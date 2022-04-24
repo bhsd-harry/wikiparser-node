@@ -1,11 +1,4 @@
 class WikiText extends String {
-	#string;
-
-	constructor(text) {
-		super(text);
-		this.#string = text;
-	}
-
 	replace(...args) {
 		return new WikiText(super.replace.apply(this, args));
 	}
@@ -17,7 +10,7 @@ class WikiText extends String {
 	replace_till_stable(...args) {
 		const MAX_SIZE = 1024 ** 2 * 2;
 		let i = 0,
-			text = this.#string,
+			text = this.valueOf(),
 			original = '';
 		while (i < 50 && text.length < MAX_SIZE && original !== text) {
 			original = text;

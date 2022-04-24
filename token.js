@@ -1,5 +1,5 @@
 class Token extends Array {
-	constructor(token) {
+	constructor(token = []) {
 		super(0);
 		if (Array.isArray(token)) {
 			this.push(...token);
