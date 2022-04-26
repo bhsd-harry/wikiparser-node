@@ -8,7 +8,7 @@ class WikiText extends String {
 	}
 
 	replace_till_stable(...args) {
-		const MAX_SIZE = 1024 ** 2 * 2;
+		const MAX_SIZE = 1024 ** 2;
 		let i = 0,
 			text = this.valueOf(),
 			original = '';
