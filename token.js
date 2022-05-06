@@ -17,13 +17,13 @@
  */
 
 const MAX_STAGE = 11;
+const ucfirst = str => `${str[0].toUpperCase()}${str.slice(1)}`.replaceAll('_', ' ');
 
 class Token extends Array {
 	type = 'root';
 	#stage = 0; // 解析阶段，参见顶部注释
 	#parent;
 	#atom = false;
-	#stack = [];
 	#config;
 	#accum;
 
@@ -49,6 +49,15 @@ class Token extends Array {
 				break;
 			case 'parent':
 				this.#parent = value;
+		}
+	}
+
+	get(key) {
+		switch (key) { // eslint-disable-line default-case
+			case 'accum':
+				return this.#accum;
+			case 'stage':
+				return this.#stage;
 		}
 	}
 
@@ -86,8 +95,60 @@ class Token extends Array {
 				});
 				break;
 			}
-			case 1:
+			case 1: {
+				const source = '\\[\\[|{{2,}|-{(?!{)',
+					stack = [],
+					closes = {'{': '}{2,}|\\|', '-': '}-', '[': ']]'};
+				let [text] = this,
+					regex = new RegExp(source, 'g'),
+					mt = regex.exec(text),
+					lastIndex;
+				while (mt) {
+					const {0: syntax, index: curIndex} = mt;
+					if ([']', '}', '|'].includes(syntax[0])) {
+						const top = stack.pop(),
+							{0: open, index} = top;
+						if (syntax === '|') {
+							top.parts.push(text.slice(top.pos, curIndex));
+							lastIndex = curIndex + 1;
+							top.pos = lastIndex;
+							stack.push(top);
+						} else if (syntax.startsWith('}}')) {
+							const close = syntax.slice(0, Math.min(open.length, 3)),
+								rest = open.length - close.length;
+							top.parts.push(text.slice(top.pos, curIndex));
+							const token = close.length === 3
+								? new ArgToken(top.parts, this.#config, this, this.#accum)
+								: new TranscludeToken(top.parts, this.#config, this, this.#accum);
+							lastIndex = curIndex + close.length;
+							text = `${
+								text.slice(0, index + rest)
+							}\x00${this.#accum.length}\x7f${text.slice(lastIndex)}`;
+							lastIndex = index + rest + 2 + String(this.#accum.length).length;
+							this.#accum.push(token);
+							if (rest > 1) {
+								stack.push({0: open.slice(0, rest), index});
+							}
+						} else {
+							lastIndex = curIndex + 2;
+						}
+					} else {
+						if (syntax.startsWith('{')) {
+							mt.pos = curIndex + syntax.length;
+							mt.parts = [];
+						}
+						stack.push(mt);
+						lastIndex = curIndex + syntax.length;
+					}
+					if (syntax !== '|') {
+						regex = new RegExp(stack.length ? `${source}|${closes[stack.at(-1)[0][0]]}` : source, 'g');
+					}
+					regex.lastIndex = lastIndex;
+					mt = regex.exec(text);
+				}
+				this[0] = text;
 				break;
+			}
 			case 2:
 				break;
 			case 3:
@@ -103,9 +164,17 @@ class Token extends Array {
 			case 8:
 				break;
 			case 9:
-				this.replace();
 				break;
 			case 10:
+				this.replace();
+				this.each('arg, template', token => {
+					token.name = token[0].toString().trim();
+					if (token.type === 'template') {
+						token.name = token.normalize(token.name, 'template');
+					}
+				});
+				break;
+			case 11:
 				return;
 			default:
 				throw new RangeError('参数应为0～9的整数！');
@@ -224,11 +293,33 @@ class Token extends Array {
 		token.set('parent', parent);
 	}
 
+	normalize(title, type) {
+		const parts = title.split(':');
+		let noPrefix;
+		if (parts[0].trim() === '') {
+			parts.unshift();
+		} else {
+			noPrefix = true;
+		}
+		parts[0] = parts[0].trim();
+		if (parts.length > 2) {
+			parts.length = 2;
+			parts[1] = parts.slice(1).join(':').trim();
+		}
+		const canonicalNs = this.#config.namespace[parts[0].toLowerCase().replaceAll(' ', '_')];
+		if (canonicalNs) {
+			return `${canonicalNs}:${ucfirst(parts[1])}`;
+		} else if (noPrefix && type === 'template') {
+			return `Template:${ucfirst(parts.join(':'))}`;
+		}
+		return ucfirst(parts.join(':'));
+	}
+
 	static parse(wikitext) {
 		if (wikitext instanceof Token) {
 			return wikitext.parse();
 		} else if (typeof wikitext === 'string') {
-			return new Token(wikitext).parse(1).replace();
+			return new Token(wikitext).parse();
 		}
 		throw new TypeError('仅接受String作为输入参数！');
 	}
@@ -274,11 +365,16 @@ class ExtToken extends Token {
 
 	constructor(matches, config, parent, accum) {
 		const [name, attr, inner] = matches;
-		super(attr, null, true, parent);
+		super('', null, true, parent);
 		this.name = name.toLowerCase();
 		this.tags = [name];
 		this.selfClosing = inner === '>';
 		this.set('stage', MAX_STAGE);
+		const attrToken = new Token(attr, config, true, this, accum);
+		attrToken.type = 'ext-attr';
+		attrToken.set('stage', MAX_STAGE - 1);
+		this[0] = attrToken;
+		accum.push(attrToken);
 		if (this.selfClosing) {
 			return;
 		}
@@ -294,7 +390,6 @@ class ExtToken extends Token {
 			}
 			default:
 				this.push(new AtomToken(extInner, 'ext-inner', this));
-				this.set('atom', true);
 		}
 	}
 
@@ -302,6 +397,68 @@ class ExtToken extends Token {
 		return this.selfClosing
 			? `<${this.tags[0]}${this[0]}/>`
 			: `<${this.tags[0]}${this[0]}>${this[1]}</${this.tags[1]}>`;
+	}
+}
+
+class ArgToken extends Token {
+	type = 'arg';
+	name;
+
+	constructor(parts, config, parent, accum) {
+		super('', config, true, parent, accum);
+		this.pop();
+		this.push(...parts.map((part, i) => {
+			if (i > 1) {
+				return new AtomToken(part, 'arg-redundant', this);
+			}
+			const token = new Token(part, config, true, this, accum);
+			token.type = i === 0 ? 'arg-name' : 'arg-default';
+			token.set('stage', i === 0 ? MAX_STAGE : 2);
+			accum.push(token);
+			return token;
+		}));
+		this.set('stage', 2);
+	}
+
+	toString() {
+		return `{{{${this.join('|')}}}}`;
+	}
+}
+
+class TranscludeToken extends Token {
+	type;
+	name;
+
+	constructor(parts, config, parent, accum) {
+		super('', config, true, parent, accum);
+		this.pop();
+		if (parts.length === 1 || parts[0].includes(':')) {
+			const [magicWord, ...arg] = parts[0].split(':'),
+				name = magicWord.trim();
+			if (config.parserFunction[1].includes(name) || config.parserFunction[0].includes(name.toLowerCase())) {
+				this.name = name.toLowerCase().replace(/^#/, '');
+				this.type = 'magic-word';
+				this.function = magicWord;
+				if (arg.length) {
+					parts[0] = arg.join(':');
+				} else {
+					parts.length = 0;
+				}
+			}
+		}
+		this.type ||= 'template';
+		this.push(...parts.map((part, i) => {
+			const token = new Token(part, config, true, this, accum);
+			token.type = i === 0 && this.type === 'template' ? 'transclude-name' : 'transclude-arg';
+			token.set('stage', token.type === 'transclude-name' ? MAX_STAGE : 2);
+			accum.push(token);
+			return token;
+		}));
+		this.set('stage', 2);
+	}
+
+	toString() {
+		return `{{${this.function ?? ''}${this.function && this.length ? ':' : ''}${this.join('|')}}}`;
 	}
 }
 
