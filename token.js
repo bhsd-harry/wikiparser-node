@@ -450,7 +450,7 @@ class TranscludeToken extends Token {
 				this.type = 'magic-word';
 				this.function = magicWord;
 				if (arg.length) {
-					parts[0] = arg.join(':');
+					parts[0] = [arg.join(':')];
 				} else {
 					parts.length = 0;
 				}
