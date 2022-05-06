@@ -23,7 +23,6 @@ class Token extends Array {
 	type = 'root';
 	#stage = 0; // 解析阶段，参见顶部注释
 	#parent;
-	#atom = false;
 	#config;
 	#accum;
 
@@ -41,9 +40,6 @@ class Token extends Array {
 
 	set(key, value) {
 		switch (key) { // eslint-disable-line default-case
-			case 'atom':
-				this.#atom = value;
-				break;
 			case 'stage':
 				this.#stage = value;
 				break;
@@ -75,7 +71,7 @@ class Token extends Array {
 
 	parseOnce(n = this.#stage) {
 		/* eslint-disable no-use-before-define */
-		if (n < this.#stage) {
+		if (n < this.#stage || this.length > 1 || typeof this[0] !== 'string') {
 			return;
 		} else if (n > this.#stage) {
 			throw new RangeError('参数不应大于this.#stage！');
@@ -88,8 +84,8 @@ class Token extends Array {
 				);
 				this[0] = this[0].replace(regex, (substr, name, attr = '', inner = '') => {
 					const token = name
-						? new ExtToken([name, attr, inner.slice(1)], this.#config, this, this.#accum)
-						: new CommentToken(substr.slice(4), this);
+						? new ExtToken([name, attr, inner.slice(1)], this.#config, this.#accum)
+						: new CommentToken(substr.slice(4));
 					this.#accum.push(token);
 					return `\x00${this.#accum.length - 1}\x7f`;
 				});
@@ -98,28 +94,32 @@ class Token extends Array {
 			case 1: {
 				const source = '\\[\\[|{{2,}|-{(?!{)',
 					stack = [],
-					closes = {'{': '}{2,}|\\|', '-': '}-', '[': ']]'};
+					closes = {'{': '}{2,}|[|=]', '-': '}-', '[': ']]'};
 				let [text] = this,
 					regex = new RegExp(source, 'g'),
 					mt = regex.exec(text),
 					lastIndex;
 				while (mt) {
-					const {0: syntax, index: curIndex} = mt;
-					if ([']', '}', '|'].includes(syntax[0])) {
+					const {0: syntax, index: curIndex} = mt,
+						innerSyntax = ['|', '='].includes(syntax);
+					if ([']', '}', '|', '='].includes(syntax[0])) {
 						const top = stack.pop(),
 							{0: open, index} = top;
-						if (syntax === '|') {
-							top.parts.push(text.slice(top.pos, curIndex));
+						if (innerSyntax) {
+							top.parts.at(-1).push(text.slice(top.pos, curIndex));
+							if (syntax === '|') {
+								top.parts.push([]);
+							}
 							lastIndex = curIndex + 1;
 							top.pos = lastIndex;
 							stack.push(top);
 						} else if (syntax.startsWith('}}')) {
 							const close = syntax.slice(0, Math.min(open.length, 3)),
 								rest = open.length - close.length;
-							top.parts.push(text.slice(top.pos, curIndex));
+							top.parts.at(-1).push(text.slice(top.pos, curIndex));
 							const token = close.length === 3
-								? new ArgToken(top.parts, this.#config, this, this.#accum)
-								: new TranscludeToken(top.parts, this.#config, this, this.#accum);
+								? new ArgToken(top.parts, this.#config, this.#accum)
+								: new TranscludeToken(top.parts, this.#config, this.#accum);
 							lastIndex = curIndex + close.length;
 							text = `${
 								text.slice(0, index + rest)
@@ -135,12 +135,12 @@ class Token extends Array {
 					} else {
 						if (syntax.startsWith('{')) {
 							mt.pos = curIndex + syntax.length;
-							mt.parts = [];
+							mt.parts = [[]];
 						}
 						stack.push(mt);
 						lastIndex = curIndex + syntax.length;
 					}
-					if (syntax !== '|') {
+					if (!innerSyntax) {
 						regex = new RegExp(stack.length ? `${source}|${closes[stack.at(-1)[0][0]]}` : source, 'g');
 					}
 					regex.lastIndex = lastIndex;
@@ -196,7 +196,7 @@ class Token extends Array {
 	}
 
 	replace() {
-		if (this.#atom || this.length !== 1 || typeof this[0] !== 'string') {
+		if (this.length !== 1 || typeof this[0] !== 'string') {
 			return;
 		}
 		const text = this.pop();
@@ -204,7 +204,9 @@ class Token extends Array {
 			if (i % 2 === 0) {
 				return str;
 			}
-			return this.#accum[str];
+			const token = this.#accum[str];
+			token.set('parent', this);
+			return token;
 		}).filter(str => str !== ''));
 		if (this.length === 0) {
 			this.push('');
@@ -245,10 +247,10 @@ class Token extends Array {
 		return this.filter(token => token instanceof Token && token.is(selector));
 	}
 
-	find(selector) {
+	search(selector) {
 		return this.filter(token => token instanceof Token).flatMap(token => [
 			...token.is(selector) ? [token] : [],
-			...token.find(selector),
+			...token.search(selector),
 		]);
 	}
 
@@ -282,7 +284,7 @@ class Token extends Array {
 	replaceWith(token) {
 		if (this === token) {
 			return;
-		} else if (token.contains(this)) {
+		} else if (token instanceof Token && token.contains(this)) {
 			throw new RangeError('替换后将出现循环结构！');
 		}
 		const parent = this.parent();
@@ -290,7 +292,9 @@ class Token extends Array {
 			throw new RangeError('根节点不能使用replaceWith方法！');
 		}
 		parent[parent.indexOf(this)] = token;
-		token.set('parent', parent);
+		if (token instanceof Token) {
+			token.set('parent', parent);
+		}
 	}
 
 	normalize(title, type) {
@@ -325,13 +329,13 @@ class Token extends Array {
 	}
 }
 
+/** @type {[string]} */
 class AtomToken extends Token {
 	type = 'plain';
 
 	constructor(wikitext, type, parent) {
 		super(wikitext, null, true, parent);
 		this.type = type;
-		this.set('atom', true);
 		this.set('stage', MAX_STAGE);
 	}
 
@@ -340,14 +344,15 @@ class AtomToken extends Token {
 	}
 }
 
+/** @type {[string]} */
 class CommentToken extends AtomToken {
 	closed = true;
 
-	constructor(wikitext, parent) {
+	constructor(wikitext) {
 		if (wikitext.endsWith('-->')) {
-			super(wikitext.slice(0, -3), 'comment', parent);
+			super(wikitext.slice(0, -3), 'comment', null);
 		} else {
-			super(wikitext, 'comment', parent);
+			super(wikitext, 'comment', null);
 			this.closed = false;
 		}
 	}
@@ -357,19 +362,19 @@ class CommentToken extends AtomToken {
 	}
 }
 
+/** @type {[Token, ?Token]} */
 class ExtToken extends Token {
 	type = 'ext';
 	name;
 	selfClosing;
 	tags;
 
-	constructor(matches, config, parent, accum) {
+	constructor(matches, config, accum) {
 		const [name, attr, inner] = matches;
-		super('', null, true, parent);
+		super('', null, true);
 		this.name = name.toLowerCase();
 		this.tags = [name];
 		this.selfClosing = inner === '>';
-		this.set('stage', MAX_STAGE);
 		const attrToken = new Token(attr, config, true, this, accum);
 		attrToken.type = 'ext-attr';
 		attrToken.set('stage', MAX_STAGE - 1);
@@ -400,24 +405,27 @@ class ExtToken extends Token {
 	}
 }
 
+/** @type [Token, ?Token] */
 class ArgToken extends Token {
 	type = 'arg';
 	name;
 
-	constructor(parts, config, parent, accum) {
-		super('', config, true, parent, accum);
+	constructor(parts, config, accum) {
+		super('', config, true, null, accum);
 		this.pop();
+		parts = parts.map(part => part.join('=')); // eslint-disable-line no-param-reassign
 		this.push(...parts.map((part, i) => {
-			if (i > 1) {
-				return new AtomToken(part, 'arg-redundant', this);
+			let token;
+			if (i === 0 || i > 1) {
+				token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', this);
+			} else {
+				token = new Token(part, config, true, this, accum);
+				token.type = 'arg-default';
+				token.set('stage', 2);
 			}
-			const token = new Token(part, config, true, this, accum);
-			token.type = i === 0 ? 'arg-name' : 'arg-default';
-			token.set('stage', i === 0 ? MAX_STAGE : 2);
 			accum.push(token);
 			return token;
 		}));
-		this.set('stage', 2);
 	}
 
 	toString() {
@@ -425,13 +433,15 @@ class ArgToken extends Token {
 	}
 }
 
+/** @type [?Token] */
 class TranscludeToken extends Token {
-	type;
+	type = 'template';
 	name;
 
-	constructor(parts, config, parent, accum) {
-		super('', config, true, parent, accum);
+	constructor(parts, config, accum) {
+		super('', config, true, null, accum);
 		this.pop();
+		parts[0] = parts[0].join('=');
 		if (parts.length === 1 || parts[0].includes(':')) {
 			const [magicWord, ...arg] = parts[0].split(':'),
 				name = magicWord.trim();
@@ -446,19 +456,69 @@ class TranscludeToken extends Token {
 				}
 			}
 		}
-		this.type ||= 'template';
-		this.push(...parts.map((part, i) => {
-			const token = new Token(part, config, true, this, accum);
-			token.type = i === 0 && this.type === 'template' ? 'transclude-name' : 'transclude-arg';
-			token.set('stage', token.type === 'transclude-name' ? MAX_STAGE : 2);
+		if (this.type === 'template') {
+			const part = parts.shift();
+			this.push(new AtomToken(part, 'template-name', this));
+			accum.push(this[0]);
+		}
+		let i = 1;
+		parts.map(([key, ...value]) => value.length ? [key, value.join('=')] : [key]).forEach(part => {
+			if (part.length === 1) {
+				part.unshift(i);
+				i++;
+			}
+			// eslint-disable-next-line no-use-before-define
+			const token = new TranscludeArgToken(...part, config, this, accum);
 			accum.push(token);
-			return token;
-		}));
-		this.set('stage', 2);
+			this.push(token);
+		});
 	}
 
 	toString() {
 		return `{{${this.function ?? ''}${this.function && this.length ? ':' : ''}${this.join('|')}}}`;
+	}
+
+	getArg(k, any) {
+		return this.find(({key, anon}) => String(k) === key && (any || (typeof k === 'number' ? anon : !anon)));
+	}
+
+	addArg(key, value, i = this.length) {
+		if (i === 0) {
+			throw new RangeError('i至少为1');
+		} else if (i > this.length) {
+			i = this.length; // eslint-disable-line no-param-reassign
+		}
+		const token = new TranscludeArgToken(key, value, null, this), // eslint-disable-line no-use-before-define
+			behind = this.slice(i);
+		this.length = i;
+		this.push(token, ...behind);
+	}
+}
+
+/** @type {[?Token, Token]} */
+class TranscludeArgToken extends Token {
+	type = 'transclude-arg';
+	key;
+
+	constructor(key, value, config, parent, accum = []) {
+		super('', config, true, parent, accum);
+		this.key = String(key).trim();
+		if (typeof key !== 'number') {
+			this[0] = new AtomToken(key, 'transclude-arg-key', this);
+			accum.push(this[0]);
+		} else {
+			this.anon = true;
+			this.pop();
+		}
+		const token = new Token(value, config, true, this, accum);
+		token.type = 'transclude-arg-value';
+		token.set('stage', 2);
+		accum.push(token);
+		this.push(token);
+	}
+
+	toString() {
+		return this.join('=');
 	}
 }
 
