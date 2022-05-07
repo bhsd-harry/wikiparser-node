@@ -16,8 +16,11 @@
  * 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
  */
 
+/* eslint-disable no-control-regex, no-new */
 const MAX_STAGE = 11;
-const ucfirst = str => `${str[0].toUpperCase()}${str.slice(1)}`.replaceAll('_', ' ');
+const ucfirst = str => `${str[0].toUpperCase()}${str.slice(1)}`.replaceAll('_', ' '),
+	removeComment = str => str.replace(/<!--.*?-->|\x00\d+c\x7f/g, '').trim(),
+	numberToString = n => typeof n === 'number' ? String(n) : n;
 const caller = () => {
 	try {
 		throw new Error();
@@ -33,9 +36,11 @@ class Token extends Array {
 	#config;
 	#accum;
 
-	constructor(wikitext, config = require('./config.json'), halfParsed = false, parent = null, accum = []) {
-		if (typeof wikitext === 'string') {
-			// eslint-disable-next-line no-control-regex
+	constructor(wikitext = null, config = require('./config.json'), halfParsed = false, parent = null, accum = []) {
+		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
+		if (wikitext === null) {
+			super();
+		} else if (typeof wikitext === 'string') {
 			super(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''));
 		} else {
 			throw new TypeError('仅接受String作为输入参数！');
@@ -43,6 +48,10 @@ class Token extends Array {
 		this.#parent = parent;
 		this.#config = config;
 		this.#accum = accum;
+		if (parent) {
+			parent.push(this);
+		}
+		accum.push(this);
 	}
 
 	set(key, value) {
@@ -91,21 +100,26 @@ class Token extends Array {
 		if (n < this.#stage || this.length > 1 || typeof this[0] !== 'string') {
 			return;
 		} else if (n > this.#stage) {
-			throw new RangeError('参数不应大于this.#stage！');
+			throw new RangeError(`当前解析层级为${this.#stage}！`);
 		}
 		/* eslint-disable no-use-before-define */
 		switch (n) {
 			case 0: {
+				if (this.type === 'root') {
+					this.#accum.shift();
+				}
 				const regex = new RegExp(
 					`<!--.*?(?:-->|$)|<(${this.#config.ext.join('|')})(\\s.*?)?(/>|>.*?</\\1>)`,
 					'gi',
 				);
 				this[0] = this[0].replace(regex, (substr, name, attr = '', inner = '') => {
-					const token = name
-						? new ExtToken([name, attr, inner.slice(1)], this.#config, this.#accum)
-						: new CommentToken(substr.slice(4));
-					this.#accum.push(token);
-					return `\x00${this.#accum.length - 1}\x7f`;
+					const str = `\x00${this.#accum.length}${name ? '' : 'c'}\x7f`;
+					if (name) {
+						new ExtToken([name, attr, inner.slice(1)], this.#config, this.#accum);
+					} else {
+						new CommentToken(substr.slice(4), this.#accum);
+					}
+					return str;
 				});
 				break;
 			}
@@ -135,15 +149,21 @@ class Token extends Array {
 							const close = syntax.slice(0, Math.min(open.length, 3)),
 								rest = open.length - close.length;
 							top.parts.at(-1).push(text.slice(top.pos, curIndex));
-							const token = close.length === 3
-								? new ArgToken(top.parts, this.#config, this.#accum)
-								: new TranscludeToken(top.parts, this.#config, this.#accum);
 							lastIndex = curIndex + close.length;
-							text = `${
-								text.slice(0, index + rest)
-							}\x00${this.#accum.length}\x7f${text.slice(lastIndex)}`;
-							lastIndex = index + rest + 2 + String(this.#accum.length).length;
-							this.#accum.push(token);
+							let name = '';
+							if (close.length === 2 && top.parts.length === 1 && top.parts[0].length === 1) {
+								name = removeComment(top.parts[0][0]);
+								name = name === '!' ? name : '';
+							}
+							text = `${text.slice(0, index + rest)}\x00${
+								this.#accum.length
+							}${name}\x7f${text.slice(lastIndex)}`;
+							lastIndex = index + rest + 2 + String(this.#accum.length).length + name.length;
+							if (close.length === 3) {
+								new ArgToken(top.parts, this.#config, this.#accum);
+							} else {
+								new TranscludeToken(top.parts, this.#config, this.#accum);
+							}
 							if (rest > 1) {
 								stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
 							} else if (rest === 1 && text[index - 1] === '-') {
@@ -190,7 +210,7 @@ class Token extends Array {
 			case 11:
 				return;
 			default:
-				throw new RangeError('参数应为0～9的整数！');
+				throw new RangeError('参数应为0～10的整数！');
 		}
 		/* eslint-enable no-use-before-define */
 		if (this.type === 'root') {
@@ -213,7 +233,7 @@ class Token extends Array {
 			if (token.name) {
 				return;
 			}
-			token.name = token[0].toString().trim();
+			token.name = removeComment(token[0].toString());
 			if (token.type === 'template') {
 				token.name = token.normalize(token.name, 'Template');
 			}
@@ -225,15 +245,16 @@ class Token extends Array {
 		if (!['Token.build', 'Token.parse'].includes(caller())) {
 			Token.warn('build方法一般不应直接调用，仅用于代码调试！');
 		}
+		this.#stage = MAX_STAGE;
 		if (this.length !== 1 || typeof this[0] !== 'string' || !this[0].includes('\x00')) {
 			return;
 		}
 		const text = this.pop();
-		this.push(...text.split(/[\x00\x7f]/).map((str, i) => { // eslint-disable-line no-control-regex
+		this.push(...text.split(/[\x00\x7f]/).map((str, i) => {
 			if (i % 2 === 0) {
 				return str;
 			}
-			const token = this.#accum[str];
+			const token = this.#accum[str.replace(/[c!]$/, '')];
 			token.set('parent', this);
 			return token;
 		}).filter(str => str !== ''));
@@ -320,7 +341,7 @@ class Token extends Array {
 		}
 		const parent = this.parent();
 		if (!parent) {
-			throw new RangeError('根节点不能使用replaceWith方法！');
+			throw new RangeError('不能替换根节点！');
 		}
 		parent[parent.indexOf(this)] = token;
 		if (token instanceof Token) {
@@ -370,6 +391,7 @@ class Token extends Array {
 	}
 
 	static parse(wikitext, n, config) {
+		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
 		if (wikitext instanceof Token) {
 			return wikitext.parse(n);
 		} else if (typeof wikitext === 'string') {
@@ -411,11 +433,12 @@ class AtomToken extends Token {
 class CommentToken extends AtomToken {
 	closed = true;
 
-	constructor(wikitext) {
+	constructor(wikitext, accum) {
+		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
 		if (wikitext.endsWith('-->')) {
-			super(wikitext.slice(0, -3), 'comment', null);
+			super(wikitext.slice(0, -3), 'comment', null, accum);
 		} else {
-			super(wikitext, 'comment', null);
+			super(wikitext, 'comment', null, accum);
 			this.closed = false;
 		}
 	}
@@ -434,15 +457,13 @@ class ExtToken extends Token {
 
 	constructor(matches, config, accum) {
 		const [name, attr, inner] = matches;
-		super('', null, true);
+		super(null, null, true, null, accum);
 		this.name = name.toLowerCase();
 		this.tags = [name];
 		this.selfClosing = inner === '>';
 		const attrToken = new Token(attr, config, true, this, accum);
 		attrToken.type = 'ext-attr';
 		attrToken.set('stage', MAX_STAGE - 1);
-		this[0] = attrToken;
-		accum.push(attrToken);
 		if (this.selfClosing) {
 			return;
 		}
@@ -452,12 +473,10 @@ class ExtToken extends Token {
 			case 'ref': {
 				const innerToken = new Token(extInner, config, true, this, accum);
 				innerToken.type = 'ext-inner';
-				this.push(innerToken);
-				accum.push(innerToken);
 				break;
 			}
 			default:
-				this.push(new AtomToken(extInner, 'ext-inner', this));
+				new AtomToken(extInner, 'ext-inner', this);
 		}
 	}
 
@@ -474,21 +493,16 @@ class ArgToken extends Token {
 	name;
 
 	constructor(parts, config, accum) {
-		super('', config, true, null, accum);
-		this.pop();
-		parts = parts.map(part => part.join('=')); // eslint-disable-line no-param-reassign
-		this.push(...parts.map((part, i) => {
-			let token;
+		super(null, config, true, null, accum);
+		parts.map(part => part.join('=')).forEach((part, i) => {
 			if (i === 0 || i > 1) {
-				token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', this, accum);
+				new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', this, accum);
 			} else {
-				token = new Token(part, config, true, this, accum);
+				const token = new Token(part, config, true, this, accum);
 				token.type = 'arg-default';
 				token.set('stage', 2);
 			}
-			accum.push(token);
-			return token;
-		}));
+		});
 	}
 
 	toString() {
@@ -502,16 +516,15 @@ class TranscludeToken extends Token {
 	name;
 
 	constructor(parts, config, accum) {
-		super('', config, true, null, accum);
-		this.pop();
+		super(null, config, true, null, accum);
 		parts[0] = parts[0].join('=');
 		if (parts.length === 1 || parts[0].includes(':')) {
 			const [magicWord, ...arg] = parts[0].split(':'),
-				name = magicWord.trim();
+				name = removeComment(magicWord);
 			if (config.parserFunction[1].includes(name) || config.parserFunction[0].includes(name.toLowerCase())) {
 				this.name = name.toLowerCase().replace(/^#/, '');
 				this.type = 'magic-word';
-				this.function = magicWord;
+				new AtomToken(magicWord, 'magic-word-name', this, accum);
 				if (arg.length) {
 					parts[0] = [arg.join(':')];
 				} else {
@@ -521,8 +534,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const part = parts.shift();
-			this.push(new AtomToken(part, 'template-name', this, accum));
-			accum.push(this[0]);
+			new AtomToken(part, 'template-name', this, accum);
 		}
 		let i = 1;
 		parts.map(([key, ...value]) => value.length ? [key, value.join('=')] : [key]).forEach(part => {
@@ -531,14 +543,14 @@ class TranscludeToken extends Token {
 				i++;
 			}
 			// eslint-disable-next-line no-use-before-define
-			const token = new TranscludeArgToken(...part, config, this, accum, false);
-			accum.push(token);
-			this.push(token);
+			new TranscludeArgToken(...part, config, this, accum, false);
 		});
 	}
 
 	toString() {
-		return `{{${this.function ?? ''}${this.function && this.length ? ':' : ''}${this.join('|')}}}`;
+		return this.type === 'magic-word'
+			? `{{${this[0]}${this.length > 1 ? ':' : ''}${this.slice(1).join('|')}}}`
+			: `{{${this.join('|')}}}`;
 	}
 
 	getArgs(k) {
@@ -578,7 +590,7 @@ class TranscludeToken extends Token {
 		}
 		i = Math.min(Math.max(i, 1), this.length); // eslint-disable-line no-param-reassign
 		arg = new TranscludeArgToken(key, value, null, this); // eslint-disable-line no-use-before-define
-		arg.name = String(key).trim();
+		arg.name = removeComment(String(key));
 		this.splice(i, 0, arg);
 	}
 
@@ -606,20 +618,16 @@ class TranscludeArgToken extends Token {
 		} else if (typeof key === 'number' && value.includes('=')) {
 			throw new RangeError('匿名参数中使用"="！');
 		}
-		super('', config, true, parent, accum);
+		super(null, config, true, parent, accum);
 		if (typeof key !== 'number') {
-			this[0] = new AtomToken(key, 'transclude-arg-key', this, accum);
-			accum.push(this[0]);
+			new AtomToken(key, 'transclude-arg-key', this, accum);
 		} else {
-			this.name = String(key);
+			this.name = removeComment(String(key));
 			this.anon = true;
-			this.pop();
 		}
 		const token = new Token(value, config, true, this, accum);
 		token.type = 'transclude-arg-value';
 		token.set('stage', 2);
-		accum.push(token);
-		this.push(token);
 	}
 
 	toString() {
