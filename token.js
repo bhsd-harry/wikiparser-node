@@ -85,9 +85,8 @@ class Token extends Array {
 	}
 
 	parseOnce(n = this.#stage) {
-		const thisCaller = caller();
-		if (!['Token.parseOnce', 'Token.parse'].includes(thisCaller)) {
-			console.warn('这个方法仅用于代码调试！', thisCaller);
+		if (!['Token.parseOnce', 'Token.parse'].includes(caller())) {
+			Token.warn('parseOnce方法一般不应直接调用，仅用于代码调试！');
 		}
 		if (n < this.#stage || this.length > 1 || typeof this[0] !== 'string') {
 			return;
@@ -187,16 +186,6 @@ class Token extends Array {
 			case 9:
 				break;
 			case 10:
-				this.replace();
-				this.each('arg, template, transclude-arg', token => {
-					if (token.name) {
-						return;
-					}
-					token.name = token[0].toString().trim();
-					if (token.type === 'template') {
-						token.name = token.normalize(token.name, 'Template');
-					}
-				});
 				break;
 			case 11:
 				return;
@@ -213,20 +202,28 @@ class Token extends Array {
 	}
 
 	parse(n = MAX_STAGE) {
-		const thisCaller = caller();
-		if (n < MAX_STAGE && thisCaller !== 'TranscludeToken.setValue') {
-			console.warn('这个方法仅用于代码调试！', thisCaller);
+		if (n < MAX_STAGE && caller() !== 'TranscludeToken.setValue') {
+			Token.warn('指定解析层级的方法仅供熟练用户使用！');
 		}
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage);
 		}
+		this.build();
+		this.each('arg, template, transclude-arg', token => {
+			if (token.name) {
+				return;
+			}
+			token.name = token[0].toString().trim();
+			if (token.type === 'template') {
+				token.name = token.normalize(token.name, 'Template');
+			}
+		});
 		return this;
 	}
 
-	replace() {
-		const thisCaller = caller();
-		if (!['Token.replace', 'Token.parseOnce'].includes(thisCaller)) {
-			console.warn('这个方法仅用于代码调试！', thisCaller);
+	build() {
+		if (!['Token.build', 'Token.parse'].includes(caller())) {
+			Token.warn('build方法一般不应直接调用，仅用于代码调试！');
 		}
 		if (this.length !== 1 || typeof this[0] !== 'string' || !this[0].includes('\x00')) {
 			return;
@@ -245,7 +242,7 @@ class Token extends Array {
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.replace();
+				token.build();
 			}
 		}
 	}
@@ -331,42 +328,52 @@ class Token extends Array {
 		}
 	}
 
+	remove() {
+		const parent = this.parent();
+		if (!parent) {
+			throw new RangeError('不能删除根节点！');
+		}
+		parent.splice(parent.indexOf(this), 1);
+	}
+
 	// 引自mediawiki.Title::parse
 	normalize(title, defaultNs = '') {
 		/* eslint-disable no-param-reassign */
-		const rUnderscoreTrim = /^_+|_+$/g,
-			rWhitespace = /[ _\xa0\u1680\u180e\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/g,
-			rSplit = /^(.+?)_*:_*(.*)$/;
 		let namespace = defaultNs;
-		title = title.replace(rWhitespace, '_').replace(rUnderscoreTrim, '');
+		title = title.replaceAll('_', ' ').trim();
 		if (title[0] === ':') {
 			namespace = '';
-			title = title.slice(1).replace(rUnderscoreTrim, '');
+			title = title.slice(1).trim();
 		}
-		const m = title.match(rSplit);
-		if (m) {
-			const id = this.#config.namespace[m[1].toLowerCase()];
+		const m = title.split(':');
+		if (m.length > 1) {
+			const id = this.#config.namespace[m[0].trim().toLowerCase()];
 			if (id) {
 				namespace = id;
-				[,, title] = m;
+				title = m.slice(1).join(':').trim();
 			}
 		}
 		const i = title.indexOf('#');
 		if (i !== -1) {
-			title = title.slice(0, i).replace(rUnderscoreTrim, '');
-		}
-		if (title === '' || title[0] === ':') {
-			return '';
+			title = title.slice(0, i).trim();
 		}
 		return `${namespace}${namespace && ':'}${ucfirst(title)}`;
 		/* eslint-enable no-param-reassign */
 	}
 
-	static parse(wikitext, config) {
+	static warning = true;
+
+	static warn(...args) {
+		if (Token.warning) {
+			console.warn(...args);
+		}
+	}
+
+	static parse(wikitext, n, config) {
 		if (wikitext instanceof Token) {
-			return wikitext.parse();
+			return wikitext.parse(n);
 		} else if (typeof wikitext === 'string') {
-			return new Token(wikitext, config).parse();
+			return new Token(wikitext, config).parse(n);
 		}
 		throw new TypeError('仅接受String作为输入参数！');
 	}
@@ -377,7 +384,7 @@ class Token extends Array {
 	}
 
 	static createToken(type, ...args) {
-		console.warn('这个函数仅用于代码调试！');
+		Token.warn('这个函数仅用于代码调试！');
 		return new (classes[type] ?? Token)(...args);
 	}
 
@@ -389,8 +396,6 @@ class Token extends Array {
 
 /** @type {[string]} */
 class AtomToken extends Token {
-	type = 'plain';
-
 	constructor(wikitext, type, parent, accum) {
 		super(wikitext, null, true, parent, accum);
 		this.type = type;
@@ -546,7 +551,7 @@ class TranscludeToken extends Token {
 	}
 
 	getValues(k) {
-		return this.getArgs(k).map(arg => arg.at(-1).toString()[arg.anon ? 'trimEnd' : 'trim']());
+		return this.getArgs(k).map(arg => arg.getValue());
 	}
 
 	getValue(k) {
@@ -554,21 +559,34 @@ class TranscludeToken extends Token {
 	}
 
 	setValue(key, value, i = this.length) {
-		const arg = this.getArg(key, true);
+		let arg = this.getArg(key, true);
 		if (arg) {
 			if (arg.anon) {
-				const token = new Token(value.toString()).parse(2);
-				if (token[0].includes('=')) {
-					throw new RangeError('匿名参数中使用"="！');
+				const token = new Token(value.toString()).parse(2),
+					plainToken = token.map((str, j) => [str, j])
+						.filter(([str]) => typeof str === 'string' && str.includes('='));
+				if (plainToken.length) {
+					console.warn('匿名参数中使用"="！');
+					plainToken.forEach(([str, j]) => {
+						token[j] = str.replaceAll('=', '{{=}}');
+					});
+					value = token.toString(); // eslint-disable-line no-param-reassign
 				}
 			}
 			arg[arg.length - 1] = value;
 			return;
 		}
 		i = Math.min(Math.max(i, 1), this.length); // eslint-disable-line no-param-reassign
-		const token = new TranscludeArgToken(key, value, null, this); // eslint-disable-line no-use-before-define
-		token.name = String(key).trim();
-		this.splice(i, 0, token);
+		arg = new TranscludeArgToken(key, value, null, this); // eslint-disable-line no-use-before-define
+		arg.name = String(key).trim();
+		this.splice(i, 0, arg);
+	}
+
+	naming() {
+		this.filter(({anon}) => anon).forEach(arg => {
+			arg.unshift(new AtomToken(arg.name, 'transclude-arg-key', arg));
+			arg.anon = false;
+		});
 	}
 }
 
@@ -606,6 +624,10 @@ class TranscludeArgToken extends Token {
 
 	toString() {
 		return this.join('=');
+	}
+
+	getValue() {
+		return this.at(-1).toString().replace(/<!--.*?-->/g, '').trim();
 	}
 }
 
