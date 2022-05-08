@@ -2,22 +2,23 @@
  * PHP解析器的步骤：
  * -1. 替换签名和{{subst:}}，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
  * 0. 移除特定字符\x00和\x7f，参见Parser::parse
- * 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText
- * 2. 模板/模板变量，注意rightmost法则，以及'-{'和'[['可以破坏'{{'或'{{{'语法，
+ * 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
+ * 2. 模板/模板变量/标题，注意rightmost法则，以及'-{'和'[['可以破坏'{{'或'{{{'语法，
  *    参见Preprocessor_Hash::buildDomTreeArrayFromText
  * 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
  * 4. 表格，参见Parser::handleTables
  * 5. 水平线和状态开关，参见Parser::internalParse
- * 6. 标题，参见Parser::handleHeadings
- * 7. 内链，含文件和分类，参见Parser::handleInternalLinks2
- * 8. 外链，参见Parser::handleExternalLinks
- * 9. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
- * 10. 段落和列表，参见BlockLevelPass::execute
- * 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
+ * 6. 内链，含文件和分类，参见Parser::handleInternalLinks2
+ * 7. 外链，参见Parser::handleExternalLinks
+ * 8. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
+ * 9. 段落和列表，参见BlockLevelPass::execute
+ * 10. 转换，参见LanguageConverter::recursiveConvertTopLevel
  */
 
 /* eslint-disable no-control-regex, no-new */
-const MAX_STAGE = 11;
+const MAX_STAGE = 10,
+	attrRegex = /([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg,
+	attrNameRegex = /^(?:[\w:]|\x00\d+\x7f)(?:[\w:.-]|\x00\d+\x7f)*$/;
 const ucfirst = str => `${str[0].toUpperCase()}${str.slice(1)}`.replaceAll('_', ' '),
 	removeComment = str => str.replace(/<!--.*?-->|\x00\d+c\x7f/g, '').trim(),
 	numberToString = n => typeof n === 'number' ? String(n) : n;
@@ -55,21 +56,23 @@ class Token extends Array {
 	}
 
 	set(key, value) {
-		switch (key) { // eslint-disable-line default-case
+		switch (key) {
 			case 'stage':
 				this.#stage = value;
 				break;
 			case 'parent':
 				this.#parent = value;
+			// no default
 		}
 	}
 
 	get(key) {
-		switch (key) { // eslint-disable-line default-case
+		switch (key) {
 			case 'accum':
 				return this.#accum;
 			case 'stage':
 				return this.#stage;
+			// no default
 		}
 	}
 
@@ -102,7 +105,6 @@ class Token extends Array {
 		} else if (n > this.#stage) {
 			throw new RangeError(`当前解析层级为${this.#stage}！`);
 		}
-		/* eslint-disable no-use-before-define */
 		switch (n) {
 			case 0: {
 				if (this.type === 'root') {
@@ -124,65 +126,74 @@ class Token extends Array {
 				break;
 			}
 			case 1: {
-				const source = '\\[\\[|{{2,}|-{(?!{)',
+				const source = '(?<=^(?:\x00\\d+c\x7f)*)={1,6}|\\[\\[|{{2,}|-{(?!{)',
 					stack = [],
-					closes = {'{': '}{2,}|[|=]', '-': '}-', '[': ']]'};
+					closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'};
 				let [text] = this,
-					regex = new RegExp(source, 'g'),
+					regex = new RegExp(source, 'gm'),
 					mt = regex.exec(text),
 					lastIndex;
 				while (mt) {
 					const {0: syntax, index: curIndex} = mt,
-						innerSyntax = ['|', '='].includes(syntax);
-					if ([']', '}', '|', '='].includes(syntax[0])) {
-						const top = stack.pop(),
-							{0: open, index} = top;
-						if (innerSyntax) {
-							top.parts.at(-1).push(text.slice(top.pos, curIndex));
-							if (syntax === '|') {
-								top.parts.push([]);
-							}
-							lastIndex = curIndex + 1;
-							top.pos = lastIndex;
-							stack.push(top);
-						} else if (syntax.startsWith('}}')) {
-							const close = syntax.slice(0, Math.min(open.length, 3)),
-								rest = open.length - close.length;
-							top.parts.at(-1).push(text.slice(top.pos, curIndex));
-							lastIndex = curIndex + close.length;
-							let name = '';
-							if (close.length === 2 && top.parts.length === 1 && top.parts[0].length === 1) {
-								name = removeComment(top.parts[0][0]);
-								name = name === '!' ? name : '';
-							}
-							text = `${text.slice(0, index + rest)}\x00${
-								this.#accum.length
-							}${name}\x7f${text.slice(lastIndex)}`;
-							lastIndex = index + rest + 2 + String(this.#accum.length).length + name.length;
-							if (close.length === 3) {
-								new ArgToken(top.parts, this.#config, this.#accum);
-							} else {
-								new TranscludeToken(top.parts, this.#config, this.#accum);
-							}
-							if (rest > 1) {
-								stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
-							} else if (rest === 1 && text[index - 1] === '-') {
-								stack.push({0: '-{', index: index - 1, pos: index + 1, parts: [[]]});
-							}
-						} else {
-							lastIndex = curIndex + 2;
+						top = stack.pop(),
+						innerEqual = syntax === '=' && top?.findEqual;
+					if ([']]', '}-'].includes(syntax)) { // 情形1：闭合内链或转换
+						lastIndex = curIndex + 2;
+					} else if (syntax === '\n') { // 情形2：闭合标题
+						lastIndex = curIndex + 1;
+						/** @todo 生成标题Token */
+					} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
+						top.parts.at(-1).push(text.slice(top.pos, curIndex));
+						if (syntax === '|') {
+							top.parts.push([]);
 						}
-					} else {
+						lastIndex = curIndex + 1;
+						top.pos = lastIndex;
+						top.findEqual = syntax === '|';
+						stack.push(top);
+					} else if (syntax.startsWith('}}')) { // 情形4：闭合模板
+						const {0: open, index} = top;
+						const close = syntax.slice(0, Math.min(open.length, 3)),
+							rest = open.length - close.length;
+						top.parts.at(-1).push(text.slice(top.pos, curIndex));
+						lastIndex = curIndex + close.length;
+						/* 标记{{!}} */
+						let name = '';
+						if (close.length === 2) {
+							name = removeComment(top.parts[0][0]);
+							name = name === '!' ? name : '';
+						}
+						/* 标记{{!}}结束 */
+						text = `${text.slice(0, index + rest)}\x00${
+							this.#accum.length
+						}${name}\x7f${text.slice(lastIndex)}`;
+						lastIndex = index + rest + 2 + String(this.#accum.length).length + name.length;
+						if (close.length === 3) {
+							new ArgToken(top.parts, this.#config, this.#accum);
+						} else {
+							new TranscludeToken(top.parts, this.#config, this.#accum);
+						}
+						if (rest > 1) {
+							stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
+						} else if (rest === 1 && text[index - 1] === '-') {
+							stack.push({0: '-{', index: index - 1, pos: index + 1, parts: [[]]});
+						}
+					} else { // 情形5：开启
 						if (syntax.startsWith('{')) {
 							mt.pos = curIndex + syntax.length;
 							mt.parts = [[]];
 						}
+						if (top) {
+							stack.push(top);
+						}
 						stack.push(mt);
 						lastIndex = curIndex + syntax.length;
 					}
-					if (!innerSyntax) {
-						regex = new RegExp(stack.length ? `${source}|${closes[stack.at(-1)[0][0]]}` : source, 'g');
-					}
+					const curTop = stack.at(-1);
+					regex = new RegExp(source + (curTop
+						? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
+						: ''
+					), 'gm');
 					regex.lastIndex = lastIndex;
 					mt = regex.exec(text);
 				}
@@ -206,13 +217,10 @@ class Token extends Array {
 			case 9:
 				break;
 			case 10:
-				break;
-			case 11:
 				return;
 			default:
 				throw new RangeError('参数应为0～10的整数！');
 		}
-		/* eslint-enable no-use-before-define */
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
 				token.parseOnce(n);
@@ -222,14 +230,14 @@ class Token extends Array {
 	}
 
 	parse(n = MAX_STAGE) {
-		if (n < MAX_STAGE && caller() !== 'TranscludeToken.setValue') {
+		if (n < MAX_STAGE && caller() !== 'ParameterToken.setValue') {
 			Token.warn('指定解析层级的方法仅供熟练用户使用！');
 		}
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage);
 		}
 		this.build();
-		this.each('arg, template, transclude-arg', token => {
+		this.each('arg, template, parameter', token => {
 			if (token.name) {
 				return;
 			}
@@ -448,7 +456,7 @@ class CommentToken extends AtomToken {
 	}
 }
 
-/** @type {[Token, ?Token]} */
+/** @type {[AttributeToken, ?Token]} */
 class ExtToken extends Token {
 	type = 'ext';
 	name;
@@ -461,9 +469,7 @@ class ExtToken extends Token {
 		this.name = name.toLowerCase();
 		this.tags = [name];
 		this.selfClosing = inner === '>';
-		const attrToken = new Token(attr, config, true, this, accum);
-		attrToken.type = 'ext-attr';
-		attrToken.set('stage', MAX_STAGE - 1);
+		new AttributeToken(attr, 'ext-attr', this, []);
 		if (this.selfClosing) {
 			return;
 		}
@@ -485,9 +491,122 @@ class ExtToken extends Token {
 			? `<${this.tags[0]}${this[0]}/>`
 			: `<${this.tags[0]}${this[0]}>${this[1]}</${this.tags[1]}>`;
 	}
+
+	getAttr(key) {
+		return this[0].getAttr(key);
+	}
+
+	removeAttr(key) {
+		this[0].removeAttr(key);
+	}
+
+	setAttr(key, value) {
+		this[0].setAttr(key, value);
+	}
+
+	attr(...args) {
+		return this[0].attr(...args);
+	}
+
+	empty() {
+		this.length = 1;
+		this.tags.length = 1;
+		this.selfClosing = true;
+	}
 }
 
-/** @type [Token, ?Token] */
+class AttributeToken extends AtomToken {
+	#attr = {};
+
+	constructor(attr, type, parent, accum) {
+		if (attr.includes('>')) {
+			throw new RangeError('扩展或HTML标签属性不能包含">"！');
+		}
+		super(attr, type, parent, accum);
+		if (parent.name) {
+			this.name = parent.name;
+		}
+		for (const [, key,, quoted, unquoted] of attr.matchAll(attrRegex)) {
+			this.setAttr(key, quoted ?? unquoted ?? null, true);
+		}
+	}
+
+	build() {
+		super.build();
+		if (this.type === 'ext-attr') {
+			return;
+		}
+		const accum = this.get('accum');
+		const buildOnce = str => str.split(/[\x00\x7f]/)
+			.map((s, i) => i % 2 ? accum[s.replace(/!$/, '')].toString() : s).join('');
+		for (let key in this.#attr) {
+			const text = this.#attr[key];
+			if (key.includes('\x00')) {
+				delete this.#attr[key];
+				key = buildOnce(key);
+				this.#attr[key] = text;
+			}
+			if (text === true || !text.includes('\x00')) {
+				continue;
+			}
+			this.#attr[key] = buildOnce(text);
+		}
+	}
+
+	getAttr(key) {
+		return key === undefined ? {...this.#attr} : this.#attr[key.toLowerCase().trim()];
+	}
+
+	empty() {
+		this.update('');
+		this.#attr = {};
+	}
+
+	#updateFromAttr() {
+		console.warn('这个方法会自动清除无效属性！');
+		const str = Object.entries(this.#attr).map(([k, v]) => {
+			if (v === true) {
+				return k;
+			}
+			const quote = v.includes('"') ? "'" : '"';
+			return `${k}=${quote}${v}${quote}`;
+		}).join(' ');
+		this.update(str && ` ${str}`);
+	}
+
+	removeAttr(key) {
+		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
+		if (key === undefined) {
+			this.empty();
+		} else if (key in this.#attr) {
+			delete this.#attr[key];
+			this.#updateFromAttr();
+		}
+	}
+
+	setAttr(key, value, init) {
+		if (value === undefined) {
+			this.removeAttr(key);
+			return;
+		}
+		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
+		if (attrNameRegex.test(key)) {
+			this.#attr[key] = value === null ? true : value.replace(/\s/g, ' ').trim();
+			if (!init) {
+				this.#updateFromAttr();
+			}
+		}
+	}
+
+	attr(...args) {
+		if (args.length < 2) {
+			return this.getAttr(...args);
+		}
+		this.setAttr(...args);
+	}
+}
+
+/** @type [AtomToken, ?Token] */
 class ArgToken extends Token {
 	type = 'arg';
 	name;
@@ -508,42 +627,59 @@ class ArgToken extends Token {
 	toString() {
 		return `{{{${this.join('|')}}}}`;
 	}
+
+	rename(name) {
+		this[0].update(name);
+		this.name = removeComment(name);
+	}
+
+	setDefault(token) {
+		token.type = 'arg-default';
+		if (this.length > 1) {
+			this[1].replaceWith(token);
+		} else {
+			this.push(token);
+			token.set('parent', this);
+		}
+	}
+
+	removeRedundant() {
+		if (this.length > 2) {
+			this.length = 2;
+		}
+	}
 }
 
-/** @type [?Token] */
+/** @type [AtomToken, ?ParameterToken] */
 class TranscludeToken extends Token {
 	type = 'template';
 	name;
 
 	constructor(parts, config, accum) {
 		super(null, config, true, null, accum);
-		parts[0] = parts[0].join('=');
-		if (parts.length === 1 || parts[0].includes(':')) {
-			const [magicWord, ...arg] = parts[0].split(':'),
+		const [title] = parts.shift();
+		if (parts.length === 0 || title.includes(':')) {
+			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
 			if (config.parserFunction[1].includes(name) || config.parserFunction[0].includes(name.toLowerCase())) {
 				this.name = name.toLowerCase().replace(/^#/, '');
 				this.type = 'magic-word';
 				new AtomToken(magicWord, 'magic-word-name', this, accum);
 				if (arg.length) {
-					parts[0] = [arg.join(':')];
-				} else {
-					parts.length = 0;
+					parts.unshift([arg.join(':')]);
 				}
 			}
 		}
-		if (this.type === 'template') {
-			const part = parts.shift();
-			new AtomToken(part, 'template-name', this, accum);
+		if (!this.name) {
+			new AtomToken(title, 'template-name', this, accum);
 		}
 		let i = 1;
-		parts.map(([key, ...value]) => value.length ? [key, value.join('=')] : [key]).forEach(part => {
+		parts.forEach(part => {
 			if (part.length === 1) {
 				part.unshift(i);
 				i++;
 			}
-			// eslint-disable-next-line no-use-before-define
-			new TranscludeArgToken(...part, config, this, accum, false);
+			new ParameterToken(...part, config, this, accum, false);
 		});
 	}
 
@@ -553,58 +689,67 @@ class TranscludeToken extends Token {
 			: `{{${this.join('|')}}}`;
 	}
 
-	getArgs(k) {
-		return this.filter(({name}) => String(k) === name);
+	getArgs(key) {
+		return this.filter(({name}) => String(key) === name);
 	}
 
-	getArg(k, any) {
-		const args = this.getArgs(k);
-		return (any ? args : args.filter(({anon}) => typeof k === 'number' ? anon : !anon)).at(-1);
+	getArg(key, any) {
+		const args = this.getArgs(key);
+		return (any ? args : args.filter(({anon}) => typeof key === 'number' ? anon : !anon)).at(-1);
 	}
 
-	getValues(k) {
-		return this.getArgs(k).map(arg => arg.getValue());
+	getKeys() {
+		return [...new Set(this.map(({name}) => name))];
 	}
 
-	getValue(k) {
-		return this.getValues(k).at(-1);
+	getValues(key) {
+		return this.getArgs(key).map(arg => arg.getValue());
+	}
+
+	getValue(key) {
+		if (key !== undefined) {
+			return this.getValues(key).at(-1);
+		}
+		return Object.fromEntries(this.getKeys().map(k => this.getValue(k)));
 	}
 
 	setValue(key, value, i = this.length) {
 		let arg = this.getArg(key, true);
 		if (arg) {
-			if (arg.anon) {
-				const token = new Token(value.toString()).parse(2),
-					plainToken = token.map((str, j) => [str, j])
-						.filter(([str]) => typeof str === 'string' && str.includes('='));
-				if (plainToken.length) {
-					console.warn('匿名参数中使用"="！');
-					plainToken.forEach(([str, j]) => {
-						token[j] = str.replaceAll('=', '{{=}}');
-					});
-					value = token.toString(); // eslint-disable-line no-param-reassign
-				}
-			}
-			arg[arg.length - 1] = value;
+			arg.setValue(value);
 			return;
 		}
 		i = Math.min(Math.max(i, 1), this.length); // eslint-disable-line no-param-reassign
-		arg = new TranscludeArgToken(key, value, null, this); // eslint-disable-line no-use-before-define
+		arg = new ParameterToken(key, value, null, this);
 		arg.name = removeComment(String(key));
 		this.splice(i, 0, arg);
 	}
 
+	val(...args) {
+		if (args.length < 2) {
+			return this.getValue(...args);
+		}
+		this.setValue(...args);
+	}
+
 	naming() {
 		this.filter(({anon}) => anon).forEach(arg => {
-			arg.unshift(new AtomToken(arg.name, 'transclude-arg-key', arg));
+			arg.unshift(new AtomToken(arg.name, 'parameter-key', arg));
 			arg.anon = false;
+		});
+	}
+
+	removeArg(key) {
+		this.getArgs(key).forEach(arg => {
+			arg.remove();
 		});
 	}
 }
 
-/** @type {[?Token, Token]} */
-class TranscludeArgToken extends Token {
-	type = 'transclude-arg';
+/** @type {[?AtomToken, ParameterValueToken]} */
+class ParameterToken extends Token {
+	type = 'parameter';
+	anon = false;
 	name;
 
 	constructor(key, value, config, parent, accum = [], autofix = true) {
@@ -620,14 +765,12 @@ class TranscludeArgToken extends Token {
 		}
 		super(null, config, true, parent, accum);
 		if (typeof key !== 'number') {
-			new AtomToken(key, 'transclude-arg-key', this, accum);
+			new AtomToken(key, 'parameter-key', this, accum);
 		} else {
-			this.name = removeComment(String(key));
+			this.name = String(key);
 			this.anon = true;
 		}
-		const token = new Token(value, config, true, this, accum);
-		token.type = 'transclude-arg-value';
-		token.set('stage', 2);
+		new ParameterValueToken(value, config, this, accum);
 	}
 
 	toString() {
@@ -637,15 +780,63 @@ class TranscludeArgToken extends Token {
 	getValue() {
 		return this.at(-1).toString().replace(/<!--.*?-->/g, '').trim();
 	}
+
+	setValue(value) {
+		if (this.anon) {
+			const token = new Token(value.toString()).parse(2),
+				plainToken = token.map((str, j) => [str, j])
+					.filter(([str]) => typeof str === 'string' && str.includes('='));
+			if (plainToken.length) {
+				console.warn('匿名参数中使用"="！');
+				plainToken.forEach(([str, j]) => {
+					token[j] = str.replaceAll('=', '{{=}}');
+				});
+				value = token.toString(); // eslint-disable-line no-param-reassign
+			}
+		}
+		this[this.length - 1] = value;
+	}
+
+	val(...args) {
+		if (args.length === 0) {
+			return this.getValue();
+		}
+		this.setValue(args[0]);
+	}
+
+	rename(key) {
+		if (this.anon) {
+			throw new Error('匿名参数不能简单地更名！');
+		}
+		key = String(key); // eslint-disable-line no-param-reassign
+		this[0].update(key);
+		this.name = removeComment(key);
+	}
+}
+
+/** @type {[string]} */
+class ParameterValueToken extends Token {
+	type = 'parameter-value';
+
+	constructor(value, config, parent, accum) {
+		super(value, config, true, parent, accum);
+		this.set('stage', 2);
+	}
+
+	isAnon() {
+		return this.parent().anon;
+	}
 }
 
 const classes = {
 	atom: AtomToken,
 	comment: CommentToken,
 	ext: ExtToken,
+	attribute: AttributeToken,
 	arg: ArgToken,
 	transclude: TranscludeToken,
-	transcludeArg: TranscludeArgToken,
+	parameter: ParameterToken,
+	parameterValue: ParameterValueToken,
 };
 
 module.exports = Token;
