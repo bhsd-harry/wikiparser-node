@@ -19,7 +19,7 @@
 const MAX_STAGE = 10,
 	attrRegex = /([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg,
 	attrNameRegex = /^(?:[\w:]|\x00\d+\x7f)(?:[\w:.-]|\x00\d+\x7f)*$/;
-const ucfirst = str => `${str[0].toUpperCase()}${str.slice(1)}`.replaceAll('_', ' '),
+const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`.replaceAll('_', ' '),
 	removeComment = str => str.replace(/<!--.*?-->|\x00\d+c\x7f/g, '').trim(),
 	numberToString = n => typeof n === 'number' ? String(n) : n;
 const caller = () => {
@@ -157,7 +157,7 @@ class Token extends Array {
 
 	parseOnce(n = this.#stage) {
 		if (!['Token.parseOnce', 'Token.parse'].includes(caller())) {
-			Token.warn('parseOnce方法一般不应直接调用，仅用于代码调试！');
+			Token.warn('Token.parseOnce方法一般不应直接调用，仅用于代码调试！');
 		}
 		if (n < this.#stage || !this.isPlain()) {
 			return;
@@ -286,7 +286,7 @@ class Token extends Array {
 			case 10:
 				return;
 			default:
-				throw new RangeError('参数应为0～10的整数！');
+				throw new RangeError('解析层级应为0～10的整数！');
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
@@ -297,8 +297,9 @@ class Token extends Array {
 	}
 
 	build() {
-		if (!['Token.build', 'Token.parse'].includes(caller())) {
-			Token.warn('build方法一般不应直接调用，仅用于代码调试！');
+		const thisCaller = caller();
+		if (thisCaller !== 'Token.parse' && !thisCaller.endsWith('Token.build')) {
+			Token.warn('Token.build方法一般不应直接调用，仅用于代码调试！');
 		}
 		this.#stage = MAX_STAGE;
 		if (!this.isPlain() && !(this instanceof AtomToken) || !this[0].includes('\x00')) {
@@ -347,32 +348,50 @@ class Token extends Array {
 		if (!selector?.trim()) {
 			return true;
 		}
-		const hasNot = selector.includes(':not(');
-		if (!selector.includes(',') && !hasNot) {
+		const func = ['not', 'has', 'contains'],
+			regex = new RegExp(
+				`:(${func.join('|')})\\(\\s*(?:(["'])([^']*)\\2|([^()]*?))\\s*\\)(?=:|\\s*(?:,|$))`,
+				'g',
+			),
+			hasFunc = regex.test(selector);
+		if (!selector.includes(',') && !hasFunc) {
 			const [type, ...parts] = selector.trim().split('#'),
 				name = parts.join('#');
 			return (!type || this.type === type) && (!name || this.name === name);
-		} else if (!hasNot) {
+		} else if (!hasFunc) {
 			return selector.split(',').some(str => this.is(str));
 		}
-		const notRegex = /:not\(([^()]*)\)(?=:|\s*(?:,|$))/g,
-			nots = [];
-		const selectors = selector.replace(notRegex, (_, p1) => {
-			nots.push(p1);
-			return `:not(${nots.length - 1})`;
+		const calls = Object.fromEntries(func.map(f => [f, []]));
+		regex.lastIndex = 0;
+		const selectors = selector.replace(regex, (_, f, __, quoted, unquoted) => {
+			calls[f].push(quoted ?? unquoted);
+			return `:${f}(${calls[f].length - 1})`;
 		}).split(',');
 		return selectors.some(str => {
-			const curNots = [];
-			str = str.replace(notRegex, (_, p1) => { // eslint-disable-line no-param-reassign
-				curNots.push(nots[p1]);
+			const curCalls = Object.fromEntries(func.map(f => [f, []]));
+			str = str.replace(regex, (_, f, __, ___, i) => { // eslint-disable-line no-param-reassign
+				curCalls[f].push(calls[f][i]);
 				return '';
 			});
-			return this.is(str) && !curNots.some(not => this.is(not));
+			return this.is(str) && !curCalls.not.some(s => this.is(s))
+				&& curCalls.has.every(s => this.is(s) || this.search(s).length)
+				&& curCalls.contains.every(s => this.toString().includes(s));
 		});
 	}
 
 	children(selector) {
 		return this.filter(token => token instanceof Token && token.is(selector));
+	}
+
+	not(selector) {
+		return this.filter(token => token instanceof Token && !token.is(selector));
+	}
+
+	search(selector) {
+		return this.children().flatMap(token => [
+			...token.is(selector) ? [token] : [],
+			...token.search(selector),
+		]);
 	}
 
 	closest(selector) {
@@ -384,6 +403,39 @@ class Token extends Array {
 			ancestor = ancestor.parent();
 		}
 		return null;
+	}
+
+	parent(selector) {
+		const parent = this.#parent;
+		return parent?.is(selector) ? parent : null;
+	}
+
+	parents(selector) {
+		let ancestor = this.#parent;
+		const parents = [];
+		while (ancestor) {
+			if (ancestor.is(selector)) {
+				parents.push(ancestor);
+			}
+			ancestor = ancestor.parent();
+		}
+		return parents;
+	}
+
+	parentsUntil(selector) {
+		let ancestor = this.#parent;
+		const parents = [];
+		while (ancestor && !ancestor.is(selector)) {
+			parents.push(ancestor);
+			ancestor = ancestor.parent();
+		}
+		return parents;
+	}
+
+	contains(token) {
+		return typeof token === 'string'
+			? this.toString().includes(token)
+			: this.includes(token) || this.children().some(child => child.contains(token));
 	}
 
 	each(...args) {
@@ -418,6 +470,10 @@ class Token extends Array {
 		return this.filter((_, i) => i % 2 === 0);
 	}
 
+	odd() {
+		return this.filter((_, i) => i % 2 === 1);
+	}
+
 	has(selector) {
 		return this.children().filter(token => token.is(selector) || token.search(selector).length);
 	}
@@ -439,9 +495,17 @@ class Token extends Array {
 	index() {
 		const parent = this.#parent;
 		if (parent === null) {
-			throw new Error('根节点没有兄弟节点！');
+			throw new Error('根节点没有父节点！');
 		}
 		return parent.indexOf(this);
+	}
+
+	lastIndex() {
+		const parent = this.#parent;
+		if (parent === null) {
+			throw new Error('根节点没有父节点！');
+		}
+		return parent.lastIndexOf(this);
 	}
 
 	next(selector) {
@@ -449,8 +513,17 @@ class Token extends Array {
 		if (parent === null) {
 			throw new Error('根节点没有兄弟节点！');
 		}
-		const sibling = parent[this.index() + 1];
-		return selector === undefined || sibling?.is(selector) ? sibling : null;
+		const sibling = parent[parent.indexOf(this) + 1];
+		return selector === undefined || sibling instanceof Token && sibling.is(selector) ? sibling : null;
+	}
+
+	prev(selector) {
+		const parent = this.#parent;
+		if (parent === null) {
+			throw new Error('根节点没有兄弟节点！');
+		}
+		const sibling = parent[parent.indexOf(this) - 1];
+		return selector === undefined || sibling instanceof Token && sibling.is(selector) ? sibling : null;
 	}
 
 	nextAll(selector) {
@@ -458,7 +531,18 @@ class Token extends Array {
 		if (parent === null) {
 			throw new Error('根节点没有兄弟节点！');
 		}
-		const siblings = parent.slice(this.index() + 1);
+		const siblings = parent.slice(parent.indexOf(this) + 1);
+		return selector === undefined
+			? siblings
+			: siblings.filter(token => token instanceof Token && token.is(selector));
+	}
+
+	prevAll(selector) {
+		const parent = this.#parent;
+		if (parent === null) {
+			throw new Error('根节点没有兄弟节点！');
+		}
+		const siblings = parent.slice(0, parent.indexOf(this));
 		return selector === undefined
 			? siblings
 			: siblings.filter(token => token instanceof Token && token.is(selector));
@@ -469,64 +553,9 @@ class Token extends Array {
 		if (parent === null) {
 			throw new Error('根节点没有兄弟节点！');
 		}
-		const siblings = parent.slice(this.index() + 1),
+		const siblings = parent.slice(parent.indexOf(this) + 1),
 			index = siblings.findIndex(token => token instanceof Token && token.is(selector));
-		return siblings.slice(0, index >= 0 ? index : undefined);
-	}
-
-	not(selector) {
-		return this.filter(token => token instanceof Token && !token.is(selector));
-	}
-
-	odd() {
-		return this.filter((_, i) => i % 2 === 1);
-	}
-
-	parent(selector) {
-		const parent = this.#parent;
-		return parent?.is(selector) ? parent : null;
-	}
-
-	parents(selector) {
-		let ancestor = this.#parent;
-		const parents = [];
-		while (ancestor) {
-			if (ancestor.is(selector)) {
-				parents.push(ancestor);
-			}
-			ancestor = ancestor.parent();
-		}
-		return parents;
-	}
-
-	parentsUntil(selector) {
-		let ancestor = this.#parent;
-		const parents = [];
-		while (ancestor && !ancestor.is(selector)) {
-			parents.push(ancestor);
-			ancestor = ancestor.parent();
-		}
-		return parents;
-	}
-
-	prev(selector) {
-		const parent = this.#parent;
-		if (parent === null) {
-			throw new Error('根节点没有兄弟节点！');
-		}
-		const sibling = parent[this.index() - 1];
-		return selector === undefined || sibling?.is(selector) ? sibling : null;
-	}
-
-	prevAll(selector) {
-		const parent = this.#parent;
-		if (parent === null) {
-			throw new Error('根节点没有兄弟节点！');
-		}
-		const siblings = parent.slice(0, this.index());
-		return selector === undefined
-			? siblings
-			: siblings.filter(token => token instanceof Token && token.is(selector));
+		return index === -1 ? siblings : siblings.slice(0, index);
 	}
 
 	prevUntil(selector) {
@@ -534,16 +563,9 @@ class Token extends Array {
 		if (parent === null) {
 			throw new Error('根节点没有兄弟节点！');
 		}
-		const siblings = parent.slice(0, this.index()).reverse(),
+		const siblings = parent.slice(0, parent.indexOf(this)).reverse(),
 			index = siblings.findIndex(token => token instanceof Token && token.is(selector));
-		return siblings.slice(0, index >= 0 ? index : undefined);
-	}
-
-	search(selector) {
-		return this.children().flatMap(token => [
-			...token.is(selector) ? [token] : [],
-			...token.search(selector),
-		]);
+		return index === -1 ? siblings : siblings.slice(0, index);
 	}
 
 	siblings(selector) {
@@ -552,8 +574,10 @@ class Token extends Array {
 			throw new Error('根节点没有兄弟节点！');
 		}
 		const siblings = parent.slice();
-		siblings.splice(this.index(), 1);
-		return selector === undefined ? siblings : siblings.children();
+		siblings.splice(parent.indexOf(this), 1);
+		return selector === undefined
+			? siblings
+			: siblings.filter(token => token instanceof Token && token.is(selector));
 	}
 
 	after(...args) {
@@ -561,11 +585,27 @@ class Token extends Array {
 		if (!parent) {
 			throw new Error('根节点不能有兄弟节点！');
 		}
-		const legalArgs = args.filter(arg => !arg?.contains(this));
+		const legalArgs = args.filter(arg => typeof arg === 'string' || !arg.contains(this));
 		if (legalArgs.length < args.length) {
-			console.error('会造成循环结构的节点未插入！');
+			console.error('Token.after: 会造成循环结构的节点未插入！');
 		}
-		parent.splice(this.index() + 1, 0, ...legalArgs);
+		parent.splice(parent.indexOf(this) + 1, 0, ...legalArgs);
+		legalArgs.filter(arg => arg instanceof Token).forEach(token => {
+			token.set('parent', parent);
+		});
+		return this;
+	}
+
+	before(...args) {
+		const parent = this.#parent;
+		if (!parent) {
+			throw new Error('根节点不能有兄弟节点！');
+		}
+		const legalArgs = args.filter(arg => typeof arg === 'string' || !arg.contains(this));
+		if (legalArgs.length < args.length) {
+			console.error('Token.before: 会造成循环结构的节点未插入！');
+		}
+		parent.splice(parent.indexOf(this), 0, ...legalArgs);
 		legalArgs.filter(arg => arg instanceof Token).forEach(token => {
 			token.set('parent', parent);
 		});
@@ -573,11 +613,23 @@ class Token extends Array {
 	}
 
 	append(...args) {
-		const legalArgs = args.filter(arg => arg !== this && !arg?.contains(this));
+		const legalArgs = args.filter(arg => typeof arg === 'string' || arg !== this && !arg.contains(this));
 		if (legalArgs.length < args.length) {
-			console.error('会造成循环结构的节点未插入！');
+			console.error('Token.append: 会造成循环结构的节点未插入！');
 		}
 		this.push(...legalArgs);
+		legalArgs.filter(arg => arg instanceof Token).forEach(token => {
+			token.set('parent', this);
+		});
+		return this;
+	}
+
+	prepend(...args) {
+		const legalArgs = args.filter(arg => typeof arg === 'string' || arg !== this && !arg.contains(this));
+		if (legalArgs.length < args.length) {
+			console.error('Token.prepend: 会造成循环结构的节点未插入！');
+		}
+		this.unshift(...legalArgs);
 		legalArgs.filter(arg => arg instanceof Token).forEach(token => {
 			token.set('parent', this);
 		});
@@ -593,27 +645,20 @@ class Token extends Array {
 		return this;
 	}
 
-	before(...args) {
-		const parent = this.#parent;
-		if (!parent) {
-			throw new Error('根节点不能有兄弟节点！');
+	prependTo(token) {
+		if (this === token || this.contains(token)) {
+			throw new RangeError('插入后将出现循环结构！');
 		}
-		const legalArgs = args.filter(arg => !arg?.contains(this));
-		if (legalArgs.length < args.length) {
-			console.error('会造成循环结构的节点未插入！');
-		}
-		parent.splice(this.index(), 0, ...legalArgs);
-		legalArgs.filter(arg => arg instanceof Token).forEach(token => {
-			token.set('parent', parent);
-		});
+		this.#parent = token;
+		token.unshift(this);
 		return this;
 	}
 
 	clone(deep) {
-		if (!deep || this.children().length === 0) {
-			return this.slice();
-		}
 		const copy = this.slice();
+		if (!deep || this.children().length === 0) {
+			return copy;
+		}
 		copy.forEach((token, i) => {
 			if (token instanceof Token) {
 				copy[i] = token.clone(true);
@@ -622,12 +667,17 @@ class Token extends Array {
 		return copy;
 	}
 
-	contains(token) {
-		return this.includes(token) || this.children().some(child => child.contains(token));
-	}
-
 	detach() {
 		return this.remove();
+	}
+
+	remove() {
+		const parent = this.#parent;
+		if (!parent) {
+			throw new Error('不能删除根节点！');
+		}
+		parent.splice(parent.indexOf(this), 1);
+		return this;
 	}
 
 	insertAfter(token) {
@@ -637,7 +687,7 @@ class Token extends Array {
 		} else if (this.contains(token)) {
 			throw new RangeError('插入后将出现循环结构！');
 		}
-		parent.splice(token.index() + 1, 0, this);
+		parent.splice(parent.indexOf(token) + 1, 0, this);
 		this.#parent = parent;
 		return this;
 	}
@@ -649,38 +699,8 @@ class Token extends Array {
 		} else if (this.contains(token)) {
 			throw new RangeError('插入后将出现循环结构！');
 		}
-		parent.splice(token.index(), 0, this);
+		parent.splice(parent.indexOf(token), 0, this);
 		this.#parent = parent;
-		return this;
-	}
-
-	prepend(...args) {
-		const legalArgs = args.filter(arg => arg !== this && !arg?.contains(this));
-		if (legalArgs.length < args.length) {
-			console.error('会造成循环结构的节点未插入！');
-		}
-		this.unshift(...legalArgs);
-		legalArgs.filter(arg => arg instanceof Token).forEach(token => {
-			token.set('parent', this);
-		});
-		return this;
-	}
-
-	prependTo(token) {
-		if (this === token || this.contains(token)) {
-			throw new RangeError('插入后将出现循环结构！');
-		}
-		this.#parent = token;
-		token.unshift(this);
-		return this;
-	}
-
-	remove() {
-		const parent = this.#parent;
-		if (!parent) {
-			throw new Error('不能删除根节点！');
-		}
-		parent.splice(this.index(), 1);
 		return this;
 	}
 
@@ -694,7 +714,7 @@ class Token extends Array {
 		if (!parent) {
 			throw new RangeError('不能替换根节点！');
 		}
-		parent[this.index()] = token;
+		parent[parent.indexOf(this)] = token;
 		if (token instanceof Token) {
 			token.set('parent', parent);
 		}
@@ -783,7 +803,7 @@ class Token extends Array {
 	}
 
 	static createToken(type, ...args) {
-		Token.warn('这个函数仅用于代码调试！');
+		Token.warn('Token.createToken函数仅用于代码调试！');
 		return new (classes[type] ?? Token)(...args);
 	}
 
@@ -1041,8 +1061,7 @@ class ArgToken extends Token {
 		if (this.length > 1) {
 			this[1].replaceWith(token);
 		} else {
-			this.push(token);
-			token.set('parent', this);
+			this.append(token);
 		}
 	}
 
@@ -1160,12 +1179,11 @@ class TranscludeToken extends Token {
 			arg.remove();
 		});
 		this.#keys.delete(key);
-		this.#args.delete(key);
 	}
 
 	updateKey(oldKey, newKey) {
-		if (caller() !== 'ParameterToken.rename') {
-			throw new Error('禁止外部调用updateKey方法！');
+		if (!['ParameterToken.rename', 'ParameterToken.remove'].includes(caller())) {
+			throw new Error('禁止外部调用TranscludeToken.updateKey方法！');
 		}
 		this.#args.delete(oldKey);
 		if (newKey) {
@@ -1191,7 +1209,7 @@ class ParameterToken extends Token {
 			}
 			/* eslint-enable no-param-reassign */
 		} else if (typeof key === 'number' && value.includes('=')) {
-			throw new RangeError('匿名参数中使用"="！');
+			console.warn(`ParameterToken.constructor: 匿名参数 \x1b[32m${value}\x1b[0m 中使用"="！`);
 		}
 		super(null, config, true, parent, accum);
 		if (typeof key !== 'number') {
@@ -1211,7 +1229,7 @@ class ParameterToken extends Token {
 
 	remove() {
 		super.remove();
-		this.parent().renameKey(this.name);
+		this.parent().updateKey(this.name);
 	}
 
 	getValue() {
@@ -1230,11 +1248,7 @@ class ParameterToken extends Token {
 				plainToken = token.map((str, j) => [str, j])
 					.filter(([str]) => typeof str === 'string' && str.includes('='));
 			if (plainToken.length) {
-				console.warn('匿名参数中使用"="！');
-				plainToken.forEach(([str, j]) => {
-					token[j] = str.replaceAll('=', '{{=}}');
-				});
-				value = token.toString(); // eslint-disable-line no-param-reassign
+				console.warn(`ParameterToken.setValue: 匿名参数 ${plainToken.join('\n')} 中使用"="！`);
 			}
 		}
 		this[this.length - 1] = value;
@@ -1250,18 +1264,18 @@ class ParameterToken extends Token {
 
 	rename(key, force) {
 		if (this.anon) {
-			throw new Error('匿名参数不能简单地更名！');
+			throw new Error(`匿名参数 ${this.name} 不能简单地更名！`);
 		}
 		key = String(key); // eslint-disable-line no-param-reassign
 		const name = removeComment(key),
 			parent = this.parent(),
 			keys = parent?.getKeys(); // 确保执行一次getKeys()
 		if (this.name === name) {
-			console.warn('未改变实际参数名！');
+			console.warn(`ParameterToken.rename: 未改变实际参数名 ${name}！`);
 		} else if (keys?.has(name)) {
 			const msg = `参数更名造成重复参数：${name}`;
 			if (force) {
-				console.warn(msg);
+				console.warn(`ParameterToken.rename: ${msg}`);
 			} else {
 				throw new RangeError(msg);
 			}
