@@ -36,6 +36,7 @@ class Token extends Array {
 	#parent;
 	#config;
 	#accum;
+	#sections;
 
 	constructor(wikitext = null, config = require('./config.json'), halfParsed = false, parent = null, accum = []) {
 		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
@@ -78,6 +79,10 @@ class Token extends Array {
 
 	slice(...args) {
 		return [...this].slice(...args);
+	}
+
+	map(...args) {
+		return [...this].map(...args);
 	}
 
 	filter(...args) {
@@ -136,27 +141,34 @@ class Token extends Array {
 				while (mt) {
 					const {0: syntax, index: curIndex} = mt,
 						top = stack.pop(),
+						{0: open, index} = top ?? {},
 						innerEqual = syntax === '=' && top?.findEqual;
 					if ([']]', '}-'].includes(syntax)) { // 情形1：闭合内链或转换
 						lastIndex = curIndex + 2;
 					} else if (syntax === '\n') { // 情形2：闭合标题
 						lastIndex = curIndex + 1;
-						/** @todo 生成标题Token */
+						if (this.type === 'root' && stack.length === 0) {
+							const rmt = text.slice(index, curIndex).match(/^(={1,6})(.+)\1((?:\s|\x00\d+c\x7f)*)$/);
+							if (rmt) {
+								text = `${text.slice(0, index)}\x00${this.#accum.length}\x7f${text.slice(lastIndex)}`;
+								lastIndex = index + 2 + String(this.#accum.length).length;
+								new HeadingToken(rmt[1].length, rmt.slice(2), this.#config, this.#accum);
+							}
+						}
 					} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
+						lastIndex = curIndex + 1;
 						top.parts.at(-1).push(text.slice(top.pos, curIndex));
 						if (syntax === '|') {
 							top.parts.push([]);
 						}
-						lastIndex = curIndex + 1;
 						top.pos = lastIndex;
 						top.findEqual = syntax === '|';
 						stack.push(top);
 					} else if (syntax.startsWith('}}')) { // 情形4：闭合模板
-						const {0: open, index} = top;
 						const close = syntax.slice(0, Math.min(open.length, 3)),
 							rest = open.length - close.length;
+						lastIndex = curIndex + close.length; // 这不是最终的lastIndex
 						top.parts.at(-1).push(text.slice(top.pos, curIndex));
-						lastIndex = curIndex + close.length;
 						/* 标记{{!}} */
 						let name = '';
 						if (close.length === 2) {
@@ -179,6 +191,7 @@ class Token extends Array {
 							stack.push({0: '-{', index: index - 1, pos: index + 1, parts: [[]]});
 						}
 					} else { // 情形5：开启
+						lastIndex = curIndex + syntax.length;
 						if (syntax.startsWith('{')) {
 							mt.pos = curIndex + syntax.length;
 							mt.parts = [[]];
@@ -187,7 +200,6 @@ class Token extends Array {
 							stack.push(top);
 						}
 						stack.push(mt);
-						lastIndex = curIndex + syntax.length;
 					}
 					const curTop = stack.at(-1);
 					regex = new RegExp(source + (curTop
@@ -229,26 +241,6 @@ class Token extends Array {
 		this.#stage++;
 	}
 
-	parse(n = MAX_STAGE) {
-		if (n < MAX_STAGE && caller() !== 'ParameterToken.setValue') {
-			Token.warn('指定解析层级的方法仅供熟练用户使用！');
-		}
-		while (this.#stage < n) {
-			this.parseOnce(this.#stage);
-		}
-		this.build();
-		this.each('arg, template, parameter', token => {
-			if (token.name) {
-				return;
-			}
-			token.name = removeComment(token[0].toString());
-			if (token.type === 'template') {
-				token.name = token.normalize(token.name, 'Template');
-			}
-		});
-		return this;
-	}
-
 	build() {
 		if (!['Token.build', 'Token.parse'].includes(caller())) {
 			Token.warn('build方法一般不应直接调用，仅用于代码调试！');
@@ -274,6 +266,26 @@ class Token extends Array {
 				token.build();
 			}
 		}
+	}
+
+	parse(n = MAX_STAGE) {
+		if (n < MAX_STAGE && caller() !== 'ParameterToken.setValue') {
+			Token.warn('指定解析层级的方法仅供熟练用户使用！');
+		}
+		while (this.#stage < n) {
+			this.parseOnce(this.#stage);
+		}
+		this.build();
+		this.each('arg, template, parameter', token => {
+			if (token.name) { // 匿名参数
+				return;
+			}
+			token.name = removeComment(token[0].toString());
+			if (token.type === 'template') {
+				token.name = token.normalize(token.name, 'Template');
+			}
+		});
+		return this;
 	}
 
 	is(selector) {
@@ -388,6 +400,35 @@ class Token extends Array {
 		}
 		return `${namespace}${namespace && ':'}${ucfirst(title)}`;
 		/* eslint-enable no-param-reassign */
+	}
+
+	sections(force) {
+		if (this.type !== 'root') {
+			return;
+		}
+		if (force || !this.#sections) {
+			const headings = this.children('heading').map(heading => [this.indexOf(heading), heading.name]),
+				lastHeading = new Array(6).fill(-1);
+			this.#sections = new Array(headings.length);
+			headings.forEach(([index, level], i) => {
+				for (let j = level; j < 6; j++) {
+					const last = lastHeading[j];
+					if (last >= 0) {
+						this.#sections[last] = this.slice(headings[last][0], index);
+					}
+					lastHeading[j] = j === level ? i : -1;
+				}
+			});
+			lastHeading.filter(last => last >= 0).forEach(last => {
+				this.#sections[last] = this.slice(headings[last][0]);
+			});
+			this.#sections.unshift(this.slice(0, headings[0]?.[0]));
+		}
+		return this.#sections;
+	}
+
+	section(n, force) {
+		return this.sections(force)[n];
 	}
 
 	static warning = true;
@@ -606,7 +647,40 @@ class AttributeToken extends AtomToken {
 	}
 }
 
-/** @type [AtomToken, ?Token] */
+/** @type {[Token, ?Token]} */
+class HeadingToken extends Token {
+	type = 'heading';
+	name;
+
+	constructor(level, input, config, accum) {
+		super(null, config, true, null, accum);
+		this.name = String(level);
+		input.forEach((text, i) => {
+			if (text === '') {
+				return;
+			}
+			const token = new Token(text, config, true, this, accum);
+			token.type = i === 0 ? 'heading-title' : 'heading-trail';
+			token.set('stage', 2);
+		});
+	}
+
+	toString() {
+		const equals = '='.repeat(this.name);
+		return `${equals}${this[0]}${equals}${this[1] ?? ''}\n`;
+	}
+
+	update(title) {
+		this[0] = title;
+	}
+
+	level(n) {
+		n = Math.min(Math.max(n, 1), 6); // eslint-disable-line no-param-reassign
+		this.name = String(n);
+	}
+}
+
+/** @type {[AtomToken, ?Token]} */
 class ArgToken extends Token {
 	type = 'arg';
 	name;
@@ -650,10 +724,12 @@ class ArgToken extends Token {
 	}
 }
 
-/** @type [AtomToken, ?ParameterToken] */
+/** @type {[AtomToken, ?ParameterToken]} */
 class TranscludeToken extends Token {
 	type = 'template';
 	name;
+	#keys;
+	#args = new Map();
 
 	constructor(parts, config, accum) {
 		super(null, config, true, null, accum);
@@ -670,7 +746,7 @@ class TranscludeToken extends Token {
 				}
 			}
 		}
-		if (!this.name) {
+		if (this.type === 'template') {
 			new AtomToken(title, 'template-name', this, accum);
 		}
 		let i = 1;
@@ -690,7 +766,12 @@ class TranscludeToken extends Token {
 	}
 
 	getArgs(key) {
-		return this.filter(({name}) => String(key) === name);
+		let args = this.#args.get(key);
+		if (!args) {
+			args = this.filter(({name}) => String(key) === name);
+			this.#args.set(key, args);
+		}
+		return args;
 	}
 
 	getArg(key, any) {
@@ -699,7 +780,8 @@ class TranscludeToken extends Token {
 	}
 
 	getKeys() {
-		return [...new Set(this.map(({name}) => name))];
+		this.#keys ||= new Set(this.slice(1).map(({name}) => name));
+		return this.#keys;
 	}
 
 	getValues(key) {
@@ -710,7 +792,7 @@ class TranscludeToken extends Token {
 		if (key !== undefined) {
 			return this.getValues(key).at(-1);
 		}
-		return Object.fromEntries(this.getKeys().map(k => this.getValue(k)));
+		return Object.fromEntries([...this.getKeys()].map(k => this.getValue(k)));
 	}
 
 	setValue(key, value, i = this.length) {
@@ -723,6 +805,10 @@ class TranscludeToken extends Token {
 		arg = new ParameterToken(key, value, null, this);
 		arg.name = removeComment(String(key));
 		this.splice(i, 0, arg);
+		if (this.#keys) {
+			this.#keys.add(arg.name);
+		}
+		this.#args.set(arg.name, arg);
 	}
 
 	val(...args) {
@@ -743,6 +829,19 @@ class TranscludeToken extends Token {
 		this.getArgs(key).forEach(arg => {
 			arg.remove();
 		});
+		this.#keys.delete(key);
+		this.#args.delete(key);
+	}
+
+	updateKey(oldKey, newKey) {
+		if (caller() !== 'ParameterToken.rename') {
+			throw new Error('禁止外部调用updateKey方法！');
+		}
+		this.#args.delete(oldKey);
+		if (newKey) {
+			this.#keys.add(newKey);
+			this.#args.delete(newKey);
+		}
 	}
 }
 
@@ -751,6 +850,7 @@ class ParameterToken extends Token {
 	type = 'parameter';
 	anon = false;
 	name;
+	#value;
 
 	constructor(key, value, config, parent, accum = [], autofix = true) {
 		if (autofix) {
@@ -777,8 +877,19 @@ class ParameterToken extends Token {
 		return this.join('=');
 	}
 
+	remove() {
+		super.remove();
+		this.parent().renameKey(this.name);
+	}
+
 	getValue() {
-		return this.at(-1).toString().replace(/<!--.*?-->/g, '').trim();
+		if (this.#value === undefined) {
+			this.#value = this.at(-1).toString().replace(/<!--.*?-->/g, '');
+			if (!this.anon || this.parent()?.type === 'magic-word') {
+				this.#value = this.#value.trim();
+			}
+		}
+		return this.#value;
 	}
 
 	setValue(value) {
@@ -795,6 +906,7 @@ class ParameterToken extends Token {
 			}
 		}
 		this[this.length - 1] = value;
+		this.#value = undefined;
 	}
 
 	val(...args) {
@@ -804,13 +916,27 @@ class ParameterToken extends Token {
 		this.setValue(args[0]);
 	}
 
-	rename(key) {
+	rename(key, force) {
 		if (this.anon) {
 			throw new Error('匿名参数不能简单地更名！');
 		}
 		key = String(key); // eslint-disable-line no-param-reassign
+		const name = removeComment(key),
+			parent = this.parent(),
+			keys = parent?.getKeys(); // 确保执行一次getKeys()
+		if (this.name === name) {
+			console.warn('未改变实际参数名！');
+		} else if (keys?.has(name)) {
+			const msg = `参数更名造成重复参数：${name}`;
+			if (force) {
+				console.warn(msg);
+			} else {
+				throw new RangeError(msg);
+			}
+		}
+		parent?.renameKey(this.name, name);
 		this[0].update(key);
-		this.name = removeComment(key);
+		this.name = name;
 	}
 }
 
