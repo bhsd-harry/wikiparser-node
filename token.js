@@ -311,8 +311,7 @@ class Token extends Array {
 				return str;
 			}
 			const token = this.#accum[str.replace(/[c!]$/, '')];
-			token.set('parent', this);
-			return token;
+			return token.set('parent', this);
 		}).filter(str => str !== ''));
 		if (this.length === 0) {
 			this.push('');
@@ -332,7 +331,7 @@ class Token extends Array {
 			this.parseOnce(this.#stage);
 		}
 		this.build();
-		this.each('arg, template, parameter', token => {
+		return this.each('arg, template, parameter', token => {
 			if (token.name) { // 匿名参数
 				return;
 			}
@@ -341,7 +340,6 @@ class Token extends Array {
 				token.name = token.normalize(token.name, 'Template');
 			}
 		});
-		return this;
 	}
 
 	is(selector) {
@@ -452,7 +450,7 @@ class Token extends Array {
 					token.each(selector, callback, maxDepth - 1);
 				}
 			}
-			return;
+			return this;
 		}
 		return (async () => {
 			if (this.is(selector)) {
@@ -463,6 +461,7 @@ class Token extends Array {
 					await token.each(selector, callback, maxDepth - 1); // eslint-disable-line no-await-in-loop
 				}
 			}
+			return this;
 		})();
 	}
 
@@ -706,7 +705,7 @@ class Token extends Array {
 
 	replaceWith(token) {
 		if (this === token) {
-			return;
+			return this;
 		} else if (token instanceof Token && token.contains(this)) {
 			throw new RangeError('替换后将出现循环结构！');
 		}
@@ -823,6 +822,7 @@ class AtomToken extends Token {
 
 	update(str) {
 		this[0] = str;
+		return this;
 	}
 }
 
@@ -887,20 +887,26 @@ class ExtToken extends Token {
 
 	removeAttr(key) {
 		this[0].removeAttr(key);
+		return this;
 	}
 
 	setAttr(key, value) {
 		this[0].setAttr(key, value);
+		return this;
 	}
 
 	attr(...args) {
-		return this[0].attr(...args);
+		if (args.length < 2) {
+			return this.getAttr(...args);
+		}
+		return this.setAttr(...args);
 	}
 
 	empty() {
 		this.length = 1;
 		this.tags.length = 1;
 		this.selfClosing = true;
+		return this;
 	}
 }
 
@@ -911,6 +917,8 @@ class AttributeToken extends AtomToken {
 	constructor(attr, type, parent, accum) {
 		if (attr.includes('>')) {
 			throw new RangeError('扩展或HTML标签属性不能包含">"！');
+		} else if (type !== 'ext-attr' && attr.includes('<')) {
+			throw new RangeError('HTML标签属性不能包含"<"！');
 		}
 		super(attr, type, parent, accum);
 		if (parent.name) {
@@ -948,8 +956,8 @@ class AttributeToken extends AtomToken {
 	}
 
 	empty() {
-		this.update('');
 		this.#attr = {};
+		return this.update('');
 	}
 
 	#updateFromAttr() {
@@ -972,12 +980,16 @@ class AttributeToken extends AtomToken {
 			delete this.#attr[key];
 			this.#updateFromAttr();
 		}
+		return this;
 	}
 
 	setAttr(key, value, init) {
 		if (value === undefined) {
-			this.removeAttr(key);
-			return;
+			return this.removeAttr(key);
+		} else if (value.includes('>')) {
+			throw new RangeError('扩展或HTML标签属性不能包含">"！');
+		} else if (this.type !== 'ext-attr' && value.includes('<')) {
+			throw new RangeError('HTML标签属性不能包含"<"！');
 		}
 		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
 		if (attrNameRegex.test(key)) {
@@ -986,13 +998,14 @@ class AttributeToken extends AtomToken {
 				this.#updateFromAttr();
 			}
 		}
+		return this;
 	}
 
 	attr(...args) {
 		if (args.length < 2) {
 			return this.getAttr(...args);
 		}
-		this.setAttr(...args);
+		return this.setAttr(...args);
 	}
 }
 
@@ -1021,11 +1034,13 @@ class HeadingToken extends Token {
 
 	update(title) {
 		this[0] = title;
+		return this;
 	}
 
 	level(n) {
 		n = Math.min(Math.max(n, 1), 6); // eslint-disable-line no-param-reassign
 		this.name = String(n);
+		return this;
 	}
 }
 
@@ -1054,21 +1069,33 @@ class ArgToken extends Token {
 	rename(name) {
 		this[0].update(name);
 		this.name = removeComment(name);
+		return this;
 	}
 
 	setDefault(token) {
-		token.type = 'arg-default';
+		const test = Token.parse(`{{{|${token.toString}}}}`, 2, this.get('config'));
+		if (test.length !== 1 || test[0].type !== 'arg' || test[0].length !== 2) {
+			throw new SyntaxError(`Syntax error in triple-brace argument default: ${
+				token.toString().replaceAll('\n', '\\n')
+			}`);
+		}
+		if (typeof token === 'string') {
+			token = test; // eslint-disable-line no-param-reassign
+		} else {
+			token.type = 'arg-default';
+		}
 		if (this.length > 1) {
 			this[1].replaceWith(token);
-		} else {
-			this.append(token);
+			return this;
 		}
+		return this.append(token);
 	}
 
 	removeRedundant() {
 		if (this.length > 2) {
 			this.length = 2;
 		}
+		return this;
 	}
 }
 
@@ -1114,10 +1141,14 @@ class TranscludeToken extends Token {
 			: `{{${this.join('|')}}}`;
 	}
 
+	getAnonArgs() {
+		return this.slice(1).filter(({anon}) => anon);
+	}
+
 	getArgs(key) {
 		let args = this.#args.get(key);
 		if (!args) {
-			args = this.filter(({name}) => String(key) === name);
+			args = this.slice(1).filter(({name}) => String(key) === name);
 			this.#args.set(key, args);
 		}
 		return args;
@@ -1144,27 +1175,61 @@ class TranscludeToken extends Token {
 		return Object.fromEntries([...this.getKeys()].map(k => this.getValue(k)));
 	}
 
+	append(token) {
+		super.append.call(this, token);
+		if (token.anon) {
+			token.name = String(this.getAnonArgs().length);
+		}
+		return this;
+	}
+
+	newAnonArg(value) {
+		const test = Token.parse(`{{:T|${value}}}`, 2, this.get('config'));
+		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || !test[0][1].anon) {
+			throw new SyntaxError(`Syntax error in ${this.type} anonymous argument value: ${
+				value.replaceAll('\n', '\\n')
+			}`);
+		}
+		const [[, token]] = test;
+		this.append(token); // 这一步同时更新token.name
+		if (this.#keys) {
+			this.#keys.add(token.name);
+		}
+		this.#args.set(token.name, token);
+		return this;
+	}
+
 	setValue(key, value, i = this.length) {
+		if (key === undefined) {
+			return this.newAnonArg(value);
+		}
 		let arg = this.getArg(key, true);
 		if (arg) {
 			arg.setValue(value);
-			return;
+			return this;
 		}
 		i = Math.min(Math.max(i, 1), this.length); // eslint-disable-line no-param-reassign
-		arg = new ParameterToken(key, value, null, this);
-		arg.name = removeComment(String(key));
+		const test = Token.parse(`{{:T|${key}=${value}}}`, 2, this.get('config'));
+		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || test[0][1].name !== key) {
+			throw new SyntaxError(`Syntax error in ${this.type} argument value: ${
+				value.toString().replaceAll('\n', '\\n')
+			}`);
+		}
+		[[, arg]] = test; // 总是改写成命名参数
 		this.splice(i, 0, arg);
+		arg.set('parent', this);
 		if (this.#keys) {
 			this.#keys.add(arg.name);
 		}
 		this.#args.set(arg.name, arg);
+		return this;
 	}
 
 	val(...args) {
 		if (args.length < 2) {
 			return this.getValue(...args);
 		}
-		this.setValue(...args);
+		return this.setValue(...args);
 	}
 
 	naming() {
@@ -1172,6 +1237,7 @@ class TranscludeToken extends Token {
 			arg.unshift(new AtomToken(arg.name, 'parameter-key', arg));
 			arg.anon = false;
 		});
+		return this;
 	}
 
 	removeArg(key) {
@@ -1179,6 +1245,7 @@ class TranscludeToken extends Token {
 			arg.remove();
 		});
 		this.#keys.delete(key);
+		return this;
 	}
 
 	updateKey(oldKey, newKey) {
@@ -1208,8 +1275,6 @@ class ParameterToken extends Token {
 				value = String(value);
 			}
 			/* eslint-enable no-param-reassign */
-		} else if (typeof key === 'number' && value.includes('=')) {
-			console.warn(`ParameterToken.constructor: 匿名参数 \x1b[32m${value}\x1b[0m 中使用"="！`);
 		}
 		super(null, config, true, parent, accum);
 		if (typeof key !== 'number') {
@@ -1228,8 +1293,8 @@ class ParameterToken extends Token {
 	}
 
 	remove() {
-		super.remove();
 		this.parent().updateKey(this.name);
+		return super.remove();
 	}
 
 	getValue() {
@@ -1243,23 +1308,23 @@ class ParameterToken extends Token {
 	}
 
 	setValue(value) {
-		if (this.anon) {
-			const token = new Token(value.toString()).parse(2),
-				plainToken = token.map((str, j) => [str, j])
-					.filter(([str]) => typeof str === 'string' && str.includes('='));
-			if (plainToken.length) {
-				console.warn(`ParameterToken.setValue: 匿名参数 ${plainToken.join('\n')} 中使用"="！`);
-			}
+		const {anon} = this,
+			test = Token.parse(`{{:T|${anon ? '' : '1='}${value}}}`, 2, this.get('config'));
+		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || test[0][1].anon !== anon) {
+			throw new SyntaxError(`Syntax error in template/magic-word argument value: ${
+				value.replaceAll('\n', '\\n')
+			}`);
 		}
-		this[this.length - 1] = value;
+		this.at(-1).replaceWith(test[0][1].at(-1));
 		this.#value = undefined;
+		return this;
 	}
 
 	val(...args) {
 		if (args.length === 0) {
 			return this.getValue();
 		}
-		this.setValue(args[0]);
+		return this.setValue(args[0]);
 	}
 
 	rename(key, force) {
@@ -1283,6 +1348,7 @@ class ParameterToken extends Token {
 		parent?.updateKey(this.name, name);
 		this[0].update(key);
 		this.name = name;
+		return this;
 	}
 }
 
