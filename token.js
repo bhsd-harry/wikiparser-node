@@ -733,9 +733,10 @@ class Token extends Array {
 			namespace = '';
 			title = title.slice(1).trim();
 		}
-		const m = title.split(':');
+		const m = title.split(':'),
+			{namespaces, nsid} = this.#config;
 		if (m.length > 1) {
-			const id = this.#config.namespace[m[0].trim().toLowerCase()];
+			const id = namespaces[nsid[m[0].trim().toLowerCase()]];
 			if (id) {
 				namespace = id;
 				title = m.slice(1).join(':').trim();
@@ -866,7 +867,12 @@ class ExtToken extends Token {
 		const extInner = inner.slice(0, -3 - name.length);
 		switch (this.name) {
 			case 'ref': {
-				const innerToken = new Token(extInner, config, true, this, accum);
+				const newConfig = structuredClone(config),
+					ext = new Set(newConfig.ext);
+				ext.delete('ref');
+				ext.delete('references');
+				newConfig.ext = [...ext];
+				const innerToken = new Token(extInner, newConfig, true, this, accum);
 				innerToken.type = 'ext-inner';
 				break;
 			}
@@ -952,7 +958,7 @@ class AttributeToken extends AtomToken {
 	}
 
 	getAttr(key) {
-		return key === undefined ? {...this.#attr} : this.#attr[key.toLowerCase().trim()];
+		return key === undefined ? structuredClone(this.#attr) : this.#attr[key.toLowerCase().trim()];
 	}
 
 	empty() {
