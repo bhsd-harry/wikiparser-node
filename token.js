@@ -15,7 +15,7 @@
  * 10. 转换，参见LanguageConverter::recursiveConvertTopLevel
  */
 
-/* eslint-disable no-control-regex, no-new */
+/* eslint-disable no-control-regex, no-new, no-param-reassign */
 const MAX_STAGE = 10,
 	attrRegex = /([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg,
 	attrNameRegex = /^(?:[\w:]|\x00\d+\x7f)(?:[\w:.-]|\x00\d+\x7f)*$/;
@@ -30,17 +30,25 @@ const caller = () => {
 	}
 };
 
-/** @type {[string]} */
+/**
+ * @type {[string]}
+ * @param {?(string|number)} wikitext
+ * @param {object} config
+ * @param {boolean} halfParsed
+ * @param {?Token} parent
+ * @param {Token[]} accum
+ * @throws TypeError
+ */
 class Token extends Array {
 	type = 'root';
 	#stage = 0; // 解析阶段，参见顶部注释
-	#parent;
-	#config;
-	#accum;
-	#sections;
+	#parent; /** @type {?Token} */
+	#config; /** @type {object} */
+	#accum; /** @type {Token[]} */
+	#sections; /** @type {Token[]} */
 
-	constructor(wikitext = null, config = require('./config'), halfParsed = false, parent = null, accum = []) {
-		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
+	constructor(wikitext = null, config = require(Token.config), halfParsed = false, parent = null, accum = []) {
+		wikitext = numberToString(wikitext);
 		if (wikitext === null) {
 			super();
 		} else if (typeof wikitext === 'string') {
@@ -57,6 +65,10 @@ class Token extends Array {
 		accum.push(this);
 	}
 
+	/**
+	 * @param {string} key
+	 * @param {any} value
+	 */
 	set(key, value) {
 		switch (key) {
 			case 'stage':
@@ -71,6 +83,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {string} key
+	 * @returns {any}
+	 */
 	get(key) {
 		switch (key) {
 			case 'stage':
@@ -93,14 +109,17 @@ class Token extends Array {
 		return this.set(...args);
 	}
 
+	/** @returns {boolean} */
 	isPlain() {
 		return this.constructor.name === 'Token';
 	}
 
+	/** @returns {Token|Array.<string|Token>} */
 	concat(...args) {
 		return this.isPlain() ? super.concat.apply(this, args) : [...this].concat(...args);
 	}
 
+	/** @returns {Token|Token[]} */
 	filter(...args) {
 		if (typeof args[0] === 'string') {
 			return this.children(...args);
@@ -114,6 +133,7 @@ class Token extends Array {
 		return subset;
 	}
 
+	/** @returns {Token|Token[]} */
 	flat(...args) {
 		const result = [...this].flat(...args);
 		if (this.isPlain()) {
@@ -124,18 +144,22 @@ class Token extends Array {
 		return result;
 	}
 
+	/** @returns {array} */
 	flatMap(...args) {
 		return [...this].flatMap(...args);
 	}
 
+	/** @returns {array} */
 	map(...args) {
 		return [...this].map(...args);
 	}
 
+	/** @returns {Token|Token[]} */
 	slice(...args) {
 		return this.isPlain() ? super.slice.apply(this, args) : [...this].slice(...args);
 	}
 
+	/** @returns {Token|Token[]} */
 	splice(...args) {
 		if (this.isPlain()) {
 			return super.splice.apply(this, args);
@@ -155,6 +179,7 @@ class Token extends Array {
 		return this.toString();
 	}
 
+	/** @param {number} n */
 	parseOnce(n = this.#stage) {
 		if (!['Token.parseOnce', 'Token.parse'].includes(caller())) {
 			Token.warn('Token.parseOnce方法一般不应直接调用，仅用于代码调试！');
@@ -323,6 +348,7 @@ class Token extends Array {
 		}
 	}
 
+	/** @param {number} n */
 	parse(n = MAX_STAGE) {
 		if (n < MAX_STAGE && ![
 			'ArgToken.setDefault',
@@ -341,11 +367,18 @@ class Token extends Array {
 			}
 			token.name = removeComment(token[0].toString());
 			if (token.type === 'template') {
-				token.name = token.normalize(token.name, 'Template');
+				token.name = token.normalize(token.name, 10);
 			}
 		});
 	}
 
+	/**
+	 * @param {string} key
+	 * @param {?string} equal
+	 * @param {?string} val
+	 * @param {?string} i
+	 * @returns {boolean}
+	 */
 	isAttr(key, equal, val, i) {
 		if (!caller().endsWith('Token.is')) {
 			throw new Error('禁止外部调用Token.isAttr方法！');
@@ -368,10 +401,14 @@ class Token extends Array {
 			case '!=':
 				return !(key in this) || thisVal !== val;
 			default:
-				return this[key];
+				return Boolean(this[key]);
 		}
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {boolean}
+	 */
 	is(selector) {
 		if (!selector?.trim()) {
 			return true;
@@ -390,10 +427,9 @@ class Token extends Array {
 			}
 			const attributeRegex = /\[\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^[\]]*?)\s*( i)?)?]/g,
 				attributes = [];
-			// eslint-disable-next-line no-param-reassign
 			selector = selector.replaceAll('&comma;', ',').replace(attributeRegex, (_, key, equal, val, i) => {
 				if (equal) {
-					val = i ? val.toLowerCase() : val; // eslint-disable-line no-param-reassign
+					val = i ? val.toLowerCase() : val;
 					const quotes = val.match(/^(["']).*\1$/)?.[1];
 					attributes.push([
 						key,
@@ -435,7 +471,7 @@ class Token extends Array {
 				}
 				const values = [String(i), i % 2 ? 'odd' : 'even'];
 				return str.split(',').some(s => {
-					s = s.trim(); // eslint-disable-line no-param-reassign
+					s = s.trim();
 					return s.includes(':') ? range(s, i) : values.includes(s);
 				});
 			};
@@ -448,7 +484,6 @@ class Token extends Array {
 		return selectors.some(str => {
 			const curCalls = Object.fromEntries(func.map(f => [f, []]));
 			funcRegex.lastIndex = 0;
-			// eslint-disable-next-line no-param-reassign
 			str = str.replace(funcRegex, (_, f, i) => {
 				curCalls[f].push(calls[f][i]);
 				return '';
@@ -464,21 +499,40 @@ class Token extends Array {
 		});
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {Token|Token[]}
+	 */
 	children(selector) {
 		return this.filter(token => token instanceof Token && token.is(selector));
 	}
 
+	/**
+	 * @param {string} selector
+	 * @returns {Token|Token[]}
+	 */
 	not(selector) {
 		return this.filter(token => token instanceof Token && !token.is(selector));
 	}
 
-	search(selector) {
-		return this.children().flatMap(token => [
-			...token.is(selector) ? [token] : [],
-			...token.search(selector),
-		]);
+	/**
+	 * @param {?string} selector
+	 * @param {number} maxDepth
+	 * @returns {Token[]}
+	 */
+	search(selector, maxDepth = Infinity) {
+		return maxDepth < 1
+			? []
+			: this.children().flatMap(token => [
+				...token.is(selector) ? [token] : [],
+				...token.search(selector, maxDepth - 1),
+			]);
 	}
 
+	/**
+	 * @param {string} selector
+	 * @returns {?Token}
+	 */
 	closest(selector) {
 		let ancestor = this; // eslint-disable-line consistent-this
 		while (ancestor) {
@@ -490,11 +544,19 @@ class Token extends Array {
 		return null;
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {?Token}
+	 */
 	parent(selector) {
 		const parent = this.#parent;
 		return parent?.is(selector) ? parent : null;
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {Token[]}
+	 */
 	parents(selector) {
 		let ancestor = this.#parent;
 		const parents = [];
@@ -507,6 +569,10 @@ class Token extends Array {
 		return parents;
 	}
 
+	/**
+	 * @param {string} selector
+	 * @returns {Token[]}
+	 */
 	parentsUntil(selector) {
 		let ancestor = this.#parent;
 		const parents = [];
@@ -517,12 +583,22 @@ class Token extends Array {
 		return parents;
 	}
 
+	/**
+	 * @param {string|number|Token} token
+	 * @returns {boolean}
+	 */
 	contains(token) {
+		token = numberToString(token);
 		return typeof token === 'string'
 			? this.toString().includes(token)
 			: this.includes(token) || this.children().some(child => child.contains(token));
 	}
 
+	/**
+	 * @param {string} selector
+	 * @param {function(Token)} callback
+	 * @param {number} maxDepth
+	 */
 	each(...args) {
 		const selector = args.find(arg => typeof arg === 'string') ?? '',
 			callback = args.find(arg => typeof arg === 'function'),
@@ -552,18 +628,25 @@ class Token extends Array {
 		})();
 	}
 
+	/** @returns {Token|Token[]} */
 	even() {
 		return this.filter((_, i) => i % 2 === 0);
 	}
 
+	/** @returns {Token|Token[]} */
 	odd() {
 		return this.filter((_, i) => i % 2 === 1);
 	}
 
+	/**
+	 * @param {string} selector
+	 * @returns {Token|Token[]}
+	 */
 	has(selector) {
 		return this.children().filter(token => token.is(selector) || token.search(selector).length);
 	}
 
+	/** @returns {?(string|Token)} */
 	find(...args) {
 		if (typeof args[0] === 'function') {
 			return super.find.apply(this, args);
@@ -571,6 +654,7 @@ class Token extends Array {
 		return this.find(token => token instanceof Token && token.is(args[0]));
 	}
 
+	/** @returns {number} */
 	findIndex(...args) {
 		if (typeof args[0] === 'function') {
 			return super.findIndex.apply(this, args);
@@ -578,6 +662,11 @@ class Token extends Array {
 		return this.findIndex(token => token instanceof Token && token.is(args[0]));
 	}
 
+	/**
+	 * @param {boolean} ofType
+	 * @returns {number}
+	 * @throws Error
+	 */
 	index(ofType) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -586,6 +675,11 @@ class Token extends Array {
 		return ofType ? parent.indexOf(this) : parent.filter(this.type).indexOf(this);
 	}
 
+	/**
+	 * @param {boolean} ofType
+	 * @returns {number}
+	 * @throws Error
+	 */
 	lastIndex(ofType) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -594,6 +688,11 @@ class Token extends Array {
 		return ofType ? parent.lastIndexOf(this) : parent.filter(this.type).lastIndexOf(this);
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {?(string|Token)}
+	 * @throws Error
+	 */
 	next(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -603,6 +702,11 @@ class Token extends Array {
 		return selector === undefined || sibling instanceof Token && sibling.is(selector) ? sibling : null;
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {?(string|Token)}
+	 * @throws Error
+	 */
 	prev(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -612,6 +716,11 @@ class Token extends Array {
 		return selector === undefined || sibling instanceof Token && sibling.is(selector) ? sibling : null;
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {Token|Token[]}
+	 * @throws Error
+	 */
 	nextAll(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -623,6 +732,11 @@ class Token extends Array {
 			: siblings.filter(token => token instanceof Token && token.is(selector));
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {Token|Token[]}
+	 * @throws Error
+	 */
 	prevAll(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -634,6 +748,11 @@ class Token extends Array {
 			: siblings.filter(token => token instanceof Token && token.is(selector));
 	}
 
+	/**
+	 * @param {string} selector
+	 * @returns {Token|Token[]}
+	 * @throws Error
+	 */
 	nextUntil(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -644,6 +763,11 @@ class Token extends Array {
 		return index === -1 ? siblings : siblings.slice(0, index);
 	}
 
+	/**
+	 * @param {string} selector
+	 * @returns {Token|Token[]}
+	 * @throws Error
+	 */
 	prevUntil(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -654,6 +778,11 @@ class Token extends Array {
 		return index === -1 ? siblings : siblings.slice(0, index);
 	}
 
+	/**
+	 * @param {?string} selector
+	 * @returns {Token|Token[]}
+	 * @throws Error
+	 */
 	siblings(selector) {
 		const parent = this.#parent;
 		if (parent === null) {
@@ -666,12 +795,16 @@ class Token extends Array {
 			: siblings.filter(token => token instanceof Token && token.is(selector));
 	}
 
+	/**
+	 * @param {string|number|Token}
+	 * @throws Error
+	 */
 	after(...args) {
 		const parent = this.#parent;
 		if (!parent) {
 			throw new Error('根节点不能有兄弟节点！');
 		}
-		const legalArgs = args.filter(arg => typeof arg === 'string' || !arg.contains(this));
+		const legalArgs = args.map(numberToString).filter(arg => typeof arg === 'string' || !arg.contains(this));
 		if (legalArgs.length < args.length) {
 			console.error('Token.after: 会造成循环结构的节点未插入！');
 		}
@@ -682,12 +815,16 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {string|number|Token}
+	 * @throws Error
+	 */
 	before(...args) {
 		const parent = this.#parent;
 		if (!parent) {
 			throw new Error('根节点不能有兄弟节点！');
 		}
-		const legalArgs = args.filter(arg => typeof arg === 'string' || !arg.contains(this));
+		const legalArgs = args.map(numberToString).filter(arg => typeof arg === 'string' || !arg.contains(this));
 		if (legalArgs.length < args.length) {
 			console.error('Token.before: 会造成循环结构的节点未插入！');
 		}
@@ -698,8 +835,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/** @param {string|number|Token} */
 	append(...args) {
-		const legalArgs = args.filter(arg => typeof arg === 'string' || arg !== this && !arg.contains(this));
+		const legalArgs = args.map(numberToString)
+			.filter(arg => typeof arg === 'string' || arg !== this && !arg.contains(this));
 		if (legalArgs.length < args.length) {
 			console.error('Token.append: 会造成循环结构的节点未插入！');
 		}
@@ -710,8 +849,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/** @param {string|number|Token} */
 	prepend(...args) {
-		const legalArgs = args.filter(arg => typeof arg === 'string' || arg !== this && !arg.contains(this));
+		const legalArgs = args.map(numberToString)
+			.filter(arg => typeof arg === 'string' || arg !== this && !arg.contains(this));
 		if (legalArgs.length < args.length) {
 			console.error('Token.prepend: 会造成循环结构的节点未插入！');
 		}
@@ -722,6 +863,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {Token} token
+	 * @throws RangeError
+	 */
 	appendTo(token) {
 		if (this === token || this.contains(token)) {
 			throw new RangeError('插入后将出现循环结构！');
@@ -731,6 +876,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {Token} token
+	 * @throws RangeError
+	 */
 	prependTo(token) {
 		if (this === token || this.contains(token)) {
 			throw new RangeError('插入后将出现循环结构！');
@@ -740,6 +889,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {boolean} deep
+	 * @returns {Token|Token[]}
+	 */
 	clone(deep) {
 		const copy = this.slice();
 		if (!deep || this.children().length === 0) {
@@ -753,10 +906,12 @@ class Token extends Array {
 		return copy;
 	}
 
+	/** @throws Error */
 	detach() {
 		return this.remove();
 	}
 
+	/** @throws Error */
 	remove() {
 		const parent = this.#parent;
 		if (!parent) {
@@ -766,6 +921,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {Token} token
+	 * @throws RangeError
+	 */
 	insertAfter(token) {
 		const parent = token.parent();
 		if (!parent) {
@@ -778,6 +937,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {Token} token
+	 * @throws RangeError
+	 */
 	insertBefore(token) {
 		const parent = token.parent();
 		if (!parent) {
@@ -790,6 +953,10 @@ class Token extends Array {
 		return this;
 	}
 
+	/**
+	 * @param {string|number|Token} token
+	 * @throws RangeError
+	 */
 	replaceWith(token) {
 		if (this === token) {
 			return this;
@@ -800,28 +967,33 @@ class Token extends Array {
 		if (!parent) {
 			throw new RangeError('不能替换根节点！');
 		}
-		parent[parent.indexOf(this)] = token;
+		parent[parent.indexOf(this)] = numberToString(token);
 		if (token instanceof Token) {
 			token.set('parent', parent);
 		}
 		return this;
 	}
 
+	/** @returns {Array.<string|Token>} */
 	toArray() {
 		return [...this];
 	}
 
-	// 引自mediawiki.Title::parse
-	normalize(title, defaultNs = '') {
-		/* eslint-disable no-param-reassign */
-		let namespace = defaultNs;
+	/**
+	 * 引自mediawiki.Title::parse
+	 * @param {string} title
+	 * @param {number} defaultNs
+	 * @returns {string}
+	 */
+	normalize(title, defaultNs = 0) {
+		const {namespaces, nsid} = this.#config;
+		let namespace = namespaces[defaultNs];
 		title = title.replaceAll('_', ' ').trim();
 		if (title[0] === ':') {
 			namespace = '';
 			title = title.slice(1).trim();
 		}
-		const m = title.split(':'),
-			{namespaces, nsid} = this.#config;
+		const m = title.split(':');
 		if (m.length > 1) {
 			const id = namespaces[nsid[m[0].trim().toLowerCase()]];
 			if (id) {
@@ -832,9 +1004,12 @@ class Token extends Array {
 		const i = title.indexOf('#');
 		title = i === -1 ? title : title.slice(0, i).trim();
 		return `${namespace}${namespace && ':'}${ucfirst(title)}`;
-		/* eslint-enable no-param-reassign */
 	}
 
+	/**
+	 * @param {boolean} force
+	 * @returns {?Token[]}
+	 */
 	sections(force) {
 		if (this.type !== 'root') {
 			return;
@@ -860,11 +1035,20 @@ class Token extends Array {
 		return this.#sections;
 	}
 
+	/**
+	 * @param {number} n
+	 * @param {boolean} force
+	 * @returns {Token}
+	 */
 	section(n, force) {
 		return this.sections(force)[n];
 	}
 
+	/** @type {boolean} */
 	static warning = true;
+
+	/** @type {string} */
+	static config = './config';
 
 	static warn(...args) {
 		if (Token.warning) {
@@ -872,21 +1056,34 @@ class Token extends Array {
 		}
 	}
 
+	/**
+	 * @param {?(string|number|Token)} wikitext
+	 * @param {?number} n
+	 * @param {?object} config
+	 * @throws TypeError
+	 */
 	static parse(wikitext, n, config) {
-		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
 		if (wikitext instanceof Token) {
 			return wikitext.parse(n);
-		} else if (typeof wikitext === 'string') {
-			return new Token(wikitext, config).parse(n);
 		}
-		throw new TypeError('仅接受String作为输入参数！');
+		return new Token(wikitext, config).parse(n);
 	}
 
+	/**
+	 * @param {string} title
+	 * @param {number} defaultNs
+	 * @param {?object} config
+	 * @returns {string}
+	 */
 	static normalize(title, defaultNs, config) {
 		const token = new Token('', config);
 		return token.normalize(title, defaultNs);
 	}
 
+	/**
+	 * @param {?string} type
+	 * @returns {Token}
+	 */
 	static createToken(type, ...args) {
 		Token.warn('Token.createToken函数仅用于代码调试！');
 		return new (classes[type] ?? Token)(...args);
@@ -898,26 +1095,39 @@ class Token extends Array {
 	}
 }
 
-/** @type {AtomToken} */
+/**
+ * @type {AtomToken}
+ * @param {?(string|number)} wikitext
+ * @param {string} type
+ * @param {?Token} parent
+ * @param {Token[]} accum
+ * @throws TypeError
+ */
 class AtomToken extends Token {
-	constructor(wikitext, type, parent, accum) {
+	constructor(wikitext, type, parent = null, accum = []) {
 		super(wikitext, null, true, parent, accum);
 		this.type = type;
 		this.set('stage', MAX_STAGE);
 	}
 
+	/** @param {string|number} str */
 	update(str) {
-		this[0] = str;
+		this[0] = numberToString(str);
 		return this;
 	}
 }
 
-/** @type {AtomToken} */
+/**
+ * @type {AtomToken}
+ * @param {string|number|array} wikitext
+ * @param {Token[]} accum
+ * @throws TypeError
+ */
 class CommentToken extends AtomToken {
 	closed = true;
 
-	constructor(wikitext, accum) {
-		wikitext = numberToString(wikitext); // eslint-disable-line no-param-reassign
+	constructor(wikitext, accum = []) {
+		wikitext = String(wikitext);
 		if (wikitext.endsWith('-->')) {
 			super(wikitext.slice(0, -3), 'comment', null, accum);
 		} else {
@@ -931,20 +1141,26 @@ class CommentToken extends AtomToken {
 	}
 }
 
-/** @type {[AttributeToken, ?Token]} */
+/**
+ * @type {[AttributeToken, ?Token]}
+ * @param {[string, string, string]} matches
+ * @param {object} config
+ * @param {Token[]} accum
+ * @throws RangeError
+ */
 class ExtToken extends Token {
 	type = 'ext';
-	name;
-	selfClosing;
-	tags;
+	name; /** @type {string} */
+	selfClosing; /** @type {boolean} */
+	tags; /** @type {[string, ?string]} */
 
-	constructor(matches, config, accum) {
+	constructor(matches, config = require(Token.config), accum = []) {
 		const [name, attr, inner] = matches;
 		super(null, null, true, null, accum);
 		this.name = name.toLowerCase();
 		this.tags = [name];
 		this.selfClosing = inner === '>';
-		new AttributeToken(attr, 'ext-attr', this, []);
+		new AttributeToken(attr, 'ext-attr', this);
 		if (this.selfClosing) {
 			return;
 		}
@@ -972,15 +1188,24 @@ class ExtToken extends Token {
 			: `<${this.tags[0]}${this[0]}>${this[1]}</${this.tags[1]}>`;
 	}
 
+	/**
+	 * @param {?string} key
+	 * @returns {string|true|Object.<string, string|true>}
+	 */
 	getAttr(key) {
 		return this[0].getAttr(key);
 	}
 
+	/** @param {?string} key */
 	removeAttr(key) {
 		this[0].removeAttr(key);
 		return this;
 	}
 
+	/**
+	 * @param {string} key
+	 * @param {?(string|number|true)} value
+	 */
 	setAttr(key, value) {
 		this[0].setAttr(key, value);
 		return this;
@@ -1001,11 +1226,19 @@ class ExtToken extends Token {
 	}
 }
 
-/** @type {AtomToken} */
+/**
+ * @type {AtomToken}
+ * @param {string} attr
+ * @param {string} type
+ * @param {?Token} parent
+ * @param {Token[]} accum
+ * @throws TypeError
+ * @throws RangeError
+ */
 class AttributeToken extends AtomToken {
 	#attr = {}; /** @type {Object.<string, string|true>} */
 
-	constructor(attr, type, parent, accum) {
+	constructor(attr, type, parent = null, accum = []) {
 		if (attr.includes('>')) {
 			throw new RangeError('扩展或HTML标签属性不能包含">"！');
 		} else if (type !== 'ext-attr' && attr.includes('<')) {
@@ -1042,8 +1275,12 @@ class AttributeToken extends AtomToken {
 		}
 	}
 
+	/**
+	 * @param {?string} key
+	 * @returns {string|true|Object.<string, string|true>}
+	 */
 	getAttr(key) {
-		return key === undefined ? structuredClone(this.#attr) : this.#attr[key.toLowerCase().trim()];
+		return key === undefined ? this.#attr : this.#attr[key.toLowerCase().trim()];
 	}
 
 	empty() {
@@ -1063,8 +1300,9 @@ class AttributeToken extends AtomToken {
 		this.update(str && ` ${str}`);
 	}
 
+	/** @param {?string} key */
 	removeAttr(key) {
-		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
+		key = key.toLowerCase().trim();
 		if (key === undefined) {
 			this.empty();
 		} else if (key in this.#attr) {
@@ -1074,7 +1312,13 @@ class AttributeToken extends AtomToken {
 		return this;
 	}
 
+	/**
+	 * @param {string} key
+	 * @param {?(string|number|true)} value
+	 * @param {boolean} init
+	 */
 	setAttr(key, value, init) {
+		value = numberToString(value);
 		if (value === undefined) {
 			return this.removeAttr(key);
 		} else if (value === true) {
@@ -1084,7 +1328,7 @@ class AttributeToken extends AtomToken {
 		} else if (this.type !== 'ext-attr' && value.includes('<')) {
 			throw new RangeError('HTML标签属性不能包含"<"！');
 		}
-		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
+		key = key.toLowerCase().trim();
 		if (attrNameRegex.test(key)) {
 			this.#attr[key] = value === true ? true : value.replace(/\s/g, ' ').trim();
 			if (!init) {
@@ -1101,6 +1345,13 @@ class AttributeToken extends AtomToken {
 		return this.setAttr(...args);
 	}
 
+	/**
+	 * @param {string} key
+	 * @param {?string} equal
+	 * @param {?string} val
+	 * @param {?string} i
+	 * @returns {boolean}
+	 */
 	isAttr(key, equal, val, i) {
 		if (caller() !== 'AttributeToken.is') {
 			throw new Error('禁止外部调用Token.isAttr方法！');
@@ -1128,12 +1379,18 @@ class AttributeToken extends AtomToken {
 	}
 }
 
-/** @type {[Token, ?Token]} */
+/**
+ * @type {[Token, ?Token]}
+ * @param {number} level
+ * @param {[string, string]} input
+ * @param {object} config
+ * @param {Token[]} accum
+ */
 class HeadingToken extends Token {
 	type = 'heading';
-	name;
+	name; /** @type {string} */
 
-	constructor(level, input, config, accum) {
+	constructor(level, input, config = require(Token.config), accum = []) {
 		super(null, config, true, null, accum);
 		this.name = String(level);
 		input.forEach((text, i) => {
@@ -1151,24 +1408,31 @@ class HeadingToken extends Token {
 		return `${equals}${this[0]}${equals}${this[1] ?? ''}`;
 	}
 
+	/** @param {string|number} title */
 	update(title) {
-		this[0] = title;
+		this[0] = numberToString(title);
 		return this;
 	}
 
+	/** @param {number} n */
 	level(n) {
-		n = Math.min(Math.max(n, 1), 6); // eslint-disable-line no-param-reassign
+		n = Math.min(Math.max(n, 1), 6);
 		this.name = String(n);
 		return this;
 	}
 }
 
-/** @type {[AtomToken, ?Token]} */
+/**
+ * @type {[AtomToken, ?Token]}
+ * @param {string[][]} parts
+ * @param {object} config
+ * @param <Token[]> accum
+ */
 class ArgToken extends Token {
 	type = 'arg';
-	name;
+	name; /** @type {string} */
 
-	constructor(parts, config, accum) {
+	constructor(parts, config = require(Token.config), accum = []) {
 		super(null, config, true, null, accum);
 		parts.map(part => part.join('=')).forEach((part, i) => {
 			if (i === 0 || i > 1) {
@@ -1185,13 +1449,21 @@ class ArgToken extends Token {
 		return `{{{${this.join('|')}}}}`;
 	}
 
+	/** @param {string|number} name */
 	rename(name) {
+		name = numberToString(name);
 		this[0].update(name);
 		this.name = removeComment(name);
 		return this;
 	}
 
+	/**
+	 * @param {Token|string|number} token
+	 * @throws SyntaxError
+	 * @throws RangeError
+	 */
 	setDefault(token) {
+		token = numberToString(token);
 		const test = new Token(`{{{|${token.toString}}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || test[0].type !== 'arg' || test[0].length !== 2) {
 			throw new SyntaxError(`Syntax error in triple-brace argument default: ${
@@ -1199,7 +1471,7 @@ class ArgToken extends Token {
 			}`);
 		}
 		if (typeof token === 'string') {
-			token = test; // eslint-disable-line no-param-reassign
+			token = test;
 		} else {
 			token.type = 'arg-default';
 		}
@@ -1218,14 +1490,19 @@ class ArgToken extends Token {
 	}
 }
 
-/** @type {[AtomToken, ?ParameterToken]} */
+/**
+ * @type {[AtomToken, ?ParameterToken]}
+ * @param {string[][]} parts
+ * @param {object} config
+ * @param {Token[]} accum
+ */
 class TranscludeToken extends Token {
 	type = 'template';
-	name;
-	#keys;
+	name; /** @type {string} */
+	#keys; /** @type {Set.<string>} */
 	#args = new Map();
 
-	constructor(parts, config, accum) {
+	constructor(parts, config = require(Token.config), accum = []) {
 		super(null, config, true, null, accum);
 		const [title] = parts.shift();
 		if (parts.length === 0 || title.includes(':')) {
@@ -1260,33 +1537,53 @@ class TranscludeToken extends Token {
 			: `{{${this.join('|')}}}`;
 	}
 
+	/** @returns {ParameterToken[]} */
 	getAnonArgs() {
 		return this.slice(1).filter(({anon}) => anon);
 	}
 
+	/**
+	 * @param {string|number} key
+	 * @returns {ParameterToken[]}
+	 */
 	getArgs(key) {
+		key = String(key);
 		let args = this.#args.get(key);
 		if (!args) {
-			args = this.slice(1).filter(({name}) => String(key) === name);
+			args = this.slice(1).filter(({name}) => key === name);
 			this.#args.set(key, args);
 		}
 		return args;
 	}
 
+	/**
+	 * @param {string|number} key
+	 * @param {boolean} any
+	 * @returns {?ParameterToken}
+	 */
 	getArg(key, any) {
 		const args = this.getArgs(key);
 		return (any ? args : args.filter(({anon}) => typeof key === 'number' ? anon : !anon)).at(-1);
 	}
 
+	/** @returns {Set.<string>} */
 	getKeys() {
 		this.#keys ||= new Set(this.slice(1).map(({name}) => name));
 		return this.#keys;
 	}
 
+	/**
+	 * @param {string|number} key
+	 * @returns {string[]}
+	 */
 	getValues(key) {
 		return this.getArgs(key).map(arg => arg.getValue());
 	}
 
+	/**
+	 * @param {?(string|number)} key
+	 * @returns {?string|Object.<string, string>}
+	 */
 	getValue(key) {
 		if (key !== undefined) {
 			return this.getValues(key).at(-1);
@@ -1294,7 +1591,14 @@ class TranscludeToken extends Token {
 		return Object.fromEntries([...this.getKeys()].map(k => this.getValue(k)));
 	}
 
+	/**
+	 * @param {Token}
+	 * @throws TypeError
+	 */
 	append(token) {
+		if (!(token instanceof ParameterToken)) {
+			throw new TypeError('仅接受ParameterToken作为输入参数！');
+		}
 		super.append.call(this, token);
 		if (token.anon) {
 			token.name = String(this.getAnonArgs().length);
@@ -1302,7 +1606,12 @@ class TranscludeToken extends Token {
 		return this;
 	}
 
+	/**
+	 * @param {string|number} value
+	 * @throws SyntaxError
+	 */
 	newAnonArg(value) {
+		value = String(value);
 		const test = new Token(`{{:T|${value}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || !test[0][1].anon) {
 			throw new SyntaxError(`Syntax error in ${this.type} anonymous argument value: ${
@@ -1318,6 +1627,12 @@ class TranscludeToken extends Token {
 		return this;
 	}
 
+	/**
+	 * @param {?(string|number)} key
+	 * @param {string|number} value
+	 * @param {number} i
+	 * @throws SyntaxError
+	 */
 	setValue(key, value, i = this.length) {
 		if (key === undefined) {
 			return this.newAnonArg(value);
@@ -1327,7 +1642,8 @@ class TranscludeToken extends Token {
 			arg.setValue(value);
 			return this;
 		}
-		i = Math.min(Math.max(i, 1), this.length); // eslint-disable-line no-param-reassign
+		value = numberToString(value);
+		i = Math.min(Math.max(i, 1), this.length);
 		const test = new Token(`{{:T|${key}=${value}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || test[0][1].name !== key) {
 			throw new SyntaxError(`Syntax error in ${this.type} argument value: ${
@@ -1359,6 +1675,7 @@ class TranscludeToken extends Token {
 		return this;
 	}
 
+	/** @param {string|number} key */
 	removeArg(key) {
 		this.getArgs(key).forEach(arg => {
 			arg.remove();
@@ -1367,6 +1684,10 @@ class TranscludeToken extends Token {
 		return this;
 	}
 
+	/**
+	 * @param {string} oldKey
+	 * @param {?string} newKey
+	 */
 	updateKey(oldKey, newKey) {
 		if (!['ParameterToken.rename', 'ParameterToken.remove'].includes(caller())) {
 			throw new Error('禁止外部调用TranscludeToken.updateKey方法！');
@@ -1379,19 +1700,25 @@ class TranscludeToken extends Token {
 	}
 }
 
-/** @type {[?AtomToken, Token]} */
+/**
+ * @type {[?AtomToken, Token]}
+ * @param {string|number} key
+ * @param {string|number} value
+ * @param {object} config
+ * @param {?Token} parent
+ * @param {Token[]} accum
+ * @param {boolean} autofix
+ */
 class ParameterToken extends Token {
 	type = 'parameter';
 	anon = false;
-	name;
-	#value;
+	name; /** @type {string} */
+	#value; /** @type {string} */
 
-	constructor(key, value, config, parent, accum = [], autofix = true) {
+	constructor(key, value, config = require(Token.config), parent = null, accum = [], autofix = true) {
 		if (autofix) {
-			/* eslint-disable no-param-reassign */
 			key = String(key);
 			value = typeof value === 'number' ? String(value) : value;
-			/* eslint-enable no-param-reassign */
 		}
 		super(null, config, true, parent, accum);
 		if (typeof key !== 'number') {
@@ -1414,6 +1741,7 @@ class ParameterToken extends Token {
 		return super.remove();
 	}
 
+	/** @returns {string} */
 	getValue() {
 		if (this.#value === undefined) {
 			this.#value = this.at(-1).toString().replace(/<!--.*?-->/g, '');
@@ -1424,7 +1752,12 @@ class ParameterToken extends Token {
 		return this.#value;
 	}
 
+	/**
+	 * @param {string|number} value
+	 * @throws SyntaxError
+	 */
 	setValue(value) {
+		value = numberToString(value);
 		const {anon} = this,
 			test = new Token(`{{:T|${anon ? '' : '1='}${value}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || test[0][1].anon !== anon) {
@@ -1444,11 +1777,17 @@ class ParameterToken extends Token {
 		return this.setValue(args[0]);
 	}
 
+	/**
+	 * @param {string|number} key
+	 * @param {boolean} force
+	 * @throws Error
+	 * @throws RangeError
+	 */
 	rename(key, force) {
 		if (this.anon) {
 			throw new Error(`匿名参数 ${this.name} 不能简单地更名！`);
 		}
-		key = String(key); // eslint-disable-line no-param-reassign
+		key = String(key);
 		const name = removeComment(key),
 			parent = this.parent(),
 			keys = parent?.getKeys(); // 确保执行一次getKeys()
