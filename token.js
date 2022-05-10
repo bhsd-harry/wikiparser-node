@@ -205,8 +205,8 @@ class Token extends Array {
 						if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
 							const rmt = text.slice(index, curIndex).match(/^(={1,6})(.+)\1((?:\s|\x00\d+c\x7f)*)$/);
 							if (rmt) {
-								text = `${text.slice(0, index)}\x00${this.#accum.length}\x7f${text.slice(lastIndex)}`;
-								lastIndex = index + 2 + String(this.#accum.length).length;
+								text = `${text.slice(0, index)}\x00${this.#accum.length}\x7f${text.slice(curIndex)}`;
+								lastIndex = index + 3 + String(this.#accum.length).length;
 								new HeadingToken(rmt[1].length, rmt.slice(2), this.#config, this.#accum);
 							}
 						}
@@ -346,34 +346,111 @@ class Token extends Array {
 		if (!selector?.trim()) {
 			return true;
 		}
-		const func = ['not', 'has', 'contains'],
-			regex = new RegExp(
-				`:(${func.join('|')})\\(\\s*(?:(["'])([^']*)\\2|([^()]*?))\\s*\\)(?=:|\\s*(?:,|$))`,
+		const escapedQuotes = {'"': '&quot;', "'": '&apos;'},
+			escapedSelector = selector.replace(/\\["']/g, m => escapedQuotes[m[1]]),
+			func = ['not', 'has', 'contains', 'nth-child', 'nth-last-child', 'nth-of-type', 'nth-last-of-type'],
+			funcRegex = new RegExp(
+				`:(${func.join('|')})\\(\\s*("[^"]*"|'[^']*'|[^()]*?)\\s*\\)(?=:|\\s*(?:,|$))`,
 				'g',
 			),
-			hasFunc = regex.test(selector);
-		if (!selector.includes(',') && !hasFunc) {
+			hasFunc = funcRegex.test(escapedSelector);
+		if (!hasFunc) {
+			if (selector.includes(',')) {
+				return selector.split(',').some(str => this.is(str));
+			}
+			const attributeRegex = /\[\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^[\]]*?)\s*( i)?)?]/g,
+				attributes = [];
+			// eslint-disable-next-line no-param-reassign
+			selector = selector.replaceAll('&comma;', ',').replace(attributeRegex, (_, key, equal, val, i) => {
+				if (equal) {
+					val = i ? val.toLowerCase() : val; // eslint-disable-line no-param-reassign
+					const quotes = val.match(/^(["']).*\1$/)?.[1];
+					attributes.push([
+						key,
+						equal,
+						quotes ? val.slice(1, -1).replaceAll(escapedQuotes[quotes], quotes) : val,
+						i,
+					]);
+				} else {
+					attributes.push([key]);
+				}
+				return '';
+			});
 			const [type, ...parts] = selector.trim().split('#'),
 				name = parts.join('#');
-			return (!type || this.type === type) && (!name || this.name === name);
-		} else if (!hasFunc) {
-			return selector.split(',').some(str => this.is(str));
+			return (!type || this.type === type) && (!name || this.name === name)
+				&& attributes.every(([key, equal, val, i]) => {
+					const thisVal = i ? String(this[key]).toLowerCase() : String(this[key]);
+					switch (equal) {
+						case '=':
+							return key in this && thisVal === val;
+						case '~=':
+							return this[key]?.[Symbol.iterator] && [...this[key]].some(v => String(v) === val);
+						case '|=':
+							return key in this && (thisVal === val || thisVal.startsWith(`${val}-`));
+						case '^=':
+							return key in this && thisVal.startsWith(val);
+						case '$=':
+							return key in this && thisVal.endsWith(val);
+						case '*=':
+							return key in this && thisVal.includes(val);
+						case '!=':
+							return !(key in this) || thisVal !== val;
+						default:
+							return this[key];
+					}
+				});
 		}
+		/*
+		 * 先将"\\'"转义成'&apos;'，将'\\"'转义成'&quot;'，即escapedSelector
+		 * 在去掉一重':func()'时，如果使用了"'"，则将内部的'&apos;'解码成"'"；如果使用了'"'，则将内部的'&quot;'解码成'"'
+		 */
 		const calls = Object.fromEntries(func.map(f => [f, []]));
-		regex.lastIndex = 0;
-		const selectors = selector.replace(regex, (_, f, __, quoted, unquoted) => {
-			calls[f].push(quoted ?? unquoted);
+		funcRegex.lastIndex = 0;
+		const selectors = escapedSelector.replace(funcRegex, (_, f, arg) => {
+			const quotes = arg.match(/^(["']).*\1$/)?.[1];
+			calls[f].push(quotes ? arg.slice(1, -1).replaceAll(escapedQuotes[quotes], quotes) : arg);
 			return `:${f}(${calls[f].length - 1})`;
 		}).split(',');
+		const range = (str, i) => {
+				let [start, end, step = 1] = str.split(':');
+				start = Number(start);
+				end = Number(end || Infinity);
+				step = Number(step);
+				return start <= i && end > i && (i - start) % step === 0;
+			},
+			nth = (str, i) => {
+				if (i === null) {
+					return false;
+				}
+				const values = [String(i), i % 2 ? 'odd' : 'even'];
+				return str.split(',').some(s => {
+					s = s.trim(); // eslint-disable-line no-param-reassign
+					return s.includes(':') ? range(s, i) : values.includes(s);
+				});
+			};
+		const parent = this.parent(),
+			index = parent && this.index() + 1,
+			indexOfType = parent && this.index(true) + 1,
+			lastIndex = parent && this.lastIndex() + 1,
+			lastIndexOfType = parent && this.lastIndex(true) + 1,
+			content = parent && this.toString();
 		return selectors.some(str => {
 			const curCalls = Object.fromEntries(func.map(f => [f, []]));
-			str = str.replace(regex, (_, f, __, ___, i) => { // eslint-disable-line no-param-reassign
+			funcRegex.lastIndex = 0;
+			// eslint-disable-next-line no-param-reassign
+			str = str.replace(funcRegex, (_, f, i) => {
 				curCalls[f].push(calls[f][i]);
 				return '';
 			});
-			return this.is(str) && !curCalls.not.some(s => this.is(s))
+			return this.is(str)
+				&& !curCalls.not.some(s => this.is(s))
 				&& curCalls.has.every(s => this.is(s) || this.search(s).length)
-				&& curCalls.contains.every(s => this.toString().includes(s));
+				&& curCalls.contains.every(s => content.includes(s))
+				&& curCalls['nth-child'].every(s => nth(s, index))
+				&& curCalls['nth-of-type'].every(s => nth(s, indexOfType))
+				&& curCalls['nth-last-child'].every(s => nth(s, lastIndex))
+				&& curCalls['nth-last-of-type'].every(s => nth(s, lastIndexOfType));
 		});
 	}
 
@@ -491,20 +568,20 @@ class Token extends Array {
 		return this.findIndex(token => token instanceof Token && token.is(args[0]));
 	}
 
-	index() {
+	index(ofType) {
 		const parent = this.#parent;
 		if (parent === null) {
 			throw new Error('根节点没有父节点！');
 		}
-		return parent.indexOf(this);
+		return ofType ? parent.indexOf(this) : parent.filter(this.type).indexOf(this);
 	}
 
-	lastIndex() {
+	lastIndex(ofType) {
 		const parent = this.#parent;
 		if (parent === null) {
 			throw new Error('根节点没有父节点！');
 		}
-		return parent.lastIndexOf(this);
+		return ofType ? parent.lastIndexOf(this) : parent.filter(this.type).lastIndexOf(this);
 	}
 
 	next(selector) {
@@ -743,9 +820,7 @@ class Token extends Array {
 			}
 		}
 		const i = title.indexOf('#');
-		if (i !== -1) {
-			title = title.slice(0, i).trim();
-		}
+		title = i === -1 ? title : title.slice(0, i).trim();
 		return `${namespace}${namespace && ':'}${ucfirst(title)}`;
 		/* eslint-enable no-param-reassign */
 	}
@@ -1035,7 +1110,7 @@ class HeadingToken extends Token {
 
 	toString() {
 		const equals = '='.repeat(this.name);
-		return `${equals}${this[0]}${equals}${this[1] ?? ''}\n`;
+		return `${equals}${this[0]}${equals}${this[1] ?? ''}`;
 	}
 
 	update(title) {
@@ -1277,9 +1352,7 @@ class ParameterToken extends Token {
 		if (autofix) {
 			/* eslint-disable no-param-reassign */
 			key = String(key);
-			if (typeof value === 'number') {
-				value = String(value);
-			}
+			value = typeof value === 'number' ? String(value) : value;
 			/* eslint-enable no-param-reassign */
 		}
 		super(null, config, true, parent, accum);
