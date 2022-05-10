@@ -26,7 +26,7 @@ const caller = () => {
 	try {
 		throw new Error();
 	} catch ({stack}) {
-		return stack.match(/(?<=^\s+at )[\w.]+(?= \()/gm)?.[2];
+		return stack.match(/(?<=^\s+at )[\w.]+(?= \((?!<anonymous>))/gm)?.[2];
 	}
 };
 
@@ -324,7 +324,11 @@ class Token extends Array {
 	}
 
 	parse(n = MAX_STAGE) {
-		if (n < MAX_STAGE && caller() !== 'ParameterToken.setValue') {
+		if (n < MAX_STAGE && ![
+			'ArgToken.setDefault',
+			'TranscludeToken.newAnonArg', 'TranscludeToken.setValue',
+			'ParameterToken.setValue',
+		].includes(caller())) {
 			Token.warn('指定解析层级的方法仅供熟练用户使用！');
 		}
 		while (this.#stage < n) {
@@ -340,6 +344,32 @@ class Token extends Array {
 				token.name = token.normalize(token.name, 'Template');
 			}
 		});
+	}
+
+	isAttr(key, equal, val, i) {
+		if (!caller().endsWith('Token.is')) {
+			throw new Error('禁止外部调用Token.isAttr方法！');
+		}
+		const thisVal = i ? String(this[key]).toLowerCase() : String(this[key]);
+		switch (equal) {
+			case '=':
+				return key in this && thisVal === val;
+			case '~=':
+				return typeof this[key] !== 'string' // string也是iterable，但显然不符合意图
+					&& this[key]?.[Symbol.iterator] && [...this[key]].some(v => String(v) === val);
+			case '|=':
+				return key in this && (thisVal === val || thisVal.startsWith(`${val}-`));
+			case '^=':
+				return key in this && thisVal.startsWith(val);
+			case '$=':
+				return key in this && thisVal.endsWith(val);
+			case '*=':
+				return key in this && thisVal.includes(val);
+			case '!=':
+				return !(key in this) || thisVal !== val;
+			default:
+				return this[key];
+		}
 	}
 
 	is(selector) {
@@ -379,27 +409,7 @@ class Token extends Array {
 			const [type, ...parts] = selector.trim().split('#'),
 				name = parts.join('#');
 			return (!type || this.type === type) && (!name || this.name === name)
-				&& attributes.every(([key, equal, val, i]) => {
-					const thisVal = i ? String(this[key]).toLowerCase() : String(this[key]);
-					switch (equal) {
-						case '=':
-							return key in this && thisVal === val;
-						case '~=':
-							return this[key]?.[Symbol.iterator] && [...this[key]].some(v => String(v) === val);
-						case '|=':
-							return key in this && (thisVal === val || thisVal.startsWith(`${val}-`));
-						case '^=':
-							return key in this && thisVal.startsWith(val);
-						case '$=':
-							return key in this && thisVal.endsWith(val);
-						case '*=':
-							return key in this && thisVal.includes(val);
-						case '!=':
-							return !(key in this) || thisVal !== val;
-						default:
-							return this[key];
-					}
-				});
+				&& attributes.every(args => this.isAttr(...args));
 		}
 		/*
 		 * 先将"\\'"转义成'&apos;'，将'\\"'转义成'&quot;'，即escapedSelector
@@ -993,7 +1003,7 @@ class ExtToken extends Token {
 
 /** @type {AtomToken} */
 class AttributeToken extends AtomToken {
-	#attr = {};
+	#attr = {}; /** @type {Object.<string, string|true>} */
 
 	constructor(attr, type, parent, accum) {
 		if (attr.includes('>')) {
@@ -1006,7 +1016,7 @@ class AttributeToken extends AtomToken {
 			this.name = parent.name;
 		}
 		for (const [, key,, quoted, unquoted] of attr.matchAll(attrRegex)) {
-			this.setAttr(key, quoted ?? unquoted ?? null, true);
+			this.setAttr(key, quoted ?? unquoted ?? true, true);
 		}
 	}
 
@@ -1067,6 +1077,8 @@ class AttributeToken extends AtomToken {
 	setAttr(key, value, init) {
 		if (value === undefined) {
 			return this.removeAttr(key);
+		} else if (value === true) {
+			// pass
 		} else if (value.includes('>')) {
 			throw new RangeError('扩展或HTML标签属性不能包含">"！');
 		} else if (this.type !== 'ext-attr' && value.includes('<')) {
@@ -1074,7 +1086,7 @@ class AttributeToken extends AtomToken {
 		}
 		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
 		if (attrNameRegex.test(key)) {
-			this.#attr[key] = value === null ? true : value.replace(/\s/g, ' ').trim();
+			this.#attr[key] = value === true ? true : value.replace(/\s/g, ' ').trim();
 			if (!init) {
 				this.#updateFromAttr();
 			}
@@ -1087,6 +1099,32 @@ class AttributeToken extends AtomToken {
 			return this.getAttr(...args);
 		}
 		return this.setAttr(...args);
+	}
+
+	isAttr(key, equal, val, i) {
+		if (caller() !== 'AttributeToken.is') {
+			throw new Error('禁止外部调用Token.isAttr方法！');
+		}
+		const attr = this.getAttr(key),
+			thisVal = i ? String(attr).toLowerCase() : String(attr);
+		switch (equal) {
+			case '=':
+				return attr !== undefined && thisVal === val;
+			case '~=':
+				return typeof attr === 'string' && thisVal.split(/\s/).some(v => v === val);
+			case '|=':
+				return attr !== undefined && (thisVal === val || thisVal.startsWith(`${val}-`));
+			case '^=':
+				return attr !== undefined && thisVal.startsWith(val);
+			case '$=':
+				return attr !== undefined && thisVal.endsWith(val);
+			case '*=':
+				return attr !== undefined && thisVal.includes(val);
+			case '!=':
+				return attr === undefined || thisVal !== val;
+			default:
+				return attr !== undefined;
+		}
 	}
 }
 
@@ -1154,7 +1192,7 @@ class ArgToken extends Token {
 	}
 
 	setDefault(token) {
-		const test = Token.parse(`{{{|${token.toString}}}}`, 2, this.get('config'));
+		const test = new Token(`{{{|${token.toString}}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || test[0].type !== 'arg' || test[0].length !== 2) {
 			throw new SyntaxError(`Syntax error in triple-brace argument default: ${
 				token.toString().replaceAll('\n', '\\n')
@@ -1265,7 +1303,7 @@ class TranscludeToken extends Token {
 	}
 
 	newAnonArg(value) {
-		const test = Token.parse(`{{:T|${value}}}`, 2, this.get('config'));
+		const test = new Token(`{{:T|${value}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || !test[0][1].anon) {
 			throw new SyntaxError(`Syntax error in ${this.type} anonymous argument value: ${
 				value.replaceAll('\n', '\\n')
@@ -1290,7 +1328,7 @@ class TranscludeToken extends Token {
 			return this;
 		}
 		i = Math.min(Math.max(i, 1), this.length); // eslint-disable-line no-param-reassign
-		const test = Token.parse(`{{:T|${key}=${value}}}`, 2, this.get('config'));
+		const test = new Token(`{{:T|${key}=${value}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || test[0][1].name !== key) {
 			throw new SyntaxError(`Syntax error in ${this.type} argument value: ${
 				value.toString().replaceAll('\n', '\\n')
@@ -1388,7 +1426,7 @@ class ParameterToken extends Token {
 
 	setValue(value) {
 		const {anon} = this,
-			test = Token.parse(`{{:T|${anon ? '' : '1='}${value}}}`, 2, this.get('config'));
+			test = new Token(`{{:T|${anon ? '' : '1='}${value}}}`, this.get('config')).parse(2);
 		if (test.length !== 1 || !test[0].is('template#T') || test[0].length !== 2 || test[0][1].anon !== anon) {
 			throw new SyntaxError(`Syntax error in template/magic-word argument value: ${
 				value.replaceAll('\n', '\\n')
