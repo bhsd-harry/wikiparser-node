@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign */
+'use strict';
 const numberToString = n => typeof n === 'number' ? String(n) : n,
 	typeError = (...args) => {
 		throw new TypeError(`仅接受${args.join('、')}作为输入参数！`);
@@ -11,6 +11,8 @@ class TokenCollection extends Array {
 	constructor(...args) {
 		if (args.length === 1 && (Array.isArray(args[0]) || args[0] instanceof Set)) {
 			super(...args[0]);
+		} else if (args.length === 1 && args[0] === 0) {
+			super();
 		} else {
 			super(...args.map(numberToString));
 		}
@@ -18,8 +20,26 @@ class TokenCollection extends Array {
 
 	// ------------------------------ extended superclass ------------------------------ //
 
+	add(...args) {
+		const arr = this.concat(...args);
+		if (arr.some(ele => typeof ele === 'string')) {
+			throw new RangeError('TokenCollection.add方法仅用于不包含字符串的情形！');
+		}
+		return $.from(arr);
+	}
+
+	delete(arg) {
+		const index = this.indexOf(arg);
+		if (index >= 0 && (typeof arg !== 'string' || this.lastIndexOf(arg) === index)) {
+			this.splice(index, 1);
+		} else {
+			throw new RangeError('无法删除有重复的字符串！');
+		}
+		return this;
+	}
+
 	forEach(...args) {
-		super.forEach.apply(this, args);
+		super.forEach(...args);
 		return this;
 	}
 
@@ -31,7 +51,7 @@ class TokenCollection extends Array {
 	/**
 	 * @param {string} method
 	 * @param {string} selector
-	 * @returns {TokenCollection}
+	 * @returns {TokenCollection.<Token>}
 	 */
 	#flatMap(method, selector) {
 		return $.from(this.filterTokens().flatMap(token => token[method](selector)));
@@ -40,7 +60,7 @@ class TokenCollection extends Array {
 	/**
 	 * @param {string} method
 	 * @param {string} selector
-	 * @returns {TokenCollection}
+	 * @returns {TokenCollection.<Token>}
 	 */
 	#tryFlatMap(method, selector) {
 		return $.from(
@@ -62,7 +82,7 @@ class TokenCollection extends Array {
 	/**
 	 * @param {string} method
 	 * @param {string} selector
-	 * @returns {TokenCollection}
+	 * @returns {TokenCollection.<Token>}
 	 */
 	#map(method, selector) {
 		return $.from(this.filterTokens().map(token => token[method](selector)).filter(token => token !== null));
@@ -71,7 +91,7 @@ class TokenCollection extends Array {
 	/**
 	 * @param {string} method
 	 * @param {string} selector
-	 * @returns {TokenCollection}
+	 * @returns {TokenCollection.<Token>}
 	 */
 	#tryMap(method, selector) {
 		return $.from(
@@ -83,6 +103,10 @@ class TokenCollection extends Array {
 				}
 			}).filter(ele => ele !== null),
 		);
+	}
+
+	join(separator) {
+		return this.map(String).join(separator);
 	}
 
 	toString() {
@@ -162,52 +186,67 @@ class TokenCollection extends Array {
 	}
 
 	/**
+	 * 为避免重复和实现maxDepth，必须采取广度优先搜索
 	 * @param {string} selector
 	 * @param {function(Token)} callback
 	 * @param {number} maxDepth - 0 表示当前层级
+	 * @param {Set.<Token>} visited
 	 */
 	each(...args) {
-		const selector = args.find(arg => typeof arg === 'string') ?? '',
-			callback = args.find(arg => typeof arg === 'function'),
+		if (this.length === 0) {
+			return;
+		}
+		let selector, callback, maxDepth, visited;
+		if (args.length === 4) {
+			[selector, callback, maxDepth, visited] = args;
+		} else {
+			selector = args.find(arg => typeof arg === 'string') ?? '';
+			callback = args.find(arg => typeof arg === 'function');
 			maxDepth = args.find(arg => typeof arg === 'number') ?? Infinity;
+			visited = args.find(arg => arg instanceof Set) ?? new Set();
+		}
 		if (maxDepth < 0) {
 			return;
 		} else if (callback.constructor.name !== 'AsyncFunction') {
-			for (const token of this) {
-				if (typeof token === 'string') {
-					continue;
+			for (const token of this.filter(selector)) {
+				if (!visited.has(token)) {
+					visited.add(token);
+					callback(token);
 				}
-				token.each(selector, callback, maxDepth);
 			}
+			this.children().each(selector, callback, maxDepth - 1, visited);
 			return this;
 		}
 		return (async () => {
-			for (const token of this) {
-				if (typeof token === 'string') {
-					continue;
+			for (const token of this.filter(selector)) {
+				if (!visited.has(token)) {
+					visited.add(token);
+					await callback(token); // eslint-disable-line no-await-in-loop
 				}
-				await token.each(selector, callback, maxDepth); // eslint-disable-line no-await-in-loop
 			}
+			await this.children().each(selector, callback, maxDepth - 1, visited);
 			return this;
 		})();
 	}
 
 	/**
+	 * 为避免重复和实现maxDepth，必须采取广度优先搜索
 	 * @param {?string} selector
 	 * @param {number} maxDepth
+	 * @param {Set.<Token>} visited
 	 * @returns {TokenCollection}
 	 */
-	search(selector, maxDepth = Infinity) {
+	search(selector, maxDepth = Infinity, visited = new Set()) {
 		if (typeof maxDepth !== 'number') {
 			typeError('Number');
+		} else if (maxDepth < 0 || this.length === 0) {
+			return $();
 		}
-		return $(maxDepth < 0
-			? []
-			: this.filterTokens().flatMap(token => [
-				...token.is(selector) ? [token] : [],
-				...token.$children.search(selector, maxDepth - 1),
-			]),
-		);
+		const filtered = this.filter(token => typeof token !== 'string' && !visited.has(token))
+			.forEach(token => {
+				visited.add(token);
+			});
+		return filtered.filter(selector).concat(filtered.children().search(selector, maxDepth - 1, visited));
 	}
 
 	/**
@@ -224,7 +263,7 @@ class TokenCollection extends Array {
 	 */
 	find(...args) {
 		if (typeof args[0] === 'function') {
-			return super.find.apply(this, args);
+			return super.find(...args);
 		} else if (typeof args[0] === 'string') {
 			return this.find(token => typeof token !== 'string' && token.is(args[0]));
 		}
@@ -237,7 +276,7 @@ class TokenCollection extends Array {
 	 */
 	findIndex(...args) {
 		if (typeof args[0] === 'function') {
-			return super.findIndex.apply(this, args);
+			return super.findIndex(...args);
 		} else if (typeof args[0] === 'string') {
 			return this.findIndex(token => typeof token !== 'string' && token.is(args[0]));
 		}
@@ -271,19 +310,25 @@ class TokenCollection extends Array {
 	}
 
 	/**
-	 * @param {?string} selector
+	 * @param {string} selector
 	 * @returns {TokenCollection}
 	 */
 	nextAll(selector) {
+		if (selector === undefined) {
+			throw new TypeError('TokenCollection.nextAll必须指定选择器（可以为空）！');
+		}
 		return this.#tryFlatMap('nextAll', selector);
 	}
 
 	/**
-	 * @param {?string} selector
+	 * @param {string} selector
 	 * @returns {TokenCollection}
 	 * @throws Error
 	 */
 	prevAll(selector) {
+		if (selector === undefined) {
+			throw new TypeError('TokenCollection.prevAll必须指定选择器（可以为空）！');
+		}
 		return this.#tryFlatMap('prevAll', selector);
 	}
 
@@ -291,40 +336,28 @@ class TokenCollection extends Array {
 	 * @param {string} selector
 	 * @returns {TokenCollection}
 	 */
-	nextUntil(selector) {
-		if (typeof selector !== 'string') {
-			typeError('String');
-		}
-		return this.#tryFlatMap('nextUntil', selector);
-	}
-
-	/**
-	 * @param {string} selector
-	 * @returns {TokenCollection}
-	 */
-	prevUntil(selector) {
-		if (typeof selector !== 'string') {
-			typeError('String');
-		}
-		return this.#tryFlatMap('prevUntil', selector);
-	}
-
-	/**
-	 * @param {?string} selector
-	 * @returns {TokenCollection}
-	 */
 	siblings(selector) {
+		if (selector === undefined) {
+			throw new TypeError('TokenCollection.siblings必须指定选择器（可以为空）！');
+		}
 		return this.#tryFlatMap('siblings', selector);
 	}
 
 	// ------------------------------ batch manipulation ------------------------------ //
 
 	detach() {
-		return this.forEach(token => {
+		let count = 0;
+		this.forEach(token => {
 			try {
 				token.detach();
-			} catch {}
+			} catch {
+				count++;
+			}
 		});
+		if (count) {
+			console.error('\x1b[31m%s\x1b[0m', `共有${count}个元素未能成功！`);
+		}
+		return this;
 	}
 
 	remove() {
@@ -332,26 +365,29 @@ class TokenCollection extends Array {
 			token.remove();
 		});
 	}
-
-	/**
-	 * @param {Token[]|Set.<Token>} arr
-	 * @returns {TokenCollection}
-	 */
-	static from(arr) {
-		if (arr instanceof Set) {
-			return $(arr);
-		} else if (!Array.isArray(arr)) {
-			typeError('Array', 'Set');
-		}
-		return arr.some(ele => typeof ele === 'string') ? $(arr) : $(new Set(arr));
-	}
 }
 
 const $ = (...args) => new TokenCollection(...args);
+
 $.class = TokenCollection;
+
+/**
+ * @param {Token[]|Set.<Token>} arr
+ * @returns {TokenCollection.<Token>}
+ */
+$.from = arr => {
+	if (arr instanceof Set) {
+		return $(arr);
+	} else if (!Array.isArray(arr)) {
+		typeError('Array', 'Set');
+	}
+	return $(new Set(arr));
+};
+
 $.reload = () => {
-	delete require.cache[require.resolve('./tokenCollection')];
-	return require('./tokenCollection');
+	const [id] = Object.entries(require.cache).find(([, mod]) => mod.exports.typeError === typeError);
+	delete require.cache[id];
+	return require(id).$;
 };
 
 module.exports = {$, numberToString, typeError};
