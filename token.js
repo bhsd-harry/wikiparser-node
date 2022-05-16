@@ -164,6 +164,8 @@ class Token {
 	get(key) {
 		if (typeof key !== 'string') {
 			typeError('String');
+		} else if (externalUse()) {
+			Token.warn(false, 'Token.get方法一般不应直接调用，仅用于代码调试！');
 		}
 		switch (key) {
 			case 'stage':
@@ -756,6 +758,9 @@ class Token {
 
 	/** @param {string|Token} token */
 	verifyChild(token) {
+		if (externalUse()) {
+			Token.warn(false, 'Token.verifyChild方法一般不应直接调用，仅用于代码调试！');
+		}
 		const result = this.#acceptable
 			? this.#acceptable.includes(token.constructor.name)
 				&& (typeof token === 'string' || !token.contains(this, true))
