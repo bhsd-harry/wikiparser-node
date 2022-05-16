@@ -1,14 +1,13 @@
 'use strict';
 const Token = require('./token'),
-	FixedToken = require('./fixedToken'),
 	AtomToken = require('./atomToken'),
-	{removeComment, numberToString, typeError} = require('./util');
+	{removeComment, numberToString, typeError, fixToken} = require('./util');
 
 /**
  * @content AtomToken
  * @content Token
  */
-class ParameterToken extends FixedToken {
+class ParameterToken extends fixToken(Token) {
 	type = 'parameter';
 	anon = false;
 	name;

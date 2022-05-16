@@ -2,6 +2,23 @@
 
 const MAX_STAGE = 11;
 
+const fixToken = constructor => class extends constructor {
+	seal() {
+		if (externalUse()) {
+			throw new Error('禁止外部调用FixedToken.seal方法！');
+		}
+		return this.keepChildrenOrder().unremovableChild(':');
+	}
+
+	insert() {
+		throw new Error(`${this.constructor.name}不可插入元素！`);
+	}
+
+	delete() {
+		throw new Error(`${this.constructor.name}不可删除元素！`);
+	}
+};
+
 // ------------------------------ string conversion ------------------------------ //
 
 const numberToString = n => typeof n === 'number' ? String(n) : n;
@@ -87,6 +104,7 @@ const externalUse = () => {
 
 module.exports = {
 	MAX_STAGE,
+	fixToken,
 	numberToString, removeComment, toCase, nth,
 	tokenLike, tokenIs, select, selects,
 	typeError, caller, externalUse,

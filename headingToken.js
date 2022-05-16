@@ -1,10 +1,9 @@
 'use strict';
 const Token = require('./token'),
-	FixedToken = require('./fixedToken'),
-	{MAX_STAGE, removeComment, typeError} = require('./util');
+	{MAX_STAGE, removeComment, typeError, fixToken} = require('./util');
 
 /** @content Token, Token */
-class HeadingToken extends FixedToken {
+class HeadingToken extends fixToken(Token) {
 	type = 'heading';
 	name;
 

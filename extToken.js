@@ -1,14 +1,13 @@
 'use strict';
 const Token = require('./token'),
-	FixedToken = require('./fixedToken'),
 	AttributeToken = require('./attributeToken');
-const {typeError} = require('./util');
+const {typeError, fixToken} = require('./util');
 
 /**
  * @content AttributeToken
  * @content Token|AtomToken
  */
-class ExtToken extends FixedToken {
+class ExtToken extends fixToken(Token) {
 	type = 'ext';
 	name;
 	selfClosing;

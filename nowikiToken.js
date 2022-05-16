@@ -1,10 +1,10 @@
 'use strict';
 const Token = require('./token'),
 	AtomToken = require('./atomToken'),
-	{numberToString, typeError} = require('./util');
+	{numberToString, typeError, fixToken} = require('./util');
 
 /** @content string */
-class NowikiToken extends AtomToken {
+class NowikiToken extends fixToken(AtomToken) {
 	/**
 	 * @param {string|number|Token|TokenCollection} wikitext
 	 * @param {?Token} parent
@@ -18,14 +18,6 @@ class NowikiToken extends AtomToken {
 		}
 		super(String(wikitext), 'ext-inner', parent, accum);
 		this.unremovableChild(0);
-	}
-
-	insert() {
-		throw new Error(`${this.constructor.name}不可插入元素！`);
-	}
-
-	delete() {
-		throw new Error(`${this.constructor.name}不可删除元素！`);
 	}
 
 	/** @param {string|number} str */
