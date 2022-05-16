@@ -1,0 +1,17 @@
+{
+	"rules": {
+		"func-names": [
+			2,
+			"as-needed"
+		],
+		"no-control-regex": 0,
+		"no-new": 0,
+		"no-param-reassign": 0,
+		"prefer-arrow-callback": [
+			2,
+			{
+				"allowNamedFunctions": true
+			}
+		]
+	}
+}
