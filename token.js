@@ -516,11 +516,8 @@ class Token {
 		})();
 	}
 
-	/**
-	 * 与TokenCollection.search方法统一，采取广度优先搜索
-	 * @param {string|undefined} selector
-	 */
-	descendants(selector, maxDepth = Infinity) {
+	/** 与TokenCollection.search方法统一，采取广度优先搜索  */
+	descendants(selector = '', maxDepth = Infinity) {
 		return this.$children.search(selector, maxDepth - 1);
 	}
 
@@ -803,10 +800,13 @@ class Token {
 	/** @param {...number|string|Token} args */
 	delete(...args) {
 		const /** @type {Token[]} */ tokens = args.filter(token => token instanceof Token),
-			indices = new Ranges(args.filter(i => ['number', 'string'].includes(typeof i))).applyTo(this).reverse();
+			indices = new Ranges(args.filter(i => ['number', 'string'].includes(typeof i)))
+				.applyTo(this.$children).reverse();
 		indices.forEach(i => { // 倒序删除，且必须在删除指定Token之前
 			const [token] = this.$children.splice(i, 1);
-			token.removeParent();
+			if (token instanceof Token) {
+				token.removeParent();
+			}
 		});
 		tokens.forEach(token => {
 			if (this.$children.includes(token)) {

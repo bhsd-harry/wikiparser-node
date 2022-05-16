@@ -275,11 +275,10 @@ class TokenCollection extends Array {
 
 	/**
 	 * 广度优先搜索
-	 * @param {string} selector
 	 * @param {Set<Token>} visited
 	 * @returns {UniqueCollection}
 	 */
-	search(selector, maxDepth = Infinity, visited = new Set()) {
+	search(selector = '', maxDepth = Infinity, visited = new Set()) {
 		if (typeof selector !== 'string' || typeof maxDepth !== 'number') {
 			typeError('String', 'Number');
 		} else if (maxDepth < 0 || this.length === 0) {

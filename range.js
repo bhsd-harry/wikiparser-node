@@ -43,13 +43,13 @@ class Ranges extends Array {
 	 * @returns {(number|Range)[]}
 	 */
 	constructor(arr) {
+		super();
 		if (arr === 0) {
-			super();
 			return;
 		} else if (!Array.isArray(arr)) {
 			typeError('Array');
 		}
-		super(
+		this.push(
 			...arr.filter(ele => ['number', 'string'].includes(typeof ele)).map(ele => {
 				try {
 					return isNaN(ele) ? new Range(ele) : Number(ele);
