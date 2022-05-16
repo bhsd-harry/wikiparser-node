@@ -1,4 +1,7 @@
 # 目录
+<details>
+   <summary>展开</summary>
+   
 1. [Token](#token)
    1. [静态方法](#token.static.methods)
       1. [parse](#token.parse)
@@ -77,6 +80,7 @@
 5. [TokenCollection](#tokencollection)
 6. [UniqueCollection](#uniquecollection)
 7. [选择器](#选择器)
+   </details>
 
 # Token
 这是所有解析后的维基文本的基础类，同时也是一个可迭代对象，迭代器会依次返回[$children](#token.$children)属性的各个元素。
@@ -84,6 +88,9 @@
 
 ## 方法<a id="token.methods"></a>
 ### 静态方法<a id="token.static.methods"></a>
+<details>
+   <summary>展开</summary>
+   
 **parse**(wikitext: string): Token<a id="token.parse"></a>
 - 解析文本。
 - 参数:
@@ -108,8 +115,12 @@ assert(String(root) === wikitext); // Token可以无损还原为维基文本
 assert(Token.normalizeTitle('doc', 10) === 'Template:Doc');
 assert(Token.normalizeTitle(':mainpage', 10) === 'Mainpage');
 ```
+</details>
 
 ### 原型方法<a id="token.prototype.methods"></a>
+<details>
+   <summary>展开</summary>
+   
 **isPlain**(): boolean<a id="token.isplain"></a>
 - 是否是普通节点（即基础的Token类）。根节点就是一个普通节点。
 
@@ -546,14 +557,22 @@ assert(root.text() === '<nowiki><!-- c --></nowiki>');
 page.nowikiChildren(1, 2);
 assert(page.$children[1].text() === '<nowiki>==e==\nf\n</nowiki>');
 ```
-
+   </details>
+   
 ## 属性<a id="token.properties"></a>
 ### 静态属性<a id="token.static.properties"></a>
+<details>
+   <summary>展开</summary>
+   
 **config**: string<a id="token.config"></a>
 - 维基文本的默认设置JSON路径。
 - Default: ```'./config'```
-
+   </details>
+   
 ### 实例属性<a id="token.instance.properties"></a>
+<details>
+   <summary>展开</summary>
+   
 **$children**: [TokenCollection](#tokencollection)<a id="token.$children"></a>
 - 子节点数组
 
@@ -568,7 +587,8 @@ assert.deepStrictEqual(page.$children, new Token.$.TokenCollection(d, e, f, g, h
 ```js
 assert(root.type === 'root');
 ```
-
+   </details>
+   
 # CommentToken
 这是一个用于HTML注释的扩展类。请使用[Token.parse](#token.parse)方法获取CommentToken实例。
 [返回目录](#目录)
@@ -581,6 +601,9 @@ assert(comment.text() === commentText);
 
 ## 方法<a id="commentoken.methods"></a>
 ### 原型方法<a id="commenttoken.prototype.methods"></a>
+<details>
+   <summary>展开</summary>
+   
 **empty**(): this<a id="commenttoken.empty"></a>
 - 清空注释内容。
 - 注意：不会清除注释节点。
@@ -597,16 +620,21 @@ assert(comment.text() === '<!--');
 comment.close();
 assert(comment.text() === '<!---->');
 ```
-
+   </details>
+   
 ## 属性<a id="commenttoken.properties"></a>
 ### 实例属性<a id="commenttoken.instance.properties"></a>
+<details>
+   <summary>展开</summary>
+   
 **closed**: boolean<a id="commenttoken.closed"></a>
 - 是否封闭。
 
 ```js
 assert(comment.closed === true);
 ```
-
+   </details>
+   
 # ExtToken
 这是一个用于扩展标签的扩展类。请使用[Token.parse](#token.parse)方法获取ExtToken实例。
 [返回目录](#目录)
@@ -620,6 +648,9 @@ assert(references.text() === '<references group = a/>');
 
 ## 方法<a id="exttoken.methods"></a>
 ### 原型方法<a id="exttoken.prototype.methods"></a>
+<details>
+   <summary>展开</summary>
+   
 **hide**(): this<a id="exttoken.hide"></a>
 - 更改为自封闭。
 - 注意：不会清除原本的内部Token，但转换为文字时不会显示。
@@ -670,9 +701,13 @@ assert(ref.text() === '<ref>ref</ref>');
 ref.setAttr('name', 'name')
 assert(ref.text() === '<ref name="name">ref</ref>');
 ```
-
+   </details>
+   
 ## 属性<a id="exttoken.properties"></a>
 ### 实例属性<a id="exttoken.instance.properties"></a>
+<details>
+   <summary>展开</summary>
+   
 **selfClosing**: boolean<a id="exttoken.selfclosing"></a>
 - 是否自封闭。
 
@@ -686,6 +721,8 @@ assert(references.selfClosing === true);
 ```js
 assert(references.name === 'references');
 ```
+   </details>
+   
 # AttributeToken
 这是扩展和HTML标签属性的扩展类。这个类的文字一般情况下应以空白字符开头。这个类的特殊之处在于使用属性选择器时，对应的属性是解析出的标签属性而非通常的实例属性，详见[属性选择器](#属性选择器)。请使用[Token.parse](#token.parse)方法分别获取扩展标签的AttributeToken实例和HTML标签的AttributeToken实例。
 [返回目录](#目录)
@@ -699,6 +736,9 @@ assert(attr.is('[type=ext-attr]') === false);
 
 ## 方法<a id="attributetoken.methods"></a>
 ### 原型方法<a id="attributetoken.prototype.methods"></a>
+<details>
+   <summary>展开</summary>
+   
 **getAttr**(key: string): string<a id="attributetoken.getattr"></a>
 - 参见[ExtToken.getAttr](#exttoken.getattr)
 
@@ -707,16 +747,21 @@ assert(attr.is('[type=ext-attr]') === false);
 
 **setAttr**(key: string, value: string): this<a id="attributetoken.setattr"></a>
 - 参见[ExtToken.setAttr](#exttoken.setattr)
-
+   </details>
+   
 ## 属性<a id="exttoken.properties"></a>
 ### 实例属性<a id="exttoken.instance.properties"></a>
+<details>
+   <summary>展开</summary>
+   
 **name**: boolean<a id="attributetoken.name"></a>
 - 转换为全小写的标签名。
 
 ```js
 assert(attr.name === 'references');
 ```
-
+   </details>
+   
 # TokenCollection
 [返回目录](#目录)
 
