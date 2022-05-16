@@ -1,5 +1,86 @@
+# 目录
+1. [Token](#token)
+   1. [静态方法](#token.static.methods)
+      1. [parse](#token.parse)
+      2. [normalizeTitle](#token.normalizetitle)
+   2. [原型方法](#token.prototype.methods)
+      1. [isPlain](#token.isplain)
+      2. [length](#token.length)
+      3. [text](#token.text)
+      4. [is](#token.is)
+      5. [not](#token.not)
+      6. [parent](#token.parent)
+      7. [closest](#token.closest)
+      8. [parents](#token.parents)
+      9. [parentsUntil](#token.parentsuntil)
+      10. [even](#token.even)
+      11. [odd](#token.odd)
+      12. [eq](#token.eq)
+      13. [children](#token.children)
+      14. [contains](#token.contains)
+      15. [each](#token.each)
+      16. [descendants](#token.descendants)
+      17. [has](#token.has)
+      18. [index](#token.index)
+      19. [lastIndex](#token.lastindex)
+      20. [next](#token.next)
+      21. [prev](#token.prev)
+      22. [nextAll](#token.nextall)
+      23. [prevAll](#token.prevall)
+      24. [nextUntil](#token.nextuntil)
+      25. [prevUntil](#token.prevuntil)
+      26. [siblings](#token.siblings)
+      27. [detach](#token.detach)
+      28. [remove](#token.remove)
+      29. [insert](#token.insert)
+      30. [append](#token.append)
+      31. [prepend](#token.prepend)
+      32. [merge](#token.merge)
+      33. [delete](#token.delete)
+      34. [content](#token.content)
+      35. [replaceWith](#token.replacewith)
+      36. [sections](#token.sections)
+      37. [section](#token.section)
+      38. [newSection](#token.newsection)
+      39. [comment](#token.comment)
+      40. [commentChildren](#token.commentchildren)
+      41. [nowiki](#token.nowiki)
+      42. [nowikiChildren](#token.nowikichildren)
+   3. [静态属性](#token.static.properties)
+      1. [config](#token.config)
+   4. [实例属性](#token.instance.properties)
+      1. [$children](#token.$children)
+      2. [type](#token.type)
+2. [CommentToken](#commenttoken)
+   1. [原型方法](#commenttoken.prototype.methods)
+      1. [empty](#commenttoken.empty)
+      2. [close](#commenttoken.close)
+   2. [实例属性](#commenttoken.instance.properties)
+      1. [closed](#commenttoken.closed)
+3. [ExtToken](#exttoken)
+   1. [原型方法](#exttoken.prototype.methods)
+      1. [hide](#exttoken.hide)
+      2. [show](#exttoken.show)
+      3. [getAttr](#exttoken.getattr)
+      4. [removeAttr](#exttoken.removeattr)
+      5. [setAttr](#exttoken.setattr)
+   2. [实例属性](#exttoken.instance.properties)
+      1. [selfClosing](#exttoken.selfclosing)
+      2. [name](#exttoken.name)
+4. [AttributeToken](#attributetoken)
+   1. [原型方法](#attributetoken.prototype.methods)
+      1. [getAttr](#attributetoken.getattr)
+      2. [removeAttr](#attributetoken.removeattr)
+      3. [setAttr](#attributetoken.setattr)
+   2. [实例属性](#attributetoken.instance.properties)
+      1. [name](#attributetoken.name)
+5. [TokenCollection](#tokencollection)
+6. [UniqueCollection](#uniquecollection)
+7. [选择器](#选择器)
+
 # Token
 这是所有解析后的维基文本的基础类，同时也是一个可迭代对象，迭代器会依次返回[$children](#token.$children)属性的各个元素。
+[返回目录](#目录)
 
 ## 方法<a id="token.methods"></a>
 ### 静态方法<a id="token.static.methods"></a>
@@ -366,7 +447,7 @@ root.content(c);
 assert(root.length() === 1);
 ```
   
-**replaceWith**(token: string\|Token): this<a id="token.replaceWith"></a>
+**replaceWith**(token: string\|Token): this<a id="token.replacewith"></a>
 - 将自身在父节点中的位置替换为另一个节点。
 - 参数：
   - token: 纯文本或非纯文本节点。
@@ -490,6 +571,7 @@ assert(root.type === 'root');
 
 # CommentToken
 这是一个用于HTML注释的扩展类。请使用[Token.parse](#token.parse)方法获取CommentToken实例。
+[返回目录](#目录)
 
 ```js
 const commentText = '<!-- comment '; // 维基文本允许未封闭的注释
@@ -527,6 +609,7 @@ assert(comment.closed === true);
 
 # ExtToken
 这是一个用于扩展标签的扩展类。请使用[Token.parse](#token.parse)方法获取ExtToken实例。
+[返回目录](#目录)
 
 ```js
 const extText = '<ref group="a">ref</ref><references group = a/>';
@@ -605,6 +688,7 @@ assert(references.name === 'references');
 ```
 # AttributeToken
 这是扩展和HTML标签属性的扩展类。这个类的文字一般情况下应以空白字符开头。这个类的特殊之处在于使用属性选择器时，对应的属性是解析出的标签属性而非通常的实例属性，详见[属性选择器](#属性选择器)。请使用[Token.parse](#token.parse)方法分别获取扩展标签的AttributeToken实例和HTML标签的AttributeToken实例。
+[返回目录](#目录)
 
 ```js
 const [attr] = references;
@@ -634,7 +718,10 @@ assert(attr.name === 'references');
 ```
 
 # TokenCollection
+[返回目录](#目录)
 
 # UniqueCollection
+[返回目录](#目录)
 
 # 选择器
+[返回目录](#目录)
