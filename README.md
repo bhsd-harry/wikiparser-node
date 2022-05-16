@@ -348,7 +348,7 @@ assert(root.has('#nowiki') === true);
 **delete**(...args: (number\|string\|Token)[]): this<a id="token.delete"></a>
 - 删除指定子节点。
 - 参数：
-  - args: 可以是子节点编号或Python切片，也可以是指定的[Token](#token)对象。
+  - args: 可以是子节点编号或Python切片，也可以是指定的Token对象。
 
 ```js
 root.delete(-1, c);
@@ -486,6 +486,151 @@ assert.deepStrictEqual(page.$children, new Token.$.TokenCollection(d, e, f, g, h
 
 ```js
 assert(root.type === 'root');
+```
+
+# CommentToken
+这是一个用于HTML注释的扩展类。请使用[Token.parse](#token.parse)方法获取CommentToken实例。
+
+```js
+const commentText = '<!-- comment '; // 维基文本允许未封闭的注释
+const [comment] = Token.parse(commentText);
+assert(comment.text() === commentText);
+```
+
+## 方法<a id="commentoken.methods"></a>
+### 原型方法<a id="commenttoken.prototype.methods"></a>
+**empty**(): this<a id="commenttoken.empty"></a>
+- 清空注释内容。
+- 注意：不会清除注释节点。
+
+```js
+comment.empty();
+assert(comment.text() === '<!--');
+```
+
+**close**(): this<a id="commenttoken.close"></a>
+- 封闭注释。如果原本注释就是封闭的话没有效果。
+
+```js
+comment.close();
+assert(comment.text() === '<!---->');
+```
+
+## 属性<a id="commenttoken.properties"></a>
+### 实例属性<a id="commenttoken.instance.properties"></a>
+**closed**: boolean<a id="commenttoken.closed"></a>
+- 是否封闭。
+
+```js
+assert(comment.closed === true);
+```
+
+# ExtToken
+这是一个用于扩展标签的扩展类。请使用[Token.parse](#token.parse)方法获取ExtToken实例。
+
+```js
+const extText = '<ref group="a">ref</ref><references group = a/>';
+const [ref, references] = Token.parse(extText);
+assert(ref.text() === '<ref group="a">ref</ref>');
+assert(references.text() === '<references group = a/>');
+```
+
+## 方法<a id="exttoken.methods"></a>
+### 原型方法<a id="exttoken.prototype.methods"></a>
+**hide**(): this<a id="exttoken.hide"></a>
+- 更改为自封闭。
+- 注意：不会清除原本的内部Token，但转换为文字时不会显示。
+
+```js
+ref.hide();
+assert(ref.text() === '<ref group="a"/>');
+```
+
+**show**([inner: Token]): this<a id="exttoken.show"></a>
+- 取消自封闭，并可以同时更新内部Token。如果参数为空且原本有非空的内部Token，则现在转换为文字时会显示出来。
+- 参数：
+  - inner（可选）: 新的内部Token。注意需要符合该扩展标签的要求，比如```<nowiki>```标签内部必须是[NowikiToken](#nowikitoken)。
+
+```js
+ref.show();
+assert(ref.text() === '<ref group="a">ref</ref>');
+```
+
+**getAttr**(key: string): string<a id="exttoken.getattr"></a>
+- 获得指定的标签属性。
+- 参数：
+  - key: 属性名。
+
+```js
+assert(ref.getAttr('group') === 'a');
+```
+
+**removeAttr**([key: string]): this<a id="exttoken.removeattr"></a>
+- 清除指定的标签属性，参数为空时清除所有属性。
+- 参数：
+  - key（可选）: 属性名。
+
+```js
+ref.removeAttr('name');
+assert(ref.text() === '<ref group="a">ref</ref>');
+ref.removeAttr();
+assert(ref.text() === '<ref>ref</ref>');
+```
+
+**setAttr**(key: string, value: string): this<a id="exttoken.setattr"></a>
+- 设定标签属性。
+- 参数：
+  - key: 属性名。
+  - value: 属性值。
+
+```js
+ref.setAttr('name', 'name')
+assert(ref.text() === '<ref name="name">ref</ref>');
+```
+
+## 属性<a id="exttoken.properties"></a>
+### 实例属性<a id="exttoken.instance.properties"></a>
+**selfClosing**: boolean<a id="exttoken.selfclosing"></a>
+- 是否自封闭。
+
+```js
+assert(references.selfClosing === true);
+```
+
+**name**: boolean<a id="exttoken.name"></a>
+- 转换为全小写的标签名。这是一个只读属性。
+
+```js
+assert(references.name === 'references');
+```
+# AttributeToken
+这是扩展和HTML标签属性的扩展类。这个类的文字一般情况下应以空白字符开头。这个类的特殊之处在于使用属性选择器时，对应的属性是解析出的标签属性而非通常的实例属性，详见[属性选择器](#属性选择器)。请使用[Token.parse](#token.parse)方法分别获取扩展标签的AttributeToken实例和HTML标签的AttributeToken实例。
+
+```js
+const [attr] = references;
+assert(attr.text() === ' group = a');
+assert(attr.is('[group=a]') === true);
+assert(attr.is('[type=ext-attr]') === false);
+```
+
+## 方法<a id="attributetoken.methods"></a>
+### 原型方法<a id="attributetoken.prototype.methods"></a>
+**getAttr**(key: string): string<a id="attributetoken.getattr"></a>
+- 参见[ExtToken.getAttr](#exttoken.getattr)
+
+**removeAttr**([key: string]): this<a id="attributetoken.removeattr"></a>
+- 参见[ExtToken.removeAttr](#exttoken.removeattr)
+
+**setAttr**(key: string, value: string): this<a id="attributetoken.setattr"></a>
+- 参见[ExtToken.setAttr](#exttoken.setattr)
+
+## 属性<a id="exttoken.properties"></a>
+### 实例属性<a id="exttoken.instance.properties"></a>
+**name**: boolean<a id="attributetoken.name"></a>
+- 转换为全小写的标签名。
+
+```js
+assert(attr.name === 'references');
 ```
 
 # TokenCollection

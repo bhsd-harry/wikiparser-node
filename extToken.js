@@ -11,7 +11,7 @@ class ExtToken extends fixToken(Token) {
 	type = 'ext';
 	name;
 	selfClosing;
-	/** @type {string[]} */ tags;
+	/** @type {string[]} */ #tags;
 
 	/**
 	 * @param {string} name
@@ -28,7 +28,7 @@ class ExtToken extends fixToken(Token) {
 		super(null, null, true, null, accum, ['AttributeToken', 'AtomToken']);
 		this.name = name.toLowerCase();
 		this.selfClosing = inner === true;
-		this.tags = this.selfClosing ? [name] : [name, inner.slice(-1 - name.length, -1)];
+		this.#tags = this.selfClosing ? [name] : [name, inner.slice(-1 - name.length, -1)];
 		new AttributeToken(!attr || /^\s/.test(attr) ? attr : ` ${attr}`, this);
 		const /** @type {string} */ extInner = this.selfClosing ? '' : inner.slice(0, -3 - name.length);
 		let innerToken;
@@ -52,22 +52,22 @@ class ExtToken extends fixToken(Token) {
 			 */
 			default: {
 				const AtomToken = require('./atomToken');
-				innerToken = new AtomToken(extInner, this);
+				innerToken = new AtomToken(extInner, 'ext-inner', this);
 			}
 		}
 		// 可能多余，但无妨
 		innerToken.type = 'ext-inner';
 		innerToken.name = this.name;
-		this.freeze(['name', 'tags']).seal();
+		this.freeze('name').seal();
 	}
 
 	// ------------------------------ extended superclass ------------------------------ //
 
 	toString() {
-		const {selfClosing, tags, $children: [attr, inner]} = this;
-		return selfClosing
-			? `<${tags[0]}${attr}/>`
-			: `<${tags[0]}${attr}>${inner}</${tags[1] ?? tags[0]}>`;
+		const [attr, inner] = this;
+		return this.selfClosing
+			? `<${this.#tags[0]}${attr}/>`
+			: `<${this.#tags[0]}${attr}>${inner}</${this.#tags[1] ?? this.#tags[0]}>`;
 	}
 
 	hide() {
