@@ -37,7 +37,7 @@ const EventEmitter = require('events'),
 
 class Token {
 	type = 'root';
-	$children;
+	/** @type {TokenCollection} */ $children;
 	/** 解析阶段，参见顶部注释 */ #stage = 0;
 	#events = new EventEmitter();
 	#config;
@@ -221,8 +221,7 @@ class Token {
 	resetParent(token) {
 		if (!(token instanceof Token)) {
 			typeError('Token');
-		}
-		if (externalUse()) {
+		} else if (externalUse()) {
 			Token.warn(false, 'Token.resetParent方法一般不应直接调用，仅用于代码调试！');
 		}
 		const parent = this.#parent;
@@ -777,7 +776,7 @@ class Token {
 		args = (Array.isArray(args) ? args : [args]).map(numberToString);
 		const $legalArgs = Token.$(args.filter(arg => this.verifyChild(arg)));
 		if ($legalArgs.length < args.length) {
-			Token.error('Token.prepend: 部分节点未插入！');
+			Token.error('Token.insert: 部分节点未插入！');
 		}
 		this.$children.splice(i, 0, ...$legalArgs);
 		$legalArgs.filterTokens().forEach(token => {
@@ -795,6 +794,16 @@ class Token {
 	/** @param {...string|number|Token} args */
 	prepend(...args) {
 		return this.insert(args, 0);
+	}
+
+	/** @param {...Token} args */
+	merge(...args) {
+		if (!this.isPlain()) {
+			throw new Error('Token.merge方法只可用于根节点！');
+		} else if (args.some(token => !(token instanceof Token) || !token.isPlain())) {
+			typeError('Token');
+		}
+		return this.append(...args.flatMap(token => token.$children));
 	}
 
 	/** @param {...number|string|Token} args */
@@ -963,16 +972,57 @@ class Token {
 		return this.sections(force)[n];
 	}
 
+	/**
+	 * @param {string|Token|TokenCollection} title
+	 * @param {string|Token|TokenCollection} text
+	 */
+	newSection(title, text, level = 2) {
+		if (typeof level !== 'number') {
+			typeError('Number');
+		} else if (this.type !== 'root') {
+			throw new Error('Token.newSection方法只可用于根节点！');
+		}
+		title = String(title);
+		text = String(text);
+		level = Math.min(Math.max(level, 1), 6);
+		const equal = '='.repeat(level);
+		const root = new Token(`${this.toString().endsWith('\n') ? '' : '\n'}${equal}${title}${equal}\n${text}`)
+			.parse();
+		return this.merge(root);
+	}
+
 	comment() {
 		const CommentToken = require('./commentToken');
 		const comment = new CommentToken(this, true); // CommentToken只包含字符串，所以this不是comment的child
 		return this.replaceWith(comment);
 	}
 
+	/** @param {number} start */
+	commentChildren(start, count = 1) {
+		if (typeof start !== 'number' || typeof count !== 'number') {
+			typeError('Number');
+		}
+		const CommentToken = require('./commentToken');
+		const /** @type {TokenCollection} */ $replaced = this.$children.slice(start, start + count),
+			comment = new CommentToken($replaced.toString(), true);
+		return this.delete(`${start}:${start + count}`).insert(comment, start);
+	}
+
 	nowiki() {
 		const ExtToken = require('./extToken');
 		const nowiki = new ExtToken('nowiki', '', `${this.toString()}</nowiki>`, this.#config);
 		return this.replaceWith(nowiki);
+	}
+
+	/** @param {number} start */
+	nowikiChildren(start, count = 1) {
+		if (typeof start !== 'number' || typeof count !== 'number') {
+			typeError('Number');
+		}
+		const ExtToken = require('./extToken');
+		const /** @type {TokenCollection} */ $replaced = this.$children.slice(start, start + count),
+			nowiki = new ExtToken('nowiki', '', `${$replaced.toString()}</nowiki>`, this.#config);
+		return this.delete(`${start}:${start + count}`).insert(nowiki, start);
 	}
 
 	// ------------------------------ parsing and building ------------------------------ //
