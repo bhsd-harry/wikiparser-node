@@ -32,7 +32,7 @@ class TokenCollection extends Array {
 		const index = this.indexOf(arg);
 		if (index >= 0 && (typeof arg !== 'string' || this.lastIndexOf(arg) === index)) {
 			this.splice(index, 1);
-		} else {
+		} else if (index >= 0 && typeof arg === 'string') {
 			throw new RangeError('无法删除有重复的字符串！');
 		}
 		return this;

@@ -2158,7 +2158,7 @@ class TranscludeToken extends Token {
 			Token.debug('caller', {callee, caller: thisCaller});
 			throw new Error('禁止外部调用TranscludeToken.updateKey方法！');
 		}
-		const oldArgs = this.#args.get(oldKey).delete(token);
+		const oldArgs = this.getArgs(oldKey).delete(token);
 		if (oldArgs.length === 0) {
 			this.#keys.delete(oldKey);
 		}
@@ -2265,7 +2265,7 @@ class ParameterToken extends FixedToken {
 		}
 		key = String(key);
 		const name = removeComment(key),
-			{oldName} = this,
+			{name: oldName} = this,
 			parent = this.parent(),
 			keys = parent?.getKeys(); // 确保执行一次getKeys()
 		if (oldName === name) {
