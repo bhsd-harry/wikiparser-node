@@ -119,7 +119,7 @@ assert(Token.normalizeTitle(':mainpage', 10) === 'Mainpage');
 
 ### 原型方法<a id="token.prototype.methods"></a>
 <details>
-   <summary>展开</summary>
+   <summary>基础信息</summary>
    
 **isPlain**(): boolean<a id="token.isplain"></a>
 - 是否是普通节点（即基础的Token类）。根节点就是一个普通节点。
@@ -143,7 +143,11 @@ assert(root.length() === 4); // 注释和<nowiki>之间还有一个'\n'
 ```js
 assert(root.text() === wikitext);
 ```
-
+   </details>
+   
+<details>
+   <summary>筛选和遍历</summary>
+   
 **is**(selector: string): boolean<a id="token.is"></a>
 - 判断节点是否满足[选择器](#选择器)。
 - 参数：
@@ -377,7 +381,11 @@ assert.deepStrictEqual(c.prevUntil('ext'), new Token.$.TokenCollection('\n'));
 assert.deepStrictEqual(b.siblings(), new Token.$.TokenCollection(['a\n', '\n', c]));
 assert.deepStrictEqual(b.siblings(''), new Token.$.TokenCollection(c));
 ```
-  
+   </details>
+   
+<details>
+   <summary>基本操作</summary>
+   
 **detach**(): this<a id="token.detach"></a>
 - 从父节点上脱离。
 - 说明：自身仍留有原父节点的索引。
@@ -468,7 +476,11 @@ c.replaceWith(b);
 assert(root.contains(b) === true);
 assert(root.contains(c) === false);
 ```
+  </details>
   
+<details>
+   <summary>章节相关</summary>
+   
 **sections**([force: boolean]): TokenCollection[]<a id="token.sections"></a>
 - 获取各章节。
 - 参数：
@@ -514,7 +526,11 @@ assert.deepStrictEqual(page.section(0), new Token.$.TokenCollection(d));
 page.newSection('Header', 'Content');
 assert(page.children('heading#2').at(-1).text() === '==Header==');
 ```
-  
+</details>
+
+<details>
+   <summary>快速修改</summary>
+   
 **comment**(): this<a id="token.comment"></a>
 - 将自身替换为相同内容的注释。
 - 说明：虽然内容相同，但不是同一个节点，注释内部的是纯文本节点。
