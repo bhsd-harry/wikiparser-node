@@ -109,7 +109,7 @@ assert(String(root) === wikitext); // Token可以无损还原为维基文本
 - 规范化页面标题。
 - 参数:
   - title: 未规范化的标题。
-  - defaultNs: 默认名字空间。Default: ```0```（即主空间）
+  - defaultNs: 默认名字空间。Default: `0`（即主空间）
 
 ```js
 assert(Token.normalizeTitle('doc', 10) === 'Template:Doc');
@@ -131,7 +131,7 @@ assert(inner.isPlain() === true);
 ```
 
 **length**(): number<a id="token.length"></a>
-- 子节点数。即```.$children.length```。
+- 子节点数。即`.$children.length`。
 
 ```js
 assert(root.length() === 4); // 注释和<nowiki>之间还有一个'\n'
@@ -159,7 +159,7 @@ assert(c.is('[closed=true]:nth-child(4)')); // 注意选择器计数是从1开�
 - 判断节点是否不满足[选择器](#选择器)。
 - 参数：
   - selector: 选择器。
-- 说明：纯文本节点总是返回```false```。
+- 说明：纯文本节点总是返回`false`。
 
 ```js
 assert(root.not('[type!=root]'));
@@ -221,8 +221,8 @@ assert.deepStrictEqual(root.odd(), new Token.$.TokenCollection([b, c]));
 - 指定编号的子节点
 - 参数：
   - n: 编号，可以是数字（负数表示从末尾计数），也可以是类似Python中切片语法的字符串。
-  - 示例：```.eq('::2')```等效```.eq('even')```或是```.even()```。
-  - 多个参数时取并集，如```.eq(0, 1)```会同时返回编号为0和1的两个子节点，```.eq('odd', '::2')```会返回所有子节点。
+  - 示例：`.eq('::2')`等效`.eq('even')`或是`.even()`。
+  - 多个参数时取并集，如`.eq(0, 1)`会同时返回编号为0和1的两个子节点，`.eq('odd', '::2')`会返回所有子节点。
 - 说明：包含纯文本节点。
 
 ```js
@@ -243,7 +243,7 @@ assert.deepStrictEqual(root.children(), new Token.$.UniqueCollection([b, c]));
 - 判断是否包含另一节点。
 - 参数：
   - token: 字符串或非纯文本节点。
-  - includingSelf: 是否将同一节点视为互相包含。Default: ```false```
+  - includingSelf: 是否将同一节点视为互相包含。Default: `false`
 
 ```js
 assert(root.contains(b));
@@ -255,7 +255,7 @@ assert(root.contains('a\n<ref')); // 参数为字符串时会先执行.text()方
 - 参数；
   - selector（可选）: 选择器。
   - callback: 回调函数。可以是异步函数，此时方法返回的是个Promise。
-  - maxDepth（可选）: 遍历深度，自身对应的深度为0。Default: ```Infinity```
+  - maxDepth（可选）: 遍历深度，自身对应的深度为0。Default: `Infinity`
 - 说明：不会遍历纯文本节点。遍历顺序为广度优先。
 
 ```js
@@ -269,8 +269,8 @@ assert(output === 'root\next\ncomment\next-attr\next-inner\n');
 **descendants**(selector: string, [maxDepth: number]): [UniqueCollection](#uniquecollection)<a id="token.descendants"></a>
 - 子孙节点，可以额外进行[选择器](#选择器)筛选或是限制深度。
 - 参数；
-  - selector: 选择器。Default: ```''```
-  - maxDepth（可选）: 深度，自身（不包含）对应的深度为0。Default: ```Infinity```
+  - selector: 选择器。Default: `''`
+  - maxDepth（可选）: 深度，自身（不包含）对应的深度为0。Default: `Infinity`
 - 说明：不包含纯文本节点。
 
 ```js
@@ -289,7 +289,7 @@ assert(root.has('ext-inner') === true);
 **index**(ofType: boolean): number<a id="token.index"></a>
 - 在兄弟节点间的编号。
 - 参数：
-  - ofType: 是否只计数相同type的节点。Default: ```false```
+  - ofType: 是否只计数相同type的节点。Default: `false`
 
 ```js
 assert(b.index() === 1);
@@ -299,7 +299,7 @@ assert(b.index(true) === 0);
 **lastIndex**(ofType: boolean): number<a id="token.lastindex"></a>
 - 在兄弟节点间从末尾计数的编号。
 - 参数：
-  - ofType: 是否只计数相同type的节点。Default: ```false```
+  - ofType: 是否只计数相同type的节点。Default: `false`
 
 ```js
 assert(b.lastIndex() === 2);
@@ -402,7 +402,7 @@ assert(b.length() === 2);
 - 在指定位置处插入一些纯文本或非纯文本节点。
 - 参数：
   - args: 节点数组。
-  - i: 插入起始位置。Default: ```this.$children.length```
+  - i: 插入起始位置。Default: `this.$children.length`
 
 ```js
 root.insert(c, 2);
@@ -508,7 +508,7 @@ assert.deepStrictEqual(page.section(0), new Token.$.TokenCollection(d));
 - 参数：
   - title: 章节标题。
   - text: 章节内容。
-  - level: 标题等级。Default: ```2```
+  - level: 标题等级。Default: `2`
 
 ```js
 page.newSection('Header', 'Content');
@@ -529,7 +529,7 @@ assert(root.text() === '<!--<ref>b</ref>-->');
 - 将连续子节点替换为相同内容的注释。
 - 参数：
   - start: 起始编号。
-  - count: 连续子节点个数。Default: ```1```
+  - count: 连续子节点个数。Default: `1`
 
 ```js
 page.commentChildren(0);
@@ -537,8 +537,8 @@ assert(page.$children[0].text() === '<!--d\n-->');
 ```
   
 **nowiki**(): this<a id="token.nowiki"></a>
-- 将自身替换为被```<nowiki>```标签包裹的相同内容。
-- 说明：虽然内容相同，但不是同一个节点，```<nowiki>```标签内部的是纯文本节点。
+- 将自身替换为被`<nowiki>`标签包裹的相同内容。
+- 说明：虽然内容相同，但不是同一个节点，`<nowiki>`标签内部的是纯文本节点。
 
 ```js
 root.content(c);
@@ -548,10 +548,10 @@ assert(root.text() === '<nowiki><!-- c --></nowiki>');
 ```
 
 **nowikiChildren**(start: number, count: number): this<a id="token.nowikichildren"></a>
-- 将连续子节点替换为被```<nowiki>```标签包裹的相同内容。
+- 将连续子节点替换为被`<nowiki>`标签包裹的相同内容。
 - 参数：
   - start: 起始编号。
-  - count: 连续子节点个数。Default: ```1```
+  - count: 连续子节点个数。Default: `1`
 
 ```js
 page.nowikiChildren(1, 2);
@@ -566,7 +566,7 @@ assert(page.$children[1].text() === '<nowiki>==e==\nf\n</nowiki>');
    
 **config**: string<a id="token.config"></a>
 - 维基文本的默认设置JSON路径。
-- Default: ```'./config'```
+- Default: `'./config'`
    </details>
    
 ### 实例属性<a id="token.instance.properties"></a>
@@ -582,7 +582,7 @@ assert.deepStrictEqual(page.$children, new Token.$.TokenCollection(d, e, f, g, h
 
 **type**: string<a id="token.type"></a>
 - 节点类型
-- Default: ```'root'```
+- Default: `'root'`
 
 ```js
 assert(root.type === 'root');
@@ -663,7 +663,7 @@ assert(ref.text() === '<ref group="a"/>');
 **show**([inner: Token]): this<a id="exttoken.show"></a>
 - 取消自封闭，并可以同时更新内部Token。如果参数为空且原本有非空的内部Token，则现在转换为文字时会显示出来。
 - 参数：
-  - inner（可选）: 新的内部Token。注意需要符合该扩展标签的要求，比如```<nowiki>```标签内部必须是[NowikiToken](#nowikitoken)。
+  - inner（可选）: 新的内部Token。注意需要符合该扩展标签的要求，比如`<nowiki>`标签内部必须是[NowikiToken](#nowikitoken)。
 
 ```js
 ref.show();
