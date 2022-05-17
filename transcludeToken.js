@@ -2,7 +2,7 @@
 const Token = require('./token'),
 	AtomToken = require('./atomToken'),
 	ParameterToken = require('./parameterToken'),
-	{removeComment, externalUse, numberToString, typeError} = require('./util');
+	{removeComment, numberToString, typeError} = require('./util');
 
 /**
  * @content AtomToken
@@ -95,6 +95,20 @@ class TranscludeToken extends Token {
 				}
 				that.#handleDeletedArg(child);
 			},
+		).on(
+			'childRenamed',
+			/**
+			 * @param {ParameterToken} child
+			 * @param {string} oldKey - 更名前的参数名
+			 */
+			function transclude(child, oldKey) {
+				const /** @type {UniqueCollection} */ oldArgs = that.getArgs(oldKey).delete(child);
+				if (oldArgs.length === 0) {
+					that.#keys?.delete(oldKey);
+				}
+				that.#keys?.add(child.name);
+				that.#args.get(child.name)?.push(child);
+			},
 		);
 	}
 
@@ -160,7 +174,10 @@ class TranscludeToken extends Token {
 	// ------------------------------ transclusion specifics ------------------------------ //
 
 	#handleAnonArgChange() {
-		this.resetAnonKeys().#keys = undefined;
+		this.getAnonArgs().forEach((token, i) => {
+			token.name = String(i);
+		});
+		this.#keys = undefined;
 		this.#args.forEach((_, key) => {
 			const number = Number(key);
 			if (Number.isInteger(number) && number > 0) {
@@ -215,14 +232,6 @@ class TranscludeToken extends Token {
 	/** @returns {UniqueCollection} */
 	getAnonArgs() {
 		return this.getAllArgs().filter(({anon}) => anon);
-	}
-
-	resetAnonKeys() {
-		const anonArgs = this.getAnonArgs();
-		anonArgs.forEach(token => {
-			token.name = String(anonArgs.indexOf(token));
-		});
-		return this;
 	}
 
 	/** @param {string|number} key */
@@ -337,23 +346,6 @@ class TranscludeToken extends Token {
 	/** @param {string|number} key */
 	removeArg(key) {
 		return this.delete(...this.getArgs(key));
-	}
-
-	/**
-	 * @param {ParameterToken} token - 更名的参数
-	 * @param {string} oldKey - 更名前的参数名
-	 */
-	updateKey(token, oldKey) {
-		if (externalUse()) {
-			throw new Error('禁止外部调用TranscludeToken.updateKey方法！');
-		}
-		const /** @type {UniqueCollection} */ oldArgs = this.getArgs(oldKey).delete(token);
-		if (oldArgs.length === 0) {
-			this.#keys?.delete(oldKey);
-		}
-		this.#keys?.add(token.name);
-		this.#args.get(token.name)?.push(token);
-		return this;
 	}
 }
 

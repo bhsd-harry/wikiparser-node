@@ -24,6 +24,7 @@
  * !: {{!}}专用
  * t: ArgToken或TranscludeToken
  * h: HeadingToken
+ * x: HtmlToken
  */
 
 const EventEmitter = require('events'),
@@ -1163,8 +1164,37 @@ class Token {
 				this.$children[0] = text;
 				break;
 			}
-			case 2:
+			case 2: {
+				const regex = /^(\/?)([a-z][^\s/>]*)([^>]*?)(\/?>)([^<]*)$/i,
+					/** @type {string[]} */ elements = this.#config.html.flat(),
+					/** @type {string[]} */ bits = this.$children[0].split('<');
+				let text = bits.shift();
+				bits.forEach(x => {
+					const mt = x.match(regex),
+						t = mt?.[2],
+						name = t?.toLocaleLowerCase();
+					if (!mt || !elements.includes(name)) {
+						text += `<${x}`;
+						return;
+					}
+					const [, slash,, params, brace, rest] = mt,
+						AttributeToken = require('./attributeToken'),
+						attr = new AttributeToken(params, 'html-attr', this.#accum),
+						itemprop = attr.getAttr('itemprop');
+					if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
+						|| name === 'link' && (itemprop === undefined && attr.getAttr('href') === undefined)
+					) {
+						text += `<${x}`;
+						this.#accum.pop();
+						return;
+					}
+					text += `\x00${this.#accum.length}x\x7f${rest}`;
+					const HtmlToken = require('./htmlToken');
+					new HtmlToken(t, attr, slash === '/', brace === '/>', this.#config, this.#accum);
+				});
+				this.$children[0] = text;
 				break;
+			}
 			case 3:
 				break;
 			case 4:

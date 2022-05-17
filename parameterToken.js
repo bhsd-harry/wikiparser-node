@@ -111,7 +111,7 @@ class ParameterToken extends fixToken(Token) {
 		const /** @type [AtomToken] */ [paramKey] = this;
 		paramKey.content(key);
 		this.name = name;
-		parent?.updateKey(this, oldName);
+		parent?.emit('childRenamed', this, oldName);
 		return this;
 	}
 }
