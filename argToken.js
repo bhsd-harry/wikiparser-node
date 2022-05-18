@@ -35,7 +35,7 @@ class ArgToken extends Token {
 			}
 		});
 		const that = this;
-		this.keepChildrenOrder().unremovableChild(0).on(
+		this.freeze('type').keepChildrenOrder().unremovableChild(0).on(
 			'childDetached',
 			/** @param {number} i */
 			function arg(_, i) {
@@ -56,14 +56,15 @@ class ArgToken extends Token {
 	 * @param {number} i
 	 */
 	insert(args, i = this.$children.length) {
-		args = Array.isArray(args) ? args : [args];
-		if (i !== 1 || args.length > 1) {
+		if (i !== 1 || Array.isArray(args) && args.length > 1) {
 			throw new RangeError('ArgToken不可插入arg-name或arg-redundant子节点！');
-		} else if (!(args[0] instanceof Token)) {
+		}
+		const arg = Array.isArray(args) ? args[0] : args;
+		if (!(arg instanceof Token)) {
 			throw new TypeError('arg-default子节点应为Token！');
 		}
-		args[0].type = 'arg-default';
-		return super.insert(args, i);
+		arg.type = 'arg-default';
+		return super.insert(arg, i);
 	}
 
 	/** @param {...number|string|Token} args */

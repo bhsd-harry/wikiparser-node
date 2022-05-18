@@ -1,13 +1,13 @@
 'use strict';
 const Token = require('./token'),
-	{MAX_STAGE, typeError, numberToString} = require('./util');
+	{typeError, numberToString} = require('./util');
 
 /** @content string */
 class AtomToken extends Token {
 	/**
 	 * @param {string|number|Token|(string|Token)[]} wikitext
 	 * @param {string} type
-	 * @param {?Token} parent
+	 * @param {Token} parent
 	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, type, parent = null, accum = [], acceptable = ['String']) {
@@ -17,7 +17,6 @@ class AtomToken extends Token {
 		}
 		super(wikitext, null, true, parent, accum, acceptable);
 		this.type = type;
-		this.set('stage', MAX_STAGE);
 	}
 
 	empty() {

@@ -30,13 +30,18 @@ class HtmlToken extends fixToken(AtomToken) {
 		this.selfClosing = selfClosing;
 		this.#tag = name;
 		this.set('config', config);
-		this.unremovableChild(0);
+		this.seal();
 	}
 
 	toString() {
 		return `<${this.closing ? '/' : ''}${this.#tag}${
 			this.$children[0].toString()
 		}${this.selfClosing ? '/' : ''}>${this.#toBeClosed ? `</${this.name}>` : ''}`;
+	}
+
+	rename(tag) {
+		this.name = tag.toLowerCase();
+		this.#tag = tag;
 	}
 
 	/** 只按照解析器的实际处理方式修复，可能不是代码本意 */

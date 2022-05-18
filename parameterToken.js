@@ -17,7 +17,7 @@ class ParameterToken extends fixToken(Token) {
 	 * @param {string|number|Token|TokenCollection} key
 	 * @param {string|number|Token|(string|Token)[]} value
 	 * @param {Object<string, any>} config
-	 * @param {?Token} parent
+	 * @param {Token} parent
 	 * @param {Token[]} accum
 	 */
 	constructor(key, value, config = require(Token.config), parent = null, accum = [], autofix = true) {

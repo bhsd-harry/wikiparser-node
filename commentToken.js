@@ -14,6 +14,7 @@ class CommentToken extends NowikiToken {
 		super(wikitext, null, accum);
 		this.type = 'comment';
 		this.closed = closed;
+		this.freeze('type');
 	}
 
 	toString() {

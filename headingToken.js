@@ -1,6 +1,7 @@
 'use strict';
 const Token = require('./token'),
-	{MAX_STAGE, removeComment, typeError, fixToken} = require('./util');
+	AtomToken = require('./atomToken'),
+	{removeComment, typeError, fixToken} = require('./util');
 
 /** @content Token, Token */
 class HeadingToken extends fixToken(Token) {
@@ -17,14 +18,13 @@ class HeadingToken extends fixToken(Token) {
 		if (removeComment(input[1].toString())) {
 			throw new RangeError('标题行行末只能包含注释和空白字符！');
 		}
-		super(null, config, true, null, accum, ['Token']);
+		super(null, config, true, null, accum, ['Token', 'AtomToken']);
 		this.name = String(level);
-		input.forEach((text, i) => {
-			const token = new Token(text, config, true, this, accum, i === 0 ? null : ['String', 'CommentToken']);
-			token.type = i === 0 ? 'heading-title' : 'heading-trail';
-			token.name = this.name;
-			token.set('stage', i === 0 ? 2 : MAX_STAGE);
-		});
+		const token = new Token(input[0], config, true, this, accum);
+		token.type = 'heading-title';
+		token.name = this.name;
+		token.set('stage', 2);
+		new AtomToken(input[1], 'heading-trail', this, accum, ['String', 'CommentToken']);
 		this.seal();
 	}
 

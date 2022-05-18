@@ -11,7 +11,7 @@ const Token = require('./token'),
 class TranscludeToken extends Token {
 	type = 'template';
 	name;
-	/** @type {Set<string>} */ #keys;
+	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Map<string, UniqueCollection>} */ #args = new Map();
 
 	/**
@@ -104,9 +104,9 @@ class TranscludeToken extends Token {
 			function transclude(child, oldKey) {
 				const /** @type {UniqueCollection} */ oldArgs = that.getArgs(oldKey).delete(child);
 				if (oldArgs.length === 0) {
-					that.#keys?.delete(oldKey);
+					that.#keys.delete(oldKey);
 				}
-				that.#keys?.add(child.name);
+				that.#keys.add(child.name);
 				that.#args.get(child.name)?.push(child);
 			},
 		);
@@ -138,7 +138,7 @@ class TranscludeToken extends Token {
 			if (this.type === 'template' && i < this.$children.length - args.length) {
 				Token.warn(true, '新的匿名参数被插入中间！');
 			}
-			this.#handleAnonArgChange();
+			this.#handleAnonArgChange(true);
 		}
 		args.filter(({anon}) => !anon).forEach(token => {
 			this.#handleAddedArg(token);
@@ -173,11 +173,16 @@ class TranscludeToken extends Token {
 
 	// ------------------------------ transclusion specifics ------------------------------ //
 
-	#handleAnonArgChange() {
+	#handleAnonArgChange(addingOnly = false) {
 		this.getAnonArgs().forEach((token, i) => {
-			token.name = String(i);
+			token.name = String(i + 1);
+			if (addingOnly) {
+				this.#keys.add(token.name);
+			}
 		});
-		this.#keys = undefined;
+		if (!addingOnly) {
+			this.#keys.clear();
+		}
 		this.#args.forEach((_, key) => {
 			const number = Number(key);
 			if (Number.isInteger(number) && number > 0) {
@@ -190,10 +195,10 @@ class TranscludeToken extends Token {
 	/** @param {ParameterToken} arg */
 	#handleAddedArg(arg) {
 		if (arg.anon) {
-			return this.#handleAnonArgChange();
+			return this.#handleAnonArgChange(true);
 		}
 		this.#args.get(arg.name)?.push(arg);
-		this.#keys?.add(arg.name);
+		this.#keys.add(arg.name);
 		return this;
 	}
 
@@ -204,7 +209,7 @@ class TranscludeToken extends Token {
 		}
 		this.#args.get(arg.name)?.delete(arg);
 		if (this.getArgs(arg.name).length === 0) {
-			this.#keys?.delete(arg.name);
+			this.#keys.delete(arg.name);
 		}
 		return this;
 	}
@@ -259,7 +264,14 @@ class TranscludeToken extends Token {
 	}
 
 	getKeys() {
-		this.#keys ||= new Set(this.getAllArgs().map(({name}) => name));
+		if (this.#keys.size === 0) {
+			const args = this.getAllArgs();
+			if (args.length) {
+				args.forEach(({name}) => {
+					this.#keys.add(name);
+				});
+			}
+		}
 		return this.#keys;
 	}
 

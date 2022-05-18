@@ -7,7 +7,7 @@ const fixToken = constructor => class extends constructor {
 		if (externalUse()) {
 			throw new Error('禁止外部调用FixedToken.seal方法！');
 		}
-		return this.keepChildrenOrder().unremovableChild(':');
+		return this.keepChildrenOrder().unremovableChild(':').freeze('type');
 	}
 
 	insert() {

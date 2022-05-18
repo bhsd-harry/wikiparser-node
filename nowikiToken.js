@@ -7,7 +7,7 @@ const Token = require('./token'),
 class NowikiToken extends fixToken(AtomToken) {
 	/**
 	 * @param {string|number|Token|TokenCollection} wikitext
-	 * @param {?Token} parent
+	 * @param {Token} parent
 	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, parent = null, accum = []) {

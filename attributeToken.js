@@ -4,7 +4,7 @@ const Token = require('./token'),
 	{typeError, numberToString, externalUse, toCase} = require('./util');
 
 class AttributeToken extends AtomToken {
-	/** @type {Object<string, string|true>} */ #attr;
+	/** @type {Map<string, string|true>} */ #attr = new Map();
 
 	/**
 	 * @param {string|number|Token|(string|Token)[]} attr
@@ -34,7 +34,7 @@ class AttributeToken extends AtomToken {
 			this.name = parent.name;
 		}
 		const that = this;
-		this.#parseAttr().on('parentReset', function attribute(oldParent, newParent) {
+		this.freeze('type').#parseAttr().on('parentReset', function attribute(oldParent, newParent) {
 			if (that.type.slice(0, -5) !== newParent.type) {
 				that.set('parent', oldParent);
 				throw new Error('AttributeToken: 不能更改父节点的type！');
@@ -54,22 +54,26 @@ class AttributeToken extends AtomToken {
 		if (this.type === 'ext-attr') {
 			return this;
 		}
-		for (let key in this.#attr) {
-			let text = this.#attr[key];
+		this.#attr.forEach((text, key) => {
+			let built = false;
 			if (key.includes('\x00')) {
-				delete this.#attr[key];
+				this.#attr.delete(key);
 				key = this.buildOnce(key).toString();
+				built = true;
 			}
 			if (typeof text === 'string' && text.includes('\x00')) {
 				text = this.buildOnce(text).toString();
+				built = true;
 			}
-			this.#attr[key] = text;
-		}
+			if (built) {
+				this.#attr.set(key, text);
+			}
+		});
 		return this;
 	}
 
 	#parseAttr() {
-		this.#attr = {};
+		this.#attr.clear();
 		for (const [, key,, quoted, unquoted] of this.toString()
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg)
 		) {
@@ -162,12 +166,12 @@ class AttributeToken extends AtomToken {
 		if (key !== undefined && typeof key !== 'string') {
 			typeError('String');
 		}
-		return key === undefined ? this.#attr : this.#attr[key.toLowerCase().trim()];
+		return key === undefined ? this.#attr : this.#attr.get(key.toLowerCase().trim());
 	}
 
 	#updateFromAttr() {
 		Token.warn(true, '这个方法会自动清除嵌入的模板和无效属性！');
-		const str = Object.entries(this.#attr).map(([k, v]) => {
+		const str = [...this.#attr].map(([k, v]) => {
 			if (v === true) {
 				return k;
 			}
@@ -178,7 +182,7 @@ class AttributeToken extends AtomToken {
 	}
 
 	empty() {
-		this.#attr = {};
+		this.#attr.clear();
 		return this.content('', true);
 	}
 
@@ -190,8 +194,7 @@ class AttributeToken extends AtomToken {
 			typeError('String');
 		}
 		key = key.toLowerCase().trim();
-		if (key in this.#attr) {
-			delete this.#attr[key];
+		if (this.#attr.delete(key)) {
 			this.#updateFromAttr();
 		}
 		return this;
@@ -222,7 +225,7 @@ class AttributeToken extends AtomToken {
 		if (!/^(?:[\w:]|\x00\d+t\x7f)(?:[\w:.-]|\x00\d+t\x7f)*$/.test(key)) {
 			throw new RangeError('无效的属性名！');
 		}
-		this.#attr[key] = value === true ? true : value.replace(/\s/g, ' ').trim();
+		this.#attr.set(key, value === true ? true : value.replace(/\s/g, ' ').trim());
 		if (!init) {
 			this.#updateFromAttr();
 		}
