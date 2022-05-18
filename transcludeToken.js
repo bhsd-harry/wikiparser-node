@@ -4,6 +4,9 @@ const Token = require('./token'),
 	ParameterToken = require('./parameterToken'),
 	{removeComment, numberToString, typeError} = require('./util');
 
+/** @param {string} name */
+const legalTemplateName = name => !/\x00\d+e\x7f|[#<>[\]{}]/.test(name);
+
 /**
  * @content AtomToken
  * @content ?ParameterToken
@@ -24,15 +27,14 @@ class TranscludeToken extends Token {
 		super(null, config, true, null, accum, ['AtomToken', 'ParameterToken']);
 		const /** @type {{parserFunction: string[][]}} */ {parserFunction: [sensitive, insensitive]} = config;
 		/** @param {string} name */
-		const legalMagicWord = name => sensitive.includes(name) || insensitive.includes(name.toLowerCase()),
-			legalTemplateName = name => !/\x00\d+e\x7f|[#<>[\]{}]/.test(name);
+		const legalMagicWord = name => sensitive.includes(name) || insensitive.includes(name.toLowerCase());
 		if (parts.length === 0 || title.includes(':')) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
 			if (legalMagicWord(name)) {
 				this.name = name.toLowerCase().replace(/^#/, '');
 				this.type = 'magic-word';
-				new AtomToken(magicWord, 'magic-word-name', this, accum);
+				new AtomToken(magicWord, 'magic-word-name', this, accum, ['String', 'CommentToken']);
 				if (arg.length) {
 					parts.unshift([arg.join(':')]);
 				}
@@ -54,7 +56,7 @@ class TranscludeToken extends Token {
 		let i = 1;
 		parts.forEach(part => {
 			if (part.length === 1) {
-				part.unshift(i);
+				part.unshift(this.type === 'magic-word' && this.name === 'invoke' ? i - 2 : i);
 				i++;
 			}
 			new ParameterToken(...part, config, this, accum, false);
@@ -175,7 +177,7 @@ class TranscludeToken extends Token {
 
 	#handleAnonArgChange(addingOnly = false) {
 		this.getAnonArgs().forEach((token, i) => {
-			token.name = String(i + 1);
+			token.name = String(this.type === 'magic-word' && this.name === 'invoke' ? i - 1 : i + 1);
 			if (addingOnly) {
 				this.#keys.add(token.name);
 			}
@@ -358,6 +360,42 @@ class TranscludeToken extends Token {
 	/** @param {string|number} key */
 	removeArg(key) {
 		return this.delete(...this.getArgs(key));
+	}
+
+	/** @param {string|number|Token|TokenCollection} title */
+	rename(title) {
+		if (this.type === 'magic-word') {
+			throw new Error('TranscludeToken.rename方法仅用于更换模板！');
+		} else if (!['string', 'number'].includes(typeof title)
+			&& !(title instanceof Token) && !(title instanceof Token.$.TokenCollection)
+		) {
+			typeError('String', 'Number', 'Token', 'TokenCollection');
+		}
+		const name = removeComment(title.toString());
+		if (!legalTemplateName(name)) {
+			throw new RangeError('非法的模板名！');
+		}
+		this.$children[0].content(title);
+		this.name = this.type === 'magic-word' ? name.toLowerCase().replace(/^#/, '') : this.normalizeTitle(name, 10);
+	}
+
+	/**
+	 * @param {string} module
+	 * @param {string} func
+	 */
+	invoke(module, func) {
+		if (this.type === 'magic-word') {
+			throw new Error('TranscludeToken.invoke方法仅用于将模板替换为模块！');
+		} else if (typeof module !== 'string' || typeof func !== 'string') {
+			typeError('String');
+		}
+		Object.defineProperty(this, 'type', {value: 'magic-word', writable: false, configurable: true});
+		this.$children[0].content('#invoke').set('accum', ['String', 'CommentToken']).type = 'magic-word-name';
+		this.name = 'invoke'; // 必须先改名
+		this.insert([
+			new ParameterToken(-1, module, null, null, [], false),
+			new ParameterToken(0, func, null, null, [], false),
+		], 1);
 	}
 }
 

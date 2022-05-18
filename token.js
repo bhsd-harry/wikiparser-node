@@ -43,6 +43,7 @@ class Token {
 	#events = new EventEmitter();
 	#config;
 	#parent;
+	/** 这个数组起两个作用：1. 数组中的Token会在build时替换\x00\x7f标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	#accum;
 	#acceptable;
 	/** @type {TokenCollection[]} */ #sections;
@@ -201,6 +202,12 @@ class Token {
 			case 'parent':
 				this.#parent = value;
 				break;
+			case 'config':
+				this.#config = value;
+				break;
+			case 'accum':
+				this.#accum = value;
+				break;
 			case 'acceptable':
 				this.#acceptable = value;
 				break;
@@ -245,14 +252,13 @@ class Token {
 		return this.emit('parentRemoved', parent);
 	}
 
-	/** @param {string|string[]} keys */
-	freeze(keys) {
+	/** @param {string[]} keys */
+	freeze(...keys) {
 		if (externalUse()) {
 			Token.warn(false, 'Token.freeze方法一般不应直接调用，仅用于代码调试！');
 		}
-		keys = typeof keys === 'string' ? [keys] : keys;
 		keys.forEach(key => {
-			Object.defineProperty(this, key, {writable: false, configurable: false});
+			Object.defineProperty(this, key, {writable: false, configurable: true});
 		});
 		return this;
 	}
@@ -782,7 +788,9 @@ class Token {
 		this.$children.splice(i, 0, ...$legalArgs);
 		$legalArgs.filterTokens().forEach(token => {
 			token.resetParent(this);
-			token.type = token.type === 'root' ? 'plain' : token.type;
+			if (token.type === 'root') {
+				token.type = 'plain';
+			}
 		});
 		return this;
 	}
@@ -1066,7 +1074,7 @@ class Token {
 			}
 			case 1: {
 				const source = '(?<=^(?:\x00\\d+c\x7f)*)={1,6}|\\[\\[|{{2,}|-{(?!{)',
-					stack = [],
+					/** @type {RegExpExecArray[]} */ stack = [],
 					closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'};
 				let /** @type {[string]} */ [text] = this,
 					regex = new RegExp(source, 'gm'),
@@ -1122,9 +1130,9 @@ class Token {
 								if (e.message.startsWith('非法的模板名称：')) {
 									lastIndex = index + open.length;
 									skip = true;
-									continue;
+								} else {
+									throw e;
 								}
-								throw e;
 							}
 						}
 						if (!skip) {
