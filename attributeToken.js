@@ -223,6 +223,9 @@ class AttributeToken extends AtomToken {
 		}
 		key = key.toLowerCase().trim();
 		if (!/^(?:[\w:]|\x00\d+t\x7f)(?:[\w:.-]|\x00\d+t\x7f)*$/.test(key)) {
+			if (init) {
+				return this;
+			}
 			throw new RangeError('无效的属性名！');
 		}
 		this.#attr.set(key, value === true ? true : value.replace(/\s/g, ' ').trim());

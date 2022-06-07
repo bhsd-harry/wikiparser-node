@@ -151,7 +151,7 @@ class TranscludeToken extends Token {
 	/** @param {...number|string|Token} args */
 	delete(...args) {
 		const {Ranges} = require('./range'),
-			indices = new Ranges(args.filter(i => ['number', 'string'].includes(typeof i))).applyTo(this),
+			indices = new Ranges(args.filter(i => ['number', 'string'].includes(typeof i))).applyTo(this.$children),
 			/** @type {Token[]} */ tokens = args.filter(token => token instanceof Token);
 		if (indices.includes(0) || tokens.includes(this.$children[0])) {
 			throw new RangeError('TranscludeToken不能删除name子节点！');

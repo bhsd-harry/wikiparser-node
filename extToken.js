@@ -34,6 +34,8 @@ class ExtToken extends fixToken(Token) {
 		let innerToken;
 		switch (this.name) {
 			case 'ref':
+			case 'choose':
+			case 'option':
 				this.set('acceptable', ['AttributeToken', 'Token']);
 				innerToken = new Token(extInner, config, true, this, accum);
 				break;

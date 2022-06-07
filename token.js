@@ -1138,7 +1138,7 @@ class Token {
 						if (!skip) {
 							/* 标记{{!}}结束 */
 							text = `${text.slice(0, index + rest)}\x00${length}${ch}\x7f${text.slice(lastIndex)}`;
-							lastIndex = index + rest + 3 + String(this.#accum.length - 1).length;
+							lastIndex = index + rest + 3 + String(length).length;
 							if (rest > 1) {
 								stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
 							} else if (rest === 1 && text[index - 1] === '-') {
