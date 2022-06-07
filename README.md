@@ -33,7 +33,12 @@
       7. [toggleAttr](#attributetoken.toggleattr)
    2. [实例属性](#attributetoken.instance.properties)
       1. [name](#attributetoken.name)
-6. [选择器](#选择器)
+6. [HeadingToken](#headingtoken)
+   1. [原型方法](#headingtoken.prototype.methods)
+      1. [setLevel](#headingtoken.setlevel)
+   2. [实例属性](#headingtoken.instance.properties)
+      1. [name](#headingtoken.name)
+7. [选择器](#选择器)
    1. [type](#selector.type)
    2. [name](#selector.name)
    3. [属性](#selector.attribute)
@@ -224,7 +229,7 @@ attr.toggleAttr('uncached');
 assert(root.toString() === '<choose uncached></choose>');
 ```
    
-## 实例属性<a id="exttoken.instance.properties"></a>
+## 实例属性<a id="attributetoken.instance.properties"></a>
    
 **name**: string<a id="attributetoken.name"></a>
 - 小写的标签名。
@@ -233,6 +238,32 @@ assert(root.toString() === '<choose uncached></choose>');
 var root = Parser.parse('<REF/>'),
     attr = root.querySelector('ext-attr'); // 即使没有设置属性，扩展和 HTML 标签的第一个子节点也总是 AttributeToken
 assert(attr.name === 'ref');
+```
+
+# HeadingToken
+章节标题。
+
+## 原型方法<a id="headingtoken.prototype.methods"></a>
+
+**setLevel**(n: number): void<a id="headingtoken.setlevel"></a>
+- 修改标题层级。
+
+```js
+var root = Parser.parse('==a=='),
+    header = root.firstChild;
+header.setLevel(3);
+assert(root.toString() === '===a===');
+```
+   
+## 实例属性<a id="headingtoken.instance.properties"></a>
+   
+**name**: string<a id="headingtoken.name"></a>
+- 字符串格式的标题层级。
+
+```js
+var root = Parser.parse('==a=='),
+    header = root.firstChild;
+assert(header.name === '2');
 ```
 
 # 选择器
