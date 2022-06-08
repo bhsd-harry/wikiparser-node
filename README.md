@@ -44,12 +44,37 @@
         2. [setDefault](argtoken.setdefault)
     2. [实例属性](argtoken.instance.properties)
         1. [name](argtoken.name)
-8. [选择器](#选择器)
+8. [TranscludeToken](#transcludetoken)
+    1. [原型方法](#transcludetoken.prototype.methods)
+        1. [getAllArgs](#transcludetoken.getallargs)
+        2. [getAnonArgs](#transcludetoken.getanonargs)
+        3. [getArgs](#transcludetoken.getargs)
+        4. [hasArg](#transcludetoken.hasarg)
+        5. [getArg](#transcludetoken.getarg)
+        6. [removeArg](#transcludetoken.removearg)
+        7. [getKeys](#transcludetoken.getkeys)
+        8. [getValues](#transcludetoken.getvalues)
+        9. [getValue](#transcludetoken.getvalue)
+        10. [newAnonArg](#transcludetoken.newanonarg)
+        11. [setValue](#transcludetoken.setvalue)
+        12. [anonToNamed](#transcludetoken.anontonamed)
+        13. [replaceTemplate](#transcludetoken.replacetemplate)
+    2. [实例属性](#transcludetoken.instance.properties)
+        1. [name](#transcludetoken.name)
+9. [ParameterToken](#parametertoken)
+    1. [原型方法](#parametertoken.prototype.methods)
+        1. [getValue](#parametertoken.getvalue)
+        2. [setValue](#parametertoken.setvalue)
+        3. [rename](#parametertoken.rename)
+    2. [实例属性](#parametertoken.instance.properties)
+        1. [name](#parametertoken.name)
+        2. [anon](#parametertoken.anon)
+10. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
     4. [伪选择器](#selector.pseudo)
-    </details>
+</details>
 
 # Parser
 这是解析工具的入口。
@@ -307,6 +332,80 @@ var root = Parser.parse('{{{a}}}'),
     arg = root.firstChild;
 assert(arg.name === 'a');
 ```
+
+# TranscludeToken
+模板或魔术字。
+
+## 对象方法<a id="transcludetoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**getAllArgs**(): ParameterToken[]<a id="transcludetoken.getallargs"></a>
+- 获取所有参数。
+
+**getAnonArgs**(): ParameterToken[]<a id="transcludetoken.getanonargs"></a>
+- 获取所有匿名参数。
+
+**getArgs**(key: string\|number): Set\<ParameterToken><a id="transcludetoken.getargs"></a>
+- 获取指定名称的参数（含重复）。
+
+**hasArg**(key: string\|number): boolean<a id="transcludetoken.hasarg"></a>
+- 是否带有指定参数。
+
+**getArg**(key: string\|number): ParameterToken<a id="transcludetoken.getarg"></a>
+- 获取指定名称的有效参数（即最后一个）。
+
+**removeArg**(key: string\|number): void<a id="transcludetoken.removearg"></a>
+- 移除指定名称的参数（含重复）。
+
+**getKeys**(): Set\<string><a id="transcludetoken.getkeys"></a>
+- 获取所有参数名。
+
+**getValues**(key: string\|number): string[]<a id="transcludetoken.getvalues"></a>
+- 获取指定名称的参数值（含重复）。
+
+**getValue**(key: string\|number): string<a id="transcludetoken.getvalue"></a>
+- 获取指定名称的有效参数值（即最后一个）。
+
+**newAnonArg**(val: any): void<a id="transcludetoken.newanonarg"></a>
+- 在末尾添加新的匿名参数。
+
+**setValue**(key: string, value: any): void<a id="transcludetoken.setvalue"></a>
+- 修改或新增参数。
+
+**anonToNamed**(): void<a id="transcludetoken.anontonamed"></a>
+- 将所有匿名参数修改为对应的命名参数。
+
+**replaceTemplate**(title: string): void<a id="transcludetoken.replacetemplate"></a>
+- 更换模板，但保留参数。
+</details>
+
+## 实例属性<a id="transcludetoken.instance.properties"></a>
+
+**name**: string<a id="transcludetoken.name"></a>
+- 模板名或魔术字。
+
+# ParameterToken
+模板或魔术字的参数。
+
+## 对象方法<a id="parametertoken.prototype.methods"></a>
+
+**getValue**(): string<a id="parametertoken.getvalue"></a>
+- 获取参数值。
+
+**setValue**(value: any): void<a id="parametertoken.setvalue"></a>
+- 设置参数值。
+
+**rename**(key: string, force: boolean): void<a id="parametertoken.rename"></a>
+- 重命名参数，可选是否在导致重复参数时抛出错误。
+
+## 实例属性<a id="parametertoken.instance.properties"></a>
+
+**name**: string<a id="parametertoken.name"></a>
+- 参数名。
+
+**anon**: boolean<a id="parametertoken.anon"></a>
+- 是否是匿名参数。
 
 # 选择器
 Token 选择器的设计仿照了 CSS 和 jQuery 的选择器。
