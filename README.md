@@ -1,49 +1,55 @@
 # 目录
 <details>
-   <summary>展开</summary>
+    <summary>展开</summary>
    
 1. [Parser](#parser)
-   1. [方法](#parser.methods)
-      1. [parse](#parser.parse)
-      2. [normalizeTitle](#parser.normalizetitle)
+    1. [方法](#parser.methods)
+        1. [parse](#parser.parse)
+        2. [normalizeTitle](#parser.normalizetitle)
 2. [Token](#token)
-   1. [原型方法](#token.prototype.methods)
-      1. [isPlain](#token.isplain)
-      2. [toString](#token.tostring)
-      3. [text](#token.text)
-      4. [sections](#token.sections)
-      5. [section](#token.section)
-   2. [实例属性](#token.instance.properties)
-      1. [type](#token.type)
+    1. [原型方法](#token.prototype.methods)
+        1. [isPlain](#token.isplain)
+        2. [toString](#token.tostring)
+        3. [text](#token.text)
+        4. [sections](#token.sections)
+        5. [section](#token.section)
+    2. [实例属性](#token.instance.properties)
+        1. [type](#token.type)
 3. [CommentToken](#commenttoken)
-   1. [实例属性](#commenttoken.instance.properties)
-      1. [closed](#commenttoken.closed)
+    1. [实例属性](#commenttoken.instance.properties)
+        1. [closed](#commenttoken.closed)
 4. [ExtToken](#exttoken)
-   1. [实例属性](#exttoken.instance.properties)
-      1. [selfClosing](#exttoken.selfclosing)
-      2. [name](#exttoken.name)
+    1. [实例属性](#exttoken.instance.properties)
+        1. [selfClosing](#exttoken.selfclosing)
+        2. [name](#exttoken.name)
 5. [AttributeToken](#attributetoken)
-   1. [原型方法](#attributetoken.prototype.methods)
-      1. [hasAttr](#attributetoken.hasattr)
-      2. [getAttr](#attributetoken.getattr)
-      3. [getAttrNames](#attributetoken.getattrnames)
-      4. [hasAttrs](#attributetoken.hasattrs)
-      5. [setAttr](#attributetoken.setattr)
-      6. [removeAttr](#attributetoken.removeattr)
-      7. [toggleAttr](#attributetoken.toggleattr)
-   2. [实例属性](#attributetoken.instance.properties)
-      1. [name](#attributetoken.name)
+    1. [原型方法](#attributetoken.prototype.methods)
+        1. [hasAttr](#attributetoken.hasattr)
+        2. [getAttr](#attributetoken.getattr)
+        3. [getAttrNames](#attributetoken.getattrnames)
+        4. [hasAttrs](#attributetoken.hasattrs)
+        5. [setAttr](#attributetoken.setattr)
+        6. [removeAttr](#attributetoken.removeattr)
+        7. [toggleAttr](#attributetoken.toggleattr)
+    2. [实例属性](#attributetoken.instance.properties)
+        1. [name](#attributetoken.name)
 6. [HeadingToken](#headingtoken)
-   1. [原型方法](#headingtoken.prototype.methods)
-      1. [setLevel](#headingtoken.setlevel)
-   2. [实例属性](#headingtoken.instance.properties)
-      1. [name](#headingtoken.name)
-7. [选择器](#选择器)
-   1. [type](#selector.type)
-   2. [name](#selector.name)
-   3. [属性](#selector.attribute)
-   4. [伪选择器](#selector.pseudo)
-   </details>
+    1. [原型方法](#headingtoken.prototype.methods)
+        1. [setLevel](#headingtoken.setlevel)
+    2. [实例属性](#headingtoken.instance.properties)
+        1. [name](#headingtoken.name)
+7. [ArgToken](#argtoken)
+    1. [原型方法](#argtoken.prototype.methods)
+        1. [setName](argtoken.setname)
+        2. [setDefault](argtoken.setdefault)
+    2. [实例属性](argtoken.instance.properties)
+        1. [name](argtoken.name)
+8. [选择器](#选择器)
+    1. [type](#selector.type)
+    2. [name](#selector.name)
+    3. [属性](#selector.attribute)
+    4. [伪选择器](#selector.pseudo)
+    </details>
 
 # Parser
 这是解析工具的入口。
@@ -264,6 +270,42 @@ assert(root.toString() === '===a===');
 var root = Parser.parse('==a=='),
     header = root.firstChild;
 assert(header.name === '2');
+```
+
+# ArgToken
+被 `{{{}}}` 包裹的模板参数。
+
+## 原型方法<a id="argtoken.prototype.methods"></a>
+
+**setName**(name: any): void<a id="argtoken.setname"></a>
+- 修改参数名。
+
+```js
+var root = Parser.parse('{{{a}}}'),
+    arg = root.firstChild;
+arg.setName('b');
+assert(root.toString() === '{{{b}}}');
+```
+
+**setDefault**(value: any): void<a id="argtoken.setdefault"></a>
+- 设置或修改参数预设值。
+
+```js
+var root = Parser.parse('{{{a}}}'),
+    arg = root.firstChild;
+arg.setDefault('b');
+assert(root.toString() === '{{{a|b}}}');
+```
+
+## 实例属性<a id="argtoken.instance.properties"></a>
+
+**name**: string<a id="argtoken.name"></a>
+- 参数名。
+
+```js
+var root = Parser.parse('{{{a}}}'),
+    arg = root.firstChild;
+assert(arg.name === 'a');
 ```
 
 # 选择器
