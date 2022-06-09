@@ -7,6 +7,10 @@ const {typeError, externalUse} = require('../util/debug'),
 	Token = require('./token'),
 	AttributeToken = require('./attributeToken');
 
+/**
+ * HTML标签
+ * @classdesc `{childNodes: [AttributeToken]}`
+ */
 class HtmlToken extends attributeParent(fixedToken(Token)) {
 	type = 'html';
 	closing;

@@ -5,6 +5,10 @@ const /** @type {Parser} */ Parser = require('..'),
 	AtomToken = require('./atomToken'),
 	watchFirstChild = require('../mixin/watchFirstChild');
 
+/**
+ * `{{{}}}`包裹的参数
+ * @classdesc `{childNodes: [AtomToken, Token, ...AtomToken]}`
+ */
 class ArgToken extends watchFirstChild(Token) {
 	type = 'arg';
 

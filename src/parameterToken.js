@@ -7,6 +7,10 @@ const {typeError} = require('../util/debug'),
 	AtomToken = require('./atomToken'),
 	TranscludeToken = require('./transcludeToken'); // eslint-disable-line no-unused-vars
 
+/**
+ * 模板或魔术字参数
+ * @classdesc `{childNodes: [AtomToken, Token]}`
+ */
 class ParameterToken extends fixedToken(Token) {
 	type = 'parameter';
 	anon;

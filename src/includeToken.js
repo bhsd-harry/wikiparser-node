@@ -6,6 +6,10 @@ const hidden = require('../mixin/hidden'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('./token');
 
+/**
+ * `<includeonly>`或`<onlyinclude>`
+ * @classdesc `{childNodes: [string]}`
+ */
 class IncludeToken extends hidden(fixedToken(Token)) {
 	type = 'include';
 	selfClosing;
@@ -56,10 +60,7 @@ class IncludeToken extends hidden(fixedToken(Token)) {
 
 	/** @param {string} str */
 	setText(str) {
-		if (typeof str !== 'string') {
-			typeError('String');
-		}
-		this.setAttribute('childNodes', [this.firstChild, str]);
+		super.setText(str, 1);
 	}
 }
 

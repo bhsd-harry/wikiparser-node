@@ -7,6 +7,10 @@ const {typeError, externalUse} = require('../util/debug'),
 	Token = require('./token'),
 	AttributeToken = require('./attributeToken');
 
+/**
+ * 扩展标签
+ * @classdesc `{childNodes: [AttributeToken, NowikiToken|Token]}`
+ */
 class ExtToken extends attributeParent(fixedToken(Token)) {
 	type = 'ext';
 	selfClosing;

@@ -1,7 +1,6 @@
 'use strict';
 
 const fixedToken = require('../../mixin/fixedToken'),
-	{typeError} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('../token');
 
@@ -18,14 +17,6 @@ class NowikiToken extends fixedToken(Token) {
 	 */
 	constructor(wikitext, accum = []) {
 		super(wikitext, null, false, accum, {String: ':'});
-	}
-
-	/** @param {string} str */
-	setText(str) {
-		if (typeof str !== 'string') {
-			typeError('String');
-		}
-		this.setAttribute('childNodes', [str]);
 	}
 }
 

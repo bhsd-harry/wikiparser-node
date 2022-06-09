@@ -6,6 +6,10 @@ const {typeError} = require('../util/debug'),
 	Token = require('./token'),
 	AtomToken = require('./atomToken');
 
+/**
+ * 章节标题
+ * @classdesc `{childNodes: [Token, AtomToken]}`
+ */
 class HeadingToken extends fixedToken(Token) {
 	type = 'heading';
 

@@ -7,6 +7,10 @@ const {removeComment} = require('../util/string'),
 	AtomToken = require('./atomToken'),
 	ParameterToken = require('./parameterToken');
 
+/**
+ * 模板或魔术字
+ * @classdesc `{childNodes: [AtomToken, ...ParameterToken]}`
+ */
 class TranscludeToken extends Token {
 	type = 'template';
 	/** @type {Set<string>} */ #keys = new Set();
