@@ -1,0 +1,41 @@
+'use strict';
+
+/**
+ * @param {...string} args
+ * @throws {TypeError}
+ */
+const typeError = (...args) => {
+	throw new TypeError(`仅接受 ${args.join('、')} 作为输入参数！`);
+};
+
+/**
+ * 不是被构造器或原型方法调用
+ * @param {string} name
+ */
+const externalUse = (name, onlyNew = false) => {
+	if (typeof name !== 'string') {
+		throw new TypeError('检查外部调用时必须提供方法名！');
+	}
+	const regex = onlyNew
+		? new RegExp(`^new ${name}$`)
+		: new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`);
+	try {
+		throw new Error();
+	} catch (e) {
+		if (e instanceof Error) {
+			const mt = e.stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);
+			return !mt.slice(2).some(func => regex.test(func));
+		}
+	}
+};
+
+/**
+ * @param {ObjectConstructor} constructor
+ * @param {string} method
+ * @throws {Error}
+ */
+const debugOnly = (constructor, method) => {
+	throw new Error(`${constructor.name}.${method} 方法仅用于代码调试！`);
+};
+
+module.exports = {typeError, externalUse, debugOnly};

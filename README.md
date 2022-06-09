@@ -69,7 +69,16 @@
     2. [实例属性](#parametertoken.instance.properties)
         1. [name](#parametertoken.name)
         2. [anon](#parametertoken.anon)
-10. [选择器](#选择器)
+10. [HtmlToken](#htmltoken)
+    1. [原型方法](#htmltoken.prototype.methods)
+        1. [check](#htmltoken.check)
+        2. [fix](#htmltoken.fix)
+        3. [replaceTag](#htmltoken.replacetag)
+    2. [实例属性](#htmltoken.instance.properties)
+        1. [name](#htmltoken.name)
+        2. [closing](#htmltoken.closing)
+        3. [selfClosing](#htmltoken.selfclosing)
+11. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
@@ -365,7 +374,7 @@ assert.deepStrictEqual(template.getAllArgs(), template.children.slice(1));
 var root = Parser.parse('{{a|b|c=1}}{{#if:x|y|z}}'),
     template = root.firstChild,
     magicWord = root.lastChild;
-assert.deepStrictEqual(template.getAnonArgs(), template.chidren.slice(1, 2));
+assert.deepStrictEqual(template.getAnonArgs(), template.children.slice(1, 2));
 assert.deepStrictEqual(magicWord.getAnonArgs(), magicWord.children.slice(1)); // 目前魔术字的参数总是视为匿名参数
 ```
 
@@ -522,6 +531,7 @@ var root = Parser.parse('{{a|b=1|c=2}}'),
     param = root.querySelector('parameter');
 try {
     param.rename('c');
+    throw new Error();
 } catch (e) {
     assert(e.message === '参数更名造成重复参数：c');
 }
@@ -547,6 +557,87 @@ var root = Parser.parse('{{a|b| c = 1}}'),
     [anonymous, named] = root.querySelectorAll('parameter');
 assert(anonymous.anon === true);
 assert(named.anon === false);
+```
+
+# HtmlToken
+HTML标签，未进行匹配。
+
+## 原型方法<a id="htmltoken.prototype.methods"></a>
+
+**check**(): void<a id="htmltoken.check"></a>
+- 初步检测是否符合语法，不符时会抛出不同错误。可能会遗漏未匹配的内联标签。
+
+```js
+var root = Parser.parse('<p><b/></i>'),
+    [p, b, i] = root.children;  
+try {
+    p.check();
+    throw new Error();
+} catch (e) {
+    assert(e.message === '未闭合的标签：<p>');
+}
+try {
+    b.check();
+    throw new Error();
+} catch (e) {
+    assert(e.message === '无效自封闭标签：<b/>');
+}
+try {
+    i.check();
+    throw new Error();
+} catch (e) {
+    assert(e.message === '未匹配的闭合标签：</i>');
+}
+```
+
+**fix**(): void<a id="htmltoken.fix"></a>
+- 尝试修复无效自封闭标签，存疑时会输出警告。
+
+```js
+var root = Parser.parse('<b>a<b/><div style="height:1em"/>');
+for (const html of root.querySelectorAll('html')) {
+    html.fix();
+}
+assert(root.toString() === '<b>a</b><div style="height:1em"></div>');
+```
+
+**replaceTag**(tag: string): void<a id="htmltoken.replacetag"></a>
+- 修改标签。
+
+```js
+var root = Parser.parse('<b>'),
+    html = root.firstChild;
+html.replaceTag('i');
+assert(root.toString() === '<i>');
+```
+
+## 实例属性<a id="htmltoken.instance.properties"></a>
+
+**name**: string<a id="htmltoken.name"></a>
+- 小写的标签名。
+
+```js
+var root = Parser.parse('<b>'),
+    html = root.firstChild;
+assert(html.name === 'b');
+```
+
+**closing**: boolean<a id="htmltoken.closing"></a>
+- 是否是闭合标签。
+
+```js
+var root = Parser.parse('</b>'),
+    html = root.firstChild;
+assert(html.closing === true);
+```
+
+**selfClosing**: boolean<a id="htmltoken.selfclosing"></a>
+- 是否是自闭合标签（可能不符合HTML5规范）。
+
+```js
+var root = Parser.parse('<b/>'),
+    html = root.firstChild;
+assert(html.selfClosing === true);
 ```
 
 # 选择器
