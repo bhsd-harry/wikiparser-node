@@ -87,12 +87,12 @@ class ParameterToken extends fixedToken(Token) {
 
 	getValue() {
 		const value = this.lastElementChild.text();
-		return !this.anon || this.parentNode?.type !== 'template' ? value.trim() : value;
+		return !this.anon || this.parentElement?.type !== 'template' ? value.trim() : value;
 	}
 
 	setValue(value) {
 		const {anon} = this,
-			isTemplate = this.parentNode?.type === 'template',
+			isTemplate = this.parentElement?.type === 'template',
 			root = new Token(
 				`{{${isTemplate ? ':T|' : 'lc:'}${anon ? '' : '1='}${String(value)}}}`,
 				this.getAttribute('config'),
@@ -117,7 +117,7 @@ class ParameterToken extends fixedToken(Token) {
 	rename(key, force = false) {
 		if (typeof key !== 'string') {
 			typeError('String');
-		} else if (this.parentNode?.type !== 'template') {
+		} else if (this.parentElement?.type !== 'template') {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		key = key.trim();
