@@ -30,7 +30,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		} else if (!(attr instanceof AttributeToken)) {
 			typeError('AttributeToken');
 		}
-		super(null, config, true, accum, {AttributeToken: 0});
+		super(undefined, config, true, accum, {AttributeToken: 0});
 		this.appendChild(attr);
 		this.setAttribute('name', name.toLowerCase());
 		this.closing = closing;

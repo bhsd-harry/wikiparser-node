@@ -24,9 +24,9 @@ class ParameterToken extends fixedToken(Token) {
 		if (!['string', 'number'].includes(typeof key)) {
 			typeError('String', 'Number');
 		}
-		super(null, config, true, accum, {AtomToken: 0, Token: 1});
+		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
 		this.anon = typeof key === 'number';
-		const keyToken = new AtomToken(this.anon ? null : key, 'parameter-key', accum, {
+		const keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
 			String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
 			ExtToken: ':', ArgToken: ':', TranscludeToken: ':',
 		});

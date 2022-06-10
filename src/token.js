@@ -54,7 +54,7 @@ class Token extends AstElement {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''), 0, true);
-		} else if (wikitext !== undefined && wikitext !== null) {
+		} else if (wikitext !== undefined) {
 			typeError('String');
 		}
 		this.setAttribute('config', config).setAttribute('accum', accum).setAttribute('acceptable', acceptable);

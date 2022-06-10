@@ -17,7 +17,7 @@ class ArgToken extends watchFirstChild(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
-		super(null, config, true, accum, {Token: 1, AtomToken: [0, '2:']});
+		super(undefined, config, true, accum, {Token: 1, AtomToken: [0, '2:']});
 		for (const [i, part] of parts.entries()) {
 			if (i === 0 || i > 1) {
 				const token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', accum, {

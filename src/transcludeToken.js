@@ -22,7 +22,7 @@ class TranscludeToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
-		super(null, config, true, accum, {AtomToken: 0, ParameterToken: '1:'});
+		super(undefined, config, true, accum, {AtomToken: 0, ParameterToken: '1:'});
 		const {parserFunction: [sensitive, insensitive]} = config;
 		if (parts.length === 0 || title.includes(':')) {
 			const [magicWord, ...arg] = title.split(':'),
@@ -212,7 +212,7 @@ class TranscludeToken extends Token {
 	/** @param {string|number} key */
 	getArg(key, exact = false) {
 		const args = [...this.getArgs(key)].reverse();
-		return exact ? args.find(({anon}) => typeof key === 'number' === anon) : args[0] ?? null;
+		return exact ? args.find(({anon}) => typeof key === 'number' === anon) : args[0];
 	}
 
 	/** @param {string|number} key */

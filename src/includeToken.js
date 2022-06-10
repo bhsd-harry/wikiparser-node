@@ -29,7 +29,7 @@ class IncludeToken extends hidden(fixedToken(Token)) {
 		} else if (!['includeonly', 'onlyinclude'].includes(name.toLowerCase())) {
 			throw new RangeError('IncludeToken 仅用于 <includeonly> 和 <onlyinclude>！');
 		}
-		super(null, null, false, accum, {String: [0, 1]});
+		super(undefined, null, false, accum, {String: [0, 1]});
 		this.setAttribute('name', name.toLowerCase());
 		this.selfClosing = inner === undefined;
 		this.closed = inner === undefined || Boolean(closing);

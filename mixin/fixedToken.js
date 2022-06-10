@@ -11,10 +11,10 @@ const {typeError, externalUse} = require('../util/debug'),
 const fixedToken = constructor => class extends constructor {
 	/** @param {string} wikitext */
 	constructor(wikitext, ...args) {
-		super(null, ...args);
+		super(undefined, ...args);
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
-		} else if (wikitext !== undefined && wikitext !== null) {
+		} else if (wikitext !== undefined) {
 			typeError('String');
 		}
 	}

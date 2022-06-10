@@ -27,7 +27,7 @@ class ExtToken extends attributeParent(fixedToken(Token)) {
 		) {
 			typeError('String');
 		}
-		super(null, null, false, accum, {AttributeToken: 0, NowikiToken: 1});
+		super(undefined, null, false, accum, {AttributeToken: 0, NowikiToken: 1});
 		this.setAttribute('name', name.toLowerCase());
 		this.selfClosing = inner === undefined;
 		this.#tags = [name, closing || name];
