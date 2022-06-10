@@ -65,6 +65,7 @@ class TranscludeToken extends Token {
 		if (this.type === 'magic-word') {
 			return;
 		}
+		const that = this;
 		/**
 		 * 当事件bubble到parameter时，将oldKey和newKey保存进AstEventData。
 		 * 当继续bubble到template时，处理并删除oldKey和newKey。
@@ -77,15 +78,15 @@ class TranscludeToken extends Token {
 				delete data.newKey;
 			}
 			if (prevTarget instanceof ParameterToken && oldKey !== newKey) {
-				const oldArgs = this.getArgs(oldKey, false);
+				const oldArgs = that.getArgs(oldKey, false);
 				oldArgs.delete(prevTarget);
-				this.getArgs(newKey, false).add(prevTarget);
-				this.#keys.add(newKey);
+				that.getArgs(newKey, false).add(prevTarget);
+				that.#keys.add(newKey);
 				if (oldArgs.size === 0) {
-					this.#keys.delete(oldKey);
+					that.#keys.delete(oldKey);
 				}
 			} else if (prevTarget instanceof AtomToken) {
-				this.setAttribute('name', this.normalizeTitle(prevTarget.text(), 10));
+				that.setAttribute('name', that.normalizeTitle(prevTarget.text(), 10));
 			}
 		};
 		this.addEventListener('remove', transcludeListener);

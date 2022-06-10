@@ -37,20 +37,21 @@ class ParameterToken extends fixedToken(Token) {
 		if (this.type === 'magic-word') {
 			return;
 		}
+		const that = this;
 		/**
 		 * 在AstEventData中记录oldKey和newKey
 		 * @type {AstListener}
 		 */
 		const parameterListener = ({prevTarget}, data) => {
-			if (this.anon || !this.name) { // 匿名参数不管怎么变动还是匿名
+			if (that.anon || !that.name) { // 匿名参数不管怎么变动还是匿名
 				return;
 			}
-			const /** @type {{firstChild: Token}} */ {firstChild} = this;
+			const /** @type {{firstChild: Token}} */ {firstChild} = that;
 			if (prevTarget === firstChild) {
 				const newKey = firstChild.text().trim();
-				data.oldKey = this.name;
+				data.oldKey = that.name;
 				data.newKey = newKey;
-				this.setAttribute('name', newKey);
+				that.setAttribute('name', newKey);
 			}
 		};
 		this.addEventListener('remove', parameterListener);
