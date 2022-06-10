@@ -18,7 +18,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @param {string} title
-	 * @param {[string|number, string|undefined][]} parts
+	 * @param {[string, string|undefined][]} parts
 	 * @param {accum} accum
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
@@ -37,6 +37,19 @@ class TranscludeToken extends Token {
 				if (arg.length) {
 					parts.unshift([arg.join(':')]);
 				}
+				if (this.name === 'invoke') {
+					for (let i = 0; i < 2; i++) {
+						const part = parts.shift();
+						if (!part) {
+							break;
+						}
+						const invoke = new AtomToken(part.join('='), `invoke-${i ? 'func' : 'module'}`, accum, {
+							String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
+						});
+						this.appendChild(invoke);
+					}
+					this.protectChildren('1:3');
+				}
 			}
 		}
 		if (this.type === 'template') {
@@ -49,9 +62,10 @@ class TranscludeToken extends Token {
 			});
 			this.appendChild(token);
 		}
+		const templateLike = TranscludeToken.isTemplate(this);
 		let i = 1;
 		for (const part of parts) {
-			if (this.type === 'magic-word') {
+			if (!templateLike) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}
@@ -62,7 +76,7 @@ class TranscludeToken extends Token {
 			this.appendChild(new ParameterToken(...part, config, accum));
 		}
 		this.protectChildren(0);
-		if (this.type === 'magic-word') {
+		if (!templateLike) {
 			return;
 		}
 		const that = this;
@@ -182,7 +196,7 @@ class TranscludeToken extends Token {
 
 	/** @returns {ParameterToken[]} */
 	getAllArgs() {
-		return this.children.slice(1);
+		return this.children.filter(child => child instanceof ParameterToken);
 	}
 
 	getAnonArgs() {
@@ -212,7 +226,7 @@ class TranscludeToken extends Token {
 
 	/** @param {string|number} key */
 	getArg(key, exact = false) {
-		const args = [...this.getArgs(key)].reverse();
+		const args = [...this.getArgs(key)].sort(TranscludeToken.comparePosition).reverse();
 		return exact ? args.find(({anon}) => typeof key === 'number' === anon) : args[0];
 	}
 
@@ -224,8 +238,9 @@ class TranscludeToken extends Token {
 	}
 
 	getKeys() {
-		if (this.#keys.size === 0 && this.childElementCount) {
-			for (const {name} of this.getAllArgs()) {
+		const args = this.getAllArgs();
+		if (this.#keys.size === 0 && args.length) {
+			for (const {name} of args) {
 				this.#keys.add(name);
 			}
 		}
@@ -244,13 +259,13 @@ class TranscludeToken extends Token {
 	 */
 	getValue(key) {
 		if (key !== undefined) {
-			return this.getValues(key).at(-1);
+			return this.getArg(key).getValue();
 		}
 		return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]));
 	}
 
 	newAnonArg(val) {
-		const isTemplate = this.type === 'template',
+		const isTemplate = TranscludeToken.isTemplate(this),
 			root = new Token(`{{${isTemplate ? ':T|' : 'lc:'}${String(val)}}}`, this.getAttribute('config')).parse(2),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild.matches(isTemplate ? 'template#T' : 'magic-word#lc')
@@ -265,7 +280,7 @@ class TranscludeToken extends Token {
 	setValue(key, value) {
 		if (typeof key !== 'string') {
 			typeError('String');
-		} else if (this.type === 'magic-word') {
+		} else if (!TranscludeToken.isTemplate(this)) {
 			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
 		}
 		const token = this.getArg(key);
@@ -293,7 +308,7 @@ class TranscludeToken extends Token {
 	/** @param {string} title */
 	replaceTemplate(title) {
 		if (this.type === 'magic-word') {
-			throw new Error(`${this.constructor.name}.replaceTemplate方法仅用于更换模板！`);
+			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
 		} else if (typeof title !== 'string') {
 			typeError('String');
 		}
@@ -304,6 +319,54 @@ class TranscludeToken extends Token {
 		}
 		this.setAttribute('name', firstElementChild.name)
 			.firstElementChild.replaceChildren(...firstElementChild.firstElementChild.childNodes);
+	}
+
+	/** @param {string} title */
+	replaceModule(title) {
+		if (this.type !== 'magic-word' || this.name !== 'invoke') {
+			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
+		} else if (typeof title !== 'string') {
+			typeError('String');
+		}
+		const root = new Token(`{{#invoke:${title}}}`, this.getAttribute('config')).parse(2),
+			{childNodes: {length}, firstElementChild} = root;
+		if (length !== 1 || firstElementChild.type !== 'magic-word' || firstElementChild.name !== 'invoke'
+			|| firstElementChild.childElementCount !== 2
+		) {
+			throw new SyntaxError(`非法的模块名称：${title}`);
+		} else if (this.childElementCount > 1) {
+			this.children[1].replaceChildren(...firstElementChild.lastElementChild.childNodes);
+		} else {
+			const {lastChild} = firstElementChild;
+			root.destroy();
+			firstElementChild.destroy();
+			this.appendChild(lastChild);
+		}
+	}
+
+	/** @param {string} func */
+	replaceFunction(func) {
+		if (this.type !== 'magic-word' || this.name !== 'invoke') {
+			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
+		} else if (typeof func !== 'string') {
+			typeError('String');
+		} else if (this.childElementCount < 2) {
+			throw new Error('尚未指定模块名称！');
+		}
+		const root = new Token(`{{#invoke:M|${func}}}`, this.getAttribute('config')).parse(2),
+			{childNodes: {length}, firstElementChild} = root;
+		if (length !== 1 || firstElementChild.type !== 'magic-word' || firstElementChild.name !== 'invoke'
+			|| firstElementChild.childElementCount !== 3
+		) {
+			throw new SyntaxError(`非法的模块函数名：${func}`);
+		} else if (this.childElementCount > 2) {
+			this.children[2].replaceChildren(...firstElementChild.lastElementChild.childNodes);
+		} else {
+			const {lastChild} = firstElementChild;
+			root.destroy();
+			firstElementChild.destroy();
+			this.appendChild(lastChild);
+		}
 	}
 }
 

@@ -569,6 +569,15 @@ class Token extends AstElement {
 		}
 		return this.build().afterBuild();
 	}
+
+	/** @param {TranscludeToken} token */
+	static isTemplate(token) {
+		const TranscludeToken = require('./transcludeToken');
+		if (!(token instanceof TranscludeToken)) {
+			typeError('TranscludeToken');
+		}
+		return token.type === 'template' || token.name === 'invoke';
+	}
 }
 
 Parser.classes.Token = __filename;

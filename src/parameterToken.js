@@ -4,8 +4,7 @@ const {typeError} = require('../util/debug'),
 	fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('./token'),
-	AtomToken = require('./atomToken'),
-	TranscludeToken = require('./transcludeToken'); // eslint-disable-line no-unused-vars
+	AtomToken = require('./atomToken');
 
 /**
  * 模板或魔术字参数
@@ -70,12 +69,14 @@ class ParameterToken extends fixedToken(Token) {
 	afterBuild() {
 		if (!this.anon) {
 			const name = this.firstElementChild.text().trim(),
-				/** @type {{parentNode: TranscludeToken}} */ {parentNode} = this;
+				{parentNode} = this;
 			this.setAttribute('name', name);
-			const /** @type {Set<string>} */ keys = parentNode.getAttribute('keys'),
-				args = parentNode.getArgs(name, false);
-			keys.add(name);
-			args.add(this);
+			if (parentNode && parentNode instanceof require('./transcludeToken')) {
+				const /** @type {Set<string>} */ keys = parentNode.getAttribute('keys'),
+					args = parentNode.getArgs(name, false);
+				keys.add(name);
+				args.add(this);
+			}
 		}
 		return super.afterBuild();
 	}
@@ -88,12 +89,12 @@ class ParameterToken extends fixedToken(Token) {
 
 	getValue() {
 		const value = this.lastElementChild.text();
-		return !this.anon || this.parentElement?.type !== 'template' ? value.trim() : value;
+		return this.anon && ParameterToken.isTemplate(this.parentNode) ? value : value.trim();
 	}
 
 	setValue(value) {
 		const {anon} = this,
-			isTemplate = this.parentElement?.type === 'template',
+			isTemplate = ParameterToken.isTemplate(this.parentNode),
 			root = new Token(
 				`{{${isTemplate ? ':T|' : 'lc:'}${anon ? '' : '1='}${String(value)}}}`,
 				this.getAttribute('config'),

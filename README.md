@@ -499,116 +499,139 @@ assert(arg.name === 'a');
 - 获取所有参数。
 
 ```js
-var root = Parser.parse('{{a|b|c=1}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b|c=1}}{{#invoke:d|e|f|g=1}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 assert.deepStrictEqual(template.getAllArgs(), template.children.slice(1));
+assert.deepStrictEqual(invoke.getAllArgs(), invoke.children.slice(3));
 ```
 
 **getAnonArgs**(): ParameterToken[]<a id="transcludetoken.getanonargs"></a>
 - 获取所有匿名参数。
 
 ```js
-var root = Parser.parse('{{a|b|c=1}}{{#if:x|y|z}}'),
-    template = root.firstChild,
-    magicWord = root.lastChild;
+var root = Parser.parse('{{a|b|c=1}}{{#invoke:d|e|f|g=1}}{{#if:x|y|z}}'),
+    [template, invoke, magicWord] = root.children;
 assert.deepStrictEqual(template.getAnonArgs(), template.children.slice(1, 2));
-assert.deepStrictEqual(magicWord.getAnonArgs(), magicWord.children.slice(1)); // 目前魔术字的参数总是视为匿名参数
+assert.deepStrictEqual(invoke.getAnonArgs(), invoke.children.slice(3, 4));
+assert.deepStrictEqual(magicWord.getAnonArgs(), magicWord.children.slice(1)); // 除#invoke外的魔术字的参数总是视为匿名参数
 ```
 
 **getArgs**(key: string\|number): Set\<ParameterToken><a id="transcludetoken.getargs"></a>
 - 获取指定名称的参数（含重复）。
 
 ```js
-var root = Parser.parse('{{a|b|1=c}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b|1=c}}{{#invoke:d|e|f|1=g}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 assert.deepStrictEqual(template.getArgs(1), new Set(template.children.slice(1)));
+assert.deepStrictEqual(invoke.getArgs(1), new Set(invoke.children.slice(3)));
 ```
 
 **hasArg**(key: string\|number): boolean<a id="transcludetoken.hasarg"></a>
 - 是否带有指定参数。
 
 ```js
-var root = Parser.parse('{{a|b|c=1}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b|c=1}}{{#invoke:d|e|f|g=1}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 assert(template.hasArg(1) === true);
 assert(template.hasArg('c') === true);
+assert(invoke.hasArg(1) === true);
+assert(invoke.hasArg('g') === true);
 ```
 
 **getArg**(key: string\|number): ParameterToken<a id="transcludetoken.getarg"></a>
 - 获取指定名称的有效参数（即最后一个）。
 
 ```js
-var root = Parser.parse('{{a|b|1=c}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b|1=c}}{{#invoke:d|e|1=f|g}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 assert(template.getArg(1) === template.lastChild);
+assert(invoke.getArg(1) === invoke.lastChild);
 ```
 
 **removeArg**(key: string\|number): void<a id="transcludetoken.removearg"></a>
 - 移除指定名称的参数（含重复）。
 
 ```js
-var root = Parser.parse('{{a|b|1=c}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b|1=c}}{{#invoke:d|e|f|1=g}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 template.removeArg(1);
-assert(root.toString() === '{{a}}');
+invoke.removeArg(1);
+assert(root.toString() === '{{a}}{{#invoke:d|e}}');
 ```
 
 **getKeys**(): string[]<a id="transcludetoken.getkeys"></a>
 - 获取所有参数名。
 
 ```js
-var root = Parser.parse('{{a|b=1|c=2}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b=1|c=2}}{{#invoke:d|e|f=1|g=2}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 assert.deepStrictEqual(template.getKeys(), ['b', 'c']);
+assert.deepStrictEqual(invoke.getKeys(), ['f', 'g']);
 ```
 
 **getValues**(key: string\|number): string[]<a id="transcludetoken.getvalues"></a>
 - 获取指定名称的参数值（含重复）。
 
 ```js
-var root = Parser.parse('{{a|b|1=c}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b|1=c}}{{#invoke:d|e|f|1=g}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 assert.deepStrictEqual(template.getValues(1), ['b', 'c']);
+assert.deepStrictEqual(invoke.getValues(1), ['f', 'g']);
 ```
 
 **getValue**(key: string\|number): string<a id="transcludetoken.getvalue"></a>
 - 获取指定名称的有效参数值（即最后一个）。
 
 ```js
-var root = Parser.parse('{{a|b|1=c}}'),
-    template = root.firstChild;
-assert(template.getValue(1) === 'c');
+var root = Parser.parse('{{a|b|1= c }}{{#invoke:d|e|1=f| g }}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
+assert(template.getValue(1) === 'c'); // 模板的命名参数不保留首尾的空白字符
+assert(invoke.getValue(1) === ' g '); // #invoke魔术字保留匿名参数首位的空白字符
 ```
 
 **newAnonArg**(val: any): void<a id="transcludetoken.newanonarg"></a>
 - 在末尾添加新的匿名参数。
 
 ```js
-var root = Parser.parse('{{a|b}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b}}{{#invoke:d|e}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 template.newAnonArg(' c ');
-assert(root.toString() === '{{a|b| c }}');
+invoke.newAnonArg(' f ');
+assert(root.toString() === '{{a|b| c }}{{#invoke:d|e| f }}');
 ```
 
 **setValue**(key: string, value: any): void<a id="transcludetoken.setvalue"></a>
 - 修改或新增参数。
 
 ```js
-var root = Parser.parse('{{a|b}}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a|b}}{{#invoke:e|f|g=3}}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 template.setValue('1', ' c ');
 template.setValue('d', ' 2 ');
-assert(root.toString() === '{{a| c |d= 2 }}');
+invoke.setValue('g', ' 4 ');
+assert(root.toString() === '{{a| c |d= 2 }}{{#invoke:e|f|g= 4 }}');
 ```
 
 **anonToNamed**(): void<a id="transcludetoken.anontonamed"></a>
 - 将所有匿名参数修改为对应的命名参数。
 
 ```js
-var root = Parser.parse('{{a| b | c }}'),
-    template = root.firstChild;
+var root = Parser.parse('{{a| b | c }}{{#invoke:d|e| f }}'),
+    template = root.firstChild,
+    invoke = root.lastChild;
 template.anonToNamed();
-assert(root.toString() === '{{a|1= b |2= c }}'); // 注意改成命名参数后会参数值的首尾空白字符失效
+invoke.anonToNamed();
+assert(root.toString() === '{{a|1= b |2= c }}{{#invoke:d|e|1= f }}'); // 注意改成命名参数后会参数值的首尾空白字符失效
 ```
 
 **replaceTemplate**(title: string): void<a id="transcludetoken.replacetemplate"></a>
