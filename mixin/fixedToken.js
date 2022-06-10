@@ -27,13 +27,13 @@ const fixedToken = constructor => class extends constructor {
 	 * @template {string|Token} T
 	 * @param {T} token
 	 * @param {number} i
-	 * @returns {T}
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (externalUse(this.constructor.name, true)) {
 			throw new Error(`${this.constructor.name} 不可插入元素！`);
 		}
 		super.insertAt(token, i);
+		return token;
 	}
 };
 

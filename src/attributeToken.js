@@ -217,7 +217,6 @@ class AttributeToken extends Token {
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
-	 * @returns {T}
 	 */
 	insertAt(token, i = this.childNodes.length, done = false) {
 		if (done && externalUse('insertAt')) {

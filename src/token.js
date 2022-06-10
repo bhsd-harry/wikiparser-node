@@ -173,7 +173,6 @@ class Token extends AstElement {
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
-	 * @returns {T}
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (this.#acceptable) {
