@@ -6,23 +6,30 @@
     1. [方法](#parser.methods)
         1. [parse](#parser.parse)
         2. [normalizeTitle](#parser.normalizetitle)
-2. [Token](#token)
+2. [AstElement](#astelement)
+    1. [原型方法](#astelement.prototype.methods)
+    2. [实例属性](#astelement.instance.properties)
+    3. [原型属性](#astelement.prototype.properties)
+3. [Token](#token)
     1. [原型方法](#token.prototype.methods)
-        1. [isPlain](#token.isplain)
-        2. [toString](#token.tostring)
-        3. [text](#token.text)
-        4. [sections](#token.sections)
-        5. [section](#token.section)
+        1. [destroy](#token.destroy)
+        2. [getAncestors](#token.getancestors)
+        3. [isPlain](#token.isplain)
+        4. [toString](#token.tostring)
+        5. [text](#token.text)
+        6. [setText](#token.settext)
+        7. [sections](#token.sections)
+        8. [section](#token.section)
     2. [实例属性](#token.instance.properties)
         1. [type](#token.type)
-3. [CommentToken](#commenttoken)
+4. [CommentToken](#commenttoken)
     1. [实例属性](#commenttoken.instance.properties)
         1. [closed](#commenttoken.closed)
-4. [ExtToken](#exttoken)
+5. [ExtToken](#exttoken)
     1. [实例属性](#exttoken.instance.properties)
         1. [selfClosing](#exttoken.selfclosing)
         2. [name](#exttoken.name)
-5. [AttributeToken](#attributetoken)
+6. [AttributeToken](#attributetoken)
     1. [原型方法](#attributetoken.prototype.methods)
         1. [hasAttr](#attributetoken.hasattr)
         2. [getAttr](#attributetoken.getattr)
@@ -33,18 +40,18 @@
         7. [toggleAttr](#attributetoken.toggleattr)
     2. [实例属性](#attributetoken.instance.properties)
         1. [name](#attributetoken.name)
-6. [HeadingToken](#headingtoken)
+7. [HeadingToken](#headingtoken)
     1. [原型方法](#headingtoken.prototype.methods)
         1. [setLevel](#headingtoken.setlevel)
     2. [实例属性](#headingtoken.instance.properties)
         1. [name](#headingtoken.name)
-7. [ArgToken](#argtoken)
+8. [ArgToken](#argtoken)
     1. [原型方法](#argtoken.prototype.methods)
         1. [setName](argtoken.setname)
         2. [setDefault](argtoken.setdefault)
     2. [实例属性](argtoken.instance.properties)
         1. [name](argtoken.name)
-8. [TranscludeToken](#transcludetoken)
+9. [TranscludeToken](#transcludetoken)
     1. [原型方法](#transcludetoken.prototype.methods)
         1. [getAllArgs](#transcludetoken.getallargs)
         2. [getAnonArgs](#transcludetoken.getanonargs)
@@ -61,7 +68,7 @@
         13. [replaceTemplate](#transcludetoken.replacetemplate)
     2. [实例属性](#transcludetoken.instance.properties)
         1. [name](#transcludetoken.name)
-9. [ParameterToken](#parametertoken)
+10. [ParameterToken](#parametertoken)
     1. [原型方法](#parametertoken.prototype.methods)
         1. [getValue](#parametertoken.getvalue)
         2. [setValue](#parametertoken.setvalue)
@@ -69,7 +76,7 @@
     2. [实例属性](#parametertoken.instance.properties)
         1. [name](#parametertoken.name)
         2. [anon](#parametertoken.anon)
-10. [HtmlToken](#htmltoken)
+11. [HtmlToken](#htmltoken)
     1. [原型方法](#htmltoken.prototype.methods)
         1. [check](#htmltoken.check)
         2. [fix](#htmltoken.fix)
@@ -78,7 +85,7 @@
         1. [name](#htmltoken.name)
         2. [closing](#htmltoken.closing)
         3. [selfClosing](#htmltoken.selfclosing)
-11. [选择器](#选择器)
+12. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
@@ -94,24 +101,105 @@ var Parser = require('.');
 
 ## 方法<a id="parser.methods"></a>
 
-**parse**(wikitext: string): Token<a id="parser.parse"></a>
+**parse**(wikitext: string): [Token](#token)<a id="parser.parse"></a>
 - 解析维基文本。
 
 ```js
-var root = Parser.parse(wikitext);
+var wikitext = 'any string',
+    root = Parser.parse(wikitext);
 ```
 
-**normalizeTitle**(title: string, defaultNs: number): string<a id="parser.normalizetitle"></a>
+**normalizeTitle**(title: string, defaultNs?: number): string<a id="parser.normalizetitle"></a>
 - 规范化页面标题。
 
 ```js
 assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj'); // 模板调用的默认名字空间编号是 10
 ```
 
+[返回目录](#目录)
+
+# AstElement
+语法树的节点均为字符串或一个仿 HTMLElement 的类 AstElement，这里仅列举这些方法和属性。
+
+## 原型方法<a id="astelement.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**hasAttribute**(key: PropertyKey): boolean  
+**getAttribute**(key: PropertyKey): string\|undefined  
+**getAttributeNames**(): string[]  
+**hasAttributes**(): boolean  
+**setAttribte**(key: PropertyKey, value: any): this  
+**removeAttribute**(key: PropertyKey): void  
+**toggleAttribute**(key: PropertyKey, force?: boolean): void  
+**hasChildNodes**(): boolean  
+**contains**(node: AstElement): boolean  
+**removeChild**(node: AstElement): AstElement  
+**appendChild**(node: string\|AstElement): string\|AstElement  
+**append**(...elements: string\|AstElement): void  
+**insertBefore**(node: string\|AstElement, reference: AstElement): string\|AstElement  
+**prepend**(...elements: string\|AstElement): void  
+**replaceChild**(newChild: string\|AstElement, oldChild: AstElement): AstElement  
+**replaceChildren**(...elements: string\|AstElement): void  
+**after**(...element: string\|AstElement): void  
+**before**(...element: string\|AstElement): void  
+**remove**(): void  
+**replaceWith**(...elements: string\|AstElement): void  
+**normalize**(): void  
+**getRootNode**(): AstElement  
+**addEventListener**(type: string, listener: (e: event, data: any) => void, options?: {once: boolean}): void  
+**removeEventListener**(type: string, listener: (e: event, data: any) => void): void  
+**dispatchEvent**(e: event, data: any): void  
+**matches**(selector: string): boolean  
+**closest**(selector: string): AstElement\|undefined  
+**querySelector**(selector: string): AstElement\|undefined  
+**querySelectorAll**(selector: string): AstElement[]  
+</details>
+
+## 实例属性<a id="astelement.instance.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**childNodes**: (string\|AstElement)[]  
+**parentNode**: AstElement\|undefined  
+</details>
+
+## 原型属性<a id="astelement.prototype.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**children**: AstElement[]  
+**parentElement**: AstElement\|undefined  
+**firstChild**: string\|AstElement\|undefined  
+**firstElementChild**: AstElement\|undefined  
+**lastChild** string\|AstElement\|undefined  
+**lastElementChild**: AstElement\|undefined  
+**nextSibling**: string\|AstElement\|undefined  
+**nextElementSibling**: AstElement\|undefined  
+**previousSibling**: string\|AstElement\|undefined  
+**previousElementSibling**: AstElement\|undefined  
+</details>
+
+[返回目录](#目录)
+
 # Token
 这是所有解析后的维基文本的基础类。
 
 ## 原型方法<a id="token.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**destroy**(): void<a id="token.destroy"></a>
+- 销毁节点，只能对根节点使用。
+
+**getAncestors**(): Token[]<a id="token.getancestors"></a>
+- 获取所有祖先节点。
+
+```js
+var root = Parser.parse('<ref/>'),
+    attr = root.querySelector('ext-attr');
+assert.deepStrictEqual(attr.getAncestors(), [attr.parentElement, root]);
+```
    
 **isPlain**(): boolean<a id="token.isplain"></a>
 - 是否是基础类（即未拓展的 Token）。
@@ -136,6 +224,15 @@ assert(root.toString() === wikitext); // 解析是可逆的
 var root = Parser.parse('<includeonly>a</includeonly><!-- b --><noinclude>c</noinclude>');
 assert(root.text() === 'c');
 ```
+
+**setText**(text: string, i: number): void<a id="token.settext"></a>
+- 只能通过这个方法修改指定位置上的纯字符串节点。
+
+```js
+var root = Parser.parse('');
+root.setText('string', 0);
+assert(root.toString() === 'string');
+```
    
 **sections**(): Token\[\]\[\]<a id="token.sections"></a>
 - 将页面分割为章节，每个章节对应一个 Token 数组。
@@ -155,8 +252,11 @@ var root = Parser.parse('a\n==b==\nc\n===d===\n'),
     section = root.section(0); // 序言对应的编号为 0
 assert.deepStrictEqual(section, [root.firstChild]);
 ```
+</details>
    
 ## 实例属性<a id="token.instance.properties"></a>
+<details>
+    <summary>展开</summary>
 
 **type**: string<a id="token.type"></a>
 - 根节点的值为 `root`，其他的基础类节点一般为 `plain`。
@@ -165,25 +265,35 @@ assert.deepStrictEqual(section, [root.firstChild]);
 var root = Parser.parse(wikitext);
 assert(root.type === 'root');
 ```
+</details>
+
+[返回目录](#目录)
    
 # CommentToken
 HTML 注释。
 
 ## 实例属性<a id="commenttoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
    
 **closed**: boolean<a id="commenttoken.closed"></a>
 - 是否闭合。
 
 ```js
 var root = Parser.parse('<!-- text'),
-    comment = root.firstChild; // Token API 模仿了 HTMLElement API
+    comment = root.firstChild;
 assert(comment.closed === false);
 ```
+</details>
+
+[返回目录](#目录)
    
 # ExtToken
 扩展标签。
 
 ## 实例属性<a id="exttoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
    
 **selfClosing**: boolean<a id="exttoken.selfclosing"></a>
 - 是否自封闭。
@@ -202,11 +312,16 @@ var root = Parser.parse('<REF/>'),
     ref = root.firstChild;
 assert(ref.name === 'ref');
 ```
+</details>
+
+[返回目录](#目录)
    
 # AttributeToken
 扩展和 HTML 标签属性。
 
 ## 原型方法<a id="attributetoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
 
 **hasAttr**(key: string): boolean<a id="attributetoken.hasattr"></a>
 - 是否带有指定属性。
@@ -277,8 +392,11 @@ assert(root.toString() === '<choose></choose>');
 attr.toggleAttr('uncached');
 assert(root.toString() === '<choose uncached></choose>');
 ```
+</details>
    
 ## 实例属性<a id="attributetoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
    
 **name**: string<a id="attributetoken.name"></a>
 - 小写的标签名。
@@ -288,11 +406,16 @@ var root = Parser.parse('<REF/>'),
     attr = root.querySelector('ext-attr'); // 即使没有设置属性，扩展和 HTML 标签的第一个子节点也总是 AttributeToken
 assert(attr.name === 'ref');
 ```
+</details>
+
+[返回目录](#目录)
 
 # HeadingToken
 章节标题。
 
 ## 原型方法<a id="headingtoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
 
 **setLevel**(n: number): void<a id="headingtoken.setlevel"></a>
 - 修改标题层级。
@@ -303,8 +426,11 @@ var root = Parser.parse('==a=='),
 header.setLevel(3);
 assert(root.toString() === '===a===');
 ```
+</details>
    
 ## 实例属性<a id="headingtoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
    
 **name**: string<a id="headingtoken.name"></a>
 - 字符串格式的标题层级。
@@ -314,11 +440,16 @@ var root = Parser.parse('==a=='),
     header = root.firstChild;
 assert(header.name === '2');
 ```
+</details>
+
+[返回目录](#目录)
 
 # ArgToken
 被 `{{{}}}` 包裹的模板参数。
 
 ## 原型方法<a id="argtoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
 
 **setName**(name: any): void<a id="argtoken.setname"></a>
 - 修改参数名。
@@ -339,8 +470,11 @@ var root = Parser.parse('{{{a}}}'),
 arg.setDefault('b');
 assert(root.toString() === '{{{a|b}}}');
 ```
+</details>
 
 ## 实例属性<a id="argtoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
 
 **name**: string<a id="argtoken.name"></a>
 - 参数名。
@@ -350,11 +484,14 @@ var root = Parser.parse('{{{a}}}'),
     arg = root.firstChild;
 assert(arg.name === 'a');
 ```
+</details>
+
+[返回目录](#目录)
 
 # TranscludeToken
 模板或魔术字。
 
-## 对象方法<a id="transcludetoken.prototype.methods"></a>
+## 原型方法<a id="transcludetoken.prototype.methods"></a>
 <details>
     <summary>展开</summary>
 
@@ -486,6 +623,8 @@ assert(root.toString() === '{{aa|b|c=1}}');
 </details>
 
 ## 实例属性<a id="transcludetoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
 
 **name**: string<a id="transcludetoken.name"></a>
 - 模板名（含名字空间）或魔术字。
@@ -497,11 +636,16 @@ var root = Parser.parse('{{a}}{{!}}'),
 assert(template.name === 'Template:A');
 assert(magicWord.name === '!');
 ```
+</details>
+
+[返回目录](#目录)
 
 # ParameterToken
 模板或魔术字的参数。
 
-## 对象方法<a id="parametertoken.prototype.methods"></a>
+## 原型方法<a id="parametertoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
 
 **getValue**(): string<a id="parametertoken.getvalue"></a>
 - 获取参数值。
@@ -536,8 +680,11 @@ try {
     assert(e.message === '参数更名造成重复参数：c');
 }
 ```
+</details>
 
 ## 实例属性<a id="parametertoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
 
 **name**: string<a id="parametertoken.name"></a>
 - 参数名。
@@ -558,11 +705,16 @@ var root = Parser.parse('{{a|b| c = 1}}'),
 assert(anonymous.anon === true);
 assert(named.anon === false);
 ```
+</details>
+
+[返回目录](#目录)
 
 # HtmlToken
 HTML标签，未进行匹配。
 
 ## 原型方法<a id="htmltoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
 
 **check**(): void<a id="htmltoken.check"></a>
 - 初步检测是否符合语法，不符时会抛出不同错误。可能会遗漏未匹配的内联标签。
@@ -610,8 +762,11 @@ var root = Parser.parse('<b>'),
 html.replaceTag('i');
 assert(root.toString() === '<i>');
 ```
+</details>
 
 ## 实例属性<a id="htmltoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
 
 **name**: string<a id="htmltoken.name"></a>
 - 小写的标签名。
@@ -639,9 +794,14 @@ var root = Parser.parse('<b/>'),
     html = root.firstChild;
 assert(html.selfClosing === true);
 ```
+</details>
+
+[返回目录](#目录)
 
 # 选择器
 Token 选择器的设计仿照了 CSS 和 jQuery 的选择器。
+<details>
+    <summary>展开</summary>
 
 **type**<a id="selector.type"></a>
 - 类比 CSS tag 选择器。
@@ -693,6 +853,10 @@ assert(comment.matches(':only-of-type') === true);
 assert(root.matches(':contains(text)') === true);
 assert(root.matches(':has(comment)') === true);
 assert(root.matches(':parent') === true);
+assert(comment.matches(':empty') === true);
 assert(comment.matches(':hidden') === true);
 assert(root.matches(':visible') === true);
 ```
+</details>
+
+[返回目录](#目录)
