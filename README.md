@@ -90,6 +90,7 @@
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
     4. [伪选择器](#selector.pseudo)
+13. [$ (TokenCollection)](#-tokencollection)
 </details>
 
 # Parser
@@ -880,6 +881,77 @@ assert(comment.matches(':empty') === true);
 assert(comment.matches(':hidden') === true);
 assert(root.matches(':visible') === true);
 ```
+</details>
+
+[返回目录](#目录)
+
+# $ (TokenCollection)
+这是一个仿 jQuery 的批量操作工具，这里仅列举方法和属性。
+<details>
+    <summary>展开</summary>
+
+**toArray**(): (string\|Token)[]  
+**get**(num: number): string\|Token  
+**each**(callback: function(this: string\|Token, number, string\|Token): void): this  
+**map**(callback: function(this: string\|Token, number, string\|Token): any): any[]\|TokenCollection  
+**slice**(start: number, end: number): TokenCollection  
+**first**(): TokenCollection  
+**last**(): TokenCollection  
+**eq**(i: number): TokenCollection  
+**toString**(): string  
+**text**(text?: string): string\|this  
+**is**(selector: string): boolean  
+**filter**(selector: string\|function(this: string\|Token, number, string\|Token): boolean): TokenCollection  
+**not**(selector: string\|function(this: string\|Token, number, string\|Token): boolean): TokenCollection  
+**find**(selector: string): TokenCollection  
+**has**(selector: string): boolean  
+**closest**(selector?: string): TokenCollection  
+**index**(): number  
+**add**(elements: string\|Token\|TokenCollection\|(string\|Token)[]): TokenCollection  
+**addBack**(selector?: string): TokenCollection  
+**parent**(selector?: string): TokenCollection  
+**parents**(selector?: string): TokenCollection  
+**parentsUntil**(selector?: string, filter?: string): TokenCollection  
+**next**(selector?: string): TokenCollection  
+**nextAll**(selector?: string): TokenCollection  
+**nextUntil**(selector?: string, filter?: string): TokenCollection  
+**prev**(selector?: string): TokenCollection  
+**prevAll**(selector?: string): TokenCollection  
+**prevUntil**(selector?: string, filter?: string): TokenCollection  
+**siblings**(selector?: string): TokenCollection  
+**children**(selector?: string): TokenCollection  
+**contents**(): TokenCollection  
+**data**(key: string\|Record\<string, any>, value?: any): this\|any  
+**removeData**(name: string\|string[]): this  
+**on**(events: string\|Record\<string, (e: Event, data: any) => any, [selector: string], handler: (e: Event, data: any) => any): this  
+**one**(events: string\|Record\<string, (e: Event, data: any) => any, [selector: string], handler: (e: Event, data: any) => any): this  
+**off**(events: string\|Record\<string, (e: Event, data: any) => any, [selector: string], [handler: (e: Event, data: any) => any]): this  
+**trigger**(event: Event, data?: any): this  
+**tiggerHandler**(event: Event, data?: any): any  
+**append**(content: string\|Token\|TokenCollection\|(string\|Token)[]\|function(this: Token, number, string): string\|Token\|TokenCollection\|(string\|Token)[]): this  
+**prepend**(content: string\|Token\|TokenCollection\|(string\|Token)[]\|function(this: Token, number, string): string\|Token\|TokenCollection\|(string\|Token)[]): this  
+**before**(content: string\|Token\|TokenCollection\|(string\|Token)[]\|function(this: Token, number, string): string\|Token\|TokenCollection\|(string\|Token)[]): this  
+**after**(content: string\|Token\|TokenCollection\|(string\|Token)[]\|function(this: Token, number, string): string\|Token\|TokenCollection\|(string\|Token)[]): this  
+**html**(content: string\|Token\|TokenCollection\|(string\|Token)[]\|function(this: Token, number, string): string\|Token\|TokenCollection\|(string\|Token)[]): this  
+**replaceWith**(content: string\|Token\|TokenCollection\|(string\|Token)[]\|function(this: Token, number, string): string\|Token\|TokenCollection\|(string\|Token)[]): this  
+**remove**(selector?: string): this  
+**detach**(selector?: string): this  
+**empty**(): this  
+**appendTo**(target: Token\|Token[]): this  
+**prependTo**(target: Token\|Token[]): this  
+**insertBefore**(target: Token\|Token[]): this  
+**insertAfter**(target: Token\|Token[]): this  
+**replaceAll**(target: Token\|Token[]): this  
+**val**(value: string\|string[]\|function(this: Token, number, string): string): this  
+**attr**(name: string\|Record\<string, string>, value?: string): this\|string  
+**removeAttr**(name: string): this  
+**prop**(name: string\|Record\<string, any>, value?: any): this\|any  
+**removeProp**(name: string): this  
+**wrapAll**(wrapper: string[]\|function(this: Token, string): string[]): this  
+**wrapInner**(wrapper: string[]\|function(this: Token, string): string[]): this  
+**wrap**(wrapper: string[]\|function(this: Token, string): string[]): this  
+**unwrap**(): this  
+
 </details>
 
 [返回目录](#目录)
