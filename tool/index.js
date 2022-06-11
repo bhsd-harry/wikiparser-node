@@ -851,6 +851,39 @@ const $ = tokens => {
 		},
 	});
 };
+$.hasData = /** @param {Token} element */ element => {
+	if (!(element instanceof Token)) {
+		typeError('Token');
+	}
+	return $.dataStore.has(element);
+};
+$.data = /** @type {(element: Token, key?: string, value?: any) => any} */ (element, key, value) => {
+	if (!(element instanceof Token)) {
+		typeError('Token');
+	} else if (key !== undefined && typeof key !== 'string') {
+		typeError('String');
+	} else if (key === undefined) {
+		return $.dataStore.get(element);
+	} else if (value === undefined) {
+		return $.dataStore.get(element)?.[key];
+	} else if (!$.dataStore.has(element)) {
+		$.dataStore.set(element, {});
+	}
+	$.dataStore.get(element)[key] = value;
+	return value;
+};
+$.removeData = /** @type {(element: Token, name?: string) => void} */ (element, name) => {
+	if (!(element instanceof Token)) {
+		typeError('Token');
+	} else if (name !== undefined && typeof name !== 'string') {
+		typeError('String');
+	} else if (name === undefined) {
+		$.dataStore.delete(element);
+	} else if ($.dataStore.has(element)) {
+		const data = $.dataStore.get(element);
+		delete data[name];
+	}
+};
 Object.defineProperty($, 'dataStore', {value: dataStore});
 Object.defineProperty($, 'TokenCollection', {value: TokenCollection});
 Object.defineProperty($, 'reload', {
