@@ -32,9 +32,9 @@ class ExtToken extends attributeParent(fixedToken(Token)) {
 		this.selfClosing = inner === undefined;
 		this.#tags = [name, closing || name];
 		const attrToken = new AttributeToken(!attr || /^\s/.test(attr) ? attr : ` ${attr}`, 'ext-attr', this.name),
-			/** @type {ParserConfig} */ newConfig = config ? {...config} : {},
+			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
-		let /** @type {Token} */ innerToken;
+		let innerToken;
 		switch (this.name) {
 			case 'choose':
 				ext.add('option');

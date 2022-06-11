@@ -45,7 +45,7 @@ class ParameterToken extends fixedToken(Token) {
 			if (that.anon || !that.name) { // 匿名参数不管怎么变动还是匿名
 				return;
 			}
-			const /** @type {{firstChild: Token}} */ {firstChild} = that;
+			const {firstChild} = that;
 			if (prevTarget === firstChild) {
 				const newKey = firstChild.text().trim();
 				data.oldKey = that.name;
@@ -123,15 +123,17 @@ class ParameterToken extends fixedToken(Token) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		key = key.trim();
-		/** @type {{parentNode: TranscludeToken, firstChild: AtomToken}} */
-		const {parentNode, firstChild} = this;
+		const /** @type {ParameterToken & {firstChild: AtomToken}} */ {parentNode, firstChild} = this;
 		if (this.name === key) {
 			Parser.warn('未改变实际参数名', key);
-		} else if (parentNode?.hasArg(key)) {
-			if (force) {
-				Parser.warn('参数更名造成重复参数', key);
-			} else {
-				throw new RangeError(`参数更名造成重复参数：${key}`);
+		} else {
+			const TranscludeToken = require('./transcludeToken');
+			if (parentNode instanceof TranscludeToken && parentNode.hasArg(key)) {
+				if (force) {
+					Parser.warn('参数更名造成重复参数', key);
+				} else {
+					throw new RangeError(`参数更名造成重复参数：${key}`);
+				}
 			}
 		}
 		firstChild.safeReplaceWith(key);

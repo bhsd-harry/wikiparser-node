@@ -1,6 +1,6 @@
 'use strict';
 
-const Parser = require('..'),
+const /** @type {Parser} */ Parser = require('..'),
 	Token = require('./token');
 
 /**

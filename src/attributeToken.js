@@ -78,7 +78,11 @@ class AttributeToken extends Token {
 		return this.#attr.has(key.toLowerCase().trim());
 	}
 
-	/** @param {string|undefined} key */
+	/**
+	 * @template {string|undefined} T
+	 * @param {T} key
+	 * @returns {T extends string ? string|true : Record<string, string|true>}
+	 */
 	getAttr(key) {
 		if (key === undefined) {
 			return Object.fromEntries(this.#attr);
@@ -244,7 +248,7 @@ class AttributeToken extends Token {
 			return equal === '!=';
 		}
 		val = toCase(val, i);
-		const /** @type {string|true} */ attr = this.getAttr(key),
+		const attr = this.getAttr(key),
 			thisVal = toCase(attr === true ? '' : attr, i);
 		switch (equal) {
 			case '~=':

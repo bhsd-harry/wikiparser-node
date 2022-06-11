@@ -388,7 +388,7 @@ class Token extends AstElement {
 			regex = new RegExp(source, 'gm'),
 			/** @type {BracketExecArray} */ mt = regex.exec(text),
 			moreBraces = text.includes('}}'),
-			/** @type {number} */ lastIndex;
+			lastIndex;
 		while (mt || lastIndex <= text.length && stack.at(-1)?.[0]?.[0] === '=') {
 			const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
 				/** @type {BracketExecArray} */ top = stack.pop() ?? {},
