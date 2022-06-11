@@ -71,6 +71,11 @@ const /** @type {Parser} */ Parser = {
 		}
 		return new Token(...args);
 	},
+
+	getTool() {
+		delete require.cache[require.resolve('./tool')];
+		return require('./tool');
+	},
 };
 const hidden = {enumerable: false};
 Object.defineProperties(Parser, {

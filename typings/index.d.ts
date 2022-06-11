@@ -59,7 +59,7 @@ declare global {
 		oldKey: string;
 		newKey: string;
 	}
-	type AstListener = (e: AstEvent, data: AstEventData) => void;
+	type AstListener = (e: AstEvent, data: AstEventData) => any;
 
 	interface BracketExecArray extends RegExpExecArray {
 		parts: string[][];
@@ -71,6 +71,11 @@ declare global {
 	type acceptable = Record<string, number|string|(number|string)[]>;
 	
 	type RangesSpread = Range[];
+
+	interface CollectionCallback<T, S> extends Function {
+		call: (thisArg: string|Token, i: number, ele: S) => T;
+	}
+	type CollectionMap = (arr: Token[]) => (string|Token)[];
 }
 
 export {};
