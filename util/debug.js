@@ -24,8 +24,14 @@ const externalUse = (name, onlyNew = false, proxy = false) => {
 	} else {
 		regex = new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`);
 	}
-	const mt = new Error().stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);
-	return !mt.slice(2).some(func => regex.test(func));
+	try {
+		throw new Error();
+	} catch (e) {
+		if (e instanceof Error) {
+			const mt = e.stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);
+			return !mt.slice(2).some(func => regex.test(func));
+		}
+	}
 };
 
 /**
