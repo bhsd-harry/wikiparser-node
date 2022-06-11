@@ -46,6 +46,8 @@ class ExtToken extends attributeParent(fixedToken(Token)) {
 			case 'tab':
 			case 'tabs':
 			case 'pre':
+			case 'includeonly':
+			case 'onlyinclude':
 				this.setAttribute('acceptable', {AttributeToken: 0, Token: 1});
 				ext.delete(this.name);
 				newConfig.ext = [...ext];
