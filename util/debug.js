@@ -12,21 +12,20 @@ const typeError = (...args) => {
  * 不是被构造器或原型方法调用
  * @param {string} name
  */
-const externalUse = (name, onlyNew = false) => {
+const externalUse = (name, onlyNew = false, proxy = false) => {
 	if (typeof name !== 'string') {
 		throw new TypeError('检查外部调用时必须提供方法名！');
 	}
-	const regex = onlyNew
-		? new RegExp(`^new ${name}$`)
-		: new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`);
-	try {
-		throw new Error();
-	} catch (e) {
-		if (e instanceof Error) {
-			const mt = e.stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);
-			return !mt.slice(2).some(func => regex.test(func));
-		}
+	let /** @type {RegExp} */ regex;
+	if (onlyNew) {
+		regex = new RegExp(`^new ${name}$`);
+	} else if (proxy) {
+		regex = new RegExp(`^Proxy\\.(?!${name}$)`);
+	} else {
+		regex = new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`);
 	}
+	const mt = new Error().stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);
+	return !mt.slice(2).some(func => regex.test(func));
 };
 
 /**
