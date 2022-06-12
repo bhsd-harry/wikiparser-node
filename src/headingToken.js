@@ -49,6 +49,10 @@ class HeadingToken extends fixedToken(Token) {
 		this.setAttribute('name', String(n));
 		this.firstElementChild.setAttribute('name', this.name);
 	}
+
+	removeTrail() {
+		this.lastElementChild.replaceChildren();
+	}
 }
 
 Parser.classes.HeadingToken = __filename;

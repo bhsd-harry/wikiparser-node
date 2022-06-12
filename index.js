@@ -27,6 +27,7 @@ const /** @type {Parser} */ Parser = {
 		HeadingToken: '../src/headingToken',
 		ArgToken: '../src/argToken',
 		TranscludeToken: './src/transcludeToken',
+		HtmlToken: './src/htmlToken',
 	},
 
 	clearCache() {

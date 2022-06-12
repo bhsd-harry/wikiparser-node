@@ -62,6 +62,10 @@ class IncludeToken extends hidden(fixedToken(Token)) {
 	setText(str) {
 		super.setText(str, 1);
 	}
+
+	removeAttr() {
+		super.setText('', 0);
+	}
 }
 
 Parser.classes.IncludeToken = __filename;

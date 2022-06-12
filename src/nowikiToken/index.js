@@ -18,6 +18,11 @@ class NowikiToken extends fixedToken(Token) {
 	constructor(wikitext, accum = []) {
 		super(wikitext, null, false, accum, {String: ':'});
 	}
+
+	/** @param {string} str */
+	setText(str) {
+		super.setText(str, 0);
+	}
 }
 
 Parser.classes.NowikiToken = __filename;
