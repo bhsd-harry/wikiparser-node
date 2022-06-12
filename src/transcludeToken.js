@@ -142,7 +142,7 @@ class TranscludeToken extends Token {
 			maxAnon = String(args.length + (addedToken ? 0 : 1));
 		if (addedToken) {
 			this.#keys.add(maxAnon);
-		} else if (!this.hasArg(maxAnon)) {
+		} else if (!this.hasArg(maxAnon, true)) {
 			this.#keys.delete(maxAnon);
 		}
 		const j = addedToken ? args.indexOf(addedToken) : 0;
@@ -204,35 +204,39 @@ class TranscludeToken extends Token {
 	}
 
 	/** @param {string|number} key */
-	getArgs(key, copy = true) {
+	getArgs(key, copy = true, exact = false) {
 		if (!['string', 'number'].includes(typeof key)) {
 			typeError('String', 'Number');
 		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
 			debugOnly(this.constructor, 'getArgs');
 		}
-		key = String(key).trim();
-		let args = this.#args.get(key);
+		const keyStr = String(key).trim();
+		let args = this.#args.get(keyStr);
 		if (!args) {
-			args = new Set(this.getAllArgs().filter(({name}) => key === name));
-			this.#args.set(key, args);
+			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
+			this.#args.set(keyStr, args);
 		}
-		return copy ? new Set(args) : args;
+		if (copy && exact && !isNaN(keyStr)) {
+			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
+		} else if (copy) {
+			args = new Set(args);
+		}
+		return args;
 	}
 
 	/** @param {string|number} key */
-	hasArg(key) {
-		return this.getArgs(key).size > 0;
+	hasArg(key, exact = false) {
+		return this.getArgs(key, exact, exact).size > 0;
 	}
 
 	/** @param {string|number} key */
 	getArg(key, exact = false) {
-		const args = [...this.getArgs(key)].sort(TranscludeToken.comparePosition).reverse();
-		return exact ? args.find(({anon}) => typeof key === 'number' === anon) : args[0];
+		return [...this.getArgs(key, exact, exact)].sort(TranscludeToken.comparePosition).at(-1);
 	}
 
 	/** @param {string|number} key */
-	removeArg(key) {
-		for (const token of this.getArgs(key)) {
+	removeArg(key, exact = false) {
+		for (const token of this.getArgs(key, exact, exact)) {
 			this.removeChild(token);
 		}
 	}
@@ -249,7 +253,7 @@ class TranscludeToken extends Token {
 
 	/** @param {string|number} key */
 	getValues(key) {
-		return [...this.getArgs(key)].map(token => token.getValue());
+		return [...this.getArgs(key, false)].map(token => token.getValue());
 	}
 
 	/**
@@ -299,6 +303,9 @@ class TranscludeToken extends Token {
 	}
 
 	anonToNamed() {
+		if (!TranscludeToken.isTemplate(this)) {
+			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
+		}
 		for (const token of this.getAnonArgs()) {
 			token.anon = false;
 			token.firstElementChild.replaceChildren(token.name);
@@ -367,6 +374,58 @@ class TranscludeToken extends Token {
 			firstElementChild.destroy();
 			this.appendChild(lastChild);
 		}
+	}
+
+	getDuplicatedArgs() {
+		if (!TranscludeToken.isTemplate(this)) {
+			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
+		}
+		return [...this.#args.entries()].filter(([, {size}]) => size > 1);
+	}
+
+	fixDuplication() {
+		const /** @type {string[]} */ duplicatedKeys = [];
+		for (const [key, args] of this.getDuplicatedArgs()) {
+			const /** @type {Map<string, ParameterToken[]>} */ values = new Map();
+			for (const arg of args) {
+				const val = arg.getValue().trim();
+				if (values.has(val)) {
+					values.get(val).push(arg);
+				} else {
+					values.set(val, [arg]);
+				}
+			}
+			let anonFound = isNaN(key);
+			const entries = [...values.entries()],
+				emptyArgs = entries.filter(([val]) => val === '').flatMap(([, curArgs]) => curArgs),
+				duplicatedArgs = entries.filter(([, {length}]) => length > 1).flatMap(([, curArgs]) => {
+					const anonIndex = anonFound ? -1 : curArgs.findIndex(({anon}) => anon);
+					if (anonIndex !== -1) {
+						anonFound = true;
+					}
+					curArgs.splice(anonIndex, 1);
+					return curArgs;
+				}),
+				badArgs = [...new Set([...emptyArgs, ...duplicatedArgs])],
+				index = anonFound ? -1 : badArgs.findIndex(({anon}) => anon);
+			if (badArgs.length === args.size) {
+				badArgs.splice(index, 1);
+			} else if (badArgs.length < args.size && index !== -1) {
+				this.anonToNamed();
+			}
+			for (const arg of badArgs) {
+				arg.remove();
+			}
+			const remaining = args.size - badArgs.length;
+			if (remaining > 1) {
+				Parser.error(`${this.type === 'template'
+					? this.name
+					: `Module:${this.children[1]?.text()?.replaceAll('_', ' ')?.trim() ?? ''}`
+				} 还留有 ${remaining} 个重复的 ${key} 参数！`);
+				duplicatedKeys.push(key);
+			}
+		}
+		return duplicatedKeys;
 	}
 }
 
