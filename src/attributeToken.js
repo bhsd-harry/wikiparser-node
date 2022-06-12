@@ -171,7 +171,7 @@ class AttributeToken extends Token {
 		this.setAttr(key, force === true || force === undefined && value === false);
 	}
 
-	/** 从this.#attr更新childNodes */
+	/** 从`this.#attr`更新`childNodes` */
 	#updateFromAttr(replace = true) {
 		if (replace) {
 			Parser.warn(`${this.constructor.name}.#updateFromAttr 方法会自动清除无效属性！`);
@@ -196,7 +196,7 @@ class AttributeToken extends Token {
 		return this.#updateFromAttr(false);
 	}
 
-	/** 从childNodes更新this.#attr */
+	/** 从`childNodes`更新`this.#attr` */
 	#parseAttr() {
 		this.#attr.clear();
 		for (const [, key,, quoted, unquoted] of this.toString()
@@ -235,7 +235,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @param {string} key
-	 * @param {string|undefined} equal - equal存在时val和i也一定存在
+	 * @param {string|undefined} equal - `equal`存在时`val`和`i`也一定存在
 	 * @param {string|undefined} val
 	 * @param {string|undefined} i
 	 */
@@ -253,7 +253,7 @@ class AttributeToken extends Token {
 		switch (equal) {
 			case '~=':
 				return attr !== true && thisVal.split(/\s/).some(v => v === val);
-			case '|=': // 允许val === ''
+			case '|=': // 允许`val === ''`
 				return thisVal === val || thisVal.startsWith(`${val}-`);
 			case '^=':
 				return attr !== true && thisVal.startsWith(val);
@@ -263,7 +263,7 @@ class AttributeToken extends Token {
 				return attr !== true && thisVal.includes(val);
 			case '!=':
 				return thisVal !== val;
-			default: // '='
+			default: // `=`
 				return thisVal === val;
 		}
 	}

@@ -2,10 +2,10 @@
 
 /*
  * PHP解析器的步骤：
- * -1. 替换签名和{{subst:}}，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
- * 0. 移除特定字符\x00和\x7f，参见Parser::parse
+ * -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
+ * 0. 移除特定字符`\x00`和`\x7f`，参见Parser::parse
  * 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
- * 2. 模板/模板变量/标题，注意rightmost法则，以及'-{'和'[['可以破坏'{{'或'{{{'语法，
+ * 2. 模板/模板变量/标题，注意rightmost法则，以及`-{`和`[[`可以破坏`{{`或`{{{`语法，
  *    参见Preprocessor_Hash::buildDomTreeArrayFromText
  * 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
  * 4. 表格，参见Parser::handleTables
@@ -22,7 +22,7 @@
  * \x00\d+.\x7f标记Token：
  * e: ExtToken
  * c: CommentToken、NoIncludeToken和IncludeToken
- * !: {{!}}专用
+ * !: `{{!}}`专用
  * t: ArgToken或TranscludeToken
  * h: HeadingToken
  * x: HtmlToken
@@ -40,8 +40,11 @@ class Token extends AstElement {
 	type = 'root';
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */ #stage = 0;
 	/** @type {ParserConfig} */ #config;
-	/** 这个数组起两个作用：1. 数组中的Token会在build时替换\x00\x7f标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
-	/** @type {accum} */ #accum;
+	/**
+	 * 这个数组起两个作用：1. 数组中的Token会在build时替换`/\x00\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
+	 * @type {accum}
+	 */
+	#accum;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
 
@@ -545,7 +548,7 @@ class Token extends AstElement {
 		return this;
 	}
 
-	/** 生成部分Token的name属性 */
+	/** 生成部分Token的`name`属性 */
 	afterBuild() {
 		if (!Parser.debugging && externalUse('afterBuild')) {
 			debugOnly(this.constructor, 'afterBuild');
@@ -557,7 +560,7 @@ class Token extends AstElement {
 		return this;
 	}
 
-	/** 解析、重构、生成部分Token的name属性 */
+	/** 解析、重构、生成部分Token的`name`属性 */
 	parse(n = MAX_STAGE) {
 		if (typeof n !== 'number') {
 			typeError('Number');

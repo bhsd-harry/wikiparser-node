@@ -55,12 +55,14 @@ class ExtToken extends attributeParent(fixedToken(Token)) {
 				break;
 			/*
 			 * 更多定制扩展的代码示例：
+			 * ```
 			 * case 'extensionName':
 			 * 	this.setAttribute('acceptable', {AttributeToken: 0, ExtensionNameToken: 1});
 			 * 	ext.delete(this.name);
 			 * 	newConfig.ext = [...ext];
 			 * 	innerToken = new ExtensionNameToken(extInner, newConfig, false, accum);
 			 * 	break;
+			 * ```
 			 */
 			default: {
 				const NowikiToken = require('./nowikiToken');

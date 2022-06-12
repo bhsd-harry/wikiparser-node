@@ -38,7 +38,7 @@ class ParameterToken extends fixedToken(Token) {
 		}
 		const that = this;
 		/**
-		 * 在AstEventData中记录oldKey和newKey
+		 * 在AstEventData中记录`oldKey`和`newKey`
 		 * @type {AstListener}
 		 */
 		const parameterListener = ({prevTarget}, data) => {

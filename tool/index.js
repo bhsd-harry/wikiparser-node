@@ -101,7 +101,7 @@ class TokenCollection extends Array {
 
 	/** @param {CollectionCallback<void, string|Token>} callback */
 	each(callback) {
-		this.forEach((ele, i) => { // 不能使用for...of
+		this.forEach((ele, i) => { // 不能使用`for`...`of`
 			callback.call(ele, i, ele);
 		});
 		return this;

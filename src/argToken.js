@@ -56,7 +56,7 @@ class ArgToken extends watchFirstChild(Token) {
 	}
 
 	/**
-	 * 删除arg-default子节点时自动删除全部arg-redundant子节点
+	 * 删除`arg-default`子节点时自动删除全部`arg-redundant`子节点
 	 * @param {number} i
 	 * @returns {Token}
 	 */
