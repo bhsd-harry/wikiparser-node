@@ -1,9 +1,9 @@
 import Token from '../src/token';
 import {Range} from '../lib/range';
+import $ from '../tool';
 
 declare global {
 	interface ParserConfig {
-		include: string[],
 		ext: string[];
 		html: [string[], string[], string[]];
 		namespaces: Record<string, string>;
@@ -26,17 +26,19 @@ declare global {
 		mixins: Record<string, string>;
 		defaultPaths: Record<string, string>;
 		/** 清除各模块的缓存 */
-		clearCache: (type?: string) => void;
+		clearCache: () => void;
 
 		config: string;
 		getConfig: () => ParserConfig;
 
 		normalizeTitle: (title: string, defaultNs?: number) => string;
 
-		MAX_STAGE: number;
-		parse: (wikitext: string|Token, maxStage?: number) => Token;
+		readonly MAX_STAGE: number;
+		parse: (wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig) => Token;
 
 		create: (className: string, ...args: any[]) => Token;
+
+		getTool: () => typeof $;
 	}
 
 	type pseudo = 'root'|'is'|'not'|'nth-child'|'nth-of-type'|'nth-last-child'|'nth-last-of-type'
@@ -45,10 +47,9 @@ declare global {
 	type pseudoCall = Record<pseudo, string[]>;
 
 	interface AstEvent extends Event {
-		target: Token;
+		readonly target: Token;
 		currentTarget: Token;
 		prevTarget: ?Token;
-		path: Token[];
 	};
 	interface AstEventData {
 		position: number;

@@ -7,7 +7,7 @@ const hidden = require('../mixin/hidden'),
 	Token = require('./token');
 
 /**
- * `<includeonly>`或`<onlyinclude>`
+ * `<includeonly>`或`<noinclude>`
  * @classdesc `{childNodes: [string]}`
  */
 class IncludeToken extends hidden(fixedToken(Token)) {
@@ -26,8 +26,8 @@ class IncludeToken extends hidden(fixedToken(Token)) {
 			|| inner !== undefined && typeof inner !== 'string' || typeof closing !== 'string'
 		) {
 			typeError('String');
-		} else if (!['includeonly', 'onlyinclude'].includes(name.toLowerCase())) {
-			throw new RangeError('IncludeToken 仅用于 <includeonly> 和 <onlyinclude>！');
+		} else if (!['includeonly', 'noinclude'].includes(name.toLowerCase())) {
+			throw new RangeError('IncludeToken 仅用于 <includeonly> 和 <noinclude>！');
 		}
 		super(undefined, null, false, accum, {String: [0, 1]});
 		this.setAttribute('name', name.toLowerCase());

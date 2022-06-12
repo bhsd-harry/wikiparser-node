@@ -54,12 +54,12 @@ const /** @type {Parser} */ Parser = {
 
 	MAX_STAGE: 11,
 
-	parse(wikitext, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include = false, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src/token');
 		if (wikitext instanceof Token) {
 			return wikitext.parse(maxStage);
 		}
-		return new Token(wikitext, config).parse(maxStage);
+		return new Token(wikitext, config).parse(maxStage, include);
 	},
 
 	create(className, ...args) {

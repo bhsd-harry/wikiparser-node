@@ -1,8 +1,4 @@
 {
-	"include": [
-		"includeonly",
-		"onlyinclude"
-	],
 	"ext": [
 		"nowiki",
 		"pre",

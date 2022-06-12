@@ -295,7 +295,7 @@ class Token extends AstElement {
 	}
 
 	/** 将维基语法替换为占位符 */
-	parseOnce(n = this.#stage) {
+	parseOnce(n = this.#stage, include = false) {
 		if (!Parser.debugging && externalUse('parseOnce')) {
 			debugOnly(this.constructor, 'parseOnce');
 		} else if (typeof n !== 'number') {
@@ -310,7 +310,7 @@ class Token extends AstElement {
 				if (this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#parseCommentAndExt();
+				this.#parseCommentAndExt(include);
 				break;
 			case 1:
 				this.#parseBrackets();
@@ -341,23 +341,47 @@ class Token extends AstElement {
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.parseOnce(n);
+				token.parseOnce(n, include);
 			}
 		}
 		this.#stage++;
 		return this;
 	}
 
-	#parseCommentAndExt() {
+	#parseCommentAndExt(includeOnly = false) {
+		let /** @type {string} */ text = this.firstChild;
+		const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
+		if (includeOnly && onlyinclude.test(text)) { // `<onlyinclude>`拥有最高优先级
+			onlyinclude.lastIndex = 0;
+			text = text.replace(
+				onlyinclude,
+				/** @param {string} inner */ (_, inner) => {
+					const str = `\x00${this.#accum.length}e\x7f`,
+						OnlyincludeToken = require('./onlyincludeToken');
+					new OnlyincludeToken(inner, this.#config, this.#accum);
+					return str;
+				},
+			).replace(/(?<=^|\x00\d+e\x7f).*?(?=$|\x00\d+e\x7f)/gs, substr => {
+				if (substr === '') {
+					return '';
+				}
+				const NoincludeToken = require('./nowikiToken/noincludeToken');
+				new NoincludeToken(substr, this.#accum);
+				return `\x00${this.#accum.length - 1}c\x7f`;
+			});
+			this.replaceChildren(text);
+			return;
+		}
 		const regex = new RegExp(
-			`<!--.*?(?:-->|$)|<noinclude(?:\\s.*?)?>|</noinclude\\s*>|<(${
-				this.#config.ext.join('|')
-			})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|<(${
-				this.#config.include.join('|')
-			})(\\s.*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`,
+			includeOnly
+				? `<!--.*?(?:-->|$)|<includeonly(?:\\s.*?)?>|</includeonly\\s*>|<(${
+					this.#config.ext.join('|')
+				})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|<(noinclude)(\\s.*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`
+				: `<!--.*?(?:-->|$)|<(?:no|only)include(?:\\s.*?)?>|</(?:no|only)include\\s*>|<(${
+					this.#config.ext.join('|')
+				})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|<(includeonly)(\\s.*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`,
 			'gis',
 		);
-		let /** @type {string} */ text = this.firstChild;
 		text = text.replace(
 			regex,
 			/** @type {function(...string): string} */
@@ -561,14 +585,14 @@ class Token extends AstElement {
 	}
 
 	/** 解析、重构、生成部分Token的`name`属性 */
-	parse(n = MAX_STAGE) {
+	parse(n = MAX_STAGE, include = false) {
 		if (typeof n !== 'number') {
 			typeError('Number');
 		} else if (n < MAX_STAGE && externalUse('parse')) {
 			Parser.warn('指定解析层级的方法仅供熟练用户使用！');
 		}
 		while (this.#stage < n) {
-			this.parseOnce();
+			this.parseOnce(this.#stage, include);
 		}
 		return this.build().afterBuild();
 	}
