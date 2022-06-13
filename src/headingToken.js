@@ -3,8 +3,7 @@
 const {typeError} = require('../util/debug'),
 	fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token'),
-	AtomToken = require('./atomToken');
+	Token = require('./token');
 
 /**
  * 章节标题
@@ -24,9 +23,10 @@ class HeadingToken extends fixedToken(Token) {
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
-		const trail = new AtomToken(input[1], 'heading-trail', accum, {
-			String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
-		});
+		const AtomToken = require('./atomToken'),
+			trail = new AtomToken(input[1], 'heading-trail', accum, {
+				String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
+			});
 		this.append(token, trail);
 	}
 

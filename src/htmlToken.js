@@ -4,8 +4,7 @@ const {typeError, externalUse} = require('../util/debug'),
 	fixedToken = require('../mixin/fixedToken'),
 	attributeParent = require('../mixin/attributeParent'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token'),
-	AttributeToken = require('./attributeToken');
+	Token = require('./token');
 
 /**
  * HTML标签
@@ -27,7 +26,9 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		if (typeof name !== 'string') {
 			typeError('String');
-		} else if (!(attr instanceof AttributeToken)) {
+		}
+		const AttributeToken = require('./attributeToken');
+		if (!(attr instanceof AttributeToken)) {
 			typeError('AttributeToken');
 		}
 		super(undefined, config, true, accum, {AttributeToken: 0});

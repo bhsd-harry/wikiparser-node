@@ -22,7 +22,7 @@ const /** @type {Parser} */ Parser = {
 	mixins: {},
 	defaultPaths: {
 		Token: './src/token',
-		ExtToken: '../src/extToken',
+		ExtToken: '../src/tagPairToken/extToken',
 		CommentToken: './src/nowikiToken/commentToken',
 		HeadingToken: '../src/headingToken',
 		ArgToken: '../src/argToken',

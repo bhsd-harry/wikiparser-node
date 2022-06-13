@@ -3,8 +3,7 @@
 const {typeError} = require('../util/debug'),
 	fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token'),
-	AtomToken = require('./atomToken');
+	Token = require('./token');
 
 /**
  * 模板或魔术字参数
@@ -25,10 +24,11 @@ class ParameterToken extends fixedToken(Token) {
 		}
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
 		this.anon = typeof key === 'number';
-		const keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
-			String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
-			ExtToken: ':', ArgToken: ':', TranscludeToken: ':',
-		});
+		const AtomToken = require('./atomToken'),
+			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
+				String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
+				ExtToken: ':', ArgToken: ':', TranscludeToken: ':',
+			});
 		const token = new Token(value, config, true, accum);
 		token.type = 'parameter-value';
 		token.setAttribute('stage', 2);
@@ -125,7 +125,7 @@ class ParameterToken extends fixedToken(Token) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		key = key.trim();
-		const /** @type {ParameterToken & {firstChild: AtomToken}} */ {parentNode, firstChild} = this;
+		const /** @type {ParameterToken & {firstChild: Token}} */ {parentNode, firstChild} = this;
 		if (this.name === key) {
 			Parser.warn('未改变实际参数名', key);
 		} else {

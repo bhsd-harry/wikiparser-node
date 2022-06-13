@@ -1,6 +1,6 @@
 'use strict';
 
-const {typeError, externalUse} = require('../util/debug'),
+const {externalUse} = require('../util/debug'),
 	/** @type {Parser} */ Parser = require('..');
 
 /**
@@ -9,16 +9,6 @@ const {typeError, externalUse} = require('../util/debug'),
  * @returns {T}
  */
 const fixedToken = constructor => class extends constructor {
-	/** @param {string} wikitext */
-	constructor(wikitext, ...args) {
-		super(undefined, ...args);
-		if (typeof wikitext === 'string') {
-			this.insertAt(wikitext);
-		} else if (wikitext !== undefined) {
-			typeError('String');
-		}
-	}
-
 	removeAt() {
 		throw new Error(`${this.constructor.name} 不可删除元素！`);
 	}

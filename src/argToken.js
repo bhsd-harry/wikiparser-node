@@ -2,7 +2,6 @@
 
 const /** @type {Parser} */ Parser = require('..'),
 	Token = require('./token'),
-	AtomToken = require('./atomToken'),
 	watchFirstChild = require('../mixin/watchFirstChild');
 
 /**
@@ -20,10 +19,11 @@ class ArgToken extends watchFirstChild(Token) {
 		super(undefined, config, true, accum, {Token: 1, AtomToken: [0, '2:']});
 		for (const [i, part] of parts.entries()) {
 			if (i === 0 || i > 1) {
-				const token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', accum, {
-					String: ':', CommentToken: ':', ExtToken: ':', NoincludeToken: ':', IncludeToken: ':',
-					ArgToken: ':', TranscludeToken: ':',
-				});
+				const AtomToken = require('./atomToken'),
+					token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', accum, {
+						String: ':', CommentToken: ':', ExtToken: ':', NoincludeToken: ':', IncludeToken: ':',
+						ArgToken: ':', TranscludeToken: ':',
+					});
 				super.insertAt(token);
 			} else {
 				const token = new Token(part, config, true, accum);

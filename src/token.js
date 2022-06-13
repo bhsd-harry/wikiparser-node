@@ -460,14 +460,14 @@ class Token extends AstElement {
 			(substr, name, attr, inner, closing, include, includeAttr, includeInner, includeClosing) => {
 				const str = `\x00${this.#accum.length}${name ? 'e' : 'c'}\x7f`;
 				if (name) {
-					const ExtToken = require('./extToken');
+					const ExtToken = require('./tagPairToken/extToken');
 					new ExtToken(name, attr, inner, closing, this.#config, this.#accum);
 				} else if (substr.startsWith('<!--')) {
 					const CommentToken = require('./nowikiToken/commentToken'),
 						closed = substr.endsWith('-->');
 					new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, this.#accum);
 				} else if (include) {
-					const IncludeToken = require('./includeToken');
+					const IncludeToken = require('./tagPairToken/includeToken');
 					new IncludeToken(include, includeAttr, includeInner, includeClosing, this.#accum);
 				} else {
 					const NoincludeToken = require('./nowikiToken/noincludeToken');
