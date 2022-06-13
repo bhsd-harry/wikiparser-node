@@ -18,7 +18,7 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable
 	 */
-	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = [], acceptable = null) {
+	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
 		if (typeof name !== 'string' || closing !== undefined && typeof closing !== 'string') {
 			typeError('String');
 		} else if (!Token.isNode(attr) || !Token.isNode(inner)) {
@@ -28,13 +28,19 @@ class TagPairToken extends fixedToken(Token) {
 		if (![...config?.ext ?? [], 'includeonly', 'noinclude'].includes(lcName)) {
 			throw new RangeError(`非法的标签: ${lcName}！`);
 		}
-		super(undefined, config, false, [], acceptable);
+		super(undefined, config);
 		this.setAttribute('name', lcName);
 		this.selfClosing = closing === undefined;
 		this.closed = closing !== '';
 		this.#tags = [name, closing || name];
 		this.append(attr, inner);
-		const index = Math.min(...[accum.indexOf(attr), accum.indexOf(inner)].filter(i => i !== -1));
+		let index = accum.indexOf(attr);
+		if (index === -1) {
+			index = accum.indexOf(inner);
+		}
+		if (index === -1) {
+			index = Infinity;
+		}
 		accum.splice(index, 0, this);
 	}
 

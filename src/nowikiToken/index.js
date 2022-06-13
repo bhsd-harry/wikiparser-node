@@ -16,7 +16,7 @@ class NowikiToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, accum = []) {
-		super(wikitext, null, false, accum, {String: ':'});
+		super(wikitext, null, false, accum);
 	}
 
 	/** @param {string} str */

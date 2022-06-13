@@ -18,7 +18,7 @@ class HeadingToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
-		super(undefined, null, true, accum, {Token: 0, AtomToken: 1});
+		super(undefined, null, true, accum);
 		this.setAttribute('name', String(level));
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';

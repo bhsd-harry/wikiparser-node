@@ -22,7 +22,7 @@ class ParameterToken extends fixedToken(Token) {
 		if (!['string', 'number'].includes(typeof key)) {
 			typeError('String', 'Number');
 		}
-		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
+		super(undefined, config, true, accum);
 		this.anon = typeof key === 'number';
 		const AtomToken = require('./atomToken'),
 			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
