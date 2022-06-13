@@ -60,6 +60,10 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? this.lastElementChild.toString() : super.toString('=');
 	}
 
+	getGaps() {
+		return this.anon ? 0 : 1;
+	}
+
 	text() {
 		return this.anon ? this.lastElementChild.text() : super.text('=');
 	}

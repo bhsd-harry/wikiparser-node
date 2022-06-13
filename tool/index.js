@@ -831,7 +831,7 @@ class TokenCollection extends Array {
 	}
 
 	position() {
-		return this._find()?.position;
+		return this._find()?.getPosition();
 	}
 
 	height() {

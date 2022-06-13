@@ -35,7 +35,7 @@
 		],
 		"require-atomic-updates": 2,
 		"block-scoped-var": 2,
-		"class-methods-use-this": 2,
+		"class-methods-use-this": 0,
 		"consistent-this": 2,
 		"curly": 2,
 		"default-case": 2,

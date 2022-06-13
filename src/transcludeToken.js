@@ -128,6 +128,14 @@ class TranscludeToken extends watchFirstChild(Token) {
 			: `{{${super.toString('|')}}}`;
 	}
 
+	getPadding() {
+		return 2;
+	}
+
+	getGaps() {
+		return 1;
+	}
+
 	text() {
 		const {children, childElementCount, firstElementChild} = this;
 		return this.type === 'magic-word'

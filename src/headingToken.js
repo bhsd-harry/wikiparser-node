@@ -35,6 +35,14 @@ class HeadingToken extends fixedToken(Token) {
 		return `${equals}${super.toString(equals)}`;
 	}
 
+	getPadding() {
+		return Number(this.name);
+	}
+
+	getGaps() {
+		return Number(this.name);
+	}
+
 	text() {
 		const equals = '='.repeat(Number(this.name));
 		return `${equals}${this.firstElementChild.text()}${equals}`;

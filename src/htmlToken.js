@@ -57,6 +57,10 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.selfClosing ? '/' : ''}>`;
 	}
 
+	getPadding() {
+		return this.#tag.length + (this.closing ? 2 : 1);
+	}
+
 	text() {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.text()}${this.selfClosing ? '/' : ''}>`;
 	}

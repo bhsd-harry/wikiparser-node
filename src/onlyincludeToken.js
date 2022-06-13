@@ -19,6 +19,10 @@ class OnlyincludeToken extends Token {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
+	getPadding() {
+		return 13;
+	}
+
 	isPlain() {
 		return this.constructor === OnlyincludeToken;
 	}

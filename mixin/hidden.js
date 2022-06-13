@@ -8,7 +8,6 @@ const /** @type {Parser} */ Parser = require('..');
  * @returns {T}
  */
 const hidden = constructor => class extends constructor {
-	/* eslint-disable class-methods-use-this */
 	text() {
 		return '';
 	}

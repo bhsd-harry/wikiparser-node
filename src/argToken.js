@@ -39,6 +39,14 @@ class ArgToken extends watchFirstChild(Token) {
 		return `{{{${super.toString('|')}}}}`;
 	}
 
+	getPadding() {
+		return 3;
+	}
+
+	getGaps() {
+		return 1;
+	}
+
 	text() {
 		return `{{{${this.children.slice(0, 2).map(child => child.text()).join('|')}}}}`;
 	}

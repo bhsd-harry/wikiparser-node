@@ -70,6 +70,14 @@ class TagPairToken extends fixedToken(Token) {
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${closed ? `</${closing}>` : ''}`;
 	}
 
+	getPadding() {
+		return this.#tags[0].length + 1;
+	}
+
+	getGaps() {
+		return this.selfClosing ? 2 : 1;
+	}
+
 	text() {
 		const {closed, firstChild, lastChild, selfClosing} = this,
 			[opening, closing] = this.#tags,
