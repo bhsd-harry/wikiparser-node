@@ -34,7 +34,7 @@ class TagPairToken extends fixedToken(Token) {
 		this.closed = closing !== '';
 		this.#tags = [name, closing || name];
 		this.append(attr, inner);
-		const index = Math.max(accum.indexOf(attr), accum.indexOf(inner));
+		const index = Math.min(...[accum.indexOf(attr), accum.indexOf(inner)].filter(i => i !== -1));
 		accum.splice(index, 0, this);
 	}
 
