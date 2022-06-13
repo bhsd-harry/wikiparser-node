@@ -439,7 +439,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			let remaining = args.size - badArgs.length;
 			if (remaining === 1) {
 				continue;
-			} else if (aggressive && (anonCount ? /\D\d+$/ : /^\d+$/).test(key)) {
+			} else if (aggressive && (anonCount ? /\D\d+$/ : /(?:^|\D)\d+$/).test(key)) {
 				let /** @type {number} */ last;
 				const str = key.slice(0, -key.match(/\d+$/)[0].length),
 					regex = new RegExp(`^${str.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&')}\\d+$`),
