@@ -38,7 +38,11 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.#tag = name;
 	}
 
-	/** @param {PropertyKey} key */
+	/**
+	 * @template {TokenAttributeName} T
+	 * @param {T} key
+	 * @returns {TokenAttribute<T>}
+	 */
 	getAttribute(key) {
 		if (!Parser.debugging && key === 'tag' && externalUse('getAttribute')) {
 			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);
@@ -57,7 +61,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	check() {
-		const /** @type {ParserConfig} */ {html} = this.getAttribute('config'),
+		const {html} = this.getAttribute('config'),
 			{name, parentElement, closing, selfClosing} = this,
 			string = this.toString().replaceAll('\n', '\\n');
 		if (closing && selfClosing) {
@@ -106,7 +110,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	fix() {
-		const /** @type {ParserConfig} */ config = this.getAttribute('config'),
+		const config = this.getAttribute('config'),
 			{parentElement, selfClosing, name, firstElementChild} = this;
 		if (!parentElement || !selfClosing || !config.html[0].includes(name)) {
 			return;
@@ -130,7 +134,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/** @param {string} tag */
 	replaceTag(tag) {
-		const /** @type {ParserConfig} */ {html} = this.getAttribute('config'),
+		const {html} = this.getAttribute('config'),
 			name = tag.toLowerCase();
 		if (!html.flat().includes(name)) {
 			throw new RangeError(`非法的HTML标签：${tag}`);

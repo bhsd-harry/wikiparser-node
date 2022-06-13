@@ -72,7 +72,7 @@ class ParameterToken extends fixedToken(Token) {
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode && parentNode instanceof require('./transcludeToken')) {
-				const /** @type {Set<string>} */ keys = parentNode.getAttribute('keys'),
+				const keys = parentNode.getAttribute('keys'),
 					args = parentNode.getArgs(name, false);
 				keys.add(name);
 				args.add(this);

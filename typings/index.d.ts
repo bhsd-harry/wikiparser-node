@@ -1,6 +1,7 @@
 import Token from '../src/token';
-import {Range} from '../lib/range';
+import {Range, Ranges} from '../lib/range';
 import $ from '../tool';
+import ParameterToken from '../src/parameterToken';
 
 declare global {
 	interface ParserConfig {
@@ -77,6 +78,33 @@ declare global {
 		call: (thisArg: string|Token, i: number, ele: S) => T;
 	}
 	type CollectionMap = (arr: Token[]) => (string|Token)[];
+
+	interface TokenPosition {
+		line: number;
+		ch: number;
+	}
+
+	type TokenAttributeName =
+		'childNodes'|'parentNode'| // AstNode
+		'name'| // AstElement
+		'stage'|'config'|'accum'|'acceptable'|'protectedChildren'| // Token
+		'tags'| // ExtToken
+		'keys'|'args'| // TranscludeToken
+		'attr'; // AttributeToken
+	type TokenAttribute<T> =
+		T extends 'childNodes' ? (string|Token)[] :
+		T extends 'parentNode' ? Token|undefined :
+		T extends 'name'|'tag' ? string :
+		T extends 'stage' ? number :
+		T extends 'config' ? ParserConfig :
+		T extends 'accum' ? accum :
+		T extends 'acceptable' ? Record<string, Ranges> :
+		T extends 'protectedChildren' ? Ranges :
+		T extends 'tags' ? string[] :
+		T extends 'keys' ? Set<string> :
+		T extends 'args' ? Map<string, Set<ParameterToken>> :
+		T extends 'attr' ? Map<string, string|true> :
+		string;
 }
 
 export {};

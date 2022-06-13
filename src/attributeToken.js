@@ -37,7 +37,11 @@ class AttributeToken extends Token {
 		this.setAttribute('name', name).#parseAttr();
 	}
 
-	/** @param {PropertyKey} key */
+	/**
+	 * @template {TokenAttributeName} T
+	 * @param {T} key
+	 * @returns {TokenAttribute<T>}
+	 */
 	getAttribute(key) {
 		if (!Parser.debugging && key === 'attr' && externalUse('getAttribute')) {
 			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);

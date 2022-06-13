@@ -2,7 +2,6 @@
 
 const {typeError, externalUse} = require('../util/debug'),
 	Token = require('../src/token'),
-	{Ranges} = require('../lib/range'), // eslint-disable-line no-unused-vars
 	assert = require('assert/strict');
 
 const /** @type {WeakMap<Token, Record<string, any>>} */ dataStore = new WeakMap();
@@ -753,13 +752,13 @@ class TokenCollection extends Array {
 				throw error;
 			}
 		}
-		const /** @type {Ranges} */ ranges = parentNode.getAttribute('protectedChildren'),
+		const ranges = parentNode.getAttribute('protectedChildren'),
 			index = ranges.applyTo(childNodes).find(n => n >= i && n < i + this.length);
 		if (index !== undefined) {
 			throw new Error(`第 ${index} 个子节点受到保护！`);
 		}
 		const [pre, post] = typeof wrapper === 'function' ? wrapper.call(firstToken) : wrapper,
-			/** @type {ParserConfig} */ config = firstToken.getRootNode().getAttribute('config'),
+			config = firstToken.getRootNode().getAttribute('config'),
 			token = new Token(`${pre}${this.toString()}${post}`, config).parse();
 		if (token.childNodes.length !== 1) {
 			throw new RangeError(`非法的 wrapper:\n${pre}\n${post}`);
@@ -790,7 +789,7 @@ class TokenCollection extends Array {
 					return string;
 				}
 				const [pre, post] = typeof wrapper === 'function' ? wrapper.call(this, i) : wrapper,
-					/** @type {ParserConfig} */ config = this.getRootNode().getAttribute('config'),
+					config = this.getRootNode().getAttribute('config'),
 					token = new Token(`${pre}${string}${post}`, config).parse();
 				if (token.childNodes.length !== 1) {
 					throw new RangeError(`非法的 wrapper:\n${pre}\n${post}`);
