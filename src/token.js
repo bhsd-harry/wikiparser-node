@@ -306,41 +306,6 @@ class Token extends AstElement {
 		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
 	}
 
-	/**
-	 * @param {number} index
-	 * @returns {TokenPosition}
-	 */
-	posFromIndex(index) {
-		if (typeof index !== 'number') {
-			typeError('Number');
-		}
-		const text = this.toString();
-		if (index < 0 || index >= text.length || !Number.isInteger(index)) {
-			return;
-		}
-		const lines = text.slice(0, index).split('\n');
-		return {line: lines.length - 1, ch: lines.at(-1).length};
-	}
-
-	/**
-	 * @param {TokenPosition|number} pos
-	 * @param {number} ch
-	 */
-	indexFromPos(pos, ch) {
-		const line = typeof pos === 'object' ? pos.line : pos;
-		ch = typeof pos === 'object' ? pos.ch : ch;
-		if (typeof line !== 'number' || typeof ch !== 'number') {
-			typeError('Number');
-		} else if (line < 0 || !Number.isInteger(line) || ch < 0 || !Number.isInteger(ch)) {
-			return;
-		}
-		const lines = this.toString().split('\n');
-		if (lines.length < line + 1 || lines[line].length < ch) {
-			return;
-		}
-		return lines.slice(0, line).reduce((acc, curLine) => acc + curLine.length + 1, 0) + ch;
-	}
-
 	/** 将维基语法替换为占位符 */
 	parseOnce(n = this.#stage, include = false) {
 		if (!Parser.debugging && externalUse('parseOnce')) {

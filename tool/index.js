@@ -819,6 +819,28 @@ class TokenCollection extends Array {
 		}
 		return this;
 	}
+
+	/** @returns {AstPosition} */
+	offset() {
+		const firstToken = this._find();
+		if (!firstToken) {
+			return;
+		}
+		const {top, left} = firstToken.getBoundingClientRect();
+		return {top, left};
+	}
+
+	position() {
+		return this._find()?.position;
+	}
+
+	height() {
+		return this._find()?.offsetHeight;
+	}
+
+	width() {
+		return this._find()?.offsetWidth;
+	}
 }
 
 /** @param {string|Token|Iterable<string|Token>} tokens */

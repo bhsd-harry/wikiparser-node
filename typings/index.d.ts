@@ -79,9 +79,15 @@ declare global {
 	}
 	type CollectionMap = (arr: Token[]) => (string|Token)[];
 
-	interface TokenPosition {
-		line: number;
-		ch: number;
+	interface AstPosition {
+		top: number;
+		left: number;
+	}
+	interface AstRect {
+		top: number;
+		left: number;
+		height: number;
+		left: number;
 	}
 
 	type TokenAttributeName =
