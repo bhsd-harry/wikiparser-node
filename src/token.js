@@ -64,7 +64,11 @@ class Token extends AstElement {
 		accum.push(this);
 	}
 
-	/** @param {PropertyKey} key */
+	/**
+	 * @template {TokenAttributeName} T
+	 * @param {T} key
+	 * @returns {TokenAttribute<T>}
+	 */
 	getAttribute(key) {
 		if (!Parser.debugging && ['stage', 'config', 'accum', 'acceptable', 'protectedChildren'].includes(key)
 			&& externalUse('getAttribute')
@@ -87,7 +91,11 @@ class Token extends AstElement {
 		}
 	}
 
-	/** @param {PropertyKey} key */
+	/**
+	 * @template {TokenAttributeName} T
+	 * @param {T} key
+	 * @param {TokenAttribute<T>} value
+	 */
 	setAttribute(key, value) {
 		if (!Parser.debugging && ['stage', 'config', 'accum', 'acceptable', 'protectedChildren'].includes(key)
 			&& externalUse('setAttribute')
@@ -200,7 +208,7 @@ class Token extends AstElement {
 		if (!parentNode) {
 			throw new Error('不存在父节点！');
 		}
-		const /** @type {Record<string, Ranges>} */ acceptable = parentNode.getAttribute('acceptable');
+		const acceptable = parentNode.getAttribute('acceptable');
 		if (!acceptable || Object.values(acceptable).every(ranges => {
 			const /** @type {RangesSpread} */ [{start, end, step}] = ranges;
 			return start === 0 && end === Infinity && step === 1;
@@ -292,6 +300,70 @@ class Token extends AstElement {
 			typeError('Number');
 		}
 		return this.sections()[n];
+	}
+
+	/**
+	 * @param {number} line
+	 * @param {number} ch
+	 * @returns {TokenPosition}
+	 */
+	static pos(line, ch) {
+		if (typeof line !== 'number' || typeof ch !== 'number') {
+			typeError('Number');
+		}
+		return {line, ch};
+	}
+
+	/**
+	 * @param {string} text
+	 * @param {number} index
+	 */
+	static posFromIndex(text, index) {
+		if (typeof text !== 'string') {
+			typeError('String');
+		} else if (typeof index !== 'number') {
+			typeError('Number');
+		} else if (index < 0 || index >= text.length || !Number.isInteger(index)) {
+			return;
+		}
+		const lines = text.slice(0, index).split('\n');
+		return this.pos(lines.length - 1, lines.at(-1).length);
+	}
+
+	/**
+	 * @param {string} text
+	 * @param {TokenPosition|number} pos
+	 * @param {number} ch
+	 */
+	static indexFromPos(text, pos, ch) {
+		if (typeof text !== 'string') {
+			typeError('String');
+		}
+		const line = typeof pos === 'object' ? pos.line : pos;
+		ch = typeof pos === 'object' ? pos.ch : ch;
+		if (typeof line !== 'number' || typeof ch !== 'number') {
+			typeError('Number');
+		} else if (line < 0 || !Number.isInteger(line) || ch < 0 || !Number.isInteger(ch)) {
+			return;
+		}
+		const lines = text.split('\n');
+		if (lines.length < line + 1 || lines[line].length < ch) {
+			return;
+		}
+		return lines.slice(0, line).reduce((acc, curLine) => acc + curLine.length + 1, 0) + ch;
+	}
+
+	/** @param {number} index */
+	posFromIndex(index) {
+		return Token.posFromIndex(this.toString(), index);
+	}
+
+	/**
+	 * @param {TokenPosition|number} pos
+	 * @param {number} ch
+	 */
+	indexFromPos(pos, ch) {
+		return Token.indexFromPos(this.toString(), pos, ch);
 	}
 
 	/** 将维基语法替换为占位符 */
