@@ -105,8 +105,8 @@ class ParameterToken extends fixedToken(Token) {
 				this.getAttribute('config'),
 			).parse(2),
 			{childNodes: {length}, firstElementChild} = root,
-			/** @type {{lastElementChild: ParameterToken}} */ {lastElementChild} = firstElementChild;
-		if (length !== 1 || !firstElementChild.matches(templateLike ? 'template#T' : 'magic-word#lc')
+			/** @type {ParameterToken} */ lastElementChild = firstElementChild?.lastElementChild;
+		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
 			|| firstElementChild.childElementCount !== 2
 			|| lastElementChild.anon !== anon || lastElementChild.name !== '1'
 		) {
@@ -124,24 +124,33 @@ class ParameterToken extends fixedToken(Token) {
 	rename(key, force = false) {
 		if (typeof key !== 'string') {
 			typeError('String');
-		} else if (this.parentElement?.type !== 'template') {
+		}
+		const TranscludeToken = require('./transcludeToken'),
+			/** @type {ParameterToken & {firstChild: Token}} */ {parentNode, firstChild} = this;
+		if (!(parentNode instanceof TranscludeToken) || !parentNode.isTemplate()) { // 必须检测是否是TranscludeToken
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
-		key = key.trim();
-		const /** @type {ParameterToken & {firstChild: Token}} */ {parentNode, firstChild} = this;
-		if (this.name === key) {
-			Parser.warn('未改变实际参数名', key);
-		} else {
-			const TranscludeToken = require('./transcludeToken');
-			if (parentNode instanceof TranscludeToken && parentNode.hasArg(key)) {
-				if (force) {
-					Parser.warn('参数更名造成重复参数', key);
-				} else {
-					throw new RangeError(`参数更名造成重复参数：${key}`);
-				}
+		const root = new Token(`{{:T|${key}=}}`, this.getAttribute('config')).parse(2),
+			{childNodes: {length}, firstElementChild} = root;
+		if (length !== 1 || !firstElementChild?.matches('template#T') || firstElementChild.childElementCount !== 2) {
+			throw new SyntaxError(`非法的模板参数名：${key}`);
+		}
+		const {lastElementChild} = firstElementChild,
+			{name} = lastElementChild,
+			keyToken = lastElementChild.firstChild;
+		if (this.name === name) {
+			Parser.warn('未改变实际参数名', name);
+		} else if (parentNode.hasArg(name)) {
+			if (force) {
+				Parser.warn('参数更名造成重复参数', name);
+			} else {
+				throw new RangeError(`参数更名造成重复参数：${name}`);
 			}
 		}
-		firstChild.safeReplaceWith(key);
+		root.destroy();
+		firstElementChild.destroy();
+		lastElementChild.destroy();
+		firstChild.safeReplaceWith(keyToken);
 	}
 }
 

@@ -84,14 +84,14 @@ class ArgToken extends watchFirstChild(Token) {
 	setName(name) {
 		name = String(name);
 		const root = new Token(`{{{${name}}}}`, this.getAttribute('config')).parse(2),
-			{childNodes: {length}, firstChild} = root;
-		if (length !== 1 || !(firstChild instanceof ArgToken) || firstChild.childElementCount !== 1) {
+			{childNodes: {length}, firstElementChild} = root;
+		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的参数名称：${name.replaceAll('\n', '\\n')}`);
 		}
 		const /** @type {Token} */ oldName = this.firstChild,
-			newName = firstChild.firstElementChild;
+			newName = firstElementChild.firstElementChild;
 		root.destroy();
-		firstChild.destroy();
+		firstElementChild.destroy();
 		oldName.safeReplaceWith(newName);
 		this.setAttribute('name', newName.text().trim());
 	}
@@ -100,14 +100,14 @@ class ArgToken extends watchFirstChild(Token) {
 	setDefault(value) {
 		value = String(value);
 		const root = new Token(`{{{|${value}}}}`, this.getAttribute('config')).parse(2),
-			{childNodes: {length}, firstChild} = root;
-		if (length !== 1 || !(firstChild instanceof ArgToken) || firstChild.childElementCount !== 2) {
+			{childNodes: {length}, firstElementChild} = root;
+		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${value.replaceAll('\n', '\\n')}`);
 		}
 		const /** @type {Token[]} */ [, oldDefault] = this.children,
-			newDefault = firstChild.lastElementChild;
+			newDefault = firstElementChild.lastElementChild;
 		root.destroy();
-		firstChild.destroy();
+		firstElementChild.destroy();
 		if (oldDefault) {
 			oldDefault.safeReplaceWith(newDefault);
 		} else {
