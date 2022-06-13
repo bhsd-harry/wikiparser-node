@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('../src/token');
+	Token = require('../src/token'); // eslint-disable-line no-unused-vars
 
 /**
  * @template T
@@ -9,19 +9,25 @@ const /** @type {Parser} */ Parser = require('..'),
  * @returns {T}
  */
 const watchFirstChild = constructor => class extends constructor {
+	/** @this {Token} */
 	constructor(...args) {
 		super(...args);
-		if (this instanceof Token) {
-			const that = this,
-				/** @type {AstListener} */ watchFirstChildListener = ({prevTarget}) => {
-					if (prevTarget === that.firstChild) {
-						that.setAttribute('name', prevTarget.text().trim());
+		const that = this,
+			/** @type {AstListener} */ watchFirstChildListener = ({prevTarget}) => {
+				if (prevTarget === that.firstChild) {
+					const name = prevTarget.text().trim();
+					let standardname;
+					if (that.type === 'template') {
+						standardname = that.normalizeTitle(name, 10);
+					} else if (that.type === 'magic-word') {
+						standardname = name.toLowerCase().replace(/^#/, '');
+					} else {
+						standardname = name;
 					}
-				};
-			this.addEventListener('remove', watchFirstChildListener);
-			this.addEventListener('insert', watchFirstChildListener);
-			this.addEventListener('replace', watchFirstChildListener);
-		}
+					that.setAttribute('name', standardname);
+				}
+			};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], watchFirstChildListener);
 	}
 };
 

@@ -407,9 +407,6 @@ class TokenCollection extends Array {
 			: Object.entries(events);
 		for (const token of this._filter(selector)) {
 			for (const [event, listener] of eventPair) {
-				if (typeof event !== 'string' || typeof listener !== 'function') {
-					typeError('String', 'Function');
-				}
 				token.addEventListener(event, listener, {once});
 			}
 		}

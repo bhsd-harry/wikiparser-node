@@ -21,7 +21,7 @@ class NowikiToken extends fixedToken(Token) {
 
 	/** @param {string} str */
 	setText(str) {
-		super.setText(str, 0);
+		return super.setText(str, 0);
 	}
 }
 

@@ -22,7 +22,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 * @param {AttributeToken} attr
 	 * @param {boolean} closing
 	 * @param {boolean} selfClosing
-	 * @param {Token[]} accum
+	 * @param {accum} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		if (typeof name !== 'string') {

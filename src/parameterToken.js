@@ -53,9 +53,7 @@ class ParameterToken extends fixedToken(Token) {
 				that.setAttribute('name', newKey);
 			}
 		};
-		this.addEventListener('remove', parameterListener);
-		this.addEventListener('insert', parameterListener);
-		this.addEventListener('replace', parameterListener);
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
 	}
 
 	toString() {
