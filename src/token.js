@@ -302,60 +302,24 @@ class Token extends AstElement {
 		return this.sections()[n];
 	}
 
-	/**
-	 * @param {number} line
-	 * @param {number} ch
-	 * @returns {TokenPosition}
-	 */
-	static pos(line, ch) {
-		if (typeof line !== 'number' || typeof ch !== 'number') {
-			typeError('Number');
-		}
-		return {line, ch};
+	isTemplate() {
+		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
 	}
 
 	/**
-	 * @param {string} text
 	 * @param {number} index
+	 * @returns {TokenPosition}
 	 */
-	static posFromIndex(text, index) {
-		if (typeof text !== 'string') {
-			typeError('String');
-		} else if (typeof index !== 'number') {
+	posFromIndex(index) {
+		if (typeof index !== 'number') {
 			typeError('Number');
-		} else if (index < 0 || index >= text.length || !Number.isInteger(index)) {
+		}
+		const text = this.toString();
+		if (index < 0 || index >= text.length || !Number.isInteger(index)) {
 			return;
 		}
 		const lines = text.slice(0, index).split('\n');
-		return this.pos(lines.length - 1, lines.at(-1).length);
-	}
-
-	/**
-	 * @param {string} text
-	 * @param {TokenPosition|number} pos
-	 * @param {number} ch
-	 */
-	static indexFromPos(text, pos, ch) {
-		if (typeof text !== 'string') {
-			typeError('String');
-		}
-		const line = typeof pos === 'object' ? pos.line : pos;
-		ch = typeof pos === 'object' ? pos.ch : ch;
-		if (typeof line !== 'number' || typeof ch !== 'number') {
-			typeError('Number');
-		} else if (line < 0 || !Number.isInteger(line) || ch < 0 || !Number.isInteger(ch)) {
-			return;
-		}
-		const lines = text.split('\n');
-		if (lines.length < line + 1 || lines[line].length < ch) {
-			return;
-		}
-		return lines.slice(0, line).reduce((acc, curLine) => acc + curLine.length + 1, 0) + ch;
-	}
-
-	/** @param {number} index */
-	posFromIndex(index) {
-		return Token.posFromIndex(this.toString(), index);
+		return {line: lines.length - 1, ch: lines.at(-1).length};
 	}
 
 	/**
@@ -363,7 +327,18 @@ class Token extends AstElement {
 	 * @param {number} ch
 	 */
 	indexFromPos(pos, ch) {
-		return Token.indexFromPos(this.toString(), pos, ch);
+		const line = typeof pos === 'object' ? pos.line : pos;
+		ch = typeof pos === 'object' ? pos.ch : ch;
+		if (typeof line !== 'number' || typeof ch !== 'number') {
+			typeError('Number');
+		} else if (line < 0 || !Number.isInteger(line) || ch < 0 || !Number.isInteger(ch)) {
+			return;
+		}
+		const lines = this.toString().split('\n');
+		if (lines.length < line + 1 || lines[line].length < ch) {
+			return;
+		}
+		return lines.slice(0, line).reduce((acc, curLine) => acc + curLine.length + 1, 0) + ch;
 	}
 
 	/** 将维基语法替换为占位符 */
@@ -667,15 +642,6 @@ class Token extends AstElement {
 			this.parseOnce(this.#stage, include);
 		}
 		return this.build().afterBuild();
-	}
-
-	/** @param {TranscludeToken} token */
-	static isTemplate(token) {
-		const TranscludeToken = require('./transcludeToken');
-		if (!(token instanceof TranscludeToken)) {
-			typeError('TranscludeToken');
-		}
-		return token.type === 'template' || token.name === 'invoke';
 	}
 }
 

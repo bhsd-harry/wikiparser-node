@@ -80,11 +80,13 @@ class ArgToken extends watchFirstChild(Token) {
 		return super.insertAt(token, i);
 	}
 
+	/** @param {string} name */
 	setName(name) {
-		const root = new Token(`{{{${String(name)}}}}`, this.getAttribute('config')).parse(2),
+		name = String(name);
+		const root = new Token(`{{{${name}}}}`, this.getAttribute('config')).parse(2),
 			{childNodes: {length}, firstChild} = root;
 		if (length !== 1 || !(firstChild instanceof ArgToken) || firstChild.childElementCount !== 1) {
-			throw new SyntaxError(`非法的参数名称：${String(name).replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的参数名称：${name.replaceAll('\n', '\\n')}`);
 		}
 		const /** @type {Token} */ oldName = this.firstChild,
 			newName = firstChild.firstElementChild;
@@ -94,11 +96,13 @@ class ArgToken extends watchFirstChild(Token) {
 		this.setAttribute('name', newName.text().trim());
 	}
 
+	/** @param {string} value */
 	setDefault(value) {
-		const root = new Token(`{{{|${String(value)}}}}`, this.getAttribute('config')).parse(2),
+		value = String(value);
+		const root = new Token(`{{{|${value}}}}`, this.getAttribute('config')).parse(2),
 			{childNodes: {length}, firstChild} = root;
 		if (length !== 1 || !(firstChild instanceof ArgToken) || firstChild.childElementCount !== 2) {
-			throw new SyntaxError(`非法的参数预设值：${String(value).replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的参数预设值：${value.replaceAll('\n', '\\n')}`);
 		}
 		const /** @type {Token[]} */ [, oldDefault] = this.children,
 			newDefault = firstChild.lastElementChild;

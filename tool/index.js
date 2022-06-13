@@ -56,9 +56,7 @@ class TokenCollection extends Array {
 		this.sort((a, b) => {
 			const aRoot = a.getRootNode(),
 				bRoot = b.getRootNode();
-			return aRoot === bRoot
-				? Token.comparePosition(a, b)
-				: rootArray.indexOf(aRoot) - rootArray.indexOf(bRoot);
+			return aRoot === bRoot ? a.comparePosition(b) : rootArray.indexOf(aRoot) - rootArray.indexOf(bRoot);
 		});
 	}
 

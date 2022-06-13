@@ -90,24 +90,27 @@ class ParameterToken extends fixedToken(Token) {
 	}
 
 	getValue() {
-		const value = this.lastElementChild.text();
-		return this.anon && ParameterToken.isTemplate(this.parentNode) ? value : value.trim();
+		const value = this.lastElementChild.text(),
+			/** @type {{parentNode: Token}} */ {parentNode} = this;
+		return this.anon && parentNode?.isTemplate() ? value : value.trim();
 	}
 
+	/** @param {string} value */
 	setValue(value) {
-		const {anon} = this,
-			isTemplate = ParameterToken.isTemplate(this.parentNode),
+		value = String(value);
+		const /** @type {{anon: boolean, parentNode: Token}} */ {anon, parentNode} = this,
+			templateLike = parentNode.isTemplate(),
 			root = new Token(
-				`{{${isTemplate ? ':T|' : 'lc:'}${anon ? '' : '1='}${String(value)}}}`,
+				`{{${templateLike ? ':T|' : 'lc:'}${anon ? '' : '1='}${value}}}`,
 				this.getAttribute('config'),
 			).parse(2),
 			{childNodes: {length}, firstElementChild} = root,
 			/** @type {{lastElementChild: ParameterToken}} */ {lastElementChild} = firstElementChild;
-		if (length !== 1 || !firstElementChild.matches(isTemplate ? 'template#T' : 'magic-word#lc')
+		if (length !== 1 || !firstElementChild.matches(templateLike ? 'template#T' : 'magic-word#lc')
 			|| firstElementChild.childElementCount !== 2
 			|| lastElementChild.anon !== anon || lastElementChild.name !== '1'
 		) {
-			throw new SyntaxError(`非法的模板参数：${String(value).replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的模板参数：${value.replaceAll('\n', '\\n')}`);
 		}
 		const /** @type {Token} */ oldValue = this.lastChild,
 			newValue = lastElementChild.lastChild;
