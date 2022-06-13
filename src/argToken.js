@@ -40,7 +40,11 @@ class ArgToken extends watchFirstChild(Token) {
 	}
 
 	text() {
-		return `{{{${this.childNodes.slice(0, 2).map(/** @param {Token} child */ child => child.text()).join('|')}}}}`;
+		return `{{{${this.children.slice(0, 2).map(child => child.text()).join('|')}}}}`;
+	}
+
+	plain() {
+		return this.childElementCount > 1 ? this.children[1].plain() : '';
 	}
 
 	afterBuild() {
@@ -96,7 +100,7 @@ class ArgToken extends watchFirstChild(Token) {
 		if (length !== 1 || !(firstChild instanceof ArgToken) || firstChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${String(value).replaceAll('\n', '\\n')}`);
 		}
-		const /** @type {Token[]} */ [, oldDefault] = this.childNodes,
+		const /** @type {Token[]} */ [, oldDefault] = this.children,
 			newDefault = firstChild.lastElementChild;
 		root.destroy();
 		firstChild.destroy();

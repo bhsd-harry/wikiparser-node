@@ -8,7 +8,7 @@ const hidden = require('../mixin/hidden'),
 
 /**
  * `<includeonly>`或`<noinclude>`
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [string, string]}`
  */
 class IncludeToken extends hidden(fixedToken(Token)) {
 	type = 'include';

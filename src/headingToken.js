@@ -40,6 +40,10 @@ class HeadingToken extends fixedToken(Token) {
 		return `${equals}${this.firstElementChild.text()}${equals}`;
 	}
 
+	plain() {
+		return this.firstElementChild.plain();
+	}
+
 	/** @param {number} n */
 	setLevel(n) {
 		if (typeof n !== 'number') {

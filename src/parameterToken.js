@@ -66,6 +66,10 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? this.lastElementChild.text() : super.text('=');
 	}
 
+	plain() {
+		return this.lastElementChild.plain();
+	}
+
 	afterBuild() {
 		if (!this.anon) {
 			const name = this.firstElementChild.text().trim(),
