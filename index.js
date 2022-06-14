@@ -88,7 +88,7 @@ const /** @type {Parser} */ Parser = {
 const hidden = {enumerable: false};
 Object.defineProperties(Parser, {
 	warning: hidden, debugging: hidden, warn: hidden, debug: hidden, error: hidden,
-	classes: hidden, mixins: hidden, defaultPaths: hidden, clearCache: hidden, getConfig: hidden,
+	classes: hidden, mixins: hidden, defaultPaths: hidden, aliases: hidden, clearCache: hidden, getConfig: hidden,
 	MAX_STAGE: {...hidden, writable: false}, create: hidden,
 });
 

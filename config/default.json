@@ -341,14 +341,7 @@
 			"scriptpath",
 			"样式路径",
 			"stylepath",
-			"msg",
-			"原始",
-			"raw",
 			"msgnw",
-			"替代",
-			"subst",
-			"安全替代",
-			"safesubst",
 			"#related",
 			"#cscore",
 			"#regex",
@@ -566,6 +559,15 @@
 			"CONTENTLANGUAGE",
 			"CONTENTLANG",
 			"PAGELANGUAGE"
+		],
+		[
+			"msg",
+			"原始",
+			"raw",
+			"替代",
+			"subst",
+			"安全替代",
+			"safesubst"
 		]
 	]
 }

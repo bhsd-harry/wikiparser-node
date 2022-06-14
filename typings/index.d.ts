@@ -9,7 +9,7 @@ declare global {
 		html: [string[], string[], string[]];
 		namespaces: Record<string, string>;
 		nsid: Record<string, number>;
-		parserFunction: [string[], string[]];
+		parserFunction: [string[], string[], string[]];
 	}
 
 	interface Parser {

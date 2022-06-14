@@ -13,6 +13,7 @@ const {removeComment} = require('../util/string'),
  */
 class TranscludeToken extends watchFirstChild(Token) {
 	type = 'template';
+	modifier = '';
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Map<string, Set<ParameterToken>>} */ #args = new Map();
 
@@ -25,10 +26,17 @@ class TranscludeToken extends watchFirstChild(Token) {
 		super(undefined, config, true, accum, {AtomToken: 0, ParameterToken: '1:'});
 		const AtomToken = require('./atomToken'),
 			{parserFunction: [sensitive, insensitive]} = config;
+		this.seal('modifier');
+		if (title.includes(':')) {
+			const [modifier, ...arg] = title.split(':');
+			if (this.setModifier(modifier)) {
+				title = arg.join(':');
+			}
+		}
 		if (parts.length === 0 || title.includes(':')) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
-			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
+			if (sensitive.includes(name) || insensitive.includes(name.toUpperCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, ''));
 				this.type = 'magic-word';
 				const token = new AtomToken(magicWord, 'magic-word-name', accum, {'Stage-1': ':', '!ExtToken': ''});
@@ -54,6 +62,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (this.type === 'template') {
 			const name = removeComment(title);
 			if (/\x00\d+e\x7f|[#<>[\]{}]/.test(name)) {
+				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
 			const token = new AtomToken(title, 'template-name', accum, {
@@ -103,6 +112,18 @@ class TranscludeToken extends watchFirstChild(Token) {
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
 	}
 
+	/** @param {string} modifier */
+	setModifier(modifier, force = false) {
+		if (!modifier || force && !externalUse('setModifier') || new RegExp(`^\\s*(?:${
+			this.getAttribute('config').parserFunction[2].join('|')
+		})\\s*$`, 'i').test(removeComment(modifier))) {
+			const enumerable = Boolean(modifier);
+			Object.defineProperty(this, 'modifier', {value: modifier || '', enumerable});
+			return enumerable;
+		}
+		return false;
+	}
+
 	/**
 	 * @template {TokenAttributeName} T
 	 * @param {T} key
@@ -121,13 +142,15 @@ class TranscludeToken extends watchFirstChild(Token) {
 
 	toString() {
 		const {children, childElementCount, firstChild} = this;
-		return this.type === 'magic-word'
-			? `{{${String(firstChild)}${childElementCount > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}}}`
-			: `{{${super.toString('|')}}}`;
+		return `{{${this.modifier && `${this.modifier}:`}${
+			this.type === 'magic-word'
+				? `${String(firstChild)}${childElementCount > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
+				: super.toString('|')
+		}}}`;
 	}
 
 	getPadding() {
-		return 2;
+		return this.modifier ? this.modifier.length + 3 : 2;
 	}
 
 	getGaps() {
@@ -201,6 +224,9 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (this.type === 'template') {
 			const name = this.firstElementChild.text().trim();
 			this.setAttribute('name', this.normalizeTitle(name, 10));
+		}
+		if (this.modifier?.includes('\x00')) {
+			this.setModifier(this.buildFromStr(this.modifier).map(String).join(''), true);
 		}
 		return super.afterBuild();
 	}
