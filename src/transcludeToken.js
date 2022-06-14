@@ -25,7 +25,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, ParameterToken: '1:'});
 		const AtomToken = require('./atomToken'),
-			{parserFunction: [sensitive, insensitive]} = config;
+			{parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
 		if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':');
@@ -33,10 +33,10 @@ class TranscludeToken extends watchFirstChild(Token) {
 				title = arg.join(':');
 			}
 		}
-		if (parts.length === 0 || title.includes(':')) {
+		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier)) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
-			if (sensitive.includes(name) || insensitive.includes(name.toUpperCase())) {
+			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, ''));
 				this.type = 'magic-word';
 				const token = new AtomToken(magicWord, 'magic-word-name', accum, {'Stage-1': ':', '!ExtToken': ''});
@@ -60,8 +60,8 @@ class TranscludeToken extends watchFirstChild(Token) {
 			}
 		}
 		if (this.type === 'template') {
-			const name = removeComment(title);
-			if (/\x00\d+e\x7f|[#<>[\]{}]/.test(name)) {
+			const [name] = removeComment(title).split('#');
+			if (/\x00\d+e\x7f|[<>[\]{}]/.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
@@ -115,13 +115,21 @@ class TranscludeToken extends watchFirstChild(Token) {
 	/** @param {string} modifier */
 	setModifier(modifier, force = false) {
 		if (!modifier || force && !externalUse('setModifier') || new RegExp(`^\\s*(?:${
-			this.getAttribute('config').parserFunction[2].join('|')
+			this.getAttribute('config').parserFunction.slice(2).flat().join('|')
 		})\\s*$`, 'i').test(removeComment(modifier))) {
 			const enumerable = Boolean(modifier);
 			Object.defineProperty(this, 'modifier', {value: modifier || '', enumerable});
 			return enumerable;
 		}
 		return false;
+	}
+
+	subst() {
+		this.setModifier('subst');
+	}
+
+	safesubst() {
+		this.setModifier('safesubst');
 	}
 
 	/**
