@@ -127,16 +127,28 @@ class Token extends AstElement {
 				}
 				this.#accum = value;
 				return this;
-			case 'acceptable':
+			case 'acceptable': {
+				const /** @type {acceptable} */ acceptable = {};
 				if (typeof value !== 'object') {
 					typeError('Object');
 				} else if (value) {
 					for (const [k, v] of Object.entries(value)) {
-						value[k] = v instanceof Ranges ? v : new Ranges(v);
+						if (k.startsWith('Stage-')) {
+							for (let i = 0; i <= Number(k.slice(6)); i++) {
+								for (const type of Parser.aliases[i]) {
+									acceptable[type] = new Ranges(v);
+								}
+							}
+						} else if (k.startsWith('!')) { // `!`项必须放在最后
+							delete acceptable[k.slice(1)];
+						} else {
+							acceptable[k] = new Ranges(v);
+						}
 					}
 				}
-				this.#acceptable = value;
+				this.#acceptable = value && acceptable;
 				return this;
+			}
 			case 'protectedChildren':
 				if (!(value instanceof Ranges)) {
 					typeError('Ranges');

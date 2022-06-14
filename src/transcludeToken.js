@@ -31,9 +31,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, ''));
 				this.type = 'magic-word';
-				const token = new AtomToken(magicWord, 'magic-word-name', accum, {
-					String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
-				});
+				const token = new AtomToken(magicWord, 'magic-word-name', accum, {'Stage-1': ':', '!ExtToken': ''});
 				this.appendChild(token);
 				if (arg.length) {
 					parts.unshift([arg.join(':')]);
@@ -45,7 +43,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 							break;
 						}
 						const invoke = new AtomToken(part.join('='), `invoke-${i ? 'func' : 'module'}`, accum, {
-							String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
+							'Stage-1': ':', '!ExtToken': '',
 						});
 						this.appendChild(invoke);
 					}
@@ -59,7 +57,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
 			const token = new AtomToken(title, 'template-name', accum, {
-				String: ':', CommentToken: ':', NoincludeToken: ':', ArgToken: ':', TranscludeToken: ':',
+				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			});
 			this.appendChild(token);
 		}

@@ -40,6 +40,8 @@ declare global {
 		create: (className: string, ...args: any[]) => Token;
 
 		getTool: () => typeof $;
+
+		aliases: string[][];
 	}
 
 	type pseudo = 'root'|'is'|'not'|'nth-child'|'nth-of-type'|'nth-last-child'|'nth-last-of-type'

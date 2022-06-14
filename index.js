@@ -30,6 +30,13 @@ const /** @type {Parser} */ Parser = {
 		HtmlToken: './src/htmlToken',
 	},
 
+	aliases: [
+		['String'],
+		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
+		['ArgToken', 'TranscludeToken', 'HeadingToken'],
+		['HtmlToken'],
+	],
+
 	clearCache() {
 		const entries = [...Object.entries(this.classes), ...Object.entries(this.mixins)];
 		for (const [, path] of entries) {

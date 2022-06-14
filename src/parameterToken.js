@@ -26,8 +26,7 @@ class ParameterToken extends fixedToken(Token) {
 		this.anon = typeof key === 'number';
 		const AtomToken = require('./atomToken'),
 			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
-				String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
-				ExtToken: ':', ArgToken: ':', TranscludeToken: ':',
+				'Stage-2': ':', '!HeadingToken': '',
 			});
 		const token = new Token(value, config, true, accum);
 		token.type = 'parameter-value';

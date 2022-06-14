@@ -21,8 +21,7 @@ class ArgToken extends watchFirstChild(Token) {
 			if (i === 0 || i > 1) {
 				const AtomToken = require('./atomToken'),
 					token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', accum, {
-						String: ':', CommentToken: ':', ExtToken: ':', NoincludeToken: ':', IncludeToken: ':',
-						ArgToken: ':', TranscludeToken: ':',
+						'Stage-2': ':', '!HeadingToken': '',
 					});
 				super.insertAt(token);
 			} else {

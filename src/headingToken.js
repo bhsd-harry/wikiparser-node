@@ -24,9 +24,7 @@ class HeadingToken extends fixedToken(Token) {
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
 		const AtomToken = require('./atomToken'),
-			trail = new AtomToken(input[1], 'heading-trail', accum, {
-				String: ':', CommentToken: ':', NoincludeToken: ':', IncludeToken: ':',
-			});
+			trail = new AtomToken(input[1], 'heading-trail', accum, {'Stage-1': ':', '!ExtToken': ''});
 		this.append(token, trail);
 	}
 

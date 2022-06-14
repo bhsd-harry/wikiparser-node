@@ -14,25 +14,29 @@ class AttributeToken extends Token {
 
 	/**
 	 * @param {string} attr
-	 * @param {'ext-attr'|'html-attr'} type
+	 * @param {'ext-attr'|'html-attr'|'table-attr'} type
 	 * @param {string} name
 	 * @param {accum} accum
 	 */
 	constructor(attr, type, name, accum = []) {
 		if (typeof attr !== 'string') {
 			typeError('String');
-		} else if (!['ext-attr', 'html-attr'].includes(type)) {
-			throw new RangeError('type 只能在 "ext-attr" 和 "html-attr" 中取值！');
-		} else if (attr.includes('>')) {
+		} else if (!['ext-attr', 'html-attr', 'table-attr'].includes(type)) {
+			throw new RangeError('type 只能在 "ext-attr"、"html-attr" 和 "table-attr" 中取值！');
+		} else if (attr !== 'table-attr' && attr.includes('>')) {
 			throw new RangeError('扩展或HTML标签属性不能包含 ">"！');
 		} else if (type === 'html-attr' && attr.includes('<')) {
 			throw new RangeError('HTML标签属性不能包含 "<"！');
 		}
+		let stage;
 		if (type === 'ext-attr') {
-			super(attr, null, false, accum, {String: ':'});
+			stage = 1;
+		} else if (type === 'html-attr') {
+			stage = 2;
 		} else {
-			super(attr, null, true, accum, {String: ':', ArgToken: ':', TranscludeToken: ':'});
+			stage = 3;
 		}
+		super(attr, null, false, accum, {[`Stage-${stage}`]: ':', '!HeadingToken': ''});
 		this.type = type;
 		this.setAttribute('name', name).#parseAttr();
 	}

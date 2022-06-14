@@ -16,7 +16,6 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {string|Token} inner
 	 * @param {string|undefined} closing - 约定`undefined`表示自闭合，`''`表示未闭合
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable
 	 */
 	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
 		if (typeof name !== 'string' || closing !== undefined && typeof closing !== 'string') {
