@@ -820,7 +820,6 @@ class TokenCollection extends Array {
 		return this;
 	}
 
-	/** @returns {AstPosition} */
 	offset() {
 		const firstToken = this._find();
 		if (!firstToken) {

@@ -200,6 +200,11 @@ class AttributeToken extends Token {
 		return this.#updateFromAttr(false);
 	}
 
+	/** @returns {[number, string][]} */
+	plain() {
+		return [];
+	}
+
 	/** 从`childNodes`更新`this.#attr` */
 	#parseAttr() {
 		this.#attr.clear();

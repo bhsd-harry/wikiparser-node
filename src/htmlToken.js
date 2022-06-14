@@ -65,6 +65,11 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.text()}${this.selfClosing ? '/' : ''}>`;
 	}
 
+	/** @returns {[number, string][]} */
+	plain() {
+		return [];
+	}
+
 	check() {
 		const {html} = this.getAttribute('config'),
 			{name, parentElement, closing, selfClosing} = this,

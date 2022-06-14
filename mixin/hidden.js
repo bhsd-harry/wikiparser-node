@@ -12,8 +12,9 @@ const hidden = constructor => class extends constructor {
 		return '';
 	}
 
+	/** @returns {[number, string][]} */
 	plain() {
-		return '';
+		return [];
 	}
 };
 

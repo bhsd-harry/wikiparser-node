@@ -52,7 +52,7 @@ class ArgToken extends watchFirstChild(Token) {
 	}
 
 	plain() {
-		return this.childElementCount > 1 ? this.children[1].plain() : '';
+		return this.childElementCount > 1 ? this.children[1].plain() : [];
 	}
 
 	afterBuild() {

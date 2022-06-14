@@ -146,7 +146,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 	}
 
 	plain() {
-		return this.getAllArgs().map(child => child.plain()).join('');
+		return this.getAllArgs().flatMap(child => child.plain());
 	}
 
 	/** @param {ParameterToken} addedToken */

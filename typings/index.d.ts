@@ -79,17 +79,6 @@ declare global {
 	}
 	type CollectionMap = (arr: Token[]) => (string|Token)[];
 
-	interface AstPosition {
-		top: number;
-		left: number;
-	}
-	interface AstRect {
-		top: number;
-		left: number;
-		height: number;
-		left: number;
-	}
-
 	type TokenAttributeName =
 		'childNodes'|'parentNode'| // AstNode
 		'name'| // AstElement
