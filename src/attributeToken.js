@@ -30,13 +30,13 @@ class AttributeToken extends Token {
 		}
 		let stage;
 		if (type === 'ext-attr') {
-			stage = 1;
+			stage = 0;
 		} else if (type === 'html-attr') {
 			stage = 2;
 		} else {
 			stage = 3;
 		}
-		super(attr, null, false, accum, {[`Stage-${stage}`]: ':', '!HeadingToken': ''});
+		super(attr, null, type !== 'ext-attr', accum, {[`Stage-${stage}`]: ':'});
 		this.type = type;
 		this.setAttribute('name', name).#parseAttr();
 	}
@@ -121,9 +121,9 @@ class AttributeToken extends Token {
 			throw new Error(`手动调用 ${this.constructor.name}.setAttr 方法时禁止设置 init 参数！`);
 		} else if (typeof value === 'boolean') {
 			// pass
-		} else if (value.includes('>')) {
+		} else if (!init && value.includes('>')) {
 			throw new RangeError('扩展或HTML标签属性不能包含 ">"！');
-		} else if (this.type === 'html-attr' && value.includes('<')) {
+		} else if (!init && this.type === 'html-attr' && value.includes('<')) {
 			throw new RangeError('HTML标签属性不能包含 "<"！');
 		}
 		key = key.toLowerCase().trim();

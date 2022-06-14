@@ -65,9 +65,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
-			const token = new AtomToken(title, 'template-name', accum, {
-				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
-			});
+			const token = new AtomToken(title, 'template-name', accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.appendChild(token);
 		}
 		const templateLike = this.isTemplate();
