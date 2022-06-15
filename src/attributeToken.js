@@ -121,10 +121,8 @@ class AttributeToken extends Token {
 			throw new Error(`手动调用 ${this.constructor.name}.setAttr 方法时禁止设置 init 参数！`);
 		} else if (typeof value === 'boolean') {
 			// pass
-		} else if (!init && value.includes('>')) {
-			throw new RangeError('扩展或HTML标签属性不能包含 ">"！');
-		} else if (!init && this.type === 'html-attr' && value.includes('<')) {
-			throw new RangeError('HTML标签属性不能包含 "<"！');
+		} else if (!init && this.type === 'ext-attr' && value.includes('>')) {
+			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
 		key = key.toLowerCase().trim();
 		let parsedKey = key;
@@ -134,7 +132,7 @@ class AttributeToken extends Token {
 			token.parseOnce();
 			parsedKey = token.firstChild;
 		}
-		if (!/^(?:[\w:]|\x00\d+t\x7f)(?:[\w:.-]|\x00\d+t\x7f)*$/.test(parsedKey)) {
+		if (!/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
 			if (init) {
 				return this;
 			}

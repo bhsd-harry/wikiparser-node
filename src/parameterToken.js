@@ -92,45 +92,49 @@ class ParameterToken extends fixedToken(Token) {
 		return this.replaceWith(token);
 	}
 
+	/** @this {ParameterToken & {parentNode: Token}} */
 	getValue() {
-		const value = this.lastElementChild.text(),
-			/** @type {{parentNode: Token}} */ {parentNode} = this;
-		return this.anon && parentNode?.isTemplate() ? value : value.trim();
+		const value = this.lastElementChild.text();
+		return this.anon && this.parentNode?.isTemplate() ? value : value.trim();
 	}
 
-	/** @param {string} value */
+	/**
+	 * @this {ParameterToken & {parentNode: Token, lastChild: Token}}
+	 * @param {string} value
+	 */
 	setValue(value) {
 		value = String(value);
-		const /** @type {{anon: boolean, parentNode: Token}} */ {anon, parentNode} = this,
-			templateLike = parentNode.isTemplate(),
+		const templateLike = this.parentNode?.isTemplate(),
 			root = new Token(
-				`{{${templateLike ? ':T|' : 'lc:'}${anon ? '' : '1='}${value}}}`,
+				`{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 				this.getAttribute('config'),
 			).parse(2),
 			{childNodes: {length}, firstElementChild} = root,
 			/** @type {ParameterToken} */ lastElementChild = firstElementChild?.lastElementChild;
 		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
 			|| firstElementChild.childElementCount !== 2
-			|| lastElementChild.anon !== anon || lastElementChild.name !== '1'
+			|| lastElementChild.anon !== this.anon || lastElementChild.name !== '1'
 		) {
 			throw new SyntaxError(`非法的模板参数：${value.replaceAll('\n', '\\n')}`);
 		}
-		const /** @type {Token} */ oldValue = this.lastChild,
-			newValue = lastElementChild.lastChild;
+		const newValue = lastElementChild.lastChild;
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();
-		oldValue.safeReplaceWith(newValue);
+		this.lastChild.safeReplaceWith(newValue);
 	}
 
-	/** @param {string} key */
+	/**
+	 * @this {ParameterToken & {firstChild: Token}}
+	 * @param {string} key
+	 */
 	rename(key, force = false) {
 		if (typeof key !== 'string') {
 			typeError('String');
 		}
-		const TranscludeToken = require('./transcludeToken'),
-			/** @type {ParameterToken & {firstChild: Token}} */ {parentNode, firstChild} = this;
-		if (!(parentNode instanceof TranscludeToken) || !parentNode.isTemplate()) { // 必须检测是否是TranscludeToken
+		const {parentNode} = this;
+		// 必须检测是否是TranscludeToken
+		if (!parentNode || !(parentNode instanceof require('./transcludeToken')) || !parentNode.isTemplate()) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		const root = new Token(`{{:T|${key}=}}`, this.getAttribute('config')).parse(2),
@@ -153,7 +157,7 @@ class ParameterToken extends fixedToken(Token) {
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();
-		firstChild.safeReplaceWith(keyToken);
+		this.firstChild.safeReplaceWith(keyToken);
 	}
 }
 
