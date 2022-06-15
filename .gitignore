@@ -3,3 +3,4 @@
 *.swp
 */*.swp
 .DS_Store
+errors/

@@ -1,5 +1,7 @@
 'use strict';
 
+const fs = require('fs');
+
 const /** @type {Parser} */ Parser = {
 	warning: true,
 	debugging: false,
@@ -64,10 +66,15 @@ const /** @type {Parser} */ Parser = {
 
 	parse(wikitext, include = false, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src/token');
-		if (wikitext instanceof Token) {
-			return wikitext.parse(maxStage);
+		if (typeof wikitext === 'string') {
+			wikitext = new Token(wikitext, config);
 		}
-		return new Token(wikitext, config).parse(maxStage, include);
+		try {
+			return wikitext.parse(maxStage, include);
+		} catch (e) {
+			fs.writeFileSync(`${__dirname}/errors/${new Date().toISOString()}`, wikitext.toString());
+			throw e;
+		}
 	},
 
 	create(className, ...args) {

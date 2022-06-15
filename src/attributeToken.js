@@ -189,7 +189,17 @@ class AttributeToken extends Token {
 				return k;
 			}
 			const quote = v.includes('"') ? "'" : '"';
-			return `${k}=${quote}${v}${quote}`;
+			let equal = '=';
+			if (this.type !== 'ext-attr') {
+				const parameter = this.closest('parameter');
+				if (parameter) {
+					const /** @type {{anon: boolean, parentNode: Token}} */ {anon, parentNode} = parameter;
+					if (anon && parentNode?.isTemplate()) {
+						equal = '{{=}}';
+					}
+				}
+			}
+			return `${k}${equal}${quote}${v}${quote}`;
 		}).join(' ');
 		if (replace) { // 不能使用replaceChildren方法
 			for (let i = this.childNodes.length - 1; i >= 0; i--) {
@@ -212,7 +222,10 @@ class AttributeToken extends Token {
 	/** 从`childNodes`更新`this.#attr` */
 	#parseAttr() {
 		this.#attr.clear();
-		for (const [, key,, quoted, unquoted] of this.toString()
+		const string = this.type === 'ext-attr'
+			? this.toString()
+			: this.toString().replace(/\x00\d+~\x7f|{{\s*=\s*}}/g, '=');
+		for (const [, key,, quoted, unquoted] of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg)
 		) {
 			this.setAttr(key, quoted ?? unquoted ?? true, true);

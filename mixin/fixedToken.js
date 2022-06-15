@@ -9,6 +9,8 @@ const {externalUse} = require('../util/debug'),
  * @returns {T}
  */
 const fixedToken = constructor => class extends constructor {
+	static fixed = true;
+
 	removeAt() {
 		throw new Error(`${this.constructor.name} 不可删除元素！`);
 	}
