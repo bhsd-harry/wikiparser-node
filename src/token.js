@@ -23,9 +23,15 @@
  * e: ExtToken
  * c: CommentToken、NoIncludeToken和IncludeToken
  * !: `{{!}}`专用
+ * {: `{{(!}}`专用
+ * }: `{{!)}}`专用
+ * -: `{{!-}}`专用
+ * +: `{{!!}}`专用
+ * ~: `{{=}}`专用
  * t: ArgToken或TranscludeToken
  * h: HeadingToken
  * x: HtmlToken
+ * b: TableToken
  */
 
 const {typeError, externalUse, debugOnly} = require('../util/debug'),
@@ -221,10 +227,10 @@ class Token extends AstElement {
 			throw new Error('不存在父节点！');
 		}
 		const acceptable = parentNode.getAttribute('acceptable');
-		if (!acceptable || Object.values(acceptable).every(ranges => {
+		if (!parentNode.constructor.fixed && (!acceptable || Object.values(acceptable).every(ranges => {
 			const /** @type {RangesSpread} */ [{start, end, step}] = ranges;
 			return start === 0 && end === Infinity && step === 1;
-		})) {
+		}))) {
 			Parser.warn(`父节点为 ${parentNode.constructor.name}，退化到 replaceWith 方法。`);
 			return this.replaceWith(token);
 		} else if (token.constructor !== this.constructor) {
@@ -343,6 +349,7 @@ class Token extends AstElement {
 				this.#parseHtml();
 				break;
 			case 3:
+				this.#parseTable();
 				break;
 			case 4:
 				break;
@@ -372,8 +379,9 @@ class Token extends AstElement {
 		return this;
 	}
 
+	/** @this {Token & {firstChild: string}} */
 	#parseCommentAndExt(includeOnly = false) {
-		let /** @type {string} */ text = this.firstChild;
+		let text = this.firstChild;
 		const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
 		if (includeOnly && onlyinclude.test(text)) { // `<onlyinclude>`拥有最高优先级
 			onlyinclude.lastIndex = 0;
@@ -431,11 +439,14 @@ class Token extends AstElement {
 		this.replaceChildren(text);
 	}
 
+	/** @this {Token & {firstChild: string}} */
 	#parseBrackets() {
 		const source = '(?<=^(?:\x00\\d+c\x7f)*)={1,6}|\\[\\[|{{2,}|-{(?!{)',
 			/** @type {BracketExecArray[]} */ stack = [],
-			closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'};
-		let /** @type {string} */ text = this.firstChild,
+			closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
+			/** @type {Record<string, string>} */
+			marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
+		let text = this.firstChild,
 			regex = new RegExp(source, 'gm'),
 			/** @type {BracketExecArray} */ mt = regex.exec(text),
 			moreBraces = text.includes('}}'),
@@ -451,8 +462,7 @@ class Token extends AstElement {
 				lastIndex = curIndex + 1;
 				const {pos, findEqual} = stack.at(-1) ?? {};
 				if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
-					const rmt = text.slice(index, curIndex)
-						.match(/^(={1,6})(.+)\1((?:\s|\x00\d+c\x7f)*)$/);
+					const rmt = text.slice(index, curIndex).match(/^(={1,6})(.+)\1((?:\s|\x00\d+c\x7f)*)$/);
 					if (rmt) {
 						text = `${text.slice(0, index)}\x00${this.#accum.length}h\x7f${text.slice(curIndex)}`;
 						lastIndex = index + 4 + String(this.#accum.length).length;
@@ -476,7 +486,7 @@ class Token extends AstElement {
 				lastIndex = curIndex + close.length; // 这不是最终的lastIndex
 				parts.at(-1).push(text.slice(top.pos, curIndex));
 				/* 标记{{!}} */
-				const ch = close.length === 2 && removeComment(parts[0][0]) === '!' ? '!' : 't';
+				const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't';
 				let skip = false;
 				if (close.length === 3) {
 					const ArgToken = require('./argToken');
@@ -506,14 +516,11 @@ class Token extends AstElement {
 				}
 			} else { // 情形5：开启
 				lastIndex = curIndex + syntax.length;
-				if ('0' in top) {
-					stack.push(top);
-				}
 				if (syntax[0] === '{') {
 					mt.pos = lastIndex;
 					mt.parts = [[]];
 				}
-				stack.push(mt);
+				stack.push(...'0' in top ? [top] : [], mt);
 			}
 			moreBraces &&= text.slice(lastIndex).includes('}}');
 			let curTop = stack.at(-1);
@@ -531,11 +538,11 @@ class Token extends AstElement {
 		this.replaceChildren(text);
 	}
 
+	/** @this {Token & {firstChild: string}} */
 	#parseHtml() {
 		const regex = /^(\/?)([a-z][^\s/>]*)([^>]*?)(\/?>)([^<]*)$/i,
 			elements = this.#config.html.flat(),
-			/** @type {{firstChild: string}} */ {firstChild} = this,
-			bits = firstChild.split('<');
+			bits = this.firstChild.split('<');
 		let text = bits.shift();
 		for (const x of bits) {
 			const mt = x.match(regex),
@@ -561,6 +568,108 @@ class Token extends AstElement {
 			new HtmlToken(t, attr, slash === '/', brace === '/>', this.#config, this.#accum);
 		}
 		this.replaceChildren(text);
+	}
+
+	/** @this {Token & {firstChild: string}} */
+	#parseTable() {
+		const TableToken = require('./tableToken'),
+			TdToken = require('./tableToken/tdToken'),
+			/** @type {TableToken[]} */ stack = [];
+		let out = '';
+		const /** @type {(str: string, top: TableToken) => void} */ push = (str, top) => {
+			if (top instanceof TdToken) {
+				top.appendInner(str);
+			} else if (typeof top?.lastChild === 'string') {
+				top.setText(top.lastChild + str, top.childNodes.length - 1);
+			} else if (top) {
+				top.appendChild(str.replace(/^\n/, ''));
+			} else {
+				out += str;
+			}
+		};
+		for (const outLine of this.firstChild.split('\n')) {
+			let top = stack.pop();
+			const [spaces] = outLine.match(/^(?:\s|\x00\d+c\x7f)*/);
+			push(`\n${spaces}`, top);
+			const line = outLine.slice(spaces.length),
+				matchesStart = line.match(
+					/^((?:\x00\d+c\x7f|:)*(?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)$/,
+				);
+			if (matchesStart) {
+				const [, indent, tableSyntax, attr] = matchesStart;
+				push(`${indent}\x00${this.#accum.length}b\x7f`, top);
+				const table = new TableToken('table', tableSyntax, attr, this.#config, this.#accum);
+				stack.push(...top ? [top] : [], table);
+				continue;
+			} else if (!top) {
+				out += line;
+				continue;
+			}
+			const matches = line.match(
+				/^(?:(\|}|\x00\d+!\x7f}|\x00\d+}\x7f)|((?:\|-|\x00\d+!\x7f-|\x00\d+-\x7f)-*)|(!|(?:\||\x00\d+!\x7f)\+?))(.*)$/,
+			);
+			if (!matches) {
+				push(line, top);
+				stack.push(...top ? [top] : []);
+				continue;
+			}
+			const [, closing, row, cell, attr] = matches;
+			if (closing) {
+				while (top.type !== 'table') {
+					top = stack.pop();
+				}
+				top.setAttribute('closing', closing);
+				push(attr, stack.at(-1));
+			} else if (row) {
+				if (top.type === 'td') {
+					top = stack.pop();
+				}
+				if (top.type === 'tr') {
+					top = stack.pop();
+				}
+				const tr = new TableToken('tr', row, attr, this.#config, this.#accum);
+				stack.push(top, tr);
+				top.appendChild(tr);
+			} else if (cell) {
+				if (top.type === 'td') {
+					top = stack.at(-1);
+				} else {
+					stack.push(top);
+				}
+				const regex = cell === '!'
+					? /!!|(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g
+					: /(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g;
+				let mt = regex.exec(attr),
+					lastIndex = 0,
+					lastSyntax = cell;
+				while (mt) {
+					const td = new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), this.#config, this.#accum);
+					top.appendChild(td);
+					({lastIndex} = regex);
+					[lastSyntax] = mt;
+					mt = regex.exec(attr);
+				}
+				const td = new TdToken(lastSyntax, attr.slice(lastIndex), this.#config, this.#accum);
+				top.appendChild(td);
+				stack.push(td);
+			} else {
+				push(line, top);
+			}
+		}
+		this.replaceChildren(out.slice(1));
+		for (const table of this.#accum) {
+			if (table instanceof TableToken) {
+				table.normalize();
+				for (const [i, child] of table.childNodes.entries()) {
+					if (typeof child === 'string' && child.includes('\x00')) {
+						table.removeAt(i);
+						const inner = new Token(child, this.#config, true, this.#accum);
+						table.insertAt(inner, i);
+						inner.setAttribute('stage', 4);
+					}
+				}
+			}
+		}
 	}
 
 	/** @param {string} str */

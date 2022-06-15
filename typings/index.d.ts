@@ -87,11 +87,12 @@ declare global {
 		'stage'|'config'|'accum'|'acceptable'|'protectedChildren'| // Token
 		'tags'| // ExtToken
 		'keys'|'args'| // TranscludeToken
-		'attr'; // AttributeToken
+		'attr'| // AttributeToken
+		'tag'| // HtmlToken
+		'syntax'|'closing'; // TableToken
 	type TokenAttribute<T> =
 		T extends 'childNodes' ? (string|Token)[] :
 		T extends 'parentNode' ? Token|undefined :
-		T extends 'name'|'tag' ? string :
 		T extends 'stage' ? number :
 		T extends 'config' ? ParserConfig :
 		T extends 'accum' ? accum :

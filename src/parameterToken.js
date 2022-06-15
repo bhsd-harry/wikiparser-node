@@ -30,8 +30,7 @@ class ParameterToken extends fixedToken(Token) {
 			});
 		const token = new Token(value, config, true, accum);
 		token.type = 'parameter-value';
-		token.setAttribute('stage', 2);
-		this.append(keyToken, token);
+		this.append(keyToken, token.setAttribute('stage', 2));
 		if (this.type === 'magic-word') {
 			return;
 		}

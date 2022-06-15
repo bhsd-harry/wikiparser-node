@@ -37,6 +37,7 @@ const /** @type {Parser} */ Parser = {
 		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
 		['ArgToken', 'TranscludeToken', 'HeadingToken'],
 		['HtmlToken'],
+		['TableToken', 'TdToken'],
 	],
 
 	clearCache() {

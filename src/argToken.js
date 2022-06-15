@@ -27,8 +27,7 @@ class ArgToken extends watchFirstChild(Token) {
 			} else {
 				const token = new Token(part, config, true, accum);
 				token.type = 'arg-default';
-				token.setAttribute('stage', 2);
-				super.insertAt(token);
+				super.insertAt(token.setAttribute('stage', 2));
 			}
 		}
 		this.protectChildren(0);

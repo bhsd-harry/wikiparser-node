@@ -56,8 +56,7 @@ class HeadingToken extends fixedToken(Token) {
 			typeError('Number');
 		}
 		n = Math.min(Math.max(n, 1), 6);
-		this.setAttribute('name', String(n));
-		this.firstElementChild.setAttribute('name', this.name);
+		this.setAttribute('name', String(n)).firstElementChild.setAttribute('name', this.name);
 	}
 
 	removeTrail() {

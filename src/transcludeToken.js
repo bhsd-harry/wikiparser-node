@@ -37,8 +37,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
 			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
-				this.setAttribute('name', name.toLowerCase().replace(/^#/, ''));
-				this.type = 'magic-word';
+				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
 				const token = new AtomToken(magicWord, 'magic-word-name', accum, {'Stage-1': ':', '!ExtToken': ''});
 				this.appendChild(token);
 				if (arg.length) {
@@ -190,8 +189,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			const {name} = token,
 				newName = String(i + 1);
 			if (name !== newName) {
-				token.setAttribute('name', newName);
-				this.getArgs(newName, false).add(token);
+				this.getArgs(newName, false).add(token.setAttribute('name', newName));
 				if (name) {
 					this.getArgs(name, false).delete(token);
 				}

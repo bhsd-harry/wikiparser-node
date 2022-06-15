@@ -28,10 +28,9 @@ class TagPairToken extends fixedToken(Token) {
 			throw new RangeError(`非法的标签: ${lcName}！`);
 		}
 		super(undefined, config);
-		this.setAttribute('name', lcName);
+		this.setAttribute('name', lcName).#tags = [name, closing || name];
 		this.selfClosing = closing === undefined;
 		this.closed = closing !== '';
-		this.#tags = [name, closing || name];
 		this.append(attr, inner);
 		let index = accum.indexOf(attr);
 		if (index === -1) {

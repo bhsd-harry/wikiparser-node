@@ -128,8 +128,7 @@ class AttributeToken extends Token {
 		let parsedKey = key;
 		if (this.type === 'html-attr' && !init) {
 			const token = new Token(key); // 不需要真解析
-			token.setAttribute('stage', 1);
-			token.parseOnce();
+			token.setAttribute('stage', 1).parseOnce();
 			parsedKey = token.firstChild;
 		}
 		if (!/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
