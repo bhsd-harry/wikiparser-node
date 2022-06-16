@@ -537,5 +537,42 @@
 			"安全替代",
 			"safesubst"
 		]
+	],
+	"doubleUnderscore": [
+		[
+			"forcetoc",
+			"强显目录",
+			"nocc",
+			"nocontentconvert",
+			"不转换内容",
+			"noeditsection",
+			"无段落编辑",
+			"无编辑段落",
+			"nogallery",
+			"无图库",
+			"notc",
+			"notitleconvert",
+			"不转换标题",
+			"notoc",
+			"无目录",
+			"toc",
+			"目录"
+		],
+		[
+			"DISAMBIG",
+			"消除歧义",
+			"HIDDENCAT",
+			"隐藏分类",
+			"INDEX",
+			"索引",
+			"NEWSECTIONLINK",
+			"新段落链接",
+			"NOINDEX",
+			"无索引",
+			"NONEWSECTIONLINK",
+			"无新段落链接",
+			"STATICREDIRECT",
+			"静态重定向"
+		]
 	]
 }

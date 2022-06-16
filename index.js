@@ -33,6 +33,9 @@ const /** @type {Parser} */ Parser = {
 		ArgToken: '../src/argToken',
 		TranscludeToken: './src/transcludeToken',
 		HtmlToken: './src/htmlToken',
+		TableToken: './src/tableToken',
+		HrToken: './src/nowikiToken/hrToken',
+		DoubleUnderscoreToken: './src/nowikiToken/doubleUnderscoreToken',
 	},
 
 	aliases: [
@@ -40,7 +43,8 @@ const /** @type {Parser} */ Parser = {
 		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
 		['ArgToken', 'TranscludeToken', 'HeadingToken'],
 		['HtmlToken'],
-		['TableToken', 'TdToken'],
+		['TableToken'],
+		['HrToken', 'DoubleUnderscoreToken'],
 	],
 
 	clearCache() {
@@ -98,7 +102,7 @@ const /** @type {Parser} */ Parser = {
 };
 const hidden = {enumerable: false};
 Object.defineProperties(Parser, {
-	warning: hidden, debugging: hidden, warn: hidden, debug: hidden, error: hidden,
+	warning: hidden, debugging: hidden, warn: hidden, debug: hidden, error: hidden, info: hidden,
 	classes: hidden, mixins: hidden, defaultPaths: hidden, aliases: hidden, clearCache: hidden, getConfig: hidden,
 	MAX_STAGE: {...hidden, writable: false}, create: hidden,
 });

@@ -21,13 +21,18 @@ class CommentToken extends hidden(NowikiToken) {
 		this.closed = closed;
 	}
 
+	/** @this {CommentToken & {firstChild: string}} */
 	toString() {
-		const /** @type {CommentToken & {firstChild: string}} */ {firstChild, closed, nextSibling} = this;
+		const {firstChild, closed, nextSibling} = this;
 		if (!closed && nextSibling) {
 			Parser.error('自动闭合HTML注释', firstChild.replaceAll('\n', '\\n'));
 			this.closed = true;
 		}
 		return `<!--${firstChild}${this.closed ? '-->' : ''}`;
+	}
+
+	getPadding() {
+		return 4;
 	}
 }
 

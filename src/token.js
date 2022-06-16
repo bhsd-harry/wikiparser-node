@@ -32,6 +32,8 @@
  * h: HeadingToken
  * x: HtmlToken
  * b: TableToken
+ * r: HrToken
+ * u: DoubleUnderscoreToken
  */
 
 const {typeError, externalUse, debugOnly} = require('../util/debug'),
@@ -352,8 +354,10 @@ class Token extends AstElement {
 			case 3:
 				this.#parseTable();
 				break;
-			case 4:
+			case 4: {
+				this.#parseHrAndDoubleUndescore();
 				break;
+			}
 			case 5:
 				break;
 			case 6:
@@ -671,6 +675,27 @@ class Token extends AstElement {
 				}
 			}
 		}
+	}
+
+	/** @this {Token & {firstChild: string}} */
+	#parseHrAndDoubleUndescore() {
+		const HrToken = require('./nowikiToken/hrToken'),
+			DoubleUnderscoreToken = require('./nowikiToken/doubleUnderscoreToken'),
+			{doubleUnderscore} = this.#config,
+			text = this.firstChild.replace(/^-{4,}/mg, m => {
+				new HrToken(m.length, this.#accum);
+				return `\x00${this.#accum.length - 1}r\x7f`;
+			}).replace(
+				new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'ig'),
+				/** @param {string} p1 */(m, p1) => {
+					if (doubleUnderscore[0].includes(p1.toLowerCase()) || doubleUnderscore[1].includes(p1)) {
+						new DoubleUnderscoreToken(p1, this.#accum);
+						return `\x00${this.#accum.length - 1}u\x7f`;
+					}
+					return m;
+				},
+			);
+		this.replaceChildren(text);
 	}
 
 	/** @param {string} str */

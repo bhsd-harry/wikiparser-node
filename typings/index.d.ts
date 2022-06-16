@@ -10,6 +10,7 @@ declare global {
 		namespaces: Record<string, string>;
 		nsid: Record<string, number>;
 		parserFunction: [string[], string[], string[], string[]];
+		doubleUnderscore: [string[], string[]];
 	}
 
 	interface Parser {
