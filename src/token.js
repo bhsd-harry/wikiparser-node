@@ -10,7 +10,7 @@
  * 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
  * 4. 表格，参见Parser::handleTables
  * 5. 水平线和状态开关，参见Parser::internalParse
- * 6. 标题，参见Parser::handleHeadings
+ * 6. `'`，参见Parser::doQuotes
  * 7. 内链，含文件和分类，参见Parser::handleInternalLinks2
  * 8. 外链，参见Parser::handleExternalLinks
  * 9. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
@@ -34,6 +34,7 @@
  * b: TableToken
  * r: HrToken
  * u: DoubleUnderscoreToken
+ * l: LinkToken
  */
 
 const {typeError, externalUse, debugOnly} = require('../util/debug'),
@@ -257,6 +258,15 @@ class Token extends AstElement {
 		token.dispatchEvent(e, {position: i, oldToken: this, newToken: token});
 	}
 
+	/** @param {string} title */
+	isInterwiki(title) {
+		if (typeof title !== 'string') {
+			typeError('String');
+		}
+		return title.replaceAll('_', ' ').replace(/^\s*:?\s*/, '')
+			.match(new RegExp(`^\\s*(${this.#config.interwiki.join('|')})\\s*:`, 'i'));
+	}
+
 	/**
 	 * 引自mediawiki.Title::parse
 	 * @param {string} title
@@ -274,6 +284,10 @@ class Token extends AstElement {
 			namespace = '';
 			title = title.slice(1).trim();
 		}
+		const iw = this.isInterwiki(title);
+		if (iw) {
+			title = title.slice(iw[0].length);
+		}
 		const m = title.split(':');
 		if (m.length > 1) {
 			const id = namespaces[nsid[m[0].trim().toLowerCase()]];
@@ -284,7 +298,9 @@ class Token extends AstElement {
 		}
 		const i = title.indexOf('#');
 		title = i === -1 ? title : title.slice(0, i).trim();
-		return `${namespace}${namespace && ':'}${title && `${title[0].toUpperCase()}${title.slice(1)}`}`;
+		return `${
+			iw ? `${iw[1].toLowerCase()}:` : ''
+		}${namespace}${namespace && ':'}${title && `${title[0].toUpperCase()}${title.slice(1)}`}`;
 	}
 
 	sections() {
@@ -327,6 +343,10 @@ class Token extends AstElement {
 		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
 	}
 
+	getCategories() {
+		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
+	}
+
 	/** 将维基语法替换为占位符 */
 	parseOnce(n = this.#stage, include = false) {
 		if (!Parser.debugging && externalUse('parseOnce')) {
@@ -354,13 +374,14 @@ class Token extends AstElement {
 			case 3:
 				this.#parseTable();
 				break;
-			case 4: {
+			case 4:
 				this.#parseHrAndDoubleUndescore();
 				break;
-			}
 			case 5:
+				this.replaceChildren(this.#parseQuotes());
 				break;
 			case 6:
+				this.#parseLinks();
 				break;
 			case 7:
 				break;
@@ -370,10 +391,8 @@ class Token extends AstElement {
 				break;
 			case 10:
 				break;
-			case 11:
-				return;
 			default:
-				throw new RangeError(`解析层级应为 0 ~ ${MAX_STAGE} 的整数！`);
+				throw new RangeError(`解析层级应为 0 ~ ${MAX_STAGE - 1} 的整数！`);
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
@@ -698,6 +717,90 @@ class Token extends AstElement {
 		this.replaceChildren(text);
 	}
 
+	/** @param {string} text */
+	#parseQuotes(text = this.firstChild) {
+		return text;
+	}
+
+	/** @this {Token & {firstChild: string}} */
+	#parseLinks() {
+		const regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?]](.*)$/s,
+			regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/s,
+			regexExt = new RegExp(`^\\s*(?:${this.#config.protocol})`, 'i'),
+			bits = this.firstChild.split('[[');
+		let s = bits.shift();
+		for (let i = 0; i < bits.length; i++) {
+			let mightBeImg, link, text, after;
+			const x = bits[i],
+				m = x.match(regex);
+			if (m) {
+				[, link, text, after] = m;
+				if (after.startsWith(']') && text?.includes('[')) {
+					text += ']';
+					after = after.slice(1);
+				}
+			} else {
+				const m2 = x.match(regexImg);
+				if (m2) {
+					mightBeImg = true;
+					[, link, text] = m2;
+				}
+			}
+			if (link === undefined || regexExt.test(link) || /\x00\d+[exhbru]\x7f/.test(link)) {
+				s += `[[${x}`;
+				continue;
+			}
+			const page = link.includes('%') ? decodeURIComponent(link) : link,
+				force = link.trim().startsWith(':');
+			if (force && mightBeImg || /[<>[\]{}|]/.test(page)) {
+				s += `[[${x}`;
+				continue;
+			}
+			const title = this.normalizeTitle(page);
+			if (mightBeImg) {
+				if (!title.startsWith('File:')) {
+					s += `[[${x}`;
+					continue;
+				}
+				let found;
+				for (let j = i + 1; j < bits.length; j++) {
+					const next = bits[j],
+						p = next.split(']]');
+					if (p.length > 2) {
+						found = true;
+						i = j;
+						text += `[[${p[0]}]]${p[1]}`;
+						after = p.slice(2).join(']]');
+						break;
+					} else if (p.length === 2) {
+						text += `[[${p[0]}]]${p[1]}`;
+					} else {
+						break;
+					}
+				}
+				if (!found) {
+					s += `[[${x}`;
+					continue;
+				}
+			}
+			text = text && this.#parseQuotes(text);
+			s += `\x00${this.#accum.length}l\x7f${after}`;
+			if (!force) {
+				if (title.startsWith('File:')) {
+					// new ImageToken(link, title, text);
+					continue;
+				} else if (title.startsWith('Category:')) {
+					const CategoryToken = require('./linkToken/categoryToken');
+					new CategoryToken(link, text, title, this.#config, this.#accum);
+					continue;
+				}
+			}
+			const LinkToken = require('./linkToken');
+			new LinkToken(link, text, title, this.#config, this.#accum);
+		}
+		this.replaceChildren(s);
+	}
+
 	/** @param {string} str */
 	buildFromStr(str) {
 		if (!Parser.debugging && externalUse('buildFromStr')) {
@@ -706,6 +809,8 @@ class Token extends AstElement {
 		return str.split(/[\x00\x7f]/).map((s, i) => {
 			if (i % 2 === 0) {
 				return s;
+			} else if (!isNaN(s.at(-1))) {
+				throw new Error(`解析错误！未正确标记的Token：${s}`);
 			}
 			return this.#accum[Number(s.slice(0, -1))];
 		});

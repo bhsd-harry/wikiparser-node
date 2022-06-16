@@ -374,8 +374,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (length !== 1 || firstElementChild?.type !== 'template' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的模板名称：${title}`);
 		}
-		this.setAttribute('name', firstElementChild.name)
-			.firstElementChild.replaceChildren(...firstElementChild.firstElementChild.childNodes);
+		this.firstElementChild.replaceChildren(...firstElementChild.firstElementChild.childNodes);
 	}
 
 	/** @param {string} title */

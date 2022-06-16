@@ -11,6 +11,8 @@ declare global {
 		nsid: Record<string, number>;
 		parserFunction: [string[], string[], string[], string[]];
 		doubleUnderscore: [string[], string[]];
+		protocol: string;
+		interwiki: string[];
 	}
 
 	interface Parser {
