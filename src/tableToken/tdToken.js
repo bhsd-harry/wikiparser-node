@@ -15,6 +15,10 @@ const getSubType = /** @param {string} syntax */ syntax => {
 	return 'td';
 };
 
+/**
+ * `<td>`、`<th>`和`<caption>`
+ * @classdesc `{childNodes: [AttributeToken, Token]}`
+ */
 class TdToken extends fixedToken(TableToken) {
 	#innerSyntax = '';
 
@@ -43,14 +47,10 @@ class TdToken extends fixedToken(TableToken) {
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;
 		}
-		const innerToken = new Token(inner.slice(innerSyntax?.index), config, true, accum);
+		const innerToken = new Token(inner.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
-		this.setAttribute('acceptable', {AttributeToken: 0, Token: 1}).appendChild(innerToken.setAttribute('stage', 4));
-	}
-
-	/** @param {...(string|Token)} elements */
-	appendInner(...elements) {
-		this.lastElementChild.append(...elements);
+		innerToken.setAttribute('stage', 4);
+		this.setAttribute('acceptable', {AttributeToken: 0, Token: 1}).appendChild(innerToken);
 	}
 
 	/**
@@ -59,9 +59,7 @@ class TdToken extends fixedToken(TableToken) {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (!Parser.debugging && key === 'innerSyntax' && externalUse('getAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);
-		} else if (key === 'innerSyntax') {
+		if (key === 'innerSyntax') {
 			return this.#innerSyntax;
 		}
 		return super.getAttribute(key);
@@ -91,15 +89,31 @@ class TdToken extends fixedToken(TableToken) {
 	}
 
 	toString() {
+		if (this.firstElementChild.toString()) {
+			this.#innerSyntax ||= '|';
+		}
 		return super.toString(this.#innerSyntax);
 	}
 
 	getGaps() {
+		if (this.firstElementChild.toString()) {
+			this.#innerSyntax ||= '|';
+		}
 		return this.#innerSyntax.length;
+	}
+
+	text() {
+		if (this.firstElementChild.toString()) {
+			this.#innerSyntax ||= '|';
+		}
+		return super.text(this.#innerSyntax);
 	}
 
 	escape() {
 		super.escape();
+		if (this.firstElementChild.toString()) {
+			this.#innerSyntax ||= '|';
+		}
 		this.#innerSyntax = this.#innerSyntax.replaceAll('|', '{{!}}');
 	}
 }

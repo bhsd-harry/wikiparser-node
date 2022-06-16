@@ -36,11 +36,11 @@
 
 const {typeError, externalUse, debugOnly} = require('../util/debug'),
 	{removeComment} = require('../util/string'),
+	{Ranges} = require('../lib/range'),
+	assert = require('assert/strict'),
 	/** @type {Parser} */ Parser = require('..'),
 	{MAX_STAGE} = Parser,
-	AstElement = require('../lib/element'),
-	{Ranges} = require('../lib/range'),
-	assert = require('assert/strict');
+	AstElement = require('../lib/element');
 
 class Token extends AstElement {
 	type = 'root';
@@ -206,7 +206,8 @@ class Token extends AstElement {
 	insertAt(token, i = this.childNodes.length) {
 		if (this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
-					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.childNodes)]),
+					Object.entries(this.#acceptable)
+						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i);
 			if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j + 1))) {
@@ -577,14 +578,15 @@ class Token extends AstElement {
 			/** @type {TableToken[]} */ stack = [];
 		let out = '';
 		const /** @type {(str: string, top: TableToken) => void} */ push = (str, top) => {
-			if (top instanceof TdToken) {
-				top.appendInner(str);
-			} else if (typeof top?.lastChild === 'string') {
-				top.setText(top.lastChild + str, top.childNodes.length - 1);
-			} else if (top) {
-				top.appendChild(str.replace(/^\n/, ''));
-			} else {
+			if (!top) {
 				out += str;
+			} else if (top instanceof TdToken) {
+				const {lastElementChild} = top;
+				lastElementChild.setText(lastElementChild.firstChild + str, 0);
+			} else if (typeof top.lastChild === 'string') {
+				top.setText(top.lastChild + str, 1);
+			} else {
+				top.appendChild(str.replace(/^\n/, ''));
 			}
 		};
 		for (const outLine of this.firstChild.split('\n')) {
@@ -658,15 +660,14 @@ class Token extends AstElement {
 		}
 		this.replaceChildren(out.slice(1));
 		for (const table of this.#accum) {
-			if (table instanceof TableToken) {
+			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
-				for (const [i, child] of table.childNodes.entries()) {
-					if (typeof child === 'string' && child.includes('\x00')) {
-						table.removeAt(i);
-						const inner = new Token(child, this.#config, true, this.#accum);
-						table.insertAt(inner, i);
-						inner.setAttribute('stage', 4);
-					}
+				const [, child] = table.childNodes;
+				if (typeof child === 'string' && child.includes('\x00')) {
+					table.removeAt(1);
+					const inner = new Token(child, this.#config, true, this.#accum);
+					table.insertAt(inner, 1);
+					inner.setAttribute('stage', 4);
 				}
 			}
 		}

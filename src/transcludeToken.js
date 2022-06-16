@@ -309,7 +309,10 @@ class TranscludeToken extends watchFirstChild(Token) {
 		return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]));
 	}
 
-	/** @param {string} val */
+	/**
+	 * @param {string} val
+	 * @returns {ParameterToken}
+	 */
 	newAnonArg(val) {
 		val = String(val);
 		const templateLike = this.isTemplate(),
@@ -320,7 +323,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 		) {
 			throw new SyntaxError(`非法的匿名参数：${val.replaceAll('\n', '\\n')}`);
 		}
-		this.appendChild(firstElementChild.lastChild);
+		return this.appendChild(firstElementChild.lastChild);
 	}
 
 	/**
