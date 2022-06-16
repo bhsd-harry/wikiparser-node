@@ -5,6 +5,10 @@ const {typeError, externalUse} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('../token');
 
+/**
+ * 成对标签
+ * @classdesc `{childNodes: [string|AttributeToken, string|Token]}`
+ */
 class TagPairToken extends fixedToken(Token) {
 	selfClosing;
 	closed;

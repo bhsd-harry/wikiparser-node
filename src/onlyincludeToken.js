@@ -3,7 +3,10 @@
 const /** @type {Parser} */ Parser = require('..'),
 	Token = require('./token');
 
-/** 嵌入时的`<onlyinclude>` */
+/**
+ * 嵌入时的`<onlyinclude>`
+ * @classdesc `{childNodes: ...string|Token}`
+ */
 class OnlyincludeToken extends Token {
 	type = 'onlyinclude';
 
