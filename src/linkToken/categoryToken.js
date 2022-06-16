@@ -5,7 +5,7 @@ const /** @type {Parser} */ Parser = require('../..'),
 	Token = require('../token');
 
 /**
- * 内链
+ * 分类
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 class CategoryToken extends LinkToken {

@@ -25,18 +25,6 @@ const /** @type {Parser} */ Parser = {
 
 	classes: {},
 	mixins: {},
-	defaultPaths: {
-		Token: './src/token',
-		ExtToken: '../src/tagPairToken/extToken',
-		CommentToken: './src/nowikiToken/commentToken',
-		HeadingToken: '../src/headingToken',
-		ArgToken: '../src/argToken',
-		TranscludeToken: './src/transcludeToken',
-		HtmlToken: './src/htmlToken',
-		TableToken: './src/tableToken',
-		HrToken: './src/nowikiToken/hrToken',
-		DoubleUnderscoreToken: './src/nowikiToken/doubleUnderscoreToken',
-	},
 
 	aliases: [
 		['String'],
@@ -85,16 +73,6 @@ const /** @type {Parser} */ Parser = {
 		}
 	},
 
-	create(className, ...args) {
-		let /** @type {ObjectConstructor} */ Token;
-		if (className in this.classes) {
-			Token = require(this.classes[className]);
-		} else if (className in this.defaultPaths) {
-			Token = require(this.defaultPaths[className]);
-		}
-		return new Token(...args);
-	},
-
 	getTool() {
 		delete require.cache[require.resolve('./tool')];
 		return require('./tool');
@@ -103,8 +81,8 @@ const /** @type {Parser} */ Parser = {
 const hidden = {enumerable: false};
 Object.defineProperties(Parser, {
 	warning: hidden, debugging: hidden, warn: hidden, debug: hidden, error: hidden, info: hidden,
-	classes: hidden, mixins: hidden, defaultPaths: hidden, aliases: hidden, clearCache: hidden, getConfig: hidden,
-	MAX_STAGE: {...hidden, writable: false}, create: hidden,
+	classes: hidden, mixins: hidden, aliases: hidden, clearCache: hidden, getConfig: hidden,
+	MAX_STAGE: {...hidden, writable: false},
 });
 
 module.exports = Parser;
