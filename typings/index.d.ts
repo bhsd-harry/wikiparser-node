@@ -21,6 +21,8 @@ declare global {
 		debug: (msg: string, ...args: any[]) => void;
 		/** 总是输出到console.error */
 		error: (msg: string, ...args: any[]) => void;
+		/** 总是输出到console.info */
+		info: (msg: string, ...args: any[]) => void;
 
 		/** 只储存导出各个Class的文件路径 */
 		classes: Record<string, string>;

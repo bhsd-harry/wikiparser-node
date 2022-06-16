@@ -426,6 +426,20 @@ class TranscludeToken extends watchFirstChild(Token) {
 		}
 	}
 
+	hasDuplicatedArgs() {
+		if (!this.isTemplate()) {
+			throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
+		}
+		return this.getKeys().length < this.getAllArgs().length;
+	}
+
+	countDuplicatedArgs() {
+		if (!this.isTemplate()) {
+			throw new Error(`${this.constructor.name}.countDuplicatedArgs 方法仅供模板使用！`);
+		}
+		return this.getAllArgs().length - this.getKeys().length;
+	}
+
 	getDuplicatedArgs() {
 		if (!this.isTemplate()) {
 			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
@@ -438,6 +452,9 @@ class TranscludeToken extends watchFirstChild(Token) {
 	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数
 	 */
 	fixDuplication(aggressive = false) {
+		if (!this.hasDuplicatedArgs()) {
+			return [];
+		}
 		const /** @type {string[]} */ duplicatedKeys = [];
 		let anonCount = this.getAnonArgs().length;
 		for (const [key, args] of this.getDuplicatedArgs()) {
@@ -511,6 +528,33 @@ class TranscludeToken extends watchFirstChild(Token) {
 			}
 		}
 		return duplicatedKeys;
+	}
+
+	/** @returns {TranscludeToken} */
+	escapeTables() {
+		const count = this.countDuplicatedArgs();
+		if (!/\n\s*:*\s*{\|.*\n\s*\|}/s.test(this.text()) || count === 0) {
+			return this;
+		}
+		const stripped = this.toString().slice(2, -2),
+			config = this.getAttribute('config'),
+			parsed = new Token(stripped, config).parse(4),
+			TableToken = require('./tableToken');
+		for (const table of parsed.children) {
+			if (table instanceof TableToken) {
+				table.escape();
+			}
+		}
+		const {firstChild, childNodes} = new Token(`{{${parsed.toString()}}}`, config).parse(2);
+		if (childNodes.length !== 1 || !(firstChild instanceof TranscludeToken)) {
+			throw new Error('转义表格失败！');
+		}
+		const newCount = firstChild.countDuplicatedArgs();
+		if (newCount < count) {
+			Parser.info(`共修复了 ${count - newCount} 个重复参数。`);
+		}
+		this.safeReplaceWith(firstChild);
+		return firstChild;
 	}
 }
 

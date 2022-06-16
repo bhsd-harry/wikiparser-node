@@ -41,8 +41,12 @@ class TdToken extends fixedToken(TableToken) {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		const innerSyntax = inner.match(/\||\x00\d+!\x7f/),
+		let innerSyntax = inner.match(/\||\x00\d+!\x7f/),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
+		if (/\[\[|-{/.test(attr)) {
+			innerSyntax = null;
+			attr = '';
+		}
 		super('td', syntax, attr, config, accum);
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;

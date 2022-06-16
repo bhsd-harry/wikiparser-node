@@ -106,9 +106,15 @@ class TableToken extends attributeParent(Token) {
 		}${this.#closing}`;
 	}
 
+	/** @param {string} syntax */
+	static escape(syntax) {
+		return syntax.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
+			.replaceAll('|', '{{!}}');
+	}
+
 	escape() {
-		this.#syntax = this.#syntax.replaceAll('|', '{{!}}');
-		this.#closing = this.#closing.replaceAll('|', '{{!}}');
+		this.#syntax = TableToken.escape(this.#syntax);
+		this.#closing = TableToken.escape(this.#closing);
 		for (const child of this.children) {
 			if (child instanceof TableToken) {
 				child.escape();

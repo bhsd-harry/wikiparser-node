@@ -19,6 +19,9 @@ const /** @type {Parser} */ Parser = {
 	error(msg, ...args) {
 		console.error('\x1b[31m%s\x1b[0m', msg, ...args);
 	},
+	info(msg, ...args) {
+		console.info('\x1b[32m%s\x1b[0m', msg, ...args);
+	},
 
 	classes: {},
 	mixins: {},
