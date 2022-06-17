@@ -37,7 +37,7 @@ class LinkToken extends watchFirstChild(Token) {
 		if (text !== undefined) {
 			const inner = new Token(text, config, true, accum);
 			inner.type = 'link-text';
-			this.appendChild(inner.setAttribute('stage', 6));
+			this.appendChild(inner.setAttribute('stage', 7));
 		}
 		this.protectChildren(0);
 	}
@@ -68,7 +68,7 @@ class LinkToken extends watchFirstChild(Token) {
 	 */
 	setTarget(link) {
 		link = String(link);
-		const root = new Token(`[[${link}]]`, this.getAttribute('config')).parse(7),
+		const root = new Token(`[[${link}]]`, this.getAttribute('config')).parse(6),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
@@ -86,7 +86,7 @@ class LinkToken extends watchFirstChild(Token) {
 	 */
 	setText(text) {
 		text = String(text);
-		const root = new Token(`[[L|${text}]]`, this.getAttribute('config')).parse(7),
+		const root = new Token(`[[L|${text}]]`, this.getAttribute('config')).parse(6),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的内链文字：${text.replaceAll('\n', '\\n')}`);

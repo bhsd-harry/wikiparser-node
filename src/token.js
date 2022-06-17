@@ -36,6 +36,7 @@
  * u: DoubleUnderscoreToken
  * l: LinkToken
  * q: QuoteToken
+ * w: ExtLinkToken
  */
 
 const {typeError, externalUse, debugOnly} = require('../util/debug'),
@@ -393,6 +394,7 @@ class Token extends AstElement {
 				break;
 			}
 			case 7:
+				this.#parseExternalLinks();
 				break;
 			case 8:
 				break;
@@ -858,6 +860,32 @@ class Token extends AstElement {
 			arr[i] = `\x00${this.#accum.length - 1}q\x7f`;
 		}
 		return arr.join('');
+	}
+
+	/** @this {Token & {firstChild: string}} */
+	#parseExternalLinks() {
+		const ExtLinkToken = require('./extLinkToken'),
+			regex = new RegExp(
+				`\\[((?:${this.#config.protocol}|//)`
+					+ '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
+					+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*)'
+					+ '(\\p{Zs}*)([^\\]\\x01-\\x08\\x0a-\\x1f\\ufffd]*)\\]',
+				'gui',
+			);
+		this.replaceChildren(this.firstChild.replace(
+			regex,
+			/** @type {function(...string): string} */ (_, url, space, text) => {
+				const {length} = this.#accum,
+					mt = url.match(/&[lg]t;/);
+				if (mt) {
+					url = url.slice(0, mt.index);
+					space = '';
+					text = `${url.slice(mt.index)}${space}${text}`;
+				}
+				new ExtLinkToken(url, space, text, this.#config, this.#accum);
+				return `\x00${length}w\x7f`;
+			},
+		));
 	}
 
 	/** @param {string} str */

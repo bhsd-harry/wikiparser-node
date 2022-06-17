@@ -74,7 +74,7 @@ class CategoryToken extends LinkToken {
 	 */
 	setText(text) {
 		text = String(text);
-		const root = new Token(`[[Category:C|${text}]]`, this.getAttribute('config')).parse(7),
+		const root = new Token(`[[Category:C|${text}]]`, this.getAttribute('config')).parse(6),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'category' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的分类关键字：${text.replaceAll('\n', '\\n')}`);
