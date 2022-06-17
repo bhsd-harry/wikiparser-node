@@ -10,8 +10,8 @@
  * 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
  * 4. 表格，参见Parser::handleTables
  * 5. 水平线和状态开关，参见Parser::internalParse
- * 6. `'`，参见Parser::doQuotes
- * 7. 内链，含文件和分类，参见Parser::handleInternalLinks2
+ * 6. 内链，含文件和分类，参见Parser::handleInternalLinks2
+ * 7. `'`，参见Parser::doQuotes
  * 8. 外链，参见Parser::handleExternalLinks
  * 9. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
  * 10. 段落和列表，参见BlockLevelPass::execute
@@ -35,6 +35,7 @@
  * r: HrToken
  * u: DoubleUnderscoreToken
  * l: LinkToken
+ * q: QuoteToken
  */
 
 const {typeError, externalUse, debugOnly} = require('../util/debug'),
@@ -347,7 +348,10 @@ class Token extends AstElement {
 		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
 	}
 
-	/** 将维基语法替换为占位符 */
+	/**
+	 * 将维基语法替换为占位符
+	 * @this {Token & {firstChild: string}}
+	 */
 	parseOnce(n = this.#stage, include = false) {
 		if (!Parser.debugging && externalUse('parseOnce')) {
 			debugOnly(this.constructor, 'parseOnce');
@@ -378,11 +382,16 @@ class Token extends AstElement {
 				this.#parseHrAndDoubleUndescore();
 				break;
 			case 5:
-				this.replaceChildren(this.#parseQuotes());
-				break;
-			case 6:
 				this.#parseLinks();
 				break;
+			case 6: {
+				const lines = this.firstChild.split('\n');
+				for (let i = 0; i < lines.length; i++) {
+					lines[i] = this.#parseQuotes(lines[i]);
+				}
+				this.replaceChildren(lines.join('\n'));
+				break;
+			}
 			case 7:
 				break;
 			case 8:
@@ -717,11 +726,6 @@ class Token extends AstElement {
 		this.replaceChildren(text);
 	}
 
-	/** @param {string} text */
-	#parseQuotes(text = this.firstChild) {
-		return text;
-	}
-
 	/** @this {Token & {firstChild: string}} */
 	#parseLinks() {
 		const regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?]](.*)$/s,
@@ -787,7 +791,8 @@ class Token extends AstElement {
 			s += `\x00${this.#accum.length}l\x7f${after}`;
 			if (!force) {
 				if (title.startsWith('File:')) {
-					// new ImageToken(link, title, text);
+					const FileToken = require('./linkToken/fileToken');
+					new FileToken(link, text, title, this.#config, this.#accum);
 					continue;
 				} else if (title.startsWith('Category:')) {
 					const CategoryToken = require('./linkToken/categoryToken');
@@ -799,6 +804,60 @@ class Token extends AstElement {
 			new LinkToken(link, text, title, this.#config, this.#accum);
 		}
 		this.replaceChildren(s);
+	}
+
+	/** @param {string} text */
+	#parseQuotes(text) {
+		const arr = text.split(/('{2,})/),
+			{length} = arr;
+		if (length === 1) {
+			return text;
+		}
+		let nBold = 0,
+			nItalic = 0,
+			firstSingle, firstMulti, firstSpace;
+		for (let i = 1; i < length; i += 2) {
+			const len = arr[i].length;
+			switch (len) {
+				case 2:
+					nItalic++;
+					break;
+				case 4:
+					arr[i - 1] += "'";
+					arr[i] = "'''";
+					// fall through
+				case 3:
+					nBold++;
+					if (firstSingle) {
+						break;
+					} else if (arr[i - 1].at(-1) === ' ') {
+						if (!firstMulti && !firstSpace) {
+							firstSpace = i;
+						}
+					} else if (arr[i - 1].at(-2) === ' ') {
+						firstSingle = i;
+					} else if (!firstMulti) {
+						firstMulti = i;
+					}
+					break;
+				default:
+					arr[i - 1] += "'".repeat(len - 5);
+					arr[i] = "'''''";
+					nItalic++;
+					nBold++;
+			}
+		}
+		if (nItalic % 2 === 1 && nBold % 2 === 1) {
+			const i = firstSingle ?? firstMulti ?? firstSpace;
+			arr[i] = "''";
+			arr[i - 1] += "'";
+		}
+		const QuoteToken = require('./nowikiToken/quoteToken');
+		for (let i = 1; i < length; i += 2) {
+			new QuoteToken(arr[i].length, this.#accum);
+			arr[i] = `\x00${this.#accum.length - 1}q\x7f`;
+		}
+		return arr.join('');
 	}
 
 	/** @param {string} str */

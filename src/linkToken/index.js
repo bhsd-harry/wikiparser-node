@@ -37,7 +37,7 @@ class LinkToken extends watchFirstChild(Token) {
 		if (text !== undefined) {
 			const inner = new Token(text, config, true, accum);
 			inner.type = 'link-text';
-			this.appendChild(inner.setAttribute('stage', 7));
+			this.appendChild(inner.setAttribute('stage', 6));
 		}
 		this.protectChildren(0);
 	}
