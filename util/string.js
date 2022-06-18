@@ -13,4 +13,7 @@ const toCase = (val, i) => i ? val.toLowerCase() : val;
  */
 const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
 
-module.exports = {toCase, removeComment};
+/** @param {string} str */
+const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
+
+module.exports = {toCase, removeComment, ucfirst};

@@ -15,6 +15,7 @@ declare global {
 		T extends 'keys' ? Set<string> :
 		T extends 'args' ? Map<string, Set<ParameterToken>> :
 		T extends 'attr' ? Map<string, string|true> :
+		T extends 'include'|'selfLink' ? boolean :
 		string;
 }
 

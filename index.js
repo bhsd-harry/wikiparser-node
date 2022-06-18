@@ -61,12 +61,18 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	isInterwiki(title) {
-		const Token = require('./src/token');
-		return new Token().isInterwiki(title);
+		this.running = true;
+		const Token = require('./src/token'),
+			result = new Token().isInterwiki(title);
+		this.running = false;
+		return result;
 	},
 	normalizeTitle(title, defaultNs = 0) {
-		const Token = require('./src/token');
-		return new Token().normalizeTitle(title, defaultNs);
+		this.running = true;
+		const Token = require('./src/token'),
+			result = new Token().normalizeTitle(title, defaultNs);
+		this.running = false;
+		return result;
 	},
 
 	MAX_STAGE: 11,

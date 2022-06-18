@@ -1,7 +1,6 @@
 'use strict';
 
-const {externalUse} = require('../util/debug'),
-	/** @type {Parser} */ Parser = require('..');
+const /** @type {Parser} */ Parser = require('..');
 
 /**
  * @template T
@@ -21,7 +20,7 @@ const fixedToken = constructor => class extends constructor {
 	 * @param {number} i
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		if (externalUse(this.constructor.name, true)) {
+		if (!Parser.running) {
 			throw new Error(`${this.constructor.name} 不可插入元素！`);
 		}
 		super.insertAt(token, i);
