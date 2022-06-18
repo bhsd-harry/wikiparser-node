@@ -1,5 +1,5 @@
 import Ranges from '../lib/ranges';
-import Token from '../src/token';
+import Token from '../src';
 import ParameterToken from '../src/parameterToken';
 
 declare global {

@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	AttributeToken = require('../src/attributeToken'); // eslint-disable-line no-unused-vars
+	AttributeToken = require('../src/attribute'); // eslint-disable-line no-unused-vars
 
 /**
  * @template T

@@ -1,4 +1,4 @@
-import Token from '../src/token';
+import Token from '../src';
 
 declare global {
 	interface CollectionCallback<T, S> extends Function {

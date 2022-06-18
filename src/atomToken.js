@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('./token');
+	Token = require('.');
 
 /**
  * 不会被继续解析的plain Token

@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('./token');
+	Token = require('.');
 
 /**
  * 嵌入时的`<onlyinclude>`
@@ -16,6 +16,13 @@ class OnlyincludeToken extends Token {
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(inner, config, false, accum);
+	}
+
+	cloneNode() {
+		Parser.running = true;
+		const token = new OnlyincludeToken(undefined, this.getAttribute('config'));
+		Parser.running = false;
+		return token;
 	}
 
 	toString() {

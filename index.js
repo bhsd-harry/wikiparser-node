@@ -67,14 +67,14 @@ const /** @type {Parser} */ Parser = {
 
 	isInterwiki(title) {
 		this.running = true;
-		const Token = require('./src/token'),
+		const Token = require('./src'),
 			result = new Token().isInterwiki(title);
 		this.running = false;
 		return result;
 	},
 	normalizeTitle(title, defaultNs = 0) {
 		this.running = true;
-		const Token = require('./src/token'),
+		const Token = require('./src'),
 			result = new Token().normalizeTitle(title, defaultNs);
 		this.running = false;
 		return result;
@@ -84,7 +84,7 @@ const /** @type {Parser} */ Parser = {
 
 	parse(wikitext, include = false, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
 		this.running = true;
-		const Token = require('./src/token');
+		const Token = require('./src');
 		if (typeof wikitext === 'string') {
 			wikitext = new Token(wikitext, config);
 		} else if (!(wikitext instanceof Token)) {

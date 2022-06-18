@@ -51,7 +51,7 @@ const parseQuotes = (text, accum = []) => {
 		arr[i] = "''";
 		arr[i - 1] += "'";
 	}
-	const QuoteToken = require('../src/nowikiToken/quoteToken');
+	const QuoteToken = require('../src/nowiki/quote');
 	for (let i = 1; i < length; i += 2) {
 		new QuoteToken(arr[i].length, accum);
 		arr[i] = `\x00${accum.length - 1}q\x7f`;

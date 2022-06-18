@@ -75,10 +75,16 @@ class Token extends AstElement {
 	}
 
 	cloneNode() {
-		if (this.type !== 'root' || !this.isPlain()) {
-			throw new Error('只能复制根节点！');
+		if (!this.isPlain()) {
+			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
 		}
-		return Parser.parse(this.toString(), this.#include, this.#stage, this.#config);
+		Parser.running = true;
+		const token = new Token(undefined, this.#config, false, [], this.#acceptable)
+			.parse(this.#stage, this.#include);
+		token.type = this.type;
+		token.protectChildren(...this.#protectedChildren);
+		Parser.running = false;
+		return token;
 	}
 
 	/**

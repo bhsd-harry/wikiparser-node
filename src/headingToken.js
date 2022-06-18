@@ -3,7 +3,7 @@
 const {typeError} = require('../util/debug'),
 	fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token');
+	Token = require('.');
 
 /**
  * 章节标题

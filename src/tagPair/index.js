@@ -1,9 +1,8 @@
 'use strict';
 
-const {typeError, externalUse} = require('../../util/debug'),
-	fixedToken = require('../../mixin/fixedToken'),
+const fixedToken = require('../../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('../token');
+	Token = require('..');
 
 /**
  * 成对标签
@@ -22,17 +21,8 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
-		if (typeof name !== 'string' || closing !== undefined && typeof closing !== 'string') {
-			typeError('String');
-		} else if (!Token.isNode(attr) || !Token.isNode(inner)) {
-			typeError('String', 'Token');
-		}
-		const lcName = name.toLowerCase();
-		if (![...config?.ext ?? [], 'includeonly', 'noinclude'].includes(lcName)) {
-			throw new RangeError(`非法的标签: ${lcName}！`);
-		}
 		super(undefined, config);
-		this.setAttribute('name', lcName).#tags = [name, closing || name];
+		this.setAttribute('name', name.toLowerCase()).#tags = [name, closing || name];
 		this.selfClosing = closing === undefined;
 		this.closed = closing !== '';
 		this.append(attr, inner);
@@ -46,16 +36,29 @@ class TagPairToken extends fixedToken(Token) {
 		accum.splice(index, 0, this);
 	}
 
+	cloneNode() {
+		Parser.running = true;
+		let /** @type {string|undefined} */ closing;
+		if (this.selfClosing) {
+			// pass
+		} else if (!this.closed) {
+			closing = '';
+		} else {
+			[, closing] = this.#tags;
+		}
+		const token = new TagPairToken(this.#tags[0], '', '', closing, this.getAttribute('config'));
+		Parser.running = false;
+		return token;
+	}
+
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (!Parser.debugging && key === 'tags' && externalUse('getAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);
-		} else if (key === 'tags') {
-			return this.#tags;
+		if (key === 'tags') {
+			return [...this.#tags];
 		}
 		return super.getAttribute(key);
 	}
@@ -64,7 +67,7 @@ class TagPairToken extends fixedToken(Token) {
 		const {closed, firstChild, lastChild, nextSibling, name, selfClosing} = this,
 			[opening, closing] = this.#tags;
 		if (!closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, lastChild.replaceAll('\n', '\\n'));
+			Parser.error(`自动闭合 <${name}>`, String(lastChild).replaceAll('\n', '\\n'));
 			this.closed = true;
 		}
 		return selfClosing
@@ -77,7 +80,7 @@ class TagPairToken extends fixedToken(Token) {
 	}
 
 	getGaps() {
-		return this.selfClosing ? 2 : 1;
+		return 1;
 	}
 
 	text() {
@@ -89,14 +92,11 @@ class TagPairToken extends fixedToken(Token) {
 			: `<${opening}${text(firstChild)}>${text(lastChild)}${closed ? `</${closing}>` : ''}`;
 	}
 
-	/**
-	 * @this {TagPairToken & {lastChild: string|Token}}
-	 * @returns {[number, string][]}
-	 */
+	/** @returns {[number, string][]} */
 	plain() {
 		const {lastChild} = this;
 		if (typeof lastChild === 'string') {
-			return lastChild ? [[this.getAbsoluteIndex() + this.getIndex(1), lastChild]] : [];
+			return lastChild ? [[this.getAbsoluteIndex() + this.getRelativeIndex(1), lastChild]] : [];
 		}
 		return lastChild.plain();
 	}

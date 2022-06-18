@@ -3,7 +3,7 @@
 const {typeError, externalUse} = require('../util/debug'),
 	{toCase} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token');
+	Token = require('.');
 
 /**
  * 扩展和HTML标签属性
@@ -42,13 +42,13 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		if (!Parser.debugging && key === 'attr' && externalUse('getAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);
+			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 #${key} 仅用于代码调试！`);
 		} else if (key === 'attr') {
 			return this.#attr;
 		}
@@ -127,13 +127,15 @@ class AttributeToken extends Token {
 		key = key.toLowerCase().trim();
 		let parsedKey = key;
 		if (this.type === 'html-attr' && !init) {
+			Parser.running = true;
 			const token = new Token(key); // 不需要真解析
 			token.setAttribute('stage', 1).parseOnce();
+			Parser.running = false;
 			parsedKey = token.firstChild;
 		}
 		if (!/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
 			if (init) {
-				return this;
+				return;
 			}
 			throw new RangeError(`无效的属性名：${key}！`);
 		} else if (value === false) {
@@ -144,7 +146,6 @@ class AttributeToken extends Token {
 		if (!init) {
 			this.#updateFromAttr();
 		}
-		return this;
 	}
 
 	/** @param {string} key */
@@ -191,7 +192,7 @@ class AttributeToken extends Token {
 				const parameter = this.closest('parameter');
 				if (parameter) {
 					const /** @type {{anon: boolean, parentNode: Token}} */ {anon, parentNode} = parameter;
-					if (anon && parentNode?.isTemplate()) {
+					if (anon && parentNode?.matches('template, magic-word#invoke')) {
 						equal = '{{=}}';
 					}
 				}

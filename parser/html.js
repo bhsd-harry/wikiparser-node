@@ -20,7 +20,7 @@ const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 			continue;
 		}
 		const [, slash,, params, brace, rest] = mt,
-			AttributeToken = require('../src/attributeToken'),
+			AttributeToken = require('../src/attribute'),
 			attr = new AttributeToken(params, 'html-attr', name, accum),
 			itemprop = attr.getAttr('itemprop');
 		if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)

@@ -2,7 +2,7 @@
 
 const fixedToken = require('../../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('../token');
+	Token = require('..');
 
 /**
  * 纯文字Token，不会被解析
@@ -17,6 +17,14 @@ class NowikiToken extends fixedToken(Token) {
 	 */
 	constructor(wikitext, accum = []) {
 		super(wikitext, null, false, accum);
+	}
+
+	cloneNode() {
+		Parser.running = true;
+		const token = new NowikiToken();
+		token.type = this.type;
+		Parser.running = false;
+		return token;
 	}
 
 	/** @param {string} str */

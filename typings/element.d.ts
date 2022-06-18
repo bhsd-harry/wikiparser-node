@@ -1,4 +1,4 @@
-import Token from '../src/token';
+import Token from '../src';
 
 declare global {
 	interface AstEvent extends Event {

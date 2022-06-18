@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('../src/token'); // eslint-disable-line no-unused-vars
+	Token = require('../src'); // eslint-disable-line no-unused-vars
 
 /**
  * @param {Token & {firstChild: string}} token

@@ -18,7 +18,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 */
 	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
 		const lcName = name.toLowerCase(),
-			AttributeToken = require('../attributeToken'),
+			AttributeToken = require('../attribute'),
 			attrToken = new AttributeToken(!attr || /^\s/.test(attr) ? attr : ` ${attr}`, 'ext-attr', lcName),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
@@ -36,7 +36,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			case 'pre': {
 				ext.delete(lcName);
 				newConfig.ext = [...ext];
-				const Token = require('../token');
+				const Token = require('..');
 				acceptable = {AttributeToken: 0, Token: 1};
 				innerToken = new Token(inner, newConfig, false, accum);
 				break;
@@ -47,7 +47,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			 * case 'extensionName': {
 			 * 	ext.delete(this.name);
 			 * 	newConfig.ext = [...ext];
-			 * 	const ExtensionToken = require('../extensionToken');
+			 * 	const ExtensionToken = require('../extension');
 			 * 	acceptable = {AttributeToken: 0, ExtensionToken: 1};
 			 * 	innerToken = new ExtensionToken(extInner, newConfig, false, accum);
 			 * 	break;
@@ -55,7 +55,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			 * ```
 			 */
 			default: {
-				const NowikiToken = require('../nowikiToken');
+				const NowikiToken = require('../nowiki');
 				acceptable = {AttributeToken: 0, NowikiToken: 1};
 				innerToken = new NowikiToken(inner);
 			}
@@ -67,6 +67,14 @@ class ExtToken extends attributeParent(TagPairToken) {
 		}
 		super(name, attrToken, innerToken, closing, config, accum, acceptable);
 		Object.defineProperty(this, 'closed', {value: true, enumerable: false, writable: false, configurable: false});
+	}
+
+	cloneNode() {
+		Parser.running = true;
+		const tags = this.getAttribute('tags'),
+			token = new ExtToken(tags[0], '', '', this.selfClosing ? undefined : tags[1], this.getAttribute('config'));
+		Parser.running = false;
+		return token;
 	}
 }
 
