@@ -39,13 +39,13 @@
  * w: ExtLinkToken
  */
 
-const {typeError, externalUse, debugOnly} = require('../util/debug'),
-	{removeComment} = require('../util/string'),
-	{Ranges} = require('../lib/range'),
+const {typeError, externalUse} = require('../util/debug'),
+	{ucfirst} = require('../util/string'),
+	Ranges = require('../lib/ranges'),
+	AstElement = require('../lib/element'),
 	assert = require('assert/strict'),
 	/** @type {Parser} */ Parser = require('..'),
-	{MAX_STAGE} = Parser,
-	AstElement = require('../lib/element');
+	{MAX_STAGE} = Parser;
 
 class Token extends AstElement {
 	type = 'root';
@@ -58,6 +58,7 @@ class Token extends AstElement {
 	#accum;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
+	/** @type {boolean} */ #include;
 
 	/**
 	 * @param {?string} wikitext
@@ -67,82 +68,75 @@ class Token extends AstElement {
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.insertAt(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''), 0, true);
-		} else if (wikitext !== undefined) {
-			typeError('String');
+			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''));
 		}
 		this.setAttribute('config', config).setAttribute('accum', accum).setAttribute('acceptable', acceptable);
 		accum.push(this);
 	}
 
+	cloneNode() {
+		if (this.type !== 'root' || !this.isPlain()) {
+			throw new Error('只能复制根节点！');
+		}
+		return Parser.parse(this.toString(), this.#include, this.#stage, this.#config);
+	}
+
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (!Parser.debugging && ['stage', 'config', 'accum', 'acceptable', 'protectedChildren'].includes(key)
-			&& externalUse('getAttribute')
-		) {
-			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);
-		}
 		switch (key) {
 			case 'stage':
 				return this.#stage;
 			case 'config':
-				return this.#config;
+				return structuredClone(this.#config);
 			case 'accum':
 				return this.#accum;
 			case 'acceptable':
-				return this.#acceptable;
+				return this.#acceptable ? {...this.#acceptable} : null;
 			case 'protectedChildren':
-				return this.#protectedChildren;
+				return new Ranges(this.#protectedChildren);
+			case 'include':
+				return this.#include;
 			default:
 				return super.getAttribute(key);
 		}
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @param {TokenAttribute<T>} value
 	 */
 	setAttribute(key, value) {
-		if (!Parser.debugging && ['stage', 'config', 'accum', 'acceptable', 'protectedChildren'].includes(key)
+		if (key === 'include' || !Parser.running && ['config', 'accum'].includes(key)) {
+			throw new RangeError(`禁止手动指定私有的 #${key} 属性！`);
+		} else if (!Parser.debugging && ['stage', 'acceptable', 'protectedChildren'].includes(key)
 			&& externalUse('setAttribute')
 		) {
-			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 ${key} 仅用于代码调试！`);
+			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
 		}
 		switch (key) {
 			case 'stage':
-				if (typeof value !== 'number') {
-					typeError('Number');
-				} else if (!Number.isInteger(value) || value < 0 || value > MAX_STAGE) {
-					throw new RangeError(`非法的解析层级：${value}！`);
-				} else if (value > 0 && this.#stage === 0 && this.type === 'root') {
+				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
 				this.#stage = value;
 				return this;
 			case 'config':
-				if (typeof value !== 'object') {
-					typeError('Object');
-				}
 				this.#config = value;
 				return this;
 			case 'accum':
-				if (!Array.isArray(value)) {
-					typeError('Array');
-				} else if (value.some(ele => !(ele instanceof Token))) {
-					typeError('Token');
-				}
 				this.#accum = value;
+				return this;
+			case 'protectedChildren':
+				this.#protectedChildren = value;
 				return this;
 			case 'acceptable': {
 				const /** @type {acceptable} */ acceptable = {};
-				if (typeof value !== 'object') {
-					typeError('Object');
-				} else if (value) {
+				if (value) {
 					for (const [k, v] of Object.entries(value)) {
 						if (k.startsWith('Stage-')) {
 							for (let i = 0; i <= Number(k.slice(6)); i++) {
@@ -160,12 +154,6 @@ class Token extends AstElement {
 				this.#acceptable = value && acceptable;
 				return this;
 			}
-			case 'protectedChildren':
-				if (!(value instanceof Ranges)) {
-					typeError('Ranges');
-				}
-				this.#protectedChildren = value;
-				return this;
 			default:
 				return super.setAttribute(key, value);
 		}
@@ -175,13 +163,12 @@ class Token extends AstElement {
 		return this.constructor === Token;
 	}
 
-	/** @param {...string|number} args */
+	/** @param {...string|number|Range} args */
 	protectChildren(...args) {
 		if (!Parser.debugging && externalUse('protectChildren')) {
-			debugOnly(this.constructor, 'protectChildren');
+			this.debugOnly('protectChildren');
 		}
-		const ranges = new Ranges(args);
-		this.#protectedChildren.extend(ranges);
+		this.#protectedChildren.push(...new Ranges(args));
 	}
 
 	/**
@@ -214,8 +201,11 @@ class Token extends AstElement {
 					Object.entries(this.#acceptable)
 						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length + 1)]),
 				),
-				nodesAfter = this.childNodes.slice(i);
-			if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j + 1))) {
+				nodesAfter = this.childNodes.slice(i),
+				insertedName = token.constructor.name;
+			if (!acceptableIndices[insertedName].includes(i)) {
+				throw new RangeError(`${this.constructor.name} 的第 ${i} 个子节点不能为 ${insertedName}！`);
+			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j + 1))) {
 				throw new Error(`${this.constructor.name} 插入新的第 ${i} 个子节点会破坏规定的顺序！`);
 			}
 		}
@@ -231,14 +221,6 @@ class Token extends AstElement {
 		const {parentNode} = this;
 		if (!parentNode) {
 			throw new Error('不存在父节点！');
-		}
-		const acceptable = parentNode.getAttribute('acceptable');
-		if (!parentNode.constructor.fixed && (!acceptable || Object.values(acceptable).every(ranges => {
-			const /** @type {RangesSpread} */ [{start, end, step}] = ranges;
-			return start === 0 && end === Infinity && step === 1;
-		}))) {
-			Parser.warn(`父节点为 ${parentNode.constructor.name}，退化到 replaceWith 方法。`);
-			return this.replaceWith(token);
 		} else if (token.constructor !== this.constructor) {
 			typeError(this.constructor.name);
 		}
@@ -263,10 +245,10 @@ class Token extends AstElement {
 	/** @param {string} title */
 	isInterwiki(title) {
 		if (typeof title !== 'string') {
-			typeError('String');
+			typeError(this, 'isInterwiki', 'String');
 		}
 		return title.replaceAll('_', ' ').replace(/^\s*:?\s*/, '')
-			.match(new RegExp(`^\\s*(${this.#config.interwiki.join('|')})\\s*:`, 'i'));
+			.match(new RegExp(`^(${this.#config.interwiki.join('|')})\\s*:`, 'i'));
 	}
 
 	/**
@@ -274,10 +256,8 @@ class Token extends AstElement {
 	 * @param {string} title
 	 */
 	normalizeTitle(title, defaultNs = 0) {
-		if (typeof title !== 'string') {
-			typeError('String');
-		} else if (typeof defaultNs !== 'number') {
-			typeError('Number');
+		if (typeof title !== 'string' || typeof defaultNs !== 'number') {
+			typeError(this, 'normalizeTitle', 'String', 'Number');
 		}
 		const {namespaces, nsid} = this.#config;
 		let namespace = namespaces[defaultNs];
@@ -293,16 +273,14 @@ class Token extends AstElement {
 		const m = title.split(':');
 		if (m.length > 1) {
 			const id = namespaces[nsid[m[0].trim().toLowerCase()]];
-			if (id) {
+			if (id !== undefined) {
 				namespace = id;
 				title = m.slice(1).join(':').trim();
 			}
 		}
 		const i = title.indexOf('#');
 		title = i === -1 ? title : title.slice(0, i).trim();
-		return `${
-			iw ? `${iw[1].toLowerCase()}:` : ''
-		}${namespace}${namespace && ':'}${title && `${title[0].toUpperCase()}${title.slice(1)}`}`;
+		return `${iw ? `${iw[1].toLowerCase()}:` : ''}${namespace}${namespace && ':'}${ucfirst(title)}`;
 	}
 
 	sections() {
@@ -336,13 +314,9 @@ class Token extends AstElement {
 	/** @param {number} n */
 	section(n) {
 		if (typeof n !== 'number') {
-			typeError('Number');
+			typeError(this, 'section', 'Number');
 		}
 		return this.sections()[n];
-	}
-
-	isTemplate() {
-		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
 	}
 
 	getCategories() {
@@ -355,13 +329,9 @@ class Token extends AstElement {
 	 */
 	parseOnce(n = this.#stage, include = false) {
 		if (!Parser.debugging && externalUse('parseOnce')) {
-			debugOnly(this.constructor, 'parseOnce');
-		} else if (typeof n !== 'number') {
-			typeError('Number');
+			this.debugOnly('parseOnce');
 		} else if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
 			return;
-		} else if (n > this.#stage) {
-			throw new RangeError(`当前解析层级为 ${this.#stage}，无法越级解析！`);
 		}
 		switch (n) {
 			case 0:
@@ -390,20 +360,19 @@ class Token extends AstElement {
 				for (let i = 0; i < lines.length; i++) {
 					lines[i] = this.#parseQuotes(lines[i]);
 				}
-				this.replaceChildren(lines.join('\n'));
+				this.setText(lines.join('\n'));
 				break;
 			}
 			case 7:
 				this.#parseExternalLinks();
 				break;
 			case 8:
+				this.#parseMagicLinks();
 				break;
 			case 9:
 				break;
 			case 10:
-				break;
-			default:
-				throw new RangeError(`解析层级应为 0 ~ ${MAX_STAGE - 1} 的整数！`);
+				// no default
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
@@ -414,285 +383,90 @@ class Token extends AstElement {
 		return this;
 	}
 
+	/** @param {string} str */
+	buildFromStr(str) {
+		if (!Parser.debugging && externalUse('buildFromStr')) {
+			this.debugOnly('buildFromStr');
+		}
+		return str.split(/[\x00\x7f]/).map((s, i) => {
+			if (i % 2 === 0) {
+				return s;
+			} else if (!isNaN(s.at(-1))) {
+				throw new Error(`解析错误！未正确标记的 Token：${s}`);
+			}
+			return this.#accum[Number(s.slice(0, -1))];
+		});
+	}
+
+	/** 将占位符替换为子Token */
+	build() {
+		if (!Parser.debugging && externalUse('build')) {
+			this.debugOnly('build');
+		}
+		this.#stage = MAX_STAGE;
+		const {childNodes: {length}, firstChild} = this;
+		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\x00')) {
+			return this;
+		}
+		this.replaceChildren(...this.buildFromStr(firstChild));
+		this.normalize();
+		if (this.type === 'root') {
+			for (const token of this.#accum) {
+				token.build();
+			}
+		}
+		return this;
+	}
+
+	/** 生成部分Token的`name`属性 */
+	afterBuild() {
+		if (!Parser.debugging && externalUse('afterBuild')) {
+			this.debugOnly('afterBuild');
+		} else if (this.type === 'root') {
+			for (const token of this.#accum) {
+				token.afterBuild();
+			}
+		}
+		return this;
+	}
+
+	/** 解析、重构、生成部分Token的`name`属性 */
+	parse(n = MAX_STAGE, include = false) {
+		if (typeof n !== 'number') {
+			typeError(this, 'parse', 'Number');
+		} else if (n < MAX_STAGE && !Parser.debugging && externalUse('parse')) {
+			Parser.warn('指定解析层级的方法仅供熟练用户使用！');
+		}
+		this.#include = Boolean(include);
+		while (this.#stage < n) {
+			this.parseOnce(this.#stage, include);
+		}
+		return this.build().afterBuild();
+	}
+
 	/** @this {Token & {firstChild: string}} */
 	#parseCommentAndExt(includeOnly = false) {
-		let text = this.firstChild;
-		const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
-		if (includeOnly && onlyinclude.test(text)) { // `<onlyinclude>`拥有最高优先级
-			onlyinclude.lastIndex = 0;
-			text = text.replace(
-				onlyinclude,
-				/** @param {string} inner */ (_, inner) => {
-					const str = `\x00${this.#accum.length}e\x7f`,
-						OnlyincludeToken = require('./onlyincludeToken');
-					new OnlyincludeToken(inner, this.#config, this.#accum);
-					return str;
-				},
-			).replace(/(?<=^|\x00\d+e\x7f).*?(?=$|\x00\d+e\x7f)/gs, substr => {
-				if (substr === '') {
-					return '';
-				}
-				const NoincludeToken = require('./nowikiToken/noincludeToken');
-				new NoincludeToken(substr, this.#accum);
-				return `\x00${this.#accum.length - 1}c\x7f`;
-			});
-			this.replaceChildren(text);
-			return;
-		}
-		const regex = new RegExp(
-			includeOnly
-				? `<!--.*?(?:-->|$)|<includeonly(?:\\s.*?)?>|</includeonly\\s*>|<(${
-					this.#config.ext.join('|')
-				})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|<(noinclude)(\\s.*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`
-				: `<!--.*?(?:-->|$)|<(?:no|only)include(?:\\s.*?)?>|</(?:no|only)include\\s*>|<(${
-					this.#config.ext.join('|')
-				})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|<(includeonly)(\\s.*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`,
-			'gis',
-		);
-		text = text.replace(
-			regex,
-			/** @type {function(...string): string} */
-			(substr, name, attr, inner, closing, include, includeAttr, includeInner, includeClosing) => {
-				const str = `\x00${this.#accum.length}${name ? 'e' : 'c'}\x7f`;
-				if (name) {
-					const ExtToken = require('./tagPairToken/extToken');
-					new ExtToken(name, attr, inner, closing, this.#config, this.#accum);
-				} else if (substr.startsWith('<!--')) {
-					const CommentToken = require('./nowikiToken/commentToken'),
-						closed = substr.endsWith('-->');
-					new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, this.#accum);
-				} else if (include) {
-					const IncludeToken = require('./tagPairToken/includeToken');
-					new IncludeToken(include, includeAttr, includeInner, includeClosing, this.#accum);
-				} else {
-					const NoincludeToken = require('./nowikiToken/noincludeToken');
-					new NoincludeToken(substr, this.#accum);
-				}
-				return str;
-			},
-		);
-		this.replaceChildren(text);
+		const parseCommentAndExt = require('../parser/commentAndExt');
+		this.setText(parseCommentAndExt(this.firstChild, this.#config, this.#accum, includeOnly));
 	}
 
 	/** @this {Token & {firstChild: string}} */
 	#parseBrackets() {
-		const source = '(?<=^(?:\x00\\d+c\x7f)*)={1,6}|\\[\\[|{{2,}|-{(?!{)',
-			/** @type {BracketExecArray[]} */ stack = [],
-			closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
-			/** @type {Record<string, string>} */
-			marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
-		let text = this.firstChild,
-			regex = new RegExp(source, 'gm'),
-			/** @type {BracketExecArray} */ mt = regex.exec(text),
-			moreBraces = text.includes('}}'),
-			lastIndex;
-		while (mt || lastIndex <= text.length && stack.at(-1)?.[0]?.[0] === '=') {
-			const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
-				/** @type {BracketExecArray} */ top = stack.pop() ?? {},
-				{0: open, index, parts} = top,
-				innerEqual = syntax === '=' && top.findEqual;
-			if ([']]', '}-'].includes(syntax)) { // 情形1：闭合内链或转换
-				lastIndex = curIndex + 2;
-			} else if (syntax === '\n') { // 情形2：闭合标题
-				lastIndex = curIndex + 1;
-				const {pos, findEqual} = stack.at(-1) ?? {};
-				if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
-					const rmt = text.slice(index, curIndex).match(/^(={1,6})(.+)\1((?:\s|\x00\d+c\x7f)*)$/);
-					if (rmt) {
-						text = `${text.slice(0, index)}\x00${this.#accum.length}h\x7f${text.slice(curIndex)}`;
-						lastIndex = index + 4 + String(this.#accum.length).length;
-						const HeadingToken = require('./headingToken');
-						new HeadingToken(rmt[1].length, rmt.slice(2), this.#config, this.#accum);
-					}
-				}
-			} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
-				lastIndex = curIndex + 1;
-				parts.at(-1).push(text.slice(top.pos, curIndex));
-				if (syntax === '|') {
-					parts.push([]);
-				}
-				top.pos = lastIndex;
-				top.findEqual = syntax === '|';
-				stack.push(top);
-			} else if (syntax.startsWith('}}')) { // 情形4：闭合模板
-				const close = syntax.slice(0, Math.min(open.length, 3)),
-					rest = open.length - close.length,
-					{length} = this.#accum;
-				lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-				parts.at(-1).push(text.slice(top.pos, curIndex));
-				/* 标记{{!}} */
-				const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't';
-				let skip = false;
-				if (close.length === 3) {
-					const ArgToken = require('./argToken');
-					new ArgToken(parts.map(part => part.join('=')), this.#config, this.#accum);
-				} else {
-					try {
-						const TranscludeToken = require('./transcludeToken');
-						new TranscludeToken(parts[0][0], parts.slice(1), this.#config, this.#accum);
-					} catch (e) {
-						if (e instanceof Error && e.message.startsWith('非法的模板名称：')) {
-							lastIndex = index + open.length;
-							skip = true;
-						} else {
-							throw e;
-						}
-					}
-				}
-				if (!skip) {
-					/* 标记{{!}}结束 */
-					text = `${text.slice(0, index + rest)}\x00${length}${ch}\x7f${text.slice(lastIndex)}`;
-					lastIndex = index + rest + 3 + String(length).length;
-					if (rest > 1) {
-						stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
-					} else if (rest === 1 && text[index - 1] === '-') {
-						stack.push({0: '-{', index: index - 1, pos: index + 1, parts: [[]]});
-					}
-				}
-			} else { // 情形5：开启
-				lastIndex = curIndex + syntax.length;
-				if (syntax[0] === '{') {
-					mt.pos = lastIndex;
-					mt.parts = [[]];
-				}
-				stack.push(...'0' in top ? [top] : [], mt);
-			}
-			moreBraces &&= text.slice(lastIndex).includes('}}');
-			let curTop = stack.at(-1);
-			if (!moreBraces && curTop?.[0]?.[0] === '{') {
-				stack.pop();
-				curTop = stack.at(-1);
-			}
-			regex = new RegExp(source + (curTop
-				? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
-				: ''
-			), 'gm');
-			regex.lastIndex = lastIndex;
-			mt = regex.exec(text);
-		}
-		this.replaceChildren(text);
+		const parseBrackets = require('../parser/brackets');
+		this.setText(parseBrackets(this.firstChild, this.#config, this.#accum));
 	}
 
 	/** @this {Token & {firstChild: string}} */
 	#parseHtml() {
-		const regex = /^(\/?)([a-z][^\s/>]*)([^>]*?)(\/?>)([^<]*)$/i,
-			elements = this.#config.html.flat(),
-			bits = this.firstChild.split('<');
-		let text = bits.shift();
-		for (const x of bits) {
-			const mt = x.match(regex),
-				t = mt?.[2],
-				name = t?.toLowerCase();
-			if (!mt || !elements.includes(name)) {
-				text += `<${x}`;
-				continue;
-			}
-			const [, slash,, params, brace, rest] = mt,
-				AttributeToken = require('./attributeToken'),
-				attr = new AttributeToken(params, 'html-attr', name, this.#accum),
-				itemprop = attr.getAttr('itemprop');
-			if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
-				|| name === 'link' && (itemprop === undefined && attr.getAttr('href') === undefined)
-			) {
-				text += `<${x}`;
-				this.#accum.pop();
-				continue;
-			}
-			text += `\x00${this.#accum.length}x\x7f${rest}`;
-			const HtmlToken = require('./htmlToken');
-			new HtmlToken(t, attr, slash === '/', brace === '/>', this.#config, this.#accum);
-		}
-		this.replaceChildren(text);
+		const parseHtml = require('../parser/html');
+		this.setText(parseHtml(this.firstChild, this.#config, this.#accum));
 	}
 
 	/** @this {Token & {firstChild: string}} */
 	#parseTable() {
-		const TableToken = require('./tableToken'),
-			TdToken = require('./tableToken/tdToken'),
-			/** @type {TableToken[]} */ stack = [];
-		let out = '';
-		const /** @type {(str: string, top: TableToken) => void} */ push = (str, top) => {
-			if (!top) {
-				out += str;
-			} else if (top instanceof TdToken) {
-				const {lastElementChild} = top;
-				lastElementChild.setText(lastElementChild.firstChild + str, 0);
-			} else if (typeof top.lastChild === 'string') {
-				top.setText(top.lastChild + str, 1);
-			} else {
-				top.appendChild(str.replace(/^\n/, ''));
-			}
-		};
-		for (const outLine of this.firstChild.split('\n')) {
-			let top = stack.pop();
-			const [spaces] = outLine.match(/^(?:\s|\x00\d+c\x7f)*/);
-			push(`\n${spaces}`, top);
-			const line = outLine.slice(spaces.length),
-				matchesStart = line.match(
-					/^((?:\x00\d+c\x7f|:)*(?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)$/,
-				);
-			if (matchesStart) {
-				const [, indent, tableSyntax, attr] = matchesStart;
-				push(`${indent}\x00${this.#accum.length}b\x7f`, top);
-				const table = new TableToken('table', tableSyntax, attr, this.#config, this.#accum);
-				stack.push(...top ? [top] : [], table);
-				continue;
-			} else if (!top) {
-				out += line;
-				continue;
-			}
-			const matches = line.match(
-				/^(?:(\|}|\x00\d+!\x7f}|\x00\d+}\x7f)|((?:\|-|\x00\d+!\x7f-|\x00\d+-\x7f)-*)|(!|(?:\||\x00\d+!\x7f)\+?))(.*)$/,
-			);
-			if (!matches) {
-				push(line, top);
-				stack.push(...top ? [top] : []);
-				continue;
-			}
-			const [, closing, row, cell, attr] = matches;
-			if (closing) {
-				while (top.type !== 'table') {
-					top = stack.pop();
-				}
-				top.setAttribute('closing', closing);
-				push(attr, stack.at(-1));
-			} else if (row) {
-				if (top.type === 'td') {
-					top = stack.pop();
-				}
-				if (top.type === 'tr') {
-					top = stack.pop();
-				}
-				const tr = new TableToken('tr', row, attr, this.#config, this.#accum);
-				stack.push(top, tr);
-				top.appendChild(tr);
-			} else if (cell) {
-				if (top.type === 'td') {
-					top = stack.at(-1);
-				} else {
-					stack.push(top);
-				}
-				const regex = cell === '!'
-					? /!!|(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g
-					: /(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g;
-				let mt = regex.exec(attr),
-					lastIndex = 0,
-					lastSyntax = cell;
-				while (mt) {
-					const td = new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), this.#config, this.#accum);
-					top.appendChild(td);
-					({lastIndex} = regex);
-					[lastSyntax] = mt;
-					mt = regex.exec(attr);
-				}
-				const td = new TdToken(lastSyntax, attr.slice(lastIndex), this.#config, this.#accum);
-				top.appendChild(td);
-				stack.push(td);
-			} else {
-				push(line, top);
-			}
-		}
-		this.replaceChildren(out.slice(1));
+		const parseTable = require('../parser/table'),
+			TableToken = require('./tableToken');
+		this.setText(parseTable(this.firstChild, this.#config, this.#accum));
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
@@ -709,243 +483,32 @@ class Token extends AstElement {
 
 	/** @this {Token & {firstChild: string}} */
 	#parseHrAndDoubleUndescore() {
-		const HrToken = require('./nowikiToken/hrToken'),
-			DoubleUnderscoreToken = require('./nowikiToken/doubleUnderscoreToken'),
-			{doubleUnderscore} = this.#config,
-			text = this.firstChild.replace(/^-{4,}/mg, m => {
-				new HrToken(m.length, this.#accum);
-				return `\x00${this.#accum.length - 1}r\x7f`;
-			}).replace(
-				new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'ig'),
-				/** @param {string} p1 */(m, p1) => {
-					if (doubleUnderscore[0].includes(p1.toLowerCase()) || doubleUnderscore[1].includes(p1)) {
-						new DoubleUnderscoreToken(p1, this.#accum);
-						return `\x00${this.#accum.length - 1}u\x7f`;
-					}
-					return m;
-				},
-			);
-		this.replaceChildren(text);
+		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
+		this.setText(parseHrAndDoubleUnderscore(this.firstChild, this.#config, this.#accum));
 	}
 
 	/** @this {Token & {firstChild: string}} */
 	#parseLinks() {
-		const regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?]](.*)$/s,
-			regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/s,
-			regexExt = new RegExp(`^\\s*(?:${this.#config.protocol})`, 'i'),
-			bits = this.firstChild.split('[[');
-		let s = bits.shift();
-		for (let i = 0; i < bits.length; i++) {
-			let mightBeImg, link, text, after;
-			const x = bits[i],
-				m = x.match(regex);
-			if (m) {
-				[, link, text, after] = m;
-				if (after.startsWith(']') && text?.includes('[')) {
-					text += ']';
-					after = after.slice(1);
-				}
-			} else {
-				const m2 = x.match(regexImg);
-				if (m2) {
-					mightBeImg = true;
-					[, link, text] = m2;
-				}
-			}
-			if (link === undefined || regexExt.test(link) || /\x00\d+[exhbru]\x7f/.test(link)) {
-				s += `[[${x}`;
-				continue;
-			}
-			const page = link.includes('%') ? decodeURIComponent(link) : link,
-				force = link.trim().startsWith(':');
-			if (force && mightBeImg || /[<>[\]{}|]/.test(page)) {
-				s += `[[${x}`;
-				continue;
-			}
-			const title = this.normalizeTitle(page);
-			if (mightBeImg) {
-				if (!title.startsWith('File:')) {
-					s += `[[${x}`;
-					continue;
-				}
-				let found;
-				for (let j = i + 1; j < bits.length; j++) {
-					const next = bits[j],
-						p = next.split(']]');
-					if (p.length > 2) {
-						found = true;
-						i = j;
-						text += `[[${p[0]}]]${p[1]}`;
-						after = p.slice(2).join(']]');
-						break;
-					} else if (p.length === 2) {
-						text += `[[${p[0]}]]${p[1]}`;
-					} else {
-						break;
-					}
-				}
-				if (!found) {
-					s += `[[${x}`;
-					continue;
-				}
-			}
-			text = text && this.#parseQuotes(text);
-			s += `\x00${this.#accum.length}l\x7f${after}`;
-			if (!force) {
-				if (title.startsWith('File:')) {
-					const FileToken = require('./linkToken/fileToken');
-					new FileToken(link, text, title, this.#config, this.#accum);
-					continue;
-				} else if (title.startsWith('Category:')) {
-					const CategoryToken = require('./linkToken/categoryToken');
-					new CategoryToken(link, text, title, this.#config, this.#accum);
-					continue;
-				}
-			}
-			const LinkToken = require('./linkToken');
-			new LinkToken(link, text, title, this.#config, this.#accum);
-		}
-		this.replaceChildren(s);
+		const parseLinks = require('../parser/links');
+		this.setText(parseLinks(this, this.#config, this.#accum));
 	}
 
 	/** @param {string} text */
 	#parseQuotes(text) {
-		const arr = text.split(/('{2,})/),
-			{length} = arr;
-		if (length === 1) {
-			return text;
-		}
-		let nBold = 0,
-			nItalic = 0,
-			firstSingle, firstMulti, firstSpace;
-		for (let i = 1; i < length; i += 2) {
-			const len = arr[i].length;
-			switch (len) {
-				case 2:
-					nItalic++;
-					break;
-				case 4:
-					arr[i - 1] += "'";
-					arr[i] = "'''";
-					// fall through
-				case 3:
-					nBold++;
-					if (firstSingle) {
-						break;
-					} else if (arr[i - 1].at(-1) === ' ') {
-						if (!firstMulti && !firstSpace) {
-							firstSpace = i;
-						}
-					} else if (arr[i - 1].at(-2) === ' ') {
-						firstSingle = i;
-					} else if (!firstMulti) {
-						firstMulti = i;
-					}
-					break;
-				default:
-					arr[i - 1] += "'".repeat(len - 5);
-					arr[i] = "'''''";
-					nItalic++;
-					nBold++;
-			}
-		}
-		if (nItalic % 2 === 1 && nBold % 2 === 1) {
-			const i = firstSingle ?? firstMulti ?? firstSpace;
-			arr[i] = "''";
-			arr[i - 1] += "'";
-		}
-		const QuoteToken = require('./nowikiToken/quoteToken');
-		for (let i = 1; i < length; i += 2) {
-			new QuoteToken(arr[i].length, this.#accum);
-			arr[i] = `\x00${this.#accum.length - 1}q\x7f`;
-		}
-		return arr.join('');
+		const parseQuotes = require('../parser/quotes');
+		return parseQuotes(text, this.#accum);
 	}
 
 	/** @this {Token & {firstChild: string}} */
 	#parseExternalLinks() {
-		const ExtLinkToken = require('./extLinkToken'),
-			regex = new RegExp(
-				`\\[((?:${this.#config.protocol}|//)`
-					+ '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
-					+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*)'
-					+ '(\\p{Zs}*)([^\\]\\x01-\\x08\\x0a-\\x1f\\ufffd]*)\\]',
-				'gui',
-			);
-		this.replaceChildren(this.firstChild.replace(
-			regex,
-			/** @type {function(...string): string} */ (_, url, space, text) => {
-				const {length} = this.#accum,
-					mt = url.match(/&[lg]t;/);
-				if (mt) {
-					url = url.slice(0, mt.index);
-					space = '';
-					text = `${url.slice(mt.index)}${space}${text}`;
-				}
-				new ExtLinkToken(url, space, text, this.#config, this.#accum);
-				return `\x00${length}w\x7f`;
-			},
-		));
+		const parseExternalLinks = require('../parser/externalLinks');
+		this.setText(parseExternalLinks(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @param {string} str */
-	buildFromStr(str) {
-		if (!Parser.debugging && externalUse('buildFromStr')) {
-			debugOnly(this.constructor, 'buildFromStr');
-		}
-		return str.split(/[\x00\x7f]/).map((s, i) => {
-			if (i % 2 === 0) {
-				return s;
-			} else if (!isNaN(s.at(-1))) {
-				throw new Error(`解析错误！未正确标记的Token：${s}`);
-			}
-			return this.#accum[Number(s.slice(0, -1))];
-		});
-	}
-
-	/** 将占位符替换为子Token */
-	build() {
-		if (!Parser.debugging && externalUse('build')) {
-			debugOnly(this.constructor, 'build');
-		}
-		this.#stage = MAX_STAGE;
-		const {childNodes: {length}, firstChild} = this;
-		if (this.#accum.length === 0 || length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\x00')) {
-			return this;
-		}
-		this.replaceChildren(...this.buildFromStr(firstChild));
-		this.normalize();
-		if (this.type === 'root') {
-			for (const token of this.#accum) {
-				token.build();
-			}
-		}
-		return this;
-	}
-
-	/** 生成部分Token的`name`属性 */
-	afterBuild() {
-		if (!Parser.debugging && externalUse('afterBuild')) {
-			debugOnly(this.constructor, 'afterBuild');
-		} else if (this.type === 'root') {
-			for (const token of this.#accum) {
-				token.afterBuild();
-			}
-		}
-		return this;
-	}
-
-	/** 解析、重构、生成部分Token的`name`属性 */
-	parse(n = MAX_STAGE, include = false) {
-		if (typeof n !== 'number') {
-			typeError('Number');
-		} else if (n < MAX_STAGE && externalUse('parse')) {
-			Parser.warn('指定解析层级的方法仅供熟练用户使用！');
-		}
-		while (this.#stage < n) {
-			this.parseOnce(this.#stage, include);
-		}
-		return this.build().afterBuild();
+	/** @this {Token & {firstChild: string}} */
+	#parseMagicLinks() {
+		const parseMagicLinks = require('../parser/magicLinks');
+		this.setText(parseMagicLinks(this.firstChild, this.#config, this.#accum));
 	}
 }
 

@@ -19,6 +19,7 @@ declare global {
 		/** 只储存导出各个Class的文件路径 */
 		classes: Record<string, string>;
 		mixins: Record<string, string>;
+		parsers: Record<string, string>;
 		/** 清除各模块的缓存 */
 		clearCache: () => void;
 

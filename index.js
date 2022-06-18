@@ -26,9 +26,14 @@ const /** @type {Parser} */ Parser = {
 
 	classes: {},
 	mixins: {},
+	parsers: {},
 
 	clearCache() {
-		const entries = [...Object.entries(this.classes), ...Object.entries(this.mixins)];
+		const entries = [
+			...Object.entries(this.classes),
+			...Object.entries(this.mixins),
+			...Object.entries(this.parsers),
+		];
 		for (const [, path] of entries) {
 			delete require.cache[require.resolve(path)];
 		}
@@ -82,6 +87,8 @@ const /** @type {Parser} */ Parser = {
 		const Token = require('./src/token');
 		if (typeof wikitext === 'string') {
 			wikitext = new Token(wikitext, config);
+		} else if (!(wikitext instanceof Token)) {
+			throw new TypeError('待解析的内容应为 String 或 Token！');
 		}
 		try {
 			wikitext.parse(maxStage, include);
@@ -104,12 +111,15 @@ const /** @type {Parser} */ Parser = {
 		return require('./tool');
 	},
 };
-const hidden = {enumerable: false};
-Object.defineProperties(Parser, {
-	warning: hidden, debugging: hidden, running: hidden,
-	warn: hidden, debug: hidden, error: hidden, info: hidden,
-	classes: hidden, mixins: hidden, aliases: {...hidden, writable: false}, MAX_STAGE: {...hidden, writable: false},
-	clearCache: hidden, getConfig: hidden,
-});
+
+const /** @type {PropertyDescriptorMap} */ def = {};
+for (const key in Parser) {
+	if (['alises', 'MAX_STAGE'].includes(key)) {
+		def[key] = {enumerable: false, writable: false};
+	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse', 'getTool'].includes(key)) {
+		def[key] = {enumerable: false};
+	}
+}
+Object.defineProperties(Parser, def);
 
 module.exports = Parser;
