@@ -1,29 +1,25 @@
 'use strict';
 
 /**
+ * @param {ObjectConstructor} constructor
+ * @param {string} method
  * @param {...string} args
- * @throws {TypeError}
  */
-const typeError = (...args) => {
-	throw new TypeError(`仅接受 ${args.join('、')} 作为输入参数！`);
+const typeError = ({constructor}, method, ...args) => {
+	throw new TypeError(`${constructor.name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
 };
 
 /**
  * 不是被构造器或原型方法调用
  * @param {string} name
  */
-const externalUse = (name, onlyNew = false, proxy = false) => {
-	if (typeof name !== 'string') {
-		throw new TypeError('检查外部调用时必须提供方法名！');
+const externalUse = (name, proxy = false) => {
+	if (!proxy && require('..').running) {
+		return false;
 	}
-	let /** @type {RegExp} */ regex;
-	if (onlyNew) {
-		regex = new RegExp(`^new ${name}$`);
-	} else if (proxy) {
-		regex = new RegExp(`^Proxy\\.(?!${name}$)`);
-	} else {
-		regex = new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`);
-	}
+	const regex = new RegExp(`^${
+		proxy ? 'Proxy' : 'new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)'
+	}\\.(?!${name}$)`);
 	try {
 		throw new Error();
 	} catch (e) {
@@ -35,12 +31,40 @@ const externalUse = (name, onlyNew = false, proxy = false) => {
 };
 
 /**
- * @param {ObjectConstructor} constructor
- * @param {string} method
- * @throws {Error}
+ * @param {AstEvent} e
+ * @param {AstEventData} data
  */
-const debugOnly = (constructor, method) => {
-	throw new Error(`${constructor.name}.${method} 方法仅用于代码调试！`);
+const undo = (e, data) => {
+	const {target, type} = e;
+	switch (type) {
+		case 'remove': {
+			const childNodes = [...target.childNodes];
+			childNodes.splice(data.position, 0, data.removed);
+			target.setAttribute('childNodes', childNodes);
+			break;
+		}
+		case 'insert': {
+			const childNodes = [...target.childNodes];
+			childNodes.splice(data.position, 1);
+			target.setAttribute('childNodes', childNodes);
+			break;
+		}
+		case 'replace': {
+			const {parentNode} = target,
+				childNodes = [...parentNode.childNodes];
+			childNodes.splice(data.position, 1, data.oldToken);
+			parentNode.setAttribute('childNodes', childNodes);
+			break;
+		}
+		case 'text': {
+			const childNodes = [...target.childNodes];
+			childNodes[data.position] = data.oldText;
+			target.setAttribute('childNodes', childNodes);
+			break;
+		}
+		default:
+			throw new RangeError(`无法撤销未知类型的事件：${type}`);
+	}
 };
 
-module.exports = {typeError, externalUse, debugOnly};
+module.exports = {typeError, externalUse, undo};
