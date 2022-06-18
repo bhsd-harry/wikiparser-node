@@ -5,6 +5,7 @@ const fs = require('fs');
 const /** @type {Parser} */ Parser = {
 	warning: true,
 	debugging: false,
+	running: false,
 
 	warn(msg, ...args) {
 		if (this.warning) {
@@ -26,15 +27,6 @@ const /** @type {Parser} */ Parser = {
 	classes: {},
 	mixins: {},
 
-	aliases: [
-		['String'],
-		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
-		['ArgToken', 'TranscludeToken', 'HeadingToken'],
-		['HtmlToken'],
-		['TableToken'],
-		['HrToken', 'DoubleUnderscoreToken'],
-	],
-
 	clearCache() {
 		const entries = [...Object.entries(this.classes), ...Object.entries(this.mixins)];
 		for (const [, path] of entries) {
@@ -47,12 +39,31 @@ const /** @type {Parser} */ Parser = {
 		}
 	},
 
+	aliases: [
+		['String'],
+		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
+		['ArgToken', 'TranscludeToken', 'HeadingToken'],
+		['HtmlToken'],
+		['TableToken'],
+		['HrToken', 'DoubleUnderscoreToken'],
+		['LinkToken', 'FileToken', 'CategoryToken'],
+		['QuoteToken'],
+		['ExtLinkToken'],
+		['MagicLinkToken'],
+		['ListToken'],
+		['ConversionToken'],
+	],
+
 	config: './config/default',
 
 	getConfig() {
 		return require(this.config);
 	},
 
+	isInterwiki(title) {
+		const Token = require('./src/token');
+		return new Token().isInterwiki(title);
+	},
 	normalizeTitle(title, defaultNs = 0) {
 		const Token = require('./src/token');
 		return new Token().normalizeTitle(title, defaultNs);
@@ -61,16 +72,25 @@ const /** @type {Parser} */ Parser = {
 	MAX_STAGE: 11,
 
 	parse(wikitext, include = false, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
+		this.running = true;
 		const Token = require('./src/token');
 		if (typeof wikitext === 'string') {
 			wikitext = new Token(wikitext, config);
 		}
 		try {
-			return wikitext.parse(maxStage, include);
+			wikitext.parse(maxStage, include);
 		} catch (e) {
-			fs.writeFileSync(`${__dirname}/errors/${new Date().toISOString()}`, wikitext.toString());
+			if (e instanceof Error) {
+				fs.writeFileSync(
+					`${__dirname}/errors/${new Date().toISOString()}`,
+					`${e.stack}\n\n\n${wikitext.toString()}`,
+				);
+			}
+			this.running = false;
 			throw e;
 		}
+		this.running = false;
+		return wikitext;
 	},
 
 	getTool() {
@@ -80,9 +100,10 @@ const /** @type {Parser} */ Parser = {
 };
 const hidden = {enumerable: false};
 Object.defineProperties(Parser, {
-	warning: hidden, debugging: hidden, warn: hidden, debug: hidden, error: hidden, info: hidden,
-	classes: hidden, mixins: hidden, aliases: hidden, clearCache: hidden, getConfig: hidden,
-	MAX_STAGE: {...hidden, writable: false},
+	warning: hidden, debugging: hidden, running: hidden,
+	warn: hidden, debug: hidden, error: hidden, info: hidden,
+	classes: hidden, mixins: hidden, aliases: {...hidden, writable: false}, MAX_STAGE: {...hidden, writable: false},
+	clearCache: hidden, getConfig: hidden,
 });
 
 module.exports = Parser;
