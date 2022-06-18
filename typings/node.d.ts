@@ -3,16 +3,6 @@ import Token from '../src/token';
 import ParameterToken from '../src/parameterToken';
 
 declare global {
-	type TokenAttributeName =
-		'childNodes'|'parentNode'|'optional'| // AstNode
-		'stage'|'config'|'accum'|'acceptable'|'protectedChildren'| // Token
-		'tags'| // TagPairToken
-		'keys'|'args'| // TranscludeToken
-		'attr'| // AttributeToken
-		'tag'| // HtmlToken
-		'syntax'|'closing'|'innerSyntax'| // TableToken
-		'space'; // ExtLinkToken
-
 	type TokenAttribute<T> =
 		T extends 'childNodes' ? (string|Token)[] :
 		T extends 'parentNode' ? Token|undefined :
