@@ -5,7 +5,10 @@
 1. [Parser](#parser)
     1. [方法](#parser.methods)
         1. [parse](#parser.parse)
-        2. [normalizeTitle](#parser.normalizetitle)
+        2. [isInterwiki](#parser.isinterwiki)
+        3. [normalizeTitle](#parser.normalizetitle)
+    2. [属性](#parser.properties)
+        1. [config](#parser.config)
 2. [AstElement](#astelement)
     1. [原型方法](#astelement.prototype.methods)
     2. [实例属性](#astelement.instance.properties)
@@ -17,9 +20,11 @@
         3. [isPlain](#token.isplain)
         4. [toString](#token.tostring)
         5. [text](#token.text)
-        6. [setText](#token.settext)
-        7. [sections](#token.sections)
-        8. [section](#token.section)
+        6. [safeReplaceWith](#token.safereplacewith)
+        7. [setText](#token.settext)
+        8. [sections](#token.sections)
+        9. [section](#token.section)
+        10. [getCategories](#token.getcategories)
     2. [实例属性](#token.instance.properties)
         1. [type](#token.type)
 4. [CommentToken](#commenttoken)
@@ -97,25 +102,40 @@
 这是解析工具的入口。
 
 ```js
-var Parser = require('.');
+var Parser = require('wikiparser-node');
 ```
 
 ## 方法<a id="parser.methods"></a>
 
-**parse**(wikitext: string): [Token](#token)<a id="parser.parse"></a>
+**parse**(wikitext: string, include?: boolean): [Token](#token)<a id="parser.parse"></a>
 - 解析维基文本。
 
 ```js
-var wikitext = 'any string',
-    root = Parser.parse(wikitext);
+var wikitext = '<includeonly>include</includeonly><noinclude>noinclude</noinclude>',
+    include = Parser.parse(wikitext, true),
+    noinclude = Parser.parse(wikitext);
+assert(include.text() === 'include'); // Token.text()方法只保留有效部分，详见后文Token章节
+assert(noinclude.text() === 'noinclude');
 ```
 
-**normalizeTitle**(title: string, defaultNs?: number): string<a id="parser.normalizetitle"></a>
+**isInterwiki**(title: string): RegExpMatchArray<a id="parser.isinterwiki"></a>
+- 指定的标题是否是跨维基。
+
+```js
+assert(Boolean(Parser.isInterwiki('zhwiki:首页')));
+```
+
+**normalizeTitle**(title: string, defaultNs?: number = 0): string<a id="parser.normalizetitle"></a>
 - 规范化页面标题。
 
 ```js
-assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj'); // 模板调用的默认名字空间编号是 10
+assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj');
 ```
+
+## 属性<a id="parser.properties"></a>
+
+**config**: string<a id="parser.config"></a>
+- 指定解析设置JSON文件的相对或绝对路径。
 
 [返回目录](#目录)
 
@@ -134,51 +154,58 @@ assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj'); // 模板调用的默
 **removeAttribute**(key: PropertyKey): void  
 **toggleAttribute**(key: PropertyKey, force?: boolean): void  
 **hasChildNodes**(): boolean  
-**contains**(node: AstElement): boolean  
-**removeChild**(node: AstElement): AstElement  
-**appendChild**(node: string\|AstElement): string\|AstElement  
-**append**(...elements: string\|AstElement): void  
-**insertBefore**(node: string\|AstElement, reference: AstElement): string\|AstElement  
-**prepend**(...elements: string\|AstElement): void  
-**replaceChild**(newChild: string\|AstElement, oldChild: AstElement): AstElement  
-**replaceChildren**(...elements: string\|AstElement): void  
-**after**(...element: string\|AstElement): void  
-**before**(...element: string\|AstElement): void  
+**contains**(node: this): boolean  
+**removeChild**(node: this): this  
+**appendChild**(node: string\|this): string\|this  
+**append**(...elements: string\|this): void  
+**insertBefore**(node: string\|this, reference: this): string\|this  
+**prepend**(...elements: string\|this): void  
+**replaceChild**(newChild: string\|this, oldChild: this): this  
+**replaceChildren**(...elements: string\|this): void  
+**after**(...element: string\|this): void  
+**before**(...element: string\|this): void  
 **remove**(): void  
-**replaceWith**(...elements: string\|AstElement): void  
+**replaceWith**(...elements: string\|this): void  
 **normalize**(): void  
-**getRootNode**(): AstElement  
+**getRootNode**(): this  
 **addEventListener**(type: string, listener: (e: event, data: any) => void, options?: {once: boolean}): void  
 **removeEventListener**(type: string, listener: (e: event, data: any) => void): void  
 **dispatchEvent**(e: event, data: any): void  
 **matches**(selector: string): boolean  
-**closest**(selector: string): AstElement\|undefined  
-**querySelector**(selector: string): AstElement\|undefined  
-**querySelectorAll**(selector: string): AstElement[]  
+**comparePosition**(other: this): number  
+**closest**(selector: string): this\|undefined  
+**querySelector**(selector: string): this\|undefined  
+**querySelectorAll**(selector: string): this[]  
+**getBoundingClientRect**(): {height: number, width: number, top: number, left: number}  
 </details>
 
 ## 实例属性<a id="astelement.instance.properties"></a>
 <details>
     <summary>展开</summary>
 
-**childNodes**: (string\|AstElement)[]  
-**parentNode**: AstElement\|undefined  
+**childNodes**: (string\|this)[] 
 </details>
 
 ## 原型属性<a id="astelement.prototype.properties"></a>
 <details>
     <summary>展开</summary>
 
-**children**: AstElement[]  
-**parentElement**: AstElement\|undefined  
-**firstChild**: string\|AstElement\|undefined  
-**firstElementChild**: AstElement\|undefined  
-**lastChild** string\|AstElement\|undefined  
-**lastElementChild**: AstElement\|undefined  
-**nextSibling**: string\|AstElement\|undefined  
-**nextElementSibling**: AstElement\|undefined  
-**previousSibling**: string\|AstElement\|undefined  
-**previousElementSibling**: AstElement\|undefined  
+**children**: this[]  
+**firstChild**: string\|this\|undefined  
+**firstElementChild**: this\|undefined  
+**lastChild** string\|this\|undefined  
+**lastElementChild**: this\|undefined   
+**parentNode**: this\|undefined  
+**parentElement**: this\|undefined  
+**nextSibling**: string\|this\|undefined  
+**nextElementSibling**: this\|undefined  
+**previousSibling**: string\|this\|undefined  
+**previousElementSibling**: this\|undefined  
+**offsetHeight**: number  
+**offsetWidth**: number  
+**offsetTop**: number  
+**offsetLeft**: number  
+**style**: {top: number, left: number, height: number, width: number, padding: number}  
 </details>
 
 [返回目录](#目录)
@@ -222,8 +249,8 @@ assert(root.toString() === wikitext); // 解析是可逆的
 - 移除不可见的维基文本，包括 HTML 注释、仅用于嵌入的文字（即 `<includeonly>` 或 `<onlyinclude>` 标签内部）、无效的标签属性等。
 
 ```js
-var root = Parser.parse('<includeonly>a</includeonly><!-- b --><noinclude>c</noinclude>');
-assert(root.text() === 'c');
+var root = Parser.parse('<!-- a -->{{{||b}}}<br */>');
+assert(root.text() === '{{{|}}}<br/>');
 ```
 
 **setText**(text: string, i: number): void<a id="token.settext"></a>
@@ -234,6 +261,9 @@ var root = Parser.parse('');
 root.setText('string', 0);
 assert(root.toString() === 'string');
 ```
+
+**safeReplaceWith**(token: Token): void<a id="token.safereplacewith"></a>
+- 将节点替换为一个同类节点，相当于[replaceWith](#astelement.prototype.methods)，但适用于父节点有规定的子节点顺序时。
    
 **sections**(): Token\[\]\[\]<a id="token.sections"></a>
 - 将页面分割为章节，每个章节对应一个 Token 数组。
@@ -253,6 +283,9 @@ var root = Parser.parse('a\n==b==\nc\n===d===\n'),
     section = root.section(0); // 序言对应的编号为 0
 assert.deepStrictEqual(section, [root.firstChild]);
 ```
+
+**getCategories**(): [string, string][]<a id="token.getcategories"></a>
+- 获取所有分类和对应的排序关键字。
 </details>
    
 ## 实例属性<a id="token.instance.properties"></a>
