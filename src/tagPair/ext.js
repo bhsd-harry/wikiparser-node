@@ -17,9 +17,10 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
+		attr = !attr || /^\s/.test(attr) ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			AttributeToken = require('../attribute'),
-			attrToken = new AttributeToken(!attr || /^\s/.test(attr) ? attr : ` ${attr}`, 'ext-attr', lcName),
+			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {acceptable} */ acceptable, innerToken;
