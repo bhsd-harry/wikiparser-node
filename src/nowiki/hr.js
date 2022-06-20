@@ -1,7 +1,6 @@
 'use strict';
 
-const {typeError} = require('../../util/debug'),
-	/** @type {Parser} */ Parser = require('../..'),
+const /** @type {Parser} */ Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
@@ -16,12 +15,20 @@ class HrToken extends NowikiToken {
 	 * @param {accum} accum
 	 */
 	constructor(n, accum = []) {
-		if (typeof n !== 'number') {
-			typeError('Number');
-		} else if (n < 4 || !Number.isInteger(n)) {
-			throw new RangeError('输入参数应为不小于4的正整数！');
-		}
 		super('-'.repeat(n), accum);
+	}
+
+	/** @this {HrToken & {firstChild: string}} */
+	cloneNode() {
+		Parser.running = true;
+		const token = new HrToken(this.firstChild.length);
+		Parser.running = false;
+		return token;
+	}
+
+	/** @returns {[number, string][]} */
+	plain() {
+		return [];
 	}
 
 	/** @param {string} str */
@@ -30,11 +37,6 @@ class HrToken extends NowikiToken {
 			throw new RangeError('<hr>总是写作不少于4个的连续"-"！');
 		}
 		return super.setText(str);
-	}
-
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
 	}
 }
 

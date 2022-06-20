@@ -20,6 +20,13 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		this.setAttribute('name', word.toLowerCase());
 	}
 
+	cloneNode() {
+		Parser.running = true;
+		const token = new DoubleUnderscoreToken(this.firstChild);
+		Parser.running = false;
+		return token;
+	}
+
 	/** @this {DoubleUnderscoreToken & {firstChild: string}} */
 	toString() {
 		return `__${this.firstChild}__`;

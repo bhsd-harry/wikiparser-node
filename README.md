@@ -86,9 +86,9 @@
         2. [anon](#parametertoken.anon)
 11. [HtmlToken](#htmltoken)
     1. [原型方法](#htmltoken.prototype.methods)
-        1. [check](#htmltoken.check)
-        2. [fix](#htmltoken.fix)
-        3. [replaceTag](#htmltoken.replacetag)
+        1. [replaceTag](#htmltoken.replacetag)
+        2. [findMatchingTag](#htmltoken.findmatchingtag)
+        3. [fix](#htmltoken.fix)
     2. [实例属性](#htmltoken.instance.properties)
         1. [name](#htmltoken.name)
         2. [closing](#htmltoken.closing)
@@ -805,43 +805,6 @@ HTML标签，未进行匹配。
 <details>
     <summary>展开</summary>
 
-**check**(): void<a id="htmltoken.check"></a>
-- 初步检测是否符合语法，不符时会抛出不同错误。可能会遗漏未匹配的内联标签。
-
-```js
-var root = Parser.parse('<p><b/></i>'),
-    [p, b, i] = root.children;  
-try {
-    p.check();
-    throw new Error();
-} catch (e) {
-    assert(e.message === '未闭合的标签：<p>');
-}
-try {
-    b.check();
-    throw new Error();
-} catch (e) {
-    assert(e.message === '无效自封闭标签：<b/>');
-}
-try {
-    i.check();
-    throw new Error();
-} catch (e) {
-    assert(e.message === '未匹配的闭合标签：</i>');
-}
-```
-
-**fix**(): void<a id="htmltoken.fix"></a>
-- 尝试修复无效自封闭标签，存疑时会输出警告。
-
-```js
-var root = Parser.parse('<b>a<b/><div style="height:1em"/>');
-for (const html of root.querySelectorAll('html')) {
-    html.fix();
-}
-assert(root.toString() === '<b>a</b><div style="height:1em"></div>');
-```
-
 **replaceTag**(tag: string): void<a id="htmltoken.replacetag"></a>
 - 修改标签。
 
@@ -850,6 +813,45 @@ var root = Parser.parse('<b>'),
     html = root.firstChild;
 html.replaceTag('i');
 assert(root.toString() === '<i>');
+```
+
+**findMatchingTag**(): HtmlToken<a id="htmltoken.findmatchingtag"></a>
+- 搜索匹配的另一个标签，找不到或无效自封闭时会抛出不同错误。
+
+```js
+var root = Parser.parse('<p><b/></i><u></u><br>'),
+    [p, b, i, u, u2, br] = root.children;  
+try {
+    p.findMatchingTag();
+    throw new Error();
+} catch (e) {
+    assert(e.message === '未闭合的标签：<p>');
+}
+try {
+    b.findMatchingTag();
+    throw new Error();
+} catch (e) {
+    assert(e.message === '无效自封闭标签：<b/>');
+}
+try {
+    i.findMatchingTag();
+    throw new Error();
+} catch (e) {
+    assert(e.message === '未匹配的闭合标签：</i>');
+}
+assert(u.findMatchingTag() === u2);
+assert(br.findMatchingTag() === br);
+```
+
+**fix**(): void<a id="htmltoken.fix"></a>
+- 尝试修复无效自封闭标签，无法修复时会抛出错误。
+
+```js
+var root = Parser.parse('<b>a<b/><div style="height:1em"/>');
+for (const html of root.querySelectorAll('html')) {
+    html.fix();
+}
+assert(root.toString() === '<b>a</b><div style="height:1em"></div>');
 ```
 </details>
 

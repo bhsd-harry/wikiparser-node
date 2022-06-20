@@ -24,14 +24,14 @@ const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 			attr = new AttributeToken(params, 'html-attr', name, config, accum),
 			itemprop = attr.getAttr('itemprop');
 		if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
-			|| name === 'link' && (itemprop === undefined && attr.getAttr('href') === undefined)
+			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)
 		) {
 			text += `<${x}`;
 			accum.pop();
 			continue;
 		}
 		text += `\x00${accum.length}x\x7f${rest}`;
-		const HtmlToken = require('../src/htmlToken');
+		const HtmlToken = require('../src/html');
 		new HtmlToken(t, attr, slash === '/', brace === '/>', config, accum);
 	}
 	return text;
