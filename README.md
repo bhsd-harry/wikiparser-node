@@ -71,6 +71,9 @@
         11. [setValue](#transcludetoken.setvalue)
         12. [anonToNamed](#transcludetoken.anontonamed)
         13. [replaceTemplate](#transcludetoken.replacetemplate)
+        14. [hasDuplicatedArgs](#transcludetoken.hasduplicatedargs)
+        15. [getDuplicatedArgs](#transcludetoken.getduplicatedargs)
+        16. [fixDuplication](#transcludetoken.fixduplication)
     2. [实例属性](#transcludetoken.instance.properties)
         1. [name](#transcludetoken.name)
 10. [ParameterToken](#parametertoken)
@@ -530,7 +533,7 @@ assert(arg.name === 'a');
 <details>
     <summary>展开</summary>
 
-**getAllArgs**(): ParameterToken[]<a id="transcludetoken.getallargs"></a>
+**getAllArgs**(): [ParameterToken](#parametertoken)[]<a id="transcludetoken.getallargs"></a>
 - 获取所有参数。
 
 ```js
@@ -541,7 +544,7 @@ assert.deepStrictEqual(template.getAllArgs(), template.children.slice(1));
 assert.deepStrictEqual(invoke.getAllArgs(), invoke.children.slice(3));
 ```
 
-**getAnonArgs**(): ParameterToken[]<a id="transcludetoken.getanonargs"></a>
+**getAnonArgs**(): [ParameterToken](#parametertoken)[]<a id="transcludetoken.getanonargs"></a>
 - 获取所有匿名参数。
 
 ```js
@@ -552,8 +555,8 @@ assert.deepStrictEqual(invoke.getAnonArgs(), invoke.children.slice(3, 4));
 assert.deepStrictEqual(magicWord.getAnonArgs(), magicWord.children.slice(1)); // 除#invoke外的魔术字的参数总是视为匿名参数
 ```
 
-**getArgs**(key: string\|number): Set\<ParameterToken><a id="transcludetoken.getargs"></a>
-- 获取指定名称的参数（含重复）。
+**getArgs**(key: string\|number): Set\<[ParameterToken](#parametertoken)><a id="transcludetoken.getargs"></a>
+- 获取指定名称的参数（含重复），注意顺序可能不固定。
 
 ```js
 var root = Parser.parse('{{a|b|1=c}}{{#invoke:d|e|f|1=g}}'),
@@ -576,7 +579,7 @@ assert(invoke.hasArg(1) === true);
 assert(invoke.hasArg('g') === true);
 ```
 
-**getArg**(key: string\|number): ParameterToken<a id="transcludetoken.getarg"></a>
+**getArg**(key: string\|number): [ParameterToken](#parametertoken)<a id="transcludetoken.getarg"></a>
 - 获取指定名称的有效参数（即最后一个）。
 
 ```js
@@ -677,6 +680,34 @@ var root = Parser.parse('{{a|b|c=1}}'),
     template = root.firstChild;
 template.replaceTemplate('aa');
 assert(root.toString() === '{{aa|b|c=1}}');
+```
+
+**hasDuplicatedArgs**(): number<a id="transcludetoken.hasduplicatedargs"></a>
+- 重复参数计数。
+
+```js
+var root = Parser.parse('{{a||1=}}'),
+    template = root.firstChild;
+assert(template.hasDuplicatedArgs() === 1);
+```
+
+**getDuplicatedArgs**(): \[string, Set\<[ParameterToken](#parametertoken)>][]<a id="transcludetoken.getduplicatedargs"></a>
+- 获取全部重复参数，注意顺序可能不固定。
+
+```js
+var root = Parser.parse('{{a||1=}}'),
+    template = root.firstChild;
+assert.deepStrictEqual(template.getDuplicatedArgs(), [['1', new Set(template.getAllArgs())]]);
+```
+
+**fixDuplication**(): string[]<a id="transcludetoken.fixduplication"></a>
+- 尝试修复重复参数，返回值为无法修复的参数名列表。
+
+```js
+var root = Parser.parse('{{a|b|1=|1=c}}'),
+    template = root.firstChild;
+assert.deepStrictEqual(template.fixDuplication(), ['1']); // 
+assert(root.toString() === '{{a|b|1=c}}');
 ```
 </details>
 
