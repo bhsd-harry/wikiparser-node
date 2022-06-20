@@ -31,7 +31,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				if (rmt) {
 					text = `${text.slice(0, index)}\x00${accum.length}h\x7f${text.slice(curIndex)}`;
 					lastIndex = index + 4 + String(accum.length).length;
-					const HeadingToken = require('../src/headingToken');
+					const HeadingToken = require('../src/heading');
 					new HeadingToken(rmt[1].length, rmt.slice(2), config, accum);
 				}
 			}
@@ -50,15 +50,15 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
 			parts.at(-1).push(text.slice(top.pos, curIndex));
-			/* 标记{{!}} */
+			/* 标记{{!}}等 */
 			const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't';
 			let skip = false;
 			if (close.length === 3) {
-				const ArgToken = require('../src/argToken');
+				const ArgToken = require('../src/arg');
 				new ArgToken(parts.map(part => part.join('=')), config, accum);
 			} else {
 				try {
-					const TranscludeToken = require('../src/transcludeToken');
+					const TranscludeToken = require('../src/transclude');
 					new TranscludeToken(parts[0][0], parts.slice(1), config, accum);
 				} catch (e) {
 					if (e instanceof Error && e.message.startsWith('非法的模板名称：')) {

@@ -17,6 +17,15 @@ class AtomToken extends Token {
 		super(wikitext, null, true, accum, acceptable);
 		this.type = type;
 	}
+
+	cloneNode() {
+		const cloned = this.cloneChildren();
+		Parser.running = true;
+		const token = new AtomToken(undefined, this.type, [], this.getAttribute('acceptable'));
+		token.append(...cloned);
+		Parser.running = false;
+		return token;
+	}
 }
 
 Parser.classes.AtomToken = __filename;

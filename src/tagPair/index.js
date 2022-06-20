@@ -36,21 +36,6 @@ class TagPairToken extends fixedToken(Token) {
 		accum.splice(index, 0, this);
 	}
 
-	cloneNode() {
-		Parser.running = true;
-		let /** @type {string|undefined} */ closing;
-		if (this.selfClosing) {
-			// pass
-		} else if (!this.closed) {
-			closing = '';
-		} else {
-			[, closing] = this.#tags;
-		}
-		const token = new TagPairToken(this.#tags[0], '', '', closing, this.getAttribute('config'));
-		Parser.running = false;
-		return token;
-	}
-
 	/**
 	 * @template {string} T
 	 * @param {T} key

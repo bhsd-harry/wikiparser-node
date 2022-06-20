@@ -1,14 +1,13 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('./token'),
-	watchFirstChild = require('../mixin/watchFirstChild');
+	Token = require('.');
 
 /**
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, Token, ...AtomToken]}`
  */
-class ArgToken extends watchFirstChild(Token) {
+class ArgToken extends Token {
 	type = 'arg';
 
 	/**
@@ -19,7 +18,7 @@ class ArgToken extends watchFirstChild(Token) {
 		super(undefined, config, true, accum, {Token: 1, AtomToken: [0, '2:']});
 		for (const [i, part] of parts.entries()) {
 			if (i === 0 || i > 1) {
-				const AtomToken = require('./atomToken'),
+				const AtomToken = require('./atom'),
 					token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', accum, {
 						'Stage-2': ':', '!HeadingToken': '',
 					});
@@ -31,6 +30,30 @@ class ArgToken extends watchFirstChild(Token) {
 			}
 		}
 		this.protectChildren(0);
+	}
+
+	cloneNode() {
+		const [name, ...cloned] = this.cloneChildren();
+		Parser.running = true;
+		const token = new ArgToken([''], this.getAttribute('config'));
+		token.firstElementChild.safeReplaceWith(name);
+		token.append(...cloned);
+		token.afterBuild();
+		Parser.running = false;
+		return token;
+	}
+
+	afterBuild() {
+		super.afterBuild();
+		this.setAttribute('name', this.firstElementChild.text().trim());
+		const that = this,
+			/** @type {AstListener} */ argListener = ({prevTarget}) => {
+				if (prevTarget === that.firstElementChild) {
+					that.setAttribute('name', prevTarget.text().trim());
+				}
+			};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
+		return this;
 	}
 
 	toString() {
@@ -51,12 +74,6 @@ class ArgToken extends watchFirstChild(Token) {
 
 	plain() {
 		return this.childElementCount > 1 ? this.children[1].plain() : [];
-	}
-
-	afterBuild() {
-		const name = this.firstElementChild.text().trim();
-		this.setAttribute('name', name);
-		return super.afterBuild();
 	}
 
 	removeRedundant() {
@@ -86,13 +103,10 @@ class ArgToken extends watchFirstChild(Token) {
 		return super.insertAt(token, i);
 	}
 
-	/**
-	 * @this {ArgToken & {firstChild: Token}}
-	 * @param {string} name
-	 */
+	/** @param {string} name */
 	setName(name) {
 		name = String(name);
-		const root = new Token(`{{{${name}}}}`, this.getAttribute('config')).parse(2),
+		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的参数名称：${name.replaceAll('\n', '\\n')}`);
@@ -100,16 +114,13 @@ class ArgToken extends watchFirstChild(Token) {
 		const newName = firstElementChild.firstElementChild;
 		root.destroy();
 		firstElementChild.destroy();
-		this.firstChild.safeReplaceWith(newName);
+		this.firstElementChild.safeReplaceWith(newName);
 	}
 
-	/**
-	 * @this {ArgToken & {children: Token[]}}
-	 * @param {string} value
-	 */
+	/** @param {string} value */
 	setDefault(value) {
 		value = String(value);
-		const root = new Token(`{{{|${value}}}}`, this.getAttribute('config')).parse(2),
+		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${value.replaceAll('\n', '\\n')}`);

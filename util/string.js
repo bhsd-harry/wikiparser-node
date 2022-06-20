@@ -16,7 +16,10 @@ const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
 /** @param {string} str */
 const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
 
+/** @param {string} str */
+const escapeRegExp = str => str.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
+
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
 	+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*';
 
-module.exports = {toCase, removeComment, ucfirst, extUrlChar};
+module.exports = {toCase, removeComment, ucfirst, escapeRegExp, extUrlChar};

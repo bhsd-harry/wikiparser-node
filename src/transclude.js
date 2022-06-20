@@ -1,21 +1,31 @@
 'use strict';
 
-const {removeComment} = require('../util/string'),
-	{typeError, externalUse, debugOnly} = require('../util/debug'),
-	watchFirstChild = require('../mixin/watchFirstChild'),
+const {removeComment, escapeRegExp} = require('../util/string'),
+	{typeError, externalUse, undo} = require('../util/debug'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token'),
-	ParameterToken = require('./parameterToken');
+	Token = require('.'),
+	ParameterToken = require('./parameter');
 
 /**
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken, ...ParameterToken]}`
  */
-class TranscludeToken extends watchFirstChild(Token) {
+class TranscludeToken extends Token {
 	type = 'template';
 	modifier = '';
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Map<string, Set<ParameterToken>>} */ #args = new Map();
+
+	/** @param {string} modifier */
+	setModifier(modifier, force = false) {
+		if (!modifier || force && Parser.running || new RegExp(`^\\s*(?:${
+			this.getAttribute('config').parserFunction.slice(2).flat().join('|')
+		})\\s*$`, 'i').test(removeComment(modifier))) {
+			this.setAttribute('modifier', modifier);
+			return Boolean(modifier);
+		}
+		return false;
+	}
 
 	/**
 	 * @param {string} title
@@ -24,7 +34,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, ParameterToken: '1:'});
-		const AtomToken = require('./atomToken'),
+		const AtomToken = require('./atom'),
 			{parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
 		if (title.includes(':')) {
@@ -33,7 +43,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 				title = arg.join(':');
 			}
 		}
-		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier)) {
+		if (title.includes(':') || parts.length === 0 && !raw.includes(removeComment(this.modifier).toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
 			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
@@ -44,12 +54,13 @@ class TranscludeToken extends watchFirstChild(Token) {
 					parts.unshift([arg.join(':')]);
 				}
 				if (this.name === 'invoke') {
+					this.setAttribute('acceptable', {AtomToken: ':3', ParameterToken: '3:'});
 					for (let i = 0; i < 2; i++) {
 						const part = parts.shift();
 						if (!part) {
 							break;
 						}
-						const invoke = new AtomToken(part.join('='), `invoke-${i ? 'func' : 'module'}`, accum, {
+						const invoke = new AtomToken(part.join('='), `invoke-${i ? 'function' : 'module'}`, accum, {
 							'Stage-1': ':', '!ExtToken': '',
 						});
 						this.appendChild(invoke);
@@ -67,7 +78,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			const token = new AtomToken(title, 'template-name', accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.appendChild(token);
 		}
-		const templateLike = this.isTemplate();
+		const templateLike = this.matches('template, magic-word#invoke');
 		let i = 1;
 		for (const part of parts) {
 			if (!templateLike) {
@@ -81,44 +92,72 @@ class TranscludeToken extends watchFirstChild(Token) {
 			this.appendChild(new ParameterToken(...part, config, accum));
 		}
 		this.protectChildren(0);
-		if (!templateLike) {
-			return;
-		}
-		const that = this;
-		/**
-		 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
-		 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-		 * @type {AstListener}
-		 */
-		const transcludeListener = ({prevTarget}, data) => {
-			const {oldKey, newKey} = data ?? {};
-			if (typeof oldKey === 'string') {
-				delete data.oldKey;
-				delete data.newKey;
-			}
-			if (prevTarget instanceof ParameterToken && oldKey !== newKey) {
-				const oldArgs = that.getArgs(oldKey, false);
-				oldArgs.delete(prevTarget);
-				that.getArgs(newKey, false).add(prevTarget);
-				that.#keys.add(newKey);
-				if (oldArgs.size === 0) {
-					that.#keys.delete(oldKey);
-				}
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
 	}
 
-	/** @param {string} modifier */
-	setModifier(modifier, force = false) {
-		if (!modifier || force && !externalUse('setModifier') || new RegExp(`^\\s*(?:${
-			this.getAttribute('config').parserFunction.slice(2).flat().join('|')
-		})\\s*$`, 'i').test(removeComment(modifier))) {
-			const enumerable = Boolean(modifier);
-			Object.defineProperty(this, 'modifier', {value: modifier || '', enumerable});
-			return enumerable;
+	cloneNode() {
+		const [first, ...cloned] = this.cloneChildren(),
+			config = this.getAttribute('config'),
+			modifier = this.modifier && Parser.parse(this.modifier, this.getAttribute('include'), 2, config).text();
+		Parser.running = true;
+		const token = new TranscludeToken(`${modifier}${modifier && ':'}${this.name}`, [], config);
+		token.firstElementChild.safeReplaceWith(first);
+		token.append(...cloned);
+		token.setModifier(this.modifier, true);
+		token.afterBuild();
+		Parser.running = false;
+		return token;
+	}
+
+	afterBuild() {
+		super.afterBuild();
+		if (this.type === 'template') {
+			const name = this.firstElementChild.text().trim();
+			this.setAttribute('name', this.normalizeTitle(name, 10));
 		}
-		return false;
+		if (this.modifier?.includes('\x00')) {
+			this.setModifier(this.buildFromStr(this.modifier).map(String).join(''), true);
+		}
+		if (this.matches('template, magic-word#invoke')) {
+			const that = this;
+			/**
+			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
+			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
+			 * @type {AstListener}
+			 */
+			const transcludeListener = (e, data) => {
+				const {type, firstElementChild} = that,
+					{prevTarget} = e,
+					{oldKey, newKey} = data ?? {};
+				if (typeof oldKey === 'string') {
+					delete data.oldKey;
+					delete data.newKey;
+				}
+				if (prevTarget === firstElementChild) {
+					const name = prevTarget.text().trim();
+					let standardname;
+					if (type === 'magic-word') {
+						standardname = name.toLowerCase().replace(/^#/, '');
+						if (that.name !== standardname) {
+							undo(e, data);
+							throw new Error('禁止修改原有的魔术字！');
+						}
+					} else if (type === 'template') {
+						standardname = that.normalizeTitle(name, 10);
+					}
+					that.setAttribute('name', standardname);
+				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
+					const oldArgs = that.getArgs(oldKey, false, false);
+					oldArgs.delete(prevTarget);
+					that.getArgs(newKey, false, false).add(prevTarget);
+					that.#keys.add(newKey);
+					if (oldArgs.size === 0) {
+						that.#keys.delete(oldKey);
+					}
+				}
+			};
+			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
+		}
+		return this;
 	}
 
 	subst() {
@@ -130,17 +169,15 @@ class TranscludeToken extends watchFirstChild(Token) {
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (!Parser.debugging && ['args', 'keys'].includes(key) && externalUse('getAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.getAttribute 方法获取私有属性 ${key} 仅用于代码调试！`);
-		} else if (key === 'args') {
-			return this.#args;
+		if (key === 'args') {
+			return new Map(this.#args);
 		} else if (key === 'keys') {
-			return this.#keys;
+			return !Parser.debugging && externalUse('getAttribute') ? new Set(this.#keys) : this.#keys;
 		}
 		return super.getAttribute(key);
 	}
@@ -175,23 +212,24 @@ class TranscludeToken extends watchFirstChild(Token) {
 		return this.getAllArgs().flatMap(child => child.plain());
 	}
 
-	/** @param {ParameterToken} addedToken */
+	/** @param {number|ParameterToken} addedToken */
 	#handleAnonArgChange(addedToken) {
 		const args = this.getAnonArgs(),
-			maxAnon = String(args.length + (addedToken ? 0 : 1));
-		if (addedToken) {
+			added = typeof addedToken !== 'number',
+			maxAnon = String(args.length + (added ? 0 : 1));
+		if (added) {
 			this.#keys.add(maxAnon);
 		} else if (!this.hasArg(maxAnon, true)) {
 			this.#keys.delete(maxAnon);
 		}
-		const j = addedToken ? args.indexOf(addedToken) : 0;
+		const j = added ? args.indexOf(addedToken) : addedToken - 1;
 		for (const [i, token] of [...args.entries()].slice(j)) {
 			const {name} = token,
 				newName = String(i + 1);
 			if (name !== newName) {
-				this.getArgs(newName, false).add(token.setAttribute('name', newName));
+				this.getArgs(newName, false, false).add(token.setAttribute('name', newName));
 				if (name) {
-					this.getArgs(name, false).delete(token);
+					this.getArgs(name, false, false).delete(token);
 				}
 			}
 		}
@@ -201,9 +239,9 @@ class TranscludeToken extends watchFirstChild(Token) {
 	removeAt(i) {
 		const /** @type {ParameterToken} */ token = super.removeAt(i);
 		if (token.anon) {
-			this.#handleAnonArgChange();
+			this.#handleAnonArgChange(Number(token.name));
 		} else {
-			const args = this.getArgs(token.name, false);
+			const args = this.getArgs(token.name, false, false);
 			args.delete(token);
 			if (args.size === 0) {
 				this.#keys.delete(token.name);
@@ -218,21 +256,10 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (token.anon) {
 			this.#handleAnonArgChange(token);
 		} else if (token.name) {
-			this.getArgs(token.name, false).add(token);
+			this.getArgs(token.name, false, false).add(token);
 			this.#keys.add(token.name);
 		}
 		return token;
-	}
-
-	afterBuild() {
-		if (this.type === 'template') {
-			const name = this.firstElementChild.text().trim();
-			this.setAttribute('name', this.normalizeTitle(name, 10));
-		}
-		if (this.modifier?.includes('\x00')) {
-			this.setModifier(this.buildFromStr(this.modifier).map(String).join(''), true);
-		}
-		return super.afterBuild();
 	}
 
 	/** @returns {ParameterToken[]} */
@@ -245,11 +272,11 @@ class TranscludeToken extends watchFirstChild(Token) {
 	}
 
 	/** @param {string|number} key */
-	getArgs(key, copy = true, exact = false) {
+	getArgs(key, exact = false, copy = true) {
 		if (!['string', 'number'].includes(typeof key)) {
-			typeError('String', 'Number');
+			typeError(this, 'getArgs', 'String', 'Number');
 		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
-			debugOnly(this.constructor, 'getArgs');
+			this.debugOnly('getArgs');
 		}
 		const keyStr = String(key).trim();
 		let args = this.#args.get(keyStr);
@@ -257,7 +284,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args.set(keyStr, args);
 		}
-		if (copy && exact && !isNaN(keyStr)) {
+		if (exact && !isNaN(keyStr)) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
 			args = new Set(args);
@@ -267,17 +294,17 @@ class TranscludeToken extends watchFirstChild(Token) {
 
 	/** @param {string|number} key */
 	hasArg(key, exact = false) {
-		return this.getArgs(key, exact, exact).size > 0;
+		return this.getArgs(key, exact, false).size > 0;
 	}
 
 	/** @param {string|number} key */
 	getArg(key, exact = false) {
-		return [...this.getArgs(key, exact, exact)].sort((a, b) => a.comparePosition(b)).at(-1);
+		return [...this.getArgs(key, exact, false)].sort((a, b) => a.comparePosition(b)).at(-1);
 	}
 
 	/** @param {string|number} key */
 	removeArg(key, exact = false) {
-		for (const token of this.getArgs(key, exact, exact)) {
+		for (const token of this.getArgs(key, exact, false)) {
 			this.removeChild(token);
 		}
 	}
@@ -294,7 +321,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 
 	/** @param {string|number} key */
 	getValues(key) {
-		return [...this.getArgs(key, false)].map(token => token.getValue());
+		return [...this.getArgs(key, false, false)].map(token => token.getValue());
 	}
 
 	/**
@@ -315,8 +342,9 @@ class TranscludeToken extends watchFirstChild(Token) {
 	 */
 	newAnonArg(val) {
 		val = String(val);
-		const templateLike = this.isTemplate(),
-			root = new Token(`{{${templateLike ? ':T|' : 'lc:'}${val}}}`, this.getAttribute('config')).parse(2),
+		const templateLike = this.matches('template, magic-word#invoke'),
+			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
+			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
 			|| firstElementChild.childElementCount !== 2 || !firstElementChild.lastElementChild.anon
@@ -332,8 +360,8 @@ class TranscludeToken extends watchFirstChild(Token) {
 	 */
 	setValue(key, value) {
 		if (typeof key !== 'string') {
-			typeError('String');
-		} else if (!this.isTemplate()) {
+			typeError(this, 'setValue', 'String');
+		} else if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
 		}
 		const token = this.getArg(key);
@@ -342,7 +370,8 @@ class TranscludeToken extends watchFirstChild(Token) {
 			token.setValue(value);
 			return;
 		}
-		const root = new Token(`{{:T|${key}=${value}}}`, this.getAttribute('config')).parse(2),
+		const wikitext = `{{:T|${key}=${value}}}`,
+			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('template#T')
 			|| firstElementChild.childElementCount !== 2 || firstElementChild.lastElementChild.name !== key
@@ -353,7 +382,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 	}
 
 	anonToNamed() {
-		if (!this.isTemplate()) {
+		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
 		}
 		for (const token of this.getAnonArgs()) {
@@ -367,9 +396,9 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (this.type === 'magic-word') {
 			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
 		} else if (typeof title !== 'string') {
-			typeError('String');
+			typeError(this, 'replaceTemplate', 'String');
 		}
-		const root = new Token(`{{${title}}}`, this.getAttribute('config')).parse(2),
+		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'template' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的模板名称：${title}`);
@@ -382,9 +411,9 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
 		} else if (typeof title !== 'string') {
-			typeError('String');
+			typeError(this, 'replaceModule', 'String');
 		}
-		const root = new Token(`{{#invoke:${title}}}`, this.getAttribute('config')).parse(2),
+		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('magic-word#invoke')
 			|| firstElementChild.childElementCount !== 2
@@ -405,11 +434,11 @@ class TranscludeToken extends watchFirstChild(Token) {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
 		} else if (typeof func !== 'string') {
-			typeError('String');
+			typeError(this, 'replaceFunction', 'String');
 		} else if (this.childElementCount < 2) {
 			throw new Error('尚未指定模块名称！');
 		}
-		const root = new Token(`{{#invoke:M|${func}}}`, this.getAttribute('config')).parse(2),
+		const root = Parser.parse(`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('magic-word#invoke')
 			|| firstElementChild.childElementCount !== 3
@@ -426,24 +455,17 @@ class TranscludeToken extends watchFirstChild(Token) {
 	}
 
 	hasDuplicatedArgs() {
-		if (!this.isTemplate()) {
+		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
-		}
-		return this.getKeys().length < this.getAllArgs().length;
-	}
-
-	countDuplicatedArgs() {
-		if (!this.isTemplate()) {
-			throw new Error(`${this.constructor.name}.countDuplicatedArgs 方法仅供模板使用！`);
 		}
 		return this.getAllArgs().length - this.getKeys().length;
 	}
 
 	getDuplicatedArgs() {
-		if (!this.isTemplate()) {
+		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 		}
-		return [...this.#args.entries()].filter(([, {size}]) => size > 1);
+		return [...this.#args.entries()].filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
 	}
 
 	/**
@@ -471,7 +493,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			}
 			let noMoreAnon = anonCount === 0 || isNaN(key);
 			const entries = [...values.entries()],
-				emptyArgs = entries.filter(([val]) => val === '').flatMap(([, curArgs]) => curArgs),
+				emptyArgs = values.get('') ?? [],
 				duplicatedArgs = entries.filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
 					if (anonIndex !== -1) {
@@ -481,7 +503,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 					return curArgs;
 				}),
 				badArgs = [...emptyArgs, ...duplicatedArgs],
-				index = noMoreAnon ? -1 : badArgs.findIndex(({anon}) => anon);
+				index = noMoreAnon ? -1 : emptyArgs.findIndex(({anon}) => anon);
 			if (badArgs.length === args.size) {
 				badArgs.splice(index, 1);
 			} else if (index !== -1) {
@@ -497,7 +519,7 @@ class TranscludeToken extends watchFirstChild(Token) {
 			} else if (aggressive && (anonCount ? /\D\d+$/ : /(?:^|\D)\d+$/).test(key)) {
 				let /** @type {number} */ last;
 				const str = key.slice(0, -key.match(/\d+$/)[0].length),
-					regex = new RegExp(`^${str.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&')}\\d+$`),
+					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
 						const j = Number(name.slice(str.length)),
@@ -531,27 +553,29 @@ class TranscludeToken extends watchFirstChild(Token) {
 
 	/** @returns {TranscludeToken} */
 	escapeTables() {
-		const count = this.countDuplicatedArgs();
-		if (!/\n\s*:*\s*{\|.*\n\s*\|}/s.test(this.text()) || count === 0) {
+		const count = this.hasDuplicatedArgs();
+		if (!/\n\s*:*\s*{\|.*\n\s*\|}/s.test(this.text()) || !count) {
 			return this;
 		}
 		const stripped = this.toString().slice(2, -2),
+			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			parsed = new Token(stripped, config).parse(4),
+			parsed = Parser.parse(stripped, include, 4, config),
 			TableToken = require('./tableToken');
 		for (const table of parsed.children) {
 			if (table instanceof TableToken) {
 				table.escape();
 			}
 		}
-		const {firstChild, childNodes} = new Token(`{{${parsed.toString()}}}`, config).parse(2);
+		const {firstChild, childNodes} = Parser.parse(`{{${parsed.toString()}}}`, include, 2, config);
 		if (childNodes.length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('转义表格失败！');
 		}
-		const newCount = firstChild.countDuplicatedArgs();
-		if (newCount < count) {
-			Parser.info(`共修复了 ${count - newCount} 个重复参数。`);
+		const newCount = firstChild.hasDuplicatedArgs();
+		if (newCount === count) {
+			return this;
 		}
+		Parser.info(`共修复了 ${count - newCount} 个重复参数。`);
 		this.safeReplaceWith(firstChild);
 		return firstChild;
 	}

@@ -23,9 +23,19 @@ class HeadingToken extends fixedToken(Token) {
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
-		const AtomToken = require('./atomToken'),
+		const AtomToken = require('./atom'),
 			trail = new AtomToken(input[1], 'heading-trail', accum, {'Stage-1': ':', '!ExtToken': ''});
 		this.append(token, trail);
+	}
+
+	cloneNode() {
+		const [title, trail] = this.cloneChildren();
+		Parser.running = true;
+		const token = new HeadingToken(Number(this.name), [], this.getAttribute('config'));
+		token.firstElementChild.safeReplaceWith(title);
+		token.lastElementChild.safeReplaceWith(trail);
+		Parser.running = false;
+		return token;
 	}
 
 	toString() {
@@ -53,7 +63,7 @@ class HeadingToken extends fixedToken(Token) {
 	/** @param {number} n */
 	setLevel(n) {
 		if (typeof n !== 'number') {
-			typeError('Number');
+			typeError(this, 'setLevel', 'Number');
 		}
 		n = Math.min(Math.max(n, 1), 6);
 		this.setAttribute('name', String(n)).firstElementChild.setAttribute('name', this.name);

@@ -73,6 +73,16 @@ class AttributeToken extends Token {
 		this.setAttribute('name', name).#parseAttr();
 	}
 
+	cloneNode() {
+		const cloned = this.cloneChildren();
+		Parser.running = true;
+		const token = new AttributeToken(undefined, this.type, this.name, this.getAttribute('config'));
+		token.append(...cloned);
+		token.afterBuild();
+		Parser.running = false;
+		return token;
+	}
+
 	/**
 	 * @template {string} T
 	 * @param {T} key
@@ -110,7 +120,6 @@ class AttributeToken extends Token {
 
 	afterBuild() {
 		super.afterBuild();
-		console.log('Attaching event listeners');
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], ({type, target}) => {
 			if (type === 'text' || target !== this) {
 				this.#parseAttr();

@@ -1,6 +1,6 @@
 import Ranges from '../lib/ranges';
 import Token from '../src';
-import ParameterToken from '../src/parameterToken';
+import ParameterToken from '../src/parameter';
 
 declare global {
 	type TokenAttribute<T> =

@@ -3,7 +3,7 @@
 const fixedToken = require('../../mixin/fixedToken'),
 	{externalUse} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('../token'),
+	Token = require('..'),
 	TableToken = require('.');
 
 const getSubType = /** @param {string} syntax */ syntax => {
@@ -58,7 +58,7 @@ class TdToken extends fixedToken(TableToken) {
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @returns {TokenAttribute<T>}
 	 */
@@ -70,13 +70,13 @@ class TdToken extends fixedToken(TableToken) {
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @param {TokenAttribute<T>} value
 	 */
 	setAttribute(key, value) {
 		if (!Parser.debugging && key === 'innerSyntax' && externalUse('setAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 ${key} 仅用于代码调试！`);
+			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
 		} else if (key === 'innerSyntax') {
 			this.#innerSyntax = String(value);
 		} else {

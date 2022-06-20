@@ -19,9 +19,10 @@ class NowikiToken extends fixedToken(Token) {
 		super(wikitext, null, false, accum);
 	}
 
+	/** @this {NowikiToken & {firstChild: string}} */
 	cloneNode() {
 		Parser.running = true;
-		const token = new NowikiToken();
+		const token = new NowikiToken(this.firstChild);
 		token.type = this.type;
 		Parser.running = false;
 		return token;

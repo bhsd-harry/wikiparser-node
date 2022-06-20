@@ -21,20 +21,13 @@ class IncludeToken extends hidden(TagPairToken) {
 		super(name, attr, inner ?? '', inner !== undefined ? closing ?? '' : closing, null, accum, {String: [0, 1]});
 	}
 
+	/** @this {IncludeToken & {firstChild: string, lastChild: string}} */
 	cloneNode() {
 		Parser.running = true;
-		const tags = this.getAttribute('tags');
-		let /** @type {string|undefined} */ closing,
-			/** @type {string|undefined} */ inner;
-		if (this.selfClosing) {
-			// pass
-		} else if (!this.closed) {
-			inner = '';
-		} else {
-			inner = '';
-			[, closing] = tags;
-		}
-		const token = new IncludeToken(tags[0], '', inner, closing);
+		const tags = this.getAttribute('tags'),
+			inner = this.selfClosing ? undefined : this.lastChild,
+			closing = this.selfClosing || !this.closed ? undefined : tags[1];
+		const token = new IncludeToken(tags[0], this.firstChild, inner, closing);
 		Parser.running = false;
 		return token;
 	}

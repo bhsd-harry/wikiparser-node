@@ -21,9 +21,10 @@ class CommentToken extends hidden(NowikiToken) {
 		this.closed = closed;
 	}
 
+	/** @this {CommentToken & {firstChild: string}} */
 	cloneNode() {
 		Parser.running = true;
-		const token = new CommentToken(undefined, this.closed);
+		const token = new CommentToken(this.firstChild, this.closed);
 		Parser.running = false;
 		return token;
 	}

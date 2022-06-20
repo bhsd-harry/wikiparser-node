@@ -395,13 +395,14 @@ var root = Parser.parse('<ref/>'),
 assert(attr.hasAttrs() === false);
 ```
 
-**setAttr**(key: string, value: string\|boolean): this<a id="attributetoken.setattr"></a>
+**setAttr**(key: string, value: string\|boolean): void<a id="attributetoken.setattr"></a>
 - 设置属性。
 
 ```js
 var root = Parser.parse('<choose></choose>'),
     attr = root.querySelector('ext-attr');
-attr.setAttr('before', 'a').setAttr('uncached', true);
+attr.setAttr('before', 'a');
+attr.setAttr('uncached', true);
 assert(root.toString() === '<choose before="a" uncached></choose>');
 ```
 

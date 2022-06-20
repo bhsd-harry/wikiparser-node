@@ -74,14 +74,22 @@ class Token extends AstElement {
 		accum.push(this);
 	}
 
+	cloneChildren() {
+		if (!Parser.debugging && externalUse('cloneChildren')) {
+			this.debugOnly('cloneChildren');
+		}
+		return this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
+	}
+
 	cloneNode() {
 		if (!this.isPlain()) {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
 		}
+		const cloned = this.cloneChildren();
 		Parser.running = true;
-		const token = new Token(undefined, this.#config, false, [], this.#acceptable)
-			.parse(this.#stage, this.#include);
+		const token = new Token(undefined, this.#config, false, [], this.#acceptable);
 		token.type = this.type;
+		token.append(...cloned);
 		token.protectChildren(...this.#protectedChildren);
 		Parser.running = false;
 		return token;
@@ -337,7 +345,7 @@ class Token extends AstElement {
 		if (!Parser.debugging && externalUse('parseOnce')) {
 			this.debugOnly('parseOnce');
 		} else if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
-			return;
+			return this;
 		}
 		switch (n) {
 			case 0:

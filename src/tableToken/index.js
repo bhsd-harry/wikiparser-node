@@ -3,7 +3,7 @@
 const {externalUse} = require('../../util/debug'),
 	attributeParent = require('../../mixin/attributeParent'),
 	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('../token');
+	Token = require('..');
 
 /**
  * 表格及其子元素
@@ -24,13 +24,13 @@ class TableToken extends attributeParent(Token) {
 		});
 		this.type = type;
 		this.#syntax = syntax;
-		const AttributeToken = require('../attributeToken');
-		this.appendChild(new AttributeToken(attr, 'table-attr', type, accum));
+		const AttributeToken = require('../attribute');
+		this.appendChild(new AttributeToken(attr, 'table-attr', type, config, accum));
 		this.protectChildren(0);
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @returns {TokenAttribute<T>}
 	 */
@@ -44,13 +44,13 @@ class TableToken extends attributeParent(Token) {
 	}
 
 	/**
-	 * @template {TokenAttributeName} T
+	 * @template {string} T
 	 * @param {T} key
 	 * @param {TokenAttribute<T>} value
 	 */
 	setAttribute(key, value) {
 		if (!Parser.debugging && ['syntax', 'closing'].includes(key) && externalUse('setAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 ${key} 仅用于代码调试！`);
+			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
 		} else if (key === 'syntax') {
 			this.#syntax = String(value);
 		} else if (key === 'closing' && this.type === 'table') {

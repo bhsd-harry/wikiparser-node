@@ -3,7 +3,7 @@
 const {typeError} = require('../util/debug'),
 	fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
-	Token = require('./token');
+	Token = require('.');
 
 /**
  * 模板或魔术字参数
@@ -19,20 +19,39 @@ class ParameterToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
-		if (!['string', 'number'].includes(typeof key)) {
-			typeError('String', 'Number');
-		}
 		super(undefined, config, true, accum);
 		this.anon = typeof key === 'number';
-		const AtomToken = require('./atomToken'),
+		const AtomToken = require('./atom'),
 			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
 				'Stage-2': ':', '!HeadingToken': '',
-			});
-		const token = new Token(value, config, true, accum);
+			}),
+			token = new Token(value, config, true, accum);
 		token.type = 'parameter-value';
 		this.append(keyToken, token.setAttribute('stage', 2));
-		if (this.type === 'magic-word') {
-			return;
+	}
+
+	cloneNode() {
+		const [key, value] = this.cloneChildren();
+		Parser.running = true;
+		const config = this.getAttribute('config'),
+			token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
+		token.firstElementChild.safeReplaceWith(key);
+		token.lastElementChild.safeReplaceWith(value);
+		token.afterBuild();
+		Parser.running = false;
+		return token;
+	}
+
+	afterBuild() {
+		super.afterBuild();
+		if (!this.anon) {
+			const name = this.firstElementChild.text().trim(),
+				{parentNode} = this;
+			this.setAttribute('name', name);
+			if (parentNode && parentNode instanceof require('./transclude')) {
+				parentNode.getAttribute('keys').add(name);
+				parentNode.getArgs(name, false, false).add(this);
+			}
 		}
 		const that = this;
 		/**
@@ -40,18 +59,18 @@ class ParameterToken extends fixedToken(Token) {
 		 * @type {AstListener}
 		 */
 		const parameterListener = ({prevTarget}, data) => {
-			if (that.anon || !that.name) { // 匿名参数不管怎么变动还是匿名
-				return;
-			}
-			const {firstChild} = that;
-			if (prevTarget === firstChild) {
-				const newKey = firstChild.text().trim();
-				data.oldKey = that.name;
-				data.newKey = newKey;
-				that.setAttribute('name', newKey);
+			if (!that.anon) { // 匿名参数不管怎么变动还是匿名
+				const {firstElementChild} = that;
+				if (prevTarget === firstElementChild) {
+					const newKey = firstElementChild.text().trim();
+					data.oldKey = that.name;
+					data.newKey = newKey;
+					that.setAttribute('name', newKey);
+				}
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
+		return this;
 	}
 
 	toString() {
@@ -70,44 +89,23 @@ class ParameterToken extends fixedToken(Token) {
 		return this.lastElementChild.plain();
 	}
 
-	afterBuild() {
-		if (!this.anon) {
-			const name = this.firstElementChild.text().trim(),
-				{parentNode} = this;
-			this.setAttribute('name', name);
-			if (parentNode && parentNode instanceof require('./transcludeToken')) {
-				const keys = parentNode.getAttribute('keys'),
-					args = parentNode.getArgs(name, false);
-				keys.add(name);
-				args.add(this);
-			}
-		}
-		return super.afterBuild();
-	}
-
 	/** @param {ParameterToken} token */
 	safeReplaceWith(token) {
 		Parser.warn(`${this.constructor.name}.safeReplaceWith 方法退化到 replaceWith。`);
 		return this.replaceWith(token);
 	}
 
-	/** @this {ParameterToken & {parentNode: Token}} */
 	getValue() {
 		const value = this.lastElementChild.text();
-		return this.anon && this.parentNode?.isTemplate() ? value : value.trim();
+		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();
 	}
 
-	/**
-	 * @this {ParameterToken & {parentNode: Token, lastChild: Token}}
-	 * @param {string} value
-	 */
+	/** @param {string} value */
 	setValue(value) {
 		value = String(value);
-		const templateLike = this.parentNode?.isTemplate(),
-			root = new Token(
-				`{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
-				this.getAttribute('config'),
-			).parse(2),
+		const templateLike = this.parentElement?.matches('template, magic-word#invoke'),
+			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
+			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root,
 			/** @type {ParameterToken} */ lastElementChild = firstElementChild?.lastElementChild;
 		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
@@ -120,23 +118,22 @@ class ParameterToken extends fixedToken(Token) {
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();
-		this.lastChild.safeReplaceWith(newValue);
+		this.lastElementChild.safeReplaceWith(newValue);
 	}
 
-	/**
-	 * @this {ParameterToken & {firstChild: Token}}
-	 * @param {string} key
-	 */
+	/** @param {string} key */
 	rename(key, force = false) {
 		if (typeof key !== 'string') {
-			typeError('String');
+			typeError(this, 'rename', 'String');
 		}
 		const {parentNode} = this;
 		// 必须检测是否是TranscludeToken
-		if (!parentNode || !(parentNode instanceof require('./transcludeToken')) || !parentNode.isTemplate()) {
+		if (!parentNode || !parentNode.matches('template, magic-word#invoke')
+			|| !(parentNode instanceof require('./transclude'))
+		) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
-		const root = new Token(`{{:T|${key}=}}`, this.getAttribute('config')).parse(2),
+		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('template#T') || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
@@ -156,7 +153,7 @@ class ParameterToken extends fixedToken(Token) {
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();
-		this.firstChild.safeReplaceWith(keyToken);
+		this.firstElementChild.safeReplaceWith(keyToken);
 	}
 }
 
