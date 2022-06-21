@@ -18,13 +18,13 @@ class HeadingToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
-		super(undefined, null, true, accum);
+		super(undefined, config, true, accum);
 		this.setAttribute('name', String(level));
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
 		const AtomToken = require('./atom'),
-			trail = new AtomToken(input[1], 'heading-trail', accum, {'Stage-1': ':', '!ExtToken': ''});
+			trail = new AtomToken(input[1], 'heading-trail', config, accum, {'Stage-1': ':', '!ExtToken': ''});
 		this.append(token, trail);
 	}
 

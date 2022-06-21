@@ -15,14 +15,14 @@ class NowikiToken extends fixedToken(Token) {
 	 * @param {string} wikitext
 	 * @param {accum} accum
 	 */
-	constructor(wikitext, accum = []) {
-		super(wikitext, null, false, accum);
+	constructor(wikitext, config = Parser.getConfig(), accum = []) {
+		super(wikitext, config, false, accum);
 	}
 
 	/** @this {NowikiToken & {firstChild: string}} */
 	cloneNode() {
 		Parser.running = true;
-		const token = new NowikiToken(this.firstChild);
+		const token = new NowikiToken(this.firstChild, this.getAttribute('config'));
 		token.type = this.type;
 		Parser.running = false;
 		return token;

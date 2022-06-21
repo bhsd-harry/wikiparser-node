@@ -333,6 +333,36 @@ class Token extends AstElement {
 		return this.sections()[n];
 	}
 
+	/**
+	 * @param {string|undefined} tag
+	 * @returns {[Token, Token]}
+	 */
+	findEnclosingHtml(tag) {
+		if (tag !== undefined && typeof tag !== 'string') {
+			typeError(this, 'findEnclosingHtml', 'String');
+		}
+		tag = tag?.toLowerCase();
+		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
+			throw new RangeError(`非法的标签或空标签：${tag}`);
+		}
+		let {previousElementSibling, nextElementSibling} = this;
+		while (previousElementSibling
+			&& !previousElementSibling.matches(`html${tag && '#'}${tag ?? ''}[selfClosing=false][closing=false]`)
+		) {
+			({previousElementSibling} = previousElementSibling);
+		}
+		if (!previousElementSibling) {
+			return this.parentElement?.findEnclosingHtml(tag);
+		}
+		tag = previousElementSibling.name;
+		while (nextElementSibling && !nextElementSibling.matches(`html#${tag}[selfClosing=false][closing=true]`)) {
+			({nextElementSibling} = nextElementSibling);
+		}
+		return nextElementSibling
+			? [previousElementSibling, nextElementSibling]
+			: this.parentElement?.findEnclosingHtml(tag);
+	}
+
 	getCategories() {
 		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
 	}
@@ -480,7 +510,7 @@ class Token extends AstElement {
 	#parseTable() {
 		const parseTable = require('../parser/table'),
 			TableToken = require('./tableToken');
-		this.setText(parseTable(this.firstChild, this.#config, this.#accum));
+		this.setText(parseTable(this, this.#config, this.#accum));
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
@@ -510,7 +540,7 @@ class Token extends AstElement {
 	/** @param {string} text */
 	#parseQuotes(text) {
 		const parseQuotes = require('../parser/quotes');
-		return parseQuotes(text, this.#accum);
+		return parseQuotes(text, this.#config, this.#accum);
 	}
 
 	/** @this {Token & {firstChild: string}} */

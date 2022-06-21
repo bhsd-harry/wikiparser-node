@@ -20,7 +20,7 @@ class TranscludeToken extends Token {
 	setModifier(modifier, force = false) {
 		if (!modifier || force && Parser.running || new RegExp(`^\\s*(?:${
 			this.getAttribute('config').parserFunction.slice(2).flat().join('|')
-		})\\s*$`, 'i').test(removeComment(modifier))) {
+		})\\s*$`, 'i').test(modifier)) {
 			this.setAttribute('modifier', modifier);
 			return Boolean(modifier);
 		}
@@ -43,12 +43,14 @@ class TranscludeToken extends Token {
 				title = arg.join(':');
 			}
 		}
-		if (title.includes(':') || parts.length === 0 && !raw.includes(removeComment(this.modifier).toLowerCase())) {
+		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord);
 			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
-				const token = new AtomToken(magicWord, 'magic-word-name', accum, {'Stage-1': ':', '!ExtToken': ''});
+				const token = new AtomToken(magicWord, 'magic-word-name', config, accum, {
+					'Stage-1': ':', '!ExtToken': '',
+				});
 				this.appendChild(token);
 				if (arg.length) {
 					parts.unshift([arg.join(':')]);
@@ -60,9 +62,9 @@ class TranscludeToken extends Token {
 						if (!part) {
 							break;
 						}
-						const invoke = new AtomToken(part.join('='), `invoke-${i ? 'function' : 'module'}`, accum, {
-							'Stage-1': ':', '!ExtToken': '',
-						});
+						const invoke = new AtomToken(part.join('='), `invoke-${
+							i ? 'function' : 'module'
+						}`, config, accum, {'Stage-1': ':', '!ExtToken': ''});
 						this.appendChild(invoke);
 					}
 					this.protectChildren('1:3');
@@ -75,7 +77,7 @@ class TranscludeToken extends Token {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
-			const token = new AtomToken(title, 'template-name', accum, {'Stage-2': ':', '!HeadingToken': ''});
+			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.appendChild(token);
 		}
 		const templateLike = this.matches('template, magic-word#invoke');

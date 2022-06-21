@@ -31,7 +31,7 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 		if (trail.length >= p1.length) {
 			return m;
 		}
-		new MagicLinkToken(url, accum);
+		new MagicLinkToken(url, config, accum);
 		return `\x00${accum.length - 1}w\x7f${trail}`;
 	});
 };

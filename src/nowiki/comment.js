@@ -16,15 +16,15 @@ class CommentToken extends hidden(NowikiToken) {
 	 * @param {string} wikitext
 	 * @param {accum} accum
 	 */
-	constructor(wikitext, closed = true, accum = []) {
-		super(wikitext, accum);
+	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
+		super(wikitext, config, accum);
 		this.closed = closed;
 	}
 
 	/** @this {CommentToken & {firstChild: string}} */
 	cloneNode() {
 		Parser.running = true;
-		const token = new CommentToken(this.firstChild, this.closed);
+		const token = new CommentToken(this.firstChild, this.closed, this.getAttribute('config'));
 		Parser.running = false;
 		return token;
 	}

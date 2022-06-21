@@ -14,14 +14,14 @@ class HrToken extends NowikiToken {
 	 * @param {number} n
 	 * @param {accum} accum
 	 */
-	constructor(n, accum = []) {
-		super('-'.repeat(n), accum);
+	constructor(n, config = Parser.getConfig(), accum = []) {
+		super('-'.repeat(n), config, accum);
 	}
 
 	/** @this {HrToken & {firstChild: string}} */
 	cloneNode() {
 		Parser.running = true;
-		const token = new HrToken(this.firstChild.length);
+		const token = new HrToken(this.firstChild.length, this.getAttribute('config'));
 		Parser.running = false;
 		return token;
 	}

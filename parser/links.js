@@ -68,7 +68,7 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 				continue;
 			}
 		}
-		text = text && parseQuotes(text);
+		text = text && parseQuotes(text, config);
 		s += `\x00${accum.length}l\x7f${after}`;
 		if (!force) {
 			if (title.startsWith('File:')) {

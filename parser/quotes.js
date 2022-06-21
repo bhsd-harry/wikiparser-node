@@ -6,7 +6,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {string} text
  * @param {accum} accum
  */
-const parseQuotes = (text, accum = []) => {
+const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	const arr = text.split(/('{2,})/),
 		{length} = arr;
 	if (length === 1) {
@@ -53,7 +53,7 @@ const parseQuotes = (text, accum = []) => {
 	}
 	const QuoteToken = require('../src/nowiki/quote');
 	for (let i = 1; i < length; i += 2) {
-		new QuoteToken(arr[i].length, accum);
+		new QuoteToken(arr[i].length, config, accum);
 		arr[i] = `\x00${accum.length - 1}q\x7f`;
 	}
 	return arr.join('');

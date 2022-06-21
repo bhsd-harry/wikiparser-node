@@ -15,14 +15,14 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	 * @param {string} word
 	 * @param {accum} accum
 	 */
-	constructor(word, accum = []) {
-		super(word, accum);
+	constructor(word, config = Parser.getConfig(), accum = []) {
+		super(word, config, accum);
 		this.setAttribute('name', word.toLowerCase());
 	}
 
 	cloneNode() {
 		Parser.running = true;
-		const token = new DoubleUnderscoreToken(this.firstChild);
+		const token = new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config'));
 		Parser.running = false;
 		return token;
 	}

@@ -3,10 +3,10 @@
 const /** @type {Parser} */ Parser = require('..');
 
 /**
- * @param {string} firstChild
+ * @param {{firstChild: string, type: string}}
  * @param {accum} accum
  */
-const parseTable = (firstChild, config = Parser.getConfig(), accum = []) => {
+const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = []) => {
 	const TableToken = require('../src/tableToken'),
 		TdToken = require('../src/tableToken/tdToken'),
 		/** @type {TableToken[]} */ stack = [];
@@ -23,7 +23,11 @@ const parseTable = (firstChild, config = Parser.getConfig(), accum = []) => {
 			top.appendChild(str.replace(/^\n/, ''));
 		}
 	};
-	for (const outLine of firstChild.split('\n')) {
+	const lines = firstChild.split('\n');
+	if (type !== 'root') {
+		lines.shift();
+	}
+	for (const outLine of lines) {
 		let top = stack.pop();
 		const [spaces] = outLine.match(/^(?:\s|\x00\d+c\x7f)*/);
 		push(`\n${spaces}`, top);

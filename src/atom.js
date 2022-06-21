@@ -13,15 +13,17 @@ class AtomToken extends Token {
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable
 	 */
-	constructor(wikitext, type = 'plain', accum = [], acceptable = null) {
-		super(wikitext, null, true, accum, acceptable);
+	constructor(wikitext, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
+		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
 	}
 
 	cloneNode() {
 		const cloned = this.cloneChildren();
 		Parser.running = true;
-		const token = new AtomToken(undefined, this.type, [], this.getAttribute('acceptable'));
+		const config = this.getAttribute('config'),
+			acceptable = this.getAttribute('acceptable'),
+			token = new AtomToken(undefined, this.type, config, [], acceptable);
 		token.append(...cloned);
 		Parser.running = false;
 		return token;

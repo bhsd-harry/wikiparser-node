@@ -1,7 +1,7 @@
 'use strict';
 
 const {typeError, externalUse} = require('../util/debug'),
-	Token = require('../src/token'),
+	Token = require('../src'),
 	assert = require('assert/strict');
 
 const /** @type {WeakMap<Token, Record<string, any>>} */ dataStore = new WeakMap();
@@ -91,7 +91,7 @@ class TokenCollection extends Array {
 	 */
 	get(num) {
 		if (typeof num === 'number') {
-			return num < 0 ? this[num + this.length] : this[num];
+			return this.at(num);
 		}
 		return this.toArray();
 	}
@@ -804,22 +804,6 @@ class TokenCollection extends Array {
 		return this._wrap('replaceWith', wrapper);
 	}
 
-	unwrap() {
-		const parents = this.parent();
-		for (const token of parents) {
-			const {parentNode, childNodes} = token;
-			if (parentNode && childNodes.every(child => parentNode.verifyChild(child))) {
-				const i = parentNode.childNodes.indexOf(token);
-				parentNode.removeAt(i);
-				token.destroy();
-				for (const [j, child] of childNodes.entries()) {
-					parentNode.insertAt(child, i + j);
-				}
-			}
-		}
-		return this;
-	}
-
 	offset() {
 		const firstToken = this._find();
 		if (!firstToken) {
@@ -830,7 +814,8 @@ class TokenCollection extends Array {
 	}
 
 	position() {
-		return this._find()?.getPosition();
+		const style = this._find()?.style;
+		return style && {top: style.top, left: style.left};
 	}
 
 	height() {
@@ -852,7 +837,7 @@ const $ = tokens => {
 		get(obj, prop) {
 			if (prop === Symbol.iterator || typeof obj[prop] !== 'function'
 				|| !prop.startsWith('_') && Object.getOwnPropertyDescriptor(obj.constructor.prototype, prop)
-				|| !externalUse(prop, false, true)
+				|| !externalUse(prop, true)
 			) {
 				return obj[prop];
 			}

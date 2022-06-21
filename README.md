@@ -24,7 +24,8 @@
         7. [setText](#token.settext)
         8. [sections](#token.sections)
         9. [section](#token.section)
-        10. [getCategories](#token.getcategories)
+        10. [findEnclosingHtml](#token.findenclosinghtml)
+        11. [getCategories](#token.getcategories)
     2. [实例属性](#token.instance.properties)
         1. [type](#token.type)
 4. [CommentToken](#commenttoken)
@@ -180,6 +181,7 @@ assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj');
 **querySelector**(selector: string): this\|undefined  
 **querySelectorAll**(selector: string): this[]  
 **getBoundingClientRect**(): {height: number, width: number, top: number, left: number}  
+**splitText**(i: number, offset: number): string
 </details>
 
 ## 实例属性<a id="astelement.instance.properties"></a>
@@ -285,6 +287,15 @@ assert.deepStrictEqual(sections, [childNodes.slice(0, 1), childNodes.slice(1), c
 var root = Parser.parse('a\n==b==\nc\n===d===\n'),
     section = root.section(0); // 序言对应的编号为 0
 assert.deepStrictEqual(section, [root.firstChild]);
+```
+
+**findEnclosingHtml**(tag?: string): [Token, Token]<a id="token.findenclosinghtml"></a>
+- 搜索包裹当前Token的HTML标签对，不指定`tag`参数时会搜索任意HTML标签。
+
+```js
+var root = Parser.parse('<p>{{a}}</p>'),
+    template = root.querySelector('template');
+assert.deepStrictEqual(template.findEnclosingHtml('p'), [root.firstChild, root.lastChild]);
 ```
 
 **getCategories**(): [string, string][]<a id="token.getcategories"></a>

@@ -19,7 +19,7 @@ class ArgToken extends Token {
 		for (const [i, part] of parts.entries()) {
 			if (i === 0 || i > 1) {
 				const AtomToken = require('./atom'),
-					token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', accum, {
+					token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', config, accum, {
 						'Stage-2': ':', '!HeadingToken': '',
 					});
 				super.insertAt(token);

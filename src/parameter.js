@@ -22,7 +22,7 @@ class ParameterToken extends fixedToken(Token) {
 		super(undefined, config, true, accum);
 		this.anon = typeof key === 'number';
 		const AtomToken = require('./atom'),
-			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', accum, {
+			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', config, accum, {
 				'Stage-2': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, true, accum);

@@ -14,8 +14,8 @@ class QuoteToken extends NowikiToken {
 	 * @param {number} n
 	 * @param {accum} accum
 	 */
-	constructor(n, accum = []) {
-		super("'".repeat(n), accum);
+	constructor(n, config = Parser.getConfig(), accum = []) {
+		super("'".repeat(n), config, accum);
 		this.setAttribute('name', String(n));
 	}
 

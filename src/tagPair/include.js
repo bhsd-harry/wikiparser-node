@@ -17,8 +17,8 @@ class IncludeToken extends hidden(TagPairToken) {
 	 * @param {string|undefined} closing
 	 * @param {accum} accum
 	 */
-	constructor(name, attr = '', inner = undefined, closing = undefined, accum = []) {
-		super(name, attr, inner ?? '', inner !== undefined ? closing ?? '' : closing, null, accum, {String: [0, 1]});
+	constructor(name, attr = '', inner = undefined, closing = undefined, config = Parser.getConfig(), accum = []) {
+		super(name, attr, inner ?? '', inner !== undefined ? closing ?? '' : closing, config, accum, {String: [0, 1]});
 	}
 
 	/** @this {IncludeToken & {firstChild: string, lastChild: string}} */
@@ -27,7 +27,7 @@ class IncludeToken extends hidden(TagPairToken) {
 		const tags = this.getAttribute('tags'),
 			inner = this.selfClosing ? undefined : this.lastChild,
 			closing = this.selfClosing || !this.closed ? undefined : tags[1];
-		const token = new IncludeToken(tags[0], this.firstChild, inner, closing);
+		const token = new IncludeToken(tags[0], this.firstChild, inner, closing, this.getAttribute('config'));
 		Parser.running = false;
 		return token;
 	}

@@ -58,7 +58,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			default: {
 				const NowikiToken = require('../nowiki');
 				acceptable = {AttributeToken: 0, NowikiToken: 1};
-				innerToken = new NowikiToken(inner);
+				innerToken = new NowikiToken(inner, config);
 			}
 		}
 		innerToken.type = 'ext-inner';

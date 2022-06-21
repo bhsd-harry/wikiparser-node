@@ -175,7 +175,8 @@ class AttributeToken extends Token {
 		let parsedKey = key;
 		if (this.type !== 'ext-attr' && !init) {
 			Parser.running = true;
-			const token = new Token(key).setAttribute('stage', 1).parseOnce(1, this.getAttribute(1, 'include'));
+			const token = new Token(key, this.getAttribute('config')).setAttribute('stage', 1)
+				.parseOnce(1, this.getAttribute(1, 'include'));
 			Parser.running = false;
 			parsedKey = token.firstChild;
 		}

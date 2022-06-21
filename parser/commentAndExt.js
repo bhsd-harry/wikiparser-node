@@ -19,7 +19,7 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 				return '';
 			}
 			const NoincludeToken = require('../src/nowiki/noinclude');
-			new NoincludeToken(substr, accum);
+			new NoincludeToken(substr, config, accum);
 			return `\x00${accum.length - 1}c\x7f`;
 		});
 	}
@@ -44,13 +44,13 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 			} else if (substr.startsWith('<!--')) {
 				const CommentToken = require('../src/nowiki/comment'),
 					closed = substr.endsWith('-->');
-				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, accum);
+				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
 			} else if (include) {
 				const IncludeToken = require('../src/tagPair/include');
-				new IncludeToken(include, includeAttr, includeInner, includeClosing, accum);
+				new IncludeToken(include, includeAttr, includeInner, includeClosing, config, accum);
 			} else {
 				const NoincludeToken = require('../src/nowiki/noinclude');
-				new NoincludeToken(substr, accum);
+				new NoincludeToken(substr, config, accum);
 			}
 			return str;
 		},
