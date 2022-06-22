@@ -22,11 +22,11 @@ class ArgToken extends Token {
 					token = new AtomToken(part, `arg-${i === 0 ? 'name' : 'redundant'}`, config, accum, {
 						'Stage-2': ':', '!HeadingToken': '',
 					});
-				super.insertAt(token);
+				this.appendChild(token);
 			} else {
 				const token = new Token(part, config, true, accum);
 				token.type = 'arg-default';
-				super.insertAt(token.setAttribute('stage', 2));
+				this.appendChild(token.setAttribute('stage', 2));
 			}
 		}
 		this.protectChildren(0);
@@ -96,11 +96,13 @@ class ArgToken extends Token {
 
 	/** @param {Token} token */
 	insertAt(token, i = this.childNodes.length) {
-		if (i > 1) {
+		if (i > 1 && !Parser.running) {
 			throw new RangeError(`${this.constructor.name} 不可插入 arg-redundant 子节点！`);
 		}
 		super.insertAt(token, i);
-		token.type = 'arg-default';
+		if (i === 1) {
+			token.type = 'arg-default';
+		}
 		return token;
 	}
 

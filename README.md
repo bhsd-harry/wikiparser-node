@@ -150,6 +150,7 @@ assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj');
 <details>
     <summary>展开</summary>
 
+**isEqualNode**(node: this): boolean  
 **hasAttribute**(key: PropertyKey): boolean  
 **getAttribute**(key: PropertyKey): string\|undefined  
 **getAttributeNames**(): string[]  
@@ -200,12 +201,14 @@ assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj');
 **firstElementChild**: this\|undefined  
 **lastChild** string\|this\|undefined  
 **lastElementChild**: this\|undefined   
+**isConnected**: boolean  
 **parentNode**: this\|undefined  
 **parentElement**: this\|undefined  
 **nextSibling**: string\|this\|undefined  
 **nextElementSibling**: this\|undefined  
 **previousSibling**: string\|this\|undefined  
 **previousElementSibling**: this\|undefined  
+**hidden**: boolean  
 **offsetHeight**: number  
 **offsetWidth**: number  
 **offsetTop**: number  
