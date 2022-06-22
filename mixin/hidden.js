@@ -8,6 +8,10 @@ const /** @type {Parser} */ Parser = require('..');
  * @returns {T}
  */
 const hidden = constructor => class extends constructor {
+	get hidden() {
+		return true;
+	}
+
 	text() {
 		return '';
 	}

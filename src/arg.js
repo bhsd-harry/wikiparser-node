@@ -5,7 +5,7 @@ const /** @type {Parser} */ Parser = require('..'),
 
 /**
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, Token, ...AtomToken]}`
+ * @classdesc `{childNodes: [AtomToken, Token, ...HiddenToken]}`
  */
 class ArgToken extends Token {
 	type = 'arg';
@@ -15,11 +15,11 @@ class ArgToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {Token: 1, AtomToken: [0, '2:']});
+		super(undefined, config, true, accum, {AtomToken: 0, Token: 1, HiddenToken: '2:'});
 		for (const [i, part] of parts.entries()) {
 			if (i === 0 || i > 1) {
-				const AtomToken = require('./atom'),
-					token = new AtomToken(part, i === 0 ? 'arg-name' : 'arg-redundant', config, accum, {
+				const AtomToken = i === 0 ? require('./atom') : require('./atom/hidden'),
+					token = new AtomToken(part, `arg-${i === 0 ? 'name' : 'redundant'}`, config, accum, {
 						'Stage-2': ':', '!HeadingToken': '',
 					});
 				super.insertAt(token);
@@ -96,11 +96,12 @@ class ArgToken extends Token {
 
 	/** @param {Token} token */
 	insertAt(token, i = this.childNodes.length) {
-		if (i !== 1 || this.childElementCount !== 1) {
-			throw new RangeError(`${this.constructor.name} 不可插入 arg-name 或 arg-redundant 子节点！`);
+		if (i > 1) {
+			throw new RangeError(`${this.constructor.name} 不可插入 arg-redundant 子节点！`);
 		}
+		super.insertAt(token, i);
 		token.type = 'arg-default';
-		return super.insertAt(token, i);
+		return token;
 	}
 
 	/** @param {string} name */

@@ -1,7 +1,7 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
-	Token = require('.');
+const /** @type {Parser} */ Parser = require('../..'),
+	Token = require('..');
 
 /**
  * 不会被继续解析的plain Token
@@ -21,9 +21,10 @@ class AtomToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildren();
 		Parser.running = true;
-		const config = this.getAttribute('config'),
+		const /** @type {typeof AtomToken} */ Constructor = this.constructor,
+			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
-			token = new AtomToken(undefined, this.type, config, [], acceptable);
+			token = new Constructor(undefined, this.type, config, [], acceptable);
 		token.append(...cloned);
 		Parser.running = false;
 		return token;

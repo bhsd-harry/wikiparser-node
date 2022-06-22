@@ -7,7 +7,7 @@ const {typeError} = require('../util/debug'),
 
 /**
  * 章节标题
- * @classdesc `{childNodes: [Token, AtomToken]}`
+ * @classdesc `{childNodes: [Token, HiddenToken]}`
  */
 class HeadingToken extends fixedToken(Token) {
 	type = 'heading';
@@ -23,8 +23,8 @@ class HeadingToken extends fixedToken(Token) {
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
-		const AtomToken = require('./atom'),
-			trail = new AtomToken(input[1], 'heading-trail', config, accum, {'Stage-1': ':', '!ExtToken': ''});
+		const HiddenToken = require('./atom/hidden'),
+			trail = new HiddenToken(input[1], 'heading-trail', config, accum, {'Stage-1': ':', '!ExtToken': ''});
 		this.append(token, trail);
 	}
 
