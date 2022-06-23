@@ -120,11 +120,13 @@ class AttributeToken extends Token {
 
 	afterBuild() {
 		super.afterBuild();
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], ({type, target}) => {
-			if (type === 'text' || target !== this) {
-				this.#parseAttr();
-			}
-		});
+		const that = this,
+			/** @type {AstListener} */ attributeListener = ({type, target}) => {
+				if (type === 'text' || target !== that) {
+					that.#parseAttr();
+				}
+			};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], attributeListener);
 		return this;
 	}
 

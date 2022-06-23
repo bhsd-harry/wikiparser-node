@@ -23,8 +23,10 @@ class HeadingToken extends fixedToken(Token) {
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
-		const HiddenToken = require('./atom/hidden'),
-			trail = new HiddenToken(input[1], 'heading-trail', config, accum, {'Stage-1': ':', '!ExtToken': ''});
+		const SyntaxToken = require('./syntax'),
+			trail = new SyntaxToken(input[1], /^[^\S\n]*$/, 'heading-trail', config, accum, {
+				'Stage-1': ':', '!ExtToken': '',
+			});
 		this.append(token, trail);
 	}
 
@@ -39,8 +41,19 @@ class HeadingToken extends fixedToken(Token) {
 	}
 
 	toString() {
-		const equals = '='.repeat(Number(this.name));
-		return `${equals}${super.toString(equals)}`;
+		const equals = '='.repeat(Number(this.name)),
+			{previousVisibleSibling, nextVisibleSibling} = this;
+		return `${
+			typeof previousVisibleSibling === 'string' && !previousVisibleSibling.endsWith('\n')
+			|| previousVisibleSibling instanceof Token
+				? '\n'
+				: ''
+		}${equals}${super.toString(equals)}${
+			typeof nextVisibleSibling === 'string' && !nextVisibleSibling.startsWith('\n')
+			|| nextVisibleSibling instanceof Token
+				? '\n'
+				: ''
+		}`;
 	}
 
 	getPadding() {
@@ -56,6 +69,7 @@ class HeadingToken extends fixedToken(Token) {
 		return `${equals}${this.firstElementChild.text()}${equals}`;
 	}
 
+	/** @returns {[number, string][]} */
 	plain() {
 		return this.firstElementChild.plain();
 	}

@@ -85,6 +85,7 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? this.lastElementChild.text() : super.text('=');
 	}
 
+	/** @returns {[number, string][]} */
 	plain() {
 		return this.lastElementChild.plain();
 	}

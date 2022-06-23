@@ -72,6 +72,7 @@ class ArgToken extends Token {
 		return `{{{${this.children.slice(0, 2).map(child => child.text()).join('|')}}}}`;
 	}
 
+	/** @returns {[number, string][]} */
 	plain() {
 		return this.childElementCount > 1 ? this.children[1].plain() : [];
 	}
