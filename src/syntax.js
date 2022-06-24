@@ -38,7 +38,7 @@ class SyntaxToken extends Token {
 	afterBuild() {
 		const that = this,
 			/** @type {AstListener} */ syntaxListener = (e, data) => {
-				if (!that.#pattern.test(that.text())) {
+				if (!Parser.running && !that.#pattern.test(that.text())) {
 					undo(e, data);
 				}
 			};
@@ -56,6 +56,11 @@ class SyntaxToken extends Token {
 			return this.#pattern;
 		}
 		return super.getAttribute(key);
+	}
+
+	/** @returns {[number, string][]} */
+	plain() {
+		return [];
 	}
 }
 

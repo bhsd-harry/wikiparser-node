@@ -8,57 +8,57 @@ const /** @type {Parser} */ Parser = require('..'),
  * @param {T} constructor
  * @returns {T}
  */
-const attributeParent = constructor => class extends constructor {
+const attributeParent = (constructor, i = 0) => class extends constructor {
 	/**
-	 * @this {{firstChild: AttributeToken}}
+	 * @this {{children: AttributeToken[]}}
 	 * @param {string} key
 	 */
 	hasAttr(key) {
-		return this.firstChild.hasAttr(key);
+		return this.children[i].hasAttr(key);
 	}
 
 	/**
-	 * @this {{firstChild: AttributeToken}}
+	 * @this {{children: AttributeToken[]}}
 	 * @param {string|undefined} key
 	 */
 	getAttr(key) {
-		return this.firstChild.getAttr(key);
+		return this.children[i].getAttr(key);
 	}
 
-	/** @this {{firstChild: AttributeToken}} */
+	/** @this {{children: AttributeToken[]}} */
 	getAttrNames() {
-		return this.firstChild.getAttrNames();
+		return this.children[i].getAttrNames();
 	}
 
-	/** @this {{firstChild: AttributeToken}} */
+	/** @this {{children: AttributeToken[]}} */
 	hasAttrs() {
-		return this.firstChild.hasAttrs();
+		return this.children[i].hasAttrs();
 	}
 
 	/**
-	 * @this {{firstChild: AttributeToken}}
+	 * @this {{children: AttributeToken[]}}
 	 * @param {string} key
 	 * @param {string|boolean} value
 	 */
 	setAttr(key, value) {
-		this.firstChild.setAttr(key, value);
+		this.children[i].setAttr(key, value);
 	}
 
 	/**
-	 * @this {{firstChild: AttributeToken}}
+	 * @this {{children: AttributeToken[]}}
 	 * @param {string} key
 	 */
 	removeAttr(key) {
-		this.firstChild.removeAttr(key);
+		this.children[i].removeAttr(key);
 	}
 
 	/**
-	 * @this {{firstChild: AttributeToken}}
+	 * @this {{children: AttributeToken[]}}
 	 * @param {string} key
 	 * @param {boolean|undefined} force
 	 */
 	toggleAttr(key, force) {
-		this.firstChild.toggleAttr(key, force);
+		this.children[i].toggleAttr(key, force);
 	}
 };
 

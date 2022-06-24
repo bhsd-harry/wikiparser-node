@@ -4,22 +4,14 @@ const fixedToken = require('../../mixin/fixedToken'),
 	{externalUse} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..'),
-	TableToken = require('.');
-
-const getSubType = /** @param {string} syntax */ syntax => {
-	if (syntax === '!') {
-		return 'th';
-	} else if (syntax.endsWith('+')) {
-		return 'caption';
-	}
-	return 'td';
-};
+	TrToken = require('./tr');
 
 /**
  * `<td>`、`<th>`和`<caption>`
- * @classdesc `{childNodes: [AttributeToken, Token]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributeToken, Token]}`
  */
-class TdToken extends fixedToken(TableToken) {
+class TdToken extends fixedToken(TrToken) {
+	type = 'td';
 	#innerSyntax = '';
 
 	/**
@@ -27,13 +19,19 @@ class TdToken extends fixedToken(TableToken) {
 	 * @returns {'td'|'th'|'caption'}
 	 */
 	get subtype() {
-		return this.isLineStart() ? getSubType(this.getAttribute('syntax')) : this.previousSibling.subtype;
+		const syntax = this.firstElementChild.text();
+		if (syntax.startsWith('\n')) {
+			if (syntax.endsWith('!')) {
+				return 'th';
+			} else if (syntax.endsWith('+')) {
+				return 'caption';
+			}
+			return 'td';
+		}
+		return this.previousSibling.subtype;
 	}
 
-	isLineStart() {
-		const {previousElementSibling} = this;
-		return previousElementSibling?.type !== 'td' || previousElementSibling.offsetHeight > 1;
-	}
+	static openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|{{\s*!\s*}}\+?)|(?:\||{{\s*!\s*}}){2}|!!|{{\s*!!\s*}})$/;
 
 	/**
 	 * @param {string} syntax
@@ -47,14 +45,20 @@ class TdToken extends fixedToken(TableToken) {
 			innerSyntax = null;
 			attr = '';
 		}
-		super('td', syntax, attr, config, accum);
+		super(syntax, attr, config, accum, TdToken.openingPattern);
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;
 		}
 		const innerToken = new Token(inner.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
 		innerToken.setAttribute('stage', 4);
-		this.setAttribute('acceptable', {AttributeToken: 0, Token: 1}).appendChild(innerToken);
+		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2}).appendChild(innerToken);
+	}
+
+	cloneNode() {
+		const token = super.cloneNode();
+		token.setAttribute('innerSyntax', this.#innerSyntax);
+		return token;
 	}
 
 	/**
@@ -75,12 +79,12 @@ class TdToken extends fixedToken(TableToken) {
 	 * @param {TokenAttribute<T>} value
 	 */
 	setAttribute(key, value) {
-		if (!Parser.debugging && key === 'innerSyntax' && externalUse('setAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
-		} else if (key === 'innerSyntax') {
-			this.#innerSyntax = String(value);
-		} else {
+		if (key !== 'innerSyntax') {
 			super.setAttribute(key, value);
+		} else if (!Parser.debugging && externalUse('setAttribute')) {
+			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
+		} else {
+			this.#innerSyntax = String(value);
 		}
 		return this;
 	}
@@ -93,32 +97,39 @@ class TdToken extends fixedToken(TableToken) {
 	}
 
 	toString() {
-		if (this.firstElementChild.toString()) {
+		const [syntax, attr, inner] = this.children,
+			attrStr = attr.toString();
+		if (attrStr) {
 			this.#innerSyntax ||= '|';
 		}
-		return super.toString(this.#innerSyntax);
+		return `${syntax.toString()}${attrStr}${this.#innerSyntax}${inner.toString()}`;
 	}
 
-	getGaps() {
-		if (this.firstElementChild.toString()) {
+	getGaps(i = 0) {
+		if (i !== 1) {
+			return 0;
+		} else if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
 		}
 		return this.#innerSyntax.length;
 	}
 
 	text() {
-		if (this.firstElementChild.toString()) {
+		const [syntax, attr, inner] = this.children;
+		if (attr.toString()) {
 			this.#innerSyntax ||= '|';
 		}
-		return super.text(this.#innerSyntax);
+		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 
 	escape() {
 		super.escape();
-		if (this.firstElementChild.toString()) {
-			this.#innerSyntax ||= '|';
+		if (this.children[1].toString()) {
+			this.#innerSyntax ||= '{{!}}';
 		}
-		this.#innerSyntax = this.#innerSyntax.replaceAll('|', '{{!}}');
+		if (this.#innerSyntax === '|') {
+			this.#innerSyntax = '{{!}}';
+		}
 	}
 }
 

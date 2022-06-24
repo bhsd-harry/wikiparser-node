@@ -509,7 +509,7 @@ class Token extends AstElement {
 	/** @this {Token & {firstChild: string}} */
 	#parseTable() {
 		const parseTable = require('../parser/table'),
-			TableToken = require('./tableToken');
+			TableToken = require('./table');
 		this.setText(parseTable(this, this.#config, this.#accum));
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {

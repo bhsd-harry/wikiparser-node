@@ -563,7 +563,7 @@ class TranscludeToken extends Token {
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			parsed = Parser.parse(stripped, include, 4, config),
-			TableToken = require('./tableToken');
+			TableToken = require('./table');
 		for (const table of parsed.children) {
 			if (table instanceof TableToken) {
 				table.escape();
