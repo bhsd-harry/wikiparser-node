@@ -28,6 +28,7 @@
         11. [getCategories](#token.getcategories)
     2. [实例属性](#token.instance.properties)
         1. [type](#token.type)
+    3. [原型属性](#token.prototype.properties)
 4. [CommentToken](#commenttoken)
     1. [实例属性](#commenttoken.instance.properties)
         1. [closed](#commenttoken.closed)
@@ -44,6 +45,7 @@
         5. [setAttr](#attributetoken.setattr)
         6. [removeAttr](#attributetoken.removeattr)
         7. [toggleAttr](#attributetoken.toggleattr)
+        8. [sanitize](#attributetoken.sanitize)
     2. [实例属性](#attributetoken.instance.properties)
         1. [name](#attributetoken.name)
 7. [HeadingToken](#headingtoken)
@@ -318,6 +320,14 @@ assert(root.type === 'root');
 ```
 </details>
 
+## 原型属性<a id="token.prototype.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**previousVisibleSibling**: string\|Token\|undefined  
+**nextVisibleSibling**: string\|Token\|undefined  
+</details>
+
 [返回目录](#目录)
    
 # CommentToken
@@ -443,6 +453,16 @@ attr.toggleAttr('uncached');
 assert(root.toString() === '<choose></choose>');
 attr.toggleAttr('uncached');
 assert(root.toString() === '<choose uncached></choose>');
+```
+
+**sanitize**(): void<a id="attributetoken.sanitize"></a>
+- 清理无效属性。
+
+```js
+var root = Parser.parse('<p ">'),
+    attr = root.querySelector('html-attr');
+attr.sanitize();
+assert(root.toString() === '<p>');
 ```
 </details>
    

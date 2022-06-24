@@ -1,7 +1,7 @@
 'use strict';
 
 const {typeError, externalUse} = require('../util/debug'),
-	{toCase} = require('../util/string'),
+	{toCase, removeComment} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -17,13 +17,12 @@ class AttributeToken extends Token {
 	/** 从`this.#attr`更新`childNodes` */
 	#updateFromAttr() {
 		let equal = '=';
-		if (this.type !== 'ext-attr') {
-			const parameter = this.closest('parameter');
-			if (parameter) {
-				if (parameter.anon && parameter.parentNode?.matches('template, magic-word#invoke')) {
-					equal = '{{=}}';
-				}
-			}
+		const ParameterToken = require('./parameter'),
+			parent = this.closest('ext, parameter');
+		if (parent instanceof ParameterToken && parent.anon
+			&& parent.parentNode?.matches('template, magic-word#invoke')
+		) {
+			equal = '{{=}}';
 		}
 		const str = [...this.#attr].map(([k, v]) => {
 			if (v === true) {
@@ -35,6 +34,14 @@ class AttributeToken extends Token {
 		return str && ` ${str}`;
 	}
 
+	sanitize() {
+		if (!Parser.running) {
+			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
+		}
+		const token = Parser.parse(this.#updateFromAttr(), false, stages[this.type], this.getAttribute('config'));
+		this.replaceChildren(...token.childNodes, true);
+	}
+
 	/** 从`childNodes`更新`this.#attr` */
 	#parseAttr() {
 		this.#attr.clear();
@@ -42,13 +49,12 @@ class AttributeToken extends Token {
 			token;
 		if (this.type !== 'ext-attr' && !Parser.running) {
 			Parser.running = true;
-			const include = this.getAttribute('include'),
-				config = this.getAttribute('config');
-			token = new Token(string, config).setAttribute('stage', 1).parseOnce(1, include);
+			token = new Token(string, this.getAttribute('config')).parseOnce(0, this.getAttribute('include'))
+				.parseOnce();
 			string = token.firstChild;
 			Parser.running = false;
 		}
-		string = string.replace(/\x00\d+~\x7f/g, '=');
+		string = removeComment(string).replace(/\x00\d+~\x7f/g, '=');
 		const build = /** @param {string|boolean} str */ str => {
 			return typeof str === 'boolean' || !(token instanceof Token)
 				? str
@@ -177,8 +183,8 @@ class AttributeToken extends Token {
 		let parsedKey = key;
 		if (this.type !== 'ext-attr' && !init) {
 			Parser.running = true;
-			const token = new Token(key, this.getAttribute('config')).setAttribute('stage', 1)
-				.parseOnce(1, this.getAttribute(1, 'include'));
+			const token = new Token(key, this.getAttribute('config')).parseOnce(0, this.getAttribute(1, 'include'))
+				.parseOnce();
 			Parser.running = false;
 			parsedKey = token.firstChild;
 		}
@@ -193,7 +199,7 @@ class AttributeToken extends Token {
 			this.#attr.set(key, value === true ? true : value.replace(/\s/g, ' ').trim());
 		}
 		if (!init) {
-			this.replaceChildren(this.#updateFromAttr(), true);
+			this.sanitize();
 		}
 	}
 
@@ -204,7 +210,7 @@ class AttributeToken extends Token {
 		}
 		key = key.toLowerCase().trim();
 		if (this.#attr.delete(key)) {
-			this.replaceChildren(this.#updateFromAttr(), true);
+			this.sanitize();
 		}
 	}
 
