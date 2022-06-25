@@ -3,6 +3,7 @@
 const /** @type {Parser} */ Parser = require('..');
 
 /**
+ * `tr`和`td`包含开头的换行
  * @param {{firstChild: string, type: string}}
  * @param {accum} accum
  */
@@ -10,31 +11,28 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 	const TableToken = require('../src/table'),
 		TrToken = require('../src/table/tr'),
 		TdToken = require('../src/table/td'),
-		/** @type {TrToken[]} */ stack = [];
-	let out = '';
-	const /** @type {(str: string, top: TableToken & {firstChild: string}) => void} */ push = (str, top) => {
+		/** @type {TrToken[]} */ stack = [],
+		lines = firstChild.split('\n');
+	let out = type === 'root' ? '' : `\n${lines.shift()}`;
+	const /** @type {(str: string, top: TrToken & {firstChild: string}) => void} */ push = (str, top) => {
 		if (!top) {
 			out += str;
-		} else if (top instanceof TdToken) {
-			const {lastElementChild} = top;
+			return;
+		}
+		const {lastElementChild, lastChild} = top;
+		if (top instanceof TdToken) {
 			lastElementChild.setText(lastElementChild.firstChild + str, 0);
-		} else if (typeof top.lastChild === 'string') {
-			top.setText(top.lastChild + str, 2);
+		} else if (typeof lastChild === 'string') {
+			top.setText(lastChild + str, 2);
 		} else {
 			top.appendChild(str);
 		}
 	};
-	const lines = firstChild.split('\n');
-	if (type !== 'root') {
-		lines.shift();
-	}
 	for (const outLine of lines) {
 		let top = stack.pop();
 		const [spaces] = outLine.match(/^(?:\s|\x00\d+c\x7f)*/);
 		const line = outLine.slice(spaces.length),
-			matchesStart = line.match(
-				/^((?:\x00\d+c\x7f|:)*(?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)$/,
-			);
+			matchesStart = line.match(/^(:*(?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)/);
 		if (matchesStart) {
 			const [, indent, tableSyntax, attr] = matchesStart;
 			push(`\n${spaces}${indent}\x00${accum.length}b\x7f`, top);
@@ -46,7 +44,7 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			continue;
 		}
 		const matches = line.match(
-			/^(?:(\|}|\x00\d+!\x7f}|\x00\d+}\x7f)|((?:\|-|\x00\d+!\x7f-|\x00\d+-\x7f)-*)|(!|(?:\||\x00\d+!\x7f)\+?))(.*)$/,
+			/^(?:(\|}|\x00\d+!\x7f}|\x00\d+}\x7f)|(\|-+|\x00\d+!\x7f-+|\x00\d+-\x7f-*)|(!|(?:\||\x00\d+!\x7f)\+?))(.*)/,
 		);
 		if (!matches) {
 			push(`\n${outLine}`, top);
@@ -55,7 +53,7 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		}
 		const [, closing, row, cell, attr] = matches;
 		if (closing) {
-			while (!(top instanceof TableToken)) {
+			while (top.type !== 'table') {
 				top = stack.pop();
 			}
 			top.close(`\n${spaces}${closing}`);
@@ -70,11 +68,9 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			const tr = new TrToken(`\n${spaces}${row}`, attr, config, accum);
 			stack.push(top, tr);
 			top.appendChild(tr);
-		} else if (cell) {
+		} else {
 			if (top.type === 'td') {
-				top = stack.at(-1);
-			} else {
-				stack.push(top);
+				top = stack.pop();
 			}
 			const regex = cell === '!'
 				? /!!|(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g
@@ -90,10 +86,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 				mt = regex.exec(attr);
 			}
 			const td = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);
+			stack.push(top, td);
 			top.appendChild(td);
-			stack.push(td);
-		} else {
-			push(`\n${outLine}`, top);
 		}
 	}
 	return out.slice(1);

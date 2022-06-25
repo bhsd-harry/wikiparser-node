@@ -14,21 +14,17 @@ class TdToken extends fixedToken(TrToken) {
 	type = 'td';
 	#innerSyntax = '';
 
-	/**
-	 * @this {TdToken & {previousSibling: TdToken}}
-	 * @returns {'td'|'th'|'caption'}
-	 */
+	/** @returns {'td'|'th'|'caption'} */
 	get subtype() {
 		const syntax = this.firstElementChild.text();
-		if (syntax.startsWith('\n')) {
-			if (syntax.endsWith('!')) {
-				return 'th';
-			} else if (syntax.endsWith('+')) {
-				return 'caption';
-			}
-			return 'td';
+		if (!syntax.startsWith('\n')) {
+			return this.previousElementSibling.subtype;
+		} else if (syntax.endsWith('!')) {
+			return 'th';
+		} else if (syntax.endsWith('+')) {
+			return 'caption';
 		}
-		return this.previousSibling.subtype;
+		return 'td';
 	}
 
 	static openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|{{\s*!\s*}}\+?)|(?:\||{{\s*!\s*}}){2}|!!|{{\s*!!\s*}})$/;
@@ -39,7 +35,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		let innerSyntax = inner.match(/\||\x00\d+!\x7f/),
+		let innerSyntax = inner?.match(/\||\x00\d+!\x7f/),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
 		if (/\[\[|-{/.test(attr)) {
 			innerSyntax = null;
@@ -49,10 +45,10 @@ class TdToken extends fixedToken(TrToken) {
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;
 		}
-		const innerToken = new Token(inner.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
+		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
-		innerToken.setAttribute('stage', 4);
-		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2}).appendChild(innerToken);
+		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
+			.appendChild(innerToken.setAttribute('stage', 4));
 	}
 
 	cloneNode() {
@@ -80,12 +76,11 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	setAttribute(key, value) {
 		if (key !== 'innerSyntax') {
-			super.setAttribute(key, value);
+			return super.setAttribute(key, value);
 		} else if (!Parser.debugging && externalUse('setAttribute')) {
 			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
-		} else {
-			this.#innerSyntax = String(value);
 		}
+		this.#innerSyntax = String(value);
 		return this;
 	}
 
@@ -96,29 +91,45 @@ class TdToken extends fixedToken(TrToken) {
 		return super.build();
 	}
 
-	toString() {
-		const [syntax, attr, inner] = this.children,
-			attrStr = attr.toString();
-		if (attrStr) {
+	#correct() {
+		if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
 		}
-		return `${syntax.toString()}${attrStr}${this.#innerSyntax}${inner.toString()}`;
+		if (!this.subtype) {
+			const syntax = this.firstElementChild;
+			switch (syntax.text()) {
+				case '!!':
+					syntax.replaceChildren('\n!');
+					break;
+				case '||':
+					syntax.replaceChildren('\n|');
+					break;
+				default:
+					syntax.replaceChildren('\n|');
+					TdToken.escape(syntax);
+			}
+		}
+	}
+
+	/** @returns {string} */
+	toString() {
+		this.#correct();
+		const [syntax, attr, inner] = this.children;
+		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}
 
 	getGaps(i = 0) {
 		if (i !== 1) {
 			return 0;
-		} else if (this.children[1].toString()) {
-			this.#innerSyntax ||= '|';
 		}
+		this.#correct();
 		return this.#innerSyntax.length;
 	}
 
+	/** @returns {string} */
 	text() {
+		this.#correct();
 		const [syntax, attr, inner] = this.children;
-		if (attr.toString()) {
-			this.#innerSyntax ||= '|';
-		}
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 

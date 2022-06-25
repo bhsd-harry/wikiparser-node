@@ -62,6 +62,15 @@ class SyntaxToken extends Token {
 	plain() {
 		return [];
 	}
+
+	/** @param {...string|Token} elements */
+	replaceChildren(...elements) {
+		if (this.#pattern.test(elements.map(ele => typeof ele === 'string' ? ele : ele.text()).join(''))) {
+			Parser.running = true;
+			super.replaceChildren(...elements);
+			Parser.running = false;
+		}
+	}
 }
 
 Parser.classes.SyntaxToken = __filename;

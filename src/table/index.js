@@ -12,6 +12,7 @@ class TableToken extends TrToken {
 	type = 'table';
 
 	static openingPattern = /^(?:{\||{{{\s*!\s*}}|{{\s*\(!\s*}})$/;
+	static closingPattern = /^\n[^\S\n]*(?:\|}|{{\s*!\s*}}}|{{\s*!\)\s*}})$/;
 
 	/**
 	 * @param {string} syntax
@@ -24,14 +25,12 @@ class TableToken extends TrToken {
 		});
 	}
 
-	static closingPattern = /^\n[^\S\n]*(?:\|}|{{\s*!\s*}}}|{{\s*!\)\s*}})$/;
-
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
 	 */
 	insertAt(token, i) {
-		const previous = this.childNodes[i - 1],
+		const previous = this.childNodes.at(i - 1),
 			{closingPattern} = TableToken;
 		if (token instanceof TrToken && token.type === 'td' && previous instanceof TrToken && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
@@ -52,15 +51,15 @@ class TableToken extends TrToken {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${syntax.replaceAll('\n', '\\n')}`);
 		} else if (lastElementChild instanceof SyntaxToken) {
 			lastElementChild.replaceChildren(...inner.childNodes);
-			return;
+		} else {
+			Parser.running = true;
+			const token = new SyntaxToken(undefined, TableToken.closingPattern, 'table-syntax', config, [], {
+				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
+			});
+			Parser.running = false;
+			token.replaceChildren(...inner.childNodes);
+			this.appendChild(token);
 		}
-		Parser.running = true;
-		const token = new SyntaxToken(undefined, TableToken.closingPattern, 'table-syntax', config, [], {
-			'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-		});
-		Parser.running = false;
-		token.replaceChildren(...inner.childNodes);
-		this.appendChild(token);
 	}
 }
 

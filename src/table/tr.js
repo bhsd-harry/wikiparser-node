@@ -32,16 +32,23 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	cloneNode() {
-		const cloned = this.cloneChildren();
+		const [syntax, attr, inner, ...cloned] = this.cloneChildren();
 		Parser.running = true;
 		const /** @type {typeof TrToken} */ Constructor = this.constructor,
 			token = new Constructor(undefined, undefined, this.getAttribute('config'));
-		token.replaceChildren(...cloned);
+		token.firstElementChild.safeReplaceWith(syntax);
+		token.children[1].safeReplaceWith(attr);
+		if (token.childElementCount > 2) { // TdToken
+			token.children[2].safeReplaceWith(inner);
+		} else if (inner !== undefined) {
+			token.appendChild(inner);
+		}
+		token.append(...cloned);
 		Parser.running = false;
 		return token;
 	}
 
-	toString() {
+	#correct() {
 		const [,, child] = this.childNodes;
 		if (typeof child === 'string' && !child.startsWith('\n')) {
 			this.setText(`\n${child}`, 2);
@@ -53,12 +60,16 @@ class TrToken extends attributeParent(Token, 1) {
 				child.setText(`\n${firstChild}`, 0);
 			}
 		}
+	}
+
+	toString() {
+		this.#correct();
 		return super.toString();
 	}
 
-	getGaps() {
-		this.toString();
-		return 0;
+	text() {
+		this.#correct();
+		return super.text();
 	}
 
 	/** @param {SyntaxToken} syntax */
@@ -72,9 +83,7 @@ class TrToken extends attributeParent(Token, 1) {
 				: child.toString(),
 			).join(''),
 			token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
-		Parser.running = true;
 		syntax.replaceChildren(...token.childNodes);
-		Parser.running = false;
 	}
 
 	escape() {
@@ -85,6 +94,36 @@ class TrToken extends attributeParent(Token, 1) {
 				child.escape();
 			}
 		}
+	}
+
+	/** @param {number} i */
+	removeAt(i) {
+		const child = super.removeAt(i);
+		if (!(child instanceof TrToken) || child.type !== 'td') {
+			return child;
+		}
+		const syntax = child.firstElementChild.text();
+		if (!syntax.startsWith('\n')) {
+			return child;
+		}
+		const /** @type {Token} */ next = this.childNodes.at(i),
+			{type, firstElementChild} = next;
+		if (type !== 'td' || firstElementChild.text().startsWith('\n')) {
+			return child;
+		}
+		for (const char of ['!', '|', '|+']) {
+			if (syntax.endsWith(char)) {
+				firstElementChild.replaceChildren(`\n${char}`);
+				return child;
+			}
+		}
+		if (syntax.endsWith('+')) {
+			firstElementChild.replaceChildren('\n|+');
+		} else {
+			firstElementChild.replaceChildren('\n|');
+		}
+		TrToken.escape(firstElementChild);
+		return child;
 	}
 }
 
