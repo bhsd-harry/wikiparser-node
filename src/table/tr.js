@@ -96,34 +96,42 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 	}
 
+	/** @param {string} syntax */
+	setSyntax(syntax, escape = false) {
+		const {firstElementChild} = this;
+		firstElementChild.replaceChildren(syntax);
+		if (escape) {
+			TrToken.escape(firstElementChild);
+		}
+	}
+
 	/** @param {number} i */
 	removeAt(i) {
-		const child = super.removeAt(i);
-		if (!(child instanceof TrToken) || child.type !== 'td') {
-			return child;
-		}
-		const syntax = child.firstElementChild.text();
-		if (!syntax.startsWith('\n')) {
-			return child;
-		}
-		const /** @type {Token} */ next = this.childNodes.at(i),
-			{type, firstElementChild} = next;
-		if (type !== 'td' || firstElementChild.text().startsWith('\n')) {
-			return child;
-		}
-		for (const char of ['!', '|', '|+']) {
-			if (syntax.endsWith(char)) {
-				firstElementChild.replaceChildren(`\n${char}`);
-				return child;
+		const TdToken = require('./td'),
+			child = this.childNodes.at(i);
+		if (child instanceof TdToken && child.isIndependent()) {
+			const {nextElementSibling} = child;
+			if (nextElementSibling.type === 'td') {
+				nextElementSibling.independence();
 			}
 		}
-		if (syntax.endsWith('+')) {
-			firstElementChild.replaceChildren('\n|+');
-		} else {
-			firstElementChild.replaceChildren('\n|');
+		return super.removeAt(i);
+	}
+
+	/**
+	 * @template {string|Token} T
+	 * @param {T} token
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		if (!Parser.running && !(token instanceof TrToken)) {
+			typeError(this, 'insertAt', 'TrToken');
 		}
-		TrToken.escape(firstElementChild);
-		return child;
+		const TdToken = require('./td'),
+			child = this.childNodes.at(i);
+		if (token instanceof TdToken && token.isIndependent() && child instanceof TdToken) {
+			child.independence();
+		}
+		return super.insertAt(token, i);
 	}
 }
 

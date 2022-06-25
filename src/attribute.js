@@ -232,6 +232,11 @@ class AttributeToken extends Token {
 		this.setAttr(key, force === true || force === undefined && value === false);
 	}
 
+	toString() {
+		const str = super.toString();
+		return this.type === 'table-attr' ? str.replaceAll('\n', ' ') : str;
+	}
+
 	text() {
 		return this.#updateFromAttr();
 	}

@@ -14,17 +14,39 @@ class TdToken extends fixedToken(TrToken) {
 	type = 'td';
 	#innerSyntax = '';
 
-	/** @returns {'td'|'th'|'caption'} */
 	get subtype() {
-		const syntax = this.firstElementChild.text();
-		if (!syntax.startsWith('\n')) {
-			return this.previousElementSibling.subtype;
-		} else if (syntax.endsWith('!')) {
-			return 'th';
+		return this.getSyntax().subtype;
+	}
+
+	isIndependent() {
+		return this.firstElementChild.text().startsWith('\n');
+	}
+
+	/** @returns {{subtype: 'td'|'th'|'caption', escape: boolean, correction: boolean}} */
+	getSyntax() {
+		const syntax = this.firstElementChild.text(),
+			escape = syntax.includes('{{');
+		let subtype = 'td';
+		if (syntax.endsWith('!')) {
+			subtype = 'th';
 		} else if (syntax.endsWith('+')) {
-			return 'caption';
+			subtype = 'caption';
 		}
-		return 'td';
+		if (this.isIndependent()) {
+			return {subtype, escape, correction: false};
+		}
+		const {previousElementSibling} = this;
+		if (previousElementSibling?.type !== 'td') {
+			return {subtype, escape, correction: true};
+		}
+		const result = previousElementSibling.getSyntax();
+		result.escape ||= escape;
+		result.correction = previousElementSibling.lastElementChild.offsetHeight > 1;
+		if (subtype === 'th' && result.subtype !== 'th') {
+			result.subtype = 'th';
+			result.correction = true;
+		}
+		return result;
 	}
 
 	static openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|{{\s*!\s*}}\+?)|(?:\||{{\s*!\s*}}){2}|!!|{{\s*!!\s*}})$/;
@@ -91,23 +113,27 @@ class TdToken extends fixedToken(TrToken) {
 		return super.build();
 	}
 
+	static #aliases = {td: '\n|', th: '\n!', caption: '\n|+'};
+
+	/** @param {string} syntax */
+	setSyntax(syntax, escape = false) {
+		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, escape);
+	}
+
 	#correct() {
 		if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
 		}
-		if (!this.subtype) {
-			const syntax = this.firstElementChild;
-			switch (syntax.text()) {
-				case '!!':
-					syntax.replaceChildren('\n!');
-					break;
-				case '||':
-					syntax.replaceChildren('\n|');
-					break;
-				default:
-					syntax.replaceChildren('\n|');
-					TdToken.escape(syntax);
-			}
+		const {subtype, escape, correction} = this.getSyntax();
+		if (correction) {
+			this.setSyntax(subtype, escape);
+		}
+	}
+
+	independence() {
+		if (!this.isIndependent()) {
+			const {subtype, escape} = this.getSyntax();
+			this.setSyntax(subtype, escape);
 		}
 	}
 
