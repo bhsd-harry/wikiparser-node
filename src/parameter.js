@@ -73,6 +73,7 @@ class ParameterToken extends fixedToken(Token) {
 		return this;
 	}
 
+	/** @returns {string} */
 	toString() {
 		return this.anon ? this.lastElementChild.toString() : super.toString('=');
 	}
@@ -81,6 +82,7 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? 0 : 1;
 	}
 
+	/** @returns {string} */
 	text() {
 		return this.anon ? this.lastElementChild.text() : super.text('=');
 	}

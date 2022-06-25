@@ -68,6 +68,7 @@ class ArgToken extends Token {
 		return 1;
 	}
 
+	/** @returns {string} */
 	text() {
 		return `{{{${this.children.slice(0, 2).map(child => child.text()).join('|')}}}}`;
 	}

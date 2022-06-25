@@ -68,6 +68,7 @@ class TagPairToken extends fixedToken(Token) {
 		return 1;
 	}
 
+	/** @returns {string} */
 	text() {
 		const {closed, firstChild, lastChild, selfClosing} = this,
 			[opening, closing] = this.#tags,

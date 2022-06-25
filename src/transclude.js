@@ -1,14 +1,14 @@
 'use strict';
 
 const {removeComment, escapeRegExp} = require('../util/string'),
-	{typeError, externalUse, undo} = require('../util/debug'),
+	{typeError, externalUse} = require('../util/debug'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
 
 /**
  * 模板或魔术字
- * @classdesc `{childNodes: [AtomToken, ...ParameterToken]}`
+ * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...ParameterToken]}`
  */
 class TranscludeToken extends Token {
 	type = 'template';
@@ -16,11 +16,18 @@ class TranscludeToken extends Token {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Map<string, Set<ParameterToken>>} */ #args = new Map();
 
-	/** @param {string} modifier */
-	setModifier(modifier, force = false) {
-		if (!modifier || force && Parser.running || new RegExp(`^\\s*(?:${
-			this.getAttribute('config').parserFunction.slice(2).flat().join('|')
-		})\\s*$`, 'i').test(modifier)) {
+	setModifier(modifier = '') {
+		if (typeof modifier !== 'string') {
+			typeError(this, 'setModifier', 'String');
+		}
+		const [,, raw, subst] = this.getAttribute('config').parserFunction,
+			lcModifier = modifier.trim().toLowerCase(),
+			isRaw = raw.includes(lcModifier),
+			isSubst = subst.includes(lcModifier),
+			wasRaw = raw.includes(this.modifier.trim().toLowerCase());
+		if (wasRaw && isRaw || !wasRaw && (isSubst || modifier === '')
+			|| (Parser.running || this.childElementCount > 1) && (isRaw || isSubst || modifier === '')
+		) {
 			this.setAttribute('modifier', modifier);
 			return Boolean(modifier);
 		}
@@ -33,8 +40,9 @@ class TranscludeToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {AtomToken: 0, ParameterToken: '1:'});
+		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
 		const AtomToken = require('./atom'),
+			SyntaxToken = require('./syntax'),
 			{parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
 		if (title.includes(':')) {
@@ -45,18 +53,20 @@ class TranscludeToken extends Token {
 		}
 		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
-				name = removeComment(magicWord);
-			if (sensitive.includes(name) || insensitive.includes(name.toLowerCase())) {
+				name = removeComment(magicWord),
+				isSensitive = sensitive.includes(name);
+			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
-				const token = new AtomToken(magicWord, 'magic-word-name', config, accum, {
-					'Stage-1': ':', '!ExtToken': '',
-				});
+				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
+					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
+						'Stage-1': ':', '!ExtToken': '',
+					});
 				this.appendChild(token);
 				if (arg.length) {
 					parts.unshift([arg.join(':')]);
 				}
 				if (this.name === 'invoke') {
-					this.setAttribute('acceptable', {AtomToken: ':3', ParameterToken: '3:'});
+					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
 					for (let i = 0; i < 2; i++) {
 						const part = parts.shift();
 						if (!part) {
@@ -97,15 +107,13 @@ class TranscludeToken extends Token {
 	}
 
 	cloneNode() {
-		const [first, ...cloned] = this.cloneChildren(),
-			config = this.getAttribute('config'),
-			modifier = this.modifier && Parser.parse(this.modifier, this.getAttribute('include'), 2, config).text();
+		const [first, ...cloned] = this.cloneChildren();
 		Parser.running = true;
-		const token = new TranscludeToken(`${modifier}${modifier && ':'}${this.name}`, [], config);
+		const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], this.getAttribute('config'));
+		token.setModifier(this.modifier);
 		token.firstElementChild.safeReplaceWith(first);
-		token.append(...cloned);
-		token.setModifier(this.modifier, true);
 		token.afterBuild();
+		token.append(...cloned);
 		Parser.running = false;
 		return token;
 	}
@@ -113,11 +121,8 @@ class TranscludeToken extends Token {
 	afterBuild() {
 		super.afterBuild();
 		if (this.type === 'template') {
-			const name = this.firstElementChild.text().trim();
+			const name = this.firstElementChild.text();
 			this.setAttribute('name', this.normalizeTitle(name, 10));
-		}
-		if (this.modifier?.includes('\x00')) {
-			this.setModifier(this.buildFromStr(this.modifier).map(String).join(''), true);
 		}
 		if (this.matches('template, magic-word#invoke')) {
 			const that = this;
@@ -127,26 +132,14 @@ class TranscludeToken extends Token {
 			 * @type {AstListener}
 			 */
 			const transcludeListener = (e, data) => {
-				const {type, firstElementChild} = that,
-					{prevTarget} = e,
+				const {prevTarget} = e,
 					{oldKey, newKey} = data ?? {};
 				if (typeof oldKey === 'string') {
 					delete data.oldKey;
 					delete data.newKey;
 				}
-				if (prevTarget === firstElementChild) {
-					const name = prevTarget.text().trim();
-					let standardname;
-					if (type === 'magic-word') {
-						standardname = name.toLowerCase().replace(/^#/, '');
-						if (that.name !== standardname) {
-							undo(e, data);
-							throw new Error('禁止修改原有的魔术字！');
-						}
-					} else if (type === 'template') {
-						standardname = that.normalizeTitle(name, 10);
-					}
-					that.setAttribute('name', standardname);
+				if (prevTarget === that.firstElementChild && that.type === 'template') {
+					that.setAttribute('name', that.normalizeTitle(prevTarget.text(), 10));
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = that.getArgs(oldKey, false, false);
 					oldArgs.delete(prevTarget);
@@ -186,7 +179,7 @@ class TranscludeToken extends Token {
 
 	toString() {
 		const {children, childElementCount, firstChild} = this;
-		return `{{${this.modifier && `${this.modifier}:`}${
+		return `{{${this.modifier}${this.modifier && ':'}${
 			this.type === 'magic-word'
 				? `${String(firstChild)}${childElementCount > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
 				: super.toString('|')
@@ -201,13 +194,16 @@ class TranscludeToken extends Token {
 		return 1;
 	}
 
+	/** @returns {string} */
 	text() {
 		const {children, childElementCount, firstElementChild} = this;
-		return this.type === 'magic-word'
-			? `{{${firstElementChild.text()}${childElementCount > 1 ? ':' : ''}${
-				children.slice(1).map(child => child.text()).join('|')
-			}}}`
-			: `{{${super.text('|')}}}`;
+		return `{{${this.modifier}${this.modifier && ':'}${
+			this.type === 'magic-word'
+				? `${firstElementChild.text()}${childElementCount > 1 ? ':' : ''}${
+					children.slice(1).map(child => child.text()).join('|')
+				}`
+				: super.text('|')
+		}}}`;
 	}
 
 	plain() {

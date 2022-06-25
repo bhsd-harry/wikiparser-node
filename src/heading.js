@@ -64,6 +64,7 @@ class HeadingToken extends fixedToken(Token) {
 		return Number(this.name);
 	}
 
+	/** @returns {string} */
 	text() {
 		const equals = '='.repeat(Number(this.name));
 		return `${equals}${this.firstElementChild.text()}${equals}`;

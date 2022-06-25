@@ -197,7 +197,7 @@ class Token extends AstElement {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.childNodes)]),
 				),
-				nodesAfter = this.childNodes.slice(i + 1);
+				nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
 			if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {
 				throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
 			}
@@ -236,7 +236,7 @@ class Token extends AstElement {
 		if (!parentNode) {
 			throw new Error('不存在父节点！');
 		} else if (token.constructor !== this.constructor) {
-			typeError(this.constructor.name);
+			typeError(this, 'safeReplaceWith', this.constructor.name);
 		}
 		try {
 			assert.deepEqual(token.getAttribute('acceptable'), this.#acceptable);
