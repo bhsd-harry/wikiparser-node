@@ -216,11 +216,12 @@ class Token extends AstElement {
 						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i),
-				insertedName = token.constructor.name;
-			if (!acceptableIndices[insertedName].includes(i)) {
-				throw new RangeError(`${this.constructor.name} 的第 ${i} 个子节点不能为 ${insertedName}！`);
-			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j + 1))) {
-				throw new Error(`${this.constructor.name} 插入新的第 ${i} 个子节点会破坏规定的顺序！`);
+				insertedName = token.constructor.name,
+				k = i < 0 ? i + this.childNodes.length : i;
+			if (!acceptableIndices[insertedName].includes(k)) {
+				throw new RangeError(`${this.constructor.name} 的第 ${k} 个子节点不能为 ${insertedName}！`);
+			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(k + j + 1))) {
+				throw new Error(`${this.constructor.name} 插入新的第 ${k} 个子节点会破坏规定的顺序！`);
 			}
 		}
 		super.insertAt(token, i);

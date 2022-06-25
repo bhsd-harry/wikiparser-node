@@ -14,7 +14,7 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 	 * @param {string} key
 	 */
 	hasAttr(key) {
-		return this.children[i].hasAttr(key);
+		return this.children.at(i).hasAttr(key);
 	}
 
 	/**
@@ -22,17 +22,17 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 	 * @param {string|undefined} key
 	 */
 	getAttr(key) {
-		return this.children[i].getAttr(key);
+		return this.children.at(i).getAttr(key);
 	}
 
 	/** @this {{children: AttributeToken[]}} */
 	getAttrNames() {
-		return this.children[i].getAttrNames();
+		return this.children.at(i).getAttrNames();
 	}
 
 	/** @this {{children: AttributeToken[]}} */
 	hasAttrs() {
-		return this.children[i].hasAttrs();
+		return this.children.at(i).hasAttrs();
 	}
 
 	/**
@@ -41,7 +41,7 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 	 * @param {string|boolean} value
 	 */
 	setAttr(key, value) {
-		this.children[i].setAttr(key, value);
+		this.children.at(i).setAttr(key, value);
 	}
 
 	/**
@@ -49,7 +49,7 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 	 * @param {string} key
 	 */
 	removeAttr(key) {
-		this.children[i].removeAttr(key);
+		this.children.at(i).removeAttr(key);
 	}
 
 	/**
@@ -58,7 +58,7 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 	 * @param {boolean|undefined} force
 	 */
 	toggleAttr(key, force) {
-		this.children[i].toggleAttr(key, force);
+		this.children.at(i).toggleAttr(key, force);
 	}
 };
 

@@ -98,11 +98,12 @@ class ArgToken extends Token {
 
 	/** @param {Token} token */
 	insertAt(token, i = this.childNodes.length) {
-		if (i > 1 && !Parser.running) {
+		const j = i < 0 ? i + this.childNodes.length : i;
+		if (j > 1 && !Parser.running) {
 			throw new RangeError(`${this.constructor.name} 不可插入 arg-redundant 子节点！`);
 		}
 		super.insertAt(token, i);
-		if (i === 1) {
+		if (j === 1) {
 			token.type = 'arg-default';
 		}
 		return token;
