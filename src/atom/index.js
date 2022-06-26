@@ -19,14 +19,12 @@ class AtomToken extends Token {
 	}
 
 	cloneNode() {
-		const cloned = this.cloneChildren();
-		Parser.running = true;
-		const /** @type {typeof AtomToken} */ Constructor = this.constructor,
+		const cloned = this.cloneChildren(),
+			/** @type {typeof AtomToken} */ Constructor = this.constructor,
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
-			token = new Constructor(undefined, this.type, config, [], acceptable);
+			token = Parser.run(() => new Constructor(undefined, this.type, config, [], acceptable));
 		token.append(...cloned);
-		Parser.running = false;
 		return token;
 	}
 }

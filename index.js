@@ -5,7 +5,6 @@ const fs = require('fs');
 const /** @type {Parser} */ Parser = {
 	warning: true,
 	debugging: false,
-	running: false,
 
 	warn(msg, ...args) {
 		if (this.warning) {
@@ -22,6 +21,21 @@ const /** @type {Parser} */ Parser = {
 	},
 	info(msg, ...args) {
 		console.info('\x1b[32m%s\x1b[0m', msg, ...args);
+	},
+
+	running: false,
+
+	run(callback) {
+		const {running} = this;
+		this.running = true;
+		try {
+			const result = callback();
+			this.running = running;
+			return result;
+		} catch (e) {
+			this.running = running;
+			throw e;
+		}
 	},
 
 	classes: {},
@@ -66,43 +80,36 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	isInterwiki(title) {
-		this.running = true;
-		const Token = require('./src'),
-			result = new Token().isInterwiki(title);
-		this.running = false;
-		return result;
+		const Token = require('./src');
+		return this.run(() => new Token()).isInterwiki(title);
 	},
 	normalizeTitle(title, defaultNs = 0) {
-		this.running = true;
-		const Token = require('./src'),
-			result = new Token().normalizeTitle(title, defaultNs);
-		this.running = false;
-		return result;
+		const Token = require('./src');
+		return this.run(() => new Token()).normalizeTitle(title, defaultNs);
 	},
 
 	MAX_STAGE: 11,
 
 	parse(wikitext, include = false, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
-		this.running = true;
 		const Token = require('./src');
-		if (typeof wikitext === 'string') {
-			wikitext = new Token(wikitext, config);
-		} else if (!(wikitext instanceof Token)) {
-			throw new TypeError('待解析的内容应为 String 或 Token！');
-		}
-		try {
-			wikitext.parse(maxStage, include);
-		} catch (e) {
-			if (e instanceof Error) {
-				fs.writeFileSync(
-					`${__dirname}/errors/${new Date().toISOString()}`,
-					`${e.stack}\n\n\n${wikitext.toString()}`,
-				);
+		this.run(() => {
+			if (typeof wikitext === 'string') {
+				wikitext = new Token(wikitext, config);
+			} else if (!(wikitext instanceof Token)) {
+				throw new TypeError('待解析的内容应为 String 或 Token！');
 			}
-			this.running = false;
-			throw e;
-		}
-		this.running = false;
+			try {
+				wikitext.parse(maxStage, include);
+			} catch (e) {
+				if (e instanceof Error) {
+					fs.writeFileSync(
+						`${__dirname}/errors/${new Date().toISOString()}`,
+						`${e.stack}\n\n\n${wikitext.toString()}`,
+					);
+				}
+				throw e;
+			}
+		});
 		return wikitext;
 	},
 

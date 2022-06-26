@@ -53,14 +53,13 @@ class TableToken extends TrToken {
 		} else if (lastElementChild instanceof SyntaxToken) {
 			lastElementChild.replaceChildren(...inner.childNodes);
 		} else {
-			const {running} = Parser;
-			Parser.running = true;
-			const token = new SyntaxToken(undefined, TableToken.closingPattern, 'table-syntax', config, [], {
-				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-			});
-			token.replaceChildren(...inner.childNodes);
-			this.appendChild(token);
-			Parser.running = running;
+			this.appendChild(Parser.run(() => {
+				const token = new SyntaxToken(undefined, TableToken.closingPattern, 'table-syntax', config, [], {
+					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
+				});
+				token.replaceChildren(...inner.childNodes);
+				return token;
+			}));
 		}
 	}
 
@@ -115,10 +114,8 @@ class TableToken extends TrToken {
 		}
 		const reference = this.getNthRow(row, false, true),
 			AttributeToken = require('../attribute'); // eslint-disable-line no-unused-vars
-		Parser.running = true;
 		/** @type {TrToken & AttributeToken}} */
-		const token = new TrToken('\n|-', undefined, this.getAttribute('config'));
-		Parser.running = false;
+		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);
 		}

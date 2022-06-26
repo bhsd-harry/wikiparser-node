@@ -20,10 +20,7 @@ class HrToken extends NowikiToken {
 
 	/** @this {HrToken & {firstChild: string}} */
 	cloneNode() {
-		Parser.running = true;
-		const token = new HrToken(this.firstChild.length, this.getAttribute('config'));
-		Parser.running = false;
-		return token;
+		return Parser.run(() => new HrToken(this.firstChild.length, this.getAttribute('config')));
 	}
 
 	/** @returns {[number, string][]} */

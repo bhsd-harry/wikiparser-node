@@ -86,13 +86,13 @@ class Token extends AstElement {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
 		}
 		const cloned = this.cloneChildren();
-		Parser.running = true;
-		const token = new Token(undefined, this.#config, false, [], this.#acceptable);
-		token.type = this.type;
-		token.append(...cloned);
-		token.protectChildren(...this.#protectedChildren);
-		Parser.running = false;
-		return token;
+		return Parser.run(() => {
+			const token = new Token(undefined, this.#config, false, [], this.#acceptable);
+			token.type = this.type;
+			token.append(...cloned);
+			token.protectChildren(...this.#protectedChildren);
+			return token;
+		});
 	}
 
 	/**

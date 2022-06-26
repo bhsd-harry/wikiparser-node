@@ -21,10 +21,7 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	}
 
 	cloneNode() {
-		Parser.running = true;
-		const token = new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config'));
-		Parser.running = false;
-		return token;
+		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config')));
 	}
 
 	/** @this {DoubleUnderscoreToken & {firstChild: string}} */

@@ -23,12 +23,11 @@ class IncludeToken extends hidden(TagPairToken) {
 
 	/** @this {IncludeToken & {firstChild: string, lastChild: string}} */
 	cloneNode() {
-		Parser.running = true;
 		const tags = this.getAttribute('tags'),
+			config = this.getAttribute('config'),
 			inner = this.selfClosing ? undefined : this.lastChild,
-			closing = this.selfClosing || !this.closed ? undefined : tags[1];
-		const token = new IncludeToken(tags[0], this.firstChild, inner, closing, this.getAttribute('config'));
-		Parser.running = false;
+			closing = this.selfClosing || !this.closed ? undefined : tags[1],
+			token = Parser.run(() => new IncludeToken(tags[0], this.firstChild, inner, closing, config));
 		return token;
 	}
 

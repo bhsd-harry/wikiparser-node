@@ -107,15 +107,16 @@ class TranscludeToken extends Token {
 	}
 
 	cloneNode() {
-		const [first, ...cloned] = this.cloneChildren();
-		Parser.running = true;
-		const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], this.getAttribute('config'));
-		token.setModifier(this.modifier);
-		token.firstElementChild.safeReplaceWith(first);
-		token.afterBuild();
-		token.append(...cloned);
-		Parser.running = false;
-		return token;
+		const [first, ...cloned] = this.cloneChildren(),
+			config = this.getAttribute('config');
+		return Parser.run(() => {
+			const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], config);
+			token.setModifier(this.modifier);
+			token.firstElementChild.safeReplaceWith(first);
+			token.afterBuild();
+			token.append(...cloned);
+			return token;
+		});
 	}
 
 	afterBuild() {

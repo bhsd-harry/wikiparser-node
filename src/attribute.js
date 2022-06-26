@@ -47,16 +47,12 @@ class AttributeToken extends Token {
 	/** 从`childNodes`更新`this.#attr` */
 	#parseAttr() {
 		this.#attr.clear();
-		let string = this.toString(),
-			token;
-		if (this.type !== 'ext-attr' && !Parser.running) {
-			Parser.running = true;
-			token = new Token(string, this.getAttribute('config')).parseOnce(0, this.getAttribute('include'))
-				.parseOnce();
-			string = token.firstChild;
-			Parser.running = false;
-		}
-		string = removeComment(string).replace(/\x00\d+~\x7f/g, '=');
+		const config = this.getAttribute('config'),
+			include = this.getAttribute('include'),
+			/** @type {Token & {firstChild: string}} */ token = this.type !== 'ext-attr' && !Parser.running
+				? Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce())
+				: undefined,
+			string = removeComment(token?.firstChild ?? this.toString()).replace(/\x00\d+~\x7f/g, '=');
 		const build = /** @param {string|boolean} str */ str => {
 			return typeof str === 'boolean' || !(token instanceof Token)
 				? str
@@ -85,12 +81,12 @@ class AttributeToken extends Token {
 
 	cloneNode() {
 		const cloned = this.cloneChildren();
-		Parser.running = true;
-		const token = new AttributeToken(undefined, this.type, this.name, this.getAttribute('config'));
-		token.append(...cloned);
-		token.afterBuild();
-		Parser.running = false;
-		return token;
+		return Parser.run(() => {
+			const token = new AttributeToken(undefined, this.type, this.name, this.getAttribute('config'));
+			token.append(...cloned);
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	/**
@@ -184,14 +180,11 @@ class AttributeToken extends Token {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
 		key = key.toLowerCase().trim();
-		let parsedKey = key;
-		if (this.type !== 'ext-attr' && !init) {
-			Parser.running = true;
-			const token = new Token(key, this.getAttribute('config')).parseOnce(0, this.getAttribute(1, 'include'))
-				.parseOnce();
-			Parser.running = false;
-			parsedKey = token.firstChild;
-		}
+		const config = this.getAttribute('config'),
+			include = this.getAttribute('include'),
+			parsedKey = this.type !== 'ext-attr' && !init
+				? Parser.run(() => new Token(key, config).parseOnce(0, include).parseOnce().firstChild)
+				: key;
 		if (!/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
 			if (init) {
 				return false;

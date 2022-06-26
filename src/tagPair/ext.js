@@ -71,14 +71,12 @@ class ExtToken extends attributeParent(TagPairToken) {
 	}
 
 	cloneNode() {
-		const inner = this.lastElementChild.cloneNode();
-		Parser.running = true;
-		const tags = this.getAttribute('tags'),
+		const inner = this.lastElementChild.cloneNode(),
+			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
 			attr = this.firstElementChild.toString(),
-			token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
+			token = Parser.run(() => new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config));
 		token.lastElementChild.safeReplaceWith(inner);
-		Parser.running = false;
 		return token;
 	}
 }

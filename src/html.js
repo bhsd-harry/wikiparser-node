@@ -32,11 +32,9 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	cloneNode() {
-		const [attr] = this.cloneChildren();
-		Parser.running = true;
-		const token = new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, this.getAttribute('config'));
-		Parser.running = false;
-		return token;
+		const [attr] = this.cloneChildren(),
+			config = this.getAttribute('config');
+		return Parser.run(() => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config));
 	}
 
 	/**

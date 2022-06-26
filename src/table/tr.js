@@ -32,20 +32,20 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	cloneNode() {
-		const [syntax, attr, inner, ...cloned] = this.cloneChildren();
-		Parser.running = true;
-		const /** @type {typeof TrToken} */ Constructor = this.constructor,
-			token = new Constructor(undefined, undefined, this.getAttribute('config'));
-		token.firstElementChild.safeReplaceWith(syntax);
-		token.children[1].safeReplaceWith(attr);
-		if (token.childElementCount > 2) { // TdToken
-			token.children[2].safeReplaceWith(inner);
-		} else if (inner !== undefined) {
-			token.appendChild(inner);
-		}
-		token.append(...cloned);
-		Parser.running = false;
-		return token;
+		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
+			/** @type {typeof TrToken} */ Constructor = this.constructor;
+		return Parser.run(() => {
+			const token = new Constructor(undefined, undefined, this.getAttribute('config'));
+			token.firstElementChild.safeReplaceWith(syntax);
+			token.children[1].safeReplaceWith(attr);
+			if (token.childElementCount > 2) { // TdToken
+				token.children[2].safeReplaceWith(inner);
+			} else if (inner !== undefined) {
+				token.appendChild(inner);
+			}
+			token.append(...cloned);
+			return token;
+		});
 	}
 
 	#correct() {
@@ -194,10 +194,8 @@ class TrToken extends attributeParent(Token, 1) {
 			inner = Parser.parse(inner, this.getAttribute('include'), undefined, config);
 		}
 		const TdToken = require('./td'),
-			AttributeToken = require('../attribute'); // eslint-disable-line no-unused-vars
-		Parser.running = true;
-		const /** @type {TdToken & AttributeToken}} */ token = new TdToken('\n|', undefined, config);
-		Parser.running = false;
+			AttributeToken = require('../attribute'), // eslint-disable-line no-unused-vars
+			/** @type {TdToken & AttributeToken}} */ token = Parser.run(() => new TdToken('\n|', undefined, config));
 		token.setSyntax(subtype);
 		token.lastElementChild.safeReplaceWith(inner);
 		for (const [k, v] of Object.entries(attr)) {

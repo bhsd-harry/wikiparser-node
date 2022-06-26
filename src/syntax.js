@@ -24,15 +24,15 @@ class SyntaxToken extends Token {
 	}
 
 	cloneNode() {
-		const cloned = this.cloneChildren();
-		Parser.running = true;
-		const config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable'),
-			token = new SyntaxToken(undefined, this.#pattern, this.type, config, [], acceptable);
-		token.append(...cloned);
-		token.afterBuild();
-		Parser.running = false;
-		return token;
+		const cloned = this.cloneChildren(),
+			config = this.getAttribute('config'),
+			acceptable = this.getAttribute('acceptable');
+		return Parser.run(() => {
+			const token = new SyntaxToken(undefined, this.#pattern, this.type, config, [], acceptable);
+			token.append(...cloned);
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	afterBuild() {
@@ -66,10 +66,9 @@ class SyntaxToken extends Token {
 	/** @param {...string|Token} elements */
 	replaceChildren(...elements) {
 		if (this.#pattern.test(elements.map(ele => typeof ele === 'string' ? ele : ele.text()).join(''))) {
-			const {running} = Parser;
-			Parser.running = true;
-			super.replaceChildren(...elements);
-			Parser.running = running;
+			Parser.run(() => {
+				super.replaceChildren(...elements);
+			});
 		}
 	}
 }

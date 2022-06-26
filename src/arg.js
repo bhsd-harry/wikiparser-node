@@ -34,13 +34,13 @@ class ArgToken extends Token {
 
 	cloneNode() {
 		const [name, ...cloned] = this.cloneChildren();
-		Parser.running = true;
-		const token = new ArgToken([''], this.getAttribute('config'));
-		token.firstElementChild.safeReplaceWith(name);
-		token.append(...cloned);
-		token.afterBuild();
-		Parser.running = false;
-		return token;
+		return Parser.run(() => {
+			const token = new ArgToken([''], this.getAttribute('config'));
+			token.firstElementChild.safeReplaceWith(name);
+			token.append(...cloned);
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	afterBuild() {

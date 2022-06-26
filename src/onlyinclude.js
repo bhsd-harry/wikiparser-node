@@ -19,11 +19,9 @@ class OnlyincludeToken extends Token {
 	}
 
 	cloneNode() {
-		const cloned = this.cloneChildren();
-		Parser.running = true;
-		const token = new OnlyincludeToken(undefined, this.getAttribute('config'));
+		const cloned = this.cloneChildren(),
+			token = Parser.run(() => new OnlyincludeToken(undefined, this.getAttribute('config')));
 		token.append(...cloned);
-		Parser.running = false;
 		return token;
 	}
 

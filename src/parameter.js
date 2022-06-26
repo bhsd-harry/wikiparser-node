@@ -31,15 +31,15 @@ class ParameterToken extends fixedToken(Token) {
 	}
 
 	cloneNode() {
-		const [key, value] = this.cloneChildren();
-		Parser.running = true;
-		const config = this.getAttribute('config'),
-			token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
-		token.firstElementChild.safeReplaceWith(key);
-		token.lastElementChild.safeReplaceWith(value);
-		token.afterBuild();
-		Parser.running = false;
-		return token;
+		const [key, value] = this.cloneChildren(),
+			config = this.getAttribute('config');
+		return Parser.run(() => {
+			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
+			token.firstElementChild.safeReplaceWith(key);
+			token.lastElementChild.safeReplaceWith(value);
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	afterBuild() {
