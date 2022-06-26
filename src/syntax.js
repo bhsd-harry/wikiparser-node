@@ -66,9 +66,10 @@ class SyntaxToken extends Token {
 	/** @param {...string|Token} elements */
 	replaceChildren(...elements) {
 		if (this.#pattern.test(elements.map(ele => typeof ele === 'string' ? ele : ele.text()).join(''))) {
+			const {running} = Parser;
 			Parser.running = true;
 			super.replaceChildren(...elements);
-			Parser.running = false;
+			Parser.running = running;
 		}
 	}
 }

@@ -133,6 +133,78 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 		return super.insertAt(token, i);
 	}
+
+	getRowCount() {
+		const TdToken = require('./td');
+		return Number(this.children.some(child => child instanceof TdToken && child.subtype !== 'caption'));
+	}
+
+	getColCount() {
+		const TdToken = require('./td');
+		return this.children.filter(child => child instanceof TdToken && child.subtype !== 'caption').length;
+	}
+
+	/** @param {number} n */
+	getNthCol(n, insert = false) {
+		if (this.type === 'td') {
+			throw new Error(`${this.constructor.name}.getNthCol 方法只可用于表格或表格行！`);
+		} else if (typeof n !== 'number') {
+			typeError(this, 'getNthCol', 'Number');
+		}
+		const nCols = this.getColCount();
+		n = n < 0 ? n + nCols : n;
+		if (n < 0 || n > nCols || n === nCols && !insert) {
+			throw new RangeError(`不存在第 ${n} 个单元格！`);
+		}
+		const TdToken = require('./td'); // eslint-disable-line no-unused-vars
+		let /** @type {TdToken} */ nextElementSibling = this.children.find(({type}) => type === 'td'),
+			isCaption = nextElementSibling?.subtype === 'caption';
+		if (nextElementSibling === undefined && this.type === 'table') {
+			const [,, plain] = this.children;
+			return plain?.isPlain() ? this.children[3] : plain;
+		}
+		while (n > 0 || isCaption) {
+			n -= Number(!isCaption);
+			({nextElementSibling} = nextElementSibling);
+			isCaption = nextElementSibling?.subtype === 'caption';
+		}
+		return nextElementSibling;
+	}
+
+	/**
+	 * @param {string|Token} inner
+	 * @param {TableCoords}
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string|boolean>} attr
+	 * @returns {TdToken}
+	 */
+	insertTableCell(inner, {row = 0, column}, subtype = 'td', attr = {}) {
+		if (this.type === 'td') {
+			throw new Error(`${this.constructor.name}.insertTableCell 方法只可用于表格或表格行！`);
+		} else if (typeof inner !== 'string' && !(inner instanceof Token) || typeof attr !== 'object') {
+			typeError(this, 'insertTableCell', 'String', 'Token', 'Object');
+		} else if (!['td', 'th', 'caption'].includes(subtype)) {
+			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
+		}
+		const TableToken = require('.'),
+			rowToken = this instanceof TableToken ? this.getNthRow(row, true) : this,
+			reference = rowToken.getNthCol(column, true),
+			config = this.getAttribute('config');
+		if (typeof inner === 'string') {
+			inner = Parser.parse(inner, this.getAttribute('include'), undefined, config);
+		}
+		const TdToken = require('./td'),
+			AttributeToken = require('../attribute'); // eslint-disable-line no-unused-vars
+		Parser.running = true;
+		const /** @type {TdToken & AttributeToken}} */ token = new TdToken('\n|', undefined, config);
+		Parser.running = false;
+		token.setSyntax(subtype);
+		token.lastElementChild.safeReplaceWith(inner);
+		for (const [k, v] of Object.entries(attr)) {
+			token.setAttr(k, v);
+		}
+		return rowToken.insertBefore(token, reference);
+	}
 }
 
 Parser.classes.TrToken = __filename;

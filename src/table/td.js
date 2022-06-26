@@ -168,6 +168,10 @@ class TdToken extends fixedToken(TrToken) {
 			this.#innerSyntax = '{{!}}';
 		}
 	}
+
+	getRowCount() {
+		throw new Error(`${this.constructor.name}.getRowCount 方法只可用于表格或表格行！`);
+	}
 }
 
 Parser.classes.TdToken = __filename;

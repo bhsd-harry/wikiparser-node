@@ -13,6 +13,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
  */
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
+	#sanitized = true;
 
 	/** 从`this.#attr`更新`childNodes` */
 	#updateFromAttr() {
@@ -35,11 +36,12 @@ class AttributeToken extends Token {
 	}
 
 	sanitize() {
-		if (!Parser.running) {
+		if (!Parser.running && !this.#sanitized) {
 			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
 		}
 		const token = Parser.parse(this.#updateFromAttr(), false, stages[this.type], this.getAttribute('config'));
 		this.replaceChildren(...token.childNodes, true);
+		this.#sanitized = true;
 	}
 
 	/** 从`childNodes`更新`this.#attr` */
@@ -63,7 +65,9 @@ class AttributeToken extends Token {
 		for (const [, key,, quoted, unquoted] of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg)
 		) {
-			this.setAttr(build(key), build(quoted ?? unquoted ?? true), true);
+			if (!this.setAttr(build(key), build(quoted ?? unquoted ?? true), true)) {
+				this.#sanitized = false;
+			}
 		}
 	}
 
@@ -190,7 +194,7 @@ class AttributeToken extends Token {
 		}
 		if (!/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
 			if (init) {
-				return;
+				return false;
 			}
 			throw new RangeError(`无效的属性名：${key}！`);
 		} else if (value === false) {
@@ -201,6 +205,7 @@ class AttributeToken extends Token {
 		if (!init) {
 			this.sanitize();
 		}
+		return true;
 	}
 
 	/** @param {string} key */

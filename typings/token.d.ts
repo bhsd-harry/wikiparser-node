@@ -15,12 +15,6 @@ declare global {
 
 	type accum = Token[];
 	type acceptable = Record<string, number|string|Ranges|(number|string)[]>;
-
-	interface BracketExecArray extends RegExpExecArray {
-		parts: string[][];
-		findEqual: boolean;
-		pos: number;
-	}
 }
 
 export {};
