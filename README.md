@@ -7,6 +7,7 @@
         1. [parse](#parser.parse)
         2. [isInterwiki](#parser.isinterwiki)
         3. [normalizeTitle](#parser.normalizetitle)
+        4. [getTool](#parser.gettool)
     2. [属性](#parser.properties)
         1. [config](#parser.config)
 2. [AstElement](#astelement)
@@ -61,24 +62,28 @@
         1. [name](argtoken.name)
 9. [TranscludeToken](#transcludetoken)
     1. [原型方法](#transcludetoken.prototype.methods)
-        1. [getAllArgs](#transcludetoken.getallargs)
-        2. [getAnonArgs](#transcludetoken.getanonargs)
-        3. [getArgs](#transcludetoken.getargs)
-        4. [hasArg](#transcludetoken.hasarg)
-        5. [getArg](#transcludetoken.getarg)
-        6. [removeArg](#transcludetoken.removearg)
-        7. [getKeys](#transcludetoken.getkeys)
-        8. [getValues](#transcludetoken.getvalues)
-        9. [getValue](#transcludetoken.getvalue)
-        10. [newAnonArg](#transcludetoken.newanonarg)
-        11. [setValue](#transcludetoken.setvalue)
-        12. [anonToNamed](#transcludetoken.anontonamed)
-        13. [replaceTemplate](#transcludetoken.replacetemplate)
-        14. [hasDuplicatedArgs](#transcludetoken.hasduplicatedargs)
-        15. [getDuplicatedArgs](#transcludetoken.getduplicatedargs)
-        16. [fixDuplication](#transcludetoken.fixduplication)
+        1. [subst](#transcludetoken.subst)
+        2. [safesubst](#transcludetoken.safesubst)
+        3. [getAllArgs](#transcludetoken.getallargs)
+        4. [getAnonArgs](#transcludetoken.getanonargs)
+        5. [getArgs](#transcludetoken.getargs)
+        6. [hasArg](#transcludetoken.hasarg)
+        7. [getArg](#transcludetoken.getarg)
+        8. [removeArg](#transcludetoken.removearg)
+        9. [getKeys](#transcludetoken.getkeys)
+        10. [getValues](#transcludetoken.getvalues)
+        11. [getValue](#transcludetoken.getvalue)
+        12. [newAnonArg](#transcludetoken.newanonarg)
+        13. [setValue](#transcludetoken.setvalue)
+        14. [anonToNamed](#transcludetoken.anontonamed)
+        15. [replaceTemplate](#transcludetoken.replacetemplate)
+        16. [hasDuplicatedArgs](#transcludetoken.hasduplicatedargs)
+        17. [getDuplicatedArgs](#transcludetoken.getduplicatedargs)
+        18. [fixDuplication](#transcludetoken.fixduplication)
+        19. [escapeTables](#transcludetoken.escapetables)
     2. [实例属性](#transcludetoken.instance.properties)
         1. [name](#transcludetoken.name)
+        2. [modifier](#transcludetoken.modifier)
 10. [ParameterToken](#parametertoken)
     1. [原型方法](#parametertoken.prototype.methods)
         1. [getValue](#parametertoken.getvalue)
@@ -113,7 +118,7 @@ var Parser = require('wikiparser-node');
 
 ## 方法<a id="parser.methods"></a>
 
-**parse**(wikitext: string, include?: boolean): [Token](#token)<a id="parser.parse"></a>
+**parse**(wikitext: string, include?: boolean = false): [Token](#token)<a id="parser.parse"></a>
 - 解析维基文本。
 
 ```js
@@ -138,10 +143,17 @@ assert(Boolean(Parser.isInterwiki('zhwiki:首页')));
 assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj');
 ```
 
+**getTool**(): typeof [$](#-tokencollection)<a id="parser.gettool"></a>
+- 加载[批量操作工具](#-tokencollection)。
+
 ## 属性<a id="parser.properties"></a>
 
 **config**: string<a id="parser.config"></a>
 - 指定解析设置JSON文件的相对或绝对路径。
+
+```js
+assert(Parser.config === './config/default'); // 这是默认设置的相对路径
+```
 
 [返回目录](#目录)
 
@@ -153,6 +165,7 @@ assert(Parser.normalizeTitle('lj', 10) === 'Template:Lj');
     <summary>展开</summary>
 
 **isEqualNode**(node: this): boolean  
+**cloneNode**(): this  
 **hasAttribute**(key: PropertyKey): boolean  
 **getAttribute**(key: PropertyKey): string\|undefined  
 **getAttributeNames**(): string[]  
@@ -378,7 +391,7 @@ assert(ref.name === 'ref');
 [返回目录](#目录)
    
 # AttributeToken
-扩展和 HTML 标签属性。
+扩展和 HTML 标签及表格的属性。
 
 ## 原型方法<a id="attributetoken.prototype.methods"></a>
 <details>
@@ -422,14 +435,14 @@ var root = Parser.parse('<ref/>'),
 assert(attr.hasAttrs() === false);
 ```
 
-**setAttr**(key: string, value: string\|boolean): void<a id="attributetoken.setattr"></a>
+**setAttr**(key: string, value: string\|boolean): boolean<a id="attributetoken.setattr"></a>
 - 设置属性。
 
 ```js
 var root = Parser.parse('<choose></choose>'),
     attr = root.querySelector('ext-attr');
-attr.setAttr('before', 'a');
-attr.setAttr('uncached', true);
+assert(attr.setAttr('before', 'a') === true);
+assert(attr.setAttr('uncached', true) === true);
 assert(root.toString() === '<choose before="a" uncached></choose>');
 ```
 
@@ -566,6 +579,19 @@ assert(arg.name === 'a');
 ## 原型方法<a id="transcludetoken.prototype.methods"></a>
 <details>
     <summary>展开</summary>
+
+**subst**(): void<a id="transcludetoken.subst"></a>  
+**safesubst**(): void<a id="transcludetoken.safesubst"></a>
+- 将引用方式修改为替换引用。
+
+```js
+var root = Parser.parse('{{a}}{{!}}'),
+    template = root.firstChild,
+    magicWord = root.lastChild;
+template.subst();
+magicWord.safesubst();
+assert(root.toString() === '{{subst:a}}{{safesubst:!}}');
+```
 
 **getAllArgs**(): [ParameterToken](#parametertoken)[]<a id="transcludetoken.getallargs"></a>
 - 获取所有参数。
@@ -743,6 +769,16 @@ var root = Parser.parse('{{a|b|1=|1=c}}'),
 assert.deepStrictEqual(template.fixDuplication(), ['1']); // 
 assert(root.toString() === '{{a|b|1=c}}');
 ```
+
+**escapeTables**(): this<a id="transcludetoken.escapetables"></a>
+- 如果内部包含疑似未转义的表格语法且因此造成了重复参数，则对这些表格进行转义。
+
+```js
+var root = Parser.parse('{{a|b=c\n{|\n|rowspan=2|d\n|rowspan=2|e\n|}}}'),
+    template = root.firstChild;
+template.escapeTables();
+assert(root.toString() === '{{a|b=c\n{{(!}}\n{{!}}rowspan=2{{!}}d\n{{!}}rowspan=2{{!}}e\n{{!}}}}}');
+```
 </details>
 
 ## 实例属性<a id="transcludetoken.instance.properties"></a>
@@ -758,6 +794,15 @@ var root = Parser.parse('{{a}}{{!}}'),
     magicWord = root.lastChild;
 assert(template.name === 'Template:A');
 assert(magicWord.name === '!');
+```
+
+**modifier**: string<a id="transcludetoken.modifier"></a>
+- subst 和 safesubst 等。
+
+```js
+var root = Parser.parse('<includeonly>{{subst:REVISIONUSER}}</includeonly>', true),
+    magicWord = root.querySelector('magic-word');
+assert(magicWord.modifier === 'subst');
 ```
 </details>
 
@@ -1051,7 +1096,6 @@ assert(root.matches(':visible') === true);
 **wrapAll**(wrapper: string[]\|function(this: Token, string): string[]): this  
 **wrapInner**(wrapper: string[]\|function(this: Token, string): string[]): this  
 **wrap**(wrapper: string[]\|function(this: Token, string): string[]): this  
-**unwrap**(): this  
 
 </details>
 
