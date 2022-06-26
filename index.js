@@ -58,6 +58,12 @@ const /** @type {Parser} */ Parser = {
 		}
 	},
 
+	log(f) {
+		if (typeof f === 'function') {
+			console.log(f.toString());
+		}
+	},
+
 	aliases: [
 		['String'],
 		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],

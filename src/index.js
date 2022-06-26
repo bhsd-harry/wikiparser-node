@@ -112,8 +112,17 @@ class Token extends AstElement {
 				return this.#acceptable ? {...this.#acceptable} : null;
 			case 'protectedChildren':
 				return new Ranges(this.#protectedChildren);
-			case 'include':
-				return this.#include;
+			case 'include': {
+				if (this.#include !== undefined) {
+					return this.#include;
+				}
+				const includeToken = this.querySelector('include');
+				if (includeToken) {
+					return includeToken.name === 'noinclude';
+				}
+				const noincludeToken = this.querySelector('noinclude');
+				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/i.test(noincludeToken.toString());
+			}
 			default:
 				return super.getAttribute(key);
 		}
@@ -486,7 +495,7 @@ class Token extends AstElement {
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);
 		}
-		return this.build().afterBuild();
+		return n ? this.build().afterBuild() : this;
 	}
 
 	/** @this {Token & {firstChild: string}} */

@@ -26,6 +26,8 @@ declare global {
 		/** 清除各模块的缓存 */
 		clearCache(): void;
 
+		log(f: Function): void;
+
 		readonly aliases: string[][];
 
 		config: string;
