@@ -1,9 +1,18 @@
 'use strict';
 
 const {typeError} = require('../../util/debug'),
+	Ranges = require('../../lib/ranges'),
 	/** @type {Parser} */ Parser = require('../..'),
+	Token = require('..'), // eslint-disable-line no-unused-vars
 	TrToken = require('./tr'),
+	TdToken = require('./td'),
 	SyntaxToken = require('../syntax');
+
+/**
+ * @param {TableCoords} coords1
+ * @param {TableCoords} coords2
+ */
+const cmpCoords = (coords1, coords2) => coords1?.row === coords2?.row && coords1?.column === coords2?.column;
 
 /**
  * 表格
@@ -29,14 +38,15 @@ class TableToken extends TrToken {
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
+	 * @returns {T}
 	 */
-	insertAt(token, i) {
+	insertAt(token, i = this.childNodes.length) {
 		const previous = this.childNodes.at(i - 1),
 			{closingPattern} = TableToken;
 		if (token instanceof TrToken && token.type === 'td' && previous instanceof TrToken && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.appendChild(token);
-		} else if (i === this.childNodes.length && token instanceof SyntaxToken
+		} else if (!Parser.running && i === this.childNodes.length && token instanceof SyntaxToken
 			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
 		) {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${token.toString().replaceAll('\n', '\\n')}`);
@@ -98,9 +108,12 @@ class TableToken extends TrToken {
 		return nextElementSibling;
 	}
 
-	/** @param {TableCoords} */
-	getNthCell({row, column}) {
-		return this.getNthRow(row).getNthCol(column);
+	/** @param {TableCoords & TableRenderedCoords} coords */
+	getNthCell(coords) {
+		if (coords.row === undefined) {
+			coords = this.toRawCoords(coords);
+		}
+		return coords && this.getNthRow(coords.row).getNthCol(coords.column);
 	}
 
 	/**
@@ -120,6 +133,265 @@ class TableToken extends TrToken {
 			token.setAttr(k, v);
 		}
 		return this.insertBefore(token, reference);
+	}
+
+	/**
+	 * @param {string|Token} inner
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string|boolean>} attr
+	 * @returns {TdToken}
+	 */
+	insertTableCell(inner, coords, subtype = 'td', attr = {}) {
+		if (coords.column === undefined) {
+			const {x, y} = coords;
+			coords = this.toRawCoords(coords);
+			if (!coords?.start) {
+				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
+			}
+		}
+		const rowToken = this.getNthRow(coords.row ?? 0, true);
+		if (rowToken === this) {
+			super.insertTableCell(inner, coords, subtype, attr);
+		} else {
+			rowToken.insertTableCell(inner, coords, subtype, attr);
+		}
+	}
+
+	getLayout() {
+		const nRows = this.getRowCount(),
+			/** @type {TableCoords[][]} */ layout = new Array(nRows).fill().map(() => []),
+			rows = new Array(nRows).fill().map((_, i) => this.getNthRow(i));
+		for (let i = 0; i < nRows; i++) {
+			const rowLayout = layout[i],
+				row = rows[i];
+			for (let j = 0, k = 0; j < row.getColCount(); j++) {
+				while (rowLayout[k] !== undefined) {
+					k++;
+				}
+				const /** @type {TableCoords} */ coords = {row: i, column: j},
+					cell = row.getNthCol(j),
+					rowspan = cell.getAttr('rowspan'),
+					colspan = cell.getAttr('colspan');
+				for (let y = i; y < Math.min(i + rowspan, nRows); y++) {
+					for (let x = k; x < k + colspan; x++) {
+						layout[y][x] = coords;
+					}
+				}
+				k += colspan;
+			}
+		}
+		return layout;
+	}
+
+	/**
+	 * @param {TableCoords}
+	 * @returns {TableRenderedCoords}
+	 */
+	toRenderedCoords({row, column}) {
+		if (typeof row !== 'number' || typeof column !== 'number') {
+			typeError(this, 'toRenderedCoords', 'Number');
+		}
+		const rowLayout = this.getLayout()[row],
+			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}));
+		return rowLayout && (x === -1 ? undefined : {y: row, x});
+	}
+
+	/** @param {TableRenderedCoords} */
+	toRawCoords({x, y}) {
+		if (typeof x !== 'number' || typeof y !== 'number') {
+			typeError(this, 'toRawCoords', 'Number');
+		}
+		const rowLayout = this.getLayout()[y],
+			coords = rowLayout?.[x];
+		if (coords) {
+			const prevCoords = rowLayout[x - 1];
+			coords.start = coords?.row === y && !cmpCoords(prevCoords, coords);
+		} else if (!rowLayout && y === 0) {
+			return {row: 0, column: 0, start: true};
+		} else if (x === rowLayout?.length) {
+			return {row: y, column: this.getNthRow(y).getColCount(), start: true};
+		}
+		return coords;
+	}
+
+	/** @param {number} y */
+	getFullRow(y) {
+		if (typeof y !== 'number') {
+			typeError(this, 'getFullRow', 'Number');
+		}
+		return new Map(
+			this.getLayout()[y]?.filter(() => true)?.map(coords => [this.getNthCell(coords), coords.row === y]),
+		);
+	}
+
+	/** @param {number} x */
+	getFullCol(x) {
+		if (typeof x !== 'number') {
+			typeError(this, 'getFullCol', 'Number');
+		}
+		const layout = this.getLayout(),
+			colLayout = layout.map(row => row[x]).filter(coords => coords);
+		return new Map(
+			colLayout.map(coords => [this.getNthCell(coords), !cmpCoords(layout[coords.row][x - 1], coords)]),
+		);
+	}
+
+	/**
+	 * @param {number|number[]} rows
+	 * @param {string|Token} inner
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string>} attr
+	 */
+	fillTableRow(rows, inner, subtype = 'td', attr = {}) {
+		if (typeof rows === 'number') {
+			rows = [rows];
+		} else if (rows === undefined) {
+			rows = new Ranges(':').applyTo(this.getRowCount());
+		} else if (!Array.isArray(rows)) {
+			typeError(this, 'fillTableRow', 'Number');
+		}
+		const layout = this.getLayout(),
+			maxCol = Math.max(...layout.map(row => row.length)),
+			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		for (const y of rows) {
+			const rowLayout = layout[y];
+			if (!rowLayout) {
+				continue;
+			}
+			const rowToken = this.getNthRow(y),
+				[,, plain] = rowToken.childNodes;
+			for (let i = 0, j = typeof plain === 'string' || plain.isPlain() ? 3 : 2; i < maxCol; i++, j++) {
+				const coords = rowLayout[i];
+				if (!coords) {
+					rowToken.insertAt(token.cloneNode(), j);
+				} else if (coords.row < y) {
+					j--;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param {string|Token} inner
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string>} attr
+	 */
+	fillTable(inner, subtype = 'td', attr = {}) {
+		this.fillTableRow(undefined, inner, subtype, attr);
+	}
+
+	/**
+	 * @param {number} x
+	 * @param {string|Token} inner
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string>} attr
+	 */
+	insertTableCol(x, inner, subtype, attr) {
+		if (typeof x !== 'number') {
+			typeError(this, 'insertTableCol', 'Number');
+		}
+		const layout = this.getLayout(),
+			rowLength = layout.map(row => row.length),
+			minCol = Math.min(...rowLength);
+		if (x > minCol) {
+			throw new RangeError(`表格第 ${rowLength.indexOf(minCol)} 行仅有 ${minCol} 列！`);
+		}
+		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		for (let i = 0; i < layout.length; i++) {
+			const coords = layout[i][x],
+				prevCoords = layout[i][x - 1];
+			if (cmpCoords(prevCoords, coords)) {
+				const cell = this.getNthCell(coords);
+				cell.setAttr('colspan', cell.getAttr('colspan') + 1);
+			} else {
+				const rowToken = this.getNthRow(i);
+				rowToken.insertBefore(token.cloneNode(), rowToken.getNthCol(coords.column, true));
+			}
+		}
+	}
+
+	/**
+	 * @param {number} y
+	 * @param {Record<string, string>} attr
+	 */
+	formatTableRow(y, attr = {}, multiRow = false) {
+		for (const [token, start] of this.getFullRow(y)) {
+			if (multiRow || start) {
+				for (const [k, v] of Object.entries(attr)) {
+					token.setAttr(k, v);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param {number} x
+	 * @param {Record<string, string>} attr
+	 */
+	formatTableCol(x, attr = {}, multiCol = false) {
+		for (const [token, start] of this.getFullCol(x)) {
+			if (multiCol || start) {
+				for (const [k, v] of Object.entries(attr)) {
+					token.setAttr(k, v);
+				}
+			}
+		}
+	}
+
+	/** @param {number} y */
+	removeTableRow(y) {
+		const rowToken = this.getNthRow(y),
+			isSelf = rowToken === this;
+		for (const [token, start] of this.getFullRow(y)) {
+			if (!start) {
+				token.setAttr('rowspan', token.getAttr('rowspan') - 1);
+			} else if (isSelf) {
+				token.remove();
+			}
+		}
+		if (!isSelf) {
+			rowToken.remove();
+		}
+	}
+
+	/** @param {number} x */
+	removeTableCol(x) {
+		for (const [token, start] of this.getFullCol(x)) {
+			if (!start) {
+				token.setAttr('colspan', token.getAttr('colspan') - 1);
+			} else {
+				token.remove();
+			}
+		}
+	}
+
+	/**
+	 * @param {[number, number]} xlim
+	 * @param {[number, number]} ylim
+	 */
+	mergeCells(xlim, ylim) {
+		if ([...xlim, ...ylim].some(arg => typeof arg !== 'number')) {
+			typeError(this, 'mergeCells', 'Number');
+		}
+		const [xmin, xmax] = xlim.sort(),
+			[ymin, ymax] = ylim.sort(),
+			layout = this.getLayout(),
+			coordsSet = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
+		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => coordsSet.has(coords))
+			|| layout.some(rowLayout => coordsSet.has(rowLayout[xmin - 1]) || coordsSet.has(rowLayout[xmax]))
+		) {
+			throw new RangeError(`待合并区域与外侧区域有重叠！`);
+		}
+		const corner = layout[ymin][xmin],
+			cornerCell = this.getNthCell(corner);
+		coordsSet.delete(corner);
+		const cells = [...coordsSet].map(coords => this.getNthCell(coords));
+		cornerCell.setAttr('rowspan', ymax - ymin);
+		cornerCell.setAttr('colspan', xmax - xmin);
+		for (const cell of cells) {
+			cell.remove();
+		}
 	}
 }
 

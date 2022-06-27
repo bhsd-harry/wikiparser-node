@@ -1,7 +1,7 @@
 'use strict';
 
 const fixedToken = require('../../mixin/fixedToken'),
-	{externalUse} = require('../../util/debug'),
+	{externalUse, typeError} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr');
@@ -76,6 +76,28 @@ class TdToken extends fixedToken(TrToken) {
 	cloneNode() {
 		const token = super.cloneNode();
 		token.setAttribute('innerSyntax', this.#innerSyntax);
+		return token;
+	}
+
+	/**
+	 * @param {string|Token} inner
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string>} attr
+	 */
+	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
+		if (typeof inner !== 'string' && (!(inner instanceof Token) || !inner.isPlain()) || typeof attr !== 'object') {
+			throw new TypeError('TdToken.create 方法仅接受 String、Token、Object 作为输入参数！');
+		} else if (!['td', 'th', 'caption'].includes(subtype)) {
+			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
+		} else if (typeof inner === 'string') {
+			inner = Parser.parse(inner, include, undefined, config);
+		}
+		const token = Parser.run(() => new TdToken('\n|', undefined, config));
+		token.setSyntax(subtype);
+		token.lastElementChild.safeReplaceWith(inner);
+		for (const [k, v] of Object.entries(attr)) {
+			token.setAttr(k, v);
+		}
 		return token;
 	}
 
@@ -159,6 +181,37 @@ class TdToken extends fixedToken(TrToken) {
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 
+	/**
+	 * @template {string} T
+	 * @param {T} key
+	 * @returns {T extends 'rowspan'|'colspan' ? number : string|true}
+	 */
+	getAttr(key) {
+		const /** @type {string|true} */ value = super.getAttr(key);
+		key = key?.toLowerCase()?.trim();
+		return ['rowspan', 'colspan'].includes(key) ? Number(value) || 1 : value;
+	}
+
+	/**
+	 * @template {string} T
+	 * @param {T} key
+	 * @param {T extends 'rowspan'|'colspan' ? number : string|boolean} value
+	 */
+	setAttr(key, value) {
+		if (typeof key !== 'string') {
+			typeError(this, 'setAttr', 'String');
+		}
+		key = key.toLowerCase().trim();
+		if (typeof value === 'number' && ['rowspan', 'colspan'].includes(key)) {
+			value = value === 1 ? false : String(value);
+		}
+		const /** @type {boolean} */ result = super.setAttr(key, value);
+		if (!this.children[1].toString()) {
+			this.#innerSyntax = '';
+		}
+		return result;
+	}
+
 	escape() {
 		super.escape();
 		if (this.children[1].toString()) {
@@ -171,6 +224,14 @@ class TdToken extends fixedToken(TrToken) {
 
 	getRowCount() {
 		throw new Error(`${this.constructor.name}.getRowCount 方法只可用于表格或表格行！`);
+	}
+
+	getNthCol() {
+		throw new Error(`${this.constructor.name}.getNthCol 方法只可用于表格或表格行！`);
+	}
+
+	insertTableCell() {
+		throw new Error(`${this.constructor.name}.insertTableCell 方法只可用于表格或表格行！`);
 	}
 }
 

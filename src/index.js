@@ -204,7 +204,8 @@ class Token extends AstElement {
 			throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
 		} else if (this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
-					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.childNodes)]),
+					Object.entries(this.#acceptable)
+						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length - 1)]),
 				),
 				nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
 			if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {

@@ -174,9 +174,7 @@ class AttributeToken extends Token {
 		init &&= !externalUse('setAttr');
 		if (typeof key !== 'string' || !['string', 'boolean'].includes(typeof value)) {
 			typeError(this, 'setValue', 'String', 'Boolean');
-		} else if (typeof value === 'boolean') {
-			// pass
-		} else if (!init && this.type === 'ext-attr' && value.includes('>')) {
+		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
 		key = key.toLowerCase().trim();

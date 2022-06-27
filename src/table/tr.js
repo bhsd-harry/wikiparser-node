@@ -4,7 +4,8 @@ const attributeParent = require('../../mixin/attributeParent'),
 	{typeError} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..'),
-	SyntaxToken = require('../syntax');
+	SyntaxToken = require('../syntax'),
+	AttributeToken = require('../attribute');
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
@@ -21,7 +22,6 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = TrToken.openingPattern) {
 		super(undefined, config, true, accum, {String: 2, Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
-		const AttributeToken = require('../attribute');
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
@@ -69,7 +69,8 @@ class TrToken extends attributeParent(Token, 1) {
 
 	text() {
 		this.#correct();
-		return super.text();
+		const str = super.text();
+		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
 	}
 
 	/** @param {SyntaxToken} syntax */
@@ -111,7 +112,7 @@ class TrToken extends attributeParent(Token, 1) {
 			child = this.childNodes.at(i);
 		if (child instanceof TdToken && child.isIndependent()) {
 			const {nextElementSibling} = child;
-			if (nextElementSibling.type === 'td') {
+			if (nextElementSibling?.type === 'td') {
 				nextElementSibling.independence();
 			}
 		}
@@ -121,6 +122,7 @@ class TrToken extends attributeParent(Token, 1) {
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
+	 * @returns {T}
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running && !(token instanceof TrToken)) {
@@ -144,11 +146,12 @@ class TrToken extends attributeParent(Token, 1) {
 		return this.children.filter(child => child instanceof TdToken && child.subtype !== 'caption').length;
 	}
 
-	/** @param {number} n */
+	/**
+	 * @param {number} n
+	 * @returns {TdToken}
+	 */
 	getNthCol(n, insert = false) {
-		if (this.type === 'td') {
-			throw new Error(`${this.constructor.name}.getNthCol 方法只可用于表格或表格行！`);
-		} else if (typeof n !== 'number') {
+		if (typeof n !== 'number') {
 			typeError(this, 'getNthCol', 'Number');
 		}
 		const nCols = this.getColCount();
@@ -178,30 +181,10 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {Record<string, string|boolean>} attr
 	 * @returns {TdToken}
 	 */
-	insertTableCell(inner, {row = 0, column}, subtype = 'td', attr = {}) {
-		if (this.type === 'td') {
-			throw new Error(`${this.constructor.name}.insertTableCell 方法只可用于表格或表格行！`);
-		} else if (typeof inner !== 'string' && !(inner instanceof Token) || typeof attr !== 'object') {
-			typeError(this, 'insertTableCell', 'String', 'Token', 'Object');
-		} else if (!['td', 'th', 'caption'].includes(subtype)) {
-			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
-		}
-		const TableToken = require('.'),
-			rowToken = this instanceof TableToken ? this.getNthRow(row, true) : this,
-			reference = rowToken.getNthCol(column, true),
-			config = this.getAttribute('config');
-		if (typeof inner === 'string') {
-			inner = Parser.parse(inner, this.getAttribute('include'), undefined, config);
-		}
+	insertTableCell(inner, {column}, subtype = 'td', attr = {}) {
 		const TdToken = require('./td'),
-			AttributeToken = require('../attribute'), // eslint-disable-line no-unused-vars
-			/** @type {TdToken & AttributeToken}} */ token = Parser.run(() => new TdToken('\n|', undefined, config));
-		token.setSyntax(subtype);
-		token.lastElementChild.safeReplaceWith(inner);
-		for (const [k, v] of Object.entries(attr)) {
-			token.setAttr(k, v);
-		}
-		return rowToken.insertBefore(token, reference);
+			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		return this.insertBefore(token, this.getNthCol(column, true));
 	}
 }
 

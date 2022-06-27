@@ -41,7 +41,7 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 	 * @param {string|boolean} value
 	 */
 	setAttr(key, value) {
-		this.children.at(i).setAttr(key, value);
+		return this.children.at(i).setAttr(key, value);
 	}
 
 	/**
