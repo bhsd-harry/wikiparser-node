@@ -184,7 +184,7 @@ class TdToken extends fixedToken(TrToken) {
 	/**
 	 * @template {string} T
 	 * @param {T} key
-	 * @returns {T extends 'rowspan'|'colspan' ? number : string|true}
+	 * @returns {T extends 'rowspan'|'colspan' ? number : Record<string, string|true>}
 	 */
 	getAttr(key) {
 		const /** @type {string|true} */ value = super.getAttr(key);

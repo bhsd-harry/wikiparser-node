@@ -116,6 +116,9 @@
         11. [removeTableRow](#tabletoken.removetablerow)
         12. [removeTableCol](#tabletoken.removetablecol)
         13. [mergeCells](#tabletoken.mergecells)
+        14. [splitIntoRows](#tabletoken.splitintorows)
+        15. [splitIntoCols](#tabletoken.splitintocols)
+        16. [splitIntoCells](#tabletoken.splitintocells)
 13. [TdToken](#tdtoken)
     1. [原型属性](#tdtoken.prototype.properties)
         1. [subtype](#tdtoken.subtype)
@@ -1128,6 +1131,36 @@ var root = Parser.parse('{|\n|a||b\n|-\n|c||d\n|}'),
     table = root.firstChild;
 table.mergeCells([0, 2], [0, 2]); // 被合并的单元格的属性和内部文本均会丢失
 assert(root.toString() === '{|\n| rowspan="2" colspan="2"|a\n|-\n|}'); // 这个方法不会自动删除空行
+```
+
+**splitIntoRows**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintorows"></a>
+- 将单元格分裂到不同行。
+
+```js
+var root = Parser.parse('{|\n!colspan=2|a||rowspan=2|b\n|-\n|c||d\n|-\n|e\n|}'),
+    table = root.firstChild;
+table.splitIntoRows({x: 2, y: 0});
+assert(root.toString() === '{|\n!colspan=2|a||b\n|-\n|c||d\n!\n|-\n|e\n|}'); // 第 2 行由于缺失第 1 列的单元格，分裂后的第 2 列不会保留 
+```
+
+**splitIntoCols**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintocols"></a>
+- 将单元格分裂到不同列。
+
+```js
+var root = Parser.parse('{|\n!colspan=2 align=right|a\n|}'),
+    table = root.firstChild;
+table.splitIntoCols({x: 1, y: 0});
+assert(root.toString() === '{|\n! align="right"|a\n! align="right"|\n|}'); // 分裂继承属性
+```
+
+**splitIntoCells**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintocells"></a>
+- 将单元格分裂成最小单元格。
+
+```js
+var root = Parser.parse('{|\n!colspan=2|a||colspan=2 rowspan=2|b\n|-\n|c||d\n|-\n|e\n|}'),
+    table = root.firstChild;
+table.splitIntoCells({x: 2, y: 0});
+assert(root.toString() === '{|\n!colspan=2|a||b\n!\n|-\n|c||d\n!\n!\n|-\n|e\n|}'); // 第 2 行由于缺失第 1 列的单元格，分裂后的第 2、3 列不会保留 
 ```
 </details>
 

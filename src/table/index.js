@@ -263,17 +263,17 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} row
+	 * @param {number} y
 	 * @param {Record<string, string|boolean>} attr
 	 * @param {string|Token} inner
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string|boolean>} attr
 	 */
-	insertTableRow(row, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
+	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
 		if (typeof attr !== 'object') {
 			typeError(this, 'insertTableRow', 'Object');
 		}
-		let reference = this.getNthRow(row, false, true);
+		let reference = this.getNthRow(y, false, true);
 		/** @type {TrToken & AttributeToken}} */
 		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
@@ -288,8 +288,13 @@ class TableToken extends TrToken {
 		}
 		this.insertBefore(token, reference);
 		if (inner !== undefined) {
+			const rowLayout = this.getLayout()[y] ?? [];
+			for (const coords of new Set(rowLayout.filter(({row}) => row < y))) {
+				const cell = this.getNthCell(coords);
+				cell.setAttr('rowspan', cell.getAttr('rowspan') + 1);
+			}
 			token.insertTableCell(inner, {column: 0}, subtype, innerAttr);
-			this.fillTableRow(row, inner, subtype, innerAttr);
+			this.fillTableRow(y, inner, subtype, innerAttr);
 		}
 		return token;
 	}
@@ -411,6 +416,62 @@ class TableToken extends TrToken {
 		for (const cell of cells) {
 			cell.remove();
 		}
+	}
+
+	/**
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @param {('rowspan'|'colspan')[]} dirs
+	 */
+	#split(coords, dirs) {
+		const cell = this.getNthCell(coords),
+			attr = cell.getAttr(),
+			{subtype} = cell;
+		attr.rowspan = Number(attr.rowspan) || 1;
+		attr.colspan = Number(attr.colspan) || 1;
+		if (dirs.every(dir => attr[dir] === 1)) {
+			return;
+		}
+		let {x, y} = coords;
+		if (x !== undefined) {
+			coords = this.toRawCoords(coords);
+		}
+		if (coords.start === false || x === undefined) {
+			({x, y} = this.toRenderedCoords(coords));
+		}
+		const splitting = {rowspan: 1, colspan: 1};
+		for (const dir of dirs) {
+			cell.setAttr(dir, 1);
+			splitting[dir] = attr[dir];
+			delete attr[dir];
+		}
+		for (let j = y; j < y + splitting.rowspan; j++) {
+			for (let i = x; i < x + splitting.colspan; i++) {
+				if (i > x || j > y) {
+					try {
+						this.insertTableCell('', {x: i, y: j}, subtype, attr);
+					} catch (e) {
+						if (!(e instanceof RangeError) || !e.message.startsWith('指定的坐标不是单元格起始点：')) {
+							throw e;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/** @param {TableCoords & TableRenderedCoords} coords */
+	splitIntoRows(coords) {
+		this.#split(coords, ['rowspan']);
+	}
+
+	/** @param {TableCoords & TableRenderedCoords} coords */
+	splitIntoCols(coords) {
+		this.#split(coords, ['colspan']);
+	}
+
+	/** @param {TableCoords & TableRenderedCoords} coords */
+	splitIntoCells(coords) {
+		this.#split(coords, ['rowspan', 'colspan']);
 	}
 }
 

@@ -19,7 +19,8 @@ const attributeParent = (constructor, i = 0) => class extends constructor {
 
 	/**
 	 * @this {{children: AttributeToken[]}}
-	 * @param {string|undefined} key
+	 * @template {string|undefined} T
+	 * @param {T} key
 	 */
 	getAttr(key) {
 		return this.children.at(i).getAttr(key);
