@@ -119,12 +119,15 @@
 13. [TdToken](#tdtoken)
     1. [原型属性](#tdtoken.prototype.properties)
         1. [subtype](#tdtoken.subtype)
-14. [选择器](#选择器)
+14. [DoubleUnderscoreToken](#doubleunderscoretoken)
+    1. [实例属性](#doubleunderscoretoken.instance.properties)
+        1. [name](#doubleunderscoretoken.name)
+15. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
     4. [伪选择器](#selector.pseudo)
-15. [$ (TokenCollection)](#-tokencollection)
+16. [$ (TokenCollection)](#-tokencollection)
 </details>
 
 # Parser
@@ -1144,6 +1147,24 @@ var root = Parser.parse('{|\n|+a\n!b\n|c\n|}'),
 assert(caption.subtype === 'caption');
 assert(th.subtype === 'th');
 assert(td.subtype === 'td');
+```
+</details>
+
+[返回目录](#目录)
+
+# DoubleUnderscoreToken
+状态开关。
+
+## 实例属性<a id="doubleunderscoretoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**name**: string<a id="doubleunderscoretoken.name"></a>
+
+```js
+var root = Parser.parse('__NOTOC__'),
+    doubleUnderscore = root.firstChild;
+assert(doubleUnderscore.name === 'notoc');
 ```
 </details>
 
