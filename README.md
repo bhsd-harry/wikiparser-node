@@ -1026,17 +1026,18 @@ assert(table.getNthCell({row: 0, column: 0}) === td);
 assert(table.getNthCell({x: 1, y: 0}) === td); // 该单元格跨了两列
 ```
 
-**insertTableRow**(row: number, attr: Record\<string, string>): TrToken<a id="tabletoken.inserttablerow"></a>
-- 插入空行。
+**insertTableRow**(row: number, attr: Record\<string, string\|boolean>, inner?: string, subtype?: 'td'\|'th', innerAttr?: Record\<string, string\|boolean>): TrToken<a id="tabletoken.inserttablerow"></a>
+- 插入空行或一行单元格。
 
 ```js
-var root = Parser.parse('{|\n|}'),
+var root = Parser.parse('{|\n|colspan=2|a\n|}'),
     table = root.firstChild;
-table.insertTableRow(0, {bgcolor: 'red'});
-assert(root.toString() === '{|\n|- bgcolor="red"\n|}');
+table.insertTableRow(1, {bgcolor: 'red'}); // 不填写 `inner` 等后续参数时会插入一个空行，且此时是无效行。
+table.insertTableRow(0, {}, 'b', 'th', {class: 'td'});
+assert(root.toString() === '{|\n|-\n! class="td"|b\n! class="td"|b\n|-\n|colspan=2|a\n|- bgcolor="red"\n|}');
 ```
 
-**insertTableCol**(x: number, inner: string, subtype: 'td'\|'th', attr: Record\<string, string>): void<a id="tabletoken.inserttablecol"></a>
+**insertTableCol**(x: number, inner: string, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): void<a id="tabletoken.inserttablecol"></a>
 - 插入一列单元格。
 
 ```js
@@ -1046,7 +1047,7 @@ table.insertTableCol(0, 'c', 'th', {align: 'center'});
 assert(root.toString() === '{|\n! align="center"|c\n|a\n|-\n! align="center"|c\n|b\n|}');
 ```
 
-**insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype: 'td'\|'th', attr: Record\<string, string>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
+**insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
 - 插入一个单元格。
 
 ```js
@@ -1077,26 +1078,26 @@ var root = Parser.parse('{|\n|colspan=2|a\n|-\n|b||c\n|}'),
 assert.deepStrictEqual(table.getFullCol(1), new Map([[a, false], [c, true]])); // 起始位置位于该列的单元格值为 `true`
 ```
 
-**formatTableRow**(y: number, attr: Record\<string, string>, multiRow?: boolean = false): void<a id="tabletoken.formattablerow"></a>
+**formatTableRow**(y: number, attr: string\|Record\<string, string\|boolean>, multiRow?: boolean = false): void<a id="tabletoken.formattablerow"></a>
 - 批量设置一行单元格的属性。
 
 ```js
 var root = Parser.parse('{|\n|rowspan=2|a\n|-\n|b\n|}'),
     table = root.firstChild;
-table.formatTableRow(1, {align: 'center'}); // `multiRow` 为假时忽略起始位置不在该行的单元格
+table.formatTableRow(1, 'th'); // `multiRow` 为假时忽略起始位置不在该行的单元格
 table.formatTableRow(1, {bgcolor: 'red'}, true);
-assert(root.toString() === '{|\n| rowspan="2" bgcolor="red"|a\n|-\n| align="center" bgcolor="red"|b\n|}');
+assert(root.toString() === '{|\n| rowspan="2" bgcolor="red"|a\n|-\n! bgcolor="red"|b\n|}');
 ```
 
-**formatTableCol**(x: number, attr: Record\<string, string>, multiCol?: boolean = false): void<a id="tabletoken.formattablecol"></a>
+**formatTableCol**(x: number, attr: string\|Record\<string, string\|boolean>, multiCol?: boolean = false): void<a id="tabletoken.formattablecol"></a>
 - 批量设置一列单元格的属性。
 
 ```js
 var root = Parser.parse('{|\n|colspan=2|a\n|-\n|b||c\n|}'),
     table = root.firstChild;
-table.formatTableCol(1, {align: 'center'}); // `multiCol` 为假时忽略起始位置不在该列的单元格
+table.formatTableCol(1, 'th'); // `multiCol` 为假时忽略起始位置不在该列的单元格
 table.formatTableCol(1, {bgcolor: 'red'}, true);
-assert(root.toString() === '{|\n| colspan="2" bgcolor="red"|a\n|-\n|b|| align="center" bgcolor="red"|c\n|}');
+assert(root.toString() === '{|\n| colspan="2" bgcolor="red"|a\n|-\n|b\n! bgcolor="red"|c\n|}');
 ```
 
 **removeTableRow**(y: number): void<a id="tabletoken.removetablerow"></a>

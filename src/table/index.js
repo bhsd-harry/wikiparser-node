@@ -6,7 +6,8 @@ const {typeError} = require('../../util/debug'),
 	Token = require('..'), // eslint-disable-line no-unused-vars
 	TrToken = require('./tr'),
 	TdToken = require('./td'),
-	SyntaxToken = require('../syntax');
+	SyntaxToken = require('../syntax'),
+	AttributeToken = require('../attribute'); // eslint-disable-line no-unused-vars
 
 /**
  * @param {TableCoords} coords1
@@ -114,48 +115,6 @@ class TableToken extends TrToken {
 			coords = this.toRawCoords(coords);
 		}
 		return coords && this.getNthRow(coords.row).getNthCol(coords.column);
-	}
-
-	/**
-	 * @param {number} row
-	 * @param {Record<string, string|boolean>} attr
-	 * @returns {TrToken}
-	 */
-	insertTableRow(row, attr = {}) {
-		if (typeof attr !== 'object') {
-			typeError(this, 'insertTableRow', 'Object');
-		}
-		const reference = this.getNthRow(row, false, true),
-			AttributeToken = require('../attribute'); // eslint-disable-line no-unused-vars
-		/** @type {TrToken & AttributeToken}} */
-		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
-		for (const [k, v] of Object.entries(attr)) {
-			token.setAttr(k, v);
-		}
-		return this.insertBefore(token, reference);
-	}
-
-	/**
-	 * @param {string|Token} inner
-	 * @param {TableCoords & TableRenderedCoords} coords
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string|boolean>} attr
-	 * @returns {TdToken}
-	 */
-	insertTableCell(inner, coords, subtype = 'td', attr = {}) {
-		if (coords.column === undefined) {
-			const {x, y} = coords;
-			coords = this.toRawCoords(coords);
-			if (!coords?.start) {
-				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
-			}
-		}
-		const rowToken = this.getNthRow(coords.row ?? 0, true);
-		if (rowToken === this) {
-			super.insertTableCell(inner, coords, subtype, attr);
-		} else {
-			rowToken.insertTableCell(inner, coords, subtype, attr);
-		}
 	}
 
 	getLayout() {
@@ -282,12 +241,66 @@ class TableToken extends TrToken {
 	}
 
 	/**
+	 * @param {string|Token} inner
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string|boolean>} attr
+	 * @returns {TdToken}
+	 */
+	insertTableCell(inner, coords, subtype = 'td', attr = {}) {
+		if (coords.column === undefined) {
+			const {x, y} = coords;
+			coords = this.toRawCoords(coords);
+			if (!coords?.start) {
+				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
+			}
+		}
+		const rowToken = this.getNthRow(coords.row ?? 0, true);
+		if (rowToken === this) {
+			return super.insertTableCell(inner, coords, subtype, attr);
+		}
+		return rowToken.insertTableCell(inner, coords, subtype, attr);
+	}
+
+	/**
+	 * @param {number} row
+	 * @param {Record<string, string|boolean>} attr
+	 * @param {string|Token} inner
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string|boolean>} attr
+	 */
+	insertTableRow(row, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
+		if (typeof attr !== 'object') {
+			typeError(this, 'insertTableRow', 'Object');
+		}
+		let reference = this.getNthRow(row, false, true);
+		/** @type {TrToken & AttributeToken}} */
+		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
+		for (const [k, v] of Object.entries(attr)) {
+			token.setAttr(k, v);
+		}
+		if (reference === this) { // `row === 0`且表格自身是有效行
+			reference = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
+			this.insertBefore(reference, this.children.slice(2).find(({type}) => type !== 'td'));
+			for (const cell of this.children.filter(({type}) => type === 'td')) {
+				reference.appendChild(cell);
+			}
+		}
+		this.insertBefore(token, reference);
+		if (inner !== undefined) {
+			token.insertTableCell(inner, {column: 0}, subtype, innerAttr);
+			this.fillTableRow(row, inner, subtype, innerAttr);
+		}
+		return token;
+	}
+
+	/**
 	 * @param {number} x
 	 * @param {string|Token} inner
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string>} attr
 	 */
-	insertTableCol(x, inner, subtype, attr) {
+	insertTableCol(x, inner, subtype = 'td', attr = {}) {
 		if (typeof x !== 'number') {
 			typeError(this, 'insertTableCol', 'Number');
 		}
@@ -312,31 +325,37 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
-	 * @param {Record<string, string>} attr
+	 * @param {Map<TdToken, boolean>} cells
+	 * @param {string|Record<string, string|boolean>} attr
 	 */
-	formatTableRow(y, attr = {}, multiRow = false) {
-		for (const [token, start] of this.getFullRow(y)) {
-			if (multiRow || start) {
-				for (const [k, v] of Object.entries(attr)) {
-					token.setAttr(k, v);
+	#format(cells, attr = {}, multi = false) {
+		for (const [token, start] of cells) {
+			if (multi || start) {
+				if (typeof attr === 'string') {
+					token.setSyntax(attr);
+				} else {
+					for (const [k, v] of Object.entries(attr)) {
+						token.setAttr(k, v);
+					}
 				}
 			}
 		}
 	}
 
 	/**
+	 * @param {number} y
+	 * @param {string|Record<string, string|boolean>} attr
+	 */
+	formatTableRow(y, attr = {}, multiRow = false) {
+		this.#format(this.getFullRow(y), attr, multiRow);
+	}
+
+	/**
 	 * @param {number} x
-	 * @param {Record<string, string>} attr
+	 * @param {string|Record<string, string|boolean>} attr
 	 */
 	formatTableCol(x, attr = {}, multiCol = false) {
-		for (const [token, start] of this.getFullCol(x)) {
-			if (multiCol || start) {
-				for (const [k, v] of Object.entries(attr)) {
-					token.setAttr(k, v);
-				}
-			}
-		}
+		this.#format(this.getFullCol(x), attr, multiCol);
 	}
 
 	/** @param {number} y */
