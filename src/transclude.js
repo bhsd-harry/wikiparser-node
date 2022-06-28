@@ -16,6 +16,7 @@ class TranscludeToken extends Token {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Map<string, Set<ParameterToken>>} */ #args = new Map();
 
+	/** @complexity `n` */
 	setModifier(modifier = '') {
 		if (typeof modifier !== 'string') {
 			typeError(this, 'setModifier', 'String');
@@ -38,6 +39,7 @@ class TranscludeToken extends Token {
 	 * @param {string} title
 	 * @param {[string, string|undefined][]} parts
 	 * @param {accum} accum
+	 * @complexity `n²`
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
@@ -195,7 +197,10 @@ class TranscludeToken extends Token {
 		return 1;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @returns {string}
+	 * @complexity `n`
+	 */
 	text() {
 		const {children, childElementCount, firstElementChild} = this;
 		return `{{${this.modifier}${this.modifier && ':'}${
@@ -211,7 +216,10 @@ class TranscludeToken extends Token {
 		return this.getAllArgs().flatMap(child => child.plain());
 	}
 
-	/** @param {number|ParameterToken} addedToken */
+	/**
+	 * @param {number|ParameterToken} addedToken
+	 * @complexity `n`
+	 */
 	#handleAnonArgChange(addedToken) {
 		const args = this.getAnonArgs(),
 			added = typeof addedToken !== 'number',
@@ -234,7 +242,10 @@ class TranscludeToken extends Token {
 		}
 	}
 
-	/** @param {number} i */
+	/**
+	 * @param {number} i
+	 * @complexity `n`
+	 */
 	removeAt(i) {
 		const /** @type {ParameterToken} */ token = super.removeAt(i);
 		if (token.anon) {
@@ -249,7 +260,10 @@ class TranscludeToken extends Token {
 		return token;
 	}
 
-	/** @param {ParameterToken} token */
+	/**
+	 * @param {ParameterToken} token
+	 * @complexity `n`
+	 */
 	insertAt(token, i = this.childElementCount) {
 		super.insertAt(token, i);
 		if (token.anon) {
@@ -261,16 +275,23 @@ class TranscludeToken extends Token {
 		return token;
 	}
 
-	/** @returns {ParameterToken[]} */
+	/**
+	 * @returns {ParameterToken[]}
+	 * @complexity `n`
+	 */
 	getAllArgs() {
 		return this.children.filter(child => child instanceof ParameterToken);
 	}
 
+	/** @complexity `n` */
 	getAnonArgs() {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
-	/** @param {string|number} key */
+	/**
+	 * @param {string|number} key
+	 * @complexity `n`
+	 */
 	getArgs(key, exact = false, copy = true) {
 		if (!['string', 'number'].includes(typeof key)) {
 			typeError(this, 'getArgs', 'String', 'Number');
@@ -291,23 +312,33 @@ class TranscludeToken extends Token {
 		return args;
 	}
 
-	/** @param {string|number} key */
+	/**
+	 * @param {string|number} key
+	 * @complexity `n`
+	 */
 	hasArg(key, exact = false) {
 		return this.getArgs(key, exact, false).size > 0;
 	}
 
-	/** @param {string|number} key */
+	/**
+	 * @param {string|number} key
+	 * @complexity `n`
+	 */
 	getArg(key, exact = false) {
 		return [...this.getArgs(key, exact, false)].sort((a, b) => a.comparePosition(b)).at(-1);
 	}
 
-	/** @param {string|number} key */
+	/**
+	 * @param {string|number} key
+	 * @complexity `n²`
+	 */
 	removeArg(key, exact = false) {
 		for (const token of this.getArgs(key, exact, false)) {
 			this.removeChild(token);
 		}
 	}
 
+	/** @complexity `n` */
 	getKeys() {
 		const args = this.getAllArgs();
 		if (this.#keys.size === 0 && args.length) {
@@ -318,7 +349,10 @@ class TranscludeToken extends Token {
 		return [...this.#keys];
 	}
 
-	/** @param {string|number} key */
+	/**
+	 * @param {string|number} key
+	 * @complexity `n`
+	 */
 	getValues(key) {
 		return [...this.getArgs(key, false, false)].map(token => token.getValue());
 	}
@@ -327,6 +361,7 @@ class TranscludeToken extends Token {
 	 * @template {string|number|undefined} T
 	 * @param {T} key
 	 * @returns {T extends undefined ? Object<string, string> : string}
+	 * @complexity `n`
 	 */
 	getValue(key) {
 		if (key !== undefined) {
@@ -338,6 +373,7 @@ class TranscludeToken extends Token {
 	/**
 	 * @param {string} val
 	 * @returns {ParameterToken}
+	 * @complexity `n`
 	 */
 	newAnonArg(val) {
 		val = String(val);
@@ -356,6 +392,7 @@ class TranscludeToken extends Token {
 	/**
 	 * @param {string} key
 	 * @param {string} value
+	 * @complexity `n`
 	 */
 	setValue(key, value) {
 		if (typeof key !== 'string') {
@@ -380,6 +417,7 @@ class TranscludeToken extends Token {
 		this.appendChild(firstElementChild.lastChild);
 	}
 
+	/** @complexity `n` */
 	anonToNamed() {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
@@ -453,6 +491,7 @@ class TranscludeToken extends Token {
 		}
 	}
 
+	/** @complexity `n` */
 	hasDuplicatedArgs() {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
@@ -460,6 +499,7 @@ class TranscludeToken extends Token {
 		return this.getAllArgs().length - this.getKeys().length;
 	}
 
+	/** @complexity `n` */
 	getDuplicatedArgs() {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
@@ -470,6 +510,7 @@ class TranscludeToken extends Token {
 	/**
 	 * `aggressive = false`时只移除空参数和全同参数，优先保留匿名参数，否则将所有匿名参数更改为命名。
 	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数
+	 * @complexity `n²`
 	 */
 	fixDuplication(aggressive = false) {
 		if (!this.hasDuplicatedArgs()) {
@@ -550,7 +591,10 @@ class TranscludeToken extends Token {
 		return duplicatedKeys;
 	}
 
-	/** @returns {TranscludeToken} */
+	/**
+	 * @returns {TranscludeToken}
+	 * @complexity `n`
+	 */
 	escapeTables() {
 		const count = this.hasDuplicatedArgs();
 		if (!/\n\s*:*\s*{\|.*\n\s*\|}/s.test(this.text()) || !count) {

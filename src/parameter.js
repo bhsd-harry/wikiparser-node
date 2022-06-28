@@ -92,7 +92,10 @@ class ParameterToken extends fixedToken(Token) {
 		return this.lastElementChild.plain();
 	}
 
-	/** @param {ParameterToken} token */
+	/**
+	 * @param {ParameterToken} token
+	 * @complexity `n`
+	 */
 	safeReplaceWith(token) {
 		Parser.warn(`${this.constructor.name}.safeReplaceWith 方法退化到 replaceWith。`);
 		return this.replaceWith(token);

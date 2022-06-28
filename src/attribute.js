@@ -15,7 +15,10 @@ class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
 	#sanitized = true;
 
-	/** 从`this.#attr`更新`childNodes` */
+	/**
+	 * 从`this.#attr`更新`childNodes`
+	 * @complexity `n`
+	 */
 	#updateFromAttr() {
 		let equal = '=';
 		const ParameterToken = require('./parameter'),
@@ -35,6 +38,7 @@ class AttributeToken extends Token {
 		return str && ` ${str}`;
 	}
 
+	/** @complexity `n²` */
 	sanitize() {
 		if (!Parser.running && !this.#sanitized) {
 			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
@@ -44,7 +48,10 @@ class AttributeToken extends Token {
 		this.#sanitized = true;
 	}
 
-	/** 从`childNodes`更新`this.#attr` */
+	/**
+	 * 从`childNodes`更新`this.#attr`
+	 * @complexity `n`
+	 */
 	#parseAttr() {
 		this.#attr.clear();
 		const config = this.getAttribute('config'),
@@ -101,6 +108,7 @@ class AttributeToken extends Token {
 		return super.getAttribute(key);
 	}
 
+	/** @complexity `n` */
 	build() {
 		super.build();
 		if (this.type === 'ext-attr') {
@@ -169,6 +177,7 @@ class AttributeToken extends Token {
 	/**
 	 * @param {string} key
 	 * @param {string|boolean} value
+	 * @complexity `n²`
 	 */
 	setAttr(key, value, init = false) {
 		init &&= !externalUse('setAttr');
@@ -199,7 +208,10 @@ class AttributeToken extends Token {
 		return true;
 	}
 
-	/** @param {string} key */
+	/**
+	 * @param {string} key
+	 * @complexity `n²`
+	 */
 	removeAttr(key) {
 		if (typeof key !== 'string') {
 			typeError(this, 'removeAttr', 'String');
@@ -213,6 +225,7 @@ class AttributeToken extends Token {
 	/**
 	 * @param {string} key
 	 * @param {boolean|undefined} force
+	 * @complexity `n²`
 	 */
 	toggleAttr(key, force) {
 		if (typeof key !== 'string') {
@@ -242,7 +255,10 @@ class AttributeToken extends Token {
 		return [];
 	}
 
-	/** @param {number} i */
+	/**
+	 * @param {number} i
+	 * @complexity `n`
+	 */
 	removeAt(i, done = false) {
 		done &&= !externalUse('removeAt');
 		done ||= Parser.running;
@@ -256,6 +272,7 @@ class AttributeToken extends Token {
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
+	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length, done = false) {
 		done &&= !externalUse('insertAt');
@@ -267,7 +284,10 @@ class AttributeToken extends Token {
 		return token;
 	}
 
-	/** @param {...string|Token} elements */
+	/**
+	 * @param {...string|Token} elements
+	 * @complexity `n²`
+	 */
 	replaceChildren(...elements) {
 		let done = false;
 		if (typeof elements.at(-1) === 'boolean') {

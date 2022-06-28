@@ -14,6 +14,7 @@ class TdToken extends fixedToken(TrToken) {
 	type = 'td';
 	#innerSyntax = '';
 
+	/** @complexity `n` */
 	get subtype() {
 		return this.getSyntax().subtype;
 	}
@@ -22,7 +23,10 @@ class TdToken extends fixedToken(TrToken) {
 		return this.firstElementChild.text().startsWith('\n');
 	}
 
-	/** @returns {{subtype: 'td'|'th'|'caption', escape: boolean, correction: boolean}} */
+	/**
+	 * @returns {{subtype: 'td'|'th'|'caption', escape: boolean, correction: boolean}}
+	 * @complexity `n`
+	 */
 	getSyntax() {
 		const syntax = this.firstElementChild.text(),
 			escape = syntax.includes('{{');
@@ -142,6 +146,7 @@ class TdToken extends fixedToken(TrToken) {
 		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, escape);
 	}
 
+	/** @complexity `n` */
 	#correct() {
 		if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
@@ -152,6 +157,7 @@ class TdToken extends fixedToken(TrToken) {
 		}
 	}
 
+	/** @complexity `n` */
 	independence() {
 		if (!this.isIndependent()) {
 			const {subtype, escape} = this.getSyntax();
@@ -159,7 +165,10 @@ class TdToken extends fixedToken(TrToken) {
 		}
 	}
 
-	/** @returns {string} */
+	/**
+	 * @returns {string}
+	 * @complexity `n`
+	 */
 	toString() {
 		this.#correct();
 		const [syntax, attr, inner] = this.children;
@@ -174,7 +183,10 @@ class TdToken extends fixedToken(TrToken) {
 		return this.#innerSyntax.length;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @returns {string}
+	 * @complexity `n`
+	 */
 	text() {
 		this.#correct();
 		const [syntax, attr, inner] = this.children;

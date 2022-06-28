@@ -13,7 +13,10 @@ const {typeError} = require('../../util/debug'),
  * @param {TableCoords} coords1
  * @param {TableCoords} coords2
  */
-const cmpCoords = (coords1, coords2) => coords1?.row === coords2?.row && coords1?.column === coords2?.column;
+const cmpCoords = (coords1, coords2) => {
+	const diff = coords1?.row - coords2?.row;
+	return diff === 0 ? coords1?.column - coords2?.column : diff;
+};
 
 /**
  * 表格
@@ -40,6 +43,7 @@ class TableToken extends TrToken {
 	 * @template {string|Token} T
 	 * @param {T} token
 	 * @returns {T}
+	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		const previous = this.childNodes.at(i - 1),
@@ -55,6 +59,7 @@ class TableToken extends TrToken {
 		return super.insertAt(token, i);
 	}
 
+	/** @complexity `n` */
 	close(syntax = '\n|}') {
 		const config = this.getAttribute('config'),
 			inner = Parser.parse(syntax, this.getAttribute('include'), 2, config),
@@ -74,13 +79,19 @@ class TableToken extends TrToken {
 		}
 	}
 
-	/** @returns {number} */
+	/**
+	 * @returns {number}
+	 * @complexity `n`
+	 */
 	getRowCount() {
 		return super.getRowCount()
-			+ this.children.filter(({type}) => type === 'tr').reduce((acc, cur) => acc + cur.getRowCount(), 0);
+			+ this.children.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
-	/** @param {number} n */
+	/**
+	 * @param {number} n
+	 * @complexity `n`
+	 */
 	getNthRow(n, force = false, insert = false) {
 		if (typeof n !== 'number') {
 			typeError(this, 'getNthRow', 'Number');
@@ -95,21 +106,22 @@ class TableToken extends TrToken {
 		} else if (isRow) {
 			n--;
 		}
-		let /** @type {TrToken} */ nextElementSibling = this.children.find(({type}) => type === 'tr'),
-			rowCount = nextElementSibling?.getRowCount();
-		if (nextElementSibling === undefined) {
-			const {lastElementChild} = this;
-			return lastElementChild instanceof SyntaxToken ? lastElementChild : undefined;
+		for (const child of this.children.slice(2)) {
+			if (child.type === 'tr' && child.getRowCount()) {
+				n--;
+				if (n < 0) {
+					return child;
+				}
+			} else if (child.type === 'table-syntax') {
+				return child;
+			}
 		}
-		while (n > 0 || rowCount === 0) {
-			n -= rowCount;
-			({nextElementSibling} = nextElementSibling);
-			rowCount = nextElementSibling instanceof TrToken && nextElementSibling.getRowCount();
-		}
-		return nextElementSibling;
 	}
 
-	/** @param {TableCoords & TableRenderedCoords} coords */
+	/**
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @complexity `n`
+	 */
 	getNthCell(coords) {
 		if (coords.row === undefined) {
 			coords = this.toRawCoords(coords);
@@ -117,27 +129,55 @@ class TableToken extends TrToken {
 		return coords && this.getNthRow(coords.row).getNthCol(coords.column);
 	}
 
-	getLayout() {
-		const nRows = this.getRowCount(),
-			/** @type {TableCoords[][]} */ layout = new Array(nRows).fill().map(() => []),
-			rows = new Array(nRows).fill().map((_, i) => this.getNthRow(i));
-		for (let i = 0; i < nRows; i++) {
-			const rowLayout = layout[i],
-				row = rows[i];
-			for (let j = 0, k = 0; j < row.getColCount(); j++) {
-				while (rowLayout[k] !== undefined) {
-					k++;
-				}
-				const /** @type {TableCoords} */ coords = {row: i, column: j},
-					cell = row.getNthCol(j),
-					rowspan = cell.getAttr('rowspan'),
-					colspan = cell.getAttr('colspan');
-				for (let y = i; y < Math.min(i + rowspan, nRows); y++) {
-					for (let x = k; x < k + colspan; x++) {
-						layout[y][x] = coords;
+	/**
+	 * @param {TableCoords & TableRenderedCoords} stop
+	 * @complexity `n`
+	 */
+	getLayout(stop = {}) {
+		const rows = [
+				...super.getRowCount() ? [this] : [],
+				...this.children.filter(child => child.type === 'tr' && child.getRowCount()),
+			],
+			{length} = rows,
+			/** @type {TableCoords[][]} */ layout = rows.map(() => []);
+		for (const [i, rowToken] of rows.entries()) {
+			if (i > stop.row ?? stop.y) {
+				break;
+			}
+			const rowLayout = layout[i];
+			let j = 0,
+				k = 0,
+				last;
+			for (const cell of rowToken.children) {
+				if (cell instanceof TdToken) {
+					if (cell.isIndependent()) {
+						last = cell.subtype !== 'caption';
 					}
+					if (last) {
+						const /** @type {TableCoords} */ coords = {row: i, column: j},
+							rowspan = cell.getAttr('rowspan'),
+							colspan = cell.getAttr('colspan');
+						j++;
+						while (rowLayout[k]) {
+							k++;
+						}
+						if (i === stop.row && j > stop.column) {
+							layout[i][k] = coords;
+							return layout;
+						}
+						for (let y = i; y < Math.min(i + rowspan, length); y++) {
+							for (let x = k; x < k + colspan; x++) {
+								layout[y][x] = coords;
+							}
+						}
+						k += colspan;
+						if (i === stop.y && k > stop.x) {
+							return layout;
+						}
+					}
+				} else if (['tr', 'table-syntax'].includes(cell.type)) {
+					break;
 				}
-				k += colspan;
 			}
 		}
 		return layout;
@@ -146,32 +186,34 @@ class TableToken extends TrToken {
 	/**
 	 * @param {TableCoords}
 	 * @returns {TableRenderedCoords}
+	 * @complexity `n`
 	 */
 	toRenderedCoords({row, column}) {
 		if (typeof row !== 'number' || typeof column !== 'number') {
 			typeError(this, 'toRenderedCoords', 'Number');
 		}
-		const rowLayout = this.getLayout()[row],
-			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}));
+		const rowLayout = this.getLayout({row, column})[row],
+			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}) === 0);
 		return rowLayout && (x === -1 ? undefined : {y: row, x});
 	}
 
-	/** @param {TableRenderedCoords} */
+	/**
+	 * @param {TableRenderedCoords}
+	 * @complexity `n`
+	 */
 	toRawCoords({x, y}) {
 		if (typeof x !== 'number' || typeof y !== 'number') {
 			typeError(this, 'toRawCoords', 'Number');
 		}
-		const rowLayout = this.getLayout()[y],
+		const rowLayout = this.getLayout({x, y})[y],
 			coords = rowLayout?.[x];
 		if (coords) {
-			const prevCoords = rowLayout[x - 1];
-			coords.start = coords?.row === y && !cmpCoords(prevCoords, coords);
+			return {...coords, start: coords.row === y && rowLayout[x - 1] !== coords};
 		} else if (!rowLayout && y === 0) {
 			return {row: 0, column: 0, start: true};
 		} else if (x === rowLayout?.length) {
-			return {row: y, column: this.getNthRow(y).getColCount(), start: true};
+			return {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true};
 		}
-		return coords;
 	}
 
 	/** @param {number} y */
@@ -180,7 +222,7 @@ class TableToken extends TrToken {
 			typeError(this, 'getFullRow', 'Number');
 		}
 		return new Map(
-			this.getLayout()[y]?.filter(() => true)?.map(coords => [this.getNthCell(coords), coords.row === y]),
+			this.getLayout({y})[y]?.map(coords => [this.getNthCell(coords), coords.row === y]),
 		);
 	}
 
@@ -192,7 +234,7 @@ class TableToken extends TrToken {
 		const layout = this.getLayout(),
 			colLayout = layout.map(row => row[x]).filter(coords => coords);
 		return new Map(
-			colLayout.map(coords => [this.getNthCell(coords), !cmpCoords(layout[coords.row][x - 1], coords)]),
+			colLayout.map(coords => [this.getNthCell(coords), cmpCoords(layout[coords.row][x - 1], coords) !== 0]),
 		);
 	}
 
@@ -319,7 +361,7 @@ class TableToken extends TrToken {
 		for (let i = 0; i < layout.length; i++) {
 			const coords = layout[i][x],
 				prevCoords = layout[i][x - 1];
-			if (cmpCoords(prevCoords, coords)) {
+			if (cmpCoords(prevCoords, coords) === 0) {
 				const cell = this.getNthCell(coords);
 				cell.setAttr('colspan', cell.getAttr('colspan') + 1);
 			} else {
@@ -453,6 +495,7 @@ class TableToken extends TrToken {
 						if (!(e instanceof RangeError) || !e.message.startsWith('指定的坐标不是单元格起始点：')) {
 							throw e;
 						}
+						break;
 					}
 				}
 			}

@@ -75,6 +75,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.setAttribute('name', name).#tag = tag;
 	}
 
+	/** @complexity `n` */
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
 			{name, parentElement, closing, selfClosing} = this,
@@ -114,6 +115,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.after(root.firstChild);
 	}
 
+	/** @complexity `n` */
 	fix() {
 		const config = this.getAttribute('config'),
 			{parentElement, selfClosing, name, firstElementChild} = this;

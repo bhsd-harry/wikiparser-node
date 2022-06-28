@@ -74,6 +74,7 @@ class Token extends AstElement {
 		accum.push(this);
 	}
 
+	/** @complexity `n` */
 	cloneChildren() {
 		if (!Parser.debugging && externalUse('cloneChildren')) {
 			this.debugOnly('cloneChildren');
@@ -81,6 +82,7 @@ class Token extends AstElement {
 		return this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
 	}
 
+	/** @complexity `n²` */
 	cloneNode() {
 		if (!this.isPlain()) {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
@@ -197,6 +199,7 @@ class Token extends AstElement {
 	/**
 	 * @param {number} i
 	 * @returns {string|Token}
+	 * @complexity `n`
 	 */
 	removeAt(i) {
 		const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
@@ -218,6 +221,7 @@ class Token extends AstElement {
 	/**
 	 * @template {string|Token} T
 	 * @param {T} token
+	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (this.#acceptable) {
@@ -241,7 +245,10 @@ class Token extends AstElement {
 		return token;
 	}
 
-	/** @param {Token} token */
+	/**
+	 * @param {Token} token
+	 * @complexity `n`
+	 */
 	safeReplaceWith(token) {
 		const {parentNode} = this;
 		if (!parentNode) {
@@ -308,6 +315,7 @@ class Token extends AstElement {
 		return `${iw ? `${iw[1].toLowerCase()}:` : ''}${namespace}${namespace && ':'}${ucfirst(title)}`;
 	}
 
+	/** @complexity `n` */
 	sections() {
 		if (this.type !== 'root') {
 			return;
@@ -336,7 +344,10 @@ class Token extends AstElement {
 		return sections;
 	}
 
-	/** @param {number} n */
+	/**
+	 * @param {number} n
+	 * @complexity `n`
+	 */
 	section(n) {
 		if (typeof n !== 'number') {
 			typeError(this, 'section', 'Number');
@@ -347,6 +358,7 @@ class Token extends AstElement {
 	/**
 	 * @param {string|undefined} tag
 	 * @returns {[Token, Token]}
+	 * @complexity `n`
 	 */
 	findEnclosingHtml(tag) {
 		if (tag !== undefined && typeof tag !== 'string') {
@@ -356,24 +368,34 @@ class Token extends AstElement {
 		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
 			throw new RangeError(`非法的标签或空标签：${tag}`);
 		}
-		let {previousElementSibling, nextElementSibling} = this;
-		while (previousElementSibling
-			&& !previousElementSibling.matches(`html${tag && '#'}${tag ?? ''}[selfClosing=false][closing=false]`)
-		) {
-			({previousElementSibling} = previousElementSibling);
+		const {parentElement} = this;
+		if (!parentElement) {
+			return;
 		}
-		if (!previousElementSibling) {
-			return this.parentElement?.findEnclosingHtml(tag);
+		const {children} = parentElement,
+			index = children.indexOf(this);
+		let i;
+		for (i = index - 1; i >= 0; i--) {
+			if (children[i].matches(`html${tag && '#'}${tag ?? ''}[selfClosing=false][closing=false]`)) {
+				break;
+			}
 		}
-		tag = previousElementSibling.name;
-		while (nextElementSibling && !nextElementSibling.matches(`html#${tag}[selfClosing=false][closing=true]`)) {
-			({nextElementSibling} = nextElementSibling);
+		if (i === -1) {
+			return parentElement.findEnclosingHtml(tag);
 		}
-		return nextElementSibling
-			? [previousElementSibling, nextElementSibling]
-			: this.parentElement?.findEnclosingHtml(tag);
+		const opening = children[i],
+			{name} = opening;
+		for (i = index + 1; i < children.length; i++) {
+			if (children[i].matches(`html#${name}[selfClosing=false][closing=true]`)) {
+				break;
+			}
+		}
+		return i === children.length
+			? parentElement.findEnclosingHtml(tag)
+			: [opening, children[i]];
 	}
 
+	/** @complexity `n` */
 	getCategories() {
 		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
 	}
@@ -438,7 +460,10 @@ class Token extends AstElement {
 		return this;
 	}
 
-	/** @param {string} str */
+	/**
+	 * @param {string} str
+	 * @complexity `n`
+	 */
 	buildFromStr(str) {
 		if (!Parser.debugging && externalUse('buildFromStr')) {
 			this.debugOnly('buildFromStr');
@@ -453,7 +478,10 @@ class Token extends AstElement {
 		});
 	}
 
-	/** 将占位符替换为子Token */
+	/**
+	 * 将占位符替换为子Token
+	 * @complexity `n`
+	 */
 	build() {
 		if (!Parser.debugging && externalUse('build')) {
 			this.debugOnly('build');

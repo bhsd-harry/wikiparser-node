@@ -31,6 +31,7 @@ class TrToken extends attributeParent(Token, 1) {
 		this.protectChildren(0, 1);
 	}
 
+	/** @complexity `n²` */
 	cloneNode() {
 		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
 			/** @type {typeof TrToken} */ Constructor = this.constructor;
@@ -87,6 +88,7 @@ class TrToken extends attributeParent(Token, 1) {
 		syntax.replaceChildren(...token.childNodes);
 	}
 
+	/** @complexity `n` */
 	escape() {
 		for (const child of this.children) {
 			if (child instanceof SyntaxToken) {
@@ -106,7 +108,10 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 	}
 
-	/** @param {number} i */
+	/**
+	 * @param {number} i
+	 * @complexity `n`
+	 */
 	removeAt(i) {
 		const TdToken = require('./td'),
 			child = this.childNodes.at(i);
@@ -123,6 +128,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @template {string|Token} T
 	 * @param {T} token
 	 * @returns {T}
+	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running && !(token instanceof TrToken)) {
@@ -136,19 +142,63 @@ class TrToken extends attributeParent(Token, 1) {
 		return super.insertAt(token, i);
 	}
 
+	/**
+	 * @returns {0|1}
+	 * @complexity `n`
+	 */
 	getRowCount() {
 		const TdToken = require('./td');
-		return Number(this.children.some(child => child instanceof TdToken && child.subtype !== 'caption'));
+		return Number(this.children.some(child =>
+			child instanceof TdToken && child.isIndependent() && !child.firstElementChild.text().endsWith('+'),
+		));
 	}
 
+	/**
+	 * @param {(children: Token[], index: number) => Token[]} subset
+	 * @complexity `n`
+	 */
+	#getSiblingRow(subset) {
+		const {parentElement} = this;
+		if (!parentElement) {
+			return;
+		}
+		const {children} = parentElement,
+			index = children.indexOf(this);
+		for (const child of subset(children, index)) {
+			if (child instanceof TrToken && child.getRowCount()) {
+				return child;
+			}
+		}
+	}
+
+	/** @complexity `n` */
+	getNextRow() {
+		return this.#getSiblingRow((children, index) => children.slice(index + 1));
+	}
+
+	/** @complexity `n` */
+	getPreviousRow() {
+		return this.#getSiblingRow((children, index) => children.slice(0, index).reverse());
+	}
+
+	/** @complexity `n` */
 	getColCount() {
 		const TdToken = require('./td');
-		return this.children.filter(child => child instanceof TdToken && child.subtype !== 'caption').length;
+		let count = 0,
+			last = 0;
+		for (const child of this.children) {
+			if (child instanceof TdToken) {
+				last = child.isIndependent() ? Number(child.subtype !== 'caption') : last;
+				count += last;
+			}
+		}
+		return count;
 	}
 
 	/**
 	 * @param {number} n
 	 * @returns {TdToken}
+	 * @complexity `n`
 	 */
 	getNthCol(n, insert = false) {
 		if (typeof n !== 'number') {
@@ -160,18 +210,20 @@ class TrToken extends attributeParent(Token, 1) {
 			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
 		const TdToken = require('./td'); // eslint-disable-line no-unused-vars
-		let /** @type {TdToken} */ nextElementSibling = this.children.find(({type}) => type === 'td'),
-			isCaption = nextElementSibling?.subtype === 'caption';
-		if (nextElementSibling === undefined && this.type === 'table') {
-			const [,, plain] = this.children;
-			return plain?.isPlain() ? this.children[3] : plain;
+		let last = 0;
+		for (const child of this.children.slice(2)) {
+			if (child instanceof TdToken) {
+				if (child.isIndependent()) {
+					last = Number(child.subtype !== 'caption');
+				}
+				n -= last;
+				if (n < 0) {
+					return child;
+				}
+			} else if (['tr', 'table-syntax'].includes(child.type)) {
+				return child;
+			}
 		}
-		while (n > 0 || isCaption) {
-			n -= Number(!isCaption);
-			({nextElementSibling} = nextElementSibling);
-			isCaption = nextElementSibling?.subtype === 'caption';
-		}
-		return nextElementSibling;
 	}
 
 	/**
@@ -180,6 +232,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string|boolean>} attr
 	 * @returns {TdToken}
+	 * @complexity `n`
 	 */
 	insertTableCell(inner, {column}, subtype = 'td', attr = {}) {
 		const TdToken = require('./td'),
