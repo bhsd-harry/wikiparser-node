@@ -18,6 +18,22 @@ class TdToken extends fixedToken(TrToken) {
 	get subtype() {
 		return this.getSyntax().subtype;
 	}
+	set subtype(subtype) {
+		this.setSyntax(subtype);
+	}
+
+	get rowspan() {
+		return this.getAttr('rowspan');
+	}
+	set rowspan(rowspan) {
+		this.setAttr('rowspan', rowspan);
+	}
+	get colspan() {
+		return this.getAttr('colspan');
+	}
+	set colspan(colspan) {
+		this.setAttr('colspan', colspan);
+	}
 
 	isIndependent() {
 		return this.firstElementChild.text().startsWith('\n');

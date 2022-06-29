@@ -1,7 +1,6 @@
 'use strict';
 
 const {typeError} = require('../../util/debug'),
-	Ranges = require('../../lib/ranges'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..'), // eslint-disable-line no-unused-vars
 	TrToken = require('./tr'),
@@ -118,6 +117,14 @@ class TableToken extends TrToken {
 		}
 	}
 
+	/** @complexity `n` */
+	getAllRows() {
+		return [
+			...super.getRowCount() ? [this] : [],
+			...this.children.filter(child => child.type === 'tr' && child.getRowCount()),
+		];
+	}
+
 	/**
 	 * @param {TableCoords & TableRenderedCoords} coords
 	 * @complexity `n`
@@ -134,10 +141,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	getLayout(stop = {}) {
-		const rows = [
-				...super.getRowCount() ? [this] : [],
-				...this.children.filter(child => child.type === 'tr' && child.getRowCount()),
-			],
+		const rows = this.getAllRows(),
 			{length} = rows,
 			/** @type {TableCoords[][]} */ layout = rows.map(() => []);
 		for (const [i, rowToken] of rows.entries()) {
@@ -148,15 +152,14 @@ class TableToken extends TrToken {
 			let j = 0,
 				k = 0,
 				last;
-			for (const cell of rowToken.children) {
+			for (const cell of rowToken.children.slice(2)) {
 				if (cell instanceof TdToken) {
 					if (cell.isIndependent()) {
 						last = cell.subtype !== 'caption';
 					}
 					if (last) {
 						const /** @type {TableCoords} */ coords = {row: i, column: j},
-							rowspan = cell.getAttr('rowspan'),
-							colspan = cell.getAttr('colspan');
+							{rowspan, colspan} = cell;
 						j++;
 						while (rowLayout[k]) {
 							k++;
@@ -216,70 +219,122 @@ class TableToken extends TrToken {
 		}
 	}
 
-	/** @param {number} y */
+	/**
+	 * @param {number} y
+	 * @complexity `n²`
+	 */
 	getFullRow(y) {
 		if (typeof y !== 'number') {
 			typeError(this, 'getFullRow', 'Number');
 		}
+		const rows = this.getAllRows();
 		return new Map(
-			this.getLayout({y})[y]?.map(coords => [this.getNthCell(coords), coords.row === y]),
+			this.getLayout({y})[y]?.map(({row, column}) => [rows[row].getNthCol(column), row === y]),
 		);
 	}
 
-	/** @param {number} x */
+	/**
+	 * @param {number} x
+	 * @complexity `n`
+	 */
 	getFullCol(x) {
 		if (typeof x !== 'number') {
 			typeError(this, 'getFullCol', 'Number');
 		}
 		const layout = this.getLayout(),
-			colLayout = layout.map(row => row[x]).filter(coords => coords);
+			colLayout = layout.map(row => row[x]).filter(coords => coords),
+			rows = this.getAllRows();
 		return new Map(
-			colLayout.map(coords => [this.getNthCell(coords), cmpCoords(layout[coords.row][x - 1], coords) !== 0]),
+			colLayout.map(coords => [rows[coords.row].getNthCol(coords.column), layout[coords.row][x - 1] !== coords]),
 		);
 	}
 
 	/**
-	 * @param {number|number[]} rows
-	 * @param {string|Token} inner
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string>} attr
+	 * @param {Map<TdToken, boolean>} cells
+	 * @param {string|Record<string, string|boolean>} attr
+	 * @complexity `n`
 	 */
-	fillTableRow(rows, inner, subtype = 'td', attr = {}) {
-		if (typeof rows === 'number') {
-			rows = [rows];
-		} else if (rows === undefined) {
-			rows = new Ranges(':').applyTo(this.getRowCount());
-		} else if (!Array.isArray(rows)) {
-			typeError(this, 'fillTableRow', 'Number');
-		}
-		const layout = this.getLayout(),
-			maxCol = Math.max(...layout.map(row => row.length)),
-			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		for (const y of rows) {
-			const rowLayout = layout[y];
-			if (!rowLayout) {
-				continue;
-			}
-			const rowToken = this.getNthRow(y),
-				[,, plain] = rowToken.childNodes;
-			for (let i = 0, j = typeof plain === 'string' || plain.isPlain() ? 3 : 2; i < maxCol; i++, j++) {
-				const coords = rowLayout[i];
-				if (!coords) {
-					rowToken.insertAt(token.cloneNode(), j);
-				} else if (coords.row < y) {
-					j--;
+	#format(cells, attr = {}, multi = false) {
+		for (const [token, start] of cells) {
+			if (multi || start) {
+				if (typeof attr === 'string') {
+					token.setSyntax(attr);
+				} else {
+					for (const [k, v] of Object.entries(attr)) {
+						token.setAttr(k, v);
+					}
 				}
 			}
 		}
 	}
 
 	/**
+	 * @param {number} y
+	 * @param {string|Record<string, string|boolean>} attry
+	 * @complexity `n²`
+	 */
+	formatTableRow(y, attr = {}, multiRow = false) {
+		this.#format(this.getFullRow(y), attr, multiRow);
+	}
+
+	/**
+	 * @param {number} x
+	 * @param {string|Record<string, string|boolean>} attry
+	 * @complexity `n`
+	 */
+	formatTableCol(x, attr = {}, multiCol = false) {
+		this.#format(this.getFullCol(x), attr, multiCol);
+	}
+
+	/**
+	 * @param {number} y
+	 * @param {TrToken} rowToken
+	 * @param {TableCoords[][]} layout
+	 * @param {number} maxCol
+	 * @param {Token} token
+	 * @complexity `n²`
+	 */
+	#fill(y, rowToken, layout, maxCol, token) {
+		const rowLayout = layout[y],
+			{childNodes} = rowToken;
+		let lastIndex = childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption');
+		lastIndex = lastIndex === -1 ? undefined : lastIndex - childNodes.length;
+		for (let i = 0; i < maxCol; i++) {
+			if (!rowLayout[i]) {
+				rowToken.insertAt(token.cloneNode(), lastIndex);
+			}
+		}
+	}
+
+	/**
+	 * @param {number} y
 	 * @param {string|Token} inner
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string>} attr
+	 * @complexity `n²`
+	 */
+	fillTableRow(y, inner, subtype = 'td', attr = {}) {
+		const rowToken = this.getNthRow(y),
+			layout = this.getLayout({y}),
+			maxCol = Math.max(...layout.map(row => row.length)),
+			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		this.#fill(y, rowToken, layout, maxCol, token);
+	}
+
+	/**
+	 * @param {string|Token} inner
+	 * @param {'td'|'th'|'caption'} subtype
+	 * @param {Record<string, string>} attr
+	 * @complexity `n²`
 	 */
 	fillTable(inner, subtype = 'td', attr = {}) {
-		this.fillTableRow(undefined, inner, subtype, attr);
+		const rowTokens = this.getAllRows(),
+			layout = this.getLayout(),
+			maxCol = Math.max(...layout.map(row => row.length)),
+			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		for (const [y, rowToken] of rowTokens.entries()) {
+			this.#fill(y, rowToken, layout, maxCol, token);
+		}
 	}
 
 	/**
@@ -288,6 +343,7 @@ class TableToken extends TrToken {
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string|boolean>} attr
 	 * @returns {TdToken}
+	 * @complexity `n`
 	 */
 	insertTableCell(inner, coords, subtype = 'td', attr = {}) {
 		if (coords.column === undefined) {
@@ -310,6 +366,7 @@ class TableToken extends TrToken {
 	 * @param {string|Token} inner
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string|boolean>} attr
+	 * @complexity `n²`
 	 */
 	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
 		if (typeof attr !== 'object') {
@@ -323,20 +380,36 @@ class TableToken extends TrToken {
 		}
 		if (reference === this) { // `row === 0`且表格自身是有效行
 			reference = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
-			this.insertBefore(reference, this.children.slice(2).find(({type}) => type !== 'td'));
-			for (const cell of this.children.filter(({type}) => type === 'td')) {
-				reference.appendChild(cell);
+			const {childNodes} = this,
+				[,, plain] = childNodes,
+				start = typeof plain === 'string' || plain.isPlain() ? 3 : 2,
+				/** @type {TdToken[]} */ children = childNodes.slice(start),
+				index = children.findIndex(({type}) => type !== 'td');
+			this.insertAt(reference, index === -1 ? -1 : index + start);
+			for (const cell of children.slice(0, index === -1 ? undefined : index)) {
+				if (cell.subtype !== 'caption') {
+					reference.appendChild(cell);
+				}
 			}
 		}
 		this.insertBefore(token, reference);
 		if (inner !== undefined) {
-			const rowLayout = this.getLayout()[y] ?? [];
-			for (const coords of new Set(rowLayout.filter(({row}) => row < y))) {
-				const cell = this.getNthCell(coords);
-				cell.setAttr('rowspan', cell.getAttr('rowspan') + 1);
+			const td = token.insertTableCell(inner, {column: 0}, subtype, innerAttr),
+				/** @type {Set<TableCoords>} */ set = new Set(),
+				layout = this.getLayout({y}),
+				maxCol = Math.max(...layout.map(row => row.length)),
+				rowLayout = layout[y];
+			for (let i = 0; i < maxCol; i++) {
+				const coords = rowLayout[i];
+				if (!coords) {
+					token.appendChild(td.cloneNode());
+				} else if (!set.has(coords)) {
+					set.add(coords);
+					if (coords.row < y) {
+						this.getNthCell(coords).rowspan++;
+					}
+				}
 			}
-			token.insertTableCell(inner, {column: 0}, subtype, innerAttr);
-			this.fillTableRow(y, inner, subtype, innerAttr);
 		}
 		return token;
 	}
@@ -346,13 +419,14 @@ class TableToken extends TrToken {
 	 * @param {string|Token} inner
 	 * @param {'td'|'th'|'caption'} subtype
 	 * @param {Record<string, string>} attr
+	 * @complexity `n²`
 	 */
 	insertTableCol(x, inner, subtype = 'td', attr = {}) {
 		if (typeof x !== 'number') {
 			typeError(this, 'insertTableCol', 'Number');
 		}
 		const layout = this.getLayout(),
-			rowLength = layout.map(row => row.length),
+			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);
 		if (x > minCol) {
 			throw new RangeError(`表格第 ${rowLength.indexOf(minCol)} 行仅有 ${minCol} 列！`);
@@ -360,72 +434,68 @@ class TableToken extends TrToken {
 		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let i = 0; i < layout.length; i++) {
 			const coords = layout[i][x],
-				prevCoords = layout[i][x - 1];
-			if (cmpCoords(prevCoords, coords) === 0) {
-				const cell = this.getNthCell(coords);
-				cell.setAttr('colspan', cell.getAttr('colspan') + 1);
-			} else {
+				prevCoords = x === 0 ? true : layout[i][x - 1];
+			if (!prevCoords) {
+				continue;
+			} else if (prevCoords !== coords) {
 				const rowToken = this.getNthRow(i);
 				rowToken.insertBefore(token.cloneNode(), rowToken.getNthCol(coords.column, true));
-			}
-		}
-	}
-
-	/**
-	 * @param {Map<TdToken, boolean>} cells
-	 * @param {string|Record<string, string|boolean>} attr
-	 */
-	#format(cells, attr = {}, multi = false) {
-		for (const [token, start] of cells) {
-			if (multi || start) {
-				if (typeof attr === 'string') {
-					token.setSyntax(attr);
-				} else {
-					for (const [k, v] of Object.entries(attr)) {
-						token.setAttr(k, v);
-					}
-				}
+			} else if (coords?.row === i) {
+				this.getNthCell(coords).colspan++;
 			}
 		}
 	}
 
 	/**
 	 * @param {number} y
-	 * @param {string|Record<string, string|boolean>} attr
+	 * @complexity `n²`
 	 */
-	formatTableRow(y, attr = {}, multiRow = false) {
-		this.#format(this.getFullRow(y), attr, multiRow);
-	}
-
-	/**
-	 * @param {number} x
-	 * @param {string|Record<string, string|boolean>} attr
-	 */
-	formatTableCol(x, attr = {}, multiCol = false) {
-		this.#format(this.getFullCol(x), attr, multiCol);
-	}
-
-	/** @param {number} y */
 	removeTableRow(y) {
-		const rowToken = this.getNthRow(y),
-			isSelf = rowToken === this;
-		for (const [token, start] of this.getFullRow(y)) {
-			if (!start) {
-				token.setAttr('rowspan', token.getAttr('rowspan') - 1);
+		const rows = this.getAllRows(),
+			isSelf = rows[y] === this,
+			layout = this.getLayout(),
+			/** @type {Set<TableCoords>} */ set = new Set();
+		for (const [x, coords] of [...layout[y].entries()].reverse()) {
+			if (set.has(coords)) {
+				continue;
+			}
+			set.add(coords);
+			const token = rows[coords.row].getNthCol(coords.column);
+			let {rowspan} = token;
+			if (rowspan > 1) {
+				token.rowspan = --rowspan;
+				if (coords.row === y) {
+					const {colspan, subtype} = token,
+						attr = token.getAttr();
+					for (let i = y + 1; rowspan && i < rows.length; i++, rowspan--) {
+						const {column} = layout[i].slice(x + colspan).find(({row}) => row === i) ?? {};
+						if (column) {
+							rows[i].insertTableCell('', {column}, subtype, {...attr, rowspan});
+							break;
+						}
+					}
+				}
 			} else if (isSelf) {
 				token.remove();
 			}
 		}
 		if (!isSelf) {
-			rowToken.remove();
+			rows[y].remove();
 		}
 	}
 
-	/** @param {number} x */
+	/**
+	 * @param {number} x
+	 * @complexity `n²`
+	 */
 	removeTableCol(x) {
 		for (const [token, start] of this.getFullCol(x)) {
-			if (!start) {
-				token.setAttr('colspan', token.getAttr('colspan') - 1);
+			const {colspan} = token;
+			if (colspan > 1) {
+				token.colspan = colspan - 1;
+				if (start) {
+					token.lastElementChild.replaceChildren();
+				}
 			} else {
 				token.remove();
 			}
@@ -443,18 +513,18 @@ class TableToken extends TrToken {
 		const [xmin, xmax] = xlim.sort(),
 			[ymin, ymax] = ylim.sort(),
 			layout = this.getLayout(),
-			coordsSet = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
-		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => coordsSet.has(coords))
-			|| layout.some(rowLayout => coordsSet.has(rowLayout[xmin - 1]) || coordsSet.has(rowLayout[xmax]))
+			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
+		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
+			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]) || set.has(rowLayout[xmax]))
 		) {
 			throw new RangeError(`待合并区域与外侧区域有重叠！`);
 		}
 		const corner = layout[ymin][xmin],
 			cornerCell = this.getNthCell(corner);
-		coordsSet.delete(corner);
-		const cells = [...coordsSet].map(coords => this.getNthCell(coords));
-		cornerCell.setAttr('rowspan', ymax - ymin);
-		cornerCell.setAttr('colspan', xmax - xmin);
+		set.delete(corner);
+		const cells = [...set].map(coords => this.getNthCell(coords));
+		cornerCell.rowspan = ymax - ymin;
+		cornerCell.colspan = xmax - xmin;
 		for (const cell of cells) {
 			cell.remove();
 		}
