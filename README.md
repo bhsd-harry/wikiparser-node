@@ -106,13 +106,13 @@
         1. [getRowCount](#tabletoken.getrowcount)
         2. [getNthRow](#tabletoken.getnthrow)
         3. [getNthCell](#tabletoken.getnthcell)
-        4. [insertTableRow](#tabletoken.inserttablerow)
-        5. [insertTableCol](#tabletoken.inserttablecol)
-        6. [insertTableCell](#tabletoken.inserttablecell)
-        7. [getFullRow](#tabletoken.getfullrow)
-        8. [getFullCol](#tabletoken.getfullcol)
-        9. [formatTableRow](#tabletoken.formattablerow)
-        10. [formatTableCol](#tabletoken.formattablecol)
+        4. [getFullRow](#tabletoken.getfullrow)
+        5. [getFullCol](#tabletoken.getfullcol)
+        6. [formatTableRow](#tabletoken.formattablerow)
+        7. [formatTableCol](#tabletoken.formattablecol)
+        8. [insertTableRow](#tabletoken.inserttablerow)
+        9. [insertTableCol](#tabletoken.inserttablecol)
+        10. [insertTableCell](#tabletoken.inserttablecell)
         11. [removeTableRow](#tabletoken.removetablerow)
         12. [removeTableCol](#tabletoken.removetablecol)
         13. [mergeCells](#tabletoken.mergecells)
@@ -122,6 +122,8 @@
 13. [TdToken](#tdtoken)
     1. [原型属性](#tdtoken.prototype.properties)
         1. [subtype](#tdtoken.subtype)
+        2. [rowspan](#tdtoken.rowspan)
+        3. [colspan](#tdtoken.colspan)
 14. [DoubleUnderscoreToken](#doubleunderscoretoken)
     1. [实例属性](#doubleunderscoretoken.instance.properties)
         1. [name](#doubleunderscoretoken.name)
@@ -1003,7 +1005,7 @@ assert(html.selfClosing === true);
 - 表格的有效行数。
 
 ```js
-var root = Parser.parse('{|\n|a\n|+\n|}'),
+var root = Parser.parse('{|\n|\n|-\n|}'),
     table = root.firstChild;
 assert(table.getRowCount() === 1); // 表格首行可以直接写在 TableToken 下，没有内容的表格行是无效行。
 ```
@@ -1012,116 +1014,158 @@ assert(table.getRowCount() === 1); // 表格首行可以直接写在 TableToken 
 - 第 `n` 个有效行。
 
 ```js
-var root = Parser.parse('{|\n|a\n|-\n|b\n|}'),
+var root = Parser.parse('{|\n|rowspan=2| ||\n|-\n|\n|}'),
     table = root.firstChild;
 assert(table.getNthRow(0) === table);
 assert(table.getNthRow(1) === table.querySelector('tr'));
 ```
 
+|表格示意|
+|:-:|
+|<table><tbody><tr><td rowspan=2>第 0 行</td><td>第 0 行</td></tr><tr><td>第 1 行</td></tr></tbody></table>|
+
 **getNthCell**(coords: {row: number, column: number}\|{x: number, y: number}): [TdToken](#tdtoken)<a id="tabletoken.getnthcell"></a>
 - 获取指定位置的单元格，指定位置可以基于 raw HTML 或渲染后的表格。
 
 ```js
-var root = Parser.parse('{|\n|colspan=2|a\n|}'),
+var root = Parser.parse('{|\n|rowspan=2 colspan=2| ||\n|-\n|\n|-\n| || ||\n|}'),
     table = root.firstChild,
     td = table.querySelector('td');
 assert(table.getNthCell({row: 0, column: 0}) === td);
-assert(table.getNthCell({x: 1, y: 0}) === td); // 该单元格跨了两列
+assert(table.getNthCell({x: 1, y: 1}) === td); // 该单元格跨了 2 行 2 列
 ```
 
-**insertTableRow**(row: number, attr: Record\<string, string\|boolean>, inner?: string, subtype?: 'td'\|'th', innerAttr?: Record\<string, string\|boolean>): TrToken<a id="tabletoken.inserttablerow"></a>
-- 插入空行或一行单元格。
-
-```js
-var root = Parser.parse('{|\n|colspan=2|a\n|}'),
-    table = root.firstChild;
-table.insertTableRow(1, {bgcolor: 'red'}); // 不填写 `inner` 等后续参数时会插入一个空行，且此时是无效行。
-table.insertTableRow(0, {}, 'b', 'th', {class: 'td'});
-assert(root.toString() === '{|\n|-\n! class="td"|b\n! class="td"|b\n|-\n|colspan=2|a\n|- bgcolor="red"\n|}');
-```
-
-**insertTableCol**(x: number, inner: string, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): void<a id="tabletoken.inserttablecol"></a>
-- 插入一列单元格。
-
-```js
-var root = Parser.parse('{|\n|a\n|-\n|b\n|}'),
-    table = root.firstChild;
-table.insertTableCol(0, 'c', 'th', {align: 'center'});
-assert(root.toString() === '{|\n! align="center"|c\n|a\n|-\n! align="center"|c\n|b\n|}');
-```
-
-**insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
-- 插入一个单元格。
-
-```js
-var root = Parser.parse('{|\n|}'),
-    table = root.firstChild;
-table.insertTableCell('a', {row: 0, column: 0}, 'th');
-table.insertTableCell('b', {x: 1, y: 0}, 'td', {align: 'right'});
-assert(root.toString() === '{|\n!a\n| align="right"|b\n|}');
-```
+|(row, column)|(y, x)|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2 colspan=2>(0, 0)</td><td>(0, 1)</td></tr><tr><td>(1, 0)</td></tr><tr><td>(2, 0)</td><td>(2, 1)</td><td>(2, 2)</td></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>(0, 0), (0, 1)<br>(1, 0), (1, 1)</td><td>(0, 2)</td></tr><tr><td>(1, 2)</td></tr><tr><td>(2, 0)</td><td>(2, 1)</td><td>(2, 2)</td></tr></tbody></table>|
 
 **getFullRow**(y: number): Map\<[TdToken](#tdtoken), boolean><a id="tabletoken.getfullrow"></a>
 - 获取一行的所有单元格。
 
 ```js
-var root = Parser.parse('{|\n|rowspan=2|a\n|-\n|b\n|}'),
+var root = Parser.parse('{|\n|rowspan=2| ||\n|-\n|\n|}'),
     table = root.firstChild,
-    [a, b] = table.querySelectorAll('td');
-assert.deepStrictEqual(table.getFullRow(1), new Map([[a, false], [b, true]])); // 起始位置位于该行的单元格值为 `true`
+    [a,, c] = table.querySelectorAll('td');
+assert.deepStrictEqual(table.getFullRow(1), new Map([[a, false], [c, true]])); // 起始位置位于该行的单元格值为 `true`
 ```
+
+|表格|选中第 1 行|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2>`false`</td><td>&nbsp;</td></tr><tr><td>`true`</td></tr></tbody></table>|
 
 **getFullCol**(x: number): Map\<[TdToken](#tdtoken), boolean><a id="tabletoken.getfullcol"></a>
 - 获取一列的所有单元格。
 
 ```js
-var root = Parser.parse('{|\n|colspan=2|a\n|-\n|b||c\n|}'),
+var root = Parser.parse('{|\n|colspan=2|\n|-\n| ||\n|}'),
     table = root.firstChild,
     [a,, c] = table.querySelectorAll('td');
 assert.deepStrictEqual(table.getFullCol(1), new Map([[a, false], [c, true]])); // 起始位置位于该列的单元格值为 `true`
 ```
 
+|表格|选中第 1 列|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>|<table><tbody><tr><td colspan=2>`false`</td></tr><tr><td>&nbsp;</td><td>`true`</td></tr></tbody></table>|
+
 **formatTableRow**(y: number, attr: string\|Record\<string, string\|boolean>, multiRow?: boolean = false): void<a id="tabletoken.formattablerow"></a>
 - 批量设置一行单元格的属性。
 
 ```js
-var root = Parser.parse('{|\n|rowspan=2|a\n|-\n|b\n|}'),
+var root = Parser.parse('{|\n|rowspan=2| ||\n|-\n|\n|}'),
     table = root.firstChild;
 table.formatTableRow(1, 'th'); // `multiRow` 为假时忽略起始位置不在该行的单元格
-table.formatTableRow(1, {bgcolor: 'red'}, true);
-assert(root.toString() === '{|\n| rowspan="2" bgcolor="red"|a\n|-\n! bgcolor="red"|b\n|}');
+assert(root.toString() === '{|\n|rowspan=2| ||\n|-\n!\n|}');
 ```
+
+|原表格|将第 1 行设为`<th>`|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2>td</td><td>td</td></tr><tr><td>td</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2>td</td><td>td</td></tr><tr><th>th</th></tr></tbody></table>|
 
 **formatTableCol**(x: number, attr: string\|Record\<string, string\|boolean>, multiCol?: boolean = false): void<a id="tabletoken.formattablecol"></a>
 - 批量设置一列单元格的属性。
 
 ```js
+var root = Parser.parse('{|\n|colspan=2|\n|-\n| ||\n|}'),
+    table = root.firstChild;
+table.formatTableCol(1, 'th', true); // `multiCol` 为真时包含起始位置不在该列的单元格
+assert(root.toString() === '{|\n!colspan=2|\n|-\n| \n!\n|}');
+```
+
+|原表格|将第 1 列设为`<th>`|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>td</td></tr><tr><td>td</td><td>td</td></tr></tbody></table>|<table><tbody><tr><th colspan=2>th</th></tr><tr><td>td</td><th>th</th></tr></tbody></table>|
+
+**insertTableRow**(row: number, attr: Record\<string, string\|boolean>, inner?: string, subtype?: 'td'\|'th', innerAttr?: Record\<string, string\|boolean>): TrToken<a id="tabletoken.inserttablerow"></a>
+- 插入空行或一行单元格。
+
+```js
+var root = Parser.parse('{|\n|a||rowspan=2|b||c\n|-\n|d||e\n|}'),
+    table = root.firstChild;
+table.insertTableRow(1, {class: 'tr'}); // 不填写 `inner` 等后续参数时会插入一个空行，且此时是无效行。
+table.insertTableRow(1, {}, 'f', 'th', {class: 'th'});
+assert(root.toString() === '{|\n|a|| rowspan="3"|b||c\n|- class="tr"\n|-\n! class="th"|f\n! class="th"|f\n|-\n|d||e\n|}');
+```
+
+|原表格|插入 1 行|
+|:-:|:-:|
+|<table><tbody><tr><td>a</td><td rowspan=2>b</td><td>c</td></tr><tr><td>d</td><td>e</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td rowspan=3>b</td><td>c</td></tr><tr><th>f</th><th>f</th></tr><tr><td>d</td><td>e</td></tr></tbody></table>|
+
+**insertTableCol**(x: number, inner: string, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): void<a id="tabletoken.inserttablecol"></a>
+- 插入一列单元格。
+
+```js
 var root = Parser.parse('{|\n|colspan=2|a\n|-\n|b||c\n|}'),
     table = root.firstChild;
-table.formatTableCol(1, 'th'); // `multiCol` 为假时忽略起始位置不在该列的单元格
-table.formatTableCol(1, {bgcolor: 'red'}, true);
-assert(root.toString() === '{|\n| colspan="2" bgcolor="red"|a\n|-\n|b\n! bgcolor="red"|c\n|}');
+table.insertTableCol(1, 'd', 'th', {class: 'th'});
+assert(root.toString() === '{|\n| colspan="3"|a\n|-\n|b\n! class="th"|d\n|c\n|}');
 ```
+
+|原表格|插入 1 列|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>a</td></tr><tr><td>b</td><td>c</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td></tr><tr><td>b</td><th>d</th><td>c</td></tr></tbody></table>|
+
+**insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
+- 插入一个单元格。
+
+```js
+var root = Parser.parse('{|\n|rowspan=2 colspan=2|a||b\n|-\n|c\n|-\n|d||e||f\n|}'),
+    table = root.firstChild;
+table.insertTableCell('g', {row: 0, column: 2}, 'th');
+table.insertTableCell('h', {x: 2, y: 1}, 'td', {rowspan: 2});
+assert(root.toString() === '{|\n|rowspan=2 colspan=2|a||b\n!g\n|-\n| rowspan="2"|h\n|c\n|-\n|d||e||f\n|}');
+```
+
+|原表格|插入 2 格|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>b</td><th>g</th></tr><tr><td rowspan=2>h</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>
 
 **removeTableRow**(y: number): void<a id="tabletoken.removetablerow"></a>
 - 删除一行。
 
 ```js
-var root = Parser.parse('{|\n|rowspan=2|a\n|-\n|b\n|}'),
+var root = Parser.parse('{|\n|rowspan=2|a||b||c\n|-\n!rowspan=2 class="th"|d||e\n|-\n|f||g\n|}'),
     table = root.firstChild;
 table.removeTableRow(1);
-assert(root.toString() === '{|\n|a\n|}'); // 自动调整跨行单元格的 rowspan
+assert(root.toString() === '{|\n|a||b||c\n|-\n|f\n! class="th"|\n|g\n|}'); // 自动调整跨行单元格的 rowspan
 ```
+
+|原表格|删除第 1 行|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2>a</td><td>b</td><td>c</td></tr><tr><td rowspan=2>d</td><td>e</td></tr><tr><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>f</td><td></td><td>g</td></tr></tbody></table>|
 
 **removeTableCol**(x: number): void<a id="tabletoken.removetablecol"></a>
 - 删除一列。
 
 ```js
-var root = Parser.parse('{|\n|colspan=2|a\n|-\n|b||c\n|}'),
+var root = Parser.parse('{|\n|colspan=2|a||b\n|-\n!c||colspan=2 class="th"|d\n|-\n|e||f||g\n|}'),
     table = root.firstChild;
 table.removeTableCol(1);
-assert(root.toString() === '{|\n|a\n|-\n|b\n|}'); // 自动调整跨列单元格的 colspan
+assert(root.toString() === '{|\n|a||b\n|-\n!c|| class="th"|\n|-\n|e||g\n|}'); // 自动调整跨列单元格的 colspan
 ```
+
+|原表格|删除第 1 列|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>a</td><td>b</td></tr><tr><th>c</th><th colspan=2>d</th></tr><tr><td>e</td><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td></tr><tr><th>c</th><th></th></tr><tr><td>e</td><td>g</td></tr></tbody></table>|
 
 **mergeCells**(xlim: [number, number], ylim: [number, number]): void<a id="tabletoken.mergecells"></a>
 - 合并单元格。
@@ -1176,11 +1220,27 @@ assert(root.toString() === '{|\n!colspan=2|a||b\n!\n|-\n|c||d\n!\n!\n|-\n|e\n|}'
 **subtype**: 'td'\|'th'\|'caption'<a id="tdtoken.subtype"></a>
 
 ```js
-var root = Parser.parse('{|\n|+a\n!b\n|c\n|}'),
+var root = Parser.parse('{|\n|+\n!\n|\n|}'),
     [caption, th, td] = root.querySelectorAll('td');
 assert(caption.subtype === 'caption');
 assert(th.subtype === 'th');
 assert(td.subtype === 'td');
+```
+
+**rowspan**: number<a id="tdtoken.rowspan"></a>
+
+```js
+var root = Parser.parse('{|\n|\n|}'),
+    td = root.querySelector('td');
+assert(td.rowspan === 1);
+```
+
+**colspan**: number<a id="tdtoken.colspan"></a>
+
+```js
+var root = Parser.parse('{|\n|\n|}'),
+    td = root.querySelector('td');
+assert(td.colspan === 1);
 ```
 </details>
 
