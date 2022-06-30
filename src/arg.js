@@ -13,7 +13,7 @@ class ArgToken extends Token {
 	/**
 	 * @param {string[]} parts
 	 * @param {accum} accum
-	 * @complexity `n²`
+	 * @complexity `n`
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1, HiddenToken: '2:'});
@@ -79,11 +79,13 @@ class ArgToken extends Token {
 		return this.childElementCount > 1 ? this.children[1].plain() : [];
 	}
 
-	/** @complexity `n²` */
+	/** @complexity `n` */
 	removeRedundant() {
-		for (let i = this.childElementCount - 1; i > 1; i--) {
-			super.removeAt(i);
-		}
+		Parser.run(() => {
+			for (let i = this.childElementCount - 1; i > 1; i--) {
+				super.removeAt(i);
+			}
+		});
 	}
 
 	/**

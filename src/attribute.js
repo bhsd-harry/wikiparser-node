@@ -38,13 +38,15 @@ class AttributeToken extends Token {
 		return str && ` ${str}`;
 	}
 
-	/** @complexity `n²` */
+	/** @complexity `n` */
 	sanitize() {
 		if (!Parser.running && !this.#sanitized) {
 			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
 		}
 		const token = Parser.parse(this.#updateFromAttr(), false, stages[this.type], this.getAttribute('config'));
-		this.replaceChildren(...token.childNodes, true);
+		Parser.run(() => {
+			this.replaceChildren(...token.childNodes, true);
+		});
 		this.#sanitized = true;
 	}
 
@@ -177,7 +179,7 @@ class AttributeToken extends Token {
 	/**
 	 * @param {string} key
 	 * @param {string|boolean} value
-	 * @complexity `n²`
+	 * @complexity `n`
 	 */
 	setAttr(key, value, init = false) {
 		init &&= !externalUse('setAttr');
@@ -210,7 +212,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @param {string} key
-	 * @complexity `n²`
+	 * @complexity `n`
 	 */
 	removeAttr(key) {
 		if (typeof key !== 'string') {
@@ -225,7 +227,7 @@ class AttributeToken extends Token {
 	/**
 	 * @param {string} key
 	 * @param {boolean|undefined} force
-	 * @complexity `n²`
+	 * @complexity `n`
 	 */
 	toggleAttr(key, force) {
 		if (typeof key !== 'string') {

@@ -82,7 +82,7 @@ class Token extends AstElement {
 		return this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
 	}
 
-	/** @complexity `n²` */
+	/** @complexity `n` */
 	cloneNode() {
 		if (!this.isPlain()) {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
@@ -202,17 +202,19 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	removeAt(i) {
-		const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
-		if (protectedIndices.includes(i)) {
-			throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
-		} else if (this.#acceptable) {
-			const acceptableIndices = Object.fromEntries(
-					Object.entries(this.#acceptable)
-						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length - 1)]),
-				),
-				nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
-			if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {
-				throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
+		if (!Parser.running) {
+			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
+			if (protectedIndices.includes(i)) {
+				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
+			} else if (this.#acceptable) {
+				const acceptableIndices = Object.fromEntries(
+						Object.entries(this.#acceptable)
+							.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length - 1)]),
+					),
+					nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
+				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {
+					throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
+				}
 			}
 		}
 		return super.removeAt(i);
@@ -224,7 +226,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		if (this.#acceptable) {
+		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable)
 						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length + 1)]),

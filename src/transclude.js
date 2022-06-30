@@ -39,7 +39,7 @@ class TranscludeToken extends Token {
 	 * @param {string} title
 	 * @param {[string, string|undefined][]} parts
 	 * @param {accum} accum
-	 * @complexity `n²`
+	 * @complexity `n`
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
@@ -330,12 +330,14 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @param {string|number} key
-	 * @complexity `n²`
+	 * @complexity `n`
 	 */
 	removeArg(key, exact = false) {
-		for (const token of this.getArgs(key, exact, false)) {
-			this.removeChild(token);
-		}
+		Parser.run(() => {
+			for (const token of this.getArgs(key, exact, false)) {
+				this.removeChild(token);
+			}
+		});
 	}
 
 	/** @complexity `n` */

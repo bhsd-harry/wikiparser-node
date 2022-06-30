@@ -31,7 +31,6 @@ class TrToken extends attributeParent(Token, 1) {
 		this.protectChildren(0, 1);
 	}
 
-	/** @complexity `n²` */
 	cloneNode() {
 		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
 			/** @type {typeof TrToken} */ Constructor = this.constructor;
