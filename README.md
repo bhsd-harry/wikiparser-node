@@ -119,6 +119,8 @@
         14. [splitIntoRows](#tabletoken.splitintorows)
         15. [splitIntoCols](#tabletoken.splitintocols)
         16. [splitIntoCells](#tabletoken.splitintocells)
+        17. [replicateTableRow](#tabletoken.replicatetablerow)
+        18. [replicateTableCol](#tabletoken.replicatetablecol)
 13. [TdToken](#tdtoken)
     1. [原型属性](#tdtoken.prototype.properties)
         1. [subtype](#tdtoken.subtype)
@@ -1222,6 +1224,34 @@ assert(root.toString() === '{|\n!a\n!\n|b\n|-\n!\n!\n|c\n|-\n|d||e||f\n|}');
 |原表格|分裂单元格|
 |:-:|:-:|
 |<table><tbody><tr><th rowspan=2 colspan=2>a</th><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><th>a</th><th></th><td>b</td></tr><tr><th></th><th></th><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|
+
+**replicateTableRow**(row: number): TrToken<a id="tabletoken.replicatetablerow"></a>
+- 复制一行并插入该行之前
+
+```js
+var root = Parser.parse('{|\n|rowspan=2|a||b||c\n|-\n!rowspan=2|d||e\n|-\n|f||g\n|}'),
+    table = root.firstChild;
+table.replicateTableRow(1);
+assert(root.toString() === '{|\n| rowspan="3"|a||b||c\n|-\n!d||e\n|-\n!rowspan=2|d||e\n|-\n|f||g\n|}'); // 复制行内的单元格`rowspan`总是为1
+```
+
+|原表格|复制第 1 行|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2>a</td><td>b</td><td>c</td></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td rowspan=3>a</td><td>b</td><td>c</td></tr><tr><th>d</th><th>e</th></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></tbody></table>|
+
+**replicateTableCol**(x: number): [TdToken](#tdtoken)[]<a id="tabletoken.replicatetablecol"></a>
+- 复制一列并插入该列之前
+
+```js
+var root = Parser.parse('{|\n|colspan=2|a||b\n|-\n|c\n!colspan=2|d\n|-\n|e\n!f\n|g\n|}'),
+    table = root.firstChild;
+table.replicateTableCol(1);
+assert(root.toString() === '{|\n| colspan="3"|a||b\n|-\n|c\n!d\n!colspan=2|d\n|-\n|e\n!f\n!f\n|g\n|}'); // 复制列内的单元格`colspan`总是为1
+```
+
+|原表格|复制第 1 列|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>a</td><td>b</td></tr><tr><td>c</td><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><td>g</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td></tr><tr><td>c</td><th>d</th><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><th>f</th><td>g</td></tr></tbody></table>|
 </details>
 
 [返回目录](#目录)

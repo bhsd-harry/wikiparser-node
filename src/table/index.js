@@ -398,6 +398,23 @@ class TableToken extends TrToken {
 		return rowToken.insertTableCell(inner, coords, subtype, attr);
 	}
 
+	/** @complexity `n²` */
+	#prependTableRow() {
+		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
+			{childNodes} = this,
+			[,, plain] = childNodes,
+			start = typeof plain === 'string' || plain.isPlain() ? 3 : 2,
+			/** @type {TdToken[]} */ children = childNodes.slice(start),
+			index = children.findIndex(({type}) => type !== 'td');
+		this.insertAt(row, index === -1 ? -1 : index + start);
+		for (const cell of children.slice(0, index === -1 ? undefined : index)) {
+			if (cell.subtype !== 'caption') {
+				row.appendChild(cell);
+			}
+		}
+		return row;
+	}
+
 	/**
 	 * @param {number} y
 	 * @param {Record<string, string|boolean>} attr
@@ -417,18 +434,7 @@ class TableToken extends TrToken {
 			token.setAttr(k, v);
 		}
 		if (reference === this) { // `row === 0`且表格自身是有效行
-			reference = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
-			const {childNodes} = this,
-				[,, plain] = childNodes,
-				start = typeof plain === 'string' || plain.isPlain() ? 3 : 2,
-				/** @type {TdToken[]} */ children = childNodes.slice(start),
-				index = children.findIndex(({type}) => type !== 'td');
-			this.insertAt(reference, index === -1 ? -1 : index + start);
-			for (const cell of children.slice(0, index === -1 ? undefined : index)) {
-				if (cell.subtype !== 'caption') {
-					reference.appendChild(cell);
-				}
-			}
+			reference = this.#prependTableRow();
 		}
 		this.insertBefore(token, reference);
 		if (inner !== undefined) {
@@ -621,19 +627,69 @@ class TableToken extends TrToken {
 		}
 	}
 
-	/** @param {TableCoords & TableRenderedCoords} coords */
+	/**
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @complexity `n²`
+	 */
 	splitIntoRows(coords) {
 		this.#split(coords, new Set(['rowspan']));
 	}
 
-	/** @param {TableCoords & TableRenderedCoords} coords */
+	/**
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @complexity `n²`
+	 */
 	splitIntoCols(coords) {
 		this.#split(coords, new Set(['colspan']));
 	}
 
-	/** @param {TableCoords & TableRenderedCoords} coords */
+	/**
+	 * @param {TableCoords & TableRenderedCoords} coords
+	 * @complexity `n²`
+	 */
 	splitIntoCells(coords) {
 		this.#split(coords, new Set(['rowspan', 'colspan']));
+	}
+
+	/**
+	 * 复制一行并插入该行之前
+	 * @param {number} row
+	 * @complexity `n²`
+	 */
+	replicateTableRow(row) {
+		let rowToken = this.getNthRow(row);
+		if (rowToken === this) {
+			rowToken = this.#prependTableRow();
+		}
+		const /** @type {TrToken} */ replicated = this.insertBefore(rowToken.cloneNode(), rowToken);
+		for (const [token, start] of this.getFullRow(row)) {
+			if (start) {
+				token.rowspan = 1;
+			} else {
+				token.rowspan++;
+			}
+		}
+		return replicated;
+	}
+
+	/**
+	 * 复制一列并插入该列之前
+	 * @param {number} x
+	 * @complexity `n`
+	 */
+	replicateTableCol(x) {
+		const /** @type {TdToken[]} */ replicated = [];
+		for (const [token, start] of this.getFullCol(x)) {
+			if (start) {
+				const newToken = token.cloneNode();
+				newToken.colspan = 1;
+				token.before(newToken);
+				replicated.push(newToken);
+			} else {
+				token.colspan++;
+			}
+		}
+		return replicated;
 	}
 }
 
