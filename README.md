@@ -121,6 +121,10 @@
         16. [splitIntoCells](#tabletoken.splitintocells)
         17. [replicateTableRow](#tabletoken.replicatetablerow)
         18. [replicateTableCol](#tabletoken.replicatetablecol)
+        19. [moveTableRowBefore](#tabletoken.movetablerowbefore)
+        20. [moveTableRowAfter](#tabletoken.movetablerowafter)
+        21. [moveTableColBefore](#tabletoken.movetablecolbefore)
+        22. [moveTableColAfter](#tabletoken.movetablecolafter)
 13. [TdToken](#tdtoken)
     1. [原型属性](#tdtoken.prototype.properties)
         1. [subtype](#tdtoken.subtype)
@@ -1141,7 +1145,7 @@ assert(root.toString() === '{|\n|rowspan=2 colspan=2|a||b\n!g\n|-\n| rowspan="2"
 |:-:|:-:|
 |<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>b</td><th>g</th></tr><tr><td rowspan=2>h</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>
 
-**removeTableRow**(y: number): void<a id="tabletoken.removetablerow"></a>
+**removeTableRow**(y: number): TrToken<a id="tabletoken.removetablerow"></a>
 - 删除一行。
 
 ```js
@@ -1252,6 +1256,62 @@ assert(root.toString() === '{|\n| colspan="3"|a||b\n|-\n|c\n!d\n!colspan=2|d\n|-
 |原表格|复制第 1 列|
 |:-:|:-:|
 |<table><tbody><tr><td colspan=2>a</td><td>b</td></tr><tr><td>c</td><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><td>g</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td></tr><tr><td>c</td><th>d</th><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><th>f</th><td>g</td></tr></tbody></table>|
+
+**moveTableRowBefore**(y: number, before: number): TrToken<a id="tabletoken.movetablerowbefore"></a>
+- 移动表格行。
+
+```js
+var root = Parser.parse('{|\n|rowspan=2|a||b||c||d\n|-\n|colspan=2|e||f\n|-\n|rowspan=2|g||h||i||j\n|-\n!rowspan=2|k||colspan=2|l\n|-\n|m||n||o\n|}'),
+    table = root.firstChild;
+table.moveTableRowBefore(3, 1);
+assert(root.toString() === '{|\n| rowspan="3"|a||b||c||d\n|-\n!k||colspan=2|l\n|-\n|colspan=2|e||f\n|-\n|g||h||i||j\n|-\n|m\n!\n|n||o\n|}');
+```
+
+|原表格|移动第 3 行至第 1 行前|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2>a</td><td>b</td><td>c</td><td>d</td></tr><tr><td colspan=2>e</td><td>f</td></tr><tr><td rowspan=2>g</td><td>h</td><td>i</td><td>j</td></tr><tr><th rowspan=2>k</th><th colspan=2>l</th></tr><tr><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td rowspan=3>a</td><td>b</td><td>c</td><td>d</td></tr><tr><th>k</th><th colspan=2>l</th></tr><tr><td colspan=2>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td><td>j</td></tr><tr><td>m</td><th></th><td>n</td><td>o</td></tr></tbody></table>|
+
+**moveTableRowAfter**(y: number, after: number): TrToken<a id="tabletoken.movetablerowafter"></a>
+- 移动表格行。
+
+```js
+var root = Parser.parse('{|\n|rowspan=2|a||colspan=2|b||c\n|-\n|d||e||f\n|-\n|rowspan=2|g||h||i||j\n|-\n!rowspan=2|k||colspan=2|l\n|-\n|m||n||o\n|}'),
+    table = root.firstChild;
+table.moveTableRowAfter(3, 0);
+assert(root.toString() === '{|\n| rowspan="3"|a||colspan=2|b||c\n|-\n!k||colspan=2|l\n|-\n|d||e||f\n|-\n|g||h||i||j\n|-\n|m\n!\n|n||o\n|}');
+```
+
+|原表格|移动第 3 行至第 0 行后|
+|:-:|:-:|
+|<table><tbody><tr><td rowspan=2>a</td><td colspan=2>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td rowspan=2>g</td><td>h</td><td>i</td><td>j</td></tr><tr><th rowspan=2>k</th><th colspan=2>l</th></tr><tr><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td rowspan=3>a</td><td colspan=2>b</td><td>c</td></tr><tr><th>k</th><th colspan=2>l</th></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td><td>j</td></tr><tr><td>m</td><th></th><td>n</td><td>o</td></tr></tbody></table>|
+
+**moveTableColBefore**(x: number, before: number): void<a id="tabletoken.movetablecolbefore"></a>
+- 移动表格列。
+
+```js
+var root = Parser.parse('{|\n|colspan=2|a||colspan=2|b||c\n|-\n|d||rowspan=2|e||f\n!colspan=2|g\n|-\n|h||i\n!rowspan=2|j\n|k\n|-\n|l||m||n||o\n|}'),
+    table = root.firstChild;
+table.moveTableColBefore(3, 1);
+assert(root.toString() === '{|\n| colspan="3"|a||b||c\n|-\n|d\n!g\n|rowspan=2|e||f\n!\n|-\n|h\n!rowspan=2|j\n|i\n|k\n|-\n|l||m||n||o\n|}');
+```
+
+|原表格|移动第 3 列至第 1 列前|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>a</td><td colspan=2>b</td><td>c</td></tr><tr><td>d</td><td rowspan=2>e</td><td>f</td><th colspan=2>g</th></tr><tr><td>h</td><td>i</td><th rowspan=2>j</th><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td><td>c</td></tr><tr><td>d</td><th>g</th><td rowspan=2>e</td><td>f</td><th></th></tr><tr><td>h</td><th rowspan=2>j</th><td>i</td><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|
+
+**moveTableColAfter**(x: number, after: number): void<a id="tabletoken.movetablecolafter"></a>
+- 移动表格列。
+
+```js
+var root = Parser.parse('{|\n|colspan=2|a||colspan=2|b||c\n|-\n|rowspan=2|d||e||f\n!colspan=2|g\n|-\n|h||i\n!rowspan=2|j\n|k\n|-\n|l||m||n||o\n|}'),
+    table = root.firstChild;
+table.moveTableColAfter(3, 0);
+assert(root.toString() === '{|\n| colspan="3"|a||b||c\n|-\n|rowspan=2|d\n!g\n|e||f\n!\n|-\n!rowspan=2|j\n|h||i\n|k\n|-\n|l||m||n||o\n|}');
+```
+
+|原表格|移动第 3 列至第 0 列后|
+|:-:|:-:|
+|<table><tbody><tr><td colspan=2>a</td><td colspan=2>b</td><td>c</td></tr><tr><td rowspan=2>d</td><td>e</td><td>f</td><th colspan=2>g</th></tr><tr><td>h</td><td>i</td><th rowspan=2>j</th><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td><td>c</td></tr><tr><td rowspan=2>d</td><th>g</th><td>e</td><td>f</td><th></th></tr><tr><th rowspan=2>j</th><td>h</td><td>i</td><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|
 </details>
 
 [返回目录](#目录)
