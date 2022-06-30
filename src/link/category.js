@@ -2,7 +2,7 @@
 
 const /** @type {Parser} */ Parser = require('../..'),
 	LinkToken = require('.'),
-	Token = require('../token');
+	Token = require('..');
 
 /**
  * 分类
@@ -53,12 +53,13 @@ class CategoryToken extends LinkToken {
 	 */
 	insertAt(token, i) {
 		super.insertAt(token, i);
-		if (i === 1) {
+		if (i === 1 || i === 2 - this.childNodes.length) {
 			this.#updateSortkey();
 		}
 		return token;
 	}
 
+	/** @returns {string} */
 	text() {
 		return `[[${this.firstElementChild.text()}]]`;
 	}
@@ -68,13 +69,10 @@ class CategoryToken extends LinkToken {
 		return [];
 	}
 
-	/**
-	 * @this {CategoryToken & {lastChild: Token}}
-	 * @param {string} text
-	 */
+	/** @param {string} text */
 	setText(text) {
 		text = String(text);
-		const root = new Token(`[[Category:C|${text}]]`, this.getAttribute('config')).parse(6),
+		const root = Parser.run(() => new Token(`[[Category:C|${text}]]`, this.getAttribute('config')).parse(6)),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'category' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的分类关键字：${text.replaceAll('\n', '\\n')}`);
@@ -83,7 +81,7 @@ class CategoryToken extends LinkToken {
 		if (this.childElementCount === 1) {
 			this.appendChild(lastChild);
 		} else {
-			this.lastChild.safeReplaceWith(lastChild);
+			this.lastElementChild.safeReplaceWith(lastChild);
 		}
 		this.#updateSortkey();
 	}

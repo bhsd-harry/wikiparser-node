@@ -93,8 +93,7 @@ class AttributeToken extends Token {
 		return Parser.run(() => {
 			const token = new AttributeToken(undefined, this.type, this.name, this.getAttribute('config'));
 			token.append(...cloned);
-			token.afterBuild();
-			return token;
+			return token.afterBuild();
 		});
 	}
 

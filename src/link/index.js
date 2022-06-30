@@ -2,7 +2,7 @@
 
 const watchFirstChild = require('../../mixin/watchFirstChild'),
 	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('../token');
+	Token = require('..');
 
 /**
  * 内链
@@ -10,6 +10,9 @@ const watchFirstChild = require('../../mixin/watchFirstChild'),
  */
 class LinkToken extends watchFirstChild(Token) {
 	type = 'link';
+	selfLink = false;
+	fragment = '';
+	interwiki = false;
 
 	/**
 	 * @param {string} link
@@ -19,13 +22,16 @@ class LinkToken extends watchFirstChild(Token) {
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
-		const AtomToken = require('../atomToken'),
-			target = new AtomToken(link, 'link-target', accum, {'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''});
+		const AtomToken = require('../atom'),
+			target = new AtomToken(link, 'link-target', config, accum, {
+				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
+			});
 		if (title === undefined) {
 			title = this.normalizeTitle(link.includes('%') ? decodeURIComponent(link) : link);
 		}
 		if (title) {
 			this.setAttribute('name', title);
+			this.interwiki = this.isInterwiki(title)?.[1];
 		} else {
 			this.selfLink = true;
 		}
@@ -39,7 +45,7 @@ class LinkToken extends watchFirstChild(Token) {
 			inner.type = 'link-text';
 			this.appendChild(inner.setAttribute('stage', 7));
 		}
-		this.protectChildren(0);
+		this.seal(['selfLink', 'fragment', 'interwiki']).protectChildren(0);
 	}
 
 	toString() {
@@ -58,17 +64,15 @@ class LinkToken extends watchFirstChild(Token) {
 		return `[[${super.text('|')}]]`;
 	}
 
+	/** @returns {[number, string][]} */
 	plain() {
 		return this.childElementCount === 1 ? [] : this.lastElementChild.plain();
 	}
 
-	/**
-	 * @this {LinkToken & {firstChild: Token}}
-	 * @param {string} link
-	 */
+	/** @param {string} link */
 	setTarget(link) {
 		link = String(link);
-		const root = new Token(`[[${link}]]`, this.getAttribute('config')).parse(6),
+		const root = Parser.run(() => new Token(`[[${link}]]`, this.getAttribute('config')).parse(6)),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
@@ -77,16 +81,13 @@ class LinkToken extends watchFirstChild(Token) {
 		const {firstChild} = firstElementChild;
 		root.destroy();
 		firstElementChild.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 
-	/**
-	 * @this {LinkToken & {lastChild: Token}}
-	 * @param {string} text
-	 */
+	/** @param {string} text */
 	setText(text) {
 		text = String(text);
-		const root = new Token(`[[L|${text}]]`, this.getAttribute('config')).parse(6),
+		const root = Parser.run(() => new Token(`[[L|${text}]]`, this.getAttribute('config')).parse(6)),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的内链文字：${text.replaceAll('\n', '\\n')}`);
@@ -95,7 +96,7 @@ class LinkToken extends watchFirstChild(Token) {
 		if (this.childElementCount === 1) {
 			this.appendChild(lastChild);
 		} else {
-			this.lastChild.safeReplaceWith(lastChild);
+			this.lastElementChild.safeReplaceWith(lastChild);
 		}
 	}
 
@@ -117,7 +118,7 @@ class LinkToken extends watchFirstChild(Token) {
 			this.setText(m2[1]);
 			return;
 		}
-		const m3 = text.match(/^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?: ?\(.+\))?(?:, |，|، ).+$/);
+		const m3 = text.match(/^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?: ?\(.+\))?(?:, |，|، ).+/);
 		if (m3) {
 			this.setText(m3[1]);
 			return;

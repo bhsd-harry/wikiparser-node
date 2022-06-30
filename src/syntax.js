@@ -30,8 +30,7 @@ class SyntaxToken extends Token {
 		return Parser.run(() => {
 			const token = new SyntaxToken(undefined, this.#pattern, this.type, config, [], acceptable);
 			token.append(...cloned);
-			token.afterBuild();
-			return token;
+			return token.afterBuild();
 		});
 	}
 

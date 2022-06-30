@@ -39,8 +39,7 @@ class ArgToken extends Token {
 			const token = new ArgToken([''], this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(name);
 			token.append(...cloned);
-			token.afterBuild();
-			return token;
+			return token.afterBuild();
 		});
 	}
 

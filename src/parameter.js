@@ -37,8 +37,7 @@ class ParameterToken extends fixedToken(Token) {
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
 			token.firstElementChild.safeReplaceWith(key);
 			token.lastElementChild.safeReplaceWith(value);
-			token.afterBuild();
-			return token;
+			return token.afterBuild();
 		});
 	}
 

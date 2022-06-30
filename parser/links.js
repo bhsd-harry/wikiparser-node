@@ -68,21 +68,17 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 				continue;
 			}
 		}
-		text = text && parseQuotes(text, config);
+		text = text && parseQuotes(text, config, accum);
 		s += `\x00${accum.length}l\x7f${after}`;
+		let LinkToken = require('../src/link');
 		if (!force) {
 			if (title.startsWith('File:')) {
-				const FileToken = require('../src/linkToken/fileToken');
-				new FileToken(link, text, title, config, accum);
-				continue;
+				LinkToken = require('../src/link/file');
 			} else if (title.startsWith('Category:')) {
-				const CategoryToken = require('../src/linkToken/categoryToken');
-				new CategoryToken(link, text, title, config, accum);
-				continue;
+				LinkToken = require('../src/link/category');
 			}
 		}
-		const LinkToken = require('../src/linkToken');
-		new LinkToken(link, text, title, config, accum);
+		new LinkToken(link, text, config, accum);
 	}
 	return s;
 };

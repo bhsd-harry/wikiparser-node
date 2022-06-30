@@ -71,6 +71,10 @@ class TdToken extends fixedToken(TrToken) {
 
 	static openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|{{\s*!\s*}}\+?)|(?:\||{{\s*!\s*}}){2}|!!|{{\s*!!\s*}})$/;
 
+	getRowCount = undefined;
+	getNthCol = undefined;
+	insertTableCell = undefined;
+
 	/**
 	 * @param {string} syntax
 	 * @param {string} inner
@@ -90,7 +94,7 @@ class TdToken extends fixedToken(TrToken) {
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
 		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
-			.appendChild(innerToken.setAttribute('stage', 4));
+			.seal(['getRowCount', 'getNthCol', 'insertTableCell']).appendChild(innerToken.setAttribute('stage', 4));
 	}
 
 	cloneNode() {
@@ -248,18 +252,6 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.#innerSyntax === '|') {
 			this.#innerSyntax = '{{!}}';
 		}
-	}
-
-	getRowCount() {
-		throw new Error(`${this.constructor.name}.getRowCount 方法只可用于表格或表格行！`);
-	}
-
-	getNthCol() {
-		throw new Error(`${this.constructor.name}.getNthCol 方法只可用于表格或表格行！`);
-	}
-
-	insertTableCell() {
-		throw new Error(`${this.constructor.name}.insertTableCell 方法只可用于表格或表格行！`);
 	}
 }
 
