@@ -1,7 +1,7 @@
 # 目录
 <details>
     <summary>展开</summary>
-   
+
 1. [Parser](#parser)
     1. [方法](#parser.methods)
         1. [parse](#parser.parse)
@@ -223,14 +223,14 @@ assert(Parser.config === './config/default'); // 这是默认设置的相对路�
 **querySelector**(selector: string): this\|undefined  
 **querySelectorAll**(selector: string): this[]  
 **getBoundingClientRect**(): {height: number, width: number, top: number, left: number}  
-**splitText**(i: number, offset: number): string
+**splitText**(i: number, offset: number): string  
 </details>
 
 ## 实例属性<a id="astelement.instance.properties"></a>
 <details>
     <summary>展开</summary>
 
-**childNodes**: (string\|this)[] 
+**childNodes**: (string\|this)[]
 </details>
 
 ## 原型属性<a id="astelement.prototype.properties"></a>
@@ -277,7 +277,7 @@ var root = Parser.parse('<ref/>'),
     attr = root.querySelector('ext-attr');
 assert.deepStrictEqual(attr.getAncestors(), [attr.parentElement, root]);
 ```
-   
+
 **isPlain**(): boolean<a id="token.isplain"></a>
 - 是否是基础类（即未拓展的 Token）。
 
@@ -313,7 +313,7 @@ assert(root.toString() === 'string');
 
 **safeReplaceWith**(token: Token): void<a id="token.safereplacewith"></a>
 - 将节点替换为一个同类节点，相当于[replaceWith](#astelement.prototype.methods)，但适用于父节点有规定的子节点顺序时。
-   
+
 **sections**(): Token\[\]\[\]<a id="token.sections"></a>
 - 将页面分割为章节，每个章节对应一个 Token 数组。
 
@@ -323,7 +323,7 @@ var root = Parser.parse('a\n==b==\nc\n===d===\n'),
     sections = root.sections();
 assert.deepStrictEqual(sections, [childNodes.slice(0, 1), childNodes.slice(1), childNodes.slice(3)]);
 ```
-  
+
 **section**(n: number): Token\[\]<a id="token.section"></a>
 - 仅获取指定章节。
 
@@ -345,7 +345,7 @@ assert.deepStrictEqual(template.findEnclosingHtml('p'), [root.firstChild, root.l
 **getCategories**(): [string, string][]<a id="token.getcategories"></a>
 - 获取所有分类和对应的排序关键字。
 </details>
-   
+
 ## 实例属性<a id="token.instance.properties"></a>
 <details>
     <summary>展开</summary>
@@ -368,14 +368,14 @@ assert(root.type === 'root');
 </details>
 
 [返回目录](#目录)
-   
+
 # CommentToken
 HTML 注释。
 
 ## 实例属性<a id="commenttoken.instance.properties"></a>
 <details>
     <summary>展开</summary>
-   
+
 **closed**: boolean<a id="commenttoken.closed"></a>
 - 是否闭合。
 
@@ -387,14 +387,14 @@ assert(comment.closed === false);
 </details>
 
 [返回目录](#目录)
-   
+
 # ExtToken
 扩展标签。
 
 ## 实例属性<a id="exttoken.instance.properties"></a>
 <details>
     <summary>展开</summary>
-   
+
 **selfClosing**: boolean<a id="exttoken.selfclosing"></a>
 - 是否自封闭。
 
@@ -415,7 +415,7 @@ assert(ref.name === 'ref');
 </details>
 
 [返回目录](#目录)
-   
+
 # AttributeToken
 扩展和 HTML 标签及表格的属性。
 
@@ -432,7 +432,7 @@ var root = Parser.parse('<choose uncached before="a"></choose>'),
 assert(attr.hasAttr('uncached') === true);
 assert(attr.hasAttr('before') === true);
 ```
-   
+
 **getAttr**(key: string): string\|boolean<a id="attributetoken.getattr"></a>
 - 获取指定属性。
 
@@ -504,11 +504,11 @@ attr.sanitize();
 assert(root.toString() === '<p>');
 ```
 </details>
-   
+
 ## 实例属性<a id="attributetoken.instance.properties"></a>
 <details>
     <summary>展开</summary>
-   
+
 **name**: string<a id="attributetoken.name"></a>
 - 小写的标签名。
 
@@ -538,11 +538,11 @@ header.setLevel(3);
 assert(root.toString() === '===a===');
 ```
 </details>
-   
+
 ## 实例属性<a id="headingtoken.instance.properties"></a>
 <details>
     <summary>展开</summary>
-   
+
 **name**: string<a id="headingtoken.name"></a>
 - 字符串格式的标题层级。
 
@@ -792,7 +792,7 @@ assert.deepStrictEqual(template.getDuplicatedArgs(), [['1', new Set(template.get
 ```js
 var root = Parser.parse('{{a|b|1=|1=c}}'),
     template = root.firstChild;
-assert.deepStrictEqual(template.fixDuplication(), ['1']); // 
+assert.deepStrictEqual(template.fixDuplication(), ['1']);
 assert(root.toString() === '{{a|b|1=c}}');
 ```
 
@@ -925,7 +925,7 @@ assert(root.toString() === '<i>');
 
 ```js
 var root = Parser.parse('<p><b/></i><u></u><br>'),
-    [p, b, i, u, u2, br] = root.children;  
+    [p, b, i, u, u2, br] = root.children;
 try {
     p.findMatchingTag();
     throw new Error();
@@ -1167,45 +1167,61 @@ assert(root.toString() === '{|\n|a||b\n|-\n!c|| class="th"|\n|-\n|e||g\n|}'); //
 |:-:|:-:|
 |<table><tbody><tr><td colspan=2>a</td><td>b</td></tr><tr><th>c</th><th colspan=2>d</th></tr><tr><td>e</td><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td></tr><tr><th>c</th><th></th></tr><tr><td>e</td><td>g</td></tr></tbody></table>|
 
-**mergeCells**(xlim: [number, number], ylim: [number, number]): void<a id="tabletoken.mergecells"></a>
+**mergeCells**(xlim: [number, number], ylim: [number, number]): [TdToken](#tdtoken)<a id="tabletoken.mergecells"></a>
 - 合并单元格。
 
 ```js
-var root = Parser.parse('{|\n|a||b\n|-\n|c||d\n|}'),
+var root = Parser.parse('{|\n|a||b||c\n|-\n|d||e||f\n|-\n|g||h||i\n|}'),
     table = root.firstChild;
 table.mergeCells([0, 2], [0, 2]); // 被合并的单元格的属性和内部文本均会丢失
-assert(root.toString() === '{|\n| rowspan="2" colspan="2"|a\n|-\n|}'); // 这个方法不会自动删除空行
+assert(root.toString() === '{|\n| rowspan="2" colspan="2"|a||c\n|-\n|f\n|-\n|g||h||i\n|}');
 ```
+
+|原表格|合并单元格|
+|:-:|:-:|
+|<table><tbody><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>c</td></tr><tr><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></tbody></table>|
 
 **splitIntoRows**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintorows"></a>
 - 将单元格分裂到不同行。
 
 ```js
-var root = Parser.parse('{|\n!colspan=2|a||rowspan=2|b\n|-\n|c||d\n|-\n|e\n|}'),
+var root = Parser.parse('{|\n|a||b\n!rowspan=3|c\n|-\n|d\n|-\n|e||f\n|}'),
     table = root.firstChild;
 table.splitIntoRows({x: 2, y: 0});
-assert(root.toString() === '{|\n!colspan=2|a||b\n|-\n|c||d\n!\n|-\n|e\n|}'); // 第 2 行由于缺失第 1 列的单元格，分裂后的第 2 列不会保留 
+assert(root.toString() === '{|\n|a||b\n!c\n|-\n|d\n|-\n|e||f\n!\n|}'); // 第 1 行由于缺失第 1 列的单元格，分裂后的第 2 列不会保留
 ```
+
+|原表格|按行分裂单元格|
+|:-:|:-:|
+|<table><tbody><tr><td>a</td><td>b</td><th rowspan=3>c</th></tr><tr><td>d</td></tr><tr><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td><th>c</th></tr><tr><td>d</td></tr><tr><td>e</td><td>f</td><th></th></tr></tbody></table>|
 
 **splitIntoCols**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintocols"></a>
 - 将单元格分裂到不同列。
 
 ```js
-var root = Parser.parse('{|\n!colspan=2 align=right|a\n|}'),
+var root = Parser.parse('{|\n!colspan=2 class="th"|a\n|}'),
     table = root.firstChild;
 table.splitIntoCols({x: 1, y: 0});
-assert(root.toString() === '{|\n! align="right"|a\n! align="right"|\n|}'); // 分裂继承属性
+assert(root.toString() === '{|\n! class="th"|a\n! class="th"|\n|}'); // 分裂继承属性
 ```
+
+|原表格|按列分裂单元格|
+|:-:|:-:|
+|<table><tbody><tr><th colspan=2>a</th></tr></tbody></table>|<table><tbody><tr><th>a</th><th>&nbsp;</th></tr></tbody></table>|
 
 **splitIntoCells**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintocells"></a>
 - 将单元格分裂成最小单元格。
 
 ```js
-var root = Parser.parse('{|\n!colspan=2|a||colspan=2 rowspan=2|b\n|-\n|c||d\n|-\n|e\n|}'),
+var root = Parser.parse('{|\n!rowspan=2 colspan=2|a\n|b\n|-\n|c\n|-\n|d||e||f\n|}'),
     table = root.firstChild;
-table.splitIntoCells({x: 2, y: 0});
-assert(root.toString() === '{|\n!colspan=2|a||b\n!\n|-\n|c||d\n!\n!\n|-\n|e\n|}'); // 第 2 行由于缺失第 1 列的单元格，分裂后的第 2、3 列不会保留 
+table.splitIntoCells({x: 0, y: 0});
+assert(root.toString() === '{|\n!a\n!\n|b\n|-\n!\n!\n|c\n|-\n|d||e||f\n|}');
 ```
+
+|原表格|分裂单元格|
+|:-:|:-:|
+|<table><tbody><tr><th rowspan=2 colspan=2>a</th><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><th>a</th><th></th><td>b</td></tr><tr><th></th><th></th><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|
 </details>
 
 [返回目录](#目录)

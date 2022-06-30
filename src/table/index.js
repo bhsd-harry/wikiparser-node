@@ -17,6 +17,35 @@ const cmpCoords = (coords1, coords2) => {
 	return diff === 0 ? coords1?.column - coords2?.column : diff;
 };
 
+/** @extends {Array<TableCoords[]>} */
+class Layout extends Array {
+	/** @complexity `n` */
+	print() {
+		const hBorders = new Array(this.length + 1).fill().map((_, i) => {
+				const prev = this[i - 1] ?? [],
+					next = this[i] ?? [];
+				return new Array(Math.max(prev.length, next.length)).fill().map((__, j) => prev[j] !== next[j]);
+			}),
+			vBorders = this.map(cur => new Array(cur.length + 1).fill().map((_, j) => cur[j - 1] !== cur[j]));
+		let out = '';
+		for (let i = 0; i <= this.length; i++) {
+			const hBorder = hBorders[i],
+				vBorderTop = vBorders[i - 1] ?? [],
+				vBorderBottom = vBorders[i] ?? [],
+				// eslint-disable-next-line no-sparse-arrays
+				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
+			for (let j = 0; j <= hBorder.length; j++) {
+				/* eslint-disable no-bitwise */
+				const bit = (vBorderTop[j] << 3) + (vBorderBottom[j] << 0) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
+				out += `${border[bit]}${hBorder[j] ? '─' : ' '}`;
+				/* eslint-enable no-bitwise */
+			}
+			out += '\n';
+		}
+		console.log(out.slice(0, -1));
+	}
+}
+
 /**
  * 表格
  * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?(string|Token), ...TdToken, ...TrToken, ?SyntaxToken]}`
@@ -89,6 +118,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * @param {number} n
+	 * @returns {TrToken}
 	 * @complexity `n`
 	 */
 	getNthRow(n, force = false, insert = false) {
@@ -117,7 +147,10 @@ class TableToken extends TrToken {
 		}
 	}
 
-	/** @complexity `n` */
+	/**
+	 * @returns {TrToken[]}
+	 * @complexity `n`
+	 */
 	getAllRows() {
 		return [
 			...super.getRowCount() ? [this] : [],
@@ -143,7 +176,7 @@ class TableToken extends TrToken {
 	getLayout(stop = {}) {
 		const rows = this.getAllRows(),
 			{length} = rows,
-			/** @type {TableCoords[][]} */ layout = rows.map(() => []);
+			/** @type {Layout} */ layout = new Layout(length).fill().map(() => []);
 		for (const [i, rowToken] of rows.entries()) {
 			if (i > stop.row ?? stop.y) {
 				break;
@@ -184,6 +217,11 @@ class TableToken extends TrToken {
 			}
 		}
 		return layout;
+	}
+
+	/** @complexity `n` */
+	printLayout() {
+		this.getLayout().print();
 	}
 
 	/**
@@ -330,7 +368,7 @@ class TableToken extends TrToken {
 	fillTable(inner, subtype = 'td', attr = {}) {
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
-			maxCol = Math.max(...layout.map(row => row.length)),
+			maxCol = Math.max(...layout.map(({length}) => length)),
 			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (const [y, rowToken] of rowTokens.entries()) {
 			this.#fill(y, rowToken, layout, maxCol, token);
@@ -505,14 +543,18 @@ class TableToken extends TrToken {
 	/**
 	 * @param {[number, number]} xlim
 	 * @param {[number, number]} ylim
+	 * @complexity `n²`
 	 */
 	mergeCells(xlim, ylim) {
 		if ([...xlim, ...ylim].some(arg => typeof arg !== 'number')) {
 			typeError(this, 'mergeCells', 'Number');
 		}
+		const layout = this.getLayout(),
+			maxCol = Math.max(...layout.map(({length}) => length));
+		xlim = xlim.map(x => x < 0 ? x + maxCol : x);
+		ylim = ylim.map(y => y < 0 ? y + layout.length : y);
 		const [xmin, xmax] = xlim.sort(),
 			[ymin, ymax] = ylim.sort(),
-			layout = this.getLayout(),
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
 		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
 			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]) || set.has(rowLayout[xmax]))
@@ -520,19 +562,21 @@ class TableToken extends TrToken {
 			throw new RangeError(`待合并区域与外侧区域有重叠！`);
 		}
 		const corner = layout[ymin][xmin],
-			cornerCell = this.getNthCell(corner);
-		set.delete(corner);
-		const cells = [...set].map(coords => this.getNthCell(coords));
+			rows = this.getAllRows(),
+			cornerCell = rows[corner.row].getNthCol(corner.column);
 		cornerCell.rowspan = ymax - ymin;
 		cornerCell.colspan = xmax - xmin;
-		for (const cell of cells) {
-			cell.remove();
+		set.delete(corner);
+		for (const {row, column} of set) {
+			rows[row].getNthCol(column).remove();
 		}
+		return cornerCell;
 	}
 
 	/**
 	 * @param {TableCoords & TableRenderedCoords} coords
-	 * @param {('rowspan'|'colspan')[]} dirs
+	 * @param {Set<'rowspan'|'colspan'>} dirs
+	 * @complexity `n²`
 	 */
 	#split(coords, dirs) {
 		const cell = this.getNthCell(coords),
@@ -540,7 +584,12 @@ class TableToken extends TrToken {
 			{subtype} = cell;
 		attr.rowspan = Number(attr.rowspan) || 1;
 		attr.colspan = Number(attr.colspan) || 1;
-		if (dirs.every(dir => attr[dir] === 1)) {
+		for (const dir of dirs) {
+			if (attr[dir] === 1) {
+				dirs.delete(dir);
+			}
+		}
+		if (dirs.size === 0) {
 			return;
 		}
 		let {x, y} = coords;
@@ -574,17 +623,17 @@ class TableToken extends TrToken {
 
 	/** @param {TableCoords & TableRenderedCoords} coords */
 	splitIntoRows(coords) {
-		this.#split(coords, ['rowspan']);
+		this.#split(coords, new Set(['rowspan']));
 	}
 
 	/** @param {TableCoords & TableRenderedCoords} coords */
 	splitIntoCols(coords) {
-		this.#split(coords, ['colspan']);
+		this.#split(coords, new Set(['colspan']));
 	}
 
 	/** @param {TableCoords & TableRenderedCoords} coords */
 	splitIntoCells(coords) {
-		this.#split(coords, ['rowspan', 'colspan']);
+		this.#split(coords, new Set(['rowspan', 'colspan']));
 	}
 }
 
