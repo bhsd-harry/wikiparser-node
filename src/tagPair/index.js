@@ -70,12 +70,11 @@ class TagPairToken extends fixedToken(Token) {
 
 	/** @returns {string} */
 	text() {
-		const {closed, firstChild, lastChild, selfClosing} = this,
-			[opening, closing] = this.#tags,
-			text = /** @param {string|Token} child */ child => typeof child === 'string' ? child : child.text();
+		const {closed, firstChild, selfClosing} = this,
+			[opening, closing] = this.#tags;
 		return selfClosing
-			? `<${opening}${text(firstChild)}/>`
-			: `<${opening}${text(firstChild)}>${text(lastChild)}${closed ? `</${closing}>` : ''}`;
+			? `<${opening}${typeof firstChild === 'string' ? firstChild : firstChild.text()}/>`
+			: `<${opening}${super.text('>')}${closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @returns {[number, string][]} */

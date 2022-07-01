@@ -1,6 +1,7 @@
 'use strict';
 
 const {undo} = require('../util/debug'),
+	{text} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -67,7 +68,7 @@ class SyntaxToken extends Token {
 	 * @complexity `n`
 	 */
 	replaceChildren(...elements) {
-		if (this.#pattern.test(elements.map(ele => typeof ele === 'string' ? ele : ele.text()).join(''))) {
+		if (this.#pattern.test(text(elements))) {
 			Parser.run(() => {
 				super.replaceChildren(...elements);
 			});

@@ -42,7 +42,6 @@ class ParameterToken extends fixedToken(Token) {
 	}
 
 	afterBuild() {
-		super.afterBuild();
 		if (!this.anon) {
 			const name = this.firstElementChild.text().trim(),
 				{parentNode} = this;

@@ -1,6 +1,7 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const {text} = require('../util/string'),
+	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -44,7 +45,6 @@ class ArgToken extends Token {
 	}
 
 	afterBuild() {
-		super.afterBuild();
 		this.setAttribute('name', this.firstElementChild.text().trim());
 		const that = this,
 			/** @type {AstListener} */ argListener = ({prevTarget}) => {
@@ -70,7 +70,7 @@ class ArgToken extends Token {
 
 	/** @returns {string} */
 	text() {
-		return `{{{${this.children.slice(0, 2).map(child => child.text()).join('|')}}}}`;
+		return `{{{${text(this.children.slice(0, 2), '|')}}}}`;
 	}
 
 	/** @returns {[number, string][]} */

@@ -156,7 +156,7 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.#innerSyntax.includes('\x00')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax).map(String).join('');
 		}
-		return super.build();
+		return this;
 	}
 
 	static #aliases = {td: '\n|', th: '\n!', caption: '\n|+'};

@@ -134,7 +134,6 @@ class AttributeToken extends Token {
 	}
 
 	afterBuild() {
-		super.afterBuild();
 		const that = this,
 			/** @type {AstListener} */ attributeListener = ({type, target}) => {
 				if (type === 'text' || target !== that) {

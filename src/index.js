@@ -40,7 +40,6 @@
  */
 
 const {typeError, externalUse} = require('../util/debug'),
-	{ucfirst} = require('../util/string'),
 	Ranges = require('../lib/ranges'),
 	AstElement = require('../lib/element'),
 	assert = require('assert/strict'),
@@ -278,43 +277,12 @@ class Token extends AstElement {
 
 	/** @param {string} title */
 	isInterwiki(title) {
-		if (typeof title !== 'string') {
-			typeError(this, 'isInterwiki', 'String');
-		}
-		return title.replaceAll('_', ' ').replace(/^\s*:?\s*/, '')
-			.match(new RegExp(`^(${this.#config.interwiki.join('|')})\\s*:`, 'i'));
+		return Parser.isInterwiki(title, this.#config);
 	}
 
-	/**
-	 * 引自mediawiki.Title::parse
-	 * @param {string} title
-	 */
-	normalizeTitle(title, defaultNs = 0) {
-		if (typeof title !== 'string' || typeof defaultNs !== 'number') {
-			typeError(this, 'normalizeTitle', 'String', 'Number');
-		}
-		const {namespaces, nsid} = this.#config;
-		let namespace = namespaces[defaultNs];
-		title = title.replaceAll('_', ' ').trim();
-		if (title[0] === ':') {
-			namespace = '';
-			title = title.slice(1).trim();
-		}
-		const iw = this.isInterwiki(title);
-		if (iw) {
-			title = title.slice(iw[0].length);
-		}
-		const m = title.split(':');
-		if (m.length > 1) {
-			const id = namespaces[nsid[m[0].trim().toLowerCase()]];
-			if (id !== undefined) {
-				namespace = id;
-				title = m.slice(1).join(':').trim();
-			}
-		}
-		const i = title.indexOf('#');
-		title = i === -1 ? title : title.slice(0, i).trim();
-		return `${iw ? `${iw[1].toLowerCase()}:` : ''}${namespace}${namespace && ':'}${ucfirst(title)}`;
+	/** @param {string} title */
+	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
+		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);
 	}
 
 	/** @complexity `n` */

@@ -1,6 +1,7 @@
 'use strict';
 
 const {typeError, externalUse} = require('../util/debug'),
+	{text} = require('../util/string'),
 	Token = require('../src'),
 	assert = require('assert/strict');
 
@@ -146,13 +147,13 @@ class TokenCollection extends Array {
 
 	/**
 	 * @template {unknown} T
-	 * @param {T} text
+	 * @param {T} str
 	 * @returns {T extends string|Function ? this : string}
 	 */
-	text(text) {
-		/** @type {(ele: Token, i: number, text: string) => string} */
-		const callback = typeof text === 'function' ? text.call : () => text;
-		if (['string', 'function'].includes(typeof text)) {
+	text(str) {
+		/** @type {(ele: Token, i: number, str: string) => string} */
+		const callback = typeof str === 'function' ? str.call : () => str;
+		if (['string', 'function'].includes(typeof str)) {
 			for (const [i, ele] of this.entries()) {
 				if (ele instanceof Token) {
 					try {
@@ -162,7 +163,7 @@ class TokenCollection extends Array {
 			}
 			return this;
 		}
-		return this.toArray().map(ele => typeof ele === 'string' ? ele : ele.text()).join('');
+		return text(this.toArray());
 	}
 
 	/** @param {string|CollectionCallback<boolean, string|Token>|Token|Token[]} selector */

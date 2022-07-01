@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment, escapeRegExp} = require('../util/string'),
+const {removeComment, escapeRegExp, text} = require('../util/string'),
 	{typeError, externalUse} = require('../util/debug'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
@@ -85,10 +85,11 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const [name] = removeComment(title).split('#');
-			if (/\x00\d+e\x7f|[<>[\]{}]/.test(name)) {
+			if (/\x00\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
+			this.setAttribute('name', this.normalizeTitle(name, 10, true).title);
 			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.appendChild(token);
 		}
@@ -122,10 +123,8 @@ class TranscludeToken extends Token {
 	}
 
 	afterBuild() {
-		super.afterBuild();
-		if (this.type === 'template') {
-			const name = this.firstElementChild.text();
-			this.setAttribute('name', this.normalizeTitle(name, 10));
+		if (this.name.includes('\x00')) {
+			this.setAttribute('name', text(this.buildFromStr(this.name)));
 		}
 		if (this.matches('template, magic-word#invoke')) {
 			const that = this;
@@ -142,7 +141,7 @@ class TranscludeToken extends Token {
 					delete data.newKey;
 				}
 				if (prevTarget === that.firstElementChild && that.type === 'template') {
-					that.setAttribute('name', that.normalizeTitle(prevTarget.text(), 10));
+					that.setAttribute('name', that.normalizeTitle(prevTarget.text(), 10).title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = that.getArgs(oldKey, false, false);
 					oldArgs.delete(prevTarget);
@@ -205,9 +204,7 @@ class TranscludeToken extends Token {
 		const {children, childElementCount, firstElementChild} = this;
 		return `{{${this.modifier}${this.modifier && ':'}${
 			this.type === 'magic-word'
-				? `${firstElementChild.text()}${childElementCount > 1 ? ':' : ''}${
-					children.slice(1).map(child => child.text()).join('|')
-				}`
+				? `${firstElementChild.text()}${childElementCount > 1 ? ':' : ''}${text(children.slice(1), '|')}`
 				: super.text('|')
 		}}}`;
 	}
@@ -584,7 +581,7 @@ class TranscludeToken extends Token {
 			if (remaining > 1) {
 				Parser.error(`${this.type === 'template'
 					? this.name
-					: this.normalizeTitle(this.children[1]?.text() ?? '', 828)
+					: this.normalizeTitle(this.children[1]?.text() ?? '', 828).title
 				} 还留有 ${remaining} 个重复的 ${key} 参数！`);
 				duplicatedKeys.push(key);
 				continue;

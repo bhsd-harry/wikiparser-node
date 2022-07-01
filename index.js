@@ -1,6 +1,7 @@
 'use strict';
 
-const fs = require('fs');
+const fs = require('fs'),
+	{text} = require('./util/string');
 
 const /** @type {Parser} */ Parser = {
 	warning: true,
@@ -85,18 +86,40 @@ const /** @type {Parser} */ Parser = {
 		return require(this.config);
 	},
 
-	isInterwiki(title) {
-		const Token = require('./src');
-		return this.run(() => new Token()).isInterwiki(title);
+	isInterwiki(title, {interwiki} = Parser.getConfig()) {
+		title = String(title);
+		return title.replaceAll('_', ' ').replace(/^\s*:?\s*/, '')
+			.match(new RegExp(`^(${interwiki.join('|')})\\s*:`, 'i'));
 	},
-	normalizeTitle(title, defaultNs = 0) {
-		const Token = require('./src');
-		return this.run(() => new Token()).normalizeTitle(title, defaultNs);
+
+	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {
+		title = String(title);
+		let /** @type {Token} */ token;
+		if (!halfParsed) {
+			const Token = require('./src');
+			token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce());
+			title = token.firstChild;
+		}
+		const Title = require('./lib/title'),
+			titleObj = new Title(title, defaultNs, config);
+		if (token) {
+			const build = /** @param {string[]} keys */ keys => {
+				for (const key of keys) {
+					if (titleObj[key].includes('\x00')) {
+						titleObj[key] = text(token.buildFromStr(titleObj[key]));
+					}
+				}
+			};
+			Parser.run(() => {
+				build(['title', 'fragment']);
+			});
+		}
+		return titleObj;
 	},
 
 	MAX_STAGE: 11,
 
-	parse(wikitext, include = false, maxStage = this.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include = false, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src');
 		this.run(() => {
 			if (typeof wikitext === 'string') {

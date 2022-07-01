@@ -41,9 +41,10 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const title = token.normalizeTitle(page);
+		const title = token.normalizeTitle(page, 0, true),
+			{ns, interwiki} = title;
 		if (mightBeImg) {
-			if (!title.startsWith('File:')) {
+			if (interwiki || ns !== 6) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -72,13 +73,13 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 		s += `\x00${accum.length}l\x7f${after}`;
 		let LinkToken = require('../src/link');
 		if (!force) {
-			if (title.startsWith('File:')) {
+			if (!interwiki && ns === 6) {
 				LinkToken = require('../src/link/file');
-			} else if (title.startsWith('Category:')) {
+			} else if (!interwiki && ns === 14) {
 				LinkToken = require('../src/link/category');
 			}
 		}
-		new LinkToken(link, text, config, accum);
+		new LinkToken(link, text, title, config, accum);
 	}
 	return s;
 };
