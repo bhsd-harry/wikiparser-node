@@ -2,7 +2,7 @@
 
 const /** @type {Parser} */ Parser = require('../..'),
 	LinkToken = require('.'),
-	Token = require('..');
+	Token = require('..'); // eslint-disable-line no-unused-vars
 
 /**
  * 分类
@@ -10,38 +10,47 @@ const /** @type {Parser} */ Parser = require('../..'),
  */
 class CategoryToken extends LinkToken {
 	type = 'category';
+	sortkey = '';
+
+	setFragment = undefined;
+	asSelfLink = undefined;
+	pipeTrick = undefined;
 
 	/**
 	 * @param {string} link
 	 * @param {string|undefined} text
-	 * @param {string} title
+	 * @param {Title} title
 	 * @param {accum} accum
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		super(link, text, title, config, accum);
+		this.seal(['sortkey', 'setFragment', 'asSelfLink', 'pipeTrick']);
+	}
+
+	afterBuild() {
+		super.afterBuild();
 		this.#updateSortkey();
 		const that = this;
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], ({prevTarget}) => {
-			if (prevTarget.type === 'link-text') {
+		const /** @type {AstListener} */ categoryListener = ({prevTarget}) => {
+			if (prevTarget?.type === 'link-text') {
 				that.#updateSortkey();
 			}
-		});
+		};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], categoryListener);
 	}
 
 	#updateSortkey() {
-		this.sortkey = this.children[1]?.text()
+		this.setAttribute('sortkey', this.children[1]?.text()
 			?.replace(/&#(\d+);/g, /** @param {string} p1 */ (_, p1) => String.fromCharCode(Number(p1)))
 			?.replace(/&#x([\da-f]+);/gi, /** @param {string} p1 */ (_, p1) => String.fromCharCode(parseInt(p1, 16)))
-			?.replaceAll('\n', '');
-		if (!this.sortkey) {
-			delete this.sortkey;
-		}
+			?.replaceAll('\n', '') ?? '',
+		);
 	}
 
 	/** @param {number} i */
 	removeAt(i) {
 		if (i === 1) {
-			delete this.sortkey;
+			this.setAttribute('sortkey', '');
 		}
 		return super.removeAt(i);
 	}
@@ -53,7 +62,7 @@ class CategoryToken extends LinkToken {
 	 */
 	insertAt(token, i) {
 		super.insertAt(token, i);
-		if (i === 1 || i === 2 - this.childNodes.length) {
+		if (i === 1 && !Parser.running) {
 			this.#updateSortkey();
 		}
 		return token;
@@ -70,25 +79,8 @@ class CategoryToken extends LinkToken {
 	}
 
 	/** @param {string} text */
-	setText(text) {
-		text = String(text);
-		const root = Parser.run(() => new Token(`[[Category:C|${text}]]`, this.getAttribute('config')).parse(6)),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'category' || firstElementChild.childElementCount !== 2) {
-			throw new SyntaxError(`非法的分类关键字：${text.replaceAll('\n', '\\n')}`);
-		}
-		const {lastChild} = firstElementChild;
-		if (this.childElementCount === 1) {
-			this.appendChild(lastChild);
-		} else {
-			this.lastElementChild.safeReplaceWith(lastChild);
-		}
-		this.#updateSortkey();
-	}
-
-	/** @param {string} text */
 	setSortkey(text) {
-		this.setText(text);
+		this.setLinkText(text);
 	}
 }
 
