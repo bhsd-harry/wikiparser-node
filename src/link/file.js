@@ -52,8 +52,10 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childElementCount) {
-		this.getArgs(token.name, false, false).add(token);
-		this.#keys.add(token.name);
+		if (!Parser.running) {
+			this.getArgs(token.name, false, false).add(token);
+			this.#keys.add(token.name);
+		}
 		return super.insertAt(token, i);
 	}
 
@@ -128,7 +130,7 @@ class FileToken extends LinkToken {
 	/**
 	 * @template {string|undefined} T
 	 * @param {T} key
-	 * @returns {T extends undefined ? Object<string, string> : string}
+	 * @returns {T extends undefined ? Object<string, string> : string|true}
 	 * @complexity `n`
 	 */
 	getValue(key) {

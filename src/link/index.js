@@ -102,6 +102,9 @@ class LinkToken extends Token {
 	/** @param {string} link */
 	setTarget(link) {
 		link = String(link);
+		if (!/^\s*[:#]/.test(link)) {
+			link = `:${link}`;
+		}
 		const root = Parser.run(() =>
 				new Token(`[[${link}]]`, this.getAttribute('config')).parse(6, this.getAttribute('include')),
 			),
@@ -120,14 +123,18 @@ class LinkToken extends Token {
 	#setFragment(fragment, page = true) {
 		fragment = String(fragment).replace(/[<>[]#|=!]/g, p => encodeURIComponent(p));
 		const root = Parser.run(() =>
-				new Token(`[[${page ? this.name : ''}#${fragment}]]`, this.getAttribute('config'))
-					.parse(6, this.getAttribute('include')),
+				new Token(`[[${page
+					? `${/^(?:File|Category):/.test(this.name) ? ':' : ''}${this.name}`
+					: ''
+				}#${fragment}]]`, this.getAttribute('config')).parse(6, this.getAttribute('include')),
 			),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childElementCount !== 2) {
+		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
 		}
-		Parser.warn(`${this.constructor.name}.${page ? 'setFragment' : 'asSelfLink'} 方法会移除嵌入标记！`);
+		if (page) {
+			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
+		}
 		const {firstChild} = firstElementChild;
 		root.destroy();
 		firstElementChild.destroy();

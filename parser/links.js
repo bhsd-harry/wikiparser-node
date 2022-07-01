@@ -37,13 +37,16 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 		}
 		const page = link.includes('%') ? decodeURIComponent(link) : link,
 			force = link.trim().startsWith(':');
-		if (force && mightBeImg || /[<>[\]{}|]/.test(page)) {
+		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
 		}
 		const title = token.normalizeTitle(page, 0, true),
-			{ns, interwiki} = title;
-		if (mightBeImg) {
+			{ns, interwiki, valid} = title;
+		if (!valid) {
+			s += `[[${x}`;
+			continue;
+		} else if (mightBeImg) {
 			if (interwiki || ns !== 6) {
 				s += `[[${x}`;
 				continue;

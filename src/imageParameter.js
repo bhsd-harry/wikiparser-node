@@ -90,7 +90,7 @@ class ImageParameterToken extends Token {
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		if (this.#isVoid()) {
+		if (!Parser.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}
 		return super.insertAt(token, i);

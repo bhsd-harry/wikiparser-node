@@ -35,10 +35,7 @@ const explode = (start, end, separator, str) => {
 	if (str === undefined) {
 		return [];
 	}
-	start = escapeRegExp(start);
-	end = escapeRegExp(end);
-	separator = escapeRegExp(separator);
-	const regex = new RegExp(`${start}|${end}|${separator}`, 'g'),
+	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
 		/** @type {string[]} */ exploded = [];
 	let mt = regex.exec(str),
 		depth = 0,
