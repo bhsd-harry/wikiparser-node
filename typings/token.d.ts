@@ -11,6 +11,7 @@ declare global {
 		doubleUnderscore: [string[], string[]];
 		protocol: string;
 		interwiki: string[];
+		img: Record<string, string>;
 	}
 
 	type accum = Token[];
