@@ -133,12 +133,43 @@
 14. [DoubleUnderscoreToken](#doubleunderscoretoken)
     1. [实例属性](#doubleunderscoretoken.instance.properties)
         1. [name](#doubleunderscoretoken.name)
-15. [选择器](#选择器)
+15. [LinkToken](#linktoken)
+    1. [原型方法](#linktoken.prototype.methods)
+        1. [setTarget](#linktoken.settarget)
+        2. [setFragment](#linktoken.setfragment)
+        3. [asSelfLink](#linktoken.asselflink)
+        4. [setLinkText](#linktoken.setlinktext)
+        5. [pipeTrick](#linktoken.pipetrick)
+    2. [实例属性](#linktoken.instance.properties)
+        1. [name](#linktoken.name)
+        2. [selfLink](#linktoken.selflink)
+        3. [fragment](#linktoken.fragment)
+        4. [interwiki](#linktoken.interwiki)
+16. [CategoryToken](#categorytoken)
+    1. [原型方法](#categorytoken.prototype.methods)
+        1. [setSortkey](#categorytoken.setsortkey)
+    2. [实例属性](#categorytoken.instance.properties)
+        1. [sortkey](#categorytoken.sortkey)
+17. [FileToken](#filetoken)
+    1. [原型方法](#filetoken.prototype.methods)
+        1. [getAllArgs](#filetoken.getallargs)
+        2. [getArgs](#filetoken.getargs)
+        3. [hasArg](#filetoken.hasarg)
+        4. [getArg](#filetoken.getarg)
+        5. [removeArg](#filetoken.removearg)
+        6. [getKeys](#filetoken.getkeys)
+        7. [getValue](#filetoken.getvalue)
+        8. [setValue](#filetoken.setvalue)
+18. [ImageParameterToken](#imageparametertoken)
+    1. [原型方法](#imageparametertoken.prototype.methods)
+        1. [getValue](#imageparametertoken.getvalue)
+        2. [setValue](#imageparametertoken.setvalue)
+19. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
     4. [伪选择器](#selector.pseudo)
-16. [$ (TokenCollection)](#-tokencollection)
+20. [$ (TokenCollection)](#-tokencollection)
 </details>
 
 # Parser
@@ -395,7 +426,7 @@ assert(comment.closed === false);
 [返回目录](#目录)
 
 # ExtToken
-扩展标签。
+扩展标签。这个类同时混合了 [AttributeToken](#attributetoken) 类的方法。
 
 ## 实例属性<a id="exttoken.instance.properties"></a>
 <details>
@@ -910,7 +941,7 @@ assert(named.anon === false);
 [返回目录](#目录)
 
 # HtmlToken
-HTML标签，未进行匹配。
+HTML标签，未进行匹配。这个类同时混合了 [AttributeToken](#attributetoken) 类的方法。
 
 ## 原型方法<a id="htmltoken.prototype.methods"></a>
 <details>
@@ -1360,11 +1391,267 @@ assert(td.colspan === 1);
     <summary>展开</summary>
 
 **name**: string<a id="doubleunderscoretoken.name"></a>
+- 小写的状态开关名。
 
 ```js
 var root = Parser.parse('__NOTOC__'),
     doubleUnderscore = root.firstChild;
 assert(doubleUnderscore.name === 'notoc');
+```
+</details>
+
+[返回目录](#目录)
+
+# LinkToken
+内链，包括跨维基链接。
+
+## 原型方法<a id="linktoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**setTarget**(link: string): void<a id="linktoken.settarget"></a>
+- 修改内链目标。
+
+```js
+var root = Parser.parse('[[a]]'),
+    link = root.firstChild;
+link.setTarget('b');
+assert(root.toString() === '[[:b]]'); // 自动在开头添加':'
+```
+
+**setFragment**(fragment: string): void<a id="linktoken.setfragment"></a>
+- 不改变目标页面，仅修改 fragment。
+
+```js
+var root = Parser.parse('[[:file:a]]'),
+    link = root.firstChild;
+link.setFragment('b');
+assert(root.toString() === '[[:File:A#b]]'); // 这个方法会同时规范化页面名
+```
+
+**asSelfLink**(fragment?: string): void<a id="linktoken.asselflink"></a>
+- 当原链接带有或指定 fragment 时，将内链修改为 selfLink 格式。
+
+```js
+var root = Parser.parse('[[a#b]]'),
+    link = root.firstChild;
+link.asSelfLink();
+assert(root.toString() === '[[#b]]');
+```
+
+**setLinkText**(linkText?: string)<a id="linktoken.setlinktext"></a>
+- 修改链接文本。
+
+```js
+var root = Parser.parse('[[a]]'),
+    link = root.firstChild;
+link.setLinkText('b');
+assert(root.toString() === '[[a|b]]');
+link.removeAt(1); // 若要移除链接文本，直接使用removeAt方法即可
+assert(root.toString() === '[[a]]');
+```
+
+**pipeTrick**(): void<a id="linktoken.pipetrick"></a>
+- 模拟解析器预转换的 pipe trick。
+
+```js
+var root = Parser.parse('[[help:a (b)]]'),
+    link = root.firstChild;
+link.pipeTrick();
+assert(root.toString() === '[[help:a (b)|a]]');
+```
+</details>
+
+## 实例属性<a id="linktoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**name**: string<a id="linktoken.name"></a>
+- 规范化的目标页面名称。
+
+```js
+var root = Parser.parse('[[:文件:a]]'),
+    link = root.firstChild;
+assert(link.name === 'File:A');
+```
+
+**selfLink**: boolean<a id="linktoken.selflink"></a>
+- 是否是 selfLink。
+
+```js
+var root = Parser.parse('[[#a]]'),
+    link = root.firstChild;
+assert(link.selfLink === true);
+```
+
+**fragment**: string<a id="linktoken.fragment"></a>
+- URL 解码后的 fragment。
+
+```js
+var root = Parser.parse('[[#.7B.7D]]'), // 兼容 MediaWiki 式的 fragment 编码
+    link = root.firstChild;
+assert(link.fragment === '{}');
+```
+
+**interwiki**: string<a id="linktoken.interwiki"></a>
+- 跨维基前缀。
+
+```js
+var root = Parser.parse('[[zhwiki:a]]'),
+    link = root.firstChild;
+assert(link.interwiki === 'zhwiki');
+```
+</details>
+
+[返回目录](#目录)
+
+# CategoryToken
+分类。这个类继承了 [LinkToken](#linktoken) 类。
+
+## 原型方法<a id="categorytoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**setSortkey**(text: string): void<a id="categorytoken.setsortkey"></a>
+- 修改分类关键字，实际上就是 [setLinkText](#linktoken.setlinktext) 方法的别名。
+
+```js
+var root = Parser.parse('[[category:a]]'),
+    category = root.firstChild;
+category.setSortkey('*');
+assert(root.toString() === '[[category:a|*]]');
+````
+</details>
+
+## 实例属性<a id="categorytoken.instance.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**sortkey**: string<a id="categorytoken.sortkey"></a>
+- 分类关键字。
+
+```js
+var root = Parser.parse('[[category:a|*]]'),
+    category = root.firstChild;
+assert(category.sortkey === '*');
+```
+</details>
+
+[返回目录](#目录)
+
+# FileToken
+文件。这个类继承了 [LinkToken](#linktoken) 类。
+
+## 原型方法<a id="filetoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**getAllArgs**(): [ImageParameterToken](#imageparametertoken)[]<a id="filetoken.getallargs"></a>
+- 获取所有图片参数，类似 [TranscludeToken.getAllArgs](#transcludetoken.getallargs) 方法。
+
+```js
+var root = Parser.parse('[[file:a|thumb|1px|link=b|alt=c|d]]'),
+    file = root.firstChild;
+assert.deepStrictEqual(file.getAllArgs(), file.children.slice(1));
+```
+
+**getArgs**(key: string): Set\<[ImageParameterToken](#imageparametertoken)><a id="filetoken.getargs"></a>
+- 获取指定的图片参数，类似 [TranscludeToken.getArgs](#transcludetoken.getargs) 方法。
+
+```js
+var root = Parser.parse('[[file:a|frame|framed]]'), // 这里故意使用一个错误语法的例子，请勿模仿
+    file = root.firstChild;
+assert.deepStrictEqual(file.getArgs('framed'), new Set(file.children.slice(1)));
+```
+
+**hasArg**(key: string): boolean<a id="filetoken.hasarg"></a>
+- 是否带有指定的图片参数，类似 [TranscludeToken.hasArg](#transcludetoken.hasarg) 方法。
+
+```js
+var root = Parser.parse('[[file:a|b]]'),
+    file = root.firstChild;
+assert(file.hasArg('caption') === true);
+```
+
+**getArg**(key: string): [ImageParameterToken](#imageparametertoken)<a id="filetoken.getarg"></a>
+- 获取最后一个指定的图片参数，类似 [TranscludeToken.getArg](#transcludetoken.getarg) 方法。
+
+```js
+var root = Parser.parse('[[file:a|link=b|链接=c]]'), // 这里故意使用一个错误语法的例子，请勿模仿
+    file = root.firstChild;
+assert(file.getArg('link'), file.lastChild);
+```
+
+**removeArg**(key: string): void<a id="filetoken.removearg"></a>
+- 移除指定的图片参数，类似 [TranscludeToken.removeArg](#transcludetoken.removearg) 方法。
+
+```js
+var root = Parser.parse('[[file:a|frame|framed]]'), // 这里故意使用一个错误语法的例子，请勿模仿
+    file = root.firstChild;
+file.removeArg('framed');
+assert(root.toString() === '[[file:a]]');
+```
+
+**getKeys**(): string[]<a id="filetoken.getkeys"></a>
+- 获取所有图片参数名，类似 [TranscludeToken.getKeys](#transcludetoken.getkeys) 方法。
+
+```js
+var root = Parser.parse('[[file:a|thumb|1px|link=b|alt=c|d]]'),
+    file = root.firstChild;
+assert.deepStrictEqual(file.getKeys(), ['thumbnail', 'width', 'link', 'alt', 'caption']);
+```
+
+**getValue**(key: string): string\|true<a id="filetoken.getvalue"></a>
+- 获取指定的图片参数值，类似 [TranscludeToken.getValue](#transcludetoken.getvalue) 方法。
+
+```js
+var root = Parser.parse('[[file:a|thumb|100px]]'),
+    file = root.firstChild;
+assert(file.getValue('thumbnail') === true);
+assert(file.getValue('width') === '100');
+```
+
+**setValue**(key: string, value: string\|boolean): void<a id="filetoken.setvalue"></a>
+- 修改或设置指定的图片参数，类似 [TranscludeToken.setValue](#transcludetoken.setvalue) 方法。
+
+```js
+var root = Parser.parse('[[file:a|thumb]]'),
+    file = root.firstChild;
+file.setValue('thumbnail', false);
+file.setValue('width', '100');
+file.setValue('framed', true);
+assert(root.toString() === '[[file:a|100px|framed]]');
+```
+</details>
+
+[返回目录](#目录)
+
+# ImageParameterToken
+图片参数。
+
+## 原型方法<a id="imageparametertoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**getValue**(): string\|true<a id="imageparametertoken.getvalue"></a>
+- 获取图片参数值，类似 [ParameterToken.getValue](#parametertoken.getvalue) 方法。
+
+```js
+var root = Parser.parse('[[file:a|thumb|100px]]'),
+    [thumbnail, width] = root.querySelectorAll('image-parameter');
+assert(thumbnail.getValue() === true);
+assert(width.getValue() === '100');
+```
+
+**setValue**(value: string\|boolean): void<a id="imageparametertoken.setvalue"></a>
+- 修改或移除图片参数，类似 [ParameterToken.setValue](#parametertoken.setvalue) 方法。
+
+```js
+var root = Parser.parse('[[file:a|thumb|100px]]'),
+    [thumbnail, width] = root.querySelectorAll('image-parameter');
+thumbnail.setValue(false);
+width.setValue('x100');
+assert(root.toString() === '[[file:a|x100px]]');
 ```
 </details>
 
