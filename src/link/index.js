@@ -40,16 +40,14 @@ class LinkToken extends Token {
 	}
 
 	cloneNode() {
-		const [link, linkText] = this.cloneChildren();
+		const [link, ...linkText] = this.cloneChildren();
 		return Parser.run(() => {
 			const /** @type {typeof LinkToken} */ Constructor = this.constructor,
 				token = new Constructor('', undefined, {
 					title: this.name, interwiki: this.interwiki, fragment: this.fragment,
 				}, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(link);
-			if (linkText) {
-				token.appendChild(linkText);
-			}
+			token.appendChild(...linkText);
 			return token.afterBuild();
 		});
 	}

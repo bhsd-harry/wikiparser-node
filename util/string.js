@@ -32,6 +32,9 @@ const text = (childNodes, separator = '') => {
  * @param {string} str
  */
 const explode = (start, end, separator, str) => {
+	if (str === undefined) {
+		return [];
+	}
 	start = escapeRegExp(start);
 	end = escapeRegExp(end);
 	separator = escapeRegExp(separator);

@@ -100,8 +100,8 @@ class ArgToken extends Token {
 	}
 
 	/** @param {Token} token */
-	insertAt(token, i = this.childNodes.length) {
-		const j = i < 0 ? i + this.childNodes.length : i;
+	insertAt(token, i = this.childElementCount) {
+		const j = i < 0 ? i + this.childElementCount : i;
 		if (j > 1 && !Parser.running) {
 			throw new RangeError(`${this.constructor.name} 不可插入 arg-redundant 子节点！`);
 		}
