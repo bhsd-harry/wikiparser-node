@@ -585,8 +585,8 @@ class TableToken extends TrToken {
 		cornerCell.rowspan = ymax - ymin;
 		cornerCell.colspan = xmax - xmin;
 		set.delete(corner);
-		for (const {row, column} of set) {
-			rows[row].getNthCol(column).remove();
+		for (const token of [...set].map(({row, column}) => rows[row].getNthCol(column))) {
+			token.remove();
 		}
 		return cornerCell;
 	}

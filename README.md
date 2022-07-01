@@ -1028,7 +1028,7 @@ assert(table.getNthRow(1) === table.querySelector('tr'));
 
 |表格示意|
 |:-:|
-|<table><tbody><tr><td rowspan=2>第 0 行</td><td>第 0 行</td></tr><tr><td>第 1 行</td></tr></tbody></table>|
+|<table><tr><td rowspan=2>第 0 行</td><td>第 0 行</td></tr><tr><td>第 1 行</td></tr></table>|
 
 **getNthCell**(coords: {row: number, column: number}\|{x: number, y: number}): [TdToken](#tdtoken)<a id="tabletoken.getnthcell"></a>
 - 获取指定位置的单元格，指定位置可以基于 raw HTML 或渲染后的表格。
@@ -1043,7 +1043,7 @@ assert(table.getNthCell({x: 1, y: 1}) === td); // 该单元格跨了 2 行 2 列
 
 |(row, column)|(y, x)|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2 colspan=2>(0, 0)</td><td>(0, 1)</td></tr><tr><td>(1, 0)</td></tr><tr><td>(2, 0)</td><td>(2, 1)</td><td>(2, 2)</td></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>(0, 0), (0, 1)<br>(1, 0), (1, 1)</td><td>(0, 2)</td></tr><tr><td>(1, 2)</td></tr><tr><td>(2, 0)</td><td>(2, 1)</td><td>(2, 2)</td></tr></tbody></table>|
+|<table><tr><td rowspan=2 colspan=2 align="center">(0, 0)</td><td>(0, 1)</td></tr><tr><td>(1, 0)</td></tr><tr><td>(2, 0)</td><td>(2, 1)</td><td>(2, 2)</td></table>|<table><tr><td rowspan=2 colspan=2 align="center">(0, 0), (0, 1)<br>(1, 0), (1, 1)</td><td>(0, 2)</td></tr><tr><td>(1, 2)</td></tr><tr><td>(2, 0)</td><td>(2, 1)</td><td>(2, 2)</td></tr></table>|
 
 **getFullRow**(y: number): Map\<[TdToken](#tdtoken), boolean><a id="tabletoken.getfullrow"></a>
 - 获取一行的所有单元格。
@@ -1057,7 +1057,7 @@ assert.deepStrictEqual(table.getFullRow(1), new Map([[a, false], [c, true]])); /
 
 |表格|选中第 1 行|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2>`false`</td><td>&nbsp;</td></tr><tr><td>`true`</td></tr></tbody></table>|
+|<table><tr><td rowspan=2>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td></tr></table>|<table><tr><td rowspan=2>`false`</td><td>&nbsp;</td></tr><tr><td>`true`</td></tr></table>|
 
 **getFullCol**(x: number): Map\<[TdToken](#tdtoken), boolean><a id="tabletoken.getfullcol"></a>
 - 获取一列的所有单元格。
@@ -1071,7 +1071,7 @@ assert.deepStrictEqual(table.getFullCol(1), new Map([[a, false], [c, true]])); /
 
 |表格|选中第 1 列|
 |:-:|:-:|
-|<table><tbody><tr><td colspan=2>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>|<table><tbody><tr><td colspan=2>`false`</td></tr><tr><td>&nbsp;</td><td>`true`</td></tr></tbody></table>|
+|<table><tr><td colspan=2>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></table>|<table><tr><td colspan=2 align="center">`false`</td></tr><tr><td>&nbsp;</td><td>`true`</td></tr></table>|
 
 **formatTableRow**(y: number, attr: string\|Record\<string, string\|boolean>, multiRow?: boolean = false): void<a id="tabletoken.formattablerow"></a>
 - 批量设置一行单元格的属性。
@@ -1083,9 +1083,9 @@ table.formatTableRow(1, 'th'); // `multiRow` 为假时忽略起始位置不在�
 assert(root.toString() === '{|\n|rowspan=2| ||\n|-\n!\n|}');
 ```
 
-|原表格|将第 1 行设为`<th>`|
-|:-:|:-:|
-|<table><tbody><tr><td rowspan=2>td</td><td>td</td></tr><tr><td>td</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2>td</td><td>td</td></tr><tr><th>th</th></tr></tbody></table>|
+|原表格|将第 1 行设为`<th>`<br>`multiRow = false`|将第 1 行设为`<th>`<br>`multiRow = true`|
+|:-:|:-:|:-:|
+|<table><tr><td rowspan=2 align="center">td</td><td>td</td></tr><tr><td>td</td></tr></table>|<table><tr><td rowspan=2>td</td><td>td</td></tr><tr><th>th</th></tr></table>|<table><tr><th rowspan=2>th</th><td>td</td></tr><tr><th>th</th></tr></table>|
 
 **formatTableCol**(x: number, attr: string\|Record\<string, string\|boolean>, multiCol?: boolean = false): void<a id="tabletoken.formattablecol"></a>
 - 批量设置一列单元格的属性。
@@ -1097,9 +1097,9 @@ table.formatTableCol(1, 'th', true); // `multiCol` 为真时包含起始位置�
 assert(root.toString() === '{|\n!colspan=2|\n|-\n| \n!\n|}');
 ```
 
-|原表格|将第 1 列设为`<th>`|
-|:-:|:-:|
-|<table><tbody><tr><td colspan=2>td</td></tr><tr><td>td</td><td>td</td></tr></tbody></table>|<table><tbody><tr><th colspan=2>th</th></tr><tr><td>td</td><th>th</th></tr></tbody></table>|
+|原表格|将第 1 列设为`<th>`<br>`multiCol = false`|将第 1 列设为`<th>`<br>`multiCol = true`|
+|:-:|:-:|:-:|
+|<table><tr><td colspan=2>td</td></tr><tr><td>td</td><td>td</td></tr></table>|<table><tr><td colspan=2>td</td></tr><tr><td>td</td><th>th</th></tr></table>|<table><tr><th colspan=2>th</th></tr><tr><td>td</td><th>th</th></tr></table>|
 
 **insertTableRow**(row: number, attr: Record\<string, string\|boolean>, inner?: string, subtype?: 'td'\|'th', innerAttr?: Record\<string, string\|boolean>): TrToken<a id="tabletoken.inserttablerow"></a>
 - 插入空行或一行单元格。
@@ -1114,7 +1114,7 @@ assert(root.toString() === '{|\n|a|| rowspan="3"|b||c\n|- class="tr"\n|-\n! clas
 
 |原表格|插入 1 行|
 |:-:|:-:|
-|<table><tbody><tr><td>a</td><td rowspan=2>b</td><td>c</td></tr><tr><td>d</td><td>e</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td rowspan=3>b</td><td>c</td></tr><tr><th>f</th><th>f</th></tr><tr><td>d</td><td>e</td></tr></tbody></table>|
+|<table><tr><td>a</td><td rowspan=2>b</td><td>c</td></tr><tr><td>d</td><td>e</td></tr></table>|<table><tr><td>a</td><td rowspan=3>b</td><td>c</td></tr><tr><th>f</th><th>f</th></tr><tr><td>d</td><td>e</td></tr></table>|
 
 **insertTableCol**(x: number, inner: string, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): void<a id="tabletoken.inserttablecol"></a>
 - 插入一列单元格。
@@ -1128,7 +1128,7 @@ assert(root.toString() === '{|\n| colspan="3"|a\n|-\n|b\n! class="th"|d\n|c\n|}'
 
 |原表格|插入 1 列|
 |:-:|:-:|
-|<table><tbody><tr><td colspan=2>a</td></tr><tr><td>b</td><td>c</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td></tr><tr><td>b</td><th>d</th><td>c</td></tr></tbody></table>|
+|<table><tr><td colspan=2 align="center">a</td></tr><tr><td>b</td><td>c</td></tr></table>|<table><tr><td colspan=3 align="center">a</td></tr><tr><td>b</td><th>d</th><td>c</td></tr></table>|
 
 **insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
 - 插入一个单元格。
@@ -1137,13 +1137,13 @@ assert(root.toString() === '{|\n| colspan="3"|a\n|-\n|b\n! class="th"|d\n|c\n|}'
 var root = Parser.parse('{|\n|rowspan=2 colspan=2|a||b\n|-\n|c\n|-\n|d||e||f\n|}'),
     table = root.firstChild;
 table.insertTableCell('g', {row: 0, column: 2}, 'th');
-table.insertTableCell('h', {x: 2, y: 1}, 'td', {rowspan: 2});
-assert(root.toString() === '{|\n|rowspan=2 colspan=2|a||b\n!g\n|-\n| rowspan="2"|h\n|c\n|-\n|d||e||f\n|}');
+table.insertTableCell('h', {x: 2, y: 1}, 'th', {rowspan: 2});
+assert(root.toString() === '{|\n|rowspan=2 colspan=2|a||b\n!g\n|-\n! rowspan="2"|h\n|c\n|-\n|d||e||f\n|}');
 ```
 
 |原表格|插入 2 格|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>b</td><th>g</th></tr><tr><td rowspan=2>h</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>
+|<table><tr><td rowspan=2 colspan=2 align="center">a</td><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>|<table><tr><td rowspan=2 colspan=2 align="center">a</td><td>b</td><th>g</th></tr><tr><th rowspan=2>h</th><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>
 
 **removeTableRow**(y: number): TrToken<a id="tabletoken.removetablerow"></a>
 - 删除一行。
@@ -1157,35 +1157,35 @@ assert(root.toString() === '{|\n|a||b||c\n|-\n|f\n! class="th"|\n|g\n|}'); // �
 
 |原表格|删除第 1 行|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2>a</td><td>b</td><td>c</td></tr><tr><td rowspan=2>d</td><td>e</td></tr><tr><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>f</td><td></td><td>g</td></tr></tbody></table>|
+|<table><tr><td rowspan=2>a</td><td>b</td><td>c</td></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></table>|<table><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>f</td><td></td><td>g</td></tr></table>|
 
 **removeTableCol**(x: number): void<a id="tabletoken.removetablecol"></a>
 - 删除一列。
 
 ```js
-var root = Parser.parse('{|\n|colspan=2|a||b\n|-\n!c||colspan=2 class="th"|d\n|-\n|e||f||g\n|}'),
+var root = Parser.parse('{|\n|colspan=2|a||b\n|-\n|c\n!colspan=2 class="th"|d\n|-\n|e\n!f\n|g\n|}'),
     table = root.firstChild;
 table.removeTableCol(1);
-assert(root.toString() === '{|\n|a||b\n|-\n!c|| class="th"|\n|-\n|e||g\n|}'); // 自动调整跨列单元格的 colspan
+assert(root.toString() === '{|\n|a||b\n|-\n|c\n! class="th"|\n|-\n|e\n|g\n|}'); // 自动调整跨列单元格的 colspan
 ```
 
 |原表格|删除第 1 列|
 |:-:|:-:|
-|<table><tbody><tr><td colspan=2>a</td><td>b</td></tr><tr><th>c</th><th colspan=2>d</th></tr><tr><td>e</td><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td></tr><tr><th>c</th><th></th></tr><tr><td>e</td><td>g</td></tr></tbody></table>|
+|<table><tr><td colspan=2 align="center">a</td><td>b</td></tr><tr><td>c</td><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><td>g</td></tr></table>|<table><tr><td>a</td><td>b</td></tr><tr><th>c</th><th></th></tr><tr><td>e</td><td>g</td></tr></table>|
 
 **mergeCells**(xlim: [number, number], ylim: [number, number]): [TdToken](#tdtoken)<a id="tabletoken.mergecells"></a>
 - 合并单元格。
 
 ```js
-var root = Parser.parse('{|\n|a||b||c\n|-\n|d||e||f\n|-\n|g||h||i\n|}'),
+var root = Parser.parse('{|\n!a\n|b||c\n|-\n|d||e||f\n|-\n|g||h||i\n|}'),
     table = root.firstChild;
 table.mergeCells([0, 2], [0, 2]); // 被合并的单元格的属性和内部文本均会丢失
-assert(root.toString() === '{|\n| rowspan="2" colspan="2"|a||c\n|-\n|f\n|-\n|g||h||i\n|}');
+assert(root.toString() === '{|\n! rowspan="2" colspan="2"|a\n|c\n|-\n|f\n|-\n|g||h||i\n|}');
 ```
 
 |原表格|合并单元格|
 |:-:|:-:|
-|<table><tbody><tr><td>a</td><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></tbody></table>|<table><tbody><tr><td rowspan=2 colspan=2>a</td><td>c</td></tr><tr><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></tbody></table>|
+|<table><tr><th>a</th><td>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></table>|<table><tr><th rowspan=2 colspan=2>a</th><td>c</td></tr><tr><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td></tr></table>|
 
 **splitIntoRows**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintorows"></a>
 - 将单元格分裂到不同行。
@@ -1199,7 +1199,7 @@ assert(root.toString() === '{|\n|a||b\n!c\n|-\n|d\n|-\n|e||f\n!\n|}'); // 第 1 
 
 |原表格|按行分裂单元格|
 |:-:|:-:|
-|<table><tbody><tr><td>a</td><td>b</td><th rowspan=3>c</th></tr><tr><td>d</td></tr><tr><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><td>a</td><td>b</td><th>c</th></tr><tr><td>d</td></tr><tr><td>e</td><td>f</td><th></th></tr></tbody></table>|
+|<table><tr><td>a</td><td>b</td><th rowspan=3>c</th></tr><tr><td>d</td></tr><tr><td>e</td><td>f</td></tr></table>|<table><tr><td>a</td><td>b</td><th>c</th></tr><tr><td>d</td></tr><tr><td>e</td><td>f</td><th></th></tr></table>|
 
 **splitIntoCols**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintocols"></a>
 - 将单元格分裂到不同列。
@@ -1213,7 +1213,7 @@ assert(root.toString() === '{|\n! class="th"|a\n! class="th"|\n|}'); // 分裂�
 
 |原表格|按列分裂单元格|
 |:-:|:-:|
-|<table><tbody><tr><th colspan=2>a</th></tr></tbody></table>|<table><tbody><tr><th>a</th><th>&nbsp;</th></tr></tbody></table>|
+|<table><tr><th colspan=2>a</th></tr></table>|<table><tr><th>a</th><th>&nbsp;</th></tr></table>|
 
 **splitIntoCells**(coords: {row: number, column: number}\|{x: number, y: number}): void<a id="tabletoken.splitintocells"></a>
 - 将单元格分裂成最小单元格。
@@ -1227,7 +1227,7 @@ assert(root.toString() === '{|\n!a\n!\n|b\n|-\n!\n!\n|c\n|-\n|d||e||f\n|}');
 
 |原表格|分裂单元格|
 |:-:|:-:|
-|<table><tbody><tr><th rowspan=2 colspan=2>a</th><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|<table><tbody><tr><th>a</th><th></th><td>b</td></tr><tr><th></th><th></th><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></tbody></table>|
+|<table><tr><th rowspan=2 colspan=2>a</th><td>b</td></tr><tr><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>|<table><tr><th>a</th><th></th><td>b</td></tr><tr><th></th><th></th><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr></table>|
 
 **replicateTableRow**(row: number): TrToken<a id="tabletoken.replicatetablerow"></a>
 - 复制一行并插入该行之前
@@ -1241,7 +1241,7 @@ assert(root.toString() === '{|\n| rowspan="3"|a||b||c\n|-\n!d||e\n|-\n!rowspan=2
 
 |原表格|复制第 1 行|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2>a</td><td>b</td><td>c</td></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></tbody></table>|<table><tbody><tr><td rowspan=3>a</td><td>b</td><td>c</td></tr><tr><th>d</th><th>e</th></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></tbody></table>|
+|<table><tr><td rowspan=2>a</td><td>b</td><td>c</td></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></table>|<table><tr><td rowspan=3>a</td><td>b</td><td>c</td></tr><tr><th>d</th><th>e</th></tr><tr><th rowspan=2>d</th><th>e</th></tr><tr><td>f</td><td>g</td></tr></table>|
 
 **replicateTableCol**(x: number): [TdToken](#tdtoken)[]<a id="tabletoken.replicatetablecol"></a>
 - 复制一列并插入该列之前
@@ -1255,7 +1255,7 @@ assert(root.toString() === '{|\n| colspan="3"|a||b\n|-\n|c\n!d\n!colspan=2|d\n|-
 
 |原表格|复制第 1 列|
 |:-:|:-:|
-|<table><tbody><tr><td colspan=2>a</td><td>b</td></tr><tr><td>c</td><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><td>g</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td></tr><tr><td>c</td><th>d</th><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><th>f</th><td>g</td></tr></tbody></table>|
+|<table><tr><td colspan=2 align="center">a</td><td>b</td></tr><tr><td>c</td><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><td>g</td></tr></table>|<table><tr><td colspan=3 align="center">a</td><td>b</td></tr><tr><td>c</td><th>d</th><th colspan=2>d</th></tr><tr><td>e</td><th>f</th><th>f</th><td>g</td></tr></table>|
 
 **moveTableRowBefore**(y: number, before: number): TrToken<a id="tabletoken.movetablerowbefore"></a>
 - 移动表格行。
@@ -1269,7 +1269,7 @@ assert(root.toString() === '{|\n| rowspan="3"|a||b||c||d\n|-\n!k||colspan=2|l\n|
 
 |原表格|移动第 3 行至第 1 行前|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2>a</td><td>b</td><td>c</td><td>d</td></tr><tr><td colspan=2>e</td><td>f</td></tr><tr><td rowspan=2>g</td><td>h</td><td>i</td><td>j</td></tr><tr><th rowspan=2>k</th><th colspan=2>l</th></tr><tr><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td rowspan=3>a</td><td>b</td><td>c</td><td>d</td></tr><tr><th>k</th><th colspan=2>l</th></tr><tr><td colspan=2>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td><td>j</td></tr><tr><td>m</td><th></th><td>n</td><td>o</td></tr></tbody></table>|
+|<table><tr><td rowspan=2>a</td><td>b</td><td>c</td><td>d</td></tr><tr><td colspan=2 align="center">e</td><td>f</td></tr><tr><td rowspan=2>g</td><td>h</td><td>i</td><td>j</td></tr><tr><th rowspan=2>k</th><th colspan=2>l</th></tr><tr><td>m</td><td>n</td><td>o</td></tr></table>|<table><tr><td rowspan=3>a</td><td>b</td><td>c</td><td>d</td></tr><tr><th>k</th><th colspan=2>l</th></tr><tr><td colspan=2 align="center">e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td><td>j</td></tr><tr><td>m</td><th></th><td>n</td><td>o</td></tr></table>|
 
 **moveTableRowAfter**(y: number, after: number): TrToken<a id="tabletoken.movetablerowafter"></a>
 - 移动表格行。
@@ -1283,7 +1283,7 @@ assert(root.toString() === '{|\n| rowspan="3"|a||colspan=2|b||c\n|-\n!k||colspan
 
 |原表格|移动第 3 行至第 0 行后|
 |:-:|:-:|
-|<table><tbody><tr><td rowspan=2>a</td><td colspan=2>b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td rowspan=2>g</td><td>h</td><td>i</td><td>j</td></tr><tr><th rowspan=2>k</th><th colspan=2>l</th></tr><tr><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td rowspan=3>a</td><td colspan=2>b</td><td>c</td></tr><tr><th>k</th><th colspan=2>l</th></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td><td>j</td></tr><tr><td>m</td><th></th><td>n</td><td>o</td></tr></tbody></table>|
+|<table><tr><td rowspan=2>a</td><td colspan=2 align="center">b</td><td>c</td></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td rowspan=2>g</td><td>h</td><td>i</td><td>j</td></tr><tr><th rowspan=2>k</th><th colspan=2>l</th></tr><tr><td>m</td><td>n</td><td>o</td></tr></table>|<table><tr><td rowspan=3>a</td><td colspan=2 align="center">b</td><td>c</td></tr><tr><th>k</th><th colspan=2>l</th></tr><tr><td>d</td><td>e</td><td>f</td></tr><tr><td>g</td><td>h</td><td>i</td><td>j</td></tr><tr><td>m</td><th></th><td>n</td><td>o</td></tr></table>|
 
 **moveTableColBefore**(x: number, before: number): void<a id="tabletoken.movetablecolbefore"></a>
 - 移动表格列。
@@ -1297,7 +1297,7 @@ assert(root.toString() === '{|\n| colspan="3"|a||b||c\n|-\n|d\n!g\n|rowspan=2|e|
 
 |原表格|移动第 3 列至第 1 列前|
 |:-:|:-:|
-|<table><tbody><tr><td colspan=2>a</td><td colspan=2>b</td><td>c</td></tr><tr><td>d</td><td rowspan=2>e</td><td>f</td><th colspan=2>g</th></tr><tr><td>h</td><td>i</td><th rowspan=2>j</th><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td><td>c</td></tr><tr><td>d</td><th>g</th><td rowspan=2>e</td><td>f</td><th></th></tr><tr><td>h</td><th rowspan=2>j</th><td>i</td><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|
+|<table><tr><td colspan=2 align="center">a</td><td colspan=2 align="center">b</td><td>c</td></tr><tr><td>d</td><td rowspan=2>e</td><td>f</td><th colspan=2>g</th></tr><tr><td>h</td><td>i</td><th rowspan=2>j</th><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></table>|<table><tr><td colspan=3 align="center">a</td><td>b</td><td>c</td></tr><tr><td>d</td><th>g</th><td rowspan=2>e</td><td>f</td><th></th></tr><tr><td>h</td><th rowspan=2>j</th><td>i</td><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></table>|
 
 **moveTableColAfter**(x: number, after: number): void<a id="tabletoken.movetablecolafter"></a>
 - 移动表格列。
@@ -1311,7 +1311,7 @@ assert(root.toString() === '{|\n| colspan="3"|a||b||c\n|-\n|rowspan=2|d\n!g\n|e|
 
 |原表格|移动第 3 列至第 0 列后|
 |:-:|:-:|
-|<table><tbody><tr><td colspan=2>a</td><td colspan=2>b</td><td>c</td></tr><tr><td rowspan=2>d</td><td>e</td><td>f</td><th colspan=2>g</th></tr><tr><td>h</td><td>i</td><th rowspan=2>j</th><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|<table><tbody><tr><td colspan=3>a</td><td>b</td><td>c</td></tr><tr><td rowspan=2>d</td><th>g</th><td>e</td><td>f</td><th></th></tr><tr><th rowspan=2>j</th><td>h</td><td>i</td><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></tbody></table>|
+|<table><tr><td colspan=2 align="center">a</td><td colspan=2 align="center">b</td><td>c</td></tr><tr><td rowspan=2>d</td><td>e</td><td>f</td><th colspan=2>g</th></tr><tr><td>h</td><td>i</td><th rowspan=2>j</th><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></table>|<table><tr><td colspan=3 align="center">a</td><td>b</td><td>c</td></tr><tr><td rowspan=2>d</td><th>g</th><td>e</td><td>f</td><th></th></tr><tr><th rowspan=2>j</th><td>h</td><td>i</td><td>k</td></tr><tr><td>l</td><td>m</td><td>n</td><td>o</td></tr></table>|
 </details>
 
 [返回目录](#目录)
