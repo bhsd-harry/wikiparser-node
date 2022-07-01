@@ -13,7 +13,7 @@ declare global {
 		T extends 'acceptable' ? Record<string, Ranges> :
 		T extends 'protectedChildren' ? Ranges :
 		T extends 'keys' ? Set<string> :
-		T extends 'args' ? Map<string, Set<ParameterToken>> :
+		T extends 'args' ? Record<string, Set<ParameterToken>> :
 		T extends 'attr' ? Map<string, string|true> :
 		T extends 'include'|'selfLink' ? boolean :
 		T extends 'pattern' ? RegExp :

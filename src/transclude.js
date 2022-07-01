@@ -14,7 +14,7 @@ class TranscludeToken extends Token {
 	type = 'template';
 	modifier = '';
 	/** @type {Set<string>} */ #keys = new Set();
-	/** @type {Map<string, Set<ParameterToken>>} */ #args = new Map();
+	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 
 	/** @complexity `n` */
 	setModifier(modifier = '') {
@@ -172,7 +172,7 @@ class TranscludeToken extends Token {
 	 */
 	getAttribute(key) {
 		if (key === 'args') {
-			return new Map(this.#args);
+			return {...this.#args};
 		} else if (key === 'keys') {
 			return !Parser.debugging && externalUse('getAttribute') ? new Set(this.#keys) : this.#keys;
 		}
@@ -296,10 +296,10 @@ class TranscludeToken extends Token {
 			this.debugOnly('getArgs');
 		}
 		const keyStr = String(key).trim();
-		let args = this.#args.get(keyStr);
+		let args = this.#args[keyStr];
 		if (!args) {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
-			this.#args.set(keyStr, args);
+			this.#args[keyStr] = args;
 		}
 		if (exact && !isNaN(keyStr)) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
@@ -503,7 +503,7 @@ class TranscludeToken extends Token {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 		}
-		return [...this.#args.entries()].filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
+		return Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
 	}
 
 	/**
@@ -521,26 +521,26 @@ class TranscludeToken extends Token {
 			if (args.size <= 1) {
 				continue;
 			}
-			const /** @type {Map<string, ParameterToken[]>} */ values = new Map();
+			const /** @type {Record<string, ParameterToken[]>} */ values = {};
 			for (const arg of args) {
 				const val = arg.getValue().trim();
-				if (values.has(val)) {
-					values.get(val).push(arg);
+				if (val in values) {
+					values[val].push(arg);
 				} else {
-					values.set(val, [arg]);
+					values[val] = [arg];
 				}
 			}
 			let noMoreAnon = anonCount === 0 || isNaN(key);
-			const entries = [...values.entries()],
-				emptyArgs = values.get('') ?? [],
-				duplicatedArgs = entries.filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
-					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
-					if (anonIndex !== -1) {
-						noMoreAnon = true;
-					}
-					curArgs.splice(anonIndex, 1);
-					return curArgs;
-				}),
+			const emptyArgs = values[''] ?? [],
+				duplicatedArgs = Object.entries(values).filter(([val, {length}]) => val && length > 1)
+					.flatMap(([, curArgs]) => {
+						const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
+						if (anonIndex !== -1) {
+							noMoreAnon = true;
+						}
+						curArgs.splice(anonIndex, 1);
+						return curArgs;
+					}),
 				badArgs = [...emptyArgs, ...duplicatedArgs],
 				index = noMoreAnon ? -1 : emptyArgs.findIndex(({anon}) => anon);
 			if (badArgs.length === args.size) {
