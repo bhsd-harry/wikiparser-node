@@ -25,7 +25,36 @@ const text = (childNodes, separator = '') => {
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
+/**
+ * @param {string} start
+ * @param {string} end
+ * @param {string} separator
+ * @param {string} str
+ */
+const explode = (start, end, separator, str) => {
+	start = escapeRegExp(start);
+	end = escapeRegExp(end);
+	separator = escapeRegExp(separator);
+	const regex = new RegExp(`${start}|${end}|${separator}`, 'g'),
+		/** @type {string[]} */ exploded = [];
+	let mt = regex.exec(str),
+		depth = 0,
+		lastIndex = 0;
+	while (mt) {
+		const {0: match, index} = mt;
+		if (match !== separator) {
+			depth += match === start ? 1 : -1;
+		} else if (depth === 0) {
+			exploded.push(str.slice(lastIndex, index));
+			({lastIndex} = regex);
+		}
+		mt = regex.exec(str);
+	}
+	exploded.push(str.slice(lastIndex));
+	return exploded;
+};
+
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
 	+ '[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]*';
 
-module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, extUrlChar};
+module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, extUrlChar};
