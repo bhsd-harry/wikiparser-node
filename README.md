@@ -168,11 +168,7 @@
         2. [setValue](#imageparametertoken.setvalue)
 19. [ExtLinkToken](#extlinktoken)
     1. [原型方法](#extlinktoken.prototype.methods)
-        1. [getUrl](#extlinktoken.geturl)
-        2. [setTarget](#extlinktoken.settarget)
-        3. [setLinkText](#extlinktoken.setlinktext)
-    2. [原型属性](#extlinktoken.prototype.properties)
-        1. [protocol](#extlinktoken.protocol)
+        1. [setLinkText](#extlinktoken.setlinktext)
 20. [MagicLinkToken](#magiclinktoken)
     1. [原型方法](#magiclinktoken.prototype.methods)
         1. [getUrl](#magiclinktoken.geturl)
@@ -1689,17 +1685,11 @@ assert(root.toString() === '[[file:a|x100px]]');
 [返回目录](#目录)
 
 # ExtLinkToken
-`[]`内的外部链接。
+`[]`内的外部链接。这个类同时混合了 [MagicLinkToken](#magiclinktoken) 类的方法和原型属性。
 
 ## 原型方法<a id="extlinktoken.prototype.methods"></a>
 <details>
     <summary>展开</summary>
-
-**getUrl**(): URL<a id="extlinktoken.geturl"></a>
-- 混合自 [MagicLinkToken.getUrl](#magiclinktoken.geturl)。
-
-**setTarget**(url: string\|URL): void<a id="extlinktoken.settarget"></a>
-- 混合自 [MagicLinkToken.setTarget](#magiclinktoken.settarget)。
 
 **setLinkText**(text: string): void<a id="extlinktoken.setlinktext"></a>
 - 修改外链文本。
@@ -1710,14 +1700,6 @@ var root = Parser.parse('[//example.org example]'),
 extlink.setLinkText(''); // 清空外链文本
 assert(root.toString() === '[//example.org]');
 ```
-</details>
-
-## 原型属性<a id="extlinktoken.prototype.properties"></a>
-<details>
-    <summary>展开</summary>
-
-**protocol**: string<a id="extlinktoken.protocol"></a>
-- 混合自 [MagicLinkToken.protocol](#magiclinktoken.protocol)。
 </details>
 
 [返回目录](#目录)
