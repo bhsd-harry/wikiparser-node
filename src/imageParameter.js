@@ -1,7 +1,7 @@
 'use strict';
 
 const {typeError} = require('../util/debug'),
-	{extUrlChar} = require('../util/string'),
+	{text, extUrlChar} = require('../util/string'),
 	Title = require('../lib/title'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
@@ -14,9 +14,13 @@ class ImageParameterToken extends Token {
 	type = 'image-parameter';
 	#syntax = '';
 
+	static #noLink = Symbol('no-link');
+
 	/**
-	 * @param {string} key
+	 * @template {string} T
+	 * @param {T} key
 	 * @param {string} value
+	 * @returns {T extends 'link' ? string|Symbol : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig()) {
 		value = value.replace(/\x00\d+t\x7f/g, '').trim();
@@ -26,11 +30,11 @@ class ImageParameterToken extends Token {
 			return true;
 		} else if (key === 'link') {
 			if (!value) {
-				return true;
+				return this.#noLink;
 			}
 			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}`, 'ui');
 			if (regex.test(value)) {
-				return true;
+				return value;
 			}
 			if (/^\[\[.+]]$/.test(value)) {
 				value = value.slice(2, -2);
@@ -40,9 +44,60 @@ class ImageParameterToken extends Token {
 					value = decodeURIComponent(value);
 				} catch {}
 			}
-			return new Title(value, 0, config).valid;
+			const {title, fragment, valid} = new Title(value, 0, config);
+			return valid && `${title}${fragment && '#'}${fragment}`;
 		}
 		return !isNaN(value);
+	}
+
+	get link() {
+		if (this.name === 'link') {
+			return ImageParameterToken.#validate('link', this.getValue(), this.getAttribute('config'));
+		}
+		return undefined;
+	}
+	set link(value) {
+		if (this.name === 'link') {
+			value = value === ImageParameterToken.#noLink ? '' : value;
+			this.setValue(value);
+		}
+	}
+	get size() {
+		if (this.name === 'width') {
+			const /** @type {string} */ size = this.getValue().trim();
+			if (!size.includes('{{')) {
+				const [width, height = ''] = size.split('x');
+				return {width, height};
+			}
+			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
+				{childNodes} = token,
+				i = childNodes.findIndex(child => typeof child === 'string' && child.includes('x'));
+			if (i === -1) {
+				return {width: size, height: ''};
+			}
+			token.splitText(i, childNodes[i].indexOf('x'));
+			token.splitText(i + 1, 1);
+			return {width: text(token.childNodes.slice(0, i + 1)), height: text(token.childNodes.slice(i + 2))};
+		}
+		return undefined;
+	}
+	get width() {
+		return this.size?.width;
+	}
+	set width(width) {
+		if (this.name === 'width') {
+			const {height} = this;
+			this.setValue(`${String(width || '')}${height && 'x'}${height}`);
+		}
+	}
+	get height() {
+		return this.size?.height;
+	}
+	set height(height) {
+		height = String(height || '');
+		if (this.name === 'width') {
+			this.setValue(`${this.width}${height && 'x'}${height}`);
+		}
 	}
 
 	/**
