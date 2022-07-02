@@ -38,6 +38,14 @@ class MagicLinkToken extends Token {
 		this.#protocolRegex = new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'i');
 	}
 
+	afterBuild() {
+		const ParameterToken = require('./parameter'), // eslint-disable-line no-unused-vars
+			/** @type {ParameterToken} */ parameter = this.closest('parameter');
+		if (parameter.getValue() === this.text()) {
+			this.replaceWith(this.toString());
+		}
+	}
+
 	getUrl() {
 		const url = this.text();
 		try {
