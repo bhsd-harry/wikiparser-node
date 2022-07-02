@@ -8,7 +8,8 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = []) => {
-	const TableToken = require('../src/table'),
+	const Token = require('../src'),
+		TableToken = require('../src/table'),
 		TrToken = require('../src/table/tr'),
 		TdToken = require('../src/table/td'),
 		/** @type {TrToken[]} */ stack = [],
@@ -19,13 +20,13 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			out += str;
 			return;
 		}
-		const {lastElementChild, lastChild} = top;
-		if (top instanceof TdToken) {
+		const {lastElementChild} = top;
+		if (lastElementChild.isPlain()) {
 			lastElementChild.setText(lastElementChild.firstChild + str, 0);
-		} else if (typeof lastChild === 'string') {
-			top.setText(lastChild + str, 2);
 		} else {
-			top.appendChild(str);
+			const token = new Token(str, config, true, accum);
+			token.type = 'table-inter';
+			top.appendChild(token.setAttribute('stage', 3));
 		}
 	};
 	for (const outLine of lines) {

@@ -9,7 +9,7 @@ const attributeParent = require('../../mixin/attributeParent'),
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?(string|Token), ...TdToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken]}`
  */
 class TrToken extends attributeParent(Token, 1) {
 	type = 'tr';
@@ -21,7 +21,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = TrToken.openingPattern) {
-		super(undefined, config, true, accum, {String: 2, Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
+		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',

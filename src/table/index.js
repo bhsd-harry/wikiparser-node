@@ -50,7 +50,7 @@ class Layout extends Array {
 
 /**
  * 表格
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?(string|Token), ...TdToken, ...TrToken, ?SyntaxToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 class TableToken extends TrToken {
 	type = 'table';
@@ -65,7 +65,7 @@ class TableToken extends TrToken {
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
 		super(syntax, attr, config, accum, TableToken.openingPattern);
 		this.setAttribute('acceptable', {
-			String: 2, Token: 2, SyntaxToken: [0, -1], AttributeToken: 1, TdToken: '2:', TrToken: '2:',
+			Token: 2, SyntaxToken: [0, -1], AttributeToken: 1, TdToken: '2:', TrToken: '2:',
 		});
 	}
 

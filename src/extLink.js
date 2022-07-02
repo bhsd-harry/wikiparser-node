@@ -52,7 +52,7 @@ class ExtLinkToken extends Token {
 	}
 
 	toString() {
-		return `[${super.toString(this.#space)}]`;
+		return `[${this.firstElementChild.toString()}${this.#space}${this.children[1]?.toString() ?? ''}]`;
 	}
 
 	getPadding() {

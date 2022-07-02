@@ -35,8 +35,13 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const page = link.includes('%') ? decodeURIComponent(link) : link,
-			force = link.trim().startsWith(':');
+		let page = link;
+		if (link.includes('%')) {
+			try {
+				page = decodeURIComponent(link);
+			} catch {}
+		}
+		const force = link.trim().startsWith(':');
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
