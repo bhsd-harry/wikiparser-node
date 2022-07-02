@@ -162,6 +162,11 @@
         6. [getKeys](#filetoken.getkeys)
         7. [getValue](#filetoken.getvalue)
         8. [setValue](#filetoken.setvalue)
+    2. [原型属性](#filetoken.prototype.properties)
+        1. [link](#filetoken.link)
+        2. [size](#filetoken.size)
+        3. [width](#filetoken.width)
+        4. [height](#filetoken.height)
 18. [ImageParameterToken](#imageparametertoken)
     1. [原型方法](#imageparametertoken.prototype.methods)
         1. [getValue](#imageparametertoken.getvalue)
@@ -1648,6 +1653,53 @@ file.setValue('thumbnail', false);
 file.setValue('width', '100');
 file.setValue('framed', true);
 assert(root.toString() === '[[file:a|100px|framed]]');
+```
+</details>
+
+## 原型属性<a id="filetoken.prototype.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**link**: string\|symbol<a id="filetoken.link"></a>
+- 链接目标。
+
+```js
+var root = Parser.parse('[[file:a|link=[[talk:b]]]]'),
+    file = root.firstChild;
+assert(file.link === 'Talk:B');
+file.link = '//c';
+assert(root.toString() === '[[file:a|link=//c]]');
+```
+
+**size**: {width: string, height: string}<a id="filetoken.size"></a>
+- 图片尺寸。
+
+```js
+var root = Parser.parse('[[file:a|x1px]]'),
+    file = root.firstChild;
+assert.deepStrictEqual(file.size, {width: '', height: '1'});
+```
+
+**width**: number<a id="filetoken.width"></a>
+- 图片宽度。
+
+```js
+var root = Parser.parse('[[file:a|1x1px]]'),
+    file = root.firstChild;
+assert(file.width === '1');
+file.width = undefined;
+assert(root.toString() === '[[file:a|x1px]]');
+```
+
+**height**: number<a id="filetoken.height"></a>
+- 图片高度。
+
+```js
+var root = Parser.parse('[[file:a|1x1px]]'),
+    file = root.firstChild;
+assert(file.height === '1');
+file.height = undefined;
+assert(root.toString() === '[[file:a|1px]]');
 ```
 </details>
 
