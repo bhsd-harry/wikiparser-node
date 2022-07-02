@@ -172,12 +172,18 @@
         3. [setLinkText](#extlinktoken.setlinktext)
     2. [原型属性](#extlinktoken.prototype.properties)
         1. [protocol](#extlinktoken.protocol)
-20. [选择器](#选择器)
+20. [MagicLinkToken](#magiclinktoken)
+    1. [原型方法](#magiclinktoken.prototype.methods)
+        1. [getUrl](#magiclinktoken.geturl)
+        2. [setTarget](#magiclinktoken.settarget)
+    2. [原型属性](#magiclinktoken.prototype.properties)
+        1. [protocol](#magiclinktoken.protocol)
+21. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
     4. [伪选择器](#selector.pseudo)
-21. [$ (TokenCollection)](#-tokencollection)
+22. [$ (TokenCollection)](#-tokencollection)
 </details>
 
 # Parser
@@ -1689,21 +1695,12 @@ assert(root.toString() === '[[file:a|x100px]]');
     <summary>展开</summary>
 
 **getUrl**(): URL<a id="extlinktoken.geturl"></a>
-- 生成一个 URL 对象，以方便解析和修改外链目标。
+- 混合自 [MagicLinkToken.getUrl](#magiclinktoken.geturl)。
 
 **setTarget**(url: string\|URL): void<a id="extlinktoken.settarget"></a>
-- 修改外链目标。可以和 [getUrl](#extlink.geturl) 方法联合使用（见以下示例）。
+- 混合自 [MagicLinkToken.setTarget](#magiclinktoken.settarget)。
 
-```js
-var root = Parser.parse('[https://www.mediawiki.org/wiki/Manual:Parser.php]'),
-    extlink = root.firstChild,
-    url = extlink.getUrl();
-url.searchParams.set('action', 'info');
-extlink.setTarget(url);
-assert(root.toString() === '[https://www.mediawiki.org/wiki/Manual:Parser.php?action=info]');
-```
-
-**setLinkText**(text: string): void<a id="extLinktoken.setlinktext"></a>
+**setLinkText**(text: string): void<a id="extlinktoken.setlinktext"></a>
 - 修改外链文本。
 
 ```js
@@ -1719,15 +1716,49 @@ assert(root.toString() === '[//example.org]');
     <summary>展开</summary>
 
 **protocol**: string<a id="extlinktoken.protocol"></a>
+- 混合自 [MagicLinkToken.protocol](#magiclinktoken.protocol)。
+</details>
+
+[返回目录](#目录)
+
+# MagicLinkToken
+自由外链。
+
+## 原型方法<a id="magiclinktoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**getUrl**(): URL<a id="magiclinktoken.geturl"></a>
+- 生成一个 URL 对象，以方便解析和修改外链目标。
+
+**setTarget**(url: string\|URL): void<a id="magiclinktoken.settarget"></a>
+- 修改外链目标。可以和 [getUrl](#magiclinktoken.geturl) 方法联合使用（见以下示例）。
+
+```js
+var root = Parser.parse('https://www.mediawiki.org/wiki/Manual:Parser.php'),
+    magiclink = root.firstChild,
+    url = magiclink.getUrl();
+url.searchParams.set('action', 'info');
+magiclink.setTarget(url);
+assert(root.toString() === 'https://www.mediawiki.org/wiki/Manual:Parser.php?action=info');
+```
+</details>
+
+## 原型属性<a id="magiclinktoken.prototype.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**protocol**: string<a id="magiclinktoken.protocol"></a>
 - 外链协议。
 
 ```js
-var root = Parser.parse('[//example.org]'),
-    extlink = root.firstChild;
-assert(extlink.protocol === '//');
-extlink.protocol = 'https://';
-assert(root.toString() === '[https://example.org]');
+var root = Parser.parse('ftp://example.org'),
+    magiclink = root.firstChild;
+assert(magiclink.protocol === 'ftp://');
+magiclink.protocol = 'https://';
+assert(root.toString() === 'https://example.org');
 ```
+</details>
 
 [返回目录](#目录)
 

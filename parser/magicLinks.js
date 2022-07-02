@@ -8,7 +8,7 @@ const {extUrlChar} = require('../util/string'),
  * @param {accum} accum
  */
 const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const MagicLinkToken = require('../src/magicLinkToken'),
+	const MagicLinkToken = require('../src/magicLink'),
 		regex = new RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'gui');
 	return firstChild.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
@@ -31,7 +31,7 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 		if (trail.length >= p1.length) {
 			return m;
 		}
-		new MagicLinkToken(url, config, accum);
+		new MagicLinkToken(url, false, config, accum);
 		return `\x00${accum.length - 1}w\x7f${trail}`;
 	});
 };
