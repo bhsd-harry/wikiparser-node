@@ -8,7 +8,7 @@ const {extUrlChar} = require('../util/string'),
  * @param {accum} accum
  */
 const parseExternalLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const ExtLinkToken = require('../src/extLinkToken'),
+	const ExtLinkToken = require('../src/extLink'),
 		regex = new RegExp(
 			`\\[((?:${config.protocol}|//)${extUrlChar})(\\p{Zs}*)([^\\]\\x01-\\x08\\x0a-\\x1f\\ufffd]*)\\]`,
 			'gui',

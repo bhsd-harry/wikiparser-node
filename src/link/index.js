@@ -12,9 +12,9 @@ const Title = require('../../lib/title'), // eslint-disable-line no-unused-vars
  */
 class LinkToken extends Token {
 	type = 'link';
-	selfLink = false;
-	fragment = '';
-	interwiki = false;
+	selfLink;
+	fragment;
+	interwiki;
 
 	/**
 	 * @param {string} link
@@ -61,14 +61,25 @@ class LinkToken extends Token {
 		}
 		const that = this;
 		const /** @type {AstListener} */ linkListener = (e, data) => {
-			if (e.prevTarget?.type === 'link-target') {
-				const name = e.prevTarget.text(),
-					{title, interwiki, fragment, ns} = that.normalizeTitle(name);
-				if (that.type === 'category' && (interwiki || ns !== 14)
+			const {prevTarget} = e;
+			if (prevTarget?.type === 'link-target') {
+				const name = prevTarget.text(),
+					{title, interwiki, fragment, ns, valid} = that.normalizeTitle(name);
+				if (!valid) {
+					undo(e, data);
+					throw new Error(`非法的内链目标：${name}`);
+				} else if (that.type === 'category' && (interwiki || ns !== 14)
 					|| that.type === 'file' && (interwiki || ns !== 6)
 				) {
 					undo(e, data);
-					throw new Error(`${that.type === 'file' ? '文件' : '分类'}链接不可更改命名空间！`, name);
+					throw new Error(`${that.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
+				} else if (that.type === 'link' && !interwiki && [6, 14].includes(ns) && !name.trim().startsWith(':')) {
+					const {firstChild} = prevTarget;
+					if (typeof firstChild === 'string') {
+						prevTarget.setText(`:${firstChild}`);
+					} else {
+						prevTarget.prepend(':');
+					}
 				}
 				that.setAttribute('selfLink', !title).setAttribute('interwiki', interwiki)
 					.setAttribute('name', title).setAttribute('fragment', fragment);

@@ -1,6 +1,7 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const {typeError} = require('../util/debug'),
+	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -10,6 +11,22 @@ const /** @type {Parser} */ Parser = require('..'),
 class ExtLinkToken extends Token {
 	type = 'ext-link';
 	#space;
+	#protocolRegex;
+
+	get protocol() {
+		return this.firstElementChild.text().match(this.#protocolRegex)?.[0];
+	}
+	/** @param {string} value */
+	set protocol(value) {
+		if (typeof value !== 'string') {
+			typeError(this, 'protocol', 'String');
+		}
+		if (!new RegExp(`${this.#protocolRegex.source}$`, 'i').test(value)) {
+			throw new RangeError(`非法的外链协议：${value}`);
+		}
+		const {firstElementChild} = this;
+		firstElementChild.replaceChildren(firstElementChild.text().replace(this.#protocolRegex, value));
+	}
 
 	/**
 	 * @param {string} url
@@ -29,6 +46,16 @@ class ExtLinkToken extends Token {
 			this.appendChild(inner.setAttribute('stage', 8));
 		}
 		this.protectChildren(0);
+		this.#protocolRegex = new RegExp(`^(?:${config.protocol}|//)`, 'i');
+	}
+
+	cloneNode() {
+		const [url, text] = this.cloneChildren(),
+			token = Parser.run(() => new ExtLinkToken(undefined, '', '', this.getAttribute('config')));
+		token.firstElementChild.safeReplaceWith(url);
+		if (text) {
+			token.appendChild(text);
+		}
 	}
 
 	toString() {
@@ -44,18 +71,33 @@ class ExtLinkToken extends Token {
 	}
 
 	text() {
-		return `[${super.text(this.#space)}]`;
+		return `[${super.text(' ')}]`;
 	}
 
-	/** @returns {[number, string][]} */
+	/**
+	 * @returns {[number, string][]}
+	 * @complexity `n`
+	 */
 	plain() {
 		return this.childElementCount === 1 ? [] : this.lastElementChild.plain();
 	}
 
-	/** @param {string} url */
+	getUrl() {
+		const url = this.firstElementChild.text();
+		try {
+			return new URL(url);
+		} catch (e) {
+			if (e instanceof TypeError && e.message === 'Invalid URL') {
+				throw new Error(`非标准协议的外部链接：${url}`);
+			}
+			throw e;
+		}
+	}
+
+	/** @param {string|URL} url */
 	setTarget(url) {
 		url = String(url);
-		const root = Parser.run(() => new Token(`[${url}]`, this.getAttribute('config')).parse(8)),
+		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的外链目标：${url}`);
@@ -67,9 +109,9 @@ class ExtLinkToken extends Token {
 	}
 
 	/** @param {string} text  */
-	setText(text) {
+	setLinkText(text) {
 		text = String(text);
-		const root = Parser.run(() => new Token(`[//url ${text}]`, this.getAttribute('config')).parse(8)),
+		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childElementCount !== 2) {
 			throw new SyntaxError(`非法的外链文字：${text.replaceAll('\n', '\\n')}`);
@@ -78,7 +120,7 @@ class ExtLinkToken extends Token {
 		if (this.childElementCount === 1) {
 			this.appendChild(lastChild);
 		} else {
-			this.lastElementChild.safeReplaceWith(lastChild);
+			this.lastElementChild.replaceWith(lastChild);
 		}
 		this.#space ||= ' ';
 	}
