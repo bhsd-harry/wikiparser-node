@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/wikiparser-node.svg)](https://www.npmjs.com/package/wikiparser-node)
 # 目录
 <details>
     <summary>展开</summary>
