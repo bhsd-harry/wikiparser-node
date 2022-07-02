@@ -19,8 +19,12 @@ class QuoteToken extends NowikiToken {
 		this.setAttribute('name', String(n));
 	}
 
-	setText() {
-		throw new Error(`禁止修改 ${this.constructor.name}！`);
+	/** @param {string} str */
+	setText(str) {
+		if (!["''", "'''", "'''''"].includes(str)) {
+			throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);
+		}
+		return super.setText(str);
 	}
 
 	/** @returns {[number, string][]} */

@@ -4,15 +4,15 @@ const /** @type {Parser} */ Parser = require('..'),
 	Token = require('../src'); // eslint-disable-line no-unused-vars
 
 /**
- * @param {Token & {firstChild: string}} token
+ * @param {string} firstChild
  * @param {accum} accum
  */
-const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
+const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js'),
 		regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?]](.*)/s,
 		regexImg = /^([^\n<>[\]{}|]+)\|(.*)/s,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'i'),
-		bits = token.firstChild.split('[[');
+		bits = firstChild.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
 		let mightBeImg, link, text, after;
@@ -41,7 +41,7 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const title = token.normalizeTitle(page, 0, true),
+		const title = Parser.normalizeTitle(page, 0, false, config, true),
 			{ns, interwiki, valid} = title;
 		if (!valid) {
 			s += `[[${x}`;
@@ -52,23 +52,24 @@ const parseLinks = (token, config = Parser.getConfig(), accum = []) => {
 				continue;
 			}
 			let found;
-			for (let j = i + 1; j < bits.length; j++) {
-				const next = bits[j],
+			for (i++; i < bits.length; i++) {
+				const next = bits[i],
 					p = next.split(']]');
 				if (p.length > 2) {
 					found = true;
-					i = j;
 					text += `[[${p[0]}]]${p[1]}`;
 					after = p.slice(2).join(']]');
 					break;
 				} else if (p.length === 2) {
 					text += `[[${p[0]}]]${p[1]}`;
 				} else {
+					text += `[[${next}`;
 					break;
 				}
 			}
+			text = parseLinks(text, config, accum);
 			if (!found) {
-				s += `[[${x}`;
+				s += `[[${link}|${text}`;
 				continue;
 			}
 		}

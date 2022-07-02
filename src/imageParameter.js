@@ -68,12 +68,12 @@ class ImageParameterToken extends Token {
 					super(mt[2], config, true, accum, {'Stage-2': ':', '!HeadingToken': ':'});
 					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 				}
-				this.setAttribute('name', param[1]);
+				this.setAttribute('name', param[1]).setAttribute('stage', 7);
 				return;
 			}
 		}
 		super(str, config, true, accum);
-		this.setAttribute('name', 'caption');
+		this.setAttribute('name', 'caption').setAttribute('stage', 7);
 	}
 
 	cloneNode() {

@@ -543,7 +543,7 @@ class Token extends AstElement {
 	/** @this {Token & {firstChild: string}} */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
-		this.setText(parseLinks(this, this.#config, this.#accum));
+		this.setText(parseLinks(this.firstChild, this.#config, this.#accum));
 	}
 
 	/** @param {string} text */

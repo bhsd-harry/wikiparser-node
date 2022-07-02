@@ -105,9 +105,7 @@ class LinkToken extends Token {
 		if (!/^\s*[:#]/.test(link)) {
 			link = `:${link}`;
 		}
-		const root = Parser.run(() =>
-				new Token(`[[${link}]]`, this.getAttribute('config')).parse(6, this.getAttribute('include')),
-			),
+		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
@@ -122,12 +120,9 @@ class LinkToken extends Token {
 	/** @param {string} fragment */
 	#setFragment(fragment, page = true) {
 		fragment = String(fragment).replace(/[<>[]#|=!]/g, p => encodeURIComponent(p));
-		const root = Parser.run(() =>
-				new Token(`[[${page
-					? `${/^(?:File|Category):/.test(this.name) ? ':' : ''}${this.name}`
-					: ''
-				}#${fragment}]]`, this.getAttribute('config')).parse(6, this.getAttribute('include')),
-			),
+		const include = this.getAttribute('include'),
+			config = this.getAttribute('config'),
+			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childElementCount !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
@@ -159,10 +154,9 @@ class LinkToken extends Token {
 		let lastElementChild;
 		const config = this.getAttribute('config');
 		if (linkText) {
-			const root = Parser.run(() =>
-					new Token(`[[${this.type === 'category' ? 'Category:' : ''}L|${linkText}]]`, config)
-						.parse(7, this.getAttribute('include')),
-				),
+			const root = Parser.parse(`[[${
+					this.type === 'category' ? 'Category:' : ''
+				}L|${linkText}]]`, this.getAttribute('include'), 6, config),
 				{childNodes: {length}, firstElementChild} = root;
 			if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${
