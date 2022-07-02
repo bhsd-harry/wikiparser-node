@@ -19,10 +19,9 @@ class ImageParameterToken extends Token {
 	 * @param {string} value
 	 */
 	static #validate(key, value, config = Parser.getConfig()) {
-		value = value.trim();
+		value = value.replace(/\x00\d+t\x7f/g, '').trim();
 		if (key === 'width') {
-			const mt = value.match(/^(\d*)(?:x(\d*))?$/);
-			return Number(mt?.[1]) > 0 || Number(mt?.[2]) > 0;
+			return /^\d*(?:x\d*)?$/.test(value);
 		} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
 			return true;
 		} else if (key === 'link') {
@@ -68,7 +67,7 @@ class ImageParameterToken extends Token {
 					super(mt[2], config, true, accum, {'Stage-2': ':', '!HeadingToken': ':'});
 					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 				}
-				this.setAttribute('name', param[1]).setAttribute('stage', 7);
+				this.setAttribute('name', param[1]).setAttribute('stage', Parser.MAX_STAGE);
 				return;
 			}
 		}

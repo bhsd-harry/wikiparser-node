@@ -1,5 +1,5 @@
 {
-  "name": "wiparser-node",
+  "name": "wikiparser-node",
   "version": "0.0.0",
   "description": "A Node.js parser for MediaWiki markup with AST",
   "keywords": [
