@@ -41,7 +41,7 @@ class MagicLinkToken extends Token {
 	afterBuild() {
 		const ParameterToken = require('./parameter'), // eslint-disable-line no-unused-vars
 			/** @type {ParameterToken} */ parameter = this.closest('parameter');
-		if (parameter.getValue() === this.text()) {
+		if (parameter?.getValue() === this.text()) {
 			this.replaceWith(this.toString());
 		}
 	}
