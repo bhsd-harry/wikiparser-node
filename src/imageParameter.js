@@ -1,6 +1,8 @@
 'use strict';
 
 const {typeError} = require('../util/debug'),
+	{extUrlChar} = require('../util/string'),
+	Title = require('../lib/title'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -13,6 +15,38 @@ class ImageParameterToken extends Token {
 	#syntax = '';
 
 	/**
+	 * @param {string} key
+	 * @param {string} value
+	 */
+	static #validate(key, value, config = Parser.getConfig()) {
+		value = value.trim();
+		if (key === 'width') {
+			const mt = value.match(/^(\d*)(?:x(\d*))?$/);
+			return Number(mt?.[1]) > 0 || Number(mt?.[2]) > 0;
+		} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
+			return true;
+		} else if (key === 'link') {
+			if (!value) {
+				return true;
+			}
+			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}`, 'ui');
+			if (regex.test(value)) {
+				return true;
+			}
+			if (/^\[\[.+]]$/.test(value)) {
+				value = value.slice(2, -2);
+			}
+			if (value.includes('%')) {
+				try {
+					value = decodeURIComponent(value);
+				} catch {}
+			}
+			return new Title(value, 0, config).valid;
+		}
+		return !isNaN(value);
+	}
+
+	/**
 	 * @param {string} str
 	 * @param {accum} accum
 	 */
@@ -22,20 +56,24 @@ class ImageParameterToken extends Token {
 				([syntax, param]) => [syntax, param, new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`)],
 			),
 			param = regexes.find(([,, regex]) => regex.test(str));
-		if (!param) {
-			super(str, config, true, accum);
-			this.setAttribute('name', 'caption');
-		} else {
+		if (param) {
 			const mt = str.match(param[2]);
-			if (mt.length === 3) {
-				super(undefined, config, true, accum);
-				this.#syntax = str;
+			if (mt.length === 4 && !ImageParameterToken.#validate(param[1], mt[2], config)) {
+				// pass
 			} else {
-				super(mt[2], config, true, accum, {'Stage-2': ':', '!HeadingToken': ':'});
-				this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
+				if (mt.length === 3) {
+					super(undefined, config, true, accum);
+					this.#syntax = str;
+				} else {
+					super(mt[2], config, true, accum, {'Stage-2': ':', '!HeadingToken': ':'});
+					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
+				}
+				this.setAttribute('name', param[1]);
+				return;
 			}
-			this.setAttribute('name', param[1]);
 		}
+		super(str, config, true, accum);
+		this.setAttribute('name', 'caption');
 	}
 
 	cloneNode() {

@@ -64,6 +64,16 @@ class FileToken extends LinkToken {
 		return this.childNodes.slice(1);
 	}
 
+	/** @complexity `n` */
+	getFrameArgs() {
+		const args = this.getAllArgs()
+			.filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
+		if (args.length > 1) {
+			Parser.error(`警告：图片 ${this.name} 带有 ${args.length} 个框架参数，只有第 1 个 ${args[0].name} 会生效！`);
+		}
+		return args;
+	}
+
 	/**
 	 * @param {string} key
 	 * @complexity `n`

@@ -1559,9 +1559,9 @@ assert.deepStrictEqual(file.getAllArgs(), file.children.slice(1));
 - 获取指定的图片参数，类似 [TranscludeToken.getArgs](#transcludetoken.getargs) 方法。
 
 ```js
-var root = Parser.parse('[[file:a|frame|framed]]'), // 这里故意使用一个错误语法的例子，请勿模仿
+var root = Parser.parse('[[file:a|link=b|链接=c]]'), // 这里故意使用一个错误语法的例子，请勿模仿
     file = root.firstChild;
-assert.deepStrictEqual(file.getArgs('framed'), new Set(file.children.slice(1)));
+assert.deepStrictEqual(file.getArgs('link'), new Set(file.children.slice(1)));
 ```
 
 **hasArg**(key: string): boolean<a id="filetoken.hasarg"></a>
@@ -1586,9 +1586,9 @@ assert(file.getArg('link'), file.lastChild);
 - 移除指定的图片参数，类似 [TranscludeToken.removeArg](#transcludetoken.removearg) 方法。
 
 ```js
-var root = Parser.parse('[[file:a|frame|framed]]'), // 这里故意使用一个错误语法的例子，请勿模仿
+var root = Parser.parse('[[file:a|link=b|链接=c]]'), // 这里故意使用一个错误语法的例子，请勿模仿
     file = root.firstChild;
-file.removeArg('framed');
+file.removeArg('link');
 assert(root.toString() === '[[file:a]]');
 ```
 
