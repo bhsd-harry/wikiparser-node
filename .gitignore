@@ -4,4 +4,5 @@
 */*.swp
 .DS_Store
 errors/
+!errors/README
 .vscode/

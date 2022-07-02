@@ -108,7 +108,7 @@ const /** @type {Parser} */ Parser = {
 					}
 				}
 			};
-			Parser.run(() => {
+			this.run(() => {
 				build(['title', 'fragment']);
 			});
 		}
@@ -119,25 +119,58 @@ const /** @type {Parser} */ Parser = {
 
 	parse(wikitext, include = false, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src');
+		let token;
 		this.run(() => {
 			if (typeof wikitext === 'string') {
-				wikitext = new Token(wikitext, config);
-			} else if (!(wikitext instanceof Token)) {
+				token = new Token(wikitext, config);
+			} else if (wikitext instanceof Token) {
+				token = wikitext;
+				wikitext = token.toString();
+			} else {
 				throw new TypeError('待解析的内容应为 String 或 Token！');
 			}
 			try {
-				wikitext.parse(maxStage, include);
+				token.parse(maxStage, include);
 			} catch (e) {
 				if (e instanceof Error) {
-					fs.writeFileSync(
-						`${__dirname}/errors/${new Date().toISOString()}`,
-						`${e.stack}\n\n\n${wikitext.toString()}`,
-					);
+					const file = `${__dirname}/errors/${new Date().toISOString()}`,
+						stage = token.getAttribute('stage');
+					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : token.toString());
+					fs.writeFileSync(`${file}.err`, e.stack);
+					fs.writeFileSync(`${file}.json`, JSON.stringify({
+						stage, include: token.getAttribute('include'), config: this.config,
+					}, null, '\t'));
 				}
 				throw e;
 			}
 		});
 		return wikitext;
+	},
+
+	reparse(date) {
+		const path = `${__dirname}/errors/`,
+			main = fs.readdirSync(path).find(name => name.startsWith(date) && name.endsWith('Z'));
+		if (!main) {
+			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
+		}
+		const Token = require('./src'),
+			file = `${path}${main}`,
+			wikitext = fs.readFileSync(file, 'utf8'),
+			{stage, include, config} = require(`${file}.json`);
+		this.config = config;
+		return this.run(() => {
+			const halfParsed = stage < this.MAX_STAGE,
+				token = new Token(wikitext, this.getConfig(), halfParsed);
+			if (halfParsed) {
+				token.setAttribute('stage', stage).parseOnce(stage, include);
+			} else {
+				token.parse(undefined, include);
+			}
+			fs.unlinkSync(file);
+			fs.unlinkSync(`${file}.err`);
+			fs.unlinkSync(`${file}.json`);
+			return token;
+		});
 	},
 
 	getTool() {

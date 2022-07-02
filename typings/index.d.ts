@@ -41,6 +41,7 @@ declare global {
 
 		readonly MAX_STAGE: number;
 		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
+		reparse(date: string): Token;
 
 		getTool(): typeof $;
 	}
