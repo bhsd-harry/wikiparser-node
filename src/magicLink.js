@@ -15,7 +15,6 @@ class MagicLinkToken extends Token {
 	get protocol() {
 		return this.text().match(this.#protocolRegex)?.[0];
 	}
-	/** @param {string} value */
 	set protocol(value) {
 		if (typeof value !== 'string') {
 			typeError(this, 'protocol', 'String');

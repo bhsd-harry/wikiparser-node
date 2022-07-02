@@ -12,16 +12,13 @@ class ExtLinkToken extends Token {
 	type = 'ext-link';
 	#space;
 
-	/** @this {ExtLinkToken & {firstElementChild: MagicLinkToken}} */
+	/** @this {{firstChild: MagicLinkToken}} */
 	get protocol() {
-		return this.firstElementChild.protocol;
+		return this.firstChild.protocol;
 	}
-	/**
-	 * @this {ExtLinkToken & {firstElementChild: MagicLinkToken}}
-	 * @param {string} value
-	 */
+	/** @this {{firstChild: MagicLinkToken}} */
 	set protocol(value) {
-		this.firstElementChild.protocol = value;
+		this.firstChild.protocol = value;
 	}
 
 	/**
