@@ -25,6 +25,7 @@ class FileToken extends LinkToken {
 	 * @param {string|undefined} text
 	 * @param {Title} title
 	 * @param {accum} accum
+	 * @complexity `n`
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		super(link, undefined, title, config, accum);

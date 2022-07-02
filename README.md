@@ -27,6 +27,7 @@
         9. [section](#token.section)
         10. [findEnclosingHtml](#token.findenclosinghtml)
         11. [getCategories](#token.getcategories)
+        12. [redoQuotes](#token.redoquotes)
     2. [实例属性](#token.instance.properties)
         1. [type](#token.type)
     3. [原型属性](#token.prototype.properties)
@@ -381,6 +382,22 @@ assert.deepStrictEqual(template.findEnclosingHtml('p'), [root.firstChild, root.l
 
 **getCategories**(): [string, string][]<a id="token.getcategories"></a>
 - 获取所有分类和对应的排序关键字。
+
+```js
+var root = Parser.parse('[[category:a|*]]');
+assert.deepStrictEqual(root.getCategories(), [['Category:A', '*']]);
+```
+
+**redoQuotes**(): void<a id="token.redoquotes"></a>
+- 经过一系列编辑操作后，重新局部解析`'`。注意这个方法会忽略所有 Token，只解析当前节点的直接纯文本子节点。
+
+```js
+var root = Parser.parse("'''a'''");
+root.lastElementChild.setText("''");
+assert(root.toString() === "'''a''");
+root.redoQuotes();
+assert.deepStrictEqual(root.childNodes, ["'", root.firstElementChild, "a", root.lastElementChild]);
+```
 </details>
 
 ## 实例属性<a id="token.instance.properties"></a>

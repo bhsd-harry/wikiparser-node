@@ -370,6 +370,39 @@ class Token extends AstElement {
 		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
 	}
 
+	redoQuotes() {
+		const acceptable = this.getAttribute('acceptable');
+		if (acceptable && !acceptable.QuoteToken?.some(
+			range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1,
+		)) {
+			throw new Error(`${this.constructor.name} 不接受 QuoteToken 作为子节点！`);
+		}
+		for (const quote of this.childNodes) {
+			if (quote instanceof Token && quote.type === 'quote') {
+				quote.replaceWith(quote.firstChild);
+			}
+		}
+		this.normalize();
+		/** @type {[number, string][]} */
+		const textNodes = [...this.childNodes.entries()].filter(([, child]) => typeof child === 'string'),
+			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
+			token = Parser.run(() => {
+				const root = new Token(textNodes.map(([, str]) => str).join(''), this.getAttribute('config'));
+				return root.setAttribute('stage', 6).parse(7);
+			});
+		for (const quote of token.children.reverse()) {
+			if (quote.type === 'quote') {
+				const index = quote.getRelativeIndex(),
+					n = indices.findLastIndex(textIndex => textIndex <= index);
+				this.splitText(n, index - indices[n]);
+				this.splitText(n + 1, Number(quote.name));
+				this.removeAt(n + 1);
+				this.insertAt(quote, n + 1);
+			}
+		}
+		this.normalize();
+	}
+
 	/**
 	 * 将维基语法替换为占位符
 	 * @this {Token & {firstChild: string}}
