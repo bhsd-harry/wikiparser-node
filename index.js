@@ -144,7 +144,7 @@ const /** @type {Parser} */ Parser = {
 				throw e;
 			}
 		});
-		return wikitext;
+		return token;
 	},
 
 	reparse(date) {
