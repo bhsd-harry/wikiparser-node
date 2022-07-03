@@ -90,20 +90,25 @@ class TableToken extends TrToken {
 	}
 
 	/** @complexity `n` */
-	close(syntax = '\n|}') {
+	close(syntax = '\n|}', halfParsed = false) {
+		halfParsed &&= Parser.running;
 		const config = this.getAttribute('config'),
-			inner = Parser.parse(syntax, this.getAttribute('include'), 2, config),
-			{lastElementChild} = this;
-		if (!TableToken.closingPattern.test(inner.text())) {
+			accum = this.getAttribute('accum'),
+			inner = !halfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
+			{lastElementChild} = this,
+			{closingPattern} = TableToken;
+		if (!halfParsed && !closingPattern.test(inner.text())) {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(syntax)}`);
 		} else if (lastElementChild instanceof SyntaxToken) {
 			lastElementChild.replaceChildren(...inner.childNodes);
 		} else {
 			this.appendChild(Parser.run(() => {
-				const token = new SyntaxToken(undefined, TableToken.closingPattern, 'table-syntax', config, [], {
+				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 				});
-				token.replaceChildren(...inner.childNodes);
+				if (inner) {
+					token.replaceChildren(...inner.childNodes);
+				}
 				return token;
 			}));
 		}

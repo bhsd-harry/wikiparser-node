@@ -54,10 +54,10 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		}
 		const [, closing, row, cell, attr] = matches;
 		if (closing) {
-			while (top.type !== 'table') {
+			while (!(top instanceof TableToken)) {
 				top = stack.pop();
 			}
-			top.close(`\n${spaces}${closing}`);
+			top.close(`\n${spaces}${closing}`, true);
 			push(attr, stack.at(-1));
 		} else if (row) {
 			if (top.type === 'td') {
