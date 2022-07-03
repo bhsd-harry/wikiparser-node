@@ -1,7 +1,6 @@
 'use strict';
 
-const {typeError} = require('../util/debug'),
-	{text, extUrlChar} = require('../util/string'),
+const {text, noWrap, extUrlChar} = require('../util/string'),
 	Title = require('../lib/title'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
@@ -200,13 +199,13 @@ class ImageParameterToken extends Token {
 	setValue(value) {
 		if (this.#isVoid()) {
 			if (typeof value !== 'boolean') {
-				typeError(this, 'setValue', 'Boolean');
+				this.typeError('setValue', 'Boolean');
 			} else if (value === false) {
 				this.remove();
 			}
 			return;
 		} else if (typeof value !== 'string') {
-			typeError(this, 'setValue', 'String');
+			this.typeError('setValue', 'String');
 		}
 		const root = Parser.parse(`[[File:F|${
 				this.#syntax ? this.#syntax.replace('$1', value) : value
@@ -216,7 +215,7 @@ class ImageParameterToken extends Token {
 		if (length !== 1 || !firstElementChild?.matches('file#File:F')
 			|| firstElementChild.childElementCount !== 2 || param.name !== this.name
 		) {
-			throw new SyntaxError(`非法的 ${this.name} 参数：${value.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}
 		this.replaceChildren(...param.childNodes);
 	}

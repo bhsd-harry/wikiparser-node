@@ -1,6 +1,6 @@
 'use strict';
 
-const {typeError} = require('../util/debug'),
+const {noWrap} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
@@ -116,7 +116,7 @@ class ParameterToken extends fixedToken(Token) {
 			|| firstElementChild.childElementCount !== 2
 			|| lastElementChild.anon !== this.anon || lastElementChild.name !== '1'
 		) {
-			throw new SyntaxError(`非法的模板参数：${value.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
 		const newValue = lastElementChild.lastChild;
 		root.destroy();
@@ -128,7 +128,7 @@ class ParameterToken extends fixedToken(Token) {
 	/** @param {string} key */
 	rename(key, force = false) {
 		if (typeof key !== 'string') {
-			typeError(this, 'rename', 'String');
+			this.typeError('rename', 'String');
 		}
 		const {parentNode} = this;
 		// 必须检测是否是TranscludeToken

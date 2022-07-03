@@ -1,7 +1,7 @@
 'use strict';
 
-const {removeComment, escapeRegExp, text} = require('../util/string'),
-	{typeError, externalUse} = require('../util/debug'),
+const {removeComment, escapeRegExp, text, noWrap} = require('../util/string'),
+	{externalUse} = require('../util/debug'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
@@ -19,7 +19,7 @@ class TranscludeToken extends Token {
 	/** @complexity `n` */
 	setModifier(modifier = '') {
 		if (typeof modifier !== 'string') {
-			typeError(this, 'setModifier', 'String');
+			this.typeError('setModifier', 'String');
 		}
 		const [,, raw, subst] = this.getAttribute('config').parserFunction,
 			lcModifier = modifier.trim().toLowerCase(),
@@ -291,7 +291,7 @@ class TranscludeToken extends Token {
 	 */
 	getArgs(key, exact = false, copy = true) {
 		if (!['string', 'number'].includes(typeof key)) {
-			typeError(this, 'getArgs', 'String', 'Number');
+			this.typeError('getArgs', 'String', 'Number');
 		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
 			this.debugOnly('getArgs');
 		}
@@ -383,7 +383,7 @@ class TranscludeToken extends Token {
 		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
 			|| firstElementChild.childElementCount !== 2 || !firstElementChild.lastElementChild.anon
 		) {
-			throw new SyntaxError(`非法的匿名参数：${val.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
 		}
 		return this.appendChild(firstElementChild.lastChild);
 	}
@@ -395,7 +395,7 @@ class TranscludeToken extends Token {
 	 */
 	setValue(key, value) {
 		if (typeof key !== 'string') {
-			typeError(this, 'setValue', 'String');
+			this.typeError('setValue', 'String');
 		} else if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
 		}
@@ -411,7 +411,7 @@ class TranscludeToken extends Token {
 		if (length !== 1 || !firstElementChild?.matches('template#T')
 			|| firstElementChild.childElementCount !== 2 || firstElementChild.lastElementChild.name !== key
 		) {
-			throw new SyntaxError(`非法的命名参数：${key}=${value.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
 		this.appendChild(firstElementChild.lastChild);
 	}
@@ -432,7 +432,7 @@ class TranscludeToken extends Token {
 		if (this.type === 'magic-word') {
 			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
 		} else if (typeof title !== 'string') {
-			typeError(this, 'replaceTemplate', 'String');
+			this.typeError('replaceTemplate', 'String');
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
@@ -447,7 +447,7 @@ class TranscludeToken extends Token {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
 		} else if (typeof title !== 'string') {
-			typeError(this, 'replaceModule', 'String');
+			this.typeError('replaceModule', 'String');
 		}
 		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
@@ -470,7 +470,7 @@ class TranscludeToken extends Token {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
 		} else if (typeof func !== 'string') {
-			typeError(this, 'replaceFunction', 'String');
+			this.typeError('replaceFunction', 'String');
 		} else if (this.childElementCount < 2) {
 			throw new Error('尚未指定模块名称！');
 		}
@@ -582,7 +582,10 @@ class TranscludeToken extends Token {
 				Parser.error(`${this.type === 'template'
 					? this.name
 					: this.normalizeTitle(this.children[1]?.text() ?? '', 828).title
-				} 还留有 ${remaining} 个重复的 ${key} 参数！`);
+				} 还留有 ${remaining} 个重复的 ${key} 参数：${[...this.getArgs(key)].map(arg => {
+					const {top, left} = arg.getBoundingClientRect();
+					return `第 ${top} 行第 ${left} 列`;
+				}).join('、')}`);
 				duplicatedKeys.push(key);
 				continue;
 			}

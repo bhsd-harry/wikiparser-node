@@ -54,7 +54,10 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
+/** @param {string} str */
+const noWrap = str => str.replaceAll('\n', '\\n');
+
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
 	+ '[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]*';
 
-module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, extUrlChar};
+module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, noWrap, extUrlChar};

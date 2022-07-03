@@ -29,6 +29,7 @@
         10. [findEnclosingHtml](#token.findenclosinghtml)
         11. [getCategories](#token.getcategories)
         12. [redoQuotes](#token.redoquotes)
+        13. [print](#token.print)
     2. [实例属性](#token.instance.properties)
         1. [type](#token.type)
     3. [原型属性](#token.prototype.properties)
@@ -425,6 +426,15 @@ assert.deepStrictEqual(root.childNodes, ["'", root.firstElementChild, "a", root.
 ```js
 var root = Parser.parse(wikitext);
 assert(root.type === 'root');
+```
+
+**print**(format?: 'markup'\|'json' = 'markup'): void\|object<a id="token.print"></a>
+- 打印解析生成的 AST。
+
+```js
+var root = Parser.parse("<ref>{{T|<br>\n----\n[[File:F|thumb|''[//example.net]'']]}}</ref>");
+root.print();
+root.print('json', 'example'); // JSON格式的输出结果将保存至 /printed/example.json 文件
 ```
 </details>
 
@@ -930,7 +940,7 @@ param.setValue(' 2 ');
 assert(root.toString() === '{{a|b= 2 }}'); // setValue方法总是保留空白字符，哪怕是无效的
 ```
 
-**rename**(key: string, force: boolean): void<a id="parametertoken.rename"></a>
+**rename**(key: string, force?: boolean = false): void<a id="parametertoken.rename"></a>
 - 重命名参数，可选是否在导致重复参数时抛出错误。
 
 ```js
@@ -1164,7 +1174,7 @@ assert(root.toString() === '{|\n!colspan=2|\n|-\n| \n!\n|}');
 |:-:|:-:|:-:|
 |<table><tr><td colspan=2>td</td></tr><tr><td>td</td><td>td</td></tr></table>|<table><tr><td colspan=2>td</td></tr><tr><td>td</td><th>th</th></tr></table>|<table><tr><th colspan=2>th</th></tr><tr><td>td</td><th>th</th></tr></table>|
 
-**insertTableRow**(row: number, attr: Record\<string, string\|boolean>, inner?: string, subtype?: 'td'\|'th', innerAttr?: Record\<string, string\|boolean>): TrToken<a id="tabletoken.inserttablerow"></a>
+**insertTableRow**(row: number, attr: Record\<string, string\|boolean>, inner?: string, subtype?: 'td'\|'th' = 'td', innerAttr?: Record\<string, string\|boolean>): TrToken<a id="tabletoken.inserttablerow"></a>
 - 插入空行或一行单元格。
 
 ```js
@@ -1179,7 +1189,7 @@ assert(root.toString() === '{|\n|a|| rowspan="3"|b||c\n|- class="tr"\n|-\n! clas
 |:-:|:-:|
 |<table><tr><td>a</td><td rowspan=2>b</td><td>c</td></tr><tr><td>d</td><td>e</td></tr></table>|<table><tr><td>a</td><td rowspan=3>b</td><td>c</td></tr><tr><th>f</th><th>f</th></tr><tr><td>d</td><td>e</td></tr></table>|
 
-**insertTableCol**(x: number, inner: string, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): void<a id="tabletoken.inserttablecol"></a>
+**insertTableCol**(x: number, inner: string, subtype?: 'td'\|'th' = 'td', attr?: Record\<string, string\|boolean>): void<a id="tabletoken.inserttablecol"></a>
 - 插入一列单元格。
 
 ```js
@@ -1193,7 +1203,7 @@ assert(root.toString() === '{|\n| colspan="3"|a\n|-\n|b\n! class="th"|d\n|c\n|}'
 |:-:|:-:|
 |<table><tr><td colspan=2 align="center">a</td></tr><tr><td>b</td><td>c</td></tr></table>|<table><tr><td colspan=3 align="center">a</td></tr><tr><td>b</td><th>d</th><td>c</td></tr></table>|
 
-**insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype: 'td'\|'th', attr: Record\<string, string\|boolean>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
+**insertTableCell**(inner: string, coords: {row: number, column: number}\|{x: number, y: number}, subtype?: 'td'\|'th' = 'td', attr?: Record\<string, string\|boolean>): [TdToken](#tdtoken)<a id="tabletoken.inserttablecell"></a>
 - 插入一个单元格。
 
 ```js
@@ -1471,7 +1481,7 @@ link.asSelfLink();
 assert(root.toString() === '[[#b]]');
 ```
 
-**setLinkText**(linkText?: string)<a id="linktoken.setlinktext"></a>
+**setLinkText**(linkText: string)<a id="linktoken.setlinktext"></a>
 - 修改链接文本。
 
 ```js

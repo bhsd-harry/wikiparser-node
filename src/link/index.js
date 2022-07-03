@@ -1,7 +1,7 @@
 'use strict';
 
 const Title = require('../../lib/title'), // eslint-disable-line no-unused-vars
-	{text} = require('../../util/string'),
+	{text, noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..');
@@ -170,9 +170,7 @@ class LinkToken extends Token {
 				}L|${linkText}]]`, this.getAttribute('include'), 6, config),
 				{childNodes: {length}, firstElementChild} = root;
 			if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 2) {
-				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${
-					linkText.replaceAll('\n', '\\n')
-				}`);
+				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}
 			({lastElementChild} = firstElementChild);
 		} else {

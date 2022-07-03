@@ -1,7 +1,6 @@
 'use strict';
 
 const attributeParent = require('../../mixin/attributeParent'),
-	{typeError} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
@@ -75,9 +74,6 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/** @param {SyntaxToken} syntax */
 	static escape(syntax) {
-		if (!(syntax instanceof SyntaxToken)) {
-			typeError('SyntaxToken');
-		}
 		const wikitext = syntax.childNodes.map(child => typeof child === 'string'
 				? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
 					.replaceAll('|', '{{!}}')
@@ -131,7 +127,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running && !(token instanceof TrToken)) {
-			typeError(this, 'insertAt', 'TrToken');
+			this.typeError('insertAt', 'TrToken');
 		}
 		const TdToken = require('./td'),
 			child = this.childNodes.at(i);
@@ -201,7 +197,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	getNthCol(n, insert = false) {
 		if (typeof n !== 'number') {
-			typeError(this, 'getNthCol', 'Number');
+			this.typeError('getNthCol', 'Number');
 		}
 		const nCols = this.getColCount();
 		n = n < 0 ? n + nCols : n;

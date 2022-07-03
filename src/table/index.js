@@ -1,7 +1,7 @@
 'use strict';
 
-const {typeError} = require('../../util/debug'),
-	assert = require('assert/strict'),
+const assert = require('assert/strict'),
+	{noWrap} = require('../../util/string'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..'), // eslint-disable-line no-unused-vars
 	TrToken = require('./tr'),
@@ -84,7 +84,7 @@ class TableToken extends TrToken {
 		} else if (!Parser.running && i === this.childNodes.length && token instanceof SyntaxToken
 			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
 		) {
-			throw new SyntaxError(`表格的闭合部分不符合语法！${token.toString().replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(token.toString())}`);
 		}
 		return super.insertAt(token, i);
 	}
@@ -95,7 +95,7 @@ class TableToken extends TrToken {
 			inner = Parser.parse(syntax, this.getAttribute('include'), 2, config),
 			{lastElementChild} = this;
 		if (!TableToken.closingPattern.test(inner.text())) {
-			throw new SyntaxError(`表格的闭合部分不符合语法！${syntax.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(syntax)}`);
 		} else if (lastElementChild instanceof SyntaxToken) {
 			lastElementChild.replaceChildren(...inner.childNodes);
 		} else {
@@ -132,7 +132,7 @@ class TableToken extends TrToken {
 	 */
 	getNthRow(n, force = false, insert = false) {
 		if (typeof n !== 'number') {
-			typeError(this, 'getNthRow', 'Number');
+			this.typeError('getNthRow', 'Number');
 		}
 		const nRows = this.getRowCount(),
 			isRow = super.getRowCount();
@@ -240,7 +240,7 @@ class TableToken extends TrToken {
 	 */
 	toRenderedCoords({row, column}) {
 		if (typeof row !== 'number' || typeof column !== 'number') {
-			typeError(this, 'toRenderedCoords', 'Number');
+			this.typeError('toRenderedCoords', 'Number');
 		}
 		const rowLayout = this.getLayout({row, column})[row],
 			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}) === 0);
@@ -253,7 +253,7 @@ class TableToken extends TrToken {
 	 */
 	toRawCoords({x, y}) {
 		if (typeof x !== 'number' || typeof y !== 'number') {
-			typeError(this, 'toRawCoords', 'Number');
+			this.typeError('toRawCoords', 'Number');
 		}
 		const rowLayout = this.getLayout({x, y})[y],
 			coords = rowLayout?.[x];
@@ -272,7 +272,7 @@ class TableToken extends TrToken {
 	 */
 	getFullRow(y) {
 		if (typeof y !== 'number') {
-			typeError(this, 'getFullRow', 'Number');
+			this.typeError('getFullRow', 'Number');
 		}
 		const rows = this.getAllRows();
 		return new Map(
@@ -286,7 +286,7 @@ class TableToken extends TrToken {
 	 */
 	getFullCol(x) {
 		if (typeof x !== 'number') {
-			typeError(this, 'getFullCol', 'Number');
+			this.typeError('getFullCol', 'Number');
 		}
 		const layout = this.getLayout(),
 			colLayout = layout.map(row => row[x]).filter(coords => coords),
@@ -438,7 +438,7 @@ class TableToken extends TrToken {
 	 */
 	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
 		if (typeof attr !== 'object') {
-			typeError(this, 'insertTableRow', 'Object');
+			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);
 		/** @type {TrToken & AttributeToken}} */
@@ -482,7 +482,7 @@ class TableToken extends TrToken {
 	 */
 	insertTableCol(x, inner, subtype = 'td', attr = {}) {
 		if (typeof x !== 'number') {
-			typeError(this, 'insertTableCol', 'Number');
+			this.typeError('insertTableCol', 'Number');
 		}
 		const layout = this.getLayout(),
 			rowLength = layout.map(({length}) => length),
@@ -565,7 +565,7 @@ class TableToken extends TrToken {
 	 */
 	mergeCells(xlim, ylim) {
 		if ([...xlim, ...ylim].some(arg => typeof arg !== 'number')) {
-			typeError(this, 'mergeCells', 'Number');
+			this.typeError('mergeCells', 'Number');
 		}
 		const layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length));
@@ -711,7 +711,7 @@ class TableToken extends TrToken {
 	 */
 	moveTableRowBefore(y, before) {
 		if (typeof y !== 'number' || typeof before !== 'number') {
-			typeError(this, 'moveTableRowBefore', 'Number');
+			this.typeError('moveTableRowBefore', 'Number');
 		}
 		const layout = this.getLayout(),
 			/**
@@ -748,7 +748,7 @@ class TableToken extends TrToken {
 	 */
 	moveTableRowAfter(y, after) {
 		if (typeof y !== 'number' || typeof after !== 'number') {
-			typeError(this, 'moveTableRowAfter', 'Number');
+			this.typeError('moveTableRowAfter', 'Number');
 		}
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after),
@@ -797,7 +797,7 @@ class TableToken extends TrToken {
 	 */
 	#moveCol(x, reference, after = false) {
 		if (typeof x !== 'number' || typeof reference !== 'number') {
-			typeError(this, `moveTableCol${after ? 'After' : 'Before'}`, 'Number');
+			this.typeError(`moveTableCol${after ? 'After' : 'Before'}`, 'Number');
 		}
 		const layout = this.getLayout(),
 			/** @type {(rowLayout: TableCoords[], i: number, oneCol?: boolean) => boolean} */

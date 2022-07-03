@@ -1,6 +1,6 @@
 'use strict';
 
-const {text} = require('../util/string'),
+const {text, noWrap} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -118,7 +118,7 @@ class ArgToken extends Token {
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 1) {
-			throw new SyntaxError(`非法的参数名称：${name.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
 		const newName = firstElementChild.firstElementChild;
 		root.destroy();
@@ -132,7 +132,7 @@ class ArgToken extends Token {
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 2) {
-			throw new SyntaxError(`非法的参数预设值：${value.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
 		const [, oldDefault] = this.children,
 			newDefault = firstElementChild.lastElementChild;

@@ -39,7 +39,7 @@
  * w: ExtLinkToken
  */
 
-const {typeError, externalUse} = require('../util/debug'),
+const {externalUse} = require('../util/debug'),
 	Ranges = require('../lib/ranges'),
 	AstElement = require('../lib/element'),
 	assert = require('assert/strict'),
@@ -255,7 +255,7 @@ class Token extends AstElement {
 		if (!parentNode) {
 			throw new Error('不存在父节点！');
 		} else if (token.constructor !== this.constructor) {
-			typeError(this, 'safeReplaceWith', this.constructor.name);
+			this.typeError('safeReplaceWith', this.constructor.name);
 		}
 		try {
 			assert.deepEqual(token.getAttribute('acceptable'), this.#acceptable);
@@ -320,7 +320,7 @@ class Token extends AstElement {
 	 */
 	section(n) {
 		if (typeof n !== 'number') {
-			typeError(this, 'section', 'Number');
+			this.typeError('section', 'Number');
 		}
 		return this.sections()[n];
 	}
@@ -332,7 +332,7 @@ class Token extends AstElement {
 	 */
 	findEnclosingHtml(tag) {
 		if (tag !== undefined && typeof tag !== 'string') {
-			typeError(this, 'findEnclosingHtml', 'String');
+			this.typeError('findEnclosingHtml', 'String');
 		}
 		tag = tag?.toLowerCase();
 		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
@@ -519,7 +519,7 @@ class Token extends AstElement {
 	/** 解析、重构、生成部分Token的`name`属性 */
 	parse(n = MAX_STAGE, include = false) {
 		if (typeof n !== 'number') {
-			typeError(this, 'parse', 'Number');
+			this.typeError('parse', 'Number');
 		} else if (n < MAX_STAGE && !Parser.debugging && externalUse('parse')) {
 			Parser.warn('指定解析层级的方法仅供熟练用户使用！');
 		}

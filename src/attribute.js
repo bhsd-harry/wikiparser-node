@@ -1,6 +1,6 @@
 'use strict';
 
-const {typeError, externalUse} = require('../util/debug'),
+const {externalUse} = require('../util/debug'),
 	{toCase, removeComment} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
@@ -147,7 +147,7 @@ class AttributeToken extends Token {
 	/** @param {string} key */
 	hasAttr(key) {
 		if (typeof key !== 'string') {
-			typeError(this, 'hasAttr', 'String');
+			this.typeError('hasAttr', 'String');
 		}
 		return this.#attr.has(key.toLowerCase().trim());
 	}
@@ -161,7 +161,7 @@ class AttributeToken extends Token {
 		if (key === undefined) {
 			return Object.fromEntries(this.#attr);
 		} else if (typeof key !== 'string') {
-			typeError(this, 'getAttr', 'String');
+			this.typeError('getAttr', 'String');
 		}
 		return this.#attr.get(key.toLowerCase().trim());
 	}
@@ -182,7 +182,7 @@ class AttributeToken extends Token {
 	setAttr(key, value, init = false) {
 		init &&= !externalUse('setAttr');
 		if (typeof key !== 'string' || !['string', 'boolean'].includes(typeof value)) {
-			typeError(this, 'setValue', 'String', 'Boolean');
+			this.typeError('setValue', 'String', 'Boolean');
 		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
@@ -214,7 +214,7 @@ class AttributeToken extends Token {
 	 */
 	removeAttr(key) {
 		if (typeof key !== 'string') {
-			typeError(this, 'removeAttr', 'String');
+			this.typeError('removeAttr', 'String');
 		}
 		key = key.toLowerCase().trim();
 		if (this.#attr.delete(key)) {
@@ -229,7 +229,7 @@ class AttributeToken extends Token {
 	 */
 	toggleAttr(key, force) {
 		if (typeof key !== 'string') {
-			typeError(this, 'toggleAttr', 'String');
+			this.typeError('toggleAttr', 'String');
 		} else if (force !== undefined) {
 			force = Boolean(force);
 		}

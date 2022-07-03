@@ -1,17 +1,18 @@
 'use strict';
 
 const {typeError, externalUse} = require('../util/debug'),
-	{text} = require('../util/string'),
+	{text, noWrap} = require('../util/string'),
 	Token = require('../src'),
 	assert = require('assert/strict');
 
 const /** @type {WeakMap<Token, Record<string, any>>} */ dataStore = new WeakMap();
 
 /**
+ * @param {string} method
  * @param {string|Token|Token[]} selector
  * @returns {(token: Token) => boolean}
  */
-const matchesGenerator = selector => {
+const matchesGenerator = (method, selector) => {
 	if (typeof selector === 'string') {
 		return token => token instanceof Token && token.matches(selector);
 	} else if (Array.isArray(selector)) {
@@ -19,7 +20,7 @@ const matchesGenerator = selector => {
 	} else if (selector instanceof Token) {
 		return token => token === selector;
 	}
-	typeError('String', 'Token', 'Array');
+	typeError(TokenCollection, method, 'String', 'Token', 'Array');
 };
 
 /** @extends {Array<Token>} */
@@ -39,7 +40,7 @@ class TokenCollection extends Array {
 			} else if (typeof token === 'string') {
 				this.push(token);
 			} else if (!(token instanceof Token)) {
-				typeError('String', 'Token');
+				this.typeError('constructor', 'String', 'Token');
 			} else if (!this.includes(token)) {
 				this.#roots.add(token.getRootNode());
 				this.push(token);
@@ -47,6 +48,14 @@ class TokenCollection extends Array {
 		}
 		Object.defineProperty(this, 'prevObject', {enumerable: false});
 		this.#sort();
+	}
+
+	/**
+	 * @param {string} method
+	 * @param  {...string} types
+	 */
+	typeError(method, ...types) {
+		return typeError(this.constructor, method, ...types);
 	}
 
 	#sort() {
@@ -171,7 +180,7 @@ class TokenCollection extends Array {
 		if (typeof selector === 'function') {
 			return this.some((ele, i) => selector.call(ele, i, ele));
 		}
-		const matches = matchesGenerator(selector);
+		const matches = matchesGenerator('is', selector);
 		return this.some(matches);
 	}
 
@@ -182,7 +191,7 @@ class TokenCollection extends Array {
 		if (typeof selector === 'function') {
 			$arr = $(arr.filter((ele, i) => selector.call(ele, i, ele)));
 		} else {
-			const matches = matchesGenerator(selector);
+			const matches = matchesGenerator('filter', selector);
 			$arr = $(arr.filter(matches));
 		}
 		$arr.prevObject = this;
@@ -198,7 +207,7 @@ class TokenCollection extends Array {
 		} else if (typeof selector === 'string') {
 			$arr = $(arr.filter(ele => ele instanceof Token && !ele.matches(selector)));
 		} else {
-			const matches = matchesGenerator(selector);
+			const matches = matchesGenerator('not', selector);
 			$arr = $(arr.filter(ele => !matches(ele)));
 		}
 		$arr.prevObject = this;
@@ -215,7 +224,7 @@ class TokenCollection extends Array {
 		} else if (selector instanceof Token) {
 			map = arr => arr.some(token => token.contains(selector)) ? [selector] : [];
 		} else {
-			typeError('String', 'Token', 'Array');
+			this.typeError('find', 'String', 'Token', 'Array');
 		}
 		return this._create(map);
 	}
@@ -228,13 +237,13 @@ class TokenCollection extends Array {
 		} else if (selector instanceof Token) {
 			return arr.some(ele => ele.contains(selector));
 		}
-		typeError('String', 'Token');
+		this.typeError('has', 'String', 'Token');
 	}
 
 	/** @param {string} selector */
 	closest(selector) {
 		if (typeof selector !== 'string') {
-			typeError('String');
+			this.typeError('closest', 'String');
 		}
 		return this._create(arr => arr.map(ele => ele.closest(selector)));
 	}
@@ -314,7 +323,7 @@ class TokenCollection extends Array {
 	 * @param {string|Token|Token[]} selector
 	 */
 	_until(method, selector, filter = '') {
-		const matches = matchesGenerator(selector);
+		const matches = matchesGenerator(`${method.replace(/All$/, '')}Until`, selector);
 		return this._create(arr => arr.flatMap(ele => {
 			const tokens = $(ele)[method]().toArray(),
 				tokenArray = method === 'nextAll' ? tokens : tokens.reverse(),
@@ -349,7 +358,7 @@ class TokenCollection extends Array {
 	/** @param {[string|Record<string, any>]} key */
 	data(key, value) {
 		if (value !== undefined && typeof key !== 'string') {
-			typeError('String');
+			this.typeError('data', 'String');
 		} else if (value === undefined && typeof key !== 'object') {
 			const data = $.dataStore.get(this._find());
 			return key === undefined ? data : data?.[key];
@@ -371,7 +380,7 @@ class TokenCollection extends Array {
 	/** @param {string|string[]} name */
 	removeData(name) {
 		if (name !== undefined && typeof name !== 'string' && !Array.isArray(name)) {
-			typeError('String', 'Array');
+			this.typeError('removeData', 'String', 'Array');
 		}
 		name = typeof name === 'string' ? name.split(/\s/) : name;
 		for (const token of this._filter()) {
@@ -396,7 +405,7 @@ class TokenCollection extends Array {
 	 */
 	_addEventListener(events, selector, handler, once = false) {
 		if (!['string', 'object'].includes(typeof events)) {
-			typeError('String', 'Object');
+			this.typeError(once ? 'once' : 'on', 'String', 'Object');
 		} else if (typeof selector === 'function') {
 			handler = selector;
 			selector = undefined;
@@ -437,7 +446,7 @@ class TokenCollection extends Array {
 	 */
 	off(events, selector, handler) {
 		if (!['string', 'object', 'undefined'].includes(typeof events)) {
-			typeError('String', 'Object');
+			this.typeError('off', 'String', 'Object');
 		}
 		handler = typeof selector === 'function' ? selector : handler;
 		let eventPair;
@@ -452,7 +461,7 @@ class TokenCollection extends Array {
 			} else {
 				for (const [event, listener] of eventPair) {
 					if (typeof event !== 'string' || !['function', 'undefined'].includes(typeof listener)) {
-						typeError('String', 'Function');
+						this.typeError('off', 'String', 'Function');
 					} else if (listener) {
 						token.removeEventListener(event, listener);
 					} else {
@@ -503,7 +512,7 @@ class TokenCollection extends Array {
 					} else if (Array.isArray(result)) {
 						token[method](...result);
 					} else {
-						typeError('String', 'Token');
+						this.typeError(method, 'String', 'Token');
 					}
 				}
 			}
@@ -604,7 +613,7 @@ class TokenCollection extends Array {
 				}
 			}
 		} else {
-			typeError('Token', 'Array');
+			this.typeError(method, 'Token', 'Array');
 		}
 		return this;
 	}
@@ -648,7 +657,7 @@ class TokenCollection extends Array {
 		} else if (Array.isArray(value)) {
 			toValue = i => value[i];
 		} else {
-			typeError('String', 'Array', 'Function');
+			this.typeError('val', 'String', 'Array', 'Function');
 		}
 		for (const [i, token] of this.entries()) {
 			if (token instanceof Token && typeof token.setValue === 'function' && token.setValue.length === 1) {
@@ -730,7 +739,7 @@ class TokenCollection extends Array {
 	 */
 	wrapAll(wrapper) {
 		if (typeof wrapper !== 'function' && !Array.isArray(wrapper)) {
-			typeError('Array', 'Function');
+			this.typeError('wrapAll', 'Array', 'Function');
 		}
 		const firstToken = this._find(),
 			error = new Error('wrapAll 的主体应为同一个父节点下的连续子节点！');
@@ -757,7 +766,7 @@ class TokenCollection extends Array {
 			config = firstToken.getRootNode().getAttribute('config'),
 			token = new Token(`${pre}${this.toString()}${post}`, config).parse();
 		if (token.childNodes.length !== 1) {
-			throw new RangeError(`非法的 wrapper:\n${pre}\n${post}`);
+			throw new RangeError(`非法的 wrapper:\n${noWrap(pre)}\n${noWrap(post)}`);
 		}
 		for (let j = i + this.length - 1; j >= i; j--) {
 			parentNode.removeAt(j);
@@ -772,7 +781,7 @@ class TokenCollection extends Array {
 	 */
 	_wrap(method, wrapper) {
 		if (typeof wrapper !== 'function' && !Array.isArray(wrapper)) {
-			typeError('Array', 'Function');
+			this.typeError(method, 'Array', 'Function');
 		}
 		return this[method](
 			/**
@@ -788,7 +797,7 @@ class TokenCollection extends Array {
 					config = this.getRootNode().getAttribute('config'),
 					token = new Token(`${pre}${string}${post}`, config).parse();
 				if (token.childNodes.length !== 1) {
-					throw new RangeError(`非法的 wrapper:\n${pre}\n${post}`);
+					throw new RangeError(`非法的 wrapper:\n${noWrap(pre)}\n${noWrap(post)}`);
 				}
 				return token.firstChild;
 			},
@@ -852,36 +861,37 @@ const $ = tokens => {
 		},
 	});
 };
-$.hasData = /** @param {Token} element */ element => {
+/* eslint-disable func-names */
+$.hasData = /** @param {Token} element */ function hasData(element) {
 	if (!(element instanceof Token)) {
-		typeError('Token');
+		typeError(this, 'hasData', 'Token');
 	}
-	return $.dataStore.has(element);
+	return this.dataStore.has(element);
 };
-$.data = /** @type {(element: Token, key?: string, value?: any) => any} */ (element, key, value) => {
+$.data = /** @type {function(Token, string, any): any} */ function data(element, key, value) {
 	if (!(element instanceof Token)) {
-		typeError('Token');
+		typeError(this, 'data', 'Token');
 	} else if (key === undefined) {
-		return $.dataStore.get(element);
+		return this.dataStore.get(element);
 	} else if (typeof key !== 'string') {
-		typeError('String');
+		typeError(this, 'data', 'String');
 	} else if (value === undefined) {
-		return $.dataStore.get(element)?.[key];
-	} else if (!$.dataStore.has(element)) {
-		$.dataStore.set(element, {});
+		return this.dataStore.get(element)?.[key];
+	} else if (!this.dataStore.has(element)) {
+		this.dataStore.set(element, {});
 	}
-	$.dataStore.get(element)[key] = value;
+	this.dataStore.get(element)[key] = value;
 	return value;
 };
-$.removeData = /** @type {(element: Token, name?: string) => void} */ (element, name) => {
+$.removeData = /** @type {function(Token, string): void} */ function removeData(element, name) {
 	if (!(element instanceof Token)) {
-		typeError('Token');
+		typeError(this, 'removeData', 'Token');
 	} else if (name === undefined) {
-		$.dataStore.delete(element);
+		this.dataStore.delete(element);
 	} else if (typeof name !== 'string') {
-		typeError('String');
-	} else if ($.dataStore.has(element)) {
-		const data = $.dataStore.get(element);
+		typeError(this, 'removeData', 'String');
+	} else if (this.dataStore.has(element)) {
+		const data = this.dataStore.get(element);
 		delete data[name];
 	}
 };

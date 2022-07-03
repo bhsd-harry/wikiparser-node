@@ -1,12 +1,12 @@
 'use strict';
 
 /**
- * @param {ObjectConstructor} constructor
+ * @param {function}
  * @param {string} method
  * @param {...string} args
  */
-const typeError = ({constructor}, method, ...args) => {
-	throw new TypeError(`${constructor.name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
+const typeError = ({name}, method, ...args) => {
+	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
 };
 
 /**

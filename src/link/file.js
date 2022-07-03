@@ -1,7 +1,7 @@
 'use strict';
 
-const {explode} = require('../../util/string'),
-	{typeError, externalUse} = require('../../util/debug'),
+const {explode, noWrap} = require('../../util/string'),
+	{externalUse} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
@@ -102,7 +102,7 @@ class FileToken extends LinkToken {
 		const args = this.getAllArgs()
 			.filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
 		if (args.length > 1) {
-			Parser.error(`警告：图片 ${this.name} 带有 ${args.length} 个框架参数，只有第 1 个 ${args[0].name} 会生效！`);
+			Parser.error(`图片 ${this.name} 带有 ${args.length} 个框架参数，只有第 1 个 ${args[0].name} 会生效！`);
 		}
 		return args;
 	}
@@ -113,7 +113,7 @@ class FileToken extends LinkToken {
 	 */
 	getArgs(key, copy = true) {
 		if (typeof key !== 'string') {
-			typeError(this, 'getArgs', 'String');
+			this.typeError('getArgs', 'String');
 		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
 			this.debugOnly('getArgs');
 		}
@@ -190,7 +190,7 @@ class FileToken extends LinkToken {
 	 */
 	setValue(key, value) {
 		if (typeof key !== 'string') {
-			typeError(this, 'setValue', 'String');
+			this.typeError('setValue', 'String');
 		} else if (value === false) {
 			this.removeArg(key);
 			return;
@@ -211,7 +211,7 @@ class FileToken extends LinkToken {
 		}
 		if (value === true) {
 			if (syntax.includes('$1')) {
-				typeError(this, 'setValue', 'Boolean');
+				this.typeError('setValue', 'Boolean');
 			}
 			const newArg = Parser.run(() => new ImageParameterToken(syntax, config));
 			this.appendChild(newArg);
@@ -223,7 +223,7 @@ class FileToken extends LinkToken {
 		if (length !== 1 || !firstElementChild?.matches('file#File:F')
 			|| firstElementChild.childElementCount !== 2 || firstElementChild.lastElementChild.name !== key
 		) {
-			throw new SyntaxError(`非法的 ${key} 参数：${value.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
 		this.appendChild(firstElementChild.lastChild);
 	}

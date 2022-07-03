@@ -1,6 +1,7 @@
 'use strict';
 
-const fixedToken = require('../mixin/fixedToken'),
+const {noWrap} = require('../util/string'),
+	fixedToken = require('../mixin/fixedToken'),
 	attributeParent = require('../mixin/attributeParent'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
@@ -79,7 +80,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
 			{name, parentElement, closing, selfClosing} = this,
-			string = this.toString().replaceAll('\n', '\\n');
+			string = noWrap(this.toString());
 		if (closing && selfClosing) {
 			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
 		} else if (html[2].includes(name) || selfClosing && html[1].includes(name)) { // 自封闭标签
@@ -134,7 +135,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			this.selfClosing = false;
 			this.closing = true;
 		} else {
-			Parser.warn('无法修复无效自封闭标签', this.toString().replaceAll('\n', '\\n'));
+			Parser.warn('无法修复无效自封闭标签', noWrap(this.toString()));
 			throw new Error(`无法修复无效自封闭标签：前文共有 ${imbalance} 个未匹配的闭合标签`);
 		}
 	}

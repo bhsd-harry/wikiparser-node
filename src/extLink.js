@@ -1,6 +1,7 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const {noWrap} = require('../util/string'),
+	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	MagicLinkToken = require('./magicLink');
 
@@ -97,7 +98,7 @@ class ExtLinkToken extends Token {
 		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childElementCount !== 2) {
-			throw new SyntaxError(`非法的外链文字：${text.replaceAll('\n', '\\n')}`);
+			throw new SyntaxError(`非法的外链文字：${noWrap(text)}`);
 		}
 		const {lastChild} = firstElementChild;
 		if (this.childElementCount === 1) {

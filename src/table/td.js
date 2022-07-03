@@ -110,7 +110,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
 		if (typeof inner !== 'string' && (!(inner instanceof Token) || !inner.isPlain()) || typeof attr !== 'object') {
-			throw new TypeError('TdToken.create 方法仅接受 String、Token、Object 作为输入参数！');
+			typeError(this, 'create', 'String', 'Token', 'Object');
 		} else if (!['td', 'th', 'caption'].includes(subtype)) {
 			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
 		} else if (typeof inner === 'string') {
@@ -231,7 +231,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	setAttr(key, value) {
 		if (typeof key !== 'string') {
-			typeError(this, 'setAttr', 'String');
+			this.typeError('setAttr', 'String');
 		}
 		key = key.toLowerCase().trim();
 		if (typeof value === 'number' && ['rowspan', 'colspan'].includes(key)) {

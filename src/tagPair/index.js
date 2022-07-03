@@ -52,7 +52,7 @@ class TagPairToken extends fixedToken(Token) {
 		const {closed, firstChild, lastChild, nextSibling, name, selfClosing} = this,
 			[opening, closing] = this.#tags;
 		if (!closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, String(lastChild).replaceAll('\n', '\\n'));
+			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.closed = true;
 		}
 		return selfClosing

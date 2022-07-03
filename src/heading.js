@@ -1,7 +1,6 @@
 'use strict';
 
-const {typeError} = require('../util/debug'),
-	fixedToken = require('../mixin/fixedToken'),
+const fixedToken = require('../mixin/fixedToken'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -76,7 +75,7 @@ class HeadingToken extends fixedToken(Token) {
 	/** @param {number} n */
 	setLevel(n) {
 		if (typeof n !== 'number') {
-			typeError(this, 'setLevel', 'Number');
+			this.typeError('setLevel', 'Number');
 		}
 		n = Math.min(Math.max(n, 1), 6);
 		this.setAttribute('name', String(n)).firstElementChild.setAttribute('name', this.name);

@@ -1,7 +1,6 @@
 'use strict';
 
-const {typeError} = require('../util/debug'),
-	/** @type {Parser} */ Parser = require('..'),
+const /** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -17,7 +16,7 @@ class MagicLinkToken extends Token {
 	}
 	set protocol(value) {
 		if (typeof value !== 'string') {
-			typeError(this, 'protocol', 'String');
+			this.typeError('protocol', 'String');
 		}
 		if (!new RegExp(`${this.#protocolRegex.source}$`, 'i').test(value)) {
 			throw new RangeError(`非法的外链协议：${value}`);

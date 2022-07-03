@@ -30,7 +30,7 @@ class CommentToken extends hidden(NowikiToken) {
 	toString() {
 		const {firstChild, closed, nextSibling} = this;
 		if (!closed && nextSibling) {
-			Parser.error('自动闭合HTML注释', firstChild.replaceAll('\n', '\\n'));
+			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
 		return `<!--${firstChild}${this.closed ? '-->' : ''}`;
