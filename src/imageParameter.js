@@ -32,7 +32,7 @@ class ImageParameterToken extends Token {
 			if (!value) {
 				return this.#noLink;
 			}
-			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}`, 'ui');
+			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\x00\\d+t\x7f|$)`, 'ui');
 			if (regex.test(value)) {
 				return value;
 			}
