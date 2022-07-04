@@ -1,13 +1,14 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const sol = require('../../mixin/sol'),
+	/** @type {Parser} */ Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * `<hr>`
  * @classdesc `{childNodes: [string]}`
  */
-class HrToken extends NowikiToken {
+class HrToken extends sol(NowikiToken) {
 	type = 'hr';
 
 	/**

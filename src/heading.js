@@ -1,6 +1,7 @@
 'use strict';
 
 const fixedToken = require('../mixin/fixedToken'),
+	sol = require('../mixin/sol'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -8,7 +9,7 @@ const fixedToken = require('../mixin/fixedToken'),
  * 章节标题
  * @classdesc `{childNodes: [Token, HiddenToken]}`
  */
-class HeadingToken extends fixedToken(Token) {
+class HeadingToken extends fixedToken(sol(Token)) {
 	type = 'heading';
 
 	/**
@@ -37,34 +38,29 @@ class HeadingToken extends fixedToken(Token) {
 		return token;
 	}
 
+	/** @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}} */
 	toString() {
-		const equals = '='.repeat(Number(this.name)),
-			{previousVisibleSibling, nextVisibleSibling} = this;
-		return `${
-			typeof previousVisibleSibling === 'string' && !previousVisibleSibling.endsWith('\n')
-			|| previousVisibleSibling instanceof Token
-				? '\n'
-				: ''
-		}${equals}${super.toString(equals)}${
-			typeof nextVisibleSibling === 'string' && !nextVisibleSibling.startsWith('\n')
-			|| nextVisibleSibling instanceof Token
-				? '\n'
-				: ''
-		}`;
+		const equals = '='.repeat(Number(this.name));
+		return `${this.prependNewLine()}${equals}${
+			this.firstElementChild.toString()
+		}${equals}${this.lastElementChild.toString()}${this.appendNewLine()}`;
 	}
 
 	getPadding() {
-		return Number(this.name);
+		return super.getPadding() + Number(this.name);
 	}
 
 	getGaps() {
 		return Number(this.name);
 	}
 
-	/** @returns {string} */
+	/**
+	 * @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}}
+	 * @returns {string}
+	 */
 	text() {
 		const equals = '='.repeat(Number(this.name));
-		return `${equals}${this.firstElementChild.text()}${equals}`;
+		return `${this.prependNewLine()}${equals}${this.firstElementChild.text()}${equals}${this.appendNewLine()}`;
 	}
 
 	/** @returns {[number, string][]} */
