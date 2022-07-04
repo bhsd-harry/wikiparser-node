@@ -37,6 +37,7 @@
  * l: LinkToken
  * q: QuoteToken
  * w: ExtLinkToken
+ * d: ListToken
  */
 
 const {externalUse} = require('../util/debug'),
@@ -436,11 +437,7 @@ class Token extends AstElement {
 				this.#parseLinks();
 				break;
 			case 6: {
-				const lines = this.firstChild.split('\n');
-				for (let i = 0; i < lines.length; i++) {
-					lines[i] = this.#parseQuotes(lines[i]);
-				}
-				this.setText(lines.join('\n'));
+				this.#parseQuotes();
 				break;
 			}
 			case 7:
@@ -450,6 +447,7 @@ class Token extends AstElement {
 				this.#parseMagicLinks();
 				break;
 			case 9:
+				this.#parseList();
 				break;
 			case 10:
 				// no default
@@ -579,10 +577,14 @@ class Token extends AstElement {
 		this.setText(parseLinks(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @param {string} text */
-	#parseQuotes(text) {
-		const parseQuotes = require('../parser/quotes');
-		return parseQuotes(text, this.#config, this.#accum);
+	/** @this {Token & {firstChild: string}} */
+	#parseQuotes() {
+		const parseQuotes = require('../parser/quotes'),
+			lines = this.firstChild.split('\n');
+		for (let i = 0; i < lines.length; i++) {
+			lines[i] = parseQuotes(lines[i], this.#config, this.#accum);
+		}
+		this.setText(lines.join('\n'));
 	}
 
 	/** @this {Token & {firstChild: string}} */
@@ -595,6 +597,15 @@ class Token extends AstElement {
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(this.firstChild, this.#config, this.#accum));
+	}
+
+	#parseList() {
+		const parseList = require('../parser/list'),
+			lines = this.firstChild.split('\n');
+		for (let i = 0; i < lines.length; i++) {
+			lines[i] = parseList(lines[i], this.#config, this.#accum);
+		}
+		this.setText(lines.join('\n'));
 	}
 }
 
