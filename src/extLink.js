@@ -49,15 +49,27 @@ class ExtLinkToken extends Token {
 		}
 	}
 
+	#correct() {
+		if (!this.#space
+			// 都替换成`<`肯定不对，但无妨
+			&& /^[^[\]<>"\x00-\x20\x7f\p{Zs}\ufffd]/u.test(this.children[1]?.text().replace(/&[lg]t;/, '<'))
+		) {
+			this.#space = ' ';
+		}
+	}
+
 	toString() {
+		this.#correct();
 		return `[${this.firstElementChild.toString()}${this.#space}${this.children[1]?.toString() ?? ''}]`;
 	}
 
 	getPadding() {
+		this.#correct();
 		return 1;
 	}
 
 	getGaps() {
+		this.#correct();
 		return this.#space.length;
 	}
 

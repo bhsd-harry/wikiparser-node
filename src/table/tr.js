@@ -48,15 +48,13 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	#correct() {
-		const [,, child] = this.childNodes;
-		if (typeof child === 'string' && !child.startsWith('\n')) {
-			this.setText(`\n${child}`, 2);
-		} else if (typeof child !== 'string' && child?.isPlain()) {
+		const [,, child] = this.children;
+		if (child?.isPlain()) {
 			const {firstChild} = child;
 			if (typeof firstChild !== 'string') {
 				child.prepend('\n');
 			} else if (!firstChild.startsWith('\n')) {
-				child.setText(`\n${firstChild}`, 0);
+				child.setText(`\n${firstChild}`);
 			}
 		}
 	}

@@ -70,15 +70,15 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @template {string|Token} T
+	 * @template {TrToken|SyntaxToken} T
 	 * @param {T} token
 	 * @returns {T}
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		const previous = this.childNodes.at(i - 1),
+		const previous = this.children.at(i - 1),
 			{closingPattern} = TableToken;
-		if (token instanceof TrToken && token.type === 'td' && previous instanceof TrToken && previous.type === 'tr') {
+		if (token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.appendChild(token);
 		} else if (!Parser.running && i === this.childNodes.length && token instanceof SyntaxToken
@@ -417,14 +417,14 @@ class TableToken extends TrToken {
 	/** @complexity `n` */
 	#prependTableRow() {
 		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
-			{childNodes} = this,
-			[,, plain] = childNodes,
-			start = typeof plain === 'string' || plain.isPlain() ? 3 : 2,
-			/** @type {TdToken[]} */ children = childNodes.slice(start),
-			index = children.findIndex(({type}) => type !== 'td');
+			{children} = this,
+			[,, plain] = children,
+			start = plain?.isPlain() ? 3 : 2,
+			/** @type {TdToken[]} */ tdChildren = children.slice(start),
+			index = tdChildren.findIndex(({type}) => type !== 'td');
 		this.insertAt(row, index === -1 ? -1 : index + start);
 		Parser.run(() => {
-			for (const cell of children.slice(0, index === -1 ? undefined : index)) {
+			for (const cell of tdChildren.slice(0, index === -1 ? undefined : index)) {
 				if (cell.subtype !== 'caption') {
 					row.appendChild(cell);
 				}
