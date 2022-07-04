@@ -28,14 +28,13 @@ class AttributeToken extends Token {
 		) {
 			equal = '{{=}}';
 		}
-		const str = [...this.#attr].map(([k, v]) => {
+		return [...this.#attr].map(([k, v]) => {
 			if (v === true) {
 				return k;
 			}
 			const quote = v.includes('"') ? "'" : '"';
 			return `${k}${equal}${quote}${v}${quote}`;
 		}).join(' ');
-		return str && ` ${str}`;
 	}
 
 	/** @complexity `n` */
@@ -56,17 +55,17 @@ class AttributeToken extends Token {
 	 */
 	#parseAttr() {
 		this.#attr.clear();
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			/** @type {Token & {firstChild: string}} */ token = this.type !== 'ext-attr' && !Parser.running
-				? Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce())
-				: undefined,
-			string = removeComment(token?.firstChild ?? this.toString()).replace(/\x00\d+~\x7f/g, '=');
-		const build = /** @param {string|boolean} str */ str => {
-			return typeof str === 'boolean' || !(token instanceof Token)
-				? str
-				: token.buildFromStr(str).map(String).join('');
-		};
+		let string = this.toString(),
+			/** @type {Token & {firstChild: string}} */ token;
+		if (this.type !== 'ext-attr' && !Parser.running) {
+			const config = this.getAttribute('config'),
+				include = this.getAttribute('include');
+			token = Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce());
+			string = token.firstChild;
+		}
+		string = removeComment(string).replace(/\x00\d+~\x7f/g, '=');
+		const build = /** @param {string|boolean} str */ str =>
+			typeof str === 'boolean' || !token ? str : token.buildFromStr(str).map(String).join('');
 		for (const [, key,, quoted, unquoted] of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg)
 		) {
@@ -241,13 +240,24 @@ class AttributeToken extends Token {
 		this.setAttr(key, force === true || force === undefined && value === false);
 	}
 
+	#leadingSpace(str = super.toString()) {
+		return str && !/^\s/.test(str) ? ' ' : '';
+	}
+
 	toString() {
-		const str = super.toString();
+		let str = super.toString();
+		str = `${this.#leadingSpace(str)}${str}`;
 		return this.type === 'table-attr' ? str.replaceAll('\n', ' ') : str;
 	}
 
+	getPadding() {
+		return this.#leadingSpace().length;
+	}
+
 	text() {
-		return this.#updateFromAttr();
+		let str = this.#updateFromAttr();
+		str = `${this.#leadingSpace(str)}${str}`;
+		return this.type === 'table-attr' ? str.replaceAll('\n', ' ') : str;
 	}
 
 	/** @returns {[number, string][]} */
