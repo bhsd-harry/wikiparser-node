@@ -19,7 +19,10 @@ const sol = constructor => class extends constructor {
 
 	/** @this {Token} */
 	appendNewLine() {
-		return String(this.nextVisibleSibling ?? '').startsWith('\n') ? '' : '\n';
+		const {nextVisibleSibling = '', parentNode} = this;
+		return (nextVisibleSibling || parentNode?.type !== 'root') && !String(nextVisibleSibling ?? '').startsWith('\n')
+			? '\n'
+			: '';
 	}
 
 	toString(ownLine = false) {
