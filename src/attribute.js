@@ -1,7 +1,7 @@
 'use strict';
 
 const {externalUse} = require('../util/debug'),
-	{toCase, removeComment} = require('../util/string'),
+	{toCase, removeComment, normalizeSpace} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
@@ -244,10 +244,10 @@ class AttributeToken extends Token {
 		return this.type !== 'table-attr' && str && !/^\s/.test(str) ? ' ' : '';
 	}
 
+	/** @this {AttributeToken & Token} */
 	toString() {
-		let str = super.toString();
-		str = `${this.#leadingSpace(str)}${str}`;
-		return this.type === 'table-attr' ? str.replaceAll('\n', ' ') : str;
+		const str = this.type === 'table-attr' ? normalizeSpace(this) : super.toString();
+		return `${this.#leadingSpace(str)}${str}`;
 	}
 
 	getPadding() {
@@ -257,7 +257,7 @@ class AttributeToken extends Token {
 	text() {
 		let str = this.#updateFromAttr();
 		str = `${this.#leadingSpace(str)}${str}`;
-		return this.type === 'table-attr' ? str.replaceAll('\n', ' ') : str;
+		return this.type === 'table-attr' ? normalizeSpace(str) : str;
 	}
 
 	/** @returns {[number, string][]} */

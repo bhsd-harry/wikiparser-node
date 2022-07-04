@@ -1,6 +1,6 @@
 'use strict';
 
-const {noWrap} = require('../util/string'),
+const {noWrap, normalizeSpace} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	MagicLinkToken = require('./magicLink');
@@ -35,7 +35,7 @@ class ExtLinkToken extends Token {
 		if (text) {
 			const inner = new Token(text, config, true, accum);
 			inner.type = 'ext-link-text';
-			this.appendChild(inner.setAttribute('stage', 8));
+			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.protectChildren(0);
 	}
@@ -60,7 +60,7 @@ class ExtLinkToken extends Token {
 
 	toString() {
 		this.#correct();
-		return `[${this.firstElementChild.toString()}${this.#space}${this.children[1]?.toString() ?? ''}]`;
+		return `[${this.firstElementChild.toString()}${this.#space}${normalizeSpace(this.children[1])}]`;
 	}
 
 	getPadding() {
@@ -74,7 +74,7 @@ class ExtLinkToken extends Token {
 	}
 
 	text() {
-		return `[${super.text(' ')}]`;
+		return `[${super.text(' ').replaceAll('\n', ' ')}]`;
 	}
 
 	/**

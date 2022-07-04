@@ -602,7 +602,7 @@ class Token extends AstElement {
 	#parseList() {
 		const parseList = require('../parser/list'),
 			lines = this.firstChild.split('\n');
-		for (let i = 0; i < lines.length; i++) {
+		for (let i = this.type === 'root' ? 0 : 1; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
 		this.setText(lines.join('\n'));

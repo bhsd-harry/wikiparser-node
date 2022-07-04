@@ -57,7 +57,19 @@ const explode = (start, end, separator, str) => {
 /** @param {string} str */
 const noWrap = str => str.replaceAll('\n', '\\n');
 
+/**
+ * @param {string|Token} token
+ * @returns {string}
+ */
+const normalizeSpace = (token = '', separator = '') => {
+	const Token = require('../src'); // eslint-disable-line no-unused-vars
+	return typeof token === 'string'
+		? token.replaceAll('\n', ' ')
+		: token.childNodes.map(child => typeof child === 'string' ? normalizeSpace(child) : child.toString())
+			.join(separator);
+};
+
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
 	+ '[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]*';
 
-module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, noWrap, extUrlChar};
+module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};

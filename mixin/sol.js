@@ -11,14 +11,15 @@ const /** @type {Parser} */ Parser = require('..'),
 const sol = constructor => class extends constructor {
 	/** @this {Token} */
 	prependNewLine() {
-		const {previousVisibleSibling} = this;
-		return previousVisibleSibling && !String(previousVisibleSibling).endsWith('\n') ? '\n' : '';
+		const {previousVisibleSibling = '', parentNode} = this;
+		return (previousVisibleSibling || parentNode?.type !== 'root') && !String(previousVisibleSibling).endsWith('\n')
+			? '\n'
+			: '';
 	}
 
 	/** @this {Token} */
 	appendNewLine() {
-		const {nextVisibleSibling} = this;
-		return nextVisibleSibling && !String(nextVisibleSibling).startsWith('\n') ? '\n' : '';
+		return String(this.nextVisibleSibling ?? '').startsWith('\n') ? '' : '\n';
 	}
 
 	toString(ownLine = false) {

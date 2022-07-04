@@ -31,7 +31,7 @@ class LinkToken extends Token {
 		if (linkText !== undefined) {
 			const inner = new Token(linkText, config, true, accum);
 			inner.type = 'link-text';
-			this.appendChild(inner.setAttribute('stage', 7));
+			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.selfLink = !title.title;
 		this.fragment = title.fragment;
