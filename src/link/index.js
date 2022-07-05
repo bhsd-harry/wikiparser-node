@@ -29,7 +29,7 @@ class LinkToken extends Token {
 			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
-			const inner = new Token(linkText, config, true, accum);
+			const inner = new Token(linkText, config, true, accum, {'Stage-5': ':', ConverterToken: ':'});
 			inner.type = 'link-text';
 			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}

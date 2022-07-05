@@ -38,6 +38,7 @@
  * q: QuoteToken
  * w: ExtLinkToken
  * d: ListToken
+ * v: ConverterToken
  */
 
 const {externalUse} = require('../util/debug'),
@@ -202,9 +203,13 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	removeAt(i) {
+		if (typeof i !== 'number') {
+			this.typeError('removeAt', 'Number');
+		}
+		const iPos = i < 0 ? i + this.childNodes.length : i;
 		if (!Parser.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
-			if (protectedIndices.includes(i)) {
+			if (protectedIndices.includes(iPos)) {
 				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
 			} else if (this.#acceptable) {
 				const acceptableIndices = Object.fromEntries(

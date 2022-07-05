@@ -33,7 +33,7 @@ class ExtLinkToken extends Token {
 		this.appendChild(new MagicLinkToken(url, true, config, accum));
 		this.#space = space;
 		if (text) {
-			const inner = new Token(text, config, true, accum);
+			const inner = new Token(text, config, true, accum, {'Stage-7': ':', ConverterToken: ':'});
 			inner.type = 'ext-link-text';
 			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
