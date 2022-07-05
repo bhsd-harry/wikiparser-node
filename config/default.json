@@ -763,5 +763,16 @@
 		"底部": "bottom",
 		"text-bottom": "text-bottom",
 		"文字底部": "text-bottom"
-	}
+	},
+	"variants": [
+		"zh",
+		"zh-hans",
+		"zh-hant",
+		"zh-cn",
+		"zh-tw",
+		"zh-hk",
+		"zh-sg",
+		"zh-my",
+		"zh-mo"
+	]
 }

@@ -12,6 +12,7 @@ declare global {
 		protocol: string;
 		interwiki: string[];
 		img: Record<string, string>;
+		variants: string[];
 	}
 
 	type accum = Token[];
