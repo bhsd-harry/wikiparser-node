@@ -113,7 +113,7 @@ class ParameterToken extends fixedToken(Token) {
 			{childNodes: {length}, firstElementChild} = root,
 			/** @type {ParameterToken} */ lastElementChild = firstElementChild?.lastElementChild;
 		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
-			|| firstElementChild.childElementCount !== 2
+			|| firstElementChild.childNodes.length !== 2
 			|| lastElementChild.anon !== this.anon || lastElementChild.name !== '1'
 		) {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
@@ -139,7 +139,7 @@ class ParameterToken extends fixedToken(Token) {
 		}
 		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || !firstElementChild?.matches('template#T') || firstElementChild.childElementCount !== 2) {
+		if (length !== 1 || !firstElementChild?.matches('template#T') || firstElementChild.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
 		}
 		const {lastElementChild} = firstElementChild,

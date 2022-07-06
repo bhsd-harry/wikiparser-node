@@ -75,13 +75,13 @@ class ArgToken extends Token {
 
 	/** @returns {[number, string][]} */
 	plain() {
-		return this.childElementCount > 1 ? this.children[1].plain() : [];
+		return this.childNodes.length > 1 ? this.children[1].plain() : [];
 	}
 
 	/** @complexity `n` */
 	removeRedundant() {
 		Parser.run(() => {
-			for (let i = this.childElementCount - 1; i > 1; i--) {
+			for (let i = this.childNodes.length - 1; i > 1; i--) {
 				super.removeAt(i);
 			}
 		});
@@ -100,8 +100,8 @@ class ArgToken extends Token {
 	}
 
 	/** @param {Token} token */
-	insertAt(token, i = this.childElementCount) {
-		const j = i < 0 ? i + this.childElementCount : i;
+	insertAt(token, i = this.childNodes.length) {
+		const j = i < 0 ? i + this.childNodes.length : i;
 		if (j > 1 && !Parser.running) {
 			throw new RangeError(`${this.constructor.name} 不可插入 arg-redundant 子节点！`);
 		}
@@ -117,7 +117,7 @@ class ArgToken extends Token {
 		name = String(name);
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 1) {
+		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
 		const newName = firstElementChild.firstElementChild;
@@ -131,7 +131,7 @@ class ArgToken extends Token {
 		value = String(value);
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childElementCount !== 2) {
+		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
 		const [, oldDefault] = this.children,

@@ -84,7 +84,7 @@ class FileToken extends LinkToken {
 	 * @param {ImageParameterToken} token
 	 * @complexity `n`
 	 */
-	insertAt(token, i = this.childElementCount) {
+	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running) {
 			this.getArgs(token.name, false, false).add(token);
 			this.#keys.add(token.name);
@@ -221,7 +221,7 @@ class FileToken extends LinkToken {
 			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('file#File:F')
-			|| firstElementChild.childElementCount !== 2 || firstElementChild.lastElementChild.name !== key
+			|| firstElementChild.childNodes.length !== 2 || firstElementChild.lastElementChild.name !== key
 		) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}

@@ -27,7 +27,7 @@ class TranscludeToken extends Token {
 			isSubst = subst.includes(lcModifier),
 			wasRaw = raw.includes(this.modifier.trim().toLowerCase());
 		if (wasRaw && isRaw || !wasRaw && (isSubst || modifier === '')
-			|| (Parser.running || this.childElementCount > 1) && (isRaw || isSubst || modifier === '')
+			|| (Parser.running || this.childNodes.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			return Boolean(modifier);
@@ -180,10 +180,10 @@ class TranscludeToken extends Token {
 	}
 
 	toString() {
-		const {children, childElementCount, firstChild} = this;
+		const {children, childNodes: {length}, firstChild} = this;
 		return `{{${this.modifier}${this.modifier && ':'}${
 			this.type === 'magic-word'
-				? `${String(firstChild)}${childElementCount > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
+				? `${String(firstChild)}${length > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
 				: super.toString('|')
 		}}}`;
 	}
@@ -201,10 +201,10 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	text() {
-		const {children, childElementCount, firstElementChild} = this;
+		const {children, childNodes: {length}, firstElementChild} = this;
 		return `{{${this.modifier}${this.modifier && ':'}${
 			this.type === 'magic-word'
-				? `${firstElementChild.text()}${childElementCount > 1 ? ':' : ''}${text(children.slice(1), '|')}`
+				? `${firstElementChild.text()}${length > 1 ? ':' : ''}${text(children.slice(1), '|')}`
 				: super.text('|')
 		}}}`;
 	}
@@ -261,7 +261,7 @@ class TranscludeToken extends Token {
 	 * @param {ParameterToken} token
 	 * @complexity `n`
 	 */
-	insertAt(token, i = this.childElementCount) {
+	insertAt(token, i = this.childNodes.length) {
 		super.insertAt(token, i);
 		if (token.anon) {
 			this.#handleAnonArgChange(token);
@@ -381,7 +381,7 @@ class TranscludeToken extends Token {
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
-			|| firstElementChild.childElementCount !== 2 || !firstElementChild.lastElementChild.anon
+			|| firstElementChild.childNodes.length !== 2 || !firstElementChild.lastElementChild.anon
 		) {
 			throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
 		}
@@ -409,7 +409,7 @@ class TranscludeToken extends Token {
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('template#T')
-			|| firstElementChild.childElementCount !== 2 || firstElementChild.lastElementChild.name !== key
+			|| firstElementChild.childNodes.length !== 2 || firstElementChild.lastElementChild.name !== key
 		) {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
@@ -436,7 +436,7 @@ class TranscludeToken extends Token {
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'template' || firstElementChild.childElementCount !== 1) {
+		if (length !== 1 || firstElementChild?.type !== 'template' || firstElementChild.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的模板名称：${title}`);
 		}
 		this.firstElementChild.replaceChildren(...firstElementChild.firstElementChild.childNodes);
@@ -452,10 +452,10 @@ class TranscludeToken extends Token {
 		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('magic-word#invoke')
-			|| firstElementChild.childElementCount !== 2
+			|| firstElementChild.childNodes.length !== 2
 		) {
 			throw new SyntaxError(`非法的模块名称：${title}`);
-		} else if (this.childElementCount > 1) {
+		} else if (this.childNodes.length > 1) {
 			this.children[1].replaceChildren(...firstElementChild.lastElementChild.childNodes);
 		} else {
 			const {lastChild} = firstElementChild;
@@ -471,16 +471,16 @@ class TranscludeToken extends Token {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
 		} else if (typeof func !== 'string') {
 			this.typeError('replaceFunction', 'String');
-		} else if (this.childElementCount < 2) {
+		} else if (this.childNodes.length < 2) {
 			throw new Error('尚未指定模块名称！');
 		}
 		const root = Parser.parse(`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('magic-word#invoke')
-			|| firstElementChild.childElementCount !== 3
+			|| firstElementChild.childNodes.length !== 3
 		) {
 			throw new SyntaxError(`非法的模块函数名：${func}`);
-		} else if (this.childElementCount > 2) {
+		} else if (this.childNodes.length > 2) {
 			this.children[2].replaceChildren(...firstElementChild.lastElementChild.childNodes);
 		} else {
 			const {lastChild} = firstElementChild;

@@ -213,7 +213,7 @@ class ImageParameterToken extends Token {
 			{childNodes: {length}, firstElementChild} = root,
 			param = firstElementChild?.lastElementChild;
 		if (length !== 1 || !firstElementChild?.matches('file#File:F')
-			|| firstElementChild.childElementCount !== 2 || param.name !== this.name
+			|| firstElementChild.childNodes.length !== 2 || param.name !== this.name
 		) {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}

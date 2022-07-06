@@ -107,7 +107,7 @@ class LinkToken extends Token {
 
 	/** @returns {[number, string][]} */
 	plain() {
-		return this.childElementCount === 1 ? [] : this.lastElementChild.plain();
+		return this.childNodes.length === 1 ? [] : this.lastElementChild.plain();
 	}
 
 	/** @param {string} link */
@@ -118,7 +118,7 @@ class LinkToken extends Token {
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 1) {
+		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childNodes.length !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
@@ -135,7 +135,7 @@ class LinkToken extends Token {
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childElementCount !== 1) {
+		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
 		}
 		if (page) {
@@ -169,7 +169,7 @@ class LinkToken extends Token {
 					this.type === 'category' ? 'Category:' : ''
 				}L|${linkText}]]`, this.getAttribute('include'), 6, config),
 				{childNodes: {length}, firstElementChild} = root;
-			if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childElementCount !== 2) {
+			if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childNodes.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}
 			({lastElementChild} = firstElementChild);
@@ -177,7 +177,7 @@ class LinkToken extends Token {
 			lastElementChild = Parser.run(() => new Token('', config));
 			lastElementChild.setAttribute('stage', 7).type = 'link-text';
 		}
-		if (this.childElementCount === 1) {
+		if (this.childNodes.length === 1) {
 			this.appendChild(lastElementChild);
 		} else {
 			this.lastElementChild.safeReplaceWith(lastElementChild);

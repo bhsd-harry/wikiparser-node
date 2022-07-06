@@ -50,7 +50,7 @@ class ExtLinkToken extends Token {
 	}
 
 	#correct() {
-		if (!this.#space && this.childElementCount > 1
+		if (!this.#space && this.childNodes.length > 1
 			// 都替换成`<`肯定不对，但无妨
 			&& /^[^[\]<>"{\x00-\x20\x7f\p{Zs}\ufffd]/u.test(this.lastElementChild.text().replace(/&[lg]t;/, '<'))
 		) {
@@ -82,7 +82,7 @@ class ExtLinkToken extends Token {
 	 * @complexity `n`
 	 */
 	plain() {
-		return this.childElementCount === 1 ? [] : this.lastElementChild.plain();
+		return this.childNodes.length === 1 ? [] : this.lastElementChild.plain();
 	}
 
 	/** @this {ExtLinkToken & {firstElementChild: MagicLinkToken}} */
@@ -95,7 +95,7 @@ class ExtLinkToken extends Token {
 		url = String(url);
 		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childElementCount !== 1) {
+		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的外链目标：${url}`);
 		}
 		const {firstChild} = firstElementChild;
@@ -109,11 +109,11 @@ class ExtLinkToken extends Token {
 		text = String(text);
 		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childElementCount !== 2) {
+		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的外链文字：${noWrap(text)}`);
 		}
 		const {lastChild} = firstElementChild;
-		if (this.childElementCount === 1) {
+		if (this.childNodes.length === 1) {
 			this.appendChild(lastChild);
 		} else {
 			this.lastElementChild.replaceWith(lastChild);

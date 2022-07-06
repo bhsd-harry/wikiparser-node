@@ -37,7 +37,7 @@ class TrToken extends attributeParent(Token, 1) {
 			const token = new Constructor(undefined, undefined, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(syntax);
 			token.children[1].safeReplaceWith(attr);
-			if (token.childElementCount > 2) { // TdToken
+			if (token.type === 'td') { // TdToken
 				token.children[2].safeReplaceWith(inner);
 			} else if (inner !== undefined) {
 				token.appendChild(inner);
