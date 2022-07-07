@@ -181,12 +181,35 @@
         2. [setTarget](#magiclinktoken.settarget)
     2. [原型属性](#magiclinktoken.prototype.properties)
         1. [protocol](#magiclinktoken.protocol)
-21. [选择器](#选择器)
+21. [ConverterToken](#convertertoken)
+    1. [原型方法](#convertertoken.prototype.methods)
+        1. [getAllFlags](#convertertoken.getallflags)
+        2. [getEffectiveFlags](#convertertoken.geteffectiveflags)
+        3. [hasFlag](#convertertoken.hasflag)
+        4. [hasEffectiveFlag](#convertertoken.haseffectiveflag)
+        5. [removeFlag](#convertertoken.removeflag)
+        6. [setFlag](#convertertoken.setflag)
+        7. [toggleFlag](#convertertoken.toggleflag)
+    2. [原型属性](#convertertoken.prototype.properties)
+        1. [noConvert](#convertertoken.noconvert)
+22. [ConverterRuleToken](#converterruletoken)
+    1. [原型方法](#converterruletoken.prototype.methods)
+        1. [noConvert](#converterruletoken.noconvert)
+        2. [setTo](#converterruletoken.setto)
+        3. [setVariant](#converterruletoken.setvariant)
+        4. [setFrom](#converterruletoken.setfrom)
+        5. [makeUnidirectional](#converterruletoken.makeunidirectional)
+        6. [makeBidirectional](#converterruletoken.makebidirectional)
+    2. [实例属性](#converterruletoken.instance.properties)
+        1. [variant](#converterruletoken.variant)
+        2. [unidirectional](#converterruletoken.unidirectional)
+        3. [bidirectional](#converterruletoken.bidirectional)
+23. [选择器](#选择器)
     1. [type](#selector.type)
     2. [name](#selector.name)
     3. [属性](#selector.attribute)
     4. [伪选择器](#selector.pseudo)
-22. [$ (TokenCollection)](#-tokencollection)
+24. [$ (TokenCollection)](#-tokencollection)
 </details>
 
 # Parser
@@ -1802,6 +1825,192 @@ var root = Parser.parse('ftp://example.org'),
 assert(magiclink.protocol === 'ftp://');
 magiclink.protocol = 'https://';
 assert(root.toString() === 'https://example.org');
+```
+</details>
+
+[返回目录](#目录)
+
+# ConverterToken
+转换。
+
+## 原型方法<a id="convertertoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**getAllFlags**(): Set\<string><a id="convertertoken.getallflags"></a>
+- 获取所有转换 flag，包括无效的。
+
+```js
+var root = Parser.parse('-{zh-hans;zh-hant|}-'),
+    converter = root.firstChild;
+assert.deepStrictEqual(converter.getAllFlags(), new Set(['zh-hans', 'zh-hant']));
+```
+
+**getEffectiveFlags**(): Set\<string><a id="convertertoken.geteffectiveflags"></a>
+- 解析有效的转换 flag。
+
+```js
+var root = Parser.parse('-{}-'),
+    converter = root.firstChild;
+assert.deepStrictEqual(converter.getEffectiveFlags(), new Set(['S']));
+```
+
+**hasFlag**(flag: string): boolean<a id="convertertoken.hasflag"></a>
+- 是否包含 flag，即使可能是无效 flag。
+
+```js
+var root = Parser.parse('-{R|}-'),
+    converter = root.firstChild;
+assert(converter.hasFlag('R') === true);
+```
+
+**hasEffectiveFlag**(flag: string): boolean<a id="convertertoken.haseffectiveflag"></a>
+- 是否包含某有效 flag。
+
+```js
+var root = Parser.parse('-{}-'),
+    converter = root.firstChild;
+assert(converter.hasEffectiveFlag('S') === true);
+```
+
+**removeFlag**(flag: string): void<a id="convertertoken.removeflag"></a>
+- 移除 flag，可能原本就是无效的 flag。
+
+```js
+var root = Parser.parse('-{R|}-'),
+    converter = root.firstChild;
+converter.removeFlag('R');
+assert(root.toString() === '-{}-');
+```
+
+**setFlag**(flag: string): void<a id="convertertoken.setflag"></a>
+- 添加指定 flag，可能是无效 flag。
+
+```js
+var root = Parser.parse('-{}-'),
+    converter = root.firstChild;
+converter.setFlag('R');
+assert(root.toString() === '-{R|}-');
+```
+
+**toggleFlag**(flag: string): void<a id="convertertoken.toggleflag"></a>
+- 改变某 flag 的有无，可能是无效 flag。
+
+```js
+var root = Parser.parse('-{R|}-'),
+    converter = root.firstChild;
+converter.toggleFlag('R');
+converter.toggleFlag('D');
+assert(root.toString() === '-{D|}-');
+```
+</details>
+
+## 原型属性<a id="convertertoken.prototype.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**noConvert**: boolean<a id="convertertoken.noconvert"></a>
+- 是否不会转换。
+
+```js
+var root = Parser.parse('-{简体}-'),
+    converter = root.firstChild;
+assert(converter.noConvert === true);
+```
+</details>
+
+[返回目录](#目录)
+
+# ConverterRuleToken
+单条转换规则。
+
+## 原型方法<a id="converterruletoken.prototype.methods"></a>
+<details>
+    <summary>展开</summary>
+
+**noConvert**(): void<a id="converterruletoken.noconvert"></a>
+- 更改规则使得内容不会转换。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁體}-'),
+    converterRule = root.querySelector('converter-rule');
+converterRule.noConvert();
+assert(root.toString() === '-{繁體}-');
+```
+
+**setTo**(to: string): void<a id="converterruletoken.setto"></a>
+- 修改转换结果。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁體}-'),
+    converterRule = root.querySelector('converter-rule');
+converterRule.setTo('繁体');
+assert(root.toString() === '-{繁體=>zh-hans:繁体}-');
+```
+
+**setVariant**(variant: string): void<a id="converterruletoken.setvariant"></a>
+- 修改转换规则对应的语言变体。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁體}-'),
+    converterRule = root.querySelector('converter-rule');
+converterRule.setVariant('zh-cn');
+assert(root.toString() === '-{繁體=>zh-cn:繁體}-');
+```
+
+**setFrom**(from: string): void<a id="converterruletoken.setfrom"></a>
+- 对单项转换规则，修改待转换的内容。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁体}-'),
+    converterRule = root.querySelector('converter-rule');
+converterRule.setFrom('正體');
+assert(root.toString() === '-{正體=>zh-hans:繁体}-');
+```
+
+**makeUnidirectional**(from: string): void<a id="converterruletoken.makeunidirectional"></a>
+- [ConverterRuleToken.setFrom](#converterruletoken.setfrom) 方法的別名。
+
+**makeBidirectional**(): void<a id="converterruletoken.makebidirectional"></a>
+- 将规则改为双向转换。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁体}-'),
+    converterRule = root.querySelector('converter-rule');
+converterRule.makeBidirectional();
+assert(root.toString() === '-{zh-hans:繁体}-');
+```
+</details>
+
+## 原型属性<a id="convertertoken.prototype.properties"></a>
+<details>
+    <summary>展开</summary>
+
+**variant**: string<a id="converterruletoken.variant"></a>
+- 规则对应的语言变体。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁体}-'),
+    converterRule = root.querySelector('converter-rule');
+assert(converterRule.variant === 'zh-hans');
+```
+
+**unidirectional**: boolean<a id="converterruletoken.unidirectional"></a>
+- 是否是单向转换。
+
+```js
+var root = Parser.parse('-{繁體=>zh-hans:繁体}-'),
+    converterRule = root.querySelector('converter-rule');
+assert(converterRule.unidirectional === true);
+```
+
+**bidirectional**: boolean<a id="converterruletoken.bidirectional"></a>
+- 是否是双向转换。
+
+```js
+var root = Parser.parse('-{zh-hans:繁体}-'),
+    converterRule = root.querySelector('converter-rule');
+assert(converterRule.bidirectional === true);
 ```
 </details>
 
