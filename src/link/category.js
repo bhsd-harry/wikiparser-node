@@ -37,6 +37,7 @@ class CategoryToken extends LinkToken {
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], categoryListener);
+		return this;
 	}
 
 	#updateSortkey() {

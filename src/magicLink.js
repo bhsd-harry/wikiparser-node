@@ -42,6 +42,7 @@ class MagicLinkToken extends Token {
 		if (parameter?.getValue() === this.text()) {
 			this.replaceWith(this.toString());
 		}
+		return this;
 	}
 
 	getUrl() {

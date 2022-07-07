@@ -39,6 +39,7 @@ class ConverterFlagsToken extends Token {
 				}
 			};
 		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterFlagsListener);
+		return this;
 	}
 
 	/**

@@ -152,7 +152,7 @@ class TdToken extends fixedToken(TrToken) {
 		return this;
 	}
 
-	build() {
+	afterBuild() {
 		if (this.#innerSyntax.includes('\x00')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax).map(String).join('');
 		}

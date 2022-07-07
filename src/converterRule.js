@@ -77,6 +77,7 @@ class ConverterRuleToken extends Token {
 				}
 			};
 		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterRuleListener);
+		return this;
 	}
 
 	/**

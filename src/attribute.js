@@ -108,31 +108,24 @@ class AttributeToken extends Token {
 		return super.getAttribute(key);
 	}
 
-	/** @complexity `n` */
-	build() {
-		super.build();
-		if (this.type === 'ext-attr') {
-			return this;
-		}
-		for (let [key, text] of this.#attr) {
-			let built = false;
-			if (key.includes('\x00')) {
-				this.#attr.delete(key);
-				key = this.buildFromStr(key).map(String).join('');
-				built = true;
-			}
-			if (typeof text === 'string' && text.includes('\x00')) {
-				text = this.buildFromStr(text).map(String).join('');
-				built = true;
-			}
-			if (built) {
-				this.#attr.set(key, text);
-			}
-		}
-		return this;
-	}
-
 	afterBuild() {
+		if (this.type !== 'ext-attr') {
+			for (let [key, text] of this.#attr) {
+				let built = false;
+				if (key.includes('\x00')) {
+					this.#attr.delete(key);
+					key = this.buildFromStr(key).map(String).join('');
+					built = true;
+				}
+				if (typeof text === 'string' && text.includes('\x00')) {
+					text = this.buildFromStr(text).map(String).join('');
+					built = true;
+				}
+				if (built) {
+					this.#attr.set(key, text);
+				}
+			}
+		}
 		const that = this,
 			/** @type {AstListener} */ attributeListener = ({type, target}) => {
 				if (type === 'text' || target !== that) {
