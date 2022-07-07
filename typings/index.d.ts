@@ -44,6 +44,8 @@ declare global {
 		reparse(date: string): Token;
 
 		getTool(): typeof $;
+
+		typeAliases: Record<string, string[]>;
 	}
 }
 
