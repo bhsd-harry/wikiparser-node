@@ -9,10 +9,10 @@ const /** @type {Parser} */ Parser = require('../..'),
  */
 class DdToken extends NowikiToken {
 	type = 'dd';
-	dt;
-	ul;
-	ol;
-	indent;
+	dt = false;
+	ul = false;
+	ol = false;
+	indent = 0;
 
 	/** @param {string} str */
 	#update(str) {
