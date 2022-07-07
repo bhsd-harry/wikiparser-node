@@ -57,7 +57,7 @@ class TagPairToken extends fixedToken(Token) {
 		}
 		return selfClosing
 			? `<${opening}${String(firstChild)}/>`
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${closed ? `</${closing}>` : ''}`;
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	getPadding() {
