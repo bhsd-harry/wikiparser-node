@@ -51,11 +51,8 @@ const {externalUse} = require('../util/debug'),
 class Token extends AstElement {
 	type = 'root';
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */ #stage = 0;
-	/** @type {ParserConfig} */ #config;
-	/**
-	 * 这个数组起两个作用：1. 数组中的Token会在build时替换`/\x00\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
-	 * @type {accum}
-	 */
+	#config;
+	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\x00\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	#accum;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
@@ -71,7 +68,9 @@ class Token extends AstElement {
 		if (typeof wikitext === 'string') {
 			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''));
 		}
-		this.setAttribute('config', config).setAttribute('accum', accum).setAttribute('acceptable', acceptable);
+		this.#config = config;
+		this.#accum = accum;
+		this.setAttribute('acceptable', acceptable);
 		accum.push(this);
 	}
 
