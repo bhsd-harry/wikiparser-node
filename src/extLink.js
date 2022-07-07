@@ -116,7 +116,7 @@ class ExtLinkToken extends Token {
 		if (this.childNodes.length === 1) {
 			this.appendChild(lastChild);
 		} else {
-			this.lastElementChild.replaceWith(lastChild);
+			this.lastElementChild.safeReplaceWith(lastChild);
 		}
 		this.#space ||= ' ';
 	}
