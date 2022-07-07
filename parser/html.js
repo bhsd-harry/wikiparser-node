@@ -37,5 +37,4 @@ const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 	return text;
 };
 
-Parser.parsers.parseHtml = __filename;
 module.exports = parseHtml;

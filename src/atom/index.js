@@ -17,17 +17,6 @@ class AtomToken extends Token {
 		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
 	}
-
-	cloneNode() {
-		const cloned = this.cloneChildren(),
-			/** @type {typeof AtomToken} */ Constructor = this.constructor,
-			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable'),
-			token = Parser.run(() => new Constructor(undefined, this.type, config, [], acceptable));
-		token.append(...cloned);
-		return token;
-	}
 }
 
-Parser.classes.AtomToken = __filename;
 module.exports = AtomToken;

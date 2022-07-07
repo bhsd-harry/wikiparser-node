@@ -1,14 +1,13 @@
 'use strict';
 
-const fixedToken = require('../../mixin/fixedToken'),
-	/** @type {Parser} */ Parser = require('../..'),
+const /** @type {Parser} */ Parser = require('../..'),
 	Token = require('..');
 
 /**
  * 成对标签
  * @classdesc `{childNodes: [string|AttributeToken, string|Token]}`
  */
-class TagPairToken extends fixedToken(Token) {
+class TagPairToken extends Token {
 	selfClosing;
 	closed;
 	#tags;
@@ -22,7 +21,7 @@ class TagPairToken extends fixedToken(Token) {
 	 */
 	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config);
-		this.setAttribute('name', name.toLowerCase()).#tags = [name, closing || name];
+		this.#tags = [name, closing || name];
 		this.selfClosing = closing === undefined;
 		this.closed = closing !== '';
 		this.append(attr, inner);
@@ -36,36 +35,20 @@ class TagPairToken extends fixedToken(Token) {
 		accum.splice(index, 0, this);
 	}
 
-	/**
-	 * @template {string} T
-	 * @param {T} key
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		if (key === 'tags') {
-			return [...this.#tags];
-		}
-		return super.getAttribute(key);
-	}
-
 	toString() {
-		const {closed, firstChild, lastChild, nextSibling, name, selfClosing} = this,
+		const {closed, selfClosing} = this,
 			[opening, closing] = this.#tags;
-		if (!closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, lastChild);
-			this.closed = true;
-		}
 		return selfClosing
-			? `<${opening}${String(firstChild)}/>`
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${closed ? `</${closing}>` : ''}`;
+			? `<${opening}${super.toString()}/>`
+			: `<${opening}${super.toString('>')}${closed ? `</${closing}>` : ''}`;
 	}
 
-	getPadding() {
-		return this.#tags[0].length + 1;
-	}
-
-	getGaps() {
-		return 1;
+	print() {
+		const {closed, selfClosing} = this,
+			[opening, closing] = this.#tags;
+		return selfClosing
+			? super.print({pre: `&lt;${opening}`, post: '/&gt;'})
+			: super.print({pre: `&lt;${opening}`, sep: '&gt;', post: closed ? `&lt;/${closing}&gt;` : ''});
 	}
 
 	/** @returns {string} */
@@ -76,16 +59,6 @@ class TagPairToken extends fixedToken(Token) {
 			? `<${opening}${typeof firstChild === 'string' ? firstChild : firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${closed ? `</${closing}>` : ''}`;
 	}
-
-	/** @returns {[number, string][]} */
-	plain() {
-		const {lastChild} = this;
-		if (typeof lastChild === 'string') {
-			return lastChild ? [[this.getAbsoluteIndex() + this.getRelativeIndex(1), lastChild]] : [];
-		}
-		return lastChild.plain();
-	}
 }
 
-Parser.classes.TagPairToken = __filename;
 module.exports = TagPairToken;

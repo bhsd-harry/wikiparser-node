@@ -64,8 +64,6 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 					if (e instanceof Error && e.message.startsWith('非法的模板名称：')) {
 						lastIndex = index + open.length;
 						skip = true;
-					} else {
-						throw e;
 					}
 				}
 			}
@@ -103,5 +101,4 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 	return text;
 };
 
-Parser.parsers.parseBrackets = __filename;
 module.exports = parseBrackets;

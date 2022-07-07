@@ -59,5 +59,4 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	return arr.join('');
 };
 
-Parser.parsers.parseQuotes = __filename;
 module.exports = parseQuotes;

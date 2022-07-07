@@ -17,11 +17,6 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	 */
 	constructor(word, config = Parser.getConfig(), accum = []) {
 		super(word, config, accum);
-		this.setAttribute('name', word.toLowerCase());
-	}
-
-	cloneNode() {
-		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config')));
 	}
 
 	/** @this {DoubleUnderscoreToken & {firstChild: string}} */
@@ -29,14 +24,9 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		return `__${this.firstChild}__`;
 	}
 
-	getPadding() {
-		return 2;
-	}
-
-	setText() {
-		throw new Error(`禁止修改 ${this.constructor.name}！`);
+	print() {
+		return super.print({pre: '__', post: '__'});
 	}
 }
 
-Parser.classes.DoubleUnderscoreToken = __filename;
 module.exports = DoubleUnderscoreToken;

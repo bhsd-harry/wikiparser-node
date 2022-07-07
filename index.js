@@ -1,29 +1,8 @@
 'use strict';
 
-const fs = require('fs'),
-	{text} = require('./util/string');
+const {text} = require('./util/string');
 
 const /** @type {Parser} */ Parser = {
-	warning: true,
-	debugging: false,
-
-	warn(msg, ...args) {
-		if (this.warning) {
-			console.warn('\x1b[33m%s\x1b[0m', msg, ...args);
-		}
-	},
-	debug(msg, ...args) {
-		if (this.debugging) {
-			console.debug('\x1b[34m%s\x1b[0m', msg, ...args);
-		}
-	},
-	error(msg, ...args) {
-		console.error('\x1b[31m%s\x1b[0m', msg, ...args);
-	},
-	info(msg, ...args) {
-		console.info('\x1b[32m%s\x1b[0m', msg, ...args);
-	},
-
 	running: false,
 
 	run(callback) {
@@ -38,47 +17,6 @@ const /** @type {Parser} */ Parser = {
 			throw e;
 		}
 	},
-
-	classes: {},
-	mixins: {},
-	parsers: {},
-
-	clearCache() {
-		const entries = [
-			...Object.entries(this.classes),
-			...Object.entries(this.mixins),
-			...Object.entries(this.parsers),
-		];
-		for (const [, path] of entries) {
-			delete require.cache[require.resolve(path)];
-		}
-		for (const [name, path] of entries) {
-			if (name in global) {
-				global[name] = require(path);
-			}
-		}
-	},
-
-	log(f) {
-		if (typeof f === 'function') {
-			console.log(f.toString());
-		}
-	},
-
-	aliases: [
-		['String'],
-		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
-		['ArgToken', 'TranscludeToken', 'HeadingToken'],
-		['HtmlToken'],
-		['TableToken'],
-		['HrToken', 'DoubleUnderscoreToken'],
-		['LinkToken', 'FileToken', 'CategoryToken'],
-		['QuoteToken'],
-		['ExtLinkToken'],
-		['MagicLinkToken'],
-		['ListToken', 'DdToken'],
-		['ConverterToken'],
-	],
 
 	config: './config/default',
 
@@ -131,102 +69,17 @@ const /** @type {Parser} */ Parser = {
 			} else {
 				throw new TypeError('待解析的内容应为 String 或 Token！');
 			}
-			try {
-				token.parse(maxStage, include);
-			} catch (e) {
-				if (e instanceof Error) {
-					const file = `${__dirname}/errors/${new Date().toISOString()}`,
-						stage = token.getAttribute('stage');
-					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : token.toString());
-					fs.writeFileSync(`${file}.err`, e.stack);
-					fs.writeFileSync(`${file}.json`, JSON.stringify({
-						stage, include: token.getAttribute('include'), config: this.config,
-					}, null, '\t'));
-				}
-				throw e;
-			}
+			token.parse(maxStage, include);
 		});
 		return token;
-	},
-
-	reparse(date) {
-		const path = `${__dirname}/errors/`,
-			main = fs.readdirSync(path).find(name => name.startsWith(date) && name.endsWith('Z'));
-		if (!main) {
-			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
-		}
-		const Token = require('./src'),
-			file = `${path}${main}`,
-			wikitext = fs.readFileSync(file, 'utf8'),
-			{stage, include, config} = require(`${file}.json`);
-		this.config = config;
-		return this.run(() => {
-			const halfParsed = stage < this.MAX_STAGE,
-				token = new Token(wikitext, this.getConfig(), halfParsed);
-			if (halfParsed) {
-				token.setAttribute('stage', stage).parseOnce(stage, include);
-			} else {
-				token.parse(undefined, include);
-			}
-			fs.unlinkSync(file);
-			fs.unlinkSync(`${file}.err`);
-			fs.unlinkSync(`${file}.json`);
-			return token;
-		});
-	},
-
-	getTool() {
-		delete require.cache[require.resolve('./tool')];
-		return require('./tool');
-	},
-
-	typeAliases: {
-		ext: ['extension'],
-		'ext-inner': ['extension-inner'],
-		arg: ['argument'],
-		'arg-name': ['argument-name'],
-		'arg-default': ['argument-default'],
-		'arg-redundant': ['argument-redundant'],
-		template: ['tpl'],
-		'template-name': ['tpl-name'],
-		'magic-word': ['parser-function', 'parser-func'],
-		'invoke-function': ['invoke-func'],
-		'invoke-module': ['invoke-mod'],
-		parameter: ['param'],
-		'parameter-key': ['param-key'],
-		'parameter-value': ['parameter-val', 'param-value', 'param-val'],
-		heading: ['header'],
-		'heading-title': ['header-title'],
-		table: ['tbl'],
-		'table-inter': ['tbl-inter'],
-		tr: ['table-row', 'tbl-row'],
-		td: ['table-cell', 'tbl-cell', 'table-data', 'tbl-data'],
-		'double-underscore': ['underscore', 'behavior-switch', 'behaviour-switch'],
-		hr: ['horizontal'],
-		category: ['category-link', 'cat', 'cat-link'],
-		file: ['file-link', 'image', 'image-link', 'img', 'img-link'],
-		'image-parameter': ['img-parameter', 'image-param', 'img-param'],
-		quote: ['quotes', 'quot', 'apostrophe', 'apostrophes', 'apos'],
-		'ext-link': ['external-link'],
-		'ext-link-text': ['external-link-text'],
-		'ext-link-url': ['external-link-url'],
-		'free-ext-link': ['free-external-link', 'magic-link'],
-		dd: ['indent', 'indentation'],
-		converter: ['convert', 'conversion'],
-		'converter-flags': ['convert-flags', 'conversion-flags', 'converter-flag', 'convert-flag', 'conversion-flag'],
-		'converter-rule': ['convert-rule', 'conversion-rule'],
-		'converter-rule-noconvert': ['convert-rule-noconvert', 'conversion-rule-noconvert'],
-		'converter-rule-variant': ['convert-rule-variant', 'conversion-rule-variant'],
-		'converter-rule-to': ['convert-rule-to', 'conversion-rule-to'],
-		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
 	},
 };
 
 const /** @type {PropertyDescriptorMap} */ def = {};
 for (const key in Parser) {
-	if (['alises', 'MAX_STAGE'].includes(key)) {
+	if (['MAX_STAGE'].includes(key)) {
 		def[key] = {enumerable: false, writable: false};
-	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse', 'getTool'].includes(key)) {
+	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse'].includes(key)) {
 		def[key] = {enumerable: false};
 	}
 }

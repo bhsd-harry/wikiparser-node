@@ -40,5 +40,4 @@ const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => 
 	return firstChild;
 };
 
-Parser.parsers.parseConverter = __filename;
 module.exports = parseConverter;

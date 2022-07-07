@@ -22,5 +22,4 @@ const parseHrAndDoubleUnderscore = (firstChild, config = Parser.getConfig(), acc
 	});
 };
 
-Parser.parsers.parseHrAndDoubleUnderscore = __filename;
 module.exports = parseHrAndDoubleUnderscore;

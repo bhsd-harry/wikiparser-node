@@ -93,5 +93,4 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	return s;
 };
 
-Parser.parsers.parseLinks = __filename;
 module.exports = parseLinks;

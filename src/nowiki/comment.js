@@ -22,24 +22,13 @@ class CommentToken extends hidden(NowikiToken) {
 	}
 
 	/** @this {CommentToken & {firstChild: string}} */
-	cloneNode() {
-		return Parser.run(() => new CommentToken(this.firstChild, this.closed, this.getAttribute('config')));
-	}
-
-	/** @this {CommentToken & {firstChild: string}} */
 	toString() {
-		const {firstChild, closed, nextSibling} = this;
-		if (!closed && nextSibling) {
-			Parser.error('自动闭合HTML注释', this);
-			this.closed = true;
-		}
-		return `<!--${firstChild}${this.closed ? '-->' : ''}`;
+		return `<!--${this.firstChild}${this.closed ? '-->' : ''}`;
 	}
 
-	getPadding() {
-		return 4;
+	print() {
+		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 }
 
-Parser.classes.CommentToken = __filename;
 module.exports = CommentToken;

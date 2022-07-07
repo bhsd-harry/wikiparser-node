@@ -18,19 +18,12 @@ class OnlyincludeToken extends Token {
 		super(inner, config, false, accum);
 	}
 
-	cloneNode() {
-		const cloned = this.cloneChildren(),
-			token = Parser.run(() => new OnlyincludeToken(undefined, this.getAttribute('config')));
-		token.append(...cloned);
-		return token;
-	}
-
 	toString() {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
-	getPadding() {
-		return 13;
+	print() {
+		return super.print({pre: '&lt;onlyinclude&gt;', post: '&lt;/onlyinclude&gt;'});
 	}
 
 	isPlain() {
@@ -38,5 +31,4 @@ class OnlyincludeToken extends Token {
 	}
 }
 
-Parser.classes.OnlyincludeToken = __filename;
 module.exports = OnlyincludeToken;

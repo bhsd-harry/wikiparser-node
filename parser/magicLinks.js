@@ -36,5 +36,4 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 	});
 };
 
-Parser.parsers.parseMagicLinks = __filename;
 module.exports = parseMagicLinks;

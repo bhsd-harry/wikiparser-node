@@ -54,5 +54,4 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	return text;
 };
 
-Parser.parsers.parseList = __filename;
 module.exports = parseList;

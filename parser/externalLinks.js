@@ -26,5 +26,4 @@ const parseExternalLinks = (firstChild, config = Parser.getConfig(), accum = [])
 	});
 };
 
-Parser.parsers.parseExternalLinks = __filename;
 module.exports = parseExternalLinks;

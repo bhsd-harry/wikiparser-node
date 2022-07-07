@@ -1,16 +1,13 @@
 'use strict';
 
-const sol = require('../../mixin/sol'),
-	/** @type {Parser} */ Parser = require('../..'),
-	DdToken = require('./dd');
+const DdToken = require('./dd');
 
 /**
  * ;:*#
  * @classdesc `{childNodes: [string]}`
  */
-class ListToken extends sol(DdToken) {
+class ListToken extends DdToken {
 	type = 'list';
 }
 
-Parser.classes.ListToken = __filename;
 module.exports = ListToken;

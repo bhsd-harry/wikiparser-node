@@ -57,5 +57,4 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 	);
 };
 
-Parser.parsers.parseCommentAndExt = __filename;
 module.exports = parseCommentAndExt;

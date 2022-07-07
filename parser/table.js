@@ -94,5 +94,4 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 	return out.slice(1);
 };
 
-Parser.parsers.parseTable = __filename;
 module.exports = parseTable;

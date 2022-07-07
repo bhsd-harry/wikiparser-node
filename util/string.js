@@ -1,13 +1,6 @@
 'use strict';
 
 /**
- * optionally convert to lower cases
- * @param {string} val
- * @param {boolean} i
- */
-const toCase = (val, i) => i ? val.toLowerCase() : val;
-
-/**
  * remove half-parsed comment-like tokens
  * @param {string} str
  */
@@ -16,13 +9,23 @@ const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
 /** @param {string} str */
 const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
 
-/** @param {string} str */
-const escapeRegExp = str => str.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
-
 /** @param {(string|AstNode)[]} childNodes */
 const text = (childNodes, separator = '') => {
 	const AstNode = require('../lib/node'); // eslint-disable-line no-unused-vars
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
+};
+
+/**
+ * @param {(string|AstNode)[]} childNodes
+ * @param {printOpt} opt
+ */
+const print = (childNodes, opt = {}) => {
+	const AstNode = require('../lib/node'), // eslint-disable-line no-unused-vars
+		{pre = '', post = '', sep = ''} = opt;
+	return `${pre}${childNodes.map(child => typeof child === 'string'
+		? child.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+		: child.print(),
+	).join(sep)}${post}`;
 };
 
 /**
@@ -35,6 +38,8 @@ const explode = (start, end, separator, str) => {
 	if (str === undefined) {
 		return [];
 	}
+	/** @param {string} str */
+	const escapeRegExp = string => string.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
 	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
 		/** @type {string[]} */ exploded = [];
 	let mt = regex.exec(str),
@@ -54,22 +59,7 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
-/** @param {string} str */
-const noWrap = str => str.replaceAll('\n', '\\n');
-
-/**
- * @param {string|Token} token
- * @returns {string}
- */
-const normalizeSpace = (token = '', separator = '') => {
-	const Token = require('../src'); // eslint-disable-line no-unused-vars
-	return typeof token === 'string'
-		? token.replaceAll('\n', ' ')
-		: token.childNodes.map(child => typeof child === 'string' ? normalizeSpace(child) : child.toString())
-			.join(separator);
-};
-
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
 	+ '[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]*';
 
-module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};
+module.exports = {removeComment, ucfirst, text, print, explode, extUrlChar};

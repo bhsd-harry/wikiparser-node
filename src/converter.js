@@ -1,6 +1,6 @@
 'use strict';
 
-const {text} = require('../util/string'),
+const {text, print} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	ConverterFlagsToken = require('./converterFlags'),
@@ -34,15 +34,6 @@ class ConverterToken extends Token {
 				);
 			}
 		}
-		this.protectChildren(0);
-	}
-
-	cloneNode() {
-		const [flags, ...rules] = this.cloneChildren(),
-			token = Parser.run(() => new ConverterToken([], [], this.getAttribute('config')));
-		token.firstElementChild.safeReplaceWith(flags);
-		token.append(...rules);
-		return token;
 	}
 
 	toString() {
@@ -50,86 +41,17 @@ class ConverterToken extends Token {
 		return `-{${flags.toString()}${flags.childNodes.length ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
-	getPadding() {
-		return 2;
-	}
-
-	/** @param {number} i */
-	getGaps(i = 0) {
-		i = i < 0 ? i + this.childNodes.length : i;
-		return i || this.firstElementChild.childNodes.length ? 1 : 0;
+	print() {
+		const [flags, ...rules] = this.children;
+		return `<span class="converter">-{${flags.print()}${
+			flags.childNodes.length ? '|' : ''
+		}${print(rules, {sep: ';'})}}-</span>`;
 	}
 
 	text() {
 		const [flags, ...rules] = this.children;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
-
-	/** @returns {[number, string][]} */
-	plain() {
-		return this.children.slice(1).flatMap(child => child.plain());
-	}
-
-	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
-	getAllFlags() {
-		return this.firstChild.getAllFlags();
-	}
-
-	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
-	getEffectiveFlags() {
-		return this.firstChild.getEffectiveFlags();
-	}
-
-	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
-	getUnknownFlags() {
-		return this.firstChild.getUnknownFlags();
-	}
-
-	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
-	 */
-	hasFlag(flag) {
-		return this.firstChild.hasFlag(flag);
-	}
-
-	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
-	 */
-	hasEffectiveFlag(flag) {
-		return this.firstChild.hasEffectiveFlag(flag);
-	}
-
-	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
-	 */
-	removeFlag(flag) {
-		this.firstChild.removeFlag(flag);
-	}
-
-	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
-	 */
-	setFlag(flag) {
-		this.firstChild.setFlag(flag);
-	}
-
-	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
-	 */
-	toggleFlag(flag) {
-		this.firstChild.toggleFlag(flag);
-	}
-
-	/** @this {ConverterToken & {children: [ConverterFlagsToken, ConverterRuleToken]}} */
-	get noConvert() {
-		return this.childNodes.length < 3 && !this.children[1]?.variant;
-	}
 }
 
-Parser.classes.ConverterToken = __filename;
 module.exports = ConverterToken;
