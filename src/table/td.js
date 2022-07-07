@@ -196,6 +196,7 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	getGaps(i = 0) {
+		i = i < 0 ? i + this.childNodes.length : i;
 		if (i !== 1) {
 			return 0;
 		}

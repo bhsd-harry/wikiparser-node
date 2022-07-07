@@ -77,6 +77,7 @@ const /** @type {Parser} */ Parser = {
 		['ExtLinkToken'],
 		['MagicLinkToken'],
 		['ListToken', 'DdToken'],
+		['ConverterToken'],
 	],
 
 	config: './config/default',

@@ -455,6 +455,7 @@ class Token extends AstElement {
 				this.#parseList();
 				break;
 			case 10:
+				this.#parseConverter();
 				// no default
 		}
 		if (this.type === 'root') {
@@ -533,25 +534,21 @@ class Token extends AstElement {
 		return n ? this.build().afterBuild() : this;
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseCommentAndExt(includeOnly = false) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(this.firstChild, this.#config, this.#accum, includeOnly));
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
 		this.setText(parseBrackets(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseHtml() {
 		const parseHtml = require('../parser/html');
 		this.setText(parseHtml(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseTable() {
 		const parseTable = require('../parser/table'),
 			TableToken = require('./table');
@@ -570,13 +567,11 @@ class Token extends AstElement {
 		}
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseHrAndDoubleUndescore() {
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
 		this.setText(parseHrAndDoubleUnderscore(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
 		this.setText(parseLinks(this.firstChild, this.#config, this.#accum));
@@ -592,18 +587,17 @@ class Token extends AstElement {
 		this.setText(lines.join('\n'));
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseExternalLinks() {
 		const parseExternalLinks = require('../parser/externalLinks');
 		this.setText(parseExternalLinks(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(this.firstChild, this.#config, this.#accum));
 	}
 
+	/** @this {Token & {firstChild: string}} */
 	#parseList() {
 		const parseList = require('../parser/list'),
 			lines = this.firstChild.split('\n');
@@ -611,6 +605,11 @@ class Token extends AstElement {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
 		this.setText(lines.join('\n'));
+	}
+
+	#parseConverter() {
+		const parseConverter = require('../parser/converter');
+		this.setText(parseConverter(this.firstChild, this.#config, this.#accum));
 	}
 }
 
