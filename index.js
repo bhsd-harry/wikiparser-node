@@ -18,10 +18,8 @@ const /** @type {Parser} */ Parser = {
 		}
 	},
 
-	config: './config/default',
-
 	getConfig() {
-		return require(this.config);
+		return this.config;
 	},
 
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
@@ -85,4 +83,5 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
+globalThis.Parser = Parser;
 module.exports = Parser;

@@ -32,8 +32,9 @@ class HeadingToken extends Token {
 	}
 
 	print() {
-		const equals = '='.repeat(Number(this.name));
-		return super.print({pre: equals, sep: equals});
+		const name = Number(this.name),
+			equals = '='.repeat(name);
+		return super.print({pre: equals, sep: equals, class: `heading-${Math.min(name, 3)}`});
 	}
 
 	/** @returns {string} */

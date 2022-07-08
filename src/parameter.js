@@ -32,7 +32,9 @@ class ParameterToken extends Token {
 	}
 
 	print() {
-		return this.anon ? `<span class="parameter">${this.lastElementChild.print()}</span>` : super.print({sep: '='});
+		return this.anon
+			? `<span class="wpb-parameter">${this.lastElementChild.print()}</span>`
+			: super.print({sep: '='});
 	}
 
 	/** @returns {string} */

@@ -37,7 +37,7 @@ class Token extends AstElement {
 			case 'stage':
 				return this.#stage;
 			case 'config':
-				return structuredClone(this.#config);
+				return JSON.parse(JSON.stringify(this.#config));
 			case 'accum':
 				return this.#accum;
 			default:

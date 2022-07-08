@@ -20,6 +20,8 @@ declare global {
 		pre?: string;
 		post?: string;
 		sep?: string;
+		class?: string;
+		parent?: string;
 	} 
 }
 

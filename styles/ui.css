@@ -1,0 +1,105 @@
+.wikiparser {
+	white-space: pre-wrap;
+	font-family: monospace;
+}
+
+.wpb-noinclude, .wpb-include, .wpb-comment, .wpb-arg-redundant {
+	color: #72777d;
+	font-weight: normal;
+}
+.wpb-comment {
+	font-style: italic;
+}
+
+.wpb-ext, .wpb-html {
+	color: #14866d;
+	font-weight: bold;
+}
+.wpb-ext-attr, .wpb-ext-inner, .wpb-html-attr {
+	font-weight: normal;
+}
+.wpb-ext-inner {
+	color: revert;
+}
+
+.wpb-arg {
+	color: #ac6600;
+	font-weight: bold;
+}
+.wpb-arg-default {
+	color: #ad9300;
+	font-weight: normal;
+}
+
+.wpb-template {
+	color: #80c;
+	font-weight: bold;
+}
+.wpb-magic-word {
+	color: #d33;
+	font-weight: bold;
+}
+.wpb-invoke-module, .wpb-invoke-function {
+	color: #dd5d33;
+	font-weight: normal;
+}
+.wpb-parameter {
+	color: revert;
+	font-weight: normal;
+}
+.wpb-template > .wpb-parameter > .wpb-parameter-key {
+	color: #b0c;
+}
+
+.wpb-heading-1, .wpb-heading-2, .wpb-heading-3, .wpb-image-parameter {
+	color: #0076dd;
+}
+.wpb-heading-1 {
+	font-size: 1.8em;
+	line-height: 1.2em;
+}
+.wpb-heading-2 {
+	font-size: 1.5em;
+	line-height: 1.2em;
+}
+.wpb-heading-title {
+	color: revert;
+	font-weight: bold;
+}
+
+.wpb-table, .wpb-tr, .wpb-td {
+	color: #d08;
+	font-weight :bold;
+}
+.wpb-table-inter, .wpb-td-inner {
+	color: revert;
+	font-weight: normal;
+}
+.wpb-table-attr {
+	color: #db00be;
+	font-weight: normal;
+}
+
+.wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd {
+	color: #0076dd;
+	font-weight: bold;
+	background-color: #eee;
+}
+
+.wpb-link, .wpb-category, .wpb-file, .wpb-ext-link, .wpb-free-ext-link {
+	color: #000aaa;
+}
+.wpb-link-text, .wpb-ext-link-text {
+	color: revert;
+}
+
+.wpb-converter {
+	color: #b68;
+	font-weight: bold;
+}
+.wpb-converter-rule {
+	font-weight: normal;
+}
+.wpb-converter-from, .wpb-conveter-to {
+	color: revert;
+}

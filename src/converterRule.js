@@ -48,7 +48,7 @@ class ConverterRuleToken extends Token {
 	print() {
 		if (this.childNodes.length === 3) {
 			const [from, variant, to] = this.children;
-			return `<span class="converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
+			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
 		}
 		return super.print({sep: ':'});
 	}

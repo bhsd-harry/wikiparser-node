@@ -5,3 +5,5 @@
 .DS_Store
 .vscode/
 wiki/
+typings/mw
+typings/jquery

@@ -1,5 +1,4 @@
 import Token from '../src';
-import $ from '../tool';
 import Title from '../lib/title';
 
 declare global {
@@ -8,7 +7,7 @@ declare global {
 
 		run<T>(callback: () => T): T;
 
-		config: string;
+		config: ParserConfig;
 		getConfig(): ParserConfig;
 
 		isInterwiki(title: string, config?: ParserConfig): RegExpMatchArray;

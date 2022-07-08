@@ -53,7 +53,7 @@ class TdToken extends TrToken {
 
 	print() {
 		const [syntax, attr, inner] = this.children;
-		return `<span class="td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
+		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 
 	/**

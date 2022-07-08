@@ -1,5 +1,4 @@
 import Token from '../src';
-import Ranges from '../lib/ranges';
 
 declare global {
 	interface ParserConfig {
@@ -16,7 +15,6 @@ declare global {
 	}
 
 	type accum = Token[];
-	type acceptable = Record<string, number|string|Ranges|(number|string)[]>;
 }
 
 export {};
