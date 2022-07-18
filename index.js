@@ -18,6 +18,8 @@ const /** @type {Parser} */ Parser = {
 		}
 	},
 
+	config: require('./config/default'),
+
 	getConfig() {
 		return this.config;
 	},
