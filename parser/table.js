@@ -12,6 +12,7 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		TableToken = require('../src/table'),
 		TrToken = require('../src/table/tr'),
 		TdToken = require('../src/table/td'),
+		DdToken = require('../src/nowiki/dd'),
 		/** @type {TrToken[]} */ stack = [],
 		lines = firstChild.split('\n');
 	let out = type === 'root' ? '' : `\n${lines.shift()}`;
@@ -33,10 +34,13 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		let top = stack.pop();
 		const [spaces] = outLine.match(/^(?:\s|\x00\d+c\x7f)*/);
 		const line = outLine.slice(spaces.length),
-			matchesStart = line.match(/^(:*(?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)/);
+			matchesStart = line.match(/^(:*)((?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)/);
 		if (matchesStart) {
-			const [, indent, tableSyntax, attr] = matchesStart;
-			push(`\n${spaces}${indent}\x00${accum.length}b\x7f`, top);
+			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
+			if (indent) {
+				new DdToken(indent, config, accum);
+			}
+			push(`\n${spaces}${indent && `\x00${accum.length - 1}d\x7f`}${moreSpaces}\x00${accum.length}b\x7f`, top);
 			const table = new TableToken(tableSyntax, attr, config, accum);
 			stack.push(...top ? [top] : [], table);
 			continue;
