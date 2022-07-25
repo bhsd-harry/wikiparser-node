@@ -46,7 +46,10 @@ class MagicLinkToken extends Token {
 	}
 
 	getUrl() {
-		const url = this.text();
+		let url = this.text();
+		if (url.startsWith('//')) {
+			url = `https:${url}`;
+		}
 		try {
 			return new URL(url);
 		} catch (e) {
