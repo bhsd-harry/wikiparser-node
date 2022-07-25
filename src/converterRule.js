@@ -120,15 +120,6 @@ class ConverterRuleToken extends Token {
 		return super.text(':');
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		const {firstElementChild, lastElementChild, unidirectional} = this;
-		if (unidirectional) {
-			return [...firstElementChild.plain(), ...lastElementChild.plain()];
-		}
-		return lastElementChild.plain();
-	}
-
 	noConvert() {
 		for (let i = this.childNodes.length - 2; i >= 0; i--) {
 			super.removeAt(i);

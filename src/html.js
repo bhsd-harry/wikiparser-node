@@ -62,11 +62,6 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.text()}${this.selfClosing ? '/' : ''}>`;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/** @param {string} tag */
 	replaceTag(tag) {
 		const name = tag.toLowerCase();

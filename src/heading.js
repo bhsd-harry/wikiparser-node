@@ -63,11 +63,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		return `${this.prependNewLine()}${equals}${this.firstElementChild.text()}${equals}${this.appendNewLine()}`;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return this.firstElementChild.plain();
-	}
-
 	/** @param {number} n */
 	setLevel(n) {
 		if (typeof n !== 'number') {

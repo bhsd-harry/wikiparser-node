@@ -77,14 +77,6 @@ class ExtLinkToken extends Token {
 		return `[${super.text(' ').replaceAll('\n', ' ')}]`;
 	}
 
-	/**
-	 * @returns {[number, string][]}
-	 * @complexity `n`
-	 */
-	plain() {
-		return this.childNodes.length === 1 ? [] : this.lastElementChild.plain();
-	}
-
 	/** @this {ExtLinkToken & {firstElementChild: MagicLinkToken}} */
 	getUrl() {
 		return this.firstElementChild.getUrl();

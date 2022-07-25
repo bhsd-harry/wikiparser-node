@@ -24,11 +24,6 @@ class HrToken extends sol(NowikiToken) {
 		return Parser.run(() => new HrToken(this.firstChild.length, this.getAttribute('config')));
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/** @param {string} str */
 	setText(str) {
 		if (!/^-{4,}$/.test(str)) {

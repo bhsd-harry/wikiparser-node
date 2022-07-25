@@ -26,11 +26,6 @@ class QuoteToken extends NowikiToken {
 		}
 		return super.setText(str);
 	}
-
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
 }
 
 Parser.classes.QuoteToken = __filename;

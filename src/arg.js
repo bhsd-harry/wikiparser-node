@@ -73,11 +73,6 @@ class ArgToken extends Token {
 		return `{{{${text(this.children.slice(0, 2), '|')}}}}`;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return this.childNodes.length > 1 ? this.children[1].plain() : [];
-	}
-
 	/** @complexity `n` */
 	removeRedundant() {
 		Parser.run(() => {

@@ -86,11 +86,6 @@ class ConverterFlagsToken extends Token {
 		return super.text(';');
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/**
 	 * @param {string} flag
 	 * @returns {AtomToken[]}

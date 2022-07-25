@@ -74,11 +74,6 @@ class CategoryToken extends LinkToken {
 		return `[[${this.firstElementChild.text()}]]`;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/** @param {string} text */
 	setSortkey(text) {
 		this.setLinkText(text);

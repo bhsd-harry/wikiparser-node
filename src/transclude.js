@@ -209,10 +209,6 @@ class TranscludeToken extends Token {
 		}}}`;
 	}
 
-	plain() {
-		return this.getAllArgs().flatMap(child => child.plain());
-	}
-
 	/**
 	 * @param {number|ParameterToken} addedToken
 	 * @complexity `n`

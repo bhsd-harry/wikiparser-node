@@ -65,11 +65,6 @@ class ConverterToken extends Token {
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return this.children.slice(1).flatMap(child => child.plain());
-	}
-
 	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
 	getAllFlags() {
 		return this.firstChild.getAllFlags();

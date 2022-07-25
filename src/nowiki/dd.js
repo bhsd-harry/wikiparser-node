@@ -29,11 +29,6 @@ class DdToken extends NowikiToken {
 		this.seal(['dt', 'ul', 'ol', 'indent']).#update(str);
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/** @param {string} str */
 	setText(str) {
 		const src = this.type === 'dd' ? ':' : ';:*#';

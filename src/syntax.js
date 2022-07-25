@@ -60,11 +60,6 @@ class SyntaxToken extends Token {
 		return super.getAttribute(key);
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/**
 	 * @param {...string|Token} elements
 	 * @complexity `n`

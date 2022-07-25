@@ -11,11 +11,6 @@ const hidden = constructor => class extends constructor {
 	text() {
 		return '';
 	}
-
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
 };
 
 Parser.mixins.hidden = __filename;

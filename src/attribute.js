@@ -253,11 +253,6 @@ class AttributeToken extends Token {
 		return this.type === 'table-attr' ? normalizeSpace(str) : str;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return [];
-	}
-
 	/**
 	 * @param {number} i
 	 * @complexity `n`

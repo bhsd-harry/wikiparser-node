@@ -76,15 +76,6 @@ class TagPairToken extends fixedToken(Token) {
 			? `<${opening}${typeof firstChild === 'string' ? firstChild : firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${closed ? `</${closing}>` : ''}`;
 	}
-
-	/** @returns {[number, string][]} */
-	plain() {
-		const {lastChild} = this;
-		if (typeof lastChild === 'string') {
-			return lastChild ? [[this.getAbsoluteIndex() + this.getRelativeIndex(1), lastChild]] : [];
-		}
-		return lastChild.plain();
-	}
 }
 
 Parser.classes.TagPairToken = __filename;

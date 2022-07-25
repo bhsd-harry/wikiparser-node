@@ -105,11 +105,6 @@ class LinkToken extends Token {
 		return `[[${super.text('|')}]]`;
 	}
 
-	/** @returns {[number, string][]} */
-	plain() {
-		return this.childNodes.length === 1 ? [] : this.lastElementChild.plain();
-	}
-
 	/** @param {string} link */
 	setTarget(link) {
 		link = String(link);
