@@ -79,6 +79,10 @@ class ExtToken extends attributeParent(TagPairToken) {
 		token.lastElementChild.safeReplaceWith(inner);
 		return token;
 	}
+
+	get innerText() {
+		return this.selfClosing ? '' : this.lastElementChild.text();
+	}
 }
 
 Parser.classes.ExtToken = __filename;
