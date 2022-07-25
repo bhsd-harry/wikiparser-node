@@ -60,6 +60,6 @@ const explode = (start, end, separator, str) => {
 };
 
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
-	+ '[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]*';
+	+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*';
 
 module.exports = {removeComment, ucfirst, text, print, explode, extUrlChar};
