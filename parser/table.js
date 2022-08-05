@@ -36,6 +36,9 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		const line = outLine.slice(spaces.length),
 			matchesStart = line.match(/^(:*)((?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)/);
 		if (matchesStart) {
+			while (top && top.type !== 'td') {
+				top = stack.pop();
+			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
 				new DdToken(indent, config, accum);
