@@ -12,6 +12,7 @@ class CategoryToken extends LinkToken {
 	type = 'category';
 	sortkey = '';
 
+	setLangLink = undefined;
 	setFragment = undefined;
 	asSelfLink = undefined;
 	pipeTrick = undefined;

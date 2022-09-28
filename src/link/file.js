@@ -15,6 +15,7 @@ class FileToken extends LinkToken {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Record<string, Set<ImageParameterToken>>} */ #args = {};
 
+	setLangLink = undefined;
 	setFragment = undefined;
 	asSelfLink = undefined;
 	setLinkText = undefined;

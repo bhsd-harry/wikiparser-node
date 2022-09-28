@@ -90,7 +90,8 @@ class LinkToken extends Token {
 	}
 
 	toString() {
-		return `[[${super.toString('|')}]]`;
+		const str = super.toString('|');
+		return this.parentElement?.matches('ext-inner#gallery') ? str : `[[${str}]]`;
 	}
 
 	getPadding() {
@@ -116,6 +117,33 @@ class LinkToken extends Token {
 		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childNodes.length !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
+		}
+		const {firstChild} = firstElementChild;
+		root.destroy();
+		firstElementChild.destroy();
+		this.firstElementChild.safeReplaceWith(firstChild);
+	}
+
+	/**
+	 * @param {string} lang
+	 * @param {string} link
+	 */
+	setLangLink(lang, link) {
+		if (typeof lang !== 'string') {
+			this.typeError('setLangLink', 'String');
+		}
+		link = String(link).trim();
+		if (link.startsWith('#')) {
+			throw new SyntaxError(`跨语言链接不能仅为fragment！`);
+		} else if (link.startsWith(':')) {
+			link = link.slice(1);
+		}
+		const root = Parser.parse(`[[${lang}:${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
+			/** @type {Token & {firstElementChild: LinkToken}} */ {childNodes: {length}, firstElementChild} = root;
+		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childNodes.length !== 1
+			|| firstElementChild.interwiki !== lang.toLowerCase()
+		) {
+			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
 		}
 		const {firstChild} = firstElementChild;
 		root.destroy();
