@@ -21,7 +21,7 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
-		super(undefined, config);
+		super(undefined, config, true);
 		this.setAttribute('name', name.toLowerCase()).#tags = [name, closing || name];
 		this.selfClosing = closing === undefined;
 		this.closed = closing !== '';

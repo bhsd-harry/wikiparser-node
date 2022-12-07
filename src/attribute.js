@@ -82,7 +82,7 @@ class AttributeToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
-		super(attr, config, type !== 'ext-attr', accum, {[`Stage-${stages[type]}`]: ':'});
+		super(attr, config, true, accum, {[`Stage-${stages[type]}`]: ':'});
 		this.type = type;
 		this.setAttribute('name', name).#parseAttr();
 	}

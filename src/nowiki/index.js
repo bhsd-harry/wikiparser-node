@@ -16,7 +16,7 @@ class NowikiToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(wikitext, config, false, accum);
+		super(wikitext, config, true, accum);
 	}
 
 	/** @this {NowikiToken & {firstChild: string}} */

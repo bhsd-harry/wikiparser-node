@@ -15,7 +15,7 @@ class OnlyincludeToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
-		super(inner, config, false, accum);
+		super(inner, config, true, accum);
 	}
 
 	cloneNode() {

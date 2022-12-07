@@ -19,7 +19,7 @@ class ConverterToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(flags, rules, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, false, accum);
+		super(undefined, config, true, accum);
 		this.append(new ConverterFlagsToken(flags, config, accum));
 		if (rules.length) {
 			const [firstRule] = rules,
