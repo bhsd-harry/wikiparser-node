@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {T} constructor
  * @returns {T}
  */
-const fixedToken = constructor => class extends constructor {
+const fixedToken = ct => class extends ct {
 	static fixed = true;
 
 	removeAt() {

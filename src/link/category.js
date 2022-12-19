@@ -2,7 +2,7 @@
 
 const /** @type {Parser} */ Parser = require('../..'),
 	LinkToken = require('.'),
-	Token = require('..'); // eslint-disable-line no-unused-vars
+	Token = require('..');
 
 /**
  * 分类

@@ -1,14 +1,14 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	AttributeToken = require('../src/attribute'); // eslint-disable-line no-unused-vars
+	AttributeToken = require('../src/attribute');
 
 /**
  * @template T
  * @param {T} constructor
  * @returns {T}
  */
-const attributeParent = (constructor, i = 0) => class extends constructor {
+const attributeParent = (ct, i = 0) => class extends ct {
 	/**
 	 * @this {{children: AttributeToken[]}}
 	 * @param {string} key

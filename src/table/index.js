@@ -3,19 +3,19 @@
 const assert = require('assert/strict'),
 	{noWrap} = require('../../util/string'),
 	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('..'), // eslint-disable-line no-unused-vars
+	Token = require('..'),
 	TrToken = require('./tr'),
 	TdToken = require('./td'),
 	SyntaxToken = require('../syntax'),
-	AttributeToken = require('../attribute'); // eslint-disable-line no-unused-vars
+	AttributeToken = require('../attribute');
 
 /**
  * @param {TableCoords} coords1
  * @param {TableCoords} coords2
  */
 const cmpCoords = (coords1, coords2) => {
-	const diff = coords1?.row - coords2?.row;
-	return diff === 0 ? coords1?.column - coords2?.column : diff;
+	const diff = coords1.row - coords2.row;
+	return diff === 0 ? coords1.column - coords2.column : diff;
 };
 const isRowEnd = /** @param {Token} */ ({type}) => ['tr', 'table-syntax'].includes(type);
 
@@ -192,7 +192,7 @@ class TableToken extends TrToken {
 			{length} = rows,
 			/** @type {Layout} */ layout = new Layout(length).fill().map(() => []);
 		for (const [i, rowToken] of rows.entries()) {
-			if (i > stop.row ?? stop.y) {
+			if (i > (stop.row ?? stop.y)) {
 				break;
 			}
 			const rowLayout = layout[i];

@@ -45,7 +45,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	getSyntax() {
 		const syntax = this.firstElementChild.text(),
-			escape = syntax.includes('{{');
+			esc = syntax.includes('{{');
 		let subtype = 'td';
 		if (syntax.endsWith('!')) {
 			subtype = 'th';
@@ -53,14 +53,14 @@ class TdToken extends fixedToken(TrToken) {
 			subtype = 'caption';
 		}
 		if (this.isIndependent()) {
-			return {subtype, escape, correction: false};
+			return {subtype, esc, correction: false};
 		}
 		const {previousElementSibling} = this;
 		if (previousElementSibling?.type !== 'td') {
-			return {subtype, escape, correction: true};
+			return {subtype, esc, correction: true};
 		}
 		const result = previousElementSibling.getSyntax();
-		result.escape ||= escape;
+		result.escape ||= esc;
 		result.correction = previousElementSibling.lastElementChild.offsetHeight > 1;
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
@@ -91,6 +91,7 @@ class TdToken extends fixedToken(TrToken) {
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;
 		}
+		// eslint-disable-next-line no-unsafe-optional-chaining
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
 		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
@@ -162,8 +163,8 @@ class TdToken extends fixedToken(TrToken) {
 	static #aliases = {td: '\n|', th: '\n!', caption: '\n|+'};
 
 	/** @param {string} syntax */
-	setSyntax(syntax, escape = false) {
-		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, escape);
+	setSyntax(syntax, esc = false) {
+		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, esc);
 	}
 
 	/** @complexity `n` */
@@ -171,17 +172,17 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
 		}
-		const {subtype, escape, correction} = this.getSyntax();
+		const {subtype, escape: esc, correction} = this.getSyntax();
 		if (correction) {
-			this.setSyntax(subtype, escape);
+			this.setSyntax(subtype, esc);
 		}
 	}
 
 	/** @complexity `n` */
 	independence() {
 		if (!this.isIndependent()) {
-			const {subtype, escape} = this.getSyntax();
-			this.setSyntax(subtype, escape);
+			const {subtype, escape: esc} = this.getSyntax();
+			this.setSyntax(subtype, esc);
 		}
 	}
 

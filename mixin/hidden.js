@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {T} constructor
  * @returns {T}
  */
-const hidden = constructor => class extends constructor {
+const hidden = ct => class extends ct {
 	text() {
 		return '';
 	}

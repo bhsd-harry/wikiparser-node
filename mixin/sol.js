@@ -1,14 +1,14 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('../src'); // eslint-disable-line no-unused-vars
+	Token = require('../src');
 
 /**
  * @template T
  * @param {T} constructor
  * @returns {T}
  */
-const sol = constructor => class extends constructor {
+const sol = ct => class extends ct {
 	/** @this {Token} */
 	prependNewLine() {
 		const {previousVisibleSibling = '', parentNode} = this;

@@ -35,8 +35,8 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 					}
 				} else if (arr[i - 1].at(-2) === ' ') {
 					firstSingle = i;
-				} else if (!firstMulti) {
-					firstMulti = i;
+				} else {
+					firstMulti ||= i;
 				}
 				break;
 			default:

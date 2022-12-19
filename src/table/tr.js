@@ -93,10 +93,10 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/** @param {string} syntax */
-	setSyntax(syntax, escape = false) {
+	setSyntax(syntax, esc = false) {
 		const {firstElementChild} = this;
 		firstElementChild.replaceChildren(syntax);
-		if (escape) {
+		if (esc) {
 			TrToken.escape(firstElementChild);
 		}
 	}
@@ -202,7 +202,7 @@ class TrToken extends attributeParent(Token, 1) {
 		if (n < 0 || n > nCols || n === nCols && !insert) {
 			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
-		const TdToken = require('./td'); // eslint-disable-line no-unused-vars
+		const TdToken = require('./td');
 		let last = 0;
 		for (const child of this.children.slice(2)) {
 			if (child instanceof TdToken) {

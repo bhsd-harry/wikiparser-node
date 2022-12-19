@@ -21,7 +21,7 @@ const escapeRegExp = str => str.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
 
 /** @param {(string|AstNode)[]} childNodes */
 const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node'); // eslint-disable-line no-unused-vars
+	const AstNode = require('../lib/node');
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
@@ -62,7 +62,7 @@ const noWrap = str => str.replaceAll('\n', '\\n');
  * @returns {string}
  */
 const normalizeSpace = (token = '', separator = '') => {
-	const Token = require('../src'); // eslint-disable-line no-unused-vars
+	const Token = require('../src');
 	return typeof token === 'string'
 		? token.replaceAll('\n', ' ')
 		: token.childNodes.map(child => typeof child === 'string' ? normalizeSpace(child) : child.toString())
