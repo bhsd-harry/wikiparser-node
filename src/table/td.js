@@ -53,11 +53,11 @@ class TdToken extends fixedToken(TrToken) {
 			subtype = 'caption';
 		}
 		if (this.isIndependent()) {
-			return {subtype, esc, correction: false};
+			return {subtype, escape: esc, correction: false};
 		}
 		const {previousElementSibling} = this;
 		if (previousElementSibling?.type !== 'td') {
-			return {subtype, esc, correction: true};
+			return {subtype, escape: esc, correction: true};
 		}
 		const result = previousElementSibling.getSyntax();
 		result.escape ||= esc;
