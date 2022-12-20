@@ -5,10 +5,7 @@
 	},
 	"extends": "eslint:recommended",
 	"parserOptions": {
-		"ecmaVersion": 13,
-		"ecmaFeatures": {
-			"impliedStrict": true
-		}
+		"ecmaVersion": 13
 	},
 	"rules": {
 		"array-callback-return": [
@@ -188,6 +185,7 @@
 		],
 		"require-await": 2,
 		"spaced-comment": 2,
+        "strict": 2,
 		"symbol-description": 2,
 		"yoda": 2,
 		"array-bracket-spacing": 2,
