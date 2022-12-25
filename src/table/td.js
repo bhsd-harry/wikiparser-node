@@ -99,7 +99,7 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	cloneNode() {
-		const token = super.cloneNode();
+		const /** @type {TdToken} */ token = super.cloneNode();
 		token.setAttribute('innerSyntax', this.#innerSyntax);
 		return token;
 	}
@@ -142,6 +142,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @template {string} T
 	 * @param {T} key
 	 * @param {TokenAttribute<T>} value
+	 * @return {this}
 	 */
 	setAttribute(key, value) {
 		if (key !== 'innerSyntax') {

@@ -47,7 +47,7 @@ class LinkToken extends Token {
 					title: this.name, interwiki: this.interwiki, fragment: this.fragment,
 				}, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(link);
-			token.appendChild(...linkText);
+			token.append(...linkText);
 			return token.afterBuild();
 		});
 	}
@@ -91,7 +91,7 @@ class LinkToken extends Token {
 
 	toString() {
 		const str = super.toString('|');
-		return this.parentElement?.matches('ext-inner#gallery') ? str : `[[${str}]]`;
+		return this.type === 'gallery-image' ? str.slice(5) : `[[${str}]]`;
 	}
 
 	getPadding() {
@@ -103,19 +103,20 @@ class LinkToken extends Token {
 	}
 
 	text() {
-		return `[[${super.text('|')}]]`;
+		const str = super.text('|');
+		return this.type === 'gallery-image' ? str : `[[${str}]]`;
 	}
 
 	/** @param {string} link */
 	setTarget(link) {
 		link = String(link);
-		if (!/^\s*[:#]/.test(link)) {
+		if (link.type === 'link' && !/^\s*[:#]/.test(link)) {
 			link = `:${link}`;
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childNodes.length !== 1) {
-			const msgs = {link: '内链', file: '文件链接', category: '分类'};
+			const msgs = {link: '内链', file: '文件链接', category: '分类', 'gallery-image': '文件链接'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
 		const {firstChild} = firstElementChild;

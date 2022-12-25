@@ -47,6 +47,7 @@ class ExtLinkToken extends Token {
 		if (text) {
 			token.appendChild(text);
 		}
+		return token;
 	}
 
 	#correct() {

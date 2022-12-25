@@ -23,7 +23,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
-		let /** @type {acceptable} */ acceptable, innerToken;
+		let /** @type {acceptable} */ acceptable, /** @type {Token} */ innerToken;
 		switch (lcName) {
 			case 'choose':
 				ext.add('option');
@@ -42,15 +42,23 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new Token(inner, newConfig, false, accum);
 				break;
 			}
+			case 'gallery': {
+				ext.delete(lcName);
+				newConfig.ext = [...ext];
+				const GalleryToken = require('../gallery');
+				acceptable = {AttributeToken: 0, GalleryToken: 1};
+				innerToken = new GalleryToken(inner, newConfig, accum);
+				break;
+			}
 			/*
 			 * 更多定制扩展的代码示例：
 			 * ```
 			 * case 'extensionName': {
-			 * 	ext.delete(this.name);
+			 * 	ext.delete(lcName);
 			 * 	newConfig.ext = [...ext];
 			 * 	const ExtensionToken = require('../extension');
 			 * 	acceptable = {AttributeToken: 0, ExtensionToken: 1};
-			 * 	innerToken = new ExtensionToken(extInner, newConfig, false, accum);
+			 * 	innerToken = new ExtensionToken(inner, newConfig, accum);
 			 * 	break;
 			 * }
 			 * ```

@@ -45,6 +45,16 @@ class MagicLinkToken extends Token {
 		return this;
 	}
 
+	cloneNode() {
+		const cloned = this.cloneChildren(),
+			token = Parser.run(() => new MagicLinkToken(
+				undefined, this.type === 'ext-link-url', this.getAttribute('config'),
+			));
+		token.append(...cloned);
+		token.afterBuild();
+		return token;
+	}
+
 	getUrl() {
 		let url = this.text();
 		if (url.startsWith('//')) {
