@@ -11,7 +11,7 @@ const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
 
 /** @param {(string|AstNode)[]} childNodes */
 const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node'); // eslint-disable-line no-unused-vars
+	const AstNode = require('../lib/node');
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
@@ -20,7 +20,7 @@ const text = (childNodes, separator = '') => {
  * @param {printOpt} opt
  */
 const print = (childNodes, opt = {}) => {
-	const AstNode = require('../lib/node'), // eslint-disable-line no-unused-vars
+	const AstNode = require('../lib/node'),
 		{pre = '', post = '', sep = ''} = opt;
 	return `${pre}${childNodes.map(child => typeof child === 'string'
 		? child.replaceAll('<', '&lt;').replaceAll('>', '&gt;')

@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('../..'),
-	LinkToken = require('.'); // eslint-disable-line no-unused-vars
+	LinkToken = require('.');
 
 /**
  * 分类

@@ -2,7 +2,7 @@
 
 const /** @type {Parser} */ Parser = require('../..'),
 	TrToken = require('./tr'),
-	SyntaxToken = require('../syntax'); // eslint-disable-line no-unused-vars
+	SyntaxToken = require('../syntax');
 
 /**
  * 表格

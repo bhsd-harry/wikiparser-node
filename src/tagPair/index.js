@@ -20,7 +20,7 @@ class TagPairToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
-		super(undefined, config);
+		super(undefined, config, true);
 		this.#tags = [name, closing || name];
 		this.selfClosing = closing === undefined;
 		this.closed = closing !== '';
@@ -39,8 +39,8 @@ class TagPairToken extends Token {
 		const {closed, selfClosing} = this,
 			[opening, closing] = this.#tags;
 		return selfClosing
-			? `<${opening}${super.toString()}/>`
-			: `<${opening}${super.toString('>')}${closed ? `</${closing}>` : ''}`;
+			? `<${opening}${String(firstChild)}/>`
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	print() {

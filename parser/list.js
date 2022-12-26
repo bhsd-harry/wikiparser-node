@@ -7,13 +7,13 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseList = (text, config = Parser.getConfig(), accum = []) => {
-	const mt = text.match(/^(?:[;:*#]|\x00\d+c\x7f)*[;:*#]/);
+	const mt = text.match(/^((?:\x00\d+c\x7f)*)([;:*#]+)/);
 	if (!mt) {
 		return text;
 	}
 	const ListToken = require('../src/nowiki/list'),
-		[prefix] = mt;
-	text = `\x00${accum.length}d\x7f${text.slice(prefix.length)}`;
+		[total, comment, prefix] = mt;
+	text = `${comment}\x00${accum.length}d\x7f${text.slice(total.length)}`;
 	new ListToken(prefix, config, accum);
 	let dt = prefix.split(';').length - 1;
 	if (!dt) {

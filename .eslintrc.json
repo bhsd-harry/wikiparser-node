@@ -5,10 +5,7 @@
 	},
 	"extends": "eslint:recommended",
 	"parserOptions": {
-		"ecmaVersion": 13,
-		"ecmaFeatures": {
-			"impliedStrict": true
-		}
+		"ecmaVersion": 13
 	},
 	"rules": {
 		"array-callback-return": [
@@ -18,13 +15,39 @@
 			}
 		],
 		"no-await-in-loop": 2,
+		"no-constant-binary-expression": 2,
 		"no-constructor-return": 2,
 		"no-fallthrough": 1,
 		"no-promise-executor-return": 2,
 		"no-self-compare": 2,
 		"no-template-curly-in-string": 2,
+		"no-undef": [
+			2,
+			{
+				"typeof": true
+			}
+		],
 		"no-unmodified-loop-condition": 2,
 		"no-unreachable-loop": 2,
+		"no-unsafe-negation": [
+			2,
+			{
+				"enforceForOrderingRelations": true
+			}
+		],
+		"no-unsafe-optional-chaining": [
+			2,
+			{
+				"disallowArithmeticOperators": true
+			}
+		],
+		"no-unused-vars": [
+			2,
+			{
+				"varsIgnorePattern": "AstNode|AstElement|[a-zA-Z]*Token",
+				"ignoreRestSiblings": true
+			}
+		],
 		"no-use-before-define": [
 			2,
 			{
@@ -33,7 +56,12 @@
 				"variables": false
 			}
 		],
-		"require-atomic-updates": 2,
+		"require-atomic-updates": [
+			2,
+			{
+				"allowProperties": true
+			}
+		],
 		"block-scoped-var": 2,
 		"class-methods-use-this": 0,
 		"consistent-this": 2,
@@ -46,6 +74,13 @@
 		"func-names": [
 			2,
 			"never"
+		],
+		"logical-assignment-operators": [
+			2,
+			"always",
+			{
+				"enforceForIfStatements": true
+			}
 		],
 		"multiline-comment-style": 2,
 		"new-cap": [
@@ -67,6 +102,12 @@
 		],
 		"no-eval": 2,
 		"no-extend-native": 2,
+		"no-extra-boolean-cast": [
+			2,
+			{
+				"enforceForLogicalOperands": true
+			}
+		],
 		"no-floating-decimal": 2,
 		"no-implied-eval": 2,
 		"no-invalid-this": [
@@ -91,7 +132,12 @@
 		"no-return-await": 2,
 		"no-script-url": 2,
 		"no-sequences": 2,
-		"no-shadow": 2,
+		"no-shadow": [
+			2,
+			{
+				"builtinGlobals": true
+			}
+		],
 		"no-undef-init": 2,
 		"no-unneeded-ternary": [
 			2,
@@ -139,6 +185,7 @@
 		],
 		"require-await": 2,
 		"spaced-comment": 2,
+        "strict": 2,
 		"symbol-description": 2,
 		"yoda": 2,
 		"array-bracket-spacing": 2,

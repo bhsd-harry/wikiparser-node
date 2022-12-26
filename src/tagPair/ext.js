@@ -22,7 +22,7 @@ class ExtToken extends TagPairToken {
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = JSON.parse(JSON.stringify(config)),
 			ext = new Set(newConfig.ext);
-		let innerToken;
+		let /** @type {Token} */ innerToken;
 		switch (lcName) {
 			case 'choose':
 				ext.add('option');

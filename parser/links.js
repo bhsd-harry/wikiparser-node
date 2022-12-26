@@ -1,7 +1,7 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = require('..'),
-	Token = require('../src'); // eslint-disable-line no-unused-vars
+	Token = require('../src');
 
 /**
  * @param {string} firstChild
@@ -78,7 +78,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 				continue;
 			}
 		}
-		text = text && parseQuotes(text, config, accum);
+		text &&= parseQuotes(text, config, accum);
 		s += `\x00${accum.length}l\x7f${after}`;
 		let LinkToken = require('../src/link');
 		if (!force) {

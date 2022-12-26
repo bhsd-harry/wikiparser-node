@@ -27,7 +27,8 @@ class LinkToken extends Token {
 	}
 
 	toString() {
-		return `[[${super.toString('|')}]]`;
+		const str = super.toString('|');
+		return this.type === 'gallery-image' ? str.slice(5) : `[[${str}]]`;
 	}
 
 	print() {
@@ -35,7 +36,8 @@ class LinkToken extends Token {
 	}
 
 	text() {
-		return `[[${super.text('|')}]]`;
+		const str = super.text('|');
+		return this.type === 'gallery-image' ? str.slice(5) : `[[${str}]]`;
 	}
 }
 
