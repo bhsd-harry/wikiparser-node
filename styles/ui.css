@@ -19,7 +19,7 @@
 	font-weight: normal;
 }
 .wpb-ext-inner {
-	color: revert;
+	color: initial;
 }
 
 .wpb-arg {
@@ -44,7 +44,7 @@
 	font-weight: normal;
 }
 .wpb-parameter {
-	color: revert;
+	color: initial;
 	font-weight: normal;
 }
 .wpb-template > .wpb-parameter > .wpb-parameter-key {
@@ -63,7 +63,7 @@
 	line-height: 1.2em;
 }
 .wpb-heading-title {
-	color: revert;
+	color: initial;
 	font-weight: bold;
 }
 
@@ -72,7 +72,7 @@
 	font-weight :bold;
 }
 .wpb-table-inter, .wpb-td-inner {
-	color: revert;
+	color: initial;
 	font-weight: normal;
 }
 .wpb-table-attr {
@@ -90,7 +90,7 @@
 	color: #000aaa;
 }
 .wpb-link-text, .wpb-ext-link-text {
-	color: revert;
+	color: initial;
 }
 
 .wpb-converter {
@@ -101,5 +101,5 @@
 	font-weight: normal;
 }
 .wpb-converter-from, .wpb-conveter-to {
-	color: revert;
+	color: initial;
 }
