@@ -7,6 +7,10 @@
 	"parserOptions": {
 		"ecmaVersion": 13
 	},
+	"ignorePatterns": [
+		"webpack.config.js",
+		"bundle.min.js"
+	],
 	"rules": {
 		"array-callback-return": [
 			2,
@@ -135,7 +139,7 @@
 		"no-shadow": [
 			2,
 			{
-				"builtinGlobals": true
+				"builtinGlobals": false
 			}
 		],
 		"no-undef-init": 2,

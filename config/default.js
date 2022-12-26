@@ -1,4 +1,5 @@
 /* eslint quotes: [2, 'double'], quote-props: [2, 'always'], comma-dangle: [2, 'never'] */
+"use strict";
 module.exports = {
 	"ext": [
 		"nowiki",
