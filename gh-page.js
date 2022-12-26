@@ -7,15 +7,18 @@
 	let /** @type {number} */ debounced;
 	const prettify = () => {
 			clearTimeout(debounced);
-			const wikitext = textbox.value,
-				printed = Parser.print(wikitext, input.checked);
-			preview.innerHTML = printed;
+			preview.innerHTML = Parser.print(textbox.value, input.checked);
+			preview.classList.remove('active');
+			textbox.style.color = 'transparent';
 		},
 		debounce = () => {
 			clearTimeout(debounced);
-			debounced = setTimeout(prettify, 2500);
+			debounced = setTimeout(prettify, 1000);
+			textbox.style.color = '';
+			preview.classList.add('active');
 		};
 	textbox.addEventListener('input', debounce);
+	textbox.addEventListener('cut', debounce);
 	input.addEventListener('change', prettify);
 	prettify();
 })();

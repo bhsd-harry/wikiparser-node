@@ -34,5 +34,4 @@ class GalleryImageToken extends FileToken {
 	}
 }
 
-Parser.classes.GalleryImageToken = __filename;
 module.exports = GalleryImageToken;

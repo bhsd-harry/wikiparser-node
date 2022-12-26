@@ -53,5 +53,4 @@ class GalleryToken extends Token {
 	}
 }
 
-Parser.classes.GalleryToken = __filename;
 module.exports = GalleryToken;

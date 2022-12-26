@@ -1,23 +1,25 @@
-:root {
-	font-size: 14px;
-	font-family: sans-serif;
-	line-height: 1.6;
-}
-body, main, article, div, h2, span, label, input, textarea {
+html, body, div, span, label, article, main, input, textarea {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: inherit;
+	font: inherit;
+	vertical-align: baseline;
+}
+:root {
+	font-size: 14px;
+	font-family: sans-serif;
 }
 body {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	background-color: #f0f0f0;
+	line-height: 1.6;
 }
 main {
 	display: flex;
-	width: 1200px;
+	width: 90vw;
+	max-width: 1200px;
 	margin: 3rem 0;
 	background-color: #fff;
 	box-shadow: 0 0 .5rem rgba(0, 0, 0, .1);
@@ -28,24 +30,9 @@ article {
 	width: 100%;
 	padding: 1rem 2rem 2rem;
 }
-h2 {
-	font-size: 1.6em;
-	font-weight: 700;
-	margin: 1rem 0;
-	padding: .2rem;
-	background: none;
-}
-#wikiPretty {
-	margin-bottom: 1em;
-}
 .fieldLayout {
-	max-width: 50em;
 	display: table;
 	padding: 0.5em 0;
-}
-.field {
-	width: 1px;
-	position: relative;
 }
 .field, .header {
 	display: table-cell;
@@ -54,18 +41,22 @@ h2 {
 .field, .header, input, input + span, label {
 	cursor: pointer;
 }
-input, textarea {
+.field, #editarea {
+	position: relative;
+}
+input, textarea, #wikiPretty {
 	outline: none;
-	border: 1px solid rgb(222, 222, 222);
+	border: 1px solid #dedede;
 	border-radius: .2em .2em 0 0;
-	background-color: rgb(245, 245, 245);
 	box-shadow: none;
 	padding: .4em;
 }
-input {
-	opacity: 0;
+input, textarea {
 	position: relative;
 	z-index: 1;
+}
+input {
+	opacity: 0;
 }
 input + span {
 	position: absolute;
@@ -82,18 +73,36 @@ input:checked + span {
 	background-color: #36c;
 	border-color: #36c;
 	background-size: 1em 1em;
-	background-image: linear-gradient(transparent,transparent),url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Cg fill=%22%23fff%22%3E%3Ctitle xmlns:default=%22http://www.w3.org/2000/svg%22%3Echeck%3C/title%3E%3Cpath xmlns:default=%22http://www.w3.org/2000/svg%22 d=%22M7 14.17L2.83 10l-1.41 1.41L7 17 19 5l-1.41-1.42L7 14.17z%22/%3E%3C/g%3E%3C/svg%3E");
+	background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Cg fill=%22%23fff%22%3E%3Ctitle xmlns:default=%22http://www.w3.org/2000/svg%22%3Echeck%3C/title%3E%3Cpath xmlns:default=%22http://www.w3.org/2000/svg%22 d=%22M7 14.17L2.83 10l-1.41 1.41L7 17 19 5l-1.41-1.42L7 14.17z%22/%3E%3C/g%3E%3C/svg%3E");
 }
 label {
 	padding-left: 0.7em;
 }
-#wpTextbox {
+textarea, #wikiPretty {
+	line-height: 1.4;
+	tab-size: 4;
+}
+textarea {
 	display: block;
 	width: 100%;
 	max-height: 100vh;
 	resize: vertical;
 	font-family: monospace;
-	line-height: 1.4;
-	tab-size: 4;
 	direction: ltr;
+	background: none;
+	caret-color: #000;
+}
+#wikiPretty {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background-color: #f5f5f5;
+}
+#wikiPretty span {
+	font-size: inherit;
+}
+#wikiPretty.active span {
+	color: transparent;
 }
