@@ -3,6 +3,7 @@
 *.swp
 */*.swp
 .DS_Store
+errors/
 .vscode/
 wiki/
 typings/mw
