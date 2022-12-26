@@ -104,7 +104,7 @@ class LinkToken extends Token {
 
 	text() {
 		const str = super.text('|');
-		return this.type === 'gallery-image' ? str : `[[${str}]]`;
+		return this.type === 'gallery-image' ? str.slice(5) : `[[${str}]]`;
 	}
 
 	/** @param {string} link */
