@@ -58,6 +58,21 @@ class GalleryToken extends Token {
 	text() {
 		return text(this.children, '\n');
 	}
+
+	/** @param {string} file */
+	insertImage(file, i = this.childNodes.length) {
+		let title;
+		try {
+			title = this.normalizeTitle(decodeURIComponent(file), 6, true);
+		} catch {
+			title = this.normalizeTitle(file, 6, true);
+		}
+		if (!title.valid) {
+			throw new SyntaxError(`非法的文件名：${file}`);
+		}
+		const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
+		return this.insertAt(token, i);
+	}
 }
 
 Parser.classes.GalleryToken = __filename;
