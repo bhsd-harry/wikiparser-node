@@ -73,13 +73,18 @@ const /** @type {Parser} */ Parser = {
 		});
 		return token;
 	},
+
+	print(wikitext, include = false, config = Parser.getConfig()) {
+		const token = this.parse(wikitext, include, this.MAX_STAGE, config);
+		return `<div class="wikiparser">${token.print()}</div>`;
+	},
 };
 
 const /** @type {PropertyDescriptorMap} */ def = {};
 for (const key in Parser) {
 	if (['MAX_STAGE'].includes(key)) {
 		def[key] = {enumerable: false, writable: false};
-	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse'].includes(key)) {
+	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse', 'print'].includes(key)) {
 		def[key] = {enumerable: false};
 	}
 }

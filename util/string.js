@@ -24,7 +24,7 @@ const print = (childNodes, opt = {}) => {
 		{pre = '', post = '', sep = ''} = opt;
 	return `${pre}${childNodes.map(child => typeof child === 'string'
 		? child.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-		: `</span>${child.print()}<span class="${opt.parent}">`,
+		: child.print(),
 	).join(sep)}${post}`;
 };
 

@@ -21,7 +21,6 @@ declare global {
 		post?: string;
 		sep?: string;
 		class?: string;
-		parent?: string;
 	} 
 }
 

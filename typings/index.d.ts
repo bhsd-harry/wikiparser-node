@@ -17,6 +17,7 @@ declare global {
 
 		readonly MAX_STAGE: number;
 		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
+		print(wikitext: string, include?: boolean, config?: ParserConfig): string;
 	}
 }
 
