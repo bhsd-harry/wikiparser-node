@@ -44,6 +44,10 @@ class GalleryToken extends Token {
 		return super.toString('\n');
 	}
 
+	print() {
+		return super.print({sep: '\n'});
+	}
+
 	text() {
 		return text(this.children, '\n');
 	}

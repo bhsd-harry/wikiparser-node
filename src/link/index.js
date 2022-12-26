@@ -32,7 +32,7 @@ class LinkToken extends Token {
 	}
 
 	print() {
-		return super.print({pre: '[[', post: ']]', sep: '|'});
+		return super.print(this.type === 'gallery-image' ? {sep: '|'} : {pre: '[[', post: ']]', sep: '|'});
 	}
 
 	text() {
