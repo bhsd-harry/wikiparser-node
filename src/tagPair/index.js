@@ -36,11 +36,11 @@ class TagPairToken extends Token {
 	}
 
 	toString() {
-		const {closed, firstChild, lastChild, selfClosing} = this,
+		const {closed, firstChild, selfClosing} = this,
 			[opening, closing] = this.#tags;
 		return selfClosing
 			? `<${opening}${String(firstChild)}/>`
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${closed ? `</${closing}>` : ''}`;
+			: `<${opening}${super.toString('>')}${closed ? `</${closing}>` : ''}`;
 	}
 
 	print() {
