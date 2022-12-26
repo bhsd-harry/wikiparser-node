@@ -9,6 +9,7 @@
 	},
 	"ignorePatterns": [
 		"webpack.config.js",
+		"bundle.js",
 		"bundle.min.js"
 	],
 	"rules": {
