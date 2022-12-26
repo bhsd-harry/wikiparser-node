@@ -25,12 +25,17 @@ class GalleryToken extends Token {
 				this.appendChild(line);
 				continue;
 			}
-			const [, file, alt] = matches,
-				title = this.normalizeTitle(file.includes('%') ? decodeURIComponent(file) : file, 6, true);
+			const [, file, alt] = matches;
+			let title;
+			try {
+				title = this.normalizeTitle(decodeURIComponent(file), 6, true);
+			} catch {
+				title = this.normalizeTitle(file, 6, true);
+			}
 			if (!title.valid) {
 				this.appendChild(line);
 			} else {
-				this.appendChild(new GalleryImageToken(title.title, alt, title, config, accum));
+				this.appendChild(new GalleryImageToken(file, alt, title, config, accum));
 			}
 		}
 	}
