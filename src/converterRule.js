@@ -52,15 +52,6 @@ class ConverterRuleToken extends Token {
 		}
 		return super.print({sep: ':'});
 	}
-
-	/** @returns {string} */
-	text() {
-		if (this.childNodes.length === 3) {
-			const [from, variant, to] = this.children;
-			return `${from.text()}=>${variant.text()}:${to.text()}`;
-		}
-		return super.text(':');
-	}
 }
 
 module.exports = ConverterRuleToken;

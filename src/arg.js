@@ -1,12 +1,11 @@
 'use strict';
 
-const {text} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+const /** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
 /**
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, Token, ...HiddenToken]}`
+ * @classdesc `{childNodes: [AtomToken, Token, ...AtomToken]}`
  */
 class ArgToken extends Token {
 	type = 'arg';
@@ -20,7 +19,7 @@ class ArgToken extends Token {
 		super(undefined, config, true, accum);
 		for (const [i, part] of parts.entries()) {
 			if (i === 0 || i > 1) {
-				const AtomToken = i === 0 ? require('./atom') : require('./atom/hidden'),
+				const AtomToken = require('./atom'),
 					token = new AtomToken(part, `arg-${i === 0 ? 'name' : 'redundant'}`, config, accum);
 				this.appendChild(token);
 			} else {
@@ -37,11 +36,6 @@ class ArgToken extends Token {
 
 	print() {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
-	}
-
-	/** @returns {string} */
-	text() {
-		return `{{{${text(this.children.slice(0, 2), '|')}}}}`;
 	}
 }
 

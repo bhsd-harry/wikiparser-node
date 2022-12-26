@@ -5,7 +5,7 @@ const /** @type {Parser} */ Parser = require('..'),
 
 /**
  * 章节标题
- * @classdesc `{childNodes: [Token, HiddenToken]}`
+ * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 class HeadingToken extends Token {
 	type = 'heading';
@@ -35,12 +35,6 @@ class HeadingToken extends Token {
 		const name = Number(this.name),
 			equals = '='.repeat(name);
 		return super.print({pre: equals, sep: equals, class: `heading-${Math.min(name, 3)}`});
-	}
-
-	/** @returns {string} */
-	text() {
-		const equals = '='.repeat(Number(this.name));
-		return `${equals}${this.firstElementChild.text()}${equals}`;
 	}
 }
 

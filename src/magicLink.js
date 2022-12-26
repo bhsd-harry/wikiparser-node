@@ -24,7 +24,7 @@ class MagicLinkToken extends Token {
 	afterBuild() {
 		const ParameterToken = require('./parameter'),
 			/** @type {ParameterToken} */ parameter = this.closest('parameter');
-		if (parameter?.getValue() === this.text()) {
+		if (parameter?.getValue() === this.toString()) {
 			this.replaceWith(this.toString());
 		}
 		return this;

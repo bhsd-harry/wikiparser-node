@@ -6,15 +6,6 @@
  */
 const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
 
-/** @param {string} str */
-const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
-
-/** @param {(string|AstNode)[]} childNodes */
-const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node');
-	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
-};
-
 /**
  * @param {(string|AstNode)[]} childNodes
  * @param {printOpt} opt
@@ -62,4 +53,4 @@ const explode = (start, end, separator, str) => {
 const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
 	+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*';
 
-module.exports = {removeComment, ucfirst, text, print, explode, extUrlChar};
+module.exports = {removeComment, print, explode, extUrlChar};

@@ -1,6 +1,6 @@
 'use strict';
 
-const {text, print} = require('../util/string'),
+const {print} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	ConverterFlagsToken = require('./converterFlags'),
@@ -46,11 +46,6 @@ class ConverterToken extends Token {
 		return `<span class="wpb-converter">-{${flags.print()}${
 			flags.childNodes.length ? '|' : ''
 		}${print(rules, {sep: ';'})}}-</span>`;
-	}
-
-	text() {
-		const [flags, ...rules] = this.children;
-		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 }
 

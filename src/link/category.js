@@ -13,16 +13,10 @@ class CategoryToken extends LinkToken {
 	/**
 	 * @param {string} link
 	 * @param {string|undefined} text
-	 * @param {Title} title
 	 * @param {accum} accum
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		super(link, text, title, config, accum);
-	}
-
-	/** @returns {string} */
-	text() {
-		return `[[${this.firstElementChild.text()}]]`;
 	}
 }
 

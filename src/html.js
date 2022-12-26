@@ -37,10 +37,6 @@ class HtmlToken extends Token {
 			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`, post: `${this.selfClosing ? '/' : ''}&gt;`,
 		});
 	}
-
-	text() {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.text()}${this.selfClosing ? '/' : ''}>`;
-	}
 }
 
 module.exports = HtmlToken;

@@ -15,7 +15,6 @@ class FileToken extends LinkToken {
 	/**
 	 * @param {string} link
 	 * @param {string|undefined} text
-	 * @param {Title} title
 	 * @param {accum} accum
 	 * @complexity `n`
 	 */

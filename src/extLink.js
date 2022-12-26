@@ -37,10 +37,6 @@ class ExtLinkToken extends Token {
 		const {childNodes: {length}} = this;
 		return super.print({pre: '[', sep: length > 1 ? this.#space : '', post: length > 1 ? ']' : `${this.#space}]`});
 	}
-
-	text() {
-		return `[${super.text(' ').replaceAll('\n', ' ')}]`;
-	}
 }
 
 module.exports = ExtLinkToken;

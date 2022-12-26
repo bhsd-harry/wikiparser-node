@@ -37,13 +37,8 @@ class ParameterToken extends Token {
 			: super.print({sep: '='});
 	}
 
-	/** @returns {string} */
-	text() {
-		return this.anon ? this.lastElementChild.text() : super.text('=');
-	}
-
 	getValue() {
-		const value = this.lastElementChild.text();
+		const value = this.lastElementChild.toString();
 		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();
 	}
 }

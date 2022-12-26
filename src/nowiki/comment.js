@@ -1,14 +1,13 @@
 'use strict';
 
-const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+const /** @type {Parser} */ Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * HTML注释，不可见
  * @classdesc `{childNodes: [string]}`
  */
-class CommentToken extends hidden(NowikiToken) {
+class CommentToken extends NowikiToken {
 	type = 'comment';
 	closed;
 

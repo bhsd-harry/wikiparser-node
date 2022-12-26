@@ -50,15 +50,6 @@ class TagPairToken extends Token {
 			? super.print({pre: `&lt;${opening}`, post: '/&gt;'})
 			: super.print({pre: `&lt;${opening}`, sep: '&gt;', post: closed ? `&lt;/${closing}&gt;` : ''});
 	}
-
-	/** @returns {string} */
-	text() {
-		const {closed, firstChild, selfClosing} = this,
-			[opening, closing] = this.#tags;
-		return selfClosing
-			? `<${opening}${typeof firstChild === 'string' ? firstChild : firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${closed ? `</${closing}>` : ''}`;
-	}
 }
 
 module.exports = TagPairToken;

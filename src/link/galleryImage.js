@@ -14,7 +14,6 @@ class GalleryImageToken extends FileToken {
 	/**
 	 * @param {string} link
 	 * @param {string|undefined} text
-	 * @param {Title} title
 	 * @param {accum} accum
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {

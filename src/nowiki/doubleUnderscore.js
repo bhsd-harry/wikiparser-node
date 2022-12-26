@@ -1,14 +1,13 @@
 'use strict';
 
-const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+const /** @type {Parser} */ Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * 状态开关
  * @classdesc `{childNodes: [string]}`
  */
-class DoubleUnderscoreToken extends hidden(NowikiToken) {
+class DoubleUnderscoreToken extends NowikiToken {
 	type = 'double-underscore';
 
 	/**

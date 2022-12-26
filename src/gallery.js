@@ -1,7 +1,6 @@
 'use strict';
 
-const {text} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+const /** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	GalleryImageToken = require('./link/galleryImage');
 
@@ -46,10 +45,6 @@ class GalleryToken extends Token {
 
 	print() {
 		return super.print({sep: '\n'});
-	}
-
-	text() {
-		return text(this.children, '\n');
 	}
 }
 

@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment, text, print} = require('../util/string'),
+const {removeComment, print} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
@@ -109,19 +109,6 @@ class TranscludeToken extends Token {
 				? `${firstElementChild.print()}${length > 1 ? ':' : ''}${print(children.slice(1), {sep: '|'})}`
 				: print(children, {sep: '|'})
 		}}}</span>`;
-	}
-
-	/**
-	 * @returns {string}
-	 * @complexity `n`
-	 */
-	text() {
-		const {children, childNodes: {length}, firstElementChild} = this;
-		return `{{${this.modifier}${this.modifier && ':'}${
-			this.type === 'magic-word'
-				? `${firstElementChild.text()}${length > 1 ? ':' : ''}${text(children.slice(1), '|')}`
-				: super.text('|')
-		}}}`;
 	}
 }
 

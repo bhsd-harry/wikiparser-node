@@ -1,7 +1,5 @@
 'use strict';
 
-const {text} = require('./util/string');
-
 const /** @type {Parser} */ Parser = {
 	running: false,
 
@@ -30,29 +28,10 @@ const /** @type {Parser} */ Parser = {
 			.match(new RegExp(`^(${interwiki.join('|')})\\s*:`, 'i'));
 	},
 
-	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {
-		title = String(title);
-		let /** @type {Token} */ token;
-		if (!halfParsed) {
-			const Token = require('./src');
-			token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce());
-			title = token.firstChild;
-		}
-		const Title = require('./lib/title'),
-			titleObj = new Title(title, defaultNs, config);
-		if (token) {
-			const build = /** @param {string[]} keys */ keys => {
-				for (const key of keys) {
-					if (titleObj[key].includes('\x00')) {
-						titleObj[key] = text(token.buildFromStr(titleObj[key]));
-					}
-				}
-			};
-			this.run(() => {
-				build(['title', 'fragment']);
-			});
-		}
-		return titleObj;
+	/* eslint-disable-next-line no-unused-vars */
+	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig()) {
+		const Title = require('./lib/title');
+		return new Title(String(title), defaultNs, config);
 	},
 
 	MAX_STAGE: 11,

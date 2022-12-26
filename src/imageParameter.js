@@ -13,8 +13,6 @@ class ImageParameterToken extends Token {
 	type = 'image-parameter';
 	#syntax = '';
 
-	static #noLink = Symbol('no-link');
-
 	/**
 	 * @template {string} T
 	 * @param {T} key
@@ -94,13 +92,6 @@ class ImageParameterToken extends Token {
 			return super.print();
 		}
 		return `<span class="wpb-image-parameter">${this.#syntax.replace('$1', print(this.childNodes))}</span>`;
-	}
-
-	text() {
-		if (!this.#syntax) {
-			return super.text().trim();
-		}
-		return this.#syntax.replace('$1', super.text()).trim();
 	}
 }
 

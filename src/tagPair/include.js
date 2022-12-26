@@ -1,14 +1,13 @@
 'use strict';
 
-const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+const /** @type {Parser} */ Parser = require('../..'),
 	TagPairToken = require('.');
 
 /**
  * `<includeonly>`或`<noinclude>`
  * @classdesc `{childNodes: [string, string]}`
  */
-class IncludeToken extends hidden(TagPairToken) {
+class IncludeToken extends TagPairToken {
 	type = 'include';
 
 	/**

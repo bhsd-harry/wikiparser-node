@@ -27,10 +27,6 @@ class ConverterFlagsToken extends Token {
 	print() {
 		return super.print({sep: ';'});
 	}
-
-	text() {
-		return super.text(';');
-	}
 }
 
 module.exports = ConverterFlagsToken;

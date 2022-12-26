@@ -25,11 +25,6 @@ class TrToken extends Token {
 			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
 		);
 	}
-
-	text() {
-		const str = super.text();
-		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
-	}
 }
 
 module.exports = TrToken;
