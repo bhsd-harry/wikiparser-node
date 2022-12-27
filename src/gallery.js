@@ -44,7 +44,7 @@ class GalleryToken extends Token {
 	}
 
 	print() {
-		return super.print({sep: '\n'});
+		return super.print({sep: '\n', wrap: s => `<span class="wpb-error">${s}</span>`});
 	}
 }
 

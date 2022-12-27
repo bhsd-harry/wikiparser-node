@@ -21,6 +21,7 @@ declare global {
 		post?: string;
 		sep?: string;
 		class?: string;
+		wrap?: (s: string) => string;
 	} 
 }
 

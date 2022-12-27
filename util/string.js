@@ -12,9 +12,9 @@ const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
  */
 const print = (childNodes, opt = {}) => {
 	const AstNode = require('../lib/node'),
-		{pre = '', post = '', sep = ''} = opt;
+		{pre = '', post = '', sep = '', wrap = s => s} = opt;
 	return `${pre}${childNodes.map(child => typeof child === 'string'
-		? child.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+		? wrap(child.replaceAll('<', '&lt;').replaceAll('>', '&gt;'))
 		: child.print(),
 	).join(sep)}${post}`;
 };

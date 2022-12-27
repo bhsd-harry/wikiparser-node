@@ -89,7 +89,7 @@ class ImageParameterToken extends Token {
 
 	print() {
 		if (!this.#syntax) {
-			return super.print();
+			return super.print({class: 'image-caption'});
 		}
 		return `<span class="wpb-image-parameter">${this.#syntax.replace('$1', print(this.childNodes))}</span>`;
 	}

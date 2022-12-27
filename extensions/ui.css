@@ -3,7 +3,12 @@
 	font-family: monospace;
 }
 
-.wpb-noinclude, .wpb-include, .wpb-comment, .wpb-arg-redundant {
+.wpb-error, .wpb-arg-redundant, .wpb-table-inter {
+	color: #f00;
+	font-weight: normal;
+}
+
+.wpb-noinclude, .wpb-include, .wpb-comment {
 	color: #72777d;
 	font-weight: normal;
 }
@@ -20,6 +25,7 @@
 }
 .wpb-ext-inner {
 	color: initial;
+	background-color: rgba(0, 0, 0, .04);
 }
 
 .wpb-arg {
@@ -53,16 +59,8 @@
 	color: #b0c;
 }
 
-.wpb-heading-1, .wpb-heading-2, .wpb-heading-3, .wpb-image-parameter {
+.wpb-heading, .wpb-image-parameter {
 	color: #0076dd;
-}
-.wpb-heading-1 {
-	font-size: 1.8em;
-	line-height: 1.2em;
-}
-.wpb-heading-2 {
-	font-size: 1.5em;
-	line-height: 1.2em;
 }
 .wpb-heading-title {
 	color: initial;
@@ -73,12 +71,12 @@
 	color: #d08;
 	font-weight :bold;
 }
-.wpb-table-inter, .wpb-td-inner {
-	color: initial;
-	font-weight: normal;
-}
 .wpb-table-attr {
 	color: #db00be;
+	font-weight: normal;
+}
+.wpb-td-inner {
+	color: initial;
 	font-weight: normal;
 }
 
@@ -92,7 +90,7 @@
 	color: #000aaa;
 	background-color: rgba(34, 17, 153, .04);
 }
-.wpb-link-text, .wpb-ext-link-text {
+.wpb-link-text, .wpb-image-caption, .wpb-ext-link-text {
 	color: initial;
 }
 
@@ -103,6 +101,6 @@
 .wpb-converter-rule {
 	font-weight: normal;
 }
-.wpb-converter-from, .wpb-conveter-to {
+.wpb-converter-rule-from, .wpb-converter-rule-to {
 	color: initial;
 }
