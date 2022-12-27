@@ -7,7 +7,7 @@ const fixedToken = require('../mixin/fixedToken'),
 
 /**
  * 章节标题
- * @classdesc `{childNodes: [Token, HiddenToken]}`
+ * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 class HeadingToken extends fixedToken(sol(Token)) {
 	type = 'heading';
