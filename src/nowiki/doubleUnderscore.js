@@ -1,7 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
-	NowikiToken = require('.');
+const NowikiToken = require('.');
 
 /**
  * 状态开关
@@ -9,14 +8,6 @@ const /** @type {Parser} */ Parser = require('../..'),
  */
 class DoubleUnderscoreToken extends NowikiToken {
 	type = 'double-underscore';
-
-	/**
-	 * @param {string} word
-	 * @param {accum} accum
-	 */
-	constructor(word, config = Parser.getConfig(), accum = []) {
-		super(word, config, accum);
-	}
 
 	/** @this {DoubleUnderscoreToken & {firstChild: string}} */
 	toString() {
