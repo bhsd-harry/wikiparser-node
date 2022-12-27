@@ -10,7 +10,7 @@
 	font-size: inherit;
 	tab-size: 4;
 	overflow-y: auto;
-	word-break: break-all;
+	word-break: normal;
 }
 .wikiparsed {
 	position: relative;
