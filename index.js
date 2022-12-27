@@ -55,7 +55,7 @@ const /** @type {Parser} */ Parser = {
 
 	print(wikitext, include = false, config = Parser.getConfig()) {
 		const token = this.parse(wikitext, include, this.MAX_STAGE, config);
-		return `<div class="wikiparser">${token.print()}</div>`;
+		return `<div class="wikiparser">${token.print()} </div>`;
 	},
 };
 

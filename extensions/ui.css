@@ -34,10 +34,12 @@
 .wpb-template {
 	color: #80c;
 	font-weight: bold;
+	background-color: rgba(119, 0, 170, .04);
 }
 .wpb-magic-word {
 	color: #d33;
 	font-weight: bold;
+	background-color: rgba(170, 17, 17, .04);
 }
 .wpb-invoke-module, .wpb-invoke-function {
 	color: #dd5d33;
@@ -88,6 +90,7 @@
 
 .wpb-link, .wpb-category, .wpb-file, .wpb-gallery-image, .wpb-ext-link, .wpb-free-ext-link {
 	color: #000aaa;
+	background-color: rgba(34, 17, 153, .04);
 }
 .wpb-link-text, .wpb-ext-link-text {
 	color: initial;

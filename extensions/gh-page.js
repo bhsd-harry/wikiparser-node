@@ -10,6 +10,7 @@
 			preview.innerHTML = Parser.print(textbox.value, input.checked);
 			preview.classList.remove('active');
 			textbox.style.color = 'transparent';
+			preview.scrollTop = textbox.scrollTop;
 		},
 		debounce = () => {
 			clearTimeout(debounced);
@@ -19,6 +20,9 @@
 		};
 	textbox.addEventListener('input', debounce);
 	textbox.addEventListener('cut', debounce);
+	textbox.addEventListener('scroll', () => {
+		preview.scrollTop = textbox.scrollTop;
+	});
 	input.addEventListener('change', prettify);
 	prettify();
 })();
