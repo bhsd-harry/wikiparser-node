@@ -4,7 +4,8 @@
 		"es2021": true
 	},
 	"plugins": [
-		"promise"
+		"promise",
+		"es-x"
 	],
 	"extends": [
 		"eslint:recommended",
@@ -290,6 +291,7 @@
 			"module.exports"
 		],
 		"n/no-path-concat": 2,
-		"n/no-missing-require": 2
+		"n/no-missing-require": 2,
+		"es-x/no-regexp-lookbehind-assertions": 2
 	}
 }

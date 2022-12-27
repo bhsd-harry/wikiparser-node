@@ -27,7 +27,8 @@
     "webpack": "^5.73.0",
     "eslint": "^8.30.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-n": "^15.6.0"
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-es-x": "^5.4.0"
   },
   "engines": {
     "node": "^18.4.0"

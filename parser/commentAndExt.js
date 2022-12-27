@@ -14,13 +14,13 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 				OnlyincludeToken = require('../src/onlyinclude');
 			new OnlyincludeToken(inner, config, accum);
 			return str;
-		}).replace(/(?<=^|\x00\d+e\x7f).*?(?=$|\x00\d+e\x7f)/gs, substr => {
+		}).replace(/(^|\x00\d+e\x7f)(.*?)(?=$|\x00\d+e\x7f)/gs, (_, lead, substr) => {
 			if (substr === '') {
-				return '';
+				return lead;
 			}
 			const NoincludeToken = require('../src/nowiki/noinclude');
 			new NoincludeToken(substr, config, accum);
-			return `\x00${accum.length - 1}c\x7f`;
+			return `${lead}\x00${accum.length - 1}c\x7f`;
 		});
 	}
 	const ext = config.ext.join('|'),
