@@ -8,7 +8,8 @@
 	],
 	"extends": [
 		"eslint:recommended",
-		"plugin:promise/recommended"
+		"plugin:promise/recommended",
+		"plugin:node/recommended"
 	],
 	"parserOptions": {
 		"ecmaVersion": 13
@@ -283,6 +284,11 @@
 			2,
 			"inside"
 		],
-		"promise/no-multiple-resolved": 1
+		"promise/no-multiple-resolved": 1,
+		"node/exports-style": [
+			2,
+			"module.exports"
+		],
+		"node/no-missing-require": 2
 	}
 }
