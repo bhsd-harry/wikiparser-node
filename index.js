@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require('fs'),
+	path = require('path'),
 	{text} = require('./util/string');
 
 const /** @type {Parser} */ Parser = {
@@ -49,12 +50,12 @@ const /** @type {Parser} */ Parser = {
 			...Object.entries(this.mixins),
 			...Object.entries(this.parsers),
 		];
-		for (const [, path] of entries) {
-			delete require.cache[require.resolve(path)];
+		for (const [, filePath] of entries) {
+			delete require.cache[require.resolve(filePath)];
 		}
-		for (const [name, path] of entries) {
+		for (const [name, filePath] of entries) {
 			if (name in global) {
-				global[name] = require(path);
+				global[name] = require(filePath);
 			}
 		}
 	},
@@ -135,7 +136,7 @@ const /** @type {Parser} */ Parser = {
 				token.parse(maxStage, include);
 			} catch (e) {
 				if (e instanceof Error) {
-					const file = `${__dirname}/errors/${new Date().toISOString()}`,
+					const file = path.join(__dirname, 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
 					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : token.toString());
 					fs.writeFileSync(`${file}.err`, e.stack);
@@ -150,13 +151,13 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	reparse(date) {
-		const path = `${__dirname}/errors/`,
-			main = fs.readdirSync(path).find(name => name.startsWith(date) && name.endsWith('Z'));
+		const main = fs.readdirSync(path.join(__dirname, 'errors'))
+			.find(name => name.startsWith(date) && name.endsWith('Z'));
 		if (!main) {
 			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
 		}
 		const Token = require('./src'),
-			file = `${path}${main}`,
+			file = path.join(__dirname, 'errors', main),
 			wikitext = fs.readFileSync(file, 'utf8'),
 			{stage, include, config} = require(`${file}.json`);
 		this.config = config;
