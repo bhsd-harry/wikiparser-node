@@ -3,10 +3,10 @@
 }
 .wikiparsed, #wikiPretty {
 	outline: none;
-	border: 1.5px solid #dedede;
+	border: 1.5px solid #dedede !important;
 	border-radius: 0;
 	padding: .4em;
-	line-height: 1.4;
+	line-height: 1.4 !important;
 	font-size: inherit;
 	tab-size: 4;
 	overflow-y: auto;

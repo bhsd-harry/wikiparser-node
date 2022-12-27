@@ -43,7 +43,7 @@
 						const {offsetTop, offsetHeight} = child;
 						return offsetTop >= scrollTop + parentHeight || offsetTop + offsetHeight <= scrollTop;
 					});
-				end += end === -1 ? Infinity : start + 1;
+				end = end === -1 ? childNodes.length : end + start + 1;
 				start &&= start - 1;
 				const wikitext = root.childNodes.slice(start, end).map(String).join(''),
 					tokens = Parser.parse(wikitext, option.include).childNodes;
