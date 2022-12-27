@@ -8,6 +8,8 @@
 	const wikiparse = (textbox, option = {}) => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
 			throw new TypeError('wikiparse方法仅可用于textarea元素！');
+		} else if (typeof option !== 'object') {
+			option = {include: option};
 		}
 		const preview = document.createElement('div'),
 			container = document.createElement('div');
