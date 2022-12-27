@@ -27,7 +27,7 @@ class TableToken extends TrToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			{closingPattern} = TableToken;
-		this.appendChild(Parser.run(() => new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum)));
+		this.appendChild(new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum));
 	}
 }
 
