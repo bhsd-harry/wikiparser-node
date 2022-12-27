@@ -36,11 +36,6 @@ class ParameterToken extends Token {
 			? `<span class="wpb-parameter">${this.lastElementChild.print()}</span>`
 			: super.print({sep: '='});
 	}
-
-	getValue() {
-		const value = this.lastElementChild.toString();
-		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();
-	}
 }
 
 module.exports = ParameterToken;

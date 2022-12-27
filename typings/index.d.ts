@@ -11,9 +11,7 @@ declare global {
 		getConfig(): ParserConfig;
 
 		isInterwiki(title: string, config?: ParserConfig): RegExpMatchArray;
-		normalizeTitle(
-			title: string, defaultNs?: number, include?: boolean, config?: ParserConfig, halfParsed?: boolean
-		): Title;
+		normalizeTitle(title: string, defaultNs?: number, config?: ParserConfig): Title;
 
 		readonly MAX_STAGE: number;
 		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;

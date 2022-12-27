@@ -78,10 +78,10 @@ class TranscludeToken extends Token {
 			const token = new AtomToken(title, 'template-name', config, accum);
 			this.appendChild(token);
 		}
-		const templateLike = this.matches('template, magic-word#invoke');
+		const notTemplateLike = this.type === 'magic-word' && this.name !== 'invoke';
 		let i = 1;
 		for (const part of parts) {
-			if (!templateLike) {
+			if (notTemplateLike) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}

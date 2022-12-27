@@ -46,7 +46,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const title = Parser.normalizeTitle(page, 0, false, config, true),
+		const title = Parser.normalizeTitle(page, 0, config),
 			{ns, interwiki, valid} = title;
 		if (!valid) {
 			s += `[[${x}`;

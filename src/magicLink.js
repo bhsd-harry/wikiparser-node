@@ -20,15 +20,6 @@ class MagicLinkToken extends Token {
 			this.type = 'ext-link-url';
 		}
 	}
-
-	afterBuild() {
-		const ParameterToken = require('./parameter'),
-			/** @type {ParameterToken} */ parameter = this.closest('parameter');
-		if (parameter?.getValue() === this.toString()) {
-			this.replaceWith(this.toString());
-		}
-		return this;
-	}
 }
 
 module.exports = MagicLinkToken;

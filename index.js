@@ -29,7 +29,7 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	/* eslint-disable-next-line no-unused-vars */
-	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig()) {
+	normalizeTitle(title, defaultNs = 0, config = Parser.getConfig()) {
 		const Title = require('./lib/title');
 		return new Title(String(title), defaultNs, config);
 	},

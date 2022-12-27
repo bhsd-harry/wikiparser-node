@@ -27,9 +27,9 @@ class GalleryToken extends Token {
 			const [, file, alt] = matches;
 			let title;
 			try {
-				title = this.normalizeTitle(decodeURIComponent(file), 6, true);
+				title = this.normalizeTitle(decodeURIComponent(file), 6);
 			} catch {
-				title = this.normalizeTitle(file, 6, true);
+				title = this.normalizeTitle(file, 6);
 			}
 			if (!title.valid) {
 				this.appendChild(line);

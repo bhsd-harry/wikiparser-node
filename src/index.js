@@ -10,7 +10,6 @@ class Token extends AstElement {
 	#config;
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\x00\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	#accum;
-	/** @type {boolean} */ #include;
 
 	/**
 	 * @param {?string} wikitext
@@ -34,8 +33,6 @@ class Token extends AstElement {
 	 */
 	getAttribute(key) {
 		switch (key) {
-			case 'stage':
-				return this.#stage;
 			case 'config':
 				return JSON.parse(JSON.stringify(this.#config));
 			case 'accum':
@@ -81,8 +78,8 @@ class Token extends AstElement {
 	}
 
 	/** @param {string} title */
-	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);
+	normalizeTitle(title, defaultNs = 0) {
+		return Parser.normalizeTitle(title, defaultNs, this.#config);
 	}
 
 	/**
@@ -146,12 +143,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	buildFromStr(str) {
-		return str.split(/[\x00\x7f]/).map((s, i) => {
-			if (i % 2 === 0) {
-				return s;
-			}
-			return this.#accum[Number(s.slice(0, -1))];
-		});
+		return str.split(/[\x00\x7f]/).map((s, i) => i % 2 === 0 ? s : this.#accum[Number(s.slice(0, -1))]);
 	}
 
 	/**
@@ -186,7 +178,6 @@ class Token extends AstElement {
 
 	/** 解析、重构、生成部分Token的`name`属性 */
 	parse(n = MAX_STAGE, include = false) {
-		this.#include = Boolean(include);
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);
 		}
