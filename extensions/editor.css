@@ -1,0 +1,35 @@
+.wikiparse-container {
+	position: relative;
+}
+.wikiparsed, #wikiPretty {
+	outline: none;
+	border: 1.5px solid #dedede;
+	border-radius: 0;
+	padding: .4em;
+	line-height: 1.4;
+	font-size: inherit;
+	tab-size: 4;
+	overflow-y: auto;
+	word-break: break-all;
+}
+.wikiparsed {
+	position: relative;
+	display: block;
+	width: 100%;
+	resize: vertical;
+	font-family: monospace;
+	background: none !important;
+	caret-color: #000;
+}
+#wikiPretty {
+	position: absolute;
+	inset: 0;
+	background-color: #fff;
+}
+#wikiPretty span {
+	font-size: inherit;
+}
+#wikiPretty.active span {
+	color: transparent;
+	background: none;
+}
