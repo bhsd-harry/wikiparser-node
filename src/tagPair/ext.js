@@ -40,6 +40,13 @@ class ExtToken extends TagPairToken {
 				innerToken = new Token(inner, newConfig, false, accum);
 				break;
 			}
+			case 'gallery': {
+				ext.delete(lcName);
+				newConfig.ext = [...ext];
+				const GalleryToken = require('../gallery');
+				innerToken = new GalleryToken(inner, newConfig, accum);
+				break;
+			}
 			default: {
 				const NowikiToken = require('../nowiki');
 				innerToken = new NowikiToken(inner, config);
