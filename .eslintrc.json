@@ -9,7 +9,7 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:promise/recommended",
-		"plugin:node/recommended"
+		"plugin:n/recommended-script"
 	],
 	"parserOptions": {
 		"ecmaVersion": 13
@@ -197,7 +197,7 @@
 		],
 		"require-await": 2,
 		"spaced-comment": 2,
-        "strict": 2,
+		"strict": 2,
 		"symbol-description": 2,
 		"yoda": 2,
 		"array-bracket-spacing": 2,
@@ -285,10 +285,11 @@
 			"inside"
 		],
 		"promise/no-multiple-resolved": 1,
-		"node/exports-style": [
+		"n/exports-style": [
 			2,
 			"module.exports"
 		],
-		"node/no-missing-require": 2
+		"n/no-path-concat": 2,
+		"n/no-missing-require": 2
 	}
 }
