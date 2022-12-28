@@ -19,6 +19,9 @@ class SyntaxToken extends Token {
 	 * @param {acceptable} acceptable
 	 */
 	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
+		if (pattern.global) {
+			throw new RangeError(`SyntaxToken 的语法正则不能含有 g 修饰符：${pattern}`);
+		}
 		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
 		this.#pattern = pattern;
