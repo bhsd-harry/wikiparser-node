@@ -63,11 +63,11 @@ class AttributeToken extends Token {
 			token = Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce());
 			string = token.firstChild;
 		}
-		string = removeComment(string).replace(/\x00\d+~\x7f/g, '=');
+		string = removeComment(string).replace(/\0\d+~\x7f/g, '=');
 		const build = /** @param {string|boolean} str */ str =>
 			typeof str === 'boolean' || !token ? str : token.buildFromStr(str).map(String).join('');
 		for (const [, key,, quoted, unquoted] of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg)
+			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gs)
 		) {
 			if (!this.setAttr(build(key), build(quoted ?? unquoted ?? true), true)) {
 				this.#sanitized = false;
@@ -112,12 +112,12 @@ class AttributeToken extends Token {
 		if (this.type !== 'ext-attr') {
 			for (let [key, text] of this.#attr) {
 				let built = false;
-				if (key.includes('\x00')) {
+				if (key.includes('\0')) {
 					this.#attr.delete(key);
 					key = this.buildFromStr(key).map(String).join('');
 					built = true;
 				}
-				if (typeof text === 'string' && text.includes('\x00')) {
+				if (typeof text === 'string' && text.includes('\0')) {
 					text = this.buildFromStr(text).map(String).join('');
 					built = true;
 				}
@@ -184,7 +184,7 @@ class AttributeToken extends Token {
 			parsedKey = this.type !== 'ext-attr' && !init
 				? Parser.run(() => new Token(key, config).parseOnce(0, include).parseOnce().firstChild)
 				: key;
-		if (!/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
+		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7f)(?:[\w:.-]|\0\d+[t!~{}+-]\x7f)*$/.test(parsedKey)) {
 			if (init) {
 				return false;
 			}

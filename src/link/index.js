@@ -53,10 +53,10 @@ class LinkToken extends Token {
 	}
 
 	afterBuild() {
-		if (this.name.includes('\x00')) {
+		if (this.name.includes('\0')) {
 			this.setAttribute('name', text(this.buildFromStr(this.name)));
 		}
-		if (this.fragment.includes('\x00')) {
+		if (this.fragment.includes('\0')) {
 			this.setAttribute('fragment', text(this.buildFromStr(this.fragment)));
 		}
 		const that = this;
@@ -154,7 +154,7 @@ class LinkToken extends Token {
 
 	/** @param {string} fragment */
 	#setFragment(fragment, page = true) {
-		fragment = String(fragment).replace(/[<>[]#|=!]/g, p => encodeURIComponent(p));
+		fragment = String(fragment).replace(/[<>[]#|=!\]/g, p => encodeURIComponent(p));
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
@@ -213,19 +213,19 @@ class LinkToken extends Token {
 		if (/[#%]/.test(linkText)) {
 			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
 		}
-		const m1 = linkText.match(/^:?(?:[ \w\x80-\xff-]+:)?(.+?) ?\(.+\)$/);
+		const m1 = /^:?(?:[ \w\x80-\xff-]+:)?([^(]+)\(.+\)$/.exec(linkText);
 		if (m1) {
-			this.setLinkText(m1[1]);
+			this.setLinkText(m1[1].trim());
 			return;
 		}
-		const m2 = linkText.match(/^:?(?:[ \w\x80-\xff-]+:)?(.+?) ?（.+）$/);
+		const m2 = /^:?(?:[ \w\x80-\xff-]+:)?([^（]+)（.+）$/.exec(linkText);
 		if (m2) {
-			this.setLinkText(m2[1]);
+			this.setLinkText(m2[1].trim());
 			return;
 		}
-		const m3 = linkText.match(/^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?: ?\(.+\))?(?:, |，|، ).+/);
+		const m3 = /^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، ).+/.exec(linkText);
 		if (m3) {
-			this.setLinkText(m3[1]);
+			this.setLinkText(m3[1].trim());
 			return;
 		}
 		this.setLinkText(linkText);

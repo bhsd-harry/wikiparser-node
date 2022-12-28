@@ -53,7 +53,7 @@ class ExtLinkToken extends Token {
 	#correct() {
 		if (!this.#space && this.childNodes.length > 1
 			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"{\x00-\x20\x7f\p{Zs}\ufffd]/u.test(this.lastElementChild.text().replace(/&[lg]t;/, '<'))
+			&& /^[^[\]<>"{\0-\x1f\x7f\p{Zs}\ufffd]/u.test(this.lastElementChild.text().replace(/&[lg]t;/, '<'))
 		) {
 			this.#space = ' ';
 		}

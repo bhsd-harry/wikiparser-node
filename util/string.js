@@ -3,7 +3,7 @@
 /**
  * optionally convert to lower cases
  * @param {string} val
- * @param {boolean} i
+ * @param {string|undefined} i
  */
 const toCase = (val, i) => i ? val.toLowerCase() : val;
 
@@ -11,7 +11,7 @@ const toCase = (val, i) => i ? val.toLowerCase() : val;
  * remove half-parsed comment-like tokens
  * @param {string} str
  */
-const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
+const removeComment = str => str.replace(/\0\d+c\x7f/g, '');
 
 /** @param {string} str */
 const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
@@ -35,7 +35,7 @@ const explode = (start, end, separator, str) => {
 	if (str === undefined) {
 		return [];
 	}
-	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
+	const regex = RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
 		/** @type {string[]} */ exploded = [];
 	let mt = regex.exec(str),
 		depth = 0,
@@ -69,7 +69,7 @@ const normalizeSpace = (token = '', separator = '') => {
 			.join(separator);
 };
 
-const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
-	+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*';
+const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd])'
+	+ '(?:[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd]|\\0\\d+c\\x7f)*';
 
 module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};

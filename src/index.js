@@ -3,7 +3,7 @@
 /*
  * PHP解析器的步骤：
  * -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
- * 0. 移除特定字符`\x00`和`\x7f`，参见Parser::parse
+ * 0. 移除特定字符`\0`和`\x7f`，参见Parser::parse
  * 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
  * 2. 模板/模板变量/标题，注意rightmost法则，以及`-{`和`[[`可以破坏`{{`或`{{{`语法，
  *    参见Preprocessor_Hash::buildDomTreeArrayFromText
@@ -19,7 +19,7 @@
  */
 
 /*
- * \x00\d+.\x7f标记Token：
+ * \0\d+.\x7f标记Token：
  * e: ExtToken
  * c: CommentToken、NoIncludeToken和IncludeToken
  * !: `{{!}}`专用
@@ -52,7 +52,7 @@ class Token extends AstElement {
 	type = 'root';
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */ #stage = 0;
 	#config;
-	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\x00\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
+	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	#accum;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
@@ -66,7 +66,7 @@ class Token extends AstElement {
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''));
+			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\0\x7f]/g, ''));
 		}
 		this.#config = config;
 		this.#accum = accum;
@@ -474,7 +474,7 @@ class Token extends AstElement {
 		if (!Parser.debugging && externalUse('buildFromStr')) {
 			this.debugOnly('buildFromStr');
 		}
-		return str.split(/[\x00\x7f]/).map((s, i) => {
+		return str.split(/[\0\x7f]/).map((s, i) => {
 			if (i % 2 === 0) {
 				return s;
 			} else if (!isNaN(s.at(-1))) {
@@ -494,7 +494,7 @@ class Token extends AstElement {
 		}
 		this.#stage = MAX_STAGE;
 		const {childNodes: {length}, firstChild} = this;
-		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\x00')) {
+		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\0')) {
 			return this;
 		}
 		this.replaceChildren(...this.buildFromStr(firstChild));
@@ -556,7 +556,7 @@ class Token extends AstElement {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
 				const [, child] = table.childNodes;
-				if (typeof child === 'string' && child.includes('\x00')) {
+				if (typeof child === 'string' && child.includes('\0')) {
 					table.removeAt(1);
 					const inner = new Token(child, this.#config, true, this.#accum);
 					table.insertAt(inner, 1);

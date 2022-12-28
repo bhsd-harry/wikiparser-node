@@ -100,10 +100,15 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/** @complexity `n` */
+	getUnknownFlags() {
+		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/.test(flag));
+	}
+
+	/** @complexity `n` */
 	getEffectiveFlags() {
 		const {variants} = this.getAttribute('config'),
 			variantFlags = this.#flags.filter(flag => variants.includes(flag)),
-			unknownFlags = this.#flags.filter(flag => /{{.+}}/.test(flag));
+			unknownFlags = this.getUnknownFlags();
 		if (variantFlags.length) {
 			return new Set([...variantFlags, ...unknownFlags]);
 		}
@@ -136,11 +141,6 @@ class ConverterFlagsToken extends Token {
 			flags.delete('S');
 		}
 		return flags;
-	}
-
-	/** @complexity `n` */
-	getUnknownFlags() {
-		return [...this.getFlags()].filter(flag => /{{.+}}/.test(flag));
 	}
 
 	/** @param {string} flag */

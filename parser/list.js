@@ -7,20 +7,20 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseList = (text, config = Parser.getConfig(), accum = []) => {
-	const mt = text.match(/^((?:\x00\d+c\x7f)*)([;:*#]+)/);
+	const mt = /^((?:\0\d+c\x7f)*)([;:*#]+)/.exec(text);
 	if (!mt) {
 		return text;
 	}
 	const ListToken = require('../src/nowiki/list'),
 		[total, comment, prefix] = mt;
-	text = `${comment}\x00${accum.length}d\x7f${text.slice(total.length)}`;
+	text = `${comment}\0${accum.length}d\x7f${text.slice(total.length)}`;
 	new ListToken(prefix, config, accum);
 	let dt = prefix.split(';').length - 1;
 	if (!dt) {
 		return text;
 	}
 	const DdToken = require('../src/nowiki/dd');
-	let regex = /:+|-{/g,
+	let regex = /:+|-\{/g,
 		ex = regex.exec(text),
 		lc = 0;
 	while (ex && dt) {
@@ -28,16 +28,16 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 		if (syntax[0] === ':') {
 			if (syntax.length >= dt) {
 				new DdToken(':'.repeat(dt), config, accum);
-				return `${text.slice(0, index)}\x00${accum.length - 1}d\x7f${text.slice(index + dt)}`;
+				return `${text.slice(0, index)}\0${accum.length - 1}d\x7f${text.slice(index + dt)}`;
 			}
-			text = `${text.slice(0, index)}\x00${accum.length}d\x7f${text.slice(regex.lastIndex)}`;
+			text = `${text.slice(0, index)}\0${accum.length}d\x7f${text.slice(regex.lastIndex)}`;
 			dt -= syntax.length;
 			regex.lastIndex = index + 4 + String(accum.length).length;
 			new DdToken(syntax, config, accum);
 		} else if (syntax === '-{') {
 			if (!lc) {
 				const {lastIndex} = regex;
-				regex = /-{|}-/g;
+				regex = /-\{|\}-/g;
 				regex.lastIndex = lastIndex;
 			}
 			lc++;
@@ -45,7 +45,7 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 			lc--;
 			if (!lc) {
 				const {lastIndex} = regex;
-				regex = /:+|-{/g;
+				regex = /:+|-\{/g;
 				regex.lastIndex = lastIndex;
 			}
 		}

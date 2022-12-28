@@ -4,12 +4,14 @@
 		"es2021": true
 	},
 	"plugins": [
-		"promise"
+		"promise",
+		"regexp"
 	],
 	"extends": [
 		"eslint:recommended",
 		"plugin:promise/recommended",
-		"plugin:n/recommended-script"
+		"plugin:n/recommended-script",
+		"plugin:regexp/recommended"
 	],
 	"parserOptions": {
 		"ecmaVersion": 13
@@ -288,6 +290,30 @@
 			"module.exports"
 		],
 		"n/no-path-concat": 2,
-		"n/no-missing-require": 2
+		"n/no-missing-require": 2,
+		"regexp/no-contradiction-with-assertion": 2,
+		"regexp/no-missing-g-flag": 2,
+		"regexp/no-super-linear-backtracking": [
+			2,
+			{
+				"report": "potential"
+			}
+		],
+		"regexp/no-super-linear-move": [
+			2,
+			{
+				"report": "potential"
+			}
+		],
+		"regexp/no-extra-lookaround-assertions": 2,
+		"regexp/no-octal": 2,
+		"regexp/no-standalone-backslash": 2,
+		"regexp/prefer-escape-replacement-dollar-char": 2,
+		"regexp/prefer-quantifier": 2,
+		"regexp/prefer-regexp-test": 2,
+		"regexp/use-ignore-case": 2,
+		"regexp/hexadecimal-escape": 2,
+		"regexp/letter-case": 2,
+		"regexp/prefer-lookaround": 2
 	}
 }

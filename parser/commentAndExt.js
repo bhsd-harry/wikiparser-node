@@ -8,25 +8,25 @@ const /** @type {Parser} */ Parser = require('..');
  */
 const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], includeOnly = false) => {
 	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
-	if (includeOnly && new RegExp(onlyinclude, 's').test(text)) { // `<onlyinclude>`拥有最高优先级
+	if (includeOnly && text.search(onlyinclude) !== -1) { // `<onlyinclude>`拥有最高优先级
 		return text.replace(onlyinclude, /** @param {string} inner */ (_, inner) => {
-			const str = `\x00${accum.length}e\x7f`,
+			const str = `\0${accum.length}e\x7f`,
 				OnlyincludeToken = require('../src/onlyinclude');
 			new OnlyincludeToken(inner, config, accum);
 			return str;
-		}).replace(/(?<=^|\x00\d+e\x7f).*?(?=$|\x00\d+e\x7f)/gs, substr => {
+		}).replace(/(?<=^|\0\d+e\x7f).*?(?=$|\0\d+e\x7f)/gs, substr => {
 			if (substr === '') {
 				return '';
 			}
 			const NoincludeToken = require('../src/nowiki/noinclude');
 			new NoincludeToken(substr, config, accum);
-			return `\x00${accum.length - 1}c\x7f`;
+			return `\0${accum.length - 1}c\x7f`;
 		});
 	}
 	const ext = config.ext.join('|'),
 		includeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		noincludeRegex = includeOnly ? 'noinclude' : 'includeonly',
-		regex = new RegExp(
+		regex = RegExp(
 			'<!--.*?(?:-->|$)|' // comment
 			+ `<${includeRegex}(?:\\s.*?)?>|</${includeRegex}\\s*>|` // <includeonly>
 			+ `<(${ext})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
@@ -37,7 +37,7 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 		regex,
 		/** @type {function(...string): string} */
 		(substr, name, attr, inner, closing, include, includeAttr, includeInner, includeClosing) => {
-			const str = `\x00${accum.length}${name ? 'e' : 'c'}\x7f`;
+			const str = `\0${accum.length}${name ? 'e' : 'c'}\x7f`;
 			if (name) {
 				const ExtToken = require('../src/tagPair/ext');
 				new ExtToken(name, attr, inner, closing, config, accum);

@@ -59,7 +59,7 @@ class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
-				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
+				const pattern = RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
 					});
@@ -85,7 +85,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const [name] = removeComment(title).split('#');
-			if (/\x00\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
+			if (/\0\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
@@ -123,7 +123,7 @@ class TranscludeToken extends Token {
 	}
 
 	afterBuild() {
-		if (this.name.includes('\x00')) {
+		if (this.name.includes('\0')) {
 			this.setAttribute('name', text(this.buildFromStr(this.name)));
 		}
 		if (this.matches('template, magic-word#invoke')) {
@@ -470,7 +470,9 @@ class TranscludeToken extends Token {
 		} else if (this.childNodes.length < 2) {
 			throw new Error('尚未指定模块名称！');
 		}
-		const root = Parser.parse(`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
+		const root = Parser.parse(
+				`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config'),
+			),
 			{childNodes: {length}, firstElementChild} = root;
 		if (length !== 1 || !firstElementChild?.matches('magic-word#invoke')
 			|| firstElementChild.childNodes.length !== 3
@@ -553,8 +555,8 @@ class TranscludeToken extends Token {
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/ : /(?:^|\D)\d+$/).test(key)) {
 				let /** @type {number} */ last;
-				const str = key.slice(0, -key.match(/\d+$/)[0].length),
-					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`),
+				const str = key.slice(0, -/(?<!\d)\d+$/.exec(key)[0].length),
+					regex = RegExp(`^${escapeRegExp(str)}\\d+$`),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
 						const j = Number(name.slice(str.length)),
@@ -595,7 +597,7 @@ class TranscludeToken extends Token {
 	 */
 	escapeTables() {
 		const count = this.hasDuplicatedArgs();
-		if (!/\n\s*:*\s*{\|.*\n\s*\|}/s.test(this.text()) || !count) {
+		if (!/\n[^\S\n]*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/.test(this.text()) || !count) {
 			return this;
 		}
 		const stripped = this.toString().slice(2, -2),

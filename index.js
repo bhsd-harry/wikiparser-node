@@ -89,8 +89,7 @@ const /** @type {Parser} */ Parser = {
 
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
 		title = String(title);
-		return title.replaceAll('_', ' ').replace(/^\s*:?\s*/, '')
-			.match(new RegExp(`^(${interwiki.join('|')})\\s*:`, 'i'));
+		return RegExp(`^(${interwiki.join('|')})\\s*:`, 'i').exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/, ''));
 	},
 
 	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {
@@ -106,7 +105,7 @@ const /** @type {Parser} */ Parser = {
 		if (token) {
 			const build = /** @param {string[]} keys */ keys => {
 				for (const key of keys) {
-					if (titleObj[key].includes('\x00')) {
+					if (titleObj[key].includes('\0')) {
 						titleObj[key] = text(token.buildFromStr(titleObj[key]));
 					}
 				}

@@ -8,15 +8,20 @@ const {removeComment} = require('../util/string'),
  * @param {accum} accum
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
-	const source = '(?<=^(?:\x00\\d+c\x7f)*)={1,6}|\\[\\[|{{2,}|-{(?!{)',
+	const source = '^(\0\\d+c\x7f)*={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
-	let regex = new RegExp(source, 'gm'),
+	let regex = RegExp(source, 'gm'),
 		/** @type {BracketExecArray} */ mt = regex.exec(text),
 		moreBraces = text.includes('}}'),
 		lastIndex;
 	while (mt || lastIndex <= text.length && stack.at(-1)?.[0]?.[0] === '=') {
+		if (mt?.[1]) {
+			const [, {length}] = mt;
+			mt[0] = mt[0].slice(length);
+			mt.index += length;
+		}
 		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
 			/** @type {BracketExecArray} */ top = stack.pop() ?? {},
 			{0: open, index, parts} = top,
@@ -27,9 +32,9 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
-				const rmt = text.slice(index, curIndex).match(/^(={1,6})(.+)\1((?:\s|\x00\d+c\x7f)*)$/);
+				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7f)*)$/.exec(text.slice(index, curIndex));
 				if (rmt) {
-					text = `${text.slice(0, index)}\x00${accum.length}h\x7f${text.slice(curIndex)}`;
+					text = `${text.slice(0, index)}\0${accum.length}h\x7f${text.slice(curIndex)}`;
 					lastIndex = index + 4 + String(accum.length).length;
 					const HeadingToken = require('../src/heading');
 					new HeadingToken(rmt[1].length, rmt.slice(2), config, accum);
@@ -71,7 +76,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			}
 			if (!skip) {
 				/* 标记{{!}}结束 */
-				text = `${text.slice(0, index + rest)}\x00${length}${ch}\x7f${text.slice(lastIndex)}`;
+				text = `${text.slice(0, index + rest)}\0${length}${ch}\x7f${text.slice(lastIndex)}`;
 				lastIndex = index + rest + 3 + String(length).length;
 				if (rest > 1) {
 					stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
@@ -93,7 +98,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			stack.pop();
 			curTop = stack.at(-1);
 		}
-		regex = new RegExp(source + (curTop
+		regex = RegExp(source + (curTop
 			? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
 			: ''
 		), 'gm');

@@ -17,7 +17,7 @@ const externalUse = (name, proxy = false) => {
 	if (!proxy && require('..').running) {
 		return false;
 	}
-	const regex = new RegExp(`^${
+	const regex = RegExp(`^${
 		proxy ? 'Proxy' : 'new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)'
 	}\\.(?!${name}$)`);
 	try {

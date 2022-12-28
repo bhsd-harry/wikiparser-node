@@ -69,7 +69,8 @@ class TdToken extends fixedToken(TrToken) {
 		return result;
 	}
 
-	static openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|{{\s*!\s*}}\+?)|(?:\||{{\s*!\s*}}){2}|!!|{{\s*!!\s*}})$/;
+	static openingPattern
+		= /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/;
 
 	getRowCount = undefined;
 	getNthCol = undefined;
@@ -81,9 +82,9 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		let innerSyntax = inner?.match(/\||\x00\d+!\x7f/),
+		let innerSyntax = /\||\0\d+!\x7f/.exec(inner),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
-		if (/\[\[|-{/.test(attr)) {
+		if (/\[\[|-\{/.test(attr)) {
 			innerSyntax = null;
 			attr = '';
 		}
@@ -155,7 +156,7 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	afterBuild() {
-		if (this.#innerSyntax.includes('\x00')) {
+		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax).map(String).join('');
 		}
 		return this;

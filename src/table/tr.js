@@ -13,7 +13,7 @@ const attributeParent = require('../../mixin/attributeParent'),
 class TrToken extends attributeParent(Token, 1) {
 	type = 'tr';
 
-	static openingPattern = /^\n[^\S\n]*(?:\|-+|{{\s*!\s*}}-+|{{\s*!-\s*}}-*)$/;
+	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/;
 
 	/**
 	 * @param {string} syntax

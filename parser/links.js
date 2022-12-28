@@ -9,15 +9,15 @@ const /** @type {Parser} */ Parser = require('..'),
  */
 const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js'),
-		regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?]](.*)/s,
+		regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?\]\](.*)/s,
 		regexImg = /^([^\n<>[\]{}|]+)\|(.*)/s,
-		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'i'),
+		regexExt = RegExp(`^\\s*(?:${config.protocol})`, 'i'),
 		bits = firstChild.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
 		let mightBeImg, link, text, after;
 		const x = bits[i],
-			m = x.match(regex);
+			m = regex.exec(x);
 		if (m) {
 			[, link, text, after] = m;
 			if (after.startsWith(']') && text?.includes('[')) {
@@ -25,13 +25,13 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 				after = after.slice(1);
 			}
 		} else {
-			const m2 = x.match(regexImg);
+			const m2 = regexImg.exec(x);
 			if (m2) {
 				mightBeImg = true;
 				[, link, text] = m2;
 			}
 		}
-		if (link === undefined || regexExt.test(link) || /\x00\d+[exhbru]\x7f/.test(link)) {
+		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7f/.test(link)) {
 			s += `[[${x}`;
 			continue;
 		}
@@ -79,7 +79,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			}
 		}
 		text &&= parseQuotes(text, config, accum);
-		s += `\x00${accum.length}l\x7f${after}`;
+		s += `\0${accum.length}l\x7f${after}`;
 		let LinkToken = require('../src/link');
 		if (!force) {
 			if (!interwiki && ns === 6) {
