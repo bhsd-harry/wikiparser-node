@@ -7,19 +7,19 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const regex = /^(\/?)([a-z][^\s/>]*)([^>]*?)(\/?>)([^<]*)$/i,
+	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/i,
 		elements = config.html.flat(),
 		bits = firstChild.split('<');
 	let text = bits.shift();
 	for (const x of bits) {
-		const mt = x.match(regex),
+		const mt = regex.exec(x),
 			t = mt?.[2],
 			name = t?.toLowerCase();
 		if (!mt || !elements.includes(name)) {
 			text += `<${x}`;
 			continue;
 		}
-		const [, slash,, params, brace, rest] = mt,
+		const [, slash,, params = '', brace, rest] = mt,
 			AttributeToken = require('../src/attribute'),
 			attr = new AttributeToken(params, 'html-attr', name, config, accum),
 			itemprop = attr.getAttr('itemprop');
@@ -30,7 +30,7 @@ const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 			accum.pop();
 			continue;
 		}
-		text += `\x00${accum.length}x\x7f${rest}`;
+		text += `\0${accum.length}x\x7f${rest}`;
 		const HtmlToken = require('../src/html');
 		new HtmlToken(t, attr, slash === '/', brace === '/>', config, accum);
 	}

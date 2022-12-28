@@ -24,11 +24,9 @@ const /** @type {Parser} */ Parser = {
 
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
 		title = String(title);
-		return title.replaceAll('_', ' ').replace(/^\s*:?\s*/, '')
-			.match(new RegExp(`^(${interwiki.join('|')})\\s*:`, 'i'));
+		return RegExp(`^(${interwiki.join('|')})\\s*:`, 'i').exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/, ''));
 	},
 
-	/* eslint-disable-next-line no-unused-vars */
 	normalizeTitle(title, defaultNs = 0, config = Parser.getConfig()) {
 		const Title = require('./lib/title');
 		return new Title(String(title), defaultNs, config);

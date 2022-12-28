@@ -4,7 +4,7 @@
  * remove half-parsed comment-like tokens
  * @param {string} str
  */
-const removeComment = str => str.replace(/\x00\d+c\x7f/g, '');
+const removeComment = str => str.replace(/\0\d+c\x7f/g, '');
 
 /**
  * @param {(string|AstNode)[]} childNodes
@@ -31,7 +31,7 @@ const explode = (start, end, separator, str) => {
 	}
 	/** @param {string} str */
 	const escapeRegExp = string => string.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
-	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
+	const regex = RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
 		/** @type {string[]} */ exploded = [];
 	let mt = regex.exec(str),
 		depth = 0,
@@ -50,7 +50,7 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
-const extUrlChar = '(?:[\\d.]+|\\[[\\da-f:.]+\\]|[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd])'
-	+ '(?:[^[\\]<>"\\x00-\\x20\\x7f\\p{Zs}\\ufffd]|\\x00\\d+c\\x7f)*';
+const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd])'
+	+ '(?:[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd]|\\0\\d+c\\x7f)*';
 
 module.exports = {removeComment, print, explode, extUrlChar};

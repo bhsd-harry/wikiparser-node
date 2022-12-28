@@ -17,9 +17,9 @@ class AttributeToken extends Token {
 	 */
 	#parseAttr() {
 		let string = this.toString();
-		string = removeComment(string).replace(/\x00\d+~\x7f/g, '=');
+		string = removeComment(string).replace(/\0\d+~\x7f/g, '=');
 		for (const [, key,, quoted, unquoted] of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/sg)
+			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gs)
 		) {
 			this.setAttr(key, quoted ?? unquoted ?? true, true);
 		}
@@ -53,7 +53,7 @@ class AttributeToken extends Token {
 	 */
 	setAttr(key, value) {
 		key = key.toLowerCase().trim();
-		if (/^(?:[\w:]|\x00\d+[t!~{}+-]\x7f)(?:[\w:.-]|\x00\d+[t!~{}+-]\x7f)*$/.test(key)) {
+		if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7f)(?:[\w:.-]|\0\d+[t!~{}+-]\x7f)*$/.test(key)) {
 			this.#attr.set(key, value === true ? true : value.replace(/\s/g, ' ').trim());
 		}
 	}

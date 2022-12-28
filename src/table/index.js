@@ -11,8 +11,8 @@ const /** @type {Parser} */ Parser = require('../..'),
 class TableToken extends TrToken {
 	type = 'table';
 
-	static openingPattern = /^(?:{\||{{{\s*!\s*}}|{{\s*\(!\s*}})$/;
-	static closingPattern = /^\n[^\S\n]*(?:\|}|{{\s*!\s*}}}|{{\s*!\)\s*}})$/;
+	static openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/;
+	static closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/;
 
 	/**
 	 * @param {string} syntax

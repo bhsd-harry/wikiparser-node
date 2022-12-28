@@ -8,7 +8,7 @@ class Token extends AstElement {
 	type = 'root';
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */ #stage = 0;
 	#config;
-	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\x00\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
+	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	#accum;
 
 	/**
@@ -19,7 +19,7 @@ class Token extends AstElement {
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = []) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\x00\x7f]/g, ''));
+			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\0\x7f]/g, ''));
 		}
 		this.#config = config;
 		this.#accum = accum;
@@ -143,7 +143,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	buildFromStr(str) {
-		return str.split(/[\x00\x7f]/).map((s, i) => i % 2 === 0 ? s : this.#accum[Number(s.slice(0, -1))]);
+		return str.split(/[\0\x7f]/).map((s, i) => i % 2 === 0 ? s : this.#accum[Number(s.slice(0, -1))]);
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Token extends AstElement {
 	build() {
 		this.#stage = MAX_STAGE;
 		const {childNodes: {length}, firstChild} = this;
-		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\x00')) {
+		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\0')) {
 			return this;
 		}
 		this.replaceChildren(...this.buildFromStr(firstChild));
@@ -207,7 +207,7 @@ class Token extends AstElement {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
 				const [, child] = table.childNodes;
-				if (typeof child === 'string' && child.includes('\x00')) {
+				if (typeof child === 'string' && child.includes('\0')) {
 					table.removeAt(1);
 					const inner = new Token(child, this.#config, true, this.#accum);
 					table.insertAt(inner, 1);

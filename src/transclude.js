@@ -49,7 +49,7 @@ class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
-				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
+				const pattern = RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum);
 				this.appendChild(token);
 				if (arg.length) {
@@ -71,7 +71,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const [name] = removeComment(title).split('#');
-			if (/\x00\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
+			if (/\0\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}

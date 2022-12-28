@@ -32,15 +32,15 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 	};
 	for (const outLine of lines) {
 		let top = stack.pop();
-		const [spaces] = outLine.match(/^(?:\s|\x00\d+c\x7f)*/);
+		const [spaces] = /^(?:\s|\0\d+c\x7f)*/.exec(outLine);
 		const line = outLine.slice(spaces.length),
-			matchesStart = line.match(/^(:*)((?:\s|\x00\d+c\x7f)*)({\||{\x00\d+!\x7f|\x00\d+{\x7f)(.*)/);
+			matchesStart = /^(:*)((?:\s|\0\d+c\x7f)*)(\{\||\{\0\d+!\x7f|\0\d+\{\x7f)(.*)$/.exec(line);
 		if (matchesStart) {
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
 				new DdToken(indent, config, accum);
 			}
-			push(`\n${spaces}${indent && `\x00${accum.length - 1}d\x7f`}${moreSpaces}\x00${accum.length}b\x7f`, top);
+			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7f`}${moreSpaces}\0${accum.length}b\x7f`, top);
 			const table = new TableToken(tableSyntax, attr, config, accum);
 			stack.push(...top ? [top] : [], table);
 			continue;
@@ -48,9 +48,9 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			out += `\n${outLine}`;
 			continue;
 		}
-		const matches = line.match(
-			/^(?:(\|}|\x00\d+!\x7f}|\x00\d+}\x7f)|(\|-+|\x00\d+!\x7f-+|\x00\d+-\x7f-*)|(!|(?:\||\x00\d+!\x7f)\+?))(.*)/,
-		);
+		const matches
+			= /^(?:(\|\}|\0\d+!\x7f\}|\0\d+\}\x7f)|(\|-+|\0\d+!\x7f-+|\0\d+-\x7f-*)(?!-)|(!|(?:\||\0\d+!\x7f)\+?))(.*)$/
+				.exec(line);
 		if (!matches) {
 			push(`\n${outLine}`, top);
 			stack.push(...top ? [top] : []);
@@ -78,8 +78,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 				top = stack.pop();
 			}
 			const regex = cell === '!'
-				? /!!|(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g
-				: /(?:\||\x00\d+!\x7f){2}|\x00\d+\+\x7f/g;
+				? /!!|(?:\||\0\d+!\x7f){2}|\0\d+\+\x7f/g
+				: /(?:\||\0\d+!\x7f){2}|\0\d+\+\x7f/g;
 			let mt = regex.exec(attr),
 				lastIndex = 0,
 				lastSyntax = `\n${spaces}${cell}`;

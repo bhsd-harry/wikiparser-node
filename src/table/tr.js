@@ -12,7 +12,7 @@ const /** @type {Parser} */ Parser = require('../..'),
 class TrToken extends Token {
 	type = 'tr';
 
-	static openingPattern = /^\n[^\S\n]*(?:\|-+|{{\s*!\s*}}-+|{{\s*!-\s*}}-*)$/;
+	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/;
 
 	/**
 	 * @param {string} syntax

@@ -19,7 +19,7 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		for (const line of inner?.split('\n') ?? []) {
-			const matches = line.match(/^([^|]+)(?:\|(.*))?/);
+			const matches = /^([^|]+)(?:\|(.*))?/.exec(line);
 			if (!matches) {
 				this.appendChild(line);
 				continue;

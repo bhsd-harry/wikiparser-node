@@ -12,7 +12,8 @@ class TdToken extends TrToken {
 	type = 'td';
 	#innerSyntax = '';
 
-	static openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|{{\s*!\s*}}\+?)|(?:\||{{\s*!\s*}}){2}|!!|{{\s*!!\s*}})$/;
+	static openingPattern
+		= /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/;
 
 	/**
 	 * @param {string} syntax
@@ -20,9 +21,9 @@ class TdToken extends TrToken {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		let innerSyntax = inner?.match(/\||\x00\d+!\x7f/),
+		let innerSyntax = /\||\0\d+!\x7f/.exec(inner),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
-		if (/\[\[|-{/.test(attr)) {
+		if (/\[\[|-\{/.test(attr)) {
 			innerSyntax = null;
 			attr = '';
 		}
@@ -37,7 +38,7 @@ class TdToken extends TrToken {
 	}
 
 	afterBuild() {
-		if (this.#innerSyntax.includes('\x00')) {
+		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax).map(String).join('');
 		}
 		return this;

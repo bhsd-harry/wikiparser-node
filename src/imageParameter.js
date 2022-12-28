@@ -19,7 +19,7 @@ class ImageParameterToken extends Token {
 	 * @param {string} value
 	 */
 	static #validate(key, value, config = Parser.getConfig()) {
-		value = value.replace(/\x00\d+t\x7f/g, '').trim();
+		value = value.replace(/\0\d+t\x7f/g, '').trim();
 		if (key === 'width') {
 			return /^\d*(?:x\d*)?$/.test(value);
 		} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
@@ -28,11 +28,11 @@ class ImageParameterToken extends Token {
 			if (!value) {
 				return true;
 			}
-			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\x00\\d+t\x7f|$)`, 'ui');
+			const regex = RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7f|$)`, 'iu');
 			if (regex.test(value)) {
 				return true;
 			}
-			if (/^\[\[.+]]$/.test(value)) {
+			if (/^\[\[.+\]\]$/.test(value)) {
 				value = value.slice(2, -2);
 			}
 			if (value.includes('%')) {
@@ -53,11 +53,11 @@ class ImageParameterToken extends Token {
 	constructor(str, config = Parser.getConfig(), accum = []) {
 		const regexes = Object.entries(config.img).map(
 				/** @returns {[string, string, RegExp]} */
-				([syntax, param]) => [syntax, param, new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`)],
+				([syntax, param]) => [syntax, param, RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`)],
 			),
 			param = regexes.find(([,, regex]) => regex.test(str));
 		if (param) {
-			const mt = str.match(param[2]);
+			const mt = param[2].exec(str);
 			if (mt.length === 4 && !ImageParameterToken.#validate(param[1], mt[2], config)) {
 				// pass
 			} else {
