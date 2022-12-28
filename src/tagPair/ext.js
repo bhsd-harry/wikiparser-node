@@ -16,7 +16,7 @@ class ExtToken extends TagPairToken {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
-		attr = !attr || /^\s/.test(attr) ? attr : ` ${attr}`;
+		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			AttributeToken = require('../attribute'),
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),

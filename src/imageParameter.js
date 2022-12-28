@@ -32,7 +32,7 @@ class ImageParameterToken extends Token {
 			if (regex.test(value)) {
 				return true;
 			}
-			if (/^\[\[.+\]\]$/.test(value)) {
+			if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
 			if (value.includes('%')) {
