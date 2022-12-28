@@ -84,7 +84,7 @@
 			preview.scrollTop = textbox.scrollTop;
 			if (preview.scrollHeight > preview.offsetHeight) {
 				clearTimeout(debouncedScroll);
-				debouncedScroll = setTimeout(viewport, 1000);
+				debouncedScroll = setTimeout(viewport, 500);
 			}
 		});
 		prettify();
