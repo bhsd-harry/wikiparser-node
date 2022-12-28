@@ -28,9 +28,9 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 		noincludeRegex = includeOnly ? 'noinclude' : 'includeonly',
 		regex = RegExp(
 			'<!--.*?(?:-->|$)|' // comment
-			+ `<${includeRegex}(?:\\s.*?)?>|</${includeRegex}\\s*>|` // <includeonly>
-			+ `<(${ext})(\\s.*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
-			+ `<(${noincludeRegex})(\\s.*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`, // <noinclude>
+			+ `<${includeRegex}(?:\\s[^>]*?)?>|</${includeRegex}\\s*>|` // <includeonly>
+			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
+			+ `<(${noincludeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`, // <noinclude>
 			'gis',
 		);
 	return text.replace(

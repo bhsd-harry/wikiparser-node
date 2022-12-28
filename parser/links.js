@@ -9,8 +9,8 @@ const /** @type {Parser} */ Parser = require('..'),
  */
 const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js'),
-		regex = /^([^\n<>[\]{}|]+)(?:\|(.+?))?\]\](.*)/s,
-		regexImg = /^([^\n<>[\]{}|]+)\|(.*)/s,
+		regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/s,
+		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/s,
 		regexExt = RegExp(`^\\s*(?:${config.protocol})`, 'i'),
 		bits = firstChild.split('[[');
 	let s = bits.shift();

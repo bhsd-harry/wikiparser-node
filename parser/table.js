@@ -34,7 +34,7 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		let top = stack.pop();
 		const [spaces] = /^(?:\s|\0\d+c\x7f)*/.exec(outLine);
 		const line = outLine.slice(spaces.length),
-			matchesStart = /^(:*)((?:\s|\0\d+c\x7f)*)(\{\||\{\0\d+!\x7f|\0\d+\{\x7f)(.*)/.exec(line);
+			matchesStart = /^(:*)((?:\s|\0\d+c\x7f)*)(\{\||\{\0\d+!\x7f|\0\d+\{\x7f)(.*)$/.exec(line);
 		if (matchesStart) {
 			while (top && top.type !== 'td') {
 				top = stack.pop();
@@ -52,7 +52,7 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			continue;
 		}
 		const matches
-			= /^(?:(\|\}|\0\d+!\x7f\}|\0\d+\}\x7f)|(\|-+|\0\d+!\x7f-+|\0\d+-\x7f-*)|(!|(?:\||\0\d+!\x7f)\+?))(.*)/
+			= /^(?:(\|\}|\0\d+!\x7f\}|\0\d+\}\x7f)|(\|-+|\0\d+!\x7f-+|\0\d+-\x7f-*)(?!-)|(!|(?:\||\0\d+!\x7f)\+?))(.*)$/
 				.exec(line);
 		if (!matches) {
 			push(`\n${outLine}`, top);

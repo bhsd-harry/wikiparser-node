@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const regex = /^(\/?)([a-z][^\s/>]*)([^>]*?)(\/?>)([^<]*)$/i,
+	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/i,
 		elements = config.html.flat(),
 		bits = firstChild.split('<');
 	let text = bits.shift();
@@ -19,7 +19,7 @@ const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 			text += `<${x}`;
 			continue;
 		}
-		const [, slash,, params, brace, rest] = mt,
+		const [, slash,, params = '', brace, rest] = mt,
 			AttributeToken = require('../src/attribute'),
 			attr = new AttributeToken(params, 'html-attr', name, config, accum),
 			itemprop = attr.getAttr('itemprop');

@@ -213,17 +213,17 @@ class LinkToken extends Token {
 		if (/[#%]/.test(linkText)) {
 			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
 		}
-		const m1 = /^:?(?:[ \w\x80-\xff-]+:)?(.+?) ?\(.+\)$/.exec(linkText);
+		const m1 = /^:?(?:[ \w\x80-\xff-]+:)?([^(]+)\(.+\)$/.exec(linkText);
 		if (m1) {
 			this.setLinkText(m1[1].trim());
 			return;
 		}
-		const m2 = /^:?(?:[ \w\x80-\xff-]+:)?(.+?) ?（.+）$/.exec(linkText);
+		const m2 = /^:?(?:[ \w\x80-\xff-]+:)?([^（]+)（.+）$/.exec(linkText);
 		if (m2) {
 			this.setLinkText(m2[1].trim());
 			return;
 		}
-		const m3 = /^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?: ?\(.+\))?(?:, |，|، ).+/.exec(linkText);
+		const m3 = /^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، )./.exec(linkText);
 		if (m3) {
 			this.setLinkText(m3[1].trim());
 			return;
