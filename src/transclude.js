@@ -555,7 +555,7 @@ class TranscludeToken extends Token {
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/ : /(?:^|\D)\d+$/).test(key)) {
 				let /** @type {number} */ last;
-				const str = key.slice(0, -/(?<!\d)\d+$/.exec(key)[0].length),
+				const str = key.slice(0, -/\d+$/.exec(key)[0].length),
 					regex = RegExp(`^${escapeRegExp(str)}\\d+$`),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
@@ -597,7 +597,7 @@ class TranscludeToken extends Token {
 	 */
 	escapeTables() {
 		const count = this.hasDuplicatedArgs();
-		if (!/\n[^\S\n]*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/.test(this.text()) || !count) {
+		if (!/\n\s*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/.test(this.text()) || !count) {
 			return this;
 		}
 		const stripped = this.toString().slice(2, -2),

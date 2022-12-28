@@ -8,7 +8,7 @@ const {removeComment} = require('../util/string'),
  * @param {accum} accum
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
-	const source = '^(\0\\d+c\x7f)*={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',
+	const source = '(?<=^(?:\0\\d+c\x7f)*)={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
@@ -17,11 +17,6 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 		moreBraces = text.includes('}}'),
 		lastIndex;
 	while (mt || lastIndex <= text.length && stack.at(-1)?.[0]?.[0] === '=') {
-		if (mt?.[1]) {
-			const [, {length}] = mt;
-			mt[0] = mt[0].slice(length);
-			mt.index += length;
-		}
 		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
 			/** @type {BracketExecArray} */ top = stack.pop() ?? {},
 			{0: open, index, parts} = top,

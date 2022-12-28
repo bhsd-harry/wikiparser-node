@@ -101,7 +101,7 @@ class ConverterFlagsToken extends Token {
 
 	/** @complexity `n` */
 	getUnknownFlags() {
-		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/.test(flag));
+		return this.#flags.filter(flag => /\{\{.+\}\}/.test(flag));
 	}
 
 	/** @complexity `n` */

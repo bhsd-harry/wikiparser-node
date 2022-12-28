@@ -21,7 +21,7 @@ const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => 
 				str = firstChild.slice(top.index + 2, index),
 				i = str.indexOf('|'),
 				[flags, text] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
-				temp = text.replace(/(&[#a-z\d]+);/i, '$1\x01'),
+				temp = text.replace(/(?<=&[#a-z\d]+);/i, '\x01'),
 				variants = `(?:${config.variants.join('|')})`,
 				rules = temp.split(RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`))
 					.map(rule => rule.replaceAll('\x01', ';'));
