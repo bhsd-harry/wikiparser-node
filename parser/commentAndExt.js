@@ -8,7 +8,7 @@ const /** @type {Parser} */ Parser = require('..');
  */
 const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], includeOnly = false) => {
 	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
-	if (includeOnly && new RegExp(onlyinclude, '').test(text)) { // `<onlyinclude>`拥有最高优先级
+	if (includeOnly && new RegExp(onlyinclude, 's').test(text)) { // `<onlyinclude>`拥有最高优先级
 		return text.replace(onlyinclude, /** @param {string} inner */ (_, inner) => {
 			const str = `\x00${accum.length}e\x7f`,
 				OnlyincludeToken = require('../src/onlyinclude');
