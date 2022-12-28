@@ -234,7 +234,7 @@ class AttributeToken extends Token {
 	}
 
 	#leadingSpace(str = super.toString()) {
-		return this.type !== 'table-attr' && str && !/^\s/.test(str) ? ' ' : '';
+		return this.type !== 'table-attr' && str && str.trimStart() === str ? ' ' : '';
 	}
 
 	/** @this {AttributeToken & Token} */

@@ -26,7 +26,7 @@ class HrToken extends sol(NowikiToken) {
 
 	/** @param {string} str */
 	setText(str) {
-		if (!/^-{4,}$/.test(str)) {
+		if (str.length < 4 || /[^-]/.test(str)) {
 			throw new RangeError('<hr>总是写作不少于4个的连续"-"！');
 		}
 		return super.setText(str);

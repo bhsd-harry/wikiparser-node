@@ -210,7 +210,7 @@ class LinkToken extends Token {
 
 	pipeTrick() {
 		const linkText = this.firstElementChild.text();
-		if (/[#%]/.test(linkText)) {
+		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
 		}
 		const m1 = /^:?(?:[ \w\x80-\xff-]+:)?([^(]+)\(.+\)$/.exec(linkText);
