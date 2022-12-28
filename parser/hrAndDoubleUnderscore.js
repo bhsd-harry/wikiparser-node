@@ -10,7 +10,7 @@ const parseHrAndDoubleUnderscore = (firstChild, config = Parser.getConfig(), acc
 	const HrToken = require('../src/nowiki/hr'),
 		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore'),
 		{doubleUnderscore} = config;
-	return firstChild.replace(/^((?:\0\d+c\x7f)*)-{4,}/gm, (_, lead, m) => {
+	return firstChild.replace(/^((?:\0\d+c\x7f)*)(-{4,})/gm, (_, lead, m) => {
 		new HrToken(m.length, config, accum);
 		return `${lead}\0${accum.length - 1}r\x7f`;
 	}).replace(RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'gi'), /** @param {string} p1 */(m, p1) => {
