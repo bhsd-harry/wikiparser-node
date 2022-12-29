@@ -32,10 +32,10 @@ class GalleryToken extends Token {
 			} catch {
 				title = this.normalizeTitle(file, 6, true);
 			}
-			if (!title.valid) {
-				this.appendChild(line);
-			} else {
+			if (title.valid) {
 				this.appendChild(new GalleryImageToken(file, alt, title, config, accum));
+			} else {
+				this.appendChild(line);
 			}
 		}
 	}

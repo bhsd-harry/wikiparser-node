@@ -155,7 +155,7 @@ class FileToken extends LinkToken {
 	/** @complexity `n` */
 	getKeys() {
 		const args = this.getAllArgs();
-		if (this.#keys.size === 0 && args.length) {
+		if (this.#keys.size === 0 && args.length > 0) {
 			for (const {name} of args) {
 				this.#keys.add(name);
 			}

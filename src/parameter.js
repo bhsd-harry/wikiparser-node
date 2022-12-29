@@ -58,10 +58,10 @@ class ParameterToken extends fixedToken(Token) {
 		 */
 		const parameterListener = ({prevTarget}, data) => {
 			if (!that.anon) { // 匿名参数不管怎么变动还是匿名
-				const {firstElementChild} = that;
+				const {firstElementChild, name} = that;
 				if (prevTarget === firstElementChild) {
 					const newKey = firstElementChild.text().trim();
-					data.oldKey = that.name;
+					data.oldKey = name;
 					data.newKey = newKey;
 					that.setAttribute('name', newKey);
 				}
@@ -138,8 +138,7 @@ class ParameterToken extends fixedToken(Token) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
 		}
 		const {lastElementChild} = firstElementChild,
-			{name} = lastElementChild,
-			keyToken = lastElementChild.firstChild;
+			{name, firstChild} = lastElementChild;
 		if (this.name === name) {
 			Parser.warn('未改变实际参数名', name);
 		} else if (parentNode.hasArg(name)) {
@@ -152,7 +151,7 @@ class ParameterToken extends fixedToken(Token) {
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();
-		this.firstElementChild.safeReplaceWith(keyToken);
+		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 }
 

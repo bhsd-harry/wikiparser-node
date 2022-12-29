@@ -8,11 +8,11 @@ const {removeComment} = require('../util/string'),
  * @param {accum} accum
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
-	const source = '^(\0\\d+c\x7f)*={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',
+	const source = '^(\0\\d+c\x7F)*={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
-	let regex = RegExp(source, 'gm'),
+	let regex = new RegExp(source, 'gm'),
 		/** @type {BracketExecArray} */ mt = regex.exec(text),
 		moreBraces = text.includes('}}'),
 		lastIndex;
@@ -24,17 +24,17 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 		}
 		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
 			/** @type {BracketExecArray} */ top = stack.pop() ?? {},
-			{0: open, index, parts} = top,
-			innerEqual = syntax === '=' && top.findEqual;
+			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
+			innerEqual = syntax === '=' && topFindEqual;
 		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
 			lastIndex = curIndex + 2;
 		} else if (syntax === '\n') { // 情形2：闭合标题
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
-				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7f)*)$/.exec(text.slice(index, curIndex));
+				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/.exec(text.slice(index, curIndex));
 				if (rmt) {
-					text = `${text.slice(0, index)}\0${accum.length}h\x7f${text.slice(curIndex)}`;
+					text = `${text.slice(0, index)}\0${accum.length}h\x7F${text.slice(curIndex)}`;
 					lastIndex = index + 4 + String(accum.length).length;
 					const HeadingToken = require('../src/heading');
 					new HeadingToken(rmt[1].length, rmt.slice(2), config, accum);
@@ -42,7 +42,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
 			lastIndex = curIndex + 1;
-			parts.at(-1).push(text.slice(top.pos, curIndex));
+			parts.at(-1).push(text.slice(topPos, curIndex));
 			if (syntax === '|') {
 				parts.push([]);
 			}
@@ -54,7 +54,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				rest = open.length - close.length,
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-			parts.at(-1).push(text.slice(top.pos, curIndex));
+			parts.at(-1).push(text.slice(topPos, curIndex));
 			/* 标记{{!}}等 */
 			const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't';
 			let skip = false;
@@ -76,7 +76,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			}
 			if (!skip) {
 				/* 标记{{!}}结束 */
-				text = `${text.slice(0, index + rest)}\0${length}${ch}\x7f${text.slice(lastIndex)}`;
+				text = `${text.slice(0, index + rest)}\0${length}${ch}\x7F${text.slice(lastIndex)}`;
 				lastIndex = index + rest + 3 + String(length).length;
 				if (rest > 1) {
 					stack.push({0: open.slice(0, rest), index, pos: index + rest, parts: [[]]});
@@ -98,7 +98,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			stack.pop();
 			curTop = stack.at(-1);
 		}
-		regex = RegExp(source + (curTop
+		regex = new RegExp(source + (curTop
 			? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
 			: ''
 		), 'gm');

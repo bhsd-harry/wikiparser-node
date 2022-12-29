@@ -18,15 +18,15 @@ class ArgToken extends Token {
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1, HiddenToken: '2:'});
-		for (const [i, part] of parts.entries()) {
+		for (let i = 0; i < parts.length; i++) {
 			if (i === 0 || i > 1) {
 				const AtomToken = i === 0 ? require('./atom') : require('./atom/hidden'),
-					token = new AtomToken(part, `arg-${i === 0 ? 'name' : 'redundant'}`, config, accum, {
+					token = new AtomToken(parts[i], `arg-${i === 0 ? 'name' : 'redundant'}`, config, accum, {
 						'Stage-2': ':', '!HeadingToken': '',
 					});
 				this.appendChild(token);
 			} else {
-				const token = new Token(part, config, true, accum);
+				const token = new Token(parts[i], config, true, accum);
 				token.type = 'arg-default';
 				this.appendChild(token.setAttribute('stage', 2));
 			}

@@ -18,6 +18,14 @@ const cmpCoords = (coords1, coords2) => {
 	return diff === 0 ? coords1.column - coords2.column : diff;
 };
 const isRowEnd = /** @param {Token} */ ({type}) => type === 'tr' || type === 'table-syntax';
+/**
+ * @param {TableCoords[]} rowLayout
+ * @param {number} i
+ */
+const isStartCol = (rowLayout, i, oneCol = false) => {
+	const coords = rowLayout[i];
+	return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
+};
 
 /** @extends {Array<TableCoords[]>} */
 class Layout extends Array {
@@ -38,7 +46,7 @@ class Layout extends Array {
 				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
 			for (let j = 0; j <= hBorder.length; j++) {
 				/* eslint-disable no-bitwise */
-				const bit = (vBorderTop[j] << 3) + (vBorderBottom[j] << 0) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
+				const bit = (vBorderTop[j] << 3) + Number(vBorderBottom[j]) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
 				out += `${border[bit]}${hBorder[j] ? '─' : ' '}`;
 				/* eslint-enable no-bitwise */
 			}
@@ -191,7 +199,7 @@ class TableToken extends TrToken {
 		const rows = this.getAllRows(),
 			{length} = rows,
 			/** @type {Layout} */ layout = new Layout(length).fill().map(() => []);
-		for (const [i, rowToken] of rows.entries()) {
+		for (let i = 0; i < length; i++) {
 			if (i > (stop.row ?? stop.y)) {
 				break;
 			}
@@ -199,7 +207,7 @@ class TableToken extends TrToken {
 			let j = 0,
 				k = 0,
 				last;
-			for (const cell of rowToken.children.slice(2)) {
+			for (const cell of rows[i].children.slice(2)) {
 				if (cell instanceof TdToken) {
 					if (cell.isIndependent()) {
 						last = cell.subtype !== 'caption';
@@ -294,7 +302,7 @@ class TableToken extends TrToken {
 			this.typeError('getFullCol', 'Number');
 		}
 		const layout = this.getLayout(),
-			colLayout = layout.map(row => row[x]).filter(coords => coords),
+			colLayout = layout.map(row => row[x]).filter(Boolean),
 			rows = this.getAllRows();
 		return new Map(
 			colLayout.map(coords => [rows[coords.row].getNthCol(coords.column), layout[coords.row][x - 1] !== coords]),
@@ -386,8 +394,8 @@ class TableToken extends TrToken {
 			layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		for (const [y, rowToken] of rowTokens.entries()) {
-			this.#fill(y, rowToken, layout, maxCol, token);
+		for (let y = 0; y < rowTokens.length; y++) {
+			this.#fill(y, rowTokens[y], layout, maxCol, token);
 		}
 	}
 
@@ -403,7 +411,7 @@ class TableToken extends TrToken {
 		if (coords.column === undefined) {
 			const {x, y} = coords;
 			coords = this.toRawCoords(coords);
-			if (!coords?.start) {
+			if (!coords?.start) { // eslint-disable-line unicorn/consistent-destructuring
 				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
 			}
 		}
@@ -517,8 +525,10 @@ class TableToken extends TrToken {
 	removeTableRow(y) {
 		const rows = this.getAllRows(),
 			layout = this.getLayout(),
+			rowLayout = layout[y],
 			/** @type {Set<TableCoords>} */ set = new Set();
-		for (const [x, coords] of [...layout[y].entries()].reverse()) {
+		for (let x = rowLayout.length - 1; x >= 0; x--) {
+			const coords = rowLayout[x];
 			if (set.has(coords)) {
 				continue;
 			}
@@ -551,11 +561,11 @@ class TableToken extends TrToken {
 	 */
 	removeTableCol(x) {
 		for (const [token, start] of this.getFullCol(x)) {
-			const {colspan} = token;
+			const {colspan, lastElementChild} = token;
 			if (colspan > 1) {
 				token.colspan = colspan - 1;
 				if (start) {
-					token.lastElementChild.replaceChildren();
+					lastElementChild.replaceChildren();
 				}
 			} else {
 				token.remove();
@@ -619,7 +629,7 @@ class TableToken extends TrToken {
 		if (x !== undefined) {
 			coords = this.toRawCoords(coords);
 		}
-		if (coords.start === false || x === undefined) {
+		if (coords.start === false || x === undefined) { // eslint-disable-line unicorn/consistent-destructuring
 			({x, y} = this.toRenderedCoords(coords));
 		}
 		const splitting = {rowspan: 1, colspan: 1};
@@ -804,22 +814,18 @@ class TableToken extends TrToken {
 		if (typeof x !== 'number' || typeof reference !== 'number') {
 			this.typeError(`moveTableCol${after ? 'After' : 'Before'}`, 'Number');
 		}
-		const layout = this.getLayout(),
-			/** @type {(rowLayout: TableCoords[], i: number, oneCol?: boolean) => boolean} */
-			isStart = (rowLayout, i, oneCol = false) => {
-				const coords = rowLayout[i];
-				return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
-			};
-		if (layout.some(rowLayout => isStart(rowLayout, x) !== isStart(rowLayout, reference, after))) {
+		const layout = this.getLayout();
+		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);
 		}
 		const /** @type {Set<TableCoords>} */ setX = new Set(),
 			/** @type {Set<TableCoords>} */ setRef = new Set(),
 			rows = this.getAllRows();
-		for (const [i, rowLayout] of layout.entries()) {
-			const coords = rowLayout[x],
+		for (let i = 0; i < layout.length; i++) {
+			const rowLayout = layout[i],
+				coords = rowLayout[x],
 				refCoords = rowLayout[reference],
-				start = isStart(rowLayout, x);
+				start = isStartCol(rowLayout, x);
 			if (refCoords && !start && !setRef.has(refCoords)) {
 				setRef.add(refCoords);
 				rows[refCoords.row].getNthCol(refCoords.column).colspan++;

@@ -46,7 +46,7 @@ const {externalUse} = require('../util/debug'),
 	AstElement = require('../lib/element'),
 	assert = require('assert/strict'),
 	/** @type {Parser} */ Parser = require('..'),
-	{MAX_STAGE} = Parser;
+	{MAX_STAGE, aliases} = Parser;
 
 class Token extends AstElement {
 	type = 'root';
@@ -66,7 +66,7 @@ class Token extends AstElement {
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\0\x7f]/g, ''));
+			this.appendChild(halfParsed ? wikitext : wikitext.replaceAll('\0', '').replaceAll('\x7F', ''));
 		}
 		this.#config = config;
 		this.#accum = accum;
@@ -165,7 +165,7 @@ class Token extends AstElement {
 					for (const [k, v] of Object.entries(value)) {
 						if (k.startsWith('Stage-')) {
 							for (let i = 0; i <= Number(k.slice(6)); i++) {
-								for (const type of Parser.aliases[i]) {
+								for (const type of aliases[i]) {
 									acceptable[type] = new Ranges(v);
 								}
 							}
@@ -301,7 +301,8 @@ class Token extends AstElement {
 				.map(/** @param {[number, Token]} */ ([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1];
 		const /** @type {(string|Token)[][]} */ sections = new Array(headings.length);
-		for (const [i, [index, level]] of headings.entries()) {
+		for (let i = 0; i < headings.length; i++) {
+			const [index, level] = headings[i];
 			for (let j = level; j < 6; j++) {
 				const last = lastHeading[j];
 				if (last >= 0) {
@@ -440,10 +441,10 @@ class Token extends AstElement {
 			case 5:
 				this.#parseLinks();
 				break;
-			case 6: {
+			case 6:
 				this.#parseQuotes();
 				break;
-			}
+
 			case 7:
 				this.#parseExternalLinks();
 				break;
@@ -474,7 +475,7 @@ class Token extends AstElement {
 		if (!Parser.debugging && externalUse('buildFromStr')) {
 			this.debugOnly('buildFromStr');
 		}
-		return str.split(/[\0\x7f]/).map((s, i) => {
+		return str.split(/[\0\x7F]/).map((s, i) => {
 			if (i % 2 === 0) {
 				return s;
 			} else if (!isNaN(s.at(-1))) {

@@ -11,7 +11,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js'),
 		regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/s,
 		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/s,
-		regexExt = RegExp(`^\\s*(?:${config.protocol})`, 'i'),
+		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'i'),
 		bits = firstChild.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
@@ -31,7 +31,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 				[, link, text] = m2;
 			}
 		}
-		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7f/.test(link)) {
+		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7F/.test(link)) {
 			s += `[[${x}`;
 			continue;
 		}
@@ -79,7 +79,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			}
 		}
 		text &&= parseQuotes(text, config, accum);
-		s += `\0${accum.length}l\x7f${after}`;
+		s += `\0${accum.length}l\x7F${after}`;
 		let LinkToken = require('../src/link');
 		if (!force) {
 			if (!interwiki && ns === 6) {

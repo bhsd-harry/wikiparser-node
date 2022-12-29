@@ -32,8 +32,8 @@ class DdToken extends NowikiToken {
 	/** @param {string} str */
 	setText(str) {
 		const src = this.type === 'dd' ? ':' : ';:*#';
-		if (RegExp(`[^${src}]`).test(str)) {
-			throw new RangeError(`${this.constructor.name} 仅能包含${src.split('').map(c => `"${c}"`).join('、')}！`);
+		if (new RegExp(`[^${src}]`).test(str)) {
+			throw new RangeError(`${this.constructor.name} 仅能包含${[...src].map(c => `"${c}"`).join('、')}！`);
 		}
 		this.#update(str);
 		return super.setText(str);

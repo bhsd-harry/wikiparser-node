@@ -18,7 +18,7 @@ class MagicLinkToken extends Token {
 		if (typeof value !== 'string') {
 			this.typeError('protocol', 'String');
 		}
-		if (!RegExp(`${this.#protocolRegex.source}$`, 'i').test(value)) {
+		if (!new RegExp(`${this.#protocolRegex.source}$`, 'i').test(value)) {
 			throw new RangeError(`非法的外链协议：${value}`);
 		}
 		this.replaceChildren(this.text().replace(this.#protocolRegex, value));
@@ -33,7 +33,7 @@ class MagicLinkToken extends Token {
 		if (doubleSlash) {
 			this.type = 'ext-link-url';
 		}
-		this.#protocolRegex = RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'i');
+		this.#protocolRegex = new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'i');
 	}
 
 	afterBuild() {

@@ -1,20 +1,23 @@
 {
 	"env": {
 		"node": true,
-		"es2021": true
+		"es2022": true
 	},
 	"plugins": [
 		"promise",
-		"regexp"
+		"regexp",
+		"unicorn"
 	],
 	"extends": [
 		"eslint:recommended",
 		"plugin:promise/recommended",
 		"plugin:n/recommended-script",
-		"plugin:regexp/recommended"
+		"plugin:regexp/recommended",
+		"plugin:unicorn/recommended"
 	],
 	"parserOptions": {
-		"ecmaVersion": 13
+		"ecmaVersion": 13,
+		"sourceType": "script"
 	},
 	"rules": {
 		"array-callback-return": [
@@ -313,7 +316,74 @@
 		"regexp/prefer-regexp-test": 2,
 		"regexp/use-ignore-case": 2,
 		"regexp/hexadecimal-escape": 2,
-		"regexp/letter-case": 2,
-		"regexp/prefer-lookaround": 2
+		"regexp/letter-case": [
+			2,
+			{
+				"unicodeEscape": "uppercase",
+				"hexadecimalEscape": "uppercase",
+				"controlEscape": "uppercase"
+			}
+		],
+		"regexp/prefer-lookaround": 2,
+		"unicorn/better-regex": 0,
+		"unicorn/catch-error-name": [
+			2,
+			{
+				"name": "e"
+			}
+		],
+		"unicorn/consistent-destructuring": [
+			2,
+			{
+				"exceptions": [
+					"Parser.running",
+					"Parser.debugging",
+					"Parser.classes"
+				]
+			}
+		],
+		"unicorn/filename-case": [
+			2,
+			{
+				"case": "camelCase"
+			}
+		],
+		"unicorn/no-array-callback-reference": 0,
+		"unicorn/no-await-expression-member": 0,
+		"unicorn/no-for-loop": 0,
+		"unicorn/no-hex-escape": 0,
+		"unicorn/no-nested-ternary": 0,
+		"unicorn/no-new-array": 0,
+		"unicorn/no-null": 0,
+		"unicorn/no-process-exit": 0,
+		"unicorn/no-this-assignment": 0,
+		"unicorn/no-unreadable-array-destructuring": 0,
+		"unicorn/no-unreadable-iife": 0,
+		"unicorn/no-useless-undefined": 0,
+		"unicorn/prefer-at": 2,
+		"unicorn/prefer-dom-node-append": 0,
+		"unicorn/prefer-dom-node-dataset": 0,
+		"unicorn/prefer-dom-node-remove": 0,
+		"unicorn/prefer-dom-node-text-content": 0,
+		"unicorn/prefer-export-from": 0,
+		"unicorn/prefer-modern-dom-apis": 0,
+		"unicorn/prefer-module": 0,
+		"unicorn/prefer-node-protocol": 0,
+		"unicorn/prefer-number-properties": 0,
+		"unicorn/prefer-set-has": 0,
+		"unicorn/prefer-string-replace-all": 2,
+		"unicorn/prefer-type-error": 0,
+		"unicorn/prevent-abbreviations": 0,
+		"unicorn/relative-url-style": [
+			2,
+			"always"
+		],
+		"unicorn/require-array-join-separator": 0,
+		"unicorn/require-number-to-fixed-digits-argument": 0,
+		"unicorn/switch-case-braces": [
+			2,
+			"avoid"
+		],
+		"unicorn/template-indent": 0
 	}
 }

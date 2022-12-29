@@ -23,10 +23,10 @@ const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => 
 				[flags, text] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
 				temp = text.replace(/(&[#a-z\d]+);/i, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
-				rules = temp.split(RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`))
+				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`))
 					.map(rule => rule.replaceAll('\x01', ';'));
 			new ConverterToken(flags, rules, config, accum);
-			firstChild = `${firstChild.slice(0, top.index)}\0${length}v\x7f${firstChild.slice(index + 2)}`;
+			firstChild = `${firstChild.slice(0, top.index)}\0${length}v\x7F${firstChild.slice(index + 2)}`;
 			if (stack.length === 0) {
 				regex = regex1;
 			}

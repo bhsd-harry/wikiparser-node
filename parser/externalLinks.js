@@ -9,8 +9,8 @@ const {extUrlChar} = require('../util/string'),
  */
 const parseExternalLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const ExtLinkToken = require('../src/extLink'),
-		regex = RegExp(
-			`\\[((?:${config.protocol}|//)${extUrlChar})(\\p{Zs}*)([^\\]\x01-\x08\x0a-\x1f\ufffd]*)\\]`,
+		regex = new RegExp(
+			`\\[((?:${config.protocol}|//)${extUrlChar})(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
 			'giu',
 		);
 	return firstChild.replace(regex, /** @type {function(...string): string} */ (_, url, space, text) => {
@@ -22,7 +22,7 @@ const parseExternalLinks = (firstChild, config = Parser.getConfig(), accum = [])
 			text = `${url.slice(mt.index)}${space}${text}`;
 		}
 		new ExtLinkToken(url, space, text, config, accum);
-		return `\0${length}w\x7f`;
+		return `\0${length}w\x7F`;
 	});
 };
 

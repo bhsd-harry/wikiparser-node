@@ -30,7 +30,7 @@ const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 			accum.pop();
 			continue;
 		}
-		text += `\0${accum.length}x\x7f${rest}`;
+		text += `\0${accum.length}x\x7F${rest}`;
 		const HtmlToken = require('../src/html');
 		new HtmlToken(t, attr, slash === '/', brace === '/>', config, accum);
 	}

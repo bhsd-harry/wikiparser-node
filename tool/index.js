@@ -71,7 +71,7 @@ class TokenCollection extends Array {
 	}
 
 	toArray() {
-		return Array.from(this);
+		return [...this];
 	}
 
 	_filter(selector = '') {
@@ -108,9 +108,9 @@ class TokenCollection extends Array {
 
 	/** @param {CollectionCallback<void, string|Token>} callback */
 	each(callback) {
-		this.forEach((ele, i) => { // 不能使用`for`...`of`
-			callback.call(ele, i, ele);
-		});
+		for (let i = 0; i < this.length; i++) {
+			callback.call(this[i], i, this[i]);
+		}
 		return this;
 	}
 
@@ -163,7 +163,8 @@ class TokenCollection extends Array {
 		/** @type {(ele: Token, i: number, str: string) => string} */
 		const callback = typeof str === 'function' ? str.call : () => str;
 		if (typeof str === 'string' || typeof str === 'function') {
-			for (const [i, ele] of this.entries()) {
+			for (let i = 0; i < this.length; i++) {
+				const ele = this[i];
 				if (ele instanceof Token) {
 					try {
 						ele.replaceChildren(callback(ele, i, ele.text()));
@@ -504,7 +505,8 @@ class TokenCollection extends Array {
 	 */
 	_insert(method, content, ...additional) {
 		if (typeof content === 'function') {
-			for (const [i, token] of this.entries()) {
+			for (let i = 0; i < this.length; i++) {
+				const token = this[i];
 				if (token instanceof Token) {
 					const result = content.call(token, i, token.toString());
 					if (typeof result === 'string' || result instanceof Token) {
@@ -659,7 +661,8 @@ class TokenCollection extends Array {
 		} else {
 			this.typeError('val', 'String', 'Array', 'Function');
 		}
-		for (const [i, token] of this.entries()) {
+		for (let i = 0; i < this.length; i++) {
+			const token = this[i];
 			if (token instanceof Token && typeof token.setValue === 'function' && token.setValue.length === 1) {
 				token.setValue(toValue(i, token));
 			}
@@ -678,7 +681,8 @@ class TokenCollection extends Array {
 			const firstToken = this._find();
 			return firstToken?.[getter] && firstToken[getter](name);
 		}
-		for (const [i, token] of this.entries()) {
+		for (let i = 0; i < this.length; i++) {
+			const token = this[i];
 			if (token instanceof Token && typeof token[setter] === 'function') {
 				if (typeof value === 'string') {
 					token[setter](name, value);

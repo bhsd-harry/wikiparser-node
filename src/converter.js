@@ -21,7 +21,7 @@ class ConverterToken extends Token {
 	constructor(flags, rules, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		this.append(new ConverterFlagsToken(flags, config, accum));
-		if (rules.length) {
+		if (rules.length > 0) {
 			const [firstRule] = rules,
 				hasColon = firstRule.includes(':'),
 				firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
@@ -47,7 +47,7 @@ class ConverterToken extends Token {
 
 	toString() {
 		const [flags, ...rules] = this.children;
-		return `-{${flags.toString()}${flags.childNodes.length ? '|' : ''}${rules.map(String).join(';')}}-`;
+		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
 	getPadding() {
@@ -57,7 +57,7 @@ class ConverterToken extends Token {
 	/** @param {number} i */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
-		return i || this.firstElementChild.childNodes.length ? 1 : 0;
+		return i || this.firstElementChild.childNodes.length > 0 ? 1 : 0;
 	}
 
 	text() {

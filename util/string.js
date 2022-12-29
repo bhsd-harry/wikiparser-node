@@ -11,13 +11,13 @@ const toCase = (val, i) => i ? val.toLowerCase() : val;
  * remove half-parsed comment-like tokens
  * @param {string} str
  */
-const removeComment = str => str.replace(/\0\d+c\x7f/g, '');
+const removeComment = str => str.replaceAll(/\0\d+c\x7F/g, '');
 
 /** @param {string} str */
 const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
 
 /** @param {string} str */
-const escapeRegExp = str => str.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
+const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
 
 /** @param {(string|AstNode)[]} childNodes */
 const text = (childNodes, separator = '') => {
@@ -35,7 +35,7 @@ const explode = (start, end, separator, str) => {
 	if (str === undefined) {
 		return [];
 	}
-	const regex = RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
+	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
 		/** @type {string[]} */ exploded = [];
 	let mt = regex.exec(str),
 		depth = 0,

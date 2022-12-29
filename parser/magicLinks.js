@@ -9,7 +9,7 @@ const {extUrlChar} = require('../util/string'),
  */
 const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const MagicLinkToken = require('../src/magicLink'),
-		regex = RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'giu');
+		regex = new RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'giu');
 	return firstChild.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
 			url = m;
@@ -18,7 +18,7 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 			trail = url.slice(m2.index);
 			url = url.slice(0, m2.index);
 		}
-		const sep = RegExp(`[,;.:!?${url.includes('(') ? '' : ')'}]+$`),
+		const sep = new RegExp(`[,;.:!?${url.includes('(') ? '' : ')'}]+$`),
 			sepChars = sep.exec(url);
 		if (sepChars) {
 			let correction = 0;
@@ -32,7 +32,7 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 			return m;
 		}
 		new MagicLinkToken(url, false, config, accum);
-		return `\0${accum.length - 1}w\x7f${trail}`;
+		return `\0${accum.length - 1}w\x7F${trail}`;
 	});
 };
 

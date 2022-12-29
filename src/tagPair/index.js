@@ -57,6 +57,7 @@ class TagPairToken extends fixedToken(Token) {
 		}
 		return selfClosing
 			? `<${opening}${String(firstChild)}/>`
+			// eslint-disable-next-line unicorn/consistent-destructuring
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 

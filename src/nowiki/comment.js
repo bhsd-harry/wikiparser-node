@@ -33,7 +33,7 @@ class CommentToken extends hidden(NowikiToken) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
-		return `<!--${firstChild}${this.closed ? '-->' : ''}`;
+		return `<!--${firstChild}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
 	}
 
 	getPadding() {

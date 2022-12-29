@@ -43,8 +43,8 @@ class CategoryToken extends LinkToken {
 
 	#updateSortkey() {
 		this.setAttribute('sortkey', this.children[1]?.text()
-			?.replace(/&#(\d+);/g, /** @param {string} p1 */ (_, p1) => String.fromCharCode(Number(p1)))
-			?.replace(/&#x([\da-f]+);/gi, /** @param {string} p1 */ (_, p1) => String.fromCharCode(parseInt(p1, 16)))
+			?.replace(/&#(\d+);/g, /** @param {string} p1 */ (_, p1) => String.fromCodePoint(Number(p1)))
+			?.replace(/&#x([\da-f]+);/gi, /** @param {string} p1 */ (_, p1) => String.fromCodePoint(parseInt(p1, 16)))
 			?.replaceAll('\n', '') ?? '',
 		);
 	}

@@ -156,7 +156,7 @@ class LinkToken extends Token {
 
 	/** @param {string} fragment */
 	#setFragment(fragment, page = true) {
-		fragment = String(fragment).replace(/[<>[]#|=!\]/g, p => encodeURIComponent(p));
+		fragment = String(fragment).replaceAll(/[<>[\]#|=]/g, p => encodeURIComponent(p));
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
@@ -215,17 +215,17 @@ class LinkToken extends Token {
 		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
 		}
-		const m1 = /^:?(?:[ \w\x80-\xff-]+:)?([^(]+)\(.+\)$/.exec(linkText);
+		const m1 = /^:?(?:[ \w\x80-\xFF-]+:)?([^(]+)\(.+\)$/.exec(linkText);
 		if (m1) {
 			this.setLinkText(m1[1].trim());
 			return;
 		}
-		const m2 = /^:?(?:[ \w\x80-\xff-]+:)?([^（]+)（.+）$/.exec(linkText);
+		const m2 = /^:?(?:[ \w\x80-\xFF-]+:)?([^（]+)（.+）$/.exec(linkText);
 		if (m2) {
 			this.setLinkText(m2[1].trim());
 			return;
 		}
-		const m3 = /^:?(?:[ \w\x80-\xff-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، )./.exec(linkText);
+		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، )./.exec(linkText);
 		if (m3) {
 			this.setLinkText(m3[1].trim());
 			return;

@@ -109,7 +109,7 @@ class ConverterFlagsToken extends Token {
 		const {variants} = this.getAttribute('config'),
 			variantFlags = this.#flags.filter(flag => variants.includes(flag)),
 			unknownFlags = this.getUnknownFlags();
-		if (variantFlags.length) {
+		if (variantFlags.length > 0) {
 			return new Set([...variantFlags, ...unknownFlags]);
 		}
 		const validFlags = ['A', 'T', 'R', 'D', '-', 'H', 'N'],
@@ -198,10 +198,10 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n²`
 	 */
 	toggleFlag(flag) {
-		if (!this.#flags.includes(flag)) {
-			this.#newFlag(flag);
-		} else {
+		if (this.#flags.includes(flag)) {
 			this.removeFlag(flag);
+		} else {
+			this.#newFlag(flag);
 		}
 	}
 }

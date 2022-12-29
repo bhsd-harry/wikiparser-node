@@ -17,11 +17,11 @@ const externalUse = (name, proxy = false) => {
 	if (!proxy && require('..').running) {
 		return false;
 	}
-	const regex = RegExp(`^${
+	const regex = new RegExp(`^${
 		proxy ? 'Proxy' : 'new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)'
 	}\\.(?!${name}$)`);
 	try {
-		throw new Error();
+		throw new Error(); // eslint-disable-line unicorn/error-message
 	} catch (e) {
 		if (e instanceof Error) {
 			const mt = e.stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);

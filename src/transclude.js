@@ -59,12 +59,12 @@ class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
-				const pattern = RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
+				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
 					});
 				this.appendChild(token);
-				if (arg.length) {
+				if (arg.length > 0) {
 					parts.unshift([arg.join(':')]);
 				}
 				if (this.name === 'invoke') {
@@ -85,7 +85,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const [name] = removeComment(title).split('#');
-			if (/\0\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
+			if (/\0\d+[eh!+-]\x7F|[<>[\]{}]/.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
@@ -180,8 +180,8 @@ class TranscludeToken extends Token {
 	}
 
 	toString() {
-		const {children, childNodes: {length}, firstChild} = this;
-		return `{{${this.modifier}${this.modifier && ':'}${
+		const {children, childNodes: {length}, firstChild, modifier} = this;
+		return `{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
 				? `${String(firstChild)}${length > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
 				: super.toString('|')
@@ -201,8 +201,8 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	text() {
-		const {children, childNodes: {length}, firstElementChild} = this;
-		return `{{${this.modifier}${this.modifier && ':'}${
+		const {children, childNodes: {length}, firstElementChild, modifier} = this;
+		return `{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
 				? `${firstElementChild.text()}${length > 1 ? ':' : ''}${text(children.slice(1), '|')}`
 				: super.text('|')
@@ -223,9 +223,10 @@ class TranscludeToken extends Token {
 			this.#keys.delete(maxAnon);
 		}
 		const j = added ? args.indexOf(addedToken) : addedToken - 1;
-		for (const [i, token] of [...args.entries()].slice(j)) {
-			const {name} = token,
-				newName = String(i + 1);
+		for (let i = j; i < args.length; i++) {
+			const token = args[i],
+				{name} = token,
+				newName = String(i - j + 1);
 			if (name !== newName) {
 				this.getArgs(newName, false, false).add(token.setAttribute('name', newName));
 				if (name) {
@@ -336,7 +337,7 @@ class TranscludeToken extends Token {
 	/** @complexity `n` */
 	getKeys() {
 		const args = this.getAllArgs();
-		if (this.#keys.size === 0 && args.length) {
+		if (this.#keys.size === 0 && args.length > 0) {
 			for (const {name} of args) {
 				this.#keys.add(name);
 			}
@@ -556,7 +557,7 @@ class TranscludeToken extends Token {
 			} else if (aggressive && (anonCount ? /\D\d+$/ : /(?:^|\D)\d+$/).test(key)) {
 				let /** @type {number} */ last;
 				const str = key.slice(0, -/(?<!\d)\d+$/.exec(key)[0].length),
-					regex = RegExp(`^${escapeRegExp(str)}\\d+$`),
+					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
 						const j = Number(name.slice(str.length)),
@@ -565,8 +566,9 @@ class TranscludeToken extends Token {
 						return cmp;
 					});
 				if (ordered) {
-					for (const [i, arg] of series.entries()) {
-						const name = `${str}${i + 1}`;
+					for (let i = 0; i < series.length; i++) {
+						const name = `${str}${i + 1}`,
+							arg = series[i];
 						if (arg.name !== name) {
 							if (arg.name === key) {
 								remaining--;

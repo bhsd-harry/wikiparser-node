@@ -18,7 +18,7 @@ class IncludeToken extends hidden(TagPairToken) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = undefined, closing = undefined, config = Parser.getConfig(), accum = []) {
-		super(name, attr, inner ?? '', inner !== undefined ? closing ?? '' : closing, config, accum, {String: [0, 1]});
+		super(name, attr, inner ?? '', inner === undefined ? closing : closing ?? '', config, accum, {String: [0, 1]});
 	}
 
 	/** @this {IncludeToken & {firstChild: string, lastChild: string}} */

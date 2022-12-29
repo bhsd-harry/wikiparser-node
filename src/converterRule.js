@@ -22,16 +22,12 @@ class ConverterRuleToken extends Token {
 	 */
 	constructor(rule, hasColon = true, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: ':'});
-		if (!hasColon) {
-			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
-		} else {
+		if (hasColon) {
 			const i = rule.indexOf(':'),
 				j = rule.slice(0, i).indexOf('=>'),
 				v = (j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i)).trim(),
 				{variants} = config;
-			if (!variants.includes(v)) {
-				super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
-			} else {
+			if (variants.includes(v)) {
 				super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 				super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
 				if (j === -1) {
@@ -40,7 +36,11 @@ class ConverterRuleToken extends Token {
 					super.insertAt(new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum), 0);
 					this.unidirectional = true;
 				}
+			} else {
+				super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 			}
+		} else {
+			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 		}
 		this.seal(['variant', 'unidirectional', 'bidirectional']);
 	}
@@ -163,7 +163,7 @@ class ConverterRuleToken extends Token {
 
 	/** @param {string} from */
 	setFrom(from) {
-		const {variant} = this;
+		const {variant, unidirectional} = this;
 		if (!variant) {
 			throw new Error('请先指定语言变体！');
 		}
@@ -176,7 +176,7 @@ class ConverterRuleToken extends Token {
 		) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		}
-		if (this.unidirectional) {
+		if (unidirectional) {
 			this.firstElementChild.safeReplaceWith(firstElementChild.lastElementChild.firstChild);
 		} else {
 			super.insertAt(firstElementChild.lastElementChild.firstChild, 0);
