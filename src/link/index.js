@@ -73,7 +73,9 @@ class LinkToken extends Token {
 				) {
 					undo(e, data);
 					throw new Error(`${that.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
-				} else if (that.type === 'link' && !interwiki && [6, 14].includes(ns) && !name.trim().startsWith(':')) {
+				} else if (that.type === 'link' && !interwiki && (ns === 6 || ns === 14)
+					&& !name.trim().startsWith(':')
+				) {
 					const {firstChild} = prevTarget;
 					if (typeof firstChild === 'string') {
 						prevTarget.setText(`:${firstChild}`);

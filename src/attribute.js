@@ -173,7 +173,7 @@ class AttributeToken extends Token {
 	 */
 	setAttr(key, value, init = false) {
 		init &&= !externalUse('setAttr');
-		if (typeof key !== 'string' || !['string', 'boolean'].includes(typeof value)) {
+		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
 			this.typeError('setValue', 'String', 'Boolean');
 		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');

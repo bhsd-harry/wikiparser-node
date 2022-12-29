@@ -17,7 +17,7 @@ const cmpCoords = (coords1, coords2) => {
 	const diff = coords1.row - coords2.row;
 	return diff === 0 ? coords1.column - coords2.column : diff;
 };
-const isRowEnd = /** @param {Token} */ ({type}) => ['tr', 'table-syntax'].includes(type);
+const isRowEnd = /** @param {Token} */ ({type}) => type === 'tr' || type === 'table-syntax';
 
 /** @extends {Array<TableCoords[]>} */
 class Layout extends Array {

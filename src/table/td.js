@@ -113,7 +113,7 @@ class TdToken extends fixedToken(TrToken) {
 	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
 		if (typeof inner !== 'string' && (!(inner instanceof Token) || !inner.isPlain()) || typeof attr !== 'object') {
 			typeError(this, 'create', 'String', 'Token', 'Object');
-		} else if (!['td', 'th', 'caption'].includes(subtype)) {
+		} else if (subtype !== 'td' && subtype !== 'th' && subtype !== 'caption') {
 			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
 		} else if (typeof inner === 'string') {
 			inner = Parser.parse(inner, include, undefined, config);
@@ -225,7 +225,7 @@ class TdToken extends fixedToken(TrToken) {
 	getAttr(key) {
 		const /** @type {string|true} */ value = super.getAttr(key);
 		key = key?.toLowerCase()?.trim();
-		return ['rowspan', 'colspan'].includes(key) ? Number(value) || 1 : value;
+		return key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value;
 	}
 
 	/**
@@ -238,7 +238,7 @@ class TdToken extends fixedToken(TrToken) {
 			this.typeError('setAttr', 'String');
 		}
 		key = key.toLowerCase().trim();
-		if (typeof value === 'number' && ['rowspan', 'colspan'].includes(key)) {
+		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
 			value = value === 1 ? false : String(value);
 		}
 		const /** @type {boolean} */ result = super.setAttr(key, value);

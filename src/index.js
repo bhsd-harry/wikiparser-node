@@ -136,9 +136,9 @@ class Token extends AstElement {
 	 * @param {TokenAttribute<T>} value
 	 */
 	setAttribute(key, value) {
-		if (key === 'include' || !Parser.running && ['config', 'accum'].includes(key)) {
+		if (key === 'include' || !Parser.running && (key === 'config' || key === 'accum')) {
 			throw new RangeError(`禁止手动指定私有的 #${key} 属性！`);
-		} else if (!Parser.debugging && ['stage', 'acceptable', 'protectedChildren'].includes(key)
+		} else if (!Parser.debugging && (key === 'stage' || key === 'acceptable' || key === 'protectedChildren')
 			&& externalUse('setAttribute')
 		) {
 			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);

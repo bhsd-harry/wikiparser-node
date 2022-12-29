@@ -21,7 +21,7 @@ class QuoteToken extends NowikiToken {
 
 	/** @param {string} str */
 	setText(str) {
-		if (!["''", "'''", "'''''"].includes(str)) {
+		if (str !== "''" && str !== "'''" && str !== "'''''") {
 			throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);
 		}
 		return super.setText(str);

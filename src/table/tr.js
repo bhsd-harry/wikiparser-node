@@ -213,7 +213,7 @@ class TrToken extends attributeParent(Token, 1) {
 				if (n < 0) {
 					return child;
 				}
-			} else if (['tr', 'table-syntax'].includes(child.type)) {
+			} else if (child.type === 'tr' || child.type === 'table-syntax') {
 				return child;
 			}
 		}

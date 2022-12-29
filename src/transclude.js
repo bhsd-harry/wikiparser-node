@@ -286,7 +286,7 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	getArgs(key, exact = false, copy = true) {
-		if (!['string', 'number'].includes(typeof key)) {
+		if (typeof key !== 'string' && typeof key !== 'number') {
 			this.typeError('getArgs', 'String', 'Number');
 		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
 			this.debugOnly('getArgs');

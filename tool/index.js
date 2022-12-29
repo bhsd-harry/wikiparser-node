@@ -162,7 +162,7 @@ class TokenCollection extends Array {
 	text(str) {
 		/** @type {(ele: Token, i: number, str: string) => string} */
 		const callback = typeof str === 'function' ? str.call : () => str;
-		if (['string', 'function'].includes(typeof str)) {
+		if (typeof str === 'string' || typeof str === 'function') {
 			for (const [i, ele] of this.entries()) {
 				if (ele instanceof Token) {
 					try {
@@ -404,7 +404,7 @@ class TokenCollection extends Array {
 	 * @param {AstListener} handler
 	 */
 	_addEventListener(events, selector, handler, once = false) {
-		if (!['string', 'object'].includes(typeof events)) {
+		if (typeof events !== 'string' && typeof events !== 'object') {
 			this.typeError(once ? 'once' : 'on', 'String', 'Object');
 		} else if (typeof selector === 'function') {
 			handler = selector;
@@ -445,7 +445,7 @@ class TokenCollection extends Array {
 	 * @param {AstListener} handler
 	 */
 	off(events, selector, handler) {
-		if (!['string', 'object', 'undefined'].includes(typeof events)) {
+		if (typeof events !== 'string' && typeof events !== 'object' && events !== undefined) {
 			this.typeError('off', 'String', 'Object');
 		}
 		handler = typeof selector === 'function' ? selector : handler;
@@ -460,7 +460,7 @@ class TokenCollection extends Array {
 				token.removeAllEventListeners();
 			} else {
 				for (const [event, listener] of eventPair) {
-					if (typeof event !== 'string' || !['function', 'undefined'].includes(typeof listener)) {
+					if (typeof event !== 'string' || typeof listener !== 'function' && listener !== undefined) {
 						this.typeError('off', 'String', 'Function');
 					} else if (listener) {
 						token.removeEventListener(event, listener);
