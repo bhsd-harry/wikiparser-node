@@ -26,7 +26,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			/** @type {BracketExecArray} */ top = stack.pop() ?? {},
 			{0: open, index, parts} = top,
 			innerEqual = syntax === '=' && top.findEqual;
-		if ([']]', '}-'].includes(syntax)) { // 情形1：闭合内链或转换
+		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
 			lastIndex = curIndex + 2;
 		} else if (syntax === '\n') { // 情形2：闭合标题
 			lastIndex = curIndex + 1;
