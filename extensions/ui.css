@@ -4,9 +4,10 @@
 	font-family: monospace;
 }
 
-.wpb-error, .wpb-arg-redundant, .wpb-table-inter {
+.wpb-error {
 	color: #f00;
 	font-weight: normal;
+	text-decoration: underline wavy #f00 1px;
 }
 
 .wpb-noinclude, .wpb-include, .wpb-comment {

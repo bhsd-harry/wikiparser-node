@@ -27,6 +27,11 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		} else {
 			const token = new Token(str, config, true, accum);
 			token.type = 'table-inter';
+			token.print = function() {
+				return `<span class="wpb-error" title="Will be placed outside the table">${
+					Token.prototype.print.call(this)
+				}</span>`;
+			};
 			top.appendChild(token.setAttribute('stage', 3));
 		}
 	};

@@ -19,6 +19,13 @@ const print = (childNodes, opt = {}) => {
 	).join(sep)}${post}`;
 };
 
+/** @param {string} text */
+const printError = (text, title = '') => {
+	return `<span class="wpb-error"${title && ` title="${title.replaceAll('"', '&quot;')}"`}>${
+		text.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+	}</span>`;
+};
+
 /**
  * @param {string} start
  * @param {string} end
@@ -53,4 +60,4 @@ const explode = (start, end, separator, str) => {
 const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd])'
 	+ '(?:[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd]|\\0\\d+c\\x7f)*';
 
-module.exports = {removeComment, print, explode, extUrlChar};
+module.exports = {removeComment, print, printError, explode, extUrlChar};

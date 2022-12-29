@@ -1,6 +1,7 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const {printError} = require('../util/string'),
+	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
 	GalleryImageToken = require('./link/galleryImage');
 
@@ -44,7 +45,7 @@ class GalleryToken extends Token {
 	}
 
 	print() {
-		return super.print({sep: '\n', wrap: s => `<span class="wpb-error">${s}</span>`});
+		return super.print({sep: '\n', wrap: s => printError(s, 'Invisible content')});
 	}
 }
 

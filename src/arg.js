@@ -1,6 +1,7 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const {print, printError} = require('../util/string'),
+	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -35,7 +36,11 @@ class ArgToken extends Token {
 	}
 
 	print() {
-		return super.print({pre: '{{{', post: '}}}', sep: '|'});
+		const {childNodes} = this;
+		return `<span class="wpb-arg">{{{${print(childNodes.slice(0, 2), {sep: '|'})}${childNodes.length > 2
+			? printError(`|${childNodes.slice(2).map(String).join('|')}`, 'Invisible content')
+			: ''
+		}}}}</span>`;
 	}
 }
 

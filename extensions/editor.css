@@ -25,6 +25,7 @@
 	position: absolute;
 	inset: 0;
 	background-color: #fff;
+	user-select: none;
 }
 #wikiPretty span {
 	font-size: inherit;
