@@ -32,9 +32,9 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 	};
 	for (const outLine of lines) {
 		let top = stack.pop();
-		const [spaces] = /^(?:\s|\0\d+c\x7F)*/.exec(outLine);
-		const line = outLine.slice(spaces.length),
-			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{\0\d+!\x7F|\0\d+\{\x7F)(.*)$/.exec(line);
+		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine),
+			line = outLine.slice(spaces.length),
+			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u.exec(line);
 		if (matchesStart) {
 			while (top && top.type !== 'td') {
 				top = stack.pop();
@@ -51,8 +51,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			out += `\n${outLine}`;
 			continue;
 		}
-		const matches
-			= /^(?:(\|\}|\0\d+!\x7F\}|\0\d+\}\x7F)|(\|-+|\0\d+!\x7F-+|\0\d+-\x7F-*)(?!-)|(!|(?:\||\0\d+!\x7F)\+?))(.*)$/
+		const matches = // eslint-disable-line operator-linebreak
+			/^(?:(\|\}|\0\d+!\x7F\}|\0\d+\}\x7F)|(\|-+|\0\d+!\x7F-+|\0\d+-\x7F-*)(?!-)|(!|(?:\||\0\d+!\x7F)\+?))(.*)$/u
 				.exec(line);
 		if (!matches) {
 			push(`\n${outLine}`, top);
@@ -81,8 +81,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 				top = stack.pop();
 			}
 			const regex = cell === '!'
-				? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/g
-				: /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/g;
+				? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu
+				: /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
 			let mt = regex.exec(attr),
 				lastIndex = 0,
 				lastSyntax = `\n${spaces}${cell}`;

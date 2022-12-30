@@ -63,11 +63,11 @@ class AttributeToken extends Token {
 			token = Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce());
 			string = token.firstChild;
 		}
-		string = removeComment(string).replaceAll(/\0\d+~\x7F/g, '=');
+		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
 		const build = /** @param {string|boolean} str */ str =>
 			typeof str === 'boolean' || !token ? str : token.buildFromStr(str).map(String).join('');
 		for (const [, key,, quoted, unquoted] of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gs)
+			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gsu)
 		) {
 			if (!this.setAttr(build(key), build(quoted ?? unquoted ?? true), true)) {
 				this.#sanitized = false;
@@ -126,12 +126,11 @@ class AttributeToken extends Token {
 				}
 			}
 		}
-		const that = this,
-			/** @type {AstListener} */ attributeListener = ({type, target}) => {
-				if (type === 'text' || target !== that) {
-					that.#parseAttr();
-				}
-			};
+		const /** @type {AstListener} */ attributeListener = ({type, target}) => {
+			if (type === 'text' || target !== this) {
+				this.#parseAttr();
+			}
+		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], attributeListener);
 		return this;
 	}
@@ -184,7 +183,7 @@ class AttributeToken extends Token {
 			parsedKey = this.type !== 'ext-attr' && !init
 				? Parser.run(() => new Token(key, config).parseOnce(0, include).parseOnce().firstChild)
 				: key;
-		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/.test(parsedKey)) {
+		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			if (init) {
 				return false;
 			}
@@ -192,7 +191,7 @@ class AttributeToken extends Token {
 		} else if (value === false) {
 			this.#attr.delete(key);
 		} else {
-			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/g, ' ').trim());
+			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
 		}
 		if (!init) {
 			this.sanitize();
@@ -319,7 +318,7 @@ class AttributeToken extends Token {
 			thisVal = toCase(attr === true ? '' : attr, i);
 		switch (equal) {
 			case '~=':
-				return attr !== true && thisVal.split(/\s/).includes(val);
+				return attr !== true && thisVal.split(/\s/u).includes(val);
 			case '|=': // 允许`val === ''`
 				return thisVal === val || thisVal.startsWith(`${val}-`);
 			case '^=':

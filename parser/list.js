@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseList = (text, config = Parser.getConfig(), accum = []) => {
-	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/.exec(text);
+	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(text);
 	if (!mt) {
 		return text;
 	}
@@ -20,7 +20,7 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 		return text;
 	}
 	const DdToken = require('../src/nowiki/dd');
-	let regex = /:+|-\{/g,
+	let regex = /:+|-\{/gu,
 		ex = regex.exec(text),
 		lc = 0;
 	while (ex && dt) {
@@ -37,7 +37,7 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 		} else if (syntax === '-{') {
 			if (!lc) {
 				const {lastIndex} = regex;
-				regex = /-\{|\}-/g;
+				regex = /-\{|\}-/gu;
 				regex.lastIndex = lastIndex;
 			}
 			lc++;
@@ -45,7 +45,7 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 			lc--;
 			if (!lc) {
 				const {lastIndex} = regex;
-				regex = /:+|-\{/g;
+				regex = /:+|-\{/gu;
 				regex.lastIndex = lastIndex;
 			}
 		}

@@ -1,6 +1,6 @@
 'use strict';
 
-const Title = require('../../lib/title'), // eslint-disable-line no-unused-vars
+const Title = require('../../lib/title'),
 	{text, noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
@@ -42,10 +42,8 @@ class LinkToken extends Token {
 	cloneNode() {
 		const [link, ...linkText] = this.cloneChildren();
 		return Parser.run(() => {
-			const /** @type {typeof LinkToken} */ Constructor = this.constructor,
-				token = new Constructor('', undefined, {
-					title: this.name, interwiki: this.interwiki, fragment: this.fragment,
-				}, this.getAttribute('config'));
+			const /** @type {typeof LinkToken} */ {constructor: Constructor, name: title, interwiki, fragment} = this,
+				token = new Constructor('', undefined, {title, interwiki, fragment}, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(link);
 			token.append(...linkText);
 			return token.afterBuild();
@@ -59,21 +57,20 @@ class LinkToken extends Token {
 		if (this.fragment.includes('\0')) {
 			this.setAttribute('fragment', text(this.buildFromStr(this.fragment)));
 		}
-		const that = this;
 		const /** @type {AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, fragment, ns, valid} = that.normalizeTitle(name);
+					{title, interwiki, fragment, ns, valid} = this.normalizeTitle(name);
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
-				} else if (that.type === 'category' && (interwiki || ns !== 14)
-					|| that.type === 'file' && (interwiki || ns !== 6)
+				} else if (this.type === 'category' && (interwiki || ns !== 14)
+					|| this.type === 'file' && (interwiki || ns !== 6)
 				) {
 					undo(e, data);
-					throw new Error(`${that.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
-				} else if (that.type === 'link' && !interwiki && (ns === 6 || ns === 14)
+					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
+				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14)
 					&& !name.trim().startsWith(':')
 				) {
 					const {firstChild} = prevTarget;
@@ -83,8 +80,9 @@ class LinkToken extends Token {
 						prevTarget.prepend(':');
 					}
 				}
-				that.setAttribute('selfLink', !title).setAttribute('interwiki', interwiki)
-					.setAttribute('name', title).setAttribute('fragment', fragment);
+				this.setAttribute('selfLink', !title).setAttribute('interwiki', interwiki)
+					.setAttribute('name', title)
+					.setAttribute('fragment', fragment);
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
@@ -112,7 +110,7 @@ class LinkToken extends Token {
 	/** @param {string} link */
 	setTarget(link) {
 		link = String(link);
-		if (link.type === 'link' && !/^\s*[:#]/.test(link)) {
+		if (link.type === 'link' && !/^\s*[:#]/u.test(link)) {
 			link = `:${link}`;
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
@@ -156,7 +154,7 @@ class LinkToken extends Token {
 
 	/** @param {string} fragment */
 	#setFragment(fragment, page = true) {
-		fragment = String(fragment).replaceAll(/[<>[\]#|=]/g, p => encodeURIComponent(p));
+		fragment = String(fragment).replaceAll(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
@@ -215,17 +213,17 @@ class LinkToken extends Token {
 		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
 		}
-		const m1 = /^:?(?:[ \w\x80-\xFF-]+:)?([^(]+)\(.+\)$/.exec(linkText);
+		const m1 = /^:?(?:[ \w\x80-\xFF-]+:)?([^(]+)\(.+\)$/u.exec(linkText);
 		if (m1) {
 			this.setLinkText(m1[1].trim());
 			return;
 		}
-		const m2 = /^:?(?:[ \w\x80-\xFF-]+:)?([^（]+)（.+）$/.exec(linkText);
+		const m2 = /^:?(?:[ \w\x80-\xFF-]+:)?([^（]+)（.+）$/u.exec(linkText);
 		if (m2) {
 			this.setLinkText(m2[1].trim());
 			return;
 		}
-		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، )./.exec(linkText);
+		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، )./u.exec(linkText);
 		if (m3) {
 			this.setLinkText(m3[1].trim());
 			return;

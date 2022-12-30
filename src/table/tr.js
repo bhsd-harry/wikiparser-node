@@ -13,7 +13,7 @@ const attributeParent = require('../../mixin/attributeParent'),
 class TrToken extends attributeParent(Token, 1) {
 	type = 'tr';
 
-	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/;
+	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
 
 	/**
 	 * @param {string} syntax
@@ -32,7 +32,7 @@ class TrToken extends attributeParent(Token, 1) {
 
 	cloneNode() {
 		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
-			/** @type {typeof TrToken} */ Constructor = this.constructor;
+			/** @type {typeof TrToken} */ {constructor: Constructor} = this;
 		return Parser.run(() => {
 			const token = new Constructor(undefined, undefined, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(syntax);
@@ -48,7 +48,7 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	#correct() {
-		const [,, child] = this.children;
+		const {children: [,, child]} = this;
 		if (child?.isPlain()) {
 			const {firstChild} = child;
 			if (typeof firstChild !== 'string') {
@@ -72,10 +72,11 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/** @param {SyntaxToken} syntax */
 	static escape(syntax) {
-		const wikitext = syntax.childNodes.map(child => typeof child === 'string'
-				? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
-					.replaceAll('|', '{{!}}')
-				: child.toString(),
+		const wikitext = syntax.childNodes.map(
+				child => typeof child === 'string'
+					? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
+						.replaceAll('|', '{{!}}')
+					: child.toString(),
 			).join(''),
 			token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
 		syntax.replaceChildren(...token.childNodes);
@@ -141,8 +142,8 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	getRowCount() {
 		const TdToken = require('./td');
-		return Number(this.children.some(child =>
-			child instanceof TdToken && child.isIndependent() && !child.firstElementChild.text().endsWith('+'),
+		return Number(this.children.some(
+			child => child instanceof TdToken && child.isIndependent() && !child.firstElementChild.text().endsWith('+'),
 		));
 	}
 
@@ -153,7 +154,7 @@ class TrToken extends attributeParent(Token, 1) {
 	#getSiblingRow(subset) {
 		const {parentElement} = this;
 		if (!parentElement) {
-			return;
+			return undefined;
 		}
 		const {children} = parentElement,
 			index = children.indexOf(this);
@@ -162,6 +163,7 @@ class TrToken extends attributeParent(Token, 1) {
 				return child;
 			}
 		}
+		return undefined;
 	}
 
 	/** @complexity `n` */
@@ -217,6 +219,7 @@ class TrToken extends attributeParent(Token, 1) {
 				return child;
 			}
 		}
+		return undefined;
 	}
 
 	/**

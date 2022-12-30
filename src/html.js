@@ -83,7 +83,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		} else if (selfClosing && html[0].includes(name)) {
 			throw new SyntaxError(`无效自封闭标签：${string}`);
 		} else if (!parentElement) {
-			return;
+			return undefined;
 		}
 		const {children} = parentElement,
 			i = children.indexOf(this),

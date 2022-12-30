@@ -14,17 +14,58 @@ const assert = require('assert/strict'),
  * @param {TableCoords} coords2
  */
 const cmpCoords = (coords1, coords2) => {
-	const diff = coords1.row - coords2.row;
-	return diff === 0 ? coords1.column - coords2.column : diff;
-};
-const isRowEnd = /** @param {Token} */ ({type}) => type === 'tr' || type === 'table-syntax';
+		const diff = coords1.row - coords2.row;
+		return diff === 0 ? coords1.column - coords2.column : diff;
+	},
+	isRowEnd = /** @param {Token} */ ({type}) => type === 'tr' || type === 'table-syntax',
+	/**
+	 * @param {TableCoords[]} rowLayout
+	 * @param {number} i
+	 */
+	isStartCol = (rowLayout, i, oneCol = false) => {
+		const coords = rowLayout[i];
+		return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
+	};
+
 /**
- * @param {TableCoords[]} rowLayout
- * @param {number} i
+ * @param {Map<TdToken, boolean>} cells
+ * @param {string|Record<string, string|boolean>} attr
+ * @complexity `n`
  */
-const isStartCol = (rowLayout, i, oneCol = false) => {
-	const coords = rowLayout[i];
-	return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
+const format = (cells, attr = {}, multi = false) => {
+	for (const [token, start] of cells) {
+		if (multi || start) {
+			if (typeof attr === 'string') {
+				token.setSyntax(attr);
+			} else {
+				for (const [k, v] of Object.entries(attr)) {
+					token.setAttr(k, v);
+				}
+			}
+		}
+	}
+};
+
+/**
+ * @param {number} y
+ * @param {TrToken} rowToken
+ * @param {TableCoords[][]} layout
+ * @param {number} maxCol
+ * @param {Token} token
+ * @complexity `n`
+ */
+const fill = (y, rowToken, layout, maxCol, token) => {
+	const rowLayout = layout[y],
+		{childNodes} = rowToken;
+	let lastIndex = childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption');
+	lastIndex = lastIndex === -1 ? undefined : lastIndex - childNodes.length;
+	Parser.run(() => {
+		for (let i = 0; i < maxCol; i++) {
+			if (!rowLayout[i]) {
+				rowToken.insertAt(token.cloneNode(), lastIndex);
+			}
+		}
+	});
 };
 
 /** @extends {Array<TableCoords[]>} */
@@ -63,8 +104,8 @@ class Layout extends Array {
 class TableToken extends TrToken {
 	type = 'table';
 
-	static openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/;
-	static closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/;
+	static openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u;
+	static closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
 	/**
 	 * @param {string} syntax
@@ -131,7 +172,9 @@ class TableToken extends TrToken {
 			+ this.children.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
-	getPreviousRow() {}
+	getPreviousRow() { // eslint-disable-line class-methods-use-this
+		return undefined;
+	}
 
 	/** @complexity `n` */
 	getNextRow() {
@@ -167,6 +210,7 @@ class TableToken extends TrToken {
 				return child;
 			}
 		}
+		return undefined;
 	}
 
 	/**
@@ -277,6 +321,7 @@ class TableToken extends TrToken {
 		} else if (x === rowLayout?.length) {
 			return {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true};
 		}
+		return undefined;
 	}
 
 	/**
@@ -310,31 +355,12 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {Map<TdToken, boolean>} cells
-	 * @param {string|Record<string, string|boolean>} attr
-	 * @complexity `n`
-	 */
-	#format(cells, attr = {}, multi = false) {
-		for (const [token, start] of cells) {
-			if (multi || start) {
-				if (typeof attr === 'string') {
-					token.setSyntax(attr);
-				} else {
-					for (const [k, v] of Object.entries(attr)) {
-						token.setAttr(k, v);
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * @param {number} y
 	 * @param {string|Record<string, string|boolean>} attry
 	 * @complexity `n²`
 	 */
 	formatTableRow(y, attr = {}, multiRow = false) {
-		this.#format(this.getFullRow(y), attr, multiRow);
+		format(this.getFullRow(y), attr, multiRow);
 	}
 
 	/**
@@ -343,29 +369,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	formatTableCol(x, attr = {}, multiCol = false) {
-		this.#format(this.getFullCol(x), attr, multiCol);
-	}
-
-	/**
-	 * @param {number} y
-	 * @param {TrToken} rowToken
-	 * @param {TableCoords[][]} layout
-	 * @param {number} maxCol
-	 * @param {Token} token
-	 * @complexity `n`
-	 */
-	#fill(y, rowToken, layout, maxCol, token) {
-		const rowLayout = layout[y],
-			{childNodes} = rowToken;
-		let lastIndex = childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption');
-		lastIndex = lastIndex === -1 ? undefined : lastIndex - childNodes.length;
-		Parser.run(() => {
-			for (let i = 0; i < maxCol; i++) {
-				if (!rowLayout[i]) {
-					rowToken.insertAt(token.cloneNode(), lastIndex);
-				}
-			}
-		});
+		format(this.getFullCol(x), attr, multiCol);
 	}
 
 	/**
@@ -380,7 +384,7 @@ class TableToken extends TrToken {
 			layout = this.getLayout({y}),
 			maxCol = Math.max(...layout.map(row => row.length)),
 			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		this.#fill(y, rowToken, layout, maxCol, token);
+		fill(y, rowToken, layout, maxCol, token);
 	}
 
 	/**
@@ -395,7 +399,7 @@ class TableToken extends TrToken {
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let y = 0; y < rowTokens.length; y++) {
-			this.#fill(y, rowTokens[y], layout, maxCol, token);
+			fill(y, rowTokens[y], layout, maxCol, token);
 		}
 	}
 
@@ -728,12 +732,13 @@ class TableToken extends TrToken {
 		if (typeof y !== 'number' || typeof before !== 'number') {
 			this.typeError('moveTableRowBefore', 'Number');
 		}
-		const layout = this.getLayout(),
-			/**
-			 * @type {(i: number) => number[]}
-			 * @complexity `n`
-			 */
-			occupied = i => layout[i].map(({row}, j) => row === i ? j : null).filter(j => j !== null);
+		const layout = this.getLayout();
+
+		/**
+		 * @type {(i: number) => number[]}
+		 * @complexity `n`
+		 */
+		const occupied = i => layout[i].map(({row}, j) => row === i ? j : null).filter(j => j !== null);
 		try {
 			assert.deepStrictEqual(occupied(y), occupied(before));
 		} catch (e) {
@@ -768,14 +773,15 @@ class TableToken extends TrToken {
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after),
 			/** @type {TdToken[]} */
-			cells = afterToken.children.filter(child => child instanceof TdToken && child.subtype !== 'caption'),
-			/**
-			 * @type {(i: number, oneRow?: boolean) => number[]}
-			 * @complexity `n`
-			 */
-			occupied = (i, oneRow = false) => layout[i].map(({row, column}, j) =>
-				row === i && (!oneRow || cells[column].rowspan === 1) ? j : null,
-			).filter(j => j !== null);
+			cells = afterToken.children.filter(child => child instanceof TdToken && child.subtype !== 'caption');
+
+		/**
+		 * @type {(i: number, oneRow?: boolean) => number[]}
+		 * @complexity `n`
+		 */
+		const occupied = (i, oneRow = false) => layout[i].map(
+			({row, column}, j) => row === i && (!oneRow || cells[column].rowspan === 1) ? j : null,
+		).filter(j => j !== null);
 		try {
 			assert.deepStrictEqual(occupied(y), occupied(after, true));
 		} catch (e) {
@@ -846,9 +852,10 @@ class TableToken extends TrToken {
 				}
 				if (start) {
 					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
-					rowToken.insertBefore(token, col === undefined && rowToken.type === 'table'
-						? rowToken.children.slice(2).find(isRowEnd)
-						: col !== undefined && rowToken.getNthCol(col),
+					rowToken.insertBefore(
+						token, col === undefined && rowToken.type === 'table'
+							? rowToken.children.slice(2).find(isRowEnd)
+							: col !== undefined && rowToken.getNthCol(col),
 					);
 				}
 			}

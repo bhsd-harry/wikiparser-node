@@ -17,6 +17,7 @@ class ExtLinkToken extends Token {
 	get protocol() {
 		return this.firstChild.protocol;
 	}
+
 	/** @this {{firstChild: MagicLinkToken}} */
 	set protocol(value) {
 		this.firstChild.protocol = value;
@@ -53,7 +54,7 @@ class ExtLinkToken extends Token {
 	#correct() {
 		if (!this.#space && this.childNodes.length > 1
 			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastElementChild.text().replace(/&[lg]t;/, '<'))
+			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastElementChild.text().replace(/&[lg]t;/u, '<'))
 		) {
 			this.#space = ' ';
 		}

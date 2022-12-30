@@ -46,7 +46,7 @@ class ConverterToken extends Token {
 	}
 
 	toString() {
-		const [flags, ...rules] = this.children;
+		const {children: [flags, ...rules]} = this;
 		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
@@ -61,7 +61,7 @@ class ConverterToken extends Token {
 	}
 
 	text() {
-		const [flags, ...rules] = this.children;
+		const {children: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 

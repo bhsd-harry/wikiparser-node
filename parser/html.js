@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/i,
+	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/iu,
 		elements = config.html.flat(),
 		bits = firstChild.split('<');
 	let text = bits.shift();

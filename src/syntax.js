@@ -39,14 +39,13 @@ class SyntaxToken extends Token {
 	}
 
 	afterBuild() {
-		const that = this,
-			/** @type {AstListener} */ syntaxListener = (e, data) => {
-				const pattern = that.#pattern;
-				if (!Parser.running && !pattern.test(that.text())) {
-					undo(e, data);
-					throw new Error(`不可修改 ${that.constructor.name} 的语法：/${pattern.source}/${pattern.flags}`);
-				}
-			};
+		const /** @type {AstListener} */ syntaxListener = (e, data) => {
+			const pattern = this.#pattern;
+			if (!Parser.running && !pattern.test(this.text())) {
+				undo(e, data);
+				throw new Error(`不可修改 ${this.constructor.name} 的语法：/${pattern.source}/${pattern.flags}`);
+			}
+		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
 		return this;
 	}

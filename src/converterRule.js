@@ -61,21 +61,20 @@ class ConverterRuleToken extends Token {
 		if (this.childNodes.length > 1) {
 			this.setAttribute('variant', this.children.at(-2).text().trim());
 		}
-		const that = this,
-			/** @type {AstListener} */ converterRuleListener = (e, data) => {
-				const {childNodes} = that,
-					{prevTarget} = e;
-				if (childNodes.length > 1 && childNodes.at(-2) === prevTarget) {
-					const v = prevTarget.text().trim(),
-						{variants} = that.getAttribute('config');
-					if (variants.includes(v)) {
-						that.setAttribute('variant', v);
-					} else {
-						undo(e, data);
-						throw new Error(`无效的语言变体：${v}`);
-					}
+		const /** @type {AstListener} */ converterRuleListener = (e, data) => {
+			const {childNodes} = this,
+				{prevTarget} = e;
+			if (childNodes.length > 1 && childNodes.at(-2) === prevTarget) {
+				const v = prevTarget.text().trim(),
+					{variants} = this.getAttribute('config');
+				if (variants.includes(v)) {
+					this.setAttribute('variant', v);
+				} else {
+					undo(e, data);
+					throw new Error(`无效的语言变体：${v}`);
 				}
-			};
+			}
+		};
 		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterRuleListener);
 		return this;
 	}
@@ -92,13 +91,13 @@ class ConverterRuleToken extends Token {
 	}
 
 	insertAt() {
-		throw new Error('转换规则语法复杂，请勿尝试手动插入子节点！');
+		throw new Error(`转换规则语法复杂，请勿尝试对 ${this.constructor.name} 手动插入子节点！`);
 	}
 
 	/** @returns {string} */
 	toString() {
 		if (this.childNodes.length === 3) {
-			const [from, variant, to] = this.children;
+			const {children: [from, variant, to]} = this;
 			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
 		}
 		return super.toString(':');
@@ -106,7 +105,7 @@ class ConverterRuleToken extends Token {
 
 	/** @param {number} i */
 	getGaps(i = 0) {
-		const {length} = this.childNodes;
+		const {childNodes: {length}} = this;
 		i = i < 0 ? i + length : i;
 		return i === 0 && length === 3 ? 2 : 1;
 	}
@@ -114,7 +113,7 @@ class ConverterRuleToken extends Token {
 	/** @returns {string} */
 	text() {
 		if (this.childNodes.length === 3) {
-			const [from, variant, to] = this.children;
+			const {children: [from, variant, to]} = this;
 			return `${from.text()}=>${variant.text()}:${to.text()}`;
 		}
 		return super.text(':');
@@ -138,8 +137,9 @@ class ConverterRuleToken extends Token {
 		) {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
-		const {lastChild} = firstElementChild.lastElementChild;
-		firstElementChild.lastElementChild.removeAt(0);
+		const {lastElementChild} = firstElementChild,
+			{lastChild} = lastElementChild;
+		lastElementChild.removeAt(0);
 		this.lastElementChild.safeReplaceWith(lastChild);
 	}
 

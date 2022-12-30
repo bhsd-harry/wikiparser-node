@@ -24,7 +24,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name).setAttribute('stage', 2);
 		const SyntaxToken = require('./syntax'),
-			trail = new SyntaxToken(input[1], /^[^\S\n]*$/, 'heading-trail', config, accum, {
+			trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
 				'Stage-1': ':', '!ExtToken': '',
 			});
 		this.append(token, trail);

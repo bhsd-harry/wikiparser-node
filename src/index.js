@@ -50,9 +50,9 @@ const {externalUse} = require('../util/debug'),
 
 class Token extends AstElement {
 	type = 'root';
-	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */ #stage = 0;
+	#stage = 0; // 解析阶段，参见顶部注释。只对plain Token有意义。
 	#config;
-	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
+	// 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
 	#accum;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
@@ -123,7 +123,7 @@ class Token extends AstElement {
 					return includeToken.name === 'noinclude';
 				}
 				const noincludeToken = this.querySelector('noinclude');
-				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/i.test(noincludeToken.toString());
+				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(noincludeToken.toString());
 			}
 			default:
 				return super.getAttribute(key);
@@ -236,7 +236,7 @@ class Token extends AstElement {
 						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i),
-				insertedName = token.constructor.name,
+				{constructor: {name: insertedName}} = token,
 				k = i < 0 ? i + this.childNodes.length : i;
 			if (!acceptableIndices[insertedName].includes(k)) {
 				throw new RangeError(`${this.constructor.name} 的第 ${k} 个子节点不能为 ${insertedName}！`);
@@ -293,14 +293,14 @@ class Token extends AstElement {
 	/** @complexity `n` */
 	sections() {
 		if (this.type !== 'root') {
-			return;
+			return undefined;
 		}
 		const {childNodes} = this,
 			headings = [...childNodes.entries()]
 				.filter(([, child]) => child instanceof Token && child.type === 'heading')
 				.map(/** @param {[number, Token]} */ ([i, {name}]) => [i, Number(name)]),
-			lastHeading = [-1, -1, -1, -1, -1, -1];
-		const /** @type {(string|Token)[][]} */ sections = new Array(headings.length);
+			lastHeading = [-1, -1, -1, -1, -1, -1],
+			/** @type {(string|Token)[][]} */ sections = new Array(headings.length);
 		for (let i = 0; i < headings.length; i++) {
 			const [index, level] = headings[i];
 			for (let j = level; j < 6; j++) {
@@ -346,7 +346,7 @@ class Token extends AstElement {
 		}
 		const {parentElement} = this;
 		if (!parentElement) {
-			return;
+			return undefined;
 		}
 		const {children} = parentElement,
 			index = children.indexOf(this);
@@ -475,7 +475,7 @@ class Token extends AstElement {
 		if (!Parser.debugging && externalUse('buildFromStr')) {
 			this.debugOnly('buildFromStr');
 		}
-		return str.split(/[\0\x7F]/).map((s, i) => {
+		return str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return s;
 			} else if (!isNaN(s.at(-1))) {
@@ -556,7 +556,7 @@ class Token extends AstElement {
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
-				const [, child] = table.childNodes;
+				const {childNodes: [, child]} = table;
 				if (typeof child === 'string' && child.includes('\0')) {
 					table.removeAt(1);
 					const inner = new Token(child, this.#config, true, this.#accum);

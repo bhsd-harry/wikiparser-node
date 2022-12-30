@@ -50,6 +50,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
+
 			/*
 			 * 更多定制扩展的代码示例：
 			 * ```

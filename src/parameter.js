@@ -51,19 +51,19 @@ class ParameterToken extends fixedToken(Token) {
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
-		const that = this;
+
 		/**
 		 * 在AstEventData中记录`oldKey`和`newKey`
 		 * @type {AstListener}
 		 */
 		const parameterListener = ({prevTarget}, data) => {
-			if (!that.anon) { // 匿名参数不管怎么变动还是匿名
-				const {firstElementChild, name} = that;
+			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
+				const {firstElementChild, name} = this;
 				if (prevTarget === firstElementChild) {
 					const newKey = firstElementChild.text().trim();
 					data.oldKey = name;
 					data.newKey = newKey;
-					that.setAttribute('name', newKey);
+					this.setAttribute('name', newKey);
 				}
 			}
 		};
@@ -113,7 +113,7 @@ class ParameterToken extends fixedToken(Token) {
 		) {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
-		const newValue = lastElementChild.lastChild;
+		const {lastChild: newValue} = lastElementChild;
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();

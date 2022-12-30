@@ -46,12 +46,11 @@ class ArgToken extends Token {
 
 	afterBuild() {
 		this.setAttribute('name', this.firstElementChild.text().trim());
-		const that = this,
-			/** @type {AstListener} */ argListener = ({prevTarget}) => {
-				if (prevTarget === that.firstElementChild) {
-					that.setAttribute('name', prevTarget.text().trim());
-				}
-			};
+		const /** @type {AstListener} */ argListener = ({prevTarget}) => {
+			if (prevTarget === this.firstElementChild) {
+				this.setAttribute('name', prevTarget.text().trim());
+			}
+		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
 		return this;
 	}
@@ -115,7 +114,7 @@ class ArgToken extends Token {
 		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
-		const newName = firstElementChild.firstElementChild;
+		const {firstElementChild: newName} = firstElementChild;
 		root.destroy();
 		firstElementChild.destroy();
 		this.firstElementChild.safeReplaceWith(newName);
@@ -129,8 +128,8 @@ class ArgToken extends Token {
 		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
-		const [, oldDefault] = this.children,
-			newDefault = firstElementChild.lastElementChild;
+		const {children: [, oldDefault]} = this,
+			{lastElementChild: newDefault} = firstElementChild;
 		root.destroy();
 		firstElementChild.destroy();
 		if (oldDefault) {

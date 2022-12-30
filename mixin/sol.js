@@ -5,7 +5,7 @@ const /** @type {Parser} */ Parser = require('..'),
 
 /**
  * @template T
- * @param {T} constructor
+ * @param {T} ct
  * @returns {T}
  */
 const sol = ct => class extends ct {

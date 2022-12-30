@@ -18,6 +18,7 @@ class TdToken extends fixedToken(TrToken) {
 	get subtype() {
 		return this.getSyntax().subtype;
 	}
+
 	set subtype(subtype) {
 		this.setSyntax(subtype);
 	}
@@ -25,12 +26,15 @@ class TdToken extends fixedToken(TrToken) {
 	get rowspan() {
 		return this.getAttr('rowspan');
 	}
+
 	set rowspan(rowspan) {
 		this.setAttr('rowspan', rowspan);
 	}
+
 	get colspan() {
 		return this.getAttr('colspan');
 	}
+
 	set colspan(colspan) {
 		this.setAttr('colspan', colspan);
 	}
@@ -70,7 +74,7 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	static openingPattern
-		= /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/;
+		= /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u;
 
 	getRowCount = undefined;
 	getNthCol = undefined;
@@ -82,9 +86,9 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		let innerSyntax = /\||\0\d+!\x7F/.exec(inner),
+		let innerSyntax = /\||\0\d+!\x7F/u.exec(inner),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
-		if (/\[\[|-\{/.test(attr)) {
+		if (/\[\[|-\{/u.test(attr)) {
 			innerSyntax = null;
 			attr = '';
 		}
@@ -96,7 +100,8 @@ class TdToken extends fixedToken(TrToken) {
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
 		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
-			.seal(['getRowCount', 'getNthCol', 'insertTableCell']).appendChild(innerToken.setAttribute('stage', 4));
+			.seal(['getRowCount', 'getNthCol', 'insertTableCell'])
+			.appendChild(innerToken.setAttribute('stage', 4));
 	}
 
 	cloneNode() {
@@ -194,7 +199,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	toString() {
 		this.#correct();
-		const [syntax, attr, inner] = this.children;
+		const {children: [syntax, attr, inner]} = this;
 		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}
 
@@ -213,7 +218,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	text() {
 		this.#correct();
-		const [syntax, attr, inner] = this.children;
+		const {children: [syntax, attr, inner]} = this;
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 

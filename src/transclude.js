@@ -21,7 +21,7 @@ class TranscludeToken extends Token {
 		if (typeof modifier !== 'string') {
 			this.typeError('setModifier', 'String');
 		}
-		const [,, raw, subst] = this.getAttribute('config').parserFunction,
+		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = modifier.trim().toLowerCase(),
 			isRaw = raw.includes(lcModifier),
 			isSubst = subst.includes(lcModifier),
@@ -58,7 +58,7 @@ class TranscludeToken extends Token {
 				name = removeComment(magicWord),
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
-				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
+				this.setAttribute('name', name.toLowerCase().replace(/^#/u, '')).type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
@@ -85,7 +85,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const [name] = removeComment(title).split('#');
-			if (/\0\d+[eh!+-]\x7F|[<>[\]{}]/.test(name)) {
+			if (/\0\d+[eh!+-]\x7F|[<>[\]{}]/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
@@ -127,7 +127,6 @@ class TranscludeToken extends Token {
 			this.setAttribute('name', text(this.buildFromStr(this.name)));
 		}
 		if (this.matches('template, magic-word#invoke')) {
-			const that = this;
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
 			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
@@ -140,15 +139,15 @@ class TranscludeToken extends Token {
 					delete data.oldKey;
 					delete data.newKey;
 				}
-				if (prevTarget === that.firstElementChild && that.type === 'template') {
-					that.setAttribute('name', that.normalizeTitle(prevTarget.text(), 10).title);
+				if (prevTarget === this.firstElementChild && this.type === 'template') {
+					this.setAttribute('name', this.normalizeTitle(prevTarget.text(), 10).title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
-					const oldArgs = that.getArgs(oldKey, false, false);
+					const oldArgs = this.getArgs(oldKey, false, false);
 					oldArgs.delete(prevTarget);
-					that.getArgs(newKey, false, false).add(prevTarget);
-					that.#keys.add(newKey);
+					this.getArgs(newKey, false, false).add(prevTarget);
+					this.#keys.add(newKey);
 					if (oldArgs.size === 0) {
-						that.#keys.delete(oldKey);
+						this.#keys.delete(oldKey);
 					}
 				}
 			};
@@ -515,7 +514,7 @@ class TranscludeToken extends Token {
 			return [];
 		}
 		const /** @type {string[]} */ duplicatedKeys = [];
-		let anonCount = this.getAnonArgs().length;
+		let {length: anonCount} = this.getAnonArgs();
 		for (const [key, args] of this.getDuplicatedArgs()) {
 			if (args.size <= 1) {
 				continue;
@@ -554,10 +553,10 @@ class TranscludeToken extends Token {
 			let remaining = args.size - badArgs.length;
 			if (remaining === 1) {
 				continue;
-			} else if (aggressive && (anonCount ? /\D\d+$/ : /(?:^|\D)\d+$/).test(key)) {
+			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
 				let /** @type {number} */ last;
-				const str = key.slice(0, -/(?<!\d)\d+$/.exec(key)[0].length),
-					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`),
+				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)[0].length),
+					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`, 'u'),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
 						const j = Number(name.slice(str.length)),
@@ -599,7 +598,7 @@ class TranscludeToken extends Token {
 	 */
 	escapeTables() {
 		const count = this.hasDuplicatedArgs();
-		if (!/\n[^\S\n]*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/.test(this.text()) || !count) {
+		if (!/\n[^\S\n]*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/u.test(this.text()) || !count) {
 			return this;
 		}
 		const stripped = this.toString().slice(2, -2),

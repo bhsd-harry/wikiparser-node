@@ -22,9 +22,9 @@ class ImageParameterToken extends Token {
 	 * @returns {T extends 'link' ? string|Symbol : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig()) {
-		value = value.replaceAll(/\0\d+t\x7F/g, '').trim();
+		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
 		if (key === 'width') {
-			return /^\d*(?:x\d*)?$/.test(value);
+			return /^\d*(?:x\d*)?$/u.test(value);
 		} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
 			return true;
 		} else if (key === 'link') {
@@ -55,12 +55,14 @@ class ImageParameterToken extends Token {
 		}
 		return undefined;
 	}
+
 	set link(value) {
 		if (this.name === 'link') {
 			value = value === ImageParameterToken.#noLink ? '' : value;
 			this.setValue(value);
 		}
 	}
+
 	get size() {
 		if (this.name === 'width') {
 			const /** @type {string} */ size = this.getValue().trim();
@@ -81,18 +83,22 @@ class ImageParameterToken extends Token {
 		}
 		return undefined;
 	}
+
 	get width() {
 		return this.size?.width;
 	}
+
 	set width(width) {
 		if (this.name === 'width') {
 			const {height} = this;
 			this.setValue(`${String(width || '')}${height && 'x'}${height}`);
 		}
 	}
+
 	get height() {
 		return this.size?.height;
 	}
+
 	set height(height) {
 		height = String(height || '');
 		if (this.name === 'width') {
@@ -107,7 +113,7 @@ class ImageParameterToken extends Token {
 	constructor(str, config = Parser.getConfig(), accum = []) {
 		const regexes = Object.entries(config.img).map(
 				/** @returns {[string, string, RegExp]} */
-				([syntax, param]) => [syntax, param, new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`)],
+				([syntax, param]) => [syntax, param, new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`, 'u')],
 			),
 			param = regexes.find(([,, regex]) => regex.test(str));
 		if (param) {

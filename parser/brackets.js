@@ -12,7 +12,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
-	let regex = new RegExp(source, 'gm'),
+	let regex = new RegExp(source, 'gmu'),
 		/** @type {BracketExecArray} */ mt = regex.exec(text),
 		moreBraces = text.includes('}}'),
 		lastIndex;
@@ -32,7 +32,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
-				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/.exec(text.slice(index, curIndex));
+				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u.exec(text.slice(index, curIndex));
 				if (rmt) {
 					text = `${text.slice(0, index)}\0${accum.length}h\x7F${text.slice(curIndex)}`;
 					lastIndex = index + 4 + String(accum.length).length;
@@ -55,8 +55,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
 			parts.at(-1).push(text.slice(topPos, curIndex));
-			/* 标记{{!}}等 */
-			const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't';
+			const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't'; // 标记{{!}}等
 			let skip = false;
 			if (close.length === 3) {
 				const ArgToken = require('../src/arg');
@@ -75,7 +74,6 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				}
 			}
 			if (!skip) {
-				/* 标记{{!}}结束 */
 				text = `${text.slice(0, index + rest)}\0${length}${ch}\x7F${text.slice(lastIndex)}`;
 				lastIndex = index + rest + 3 + String(length).length;
 				if (rest > 1) {
@@ -101,7 +99,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 		regex = new RegExp(source + (curTop
 			? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
 			: ''
-		), 'gm');
+		), 'gmu');
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(text);
 	}

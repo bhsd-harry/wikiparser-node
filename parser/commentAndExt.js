@@ -7,14 +7,14 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], includeOnly = false) => {
-	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
+	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gsu;
 	if (includeOnly && text.search(onlyinclude) !== -1) { // `<onlyinclude>`拥有最高优先级
 		return text.replaceAll(onlyinclude, /** @param {string} inner */ (_, inner) => {
 			const str = `\0${accum.length}e\x7F`,
 				OnlyincludeToken = require('../src/onlyinclude');
 			new OnlyincludeToken(inner, config, accum);
 			return str;
-		}).replaceAll(/(?<=^|\0\d+e\x7F).*?(?=$|\0\d+e\x7F)/gs, substr => {
+		}).replaceAll(/(?<=^|\0\d+e\x7F).*?(?=$|\0\d+e\x7F)/gsu, substr => {
 			if (substr === '') {
 				return '';
 			}
@@ -31,7 +31,7 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 			+ `<${includeRegex}(?:\\s[^>]*?)?>|</${includeRegex}\\s*>|` // <includeonly>
 			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
 			+ `<(${noincludeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`, // <noinclude>
-			'gis',
+			'gisu',
 		);
 	return text.replace(
 		regex,

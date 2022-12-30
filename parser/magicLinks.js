@@ -13,16 +13,16 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 	return firstChild.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
 			url = m;
-		const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/i.exec(url);
+		const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);
 		if (m2) {
 			trail = url.slice(m2.index);
 			url = url.slice(0, m2.index);
 		}
-		const sep = new RegExp(`[,;.:!?${url.includes('(') ? '' : ')'}]+$`),
+		const sep = new RegExp(`[,;.:!?${url.includes('(') ? '' : ')'}]+$`, 'u'),
 			sepChars = sep.exec(url);
 		if (sepChars) {
 			let correction = 0;
-			if (sepChars[0].startsWith(';') && /&(?:[a-z]+|#x[\da-f]+|#\d+)$/i.test(url.slice(0, sepChars.index))) {
+			if (sepChars[0].startsWith(';') && /&(?:[a-z]+|#x[\da-f]+|#\d+)$/iu.test(url.slice(0, sepChars.index))) {
 				correction = 1;
 			}
 			trail = `${url.slice(sepChars.index + correction)}${trail}`;

@@ -4,11 +4,11 @@ const /** @type {Parser} */ Parser = require('..');
 
 /**
  * @template T
- * @param {T} constructor
+ * @param {T} ct
  * @returns {T}
  */
 const hidden = ct => class extends ct {
-	text() {
+	text() { // eslint-disable-line class-methods-use-this
 		return '';
 	}
 };

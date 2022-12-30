@@ -19,15 +19,16 @@ const externalUse = (name, proxy = false) => {
 	}
 	const regex = new RegExp(`^${
 		proxy ? 'Proxy' : 'new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)'
-	}\\.(?!${name}$)`);
+	}\\.(?!${name}$)`, 'u');
 	try {
 		throw new Error(); // eslint-disable-line unicorn/error-message
 	} catch (e) {
 		if (e instanceof Error) {
-			const mt = e.stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gm);
+			const mt = e.stack.match(/(?<=^\s+at )(?:new )?[\w.]+(?= \(\/)/gmu);
 			return !mt.slice(2).some(func => regex.test(func));
 		}
 	}
+	return false;
 };
 
 /**

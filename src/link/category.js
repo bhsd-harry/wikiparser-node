@@ -31,10 +31,9 @@ class CategoryToken extends LinkToken {
 	afterBuild() {
 		super.afterBuild();
 		this.#updateSortkey();
-		const that = this;
 		const /** @type {AstListener} */ categoryListener = ({prevTarget}) => {
 			if (prevTarget?.type === 'link-text') {
-				that.#updateSortkey();
+				this.#updateSortkey();
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], categoryListener);
@@ -43,10 +42,9 @@ class CategoryToken extends LinkToken {
 
 	#updateSortkey() {
 		this.setAttribute('sortkey', this.children[1]?.text()
-			?.replace(/&#(\d+);/g, /** @param {string} p1 */ (_, p1) => String.fromCodePoint(Number(p1)))
-			?.replace(/&#x([\da-f]+);/gi, /** @param {string} p1 */ (_, p1) => String.fromCodePoint(parseInt(p1, 16)))
-			?.replaceAll('\n', '') ?? '',
-		);
+			?.replace(/&#(\d+);/gu, /** @param {string} p1 */ (_, p1) => String.fromCodePoint(Number(p1)))
+			?.replace(/&#x([\da-f]+);/giu, /** @param {string} p1 */ (_, p1) => String.fromCodePoint(parseInt(p1, 16)))
+			?.replaceAll('\n', '') ?? '');
 	}
 
 	/** @param {number} i */

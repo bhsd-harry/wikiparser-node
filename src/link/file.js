@@ -24,15 +24,19 @@ class FileToken extends LinkToken {
 	get link() {
 		return this.getArg('link')?.link;
 	}
+
 	set link(value) {
 		this.setValue('link', value);
 	}
+
 	get size() {
 		return this.getArg('width')?.size;
 	}
+
 	get width() {
 		return this.size?.width;
 	}
+
 	set width(width) {
 		const arg = this.getArg('width');
 		if (arg) {
@@ -41,9 +45,11 @@ class FileToken extends LinkToken {
 			this.setValue('width', width);
 		}
 	}
+
 	get height() {
 		return this.size?.height;
 	}
+
 	set height(height) {
 		const arg = this.getArg('width');
 		if (arg) {

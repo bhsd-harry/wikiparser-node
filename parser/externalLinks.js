@@ -15,7 +15,7 @@ const parseExternalLinks = (firstChild, config = Parser.getConfig(), accum = [])
 		);
 	return firstChild.replace(regex, /** @type {function(...string): string} */ (_, url, space, text) => {
 		const {length} = accum,
-			mt = /&[lg]t;/.exec(url);
+			mt = /&[lg]t;/u.exec(url);
 		if (mt) {
 			url = url.slice(0, mt.index);
 			space = '';

@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
-	const arr = text.split(/('{2,})/),
+	const arr = text.split(/('{2,})/u),
 		{length} = arr;
 	if (length === 1) {
 		return text;
@@ -16,7 +16,7 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 		nItalic = 0,
 		firstSingle, firstMulti, firstSpace;
 	for (let i = 1; i < length; i += 2) {
-		const len = arr[i].length;
+		const {length: len} = arr[i];
 		switch (len) {
 			case 2:
 				nItalic++;

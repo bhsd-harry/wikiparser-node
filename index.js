@@ -89,8 +89,8 @@ const /** @type {Parser} */ Parser = {
 
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
 		title = String(title);
-		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'i')
-			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/, ''));
+		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'iu')
+			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
 	},
 
 	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {

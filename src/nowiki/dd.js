@@ -17,7 +17,8 @@ class DdToken extends NowikiToken {
 	/** @param {string} str */
 	#update(str) {
 		this.setAttribute('ul', str.includes('*')).setAttribute('ol', str.includes('#'))
-			.setAttribute('dt', str.includes(';')).setAttribute('indent', str.split(':').length - 1);
+			.setAttribute('dt', str.includes(';'))
+			.setAttribute('indent', str.split(':').length - 1);
 	}
 
 	/**
@@ -32,7 +33,7 @@ class DdToken extends NowikiToken {
 	/** @param {string} str */
 	setText(str) {
 		const src = this.type === 'dd' ? ':' : ';:*#';
-		if (new RegExp(`[^${src}]`).test(str)) {
+		if (new RegExp(`[^${src}]`, 'u').test(str)) {
 			throw new RangeError(`${this.constructor.name} 仅能包含${[...src].map(c => `"${c}"`).join('、')}！`);
 		}
 		this.#update(str);

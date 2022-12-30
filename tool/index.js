@@ -1,3 +1,4 @@
+/* eslint no-underscore-dangle: [2, {allowAfterThis: true, enforceInMethodNames: false, allow: ['__filename']}] */
 'use strict';
 
 const {typeError, externalUse} = require('../util/debug'),
@@ -20,7 +21,7 @@ const matchesGenerator = (method, selector) => {
 	} else if (selector instanceof Token) {
 		return token => token === selector;
 	}
-	typeError(TokenCollection, method, 'String', 'Token', 'Array');
+	return typeError(TokenCollection, method, 'String', 'Token', 'Array'); // eslint-disable-line no-use-before-define
 };
 
 /** @extends {Array<Token>} */
@@ -238,7 +239,7 @@ class TokenCollection extends Array {
 		} else if (selector instanceof Token) {
 			return arr.some(ele => ele.contains(selector));
 		}
-		this.typeError('has', 'String', 'Token');
+		return this.typeError('has', 'String', 'Token');
 	}
 
 	/** @param {string} selector */
@@ -324,7 +325,7 @@ class TokenCollection extends Array {
 	 * @param {string|Token|Token[]} selector
 	 */
 	_until(method, selector, filter = '') {
-		const matches = matchesGenerator(`${method.replace(/All$/, '')}Until`, selector);
+		const matches = matchesGenerator(`${method.replace(/All$/u, '')}Until`, selector);
 		return this._create(arr => arr.flatMap(ele => {
 			const tokens = $(ele)[method]().toArray(),
 				tokenArray = method === 'nextAll' ? tokens : tokens.reverse(),
@@ -383,7 +384,7 @@ class TokenCollection extends Array {
 		if (name !== undefined && typeof name !== 'string' && !Array.isArray(name)) {
 			this.typeError('removeData', 'String', 'Array');
 		}
-		name = typeof name === 'string' ? name.split(/\s/) : name;
+		name = typeof name === 'string' ? name.split(/\s/u) : name;
 		for (const token of this._filter()) {
 			if (!$.dataStore.has(token)) {
 				continue;
@@ -412,7 +413,7 @@ class TokenCollection extends Array {
 			selector = undefined;
 		}
 		const eventPair = typeof events === 'string'
-			? events.split(/\s/).map(/** @returns {[string, AstListener]} */ event => [event, handler])
+			? events.split(/\s/u).map(/** @returns {[string, AstListener]} */ event => [event, handler])
 			: Object.entries(events);
 		for (const token of this._filter(selector)) {
 			for (const [event, listener] of eventPair) {
@@ -453,7 +454,7 @@ class TokenCollection extends Array {
 		let eventPair;
 		if (events) {
 			eventPair = typeof events === 'string'
-				? events.split(/\s/).map(/** @returns {[string, AstListener]} */ event => [event, handler])
+				? events.split(/\s/u).map(/** @returns {[string, AstListener]} */ event => [event, handler])
 				: Object.entries(events);
 		}
 		for (const token of this._filter(selector)) {
@@ -487,7 +488,7 @@ class TokenCollection extends Array {
 	triggerHandler(event, data) {
 		const firstToken = this._find();
 		if (!firstToken) {
-			return;
+			return undefined;
 		}
 		const e = typeof event === 'string' ? new Event(event) : event,
 			listeners = firstToken.listEventListeners(typeof event === 'string' ? event : event.type);
@@ -578,7 +579,8 @@ class TokenCollection extends Array {
 	}
 
 	remove(selector = '') {
-		for (const token of this.removeData()._filter(selector)) {
+		this.removeData();
+		for (const token of this._filter(selector)) {
 			token.remove();
 			token.removeAllEventListeners();
 		}
@@ -788,6 +790,7 @@ class TokenCollection extends Array {
 			this.typeError(method, 'Array', 'Function');
 		}
 		return this[method](
+
 			/**
 			 * @this {string|Token}
 			 * @param {number} i
@@ -821,7 +824,7 @@ class TokenCollection extends Array {
 	offset() {
 		const firstToken = this._find();
 		if (!firstToken) {
-			return;
+			return undefined;
 		}
 		const {top, left} = firstToken.getBoundingClientRect();
 		return {top, left};
@@ -855,6 +858,7 @@ const $ = tokens => {
 			) {
 				return obj[prop];
 			}
+			return undefined;
 		},
 		set(obj, prop, val) {
 			if (prop === 'prevObject' && (val === undefined || val instanceof TokenCollection)) {

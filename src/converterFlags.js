@@ -32,12 +32,11 @@ class ConverterFlagsToken extends Token {
 	/** @complexity `n` */
 	afterBuild() {
 		this.#flags = this.children.map(child => child.text().trim());
-		const that = this,
-			/** @type {AstListener} */ converterFlagsListener = ({prevTarget}) => {
-				if (prevTarget) {
-					that.#flags[that.childNodes.indexOf(prevTarget)] = prevTarget.text().trim();
-				}
-			};
+		const /** @type {AstListener} */ converterFlagsListener = ({prevTarget}) => {
+			if (prevTarget) {
+				this.#flags[this.childNodes.indexOf(prevTarget)] = prevTarget.text().trim();
+			}
+		};
 		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterFlagsListener);
 		return this;
 	}
@@ -101,7 +100,7 @@ class ConverterFlagsToken extends Token {
 
 	/** @complexity `n` */
 	getUnknownFlags() {
-		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/.test(flag));
+		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/u.test(flag));
 	}
 
 	/** @complexity `n` */
