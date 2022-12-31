@@ -7,8 +7,8 @@ const /** @type {Parser} */ Parser = require('..');
  * @param {accum} accum
  */
 const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const ConverterToken = require('../src/converter'),
-		regex1 = /-\{/gu,
+	const ConverterToken = require('../src/converter');
+	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
 		/** @type {RegExpExecArray[]} */ stack = [];
 	let regex = regex1,

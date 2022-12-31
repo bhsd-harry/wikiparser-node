@@ -11,8 +11,8 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	if (!mt) {
 		return text;
 	}
-	const ListToken = require('../src/nowiki/list'),
-		[total, comment, prefix] = mt;
+	const ListToken = require('../src/nowiki/list');
+	const [total, comment, prefix] = mt;
 	text = `${comment}\0${accum.length}d\x7F${text.slice(total.length)}`;
 	new ListToken(prefix, config, accum);
 	let dt = prefix.split(';').length - 1;

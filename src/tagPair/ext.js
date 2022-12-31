@@ -18,8 +18,8 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 */
 	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
+		const AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
-			AttributeToken = require('../attribute'),
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);

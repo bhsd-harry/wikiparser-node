@@ -8,8 +8,8 @@ const /** @type {Parser} */ Parser = require('..');
  */
 const parseHrAndDoubleUnderscore = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const HrToken = require('../src/nowiki/hr'),
-		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore'),
-		{doubleUnderscore} = config;
+		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
+	const {doubleUnderscore} = config;
 	return firstChild.replaceAll(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
 		new HrToken(m.length, config, accum);
 		return `${lead}\0${accum.length - 1}r\x7F`;

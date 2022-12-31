@@ -10,8 +10,8 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gsu;
 	if (includeOnly && text.search(onlyinclude) !== -1) { // `<onlyinclude>`拥有最高优先级
 		return text.replaceAll(onlyinclude, /** @param {string} inner */ (_, inner) => {
-			const str = `\0${accum.length}e\x7F`,
-				OnlyincludeToken = require('../src/onlyinclude');
+			const str = `\0${accum.length}e\x7F`;
+			const OnlyincludeToken = require('../src/onlyinclude');
 			new OnlyincludeToken(inner, config, accum);
 			return str;
 		}).replaceAll(/(?<=^|\0\d+e\x7F).*?(?=$|\0\d+e\x7F)/gsu, substr => {
@@ -42,8 +42,8 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 				const ExtToken = require('../src/tagPair/ext');
 				new ExtToken(name, attr, inner, closing, config, accum);
 			} else if (substr.startsWith('<!--')) {
-				const CommentToken = require('../src/nowiki/comment'),
-					closed = substr.endsWith('-->');
+				const CommentToken = require('../src/nowiki/comment');
+				const closed = substr.endsWith('-->');
 				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
 			} else if (include) {
 				const IncludeToken = require('../src/tagPair/include');

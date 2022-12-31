@@ -107,8 +107,8 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 */
 	removeAt(i) {
-		const TdToken = require('./td'),
-			child = this.childNodes.at(i);
+		const TdToken = require('./td');
+		const child = this.childNodes.at(i);
 		if (child instanceof TdToken && child.isIndependent()) {
 			const {nextElementSibling} = child;
 			if (nextElementSibling?.type === 'td') {
@@ -128,8 +128,8 @@ class TrToken extends attributeParent(Token, 1) {
 		if (!Parser.running && !(token instanceof TrToken)) {
 			this.typeError('insertAt', 'TrToken');
 		}
-		const TdToken = require('./td'),
-			child = this.childNodes.at(i);
+		const TdToken = require('./td');
+		const child = this.childNodes.at(i);
 		if (token instanceof TdToken && token.isIndependent() && child instanceof TdToken) {
 			child.independence();
 		}
@@ -231,8 +231,8 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 */
 	insertTableCell(inner, {column}, subtype = 'td', attr = {}) {
-		const TdToken = require('./td'),
-			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		const TdToken = require('./td');
+		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		return this.insertBefore(token, this.getNthCol(column, true));
 	}
 }

@@ -44,8 +44,8 @@ class TranscludeToken extends Token {
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
 		const AtomToken = require('./atom'),
-			SyntaxToken = require('./syntax'),
-			{parserFunction: [insensitive, sensitive, raw]} = config;
+			SyntaxToken = require('./syntax');
+		const {parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
 		if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':');
@@ -604,8 +604,8 @@ class TranscludeToken extends Token {
 		const stripped = this.toString().slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			parsed = Parser.parse(stripped, include, 4, config),
-			TableToken = require('./table');
+			parsed = Parser.parse(stripped, include, 4, config);
+		const TableToken = require('./table');
 		for (const table of parsed.children) {
 			if (table instanceof TableToken) {
 				table.escape();

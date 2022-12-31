@@ -45,8 +45,8 @@ const {externalUse} = require('../util/debug'),
 	Ranges = require('../lib/ranges'),
 	AstElement = require('../lib/element'),
 	assert = require('assert/strict'),
-	/** @type {Parser} */ Parser = require('..'),
-	{MAX_STAGE, aliases} = Parser;
+	/** @type {Parser} */ Parser = require('..');
+const {MAX_STAGE, aliases} = Parser;
 
 class Token extends AstElement {
 	type = 'root';
@@ -579,8 +579,8 @@ class Token extends AstElement {
 
 	/** @this {Token & {firstChild: string}} */
 	#parseQuotes() {
-		const parseQuotes = require('../parser/quotes'),
-			lines = this.firstChild.split('\n');
+		const parseQuotes = require('../parser/quotes');
+		const lines = this.firstChild.split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i], this.#config, this.#accum);
 		}
@@ -599,8 +599,8 @@ class Token extends AstElement {
 
 	/** @this {Token & {firstChild: string}} */
 	#parseList() {
-		const parseList = require('../parser/list'),
-			lines = this.firstChild.split('\n');
+		const parseList = require('../parser/list');
+		const lines = this.firstChild.split('\n');
 		for (let i = this.type === 'root' ? 0 : 1; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}

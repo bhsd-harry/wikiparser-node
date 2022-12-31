@@ -8,8 +8,8 @@ const /** @type {Parser} */ Parser = require('..'),
  * @param {accum} accum
  */
 const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const parseQuotes = require('./quotes.js'),
-		regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/su,
+	const parseQuotes = require('./quotes.js');
+	const regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/su,
 		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
 		bits = firstChild.split('[[');

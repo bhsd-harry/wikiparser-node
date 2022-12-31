@@ -34,6 +34,7 @@
 		"no-constant-binary-expression": 2,
 		"no-constructor-return": 2,
 		"no-control-regex": 0,
+		"no-empty-character-class": 0,
 		"no-fallthrough": 2,
 		"no-import-assign": 0,
 		"no-inner-declarations": [
@@ -445,13 +446,28 @@
 			"inside"
 		],
 		"promise/no-multiple-resolved": 2,
+		"n/no-extraneous-import": 0,
+		"n/no-missing-import": 0,
+		"n/no-new-require": 2,
+		"n/no-path-concat": 2,
+		"n/no-unpublished-bin": 0,
+		"n/no-unpublished-import": 0,
+		"n/shebang": 0,
 		"n/exports-style": [
 			2,
 			"module.exports"
 		],
-		"n/no-path-concat": 2,
-		"n/no-missing-require": 2,
+		"n/no-mixed-requires": 2,
+		"n/prefer-promises/fs": 2,
 		"regexp/no-contradiction-with-assertion": 2,
+		"regexp/no-dupe-disjunctions": [
+			2,
+			{
+				"report": "interesting"
+			}
+		],
+		"regexp/no-empty-character-class": 2,
+		"regexp/no-misleading-unicode-character": 2,
 		"regexp/no-missing-g-flag": 2,
 		"regexp/no-super-linear-backtracking": [
 			2,
@@ -468,6 +484,12 @@
 		"regexp/no-extra-lookaround-assertions": 2,
 		"regexp/no-octal": 2,
 		"regexp/no-standalone-backslash": 2,
+		"regexp/no-useless-character-class": [
+			2,
+			{
+				"ignores": []
+			}
+		],
 		"regexp/prefer-escape-replacement-dollar-char": 2,
 		"regexp/prefer-quantifier": 2,
 		"regexp/prefer-regexp-test": 2,
@@ -479,6 +501,12 @@
 				"unicodeEscape": "uppercase",
 				"hexadecimalEscape": "uppercase",
 				"controlEscape": "uppercase"
+			}
+		],
+		"regexp/prefer-character-class": [
+			2,
+			{
+				"minAlternatives": 2
 			}
 		],
 		"regexp/prefer-lookaround": 2,

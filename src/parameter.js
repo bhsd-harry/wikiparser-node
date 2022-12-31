@@ -21,8 +21,8 @@ class ParameterToken extends fixedToken(Token) {
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		this.anon = typeof key === 'number';
-		const AtomToken = require('./atom'),
-			keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', config, accum, {
+		const AtomToken = require('./atom');
+		const keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', config, accum, {
 				'Stage-2': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, true, accum);

@@ -8,8 +8,8 @@ const {extUrlChar} = require('../util/string'),
  * @param {accum} accum
  */
 const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const MagicLinkToken = require('../src/magicLink'),
-		regex = new RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'giu');
+	const MagicLinkToken = require('../src/magicLink');
+	const regex = new RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'giu');
 	return firstChild.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
 			url = m;

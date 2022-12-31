@@ -12,8 +12,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 		TableToken = require('../src/table'),
 		TrToken = require('../src/table/tr'),
 		TdToken = require('../src/table/td'),
-		DdToken = require('../src/nowiki/dd'),
-		/** @type {TrToken[]} */ stack = [],
+		DdToken = require('../src/nowiki/dd');
+	const /** @type {TrToken[]} */ stack = [],
 		lines = firstChild.split('\n');
 	let out = type === 'root' ? '' : `\n${lines.shift()}`;
 	const /** @type {(str: string, top: TrToken & {firstChild: string}) => void} */ push = (str, top) => {

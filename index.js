@@ -101,8 +101,8 @@ const /** @type {Parser} */ Parser = {
 			token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce());
 			title = token.firstChild;
 		}
-		const Title = require('./lib/title'),
-			titleObj = new Title(title, defaultNs, config);
+		const Title = require('./lib/title');
+		const titleObj = new Title(title, defaultNs, config);
 		if (token) {
 			const build = /** @param {string[]} keys */ keys => {
 				for (const key of keys) {
@@ -156,10 +156,10 @@ const /** @type {Parser} */ Parser = {
 		if (!main) {
 			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
 		}
-		const Token = require('./src'),
-			file = path.join(__dirname, 'errors', main),
-			wikitext = fs.readFileSync(file, 'utf8'),
-			{stage, include, config} = require(`${file}.json`);
+		const file = path.join(__dirname, 'errors', main),
+			wikitext = fs.readFileSync(file, 'utf8');
+		const {stage, include, config} = require(`${file}.json`),
+			Token = require('./src');
 		this.config = config;
 		return this.run(() => {
 			const halfParsed = stage < this.MAX_STAGE,
