@@ -86,10 +86,9 @@ class Layout extends Array {
 				// eslint-disable-next-line no-sparse-arrays
 				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
 			for (let j = 0; j <= hBorder.length; j++) {
-				/* eslint-disable no-bitwise */
+				// eslint-disable-next-line no-bitwise
 				const bit = (vBorderTop[j] << 3) + Number(vBorderBottom[j]) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
 				out += `${border[bit]}${hBorder[j] ? '─' : ' '}`;
-				/* eslint-enable no-bitwise */
 			}
 			out += '\n';
 		}
