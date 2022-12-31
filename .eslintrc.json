@@ -5,7 +5,8 @@
 	},
 	"plugins": [
 		"regexp",
-		"unicorn"
+		"unicorn",
+		"jsdoc"
 	],
 	"extends": [
 		"eslint:recommended",
@@ -147,7 +148,6 @@
 		],
 		"multiline-comment-style": 2,
 		"new-cap": 2,
-		"no-alert": 2,
 		"no-array-constructor": 2,
 		"no-bitwise": 2,
 		"no-caller": 2,
@@ -203,7 +203,6 @@
 			"always"
 		],
 		"no-return-await": 0,
-		"no-script-url": 2,
 		"no-sequences": [
 			2,
 			{
@@ -249,7 +248,6 @@
 		],
 		"no-useless-concat": 2,
 		"no-useless-constructor": 2,
-		"no-useless-rename": 2,
 		"no-useless-return": 2,
 		"no-var": 2,
 		"no-void": 2,
@@ -533,6 +531,7 @@
 		"unicorn/no-array-callback-reference": 0,
 		"unicorn/no-await-expression-member": 0,
 		"unicorn/no-document-cookie": 0,
+		"unicorn/no-empty-file": 0,
 		"unicorn/no-for-loop": 0,
 		"unicorn/no-hex-escape": 0,
 		"unicorn/no-invalid-remove-event-listener": 0,
@@ -540,6 +539,7 @@
 		"unicorn/no-new-array": 0,
 		"unicorn/no-null": 0,
 		"unicorn/no-process-exit": 0,
+		"unicorn/no-thenable": 0,
 		"unicorn/no-typeof-undefined": [
 			2,
 			{
@@ -547,7 +547,6 @@
 			}
 		],
 		"unicorn/no-unreadable-array-destructuring": 0,
-		"unicorn/no-unreadable-iife": 0,
 		"unicorn/no-unused-properties": 2,
 		"unicorn/no-useless-undefined": 0,
 		"unicorn/prefer-add-event-listener": 0,
@@ -565,24 +564,87 @@
 		"unicorn/prefer-export-from": 0,
 		"unicorn/prefer-keyboard-event-key": 0,
 		"unicorn/prefer-modern-dom-apis": 0,
+		"unicorn/prefer-modern-math-apis": 0,
 		"unicorn/prefer-module": 0,
 		"unicorn/prefer-node-protocol": 0,
 		"unicorn/prefer-number-properties": 0,
+		"unicorn/prefer-object-from-entries": 0,
 		"unicorn/prefer-query-selector": 0,
 		"unicorn/prefer-set-has": 0,
+		"unicorn/prefer-set-size": 0,
 		"unicorn/prefer-string-replace-all": 2,
+		"unicorn/prefer-string-slice": 0,
+		"unicorn/prefer-string-trim-start-end": 0,
 		"unicorn/prefer-type-error": 0,
 		"unicorn/prevent-abbreviations": 0,
-		"unicorn/relative-url-style": [
-			2,
-			"always"
-		],
+		"unicorn/relative-url-style": 0,
 		"unicorn/require-array-join-separator": 0,
 		"unicorn/require-number-to-fixed-digits-argument": 0,
 		"unicorn/switch-case-braces": [
 			2,
 			"avoid"
 		],
-		"unicorn/template-indent": 0
+		"unicorn/template-indent": 0,
+		"jsdoc/check-alignment": 2,
+		"jsdoc/check-indentation": 2,
+		"jsdoc/check-param-names": [
+			2,
+			{
+				"useDefaultObjectProperties": true
+			}
+		],
+		"jsdoc/check-tag-names": [
+			2,
+			{
+				"definedTags": [
+					"template",
+					"complexity"
+				]
+			}
+		],
+		"jsdoc/check-types": 2,
+		"jsdoc/multiline-blocks": 2,
+		"jsdoc/newline-after-description": [
+			2,
+			"never"
+		],
+		"jsdoc/no-bad-blocks": [
+			2,
+			{
+				"preventAllMultiAsteriskBlocks": true
+			}
+		],
+		"jsdoc/no-multi-asterisks": 2,
+		"jsdoc/require-asterisk-prefix": 2,
+		"jsdoc/require-description": 2,
+		"jsdoc/require-hyphen-before-param-description": [
+			2,
+			"never"
+		],
+		"jsdoc/require-jsdoc": [
+			2,
+			{
+				"require": {
+					"ArrowFunctionExpression": true,
+					"ClassDeclaration": true,
+					"FunctionExpression": true,
+					"MethodDefinition": true
+				},
+				"checkGetters": true,
+				"checkSetters": "no-getter"
+			}
+		],
+		"jsdoc/require-param-description": 2,
+		"jsdoc/require-param-name": 2,
+		"jsdoc/require-param-type": 2,
+		"jsdoc/require-param": 2,
+		"jsdoc/require-returns-check": [
+			2,
+			{
+				"exemptAsync": false
+			}
+		],
+		"jsdoc/require-returns-type": 2,
+		"jsdoc/require-throws": 2
 	}
 }

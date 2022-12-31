@@ -1,9 +1,11 @@
 'use strict';
 
 /**
- * @param {function}
- * @param {string} method
- * @param {...string} args
+ * 定制TypeError消息
+ * @param {Function} constructor 类
+ * @param {string} method 方法名称
+ * @param {...string} args 可接受的参数类型
+ * @throws `TypeError`
  */
 const typeError = ({name}, method, ...args) => {
 	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
@@ -11,15 +13,14 @@ const typeError = ({name}, method, ...args) => {
 
 /**
  * 不是被构造器或原型方法调用
- * @param {string} name
+ * @param {string} name 方法名称
  */
-const externalUse = (name, proxy = false) => {
-	if (!proxy && require('..').running) {
+const externalUse = name => {
+	const Parser = require('..');
+	if (Parser.running) {
 		return false;
 	}
-	const regex = new RegExp(`^${
-		proxy ? 'Proxy' : 'new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)'
-	}\\.(?!${name}$)`, 'u');
+	const regex = new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`, 'u');
 	try {
 		throw new Error(); // eslint-disable-line unicorn/error-message
 	} catch (e) {
@@ -32,8 +33,10 @@ const externalUse = (name, proxy = false) => {
 };
 
 /**
- * @param {AstEvent} e
- * @param {AstEventData} data
+ * 撤销最近一次Mutation
+ * @param {AstEvent} e 事件
+ * @param {AstEventData} data 事件数据
+ * @throws `RangeError` 无法撤销的事件类型
  */
 const undo = (e, data) => {
 	const {target, type} = e;
