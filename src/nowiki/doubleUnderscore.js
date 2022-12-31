@@ -24,7 +24,10 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config')));
 	}
 
-	/** @this {DoubleUnderscoreToken & {firstChild: string}} */
+	/**
+	 * @override
+	 * @this {DoubleUnderscoreToken & {firstChild: string}}
+	 */
 	toString() {
 		return `__${this.firstChild}__`;
 	}

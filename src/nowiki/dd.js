@@ -14,7 +14,10 @@ class DdToken extends NowikiToken {
 	ol = false;
 	indent = 0;
 
-	/** @param {string} str */
+	/**
+	 * 更新属性
+	 * @param {string} str
+	 */
 	#update(str) {
 		this.setAttribute('ul', str.includes('*')).setAttribute('ol', str.includes('#'))
 			.setAttribute('dt', str.includes(';'))
@@ -30,7 +33,10 @@ class DdToken extends NowikiToken {
 		this.seal(['dt', 'ul', 'ol', 'indent']).#update(str);
 	}
 
-	/** @param {string} str */
+	/**
+	 * @override
+	 * @param {string} str 新文本
+	 */
 	setText(str) {
 		const src = this.type === 'dd' ? ':' : ';:*#';
 		if (new RegExp(`[^${src}]`, 'u').test(str)) {

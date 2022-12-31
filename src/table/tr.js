@@ -82,7 +82,10 @@ class TrToken extends attributeParent(Token, 1) {
 		syntax.replaceChildren(...token.childNodes);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 转义表格语法
+	 * @complexity `n`
+	 */
 	escape() {
 		for (const child of this.children) {
 			if (child instanceof SyntaxToken) {
@@ -93,7 +96,11 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 	}
 
-	/** @param {string} syntax */
+	/**
+	 * 设置表格语法
+	 * @param {string} syntax 表格语法
+	 * @param {boolean} esc 是否需要转义
+	 */
 	setSyntax(syntax, esc = false) {
 		const {firstElementChild} = this;
 		firstElementChild.replaceChildren(syntax);
@@ -166,17 +173,26 @@ class TrToken extends attributeParent(Token, 1) {
 		return undefined;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取下一行
+	 * @complexity `n`
+	 */
 	getNextRow() {
 		return this.#getSiblingRow((children, index) => children.slice(index + 1));
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取前一行
+	 * @complexity `n`
+	 */
 	getPreviousRow() {
 		return this.#getSiblingRow((children, index) => children.slice(0, index).reverse());
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取列数
+	 * @complexity `n`
+	 */
 	getColCount() {
 		const TdToken = require('./td');
 		let count = 0,

@@ -71,7 +71,12 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.setAttribute('name', name).#tag = tag;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * @complexity `n`
+	 * @throws `SyntaxError` 同时闭合和自封闭的标签
+	 * @throws `SyntaxError` 无效自封闭标签
+	 * @throws `SyntaxError` 未闭合的标签
+	 */
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
 			{name, parentElement, closing, selfClosing} = this,

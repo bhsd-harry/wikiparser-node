@@ -71,7 +71,11 @@ class MagicLinkToken extends Token {
 		}
 	}
 
-	/** @param {string|URL} url */
+	/**
+	 * 设置外链目标
+	 * @param {string|URL} url 含协议的网址
+	 * @throws `SyntaxError` 非法的自由外链目标
+	 */
 	setTarget(url) {
 		url = String(url);
 		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),

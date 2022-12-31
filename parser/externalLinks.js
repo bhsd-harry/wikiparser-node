@@ -4,8 +4,10 @@ const {extUrlChar} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..');
 
 /**
- * @param {string} firstChild
- * @param {accum} accum
+ * 解析外部链接
+ * @param {string} firstChild wikitext
+ * @param {ParserConfig} config 设置
+ * @param {accum} accum 嵌套的节点数组
  */
 const parseExternalLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const ExtLinkToken = require('../src/extLink');

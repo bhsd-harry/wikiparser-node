@@ -3,9 +3,10 @@
 const /** @type {Parser} */ Parser = require('..');
 
 /**
- * `tr`和`td`包含开头的换行
- * @param {{firstChild: string, type: string}}
- * @param {accum} accum
+ * 解析表格，注意`tr`和`td`包含开头的换行
+ * @param {{firstChild: string, type: string}} root 根节点
+ * @param {ParserConfig} config 设置
+ * @param {accum} accum 嵌套的节点数组
  */
 const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = []) => {
 	const Token = require('../src'),
@@ -16,7 +17,13 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 	const /** @type {TrToken[]} */ stack = [],
 		lines = firstChild.split('\n');
 	let out = type === 'root' ? '' : `\n${lines.shift()}`;
-	const /** @type {(str: string, top: TrToken & {firstChild: string}) => void} */ push = (str, top) => {
+
+	/**
+	 * 向表格中插入纯文本
+	 * @param {string} str 待插入的文本
+	 * @param {TrToken} top 当前解析的表格或表格行
+	 */
+	const push = (str, top) => {
 		if (!top) {
 			out += str;
 			return;

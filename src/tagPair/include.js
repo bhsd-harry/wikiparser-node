@@ -21,7 +21,10 @@ class IncludeToken extends hidden(TagPairToken) {
 		super(name, attr, inner ?? '', inner === undefined ? closing : closing ?? '', config, accum, {String: [0, 1]});
 	}
 
-	/** @this {IncludeToken & {firstChild: string, lastChild: string}} */
+	/**
+	 * @override
+	 * @this {IncludeToken & {firstChild: string, lastChild: string}}
+	 */
 	cloneNode() {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
@@ -31,7 +34,10 @@ class IncludeToken extends hidden(TagPairToken) {
 		return token;
 	}
 
-	/** @param {string} str */
+	/**
+	 * @override
+	 * @param {string} str 新文本
+	 */
 	setText(str) {
 		return super.setText(str, 1);
 	}

@@ -99,12 +99,18 @@ class FileToken extends LinkToken {
 		return super.insertAt(token, i);
 	}
 
-	/** @returns {ImageParameterToken[]} */
+	/**
+	 * 获取所有图片参数节点
+	 * @returns {ImageParameterToken[]}
+	 */
 	getAllArgs() {
 		return this.childNodes.slice(1);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取图片框架属性参数节点
+	 * @complexity `n`
+	 */
 	getFrameArgs() {
 		const args = this.getAllArgs()
 			.filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
@@ -158,7 +164,10 @@ class FileToken extends LinkToken {
 		}
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取图片参数名
+	 * @complexity `n`
+	 */
 	getKeys() {
 		const args = this.getAllArgs();
 		if (this.#keys.size === 0 && args.length > 0) {
@@ -194,6 +203,8 @@ class FileToken extends LinkToken {
 	 * @param {string} key
 	 * @param {string|boolean} value
 	 * @complexity `n`
+	 * @throws `RangeError` 未定义的图片参数
+	 * @throws `SyntaxError` 非法的参数
 	 */
 	setValue(key, value) {
 		if (typeof key !== 'string') {

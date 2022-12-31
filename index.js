@@ -104,7 +104,11 @@ const /** @type {Parser} */ Parser = {
 		const Title = require('./lib/title');
 		const titleObj = new Title(title, defaultNs, config);
 		if (token) {
-			const build = /** @param {string[]} keys */ keys => {
+			/**
+			 * 重建部分属性值
+			 * @param {string[]} keys 属性键
+			 */
+			const build = keys => {
 				for (const key of keys) {
 					if (titleObj[key].includes('\0')) {
 						titleObj[key] = text(token.buildFromStr(titleObj[key]));

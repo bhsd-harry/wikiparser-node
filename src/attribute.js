@@ -169,6 +169,8 @@ class AttributeToken extends Token {
 	 * @param {string} key
 	 * @param {string|boolean} value
 	 * @complexity `n`
+	 * @throws `RangeError` 扩展标签属性不能包含">"
+	 * @throws `RangeError` 无效的属性名
 	 */
 	setAttr(key, value, init = false) {
 		init &&= !externalUse('setAttr');

@@ -47,7 +47,10 @@ class CategoryToken extends LinkToken {
 			?.replaceAll('\n', '') ?? '');
 	}
 
-	/** @param {number} i */
+	/**
+	 * @override
+	 * @param {number} i 子节点位置
+	 */
 	removeAt(i) {
 		if (i === 1) {
 			this.setAttribute('sortkey', '');
@@ -68,12 +71,18 @@ class CategoryToken extends LinkToken {
 		return token;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	text() {
 		return `[[${this.firstElementChild.text()}]]`;
 	}
 
-	/** @param {string} text */
+	/**
+	 * 设置排序关键字
+	 * @param {string} text 排序关键字
+	 */
 	setSortkey(text) {
 		this.setLinkText(text);
 	}

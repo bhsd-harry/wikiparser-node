@@ -3,8 +3,10 @@
 const /** @type {Parser} */ Parser = require('..');
 
 /**
- * @param {string} text
- * @param {accum} accum
+ * 解析单引号
+ * @param {string} text wikitext
+ * @param {ParserConfig} config 设置
+ * @param {accum} accum 嵌套的节点数组
  */
 const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	const arr = text.split(/('{2,})/u),

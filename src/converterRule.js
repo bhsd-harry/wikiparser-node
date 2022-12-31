@@ -161,7 +161,11 @@ class ConverterRuleToken extends Token {
 		this.setAttribute('variant', v);
 	}
 
-	/** @param {string} from */
+	/**
+	 * @param {string} from
+	 * @throws `Error` 尚未指定语言变体
+	 * @throws `SyntaxError` 非法的转换原文
+	 */
 	setFrom(from) {
 		const {variant, unidirectional} = this;
 		if (!variant) {

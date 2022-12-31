@@ -4,8 +4,11 @@ const {removeComment} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..');
 
 /**
- * @param {string} text
- * @param {accum} accum
+ * 解析花括号
+ * @param {string} text wikitext
+ * @param {ParserConfig} config 设置
+ * @param {accum} accum 嵌套的节点数组
+ * @throws TranscludeToken.constructor()
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 	const source = '^(\0\\d+c\x7F)*={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',

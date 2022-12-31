@@ -169,12 +169,18 @@ class TdToken extends fixedToken(TrToken) {
 
 	static #aliases = {td: '\n|', th: '\n!', caption: '\n|+'};
 
-	/** @param {string} syntax */
+	/**
+	 * @override
+	 * @param {string} syntax 表格语法
+	 */
 	setSyntax(syntax, esc = false) {
 		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, esc);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 修复\<td\>语法
+	 * @complexity `n`
+	 */
 	#correct() {
 		if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
@@ -185,7 +191,10 @@ class TdToken extends fixedToken(TrToken) {
 		}
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 改为独占一行
+	 * @complexity `n`
+	 */
 	independence() {
 		if (!this.isIndependent()) {
 			const {subtype, escape: esc} = this.getSyntax();

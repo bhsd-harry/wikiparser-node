@@ -388,6 +388,8 @@ class TranscludeToken extends Token {
 	 * @param {string} key
 	 * @param {string} value
 	 * @complexity `n`
+	 * @throws `Error` 仅用于模板
+	 * @throws `SyntaxError` 非法的命名参数
 	 */
 	setValue(key, value) {
 		if (typeof key !== 'string') {
@@ -423,7 +425,11 @@ class TranscludeToken extends Token {
 		}
 	}
 
-	/** @param {string} title */
+	/**
+	 * @param {string} title
+	 * @throws `Error` 仅用于模板
+	 * @throws `SyntaxError` 非法的模板名称
+	 */
 	replaceTemplate(title) {
 		if (this.type === 'magic-word') {
 			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
@@ -438,7 +444,11 @@ class TranscludeToken extends Token {
 		this.firstElementChild.replaceChildren(...firstElementChild.firstElementChild.childNodes);
 	}
 
-	/** @param {string} title */
+	/**
+	 * @param {string} title
+	 * @throws `Error` 仅用于模块
+	 * @throws `SyntaxError` 非法的模块名称
+	 */
 	replaceModule(title) {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
@@ -461,7 +471,12 @@ class TranscludeToken extends Token {
 		}
 	}
 
-	/** @param {string} func */
+	/**
+	 * @param {string} func
+	 * @throws `Error` 仅用于模块
+	 * @throws `Error` 尚未指定模块名称
+	 * @throws `SyntaxError` 非法的模块函数名
+	 */
 	replaceFunction(func) {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);

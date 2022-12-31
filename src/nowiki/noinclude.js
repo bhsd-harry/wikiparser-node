@@ -11,7 +11,10 @@ const hidden = require('../../mixin/hidden'),
 class NoincludeToken extends hidden(NowikiToken) {
 	type = 'noinclude';
 
-	/** @param {string} str */
+	/**
+	 * @override
+	 * @param {string} str 新文本
+	 */
 	setText(str) {
 		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s.*)?\/?>$/isu.test(this.toString())) {
 			throw new Error(`${this.constructor.name} 不可更改文字内容！`);

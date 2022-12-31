@@ -50,6 +50,11 @@ class LinkToken extends Token {
 		});
 	}
 
+	/**
+	 * @override
+	 * @throws `Error` 非法的内链目标
+	 * @throws `Error` 不可更改命名空间
+	 */
 	afterBuild() {
 		if (this.name.includes('\0')) {
 			this.setAttribute('name', text(this.buildFromStr(this.name)));
@@ -106,7 +111,11 @@ class LinkToken extends Token {
 		return this.type === 'gallery-image' ? str : `[[${str}]]`;
 	}
 
-	/** @param {string} link */
+	/**
+	 * 设置链接目标
+	 * @param {string} link 链接目标
+	 * @throws `SyntaxError` 非法的链接目标
+	 */
 	setTarget(link) {
 		link = String(link);
 		if (link.type === 'link' && !/^\s*[:#]/u.test(link)) {
@@ -127,6 +136,7 @@ class LinkToken extends Token {
 	/**
 	 * @param {string} lang
 	 * @param {string} link
+	 * @throws `SyntaxError` 非法的跨语言链接
 	 */
 	setLangLink(lang, link) {
 		if (typeof lang !== 'string') {
@@ -151,7 +161,12 @@ class LinkToken extends Token {
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 
-	/** @param {string} fragment */
+	/**
+	 * 设置fragment
+	 * @param {string} fragment fragment
+	 * @param {boolean} page 是否是其他页面
+	 * @throws `SyntaxError` 非法的fragment
+	 */
 	#setFragment(fragment, page = true) {
 		fragment = String(fragment).replaceAll(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
 		const include = this.getAttribute('include'),
@@ -170,7 +185,10 @@ class LinkToken extends Token {
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 
-	/** @param {string} fragment */
+	/**
+	 * 设置fragment
+	 * @param {string} fragment fragment
+	 */
 	setFragment(fragment) {
 		this.#setFragment(fragment);
 	}

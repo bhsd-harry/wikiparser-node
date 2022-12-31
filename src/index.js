@@ -82,7 +82,11 @@ class Token extends AstElement {
 		return this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 深拷贝节点
+	 * @complexity `n`
+	 * @throws `Error` 未定义复制方法
+	 */
 	cloneNode() {
 		if (!this.isPlain()) {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
@@ -134,6 +138,7 @@ class Token extends AstElement {
 	 * @template {string} T
 	 * @param {T} key
 	 * @param {TokenAttribute<T>} value
+	 * @throws `RangeError` 禁止手动指定私有属性
 	 */
 	setAttribute(key, value) {
 		if (key === 'include' || !Parser.running && (key === 'config' || key === 'accum')) {
@@ -200,6 +205,7 @@ class Token extends AstElement {
 	 * @param {number} i
 	 * @returns {string|Token}
 	 * @complexity `n`
+	 * @throws `Error` 不可移除的子节点
 	 */
 	removeAt(i) {
 		if (typeof i !== 'number') {
@@ -228,6 +234,7 @@ class Token extends AstElement {
 	 * @template {string|Token} T
 	 * @param {T} token
 	 * @complexity `n`
+	 * @throws `RangeError` 不可插入的子节点
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running && this.#acceptable) {
@@ -254,6 +261,8 @@ class Token extends AstElement {
 	/**
 	 * @param {Token} token
 	 * @complexity `n`
+	 * @throws `Error` 不存在父节点
+	 * @throws `Error` 待替换的节点具有不同属性
 	 */
 	safeReplaceWith(token) {
 		const {parentNode} = this;

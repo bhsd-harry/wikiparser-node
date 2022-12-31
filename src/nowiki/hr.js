@@ -19,12 +19,18 @@ class HrToken extends sol(NowikiToken) {
 		super('-'.repeat(n), config, accum);
 	}
 
-	/** @this {HrToken & {firstChild: string}} */
+	/**
+	 * @override
+	 * @this {HrToken & {firstChild: string}}
+	 */
 	cloneNode() {
 		return Parser.run(() => new HrToken(this.firstChild.length, this.getAttribute('config')));
 	}
 
-	/** @param {string} str */
+	/**
+	 * @override
+	 * @param {string} str 新文本
+	 */
 	setText(str) {
 		if (str.length < 4 || /[^-]/u.test(str)) {
 			throw new RangeError('<hr>总是写作不少于4个的连续"-"！');

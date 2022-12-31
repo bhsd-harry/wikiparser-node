@@ -73,7 +73,10 @@ const fill = (y, rowToken, layout, maxCol, token) => {
 
 /** @extends {Array<TableCoords[]>} */
 class Layout extends Array {
-	/** @complexity `n` */
+	/**
+	 * 打印表格布局
+	 * @complexity `n`
+	 */
 	print() {
 		const hBorders = new Array(this.length + 1).fill().map((_, i) => {
 				const prev = this[i - 1] ?? [],
@@ -140,7 +143,13 @@ class TableToken extends TrToken {
 		return super.insertAt(token, i);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 闭合表格语法
+	 * @complexity `n`
+	 * @param {string} syntax 表格结尾语法
+	 * @param {boolean} halfParsed 是否是半解析状态
+	 * @throws `SyntaxError` 表哥的闭合部分不符合语法
+	 */
 	close(syntax = '\n|}', halfParsed = false) {
 		halfParsed &&= Parser.running;
 		const config = this.getAttribute('config'),
@@ -166,6 +175,7 @@ class TableToken extends TrToken {
 	}
 
 	/**
+	 * 获取行数
 	 * @returns {number}
 	 * @complexity `n`
 	 */
@@ -178,7 +188,10 @@ class TableToken extends TrToken {
 		return undefined;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * @override
+	 * @complexity `n`
+	 */
 	getNextRow() {
 		return this.getNthRow(super.getRowCount() ? 1 : 0);
 	}
@@ -287,7 +300,10 @@ class TableToken extends TrToken {
 		return layout;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 打印表格布局
+	 * @complexity `n`
+	 */
 	printLayout() {
 		this.getLayout().print();
 	}
@@ -428,7 +444,10 @@ class TableToken extends TrToken {
 		return rowToken.insertTableCell(inner, coords, subtype, attr);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 在开头插入一行
+	 * @complexity `n`
+	 */
 	#prependTableRow() {
 		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{children} = this,

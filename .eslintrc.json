@@ -587,12 +587,6 @@
 		"unicorn/template-indent": 0,
 		"jsdoc/check-alignment": 2,
 		"jsdoc/check-indentation": 2,
-		"jsdoc/check-param-names": [
-			2,
-			{
-				"useDefaultObjectProperties": true
-			}
-		],
 		"jsdoc/check-tag-names": [
 			2,
 			{
@@ -616,7 +610,17 @@
 		],
 		"jsdoc/no-multi-asterisks": 2,
 		"jsdoc/require-asterisk-prefix": 2,
-		"jsdoc/require-description": 2,
+		"jsdoc/require-description": [
+			2,
+			{
+				"contexts": [
+					"FunctionDeclaration",
+					"FunctionExpression",
+					"VariableDeclarator > ArrowFunctionExpression"
+				],
+				"checkConstructors": false
+			}
+		],
 		"jsdoc/require-hyphen-before-param-description": [
 			2,
 			"never"
@@ -627,9 +631,11 @@
 				"require": {
 					"ArrowFunctionExpression": true,
 					"ClassDeclaration": true,
+					"FunctionDeclaration": true,
 					"FunctionExpression": true,
 					"MethodDefinition": true
 				},
+				"exemptEmptyConstructors": true,
 				"checkGetters": true,
 				"checkSetters": "no-getter"
 			}
@@ -637,7 +643,14 @@
 		"jsdoc/require-param-description": 2,
 		"jsdoc/require-param-name": 2,
 		"jsdoc/require-param-type": 2,
-		"jsdoc/require-param": 2,
+		"jsdoc/require-param": [
+			2,
+			{
+				"exceptions": [
+					"_"
+				]
+			}
+		],
 		"jsdoc/require-returns-check": [
 			2,
 			{
@@ -646,5 +659,44 @@
 		],
 		"jsdoc/require-returns-type": 2,
 		"jsdoc/require-throws": 2
+	},
+	"overrides": [
+		{
+			"files": "index.js",
+			"rules": {
+				"jsdoc/require-jsdoc": 0
+			}
+		},
+		{
+			"files": "tool/index.js",
+			"rules": {		
+				"jsdoc/check-alignment": 0,
+				"jsdoc/check-indentation": 0,
+				"jsdoc/check-tag-names": 0,
+				"jsdoc/check-types": 0,
+				"jsdoc/multiline-blocks": 0,
+				"jsdoc/newline-after-description": 0,
+				"jsdoc/no-bad-blocks": 0,
+				"jsdoc/no-multi-asterisks": 0,
+				"jsdoc/require-asterisk-prefix": 0,
+				"jsdoc/require-description": 0,
+				"jsdoc/require-hyphen-before-param-description": 0,
+				"jsdoc/require-jsdoc": 0,
+				"jsdoc/require-param-description": 0,
+				"jsdoc/require-param-name": 0,
+				"jsdoc/require-param-type": 0,
+				"jsdoc/require-param": 0,
+				"jsdoc/require-returns-check": 0,
+				"jsdoc/require-returns-type": 0,
+				"jsdoc/require-throws": 0
+			}
+		}
+	],
+	"settings": {
+		"jsdoc": {
+			"tagNamePreference": {
+				"augments": "extends"
+			}
+		}
 	}
 }

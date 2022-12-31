@@ -3,13 +3,16 @@
 const /** @type {Parser} */ Parser = require('..');
 
 /**
- * @param {string} text
- * @param {accum} accum
+ * 解析HTML注释和扩展标签
+ * @param {string} text wikitext
+ * @param {ParserConfig} config 设置
+ * @param {accum} accum 嵌套的节点数组
+ * @param {boolean} includeOnly 是否嵌入
  */
 const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], includeOnly = false) => {
 	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gsu;
 	if (includeOnly && text.search(onlyinclude) !== -1) { // `<onlyinclude>`拥有最高优先级
-		return text.replaceAll(onlyinclude, /** @param {string} inner */ (_, inner) => {
+		return text.replaceAll(onlyinclude, /** @param {string} inner 标签内部文字 */ (_, inner) => {
 			const str = `\0${accum.length}e\x7F`;
 			const OnlyincludeToken = require('../src/onlyinclude');
 			new OnlyincludeToken(inner, config, accum);

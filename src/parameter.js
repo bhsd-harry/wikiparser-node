@@ -71,7 +71,10 @@ class ParameterToken extends fixedToken(Token) {
 		return this;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	toString() {
 		return this.anon ? this.lastElementChild.toString() : super.toString('=');
 	}
@@ -80,7 +83,10 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? 0 : 1;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	text() {
 		return this.anon ? this.lastElementChild.text() : super.text('=');
 	}
@@ -99,7 +105,11 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();
 	}
 
-	/** @param {string} value */
+	/**
+	 * 设置参数值
+	 * @param {string} value 参数值
+	 * @throws `SyntaxError` 非法的模板参数
+	 */
 	setValue(value) {
 		value = String(value);
 		const templateLike = this.parentElement?.matches('template, magic-word#invoke'),
@@ -120,7 +130,14 @@ class ParameterToken extends fixedToken(Token) {
 		this.lastElementChild.safeReplaceWith(newValue);
 	}
 
-	/** @param {string} key */
+	/**
+	 * 修改参数名
+	 * @param {string} key 新参数名
+	 * @param {boolean} force 是否无视冲突命名
+	 * @throws `Error` 仅用于模板参数
+	 * @throws `SyntaxError` 非法的模板参数名
+	 * @throws `RangeError` 更名造成重复参数
+	 */
 	rename(key, force = false) {
 		if (typeof key !== 'string') {
 			this.typeError('rename', 'String');

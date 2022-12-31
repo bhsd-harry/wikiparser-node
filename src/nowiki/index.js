@@ -19,7 +19,10 @@ class NowikiToken extends fixedToken(Token) {
 		super(wikitext, config, true, accum);
 	}
 
-	/** @this {NowikiToken & {firstChild: string}} */
+	/**
+	 * @override
+	 * @this {NowikiToken & {firstChild: string}}
+	 */
 	cloneNode() {
 		const /** @type {typeof NowikiToken} */ {constructor: Constructor, firstChild, type} = this,
 			token = Parser.run(() => new Constructor(firstChild, this.getAttribute('config')));
@@ -27,7 +30,10 @@ class NowikiToken extends fixedToken(Token) {
 		return token;
 	}
 
-	/** @param {string} str */
+	/**
+	 * @override
+	 * @param {string} str 新文本
+	 */
 	setText(str) {
 		return super.setText(str, 0);
 	}
