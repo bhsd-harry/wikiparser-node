@@ -35,6 +35,7 @@
 		"no-constructor-return": 2,
 		"no-control-regex": 0,
 		"no-fallthrough": 2,
+		"no-import-assign": 0,
 		"no-inner-declarations": [
 			2,
 			"both"
@@ -193,7 +194,6 @@
 		"no-loop-func": 2,
 		"no-multi-assign": 2,
 		"no-multi-str": 2,
-		"no-negated-condition": 2,
 		"no-nested-ternary": 2,
 		"no-new": 0,
 		"no-new-func": 2,
@@ -499,33 +499,54 @@
 				]
 			}
 		],
+		"unicorn/escape-case": 0,
+		"unicorn/expiring-todo-comments": 0,
 		"unicorn/filename-case": [
 			2,
 			{
 				"case": "camelCase"
 			}
 		],
+		"unicorn/import-style": 0,
 		"unicorn/no-array-callback-reference": 0,
 		"unicorn/no-await-expression-member": 0,
+		"unicorn/no-document-cookie": 0,
 		"unicorn/no-for-loop": 0,
 		"unicorn/no-hex-escape": 0,
+		"unicorn/no-invalid-remove-event-listener": 0,
 		"unicorn/no-nested-ternary": 0,
 		"unicorn/no-new-array": 0,
 		"unicorn/no-null": 0,
 		"unicorn/no-process-exit": 0,
+		"unicorn/no-typeof-undefined": [
+			2,
+			{
+				"checkGlobalVariables": true
+			}
+		],
 		"unicorn/no-unreadable-array-destructuring": 0,
 		"unicorn/no-unreadable-iife": 0,
+		"unicorn/no-unused-properties": 2,
 		"unicorn/no-useless-undefined": 0,
+		"unicorn/prefer-add-event-listener": 0,
+		"unicorn/prefer-array-find": [
+			2,
+			{
+				"checkFromLast": true
+			}
+		],
 		"unicorn/prefer-at": 2,
 		"unicorn/prefer-dom-node-append": 0,
 		"unicorn/prefer-dom-node-dataset": 0,
 		"unicorn/prefer-dom-node-remove": 0,
 		"unicorn/prefer-dom-node-text-content": 0,
 		"unicorn/prefer-export-from": 0,
+		"unicorn/prefer-keyboard-event-key": 0,
 		"unicorn/prefer-modern-dom-apis": 0,
 		"unicorn/prefer-module": 0,
 		"unicorn/prefer-node-protocol": 0,
 		"unicorn/prefer-number-properties": 0,
+		"unicorn/prefer-query-selector": 0,
 		"unicorn/prefer-set-has": 0,
 		"unicorn/prefer-string-replace-all": 2,
 		"unicorn/prefer-type-error": 0,
