@@ -238,7 +238,10 @@ class AttributeToken extends Token {
 
 	/** @this {AttributeToken & Token} */
 	toString() {
-		const str = this.type === 'table-attr' ? normalizeSpace(this) : super.toString();
+		if (this.type === 'table-attr') {
+			normalizeSpace(this);
+		}
+		const str = super.toString();
 		return `${this.#leadingSpace(str)}${str}`;
 	}
 
@@ -247,9 +250,11 @@ class AttributeToken extends Token {
 	}
 
 	text() {
-		let str = this.#updateFromAttr();
-		str = `${this.#leadingSpace(str)}${str}`;
-		return this.type === 'table-attr' ? normalizeSpace(str) : str;
+		if (this.type === 'table-attr') {
+			normalizeSpace(this);
+		}
+		const str = this.#updateFromAttr();
+		return `${this.#leadingSpace(str)}${str}`;
 	}
 
 	/**

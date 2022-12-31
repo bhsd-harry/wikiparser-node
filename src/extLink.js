@@ -62,7 +62,8 @@ class ExtLinkToken extends Token {
 
 	toString() {
 		this.#correct();
-		return `[${this.firstElementChild.toString()}${this.#space}${normalizeSpace(this.children[1])}]`;
+		normalizeSpace(this.lastElementChild);
+		return `[${super.toString(this.#space)}]`;
 	}
 
 	getPadding() {
@@ -76,7 +77,8 @@ class ExtLinkToken extends Token {
 	}
 
 	text() {
-		return `[${super.text(' ').replaceAll('\n', ' ')}]`;
+		normalizeSpace(this.lastElementChild);
+		return `[${super.text(' ')}]`;
 	}
 
 	/** @this {ExtLinkToken & {firstElementChild: MagicLinkToken}} */

@@ -2,34 +2,45 @@
 
 /**
  * optionally convert to lower cases
- * @param {string} val
- * @param {string|undefined} i
+ * @param {string} val 属性值
+ * @param {string|undefined} i 是否对大小写不敏感
  */
 const toCase = (val, i) => i ? val.toLowerCase() : val;
 
 /**
  * remove half-parsed comment-like tokens
- * @param {string} str
+ * @param {string} str 原字符串
  */
 const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
 
-/** @param {string} str */
+/**
+ * initial in upper case
+ * @param {string} str 原字符串
+ */
 const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
 
-/** @param {string} str */
+/**
+ * escape special chars for RegExp constructor
+ * @param {string} str RegExp source
+ */
 const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+\-^$[\]]/gu, '\\$&');
 
-/** @param {(string|AstNode)[]} childNodes */
+/**
+ * extract effective wikitext
+ * @param {(string|AstNode)[]} childNodes a Token's contents
+ * @param {string} separator delimiter between nodes
+ */
 const text = (childNodes, separator = '') => {
 	const AstNode = require('../lib/node');
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
 /**
- * @param {string} start
- * @param {string} end
- * @param {string} separator
- * @param {string} str
+ * a more sophisticated string-explode function
+ * @param {string} start start syntax of a nested AST node
+ * @param {string} end end syntax of a nested AST node
+ * @param {string} separator syntax for explosion
+ * @param {string} str string to be exploded
  */
 const explode = (start, end, separator, str) => {
 	if (str === undefined) {
@@ -54,19 +65,28 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
-/** @param {string} str */
+/**
+ * escape newlines
+ * @param {string} str 原字符串
+ */
 const noWrap = str => str.replaceAll('\n', '\\n');
 
 /**
- * @param {string|Token} token
- * @returns {string}
+ * convert newline in text nodes to single whitespace
+ * @param {Token} token 父节点
  */
-const normalizeSpace = (token = '', separator = '') => {
+const normalizeSpace = token => {
+	if (token === undefined) {
+		return;
+	}
 	const Token = require('../src');
-	return typeof token === 'string'
-		? token.replaceAll('\n', ' ')
-		: token.childNodes.map(child => typeof child === 'string' ? normalizeSpace(child) : child.toString())
-			.join(separator);
+	const {childNodes} = token;
+	for (let i = 0; i < childNodes.length; i++) {
+		const child = childNodes[i];
+		if (typeof child === 'string') {
+			token.setText(child.replaceAll('\n', ' '), i);
+		}
+	}
 };
 
 const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd])'
