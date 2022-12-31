@@ -14,18 +14,21 @@ const assert = require('assert/strict'),
  * @param {TableCoords} coords2
  */
 const cmpCoords = (coords1, coords2) => {
-		const diff = coords1.row - coords2.row;
-		return diff === 0 ? coords1.column - coords2.column : diff;
-	},
-	isRowEnd = /** @param {Token} */ ({type}) => type === 'tr' || type === 'table-syntax',
-	/**
-	 * @param {TableCoords[]} rowLayout
-	 * @param {number} i
-	 */
-	isStartCol = (rowLayout, i, oneCol = false) => {
-		const coords = rowLayout[i];
-		return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
-	};
+	const diff = coords1.row - coords2.row;
+	return diff === 0 ? coords1.column - coords2.column : diff;
+};
+
+/** @param {Token} */
+const isRowEnd = ({type}) => type === 'tr' || type === 'table-syntax';
+
+/**
+ * @param {TableCoords[]} rowLayout
+ * @param {number} i
+ */
+const isStartCol = (rowLayout, i, oneCol = false) => {
+	const coords = rowLayout[i];
+	return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
+};
 
 /**
  * @param {Map<TdToken, boolean>} cells

@@ -86,7 +86,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		let innerSyntax = /\||\0\d+!\x7F/u.exec(inner),
+		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
 		if (/\[\[|-\{/u.test(attr)) {
 			innerSyntax = null;

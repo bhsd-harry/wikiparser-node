@@ -80,8 +80,7 @@ class LinkToken extends Token {
 						prevTarget.prepend(':');
 					}
 				}
-				this.setAttribute('selfLink', !title).setAttribute('interwiki', interwiki)
-					.setAttribute('name', title)
+				this.setAttribute('selfLink', !title).setAttribute('interwiki', interwiki).setAttribute('name', title)
 					.setAttribute('fragment', fragment);
 			}
 		};
