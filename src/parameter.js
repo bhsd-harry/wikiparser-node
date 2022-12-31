@@ -112,7 +112,7 @@ class ParameterToken extends fixedToken(Token) {
 	 */
 	setValue(value) {
 		value = String(value);
-		const templateLike = this.parentElement?.matches('template, magic-word#invoke'),
+		const templateLike = this.parentNode?.matches('template, magic-word#invoke'),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root,

@@ -294,11 +294,11 @@ class TokenCollection extends Array {
 	 */
 	_siblings(start, count, selector = '') {
 		return this._create(arr => arr.flatMap(ele => {
-			const {parentElement} = ele;
-			if (!parentElement) {
+			const {parentNode} = ele;
+			if (!parentNode) {
 				return undefined;
 			}
-			const {children} = parentElement,
+			const {children} = parentNode,
 				i = children.indexOf(ele);
 			children.splice(
 				typeof start === 'function' ? start(i) : start,

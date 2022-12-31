@@ -252,7 +252,7 @@ class Token extends AstElement {
 			}
 		}
 		super.insertAt(token, i);
-		if (token instanceof Token && token.type === 'root') {
+		if (typeof token !== 'string' && token.type === 'root') {
 			token.type = 'plain';
 		}
 		return token;
@@ -306,7 +306,7 @@ class Token extends AstElement {
 		}
 		const {childNodes} = this,
 			headings = [...childNodes.entries()]
-				.filter(([, child]) => child instanceof Token && child.type === 'heading')
+				.filter(([, child]) => typeof child !== 'string' && child.type === 'heading')
 				.map(/** @param {[number, Token]} */ ([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
 			/** @type {(string|Token)[][]} */ sections = new Array(headings.length);
@@ -353,11 +353,11 @@ class Token extends AstElement {
 		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
 			throw new RangeError(`非法的标签或空标签：${tag}`);
 		}
-		const {parentElement} = this;
-		if (!parentElement) {
+		const {parentNode} = this;
+		if (!parentNode) {
 			return undefined;
 		}
-		const {children} = parentElement,
+		const {children} = parentNode,
 			index = children.indexOf(this);
 		let i;
 		for (i = index - 1; i >= 0; i--) {
@@ -366,7 +366,7 @@ class Token extends AstElement {
 			}
 		}
 		if (i === -1) {
-			return parentElement.findEnclosingHtml(tag);
+			return parentNode.findEnclosingHtml(tag);
 		}
 		const opening = children[i],
 			{name} = opening;
@@ -376,7 +376,7 @@ class Token extends AstElement {
 			}
 		}
 		return i === children.length
-			? parentElement.findEnclosingHtml(tag)
+			? parentNode.findEnclosingHtml(tag)
 			: [opening, children[i]];
 	}
 
@@ -393,7 +393,7 @@ class Token extends AstElement {
 			throw new Error(`${this.constructor.name} 不接受 QuoteToken 作为子节点！`);
 		}
 		for (const quote of this.childNodes) {
-			if (quote instanceof Token && quote.type === 'quote') {
+			if (typeof quote !== 'string' && quote.type === 'quote') {
 				quote.replaceWith(quote.firstChild);
 			}
 		}

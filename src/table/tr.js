@@ -159,11 +159,11 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 */
 	#getSiblingRow(subset) {
-		const {parentElement} = this;
-		if (!parentElement) {
+		const {parentNode} = this;
+		if (!parentNode) {
 			return undefined;
 		}
-		const {children} = parentElement,
+		const {children} = parentNode,
 			index = children.indexOf(this);
 		for (const child of subset(children, index)) {
 			if (child instanceof TrToken && child.getRowCount()) {

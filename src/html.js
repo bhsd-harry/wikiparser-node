@@ -79,7 +79,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
-			{name, parentElement, closing, selfClosing} = this,
+			{name, parentNode, closing, selfClosing} = this,
 			string = noWrap(this.toString());
 		if (closing && selfClosing) {
 			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
@@ -87,10 +87,10 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			return this;
 		} else if (selfClosing && html[0].includes(name)) {
 			throw new SyntaxError(`无效自封闭标签：${string}`);
-		} else if (!parentElement) {
+		} else if (!parentNode) {
 			return undefined;
 		}
-		const {children} = parentElement,
+		const {children} = parentNode,
 			i = children.indexOf(this),
 			selector = `html#${name}`,
 			siblings = closing
@@ -119,14 +119,14 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	/** @complexity `n` */
 	fix() {
 		const config = this.getAttribute('config'),
-			{parentElement, selfClosing, name, firstElementChild} = this;
-		if (!parentElement || !selfClosing || !config.html[0].includes(name)) {
+			{parentNode, selfClosing, name, firstElementChild} = this;
+		if (!parentNode || !selfClosing || !config.html[0].includes(name)) {
 			return;
 		} else if (firstElementChild.text().trim()) {
 			this.#localMatch();
 			return;
 		}
-		const {children} = parentElement,
+		const {children} = parentNode,
 			i = children.indexOf(this),
 			/** @type {HtmlToken[]} */
 			prevSiblings = children.slice(0, i).filter(child => child.matches(`html#${name}`)),
