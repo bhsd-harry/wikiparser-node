@@ -11,6 +11,7 @@ class MagicLinkToken extends Token {
 	type = 'free-ext-link';
 	#protocolRegex;
 
+	/** 协议 */
 	get protocol() {
 		return this.#protocolRegex.exec(this.text())?.[0];
 	}
@@ -26,7 +27,8 @@ class MagicLinkToken extends Token {
 	}
 
 	/**
-	 * @param {string} url
+	 * @param {string} url 网址
+	 * @param {boolean} doubleSlash 是否接受"//"作为协议
 	 * @param {accum} accum
 	 */
 	constructor(url, doubleSlash = false, config = Parser.getConfig(), accum = []) {
@@ -37,6 +39,7 @@ class MagicLinkToken extends Token {
 		this.#protocolRegex = new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu');
 	}
 
+	/** @override */
 	afterBuild() {
 		const ParameterToken = require('./parameter');
 		const /** @type {ParameterToken} */ parameter = this.closest('parameter');
@@ -46,6 +49,7 @@ class MagicLinkToken extends Token {
 		return this;
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			token = Parser.run(() => new MagicLinkToken(
@@ -56,6 +60,10 @@ class MagicLinkToken extends Token {
 		return token;
 	}
 
+	/**
+	 * 获取网址
+	 * @throws `Error` 非标准协议
+	 */
 	getUrl() {
 		let url = this.text();
 		if (url.startsWith('//')) {

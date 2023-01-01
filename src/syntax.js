@@ -13,10 +13,12 @@ class SyntaxToken extends Token {
 	#pattern;
 
 	/**
-	 * @param {?string} wikitext
-	 * @param {RegExp} pattern
+	 * @param {?string} wikitext 语法wikitext
+	 * @param {RegExp} pattern 语法正则
+	 * @param {string} type Token.type
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable
+	 * @param {acceptable} acceptable 可接受的子节点设置
+	 * @throws `RangeError` 含有g修饰符的语法正则
 	 */
 	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
 		if (pattern.global) {
@@ -27,6 +29,7 @@ class SyntaxToken extends Token {
 		this.#pattern = pattern;
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			config = this.getAttribute('config'),
@@ -38,6 +41,7 @@ class SyntaxToken extends Token {
 		});
 	}
 
+	/** @override */
 	afterBuild() {
 		const /** @type {AstListener} */ syntaxListener = (e, data) => {
 			const pattern = this.#pattern;
@@ -51,8 +55,9 @@ class SyntaxToken extends Token {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -63,7 +68,8 @@ class SyntaxToken extends Token {
 	}
 
 	/**
-	 * @param {...string|Token} elements
+	 * @override
+	 * @param {...string|Token} elements 待替换的子节点
 	 * @complexity `n`
 	 */
 	replaceChildren(...elements) {

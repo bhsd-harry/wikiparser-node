@@ -6,8 +6,7 @@ const {removeComment} = require('../util/string'),
 /**
  * 解析花括号
  * @param {string} text wikitext
- * @param {ParserConfig} config 设置
- * @param {accum} accum 嵌套的节点数组
+ * @param {accum} accum
  * @throws TranscludeToken.constructor()
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {

@@ -12,8 +12,10 @@ class ExtToken extends attributeParent(TagPairToken) {
 	type = 'ext';
 
 	/**
-	 * @param {string} name
-	 * @param {string|undefined} closing
+	 * @param {string} name 标签名
+	 * @param {string} attr 标签属性
+	 * @param {string} inner 内部wikitext
+	 * @param {string|undefined} closing 是否封闭
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
@@ -79,6 +81,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 		Object.defineProperty(this, 'closed', {value: true, enumerable: false, writable: false, configurable: false});
 	}
 
+	/** @override */
 	cloneNode() {
 		const inner = this.lastElementChild.cloneNode(),
 			tags = this.getAttribute('tags'),
@@ -89,6 +92,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 		return token;
 	}
 
+	/** 内部wikitext */
 	get innerText() {
 		return this.selfClosing ? '' : this.lastElementChild.text();
 	}

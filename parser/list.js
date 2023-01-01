@@ -5,8 +5,7 @@ const /** @type {Parser} */ Parser = require('..');
 /**
  * 解析列表
  * @param {string} text wikitext
- * @param {ParserConfig} config 设置
- * @param {accum} accum 嵌套的节点数组
+ * @param {accum} accum
  */
 const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(text);

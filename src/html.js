@@ -17,10 +17,10 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	#tag;
 
 	/**
-	 * @param {string} name
-	 * @param {AttributeToken} attr
-	 * @param {boolean} closing
-	 * @param {boolean} selfClosing
+	 * @param {string} name 标签名
+	 * @param {AttributeToken} attr 标签属性
+	 * @param {boolean} closing 是否闭合
+	 * @param {boolean} selfClosing 是否自封闭
 	 * @param {accum} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
@@ -32,6 +32,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.#tag = name;
 	}
 
+	/** @override */
 	cloneNode() {
 		const [attr] = this.cloneChildren(),
 			config = this.getAttribute('config');
@@ -39,8 +40,9 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -50,19 +52,26 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		return super.getAttribute(key);
 	}
 
+	/** @override */
 	toString() {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.selfClosing ? '/' : ''}>`;
 	}
 
+	/** @override */
 	getPadding() {
 		return this.#tag.length + (this.closing ? 2 : 1);
 	}
 
+	/** @override */
 	text() {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.text()}${this.selfClosing ? '/' : ''}>`;
 	}
 
-	/** @param {string} tag */
+	/**
+	 * 更换标签名
+	 * @param {string} tag 标签名
+	 * @throws `RangeError` 非法的HTML标签
+	 */
 	replaceTag(tag) {
 		const name = tag.toLowerCase();
 		if (!this.getAttribute('config').html.flat().includes(name)) {
@@ -72,6 +81,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	/**
+	 * 搜索匹配的标签
 	 * @complexity `n`
 	 * @throws `SyntaxError` 同时闭合和自封闭的标签
 	 * @throws `SyntaxError` 无效自封闭标签
@@ -110,13 +120,18 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		throw new SyntaxError(`未${closing ? '匹配的闭合' : '闭合的'}标签：${string}`);
 	}
 
+	/** 局部闭合 */
 	#localMatch() {
 		this.selfClosing = false;
 		const root = Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'));
 		this.after(root.firstChild);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 修复无效自封闭标签
+	 * @complexity `n`
+	 * @throws `Error` 无法修复无效自封闭标签
+	 */
 	fix() {
 		const config = this.getAttribute('config'),
 			{parentNode, selfClosing, name, firstElementChild} = this;

@@ -59,6 +59,7 @@ class TokenCollection extends Array {
 		return typeError(this.constructor, method, ...types);
 	}
 
+	/** 节点排序 */
 	#sort() {
 		if (this.some(token => typeof token === 'string')) {
 			return;

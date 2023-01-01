@@ -14,6 +14,7 @@ class NoincludeToken extends hidden(NowikiToken) {
 	/**
 	 * @override
 	 * @param {string} str 新文本
+	 * @throws `Error` 不可更改
 	 */
 	setText(str) {
 		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s.*)?\/?>$/isu.test(this.toString())) {

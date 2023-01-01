@@ -16,9 +16,10 @@ class ImageParameterToken extends Token {
 	static #noLink = Symbol('no-link');
 
 	/**
+	 * 检查图片参数是否合法
 	 * @template {string} T
-	 * @param {T} key
-	 * @param {string} value
+	 * @param {T} key 参数名
+	 * @param {string} value 参数值
 	 * @returns {T extends 'link' ? string|Symbol : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig()) {
@@ -49,6 +50,7 @@ class ImageParameterToken extends Token {
 		return !isNaN(value);
 	}
 
+	/** 图片链接 */
 	get link() {
 		if (this.name === 'link') {
 			return ImageParameterToken.#validate('link', this.getValue(), this.getAttribute('config'));
@@ -63,6 +65,7 @@ class ImageParameterToken extends Token {
 		}
 	}
 
+	/** 图片大小 */
 	get size() {
 		if (this.name === 'width') {
 			const /** @type {string} */ size = this.getValue().trim();
@@ -84,6 +87,7 @@ class ImageParameterToken extends Token {
 		return undefined;
 	}
 
+	/** 图片宽度 */
 	get width() {
 		return this.size?.width;
 	}
@@ -95,6 +99,7 @@ class ImageParameterToken extends Token {
 		}
 	}
 
+	/** 图片高度 */
 	get height() {
 		return this.size?.height;
 	}
@@ -107,7 +112,7 @@ class ImageParameterToken extends Token {
 	}
 
 	/**
-	 * @param {string} str
+	 * @param {string} str 图片参数
 	 * @param {accum} accum
 	 */
 	constructor(str, config = Parser.getConfig(), accum = []) {
@@ -136,6 +141,7 @@ class ImageParameterToken extends Token {
 		this.setAttribute('name', 'caption').setAttribute('stage', 7);
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			config = this.getAttribute('config'),
@@ -145,8 +151,9 @@ class ImageParameterToken extends Token {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -156,14 +163,17 @@ class ImageParameterToken extends Token {
 		return super.getAttribute(key);
 	}
 
+	/** @override */
 	isPlain() {
 		return true;
 	}
 
+	/** 是否是不可变参数 */
 	#isVoid() {
 		return this.#syntax && !this.#syntax.includes('$1');
 	}
 
+	/** @override */
 	toString() {
 		if (!this.#syntax) {
 			return super.toString();
@@ -171,10 +181,12 @@ class ImageParameterToken extends Token {
 		return this.#syntax.replace('$1', super.toString());
 	}
 
+	/** @override */
 	getPadding() {
 		return Math.max(0, this.#syntax.indexOf('$1'));
 	}
 
+	/** @override */
 	text() {
 		if (!this.#syntax) {
 			return super.text().trim();
@@ -183,9 +195,12 @@ class ImageParameterToken extends Token {
 	}
 
 	/**
+	 * @override
 	 * @template {string|Token} T
-	 * @param {T} token
+	 * @param {T} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @complexity `n`
+	 * @throws `Error` 不接受自定义输入的图片参数
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running && this.#isVoid()) {
@@ -194,14 +209,19 @@ class ImageParameterToken extends Token {
 		return super.insertAt(token, i);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取参数值
+	 * @complexity `n`
+	 */
 	getValue() {
 		return this.#isVoid() || super.text();
 	}
 
 	/**
-	 * @param {string|boolean} value
+	 * 设置参数值
+	 * @param {string|boolean} value 参数值
 	 * @complexity `n`
+	 * @throws	SyntaxError` 非法的参数值
 	 */
 	setValue(value) {
 		if (this.#isVoid()) {

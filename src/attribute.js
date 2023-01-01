@@ -37,7 +37,10 @@ class AttributeToken extends Token {
 		}).join(' ');
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 清理标签属性
+	 * @complexity `n`
+	 */
 	sanitize() {
 		if (!Parser.running && !this.#sanitized) {
 			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
@@ -64,7 +67,12 @@ class AttributeToken extends Token {
 			string = token.firstChild;
 		}
 		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
-		const build = /** @param {string|boolean} str */ str =>
+
+		/**
+		 * 解析并重建标签属性
+		 * @param {string|boolean} str 半解析的标签属性文本
+		 */
+		const build = str =>
 			typeof str === 'boolean' || !token ? str : token.buildFromStr(str).map(String).join('');
 		for (const [, key,, quoted, unquoted] of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gsu)
@@ -76,9 +84,9 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @param {string} attr
-	 * @param {'ext-attr'|'html-attr'|'table-attr'} type
-	 * @param {string} name
+	 * @param {string} attr 标签属性
+	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
+	 * @param {string} name 标签名
 	 * @param {accum} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
@@ -87,6 +95,7 @@ class AttributeToken extends Token {
 		this.setAttribute('name', name).#parseAttr();
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren();
 		return Parser.run(() => {
@@ -97,8 +106,9 @@ class AttributeToken extends Token {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -108,6 +118,7 @@ class AttributeToken extends Token {
 		return super.getAttribute(key);
 	}
 
+	/** @override */
 	afterBuild() {
 		if (this.type !== 'ext-attr') {
 			for (let [key, text] of this.#attr) {
@@ -135,7 +146,10 @@ class AttributeToken extends Token {
 		return this;
 	}
 
-	/** @param {string} key */
+	/**
+	 * 标签是否具有某属性
+	 * @param {string} key 属性键
+	 */
 	hasAttr(key) {
 		if (typeof key !== 'string') {
 			this.typeError('hasAttr', 'String');
@@ -144,8 +158,9 @@ class AttributeToken extends Token {
 	}
 
 	/**
+	 * 获取标签属性
 	 * @template {string|undefined} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {T extends string ? string|true : Record<string, string|true>}
 	 */
 	getAttr(key) {
@@ -157,17 +172,21 @@ class AttributeToken extends Token {
 		return this.#attr.get(key.toLowerCase().trim());
 	}
 
+	/** 获取全部的标签属性名 */
 	getAttrNames() {
 		return [...this.#attr.keys()];
 	}
 
+	/** 标签是否具有任意属性 */
 	hasAttrs() {
 		return this.getAttrNames().length > 0;
 	}
 
 	/**
-	 * @param {string} key
-	 * @param {string|boolean} value
+	 * 设置标签属性
+	 * @param {string} key 属性键
+	 * @param {string|boolean} value 属性值
+	 * @param {boolean} init 是否是初次解析
 	 * @complexity `n`
 	 * @throws `RangeError` 扩展标签属性不能包含">"
 	 * @throws `RangeError` 无效的属性名
@@ -202,7 +221,8 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @param {string} key
+	 * 移除标签属性
+	 * @param {string} key 属性键
 	 * @complexity `n`
 	 */
 	removeAttr(key) {
@@ -216,9 +236,11 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @param {string} key
-	 * @param {boolean|undefined} force
+	 * 开关标签属性
+	 * @param {string} key 属性键
+	 * @param {boolean|undefined} force 强制开启或关闭
 	 * @complexity `n`
+	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key, force) {
 		if (typeof key !== 'string') {
@@ -234,11 +256,18 @@ class AttributeToken extends Token {
 		this.setAttr(key, force === true || force === undefined && value === false);
 	}
 
+	/**
+	 * 生成引导空格
+	 * @param {string} str 属性字符串
+	 */
 	#leadingSpace(str = super.toString()) {
 		return this.type !== 'table-attr' && str && str.trimStart() === str ? ' ' : '';
 	}
 
-	/** @this {AttributeToken & Token} */
+	/**
+	 * @override
+	 * @this {AttributeToken & Token}
+	 */
 	toString() {
 		if (this.type === 'table-attr') {
 			normalizeSpace(this);
@@ -247,10 +276,12 @@ class AttributeToken extends Token {
 		return `${this.#leadingSpace(str)}${str}`;
 	}
 
+	/** @override */
 	getPadding() {
 		return this.#leadingSpace().length;
 	}
 
+	/** @override */
 	text() {
 		if (this.type === 'table-attr') {
 			normalizeSpace(this);
@@ -260,7 +291,9 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
+	 * @param {boolean} done 是否已解析过改变后的标签属性
 	 * @complexity `n`
 	 */
 	removeAt(i, done = false) {
@@ -274,8 +307,11 @@ class AttributeToken extends Token {
 	}
 
 	/**
+	 * @override
 	 * @template {string|Token} T
-	 * @param {T} token
+	 * @param {T} token 待插入的节点
+	 * @param {number} i 插入位置
+	 * @param {boolean} done 是否已解析过改变后的标签属性
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length, done = false) {
@@ -289,7 +325,8 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @param {...string|Token} elements
+	 * @override
+	 * @param {...string|Token} elements 待替换的子节点
 	 * @complexity `n²`
 	 */
 	replaceChildren(...elements) {
@@ -307,10 +344,12 @@ class AttributeToken extends Token {
 	}
 
 	/**
-	 * @param {string} key
-	 * @param {string|undefined} equal - `equal`存在时`val`和`i`也一定存在
-	 * @param {string|undefined} val
-	 * @param {string|undefined} i
+	 * @override
+	 * @param {string} key 属性键
+	 * @param {string|undefined} equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
+	 * @param {string|undefined} val 属性值
+	 * @param {string|undefined} i 是否对大小写不敏感
+	 * @throws `Error` 禁止外部调用
 	 */
 	matchesAttr(key, equal, val, i) {
 		if (externalUse('matchesAttr')) {

@@ -13,7 +13,8 @@ class CommentToken extends hidden(NowikiToken) {
 	closed;
 
 	/**
-	 * @param {string} wikitext
+	 * @param {string} wikitext wikitext
+	 * @param {boolean} closed 是否闭合
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
@@ -42,6 +43,7 @@ class CommentToken extends hidden(NowikiToken) {
 		return `<!--${firstChild}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
 	}
 
+	/** @override */
 	getPadding() {
 		return 4;
 	}

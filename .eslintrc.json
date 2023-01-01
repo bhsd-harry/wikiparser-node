@@ -262,7 +262,7 @@
 				"VariableDeclarator": {
 					"array": true,
 					"object": true,
-					"enforceForRenamedProperties": true
+					"enforceForRenamedProperties": "literal"
 				},
 				"AssignmentExpression": {
 					"array": true,
@@ -615,10 +615,15 @@
 			{
 				"contexts": [
 					"FunctionDeclaration",
-					"FunctionExpression",
+					"VariableDeclarator > FunctionExpression",
+					"MethodDefinition > FunctionExpression",
 					"VariableDeclarator > ArrowFunctionExpression"
 				],
-				"checkConstructors": false
+				"exemptedBy": [
+					"type"
+				],
+				"checkConstructors": false,
+				"checkSetters": false
 			}
 		],
 		"jsdoc/require-hyphen-before-param-description": [
@@ -640,14 +645,44 @@
 				"checkSetters": "no-getter"
 			}
 		],
-		"jsdoc/require-param-description": 2,
-		"jsdoc/require-param-name": 2,
+		"jsdoc/require-param-description": [
+			2,
+			{
+				"exceptions": [
+					"accum"
+				],
+				"contexts": [
+					"FunctionDeclaration",
+					"VariableDeclarator > FunctionExpression",
+					"MethodDefinition > FunctionExpression",
+					"VariableDeclarator > ArrowFunctionExpression"
+				]
+			}
+		],
+		"jsdoc/require-param-name": [
+			2,
+			{
+				"contexts": [
+					"FunctionDeclaration",
+					"VariableDeclarator > FunctionExpression",
+					"MethodDefinition > FunctionExpression",
+					"VariableDeclarator > ArrowFunctionExpression"
+				]
+			}
+		],
 		"jsdoc/require-param-type": 2,
 		"jsdoc/require-param": [
 			2,
 			{
 				"exceptions": [
-					"_"
+					"_",
+					"config"
+				],
+				"contexts": [
+					"FunctionDeclaration",
+					"VariableDeclarator > FunctionExpression",
+					"MethodDefinition > FunctionExpression",
+					"VariableDeclarator > ArrowFunctionExpression"
 				]
 			}
 		],
@@ -696,7 +731,10 @@
 		"jsdoc": {
 			"tagNamePreference": {
 				"augments": "extends"
-			}
+			},
+			"overrideReplacesDocs": [
+				"require-description"
+			]
 		}
 	}
 }

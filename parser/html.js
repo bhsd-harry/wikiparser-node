@@ -5,8 +5,7 @@ const /** @type {Parser} */ Parser = require('..');
 /**
  * 解析HTML标签
  * @param {string} firstChild wikitext
- * @param {ParserConfig} config 设置
- * @param {accum} accum 嵌套的节点数组
+ * @param {accum} accum
  */
 const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/iu,

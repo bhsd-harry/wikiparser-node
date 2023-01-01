@@ -69,7 +69,7 @@ const attributeParent = (ct, i = 0) => class extends ct {
 	 * 开关AttributeToken子节点的某属性
 	 * @this {{children: AttributeToken[]}}
 	 * @param {string} key 属性键
-	 * @param {boolean|undefined} force 是否强制开启或关闭
+	 * @param {boolean|undefined} force 强制开启或关闭
 	 */
 	toggleAttr(key, force) {
 		this.children.at(i).toggleAttr(key, force);

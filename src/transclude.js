@@ -16,7 +16,11 @@ class TranscludeToken extends Token {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 
-	/** @complexity `n` */
+	/**
+	 * 设置引用修饰符
+	 * @param {string} modifier 引用修饰符
+	 * @complexity `n`
+	 */
 	setModifier(modifier = '') {
 		if (typeof modifier !== 'string') {
 			this.typeError('setModifier', 'String');
@@ -36,10 +40,11 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} title
-	 * @param {[string, string|undefined][]} parts
+	 * @param {string} title 模板标题或魔术字
+	 * @param {[string, string|undefined][]} parts 参数各部分
 	 * @param {accum} accum
 	 * @complexity `n`
+	 * @throws `SyntaxError` 非法的模板名称
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
@@ -109,6 +114,7 @@ class TranscludeToken extends Token {
 		this.protectChildren(0);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [first, ...cloned] = this.cloneChildren(),
 			config = this.getAttribute('config');
@@ -122,6 +128,7 @@ class TranscludeToken extends Token {
 		});
 	}
 
+	/** @override */
 	afterBuild() {
 		if (this.name.includes('\0')) {
 			this.setAttribute('name', text(this.buildFromStr(this.name)));
@@ -156,17 +163,20 @@ class TranscludeToken extends Token {
 		return this;
 	}
 
+	/** 替换引用 */
 	subst() {
 		this.setModifier('subst');
 	}
 
+	/** 安全的替换引用 */
 	safesubst() {
 		this.setModifier('safesubst');
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -178,6 +188,7 @@ class TranscludeToken extends Token {
 		return super.getAttribute(key);
 	}
 
+	/** @override */
 	toString() {
 		const {children, childNodes: {length}, firstChild, modifier} = this;
 		return `{{${modifier}${modifier && ':'}${
@@ -187,15 +198,18 @@ class TranscludeToken extends Token {
 		}}}`;
 	}
 
+	/** @override */
 	getPadding() {
 		return this.modifier ? this.modifier.length + 3 : 2;
 	}
 
+	/** @override */
 	getGaps() {
 		return 1;
 	}
 
 	/**
+	 * @override
 	 * @returns {string}
 	 * @complexity `n`
 	 */
@@ -209,7 +223,8 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {number|ParameterToken} addedToken
+	 * 处理匿名参数更改
+	 * @param {number|ParameterToken} addedToken 新增的参数
 	 * @complexity `n`
 	 */
 	#handleAnonArgChange(addedToken) {
@@ -236,7 +251,8 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
 	 * @complexity `n`
 	 */
 	removeAt(i) {
@@ -254,7 +270,9 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {ParameterToken} token
+	 * @override
+	 * @param {ParameterToken} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
@@ -269,6 +287,7 @@ class TranscludeToken extends Token {
 	}
 
 	/**
+	 * 获取所有参数
 	 * @returns {ParameterToken[]}
 	 * @complexity `n`
 	 */
@@ -276,13 +295,19 @@ class TranscludeToken extends Token {
 		return this.children.filter(child => child instanceof ParameterToken);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取匿名参数
+	 * @complexity `n`
+	 */
 	getAnonArgs() {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
 	/**
-	 * @param {string|number} key
+	 * 获取指定参数
+	 * @param {string|number} key 参数名
+	 * @param {boolean} exact 是否匹配匿名性
+	 * @param {boolean} copy 是否返回一个备份
 	 * @complexity `n`
 	 */
 	getArgs(key, exact = false, copy = true) {
@@ -306,7 +331,9 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string|number} key
+	 * 是否具有某参数
+	 * @param {string|number} key 参数名
+	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
 	hasArg(key, exact = false) {
@@ -314,7 +341,9 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string|number} key
+	 * 获取生效的指定参数
+	 * @param {string|number} key 参数名
+	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
 	getArg(key, exact = false) {
@@ -322,7 +351,9 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string|number} key
+	 * 移除指定参数
+	 * @param {string|number} key 参数名
+	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
 	removeArg(key, exact = false) {
@@ -333,7 +364,10 @@ class TranscludeToken extends Token {
 		});
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取所有参数名
+	 * @complexity `n`
+	 */
 	getKeys() {
 		const args = this.getAllArgs();
 		if (this.#keys.size === 0 && args.length > 0) {
@@ -345,7 +379,8 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string|number} key
+	 * 获取参数值
+	 * @param {string|number} key 参数名
 	 * @complexity `n`
 	 */
 	getValues(key) {
@@ -353,8 +388,9 @@ class TranscludeToken extends Token {
 	}
 
 	/**
+	 * 获取生效的参数值
 	 * @template {string|number|undefined} T
-	 * @param {T} key
+	 * @param {T} key 参数名
 	 * @returns {T extends undefined ? Object<string, string> : string}
 	 * @complexity `n`
 	 */
@@ -366,9 +402,11 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} val
+	 * 插入匿名参数
+	 * @param {string} val 参数值
 	 * @returns {ParameterToken}
 	 * @complexity `n`
+	 * @throws `SyntaxError` 非法的匿名参数
 	 */
 	newAnonArg(val) {
 		val = String(val);
@@ -385,8 +423,9 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} key
-	 * @param {string} value
+	 * 设置参数值
+	 * @param {string} key 参数名
+	 * @param {string} value 参数值
 	 * @complexity `n`
 	 * @throws `Error` 仅用于模板
 	 * @throws `SyntaxError` 非法的命名参数
@@ -414,7 +453,11 @@ class TranscludeToken extends Token {
 		this.appendChild(firstElementChild.lastChild);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 将匿名参数改写为命名参数
+	 * @complexity `n`
+	 * @throws `Error` 仅用于模板
+	 */
 	anonToNamed() {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
@@ -426,7 +469,8 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} title
+	 * 替换模板名
+	 * @param {string} title 模板名
 	 * @throws `Error` 仅用于模板
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
@@ -445,7 +489,8 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} title
+	 * 替换模块名
+	 * @param {string} title 模块名
 	 * @throws `Error` 仅用于模块
 	 * @throws `SyntaxError` 非法的模块名称
 	 */
@@ -472,7 +517,8 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} func
+	 * 替换模块函数
+	 * @param {string} func 模块函数名
 	 * @throws `Error` 仅用于模块
 	 * @throws `Error` 尚未指定模块名称
 	 * @throws `SyntaxError` 非法的模块函数名
@@ -503,7 +549,11 @@ class TranscludeToken extends Token {
 		}
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 是否存在重名参数
+	 * @complexity `n`
+	 * @throws `Error` 仅用于模板
+	 */
 	hasDuplicatedArgs() {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
@@ -511,7 +561,11 @@ class TranscludeToken extends Token {
 		return this.getAllArgs().length - this.getKeys().length;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取重名参数
+	 * @complexity `n`
+	 * @throws `Error` 仅用于模板
+	 */
 	getDuplicatedArgs() {
 		if (!this.matches('template, magic-word#invoke')) {
 			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
@@ -520,8 +574,10 @@ class TranscludeToken extends Token {
 	}
 
 	/**
+	 * 修复重名参数：
 	 * `aggressive = false`时只移除空参数和全同参数，优先保留匿名参数，否则将所有匿名参数更改为命名。
-	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数
+	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数。
+	 * @param {boolean} aggressive 是否使用有更大风险的修复手段
 	 * @complexity `n²`
 	 */
 	fixDuplication(aggressive = false) {
@@ -608,8 +664,10 @@ class TranscludeToken extends Token {
 	}
 
 	/**
+	 * 转义模板内的表格
 	 * @returns {TranscludeToken}
 	 * @complexity `n`
+	 * @throws `Error` 转义失败
 	 */
 	escapeTables() {
 		const count = this.hasDuplicatedArgs();

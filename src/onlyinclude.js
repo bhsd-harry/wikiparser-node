@@ -11,13 +11,14 @@ class OnlyincludeToken extends Token {
 	type = 'onlyinclude';
 
 	/**
-	 * @param {string} inner
+	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(inner, config, true, accum);
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			token = Parser.run(() => new OnlyincludeToken(undefined, this.getAttribute('config')));
@@ -25,14 +26,17 @@ class OnlyincludeToken extends Token {
 		return token;
 	}
 
+	/** @override */
 	toString() {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
+	/** @override */
 	getPadding() {
 		return 13;
 	}
 
+	/** @override */
 	isPlain() {
 		return this.constructor === OnlyincludeToken;
 	}

@@ -14,7 +14,7 @@ class GalleryToken extends Token {
 	name = 'gallery';
 
 	/**
-	 * @param {string} inner
+	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
@@ -40,6 +40,7 @@ class GalleryToken extends Token {
 		}
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			token = Parser.run(() => new GalleryToken(undefined, this.getAttribute('config')));
@@ -47,19 +48,27 @@ class GalleryToken extends Token {
 		return token;
 	}
 
+	/** @override */
 	toString() {
 		return super.toString('\n');
 	}
 
+	/** @override */
 	getGaps() {
 		return 1;
 	}
 
+	/** @override */
 	text() {
 		return text(this.children, '\n');
 	}
 
-	/** @param {string} file */
+	/**
+	 * 插入图片
+	 * @param {string} file 图片文件名
+	 * @param {number} i 插入位置
+	 * @throws `SyntaxError` 非法的文件名
+	 */
 	insertImage(file, i = this.childNodes.length) {
 		let title;
 		try {

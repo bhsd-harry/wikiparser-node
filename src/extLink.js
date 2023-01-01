@@ -13,20 +13,26 @@ class ExtLinkToken extends Token {
 	type = 'ext-link';
 	#space;
 
-	/** @this {{firstChild: MagicLinkToken}} */
+	/**
+	 * 协议
+	 * @this {{firstChild: MagicLinkToken}}
+	 */
 	get protocol() {
 		return this.firstChild.protocol;
 	}
 
-	/** @this {{firstChild: MagicLinkToken}} */
+	/**
+	 * @this {{firstChild: MagicLinkToken}}
+	 * @param {string} value 协议
+	 */
 	set protocol(value) {
 		this.firstChild.protocol = value;
 	}
 
 	/**
-	 * @param {string} url
-	 * @param {string} space
-	 * @param {string} text
+	 * @param {string} url 网址
+	 * @param {string} space 空白字符
+	 * @param {string} text 链接文字
 	 * @param {accum} accum
 	 */
 	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
@@ -41,6 +47,7 @@ class ExtLinkToken extends Token {
 		this.protectChildren(0);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [url, text] = this.cloneChildren(),
 			token = Parser.run(() => new ExtLinkToken(undefined, '', '', this.getAttribute('config')));
@@ -51,6 +58,7 @@ class ExtLinkToken extends Token {
 		return token;
 	}
 
+	/** 修正空白字符 */
 	#correct() {
 		if (!this.#space && this.childNodes.length > 1
 			// 都替换成`<`肯定不对，但无妨
@@ -60,33 +68,44 @@ class ExtLinkToken extends Token {
 		}
 	}
 
+	/** @override */
 	toString() {
 		this.#correct();
 		normalizeSpace(this.lastElementChild);
 		return `[${super.toString(this.#space)}]`;
 	}
 
+	/** @override */
 	getPadding() {
 		this.#correct();
 		return 1;
 	}
 
+	/** @override */
 	getGaps() {
 		this.#correct();
 		return this.#space.length;
 	}
 
+	/** @override */
 	text() {
 		normalizeSpace(this.lastElementChild);
 		return `[${super.text(' ')}]`;
 	}
 
-	/** @this {ExtLinkToken & {firstElementChild: MagicLinkToken}} */
+	/**
+	 * 获取网址
+	 * @this {{firstElementChild: MagicLinkToken}}
+	 */
 	getUrl() {
 		return this.firstElementChild.getUrl();
 	}
 
-	/** @param {string|URL} url */
+	/**
+	 * 设置链接目标
+	 * @param {string|URL} url 网址
+	 * @throws `SyntaxError` 非法的外链目标
+	 */
 	setTarget(url) {
 		url = String(url);
 		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
@@ -100,7 +119,11 @@ class ExtLinkToken extends Token {
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 
-	/** @param {string} text  */
+	/**
+	 * 设置链接显示文字
+	 * @param {string} text 链接显示文字
+	 * @throws `SyntaxError` 非法的链接显示文字
+	 */
 	setLinkText(text) {
 		text = String(text);
 		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),

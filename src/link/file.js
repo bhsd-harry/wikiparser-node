@@ -21,6 +21,7 @@ class FileToken extends LinkToken {
 	setLinkText = undefined;
 	pipeTrick = undefined;
 
+	/** 图片链接 */
 	get link() {
 		return this.getArg('link')?.link;
 	}
@@ -29,10 +30,12 @@ class FileToken extends LinkToken {
 		this.setValue('link', value);
 	}
 
+	/** 图片大小 */
 	get size() {
 		return this.getArg('width')?.size;
 	}
 
+	/** 图片宽度 */
 	get width() {
 		return this.size?.width;
 	}
@@ -46,6 +49,7 @@ class FileToken extends LinkToken {
 		}
 	}
 
+	/** 图片高度 */
 	get height() {
 		return this.size?.height;
 	}
@@ -60,9 +64,9 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} link
-	 * @param {string|undefined} text
-	 * @param {Title} title
+	 * @param {string} link 文件名
+	 * @param {string|undefined} text 图片参数
+	 * @param {Title} title 文件标题对象
 	 * @param {accum} accum
 	 * @complexity `n`
 	 */
@@ -74,7 +78,8 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
 	 * @complexity `n`
 	 */
 	removeAt(i) {
@@ -88,7 +93,9 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {ImageParameterToken} token
+	 * @override
+	 * @param {ImageParameterToken} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
@@ -121,7 +128,9 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} key
+	 * 获取指定图片参数
+	 * @param {string} key 参数名
+	 * @param {boolean} copy 是否返回备份
 	 * @complexity `n`
 	 */
 	getArgs(key, copy = true) {
@@ -139,7 +148,8 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} key
+	 * 是否具有指定图片参数
+	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
 	hasArg(key) {
@@ -147,7 +157,8 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} key
+	 * 获取生效的指定图片参数
+	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
 	getArg(key) {
@@ -155,7 +166,8 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} key
+	 * 移除指定图片参数
+	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
 	removeArg(key) {
@@ -179,7 +191,8 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} key
+	 * 获取指定的图片参数值
+	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
 	getValues(key) {
@@ -187,8 +200,9 @@ class FileToken extends LinkToken {
 	}
 
 	/**
+	 * 获取生效的指定图片参数值
 	 * @template {string|undefined} T
-	 * @param {T} key
+	 * @param {T} key 参数名
 	 * @returns {T extends undefined ? Object<string, string> : string|true}
 	 * @complexity `n`
 	 */
@@ -200,8 +214,9 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @param {string} key
-	 * @param {string|boolean} value
+	 * 设置图片参数
+	 * @param {string} key 参数名
+	 * @param {string|boolean} value 参数值
 	 * @complexity `n`
 	 * @throws `RangeError` 未定义的图片参数
 	 * @throws `SyntaxError` 非法的参数

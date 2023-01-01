@@ -5,8 +5,7 @@ const /** @type {Parser} */ Parser = require('..');
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
  * @param {{firstChild: string, type: string}} root 根节点
- * @param {ParserConfig} config 设置
- * @param {accum} accum 嵌套的节点数组
+ * @param {accum} accum
  */
 const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = []) => {
 	const Token = require('../src'),

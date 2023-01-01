@@ -16,8 +16,10 @@ class TrToken extends attributeParent(Token, 1) {
 	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
 
 	/**
-	 * @param {string} syntax
+	 * @param {string} syntax 表格语法
+	 * @param {string} attr 表格属性
 	 * @param {accum} accum
+	 * @param {RegExp} pattern 表格语法正则
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = TrToken.openingPattern) {
 		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
@@ -30,9 +32,10 @@ class TrToken extends attributeParent(Token, 1) {
 		this.protectChildren(0, 1);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
-			/** @type {typeof TrToken} */ {constructor: Constructor} = this;
+			/** @type {{constructor: typeof TrToken}} */ {constructor: Constructor} = this;
 		return Parser.run(() => {
 			const token = new Constructor(undefined, undefined, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(syntax);
@@ -47,6 +50,7 @@ class TrToken extends attributeParent(Token, 1) {
 		});
 	}
 
+	/** 修复简单的表格语法错误 */
 	#correct() {
 		const {children: [,, child]} = this;
 		if (child?.isPlain()) {
@@ -59,18 +63,23 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 	}
 
+	/** @override */
 	toString() {
 		this.#correct();
 		return super.toString();
 	}
 
+	/** @override */
 	text() {
 		this.#correct();
 		const str = super.text();
 		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
 	}
 
-	/** @param {SyntaxToken} syntax */
+	/**
+	 * 转义表格语法
+	 * @param {SyntaxToken} syntax 表格语法节点
+	 */
 	static escape(syntax) {
 		const wikitext = syntax.childNodes.map(
 				child => typeof child === 'string'
@@ -110,7 +119,8 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
 	 * @complexity `n`
 	 */
 	removeAt(i) {
@@ -126,8 +136,10 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/**
+	 * @override
 	 * @template {string|Token} T
-	 * @param {T} token
+	 * @param {T} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @returns {T}
 	 * @complexity `n`
 	 */
@@ -144,6 +156,7 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/**
+	 * 获取行数
 	 * @returns {0|1}
 	 * @complexity `n`
 	 */
@@ -155,7 +168,8 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/**
-	 * @param {(children: Token[], index: number) => Token[]} subset
+	 * 获取相邻行
+	 * @param {(children: Token[], index: number) => Token[]} subset 筛选兄弟节点的方法
 	 * @complexity `n`
 	 */
 	#getSiblingRow(subset) {
@@ -207,9 +221,12 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/**
-	 * @param {number} n
+	 * 获取第n列
+	 * @param {number} n 列号
+	 * @param {boolean} insert 是否用于判断插入新列的位置
 	 * @returns {TdToken}
 	 * @complexity `n`
+	 * @throws `RangeError` 不存在对应单元格
 	 */
 	getNthCol(n, insert = false) {
 		if (typeof n !== 'number') {
@@ -239,10 +256,11 @@ class TrToken extends attributeParent(Token, 1) {
 	}
 
 	/**
-	 * @param {string|Token} inner
-	 * @param {TableCoords}
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string|boolean>} attr
+	 * 插入新的单元格
+	 * @param {string|Token} inner 单元格内部wikitext
+	 * @param {TableCoords} coord 单元格坐标
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string|boolean>} attr 单元格属性
 	 * @returns {TdToken}
 	 * @complexity `n`
 	 */

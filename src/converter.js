@@ -14,8 +14,8 @@ class ConverterToken extends Token {
 	type = 'converter';
 
 	/**
-	 * @param {string[]} flags
-	 * @param {string[]} rules
+	 * @param {string[]} flags 转换类型标记
+	 * @param {string[]} rules 转换规则
 	 * @param {accum} accum
 	 */
 	constructor(flags, rules, config = Parser.getConfig(), accum = []) {
@@ -37,6 +37,7 @@ class ConverterToken extends Token {
 		this.protectChildren(0);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [flags, ...rules] = this.cloneChildren(),
 			token = Parser.run(() => new ConverterToken([], [], this.getAttribute('config')));
@@ -45,82 +46,105 @@ class ConverterToken extends Token {
 		return token;
 	}
 
+	/** @override */
 	toString() {
 		const {children: [flags, ...rules]} = this;
 		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
+	/** @override */
 	getPadding() {
 		return 2;
 	}
 
-	/** @param {number} i */
+	/**
+	 * /** @override
+	 * @param {number} i 子节点位置
+	 */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
 		return i || this.firstElementChild.childNodes.length > 0 ? 1 : 0;
 	}
 
+	/** @override */
 	text() {
 		const {children: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 
-	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
+	/**
+	 * 获取所有转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 */
 	getAllFlags() {
 		return this.firstChild.getAllFlags();
 	}
 
-	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
+	/**
+	 * 获取有效的转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 */
 	getEffectiveFlags() {
 		return this.firstChild.getEffectiveFlags();
 	}
 
-	/** @this {ConverterToken & {firstChild: ConverterFlagsToken}} */
+	/**
+	 * 获取未知的转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 */
 	getUnknownFlags() {
 		return this.firstChild.getUnknownFlags();
 	}
 
 	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
+	 * 是否具有某转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @param {string} flag 转换类型标记
 	 */
 	hasFlag(flag) {
 		return this.firstChild.hasFlag(flag);
 	}
 
 	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
+	 * 是否具有某有效的转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @param {string} flag 转换类型标记
 	 */
 	hasEffectiveFlag(flag) {
 		return this.firstChild.hasEffectiveFlag(flag);
 	}
 
 	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
+	 * 移除转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @param {string} flag 转换类型标记
 	 */
 	removeFlag(flag) {
 		this.firstChild.removeFlag(flag);
 	}
 
 	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
+	 * 设置转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @param {string} flag 转换类型标记
 	 */
 	setFlag(flag) {
 		this.firstChild.setFlag(flag);
 	}
 
 	/**
-	 * @this {ConverterToken & {firstChild: ConverterFlagsToken}}
-	 * @param {string} flag
+	 * 开关某转换类型标记
+	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @param {string} flag 转换类型标记
 	 */
 	toggleFlag(flag) {
 		this.firstChild.toggleFlag(flag);
 	}
 
-	/** @this {ConverterToken & {children: [ConverterFlagsToken, ConverterRuleToken]}} */
+	/**
+	 * 是否无转换
+	 * @this {ConverterToken & {children: [ConverterFlagsToken, ConverterRuleToken]}}
+	 */
 	get noConvert() {
 		return this.childNodes.length < 3 && !this.children[1]?.variant;
 	}

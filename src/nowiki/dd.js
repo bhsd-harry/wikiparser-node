@@ -16,7 +16,7 @@ class DdToken extends NowikiToken {
 
 	/**
 	 * 更新属性
-	 * @param {string} str
+	 * @param {string} str wikitext
 	 */
 	#update(str) {
 		this.setAttribute('ul', str.includes('*')).setAttribute('ol', str.includes('#'))
@@ -25,7 +25,7 @@ class DdToken extends NowikiToken {
 	}
 
 	/**
-	 * @param {string} str
+	 * @param {string} str wikitext
 	 * @param {accum} accum
 	 */
 	constructor(str, config = Parser.getConfig(), accum = []) {
@@ -36,6 +36,7 @@ class DdToken extends NowikiToken {
 	/**
 	 * @override
 	 * @param {string} str 新文本
+	 * @throws `RangeError` 错误的列表语法
 	 */
 	setText(str) {
 		const src = this.type === 'dd' ? ':' : ';:*#';

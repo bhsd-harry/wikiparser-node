@@ -14,10 +14,10 @@ class TagPairToken extends fixedToken(Token) {
 	#tags;
 
 	/**
-	 * @param {string} name
-	 * @param {string|Token} attr
-	 * @param {string|Token} inner
-	 * @param {string|undefined} closing - 约定`undefined`表示自闭合，`''`表示未闭合
+	 * @param {string} name 标签名
+	 * @param {string|Token} attr 标签属性
+	 * @param {string|Token} inner 内部wikitext
+	 * @param {string|undefined} closing 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
 	 * @param {accum} accum
 	 */
 	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
@@ -37,8 +37,9 @@ class TagPairToken extends fixedToken(Token) {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -48,6 +49,7 @@ class TagPairToken extends fixedToken(Token) {
 		return super.getAttribute(key);
 	}
 
+	/** @override */
 	toString() {
 		const {closed, firstChild, lastChild, nextSibling, name, selfClosing} = this,
 			[opening, closing] = this.#tags;
@@ -61,10 +63,12 @@ class TagPairToken extends fixedToken(Token) {
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
+	/** @override */
 	getPadding() {
 		return this.#tags[0].length + 1;
 	}
 
+	/** @override */
 	getGaps() {
 		return 1;
 	}

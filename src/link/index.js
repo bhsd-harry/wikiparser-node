@@ -17,9 +17,9 @@ class LinkToken extends Token {
 	interwiki;
 
 	/**
-	 * @param {string} link
-	 * @param {string|undefined} linkText
-	 * @param {Title} title
+	 * @param {string} link 链接标题
+	 * @param {string|undefined} linkText 链接显示文字
+	 * @param {Title} title 链接标题对象
 	 * @param {accum} accum
 	 */
 	constructor(link, linkText, title, config = Parser.getConfig(), accum = []) {
@@ -39,10 +39,12 @@ class LinkToken extends Token {
 		this.setAttribute('name', title.title).seal(['selfLink', 'fragment', 'interwiki']).protectChildren(0);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [link, ...linkText] = this.cloneChildren();
 		return Parser.run(() => {
-			const /** @type {typeof LinkToken} */ {constructor: Constructor, name: title, interwiki, fragment} = this,
+			/** @type {this & {constructor: typeof LinkToken}} */
+			const {constructor: Constructor, name: title, interwiki, fragment} = this,
 				token = new Constructor('', undefined, {title, interwiki, fragment}, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(link);
 			token.append(...linkText);
@@ -93,19 +95,23 @@ class LinkToken extends Token {
 		return this;
 	}
 
+	/** @override */
 	toString() {
 		const str = super.toString('|');
 		return this.type === 'gallery-image' ? str : `[[${str}]]`;
 	}
 
+	/** @override */
 	getPadding() {
 		return 2;
 	}
 
+	/** @override */
 	getGaps() {
 		return 1;
 	}
 
+	/** @override */
 	text() {
 		const str = super.text('|');
 		return this.type === 'gallery-image' ? str : `[[${str}]]`;
@@ -134,8 +140,9 @@ class LinkToken extends Token {
 	}
 
 	/**
-	 * @param {string} lang
-	 * @param {string} link
+	 * 设置跨语言链接
+	 * @param {string} lang 语言前缀
+	 * @param {string} link 页面标题
 	 * @throws `SyntaxError` 非法的跨语言链接
 	 */
 	setLangLink(lang, link) {
@@ -193,6 +200,11 @@ class LinkToken extends Token {
 		this.#setFragment(fragment);
 	}
 
+	/**
+	 * 修改为到自身的链接
+	 * @param {string} fragment fragment
+	 * @throws `RangeError` 空fragment
+	 */
 	asSelfLink(fragment = this.fragment) {
 		fragment = String(fragment);
 		if (!fragment.trim()) {
@@ -201,6 +213,11 @@ class LinkToken extends Token {
 		this.#setFragment(fragment, false);
 	}
 
+	/**
+	 * 设置链接显示文字
+	 * @param {string} linkText 链接显示文字
+	 * @throws `SyntaxError` 非法的链接显示文字
+	 */
 	setLinkText(linkText = '') {
 		linkText = String(linkText);
 		let lastElementChild;
@@ -225,6 +242,10 @@ class LinkToken extends Token {
 		}
 	}
 
+	/**
+	 * 自动生成管道符后的链接文字
+	 * @throws `Error` 带有"#"或"%"时不可用
+	 */
 	pipeTrick() {
 		const linkText = this.firstElementChild.text();
 		if (linkText.includes('#') || linkText.includes('%')) {

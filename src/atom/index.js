@@ -9,18 +9,20 @@ const /** @type {Parser} */ Parser = require('../..'),
  */
 class AtomToken extends Token {
 	/**
-	 * @param {?string} wikitext
+	 * @param {?string} wikitext wikitext
+	 * @param {string} type Token.type
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable
+	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
 		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
-			/** @type {typeof AtomToken} */ {constructor: Constructor} = this,
+			/** @type {{constructor: typeof AtomToken}} */ {constructor: Constructor} = this,
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
 			token = Parser.run(() => new Constructor(undefined, this.type, config, [], acceptable));

@@ -13,7 +13,7 @@ class ConverterFlagsToken extends Token {
 	/** @type {string[]} */ #flags;
 
 	/**
-	 * @param {string[]} flags
+	 * @param {string[]} flags 转换类型标记
 	 * @param {accum} accum
 	 */
 	constructor(flags, config = Parser.getConfig(), accum = []) {
@@ -21,6 +21,7 @@ class ConverterFlagsToken extends Token {
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			token = Parser.run(() => new ConverterFlagsToken([], this.getAttribute('config')));
@@ -29,7 +30,10 @@ class ConverterFlagsToken extends Token {
 		return token;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * @override
+	 * @complexity `n`
+	 */
 	afterBuild() {
 		this.#flags = this.children.map(child => child.text().trim());
 		const /** @type {AstListener} */ converterFlagsListener = ({prevTarget}) => {
@@ -42,8 +46,9 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -54,7 +59,8 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
 	 * @complexity `n`
 	 */
 	removeAt(i) {
@@ -64,7 +70,9 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {AtomToken} token
+	 * @override
+	 * @param {AtomToken} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.childNodes.length) {
@@ -73,20 +81,24 @@ class ConverterFlagsToken extends Token {
 		return token;
 	}
 
+	/** @override */
 	toString() {
 		return super.toString(';');
 	}
 
+	/** @override */
 	getGaps() {
 		return 1;
 	}
 
+	/** @override */
 	text() {
 		return super.text(';');
 	}
 
 	/**
-	 * @param {string} flag
+	 * 获取转换类型标记节点
+	 * @param {string} flag 转换类型标记
 	 * @returns {AtomToken[]}
 	 * @complexity `n`
 	 */
@@ -94,16 +106,23 @@ class ConverterFlagsToken extends Token {
 		return this.#flags.includes(flag) ? this.children.filter(child => child.text().trim() === flag) : [];
 	}
 
+	/** 获取所有转换类型标记 */
 	getAllFlags() {
 		return new Set(this.#flags);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取未知转换类型标记
+	 * @complexity `n`
+	 */
 	getUnknownFlags() {
 		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/u.test(flag));
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取有效转换类型标记
+	 * @complexity `n`
+	 */
 	getEffectiveFlags() {
 		const {variants} = this.getAttribute('config'),
 			variantFlags = this.#flags.filter(flag => variants.includes(flag)),
@@ -142,7 +161,10 @@ class ConverterFlagsToken extends Token {
 		return flags;
 	}
 
-	/** @param {string} flag */
+	/**
+	 * 是否具有某转换类型标记
+	 * @param {string} flag 转换类型标记
+	 */
 	hasFlag(flag) {
 		if (typeof flag !== 'string') {
 			this.typeError('hasFlag', 'String');
@@ -151,7 +173,8 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {string} flag
+	 * 是否具有某有效转换类型标记
+	 * @param {string} flag 转换类型标记
 	 * @complexity `n`
 	 */
 	hasEffectiveFlag(flag) {
@@ -162,7 +185,8 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {string} flag
+	 * 移除某转换类型标记
+	 * @param {string} flag 转换类型标记
 	 * @complexity `n²`
 	 */
 	removeFlag(flag) {
@@ -172,7 +196,8 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {string} flag
+	 * 添加转换类型标记
+	 * @param {string} flag 转换类型标记
 	 * @complexity `n`
 	 */
 	#newFlag(flag) {
@@ -181,7 +206,8 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {string} flag
+	 * 设置转换类型标记
+	 * @param {string} flag 转换类型标记
 	 * @complexity `n`
 	 */
 	setFlag(flag) {
@@ -193,7 +219,8 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @param {string} flag
+	 * 开关转换类型标记
+	 * @param {string} flag 转换类型标记
 	 * @complexity `n²`
 	 */
 	toggleFlag(flag) {

@@ -12,7 +12,7 @@ class HrToken extends sol(NowikiToken) {
 	type = 'hr';
 
 	/**
-	 * @param {number} n
+	 * @param {number} n 字符串长度
 	 * @param {accum} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
@@ -30,6 +30,7 @@ class HrToken extends sol(NowikiToken) {
 	/**
 	 * @override
 	 * @param {string} str 新文本
+	 * @throws `RangeError` 错误的\<hr\>语法
 	 */
 	setText(str) {
 		if (str.length < 4 || /[^-]/u.test(str)) {

@@ -58,7 +58,6 @@ declare global {
 		/**
 		 * 是否是跨维基链接
 		 * @param {string} title 链接标题
-		 * @param {ParserConfig} config 设置
 		 */
 		isInterwiki(title: string, config?: ParserConfig): RegExpMatchArray;
 		/**
@@ -66,7 +65,6 @@ declare global {
 		 * @param {string} title 标题（含或不含命名空间前缀）
 		 * @param {number} defaultNs 命名空间
 		 * @param {boolean} include 是否嵌入
-		 * @param {ParserConfig} config 设置
 		 * @param {boolean} halfParsed 是否是半解析状态
 		 */
 		normalizeTitle(
@@ -79,7 +77,6 @@ declare global {
 		 * @param {string|Token} wikitext wikitext
 		 * @param {boolean} include 是否嵌入
 		 * @param {number} maxStage 最大解析层级
-		 * @param {ParserConfig} config 设置
 		 */
 		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
 		/**

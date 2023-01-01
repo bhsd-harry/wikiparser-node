@@ -14,7 +14,10 @@ class TdToken extends fixedToken(TrToken) {
 	type = 'td';
 	#innerSyntax = '';
 
-	/** @complexity `n` */
+	/**
+	 * 单元格类型
+	 * @complexity `n`
+	 */
 	get subtype() {
 		return this.getSyntax().subtype;
 	}
@@ -23,6 +26,7 @@ class TdToken extends fixedToken(TrToken) {
 		this.setSyntax(subtype);
 	}
 
+	/** rowspan */
 	get rowspan() {
 		return this.getAttr('rowspan');
 	}
@@ -31,6 +35,7 @@ class TdToken extends fixedToken(TrToken) {
 		this.setAttr('rowspan', rowspan);
 	}
 
+	/** colspan */
 	get colspan() {
 		return this.getAttr('colspan');
 	}
@@ -39,11 +44,13 @@ class TdToken extends fixedToken(TrToken) {
 		this.setAttr('colspan', colspan);
 	}
 
+	/** 是否位于行首 */
 	isIndependent() {
 		return this.firstElementChild.text().startsWith('\n');
 	}
 
 	/**
+	 * 获取单元格语法信息
 	 * @returns {{subtype: 'td'|'th'|'caption', escape: boolean, correction: boolean}}
 	 * @complexity `n`
 	 */
@@ -81,8 +88,8 @@ class TdToken extends fixedToken(TrToken) {
 	insertTableCell = undefined;
 
 	/**
-	 * @param {string} syntax
-	 * @param {string} inner
+	 * @param {string} syntax 单元格语法
+	 * @param {string} inner 内部wikitext
 	 * @param {accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
@@ -104,6 +111,7 @@ class TdToken extends fixedToken(TrToken) {
 			.appendChild(innerToken.setAttribute('stage', 4));
 	}
 
+	/** @override */
 	cloneNode() {
 		const /** @type {TdToken} */ token = super.cloneNode();
 		token.setAttribute('innerSyntax', this.#innerSyntax);
@@ -111,9 +119,12 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
-	 * @param {string|Token} inner
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string>} attr
+	 * 创建新的单元格
+	 * @param {string|Token} inner 内部wikitext
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string>} attr 单元格属性
+	 * @param {boolean} include 是否嵌入
+	 * @throws `RangeError` 非法的单元格类型
 	 */
 	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
 		if (typeof inner !== 'string' && (!(inner instanceof Token) || !inner.isPlain()) || typeof attr !== 'object') {
@@ -133,8 +144,9 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -145,10 +157,12 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
-	 * @param {TokenAttribute<T>} value
-	 * @return {this}
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
+	 * @returns {this}
+	 * @throws `RangeError` 仅用于代码调试
 	 */
 	setAttribute(key, value) {
 		if (key !== 'innerSyntax') {
@@ -160,6 +174,7 @@ class TdToken extends fixedToken(TrToken) {
 		return this;
 	}
 
+	/** @override */
 	afterBuild() {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax).map(String).join('');
@@ -172,6 +187,7 @@ class TdToken extends fixedToken(TrToken) {
 	/**
 	 * @override
 	 * @param {string} syntax 表格语法
+	 * @param {boolean} esc 是否需要转义
 	 */
 	setSyntax(syntax, esc = false) {
 		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, esc);
@@ -203,6 +219,7 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
+	 * @override
 	 * @returns {string}
 	 * @complexity `n`
 	 */
@@ -212,6 +229,10 @@ class TdToken extends fixedToken(TrToken) {
 		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}
 
+	/**
+	 * @override
+	 * @param {number} i 子节点位置
+	 */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
 		if (i !== 1) {
@@ -222,6 +243,7 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
+	 * @override
 	 * @returns {string}
 	 * @complexity `n`
 	 */
@@ -232,8 +254,9 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
+	 * 获取单元格属性
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {T extends 'rowspan'|'colspan' ? number : Record<string, string|true>}
 	 */
 	getAttr(key) {
@@ -243,9 +266,10 @@ class TdToken extends fixedToken(TrToken) {
 	}
 
 	/**
+	 * 设置单元格属性
 	 * @template {string} T
-	 * @param {T} key
-	 * @param {T extends 'rowspan'|'colspan' ? number : string|boolean} value
+	 * @param {T} key 属性键
+	 * @param {T extends 'rowspan'|'colspan' ? number : string|boolean} value 属性值
 	 */
 	setAttr(key, value) {
 		if (typeof key !== 'string') {
@@ -262,6 +286,7 @@ class TdToken extends fixedToken(TrToken) {
 		return result;
 	}
 
+	/** @override */
 	escape() {
 		super.escape();
 		if (this.children[1].toString()) {

@@ -13,8 +13,8 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	type = 'heading';
 
 	/**
-	 * @param {number} level
-	 * @param {string[]} input
+	 * @param {number} level 标题层级
+	 * @param {string[]} input 标题文字
 	 * @param {accum} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
@@ -30,6 +30,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		this.append(token, trail);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [title, trail] = this.cloneChildren(),
 			token = Parser.run(() => new HeadingToken(Number(this.name), [], this.getAttribute('config')));
@@ -38,7 +39,10 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		return token;
 	}
 
-	/** @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}} */
+	/**
+	 * @override
+	 * @this {{prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'} & HeadingToken}
+	 */
 	toString() {
 		const equals = '='.repeat(Number(this.name));
 		return `${this.prependNewLine()}${equals}${
@@ -46,15 +50,18 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		}${equals}${this.lastElementChild.toString()}${this.appendNewLine()}`;
 	}
 
+	/** @override */
 	getPadding() {
 		return super.getPadding() + Number(this.name);
 	}
 
+	/** @override */
 	getGaps() {
 		return Number(this.name);
 	}
 
 	/**
+	 * @override
 	 * @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}}
 	 * @returns {string}
 	 */
@@ -63,7 +70,10 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		return `${this.prependNewLine()}${equals}${this.firstElementChild.text()}${equals}${this.appendNewLine()}`;
 	}
 
-	/** @param {number} n */
+	/**
+	 * 设置标题层级
+	 * @param {number} n 标题层级
+	 */
 	setLevel(n) {
 		if (typeof n !== 'number') {
 			this.typeError('setLevel', 'Number');
@@ -72,6 +82,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		this.setAttribute('name', String(n)).firstElementChild.setAttribute('name', this.name);
 	}
 
+	/** 移除标题后的不可见内容 */
 	removeTrail() {
 		this.lastElementChild.replaceChildren();
 	}

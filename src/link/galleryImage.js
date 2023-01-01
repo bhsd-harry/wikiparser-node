@@ -16,9 +16,9 @@ class GalleryImageToken extends FileToken {
 	height = undefined;
 
 	/**
-	 * @param {string} link
-	 * @param {string|undefined} text
-	 * @param {Title} title
+	 * @param {string} link 图片文件名
+	 * @param {string|undefined} text 图片参数
+	 * @param {Title} title 图片文件标题对象
 	 * @param {accum} accum
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
@@ -38,6 +38,7 @@ class GalleryImageToken extends FileToken {
 		this.seal(['size', 'width', 'height']);
 	}
 
+	/** @override */
 	getPadding() {
 		return 0;
 	}

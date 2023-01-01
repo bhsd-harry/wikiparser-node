@@ -14,8 +14,8 @@ class ParameterToken extends fixedToken(Token) {
 	anon;
 
 	/**
-	 * @param {string|number} key
-	 * @param {string} value
+	 * @param {string|number} key 参数名
+	 * @param {string} value 参数值
 	 * @param {accum} accum
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
@@ -30,6 +30,7 @@ class ParameterToken extends fixedToken(Token) {
 		this.append(keyToken, token.setAttribute('stage', 2));
 	}
 
+	/** @override */
 	cloneNode() {
 		const [key, value] = this.cloneChildren(),
 			config = this.getAttribute('config');
@@ -41,6 +42,7 @@ class ParameterToken extends fixedToken(Token) {
 		});
 	}
 
+	/** @override */
 	afterBuild() {
 		if (!this.anon) {
 			const name = this.firstElementChild.text().trim(),
@@ -51,12 +53,7 @@ class ParameterToken extends fixedToken(Token) {
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
-
-		/**
-		 * 在AstEventData中记录`oldKey`和`newKey`
-		 * @type {AstListener}
-		 */
-		const parameterListener = ({prevTarget}, data) => {
+		const /** @type {AstListener} */ parameterListener = ({prevTarget}, data) => {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstElementChild, name} = this;
 				if (prevTarget === firstElementChild) {
@@ -79,6 +76,7 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? this.lastElementChild.toString() : super.toString('=');
 	}
 
+	/** @override */
 	getGaps() {
 		return this.anon ? 0 : 1;
 	}
@@ -92,7 +90,8 @@ class ParameterToken extends fixedToken(Token) {
 	}
 
 	/**
-	 * @param {ParameterToken} token
+	 * @override
+	 * @param {ParameterToken} token 待替换的节点
 	 * @complexity `n`
 	 */
 	safeReplaceWith(token) {
@@ -100,6 +99,7 @@ class ParameterToken extends fixedToken(Token) {
 		return this.replaceWith(token);
 	}
 
+	/** 获取参数值 */
 	getValue() {
 		const value = this.lastElementChild.text();
 		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();

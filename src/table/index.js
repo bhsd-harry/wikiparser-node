@@ -10,20 +10,26 @@ const assert = require('assert/strict'),
 	AttributeToken = require('../attribute');
 
 /**
- * @param {TableCoords} coords1
- * @param {TableCoords} coords2
+ * 比较两个表格坐标
+ * @param {TableCoords} coords1 坐标1
+ * @param {TableCoords} coords2 坐标2
  */
 const cmpCoords = (coords1, coords2) => {
 	const diff = coords1.row - coords2.row;
 	return diff === 0 ? coords1.column - coords2.column : diff;
 };
 
-/** @param {Token} */
+/**
+ * 是否是行尾
+ * @param {Token} cell 表格单元格
+ */
 const isRowEnd = ({type}) => type === 'tr' || type === 'table-syntax';
 
 /**
- * @param {TableCoords[]} rowLayout
- * @param {number} i
+ * 是否是合并单元格的第一列
+ * @param {TableCoords[]} rowLayout 行布局
+ * @param {number} i 单元格序号
+ * @param {boolean} oneCol 是否仅有一列
  */
 const isStartCol = (rowLayout, i, oneCol = false) => {
 	const coords = rowLayout[i];
@@ -31,8 +37,10 @@ const isStartCol = (rowLayout, i, oneCol = false) => {
 };
 
 /**
- * @param {Map<TdToken, boolean>} cells
- * @param {string|Record<string, string|boolean>} attr
+ * 设置表格格式
+ * @param {Map<TdToken, boolean>} cells 单元格
+ * @param {string|Record<string, string|boolean>} attr 属性
+ * @param {boolean} multi 是否对所有单元格设置，或是仅对行首单元格设置
  * @complexity `n`
  */
 const format = (cells, attr = {}, multi = false) => {
@@ -50,11 +58,12 @@ const format = (cells, attr = {}, multi = false) => {
 };
 
 /**
- * @param {number} y
- * @param {TrToken} rowToken
- * @param {TableCoords[][]} layout
- * @param {number} maxCol
- * @param {Token} token
+ * 表格填充
+ * @param {number} y 行号
+ * @param {TrToken} rowToken 表格行
+ * @param {TableCoords[][]} layout 表格布局
+ * @param {number} maxCol 最大列数
+ * @param {Token} token 待填充的单元格
  * @complexity `n`
  */
 const fill = (y, rowToken, layout, maxCol, token) => {
@@ -113,7 +122,8 @@ class TableToken extends TrToken {
 	static closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
 	/**
-	 * @param {string} syntax
+	 * @param {string} syntax 表格语法
+	 * @param {string} attr 表格属性
 	 * @param {accum} accum
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
@@ -124,10 +134,13 @@ class TableToken extends TrToken {
 	}
 
 	/**
+	 * @override
 	 * @template {TrToken|SyntaxToken} T
-	 * @param {T} token
+	 * @param {T} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @returns {T}
 	 * @complexity `n`
+	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		const previous = this.children.at(i - 1),
@@ -148,7 +161,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 * @param {string} syntax 表格结尾语法
 	 * @param {boolean} halfParsed 是否是半解析状态
-	 * @throws `SyntaxError` 表哥的闭合部分不符合语法
+	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false) {
 		halfParsed &&= Parser.running;
@@ -175,7 +188,7 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * 获取行数
+	 * @override
 	 * @returns {number}
 	 * @complexity `n`
 	 */
@@ -184,6 +197,7 @@ class TableToken extends TrToken {
 			+ this.children.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
+	/** @override */
 	getPreviousRow() { // eslint-disable-line class-methods-use-this
 		return undefined;
 	}
@@ -197,9 +211,13 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} n
+	 * 获取第n行
+	 * @param {number} n 行号
+	 * @param {boolean} force 是否将表格自身视为第一行
+	 * @param {boolean} insert 是否用于判断插入新行的位置
 	 * @returns {TrToken}
 	 * @complexity `n`
+	 * @throws `RangeError` 不存在该行
 	 */
 	getNthRow(n, force = false, insert = false) {
 		if (typeof n !== 'number') {
@@ -229,6 +247,7 @@ class TableToken extends TrToken {
 	}
 
 	/**
+	 * 获取所有行
 	 * @returns {TrToken[]}
 	 * @complexity `n`
 	 */
@@ -240,7 +259,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords & TableRenderedCoords} coords
+	 * 获取指定坐标的单元格
+	 * @param {TableCoords & TableRenderedCoords} coords 表格坐标
 	 * @complexity `n`
 	 */
 	getNthCell(coords) {
@@ -251,7 +271,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords & TableRenderedCoords} stop
+	 * 获取表格布局
+	 * @param {TableCoords & TableRenderedCoords} stop 中止条件
 	 * @complexity `n`
 	 */
 	getLayout(stop = {}) {
@@ -309,7 +330,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords}
+	 * 转换为渲染后的表格坐标
+	 * @param {TableCoords} coord wikitext中的表格坐标
 	 * @returns {TableRenderedCoords}
 	 * @complexity `n`
 	 */
@@ -323,7 +345,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableRenderedCoords}
+	 * 转换为wikitext中的表格坐标
+	 * @param {TableRenderedCoords} coord 渲染后的表格坐标
 	 * @complexity `n`
 	 */
 	toRawCoords({x, y}) {
@@ -343,7 +366,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
+	 * 获取完整行
+	 * @param {number} y 行号
 	 * @complexity `n²`
 	 */
 	getFullRow(y) {
@@ -357,7 +381,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
+	 * 获取完整列
+	 * @param {number} x 列号
 	 * @complexity `n`
 	 */
 	getFullCol(x) {
@@ -373,8 +398,10 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
-	 * @param {string|Record<string, string|boolean>} attry
+	 * 设置行格式
+	 * @param {number} y 行号
+	 * @param {string|Record<string, string|boolean>} attr 表格属性
+	 * @param {boolean} multiRow 是否对所有单元格设置，或是仅对行首单元格设置
 	 * @complexity `n²`
 	 */
 	formatTableRow(y, attr = {}, multiRow = false) {
@@ -382,8 +409,10 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
-	 * @param {string|Record<string, string|boolean>} attry
+	 * 设置列格式
+	 * @param {number} x 列号
+	 * @param {string|Record<string, string|boolean>} attr 表格属性
+	 * @param {boolean} multiCol 是否对所有单元格设置，或是仅对行首单元格设置
 	 * @complexity `n`
 	 */
 	formatTableCol(x, attr = {}, multiCol = false) {
@@ -391,10 +420,11 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
-	 * @param {string|Token} inner
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string>} attr
+	 * 填充表格行
+	 * @param {number} y 行号
+	 * @param {string|Token} inner 填充内容
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string>} attr 表格属性
 	 * @complexity `n`
 	 */
 	fillTableRow(y, inner, subtype = 'td', attr = {}) {
@@ -406,9 +436,10 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {string|Token} inner
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string>} attr
+	 * 填充表格
+	 * @param {string|Token} inner 填充内容
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string>} attr 表格属性
 	 * @complexity `n`
 	 */
 	fillTable(inner, subtype = 'td', attr = {}) {
@@ -422,12 +453,14 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {string|Token} inner
-	 * @param {TableCoords & TableRenderedCoords} coords
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string|boolean>} attr
+	 * @override
+	 * @param {string|Token} inner 单元格内部wikitext
+	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string|boolean>} attr 单元格属性
 	 * @returns {TdToken}
 	 * @complexity `n`
+	 * @throws `RangeError` 指定的坐标不是单元格起始点
 	 */
 	insertTableCell(inner, coords, subtype = 'td', attr = {}) {
 		if (coords.column === undefined) {
@@ -467,11 +500,12 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
-	 * @param {Record<string, string|boolean>} attr
-	 * @param {string|Token} inner
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string|boolean>} attr
+	 * 插入表格行
+	 * @param {number} y 行号
+	 * @param {Record<string, string|boolean>} attr 表格行属性
+	 * @param {string|Token} inner 内部wikitext
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string|boolean>} innerAttr 单元格属性
 	 * @complexity `n`
 	 */
 	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
@@ -512,11 +546,13 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
-	 * @param {string|Token} inner
-	 * @param {'td'|'th'|'caption'} subtype
-	 * @param {Record<string, string>} attr
+	 * 插入表格列
+	 * @param {number} x 列号
+	 * @param {string|Token} inner 内部wikitext
+	 * @param {'td'|'th'|'caption'} subtype 单元格类型
+	 * @param {Record<string, string>} attr 单元格属性
 	 * @complexity `n²`
+	 * @throws `RangeError` 列号过大
 	 */
 	insertTableCol(x, inner, subtype = 'td', attr = {}) {
 		if (typeof x !== 'number') {
@@ -544,7 +580,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
+	 * 移除表格行
+	 * @param {number} y 行号
 	 * @complexity `n²`
 	 */
 	removeTableRow(y) {
@@ -581,7 +618,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
+	 * 移除表格列
+	 * @param {number} x 列号
 	 * @complexity `n²`
 	 */
 	removeTableCol(x) {
@@ -599,9 +637,11 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {[number, number]} xlim
-	 * @param {[number, number]} ylim
+	 * 合并单元格
+	 * @param {[number, number]} xlim 列范围
+	 * @param {[number, number]} ylim 行范围
 	 * @complexity `n²`
+	 * @throws `RangeError` 待合并区域与外侧区域有重叠
 	 */
 	mergeCells(xlim, ylim) {
 		if ([...xlim, ...ylim].some(arg => typeof arg !== 'number')) {
@@ -632,9 +672,11 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords & TableRenderedCoords} coords
-	 * @param {Set<'rowspan'|'colspan'>} dirs
+	 * 分裂单元格
+	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
+	 * @param {Set<'rowspan'|'colspan'>} dirs 分裂方向
 	 * @complexity `n²`
+	 * @throws `RangeError` 指定的坐标不是单元格起始点
 	 */
 	#split(coords, dirs) {
 		const cell = this.getNthCell(coords),
@@ -680,7 +722,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords & TableRenderedCoords} coords
+	 * 分裂成多行
+	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
 	 * @complexity `n²`
 	 */
 	splitIntoRows(coords) {
@@ -688,7 +731,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords & TableRenderedCoords} coords
+	 * 分裂成多列
+	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
 	 * @complexity `n²`
 	 */
 	splitIntoCols(coords) {
@@ -696,7 +740,8 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {TableCoords & TableRenderedCoords} coords
+	 * 分裂成单元格
+	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
 	 * @complexity `n²`
 	 */
 	splitIntoCells(coords) {
@@ -705,7 +750,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * 复制一行并插入该行之前
-	 * @param {number} row
+	 * @param {number} row 行号
 	 * @complexity `n²`
 	 */
 	replicateTableRow(row) {
@@ -726,7 +771,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * 复制一列并插入该列之前
-	 * @param {number} x
+	 * @param {number} x 列号
 	 * @complexity `n`
 	 */
 	replicateTableCol(x) {
@@ -745,9 +790,11 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
-	 * @param {number} before
+	 * 移动表格行
+	 * @param {number} y 行号
+	 * @param {number} before 新位置
 	 * @complexity `n²`
+	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowBefore(y, before) {
 		if (typeof y !== 'number' || typeof before !== 'number') {
@@ -783,9 +830,11 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} y
-	 * @param {number} after
+	 * 移动表格行
+	 * @param {number} y 行号
+	 * @param {number} after 新位置
 	 * @complexity `n²`
+	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowAfter(y, after) {
 		if (typeof y !== 'number' || typeof after !== 'number') {
@@ -833,9 +882,12 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
-	 * @param {number} reference
+	 * 移动表格列
+	 * @param {number} x 列号
+	 * @param {number} reference 新位置
+	 * @param {boolean} after 在新位置之后或之前
 	 * @complexity `n`
+	 * @throws `RangeError` 无法移动
 	 */
 	#moveCol(x, reference, after = false) {
 		if (typeof x !== 'number' || typeof reference !== 'number') {
@@ -884,8 +936,9 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
-	 * @param {number} before
+	 * 移动表格列
+	 * @param {number} x 列号
+	 * @param {number} before 新位置
 	 * @complexity `n`
 	 */
 	moveTableColBefore(x, before) {
@@ -893,8 +946,9 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * @param {number} x
-	 * @param {number} after
+	 * 移动表格列
+	 * @param {number} x 列号
+	 * @param {number} after 新位置
 	 * @complexity `n`
 	 */
 	moveTableColAfter(x, after) {

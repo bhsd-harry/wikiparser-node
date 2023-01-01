@@ -5,8 +5,7 @@ const /** @type {Parser} */ Parser = require('..');
 /**
  * 解析语言变体转换
  * @param {string} firstChild wikitext
- * @param {ParserConfig} config 设置
- * @param {accum} accum 嵌套的节点数组
+ * @param {accum} accum
  */
 const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => {
 	const ConverterToken = require('../src/converter');

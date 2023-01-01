@@ -18,9 +18,9 @@ class CategoryToken extends LinkToken {
 	pipeTrick = undefined;
 
 	/**
-	 * @param {string} link
-	 * @param {string|undefined} text
-	 * @param {Title} title
+	 * @param {string} link 分类名
+	 * @param {string|undefined} text 排序关键字
+	 * @param {Title} title 分类页面标题对象
 	 * @param {accum} accum
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
@@ -28,6 +28,7 @@ class CategoryToken extends LinkToken {
 		this.seal(['sortkey', 'setFragment', 'asSelfLink', 'pipeTrick']);
 	}
 
+	/** @override */
 	afterBuild() {
 		super.afterBuild();
 		this.#updateSortkey();
@@ -40,6 +41,7 @@ class CategoryToken extends LinkToken {
 		return this;
 	}
 
+	/** 更新排序关键字 */
 	#updateSortkey() {
 		this.setAttribute('sortkey', this.children[1]?.text()
 			?.replaceAll(/&#(\d+);/gu, /** @param {string} p */ (_, p) => String.fromCodePoint(Number(p)))
@@ -59,9 +61,10 @@ class CategoryToken extends LinkToken {
 	}
 
 	/**
+	 * @override
 	 * @template {string|Token} T
-	 * @param {T} token
-	 * @param {number} i
+	 * @param {T} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 */
 	insertAt(token, i) {
 		super.insertAt(token, i);

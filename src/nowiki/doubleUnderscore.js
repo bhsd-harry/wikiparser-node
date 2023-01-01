@@ -12,7 +12,7 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	type = 'double-underscore';
 
 	/**
-	 * @param {string} word
+	 * @param {string} word 状态开关名
 	 * @param {accum} accum
 	 */
 	constructor(word, config = Parser.getConfig(), accum = []) {
@@ -20,22 +20,28 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		this.setAttribute('name', word.toLowerCase());
 	}
 
+	/** @override */
 	cloneNode() {
 		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @this {DoubleUnderscoreToken & {firstChild: string}}
+	 * @this {{firstChild: string}}
 	 */
 	toString() {
 		return `__${this.firstChild}__`;
 	}
 
+	/** @override */
 	getPadding() {
 		return 2;
 	}
 
+	/**
+	 * @override
+	 * @throws `Error` 禁止修改
+	 */
 	setText() {
 		throw new Error(`禁止修改 ${this.constructor.name}！`);
 	}

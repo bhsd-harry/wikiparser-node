@@ -12,7 +12,7 @@ class NowikiToken extends fixedToken(Token) {
 	type = 'ext-inner';
 
 	/**
-	 * @param {string} wikitext
+	 * @param {string} wikitext wikitext
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
@@ -21,10 +21,10 @@ class NowikiToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @this {NowikiToken & {firstChild: string}}
+	 * @this {NowikiToken & {firstChild: string, constructor: typeof NowikiToken}}
 	 */
 	cloneNode() {
-		const /** @type {typeof NowikiToken} */ {constructor: Constructor, firstChild, type} = this,
+		const {constructor: Constructor, firstChild, type} = this,
 			token = Parser.run(() => new Constructor(firstChild, this.getAttribute('config')));
 		token.type = type;
 		return token;

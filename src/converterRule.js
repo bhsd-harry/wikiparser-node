@@ -17,7 +17,8 @@ class ConverterRuleToken extends Token {
 	bidirectional = false;
 
 	/**
-	 * @param {string} rule
+	 * @param {string} rule 转换规则
+	 * @param {boolean} hasColon 是否带有":"
 	 * @param {accum} accum
 	 */
 	constructor(rule, hasColon = true, config = Parser.getConfig(), accum = []) {
@@ -45,6 +46,7 @@ class ConverterRuleToken extends Token {
 		this.seal(['variant', 'unidirectional', 'bidirectional']);
 	}
 
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
 			placeholders = ['', 'zh:', '=>zh:'],
@@ -57,6 +59,7 @@ class ConverterRuleToken extends Token {
 		return token;
 	}
 
+	/** @override */
 	afterBuild() {
 		if (this.childNodes.length > 1) {
 			this.setAttribute('variant', this.children.at(-2).text().trim());
@@ -80,8 +83,10 @@ class ConverterRuleToken extends Token {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
 	 * @returns {AtomToken}
+	 * @throws `RangeError` 禁止移除的子节点
 	 */
 	removeAt(i) {
 		if (i !== 0 && i !== -this.childNodes.length) {
@@ -90,11 +95,18 @@ class ConverterRuleToken extends Token {
 		return super.removeAt(i);
 	}
 
+	/**
+	 * @override
+	 * @throws `Error` 请勿手动插入子节点
+	 */
 	insertAt() {
 		throw new Error(`转换规则语法复杂，请勿尝试对 ${this.constructor.name} 手动插入子节点！`);
 	}
 
-	/** @returns {string} */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	toString() {
 		if (this.childNodes.length === 3) {
 			const {children: [from, variant, to]} = this;
@@ -103,14 +115,20 @@ class ConverterRuleToken extends Token {
 		return super.toString(':');
 	}
 
-	/** @param {number} i */
+	/**
+	 * @override
+	 * @param {number} i 子节点序号
+	 */
 	getGaps(i = 0) {
 		const {childNodes: {length}} = this;
 		i = i < 0 ? i + length : i;
 		return i === 0 && length === 3 ? 2 : 1;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	text() {
 		if (this.childNodes.length === 3) {
 			const {children: [from, variant, to]} = this;
@@ -119,6 +137,7 @@ class ConverterRuleToken extends Token {
 		return super.text(':');
 	}
 
+	/** 修改为不转换 */
 	noConvert() {
 		for (let i = this.childNodes.length - 2; i >= 0; i--) {
 			super.removeAt(i);
@@ -126,7 +145,11 @@ class ConverterRuleToken extends Token {
 		this.setAttribute('unidirectional', false).setAttribute('bidirectional', false).setAttribute('variant', '');
 	}
 
-	/** @param {string} to */
+	/**
+	 * 设置转换目标
+	 * @param {string} to 转换目标
+	 * @throws `SyntaxError` 非法的转换目标
+	 */
 	setTo(to) {
 		to = String(to);
 		const config = this.getAttribute('config'),
@@ -143,7 +166,11 @@ class ConverterRuleToken extends Token {
 		this.lastElementChild.safeReplaceWith(lastChild);
 	}
 
-	/** @param {string} variant */
+	/**
+	 * 设置语言变体
+	 * @param {string} variant 语言变体
+	 * @throws `RangeError` 无效的语言变体
+	 */
 	setVariant(variant) {
 		if (typeof variant !== 'string') {
 			this.typeError('setVariant', 'String');
@@ -162,7 +189,8 @@ class ConverterRuleToken extends Token {
 	}
 
 	/**
-	 * @param {string} from
+	 * 设置转换原文
+	 * @param {string} from 转换原文
 	 * @throws `Error` 尚未指定语言变体
 	 * @throws `SyntaxError` 非法的转换原文
 	 */
@@ -188,11 +216,15 @@ class ConverterRuleToken extends Token {
 		}
 	}
 
-	/** @param {string} from */
+	/**
+	 * 修改为单向转换
+	 * @param {string} from 转换来源
+	 */
 	makeUnidirectional(from) {
 		this.setFrom(from);
 	}
 
+	/** 修改为双向转换 */
 	makeBidirectional() {
 		if (this.unidirectional) {
 			super.removeAt(0);

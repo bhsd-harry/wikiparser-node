@@ -12,7 +12,7 @@ class ArgToken extends Token {
 	type = 'arg';
 
 	/**
-	 * @param {string[]} parts
+	 * @param {string[]} parts 以'|'分隔的各部分
 	 * @param {accum} accum
 	 * @complexity `n`
 	 */
@@ -34,6 +34,7 @@ class ArgToken extends Token {
 		this.protectChildren(0);
 	}
 
+	/** @override */
 	cloneNode() {
 		const [name, ...cloned] = this.cloneChildren();
 		return Parser.run(() => {
@@ -44,6 +45,7 @@ class ArgToken extends Token {
 		});
 	}
 
+	/** @override */
 	afterBuild() {
 		this.setAttribute('name', this.firstElementChild.text().trim());
 		const /** @type {AstListener} */ argListener = ({prevTarget}) => {
@@ -55,24 +57,33 @@ class ArgToken extends Token {
 		return this;
 	}
 
+	/** @override */
 	toString() {
 		return `{{{${super.toString('|')}}}}`;
 	}
 
+	/** @override */
 	getPadding() {
 		return 3;
 	}
 
+	/** @override */
 	getGaps() {
 		return 1;
 	}
 
-	/** @returns {string} */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	text() {
 		return `{{{${text(this.children.slice(0, 2), '|')}}}}`;
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 移除无效部分
+	 * @complexity `n`
+	 */
 	removeRedundant() {
 		Parser.run(() => {
 			for (let i = this.childNodes.length - 1; i > 1; i--) {
@@ -82,8 +93,8 @@ class ArgToken extends Token {
 	}
 
 	/**
-	 * 删除`arg-default`子节点时自动删除全部`arg-redundant`子节点
-	 * @param {number} i
+	 * 移除子节点，且在移除`arg-default`子节点时自动移除全部`arg-redundant`子节点
+	 * @param {number} i 移除位置
 	 * @returns {Token}
 	 */
 	removeAt(i) {
@@ -93,7 +104,12 @@ class ArgToken extends Token {
 		return super.removeAt(i);
 	}
 
-	/** @param {Token} token */
+	/**
+	 * @override
+	 * @param {Token} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @throws `RangeError` 不可插入多余子节点
+	 */
 	insertAt(token, i = this.childNodes.length) {
 		const j = i < 0 ? i + this.childNodes.length : i;
 		if (j > 1 && !Parser.running) {
@@ -106,7 +122,11 @@ class ArgToken extends Token {
 		return token;
 	}
 
-	/** @param {string} name */
+	/**
+	 * 设置参数名
+	 * @param {string} name 新参数名
+	 * @throws `SyntaxError` 非法的参数名
+	 */
 	setName(name) {
 		name = String(name);
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
@@ -120,7 +140,11 @@ class ArgToken extends Token {
 		this.firstElementChild.safeReplaceWith(newName);
 	}
 
-	/** @param {string} value */
+	/**
+	 * 设置预设值
+	 * @param {string} value 预设值
+	 * @throws `SyntaxError` 非法的参数预设值
+	 */
 	setDefault(value) {
 		value = String(value);
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),

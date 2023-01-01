@@ -11,7 +11,7 @@ class QuoteToken extends NowikiToken {
 	type = 'quote';
 
 	/**
-	 * @param {number} n
+	 * @param {number} n 字符串长度
 	 * @param {accum} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
@@ -19,7 +19,11 @@ class QuoteToken extends NowikiToken {
 		this.setAttribute('name', String(n));
 	}
 
-	/** @param {string} str */
+	/**
+	 * @override
+	 * @param {string} str 新文本
+	 * @throws `RangeError` 错误的单引号语法
+	 */
 	setText(str) {
 		if (str !== "''" && str !== "'''" && str !== "'''''") {
 			throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);

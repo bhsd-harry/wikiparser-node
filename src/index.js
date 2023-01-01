@@ -59,9 +59,10 @@ class Token extends AstElement {
 	/** @type {boolean} */ #include;
 
 	/**
-	 * @param {?string} wikitext
+	 * @param {?string} wikitext wikitext
+	 * @param {boolean} halfParsed 是否是半解析状态
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable
+	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
 		super();
@@ -74,7 +75,10 @@ class Token extends AstElement {
 		accum.push(this);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 深拷贝所有子节点
+	 * @complexity `n`
+	 */
 	cloneChildren() {
 		if (!Parser.debugging && externalUse('cloneChildren')) {
 			this.debugOnly('cloneChildren');
@@ -102,8 +106,9 @@ class Token extends AstElement {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
+	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
@@ -135,9 +140,10 @@ class Token extends AstElement {
 	}
 
 	/**
+	 * @override
 	 * @template {string} T
-	 * @param {T} key
-	 * @param {TokenAttribute<T>} value
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
 	 * @throws `RangeError` 禁止手动指定私有属性
 	 */
 	setAttribute(key, value) {
@@ -189,11 +195,15 @@ class Token extends AstElement {
 		}
 	}
 
+	/** 是否是普通节点 */
 	isPlain() {
 		return this.constructor === Token;
 	}
 
-	/** @param {...string|number|Range} args */
+	/**
+	 * 保护部分子节点不被移除
+	 * @param {...string|number|Range} args 子节点范围
+	 */
 	protectChildren(...args) {
 		if (!Parser.debugging && externalUse('protectChildren')) {
 			this.debugOnly('protectChildren');
@@ -202,7 +212,8 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * @param {number} i
+	 * @override
+	 * @param {number} i 移除位置
 	 * @returns {string|Token}
 	 * @complexity `n`
 	 * @throws `Error` 不可移除的子节点
@@ -231,8 +242,10 @@ class Token extends AstElement {
 	}
 
 	/**
+	 * @override
 	 * @template {string|Token} T
-	 * @param {T} token
+	 * @param {T} token 待插入的子节点
+	 * @param {number} i 插入位置
 	 * @complexity `n`
 	 * @throws `RangeError` 不可插入的子节点
 	 */
@@ -259,7 +272,8 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * @param {Token} token
+	 * 替换为同类节点
+	 * @param {Token} token 待替换的节点
 	 * @complexity `n`
 	 * @throws `Error` 不存在父节点
 	 * @throws `Error` 待替换的节点具有不同属性
@@ -289,17 +303,28 @@ class Token extends AstElement {
 		token.dispatchEvent(e, {position: i, oldToken: this, newToken: token});
 	}
 
-	/** @param {string} title */
+	/**
+	 * 判断标题是否是跨维基链接
+	 * @param {string} title 标题
+	 */
 	isInterwiki(title) {
 		return Parser.isInterwiki(title, this.#config);
 	}
 
-	/** @param {string} title */
+	/**
+	 * 规范化页面标题
+	 * @param {string} title 标题（含或不含命名空间前缀）
+	 * @param {number} defaultNs 命名空间
+	 * @param {boolean} halfParsed 是否是半解析状态
+	 */
 	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取全部章节
+	 * @complexity `n`
+	 */
 	sections() {
 		if (this.type !== 'root') {
 			return undefined;
@@ -330,7 +355,8 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * @param {number} n
+	 * 获取指定章节
+	 * @param {number} n 章节序号
 	 * @complexity `n`
 	 */
 	section(n) {
@@ -341,9 +367,11 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * @param {string|undefined} tag
+	 * 获取指定的外层HTML标签
+	 * @param {string|undefined} tag HTML标签名
 	 * @returns {[Token, Token]}
 	 * @complexity `n`
+	 * @throws `RangeError` 非法的标签或空标签
 	 */
 	findEnclosingHtml(tag) {
 		if (tag !== undefined && typeof tag !== 'string') {
@@ -380,11 +408,18 @@ class Token extends AstElement {
 			: [opening, children[i]];
 	}
 
-	/** @complexity `n` */
+	/**
+	 * 获取全部分类
+	 * @complexity `n`
+	 */
 	getCategories() {
 		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
 	}
 
+	/**
+	 * 重新解析单引号
+	 * @throws `Error` 不接受QuoteToken作为子节点
+	 */
 	redoQuotes() {
 		const acceptable = this.getAttribute('acceptable');
 		if (acceptable && !acceptable.QuoteToken?.some(
@@ -420,7 +455,8 @@ class Token extends AstElement {
 
 	/**
 	 * 将维基语法替换为占位符
-	 * @this {Token & {firstChild: string}}
+	 * @param {number} n 解析阶段
+	 * @param {boolean} include 是否嵌入
 	 */
 	parseOnce(n = this.#stage, include = false) {
 		if (!Parser.debugging && externalUse('parseOnce')) {
@@ -477,7 +513,8 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * @param {string} str
+	 * 重建wikitext
+	 * @param {string} str 半解析的字符串
 	 * @complexity `n`
 	 */
 	buildFromStr(str) {
@@ -529,7 +566,11 @@ class Token extends AstElement {
 		return this;
 	}
 
-	/** 解析、重构、生成部分Token的`name`属性 */
+	/**
+	 * 解析、重构、生成部分Token的`name`属性
+	 * @param {number} n 最大解析层级
+	 * @param {boolean} include 是否嵌入
+	 */
 	parse(n = MAX_STAGE, include = false) {
 		if (typeof n !== 'number') {
 			this.typeError('parse', 'Number');
@@ -543,21 +584,28 @@ class Token extends AstElement {
 		return n ? this.build().afterBuild() : this;
 	}
 
+	/**
+	 * 解析HTML注释和扩展标签
+	 * @param {boolean} includeOnly 是否嵌入
+	 */
 	#parseCommentAndExt(includeOnly = false) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(this.firstChild, this.#config, this.#accum, includeOnly));
 	}
 
+	/** 解析花括号 */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
 		this.setText(parseBrackets(this.firstChild, this.#config, this.#accum));
 	}
 
+	/** 解析HTML标签 */
 	#parseHtml() {
 		const parseHtml = require('../parser/html');
 		this.setText(parseHtml(this.firstChild, this.#config, this.#accum));
 	}
 
+	/** 解析表格 */
 	#parseTable() {
 		const parseTable = require('../parser/table'),
 			TableToken = require('./table');
@@ -576,17 +624,22 @@ class Token extends AstElement {
 		}
 	}
 
+	/** 解析\<hr\>和状态开关 */
 	#parseHrAndDoubleUndescore() {
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
 		this.setText(parseHrAndDoubleUnderscore(this.firstChild, this.#config, this.#accum));
 	}
 
+	/** 解析内部链接 */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
 		this.setText(parseLinks(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
+	/**
+	 * 解析单引号
+	 * @this {Token & {firstChild: string}}
+	 */
 	#parseQuotes() {
 		const parseQuotes = require('../parser/quotes');
 		const lines = this.firstChild.split('\n');
@@ -596,17 +649,22 @@ class Token extends AstElement {
 		this.setText(lines.join('\n'));
 	}
 
+	/** 解析外部链接 */
 	#parseExternalLinks() {
 		const parseExternalLinks = require('../parser/externalLinks');
 		this.setText(parseExternalLinks(this.firstChild, this.#config, this.#accum));
 	}
 
+	/** 解析自由外链 */
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(this.firstChild, this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
+	/**
+	 * 解析列表
+	 * @this {Token & {firstChild: string}}
+	 */
 	#parseList() {
 		const parseList = require('../parser/list');
 		const lines = this.firstChild.split('\n');
@@ -616,6 +674,7 @@ class Token extends AstElement {
 		this.setText(lines.join('\n'));
 	}
 
+	/** 解析语言变体转换 */
 	#parseConverter() {
 		const parseConverter = require('../parser/converter');
 		this.setText(parseConverter(this.firstChild, this.#config, this.#accum));
