@@ -19,12 +19,7 @@
 		"sourceType": "script"
 	},
 	"rules": {
-		"array-callback-return": [
-			2,
-			{
-				"checkForEach": true
-			}
-		],
+		"array-callback-return": 2,
 		"no-cond-assign": [
 			2,
 			"always"
@@ -197,7 +192,6 @@
 		"no-new-object": 2,
 		"no-new-wrappers": 2,
 		"no-octal-escape": 2,
-		"no-param-reassign": 0,
 		"no-return-assign": [
 			2,
 			"always"
@@ -570,8 +564,15 @@
 		"unicorn/prefer-number-properties": 0,
 		"unicorn/prefer-object-from-entries": 0,
 		"unicorn/prefer-query-selector": 0,
+		"unicorn/prefer-regexp-test": 0,
 		"unicorn/prefer-set-has": 0,
 		"unicorn/prefer-set-size": 0,
+		"unicorn/prefer-spread": [
+			2,
+			{
+				"concat": "certain"
+			}
+		],
 		"unicorn/prefer-string-replace-all": 2,
 		"unicorn/prefer-string-slice": 0,
 		"unicorn/prefer-string-trim-start-end": 0,
@@ -704,7 +705,7 @@
 		},
 		{
 			"files": "tool/index.js",
-			"rules": {		
+			"rules": {
 				"jsdoc/check-alignment": 0,
 				"jsdoc/check-indentation": 0,
 				"jsdoc/check-tag-names": 0,
