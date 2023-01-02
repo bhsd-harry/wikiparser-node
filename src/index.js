@@ -48,6 +48,10 @@ const {externalUse} = require('../util/debug'),
 	/** @type {Parser} */ Parser = require('..');
 const {MAX_STAGE, aliases} = Parser;
 
+/**
+ * 所有节点的基类
+ * @classdesc `{childNodes: ...(string|Token)}`
+ */
 class Token extends AstElement {
 	type = 'root';
 	#stage = 0; // 解析阶段，参见顶部注释。只对plain Token有意义。

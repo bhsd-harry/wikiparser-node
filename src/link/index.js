@@ -44,8 +44,8 @@ class LinkToken extends Token {
 		const [link, ...linkText] = this.cloneChildren();
 		return Parser.run(() => {
 			/** @type {this & {constructor: typeof LinkToken}} */
-			const {constructor: Constructor, name: title, interwiki, fragment} = this,
-				token = new Constructor('', undefined, {title, interwiki, fragment}, this.getAttribute('config'));
+			const {constructor, name: title, interwiki, fragment} = this,
+				token = new constructor('', undefined, {title, interwiki, fragment}, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(link);
 			token.append(...linkText);
 			return token.afterBuild();

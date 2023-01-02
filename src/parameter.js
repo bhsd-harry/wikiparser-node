@@ -123,11 +123,11 @@ class ParameterToken extends fixedToken(Token) {
 		) {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
-		const {lastChild: newValue} = lastElementChild;
+		const {lastChild} = lastElementChild;
 		root.destroy();
 		firstElementChild.destroy();
 		lastElementChild.destroy();
-		this.lastElementChild.safeReplaceWith(newValue);
+		this.lastElementChild.safeReplaceWith(lastChild);
 	}
 
 	/**

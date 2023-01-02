@@ -153,13 +153,13 @@ class ArgToken extends Token {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
 		const {children: [, oldDefault]} = this,
-			{lastElementChild: newDefault} = firstElementChild;
+			{lastElementChild} = firstElementChild;
 		root.destroy();
 		firstElementChild.destroy();
 		if (oldDefault) {
-			oldDefault.safeReplaceWith(newDefault);
+			oldDefault.safeReplaceWith(lastElementChild);
 		} else {
-			this.appendChild(newDefault);
+			this.appendChild(lastElementChild);
 		}
 	}
 }

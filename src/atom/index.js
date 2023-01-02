@@ -22,10 +22,10 @@ class AtomToken extends Token {
 	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
-			/** @type {{constructor: typeof AtomToken}} */ {constructor: Constructor} = this,
+			/** @type {{constructor: typeof AtomToken}} */ {constructor} = this,
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
-			token = Parser.run(() => new Constructor(undefined, this.type, config, [], acceptable));
+			token = Parser.run(() => new constructor(undefined, this.type, config, [], acceptable));
 		token.append(...cloned);
 		return token;
 	}

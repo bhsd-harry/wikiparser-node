@@ -24,8 +24,8 @@ class NowikiToken extends fixedToken(Token) {
 	 * @this {NowikiToken & {firstChild: string, constructor: typeof NowikiToken}}
 	 */
 	cloneNode() {
-		const {constructor: Constructor, firstChild, type} = this,
-			token = Parser.run(() => new Constructor(firstChild, this.getAttribute('config')));
+		const {constructor, firstChild, type} = this,
+			token = Parser.run(() => new constructor(firstChild, this.getAttribute('config')));
 		token.type = type;
 		return token;
 	}
