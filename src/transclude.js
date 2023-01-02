@@ -240,7 +240,7 @@ class TranscludeToken extends Token {
 		for (let i = j; i < args.length; i++) {
 			const token = args[i],
 				{name} = token,
-				newName = String(i - j + 1);
+				newName = String(i + 1);
 			if (name !== newName) {
 				this.getArgs(newName, false, false).add(token.setAttribute('name', newName));
 				if (name) {

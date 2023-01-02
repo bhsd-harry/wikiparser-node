@@ -12,7 +12,7 @@ const {removeComment} = require('../util/string'),
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 	const source = '^(\0\\d+c\x7F)*={1,6}|\\[\\[|\\{{2,}|-\\{(?!\\{)',
 		/** @type {BracketExecArray[]} */ stack = [],
-		closes = {'=': '\n', '{': '}{2,}|\\|', '-': '}-', '[': ']]'},
+		closes = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
 	let regex = new RegExp(source, 'gmu'),
 		/** @type {BracketExecArray} */ mt = regex.exec(text),

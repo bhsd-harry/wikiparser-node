@@ -23,7 +23,7 @@ const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
  * escape special chars for RegExp constructor
  * @param {string} str RegExp source
  */
-const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+\-^$[\]]/gu, '\\$&');
+const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
 
 /**
  * extract effective wikitext

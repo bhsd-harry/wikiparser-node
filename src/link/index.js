@@ -124,7 +124,7 @@ class LinkToken extends Token {
 	 */
 	setTarget(link) {
 		link = String(link);
-		if (link.type === 'link' && !/^\s*[:#]/u.test(link)) {
+		if (this.type === 'link' && !/^\s*[:#]/u.test(link)) {
 			link = `:${link}`;
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
