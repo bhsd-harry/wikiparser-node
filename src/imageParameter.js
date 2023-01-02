@@ -5,15 +5,7 @@ const {text, noWrap, extUrlChar} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
-/**
- * 图片参数
- * @classdesc `{childNodes: ...(string|Token)}`
- */
-class ImageParameterToken extends Token {
-	type = 'image-parameter';
-	#syntax = '';
-
-	static #noLink = Symbol('no-link');
+const noLink = Symbol('no-link'),
 
 	/**
 	 * 检查图片参数是否合法
@@ -22,7 +14,7 @@ class ImageParameterToken extends Token {
 	 * @param {string} value 参数值
 	 * @returns {T extends 'link' ? string|Symbol : boolean}
 	 */
-	static #validate(key, value, config = Parser.getConfig()) {
+	validate = (key, value, config = Parser.getConfig()) => {
 		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
 		if (key === 'width') {
 			return /^\d*(?:x\d*)?$/u.test(value);
@@ -30,7 +22,7 @@ class ImageParameterToken extends Token {
 			return true;
 		} else if (key === 'link') {
 			if (!value) {
-				return this.#noLink;
+				return noLink;
 			}
 			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
 			if (regex.test(value)) {
@@ -48,19 +40,27 @@ class ImageParameterToken extends Token {
 			return valid && `${title}${fragment && '#'}${fragment}`;
 		}
 		return !isNaN(value);
-	}
+	};
+
+/**
+ * 图片参数
+ * @classdesc `{childNodes: ...(string|Token)}`
+ */
+class ImageParameterToken extends Token {
+	type = 'image-parameter';
+	#syntax = '';
 
 	/** 图片链接 */
 	get link() {
 		if (this.name === 'link') {
-			return ImageParameterToken.#validate('link', this.getValue(), this.getAttribute('config'));
+			return validate('link', this.getValue(), this.getAttribute('config'));
 		}
 		return undefined;
 	}
 
 	set link(value) {
 		if (this.name === 'link') {
-			value = value === ImageParameterToken.#noLink ? '' : value;
+			value = value === noLink ? '' : value;
 			this.setValue(value);
 		}
 	}
@@ -123,7 +123,7 @@ class ImageParameterToken extends Token {
 			param = regexes.find(([,, regex]) => regex.test(str));
 		if (param) {
 			const mt = param[2].exec(str);
-			if (mt.length === 4 && !ImageParameterToken.#validate(param[1], mt[2], config)) {
+			if (mt.length === 4 && !validate(param[1], mt[2], config)) {
 				// pass
 			} else {
 				if (mt.length === 3) {

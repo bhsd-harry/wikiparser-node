@@ -9,6 +9,9 @@ const assert = require('assert/strict'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
 
+const openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u,
+	closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
+
 /**
  * 比较两个表格坐标
  * @param {TableCoords} coords1 坐标1
@@ -118,16 +121,13 @@ class Layout extends Array {
 class TableToken extends TrToken {
 	type = 'table';
 
-	static openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u;
-	static closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
-
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
 	 * @param {accum} accum
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
-		super(syntax, attr, config, accum, TableToken.openingPattern);
+		super(syntax, attr, config, accum, openingPattern);
 		this.setAttribute('acceptable', {
 			Token: 2, SyntaxToken: [0, -1], AttributeToken: 1, TdToken: '2:', TrToken: '2:',
 		});
@@ -143,8 +143,7 @@ class TableToken extends TrToken {
 	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		const previous = this.children.at(i - 1),
-			{closingPattern} = TableToken;
+		const previous = this.children.at(i - 1);
 		if (token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.appendChild(token);
@@ -168,8 +167,7 @@ class TableToken extends TrToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = !halfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
-			{lastElementChild} = this,
-			{closingPattern} = TableToken;
+			{lastElementChild} = this;
 		if (!halfParsed && !closingPattern.test(inner.text())) {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(syntax)}`);
 		} else if (lastElementChild instanceof SyntaxToken) {

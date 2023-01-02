@@ -6,6 +6,23 @@ const attributeParent = require('../../mixin/attributeParent'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
 
+const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u,
+
+	/**
+	 * 转义表格语法
+	 * @param {SyntaxToken} syntax 表格语法节点
+	 */
+	escapeTable = syntax => {
+		const wikitext = syntax.childNodes.map(
+				child => typeof child === 'string'
+					? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
+						.replaceAll('|', '{{!}}')
+					: child.toString(),
+			).join(''),
+			token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
+		syntax.replaceChildren(...token.childNodes);
+	};
+
 /**
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken]}`
@@ -13,15 +30,13 @@ const attributeParent = require('../../mixin/attributeParent'),
 class TrToken extends attributeParent(Token, 1) {
 	type = 'tr';
 
-	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
-
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
 	 * @param {accum} accum
 	 * @param {RegExp} pattern 表格语法正则
 	 */
-	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = TrToken.openingPattern) {
+	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
 		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
@@ -35,9 +50,9 @@ class TrToken extends attributeParent(Token, 1) {
 	/** @override */
 	cloneNode() {
 		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
-			/** @type {{constructor: typeof TrToken}} */ {constructor: Constructor} = this;
+			/** @type {{constructor: typeof TrToken}} */ {constructor} = this;
 		return Parser.run(() => {
-			const token = new Constructor(undefined, undefined, this.getAttribute('config'));
+			const token = new constructor(undefined, undefined, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(syntax);
 			token.children[1].safeReplaceWith(attr);
 			if (token.type === 'td') { // TdToken
@@ -78,27 +93,12 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/**
 	 * 转义表格语法
-	 * @param {SyntaxToken} syntax 表格语法节点
-	 */
-	static escape(syntax) {
-		const wikitext = syntax.childNodes.map(
-				child => typeof child === 'string'
-					? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
-						.replaceAll('|', '{{!}}')
-					: child.toString(),
-			).join(''),
-			token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
-		syntax.replaceChildren(...token.childNodes);
-	}
-
-	/**
-	 * 转义表格语法
 	 * @complexity `n`
 	 */
 	escape() {
 		for (const child of this.children) {
 			if (child instanceof SyntaxToken) {
-				TrToken.escape(child);
+				escapeTable(child);
 			} else if (child instanceof TrToken) {
 				child.escape();
 			}
@@ -114,7 +114,7 @@ class TrToken extends attributeParent(Token, 1) {
 		const {firstElementChild} = this;
 		firstElementChild.replaceChildren(syntax);
 		if (esc) {
-			TrToken.escape(firstElementChild);
+			escapeTable(firstElementChild);
 		}
 	}
 

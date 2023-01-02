@@ -6,6 +6,9 @@ const fixedToken = require('../../mixin/fixedToken'),
 	Token = require('..'),
 	TrToken = require('./tr');
 
+const aliases = {td: '\n|', th: '\n!', caption: '\n|+'},
+	openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u;
+
 /**
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributeToken, Token]}`
@@ -80,9 +83,6 @@ class TdToken extends fixedToken(TrToken) {
 		return result;
 	}
 
-	static openingPattern
-		= /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u;
-
 	getRowCount = undefined;
 	getNthCol = undefined;
 	insertTableCell = undefined;
@@ -99,7 +99,7 @@ class TdToken extends fixedToken(TrToken) {
 			innerSyntax = null;
 			attr = '';
 		}
-		super(syntax, attr, config, accum, TdToken.openingPattern);
+		super(syntax, attr, config, accum, openingPattern);
 		if (innerSyntax) {
 			[this.#innerSyntax] = innerSyntax;
 		}
@@ -182,15 +182,13 @@ class TdToken extends fixedToken(TrToken) {
 		return this;
 	}
 
-	static #aliases = {td: '\n|', th: '\n!', caption: '\n|+'};
-
 	/**
 	 * @override
 	 * @param {string} syntax 表格语法
 	 * @param {boolean} esc 是否需要转义
 	 */
 	setSyntax(syntax, esc = false) {
-		super.setSyntax(TdToken.#aliases[syntax] ?? syntax, esc);
+		super.setSyntax(aliases[syntax] ?? syntax, esc);
 	}
 
 	/**
@@ -201,9 +199,9 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.children[1].toString()) {
 			this.#innerSyntax ||= '|';
 		}
-		const {subtype, escape: esc, correction} = this.getSyntax();
+		const {subtype, escape, correction} = this.getSyntax();
 		if (correction) {
-			this.setSyntax(subtype, esc);
+			this.setSyntax(subtype, escape);
 		}
 	}
 
@@ -213,8 +211,8 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	independence() {
 		if (!this.isIndependent()) {
-			const {subtype, escape: esc} = this.getSyntax();
-			this.setSyntax(subtype, esc);
+			const {subtype, escape} = this.getSyntax();
+			this.setSyntax(subtype, escape);
 		}
 	}
 
