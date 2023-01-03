@@ -90,7 +90,7 @@ const pushSimple = (step, str) => {
 		// eslint-disable-next-line unicorn/explicit-length-check
 		i = pieces.slice(1).findIndex(pseudo => simplePseudos.includes(pseudo)) + 1 || pieces.length;
 	if (pieces.slice(i).some(pseudo => !simplePseudos.includes(pseudo))) {
-		throw new SyntaxError(`非法的选择器！${str}`);
+		throw new SyntaxError(`非法的选择器！\n${str}\n可能需要将':'转义为'\\:'。`);
 	}
 	step.push(desanitize(pieces.slice(0, i).join(':')), ...pieces.slice(i).map(piece => `:${piece}`));
 };
@@ -123,7 +123,7 @@ const parseSelector = selector => {
 		} else if (['>', '+', '~', ''].includes(syntax)) { // 情形2：关系
 			pushSimple(step, sanitized.slice(0, index));
 			if (!step.some(Boolean)) {
-				throw new SyntaxError(`非法的选择器！${selector}`);
+				throw new SyntaxError(`非法的选择器！\n${selector}\n可能需要通用选择器'*'。`);
 			}
 			step.relation = syntax;
 			step = [];
@@ -138,7 +138,7 @@ const parseSelector = selector => {
 		} else if (syntax === '(') { // 情形5：伪选择器开启
 			const pseudoExec = pseudoRegex.exec(sanitized.slice(0, index));
 			if (!pseudoExec) {
-				throw new SyntaxError(`非法的选择器！${desanitize(sanitized)}`);
+				throw new SyntaxError(`非法的选择器！\n${desanitize(sanitized)}\n请检查伪选择器是否存在。`);
 			}
 			pushSimple(step, sanitized.slice(0, pseudoExec.index));
 			step.push(pseudoExec[1]); // 临时存放复杂伪选择器
@@ -157,7 +157,7 @@ const parseSelector = selector => {
 		mt = regex.exec(sanitized);
 	}
 	if (regex !== regularRegex) {
-		throw new SyntaxError(`非法的选择器！${selector}`);
+		throw new SyntaxError(`非法的选择器！\n${selector}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
 	}
 	pushSimple(step, sanitized);
 	return stack;

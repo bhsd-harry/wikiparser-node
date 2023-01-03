@@ -18,7 +18,8 @@
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/test.js",
+    "real": "node test/real.js"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
@@ -26,7 +27,8 @@
     "eslint-plugin-n": "^15.6.0",
     "eslint-plugin-regexp": "^1.11.0",
     "eslint-plugin-unicorn": "^45.0.2",
-    "eslint-plugin-jsdoc": "^39.6.4"
+    "eslint-plugin-jsdoc": "^1.0.0",
+    "request": "^2.88.2"
   },
   "engines": {
     "node": "^18.4.0"

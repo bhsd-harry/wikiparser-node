@@ -439,6 +439,7 @@
 		"n/no-path-concat": 2,
 		"n/no-unpublished-bin": 0,
 		"n/no-unpublished-import": 0,
+		"n/no-unpublished-require": 0,
 		"n/shebang": 0,
 		"n/exports-style": [
 			2,
