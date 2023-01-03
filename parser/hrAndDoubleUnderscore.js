@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..');
 
 /**
  * 解析\<hr\>和状态开关

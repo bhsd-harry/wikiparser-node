@@ -1,7 +1,7 @@
 'use strict';
 
 const {extUrlChar} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..');
+	Parser = require('..');
 
 /**
  * 解析外部链接

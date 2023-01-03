@@ -1,7 +1,7 @@
 'use strict';
 
 const {removeComment} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..');
+	Parser = require('..');
 
 /**
  * 解析花括号
