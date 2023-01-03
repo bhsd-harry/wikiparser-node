@@ -33,6 +33,7 @@ const /** @type {pseudo[]} */ simplePseudos = [
 		[')', '&rpar;'],
 		['"', '&quot;'],
 		["'", '&apos;'],
+		[':', '&colon;'],
 		['\\', '&bsol;'],
 		['&', '&amp;'],
 	],
@@ -85,12 +86,13 @@ const deQuote = val => {
  * @throws `SyntaxError` 非法的选择器
  */
 const pushSimple = (step, str) => {
-	str = desanitize(str);
-	const pieces = str.split(':');
-	if (pieces.slice(1).some(pseudo => !simplePseudos.includes(pseudo))) {
+	const pieces = str.trim().split(':'),
+		// eslint-disable-next-line unicorn/explicit-length-check
+		i = pieces.slice(1).findIndex(pseudo => simplePseudos.includes(pseudo)) + 1 || pieces.length;
+	if (pieces.slice(i).some(pseudo => !simplePseudos.includes(pseudo))) {
 		throw new SyntaxError(`非法的选择器！${str}`);
 	}
-	step.push(pieces[0].trim(), ...pieces.slice(1).map(piece => `:${piece}`));
+	step.push(desanitize(pieces.slice(0, i).join(':')), ...pieces.slice(i).map(piece => `:${piece}`));
 };
 
 /**
@@ -157,7 +159,7 @@ const parseSelector = selector => {
 	if (regex !== regularRegex) {
 		throw new SyntaxError(`非法的选择器！${selector}`);
 	}
-	step.push(sanitized);
+	pushSimple(step, sanitized);
 	return stack;
 };
 

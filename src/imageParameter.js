@@ -239,7 +239,7 @@ class ImageParameterToken extends Token {
 			}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root,
 			param = firstElementChild?.lastElementChild;
-		if (length !== 1 || !firstElementChild?.matches('file#File:F')
+		if (length !== 1 || !firstElementChild?.matches('file#File\\:F')
 			|| firstElementChild.childNodes.length !== 2 || param.name !== this.name
 		) {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
