@@ -70,6 +70,9 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	toString() {
+		if (this.childNodes.length === 1) {
+			return `[${super.toString()}${this.#space}]`;
+		}
 		this.#correct();
 		normalizeSpace(this.lastElementChild);
 		return `[${super.toString(this.#space)}]`;
@@ -77,7 +80,6 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	getPadding() {
-		this.#correct();
 		return 1;
 	}
 
@@ -89,7 +91,7 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	text() {
-		normalizeSpace(this.lastElementChild);
+		normalizeSpace(this.children[1]);
 		return `[${super.text(' ')}]`;
 	}
 
@@ -142,7 +144,7 @@ class ExtLinkToken extends Token {
 
 	/** 链接显示文字 */
 	get innerText() {
-		return this.childElementCount > 1
+		return this.childNodes.length > 1
 			? this.lastElementChild.text()
 			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}

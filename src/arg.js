@@ -113,7 +113,7 @@ class ArgToken extends Token {
 	insertAt(token, i = this.childNodes.length) {
 		const j = i < 0 ? i + this.childNodes.length : i;
 		if (j > 1 && !Parser.running) {
-			throw new RangeError(`${this.constructor.name} 不可插入 arg-redundant 子节点！`);
+			throw new RangeError(`${this.constructor.name} 不可插入多余的子节点！`);
 		}
 		super.insertAt(token, i);
 		if (j === 1) {

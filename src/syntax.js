@@ -47,7 +47,8 @@ class SyntaxToken extends Token {
 			const pattern = this.#pattern;
 			if (!Parser.running && !pattern.test(this.text())) {
 				undo(e, data);
-				throw new Error(`不可修改 ${this.constructor.name} 的语法：/${pattern.source}/${pattern.flags}`);
+				Parser.error(`不可修改 ${this.constructor.name} 的语法！`, pattern);
+				throw new Error(`不可修改 ${this.constructor.name} 的语法！`);
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
