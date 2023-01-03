@@ -47,6 +47,14 @@ class CommentToken extends hidden(NowikiToken) {
 	getPadding() {
 		return 4;
 	}
+
+	/**
+	 * 内部wikitext
+	 * @this {{firstChild: string}}
+	 */
+	get innerText() {
+		return this.firstChild;
+	}
 }
 
 Parser.classes.CommentToken = __filename;

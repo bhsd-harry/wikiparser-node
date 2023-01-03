@@ -40,6 +40,11 @@ class OnlyincludeToken extends Token {
 	isPlain() {
 		return this.constructor === OnlyincludeToken;
 	}
+
+	/** 内部wikitext */
+	get innerText() {
+		return this.text();
+	}
 }
 
 Parser.classes.OnlyincludeToken = __filename;

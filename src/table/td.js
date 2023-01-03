@@ -294,6 +294,11 @@ class TdToken extends fixedToken(TrToken) {
 			this.#innerSyntax = '{{!}}';
 		}
 	}
+
+	/** 内部wikitext */
+	get innerText() {
+		return this.lastElementChild.text();
+	}
 }
 
 Parser.classes.TdToken = __filename;

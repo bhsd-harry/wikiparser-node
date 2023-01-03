@@ -139,6 +139,13 @@ class ExtLinkToken extends Token {
 		}
 		this.#space ||= ' ';
 	}
+
+	/** 链接显示文字 */
+	get innerText() {
+		return this.childElementCount > 1
+			? this.lastElementChild.text()
+			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
+	}
 }
 
 Parser.classes.ExtLinkToken = __filename;

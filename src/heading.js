@@ -86,6 +86,11 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	removeTrail() {
 		this.lastElementChild.replaceChildren();
 	}
+
+	/** 内部wikitext */
+	get innerText() {
+		return this.firstElementChild.text();
+	}
 }
 
 Parser.classes.HeadingToken = __filename;

@@ -268,6 +268,16 @@ class LinkToken extends Token {
 		}
 		this.setLinkText(linkText);
 	}
+
+	/** 链接显示文字 */
+	get innerText() {
+		if (this.type !== 'link') {
+			return undefined;
+		} else if (this.childElementCount > 1) {
+			return this.lastElementChild.text();
+		}
+		return this.firstElementChild.text().replace(/^\s*:/u, '');
+	}
 }
 
 Parser.classes.LinkToken = __filename;
