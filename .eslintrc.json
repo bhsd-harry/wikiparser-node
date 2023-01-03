@@ -455,18 +455,8 @@
 		"regexp/no-empty-character-class": 2,
 		"regexp/no-misleading-unicode-character": 2,
 		"regexp/no-missing-g-flag": 2,
-		"regexp/no-super-linear-backtracking": [
-			2,
-			{
-				"report": "potential"
-			}
-		],
-		"regexp/no-super-linear-move": [
-			2,
-			{
-				"report": "potential"
-			}
-		],
+		"regexp/no-super-linear-backtracking": 2,
+		"regexp/no-super-linear-move": 2,
 		"regexp/no-extra-lookaround-assertions": 2,
 		"regexp/no-octal": 2,
 		"regexp/no-standalone-backslash": 2,
