@@ -184,7 +184,7 @@ class Token extends AstElement {
 									acceptable[type] = new Ranges(v);
 								}
 							}
-						} else if (k.startsWith('!')) { // `!`项必须放在最后
+						} else if (k[0] === '!') { // `!`项必须放在最后
 							delete acceptable[k.slice(1)];
 						} else {
 							acceptable[k] = new Ranges(v);

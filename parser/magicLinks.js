@@ -23,7 +23,7 @@ const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) =>
 			sepChars = sep.exec(url);
 		if (sepChars) {
 			let correction = 0;
-			if (sepChars[0].startsWith(';') && /&(?:[a-z]+|#x[\da-f]+|#\d+)$/iu.test(url.slice(0, sepChars.index))) {
+			if (sepChars[0][0] === ';' && /&(?:[a-z]+|#x[\da-f]+|#\d+)$/iu.test(url.slice(0, sepChars.index))) {
 				correction = 1;
 			}
 			trail = `${url.slice(sepChars.index + correction)}${trail}`;

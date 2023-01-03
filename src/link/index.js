@@ -77,9 +77,7 @@ class LinkToken extends Token {
 				) {
 					undo(e, data);
 					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
-				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14)
-					&& !name.trim().startsWith(':')
-				) {
+				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14) && name.trim()[0] !== ':') {
 					const {firstChild} = prevTarget;
 					if (typeof firstChild === 'string') {
 						prevTarget.setText(`:${firstChild}`);
@@ -150,9 +148,10 @@ class LinkToken extends Token {
 			this.typeError('setLangLink', 'String');
 		}
 		link = String(link).trim();
-		if (link.startsWith('#')) {
+		const [char] = link;
+		if (char === '#') {
 			throw new SyntaxError(`跨语言链接不能仅为fragment！`);
-		} else if (link.startsWith(':')) {
+		} else if (char === ':') {
 			link = link.slice(1);
 		}
 		const root = Parser.parse(`[[${lang}:${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),

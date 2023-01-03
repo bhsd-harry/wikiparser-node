@@ -49,7 +49,7 @@ class TdToken extends fixedToken(TrToken) {
 
 	/** 是否位于行首 */
 	isIndependent() {
-		return this.firstElementChild.text().startsWith('\n');
+		return this.firstElementChild.text()[0] === '\n';
 	}
 
 	/**
@@ -59,11 +59,12 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	getSyntax() {
 		const syntax = this.firstElementChild.text(),
-			esc = syntax.includes('{{');
+			esc = syntax.includes('{{'),
+			char = syntax.at(-1);
 		let subtype = 'td';
-		if (syntax.endsWith('!')) {
+		if (char === '!') {
 			subtype = 'th';
-		} else if (syntax.endsWith('+')) {
+		} else if (char === '+') {
 			subtype = 'caption';
 		}
 		if (this.isIndependent()) {

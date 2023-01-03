@@ -72,7 +72,7 @@ class TrToken extends attributeParent(Token, 1) {
 			const {firstChild} = child;
 			if (typeof firstChild !== 'string') {
 				child.prepend('\n');
-			} else if (!firstChild.startsWith('\n')) {
+			} else if (firstChild[0] !== '\n') {
 				child.setText(`\n${firstChild}`);
 			}
 		}
@@ -163,7 +163,7 @@ class TrToken extends attributeParent(Token, 1) {
 	getRowCount() {
 		const TdToken = require('./td');
 		return Number(this.children.some(
-			child => child instanceof TdToken && child.isIndependent() && !child.firstElementChild.text().endsWith('+'),
+			child => child instanceof TdToken && child.isIndependent() && child.firstElementChild.text().at(-1) !== '+',
 		));
 	}
 

@@ -21,7 +21,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			m = regex.exec(x);
 		if (m) {
 			[, link, text, after] = m;
-			if (after.startsWith(']') && text?.includes('[')) {
+			if (after[0] === ']' && text?.includes('[')) {
 				text += ']';
 				after = after.slice(1);
 			}
@@ -42,7 +42,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 				page = decodeURIComponent(link);
 			} catch {}
 		}
-		const force = link.trim().startsWith(':');
+		const force = link.trim()[0] === ':';
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;

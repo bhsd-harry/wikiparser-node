@@ -16,7 +16,7 @@ const sol = ct => class extends ct {
 	 */
 	prependNewLine() {
 		const {previousVisibleSibling = '', parentNode} = this;
-		return (previousVisibleSibling || parentNode?.type !== 'root') && !String(previousVisibleSibling).endsWith('\n')
+		return (previousVisibleSibling || parentNode?.type !== 'root') && String(previousVisibleSibling).at(-1) !== '\n'
 			? '\n'
 			: '';
 	}
@@ -27,7 +27,7 @@ const sol = ct => class extends ct {
 	 */
 	appendNewLine() {
 		const {nextVisibleSibling = '', parentNode} = this;
-		return (nextVisibleSibling || parentNode?.type !== 'root') && !String(nextVisibleSibling ?? '').startsWith('\n')
+		return (nextVisibleSibling || parentNode?.type !== 'root') && String(nextVisibleSibling ?? '')[0] !== '\n'
 			? '\n'
 			: '';
 	}
