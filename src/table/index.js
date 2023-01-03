@@ -61,7 +61,7 @@ const format = (cells, attr = {}, multi = false) => {
 };
 
 /**
- * 表格填充
+ * 填补缺失单元格
  * @param {number} y 行号
  * @param {TrToken} rowToken 表格行
  * @param {TableCoords[][]} layout 表格布局
@@ -71,9 +71,9 @@ const format = (cells, attr = {}, multi = false) => {
  */
 const fill = (y, rowToken, layout, maxCol, token) => {
 	const rowLayout = layout[y],
-		{childNodes} = rowToken;
-	let lastIndex = childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption');
-	lastIndex = lastIndex === -1 ? undefined : lastIndex - childNodes.length;
+		{childNodes} = rowToken,
+		lastIndex = childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption') + 1
+			|| undefined;
 	Parser.run(() => {
 		for (let i = 0; i < maxCol; i++) {
 			if (!rowLayout[i]) {
@@ -105,7 +105,7 @@ class Layout extends Array {
 				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
 			for (let j = 0; j <= hBorder.length; j++) {
 				// eslint-disable-next-line no-bitwise
-				const bit = (vBorderTop[j] << 3) + Number(vBorderBottom[j]) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
+				const bit = (vBorderTop[j] << 3) + (vBorderBottom[j] << 0) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
 				out += `${border[bit]}${hBorder[j] ? '─' : ' '}`;
 			}
 			out += '\n';
@@ -120,6 +120,11 @@ class Layout extends Array {
  */
 class TableToken extends TrToken {
 	type = 'table';
+
+	/** 表格是否闭合 */
+	get closed() {
+		return this.lastElementChild.type === 'table-syntax';
+	}
 
 	/**
 	 * @param {string} syntax 表格语法
@@ -418,7 +423,7 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * 填充表格行
+	 * 填补表格行
 	 * @param {number} y 行号
 	 * @param {string|Token} inner 填充内容
 	 * @param {'td'|'th'|'caption'} subtype 单元格类型
@@ -434,7 +439,7 @@ class TableToken extends TrToken {
 	}
 
 	/**
-	 * 填充表格
+	 * 填补表格
 	 * @param {string|Token} inner 填充内容
 	 * @param {'td'|'th'|'caption'} subtype 单元格类型
 	 * @param {Record<string, string>} attr 表格属性
