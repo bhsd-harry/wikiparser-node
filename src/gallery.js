@@ -1,13 +1,13 @@
 'use strict';
 
-const {text} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+const /** @type {Parser} */ Parser = require('..'),
 	Token = require('.'),
-	GalleryImageToken = require('./link/galleryImage');
+	GalleryImageToken = require('./link/galleryImage'),
+	HiddenToken = require('./atom/hidden');
 
 /**
  * gallery标签
- * @classdesc `{childNodes: (string|FileToken)[]]}`
+ * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken)}`
  */
 class GalleryToken extends Token {
 	type = 'ext-inner';
@@ -35,7 +35,7 @@ class GalleryToken extends Token {
 			if (title.valid) {
 				this.appendChild(new GalleryImageToken(file, alt, title, config, accum));
 			} else {
-				this.appendChild(line);
+				this.appendChild(new HiddenToken(line, undefined, config, [], {String: ':'}));
 			}
 		}
 	}
@@ -60,7 +60,7 @@ class GalleryToken extends Token {
 
 	/** @override */
 	text() {
-		return text(this.children, '\n');
+		return super.text('\n').replaceAll(/\n{2,}/gu, '\n');
 	}
 
 	/**

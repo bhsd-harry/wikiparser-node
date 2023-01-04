@@ -8,15 +8,19 @@ const Parser = require('../..'),
  * @classdesc `{childNodes: (string|Token)[]}`
  */
 class AtomToken extends Token {
+	type = 'plain';
+
 	/**
 	 * @param {?string} wikitext wikitext
-	 * @param {string} type Token.type
+	 * @param {string|undefined} type Token.type
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
-	constructor(wikitext, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
+	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = null) {
 		super(wikitext, config, true, accum, acceptable);
-		this.type = type;
+		if (type) {
+			this.type = type;
+		}
 	}
 
 	/** @override */

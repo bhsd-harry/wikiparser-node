@@ -14,12 +14,6 @@ const toCase = (val, i) => i ? val.toLowerCase() : val;
 const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
 
 /**
- * initial in upper case
- * @param {string} str 原字符串
- */
-const ucfirst = str => str && `${str[0].toUpperCase()}${str.slice(1)}`;
-
-/**
  * escape special chars for RegExp constructor
  * @param {string} str RegExp source
  */
@@ -92,4 +86,4 @@ const normalizeSpace = token => {
 const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd])'
 	+ '(?:[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd]|\\0\\d+c\\x7f)*';
 
-module.exports = {toCase, removeComment, ucfirst, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};
+module.exports = {toCase, removeComment, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};

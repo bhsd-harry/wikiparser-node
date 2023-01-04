@@ -26,7 +26,6 @@ class GalleryImageToken extends FileToken {
 		if (text !== undefined) {
 			token = new Token(text, config, true, accum);
 			token.type = 'temp';
-			token.setAttribute('stage', 1);
 			for (let n = 1; n < Parser.MAX_STAGE; n++) {
 				token.parseOnce();
 			}
@@ -41,6 +40,16 @@ class GalleryImageToken extends FileToken {
 	/** @override */
 	getPadding() {
 		return 0;
+	}
+
+	/** @override */
+	toString() {
+		return super.toString().replaceAll('\n', ' ');
+	}
+
+	/** @override */
+	text() {
+		return super.text().replaceAll('\n', ' ');
 	}
 }
 

@@ -33,6 +33,7 @@ const {argv: [,, site = '']} = process,
 		'noinclude',
 		'include',
 		'double-underscore',
+		'hidden',
 		'heading-trail',
 		'magic-word-name',
 		'table-syntax',
@@ -44,10 +45,14 @@ const {argv: [,, site = '']} = process,
 		'parameter-value',
 		'html-attr',
 		'ext-attr',
+		'table-attr',
 		'ext-inner',
+		'td-inner',
 		'image-parameter',
 		'arg-default',
 		'link-text',
+		'ext-link-text',
+		'heading-title',
 	]),
 	possibleSyntax = /[[\]{}<>]/gu;
 
@@ -83,7 +88,7 @@ const getPages = async url => {
 					await diff(content, root.toString());
 					for (const token of root.querySelectorAll(`:not(${complexOrHiddenTypes.join()})`)) {
 						const {childNodes, type, hidden} = token;
-						if (hidden) {
+						if (hidden && !simpleTypes.has(type)) {
 							moreTypes.add(type);
 							continue;
 						}
@@ -110,5 +115,7 @@ const getPages = async url => {
 			Parser.error(`访问${name}的API端口时出错！`, e);
 		}
 	}
-	Parser.debug('其他可能不含纯文本子节点的类：', moreTypes);
+	if (moreTypes.size > 0) {
+		Parser.debug('其他可能不含纯文本子节点的类：', moreTypes);
+	}
 })();

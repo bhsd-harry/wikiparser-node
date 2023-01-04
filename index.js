@@ -37,7 +37,6 @@ const /** @type {Parser} */ Parser = {
 		arg: ['argument'],
 		'arg-name': ['argument-name'],
 		'arg-default': ['argument-default'],
-		'arg-redundant': ['argument-redundant'],
 		template: ['tpl'],
 		'template-name': ['tpl-name'],
 		'magic-word': ['parser-function', 'parser-func'],

@@ -28,20 +28,24 @@ class ExtToken extends attributeParent(TagPairToken) {
 		let /** @type {acceptable} */ acceptable, /** @type {Token} */ innerToken;
 		switch (lcName) {
 			case 'choose':
-				ext.add('option');
-				// fall through
-			case 'ref':
 			case 'option':
+			case 'ref':
 			case 'poem':
 			case 'indicator':
 			case 'tab':
 			case 'tabs':
-			case 'pre': {
+			case 'pre':
+			case 'combobox':
+			case 'combooption': {
 				ext.delete(lcName);
-				newConfig.ext = [...ext];
+				newConfig.ext = [
+					...ext,
+					...lcName === 'choose' ? ['option'] : [],
+					...lcName === 'combobox' ? ['combooption'] : [],
+				];
 				const Token = require('..');
 				acceptable = {AttributeToken: 0, Token: 1};
-				innerToken = new Token(inner, newConfig, false, accum);
+				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			}
 			case 'gallery': {

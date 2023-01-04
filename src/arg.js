@@ -21,7 +21,7 @@ class ArgToken extends Token {
 		for (let i = 0; i < parts.length; i++) {
 			if (i === 0 || i > 1) {
 				const AtomToken = i === 0 ? require('./atom') : require('./atom/hidden'),
-					token = new AtomToken(parts[i], `arg-${i === 0 ? 'name' : 'redundant'}`, config, accum, {
+					token = new AtomToken(parts[i], i === 0 ? 'arg-name' : undefined, config, accum, {
 						'Stage-2': ':', '!HeadingToken': '',
 					});
 				this.appendChild(token);
@@ -93,7 +93,7 @@ class ArgToken extends Token {
 	}
 
 	/**
-	 * 移除子节点，且在移除`arg-default`子节点时自动移除全部`arg-redundant`子节点
+	 * 移除子节点，且在移除`arg-default`子节点时自动移除全部多余子节点
 	 * @param {number} i 移除位置
 	 * @returns {Token}
 	 */

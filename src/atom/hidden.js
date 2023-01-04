@@ -5,7 +5,9 @@ const hidden = require('../../mixin/hidden'),
 	AtomToken = require('.');
 
 /** 不可见的节点 */
-class HiddenToken extends hidden(AtomToken) {}
+class HiddenToken extends hidden(AtomToken) {
+	type = 'hidden';
+}
 
 Parser.classes.HiddenToken = __filename;
 module.exports = HiddenToken;
