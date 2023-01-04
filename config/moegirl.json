@@ -708,7 +708,13 @@
 		"bottom": "bottom",
 		"底部": "bottom",
 		"text-bottom": "text-bottom",
-		"文字底部": "text-bottom"
+		"文字底部": "text-bottom",
+		"lang=$1": "lang",
+		"语言=$1": "lang",
+		"page=$1": "page",
+		"page $1": "page",
+		"页数=$1": "page",
+		"$1页": "page"
 	},
 	"variants": [
 		"zh",
