@@ -6,10 +6,10 @@ const Parser = require('..'),
 /**
  * 只能位于行首的类
  * @template T
- * @param {T} ct 基类
+ * @param {T} Constructor 基类
  * @returns {T}
  */
-const sol = ct => class extends ct {
+const sol = Constructor => class extends Constructor {
 	/**
 	 * 在前方插入newline
 	 * @this {Token}

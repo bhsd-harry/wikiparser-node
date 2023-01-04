@@ -50,6 +50,11 @@ class ImageParameterToken extends Token {
 	type = 'image-parameter';
 	#syntax = '';
 
+	/** getValue()的getter */
+	get value() {
+		return this.getValue();
+	}
+
 	/** 图片链接 */
 	get link() {
 		return this.name === 'link' ? validate('link', this.getValue(), this.getAttribute('config')) : undefined;

@@ -6,11 +6,36 @@ const Parser = require('..'),
 /**
  * 子节点含有AttributeToken的类
  * @template T
- * @param {T} ct 基类
+ * @param {T} Constructor 基类
  * @param {number} i AttributeToken子节点的位置
  * @returns {T}
  */
-const attributeParent = (ct, i = 0) => class extends ct {
+const attributeParent = (Constructor, i = 0) => class extends Constructor {
+	/**
+	 * getAttr()方法的getter写法
+	 * @returns {Record<string, string|true>}
+	 */
+	get attributes() {
+		return this.getAttr();
+	}
+
+	/** 以字符串表示的class属性 */
+	get className() {
+		const attr = this.getAttr('class');
+		return typeof attr === 'string' ? attr : '';
+	}
+
+	/** 以Set表示的class属性 */
+	get classList() {
+		return new Set(this.className.split(/\s/u));
+	}
+
+	/** id属性 */
+	get id() {
+		const attr = this.getAttr('id');
+		return typeof attr === 'string' ? attr : '';
+	}
+
 	/**
 	 * AttributeToken子节点是否具有某属性
 	 * @this {{children: AttributeToken[]}}

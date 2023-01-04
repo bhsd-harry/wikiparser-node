@@ -25,6 +25,7 @@ const /** @type {pseudo[]} */ simplePseudos = [
 		'nth-last-of-type',
 		'contains',
 		'has',
+		'lang',
 	],
 	specialChars = [
 		['[', '&lbrack;'],

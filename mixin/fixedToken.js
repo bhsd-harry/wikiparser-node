@@ -5,10 +5,10 @@ const Parser = require('..');
 /**
  * 不可增删子节点的类
  * @template T
- * @param {T} ct 基类
+ * @param {T} Constructor 基类
  * @returns {T}
  */
-const fixedToken = ct => class extends ct {
+const fixedToken = Constructor => class extends Constructor {
 	static fixed = true;
 
 	/**

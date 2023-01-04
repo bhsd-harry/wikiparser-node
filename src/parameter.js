@@ -13,6 +13,11 @@ class ParameterToken extends fixedToken(Token) {
 	type = 'parameter';
 	anon;
 
+	/** getValue()的getter */
+	get value() {
+		return this.getValue();
+	}
+
 	/**
 	 * @param {string|number} key 参数名
 	 * @param {string} value 参数值

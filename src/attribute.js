@@ -16,6 +16,31 @@ class AttributeToken extends Token {
 	#sanitized = true;
 
 	/**
+	 * getAttr()方法的getter写法
+	 * @returns {Record<string, string|true>}
+	 */
+	get attributes() {
+		return this.getAttr();
+	}
+
+	/** 以字符串表示的class属性 */
+	get className() {
+		const attr = this.getAttr('class');
+		return typeof attr === 'string' ? attr : '';
+	}
+
+	/** 以Set表示的class属性 */
+	get classList() {
+		return new Set(this.className.split(/\s/u));
+	}
+
+	/** id属性 */
+	get id() {
+		const attr = this.getAttr('id');
+		return typeof attr === 'string' ? attr : '';
+	}
+
+	/**
 	 * 从`this.#attr`更新`childNodes`
 	 * @complexity `n`
 	 */

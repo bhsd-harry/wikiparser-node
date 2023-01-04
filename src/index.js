@@ -130,11 +130,15 @@ class Token extends AstElement {
 				if (this.#include !== undefined) {
 					return this.#include;
 				}
-				const includeToken = this.querySelector('include');
+				const root = this.getRootNode();
+				if (root.type === 'root' && root !== this) {
+					return root.getAttribute('include');
+				}
+				const includeToken = root.querySelector('include');
 				if (includeToken) {
 					return includeToken.name === 'noinclude';
 				}
-				const noincludeToken = this.querySelector('noinclude');
+				const noincludeToken = root.querySelector('noinclude');
 				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken));
 			}
 			default:
@@ -451,6 +455,21 @@ class Token extends AstElement {
 			}
 		}
 		this.normalize();
+	}
+
+	/** 所有图片，包括图库 */
+	get images() {
+		return this.type === 'root' ? this.querySelectorAll('file, gallery-image') : undefined;
+	}
+
+	/** 所有内链、外链和自由外链 */
+	get links() {
+		return this.type === 'root' ? this.querySelectorAll('link, ext-link, free-ext-link') : undefined;
+	}
+
+	/** 所有模板和模块 */
+	get embeds() {
+		return this.type === 'root' ? this.querySelectorAll('template, magic-word#invoke') : undefined;
 	}
 
 	/**
