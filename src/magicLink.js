@@ -26,6 +26,11 @@ class MagicLinkToken extends Token {
 		this.replaceChildren(this.text().replace(this.#protocolRegex, value));
 	}
 
+	/** 和内链保持一致 */
+	get link() {
+		return this.text();
+	}
+
 	/**
 	 * @param {string} url 网址
 	 * @param {boolean} doubleSlash 是否接受"//"作为协议

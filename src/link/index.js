@@ -16,6 +16,21 @@ class LinkToken extends Token {
 	fragment;
 	interwiki;
 
+	/** 完整链接，和FileToken保持一致 */
+	get link() {
+		return `${this.name}${this.fragment && '#'}${this.fragment}`;
+	}
+
+	/** 链接显示文字 */
+	get innerText() {
+		if (this.type !== 'link') {
+			return undefined;
+		}
+		return this.childNodes.length > 1
+			? this.lastElementChild.text()
+			: this.firstElementChild.text().replace(/^\s*:/u, '');
+	}
+
 	/**
 	 * @param {string} link 链接标题
 	 * @param {string|undefined} linkText 链接显示文字
@@ -269,16 +284,6 @@ class LinkToken extends Token {
 			return;
 		}
 		this.setLinkText(linkText);
-	}
-
-	/** 链接显示文字 */
-	get innerText() {
-		if (this.type !== 'link') {
-			return undefined;
-		}
-		return this.childNodes.length > 1
-			? this.lastElementChild.text()
-			: this.firstElementChild.text().replace(/^\s*:/u, '');
 	}
 }
 

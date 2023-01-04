@@ -15,6 +15,13 @@ const /** @type {pseudo[]} */ simplePseudos = [
 		'header',
 		'hidden',
 		'visible',
+		'only-whitespace',
+		'local-link',
+		'read-only',
+		'read-write',
+		'invalid',
+		'required',
+		'optional',
 	],
 	/** @type {pseudo[]} */ complexPseudos = [
 		'is',

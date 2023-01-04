@@ -13,6 +13,14 @@ class CommentToken extends hidden(NowikiToken) {
 	closed;
 
 	/**
+	 * 内部wikitext
+	 * @this {{firstChild: string}}
+	 */
+	get innerText() {
+		return this.firstChild;
+	}
+
+	/**
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} closed 是否闭合
 	 * @param {accum} accum
@@ -49,14 +57,6 @@ class CommentToken extends hidden(NowikiToken) {
 	/** @override */
 	getPadding() {
 		return 4;
-	}
-
-	/**
-	 * 内部wikitext
-	 * @this {{firstChild: string}}
-	 */
-	get innerText() {
-		return this.firstChild;
 	}
 }
 

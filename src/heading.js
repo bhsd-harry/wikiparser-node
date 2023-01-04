@@ -12,6 +12,11 @@ const fixedToken = require('../mixin/fixedToken'),
 class HeadingToken extends fixedToken(sol(Token)) {
 	type = 'heading';
 
+	/** 内部wikitext */
+	get innerText() {
+		return this.firstElementChild.text();
+	}
+
 	/**
 	 * @param {number} level 标题层级
 	 * @param {string[]} input 标题文字
@@ -88,11 +93,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	/** 移除标题后的不可见内容 */
 	removeTrail() {
 		this.lastElementChild.replaceChildren();
-	}
-
-	/** 内部wikitext */
-	get innerText() {
-		return this.firstElementChild.text();
 	}
 }
 

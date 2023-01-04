@@ -14,6 +14,14 @@ class ConverterToken extends Token {
 	type = 'converter';
 
 	/**
+	 * 是否无转换
+	 * @this {ConverterToken & {children: [ConverterFlagsToken, ConverterRuleToken]}}
+	 */
+	get noConvert() {
+		return this.childNodes.length < 3 && !this.children[1]?.variant;
+	}
+
+	/**
 	 * @param {string[]} flags 转换类型标记
 	 * @param {string[]} rules 转换规则
 	 * @param {accum} accum
@@ -144,14 +152,6 @@ class ConverterToken extends Token {
 	 */
 	toggleFlag(flag) {
 		this.firstChild.toggleFlag(flag);
-	}
-
-	/**
-	 * 是否无转换
-	 * @this {ConverterToken & {children: [ConverterFlagsToken, ConverterRuleToken]}}
-	 */
-	get noConvert() {
-		return this.childNodes.length < 3 && !this.children[1]?.variant;
 	}
 }
 

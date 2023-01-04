@@ -13,6 +13,15 @@ class TagPairToken extends fixedToken(Token) {
 	closed;
 	#tags;
 
+	/** 内部wikitext */
+	get innerText() {
+		const {selfClosing, lastChild} = this;
+		if (selfClosing) {
+			return undefined;
+		}
+		return typeof lastChild === 'string' ? lastChild : lastChild.text();
+	}
+
 	/**
 	 * @param {string} name 标签名
 	 * @param {string|Token} attr 标签属性
@@ -85,15 +94,6 @@ class TagPairToken extends fixedToken(Token) {
 		return selfClosing
 			? `<${opening}${typeof firstChild === 'string' ? firstChild : firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${closed ? `</${closing}>` : ''}`;
-	}
-
-	/** 内部wikitext */
-	get innerText() {
-		const {selfClosing, lastChild} = this;
-		if (selfClosing) {
-			return undefined;
-		}
-		return typeof lastChild === 'string' ? lastChild : lastChild.text();
 	}
 }
 

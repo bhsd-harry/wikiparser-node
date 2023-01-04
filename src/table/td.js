@@ -47,6 +47,11 @@ class TdToken extends fixedToken(TrToken) {
 		this.setAttr('colspan', colspan);
 	}
 
+	/** 内部wikitext */
+	get innerText() {
+		return this.lastElementChild.text();
+	}
+
 	/** 是否位于行首 */
 	isIndependent() {
 		return this.firstElementChild.text()[0] === '\n';
@@ -296,11 +301,6 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.#innerSyntax === '|') {
 			this.#innerSyntax = '{{!}}';
 		}
-	}
-
-	/** 内部wikitext */
-	get innerText() {
-		return this.lastElementChild.text();
 	}
 }
 

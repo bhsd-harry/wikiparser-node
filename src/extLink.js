@@ -30,6 +30,21 @@ class ExtLinkToken extends Token {
 	}
 
 	/**
+	 * 和内链保持一致
+	 * @this {{firstChild: MagicLinkToken}}
+	 */
+	get link() {
+		return this.firstChild.link;
+	}
+
+	/** 链接显示文字 */
+	get innerText() {
+		return this.childNodes.length > 1
+			? this.lastElementChild.text()
+			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
+	}
+
+	/**
 	 * @param {string} url 网址
 	 * @param {string} space 空白字符
 	 * @param {string} text 链接文字
@@ -102,10 +117,10 @@ class ExtLinkToken extends Token {
 
 	/**
 	 * 获取网址
-	 * @this {{firstElementChild: MagicLinkToken}}
+	 * @this {{firstChild: MagicLinkToken}}
 	 */
 	getUrl() {
-		return this.firstElementChild.getUrl();
+		return this.firstChild.getUrl();
 	}
 
 	/**
@@ -145,13 +160,6 @@ class ExtLinkToken extends Token {
 			this.lastElementChild.safeReplaceWith(lastChild);
 		}
 		this.#space ||= ' ';
-	}
-
-	/** 链接显示文字 */
-	get innerText() {
-		return this.childNodes.length > 1
-			? this.lastElementChild.text()
-			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}
 }
 

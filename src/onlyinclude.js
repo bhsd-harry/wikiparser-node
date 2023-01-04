@@ -10,6 +10,11 @@ const Parser = require('..'),
 class OnlyincludeToken extends Token {
 	type = 'onlyinclude';
 
+	/** 内部wikitext */
+	get innerText() {
+		return this.text();
+	}
+
 	/**
 	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
@@ -42,11 +47,6 @@ class OnlyincludeToken extends Token {
 	/** @override */
 	isPlain() {
 		return this.constructor === OnlyincludeToken;
-	}
-
-	/** 内部wikitext */
-	get innerText() {
-		return this.text();
 	}
 }
 

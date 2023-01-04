@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = require('..'),
 
 /**
  * gallery标签
- * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken)}`
+ * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|string)}`
  */
 class GalleryToken extends Token {
 	type = 'ext-inner';
@@ -22,7 +22,7 @@ class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.appendChild(line);
+				this.appendChild(line.trim() ? new HiddenToken(line, undefined, config, [], {String: ':'}) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -63,7 +63,7 @@ class GalleryToken extends Token {
 
 	/** @override */
 	text() {
-		return super.text('\n').replaceAll(/\n{2,}/gu, '\n');
+		return super.text('\n').replaceAll(/\n\s*\n/gu, '\n');
 	}
 
 	/**
