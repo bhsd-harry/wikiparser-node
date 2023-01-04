@@ -515,8 +515,7 @@ class TranscludeToken extends Token {
 			this.children[1].replaceChildren(...firstElementChild.lastElementChild.childNodes);
 		} else {
 			const {lastChild} = firstElementChild;
-			root.destroy();
-			firstElementChild.destroy();
+			firstElementChild.destroy(true);
 			this.appendChild(lastChild);
 		}
 	}
@@ -548,8 +547,7 @@ class TranscludeToken extends Token {
 			this.children[2].replaceChildren(...firstElementChild.lastElementChild.childNodes);
 		} else {
 			const {lastChild} = firstElementChild;
-			root.destroy();
-			firstElementChild.destroy();
+			firstElementChild.destroy(true);
 			this.appendChild(lastChild);
 		}
 	}

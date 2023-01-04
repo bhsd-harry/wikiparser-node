@@ -138,8 +138,7 @@ class ArgToken extends Token {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
 		const {firstElementChild: newName} = firstElementChild;
-		root.destroy();
-		firstElementChild.destroy();
+		firstElementChild.destroy(true);
 		this.firstElementChild.safeReplaceWith(newName);
 	}
 
@@ -157,8 +156,7 @@ class ArgToken extends Token {
 		}
 		const {children: [, oldDefault]} = this,
 			{lastElementChild} = firstElementChild;
-		root.destroy();
-		firstElementChild.destroy();
+		firstElementChild.destroy(true);
 		if (oldDefault) {
 			oldDefault.safeReplaceWith(lastElementChild);
 		} else {

@@ -150,8 +150,7 @@ class LinkToken extends Token {
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
 		const {firstChild} = firstElementChild;
-		root.destroy();
-		firstElementChild.destroy();
+		firstElementChild.destroy(true);
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 
@@ -180,8 +179,7 @@ class LinkToken extends Token {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
 		}
 		const {firstChild} = firstElementChild;
-		root.destroy();
-		firstElementChild.destroy();
+		firstElementChild.destroy(true);
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 
@@ -204,8 +202,7 @@ class LinkToken extends Token {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}
 		const {firstChild} = firstElementChild;
-		root.destroy();
-		firstElementChild.destroy();
+		firstElementChild.destroy(true);
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 

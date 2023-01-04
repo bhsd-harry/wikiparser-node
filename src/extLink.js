@@ -136,8 +136,7 @@ class ExtLinkToken extends Token {
 			throw new SyntaxError(`非法的外链目标：${url}`);
 		}
 		const {firstChild} = firstElementChild;
-		root.destroy();
-		firstElementChild.destroy();
+		firstElementChild.destroy(true);
 		this.firstElementChild.safeReplaceWith(firstChild);
 	}
 

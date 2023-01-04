@@ -43,7 +43,7 @@ class ConverterRuleToken extends Token {
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 		}
-		this.seal(['variant', 'unidirectional', 'bidirectional']);
+		this.seal(['variant', 'unidirectional', 'bidirectional']).protectChildren('1:');
 	}
 
 	/** @override */
@@ -86,13 +86,20 @@ class ConverterRuleToken extends Token {
 	 * @override
 	 * @param {number} i 移除位置
 	 * @returns {AtomToken}
-	 * @throws `RangeError` 禁止移除的子节点
+	 * @throws `Error` 至少保留1个子节点
 	 */
 	removeAt(i) {
-		if (i === 0 || i === -this.childNodes.length) {
-			return super.removeAt(i);
+		if (this.childNodes.length === 1) {
+			throw new Error(`${this.constructor.name} 需至少保留 1 个子节点！`);
 		}
-		throw new RangeError(`${this.constructor.name} 禁止移除第 ${i} 个子节点！`);
+		const removed = super.removeAt(i);
+		if (this.childNodes.length === 1) {
+			this.setAttribute('bidirectional', false).setAttribute('variant', '')
+				.firstChild.type = 'converter-rule-noconvert';
+		} else {
+			this.setAttribute('bidirectional', true).setAttribute('unidirectional', false);
+		}
+		return removed;
 	}
 
 	/**
@@ -140,10 +147,12 @@ class ConverterRuleToken extends Token {
 
 	/** 修改为不转换 */
 	noConvert() {
-		for (let i = this.childNodes.length - 2; i >= 0; i--) {
-			super.removeAt(i);
+		const {childNodes: {length}} = this;
+		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
+			this.removeAt(0);
 		}
-		this.setAttribute('unidirectional', false).setAttribute('bidirectional', false).setAttribute('variant', '');
+		this.setAttribute('unidirectional', false).setAttribute('bidirectional', false).setAttribute('variant', '')
+			.lastChild.type = 'converter-rule-noconvert';
 	}
 
 	/**
@@ -163,7 +172,7 @@ class ConverterRuleToken extends Token {
 		}
 		const {lastElementChild} = firstElementChild,
 			{lastChild} = lastElementChild;
-		lastElementChild.removeAt(0);
+		lastElementChild.destroy(true);
 		this.lastElementChild.safeReplaceWith(lastChild);
 	}
 
