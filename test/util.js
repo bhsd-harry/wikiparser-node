@@ -53,6 +53,9 @@ const cmd = (command, args) => new Promise(resolve => {
  * @param {string} newfile 新文件
  */
 const diff = async (oldfile, newfile) => {
+	if (oldfile === newfile) {
+		return;
+	}
 	await Promise.all([fs.writeFile('npmTestOldContent', oldfile), fs.writeFile('npmTestNewContent', newfile)]);
 	const stdout = await cmd('git', [
 		'diff',
@@ -63,7 +66,7 @@ const diff = async (oldfile, newfile) => {
 		'npmTestNewContent',
 	]);
 	await Promise.all([fs.unlink('npmTestOldContent'), fs.unlink('npmTestNewContent')]);
-	return stdout?.split('\n')?.slice(4)?.join('\n');
+	console.log(stdout?.split('\n')?.slice(4)?.join('\n'));
 };
 
 /**

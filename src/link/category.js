@@ -75,14 +75,6 @@ class CategoryToken extends LinkToken {
 	}
 
 	/**
-	 * @override
-	 * @returns {string}
-	 */
-	text() {
-		return `[[${this.firstElementChild.text()}]]`;
-	}
-
-	/**
 	 * 设置排序关键字
 	 * @param {string} text 排序关键字
 	 */
