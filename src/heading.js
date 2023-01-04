@@ -42,12 +42,15 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	/**
 	 * @override
 	 * @this {{prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'} & HeadingToken}
+	 * @param {string} selector
 	 */
-	toString() {
+	toString(selector) {
 		const equals = '='.repeat(Number(this.name));
-		return `${this.prependNewLine()}${equals}${
-			this.firstElementChild.toString()
-		}${equals}${this.lastElementChild.toString()}${this.appendNewLine()}`;
+		return selector && this.matches(selector)
+			? ''
+			: `${this.prependNewLine()}${equals}${
+				this.firstElementChild.toString(selector)
+			}${equals}${this.lastElementChild.toString(selector)}${this.appendNewLine()}`;
 	}
 
 	/** @override */

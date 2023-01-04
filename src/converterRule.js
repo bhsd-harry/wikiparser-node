@@ -89,10 +89,10 @@ class ConverterRuleToken extends Token {
 	 * @throws `RangeError` 禁止移除的子节点
 	 */
 	removeAt(i) {
-		if (i !== 0 && i !== -this.childNodes.length) {
-			throw new RangeError(`${this.constructor.name} 禁止移除第 ${i} 个子节点！`);
+		if (i === 0 || i === -this.childNodes.length) {
+			return super.removeAt(i);
 		}
-		return super.removeAt(i);
+		throw new RangeError(`${this.constructor.name} 禁止移除第 ${i} 个子节点！`);
 	}
 
 	/**
@@ -105,14 +105,15 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
+	 * @param {string} selector
 	 * @returns {string}
 	 */
-	toString() {
-		if (this.childNodes.length === 3) {
+	toString(selector) {
+		if (this.childNodes.length === 3 && !(selector && this.matches(selector))) {
 			const {children: [from, variant, to]} = this;
-			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
+			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
 		}
-		return super.toString(':');
+		return super.toString(selector, ':');
 	}
 
 	/**

@@ -42,9 +42,12 @@ class GalleryImageToken extends FileToken {
 		return 0;
 	}
 
-	/** @override */
-	toString() {
-		return super.toString().replaceAll('\n', ' ');
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return super.toString(selector).replaceAll('\n', ' ');
 	}
 
 	/** @override */

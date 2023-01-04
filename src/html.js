@@ -46,15 +46,17 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'tag') {
-			return this.#tag;
-		}
-		return super.getAttribute(key);
+		return key === 'tag' ? this.#tag : super.getAttribute(key);
 	}
 
-	/** @override */
-	toString() {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.selfClosing ? '/' : ''}>`;
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return selector && this.matches(selector)
+			? ''
+			: `<${this.closing ? '/' : ''}${this.#tag}${super.toString(selector)}${this.selfClosing ? '/' : ''}>`;
 	}
 
 	/** @override */
@@ -90,7 +92,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
 			{name, parentNode, closing, selfClosing} = this,
-			string = noWrap(this.toString());
+			string = noWrap(String(this));
 		if (closing && selfClosing) {
 			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
 		} else if (html[2].includes(name) || selfClosing && html[1].includes(name)) { // 自封闭标签
@@ -150,7 +152,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			this.selfClosing = false;
 			this.closing = true;
 		} else {
-			Parser.warn('无法修复无效自封闭标签', noWrap(this.toString()));
+			Parser.warn('无法修复无效自封闭标签', noWrap(String(this)));
 			throw new Error(`无法修复无效自封闭标签：前文共有 ${imbalance} 个未匹配的闭合标签`);
 		}
 	}

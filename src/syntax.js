@@ -62,10 +62,7 @@ class SyntaxToken extends Token {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'pattern') {
-			return this.#pattern;
-		}
-		return super.getAttribute(key);
+		return key === 'pattern' ? this.#pattern : super.getAttribute(key);
 	}
 
 	/**

@@ -93,10 +93,13 @@ class LinkToken extends Token {
 		return this;
 	}
 
-	/** @override */
-	toString() {
-		const str = super.toString('|');
-		return this.type === 'gallery-image' ? str : `[[${str}]]`;
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		const str = super.toString(selector, '|');
+		return this.type === 'gallery-image' || selector && this.matches(selector) ? str : `[[${str}]]`;
 	}
 
 	/** @override */
@@ -272,10 +275,10 @@ class LinkToken extends Token {
 	get innerText() {
 		if (this.type !== 'link') {
 			return undefined;
-		} else if (this.childNodes.length > 1) {
-			return this.lastElementChild.text();
 		}
-		return this.firstElementChild.text().replace(/^\s*:/u, '');
+		return this.childNodes.length > 1
+			? this.lastElementChild.text()
+			: this.firstElementChild.text().replace(/^\s*:/u, '');
 	}
 }
 

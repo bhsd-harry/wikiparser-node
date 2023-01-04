@@ -81,9 +81,12 @@ class ConverterFlagsToken extends Token {
 		return token;
 	}
 
-	/** @override */
-	toString() {
-		return super.toString(';');
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return super.toString(selector, ';');
 	}
 
 	/** @override */
@@ -143,10 +146,9 @@ class ConverterFlagsToken extends Token {
 		} else if (flags.has('H')) {
 			const hasT = flags.has('T'),
 				hasD = flags.has('D');
-			if (hasT && hasD) {
-				return new Set(['+', 'H', 'T', 'D']);
-			}
-			return new Set(['+', 'H', ...hasT ? ['T'] : [], ...hasD ? ['D'] : [], ...unknownFlags]);
+			return hasT && hasD
+				? new Set(['+', 'H', 'T', 'D'])
+				: new Set(['+', 'H', ...hasT ? ['T'] : [], ...hasD ? ['D'] : [], ...unknownFlags]);
 		}
 		if (flags.size === 1 && flags.has('T')) {
 			flags.add('H');
@@ -166,10 +168,7 @@ class ConverterFlagsToken extends Token {
 	 * @param {string} flag 转换类型标记
 	 */
 	hasFlag(flag) {
-		if (typeof flag !== 'string') {
-			this.typeError('hasFlag', 'String');
-		}
-		return this.#flags.includes(flag);
+		return typeof flag === 'string' ? this.#flags.includes(flag) : this.typeError('hasFlag', 'String');
 	}
 
 	/**
@@ -178,10 +177,7 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	hasEffectiveFlag(flag) {
-		if (typeof flag !== 'string') {
-			this.typeError('hasFlag', 'String');
-		}
-		return this.getEffectiveFlags().has(flag);
+		return typeof flag === 'string' ? this.getEffectiveFlags().has(flag) : this.typeError('hasFlag', 'String');
 	}
 
 	/**

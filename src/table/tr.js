@@ -6,22 +6,22 @@ const attributeParent = require('../../mixin/attributeParent'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
 
-const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u,
+const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
 
-	/**
-	 * 转义表格语法
-	 * @param {SyntaxToken} syntax 表格语法节点
-	 */
-	escapeTable = syntax => {
-		const wikitext = syntax.childNodes.map(
-				child => typeof child === 'string'
-					? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
-						.replaceAll('|', '{{!}}')
-					: child.toString(),
-			).join(''),
-			token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
-		syntax.replaceChildren(...token.childNodes);
-	};
+/**
+ * 转义表格语法
+ * @param {SyntaxToken} syntax 表格语法节点
+ */
+const escapeTable = syntax => {
+	const wikitext = syntax.childNodes.map(
+			child => typeof child === 'string'
+				? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
+					.replaceAll('|', '{{!}}')
+				: String(child),
+		).join(''),
+		token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
+	syntax.replaceChildren(...token.childNodes);
+};
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
@@ -78,10 +78,13 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
 		this.#correct();
-		return super.toString();
+		return super.toString(selector);
 	}
 
 	/** @override */

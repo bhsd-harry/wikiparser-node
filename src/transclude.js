@@ -188,13 +188,19 @@ class TranscludeToken extends Token {
 		return super.getAttribute(key);
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		if (selector && this.matches(selector)) {
+			return '';
+		}
 		const {children, childNodes: {length}, firstChild, modifier} = this;
 		return `{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
 				? `${String(firstChild)}${length > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
-				: super.toString('|')
+				: super.toString(selector, '|')
 		}}}`;
 	}
 
@@ -395,10 +401,9 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	getValue(key) {
-		if (key !== undefined) {
-			return this.getArg(key)?.getValue();
-		}
-		return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]));
+		return key === undefined
+			? Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]))
+			: this.getArg(key)?.getValue();
 	}
 
 	/**
@@ -414,12 +419,12 @@ class TranscludeToken extends Token {
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
-			|| firstElementChild.childNodes.length !== 2 || !firstElementChild.lastElementChild.anon
+		if (length === 1 && firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
+			&& firstElementChild.childNodes.length === 2 && firstElementChild.lastElementChild.anon
 		) {
-			throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
+			return this.appendChild(firstElementChild.lastChild);
 		}
-		return this.appendChild(firstElementChild.lastChild);
+		throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
 	}
 
 	/**
@@ -555,10 +560,10 @@ class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	hasDuplicatedArgs() {
-		if (!this.matches('template, magic-word#invoke')) {
-			throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
+		if (this.matches('template, magic-word#invoke')) {
+			return this.getAllArgs().length - this.getKeys().length;
 		}
-		return this.getAllArgs().length - this.getKeys().length;
+		throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
 	}
 
 	/**
@@ -567,10 +572,10 @@ class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs() {
-		if (!this.matches('template, magic-word#invoke')) {
-			throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
+		if (this.matches('template, magic-word#invoke')) {
+			return Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
 		}
-		return Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
+		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 	}
 
 	/**
@@ -674,7 +679,7 @@ class TranscludeToken extends Token {
 		if (!/\n[^\S\n]*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/u.test(this.text()) || !count) {
 			return this;
 		}
-		const stripped = this.toString().slice(2, -2),
+		const stripped = String(this).slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			parsed = Parser.parse(stripped, include, 4, config);
@@ -684,7 +689,7 @@ class TranscludeToken extends Token {
 				table.escape();
 			}
 		}
-		const {firstChild, childNodes} = Parser.parse(`{{${parsed.toString()}}}`, include, 2, config);
+		const {firstChild, childNodes} = Parser.parse(`{{${String(parsed)}}}`, include, 2, config);
 		if (childNodes.length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('转义表格失败！');
 		}

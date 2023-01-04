@@ -207,10 +207,9 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getValue(key) {
-		if (key !== undefined) {
-			return this.getArg(key)?.getValue();
-		}
-		return Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]));
+		return key === undefined
+			? Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]))
+			: this.getArg(key)?.getValue();
 	}
 
 	/**

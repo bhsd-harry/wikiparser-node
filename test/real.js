@@ -85,7 +85,7 @@ const getPages = async url => {
 					console.time(title);
 					const root = Parser.parse(content, ns === 10);
 					console.timeEnd(title);
-					await diff(content, root.toString());
+					await diff(content, String(root));
 					for (const token of root.querySelectorAll(`:not(${complexOrHiddenTypes.join()})`)) {
 						const {childNodes, type, hidden} = token;
 						if (hidden && !simpleTypes.has(type)) {
@@ -106,7 +106,7 @@ const getPages = async url => {
 							moreTypes.add(type);
 						}
 					}
-					await diff(content, root.toString());
+					await diff(content, String(root));
 				} catch (e) {
 					Parser.error(`解析${name}的 ${title} 页面时出错！`, e);
 				}

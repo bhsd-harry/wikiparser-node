@@ -5,42 +5,42 @@ const {text, noWrap, extUrlChar} = require('../util/string'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 
-const noLink = Symbol('no-link'),
+const noLink = Symbol('no-link');
 
-	/**
-	 * 检查图片参数是否合法
-	 * @template {string} T
-	 * @param {T} key 参数名
-	 * @param {string} value 参数值
-	 * @returns {T extends 'link' ? string|Symbol : boolean}
-	 */
-	validate = (key, value, config = Parser.getConfig()) => {
-		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
-		if (key === 'width') {
-			return /^\d*(?:x\d*)?$/u.test(value);
-		} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
-			return true;
-		} else if (key === 'link') {
-			if (!value) {
-				return noLink;
-			}
-			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
-			if (regex.test(value)) {
-				return value;
-			}
-			if (value.startsWith('[[') && value.endsWith(']]')) {
-				value = value.slice(2, -2);
-			}
-			if (value.includes('%')) {
-				try {
-					value = decodeURIComponent(value);
-				} catch {}
-			}
-			const {title, fragment, valid} = new Title(value, 0, config);
-			return valid && `${title}${fragment && '#'}${fragment}`;
+/**
+ * 检查图片参数是否合法
+ * @template {string} T
+ * @param {T} key 参数名
+ * @param {string} value 参数值
+ * @returns {T extends 'link' ? string|Symbol : boolean}
+ */
+const validate = (key, value, config = Parser.getConfig()) => {
+	value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
+	if (key === 'width') {
+		return /^\d*(?:x\d*)?$/u.test(value);
+	} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
+		return true;
+	} else if (key === 'link') {
+		if (!value) {
+			return noLink;
 		}
-		return !isNaN(value);
-	};
+		const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
+		if (regex.test(value)) {
+			return value;
+		}
+		if (value.startsWith('[[') && value.endsWith(']]')) {
+			value = value.slice(2, -2);
+		}
+		if (value.includes('%')) {
+			try {
+				value = decodeURIComponent(value);
+			} catch {}
+		}
+		const {title, fragment, valid} = new Title(value, 0, config);
+		return valid && `${title}${fragment && '#'}${fragment}`;
+	}
+	return !isNaN(value);
+};
 
 /**
  * 图片参数
@@ -52,10 +52,7 @@ class ImageParameterToken extends Token {
 
 	/** 图片链接 */
 	get link() {
-		if (this.name === 'link') {
-			return validate('link', this.getValue(), this.getAttribute('config'));
-		}
-		return undefined;
+		return this.name === 'link' ? validate('link', this.getValue(), this.getAttribute('config')) : undefined;
 	}
 
 	set link(value) {
@@ -123,9 +120,7 @@ class ImageParameterToken extends Token {
 			param = regexes.find(([,, regex]) => regex.test(str));
 		if (param) {
 			const mt = param[2].exec(str);
-			if (mt.length === 4 && !validate(param[1], mt[2], config)) {
-				// pass
-			} else {
+			if (mt.length !== 4 || validate(param[1], mt[2], config)) {
 				if (mt.length === 3) {
 					super(undefined, config, true, accum);
 					this.#syntax = str;
@@ -157,10 +152,7 @@ class ImageParameterToken extends Token {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'syntax') {
-			return this.#syntax;
-		}
-		return super.getAttribute(key);
+		return key === 'syntax' ? this.#syntax : super.getAttribute(key);
 	}
 
 	/** @override */
@@ -173,12 +165,14 @@ class ImageParameterToken extends Token {
 		return this.#syntax && !this.#syntax.includes('$1');
 	}
 
-	/** @override */
-	toString() {
-		if (!this.#syntax) {
-			return super.toString();
-		}
-		return this.#syntax.replace('$1', super.toString());
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return this.#syntax && !(selector && this.matches(selector))
+			? this.#syntax.replace('$1', super.toString(selector))
+			: super.toString(selector);
 	}
 
 	/** @override */
@@ -188,10 +182,7 @@ class ImageParameterToken extends Token {
 
 	/** @override */
 	text() {
-		if (!this.#syntax) {
-			return super.text().trim();
-		}
-		return this.#syntax.replace('$1', super.text()).trim();
+		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
 	}
 
 	/**

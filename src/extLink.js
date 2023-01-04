@@ -68,14 +68,19 @@ class ExtLinkToken extends Token {
 		}
 	}
 
-	/** @override */
-	toString() {
-		if (this.childNodes.length === 1) {
-			return `[${super.toString()}${this.#space}]`;
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		if (selector && this.matches(selector)) {
+			return '';
+		} else if (this.childNodes.length === 1) {
+			return `[${super.toString(selector)}${this.#space}]`;
 		}
 		this.#correct();
 		normalizeSpace(this.lastElementChild);
-		return `[${super.toString(this.#space)}]`;
+		return `[${super.toString(selector, this.#space)}]`;
 	}
 
 	/** @override */

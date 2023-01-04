@@ -48,9 +48,12 @@ class GalleryToken extends Token {
 		return token;
 	}
 
-	/** @override */
-	toString() {
-		return super.toString('\n');
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return super.toString(selector, '\n');
 	}
 
 	/** @override */

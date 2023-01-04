@@ -70,10 +70,13 @@ class ParameterToken extends fixedToken(Token) {
 
 	/**
 	 * @override
+	 * @param {string} selector
 	 * @returns {string}
 	 */
-	toString() {
-		return this.anon ? this.lastElementChild.toString() : super.toString('=');
+	toString(selector) {
+		return this.anon && !(selector && this.matches(selector))
+			? this.lastElementChild.toString(selector)
+			: super.toString(selector, '=');
 	}
 
 	/** @override */

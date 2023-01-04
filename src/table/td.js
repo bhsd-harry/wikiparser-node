@@ -76,7 +76,9 @@ class TdToken extends fixedToken(TrToken) {
 		}
 		const result = previousElementSibling.getSyntax();
 		result.escape ||= esc;
-		result.correction = previousElementSibling.lastElementChild.offsetHeight > 1;
+		result.correction = previousElementSibling.lastElementChild
+			.toString('comment, ext, include, noinclude, arg, template, magic-word, html')
+			.includes('\n');
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
 			result.correction = true;
@@ -151,10 +153,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'innerSyntax') {
-			return this.#innerSyntax;
-		}
-		return super.getAttribute(key);
+		return key === 'innerSyntax' ? this.#innerSyntax : super.getAttribute(key);
 	}
 
 	/**
@@ -197,7 +196,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @complexity `n`
 	 */
 	#correct() {
-		if (this.children[1].toString()) {
+		if (String(this.children[1])) {
 			this.#innerSyntax ||= '|';
 		}
 		const {subtype, escape, correction} = this.getSyntax();
@@ -219,13 +218,16 @@ class TdToken extends fixedToken(TrToken) {
 
 	/**
 	 * @override
+	 * @param {string} selector
 	 * @returns {string}
 	 * @complexity `n`
 	 */
-	toString() {
+	toString(selector) {
 		this.#correct();
 		const {children: [syntax, attr, inner]} = this;
-		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
+		return selector && this.matches(selector)
+			? ''
+			: `${syntax.toString(selector)}${attr.toString(selector)}${this.#innerSyntax}${inner.toString(selector)}`;
 	}
 
 	/**
@@ -279,7 +281,7 @@ class TdToken extends fixedToken(TrToken) {
 			value = value === 1 ? false : String(value);
 		}
 		const /** @type {boolean} */ result = super.setAttr(key, value);
-		if (!this.children[1].toString()) {
+		if (!String(this.children[1])) {
 			this.#innerSyntax = '';
 		}
 		return result;
@@ -288,7 +290,7 @@ class TdToken extends fixedToken(TrToken) {
 	/** @override */
 	escape() {
 		super.escape();
-		if (this.children[1].toString()) {
+		if (String(this.children[1])) {
 			this.#innerSyntax ||= '{{!}}';
 		}
 		if (this.#innerSyntax === '|') {

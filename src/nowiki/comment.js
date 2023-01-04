@@ -33,14 +33,17 @@ class CommentToken extends hidden(NowikiToken) {
 	/**
 	 * @override
 	 * @this {CommentToken & {firstChild: string}}
+	 * @param {string} selector
 	 */
-	toString() {
+	toString(selector) {
 		const {firstChild, closed, nextSibling} = this;
 		if (!closed && nextSibling) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
-		return `<!--${firstChild}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
+		return selector && this.matches(selector)
+			? ''
+			: `<!--${firstChild}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
 	}
 
 	/** @override */

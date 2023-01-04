@@ -91,7 +91,7 @@ const /** @type {Parser} */ Parser = {
 
 	log(f) {
 		if (typeof f === 'function') {
-			console.log(f.toString());
+			console.log(String(f));
 		}
 	},
 
@@ -171,7 +171,7 @@ const /** @type {Parser} */ Parser = {
 				token = new Token(wikitext, config);
 			} else if (wikitext instanceof Token) {
 				token = wikitext;
-				wikitext = token.toString();
+				wikitext = String(token);
 			} else {
 				throw new TypeError('待解析的内容应为 String 或 Token！');
 			}
@@ -181,7 +181,7 @@ const /** @type {Parser} */ Parser = {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
-					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : token.toString());
+					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : String(token));
 					fs.writeFileSync(`${file}.err`, e.stack);
 					fs.writeFileSync(`${file}.json`, JSON.stringify({
 						stage, include: token.getAttribute('include'), config: this.config,

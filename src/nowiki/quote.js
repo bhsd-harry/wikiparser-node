@@ -25,10 +25,10 @@ class QuoteToken extends NowikiToken {
 	 * @throws `RangeError` 错误的单引号语法
 	 */
 	setText(str) {
-		if (str !== "''" && str !== "'''" && str !== "'''''") {
-			throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);
+		if (str === "''" || str === "'''" || str === "'''''") {
+			return super.setText(str);
 		}
-		return super.setText(str);
+		throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);
 	}
 }
 

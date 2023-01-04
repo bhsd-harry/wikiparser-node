@@ -58,7 +58,7 @@ class AttributeToken extends Token {
 	 */
 	#parseAttr() {
 		this.#attr.clear();
-		let string = this.toString(),
+		let string = this.toString('comment, include, noinclude, heading, html'),
 			/** @type {Token & {firstChild: string}} */ token;
 		if (this.type !== 'ext-attr' && !Parser.running) {
 			const config = this.getAttribute('config'),
@@ -112,10 +112,7 @@ class AttributeToken extends Token {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'attr') {
-			return new Map(this.#attr);
-		}
-		return super.getAttribute(key);
+		return key === 'attr' ? new Map(this.#attr) : super.getAttribute(key);
 	}
 
 	/** @override */
@@ -151,10 +148,7 @@ class AttributeToken extends Token {
 	 * @param {string} key 属性键
 	 */
 	hasAttr(key) {
-		if (typeof key !== 'string') {
-			this.typeError('hasAttr', 'String');
-		}
-		return this.#attr.has(key.toLowerCase().trim());
+		return typeof key === 'string' ? this.#attr.has(key.toLowerCase().trim()) : this.typeError('hasAttr', 'String');
 	}
 
 	/**
@@ -166,10 +160,8 @@ class AttributeToken extends Token {
 	getAttr(key) {
 		if (key === undefined) {
 			return Object.fromEntries(this.#attr);
-		} else if (typeof key !== 'string') {
-			this.typeError('getAttr', 'String');
 		}
-		return this.#attr.get(key.toLowerCase().trim());
+		return typeof key === 'string' ? this.#attr.get(key.toLowerCase().trim()) : this.typeError('getAttr', 'String');
 	}
 
 	/** 获取全部的标签属性名 */
@@ -201,9 +193,9 @@ class AttributeToken extends Token {
 		key = key.toLowerCase().trim();
 		const config = this.getAttribute('config'),
 			include = this.getAttribute('include'),
-			parsedKey = this.type !== 'ext-attr' && !init
-				? Parser.run(() => new Token(key, config).parseOnce(0, include).parseOnce().firstChild)
-				: key;
+			parsedKey = this.type === 'ext-attr' || init
+				? key
+				: Parser.run(() => new Token(key, config).parseOnce(0, include).parseOnce().firstChild);
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			if (init) {
 				return false;
@@ -267,12 +259,13 @@ class AttributeToken extends Token {
 	/**
 	 * @override
 	 * @this {AttributeToken & Token}
+	 * @param {string} selector
 	 */
-	toString() {
+	toString(selector) {
 		if (this.type === 'table-attr') {
 			normalizeSpace(this);
 		}
-		const str = super.toString();
+		const str = super.toString(selector);
 		return `${this.#leadingSpace(str)}${str}`;
 	}
 

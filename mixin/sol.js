@@ -34,10 +34,11 @@ const sol = ct => class extends ct {
 
 	/**
 	 * 还原为wikitext
+	 * @param {string} selector
 	 * @param {boolean} ownLine 是否独占一行
 	 */
-	toString(ownLine = false) {
-		return `${this.prependNewLine()}${super.toString()}${ownLine ? this.appendNewLine() : ''}`;
+	toString(selector, ownLine = false) {
+		return `${this.prependNewLine()}${super.toString(selector)}${ownLine ? this.appendNewLine() : ''}`;
 	}
 
 	/** 获取padding */

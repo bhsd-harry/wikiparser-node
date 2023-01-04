@@ -155,7 +155,7 @@ class TableToken extends TrToken {
 		} else if (!Parser.running && i === this.childNodes.length && token instanceof SyntaxToken
 			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
 		) {
-			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(token.toString())}`);
+			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(String(token))}`);
 		}
 		return super.insertAt(token, i);
 	}
@@ -362,10 +362,10 @@ class TableToken extends TrToken {
 			return {...coords, start: coords.row === y && rowLayout[x - 1] !== coords};
 		} else if (!rowLayout && y === 0) {
 			return {row: 0, column: 0, start: true};
-		} else if (x === rowLayout?.length) {
-			return {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true};
 		}
-		return undefined;
+		return x === rowLayout?.length
+			? {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true}
+			: undefined;
 	}
 
 	/**
@@ -474,10 +474,9 @@ class TableToken extends TrToken {
 			}
 		}
 		const rowToken = this.getNthRow(coords.row ?? 0, true);
-		if (rowToken === this) {
-			return super.insertTableCell(inner, coords, subtype, attr);
-		}
-		return rowToken.insertTableCell(inner, coords, subtype, attr);
+		return rowToken === this
+			? super.insertTableCell(inner, coords, subtype, attr)
+			: rowToken.insertTableCell(inner, coords, subtype, attr);
 	}
 
 	/**
@@ -714,10 +713,10 @@ class TableToken extends TrToken {
 					try {
 						this.insertTableCell('', {x: i, y: j}, subtype, attr);
 					} catch (e) {
-						if (!(e instanceof RangeError) || !e.message.startsWith('指定的坐标不是单元格起始点：')) {
-							throw e;
+						if (e instanceof RangeError && e.message.startsWith('指定的坐标不是单元格起始点：')) {
+							break;
 						}
-						break;
+						throw e;
 					}
 				}
 			}

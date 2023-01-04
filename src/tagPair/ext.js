@@ -90,7 +90,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 		const inner = this.lastElementChild.cloneNode(),
 			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
-			attr = this.firstElementChild.toString(),
+			attr = String(this.firstElementChild),
 			token = Parser.run(() => new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config));
 		token.lastElementChild.safeReplaceWith(inner);
 		return token;

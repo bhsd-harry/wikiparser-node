@@ -26,9 +26,12 @@ class OnlyincludeToken extends Token {
 		return token;
 	}
 
-	/** @override */
-	toString() {
-		return `<onlyinclude>${super.toString()}</onlyinclude>`;
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return selector && this.matches(selector) ? '' : `<onlyinclude>${super.toString(selector)}</onlyinclude>`;
 	}
 
 	/** @override */

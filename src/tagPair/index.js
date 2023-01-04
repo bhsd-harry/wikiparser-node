@@ -43,17 +43,19 @@ class TagPairToken extends fixedToken(Token) {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'tags') {
-			return [...this.#tags];
-		}
-		return super.getAttribute(key);
+		return key === 'tags' ? [...this.#tags] : super.getAttribute(key);
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
 		const {closed, firstChild, lastChild, nextSibling, name, selfClosing} = this,
 			[opening, closing] = this.#tags;
-		if (!closed && nextSibling) {
+		if (selector && this.matches(selector)) {
+			return '';
+		} else if (!closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.closed = true;
 		}

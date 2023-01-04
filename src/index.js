@@ -84,10 +84,9 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	cloneChildren() {
-		if (!Parser.debugging && externalUse('cloneChildren')) {
-			this.debugOnly('cloneChildren');
-		}
-		return this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
+		return !Parser.debugging && externalUse('cloneChildren')
+			? this.debugOnly('cloneChildren')
+			: this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
 	}
 
 	/**
@@ -136,7 +135,7 @@ class Token extends AstElement {
 					return includeToken.name === 'noinclude';
 				}
 				const noincludeToken = this.querySelector('noinclude');
-				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(noincludeToken.toString());
+				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken));
 			}
 			default:
 				return super.getAttribute(key);
@@ -364,10 +363,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	section(n) {
-		if (typeof n !== 'number') {
-			this.typeError('section', 'Number');
-		}
-		return this.sections()[n];
+		return typeof n === 'number' ? this.sections()[n] : this.typeError('section', 'Number');
 	}
 
 	/**
@@ -522,17 +518,16 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	buildFromStr(str) {
-		if (!Parser.debugging && externalUse('buildFromStr')) {
-			this.debugOnly('buildFromStr');
-		}
-		return str.split(/[\0\x7F]/u).map((s, i) => {
-			if (i % 2 === 0) {
-				return s;
-			} else if (!isNaN(s.at(-1))) {
+		return !Parser.debugging && externalUse('buildFromStr')
+			? this.debugOnly('buildFromStr')
+			: str.split(/[\0\x7F]/u).map((s, i) => {
+				if (i % 2 === 0) {
+					return s;
+				} else if (isNaN(s.at(-1))) {
+					return this.#accum[Number(s.slice(0, -1))];
+				}
 				throw new Error(`解析错误！未正确标记的 Token：${s}`);
-			}
-			return this.#accum[Number(s.slice(0, -1))];
-		});
+			});
 	}
 
 	/**
@@ -545,14 +540,13 @@ class Token extends AstElement {
 		}
 		this.#stage = MAX_STAGE;
 		const {childNodes: {length}, firstChild} = this;
-		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\0')) {
-			return this;
-		}
-		this.replaceChildren(...this.buildFromStr(firstChild));
-		this.normalize();
-		if (this.type === 'root') {
-			for (const token of this.#accum) {
-				token.build();
+		if (length === 1 && typeof firstChild === 'string' && firstChild.includes('\0')) {
+			this.replaceChildren(...this.buildFromStr(firstChild));
+			this.normalize();
+			if (this.type === 'root') {
+				for (const token of this.#accum) {
+					token.build();
+				}
 			}
 		}
 		return this;
