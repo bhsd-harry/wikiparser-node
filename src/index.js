@@ -64,17 +64,17 @@ class Token extends AstElement {
 
 	/** 所有图片，包括图库 */
 	get images() {
-		return this.type === 'root' ? this.querySelectorAll('file, gallery-image') : undefined;
+		return this.querySelectorAll('file, gallery-image');
 	}
 
 	/** 所有内链、外链和自由外链 */
 	get links() {
-		return this.type === 'root' ? this.querySelectorAll('link, ext-link, free-ext-link') : undefined;
+		return this.querySelectorAll('link, ext-link, free-ext-link');
 	}
 
 	/** 所有模板和模块 */
 	get embeds() {
-		return this.type === 'root' ? this.querySelectorAll('template, magic-word#invoke') : undefined;
+		return this.querySelectorAll('template, magic-word#invoke');
 	}
 
 	/**
@@ -326,6 +326,46 @@ class Token extends AstElement {
 	}
 
 	/**
+	 * 创建HTML注释
+	 * @param {string} data 注释内容
+	 */
+	createComment(data = '') {
+		if (typeof data === 'string') {
+			const CommentToken = require('./nowiki/comment');
+			const config = this.getAttribute('config');
+			return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
+		}
+		return this.typeError('createComment', 'String');
+	}
+
+	/**
+	 * 创建标签
+	 * @param {string} tagName 标签名
+	 * @param {{selfClosing: boolean, closing: boolean}} options 选项
+	 * @throws `RangeError` 非法的标签名
+	 */
+	createElement(tagName, {selfClosing, closing} = {}) {
+		if (typeof tagName !== 'string') {
+			this.typeError('createElement', 'String');
+		}
+		const config = this.getAttribute('config'),
+			include = this.getAttribute('include');
+		if (tagName === (include ? 'noinclude' : 'includeonly')) {
+			const IncludeToken = require('./tagPair/include');
+			return Parser.run(
+				() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
+			);
+		} else if (config.ext.includes(tagName)) {
+			const ExtToken = require('./tagPair/ext');
+			return Parser.run(() => new ExtToken(tagName, '', '', selfClosing ? undefined : '', config));
+		} else if (config.html.flat().includes(tagName)) {
+			const HtmlToken = require('./html');
+			return Parser.run(() => new HtmlToken(tagName, '', closing, selfClosing, config));
+		}
+		throw new RangeError(`非法的标签名！${tagName}`);
+	}
+
+	/**
 	 * 判断标题是否是跨维基链接
 	 * @param {string} title 标题
 	 */
@@ -382,7 +422,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	section(n) {
-		return typeof n === 'number' ? this.sections()[n] : this.typeError('section', 'Number');
+		return typeof n === 'number' ? this.sections()?.[n] : this.typeError('section', 'Number');
 	}
 
 	/**

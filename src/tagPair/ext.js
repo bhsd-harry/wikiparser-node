@@ -15,10 +15,10 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 * @param {string} name 标签名
 	 * @param {string} attr 标签属性
 	 * @param {string} inner 内部wikitext
-	 * @param {string|undefined} closing 是否封闭
+	 * @param {string|undefined} closed 是否封闭
 	 * @param {accum} accum
 	 */
-	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
+	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
 		const AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
@@ -81,7 +81,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 		if (lcName === 'pre') {
 			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		}
-		super(name, attrToken, innerToken, closing, config, accum, acceptable);
+		super(name, attrToken, innerToken, closed, config, accum, acceptable);
 		Object.defineProperty(this, 'closed', {value: true, writable: false, configurable: false});
 	}
 

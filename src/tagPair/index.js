@@ -26,14 +26,14 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {string} name 标签名
 	 * @param {string|Token} attr 标签属性
 	 * @param {string|Token} inner 内部wikitext
-	 * @param {string|undefined} closing 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
+	 * @param {string|undefined} closed 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
 	 * @param {accum} accum
 	 */
-	constructor(name, attr, inner, closing, config = Parser.getConfig(), accum = []) {
+	constructor(name, attr, inner, closed, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true);
-		this.setAttribute('name', name.toLowerCase()).#tags = [name, closing || name];
-		this.selfClosing = closing === undefined;
-		this.closed = closing !== '';
+		this.setAttribute('name', name.toLowerCase()).#tags = [name, closed || name];
+		this.selfClosing = closed === undefined;
+		this.closed = closed !== '';
 		this.append(attr, inner);
 		let index = accum.indexOf(attr);
 		if (index === -1) {
