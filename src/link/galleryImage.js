@@ -34,7 +34,7 @@ class GalleryImageToken extends FileToken {
 		const newConfig = structuredClone(config);
 		newConfig.img = Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width'));
 		super(link, token?.toString(), title, newConfig, accum);
-		this.seal(['size', 'width', 'height']);
+		this.seal(['size', 'width', 'height'], true);
 	}
 
 	/** @override */

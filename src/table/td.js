@@ -115,7 +115,7 @@ class TdToken extends fixedToken(TrToken) {
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
 		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
-			.seal(['getRowCount', 'getNthCol', 'insertTableCell'])
+			.seal(['getRowCount', 'getNthCol', 'insertTableCell'], true)
 			.appendChild(innerToken.setAttribute('stage', 4));
 	}
 
@@ -192,7 +192,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {string} syntax 表格语法
 	 * @param {boolean} esc 是否需要转义
 	 */
-	setSyntax(syntax, esc = false) {
+	setSyntax(syntax, esc) {
 		super.setSyntax(aliases[syntax] ?? syntax, esc);
 	}
 

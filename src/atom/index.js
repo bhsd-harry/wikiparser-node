@@ -11,7 +11,7 @@ class AtomToken extends Token {
 	type = 'plain';
 
 	/**
-	 * @param {?string} wikitext wikitext
+	 * @param {string} wikitext wikitext
 	 * @param {string|undefined} type Token.type
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置

@@ -37,7 +37,7 @@ const sol = Constructor => class extends Constructor {
 	 * @param {string} selector
 	 * @param {boolean} ownLine 是否独占一行
 	 */
-	toString(selector, ownLine = false) {
+	toString(selector, ownLine) {
 		return `${this.prependNewLine()}${super.toString(selector)}${ownLine ? this.appendNewLine() : ''}`;
 	}
 
@@ -50,7 +50,7 @@ const sol = Constructor => class extends Constructor {
 	 * 可见部分
 	 * @param {booean} ownLine 是否独占一行
 	 */
-	text(ownLine = false) {
+	text(ownLine) {
 		return `${this.prependNewLine()}${super.text()}${ownLine ? this.appendNewLine() : ''}`;
 	}
 };

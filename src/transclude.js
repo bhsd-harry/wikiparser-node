@@ -316,7 +316,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} copy 是否返回一个备份
 	 * @complexity `n`
 	 */
-	getArgs(key, exact = false, copy = true) {
+	getArgs(key, exact, copy = true) {
 		if (typeof key !== 'string' && typeof key !== 'number') {
 			this.typeError('getArgs', 'String', 'Number');
 		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
@@ -342,7 +342,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
-	hasArg(key, exact = false) {
+	hasArg(key, exact) {
 		return this.getArgs(key, exact, false).size > 0;
 	}
 
@@ -352,7 +352,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
-	getArg(key, exact = false) {
+	getArg(key, exact) {
 		return [...this.getArgs(key, exact, false)].sort((a, b) => a.comparePosition(b)).at(-1);
 	}
 
@@ -362,7 +362,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
-	removeArg(key, exact = false) {
+	removeArg(key, exact) {
 		Parser.run(() => {
 			for (const token of this.getArgs(key, exact, false)) {
 				this.removeChild(token);
@@ -468,7 +468,6 @@ class TranscludeToken extends Token {
 			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
 		}
 		for (const token of this.getAnonArgs()) {
-			token.anon = false;
 			token.firstElementChild.replaceChildren(token.name);
 		}
 	}
@@ -583,7 +582,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} aggressive 是否使用有更大风险的修复手段
 	 * @complexity `n²`
 	 */
-	fixDuplication(aggressive = false) {
+	fixDuplication(aggressive) {
 		if (!this.hasDuplicatedArgs()) {
 			return [];
 		}

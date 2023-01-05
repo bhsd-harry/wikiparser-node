@@ -28,6 +28,7 @@ class CommentToken extends hidden(NowikiToken) {
 	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, accum);
 		this.closed = closed;
+		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/**

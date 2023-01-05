@@ -74,7 +74,7 @@ class FileToken extends LinkToken {
 		super(link, undefined, title, config, accum);
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
-		this.seal(['setLangLink', 'setFragment', 'asSelfLink', 'setLinkText', 'pipeTrick']);
+		this.seal(['setLangLink', 'setFragment', 'asSelfLink', 'setLinkText', 'pipeTrick'], true);
 	}
 
 	/**

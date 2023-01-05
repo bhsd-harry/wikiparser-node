@@ -12,9 +12,31 @@ const {undo} = require('../util/debug'),
  */
 class ConverterRuleToken extends Token {
 	type = 'converter-rule';
-	variant = '';
-	unidirectional = false;
-	bidirectional = false;
+
+	/** 语言变体 */
+	get variant() {
+		return this.children.at(-2)?.text()?.trim() ?? '';
+	}
+
+	set variant(variant) {
+		this.setVariant(variant);
+	}
+
+	/** 是否是单向转换 */
+	get unidirectional() {
+		return this.childNodes.length === 3;
+	}
+
+	set unidirectional(unidirectional) {
+		if (unidirectional === false) {
+			this.makeBidirectional();
+		}
+	}
+
+	/** 是否是双向转换 */
+	get bidirectional() {
+		return this.childNodes.length === 2;
+	}
 
 	/**
 	 * @param {string} rule 转换规则
@@ -31,11 +53,8 @@ class ConverterRuleToken extends Token {
 			if (variants.includes(v.trim())) {
 				super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 				super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
-				if (j === -1) {
-					this.bidirectional = true;
-				} else {
+				if (j !== -1) {
 					super.insertAt(new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum), 0);
-					this.unidirectional = true;
 				}
 			} else {
 				super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
@@ -43,7 +62,7 @@ class ConverterRuleToken extends Token {
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 		}
-		this.seal(['variant', 'unidirectional', 'bidirectional']).protectChildren('1:');
+		this.protectChildren('1:');
 	}
 
 	/** @override */
@@ -61,18 +80,13 @@ class ConverterRuleToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		if (this.childNodes.length > 1) {
-			this.setAttribute('variant', this.children.at(-2).text().trim());
-		}
 		const /** @type {AstListener} */ converterRuleListener = (e, data) => {
 			const {childNodes} = this,
 				{prevTarget} = e;
 			if (childNodes.length > 1 && childNodes.at(-2) === prevTarget) {
 				const v = prevTarget.text().trim(),
 					{variants} = this.getAttribute('config');
-				if (variants.includes(v)) {
-					this.setAttribute('variant', v);
-				} else {
+				if (!variants.includes(v)) {
 					undo(e, data);
 					throw new Error(`无效的语言变体：${v}`);
 				}
@@ -94,10 +108,7 @@ class ConverterRuleToken extends Token {
 		}
 		const removed = super.removeAt(i);
 		if (this.childNodes.length === 1) {
-			this.setAttribute('bidirectional', false).setAttribute('variant', '')
-				.firstChild.type = 'converter-rule-noconvert';
-		} else {
-			this.setAttribute('bidirectional', true).setAttribute('unidirectional', false);
+			this.firstChild.type = 'converter-rule-noconvert';
 		}
 		return removed;
 	}
@@ -147,12 +158,11 @@ class ConverterRuleToken extends Token {
 
 	/** 修改为不转换 */
 	noConvert() {
-		const {childNodes: {length}} = this;
+		const {childNodes: {length}, lastChild} = this;
 		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
 			this.removeAt(0);
 		}
-		this.setAttribute('unidirectional', false).setAttribute('bidirectional', false).setAttribute('variant', '')
-			.lastChild.type = 'converter-rule-noconvert';
+		lastChild.type = 'converter-rule-noconvert';
 	}
 
 	/**
@@ -191,11 +201,9 @@ class ConverterRuleToken extends Token {
 			throw new RangeError(`无效的语言变体：${v}`);
 		} else if (this.childNodes.length === 1) {
 			super.insertAt(Parser.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
-			this.setAttribute('bidirectional', true);
 		} else {
 			this.children.at(-2).setText(variant);
 		}
-		this.setAttribute('variant', v);
 	}
 
 	/**
@@ -222,7 +230,6 @@ class ConverterRuleToken extends Token {
 			this.firstElementChild.safeReplaceWith(firstElementChild.lastElementChild.firstChild);
 		} else {
 			super.insertAt(firstElementChild.lastElementChild.firstChild, 0);
-			this.setAttribute('unidirectional', true).setAttribute('bidirectional', false);
 		}
 	}
 
@@ -238,7 +245,6 @@ class ConverterRuleToken extends Token {
 	makeBidirectional() {
 		if (this.unidirectional) {
 			super.removeAt(0);
-			this.setAttribute('unidirectional', false).setAttribute('bidirectional', true);
 		}
 	}
 }

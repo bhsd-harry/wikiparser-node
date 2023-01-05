@@ -11,11 +11,19 @@ const {noWrap} = require('../util/string'),
  */
 class ParameterToken extends fixedToken(Token) {
 	type = 'parameter';
-	anon;
+
+	/** 是否是匿名参数 */
+	get anon() {
+		return this.firstElementChild.hidden;
+	}
 
 	/** getValue()的getter */
 	get value() {
 		return this.getValue();
+	}
+
+	set value(value) {
+		this.setValue(value);
 	}
 
 	/**
@@ -25,9 +33,8 @@ class ParameterToken extends fixedToken(Token) {
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
-		this.anon = typeof key === 'number';
 		const AtomToken = require('./atom');
-		const keyToken = new AtomToken(this.anon ? undefined : key, 'parameter-key', config, accum, {
+		const keyToken = new AtomToken(typeof key === 'number' ? undefined : key, 'parameter-key', config, accum, {
 				'Stage-2': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, true, accum);
@@ -144,7 +151,7 @@ class ParameterToken extends fixedToken(Token) {
 	 * @throws `SyntaxError` 非法的模板参数名
 	 * @throws `RangeError` 更名造成重复参数
 	 */
-	rename(key, force = false) {
+	rename(key, force) {
 		if (typeof key !== 'string') {
 			this.typeError('rename', 'String');
 		}

@@ -21,10 +21,7 @@ class ExtLinkToken extends Token {
 		return this.firstChild.protocol;
 	}
 
-	/**
-	 * @this {{firstChild: MagicLinkToken}}
-	 * @param {string} value 协议
-	 */
+	/** @this {{firstChild: MagicLinkToken}} */
 	set protocol(value) {
 		this.firstChild.protocol = value;
 	}
@@ -35,6 +32,10 @@ class ExtLinkToken extends Token {
 	 */
 	get link() {
 		return this.firstChild.link;
+	}
+
+	set link(url) {
+		this.setTarget(url);
 	}
 
 	/** 链接显示文字 */

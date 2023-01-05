@@ -113,7 +113,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {string} syntax 表格语法
 	 * @param {boolean} esc 是否需要转义
 	 */
-	setSyntax(syntax, esc = false) {
+	setSyntax(syntax, esc) {
 		const {firstElementChild} = this;
 		firstElementChild.replaceChildren(syntax);
 		if (esc) {
@@ -231,7 +231,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 * @throws `RangeError` 不存在对应单元格
 	 */
-	getNthCol(n, insert = false) {
+	getNthCol(n, insert) {
 		if (typeof n !== 'number') {
 			this.typeError('getNthCol', 'Number');
 		}

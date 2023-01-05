@@ -1,7 +1,7 @@
 'use strict';
 
 const Title = require('../../lib/title'),
-	{text, noWrap} = require('../../util/string'),
+	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	Token = require('..');
@@ -12,13 +12,51 @@ const Title = require('../../lib/title'),
  */
 class LinkToken extends Token {
 	type = 'link';
-	selfLink;
-	fragment;
-	interwiki;
 
 	/** 完整链接，和FileToken保持一致 */
 	get link() {
-		return `${this.name}${this.fragment && '#'}${this.fragment}`;
+		return String(this.#getTitle());
+	}
+
+	set link(link) {
+		this.setTarget(link);
+	}
+
+	/** 是否链接到自身 */
+	get selfLink() {
+		return !this.#getTitle().title;
+	}
+
+	set selfLink(selfLink) {
+		if (selfLink === true) {
+			this.asSelfLink();
+		}
+	}
+
+	/** fragment */
+	get fragment() {
+		return this.#getTitle().fragment;
+	}
+
+	set fragment(fragment) {
+		this.setFragment(fragment);
+	}
+
+	/** interwiki */
+	get interwiki() {
+		return this.#getTitle().interwiki;
+	}
+
+	set interwiki(interwiki) {
+		if (typeof interwiki !== 'string') {
+			this.typeError('set interwiki', 'String');
+		}
+		const {prefix, main, fragment} = this.#getTitle(),
+			link = `${interwiki}:${prefix}${main}${fragment && '#'}${fragment}`;
+		if (interwiki && !this.isInterwiki(link)) {
+			throw new RangeError(`${interwiki} 不是合法的跨维基前缀!`);
+		}
+		this.setTarget(link);
 	}
 
 	/** 链接显示文字 */
@@ -48,10 +86,12 @@ class LinkToken extends Token {
 			inner.type = 'link-text';
 			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
-		this.selfLink = !title.title;
-		this.fragment = title.fragment;
-		this.interwiki = title.interwiki;
-		this.setAttribute('name', title.title).seal(['selfLink', 'fragment', 'interwiki']).protectChildren(0);
+		this.setAttribute('name', title.title).protectChildren(0);
+	}
+
+	/** 生成Title对象 */
+	#getTitle() {
+		return this.normalizeTitle(this.firstElementChild.text());
 	}
 
 	/** @override */
@@ -59,8 +99,8 @@ class LinkToken extends Token {
 		const [link, ...linkText] = this.cloneChildren();
 		return Parser.run(() => {
 			/** @type {this & {constructor: typeof LinkToken}} */
-			const {constructor, name: title, interwiki, fragment} = this,
-				token = new constructor('', undefined, {title, interwiki, fragment}, this.getAttribute('config'));
+			const {constructor} = this,
+				token = new constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(link);
 			token.append(...linkText);
 			return token.afterBuild();
@@ -73,17 +113,11 @@ class LinkToken extends Token {
 	 * @throws `Error` 不可更改命名空间
 	 */
 	afterBuild() {
-		if (this.name.includes('\0')) {
-			this.setAttribute('name', text(this.buildFromStr(this.name)));
-		}
-		if (this.fragment.includes('\0')) {
-			this.setAttribute('fragment', text(this.buildFromStr(this.fragment)));
-		}
 		const /** @type {AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, fragment, ns, valid} = this.normalizeTitle(name);
+					{title, interwiki, ns, valid} = this.normalizeTitle(name);
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
@@ -100,8 +134,7 @@ class LinkToken extends Token {
 						prevTarget.prepend(':');
 					}
 				}
-				this.setAttribute('selfLink', !title).setAttribute('interwiki', interwiki).setAttribute('name', title)
-					.setAttribute('fragment', fragment);
+				this.setAttribute('name', title);
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);

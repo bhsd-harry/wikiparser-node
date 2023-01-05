@@ -78,7 +78,7 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * @param {?string} wikitext wikitext
+	 * @param {string} wikitext wikitext
 	 * @param {boolean} halfParsed 是否是半解析状态
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置
@@ -605,7 +605,7 @@ class Token extends AstElement {
 	 * 解析HTML注释和扩展标签
 	 * @param {boolean} includeOnly 是否嵌入
 	 */
-	#parseCommentAndExt(includeOnly = false) {
+	#parseCommentAndExt(includeOnly) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(this.firstChild, this.#config, this.#accum, includeOnly));
 	}

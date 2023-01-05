@@ -166,7 +166,7 @@ const /** @type {Parser} */ Parser = {
 		return titleObj;
 	},
 
-	parse(wikitext, include = false, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src');
 		let token;
 		this.run(() => {

@@ -13,7 +13,7 @@ class SyntaxToken extends Token {
 	#pattern;
 
 	/**
-	 * @param {?string} wikitext 语法wikitext
+	 * @param {string} wikitext 语法wikitext
 	 * @param {RegExp} pattern 语法正则
 	 * @param {string} type Token.type
 	 * @param {accum} accum

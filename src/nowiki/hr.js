@@ -19,12 +19,9 @@ class HrToken extends sol(NowikiToken) {
 		super('-'.repeat(n), config, accum);
 	}
 
-	/**
-	 * @override
-	 * @this {HrToken & {firstChild: string}}
-	 */
+	/** @override */
 	cloneNode() {
-		return Parser.run(() => new HrToken(this.firstChild.length, this.getAttribute('config')));
+		return Parser.run(() => new HrToken(String(this).length, this.getAttribute('config')));
 	}
 
 	/**

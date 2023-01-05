@@ -25,6 +25,10 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 		return typeof attr === 'string' ? attr : '';
 	}
 
+	set className(className) {
+		this.setAttr('class', className);
+	}
+
 	/** 以Set表示的class属性 */
 	get classList() {
 		return new Set(this.className.split(/\s/u));
@@ -34,6 +38,10 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	get id() {
 		const attr = this.getAttr('id');
 		return typeof attr === 'string' ? attr : '';
+	}
+
+	set id(id) {
+		this.setAttr('id', id);
 	}
 
 	/**

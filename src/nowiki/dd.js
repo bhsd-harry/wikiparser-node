@@ -9,28 +9,36 @@ const Parser = require('../..'),
  */
 class DdToken extends NowikiToken {
 	type = 'dd';
-	dt = false;
-	ul = false;
-	ol = false;
-	indent = 0;
 
-	/**
-	 * 更新属性
-	 * @param {string} str wikitext
-	 */
-	#update(str) {
-		this.setAttribute('ul', str.includes('*')).setAttribute('ol', str.includes('#'))
-			.setAttribute('dt', str.includes(';'))
-			.setAttribute('indent', str.split(':').length - 1);
+	/** 是否包含<dt> */
+	get dt() {
+		return String(this).includes(';');
 	}
 
-	/**
-	 * @param {string} str wikitext
-	 * @param {accum} accum
-	 */
-	constructor(str, config = Parser.getConfig(), accum = []) {
-		super(str, config, accum);
-		this.seal(['dt', 'ul', 'ol', 'indent']).#update(str);
+	/** 是否包含<ul> */
+	get ul() {
+		return String(this).includes('*');
+	}
+
+	/** 是否包含<ol> */
+	get ol() {
+		return String(this).includes('#');
+	}
+
+	/** 缩进数 */
+	get indent() {
+		return String(this).split(':').length - 1;
+	}
+
+	set indent(indent) {
+		if (this.type === 'dd') {
+			if (typeof indent !== 'number') {
+				this.typeError('set indent', 'Number');
+			} else if (!Number.isInteger(indent) || indent < 0) {
+				throw new RangeError(`indent 应为自然数！${indent}`);
+			}
+			this.setText(':'.repeat(indent));
+		}
 	}
 
 	/**
@@ -43,7 +51,6 @@ class DdToken extends NowikiToken {
 		if (new RegExp(`[^${src}]`, 'u').test(str)) {
 			throw new RangeError(`${this.constructor.name} 仅能包含${[...src].map(c => `"${c}"`).join('、')}！`);
 		}
-		this.#update(str);
 		return super.setText(str);
 	}
 }

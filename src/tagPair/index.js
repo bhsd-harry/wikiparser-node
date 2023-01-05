@@ -43,6 +43,7 @@ class TagPairToken extends fixedToken(Token) {
 			index = Infinity;
 		}
 		accum.splice(index, 0, this);
+		Object.defineProperties(this, {closed: {enumerable: false}, selfClosing: {enumerable: false}});
 	}
 
 	/**

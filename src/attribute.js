@@ -29,6 +29,10 @@ class AttributeToken extends Token {
 		return typeof attr === 'string' ? attr : '';
 	}
 
+	set className(className) {
+		this.setAttr('class', className);
+	}
+
 	/** 以Set表示的class属性 */
 	get classList() {
 		return new Set(this.className.split(/\s/u));
@@ -38,6 +42,10 @@ class AttributeToken extends Token {
 	get id() {
 		const attr = this.getAttr('id');
 		return typeof attr === 'string' ? attr : '';
+	}
+
+	set id(id) {
+		this.setAttr('id', id);
 	}
 
 	/**
@@ -208,7 +216,7 @@ class AttributeToken extends Token {
 	 * @throws `RangeError` 扩展标签属性不能包含">"
 	 * @throws `RangeError` 无效的属性名
 	 */
-	setAttr(key, value, init = false) {
+	setAttr(key, value, init) {
 		init &&= !externalUse('setAttr');
 		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
 			this.typeError('setValue', 'String', 'Boolean');
@@ -314,7 +322,7 @@ class AttributeToken extends Token {
 	 * @param {boolean} done 是否已解析过改变后的标签属性
 	 * @complexity `n`
 	 */
-	removeAt(i, done = false) {
+	removeAt(i, done) {
 		done &&= !externalUse('removeAt');
 		done ||= Parser.running;
 		const token = super.removeAt(i);

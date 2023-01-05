@@ -30,6 +30,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.closing = closing;
 		this.selfClosing = selfClosing;
 		this.#tag = name;
+		Object.defineProperties(this, {closing: {enumerable: false}, selfClosing: {enumerable: false}});
 	}
 
 	/** @override */

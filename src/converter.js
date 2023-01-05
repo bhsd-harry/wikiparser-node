@@ -15,10 +15,10 @@ class ConverterToken extends Token {
 
 	/**
 	 * 是否无转换
-	 * @this {ConverterToken & {children: [ConverterFlagsToken, ConverterRuleToken]}}
+	 * @this {ConverterToken & {lastChild: ConverterRuleToken}}
 	 */
 	get noConvert() {
-		return this.childNodes.length < 3 && !this.children[1]?.variant;
+		return this.hasFlag('R') || this.childNodes.length === 2 && !this.lastChild.variant;
 	}
 
 	/**
@@ -29,18 +29,16 @@ class ConverterToken extends Token {
 	constructor(flags, rules, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		this.append(new ConverterFlagsToken(flags, config, accum));
-		if (rules.length > 0) {
-			const [firstRule] = rules,
-				hasColon = firstRule.includes(':'),
-				firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
-			if (hasColon && firstRuleToken.childNodes.length === 1) {
-				this.appendChild(new ConverterRuleToken(rules.join(';'), false, config, accum));
-			} else {
-				this.append(
-					firstRuleToken,
-					...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum)),
-				);
-			}
+		const [firstRule] = rules,
+			hasColon = firstRule.includes(':'),
+			firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
+		if (hasColon && firstRuleToken.childNodes.length === 1) {
+			this.appendChild(new ConverterRuleToken(rules.join(';'), false, config, accum));
+		} else {
+			this.append(
+				firstRuleToken,
+				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum)),
+			);
 		}
 		this.protectChildren(0);
 	}

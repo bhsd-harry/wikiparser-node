@@ -82,7 +82,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		}
 		super(name, attrToken, innerToken, closing, config, accum, acceptable);
-		Object.defineProperty(this, 'closed', {value: true, enumerable: false, writable: false, configurable: false});
+		Object.defineProperty(this, 'closed', {value: true, writable: false, configurable: false});
 	}
 
 	/** @override */

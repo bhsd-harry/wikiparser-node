@@ -126,6 +126,12 @@ class TableToken extends TrToken {
 		return this.lastElementChild.type === 'table-syntax';
 	}
 
+	set closed(closed) {
+		if (closed === true && !this.closed) {
+			this.close(this.closest('parameter') ? '\n{{!)}}' : '\n|}');
+		}
+	}
+
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
@@ -222,7 +228,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 * @throws `RangeError` 不存在该行
 	 */
-	getNthRow(n, force = false, insert = false) {
+	getNthRow(n, force, insert) {
 		if (typeof n !== 'number') {
 			this.typeError('getNthRow', 'Number');
 		}
