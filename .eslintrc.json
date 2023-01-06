@@ -19,7 +19,7 @@
 		"sourceType": "script"
 	},
 	"ignorePatterns": [
-		"tool/old.js"
+		"tool/*.js"
 	],
 	"rules": {
 		"array-callback-return": 2,
