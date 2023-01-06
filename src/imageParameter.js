@@ -19,7 +19,7 @@ class ImageParameterToken extends Token {
 	 * @param {string} value 参数值
 	 * @returns {T extends 'link' ? string|Symbol : boolean}
 	 */
-	static #validate(key, value, config = Parser.getConfig()) {
+	static #validate(key, value, config = Parser.getConfig(), halfParsed = false) {
 		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
 		if (key === 'width') {
 			return /^\d*(?:x\d*)?$/u.test(value);
@@ -41,7 +41,7 @@ class ImageParameterToken extends Token {
 					value = decodeURIComponent(value);
 				} catch {}
 			}
-			const title = new Title(value, 0, config);
+			const title = Parser.normalizeTitle(value, 0, false, config, halfParsed);
 			return title.valid && String(title);
 		}
 		return !isNaN(value);
@@ -131,7 +131,7 @@ class ImageParameterToken extends Token {
 			param = regexes.find(([,, regex]) => regex.test(str));
 		if (param) {
 			const mt = param[2].exec(str);
-			if (mt.length !== 4 || ImageParameterToken.#validate(param[1], mt[2], config)) {
+			if (mt.length !== 4 || ImageParameterToken.#validate(param[1], mt[2], config, true)) {
 				if (mt.length === 3) {
 					super(undefined, config, true, accum);
 					this.#syntax = str;

@@ -79,7 +79,6 @@ class Token extends AstElement {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {boolean} halfParsed 是否是半解析状态
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
@@ -377,7 +376,6 @@ class Token extends AstElement {
 	 * 规范化页面标题
 	 * @param {string} title 标题（含或不含命名空间前缀）
 	 * @param {number} defaultNs 命名空间
-	 * @param {boolean} halfParsed 是否是半解析状态
 	 */
 	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);

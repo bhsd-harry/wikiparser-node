@@ -170,7 +170,6 @@ class TableToken extends TrToken {
 	 * 闭合表格语法
 	 * @complexity `n`
 	 * @param {string} syntax 表格结尾语法
-	 * @param {boolean} halfParsed 是否是半解析状态
 	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false) {
