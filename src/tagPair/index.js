@@ -9,9 +9,32 @@ const fixedToken = require('../../mixin/fixedToken'),
  * @classdesc `{childNodes: [string|AttributeToken, string|Token]}`
  */
 class TagPairToken extends fixedToken(Token) {
-	selfClosing;
-	closed;
+	#selfClosing;
+	#closed;
 	#tags;
+
+	/** getter */
+	get selfClosing() {
+		return this.#selfClosing;
+	}
+
+	set selfClosing(value) {
+		const {lastChild, name, selfClosing} = this;
+		value = Boolean(value);
+		if (value !== selfClosing && (typeof lastChild === 'string' ? lastChild : lastChild.text())) {
+			Parser.warn(`<${name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
+		}
+		this.#selfClosing = value;
+	}
+
+	/** getter */
+	get closed() {
+		return this.#closed;
+	}
+
+	set closed(value) {
+		this.#closed ||= Boolean(value);
+	}
 
 	/** 内部wikitext */
 	get innerText() {
@@ -32,8 +55,8 @@ class TagPairToken extends fixedToken(Token) {
 	constructor(name, attr, inner, closed, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true);
 		this.setAttribute('name', name.toLowerCase()).#tags = [name, closed || name];
-		this.selfClosing = closed === undefined;
-		this.closed = closed !== '';
+		this.#selfClosing = closed === undefined;
+		this.#closed = closed !== '';
 		this.append(attr, inner);
 		let index = accum.indexOf(attr);
 		if (index === -1) {
@@ -43,7 +66,6 @@ class TagPairToken extends fixedToken(Token) {
 			index = Infinity;
 		}
 		accum.splice(index, 0, this);
-		Object.defineProperties(this, {closed: {enumerable: false}, selfClosing: {enumerable: false}});
 	}
 
 	/**
@@ -67,12 +89,11 @@ class TagPairToken extends fixedToken(Token) {
 			return '';
 		} else if (!closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
-			this.closed = true;
+			this.#closed = true;
 		}
 		return selfClosing
 			? `<${opening}${String(firstChild)}/>`
-			// eslint-disable-next-line unicorn/consistent-destructuring
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @override */

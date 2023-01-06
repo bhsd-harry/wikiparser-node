@@ -12,9 +12,50 @@ const {noWrap} = require('../util/string'),
  */
 class HtmlToken extends attributeParent(fixedToken(Token)) {
 	type = 'html';
-	closing;
-	selfClosing;
+	#closing;
+	#selfClosing;
 	#tag;
+
+	/** getter */
+	get closing() {
+		return this.#closing;
+	}
+
+	/** @throws `Error` 自闭合标签或空标签 */
+	set closing(value) {
+		if (!value) {
+			this.#closing = false;
+			return;
+		} else if (this.selfClosing) {
+			throw new Error(`这是一个自闭合标签！`);
+		}
+		const {html: [,, tags]} = this.getAttribute('config');
+		if (tags.includes(this.name)) {
+			throw new Error(`这是一个空标签！`);
+		}
+		this.#closing = true;
+	}
+
+	/** getter */
+	get selfClosing() {
+		return this.#selfClosing;
+	}
+
+	/** @throws `Error` 闭合标签或无效自闭合标签 */
+	set selfClosing(value) {
+		const {closing, name} = this;
+		if (!value) {
+			this.#selfClosing = false;
+			return;
+		} else if (closing) {
+			throw new Error('这是一个闭合标签！');
+		}
+		const {html: [tags]} = this.getAttribute('config');
+		if (tags.includes(name)) {
+			throw new Error(`<${name}>标签自闭合无效！`);
+		}
+		this.#selfClosing = true;
+	}
 
 	/**
 	 * @param {string} name 标签名
@@ -27,10 +68,9 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		super(undefined, config, true, accum);
 		this.appendChild(attr);
 		this.setAttribute('name', name.toLowerCase());
-		this.closing = closing;
-		this.selfClosing = selfClosing;
+		this.#closing = closing;
+		this.#selfClosing = selfClosing;
 		this.#tag = name;
-		Object.defineProperties(this, {closing: {enumerable: false}, selfClosing: {enumerable: false}});
 	}
 
 	/** @override */
@@ -125,7 +165,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/** 局部闭合 */
 	#localMatch() {
-		this.selfClosing = false;
+		this.#selfClosing = false;
 		const root = Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'));
 		this.after(root.firstChild);
 	}
@@ -150,8 +190,8 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			prevSiblings = children.slice(0, i).filter(child => child.matches(`html#${name}`)),
 			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
 		if (imbalance < 0) {
-			this.selfClosing = false;
-			this.closing = true;
+			this.#selfClosing = false;
+			this.#closing = true;
 		} else {
 			Parser.warn('无法修复无效自封闭标签', noWrap(String(this)));
 			throw new Error(`无法修复无效自封闭标签：前文共有 ${imbalance} 个未匹配的闭合标签`);

@@ -11,6 +11,11 @@ const attributeParent = require('../../mixin/attributeParent'),
 class ExtToken extends attributeParent(TagPairToken) {
 	type = 'ext';
 
+	/** @override */
+	get closed() {
+		return super.closed;
+	}
+
 	/**
 	 * @param {string} name 标签名
 	 * @param {string} attr 标签属性
@@ -82,7 +87,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		}
 		super(name, attrToken, innerToken, closed, config, accum, acceptable);
-		Object.defineProperty(this, 'closed', {value: true, writable: false, configurable: false});
 	}
 
 	/** @override */
