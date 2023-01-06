@@ -14,7 +14,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/** 是否是匿名参数 */
 	get anon() {
-		return this.firstElementChild.hidden;
+		return this.firstElementChild.childNodes.length === 0;
 	}
 
 	/** getValue()的getter */
