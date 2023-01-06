@@ -29,7 +29,7 @@ var Parser = require('wikiparser-node');
 14. [DoubleUnderscoreToken](https://github.com/bhsd-harry/wikiparser-node/wiki/12.-DoubleUnderscoreToken)
 15. [LinkToken](https://github.com/bhsd-harry/wikiparser-node/wiki/13.-LinkToken)
 16. [CategoryToken](https://github.com/bhsd-harry/wikiparser-node/wiki/14.-CategoryToken)
-17. [FileToken](https://github.com/bhsd-harry/wikiparser-node/wiki/15.-FileToken)
+17. [FileToken](https://github.com/bhsd-harry/wikiparser-node/wiki/15.-FileToken和GalleryImageToken#filetoken)
 18. [ImageParameterToken](https://github.com/bhsd-harry/wikiparser-node/wiki/16.-ImageParameterToken)
 19. [ExtLinkToken](https://github.com/bhsd-harry/wikiparser-node/wiki/17.-ExtLinkToken和MagicLinkToken#extlinktoken)
 20. [MagicLinkToken](https://github.com/bhsd-harry/wikiparser-node/wiki/17.-ExtLinkToken和MagicLinkToken#magiclinktoken)
