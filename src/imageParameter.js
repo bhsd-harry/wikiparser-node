@@ -1,7 +1,6 @@
 'use strict';
 
 const {text, noWrap, extUrlChar} = require('../util/string'),
-	Title = require('../lib/title'),
 	/** @type {Parser} */ Parser = require('..'),
 	Token = require('.');
 

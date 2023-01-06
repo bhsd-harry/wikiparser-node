@@ -1,6 +1,7 @@
 'use strict';
 
-const {explode, noWrap} = require('../../util/string'),
+const Title = require('../../lib/title'),
+	{explode, noWrap} = require('../../util/string'),
 	{externalUse} = require('../../util/debug'),
 	/** @type {Parser} */ Parser = require('../..'),
 	LinkToken = require('.'),

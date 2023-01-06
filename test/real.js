@@ -40,6 +40,13 @@ const {argv: [,, site = '']} = process,
 		'magic-word-name',
 		'heading-trail',
 		'table-syntax',
+		// 以下为代码不受限的NowikiToken
+		'ext-inner#nowiki',
+		'ext-inner#pre',
+		'ext-inner#syntaxhighlight',
+		'ext-inner#source',
+		'ext-inner#math',
+		'ext-inner#timeline',
 	],
 	simpleTypes = new Set([
 		'ext-inner',
@@ -58,7 +65,7 @@ const {argv: [,, site = '']} = process,
 		'converter-rule-noconvert',
 		'converter-rule-to',
 	]),
-	possibleSyntax = /[{}<]|(?<!=)>|>(?!\s*zh-(?:han[st]|cn|tw|hk|mo|sg|my)\s*:)|\[+(?![^[]*\])|((?:^|\])[^[]*?)\]+/gu;
+	possibleSyntax = /[{}]|\[{2,}|\[(?!(?:(?!https?\b)[^[])*\])|(?<=^|\])([^[]*?)\]+|<(?=\s*\/?\w+[\s/>])/giu;
 
 Parser.debugging = true;
 
