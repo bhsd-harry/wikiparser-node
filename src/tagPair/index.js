@@ -1,12 +1,12 @@
 'use strict';
 
 const fixedToken = require('../../mixin/fixedToken'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	Token = require('..');
 
 /**
  * 成对标签
- * @classdesc `{childNodes: [string|AttributeToken, string|Token]}`
+ * @classdesc `{childNodes: [Text|AttributeToken, Text|Token]}`
  */
 class TagPairToken extends fixedToken(Token) {
 	#selfClosing;
@@ -19,10 +19,9 @@ class TagPairToken extends fixedToken(Token) {
 	}
 
 	set selfClosing(value) {
-		const {lastChild, name, selfClosing} = this;
 		value = Boolean(value);
-		if (value !== selfClosing && (typeof lastChild === 'string' ? lastChild : lastChild.text())) {
-			Parser.warn(`<${name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
+		if (value !== this.#selfClosing && this.lastChild.text()) {
+			Parser.warn(`<${this.name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
 		}
 		this.#selfClosing = value;
 	}
@@ -38,11 +37,7 @@ class TagPairToken extends fixedToken(Token) {
 
 	/** 内部wikitext */
 	get innerText() {
-		const {selfClosing, lastChild} = this;
-		if (selfClosing) {
-			return undefined;
-		}
-		return typeof lastChild === 'string' ? lastChild : lastChild.text();
+		return this.#selfClosing ? undefined : this.lastChild.text();
 	}
 
 	/**
@@ -83,15 +78,15 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		const {closed, firstChild, lastChild, nextSibling, name, selfClosing} = this,
+		const {firstChild, lastChild, nextSibling, name} = this,
 			[opening, closing] = this.#tags;
 		if (selector && this.matches(selector)) {
 			return '';
-		} else if (!closed && nextSibling) {
+		} else if (!this.#closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.#closed = true;
 		}
-		return selfClosing
+		return this.#selfClosing
 			? `<${opening}${String(firstChild)}/>`
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
 	}
@@ -111,11 +106,10 @@ class TagPairToken extends fixedToken(Token) {
 	 * @returns {string}
 	 */
 	text() {
-		const {closed, firstChild, selfClosing} = this,
-			[opening, closing] = this.#tags;
-		return selfClosing
-			? `<${opening}${typeof firstChild === 'string' ? firstChild : firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${closed ? `</${closing}>` : ''}`;
+		const [opening, closing] = this.#tags;
+		return this.#selfClosing
+			? `<${opening}${this.firstChild.text()}/>`
+			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
 	}
 }
 

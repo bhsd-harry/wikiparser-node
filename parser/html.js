@@ -4,13 +4,13 @@ const Parser = require('..');
 
 /**
  * 解析HTML标签
- * @param {string} firstChild wikitext
+ * @param {string} wikitext wikitext
  * @param {accum} accum
  */
-const parseHtml = (firstChild, config = Parser.getConfig(), accum = []) => {
+const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/iu,
 		elements = config.html.flat(),
-		bits = firstChild.split('<');
+		bits = wikitext.split('<');
 	let text = bits.shift();
 	for (const x of bits) {
 		const mt = regex.exec(x),

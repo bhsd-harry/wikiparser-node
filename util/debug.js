@@ -60,12 +60,9 @@ const undo = (e, data) => {
 			parentNode.setAttribute('childNodes', childNodes);
 			break;
 		}
-		case 'text': {
-			const childNodes = [...target.childNodes];
-			childNodes[data.position] = data.oldText;
-			target.setAttribute('childNodes', childNodes);
+		case 'text':
+			target.replaceData(data.oldText);
 			break;
-		}
 		default:
 			throw new RangeError(`无法撤销未知类型的事件：${type}`);
 	}

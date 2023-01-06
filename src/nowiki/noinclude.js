@@ -1,12 +1,12 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * `<noinclude>`和`</noinclude>`，不可进行任何更改
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class NoincludeToken extends hidden(NowikiToken) {
 	type = 'noinclude';

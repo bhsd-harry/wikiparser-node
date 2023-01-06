@@ -1,13 +1,13 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.'),
 	GalleryImageToken = require('./link/galleryImage'),
 	HiddenToken = require('./atom/hidden');
 
 /**
  * gallery标签
- * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|string)}`
+ * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|Text)}`
  */
 class GalleryToken extends Token {
 	type = 'ext-inner';
@@ -18,11 +18,11 @@ class GalleryToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {String: ':', GalleryImageToken: ':'});
+		super(undefined, config, true, accum, {Text: ':', GalleryImageToken: ':'});
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.appendChild(line.trim() ? new HiddenToken(line, undefined, config, [], {String: ':'}) : line);
+				this.appendChild(line.trim() ? new HiddenToken(line, undefined, config, [], {Text: ':'}) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -35,7 +35,7 @@ class GalleryToken extends Token {
 			if (title.valid) {
 				this.appendChild(new GalleryImageToken(file, alt, title, config, accum));
 			} else {
-				this.appendChild(new HiddenToken(line, undefined, config, [], {String: ':'}));
+				this.appendChild(new HiddenToken(line, undefined, config, [], {Text: ':'}));
 			}
 		}
 	}

@@ -1,12 +1,13 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
+	Text = require('../../lib/text'),
 	TagPairToken = require('.');
 
 /**
  * `<includeonly>`或`<noinclude>`
- * @classdesc `{childNodes: [string, string]}`
+ * @classdesc `{childNodes: [Text, Text]}`
  */
 class IncludeToken extends hidden(TagPairToken) {
 	type = 'include';
@@ -19,19 +20,19 @@ class IncludeToken extends hidden(TagPairToken) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = undefined, closed = undefined, config = Parser.getConfig(), accum = []) {
-		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum, {String: [0, 1]});
+		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum, {Text: [0, 1]});
 	}
 
 	/**
 	 * @override
-	 * @this {IncludeToken & {firstChild: string, lastChild: string}}
+	 * @this {IncludeToken & {firstChild: Text, lastChild: Text}}
 	 */
 	cloneNode() {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
-			inner = this.selfClosing ? undefined : this.lastChild,
+			inner = this.selfClosing ? undefined : this.lastChild.data,
 			closing = this.selfClosing || !this.closed ? undefined : tags[1],
-			token = Parser.run(() => new IncludeToken(tags[0], this.firstChild, inner, closing, config));
+			token = Parser.run(() => new IncludeToken(tags[0], this.firstChild.data, inner, closing, config));
 		return token;
 	}
 

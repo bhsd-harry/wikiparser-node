@@ -1,7 +1,7 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	AtomToken = require('.');
 
 /** 不可见的节点 */

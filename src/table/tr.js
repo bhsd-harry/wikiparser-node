@@ -1,7 +1,8 @@
 'use strict';
 
 const attributeParent = require('../../mixin/attributeParent'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
+	Text = require('../../lib/text'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
@@ -14,8 +15,8 @@ const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)
  */
 const escapeTable = syntax => {
 	const wikitext = syntax.childNodes.map(
-			child => typeof child === 'string'
-				? child.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
+			/** @param {Text} child */ child => child.type === 'text'
+				? child.data.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
 					.replaceAll('|', '{{!}}')
 				: String(child),
 		).join(''),
@@ -47,12 +48,14 @@ class TrToken extends attributeParent(Token, 1) {
 		this.protectChildren(0, 1);
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {TrToken & {constructor: typeof TrToken}}
+	 */
 	cloneNode() {
-		const [syntax, attr, inner, ...cloned] = this.cloneChildren(),
-			/** @type {{constructor: typeof TrToken}} */ {constructor} = this;
+		const [syntax, attr, inner, ...cloned] = this.cloneChildren();
 		return Parser.run(() => {
-			const token = new constructor(undefined, undefined, this.getAttribute('config'));
+			const token = new this.constructor(undefined, undefined, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(syntax);
 			token.children[1].safeReplaceWith(attr);
 			if (token.type === 'td') { // TdToken
@@ -69,11 +72,11 @@ class TrToken extends attributeParent(Token, 1) {
 	#correct() {
 		const {children: [,, child]} = this;
 		if (child?.isPlain()) {
-			const {firstChild} = child;
-			if (typeof firstChild !== 'string') {
+			const /** @type {{firstChild: Text}} */ {firstChild: {type, data}} = child;
+			if (type !== 'text') {
 				child.prepend('\n');
-			} else if (firstChild[0] !== '\n') {
-				child.setText(`\n${firstChild}`);
+			} else if (data[0] !== '\n') {
+				child.setText(`\n${data}`);
 			}
 		}
 	}
@@ -140,7 +143,7 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {Text|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @returns {T}

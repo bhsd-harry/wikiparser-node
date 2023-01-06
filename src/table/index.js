@@ -2,7 +2,7 @@
 
 const assert = require('assert/strict'),
 	{noWrap} = require('../../util/string'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr'),
 	TdToken = require('./td'),

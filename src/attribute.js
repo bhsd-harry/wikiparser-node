@@ -2,14 +2,15 @@
 
 const {externalUse} = require('../util/debug'),
 	{toCase, removeComment, normalizeSpace} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
-	Token = require('.');
+	Parser = require('..'),
+	Token = require('.'),
+	Text = require('../lib/text');
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 
 /**
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: [string]|(string|ArgToken|TranscludeToken)[]}`
+ * @classdesc `{childNodes: [Text]|(Text|ArgToken|TranscludeToken)[]}`
  */
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
@@ -92,12 +93,12 @@ class AttributeToken extends Token {
 	#parseAttr() {
 		this.#attr.clear();
 		let string = this.toString('comment, include, noinclude, heading, html'),
-			/** @type {Token & {firstChild: string}} */ token;
+			/** @type {Token & {firstChild: Text}} */ token;
 		if (this.type !== 'ext-attr' && !Parser.running) {
 			const config = this.getAttribute('config'),
 				include = this.getAttribute('include');
 			token = Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce());
-			string = token.firstChild;
+			string = token.firstChild.data;
 		}
 		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
 
@@ -219,7 +220,7 @@ class AttributeToken extends Token {
 	setAttr(key, value, init) {
 		init &&= !externalUse('setAttr');
 		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
-			this.typeError('setValue', 'String', 'Boolean');
+			this.typeError('setAttr', 'String', 'Boolean');
 		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
@@ -228,7 +229,7 @@ class AttributeToken extends Token {
 			include = this.getAttribute('include'),
 			parsedKey = this.type === 'ext-attr' || init
 				? key
-				: Parser.run(() => new Token(key, config).parseOnce(0, include).parseOnce().firstChild);
+				: Parser.run(() => String(new Token(key, config).parseOnce(0, include).parseOnce()));
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			if (init) {
 				return false;
@@ -334,7 +335,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {Text|Token} T
 	 * @param {T} token 待插入的节点
 	 * @param {number} i 插入位置
 	 * @param {boolean} done 是否已解析过改变后的标签属性
@@ -352,7 +353,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @override
-	 * @param {...string|Token} elements 待替换的子节点
+	 * @param {...Text|Token} elements 待替换的子节点
 	 * @complexity `n²`
 	 */
 	replaceChildren(...elements) {

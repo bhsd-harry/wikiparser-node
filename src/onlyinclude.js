@@ -5,7 +5,7 @@ const Parser = require('..'),
 
 /**
  * 嵌入时的`<onlyinclude>`
- * @classdesc `{childNodes: ...string|Token}`
+ * @classdesc `{childNodes: ...Text|Token}`
  */
 class OnlyincludeToken extends Token {
 	type = 'onlyinclude';
@@ -46,7 +46,7 @@ class OnlyincludeToken extends Token {
 
 	/** @override */
 	isPlain() {
-		return this.constructor === OnlyincludeToken;
+		return true;
 	}
 }
 

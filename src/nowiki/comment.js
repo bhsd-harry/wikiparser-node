@@ -1,12 +1,13 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
+	Text = require('../../lib/text'),
 	NowikiToken = require('.');
 
 /**
  * HTML注释，不可见
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class CommentToken extends hidden(NowikiToken) {
 	type = 'comment';
@@ -14,10 +15,10 @@ class CommentToken extends hidden(NowikiToken) {
 
 	/**
 	 * 内部wikitext
-	 * @this {{firstChild: string}}
+	 * @this {{firstChild: Text}}
 	 */
 	get innerText() {
-		return this.firstChild;
+		return this.firstChild.data;
 	}
 
 	/**
@@ -33,26 +34,26 @@ class CommentToken extends hidden(NowikiToken) {
 
 	/**
 	 * @override
-	 * @this {CommentToken & {firstChild: string}}
+	 * @this {CommentToken & {firstChild: Text}}
 	 */
 	cloneNode() {
-		return Parser.run(() => new CommentToken(this.firstChild, this.closed, this.getAttribute('config')));
+		return Parser.run(() => new CommentToken(this.firstChild.data, this.closed, this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @this {CommentToken & {firstChild: string}}
+	 * @this {CommentToken & {firstChild: Text}}
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		const {firstChild, closed, nextSibling} = this;
+		const {firstChild: {data}, closed, nextSibling} = this;
 		if (!closed && nextSibling) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
 		return selector && this.matches(selector)
 			? ''
-			: `<!--${firstChild}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
+			: `<!--${data}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
 	}
 
 	/** @override */

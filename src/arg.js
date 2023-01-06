@@ -1,7 +1,7 @@
 'use strict';
 
 const {text, noWrap} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.');
 
 /**

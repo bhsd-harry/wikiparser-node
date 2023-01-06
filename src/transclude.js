@@ -2,7 +2,7 @@
 
 const {removeComment, escapeRegExp, text, noWrap} = require('../util/string'),
 	{externalUse} = require('../util/debug'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
 
@@ -353,7 +353,7 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	getArg(key, exact) {
-		return [...this.getArgs(key, exact, false)].sort((a, b) => a.comparePosition(b)).at(-1);
+		return [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**

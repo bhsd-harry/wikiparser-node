@@ -1,7 +1,7 @@
 'use strict';
 
 const attributeParent = require('../../mixin/attributeParent'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	TagPairToken = require('.');
 
 /**

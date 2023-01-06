@@ -1,6 +1,8 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	Text = require('../lib/text'),
+	Token = require('../src');
 
 /**
  * 不可增删子节点的类
@@ -21,7 +23,7 @@ const fixedToken = Constructor => class extends Constructor {
 
 	/**
 	 * 插入子节点
-	 * @template {string|Token} T
+	 * @template {Text|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @throws `Error`

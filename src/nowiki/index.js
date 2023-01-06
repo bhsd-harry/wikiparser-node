@@ -1,12 +1,13 @@
 'use strict';
 
 const fixedToken = require('../../mixin/fixedToken'),
-	/** @type {Parser} */ Parser = require('../..'),
-	Token = require('..');
+	Parser = require('../..'),
+	Token = require('..'),
+	Text = require('../../lib/text');
 
 /**
  * 纯文字Token，不会被解析
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class NowikiToken extends fixedToken(Token) {
 	type = 'ext-inner';
@@ -21,11 +22,11 @@ class NowikiToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @this {NowikiToken & {firstChild: string, constructor: typeof NowikiToken}}
+	 * @this {NowikiToken & {firstChild: Text, constructor: typeof NowikiToken}}
 	 */
 	cloneNode() {
-		const {constructor, firstChild, type} = this,
-			token = Parser.run(() => new constructor(firstChild, this.getAttribute('config')));
+		const {constructor, firstChild: {data}, type} = this,
+			token = Parser.run(() => new constructor(data, this.getAttribute('config')));
 		token.type = type;
 		return token;
 	}

@@ -5,15 +5,15 @@ const Parser = require('..'),
 
 /**
  * 解析内部链接
- * @param {string} firstChild wikitext
+ * @param {string} wikitext wikitext
  * @param {accum} accum
  */
-const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
+const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js');
 	const regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/su,
 		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
-		bits = firstChild.split('[[');
+		bits = wikitext.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
 		let mightBeImg, link, text, after;

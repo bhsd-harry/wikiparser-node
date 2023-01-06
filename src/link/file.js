@@ -3,7 +3,7 @@
 const Title = require('../../lib/title'),
 	{explode, noWrap} = require('../../util/string'),
 	{externalUse} = require('../../util/debug'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
 
@@ -163,7 +163,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getArg(key) {
-		return [...this.getArgs(key, false)].sort((a, b) => a.comparePosition(b)).at(-1);
+		return [...this.getArgs(key, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**

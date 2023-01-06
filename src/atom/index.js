@@ -5,7 +5,7 @@ const Parser = require('../..'),
 
 /**
  * 不会被继续解析的plain Token
- * @classdesc `{childNodes: (string|Token)[]}`
+ * @classdesc `{childNodes: (Text|Token)[]}`
  */
 class AtomToken extends Token {
 	type = 'plain';
@@ -23,13 +23,15 @@ class AtomToken extends Token {
 		}
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {AtomToken & {constructor: typeof AtomToken}}
+	 */
 	cloneNode() {
 		const cloned = this.cloneChildren(),
-			/** @type {{constructor: typeof AtomToken}} */ {constructor} = this,
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
-			token = Parser.run(() => new constructor(undefined, this.type, config, [], acceptable));
+			token = Parser.run(() => new this.constructor(undefined, this.type, config, [], acceptable));
 		token.append(...cloned);
 		return token;
 	}

@@ -5,7 +5,7 @@ const Parser = require('../..'),
 
 /**
  * :
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class DdToken extends NowikiToken {
 	type = 'dd';

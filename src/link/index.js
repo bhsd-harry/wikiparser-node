@@ -3,7 +3,8 @@
 const Title = require('../../lib/title'),
 	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
+	Text = require('../../lib/text'),
 	Token = require('..');
 
 /**
@@ -127,9 +128,9 @@ class LinkToken extends Token {
 					undo(e, data);
 					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
 				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14) && name.trim()[0] !== ':') {
-					const {firstChild} = prevTarget;
-					if (typeof firstChild === 'string') {
-						prevTarget.setText(`:${firstChild}`);
+					const /** @type {{firstChild: Text}} */ {firstChild} = prevTarget;
+					if (firstChild.type === 'text') {
+						firstChild.insertData(0, ':');
 					} else {
 						prevTarget.prepend(':');
 					}

@@ -2,7 +2,7 @@
 
 const fixedToken = require('../../mixin/fixedToken'),
 	{externalUse, typeError} = require('../../util/debug'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr');
 

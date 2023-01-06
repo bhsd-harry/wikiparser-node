@@ -1,12 +1,13 @@
 'use strict';
 
 const {text, noWrap, extUrlChar} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
-	Token = require('.');
+	Parser = require('..'),
+	Token = require('.'),
+	Text = require('../lib/text');
 
 /**
  * 图片参数
- * @classdesc `{childNodes: ...(string|Token)}`
+ * @classdesc `{childNodes: ...(Text|Token)}`
  */
 class ImageParameterToken extends Token {
 	static noLink = Symbol('no-link'); // 这个Symbol需要公开
@@ -80,14 +81,14 @@ class ImageParameterToken extends Token {
 				const [width, height = ''] = size.split('x');
 				return {width, height};
 			}
-			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
-				{childNodes} = token,
-				i = childNodes.findIndex(child => typeof child === 'string' && child.includes('x'));
+			const /** @type {{childNodes: Text[]}} */ token = Parser.parse(size, false, 2, this.getAttribute('config')),
+				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x')),
+				str = token.childNodes[i];
 			if (i === -1) {
 				return {width: size, height: ''};
 			}
-			token.splitText(i, childNodes[i].indexOf('x'));
-			token.splitText(i + 1, 1);
+			str.splitText(str.data.indexOf('x'));
+			str.nextSibling.splitText(1);
 			// eslint-disable-next-line unicorn/consistent-destructuring
 			return {width: text(token.childNodes.slice(0, i + 1)), height: text(token.childNodes.slice(i + 2))};
 		}
@@ -197,7 +198,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {Text|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`

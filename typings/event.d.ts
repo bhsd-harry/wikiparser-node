@@ -1,15 +1,16 @@
 import Token from '../src';
+import Text from '../lib/text';
 
 declare global {
 	interface AstEvent extends Event {
-		readonly target: Token;
+		readonly target: Token & Text;
 		currentTarget: Token;
 		prevTarget: ?Token;
 	};
 	interface AstEventData {
 		position: number;
-		removed: string|Token;
-		inserted: string|Token;
+		removed: Text|Token;
+		inserted: Text|Token;
 		oldToken: Token;
 		newToken: Token;
 		oldText: string;

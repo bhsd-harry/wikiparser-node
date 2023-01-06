@@ -5,7 +5,7 @@ const Parser = require('../..'),
 
 /**
  * `<hr>`
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class QuoteToken extends NowikiToken {
 	type = 'quote';

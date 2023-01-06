@@ -42,15 +42,17 @@
  */
 
 const {externalUse} = require('../util/debug'),
+	{text} = require('../util/string'),
 	Ranges = require('../lib/ranges'),
-	AstElement = require('../lib/element'),
 	assert = require('assert/strict'),
-	/** @type {Parser} */ Parser = require('..');
+	Parser = require('..'),
+	AstElement = require('../lib/element'),
+	Text = require('../lib/text');
 const {MAX_STAGE, aliases} = Parser;
 
 /**
  * 所有节点的基类
- * @classdesc `{childNodes: ...(string|Token)}`
+ * @classdesc `{childNodes: ...(Text|Token)}`
  */
 class Token extends AstElement {
 	type = 'root';
@@ -96,11 +98,12 @@ class Token extends AstElement {
 	/**
 	 * 深拷贝所有子节点
 	 * @complexity `n`
+	 * @returns {(Text|Token)[]}
 	 */
 	cloneChildren() {
 		return !Parser.debugging && externalUse('cloneChildren')
 			? this.debugOnly('cloneChildren')
-			: this.childNodes.map(child => typeof child === 'string' ? child : child.cloneNode());
+			: this.childNodes.map(child => child.cloneNode());
 	}
 
 	/**
@@ -235,7 +238,7 @@ class Token extends AstElement {
 	/**
 	 * @override
 	 * @param {number} i 移除位置
-	 * @returns {string|Token}
+	 * @returns {Text|Token}
 	 * @complexity `n`
 	 * @throws `Error` 不可移除的子节点
 	 */
@@ -264,13 +267,17 @@ class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {string|Text|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`
+	 * @returns {T extends Token ? Token : Text}
 	 * @throws `RangeError` 不可插入的子节点
 	 */
 	insertAt(token, i = this.childNodes.length) {
+		if (typeof token === 'string') {
+			token = new Text(token);
+		}
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable)
@@ -286,7 +293,7 @@ class Token extends AstElement {
 			}
 		}
 		super.insertAt(token, i);
-		if (typeof token !== 'string' && token.type === 'root') {
+		if (token.type === 'root') {
 			token.type = 'plain';
 		}
 		return token;
@@ -390,11 +397,10 @@ class Token extends AstElement {
 			return undefined;
 		}
 		const {childNodes} = this,
-			headings = [...childNodes.entries()]
-				.filter(([, child]) => typeof child !== 'string' && child.type === 'heading')
-				.map(/** @param {[number, Token]} */ ([i, {name}]) => [i, Number(name)]),
+			headings = [...childNodes.entries()].filter(([, {type}]) => type === 'heading')
+				.map(([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
-			/** @type {(string|Token)[][]} */ sections = new Array(headings.length);
+			/** @type {(Text|Token)[][]} */ sections = new Array(headings.length);
 		for (let i = 0; i < headings.length; i++) {
 			const [index, level] = headings[i];
 			for (let j = level; j < 6; j++) {
@@ -485,24 +491,24 @@ class Token extends AstElement {
 			throw new Error(`${this.constructor.name} 不接受 QuoteToken 作为子节点！`);
 		}
 		for (const quote of this.childNodes) {
-			if (typeof quote !== 'string' && quote.type === 'quote') {
-				quote.replaceWith(quote.firstChild);
+			if (quote.type === 'quote') {
+				quote.replaceWith(String(quote));
 			}
 		}
 		this.normalize();
-		/** @type {[number, string][]} */
-		const textNodes = [...this.childNodes.entries()].filter(([, child]) => typeof child === 'string'),
+		/** @type {[number, Text][]} */
+		const textNodes = [...this.childNodes.entries()].filter(([, {type}]) => type === 'text'),
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
 			token = Parser.run(() => {
-				const root = new Token(textNodes.map(([, str]) => str).join(''), this.getAttribute('config'));
+				const root = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
 				return root.setAttribute('stage', 6).parse(7);
 			});
 		for (const quote of token.children.reverse()) {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),
 					n = indices.findLastIndex(textIndex => textIndex <= index);
-				this.splitText(n, index - indices[n]);
-				this.splitText(n + 1, Number(quote.name));
+				this.childNodes[n].splitText(index - indices[n]);
+				this.childNodes[n + 1].splitText(Number(quote.name));
 				this.removeAt(n + 1);
 				this.insertAt(quote, n + 1);
 			}
@@ -573,13 +579,14 @@ class Token extends AstElement {
 	 * 重建wikitext
 	 * @param {string} str 半解析的字符串
 	 * @complexity `n`
+	 * @returns {(Token|Text)[]}
 	 */
 	buildFromStr(str) {
 		return !Parser.debugging && externalUse('buildFromStr')
 			? this.debugOnly('buildFromStr')
 			: str.split(/[\0\x7F]/u).map((s, i) => {
 				if (i % 2 === 0) {
-					return s;
+					return new Text(s);
 				} else if (isNaN(s.at(-1))) {
 					return this.#accum[Number(s.slice(0, -1))];
 				}
@@ -590,6 +597,7 @@ class Token extends AstElement {
 	/**
 	 * 将占位符替换为子Token
 	 * @complexity `n`
+	 * @this {Token & {firstChild: Text}}
 	 */
 	build() {
 		if (!Parser.debugging && externalUse('build')) {
@@ -597,8 +605,8 @@ class Token extends AstElement {
 		}
 		this.#stage = MAX_STAGE;
 		const {childNodes: {length}, firstChild} = this;
-		if (length === 1 && typeof firstChild === 'string' && firstChild.includes('\0')) {
-			this.replaceChildren(...this.buildFromStr(firstChild));
+		if (length === 1 && firstChild.type === 'text' && firstChild.data.includes('\0')) {
+			this.replaceChildren(...this.buildFromStr(firstChild.data));
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
@@ -641,30 +649,40 @@ class Token extends AstElement {
 
 	/**
 	 * 解析HTML注释和扩展标签
+	 * @this {Token & {firstChild: Text}}
 	 * @param {boolean} includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
-		this.setText(parseCommentAndExt(this.firstChild, this.#config, this.#accum, includeOnly));
+		this.firstChild.replaceData(parseCommentAndExt(this.firstChild.data, this.#config, this.#accum, includeOnly));
 	}
 
-	/** 解析花括号 */
+	/**
+	 * 解析花括号
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
-		this.setText(parseBrackets(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseBrackets(this.firstChild.data, this.#config, this.#accum));
 	}
 
-	/** 解析HTML标签 */
+	/**
+	 * 解析HTML标签
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseHtml() {
 		const parseHtml = require('../parser/html');
-		this.setText(parseHtml(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseHtml(this.firstChild.data, this.#config, this.#accum));
 	}
 
-	/** 解析表格 */
+	/**
+	 * 解析表格
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseTable() {
 		const parseTable = require('../parser/table'),
 			TableToken = require('./table');
-		this.setText(parseTable(this, this.#config, this.#accum));
+		this.firstChild.replaceData(parseTable(this, this.#config, this.#accum));
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
@@ -679,60 +697,75 @@ class Token extends AstElement {
 		}
 	}
 
-	/** 解析\<hr\>和状态开关 */
+	/**
+	 * 解析\<hr\>和状态开关
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseHrAndDoubleUndescore() {
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
-		this.setText(parseHrAndDoubleUnderscore(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseHrAndDoubleUnderscore(this.firstChild.data, this.#config, this.#accum));
 	}
 
-	/** 解析内部链接 */
+	/**
+	 * 解析内部链接
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
-		this.setText(parseLinks(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseLinks(this.firstChild.data, this.#config, this.#accum));
 	}
 
 	/**
 	 * 解析单引号
-	 * @this {Token & {firstChild: string}}
+	 * @this {Token & {firstChild: Text}}
 	 */
 	#parseQuotes() {
 		const parseQuotes = require('../parser/quotes');
-		const lines = this.firstChild.split('\n');
+		const lines = this.firstChild.data.split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i], this.#config, this.#accum);
 		}
-		this.setText(lines.join('\n'));
+		this.firstChild.replaceData(lines.join('\n'));
 	}
 
-	/** 解析外部链接 */
+	/**
+	 * 解析外部链接
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseExternalLinks() {
 		const parseExternalLinks = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseExternalLinks(this.firstChild.data, this.#config, this.#accum));
 	}
 
-	/** 解析自由外链 */
+	/**
+	 * 解析自由外链
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseMagicLinks(this.firstChild.data, this.#config, this.#accum));
 	}
 
 	/**
 	 * 解析列表
-	 * @this {Token & {firstChild: string}}
+	 * @this {Token & {firstChild: Text}}
 	 */
 	#parseList() {
 		const parseList = require('../parser/list');
-		const lines = this.firstChild.split('\n');
+		const lines = this.firstChild.data.split('\n');
 		for (let i = this.type === 'root' ? 0 : 1; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
-		this.setText(lines.join('\n'));
+		this.firstChild.replaceData(lines.join('\n'));
 	}
 
-	/** 解析语言变体转换 */
+	/**
+	 * 解析语言变体转换
+	 * @this {Token & {firstChild: Text}}
+	 */
 	#parseConverter() {
 		const parseConverter = require('../parser/converter');
-		this.setText(parseConverter(this.firstChild, this.#config, this.#accum));
+		this.firstChild.replaceData(parseConverter(this.firstChild.data, this.#config, this.#accum));
 	}
 }
 

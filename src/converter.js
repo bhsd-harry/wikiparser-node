@@ -1,7 +1,7 @@
 'use strict';
 
 const {text} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.'),
 	ConverterFlagsToken = require('./converterFlags'),
 	ConverterRuleToken = require('./converterRule');

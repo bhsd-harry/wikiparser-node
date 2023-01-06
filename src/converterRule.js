@@ -2,7 +2,7 @@
 
 const {undo} = require('../util/debug'),
 	{noWrap} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 

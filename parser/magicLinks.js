@@ -1,17 +1,17 @@
 'use strict';
 
 const {extUrlChar} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..');
+	Parser = require('..');
 
 /**
  * 解析自由外链
- * @param {string} firstChild wikitext
+ * @param {string} wikitext wikitext
  * @param {accum} accum
  */
-const parseMagicLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
+const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const MagicLinkToken = require('../src/magicLink');
 	const regex = new RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'giu');
-	return firstChild.replace(regex, /** @param {string} p1 */ (m, p1) => {
+	return wikitext.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
 			url = m;
 		const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);

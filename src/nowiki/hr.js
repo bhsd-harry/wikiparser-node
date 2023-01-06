@@ -1,12 +1,12 @@
 'use strict';
 
 const sol = require('../../mixin/sol'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * `<hr>`
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class HrToken extends sol(NowikiToken) {
 	type = 'hr';

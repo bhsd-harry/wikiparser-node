@@ -2,7 +2,7 @@
 
 const {noWrap} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.');
 
 /**

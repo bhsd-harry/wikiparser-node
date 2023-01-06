@@ -2,7 +2,7 @@
 
 const fixedToken = require('../mixin/fixedToken'),
 	sol = require('../mixin/sol'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.');
 
 /**

@@ -18,7 +18,7 @@ const /** @type {Parser} */ Parser = {
 	parsers: {},
 
 	aliases: [
-		['String'],
+		['Text'],
 		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
 		['ArgToken', 'TranscludeToken', 'HeadingToken'],
 		['HtmlToken'],
@@ -138,15 +138,14 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {
-		title = String(title);
 		let /** @type {Token} */ token;
 		if (!halfParsed) {
 			const Token = require('./src');
-			token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce());
+			token = this.run(() => new Token(String(title), config).parseOnce(0, include).parseOnce());
 			title = token.firstChild;
 		}
 		const Title = require('./lib/title');
-		const titleObj = new Title(title, defaultNs, config);
+		const titleObj = new Title(String(title), defaultNs, config);
 		if (token) {
 			/**
 			 * 重建部分属性值

@@ -1,20 +1,21 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	Text = require('../lib/text');
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
- * @param {{firstChild: string, type: string}} root 根节点
+ * @param {{firstChild: Text, type: string}} root 根节点
  * @param {accum} accum
  */
-const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = []) => {
+const parseTable = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {
 	const Token = require('../src'),
 		TableToken = require('../src/table'),
 		TrToken = require('../src/table/tr'),
 		TdToken = require('../src/table/td'),
 		DdToken = require('../src/nowiki/dd');
 	const /** @type {TrToken[]} */ stack = [],
-		lines = firstChild.split('\n');
+		lines = data.split('\n');
 	let out = type === 'root' ? '' : `\n${lines.shift()}`;
 
 	/**
@@ -27,9 +28,9 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			out += str;
 			return;
 		}
-		const {lastElementChild} = top;
+		const /** @type {Token & {lastElementChild: {firstChild: Text}}} */ {lastElementChild} = top;
 		if (lastElementChild.isPlain()) {
-			lastElementChild.setText(lastElementChild.firstChild + str, 0);
+			lastElementChild.firstChild.appendData(str);
 		} else {
 			const token = new Token(str, config, true, accum);
 			token.type = 'table-inter';

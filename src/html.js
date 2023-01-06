@@ -3,7 +3,7 @@
 const {noWrap} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
 	attributeParent = require('../mixin/attributeParent'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -26,7 +26,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		if (!value) {
 			this.#closing = false;
 			return;
-		} else if (this.selfClosing) {
+		} else if (this.#selfClosing) {
 			throw new Error(`这是一个自闭合标签！`);
 		}
 		const {html: [,, tags]} = this.getAttribute('config');
@@ -43,16 +43,15 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/** @throws `Error` 闭合标签或无效自闭合标签 */
 	set selfClosing(value) {
-		const {closing, name} = this;
 		if (!value) {
 			this.#selfClosing = false;
 			return;
-		} else if (closing) {
+		} else if (this.#closing) {
 			throw new Error('这是一个闭合标签！');
 		}
 		const {html: [tags]} = this.getAttribute('config');
-		if (tags.includes(name)) {
-			throw new Error(`<${name}>标签自闭合无效！`);
+		if (tags.includes(this.name)) {
+			throw new Error(`<${this.name}>标签自闭合无效！`);
 		}
 		this.#selfClosing = true;
 	}
@@ -77,7 +76,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	cloneNode() {
 		const [attr] = this.cloneChildren(),
 			config = this.getAttribute('config');
-		return Parser.run(() => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config));
+		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config));
 	}
 
 	/**
@@ -97,17 +96,17 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	toString(selector) {
 		return selector && this.matches(selector)
 			? ''
-			: `<${this.closing ? '/' : ''}${this.#tag}${super.toString(selector)}${this.selfClosing ? '/' : ''}>`;
+			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(selector)}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/** @override */
 	getPadding() {
-		return this.#tag.length + (this.closing ? 2 : 1);
+		return this.#tag.length + (this.#closing ? 2 : 1);
 	}
 
 	/** @override */
 	text() {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.text()}${this.selfClosing ? '/' : ''}>`;
+		return `<${this.#closing ? '/' : ''}${this.#tag}${super.text()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/**
@@ -177,8 +176,8 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	fix() {
 		const config = this.getAttribute('config'),
-			{parentNode, selfClosing, name, firstElementChild} = this;
-		if (!parentNode || !selfClosing || !config.html[0].includes(name)) {
+			{parentNode, name, firstElementChild} = this;
+		if (!parentNode || !this.#selfClosing || !config.html[0].includes(name)) {
 			return;
 		} else if (firstElementChild.text().trim()) {
 			this.#localMatch();

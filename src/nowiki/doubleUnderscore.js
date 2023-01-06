@@ -1,12 +1,13 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
-	/** @type {Parser} */ Parser = require('../..'),
+	Parser = require('../..'),
+	Text = require('../../lib/text'),
 	NowikiToken = require('.');
 
 /**
  * 状态开关
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [Text]}`
  */
 class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	type = 'double-underscore';
@@ -20,18 +21,21 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		this.setAttribute('name', word.toLowerCase());
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {{firstChild: Text}}
+	 */
 	cloneNode() {
-		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild, this.getAttribute('config')));
+		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @this {{firstChild: string}}
+	 * @this {{firstChild: Text}}
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		return selector && this.matches(selector) ? '' : `__${this.firstChild}__`;
+		return selector && this.matches(selector) ? '' : `__${this.firstChild.data}__`;
 	}
 
 	/** @override */

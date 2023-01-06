@@ -1,10 +1,11 @@
 import Ranges from '../lib/ranges';
 import Token from '../src';
+import Text from '../lib/text';
 import ParameterToken from '../src/parameter';
 
 declare global {
 	type TokenAttribute<T> =
-		T extends 'childNodes' ? (string|Token)[] :
+		T extends 'childNodes' ? (Text|Token)[] :
 		T extends 'parentNode' ? Token|undefined :
 		T extends 'optional'|'tags'|'flags' ? string[] :
 		T extends 'stage' ? number :
