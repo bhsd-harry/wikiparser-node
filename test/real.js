@@ -58,7 +58,7 @@ const {argv: [,, site = '']} = process,
 		'converter-rule-noconvert',
 		'converter-rule-to',
 	]),
-	possibleSyntax = /[[\]{}<>]/gu;
+	possibleSyntax = /[{}<]|(?<!=)>|>(?!\s*zh-(?:han[st]|cn|tw|hk|mo|sg|my)\s*:)|\[+(?![^[]*\])|((?:^|\])[^[]*?)\]+/gu;
 
 Parser.debugging = true;
 
@@ -102,7 +102,7 @@ const getPages = async url => {
 							if (child && typeof child === 'string') {
 								first = i;
 								if (child.search(possibleSyntax) >= 0) {
-									token.setText(child.replaceAll(possibleSyntax, ''), i);
+									token.setText(child.replaceAll(possibleSyntax, '$1'), i);
 								}
 							}
 						}
