@@ -141,7 +141,12 @@ const /** @type {Parser} */ Parser = {
 		let /** @type {Token} */ token;
 		if (!halfParsed) {
 			const Token = require('./src');
-			token = this.run(() => new Token(String(title), config).parseOnce(0, include).parseOnce());
+			token = this.run(() => {
+				const newToken = new Token(String(title), config),
+					parseOnce = newToken.getAttribute('parseOnce');
+				parseOnce(0, include);
+				return parseOnce();
+			});
 			title = token.firstChild;
 		}
 		const Title = require('./lib/title');
@@ -154,7 +159,7 @@ const /** @type {Parser} */ Parser = {
 			const build = keys => {
 				for (const key of keys) {
 					if (titleObj[key].includes('\0')) {
-						titleObj[key] = text(token.buildFromStr(titleObj[key]));
+						titleObj[key] = text(token.getAttribute('buildFromStr')(titleObj[key]));
 					}
 				}
 			};
@@ -210,7 +215,7 @@ const /** @type {Parser} */ Parser = {
 			const halfParsed = stage < this.MAX_STAGE,
 				token = new Token(wikitext, this.getConfig(), halfParsed);
 			if (halfParsed) {
-				token.setAttribute('stage', stage).parseOnce(stage, include);
+				token.setAttribute('stage', stage).getAttribute('parseOnce')(stage, include);
 			} else {
 				token.parse(undefined, include);
 			}

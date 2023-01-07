@@ -28,7 +28,7 @@ class GalleryImageToken extends FileToken {
 			token = new Token(text, config, true, accum);
 			token.type = 'temp';
 			for (let n = 1; n < Parser.MAX_STAGE; n++) {
-				token.parseOnce();
+				token.getAttribute('parseOnce')();
 			}
 			accum.splice(accum.indexOf(token), 1);
 		}

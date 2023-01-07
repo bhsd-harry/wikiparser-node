@@ -31,7 +31,7 @@ class ArgToken extends Token {
 				this.appendChild(token.setAttribute('stage', 2));
 			}
 		}
-		this.protectChildren(0);
+		this.getAttribute('protectChildren')(0);
 	}
 
 	/** @override */

@@ -87,7 +87,7 @@ class LinkToken extends Token {
 			inner.type = 'link-text';
 			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
-		this.setAttribute('name', title.title).protectChildren(0);
+		this.setAttribute('name', title.title).getAttribute('protectChildren')(0);
 	}
 
 	/** 生成Title对象 */

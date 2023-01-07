@@ -84,7 +84,7 @@ class TranscludeToken extends Token {
 						}`, config, accum, {'Stage-1': ':', '!ExtToken': ''});
 						this.appendChild(invoke);
 					}
-					this.protectChildren('1:3');
+					this.getAttribute('protectChildren')('1:3');
 				}
 			}
 		}
@@ -111,7 +111,7 @@ class TranscludeToken extends Token {
 			}
 			this.appendChild(new ParameterToken(...part, config, accum));
 		}
-		this.protectChildren(0);
+		this.getAttribute('protectChildren')(0);
 	}
 
 	/** @override */
@@ -131,7 +131,7 @@ class TranscludeToken extends Token {
 	/** @override */
 	afterBuild() {
 		if (this.name.includes('\0')) {
-			this.setAttribute('name', text(this.buildFromStr(this.name)));
+			this.setAttribute('name', text(this.getAttribute('buildFromStr')(this.name)));
 		}
 		if (this.matches('template, magic-word#invoke')) {
 			/**
@@ -319,9 +319,8 @@ class TranscludeToken extends Token {
 	getArgs(key, exact, copy = true) {
 		if (typeof key !== 'string' && typeof key !== 'number') {
 			this.typeError('getArgs', 'String', 'Number');
-		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
-			this.debugOnly('getArgs');
 		}
+		copy ||= !Parser.debugging && externalUse('getArgs');
 		const keyStr = String(key).trim();
 		let args = this.#args[keyStr];
 		if (!args) {

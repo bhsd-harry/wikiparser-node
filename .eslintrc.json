@@ -500,6 +500,7 @@
 				"exceptions": [
 					"Parser.running",
 					"Parser.debugging",
+					"Parser.warning",
 					"Parser.classes"
 				]
 			}

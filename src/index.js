@@ -64,6 +64,86 @@ class Token extends AstElement {
 	#protectedChildren = new Ranges();
 	/** @type {boolean} */ #include;
 
+	/**
+	 * 保护部分子节点不被移除
+	 * @param {...string|number|Range} args 子节点范围
+	 */
+	#protectChildren = (...args) => {
+		this.#protectedChildren.push(...new Ranges(args));
+	};
+
+	/**
+	 * 将维基语法替换为占位符
+	 * @param {number} n 解析阶段
+	 * @param {boolean} include 是否嵌入
+	 */
+	#parseOnce = (n = this.#stage, include = false) => {
+		if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
+			return this;
+		}
+		switch (n) {
+			case 0:
+				if (this.type === 'root') {
+					this.#accum.shift();
+				}
+				this.#parseCommentAndExt(include);
+				break;
+			case 1:
+				this.#parseBrackets();
+				break;
+			case 2:
+				this.#parseHtml();
+				break;
+			case 3:
+				this.#parseTable();
+				break;
+			case 4:
+				this.#parseHrAndDoubleUndescore();
+				break;
+			case 5:
+				this.#parseLinks();
+				break;
+			case 6:
+				this.#parseQuotes();
+				break;
+
+			case 7:
+				this.#parseExternalLinks();
+				break;
+			case 8:
+				this.#parseMagicLinks();
+				break;
+			case 9:
+				this.#parseList();
+				break;
+			case 10:
+				this.#parseConverter();
+				// no default
+		}
+		if (this.type === 'root') {
+			for (const token of this.#accum) {
+				token.getAttribute('parseOnce')(n, include);
+			}
+		}
+		this.#stage++;
+		return this;
+	};
+
+	/**
+	 * 重建wikitext
+	 * @param {string} str 半解析的字符串
+	 * @complexity `n`
+	 * @returns {(Token|AstText)[]}
+	 */
+	#buildFromStr = str => str.split(/[\0\x7F]/u).map((s, i) => {
+		if (i % 2 === 0) {
+			return new AstText(s);
+		} else if (isNaN(s.at(-1))) {
+			return this.#accum[Number(s.slice(0, -1))];
+		}
+		throw new Error(`解析错误！未正确标记的 Token：${s}`);
+	});
+
 	/** 所有图片，包括图库 */
 	get images() {
 		return this.querySelectorAll('file, gallery-image');
@@ -118,7 +198,7 @@ class Token extends AstElement {
 			const token = new Token(undefined, this.#config, false, [], this.#acceptable);
 			token.type = this.type;
 			token.append(...cloned);
-			token.protectChildren(...this.#protectedChildren);
+			token.getAttribute('protectChildren')(...this.#protectedChildren);
 			return token;
 		});
 	}
@@ -139,8 +219,14 @@ class Token extends AstElement {
 				return this.#accum;
 			case 'acceptable':
 				return this.#acceptable ? {...this.#acceptable} : null;
+			case 'protectChildren':
+				return this.#protectChildren;
 			case 'protectedChildren':
 				return new Ranges(this.#protectedChildren);
+			case 'parseOnce':
+				return this.#parseOnce;
+			case 'buildFromStr':
+				return this.#buildFromStr;
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include;
@@ -220,17 +306,6 @@ class Token extends AstElement {
 	/** 是否是普通节点 */
 	isPlain() {
 		return this.constructor === Token;
-	}
-
-	/**
-	 * 保护部分子节点不被移除
-	 * @param {...string|number|Range} args 子节点范围
-	 */
-	protectChildren(...args) {
-		if (!Parser.debugging && externalUse('protectChildren')) {
-			this.debugOnly('protectChildren');
-		}
-		this.#protectedChildren.push(...new Ranges(args));
 	}
 
 	/**
@@ -515,84 +590,6 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * 将维基语法替换为占位符
-	 * @param {number} n 解析阶段
-	 * @param {boolean} include 是否嵌入
-	 */
-	parseOnce(n = this.#stage, include = false) {
-		if (!Parser.debugging && externalUse('parseOnce')) {
-			this.debugOnly('parseOnce');
-		} else if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
-			return this;
-		}
-		switch (n) {
-			case 0:
-				if (this.type === 'root') {
-					this.#accum.shift();
-				}
-				this.#parseCommentAndExt(include);
-				break;
-			case 1:
-				this.#parseBrackets();
-				break;
-			case 2:
-				this.#parseHtml();
-				break;
-			case 3:
-				this.#parseTable();
-				break;
-			case 4:
-				this.#parseHrAndDoubleUndescore();
-				break;
-			case 5:
-				this.#parseLinks();
-				break;
-			case 6:
-				this.#parseQuotes();
-				break;
-
-			case 7:
-				this.#parseExternalLinks();
-				break;
-			case 8:
-				this.#parseMagicLinks();
-				break;
-			case 9:
-				this.#parseList();
-				break;
-			case 10:
-				this.#parseConverter();
-				// no default
-		}
-		if (this.type === 'root') {
-			for (const token of this.#accum) {
-				token.parseOnce(n, include);
-			}
-		}
-		this.#stage++;
-		return this;
-	}
-
-	/**
-	 * 重建wikitext
-	 * @param {string} str 半解析的字符串
-	 * @complexity `n`
-	 * @returns {(Token|AstText)[]}
-	 */
-	buildFromStr(str) {
-		return !Parser.debugging && externalUse('buildFromStr')
-			? this.debugOnly('buildFromStr')
-			: str.split(/[\0\x7F]/u).map((s, i) => {
-				if (i % 2 === 0) {
-					return new AstText(s);
-				} else if (isNaN(s.at(-1))) {
-					return this.#accum[Number(s.slice(0, -1))];
-				}
-				throw new Error(`解析错误！未正确标记的 Token：${s}`);
-			});
-	}
-
-	/**
 	 * 将占位符替换为子Token
 	 * @complexity `n`
 	 */
@@ -604,7 +601,7 @@ class Token extends AstElement {
 		const {childNodes: {length}, firstChild} = this,
 			str = String(firstChild);
 		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
-			this.replaceChildren(...this.buildFromStr(str));
+			this.replaceChildren(...this.#buildFromStr(str));
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
@@ -635,12 +632,12 @@ class Token extends AstElement {
 	parse(n = MAX_STAGE, include = false) {
 		if (typeof n !== 'number') {
 			this.typeError('parse', 'Number');
-		} else if (n < MAX_STAGE && !Parser.debugging && externalUse('parse')) {
+		} else if (n < MAX_STAGE && !Parser.debugging && Parser.warning && externalUse('parse')) {
 			Parser.warn('指定解析层级的方法仅供熟练用户使用！');
 		}
 		this.#include = Boolean(include);
 		while (this.#stage < n) {
-			this.parseOnce(this.#stage, include);
+			this.#parseOnce(this.#stage, include);
 		}
 		return n ? this.build().afterBuild() : this;
 	}

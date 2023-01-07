@@ -137,9 +137,8 @@ class FileToken extends LinkToken {
 	getArgs(key, copy = true) {
 		if (typeof key !== 'string') {
 			this.typeError('getArgs', 'String');
-		} else if (!copy && !Parser.debugging && externalUse('getArgs')) {
-			this.debugOnly('getArgs');
 		}
+		copy ||= !Parser.debugging && externalUse('getArgs');
 		let args = this.#args[key];
 		if (!args) {
 			args = new Set(this.getAllArgs().filter(({name}) => key === name));

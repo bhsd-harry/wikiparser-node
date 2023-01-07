@@ -20,6 +20,9 @@ declare global {
 		T extends 'childNodes' ? (AstText|Token)[] :
 		T extends 'verifyChild' ? (i: number, addition: number) => void :
 		T extends 'matchesAttr' ? (key: string, equal: string, val: string, i: string) => boolean :
+		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
+		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
+		T extends 'protectChildren' ? (...args: string|number|Range) => void :
 		string;
 }
 

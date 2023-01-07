@@ -60,7 +60,7 @@ class ExtLinkToken extends Token {
 			inner.type = 'ext-link-text';
 			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
-		this.protectChildren(0);
+		this.getAttribute('protectChildren')(0);
 	}
 
 	/** @override */

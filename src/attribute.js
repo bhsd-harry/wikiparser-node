@@ -130,7 +130,12 @@ class AttributeToken extends Token {
 		if (this.type !== 'ext-attr' && !Parser.running) {
 			const config = this.getAttribute('config'),
 				include = this.getAttribute('include');
-			token = Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce());
+			token = Parser.run(() => {
+				const newToken = new Token(string, config),
+					parseOnce = newToken.getAttribute('parseOnce');
+				parseOnce(0, include);
+				return parseOnce();
+			});
 			string = String(token);
 		}
 		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
@@ -140,7 +145,7 @@ class AttributeToken extends Token {
 		 * @param {string|boolean} str 半解析的标签属性文本
 		 */
 		const build = str =>
-			typeof str === 'boolean' || !token ? str : token.buildFromStr(str).map(String).join('');
+			typeof str === 'boolean' || !token ? str : token.getAttribute('buildFromStr')(str).map(String).join('');
 		for (const [, key,, quoted, unquoted] of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gsu)
 		) {
@@ -188,15 +193,16 @@ class AttributeToken extends Token {
 	/** @override */
 	afterBuild() {
 		if (this.type !== 'ext-attr') {
+			const buildFromStr = this.getAttribute('buildFromStr');
 			for (let [key, text] of this.#attr) {
 				let built = false;
 				if (key.includes('\0')) {
 					this.#attr.delete(key);
-					key = this.buildFromStr(key).map(String).join('');
+					key = buildFromStr(key).map(String).join('');
 					built = true;
 				}
 				if (typeof text === 'string' && text.includes('\0')) {
-					text = this.buildFromStr(text).map(String).join('');
+					text = buildFromStr(text).map(String).join('');
 					built = true;
 				}
 				if (built) {
@@ -265,7 +271,12 @@ class AttributeToken extends Token {
 			include = this.getAttribute('include'),
 			parsedKey = this.type === 'ext-attr' || init
 				? key
-				: Parser.run(() => String(new Token(key, config).parseOnce(0, include).parseOnce()));
+				: Parser.run(() => {
+					const token = new Token(key, config),
+						parseOnce = token.getAttribute('parseOnce');
+					parseOnce(0, include);
+					return String(parseOnce());
+				});
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			if (init) {
 				return false;
