@@ -597,16 +597,16 @@ class Token extends AstElement {
 	/**
 	 * 将占位符替换为子Token
 	 * @complexity `n`
-	 * @this {Token & {firstChild: Text}}
 	 */
 	build() {
 		if (!Parser.debugging && externalUse('build')) {
 			this.debugOnly('build');
 		}
 		this.#stage = MAX_STAGE;
-		const {childNodes: {length}, firstChild} = this;
-		if (length === 1 && firstChild.type === 'text' && firstChild.data.includes('\0')) {
-			this.replaceChildren(...this.buildFromStr(firstChild.data));
+		const {childNodes: {length}, firstChild} = this,
+			str = String(firstChild);
+		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
+			this.replaceChildren(...this.buildFromStr(str));
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
@@ -649,40 +649,30 @@ class Token extends AstElement {
 
 	/**
 	 * 解析HTML注释和扩展标签
-	 * @this {Token & {firstChild: Text}}
 	 * @param {boolean} includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
-		this.firstChild.replaceData(parseCommentAndExt(this.firstChild.data, this.#config, this.#accum, includeOnly));
+		this.setText(parseCommentAndExt(String(this), this.#config, this.#accum, includeOnly));
 	}
 
-	/**
-	 * 解析花括号
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析花括号 */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
-		this.firstChild.replaceData(parseBrackets(this.firstChild.data, this.#config, this.#accum));
+		this.setText(parseBrackets(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析HTML标签
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析HTML标签 */
 	#parseHtml() {
 		const parseHtml = require('../parser/html');
-		this.firstChild.replaceData(parseHtml(this.firstChild.data, this.#config, this.#accum));
+		this.setText(parseHtml(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析表格
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析表格 */
 	#parseTable() {
 		const parseTable = require('../parser/table'),
 			TableToken = require('./table');
-		this.firstChild.replaceData(parseTable(this, this.#config, this.#accum));
+		this.setText(parseTable(this, this.#config, this.#accum));
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
@@ -697,75 +687,54 @@ class Token extends AstElement {
 		}
 	}
 
-	/**
-	 * 解析\<hr\>和状态开关
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析\<hr\>和状态开关 */
 	#parseHrAndDoubleUndescore() {
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
-		this.firstChild.replaceData(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
+		this.setText(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析内部链接
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析内部链接 */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
-		this.firstChild.replaceData(parseLinks(this.firstChild.data, this.#config, this.#accum));
+		this.setText(parseLinks(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析单引号
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析单引号 */
 	#parseQuotes() {
 		const parseQuotes = require('../parser/quotes');
-		const lines = this.firstChild.data.split('\n');
+		const lines = String(this).split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i], this.#config, this.#accum);
 		}
-		this.firstChild.replaceData(lines.join('\n'));
+		this.setText(lines.join('\n'));
 	}
 
-	/**
-	 * 解析外部链接
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析外部链接 */
 	#parseExternalLinks() {
 		const parseExternalLinks = require('../parser/externalLinks');
-		this.firstChild.replaceData(parseExternalLinks(this.firstChild.data, this.#config, this.#accum));
+		this.setText(parseExternalLinks(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析自由外链
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析自由外链 */
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
-		this.firstChild.replaceData(parseMagicLinks(this.firstChild.data, this.#config, this.#accum));
+		this.setText(parseMagicLinks(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析列表
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析列表 */
 	#parseList() {
 		const parseList = require('../parser/list');
-		const lines = this.firstChild.data.split('\n');
+		const lines = String(this).split('\n');
 		for (let i = this.type === 'root' ? 0 : 1; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
-		this.firstChild.replaceData(lines.join('\n'));
+		this.setText(lines.join('\n'));
 	}
 
-	/**
-	 * 解析语言变体转换
-	 * @this {Token & {firstChild: Text}}
-	 */
+	/** 解析语言变体转换 */
 	#parseConverter() {
 		const parseConverter = require('../parser/converter');
-		this.firstChild.replaceData(parseConverter(this.firstChild.data, this.#config, this.#accum));
+		this.setText(parseConverter(String(this), this.#config, this.#accum));
 	}
 }
 

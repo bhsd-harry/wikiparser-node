@@ -93,12 +93,12 @@ class AttributeToken extends Token {
 	#parseAttr() {
 		this.#attr.clear();
 		let string = this.toString('comment, include, noinclude, heading, html'),
-			/** @type {Token & {firstChild: Text}} */ token;
+			token;
 		if (this.type !== 'ext-attr' && !Parser.running) {
 			const config = this.getAttribute('config'),
 				include = this.getAttribute('include');
 			token = Parser.run(() => new Token(string, config).parseOnce(0, include).parseOnce());
-			string = token.firstChild.data;
+			string = String(token);
 		}
 		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
 

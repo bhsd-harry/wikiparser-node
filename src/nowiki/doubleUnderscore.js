@@ -2,7 +2,6 @@
 
 const hidden = require('../../mixin/hidden'),
 	Parser = require('../..'),
-	Text = require('../../lib/text'),
 	NowikiToken = require('.');
 
 /**
@@ -21,21 +20,17 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		this.setAttribute('name', word.toLowerCase());
 	}
 
-	/**
-	 * @override
-	 * @this {{firstChild: Text}}
-	 */
+	/** @override */
 	cloneNode() {
-		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')));
+		return Parser.run(() => new DoubleUnderscoreToken(String(this.firstChild), this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @this {{firstChild: Text}}
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		return selector && this.matches(selector) ? '' : `__${this.firstChild.data}__`;
+		return selector && this.matches(selector) ? '' : `__${String(this.firstChild)}__`;
 	}
 
 	/** @override */

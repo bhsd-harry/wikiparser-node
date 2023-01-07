@@ -28,9 +28,9 @@ const parseTable = ({firstChild: {data}, type}, config = Parser.getConfig(), acc
 			out += str;
 			return;
 		}
-		const /** @type {Token & {lastElementChild: {firstChild: Text}}} */ {lastElementChild} = top;
+		const {lastElementChild} = top;
 		if (lastElementChild.isPlain()) {
-			lastElementChild.firstChild.appendData(str);
+			lastElementChild.setText(String(lastElementChild) + str);
 		} else {
 			const token = new Token(str, config, true, accum);
 			token.type = 'table-inter';

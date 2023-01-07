@@ -2,7 +2,6 @@
 
 const hidden = require('../../mixin/hidden'),
 	Parser = require('../..'),
-	Text = require('../../lib/text'),
 	NowikiToken = require('.');
 
 /**
@@ -13,12 +12,9 @@ class CommentToken extends hidden(NowikiToken) {
 	type = 'comment';
 	closed;
 
-	/**
-	 * 内部wikitext
-	 * @this {{firstChild: Text}}
-	 */
+	/** 内部wikitext */
 	get innerText() {
-		return this.firstChild.data;
+		return String(this.firstChild);
 	}
 
 	/**
@@ -32,28 +28,23 @@ class CommentToken extends hidden(NowikiToken) {
 		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
-	/**
-	 * @override
-	 * @this {CommentToken & {firstChild: Text}}
-	 */
+	/** @override */
 	cloneNode() {
-		return Parser.run(() => new CommentToken(this.firstChild.data, this.closed, this.getAttribute('config')));
+		return Parser.run(() => new CommentToken(String(this.firstChild), this.closed, this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @this {CommentToken & {firstChild: Text}}
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		const {firstChild: {data}, closed, nextSibling} = this;
-		if (!closed && nextSibling) {
+		if (!this.closed && this.nextSibling) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
 		return selector && this.matches(selector)
 			? ''
-			: `<!--${data}${this.closed ? '-->' : ''}`; // eslint-disable-line unicorn/consistent-destructuring
+			: `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @override */

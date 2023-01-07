@@ -2,7 +2,6 @@
 
 const hidden = require('../../mixin/hidden'),
 	Parser = require('../..'),
-	Text = require('../../lib/text'),
 	TagPairToken = require('.');
 
 /**
@@ -23,16 +22,13 @@ class IncludeToken extends hidden(TagPairToken) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum, {Text: [0, 1]});
 	}
 
-	/**
-	 * @override
-	 * @this {IncludeToken & {firstChild: Text, lastChild: Text}}
-	 */
+	/** @override */
 	cloneNode() {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
-			inner = this.selfClosing ? undefined : this.lastChild.data,
+			inner = this.selfClosing ? undefined : String(this.lastChild),
 			closing = this.selfClosing || !this.closed ? undefined : tags[1],
-			token = Parser.run(() => new IncludeToken(tags[0], this.firstChild.data, inner, closing, config));
+			token = Parser.run(() => new IncludeToken(tags[0], String(this.firstChild), inner, closing, config));
 		return token;
 	}
 

@@ -15,8 +15,9 @@ const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)
  */
 const escapeTable = syntax => {
 	const wikitext = syntax.childNodes.map(
-			/** @param {Text} child */ child => child.type === 'text'
-				? child.data.replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
+			child => child.type === 'text'
+				? String(child).replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}')
+					.replaceAll('||', '{{!!}}')
 					.replaceAll('|', '{{!}}')
 				: String(child),
 		).join(''),
