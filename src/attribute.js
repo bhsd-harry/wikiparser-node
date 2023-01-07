@@ -16,6 +16,40 @@ class AttributeToken extends Token {
 	#sanitized = true;
 
 	/**
+	 * @override
+	 * @param {string} key 属性键
+	 * @param {string|undefined} equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
+	 * @param {string|undefined} val 属性值
+	 * @param {string|undefined} i 是否对大小写不敏感
+	 */
+	#matchesAttr = (key, equal, val, i) => {
+		if (!equal) {
+			return this.hasAttr(key);
+		} else if (!this.hasAttr(key)) {
+			return equal === '!=';
+		}
+		val = toCase(val, i);
+		const attr = this.getAttr(key),
+			thisVal = toCase(attr === true ? '' : attr, i);
+		switch (equal) {
+			case '~=':
+				return attr !== true && thisVal.split(/\s/u).includes(val);
+			case '|=': // 允许`val === ''`
+				return thisVal === val || thisVal.startsWith(`${val}-`);
+			case '^=':
+				return attr !== true && thisVal.startsWith(val);
+			case '$=':
+				return attr !== true && thisVal.endsWith(val);
+			case '*=':
+				return attr !== true && thisVal.includes(val);
+			case '!=':
+				return thisVal !== val;
+			default: // `=`
+				return thisVal === val;
+		}
+	};
+
+	/**
 	 * getAttr()方法的getter写法
 	 * @returns {Record<string, string|true>}
 	 */
@@ -145,6 +179,9 @@ class AttributeToken extends Token {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
+		if (key === 'matchesAttr') {
+			return this.#matchesAttr;
+		}
 		return key === 'attr' ? new Map(this.#attr) : super.getAttribute(key);
 	}
 
@@ -366,43 +403,6 @@ class AttributeToken extends Token {
 		}
 		for (const element of elements) {
 			this.insertAt(element, undefined, done);
-		}
-	}
-
-	/**
-	 * @override
-	 * @param {string} key 属性键
-	 * @param {string|undefined} equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
-	 * @param {string|undefined} val 属性值
-	 * @param {string|undefined} i 是否对大小写不敏感
-	 * @throws `Error` 禁止外部调用
-	 */
-	matchesAttr(key, equal, val, i) {
-		if (externalUse('matchesAttr')) {
-			throw new Error(`禁止外部调用 ${this.constructor.name}.matchesAttr 方法！`);
-		} else if (!equal) {
-			return this.hasAttr(key);
-		} else if (!this.hasAttr(key)) {
-			return equal === '!=';
-		}
-		val = toCase(val, i);
-		const attr = this.getAttr(key),
-			thisVal = toCase(attr === true ? '' : attr, i);
-		switch (equal) {
-			case '~=':
-				return attr !== true && thisVal.split(/\s/u).includes(val);
-			case '|=': // 允许`val === ''`
-				return thisVal === val || thisVal.startsWith(`${val}-`);
-			case '^=':
-				return attr !== true && thisVal.startsWith(val);
-			case '$=':
-				return attr !== true && thisVal.endsWith(val);
-			case '*=':
-				return attr !== true && thisVal.includes(val);
-			case '!=':
-				return thisVal !== val;
-			default: // `=`
-				return thisVal === val;
 		}
 	}
 }
