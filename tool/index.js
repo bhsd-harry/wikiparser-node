@@ -3,6 +3,7 @@
 
 const {typeError, externalUse} = require('../util/debug'),
 	{text, noWrap} = require('../util/string'),
+	Text = require('../lib/text'),
 	Token = require('../src'),
 	assert = require('assert/strict');
 
@@ -10,7 +11,7 @@ const /** @type {WeakMap<Token, Record<string, any>>} */ dataStore = new WeakMap
 
 /**
  * @param {string} method
- * @param {string|Token|Token[]} selector
+ * @param {Text|Token|Token[]} selector
  * @returns {(token: Token) => boolean}
  */
 const matchesGenerator = (method, selector) => {
@@ -38,10 +39,10 @@ class TokenCollection extends Array {
 		for (const token of arr) {
 			if (token === undefined) {
 				continue;
-			} else if (typeof token === 'string') {
+			} else if (token instanceof Text) {
 				this.push(token);
 			} else if (!(token instanceof Token)) {
-				this.typeError('constructor', 'String', 'Token');
+				this.typeError('constructor', 'Text', 'Token');
 			} else if (!this.includes(token)) {
 				this.#roots.add(token.getRootNode());
 				this.push(token);
@@ -61,7 +62,7 @@ class TokenCollection extends Array {
 
 	/** 节点排序 */
 	#sort() {
-		if (this.some(token => typeof token === 'string')) {
+		if (this.some(({type}) => type === 'text')) {
 			return;
 		}
 		const rootArray = [...this.#roots];
@@ -845,9 +846,9 @@ class TokenCollection extends Array {
 	}
 }
 
-/** @param {string|Token|Iterable<string|Token>} tokens */
+/** @param {Text|Token|Iterable<string|Token>} tokens */
 const $ = tokens => {
-	if (typeof tokens === 'string' || tokens instanceof Token) {
+	if (tokens instanceof Text || tokens instanceof Token) {
 		tokens = [tokens];
 	}
 	return new Proxy(new TokenCollection(...tokens), {
