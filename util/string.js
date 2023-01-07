@@ -67,17 +67,17 @@ const noWrap = str => str.replaceAll('\n', '\\n');
 
 /**
  * convert newline in text nodes to single whitespace
- * @param {Token & {childNodes: Text[]}} token 父节点
+ * @param {Token & {childNodes: AstText[]}} token 父节点
  */
 const normalizeSpace = token => {
 	if (token === undefined) {
 		return;
 	}
 	const Token = require('../src'),
-		Text = require('../lib/text');
+		AstText = require('../lib/text');
 	for (const child of token.childNodes) {
 		if (child.type === 'text') {
-			child.setAttribute('data', child.data.replaceAll('\n', ' '));
+			child.replaceData(child.data.replaceAll('\n', ' '));
 		}
 	}
 };
