@@ -100,10 +100,8 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 * @returns {(AstText|Token)[]}
 	 */
-	cloneChildren() {
-		return !Parser.debugging && externalUse('cloneChildren')
-			? this.debugOnly('cloneChildren')
-			: this.childNodes.map(child => child.cloneNode());
+	cloneChildNodes() {
+		return this.childNodes.map(child => child.cloneNode());
 	}
 
 	/**
@@ -115,7 +113,7 @@ class Token extends AstElement {
 		if (!this.isPlain()) {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
 		}
-		const cloned = this.cloneChildren();
+		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new Token(undefined, this.#config, false, [], this.#acceptable);
 			token.type = this.type;

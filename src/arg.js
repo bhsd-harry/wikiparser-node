@@ -36,7 +36,7 @@ class ArgToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const [name, ...cloned] = this.cloneChildren();
+		const [name, ...cloned] = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new ArgToken([''], this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(name);

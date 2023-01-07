@@ -149,7 +149,7 @@ class ImageParameterToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildren(),
+		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
 			token = Parser.run(() => new ImageParameterToken(this.#syntax.replace('$1', ''), config));
 		token.replaceChildren(...cloned);

@@ -31,7 +31,7 @@ class SyntaxToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildren(),
+		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable');
 		return Parser.run(() => {

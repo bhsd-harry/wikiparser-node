@@ -44,7 +44,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/** @override */
 	cloneNode() {
-		const [key, value] = this.cloneChildren(),
+		const [key, value] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);

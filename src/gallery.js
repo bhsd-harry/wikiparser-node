@@ -42,7 +42,7 @@ class GalleryToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildren(),
+		const cloned = this.cloneChildNodes(),
 			token = Parser.run(() => new GalleryToken(undefined, this.getAttribute('config')));
 		token.append(...cloned);
 		return token;

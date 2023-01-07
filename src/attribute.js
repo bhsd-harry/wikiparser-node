@@ -164,7 +164,7 @@ class AttributeToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildren();
+		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new AttributeToken(undefined, this.type, this.name, this.getAttribute('config'));
 			token.append(...cloned);

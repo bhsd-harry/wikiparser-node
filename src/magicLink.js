@@ -60,7 +60,7 @@ class MagicLinkToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildren(),
+		const cloned = this.cloneChildNodes(),
 			token = Parser.run(() => new MagicLinkToken(
 				undefined, this.type === 'ext-link-url', this.getAttribute('config'),
 			));

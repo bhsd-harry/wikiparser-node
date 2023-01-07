@@ -65,7 +65,7 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const [url, text] = this.cloneChildren(),
+		const [url, text] = this.cloneChildNodes(),
 			token = Parser.run(() => new ExtLinkToken(undefined, '', '', this.getAttribute('config')));
 		token.firstElementChild.safeReplaceWith(url);
 		if (text) {

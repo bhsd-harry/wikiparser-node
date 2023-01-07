@@ -54,7 +54,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @this {TrToken & {constructor: typeof TrToken}}
 	 */
 	cloneNode() {
-		const [syntax, attr, inner, ...cloned] = this.cloneChildren();
+		const [syntax, attr, inner, ...cloned] = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new this.constructor(undefined, undefined, this.getAttribute('config'));
 			token.firstElementChild.safeReplaceWith(syntax);

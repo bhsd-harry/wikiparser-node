@@ -28,7 +28,7 @@ class AtomToken extends Token {
 	 * @this {AtomToken & {constructor: typeof AtomToken}}
 	 */
 	cloneNode() {
-		const cloned = this.cloneChildren(),
+		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
 			token = Parser.run(() => new this.constructor(undefined, this.type, config, [], acceptable));

@@ -97,7 +97,7 @@ class LinkToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const [link, ...linkText] = this.cloneChildren();
+		const [link, ...linkText] = this.cloneChildNodes();
 		return Parser.run(() => {
 			/** @type {this & {constructor: typeof LinkToken}} */
 			const {constructor} = this,

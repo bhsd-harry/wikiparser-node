@@ -116,7 +116,7 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const [first, ...cloned] = this.cloneChildren(),
+		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
 			const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], config);

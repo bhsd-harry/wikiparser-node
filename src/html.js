@@ -74,7 +74,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/** @override */
 	cloneNode() {
-		const [attr] = this.cloneChildren(),
+		const [attr] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config));
 	}
