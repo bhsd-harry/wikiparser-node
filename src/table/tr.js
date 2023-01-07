@@ -2,7 +2,7 @@
 
 const attributeParent = require('../../mixin/attributeParent'),
 	Parser = require('../..'),
-	Text = require('../../lib/text'),
+	AstText = require('../../lib/text'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
@@ -73,7 +73,7 @@ class TrToken extends attributeParent(Token, 1) {
 	#correct() {
 		const {children: [,, child]} = this;
 		if (child?.isPlain()) {
-			const /** @type {{firstChild: Text}} */ {firstChild: {type, data}} = child;
+			const /** @type {{firstChild: AstText}} */ {firstChild: {type, data}} = child;
 			if (type !== 'text') {
 				child.prepend('\n');
 			} else if (data[0] !== '\n') {
@@ -144,7 +144,7 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/**
 	 * @override
-	 * @template {Text|Token} T
+	 * @template {AstText|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @returns {T}

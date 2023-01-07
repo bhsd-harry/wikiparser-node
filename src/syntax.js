@@ -3,12 +3,11 @@
 const {undo} = require('../util/debug'),
 	{text} = require('../util/string'),
 	Parser = require('..'),
-	Token = require('.'),
-	Text = require('../lib/text');
+	Token = require('.');
 
 /**
  * 满足特定语法格式的plain Token
- * @classdesc `{childNodes: (Text|Token)[]}`
+ * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 class SyntaxToken extends Token {
 	#pattern;
@@ -68,7 +67,7 @@ class SyntaxToken extends Token {
 
 	/**
 	 * @override
-	 * @param {...Text|Token} elements 待替换的子节点
+	 * @param {...Token} elements 待替换的子节点
 	 * @complexity `n`
 	 */
 	replaceChildren(...elements) {

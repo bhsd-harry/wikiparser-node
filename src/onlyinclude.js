@@ -5,7 +5,7 @@ const Parser = require('..'),
 
 /**
  * 嵌入时的`<onlyinclude>`
- * @classdesc `{childNodes: ...Text|Token}`
+ * @classdesc `{childNodes: ...AstText|Token}`
  */
 class OnlyincludeToken extends Token {
 	type = 'onlyinclude';

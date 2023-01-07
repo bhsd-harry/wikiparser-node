@@ -6,7 +6,7 @@ const hidden = require('../../mixin/hidden'),
 
 /**
  * `<noinclude>`和`</noinclude>`，不可进行任何更改
- * @classdesc `{childNodes: [Text]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class NoincludeToken extends hidden(NowikiToken) {
 	type = 'noinclude';

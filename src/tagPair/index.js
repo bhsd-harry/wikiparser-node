@@ -6,7 +6,7 @@ const fixedToken = require('../../mixin/fixedToken'),
 
 /**
  * 成对标签
- * @classdesc `{childNodes: [Text|AttributeToken, Text|Token]}`
+ * @classdesc `{childNodes: [AstText|AttributeToken, AstText|Token]}`
  */
 class TagPairToken extends fixedToken(Token) {
 	#selfClosing;

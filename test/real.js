@@ -3,7 +3,7 @@
 const {diff} = require('./util'),
 	Api = require('./api'),
 	Parser = require('../'),
-	Text = require('../lib/text');
+	AstText = require('../lib/text');
 
 const {argv: [,, site = '']} = process,
 	apis = [
@@ -106,7 +106,7 @@ const getPages = async url => {
 						}
 						let first;
 						for (let i = 0; i < childNodes.length; i++) {
-							const /** @type {Text} */ {type: childType, data} = childNodes[i];
+							const /** @type {AstText} */ {type: childType, data} = childNodes[i];
 							if (childType === 'text') {
 								first = i;
 								if (data.search(possibleSyntax) >= 0) {

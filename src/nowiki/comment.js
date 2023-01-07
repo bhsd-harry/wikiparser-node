@@ -6,7 +6,7 @@ const hidden = require('../../mixin/hidden'),
 
 /**
  * HTML注释，不可见
- * @classdesc `{childNodes: [Text]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class CommentToken extends hidden(NowikiToken) {
 	type = 'comment';

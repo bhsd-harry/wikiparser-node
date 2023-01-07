@@ -18,7 +18,7 @@ const /** @type {Parser} */ Parser = {
 	parsers: {},
 
 	aliases: [
-		['Text'],
+		['AstText'],
 		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
 		['ArgToken', 'TranscludeToken', 'HeadingToken'],
 		['HtmlToken'],

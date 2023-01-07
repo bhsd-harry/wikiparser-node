@@ -1,7 +1,6 @@
 'use strict';
 
 const Parser = require('..'),
-	Text = require('../lib/text'),
 	Token = require('../src');
 
 /**
@@ -23,7 +22,7 @@ const fixedToken = Constructor => class extends Constructor {
 
 	/**
 	 * 插入子节点
-	 * @template {Text|Token} T
+	 * @template {Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @throws `Error`

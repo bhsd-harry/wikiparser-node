@@ -6,7 +6,7 @@ const sol = require('../../mixin/sol'),
 
 /**
  * `<hr>`
- * @classdesc `{childNodes: [Text]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class HrToken extends sol(NowikiToken) {
 	type = 'hr';

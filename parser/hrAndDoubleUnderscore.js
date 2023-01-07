@@ -1,11 +1,11 @@
 'use strict';
 
 const Parser = require('..'),
-	Text = require('../lib/text');
+	AstText = require('../lib/text');
 
 /**
  * 解析\<hr\>和状态开关
- * @param {{firstChild: Text, type: string}} root 根节点
+ * @param {{firstChild: AstText, type: string}} root 根节点
  * @param {accum} accum
  */
 const parseHrAndDoubleUnderscore = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {

@@ -69,7 +69,7 @@
 		"no-unused-vars": [
 			2,
 			{
-				"varsIgnorePattern": "^(?:AstNode|AstElement|Text|[a-zA-Z]*Token|Title)$",
+				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}

@@ -6,7 +6,7 @@ const hidden = require('../../mixin/hidden'),
 
 /**
  * `<includeonly>`或`<noinclude>`
- * @classdesc `{childNodes: [Text, Text]}`
+ * @classdesc `{childNodes: [AstText, AstText]}`
  */
 class IncludeToken extends hidden(TagPairToken) {
 	type = 'include';
@@ -19,7 +19,7 @@ class IncludeToken extends hidden(TagPairToken) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = undefined, closed = undefined, config = Parser.getConfig(), accum = []) {
-		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum, {Text: [0, 1]});
+		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum, {AstText: [0, 1]});
 	}
 
 	/** @override */

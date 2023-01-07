@@ -3,14 +3,13 @@
 const {externalUse} = require('../util/debug'),
 	{toCase, removeComment, normalizeSpace} = require('../util/string'),
 	Parser = require('..'),
-	Token = require('.'),
-	Text = require('../lib/text');
+	Token = require('.');
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 
 /**
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: [Text]|(Text|ArgToken|TranscludeToken)[]}`
+ * @classdesc `{childNodes: [AstText]|(AstText|ArgToken|TranscludeToken)[]}`
  */
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
@@ -335,7 +334,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @override
-	 * @template {Text|Token} T
+	 * @template {Token} T
 	 * @param {T} token 待插入的节点
 	 * @param {number} i 插入位置
 	 * @param {boolean} done 是否已解析过改变后的标签属性
@@ -353,7 +352,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @override
-	 * @param {...Text|Token} elements 待替换的子节点
+	 * @param {...Token} elements 待替换的子节点
 	 * @complexity `n²`
 	 */
 	replaceChildren(...elements) {

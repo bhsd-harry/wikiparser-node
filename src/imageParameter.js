@@ -3,11 +3,11 @@
 const {text, noWrap, extUrlChar} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.'),
-	Text = require('../lib/text');
+	AstText = require('../lib/text');
 
 /**
  * 图片参数
- * @classdesc `{childNodes: ...(Text|Token)}`
+ * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 class ImageParameterToken extends Token {
 	static noLink = Symbol('no-link'); // 这个Symbol需要公开
@@ -81,7 +81,7 @@ class ImageParameterToken extends Token {
 				const [width, height = ''] = size.split('x');
 				return {width, height};
 			}
-			const /** @type {{childNodes: Text[]}} */ token = Parser.parse(size, false, 2, this.getAttribute('config')),
+			const /** @type {{childNodes: AstText[]}} */ token = Parser.parse(size, false, 2, this.getAttribute('config')),
 				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x')),
 				str = token.childNodes[i];
 			if (i === -1) {
@@ -198,7 +198,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @override
-	 * @template {Text|Token} T
+	 * @template {Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`

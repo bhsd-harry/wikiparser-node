@@ -3,11 +3,11 @@
 const fixedToken = require('../../mixin/fixedToken'),
 	Parser = require('../..'),
 	Token = require('..'),
-	Text = require('../../lib/text');
+	AstText = require('../../lib/text');
 
 /**
  * 纯文字Token，不会被解析
- * @classdesc `{childNodes: [Text]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class NowikiToken extends fixedToken(Token) {
 	type = 'ext-inner';
@@ -22,7 +22,7 @@ class NowikiToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @this {NowikiToken & {firstChild: Text, constructor: typeof NowikiToken}}
+	 * @this {NowikiToken & {firstChild: AstText, constructor: typeof NowikiToken}}
 	 */
 	cloneNode() {
 		const {constructor, firstChild: {data}, type} = this,

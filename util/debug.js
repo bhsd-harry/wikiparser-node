@@ -20,7 +20,7 @@ const externalUse = name => {
 	if (Parser.running) {
 		return false;
 	}
-	const regex = new RegExp(`^new \\w*Token$|^(?:AstNode|AstElement|\\w*Token)\\.(?!${name}$)`, 'u');
+	const regex = new RegExp(`^new \\w*Token$|^(?:Ast\\w*|\\w*Token)\\.(?!${name}$)`, 'u');
 	try {
 		throw new Error(); // eslint-disable-line unicorn/error-message
 	} catch (e) {

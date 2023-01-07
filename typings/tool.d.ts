@@ -1,11 +1,11 @@
 import Token from '../src';
-import Text from '../lib/text';
+import AstText from '../lib/text';
 
 declare global {
 	interface CollectionCallback<T, S> extends Function {
-		call: (thisArg: Text|Token, i: number, ele: S) => T;
+		call: (thisArg: AstText|Token, i: number, ele: S) => T;
 	}
-	type CollectionMap = (arr: Token[]) => (Text|Token)[];
+	type CollectionMap = (arr: Token[]) => (AstText|Token)[];
 }
 
 export {};

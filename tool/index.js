@@ -3,7 +3,7 @@
 
 const {typeError, externalUse} = require('../util/debug'),
 	{text, noWrap} = require('../util/string'),
-	Text = require('../lib/text'),
+	AstText = require('../lib/text'),
 	Token = require('../src'),
 	assert = require('assert/strict');
 
@@ -11,7 +11,7 @@ const /** @type {WeakMap<Token, Record<string, any>>} */ dataStore = new WeakMap
 
 /**
  * @param {string} method
- * @param {Text|Token|Token[]} selector
+ * @param {AstText|Token|Token[]} selector
  * @returns {(token: Token) => boolean}
  */
 const matchesGenerator = (method, selector) => {
@@ -39,10 +39,10 @@ class TokenCollection extends Array {
 		for (const token of arr) {
 			if (token === undefined) {
 				continue;
-			} else if (token instanceof Text) {
+			} else if (token instanceof AstText) {
 				this.push(token);
 			} else if (!(token instanceof Token)) {
-				this.typeError('constructor', 'Text', 'Token');
+				this.typeError('constructor', 'AstText', 'Token');
 			} else if (!this.includes(token)) {
 				this.#roots.add(token.getRootNode());
 				this.push(token);
@@ -846,9 +846,9 @@ class TokenCollection extends Array {
 	}
 }
 
-/** @param {Text|Token|Iterable<string|Token>} tokens */
+/** @param {AstText|Token|Iterable<string|Token>} tokens */
 const $ = tokens => {
-	if (tokens instanceof Text || tokens instanceof Token) {
+	if (tokens instanceof AstText || tokens instanceof Token) {
 		tokens = [tokens];
 	}
 	return new Proxy(new TokenCollection(...tokens), {

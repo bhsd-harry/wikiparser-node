@@ -5,7 +5,7 @@ const Parser = require('..'),
 
 /**
  * 自由外链
- * @classdesc `{childNodes: [...Text|CommentToken|IncludeToken|NoincludeToken]}`
+ * @classdesc `{childNodes: [...AstText|CommentToken|IncludeToken|NoincludeToken]}`
  */
 class MagicLinkToken extends Token {
 	type = 'free-ext-link';

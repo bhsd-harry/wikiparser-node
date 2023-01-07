@@ -1,11 +1,11 @@
 'use strict';
 
 const Parser = require('..'),
-	Text = require('../lib/text');
+	AstText = require('../lib/text');
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
- * @param {{firstChild: Text, type: string}} root 根节点
+ * @param {{firstChild: AstText, type: string}} root 根节点
  * @param {accum} accum
  */
 const parseTable = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {

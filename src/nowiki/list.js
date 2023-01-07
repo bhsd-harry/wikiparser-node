@@ -6,7 +6,7 @@ const sol = require('../../mixin/sol'),
 
 /**
  * ;:*#
- * @classdesc `{childNodes: [Text]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class ListToken extends sol(DdToken) {
 	type = 'list';

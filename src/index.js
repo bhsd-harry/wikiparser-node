@@ -47,12 +47,12 @@ const {externalUse} = require('../util/debug'),
 	assert = require('assert/strict'),
 	Parser = require('..'),
 	AstElement = require('../lib/element'),
-	Text = require('../lib/text');
+	AstText = require('../lib/text');
 const {MAX_STAGE, aliases} = Parser;
 
 /**
  * 所有节点的基类
- * @classdesc `{childNodes: ...(Text|Token)}`
+ * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 class Token extends AstElement {
 	type = 'root';
@@ -98,7 +98,7 @@ class Token extends AstElement {
 	/**
 	 * 深拷贝所有子节点
 	 * @complexity `n`
-	 * @returns {(Text|Token)[]}
+	 * @returns {(AstText|Token)[]}
 	 */
 	cloneChildren() {
 		return !Parser.debugging && externalUse('cloneChildren')
@@ -238,7 +238,7 @@ class Token extends AstElement {
 	/**
 	 * @override
 	 * @param {number} i 移除位置
-	 * @returns {Text|Token}
+	 * @returns {Token}
 	 * @complexity `n`
 	 * @throws `Error` 不可移除的子节点
 	 */
@@ -267,16 +267,16 @@ class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @template {string|Text|Token} T
+	 * @template {string|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`
-	 * @returns {T extends Token ? Token : Text}
+	 * @returns {T extends Token ? Token : AstText}
 	 * @throws `RangeError` 不可插入的子节点
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (typeof token === 'string') {
-			token = new Text(token);
+			token = new AstText(token);
 		}
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
@@ -400,7 +400,7 @@ class Token extends AstElement {
 			headings = [...childNodes.entries()].filter(([, {type}]) => type === 'heading')
 				.map(([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
-			/** @type {(Text|Token)[][]} */ sections = new Array(headings.length);
+			/** @type {(AstText|Token)[][]} */ sections = new Array(headings.length);
 		for (let i = 0; i < headings.length; i++) {
 			const [index, level] = headings[i];
 			for (let j = level; j < 6; j++) {
@@ -496,7 +496,7 @@ class Token extends AstElement {
 			}
 		}
 		this.normalize();
-		/** @type {[number, Text][]} */
+		/** @type {[number, AstText][]} */
 		const textNodes = [...this.childNodes.entries()].filter(([, {type}]) => type === 'text'),
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
 			token = Parser.run(() => {
@@ -579,14 +579,14 @@ class Token extends AstElement {
 	 * 重建wikitext
 	 * @param {string} str 半解析的字符串
 	 * @complexity `n`
-	 * @returns {(Token|Text)[]}
+	 * @returns {(Token|AstText)[]}
 	 */
 	buildFromStr(str) {
 		return !Parser.debugging && externalUse('buildFromStr')
 			? this.debugOnly('buildFromStr')
 			: str.split(/[\0\x7F]/u).map((s, i) => {
 				if (i % 2 === 0) {
-					return new Text(s);
+					return new AstText(s);
 				} else if (isNaN(s.at(-1))) {
 					return this.#accum[Number(s.slice(0, -1))];
 				}

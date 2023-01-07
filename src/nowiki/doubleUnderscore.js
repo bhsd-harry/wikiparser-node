@@ -6,7 +6,7 @@ const hidden = require('../../mixin/hidden'),
 
 /**
  * 状态开关
- * @classdesc `{childNodes: [Text]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	type = 'double-underscore';

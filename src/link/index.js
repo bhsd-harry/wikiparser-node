@@ -4,7 +4,7 @@ const Title = require('../../lib/title'),
 	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
 	Parser = require('../..'),
-	Text = require('../../lib/text'),
+	AstText = require('../../lib/text'),
 	Token = require('..');
 
 /**
@@ -128,7 +128,7 @@ class LinkToken extends Token {
 					undo(e, data);
 					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
 				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14) && name.trim()[0] !== ':') {
-					const /** @type {{firstChild: Text}} */ {firstChild} = prevTarget;
+					const /** @type {{firstChild: AstText}} */ {firstChild} = prevTarget;
 					if (firstChild.type === 'text') {
 						firstChild.insertData(0, ':');
 					} else {
