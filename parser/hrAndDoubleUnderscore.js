@@ -1,17 +1,21 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	Text = require('../lib/text');
 
 /**
  * 解析\<hr\>和状态开关
- * @param {string} text wikitext
+ * @param {{firstChild: Text, type: string}} root 根节点
  * @param {accum} accum
  */
-const parseHrAndDoubleUnderscore = (text, config = Parser.getConfig(), accum = []) => {
+const parseHrAndDoubleUnderscore = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {
 	const HrToken = require('../src/nowiki/hr'),
 		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
 	const {doubleUnderscore} = config;
-	return text.replaceAll(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
+	if (type !== 'root') {
+		data = `\0${data}`;
+	}
+	data = data.replaceAll(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
 		new HrToken(m.length, config, accum);
 		return `${lead}\0${accum.length - 1}r\x7F`;
 	}).replaceAll(
@@ -24,6 +28,7 @@ const parseHrAndDoubleUnderscore = (text, config = Parser.getConfig(), accum = [
 			return m;
 		},
 	);
+	return type === 'root' ? data : data.slice(1);
 };
 
 Parser.parsers.parseHrAndDoubleUnderscore = __filename;

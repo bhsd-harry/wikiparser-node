@@ -703,7 +703,7 @@ class Token extends AstElement {
 	 */
 	#parseHrAndDoubleUndescore() {
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
-		this.firstChild.replaceData(parseHrAndDoubleUnderscore(this.firstChild.data, this.#config, this.#accum));
+		this.firstChild.replaceData(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
 	}
 
 	/**
