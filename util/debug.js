@@ -44,6 +44,7 @@ const undo = (e, data) => {
 		case 'remove': {
 			const childNodes = [...target.childNodes];
 			childNodes.splice(data.position, 0, data.removed);
+			data.removed.setAttribute('parentNode', target);
 			target.setAttribute('childNodes', childNodes);
 			break;
 		}
@@ -57,6 +58,7 @@ const undo = (e, data) => {
 			const {parentNode} = target,
 				childNodes = [...parentNode.childNodes];
 			childNodes.splice(data.position, 1, data.oldToken);
+			data.oldToken.setAttribute('parentNode', parentNode);
 			parentNode.setAttribute('childNodes', childNodes);
 			break;
 		}
