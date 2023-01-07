@@ -17,6 +17,14 @@ declare global {
 
 	type accum = Token[];
 	type acceptable = Record<string, number|string|Ranges|(number|string)[]>;
+
+	interface LintError {
+		message: string;
+		startLine: number;
+		startCol: number;
+		endLine: number;
+		endCol: number;
+	}
 }
 
 export {};

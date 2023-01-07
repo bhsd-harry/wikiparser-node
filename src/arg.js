@@ -96,6 +96,26 @@ class ArgToken extends Token {
 	}
 
 	/**
+	 * @override
+	 * @returns {LintError[]}
+	 */
+	lint() {
+		return [
+			...this.childNodes.slice(0, 2).flatMap(child => child.lint()),
+			this.childNodes.slice(2).map(child => {
+				const {top, left, height, width} = child.getBoundingClientRect();
+				return {
+					message: '三重括号内的不可见部分',
+					startLine: top,
+					endLine: top + height - 1,
+					startCol: left - 1,
+					endCol: height > 1 ? width : left + width,
+				};
+			}),
+		];
+	}
+
+	/**
 	 * 移除子节点，且在移除`arg-default`子节点时自动移除全部多余子节点
 	 * @param {number} i 移除位置
 	 * @returns {Token}

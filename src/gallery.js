@@ -85,6 +85,27 @@ class GalleryToken extends Token {
 		const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
 		return this.insertAt(token, i);
 	}
+
+	/**
+	 * @override
+	 * @returns {LintError[]}
+	 */
+	lint() {
+		const root = this.getRootNode(),
+			{top} = root.posFromIndex(root.getAbsoluteIndex());
+		return this.childNodes.flatMap((child, i) => {
+			if (child.type === 'hidden') {
+				const str = String(child),
+					startLine = top + i;
+				return /^<!--.*-->$/u.test(str)
+					? []
+					: {message: '图库中的无效内容', startLine, endLine: startLine, startCol: 0, endCol: str.length};
+			} else if (child.type === 'text') {
+				return [];
+			}
+			return child.lint();
+		});
+	}
 }
 
 Parser.classes.GalleryToken = __filename;
