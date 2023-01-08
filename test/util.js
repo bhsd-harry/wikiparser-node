@@ -59,7 +59,7 @@ const diff = async (oldfile, newfile) => {
 	await Promise.all([fs.writeFile('npmTestOldContent', oldfile), fs.writeFile('npmTestNewContent', newfile)]);
 	const stdout = await cmd('git', [
 		'diff',
-		'--color-words=[\xc0-\xff][\x80-\xbf]+|<?/?\\w+/?>?|[^[:space:]]',
+		'--color-words=[\xC0-\xFF][\x80-\xBF]+|<?/?\\w+/?>?|[^[:space:]]',
 		'-U0',
 		'--no-index',
 		'npmTestOldContent',

@@ -64,7 +64,7 @@ class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/u, '')).type = 'magic-word';
-				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
+				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
 					});

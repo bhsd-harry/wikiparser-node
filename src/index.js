@@ -3,7 +3,7 @@
 /*
  * PHP解析器的步骤：
  * -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
- * 0. 移除特定字符`\0`和`\x7f`，参见Parser::parse
+ * 0. 移除特定字符`\0`和`\x7F`，参见Parser::parse
  * 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
  * 2. 模板/模板变量/标题，注意rightmost法则，以及`-{`和`[[`可以破坏`{{`或`{{{`语法，
  *    参见Preprocessor_Hash::buildDomTreeArrayFromText
@@ -19,7 +19,7 @@
  */
 
 /*
- * \0\d+.\x7f标记Token：
+ * \0\d+.\x7F标记Token：
  * e: ExtToken
  * c: CommentToken、NoIncludeToken和IncludeToken
  * !: `{{!}}`专用
@@ -58,7 +58,7 @@ class Token extends AstElement {
 	type = 'root';
 	#stage = 0; // 解析阶段，参见顶部注释。只对plain Token有意义。
 	#config;
-	// 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
+	// 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
 	#accum;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
