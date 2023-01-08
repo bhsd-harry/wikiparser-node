@@ -14,6 +14,22 @@ const toCase = (val, i) => i ? val.toLowerCase() : val;
 const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
 
 /**
+ * 以HTML格式打印
+ * @param {(AstText|AstElement)[]} childNodes 子节点
+ * @param {printOpt} opt 选项
+ */
+const print = (childNodes, opt = {}) => {
+	const AstText = require('../lib/text'),
+		AstElement = require('../lib/element');
+	const {pre = '', post = '', sep = ''} = opt;
+	return `${pre}${childNodes.map(
+		child => child instanceof AstElement
+			? child.print()
+			: String(child).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+	).join(sep)}${post}`;
+};
+
+/**
  * escape special chars for RegExp constructor
  * @param {string} str RegExp source
  */
@@ -85,4 +101,4 @@ const normalizeSpace = token => {
 const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
 	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
-module.exports = {toCase, removeComment, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};
+module.exports = {toCase, removeComment, print, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};

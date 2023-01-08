@@ -363,7 +363,7 @@
 		"newline-per-chained-call": [
 			2,
 			{
-				"ignoreChainWithDepth": 3
+				"ignoreChainWithDepth": 4
 			}
 		],
 		"no-extra-parens": 2,

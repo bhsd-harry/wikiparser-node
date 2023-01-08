@@ -1,6 +1,6 @@
 'use strict';
 
-const {text, noWrap, extUrlChar} = require('../util/string'),
+const {text, noWrap, print, extUrlChar} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.'),
 	AstText = require('../lib/text');
@@ -188,6 +188,13 @@ class ImageParameterToken extends Token {
 	/** @override */
 	getPadding() {
 		return Math.max(0, this.#syntax.indexOf('$1'));
+	}
+
+	/** @override */
+	print() {
+		return this.#syntax
+			? `<span class="wpb-image-parameter">${this.#syntax.replace('$1', print(this.childNodes))}</span>`
+			: super.print({class: 'image-caption'});
 	}
 
 	/** @override */

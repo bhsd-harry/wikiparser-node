@@ -144,6 +144,15 @@ class ConverterRuleToken extends Token {
 		return i === 0 && length === 3 ? 2 : 1;
 	}
 
+	/** @override */
+	print() {
+		if (this.childNodes.length === 3) {
+			const {childNodes: [from, variant, to]} = this;
+			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
+		}
+		return super.print({sep: ':'});
+	}
+
 	/**
 	 * @override
 	 * @returns {string}

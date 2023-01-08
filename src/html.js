@@ -105,6 +105,13 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	/** @override */
+	print() {
+		return super.print({
+			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`, post: `${this.#selfClosing ? '/' : ''}&gt;`,
+		});
+	}
+
+	/** @override */
 	text() {
 		return `<${this.#closing ? '/' : ''}${this.#tag}${super.text()}${this.#selfClosing ? '/' : ''}>`;
 	}

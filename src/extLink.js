@@ -111,6 +111,12 @@ class ExtLinkToken extends Token {
 	}
 
 	/** @override */
+	print() {
+		const {childNodes: {length}} = this;
+		return super.print(length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`});
+	}
+
+	/** @override */
 	text() {
 		normalizeSpace(this.childNodes[1]);
 		return `[${super.text(' ')}]`;

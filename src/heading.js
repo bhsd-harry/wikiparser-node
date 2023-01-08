@@ -68,6 +68,12 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		return Number(this.name);
 	}
 
+	/** @override */
+	print() {
+		const equals = '='.repeat(Number(this.name));
+		return super.print({pre: equals, sep: equals});
+	}
+
 	/**
 	 * @override
 	 * @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}}

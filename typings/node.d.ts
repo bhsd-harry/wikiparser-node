@@ -24,6 +24,13 @@ declare global {
 		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
 		T extends 'protectChildren' ? (...args: string|number|Range) => void :
 		string;
+
+	interface printOpt {
+		pre?: string;
+		post?: string;
+		sep?: string;
+		class?: string;
+	}
 }
 
 export {};

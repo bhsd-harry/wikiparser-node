@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment, escapeRegExp, text, noWrap} = require('../util/string'),
+const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/string'),
 	{externalUse} = require('../util/debug'),
 	Parser = require('..'),
 	Token = require('.'),
@@ -212,6 +212,16 @@ class TranscludeToken extends Token {
 	/** @override */
 	getGaps() {
 		return 1;
+	}
+
+	/** @override */
+	print() {
+		const {childNodes, firstChild, modifier} = this;
+		return `<span class="wpb-${this.type}">{{${modifier}${modifier && ':'}${
+			this.type === 'magic-word'
+				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
+				: print(childNodes, {sep: '|'})
+		}}}</span>`;
 	}
 
 	/**

@@ -96,6 +96,11 @@ class ParameterToken extends fixedToken(Token) {
 		return this.anon ? 0 : 1;
 	}
 
+	/** @override */
+	print() {
+		return super.print({sep: this.anon ? '' : '='});
+	}
+
 	/**
 	 * @override
 	 * @returns {string}

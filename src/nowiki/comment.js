@@ -51,6 +51,11 @@ class CommentToken extends hidden(NowikiToken) {
 	getPadding() {
 		return 4;
 	}
+
+	/** @override */
+	print() {
+		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
+	}
 }
 
 Parser.classes.CommentToken = __filename;
