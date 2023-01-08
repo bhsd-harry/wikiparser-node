@@ -123,7 +123,7 @@ class TableToken extends TrToken {
 
 	/** 表格是否闭合 */
 	get closed() {
-		return this.lastElementChild.type === 'table-syntax';
+		return this.lastChild.type === 'table-syntax';
 	}
 
 	set closed(closed) {
@@ -154,7 +154,7 @@ class TableToken extends TrToken {
 	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		const previous = this.children.at(i - 1);
+		const previous = this.childNodes.at(i - 1);
 		if (token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.appendChild(token);
@@ -177,11 +177,11 @@ class TableToken extends TrToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = !halfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
-			{lastElementChild} = this;
+			{lastChild} = this;
 		if (!halfParsed && !closingPattern.test(inner.text())) {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(syntax)}`);
-		} else if (lastElementChild instanceof SyntaxToken) {
-			lastElementChild.replaceChildren(...inner.childNodes);
+		} else if (lastChild instanceof SyntaxToken) {
+			lastChild.replaceChildren(...inner.childNodes);
 		} else {
 			this.appendChild(Parser.run(() => {
 				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
@@ -202,7 +202,7 @@ class TableToken extends TrToken {
 	 */
 	getRowCount() {
 		return super.getRowCount()
-			+ this.children.filter(child => child.type === 'tr' && child.getRowCount()).length;
+			+ this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
 	/** @override */
@@ -241,7 +241,7 @@ class TableToken extends TrToken {
 		} else if (isRow) {
 			n--;
 		}
-		for (const child of this.children.slice(2)) {
+		for (const child of this.childNodes.slice(2)) {
 			if (child.type === 'tr' && child.getRowCount()) {
 				n--;
 				if (n < 0) {
@@ -262,7 +262,7 @@ class TableToken extends TrToken {
 	getAllRows() {
 		return [
 			...super.getRowCount() ? [this] : [],
-			...this.children.filter(child => child.type === 'tr' && child.getRowCount()),
+			...this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()),
 		];
 	}
 
@@ -295,7 +295,7 @@ class TableToken extends TrToken {
 			let j = 0,
 				k = 0,
 				last;
-			for (const cell of rows[i].children.slice(2)) {
+			for (const cell of rows[i].childNodes.slice(2)) {
 				if (cell instanceof TdToken) {
 					if (cell.isIndependent()) {
 						last = cell.subtype !== 'caption';
@@ -365,12 +365,12 @@ class TableToken extends TrToken {
 			coords = rowLayout?.[x];
 		if (coords) {
 			return {...coords, start: coords.row === y && rowLayout[x - 1] !== coords};
-		} else if (!rowLayout && y === 0) {
-			return {row: 0, column: 0, start: true};
+		} else if (rowLayout || y > 0) {
+			return x === rowLayout?.length
+				? {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true}
+				: undefined;
 		}
-		return x === rowLayout?.length
-			? {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true}
-			: undefined;
+		return {row: 0, column: 0, start: true};
 	}
 
 	/**
@@ -474,7 +474,7 @@ class TableToken extends TrToken {
 		if (coords.column === undefined) {
 			const {x, y} = coords;
 			coords = this.toRawCoords(coords);
-			if (!coords?.start) { // eslint-disable-line unicorn/consistent-destructuring
+			if (!coords?.start) {
 				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
 			}
 		}
@@ -490,10 +490,10 @@ class TableToken extends TrToken {
 	 */
 	#prependTableRow() {
 		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
-			{children} = this,
-			[,, plain] = children,
+			{childNodes} = this,
+			[,, plain] = childNodes,
 			start = plain?.isPlain() ? 3 : 2,
-			/** @type {TdToken[]} */ tdChildren = children.slice(start),
+			/** @type {TdToken[]} */ tdChildren = childNodes.slice(start),
 			index = tdChildren.findIndex(({type}) => type !== 'td');
 		this.insertAt(row, index === -1 ? -1 : index + start);
 		Parser.run(() => {
@@ -631,11 +631,11 @@ class TableToken extends TrToken {
 	 */
 	removeTableCol(x) {
 		for (const [token, start] of this.getFullCol(x)) {
-			const {colspan, lastElementChild} = token;
+			const {colspan, lastChild} = token;
 			if (colspan > 1) {
 				token.colspan = colspan - 1;
 				if (start) {
-					lastElementChild.replaceChildren();
+					lastChild.replaceChildren();
 				}
 			} else {
 				token.remove();
@@ -703,7 +703,7 @@ class TableToken extends TrToken {
 		if (x !== undefined) {
 			coords = this.toRawCoords(coords);
 		}
-		if (coords.start === false || x === undefined) { // eslint-disable-line unicorn/consistent-destructuring
+		if (coords.start === false || x === undefined) {
 			({x, y} = this.toRenderedCoords(coords));
 		}
 		const splitting = {rowspan: 1, colspan: 1};
@@ -850,7 +850,7 @@ class TableToken extends TrToken {
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after),
 			/** @type {TdToken[]} */
-			cells = afterToken.children.filter(child => child instanceof TdToken && child.subtype !== 'caption');
+			cells = afterToken.childNodes.filter(child => child instanceof TdToken && child.subtype !== 'caption');
 
 		/**
 		 * @type {(i: number, oneRow?: boolean) => number[]}
@@ -926,7 +926,7 @@ class TableToken extends TrToken {
 					if (start) {
 						const original = token;
 						token = token.cloneNode();
-						original.lastElementChild.replaceChildren();
+						original.lastChild.replaceChildren();
 						token.colspan = 1;
 					}
 				}
@@ -934,7 +934,7 @@ class TableToken extends TrToken {
 					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
 					rowToken.insertBefore(
 						token, col === undefined && rowToken.type === 'table'
-							? rowToken.children.slice(2).find(isRowEnd)
+							? rowToken.childNodes.slice(2).find(isRowEnd)
 							: col !== undefined && rowToken.getNthCol(col),
 					);
 				}

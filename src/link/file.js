@@ -251,13 +251,12 @@ class FileToken extends LinkToken {
 		}
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || !firstElementChild?.matches('file#File\\:F')
-			|| firstElementChild.childNodes.length !== 2 || firstElementChild.lastElementChild.name !== key
-		) {
+			{childNodes: {length}, firstChild: file} = root,
+			{name, type, childNodes: {length: fileLength}, lastChild: imageParameter} = file;
+		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2 || imageParameter.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
-		this.appendChild(firstElementChild.lastChild);
+		this.appendChild(imageParameter);
 	}
 }
 

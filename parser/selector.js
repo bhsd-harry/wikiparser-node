@@ -164,11 +164,11 @@ const parseSelector = selector => {
 		}
 		mt = regex.exec(sanitized);
 	}
-	if (regex !== regularRegex) {
-		throw new SyntaxError(`非法的选择器！\n${selector}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
+	if (regex === regularRegex) {
+		pushSimple(step, sanitized);
+		return stack;
 	}
-	pushSimple(step, sanitized);
-	return stack;
+	throw new SyntaxError(`非法的选择器！\n${selector}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
 };
 
 Parser.parsers.parseSelector = __filename;

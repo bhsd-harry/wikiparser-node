@@ -47,7 +47,7 @@ class ConverterToken extends Token {
 	cloneNode() {
 		const [flags, ...rules] = this.cloneChildNodes(),
 			token = Parser.run(() => new ConverterToken([], [], this.getAttribute('config')));
-		token.firstElementChild.safeReplaceWith(flags);
+		token.firstChild.safeReplaceWith(flags);
 		token.append(...rules);
 		return token;
 	}
@@ -57,7 +57,7 @@ class ConverterToken extends Token {
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		const {children: [flags, ...rules]} = this;
+		const {childNodes: [flags, ...rules]} = this;
 		return selector && this.matches(selector)
 			? ''
 			: `-{${flags.toString(selector)}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
@@ -74,12 +74,12 @@ class ConverterToken extends Token {
 	 */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
-		return i || this.firstElementChild.childNodes.length > 0 ? 1 : 0;
+		return i || this.firstChild.childNodes.length > 0 ? 1 : 0;
 	}
 
 	/** @override */
 	text() {
-		const {children: [flags, ...rules]} = this;
+		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 

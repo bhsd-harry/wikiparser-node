@@ -49,12 +49,12 @@ class TdToken extends fixedToken(TrToken) {
 
 	/** 内部wikitext */
 	get innerText() {
-		return this.lastElementChild.text();
+		return this.lastChild.text();
 	}
 
 	/** 是否位于行首 */
 	isIndependent() {
-		return this.firstElementChild.text()[0] === '\n';
+		return this.firstChild.text()[0] === '\n';
 	}
 
 	/**
@@ -63,7 +63,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @complexity `n`
 	 */
 	getSyntax() {
-		const syntax = this.firstElementChild.text(),
+		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
 			char = syntax.at(-1);
 		let subtype = 'td';
@@ -75,13 +75,13 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.isIndependent()) {
 			return {subtype, escape: esc, correction: false};
 		}
-		const {previousElementSibling} = this;
-		if (previousElementSibling?.type !== 'td') {
+		const {previousSibling} = this;
+		if (previousSibling?.type !== 'td') {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = previousElementSibling.getSyntax();
+		const result = previousSibling.getSyntax();
 		result.escape ||= esc;
-		result.correction = previousElementSibling.lastElementChild
+		result.correction = previousSibling.lastChild
 			.toString('comment, ext, include, noinclude, arg, template, magic-word, html')
 			.includes('\n');
 		if (subtype === 'th' && result.subtype !== 'th') {
@@ -144,7 +144,7 @@ class TdToken extends fixedToken(TrToken) {
 		}
 		const token = Parser.run(() => new TdToken('\n|', undefined, config));
 		token.setSyntax(subtype);
-		token.lastElementChild.safeReplaceWith(inner);
+		token.lastChild.safeReplaceWith(inner);
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);
 		}
@@ -201,7 +201,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @complexity `n`
 	 */
 	#correct() {
-		if (String(this.children[1])) {
+		if (String(this.childNodes[1])) {
 			this.#innerSyntax ||= '|';
 		}
 		const {subtype, escape, correction} = this.getSyntax();
@@ -229,7 +229,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	toString(selector) {
 		this.#correct();
-		const {children: [syntax, attr, inner]} = this;
+		const {childNodes: [syntax, attr, inner]} = this;
 		return selector && this.matches(selector)
 			? ''
 			: `${syntax.toString(selector)}${attr.toString(selector)}${this.#innerSyntax}${inner.toString(selector)}`;
@@ -241,11 +241,11 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
-		if (i !== 1) {
-			return 0;
+		if (i === 1) {
+			this.#correct();
+			return this.#innerSyntax.length;
 		}
-		this.#correct();
-		return this.#innerSyntax.length;
+		return 0;
 	}
 
 	/**
@@ -255,7 +255,7 @@ class TdToken extends fixedToken(TrToken) {
 	 */
 	text() {
 		this.#correct();
-		const {children: [syntax, attr, inner]} = this;
+		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 
@@ -286,7 +286,7 @@ class TdToken extends fixedToken(TrToken) {
 			value = value === 1 ? false : String(value);
 		}
 		const /** @type {boolean} */ result = super.setAttr(key, value);
-		if (!String(this.children[1])) {
+		if (!String(this.childNodes[1])) {
 			this.#innerSyntax = '';
 		}
 		return result;
@@ -295,7 +295,7 @@ class TdToken extends fixedToken(TrToken) {
 	/** @override */
 	escape() {
 		super.escape();
-		if (String(this.children[1])) {
+		if (String(this.childNodes[1])) {
 			this.#innerSyntax ||= '{{!}}';
 		}
 		if (this.#innerSyntax === '|') {

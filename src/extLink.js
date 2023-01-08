@@ -41,7 +41,7 @@ class ExtLinkToken extends Token {
 	/** 链接显示文字 */
 	get innerText() {
 		return this.childNodes.length > 1
-			? this.lastElementChild.text()
+			? this.lastChild.text()
 			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}
 
@@ -67,7 +67,7 @@ class ExtLinkToken extends Token {
 	cloneNode() {
 		const [url, text] = this.cloneChildNodes(),
 			token = Parser.run(() => new ExtLinkToken(undefined, '', '', this.getAttribute('config')));
-		token.firstElementChild.safeReplaceWith(url);
+		token.firstChild.safeReplaceWith(url);
 		if (text) {
 			token.appendChild(text);
 		}
@@ -78,7 +78,7 @@ class ExtLinkToken extends Token {
 	#correct() {
 		if (!this.#space && this.childNodes.length > 1
 			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastElementChild.text().replace(/&[lg]t;/u, '<'))
+			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
 		) {
 			this.#space = ' ';
 		}
@@ -95,7 +95,7 @@ class ExtLinkToken extends Token {
 			return `[${super.toString(selector)}${this.#space}]`;
 		}
 		this.#correct();
-		normalizeSpace(this.lastElementChild);
+		normalizeSpace(this.lastChild);
 		return `[${super.toString(selector, this.#space)}]`;
 	}
 
@@ -112,7 +112,7 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	text() {
-		normalizeSpace(this.children[1]);
+		normalizeSpace(this.childNodes[1]);
 		return `[${super.text(' ')}]`;
 	}
 
@@ -132,13 +132,13 @@ class ExtLinkToken extends Token {
 	setTarget(url) {
 		url = String(url);
 		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childNodes.length !== 1) {
+			{childNodes: {length}, firstChild: extLink} = root;
+		if (length !== 1 || extLink.type !== 'ext-link' || extLink.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的外链目标：${url}`);
 		}
-		const {firstChild} = firstElementChild;
-		firstElementChild.destroy(true);
-		this.firstElementChild.safeReplaceWith(firstChild);
+		const {firstChild} = extLink;
+		extLink.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -149,15 +149,15 @@ class ExtLinkToken extends Token {
 	setLinkText(text) {
 		text = String(text);
 		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'ext-link' || firstElementChild.childNodes.length !== 2) {
+			{childNodes: {length}, firstChild: extLink} = root;
+		if (length !== 1 || extLink.type !== 'ext-link' || extLink.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的外链文字：${noWrap(text)}`);
 		}
-		const {lastChild} = firstElementChild;
+		const {lastChild} = extLink;
 		if (this.childNodes.length === 1) {
 			this.appendChild(lastChild);
 		} else {
-			this.lastElementChild.safeReplaceWith(lastChild);
+			this.lastChild.safeReplaceWith(lastChild);
 		}
 		this.#space ||= ' ';
 	}

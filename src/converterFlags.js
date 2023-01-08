@@ -35,7 +35,7 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	afterBuild() {
-		this.#flags = this.children.map(child => child.text().trim());
+		this.#flags = this.childNodes.map(child => child.text().trim());
 		const /** @type {AstListener} */ converterFlagsListener = ({prevTarget}) => {
 			if (prevTarget) {
 				this.#flags[this.childNodes.indexOf(prevTarget)] = prevTarget.text().trim();
@@ -106,7 +106,7 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	getFlagToken(flag) {
-		return this.#flags.includes(flag) ? this.children.filter(child => child.text().trim() === flag) : [];
+		return this.#flags.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 
 	/** 获取所有转换类型标记 */

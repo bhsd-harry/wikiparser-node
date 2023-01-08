@@ -96,11 +96,11 @@ class MagicLinkToken extends Token {
 	setTarget(url) {
 		url = String(url);
 		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'free-ext-link') {
+			{childNodes: {length}, firstChild: freeExtLink} = root;
+		if (length !== 1 || freeExtLink.type !== 'free-ext-link') {
 			throw new SyntaxError(`非法的自由外链目标：${url}`);
 		}
-		this.replaceChildren(...firstElementChild.childNodes);
+		this.replaceChildren(...freeExtLink.childNodes);
 	}
 }
 

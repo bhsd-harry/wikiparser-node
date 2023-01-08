@@ -131,23 +131,22 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
-			{name, parentNode, closing, selfClosing} = this,
+			{name: tagName, parentNode, closing, selfClosing} = this,
 			string = noWrap(String(this));
 		if (closing && selfClosing) {
 			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
-		} else if (html[2].includes(name) || selfClosing && html[1].includes(name)) { // 自封闭标签
+		} else if (html[2].includes(tagName) || selfClosing && html[1].includes(tagName)) { // 自封闭标签
 			return this;
-		} else if (selfClosing && html[0].includes(name)) {
+		} else if (selfClosing && html[0].includes(tagName)) {
 			throw new SyntaxError(`无效自封闭标签：${string}`);
 		} else if (!parentNode) {
 			return undefined;
 		}
-		const {children} = parentNode,
-			i = children.indexOf(this),
-			selector = `html#${name}`,
+		const {childNodes} = parentNode,
+			i = childNodes.indexOf(this),
 			siblings = closing
-				? children.slice(0, i).reverse().filter(child => child.matches(selector))
-				: children.slice(i + 1).filter(child => child.matches(selector));
+				? childNodes.slice(0, i).reverse().filter(({type, name}) => type === 'html' && name === tagName)
+				: childNodes.slice(i + 1).filter(({type, name}) => type === 'html' && name === tagName);
 		let imbalance = closing ? -1 : 1;
 		for (const token of siblings) {
 			if (token.closing) {
@@ -176,17 +175,17 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	fix() {
 		const config = this.getAttribute('config'),
-			{parentNode, name, firstElementChild} = this;
-		if (!parentNode || !this.#selfClosing || !config.html[0].includes(name)) {
+			{parentNode, name: tagName, firstChild} = this;
+		if (!parentNode || !this.#selfClosing || !config.html[0].includes(tagName)) {
 			return;
-		} else if (firstElementChild.text().trim()) {
+		} else if (firstChild.text().trim()) {
 			this.#localMatch();
 			return;
 		}
-		const {children} = parentNode,
-			i = children.indexOf(this),
+		const {childNodes} = parentNode,
+			i = childNodes.indexOf(this),
 			/** @type {HtmlToken[]} */
-			prevSiblings = children.slice(0, i).filter(child => child.matches(`html#${name}`)),
+			prevSiblings = childNodes.slice(0, i).filter(({type, name}) => type === 'html' && name === tagName),
 			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
 		if (imbalance < 0) {
 			this.#selfClosing = false;
