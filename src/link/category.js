@@ -2,8 +2,7 @@
 
 const Title = require('../../lib/title'),
 	Parser = require('../..'),
-	LinkToken = require('.'),
-	Token = require('..');
+	LinkToken = require('.');
 
 /**
  * 分类

@@ -1,7 +1,6 @@
 'use strict';
 
-const Parser = require('..'),
-	Token = require('../src');
+const Parser = require('..');
 
 /**
  * 解析内部链接
