@@ -12,7 +12,7 @@ class ParameterToken extends Token {
 
 	/** 是否是匿名参数 */
 	get anon() {
-		return this.firstElementChild.childNodes.length === 0;
+		return this.firstChild.childNodes.length === 0;
 	}
 
 	/**
@@ -34,7 +34,7 @@ class ParameterToken extends Token {
 	 * @returns {string}
 	 */
 	toString() {
-		return this.anon ? this.lastElementChild.toString() : super.toString('=');
+		return this.anon ? this.lastChild.toString() : super.toString('=');
 	}
 
 	/** @override */

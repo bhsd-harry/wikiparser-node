@@ -99,10 +99,10 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	toString() {
-		const {children, childNodes: {length}, firstChild, modifier} = this;
+		const {childNodes, firstChild, modifier} = this;
 		return `{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
-				? `${String(firstChild)}${length > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
+				? `${String(firstChild)}${length > 1 ? ':' : ''}${childNodes.slice(1).map(String).join('|')}`
 				: super.toString('|')
 		}}}`;
 	}
@@ -119,11 +119,11 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	print() {
-		const {children, childNodes: {length}, firstElementChild, modifier} = this;
+		const {childNodes, firstChild, modifier} = this;
 		return `<span class="wpb-${this.type}">{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
-				? `${firstElementChild.print()}${length > 1 ? ':' : ''}${print(children.slice(1), {sep: '|'})}`
-				: print(children, {sep: '|'})
+				? `${firstChild.print()}${length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
+				: print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
 }

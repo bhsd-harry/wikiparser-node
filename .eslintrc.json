@@ -501,17 +501,7 @@
 				"name": "e"
 			}
 		],
-		"unicorn/consistent-destructuring": [
-			2,
-			{
-				"exceptions": [
-					"Parser.running",
-					"Parser.debugging",
-					"Parser.warning",
-					"Parser.classes"
-				]
-			}
-		],
+		"unicorn/consistent-destructuring": 0,
 		"unicorn/escape-case": 0,
 		"unicorn/expiring-todo-comments": 0,
 		"unicorn/filename-case": 0,

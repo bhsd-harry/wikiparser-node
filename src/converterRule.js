@@ -43,7 +43,7 @@ class ConverterRuleToken extends Token {
 	 */
 	toString() {
 		if (this.childNodes.length === 3) {
-			const {children: [from, variant, to]} = this;
+			const {childNodes: [from, variant, to]} = this;
 			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
 		}
 		return super.toString(':');
@@ -62,7 +62,7 @@ class ConverterRuleToken extends Token {
 	/** @override */
 	print() {
 		if (this.childNodes.length === 3) {
-			const {children: [from, variant, to]} = this;
+			const {childNodes: [from, variant, to]} = this;
 			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
 		}
 		return super.print({sep: ':'});

@@ -36,7 +36,7 @@ class ConverterToken extends Token {
 
 	/** @override */
 	toString() {
-		const {children: [flags, ...rules]} = this;
+		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
@@ -51,7 +51,7 @@ class ConverterToken extends Token {
 	 */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
-		return i || this.firstElementChild.childNodes.length > 0 ? 1 : 0;
+		return i || this.firstChild.childNodes.length > 0 ? 1 : 0;
 	}
 
 	/** @override */

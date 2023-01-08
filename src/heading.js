@@ -29,7 +29,7 @@ class HeadingToken extends Token {
 	/** @override */
 	toString() {
 		const equals = '='.repeat(Number(this.name));
-		return `${equals}${this.firstElementChild.toString()}${equals}${this.lastElementChild.toString()}`;
+		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;
 	}
 
 	/** @override */

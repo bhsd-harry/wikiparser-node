@@ -48,7 +48,7 @@ class TdToken extends TrToken {
 	 * @complexity `n`
 	 */
 	toString() {
-		const {children: [syntax, attr, inner]} = this;
+		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}
 
@@ -63,7 +63,7 @@ class TdToken extends TrToken {
 
 	/** @override */
 	print() {
-		const {children: [syntax, attr, inner]} = this;
+		const {childNodes: [syntax, attr, inner]} = this;
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 }
