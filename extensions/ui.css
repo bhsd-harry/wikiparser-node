@@ -4,7 +4,7 @@
 	font-family: monospace;
 }
 
-.wpb-error {
+.wpb-hidden, .wpb-table-inter, .wb-table-inter span {
 	color: #f00;
 	font-weight: normal;
 	text-decoration: underline wavy #f00 1px;

@@ -4,7 +4,6 @@
 */*.swp
 .DS_Store
 errors/
+printed/
 .vscode/
 wiki/
-typings/mw
-typings/jquery

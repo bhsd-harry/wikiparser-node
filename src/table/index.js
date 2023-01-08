@@ -1,7 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
-	TrToken = require('./tr'),
+const TrToken = require('./tr'),
 	SyntaxToken = require('../syntax');
 
 /**
@@ -11,23 +10,15 @@ const /** @type {Parser} */ Parser = require('../..'),
 class TableToken extends TrToken {
 	type = 'table';
 
-	static openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/;
-	static closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/;
-
 	/**
-	 * @param {string} syntax
-	 * @param {accum} accum
+	 * 闭合表格语法
+	 * @complexity `n`
+	 * @param {string} syntax 表格结尾语法
 	 */
-	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
-		super(syntax, attr, config, accum, TableToken.openingPattern);
-	}
-
-	/** @complexity `n` */
 	close(syntax = '\n|}') {
 		const config = this.getAttribute('config'),
-			accum = this.getAttribute('accum'),
-			{closingPattern} = TableToken;
-		this.appendChild(new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum));
+			accum = this.getAttribute('accum');
+		this.appendChild(new SyntaxToken(syntax, 'table-syntax', config, accum));
 	}
 }
 

@@ -1,7 +1,7 @@
 'use strict';
 
 const {removeComment, print} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+	Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
 
@@ -13,9 +13,13 @@ class TranscludeToken extends Token {
 	type = 'template';
 	modifier = '';
 
-	/** @complexity `n` */
+	/**
+	 * 设置引用修饰符
+	 * @param {string} modifier 引用修饰符
+	 * @complexity `n`
+	 */
 	setModifier(modifier = '') {
-		const [,, raw, subst] = this.getAttribute('config').parserFunction,
+		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = modifier.trim().toLowerCase(),
 			isRaw = raw.includes(lcModifier),
 			isSubst = subst.includes(lcModifier);
@@ -27,16 +31,17 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} title
-	 * @param {[string, string|undefined][]} parts
+	 * @param {string} title 模板标题或魔术字
+	 * @param {[string, string|undefined][]} parts 参数各部分
 	 * @param {accum} accum
 	 * @complexity `n`
+	 * @throws `SyntaxError` 非法的模板名称
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		const AtomToken = require('./atom'),
-			SyntaxToken = require('./syntax'),
-			{parserFunction: [insensitive, sensitive, raw]} = config;
+			SyntaxToken = require('./syntax');
+		const {parserFunction: [insensitive, sensitive, raw]} = config;
 		if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':');
 			if (this.setModifier(modifier)) {
@@ -48,11 +53,10 @@ class TranscludeToken extends Token {
 				name = removeComment(magicWord),
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
-				this.setAttribute('name', name.toLowerCase().replace(/^#/, '')).type = 'magic-word';
-				const pattern = RegExp(`^\\s*${name}\\s*$`, isSensitive ? '' : 'i'),
-					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum);
+				this.setAttribute('name', name.toLowerCase().replace(/^#/u, '')).type = 'magic-word';
+				const token = new SyntaxToken(magicWord, 'magic-word-name', config, accum);
 				this.appendChild(token);
-				if (arg.length) {
+				if (arg.length > 0) {
 					parts.unshift([arg.join(':')]);
 				}
 				if (this.name === 'invoke') {
@@ -71,17 +75,17 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const [name] = removeComment(title).split('#');
-			if (/\0\d+[eh!+-]\x7f|[<>[\]{}]/.test(name)) {
+			if (/\0\d+[eh!+-]\x7F|[<>[\]{}]/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum);
 			this.appendChild(token);
 		}
-		const notTemplateLike = this.type === 'magic-word' && this.name !== 'invoke';
+		const templateLike = !(this.type === 'magic-word' && this.name !== 'invoke');
 		let i = 1;
 		for (const part of parts) {
-			if (notTemplateLike) {
+			if (!templateLike) {
 				part[0] = part.join('=');
 				part.length = 1;
 			}
@@ -93,18 +97,30 @@ class TranscludeToken extends Token {
 		}
 	}
 
+	/** @override */
 	toString() {
-		const {children, childNodes: {length}, firstChild} = this;
-		return `{{${this.modifier}${this.modifier && ':'}${
+		const {children, childNodes: {length}, firstChild, modifier} = this;
+		return `{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
 				? `${String(firstChild)}${length > 1 ? ':' : ''}${children.slice(1).map(String).join('|')}`
 				: super.toString('|')
 		}}}`;
 	}
 
+	/** @override */
+	getPadding() {
+		return this.modifier ? this.modifier.length + 3 : 2;
+	}
+
+	/** @override */
+	getGaps() {
+		return 1;
+	}
+
+	/** @override */
 	print() {
-		const {children, childNodes: {length}, firstElementChild} = this;
-		return `<span class="wpb-${this.type}">{{${this.modifier}${this.modifier && ':'}${
+		const {children, childNodes: {length}, firstElementChild, modifier} = this;
+		return `<span class="wpb-${this.type}">{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
 				? `${firstElementChild.print()}${length > 1 ? ':' : ''}${print(children.slice(1), {sep: '|'})}`
 				: print(children, {sep: '|'})

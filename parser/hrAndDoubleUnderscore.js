@@ -1,25 +1,34 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..'),
+	AstText = require('../lib/text');
 
 /**
- * @param {string} firstChild
+ * 解析\<hr\>和状态开关
+ * @param {{firstChild: AstText, type: string}} root 根节点
  * @param {accum} accum
  */
-const parseHrAndDoubleUnderscore = (firstChild, config = Parser.getConfig(), accum = []) => {
+const parseHrAndDoubleUnderscore = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {
 	const HrToken = require('../src/nowiki/hr'),
-		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore'),
-		{doubleUnderscore} = config;
-	return firstChild.replace(/^((?:\0\d+c\x7f)*)(-{4,})/gm, (_, lead, m) => {
+		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
+	const {doubleUnderscore} = config;
+	if (type !== 'root') {
+		data = `\0${data}`;
+	}
+	data = data.replaceAll(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
 		new HrToken(m.length, config, accum);
-		return `${lead}\0${accum.length - 1}r\x7f`;
-	}).replace(RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'gi'), /** @param {string} p1 */(m, p1) => {
-		if (doubleUnderscore[0].includes(p1.toLowerCase()) || doubleUnderscore[1].includes(p1)) {
-			new DoubleUnderscoreToken(p1, config, accum);
-			return `\0${accum.length - 1}u\x7f`;
-		}
-		return m;
-	});
+		return `${lead}\0${accum.length - 1}r\x7F`;
+	}).replaceAll(
+		new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'giu'),
+		/** @param {string} p1 */ (m, p1) => {
+			if (doubleUnderscore[0].includes(p1.toLowerCase()) || doubleUnderscore[1].includes(p1)) {
+				new DoubleUnderscoreToken(p1, config, accum);
+				return `\0${accum.length - 1}u\x7F`;
+			}
+			return m;
+		},
+	);
+	return type === 'root' ? data : data.slice(1);
 };
 
 module.exports = parseHrAndDoubleUnderscore;

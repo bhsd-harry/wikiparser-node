@@ -9,12 +9,19 @@ declare global {
 		parserFunction: [string[], string[], string[], string[]];
 		doubleUnderscore: [string[], string[]];
 		protocol: string;
-		interwiki: string[];
 		img: Record<string, string>;
 		variants: string[];
 	}
 
 	type accum = Token[];
+
+	interface LintError {
+		message: string;
+		startLine: number;
+		startCol: number;
+		endLine: number;
+		endCol: number;
+	}
 }
 
 export {};

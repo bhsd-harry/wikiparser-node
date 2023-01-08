@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
@@ -12,17 +12,17 @@ const /** @type {Parser} */ Parser = require('../..'),
 class TrToken extends Token {
 	type = 'tr';
 
-	static openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/;
-
 	/**
-	 * @param {string} syntax
+	 * @param {string} syntax 表格语法
+	 * @param {string} attr 表格属性
 	 * @param {accum} accum
+	 * @param {RegExp} pattern 表格语法正则
 	 */
-	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = TrToken.openingPattern) {
+	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		this.append(
-			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum),
-			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
+			new SyntaxToken(syntax, 'table-syntax', config, accum),
+			new AttributeToken(attr, 'table-attr', config, accum),
 		);
 	}
 }

@@ -1,49 +1,51 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..');
 
 /**
- * @param {string} text
+ * 解析HTML注释和扩展标签
+ * @param {string} text wikitext
  * @param {accum} accum
+ * @param {boolean} includeOnly 是否嵌入
  */
 const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], includeOnly = false) => {
-	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gs;
+	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gsu;
 	if (includeOnly && text.search(onlyinclude) !== -1) { // `<onlyinclude>`拥有最高优先级
-		return text.replace(onlyinclude, /** @param {string} inner */ (_, inner) => {
-			const str = `\0${accum.length}e\x7f`,
-				OnlyincludeToken = require('../src/onlyinclude');
+		return text.replaceAll(onlyinclude, /** @param {string} inner */ (_, inner) => {
+			const str = `\0${accum.length}e\x7F`;
+			const OnlyincludeToken = require('../src/onlyinclude');
 			new OnlyincludeToken(inner, config, accum);
 			return str;
-		}).replace(/(^|\0\d+e\x7f)(.*?)(?=$|\0\d+e\x7f)/gs, (_, lead, substr) => {
+		}).replaceAll(/(^|\0\d+e\x7F)(.*?)(?=$|\0\d+e\x7F)/gsu, (_, lead, substr) => {
 			if (substr === '') {
 				return lead;
 			}
 			const NoincludeToken = require('../src/nowiki/noinclude');
 			new NoincludeToken(substr, config, accum);
-			return `${lead}\0${accum.length - 1}c\x7f`;
+			return `${lead}\0${accum.length - 1}c\x7F`;
 		});
 	}
 	const ext = config.ext.join('|'),
 		includeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		noincludeRegex = includeOnly ? 'noinclude' : 'includeonly',
-		regex = RegExp(
+		regex = new RegExp(
 			'<!--.*?(?:-->|$)|' // comment
 			+ `<${includeRegex}(?:\\s[^>]*?)?>|</${includeRegex}\\s*>|` // <includeonly>
 			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
 			+ `<(${noincludeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`, // <noinclude>
-			'gis',
+			'gisu',
 		);
 	return text.replace(
 		regex,
 		/** @type {function(...string): string} */
 		(substr, name, attr, inner, closing, include, includeAttr, includeInner, includeClosing) => {
-			const str = `\0${accum.length}${name ? 'e' : 'c'}\x7f`;
+			const str = `\0${accum.length}${name ? 'e' : 'c'}\x7F`;
 			if (name) {
 				const ExtToken = require('../src/tagPair/ext');
 				new ExtToken(name, attr, inner, closing, config, accum);
 			} else if (substr.startsWith('<!--')) {
-				const CommentToken = require('../src/nowiki/comment'),
-					closed = substr.endsWith('-->');
+				const CommentToken = require('../src/nowiki/comment');
+				const closed = substr.endsWith('-->');
 				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
 			} else if (include) {
 				const IncludeToken = require('../src/tagPair/include');

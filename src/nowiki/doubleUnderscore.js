@@ -4,16 +4,22 @@ const NowikiToken = require('.');
 
 /**
  * 状态开关
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class DoubleUnderscoreToken extends NowikiToken {
 	type = 'double-underscore';
 
-	/** @this {DoubleUnderscoreToken & {firstChild: string}} */
+	/** @override */
 	toString() {
-		return `__${this.firstChild}__`;
+		return `__${String(this.firstChild)}__`;
 	}
 
+	/** @override */
+	getPadding() {
+		return 2;
+	}
+
+	/** @override */
 	print() {
 		return super.print({pre: '__', post: '__'});
 	}

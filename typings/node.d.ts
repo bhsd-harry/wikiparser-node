@@ -1,19 +1,15 @@
 import Token from '../src';
-import ParameterToken from '../src/parameter';
+import AstText from '../lib/text';
 
 declare global {
 	type TokenAttribute<T> =
-		T extends 'childNodes' ? (string|Token)[] :
-		T extends 'parentNode' ? Token|undefined :
-		T extends 'optional'|'tags'|'flags' ? string[] :
-		T extends 'stage'|'indent' ? number :
+		T extends 'stage' ? number :
 		T extends 'config' ? ParserConfig :
 		T extends 'accum' ? accum :
-		T extends 'keys' ? Set<string> :
-		T extends 'args' ? Record<string, Set<ParameterToken>> :
-		T extends 'attr' ? Map<string, string|true> :
-		T extends 'include'|'selfLink'|'ul'|'ol'|'dt'|'unidirectional'|'bidirectional' ? boolean :
-		T extends 'pattern' ? RegExp :
+		T extends 'parentNode' ? Token|undefined :
+		T extends 'childNodes' ? (AstText|Token)[] :
+		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
+		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
 		string;
 
 	interface printOpt {
@@ -21,8 +17,7 @@ declare global {
 		post?: string;
 		sep?: string;
 		class?: string;
-		wrap?: (s: string) => string;
-	} 
+	}
 }
 
 export {};

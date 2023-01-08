@@ -3,6 +3,14 @@
 const /** @type {Parser} */ Parser = {
 	running: false,
 
+	config: require('./config/default'),
+
+	MAX_STAGE: 11,
+
+	getConfig() {
+		return this.config;
+	},
+
 	run(callback) {
 		const {running} = this;
 		this.running = true;
@@ -16,25 +24,23 @@ const /** @type {Parser} */ Parser = {
 		}
 	},
 
-	config: require('./config/default'),
-
-	getConfig() {
-		return this.config;
-	},
-
-	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		title = String(title);
-		return RegExp(`^(${interwiki.join('|')})\\s*:`, 'i').exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/, ''));
-	},
-
-	normalizeTitle(title, defaultNs = 0, config = Parser.getConfig()) {
+	normalizeTitle(title, defaultNs = 0, config = Parser.getConfig(), halfParsed = false) {
+		let /** @type {Token} */ token;
+		if (!halfParsed) {
+			const Token = require('./src');
+			token = this.run(() => {
+				const newToken = new Token(String(title), config),
+					parseOnce = newToken.getAttribute('parseOnce');
+				parseOnce();
+				return parseOnce();
+			});
+			title = token.firstChild;
+		}
 		const Title = require('./lib/title');
 		return new Title(String(title), defaultNs, config);
 	},
 
-	MAX_STAGE: 11,
-
-	parse(wikitext, include = false, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src');
 		let token;
 		this.run(() => {
@@ -42,9 +48,7 @@ const /** @type {Parser} */ Parser = {
 				token = new Token(wikitext, config);
 			} else if (wikitext instanceof Token) {
 				token = wikitext;
-				wikitext = token.toString();
-			} else {
-				throw new TypeError('待解析的内容应为 String 或 Token！');
+				wikitext = String(token);
 			}
 			token.parse(maxStage, include);
 		});
@@ -61,7 +65,7 @@ const /** @type {PropertyDescriptorMap} */ def = {};
 for (const key in Parser) {
 	if (['MAX_STAGE'].includes(key)) {
 		def[key] = {enumerable: false, writable: false};
-	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse', 'print'].includes(key)) {
+	} else if (!['config', 'normalizeTitle', 'parse', 'print'].includes(key)) {
 		def[key] = {enumerable: false};
 	}
 }

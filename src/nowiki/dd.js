@@ -4,7 +4,7 @@ const NowikiToken = require('.');
 
 /**
  * :
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class DdToken extends NowikiToken {
 	type = 'dd';

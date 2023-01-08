@@ -1,21 +1,25 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	Token = require('..');
 
 /**
  * 不会被继续解析的plain Token
- * @classdesc `{childNodes: (string|Token)[]}`
+ * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 class AtomToken extends Token {
+	type = 'plain';
+
 	/**
-	 * @param {?string} wikitext
+	 * @param {string} wikitext wikitext
+	 * @param {string|undefined} type Token.type
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable
 	 */
-	constructor(wikitext, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
-		super(wikitext, config, true, accum, acceptable);
-		this.type = type;
+	constructor(wikitext, type, config = Parser.getConfig(), accum = []) {
+		super(wikitext, config, true, accum);
+		if (type) {
+			this.type = type;
+		}
 	}
 }
 

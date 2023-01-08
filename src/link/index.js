@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	Token = require('..');
 
 /**
@@ -11,11 +11,11 @@ class LinkToken extends Token {
 	type = 'link';
 
 	/**
-	 * @param {string} link
-	 * @param {string|undefined} linkText
+	 * @param {string} link 链接标题
+	 * @param {string|undefined} linkText 链接显示文字
 	 * @param {accum} accum
 	 */
-	constructor(link, linkText, title, config = Parser.getConfig(), accum = []) {
+	constructor(link, linkText, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		const AtomToken = require('../atom');
 		this.appendChild(new AtomToken(link, 'link-target', config, accum));
@@ -26,11 +26,23 @@ class LinkToken extends Token {
 		}
 	}
 
+	/** @override */
 	toString() {
 		const str = super.toString('|');
 		return this.type === 'gallery-image' ? str : `[[${str}]]`;
 	}
 
+	/** @override */
+	getPadding() {
+		return 2;
+	}
+
+	/** @override */
+	getGaps() {
+		return 1;
+	}
+
+	/** @override */
 	print() {
 		return super.print(this.type === 'gallery-image' ? {sep: '|'} : {pre: '[[', post: ']]', sep: '|'});
 	}

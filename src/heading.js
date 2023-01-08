@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -11,8 +11,8 @@ class HeadingToken extends Token {
 	type = 'heading';
 
 	/**
-	 * @param {number} level
-	 * @param {string[]} input
+	 * @param {number} level 标题层级
+	 * @param {string[]} input 标题文字
 	 * @param {accum} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
@@ -21,19 +21,30 @@ class HeadingToken extends Token {
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
-		const SyntaxToken = require('./syntax'),
-			trail = new SyntaxToken(input[1], /^[^\S\n]*$/, 'heading-trail', config, accum);
+		const SyntaxToken = require('./syntax');
+		const trail = new SyntaxToken(input[1], 'heading-trail', config, accum);
 		this.append(token, trail);
 	}
 
+	/** @override */
 	toString() {
 		const equals = '='.repeat(Number(this.name));
 		return `${equals}${this.firstElementChild.toString()}${equals}${this.lastElementChild.toString()}`;
 	}
 
+	/** @override */
+	getPadding() {
+		return Number(this.name);
+	}
+
+	/** @override */
+	getGaps() {
+		return Number(this.name);
+	}
+
+	/** @override */
 	print() {
-		const name = Number(this.name),
-			equals = '='.repeat(name);
+		const equals = '='.repeat(Number(this.name));
 		return super.print({pre: equals, sep: equals});
 	}
 }

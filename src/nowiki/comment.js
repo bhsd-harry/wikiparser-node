@@ -1,18 +1,19 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * HTML注释，不可见
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class CommentToken extends NowikiToken {
 	type = 'comment';
 	closed;
 
 	/**
-	 * @param {string} wikitext
+	 * @param {string} wikitext wikitext
+	 * @param {boolean} closed 是否闭合
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
@@ -20,11 +21,17 @@ class CommentToken extends NowikiToken {
 		this.closed = closed;
 	}
 
-	/** @this {CommentToken & {firstChild: string}} */
+	/** @override */
 	toString() {
-		return `<!--${this.firstChild}${this.closed ? '-->' : ''}`;
+		return `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
 	}
 
+	/** @override */
+	getPadding() {
+		return 4;
+	}
+
+	/** @override */
 	print() {
 		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}

@@ -1,18 +1,18 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
-	Token = require('../src');
+const Parser = require('..');
 
 /**
- * @param {string} firstChild
+ * 解析内部链接
+ * @param {string} wikitext wikitext
  * @param {accum} accum
  */
-const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const parseQuotes = require('./quotes.js'),
-		regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/s,
-		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/s,
-		regexExt = RegExp(`^\\s*(?:${config.protocol})`, 'i'),
-		bits = firstChild.split('[[');
+const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
+	const parseQuotes = require('./quotes.js');
+	const regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/su,
+		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/su,
+		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
+		bits = wikitext.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
 		let mightBeImg, link, text, after;
@@ -20,7 +20,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			m = regex.exec(x);
 		if (m) {
 			[, link, text, after] = m;
-			if (after.startsWith(']') && text?.includes('[')) {
+			if (after[0] === ']' && text?.includes('[')) {
 				text += ']';
 				after = after.slice(1);
 			}
@@ -31,7 +31,7 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 				[, link, text] = m2;
 			}
 		}
-		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7f/.test(link)) {
+		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7F/u.test(link)) {
 			s += `[[${x}`;
 			continue;
 		}
@@ -41,18 +41,17 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 				page = decodeURIComponent(link);
 			} catch {}
 		}
-		const force = link.trim().startsWith(':');
+		const force = link.trim()[0] === ':';
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
 		}
-		const title = Parser.normalizeTitle(page, 0, config),
-			{ns, interwiki, valid} = title;
+		const {ns, valid} = Parser.normalizeTitle(page, 0, config, true);
 		if (!valid) {
 			s += `[[${x}`;
 			continue;
 		} else if (mightBeImg) {
-			if (interwiki || ns !== 6) {
+			if (ns !== 6) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -79,16 +78,16 @@ const parseLinks = (firstChild, config = Parser.getConfig(), accum = []) => {
 			}
 		}
 		text &&= parseQuotes(text, config, accum);
-		s += `\0${accum.length}l\x7f${after}`;
+		s += `\0${accum.length}l\x7F${after}`;
 		let LinkToken = require('../src/link');
 		if (!force) {
-			if (!interwiki && ns === 6) {
+			if (ns === 6) {
 				LinkToken = require('../src/link/file');
-			} else if (!interwiki && ns === 14) {
+			} else if (ns === 14) {
 				LinkToken = require('../src/link/category');
 			}
 		}
-		new LinkToken(link, text, title, config, accum);
+		new LinkToken(link, text, config, accum);
 	}
 	return s;
 };

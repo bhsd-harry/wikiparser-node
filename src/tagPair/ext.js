@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	TagPairToken = require('.');
 
 /**
@@ -9,35 +9,42 @@ const /** @type {Parser} */ Parser = require('../..'),
  */
 class ExtToken extends TagPairToken {
 	type = 'ext';
+	closed = true;
 
 	/**
-	 * @param {string} name
-	 * @param {string|undefined} closing
+	 * @param {string} name 标签名
+	 * @param {string} attr 标签属性
+	 * @param {string} inner 内部wikitext
+	 * @param {string|undefined} closed 是否封闭
 	 * @param {accum} accum
 	 */
-	constructor(name, attr = '', inner = '', closing = undefined, config = Parser.getConfig(), accum = []) {
+	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
+		const AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
-			AttributeToken = require('../attribute'),
-			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
+			attrToken = new AttributeToken(attr, 'ext-attr', config, accum),
 			newConfig = JSON.parse(JSON.stringify(config)),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
 		switch (lcName) {
 			case 'choose':
-				ext.add('option');
-				// fall through
-			case 'ref':
 			case 'option':
+			case 'ref':
 			case 'poem':
 			case 'indicator':
 			case 'tab':
 			case 'tabs':
-			case 'pre': {
+			case 'pre':
+			case 'combobox':
+			case 'combooption': {
 				ext.delete(lcName);
-				newConfig.ext = [...ext];
+				newConfig.ext = [
+					...ext,
+					...lcName === 'choose' ? ['option'] : [],
+					...lcName === 'combobox' ? ['combooption'] : [],
+				];
 				const Token = require('..');
-				innerToken = new Token(inner, newConfig, false, accum);
+				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			}
 			case 'gallery': {
@@ -56,8 +63,7 @@ class ExtToken extends TagPairToken {
 		if (lcName === 'pre') {
 			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		}
-		super(name, attrToken, innerToken, closing, config, accum);
-		Object.defineProperty(this, 'closed', {value: true, enumerable: false, writable: false, configurable: false});
+		super(name, attrToken, innerToken, closed, config, accum);
 	}
 }
 

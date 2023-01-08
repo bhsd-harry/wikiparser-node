@@ -1,6 +1,4 @@
-/* eslint quotes: [2, 'double'], quote-props: [2, 'always'], comma-dangle: [2, 'never'] */
-"use strict";
-module.exports = {
+{
 	"ext": [
 		"nowiki",
 		"pre",
@@ -21,10 +19,10 @@ module.exports = {
 		"flashmp3",
 		"sm2",
 		"score",
+		"seo",
 		"tab",
 		"tabs",
-		"combobox",
-		"combooption"
+		"combobox"
 	],
 	"html": [
 		[
@@ -383,27 +381,15 @@ module.exports = {
 			"#regex_var",
 			"#regexquote",
 			"#regexall",
-			"#长度",
 			"#len",
-			"#位置",
-			"#终端",
 			"#pos",
-			"#最近位置",
-			"#反终端",
 			"#rpos",
-			"#截取",
-			"#pf子",
 			"#sub",
-			"#计数",
 			"#count",
-			"#替换",
-			"#取代",
 			"#replace",
-			"#爆炸",
-			"#炸开",
-			"#粉碎",
 			"#explode",
-			"#tab"
+			"#tab",
+			"#seo"
 		],
 		[
 			"页面数",
@@ -646,64 +632,6 @@ module.exports = {
 		]
 	],
 	"protocol": "bitcoin:|ftp://|ftps://|geo:|git://|gopher://|http://|https://|irc://|ircs://|magnet:|mailto:|mms://|news:|nntp://|redis://|sftp://|sip:|sips:|sms:|ssh://|svn://|tel:|telnet://|urn:|worldwind://|xmpp:",
-	"interwiki": [
-		"arxiv",
-		"aswiki",
-		"cache",
-		"cmoegirl",
-		"commons",
-		"doi",
-		"google",
-		"googlegroups",
-		"gsnews",
-		"imdb",
-		"jawiki",
-		"komica",
-		"mediawikiwiki",
-		"metawikimedia",
-		"moegirl",
-		"mw",
-		"sifaswiki",
-		"sifwiki",
-		"wikia",
-		"wikibooks",
-		"wikidata",
-		"wikimedia",
-		"wikinews",
-		"wikiinfo",
-		"wikipedia",
-		"wikiquote",
-		"wikisource",
-		"wikispecies",
-		"wikiversity",
-		"wikivoyage",
-		"wikt",
-		"wiktionary",
-		"zhwiki",
-		"cc",
-		"cm",
-		"enmoe",
-		"enwp",
-		"fandom",
-		"ghia",
-		"huiji",
-		"jamoe",
-		"jawp",
-		"library",
-		"meta",
-		"phab",
-		"pmid",
-		"shoutwiki",
-		"translatewiki",
-		"zhmoe",
-		"zhmoegirl",
-		"zhtest",
-		"zhwp",
-		"文库",
-		"萌娘共享",
-		"萌娘文库",
-		"萌百"
-	],
 	"img": {
 		"thumbnail": "thumbnail",
 		"thumb": "thumbnail",
@@ -759,7 +687,13 @@ module.exports = {
 		"bottom": "bottom",
 		"底部": "bottom",
 		"text-bottom": "text-bottom",
-		"文字底部": "text-bottom"
+		"文字底部": "text-bottom",
+		"lang=$1": "lang",
+		"语言=$1": "lang",
+		"page=$1": "page",
+		"page $1": "page",
+		"页数=$1": "page",
+		"$1页": "page"
 	},
 	"variants": [
 		"zh",
@@ -772,4 +706,4 @@ module.exports = {
 		"zh-my",
 		"zh-mo"
 	]
-};
+}

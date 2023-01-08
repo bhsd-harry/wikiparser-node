@@ -1,51 +1,56 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..'),
+	AstText = require('../lib/text');
 
 /**
- * `tr`和`td`包含开头的换行
- * @param {{firstChild: string, type: string}}
+ * 解析表格，注意`tr`和`td`包含开头的换行
+ * @param {{firstChild: AstText, type: string}} root 根节点
  * @param {accum} accum
  */
-const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = []) => {
+const parseTable = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {
 	const Token = require('../src'),
 		TableToken = require('../src/table'),
 		TrToken = require('../src/table/tr'),
 		TdToken = require('../src/table/td'),
-		DdToken = require('../src/nowiki/dd'),
-		/** @type {TrToken[]} */ stack = [],
-		lines = firstChild.split('\n');
+		DdToken = require('../src/nowiki/dd');
+	const /** @type {TrToken[]} */ stack = [],
+		lines = data.split('\n');
 	let out = type === 'root' ? '' : `\n${lines.shift()}`;
-	const /** @type {(str: string, top: TrToken & {firstChild: string}) => void} */ push = (str, top) => {
+
+	/**
+	 * 向表格中插入纯文本
+	 * @param {string} str 待插入的文本
+	 * @param {TrToken} top 当前解析的表格或表格行
+	 */
+	const push = (str, top) => {
 		if (!top) {
 			out += str;
 			return;
 		}
 		const {lastElementChild} = top;
 		if (lastElementChild.isPlain()) {
-			lastElementChild.setText(lastElementChild.firstChild + str, 0);
+			lastElementChild.setText(String(lastElementChild) + str);
 		} else {
 			const token = new Token(str, config, true, accum);
 			token.type = 'table-inter';
-			token.print = function() {
-				return `<span class="wpb-error" title="Will be placed outside the table">${
-					Token.prototype.print.call(this)
-				}</span>`;
-			};
 			top.appendChild(token.setAttribute('stage', 3));
 		}
 	};
 	for (const outLine of lines) {
 		let top = stack.pop();
-		const [spaces] = /^(?:\s|\0\d+c\x7f)*/.exec(outLine);
-		const line = outLine.slice(spaces.length),
-			matchesStart = /^(:*)((?:\s|\0\d+c\x7f)*)(\{\||\{\0\d+!\x7f|\0\d+\{\x7f)(.*)$/.exec(line);
+		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine),
+			line = outLine.slice(spaces.length),
+			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u.exec(line);
 		if (matchesStart) {
+			while (top && top.type !== 'td') {
+				top = stack.pop();
+			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
 				new DdToken(indent, config, accum);
 			}
-			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7f`}${moreSpaces}\0${accum.length}b\x7f`, top);
+			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7F`}${moreSpaces}\0${accum.length}b\x7F`, top);
 			const table = new TableToken(tableSyntax, attr, config, accum);
 			stack.push(...top ? [top] : [], table);
 			continue;
@@ -53,8 +58,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 			out += `\n${outLine}`;
 			continue;
 		}
-		const matches
-			= /^(?:(\|\}|\0\d+!\x7f\}|\0\d+\}\x7f)|(\|-+|\0\d+!\x7f-+|\0\d+-\x7f-*)(?!-)|(!|(?:\||\0\d+!\x7f)\+?))(.*)$/
+		const matches = // eslint-disable-line operator-linebreak
+			/^(?:(\|\}|\0\d+!\x7F\}|\0\d+\}\x7F)|(\|-+|\0\d+!\x7F-+|\0\d+-\x7F-*)(?!-)|(!|(?:\||\0\d+!\x7F)\+?))(.*)$/u
 				.exec(line);
 		if (!matches) {
 			push(`\n${outLine}`, top);
@@ -83,8 +88,8 @@ const parseTable = ({firstChild, type}, config = Parser.getConfig(), accum = [])
 				top = stack.pop();
 			}
 			const regex = cell === '!'
-				? /!!|(?:\||\0\d+!\x7f){2}|\0\d+\+\x7f/g
-				: /(?:\||\0\d+!\x7f){2}|\0\d+\+\x7f/g;
+				? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu
+				: /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
 			let mt = regex.exec(attr),
 				lastIndex = 0,
 				lastSyntax = `\n${spaces}${cell}`;

@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -9,32 +9,39 @@ const /** @type {Parser} */ Parser = require('..'),
  */
 class HtmlToken extends Token {
 	type = 'html';
-	closing;
-	selfClosing;
+	#closing;
+	#selfClosing;
 	#tag;
 
 	/**
-	 * @param {string} name
-	 * @param {AttributeToken} attr
-	 * @param {boolean} closing
-	 * @param {boolean} selfClosing
+	 * @param {string} name 标签名
+	 * @param {AttributeToken} attr 标签属性
+	 * @param {boolean} closing 是否闭合
+	 * @param {boolean} selfClosing 是否自封闭
 	 * @param {accum} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		this.appendChild(attr);
-		this.closing = closing;
-		this.selfClosing = selfClosing;
+		this.#closing = closing;
+		this.#selfClosing = selfClosing;
 		this.#tag = name;
 	}
 
+	/** @override */
 	toString() {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.selfClosing ? '/' : ''}>`;
+		return `<${this.#closing ? '/' : ''}${this.#tag}${super.toString()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
+	/** @override */
+	getPadding() {
+		return this.#tag.length + (this.#closing ? 2 : 1);
+	}
+
+	/** @override */
 	print() {
 		return super.print({
-			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`, post: `${this.selfClosing ? '/' : ''}&gt;`,
+			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`, post: `${this.#selfClosing ? '/' : ''}&gt;`,
 		});
 	}
 }

@@ -1,13 +1,14 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..');
 
 /**
- * @param {string} text
+ * 解析单引号
+ * @param {string} text wikitext
  * @param {accum} accum
  */
 const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
-	const arr = text.split(/('{2,})/),
+	const arr = text.split(/('{2,})/u),
 		{length} = arr;
 	if (length === 1) {
 		return text;
@@ -16,7 +17,7 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 		nItalic = 0,
 		firstSingle, firstMulti, firstSpace;
 	for (let i = 1; i < length; i += 2) {
-		const len = arr[i].length;
+		const {length: len} = arr[i];
 		switch (len) {
 			case 2:
 				nItalic++;
@@ -54,7 +55,7 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	const QuoteToken = require('../src/nowiki/quote');
 	for (let i = 1; i < length; i += 2) {
 		new QuoteToken(arr[i].length, config, accum);
-		arr[i] = `\0${accum.length - 1}q\x7f`;
+		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
 	return arr.join('');
 };

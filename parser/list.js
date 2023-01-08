@@ -1,26 +1,27 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..');
 
 /**
- * @param {string} text
+ * 解析列表
+ * @param {string} text wikitext
  * @param {accum} accum
  */
 const parseList = (text, config = Parser.getConfig(), accum = []) => {
-	const mt = /^((?:\0\d+c\x7f)*)([;:*#]+)/.exec(text);
+	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(text);
 	if (!mt) {
 		return text;
 	}
-	const ListToken = require('../src/nowiki/list'),
-		[total, comment, prefix] = mt;
-	text = `${comment}\0${accum.length}d\x7f${text.slice(total.length)}`;
+	const ListToken = require('../src/nowiki/list');
+	const [total, comment, prefix] = mt;
+	text = `${comment}\0${accum.length}d\x7F${text.slice(total.length)}`;
 	new ListToken(prefix, config, accum);
 	let dt = prefix.split(';').length - 1;
 	if (!dt) {
 		return text;
 	}
 	const DdToken = require('../src/nowiki/dd');
-	let regex = /:+|-\{/g,
+	let regex = /:+|-\{/gu,
 		ex = regex.exec(text),
 		lc = 0;
 	while (ex && dt) {
@@ -28,16 +29,16 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 		if (syntax[0] === ':') {
 			if (syntax.length >= dt) {
 				new DdToken(':'.repeat(dt), config, accum);
-				return `${text.slice(0, index)}\0${accum.length - 1}d\x7f${text.slice(index + dt)}`;
+				return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + dt)}`;
 			}
-			text = `${text.slice(0, index)}\0${accum.length}d\x7f${text.slice(regex.lastIndex)}`;
+			text = `${text.slice(0, index)}\0${accum.length}d\x7F${text.slice(regex.lastIndex)}`;
 			dt -= syntax.length;
 			regex.lastIndex = index + 4 + String(accum.length).length;
 			new DdToken(syntax, config, accum);
 		} else if (syntax === '-{') {
 			if (!lc) {
 				const {lastIndex} = regex;
-				regex = /-\{|\}-/g;
+				regex = /-\{|\}-/gu;
 				regex.lastIndex = lastIndex;
 			}
 			lc++;
@@ -45,7 +46,7 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 			lc--;
 			if (!lc) {
 				const {lastIndex} = regex;
-				regex = /:+|-\{/g;
+				regex = /:+|-\{/gu;
 				regex.lastIndex = lastIndex;
 			}
 		}

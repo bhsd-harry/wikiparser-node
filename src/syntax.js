@@ -1,21 +1,21 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.');
 
 /**
  * 满足特定语法格式的plain Token
- * @classdesc `{childNodes: (string|Token)[]}`
+ * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 class SyntaxToken extends Token {
 	/**
-	 * @param {?string} wikitext
-	 * @param {RegExp} pattern
+	 * @param {string} wikitext 语法wikitext
+	 * @param {RegExp} pattern 语法正则
+	 * @param {string} type Token.type
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable
 	 */
-	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
-		super(wikitext, config, true, accum, acceptable);
+	constructor(wikitext, type = 'plain', config = Parser.getConfig(), accum = []) {
+		super(wikitext, config, true, accum);
 		this.type = type;
 	}
 }

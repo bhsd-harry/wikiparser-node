@@ -1,51 +1,79 @@
 'use strict';
 
-const {printError} = require('../util/string'),
-	/** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.'),
-	GalleryImageToken = require('./link/galleryImage');
+	GalleryImageToken = require('./link/galleryImage'),
+	HiddenToken = require('./atom/hidden');
 
 /**
  * gallery标签
- * @classdesc `{childNodes: (string|FileToken)[]]}`
+ * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
  */
 class GalleryToken extends Token {
 	type = 'ext-inner';
 	name = 'gallery';
 
 	/**
-	 * @param {string} inner
+	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		for (const line of inner?.split('\n') ?? []) {
-			const matches = /^([^|]+)(?:\|(.*))?/.exec(line);
+			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.appendChild(line);
+				this.appendChild(line.trim() ? new HiddenToken(line, undefined, config, [], {AstText: ':'}) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
-			let title;
+			let /** @type {boolean} */ valid;
 			try {
-				title = this.normalizeTitle(decodeURIComponent(file), 6);
+				({valid} = this.normalizeTitle(decodeURIComponent(file), 6, true));
 			} catch {
-				title = this.normalizeTitle(file, 6);
+				({valid} = this.normalizeTitle(file, 6, true));
 			}
-			if (!title.valid) {
-				this.appendChild(line);
+			if (valid) {
+				this.appendChild(new GalleryImageToken(file, alt, config, accum));
 			} else {
-				this.appendChild(new GalleryImageToken(file, alt, title, config, accum));
+				this.appendChild(new HiddenToken(line, undefined, config, []));
 			}
 		}
 	}
 
+	/** @override */
 	toString() {
 		return super.toString('\n');
 	}
 
+	/** @override */
+	getGaps() {
+		return 1;
+	}
+
+	/** @override */
 	print() {
-		return super.print({sep: '\n', wrap: s => printError(s, 'Invisible content')});
+		return super.print({sep: '\n'});
+	}
+
+	/**
+	 * @override
+	 * @returns {LintError[]}
+	 */
+	lint() {
+		const root = this.getRootNode(),
+			{top} = root.posFromIndex(root.getAbsoluteIndex());
+		return this.childNodes.flatMap((child, i) => {
+			if (child.type === 'hidden') {
+				const str = String(child),
+					startLine = top + i;
+				return /^<!--.*-->$/u.test(str)
+					? []
+					: {message: '图库中的无效内容', startLine, endLine: startLine, startCol: 0, endCol: str.length};
+			} else if (child.type === 'text') {
+				return [];
+			}
+			return child.lint();
+		});
 	}
 }
 

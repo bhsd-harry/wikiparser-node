@@ -4,7 +4,7 @@ const DdToken = require('./dd');
 
 /**
  * ;:*#
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class ListToken extends DdToken {
 	type = 'list';

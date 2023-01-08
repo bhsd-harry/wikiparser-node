@@ -1,17 +1,17 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	Token = require('..');
 
 /**
  * 纯文字Token，不会被解析
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class NowikiToken extends Token {
 	type = 'ext-inner';
 
 	/**
-	 * @param {string} wikitext
+	 * @param {string} wikitext wikitext
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {

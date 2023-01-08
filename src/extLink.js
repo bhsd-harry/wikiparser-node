@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.'),
 	MagicLinkToken = require('./magicLink');
 
@@ -13,9 +13,9 @@ class ExtLinkToken extends Token {
 	#space;
 
 	/**
-	 * @param {string} url
-	 * @param {string} space
-	 * @param {string} text
+	 * @param {string} url 网址
+	 * @param {string} space 空白字符
+	 * @param {string} text 链接文字
 	 * @param {accum} accum
 	 */
 	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
@@ -29,13 +29,27 @@ class ExtLinkToken extends Token {
 		}
 	}
 
+	/** @override */
 	toString() {
-		return `[${this.firstElementChild.toString()}${this.#space}${this.children[1]?.toString() ?? ''}]`;
+		return this.childNodes.length === 1
+			? `[${super.toString()}${this.#space}]`
+			: `[${super.toString(this.#space)}]`;
 	}
 
+	/** @override */
+	getPadding() {
+		return 1;
+	}
+
+	/** @override */
+	getGaps() {
+		return this.#space.length;
+	}
+
+	/** @override */
 	print() {
 		const {childNodes: {length}} = this;
-		return super.print({pre: '[', sep: length > 1 ? this.#space : '', post: length > 1 ? ']' : `${this.#space}]`});
+		return super.print(length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`});
 	}
 }
 

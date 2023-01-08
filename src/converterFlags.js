@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 
@@ -12,7 +12,7 @@ class ConverterFlagsToken extends Token {
 	type = 'converter-flags';
 
 	/**
-	 * @param {string[]} flags
+	 * @param {string[]} flags 转换类型标记
 	 * @param {accum} accum
 	 */
 	constructor(flags, config = Parser.getConfig(), accum = []) {
@@ -20,10 +20,17 @@ class ConverterFlagsToken extends Token {
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
+	/** @override */
 	toString() {
 		return super.toString(';');
 	}
 
+	/** @override */
+	getGaps() {
+		return 1;
+	}
+
+	/** @override */
 	print() {
 		return super.print({sep: ';'});
 	}

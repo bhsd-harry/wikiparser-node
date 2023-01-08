@@ -1,20 +1,21 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..'),
+const Parser = require('..'),
 	Token = require('.');
 
 /**
  * 自由外链
- * @classdesc `{childNodes: [...string|CommentToken|IncludeToken|NoincludeToken]}`
+ * @classdesc `{childNodes: [...AstText|CommentToken|IncludeToken|NoincludeToken]}`
  */
 class MagicLinkToken extends Token {
 	type = 'free-ext-link';
 
 	/**
-	 * @param {string} url
+	 * @param {string} url 网址
+	 * @param {boolean} doubleSlash 是否接受"//"作为协议
 	 * @param {accum} accum
 	 */
-	constructor(url, doubleSlash = false, config = Parser.getConfig(), accum = []) {
+	constructor(url, doubleSlash, config = Parser.getConfig(), accum = []) {
 		super(url, config, true, accum);
 		if (doubleSlash) {
 			this.type = 'ext-link-url';

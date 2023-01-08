@@ -1,92 +1,27 @@
 'use strict';
 
-const AstElement = require('../lib/element'),
-	/** @type {Parser} */ Parser = require('..'),
-	{MAX_STAGE} = Parser;
+const Parser = require('..'),
+	AstElement = require('../lib/element'),
+	AstText = require('../lib/text');
+const {MAX_STAGE} = Parser;
 
+/**
+ * 所有节点的基类
+ * @classdesc `{childNodes: ...(AstText|Token)}`
+ */
 class Token extends AstElement {
 	type = 'root';
-	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */ #stage = 0;
+	#stage = 0; // 解析阶段，参见顶部注释。只对plain Token有意义。
 	#config;
-	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7f/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
+	// 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
 	#accum;
 
 	/**
-	 * @param {?string} wikitext
-	 * @param {accum} accum
-	 * @param {acceptable} acceptable
-	 */
-	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = []) {
-		super();
-		if (typeof wikitext === 'string') {
-			this.appendChild(halfParsed ? wikitext : wikitext.replace(/[\0\x7f]/g, ''));
-		}
-		this.#config = config;
-		this.#accum = accum;
-		accum.push(this);
-	}
-
-	/**
-	 * @template {string} T
-	 * @param {T} key
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		switch (key) {
-			case 'config':
-				return JSON.parse(JSON.stringify(this.#config));
-			case 'accum':
-				return this.#accum;
-			default:
-				return super.getAttribute(key);
-		}
-	}
-
-	/**
-	 * @template {string} T
-	 * @param {T} key
-	 * @param {TokenAttribute<T>} value
-	 */
-	setAttribute(key, value) {
-		switch (key) {
-			case 'stage':
-				if (this.#stage === 0 && this.type === 'root') {
-					this.#accum.shift();
-				}
-				this.#stage = value;
-				return this;
-			default:
-				return super.setAttribute(key, value);
-		}
-	}
-
-	isPlain() {
-		return this.constructor === Token;
-	}
-
-	/**
-	 * @template {string|Token} T
-	 * @param {T} token
-	 * @complexity `n`
-	 */
-	insertAt(token, i = this.childNodes.length) {
-		super.insertAt(token, i);
-		if (token instanceof Token && token.type === 'root') {
-			token.type = 'plain';
-		}
-		return token;
-	}
-
-	/** @param {string} title */
-	normalizeTitle(title, defaultNs = 0) {
-		return Parser.normalizeTitle(title, defaultNs, this.#config);
-	}
-
-	/**
 	 * 将维基语法替换为占位符
-	 * @this {Token & {firstChild: string}}
+	 * @param {number} n 解析阶段
+	 * @param {boolean} include 是否嵌入
 	 */
-	parseOnce(n = this.#stage, include = false) {
+	#parseOnce = (n = this.#stage, include = false) => {
 		if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
 			return this;
 		}
@@ -112,10 +47,10 @@ class Token extends AstElement {
 			case 5:
 				this.#parseLinks();
 				break;
-			case 6: {
+			case 6:
 				this.#parseQuotes();
 				break;
-			}
+
 			case 7:
 				this.#parseExternalLinks();
 				break;
@@ -131,19 +66,108 @@ class Token extends AstElement {
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.parseOnce(n, include);
+				token.getAttribute('parseOnce')(n, include);
 			}
 		}
 		this.#stage++;
 		return this;
+	};
+
+	/**
+	 * 重建wikitext
+	 * @param {string} str 半解析的字符串
+	 * @complexity `n`
+	 * @returns {(Token|AstText)[]}
+	 */
+	#buildFromStr = str => str.split(/[\0\x7F]/u).map(
+		(s, i) => i % 2 === 0 ? new AstText(s) : this.#accum[Number(s.slice(0, -1))],
+	);
+
+	/**
+	 * @param {string} wikitext wikitext
+	 * @param {accum} accum
+	 */
+	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = []) {
+		super();
+		if (typeof wikitext === 'string') {
+			this.appendChild(halfParsed ? wikitext : wikitext.replaceAll('\0', '').replaceAll('\x7F', ''));
+		}
+		this.#config = config;
+		this.#accum = accum;
+		accum.push(this);
 	}
 
 	/**
-	 * @param {string} str
-	 * @complexity `n`
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @returns {TokenAttribute<T>}
 	 */
-	buildFromStr(str) {
-		return str.split(/[\0\x7f]/).map((s, i) => i % 2 === 0 ? s : this.#accum[Number(s.slice(0, -1))]);
+	getAttribute(key) {
+		switch (key) {
+			case 'config':
+				return JSON.parse(JSON.stringify(this.#config));
+			case 'accum':
+				return this.#accum;
+			case 'parseOnce':
+				return this.#parseOnce;
+			case 'buildFromStr':
+				return this.#buildFromStr;
+			default:
+				return super.getAttribute(key);
+		}
+	}
+
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
+	 */
+	setAttribute(key, value) {
+		switch (key) {
+			case 'stage':
+				if (this.#stage === 0 && this.type === 'root') {
+					this.#accum.shift();
+				}
+				this.#stage = value;
+				return this;
+			default:
+				return super.setAttribute(key, value);
+		}
+	}
+
+	/** 是否是普通节点 */
+	isPlain() {
+		return this.constructor === Token;
+	}
+
+	/**
+	 * @override
+	 * @template {string|Token} T
+	 * @param {T} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @complexity `n`
+	 * @returns {T extends Token ? Token : AstText}
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		if (typeof token === 'string') {
+			token = new AstText(token);
+		}
+		super.insertAt(token, i);
+		if (token.type === 'root') {
+			token.type = 'plain';
+		}
+		return token;
+	}
+
+	/**
+	 * 规范化页面标题
+	 * @param {string} title 标题（含或不含命名空间前缀）
+	 * @param {number} defaultNs 命名空间
+	 */
+	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
+		return Parser.normalizeTitle(title, defaultNs, this.#config, halfParsed);
 	}
 
 	/**
@@ -152,15 +176,15 @@ class Token extends AstElement {
 	 */
 	build() {
 		this.#stage = MAX_STAGE;
-		const {childNodes: {length}, firstChild} = this;
-		if (length !== 1 || typeof firstChild !== 'string' || !firstChild.includes('\0')) {
-			return this;
-		}
-		this.replaceChildren(...this.buildFromStr(firstChild));
-		this.normalize();
-		if (this.type === 'root') {
-			for (const token of this.#accum) {
-				token.build();
+		const {childNodes: {length}, firstChild} = this,
+			str = String(firstChild);
+		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
+			this.replaceChildren(...this.#buildFromStr(str));
+			this.normalize();
+			if (this.type === 'root') {
+				for (const token of this.#accum) {
+					token.build();
+				}
 			}
 		}
 		return this;
@@ -176,29 +200,40 @@ class Token extends AstElement {
 		return this;
 	}
 
-	/** 解析、重构、生成部分Token的`name`属性 */
+	/**
+	 * 解析、重构、生成部分Token的`name`属性
+	 * @param {number} n 最大解析层级
+	 * @param {boolean} include 是否嵌入
+	 */
 	parse(n = MAX_STAGE, include = false) {
 		while (this.#stage < n) {
-			this.parseOnce(this.#stage, include);
+			this.#parseOnce(this.#stage, include);
 		}
 		return n ? this.build().afterBuild() : this;
 	}
 
-	#parseCommentAndExt(includeOnly = false) {
+	/**
+	 * 解析HTML注释和扩展标签
+	 * @param {boolean} includeOnly 是否嵌入
+	 */
+	#parseCommentAndExt(includeOnly) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
-		this.setText(parseCommentAndExt(this.firstChild, this.#config, this.#accum, includeOnly));
+		this.setText(parseCommentAndExt(String(this), this.#config, this.#accum, includeOnly));
 	}
 
+	/** 解析花括号 */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
-		this.setText(parseBrackets(this.firstChild, this.#config, this.#accum));
+		this.setText(parseBrackets(String(this), this.#config, this.#accum));
 	}
 
+	/** 解析HTML标签 */
 	#parseHtml() {
 		const parseHtml = require('../parser/html');
-		this.setText(parseHtml(this.firstChild, this.#config, this.#accum));
+		this.setText(parseHtml(String(this), this.#config, this.#accum));
 	}
 
+	/** 解析表格 */
 	#parseTable() {
 		const parseTable = require('../parser/table'),
 			TableToken = require('./table');
@@ -206,7 +241,7 @@ class Token extends AstElement {
 		for (const table of this.#accum) {
 			if (table instanceof TableToken && table.type !== 'td') {
 				table.normalize();
-				const [, child] = table.childNodes;
+				const {childNodes: [, child]} = table;
 				if (typeof child === 'string' && child.includes('\0')) {
 					table.removeAt(1);
 					const inner = new Token(child, this.#config, true, this.#accum);
@@ -217,49 +252,54 @@ class Token extends AstElement {
 		}
 	}
 
+	/** 解析\<hr\>和状态开关 */
 	#parseHrAndDoubleUndescore() {
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
-		this.setText(parseHrAndDoubleUnderscore(this.firstChild, this.#config, this.#accum));
+		this.setText(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
 	}
 
+	/** 解析内部链接 */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
-		this.setText(parseLinks(this.firstChild, this.#config, this.#accum));
+		this.setText(parseLinks(String(this), this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
+	/** 解析单引号 */
 	#parseQuotes() {
-		const parseQuotes = require('../parser/quotes'),
-			lines = this.firstChild.split('\n');
+		const parseQuotes = require('../parser/quotes');
+		const lines = String(this).split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i], this.#config, this.#accum);
 		}
 		this.setText(lines.join('\n'));
 	}
 
+	/** 解析外部链接 */
 	#parseExternalLinks() {
 		const parseExternalLinks = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(this.firstChild, this.#config, this.#accum));
+		this.setText(parseExternalLinks(String(this), this.#config, this.#accum));
 	}
 
+	/** 解析自由外链 */
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(this.firstChild, this.#config, this.#accum));
+		this.setText(parseMagicLinks(String(this), this.#config, this.#accum));
 	}
 
-	/** @this {Token & {firstChild: string}} */
+	/** 解析列表 */
 	#parseList() {
-		const parseList = require('../parser/list'),
-			lines = this.firstChild.split('\n');
+		const parseList = require('../parser/list');
+		const lines = String(this).split('\n');
 		for (let i = this.type === 'root' ? 0 : 1; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
 		this.setText(lines.join('\n'));
 	}
 
+	/** 解析语言变体转换 */
 	#parseConverter() {
 		const parseConverter = require('../parser/converter');
-		this.setText(parseConverter(this.firstChild, this.#config, this.#accum));
+		this.setText(parseConverter(String(this), this.#config, this.#accum));
 	}
 }
 

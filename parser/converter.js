@@ -1,32 +1,33 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('..');
+const Parser = require('..');
 
 /**
- * @param {string} firstChild
+ * 解析语言变体转换
+ * @param {string} wikitext wikitext
  * @param {accum} accum
  */
-const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => {
-	const ConverterToken = require('../src/converter'),
-		regex1 = /-\{/g,
-		regex2 = /-\{|\}-/g,
+const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
+	const ConverterToken = require('../src/converter');
+	const regex1 = /-\{/gu,
+		regex2 = /-\{|\}-/gu,
 		/** @type {RegExpExecArray[]} */ stack = [];
 	let regex = regex1,
-		mt = regex.exec(firstChild);
+		mt = regex.exec(wikitext);
 	while (mt) {
 		const {0: syntax, index} = mt;
 		if (syntax === '}-') {
 			const top = stack.pop(),
 				{length} = accum,
-				str = firstChild.slice(top.index + 2, index),
+				str = wikitext.slice(top.index + 2, index),
 				i = str.indexOf('|'),
 				[flags, text] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
-				temp = text.replace(/(&[#a-z\d]+);/i, '$1\x01'),
+				temp = text.replace(/(&[#a-z\d]+);/iu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
-				rules = temp.split(RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`))
+				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`, 'u'))
 					.map(rule => rule.replaceAll('\x01', ';'));
 			new ConverterToken(flags, rules, config, accum);
-			firstChild = `${firstChild.slice(0, top.index)}\0${length}v\x7f${firstChild.slice(index + 2)}`;
+			wikitext = `${wikitext.slice(0, top.index)}\0${length}v\x7F${wikitext.slice(index + 2)}`;
 			if (stack.length === 0) {
 				regex = regex1;
 			}
@@ -35,9 +36,9 @@ const parseConverter = (firstChild, config = Parser.getConfig(), accum = []) => 
 			stack.push(mt);
 			regex = regex2;
 		}
-		mt = regex.exec(firstChild);
+		mt = regex.exec(wikitext);
 	}
-	return firstChild;
+	return wikitext;
 };
 
 module.exports = parseConverter;

@@ -1,17 +1,17 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = require('../..'),
+const Parser = require('../..'),
 	NowikiToken = require('.');
 
 /**
  * `<hr>`
- * @classdesc `{childNodes: [string]}`
+ * @classdesc `{childNodes: [AstText]}`
  */
 class QuoteToken extends NowikiToken {
 	type = 'quote';
 
 	/**
-	 * @param {number} n
+	 * @param {number} n 字符串长度
 	 * @param {accum} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {

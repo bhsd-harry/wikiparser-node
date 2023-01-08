@@ -2,43 +2,43 @@
 
 /**
  * remove half-parsed comment-like tokens
- * @param {string} str
+ * @param {string} str 原字符串
  */
-const removeComment = str => str.replace(/\0\d+c\x7f/g, '');
+const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
 
 /**
- * @param {(string|AstNode)[]} childNodes
- * @param {printOpt} opt
+ * 以HTML格式打印
+ * @param {AstNode[]} childNodes 子节点
+ * @param {printOpt} opt 选项
  */
 const print = (childNodes, opt = {}) => {
-	const AstNode = require('../lib/node'),
-		{pre = '', post = '', sep = '', wrap = s => s} = opt;
-	return `${pre}${childNodes.map(child => typeof child === 'string'
-		? wrap(child.replaceAll('<', '&lt;').replaceAll('>', '&gt;'))
-		: child.print(),
+	const AstNode = require('../lib/node');
+	const {pre = '', post = '', sep = ''} = opt;
+	return `${pre}${childNodes.map(
+		child => child.type === 'text'
+			? String(child).replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+			: child.print(),
 	).join(sep)}${post}`;
 };
 
-/** @param {string} text */
-const printError = (text, title = '') => {
-	return `<span class="wpb-error"${title && ` title="${title.replaceAll('"', '&quot;')}"`}>${
-		text.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-	}</span>`;
-};
+/**
+ * escape special chars for RegExp constructor
+ * @param {string} str RegExp source
+ */
+const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
 
 /**
- * @param {string} start
- * @param {string} end
- * @param {string} separator
- * @param {string} str
+ * a more sophisticated string-explode function
+ * @param {string} start start syntax of a nested AST node
+ * @param {string} end end syntax of a nested AST node
+ * @param {string} separator syntax for explosion
+ * @param {string} str string to be exploded
  */
 const explode = (start, end, separator, str) => {
 	if (str === undefined) {
 		return [];
 	}
-	/** @param {string} str */
-	const escapeRegExp = string => string.replace(/[\\{}()|.?*+\-^$[\]]/g, '\\$&');
-	const regex = RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'g'),
+	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'gu'),
 		/** @type {string[]} */ exploded = [];
 	let mt = regex.exec(str),
 		depth = 0,
@@ -57,7 +57,7 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
-const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd])'
-	+ '(?:[^[\\]<>"\\0-\\x1f\\x7f\\p{Zs}\\ufffd]|\\0\\d+c\\x7f)*';
+const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
+	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
-module.exports = {removeComment, print, printError, explode, extUrlChar};
+module.exports = {removeComment, print, escapeRegExp, explode, extUrlChar};
