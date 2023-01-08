@@ -32,6 +32,9 @@
 		const paint = () => {
 				preview.innerHTML = `${root.print()} `;
 				preview.scrollTop = textbox.scrollTop;
+				if (preview.firstElementChild.textContent !== textbox.value) {
+					alert('渲染出错！请复制导致错误的文本，提交到GitHub issues。');
+				}
 			},
 
 			/**

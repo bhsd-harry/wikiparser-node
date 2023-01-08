@@ -4,10 +4,10 @@
 	font-family: monospace;
 }
 
-.wpb-hidden, .wpb-table-inter, .wb-table-inter span {
+.wpb-hidden, .wpb-table-inter, .wpb-table-inter span {
 	color: #f00;
 	font-weight: normal;
-	text-decoration: underline wavy #f00 1px;
+	text-decoration: underline wavy 1px;
 }
 
 .wpb-noinclude, .wpb-include, .wpb-comment {
