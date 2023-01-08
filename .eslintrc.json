@@ -514,12 +514,7 @@
 		],
 		"unicorn/escape-case": 0,
 		"unicorn/expiring-todo-comments": 0,
-		"unicorn/filename-case": [
-			2,
-			{
-				"case": "camelCase"
-			}
-		],
+		"unicorn/filename-case": 0,
 		"unicorn/import-style": 0,
 		"unicorn/no-array-callback-reference": 0,
 		"unicorn/no-await-expression-member": 0,

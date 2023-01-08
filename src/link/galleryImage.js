@@ -1,7 +1,6 @@
 'use strict';
 
-const Title = require('../../lib/title'),
-	Parser = require('../..'),
+const Parser = require('../..'),
 	Token = require('..'),
 	FileToken = require('./file');
 
