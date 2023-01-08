@@ -39,7 +39,7 @@ class ArgToken extends Token {
 		const [name, ...cloned] = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new ArgToken([''], this.getAttribute('config'));
-			token.firstElementChild.safeReplaceWith(name);
+			token.firstChild.safeReplaceWith(name);
 			token.append(...cloned);
 			return token.afterBuild();
 		});
@@ -47,9 +47,9 @@ class ArgToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		this.setAttribute('name', this.firstElementChild.text().trim());
+		this.setAttribute('name', this.firstChild.text().trim());
 		const /** @type {AstListener} */ argListener = ({prevTarget}) => {
-			if (prevTarget === this.firstElementChild) {
+			if (prevTarget === this.firstChild) {
 				this.setAttribute('name', prevTarget.text().trim());
 			}
 		};
@@ -80,7 +80,7 @@ class ArgToken extends Token {
 	 * @returns {string}
 	 */
 	text() {
-		return `{{{${text(this.children.slice(0, 2), '|')}}}}`;
+		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
 
 	/**
@@ -153,13 +153,13 @@ class ArgToken extends Token {
 	setName(name) {
 		name = String(name);
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childNodes.length !== 1) {
+			{childNodes: {length}, firstChild: arg} = root;
+		if (length !== 1 || arg.type !== 'arg' || arg.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
-		const {firstElementChild: newName} = firstElementChild;
-		firstElementChild.destroy(true);
-		this.firstElementChild.safeReplaceWith(newName);
+		const {firstChild} = arg;
+		arg.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -170,17 +170,17 @@ class ArgToken extends Token {
 	setDefault(value) {
 		value = String(value);
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'arg' || firstElementChild.childNodes.length !== 2) {
+			{childNodes: {length}, firstChild: arg} = root;
+		if (length !== 1 || arg.type !== 'arg' || arg.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
-		const {children: [, oldDefault]} = this,
-			{lastElementChild} = firstElementChild;
-		firstElementChild.destroy(true);
+		const {childNodes: [, oldDefault]} = this,
+			{lastChild} = arg;
+		arg.destroy(true);
 		if (oldDefault) {
-			oldDefault.safeReplaceWith(lastElementChild);
+			oldDefault.safeReplaceWith(lastChild);
 		} else {
-			this.appendChild(lastElementChild);
+			this.appendChild(lastChild);
 		}
 	}
 }

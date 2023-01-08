@@ -79,11 +79,11 @@ class GalleryToken extends Token {
 		} catch {
 			title = this.normalizeTitle(file, 6, true);
 		}
-		if (!title.valid) {
-			throw new SyntaxError(`非法的文件名：${file}`);
+		if (title.valid) {
+			const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
+			return this.insertAt(token, i);
 		}
-		const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
-		return this.insertAt(token, i);
+		throw new SyntaxError(`非法的文件名：${file}`);
 	}
 
 	/**

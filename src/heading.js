@@ -14,7 +14,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/** 内部wikitext */
 	get innerText() {
-		return this.firstElementChild.text();
+		return this.firstChild.text();
 	}
 
 	/**
@@ -39,8 +39,8 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	cloneNode() {
 		const [title, trail] = this.cloneChildNodes(),
 			token = Parser.run(() => new HeadingToken(Number(this.name), [], this.getAttribute('config')));
-		token.firstElementChild.safeReplaceWith(title);
-		token.lastElementChild.safeReplaceWith(trail);
+		token.firsthild.safeReplaceWith(title);
+		token.lastChild.safeReplaceWith(trail);
 		return token;
 	}
 
@@ -54,8 +54,8 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		return selector && this.matches(selector)
 			? ''
 			: `${this.prependNewLine()}${equals}${
-				this.firstElementChild.toString(selector)
-			}${equals}${this.lastElementChild.toString(selector)}${this.appendNewLine()}`;
+				this.firstChild.toString(selector)
+			}${equals}${this.lastChild.toString(selector)}${this.appendNewLine()}`;
 	}
 
 	/** @override */
@@ -75,7 +75,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	 */
 	text() {
 		const equals = '='.repeat(Number(this.name));
-		return `${this.prependNewLine()}${equals}${this.firstElementChild.text()}${equals}${this.appendNewLine()}`;
+		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}${this.appendNewLine()}`;
 	}
 
 	/**
@@ -87,12 +87,12 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			this.typeError('setLevel', 'Number');
 		}
 		n = Math.min(Math.max(n, 1), 6);
-		this.setAttribute('name', String(n)).firstElementChild.setAttribute('name', this.name);
+		this.setAttribute('name', String(n)).firstChild.setAttribute('name', this.name);
 	}
 
 	/** 移除标题后的不可见内容 */
 	removeTrail() {
-		this.lastElementChild.replaceChildren();
+		this.lastChild.replaceChildren();
 	}
 }
 

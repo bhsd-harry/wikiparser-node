@@ -521,27 +521,28 @@ class Token extends AstElement {
 		if (!parentNode) {
 			return undefined;
 		}
-		const {children} = parentNode,
-			index = children.indexOf(this);
+		const {childNodes} = parentNode,
+			index = childNodes.indexOf(this);
 		let i;
 		for (i = index - 1; i >= 0; i--) {
-			if (children[i].matches(`html${tag && '#'}${tag ?? ''}[selfClosing=false][closing=false]`)) {
+			const {type, name, selfClosing, closing} = childNodes[i];
+			if (type === 'html' && (!tag || name === tag) && selfClosing === false && closing === false) {
 				break;
 			}
 		}
 		if (i === -1) {
 			return parentNode.findEnclosingHtml(tag);
 		}
-		const opening = children[i],
-			{name} = opening;
-		for (i = index + 1; i < children.length; i++) {
-			if (children[i].matches(`html#${name}[selfClosing=false][closing=true]`)) {
+		const opening = childNodes[i];
+		for (i = index + 1; i < childNodes.length; i++) {
+			const {type, name, selfClosing, closing} = childNodes[i];
+			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
 				break;
 			}
 		}
-		return i === children.length
+		return i === childNodes.length
 			? parentNode.findEnclosingHtml(tag)
-			: [opening, children[i]];
+			: [opening, childNodes[i]];
 	}
 
 	/**

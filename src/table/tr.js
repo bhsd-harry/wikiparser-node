@@ -57,10 +57,10 @@ class TrToken extends attributeParent(Token, 1) {
 		const [syntax, attr, inner, ...cloned] = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new this.constructor(undefined, undefined, this.getAttribute('config'));
-			token.firstElementChild.safeReplaceWith(syntax);
-			token.children[1].safeReplaceWith(attr);
+			token.firstChild.safeReplaceWith(syntax);
+			token.childNodes[1].safeReplaceWith(attr);
 			if (token.type === 'td') { // TdToken
-				token.children[2].safeReplaceWith(inner);
+				token.childNodes[2].safeReplaceWith(inner);
 			} else if (inner !== undefined) {
 				token.appendChild(inner);
 			}
@@ -71,7 +71,7 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/** 修复简单的表格语法错误 */
 	#correct() {
-		const {children: [,, child]} = this;
+		const {childNodes: [,, child]} = this;
 		if (child?.isPlain()) {
 			const /** @type {{firstChild: AstText}} */ {firstChild: {type, data}} = child;
 			if (type !== 'text') {
@@ -103,7 +103,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 */
 	escape() {
-		for (const child of this.children) {
+		for (const child of this.childNodes) {
 			if (child instanceof SyntaxToken) {
 				escapeTable(child);
 			} else if (child instanceof TrToken) {
@@ -118,10 +118,10 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {boolean} esc 是否需要转义
 	 */
 	setSyntax(syntax, esc) {
-		const {firstElementChild} = this;
-		firstElementChild.replaceChildren(syntax);
+		const {firstChild} = this;
+		firstChild.replaceChildren(syntax);
 		if (esc) {
-			escapeTable(firstElementChild);
+			escapeTable(firstChild);
 		}
 	}
 
@@ -134,9 +134,9 @@ class TrToken extends attributeParent(Token, 1) {
 		const TdToken = require('./td');
 		const child = this.childNodes.at(i);
 		if (child instanceof TdToken && child.isIndependent()) {
-			const {nextElementSibling} = child;
-			if (nextElementSibling?.type === 'td') {
-				nextElementSibling.independence();
+			const {nextSibling} = child;
+			if (nextSibling?.type === 'td') {
+				nextSibling.independence();
 			}
 		}
 		return super.removeAt(i);
@@ -169,14 +169,14 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	getRowCount() {
 		const TdToken = require('./td');
-		return Number(this.children.some(
-			child => child instanceof TdToken && child.isIndependent() && child.firstElementChild.text().at(-1) !== '+',
+		return Number(this.childNodes.some(
+			child => child instanceof TdToken && child.isIndependent() && child.firstChild.text().at(-1) !== '+',
 		));
 	}
 
 	/**
 	 * 获取相邻行
-	 * @param {(children: Token[], index: number) => Token[]} subset 筛选兄弟节点的方法
+	 * @param {(childNodes: Token[], index: number) => Token[]} subset 筛选兄弟节点的方法
 	 * @complexity `n`
 	 */
 	#getSiblingRow(subset) {
@@ -184,9 +184,9 @@ class TrToken extends attributeParent(Token, 1) {
 		if (!parentNode) {
 			return undefined;
 		}
-		const {children} = parentNode,
-			index = children.indexOf(this);
-		for (const child of subset(children, index)) {
+		const {childNodes} = parentNode,
+			index = childNodes.indexOf(this);
+		for (const child of subset(childNodes, index)) {
 			if (child instanceof TrToken && child.getRowCount()) {
 				return child;
 			}
@@ -199,7 +199,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 */
 	getNextRow() {
-		return this.#getSiblingRow((children, index) => children.slice(index + 1));
+		return this.#getSiblingRow((childNodes, index) => childNodes.slice(index + 1));
 	}
 
 	/**
@@ -207,7 +207,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @complexity `n`
 	 */
 	getPreviousRow() {
-		return this.#getSiblingRow((children, index) => children.slice(0, index).reverse());
+		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).reverse());
 	}
 
 	/**
@@ -218,7 +218,7 @@ class TrToken extends attributeParent(Token, 1) {
 		const TdToken = require('./td');
 		let count = 0,
 			last = 0;
-		for (const child of this.children) {
+		for (const child of this.childNodes) {
 			if (child instanceof TdToken) {
 				last = child.isIndependent() ? Number(child.subtype !== 'caption') : last;
 				count += last;
@@ -246,7 +246,7 @@ class TrToken extends attributeParent(Token, 1) {
 		}
 		const TdToken = require('./td');
 		let last = 0;
-		for (const child of this.children.slice(2)) {
+		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {
 				if (child.isIndependent()) {
 					last = Number(child.subtype !== 'caption');

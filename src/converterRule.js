@@ -15,7 +15,7 @@ class ConverterRuleToken extends Token {
 
 	/** 语言变体 */
 	get variant() {
-		return this.children.at(-2)?.text()?.trim() ?? '';
+		return this.childNodes.at(-2)?.text()?.trim() ?? '';
 	}
 
 	set variant(variant) {
@@ -72,7 +72,7 @@ class ConverterRuleToken extends Token {
 			placeholder = placeholders[cloned.length - 1],
 			token = Parser.run(() => new ConverterRuleToken(placeholder, placeholder, this.getAttribute('config')));
 		for (let i = 0; i < cloned.length; i++) {
-			token.children[i].safeReplaceWith(cloned[i]);
+			token.childNodes[i].safeReplaceWith(cloned[i]);
 		}
 		token.afterBuild();
 		return token;
@@ -128,7 +128,7 @@ class ConverterRuleToken extends Token {
 	 */
 	toString(selector) {
 		if (this.childNodes.length === 3 && !(selector && this.matches(selector))) {
-			const {children: [from, variant, to]} = this;
+			const {childNodes: [from, variant, to]} = this;
 			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
 		}
 		return super.toString(selector, ':');
@@ -150,7 +150,7 @@ class ConverterRuleToken extends Token {
 	 */
 	text() {
 		if (this.childNodes.length === 3) {
-			const {children: [from, variant, to]} = this;
+			const {childNodes: [from, variant, to]} = this;
 			return `${from.text()}=>${variant.text()}:${to.text()}`;
 		}
 		return super.text(':');
@@ -174,16 +174,14 @@ class ConverterRuleToken extends Token {
 		to = String(to);
 		const config = this.getAttribute('config'),
 			root = Parser.parse(`-{|${config.variants[0]}:${to}}-`, this.getAttribute('include'), undefined, config),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild.type !== 'converter' || firstElementChild.childNodes.length !== 2
-			|| firstElementChild.lastElementChild.childNodes.length !== 2
-		) {
+			{childNodes: {length}, firstChild: converter} = root,
+			{lastChild: converterRule, type, childNodes: {length: converterLength}} = converter;
+		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
-		const {lastElementChild} = firstElementChild,
-			{lastChild} = lastElementChild;
-		lastElementChild.destroy(true);
-		this.lastElementChild.safeReplaceWith(lastChild);
+		const {lastChild} = converterRule;
+		converterRule.destroy(true);
+		this.lastChild.safeReplaceWith(lastChild);
 	}
 
 	/**
@@ -202,7 +200,7 @@ class ConverterRuleToken extends Token {
 		} else if (this.childNodes.length === 1) {
 			super.insertAt(Parser.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
 		} else {
-			this.children.at(-2).setText(variant);
+			this.childNodes.at(-2).setText(variant);
 		}
 	}
 
@@ -220,16 +218,15 @@ class ConverterRuleToken extends Token {
 		from = String(from);
 		const config = this.getAttribute('config'),
 			root = Parser.parse(`-{|${from}=>${variant}:}-`, this.getAttribute('include'), undefined, config),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild.type !== 'converter' || firstElementChild.childNodes.length !== 2
-			|| firstElementChild.lastElementChild.childNodes.length !== 3
-		) {
+			{childNodes: {length}, firstChild: converter} = root,
+			{type, childNodes: {length: converterLength}, lastChild: converterRule} = converter;
+		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		}
 		if (unidirectional) {
-			this.firstElementChild.safeReplaceWith(firstElementChild.lastElementChild.firstChild);
+			this.firstChild.safeReplaceWith(converterRule.firstChild);
 		} else {
-			super.insertAt(firstElementChild.lastElementChild.firstChild, 0);
+			super.insertAt(converterRule.firstChild, 0);
 		}
 	}
 

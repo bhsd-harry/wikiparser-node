@@ -14,7 +14,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/** 是否是匿名参数 */
 	get anon() {
-		return this.firstElementChild.childNodes.length === 0;
+		return this.firstChild.childNodes.length === 0;
 	}
 
 	/** getValue()的getter */
@@ -48,8 +48,8 @@ class ParameterToken extends fixedToken(Token) {
 			config = this.getAttribute('config');
 		return Parser.run(() => {
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
-			token.firstElementChild.safeReplaceWith(key);
-			token.lastElementChild.safeReplaceWith(value);
+			token.firstChild.safeReplaceWith(key);
+			token.lastChild.safeReplaceWith(value);
 			return token.afterBuild();
 		});
 	}
@@ -57,7 +57,7 @@ class ParameterToken extends fixedToken(Token) {
 	/** @override */
 	afterBuild() {
 		if (!this.anon) {
-			const name = this.firstElementChild.text().trim(),
+			const name = this.firstChild.text().trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode && parentNode instanceof require('./transclude')) {
@@ -67,9 +67,9 @@ class ParameterToken extends fixedToken(Token) {
 		}
 		const /** @type {AstListener} */ parameterListener = ({prevTarget}, data) => {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
-				const {firstElementChild, name} = this;
-				if (prevTarget === firstElementChild) {
-					const newKey = firstElementChild.text().trim();
+				const {firstChild, name} = this;
+				if (prevTarget === firstChild) {
+					const newKey = firstChild.text().trim();
 					data.oldKey = name;
 					data.newKey = newKey;
 					this.setAttribute('name', newKey);
@@ -87,7 +87,7 @@ class ParameterToken extends fixedToken(Token) {
 	 */
 	toString(selector) {
 		return this.anon && !(selector && this.matches(selector))
-			? this.lastElementChild.toString(selector)
+			? this.lastChild.toString(selector)
 			: super.toString(selector, '=');
 	}
 
@@ -101,7 +101,7 @@ class ParameterToken extends fixedToken(Token) {
 	 * @returns {string}
 	 */
 	text() {
-		return this.anon ? this.lastElementChild.text() : super.text('=');
+		return this.anon ? this.lastChild.text() : super.text('=');
 	}
 
 	/**
@@ -116,7 +116,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/** 获取参数值 */
 	getValue() {
-		const value = this.lastElementChild.text();
+		const value = this.lastChild.text();
 		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();
 	}
 
@@ -130,17 +130,19 @@ class ParameterToken extends fixedToken(Token) {
 		const templateLike = this.parentNode?.matches('template, magic-word#invoke'),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root,
-			/** @type {ParameterToken} */ lastElementChild = firstElementChild?.lastElementChild;
-		if (length !== 1 || !firstElementChild?.matches(templateLike ? 'template#T' : 'magic-word#lc')
-			|| firstElementChild.childNodes.length !== 2
-			|| lastElementChild.anon !== this.anon || lastElementChild.name !== '1'
+			{childNodes: {length}, firstChild: transclude} = root,
+			/** @type {Token & {lastChild: ParameterToken}} */
+			{lastChild: parameter, type, name, childNodes: {length: transcludeLength}} = transclude,
+			targetType = templateLike ? 'template' : 'magic-word',
+			targetName = templateLike ? 'T' : 'lc';
+		if (length !== 1 || type !== targetType || name !== targetName || transcludeLength !== 2
+			|| parameter.anon !== this.anon || parameter.name !== '1'
 		) {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
-		const {lastChild} = lastElementChild;
-		lastElementChild.destroy(true);
-		this.lastElementChild.safeReplaceWith(lastChild);
+		const {lastChild} = parameter;
+		parameter.destroy(true);
+		this.lastChild.safeReplaceWith(lastChild);
 	}
 
 	/**
@@ -163,23 +165,23 @@ class ParameterToken extends fixedToken(Token) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || !firstElementChild?.matches('template#T') || firstElementChild.childNodes.length !== 2) {
+			{childNodes: {length}, firstChild: template} = root,
+			{type, name, lastChild: parameter, childNodes: {length: templateLength}} = template;
+		if (length !== 1 || type !== 'template' || name !== 'T' || templateLength !== 2) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
 		}
-		const {lastElementChild} = firstElementChild,
-			{name, firstChild} = lastElementChild;
-		if (this.name === name) {
-			Parser.warn('未改变实际参数名', name);
-		} else if (parentNode.hasArg(name)) {
+		const {name: parameterName, firstChild} = parameter;
+		if (this.name === parameterName) {
+			Parser.warn('未改变实际参数名', parameterName);
+		} else if (parentNode.hasArg(parameterName)) {
 			if (force) {
-				Parser.warn('参数更名造成重复参数', name);
+				Parser.warn('参数更名造成重复参数', parameterName);
 			} else {
-				throw new RangeError(`参数更名造成重复参数：${name}`);
+				throw new RangeError(`参数更名造成重复参数：${parameterName}`);
 			}
 		}
-		lastElementChild.destroy(true);
-		this.firstElementChild.safeReplaceWith(firstChild);
+		parameter.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

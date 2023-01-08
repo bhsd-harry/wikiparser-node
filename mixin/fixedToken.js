@@ -28,11 +28,11 @@ const fixedToken = Constructor => class extends Constructor {
 	 * @throws `Error`
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		if (!Parser.running) {
-			throw new Error(`${this.constructor.name} 不可插入元素！`);
+		if (Parser.running) {
+			super.insertAt(token, i);
+			return token;
 		}
-		super.insertAt(token, i);
-		return token;
+		throw new Error(`${this.constructor.name} 不可插入元素！`);
 	}
 };
 

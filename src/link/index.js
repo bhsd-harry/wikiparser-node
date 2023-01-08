@@ -62,12 +62,12 @@ class LinkToken extends Token {
 
 	/** 链接显示文字 */
 	get innerText() {
-		if (this.type !== 'link') {
-			return undefined;
+		if (this.type === 'link') {
+			return this.childNodes.length > 1
+				? this.lastChild.text()
+				: this.firstChild.text().replace(/^\s*:/u, '');
 		}
-		return this.childNodes.length > 1
-			? this.lastElementChild.text()
-			: this.firstElementChild.text().replace(/^\s*:/u, '');
+		return undefined;
 	}
 
 	/**
@@ -92,7 +92,7 @@ class LinkToken extends Token {
 
 	/** 生成Title对象 */
 	#getTitle() {
-		return this.normalizeTitle(this.firstElementChild.text());
+		return this.normalizeTitle(this.firstChild.text());
 	}
 
 	/** @override */
@@ -102,7 +102,7 @@ class LinkToken extends Token {
 			/** @type {this & {constructor: typeof LinkToken}} */
 			const {constructor} = this,
 				token = new constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
-			token.firstElementChild.safeReplaceWith(link);
+			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
 			return token.afterBuild();
 		});
@@ -178,14 +178,14 @@ class LinkToken extends Token {
 			link = `:${link}`;
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childNodes.length !== 1) {
+			{childNodes: {length}, firstChild: wikiLink} = root,
+			{type, firstChild, childNodes: {length: linkLength}} = wikiLink;
+		if (length !== 1 || type !== this.type || linkLength !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类', 'gallery-image': '文件链接'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
-		const {firstChild} = firstElementChild;
-		firstElementChild.destroy(true);
-		this.firstElementChild.safeReplaceWith(firstChild);
+		wikiLink.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -206,15 +206,13 @@ class LinkToken extends Token {
 			link = link.slice(1);
 		}
 		const root = Parser.parse(`[[${lang}:${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			/** @type {Token & {firstElementChild: LinkToken}} */ {childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childNodes.length !== 1
-			|| firstElementChild.interwiki !== lang.toLowerCase()
-		) {
+			/** @type {Token & {firstChild: LinkToken}} */ {childNodes: {length}, firstChild: wikiLink} = root,
+			{type, childNodes: {length: linkLength}, interwiki, firstChild} = wikiLink;
+		if (length !== 1 || type !== 'link' || linkLength !== 1 || interwiki !== lang.toLowerCase()) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
 		}
-		const {firstChild} = firstElementChild;
-		firstElementChild.destroy(true);
-		this.firstElementChild.safeReplaceWith(firstChild);
+		wikiLink.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -228,16 +226,16 @@ class LinkToken extends Token {
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
-			{childNodes: {length}, firstElementChild} = root;
-		if (length !== 1 || firstElementChild?.type !== 'link' || firstElementChild.childNodes.length !== 1) {
+			{childNodes: {length}, firstChild: wikiLink} = root,
+			{type, childNodes: {length: linkLength}, firstChild} = wikiLink;
+		if (length !== 1 || type !== 'link' || linkLength !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
 		}
 		if (page) {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}
-		const {firstChild} = firstElementChild;
-		firstElementChild.destroy(true);
-		this.firstElementChild.safeReplaceWith(firstChild);
+		wikiLink.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -268,25 +266,25 @@ class LinkToken extends Token {
 	 */
 	setLinkText(linkText = '') {
 		linkText = String(linkText);
-		let lastElementChild;
+		let lastChild;
 		const config = this.getAttribute('config');
 		if (linkText) {
 			const root = Parser.parse(`[[${
 					this.type === 'category' ? 'Category:' : ''
 				}L|${linkText}]]`, this.getAttribute('include'), 6, config),
-				{childNodes: {length}, firstElementChild} = root;
-			if (length !== 1 || firstElementChild?.type !== this.type || firstElementChild.childNodes.length !== 2) {
+				{childNodes: {length}, firstChild: wikiLink} = root;
+			if (length !== 1 || wikiLink.type !== this.type || wikiLink.childNodes.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}
-			({lastElementChild} = firstElementChild);
+			({lastChild} = wikiLink);
 		} else {
-			lastElementChild = Parser.run(() => new Token('', config));
-			lastElementChild.setAttribute('stage', 7).type = 'link-text';
+			lastChild = Parser.run(() => new Token('', config));
+			lastChild.setAttribute('stage', 7).type = 'link-text';
 		}
 		if (this.childNodes.length === 1) {
-			this.appendChild(lastElementChild);
+			this.appendChild(lastChild);
 		} else {
-			this.lastElementChild.safeReplaceWith(lastElementChild);
+			this.lastChild.safeReplaceWith(lastChild);
 		}
 	}
 
@@ -295,7 +293,7 @@ class LinkToken extends Token {
 	 * @throws `Error` 带有"#"或"%"时不可用
 	 */
 	pipeTrick() {
-		const linkText = this.firstElementChild.text();
+		const linkText = this.firstChild.text();
 		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
 		}

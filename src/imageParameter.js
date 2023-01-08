@@ -89,7 +89,6 @@ class ImageParameterToken extends Token {
 			}
 			str.splitText(str.data.indexOf('x'));
 			str.nextSibling.splitText(1);
-			// eslint-disable-next-line unicorn/consistent-destructuring
 			return {width: text(token.childNodes.slice(0, i + 1)), height: text(token.childNodes.slice(i + 2))};
 		}
 		return undefined;
@@ -239,14 +238,14 @@ class ImageParameterToken extends Token {
 		const root = Parser.parse(`[[File:F|${
 				this.#syntax ? this.#syntax.replace('$1', value) : value
 			}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{childNodes: {length}, firstElementChild} = root,
-			param = firstElementChild?.lastElementChild;
-		if (length !== 1 || !firstElementChild?.matches('file#File\\:F')
-			|| firstElementChild.childNodes.length !== 2 || param.name !== this.name
+			{childNodes: {length}, firstChild: file} = root,
+			{lastChild: imageParameter, type, name, childNodes: {length: fileLength}} = file;
+		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2
+			|| imageParameter.name !== this.name
 		) {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}
-		this.replaceChildren(...param.childNodes);
+		this.replaceChildren(...imageParameter.childNodes);
 	}
 }
 
