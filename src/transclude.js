@@ -122,7 +122,7 @@ class TranscludeToken extends Token {
 		const {childNodes, firstChild, modifier} = this;
 		return `<span class="wpb-${this.type}">{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
-				? `${firstChild.print()}${length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
+				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
