@@ -93,23 +93,28 @@ class GalleryToken extends Token {
 
 	/**
 	 * @override
-	 * @returns {LintError[]}
+	 * @param {number} start 起始位置
 	 */
-	lint() {
+	lint(start = 0) {
 		const root = this.getRootNode(),
-			{top} = root.posFromIndex(root.getAbsoluteIndex());
-		return this.childNodes.flatMap((child, i) => {
-			if (child.type === 'hidden') {
-				const str = String(child),
-					startLine = top + i;
-				return /^<!--.*-->$/u.test(str)
-					? []
-					: {message: '图库中的无效内容', startLine, endLine: startLine, startCol: 0, endCol: str.length};
-			} else if (child.type === 'text') {
-				return [];
+			{top, left} = root.posFromIndex(start),
+			/** @type {LintError[]} */ errors = [];
+		for (let i = 0, cur = start; i < this.childNodes.length; i++) {
+			const child = this.childNodes[i],
+				str = String(child);
+			if (child.type === 'hidden' && !/^<!--.*-->$/u.test(str)) {
+				errors.push({
+					message: '图库中的无效内容',
+					startLine: top + i,
+					endLine: top + i,
+					startCol: i ? 0 : left,
+					endCol: i ? str.length : left + str.length,
+				});
+			} else if (child.type !== 'hidden' && child.type !== 'text') {
+				errors.push(...child.lint(cur));
 			}
-			return child.lint();
-		});
+			cur += str.length + 1;
+		}
 	}
 }
 
