@@ -89,11 +89,10 @@ class AttributeToken extends Token {
 	 */
 	#updateFromAttr() {
 		let equal = '=';
-		const ParameterToken = require('./parameter');
-		const parent = this.closest('ext, parameter');
-		if (parent instanceof ParameterToken && parent.anon
-			&& parent.parentNode?.matches('template, magic-word#invoke')
-		) {
+		const ParameterToken = require('./parameter'),
+			TranscludeToken = require('./transclude');
+		const /** @type {ParameterToken & {parentNode: TranscludeToken}} */ parent = this.closest('ext, parameter');
+		if (parent instanceof ParameterToken && parent.anon && parent.parentNode?.isTemplate()) {
 			equal = '{{=}}';
 		}
 		return [...this.#attr].map(([k, v]) => {

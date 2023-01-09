@@ -119,20 +119,26 @@ class ParameterToken extends fixedToken(Token) {
 		return this.replaceWith(token);
 	}
 
-	/** 获取参数值 */
+	/**
+	 * 获取参数值
+	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 */
 	getValue() {
+		const TranscludeToken = require('./transclude');
 		const value = this.lastChild.text();
-		return this.anon && this.parentNode?.matches('template, magic-word#invoke') ? value : value.trim();
+		return this.anon && this.parentNode?.isTemplate() ? value : value.trim();
 	}
 
 	/**
 	 * 设置参数值
+	 * @this {ParameterToken & {parentNode: TranscludeToken}}
 	 * @param {string} value 参数值
 	 * @throws `SyntaxError` 非法的模板参数
 	 */
 	setValue(value) {
 		value = String(value);
-		const templateLike = this.parentNode?.matches('template, magic-word#invoke'),
+		const TranscludeToken = require('./transclude');
+		const templateLike = this.parentNode?.isTemplate(),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstChild: transclude} = root,
@@ -152,6 +158,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/**
 	 * 修改参数名
+	 * @this {ParameterToken & {parentNode: TranscludeToken}}
 	 * @param {string} key 新参数名
 	 * @param {boolean} force 是否无视冲突命名
 	 * @throws `Error` 仅用于模板参数
@@ -162,11 +169,10 @@ class ParameterToken extends fixedToken(Token) {
 		if (typeof key !== 'string') {
 			this.typeError('rename', 'String');
 		}
+		const TranscludeToken = require('./transclude');
 		const {parentNode} = this;
 		// 必须检测是否是TranscludeToken
-		if (!parentNode || !parentNode.matches('template, magic-word#invoke')
-			|| !(parentNode instanceof require('./transclude'))
-		) {
+		if (!parentNode?.isTemplate() || !(parentNode instanceof require('./transclude'))) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),

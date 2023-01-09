@@ -99,7 +99,7 @@ class TranscludeToken extends Token {
 			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.appendChild(token);
 		}
-		const templateLike = this.matches('template, magic-word#invoke');
+		const templateLike = this.isTemplate();
 		let i = 1;
 		for (const part of parts) {
 			if (!templateLike) {
@@ -134,7 +134,7 @@ class TranscludeToken extends Token {
 		if (this.name.includes('\0')) {
 			this.setAttribute('name', text(this.getAttribute('buildFromStr')(this.name)));
 		}
-		if (this.matches('template, magic-word#invoke')) {
+		if (this.isTemplate()) {
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
 			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
@@ -231,7 +231,7 @@ class TranscludeToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start);
-		if (this.type === 'magic-word') {
+		if (!this.isTemplate()) {
 			return errors;
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
@@ -242,6 +242,11 @@ class TranscludeToken extends Token {
 			));
 		}
 		return errors;
+	}
+
+	/** 是否是模板 */
+	isTemplate() {
+		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
 	}
 
 	/**
@@ -444,7 +449,7 @@ class TranscludeToken extends Token {
 	 */
 	newAnonArg(val) {
 		val = String(val);
-		const templateLike = this.matches('template, magic-word#invoke'),
+		const templateLike = this.isTemplate(),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{childNodes: {length}, firstChild: transclude} = root,
@@ -469,7 +474,7 @@ class TranscludeToken extends Token {
 	setValue(key, value) {
 		if (typeof key !== 'string') {
 			this.typeError('setValue', 'String');
-		} else if (!this.matches('template, magic-word#invoke')) {
+		} else if (!this.isTemplate()) {
 			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
 		}
 		const token = this.getArg(key);
@@ -494,7 +499,7 @@ class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	anonToNamed() {
-		if (!this.matches('template, magic-word#invoke')) {
+		if (!this.isTemplate()) {
 			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
 		}
 		for (const token of this.getAnonArgs()) {
@@ -583,7 +588,7 @@ class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	hasDuplicatedArgs() {
-		if (this.matches('template, magic-word#invoke')) {
+		if (this.isTemplate()) {
 			return this.getAllArgs().length - this.getKeys().length;
 		}
 		throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
@@ -596,7 +601,7 @@ class TranscludeToken extends Token {
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs() {
-		if (this.matches('template, magic-word#invoke')) {
+		if (this.isTemplate()) {
 			return Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
 		}
 		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
