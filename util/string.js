@@ -8,16 +8,17 @@ const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
 
 /**
  * 以HTML格式打印
- * @param {AstNode[]} childNodes 子节点
+ * @param {(AstText|AstElement)[]} childNodes 子节点
  * @param {printOpt} opt 选项
  */
 const print = (childNodes, opt = {}) => {
-	const AstNode = require('../lib/node');
+	const AstText = require('../lib/text'),
+		AstElement = require('../lib/element');
 	const {pre = '', post = '', sep = ''} = opt;
 	return `${pre}${childNodes.map(
-		child => child.type === 'text'
-			? String(child).replaceAll('<', '&lt;').replaceAll('>', '&gt;')
-			: child.print(),
+		child => child instanceof AstElement
+			? child.print()
+			: String(child).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
 	).join(sep)}${post}`;
 };
 
