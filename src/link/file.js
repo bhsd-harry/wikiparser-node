@@ -3,6 +3,7 @@
 const Title = require('../../lib/title'),
 	{explode, noWrap} = require('../../util/string'),
 	{externalUse} = require('../../util/debug'),
+	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
@@ -76,6 +77,26 @@ class FileToken extends LinkToken {
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 		this.seal(['setLangLink', 'setFragment', 'asSelfLink', 'setLinkText', 'pipeTrick'], true);
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			frameArgs = this.getFrameArgs(),
+			captions = this.getArgs('caption');
+		if (frameArgs.length > 1 || captions.size > 1) {
+			const rect = this.getRootNode().posFromIndex(start);
+			if (frameArgs.length > 1) {
+				errors.push(...frameArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片框架参数')));
+			}
+			if (captions.size > 1) {
+				errors.push(...[...captions].map(arg => generateForChild(arg, rect, '重复的图片说明')));
+			}
+		}
+		return errors;
 	}
 
 	/**

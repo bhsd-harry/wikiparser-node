@@ -97,6 +97,9 @@ const getPages = async url => {
 					console.time(title);
 					const root = Parser.parse(content, ns === 10);
 					console.timeEnd(title);
+					console.time(title);
+					console.log(root.lint());
+					console.timeEnd(title);
 					for (const token of root.querySelectorAll(`:not(${complexOrHiddenTypes.join()})`)) {
 						const {childNodes, type, hidden} = token;
 						if (hidden && !simpleTypes.has(type)) {

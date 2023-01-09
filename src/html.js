@@ -1,6 +1,7 @@
 'use strict';
 
 const {noWrap} = require('../util/string'),
+	{generateForSelf} = require('../util/lint'),
 	fixedToken = require('../mixin/fixedToken'),
 	attributeParent = require('../mixin/attributeParent'),
 	Parser = require('..'),
@@ -111,6 +112,22 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		});
 	}
 
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		try {
+			this.findMatchingTag();
+		} catch ({message: errorMsg}) {
+			const rect = this.getRootNode().posFromIndex(start),
+				[message] = errorMsg.split('：');
+			errors.push(generateForSelf(this, rect, message, message[0] === '未' ? 'warning' : 'error'));
+		}
+		return errors;
+	}
+
 	/** @override */
 	text() {
 		return `<${this.#closing ? '/' : ''}${this.#tag}${super.text()}${this.#selfClosing ? '/' : ''}>`;
@@ -138,23 +155,23 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	findMatchingTag() {
 		const {html} = this.getAttribute('config'),
-			{name: tagName, parentNode, closing, selfClosing} = this,
+			{name: tagName, parentNode} = this,
 			string = noWrap(String(this));
-		if (closing && selfClosing) {
+		if (this.#closing && this.#selfClosing) {
 			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
-		} else if (html[2].includes(tagName) || selfClosing && html[1].includes(tagName)) { // 自封闭标签
+		} else if (html[2].includes(tagName) || this.#selfClosing && html[1].includes(tagName)) { // 自封闭标签
 			return this;
-		} else if (selfClosing && html[0].includes(tagName)) {
+		} else if (this.#selfClosing && html[0].includes(tagName)) {
 			throw new SyntaxError(`无效自封闭标签：${string}`);
 		} else if (!parentNode) {
 			return undefined;
 		}
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
-			siblings = closing
+			siblings = this.#closing
 				? childNodes.slice(0, i).reverse().filter(({type, name}) => type === 'html' && name === tagName)
 				: childNodes.slice(i + 1).filter(({type, name}) => type === 'html' && name === tagName);
-		let imbalance = closing ? -1 : 1;
+		let imbalance = this.#closing ? -1 : 1;
 		for (const token of siblings) {
 			if (token.closing) {
 				imbalance--;
@@ -165,7 +182,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 				return token;
 			}
 		}
-		throw new SyntaxError(`未${closing ? '匹配的闭合' : '闭合的'}标签：${string}`);
+		throw new SyntaxError(`未${this.#closing ? '匹配的闭合' : '闭合的'}标签：${string}`);
 	}
 
 	/** 局部闭合 */

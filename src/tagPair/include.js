@@ -1,6 +1,7 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
+	{generateForSelf} = require('../../util/lint'),
 	Parser = require('../..'),
 	TagPairToken = require('.');
 
@@ -20,6 +21,15 @@ class IncludeToken extends hidden(TagPairToken) {
 	 */
 	constructor(name, attr = '', inner = undefined, closed = undefined, config = Parser.getConfig(), accum = []) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum, {AstText: [0, 1]});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 * @returns {LintError[]}
+	 */
+	lint(start = 0) {
+		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的标签')];
 	}
 
 	/** @override */

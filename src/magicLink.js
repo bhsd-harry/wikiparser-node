@@ -1,6 +1,8 @@
 'use strict';
 
-const Parser = require('..'),
+const {generateForChild} = require('../util/lint'),
+	Parser = require('..'),
+	AstText = require('../lib/text'),
 	Token = require('.');
 
 /**
@@ -46,6 +48,32 @@ class MagicLinkToken extends Token {
 			this.type = 'ext-link-url';
 		}
 		this.#protocolRegex = new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu');
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		let /** @type {{top: number, left: number}} */ rect;
+		for (const child of this.childNodes) {
+			const str = String(child);
+			if (child.type !== 'text' || !/[，；。：！？（）【】]/u.test(str)) {
+				continue;
+			}
+			rect ||= this.getRootNode().posFromIndex(start);
+			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning');
+			errors.push(...[...str.matchAll(/[，；。：！？（）【】]/gu)].map(({index}) => {
+				const lines = str.slice(0, index).split('\n'),
+					{length: top} = lines,
+					{length: left} = lines.at(-1),
+					startLine = refError.startLine + top - 1,
+					startCol = top > 1 ? left : refError.startCol + left;
+				return {...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1};
+			}));
+		}
+		return errors;
 	}
 
 	/** @override */

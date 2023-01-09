@@ -1,6 +1,7 @@
 'use strict';
 
 const hidden = require('../../mixin/hidden'),
+	{generateForSelf} = require('../../util/lint'),
 	Parser = require('../..'),
 	NowikiToken = require('.');
 
@@ -55,6 +56,14 @@ class CommentToken extends hidden(NowikiToken) {
 	/** @override */
 	print() {
 		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的HTML注释')];
 	}
 }
 

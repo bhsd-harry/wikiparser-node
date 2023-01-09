@@ -1,6 +1,7 @@
 'use strict';
 
 const {externalUse} = require('../util/debug'),
+	{generateForSelf} = require('../util/lint'),
 	{toCase, removeComment, normalizeSpace} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.');
@@ -353,6 +354,26 @@ class AttributeToken extends Token {
 	/** @override */
 	getPadding() {
 		return this.#leadingSpace().length;
+	}
+
+	/**
+	 * @override
+	 * @this {AttributeToken & {parentNode: HtmlToken}}
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const HtmlToken = require('./html');
+		const errors = super.lint(start);
+		let /** @type {{top: number, left: number}} */ rect;
+		if (this.type === 'html-attr' && this.parentNode.closing && this.text().trim()) {
+			rect = this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
+		}
+		if (!this.#sanitized) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '包含无效属性'));
+		}
+		return errors;
 	}
 
 	/** @override */

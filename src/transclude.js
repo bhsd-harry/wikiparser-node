@@ -2,6 +2,7 @@
 
 const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/string'),
 	{externalUse} = require('../util/debug'),
+	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
@@ -222,6 +223,25 @@ class TranscludeToken extends Token {
 				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (this.type === 'magic-word') {
+			return errors;
+		}
+		const duplicatedArgs = this.getDuplicatedArgs();
+		if (duplicatedArgs.length > 0) {
+			const rect = this.getRootNode().posFromIndex(start);
+			errors.push(...duplicatedArgs.flatMap(([, args]) => [...args]).map(
+				arg => generateForChild(arg, rect, '重复参数'),
+			));
+		}
+		return errors;
 	}
 
 	/**
@@ -572,6 +592,7 @@ class TranscludeToken extends Token {
 	/**
 	 * 获取重名参数
 	 * @complexity `n`
+	 * @returns {[string, Set<ParameterToken>][]}
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs() {
