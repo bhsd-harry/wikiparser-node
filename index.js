@@ -42,7 +42,7 @@ const /** @type {Parser} */ Parser = {
 
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src');
-		let token;
+		let /** @type {Token} */ token;
 		this.run(() => {
 			if (typeof wikitext === 'string') {
 				token = new Token(wikitext, config);
