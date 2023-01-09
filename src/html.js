@@ -14,6 +14,11 @@ class HtmlToken extends Token {
 	#selfClosing;
 	#tag;
 
+	/** getter */
+	get closing() {
+		return this.#closing;
+	}
+
 	/**
 	 * @param {string} name 标签名
 	 * @param {AttributeToken} attr 标签属性

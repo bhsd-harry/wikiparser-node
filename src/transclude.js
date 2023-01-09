@@ -84,7 +84,7 @@ class TranscludeToken extends Token {
 			const token = new AtomToken(title, 'template-name', config, accum);
 			this.appendChild(token);
 		}
-		const templateLike = !(this.type === 'magic-word' && this.name !== 'invoke');
+		const templateLike = this.isTemplate();
 		let i = 1;
 		for (const part of parts) {
 			if (!templateLike) {
@@ -134,8 +134,11 @@ class TranscludeToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const errors = super.lint(start),
-			duplicatedArgs = this.getDuplicatedArgs();
+		const errors = super.lint(start);
+		if (!this.isTemplate()) {
+			return errors;
+		}
+		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
 			const rect = this.getRootNode().posFromIndex(start);
 			errors.push(...duplicatedArgs.flatMap(([, args]) => [...args]).map(
@@ -143,6 +146,11 @@ class TranscludeToken extends Token {
 			));
 		}
 		return errors;
+	}
+
+	/** 是否是模板 */
+	isTemplate() {
+		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
 	}
 
 	/**
@@ -209,10 +217,9 @@ class TranscludeToken extends Token {
 	 * 获取重名参数
 	 * @complexity `n`
 	 * @returns {[string, Set<ParameterToken>][]}
-	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs() {
-		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke'
+		return this.isTemplate()
 			? Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)])
 			: [];
 	}
