@@ -2,6 +2,7 @@
 
 const assert = require('assert/strict'),
 	{noWrap} = require('../../util/string'),
+	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr'),
@@ -142,6 +143,18 @@ class TableToken extends TrToken {
 		this.setAttribute('acceptable', {
 			Token: 2, SyntaxToken: [0, -1], AttributeToken: 1, TdToken: '2:', TrToken: '2:',
 		});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (!this.closed) {
+			errors.push(generateForChild(this.firstChild, this.getRootNode().posFromIndex(start), '未闭合的表格'));
+		}
+		return errors;
 	}
 
 	/**

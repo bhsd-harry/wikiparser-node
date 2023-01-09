@@ -1,6 +1,7 @@
 'use strict';
 
-const attributeParent = require('../../mixin/attributeParent'),
+const {generateForChild} = require('../../util/lint'),
+	attributeParent = require('../../mixin/attributeParent'),
 	Parser = require('../..'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
@@ -46,6 +47,22 @@ class TrToken extends attributeParent(Token, 1) {
 			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
 		);
 		this.getAttribute('protectChildren')(0, 1);
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			inter = this.childNodes.find(({type}) => type === 'table-inter');
+		if (inter) {
+			const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
+			error.startLine++;
+			error.startCol = 0;
+			errors.push(error);
+		}
+		return errors;
 	}
 
 	/**
