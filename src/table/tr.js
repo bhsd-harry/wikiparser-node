@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('../..'),
+const {generateForChild} = require('../../util/lint'),
+	Parser = require('../..'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
 	AttributeToken = require('../attribute');
@@ -24,6 +25,22 @@ class TrToken extends Token {
 			new SyntaxToken(syntax, 'table-syntax', config, accum),
 			new AttributeToken(attr, 'table-attr', config, accum),
 		);
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			inter = this.childNodes.find(({type}) => type === 'table-inter');
+		if (inter) {
+			const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
+			error.startLine++;
+			error.startCol = 0;
+			errors.push(error);
+		}
+		return errors;
 	}
 }
 

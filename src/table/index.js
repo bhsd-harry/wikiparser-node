@@ -1,6 +1,7 @@
 'use strict';
 
-const TrToken = require('./tr'),
+const {generateForChild} = require('../../util/lint'),
+	TrToken = require('./tr'),
 	SyntaxToken = require('../syntax');
 
 /**
@@ -9,6 +10,23 @@ const TrToken = require('./tr'),
  */
 class TableToken extends TrToken {
 	type = 'table';
+
+	/** 表格是否闭合 */
+	get closed() {
+		return this.lastChild.type === 'table-syntax';
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (!this.closed) {
+			errors.push(generateForChild(this.firstChild, this.getRootNode().posFromIndex(start), '未闭合的表格'));
+		}
+		return errors;
+	}
 
 	/**
 	 * 闭合表格语法
