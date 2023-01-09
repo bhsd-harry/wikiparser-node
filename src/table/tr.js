@@ -14,10 +14,10 @@ const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)
  * @param {SyntaxToken} syntax 表格语法节点
  */
 const escapeTable = syntax => {
-	const wikitext = syntax.childNodes.map(
+	const templates = {'{|': '(!', '|}': '!)', '||': '!!', '|': '!'},
+		wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
-				? String(child).replaceAll('{|', '{{(!}}').replaceAll('|}', '{{!)}}').replaceAll('||', '{{!!}}')
-					.replaceAll('|', '{{!}}')
+				? String(child).replaceAll(/\{\||\|\}|\|{2}|\|/gu, p => `{{${templates[p]}}}`)
 				: String(child),
 		).join(''),
 		token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));

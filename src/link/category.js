@@ -18,10 +18,11 @@ class CategoryToken extends LinkToken {
 
 	/** 分类排序关键字 */
 	get sortkey() {
-		return this.childNodes[1]?.text()
-			?.replaceAll(/&#(\d+);/gu, /** @param {string} p */ (_, p) => String.fromCodePoint(Number(p)))
-			?.replaceAll(/&#x([\da-f]+);/giu, /** @param {string} p */ (_, p) => String.fromCodePoint(parseInt(p, 16)))
-			?.replaceAll('\n', '') ?? '';
+		return this.childNodes[1]?.text()?.replaceAll(
+			/&#(\d+|x[\da-f]+);|\n/gu,
+			/** @param {string} p */
+			(_, p) => p ? String.fromCodePoint(p[0] === 'x' ? parseInt(p.slice(1), 16) : Number(p)) : '',
+		);
 	}
 
 	set sortkey(text) {

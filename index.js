@@ -203,8 +203,11 @@ const /** @type {Parser} */ Parser = {
 			let restored = String(token),
 				process = '解析';
 			if (restored === wikitext) {
-				restored = token.print().replaceAll(/<[^<]+?>/gu, '').replaceAll('&lt;', '<').replaceAll('&gt;', '>')
-					.replaceAll('&amp;', '&');
+				const entities = {lt: '<', gt: '>', amp: '&'};
+				restored = token.print().replaceAll(
+					/<[^<]+?>|&([lg]t|amp);/gu,
+					/** @param {string} s */ (_, s) => s ? entities[s] : '',
+				);
 				process = '渲染HTML';
 			}
 			if (restored !== wikitext) {
