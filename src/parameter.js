@@ -29,6 +29,19 @@ class ParameterToken extends Token {
 		this.append(keyToken, token.setAttribute('stage', 2));
 	}
 
+	/** @override */
+	afterBuild() {
+		if (!this.anon) {
+			const name = String(this.firstChild).trim(),
+				{parentNode} = this;
+			this.setAttribute('name', name);
+			if (parentNode && parentNode instanceof require('./transclude')) {
+				parentNode.getArgs(name).add(this);
+			}
+		}
+		return this;
+	}
+
 	/**
 	 * @override
 	 * @returns {string}

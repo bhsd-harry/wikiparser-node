@@ -1,6 +1,7 @@
 'use strict';
 
-const {removeComment} = require('../util/string'),
+const {generateForSelf} = require('../util/lint'),
+	{removeComment} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.');
 
@@ -10,6 +11,7 @@ const {removeComment} = require('../util/string'),
  */
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
+	#sanitized = true;
 
 	/**
 	 * 从`childNodes`更新`this.#attr`
@@ -21,7 +23,9 @@ class AttributeToken extends Token {
 		for (const [, key,, quoted, unquoted] of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gsu)
 		) {
-			this.setAttr(key, quoted ?? unquoted ?? true, true);
+			if (!this.setAttr(key, quoted ?? unquoted ?? true, true)) {
+				this.#sanitized = false;
+			}
 		}
 	}
 
@@ -56,7 +60,29 @@ class AttributeToken extends Token {
 		key = key.toLowerCase().trim();
 		if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
 			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
+			return true;
 		}
+		return false;
+	}
+
+	/**
+	 * @override
+	 * @this {AttributeToken & {parentNode: HtmlToken}}
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const HtmlToken = require('./html');
+		const errors = super.lint(start);
+		let /** @type {{top: number, left: number}} */ rect;
+		if (this.type === 'html-attr' && this.parentNode.closing && String(this).trim()) {
+			rect = this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
+		}
+		if (!this.#sanitized) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '包含无效属性'));
+		}
+		return errors;
 	}
 }
 

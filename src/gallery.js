@@ -60,13 +60,12 @@ class GalleryToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const root = this.getRootNode(),
-			{top, left} = root.posFromIndex(start),
+		const {top, left} = this.getRootNode().posFromIndex(start),
 			/** @type {LintError[]} */ errors = [];
 		for (let i = 0, cur = start; i < this.childNodes.length; i++) {
 			const child = this.childNodes[i],
-				str = String(child);
-			if (child.type === 'hidden' && !/^<!--.*-->$/u.test(str)) {
+				str = String(child).trim();
+			if (child.type === 'hidden' && str && !/^<!--.*-->$/u.test(str)) {
 				errors.push({
 					message: '图库中的无效内容',
 					startLine: top + i,
@@ -79,6 +78,7 @@ class GalleryToken extends Token {
 			}
 			cur += str.length + 1;
 		}
+		return errors;
 	}
 }
 

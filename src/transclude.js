@@ -1,6 +1,7 @@
 'use strict';
 
 const {removeComment, print} = require('../util/string'),
+	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
 	ParameterToken = require('./parameter');
@@ -12,6 +13,7 @@ const {removeComment, print} = require('../util/string'),
 class TranscludeToken extends Token {
 	type = 'template';
 	modifier = '';
+	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 
 	/**
 	 * 设置引用修饰符
@@ -125,6 +127,94 @@ class TranscludeToken extends Token {
 				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			duplicatedArgs = this.getDuplicatedArgs();
+		if (duplicatedArgs.length > 0) {
+			const rect = this.getRootNode().posFromIndex(start);
+			errors.push(...duplicatedArgs.flatMap(([, args]) => [...args]).map(
+				arg => generateForChild(arg, rect, '重复参数'),
+			));
+		}
+		return errors;
+	}
+
+	/**
+	 * 处理匿名参数更改
+	 * @param {number|ParameterToken} addedToken 新增的参数
+	 * @complexity `n`
+	 */
+	#handleAnonArgChange(addedToken) {
+		const args = this.getAnonArgs(),
+			j = args.indexOf(addedToken),
+			newName = String(j + 1);
+		this.getArgs(newName).add(addedToken.setAttribute('name', newName));
+	}
+
+	/**
+	 * @override
+	 * @param {ParameterToken} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @complexity `n`
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		super.insertAt(token, i);
+		if (token.anon) {
+			this.#handleAnonArgChange(token);
+		} else if (token.name) {
+			this.getArgs(token.name).add(token);
+		}
+		return token;
+	}
+
+	/**
+	 * 获取所有参数
+	 * @returns {ParameterToken[]}
+	 * @complexity `n`
+	 */
+	getAllArgs() {
+		return this.childNodes.filter(child => child instanceof ParameterToken);
+	}
+
+	/**
+	 * 获取匿名参数
+	 * @complexity `n`
+	 */
+	getAnonArgs() {
+		return this.getAllArgs().filter(({anon}) => anon);
+	}
+
+	/**
+	 * 获取指定参数
+	 * @param {string|number} key 参数名
+	 * @complexity `n`
+	 */
+	getArgs(key) {
+		const keyStr = String(key).trim();
+		let args = this.#args[keyStr];
+		if (!args) {
+			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
+			this.#args[keyStr] = args;
+		}
+		return args;
+	}
+
+	/**
+	 * 获取重名参数
+	 * @complexity `n`
+	 * @returns {[string, Set<ParameterToken>][]}
+	 * @throws `Error` 仅用于模板
+	 */
+	getDuplicatedArgs() {
+		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke'
+			? Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)])
+			: [];
 	}
 }
 

@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('..'),
+const {generateForChild} = require('../util/lint'),
+	Parser = require('..'),
 	Token = require('.');
 
 /**
@@ -62,16 +63,8 @@ class ArgToken extends Token {
 			errors.push(...argDefault.lint(start + 4 + String(argName).length));
 		}
 		if (rest.length > 0) {
-			const root = this.getRootNode(),
-				{top, left} = root.posFromIndex(start);
-			errors.push(...rest.map(child => {
-				const {style: {top: offsetTop, left: offsetLeft, height, width}} = child,
-					startLine = top + offsetTop,
-					endLine = startLine + height - 1,
-					startCol = offsetTop > 0 ? offsetLeft : left + offsetLeft,
-					endCol = height > 1 ? width : startCol + width;
-				return {message: '三重括号内的不可见部分', startLine, endLine, startCol, endCol};
-			}));
+			const rect = this.getRootNode().posFromIndex(start);
+			errors.push(...rest.map(child => generateForChild(child, rect, '三重括号内的不可见部分')));
 		}
 		return errors;
 	}

@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('..'),
+const {generateForChild} = require('../util/lint'),
+	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 
@@ -10,6 +11,7 @@ const Parser = require('..'),
  */
 class ConverterFlagsToken extends Token {
 	type = 'converter-flags';
+	/** @type {string[]} */ #flags;
 
 	/**
 	 * @param {string[]} flags 转换类型标记
@@ -18,6 +20,15 @@ class ConverterFlagsToken extends Token {
 	constructor(flags, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
+	}
+
+	/**
+	 * @override
+	 * @complexity `n`
+	 */
+	afterBuild() {
+		this.#flags = this.childNodes.map(child => String(child).trim());
+		return this;
 	}
 
 	/** @override */
@@ -33,6 +44,45 @@ class ConverterFlagsToken extends Token {
 	/** @override */
 	print() {
 		return super.print({sep: ';'});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const variantFlags = this.getVariantFlags(),
+			unknownFlags = this.getUnknownFlags(),
+			validFlags = this.#flags.filter(flag => ['A', 'T', 'R', 'D', '-', 'H', 'N'].includes(flag)),
+			knownFlagCount = this.#flags.length - unknownFlags.length,
+			errors = super.lint(start);
+		if (variantFlags.length === knownFlagCount || validFlags.length === knownFlagCount) {
+			return errors;
+		}
+		const rect = this.getRootNode().posFromIndex(start);
+		for (const child of this.childNodes) {
+			const flag = String(child).trim();
+			if (!variantFlags.includes(flag) && !unknownFlags.includes(flag)
+				&& (variantFlags.length > 0 || !validFlags.includes(flag))
+			) {
+				errors.push(generateForChild(child, rect, '无效的转换标记'));
+			}
+		}
+		return errors;
+	}
+
+	/**
+	 * 获取未知转换类型标记
+	 * @complexity `n`
+	 */
+	getUnknownFlags() {
+		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/u.test(flag));
+	}
+
+	/** 获取指定语言变体的转换标记 */
+	getVariantFlags() {
+		const {variants} = this.getAttribute('config');
+		return this.#flags.filter(flag => variants.includes(flag));
 	}
 }
 

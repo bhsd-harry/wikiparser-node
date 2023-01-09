@@ -12,6 +12,11 @@ class TagPairToken extends Token {
 	#closed;
 	#tags;
 
+	/** getter */
+	get closed() {
+		return this.#closed;
+	}
+
 	/**
 	 * @param {string} name 标签名
 	 * @param {string|Token} attr 标签属性
