@@ -87,7 +87,9 @@ declare global {
 
 		getTool(): typeof $;
 
-		typeAliases: Record<string, string[]>;
+		readonly typeAliases: Record<string, string[]>;
+
+		readonly promises: Promise<void>[];
 	}
 }
 

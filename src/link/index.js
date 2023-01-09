@@ -162,6 +162,11 @@ class LinkToken extends Token {
 	}
 
 	/** @override */
+	print() {
+		return super.print(this.type === 'gallery-image' ? {sep: '|'} : {pre: '[[', post: ']]', sep: '|'});
+	}
+
+	/** @override */
 	text() {
 		const str = super.text('|');
 		return this.type === 'gallery-image' ? str : `[[${str}]]`;

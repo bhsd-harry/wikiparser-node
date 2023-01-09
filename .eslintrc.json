@@ -4,12 +4,14 @@
 		"es2022": true
 	},
 	"plugins": [
+		"promise",
 		"regexp",
 		"unicorn",
 		"jsdoc"
 	],
 	"extends": [
 		"eslint:recommended",
+		"plugin:promise/recommended",
 		"plugin:n/recommended-script",
 		"plugin:regexp/recommended",
 		"plugin:unicorn/recommended"
@@ -43,6 +45,7 @@
 				"skipStrings": false
 			}
 		],
+		"no-promise-executor-return": 2,
 		"no-self-compare": 2,
 		"no-template-curly-in-string": 2,
 		"no-undef": [
@@ -204,7 +207,7 @@
 			2,
 			"always"
 		],
-		"no-return-await": 0,
+		"no-return-await": 2,
 		"no-sequences": [
 			2,
 			{
@@ -285,7 +288,7 @@
 			2,
 			"as-needed"
 		],
-		"require-await": 0,
+		"require-await": 2,
 		"require-unicode-regexp": 2,
 		"spaced-comment": 2,
 		"strict": 2,
@@ -433,6 +436,20 @@
 			2,
 			"inside"
 		],
+		"promise/always-return": [
+			2,
+			{
+				"ignoreLastCallback": true
+			}
+		],
+		"promise/catch-or-return": [
+			2,
+			{
+				"allowThen": true
+			}
+		],
+		"promise/no-multiple-resolved": 2,
+		"promise/prefer-await-to-then": 2,
 		"n/no-extraneous-import": 0,
 		"n/no-missing-import": 0,
 		"n/no-new-require": 2,

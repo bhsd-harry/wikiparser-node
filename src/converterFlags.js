@@ -95,6 +95,11 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/** @override */
+	print() {
+		return super.print({sep: ';'});
+	}
+
+	/** @override */
 	text() {
 		return super.text(';');
 	}

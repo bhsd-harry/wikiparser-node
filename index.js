@@ -75,6 +75,8 @@ const /** @type {Parser} */ Parser = {
 		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
 	},
 
+	promises: [Promise.resolve()],
+
 	warn(msg, ...args) {
 		if (this.warning) {
 			console.warn('\x1B[33m%s\x1B[0m', msg, ...args);
@@ -172,7 +174,7 @@ const /** @type {Parser} */ Parser = {
 
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const Token = require('./src');
-		let token;
+		let /** @type {Token} */ token;
 		this.run(() => {
 			if (typeof wikitext === 'string') {
 				token = new Token(wikitext, config);
@@ -197,6 +199,24 @@ const /** @type {Parser} */ Parser = {
 				throw e;
 			}
 		});
+		if (this.debugging) {
+			let restored = String(token),
+				process = '解析';
+			if (restored === wikitext) {
+				restored = token.print().replaceAll(/<[^<]+?>/gu, '').replaceAll('&lt;', '<').replaceAll('&gt;', '>')
+					.replaceAll('&amp;', '&');
+				process = '渲染HTML';
+			}
+			if (restored !== wikitext) {
+				const diff = require('./util/diff');
+				const {promises: {0: cur, length}} = this;
+				this.promises.unshift((async () => {
+					await cur;
+					this.error(`${process}过程中不可逆地修改了原始文本！`);
+					return diff(wikitext, restored, length);
+				})());
+			}
+		}
 		return token;
 	},
 
@@ -234,7 +254,7 @@ const /** @type {Parser} */ Parser = {
 
 const /** @type {PropertyDescriptorMap} */ def = {};
 for (const key in Parser) {
-	if (['aliases', 'MAX_STAGE', 'typeAliases'].includes(key)) {
+	if (['aliases', 'MAX_STAGE', 'typeAliases', 'promises'].includes(key)) {
 		def[key] = {enumerable: false, writable: false};
 	} else if (!['config', 'isInterwiki', 'normalizeTitle', 'parse', 'getTool'].includes(key)) {
 		def[key] = {enumerable: false};

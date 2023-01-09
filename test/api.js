@@ -1,8 +1,15 @@
 /** @file 为MediaWiki API请求提供Promise界面 */
 'use strict';
 const request = require('request'),
-	{sleep} = require('./util'),
 	{info} = require('..');
+
+/**
+ * 延时
+ * @param {number} t 秒数
+ */
+const sleep = t => new Promise(resolve => {
+	setTimeout(resolve, t * 1000);
+});
 
 /**
  * 规范化API请求参数

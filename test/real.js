@@ -1,6 +1,6 @@
 'use strict';
 
-const {diff} = require('./util'),
+const diff = require('../util/diff'),
 	Api = require('./api'),
 	Parser = require('../'),
 	AstText = require('../lib/text');
@@ -97,7 +97,6 @@ const getPages = async url => {
 					console.time(title);
 					const root = Parser.parse(content, ns === 10);
 					console.timeEnd(title);
-					await diff(content, String(root));
 					for (const token of root.querySelectorAll(`:not(${complexOrHiddenTypes.join()})`)) {
 						const {childNodes, type, hidden} = token;
 						if (hidden && !simpleTypes.has(type)) {

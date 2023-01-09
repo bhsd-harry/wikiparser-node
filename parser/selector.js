@@ -46,7 +46,7 @@ const /** @type {pseudo[]} */ simplePseudos = [
 		['&', '&amp;'],
 	],
 	pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
-	regularRegex = /[[(,>+~]|\s+/u, // eslint-disable-line regexp/no-super-linear-move
+	regularRegex = /[[(,>+~]|\s+/u,
 	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
 	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u;
 

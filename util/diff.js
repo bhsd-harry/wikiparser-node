@@ -1,4 +1,5 @@
 'use strict';
+
 const {spawn} = require('child_process'),
 	fs = require('fs/promises');
 
@@ -49,32 +50,27 @@ const cmd = (command, args) => new Promise(resolve => {
 
 /**
  * 比较两个文件
- * @param {string} oldfile 旧文件
- * @param {string} newfile 新文件
+ * @param {string} oldStr 旧文本
+ * @param {string} newStr 新文本
+ * @param {string} uid 唯一标识
  */
-const diff = async (oldfile, newfile) => {
-	if (oldfile === newfile) {
+const diff = async (oldStr, newStr, uid = '') => {
+	if (oldStr === newStr) {
 		return;
 	}
-	await Promise.all([fs.writeFile('npmTestOldContent', oldfile), fs.writeFile('npmTestNewContent', newfile)]);
+	const oldFile = `diffOld${uid}`,
+		newFile = `diffNew${uid}`;
+	await Promise.all([fs.writeFile(oldFile, oldStr), fs.writeFile(newFile, newStr)]);
 	const stdout = await cmd('git', [
 		'diff',
 		'--color-words=[\xC0-\xFF][\x80-\xBF]+|<?/?\\w+/?>?|[^[:space:]]',
 		'-U0',
 		'--no-index',
-		'npmTestOldContent',
-		'npmTestNewContent',
+		oldFile,
+		newFile,
 	]);
-	await Promise.all([fs.unlink('npmTestOldContent'), fs.unlink('npmTestNewContent')]);
+	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
 	console.log(stdout?.split('\n')?.slice(4)?.join('\n'));
 };
 
-/**
- * 延时
- * @param {number} t 秒数
- */
-const sleep = t => new Promise(resolve => {
-	setTimeout(resolve, t * 1000);
-});
-
-module.exports = {diff, sleep};
+module.exports = diff;
