@@ -52,22 +52,28 @@ class ArgToken extends Token {
 
 	/**
 	 * @override
+	 * @param {number} start 起始位置
 	 * @returns {LintError[]}
 	 */
-	lint() {
-		return [
-			...this.childNodes.slice(0, 2).flatMap(child => child.lint()),
-			this.childNodes.slice(2).map(child => {
-				const {top, left, height, width} = child.getBoundingClientRect();
-				return {
-					message: '三重括号内的不可见部分',
-					startLine: top,
-					endLine: top + height - 1,
-					startCol: left - 1,
-					endCol: height > 1 ? width : left + width,
-				};
-			}),
-		];
+	lint(start = 0) {
+		const {childNodes: [argName, argDefault, ...rest]} = this,
+			errors = argName.lint(start + 3);
+		if (argDefault) {
+			errors.push(...argDefault.lint(start + 4 + String(argName).length));
+		}
+		if (rest.length > 0) {
+			const root = this.getRootNode(),
+				{top, left} = root.posFromIndex(start);
+			errors.push(...rest.map(child => {
+				const {style: {top: offsetTop, left: offsetLeft, height, width}} = child,
+					startLine = top + offsetTop,
+					endLine = startLine + height - 1,
+					startCol = offsetTop > 0 ? offsetLeft : left + offsetLeft,
+					endCol = height > 1 ? width : startCol + width;
+				return {message: '三重括号内的不可见部分', startLine, endLine, startCol, endCol};
+			}));
+		}
+		return errors;
 	}
 }
 

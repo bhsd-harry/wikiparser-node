@@ -14,11 +14,12 @@ const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
 const print = (childNodes, opt = {}) => {
 	const AstText = require('../lib/text'),
 		AstElement = require('../lib/element');
-	const {pre = '', post = '', sep = ''} = opt;
+	const {pre = '', post = '', sep = ''} = opt,
+		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 	return `${pre}${childNodes.map(
 		child => child instanceof AstElement
 			? child.print()
-			: String(child).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'),
+			: String(child).replaceAll(/[&<>]/gu, p => `&${entities[p]};`),
 	).join(sep)}${post}`;
 };
 

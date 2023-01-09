@@ -35,7 +35,7 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 			+ `<(${noincludeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`, // <noinclude>
 			'gisu',
 		);
-	return text.replace(
+	return text.replaceAll(
 		regex,
 		/** @type {function(...string): string} */
 		(substr, name, attr, inner, closing, include, includeAttr, includeInner, includeClosing) => {
