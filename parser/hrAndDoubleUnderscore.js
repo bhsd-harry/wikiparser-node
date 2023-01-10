@@ -1,18 +1,19 @@
 'use strict';
 
 const Parser = require('..'),
-	AstText = require('../lib/text');
+	AstText = require('../lib/text'),
+	Token = require('../src');
 
 /**
  * 解析\<hr\>和状态开关
- * @param {{firstChild: AstText, type: string}} root 根节点
+ * @param {Token & {firstChild: AstText}} root 根节点
  * @param {accum} accum
  */
-const parseHrAndDoubleUnderscore = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {
+const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const HrToken = require('../src/nowiki/hr'),
 		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
 	const {doubleUnderscore} = config;
-	if (type !== 'root') {
+	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
 	data = data.replaceAll(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
@@ -28,7 +29,7 @@ const parseHrAndDoubleUnderscore = ({firstChild: {data}, type}, config = Parser.
 			return m;
 		},
 	);
-	return type === 'root' ? data : data.slice(1);
+	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
 };
 
 Parser.parsers.parseHrAndDoubleUnderscore = __filename;

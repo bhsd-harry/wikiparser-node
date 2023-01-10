@@ -655,7 +655,9 @@ class Token extends AstElement {
 	/** 解析花括号 */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
-		this.setText(parseBrackets(String(this), this.#config, this.#accum));
+		const str = this.type === 'root' ? String(this) : `\0${String(this)}`,
+			parsed = parseBrackets(str, this.#config, this.#accum);
+		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
 	}
 
 	/** 解析HTML标签 */
@@ -719,9 +721,13 @@ class Token extends AstElement {
 
 	/** 解析列表 */
 	#parseList() {
+		if (this.type === 'image-parameter') {
+			return;
+		}
 		const parseList = require('../parser/list');
 		const lines = String(this).split('\n');
-		for (let i = this.type === 'root' ? 0 : 1; i < lines.length; i++) {
+		let i = this.type === 'root' || this.type === 'ext-inner' && this.type === 'poem' ? 0 : 1;
+		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
 		this.setText(lines.join('\n'));

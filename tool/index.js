@@ -855,7 +855,7 @@ const $ = tokens => {
 		/** @param {PropertyKey} prop */
 		get(obj, prop) {
 			if (prop === Symbol.iterator || typeof obj[prop] !== 'function'
-				|| !prop.startsWith('_') && Object.getOwnPropertyDescriptor(obj.constructor.prototype, prop)
+				|| prop[0] !== '_' && Object.getOwnPropertyDescriptor(obj.constructor.prototype, prop)
 				|| !externalUse(prop, true)
 			) {
 				return obj[prop];

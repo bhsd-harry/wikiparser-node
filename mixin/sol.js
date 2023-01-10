@@ -9,25 +9,35 @@ const Parser = require('..'),
  * @param {T} Constructor 基类
  * @returns {T}
  */
-const sol = Constructor => class extends Constructor {
+const sol = Constructor => class SolToken extends Constructor {
+	/**
+	 * 是否可以视为root节点
+	 * @this {Token}
+	 * @param {boolean} includeHeading 是否包括HeadingToken
+	 */
+	#isRoot(includeHeading) {
+		const {parentNode, type} = this;
+		return parentNode?.type === 'root'
+			|| parentNode?.type === 'ext-inner' && parentNode?.name === 'poem'
+				&& (includeHeading || type !== 'heading');
+	}
+
 	/**
 	 * 在前方插入newline
-	 * @this {Token}
+	 * @this {SolToken & Token}
 	 */
 	prependNewLine() {
-		const {previousVisibleSibling = '', parentNode} = this;
-		return (previousVisibleSibling || parentNode?.type !== 'root') && String(previousVisibleSibling).at(-1) !== '\n'
+		return (this.previousVisibleSibling || !this.#isRoot()) && String(this.previousVisibleSibling).at(-1) !== '\n'
 			? '\n'
 			: '';
 	}
 
 	/**
 	 * 在后方插入newline
-	 * @this {Token}
+	 * @this {SolToken & Token}
 	 */
 	appendNewLine() {
-		const {nextVisibleSibling = '', parentNode} = this;
-		return (nextVisibleSibling || parentNode?.type !== 'root') && String(nextVisibleSibling ?? '')[0] !== '\n'
+		return (this.nextVisibleSibling || !this.#isRoot(true)) && String(this.nextVisibleSibling ?? '')[0] !== '\n'
 			? '\n'
 			: '';
 	}

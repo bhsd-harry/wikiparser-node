@@ -1,22 +1,22 @@
 'use strict';
 
 const Parser = require('..'),
-	AstText = require('../lib/text');
+	AstText = require('../lib/text'),
+	Token = require('../src'),
+	TableToken = require('../src/table'),
+	TrToken = require('../src/table/tr'),
+	TdToken = require('../src/table/td'),
+	DdToken = require('../src/nowiki/dd');
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
- * @param {{firstChild: AstText, type: string}} root 根节点
+ * @param {Token & {firstChild: AstText}} root 根节点
  * @param {accum} accum
  */
-const parseTable = ({firstChild: {data}, type}, config = Parser.getConfig(), accum = []) => {
-	const Token = require('../src'),
-		TableToken = require('../src/table'),
-		TrToken = require('../src/table/tr'),
-		TdToken = require('../src/table/td'),
-		DdToken = require('../src/nowiki/dd');
+const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const /** @type {TrToken[]} */ stack = [],
 		lines = data.split('\n');
-	let out = type === 'root' ? '' : `\n${lines.shift()}`;
+	let out = type === 'root' || type === 'ext-inner' && name === 'poem' ? '' : `\n${lines.shift()}`;
 
 	/**
 	 * 向表格中插入纯文本

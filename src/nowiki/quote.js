@@ -31,13 +31,13 @@ class QuoteToken extends NowikiToken {
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];
 		let /** @type {LintError} */ refError;
-		if (previousSibling?.type === 'text' && previousSibling.data.endsWith("'")) {
+		if (previousSibling?.type === 'text' && previousSibling.data.at(-1) === "'") {
 			refError = generateForSelf(this, this.getRootNode().posFromIndex(start), '');
 			const {startLine, startCol} = refError,
 				[{length}] = previousSibling.data.match(/(?<!')'+$/u);
 			errors.push({message, startLine, startCol: startCol - length, endLine: startLine, endCol: startCol});
 		}
-		if (nextSibling?.type === 'text' && nextSibling.data.startsWith("'")) {
+		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
 			refError ||= generateForSelf(this, this.getRootNode().posFromIndex(start), '');
 			const {endLine, endCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u);
