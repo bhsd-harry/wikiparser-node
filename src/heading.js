@@ -1,6 +1,7 @@
 'use strict';
 
-const fixedToken = require('../mixin/fixedToken'),
+const {generateForSelf} = require('../util/lint'),
+	fixedToken = require('../mixin/fixedToken'),
 	sol = require('../mixin/sol'),
 	Parser = require('..'),
 	Token = require('.');
@@ -72,6 +73,18 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	print() {
 		const equals = '='.repeat(Number(this.name));
 		return super.print({pre: equals, sep: equals});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (this.name === '1') {
+			errors.push(generateForSelf(this, this.getRootNode().posFromIndex(start), '<h1>'));
+		}
+		return errors;
 	}
 
 	/**
