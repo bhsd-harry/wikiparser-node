@@ -107,8 +107,9 @@ class ConverterFlagsToken extends Token {
 	lint(start = 0) {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
+			emptyFlags = this.#flags.filter(flag => !flag),
 			validFlags = this.#flags.filter(flag => ['A', 'T', 'R', 'D', '-', 'H', 'N'].includes(flag)),
-			knownFlagCount = this.#flags.length - unknownFlags.length,
+			knownFlagCount = this.#flags.length - unknownFlags.length - emptyFlags,
 			errors = super.lint(start);
 		if (variantFlags.length === knownFlagCount || validFlags.length === knownFlagCount) {
 			return errors;
@@ -116,7 +117,7 @@ class ConverterFlagsToken extends Token {
 		const rect = this.getRootNode().posFromIndex(start);
 		for (const child of this.childNodes) {
 			const flag = child.text().trim();
-			if (!variantFlags.includes(flag) && !unknownFlags.includes(flag)
+			if (flag && !variantFlags.includes(flag) && !unknownFlags.includes(flag)
 				&& (variantFlags.length > 0 || !validFlags.includes(flag))
 			) {
 				errors.push(generateForChild(child, rect, '无效的转换标记'));

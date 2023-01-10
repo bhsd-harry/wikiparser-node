@@ -81,8 +81,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new NowikiToken(inner, config);
 			}
 		}
-		innerToken.type = 'ext-inner';
-		innerToken.setAttribute('name', lcName);
+		innerToken.setAttribute('name', lcName).type = 'ext-inner';
 		if (lcName === 'pre') {
 			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		}

@@ -100,8 +100,8 @@ class GalleryToken extends Token {
 			/** @type {LintError[]} */ errors = [];
 		for (let i = 0, cur = start; i < this.childNodes.length; i++) {
 			const child = this.childNodes[i],
-				str = String(child).trim();
-			if (child.type === 'hidden' && str && !/^<!--.*-->$/u.test(str)) {
+				str = String(child);
+			if (child.type === 'hidden' && str.trim() && !/^<!--.*-->$/u.test(str)) {
 				errors.push({
 					message: '图库中的无效内容',
 					startLine: top + i,

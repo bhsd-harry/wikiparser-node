@@ -55,8 +55,9 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			inter = this.childNodes.find(({type}) => type === 'table-inter');
-		if (inter) {
+			inter = this.childNodes.find(({type}) => type === 'table-inter'),
+			str = String(inter).trim();
+		if (inter && str && !/^<!--.*-->$/u.test(str)) {
 			const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
 			error.startLine++;
 			error.startCol = 0;
