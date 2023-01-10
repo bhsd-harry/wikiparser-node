@@ -58,12 +58,17 @@ class HtmlToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start);
+		let /** @type {LintError} */ refError;
+		if (this.name === 'h1' && !this.#closing) {
+			refError = generateForSelf(this, this.getRootNode().posFromIndex(start), '<h1>');
+			errors.push(refError);
+		}
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
-			const rect = this.getRootNode().posFromIndex(start),
-				[message] = errorMsg.split('：');
-			errors.push(generateForSelf(this, rect, message, message[0] === '未' ? 'warning' : 'error'));
+			const [message] = errorMsg.split('：');
+			refError ||= generateForSelf(this, this.getRootNode().posFromIndex(start), '');
+			errors.push({...refError, message, severity: message[0] === '未' ? 'warning' : 'error'});
 		}
 		return errors;
 	}
