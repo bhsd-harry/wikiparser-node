@@ -13,6 +13,16 @@
   },
   "license": "GPL-3.0",
   "author": "Bhsd",
+  "files": [
+    "/index.js",
+    "/parser/",
+    "/util/",
+    "/lib/",
+    "/src/",
+    "/config/",
+    "/mixin/",
+    "/tool/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"

@@ -1,11 +1,5 @@
-*~
-*/*~
-*.swp
-*/*.swp
-.DS_Store
-errors/
-!errors/README
-printed/
-!printed/README
-.vscode/
-wiki/
+/errors/*
+/printed/*
+/.vscode/
+/wiki/
+!README

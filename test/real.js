@@ -67,7 +67,7 @@ const {argv: [,, site = '']} = process,
 		'converter-rule-noconvert',
 		'converter-rule-to',
 	]),
-	possibleSyntax = /[{}]|\[{2,}|\[(?!(?:(?!https?\b)[^[])*\])|(?<=^|\])([^[]*?)\]+|<(?=\s*\/?\w+[\s/>])/giu;
+	possibleSyntax = /[{}]+|\[{2,}|\[(?!(?:(?!https?\b)[^[])*\])|(?<=^|\])([^[]*?)\]+|<(?=\s*\/?\w+[\s/>])/giu;
 
 Parser.debugging = true;
 

@@ -128,7 +128,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		} catch ({message: errorMsg}) {
 			const [message] = errorMsg.split('：');
 			refError ||= generateForSelf(this, this.getRootNode().posFromIndex(start), '');
-			errors.push({...refError, message, severity: message[0] === '未' ? 'warning' : 'error'});
+			errors.push({...refError, message, severity: message === '未闭合的标签' ? 'warning' : 'error'});
 		}
 		return errors;
 	}

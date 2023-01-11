@@ -15,6 +15,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
 	#sanitized = true;
+	#quoteBalance = true;
 
 	/**
 	 * @override
@@ -117,6 +118,7 @@ class AttributeToken extends Token {
 			this.replaceChildren(...token.childNodes, true);
 		});
 		this.#sanitized = true;
+		this.#quoteBalance = true;
 	}
 
 	/**
@@ -146,11 +148,13 @@ class AttributeToken extends Token {
 		 */
 		const build = str =>
 			typeof str === 'boolean' || !token ? str : token.getAttribute('buildFromStr')(str).map(String).join('');
-		for (const [, key,, quoted, unquoted] of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gsu)
+		for (const [, key, quoteStart, quoted, quoteEnd, unquoted] of string
+			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu)
 		) {
 			if (!this.setAttr(build(key), build(quoted ?? unquoted ?? true), true)) {
 				this.#sanitized = false;
+			} else if (quoteStart !== quoteEnd) {
+				this.#quoteBalance = false;
 			}
 		}
 	}
@@ -371,6 +375,9 @@ class AttributeToken extends Token {
 		if (!this.#sanitized) {
 			rect ||= this.getRootNode().posFromIndex(start);
 			errors.push(generateForSelf(this, rect, '包含无效属性'));
+		} else if (!this.#quoteBalance) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '未闭合的引号', 'warning'));
 		}
 		return errors;
 	}
