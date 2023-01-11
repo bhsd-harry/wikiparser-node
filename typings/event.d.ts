@@ -18,7 +18,7 @@ declare global {
 		oldKey: string;
 		newKey: string;
 	}
-	type AstListener = (e: AstEvent, data: AstEventData) => any;
+	type AstListener = (e: AstEvent, data: AstEventData) => *;
 }
 
 export {};

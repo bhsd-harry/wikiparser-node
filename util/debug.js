@@ -3,7 +3,7 @@
 /**
  * 定制TypeError消息
  * @param {Function} constructor 类
- * @param {string} method 方法名称
+ * @param {string} method
  * @param {...string} args 可接受的参数类型
  * @throws `TypeError`
  */

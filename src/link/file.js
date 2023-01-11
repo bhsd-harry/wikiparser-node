@@ -224,7 +224,7 @@ class FileToken extends LinkToken {
 	 * 获取生效的指定图片参数值
 	 * @template {string|undefined} T
 	 * @param {T} key 参数名
-	 * @returns {T extends undefined ? Object<string, string> : string|true}
+	 * @returns {T extends undefined ? Record<string, string> : string|true}
 	 * @complexity `n`
 	 */
 	getValue(key) {

@@ -18,7 +18,7 @@ const cmd = (command, args) => new Promise(resolve => {
 
 	/**
 	 * 清除进程并返回
-	 * @param {any} val 返回值
+	 * @param {*} val 返回值
 	 */
 	const r = val => {
 		clearTimeout(timer);

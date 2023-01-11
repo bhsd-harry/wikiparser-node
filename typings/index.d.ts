@@ -10,27 +10,27 @@ declare global {
 		/**
 		 * 默认输出到console.warn
 		 * @param {string} msg 消息
-		 * @param {...any} args 更多信息
+		 * @param {...*} args 更多信息
 		 */
-		warn(msg: string, ...args: any[]): void;
+		warn(msg: string, ...args: *[]): void;
 		/**
 		 * 默认不输出到console.debug
 		 * @param {string} msg 消息
-		 * @param {...any} args 更多信息
+		 * @param {...*} args 更多信息
 		 */
-		debug(msg: string, ...args: any[]): void;
+		debug(msg: string, ...args: *[]): void;
 		/**
 		 * 总是输出到console.error
 		 * @param {string} msg 消息
-		 * @param {...any} args 更多信息
+		 * @param {...*} args 更多信息
 		 */
-		error(msg: string, ...args: any[]): void;
+		error(msg: string, ...args: *[]): void;
 		/**
 		 * 总是输出到console.info
 		 * @param {string} msg 消息
-		 * @param {...any} args 更多信息
+		 * @param {...*} args 更多信息
 		 */
-		info(msg: string, ...args: any[]): void;
+		info(msg: string, ...args: *[]): void;
 
 		running: boolean;
 

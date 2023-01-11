@@ -53,7 +53,7 @@ class Api {
 	/**
 	 * GET请求
 	 * @param {Record<string, string|number|boolean|(string|number)[]>} params 请求参数
-	 * @returns {Promise<any>}
+	 * @returns {Promise<*>}
 	 */
 	async get(params) {
 		params = normalizeValues(params);

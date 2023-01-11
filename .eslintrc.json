@@ -21,7 +21,7 @@
 		"sourceType": "script"
 	},
 	"ignorePatterns": [
-		"tool/*.js"
+		"tool/index.js"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -661,7 +661,8 @@
 				"exceptions": [
 					"accum",
 					"selector",
-					"callback"
+					"callback",
+					"method"
 				],
 				"contexts": [
 					"FunctionDeclaration",

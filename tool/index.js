@@ -1,60 +1,98 @@
-/* eslint no-underscore-dangle: [2, {allowAfterThis: true, enforceInMethodNames: false, allow: ['__filename']}] */
 'use strict';
 
-const {typeError, externalUse} = require('../util/debug'),
-	{text, noWrap} = require('../util/string'),
-	AstText = require('../lib/text'),
+const {typeError} = require('../util/debug'),
+	{text} = require('../util/string'),
+	AstNode = require('../lib/node'),
 	Token = require('../src'),
-	assert = require('assert/strict');
+	AttributeToken = require('../src/attribute');
 
-const /** @type {WeakMap<Token, Record<string, any>>} */ dataStore = new WeakMap();
+const /** @type {WeakMap<Token, Record<string, *>>} */ cache = new WeakMap();
 
-/**
- * @param {string} method
- * @param {AstText|Token|Token[]} selector
- * @returns {(token: Token) => boolean}
- */
-const matchesGenerator = (method, selector) => {
-	if (typeof selector === 'string') {
-		return token => token instanceof Token && token.matches(selector);
-	} else if (Array.isArray(selector)) {
-		return token => selector.includes(token);
-	} else if (selector instanceof Token) {
-		return token => token === selector;
-	}
-	return typeError(TokenCollection, method, 'String', 'Token', 'Array'); // eslint-disable-line no-use-before-define
-};
-
-/** @extends {Array<Token>} */
-class TokenCollection extends Array {
-	/** @type {TokenCollection} */ prevObject;
+/** Token集合 */
+class TokenCollection {
+	/** @type {AstNode[]} */ array = [];
 	/** @type {Set<Token>} */ #roots = new Set();
+	/** @type {TokenCollection} */ prevObject;
 
-	/** @param {...string|Token} arr */
-	constructor(...arr) {
-		super();
-		if (arr.length === 1 && arr[0] === 0) {
-			return;
+	/**
+	 * 生成匹配函数
+	 * @param {string} method
+	 * @param {string|AstNode|Iterable<AstNode>} selector
+	 * @returns {(token: AstNode) => boolean}
+	 */
+	static #matchesGenerator = (method, selector) => {
+		if (selector === undefined || typeof selector === 'string') {
+			return token => token instanceof Token && token.matches(selector);
+		} else if (Symbol.iterator in selector) {
+			return token => new Set(selector).has(token);
+		}
+		return selector instanceof AstNode
+			? token => token === selector
+			: typeError(TokenCollection, method, 'String', 'AstNode', 'Iterable');
+	};
+
+	/** @ignore */
+	[Symbol.iterator]() {
+		return this.array[Symbol.iterator]();
+	}
+
+	/** 数组长度 */
+	get length() {
+		return this.array.length;
+	}
+
+	/** 数组长度 */
+	size() {
+		return this.array.length;
+	}
+
+	/**
+	 * 筛选Token节点
+	 * @returns {Token[]}
+	 */
+	get #tokens() {
+		return this.array.filter(ele => ele instanceof Token);
+	}
+
+	/**
+	 * 第一个Token节点
+	 * @returns {Token}
+	 */
+	get #firstToken() {
+		return this.array.find(ele => ele instanceof Token);
+	}
+
+	/**
+	 * @param {Iterable<AstNode>} arr 节点数组
+	 * @param {TokenCollection} prevObject 前身
+	 */
+	constructor(arr, prevObject) {
+		if (prevObject && !(prevObject instanceof TokenCollection)) {
+			this.typeError('constructor', 'TokenCollection');
 		}
 		for (const token of arr) {
 			if (token === undefined) {
 				continue;
-			} else if (token instanceof AstText) {
-				this.push(token);
-			} else if (!(token instanceof Token)) {
-				this.typeError('constructor', 'AstText', 'Token');
-			} else if (!this.includes(token)) {
+			} else if (!(token instanceof AstNode)) {
+				this.typeError('constructor', 'AstNode');
+			} else if (!this.array.includes(token)) {
 				this.#roots.add(token.getRootNode());
-				this.push(token);
+				this.array.push(token);
 			}
 		}
-		Object.defineProperty(this, 'prevObject', {enumerable: false});
+		this.prevObject = prevObject;
 		this.#sort();
+		Object.defineProperties(this, {
+			array: {writable: false, configurable: false},
+			prevObject: {enumerable: prevObject, writable: false, configurable: false},
+		});
+		Object.freeze(this.array);
 	}
 
 	/**
+	 * 抛出TypeError
 	 * @param {string} method
-	 * @param  {...string} types
+	 * @param  {...string} types 可接受的参数类型
 	 */
 	typeError(method, ...types) {
 		return typeError(this.constructor, method, ...types);
@@ -62,316 +100,399 @@ class TokenCollection extends Array {
 
 	/** 节点排序 */
 	#sort() {
-		if (this.some(({type}) => type === 'text')) {
-			return;
-		}
 		const rootArray = [...this.#roots];
-		this.sort((a, b) => {
+		this.array.sort(/** @type {(a: AstNode, b: AstNode) => boolean} */ (a, b) => {
 			const aRoot = a.getRootNode(),
 				bRoot = b.getRootNode();
 			return aRoot === bRoot ? a.compareDocumentPosition(b) : rootArray.indexOf(aRoot) - rootArray.indexOf(bRoot);
 		});
 	}
 
+	/** 转换为数组 */
 	toArray() {
 		return [...this];
 	}
 
-	_filter(selector = '') {
-		const arr = this.toArray().filter(ele => ele instanceof Token);
-		if (selector) {
-			return arr.filter(ele => ele.matches(selector));
+	/**
+	 * 提取第n个元素
+	 * @template {unknown} T
+	 * @param {T} n 序号
+	 * @returns {T extends number ? AstNode : AstNode[]}
+	 */
+	get(n) {
+		if (typeof n === 'number') {
+			return this.array.at(n);
 		}
-		return arr;
-	}
-
-	_find() {
-		return super.find(ele => ele instanceof Token);
-	}
-
-	/** @param {(arr: Token[]) => (string|Token)[]} map */
-	_create(map, filter = '') {
-		const $arr = $(map(this._filter())),
-			$filtered = filter ? $arr.filter(filter) : $arr;
-		$filtered.prevObject = this;
-		return $filtered;
+		return n === undefined ? this.toArray() : this.typeError('get', 'Number');
 	}
 
 	/**
-	 * @template {unknown} T
-	 * @param {T} num
-	 * @returns {T extends number ? string|Token : (string|Token)[]}
+	 * 循环
+	 * @param {CollectionCallback<void, AstNode>} callback
 	 */
-	get(num) {
-		if (typeof num === 'number') {
-			return this.at(num);
-		}
-		return this.toArray();
-	}
-
-	/** @param {CollectionCallback<void, string|Token>} callback */
 	each(callback) {
 		for (let i = 0; i < this.length; i++) {
-			callback.call(this[i], i, this[i]);
+			const ele = this.array[i];
+			callback.call(ele, i, ele);
 		}
 		return this;
 	}
 
-	/** @param {CollectionCallback<any, string|Token>} callback */
+	/**
+	 * map方法
+	 * @param {CollectionCallback<*, AstNode>} callback
+	 */
 	map(callback) {
-		const arr = this.toArray().map((ele, i) => callback.call(ele, i, ele));
+		const arr = this.array.map((ele, i) => callback.call(ele, i, ele));
 		try {
-			const $arr = $(arr);
-			$arr.prevObject = this;
-			return $arr;
+			return new TokenCollection(arr, this);
 		} catch {
 			return arr;
 		}
 	}
 
 	/**
-	 * @param {number} start
-	 * @param {number} end
+	 * 子序列
+	 * @param {number} start 起点
+	 * @param {number} end 终点
 	 */
 	slice(start, end) {
-		const $arr = $(this.toArray().slice(start, end));
-		$arr.prevObject = this;
-		return $arr;
+		return new TokenCollection(this.array.slice(start, end), this);
 	}
 
+	/** 第一个元素 */
 	first() {
 		return this.slice(0, 1);
 	}
 
+	/** 最后一个元素 */
 	last() {
 		return this.slice(-1);
 	}
 
-	/** @param {number} i */
+	/**
+	 * 任一元素
+	 * @param {number} i 序号
+	 */
 	eq(i) {
 		return this.slice(i, i === -1 ? undefined : i + 1);
 	}
 
 	/** 使用空字符串join */
 	toString() {
-		return this.toArray().map(String).join('');
+		return this.array.map(String).join('');
 	}
 
 	/**
+	 * 输出有效部分或设置文本
 	 * @template {unknown} T
-	 * @param {T} str
-	 * @returns {T extends string|Function ? this : string}
+	 * @param {T} str 新文本
+	 * @returns {T extends string|CollectionCallback<string, string> ? this : string}
 	 */
 	text(str) {
-		/** @type {(ele: Token, i: number, str: string) => string} */
-		const callback = typeof str === 'function' ? str.call : () => str;
+		const /** @type {CollectionCallback<string, string> */ callback = typeof str === 'function' ? str : () => str;
 		if (typeof str === 'string' || typeof str === 'function') {
 			for (let i = 0; i < this.length; i++) {
-				const ele = this[i];
+				const ele = this.array[i];
 				if (ele instanceof Token) {
 					try {
-						ele.replaceChildren(callback(ele, i, ele.text()));
+						ele.replaceChildren(callback.call(ele, i, ele.text()));
 					} catch {}
 				}
 			}
 			return this;
 		}
-		return text(this.toArray());
+		return str === undefined ? text(this.toArray()) : this.typeError('text', 'String', 'Function');
 	}
 
-	/** @param {string|CollectionCallback<boolean, string|Token>|Token|Token[]} selector */
+	/**
+	 * 判断是否存在元素满足选择器
+	 * @param {string|AstNode|Iterable<AstNode>|CollectionCallback<boolean, AstNode>} selector
+	 */
 	is(selector) {
-		if (typeof selector === 'function') {
-			return this.some((ele, i) => selector.call(ele, i, ele));
-		}
-		const matches = matchesGenerator('is', selector);
-		return this.some(matches);
+		return typeof selector === 'function'
+			? this.array.some((ele, i) => selector.call(ele, i, ele))
+			: this.array.some(TokenCollection.#matchesGenerator('is', selector));
 	}
 
-	/** @param {string|CollectionCallback<boolean, string|Token>|Token|Token[]} selector */
+	/**
+	 * 筛选满足选择器的元素
+	 * @param {string|AstNode|Iterable<AstNode>|CollectionCallback<boolean, AstNode>} selector
+	 */
 	filter(selector) {
-		const arr = this.toArray();
-		let $arr;
-		if (typeof selector === 'function') {
-			$arr = $(arr.filter((ele, i) => selector.call(ele, i, ele)));
-		} else {
-			const matches = matchesGenerator('filter', selector);
-			$arr = $(arr.filter(matches));
-		}
-		$arr.prevObject = this;
-		return $arr;
+		return new TokenCollection(this.array.filter(
+			(ele, i) => typeof selector === 'function'
+				? selector.call(ele, i, ele)
+				: TokenCollection.#matchesGenerator('filter', selector)(ele),
+		), this);
 	}
 
-	/** @param {string|CollectionCallback<boolean, string|Token>|Token|Token[]} selector */
+	/**
+	 * 筛选不满足选择器的元素
+	 * @param {string|AstNode|Iterable<AstNode>|CollectionCallback<boolean, AstNode>} selector
+	 */
 	not(selector) {
-		const arr = this.toArray();
-		let $arr;
+		let /** @type {(ele: AstNode, i: number) => boolean} */ callback;
 		if (typeof selector === 'function') {
-			$arr = $(arr.filter((ele, i) => !selector.call(ele, i, ele)));
-		} else if (typeof selector === 'string') {
-			$arr = $(arr.filter(ele => ele instanceof Token && !ele.matches(selector)));
+			callback = /** @implements */ (ele, i) => !selector.call(ele, i, ele);
 		} else {
-			const matches = matchesGenerator('not', selector);
-			$arr = $(arr.filter(ele => !matches(ele)));
+			const matches = TokenCollection.#matchesGenerator('not', selector);
+			callback = /** @implements */ ele => !matches(ele);
 		}
-		$arr.prevObject = this;
-		return $arr;
+		return new TokenCollection(this.array.filter(callback), this);
 	}
 
-	/** @param {string|Token|Token[]} selector */
+	/**
+	 * 搜索满足选择器的子节点
+	 * @param {string|AstNode|Iterable<AstNode>} selector
+	 */
 	find(selector) {
-		let /** @type {CollectionMap} */ map;
-		if (typeof selector === 'string') {
-			map = arr => arr.flatMap(token => token.querySelectorAll(selector));
-		} else if (Array.isArray(selector)) {
-			map = arr => [...selector].filter(ele => arr.some(token => token.contains(ele)));
-		} else if (selector instanceof Token) {
-			map = arr => arr.some(token => token.contains(selector)) ? [selector] : [];
+		let arr;
+		if (selector === undefined || typeof selector === 'string') {
+			arr = this.array.flatMap(token => token instanceof Token ? token.querySelectorAll(selector) : []);
+		} else if (Symbol.iterator in selector) {
+			arr = [...selector].filter(ele => this.array.some(token => token.contains(ele)));
+		} else if (selector instanceof AstNode) {
+			arr = this.array.some(token => token.contains(selector)) ? [selector] : [];
 		} else {
-			this.typeError('find', 'String', 'Token', 'Array');
+			this.typeError('find', 'String', 'AstNode', 'Iterable');
 		}
-		return this._create(map);
+		return new TokenCollection(arr, this);
 	}
 
-	/** @param {string|Token} selector */
+	/**
+	 * 是否存在满足条件的后代节点
+	 * @param {string|AstNode} selector
+	 */
 	has(selector) {
-		const arr = this._filter();
-		if (typeof selector === 'string') {
-			return arr.some(ele => ele.querySelector(selector));
-		} else if (selector instanceof Token) {
-			return arr.some(ele => ele.contains(selector));
+		if (selector === undefined || typeof selector === 'string') {
+			return this.array.some(ele => ele instanceof Token && ele.querySelector(selector));
 		}
-		return this.typeError('has', 'String', 'Token');
+		return selector instanceof AstNode
+			? this.array.some(ele => ele.contains(selector))
+			: this.typeError('has', 'String', 'AstNode');
 	}
 
-	/** @param {string} selector */
+	/**
+	 * 最近的祖先
+	 * @param {string} selector
+	 */
 	closest(selector) {
-		if (typeof selector !== 'string') {
-			this.typeError('closest', 'String');
+		if (selector === undefined) {
+			return new TokenCollection(this.array.map(ele => ele.parentNode), this);
 		}
-		return this._create(arr => arr.map(ele => ele.closest(selector)));
+		return typeof selector === 'string'
+			? new TokenCollection(this.#tokens.map(ele => ele.closest(selector)), this)
+			: this.typeError('closest', 'String');
 	}
 
+	/** 第一个Token节点在父容器中的序号 */
 	index() {
-		const firstToken = this._find();
-		if (!firstToken) {
-			return -1;
+		const {array: [firstNode]} = this;
+		if (firstNode) {
+			const {parentNode} = firstNode;
+			return parentNode ? parentNode.childNodes.indexOf(firstNode) : 0;
 		}
-		const {parentNode} = firstToken;
-		return parentNode ? parentNode.childNodes.indexOf(firstToken) : 0;
+		return -1;
 	}
 
-	/** @param {string|Token|(string|Token)[]} elements */
+	/**
+	 * 添加元素
+	 * @param {AstNode|Iterable<AstNode>} elements 新增的元素
+	 */
 	add(elements) {
-		elements = Array.isArray(elements) ? elements : [elements];
-		const $arr = $([...this, ...elements]);
-		$arr.prevObject = this;
-		return $arr;
+		return new TokenCollection([...this, ...Symbol.iterator in elements ? elements : [elements]], this);
 	}
 
-	/** @param {string} selector */
+	/**
+	 * 添加prevObject
+	 * @param {string} selector
+	 */
 	addBack(selector) {
 		return this.add(selector ? this.prevObject.filter(selector) : this.prevObject);
 	}
 
-	parent(selector = '') {
-		return this._create(arr => arr.map(ele => ele.parentNode), selector);
-	}
-
-	parents(selector = '') {
-		return this._create(arr => arr.flatMap(ele => ele.getAncestors()), selector);
-	}
-
-	next(selector = '') {
-		return this._create(arr => arr.map(ele => ele.nextElementSibling), selector);
-	}
-
-	prev(selector = '') {
-		return this._create(arr => arr.map(ele => ele.previousElementSibling), selector);
+	/**
+	 * 带选择器筛选的map
+	 * @param {string} method
+	 * @param {(ele: AstNode) => Token} callback
+	 * @param {string} selector
+	 */
+	#map(method, callback, selector) {
+		return selector === undefined || typeof selector === 'string'
+			? new TokenCollection(this.array.map(callback).filter(ele => ele.matches(selector)), this)
+			: this.typeError(method, 'String');
 	}
 
 	/**
-	 * @param {number|(i: number) => number} start
-	 * @param {number|(i: number) => number} count
+	 * 带选择器筛选的flatMap
+	 * @param {string} method
+	 * @param {(ele: AstNode) => Token|Token[]} callback
+	 * @param {string} selector
 	 */
-	_siblings(start, count, selector = '') {
-		return this._create(arr => arr.flatMap(ele => {
+	#flatMap(method, callback, selector) {
+		return selector === undefined || typeof selector === 'string'
+			? new TokenCollection(this.array.flatMap(callback).filter(ele => ele.matches(selector)), this)
+			: this.typeError(method, 'String');
+	}
+
+	/**
+	 * 父元素
+	 * @param {string} selector
+	 */
+	parent(selector) {
+		return this.#map('parent', ele => ele.parentNode, selector);
+	}
+
+	/**
+	 * 祖先
+	 * @param {string} selector
+	 */
+	parents(selector) {
+		return this.#flatMap('parents', ele => ele.getAncestors(), selector);
+	}
+
+	/**
+	 * nextElementSibling
+	 * @param {string} selector
+	 */
+	next(selector) {
+		return this.#map('next', ele => ele.nextElementSibling, selector);
+	}
+
+	/**
+	 * previousElementSibling
+	 * @param {string} selector
+	 */
+	prev(selector) {
+		return this.#map('prev', ele => ele.previousElementSibling, selector);
+	}
+
+	/**
+	 * 筛选兄弟
+	 * @param {string} method
+	 * @param {(i: number) => number} start 起点
+	 * @param {(i: number) => number} count 数量
+	 * @param {string} selector
+	 */
+	#siblings(method, start, count, selector) {
+		if (selector !== undefined && typeof selector !== 'string') {
+			this.typeError(method, 'String');
+		}
+		return new TokenCollection(this.array.flatMap(ele => {
 			const {parentNode} = ele;
 			if (!parentNode) {
-				return undefined;
+				return [];
 			}
-			const {children} = parentNode,
-				i = children.indexOf(ele);
-			children.splice(
-				typeof start === 'function' ? start(i) : start,
-				typeof count === 'function' ? count(i) : count,
-			);
-			return children;
-		}), selector);
-	}
-
-	nextAll(selector = '') {
-		return this._siblings(0, i => i + 1, selector);
-	}
-
-	prevAll(selector = '') {
-		return this._siblings(i => i, Infinity, selector);
-	}
-
-	siblings(selector = '') {
-		return this._siblings(i => i, 1, selector);
+			const {childNodes} = parentNode,
+				i = childNodes.indexOf(ele);
+			childNodes.splice(start(i), count(i));
+			return childNodes;
+		}).filter(ele => ele instanceof Token && ele.matches(selector)), this);
 	}
 
 	/**
-	 * @param {'parents'|'nextAll'|'prevAll'} method
-	 * @param {string|Token|Token[]} selector
+	 * 所有在后的兄弟
+	 * @param {string} selector
 	 */
-	_until(method, selector, filter = '') {
-		const matches = matchesGenerator(`${method.replace(/All$/u, '')}Until`, selector);
-		return this._create(arr => arr.flatMap(ele => {
-			const tokens = $(ele)[method]().toArray(),
-				tokenArray = method === 'nextAll' ? tokens : tokens.reverse(),
-				until = tokenArray.findIndex(end => matches(end));
-			return tokenArray.slice(0, until);
-		}), filter);
+	nextAll(selector) {
+		return this.#siblings('nextAll', () => 0, i => i + 1, selector);
 	}
 
-	/** @param {string|Token|Token[]} selector */
-	parentsUntil(selector, filter = '') {
-		return this._until('parents', selector, filter);
+	/**
+	 * 所有在前的兄弟
+	 * @param {string} selector
+	 */
+	prevAll(selector) {
+		return this.#siblings('prevAll', i => i, () => Infinity, selector);
 	}
 
-	/** @param {string|Token|Token[]} selector */
-	nextUntil(selector, filter = '') {
-		return this._until('nextAll', selector, filter);
+	/**
+	 * 所有在后的兄弟
+	 * @param {string} selector
+	 */
+	siblings(selector) {
+		return this.#siblings('siblings', i => i, () => 1, selector);
 	}
 
-	/** @param {string|Token|Token[]} selector */
-	prevUntil(selector, filter = '') {
-		return this._until('prevAll', selector, filter);
+	/**
+	 * 直到选择器被满足
+	 * @param {'parents'|'nextAll'|'prevAll'} method
+	 * @param {string|Token|Iterable<Token>} selector
+	 * @param {string} filter 额外的筛选选择器
+	 */
+	#until(method, selector, filter) {
+		const originalMethod = `${method.replace(/All$/u, '')}Until`;
+		if (filter !== undefined && typeof filter !== 'string') {
+			this.typeError(originalMethod, 'String');
+		}
+		const matches = TokenCollection.#matchesGenerator(originalMethod, selector);
+		return new TokenCollection(this.array.flatMap(ele => {
+			const /** @type {{array: Token[]}} */ {array} = $(ele)[method](),
+				until = array[method === 'nextAll' ? 'findIndex' : 'findLastIndex'](end => matches(end));
+			return method === 'nextAll' ? array.slice(0, until) : array.slice(until + 1);
+		}).filter(ele => ele.matches(filter)), this);
 	}
 
-	children(selector = '') {
-		return this._create(arr => arr.flatMap(ele => ele.children), selector);
+	/**
+	 * 直到选择器被满足的祖先
+	 * @param {string|Token|Iterable<Token>} selector
+	 * @param {string} filter 额外的筛选选择器
+	 */
+	parentsUntil(selector, filter) {
+		return this.#until('parents', selector, filter);
 	}
 
+	/**
+	 * 直到选择器被满足的后方兄弟
+	 * @param {string|Token|Iterable<Token>} selector
+	 * @param {string} filter 额外的筛选选择器
+	 */
+	nextUntil(selector, filter) {
+		return this.#until('nextAll', selector, filter);
+	}
+
+	/**
+	 * 直到选择器被满足的前方兄弟
+	 * @param {string|Token|Iterable<Token>} selector
+	 * @param {string} filter 额外的筛选选择器
+	 */
+	prevUntil(selector, filter) {
+		return this.#until('prevAll', selector, filter);
+	}
+
+	/**
+	 * Token子节点
+	 * @param {string} selector
+	 */
+	children(selector) {
+		return selector === undefined || typeof selector === 'string'
+			? new TokenCollection(this.#tokens.flatMap(ele => ele.children).filter(ele => ele.matches(selector)), this)
+			: this.typeError('children', 'String');
+	}
+
+	/** 所有子节点 */
 	contents() {
-		return this._create(arr => arr.flatMap(ele => ele.childNodes));
+		return new TokenCollection(this.array.flatMap(ele => ele.childNodes), this);
 	}
 
-	/** @param {[string|Record<string, any>]} key */
+	/**
+	 * 存取数据
+	 * @param {string|Record<string, *>} key 键
+	 * @param {*} value 值
+	 */
 	data(key, value) {
 		if (value !== undefined && typeof key !== 'string') {
 			this.typeError('data', 'String');
-		} else if (value === undefined && typeof key !== 'object') {
-			const data = $.dataStore.get(this._find());
+		} else if (value === undefined && (!key || key.constructor !== Object)) {
+			const data = cache.get(this.#firstToken);
 			return key === undefined ? data : data?.[key];
 		}
-		for (const token of this._filter()) {
-			if (!$.dataStore.has(token)) {
-				$.dataStore.set(token, {});
+		for (const token of this.#tokens) {
+			if (!cache.has(token)) {
+				cache.set(token, {});
 			}
-			const data = $.dataStore.get(token);
+			const data = cache.get(token);
 			if (typeof key === 'string') {
 				data[key] = value;
 			} else {
@@ -381,19 +502,22 @@ class TokenCollection extends Array {
 		return this;
 	}
 
-	/** @param {string|string[]} name */
+	/**
+	 * 删除数据
+	 * @param {string|string[]} name 键
+	 */
 	removeData(name) {
 		if (name !== undefined && typeof name !== 'string' && !Array.isArray(name)) {
 			this.typeError('removeData', 'String', 'Array');
 		}
 		name = typeof name === 'string' ? name.split(/\s/u) : name;
-		for (const token of this._filter()) {
-			if (!$.dataStore.has(token)) {
+		for (const token of this.#tokens) {
+			if (!cache.has(token)) {
 				continue;
 			} else if (name === undefined) {
-				$.dataStore.delete(token);
+				cache.delete(token);
 			} else {
-				const data = $.dataStore.get(token);
+				const data = cache.get(token);
 				for (const key of name) {
 					delete data[key];
 				}
@@ -403,12 +527,14 @@ class TokenCollection extends Array {
 	}
 
 	/**
-	 * @param {string|Record<string, AstListener>} events
+	 * 添加事件监听
+	 * @param {string|Record<string, AstListener>} events 事件名
 	 * @param {string|AstListener} selector
-	 * @param {AstListener} handler
+	 * @param {AstListener} handler 事件处理
+	 * @param {boolean} once 是否一次性
 	 */
-	_addEventListener(events, selector, handler, once = false) {
-		if (typeof events !== 'string' && typeof events !== 'object') {
+	#addEventListener(events, selector, handler, once = false) {
+		if (typeof events !== 'string' && (!events || events.constructor !== Object)) {
 			this.typeError(once ? 'once' : 'on', 'String', 'Object');
 		} else if (typeof selector === 'function') {
 			handler = selector;
@@ -417,59 +543,68 @@ class TokenCollection extends Array {
 		const eventPair = typeof events === 'string'
 			? events.split(/\s/u).map(/** @returns {[string, AstListener]} */ event => [event, handler])
 			: Object.entries(events);
-		for (const token of this._filter(selector)) {
-			for (const [event, listener] of eventPair) {
-				token.addEventListener(event, listener, {once});
+		for (const token of this.#tokens) {
+			if (token.matches(selector)) {
+				for (const [event, listener] of eventPair) {
+					token.addEventListener(event, listener, {once});
+				}
 			}
 		}
 		return this;
 	}
 
 	/**
-	 * @param {string|Record<string, AstListener>} events
+	 * 添加事件监听
+	 * @param {string|Record<string, AstListener>} events 事件名
 	 * @param {string|AstListener} selector
-	 * @param {AstListener} handler
+	 * @param {AstListener} handler 事件处理
 	 */
 	on(events, selector, handler) {
-		return this._addEventListener(events, selector, handler);
+		return this.#addEventListener(events, selector, handler);
 	}
 
 	/**
-	 * @param {string|Record<string, AstListener>} events
+	 * 添加一次性事件监听
+	 * @param {string|Record<string, AstListener>} events 事件名
 	 * @param {string|AstListener} selector
-	 * @param {AstListener} handler
+	 * @param {AstListener} handler 事件处理
 	 */
 	one(events, selector, handler) {
-		return this._addEventListener(events, selector, handler, true);
+		return this.#addEventListener(events, selector, handler, true);
 	}
 
 	/**
-	 * @param {string|Record<string, AstListener>|undefined} events
+	 * 移除事件监听
+	 * @param {string|Record<string, AstListener|undefined>|undefined} events 事件名
 	 * @param {string|AstListener} selector
-	 * @param {AstListener} handler
+	 * @param {AstListener} handler 事件处理
 	 */
 	off(events, selector, handler) {
-		if (typeof events !== 'string' && typeof events !== 'object' && events !== undefined) {
+		if (events === null || events !== undefined && typeof events !== 'string' && events.constructor !== Object) {
 			this.typeError('off', 'String', 'Object');
+		} else if (typeof selector === 'function') {
+			handler = selector;
+			selector = undefined;
 		}
-		handler = typeof selector === 'function' ? selector : handler;
 		let eventPair;
 		if (events) {
 			eventPair = typeof events === 'string'
 				? events.split(/\s/u).map(/** @returns {[string, AstListener]} */ event => [event, handler])
 				: Object.entries(events);
 		}
-		for (const token of this._filter(selector)) {
-			if (events === undefined) {
+		for (const token of this.#tokens) {
+			if (!token.matches(selector)) {
+				continue;
+			} else if (events === undefined) {
 				token.removeAllEventListeners();
 			} else {
 				for (const [event, listener] of eventPair) {
-					if (typeof event !== 'string' || typeof listener !== 'function' && listener !== undefined) {
-						this.typeError('off', 'String', 'Function');
-					} else if (listener) {
+					if (listener === undefined) {
+						token.removeAllEventListeners(event);
+					} else if (typeof listener === 'function') {
 						token.removeEventListener(event, listener);
 					} else {
-						token.removeAllEventListeners(event);
+						this.typeError('off', 'String', 'Function');
 					}
 				}
 			}
@@ -477,44 +612,52 @@ class TokenCollection extends Array {
 		return this;
 	}
 
-	/** @param {string|Event} event */
+	/**
+	 * 触发事件
+	 * @param {string|Event} event 事件名
+	 * @param {*} data 事件数据
+	 */
 	trigger(event, data) {
-		for (const token of this._filter()) {
+		for (const token of this) {
 			const e = typeof event === 'string' ? new Event(event, {bubbles: true}) : new Event(event.type, event);
 			token.dispatchEvent(e, data);
 		}
 		return this;
 	}
 
-	/** @param {string|Event} event */
+	/**
+	 * 伪装触发事件
+	 * @param {string|Event} event 事件名
+	 * @param {*} data 事件数据
+	 */
 	triggerHandler(event, data) {
-		const firstToken = this._find();
-		if (!firstToken) {
+		const {array: [firstNode]} = this;
+		if (!firstNode) {
 			return undefined;
 		}
-		const e = typeof event === 'string' ? new Event(event) : event,
-			listeners = firstToken.listEventListeners(typeof event === 'string' ? event : event.type);
+		const e = typeof event === 'string' ? new Event(event) : event;
 		let result;
-		for (const listener of listeners) {
+		for (const listener of firstNode.listEventListeners(e.type)) {
 			result = listener(e, data);
 		}
 		return result;
 	}
 
 	/**
+	 * 插入文档
 	 * @param {'append'|'prepend'|'before'|'after'|'replaceChildren'|'replaceWith'} method
-	 * @param {string|Token|CollectionCallback<string|Token|(string|Token)[], string>} content
-	 * @param  {...string|Token|(string|Token)[]} additional
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
 	 */
-	_insert(method, content, ...additional) {
+	#insert(method, content, ...additional) {
 		if (typeof content === 'function') {
 			for (let i = 0; i < this.length; i++) {
-				const token = this[i];
+				const token = this.array[i];
 				if (token instanceof Token) {
 					const result = content.call(token, i, token.toString());
 					if (typeof result === 'string' || result instanceof Token) {
 						token[method](result);
-					} else if (Array.isArray(result)) {
+					} else if (Symbol.iterator in result) {
 						token[method](...result);
 					} else {
 						this.typeError(method, 'String', 'Token');
@@ -524,7 +667,10 @@ class TokenCollection extends Array {
 		} else {
 			for (const token of this) {
 				if (token instanceof Token) {
-					token[method](...content, ...additional.flat());
+					token[method](
+						...Symbol.iterator in content ? content : [content],
+						...additional.flatMap(ele => Symbol.iterator in ele ? [...ele] : ele),
+					);
 				}
 			}
 		}
@@ -532,170 +678,238 @@ class TokenCollection extends Array {
 	}
 
 	/**
-	 * @param {string|Token|CollectionCallback<string|Token|(string|Token)[], string>} content
-	 * @param  {...string|Token|(string|Token)[]} additional
+	 * 在末尾插入
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
 	 */
 	append(content, ...additional) {
-		return this._insert('append', content, ...additional);
+		return this.#insert('append', content, ...additional);
 	}
 
 	/**
-	 * @param {string|Token|CollectionCallback<string|Token|(string|Token)[], string>} content
-	 * @param  {...string|Token|(string|Token)[]} additional
+	 * 在开头插入
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
 	 */
 	prepend(content, ...additional) {
-		return this._insert('prepend', content, ...additional);
+		return this.#insert('prepend', content, ...additional);
 	}
 
 	/**
-	 * @param {string|Token|CollectionCallback<string|Token|(string|Token)[], string>} content
-	 * @param  {...string|Token|(string|Token)[]} additional
+	 * 在后方插入
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
 	 */
 	before(content, ...additional) {
-		return this._insert('before', content, ...additional);
+		return this.#insert('before', content, ...additional);
 	}
 
 	/**
-	 * @param {string|Token|CollectionCallback<string|Token|(string|Token)[], string>} content
-	 * @param  {...string|Token|(string|Token)[]} additional
+	 * 在前方插入
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
 	 */
 	after(content, ...additional) {
-		return this._insert('after', content, ...additional);
+		return this.#insert('after', content, ...additional);
 	}
 
 	/**
-	 * @template {unknown} T
-	 * @param {T} content
-	 * @returns {T extends string|Token|CollectionCallback<string|Token|(string|Token)[], string> ? this : string}
+	 * 替换所有子节点
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
 	 */
 	html(content) {
 		if (content === undefined) {
 			return this.toString();
 		}
-		return this._insert('replaceChildren', content);
+		return this.#insert('replaceChildren', content);
 	}
 
-	/** @param {string|Token|CollectionCallback<string|Token|(string|Token)[], string>} content */
+	/**
+	 * 替换自身
+	 * @param {AstNode|Iterable<AstNode>|CollectionCallback<AstNode|Iterable<AstNode>, string>} content 插入内容
+	 * @param  {...AstNode|Iterable<AstNode>} additional 更多插入内容
+	 */
 	replaceWith(content) {
-		return this._insert('replaceWith', content);
+		return this.#insert('replaceWith', content);
 	}
 
-	remove(selector = '') {
+	/**
+	 * 移除自身
+	 * @param {string} selector
+	 */
+	remove(selector) {
 		this.removeData();
-		for (const token of this._filter(selector)) {
-			token.remove();
-			token.removeAllEventListeners();
-		}
-		return this;
-	}
-
-	detach(selector = '') {
-		for (const token of this._filter(selector)) {
-			token.remove();
-		}
-		return this;
-	}
-
-	empty() {
 		for (const token of this) {
-			if (token instanceof Token) {
-				token.replaceChildren();
+			if (token instanceof Token && token.matches(selector)) {
+				token.remove();
+				token.removeAllEventListeners();
 			}
 		}
 		return this;
 	}
 
 	/**
-	 * @param {'append'|'prepend'|'before'|'after'|'replaceWith'} method
-	 * @param {Token|Token[]} target
+	 * 移除自身
+	 * @param {string} selector
 	 */
-	_insertAdjacent(method, target) {
-		if (target instanceof Token) {
-			target[method](...this);
-		} else if (Array.isArray(target)) {
-			for (const token of target) {
-				if (token instanceof Token) {
-					token[method](...this);
-				}
+	detach(selector) {
+		for (const token of this) {
+			if (token instanceof Token && token.matches(selector)) {
+				token.remove();
 			}
-		} else {
-			this.typeError(method, 'Token', 'Array');
 		}
 		return this;
 	}
 
-	/** @param {Token|Token[]} target */
+	/** 清空子节点 */
+	empty() {
+		for (const token of this.#tokens) {
+			token.replaceChildren();
+		}
+		return this;
+	}
+
+	/**
+	 * 深拷贝
+	 * @param {boolean} withData 是否复制数据
+	 */
+	clone(withData) {
+		return new TokenCollection(this.#tokens.map(ele => {
+			const cloned = ele.cloneNode();
+			if (withData && cache.has(ele)) {
+				cache.set(cloned, structuredClone(cache.get(ele)));
+			}
+			return cloned;
+		}), this);
+	}
+
+	/**
+	 * 插入到
+	 * @param {string} method
+	 * @param {'append'|'prepend'|'before'|'after'|'replaceWith'} elementMethod 对应的AstElement方法
+	 * @param {Token|Iterable<Token>} target 目标位置
+	 */
+	#insertAdjacent(method, elementMethod, target) {
+		if (target instanceof Token) {
+			target[elementMethod](...this);
+		} else if (Symbol.iterator in target) {
+			for (const token of target) {
+				if (token instanceof Token) {
+					token[elementMethod](...this);
+				}
+			}
+		} else {
+			this.typeError(method, 'Token', 'Iterable');
+		}
+		return this;
+	}
+
+	/**
+	 * 插入到末尾
+	 * @param {Token|Iterable<Token>} target 目标位置
+	 */
 	appendTo(target) {
-		return this._insertAdjacent('append', target);
+		return this.#insertAdjacent('appendTo', 'append', target);
 	}
 
-	/** @param {Token|Token[]} target */
+	/**
+	 * 插入到开头
+	 * @param {Token|Iterable<Token>} target 目标位置
+	 */
 	prependTo(target) {
-		return this._insertAdjacent('prepend', target);
+		return this.#insertAdjacent('prependTo', 'prepend', target);
 	}
 
-	/** @param {Token|Token[]} target */
+	/**
+	 * 插入到前方
+	 * @param {Token|Iterable<Token>} target 目标位置
+	 */
 	insertBefore(target) {
-		return this._insertAdjacent('before', target);
+		return this.#insertAdjacent('insertBefore', 'before', target);
 	}
 
-	/** @param {Token|Token[]} target */
+	/**
+	 * 插入到后方
+	 * @param {Token|Iterable<Token>} target 目标位置
+	 */
 	insertAfter(target) {
-		return this._insertAdjacent('after', target);
+		return this.#insertAdjacent('insertAfter', 'after', target);
 	}
 
-	/** @param {Token|Token[]} target */
+	/**
+	 * 替换全部
+	 * @param {Token|Iterable<Token>} target 目标位置
+	 */
 	replaceAll(target) {
-		return this._insertAdjacent('replaceWith', target);
+		return this.#insertAdjacent('replaceAll', 'replaceWith', target);
 	}
 
-	/** @param {string|string[]|CollectionCallback<string, string>} value */
+	/**
+	 * 获取几何属性
+	 * @param {string|string[]} key 属性键
+	 */
+	css(key) {
+		const /** @type {Record<string, number>} */ style = this.#firstToken?.style;
+		if (typeof key === 'string') {
+			return style?.[key];
+		}
+		return Array.isArray(key)
+			? Object.fromEntries(key.map(k => [k, style?.[k]]))
+			: this.typeError('css', 'String', 'Array');
+	}
+
+	/**
+	 * 查询或修改值
+	 * @param {string|boolean|(string|boolean)[]|CollectionCallback<string, string|boolean>} value 值
+	 */
 	val(value) {
 		if (value === undefined) {
-			const firstToken = this._find();
+			const /** @type {{getValue: () => string|booleand}} */ firstToken = this.#firstToken;
 			return firstToken?.getValue && firstToken.getValue();
 		}
-		let /** @type {(i: number, token: Token) => string} */ toValue;
-		if (typeof value === 'string') {
-			toValue = () => value;
+		let /** @type {(i: number, token: {getValue: () => string|boolean}) => string|boolean} */ getValue;
+		if (typeof value === 'string' || typeof value === 'boolean') {
+			getValue = /** @implements */ () => value;
 		} else if (typeof value === 'function') {
-			toValue = (i, token) => value.call(token, i, token.getValue && token.getValue());
+			getValue = /** @implements */ (i, token) => value.call(token, i, token.getValue && token.getValue());
 		} else if (Array.isArray(value)) {
-			toValue = i => value[i];
+			getValue = /** @implements */ i => value[i];
 		} else {
 			this.typeError('val', 'String', 'Array', 'Function');
 		}
 		for (let i = 0; i < this.length; i++) {
-			const token = this[i];
+			const /** @type {{setValue: (value: string|boolean) => void}} */ token = this.array[i];
 			if (token instanceof Token && typeof token.setValue === 'function' && token.setValue.length === 1) {
-				token.setValue(toValue(i, token));
+				token.setValue(getValue(i, token));
 			}
 		}
 		return this;
 	}
 
 	/**
-	 * @param {'getAttr'|'getAttribute'} getter
-	 * @param {'setAttr'|'setAttribute'} setter
-	 * @param {string|Record<string, string>} name
-	 * @param {any|CollectionCallback<string, any>} value
+	 * 查询或修改属性
+	 * @param {'getAttr'|'getAttribute'} getter 属性getter
+	 * @param {'setAttr'|'setAttribute'} setter 属性setter
+	 * @param {string|Record<string, string|boolean>} name 属性名
+	 * @param {string|boolean|CollectionCallback<string|boolean, string|boolean>} value 属性值
 	 */
-	_attr(getter, setter, name, value) {
+	#attr(getter, setter, name, value) {
 		if (typeof name === 'string' && value === undefined) {
-			const firstToken = this._find();
+			const firstToken = this.#firstToken;
 			return firstToken?.[getter] && firstToken[getter](name);
 		}
 		for (let i = 0; i < this.length; i++) {
-			const token = this[i];
-			if (token instanceof Token && typeof token[setter] === 'function') {
-				if (typeof value === 'string') {
-					token[setter](name, value);
-				} else if (typeof value === 'function') {
+			const token = this.array[i];
+			if (token instanceof Token && token[setter]) {
+				if (typeof value === 'function') {
 					token[setter](name, value.call(token, i, token[getter] && token[getter](name)));
-				} else if (typeof name === 'object') {
+				} else if (name?.constructor === Object) {
 					for (const [k, v] of Object.entries(name)) {
 						token[setter](k, v);
 					}
+				} else {
+					token[setter](name, value);
 				}
 			}
 		}
@@ -703,216 +917,280 @@ class TokenCollection extends Array {
 	}
 
 	/**
-	 * @param {string|Record<string, string>} name
-	 * @param {string|CollectionCallback<string, string>} value
+	 * 标签属性
+	 * @param {string|Record<string, string|boolean>} name 属性名
+	 * @param {string|boolean|CollectionCallback<string|boolean, string|boolean>} value 属性值
 	 */
 	attr(name, value) {
-		return this._attr('getAttr', 'setAttr', name, value);
+		return this.#attr('getAttr', 'setAttr', name, value);
 	}
 
 	/**
-	 * @param {string|Record<string, string>} name
-	 * @param {any|CollectionCallback<string, any>} value
+	 * 节点属性
+	 * @param {string|Record<string, string|boolean>} name 属性名
+	 * @param {string|boolean|CollectionCallback<string|boolean, string|boolean>} value 属性值
 	 */
 	prop(name, value) {
-		return this._attr('getAttribute', 'setAttribute', name, value);
+		return this.#attr('getAttribute', 'setAttribute', name, value);
 	}
 
 	/**
+	 * 移除属性
 	 * @param {'removeAttr'|'removeAttribute'} method
-	 * @param {string} name
+	 * @param {string} name 属性名
 	 */
-	_removeAttr(method, name) {
+	#removeAttr(method, name) {
 		for (const token of this) {
-			if (token instanceof Token && typeof token[method] === 'function') {
+			if (token instanceof Token && token[method]) {
 				token[method](name);
 			}
 		}
 		return this;
 	}
 
-	/** @param {string} name */
+	/**
+	 * 标签属性
+	 * @param {string} name 属性名
+	 */
 	removeAttr(name) {
-		return this._removeAttr('removeAttr', name);
-	}
-
-	/** @param {string} name */
-	removeProp(name) {
-		return this._removeAttr('removeAttribute', name);
+		return this.#removeAttr('removeAttr', name);
 	}
 
 	/**
-	 * 出于实用角度，与jQuery的实现方式不同
-	 * @param {string[]|CollectionCallback<string[], undefined>} wrapper
+	 * 节点属性
+	 * @param {string} name 属性名
+	 */
+	removeProp(name) {
+		return this.#removeAttr('removeAttribute', name);
+	}
+
+	/**
+	 * 添加class
+	 * @this {TokenCollection & {array: AttributeToken[]}}
+	 * @param {string|string[]|CollectionCallback<string|string[], string>} className 类名
+	 */
+	addClass(className) {
+		/** @type {CollectionCallback<string|string[], string>} */
+		const callback = typeof className === 'function' ? className : () => className;
+		for (let i = 0; i < this.length; i++) {
+			const token = this.array[i],
+				{classList} = token;
+			if (classList) {
+				const newClasses = callback.call(token, i, token.className);
+				for (const newClass of Array.isArray(newClasses) ? newClasses : [newClasses]) {
+					classList.add(newClass);
+				}
+				token.className = [...classList].join(' ');
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * 移除class
+	 * @this {TokenCollection & {array: AttributeToken[]}}
+	 * @param {undefined|string|string[]|CollectionCallback<undefined|string|string[], string>} className 类名
+	 */
+	removeClass(className) {
+		/** @type {CollectionCallback<undefined|string|string[], string>} */
+		const callback = typeof className === 'function' ? className : () => className;
+		for (let i = 0; i < this.length; i++) {
+			const token = this.array[i],
+				{classList} = token;
+			if (classList) {
+				const newClasses = callback.call(token, i, token.className);
+				if (newClasses === undefined) {
+					classList.clear();
+				} else {
+					for (const newClass of Array.isArray(newClasses) ? newClasses : [newClasses]) {
+						classList.delete(newClass);
+					}
+				}
+				token.className = [...classList].join(' ');
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * 增减class
+	 * @this {TokenCollection & {array: AttributeToken[]}}
+	 * @param {string|string[]|CollectionCallback<string|string[], string>} className 类名
+	 * @param {boolean} state 是否增删
+	 */
+	toggleClass(className, state) {
+		if (typeof state === 'boolean') {
+			return this[state ? 'addClass' : 'removeClass'](className);
+		}
+		/** @type {CollectionCallback<string|string[], string>} */
+		const callback = typeof className === 'function' ? className : () => className;
+		for (let i = 0; i < this.length; i++) {
+			const token = this.array[i],
+				{classList} = token;
+			if (classList) {
+				const newClasses = callback.call(token, i, token.className);
+				for (const newClass of Array.isArray(newClasses) ? new Set(newClasses) : [newClasses]) {
+					classList[classList.has(newClass) ? 'delete' : 'add'](newClass);
+				}
+				token.className = [...classList].join(' ');
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * 是否带有某class
+	 * @this {{array: AttributeToken[]}}
+	 * @param {string} className 类名
+	 */
+	hasClass(className) {
+		return this.array.some(token => token.classList?.has(className));
+	}
+
+	/**
+	 * 全包围
+	 * @param {string[]|CollectionCallback<string[], undefined>} wrapper 包裹
+	 * @throws `Error` 不是连续的兄弟节点
 	 */
 	wrapAll(wrapper) {
 		if (typeof wrapper !== 'function' && !Array.isArray(wrapper)) {
 			this.typeError('wrapAll', 'Array', 'Function');
 		}
-		const firstToken = this._find(),
-			error = new Error('wrapAll 的主体应为同一个父节点下的连续子节点！');
-		if (!firstToken || !firstToken.parentNode) {
+		const {array} = this,
+			[firstNode] = array,
+			/** @type {Token} */ ancestor = firstNode?.parentNode,
+			error = new Error('wrapAll 的主体应为普通Token的连续子节点！');
+		if (!ancestor?.isPlain()) {
 			throw error;
 		}
-		const {parentNode} = firstToken,
-			{childNodes} = parentNode,
-			i = childNodes.indexOf(firstToken),
-			consecutiveSiblings = childNodes.slice(i, i + this.length);
-		try {
-			assert.deepStrictEqual(this.toArray(), consecutiveSiblings);
-		} catch (e) {
-			if (e instanceof assert.AssertionError) {
-				throw error;
-			}
+		const {childNodes} = ancestor,
+			i = childNodes.indexOf(firstNode),
+			j = childNodes.findIndex(node => node.contains(array.at(-1)));
+		if (j === -1 || childNodes.slice(i, j + 1).some(node => !array.includes(node))) {
+			throw error;
 		}
-		const ranges = parentNode.getAttribute('protectedChildren'),
-			index = ranges.applyTo(childNodes).find(n => n >= i && n < i + this.length);
-		if (index !== undefined) {
-			throw new Error(`第 ${index} 个子节点受到保护！`);
-		}
-		const [pre, post] = typeof wrapper === 'function' ? wrapper.call(firstToken) : wrapper,
-			config = firstToken.getRootNode().getAttribute('config'),
-			token = new Token(`${pre}${this.toString()}${post}`, config).parse();
-		if (token.childNodes.length !== 1) {
-			throw new RangeError(`非法的 wrapper:\n${noWrap(pre)}\n${noWrap(post)}`);
-		}
-		for (let j = i + this.length - 1; j >= i; j--) {
-			parentNode.removeAt(j);
-		}
-		parentNode.insertAt(token.firstChild, i);
+		const [pre, post] = typeof wrapper === 'function' ? wrapper.call(firstNode) : wrapper,
+			config = ancestor.getAttribute('config'),
+			include = ancestor.getAttribute('include'),
+			token = new Token(`${pre}${String(childNodes.slice(i, j + 1))}${post}`, config).parse(undefined, include);
+		this.detach();
+		(childNodes[i - 1]?.after ?? ancestor.prepend)(...token.childNodes);
 		return this;
 	}
 
 	/**
+	 * 局部包裹
 	 * @param {'html'|'replaceWith'} method
-	 * @param {string[]|CollectionCallback<string[], undefined>} wrapper
+	 * @param {string} originalMethod 原方法
+	 * @param {string[]|CollectionCallback<string[], undefined>} wrapper 包裹
+	 * @returns {this}
 	 */
-	_wrap(method, wrapper) {
+	#wrap(method, originalMethod, wrapper) {
 		if (typeof wrapper !== 'function' && !Array.isArray(wrapper)) {
-			this.typeError(method, 'Array', 'Function');
+			this.typeError(originalMethod, 'Array', 'Function');
 		}
-		return this[method](
 
-			/**
-			 * @this {string|Token}
-			 * @param {number} i
-			 * @param {string} string
-			 */
-			function(i, string) {
-				if (!(this instanceof Token)) {
-					return string;
-				}
-				const [pre, post] = typeof wrapper === 'function' ? wrapper.call(this, i) : wrapper,
-					config = this.getRootNode().getAttribute('config'),
-					token = new Token(`${pre}${string}${post}`, config).parse();
-				if (token.childNodes.length !== 1) {
-					throw new RangeError(`非法的 wrapper:\n${noWrap(pre)}\n${noWrap(post)}`);
-				}
-				return token.firstChild;
-			},
-		);
+		/**
+		 * @implements {CollectionCallback<AstNode|Iterable<AstNode>, string>}
+		 * @this {Token}
+		 * @param {number} i 序号
+		 * @param {string} string 原文本
+		 */
+		const callback = function(i, string) {
+			const [pre, post] = typeof wrapper === 'function' ? wrapper.call(this, i) : wrapper,
+				config = this.getAttribute('config'),
+				include = this.getAttribute('include');
+			return new Token(`${pre}${string}${post}`, config).parse(undefined, include).childNodes;
+		};
+		return this[method](callback);
 	}
 
-	/** @param {string[]|CollectionCallback<string[], undefined>} wrapper */
+	/**
+	 * 包裹内部
+	 * @param {string[]|CollectionCallback<string[], undefined>} wrapper 包裹
+	 */
 	wrapInner(wrapper) {
-		return this._wrap('html', wrapper);
+		return this.#wrap('html', 'wrapInner', wrapper);
 	}
 
-	/** @param {string[]|CollectionCallback<string[], undefined>} wrapper */
+	/**
+	 * 包裹自身
+	 * @param {string[]|CollectionCallback<string[], undefined>} wrapper 包裹
+	 */
 	wrap(wrapper) {
-		return this._wrap('replaceWith', wrapper);
+		return this.#wrap('replaceWith', 'wrap', wrapper);
 	}
 
+	/** 相对于文档的位置 */
 	offset() {
-		const firstToken = this._find();
-		if (!firstToken) {
-			return undefined;
-		}
-		const {top, left} = firstToken.getBoundingClientRect();
-		return {top, left};
+		const offset = this.#firstToken?.getBoundingClientRect();
+		return offset && {top: offset.top, left: offset.left};
 	}
 
+	/** 相对于父容器的位置 */
 	position() {
-		const style = this._find()?.style;
+		const style = this.#firstToken?.style;
 		return style && {top: style.top, left: style.left};
 	}
 
+	/** 高度 */
 	height() {
-		return this._find()?.offsetHeight;
+		return this.#firstToken?.offsetHeight;
 	}
 
+	/** 宽度 */
 	width() {
-		return this._find()?.offsetWidth;
+		return this.#firstToken?.offsetWidth;
+	}
+
+	/** 内部高度 */
+	innerHeight() {
+		return this.#firstToken?.clientHeight;
+	}
+
+	/** 内部宽度 */
+	innerWidth() {
+		return this.#firstToken?.clientWidth;
 	}
 }
 
-/** @param {AstText|Token|Iterable<string|Token>} tokens */
-const $ = tokens => {
-	if (tokens instanceof AstText || tokens instanceof Token) {
-		tokens = [tokens];
-	}
-	return new Proxy(new TokenCollection(...tokens), {
-		/** @param {PropertyKey} prop */
-		get(obj, prop) {
-			if (prop === Symbol.iterator || typeof obj[prop] !== 'function'
-				|| prop[0] !== '_' && Object.getOwnPropertyDescriptor(obj.constructor.prototype, prop)
-				|| !externalUse(prop, true)
-			) {
-				return obj[prop];
-			}
-			return undefined;
-		},
-		set(obj, prop, val) {
-			if (prop === 'prevObject' && (val === undefined || val instanceof TokenCollection)) {
-				obj[prop] = val;
-				return true;
-			}
-			return false;
-		},
-	});
-};
+/**
+ * 代替TokenCollection构造器
+ * @param {AstNode|Iterable<AstNode>} arr 节点数组
+ */
+const $ = arr => new TokenCollection(arr instanceof AstNode ? [arr] : arr);
 /* eslint-disable func-names */
 $.hasData = /** @param {Token} element */ function hasData(element) {
-	if (!(element instanceof Token)) {
-		typeError(this, 'hasData', 'Token');
-	}
-	return this.dataStore.has(element);
+	return element instanceof Token ? cache.has(element) : typeError(this, 'hasData', 'Token');
 };
-$.data = /** @type {function(Token, string, any): any} */ function data(element, key, value) {
+$.data = /** @type {function(Token, string, *): *} */ function data(element, key, value) {
 	if (!(element instanceof Token)) {
 		typeError(this, 'data', 'Token');
 	} else if (key === undefined) {
-		return this.dataStore.get(element);
+		return cache.get(element);
 	} else if (typeof key !== 'string') {
 		typeError(this, 'data', 'String');
 	} else if (value === undefined) {
-		return this.dataStore.get(element)?.[key];
-	} else if (!this.dataStore.has(element)) {
-		this.dataStore.set(element, {});
+		return cache.get(element)?.[key];
+	} else if (!cache.has(element)) {
+		cache.set(element, {});
 	}
-	this.dataStore.get(element)[key] = value;
+	cache.get(element)[key] = value;
 	return value;
 };
 $.removeData = /** @type {function(Token, string): void} */ function removeData(element, name) {
 	if (!(element instanceof Token)) {
 		typeError(this, 'removeData', 'Token');
 	} else if (name === undefined) {
-		this.dataStore.delete(element);
+		cache.delete(element);
 	} else if (typeof name !== 'string') {
 		typeError(this, 'removeData', 'String');
-	} else if (this.dataStore.has(element)) {
-		const data = this.dataStore.get(element);
+	} else if (cache.has(element)) {
+		const data = cache.get(element);
 		delete data[name];
 	}
 };
-Object.defineProperty($, 'dataStore', {value: dataStore});
-Object.defineProperty($, 'TokenCollection', {value: TokenCollection});
-Object.defineProperty($, 'reload', {
-	value() {
-		delete require.cache[__filename];
-		const $$ = require('.');
-		return $$;
-	},
-});
+/* eslint-enable func-names */
+Object.defineProperty($, 'cache', {value: cache, enumerable: false, writable: false, configurable: false});
 
 module.exports = $;

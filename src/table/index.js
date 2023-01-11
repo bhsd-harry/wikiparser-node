@@ -529,7 +529,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
-		if (typeof attr !== 'object') {
+		if (!attr || attr.constructor !== Object) {
 			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);

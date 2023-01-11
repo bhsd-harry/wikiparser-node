@@ -431,7 +431,7 @@ class TranscludeToken extends Token {
 	 * 获取生效的参数值
 	 * @template {string|number|undefined} T
 	 * @param {T} key 参数名
-	 * @returns {T extends undefined ? Object<string, string> : string}
+	 * @returns {T extends undefined ? Record<string, string> : string}
 	 * @complexity `n`
 	 */
 	getValue(key) {
