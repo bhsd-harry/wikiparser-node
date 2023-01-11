@@ -35,7 +35,7 @@ class TrToken extends Token {
 		const errors = super.lint(start),
 			inter = this.childNodes.find(({type}) => type === 'table-inter'),
 			str = String(inter).trim();
-		if (inter && str && !/^<!--.*-->$/u.test(str)) {
+		if (inter && str && !/^<!--.*-->$/su.test(str)) {
 			const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
 			error.startLine++;
 			error.startCol = 0;

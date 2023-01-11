@@ -1,6 +1,6 @@
 {
   "name": "wikiparser-node",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "A Node.js parser for MediaWiki markup with AST",
   "keywords": [
     "mediawiki",
@@ -13,6 +13,16 @@
   },
   "license": "GPL-3.0",
   "author": "Bhsd",
+  "files": [
+    "/index.js",
+    "/parser/",
+    "/util/",
+    "/lib/",
+    "/src/",
+    "/config/",
+    "/mixin/",
+    "/tool/"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"

@@ -12,6 +12,7 @@ const {generateForSelf} = require('../util/lint'),
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
 	#sanitized = true;
+	#quoteBalance = true;
 
 	/**
 	 * 从`childNodes`更新`this.#attr`
@@ -20,11 +21,13 @@ class AttributeToken extends Token {
 	#parseAttr() {
 		let string = this.toString();
 		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
-		for (const [, key,, quoted, unquoted] of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(?:\2|$)|(\S*)))?/gsu)
+		for (const [, key, quoteStart, quoted, quoteEnd, unquoted] of string
+			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu)
 		) {
 			if (!this.setAttr(key, quoted ?? unquoted ?? true, true)) {
 				this.#sanitized = false;
+			} else if (quoteStart !== quoteEnd) {
+				this.#quoteBalance = false;
 			}
 		}
 	}
@@ -81,6 +84,9 @@ class AttributeToken extends Token {
 		if (!this.#sanitized) {
 			rect ||= this.getRootNode().posFromIndex(start);
 			errors.push(generateForSelf(this, rect, '包含无效属性'));
+		} else if (!this.#quoteBalance) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '未闭合的引号', 'warning'));
 		}
 		return errors;
 	}
