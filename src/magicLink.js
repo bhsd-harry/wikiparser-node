@@ -21,11 +21,14 @@ class MagicLinkToken extends Token {
 	set protocol(value) {
 		if (typeof value !== 'string') {
 			this.typeError('protocol', 'String');
-		}
-		if (!new RegExp(`${this.#protocolRegex.source}$`, 'iu').test(value)) {
+		} else if (!new RegExp(`${this.#protocolRegex.source}$`, 'iu').test(value)) {
 			throw new RangeError(`非法的外链协议：${value}`);
 		}
-		this.replaceChildren(this.text().replace(this.#protocolRegex, value));
+		const {link} = this;
+		if (!this.#protocolRegex.test(link)) {
+			throw new Error(`特殊外链无法更改协议！${link}`);
+		}
+		this.replaceChildren(link.replace(this.#protocolRegex, value));
 	}
 
 	/** 和内链保持一致 */
