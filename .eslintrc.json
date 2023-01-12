@@ -20,9 +20,6 @@
 		"ecmaVersion": 13,
 		"sourceType": "script"
 	},
-	"ignorePatterns": [
-		"tool/index.js"
-	],
 	"rules": {
 		"array-callback-return": 2,
 		"no-cond-assign": [
