@@ -28,8 +28,7 @@ class ImageParameterToken extends Token {
 			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
 			if (regex.test(value)) {
 				return true;
-			}
-			if (value.startsWith('[[') && value.endsWith(']]')) {
+			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
 			if (value.includes('%')) {

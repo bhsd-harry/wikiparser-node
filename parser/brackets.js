@@ -57,12 +57,18 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
 			parts.at(-1).push(text.slice(topPos, curIndex));
-			const ch = close.length === 2 ? marks[removeComment(parts[0][0])] ?? 't' : 't'; // 标记{{!}}等
-			let skip = false;
+			let skip = false,
+				ch = 't';
 			if (close.length === 3) {
 				const ArgToken = require('../src/arg');
 				new ArgToken(parts.map(part => part.join('=')), config, accum);
 			} else {
+				const name = removeComment(parts[0][0]);
+				if (name in marks) {
+					ch = marks[name]; // 标记{{!}}等
+				} else if (/^(?:fullurl|canonicalurl|filepath):./iu.test(name)) {
+					ch = 'm';
+				}
 				try {
 					const TranscludeToken = require('../src/transclude');
 					new TranscludeToken(parts[0][0], parts.slice(1), config, accum);

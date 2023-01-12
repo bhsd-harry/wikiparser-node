@@ -54,6 +54,19 @@ class ExtToken extends TagPairToken {
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
+
+			/*
+			 * 更多定制扩展的代码示例：
+			 * ```
+			 * case 'extensionName': {
+			 * 	ext.delete(lcName);
+			 * 	newConfig.ext = [...ext];
+			 * 	const ExtensionToken = require('../extension');
+			 * 	innerToken = new ExtensionToken(inner, newConfig, accum);
+			 * 	break;
+			 * }
+			 * ```
+			 */
 			default: {
 				const NowikiToken = require('../nowiki');
 				innerToken = new NowikiToken(inner, config);
