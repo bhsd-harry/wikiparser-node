@@ -30,7 +30,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
-		let /** @type {acceptable} */ acceptable, /** @type {Token} */ innerToken;
+		let /** @type {Token} */ innerToken;
 		switch (lcName) {
 			case 'choose':
 			case 'option':
@@ -49,7 +49,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 					...lcName === 'combobox' ? ['combooption'] : [],
 				];
 				const Token = require('..');
-				acceptable = {AttributeToken: 0, Token: 1};
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			}
@@ -57,7 +56,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 				ext.delete(lcName);
 				newConfig.ext = [...ext];
 				const GalleryToken = require('../gallery');
-				acceptable = {AttributeToken: 0, GalleryToken: 1};
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
@@ -69,7 +67,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 			 * 	ext.delete(lcName);
 			 * 	newConfig.ext = [...ext];
 			 * 	const ExtensionToken = require('../extension');
-			 * 	acceptable = {AttributeToken: 0, ExtensionToken: 1};
 			 * 	innerToken = new ExtensionToken(inner, newConfig, accum);
 			 * 	break;
 			 * }
@@ -77,7 +74,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 			 */
 			default: {
 				const NowikiToken = require('../nowiki');
-				acceptable = {AttributeToken: 0, NowikiToken: 1};
 				innerToken = new NowikiToken(inner, config);
 			}
 		}
@@ -85,7 +81,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 		if (lcName === 'pre') {
 			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		}
-		super(name, attrToken, innerToken, closed, config, accum, acceptable);
+		super(name, attrToken, innerToken, closed, config, accum);
 	}
 
 	/** @override */

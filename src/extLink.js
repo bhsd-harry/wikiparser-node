@@ -52,7 +52,7 @@ class ExtLinkToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
+		super(undefined, config, true, accum, {MagicLinkToken: 0, Token: 1});
 		this.appendChild(new MagicLinkToken(url, true, config, accum));
 		this.#space = space;
 		if (text) {

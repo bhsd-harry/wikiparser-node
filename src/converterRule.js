@@ -44,7 +44,7 @@ class ConverterRuleToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(rule, hasColon = true, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {AtomToken: ':'});
+		super(undefined, config, true, accum);
 		if (hasColon) {
 			const i = rule.indexOf(':'),
 				j = rule.slice(0, i).indexOf('=>'),
@@ -167,11 +167,10 @@ class ConverterRuleToken extends Token {
 
 	/** 修改为不转换 */
 	noConvert() {
-		const {childNodes: {length}, lastChild} = this;
+		const {childNodes: {length}} = this;
 		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
 			this.removeAt(0);
 		}
-		lastChild.type = 'converter-rule-noconvert';
 	}
 
 	/**
@@ -231,8 +230,7 @@ class ConverterRuleToken extends Token {
 			{type, childNodes: {length: converterLength}, lastChild: converterRule} = converter;
 		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
-		}
-		if (unidirectional) {
+		} else if (unidirectional) {
 			this.firstChild.safeReplaceWith(converterRule.firstChild);
 		} else {
 			super.insertAt(converterRule.firstChild, 0);
@@ -250,7 +248,7 @@ class ConverterRuleToken extends Token {
 	/** 修改为双向转换 */
 	makeBidirectional() {
 		if (this.unidirectional) {
-			super.removeAt(0);
+			this.removeAt(0);
 		}
 	}
 }

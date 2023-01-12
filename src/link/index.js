@@ -235,8 +235,7 @@ class LinkToken extends Token {
 			{type, childNodes: {length: linkLength}, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
-		}
-		if (page) {
+		} else if (page) {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}
 		wikiLink.destroy(true);

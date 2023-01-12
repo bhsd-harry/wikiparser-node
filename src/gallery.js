@@ -18,7 +18,7 @@ class GalleryToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {AstText: ':', GalleryImageToken: ':'});
+		super(undefined, config, true, accum, {AstText: ':', GalleryImageToken: ':', HiddenToken: ':'});
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
