@@ -84,6 +84,16 @@ class AttributeToken extends Token {
 		this.setAttr('id', id);
 	}
 
+	/** #sanitized */
+	get sanitized() {
+		return this.#sanitized;
+	}
+
+	/** #quoteBalance */
+	get quoteBalance() {
+		return this.#quoteBalance;
+	}
+
 	/**
 	 * 从`this.#attr`更新`childNodes`
 	 * @complexity `n`

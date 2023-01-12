@@ -17,6 +17,11 @@ class TranscludeToken extends Token {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 
+	/** 是否存在重复参数 */
+	get duplication() {
+		return this.isTemplate() && Boolean(this.hasDuplicatedArgs());
+	}
+
 	/**
 	 * 设置引用修饰符
 	 * @param {string} modifier 引用修饰符

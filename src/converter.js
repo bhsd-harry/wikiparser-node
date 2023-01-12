@@ -21,6 +21,11 @@ class ConverterToken extends Token {
 		return this.hasFlag('R') || this.childNodes.length === 2 && !this.lastChild.variant;
 	}
 
+	/** flags */
+	get flags() {
+		return this.getAllFlags();
+	}
+
 	/**
 	 * @param {string[]} flags 转换类型标记
 	 * @param {string[]} rules 转换规则

@@ -13,6 +13,11 @@ class GalleryToken extends Token {
 	type = 'ext-inner';
 	name = 'gallery';
 
+	/** 所有图片 */
+	get images() {
+		return this.childNodes.filter(({type}) => type === 'gallery-image');
+	}
+
 	/**
 	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum

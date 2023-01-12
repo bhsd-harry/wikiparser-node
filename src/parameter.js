@@ -27,6 +27,19 @@ class ParameterToken extends fixedToken(Token) {
 	}
 
 	/**
+	 * 是否是重复参数
+	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 */
+	get duplicated() {
+		const TranscludeToken = require('./transclude');
+		try {
+			return Boolean(this.parentNode?.getDuplicatedArgs()?.some(([key]) => key === this.name));
+		} catch {
+			return false;
+		}
+	}
+
+	/**
 	 * @param {string|number} key 参数名
 	 * @param {string} value 参数值
 	 * @param {accum} accum

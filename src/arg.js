@@ -7,10 +7,15 @@ const {text, noWrap} = require('../util/string'),
 
 /**
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, Token, ...HiddenToken]}`
+ * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 class ArgToken extends Token {
 	type = 'arg';
+
+	/** default */
+	get default() {
+		return this.childNodes[1]?.text() ?? false;
+	}
 
 	/**
 	 * @param {string[]} parts 以'|'分隔的各部分

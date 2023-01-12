@@ -23,7 +23,7 @@ class TokenCollection {
 	static #matchesGenerator = (method, selector) => {
 		if (selector === undefined || typeof selector === 'string') {
 			return token => token instanceof Token && token.matches(selector);
-		} else if (Symbol.iterator in selector) {
+		} else if (selector?.[Symbol.iterator]) {
 			return token => new Set(selector).has(token);
 		}
 		return selector instanceof AstNode
@@ -250,7 +250,7 @@ class TokenCollection {
 		let arr;
 		if (selector === undefined || typeof selector === 'string') {
 			arr = this.array.flatMap(token => token instanceof Token ? token.querySelectorAll(selector) : []);
-		} else if (Symbol.iterator in selector) {
+		} else if (selector?.[Symbol.iterator]) {
 			arr = [...selector].filter(ele => this.array.some(token => token.contains(ele)));
 		} else if (selector instanceof AstNode) {
 			arr = this.array.some(token => token.contains(selector)) ? [selector] : [];
@@ -657,7 +657,7 @@ class TokenCollection {
 					const result = content.call(token, i, token.toString());
 					if (typeof result === 'string' || result instanceof Token) {
 						token[method](result);
-					} else if (Symbol.iterator in result) {
+					} else if (result?.[Symbol.iterator]) {
 						token[method](...result);
 					} else {
 						this.typeError(method, 'String', 'Token');
@@ -793,7 +793,7 @@ class TokenCollection {
 	#insertAdjacent(method, elementMethod, target) {
 		if (target instanceof Token) {
 			target[elementMethod](...this);
-		} else if (Symbol.iterator in target) {
+		} else if (target?.[Symbol.iterator]) {
 			for (const token of target) {
 				if (token instanceof Token) {
 					token[elementMethod](...this);
