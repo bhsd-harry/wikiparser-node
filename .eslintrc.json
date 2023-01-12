@@ -667,7 +667,8 @@
 				"exceptions": [
 					"accum",
 					"selector",
-					"callback"
+					"callback",
+					"method"
 				],
 				"contexts": [
 					"FunctionDeclaration",
