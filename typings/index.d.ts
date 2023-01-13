@@ -8,6 +8,7 @@ declare global {
 		run<T>(callback: () => T): T;
 
 		config: ParserConfig;
+		minConfig: ParserConfig;
 		/** 获取设置 */
 		getConfig(): ParserConfig;
 

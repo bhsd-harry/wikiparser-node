@@ -3,12 +3,13 @@
 const /** @type {Parser} */ Parser = {
 	running: false,
 
-	config: require('./config/default'),
+	config: undefined,
+	minConfig: require('./config/minimum'),
 
 	MAX_STAGE: 11,
 
 	getConfig() {
-		return this.config;
+		return {...this.minConfig, ...this.config};
 	},
 
 	run(callback) {
@@ -63,7 +64,7 @@ const /** @type {Parser} */ Parser = {
 
 const /** @type {PropertyDescriptorMap} */ def = {};
 for (const key in Parser) {
-	if (['MAX_STAGE'].includes(key)) {
+	if (['MAX_STAGE', 'minConfig'].includes(key)) {
 		def[key] = {enumerable: false, writable: false};
 	} else if (!['config', 'normalizeTitle', 'parse', 'print'].includes(key)) {
 		def[key] = {enumerable: false};
