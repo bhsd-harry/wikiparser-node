@@ -160,8 +160,10 @@ class FileToken extends LinkToken {
 			this.typeError('getArgs', 'String');
 		}
 		copy ||= !Parser.debugging && externalUse('getArgs');
-		let args = this.#args[key];
-		if (!args) {
+		let args;
+		if (Object.hasOwn(this.#args, key)) {
+			args = this.#args[key];
+		} else {
 			args = new Set(this.getAllArgs().filter(({name}) => key === name));
 			this.#args[key] = args;
 		}

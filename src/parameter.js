@@ -70,10 +70,11 @@ class ParameterToken extends fixedToken(Token) {
 	/** @override */
 	afterBuild() {
 		if (!this.anon) {
+			const TranscludeToken = require('./transclude');
 			const name = this.firstChild.text().trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
-			if (parentNode && parentNode instanceof require('./transclude')) {
+			if (parentNode && parentNode instanceof TranscludeToken) {
 				parentNode.getAttribute('keys').add(name);
 				parentNode.getArgs(name, false, false).add(this);
 			}
@@ -185,7 +186,7 @@ class ParameterToken extends fixedToken(Token) {
 		const TranscludeToken = require('./transclude');
 		const {parentNode} = this;
 		// 必须检测是否是TranscludeToken
-		if (!parentNode?.isTemplate() || !(parentNode instanceof require('./transclude'))) {
+		if (!parentNode?.isTemplate() || !(parentNode instanceof TranscludeToken)) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),

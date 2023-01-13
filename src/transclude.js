@@ -370,8 +370,10 @@ class TranscludeToken extends Token {
 		}
 		copy ||= !Parser.debugging && externalUse('getArgs');
 		const keyStr = String(key).trim();
-		let args = this.#args[keyStr];
-		if (!args) {
+		let args;
+		if (Object.hasOwn(this.#args, keyStr)) {
+			args = this.#args[keyStr];
+		} else {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args[keyStr] = args;
 		}
@@ -640,7 +642,7 @@ class TranscludeToken extends Token {
 			const /** @type {Record<string, ParameterToken[]>} */ values = {};
 			for (const arg of args) {
 				const val = arg.getValue().trim();
-				if (val in values) {
+				if (Object.hasOwn(values, val)) {
 					values[val].push(arg);
 				} else {
 					values[val] = [arg];

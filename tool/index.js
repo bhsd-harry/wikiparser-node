@@ -2,6 +2,7 @@
 
 const {typeError} = require('../util/debug'),
 	{text} = require('../util/string'),
+	{isPlainObject} = require('../util/base'),
 	AstNode = require('../lib/node'),
 	Token = require('../src'),
 	AttributeToken = require('../src/attribute');
@@ -484,7 +485,7 @@ class TokenCollection {
 	data(key, value) {
 		if (value !== undefined && typeof key !== 'string') {
 			this.typeError('data', 'String');
-		} else if (value === undefined && (!key || key.constructor !== Object)) {
+		} else if (value === undefined && !isPlainObject(key)) {
 			const data = cache.get(this.#firstToken);
 			return key === undefined ? data : data?.[key];
 		}
@@ -534,7 +535,7 @@ class TokenCollection {
 	 * @param {boolean} once 是否一次性
 	 */
 	#addEventListener(events, selector, handler, once = false) {
-		if (typeof events !== 'string' && (!events || events.constructor !== Object)) {
+		if (typeof events !== 'string' && !isPlainObject(events)) {
 			this.typeError(once ? 'once' : 'on', 'String', 'Object');
 		} else if (typeof selector === 'function') {
 			handler = selector;
@@ -580,7 +581,7 @@ class TokenCollection {
 	 * @param {AstListener} handler 事件处理
 	 */
 	off(events, selector, handler) {
-		if (events === null || events !== undefined && typeof events !== 'string' && events.constructor !== Object) {
+		if (events !== undefined && typeof events !== 'string' && !isPlainObject(events)) {
 			this.typeError('off', 'String', 'Object');
 		} else if (typeof selector === 'function') {
 			handler = selector;
@@ -904,7 +905,7 @@ class TokenCollection {
 			if (token instanceof Token && token[setter]) {
 				if (typeof value === 'function') {
 					token[setter](name, value.call(token, i, token[getter] && token[getter](name)));
-				} else if (name?.constructor === Object) {
+				} else if (isPlainObject(name)) {
 					for (const [k, v] of Object.entries(name)) {
 						token[setter](k, v);
 					}

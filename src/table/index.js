@@ -3,6 +3,7 @@
 const assert = require('assert/strict'),
 	{noWrap} = require('../../util/string'),
 	{generateForChild} = require('../../util/lint'),
+	{isPlainObject} = require('../../util/base'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr'),
@@ -529,7 +530,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
-		if (!attr || attr.constructor !== Object) {
+		if (!isPlainObject(attr)) {
 			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);

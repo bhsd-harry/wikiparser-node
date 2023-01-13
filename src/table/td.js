@@ -2,6 +2,7 @@
 
 const fixedToken = require('../../mixin/fixedToken'),
 	{externalUse, typeError} = require('../../util/debug'),
+	{isPlainObject} = require('../../util/base'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr');
@@ -135,9 +136,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @throws `RangeError` 非法的单元格类型
 	 */
 	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
-		if (typeof inner !== 'string' && (!(inner instanceof Token) || !inner.isPlain())
-			|| !attr || attr.constructor !== Object
-		) {
+		if (typeof inner !== 'string' && (!(inner instanceof Token) || !inner.isPlain()) || !isPlainObject(attr)) {
 			typeError(this, 'create', 'String', 'Token', 'Object');
 		} else if (subtype !== 'td' && subtype !== 'th' && subtype !== 'caption') {
 			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
