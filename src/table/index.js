@@ -506,7 +506,7 @@ class TableToken extends TrToken {
 		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
-			start = plain?.isPlain() ? 3 : 2,
+			start = plain?.constructor === Token ? 3 : 2,
 			/** @type {TdToken[]} */ tdChildren = childNodes.slice(start),
 			index = tdChildren.findIndex(({type}) => type !== 'td');
 		this.insertAt(row, index === -1 ? -1 : index + start);

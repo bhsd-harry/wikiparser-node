@@ -191,7 +191,7 @@ class Token extends AstElement {
 	 * @throws `Error` 未定义复制方法
 	 */
 	cloneNode() {
-		if (!this.isPlain()) {
+		if (this.constructor !== Token) {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
 		}
 		const cloned = this.cloneChildNodes();

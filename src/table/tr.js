@@ -89,7 +89,7 @@ class TrToken extends attributeParent(Token, 1) {
 	/** 修复简单的表格语法错误 */
 	#correct() {
 		const {childNodes: [,, child]} = this;
-		if (child?.isPlain()) {
+		if (child?.constructor === Token) {
 			const /** @type {{firstChild: AstText}} */ {firstChild} = child;
 			if (firstChild.type !== 'text') {
 				child.prepend('\n');

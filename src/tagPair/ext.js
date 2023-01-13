@@ -39,7 +39,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 			case 'indicator':
 			case 'tab':
 			case 'tabs':
-			case 'pre':
 			case 'combobox':
 			case 'combooption': {
 				ext.delete(lcName);
@@ -57,6 +56,11 @@ class ExtToken extends attributeParent(TagPairToken) {
 				newConfig.ext = [...ext];
 				const GalleryToken = require('../gallery');
 				innerToken = new GalleryToken(inner, newConfig, accum);
+				break;
+			}
+			case 'pre': {
+				const PreToken = require('../pre');
+				innerToken = new PreToken(inner, config, accum);
 				break;
 			}
 
@@ -78,9 +82,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 			}
 		}
 		innerToken.setAttribute('name', lcName).type = 'ext-inner';
-		if (lcName === 'pre') {
-			innerToken.setAttribute('stage', Parser.MAX_STAGE - 1);
-		}
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
 

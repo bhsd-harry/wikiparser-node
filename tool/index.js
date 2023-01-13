@@ -1061,7 +1061,7 @@ class TokenCollection {
 			[firstNode] = array,
 			/** @type {Token} */ ancestor = firstNode?.parentNode,
 			error = new Error('wrapAll 的主体应为普通Token的连续子节点！');
-		if (!ancestor?.isPlain()) {
+		if (ancestor?.constructor !== Token) {
 			throw error;
 		}
 		const {childNodes} = ancestor,
