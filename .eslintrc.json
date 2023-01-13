@@ -281,7 +281,6 @@
 		],
 		"prefer-exponentiation-operator": 2,
 		"prefer-numeric-literals": 2,
-		"prefer-object-has-own": 2,
 		"prefer-object-spread": 2,
 		"prefer-regex-literals": [
 			2,
@@ -479,6 +478,8 @@
 		"n/no-mixed-requires": 2,
 		"es-x/no-regexp-lookbehind-assertions": 2,
 		"es-x/no-object-fromentries": 2,
+		"es-x/no-global-this": 2,
+		"es-x/no-object-hasown": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,

@@ -32,10 +32,11 @@ class ParameterToken extends Token {
 	/** @override */
 	afterBuild() {
 		if (!this.anon) {
+			const TranscludeToken = require('./transclude');
 			const name = String(this.firstChild).trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
-			if (parentNode && parentNode instanceof require('./transclude')) {
+			if (parentNode && parentNode instanceof TranscludeToken) {
 				parentNode.getArgs(name).add(this);
 			}
 		}

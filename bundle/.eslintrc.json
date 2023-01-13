@@ -8,7 +8,10 @@
 		"es-x"
 	],
 	"extends": [
-		"plugin:es-x/no-new-in-es2019"
+		"plugin:es-x/no-new-in-es2019",
+		"plugin:es-x/no-new-in-es2020",
+		"plugin:es-x/no-new-in-es2021",
+		"plugin:es-x/no-new-in-es2022"
 	],
 	"parserOptions": {
 		"ecmaVersion": 13

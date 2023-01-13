@@ -72,5 +72,5 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-globalThis.Parser = Parser;
+window.Parser = Parser;
 module.exports = Parser;

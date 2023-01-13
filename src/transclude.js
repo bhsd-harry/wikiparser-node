@@ -205,8 +205,10 @@ class TranscludeToken extends Token {
 	 */
 	getArgs(key) {
 		const keyStr = String(key).trim();
-		let args = this.#args[keyStr];
-		if (!args) {
+		let args;
+		if (Object.prototype.hasOwnProperty.call(this.#args, keyStr)) {
+			args = this.#args[keyStr];
+		} else {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args[keyStr] = args;
 		}
