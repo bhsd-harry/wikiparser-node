@@ -6,7 +6,7 @@ const {generateForChild} = require('../util/lint'),
 
 /**
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, Token, ...HiddenToken]}`
+ * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 class ArgToken extends Token {
 	type = 'arg';
