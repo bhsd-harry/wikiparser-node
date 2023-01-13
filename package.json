@@ -29,7 +29,8 @@
   },
   "scripts": {
     "test": "node test/test.js",
-    "real": "node test/real.js"
+    "real": "node test/real.js",
+    "single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
