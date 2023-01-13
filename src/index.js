@@ -145,6 +145,25 @@ class Token extends AstElement {
 		throw new Error(`解析错误！未正确标记的 Token：${s}`);
 	});
 
+	/**
+	 * 将占位符替换为子Token
+	 * @complexity `n`
+	 */
+	#build = () => {
+		this.#stage = MAX_STAGE;
+		const {childNodes: {length}, firstChild} = this,
+			str = String(firstChild);
+		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
+			this.replaceChildren(...this.#buildFromStr(str));
+			this.normalize();
+			if (this.type === 'root') {
+				for (const token of this.#accum) {
+					token.getAttribute('build')();
+				}
+			}
+		}
+	};
+
 	/** 所有图片，包括图库 */
 	get images() {
 		return this.querySelectorAll('file, gallery-image');
@@ -228,6 +247,8 @@ class Token extends AstElement {
 				return this.#parseOnce;
 			case 'buildFromStr':
 				return this.#buildFromStr;
+			case 'build':
+				return this.#build;
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include;
@@ -253,16 +274,8 @@ class Token extends AstElement {
 	 * @template {string} T
 	 * @param {T} key 属性键
 	 * @param {TokenAttribute<T>} value 属性值
-	 * @throws `RangeError` 禁止手动指定私有属性
 	 */
 	setAttribute(key, value) {
-		if (key === 'include' || !Parser.running && (key === 'config' || key === 'accum')) {
-			throw new RangeError(`禁止手动指定私有的 #${key} 属性！`);
-		} else if (!Parser.debugging && (key === 'stage' || key === 'acceptable' || key === 'protectedChildren')
-			&& externalUse('setAttribute')
-		) {
-			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
-		}
 		switch (key) {
 			case 'stage':
 				if (this.#stage === 0 && this.type === 'root') {
@@ -591,29 +604,6 @@ class Token extends AstElement {
 		this.normalize();
 	}
 
-	/**
-	 * 将占位符替换为子Token
-	 * @complexity `n`
-	 */
-	build() {
-		if (!Parser.debugging && externalUse('build')) {
-			this.debugOnly('build');
-		}
-		this.#stage = MAX_STAGE;
-		const {childNodes: {length}, firstChild} = this,
-			str = String(firstChild);
-		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
-			this.replaceChildren(...this.#buildFromStr(str));
-			this.normalize();
-			if (this.type === 'root') {
-				for (const token of this.#accum) {
-					token.build();
-				}
-			}
-		}
-		return this;
-	}
-
 	/** 生成部分Token的`name`属性 */
 	afterBuild() {
 		if (!Parser.debugging && externalUse('afterBuild')) {
@@ -634,14 +624,16 @@ class Token extends AstElement {
 	parse(n = MAX_STAGE, include = false) {
 		if (typeof n !== 'number') {
 			this.typeError('parse', 'Number');
-		} else if (n < MAX_STAGE && !Parser.debugging && Parser.warning && externalUse('parse')) {
-			Parser.warn('指定解析层级的方法仅供熟练用户使用！');
 		}
 		this.#include = Boolean(include);
 		while (this.#stage < n) {
 			this.#parseOnce(this.#stage, include);
 		}
-		return n ? this.build().afterBuild() : this;
+		if (n) {
+			this.#build();
+			this.afterBuild();
+		}
+		return this;
 	}
 
 	/**

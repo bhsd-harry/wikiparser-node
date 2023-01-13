@@ -1,7 +1,7 @@
 'use strict';
 
 const fixedToken = require('../../mixin/fixedToken'),
-	{externalUse, typeError} = require('../../util/debug'),
+	{typeError} = require('../../util/debug'),
 	{isPlainObject} = require('../../util/base'),
 	Parser = require('../..'),
 	Token = require('..'),
@@ -168,16 +168,13 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {T} key 属性键
 	 * @param {TokenAttribute<T>} value 属性值
 	 * @returns {this}
-	 * @throws `RangeError` 仅用于代码调试
 	 */
 	setAttribute(key, value) {
-		if (key !== 'innerSyntax') {
-			return super.setAttribute(key, value);
-		} else if (!Parser.debugging && externalUse('setAttribute')) {
-			throw new RangeError(`使用 ${this.constructor.name}.setAttribute 方法设置私有属性 #${key} 仅用于代码调试！`);
+		if (key === 'innerSyntax') {
+			this.#innerSyntax = String(value);
+			return this;
 		}
-		this.#innerSyntax = String(value);
-		return this;
+		return super.setAttribute(key, value);
 	}
 
 	/** @override */

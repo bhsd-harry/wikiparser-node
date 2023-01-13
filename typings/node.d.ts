@@ -23,6 +23,7 @@ declare global {
 		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
 		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
 		T extends 'protectChildren' ? (...args: string|number|Range) => void :
+		T extends 'build' ? () => void :
 		string;
 
 	interface printOpt {
