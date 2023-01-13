@@ -196,6 +196,14 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'keys' || super.hasAttribute(key);
+	}
+
+	/**
+	 * @override
 	 * @param {string} selector
 	 */
 	toString(selector) {

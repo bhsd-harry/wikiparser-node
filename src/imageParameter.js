@@ -164,6 +164,14 @@ class ImageParameterToken extends Token {
 		return key === 'syntax' ? this.#syntax : super.getAttribute(key);
 	}
 
+	/**
+	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'syntax' || super.hasAttribute(key);
+	}
+
 	/** @override */
 	isPlain() {
 		return true;

@@ -67,6 +67,14 @@ class SyntaxToken extends Token {
 
 	/**
 	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'pattern' || super.hasAttribute(key);
+	}
+
+	/**
+	 * @override
 	 * @param {...Token} elements 待替换的子节点
 	 * @complexity `n`
 	 */

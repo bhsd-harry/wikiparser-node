@@ -61,6 +61,14 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'flags' || super.hasAttribute(key);
+	}
+
+	/**
+	 * @override
 	 * @param {number} i 移除位置
 	 * @complexity `n`
 	 */
