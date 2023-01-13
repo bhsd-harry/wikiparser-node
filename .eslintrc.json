@@ -22,9 +22,7 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"webpack.config.js",
-		"bundle.js",
-		"bundle.min.js"
+		"webpack.config.js"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -480,6 +478,7 @@
 		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
 		"es-x/no-regexp-lookbehind-assertions": 2,
+		"es-x/no-object-fromentries": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,

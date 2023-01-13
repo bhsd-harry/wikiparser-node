@@ -1,0 +1,16 @@
+{
+	"root": true,
+	"env": {
+		"browser": true,
+		"es2022": true
+	},
+	"plugins": [
+		"es-x"
+	],
+	"extends": [
+		"plugin:es-x/no-new-in-es2019"
+	],
+	"parserOptions": {
+		"ecmaVersion": 13
+	}
+}

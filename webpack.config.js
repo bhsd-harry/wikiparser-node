@@ -1,6 +1,7 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-const path = require('path');
+const path = require('path'),
+	{ESBuildMinifyPlugin} = require('esbuild-loader');
 
 // const mode = 'development';
 const mode = 'production';
@@ -18,6 +19,11 @@ const config = {
 	},
 	optimization: {
 		minimize: mode === 'production',
+		minimizer: [
+			new ESBuildMinifyPlugin({
+				target: 'es2018',
+			}),
+		],
 	},
 	mode,
 };
