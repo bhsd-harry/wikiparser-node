@@ -83,7 +83,7 @@ class TdToken extends fixedToken(TrToken) {
 		const result = previousSibling.getSyntax();
 		result.escape ||= esc;
 		result.correction = previousSibling.lastChild
-			.toString('comment, ext, include, noinclude, arg, template, magic-word, html')
+			.toString('comment, ext, include, noinclude, arg, template, magic-word')
 			.includes('\n');
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
