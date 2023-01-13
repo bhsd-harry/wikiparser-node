@@ -10,6 +10,7 @@ declare global {
 		T extends 'childNodes' ? (AstText|Token)[] :
 		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
 		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
+		T extends 'build' ? () => void :
 		string;
 
 	interface printOpt {

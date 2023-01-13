@@ -126,6 +126,25 @@ class Token extends AstElement {
 	);
 
 	/**
+	 * 将占位符替换为子Token
+	 * @complexity `n`
+	 */
+	#build = () => {
+		this.#stage = MAX_STAGE;
+		const {childNodes: {length}, firstChild} = this,
+			str = String(firstChild);
+		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
+			this.replaceChildren(...this.#buildFromStr(str));
+			this.normalize();
+			if (this.type === 'root') {
+				for (const token of this.#accum) {
+					token.getAttribute('build')();
+				}
+			}
+		}
+	};
+
+	/**
 	 * @param {string} wikitext wikitext
 	 * @param {accum} accum
 	 */
@@ -155,6 +174,8 @@ class Token extends AstElement {
 				return this.#parseOnce;
 			case 'buildFromStr':
 				return this.#buildFromStr;
+			case 'build':
+				return this.#build;
 			default:
 				return super.getAttribute(key);
 		}
@@ -212,26 +233,6 @@ class Token extends AstElement {
 		return Parser.normalizeTitle(title, defaultNs, this.#config, halfParsed);
 	}
 
-	/**
-	 * 将占位符替换为子Token
-	 * @complexity `n`
-	 */
-	build() {
-		this.#stage = MAX_STAGE;
-		const {childNodes: {length}, firstChild} = this,
-			str = String(firstChild);
-		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
-			this.replaceChildren(...this.#buildFromStr(str));
-			this.normalize();
-			if (this.type === 'root') {
-				for (const token of this.#accum) {
-					token.build();
-				}
-			}
-		}
-		return this;
-	}
-
 	/** 生成部分Token的`name`属性 */
 	afterBuild() {
 		if (this.type === 'root') {
@@ -251,7 +252,11 @@ class Token extends AstElement {
 		while (this.#stage < n) {
 			this.#parseOnce(this.#stage, include);
 		}
-		return n ? this.build().afterBuild() : this;
+		if (n) {
+			this.#build();
+			this.afterBuild();
+		}
+		return this;
 	}
 
 	/**

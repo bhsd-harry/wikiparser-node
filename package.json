@@ -28,8 +28,7 @@
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
   },
   "scripts": {
-    "test": "node test/test.js",
-    "real": "node test/real.js"
+    "test": "echo 'Error: no test specified for the @browser branch' && exit 1"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
