@@ -330,7 +330,7 @@ class Token extends AstElement {
 	 * @throws `Error` 不可移除的子节点
 	 */
 	removeAt(i) {
-		if (typeof i !== 'number') {
+		if (!Number.isInteger(i)) {
 			this.typeError('removeAt', 'Number');
 		}
 		const iPos = i < 0 ? i + this.childNodes.length : i;
@@ -459,6 +459,120 @@ class Token extends AstElement {
 	}
 
 	/**
+	 * 创建纯文本节点
+	 * @param {string} data 文本内容
+	 */
+	createTextNode(data = '') {
+		return typeof data === 'string' ? new AstText(data) : this.typeError('createComment', 'String');
+	}
+
+	/**
+	 * 找到给定位置所在的节点
+	 * @param {number} index 位置
+	 */
+	caretPositionFromIndex(index) {
+		if (index === undefined) {
+			return undefined;
+		} else if (!Number.isInteger(index)) {
+			this.typeError('caretPositionFromIndex', 'Number');
+		}
+		const {length} = String(this);
+		if (index > length || index < -length) {
+			return undefined;
+		} else if (index < 0) {
+			index += length;
+		}
+		let child = this, // eslint-disable-line unicorn/no-this-assignment
+			acc = 0,
+			start = 0;
+		while (child.type !== 'text') {
+			const {childNodes} = child;
+			acc += child.getPadding();
+			for (let i = 0; acc <= index && i < childNodes.length; i++) {
+				const cur = childNodes[i],
+					{length: l} = String(cur);
+				acc += l;
+				if (acc >= index) {
+					child = cur;
+					acc -= l;
+					start = acc;
+					break;
+				}
+				acc += child.getGaps(i);
+			}
+			if (child.childNodes === childNodes) {
+				return {offsetNode: child, offset: index - start};
+			}
+		}
+		return {offsetNode: child, offset: index - start};
+	}
+
+	/**
+	 * 找到给定位置所在的节点
+	 * @param {number} x 列数
+	 * @param {number} y 行数
+	 */
+	caretPositionFromPoint(x, y) {
+		return this.caretPositionFromIndex(this.indexFromPos(y, x));
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param {number} index 位置
+	 * @throws `Error` 不是根节点
+	 */
+	elementFromIndex(index) {
+		if (index === undefined) {
+			return undefined;
+		} else if (!Number.isInteger(index)) {
+			this.typeError('elementFromIndex', 'Number');
+		} else if (this.type !== 'root') {
+			throw new Error('elementFromIndex方法只可用于根节点！');
+		}
+		const {length} = String(this);
+		if (index > length || index < -length) {
+			return undefined;
+		} else if (index < 0) {
+			index += length;
+		}
+		const {childNodes} = this;
+		let acc = 0,
+			i = 0;
+		for (; acc < index && i < childNodes.length; i++) {
+			const {length: l} = String(childNodes[i]);
+			acc += l;
+		}
+		return childNodes[i && i - 1];
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param {number} x 列数
+	 * @param {number} y 行数
+	 */
+	elementFromPoint(x, y) {
+		return this.elementFromIndex(this.indexFromPos(y, x));
+	}
+
+	/**
+	 * 找到给定位置所在的所有节点
+	 * @param {number} index 位置
+	 */
+	elementsFromIndex(index) {
+		const offsetNode = this.caretPositionFromIndex(index)?.offsetNode;
+		return offsetNode && [...offsetNode.getAncestors().reverse(), offsetNode];
+	}
+
+	/**
+	 * 找到给定位置所在的所有节点
+	 * @param {number} x 列数
+	 * @param {number} y 行数
+	 */
+	elementsFromPoint(x, y) {
+		return this.elementsFromIndex(this.indexFromPos(y, x));
+	}
+
+	/**
 	 * 判断标题是否是跨维基链接
 	 * @param {string} title 标题
 	 */
@@ -513,7 +627,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 */
 	section(n) {
-		return typeof n === 'number' ? this.sections()?.[n] : this.typeError('section', 'Number');
+		return Number.isInteger(n) ? this.sections()?.[n] : this.typeError('section', 'Number');
 	}
 
 	/**
@@ -622,7 +736,7 @@ class Token extends AstElement {
 	 * @param {boolean} include 是否嵌入
 	 */
 	parse(n = MAX_STAGE, include = false) {
-		if (typeof n !== 'number') {
+		if (!Number.isInteger(n)) {
 			this.typeError('parse', 'Number');
 		}
 		this.#include = Boolean(include);
