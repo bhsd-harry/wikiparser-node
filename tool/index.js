@@ -122,7 +122,7 @@ class TokenCollection {
 	 * @returns {T extends number ? AstNode : AstNode[]}
 	 */
 	get(n) {
-		if (typeof n === 'number') {
+		if (Number.isInteger(n)) {
 			return this.array.at(n);
 		}
 		return n === undefined ? this.toArray() : this.typeError('get', 'Number');

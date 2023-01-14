@@ -102,7 +102,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	 * @param {number} n 标题层级
 	 */
 	setLevel(n) {
-		if (typeof n !== 'number') {
+		if (!Number.isInteger(n)) {
 			this.typeError('setLevel', 'Number');
 		}
 		n = Math.min(Math.max(n, 1), 6);

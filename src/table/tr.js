@@ -253,7 +253,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @throws `RangeError` 不存在对应单元格
 	 */
 	getNthCol(n, insert) {
-		if (typeof n !== 'number') {
+		if (!Number.isInteger(n)) {
 			this.typeError('getNthCol', 'Number');
 		}
 		const nCols = this.getColCount();

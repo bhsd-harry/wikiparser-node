@@ -241,7 +241,7 @@ class TableToken extends TrToken {
 	 * @throws `RangeError` 不存在该行
 	 */
 	getNthRow(n, force, insert) {
-		if (typeof n !== 'number') {
+		if (!Number.isInteger(n)) {
 			this.typeError('getNthRow', 'Number');
 		}
 		const nRows = this.getRowCount(),
@@ -357,7 +357,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	toRenderedCoords({row, column}) {
-		if (typeof row !== 'number' || typeof column !== 'number') {
+		if (!Number.isInteger(row) || !Number.isInteger(column)) {
 			this.typeError('toRenderedCoords', 'Number');
 		}
 		const rowLayout = this.getLayout({row, column})[row],
@@ -371,7 +371,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	toRawCoords({x, y}) {
-		if (typeof x !== 'number' || typeof y !== 'number') {
+		if (!Number.isInteger(x) || !Number.isInteger(y)) {
 			this.typeError('toRawCoords', 'Number');
 		}
 		const rowLayout = this.getLayout({x, y})[y],
@@ -392,7 +392,7 @@ class TableToken extends TrToken {
 	 * @complexity `n²`
 	 */
 	getFullRow(y) {
-		if (typeof y !== 'number') {
+		if (!Number.isInteger(y)) {
 			this.typeError('getFullRow', 'Number');
 		}
 		const rows = this.getAllRows();
@@ -407,7 +407,7 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	getFullCol(x) {
-		if (typeof x !== 'number') {
+		if (!Number.isInteger(x)) {
 			this.typeError('getFullCol', 'Number');
 		}
 		const layout = this.getLayout(),
@@ -576,7 +576,7 @@ class TableToken extends TrToken {
 	 * @throws `RangeError` 列号过大
 	 */
 	insertTableCol(x, inner, subtype = 'td', attr = {}) {
-		if (typeof x !== 'number') {
+		if (!Number.isInteger(x)) {
 			this.typeError('insertTableCol', 'Number');
 		}
 		const layout = this.getLayout(),
@@ -665,7 +665,7 @@ class TableToken extends TrToken {
 	 * @throws `RangeError` 待合并区域与外侧区域有重叠
 	 */
 	mergeCells(xlim, ylim) {
-		if ([...xlim, ...ylim].some(arg => typeof arg !== 'number')) {
+		if (![...xlim, ...ylim].every(Number.isInteger)) {
 			this.typeError('mergeCells', 'Number');
 		}
 		const layout = this.getLayout(),
@@ -818,7 +818,7 @@ class TableToken extends TrToken {
 	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowBefore(y, before) {
-		if (typeof y !== 'number' || typeof before !== 'number') {
+		if (!Number.isInteger(y) || !Number.isInteger(before)) {
 			this.typeError('moveTableRowBefore', 'Number');
 		}
 		const layout = this.getLayout();
@@ -858,7 +858,7 @@ class TableToken extends TrToken {
 	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowAfter(y, after) {
-		if (typeof y !== 'number' || typeof after !== 'number') {
+		if (!Number.isInteger(y) || !Number.isInteger(after)) {
 			this.typeError('moveTableRowAfter', 'Number');
 		}
 		const layout = this.getLayout(),
@@ -911,7 +911,7 @@ class TableToken extends TrToken {
 	 * @throws `RangeError` 无法移动
 	 */
 	#moveCol(x, reference, after = false) {
-		if (typeof x !== 'number' || typeof reference !== 'number') {
+		if (!Number.isInteger(x) || !Number.isInteger(reference)) {
 			this.typeError(`moveTableCol${after ? 'After' : 'Before'}`, 'Number');
 		}
 		const layout = this.getLayout();

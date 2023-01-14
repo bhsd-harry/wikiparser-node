@@ -32,9 +32,9 @@ class DdToken extends NowikiToken {
 
 	set indent(indent) {
 		if (this.type === 'dd') {
-			if (typeof indent !== 'number') {
+			if (!Number.isInteger(indent)) {
 				this.typeError('set indent', 'Number');
-			} else if (!Number.isInteger(indent) || indent < 0) {
+			} else if (indent < 0) {
 				throw new RangeError(`indent 应为自然数！${indent}`);
 			}
 			this.setText(':'.repeat(indent));
