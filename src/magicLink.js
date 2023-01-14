@@ -2,7 +2,6 @@
 
 const {generateForChild} = require('../util/lint'),
 	Parser = require('..'),
-	AstText = require('../lib/text'),
 	Token = require('.');
 
 /**
@@ -122,6 +121,13 @@ class MagicLinkToken extends Token {
 			throw new SyntaxError(`非法的自由外链目标：${url}`);
 		}
 		this.replaceChildren(...freeExtLink.childNodes);
+	}
+
+	/** 是否是模板或魔术字参数 */
+	isParamValue() {
+		const ParameterToken = require('./parameter');
+		const /** @type {ParameterToken} */ parameter = this.closest('parameter');
+		return parameter?.getValue() === this.text();
 	}
 }
 
