@@ -31,7 +31,7 @@ class TdToken extends TrToken {
 		// eslint-disable-next-line no-unsafe-optional-chaining
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
-		this.appendChild(innerToken.setAttribute('stage', 4));
+		this.insertAt(innerToken.setAttribute('stage', 4));
 	}
 
 	/** @override */

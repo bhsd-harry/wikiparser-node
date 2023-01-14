@@ -1,8 +1,6 @@
 'use strict';
 
-const Parser = require('..'),
-	AstText = require('../lib/text'),
-	Token = require('../src');
+const Parser = require('..');
 
 /**
  * 解析\<hr\>和状态开关
@@ -10,7 +8,9 @@ const Parser = require('..'),
  * @param {accum} accum
  */
 const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
-	const HrToken = require('../src/nowiki/hr'),
+	const AstText = require('../lib/text'),
+		Token = require('../src'),
+		HrToken = require('../src/nowiki/hr'),
 		DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
 	const {doubleUnderscore} = config;
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {

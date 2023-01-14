@@ -57,7 +57,7 @@ class TranscludeToken extends Token {
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/u, '')).type = 'magic-word';
 				const token = new SyntaxToken(magicWord, 'magic-word-name', config, accum);
-				this.appendChild(token);
+				this.insertAt(token);
 				if (arg.length > 0) {
 					parts.unshift([arg.join(':')]);
 				}
@@ -70,7 +70,7 @@ class TranscludeToken extends Token {
 						const invoke = new AtomToken(part.join('='), `invoke-${
 							i ? 'function' : 'module'
 						}`, config, accum);
-						this.appendChild(invoke);
+						this.insertAt(invoke);
 					}
 				}
 			}
@@ -82,7 +82,7 @@ class TranscludeToken extends Token {
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum);
-			this.appendChild(token);
+			this.insertAt(token);
 		}
 		const templateLike = this.isTemplate();
 		let i = 1;
@@ -95,7 +95,7 @@ class TranscludeToken extends Token {
 				part.unshift(i);
 				i++;
 			}
-			this.appendChild(new ParameterToken(...part, config, accum));
+			this.insertAt(new ParameterToken(...part, config, accum));
 		}
 	}
 

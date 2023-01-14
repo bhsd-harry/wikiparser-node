@@ -20,32 +20,31 @@ class ExtToken extends TagPairToken {
 	 */
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
-		const AttributeToken = require('../attribute');
+		const Token = require('..'),
+			AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributeToken(attr, 'ext-attr', config, accum),
 			newConfig = JSON.parse(JSON.stringify(config)),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
 		switch (lcName) {
+			case 'indicator':
+			case 'poem':
+			case 'ref':
 			case 'choose':
 			case 'option':
-			case 'ref':
-			case 'poem':
-			case 'indicator':
 			case 'tab':
 			case 'tabs':
 			case 'combobox':
-			case 'combooption': {
+			case 'combooption':
 				ext.delete(lcName);
 				newConfig.ext = [
 					...ext,
 					...lcName === 'choose' ? ['option'] : [],
 					...lcName === 'combobox' ? ['combooption'] : [],
 				];
-				const Token = require('..');
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
-			}
 			case 'gallery': {
 				ext.delete(lcName);
 				newConfig.ext = [...ext];
@@ -56,6 +55,11 @@ class ExtToken extends TagPairToken {
 			case 'pre': {
 				const PreToken = require('../pre');
 				innerToken = new PreToken(inner, config, accum);
+				break;
+			}
+			case 'references': {
+				const ReferencesToken = require('../references');
+				innerToken = new ReferencesToken(inner, config, accum);
 				break;
 			}
 

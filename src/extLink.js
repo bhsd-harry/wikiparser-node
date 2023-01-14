@@ -20,12 +20,12 @@ class ExtLinkToken extends Token {
 	 */
 	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
-		this.appendChild(new MagicLinkToken(url, true, config, accum));
+		this.insertAt(new MagicLinkToken(url, true, config, accum));
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, true, accum);
 			inner.type = 'ext-link-text';
-			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 	}
 

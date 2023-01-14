@@ -18,11 +18,11 @@ class LinkToken extends Token {
 	constructor(link, linkText, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		const AtomToken = require('../atom');
-		this.appendChild(new AtomToken(link, 'link-target', config, accum));
+		this.insertAt(new AtomToken(link, 'link-target', config, accum));
 		if (linkText !== undefined) {
 			const inner = new Token(linkText, config, true, accum);
 			inner.type = 'link-text';
-			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 	}
 
