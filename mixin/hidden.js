@@ -9,6 +9,8 @@ const Parser = require('..');
  * @returns {T}
  */
 const hidden = Constructor => class extends Constructor {
+	static hidden = true;
+
 	/** 没有可见部分 */
 	text() { // eslint-disable-line class-methods-use-this
 		return '';

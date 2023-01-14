@@ -1,6 +1,7 @@
 'use strict';
 
-const attributeParent = require('../../mixin/attributeParent'),
+const path = require('path'),
+	attributeParent = require('../../mixin/attributeParent'),
 	Parser = require('../..'),
 	TagPairToken = require('.');
 
@@ -45,6 +46,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			case 'option':
 			case 'combooption':
 			case 'tabs':
+			case 'poll':
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
@@ -57,19 +59,12 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
-			case 'references': {
-				const ReferencesToken = require('../nested/references');
-				innerToken = new ReferencesToken(inner, newConfig, accum);
-				break;
-			}
-			case 'choose': {
-				const ChooseToken = require('../nested/choose');
-				innerToken = new ChooseToken(inner, newConfig, accum);
-				break;
-			}
+			case 'references':
+			case 'choose':
 			case 'combobox': {
-				const ComboboxToken = require('../nested/combobox');
-				innerToken = new ComboboxToken(inner, newConfig, accum);
+				const NestedToken = require('../nested'),
+					/** @type {typeof NestedToken} */ NestedExtToken = require(path.join('..', 'nested', lcName));
+				innerToken = new NestedExtToken(inner, newConfig, accum);
 				break;
 			}
 			case 'inputbox': {

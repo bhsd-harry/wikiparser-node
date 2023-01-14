@@ -167,7 +167,8 @@ class ConverterRuleToken extends Token {
 
 	/** 修改为不转换 */
 	noConvert() {
-		for (let i = 0; i < this.childNodes.length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
+		const {length} = this;
+		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
 			this.removeAt(0);
 		}
 	}
