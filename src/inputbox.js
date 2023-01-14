@@ -30,10 +30,12 @@ class InputboxToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildNodes(),
-			token = Parser.run(() => new InputboxToken(undefined, this.getAttribute('config')));
-		token.append(...cloned);
-		return token;
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new InputboxToken(undefined, this.getAttribute('config'));
+			token.append(...cloned);
+			return token;
+		});
 	}
 }
 

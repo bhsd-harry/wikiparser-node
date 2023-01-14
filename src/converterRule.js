@@ -69,13 +69,15 @@ class ConverterRuleToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
 			placeholders = ['', 'zh:', '=>zh:'],
-			placeholder = placeholders[cloned.length - 1],
-			token = Parser.run(() => new ConverterRuleToken(placeholder, placeholder, this.getAttribute('config')));
-		for (let i = 0; i < cloned.length; i++) {
-			token.childNodes[i].safeReplaceWith(cloned[i]);
-		}
-		token.afterBuild();
-		return token;
+			placeholder = placeholders[cloned.length - 1];
+		return Parser.run(() => {
+			const token = new ConverterRuleToken(placeholder, placeholder, this.getAttribute('config'));
+			for (let i = 0; i < cloned.length; i++) {
+				token.childNodes[i].safeReplaceWith(cloned[i]);
+			}
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	/** @override */

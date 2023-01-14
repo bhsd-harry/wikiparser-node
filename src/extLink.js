@@ -65,13 +65,15 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const [url, text] = this.cloneChildNodes(),
-			token = Parser.run(() => new ExtLinkToken(undefined, '', '', this.getAttribute('config')));
-		token.firstChild.safeReplaceWith(url);
-		if (text) {
-			token.insertAt(text);
-		}
-		return token;
+		const [url, text] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config'));
+			token.firstChild.safeReplaceWith(url);
+			if (text) {
+				token.insertAt(text);
+			}
+			return token;
+		});
 	}
 
 	/** 修正空白字符 */

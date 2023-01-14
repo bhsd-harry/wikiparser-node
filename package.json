@@ -28,7 +28,7 @@
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
   },
   "scripts": {
-    "test": "node test/test.js",
+    "test": "eslint . && node test/test.js",
     "real": "node test/real.js",
     "single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
   },

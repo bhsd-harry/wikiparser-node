@@ -30,10 +30,12 @@ class AtomToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable'),
-			token = Parser.run(() => new this.constructor(undefined, this.type, config, [], acceptable));
-		token.append(...cloned);
-		return token;
+			acceptable = this.getAttribute('acceptable');
+		return Parser.run(() => {
+			const token = new this.constructor(undefined, this.type, config, [], acceptable);
+			token.append(...cloned);
+			return token;
+		});
 	}
 }
 

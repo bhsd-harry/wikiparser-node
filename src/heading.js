@@ -38,11 +38,13 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/** @override */
 	cloneNode() {
-		const [title, trail] = this.cloneChildNodes(),
-			token = Parser.run(() => new HeadingToken(Number(this.name), [], this.getAttribute('config')));
-		token.firsthild.safeReplaceWith(title);
-		token.lastChild.safeReplaceWith(trail);
-		return token;
+		const [title, trail] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new HeadingToken(Number(this.name), [], this.getAttribute('config'));
+			token.firsthild.safeReplaceWith(title);
+			token.lastChild.safeReplaceWith(trail);
+			return token;
+		});
 	}
 
 	/**

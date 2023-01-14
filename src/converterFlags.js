@@ -24,11 +24,13 @@ class ConverterFlagsToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildNodes(),
-			token = Parser.run(() => new ConverterFlagsToken([], this.getAttribute('config')));
-		token.append(...cloned);
-		token.afterBuild();
-		return token;
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ConverterFlagsToken([], this.getAttribute('config'));
+			token.append(...cloned);
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	/**

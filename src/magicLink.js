@@ -80,13 +80,13 @@ class MagicLinkToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const cloned = this.cloneChildNodes(),
-			token = Parser.run(() => new MagicLinkToken(
-				undefined, this.type === 'ext-link-url', this.getAttribute('config'),
-			));
-		token.append(...cloned);
-		token.afterBuild();
-		return token;
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new MagicLinkToken(undefined, this.type === 'ext-link-url', this.getAttribute('config'));
+			token.append(...cloned);
+			token.afterBuild();
+			return token;
+		});
 	}
 
 	/**

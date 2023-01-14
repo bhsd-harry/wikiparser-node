@@ -50,11 +50,13 @@ class ConverterToken extends Token {
 
 	/** @override */
 	cloneNode() {
-		const [flags, ...rules] = this.cloneChildNodes(),
-			token = Parser.run(() => new ConverterToken([], [], this.getAttribute('config')));
-		token.firstChild.safeReplaceWith(flags);
-		token.append(...rules);
-		return token;
+		const [flags, ...rules] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ConverterToken([], [], this.getAttribute('config'));
+			token.firstChild.safeReplaceWith(flags);
+			token.append(...rules);
+			return token;
+		});
 	}
 
 	/**
