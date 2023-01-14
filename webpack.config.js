@@ -3,8 +3,8 @@
 const path = require('path'),
 	{ESBuildMinifyPlugin} = require('esbuild-loader');
 
-const mode = 'development';
-// const mode = 'production';
+// const mode = 'development';
+const mode = 'production';
 
 const config = mode === 'production'
 	? {
@@ -23,6 +23,7 @@ const config = mode === 'production'
 			minimizer: [
 				new ESBuildMinifyPlugin({
 					target: 'es2018',
+					format: 'iife',
 				}),
 			],
 		},

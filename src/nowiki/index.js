@@ -25,7 +25,7 @@ class NowikiToken extends Token {
 	 */
 	lint(start = 0) {
 		const {type, name} = this;
-		return type === 'ext-inner' && (name === 'templatestyles' || name === 'section')
+		return type === 'ext-inner' && (name === 'templatestyles' || name === 'section') && String(this)
 			? [generateForSelf(this, this.getRootNode().posFromIndex(start), `<${name}>标签内不应有任何内容`)]
 			: super.lint(start);
 	}
