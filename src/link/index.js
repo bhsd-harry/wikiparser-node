@@ -13,6 +13,7 @@ const Title = require('../../lib/title'),
  */
 class LinkToken extends Token {
 	type = 'link';
+	#bracket = true;
 
 	/** 完整链接，和FileToken保持一致 */
 	get link() {
@@ -144,11 +145,25 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
+	 */
+	setAttribute(key, value) {
+		if (key === 'bracket') {
+			this.#bracket = Boolean(value);
+			return this;
+		}
+		return super.setAttribute(key, value);
+	}
+
+	/**
+	 * @override
 	 * @param {string} selector
 	 */
 	toString(selector) {
 		const str = super.toString(selector, '|');
-		return this.type === 'gallery-image' || selector && this.matches(selector) ? str : `[[${str}]]`;
+		return !this.#bracket || selector && this.matches(selector) ? str : `[[${str}]]`;
 	}
 
 	/** @override */
@@ -163,13 +178,13 @@ class LinkToken extends Token {
 
 	/** @override */
 	print() {
-		return super.print(this.type === 'gallery-image' ? {sep: '|'} : {pre: '[[', post: ']]', sep: '|'});
+		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: '|'} : {sep: '|'});
 	}
 
 	/** @override */
 	text() {
 		const str = super.text('|');
-		return this.type === 'gallery-image' ? str : `[[${str}]]`;
+		return this.#bracket ? `[[${str}]]` : str;
 	}
 
 	/**
@@ -183,10 +198,10 @@ class LinkToken extends Token {
 			link = `:${link}`;
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: wikiLink} = root,
-			{type, firstChild, childNodes: {length: linkLength}} = wikiLink;
+			{length, firstChild: wikiLink} = root,
+			{type, firstChild, length: linkLength} = wikiLink;
 		if (length !== 1 || type !== this.type || linkLength !== 1) {
-			const msgs = {link: '内链', file: '文件链接', category: '分类', 'gallery-image': '文件链接'};
+			const msgs = {link: '内链', file: '文件链接', category: '分类'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
 		wikiLink.destroy(true);
@@ -211,8 +226,8 @@ class LinkToken extends Token {
 			link = link.slice(1);
 		}
 		const root = Parser.parse(`[[${lang}:${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			/** @type {Token & {firstChild: LinkToken}} */ {childNodes: {length}, firstChild: wikiLink} = root,
-			{type, childNodes: {length: linkLength}, interwiki, firstChild} = wikiLink;
+			/** @type {Token & {firstChild: LinkToken}} */ {length, firstChild: wikiLink} = root,
+			{type, length: linkLength, interwiki, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1 || interwiki !== lang.toLowerCase()) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
 		}
@@ -231,8 +246,8 @@ class LinkToken extends Token {
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
-			{childNodes: {length}, firstChild: wikiLink} = root,
-			{type, childNodes: {length: linkLength}, firstChild} = wikiLink;
+			{length, firstChild: wikiLink} = root,
+			{type, length: linkLength, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
 		} else if (page) {
@@ -276,7 +291,7 @@ class LinkToken extends Token {
 			const root = Parser.parse(`[[${
 					this.type === 'category' ? 'Category:' : ''
 				}L|${linkText}]]`, this.getAttribute('include'), 6, config),
-				{childNodes: {length}, firstChild: wikiLink} = root;
+				{length, firstChild: wikiLink} = root;
 			if (length !== 1 || wikiLink.type !== this.type || wikiLink.childNodes.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}

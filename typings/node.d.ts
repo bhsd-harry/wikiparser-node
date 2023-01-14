@@ -6,7 +6,7 @@ import ParameterToken from '../src/parameter';
 declare global {
 	type TokenAttribute<T> =
 		T extends 'stage' ? number :
-		T extends 'include' ? boolean :
+		T extends 'include'|'bracket' ? boolean :
 		T extends 'pattern' ? RegExp :
 		T extends 'optional'|'tags'|'flags' ? string[] :
 		T extends 'keys' ? Set<string> :
