@@ -35,12 +35,15 @@ class ExtToken extends attributeParent(TagPairToken) {
 		ext.delete(lcName);
 		newConfig.ext = [...ext];
 		switch (lcName) {
+			case 'tab':
+				ext.delete('tabs');
+				newConfig.ext = [...ext];
+				// fall through
 			case 'indicator':
 			case 'poem':
 			case 'ref':
 			case 'option':
 			case 'combooption':
-			case 'tab':
 			case 'tabs':
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;

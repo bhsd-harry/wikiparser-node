@@ -5,7 +5,7 @@ const Parser = require('../..'),
 
 /**
  * 不会被继续解析的plain Token
- * @classdesc `{childNodes: (AstText|Token)[]}`
+ * @classdesc `{childNodes: ...AstText|Token}`
  */
 class AtomToken extends Token {
 	type = 'plain';

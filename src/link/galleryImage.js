@@ -35,7 +35,7 @@ class GalleryImageToken extends FileToken {
 		const newConfig = structuredClone(config);
 		newConfig.img = Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width'));
 		super(link, token?.toString(), title, newConfig, accum);
-		this.seal(['size', 'width', 'height'], true);
+		this.setAttribute('bracket', false).seal(['size', 'width', 'height'], true);
 	}
 
 	/** @override */
@@ -54,6 +54,26 @@ class GalleryImageToken extends FileToken {
 	/** @override */
 	text() {
 		return super.text().replaceAll('\n', ' ');
+	}
+
+	/**
+	 * @override
+	 * @param {string} link 链接目标
+	 * @throws `SyntaxError` 非法的链接目标
+	 */
+	setTarget(link) {
+		link = String(link);
+		const include = this.getAttribute('include'),
+			config = this.getAttribute('config'),
+			root = Parser.parse(`<gallery>${link}</gallery>`, include, 1, config),
+			{length, firstChild: gallery} = root,
+			{type, lastChild: {length: galleryLength, firstChild: image}} = gallery;
+		if (length !== 1 || type !== 'ext' || galleryLength !== 1 || image.type !== 'gallery-image') {
+			throw new SyntaxError(`非法的图库文件名：${link}`);
+		}
+		const {firstChild} = image;
+		image.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

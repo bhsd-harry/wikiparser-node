@@ -7,7 +7,7 @@ const {undo} = require('../util/debug'),
 
 /**
  * 满足特定语法格式的plain Token
- * @classdesc `{childNodes: (AstText|Token)[]}`
+ * @classdesc `{childNodes: ...AstText|Token}`
  */
 class SyntaxToken extends Token {
 	#pattern;
