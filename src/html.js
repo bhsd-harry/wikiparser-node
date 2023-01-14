@@ -66,7 +66,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
-		this.appendChild(attr);
+		this.insertAt(attr);
 		this.setAttribute('name', name.toLowerCase());
 		this.#closing = closing;
 		this.#selfClosing = selfClosing;

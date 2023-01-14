@@ -40,6 +40,7 @@ declare global {
 		classes: Record<string, string>;
 		mixins: Record<string, string>;
 		parsers: Record<string, string>;
+		tool: {$: string};
 		/** 清除各模块的缓存 */
 		clearCache(): void;
 

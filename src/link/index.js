@@ -79,13 +79,13 @@ class LinkToken extends Token {
 	constructor(link, linkText, title, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
 		const AtomToken = require('../atom');
-		this.appendChild(new AtomToken(link, 'link-target', config, accum, {
+		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
 			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
 			const inner = new Token(linkText, config, true, accum, {'Stage-5': ':', ConverterToken: ':'});
 			inner.type = 'link-text';
-			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.setAttribute('name', title.title).getAttribute('protectChildren')(0);
 	}
@@ -286,7 +286,7 @@ class LinkToken extends Token {
 			lastChild.setAttribute('stage', 7).type = 'link-text';
 		}
 		if (this.childNodes.length === 1) {
-			this.appendChild(lastChild);
+			this.insertAt(lastChild);
 		} else {
 			this.lastChild.safeReplaceWith(lastChild);
 		}

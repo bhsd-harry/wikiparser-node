@@ -5,8 +5,7 @@ const Parser = require('..'),
 	Token = require('../src'),
 	TableToken = require('../src/table'),
 	TrToken = require('../src/table/tr'),
-	TdToken = require('../src/table/td'),
-	DdToken = require('../src/nowiki/dd');
+	TdToken = require('../src/table/td');
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
@@ -34,7 +33,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 		} else {
 			const token = new Token(str, config, true, accum);
 			token.type = 'table-inter';
-			top.appendChild(token.setAttribute('stage', 3));
+			top.insertAt(token.setAttribute('stage', 3));
 		}
 	};
 	for (const outLine of lines) {
@@ -48,6 +47,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
+				const DdToken = require('../src/nowiki/dd');
 				new DdToken(indent, config, accum);
 			}
 			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7F`}${moreSpaces}\0${accum.length}b\x7F`, top);
@@ -82,7 +82,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 			}
 			const tr = new TrToken(`\n${spaces}${row}`, attr, config, accum);
 			stack.push(top, tr);
-			top.appendChild(tr);
+			top.insertAt(tr);
 		} else {
 			if (top.type === 'td') {
 				top = stack.pop();
@@ -95,14 +95,14 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 				lastSyntax = `\n${spaces}${cell}`;
 			while (mt) {
 				const td = new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), config, accum);
-				top.appendChild(td);
+				top.insertAt(td);
 				({lastIndex} = regex);
 				[lastSyntax] = mt;
 				mt = regex.exec(attr);
 			}
 			const td = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);
 			stack.push(top, td);
-			top.appendChild(td);
+			top.insertAt(td);
 		}
 	}
 	return out.slice(1);

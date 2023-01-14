@@ -2,7 +2,6 @@
 
 const Title = require('../../lib/title'),
 	Parser = require('../..'),
-	Token = require('..'),
 	FileToken = require('./file');
 
 /**
@@ -25,6 +24,7 @@ class GalleryImageToken extends FileToken {
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		let token;
 		if (text !== undefined) {
+			const Token = require('..');
 			token = new Token(text, config, true, accum);
 			token.type = 'temp';
 			for (let n = 1; n < Parser.MAX_STAGE; n++) {

@@ -3,6 +3,7 @@
 const {typeError} = require('../util/debug'),
 	{text} = require('../util/string'),
 	{isPlainObject} = require('../util/base'),
+	Parser = require('..'),
 	AstNode = require('../lib/node'),
 	Token = require('../src'),
 	AttributeToken = require('../src/attribute');
@@ -1194,4 +1195,5 @@ $.removeData = /** @type {function(Token, string): void} */ function removeData(
 /* eslint-enable func-names */
 Object.defineProperty($, 'cache', {value: cache, enumerable: false, writable: false, configurable: false});
 
+Parser.tool.$ = __filename;
 module.exports = $;

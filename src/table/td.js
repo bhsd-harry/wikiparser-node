@@ -117,7 +117,7 @@ class TdToken extends fixedToken(TrToken) {
 		innerToken.type = 'td-inner';
 		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
 			.seal(['getRowCount', 'getNthCol', 'insertTableCell'], true)
-			.appendChild(innerToken.setAttribute('stage', 4));
+			.insertAt(innerToken.setAttribute('stage', 4));
 	}
 
 	/** @override */

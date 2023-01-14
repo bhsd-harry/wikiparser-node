@@ -5,8 +5,7 @@ const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
-	SyntaxToken = require('../syntax'),
-	AttributeToken = require('../attribute');
+	SyntaxToken = require('../syntax');
 
 const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
 
@@ -40,6 +39,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
 		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
+		const AttributeToken = require('../attribute');
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
@@ -79,7 +79,7 @@ class TrToken extends attributeParent(Token, 1) {
 			if (token.type === 'td') { // TdToken
 				token.childNodes[2].safeReplaceWith(inner);
 			} else if (inner !== undefined) {
-				token.appendChild(inner);
+				token.insertAt(inner);
 			}
 			token.append(...cloned);
 			return token;

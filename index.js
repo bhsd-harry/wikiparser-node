@@ -16,6 +16,7 @@ const /** @type {Parser} */ Parser = {
 	classes: {},
 	mixins: {},
 	parsers: {},
+	tool: {},
 
 	aliases: [
 		['AstText'],
@@ -122,6 +123,7 @@ const /** @type {Parser} */ Parser = {
 			...Object.entries(this.classes),
 			...Object.entries(this.mixins),
 			...Object.entries(this.parsers),
+			...Object.entries(this.tool),
 		];
 		for (const [, filePath] of entries) {
 			delete require.cache[require.resolve(filePath)];

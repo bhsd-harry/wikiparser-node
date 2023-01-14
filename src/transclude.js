@@ -74,7 +74,7 @@ class TranscludeToken extends Token {
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
 					});
-				this.appendChild(token);
+				this.insertAt(token);
 				if (arg.length > 0) {
 					parts.unshift([arg.join(':')]);
 				}
@@ -88,7 +88,7 @@ class TranscludeToken extends Token {
 						const invoke = new AtomToken(part.join('='), `invoke-${
 							i ? 'function' : 'module'
 						}`, config, accum, {'Stage-1': ':', '!ExtToken': ''});
-						this.appendChild(invoke);
+						this.insertAt(invoke);
 					}
 					this.getAttribute('protectChildren')('1:3');
 				}
@@ -102,7 +102,7 @@ class TranscludeToken extends Token {
 			}
 			this.setAttribute('name', this.normalizeTitle(name, 10, true).title);
 			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
-			this.appendChild(token);
+			this.insertAt(token);
 		}
 		const templateLike = this.isTemplate();
 		let i = 1;
@@ -115,7 +115,7 @@ class TranscludeToken extends Token {
 				part.unshift(i);
 				i++;
 			}
-			this.appendChild(new ParameterToken(...part, config, accum));
+			this.insertAt(new ParameterToken(...part, config, accum));
 		}
 		this.getAttribute('protectChildren')(0);
 	}
@@ -473,7 +473,7 @@ class TranscludeToken extends Token {
 			targetType = templateLike ? 'template' : 'magic-word',
 			targetName = templateLike ? 'T' : 'lc';
 		if (length === 1 && type === targetType && name === targetName && transcludeLength === 2 && lastChild.anon) {
-			return this.appendChild(lastChild);
+			return this.insertAt(lastChild);
 		}
 		throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
 	}
@@ -505,7 +505,7 @@ class TranscludeToken extends Token {
 		if (length !== 1 || type !== 'template' || name !== 'T' || templateLength !== 2 || parameter.name !== key) {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
-		this.appendChild(parameter);
+		this.insertAt(parameter);
 	}
 
 	/**
@@ -563,7 +563,7 @@ class TranscludeToken extends Token {
 			this.childNodes[1].replaceChildren(...lastChild.childNodes);
 		} else {
 			invoke.destroy(true);
-			this.appendChild(lastChild);
+			this.insertAt(lastChild);
 		}
 	}
 
@@ -593,7 +593,7 @@ class TranscludeToken extends Token {
 			this.childNodes[2].replaceChildren(...lastChild.childNodes);
 		} else {
 			invoke.destroy(true);
-			this.appendChild(lastChild);
+			this.insertAt(lastChild);
 		}
 	}
 

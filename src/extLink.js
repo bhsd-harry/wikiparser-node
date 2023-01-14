@@ -53,12 +53,12 @@ class ExtLinkToken extends Token {
 	 */
 	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {MagicLinkToken: 0, Token: 1});
-		this.appendChild(new MagicLinkToken(url, true, config, accum));
+		this.insertAt(new MagicLinkToken(url, true, config, accum));
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, true, accum, {'Stage-7': ':', ConverterToken: ':'});
 			inner.type = 'ext-link-text';
-			this.appendChild(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.getAttribute('protectChildren')(0);
 	}
@@ -69,7 +69,7 @@ class ExtLinkToken extends Token {
 			token = Parser.run(() => new ExtLinkToken(undefined, '', '', this.getAttribute('config')));
 		token.firstChild.safeReplaceWith(url);
 		if (text) {
-			token.appendChild(text);
+			token.insertAt(text);
 		}
 		return token;
 	}
@@ -161,7 +161,7 @@ class ExtLinkToken extends Token {
 		}
 		const {lastChild} = extLink;
 		if (this.childNodes.length === 1) {
-			this.appendChild(lastChild);
+			this.insertAt(lastChild);
 		} else {
 			this.lastChild.safeReplaceWith(lastChild);
 		}

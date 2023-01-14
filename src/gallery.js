@@ -27,7 +27,7 @@ class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.appendChild(line.trim() ? new HiddenToken(line, undefined, config, [], {AstText: ':'}) : line);
+				this.insertAt(line.trim() ? new HiddenToken(line, undefined, config, [], {AstText: ':'}) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -38,9 +38,9 @@ class GalleryToken extends Token {
 				title = this.normalizeTitle(file, 6, true);
 			}
 			if (title.valid) {
-				this.appendChild(new GalleryImageToken(file, alt, title, config, accum));
+				this.insertAt(new GalleryImageToken(file, alt, title, config, accum));
 			} else {
-				this.appendChild(new HiddenToken(line, undefined, config, [], {AstText: ':'}));
+				this.insertAt(new HiddenToken(line, undefined, config, [], {AstText: ':'}));
 			}
 		}
 	}
@@ -105,8 +105,9 @@ class GalleryToken extends Token {
 			/** @type {LintError[]} */ errors = [];
 		for (let i = 0, cur = start; i < this.childNodes.length; i++) {
 			const child = this.childNodes[i],
-				str = String(child);
-			if (child.type === 'hidden' && str.trim() && !/^<!--.*-->$/u.test(str)) {
+				str = String(child),
+				trimmed = str.trim();
+			if (child.type === 'hidden' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				errors.push({
 					message: '图库中的无效内容',
 					startLine: top + i,

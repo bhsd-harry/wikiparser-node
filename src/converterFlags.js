@@ -243,7 +243,7 @@ class ConverterFlagsToken extends Token {
 	 */
 	#newFlag(flag) {
 		const token = Parser.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config')));
-		this.appendChild(token);
+		this.insertAt(token);
 	}
 
 	/**

@@ -30,11 +30,11 @@ class ArgToken extends Token {
 				const token = new AtomToken(parts[i], i === 0 ? 'arg-name' : undefined, config, accum, {
 					'Stage-2': ':', '!HeadingToken': '',
 				});
-				this.appendChild(token);
+				this.insertAt(token);
 			} else {
 				const token = new Token(parts[i], config, true, accum);
 				token.type = 'arg-default';
-				this.appendChild(token.setAttribute('stage', 2));
+				this.insertAt(token.setAttribute('stage', 2));
 			}
 		}
 		this.getAttribute('protectChildren')(0);
@@ -189,7 +189,7 @@ class ArgToken extends Token {
 		if (oldDefault) {
 			oldDefault.safeReplaceWith(lastChild);
 		} else {
-			this.appendChild(lastChild);
+			this.insertAt(lastChild);
 		}
 	}
 }

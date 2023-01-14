@@ -8,8 +8,7 @@ const assert = require('assert/strict'),
 	Token = require('..'),
 	TrToken = require('./tr'),
 	TdToken = require('./td'),
-	SyntaxToken = require('../syntax'),
-	AttributeToken = require('../attribute');
+	SyntaxToken = require('../syntax');
 
 const openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u,
 	closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
@@ -171,7 +170,7 @@ class TableToken extends TrToken {
 		const previous = this.childNodes.at(i - 1);
 		if (token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
-			return previous.appendChild(token);
+			return previous.insertAt(token);
 		} else if (!Parser.running && i === this.childNodes.length && token instanceof SyntaxToken
 			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
 		) {
@@ -197,7 +196,7 @@ class TableToken extends TrToken {
 		} else if (lastChild instanceof SyntaxToken) {
 			lastChild.replaceChildren(...inner.childNodes);
 		} else {
-			this.appendChild(Parser.run(() => {
+			this.insertAt(Parser.run(() => {
 				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 				});
@@ -513,7 +512,7 @@ class TableToken extends TrToken {
 		Parser.run(() => {
 			for (const cell of tdChildren.slice(0, index === -1 ? undefined : index)) {
 				if (cell.subtype !== 'caption') {
-					row.appendChild(cell);
+					row.insertAt(cell);
 				}
 			}
 		});
@@ -534,6 +533,7 @@ class TableToken extends TrToken {
 			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);
+		const AttributeToken = require('../attribute');
 		/** @type {TrToken & AttributeToken}} */
 		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
@@ -553,7 +553,7 @@ class TableToken extends TrToken {
 				for (let i = 0; i < maxCol; i++) {
 					const coords = rowLayout[i];
 					if (!coords) {
-						token.appendChild(td.cloneNode());
+						token.insertAt(td.cloneNode());
 					} else if (!set.has(coords)) {
 						set.add(coords);
 						if (coords.row < y) {

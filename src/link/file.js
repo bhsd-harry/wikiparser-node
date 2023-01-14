@@ -269,7 +269,7 @@ class FileToken extends LinkToken {
 				this.typeError('setValue', 'Boolean');
 			}
 			const newArg = Parser.run(() => new ImageParameterToken(syntax, config));
-			this.appendChild(newArg);
+			this.insertAt(newArg);
 			return;
 		}
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
@@ -279,7 +279,7 @@ class FileToken extends LinkToken {
 		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2 || imageParameter.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
-		this.appendChild(imageParameter);
+		this.insertAt(imageParameter);
 	}
 }
 

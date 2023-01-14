@@ -38,7 +38,7 @@ class ConverterToken extends Token {
 			hasColon = firstRule.includes(':'),
 			firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
 		if (hasColon && firstRuleToken.childNodes.length === 1) {
-			this.appendChild(new ConverterRuleToken(rules.join(';'), false, config, accum));
+			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum));
 		} else {
 			this.append(
 				firstRuleToken,
