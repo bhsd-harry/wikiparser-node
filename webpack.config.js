@@ -3,29 +3,49 @@
 const path = require('path'),
 	{ESBuildMinifyPlugin} = require('esbuild-loader');
 
-// const mode = 'development';
-const mode = 'production';
+const mode = 'development';
+// const mode = 'production';
 
-const config = {
-	entry: './index.js',
-	output: {
-		path: path.resolve(__dirname, 'bundle'),
-		filename: `bundle.${mode === 'production' ? 'min.' : ''}js`,
-		iife: true,
-	},
-	plugins: [],
-	module: {
-		rules: [],
-	},
-	optimization: {
-		minimize: mode === 'production',
-		minimizer: [
-			new ESBuildMinifyPlugin({
-				target: 'es2018',
-			}),
-		],
-	},
-	mode,
-};
+const config = mode === 'production'
+	? {
+		entry: './index.js',
+		output: {
+			path: path.resolve(__dirname, 'bundle'),
+			filename: `bundle.min.js`,
+			iife: true,
+		},
+		plugins: [],
+		module: {
+			rules: [],
+		},
+		optimization: {
+			minimize: true,
+			minimizer: [
+				new ESBuildMinifyPlugin({
+					target: 'es2018',
+				}),
+			],
+		},
+		mode,
+	}
+	: {
+		entry: './index.js',
+		output: {
+			path: path.resolve(__dirname, 'bundle'),
+			filename: `bundle.js`,
+			iife: true,
+		},
+		plugins: [],
+		module: {
+			rules: [{
+				test: /\.js$/,
+				loader: 'esbuild-loader',
+				options: {
+					target: 'es2018',
+				},
+			}],
+		},
+		mode,
+	};
 
 module.exports = config;
