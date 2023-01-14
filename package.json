@@ -28,7 +28,7 @@
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
   },
   "scripts": {
-    "test": "echo 'Error: no test specified for the @browser branch' && exit 1"
+    "test": "webpack && eslint ."
   },
   "devDependencies": {
     "@types/node": "^17.0.23",
