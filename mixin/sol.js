@@ -18,8 +18,7 @@ const sol = Constructor => class SolToken extends Constructor {
 	#isRoot(includeHeading) {
 		const {parentNode, type} = this;
 		return parentNode?.type === 'root'
-			|| parentNode?.type === 'ext-inner' && parentNode?.name === 'poem'
-				&& (includeHeading || type !== 'heading');
+			|| parentNode?.type === 'ext-inner' && (includeHeading || type !== 'heading' && parentNode.name === 'poem');
 	}
 
 	/**
