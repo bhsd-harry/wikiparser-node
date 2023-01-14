@@ -25,42 +25,48 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 */
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
-		const AttributeToken = require('../attribute');
+		const Token = require('..'),
+			AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
+		ext.delete(lcName);
+		newConfig.ext = [...ext];
 		switch (lcName) {
-			case 'choose':
-			case 'option':
-			case 'ref':
-			case 'poem':
 			case 'indicator':
+			case 'poem':
+			case 'ref':
+			case 'option':
+			case 'combooption':
 			case 'tab':
 			case 'tabs':
-			case 'combobox':
-			case 'combooption': {
-				ext.delete(lcName);
-				newConfig.ext = [
-					...ext,
-					...lcName === 'choose' ? ['option'] : [],
-					...lcName === 'combobox' ? ['combooption'] : [],
-				];
-				const Token = require('..');
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
-			}
 			case 'gallery': {
-				ext.delete(lcName);
-				newConfig.ext = [...ext];
 				const GalleryToken = require('../gallery');
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			case 'pre': {
 				const PreToken = require('../pre');
-				innerToken = new PreToken(inner, config, accum);
+				innerToken = new PreToken(inner, newConfig, accum);
+				break;
+			}
+			case 'references': {
+				const ReferencesToken = require('../nested/references');
+				innerToken = new ReferencesToken(inner, newConfig, accum);
+				break;
+			}
+			case 'choose': {
+				const ChooseToken = require('../nested/choose');
+				innerToken = new ChooseToken(inner, newConfig, accum);
+				break;
+			}
+			case 'combobox': {
+				const ComboboxToken = require('../nested/combobox');
+				innerToken = new ComboboxToken(inner, newConfig, accum);
 				break;
 			}
 
