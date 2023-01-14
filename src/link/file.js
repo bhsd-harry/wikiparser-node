@@ -31,11 +31,19 @@ class FileToken extends LinkToken {
 	lint(start = 0) {
 		const errors = super.lint(start),
 			frameArgs = this.getFrameArgs(),
+			horizAlignArgs = this.getHorizAlignArgs(),
+			vertAlignArgs = this.getVertAlignArgs(),
 			captions = this.getArgs('caption');
-		if (frameArgs.length > 1 || captions.size > 1) {
+		if (frameArgs.length > 1 || horizAlignArgs.length > 1 || vertAlignArgs.length > 1 || captions.size > 1) {
 			const rect = this.getRootNode().posFromIndex(start);
 			if (frameArgs.length > 1) {
 				errors.push(...frameArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片框架参数')));
+			}
+			if (horizAlignArgs.length > 1) {
+				errors.push(...horizAlignArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片水平对齐参数')));
+			}
+			if (vertAlignArgs.length > 1) {
+				errors.push(...vertAlignArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片垂直对齐参数')));
 			}
 			if (captions.size > 1) {
 				errors.push(...[...captions].map(arg => generateForChild(arg, rect, '重复的图片说明')));
@@ -58,6 +66,34 @@ class FileToken extends LinkToken {
 	 */
 	getFrameArgs() {
 		return this.getAllArgs().filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
+	}
+
+	/**
+	 * 获取图片水平对齐参数节点
+	 * @complexity `n`
+	 */
+	getHorizAlignArgs() {
+		const args = this.getAllArgs()
+			.filter(({name}) => ['left', 'right', 'center', 'none'].includes(name));
+		if (args.length > 1) {
+			Parser.error(`图片 ${this.name} 带有 ${args.length} 个水平对齐参数，只有第 1 个 ${args[0].name} 会生效！`);
+		}
+		return args;
+	}
+
+	/**
+	 * 获取图片垂直对齐参数节点
+	 * @complexity `n`
+	 */
+	getVertAlignArgs() {
+		const args = this.getAllArgs().filter(
+			({name}) => ['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']
+				.includes(name),
+		);
+		if (args.length > 1) {
+			Parser.error(`图片 ${this.name} 带有 ${args.length} 个垂直对齐架参数，只有第 1 个 ${args[0].name} 会生效！`);
+		}
+		return args;
 	}
 
 	/**

@@ -17,29 +17,35 @@ class ImageParameterToken extends Token {
 	 */
 	static #validate(key, value, config = Parser.getConfig()) {
 		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
-		if (key === 'width') {
-			return /^\d*(?:x\d*)?$/u.test(value);
-		} else if (['alt', 'class', 'manualthumb', 'frameless', 'framed', 'thumbnail'].includes(key)) {
-			return true;
-		} else if (key === 'link') {
-			if (!value) {
+		switch (key) {
+			case 'width':
+				return /^\d*(?:x\d*)?$/u.test(value);
+			case 'link': {
+				if (!value) {
+					return true;
+				}
+				const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
+				if (regex.test(value)) {
+					return true;
+				} else if (value.startsWith('[[') && value.endsWith(']]')) {
+					value = value.slice(2, -2);
+				}
+				if (value.includes('%')) {
+					try {
+						value = decodeURIComponent(value);
+					} catch {}
+				}
+				return Parser.normalizeTitle(value, 0, config, true).valid;
+			}
+			case 'lang':
+				return config.variants.includes(value);
+			case 'alt':
+			case 'class':
+			case 'manualthumb':
 				return true;
-			}
-			const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
-			if (regex.test(value)) {
-				return true;
-			} else if (value.startsWith('[[') && value.endsWith(']]')) {
-				value = value.slice(2, -2);
-			}
-			if (value.includes('%')) {
-				try {
-					value = decodeURIComponent(value);
-				} catch {}
-			}
-			const {valid} = Parser.normalizeTitle(value, 0, config, true);
-			return valid;
+			default:
+				return !isNaN(value);
 		}
-		return !isNaN(value);
 	}
 
 	type = 'image-parameter';
