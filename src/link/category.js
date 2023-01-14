@@ -11,6 +11,8 @@ const Title = require('../../lib/title'),
 class CategoryToken extends LinkToken {
 	type = 'category';
 
+	selfLink = undefined;
+	interwiki = undefined;
 	setLangLink = undefined;
 	setFragment = undefined;
 	asSelfLink = undefined;
@@ -37,7 +39,7 @@ class CategoryToken extends LinkToken {
 	 */
 	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		super(link, text, title, config, accum);
-		this.seal(['setFragment', 'asSelfLink', 'pipeTrick'], true);
+		this.seal(['selfLink', 'interwiki', 'setLangLink', 'setFragment', 'asSelfLink', 'pipeTrick'], true);
 	}
 
 	/**

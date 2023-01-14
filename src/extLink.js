@@ -112,7 +112,7 @@ class ExtLinkToken extends Token {
 
 	/** @override */
 	print() {
-		const {childNodes: {length}} = this;
+		const {length} = this;
 		return super.print(length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`});
 	}
 
@@ -138,7 +138,7 @@ class ExtLinkToken extends Token {
 	setTarget(url) {
 		url = String(url);
 		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: extLink} = root;
+			{length, firstChild: extLink} = root;
 		if (length !== 1 || extLink.type !== 'ext-link' || extLink.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的外链目标：${url}`);
 		}
@@ -155,7 +155,7 @@ class ExtLinkToken extends Token {
 	setLinkText(text) {
 		text = String(text);
 		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: extLink} = root;
+			{length, firstChild: extLink} = root;
 		if (length !== 1 || extLink.type !== 'ext-link' || extLink.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的外链文字：${noWrap(text)}`);
 		}

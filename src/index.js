@@ -151,7 +151,7 @@ class Token extends AstElement {
 	 */
 	#build = () => {
 		this.#stage = MAX_STAGE;
-		const {childNodes: {length}, firstChild} = this,
+		const {length, firstChild} = this,
 			str = String(firstChild);
 		if (length === 1 && firstChild.type === 'text' && str.includes('\0')) {
 			this.replaceChildren(...this.#buildFromStr(str));

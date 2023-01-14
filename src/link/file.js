@@ -17,6 +17,8 @@ class FileToken extends LinkToken {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Record<string, Set<ImageParameterToken>>} */ #args = {};
 
+	selfLink = undefined;
+	interwiki = undefined;
 	setLangLink = undefined;
 	setFragment = undefined;
 	asSelfLink = undefined;
@@ -76,7 +78,10 @@ class FileToken extends LinkToken {
 		super(link, undefined, title, config, accum);
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
-		this.seal(['setLangLink', 'setFragment', 'asSelfLink', 'setLinkText', 'pipeTrick'], true);
+		this.seal(
+			['selfLink', 'interwiki', 'setLangLink', 'setFragment', 'asSelfLink', 'setLinkText', 'pipeTrick'],
+			true,
+		);
 	}
 
 	/**
@@ -274,8 +279,8 @@ class FileToken extends LinkToken {
 		}
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
-			{childNodes: {length}, firstChild: file} = root,
-			{name, type, childNodes: {length: fileLength}, lastChild: imageParameter} = file;
+			{length, firstChild: file} = root,
+			{name, type, length: fileLength, lastChild: imageParameter} = file;
 		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2 || imageParameter.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}

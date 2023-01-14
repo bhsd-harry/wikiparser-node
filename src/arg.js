@@ -162,7 +162,7 @@ class ArgToken extends Token {
 	setName(name) {
 		name = String(name);
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: arg} = root;
+			{length, firstChild: arg} = root;
 		if (length !== 1 || arg.type !== 'arg' || arg.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
@@ -179,7 +179,7 @@ class ArgToken extends Token {
 	setDefault(value) {
 		value = String(value);
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: arg} = root;
+			{length, firstChild: arg} = root;
 		if (length !== 1 || arg.type !== 'arg' || arg.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}

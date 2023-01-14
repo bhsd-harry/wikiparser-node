@@ -155,9 +155,9 @@ class ParameterToken extends fixedToken(Token) {
 		const templateLike = this.parentNode?.isTemplate(),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: transclude} = root,
+			{length, firstChild: transclude} = root,
 			/** @type {Token & {lastChild: ParameterToken}} */
-			{lastChild: parameter, type, name, childNodes: {length: transcludeLength}} = transclude,
+			{lastChild: parameter, type, name, length: transcludeLength} = transclude,
 			targetType = templateLike ? 'template' : 'magic-word',
 			targetName = templateLike ? 'T' : 'lc';
 		if (length !== 1 || type !== targetType || name !== targetName || transcludeLength !== 2
@@ -190,8 +190,8 @@ class ParameterToken extends fixedToken(Token) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: template} = root,
-			{type, name, lastChild: parameter, childNodes: {length: templateLength}} = template;
+			{length, firstChild: template} = root,
+			{type, name, lastChild: parameter, length: templateLength} = template;
 		if (length !== 1 || type !== 'template' || name !== 'T' || templateLength !== 2) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
 		}

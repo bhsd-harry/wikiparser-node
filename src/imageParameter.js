@@ -252,8 +252,8 @@ class ImageParameterToken extends Token {
 		const root = Parser.parse(`[[File:F|${
 				this.#syntax ? this.#syntax.replace('$1', value) : value
 			}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: file} = root,
-			{lastChild: imageParameter, type, name, childNodes: {length: fileLength}} = file;
+			{length, firstChild: file} = root,
+			{lastChild: imageParameter, type, name, length: fileLength} = file;
 		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2
 			|| imageParameter.name !== this.name
 		) {

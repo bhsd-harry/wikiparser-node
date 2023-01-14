@@ -467,9 +467,9 @@ class TranscludeToken extends Token {
 		const templateLike = this.isTemplate(),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: transclude} = root,
+			{length, firstChild: transclude} = root,
 			/** @type {Token & {lastChild: ParameterToken}} */
-			{type, name, childNodes: {length: transcludeLength}, lastChild} = transclude,
+			{type, name, length: transcludeLength, lastChild} = transclude,
 			targetType = templateLike ? 'template' : 'magic-word',
 			targetName = templateLike ? 'T' : 'lc';
 		if (length === 1 && type === targetType && name === targetName && transcludeLength === 2 && lastChild.anon) {
@@ -500,8 +500,8 @@ class TranscludeToken extends Token {
 		}
 		const wikitext = `{{:T|${key}=${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: template} = root,
-			{type, name, childNodes: {length: templateLength}, lastChild: parameter} = template;
+			{length, firstChild: template} = root,
+			{type, name, length: templateLength, lastChild: parameter} = template;
 		if (length !== 1 || type !== 'template' || name !== 'T' || templateLength !== 2 || parameter.name !== key) {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
@@ -535,7 +535,7 @@ class TranscludeToken extends Token {
 			this.typeError('replaceTemplate', 'String');
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: template} = root;
+			{length, firstChild: template} = root;
 		if (length !== 1 || template.type !== 'template' || template.childNodes.length !== 1) {
 			throw new SyntaxError(`非法的模板名称：${title}`);
 		}
@@ -555,8 +555,8 @@ class TranscludeToken extends Token {
 			this.typeError('replaceModule', 'String');
 		}
 		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: invoke} = root,
-			{type, name, childNodes: {length: invokeLength}, lastChild} = invoke;
+			{length, firstChild: invoke} = root,
+			{type, name, length: invokeLength, lastChild} = invoke;
 		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invokeLength !== 2) {
 			throw new SyntaxError(`非法的模块名称：${title}`);
 		} else if (this.childNodes.length > 1) {
@@ -585,8 +585,8 @@ class TranscludeToken extends Token {
 		const root = Parser.parse(
 				`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config'),
 			),
-			{childNodes: {length}, firstChild: invoke} = root,
-			{type, name, childNodes: {length: invokeLength}, lastChild} = invoke;
+			{length, firstChild: invoke} = root,
+			{type, name, length: invokeLength, lastChild} = invoke;
 		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invokeLength !== 3) {
 			throw new SyntaxError(`非法的模块函数名：${func}`);
 		} else if (this.childNodes.length > 2) {

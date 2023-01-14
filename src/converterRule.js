@@ -139,7 +139,7 @@ class ConverterRuleToken extends Token {
 	 * @param {number} i 子节点序号
 	 */
 	getGaps(i = 0) {
-		const {childNodes: {length}} = this;
+		const {length} = this;
 		i = i < 0 ? i + length : i;
 		return i === 0 && length === 3 ? 2 : 1;
 	}
@@ -167,8 +167,7 @@ class ConverterRuleToken extends Token {
 
 	/** 修改为不转换 */
 	noConvert() {
-		const {childNodes: {length}} = this;
-		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
+		for (let i = 0; i < this.childNodes.length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
 			this.removeAt(0);
 		}
 	}
@@ -182,8 +181,8 @@ class ConverterRuleToken extends Token {
 		to = String(to);
 		const config = this.getAttribute('config'),
 			root = Parser.parse(`-{|${config.variants[0]}:${to}}-`, this.getAttribute('include'), undefined, config),
-			{childNodes: {length}, firstChild: converter} = root,
-			{lastChild: converterRule, type, childNodes: {length: converterLength}} = converter;
+			{length, firstChild: converter} = root,
+			{lastChild: converterRule, type, length: converterLength} = converter;
 		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 2) {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
@@ -226,8 +225,8 @@ class ConverterRuleToken extends Token {
 		from = String(from);
 		const config = this.getAttribute('config'),
 			root = Parser.parse(`-{|${from}=>${variant}:}-`, this.getAttribute('include'), undefined, config),
-			{childNodes: {length}, firstChild: converter} = root,
-			{type, childNodes: {length: converterLength}, lastChild: converterRule} = converter;
+			{length, firstChild: converter} = root,
+			{type, length: converterLength, lastChild: converterRule} = converter;
 		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		} else if (unidirectional) {

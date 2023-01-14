@@ -127,7 +127,7 @@ class MagicLinkToken extends Token {
 	setTarget(url) {
 		url = String(url);
 		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),
-			{childNodes: {length}, firstChild: freeExtLink} = root;
+			{length, firstChild: freeExtLink} = root;
 		if (length !== 1 || freeExtLink.type !== 'free-ext-link') {
 			throw new SyntaxError(`非法的自由外链目标：${url}`);
 		}
