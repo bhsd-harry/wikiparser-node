@@ -15,7 +15,9 @@ const Parser = require('..'),
 const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const /** @type {TrToken[]} */ stack = [],
 		lines = data.split('\n');
-	let out = type === 'root' || type === 'ext-inner' && name === 'poem' ? '' : `\n${lines.shift()}`;
+	let out = type === 'root' || type === 'parameter-value' || type === 'ext-inner' && name === 'poem'
+		? ''
+		: `\n${lines.shift()}`;
 
 	/**
 	 * 向表格中插入纯文本
