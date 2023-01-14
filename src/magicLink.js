@@ -80,16 +80,6 @@ class MagicLinkToken extends Token {
 	}
 
 	/** @override */
-	afterBuild() {
-		const ParameterToken = require('./parameter');
-		const /** @type {ParameterToken} */ parameter = this.closest('parameter');
-		if (parameter?.getValue() === this.text()) {
-			this.replaceWith(...this.childNodes);
-		}
-		return this;
-	}
-
-	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
 			token = Parser.run(() => new MagicLinkToken(
