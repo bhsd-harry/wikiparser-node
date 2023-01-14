@@ -1,9 +1,10 @@
 'use strict';
 
-const AtomToken = require('.');
+const hidden = require('../../mixin/hidden'),
+	AtomToken = require('.');
 
 /** 不可见的节点 */
-class HiddenToken extends AtomToken {
+class HiddenToken extends hidden(AtomToken) {
 	type = 'hidden';
 }
 

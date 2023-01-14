@@ -27,39 +27,43 @@ class ExtToken extends TagPairToken {
 			newConfig = JSON.parse(JSON.stringify(config)),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
+		ext.delete(lcName);
+		newConfig.ext = [...ext];
 		switch (lcName) {
+			case 'tab':
+				ext.delete('tabs');
+				newConfig.ext = [...ext];
+				// fall through
 			case 'indicator':
 			case 'poem':
 			case 'ref':
-			case 'choose':
 			case 'option':
-			case 'tab':
-			case 'tabs':
-			case 'combobox':
 			case 'combooption':
-				ext.delete(lcName);
-				newConfig.ext = [
-					...ext,
-					...lcName === 'choose' ? ['option'] : [],
-					...lcName === 'combobox' ? ['combooption'] : [],
-				];
+			case 'tabs':
+			case 'poll':
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
-				ext.delete(lcName);
-				newConfig.ext = [...ext];
 				const GalleryToken = require('../gallery');
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			case 'pre': {
 				const PreToken = require('../pre');
-				innerToken = new PreToken(inner, config, accum);
+				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
-			case 'references': {
-				const ReferencesToken = require('../references');
-				innerToken = new ReferencesToken(inner, config, accum);
+			case 'references':
+			case 'choose':
+			case 'combobox': {
+				const NestedToken = require('../nested'),
+					/** @type {typeof NestedToken} */ NestedExtToken = require(`../nested/${lcName}`);
+				innerToken = new NestedExtToken(inner, newConfig, accum);
+				break;
+			}
+			case 'inputbox': {
+				const InputboxToken = require('../inputbox');
+				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}
 
@@ -67,8 +71,6 @@ class ExtToken extends TagPairToken {
 			 * 更多定制扩展的代码示例：
 			 * ```
 			 * case 'extensionName': {
-			 * 	ext.delete(lcName);
-			 * 	newConfig.ext = [...ext];
 			 * 	const ExtensionToken = require('../extension');
 			 * 	innerToken = new ExtensionToken(inner, newConfig, accum);
 			 * 	break;

@@ -59,5 +59,4 @@ class ReferencesToken extends Token {
 	}
 }
 
-Parser.classes.ReferencesToken = __filename;
 module.exports = ReferencesToken;

@@ -1,12 +1,13 @@
 'use strict';
 
-const NowikiToken = require('.');
+const hidden = require('../../mixin/hidden'),
+	NowikiToken = require('.');
 
 /**
  * 状态开关
  * @classdesc `{childNodes: [AstText]}`
  */
-class DoubleUnderscoreToken extends NowikiToken {
+class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	type = 'double-underscore';
 
 	/** @override */

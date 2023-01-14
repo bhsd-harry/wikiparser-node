@@ -54,7 +54,7 @@ class ConverterRuleToken extends Token {
 	 * @param {number} i 子节点序号
 	 */
 	getGaps(i = 0) {
-		const {childNodes: {length}} = this;
+		const {length} = this;
 		i = i < 0 ? i + length : i;
 		return i === 0 && length === 3 ? 2 : 1;
 	}

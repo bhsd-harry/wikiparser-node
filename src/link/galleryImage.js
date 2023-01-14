@@ -33,6 +33,7 @@ class GalleryImageToken extends FileToken {
 			}
 		}
 		super(link, token?.toString(), newConfig, accum);
+		this.setAttribute('bracket', false);
 	}
 
 	/** @override */

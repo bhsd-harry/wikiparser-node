@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('../..'),
+const {generateForSelf} = require('../../util/lint'),
+	Parser = require('../..'),
 	Token = require('..');
 
 /**
@@ -16,6 +17,17 @@ class NowikiToken extends Token {
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, true, accum);
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const {type, name} = this;
+		return type === 'ext-inner' && (name === 'templatestyles' || name === 'section')
+			? [generateForSelf(this, this.getRootNode().posFromIndex(start), `<${name}>标签内不应有任何内容`)]
+			: super.lint(start);
 	}
 }
 

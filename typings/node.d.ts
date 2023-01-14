@@ -4,6 +4,7 @@ import AstText from '../lib/text';
 declare global {
 	type TokenAttribute<T> =
 		T extends 'stage' ? number :
+		T extends 'bracket' ? boolean :
 		T extends 'config' ? ParserConfig :
 		T extends 'accum' ? accum :
 		T extends 'parentNode' ? Token|undefined :

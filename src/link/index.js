@@ -9,6 +9,7 @@ const Parser = require('../..'),
  */
 class LinkToken extends Token {
 	type = 'link';
+	#bracket = true;
 
 	/**
 	 * @param {string} link 链接标题
@@ -26,10 +27,24 @@ class LinkToken extends Token {
 		}
 	}
 
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
+	 */
+	setAttribute(key, value) {
+		if (key === 'bracket') {
+			this.#bracket = Boolean(value);
+			return this;
+		}
+		return super.setAttribute(key, value);
+	}
+
 	/** @override */
 	toString() {
 		const str = super.toString('|');
-		return this.type === 'gallery-image' ? str : `[[${str}]]`;
+		return this.#bracket ? `[[${str}]]` : str;
 	}
 
 	/** @override */
@@ -44,7 +59,7 @@ class LinkToken extends Token {
 
 	/** @override */
 	print() {
-		return super.print(this.type === 'gallery-image' ? {sep: '|'} : {pre: '[[', post: ']]', sep: '|'});
+		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: '|'} : {sep: '|'});
 	}
 }
 

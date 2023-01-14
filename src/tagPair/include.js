@@ -1,6 +1,7 @@
 'use strict';
 
 const {generateForSelf} = require('../../util/lint'),
+	hidden = require('../../mixin/hidden'),
 	Parser = require('../..'),
 	TagPairToken = require('.');
 
@@ -8,7 +9,7 @@ const {generateForSelf} = require('../../util/lint'),
  * `<includeonly>`或`<noinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
-class IncludeToken extends TagPairToken {
+class IncludeToken extends hidden(TagPairToken) {
 	type = 'include';
 
 	/**

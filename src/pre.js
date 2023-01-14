@@ -26,5 +26,4 @@ class PreToken extends Token {
 	}
 }
 
-Parser.classes.PreToken = __filename;
 module.exports = PreToken;

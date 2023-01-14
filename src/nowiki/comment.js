@@ -1,6 +1,7 @@
 'use strict';
 
 const {generateForSelf} = require('../../util/lint'),
+	hidden = require('../../mixin/hidden'),
 	Parser = require('../..'),
 	NowikiToken = require('.');
 
@@ -8,7 +9,7 @@ const {generateForSelf} = require('../../util/lint'),
  * HTML注释，不可见
  * @classdesc `{childNodes: [AstText]}`
  */
-class CommentToken extends NowikiToken {
+class CommentToken extends hidden(NowikiToken) {
 	type = 'comment';
 	closed;
 
