@@ -16,8 +16,8 @@ class PreToken extends HasNowikiToken {
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, 'ext-inner', config, accum);
-		this.setAttribute('stage', Parser.MAX_STAGE - 1)
-			.setAttribute('acceptable', {AstText: ':', NoincludeToken: ':', ConverterToken: ':'});
+		this.setAttribute('stage', Parser.MAX_STAGE - 1);
+		this.setAttribute('acceptable', {AstText: ':', NoincludeToken: ':', ConverterToken: ':'});
 	}
 
 	/** @override */

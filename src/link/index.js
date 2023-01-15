@@ -91,6 +91,44 @@ class LinkToken extends Token {
 		this.setAttribute('name', title.title).getAttribute('protectChildren')(0);
 	}
 
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
+	 */
+	setAttribute(key, value) {
+		if (key === 'bracket') {
+			this.#bracket = Boolean(value);
+			return this;
+		}
+		return super.setAttribute(key, value);
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		const str = super.toString(selector, '|');
+		return this.#bracket && !(selector && this.matches(selector)) ? `[[${str}]]` : str;
+	}
+
+	/** @override */
+	getPadding() {
+		return 2;
+	}
+
+	/** @override */
+	getGaps() {
+		return 1;
+	}
+
+	/** @override */
+	print() {
+		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: '|'} : {sep: '|'});
+	}
+
 	/** 生成Title对象 */
 	#getTitle() {
 		return this.normalizeTitle(this.firstChild.text());
@@ -142,44 +180,6 @@ class LinkToken extends Token {
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 		return this;
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @param {TokenAttribute<T>} value 属性值
-	 */
-	setAttribute(key, value) {
-		if (key === 'bracket') {
-			this.#bracket = Boolean(value);
-			return this;
-		}
-		return super.setAttribute(key, value);
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		const str = super.toString(selector, '|');
-		return !this.#bracket || selector && this.matches(selector) ? str : `[[${str}]]`;
-	}
-
-	/** @override */
-	getPadding() {
-		return 2;
-	}
-
-	/** @override */
-	getGaps() {
-		return 1;
-	}
-
-	/** @override */
-	print() {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: '|'} : {sep: '|'});
 	}
 
 	/** @override */
