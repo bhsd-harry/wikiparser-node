@@ -1,8 +1,6 @@
 'use strict';
 
 const /** @type {Parser} */ Parser = {
-	running: false,
-
 	config: undefined,
 	minConfig: require('./config/minimum'),
 
@@ -12,33 +10,21 @@ const /** @type {Parser} */ Parser = {
 		return {...this.minConfig, ...this.config};
 	},
 
-	run(callback) {
-		const {running} = this;
-		this.running = true;
-		try {
-			const result = callback();
-			this.running = running;
-			return result;
-		} catch (e) {
-			this.running = running;
-			throw e;
-		}
-	},
-
-	normalizeTitle(title, defaultNs = 0, config = Parser.getConfig(), halfParsed = false) {
+	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {
 		let /** @type {Token} */ token;
 		if (!halfParsed) {
 			const Token = require('./src');
 			token = this.run(() => {
 				const newToken = new Token(String(title), config),
 					parseOnce = newToken.getAttribute('parseOnce');
-				parseOnce();
+				parseOnce(0, include);
 				return parseOnce();
 			});
 			title = token.firstChild;
 		}
 		const Title = require('./lib/title');
-		return new Title(String(title), defaultNs, config);
+		const titleObj = new Title(String(title), defaultNs, config);
+		return titleObj;
 	},
 
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
@@ -54,6 +40,10 @@ const /** @type {Parser} */ Parser = {
 			token.parse(maxStage, include);
 		});
 		return token;
+	},
+
+	run(callback) {
+		return callback();
 	},
 
 	print(wikitext, include = false, config = Parser.getConfig()) {
@@ -72,5 +62,7 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-window.Parser = Parser;
+if (typeof window !== 'undefined') {
+	window.Parser = Parser;
+}
 module.exports = Parser;

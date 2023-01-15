@@ -35,7 +35,7 @@ class ImageParameterToken extends Token {
 						value = decodeURIComponent(value);
 					} catch {}
 				}
-				return Parser.normalizeTitle(value, 0, config, true).valid;
+				return Parser.normalizeTitle(value, 0, false, config, true).valid;
 			}
 			case 'lang':
 				return config.variants.includes(value);

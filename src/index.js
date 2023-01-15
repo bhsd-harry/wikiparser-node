@@ -230,7 +230,7 @@ class Token extends AstElement {
 	 * @param {number} defaultNs 命名空间
 	 */
 	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
-		return Parser.normalizeTitle(title, defaultNs, this.#config, halfParsed);
+		return Parser.normalizeTitle(title, defaultNs, false, this.#config, halfParsed);
 	}
 
 	/** 生成部分Token的`name`属性 */

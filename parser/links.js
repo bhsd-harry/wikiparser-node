@@ -46,7 +46,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const {ns, valid} = Parser.normalizeTitle(page, 0, config, true);
+		const {ns, valid} = Parser.normalizeTitle(page, 0, false, config, true);
 		if (!valid) {
 			s += `[[${x}`;
 			continue;

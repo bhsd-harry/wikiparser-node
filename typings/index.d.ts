@@ -3,12 +3,11 @@ import Title from '../lib/title';
 
 declare global {
 	interface Parser {
-		running: boolean;
-
-		run<T>(callback: () => T): T;
-
 		config: ParserConfig;
 		minConfig: ParserConfig;
+
+		readonly MAX_STAGE: number;
+
 		/** 获取设置 */
 		getConfig(): ParserConfig;
 
@@ -16,10 +15,11 @@ declare global {
 		 * 规范化页面标题
 		 * @param {string} title 标题（含或不含命名空间前缀）
 		 * @param {number} defaultNs 命名空间
+		 * @param {boolean} include 无用参数
 		 */
-		normalizeTitle(title: string, defaultNs?: number, config?: ParserConfig, halfParsed?: boolean): Title;
-
-		readonly MAX_STAGE: number;
+		normalizeTitle(
+			title: string, defaultNs?: number, include?: boolean, config?: ParserConfig, halfParsed?: boolean
+		): Title;
 		/**
 		 * 解析wikitext
 		 * @param {string|Token} wikitext wikitext
@@ -27,6 +27,9 @@ declare global {
 		 * @param {number} maxStage 最大解析层级
 		 */
 		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
+
+		run<T>(callback: () => T): T;
+
 		/**
 		 * 以HTML格式显示wikitext
 		 * @param {string} wikitext wikitext
