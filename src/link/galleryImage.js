@@ -15,7 +15,7 @@ class GalleryImageToken extends FileToken {
 	 * @param {string|undefined} text 图片参数
 	 * @param {accum} accum
 	 */
-	constructor(link, text, config = Parser.getConfig(), accum = []) {
+	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
 		let token;
 		if (text !== undefined) {
 			const Token = require('..');
@@ -26,7 +26,7 @@ class GalleryImageToken extends FileToken {
 			}
 			accum.splice(accum.indexOf(token), 1);
 		}
-		super(link, token?.toString(), config, accum);
+		super(link, token?.toString(), title, config, accum);
 		this.setAttribute('bracket', false);
 	}
 

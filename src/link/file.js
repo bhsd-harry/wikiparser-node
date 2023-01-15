@@ -19,8 +19,8 @@ class FileToken extends LinkToken {
 	 * @param {accum} accum
 	 * @complexity `n`
 	 */
-	constructor(link, text, config = Parser.getConfig(), accum = []) {
-		super(link, undefined, config, accum);
+	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
+		super(link, undefined, title, config, accum);
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 	}
 
@@ -61,11 +61,25 @@ class FileToken extends LinkToken {
 	}
 
 	/**
+	 * 获取指定图片参数
+	 * @param {string} key 参数名
+	 * @param {boolean} copy 是否返回备份
+	 * @returns {Set<ImageParameterToken>}
+	 * @complexity `n`
+	 */
+	getArgs(key, copy = true) {
+		const args = this.getAllArgs().filter(({name}) => key === name);
+		return copy ? new Set(args) : args;
+	}
+
+	/**
 	 * 获取图片框架属性参数节点
 	 * @complexity `n`
 	 */
 	getFrameArgs() {
-		return this.getAllArgs().filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
+		const args = this.getAllArgs()
+			.filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
+		return args;
 	}
 
 	/**
@@ -75,9 +89,6 @@ class FileToken extends LinkToken {
 	getHorizAlignArgs() {
 		const args = this.getAllArgs()
 			.filter(({name}) => ['left', 'right', 'center', 'none'].includes(name));
-		if (args.length > 1) {
-			Parser.error(`图片 ${this.name} 带有 ${args.length} 个水平对齐参数，只有第 1 个 ${args[0].name} 会生效！`);
-		}
 		return args;
 	}
 
@@ -90,19 +101,7 @@ class FileToken extends LinkToken {
 			({name}) => ['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']
 				.includes(name),
 		);
-		if (args.length > 1) {
-			Parser.error(`图片 ${this.name} 带有 ${args.length} 个垂直对齐架参数，只有第 1 个 ${args[0].name} 会生效！`);
-		}
 		return args;
-	}
-
-	/**
-	 * 获取指定图片参数
-	 * @param {string} key 参数名
-	 * @complexity `n`
-	 */
-	getArgs(key) {
-		return new Set(this.getAllArgs().filter(({name}) => key === name));
 	}
 }
 
