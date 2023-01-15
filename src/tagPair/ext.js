@@ -47,6 +47,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			case 'combooption':
 			case 'tabs':
 			case 'poll':
+			case 'seo':
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
@@ -67,8 +68,13 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new NestedExtToken(inner, newConfig, accum);
 				break;
 			}
+			case 'dynamicpagelist': {
+				const ParamTagToken = require('../paramTag');
+				innerToken = new ParamTagToken(inner, newConfig, accum);
+				break;
+			}
 			case 'inputbox': {
-				const InputboxToken = require('../inputbox');
+				const InputboxToken = require('../paramTag/inputbox');
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}

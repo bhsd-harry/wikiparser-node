@@ -96,13 +96,14 @@ class LinkToken extends Token {
 		return this.normalizeTitle(this.firstChild.text());
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {LinkToken & {constructor: typeof LinkToken}}
+	 */
 	cloneNode() {
 		const [link, ...linkText] = this.cloneChildNodes();
 		return Parser.run(() => {
-			/** @type {this & {constructor: typeof LinkToken}} */
-			const {constructor} = this,
-				token = new constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
+			const token = new this.constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
 			return token.afterBuild();
