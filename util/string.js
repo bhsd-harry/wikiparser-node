@@ -1,11 +1,7 @@
 'use strict';
 
-/**
- * optionally convert to lower cases
- * @param {string} val 属性值
- * @param {string|undefined} i 是否对大小写不敏感
- */
-const toCase = (val, i) => i ? val.toLowerCase() : val;
+const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
+	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
 /**
  * remove half-parsed comment-like tokens
@@ -35,16 +31,6 @@ const print = (childNodes, opt = {}) => {
  * @param {string} str RegExp source
  */
 const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
-
-/**
- * extract effective wikitext
- * @param {(string|AstNode)[]} childNodes a Token's contents
- * @param {string} separator delimiter between nodes
- */
-const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node');
-	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
-};
 
 /**
  * a more sophisticated string-explode function
@@ -77,6 +63,23 @@ const explode = (start, end, separator, str) => {
 };
 
 /**
+ * optionally convert to lower cases
+ * @param {string} val 属性值
+ * @param {string|undefined} i 是否对大小写不敏感
+ */
+const toCase = (val, i) => i ? val.toLowerCase() : val;
+
+/**
+ * extract effective wikitext
+ * @param {(string|AstNode)[]} childNodes a Token's contents
+ * @param {string} separator delimiter between nodes
+ */
+const text = (childNodes, separator = '') => {
+	const AstNode = require('../lib/node');
+	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
+};
+
+/**
  * escape newlines
  * @param {string} str 原字符串
  */
@@ -99,7 +102,4 @@ const normalizeSpace = token => {
 	}
 };
 
-const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
-	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
-
-module.exports = {toCase, removeComment, print, escapeRegExp, text, explode, noWrap, normalizeSpace, extUrlChar};
+module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode, toCase, text, noWrap, normalizeSpace};

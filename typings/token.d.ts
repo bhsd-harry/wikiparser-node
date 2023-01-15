@@ -10,9 +10,9 @@ declare global {
 		parserFunction: [string[], string[], string[], string[]];
 		doubleUnderscore: [string[], string[]];
 		protocol: string;
-		interwiki: string[];
 		img: Record<string, string>;
 		variants: string[];
+		interwiki: string[];
 	}
 
 	type accum = Token[];
