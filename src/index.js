@@ -66,14 +66,6 @@ class Token extends AstElement {
 	/** @type {boolean} */ #include;
 
 	/**
-	 * 保护部分子节点不被移除
-	 * @param {...string|number|Range} args 子节点范围
-	 */
-	#protectChildren = (...args) => {
-		this.#protectedChildren.push(...new Ranges(args));
-	};
-
-	/**
 	 * 将维基语法替换为占位符
 	 * @param {number} n 解析阶段
 	 * @param {boolean} include 是否嵌入
@@ -164,6 +156,14 @@ class Token extends AstElement {
 		}
 	};
 
+	/**
+	 * 保护部分子节点不被移除
+	 * @param {...string|number|Range} args 子节点范围
+	 */
+	#protectChildren = (...args) => {
+		this.#protectedChildren.push(...new Ranges(args));
+	};
+
 	/** 所有图片，包括图库 */
 	get images() {
 		return this.querySelectorAll('file, gallery-image, imagemap-image');
@@ -196,34 +196,6 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * 深拷贝所有子节点
-	 * @complexity `n`
-	 * @returns {(AstText|Token)[]}
-	 */
-	cloneChildNodes() {
-		return this.childNodes.map(child => child.cloneNode());
-	}
-
-	/**
-	 * 深拷贝节点
-	 * @complexity `n`
-	 * @throws `Error` 未定义复制方法
-	 */
-	cloneNode() {
-		if (this.constructor !== Token) {
-			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
-		}
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new Token(undefined, this.#config, false, [], this.#acceptable);
-			token.type = this.type;
-			token.append(...cloned);
-			token.getAttribute('protectChildren')(...this.#protectedChildren);
-			return token;
-		});
-	}
-
-	/**
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
@@ -231,24 +203,24 @@ class Token extends AstElement {
 	 */
 	getAttribute(key) {
 		switch (key) {
-			case 'stage':
-				return this.#stage;
 			case 'config':
 				return structuredClone(this.#config);
 			case 'accum':
 				return this.#accum;
-			case 'acceptable':
-				return this.#acceptable ? {...this.#acceptable} : null;
-			case 'protectChildren':
-				return this.#protectChildren;
-			case 'protectedChildren':
-				return new Ranges(this.#protectedChildren);
 			case 'parseOnce':
 				return this.#parseOnce;
 			case 'buildFromStr':
 				return this.#buildFromStr;
 			case 'build':
 				return this.#build;
+			case 'stage':
+				return this.#stage;
+			case 'acceptable':
+				return this.#acceptable ? {...this.#acceptable} : null;
+			case 'protectChildren':
+				return this.#protectChildren;
+			case 'protectedChildren':
+				return new Ranges(this.#protectedChildren);
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include;
@@ -324,36 +296,6 @@ class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @param {number} i 移除位置
-	 * @returns {Token}
-	 * @complexity `n`
-	 * @throws `Error` 不可移除的子节点
-	 */
-	removeAt(i) {
-		if (!Number.isInteger(i)) {
-			this.typeError('removeAt', 'Number');
-		}
-		const iPos = i < 0 ? i + this.childNodes.length : i;
-		if (!Parser.running) {
-			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
-			if (protectedIndices.includes(iPos)) {
-				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
-			} else if (this.#acceptable) {
-				const acceptableIndices = Object.fromEntries(
-						Object.entries(this.#acceptable)
-							.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length - 1)]),
-					),
-					nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
-				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {
-					throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
-				}
-			}
-		}
-		return super.removeAt(i);
-	}
-
-	/**
-	 * @override
 	 * @template {string|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
@@ -384,6 +326,45 @@ class Token extends AstElement {
 			token.type = 'plain';
 		}
 		return token;
+	}
+
+	/**
+	 * 规范化页面标题
+	 * @param {string} title 标题（含或不含命名空间前缀）
+	 * @param {number} defaultNs 命名空间
+	 */
+	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
+		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);
+	}
+
+	/**
+	 * @override
+	 * @param {number} i 移除位置
+	 * @returns {Token}
+	 * @complexity `n`
+	 * @throws `Error` 不可移除的子节点
+	 */
+	removeAt(i) {
+		if (!Number.isInteger(i)) {
+			this.typeError('removeAt', 'Number');
+		}
+		const iPos = i < 0 ? i + this.childNodes.length : i;
+		if (!Parser.running) {
+			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
+			if (protectedIndices.includes(iPos)) {
+				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
+			} else if (this.#acceptable) {
+				const acceptableIndices = Object.fromEntries(
+						Object.entries(this.#acceptable)
+							.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length - 1)]),
+					),
+					nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
+				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {
+					throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
+				}
+			}
+		}
+		return super.removeAt(i);
 	}
 
 	/**
@@ -581,12 +562,31 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * 规范化页面标题
-	 * @param {string} title 标题（含或不含命名空间前缀）
-	 * @param {number} defaultNs 命名空间
+	 * 深拷贝所有子节点
+	 * @complexity `n`
+	 * @returns {(AstText|Token)[]}
 	 */
-	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);
+	cloneChildNodes() {
+		return this.childNodes.map(child => child.cloneNode());
+	}
+
+	/**
+	 * 深拷贝节点
+	 * @complexity `n`
+	 * @throws `Error` 未定义复制方法
+	 */
+	cloneNode() {
+		if (this.constructor !== Token) {
+			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
+		}
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new Token(undefined, this.#config, false, [], this.#acceptable);
+			token.type = this.type;
+			token.append(...cloned);
+			token.getAttribute('protectChildren')(...this.#protectedChildren);
+			return token;
+		});
 	}
 
 	/**
