@@ -4,8 +4,48 @@ import Title from '../lib/title';
 
 declare global {
 	interface Parser {
+		config: string;
+
+		readonly MAX_STAGE: number;
+
 		warning: boolean;
 		debugging: boolean;
+		running: boolean;
+
+		/** 只储存导出各个Class的文件路径 */
+		classes: Record<string, string>;
+		mixins: Record<string, string>;
+		parsers: Record<string, string>;
+		tool: {$: string};
+
+		readonly aliases: string[][];
+		readonly typeAliases: Record<string, string[]>;
+
+		readonly promises: Promise<void>[];
+
+		/** 获取设置 */
+		getConfig(): ParserConfig;
+
+		/**
+		 * 规范化页面标题
+		 * @param {string} title 标题（含或不含命名空间前缀）
+		 * @param {number} defaultNs 命名空间
+		 * @param {boolean} include 是否嵌入
+		 * @param {boolean} halfParsed 是否是半解析状态
+		 */
+		normalizeTitle(
+			title: string, defaultNs?: number, include?: boolean, config?: ParserConfig, halfParsed?: boolean
+		): Title;
+
+		/**
+		 * 解析wikitext
+		 * @param {string|Token} wikitext wikitext
+		 * @param {boolean} include 是否嵌入
+		 * @param {number} maxStage 最大解析层级
+		 */
+		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
+
+		run<T>(callback: () => T): T;
 
 		/**
 		 * 默认输出到console.warn
@@ -32,54 +72,21 @@ declare global {
 		 */
 		info(msg: string, ...args: *[]): void;
 
-		running: boolean;
-
-		run<T>(callback: () => T): T;
-
-		/** 只储存导出各个Class的文件路径 */
-		classes: Record<string, string>;
-		mixins: Record<string, string>;
-		parsers: Record<string, string>;
-		tool: {$: string};
-		/** 清除各模块的缓存 */
-		clearCache(): void;
-
 		/**
 		 * 打印函数定义
 		 * @param {Function} f 待打印的函数
 		 */
 		log(f: Function): void;
 
-		readonly aliases: string[][];
-
-		config: string;
-		/** 获取设置 */
-		getConfig(): ParserConfig;
+		/** 清除各模块的缓存 */
+		clearCache(): void;
 
 		/**
 		 * 是否是跨维基链接
 		 * @param {string} title 链接标题
 		 */
 		isInterwiki(title: string, config?: ParserConfig): RegExpMatchArray;
-		/**
-		 * 规范化页面标题
-		 * @param {string} title 标题（含或不含命名空间前缀）
-		 * @param {number} defaultNs 命名空间
-		 * @param {boolean} include 是否嵌入
-		 * @param {boolean} halfParsed 是否是半解析状态
-		 */
-		normalizeTitle(
-			title: string, defaultNs?: number, include?: boolean, config?: ParserConfig, halfParsed?: boolean
-		): Title;
 
-		readonly MAX_STAGE: number;
-		/**
-		 * 解析wikitext
-		 * @param {string|Token} wikitext wikitext
-		 * @param {boolean} include 是否嵌入
-		 * @param {number} maxStage 最大解析层级
-		 */
-		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
 		/**
 		 * 再次解析上次出错的wikitext
 		 * @param {string} date 错误日期
@@ -87,10 +94,6 @@ declare global {
 		reparse(date: string): Token;
 
 		getTool(): typeof $;
-
-		readonly typeAliases: Record<string, string[]>;
-
-		readonly promises: Promise<void>[];
 	}
 }
 

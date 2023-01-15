@@ -173,6 +173,19 @@ const /** @type {Parser} */ Parser = {
 		return token;
 	},
 
+	run(callback) {
+		const {running} = this;
+		this.running = true;
+		try {
+			const result = callback();
+			this.running = running;
+			return result;
+		} catch (e) {
+			this.running = running;
+			throw e;
+		}
+	},
+
 	warn(msg, ...args) {
 		if (this.warning) {
 			console.warn('\x1B[33m%s\x1B[0m', msg, ...args);
@@ -193,19 +206,6 @@ const /** @type {Parser} */ Parser = {
 	log(f) {
 		if (typeof f === 'function') {
 			console.log(String(f));
-		}
-	},
-
-	run(callback) {
-		const {running} = this;
-		this.running = true;
-		try {
-			const result = callback();
-			this.running = running;
-			return result;
-		} catch (e) {
-			this.running = running;
-			throw e;
 		}
 	},
 
