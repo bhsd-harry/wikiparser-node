@@ -121,9 +121,14 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 * @returns {(Token|AstText)[]}
 	 */
-	#buildFromStr = str => str.split(/[\0\x7F]/u).map(
-		(s, i) => i % 2 === 0 ? new AstText(s) : this.#accum[Number(s.slice(0, -1))],
-	);
+	#buildFromStr = str => str.split(/[\0\x7F]/u).map((s, i) => {
+		if (i % 2 === 0) {
+			return new AstText(s);
+		} else if (isNaN(s.at(-1))) {
+			return this.#accum[Number(s.slice(0, -1))];
+		}
+		throw new Error(`解析错误！未正确标记的 Token：${s}`);
+	});
 
 	/**
 	 * 将占位符替换为子Token
@@ -148,7 +153,7 @@ class Token extends AstElement {
 	 * @param {string} wikitext wikitext
 	 * @param {accum} accum
 	 */
-	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = []) {
+	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(halfParsed ? wikitext : wikitext.replaceAll(/[\0\x7F]/gu, ''));

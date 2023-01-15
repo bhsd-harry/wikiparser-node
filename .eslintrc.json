@@ -74,6 +74,7 @@
 			2,
 			{
 				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
+				"argsIgnorePattern": "^acceptable$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}
@@ -687,7 +688,8 @@
 					"_",
 					"config",
 					"halfParsed",
-					"selector"
+					"selector",
+					"acceptable"
 				],
 				"contexts": [
 					"FunctionDeclaration",
