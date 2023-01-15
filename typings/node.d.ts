@@ -4,7 +4,6 @@ import AstText from '../lib/text';
 declare global {
 	type TokenAttribute<T> =
 		T extends 'stage' ? number :
-		T extends 'bracket' ? boolean :
 		T extends 'config' ? ParserConfig :
 		T extends 'accum' ? accum :
 		T extends 'parentNode' ? Token|undefined :
@@ -12,6 +11,7 @@ declare global {
 		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
 		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
 		T extends 'build' ? () => void :
+		T extends 'bracket' ? boolean :
 		string;
 
 	interface printOpt {
