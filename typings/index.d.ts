@@ -16,6 +16,7 @@ declare global {
 		 * @param {string} title 标题（含或不含命名空间前缀）
 		 * @param {number} defaultNs 命名空间
 		 * @param {boolean} include 无用参数
+		 * @param {boolean} halfParsed 是否是半解析状态
 		 */
 		normalizeTitle(
 			title: string, defaultNs?: number, include?: boolean, config?: ParserConfig, halfParsed?: boolean
