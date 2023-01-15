@@ -23,7 +23,7 @@ class HasNowikiToken extends Token {
 				return `\0${accum.length - 1}c\x7F${inner}\0${accum.length}c\x7F`;
 			},
 		);
-		super(wikitext, config, true, accum);
+		super(wikitext, config, true, accum, {AstText: ':', NoincludeToken: ':'});
 		this.type = type;
 	}
 }

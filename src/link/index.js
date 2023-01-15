@@ -16,12 +16,14 @@ class LinkToken extends Token {
 	 * @param {string|undefined} linkText 链接显示文字
 	 * @param {accum} accum
 	 */
-	constructor(link, linkText, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+	constructor(link, linkText, title, config = Parser.getConfig(), accum = []) {
+		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
 		const AtomToken = require('../atom');
-		this.insertAt(new AtomToken(link, 'link-target', config, accum));
+		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
+			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
+		}));
 		if (linkText !== undefined) {
-			const inner = new Token(linkText, config, true, accum);
+			const inner = new Token(linkText, config, true, accum, {'Stage-5': ':', ConverterToken: ':'});
 			inner.type = 'link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}

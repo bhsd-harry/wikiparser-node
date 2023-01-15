@@ -689,7 +689,8 @@
 					"config",
 					"halfParsed",
 					"selector",
-					"acceptable"
+					"acceptable",
+					"title"
 				],
 				"contexts": [
 					"FunctionDeclaration",
