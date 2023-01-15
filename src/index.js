@@ -166,7 +166,7 @@ class Token extends AstElement {
 
 	/** 所有图片，包括图库 */
 	get images() {
-		return this.querySelectorAll('file, gallery-image');
+		return this.querySelectorAll('file, gallery-image, imagemap-image');
 	}
 
 	/** 所有内链、外链和自由外链 */

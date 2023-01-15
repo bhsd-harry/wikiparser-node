@@ -92,10 +92,6 @@ class TdToken extends fixedToken(TrToken) {
 		return result;
 	}
 
-	getRowCount = undefined;
-	getNthCol = undefined;
-	insertTableCell = undefined;
-
 	/**
 	 * @param {string} syntax 单元格语法
 	 * @param {string} inner 内部wikitext

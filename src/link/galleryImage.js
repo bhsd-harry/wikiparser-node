@@ -11,10 +11,6 @@ const Title = require('../../lib/title'),
 class GalleryImageToken extends FileToken {
 	type = 'gallery-image';
 
-	size = undefined;
-	width = undefined;
-	height = undefined;
-
 	/**
 	 * @param {string} link 图片文件名
 	 * @param {string|undefined} text 图片参数
@@ -32,10 +28,11 @@ class GalleryImageToken extends FileToken {
 			}
 			accum.splice(accum.indexOf(token), 1);
 		}
-		const newConfig = structuredClone(config);
-		newConfig.img = Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width'));
-		super(link, token?.toString(), title, newConfig, accum);
-		this.setAttribute('bracket', false).seal(['size', 'width', 'height'], true);
+		super(link, token?.toString(), title, config, accum);
+		this.setAttribute('bracket', false);
+		if (!Object.values(config.img).includes('width')) {
+			this.seal(['size', 'width', 'height'], true);
+		}
 	}
 
 	/** @override */

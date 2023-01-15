@@ -28,11 +28,11 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			this.#closing = false;
 			return;
 		} else if (this.#selfClosing) {
-			throw new Error(`这是一个自闭合标签！`);
+			throw new Error('这是一个自闭合标签！');
 		}
 		const {html: [,, tags]} = this.getAttribute('config');
 		if (tags.includes(this.name)) {
-			throw new Error(`这是一个空标签！`);
+			throw new Error('这是一个空标签！');
 		}
 		this.#closing = true;
 	}

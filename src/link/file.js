@@ -17,14 +17,6 @@ class FileToken extends LinkToken {
 	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Record<string, Set<ImageParameterToken>>} */ #args = {};
 
-	selfLink = undefined;
-	interwiki = undefined;
-	setLangLink = undefined;
-	setFragment = undefined;
-	asSelfLink = undefined;
-	setLinkText = undefined;
-	pipeTrick = undefined;
-
 	/** 图片链接 */
 	get link() {
 		return this.getArg('link')?.link;

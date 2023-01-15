@@ -222,7 +222,7 @@ class LinkToken extends Token {
 		link = String(link).trim();
 		const [char] = link;
 		if (char === '#') {
-			throw new SyntaxError(`跨语言链接不能仅为fragment！`);
+			throw new SyntaxError('跨语言链接不能仅为fragment！');
 		} else if (char === ':') {
 			link = link.slice(1);
 		}

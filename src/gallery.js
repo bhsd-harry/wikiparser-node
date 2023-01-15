@@ -24,6 +24,8 @@ class GalleryToken extends Token {
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AstText: ':', GalleryImageToken: ':', HiddenToken: ':'});
+		const newConfig = structuredClone(config);
+		newConfig.img = Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width'));
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
@@ -38,7 +40,7 @@ class GalleryToken extends Token {
 				title = this.normalizeTitle(file, 6, true);
 			}
 			if (title.valid) {
-				super.insertAt(new GalleryImageToken(file, alt, title, config, accum));
+				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, undefined, config, [], {AstText: ':'}));
 			}
@@ -132,7 +134,7 @@ class GalleryToken extends Token {
 	 * @param {number} i 插入位置
 	 * @throws `RangeError` 插入不可见内容
 	 */
-	insertAt(token, i) {
+	insertAt(token, i = 0) {
 		if (typeof token === 'string' && token.trim() || token instanceof HiddenToken) {
 			throw new RangeError('请勿向图库中插入不可见内容！');
 		}

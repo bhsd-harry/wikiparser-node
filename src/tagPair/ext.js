@@ -73,6 +73,11 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new NestedExtToken(inner, newConfig, accum);
 				break;
 			}
+			case 'imagemap': {
+				const ImagemapToken = require('../imagemap');
+				innerToken = new ImagemapToken(inner, config, accum);
+				break;
+			}
 			case 'dynamicpagelist': {
 				const ParamTagToken = require('../paramTag');
 				innerToken = new ParamTagToken(inner, newConfig, accum);

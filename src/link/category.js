@@ -11,13 +11,6 @@ const Title = require('../../lib/title'),
 class CategoryToken extends LinkToken {
 	type = 'category';
 
-	selfLink = undefined;
-	interwiki = undefined;
-	setLangLink = undefined;
-	setFragment = undefined;
-	asSelfLink = undefined;
-	pipeTrick = undefined;
-
 	/** 分类排序关键字 */
 	get sortkey() {
 		return this.childNodes[1]?.text()?.replaceAll(

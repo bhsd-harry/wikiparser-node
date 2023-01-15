@@ -678,7 +678,7 @@ class TableToken extends TrToken {
 		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
 			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]) || set.has(rowLayout[xmax]))
 		) {
-			throw new RangeError(`待合并区域与外侧区域有重叠！`);
+			throw new RangeError('待合并区域与外侧区域有重叠！');
 		}
 		const corner = layout[ymin][xmin],
 			rows = this.getAllRows(),
