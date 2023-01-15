@@ -105,40 +105,32 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
-	 */
-	removeAt(i) {
-		const /** @type {ImageParameterToken} */ token = super.removeAt(i),
-			args = this.getArgs(token.name, false, false);
-		args.delete(token);
-		if (args.size === 0) {
-			this.#keys.delete(token.name);
-		}
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @param {ImageParameterToken} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
-	 */
-	insertAt(token, i = this.childNodes.length) {
-		if (!Parser.running) {
-			this.getArgs(token.name, false, false).add(token);
-			this.#keys.add(token.name);
-		}
-		return super.insertAt(token, i);
-	}
-
-	/**
 	 * 获取所有图片参数节点
 	 * @returns {ImageParameterToken[]}
 	 */
 	getAllArgs() {
 		return this.childNodes.slice(1);
+	}
+
+	/**
+	 * 获取指定图片参数
+	 * @param {string} key 参数名
+	 * @param {boolean} copy 是否返回备份
+	 * @complexity `n`
+	 */
+	getArgs(key, copy = true) {
+		if (typeof key !== 'string') {
+			this.typeError('getArgs', 'String');
+		}
+		copy ||= !Parser.debugging && externalUse('getArgs');
+		let args;
+		if (Object.hasOwn(this.#args, key)) {
+			args = this.#args[key];
+		} else {
+			args = new Set(this.getAllArgs().filter(({name}) => key === name));
+			this.#args[key] = args;
+		}
+		return copy ? new Set(args) : args;
 	}
 
 	/**
@@ -183,24 +175,12 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * 获取指定图片参数
+	 * 获取生效的指定图片参数
 	 * @param {string} key 参数名
-	 * @param {boolean} copy 是否返回备份
 	 * @complexity `n`
 	 */
-	getArgs(key, copy = true) {
-		if (typeof key !== 'string') {
-			this.typeError('getArgs', 'String');
-		}
-		copy ||= !Parser.debugging && externalUse('getArgs');
-		let args;
-		if (Object.hasOwn(this.#args, key)) {
-			args = this.#args[key];
-		} else {
-			args = new Set(this.getAllArgs().filter(({name}) => key === name));
-			this.#args[key] = args;
-		}
-		return copy ? new Set(args) : args;
+	getArg(key) {
+		return [...this.getArgs(key, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**
@@ -210,15 +190,6 @@ class FileToken extends LinkToken {
 	 */
 	hasArg(key) {
 		return this.getArgs(key, false).size > 0;
-	}
-
-	/**
-	 * 获取生效的指定图片参数
-	 * @param {string} key 参数名
-	 * @complexity `n`
-	 */
-	getArg(key) {
-		return [...this.getArgs(key, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**
@@ -313,6 +284,35 @@ class FileToken extends LinkToken {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
 		this.insertAt(imageParameter);
+	}
+
+	/**
+	 * @override
+	 * @param {number} i 移除位置
+	 * @complexity `n`
+	 */
+	removeAt(i) {
+		const /** @type {ImageParameterToken} */ token = super.removeAt(i),
+			args = this.getArgs(token.name, false, false);
+		args.delete(token);
+		if (args.size === 0) {
+			this.#keys.delete(token.name);
+		}
+		return token;
+	}
+
+	/**
+	 * @override
+	 * @param {ImageParameterToken} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @complexity `n`
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		if (!Parser.running) {
+			this.getArgs(token.name, false, false).add(token);
+			this.#keys.add(token.name);
+		}
+		return super.insertAt(token, i);
 	}
 }
 
