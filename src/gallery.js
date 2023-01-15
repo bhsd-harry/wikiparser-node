@@ -22,7 +22,7 @@ class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.insertAt(line.trim() ? new HiddenToken(line, undefined, config, [], {AstText: ':'}) : line);
+				this.insertAt(line.trim() ? new HiddenToken(line, undefined, config, []) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
