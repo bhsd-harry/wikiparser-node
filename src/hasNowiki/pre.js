@@ -1,14 +1,13 @@
 'use strict';
 
-const Parser = require('..'),
-	Token = require('.');
+const Parser = require('../..'),
+	HasNowikiToken = require('.');
 
 /**
  * `<pre>`
- * @classdesc `{childNodes: [...AstText|ConverterToken]}`
+ * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-class PreToken extends Token {
-	type = 'ext-inner';
+class PreToken extends HasNowikiToken {
 	name = 'pre';
 
 	/**
@@ -16,8 +15,9 @@ class PreToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(wikitext, config, true, accum, {AstText: ':', ConverterToken: ':'});
-		this.setAttribute('stage', Parser.MAX_STAGE - 1);
+		super(wikitext, 'ext-inner', config, accum);
+		this.setAttribute('stage', Parser.MAX_STAGE - 1)
+			.setAttribute('acceptable', {AstText: ':', NoincludeToken: ':', ConverterToken: ':'});
 	}
 
 	/** @override */
@@ -33,11 +33,6 @@ class PreToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
-	}
-
-	/** @override */
-	text() {
-		return super.text().replaceAll(/<nowiki>(.*?)<\/nowiki>/gu, '$1');
 	}
 }
 

@@ -51,6 +51,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	 * @override
 	 * @this {{prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'} & HeadingToken}
 	 * @param {string} selector
+	 * @returns {string}
 	 */
 	toString(selector) {
 		const equals = '='.repeat(Number(this.name));

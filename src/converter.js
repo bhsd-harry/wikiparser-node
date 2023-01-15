@@ -62,6 +62,7 @@ class ConverterToken extends Token {
 	/**
 	 * @override
 	 * @param {string} selector
+	 * @returns {string}
 	 */
 	toString(selector) {
 		const {childNodes: [flags, ...rules]} = this;
@@ -92,7 +93,10 @@ class ConverterToken extends Token {
 		}${print(rules, {sep: ';'})}}-</span>`;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	text() {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;

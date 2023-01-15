@@ -38,6 +38,11 @@ class ParamTagToken extends Token {
 		return 1;
 	}
 
+	/** @override */
+	print() {
+		return super.print({sep: '\n'});
+	}
+
 	/**
 	 * @override
 	 * @param {number} start 起始位置
