@@ -42,8 +42,8 @@ class LinkToken extends Token {
 	}
 
 	/** @override */
-	toString() {
-		const str = super.toString('|');
+	toString(selector) {
+		const str = super.toString(selector, '|');
 		return this.#bracket ? `[[${str}]]` : str;
 	}
 

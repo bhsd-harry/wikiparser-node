@@ -32,8 +32,8 @@ class ArgToken extends Token {
 	}
 
 	/** @override */
-	toString() {
-		return `{{{${super.toString('|')}}}}`;
+	toString(selector) {
+		return `{{{${super.toString(selector, '|')}}}}`;
 	}
 
 	/** @override */

@@ -100,12 +100,12 @@ class TranscludeToken extends Token {
 	}
 
 	/** @override */
-	toString() {
+	toString(selector) {
 		const {childNodes, firstChild, modifier} = this;
 		return `{{${modifier}${modifier && ':'}${
 			this.type === 'magic-word'
 				? `${String(firstChild)}${childNodes.length > 1 ? ':' : ''}${childNodes.slice(1).map(String).join('|')}`
-				: super.toString('|')
+				: super.toString(selector, '|')
 		}}}`;
 	}
 

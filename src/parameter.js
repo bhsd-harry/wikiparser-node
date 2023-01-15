@@ -47,8 +47,8 @@ class ParameterToken extends Token {
 	 * @override
 	 * @returns {string}
 	 */
-	toString() {
-		return this.anon ? this.lastChild.toString() : super.toString('=');
+	toString(selector) {
+		return this.anon ? this.lastChild.toString() : super.toString(selector, '=');
 	}
 
 	/** @override */

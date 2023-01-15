@@ -41,12 +41,12 @@ class ConverterRuleToken extends Token {
 	 * @override
 	 * @returns {string}
 	 */
-	toString() {
+	toString(selector) {
 		if (this.childNodes.length === 3) {
 			const {childNodes: [from, variant, to]} = this;
 			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
 		}
-		return super.toString(':');
+		return super.toString(selector, ':');
 	}
 
 	/**
