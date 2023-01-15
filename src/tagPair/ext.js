@@ -41,6 +41,8 @@ class ExtToken extends TagPairToken {
 			case 'combooption':
 			case 'tabs':
 			case 'poll':
+			case 'seo':
+			case 'inputbox':
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
@@ -49,8 +51,13 @@ class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'pre': {
-				const PreToken = require('../pre');
+				const PreToken = require('../hasNowiki/pre');
 				innerToken = new PreToken(inner, newConfig, accum);
+				break;
+			}
+			case 'charinsert': {
+				const CharinsertToken = require('../hasNowiki/charinsert');
+				innerToken = new CharinsertToken(inner, newConfig, accum);
 				break;
 			}
 			case 'references':
@@ -61,9 +68,9 @@ class ExtToken extends TagPairToken {
 				innerToken = new NestedExtToken(inner, newConfig, accum);
 				break;
 			}
-			case 'inputbox': {
-				const InputboxToken = require('../inputbox');
-				innerToken = new InputboxToken(inner, newConfig, accum);
+			case 'dynamicpagelist': {
+				const ParamTagToken = require('../paramTag');
+				innerToken = new ParamTagToken(inner, newConfig, accum);
 				break;
 			}
 

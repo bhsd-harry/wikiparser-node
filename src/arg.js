@@ -22,11 +22,11 @@ class ArgToken extends Token {
 			if (i === 0 || i > 1) {
 				const AtomToken = i === 0 ? require('./atom') : require('./atom/hidden');
 				const token = new AtomToken(parts[i], i === 0 ? 'arg-name' : undefined, config, accum);
-				this.insertAt(token);
+				super.insertAt(token);
 			} else {
 				const token = new Token(parts[i], config, true, accum);
 				token.type = 'arg-default';
-				this.insertAt(token.setAttribute('stage', 2));
+				super.insertAt(token.setAttribute('stage', 2));
 			}
 		}
 	}

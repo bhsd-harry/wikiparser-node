@@ -1,14 +1,13 @@
 'use strict';
 
-const Parser = require('..'),
-	Token = require('.');
+const Parser = require('../..'),
+	HasNowikiToken = require('.');
 
 /**
  * `<pre>`
- * @classdesc `{childNodes: [...AstText|ConverterToken]}`
+ * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-class PreToken extends Token {
-	type = 'ext-inner';
+class PreToken extends HasNowikiToken {
 	name = 'pre';
 
 	/**
@@ -16,7 +15,7 @@ class PreToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(wikitext, config, true, accum);
+		super(wikitext, 'ext-inner', config, accum);
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);
 	}
 

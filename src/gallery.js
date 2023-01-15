@@ -22,7 +22,7 @@ class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.insertAt(line.trim() ? new HiddenToken(line, undefined, config, []) : line);
+				super.insertAt(line.trim() ? new HiddenToken(line, undefined, config, []) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -33,9 +33,9 @@ class GalleryToken extends Token {
 				({valid} = this.normalizeTitle(file, 6, true));
 			}
 			if (valid) {
-				this.insertAt(new GalleryImageToken(file, alt, config, accum));
+				super.insertAt(new GalleryImageToken(file, alt, config, accum));
 			} else {
-				this.insertAt(new HiddenToken(line, undefined, config, []));
+				super.insertAt(new HiddenToken(line, undefined, config, []));
 			}
 		}
 	}

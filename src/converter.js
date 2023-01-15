@@ -34,7 +34,10 @@ class ConverterToken extends Token {
 		}
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @returns {string}
+	 */
 	toString() {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
