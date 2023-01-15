@@ -1,8 +1,8 @@
 'use strict';
 
-const Parser = require('../..'),
-	Token = require('..'),
-	HasNowikiToken = require('.');
+const Parser = require('..'),
+	Token = require('.'),
+	HasNowikiToken = require('./hasNowiki');
 
 /**
  * `<charinsert>`

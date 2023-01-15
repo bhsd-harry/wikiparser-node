@@ -61,7 +61,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 				break;
 			}
 			case 'charinsert': {
-				const CharinsertToken = require('../hasNowiki/charinsert');
+				const CharinsertToken = require('../charinsert');
 				innerToken = new CharinsertToken(inner, newConfig, accum);
 				break;
 			}
