@@ -74,7 +74,7 @@ class ImagemapToken extends Token {
 					Parser.error('<imagemap>标签内必须先包含一张合法图片！', line);
 					error = true;
 				}
-			} else if (line.trim().split('\t')[0] === 'desc') {
+			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {
 				super.insertAt(new AstText(line));
 				continue;
 			} else if (line.includes('[')) {
