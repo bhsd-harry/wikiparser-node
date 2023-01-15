@@ -1,5 +1,8 @@
 'use strict';
 
+const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
+	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
+
 /**
  * remove half-parsed comment-like tokens
  * @param {string} str 原字符串
@@ -59,7 +62,4 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
-const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
-	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
-
-module.exports = {removeComment, print, escapeRegExp, explode, extUrlChar};
+module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode};
