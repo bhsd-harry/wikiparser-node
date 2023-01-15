@@ -27,7 +27,7 @@ class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
-				this.insertAt(line.trim() ? new HiddenToken(line, undefined, config, [], {AstText: ':'}) : line);
+				super.insertAt(line.trim() ? new HiddenToken(line, undefined, config, [], {AstText: ':'}) : line);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -38,9 +38,9 @@ class GalleryToken extends Token {
 				title = this.normalizeTitle(file, 6, true);
 			}
 			if (title.valid) {
-				this.insertAt(new GalleryImageToken(file, alt, title, config, accum));
+				super.insertAt(new GalleryImageToken(file, alt, title, config, accum));
 			} else {
-				this.insertAt(new HiddenToken(line, undefined, config, [], {AstText: ':'}));
+				super.insertAt(new HiddenToken(line, undefined, config, [], {AstText: ':'}));
 			}
 		}
 	}
@@ -123,6 +123,20 @@ class GalleryToken extends Token {
 			cur += str.length + 1;
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @template {string|Token} T
+	 * @param {T} token 待插入的节点
+	 * @param {number} i 插入位置
+	 * @throws `RangeError` 插入不可见内容
+	 */
+	insertAt(token, i) {
+		if (typeof token === 'string' && token.trim() || token instanceof HiddenToken) {
+			throw new RangeError('请勿向图库中插入不可见内容！');
+		}
+		return super.insertAt(token, i);
 	}
 }
 

@@ -30,11 +30,11 @@ class ArgToken extends Token {
 				const token = new AtomToken(parts[i], i === 0 ? 'arg-name' : undefined, config, accum, {
 					'Stage-2': ':', '!HeadingToken': '',
 				});
-				this.insertAt(token);
+				super.insertAt(token);
 			} else {
 				const token = new Token(parts[i], config, true, accum);
 				token.type = 'arg-default';
-				this.insertAt(token.setAttribute('stage', 2));
+				super.insertAt(token.setAttribute('stage', 2));
 			}
 		}
 		this.getAttribute('protectChildren')(0);
@@ -144,7 +144,7 @@ class ArgToken extends Token {
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		const j = i < 0 ? i + this.childNodes.length : i;
-		if (j > 1 && !Parser.running) {
+		if (j > 1) {
 			throw new RangeError(`${this.constructor.name} 不可插入多余的子节点！`);
 		}
 		super.insertAt(token, i);

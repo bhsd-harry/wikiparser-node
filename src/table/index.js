@@ -171,7 +171,7 @@ class TableToken extends TrToken {
 		if (token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
-		} else if (!Parser.running && i === this.childNodes.length && token instanceof SyntaxToken
+		} else if (i > 0 && i === this.childNodes.length && token instanceof SyntaxToken
 			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
 		) {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(String(token))}`);
@@ -196,7 +196,7 @@ class TableToken extends TrToken {
 		} else if (lastChild instanceof SyntaxToken) {
 			lastChild.replaceChildren(...inner.childNodes);
 		} else {
-			this.insertAt(Parser.run(() => {
+			super.insertAt(Parser.run(() => {
 				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 				});
