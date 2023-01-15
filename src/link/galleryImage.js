@@ -26,13 +26,7 @@ class GalleryImageToken extends FileToken {
 			}
 			accum.splice(accum.indexOf(token), 1);
 		}
-		const /** @type {ParserConfig} */ newConfig = JSON.parse(JSON.stringify(config));
-		for (const [k, v] of Object.entries(newConfig.img)) {
-			if (v === 'width') {
-				delete newConfig.img[k];
-			}
-		}
-		super(link, token?.toString(), newConfig, accum);
+		super(link, token?.toString(), config, accum);
 		this.setAttribute('bracket', false);
 	}
 

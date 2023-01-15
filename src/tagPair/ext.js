@@ -24,7 +24,7 @@ class ExtToken extends TagPairToken {
 			AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributeToken(attr, 'ext-attr', config, accum),
-			newConfig = JSON.parse(JSON.stringify(config)),
+			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
 		ext.delete(lcName);
@@ -66,6 +66,11 @@ class ExtToken extends TagPairToken {
 				const NestedToken = require('../nested'),
 					/** @type {typeof NestedToken} */ NestedExtToken = require(`../nested/${lcName}`);
 				innerToken = new NestedExtToken(inner, newConfig, accum);
+				break;
+			}
+			case 'imagemap': {
+				const ImagemapToken = require('../imagemap');
+				innerToken = new ImagemapToken(inner, config, accum);
 				break;
 			}
 			case 'dynamicpagelist': {

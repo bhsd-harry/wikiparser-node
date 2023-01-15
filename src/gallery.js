@@ -19,6 +19,12 @@ class GalleryToken extends Token {
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
+		const newConfig = structuredClone(config);
+		for (const [k, v] of Object.entries(config.img)) {
+			if (v === 'width') {
+				delete newConfig.img[k];
+			}
+		}
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
@@ -33,7 +39,7 @@ class GalleryToken extends Token {
 				({valid} = this.normalizeTitle(file, 6, true));
 			}
 			if (valid) {
-				super.insertAt(new GalleryImageToken(file, alt, config, accum));
+				super.insertAt(new GalleryImageToken(file, alt, newConfig, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, undefined, config, []));
 			}
