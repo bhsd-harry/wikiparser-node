@@ -47,16 +47,6 @@ class GalleryToken extends Token {
 		}
 	}
 
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new GalleryToken(undefined, this.getAttribute('config'));
-			token.append(...cloned);
-			return token;
-		});
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -73,31 +63,6 @@ class GalleryToken extends Token {
 	/** @override */
 	print() {
 		return super.print({sep: '\n'});
-	}
-
-	/** @override */
-	text() {
-		return super.text('\n').replaceAll(/\n\s*\n/gu, '\n');
-	}
-
-	/**
-	 * 插入图片
-	 * @param {string} file 图片文件名
-	 * @param {number} i 插入位置
-	 * @throws `SyntaxError` 非法的文件名
-	 */
-	insertImage(file, i = this.childNodes.length) {
-		let title;
-		try {
-			title = this.normalizeTitle(decodeURIComponent(file), 6, true);
-		} catch {
-			title = this.normalizeTitle(file, 6, true);
-		}
-		if (title.valid) {
-			const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
-			return this.insertAt(token, i);
-		}
-		throw new SyntaxError(`非法的文件名：${file}`);
 	}
 
 	/**
@@ -125,6 +90,41 @@ class GalleryToken extends Token {
 			cur += str.length + 1;
 		}
 		return errors;
+	}
+
+	/** @override */
+	cloneNode() {
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new GalleryToken(undefined, this.getAttribute('config'));
+			token.append(...cloned);
+			return token;
+		});
+	}
+
+	/** @override */
+	text() {
+		return super.text('\n').replaceAll(/\n\s*\n/gu, '\n');
+	}
+
+	/**
+	 * 插入图片
+	 * @param {string} file 图片文件名
+	 * @param {number} i 插入位置
+	 * @throws `SyntaxError` 非法的文件名
+	 */
+	insertImage(file, i = this.childNodes.length) {
+		let title;
+		try {
+			title = this.normalizeTitle(decodeURIComponent(file), 6, true);
+		} catch {
+			title = this.normalizeTitle(file, 6, true);
+		}
+		if (title.valid) {
+			const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
+			return this.insertAt(token, i);
+		}
+		throw new SyntaxError(`非法的文件名：${file}`);
 	}
 
 	/**
