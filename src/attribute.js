@@ -35,9 +35,10 @@ class AttributeToken extends Token {
 	/**
 	 * @param {string} attr 标签属性
 	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
+	 * @param {string} name 标签名
 	 * @param {accum} accum
 	 */
-	constructor(attr, type, config = Parser.getConfig(), accum = []) {
+	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
 		super(attr, config, true, accum);
 		this.type = type;
 		this.#parseAttr();
@@ -57,15 +58,23 @@ class AttributeToken extends Token {
 	 * 设置标签属性
 	 * @param {string} key 属性键
 	 * @param {string|boolean} value 属性值
+	 * @param {boolean} init 是否是初次解析
 	 * @complexity `n`
 	 */
-	setAttr(key, value) {
+	setAttr(key, value, init) {
 		key = key.toLowerCase().trim();
-		if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
+		const parsedKey = key;
+		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
+			if (init) {
+				return false;
+			}
+			return false;
+		} else if (value === false) {
+			this.#attr.delete(key);
+		} else {
 			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
-			return true;
 		}
-		return false;
+		return true;
 	}
 
 	/**
