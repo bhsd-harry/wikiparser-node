@@ -47,7 +47,7 @@ class TdToken extends TrToken {
 	 * @returns {string}
 	 * @complexity `n`
 	 */
-	toString() {
+	toString(selector) {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}
@@ -58,7 +58,10 @@ class TdToken extends TrToken {
 	 */
 	getGaps(i = 0) {
 		i = i < 0 ? i + this.childNodes.length : i;
-		return i === 1 ? this.#innerSyntax.length : 0;
+		if (i === 1) {
+			return this.#innerSyntax.length;
+		}
+		return 0;
 	}
 
 	/** @override */
