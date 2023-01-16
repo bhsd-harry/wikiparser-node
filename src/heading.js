@@ -28,23 +28,13 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		this.setAttribute('name', String(level));
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
-		token.setAttribute('name', this.name).setAttribute('stage', 2);
+		token.setAttribute('name', this.name);
+		token.setAttribute('stage', 2);
 		const SyntaxToken = require('./syntax');
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
 			'Stage-1': ':', '!ExtToken': '',
 		});
 		this.append(token, trail);
-	}
-
-	/** @override */
-	cloneNode() {
-		const [title, trail] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new HeadingToken(Number(this.name), [], this.getAttribute('config'));
-			token.firsthild.safeReplaceWith(title);
-			token.lastChild.safeReplaceWith(trail);
-			return token;
-		});
 	}
 
 	/**
@@ -88,6 +78,17 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			errors.push(generateForSelf(this, this.getRootNode().posFromIndex(start), '<h1>'));
 		}
 		return errors;
+	}
+
+	/** @override */
+	cloneNode() {
+		const [title, trail] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new HeadingToken(Number(this.name), [], this.getAttribute('config'));
+			token.firsthild.safeReplaceWith(title);
+			token.lastChild.safeReplaceWith(trail);
+			return token;
+		});
 	}
 
 	/**
