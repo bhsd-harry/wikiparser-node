@@ -181,6 +181,85 @@ class AttributeToken extends Token {
 		this.setAttribute('name', name).#parseAttr();
 	}
 
+	/**
+	 * 获取标签属性
+	 * @template {string|undefined} T
+	 * @param {T} key 属性键
+	 * @returns {T extends string ? string|true : Record<string, string|true>}
+	 */
+	getAttr(key) {
+		if (key === undefined) {
+			return Object.fromEntries(this.#attr);
+		}
+		return typeof key === 'string' ? this.#attr.get(key.toLowerCase().trim()) : this.typeError('getAttr', 'String');
+	}
+
+	/**
+	 * 设置标签属性
+	 * @param {string} key 属性键
+	 * @param {string|boolean} value 属性值
+	 * @param {boolean} init 是否是初次解析
+	 * @complexity `n`
+	 * @throws `RangeError` 扩展标签属性不能包含">"
+	 * @throws `RangeError` 无效的属性名
+	 */
+	setAttr(key, value, init) {
+		init &&= !externalUse('setAttr');
+		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
+			this.typeError('setAttr', 'String', 'Boolean');
+		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
+			throw new RangeError('扩展标签属性不能包含 ">"！');
+		}
+		key = key.toLowerCase().trim();
+		const config = this.getAttribute('config'),
+			include = this.getAttribute('include'),
+			parsedKey = this.type === 'ext-attr' || init
+				? key
+				: Parser.run(() => {
+					const token = new Token(key, config),
+						parseOnce = token.getAttribute('parseOnce');
+					parseOnce(0, include);
+					return String(parseOnce());
+				});
+		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
+			if (init) {
+				return false;
+			}
+			throw new RangeError(`无效的属性名：${key}！`);
+		} else if (value === false) {
+			this.#attr.delete(key);
+		} else {
+			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
+		}
+		if (!init) {
+			this.sanitize();
+		}
+		return true;
+	}
+
+	/**
+	 * @override
+	 * @this {AttributeToken & {parentNode: HtmlToken}}
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const HtmlToken = require('./html');
+		const errors = super.lint(start);
+		let /** @type {{top: number, left: number}} */ rect;
+		if (this.type === 'html-attr' && this.parentNode.closing && this.text().trim()) {
+			rect = this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
+		}
+		if (!this.#sanitized) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '包含无效属性'));
+		} else if (!this.#quoteBalance) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '未闭合的引号', 'warning'));
+		}
+		return errors;
+	}
+
 	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
@@ -241,19 +320,6 @@ class AttributeToken extends Token {
 		return typeof key === 'string' ? this.#attr.has(key.toLowerCase().trim()) : this.typeError('hasAttr', 'String');
 	}
 
-	/**
-	 * 获取标签属性
-	 * @template {string|undefined} T
-	 * @param {T} key 属性键
-	 * @returns {T extends string ? string|true : Record<string, string|true>}
-	 */
-	getAttr(key) {
-		if (key === undefined) {
-			return Object.fromEntries(this.#attr);
-		}
-		return typeof key === 'string' ? this.#attr.get(key.toLowerCase().trim()) : this.typeError('getAttr', 'String');
-	}
-
 	/** 获取全部的标签属性名 */
 	getAttrNames() {
 		return [...this.#attr.keys()];
@@ -262,49 +328,6 @@ class AttributeToken extends Token {
 	/** 标签是否具有任意属性 */
 	hasAttrs() {
 		return this.getAttrNames().length > 0;
-	}
-
-	/**
-	 * 设置标签属性
-	 * @param {string} key 属性键
-	 * @param {string|boolean} value 属性值
-	 * @param {boolean} init 是否是初次解析
-	 * @complexity `n`
-	 * @throws `RangeError` 扩展标签属性不能包含">"
-	 * @throws `RangeError` 无效的属性名
-	 */
-	setAttr(key, value, init) {
-		init &&= !externalUse('setAttr');
-		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
-			this.typeError('setAttr', 'String', 'Boolean');
-		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
-			throw new RangeError('扩展标签属性不能包含 ">"！');
-		}
-		key = key.toLowerCase().trim();
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			parsedKey = this.type === 'ext-attr' || init
-				? key
-				: Parser.run(() => {
-					const token = new Token(key, config),
-						parseOnce = token.getAttribute('parseOnce');
-					parseOnce(0, include);
-					return String(parseOnce());
-				});
-		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
-			if (init) {
-				return false;
-			}
-			throw new RangeError(`无效的属性名：${key}！`);
-		} else if (value === false) {
-			this.#attr.delete(key);
-		} else {
-			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
-		}
-		if (!init) {
-			this.sanitize();
-		}
-		return true;
 	}
 
 	/**
@@ -367,29 +390,6 @@ class AttributeToken extends Token {
 	/** @override */
 	getPadding() {
 		return this.#leadingSpace().length;
-	}
-
-	/**
-	 * @override
-	 * @this {AttributeToken & {parentNode: HtmlToken}}
-	 * @param {number} start 起始位置
-	 */
-	lint(start = 0) {
-		const HtmlToken = require('./html');
-		const errors = super.lint(start);
-		let /** @type {{top: number, left: number}} */ rect;
-		if (this.type === 'html-attr' && this.parentNode.closing && this.text().trim()) {
-			rect = this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
-		}
-		if (!this.#sanitized) {
-			rect ||= this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '包含无效属性'));
-		} else if (!this.#quoteBalance) {
-			rect ||= this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '未闭合的引号', 'warning'));
-		}
-		return errors;
 	}
 
 	/** @override */
