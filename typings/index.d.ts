@@ -37,6 +37,13 @@ declare global {
 		 * @param {boolean} include 是否嵌入
 		 */
 		print(wikitext: string, include?: boolean, config?: ParserConfig): string;
+
+		/**
+		 * 生成语法错误
+		 * @param {string} wikitext wikitext
+		 * @param {boolean} include 是否嵌入
+		 */
+		lint(wikitext: string, include?: boolean, config?: ParserConfig): LintError[];
 	}
 }
 

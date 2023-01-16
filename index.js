@@ -50,13 +50,18 @@ const /** @type {Parser} */ Parser = {
 		const token = this.parse(wikitext, include, this.MAX_STAGE, config);
 		return `<div class="wikiparser">${token.print()} </div>`;
 	},
+
+	lint(wikitext, include = false, config = Parser.getConfig()) {
+		const token = this.parse(wikitext, include, this.MAX_STAGE, config);
+		return token.lint();
+	},
 };
 
 const /** @type {PropertyDescriptorMap} */ def = {};
 for (const key in Parser) {
 	if (['MAX_STAGE', 'minConfig'].includes(key)) {
 		def[key] = {enumerable: false, writable: false};
-	} else if (!['config', 'normalizeTitle', 'parse', 'print'].includes(key)) {
+	} else if (!['config', 'normalizeTitle', 'parse', 'print', 'lint'].includes(key)) {
 		def[key] = {enumerable: false};
 	}
 }
