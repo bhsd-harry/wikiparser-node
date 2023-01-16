@@ -15,7 +15,7 @@ class ImageParameterToken extends Token {
 	 * @param {T} key 参数名
 	 * @param {string} value 参数值
 	 */
-	static #validate(key, value, config = Parser.getConfig()) {
+	static #validate(key, value, config = Parser.getConfig(), halfParsed = false) {
 		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
 		switch (key) {
 			case 'width':
@@ -35,7 +35,8 @@ class ImageParameterToken extends Token {
 						value = decodeURIComponent(value);
 					} catch {}
 				}
-				return Parser.normalizeTitle(value, 0, false, config, true).valid;
+				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed);
+				return title.valid;
 			}
 			case 'lang':
 				return config.variants.includes(value);
@@ -68,7 +69,7 @@ class ImageParameterToken extends Token {
 					super(undefined, config, true, accum);
 					this.#syntax = str;
 				} else {
-					super(mt[2], config, true, accum);
+					super(mt[2], config, true, accum, {'Stage-2': ':', '!HeadingToken': ':'});
 					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 				}
 				this.setAttribute('name', param[1]).setAttribute('stage', Parser.MAX_STAGE);
@@ -84,9 +85,13 @@ class ImageParameterToken extends Token {
 		return true;
 	}
 
-	/** @override */
-	toString() {
-		return this.#syntax ? this.#syntax.replace('$1', super.toString()) : super.toString();
+	/**
+	 * @override
+	 */
+	toString(selector) {
+		return this.#syntax
+			? this.#syntax.replace('$1', super.toString(selector))
+			: super.toString(selector);
 	}
 
 	/** @override */

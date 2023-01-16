@@ -21,13 +21,10 @@ class ImagemapLinkToken extends Token {
 		const Title = require('../lib/title'),
 			AstText = require('../lib/text'),
 			NoincludeToken = require('./nowiki/noinclude');
+		const SomeLinkToken = linkStuff[2] instanceof Title ? LinkToken : ExtLinkToken;
 		super(undefined, config, true, accum);
 		this.append(
-			new AstText(pre),
-			linkStuff[2] instanceof Title
-				? new LinkToken(...linkStuff, config, accum)
-				: new ExtLinkToken(...linkStuff, config, accum),
-			new NoincludeToken(post, config, accum),
+			new AstText(pre), new SomeLinkToken(...linkStuff, config, accum), new NoincludeToken(post, config, accum),
 		);
 	}
 }
