@@ -14,6 +14,15 @@ class TagPairToken extends fixedToken(Token) {
 	#tags;
 
 	/** getter */
+	get closed() {
+		return this.#closed;
+	}
+
+	set closed(value) {
+		this.#closed ||= Boolean(value);
+	}
+
+	/** getter */
 	get selfClosing() {
 		return this.#selfClosing;
 	}
@@ -24,15 +33,6 @@ class TagPairToken extends fixedToken(Token) {
 			Parser.warn(`<${this.name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
 		}
 		this.#selfClosing = value;
-	}
-
-	/** getter */
-	get closed() {
-		return this.#closed;
-	}
-
-	set closed(value) {
-		this.#closed ||= Boolean(value);
 	}
 
 	/** 内部wikitext */
@@ -49,7 +49,8 @@ class TagPairToken extends fixedToken(Token) {
 	 */
 	constructor(name, attr, inner, closed, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true);
-		this.setAttribute('name', name.toLowerCase()).#tags = [name, closed || name];
+		this.setAttribute('name', name.toLowerCase());
+		this.#tags = [name, closed || name];
 		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
 		this.append(attr, inner);
@@ -61,16 +62,6 @@ class TagPairToken extends fixedToken(Token) {
 			index = Infinity;
 		}
 		accum.splice(index, 0, this);
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		return key === 'tags' ? [...this.#tags] : super.getAttribute(key);
 	}
 
 	/**
@@ -107,6 +98,16 @@ class TagPairToken extends fixedToken(Token) {
 		return super.print(this.#selfClosing
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.#closed ? `&lt;/${closing}&gt;` : ''});
+	}
+
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @returns {TokenAttribute<T>}
+	 */
+	getAttribute(key) {
+		return key === 'tags' ? [...this.#tags] : super.getAttribute(key);
 	}
 
 	/**
