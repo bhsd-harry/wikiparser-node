@@ -48,17 +48,6 @@ class ConverterToken extends Token {
 		this.getAttribute('protectChildren')(0);
 	}
 
-	/** @override */
-	cloneNode() {
-		const [flags, ...rules] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ConverterToken([], [], this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(flags);
-			token.append(...rules);
-			return token;
-		});
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -77,7 +66,7 @@ class ConverterToken extends Token {
 	}
 
 	/**
-	 * /** @override
+	 * @override
 	 * @param {number} i 子节点位置
 	 */
 	getGaps(i = 0) {
@@ -91,6 +80,17 @@ class ConverterToken extends Token {
 		return `<span class="wpb-converter">-{${flags.print()}${
 			flags.childNodes.length > 0 ? '|' : ''
 		}${print(rules, {sep: ';'})}}-</span>`;
+	}
+
+	/** @override */
+	cloneNode() {
+		const [flags, ...rules] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ConverterToken([], [], this.getAttribute('config'));
+			token.firstChild.safeReplaceWith(flags);
+			token.append(...rules);
+			return token;
+		});
 	}
 
 	/**
