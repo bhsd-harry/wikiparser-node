@@ -23,7 +23,9 @@ class ParameterToken extends Token {
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		const AtomToken = require('./atom');
-		const keyToken = new AtomToken(typeof key === 'number' ? undefined : key, 'parameter-key', config, accum),
+		const keyToken = new AtomToken(typeof key === 'number' ? undefined : key, 'parameter-key', config, accum, {
+				'Stage-2': ':', '!HeadingToken': '',
+			}),
 			token = new Token(value, config, true, accum);
 		token.type = 'parameter-value';
 		this.append(keyToken, token.setAttribute('stage', 2));
@@ -37,7 +39,7 @@ class ParameterToken extends Token {
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode && parentNode instanceof TranscludeToken) {
-				parentNode.getArgs(name).add(this);
+				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
 		return this;
@@ -48,7 +50,9 @@ class ParameterToken extends Token {
 	 * @returns {string}
 	 */
 	toString(selector) {
-		return this.anon ? this.lastChild.toString() : super.toString(selector, '=');
+		return this.anon
+			? this.lastChild.toString(selector)
+			: super.toString(selector, '=');
 	}
 
 	/** @override */

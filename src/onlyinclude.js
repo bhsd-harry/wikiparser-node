@@ -18,8 +18,10 @@ class OnlyincludeToken extends Token {
 		super(inner, config, true, accum);
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 */
+	toString(selector) {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
