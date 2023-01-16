@@ -24,11 +24,6 @@ class CommentToken extends hidden(NowikiToken) {
 	}
 
 	/** @override */
-	toString() {
-		return `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
-	}
-
-	/** @override */
 	getPadding() {
 		return 4;
 	}
@@ -44,6 +39,11 @@ class CommentToken extends hidden(NowikiToken) {
 	 */
 	lint(start = 0) {
 		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的HTML注释')];
+	}
+
+	/** @override */
+	toString() {
+		return `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
 	}
 }
 
