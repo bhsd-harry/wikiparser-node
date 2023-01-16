@@ -118,6 +118,44 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return super.toString(selector, '\n');
+	}
+
+	/** @override */
+	getGaps() {
+		return 1;
+	}
+
+	/** @override */
+	print() {
+		return super.print({sep: '\n'});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			rect = this.getRootNode().posFromIndex(start);
+		if (this.image) {
+			errors.push(
+				...this.childNodes.filter(child => {
+					const str = String(child).trim();
+					return child.type === 'noinclude' && str && str[0] !== '#';
+				}).map(child => generateForChild(child, rect, '无效的<imagemap>链接')),
+			);
+		} else {
+			errors.push(generateForSelf(this, rect, '缺少图片的<imagemap>'));
+		}
+		return errors;
+	}
+
+	/**
+	 * @override
 	 * @template {string|Token} T
 	 * @param {T} token 待插入的节点
 	 * @param {number} i 插入位置
@@ -155,44 +193,6 @@ class ImagemapToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		return super.toString(selector, '\n');
-	}
-
-	/** @override */
-	getGaps() {
-		return 1;
-	}
-
-	/** @override */
-	print() {
-		return super.print({sep: '\n'});
-	}
-
-	/**
-	 * @override
-	 * @param {number} start 起始位置
-	 */
-	lint(start = 0) {
-		const errors = super.lint(start),
-			rect = this.getRootNode().posFromIndex(start);
-		if (this.image) {
-			errors.push(
-				...this.childNodes.filter(child => {
-					const str = String(child).trim();
-					return child.type === 'noinclude' && str && str[0] !== '#';
-				}).map(child => generateForChild(child, rect, '无效的<imagemap>链接')),
-			);
-		} else {
-			errors.push(generateForSelf(this, rect, '缺少图片的<imagemap>'));
-		}
-		return errors;
 	}
 
 	/** @override */
