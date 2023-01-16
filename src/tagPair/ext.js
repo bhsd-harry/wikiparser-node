@@ -23,7 +23,7 @@ class ExtToken extends TagPairToken {
 		const Token = require('..'),
 			AttributeToken = require('../attribute');
 		const lcName = name.toLowerCase(),
-			attrToken = new AttributeToken(attr, 'ext-attr', config, accum),
+			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;

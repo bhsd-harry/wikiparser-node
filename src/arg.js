@@ -17,11 +17,13 @@ class ArgToken extends Token {
 	 * @complexity `n`
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, true, accum, {AtomToken: 0, Token: 1, HiddenToken: '2:'});
 		for (let i = 0; i < parts.length; i++) {
 			if (i === 0 || i > 1) {
 				const AtomToken = i === 0 ? require('./atom') : require('./atom/hidden');
-				const token = new AtomToken(parts[i], i === 0 ? 'arg-name' : undefined, config, accum);
+				const token = new AtomToken(parts[i], i === 0 ? 'arg-name' : undefined, config, accum, {
+					'Stage-2': ':', '!HeadingToken': '',
+				});
 				super.insertAt(token);
 			} else {
 				const token = new Token(parts[i], config, true, accum);
