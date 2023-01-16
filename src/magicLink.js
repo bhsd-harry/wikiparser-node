@@ -17,7 +17,7 @@ class MagicLinkToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(url, doubleSlash, config = Parser.getConfig(), accum = []) {
-		super(url, config, true, accum);
+		super(url, config, true, accum, {'Stage-1': ':', '!ExtToken': ''});
 		if (doubleSlash) {
 			this.type = 'ext-link-url';
 		}
