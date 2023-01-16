@@ -73,23 +73,6 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		this.#tag = name;
 	}
 
-	/** @override */
-	cloneNode() {
-		const [attr] = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config));
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		return key === 'tag' ? this.#tag : super.getAttribute(key);
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -133,24 +116,6 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		return errors;
 	}
 
-	/** @override */
-	text() {
-		return `<${this.#closing ? '/' : ''}${this.#tag}${super.text()}${this.#selfClosing ? '/' : ''}>`;
-	}
-
-	/**
-	 * 更换标签名
-	 * @param {string} tag 标签名
-	 * @throws `RangeError` 非法的HTML标签
-	 */
-	replaceTag(tag) {
-		const name = tag.toLowerCase();
-		if (!this.getAttribute('config').html.flat().includes(name)) {
-			throw new RangeError(`非法的HTML标签：${tag}`);
-		}
-		this.setAttribute('name', name).#tag = tag;
-	}
-
 	/**
 	 * 搜索匹配的标签
 	 * @complexity `n`
@@ -188,6 +153,41 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			}
 		}
 		throw new SyntaxError(`未${this.#closing ? '匹配的闭合' : '闭合的'}标签：${string}`);
+	}
+
+	/** @override */
+	cloneNode() {
+		const [attr] = this.cloneChildNodes(),
+			config = this.getAttribute('config');
+		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config));
+	}
+
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @returns {TokenAttribute<T>}
+	 */
+	getAttribute(key) {
+		return key === 'tag' ? this.#tag : super.getAttribute(key);
+	}
+
+	/** @override */
+	text() {
+		return `<${this.#closing ? '/' : ''}${this.#tag}${super.text()}${this.#selfClosing ? '/' : ''}>`;
+	}
+
+	/**
+	 * 更换标签名
+	 * @param {string} tag 标签名
+	 * @throws `RangeError` 非法的HTML标签
+	 */
+	replaceTag(tag) {
+		const name = tag.toLowerCase();
+		if (!this.getAttribute('config').html.flat().includes(name)) {
+			throw new RangeError(`非法的HTML标签：${tag}`);
+		}
+		this.setAttribute('name', name).#tag = tag;
 	}
 
 	/** 局部闭合 */
