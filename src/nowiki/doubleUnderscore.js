@@ -11,6 +11,24 @@ const hidden = require('../../mixin/hidden'),
 class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	type = 'double-underscore';
 
+	/** @override */
+	getPadding() {
+		return 2;
+	}
+
+	/** @override */
+	print() {
+		return super.print({pre: '__', post: '__'});
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return selector && this.matches(selector) ? '' : `__${String(this.firstChild)}__`;
+	}
+
 	/**
 	 * @param {string} word 状态开关名
 	 * @param {accum} accum
@@ -23,24 +41,6 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	/** @override */
 	cloneNode() {
 		return Parser.run(() => new DoubleUnderscoreToken(String(this.firstChild), this.getAttribute('config')));
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		return selector && this.matches(selector) ? '' : `__${String(this.firstChild)}__`;
-	}
-
-	/** @override */
-	getPadding() {
-		return 2;
-	}
-
-	/** @override */
-	print() {
-		return super.print({pre: '__', post: '__'});
 	}
 
 	/**
