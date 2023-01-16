@@ -147,18 +147,6 @@ class TableToken extends TrToken {
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
-	 */
-	lint(start = 0) {
-		const errors = super.lint(start);
-		if (!this.closed) {
-			errors.push(generateForChild(this.firstChild, this.getRootNode().posFromIndex(start), '未闭合的表格'));
-		}
-		return errors;
-	}
-
-	/**
-	 * @override
 	 * @template {TrToken|SyntaxToken} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
@@ -177,6 +165,18 @@ class TableToken extends TrToken {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(String(token))}`);
 		}
 		return super.insertAt(token, i);
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (!this.closed) {
+			errors.push(generateForChild(this.firstChild, this.getRootNode().posFromIndex(start), '未闭合的表格'));
+		}
+		return errors;
 	}
 
 	/**
