@@ -116,7 +116,7 @@ const /** @type {Parser} */ Parser = {
 				}
 			};
 			this.run(() => {
-				build(['title', 'fragment']);
+				build(['title', 'main', 'fragment']);
 			});
 		}
 		return titleObj;
