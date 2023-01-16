@@ -111,9 +111,50 @@ class TdToken extends fixedToken(TrToken) {
 		// eslint-disable-next-line no-unsafe-optional-chaining
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
+		this.insertAt(innerToken.setAttribute('stage', 4));
 		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
-			.seal(['getRowCount', 'getNthCol', 'insertTableCell'], true)
-			.insertAt(innerToken.setAttribute('stage', 4));
+			.seal(['getRowCount', 'getNthCol', 'insertTableCell'], true);
+	}
+
+	/** @override */
+	afterBuild() {
+		if (this.#innerSyntax.includes('\0')) {
+			this.#innerSyntax = this.getAttribute('buildFromStr')(this.#innerSyntax).map(String).join('');
+		}
+		return this;
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 * @returns {string}
+	 * @complexity `n`
+	 */
+	toString(selector) {
+		this.#correct();
+		const {childNodes: [syntax, attr, inner]} = this;
+		return selector && this.matches(selector)
+			? ''
+			: `${syntax.toString(selector)}${attr.toString(selector)}${this.#innerSyntax}${inner.toString(selector)}`;
+	}
+
+	/**
+	 * @override
+	 * @param {number} i 子节点位置
+	 */
+	getGaps(i = 0) {
+		i = i < 0 ? i + this.childNodes.length : i;
+		if (i === 1) {
+			this.#correct();
+			return this.#innerSyntax.length;
+		}
+		return 0;
+	}
+
+	/** @override */
+	print() {
+		const {childNodes: [syntax, attr, inner]} = this;
+		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 
 	/** @override */
@@ -173,14 +214,6 @@ class TdToken extends fixedToken(TrToken) {
 		return super.setAttribute(key, value);
 	}
 
-	/** @override */
-	afterBuild() {
-		if (this.#innerSyntax.includes('\0')) {
-			this.#innerSyntax = this.getAttribute('buildFromStr')(this.#innerSyntax).map(String).join('');
-		}
-		return this;
-	}
-
 	/**
 	 * @override
 	 * @param {string} syntax 表格语法
@@ -213,39 +246,6 @@ class TdToken extends fixedToken(TrToken) {
 			const {subtype, escape} = this.getSyntax();
 			this.setSyntax(subtype, escape);
 		}
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 * @returns {string}
-	 * @complexity `n`
-	 */
-	toString(selector) {
-		this.#correct();
-		const {childNodes: [syntax, attr, inner]} = this;
-		return selector && this.matches(selector)
-			? ''
-			: `${syntax.toString(selector)}${attr.toString(selector)}${this.#innerSyntax}${inner.toString(selector)}`;
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 子节点位置
-	 */
-	getGaps(i = 0) {
-		i = i < 0 ? i + this.childNodes.length : i;
-		if (i === 1) {
-			this.#correct();
-			return this.#innerSyntax.length;
-		}
-		return 0;
-	}
-
-	/** @override */
-	print() {
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 
 	/**
