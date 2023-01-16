@@ -30,8 +30,21 @@ class CommentToken extends hidden(NowikiToken) {
 	}
 
 	/** @override */
-	cloneNode() {
-		return Parser.run(() => new CommentToken(String(this.firstChild), this.closed, this.getAttribute('config')));
+	getPadding() {
+		return 4;
+	}
+
+	/** @override */
+	print() {
+		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的HTML注释')];
 	}
 
 	/**
@@ -49,21 +62,8 @@ class CommentToken extends hidden(NowikiToken) {
 	}
 
 	/** @override */
-	getPadding() {
-		return 4;
-	}
-
-	/** @override */
-	print() {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
-	}
-
-	/**
-	 * @override
-	 * @param {number} start 起始位置
-	 */
-	lint(start = 0) {
-		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的HTML注释')];
+	cloneNode() {
+		return Parser.run(() => new CommentToken(String(this.firstChild), this.closed, this.getAttribute('config')));
 	}
 }
 
