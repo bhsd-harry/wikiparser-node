@@ -63,29 +63,6 @@ class ExtLinkToken extends Token {
 		this.getAttribute('protectChildren')(0);
 	}
 
-	/** @override */
-	cloneNode() {
-		const [url, text] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(url);
-			if (text) {
-				token.insertAt(text);
-			}
-			return token;
-		});
-	}
-
-	/** 修正空白字符 */
-	#correct() {
-		if (!this.#space && this.childNodes.length > 1
-			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
-		) {
-			this.#space = ' ';
-		}
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -116,6 +93,29 @@ class ExtLinkToken extends Token {
 	print() {
 		const {length} = this;
 		return super.print(length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`});
+	}
+
+	/** @override */
+	cloneNode() {
+		const [url, text] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config'));
+			token.firstChild.safeReplaceWith(url);
+			if (text) {
+				token.insertAt(text);
+			}
+			return token;
+		});
+	}
+
+	/** 修正空白字符 */
+	#correct() {
+		if (!this.#space && this.childNodes.length > 1
+			// 都替换成`<`肯定不对，但无妨
+			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
+		) {
+			this.#space = ' ';
+		}
 	}
 
 	/** @override */
