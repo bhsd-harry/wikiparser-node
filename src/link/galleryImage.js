@@ -1,6 +1,8 @@
 'use strict';
 
-const Title = require('../../lib/title'),
+const {undo} = require('../../util/debug'),
+	{generateForSelf} = require('../../util/lint'),
+	Title = require('../../lib/title'),
 	Parser = require('../..'),
 	FileToken = require('./file');
 
@@ -10,6 +12,7 @@ const Title = require('../../lib/title'),
  */
 class GalleryImageToken extends FileToken {
 	type = 'gallery-image';
+	#invalid = false;
 
 	/**
 	 * @param {string} link 图片文件名
@@ -35,6 +38,39 @@ class GalleryImageToken extends FileToken {
 		}
 	}
 
+	/**
+	 * @override
+	 * @throws `Error` 非法的内链目标
+	 * @throws `Error` 不可更改命名空间
+	 */
+	afterBuild() {
+		const initAsImagemap = this.type === 'imagemap-image',
+			{
+				title: initTitle, interwiki: initInterwiki, ns: initNs,
+			} = this.normalizeTitle(this.firstChild.text(), initAsImagemap ? 0 : 6, initAsImagemap);
+		this.setAttribute('name', initTitle);
+		this.#invalid = initInterwiki || initNs !== 6; // 只用于gallery-image的首次解析
+		const /** @type {AstListener} */ linkListener = (e, data) => {
+			const {prevTarget} = e;
+			if (prevTarget?.type === 'link-target') {
+				const name = prevTarget.text(),
+					imagemap = this.type === 'imagemap-image',
+					{title, interwiki, ns, valid} = this.normalizeTitle(name, imagemap ? 0 : 6, imagemap);
+				if (!valid) {
+					undo(e, data);
+					throw new Error(`非法的图片文件名：${name}`);
+				} else if (interwiki || ns !== 6) {
+					undo(e, data);
+					throw new Error(`图片链接不可更改命名空间：${name}`);
+				}
+				this.setAttribute('name', title);
+				this.#invalid = false;
+			}
+		};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
+		return this;
+	}
+
 	/** @override */
 	getPadding() {
 		return 0;
@@ -46,6 +82,18 @@ class GalleryImageToken extends FileToken {
 	 */
 	toString(selector) {
 		return super.toString(selector).replaceAll('\n', ' ');
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (this.#invalid) {
+			errors.push(generateForSelf(this, this.getRootNode().posFromIndex(start), '无效的图库图片'));
+		}
+		return errors;
 	}
 
 	/** @override */
