@@ -78,14 +78,6 @@ class GalleryImageToken extends FileToken {
 
 	/**
 	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		return super.toString(selector).replaceAll('\n', ' ');
-	}
-
-	/**
-	 * @override
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
@@ -94,6 +86,14 @@ class GalleryImageToken extends FileToken {
 			errors.push(generateForSelf(this, this.getRootNode().posFromIndex(start), '无效的图库图片'));
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return super.toString(selector).replaceAll('\n', ' ');
 	}
 
 	/** @override */
