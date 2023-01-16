@@ -56,18 +56,6 @@ class ParameterToken extends fixedToken(Token) {
 	}
 
 	/** @override */
-	cloneNode() {
-		const [key, value] = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
-			token.firstChild.safeReplaceWith(key);
-			token.lastChild.safeReplaceWith(value);
-			return token.afterBuild();
-		});
-	}
-
-	/** @override */
 	afterBuild() {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
@@ -113,6 +101,18 @@ class ParameterToken extends fixedToken(Token) {
 	/** @override */
 	print() {
 		return super.print({sep: this.anon ? '' : '='});
+	}
+
+	/** @override */
+	cloneNode() {
+		const [key, value] = this.cloneChildNodes(),
+			config = this.getAttribute('config');
+		return Parser.run(() => {
+			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
+			token.firstChild.safeReplaceWith(key);
+			token.lastChild.safeReplaceWith(value);
+			return token.afterBuild();
+		});
 	}
 
 	/**
