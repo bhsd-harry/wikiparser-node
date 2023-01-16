@@ -9,17 +9,17 @@ const Parser = require('..');
  */
 const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js');
-	const regex = /^([^\n<>[\]{}|]+)(?:\|(.*?[^\]]))?\]\](.*)$/su,
-		regexImg = /^([^\n<>[\]{}|]+)\|(.*)$/su,
+	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
+		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
 		bits = wikitext.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
-		let mightBeImg, link, text, after;
+		let mightBeImg, link, delimiter, text, after;
 		const x = bits[i],
 			m = regex.exec(x);
 		if (m) {
-			[, link, text, after] = m;
+			[, link, delimiter, text, after] = m;
 			if (after[0] === ']' && text?.includes('[')) {
 				text += ']';
 				after = after.slice(1);
@@ -28,7 +28,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			const m2 = regexImg.exec(x);
 			if (m2) {
 				mightBeImg = true;
-				[, link, text] = m2;
+				[, link, delimiter, text] = m2;
 			}
 		}
 		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7F/u.test(link)) {
@@ -74,7 +74,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			}
 			text = parseLinks(text, config, accum);
 			if (!found) {
-				s += `[[${link}|${text}`;
+				s += `[[${link}${delimiter}${text}`;
 				continue;
 			}
 		}
@@ -88,7 +88,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 				LinkToken = require('../src/link/category');
 			}
 		}
-		new LinkToken(link, text, title, config, accum);
+		new LinkToken(link, text, title, config, accum, delimiter);
 	}
 	return s;
 };

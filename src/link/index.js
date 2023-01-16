@@ -10,13 +10,15 @@ const Parser = require('../..'),
 class LinkToken extends Token {
 	type = 'link';
 	#bracket = true;
+	#delimiter;
 
 	/**
 	 * @param {string} link 链接标题
 	 * @param {string|undefined} linkText 链接显示文字
 	 * @param {accum} accum
+	 * @param {string} delimiter `|`
 	 */
-	constructor(link, linkText, title, config = Parser.getConfig(), accum = []) {
+	constructor(link, linkText, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
 		const AtomToken = require('../atom');
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
@@ -27,6 +29,17 @@ class LinkToken extends Token {
 			inner.type = 'link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
+		this.#delimiter = delimiter;
+	}
+
+	/**
+	 * @override
+	 */
+	afterBuild() {
+		if (this.#delimiter?.includes('\0')) {
+			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter).map(String).join('');
+		}
+		return this;
 	}
 
 	/**
@@ -47,7 +60,7 @@ class LinkToken extends Token {
 	 * @override
 	 */
 	toString(selector) {
-		const str = super.toString(selector, '|');
+		const str = super.toString(selector, this.#delimiter);
 		return this.#bracket ? `[[${str}]]` : str;
 	}
 
@@ -58,12 +71,12 @@ class LinkToken extends Token {
 
 	/** @override */
 	getGaps() {
-		return 1;
+		return this.#delimiter.length;
 	}
 
 	/** @override */
 	print() {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: '|'} : {sep: '|'});
+		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
 	}
 }
 

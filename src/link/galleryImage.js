@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('../..'),
+const {generateForSelf} = require('../../util/lint'),
+	Parser = require('../..'),
 	FileToken = require('./file');
 
 /**
@@ -9,6 +10,7 @@ const Parser = require('../..'),
  */
 class GalleryImageToken extends FileToken {
 	type = 'gallery-image';
+	#invalid = false;
 
 	/**
 	 * @param {string} link 图片文件名
@@ -30,9 +32,33 @@ class GalleryImageToken extends FileToken {
 		this.setAttribute('bracket', false);
 	}
 
+	/**
+	 * @override
+	 */
+	afterBuild() {
+		const initAsImagemap = this.type === 'imagemap-image',
+			{
+				interwiki: initInterwiki, ns: initNs,
+			} = this.normalizeTitle(this.firstChild.text(), initAsImagemap ? 0 : 6, initAsImagemap);
+		this.#invalid = initInterwiki || initNs !== 6; // 只用于gallery-image的首次解析
+		return this;
+	}
+
 	/** @override */
 	getPadding() {
 		return 0;
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (this.#invalid) {
+			errors.push(generateForSelf(this, this.getRootNode().posFromIndex(start), '无效的图库图片'));
+		}
+		return errors;
 	}
 }
 
