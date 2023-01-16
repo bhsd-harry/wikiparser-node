@@ -22,7 +22,6 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		return `__${String(this.firstChild)}__`;

@@ -40,8 +40,10 @@ class TagPairToken extends Token {
 		accum.splice(index, 0, this);
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 */
+	toString(selector) {
 		const {firstChild, lastChild} = this,
 			[opening, closing] = this.#tags;
 		return this.#selfClosing

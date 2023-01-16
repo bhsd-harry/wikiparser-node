@@ -27,7 +27,6 @@ class ParamTagToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		return super.toString(selector, '\n');

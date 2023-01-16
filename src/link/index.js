@@ -45,7 +45,6 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		const str = super.toString(selector, '|');

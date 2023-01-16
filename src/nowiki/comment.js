@@ -43,7 +43,6 @@ class CommentToken extends hidden(NowikiToken) {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		return `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
