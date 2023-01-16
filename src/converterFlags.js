@@ -22,17 +22,6 @@ class ConverterFlagsToken extends Token {
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ConverterFlagsToken([], this.getAttribute('config'));
-			token.append(...cloned);
-			token.afterBuild();
-			return token;
-		});
-	}
-
 	/**
 	 * @override
 	 * @complexity `n`
@@ -46,50 +35,6 @@ class ConverterFlagsToken extends Token {
 		};
 		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterFlagsListener);
 		return this;
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		if (key === 'flags') {
-			return Parser.debugging ? this.#flags : [...this.#flags];
-		}
-		return super.getAttribute(key);
-	}
-
-	/**
-	 * @override
-	 * @param {PropertyKey} key 属性键
-	 */
-	hasAttribute(key) {
-		return key === 'flags' || super.hasAttribute(key);
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
-	 */
-	removeAt(i) {
-		const /** @type {AtomToken} */ token = super.removeAt(i);
-		this.#flags?.splice(i, 1);
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @param {AtomToken} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
-	 */
-	insertAt(token, i = this.childNodes.length) {
-		super.insertAt(token, i);
-		this.#flags?.splice(i, 0, token.text());
-		return token;
 	}
 
 	/**
@@ -136,26 +81,6 @@ class ConverterFlagsToken extends Token {
 		return errors;
 	}
 
-	/** @override */
-	text() {
-		return super.text(';');
-	}
-
-	/**
-	 * 获取转换类型标记节点
-	 * @param {string} flag 转换类型标记
-	 * @returns {AtomToken[]}
-	 * @complexity `n`
-	 */
-	getFlagToken(flag) {
-		return this.#flags.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
-	}
-
-	/** 获取所有转换类型标记 */
-	getAllFlags() {
-		return new Set(this.#flags);
-	}
-
 	/**
 	 * 获取未知转换类型标记
 	 * @complexity `n`
@@ -168,6 +93,81 @@ class ConverterFlagsToken extends Token {
 	getVariantFlags() {
 		const {variants} = this.getAttribute('config');
 		return this.#flags.filter(flag => variants.includes(flag));
+	}
+
+	/** @override */
+	cloneNode() {
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ConverterFlagsToken([], this.getAttribute('config'));
+			token.append(...cloned);
+			token.afterBuild();
+			return token;
+		});
+	}
+
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @returns {TokenAttribute<T>}
+	 */
+	getAttribute(key) {
+		if (key === 'flags') {
+			return Parser.debugging ? this.#flags : [...this.#flags];
+		}
+		return super.getAttribute(key);
+	}
+
+	/**
+	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'flags' || super.hasAttribute(key);
+	}
+
+	/**
+	 * @override
+	 * @param {number} i 移除位置
+	 * @complexity `n`
+	 */
+	removeAt(i) {
+		const /** @type {AtomToken} */ token = super.removeAt(i);
+		this.#flags?.splice(i, 1);
+		return token;
+	}
+
+	/**
+	 * @override
+	 * @param {AtomToken} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @complexity `n`
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		super.insertAt(token, i);
+		this.#flags?.splice(i, 0, token.text());
+		return token;
+	}
+
+	/** @override */
+	text() {
+		return super.text(';');
+	}
+
+	/** 获取所有转换类型标记 */
+	getAllFlags() {
+		return new Set(this.#flags);
+	}
+
+	/**
+	 * 获取转换类型标记节点
+	 * @param {string} flag 转换类型标记
+	 * @returns {AtomToken[]}
+	 * @complexity `n`
+	 */
+	getFlagToken(flag) {
+		return this.#flags.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 
 	/**
