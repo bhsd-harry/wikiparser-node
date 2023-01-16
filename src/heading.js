@@ -23,7 +23,9 @@ class HeadingToken extends Token {
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
 		const SyntaxToken = require('./syntax');
-		const trail = new SyntaxToken(input[1], 'heading-trail', config, accum);
+		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
+			'Stage-1': ':', '!ExtToken': '',
+		});
 		this.append(token, trail);
 	}
 
@@ -31,14 +33,14 @@ class HeadingToken extends Token {
 	 * @override
 	 * @returns {string}
 	 */
-	toString() {
+	toString(selector) {
 		const equals = '='.repeat(Number(this.name));
 		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;
 	}
 
 	/** @override */
 	getPadding() {
-		return Number(this.name);
+		return super.getPadding() + Number(this.name);
 	}
 
 	/** @override */
