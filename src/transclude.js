@@ -299,7 +299,9 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 10).title);
+		if (this.type === 'template') {
+			this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 10).title);
+		}
 		if (this.isTemplate()) {
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
