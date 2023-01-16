@@ -40,29 +40,6 @@ class ArgToken extends Token {
 		this.getAttribute('protectChildren')(0);
 	}
 
-	/** @override */
-	cloneNode() {
-		const [name, ...cloned] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ArgToken([''], this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(name);
-			token.append(...cloned);
-			return token.afterBuild();
-		});
-	}
-
-	/** @override */
-	afterBuild() {
-		this.setAttribute('name', this.firstChild.text().trim());
-		const /** @type {AstListener} */ argListener = ({prevTarget}) => {
-			if (prevTarget === this.firstChild) {
-				this.setAttribute('name', prevTarget.text().trim());
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
-		return this;
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -88,6 +65,47 @@ class ArgToken extends Token {
 
 	/**
 	 * @override
+	 * @param {number} start 起始位置
+	 * @returns {LintError[]}
+	 */
+	lint(start = 0) {
+		const {childNodes: [argName, argDefault, ...rest]} = this,
+			errors = argName.lint(start + 3);
+		if (argDefault) {
+			errors.push(...argDefault.lint(start + 4 + String(argName).length));
+		}
+		if (rest.length > 0) {
+			const rect = this.getRootNode().posFromIndex(start);
+			errors.push(...rest.map(child => generateForChild(child, rect, '三重括号内的不可见部分')));
+		}
+		return errors;
+	}
+
+	/** @override */
+	cloneNode() {
+		const [name, ...cloned] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new ArgToken([''], this.getAttribute('config'));
+			token.firstChild.safeReplaceWith(name);
+			token.append(...cloned);
+			return token.afterBuild();
+		});
+	}
+
+	/** @override */
+	afterBuild() {
+		this.setAttribute('name', this.firstChild.text().trim());
+		const /** @type {AstListener} */ argListener = ({prevTarget}) => {
+			if (prevTarget === this.firstChild) {
+				this.setAttribute('name', prevTarget.text().trim());
+			}
+		};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
+		return this;
+	}
+
+	/**
+	 * @override
 	 * @returns {string}
 	 */
 	text() {
@@ -104,24 +122,6 @@ class ArgToken extends Token {
 				super.removeAt(i);
 			}
 		});
-	}
-
-	/**
-	 * @override
-	 * @param {number} start 起始位置
-	 * @returns {LintError[]}
-	 */
-	lint(start = 0) {
-		const {childNodes: [argName, argDefault, ...rest]} = this,
-			errors = argName.lint(start + 3);
-		if (argDefault) {
-			errors.push(...argDefault.lint(start + 4 + String(argName).length));
-		}
-		if (rest.length > 0) {
-			const rect = this.getRootNode().posFromIndex(start);
-			errors.push(...rest.map(child => generateForChild(child, rect, '三重括号内的不可见部分')));
-		}
-		return errors;
 	}
 
 	/**
