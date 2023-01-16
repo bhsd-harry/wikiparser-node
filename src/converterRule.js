@@ -65,6 +65,38 @@ class ConverterRuleToken extends Token {
 		this.getAttribute('protectChildren')('1:');
 	}
 
+	/**
+	 * @override
+	 * @param {string} selector
+	 * @returns {string}
+	 */
+	toString(selector) {
+		if (this.childNodes.length === 3 && !(selector && this.matches(selector))) {
+			const {childNodes: [from, variant, to]} = this;
+			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
+		}
+		return super.toString(selector, ':');
+	}
+
+	/**
+	 * @override
+	 * @param {number} i 子节点序号
+	 */
+	getGaps(i = 0) {
+		const {length} = this;
+		i = i < 0 ? i + length : i;
+		return i === 0 && length === 3 ? 2 : 1;
+	}
+
+	/** @override */
+	print() {
+		if (this.childNodes.length === 3) {
+			const {childNodes: [from, variant, to]} = this;
+			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
+		}
+		return super.print({sep: ':'});
+	}
+
 	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
@@ -121,38 +153,6 @@ class ConverterRuleToken extends Token {
 	 */
 	insertAt() {
 		throw new Error(`转换规则语法复杂，请勿尝试对 ${this.constructor.name} 手动插入子节点！`);
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 * @returns {string}
-	 */
-	toString(selector) {
-		if (this.childNodes.length === 3 && !(selector && this.matches(selector))) {
-			const {childNodes: [from, variant, to]} = this;
-			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
-		}
-		return super.toString(selector, ':');
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 子节点序号
-	 */
-	getGaps(i = 0) {
-		const {length} = this;
-		i = i < 0 ? i + length : i;
-		return i === 0 && length === 3 ? 2 : 1;
-	}
-
-	/** @override */
-	print() {
-		if (this.childNodes.length === 3) {
-			const {childNodes: [from, variant, to]} = this;
-			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
-		}
-		return super.print({sep: ':'});
 	}
 
 	/**
