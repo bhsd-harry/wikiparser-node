@@ -100,7 +100,6 @@ class TranscludeToken extends Token {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
-			this.setAttribute('name', this.normalizeTitle(name, 10, true).title);
 			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.insertAt(token);
 		}
@@ -300,9 +299,7 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		if (this.name.includes('\0')) {
-			this.setAttribute('name', text(this.getAttribute('buildFromStr')(this.name)));
-		}
+		this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 10).title);
 		if (this.isTemplate()) {
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
