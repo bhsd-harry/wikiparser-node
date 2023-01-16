@@ -11,11 +11,6 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	type = 'double-underscore';
 
 	/** @override */
-	toString() {
-		return `__${String(this.firstChild)}__`;
-	}
-
-	/** @override */
 	getPadding() {
 		return 2;
 	}
@@ -23,6 +18,14 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 	/** @override */
 	print() {
 		return super.print({pre: '__', post: '__'});
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return `__${String(this.firstChild)}__`;
 	}
 }
 

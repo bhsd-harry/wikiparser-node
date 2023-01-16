@@ -41,8 +41,11 @@ class CommentToken extends hidden(NowikiToken) {
 		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的HTML注释')];
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
 		return `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
 	}
 }

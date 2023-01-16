@@ -18,12 +18,14 @@ class TrToken extends Token {
 	 * @param {accum} accum
 	 * @param {RegExp} pattern 表格语法正则
 	 */
-	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = null) {
+		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
 		const AttributeToken = require('../attribute');
 		this.append(
-			new SyntaxToken(syntax, 'table-syntax', config, accum),
-			new AttributeToken(attr, 'table-attr', config, accum),
+			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
+				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
+			}),
+			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
 		);
 	}
 

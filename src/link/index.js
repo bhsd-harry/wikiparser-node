@@ -43,7 +43,10 @@ class LinkToken extends Token {
 		return super.setAttribute(key, value);
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
 	toString(selector) {
 		const str = super.toString(selector, '|');
 		return this.#bracket ? `[[${str}]]` : str;
