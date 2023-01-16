@@ -153,6 +153,33 @@ class ImageParameterToken extends Token {
 	}
 
 	/** @override */
+	isPlain() {
+		return true;
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		return this.#syntax && !(selector && this.matches(selector))
+			? this.#syntax.replace('$1', super.toString(selector))
+			: super.toString(selector);
+	}
+
+	/** @override */
+	getPadding() {
+		return Math.max(0, this.#syntax.indexOf('$1'));
+	}
+
+	/** @override */
+	print() {
+		return this.#syntax
+			? `<span class="wpb-image-parameter">${this.#syntax.replace('$1', print(this.childNodes))}</span>`
+			: super.print({class: 'image-caption'});
+	}
+
+	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
@@ -181,36 +208,9 @@ class ImageParameterToken extends Token {
 		return key === 'syntax' || super.hasAttribute(key);
 	}
 
-	/** @override */
-	isPlain() {
-		return true;
-	}
-
 	/** 是否是不可变参数 */
 	#isVoid() {
 		return this.#syntax && !this.#syntax.includes('$1');
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		return this.#syntax && !(selector && this.matches(selector))
-			? this.#syntax.replace('$1', super.toString(selector))
-			: super.toString(selector);
-	}
-
-	/** @override */
-	getPadding() {
-		return Math.max(0, this.#syntax.indexOf('$1'));
-	}
-
-	/** @override */
-	print() {
-		return this.#syntax
-			? `<span class="wpb-image-parameter">${this.#syntax.replace('$1', print(this.childNodes))}</span>`
-			: super.print({class: 'image-caption'});
 	}
 
 	/** @override */
