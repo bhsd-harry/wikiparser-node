@@ -18,7 +18,7 @@ class ConverterFlagsToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(flags, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, true, accum, {AtomToken: ':'});
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
@@ -31,7 +31,9 @@ class ConverterFlagsToken extends Token {
 		return this;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 */
 	toString(selector) {
 		return super.toString(selector, ';');
 	}
