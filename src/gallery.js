@@ -32,14 +32,14 @@ class GalleryToken extends Token {
 				continue;
 			}
 			const [, file, alt] = matches;
-			let /** @type {boolean} */ valid;
+			let title;
 			try {
-				({valid} = this.normalizeTitle(decodeURIComponent(file), 6, true));
+				title = this.normalizeTitle(decodeURIComponent(file), 6, true);
 			} catch {
-				({valid} = this.normalizeTitle(file, 6, true));
+				title = this.normalizeTitle(file, 6, true);
 			}
-			if (valid) {
-				super.insertAt(new GalleryImageToken(file, alt, newConfig, accum));
+			if (title.valid) {
+				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, undefined, config, []));
 			}

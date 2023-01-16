@@ -15,7 +15,7 @@ class ReferencesToken extends NestedToken {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(wikitext, /<(ref)(\s[^>]*)?>(.*?)<\/(ref\s*)>/gisu, config, accum);
+		super(wikitext, /<(ref)(\s[^>]*)?>(.*?)<\/(ref\s*)>/gisu, ['ref'], config, accum);
 	}
 }
 

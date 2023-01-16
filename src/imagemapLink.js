@@ -25,7 +25,7 @@ class ImagemapLinkToken extends Token {
 		this.append(
 			new AstText(pre),
 			linkStuff[2] instanceof Title
-				? new LinkToken(...linkStuff.slice(0, 2), config, accum)
+				? new LinkToken(...linkStuff, config, accum)
 				: new ExtLinkToken(...linkStuff, config, accum),
 			new NoincludeToken(post, config, accum),
 		);

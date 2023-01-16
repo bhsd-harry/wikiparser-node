@@ -46,12 +46,12 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const {ns, valid} = Parser.normalizeTitle(page, 0, false, config, true);
-		if (!valid) {
+		const title = Parser.normalizeTitle(page, 0, false, config, true);
+		if (!title.valid) {
 			s += `[[${x}`;
 			continue;
 		} else if (mightBeImg) {
-			if (ns !== 6) {
+			if (title.ns !== 6) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -81,13 +81,13 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 		s += `\0${accum.length}l\x7F${after}`;
 		let LinkToken = require('../src/link');
 		if (!force) {
-			if (ns === 6) {
+			if (title.ns === 6) {
 				LinkToken = require('../src/link/file');
-			} else if (ns === 14) {
+			} else if (title.ns === 14) {
 				LinkToken = require('../src/link/category');
 			}
 		}
-		new LinkToken(link, text, config, accum);
+		new LinkToken(link, text, title, config, accum);
 	}
 	return s;
 };

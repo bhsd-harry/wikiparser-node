@@ -14,9 +14,10 @@ class NestedToken extends Token {
 	/**
 	 * @param {string|undefined} wikitext wikitext
 	 * @param {RegExp} regex 内层正则
+	 * @param {string[]} tags 内层标签名
 	 * @param {accum} accum
 	 */
-	constructor(wikitext, regex, config = Parser.getConfig(), accum = []) {
+	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
 		const ExtToken = require('../tagPair/ext'),
 			NoincludeToken = require('../nowiki/noinclude');
 		const text = wikitext?.replaceAll(
@@ -33,7 +34,7 @@ class NestedToken extends Token {
 			new NoincludeToken(substr, config, accum);
 			return `${lead}\0${accum.length}c\x7F`;
 		});
-		super(text, config, true, accum);
+		super(text, config, true, accum, {NoincludeToken: ':', ExtToken: ':'});
 	}
 
 	/**

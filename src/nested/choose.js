@@ -16,7 +16,7 @@ class ChooseToken extends NestedToken {
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		const regex = /<(option|choicetemplate)(\s[^>]*)?>(.*?)<\/(\1)>/gsu;
-		super(wikitext, regex, config, accum);
+		super(wikitext, regex, ['option', 'choicetemplate'], config, accum);
 	}
 }
 

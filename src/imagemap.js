@@ -46,7 +46,7 @@ class ImagemapToken extends Token {
 				}
 				if (title.valid && title.ns === 6) {
 					const token = new GalleryImageToken(
-						file, options.length > 0 ? options.join('|') : undefined, config, accum,
+						file, options.length > 0 ? options.join('|') : undefined, title, config, accum,
 					);
 					token.type = 'imagemap-image';
 					super.insertAt(token);
