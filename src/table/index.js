@@ -33,10 +33,10 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 * @param {string} syntax 表格结尾语法
 	 */
-	close(syntax = '\n|}') {
+	close(syntax = '\n|}', halfParsed = false) {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum');
-		super.insertAt(new SyntaxToken(syntax, 'table-syntax', config, accum));
+		super.insertAt(new SyntaxToken(syntax, null, 'table-syntax', config, accum));
 	}
 }
 
