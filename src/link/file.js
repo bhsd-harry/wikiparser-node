@@ -64,10 +64,11 @@ class FileToken extends LinkToken {
 	 * @param {string|undefined} text 图片参数
 	 * @param {Title} title 文件标题对象
 	 * @param {accum} accum
+	 * @param {string} delimiter `|`
 	 * @complexity `n`
 	 */
-	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
-		super(link, undefined, title, config, accum);
+	constructor(link, text, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
+		super(link, undefined, title, config, accum, delimiter);
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 		this.seal(

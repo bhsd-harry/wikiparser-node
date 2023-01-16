@@ -255,15 +255,6 @@ class Token extends AstElement {
 				}
 				this.#stage = value;
 				return this;
-			case 'config':
-				this.#config = value;
-				return this;
-			case 'accum':
-				this.#accum = value;
-				return this;
-			case 'protectedChildren':
-				this.#protectedChildren = value;
-				return this;
 			case 'acceptable': {
 				const /** @type {acceptable} */ acceptable = {};
 				if (value) {

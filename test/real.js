@@ -9,7 +9,7 @@ const {argv: [,, site = '']} = process,
 	apis = [
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
 		['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
-		// ['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
+		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase())),
 	complexOrHiddenTypes = [
 		// 以下为子节点必为Token的类
@@ -106,7 +106,7 @@ const getPages = async url => {
 			for (const {title, ns, content} of revs) {
 				try {
 					console.time(title);
-					const root = Parser.parse(content, ns === 10);
+					const root = Parser.parse(content, ns === 10 && !title.endsWith('/doc'));
 					console.timeEnd(title);
 					console.time(title);
 					console.log(root.lint());

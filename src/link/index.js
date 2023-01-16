@@ -14,6 +14,7 @@ const Title = require('../../lib/title'),
 class LinkToken extends Token {
 	type = 'link';
 	#bracket = true;
+	#delimiter;
 
 	/** 完整链接，和FileToken保持一致 */
 	get link() {
@@ -76,8 +77,9 @@ class LinkToken extends Token {
 	 * @param {string|undefined} linkText 链接显示文字
 	 * @param {Title} title 链接标题对象
 	 * @param {accum} accum
+	 * @param {string} delimiter `|`
 	 */
-	constructor(link, linkText, title, config = Parser.getConfig(), accum = []) {
+	constructor(link, linkText, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
 		const AtomToken = require('../atom');
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
@@ -88,64 +90,8 @@ class LinkToken extends Token {
 			inner.type = 'link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
-		this.setAttribute('name', title.title).getAttribute('protectChildren')(0);
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @param {TokenAttribute<T>} value 属性值
-	 */
-	setAttribute(key, value) {
-		if (key === 'bracket') {
-			this.#bracket = Boolean(value);
-			return this;
-		}
-		return super.setAttribute(key, value);
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		const str = super.toString(selector, '|');
-		return this.#bracket && !(selector && this.matches(selector)) ? `[[${str}]]` : str;
-	}
-
-	/** @override */
-	getPadding() {
-		return 2;
-	}
-
-	/** @override */
-	getGaps() {
-		return 1;
-	}
-
-	/** @override */
-	print() {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: '|'} : {sep: '|'});
-	}
-
-	/** 生成Title对象 */
-	#getTitle() {
-		return this.normalizeTitle(this.firstChild.text());
-	}
-
-	/**
-	 * @override
-	 * @this {LinkToken & {constructor: typeof LinkToken}}
-	 */
-	cloneNode() {
-		const [link, ...linkText] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new this.constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(link);
-			token.append(...linkText);
-			return token.afterBuild();
-		});
+		this.#delimiter = delimiter;
+		this.getAttribute('protectChildren')(0);
 	}
 
 	/**
@@ -154,6 +100,10 @@ class LinkToken extends Token {
 	 * @throws `Error` 不可更改命名空间
 	 */
 	afterBuild() {
+		this.setAttribute('name', this.normalizeTitle(this.firstChild.text()).title);
+		if (this.#delimiter?.includes('\0')) {
+			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter).map(String).join('');
+		}
 		const /** @type {AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
@@ -180,6 +130,63 @@ class LinkToken extends Token {
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 		return this;
+	}
+
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @param {TokenAttribute<T>} value 属性值
+	 */
+	setAttribute(key, value) {
+		if (key === 'bracket') {
+			this.#bracket = Boolean(value);
+			return this;
+		}
+		return super.setAttribute(key, value);
+	}
+
+	/**
+	 * @override
+	 * @param {string} selector
+	 */
+	toString(selector) {
+		const str = super.toString(selector, this.#delimiter);
+		return this.#bracket && !(selector && this.matches(selector)) ? `[[${str}]]` : str;
+	}
+
+	/** @override */
+	getPadding() {
+		return 2;
+	}
+
+	/** @override */
+	getGaps() {
+		return this.#delimiter.length;
+	}
+
+	/** @override */
+	print() {
+		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
+	}
+
+	/** 生成Title对象 */
+	#getTitle() {
+		return this.normalizeTitle(this.firstChild.text());
+	}
+
+	/**
+	 * @override
+	 * @this {LinkToken & {constructor: typeof LinkToken}}
+	 */
+	cloneNode() {
+		const [link, ...linkText] = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new this.constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
+			token.firstChild.safeReplaceWith(link);
+			token.append(...linkText);
+			return token.afterBuild();
+		});
 	}
 
 	/** @override */
