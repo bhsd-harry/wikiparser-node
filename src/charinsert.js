@@ -17,11 +17,13 @@ class CharinsertToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, true, accum, {HasNowikiToken: ':'});
 		this.append(...wikitext.split('\n').map(str => new HasNowikiToken(str, 'charinsert-line', config, accum)));
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 */
 	toString(selector) {
 		return super.toString(selector, '\n');
 	}
