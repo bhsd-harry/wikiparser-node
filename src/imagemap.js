@@ -22,7 +22,9 @@ class ImagemapToken extends Token {
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, true, accum, {
+			GalleryImageToken: ':', ImagemapLinkToken: ':', NoincludeToken: ':', AstText: ':',
+		});
 		if (!inner) {
 			return;
 		}

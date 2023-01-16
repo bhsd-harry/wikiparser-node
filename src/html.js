@@ -35,8 +35,10 @@ class HtmlToken extends Token {
 		this.#tag = name;
 	}
 
-	/** @override */
-	toString() {
+	/**
+	 * @override
+	 */
+	toString(selector) {
 		return `<${this.#closing ? '/' : ''}${this.#tag}${super.toString()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
