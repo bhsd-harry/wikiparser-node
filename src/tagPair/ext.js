@@ -11,11 +11,7 @@ const path = require('path'),
  */
 class ExtToken extends attributeParent(TagPairToken) {
 	type = 'ext';
-
-	/** @override */
-	get closed() {
-		return super.closed;
-	}
+	closed = true;
 
 	/**
 	 * @param {string} name 标签名
