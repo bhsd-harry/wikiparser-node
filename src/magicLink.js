@@ -48,13 +48,6 @@ class MagicLinkToken extends Token {
 		}
 		return errors;
 	}
-
-	/** 是否是模板或魔术字参数 */
-	isParamValue() {
-		const ParameterToken = require('./parameter');
-		const /** @type {ParameterToken} */ parameter = this.closest('parameter');
-		return parameter?.getValue() === this.text();
-	}
 }
 
 module.exports = MagicLinkToken;
