@@ -74,7 +74,7 @@
 			2,
 			{
 				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
-				"argsIgnorePattern": "^(?:acceptable|selector|halfParsed)$",
+				"argsIgnorePattern": "^(?:acceptable|selector|halfParsed|copy)$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}

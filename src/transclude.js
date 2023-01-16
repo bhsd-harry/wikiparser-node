@@ -40,7 +40,7 @@ class TranscludeToken extends Token {
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
 		const AtomToken = require('./atom'),
 			SyntaxToken = require('./syntax');
 		const {parserFunction: [insensitive, sensitive, raw]} = config;
@@ -56,7 +56,10 @@ class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name);
 			if (isSensitive || insensitive.includes(name.toLowerCase())) {
 				this.setAttribute('name', name.toLowerCase().replace(/^#/u, '')).type = 'magic-word';
-				const token = new SyntaxToken(magicWord, 'magic-word-name', config, accum);
+				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
+					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
+						'Stage-1': ':', '!ExtToken': '',
+					});
 				this.insertAt(token);
 				if (arg.length > 0) {
 					parts.unshift([arg.join(':')]);
@@ -69,7 +72,7 @@ class TranscludeToken extends Token {
 						}
 						const invoke = new AtomToken(part.join('='), `invoke-${
 							i ? 'function' : 'module'
-						}`, config, accum);
+						}`, config, accum, {'Stage-1': ':', '!ExtToken': ''});
 						this.insertAt(invoke);
 					}
 				}
@@ -81,7 +84,7 @@ class TranscludeToken extends Token {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
-			const token = new AtomToken(title, 'template-name', config, accum);
+			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
 			this.insertAt(token);
 		}
 		const templateLike = this.isTemplate();
@@ -99,7 +102,9 @@ class TranscludeToken extends Token {
 		}
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 */
 	toString(selector) {
 		const {childNodes, firstChild, modifier} = this;
 		return `{{${modifier}${modifier && ':'}${
@@ -160,9 +165,15 @@ class TranscludeToken extends Token {
 	 */
 	#handleAnonArgChange(addedToken) {
 		const args = this.getAnonArgs(),
-			j = args.indexOf(addedToken),
-			newName = String(j + 1);
-		this.getArgs(newName).add(addedToken.setAttribute('name', newName));
+			j = args.indexOf(addedToken);
+		for (let i = j; i < args.length; i++) {
+			const token = args[i],
+				{name} = token,
+				newName = String(i + 1);
+			if (name !== newName) {
+				this.getArgs(newName, false, false).add(token.setAttribute('name', newName));
+			}
+		}
 	}
 
 	/**
@@ -176,7 +187,7 @@ class TranscludeToken extends Token {
 		if (token.anon) {
 			this.#handleAnonArgChange(token);
 		} else if (token.name) {
-			this.getArgs(token.name).add(token);
+			this.getArgs(token.name, false, false).add(token);
 		}
 		return token;
 	}
@@ -201,9 +212,11 @@ class TranscludeToken extends Token {
 	/**
 	 * 获取指定参数
 	 * @param {string|number} key 参数名
+	 * @param {boolean} exact 是否匹配匿名性
+	 * @param {boolean} copy 是否返回一个备份
 	 * @complexity `n`
 	 */
-	getArgs(key) {
+	getArgs(key, exact, copy = true) {
 		const keyStr = String(key).trim();
 		let args;
 		if (Object.prototype.hasOwnProperty.call(this.#args, keyStr)) {
@@ -221,9 +234,11 @@ class TranscludeToken extends Token {
 	 * @returns {[string, Set<ParameterToken>][]}
 	 */
 	getDuplicatedArgs() {
-		return this.isTemplate()
-			? Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)])
-			: [];
+		if (this.isTemplate()) {
+			return Object.entries(this.#args).filter(([, {size}]) => size > 1)
+				.map(([key, args]) => [key, new Set(args)]);
+		}
+		return [];
 	}
 }
 
