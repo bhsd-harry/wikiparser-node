@@ -14,8 +14,8 @@ const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/stri
 class TranscludeToken extends Token {
 	type = 'template';
 	modifier = '';
-	/** @type {Set<string>} */ #keys = new Set();
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
+	/** @type {Set<string>} */ #keys = new Set();
 
 	/** 是否存在重复参数 */
 	get duplication() {
@@ -120,88 +120,6 @@ class TranscludeToken extends Token {
 		this.getAttribute('protectChildren')(0);
 	}
 
-	/** @override */
-	cloneNode() {
-		const [first, ...cloned] = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], config);
-			token.setModifier(this.modifier);
-			token.firstChild.safeReplaceWith(first);
-			token.afterBuild();
-			token.append(...cloned);
-			return token;
-		});
-	}
-
-	/** @override */
-	afterBuild() {
-		if (this.name.includes('\0')) {
-			this.setAttribute('name', text(this.getAttribute('buildFromStr')(this.name)));
-		}
-		if (this.isTemplate()) {
-			/**
-			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
-			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-			 * @type {AstListener}
-			 */
-			const transcludeListener = (e, data) => {
-				const {prevTarget} = e,
-					{oldKey, newKey} = data ?? {};
-				if (typeof oldKey === 'string') {
-					delete data.oldKey;
-					delete data.newKey;
-				}
-				if (prevTarget === this.firstChild && this.type === 'template') {
-					this.setAttribute('name', this.normalizeTitle(prevTarget.text(), 10).title);
-				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
-					const oldArgs = this.getArgs(oldKey, false, false);
-					oldArgs.delete(prevTarget);
-					this.getArgs(newKey, false, false).add(prevTarget);
-					this.#keys.add(newKey);
-					if (oldArgs.size === 0) {
-						this.#keys.delete(oldKey);
-					}
-				}
-			};
-			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
-		}
-		return this;
-	}
-
-	/** 替换引用 */
-	subst() {
-		this.setModifier('subst');
-	}
-
-	/** 安全的替换引用 */
-	safesubst() {
-		this.setModifier('safesubst');
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		if (key === 'args') {
-			return {...this.#args};
-		} else if (key === 'keys') {
-			return !Parser.debugging && externalUse('getAttribute') ? new Set(this.#keys) : this.#keys;
-		}
-		return super.getAttribute(key);
-	}
-
-	/**
-	 * @override
-	 * @param {PropertyKey} key 属性键
-	 */
-	hasAttribute(key) {
-		return key === 'keys' || super.hasAttribute(key);
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -263,20 +181,6 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @override
-	 * @returns {string}
-	 * @complexity `n`
-	 */
-	text() {
-		const {childNodes, firstChild, modifier} = this;
-		return `{{${modifier}${modifier && ':'}${
-			this.type === 'magic-word'
-				? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
-				: super.text('|')
-		}}}`;
-	}
-
-	/**
 	 * 处理匿名参数更改
 	 * @param {number|ParameterToken} addedToken 新增的参数
 	 * @complexity `n`
@@ -302,25 +206,6 @@ class TranscludeToken extends Token {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
-	 */
-	removeAt(i) {
-		const /** @type {ParameterToken} */ token = super.removeAt(i);
-		if (token.anon) {
-			this.#handleAnonArgChange(Number(token.name));
-		} else {
-			const args = this.getArgs(token.name, false, false);
-			args.delete(token);
-			if (args.size === 0) {
-				this.#keys.delete(token.name);
-			}
-		}
-		return token;
 	}
 
 	/**
@@ -383,6 +268,135 @@ class TranscludeToken extends Token {
 			args = new Set(args);
 		}
 		return args;
+	}
+
+	/**
+	 * 获取重名参数
+	 * @complexity `n`
+	 * @returns {[string, Set<ParameterToken>][]}
+	 * @throws `Error` 仅用于模板
+	 */
+	getDuplicatedArgs() {
+		if (this.isTemplate()) {
+			return Object.entries(this.#args).filter(([, {size}]) => size > 1)
+				.map(([key, args]) => [key, new Set(args)]);
+		}
+		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
+	}
+
+	/** @override */
+	cloneNode() {
+		const [first, ...cloned] = this.cloneChildNodes(),
+			config = this.getAttribute('config');
+		return Parser.run(() => {
+			const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], config);
+			token.setModifier(this.modifier);
+			token.firstChild.safeReplaceWith(first);
+			token.afterBuild();
+			token.append(...cloned);
+			return token;
+		});
+	}
+
+	/** @override */
+	afterBuild() {
+		if (this.name.includes('\0')) {
+			this.setAttribute('name', text(this.getAttribute('buildFromStr')(this.name)));
+		}
+		if (this.isTemplate()) {
+			/**
+			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
+			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
+			 * @type {AstListener}
+			 */
+			const transcludeListener = (e, data) => {
+				const {prevTarget} = e,
+					{oldKey, newKey} = data ?? {};
+				if (typeof oldKey === 'string') {
+					delete data.oldKey;
+					delete data.newKey;
+				}
+				if (prevTarget === this.firstChild && this.type === 'template') {
+					this.setAttribute('name', this.normalizeTitle(prevTarget.text(), 10).title);
+				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
+					const oldArgs = this.getArgs(oldKey, false, false);
+					oldArgs.delete(prevTarget);
+					this.getArgs(newKey, false, false).add(prevTarget);
+					this.#keys.add(newKey);
+					if (oldArgs.size === 0) {
+						this.#keys.delete(oldKey);
+					}
+				}
+			};
+			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
+		}
+		return this;
+	}
+
+	/** 替换引用 */
+	subst() {
+		this.setModifier('subst');
+	}
+
+	/** 安全的替换引用 */
+	safesubst() {
+		this.setModifier('safesubst');
+	}
+
+	/**
+	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'keys' || super.hasAttribute(key);
+	}
+
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @returns {TokenAttribute<T>}
+	 */
+	getAttribute(key) {
+		if (key === 'args') {
+			return {...this.#args};
+		} else if (key === 'keys') {
+			return !Parser.debugging && externalUse('getAttribute') ? new Set(this.#keys) : this.#keys;
+		}
+		return super.getAttribute(key);
+	}
+
+	/**
+	 * @override
+	 * @returns {string}
+	 * @complexity `n`
+	 */
+	text() {
+		const {childNodes, firstChild, modifier} = this;
+		return `{{${modifier}${modifier && ':'}${
+			this.type === 'magic-word'
+				? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
+				: super.text('|')
+		}}}`;
+	}
+
+	/**
+	 * @override
+	 * @param {number} i 移除位置
+	 * @complexity `n`
+	 */
+	removeAt(i) {
+		const /** @type {ParameterToken} */ token = super.removeAt(i);
+		if (token.anon) {
+			this.#handleAnonArgChange(Number(token.name));
+		} else {
+			const args = this.getArgs(token.name, false, false);
+			args.delete(token);
+			if (args.size === 0) {
+				this.#keys.delete(token.name);
+			}
+		}
+		return token;
 	}
 
 	/**
@@ -607,19 +621,6 @@ class TranscludeToken extends Token {
 			return this.getAllArgs().length - this.getKeys().length;
 		}
 		throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
-	}
-
-	/**
-	 * 获取重名参数
-	 * @complexity `n`
-	 * @returns {[string, Set<ParameterToken>][]}
-	 * @throws `Error` 仅用于模板
-	 */
-	getDuplicatedArgs() {
-		if (this.isTemplate()) {
-			return Object.entries(this.#args).filter(([, {size}]) => size > 1).map(([key, args]) => [key, new Set(args)]);
-		}
-		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 	}
 
 	/**
