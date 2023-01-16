@@ -19,21 +19,24 @@ class ExtLinkToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, true, accum, {MagicLinkToken: 0, Token: 1});
 		this.insertAt(new MagicLinkToken(url, true, config, accum));
 		this.#space = space;
 		if (text) {
-			const inner = new Token(text, config, true, accum);
+			const inner = new Token(text, config, true, accum, {'Stage-7': ':', ConverterToken: ':'});
 			inner.type = 'ext-link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 */
 	toString(selector) {
-		return this.childNodes.length === 1
-			? `[${super.toString()}${this.#space}]`
-			: `[${super.toString(selector, this.#space)}]`;
+		if (this.childNodes.length === 1) {
+			return `[${super.toString(selector)}${this.#space}]`;
+		}
+		return `[${super.toString(selector, this.#space)}]`;
 	}
 
 	/** @override */
