@@ -23,16 +23,6 @@ class OnlyincludeToken extends Token {
 		super(inner, config, true, accum);
 	}
 
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new OnlyincludeToken(undefined, this.getAttribute('config'));
-			token.append(...cloned);
-			return token;
-		});
-	}
-
 	/**
 	 * @override
 	 * @param {string} selector
@@ -54,6 +44,16 @@ class OnlyincludeToken extends Token {
 	/** @override */
 	isPlain() {
 		return true;
+	}
+
+	/** @override */
+	cloneNode() {
+		const cloned = this.cloneChildNodes();
+		return Parser.run(() => {
+			const token = new OnlyincludeToken(undefined, this.getAttribute('config'));
+			token.append(...cloned);
+			return token;
+		});
 	}
 }
 
