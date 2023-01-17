@@ -82,6 +82,17 @@ class TagPairToken extends fixedToken(Token) {
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		const [opening, closing] = this.#tags;
+		return this.#selfClosing
+			? `<${opening}${this.firstChild.text()}/>`
+			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return this.#tags[0].length + 1;
@@ -108,17 +119,6 @@ class TagPairToken extends fixedToken(Token) {
 	 */
 	getAttribute(key) {
 		return key === 'tags' ? [...this.#tags] : super.getAttribute(key);
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 */
-	text() {
-		const [opening, closing] = this.#tags;
-		return this.#selfClosing
-			? `<${opening}${this.firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
 	}
 }
 

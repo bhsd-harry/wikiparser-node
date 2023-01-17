@@ -140,6 +140,17 @@ class TdToken extends fixedToken(TrToken) {
 
 	/**
 	 * @override
+	 * @returns {string}
+	 * @complexity `n`
+	 */
+	text() {
+		this.#correct();
+		const {childNodes: [syntax, attr, inner]} = this;
+		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
+	}
+
+	/**
+	 * @override
 	 * @param {number} i 子节点位置
 	 */
 	getGaps(i = 0) {
@@ -246,17 +257,6 @@ class TdToken extends fixedToken(TrToken) {
 			const {subtype, escape} = this.getSyntax();
 			this.setSyntax(subtype, escape);
 		}
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 * @complexity `n`
-	 */
-	text() {
-		this.#correct();
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 
 	/**

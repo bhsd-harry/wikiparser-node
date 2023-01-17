@@ -136,6 +136,20 @@ class TranscludeToken extends Token {
 		}}}`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 * @complexity `n`
+	 */
+	text() {
+		const {childNodes, firstChild, modifier} = this;
+		return `{{${modifier}${modifier && ':'}${
+			this.type === 'magic-word'
+				? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
+				: super.text('|')
+		}}}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return this.modifier ? this.modifier.length + 3 : 2;
@@ -409,20 +423,6 @@ class TranscludeToken extends Token {
 			return !Parser.debugging && externalUse('getAttribute') ? new Set(this.#keys) : this.#keys;
 		}
 		return super.getAttribute(key);
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 * @complexity `n`
-	 */
-	text() {
-		const {childNodes, firstChild, modifier} = this;
-		return `{{${modifier}${modifier && ':'}${
-			this.type === 'magic-word'
-				? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
-				: super.text('|')
-		}}}`;
 	}
 
 	/**

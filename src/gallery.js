@@ -56,6 +56,11 @@ class GalleryToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return super.text('\n').replaceAll(/\n\s*\n/gu, '\n');
+	}
+
+	/** @override */
 	getGaps() {
 		return 1;
 	}
@@ -100,11 +105,6 @@ class GalleryToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
-	}
-
-	/** @override */
-	text() {
-		return super.text('\n').replaceAll(/\n\s*\n/gu, '\n');
 	}
 
 	/**

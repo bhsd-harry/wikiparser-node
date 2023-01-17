@@ -156,6 +156,12 @@ class LinkToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		const str = super.text('|');
+		return this.#bracket ? `[[${str}]]` : str;
+	}
+
+	/** @override */
 	getPadding() {
 		return 2;
 	}
@@ -187,12 +193,6 @@ class LinkToken extends Token {
 			token.append(...linkText);
 			return token.afterBuild();
 		});
-	}
-
-	/** @override */
-	text() {
-		const str = super.text('|');
-		return this.#bracket ? `[[${str}]]` : str;
 	}
 
 	/**

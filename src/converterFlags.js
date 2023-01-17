@@ -46,6 +46,11 @@ class ConverterFlagsToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return super.text(';');
+	}
+
+	/** @override */
 	getGaps() {
 		return 1;
 	}
@@ -148,11 +153,6 @@ class ConverterFlagsToken extends Token {
 		super.insertAt(token, i);
 		this.#flags?.splice(i, 0, token.text());
 		return token;
-	}
-
-	/** @override */
-	text() {
-		return super.text(';');
 	}
 
 	/** 获取所有转换类型标记 */

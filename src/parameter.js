@@ -93,6 +93,14 @@ class ParameterToken extends fixedToken(Token) {
 			: super.toString(selector, '=');
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		return this.anon ? this.lastChild.text() : super.text('=');
+	}
+
 	/** @override */
 	getGaps() {
 		return this.anon ? 0 : 1;
@@ -123,14 +131,6 @@ class ParameterToken extends fixedToken(Token) {
 			token.lastChild.safeReplaceWith(value);
 			return token.afterBuild();
 		});
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 */
-	text() {
-		return this.anon ? this.lastChild.text() : super.text('=');
 	}
 
 	/**

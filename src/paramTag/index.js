@@ -34,6 +34,11 @@ class ParamTagToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return super.text('\n');
+	}
+
+	/** @override */
 	getGaps() {
 		return 1;
 	}
@@ -58,11 +63,6 @@ class ParamTagToken extends Token {
 			rect ||= this.getRootNode().posFromIndex(start);
 			return generateForChild(child, rect, `${this.name}的无效参数`);
 		});
-	}
-
-	/** @override */
-	text() {
-		return super.text('\n');
 	}
 
 	/**

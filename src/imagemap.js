@@ -125,6 +125,11 @@ class ImagemapToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return super.text('\n').replaceAll(/\n{2,}/gu, '\n');
+	}
+
+	/** @override */
 	getGaps() {
 		return 1;
 	}
@@ -193,11 +198,6 @@ class ImagemapToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
-	}
-
-	/** @override */
-	text() {
-		return super.text('\n').replaceAll(/\n{2,}/gu, '\n');
 	}
 }
 

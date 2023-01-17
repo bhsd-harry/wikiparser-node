@@ -168,6 +168,11 @@ class ImageParameterToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
+	}
+
+	/** @override */
 	getPadding() {
 		return Math.max(0, this.#syntax.indexOf('$1'));
 	}
@@ -211,11 +216,6 @@ class ImageParameterToken extends Token {
 	/** 是否是不可变参数 */
 	#isVoid() {
 		return this.#syntax && !this.#syntax.includes('$1');
-	}
-
-	/** @override */
-	text() {
-		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
 	}
 
 	/**

@@ -84,6 +84,13 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	}
 
 	/** @override */
+	text() {
+		return `<${this.#closing ? '/' : ''}${this.#tag}${
+			this.#closing ? '' : super.text()
+		}${this.#selfClosing ? '/' : ''}>`;
+	}
+
+	/** @override */
 	getPadding() {
 		return this.#tag.length + (this.#closing ? 2 : 1);
 	}
@@ -170,11 +177,6 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	getAttribute(key) {
 		return key === 'tag' ? this.#tag : super.getAttribute(key);
-	}
-
-	/** @override */
-	text() {
-		return `<${this.#closing ? '/' : ''}${this.#tag}${super.text()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/**

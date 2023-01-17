@@ -79,6 +79,12 @@ class ExtLinkToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		normalizeSpace(this.childNodes[1]);
+		return `[${super.text(' ')}]`;
+	}
+
+	/** @override */
 	getPadding() {
 		return 1;
 	}
@@ -116,12 +122,6 @@ class ExtLinkToken extends Token {
 		) {
 			this.#space = ' ';
 		}
-	}
-
-	/** @override */
-	text() {
-		normalizeSpace(this.childNodes[1]);
-		return `[${super.text(' ')}]`;
 	}
 
 	/**

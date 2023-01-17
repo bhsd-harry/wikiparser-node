@@ -76,6 +76,13 @@ class TrToken extends attributeParent(Token, 1) {
 		return errors;
 	}
 
+	/** @override */
+	text() {
+		this.#correct();
+		const str = super.text();
+		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
+	}
+
 	/**
 	 * @override
 	 * @this {TrToken & {constructor: typeof TrToken}}
@@ -116,13 +123,6 @@ class TrToken extends attributeParent(Token, 1) {
 	toString(selector) {
 		this.#correct();
 		return super.toString(selector);
-	}
-
-	/** @override */
-	text() {
-		this.#correct();
-		const str = super.text();
-		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
 	}
 
 	/**

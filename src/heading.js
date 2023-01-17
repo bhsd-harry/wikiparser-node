@@ -52,6 +52,16 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			}${equals}${this.lastChild.toString(selector)}${this.appendNewLine()}`;
 	}
 
+	/**
+	 * @override
+	 * @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}}
+	 * @returns {string}
+	 */
+	text() {
+		const equals = '='.repeat(Number(this.name));
+		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}${this.appendNewLine()}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return super.getPadding() + Number(this.name);
@@ -89,16 +99,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			token.lastChild.safeReplaceWith(trail);
 			return token;
 		});
-	}
-
-	/**
-	 * @override
-	 * @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}}
-	 * @returns {string}
-	 */
-	text() {
-		const equals = '='.repeat(Number(this.name));
-		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}${this.appendNewLine()}`;
 	}
 
 	/**

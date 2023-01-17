@@ -60,6 +60,15 @@ class ConverterToken extends Token {
 			: `-{${flags.toString(selector)}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		const {childNodes: [flags, ...rules]} = this;
+		return `-{${flags.text()}|${text(rules, ';')}}-`;
+	}
+
 	/** @override */
 	getPadding() {
 		return 2;
@@ -91,15 +100,6 @@ class ConverterToken extends Token {
 			token.append(...rules);
 			return token;
 		});
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 */
-	text() {
-		const {childNodes: [flags, ...rules]} = this;
-		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 
 	/**

@@ -80,6 +80,18 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		if (this.childNodes.length === 3) {
+			const {childNodes: [from, variant, to]} = this;
+			return `${from.text()}=>${variant.text()}:${to.text()}`;
+		}
+		return super.text(':');
+	}
+
+	/**
+	 * @override
 	 * @param {number} i 子节点序号
 	 */
 	getGaps(i = 0) {
@@ -153,18 +165,6 @@ class ConverterRuleToken extends Token {
 	 */
 	insertAt() {
 		throw new Error(`转换规则语法复杂，请勿尝试对 ${this.constructor.name} 手动插入子节点！`);
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 */
-	text() {
-		if (this.childNodes.length === 3) {
-			const {childNodes: [from, variant, to]} = this;
-			return `${from.text()}=>${variant.text()}:${to.text()}`;
-		}
-		return super.text(':');
 	}
 
 	/** 修改为不转换 */
