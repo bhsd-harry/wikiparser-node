@@ -23,6 +23,7 @@
   },
   "scripts": {
     "test": "rm bundle/*.js && webpack && eslint .",
+    "real": "node test/real.js",
     "single": "node test/single.js"
   },
   "devDependencies": {
@@ -35,7 +36,8 @@
     "eslint-plugin-es-x": "^5.4.0",
     "eslint-plugin-regexp": "^1.11.0",
     "eslint-plugin-unicorn": "^45.0.2",
-    "eslint-plugin-jsdoc": "^1.0.0"
+    "eslint-plugin-jsdoc": "^1.0.0",
+    "request": "^2.88.2"
   },
   "engines": {
     "node": "^18.4.0"

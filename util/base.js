@@ -6,4 +6,12 @@
  */
 const isPlainObject = obj => Boolean(obj) && Object.getPrototypeOf(obj).constructor === Object;
 
-module.exports = {isPlainObject};
+/**
+ * 延时
+ * @param {number} t 秒数
+ */
+const sleep = t => new Promise(resolve => {
+	setTimeout(resolve, t * 1000);
+});
+
+module.exports = {isPlainObject, sleep};

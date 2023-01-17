@@ -44,6 +44,18 @@ declare global {
 		 * @param {boolean} include 是否嵌入
 		 */
 		lint(wikitext: string, include?: boolean, config?: ParserConfig): LintError[];
+
+		/**
+		 * @param {string} msg 消息
+		 * @param {...*} args 更多信息
+		 */
+		debug(msg: string, ...args: *[]): void;
+		/**
+		 * 总是输出到console.error
+		 * @param {string} msg 消息
+		 * @param {...*} args 更多信息
+		 */
+		error(msg: string, ...args: *[]): void;
 	}
 }
 
