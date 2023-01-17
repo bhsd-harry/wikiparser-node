@@ -86,7 +86,8 @@ class FileToken extends LinkToken {
 			frameArgs = this.getFrameArgs(),
 			horizAlignArgs = this.getHorizAlignArgs(),
 			vertAlignArgs = this.getVertAlignArgs(),
-			captions = this.getArgs('caption');
+			captions = this.getArgs('caption'),
+			realCaptions = [...captions].filter((arg, i) => arg.text() || i === captions.size - 1);
 		if (frameArgs.length > 1 || horizAlignArgs.length > 1 || vertAlignArgs.length > 1 || captions.size > 1) {
 			const rect = this.getRootNode().posFromIndex(start);
 			if (frameArgs.length > 1) {
@@ -98,8 +99,8 @@ class FileToken extends LinkToken {
 			if (vertAlignArgs.length > 1) {
 				errors.push(...vertAlignArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片垂直对齐参数')));
 			}
-			if (captions.size > 1) {
-				errors.push(...[...captions].map(arg => generateForChild(arg, rect, '重复的图片说明')));
+			if (realCaptions.length > 1) {
+				errors.push(...realCaptions.map(arg => generateForChild(arg, rect, '重复的图片说明')));
 			}
 		}
 		return errors;
