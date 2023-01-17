@@ -245,7 +245,9 @@ const /** @type {Parser} */ Parser = {
 			...Object.entries(this.tool),
 		];
 		for (const [, filePath] of entries) {
-			delete require.cache[require.resolve(filePath)];
+			try {
+				delete require.cache[require.resolve(filePath)];
+			} catch {}
 		}
 		for (const [name, filePath] of entries) {
 			if (name in global) {
