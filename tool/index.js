@@ -281,7 +281,7 @@ class TokenCollection {
 	 */
 	closest(selector) {
 		if (selector === undefined) {
-			return new TokenCollection(this.array.map(ele => ele.parentNode), this);
+			return new TokenCollection(this.array.map(({parentNode}) => parentNode), this);
 		}
 		return typeof selector === 'string'
 			? new TokenCollection(this.#tokens.map(ele => ele.closest(selector)), this)
@@ -469,13 +469,16 @@ class TokenCollection {
 	 */
 	children(selector) {
 		return selector === undefined || typeof selector === 'string'
-			? new TokenCollection(this.#tokens.flatMap(ele => ele.children).filter(ele => ele.matches(selector)), this)
+			? new TokenCollection(
+				this.#tokens.flatMap(({children}) => children).filter(ele => ele.matches(selector)),
+				this,
+			)
 			: this.typeError('children', 'String');
 	}
 
 	/** 所有子节点 */
 	contents() {
-		return new TokenCollection(this.array.flatMap(ele => ele.childNodes), this);
+		return new TokenCollection(this.array.flatMap(({childNodes}) => childNodes), this);
 	}
 
 	/**

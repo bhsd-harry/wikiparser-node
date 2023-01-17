@@ -60,19 +60,19 @@ class TrToken extends attributeParent(Token, 1) {
 		if (!inter) {
 			return errors;
 		}
-		const str = inter.childNodes.map(child => {
+		const first = inter.childNodes.find(child => child.text().trim());
+		if (first?.type === 'magic-word') {
 			try {
-				return child.getPossibleValues().find(Boolean) ?? '';
-			} catch {
-				return child.text();
-			}
-		}).join().trim();
-		if (str && !/^(?:[|!]|\{\{\s*![!-]?\s*\}\})/u.test(str)) {
-			const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
-			error.startLine++;
-			error.startCol = 0;
-			errors.push(error);
+				const possibleValues = first.getPossibleValues();
+				if (possibleValues.every(token => /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u.test(token.text()))) {
+					return errors;
+				}
+			} catch {}
 		}
+		const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
+		error.startLine++;
+		error.startCol = 0;
+		errors.push(error);
 		return errors;
 	}
 

@@ -451,7 +451,7 @@ class TableToken extends TrToken {
 	fillTableRow(y, inner, subtype = 'td', attr = {}) {
 		const rowToken = this.getNthRow(y),
 			layout = this.getLayout({y}),
-			maxCol = Math.max(...layout.map(row => row.length)),
+			maxCol = Math.max(...layout.map(({length}) => length)),
 			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		fill(y, rowToken, layout, maxCol, token);
 	}
@@ -547,7 +547,7 @@ class TableToken extends TrToken {
 			const td = token.insertTableCell(inner, {column: 0}, subtype, innerAttr),
 				/** @type {Set<TableCoords>} */ set = new Set(),
 				layout = this.getLayout({y}),
-				maxCol = Math.max(...layout.map(row => row.length)),
+				maxCol = Math.max(...layout.map(({length}) => length)),
 				rowLayout = layout[y];
 			Parser.run(() => {
 				for (let i = 0; i < maxCol; i++) {
