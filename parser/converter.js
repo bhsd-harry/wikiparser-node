@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	ConverterToken = require('../src/converter');
 
 /**
  * 解析语言变体转换
@@ -8,7 +9,6 @@ const Parser = require('..');
  * @param {accum} accum
  */
 const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
-	const ConverterToken = require('../src/converter');
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
 		/** @type {RegExpExecArray[]} */ stack = [];

@@ -1,6 +1,8 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	AttributeToken = require('../src/attribute'),
+	HtmlToken = require('../src/html');
 
 /**
  * 解析HTML标签
@@ -20,7 +22,6 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 			text += `<${x}`;
 			continue;
 		}
-		const AttributeToken = require('../src/attribute');
 		const [, slash,, params = '', brace, rest] = mt,
 			attr = new AttributeToken(params, 'html-attr', name, config, accum),
 			itemprop = attr.getAttr('itemprop');
@@ -32,7 +33,6 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 			continue;
 		}
 		text += `\0${accum.length}x\x7F${rest}`;
-		const HtmlToken = require('../src/html');
 		new HtmlToken(t, attr, slash === '/', brace === '/>', config, accum);
 	}
 	return text;

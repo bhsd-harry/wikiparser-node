@@ -6,19 +6,28 @@ const fs = require('fs'),
 	Parser = require('..');
 Parser.config = require('../config/default');
 
-const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.txt'), 'utf8'),
-	token = Parser.parse(wikitext);
-let restored = String(token),
-	process = '解析';
-if (restored === wikitext) {
-	const entities = {lt: '<', gt: '>', amp: '&'};
-	restored = token.print().replaceAll(
+const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.txt'), 'utf8');
+
+console.time('parse');
+const token = Parser.parse(wikitext);
+console.timeEnd('parse');
+if (String(token) !== wikitext) {
+	throw new Error('解析过程中不可逆地修改了原始文本！');
+}
+
+console.time('print');
+const printed = token.print();
+console.timeEnd('print');
+const entities = {lt: '<', gt: '>', amp: '&'},
+	restored = printed.replaceAll(
 		/<[^<]+?>|&([lg]t|amp);/gu,
 		/** @param {string} s */ (_, s) => s ? entities[s] : '',
 	);
-	process = '渲染HTML';
-}
 if (restored !== wikitext) {
-	throw new Error(`${process}过程中不可逆地修改了原始文本！`);
+	throw new Error('渲染HTML过程中不可逆地修改了原始文本！');
 }
-assert.deepStrictEqual(token.lint(), []);
+
+console.time('lint');
+const errors = token.lint();
+console.timeEnd('lint');
+assert.deepStrictEqual(errors, []);

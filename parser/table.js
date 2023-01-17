@@ -5,7 +5,8 @@ const Parser = require('..'),
 	Token = require('../src'),
 	TableToken = require('../src/table'),
 	TrToken = require('../src/table/tr'),
-	TdToken = require('../src/table/td');
+	TdToken = require('../src/table/td'),
+	DdToken = require('../src/nowiki/dd');
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
@@ -49,7 +50,6 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
-				const DdToken = require('../src/nowiki/dd');
 				new DdToken(indent, config, accum);
 			}
 			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7F`}${moreSpaces}\0${accum.length}b\x7F`, top);

@@ -3,7 +3,8 @@
 const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	Token = require('..'),
-	SyntaxToken = require('../syntax');
+	SyntaxToken = require('../syntax'),
+	AttributeToken = require('../attribute');
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
@@ -20,7 +21,6 @@ class TrToken extends Token {
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = null) {
 		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
-		const AttributeToken = require('../attribute');
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',

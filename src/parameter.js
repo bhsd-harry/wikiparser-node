@@ -1,7 +1,8 @@
 'use strict';
 
 const Parser = require('..'),
-	Token = require('.');
+	Token = require('.'),
+	AtomToken = require('./atom');
 
 /**
  * 模板或魔术字参数
@@ -22,7 +23,6 @@ class ParameterToken extends Token {
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
-		const AtomToken = require('./atom');
 		const keyToken = new AtomToken(typeof key === 'number' ? undefined : key, 'parameter-key', config, accum, {
 				'Stage-2': ':', '!HeadingToken': '',
 			}),

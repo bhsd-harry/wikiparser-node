@@ -1,7 +1,8 @@
 'use strict';
 
 const Parser = require('../..'),
-	Token = require('..');
+	Token = require('..'),
+	AtomToken = require('../atom');
 
 /**
  * 内链
@@ -20,7 +21,6 @@ class LinkToken extends Token {
 	 */
 	constructor(link, linkText, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
 		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
-		const AtomToken = require('../atom');
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
 			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));

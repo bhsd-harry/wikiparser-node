@@ -1,7 +1,8 @@
 'use strict';
 
 const Parser = require('../..'),
-	Token = require('..');
+	Token = require('..'),
+	NoincludeToken = require('../nowiki/noinclude');
 
 /**
  * `<pre>`
@@ -14,7 +15,6 @@ class HasNowikiToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = []) {
-		const NoincludeToken = require('../nowiki/noinclude');
 		wikitext = wikitext.replaceAll(
 			/(<nowiki>)(.*?)(<\/nowiki>)/giu,
 			/** @type {function(...string): string} */ (_, opening, inner, closing) => {

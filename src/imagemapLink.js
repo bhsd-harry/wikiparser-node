@@ -1,6 +1,8 @@
 'use strict';
 
-const Token = require('.'),
+const Title = require('../lib/title'),
+	Token = require('.'),
+	NoincludeToken = require('./nowiki/noinclude'),
 	LinkToken = require('./link'),
 	ExtLinkToken = require('./extLink');
 
@@ -18,9 +20,6 @@ class ImagemapLinkToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(pre, linkStuff, post, config, accum) {
-		const Title = require('../lib/title'),
-			AstText = require('../lib/text'),
-			NoincludeToken = require('./nowiki/noinclude');
 		const SomeLinkToken = linkStuff[2] instanceof Title ? LinkToken : ExtLinkToken;
 		super(undefined, config, true, accum);
 		this.append(pre, new SomeLinkToken(...linkStuff, config, accum), new NoincludeToken(post, config, accum));

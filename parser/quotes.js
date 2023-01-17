@@ -1,6 +1,7 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	QuoteToken = require('../src/nowiki/quote');
 
 /**
  * 解析单引号
@@ -52,7 +53,6 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 		arr[i] = "''";
 		arr[i - 1] += "'";
 	}
-	const QuoteToken = require('../src/nowiki/quote');
 	for (let i = 1; i < length; i += 2) {
 		new QuoteToken(arr[i].length, config, accum);
 		arr[i] = `\0${accum.length - 1}q\x7F`;

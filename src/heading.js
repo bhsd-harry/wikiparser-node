@@ -2,7 +2,8 @@
 
 const {generateForSelf} = require('../util/lint'),
 	Parser = require('..'),
-	Token = require('.');
+	Token = require('.'),
+	SyntaxToken = require('./syntax');
 
 /**
  * 章节标题
@@ -22,7 +23,6 @@ class HeadingToken extends Token {
 		const token = new Token(input[0], config, true, accum);
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
-		const SyntaxToken = require('./syntax');
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
 			'Stage-1': ':', '!ExtToken': '',
 		});
