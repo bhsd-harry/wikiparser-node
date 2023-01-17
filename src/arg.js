@@ -40,6 +40,14 @@ class ArgToken extends Token {
 		return `{{{${super.toString(selector, '|')}}}}`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return 3;

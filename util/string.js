@@ -62,4 +62,14 @@ const explode = (start, end, separator, str) => {
 	return exploded;
 };
 
-module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode};
+/**
+ * extract effective wikitext
+ * @param {(string|AstNode)[]} childNodes a Token's contents
+ * @param {string} separator delimiter between nodes
+ */
+const text = (childNodes, separator = '') => {
+	const AstNode = require('../lib/node');
+	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
+};
+
+module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode, text};
