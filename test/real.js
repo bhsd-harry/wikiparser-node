@@ -35,7 +35,6 @@ const getPages = async url => {
 };
 
 (async () => {
-	const moreTypes = new Set();
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
 		Parser.config = require(path.join('..', 'config', config));
@@ -73,8 +72,5 @@ const getPages = async url => {
 		} catch (e) {
 			Parser.error(`访问${name}的API端口时出错！`, e);
 		}
-	}
-	if (moreTypes.size > 0) {
-		Parser.debug('其他可能不含纯文本子节点的类：', moreTypes);
 	}
 })();
