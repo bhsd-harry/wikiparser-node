@@ -86,7 +86,7 @@ class AttributeToken extends Token {
 		const HtmlToken = require('./html');
 		const errors = super.lint(start);
 		let /** @type {{top: number, left: number}} */ rect;
-		if (this.type === 'html-attr' && this.parentNode.closing && String(this).trim()) {
+		if (this.type === 'html-attr' && this.parentNode.closing && this.text().trim()) {
 			rect = this.getRootNode().posFromIndex(start);
 			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}

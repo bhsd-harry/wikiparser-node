@@ -43,6 +43,13 @@ class HtmlToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return `<${this.#closing ? '/' : ''}${this.#tag}${
+			this.#closing ? '' : super.text()
+		}${this.#selfClosing ? '/' : ''}>`;
+	}
+
+	/** @override */
 	getPadding() {
 		return this.#tag.length + (this.#closing ? 2 : 1);
 	}

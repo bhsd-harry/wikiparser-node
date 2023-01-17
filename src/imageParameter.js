@@ -95,6 +95,11 @@ class ImageParameterToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
+	}
+
+	/** @override */
 	getPadding() {
 		return Math.max(0, this.#syntax.indexOf('$1'));
 	}

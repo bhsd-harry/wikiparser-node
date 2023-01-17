@@ -51,6 +51,17 @@ class TagPairToken extends Token {
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		const [opening, closing] = this.#tags;
+		return this.#selfClosing
+			? `<${opening}${this.firstChild.text()}/>`
+			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return this.#tags[0].length + 1;

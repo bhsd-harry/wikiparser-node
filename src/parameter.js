@@ -35,7 +35,7 @@ class ParameterToken extends Token {
 	afterBuild() {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
-			const name = String(this.firstChild).trim(),
+			const name = this.firstChild.text().trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode && parentNode instanceof TranscludeToken) {
@@ -53,6 +53,14 @@ class ParameterToken extends Token {
 		return this.anon
 			? this.lastChild.toString(selector)
 			: super.toString(selector, '=');
+	}
+
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		return this.anon ? this.lastChild.text() : super.text('=');
 	}
 
 	/** @override */

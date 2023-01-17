@@ -1,6 +1,6 @@
 'use strict';
 
-const {print} = require('../util/string'),
+const {text, print} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.'),
 	ConverterFlagsToken = require('./converterFlags'),
@@ -41,6 +41,15 @@ class ConverterToken extends Token {
 	toString(selector) {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
+	}
+
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		const {childNodes: [flags, ...rules]} = this;
+		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 
 	/** @override */

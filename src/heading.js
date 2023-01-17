@@ -38,6 +38,15 @@ class HeadingToken extends Token {
 		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		const equals = '='.repeat(Number(this.name));
+		return `${equals}${this.firstChild.text()}${equals}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return super.getPadding() + Number(this.name);

@@ -40,6 +40,11 @@ class ExtLinkToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return `[${super.text(' ')}]`;
+	}
+
+	/** @override */
 	getPadding() {
 		return 1;
 	}

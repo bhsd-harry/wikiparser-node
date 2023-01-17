@@ -33,6 +33,11 @@ class ParamTagToken extends Token {
 	}
 
 	/** @override */
+	text() {
+		return super.text('\n');
+	}
+
+	/** @override */
 	getGaps() {
 		return 1;
 	}

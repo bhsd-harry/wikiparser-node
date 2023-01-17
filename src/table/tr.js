@@ -55,6 +55,12 @@ class TrToken extends Token {
 		errors.push(error);
 		return errors;
 	}
+
+	/** @override */
+	text() {
+		const str = super.text();
+		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
+	}
 }
 
 module.exports = TrToken;

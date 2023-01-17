@@ -51,6 +51,18 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		if (this.childNodes.length === 3) {
+			const {childNodes: [from, variant, to]} = this;
+			return `${from.text()}=>${variant.text()}:${to.text()}`;
+		}
+		return super.text(':');
+	}
+
+	/**
+	 * @override
 	 * @param {number} i 子节点序号
 	 */
 	getGaps(i = 0) {

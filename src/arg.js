@@ -1,6 +1,7 @@
 'use strict';
 
-const {generateForChild} = require('../util/lint'),
+const {text} = require('../util/string'),
+	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.');
 

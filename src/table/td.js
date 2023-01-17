@@ -54,6 +54,16 @@ class TdToken extends TrToken {
 
 	/**
 	 * @override
+	 * @returns {string}
+	 * @complexity `n`
+	 */
+	text() {
+		const {childNodes: [syntax, attr, inner]} = this;
+		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
+	}
+
+	/**
+	 * @override
 	 * @param {number} i 子节点位置
 	 */
 	getGaps(i = 0) {

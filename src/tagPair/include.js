@@ -1,7 +1,7 @@
 'use strict';
 
-const {generateForSelf} = require('../../util/lint'),
-	hidden = require('../../mixin/hidden'),
+const hidden = require('../../mixin/hidden'),
+	{generateForSelf} = require('../../util/lint'),
 	Parser = require('../..'),
 	TagPairToken = require('.');
 

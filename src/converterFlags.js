@@ -27,7 +27,7 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	afterBuild() {
-		this.#flags = this.childNodes.map(child => String(child).trim());
+		this.#flags = this.childNodes.map(child => child.text().trim());
 		return this;
 	}
 
@@ -36,6 +36,11 @@ class ConverterFlagsToken extends Token {
 	 */
 	toString(selector) {
 		return super.toString(selector, ';');
+	}
+
+	/** @override */
+	text() {
+		return super.text(';');
 	}
 
 	/** @override */
@@ -64,7 +69,7 @@ class ConverterFlagsToken extends Token {
 		}
 		const rect = this.getRootNode().posFromIndex(start);
 		for (const child of this.childNodes) {
-			const flag = String(child).trim();
+			const flag = child.text().trim();
 			if (flag && !variantFlags.includes(flag) && !unknownFlags.includes(flag)
 				&& (variantFlags.length > 0 || !validFlags.includes(flag))
 			) {
