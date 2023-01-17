@@ -64,16 +64,6 @@ class ParameterToken extends Token {
 	print() {
 		return super.print({sep: this.anon ? '' : '='});
 	}
-
-	/**
-	 * 获取参数值
-	 * @this {ParameterToken & {parentNode: TranscludeToken}}
-	 */
-	getValue() {
-		const TranscludeToken = require('./transclude');
-		const value = String(this.lastChild);
-		return this.anon && this.parentNode?.isTemplate() ? value : value.trim();
-	}
 }
 
 module.exports = ParameterToken;

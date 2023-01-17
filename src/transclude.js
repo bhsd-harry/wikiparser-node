@@ -266,7 +266,25 @@ class TranscludeToken extends Token {
 			default:
 				throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
 		}
-		return childNodes.slice(start, start + 2).map(child => child.getValue());
+		const /** @type {Token[]} */ queue = childNodes.slice(start, start + 2).map(({childNodes: [, value]}) => value);
+		for (let i = 0; i < queue.length;) {
+			/** @type {Token[] & {0: TranscludeToken}} */
+			const {length, 0: first} = queue[i].childNodes.filter(child => child.text().trim());
+			if (length === 0) {
+				queue.splice(i, 1);
+			} else if (length > 1 || first.type !== 'magic-word') {
+				i++;
+			} else {
+				try {
+					const possibleValues = first.getPossibleValues();
+					queue.splice(i, 1, ...possibleValues);
+					i += possibleValues.length;
+				} catch {
+					i++;
+				}
+			}
+		}
+		return queue;
 	}
 }
 
