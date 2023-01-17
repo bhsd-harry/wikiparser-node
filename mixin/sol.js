@@ -44,10 +44,9 @@ const sol = Constructor => class SolToken extends Constructor {
 	/**
 	 * 还原为wikitext
 	 * @param {string} selector
-	 * @param {boolean} ownLine 是否独占一行
 	 */
-	toString(selector, ownLine) {
-		return `${this.prependNewLine()}${super.toString(selector)}${ownLine ? this.appendNewLine() : ''}`;
+	toString(selector) {
+		return `${this.prependNewLine()}${super.toString(selector)}`;
 	}
 
 	/** 获取padding */
@@ -55,12 +54,9 @@ const sol = Constructor => class SolToken extends Constructor {
 		return this.prependNewLine().length;
 	}
 
-	/**
-	 * 可见部分
-	 * @param {booean} ownLine 是否独占一行
-	 */
-	text(ownLine) {
-		return `${this.prependNewLine()}${super.text()}${ownLine ? this.appendNewLine() : ''}`;
+	/** 可见部分 */
+	text() {
+		return `${this.prependNewLine()}${super.text()}`;
 	}
 };
 
