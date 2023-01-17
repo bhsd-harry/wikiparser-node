@@ -2,82 +2,14 @@
 
 const diff = require('../util/diff'),
 	Api = require('./api'),
-	Parser = require('../'),
-	AstText = require('../lib/text');
+	Parser = require('../');
 
 const {argv: [,, site = '']} = process,
 	apis = [
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
 		['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
-	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase())),
-	complexOrHiddenTypes = [
-		// 以下为子节点必为Token的类
-		'ext',
-		'arg',
-		'template',
-		'magic-word',
-		'parameter',
-		'heading',
-		'html',
-		'table',
-		'tr',
-		'td',
-		'link',
-		'category',
-		'file',
-		'gallery-image',
-		'imagemap-image',
-		'ext-link',
-		'converter',
-		'converter-flags',
-		'converter-rule',
-		// 以下为不可见的类
-		'noinclude',
-		'include',
-		'comment',
-		'double-underscore',
-		'hidden',
-		// 以下为SyntaxToken
-		'magic-word-name',
-		'heading-trail',
-		'table-syntax',
-		// 以下为代码不受限的NowikiToken
-		'ext-inner#nowiki',
-		'ext-inner#pre',
-		'ext-inner#score',
-		'ext-inner#syntaxhighlight',
-		'ext-inner#source',
-		'ext-inner#math',
-		'ext-inner#chem',
-		'ext-inner#ce',
-		'ext-inner#graph',
-		'ext-inner#mapframe',
-		'ext-inner#maplink',
-		'ext-inner#quiz',
-		'ext-inner#templatedata',
-		'ext-inner#timeline',
-		'charinsert-line',
-	],
-	simpleTypes = new Set([
-		'ext-inner',
-		'ext-attr',
-		'html-attr',
-		'table-attr',
-		'arg-default',
-		'parameter-key',
-		'parameter-value',
-		'heading-title',
-		'td-inner',
-		'link-target',
-		'link-text',
-		'image-parameter',
-		'ext-link-text',
-		'converter-flag',
-		'converter-rule-noconvert',
-		'converter-rule-to',
-	]),
-	possibleSyntax = /[{}]+|\[{2,}|\[(?!(?:(?!https?\b)[^[])*\])|(?<=^|\])([^[]*?)\]+|<(?=\s*\/?\w+[\s/>])/giu;
+	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 Parser.debugging = true;
 
@@ -97,7 +29,6 @@ const getPages = async url => {
 };
 
 (async () => {
-	const moreTypes = new Set();
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
 		Parser.config = `./config/${config}`;
@@ -109,29 +40,25 @@ const getPages = async url => {
 					const root = Parser.parse(content, ns === 10 && !title.endsWith('/doc'));
 					console.timeEnd(title);
 					console.time(title);
-					console.log(root.lint());
+					const errors = root.lint();
 					console.timeEnd(title);
-					for (const token of root.querySelectorAll(`:not(${complexOrHiddenTypes.join()})`)) {
-						const {childNodes, type, hidden} = token;
-						if (hidden && !simpleTypes.has(type)) {
-							moreTypes.add(type);
-							continue;
-						}
-						let first;
-						for (let i = 0; i < childNodes.length; i++) {
-							const /** @type {AstText} */ {type: childType, data} = childNodes[i];
-							if (childType === 'text') {
-								first = i;
-								if (data.search(possibleSyntax) >= 0) {
-									token.setText(data.replaceAll(possibleSyntax, '$1'), i);
-								}
-							}
-						}
-						if (first === undefined && !simpleTypes.has(type)) {
-							moreTypes.add(type);
-						}
+					console.log(errors);
+					const textErrors = errors.filter(
+						({message}) => /^(?:孤立的|URL中的全角标点|未匹配的闭合标签)/u.test(message),
+					);
+					if (textErrors.length === 0) {
+						continue;
 					}
-					await diff(content, String(root));
+					const lines = content.split('\n');
+					textErrors.sort(
+						({startLine: aLine, startCol: aCol}, {startLine: bLine, startCol: bCol}) =>
+							bLine - aLine || bCol - aCol,
+					);
+					for (const {startLine, startCol, endCol} of textErrors) {
+						const line = lines[startLine];
+						lines[startLine] = `${line.slice(0, startCol)}${line.slice(endCol)}`;
+					}
+					await diff(content, lines.join('\n'));
 				} catch (e) {
 					Parser.error(`解析${name}的 ${title} 页面时出错！`, e);
 				}
@@ -139,8 +66,5 @@ const getPages = async url => {
 		} catch (e) {
 			Parser.error(`访问${name}的API端口时出错！`, e);
 		}
-	}
-	if (moreTypes.size > 0) {
-		Parser.debug('其他可能不含纯文本子节点的类：', moreTypes);
 	}
 })();
