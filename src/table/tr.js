@@ -41,7 +41,9 @@ class TrToken extends Token {
 			return errors;
 		}
 		const first = inter.childNodes.find(child => child.text().trim());
-		if (first?.type === 'magic-word') {
+		if (!first) {
+			return errors;
+		} else if (first?.type === 'magic-word') {
 			try {
 				const possibleValues = first.getPossibleValues();
 				if (possibleValues.every(token => /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u.test(token.text()))) {
