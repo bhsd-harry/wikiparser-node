@@ -5,7 +5,8 @@ const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
-	SyntaxToken = require('../syntax');
+	SyntaxToken = require('../syntax'),
+	AttributeToken = require('../attribute');
 
 const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
 
@@ -39,7 +40,6 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
 		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
-		const AttributeToken = require('../attribute');
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',

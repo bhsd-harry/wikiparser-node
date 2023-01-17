@@ -1,7 +1,10 @@
 'use strict';
 
 const {removeComment} = require('../util/string'),
-	Parser = require('..');
+	Parser = require('..'),
+	HeadingToken = require('../src/heading'),
+	TranscludeToken = require('../src/transclude'),
+	ArgToken = require('../src/arg');
 
 /**
  * 解析花括号
@@ -38,7 +41,6 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				if (rmt) {
 					text = `${text.slice(0, index)}\0${accum.length}h\x7F${text.slice(curIndex)}`;
 					lastIndex = index + 4 + String(accum.length).length;
-					const HeadingToken = require('../src/heading');
 					new HeadingToken(rmt[1].length, rmt.slice(2), config, accum);
 				}
 			}
@@ -60,7 +62,6 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
-				const ArgToken = require('../src/arg');
 				new ArgToken(parts.map(part => part.join('=')), config, accum);
 			} else {
 				const name = removeComment(parts[0][0]);
@@ -70,7 +71,6 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 					ch = 'm';
 				}
 				try {
-					const TranscludeToken = require('../src/transclude');
 					new TranscludeToken(parts[0][0], parts.slice(1), config, accum);
 				} catch (e) {
 					if (e instanceof Error && e.message.startsWith('非法的模板名称：')) {

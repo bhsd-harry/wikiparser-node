@@ -1,7 +1,8 @@
 'use strict';
 
 const {extUrlChar} = require('../util/string'),
-	Parser = require('..');
+	Parser = require('..'),
+	ExtLinkToken = require('../src/extLink');
 
 /**
  * 解析外部链接
@@ -9,7 +10,6 @@ const {extUrlChar} = require('../util/string'),
  * @param {accum} accum
  */
 const parseExternalLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
-	const ExtLinkToken = require('../src/extLink');
 	const regex = new RegExp(
 		`\\[((?:${config.protocol}|//)${extUrlChar}|\0\\d+m\x7F)(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
 		'giu',

@@ -1,6 +1,9 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	LinkToken = require('../src/link'),
+	FileToken = require('../src/link/file'),
+	CategoryToken = require('../src/link/category');
 
 /**
  * 解析内部链接
@@ -80,15 +83,15 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 		}
 		text &&= parseQuotes(text, config, accum);
 		s += `\0${accum.length}l\x7F${after}`;
-		let LinkToken = require('../src/link');
+		let SomeLinkToken = LinkToken;
 		if (!force) {
 			if (!interwiki && ns === 6) {
-				LinkToken = require('../src/link/file');
+				SomeLinkToken = FileToken;
 			} else if (!interwiki && ns === 14) {
-				LinkToken = require('../src/link/category');
+				SomeLinkToken = CategoryToken;
 			}
 		}
-		new LinkToken(link, text, title, config, accum, delimiter);
+		new SomeLinkToken(link, text, title, config, accum, delimiter);
 	}
 	return s;
 };

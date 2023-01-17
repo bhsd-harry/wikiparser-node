@@ -1,6 +1,8 @@
 'use strict';
 
-const Parser = require('..');
+const Parser = require('..'),
+	ListToken = require('../src/nowiki/list'),
+	DdToken = require('../src/nowiki/dd');
 
 /**
  * 解析列表
@@ -12,7 +14,6 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	if (!mt) {
 		return text;
 	}
-	const ListToken = require('../src/nowiki/list');
 	const [total, comment, prefix] = mt;
 	text = `${comment}\0${accum.length}d\x7F${text.slice(total.length)}`;
 	new ListToken(prefix, config, accum);
@@ -20,7 +21,6 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	if (!dt) {
 		return text;
 	}
-	const DdToken = require('../src/nowiki/dd');
 	let regex = /:+|-\{/gu,
 		ex = regex.exec(text),
 		lc = 0;

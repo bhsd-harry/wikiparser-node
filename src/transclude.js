@@ -5,7 +5,9 @@ const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/stri
 	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
-	ParameterToken = require('./parameter');
+	ParameterToken = require('./parameter'),
+	AtomToken = require('./atom'),
+	SyntaxToken = require('./syntax');
 
 /**
  * 模板或魔术字
@@ -54,8 +56,6 @@ class TranscludeToken extends Token {
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
-		const AtomToken = require('./atom'),
-			SyntaxToken = require('./syntax');
 		const {parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
 		if (title.includes(':')) {

@@ -2,7 +2,9 @@
 
 const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
-	Token = require('..');
+	Token = require('..'),
+	ExtToken = require('../tagPair/ext'),
+	NoincludeToken = require('../nowiki/noinclude');
 
 /**
  * 嵌套式的扩展标签
@@ -19,8 +21,6 @@ class NestedToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
-		const ExtToken = require('../tagPair/ext'),
-			NoincludeToken = require('../nowiki/noinclude');
 		const text = wikitext?.replaceAll(
 			regex,
 			/** @type {function(...string): string} */ (_, name, attr, inner, closing) => {

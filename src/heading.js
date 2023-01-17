@@ -4,7 +4,8 @@ const {generateForSelf} = require('../util/lint'),
 	fixedToken = require('../mixin/fixedToken'),
 	sol = require('../mixin/sol'),
 	Parser = require('..'),
-	Token = require('.');
+	Token = require('.'),
+	SyntaxToken = require('./syntax');
 
 /**
  * 章节标题
@@ -30,7 +31,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		token.type = 'heading-title';
 		token.setAttribute('name', this.name);
 		token.setAttribute('stage', 2);
-		const SyntaxToken = require('./syntax');
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
 			'Stage-1': ':', '!ExtToken': '',
 		});

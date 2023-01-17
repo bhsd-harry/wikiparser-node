@@ -2,7 +2,6 @@
 
 const {generateForSelf, generateForChild} = require('../util/lint'),
 	Parser = require('..'),
-	AstText = require('../lib/text'),
 	Token = require('.'),
 	NoincludeToken = require('./nowiki/noinclude'),
 	GalleryImageToken = require('./link/galleryImage'),
