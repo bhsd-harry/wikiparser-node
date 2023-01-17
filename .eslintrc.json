@@ -546,7 +546,7 @@
 		"unicorn/no-typeof-undefined": [
 			2,
 			{
-				"checkGlobalVariables": false
+				"checkGlobalVariables": true
 			}
 		],
 		"unicorn/no-unreadable-iife": 2,
