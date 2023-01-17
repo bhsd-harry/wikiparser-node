@@ -53,9 +53,10 @@ class TranscludeToken extends Token {
 		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
 				name = removeComment(magicWord),
-				isSensitive = sensitive.includes(name);
-			if (isSensitive || insensitive.includes(name.toLowerCase())) {
-				this.setAttribute('name', name.toLowerCase().replace(/^#/u, '')).type = 'magic-word';
+				isSensitive = sensitive.includes(name),
+				canonicalCame = insensitive[name.toLowerCase()];
+			if (isSensitive || canonicalCame) {
+				this.setAttribute('name', canonicalCame || name.toLowerCase()).type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
@@ -239,6 +240,33 @@ class TranscludeToken extends Token {
 				.map(([key, args]) => [key, new Set(args)]);
 		}
 		return [];
+	}
+
+	/**
+	 * 对特定魔术字获取可能的取值
+	 * @this {ParameterToken}}
+	 * @throws `Error` 不是可接受的魔术字
+	 */
+	getPossibleValues() {
+		const {type, name, childNodes, constructor: {name: cName}} = this;
+		if (type === 'template') {
+			throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+		}
+		let start;
+		switch (name) {
+			case 'if':
+			case 'ifexist':
+			case 'ifexpr':
+			case 'iferror':
+				start = 2;
+				break;
+			case 'ifeq':
+				start = 3;
+				break;
+			default:
+				throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+		}
+		return childNodes.slice(start, start + 2).map(child => child.getValue());
 	}
 }
 

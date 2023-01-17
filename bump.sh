@@ -7,6 +7,7 @@ then
 	git push
 	npm publish --tag browser
 else
+	rm bundle/*.js
 	webpack
 	eslint .	
 	if [[ $? -eq 0 ]]

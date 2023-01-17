@@ -3,11 +3,11 @@ import Token from '../src';
 declare global {
 	interface ParserConfig {
 		ext: string[];
-		html: [string[], string[], string[]];
+		html: string[][];
 		namespaces: Record<string, string>;
 		nsid: Record<string, number>;
-		parserFunction: [string[], string[], string[], string[]];
-		doubleUnderscore: [string[], string[]];
+		parserFunction: [Record<string, string>, string[], string[], string[]];
+		doubleUnderscore: string[][];
 		protocol: string;
 		img: Record<string, string>;
 		variants: string[];
