@@ -75,7 +75,7 @@ class ImagemapToken extends Token {
 					error = true;
 				}
 			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {
-				super.insertAt(new AstText(line));
+				super.insertAt(line);
 				continue;
 			} else if (line.includes('[')) {
 				const i = line.indexOf('['),

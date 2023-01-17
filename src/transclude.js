@@ -284,6 +284,33 @@ class TranscludeToken extends Token {
 		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 	}
 
+	/**
+	 * 对特定魔术字获取可能的取值
+	 * @this {ParameterToken}}
+	 * @throws `Error` 不是可接受的魔术字
+	 */
+	getPossibleValues() {
+		const {type, name, childNodes, constructor: {name: cName}} = this;
+		if (type === 'template') {
+			throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+		}
+		let start;
+		switch (name) {
+			case 'if':
+			case 'ifexist':
+			case 'ifexpr':
+			case 'iferror':
+				start = 2;
+				break;
+			case 'ifeq':
+				start = 3;
+				break;
+			default:
+				throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+		}
+		return childNodes.slice(start, start + 2).map(child => child.getValue());
+	}
+
 	/** @override */
 	cloneNode() {
 		const [first, ...cloned] = this.cloneChildNodes(),

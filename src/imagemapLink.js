@@ -33,9 +33,7 @@ class ImagemapLinkToken extends fixedToken(Token) {
 			NoincludeToken = require('./nowiki/noinclude');
 		const SomeLinkToken = linkStuff[2] instanceof Title ? LinkToken : ExtLinkToken;
 		super(undefined, config, true, accum);
-		this.append(
-			new AstText(pre), new SomeLinkToken(...linkStuff, config, accum), new NoincludeToken(post, config, accum),
-		);
+		this.append(pre, new SomeLinkToken(...linkStuff, config, accum), new NoincludeToken(post, config, accum));
 	}
 }
 

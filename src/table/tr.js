@@ -54,10 +54,20 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
+		const TranscludeToken = require('../transclude');
 		const errors = super.lint(start),
-			inter = this.childNodes.find(({type}) => type === 'table-inter'),
-			str = String(inter).trim();
-		if (inter && str && !/^<!--.*-->$/su.test(str)) {
+			/** @type {TranscludeToken} */ inter = this.childNodes.find(({type}) => type === 'table-inter');
+		if (!inter) {
+			return errors;
+		}
+		const str = inter.childNodes.map(child => {
+			try {
+				return child.getPossibleValues().find(Boolean) ?? '';
+			} catch {
+				return child.text();
+			}
+		}).join().trim();
+		if (str && !/^(?:[|!]|\{\{\s*![!-]?\s*\}\})/u.test(str)) {
 			const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
 			error.startLine++;
 			error.startCol = 0;

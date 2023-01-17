@@ -103,6 +103,16 @@ class ParameterToken extends fixedToken(Token) {
 		return super.print({sep: this.anon ? '' : '='});
 	}
 
+	/**
+	 * 获取参数值
+	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 */
+	getValue() {
+		const TranscludeToken = require('./transclude');
+		const value = this.lastChild.text();
+		return this.anon && this.parentNode?.isTemplate() ? value : value.trim();
+	}
+
 	/** @override */
 	cloneNode() {
 		const [key, value] = this.cloneChildNodes(),
@@ -131,16 +141,6 @@ class ParameterToken extends fixedToken(Token) {
 	safeReplaceWith(token) {
 		Parser.warn(`${this.constructor.name}.safeReplaceWith 方法退化到 replaceWith。`);
 		return this.replaceWith(token);
-	}
-
-	/**
-	 * 获取参数值
-	 * @this {ParameterToken & {parentNode: TranscludeToken}}
-	 */
-	getValue() {
-		const TranscludeToken = require('./transclude');
-		const value = this.lastChild.text();
-		return this.anon && this.parentNode?.isTemplate() ? value : value.trim();
 	}
 
 	/**
