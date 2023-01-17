@@ -35,42 +35,68 @@ const /** @type {Parser} */ Parser = {
 	typeAliases: {
 		text: ['string', 'str'],
 		plain: ['regular', 'normal'],
-		include: ['includeonly'],
+		// comment and extension
+		onlyinclude: ['only-include'],
+		noinclude: ['no-include'],
+		include: ['includeonly', 'include-only'],
+		comment: [],
 		ext: ['extension'],
 		'ext-attr': ['extension-attr'],
 		'ext-inner': ['extension-inner'],
+		// triple brackets
 		arg: ['argument'],
 		'arg-name': ['argument-name'],
 		'arg-default': ['argument-default'],
+		hidden: ['arg-redundant'],
+		// double brackets
 		'magic-word': ['parser-function', 'parser-func'],
+		'magic-word-name': ['parser-function-name', 'parser-func-name'],
 		'invoke-function': ['invoke-func', 'lua-function', 'lua-func', 'module-function', 'module-func'],
 		'invoke-module': ['lua-module'],
+		template: [],
+		'template-name': [],
 		parameter: ['param'],
 		'parameter-key': ['param-key'],
 		'parameter-value': ['parameter-val', 'param-value', 'param-val'],
+		// heading
 		heading: ['header'],
 		'heading-title': ['header-title'],
 		'heading-trail': ['header-trail'],
-		'table-attr': ['tr-attr', 'table-row-attr', 'td-attr', 'table-cell-attr', 'table-data-attr'],
+		// html
+		html: [],
+		'html-attr': [],
+		// table
+		table: [],
 		tr: ['table-row'],
 		td: ['table-cell', 'table-data'],
+		'table-syntax': [],
+		'table-attr': ['tr-attr', 'table-row-attr', 'td-attr', 'table-cell-attr', 'table-data-attr'],
+		'table-inter': [],
 		'td-inner': ['table-cell-inner', 'table-data-inner'],
-		'double-underscore': ['underscore', 'behavior-switch', 'behaviour-switch'],
+		// hr and double-underscore
 		hr: ['horizontal'],
+		'double-underscore': ['underscore', 'behavior-switch', 'behaviour-switch'],
+		// link
 		link: ['wikilink'],
+		'link-target': ['wikilink-target'],
+		'link-text': ['wikilink-text'],
 		category: ['category-link', 'cat', 'cat-link'],
 		file: ['file-link', 'image', 'image-link', 'img', 'img-link'],
-		'link-text': ['wikilink-text'],
 		'gallery-image': ['gallery-file', 'gallery-img'],
 		'imagemap-image': ['imagemap-file', 'imagemap-img', 'image-map-image', 'image-map-file', 'image-map-img'],
 		'image-parameter': ['img-parameter', 'image-param', 'img-param'],
+		// quotes
 		quote: ['quotes', 'quot', 'apostrophe', 'apostrophes', 'apos'],
+		// external link
 		'ext-link': ['external-link'],
 		'ext-link-text': ['external-link-text'],
 		'ext-link-url': ['external-link-url'],
+		// magic link
 		'free-ext-link': ['free-external-link', 'magic-link'],
+		// list
 		list: ['ol', 'ordered-list', 'ul', 'unordered-list', 'dl', 'description-list'],
 		dd: ['indent', 'indentation'],
+		// converter
 		converter: ['convert', 'conversion'],
 		'converter-flags': ['convert-flags', 'conversion-flags'],
 		'converter-flag': ['convert-flag', 'conversion-flag'],
@@ -79,8 +105,10 @@ const /** @type {Parser} */ Parser = {
 		'converter-rule-variant': ['convert-rule-variant', 'conversion-rule-variant'],
 		'converter-rule-to': ['convert-rule-to', 'conversion-rule-to'],
 		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
-		'imagemap-link': ['image-map-link'],
+		// specific extensions
 		'param-line': ['parameter-line'],
+		'charinsert-line': [],
+		'imagemap-link': ['image-map-link'],
 	},
 
 	promises: [Promise.resolve()],
