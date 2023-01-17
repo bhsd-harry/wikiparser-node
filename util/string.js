@@ -63,13 +63,6 @@ const explode = (start, end, separator, str) => {
 };
 
 /**
- * optionally convert to lower cases
- * @param {string} val 属性值
- * @param {string|undefined} i 是否对大小写不敏感
- */
-const toCase = (val, i) => i ? val.toLowerCase() : val;
-
-/**
  * extract effective wikitext
  * @param {(string|AstNode)[]} childNodes a Token's contents
  * @param {string} separator delimiter between nodes
@@ -78,6 +71,13 @@ const text = (childNodes, separator = '') => {
 	const AstNode = require('../lib/node');
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
+
+/**
+ * optionally convert to lower cases
+ * @param {string} val 属性值
+ * @param {string|undefined} i 是否对大小写不敏感
+ */
+const toCase = (val, i) => i ? val.toLowerCase() : val;
 
 /**
  * escape newlines
@@ -102,4 +102,4 @@ const normalizeSpace = token => {
 	}
 };
 
-module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode, toCase, text, noWrap, normalizeSpace};
+module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode, text, toCase, noWrap, normalizeSpace};

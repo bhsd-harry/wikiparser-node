@@ -48,6 +48,14 @@ class ArgToken extends Token {
 		return selector && this.matches(selector) ? '' : `{{{${super.toString(selector, '|')}}}}`;
 	}
 
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
+	}
+
 	/** @override */
 	getPadding() {
 		return 3;
@@ -102,14 +110,6 @@ class ArgToken extends Token {
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
 		return this;
-	}
-
-	/**
-	 * @override
-	 * @returns {string}
-	 */
-	text() {
-		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
 
 	/**
