@@ -32,7 +32,7 @@
 		const paint = () => {
 				preview.innerHTML = `${root.print()} `;
 				preview.scrollTop = textbox.scrollTop;
-				if (preview.firstElementChild.textContent !== textbox.value) {
+				if (preview.firstElementChild && preview.firstElementChild.textContent !== textbox.value) {
 					alert('渲染出错！请复制导致错误的文本，提交到GitHub issues。');
 				}
 			},
@@ -103,7 +103,7 @@
 				clearTimeout(debouncedUpdate);
 				clearTimeout(debouncedScroll);
 				scrollId++;
-				debouncedUpdate = setTimeout(prettify, 2000, ++updateId);
+				debouncedUpdate = setTimeout(prettify, 5000, ++updateId);
 				textbox.style.color = '';
 				preview.classList.add('active');
 			};
@@ -114,6 +114,13 @@
 				preview.scrollTop = textbox.scrollTop;
 				clearTimeout(debouncedScroll);
 				debouncedScroll = setTimeout(viewport, 500, ++scrollId);
+			}
+		});
+		textbox.addEventListener('keydown', e => {
+			if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+				e.preventDefault();
+				updateId++;
+				prettify();
 			}
 		});
 		prettify(updateId);
