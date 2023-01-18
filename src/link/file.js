@@ -2,7 +2,6 @@
 
 const Title = require('../../lib/title'),
 	{explode, noWrap} = require('../../util/string'),
-	{externalUse} = require('../../util/debug'),
 	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	LinkToken = require('.'),
@@ -15,7 +14,6 @@ const Title = require('../../lib/title'),
 class FileToken extends LinkToken {
 	type = 'file';
 	/** @type {Set<string>} */ #keys = new Set();
-	/** @type {Record<string, Set<ImageParameterToken>>} */ #args = {};
 
 	/** 图片链接 */
 	get link() {
@@ -87,7 +85,7 @@ class FileToken extends LinkToken {
 			horizAlignArgs = this.getHorizAlignArgs(),
 			vertAlignArgs = this.getVertAlignArgs(),
 			captions = this.getArgs('caption'),
-			realCaptions = [...captions].filter((arg, i) => arg.text() || i === captions.size - 1);
+			realCaptions = [...captions.slice(0, -1).filter(arg => arg.text()), captions.at(-1)];
 		if (frameArgs.length > 1 || horizAlignArgs.length > 1 || vertAlignArgs.length > 1 || captions.size > 1) {
 			const rect = this.getRootNode().posFromIndex(start);
 			if (frameArgs.length > 1) {
@@ -117,22 +115,12 @@ class FileToken extends LinkToken {
 	/**
 	 * 获取指定图片参数
 	 * @param {string} key 参数名
-	 * @param {boolean} copy 是否返回备份
 	 * @complexity `n`
 	 */
-	getArgs(key, copy = true) {
-		if (typeof key !== 'string') {
-			this.typeError('getArgs', 'String');
-		}
-		copy ||= !Parser.debugging && externalUse('getArgs');
-		let args;
-		if (Object.hasOwn(this.#args, key)) {
-			args = this.#args[key];
-		} else {
-			args = new Set(this.getAllArgs().filter(({name}) => key === name));
-			this.#args[key] = args;
-		}
-		return copy ? new Set(args) : args;
+	getArgs(key) {
+		return typeof key === 'string'
+			? this.getAllArgs().filter(({name}) => key === name)
+			: this.typeError('getArgs', 'String');
 	}
 
 	/**
@@ -182,7 +170,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getArg(key) {
-		return [...this.getArgs(key, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
+		return this.getArgs(key).at(-1);
 	}
 
 	/**
@@ -191,7 +179,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	hasArg(key) {
-		return this.getArgs(key, false).size > 0;
+		return this.getArgs(key).length > 0;
 	}
 
 	/**
@@ -200,7 +188,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	removeArg(key) {
-		for (const token of this.getArgs(key, false)) {
+		for (const token of this.getArgs(key)) {
 			this.removeChild(token);
 		}
 	}
@@ -225,7 +213,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getValues(key) {
-		return [...this.getArgs(key, false)].map(token => token.getValue());
+		return this.getArgs(key).map(token => token.getValue());
 	}
 
 	/**
@@ -294,10 +282,8 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	removeAt(i) {
-		const /** @type {ImageParameterToken} */ token = super.removeAt(i),
-			args = this.getArgs(token.name, false, false);
-		args.delete(token);
-		if (args.size === 0) {
+		const /** @type {ImageParameterToken} */ token = super.removeAt(i);
+		if (!this.hasArg(token.name)) {
 			this.#keys.delete(token.name);
 		}
 		return token;
@@ -311,7 +297,6 @@ class FileToken extends LinkToken {
 	 */
 	insertAt(token, i = this.childNodes.length) {
 		if (!Parser.running) {
-			this.getArgs(token.name, false, false).add(token);
 			this.#keys.add(token.name);
 		}
 		return super.insertAt(token, i);
