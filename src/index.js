@@ -124,7 +124,7 @@ class Token extends AstElement {
 	#buildFromStr = str => str.split(/[\0\x7F]/u).map((s, i) => {
 		if (i % 2 === 0) {
 			return new AstText(s);
-		} else if (isNaN(s.at(-1))) {
+		} else if (isNaN(s[s.length - 1])) {
 			return this.#accum[Number(s.slice(0, -1))];
 		}
 		throw new Error(`解析错误！未正确标记的 Token：${s}`);
@@ -156,7 +156,7 @@ class Token extends AstElement {
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.insertAt(halfParsed ? wikitext : wikitext.replaceAll(/[\0\x7F]/gu, ''));
+			this.insertAt(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''));
 		}
 		this.#config = config;
 		this.#accum = accum;

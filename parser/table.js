@@ -74,7 +74,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 				top = stack.pop();
 			}
 			top.close(`\n${spaces}${closing}`, true);
-			push(attr, stack.at(-1));
+			push(attr, stack[stack.length - 1]);
 		} else if (row) {
 			if (top.type === 'td') {
 				top = stack.pop();

@@ -19,11 +19,11 @@ class AttributeToken extends Token {
 	 * @complexity `n`
 	 */
 	#parseAttr() {
+		const regex = /([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu;
 		let string = this.toString();
-		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
-		for (const [, key, quoteStart, quoted, quoteEnd, unquoted] of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu)
-		) {
+		string = removeComment(string).replace(/\0\d+~\x7F/gu, '=');
+		for (let mt = regex.exec(string); mt; mt = regex.exec(string)) {
+			const [, key, quoteStart, quoted, quoteEnd, unquoted] = mt;
 			if (!this.setAttr(key, quoted ?? unquoted ?? true, true)) {
 				this.#sanitized = false;
 			} else if (quoteStart !== quoteEnd) {
@@ -72,7 +72,7 @@ class AttributeToken extends Token {
 		} else if (value === false) {
 			this.#attr.delete(key);
 		} else {
-			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
+			this.#attr.set(key, value === true ? true : value.replace(/\s/gu, ' ').trim());
 		}
 		return true;
 	}

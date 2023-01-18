@@ -22,10 +22,10 @@ const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
 				str = wikitext.slice(top.index + 2, index),
 				i = str.indexOf('|'),
 				[flags, text] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
-				temp = text.replaceAll(/(&[#a-z\d]+);/giu, '$1\x01'),
+				temp = text.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
 				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`, 'u'))
-					.map(rule => rule.replaceAll('\x01', ';'));
+					.map(rule => rule.replace(/\x01/gu, ';'));
 			new ConverterToken(flags, rules, config, accum);
 			wikitext = `${wikitext.slice(0, top.index)}\0${length}v\x7F${wikitext.slice(index + 2)}`;
 			if (stack.length === 0) {

@@ -7,7 +7,7 @@ const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])
  * remove half-parsed comment-like tokens
  * @param {string} str 原字符串
  */
-const removeComment = str => str.replaceAll(/\0\d+c\x7F/gu, '');
+const removeComment = str => str.replace(/\0\d+c\x7F/gu, '');
 
 /**
  * 以HTML格式打印
@@ -22,7 +22,7 @@ const print = (childNodes, opt = {}) => {
 	return `${pre}${childNodes.map(
 		child => child instanceof AstElement
 			? child.print()
-			: String(child).replaceAll(/[&<>]/gu, p => `&${entities[p]};`),
+			: String(child).replace(/[&<>]/gu, p => `&${entities[p]};`),
 	).join(sep)}${post}`;
 };
 
@@ -30,7 +30,7 @@ const print = (childNodes, opt = {}) => {
  * escape special chars for RegExp constructor
  * @param {string} str RegExp source
  */
-const escapeRegExp = str => str.replaceAll(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
+const escapeRegExp = str => str.replace(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
 
 /**
  * a more sophisticated string-explode function

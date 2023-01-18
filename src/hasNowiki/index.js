@@ -15,7 +15,7 @@ class HasNowikiToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = []) {
-		wikitext = wikitext.replaceAll(
+		wikitext = wikitext.replace(
 			/(<nowiki>)(.*?)(<\/nowiki>)/giu,
 			/** @type {function(...string): string} */ (_, opening, inner, closing) => {
 				new NoincludeToken(opening, config, accum);

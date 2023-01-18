@@ -16,10 +16,10 @@ const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = P
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
-	data = data.replaceAll(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
+	data = data.replace(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
 		new HrToken(m.length, config, accum);
 		return `${lead}\0${accum.length - 1}r\x7F`;
-	}).replaceAll(
+	}).replace(
 		new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'giu'),
 		/** @param {string} p1 */ (m, p1) => {
 			if (doubleUnderscore[0].includes(p1.toLowerCase()) || doubleUnderscore[1].includes(p1)) {

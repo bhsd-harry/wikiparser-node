@@ -31,11 +31,11 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 				nBold++;
 				if (firstSingle) {
 					break;
-				} else if (arr[i - 1].at(-1) === ' ') {
+				} else if (arr[i - 1].endsWith(' ')) {
 					if (!firstMulti && !firstSpace) {
 						firstSpace = i;
 					}
-				} else if (arr[i - 1].at(-2) === ' ') {
+				} else if (arr[i - 1].slice(-2, -1) === ' ') {
 					firstSingle = i;
 				} else {
 					firstMulti ||= i;

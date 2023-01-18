@@ -20,14 +20,14 @@ class NestedToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
-		const text = wikitext?.replaceAll(
+		const text = wikitext?.replace(
 			regex,
 			/** @type {function(...string): string} */ (_, name, attr, inner, closing) => {
 				const str = `\0${accum.length + 1}e\x7F`;
 				new ExtToken(name, attr, inner, closing, config, accum);
 				return str;
 			},
-		)?.replaceAll(/(^|\0\d+e\x7F)(.*?)(?=$|\0\d+e\x7F)/gsu, (_, lead, substr) => {
+		)?.replace(/(^|\0\d+e\x7F)(.*?)(?=$|\0\d+e\x7F)/gsu, (_, lead, substr) => {
 			if (substr === '') {
 				return lead;
 			}

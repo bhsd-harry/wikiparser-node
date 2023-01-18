@@ -36,15 +36,16 @@ class MagicLinkToken extends Token {
 				continue;
 			}
 			rect ||= this.getRootNode().posFromIndex(start);
-			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning');
-			errors.push(...[...str.matchAll(/[，；。：！？（）【】]/gu)].map(({index}) => {
-				const lines = str.slice(0, index).split('\n'),
+			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning'),
+				regex = /[，；。：！？（）【】]/gu;
+			for (let mt = regex.exec(str); mt; mt = regex.exec(str)) {
+				const lines = str.slice(0, mt.index).split('\n'),
 					{length: top} = lines,
-					{length: left} = lines.at(-1),
+					{length: left} = lines[top - 1],
 					startLine = refError.startLine + top - 1,
 					startCol = top > 1 ? left : refError.startCol + left;
-				return {...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1};
-			}));
+				errors.push({...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1});
+			}
 		}
 		return errors;
 	}

@@ -476,10 +476,14 @@
 		"n/no-path-concat": 2,
 		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
-		"es-x/no-regexp-lookbehind-assertions": 2,
-		"es-x/no-object-fromentries": 2,
+		"es-x/no-array-string-prototype-at": 2,
 		"es-x/no-global-this": 2,
+		"es-x/no-object-fromentries": 2,
 		"es-x/no-object-hasown": 2,
+		"es-x/no-regexp-lookbehind-assertions": 2,
+		"es-x/no-string-prototype-matchall": 2,
+		"es-x/no-string-prototype-replaceall": 2,
+		"es-x/no-string-prototype-trimstart-trimend": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,
@@ -567,7 +571,6 @@
 		"unicorn/prefer-array-flat-map": 2,
 		"unicorn/prefer-array-index-of": 2,
 		"unicorn/prefer-array-some": 2,
-		"unicorn/prefer-at": 2,
 		"unicorn/prefer-code-point": 2,
 		"unicorn/prefer-default-parameters": 2,
 		"unicorn/prefer-includes": 2,
@@ -582,7 +585,6 @@
 				"concat": "certain"
 			}
 		],
-		"unicorn/prefer-string-replace-all": 2,
 		"unicorn/prefer-string-starts-ends-with": 2,
 		"unicorn/prefer-switch": 2,
 		"unicorn/prefer-ternary": 2,
@@ -725,6 +727,9 @@
 			"overrideReplacesDocs": [
 				"require-description"
 			]
+		},
+		"es-x": {
+			"aggressive": true
 		}
 	}
 }
