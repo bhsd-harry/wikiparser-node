@@ -80,7 +80,7 @@ class TranscludeToken extends Token {
 			}
 		}
 		if (this.type === 'template') {
-			const [name] = removeComment(title).split('#');
+			const name = removeComment(title).split('#')[0].trim();
 			if (/\0\d+[eh!+-]\x7F|[<>[\]{}\n]/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
