@@ -35,7 +35,7 @@ class FileToken extends LinkToken {
 			horizAlignArgs = this.getHorizAlignArgs(),
 			vertAlignArgs = this.getVertAlignArgs(),
 			captions = this.getArgs('caption'),
-			realCaptions = [...captions].filter((arg, i) => arg.text() || i === captions.size - 1);
+			realCaptions = [...captions.slice(0, -1).filter(arg => arg.text()), captions.at(-1)];
 		if (frameArgs.length > 1 || horizAlignArgs.length > 1 || vertAlignArgs.length > 1 || captions.size > 1) {
 			const rect = this.getRootNode().posFromIndex(start);
 			if (frameArgs.length > 1) {
@@ -65,13 +65,10 @@ class FileToken extends LinkToken {
 	/**
 	 * 获取指定图片参数
 	 * @param {string} key 参数名
-	 * @param {boolean} copy 是否返回备份
-	 * @returns {Set<ImageParameterToken>}
 	 * @complexity `n`
 	 */
-	getArgs(key, copy = true) {
-		const args = this.getAllArgs().filter(({name}) => key === name);
-		return copy ? new Set(args) : args;
+	getArgs(key) {
+		return this.getAllArgs().filter(({name}) => key === name);
 	}
 
 	/**
