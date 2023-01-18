@@ -12,6 +12,7 @@ const {argv: [,, site = '']} = process,
 	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 Parser.debugging = true;
+Parser.warning = false;
 
 /**
  * 获取最近更改的页面源代码

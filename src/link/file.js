@@ -7,13 +7,16 @@ const Title = require('../../lib/title'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
 
+const frameKeys = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
+	horizAlignKeys = new Set(['left', 'right', 'center', 'none']),
+	vertAlignKeys = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
+
 /**
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
 class FileToken extends LinkToken {
 	type = 'file';
-	/** @type {Set<string>} */ #keys = new Set();
 
 	/** 图片链接 */
 	get link() {
@@ -124,44 +127,32 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * 获取图片框架属性参数节点
+	 * 获取特定类型的图片属性参数节点
+	 * @param {Set<string>} keys 接受的参数名
+	 * @param {type} type 类型名
 	 * @complexity `n`
 	 */
+	#getTypedArgs(keys, type) {
+		const args = this.getAllArgs().filter(({name}) => keys.has(name));
+		if (args.length > 1) {
+			Parser.warn(`图片 ${this.name} 带有 ${args.length} 个${type}参数，只有第 1 个 ${args[0].name} 会生效！`);
+		}
+		return args;
+	}
+
+	/** 获取图片框架属性参数节点 */
 	getFrameArgs() {
-		const args = this.getAllArgs()
-			.filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
-		if (args.length > 1) {
-			Parser.error(`图片 ${this.name} 带有 ${args.length} 个框架参数，只有第 1 个 ${args[0].name} 会生效！`);
-		}
-		return args;
+		return this.#getTypedArgs(frameKeys, '框架');
 	}
 
-	/**
-	 * 获取图片水平对齐参数节点
-	 * @complexity `n`
-	 */
+	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs() {
-		const args = this.getAllArgs()
-			.filter(({name}) => ['left', 'right', 'center', 'none'].includes(name));
-		if (args.length > 1) {
-			Parser.error(`图片 ${this.name} 带有 ${args.length} 个水平对齐参数，只有第 1 个 ${args[0].name} 会生效！`);
-		}
-		return args;
+		return this.#getTypedArgs(horizAlignKeys, '水平对齐');
 	}
 
-	/**
-	 * 获取图片垂直对齐参数节点
-	 * @complexity `n`
-	 */
+	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs() {
-		const args = this.getAllArgs().filter(
-			({name}) => ['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']
-				.includes(name),
-		);
-		if (args.length > 1) {
-			Parser.error(`图片 ${this.name} 带有 ${args.length} 个垂直对齐架参数，只有第 1 个 ${args[0].name} 会生效！`);
-		}
-		return args;
+		return this.#getTypedArgs(vertAlignKeys, '垂直对齐');
 	}
 
 	/**
@@ -170,7 +161,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getArg(key) {
-		return this.getArgs(key).at(-1);
+		return this.getArgs(key).at(frameKeys.has(key) || horizAlignKeys.has(key) || vertAlignKeys.has(key) ? 0 : -1);
 	}
 
 	/**
@@ -198,13 +189,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getKeys() {
-		const args = this.getAllArgs();
-		if (this.#keys.size === 0 && args.length > 0) {
-			for (const {name} of args) {
-				this.#keys.add(name);
-			}
-		}
-		return [...this.#keys];
+		return new Set(this.getAllArgs().map(({name}) => name));
 	}
 
 	/**
@@ -218,15 +203,11 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取生效的指定图片参数值
-	 * @template {string|undefined} T
-	 * @param {T} key 参数名
-	 * @returns {T extends undefined ? Record<string, string> : string|true}
+	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
 	getValue(key) {
-		return key === undefined
-			? Object.fromEntries(this.getKeys().map(k => [k, this.getValue(k)]))
-			: this.getArg(key)?.getValue();
+		return this.getArg(key)?.getValue();
 	}
 
 	/**
@@ -274,32 +255,6 @@ class FileToken extends LinkToken {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
 		this.insertAt(imageParameter);
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
-	 */
-	removeAt(i) {
-		const /** @type {ImageParameterToken} */ token = super.removeAt(i);
-		if (!this.hasArg(token.name)) {
-			this.#keys.delete(token.name);
-		}
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @param {ImageParameterToken} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
-	 */
-	insertAt(token, i = this.childNodes.length) {
-		if (!Parser.running) {
-			this.#keys.add(token.name);
-		}
-		return super.insertAt(token, i);
 	}
 }
 
