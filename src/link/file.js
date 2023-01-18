@@ -135,7 +135,7 @@ class FileToken extends LinkToken {
 	#getTypedArgs(keys, type) {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 		if (args.length > 1) {
-			Parser.warn(`图片 ${this.name} 带有 ${args.length} 个${type}参数，只有第 1 个 ${args[0].name} 会生效！`);
+			Parser.warn(`图片 ${this.name} 带有 ${args.length} 个${type}参数，只有最后 1 个 ${args[0].name} 会生效！`);
 		}
 		return args;
 	}
@@ -161,7 +161,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getArg(key) {
-		return this.getArgs(key).at(frameKeys.has(key) || horizAlignKeys.has(key) || vertAlignKeys.has(key) ? 0 : -1);
+		return this.getArgs(key).at(-1);
 	}
 
 	/**
