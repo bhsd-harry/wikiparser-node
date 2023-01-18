@@ -35,6 +35,7 @@ const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
 		} else {
 			stack.push(mt);
 			regex = regex2;
+			regex.lastIndex = index + 2;
 		}
 		mt = regex.exec(wikitext);
 	}
