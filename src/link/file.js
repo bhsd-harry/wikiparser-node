@@ -6,6 +6,10 @@ const {explode} = require('../../util/string'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
 
+const frameKeys = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
+	horizAlignKeys = new Set(['left', 'right', 'center', 'none']),
+	vertAlignKeys = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
+
 /**
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
@@ -72,35 +76,28 @@ class FileToken extends LinkToken {
 	}
 
 	/**
-	 * 获取图片框架属性参数节点
+	 * 获取特定类型的图片属性参数节点
+	 * @param {Set<string>} keys 接受的参数名
 	 * @complexity `n`
 	 */
+	#getTypedArgs(keys) {
+		const args = this.getAllArgs().filter(({name}) => keys.has(name));
+		return args;
+	}
+
+	/** 获取图片框架属性参数节点 */
 	getFrameArgs() {
-		const args = this.getAllArgs()
-			.filter(({name}) => ['manualthumb', 'frameless', 'framed', 'thumbnail'].includes(name));
-		return args;
+		return this.#getTypedArgs(frameKeys, '框架');
 	}
 
-	/**
-	 * 获取图片水平对齐参数节点
-	 * @complexity `n`
-	 */
+	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs() {
-		const args = this.getAllArgs()
-			.filter(({name}) => ['left', 'right', 'center', 'none'].includes(name));
-		return args;
+		return this.#getTypedArgs(horizAlignKeys, '水平对齐');
 	}
 
-	/**
-	 * 获取图片垂直对齐参数节点
-	 * @complexity `n`
-	 */
+	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs() {
-		const args = this.getAllArgs().filter(
-			({name}) => ['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']
-				.includes(name),
-		);
-		return args;
+		return this.#getTypedArgs(vertAlignKeys, '垂直对齐');
 	}
 }
 
