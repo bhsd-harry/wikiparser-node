@@ -83,9 +83,16 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const errors = super.lint(start);
+		const errors = super.lint(start),
+			innerText = String(this.firstChild);
+		let refError;
 		if (this.name === '1') {
-			errors.push(generateForSelf(this, {start}, '<h1>'));
+			refError = generateForSelf(this, {start}, '<h1>');
+			errors.push(refError);
+		}
+		if (innerText[0] === '=' || innerText.at(-1) === '=') {
+			refError ||= generateForSelf(this, {start}, '');
+			errors.push({...refError, message: '段落标题中不平衡的"="'});
 		}
 		return errors;
 	}
