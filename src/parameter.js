@@ -1,6 +1,8 @@
 'use strict';
 
-const Parser = require('..'),
+const {extUrlChar} = require('../util/string'),
+	{generateForChild} = require('../util/lint'),
+	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 
@@ -71,6 +73,21 @@ class ParameterToken extends Token {
 	/** @override */
 	print() {
 		return super.print({sep: this.anon ? '' : '='});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			{firstChild} = this,
+			link = new RegExp(`https?://${extUrlChar}$`, 'iu').exec(firstChild.text())?.[0];
+		if (link && new URL(link).search) {
+			const e = generateForChild(firstChild, this.getRootNode().posFromIndex(start), '匿名参数中未转义的查询参数');
+			errors.push({...e, startLine: e.endLine, startCol: e.endCol, endCol: e.endCol + 1});
+		}
+		return errors;
 	}
 }
 
