@@ -5,14 +5,15 @@ const Token = require('../src');
 /**
  * 生成对于子节点的LintError对象
  * @param {Token} child 子节点
- * @param {{top: number, left: number}} boundingRect 父节点的绝对定位
+ * @param {{top: number, left: number, token: Token, start: number}} boundingRect 父节点的绝对定位
  * @param {string} message 错误信息
  * @param {'error'|'warning'} severity 严重程度
  * @returns {LintError}
  */
 const generateForChild = (child, boundingRect, message, severity = 'error') => {
 	const {style: {top: offsetTop, left: offsetLeft, height, width}} = child,
-		{top, left} = boundingRect,
+		{token, start} = boundingRect,
+		{top, left} = token ? token.getRootNode().posFromIndex(start) : boundingRect,
 		startLine = top + offsetTop,
 		endLine = startLine + height - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
@@ -23,18 +24,23 @@ const generateForChild = (child, boundingRect, message, severity = 'error') => {
 /**
  * 生成对于自己的LintError对象
  * @param {Token} token 节点
- * @param {{top: number, left: number}} boundingRect 绝对定位
+ * @param {{top: number, left: number, start: number}} boundingRect 绝对定位
  * @param {string} message 错误信息
  * @param {'error'|'warning'} severity 严重程度
  * @returns {LintError}
  */
-const generateForSelf = (token, boundingRect, message, severity = 'error') => ({
-	message,
-	severity,
-	startLine: boundingRect.top,
-	endLine: boundingRect.top + token.offsetHeight - 1,
-	startCol: boundingRect.left,
-	endCol: token.offsetHeight > 1 ? token.offsetWidth : boundingRect.left + token.offsetWidth,
-});
+const generateForSelf = (token, boundingRect, message, severity = 'error') => {
+	const {start} = boundingRect,
+		{offsetHeight, offsetWidth} = token,
+		{top, left} = start === undefined ? boundingRect : token.getRootNode().posFromIndex(start);
+	return {
+		message,
+		severity,
+		startLine: top,
+		endLine: top + offsetHeight - 1,
+		startCol: left,
+		endCol: offsetHeight > 1 ? offsetWidth : left + offsetWidth,
+	};
+};
 
 module.exports = {generateForChild, generateForSelf};

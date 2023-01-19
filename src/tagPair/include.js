@@ -29,7 +29,7 @@ class IncludeToken extends hidden(TagPairToken) {
 	 * @returns {LintError[]}
 	 */
 	lint(start = 0) {
-		return this.closed ? [] : [generateForSelf(this, this.getRootNode().posFromIndex(start), '未闭合的标签')];
+		return this.closed ? [] : [generateForSelf(this, {start}, '未闭合的标签')];
 	}
 }
 

@@ -70,7 +70,7 @@ class HeadingToken extends Token {
 	lint(start = 0) {
 		const errors = super.lint(start);
 		if (this.name === '1') {
-			errors.push(generateForSelf(this, this.getRootNode().posFromIndex(start), '<h1>'));
+			errors.push(generateForSelf(this, {start}, '<h1>'));
 		}
 		return errors;
 	}

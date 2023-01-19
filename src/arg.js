@@ -1,7 +1,7 @@
 'use strict';
 
 const {text} = require('../util/string'),
-	{generateForChild} = require('../util/lint'),
+	{generateForSelf, generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.');
 
@@ -70,6 +70,9 @@ class ArgToken extends Token {
 	 * @returns {LintError[]}
 	 */
 	lint(start = 0) {
+		if (!this.getAttribute('include')) {
+			return [generateForSelf(this, {start}, '未预期的模板参数')];
+		}
 		const {childNodes: [argName, argDefault, ...rest]} = this,
 			errors = argName.lint(start + 3);
 		if (argDefault) {
