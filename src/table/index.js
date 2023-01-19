@@ -174,7 +174,7 @@ class TableToken extends TrToken {
 	lint(start = 0) {
 		const errors = super.lint(start);
 		if (!this.closed) {
-			errors.push(generateForChild(this.firstChild, this.getRootNode().posFromIndex(start), '未闭合的表格'));
+			errors.push(generateForChild(this.firstChild, {token: this, start}, '未闭合的表格'));
 		}
 		return errors;
 	}

@@ -110,14 +110,14 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		const errors = super.lint(start);
 		let /** @type {LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
-			refError = generateForSelf(this, this.getRootNode().posFromIndex(start), '<h1>');
+			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push(refError);
 		}
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
 			const [message] = errorMsg.split('：');
-			refError ||= generateForSelf(this, this.getRootNode().posFromIndex(start), '');
+			refError ||= generateForSelf(this, {start}, '');
 			errors.push({...refError, message, severity: message === '未闭合的标签' ? 'warning' : 'error'});
 		}
 		return errors;
@@ -134,7 +134,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		const {html} = this.getAttribute('config'),
 			{name: tagName, parentNode} = this,
 			string = noWrap(String(this));
-		if (this.#closing && this.#selfClosing) {
+		if (this.#closing && (this.#selfClosing || html[2].includes(tagName))) {
 			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
 		} else if (html[2].includes(tagName) || this.#selfClosing && html[1].includes(tagName)) { // 自封闭标签
 			return this;

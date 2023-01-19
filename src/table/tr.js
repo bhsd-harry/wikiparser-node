@@ -71,7 +71,7 @@ class TrToken extends attributeParent(Token, 1) {
 				}
 			} catch {}
 		}
-		const error = generateForChild(inter, this.getRootNode().posFromIndex(start), '将被移出表格的内容');
+		const error = generateForChild(inter, {token: this, start}, '将被移出表格的内容');
 		error.startLine++;
 		error.startCol = 0;
 		errors.push(error);
