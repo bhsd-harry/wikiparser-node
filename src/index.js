@@ -61,9 +61,9 @@ class Token extends AstElement {
 	#config;
 	// 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
 	#accum;
+	/** @type {boolean} */ #include;
 	/** @type {Record<string, Ranges>} */ #acceptable;
 	#protectedChildren = new Ranges();
-	/** @type {boolean} */ #include;
 
 	/**
 	 * 将维基语法替换为占位符
@@ -79,6 +79,7 @@ class Token extends AstElement {
 				if (this.type === 'root') {
 					this.#accum.shift();
 				}
+				this.#include = Boolean(include);
 				this.#parseCommentAndExt(include);
 				break;
 			case 1:
@@ -213,14 +214,6 @@ class Token extends AstElement {
 				return this.#buildFromStr;
 			case 'build':
 				return this.#build;
-			case 'stage':
-				return this.#stage;
-			case 'acceptable':
-				return this.#acceptable ? {...this.#acceptable} : null;
-			case 'protectChildren':
-				return this.#protectChildren;
-			case 'protectedChildren':
-				return new Ranges(this.#protectedChildren);
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include;
@@ -236,6 +229,14 @@ class Token extends AstElement {
 				const noincludeToken = root.querySelector('noinclude');
 				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken));
 			}
+			case 'stage':
+				return this.#stage;
+			case 'acceptable':
+				return this.#acceptable ? {...this.#acceptable} : null;
+			case 'protectChildren':
+				return this.#protectChildren;
+			case 'protectedChildren':
+				return new Ranges(this.#protectedChildren);
 			default:
 				return super.getAttribute(key);
 		}
@@ -730,7 +731,6 @@ class Token extends AstElement {
 		if (!Number.isInteger(n)) {
 			this.typeError('parse', 'Number');
 		}
-		this.#include = Boolean(include);
 		while (this.#stage < n) {
 			this.#parseOnce(this.#stage, include);
 		}
