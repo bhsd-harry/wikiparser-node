@@ -57,6 +57,7 @@ class Token extends AstElement {
 	#config;
 	// 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
 	#accum;
+	/** @type {boolean} */ #include;
 
 	/**
 	 * 将维基语法替换为占位符
@@ -72,6 +73,7 @@ class Token extends AstElement {
 				if (this.type === 'root') {
 					this.#accum.shift();
 				}
+				this.#include = Boolean(include);
 				this.#parseCommentAndExt(include);
 				break;
 			case 1:
@@ -181,6 +183,16 @@ class Token extends AstElement {
 				return this.#buildFromStr;
 			case 'build':
 				return this.#build;
+			case 'include': {
+				if (this.#include !== undefined) {
+					return this.#include;
+				}
+				const root = this.getRootNode();
+				if (root.type === 'root' && root !== this) {
+					return root.getAttribute('include');
+				}
+				return false;
+			}
 			default:
 				return super.getAttribute(key);
 		}
@@ -235,7 +247,7 @@ class Token extends AstElement {
 	 * @param {number} defaultNs 命名空间
 	 */
 	normalizeTitle(title, defaultNs = 0, halfParsed = false) {
-		return Parser.normalizeTitle(title, defaultNs, false, this.#config, halfParsed);
+		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed);
 	}
 
 	/** 生成部分Token的`name`属性 */
