@@ -16,6 +16,14 @@ class ImagemapToken extends Token {
 	name = 'imagemap';
 
 	/**
+	 * 图片
+	 * @returns {GalleryImageToken}
+	 */
+	get image() {
+		return this.childNodes.find(({type}) => type === 'imagemap-image');
+	}
+
+	/**
 	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
 	 * @throws `SyntaxError` 没有合法图片
