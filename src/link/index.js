@@ -3,6 +3,7 @@
 const Title = require('../../lib/title'),
 	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
+	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
@@ -174,6 +175,21 @@ class LinkToken extends Token {
 	/** @override */
 	print() {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			{childNodes: [, linkText]} = this;
+		if (linkText?.childNodes?.some(
+			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
+		)) {
+			errors.push(generateForChild(linkText, {token: this, start}, '链接文本中多余的"|"'));
+		}
+		return errors;
 	}
 
 	/** 生成Title对象 */
