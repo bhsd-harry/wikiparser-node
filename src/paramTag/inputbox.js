@@ -22,9 +22,9 @@ class InputboxToken extends ParamTagToken {
 		accum.splice(accum.indexOf(this), 1);
 		accum.push(this);
 		if (wikitext) {
-			this.append(...wikitext.split('\n').map(line => new AtomToken(
-				line, 'param-line', config, accum, {AstText: ':', ArgToken: ':', TranscludeToken: ':'},
-			)));
+			this.append(...wikitext.split('\n').map(line => new AtomToken(line, 'param-line', config, accum, {
+				AstText: ':', ArgToken: ':', TranscludeToken: ':',
+			})));
 		}
 	}
 

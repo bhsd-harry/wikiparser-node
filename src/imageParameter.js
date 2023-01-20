@@ -141,7 +141,9 @@ class ImageParameterToken extends Token {
 					super(undefined, config, true, accum);
 					this.#syntax = str;
 				} else {
-					super(mt[2], config, true, accum, {'Stage-2': ':', '!HeadingToken': ':'});
+					super(mt[2], config, true, accum, {
+						'Stage-2': ':', '!HeadingToken': ':',
+					});
 					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 				}
 				this.setAttribute('name', param[1]).setAttribute('stage', Parser.MAX_STAGE);

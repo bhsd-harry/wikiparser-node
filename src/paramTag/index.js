@@ -17,10 +17,14 @@ class ParamTagToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {AtomToken: ':'});
+		super(undefined, config, true, accum, {
+			AtomToken: ':',
+		});
 		if (wikitext) {
 			this.append(
-				...wikitext.split('\n').map(line => new AtomToken(line, 'param-line', config, accum, {AstText: ':'})),
+				...wikitext.split('\n').map(line => new AtomToken(line, 'param-line', config, accum, {
+					AstText: ':',
+				})),
 			);
 		}
 	}

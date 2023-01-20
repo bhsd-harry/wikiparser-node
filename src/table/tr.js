@@ -39,7 +39,9 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {RegExp} pattern 表格语法正则
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
-		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
+		super(undefined, config, true, accum, {
+			Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:',
+		});
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',

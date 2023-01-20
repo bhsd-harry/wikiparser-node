@@ -55,7 +55,9 @@ class TranscludeToken extends Token {
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:'});
+		super(undefined, config, true, accum, {
+			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
+		});
 		const {parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
 		if (title.includes(':')) {
@@ -88,7 +90,9 @@ class TranscludeToken extends Token {
 						}
 						const invoke = new AtomToken(part.join('='), `invoke-${
 							i ? 'function' : 'module'
-						}`, config, accum, {'Stage-1': ':', '!ExtToken': ''});
+						}`, config, accum, {
+							'Stage-1': ':', '!ExtToken': '',
+						});
 						this.insertAt(invoke);
 					}
 					this.getAttribute('protectChildren')('1:3');
@@ -101,7 +105,9 @@ class TranscludeToken extends Token {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
 			}
-			const token = new AtomToken(title, 'template-name', config, accum, {'Stage-2': ':', '!HeadingToken': ''});
+			const token = new AtomToken(title, 'template-name', config, accum, {
+				'Stage-2': ':', '!HeadingToken': '',
+			});
 			this.insertAt(token);
 		}
 		const templateLike = this.isTemplate();
