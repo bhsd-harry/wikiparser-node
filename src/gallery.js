@@ -82,6 +82,7 @@ class GalleryToken extends Token {
 			if (child.type === 'hidden' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				errors.push({
 					message: '图库中的无效内容',
+					severity: 'error',
 					startLine: top + i,
 					endLine: top + i,
 					startCol: i ? 0 : left,

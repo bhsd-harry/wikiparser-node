@@ -31,16 +31,16 @@ class QuoteToken extends NowikiToken {
 			/** @type {LintError[]} */ errors = [];
 		let /** @type {LintError} */ refError;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith("'")) {
-			refError = generateForSelf(this, {start}, '');
+			refError = generateForSelf(this, {start}, message);
 			const {startLine, startCol} = refError,
 				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u);
-			errors.push({message, startLine, startCol: startCol - length, endLine: startLine, endCol: startCol});
+			errors.push({...refError, startCol: startCol - length, endLine: startLine, endCol: startCol});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
-			refError ||= generateForSelf(this, {start}, '');
+			refError ||= generateForSelf(this, {start}, message);
 			const {endLine, endCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u);
-			errors.push({message, startLine: endLine, startCol: endCol, endLine, endCol: endCol + length});
+			errors.push({...refError, startLine: endLine, startCol: endCol, endCol: endCol + length});
 		}
 		return errors;
 	}
