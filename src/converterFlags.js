@@ -74,13 +74,17 @@ class ConverterFlagsToken extends Token {
 		if (variantFlags.length === knownFlagCount || validFlags.length === knownFlagCount) {
 			return errors;
 		}
-		const rect = this.getRootNode().posFromIndex(start);
-		for (const child of this.childNodes) {
-			const flag = child.text().trim();
+		const rect = this.getRootNode().posFromIndex(start),
+			{childNodes} = this;
+		for (let i = 0; i < childNodes.length; i++) {
+			const child = childNodes[i],
+				flag = child.text().trim();
 			if (flag && !variantFlags.includes(flag) && !unknownFlags.includes(flag)
 				&& (variantFlags.length > 0 || !validFlags.includes(flag))
 			) {
-				errors.push(generateForChild(child, rect, '无效的转换标记'));
+				const error = generateForChild(child, rect, '无效的转换标记');
+				error.excerpt = childNodes.slice(0, i + 1).map(String).join(';').slice(-50);
+				errors.push(error);
 			}
 		}
 		return errors;

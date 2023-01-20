@@ -71,8 +71,9 @@ class MagicLinkToken extends Token {
 					{length: top} = lines,
 					{length: left} = lines.at(-1),
 					startLine = refError.startLine + top - 1,
-					startCol = top > 1 ? left : refError.startCol + left;
-				return {...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1};
+					startCol = top > 1 ? left : refError.startCol + left,
+					excerpt = str.slice(Math.max(0, index - 25), index + 25);
+				return {...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1, excerpt};
 			}));
 		}
 		return errors;

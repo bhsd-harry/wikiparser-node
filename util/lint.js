@@ -18,7 +18,7 @@ const generateForChild = (child, boundingRect, message, severity = 'error') => {
 		endLine = startLine + height - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
 		endCol = height > 1 ? width : startCol + width;
-	return {message, severity, startLine, endLine, startCol, endCol};
+	return {message, severity, startLine, endLine, startCol, endCol, excerpt: String(child).slice(0, 50)};
 };
 
 /**
@@ -40,6 +40,7 @@ const generateForSelf = (token, boundingRect, message, severity = 'error') => {
 		endLine: top + offsetHeight - 1,
 		startCol: left,
 		endCol: offsetHeight > 1 ? offsetWidth : left + offsetWidth,
+		excerpt: String(token).slice(0, 50),
 	};
 };
 

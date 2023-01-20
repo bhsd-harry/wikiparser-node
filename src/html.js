@@ -116,9 +116,16 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
-			const [message] = errorMsg.split('：');
 			refError ||= generateForSelf(this, {start}, '');
-			errors.push({...refError, message, severity: message === '未闭合的标签' ? 'warning' : 'error'});
+			const [message] = errorMsg.split('：'),
+				error = {...refError, message, severity: message === '未闭合的标签' ? 'warning' : 'error'};
+			if (message === '未闭合的标签') {
+				error.excerpt = String(this.getRootNode()).slice(start, start + 50);
+			} else if (message === '未匹配的闭合标签') {
+				const end = start + String(this).length;
+				error.excerpt = String(this.getRootNode()).slice(Math.max(0, end - 50), end);
+			}
+			errors.push(error);
 		}
 		return errors;
 	}
