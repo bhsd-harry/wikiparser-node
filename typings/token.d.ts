@@ -22,7 +22,6 @@ declare global {
 		startCol: number;
 		endLine: number;
 		endCol: number;
-		excerpt: string;
 	}
 }
 

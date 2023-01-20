@@ -96,7 +96,7 @@ class AttributeToken extends Token {
 		} else if (!this.#quoteBalance) {
 			rect ||= this.getRootNode().posFromIndex(start);
 			const error = generateForSelf(this, rect, '未闭合的引号', 'warning');
-			errors.push({...error, excerpt: String(this).slice(-50)});
+			errors.push(error);
 		}
 		return errors;
 	}
