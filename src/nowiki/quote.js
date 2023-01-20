@@ -29,7 +29,7 @@ class QuoteToken extends NowikiToken {
 		const {previousSibling, nextSibling} = this,
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];
-		let /** @type {LintError} */ refError;
+		let refError;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith("'")) {
 			refError = generateForSelf(this, {start}, message);
 			const {startLine, startCol} = refError,
