@@ -48,11 +48,6 @@ class ConverterFlagsToken extends Token {
 		return 1;
 	}
 
-	/** @override */
-	print() {
-		return super.print({sep: ';'});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置

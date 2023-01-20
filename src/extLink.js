@@ -53,12 +53,6 @@ class ExtLinkToken extends Token {
 	getGaps() {
 		return this.#space.length;
 	}
-
-	/** @override */
-	print() {
-		const {length} = this;
-		return super.print(length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`});
-	}
 }
 
 module.exports = ExtLinkToken;

@@ -28,11 +28,6 @@ class CommentToken extends hidden(NowikiToken) {
 		return 4;
 	}
 
-	/** @override */
-	print() {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置

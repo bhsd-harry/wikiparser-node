@@ -71,14 +71,6 @@ class TagPairToken extends Token {
 	getGaps() {
 		return 1;
 	}
-
-	/** @override */
-	print() {
-		const [opening, closing] = this.#tags;
-		return super.print(this.#selfClosing
-			? {pre: `&lt;${opening}`, post: '/&gt;'}
-			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.#closed ? `&lt;/${closing}&gt;` : ''});
-	}
 }
 
 module.exports = TagPairToken;

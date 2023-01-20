@@ -10,23 +10,6 @@ const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])
 const removeComment = str => str.replace(/\0\d+c\x7F/gu, '');
 
 /**
- * 以HTML格式打印
- * @param {(AstText|AstElement)[]} childNodes 子节点
- * @param {printOpt} opt 选项
- */
-const print = (childNodes, opt = {}) => {
-	const AstText = require('../lib/text'),
-		AstElement = require('../lib/element');
-	const {pre = '', post = '', sep = ''} = opt,
-		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-	return `${pre}${childNodes.map(
-		child => child instanceof AstElement
-			? child.print()
-			: String(child).replace(/[&<>]/gu, p => `&${entities[p]};`),
-	).join(sep)}${post}`;
-};
-
-/**
  * escape special chars for RegExp constructor
  * @param {string} str RegExp source
  */
@@ -72,4 +55,4 @@ const text = (childNodes, separator = '') => {
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
-module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode, text};
+module.exports = {extUrlChar, removeComment, escapeRegExp, explode, text};

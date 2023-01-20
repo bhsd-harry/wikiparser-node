@@ -59,11 +59,6 @@ class ArgToken extends Token {
 		return 1;
 	}
 
-	/** @override */
-	print() {
-		return super.print({pre: '{{{', post: '}}}', sep: '|'});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置

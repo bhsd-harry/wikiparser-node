@@ -73,12 +73,6 @@ class TdToken extends TrToken {
 		}
 		return 0;
 	}
-
-	/** @override */
-	print() {
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
-	}
 }
 
 module.exports = TdToken;

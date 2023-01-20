@@ -57,12 +57,6 @@ class HeadingToken extends Token {
 		return Number(this.name);
 	}
 
-	/** @override */
-	print() {
-		const equals = '='.repeat(Number(this.name));
-		return super.print({pre: equals, sep: equals});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置

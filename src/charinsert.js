@@ -32,11 +32,6 @@ class CharinsertToken extends Token {
 	getGaps() {
 		return 1;
 	}
-
-	/** @override */
-	print() {
-		return super.print({sep: '\n'});
-	}
 }
 
 module.exports = CharinsertToken;

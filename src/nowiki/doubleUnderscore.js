@@ -15,11 +15,6 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 		return 2;
 	}
 
-	/** @override */
-	print() {
-		return super.print({pre: '__', post: '__'});
-	}
-
 	/**
 	 * @override
 	 */

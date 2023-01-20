@@ -54,13 +54,6 @@ class HtmlToken extends Token {
 		return this.#tag.length + (this.#closing ? 2 : 1);
 	}
 
-	/** @override */
-	print() {
-		return super.print({
-			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`, post: `${this.#selfClosing ? '/' : ''}&gt;`,
-		});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置

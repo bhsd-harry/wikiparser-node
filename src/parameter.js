@@ -70,11 +70,6 @@ class ParameterToken extends Token {
 		return this.anon ? 0 : 1;
 	}
 
-	/** @override */
-	print() {
-		return super.print({sep: this.anon ? '' : '='});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置

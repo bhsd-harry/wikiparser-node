@@ -82,11 +82,6 @@ class LinkToken extends Token {
 		return this.#delimiter.length;
 	}
 
-	/** @override */
-	print() {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置
