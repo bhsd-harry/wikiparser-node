@@ -68,7 +68,7 @@ class ConverterToken extends Token {
 
 	/** @override */
 	print() {
-		const {children: [flags, ...rules]} = this;
+		const {childNodes: [flags, ...rules]} = this;
 		return `<span class="wpb-converter">-{${flags.print()}${
 			flags.childNodes.length > 0 ? '|' : ''
 		}${print(rules, {sep: ';'})}}-</span>`;
