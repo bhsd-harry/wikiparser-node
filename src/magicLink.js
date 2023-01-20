@@ -39,12 +39,14 @@ class MagicLinkToken extends Token {
 			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning'),
 				regex = /[，；。：！？（）【】]/gu;
 			for (let mt = regex.exec(str); mt; mt = regex.exec(str)) {
-				const lines = str.slice(0, mt.index).split('\n'),
+				const {index} = mt,
+					lines = str.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines[top - 1],
 					startLine = refError.startLine + top - 1,
-					startCol = top > 1 ? left : refError.startCol + left;
-				errors.push({...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1});
+					startCol = top > 1 ? left : refError.startCol + left,
+					excerpt = str.slice(Math.max(0, index - 25), index + 25);
+				errors.push({...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1, excerpt});
 			}
 		}
 		return errors;

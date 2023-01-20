@@ -85,7 +85,13 @@ class ParameterToken extends Token {
 			link = new RegExp(`https?://${extUrlChar}$`, 'iu').exec(firstChild.text())?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {token: this, start}, '匿名参数中未转义的查询参数');
-			errors.push({...e, startLine: e.endLine, startCol: e.endCol, endCol: e.endCol + 1});
+			errors.push({
+				...e,
+				startLine: e.endLine,
+				startCol: e.endCol,
+				endCol: e.endCol + 1,
+				excerpt: String(firstChild).slice(-50),
+			});
 		}
 		return errors;
 	}
