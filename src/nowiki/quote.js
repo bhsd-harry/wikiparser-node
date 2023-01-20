@@ -29,18 +29,22 @@ class QuoteToken extends NowikiToken {
 		const {previousSibling, nextSibling} = this,
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];
-		let refError;
+		let refError, wikitext;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith("'")) {
 			refError = generateForSelf(this, {start}, message);
+			wikitext = String(this.getRootNode());
 			const {startLine, startCol} = refError,
-				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u);
-			errors.push({...refError, startCol: startCol - length, endLine: startLine, endCol: startCol});
+				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u),
+				excerpt = wikitext.slice(start - length, start - length + 50);
+			errors.push({...refError, startCol: startCol - length, endLine: startLine, endCol: startCol, excerpt});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
 			refError ||= generateForSelf(this, {start}, message);
+			wikitext ||= String(this.getRootNode());
 			const {endLine, endCol} = refError,
-				[{length}] = nextSibling.data.match(/^'+/u);
-			errors.push({...refError, startLine: endLine, startCol: endCol, endCol: endCol + length});
+				[{length}] = nextSibling.data.match(/^'+/u),
+				excerpt = wikitext.slice(Math.max(0, start + length - 50), start + length);
+			errors.push({...refError, startLine: endLine, startCol: endCol, endCol: endCol + length, excerpt});
 		}
 		return errors;
 	}
