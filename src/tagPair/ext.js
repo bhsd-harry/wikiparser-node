@@ -24,7 +24,7 @@ class ExtToken extends TagPairToken {
 		attr = !attr || /^\s/u.test(attr) ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
-			newConfig = JSON.parse(JSON.stringify(config)),
+			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
 		ext.delete(lcName);
