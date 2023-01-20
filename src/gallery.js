@@ -20,7 +20,7 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const newConfig = structuredClone(config);
+		const newConfig = JSON.parse(JSON.stringify(config));
 		for (const [k, v] of Object.entries(config.img)) {
 			if (v === 'width') {
 				delete newConfig.img[k];
