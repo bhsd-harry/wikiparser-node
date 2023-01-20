@@ -25,7 +25,7 @@ const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
 				temp = text.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
 				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`, 'u'))
-					.map(rule => rule.replace(/\x01/gu, ';'));
+					.map(rule => rule.replaceAll('\x01', ';'));
 			new ConverterToken(flags, rules, config, accum);
 			wikitext = `${wikitext.slice(0, top.index)}\0${length}v\x7F${wikitext.slice(index + 2)}`;
 			if (stack.length === 0) {

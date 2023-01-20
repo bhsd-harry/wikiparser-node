@@ -39,7 +39,7 @@ class FileToken extends LinkToken {
 			horizAlignArgs = this.getHorizAlignArgs(),
 			vertAlignArgs = this.getVertAlignArgs(),
 			captions = this.getArgs('caption'),
-			realCaptions = [...captions.slice(0, -1).filter(arg => arg.text()), captions[captions.length - 1]];
+			realCaptions = [...captions.slice(0, -1).filter(arg => arg.text()), captions.at(-1)];
 		if (frameArgs.length > 1 || horizAlignArgs.length > 1 || vertAlignArgs.length > 1 || captions.size > 1) {
 			const rect = this.getRootNode().posFromIndex(start);
 			if (frameArgs.length > 1) {

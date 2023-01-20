@@ -21,7 +21,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 		/** @type {BracketExecArray} */ mt = regex.exec(text),
 		moreBraces = text.includes('}}'),
 		lastIndex;
-	while (mt || lastIndex <= text.length && stack[stack.length - 1]?.[0]?.[0] === '=') {
+	while (mt || lastIndex <= text.length && stack.at(-1)?.[0]?.[0] === '=') {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0].slice(length);
@@ -35,7 +35,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			lastIndex = curIndex + 2;
 		} else if (syntax === '\n') { // 情形2：闭合标题
 			lastIndex = curIndex + 1;
-			const {pos, findEqual} = stack[stack.length - 1] ?? {};
+			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u.exec(text.slice(index, curIndex));
 				if (rmt) {
@@ -46,7 +46,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
 			lastIndex = curIndex + 1;
-			parts[parts.length - 1].push(text.slice(topPos, curIndex));
+			parts.at(-1).push(text.slice(topPos, curIndex));
 			if (syntax === '|') {
 				parts.push([]);
 			}
@@ -58,7 +58,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				rest = open.length - close.length,
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-			parts[parts.length - 1].push(text.slice(topPos, curIndex));
+			parts.at(-1).push(text.slice(topPos, curIndex));
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
@@ -99,10 +99,10 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			stack.push(...'0' in top ? [top] : [], mt);
 		}
 		moreBraces &&= text.slice(lastIndex).includes('}}');
-		let curTop = stack[stack.length - 1];
+		let curTop = stack.at(-1);
 		if (!moreBraces && curTop?.[0]?.[0] === '{') {
 			stack.pop();
-			curTop = stack[stack.length - 1];
+			curTop = stack.at(-1);
 		}
 		regex = new RegExp(source + (curTop
 			? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
