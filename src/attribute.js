@@ -11,7 +11,7 @@ const {removeComment} = require('../util/string'),
  */
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
-	#sanitized = true;
+	/** @type {{index: number}} */ #dirty;
 	#quoteBalance = true;
 
 	/**
@@ -23,9 +23,9 @@ class AttributeToken extends Token {
 		let string = this.toString();
 		string = removeComment(string).replace(/\0\d+~\x7F/gu, '=');
 		for (let mt = regex.exec(string); mt; mt = regex.exec(string)) {
-			const [, key, quoteStart, quoted, quoteEnd, unquoted] = mt;
+			const {index, 1: key, 2: quoteStart, 3: quoted, 4: quoteEnd, 5: unquoted} = mt;
 			if (!this.setAttr(key, quoted ?? unquoted ?? true, true)) {
-				this.#sanitized = false;
+				this.#dirty = {index};
 			} else if (quoteStart !== quoteEnd) {
 				this.#quoteBalance = false;
 			}
@@ -91,9 +91,11 @@ class AttributeToken extends Token {
 			rect = this.getRootNode().posFromIndex(start);
 			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}
-		if (!this.#sanitized) {
+		if (this.#dirty) {
 			rect ||= this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '包含无效属性'));
+			const {index} = this.#dirty,
+				error = generateForSelf(this, rect, '包含无效属性');
+			errors.push({...error, excerpt: String(this).slice(index, index + 50)});
 		} else if (!this.#quoteBalance) {
 			rect ||= this.getRootNode().posFromIndex(start);
 			const error = generateForSelf(this, rect, '未闭合的引号', 'warning');
