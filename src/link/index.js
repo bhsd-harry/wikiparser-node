@@ -1,10 +1,10 @@
 'use strict';
 
-const Title = require('../../lib/title'),
+const {generateForChild} = require('../../util/lint'),
 	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
-	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
+	Title = require('../../lib/title'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
 	AtomToken = require('../atom');

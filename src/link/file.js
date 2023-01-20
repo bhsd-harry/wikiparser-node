@@ -1,9 +1,9 @@
 'use strict';
 
-const Title = require('../../lib/title'),
-	{explode, noWrap} = require('../../util/string'),
+const {explode, noWrap} = require('../../util/string'),
 	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
+	Title = require('../../lib/title'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
 

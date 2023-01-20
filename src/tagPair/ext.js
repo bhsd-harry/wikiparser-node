@@ -1,10 +1,10 @@
 'use strict';
 
-const path = require('path'),
+const Parser = require('../..'),
+	path = require('path'),
 	attributeParent = require('../../mixin/attributeParent'),
-	Parser = require('../..'),
-	TagPairToken = require('.'),
 	Token = require('..'),
+	TagPairToken = require('.'),
 	AttributeToken = require('../attribute');
 
 /**

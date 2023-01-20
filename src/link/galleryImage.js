@@ -1,7 +1,7 @@
 'use strict';
 
-const {undo} = require('../../util/debug'),
-	{generateForSelf} = require('../../util/lint'),
+const {generateForSelf} = require('../../util/lint'),
+	{undo} = require('../../util/debug'),
 	Title = require('../../lib/title'),
 	Parser = require('../..'),
 	Token = require('..'),

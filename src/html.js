@@ -1,7 +1,7 @@
 'use strict';
 
-const {noWrap} = require('../util/string'),
-	{generateForSelf} = require('../util/lint'),
+const {generateForSelf} = require('../util/lint'),
+	{noWrap} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
 	attributeParent = require('../mixin/attributeParent'),
 	Parser = require('..'),

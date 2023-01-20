@@ -1,8 +1,8 @@
 'use strict';
 
-const fixedToken = require('../mixin/fixedToken'),
+const Title = require('../lib/title'),
+	fixedToken = require('../mixin/fixedToken'),
 	Parser = require('..'),
-	Title = require('../lib/title'),
 	Token = require('.'),
 	NoincludeToken = require('./nowiki/noinclude'),
 	LinkToken = require('./link'),

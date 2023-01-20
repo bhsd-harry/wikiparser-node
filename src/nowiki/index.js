@@ -1,10 +1,10 @@
 'use strict';
 
-const fixedToken = require('../../mixin/fixedToken'),
-	{generateForSelf} = require('../../util/lint'),
+const {generateForSelf} = require('../../util/lint'),
+	fixedToken = require('../../mixin/fixedToken'),
 	Parser = require('../..'),
-	Token = require('..'),
-	AstText = require('../../lib/text');
+	AstText = require('../../lib/text'),
+	Token = require('..');
 
 /**
  * 纯文字Token，不会被解析

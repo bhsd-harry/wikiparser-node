@@ -1,8 +1,8 @@
 'use strict';
 
-const {undo} = require('../util/debug'),
+const Parser = require('..'),
+	{undo} = require('../util/debug'),
 	{text} = require('../util/string'),
-	Parser = require('..'),
 	Token = require('.');
 
 /**

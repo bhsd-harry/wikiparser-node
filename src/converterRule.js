@@ -1,8 +1,8 @@
 'use strict';
 
-const {undo} = require('../util/debug'),
+const Parser = require('..'),
+	{undo} = require('../util/debug'),
 	{noWrap} = require('../util/string'),
-	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 

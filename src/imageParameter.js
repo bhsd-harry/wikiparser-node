@@ -2,8 +2,8 @@
 
 const {text, noWrap, print, extUrlChar} = require('../util/string'),
 	Parser = require('..'),
-	Token = require('.'),
-	AstText = require('../lib/text');
+	AstText = require('../lib/text'),
+	Token = require('.');
 
 /**
  * 图片参数

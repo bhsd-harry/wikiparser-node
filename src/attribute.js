@@ -1,8 +1,8 @@
 'use strict';
 
-const {externalUse} = require('../util/debug'),
+const {toCase, removeComment, normalizeSpace} = require('../util/string'),
+	{externalUse} = require('../util/debug'),
 	{generateForSelf} = require('../util/lint'),
-	{toCase, removeComment, normalizeSpace} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.');
 

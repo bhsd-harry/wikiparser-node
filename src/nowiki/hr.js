@@ -1,7 +1,7 @@
 'use strict';
 
-const sol = require('../../mixin/sol'),
-	Parser = require('../..'),
+const Parser = require('../..'),
+	sol = require('../../mixin/sol'),
 	NowikiToken = require('.');
 
 /**

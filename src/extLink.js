@@ -1,7 +1,7 @@
 'use strict';
 
-const {noWrap, normalizeSpace} = require('../util/string'),
-	Parser = require('..'),
+const Parser = require('..'),
+	{noWrap, normalizeSpace} = require('../util/string'),
 	Token = require('.'),
 	MagicLinkToken = require('./magicLink');
 

@@ -1,9 +1,9 @@
 'use strict';
 
-const fixedToken = require('../../mixin/fixedToken'),
+const Parser = require('../..'),
+	fixedToken = require('../../mixin/fixedToken'),
 	{typeError} = require('../../util/debug'),
 	{isPlainObject} = require('../../util/base'),
-	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr');
 

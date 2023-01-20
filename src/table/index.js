@@ -1,9 +1,9 @@
 'use strict';
 
-const assert = require('assert/strict'),
+const {generateForChild} = require('../../util/lint'),
 	{noWrap} = require('../../util/string'),
-	{generateForChild} = require('../../util/lint'),
 	{isPlainObject} = require('../../util/base'),
+	assert = require('assert/strict'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr'),

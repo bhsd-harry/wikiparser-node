@@ -1,7 +1,7 @@
 'use strict';
 
-const fixedToken = require('../../mixin/fixedToken'),
-	Parser = require('../..'),
+const Parser = require('../..'),
+	fixedToken = require('../../mixin/fixedToken'),
 	Token = require('..');
 
 /**
