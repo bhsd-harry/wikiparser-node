@@ -14,7 +14,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
  */
 class AttributeToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
-	#sanitized = true;
+	/** @type {{index: number}} */ #dirty;
 	#quoteBalance = true;
 
 	/**
@@ -84,9 +84,9 @@ class AttributeToken extends Token {
 		this.setAttr('id', id);
 	}
 
-	/** #sanitized */
+	/** #dirty的反面 */
 	get sanitized() {
-		return this.#sanitized;
+		return !this.#dirty;
 	}
 
 	/** #quoteBalance */
@@ -120,14 +120,14 @@ class AttributeToken extends Token {
 	 * @complexity `n`
 	 */
 	sanitize() {
-		if (!Parser.running && !this.#sanitized) {
+		if (!Parser.running && this.#dirty) {
 			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
 		}
 		const token = Parser.parse(this.#updateFromAttr(), false, stages[this.type], this.getAttribute('config'));
 		Parser.run(() => {
 			this.replaceChildren(...token.childNodes, true);
 		});
-		this.#sanitized = true;
+		this.#dirty = undefined;
 		this.#quoteBalance = true;
 	}
 
@@ -158,11 +158,11 @@ class AttributeToken extends Token {
 		 */
 		const build = str =>
 			typeof str === 'boolean' || !token ? str : token.getAttribute('buildFromStr')(str).map(String).join('');
-		for (const [, key, quoteStart, quoted, quoteEnd, unquoted] of string
+		for (const {index, 1: key, 2: quoteStart, 3: quoted, 4: quoteEnd, 5: unquoted} of string
 			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu)
 		) {
 			if (!this.setAttr(build(key), build(quoted ?? unquoted ?? true), true)) {
-				this.#sanitized = false;
+				this.#dirty = {index};
 			} else if (quoteStart !== quoteEnd) {
 				this.#quoteBalance = false;
 			}
@@ -253,9 +253,11 @@ class AttributeToken extends Token {
 			rect = this.getRootNode().posFromIndex(start);
 			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}
-		if (!this.#sanitized) {
+		if (this.#dirty) {
 			rect ||= this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '包含无效属性'));
+			const {index} = this.#dirty,
+				error = generateForSelf(this, rect, '包含无效属性');
+			errors.push({...error, excerpt: String(this).slice(index, index + 50)});
 		} else if (!this.#quoteBalance) {
 			rect ||= this.getRootNode().posFromIndex(start);
 			const error = generateForSelf(this, rect, '未闭合的引号', 'warning');
