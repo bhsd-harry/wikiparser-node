@@ -25,7 +25,6 @@ class ParameterToken extends Token {
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
 		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, true, accum, {
-				'Stage-11': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, true, accum);
 		keyToken.type = 'parameter-key';

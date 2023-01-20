@@ -39,7 +39,8 @@ class AttributeToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
-		super(attr, config, true, accum);
+		super(attr, config, true, accum, {
+		});
 		this.type = type;
 		this.#parseAttr();
 	}

@@ -20,10 +20,10 @@ class TrToken extends Token {
 	 * @param {RegExp} pattern 表格语法正则
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = null) {
-		super(undefined, config, true, accum, {Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:'});
+		super(undefined, config, true, accum, {
+		});
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
-				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 			}),
 			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
 		);

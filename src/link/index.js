@@ -22,12 +22,13 @@ class LinkToken extends Token {
 	 * @param {string} delimiter `|`
 	 */
 	constructor(link, linkText, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
-		super(undefined, config, true, accum, {AtomToken: 0, Token: 1});
+		super(undefined, config, true, accum, {
+		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
-			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
-			const inner = new Token(linkText, config, true, accum, {'Stage-5': ':', ConverterToken: ':'});
+			const inner = new Token(linkText, config, true, accum, {
+			});
 			inner.type = 'link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
