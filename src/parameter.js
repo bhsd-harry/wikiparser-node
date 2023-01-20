@@ -90,7 +90,6 @@ class ParameterToken extends Token {
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
-				excerpt: String(firstChild).slice(-50),
 			});
 		}
 		return errors;
