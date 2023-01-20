@@ -76,8 +76,7 @@ class ConverterFlagsToken extends Token {
 				&& (variantFlags.length > 0 || !validFlags.includes(flag))
 			) {
 				const error = generateForChild(child, rect, '无效的转换标记');
-				error.excerpt = childNodes.slice(0, i + 1).map(String).join(';').slice(-50);
-				errors.push(error);
+				errors.push({...error, excerpt: childNodes.slice(0, i + 1).map(String).join(';').slice(-50)});
 			}
 		}
 		return errors;
