@@ -1,7 +1,7 @@
 'use strict';
 
-const path = require('path'),
-	diff = require('../util/diff'),
+const diff = require('../util/diff'),
+	path = require('path'),
 	Api = require('./api'),
 	Parser = require('../');
 

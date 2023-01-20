@@ -1,7 +1,7 @@
 'use strict';
 
-const {generateForSelf} = require('../util/lint'),
-	{removeComment} = require('../util/string'),
+const {removeComment} = require('../util/string'),
+	{generateForSelf} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.');
 

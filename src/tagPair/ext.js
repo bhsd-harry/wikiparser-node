@@ -1,8 +1,8 @@
 'use strict';
 
 const Parser = require('../..'),
-	TagPairToken = require('.'),
 	Token = require('..'),
+	TagPairToken = require('.'),
 	AttributeToken = require('../attribute');
 
 /**
