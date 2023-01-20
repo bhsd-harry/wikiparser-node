@@ -174,7 +174,7 @@ class Token extends AstElement {
 	getAttribute(key) {
 		switch (key) {
 			case 'config':
-				return structuredClone(this.#config);
+				return JSON.parse(JSON.stringify(this.#config));
 			case 'accum':
 				return this.#accum;
 			case 'parseOnce':
