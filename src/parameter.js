@@ -4,12 +4,11 @@ const {noWrap, extUrlChar} = require('../util/string'),
 	{generateForChild} = require('../util/lint'),
 	fixedToken = require('../mixin/fixedToken'),
 	Parser = require('..'),
-	Token = require('.'),
-	AtomToken = require('./atom');
+	Token = require('.');
 
 /**
  * 模板或魔术字参数
- * @classdesc `{childNodes: [AtomToken, Token]}`
+ * @classdesc `{childNodes: [Token, Token]}`
  */
 class ParameterToken extends fixedToken(Token) {
 	type = 'parameter';
@@ -48,10 +47,11 @@ class ParameterToken extends fixedToken(Token) {
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
-		const keyToken = new AtomToken(typeof key === 'number' ? undefined : key, 'parameter-key', config, accum, {
-				'Stage-2': ':', '!HeadingToken': '',
+		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, true, accum, {
+				'Stage-11': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, true, accum);
+		keyToken.type = 'parameter-key';
 		token.type = 'parameter-value';
 		this.append(keyToken, token.setAttribute('stage', 2));
 	}
@@ -60,7 +60,7 @@ class ParameterToken extends fixedToken(Token) {
 	afterBuild() {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
-			const name = this.firstChild.text().trim(),
+			const name = this.firstChild.toString('comment, noinclude, include').trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode && parentNode instanceof TranscludeToken) {
@@ -72,7 +72,7 @@ class ParameterToken extends fixedToken(Token) {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstChild, name} = this;
 				if (prevTarget === firstChild) {
-					const newKey = firstChild.text().trim();
+					const newKey = firstChild.toString('comment, noinclude, include').trim();
 					data.oldKey = name;
 					data.newKey = newKey;
 					this.setAttribute('name', newKey);
@@ -119,7 +119,8 @@ class ParameterToken extends fixedToken(Token) {
 	lint(start = 0) {
 		const errors = super.lint(start),
 			{firstChild} = this,
-			link = new RegExp(`https?://${extUrlChar}$`, 'iu').exec(firstChild.text())?.[0];
+			link = new RegExp(`https?://${extUrlChar}$`, 'iu')
+				.exec(firstChild.toString('comment, noinclude, include'))?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {token: this, start}, '匿名参数中未转义的查询参数');
 			errors.push({
