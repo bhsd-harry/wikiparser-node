@@ -34,7 +34,8 @@ class NestedToken extends Token {
 			new NoincludeToken(substr, config, accum);
 			return `${lead}\0${accum.length}c\x7F`;
 		});
-		super(text, config, true, accum, {NoincludeToken: ':', ExtToken: ':'});
+		super(text, config, true, accum, {
+		});
 	}
 
 	/**

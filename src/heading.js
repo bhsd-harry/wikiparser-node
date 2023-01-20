@@ -24,7 +24,6 @@ class HeadingToken extends Token {
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
-			'Stage-1': ':', '!ExtToken': '',
 		});
 		this.append(token, trail);
 	}

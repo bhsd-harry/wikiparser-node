@@ -532,7 +532,6 @@
 			}
 		],
 		"unicorn/consistent-function-scoping": 2,
-		"unicorn/empty-brace-spaces": 2,
 		"unicorn/error-message": 2,
 		"unicorn/explicit-length-check": 2,
 		"unicorn/new-for-builtins": 2,

@@ -30,7 +30,6 @@ class ImagemapToken extends Token {
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', NoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;
