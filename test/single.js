@@ -18,7 +18,7 @@ console.time('print');
 const printed = token.print();
 console.timeEnd('print');
 const entities = {lt: '<', gt: '>', amp: '&'},
-	restored = printed.replaceAll(
+	restored = printed.replace(
 		/<[^<]+?>|&([lg]t|amp);/gu,
 		/** @param {string} s */ (_, s) => s ? entities[s] : '',
 	);

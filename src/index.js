@@ -188,7 +188,7 @@ class Token extends AstElement {
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = undefined) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.insertAt(halfParsed ? wikitext : wikitext.replaceAll(/[\0\x7F]/gu, ''));
+			this.insertAt(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''));
 		}
 		this.#config = config;
 		this.#accum = accum;

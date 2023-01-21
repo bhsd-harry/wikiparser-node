@@ -60,7 +60,7 @@ class GalleryToken extends Token {
 
 	/** @override */
 	text() {
-		return super.text('\n').replaceAll(/\n\s*\n/gu, '\n');
+		return super.text('\n').replace(/\n\s*\n/gu, '\n');
 	}
 
 	/** @override */

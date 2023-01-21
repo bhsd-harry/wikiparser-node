@@ -13,7 +13,7 @@ class CategoryToken extends LinkToken {
 
 	/** 分类排序关键字 */
 	get sortkey() {
-		return this.childNodes[1]?.text()?.replaceAll(
+		return this.childNodes[1]?.text()?.replace(
 			/&#(\d+|x[\da-f]+);|\n/gu,
 			/** @param {string} p */
 			(_, p) => p ? String.fromCodePoint(p[0] === 'x' ? parseInt(p.slice(1), 16) : Number(p)) : '',

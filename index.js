@@ -184,7 +184,7 @@ const /** @type {Parser} */ Parser = {
 				process = '解析';
 			if (restored === wikitext) {
 				const entities = {lt: '<', gt: '>', amp: '&'};
-				restored = token.print().replaceAll(
+				restored = token.print().replace(
 					/<[^<]+?>|&([lg]t|amp);/gu,
 					/** @param {string} s */ (_, s) => s ? entities[s] : '',
 				);

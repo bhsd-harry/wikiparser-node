@@ -18,7 +18,7 @@ const escapeTable = syntax => {
 	const templates = {'{|': '(!', '|}': '!)', '||': '!!', '|': '!'},
 		wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
-				? String(child).replaceAll(/\{\||\|\}|\|{2}|\|/gu, p => `{{${templates[p]}}}`)
+				? String(child).replace(/\{\||\|\}|\|{2}|\|/gu, p => `{{${templates[p]}}}`)
 				: String(child),
 		).join(''),
 		token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));

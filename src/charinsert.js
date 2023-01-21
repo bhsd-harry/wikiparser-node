@@ -63,9 +63,9 @@ class CharinsertToken extends Token {
 			this.typeError('getLineItems', 'Number', 'HasNowikiToken');
 		}
 		const entities = {'\t': '&#9;', '\r': '&#12;', ' ': '&#32;'};
-		return String(child).replaceAll(
+		return String(child).replace(
 			/<nowiki>(.+?)<\/nowiki>/giu,
-			/** @type {function(...string): string} */ (_, inner) => inner.replaceAll(/[\t\r ]/gu, s => entities[s]),
+			/** @type {function(...string): string} */ (_, inner) => inner.replace(/[\t\r ]/gu, s => entities[s]),
 		).split(/\s/u).filter(Boolean)
 			.map(item => {
 				const parts = item.split('+');

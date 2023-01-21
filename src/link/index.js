@@ -270,7 +270,7 @@ class LinkToken extends Token {
 	 * @throws `SyntaxError` 非法的fragment
 	 */
 	#setFragment(fragment, page = true) {
-		fragment = String(fragment).replaceAll(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
+		fragment = String(fragment).replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),

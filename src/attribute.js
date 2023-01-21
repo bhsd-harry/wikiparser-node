@@ -150,7 +150,7 @@ class AttributeToken extends Token {
 			});
 			string = String(token);
 		}
-		string = removeComment(string).replaceAll(/\0\d+~\x7F/gu, '=');
+		string = removeComment(string).replace(/\0\d+~\x7F/gu, '=');
 
 		/**
 		 * 解析并重建标签属性
@@ -232,7 +232,7 @@ class AttributeToken extends Token {
 		} else if (value === false) {
 			this.#attr.delete(key);
 		} else {
-			this.#attr.set(key, value === true ? true : value.replaceAll(/\s/gu, ' ').trim());
+			this.#attr.set(key, value === true ? true : value.replace(/\s/gu, ' ').trim());
 		}
 		if (!init) {
 			this.sanitize();

@@ -20,7 +20,7 @@ class ImageParameterToken extends Token {
 	 * @returns {T extends 'link' ? string|Symbol : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig(), halfParsed = false) {
-		value = value.replaceAll(/\0\d+t\x7F/gu, '').trim();
+		value = value.replace(/\0\d+t\x7F/gu, '').trim();
 		switch (key) {
 			case 'width':
 				return /^\d*(?:x\d*)?$/u.test(value);

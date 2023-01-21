@@ -120,7 +120,7 @@ class ImagemapToken extends Token {
 
 	/** @override */
 	text() {
-		return super.text('\n').replaceAll(/\n{2,}/gu, '\n');
+		return super.text('\n').replace(/\n{2,}/gu, '\n');
 	}
 
 	/** @override */
