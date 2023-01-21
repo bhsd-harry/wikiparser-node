@@ -16,7 +16,7 @@ class AtomToken extends Token {
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
-	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = null) {
+	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);
 		if (type) {
 			this.type = type;

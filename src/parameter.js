@@ -63,7 +63,7 @@ class ParameterToken extends fixedToken(Token) {
 			const name = this.firstChild.toString('comment, noinclude, include').trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
-			if (parentNode && parentNode instanceof TranscludeToken) {
+			if (parentNode instanceof TranscludeToken) {
 				parentNode.getAttribute('keys').add(name);
 				parentNode.getArgs(name, false, false).add(this);
 			}

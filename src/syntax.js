@@ -20,7 +20,7 @@ class SyntaxToken extends Token {
 	 * @param {acceptable} acceptable 可接受的子节点设置
 	 * @throws `RangeError` 含有g修饰符的语法正则
 	 */
-	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
+	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		if (pattern.global) {
 			throw new RangeError(`SyntaxToken 的语法正则不能含有 g 修饰符：${pattern}`);
 		}

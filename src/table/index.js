@@ -830,7 +830,7 @@ class TableToken extends TrToken {
 		 * @type {(i: number) => number[]}
 		 * @complexity `n`
 		 */
-		const occupied = i => layout[i].map(({row}, j) => row === i ? j : null).filter(j => j !== null);
+		const occupied = i => layout[i].map(({row}, j) => row === i ? j : undefined).filter(j => j !== undefined);
 		try {
 			assert.deepStrictEqual(occupied(y), occupied(before));
 		} catch (e) {
@@ -874,8 +874,8 @@ class TableToken extends TrToken {
 		 * @complexity `n`
 		 */
 		const occupied = (i, oneRow = false) => layout[i].map(
-			({row, column}, j) => row === i && (!oneRow || cells[column].rowspan === 1) ? j : null,
-		).filter(j => j !== null);
+			({row, column}, j) => row === i && (!oneRow || cells[column].rowspan === 1) ? j : undefined,
+		).filter(j => j !== undefined);
 		try {
 			assert.deepStrictEqual(occupied(y), occupied(after, true));
 		} catch (e) {

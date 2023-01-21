@@ -101,7 +101,7 @@ class TdToken extends fixedToken(TrToken) {
 		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),
 			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
 		if (/\[\[|-\{/u.test(attr)) {
-			innerSyntax = null;
+			innerSyntax = undefined;
 			attr = '';
 		}
 		super(syntax, attr, config, accum, openingPattern);

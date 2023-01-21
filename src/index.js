@@ -185,7 +185,7 @@ class Token extends AstElement {
 	 * @param {accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
-	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = null) {
+	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = undefined) {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(halfParsed ? wikitext : wikitext.replaceAll(/[\0\x7F]/gu, ''));
@@ -232,7 +232,7 @@ class Token extends AstElement {
 			case 'stage':
 				return this.#stage;
 			case 'acceptable':
-				return this.#acceptable ? {...this.#acceptable} : null;
+				return this.#acceptable ? {...this.#acceptable} : undefined;
 			case 'protectChildren':
 				return this.#protectChildren;
 			case 'protectedChildren':
