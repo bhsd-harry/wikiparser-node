@@ -45,13 +45,8 @@ class ImagemapToken extends Token {
 			if (error || !trimmed || trimmed[0] === '#') {
 				//
 			} else if (first) {
-				const [file, ...options] = line.split('|');
-				let title;
-				try {
-					title = this.normalizeTitle(decodeURIComponent(file), 0, true);
-				} catch {
+				const [file, ...options] = line.split('|'),
 					title = this.normalizeTitle(file, 0, true);
-				}
 				if (title.valid && !title.interwiki && title.ns === 6) {
 					const token = new GalleryImageToken(
 						file, options.length > 0 ? options.join('|') : undefined, title, config, accum,

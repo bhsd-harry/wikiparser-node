@@ -10,7 +10,9 @@ const /** @type {Parser} */ Parser = {
 		return {...this.minConfig, ...this.config};
 	},
 
-	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false) {
+	normalizeTitle(
+		title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false, decode = false,
+	) {
 		let /** @type {Token} */ token;
 		if (!halfParsed) {
 			const Token = require('./src');
@@ -23,7 +25,7 @@ const /** @type {Parser} */ Parser = {
 			title = token.firstChild;
 		}
 		const Title = require('./lib/title');
-		const titleObj = new Title(String(title), defaultNs, config);
+		const titleObj = new Title(String(title), defaultNs, config, decode);
 		return titleObj;
 	},
 

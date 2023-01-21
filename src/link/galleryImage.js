@@ -36,9 +36,10 @@ class GalleryImageToken extends FileToken {
 	 * @override
 	 */
 	afterBuild() {
-		const {
-			interwiki: initInterwiki, ns: initNs,
-		} = this.normalizeTitle(String(this.firstChild), this.type === 'imagemap-image' ? 0 : 6, true);
+		const initImagemap = this.type === 'imagemap-image',
+			{
+				interwiki: initInterwiki, ns: initNs,
+			} = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.#invalid = initInterwiki || initNs !== 6; // 只用于gallery-image的首次解析
 		return this;
 	}
