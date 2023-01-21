@@ -172,7 +172,7 @@ class Token extends AstElement {
 
 	/** 所有内链、外链和自由外链 */
 	get links() {
-		return this.querySelectorAll('link, ext-link, free-ext-link');
+		return this.querySelectorAll('link, ext-link, free-ext-link, image-parameter#link');
 	}
 
 	/** 所有模板和模块 */
