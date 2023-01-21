@@ -38,18 +38,12 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		let page = link;
-		if (link.includes('%')) {
-			try {
-				page = decodeURIComponent(link);
-			} catch {}
-		}
 		const force = link.trim()[0] === ':';
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
 		}
-		const title = Parser.normalizeTitle(page, 0, false, config, true),
+		const title = Parser.normalizeTitle(link, 0, false, config, true, true),
 			{ns, interwiki, valid} = title;
 		if (!valid) {
 			s += `[[${x}`;

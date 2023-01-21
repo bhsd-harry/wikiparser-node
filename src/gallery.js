@@ -38,13 +38,8 @@ class GalleryToken extends Token {
 					: line);
 				continue;
 			}
-			const [, file, alt] = matches;
-			let title;
-			try {
-				title = this.normalizeTitle(decodeURIComponent(file), 6, true);
-			} catch {
-				title = this.normalizeTitle(file, 6, true);
-			}
+			const [, file, alt] = matches,
+				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
 				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
 			} else {
@@ -124,12 +119,7 @@ class GalleryToken extends Token {
 	 * @throws `SyntaxError` 非法的文件名
 	 */
 	insertImage(file, i = this.childNodes.length) {
-		let title;
-		try {
-			title = this.normalizeTitle(decodeURIComponent(file), 6, true);
-		} catch {
-			title = this.normalizeTitle(file, 6, true);
-		}
+		const title = this.normalizeTitle(file, 6, true, true);
 		if (title.valid) {
 			const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
 			return this.insertAt(token, i);

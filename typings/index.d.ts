@@ -32,9 +32,15 @@ declare global {
 		 * @param {number} defaultNs 命名空间
 		 * @param {boolean} include 是否嵌入
 		 * @param {boolean} halfParsed 是否是半解析状态
+		 * @param {boolean} decode 是否需要解码
 		 */
 		normalizeTitle(
-			title: string, defaultNs?: number, include?: boolean, config?: ParserConfig, halfParsed?: boolean
+			title: string,
+			defaultNs?: number,
+			include?: boolean,
+			config?: ParserConfig,
+			halfParsed?: boolean,
+			decode?: boolean,
 		): Title;
 
 		/**

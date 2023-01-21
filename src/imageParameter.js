@@ -34,12 +34,7 @@ class ImageParameterToken extends Token {
 				} else if (value.startsWith('[[') && value.endsWith(']]')) {
 					value = value.slice(2, -2);
 				}
-				if (value.includes('%')) {
-					try {
-						value = decodeURIComponent(value);
-					} catch {}
-				}
-				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed);
+				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true);
 				return title.valid && String(title);
 			}
 			case 'lang':

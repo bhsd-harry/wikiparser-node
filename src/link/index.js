@@ -105,7 +105,7 @@ class LinkToken extends Token {
 	 * @throws `Error` 不可更改命名空间
 	 */
 	afterBuild() {
-		this.setAttribute('name', this.normalizeTitle(this.firstChild.text()).title);
+		this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 0, false, true).title);
 		if (this.#delimiter?.includes('\0')) {
 			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter).map(String).join('');
 		}
@@ -113,7 +113,7 @@ class LinkToken extends Token {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, ns, valid} = this.normalizeTitle(name);
+					{title, interwiki, ns, valid} = this.normalizeTitle(name, 0, false, true);
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
@@ -198,7 +198,7 @@ class LinkToken extends Token {
 
 	/** 生成Title对象 */
 	#getTitle() {
-		return this.normalizeTitle(this.firstChild.text());
+		return this.normalizeTitle(this.firstChild.text(), 0, false, true);
 	}
 
 	/**

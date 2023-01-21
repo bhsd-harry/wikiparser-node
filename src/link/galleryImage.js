@@ -15,6 +15,15 @@ class GalleryImageToken extends FileToken {
 	type = 'gallery-image';
 	#invalid = false;
 
+	/** 图片链接 */
+	get link() {
+		return this.type === 'imagemap-image' ? undefined : super.link;
+	}
+
+	set link(value) {
+		super.link = value;
+	}
+
 	/**
 	 * @param {string} link 图片文件名
 	 * @param {string|undefined} text 图片参数
@@ -44,17 +53,18 @@ class GalleryImageToken extends FileToken {
 	 * @throws `Error` 不可更改命名空间
 	 */
 	afterBuild() {
-		const {
-			title: initTitle, interwiki: initInterwiki, ns: initNs,
-		} = this.normalizeTitle(String(this.firstChild), this.type === 'imagemap-image' ? 0 : 6, true);
+		const initImagemap = this.type === 'imagemap-image',
+			{
+				title: initTitle, interwiki: initInterwiki, ns: initNs,
+			} = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.setAttribute('name', initTitle);
 		this.#invalid = initInterwiki || initNs !== 6; // 只用于gallery-image的首次解析
 		const /** @type {AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
-					defaultNs = this.type === 'imagemap-image' ? 0 : 6,
-					{title, interwiki, ns, valid} = this.normalizeTitle(name, defaultNs, true);
+					imagemap = this.type === 'imagemap-image',
+					{title, interwiki, ns, valid} = this.normalizeTitle(name, imagemap ? 0 : 6, true, !imagemap);
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的图片文件名：${name}`);
