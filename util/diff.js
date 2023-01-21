@@ -38,13 +38,13 @@ const cmd = (command, args) => new Promise(resolve => {
 			r(buf);
 		});
 		shell.on('exit', () => {
-			r(shell.killed ? null : '');
+			r(shell.killed ? undefined : '');
 		});
 		shell.on('error', () => {
-			r(null);
+			r(undefined);
 		});
 	} catch {
-		r(null);
+		r(undefined);
 	}
 });
 

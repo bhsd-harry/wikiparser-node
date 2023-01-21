@@ -14,7 +14,7 @@ class SyntaxToken extends Token {
 	 * @param {string} type Token.type
 	 * @param {accum} accum
 	 */
-	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = null) {
+	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
 	}

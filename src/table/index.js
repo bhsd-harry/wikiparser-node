@@ -38,7 +38,7 @@ class TableToken extends TrToken {
 	close(syntax = '\n|}', halfParsed = false) {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum');
-		super.insertAt(new SyntaxToken(syntax, null, 'table-syntax', config, accum));
+		super.insertAt(new SyntaxToken(syntax, undefined, 'table-syntax', config, accum));
 	}
 }
 
