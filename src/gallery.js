@@ -35,13 +35,8 @@ class GalleryToken extends Token {
 					: line);
 				continue;
 			}
-			const [, file, alt] = matches;
-			let title;
-			try {
-				title = this.normalizeTitle(decodeURIComponent(file), 6, true);
-			} catch {
-				title = this.normalizeTitle(file, 6, true);
-			}
+			const [, file, alt] = matches,
+				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
 				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
 			} else {
