@@ -78,9 +78,10 @@ class FileToken extends LinkToken {
 	/**
 	 * 获取特定类型的图片属性参数节点
 	 * @param {Set<string>} keys 接受的参数名
+	 * @param {type} type 类型名
 	 * @complexity `n`
 	 */
-	#getTypedArgs(keys) {
+	#getTypedArgs(keys, type) {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 		return args;
 	}
