@@ -698,7 +698,7 @@ class Token extends AstElement {
 				const root = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
 				return root.setAttribute('stage', 6).parse(7);
 			});
-		for (const quote of token.childNodes.reverse()) {
+		for (const quote of [...token.childNodes].reverse()) {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),
 					n = indices.findLastIndex(textIndex => textIndex <= index);
