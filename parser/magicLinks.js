@@ -10,7 +10,7 @@ const {extUrlChar} = require('../util/string'),
  * @param {accum} accum
  */
 const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
-	const regex = new RegExp(`\\b(?:${config.protocol})(${extUrlChar})`, 'giu');
+	const regex = new RegExp(`(?<![\\p{L}\\d_])(?:${config.protocol})(${extUrlChar})`, 'giu');
 	return wikitext.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
 			url = m;
