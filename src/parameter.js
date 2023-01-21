@@ -39,7 +39,7 @@ class ParameterToken extends Token {
 			const name = String(this.firstChild).replace(/<!--.*?-->/gu, '').trim(),
 				{parentNode} = this;
 			this.setAttribute('name', name);
-			if (parentNode && parentNode instanceof TranscludeToken) {
+			if (parentNode instanceof TranscludeToken) {
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}

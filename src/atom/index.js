@@ -15,7 +15,7 @@ class AtomToken extends Token {
 	 * @param {string|undefined} type Token.type
 	 * @param {accum} accum
 	 */
-	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = null) {
+	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);
 		if (type) {
 			this.type = type;

@@ -19,7 +19,7 @@ class TrToken extends Token {
 	 * @param {accum} accum
 	 * @param {RegExp} pattern 表格语法正则
 	 */
-	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = null) {
+	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = undefined) {
 		super(undefined, config, true, accum, {
 		});
 		this.append(
