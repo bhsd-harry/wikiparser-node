@@ -29,16 +29,17 @@ class MagicLinkToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const errors = super.lint(start);
+		const errors = super.lint(start),
+			source = '[，；。：！？（）]';
 		let /** @type {{top: number, left: number}} */ rect;
 		for (const child of this.childNodes) {
 			const str = String(child);
-			if (child.type !== 'text' || !/[，；。：！？（）【】]/u.test(str)) {
+			if (child.type !== 'text' || !new RegExp(source, 'u').test(str)) {
 				continue;
 			}
 			rect ||= this.getRootNode().posFromIndex(start);
 			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning'),
-				regex = /[，；。：！？（）【】]/gu;
+				regex = new RegExp(source, 'gu');
 			for (let mt = regex.exec(str); mt; mt = regex.exec(str)) {
 				const {index} = mt,
 					lines = str.slice(0, index).split('\n'),
