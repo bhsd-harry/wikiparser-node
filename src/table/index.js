@@ -175,11 +175,9 @@ class TableToken extends TrToken {
 		const errors = super.lint(start);
 		if (!this.closed) {
 			const {firstChild, lastChild} = this,
+				{type, lastChild: td} = lastChild,
 				error = generateForChild(firstChild, {token: this, start}, '未闭合的表格');
-			if (lastChild.type === 'tr') {
-				error.excerpt = String(lastChild.lastChild).slice(0, 50);
-			}
-			errors.push(error);
+			errors.push({...error, excerpt: String(type === 'tr' ? td : lastChild).slice(0, 50)});
 		}
 		return errors;
 	}
