@@ -23,6 +23,9 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	setModifier(modifier = '') {
+		if (/\s$/u.test(modifier)) {
+			return false;
+		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = modifier.trim().toLowerCase(),
 			isRaw = raw.includes(lcModifier),
@@ -53,10 +56,11 @@ class TranscludeToken extends Token {
 		}
 		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
-				name = removeComment(magicWord),
+				cleaned = removeComment(magicWord),
+				name = cleaned.trim(),
 				isSensitive = sensitive.includes(name),
 				canonicalCame = insensitive[name.toLowerCase()];
-			if (isSensitive || canonicalCame) {
+			if (!(arg.length > 0 && /\s$/u.test(cleaned)) && (isSensitive || canonicalCame)) {
 				this.setAttribute('name', canonicalCame || name.toLowerCase()).type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
