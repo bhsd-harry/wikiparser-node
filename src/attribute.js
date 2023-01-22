@@ -94,9 +94,7 @@ class AttributeToken extends Token {
 		}
 		if (this.#dirty) {
 			rect ||= this.getRootNode().posFromIndex(start);
-			const {index} = this.#dirty,
-				error = generateForSelf(this, rect, '包含无效属性');
-			errors.push({...error, excerpt: String(this).slice(index, index + 50)});
+			errors.push(generateForSelf(this, rect, '包含无效属性'));
 		} else if (!this.#quoteBalance) {
 			rect ||= this.getRootNode().posFromIndex(start);
 			const error = generateForSelf(this, rect, '未闭合的引号', 'warning');
