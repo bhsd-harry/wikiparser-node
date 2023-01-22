@@ -43,6 +43,7 @@ class AttributeToken extends Token {
 		});
 		this.type = type;
 		this.#parseAttr();
+		this.setAttribute('name', name);
 	}
 
 	/**
