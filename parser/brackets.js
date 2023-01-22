@@ -64,7 +64,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			if (close.length === 3) {
 				new ArgToken(parts.map(part => part.join('=')), config, accum);
 			} else {
-				const name = removeComment(parts[0][0]);
+				const name = removeComment(parts[0][0]).trim();
 				if (name in marks) {
 					ch = marks[name]; // 标记{{!}}等
 				} else if (/^(?:fullurl|canonicalurl|filepath):./iu.test(name)) {
