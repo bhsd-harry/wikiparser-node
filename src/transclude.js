@@ -34,10 +34,10 @@ class TranscludeToken extends Token {
 			this.typeError('setModifier', 'String');
 		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
-			lcModifier = modifier.trim().toLowerCase(),
+			lcModifier = modifier.trimStart().toLowerCase(),
 			isRaw = raw.includes(lcModifier),
 			isSubst = subst.includes(lcModifier),
-			wasRaw = raw.includes(this.modifier.trim().toLowerCase());
+			wasRaw = raw.includes(this.modifier.trimStart().toLowerCase());
 		if (wasRaw && isRaw || !wasRaw && (isSubst || modifier === '')
 			|| (Parser.running || this.childNodes.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
@@ -68,7 +68,7 @@ class TranscludeToken extends Token {
 		}
 		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
-				name = removeComment(magicWord),
+				name = removeComment(magicWord)[arg.length > 0 ? 'trimStart' : 'trim'](),
 				isSensitive = sensitive.includes(name),
 				canonicalCame = insensitive[name.toLowerCase()];
 			if (isSensitive || canonicalCame) {
