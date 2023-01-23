@@ -22,11 +22,13 @@
 	color: #14866d;
 	font-weight: bold;
 }
-.wpb-ext-attr, .wpb-ext-inner, .wpb-html-attr {
+.wpb-ext-attr, .wpb-html-attr {
+	color: #179b1c;
 	font-weight: normal;
 }
 .wpb-ext-inner {
 	color: initial;
+	font-weight: normal;
 	background-color: rgba(0, 0, 0, .03);
 }
 
@@ -74,7 +76,7 @@
 	font-weight :bold;
 }
 .wpb-table-attr {
-	color: #db00be;
+	color: #f500d4;
 	font-weight: normal;
 }
 .wpb-td-inner {
