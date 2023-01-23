@@ -22,7 +22,7 @@
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
   },
   "scripts": {
-    "test": "rm bundle/*.js && webpack && eslint .",
+    "test": "rm bundle/*.js; webpack && eslint .",
     "real": "node test/real.js",
     "single": "node test/single.js"
   },

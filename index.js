@@ -69,7 +69,9 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-if (typeof window === 'object') {
+if (typeof self === 'object') {
+	self.Parser = Parser;
+} else if (typeof window === 'object') {
 	window.Parser = Parser;
 }
 module.exports = Parser;
