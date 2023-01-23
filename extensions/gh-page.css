@@ -30,6 +30,11 @@ article {
 	width: 100%;
 	padding: 1rem 2rem 2rem;
 }
+h2 {
+	font-size: 1.3em;
+	margin: 0.5rem 0;
+	font-weight: bold;
+}
 .fieldLayout {
 	display: table;
 	padding: 0.5em 0;
@@ -57,7 +62,8 @@ input {
 input + span {
 	position: absolute;
 	left: 0;
-	top: auto;
+	top: 50%;
+	transform: translateY(-50%);
 	display: inline-block;
 	width: 1em;
 	height: 1em;
