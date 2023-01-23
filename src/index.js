@@ -283,13 +283,13 @@ class Token extends AstElement {
 	 */
 	#parseCommentAndExt(includeOnly) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
-		this.setText(parseCommentAndExt(String(this), this.#config, this.#accum, includeOnly));
+		this.setText(parseCommentAndExt(String(this.firstChild), this.#config, this.#accum, includeOnly));
 	}
 
 	/** 解析花括号 */
 	#parseBrackets() {
 		const parseBrackets = require('../parser/brackets');
-		const str = this.type === 'root' ? String(this) : `\0${String(this)}`,
+		const str = this.type === 'root' ? String(this.firstChild) : `\0${String(this.firstChild)}`,
 			parsed = parseBrackets(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
 	}
@@ -297,7 +297,7 @@ class Token extends AstElement {
 	/** 解析HTML标签 */
 	#parseHtml() {
 		const parseHtml = require('../parser/html');
-		this.setText(parseHtml(String(this), this.#config, this.#accum));
+		this.setText(parseHtml(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析表格 */
@@ -328,13 +328,13 @@ class Token extends AstElement {
 	/** 解析内部链接 */
 	#parseLinks() {
 		const parseLinks = require('../parser/links');
-		this.setText(parseLinks(String(this), this.#config, this.#accum));
+		this.setText(parseLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析单引号 */
 	#parseQuotes() {
 		const parseQuotes = require('../parser/quotes');
-		const lines = String(this).split('\n');
+		const lines = String(this.firstChild).split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i], this.#config, this.#accum);
 		}
@@ -344,13 +344,13 @@ class Token extends AstElement {
 	/** 解析外部链接 */
 	#parseExternalLinks() {
 		const parseExternalLinks = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(String(this), this.#config, this.#accum));
+		this.setText(parseExternalLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析自由外链 */
 	#parseMagicLinks() {
 		const parseMagicLinks = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(String(this), this.#config, this.#accum));
+		this.setText(parseMagicLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析列表 */
@@ -359,7 +359,7 @@ class Token extends AstElement {
 			return;
 		}
 		const parseList = require('../parser/list');
-		const lines = String(this).split('\n');
+		const lines = String(this.firstChild).split('\n');
 		let i = this.type === 'root' || this.type === 'ext-inner' && this.type === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
@@ -370,7 +370,7 @@ class Token extends AstElement {
 	/** 解析语言变体转换 */
 	#parseConverter() {
 		const parseConverter = require('../parser/converter');
-		this.setText(parseConverter(String(this), this.#config, this.#accum));
+		this.setText(parseConverter(String(this.firstChild), this.#config, this.#accum));
 	}
 }
 
