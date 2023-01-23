@@ -128,18 +128,24 @@
 				start = 0,
 				{length: end} = oldStr;
 			if (scrollHeight > parentHeight) {
-				const /** @type {HTMLElement[]} */ childNodes = [...rootNode.childNodes];
-				start = childNodes.findIndex(
-					({nodeType, offsetTop, offsetHeight}) => nodeType !== 3 && offsetTop + offsetHeight > scrollTop,
-				);
-				end = childNodes.slice(start + 1).findIndex(
-					({nodeType, offsetTop}) => nodeType !== 3 && offsetTop >= scrollTop + parentHeight,
-				);
-				end = end === -1 ? childNodes.length : end + start + 1;
-				start = start && start - 1;
-				text = oldStr.slice(start, end).join('');
+				const /** @type {HTMLElement[]} */ childNodes = [...rootNode.childNodes],
+					headings = childNodes.filter(({className}) => className === 'wpb-heading');
+				if (headings.length > 0) {
+					const i = headings.findIndex(({offsetTop, offsetHeight}) => offsetTop + offsetHeight > scrollTop),
+						j = i === -1
+							? -1
+							: headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
+					if (i === -1) {
+						start = childNodes.indexOf(headings[headings.length - 1]);
+					} else if (i > 0) {
+						start = childNodes.indexOf(headings[i - 1]);
+					}
+					if (j >= 0) {
+						end = childNodes.indexOf(headings[i + j]);
+					}
+					text = oldStr.slice(start, end).join('');
+				}
 			}
-			console.debug(text);
 			const [str, printed] = await parse(text, include);
 			if (this.option.include === include && this.textbox.value === value) {
 				this.root = [
@@ -218,6 +224,7 @@
 			}
 		});
 		printer.coarsePrint();
+		return printer;
 	};
 
 	wikiparse.parse = parse;
