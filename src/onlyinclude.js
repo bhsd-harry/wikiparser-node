@@ -32,7 +32,10 @@ class OnlyincludeToken extends Token {
 
 	/** @override */
 	print() {
-		return super.print({pre: '&lt;onlyinclude&gt;', post: '&lt;/onlyinclude&gt;'});
+		return super.print({
+			pre: '<span class="wpb-ext">&lt;onlyinclude&gt;</span>',
+			post: '<span class="wpb-ext">&lt;/onlyinclude&gt;</span>',
+		});
 	}
 
 	/** @override */
