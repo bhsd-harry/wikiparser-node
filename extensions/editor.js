@@ -20,7 +20,9 @@
 	};
 
 	const blob = new Blob([`(${String(workerJS)})()`], {type: 'text/javascript'}),
-		worker = new Worker(URL.createObjectURL(blob));
+		url = URL.createObjectURL(blob),
+		worker = new Worker(url);
+	URL.revokeObjectURL(url);
 
 	/**
 	 * 将解析改为异步执行（无实质差异）
@@ -59,14 +61,14 @@
 		tick() {
 			const {ticks} = this;
 			if (ticks[0] > 0) {
-				ticks[0] -= 1000;
+				ticks[0] -= 500;
 				if (ticks[0] <= 0) {
 					this[ticks[1]]();
 				}
 			}
 			setTimeout(() => {
 				this.tick();
-			}, 1000);
+			}, 500);
 		}
 
 		/**
@@ -95,16 +97,14 @@
 			if (this.running) {
 				return undefined;
 			}
-			const [str, printed] = await parse(this.textbox.value, this.option.include, 2);
-			const {textbox: {value}, root: [text]} = this;
-			if (!text || text.join('') !== value) {
-				if (str.join('') !== value) { // 文本改变，需重新解析
-					this.running = undefined;
-					this.running = this.coarsePrint();
-					return this.running;
-				}
-				this.root = [str, printed];
+			const {option: {include}, textbox: {value}} = this,
+				[str, printed] = await parse(value, include, 2);
+			if (this.option.include !== include || this.textbox.value !== value) {
+				this.running = undefined;
+				this.running = this.coarsePrint();
+				return this.running;
 			}
+			this.root = [str, printed];
 			this.paint();
 			this.running = undefined;
 			this.running = this.finePrint();
@@ -121,8 +121,10 @@
 			const {
 				root: [oldStr, oldPrinted],
 				preview: {scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]},
+				option: {include},
+				textbox: {value},
 			} = this;
-			let {textbox: {value}} = this,
+			let text = value,
 				start = 0,
 				{length: end} = oldStr;
 			if (scrollHeight > parentHeight) {
@@ -135,12 +137,15 @@
 				);
 				end = end === -1 ? childNodes.length : end + start + 1;
 				start = start && start - 1;
-				value = oldStr.slice(start, end).join('');
+				text = oldStr.slice(start, end).join('');
 			}
-			const [str, printed] = await parse(value, this.option.include);
-			const fullStr = [...oldStr.slice(0, start), ...str, ...oldStr.slice(end)];
-			if (fullStr.join('') === this.textbox.value) {
-				this.root = [fullStr, [...oldPrinted.slice(0, start), ...printed, ...oldPrinted.slice(end)]];
+			console.debug(text);
+			const [str, printed] = await parse(text, include);
+			if (this.option.include === include && this.textbox.value === value) {
+				this.root = [
+					[...oldStr.slice(0, start), ...str, ...oldStr.slice(end)],
+					[...oldPrinted.slice(0, start), ...printed, ...oldPrinted.slice(end)],
+				];
 				this.paint();
 				this.running = undefined;
 				if (this.viewportChanged) {

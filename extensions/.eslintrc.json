@@ -1,24 +1,22 @@
 {
 	"env": {
 		"browser": true,
+		"node": false,
 		"es2022": true
 	},
-	"plugins": [
-		"es-x"
-	],
 	"extends": [
 		"plugin:es-x/restrict-to-es2018"
 	],
-	"parserOptions": {
-		"ecmaVersion": 13
-	},
 	"rules": {
+		"no-await-in-loop": 2,
+		"no-control-regex": 2,
 		"logical-assignment-operators": 0,
-		"es-x/no-array-prototype-flat": 0
-	},
-	"settings": {
-		"es-x": {
-			"aggressive": true
-		}
+		"no-alert": 2,
+		"es-x/no-array-prototype-flat": 0,
+		"unicorn/empty-brace-spaces": 2,
+		"unicorn/no-invalid-remove-event-listener": 2,
+		"unicorn/prefer-dom-node-text-content": 2,
+		"unicorn/prefer-keyboard-event-key": 2,
+		"unicorn/prefer-query-selector": 2
 	}
 }
