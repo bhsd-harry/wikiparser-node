@@ -68,7 +68,7 @@ class ImageParameterToken extends Token {
 					});
 					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 				}
-				this.setAttribute('name', param[1]).setAttribute('stage', Parser.MAX_STAGE);
+				this.setAttribute('name', param[1]);
 				return;
 			}
 		}
@@ -78,7 +78,7 @@ class ImageParameterToken extends Token {
 
 	/** @override */
 	isPlain() {
-		return true;
+		return this.name === 'caption';
 	}
 
 	/**
