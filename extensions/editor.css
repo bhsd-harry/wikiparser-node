@@ -28,7 +28,7 @@
 	background-color: #fff;
 	user-select: none;
 }
-#wikiPretty span {
+#wikiPretty:not(.macintel) span {
 	font-weight: normal;
 }
 #wikiPretty.active span {
