@@ -29,7 +29,7 @@
 	user-select: none;
 }
 #wikiPretty span {
-	font-size: inherit;
+	font-weight: normal;
 }
 #wikiPretty.active span {
 	color: transparent;
