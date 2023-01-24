@@ -2,20 +2,24 @@
 
 (() => {
 	/** web worker */
-	const workerJS = async () => {
+	const workerJS = () => {
 		self.importScripts('https://bhsd-harry.github.io/wikiparser-node/bundle/bundle.min.js');
-		const /** @type {{Parser: Parser}} */ {Parser} = self;
-		Parser.config = await (await fetch('https://bhsd-harry.github.io/wikiparser-node/config/default.json')).json();
-		self.postMessage('ready');
-		const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-		self.onmessage = /** @param {{data: [string, Boolean, number]}} */ ({data}) => {
-			const {childNodes} = Parser.parse(...data);
-			self.postMessage([
-				childNodes.map(String),
-				childNodes.map(child => child.type === 'text'
-					? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
-					: child.print()),
-			]);
+		const /** @type {{Parser: Parser}} */ {Parser} = self,
+			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+		self.onmessage = /** @param {{data: ParserConfig|[number, string, Boolean, number]}} */ ({data}) => {
+			if (Array.isArray(data)) {
+				const [id, ...args] = data,
+					{childNodes} = Parser.parse(...args);
+				self.postMessage([
+					id,
+					childNodes.map(String),
+					childNodes.map(child => child.type === 'text'
+						? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+						: child.print()),
+				]);
+			} else {
+				Parser.config = data;
+			}
 		};
 	};
 
@@ -25,19 +29,29 @@
 	URL.revokeObjectURL(url);
 
 	/**
-	 * 将解析改为异步执行（无实质差异）
+	 * 将解析改为异步执行
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} include 是否嵌入
 	 * @param {number} stage 解析层级
+	 * @param {number} id Printer编号
 	 * @returns {Promise<string[][]>}
 	 */
-	const parse = (wikitext, include, stage) => new Promise(resolve => {
-		worker.onmessage = /** @param {{data: string[][]}} */ ({data}) => {
-			worker.onmessage = null;
-			resolve(data);
+	const parse = (wikitext, include, stage, id = -1) => new Promise(resolve => {
+		/**
+		 * 临时的listener
+		 * @param {{data: [number, string[], string[]]}} e 事件
+		 */
+		const listener = ({data: [rid, ...parsed]}) => {
+			if (id === rid) {
+				worker.removeEventListener('message', listener);
+				resolve(parsed);
+			}
 		};
-		worker.postMessage([wikitext, include, stage]);
+		worker.addEventListener('message', listener);
+		worker.postMessage([id, wikitext, include, stage]);
 	});
+
+	let id = 0;
 
 	/** 用于打印AST */
 	class Printer {
@@ -47,6 +61,7 @@
 		 * @param {{include: boolean}} option 是否嵌入
 		 */
 		constructor(preview, textbox, option) {
+			this.id = id++;
 			this.preview = preview;
 			this.textbox = textbox;
 			this.option = option;
@@ -98,7 +113,7 @@
 				return undefined;
 			}
 			const {option: {include}, textbox: {value}} = this,
-				[str, printed] = await parse(value, include, 2);
+				[str, printed] = await parse(value, include, 2, this.id);
 			if (this.option.include !== include || this.textbox.value !== value) {
 				this.running = undefined;
 				this.running = this.coarsePrint();
@@ -146,7 +161,7 @@
 					text = oldStr.slice(start, end).join('');
 				}
 			}
-			const [str, printed] = await parse(text, include);
+			const [str, printed] = await parse(text, include, undefined, this.id);
 			if (this.option.include === include && this.textbox.value === value) {
 				this.root = [
 					[...oldStr.slice(0, start), ...str, ...oldStr.slice(end)],
@@ -165,15 +180,13 @@
 		}
 	}
 
-	let ready = false;
-
 	/**
 	 * 高亮textarea
 	 * @param {HTMLTextAreaElement} textbox textarea元素
 	 * @param {{include: boolean}} option 解析选项
 	 * @throws `TypeError` 不是textarea
 	 */
-	const wikiparse = async (textbox, option = {}) => {
+	const wikiparse = (textbox, option = {}) => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
 			throw new TypeError('wikiparse方法仅可用于textarea元素！');
 		} else if (typeof option !== 'object') {
@@ -196,18 +209,6 @@
 			preview.classList.add('active');
 		};
 
-		if (!ready) {
-			await new Promise(resolve => {
-				worker.onmessage = /** @param {{data: string}} */ ({data}) => {
-					if (data === 'ready') {
-						worker.onmessage = null;
-						ready = true;
-						resolve();
-					}
-				};
-			});
-		}
-
 		textbox.addEventListener('input', update);
 		textbox.addEventListener('cut', update);
 		textbox.addEventListener('scroll', () => {
@@ -220,13 +221,22 @@
 			if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
 				e.preventDefault();
 				printer.ticks[0] = 0;
-				printer.coarsePrint();
+				printer.running = printer.coarsePrint();
 			}
 		});
-		printer.coarsePrint();
+		printer.running = printer.coarsePrint();
 		return printer;
 	};
 
+	/**
+	 * 更新解析设置
+	 * @param {ParserConfig} config 设置
+	 */
+	const setConfig = config => {
+		worker.postMessage(config);
+	};
+
 	wikiparse.parse = parse;
+	wikiparse.setConfig = setConfig;
 	window.wikiparse = wikiparse;
 })();
