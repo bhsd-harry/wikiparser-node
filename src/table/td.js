@@ -263,12 +263,27 @@ class TdToken extends fixedToken(TrToken) {
 	 * 获取单元格属性
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {T extends 'rowspan'|'colspan' ? number : Record<string, string|true>}
+	 * @returns {T extends 'rowspan'|'colspan' ? number : string|true}
 	 */
 	getAttr(key) {
 		const /** @type {string|true} */ value = super.getAttr(key);
 		key = key?.toLowerCase()?.trim();
 		return key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value;
+	}
+
+	/**
+	 * 获取全部单元格属性
+	 * @returns {{rowspan: number, colspan: number, [key: string]: string|true}}
+	 */
+	getAttrs() {
+		const /** @type {record<string, string|true>} */ attr = super.getAttrs();
+		if ('rowspan' in attr) {
+			attr.rowspan = Number(attr.rowspan);
+		}
+		if ('colspan' in attr) {
+			attr.colspan = Number(attr.colspan);
+		}
+		return attr;
 	}
 
 	/**

@@ -625,7 +625,7 @@ class TableToken extends TrToken {
 				token.rowspan = --rowspan;
 				if (coords.row === y) {
 					const {colspan, subtype} = token,
-						attr = token.getAttr();
+						attr = token.getAttrs();
 					for (let i = y + 1; rowspan && i < rows.length; i++, rowspan--) {
 						const {column} = layout[i].slice(x + colspan).find(({row}) => row === i) ?? {};
 						if (column !== undefined) {
@@ -704,10 +704,10 @@ class TableToken extends TrToken {
 	 */
 	#split(coords, dirs) {
 		const cell = this.getNthCell(coords),
-			attr = cell.getAttr(),
+			attr = cell.getAttrs(),
 			{subtype} = cell;
-		attr.rowspan = Number(attr.rowspan) || 1;
-		attr.colspan = Number(attr.colspan) || 1;
+		attr.rowspan ||= 1;
+		attr.colspan ||= 1;
 		for (const dir of dirs) {
 			if (attr[dir] === 1) {
 				dirs.delete(dir);

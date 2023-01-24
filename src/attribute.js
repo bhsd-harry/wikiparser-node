@@ -51,12 +51,9 @@ class AttributeToken extends Token {
 		}
 	};
 
-	/**
-	 * getAttr()方法的getter写法
-	 * @returns {Record<string, string|true>}
-	 */
+	/** getAttrs()方法的getter写法 */
 	get attributes() {
-		return this.getAttr();
+		return this.getAttrs();
 	}
 
 	/** 以字符串表示的class属性 */
@@ -186,14 +183,9 @@ class AttributeToken extends Token {
 
 	/**
 	 * 获取标签属性
-	 * @template {string|undefined} T
-	 * @param {T} key 属性键
-	 * @returns {T extends string ? string|true : Record<string, string|true>}
+	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
-		if (key === undefined) {
-			return Object.fromEntries(this.#attr);
-		}
 		return typeof key === 'string' ? this.#attr.get(key.toLowerCase().trim()) : this.typeError('getAttr', 'String');
 	}
 
@@ -333,7 +325,12 @@ class AttributeToken extends Token {
 
 	/** 标签是否具有任意属性 */
 	hasAttrs() {
-		return this.getAttrNames().length > 0;
+		return this.#attr.size > 0;
+	}
+
+	/** 获取全部标签属性 */
+	getAttrs() {
+		return Object.fromEntries(this.#attr);
 	}
 
 	/**

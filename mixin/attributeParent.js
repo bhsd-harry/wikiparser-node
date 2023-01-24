@@ -11,12 +11,9 @@ const Parser = require('..'),
  * @returns {T}
  */
 const attributeParent = (Constructor, i = 0) => class extends Constructor {
-	/**
-	 * getAttr()方法的getter写法
-	 * @returns {Record<string, string|true>}
-	 */
+	/** getAttrs()方法的getter写法 */
 	get attributes() {
-		return this.getAttr();
+		return this.getAttrs();
 	}
 
 	/** 以字符串表示的class属性 */
@@ -56,8 +53,7 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	/**
 	 * 获取AttributeToken子节点的属性
 	 * @this {{childNodes: AttributeToken[]}}
-	 * @template {string|undefined} T
-	 * @param {T} key 属性键
+	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
 		return this.childNodes.at(i).getAttr(key);
@@ -77,6 +73,14 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	 */
 	hasAttrs() {
 		return this.childNodes.at(i).hasAttrs();
+	}
+
+	/**
+	 * 获取AttributeToken子节点的全部标签属性
+	 * @this {{childNodes: AttributeToken[]}}
+	 */
+	getAttrs() {
+		return this.childNodes.at(i).getAttrs();
 	}
 
 	/**
