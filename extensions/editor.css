@@ -28,10 +28,34 @@
 	background-color: #fff;
 	user-select: none;
 }
-#wikiPretty:not(.macintel) span {
-	font-weight: normal;
-}
 #wikiPretty.active span {
 	color: transparent;
 	background: none;
+}
+
+/* compromise for font-weight: bold */
+#wikiPretty span {
+	font-weight: normal;
+}
+.wpb-ext, .wpb-html,
+.wpb-arg,
+.wpb-template,
+.wpb-magic-word,
+.wpb-heading-title,
+.wpb-table, .wpb-tr, .wpb-td,
+.wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd
+.wpb-converter {
+	-webkit-text-stroke-width: 0.1ex;
+}
+.wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
+.wpb-noinclude, .wpb-include, .wpb-comment,
+.wpb-ext-attr, .wpb-html-attr,
+.wpb-ext-inner,
+.wpb-arg-default,
+.wpb-invoke-module, .wpb-invoke-function,
+.wpb-parameter,
+.wpb-table-attr,
+.wpb-td-inner,
+.wpb-converter-rule {
+	-webkit-text-stroke-width: 0;
 }

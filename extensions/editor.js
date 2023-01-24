@@ -201,9 +201,6 @@
 			printer = new Printer(preview, textbox, option);
 		preview.id = 'wikiPretty';
 		preview.classList.add('wikiparser', 'active');
-		if (navigator.platform === 'MacIntel') {
-			preview.classList.add('macintel');
-		}
 		container.classList.add('wikiparse-container');
 		textbox.replaceWith(container);
 		textbox.classList.add('wikiparsed');
