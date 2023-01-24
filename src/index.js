@@ -193,8 +193,6 @@ class Token extends AstElement {
 				}
 				return false;
 			}
-			case 'stage':
-				return this.#stage;
 			default:
 				return super.getAttribute(key);
 		}
