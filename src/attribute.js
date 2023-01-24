@@ -377,7 +377,9 @@ class AttributeToken extends Token {
 	 * @param {string} str 属性字符串
 	 */
 	#leadingSpace(str = super.toString()) {
-		return this.type !== 'table-attr' && str && str.trimStart() === str ? ' ' : '';
+		const {type} = this,
+			leadingRegex = {'ext-attr': /^\s/u, 'html-attr': /^[/\s]/u};
+		return str && type !== 'table-attr' && !leadingRegex[type].test(str) ? ' ' : '';
 	}
 
 	/**

@@ -10,7 +10,7 @@ const Parser = require('..'),
  * @param {accum} accum
  */
 const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
-	const regex = /^(\/?)([a-z][^\s/>]*)(\s[^>]*?)?(\/?>)([^<]*)$/iu,
+	const regex = /^(\/?)([a-z][^\s/>]*)([/\s][^>]*?)?(\/?>)([^<]*)$/iu,
 		elements = config.html.flat(),
 		bits = wikitext.split('<');
 	let text = bits.shift();
