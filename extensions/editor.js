@@ -4,11 +4,19 @@
 	/** web worker */
 	const workerJS = () => {
 		self.importScripts('https://bhsd-harry.github.io/wikiparser-node/bundle/bundle.min.js');
-		const /** @type {{Parser: Parser}} */ {Parser} = self;
-		self.onmessage = /** @param {{data: ParserConfig|[number, string, Boolean]}} */ ({data}) => {
+		const /** @type {{Parser: Parser}} */ {Parser} = self,
+			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+		self.onmessage = /** @param {{data: ParserConfig|[number, string, Boolean, number]}} */ ({data}) => {
 			if (Array.isArray(data)) {
-				const [id, ...args] = data;
-				self.postMessage([id, Parser.parse(...args).print()]);
+				const [id, ...args] = data,
+					{childNodes} = Parser.parse(...args);
+				self.postMessage([
+					id,
+					childNodes.map(String),
+					childNodes.map(child => child.type === 'text'
+						? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+						: child.print()),
+				]);
 			} else {
 				Parser.config = data;
 			}
@@ -24,22 +32,23 @@
 	 * 将解析改为异步执行
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} include 是否嵌入
+	 * @param {number} stage 解析层级
 	 * @param {number} id Printer编号
-	 * @returns {Promise<string>}
+	 * @returns {Promise<string[][]>}
 	 */
-	const parse = (wikitext, include, id = -1) => new Promise(resolve => {
+	const parse = (wikitext, include, stage, id = -1) => new Promise(resolve => {
 		/**
 		 * 临时的listener
-		 * @param {{data: [number, string]}} e 事件
+		 * @param {{data: [number, string[], string[]]}} e 事件
 		 */
-		const listener = ({data: [rid, parsed]}) => {
+		const listener = ({data: [rid, ...parsed]}) => {
 			if (id === rid) {
 				worker.removeEventListener('message', listener);
 				resolve(parsed);
 			}
 		};
 		worker.addEventListener('message', listener);
-		worker.postMessage([id, wikitext, include]);
+		worker.postMessage([id, wikitext, include, stage]);
 	});
 
 	let id = 0;
@@ -56,62 +65,122 @@
 			this.preview = preview;
 			this.textbox = textbox;
 			this.option = option;
+			/** @type {string[][]} */ this.root = [];
 			/** @type {Promise<void>} */ this.running = undefined;
-			this.ticks = 0;
+			this.viewportChanged = false;
+			/** @type {[number, string]} */ this.ticks = [0, undefined];
 		}
 
 		/** 倒计时 */
 		tick() {
 			setTimeout(() => {
-				if (this.ticks > 0) {
-					this.ticks -= 1000;
-					if (this.ticks <= 0) {
-						this.coarsePrint();
+				const {ticks} = this;
+				if (ticks[0] > 0) {
+					ticks[0] -= 500;
+					if (ticks[0] <= 0) {
+						this[ticks[1]]();
 					} else {
 						this.tick();
 					}
 				}
-			}, 1000);
+			}, 500);
 		}
 
 		/**
 		 * 用于debounce
 		 * @param {number} delay 延迟
+		 * @param {string} method 方法
 		 */
-		queue(delay) {
-			const {ticks} = this;
-			this.ticks = delay;
-			if (ticks <= 0) {
-				this.tick();
+		queue(delay, method) {
+			const {ticks} = this,
+				[state] = ticks;
+			if (state <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
+				ticks[0] = delay;
+				ticks[1] = method;
+				if (state <= 0) {
+					this.tick();
+				}
 			}
 		}
 
-		/**
-		 * 渲染
-		 * @param {string} printed 渲染后的HTML
-		 */
-		paint(printed) {
-			this.preview.innerHTML = printed;
+		/** 渲染 */
+		paint() {
+			this.preview.innerHTML = `<span class="wpb-root">${this.root[1].join('')}</span> `;
+			this.preview.scrollTop = this.textbox.scrollTop;
+			this.preview.classList.remove('active');
+			this.textbox.style.color = 'transparent';
 		}
 
-		/**
-		 * 解析
-		 * @returns {Promise<void>}
-		 */
+		/** 初步解析 */
 		async coarsePrint() {
-			this.textbox.value = this.preview.innerText || '';
 			if (this.running) {
 				return undefined;
 			}
 			const {option: {include}, textbox: {value}} = this,
-				printed = await parse(value, include, this.id);
-			if (this.option.include !== include || this.preview.innerText !== value) {
+				[str, printed] = await parse(value, include, 2, this.id);
+			if (this.option.include !== include || this.textbox.value !== value) {
 				this.running = undefined;
-				return this.coarsePrint();
+				this.running = this.coarsePrint();
+				return this.running;
 			}
-			this.paint(printed);
+			this.root = [str, printed];
+			this.paint();
 			this.running = undefined;
-			return undefined;
+			this.running = this.finePrint();
+			return this.running;
+		}
+
+		/** 根据可见范围精细解析 */
+		async finePrint() {
+			if (this.running) {
+				this.viewportChanged = true;
+				return undefined;
+			}
+			this.viewportChanged = false;
+			const {
+				root: [oldStr, oldPrinted],
+				preview: {scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]},
+				option: {include},
+				textbox: {value},
+			} = this;
+			let text = value,
+				start = 0,
+				{length: end} = oldStr;
+			if (scrollHeight > parentHeight) {
+				const /** @type {HTMLElement[]} */ childNodes = [...rootNode.childNodes],
+					headings = childNodes.filter(({className}) => className === 'wpb-heading');
+				if (headings.length > 0) {
+					const i = headings.findIndex(({offsetTop, offsetHeight}) => offsetTop + offsetHeight > scrollTop),
+						j = i === -1
+							? -1
+							: headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
+					if (i === -1) {
+						start = childNodes.indexOf(headings[headings.length - 1]);
+					} else if (i > 0) {
+						start = childNodes.indexOf(headings[i - 1]);
+					}
+					if (j >= 0) {
+						end = childNodes.indexOf(headings[i + j]);
+					}
+					text = oldStr.slice(start, end).join('');
+				}
+			}
+			const [str, printed] = await parse(text, include, undefined, this.id);
+			if (this.option.include === include && this.textbox.value === value) {
+				this.root = [
+					[...oldStr.slice(0, start), ...str, ...oldStr.slice(end)],
+					[...oldPrinted.slice(0, start), ...printed, ...oldPrinted.slice(end)],
+				];
+				this.paint();
+				this.running = undefined;
+				if (this.viewportChanged) {
+					this.running = this.finePrint();
+				}
+			} else {
+				this.running = undefined;
+				this.running = this.coarsePrint();
+			}
+			return this.running;
 		}
 	}
 
@@ -131,9 +200,10 @@
 			container = document.createElement('div'),
 			printer = new Printer(preview, textbox, option);
 		preview.id = 'wikiPretty';
-		preview.classList.add('wikiparser');
-		preview.setAttribute('contenteditable', true);
-		preview.textContent = textbox.value;
+		preview.classList.add('wikiparser', 'active');
+		if (navigator.platform === 'MacIntel') {
+			preview.classList.add('macintel');
+		}
 		container.classList.add('wikiparse-container');
 		textbox.replaceWith(container);
 		textbox.classList.add('wikiparsed');
@@ -141,15 +211,23 @@
 
 		/** 更新高亮 */
 		const update = () => {
-			printer.queue(2000);
+			printer.queue(2000, 'coarsePrint');
+			textbox.style.color = '';
+			preview.classList.add('active');
 		};
 
-		preview.addEventListener('input', update);
-		preview.addEventListener('cut', update);
-		preview.addEventListener('keydown', e => {
+		textbox.addEventListener('input', update);
+		textbox.addEventListener('cut', update);
+		textbox.addEventListener('scroll', () => {
+			if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
+				preview.scrollTop = textbox.scrollTop;
+				printer.queue(500, 'finePrint');
+			}
+		});
+		textbox.addEventListener('keydown', e => {
 			if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
 				e.preventDefault();
-				printer.ticks = 0;
+				printer.ticks[0] = 0;
 				printer.running = printer.coarsePrint();
 			}
 		});

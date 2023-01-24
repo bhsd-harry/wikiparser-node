@@ -19,12 +19,19 @@
 	width: 100%;
 	resize: vertical;
 	font-family: monospace;
-	visibility: hidden;
+	background: none !important;
+	caret-color: #000;
 }
 #wikiPretty {
 	position: absolute;
 	inset: 0;
 	background-color: #fff;
 	user-select: none;
-	caret-color: #000;
+}
+#wikiPretty:not(.macintel) span {
+	font-weight: normal;
+}
+#wikiPretty.active span {
+	color: transparent;
+	background: none;
 }
