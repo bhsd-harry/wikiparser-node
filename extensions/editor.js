@@ -69,20 +69,20 @@
 			/** @type {Promise<void>} */ this.running = undefined;
 			this.viewportChanged = false;
 			/** @type {[number, string]} */ this.ticks = [0, undefined];
-			this.tick();
 		}
 
 		/** 倒计时 */
 		tick() {
-			const {ticks} = this;
-			if (ticks[0] > 0) {
-				ticks[0] -= 500;
-				if (ticks[0] <= 0) {
-					this[ticks[1]]();
-				}
-			}
 			setTimeout(() => {
-				this.tick();
+				const {ticks} = this;
+				if (ticks[0] > 0) {
+					ticks[0] -= 500;
+					if (ticks[0] <= 0) {
+						this[ticks[1]]();
+					} else {
+						this.tick();
+					}
+				}
 			}, 500);
 		}
 
@@ -92,10 +92,14 @@
 		 * @param {string} method 方法
 		 */
 		queue(delay, method) {
-			const {ticks} = this;
-			if (ticks[0] <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
+			const {ticks} = this,
+				[state] = ticks;
+			if (state <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
 				ticks[0] = delay;
 				ticks[1] = method;
+				if (state <= 0) {
+					this.tick();
+				}
 			}
 		}
 
