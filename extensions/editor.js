@@ -1,6 +1,8 @@
 'use strict';
 
 (() => {
+	const MAX_STAGE = 11;
+
 	/** web worker */
 	const workerJS = () => {
 		self.importScripts('https://bhsd-harry.github.io/wikiparser-node/bundle/bundle.min.js');
@@ -9,13 +11,17 @@
 		self.onmessage = /** @param {{data: ParserConfig|[number, string, Boolean, number]}} */ ({data}) => {
 			if (Array.isArray(data)) {
 				const [id, ...args] = data,
+					stage = args[2] === undefined ? MAX_STAGE : args[2],
 					{childNodes} = Parser.parse(...args);
 				self.postMessage([
 					id,
-					childNodes.map(String),
-					childNodes.map(child => child.type === 'text'
-						? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
-						: child.print()),
+					childNodes.map(child => [
+						stage,
+						String(child),
+						child.type === 'text'
+							? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+							: child.print(),
+					]),
 				]);
 			} else {
 				Parser.config = data;
@@ -23,7 +29,7 @@
 		};
 	};
 
-	const blob = new Blob([`(${String(workerJS)})()`], {type: 'text/javascript'}),
+	const blob = new Blob([`(${String(workerJS).replace(/MAX_STAGE/gu, MAX_STAGE)})()`], {type: 'text/javascript'}),
 		url = URL.createObjectURL(blob),
 		worker = new Worker(url);
 	URL.revokeObjectURL(url);
@@ -34,14 +40,14 @@
 	 * @param {boolean} include 是否嵌入
 	 * @param {number} stage 解析层级
 	 * @param {number} id Printer编号
-	 * @returns {Promise<string[][]>}
+	 * @returns {Promise<[number, string, string][]>}
 	 */
 	const parse = (wikitext, include, stage, id = -1) => new Promise(resolve => {
 		/**
 		 * 临时的listener
-		 * @param {{data: [number, string[], string[]]}} e 事件
+		 * @param {{data: [number, [number, string, string][]]}} e 事件
 		 */
-		const listener = ({data: [rid, ...parsed]}) => {
+		const listener = ({data: [rid, parsed]}) => {
 			if (id === rid) {
 				worker.removeEventListener('message', listener);
 				resolve(parsed);
@@ -65,7 +71,7 @@
 			this.preview = preview;
 			this.textbox = textbox;
 			this.option = option;
-			/** @type {string[][]} */ this.root = [];
+			/** @type {[number, string, string][]} */ this.root = [];
 			/** @type {Promise<void>} */ this.running = undefined;
 			this.viewportChanged = false;
 			/** @type {[number, string]} */ this.ticks = [0, undefined];
@@ -77,11 +83,7 @@
 				const {ticks} = this;
 				if (ticks[0] > 0) {
 					ticks[0] -= 500;
-					if (ticks[0] <= 0) {
-						this[ticks[1]]();
-					} else {
-						this.tick();
-					}
+					this[ticks[0] <= 0 ? ticks[1] : 'tick']();
 				}
 			}, 500);
 		}
@@ -105,7 +107,9 @@
 
 		/** 渲染 */
 		paint() {
-			this.preview.innerHTML = `<span class="wpb-root">${this.root[1].join('')}</span> `;
+			this.preview.innerHTML = `<span class="wpb-root">${
+				this.root.map(([,, printed]) => printed).join('')
+			}</span> `;
 			this.preview.scrollTop = this.textbox.scrollTop;
 			this.preview.classList.remove('active');
 			this.textbox.style.color = 'transparent';
@@ -117,13 +121,13 @@
 				return undefined;
 			}
 			const {option: {include}, textbox: {value}} = this,
-				[str, printed] = await parse(value, include, 2, this.id);
+				parsed = await parse(value, include, 2, this.id);
 			if (this.option.include !== include || this.textbox.value !== value) {
 				this.running = undefined;
 				this.running = this.coarsePrint();
 				return this.running;
 			}
-			this.root = [str, printed];
+			this.root = parsed;
 			this.paint();
 			this.running = undefined;
 			this.running = this.finePrint();
@@ -138,39 +142,41 @@
 			}
 			this.viewportChanged = false;
 			const {
-				root: [oldStr, oldPrinted],
+				root,
 				preview: {scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]},
 				option: {include},
 				textbox: {value},
 			} = this;
 			let text = value,
 				start = 0,
-				{length: end} = oldStr;
+				{length: end} = root;
 			if (scrollHeight > parentHeight) {
 				const /** @type {HTMLElement[]} */ childNodes = [...rootNode.childNodes],
-					headings = childNodes.filter(({className}) => className === 'wpb-heading');
-				if (headings.length > 0) {
-					const i = headings.findIndex(({offsetTop, offsetHeight}) => offsetTop + offsetHeight > scrollTop),
-						j = i === -1
-							? -1
-							: headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
-					if (i === -1) {
-						start = childNodes.indexOf(headings[headings.length - 1]);
-					} else if (i > 0) {
-						start = childNodes.indexOf(headings[i - 1]);
+					headings = childNodes.filter(({className}) => className === 'wpb-heading'),
+					{length} = headings;
+				if (length > 0) {
+					let i = headings.findIndex(({offsetTop, offsetHeight}) => offsetTop + offsetHeight > scrollTop);
+					i = i === -1 ? length : i;
+					let j = headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
+					j = j === -1 ? length : i + j;
+					start = i ? childNodes.indexOf(headings[i - 1]) : 0;
+					while (i <= j && root[start][0] === MAX_STAGE) {
+						start = childNodes.indexOf(headings[i++]);
 					}
-					if (j >= 0) {
-						end = childNodes.indexOf(headings[i + j]);
+					end = j === length ? end : childNodes.indexOf(headings[j]);
+					while (i <= j && root[end - 1][0] === MAX_STAGE) {
+						end = childNodes.indexOf(headings[--j]);
 					}
-					text = oldStr.slice(start, end).join('');
+					text = root.slice(start, end).map(([, str]) => str).join('');
 				}
 			}
-			const [str, printed] = await parse(text, include, undefined, this.id);
+			if (start === end) {
+				this.running = undefined;
+				return undefined;
+			}
+			const parsed = await parse(text, include, undefined, this.id);
 			if (this.option.include === include && this.textbox.value === value) {
-				this.root = [
-					[...oldStr.slice(0, start), ...str, ...oldStr.slice(end)],
-					[...oldPrinted.slice(0, start), ...printed, ...oldPrinted.slice(end)],
-				];
+				this.root.splice(start, end - start, ...parsed);
 				this.paint();
 				this.running = undefined;
 				if (this.viewportChanged) {
