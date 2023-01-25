@@ -23,7 +23,7 @@ class ExtToken extends TagPairToken {
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || /^\s/u.test(attr) ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
-			attrToken = new AttributesToken(attr, 'ext-attr', lcName, config, accum),
+			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
