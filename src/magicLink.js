@@ -126,13 +126,6 @@ class MagicLinkToken extends Token {
 		}
 		this.replaceChildren(...freeExtLink.childNodes);
 	}
-
-	/** 是否是模板或魔术字参数 */
-	isParamValue() {
-		const ParameterToken = require('./parameter');
-		const /** @type {ParameterToken} */ parameter = this.closest('parameter');
-		return parameter?.getValue() === this.text();
-	}
 }
 
 Parser.classes.MagicLinkToken = __filename;
