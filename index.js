@@ -42,6 +42,9 @@ const /** @type {Parser} */ Parser = {
 		comment: undefined,
 		ext: ['extension'],
 		'ext-attrs': ['extension-attrs', 'ext-attributes', 'extension-attributes'],
+		'ext-attr': ['extension-attr', 'ext-attribute', 'extension-attribute'],
+		'attr-key': ['attribute-key'],
+		'attr-value': ['attribute-value', 'attr-val', 'attribute-val'],
 		'ext-inner': ['extension-inner'],
 		// triple brackets
 		arg: ['argument'],

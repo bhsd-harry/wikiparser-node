@@ -42,14 +42,14 @@ class AttributeToken extends fixedToken(Token) {
 	 * @param {accum} accum
 	 */
 	constructor(type, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
-		const keyToken = new AtomToken(key, `${type}-key`, config, accum, {
+		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
 				AstText: ':', ArgToken: ':', TranscludeToken: ':',
 			}),
 			valueToken = key === 'title'
 				? new Token(value, config, true, accum, {
 					[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
-				}).setAttribute('type', `${type}-value`).setAttribute('stage', Parser.MAX_STAGE - 1)
-				: new AtomToken(value, `${type}-value`, config, accum, {
+				}).setAttribute('type', 'attr-value').setAttribute('stage', Parser.MAX_STAGE - 1)
+				: new AtomToken(value, 'attr-value', config, accum, {
 					[`Stage-${stages[type]}`]: ':',
 				});
 		super(undefined, config, true, accum);
