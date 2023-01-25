@@ -6,7 +6,7 @@ const {generateForChild} = require('../../util/lint'),
 
 /**
  * 表格
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 class TableToken extends TrToken {
 	type = 'table';

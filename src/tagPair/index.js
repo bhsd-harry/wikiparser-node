@@ -5,7 +5,7 @@ const Parser = require('../..'),
 
 /**
  * 成对标签
- * @classdesc `{childNodes: [AstText|AttributeToken, AstText|Token]}`
+ * @classdesc `{childNodes: [AstText|AttributesToken, AstText|Token]}`
  */
 class TagPairToken extends Token {
 	#selfClosing;

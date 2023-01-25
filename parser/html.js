@@ -1,7 +1,7 @@
 'use strict';
 
 const Parser = require('..'),
-	AttributeToken = require('../src/attribute'),
+	AttributesToken = require('../src/attributes'),
 	HtmlToken = require('../src/html');
 
 /**
@@ -23,7 +23,7 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 			continue;
 		}
 		const [, slash,, params = '', brace, rest] = mt,
-			attr = new AttributeToken(params, 'html-attr', name, config, accum),
+			attr = new AttributesToken(params, 'html-attrs', name, config, accum),
 			itemprop = attr.getAttr('itemprop');
 		if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
 			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)

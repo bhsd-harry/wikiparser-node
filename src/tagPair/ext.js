@@ -3,11 +3,11 @@
 const Parser = require('../..'),
 	Token = require('..'),
 	TagPairToken = require('.'),
-	AttributeToken = require('../attribute');
+	AttributesToken = require('../attributes');
 
 /**
  * 扩展标签
- * @classdesc `{childNodes: [AttributeToken, NowikiToken|Token]}`
+ * @classdesc `{childNodes: [AttributesToken, NowikiToken|Token]}`
  */
 class ExtToken extends TagPairToken {
 	type = 'ext';
@@ -23,7 +23,7 @@ class ExtToken extends TagPairToken {
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || /^\s/u.test(attr) ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
-			attrToken = new AttributeToken(attr, 'ext-attr', lcName, config, accum),
+			attrToken = new AttributesToken(attr, 'ext-attr', lcName, config, accum),
 			newConfig = structuredClone(config),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;

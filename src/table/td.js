@@ -6,7 +6,7 @@ const Parser = require('../..'),
 
 /**
  * `<td>`、`<th>`和`<caption>`
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, Token]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 class TdToken extends TrToken {
 	type = 'td';

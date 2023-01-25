@@ -21,6 +21,7 @@
 /*
  * \0\d+.\x7F标记Token：
  * e: ExtToken
+ * a: AttributeToken
  * c: CommentToken、NoIncludeToken和IncludeToken
  * !: `{{!}}`专用
  * {: `{{(!}}`专用
