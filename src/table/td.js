@@ -37,7 +37,7 @@ class TdToken extends TrToken {
 	/** @override */
 	afterBuild() {
 		if (this.#innerSyntax.includes('\0')) {
-			this.#innerSyntax = this.getAttribute('buildFromStr')(this.#innerSyntax).map(String).join('');
+			this.#innerSyntax = this.getAttribute('buildFromStr')(this.#innerSyntax, 'string');
 		}
 		return this;
 	}

@@ -46,7 +46,7 @@ class AttributeToken extends Token {
 	/** @override */
 	afterBuild() {
 		if (this.#equal.includes('\0')) {
-			this.#equal = String(this.getAttribute('buildFromStr')(this.#equal));
+			this.#equal = this.getAttribute('buildFromStr')(this.#equal, 'string');
 		}
 	}
 
