@@ -48,7 +48,7 @@ class AttributeToken extends fixedToken(Token) {
 			valueToken = key === 'title'
 				? new Token(value, config, true, accum, {
 					[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
-				}).setAttribute('stage', Parser.MAX_STAGE - 1)
+				}).setAttribute('type', `${type}-value`).setAttribute('stage', Parser.MAX_STAGE - 1)
 				: new AtomToken(value, `${type}-value`, config, accum, {
 					[`Stage-${stages[type]}`]: ':',
 				});
