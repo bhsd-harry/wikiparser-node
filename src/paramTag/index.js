@@ -1,6 +1,7 @@
 'use strict';
 
 const {generateForChild} = require('../../util/lint'),
+	singleLine = require('../../mixin/singleLine'),
 	Parser = require('../..'),
 	Token = require('..'),
 	AtomToken = require('../atom');
@@ -18,11 +19,12 @@ class ParamTagToken extends Token {
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			AtomToken: ':',
+			SingleLineAtomToken: ':',
 		});
 		if (wikitext) {
+			const SingleLineAtomToken = singleLine(AtomToken);
 			this.append(
-				...wikitext.split('\n').map(line => new AtomToken(line, 'param-line', config, accum, {
+				...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
 					AstText: ':',
 				})),
 			);

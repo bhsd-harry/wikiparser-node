@@ -2,6 +2,7 @@
 
 const {generateForSelf} = require('../../util/lint'),
 	{undo} = require('../../util/debug'),
+	singleLine = require('../../mixin/singleLine'),
 	Title = require('../../lib/title'),
 	Parser = require('../..'),
 	Token = require('..'),
@@ -11,7 +12,7 @@ const {generateForSelf} = require('../../util/lint'),
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
-class GalleryImageToken extends FileToken {
+class GalleryImageToken extends singleLine(FileToken) {
 	type = 'gallery-image';
 	#invalid = false;
 
@@ -95,19 +96,6 @@ class GalleryImageToken extends FileToken {
 			errors.push(generateForSelf(this, {start}, '无效的图库图片'));
 		}
 		return errors;
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		return super.toString(selector).replaceAll('\n', ' ');
-	}
-
-	/** @override */
-	text() {
-		return super.text().replaceAll('\n', ' ');
 	}
 
 	/**

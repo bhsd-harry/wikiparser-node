@@ -2,6 +2,7 @@
 
 const Title = require('../lib/title'),
 	fixedToken = require('../mixin/fixedToken'),
+	singleLine = require('../mixin/singleLine'),
 	Parser = require('..'),
 	Token = require('.'),
 	NoincludeToken = require('./nowiki/noinclude'),
@@ -12,7 +13,7 @@ const Title = require('../lib/title'),
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-class ImagemapLinkToken extends fixedToken(Token) {
+class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
 	type = 'imagemap-link';
 
 	/**

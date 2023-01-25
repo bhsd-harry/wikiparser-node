@@ -1,13 +1,14 @@
 'use strict';
 
 const parseBrackets = require('../../parser/brackets'),
+	singleLine = require('../../mixin/singleLine'),
 	Parser = require('../..'),
 	ParamTagToken = require('.'),
 	AtomToken = require('../atom');
 
 /**
  * `<inputbox>`
- * @classdesc `{childNodes: ...AtomToken}`
+ * @classdesc `{childNodes: ...SingleLineAtomToken}`
  */
 class InputboxToken extends ParamTagToken {
 	name = 'inputbox';
@@ -22,7 +23,8 @@ class InputboxToken extends ParamTagToken {
 		accum.splice(accum.indexOf(this), 1);
 		accum.push(this);
 		if (wikitext) {
-			this.append(...wikitext.split('\n').map(line => new AtomToken(line, 'param-line', config, accum, {
+			const SingleLineAtomToken = singleLine(AtomToken);
+			this.append(...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
 				AstText: ':', ArgToken: ':', TranscludeToken: ':',
 			})));
 		}

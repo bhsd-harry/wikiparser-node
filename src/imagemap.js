@@ -1,6 +1,7 @@
 'use strict';
 
 const {generateForSelf, generateForChild} = require('../util/lint'),
+	singleLine = require('../mixin/singleLine'),
 	Parser = require('..'),
 	Token = require('.'),
 	NoincludeToken = require('./nowiki/noinclude'),
@@ -38,14 +39,15 @@ class ImagemapToken extends Token {
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', NoincludeToken: ':', AstText: ':',
+			GalleryImageToken: ':', ImagemapLinkToken: ':', SingleLineNoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;
 		}
 		const lines = inner.split('\n'),
+			SingleLineNoincludeToken = singleLine(NoincludeToken),
 			fallback = /** @param {string} line 一行文本 */ line => {
-				super.insertAt(new NoincludeToken(line, config, accum));
+				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 			};
 		let first = true,
 			error = false;

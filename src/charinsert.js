@@ -1,6 +1,7 @@
 'use strict';
 
 const Parser = require('..'),
+	singleLine = require('../mixin/singleLine'),
 	Token = require('.'),
 	HasNowikiToken = require('./hasNowiki');
 
@@ -18,9 +19,12 @@ class CharinsertToken extends Token {
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			HasNowikiToken: ':',
+			SingleLineHasNowikiToken: ':',
 		});
-		this.append(...wikitext.split('\n').map(str => new HasNowikiToken(str, 'charinsert-line', config, accum)));
+		const SingleLineHasNowikiToken = singleLine(HasNowikiToken);
+		this.append(
+			...wikitext.split('\n').map(str => new SingleLineHasNowikiToken(str, 'charinsert-line', config, accum)),
+		);
 	}
 
 	/**
