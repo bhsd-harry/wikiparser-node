@@ -35,8 +35,9 @@ class ImagemapToken extends Token {
 			return;
 		}
 		const lines = inner.split('\n'),
+			SingleLineNoincludeToken = NoincludeToken,
 			fallback = /** @param {string} line 一行文本 */ line => {
-				super.insertAt(new NoincludeToken(line, config, accum));
+				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 			};
 		let first = true,
 			error = false;
