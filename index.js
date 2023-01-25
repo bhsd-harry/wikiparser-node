@@ -1,8 +1,7 @@
 'use strict';
 
 const fs = require('fs'),
-	path = require('path'),
-	{text} = require('./util/string');
+	path = require('path');
 
 const /** @type {Parser} */ Parser = {
 	config: './config/default',
@@ -150,7 +149,7 @@ const /** @type {Parser} */ Parser = {
 			const build = keys => {
 				for (const key of keys) {
 					if (titleObj[key].includes('\0')) {
-						titleObj[key] = text(token.getAttribute('buildFromStr')(titleObj[key]));
+						titleObj[key] = token.getAttribute('buildFromStr')(titleObj[key], 'text');
 					}
 				}
 			};

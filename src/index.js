@@ -126,18 +126,28 @@ class Token extends AstElement {
 
 	/**
 	 * 重建wikitext
+	 * @template {string} T
 	 * @param {string} str 半解析的字符串
+	 * @param {T} type 返回类型
 	 * @complexity `n`
-	 * @returns {(Token|AstText)[]}
+	 * @returns {T extends 'string|text' ? string : (Token|AstText)[]}
 	 */
-	#buildFromStr = str => str.split(/[\0\x7F]/u).map((s, i) => {
-		if (i % 2 === 0) {
-			return new AstText(s);
-		} else if (isNaN(s.at(-1))) {
-			return this.#accum[Number(s.slice(0, -1))];
+	#buildFromStr = (str, type) => {
+		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
+			if (i % 2 === 0) {
+				return new AstText(s);
+			} else if (isNaN(s.at(-1))) {
+				return this.#accum[Number(s.slice(0, -1))];
+			}
+			throw new Error(`解析错误！未正确标记的 Token：${s}`);
+		});
+		if (type === 'string') {
+			return nodes.map(String).join('');
+		} else if (type === 'text') {
+			return text(nodes);
 		}
-		throw new Error(`解析错误！未正确标记的 Token：${s}`);
-	});
+		return nodes;
+	};
 
 	/**
 	 * 将占位符替换为子Token

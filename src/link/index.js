@@ -107,7 +107,7 @@ class LinkToken extends Token {
 	afterBuild() {
 		this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 0, false, true).title);
 		if (this.#delimiter?.includes('\0')) {
-			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter).map(String).join('');
+			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter, 'string');
 		}
 		const /** @type {AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;

@@ -4,6 +4,9 @@ import AstText from '../lib/text';
 import ParameterToken from '../src/parameter';
 
 declare global {
+	type buildFromStr
+		= <S extends string>(str: string, type: S) => S extends 'string'|'text' ? string : (AstText|Token)[];
+
 	type TokenAttribute<T> =
 		T extends 'stage' ? number :
 		T extends 'config' ? ParserConfig :
@@ -11,7 +14,7 @@ declare global {
 		T extends 'parentNode' ? Token|undefined :
 		T extends 'childNodes' ? (AstText|Token)[] :
 		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
-		T extends 'buildFromStr' ? (str: string) => (AstText|Token)[] :
+		T extends 'buildFromStr' ? buildFromStr :
 		T extends 'build' ? () => void :
 		T extends 'bracket'|'include' ? boolean :
 		T extends 'pattern' ? RegExp :
