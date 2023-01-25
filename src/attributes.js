@@ -142,10 +142,7 @@ class AttributesToken extends Token {
 	 * @returns {(AstText|Token)[]}
 	 */
 	getDirtyAttrs() {
-		const AstText = require('../lib/text');
-		const unexpected = new Set(['ext', 'arg', 'magic-word', 'template', 'heading', 'html']),
-			/** @type {{childNodes: AstText[]}} */ {childNodes} = this;
-		return childNodes.filter(({type, data}) => type === 'text' && data.trim() || unexpected.has(type));
+		return this.childNodes.filter(child => child instanceof AtomToken);
 	}
 
 	/**
@@ -204,13 +201,10 @@ class AttributesToken extends Token {
 
 	/** 清理标签属性 */
 	sanitize() {
-		const AstText = require('../lib/text');
-		const unexpected = new Set(['ext', 'arg', 'magic-word', 'template', 'heading', 'html']),
-			/** @type {{childNodes: AstText[]}} */ {childNodes} = this;
+		const {childNodes} = this;
 		let dirty = false;
 		for (let i = childNodes.length - 1; i >= 0; i--) {
-			const {type, data} = childNodes[i];
-			if (type === 'text' && data.trim() || unexpected.has(type)) {
+			if (childNodes[i] instanceof AtomToken) {
 				dirty = true;
 				this.removeAt(i);
 			}
