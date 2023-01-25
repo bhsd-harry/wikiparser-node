@@ -226,7 +226,23 @@
 				"allowInParentheses": false
 			}
 		],
-		"no-shadow": 2,
+		"no-shadow": [
+			2,
+			{
+				"builtinGlobals": true,
+				"allow": [
+					"root",
+					"parent",
+					"top",
+					"length",
+					"open",
+					"close",
+					"closed",
+					"name",
+					"print"
+				]
+			}
+		],
 		"no-throw-literal": 2,
 		"no-undef-init": 2,
 		"no-underscore-dangle": [
