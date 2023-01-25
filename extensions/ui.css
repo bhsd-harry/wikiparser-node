@@ -5,7 +5,7 @@
 }
 
 .wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
-.wpb-ext-attrs, .wpb-html-attrs, .wpb-table-attrs {
+.wpb-ext-attr-dirty, .wpb-html-attr-dirty, .wpb-table-attr-dirty {
 	color: #f00;
 	font-weight: normal;
 	text-decoration: underline wavy 1px;
@@ -23,9 +23,11 @@
 	color: #14866d;
 	font-weight: bold;
 }
-.wpb-ext-attr > .attr-key, .wpb-html-attr > .attr-key {
+.wpb-ext-attrs, .wpb-html-attrs {
+	font-weight: normal;
+}
+.wpb-ext-attr > .attr-value, .wpb-html-attr > .attr-value {
 	color: #179b1c;
-	text-decoration: none;
 }
 .wpb-ext-inner {
 	color: initial;
@@ -77,9 +79,11 @@
 	color: #d08;
 	font-weight: bold;
 }
-.wpb-table-attr > .attr-key {
+.wpb-table-attrs {
+	font-weight: normal;
+}
+.wpb-table-attr > .attr-value {
 	color: #f500d4;
-	text-decoration: none;
 }
 .wpb-td-inner {
 	color: initial;
