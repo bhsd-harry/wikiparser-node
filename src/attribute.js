@@ -9,7 +9,7 @@ const {generateForChild} = require('../util/lint'),
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
-	post = {'ext-attr': '></pre>', 'html-attr': '>', 'table-attr': ''};
+	post = {'ext-attr': '/>', 'html-attr': '>', 'table-attr': ''};
 
 /**
  * 扩展和HTML标签属性
