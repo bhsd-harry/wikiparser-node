@@ -6,7 +6,7 @@ const {generateForChild} = require('../../util/lint'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
-	AttributeToken = require('../attribute');
+	AttributesToken = require('../attributes');
 
 const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
 
@@ -27,7 +27,7 @@ const escapeTable = syntax => {
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
 class TrToken extends attributeParent(Token, 1) {
 	type = 'tr';
@@ -40,13 +40,13 @@ class TrToken extends attributeParent(Token, 1) {
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
 		super(undefined, config, true, accum, {
-			Token: 2, SyntaxToken: 0, AttributeToken: 1, TdToken: '2:',
+			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
 		});
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 			}),
-			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
+			new AttributesToken(attr, 'table-attr', 'tr', config, accum),
 		);
 		this.getAttribute('protectChildren')(0, 1);
 	}

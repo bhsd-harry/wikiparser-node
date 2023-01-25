@@ -117,7 +117,7 @@ class Layout extends Array {
 
 /**
  * 表格
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 class TableToken extends TrToken {
 	type = 'table';
@@ -141,7 +141,7 @@ class TableToken extends TrToken {
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
 		super(syntax, attr, config, accum, openingPattern);
 		this.setAttribute('acceptable', {
-			Token: 2, SyntaxToken: [0, -1], AttributeToken: 1, TdToken: '2:', TrToken: '2:',
+			Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:',
 		});
 	}
 
@@ -536,8 +536,8 @@ class TableToken extends TrToken {
 			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);
-		const AttributeToken = require('../attribute');
-		/** @type {TrToken & AttributeToken}} */
+		const AttributesToken = require('../attributes');
+		/** @type {TrToken & AttributesToken}} */
 		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);

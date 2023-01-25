@@ -1,13 +1,13 @@
 'use strict';
 
 const Parser = require('..'),
-	AttributeToken = require('../src/attribute');
+	AttributesToken = require('../src/attributes');
 
 /**
- * 子节点含有AttributeToken的类
+ * 子节点含有AttributesToken的类
  * @template T
  * @param {T} Constructor 基类
- * @param {number} i AttributeToken子节点的位置
+ * @param {number} i AttributesToken子节点的位置
  * @returns {T}
  */
 const attributeParent = (Constructor, i = 0) => class extends Constructor {
@@ -42,8 +42,8 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	}
 
 	/**
-	 * AttributeToken子节点是否具有某属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * AttributesToken子节点是否具有某属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 */
 	hasAttr(key) {
@@ -51,8 +51,8 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	}
 
 	/**
-	 * 获取AttributeToken子节点的属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * 获取AttributesToken子节点的属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
@@ -60,32 +60,32 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	}
 
 	/**
-	 * 列举AttributeToken子节点的属性键
-	 * @this {{childNodes: AttributeToken[]}}
+	 * 列举AttributesToken子节点的属性键
+	 * @this {{childNodes: AttributesToken[]}}
 	 */
 	getAttrNames() {
 		return this.childNodes.at(i).getAttrNames();
 	}
 
 	/**
-	 * AttributeToken子节点是否具有任意属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * AttributesToken子节点是否具有任意属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 */
 	hasAttrs() {
 		return this.childNodes.at(i).hasAttrs();
 	}
 
 	/**
-	 * 获取AttributeToken子节点的全部标签属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * 获取AttributesToken子节点的全部标签属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 */
 	getAttrs() {
 		return this.childNodes.at(i).getAttrs();
 	}
 
 	/**
-	 * 对AttributeToken子节点设置属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * 对AttributesToken子节点设置属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 * @param {string|boolean} value 属性值
 	 */
@@ -94,8 +94,8 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	}
 
 	/**
-	 * 移除AttributeToken子节点的某属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * 移除AttributesToken子节点的某属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 */
 	removeAttr(key) {
@@ -103,8 +103,8 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 	}
 
 	/**
-	 * 开关AttributeToken子节点的某属性
-	 * @this {{childNodes: AttributeToken[]}}
+	 * 开关AttributesToken子节点的某属性
+	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 * @param {boolean|undefined} force 强制开启或关闭
 	 */

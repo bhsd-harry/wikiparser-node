@@ -12,7 +12,7 @@ const aliases = {td: '\n|', th: '\n!', caption: '\n|+'},
 
 /**
  * `<td>`、`<th>`和`<caption>`
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, Token]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 class TdToken extends fixedToken(TrToken) {
 	type = 'td';
@@ -112,7 +112,7 @@ class TdToken extends fixedToken(TrToken) {
 		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
 		innerToken.type = 'td-inner';
 		this.insertAt(innerToken.setAttribute('stage', 4));
-		this.setAttribute('acceptable', {SyntaxToken: 0, AttributeToken: 1, Token: 2})
+		this.setAttribute('acceptable', {SyntaxToken: 0, AttributesToken: 1, Token: 2})
 			.seal(['getRowCount', 'getNthCol', 'insertTableCell'], true);
 	}
 

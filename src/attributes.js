@@ -12,7 +12,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AstText]|(AstText|ArgToken|TranscludeToken)[]}`
  */
-class AttributeToken extends Token {
+class AttributesToken extends Token {
 	/** @type {Map<string, string|true>} */ #attr = new Map();
 	/** @type {{index: number}} */ #dirty;
 	#quoteBalance = true;
@@ -234,7 +234,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributeToken & {parentNode: HtmlToken}}
+	 * @this {AttributesToken & {parentNode: HtmlToken}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
@@ -262,7 +262,7 @@ class AttributeToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new AttributeToken(undefined, this.type, this.name, this.getAttribute('config'));
+			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
 			token.append(...cloned);
 			return token.afterBuild();
 		});
@@ -381,7 +381,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributeToken & Token}
+	 * @this {AttributesToken & Token}
 	 * @param {string} selector
 	 */
 	toString(selector) {
@@ -460,5 +460,5 @@ class AttributeToken extends Token {
 	}
 }
 
-Parser.classes.AttributeToken = __filename;
-module.exports = AttributeToken;
+Parser.classes.AttributesToken = __filename;
+module.exports = AttributesToken;

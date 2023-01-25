@@ -9,7 +9,7 @@ const {generateForSelf} = require('../util/lint'),
 
 /**
  * HTML标签
- * @classdesc `{childNodes: [AttributeToken]}`
+ * @classdesc `{childNodes: [AttributesToken]}`
  */
 class HtmlToken extends attributeParent(fixedToken(Token)) {
 	type = 'html';
@@ -59,7 +59,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/**
 	 * @param {string} name 标签名
-	 * @param {AttributeToken} attr 标签属性
+	 * @param {AttributesToken} attr 标签属性
 	 * @param {boolean} closing 是否闭合
 	 * @param {boolean} selfClosing 是否自封闭
 	 * @param {accum} accum

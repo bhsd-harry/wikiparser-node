@@ -6,7 +6,7 @@ const {typeError} = require('../util/debug'),
 	Parser = require('..'),
 	AstNode = require('../lib/node'),
 	Token = require('../src'),
-	AttributeToken = require('../src/attribute');
+	AttributesToken = require('../src/attributes');
 
 const /** @type {WeakMap<Token, Record<string, *>>} */ cache = new WeakMap();
 
@@ -971,7 +971,7 @@ class TokenCollection {
 
 	/**
 	 * 添加class
-	 * @this {TokenCollection & {array: AttributeToken[]}}
+	 * @this {TokenCollection & {array: AttributesToken[]}}
 	 * @param {string|string[]|CollectionCallback<string|string[], string>} className 类名
 	 */
 	addClass(className) {
@@ -993,7 +993,7 @@ class TokenCollection {
 
 	/**
 	 * 移除class
-	 * @this {TokenCollection & {array: AttributeToken[]}}
+	 * @this {TokenCollection & {array: AttributesToken[]}}
 	 * @param {undefined|string|string[]|CollectionCallback<undefined|string|string[], string>} className 类名
 	 */
 	removeClass(className) {
@@ -1019,7 +1019,7 @@ class TokenCollection {
 
 	/**
 	 * 增减class
-	 * @this {TokenCollection & {array: AttributeToken[]}}
+	 * @this {TokenCollection & {array: AttributesToken[]}}
 	 * @param {string|string[]|CollectionCallback<string|string[], string>} className 类名
 	 * @param {boolean} state 是否增删
 	 */
@@ -1045,7 +1045,7 @@ class TokenCollection {
 
 	/**
 	 * 是否带有某class
-	 * @this {{array: AttributeToken[]}}
+	 * @this {{array: AttributesToken[]}}
 	 * @param {string} className 类名
 	 */
 	hasClass(className) {
