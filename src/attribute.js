@@ -14,6 +14,11 @@ class AttributeToken extends Token {
 	#equal;
 	#quotes;
 
+	/** 引号是否匹配 */
+	get balanced() {
+		return !this.#equal || this.#quotes[0] === this.#quotes[1];
+	}
+
 	/**
 	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
 	 * @param {string} key 属性名
