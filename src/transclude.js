@@ -167,7 +167,7 @@ class TranscludeToken extends Token {
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
 			const rect = this.getRootNode().posFromIndex(start);
-			errors.push(...duplicatedArgs.flatMap(([, args]) => [...args]).map(
+			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
 				arg => generateForChild(arg, rect, '重复参数'),
 			));
 		}
@@ -252,12 +252,12 @@ class TranscludeToken extends Token {
 	/**
 	 * 获取重名参数
 	 * @complexity `n`
-	 * @returns {[string, Set<ParameterToken>][]}
+	 * @returns {[string, ParameterToken[]][]}
 	 */
 	getDuplicatedArgs() {
 		if (this.isTemplate()) {
 			return Object.entries(this.#args).filter(([, {size}]) => size > 1)
-				.map(([key, args]) => [key, new Set(args)]);
+				.map(([key, args]) => [key, [...args]]);
 		}
 		return [];
 	}

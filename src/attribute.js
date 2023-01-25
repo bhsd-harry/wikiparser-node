@@ -1,104 +1,101 @@
 'use strict';
 
-const {removeComment} = require('../util/string'),
-	{generateForSelf} = require('../util/lint'),
+const {generateForChild} = require('../util/lint'),
+	{removeComment} = require('../util/string'),
 	Parser = require('..'),
-	Token = require('.');
+	Token = require('.'),
+	AtomToken = require('./atom');
 
 /**
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: [AstText]|(AstText|ArgToken|TranscludeToken)[]}`
+ * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
 class AttributeToken extends Token {
-	/** @type {Map<string, string|true>} */ #attr = new Map();
-	/** @type {{index: number}} */ #dirty;
-	#quoteBalance = true;
+	#equal;
+	#quotes;
 
 	/**
-	 * 从`childNodes`更新`this.#attr`
-	 * @complexity `n`
-	 */
-	#parseAttr() {
-		const regex = /([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu;
-		let string = this.toString();
-		string = removeComment(string).replace(/\0\d+~\x7F/gu, '=');
-		for (let mt = regex.exec(string); mt; mt = regex.exec(string)) {
-			const {index, 1: key, 2: quoteStart, 3: quoted, 4: quoteEnd, 5: unquoted} = mt;
-			if (!this.setAttr(key, quoted ?? unquoted ?? true, true)) {
-				this.#dirty = {index};
-			} else if (quoteStart !== quoteEnd) {
-				this.#quoteBalance = false;
-			}
-		}
-	}
-
-	/**
-	 * @param {string} attr 标签属性
 	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
-	 * @param {string} name 标签名
+	 * @param {string} key 属性名
+	 * @param {string} equal 等号
+	 * @param {string} value 属性值
+	 * @param {string[]} quotes 引号
 	 * @param {accum} accum
 	 */
-	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
-		super(attr, config, true, accum, {
-		});
+	constructor(type, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
+		const keyToken = new AtomToken(key, `${type}-key`, config, accum, {
+			}),
+			valueToken = key === 'title'
+				? new Token(value, config, true, accum, {
+				}).setAttribute('stage', Parser.MAX_STAGE - 1)
+				: new AtomToken(value, `${type}-value`, config, accum, {
+				});
+		super(undefined, config, true, accum);
 		this.type = type;
-		this.#parseAttr();
-		this.setAttribute('name', name);
+		this.append(keyToken, valueToken);
+		this.#equal = equal;
+		this.#quotes = quotes;
+		this.setAttribute('name', removeComment(key).trim());
 	}
 
-	/**
-	 * 获取标签属性
-	 * @param {string} key 属性键
-	 */
-	getAttr(key) {
-		return this.#attr.get(key.toLowerCase().trim());
-	}
-
-	/**
-	 * 设置标签属性
-	 * @param {string} key 属性键
-	 * @param {string|boolean} value 属性值
-	 * @param {boolean} init 是否是初次解析
-	 * @complexity `n`
-	 */
-	setAttr(key, value, init) {
-		key = key.toLowerCase().trim();
-		const parsedKey = key;
-		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
-			if (init) {
-				return false;
-			}
-			return false;
-		} else if (value === false) {
-			this.#attr.delete(key);
-		} else {
-			this.#attr.set(key, value === true ? true : value.replace(/\s/gu, ' ').trim());
+	/** @override */
+	afterBuild() {
+		if (this.#equal.includes('\0')) {
+			this.#equal = String(this.getAttribute('buildFromStr')(this.#equal));
 		}
-		return true;
 	}
 
 	/**
 	 * @override
-	 * @this {AttributeToken & {parentNode: HtmlToken}}
+	 * @returns {string}
+	 */
+	toString(selector) {
+		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
+		return this.#equal
+			? `${super.toString(selector, `${this.#equal}${quoteStart}`)}${quoteEnd}`
+			: this.firstChild.toString(selector);
+	}
+
+	/**
+	 * @override
+	 * @returns {string}
+	 */
+	text() {
+		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
+	}
+
+	/** @override */
+	getGaps() {
+		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
+	}
+
+	/** @override */
+	print() {
+		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
+		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
+	}
+
+	/**
+	 * @override
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const HtmlToken = require('./html');
 		const errors = super.lint(start);
-		let /** @type {{top: number, left: number}} */ rect;
-		if (this.type === 'html-attr' && this.parentNode.closing && this.text().trim()) {
-			rect = this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
-		}
-		if (this.#dirty) {
-			rect ||= this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '包含无效属性'));
-		} else if (!this.#quoteBalance) {
-			rect ||= this.getRootNode().posFromIndex(start);
-			const error = generateForSelf(this, rect, '未闭合的引号', 'warning');
-			errors.push(error);
+		if (!this.balanced) {
+			const {lastChild} = this,
+				e = generateForChild(lastChild, {token: this, start}, '未闭合的引号', 'warning');
+			errors.push({...e, startCol: e.startCol - 1, excerpt: String(lastChild).slice(-50)});
 		}
 		return errors;
+	}
+
+	/** 获取属性值 */
+	getValue() {
+		if (this.#equal) {
+			const value = this.lastChild.text();
+			return value;
+		}
+		return true;
 	}
 }
 

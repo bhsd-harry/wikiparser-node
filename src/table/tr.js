@@ -4,11 +4,11 @@ const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	Token = require('..'),
 	SyntaxToken = require('../syntax'),
-	AttributeToken = require('../attribute');
+	AttributesToken = require('../attributes');
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributeToken, ?Token, ...TdToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
 class TrToken extends Token {
 	type = 'tr';
@@ -25,7 +25,7 @@ class TrToken extends Token {
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 			}),
-			new AttributeToken(attr, 'table-attr', 'tr', config, accum),
+			new AttributesToken(attr, 'table-attrs', 'tr', config, accum),
 		);
 	}
 
