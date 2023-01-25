@@ -1,7 +1,7 @@
 'use strict';
 
 const {generateForChild} = require('../util/lint'),
-	{noWrap} = require('../util/string'),
+	{noWrap, removeComment} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
 	Parser = require('..'),
 	Token = require('.'),
@@ -37,27 +37,27 @@ class AttributeToken extends fixedToken(Token) {
 	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
 	 * @param {string} key 属性名
 	 * @param {string} equal 等号
-	 * @param {string[]} quotes 引号
 	 * @param {string} value 属性值
+	 * @param {string[]} quotes 引号
 	 * @param {accum} accum
 	 */
-	constructor(type, key, equal, quotes = [], value = '', config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum);
-		this.type = type;
-		this.append(
-			new AtomToken(key, `${type}-key`, config, accum, {
+	constructor(type, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
+		const keyToken = new AtomToken(key, `${type}-key`, config, accum, {
 				AstText: ':', ArgToken: ':', TranscludeToken: ':',
 			}),
-			key === 'title'
+			valueToken = key === 'title'
 				? new Token(value, config, true, accum, {
 					[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 				}).setAttribute('stage', Parser.MAX_STAGE - 1)
 				: new AtomToken(value, `${type}-value`, config, accum, {
 					[`Stage-${stages[type]}`]: ':',
-				}),
-		);
+				});
+		super(undefined, config, true, accum);
+		this.type = type;
+		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = quotes;
+		this.setAttribute('name', removeComment(key).trim());
 	}
 
 	/** @override */
@@ -125,12 +125,25 @@ class AttributeToken extends fixedToken(Token) {
 		return true;
 	}
 
+	/**
+	 * @override
+	 * @template {string} T
+	 * @param {T} key 属性键
+	 * @returns {TokenAttribute<T>}
+	 */
+	getAttribute(key) {
+		if (key === 'equal') {
+			return this.#equal;
+		}
+		return key === 'quotes' ? this.#quotes : super.getAttribute(key);
+	}
+
 	/** @override */
 	cloneNode() {
 		const [key, value] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			const token = new AttributeToken(this.type, '', this.#equal, this.#quotes, '', config);
+			const token = new AttributeToken(this.type, '', this.#equal, '', this.#quotes, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			return token.afterBuild();
@@ -179,13 +192,18 @@ class AttributeToken extends fixedToken(Token) {
 			attrs = tag.firstChild;
 		}
 		const {length: attrsLength, firstChild} = attrs;
-		if (attrsLength === 1 && firstChild.type === this.type && firstChild.name === key) {
-			const {lastChild} = firstChild;
-			firstChild.destroy(true);
-			this.lastChild.safeReplaceWith(lastChild);
-			this.close();
+		Parser.debug(attrsLength, firstChild, key);
+		if (attrsLength !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
+			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
-		throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
+		const {lastChild} = firstChild;
+		firstChild.destroy(true);
+		this.lastChild.safeReplaceWith(lastChild);
+		if (this.#quotes[0]) {
+			this.close();
+		} else {
+			this.#quotes = ['"', '"'];
+		}
 	}
 
 	/**
@@ -216,12 +234,12 @@ class AttributeToken extends fixedToken(Token) {
 			attrs = tag.firstChild;
 		}
 		const {length: attrsLength, firstChild: attr} = attrs;
-		if (attrsLength === 1 && attr.type === this.type && attr.value === true) {
-			const {firstChild} = attr;
-			attr.destroy(true);
-			this.firstChild.safeReplaceWith(firstChild);
+		if (attrsLength !== 1 || attr.type !== this.type || attr.value !== true) {
+			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
-		throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
+		const {firstChild} = attr;
+		attr.destroy(true);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

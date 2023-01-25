@@ -89,29 +89,32 @@ class AttributesToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
-		const regex = new RegExp(
-			'((?!\0\\d+c\x7F)[^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
-			+ '(?:'
-			+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
-			+ '(?:=|\0\\d+~\x7F)' // `=`
-			+ '(?:\\s|\0\\d+c\x7F)*)' // `=`后的空白字符
-			+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
-			+ ')?',
-			'gsu',
-		);
-		attr = attr.replace(regex, (full, key, equal, quoteStart, quoted, quoteEnd, unquoted) => {
-			if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
-				const quotes = [quoteStart, quoteEnd];
-				new AttributeToken(type.slice(0, -1), key, equal, quoted ?? unquoted, quotes, config, accum);
-				return `\0${accum.length - 1}a\x7F`;
-			}
-			return full;
-		});
-		super(attr, config, true, accum, {
+		super(undefined, config, true, accum, {
 			[`Stage-${stages[type]}`]: ':', AttributeToken: ':',
 		});
 		this.type = type;
 		this.setAttribute('name', name);
+		if (attr) {
+			const regex = new RegExp(
+				'((?!\0\\d+c\x7F)[^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
+				+ '(?:'
+				+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
+				+ '(?:=|\0\\d+~\x7F)' // `=`
+				+ '(?:\\s|\0\\d+c\x7F)*)' // `=`后的空白字符
+				+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
+				+ ')?',
+				'gsu',
+			);
+			attr = attr.replace(regex, (full, key, equal, quoteStart, quoted, quoteEnd, unquoted) => {
+				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
+					const quotes = [quoteStart, quoteEnd];
+					new AttributeToken(type.slice(0, -1), key, equal, quoted ?? unquoted, quotes, config, accum);
+					return `\0${accum.length - (type === 'ext-attrs' ? 0 : 1)}a\x7F`;
+				}
+				return full;
+			});
+			this.insertAt(attr);
+		}
 	}
 
 	/**
@@ -151,70 +154,7 @@ class AttributesToken extends Token {
 	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
-		return this.getAttrToken(key).getValue();
-	}
-
-	/**
-	 * @override
-	 * @param {AttributeToken} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @throws `RangeError` 不是AttributeToken
-	 */
-	insertAt(token, i = this.childNodes.length) {
-		if (!Parser.running && !(token instanceof AttributeToken)) {
-			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
-		} else if (i === this.childNodes.length) {
-			const {lastChild} = this;
-			if (lastChild instanceof AttributeToken) {
-				lastChild.close();
-			}
-		} else {
-			token.close();
-		}
-		if (this.closest('parameter')) {
-			token.escape();
-		}
-		return super.insertAt(token, i);
-	}
-
-	/**
-	 * 设置标签属性
-	 * @param {string} key 属性键
-	 * @param {string|boolean} value 属性值
-	 * @throws `RangeError` 扩展标签属性不能包含">"
-	 * @throws `RangeError` 无效的属性名
-	 */
-	setAttr(key, value) {
-		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
-			this.typeError('setAttr', 'String', 'Boolean');
-		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
-			throw new RangeError('扩展标签属性不能包含 ">"！');
-		}
-		key = key.toLowerCase().trim();
-		const attr = this.getAttrToken(key);
-		if (attr) {
-			attr.setValue(value);
-			return;
-		} else if (value === false) {
-			return;
-		}
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			parsedKey = this.type === 'ext-attrs'
-				? key
-				: Parser.run(() => {
-					const token = new Token(key, config),
-						parseOnce = token.getAttribute('parseOnce');
-					parseOnce(0, include);
-					return String(parseOnce());
-				});
-		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
-			throw new RangeError(`无效的属性名：${key}！`);
-		}
-		const newAttr = Parser.run(() => new AttributeToken(
-			this.type.slice(0, -1), key, value === true ? '=' : '', ['"', '"'], value, config,
-		));
-		this.insertAt(newAttr);
+		return this.getAttrToken(key)?.getValue();
 	}
 
 	/**
@@ -272,6 +212,77 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
+	 * @param {AttributeToken} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @throws `RangeError` 不是AttributeToken
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		if (!Parser.running && !(token instanceof AttributeToken)) {
+			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
+		} else if (i === this.childNodes.length) {
+			const {lastChild} = this;
+			if (lastChild instanceof AttributeToken) {
+				lastChild.close();
+			}
+		} else {
+			token.close();
+		}
+		if (this.closest('parameter')) {
+			token.escape();
+		}
+		super.insertAt(token, i);
+		const {previousVisibleSibling, nextVisibleSibling} = token;
+		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling)) {
+			super.insertAt(' ', i + 1);
+		}
+		if (previousVisibleSibling && !/\s$/u.test(previousVisibleSibling)) {
+			super.insertAt(' ', i);
+		}
+		return token;
+	}
+
+	/**
+	 * 设置标签属性
+	 * @param {string} key 属性键
+	 * @param {string|boolean} value 属性值
+	 * @throws `RangeError` 扩展标签属性不能包含">"
+	 * @throws `RangeError` 无效的属性名
+	 */
+	setAttr(key, value) {
+		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
+			this.typeError('setAttr', 'String', 'Boolean');
+		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
+			throw new RangeError('扩展标签属性不能包含 ">"！');
+		}
+		key = key.toLowerCase().trim();
+		const attr = this.getAttrToken(key);
+		if (attr) {
+			attr.setValue(value);
+			return;
+		} else if (value === false) {
+			return;
+		}
+		const config = this.getAttribute('config'),
+			include = this.getAttribute('include'),
+			parsedKey = this.type === 'ext-attrs'
+				? key
+				: Parser.run(() => {
+					const token = new Token(key, config),
+						parseOnce = token.getAttribute('parseOnce');
+					parseOnce(0, include);
+					return String(parseOnce());
+				});
+		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
+			throw new RangeError(`无效的属性名：${key}！`);
+		}
+		const newAttr = Parser.run(() => new AttributeToken(
+			this.type.slice(0, -1), key, value === true ? '' : '=', value, ['"', '"'], config,
+		));
+		this.insertAt(newAttr);
+	}
+
+	/**
+	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
 	 * @returns {TokenAttribute<T>}
@@ -286,7 +297,7 @@ class AttributesToken extends Token {
 	 */
 	hasAttr(key) {
 		return typeof key === 'string'
-			? this.getAttrTokens().length > 0
+			? this.getAttrTokens(key).length > 0
 			: this.typeError('hasAttr', 'String');
 	}
 

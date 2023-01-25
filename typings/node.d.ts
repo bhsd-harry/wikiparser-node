@@ -15,7 +15,7 @@ declare global {
 		T extends 'build' ? () => void :
 		T extends 'bracket'|'include' ? boolean :
 		T extends 'pattern' ? RegExp :
-		T extends 'tags'|'flags' ? string[] :
+		T extends 'tags'|'flags'|'quotes' ? string[] :
 		T extends 'optional'|'keys' ? Set<string> :
 		T extends 'acceptable' ? Record<string, Ranges> :
 		T extends 'args' ? Record<string, Set<ParameterToken>> :
