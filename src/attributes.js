@@ -4,6 +4,7 @@ const {toCase, normalizeSpace, text} = require('../util/string'),
 	{generateForSelf} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
+	AtomToken = require('./atom'),
 	AttributeToken = require('./attribute');
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
@@ -90,7 +91,7 @@ class AttributesToken extends Token {
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			[`Stage-${stages[type]}`]: ':', AttributeToken: ':',
+			AtomToken: ':', AttributeToken: ':',
 		});
 		this.type = type;
 		this.setAttribute('name', name);
@@ -105,15 +106,34 @@ class AttributesToken extends Token {
 				+ ')?',
 				'gsu',
 			);
-			attr = attr.replace(regex, (full, key, equal, quoteStart, quoted, quoteEnd, unquoted) => {
-				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
-					const quotes = [quoteStart, quoteEnd];
-					new AttributeToken(type.slice(0, -1), key, equal, quoted ?? unquoted, quotes, config, accum);
-					return `\0${accum.length - (type === 'ext-attrs' ? 0 : 1)}a\x7F`;
+			let out = '',
+				mt = regex.exec(attr),
+				lastIndex = 0;
+			const insertDirty = /** 插入无效属性 */ () => {
+				if (out) {
+					this.insertAt(new AtomToken(out, `${type.slice(0, -1)}-dirty`, config, accum, {
+						[`Stage-${stages[type]}`]: ':',
+					}));
+					out = '';
 				}
-				return full;
-			});
-			this.insertAt(attr);
+			};
+			while (mt) {
+				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
+				out += attr.slice(lastIndex, index);
+				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
+					const value = quoted ?? unquoted,
+						quotes = [quoteStart, quoteEnd],
+						token = new AttributeToken(type.slice(0, -1), key, equal, value, quotes, config, accum);
+					insertDirty();
+					this.insertAt(token);
+				} else {
+					out += full;
+				}
+				({lastIndex} = regex);
+				mt = regex.exec(attr);
+			}
+			out += attr.slice(lastIndex);
+			insertDirty();
 		}
 	}
 

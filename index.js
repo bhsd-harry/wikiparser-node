@@ -42,6 +42,7 @@ const /** @type {Parser} */ Parser = {
 		comment: undefined,
 		ext: ['extension'],
 		'ext-attrs': ['extension-attrs', 'ext-attributes', 'extension-attributes'],
+		'ext-attr-dirty': ['extension-attr-dirty', 'ext-attribute-dirty', 'extension-attribute-dirty'],
 		'ext-attr': ['extension-attr', 'ext-attribute', 'extension-attribute'],
 		'attr-key': ['attribute-key'],
 		'attr-value': ['attribute-value', 'attr-val', 'attribute-val'],
@@ -68,12 +69,17 @@ const /** @type {Parser} */ Parser = {
 		// html
 		html: undefined,
 		'html-attrs': ['html-attributes'],
+		'html-attr-dirty': ['html-attribute-dirty'],
+		'html-attr': ['html-attribute'],
 		// table
 		table: undefined,
 		tr: ['table-row'],
 		td: ['table-cell', 'table-data'],
 		'table-syntax': undefined,
-		'table-attrs': ['tr-attrs', 'td-attrs', 'table-attributes', 'tr-attributes', 'table-attributes'],
+		'table-attrs': ['tr-attrs', 'td-attrs', 'table-attributes', 'tr-attributes', 'td-attributes'],
+		'table-attr-dirty':
+			['tr-attr-dirty', 'td-attr-dirty', 'table-attribute-dirty', 'tr-attribute-dirty', 'td-attribute-dirty'],
+		'table-attr': ['tr-attr', 'td-attr', 'table-attribute', 'tr-attribute', 'td-attribute'],
 		'table-inter': undefined,
 		'td-inner': ['table-cell-inner', 'table-data-inner'],
 		// hr and double-underscore
