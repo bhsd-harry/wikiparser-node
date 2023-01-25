@@ -73,10 +73,7 @@ class AttributesToken extends Token {
 	 * @returns {(AstText|Token)[]}
 	 */
 	getDirtyAttrs() {
-		const AstText = require('../lib/text');
-		const unexpected = new Set(['ext', 'arg', 'magic-word', 'template', 'heading', 'html']),
-			/** @type {{childNodes: AstText[]}} */ {childNodes} = this;
-		return childNodes.filter(({type, data}) => type === 'text' && data.trim() || unexpected.has(type));
+		return this.childNodes.filter(child => child instanceof AtomToken);
 	}
 
 	/**
