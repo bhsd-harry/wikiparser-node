@@ -27,7 +27,7 @@ class AttributeToken extends Token {
 			}),
 			valueToken = key === 'title'
 				? new Token(value, config, true, accum, {
-				}).setAttribute('stage', Parser.MAX_STAGE - 1)
+				}).setAttribute('type', `${type}-value`).setAttribute('stage', Parser.MAX_STAGE - 1)
 				: new AtomToken(value, `${type}-value`, config, accum, {
 				});
 		super(undefined, config, true, accum);
