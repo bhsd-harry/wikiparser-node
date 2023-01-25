@@ -142,7 +142,7 @@ class AttributesToken extends Token {
 	 * @returns {(AstText|Token)[]}
 	 */
 	getDirtyAttrs() {
-		return this.childNodes.filter(child => child instanceof AtomToken);
+		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
 	}
 
 	/**
@@ -204,7 +204,8 @@ class AttributesToken extends Token {
 		const {childNodes} = this;
 		let dirty = false;
 		for (let i = childNodes.length - 1; i >= 0; i--) {
-			if (childNodes[i] instanceof AtomToken) {
+			const child = childNodes[i];
+			if (child instanceof AtomToken && child.text().trim()) {
 				dirty = true;
 				this.removeAt(i);
 			}

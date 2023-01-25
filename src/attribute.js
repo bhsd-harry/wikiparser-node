@@ -192,7 +192,6 @@ class AttributeToken extends fixedToken(Token) {
 			attrs = tag.firstChild;
 		}
 		const {length: attrsLength, firstChild} = attrs;
-		Parser.debug(attrsLength, firstChild, key);
 		if (attrsLength !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
