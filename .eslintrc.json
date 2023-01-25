@@ -214,7 +214,17 @@
 				"allowInParentheses": false
 			}
 		],
-		"no-shadow": 2,
+		"no-shadow": [
+			2,
+			{
+				"builtinGlobals": true,
+				"allow": [
+					"root",
+					"escape",
+					"constructor"
+				]
+			}
+		],
 		"no-throw-literal": 2,
 		"no-undef-init": 2,
 		"no-underscore-dangle": [
