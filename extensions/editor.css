@@ -49,13 +49,12 @@
 }
 .wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
 .wpb-noinclude, .wpb-include, .wpb-comment,
-.wpb-ext-attr, .wpb-html-attr,
+.wpb-ext-attrs, .wpb-html-attrs,
 .wpb-ext-inner,
 .wpb-arg-default,
 .wpb-invoke-module, .wpb-invoke-function,
 .wpb-parameter,
-.wpb-table-attr,
-.wpb-td-inner,
+.wpb-table-attrs, .wpb-td-inner,
 .wpb-converter-rule {
 	-webkit-text-stroke-width: 0;
 }

@@ -22,9 +22,12 @@
 	color: #14866d;
 	font-weight: bold;
 }
-.wpb-ext-attr, .wpb-html-attr {
-	color: #179b1c;
+.wpb-ext-attrs, .wpb-html-attrs {
+	color: initial;
 	font-weight: normal;
+}
+.wpb-ext-attr-key, .wpb-html-attr-key {
+	color: #179b1c;
 }
 .wpb-ext-inner {
 	color: initial;
@@ -76,13 +79,12 @@
 	color: #d08;
 	font-weight: bold;
 }
-.wpb-table-attr {
-	color: #f500d4;
-	font-weight: normal;
-}
-.wpb-td-inner {
+.wpb-table-attrs, .wpb-td-inner {
 	color: initial;
 	font-weight: normal;
+}
+.wpb-table-attr-key {
+	color: #f500d4;
 }
 
 .wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd {
