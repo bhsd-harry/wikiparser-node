@@ -5,6 +5,8 @@ const {generateForChild} = require('../util/lint'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 
+const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
+
 /**
  * 转换flags
  * @classdesc `{childNodes: ...AtomToken}`
@@ -69,11 +71,11 @@ class ConverterFlagsToken extends Token {
 	lint(start = 0) {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
-			emptyFlags = this.#flags.filter(flag => !flag),
-			validFlags = this.#flags.filter(flag => ['A', 'T', 'R', 'D', '-', 'H', 'N'].includes(flag)),
-			knownFlagCount = this.#flags.length - unknownFlags.length - emptyFlags,
+			validFlags = new Set(this.#flags.filter(flag => definedFlags.has(flag))),
+			{length: emptyFlagCount} = this.#flags.filter(flag => !flag),
+			knownFlagCount = this.#flags.length - unknownFlags.size - emptyFlagCount,
 			errors = super.lint(start);
-		if (variantFlags.length === knownFlagCount || validFlags.length === knownFlagCount) {
+		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 			return errors;
 		}
 		const rect = this.getRootNode().posFromIndex(start),
@@ -81,8 +83,8 @@ class ConverterFlagsToken extends Token {
 		for (let i = 0; i < childNodes.length; i++) {
 			const child = childNodes[i],
 				flag = child.text().trim();
-			if (flag && !variantFlags.includes(flag) && !unknownFlags.includes(flag)
-				&& (variantFlags.length > 0 || !validFlags.includes(flag))
+			if (flag && !variantFlags.has(flag) && !unknownFlags.has(flag)
+				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
 				const error = generateForChild(child, rect, '无效的转换标记');
 				errors.push({...error, excerpt: childNodes.slice(0, i + 1).map(String).join(';').slice(-50)});
@@ -96,13 +98,13 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	getUnknownFlags() {
-		return this.#flags.filter(flag => /\{\{[^{}]+\}\}/u.test(flag));
+		return new Set(this.#flags.filter(flag => /\{\{[^{}]+\}\}/u.test(flag)));
 	}
 
 	/** 获取指定语言变体的转换标记 */
 	getVariantFlags() {
-		const {variants} = this.getAttribute('config');
-		return this.#flags.filter(flag => variants.includes(flag));
+		const variants = new Set(this.getAttribute('config').variants);
+		return new Set(this.#flags.filter(flag => variants.has(flag)));
 	}
 
 	/** @override */
@@ -182,11 +184,10 @@ class ConverterFlagsToken extends Token {
 	getEffectiveFlags() {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags();
-		if (variantFlags.length > 0) {
+		if (variantFlags.size > 0) {
 			return new Set([...variantFlags, ...unknownFlags]);
 		}
-		const validFlags = ['A', 'T', 'R', 'D', '-', 'H', 'N'],
-			flags = new Set([...this.#flags.filter(flag => validFlags.includes(flag)), ...unknownFlags]);
+		const flags = new Set([...this.#flags.filter(flag => definedFlags.has(flag)), ...unknownFlags]);
 		if (flags.size === 0) {
 			return new Set('S');
 		} else if (flags.has('R')) {

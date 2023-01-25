@@ -2,7 +2,7 @@
 
 const Parser = require('..');
 
-const /** @type {pseudo[]} */ simplePseudos = [
+const /** @type {Set<pseudo>} */ simplePseudos = new Set([
 		'root',
 		'first-child',
 		'first-of-type',
@@ -22,7 +22,7 @@ const /** @type {pseudo[]} */ simplePseudos = [
 		'invalid',
 		'required',
 		'optional',
-	],
+	]),
 	/** @type {pseudo[]} */ complexPseudos = [
 		'is',
 		'not',
@@ -96,8 +96,8 @@ const deQuote = val => {
 const pushSimple = (step, str) => {
 	const pieces = str.trim().split(':'),
 		// eslint-disable-next-line unicorn/explicit-length-check
-		i = pieces.slice(1).findIndex(pseudo => simplePseudos.includes(pseudo)) + 1 || pieces.length;
-	if (pieces.slice(i).some(pseudo => !simplePseudos.includes(pseudo))) {
+		i = pieces.slice(1).findIndex(pseudo => simplePseudos.has(pseudo)) + 1 || pieces.length;
+	if (pieces.slice(i).some(pseudo => !simplePseudos.has(pseudo))) {
 		throw new SyntaxError(`非法的选择器！\n${str}\n可能需要将':'转义为'\\:'。`);
 	}
 	step.push(desanitize(pieces.slice(0, i).join(':')), ...pieces.slice(i).map(piece => `:${piece}`));
@@ -110,7 +110,9 @@ const pushSimple = (step, str) => {
  */
 const parseSelector = selector => {
 	selector = selector.trim();
-	const /** @type {SelectorArray[][]} */ stack = [[[]]];
+	const /** @type {SelectorArray[][]} */ stack = [[[]]],
+		grouping = new Set([',', '>', '+', '~']),
+		combinator = new Set(['>', '+', '~', '']);
 	let sanitized = sanitize(selector),
 		regex = regularRegex,
 		mt = regex.exec(sanitized),
@@ -121,14 +123,14 @@ const parseSelector = selector => {
 		if (syntax.trim() === '') {
 			index += syntax.length;
 			const char = sanitized[index];
-			syntax = [',', '>', '+', '~'].includes(char) ? char : '';
+			syntax = grouping.has(char) ? char : '';
 		}
 		if (syntax === ',') { // 情形1：并列
 			pushSimple(step, sanitized.slice(0, index));
 			condition = [[]];
 			[step] = condition;
 			stack.push(condition);
-		} else if (['>', '+', '~', ''].includes(syntax)) { // 情形2：关系
+		} else if (combinator.has(syntax)) { // 情形2：关系
 			pushSimple(step, sanitized.slice(0, index));
 			if (!step.some(Boolean)) {
 				throw new SyntaxError(`非法的选择器！\n${selector}\n可能需要通用选择器'*'。`);
@@ -159,7 +161,7 @@ const parseSelector = selector => {
 			regex = regularRegex;
 		}
 		sanitized = sanitized.slice(index + syntax.length);
-		if ([',', '>', '+', '~'].includes(syntax)) {
+		if (grouping.has(syntax)) {
 			sanitized = sanitized.trim();
 		}
 		mt = regex.exec(sanitized);

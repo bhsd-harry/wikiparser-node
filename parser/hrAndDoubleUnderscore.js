@@ -12,7 +12,9 @@ const Parser = require('..'),
  * @param {accum} accum
  */
 const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
-	const {doubleUnderscore} = config;
+	const {doubleUnderscore} = config,
+		insensitive = new Set(doubleUnderscore[0]),
+		sensitive = new Set(doubleUnderscore[1]);
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
@@ -22,7 +24,7 @@ const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = P
 	}).replace(
 		new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'giu'),
 		/** @param {string} p1 */ (m, p1) => {
-			if (doubleUnderscore[0].includes(p1.toLowerCase()) || doubleUnderscore[1].includes(p1)) {
+			if (insensitive.has(p1.toLowerCase()) || sensitive.has(p1)) {
 				new DoubleUnderscoreToken(p1, config, accum);
 				return `\0${accum.length - 1}u\x7F`;
 			}

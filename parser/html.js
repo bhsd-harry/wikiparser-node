@@ -11,14 +11,14 @@ const Parser = require('..'),
  */
 const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,
-		elements = config.html.flat(),
+		elements = new Set(config.html.flat()),
 		bits = wikitext.split('<');
 	let text = bits.shift();
 	for (const x of bits) {
 		const mt = regex.exec(x),
 			t = mt?.[2],
 			name = t?.toLowerCase();
-		if (!mt || !elements.includes(name)) {
+		if (!mt || !elements.has(name)) {
 			text += `<${x}`;
 			continue;
 		}

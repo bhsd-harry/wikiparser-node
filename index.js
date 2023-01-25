@@ -39,7 +39,7 @@ const /** @type {Parser} */ Parser = {
 		onlyinclude: ['only-include'],
 		noinclude: ['no-include'],
 		include: ['includeonly', 'include-only'],
-		comment: [],
+		comment: undefined,
 		ext: ['extension'],
 		'ext-attr': ['extension-attr'],
 		'ext-inner': ['extension-inner'],
@@ -53,8 +53,8 @@ const /** @type {Parser} */ Parser = {
 		'magic-word-name': ['parser-function-name', 'parser-func-name'],
 		'invoke-function': ['invoke-func', 'lua-function', 'lua-func', 'module-function', 'module-func'],
 		'invoke-module': ['lua-module'],
-		template: [],
-		'template-name': [],
+		template: undefined,
+		'template-name': undefined,
 		parameter: ['param'],
 		'parameter-key': ['param-key'],
 		'parameter-value': ['parameter-val', 'param-value', 'param-val'],
@@ -63,15 +63,15 @@ const /** @type {Parser} */ Parser = {
 		'heading-title': ['header-title'],
 		'heading-trail': ['header-trail'],
 		// html
-		html: [],
-		'html-attr': [],
+		html: undefined,
+		'html-attr': undefined,
 		// table
-		table: [],
+		table: undefined,
 		tr: ['table-row'],
 		td: ['table-cell', 'table-data'],
-		'table-syntax': [],
+		'table-syntax': undefined,
 		'table-attr': ['tr-attr', 'table-row-attr', 'td-attr', 'table-cell-attr', 'table-data-attr'],
-		'table-inter': [],
+		'table-inter': undefined,
 		'td-inner': ['table-cell-inner', 'table-data-inner'],
 		// hr and double-underscore
 		hr: ['horizontal'],
@@ -107,7 +107,7 @@ const /** @type {Parser} */ Parser = {
 		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
 		// specific extensions
 		'param-line': ['parameter-line'],
-		'charinsert-line': [],
+		'charinsert-line': undefined,
 		'imagemap-link': ['image-map-link'],
 	},
 
@@ -296,11 +296,13 @@ const /** @type {Parser} */ Parser = {
 	},
 };
 
-const /** @type {PropertyDescriptorMap} */ def = {};
+const /** @type {PropertyDescriptorMap} */ def = {},
+	immutable = new Set(['MAX_STAGE', 'aliases', 'typeAliases', 'promises']),
+	enumerable = new Set(['config', 'normalizeTitle', 'parse', 'isInterwiki', 'getTool']);
 for (const key in Parser) {
-	if (['MAX_STAGE', 'aliases', 'typeAliases', 'promises'].includes(key)) {
+	if (immutable.has(key)) {
 		def[key] = {enumerable: false, writable: false};
-	} else if (!['config', 'normalizeTitle', 'parse', 'isInterwiki', 'getTool'].includes(key)) {
+	} else if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};
 	}
 }
