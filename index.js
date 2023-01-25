@@ -39,7 +39,9 @@ const /** @type {Parser} */ Parser = {
 				token = wikitext;
 				wikitext = String(token);
 			}
-			token.parse(maxStage, include);
+			try {
+				token.parse(maxStage, include);
+			} catch {}
 		});
 		return token;
 	},
@@ -73,7 +75,5 @@ Object.defineProperties(Parser, def);
 
 if (typeof self === 'object') {
 	self.Parser = Parser;
-} else if (typeof window === 'object') {
-	window.Parser = Parser;
 }
 module.exports = Parser;
