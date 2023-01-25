@@ -77,7 +77,7 @@ class AttributesToken extends Token {
 	 */
 	getAttrToken(key) {
 		const tokens = this.getAttrTokens(key);
-		return tokens[tokens.length - 1];
+		return tokens.at(-1);
 	}
 
 	/**
@@ -104,7 +104,11 @@ class AttributesToken extends Token {
 		if (!this.sanitized) {
 			refError ||= generateForSelf(this, {start}, '');
 			refError.message = '包含无效属性';
-			errors.push(refError);
+			const {childNodes} = this;
+			for (const attr of this.getDirtyAttrs()) {
+				const index = childNodes.indexOf(attr);
+				errors.push({...refError, excerpt: childNodes.slice(index).map(String).join('').slice(0, 50)});
+			}
 		}
 		return errors;
 	}
