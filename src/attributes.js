@@ -237,7 +237,9 @@ class AttributesToken extends Token {
 	 * @throws `RangeError` 不是AttributeToken
 	 */
 	insertAt(token, i = this.childNodes.length) {
-		if (!Parser.running && !(token instanceof AttributeToken)) {
+		if (Parser.running) {
+			return super.insertAt(token, i);
+		} else if (!(token instanceof AttributeToken)) {
 			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
 		} else if (i === this.childNodes.length) {
 			const {lastChild} = this;
@@ -251,12 +253,15 @@ class AttributesToken extends Token {
 			token.escape();
 		}
 		super.insertAt(token, i);
-		const {previousVisibleSibling, nextVisibleSibling} = token;
-		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling)) {
-			super.insertAt(' ', i + 1);
+		const {previousVisibleSibling, nextVisibleSibling} = token,
+			type = `${this.type.slice(0, -1)}-dirty`,
+			config = this.getAttribute('config'),
+			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
+		if (nextVisibleSibling && !/^\s/u.test(String(nextVisibleSibling))) {
+			super.insertAt(Parser.run(() => new AtomToken(' ', type, config, [], acceptable)), i + 1);
 		}
-		if (previousVisibleSibling && !/\s$/u.test(previousVisibleSibling)) {
-			super.insertAt(' ', i);
+		if (previousVisibleSibling && !/\s$/u.test(String(previousVisibleSibling))) {
+			super.insertAt(Parser.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
 		}
 		return token;
 	}
