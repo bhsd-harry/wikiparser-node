@@ -104,11 +104,7 @@ class AttributesToken extends Token {
 		if (!this.sanitized) {
 			refError ||= generateForSelf(this, {start}, '');
 			refError.message = '包含无效属性';
-			const {childNodes} = this;
-			for (const attr of this.getDirtyAttrs()) {
-				const index = childNodes.indexOf(attr);
-				errors.push({...refError, excerpt: childNodes.slice(index).map(String).join('').slice(0, 50)});
-			}
+			errors.push(refError);
 		}
 		return errors;
 	}

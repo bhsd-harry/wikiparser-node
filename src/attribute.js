@@ -84,7 +84,7 @@ class AttributeToken extends Token {
 		if (!this.balanced) {
 			const {lastChild} = this,
 				e = generateForChild(lastChild, {token: this, start}, '未闭合的引号', 'warning');
-			errors.push({...e, startCol: e.startCol - 1, excerpt: String(lastChild).slice(-50)});
+			errors.push({...e, startCol: e.startCol - 1});
 		}
 		return errors;
 	}
