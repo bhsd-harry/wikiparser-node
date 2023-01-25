@@ -4,7 +4,8 @@
 	font-family: monospace;
 }
 
-.wpb-hidden, .wpb-table-inter, .wpb-table-inter span {
+.wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
+.wpb-ext-attrs, .wpb-html-attrs, .wpb-table-attrs {
 	color: #f00;
 	font-weight: normal;
 	text-decoration: underline wavy 1px;
@@ -22,12 +23,9 @@
 	color: #14866d;
 	font-weight: bold;
 }
-.wpb-ext-attrs, .wpb-html-attrs {
-	color: initial;
-	font-weight: normal;
-}
 .wpb-ext-attr-key, .wpb-html-attr-key {
 	color: #179b1c;
+	text-decoration: none;
 }
 .wpb-ext-inner {
 	color: initial;
@@ -79,12 +77,13 @@
 	color: #d08;
 	font-weight: bold;
 }
-.wpb-table-attrs, .wpb-td-inner {
-	color: initial;
-	font-weight: normal;
-}
 .wpb-table-attr-key {
 	color: #f500d4;
+	text-decoration: none;
+}
+.wpb-td-inner {
+	color: initial;
+	font-weight: normal;
 }
 
 .wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd {
