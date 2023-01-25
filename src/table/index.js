@@ -548,7 +548,7 @@ class TableToken extends TrToken {
 		this.insertBefore(token, reference);
 		if (inner !== undefined) {
 			const td = token.insertTableCell(inner, {column: 0}, subtype, innerAttr),
-				/** @type {Set<TableCoords>} */ set = new Set(),
+				/** @type {WeakSet<TableCoords>} */ set = new WeakSet(),
 				layout = this.getLayout({y}),
 				maxCol = Math.max(...layout.map(({length}) => length)),
 				rowLayout = layout[y];
@@ -612,7 +612,7 @@ class TableToken extends TrToken {
 		const rows = this.getAllRows(),
 			layout = this.getLayout(),
 			rowLayout = layout[y],
-			/** @type {Set<TableCoords>} */ set = new Set();
+			/** @type {WeakSet<TableCoords>} */ set = new WeakSet();
 		for (let x = rowLayout.length - 1; x >= 0; x--) {
 			const coords = rowLayout[x];
 			if (set.has(coords)) {
@@ -921,8 +921,8 @@ class TableToken extends TrToken {
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);
 		}
-		const /** @type {Set<TableCoords>} */ setX = new Set(),
-			/** @type {Set<TableCoords>} */ setRef = new Set(),
+		const /** @type {WeakSet<TableCoords>} */ setX = new WeakSet(),
+			/** @type {WeakSet<TableCoords>} */ setRef = new WeakSet(),
 			rows = this.getAllRows();
 		for (let i = 0; i < layout.length; i++) {
 			const rowLayout = layout[i],
