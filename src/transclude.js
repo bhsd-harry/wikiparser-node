@@ -188,7 +188,7 @@ class TranscludeToken extends Token {
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
 			const rect = this.getRootNode().posFromIndex(start);
-			errors.push(...duplicatedArgs.flatMap(([, args]) => [...args]).map(
+			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
 				arg => generateForChild(arg, rect, '重复参数'),
 			));
 		}
@@ -293,13 +293,13 @@ class TranscludeToken extends Token {
 	/**
 	 * 获取重名参数
 	 * @complexity `n`
-	 * @returns {[string, Set<ParameterToken>][]}
+	 * @returns {[string, ParameterToken[]][]}
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs() {
 		if (this.isTemplate()) {
 			return Object.entries(this.#args).filter(([, {size}]) => size > 1)
-				.map(([key, args]) => [key, new Set(args)]);
+				.map(([key, args]) => [key, [...args]]);
 		}
 		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 	}
@@ -688,7 +688,7 @@ class TranscludeToken extends Token {
 		const /** @type {string[]} */ duplicatedKeys = [];
 		let {length: anonCount} = this.getAnonArgs();
 		for (const [key, args] of this.getDuplicatedArgs()) {
-			if (args.size <= 1) {
+			if (args.length <= 1) {
 				continue;
 			}
 			const /** @type {Record<string, ParameterToken[]>} */ values = {};
@@ -713,7 +713,7 @@ class TranscludeToken extends Token {
 					}),
 				badArgs = [...emptyArgs, ...duplicatedArgs],
 				index = noMoreAnon ? -1 : emptyArgs.findIndex(({anon}) => anon);
-			if (badArgs.length === args.size) {
+			if (badArgs.length === args.length) {
 				badArgs.splice(index, 1);
 			} else if (index !== -1) {
 				this.anonToNamed();
@@ -722,7 +722,7 @@ class TranscludeToken extends Token {
 			for (const arg of badArgs) {
 				arg.remove();
 			}
-			let remaining = args.size - badArgs.length;
+			let remaining = args.length - badArgs.length;
 			if (remaining === 1) {
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {

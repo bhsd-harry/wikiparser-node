@@ -189,7 +189,7 @@ class FileToken extends LinkToken {
 	 * @complexity `n`
 	 */
 	getKeys() {
-		return new Set(this.getAllArgs().map(({name}) => name));
+		return this.getAllArgs().map(({name}) => name);
 	}
 
 	/**
