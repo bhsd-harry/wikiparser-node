@@ -73,7 +73,7 @@ class AttributesToken extends Token {
 	 * @returns {(AstText|Token)[]}
 	 */
 	getDirtyAttrs() {
-		return this.childNodes.filter(child => child instanceof AtomToken);
+		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
 	}
 
 	/**
