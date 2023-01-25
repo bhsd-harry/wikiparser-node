@@ -35,6 +35,7 @@ class ImagemapToken extends Token {
 			return;
 		}
 		const lines = inner.split('\n'),
+			protocols = new Set(config.protocol.split('|')),
 			SingleLineNoincludeToken = NoincludeToken,
 			fallback = /** @param {string} line 一行文本 */ line => {
 				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
@@ -78,22 +79,19 @@ class ImagemapToken extends Token {
 						));
 						continue;
 					}
-				} else {
-					const protocols = config.protocol.split('|');
-					if (protocols.includes(substr.slice(1, substr.indexOf(':') + 1))
-						|| protocols.includes(substr.slice(1, substr.indexOf('//') + 2))
-					) {
-						const mtEx = /^\[([^\]\s]+)(?:(\s+)(\S[^\]]*)?)?\][\w\s]*$/u.exec(substr);
-						if (mtEx) {
-							super.insertAt(new ImagemapLinkToken(
-								line.slice(0, i),
-								mtEx.slice(1),
-								substr.slice(substr.indexOf(']') + 1),
-								config,
-								accum,
-							));
-							continue;
-						}
+				} else if (protocols.has(substr.slice(1, substr.indexOf(':') + 1))
+					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
+				) {
+					const mtEx = /^\[([^\]\s]+)(?:(\s+)(\S[^\]]*)?)?\][\w\s]*$/u.exec(substr);
+					if (mtEx) {
+						super.insertAt(new ImagemapLinkToken(
+							line.slice(0, i),
+							mtEx.slice(1),
+							substr.slice(substr.indexOf(']') + 1),
+							config,
+							accum,
+						));
+						continue;
 					}
 				}
 			}
