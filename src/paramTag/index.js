@@ -20,8 +20,9 @@ class ParamTagToken extends Token {
 		super(undefined, config, true, accum, {
 		});
 		if (wikitext) {
+			const SingleLineAtomToken = AtomToken;
 			this.append(
-				...wikitext.split('\n').map(line => new AtomToken(line, 'param-line', config, accum, {
+				...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
 				})),
 			);
 		}

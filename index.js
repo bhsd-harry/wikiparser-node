@@ -49,11 +49,13 @@ const /** @type {Parser} */ Parser = {
 	},
 };
 
-const /** @type {PropertyDescriptorMap} */ def = {};
+const /** @type {PropertyDescriptorMap} */ def = {},
+	immutable = new Set(['MAX_STAGE', 'minConfig']),
+	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
 for (const key in Parser) {
-	if (['MAX_STAGE', 'minConfig'].includes(key)) {
+	if (immutable.has(key)) {
 		def[key] = {enumerable: false, writable: false};
-	} else if (!['config', 'normalizeTitle', 'parse'].includes(key)) {
+	} else if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};
 	}
 }

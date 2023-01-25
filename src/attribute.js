@@ -48,9 +48,7 @@ class AttributeToken extends Token {
 
 	/**
 	 * 获取标签属性
-	 * @template {string|undefined} T
-	 * @param {T} key 属性键
-	 * @returns {T extends string ? string|true : Record<string, string|true>}
+	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
 		return this.#attr.get(key.toLowerCase().trim());

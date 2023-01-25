@@ -19,7 +19,10 @@ class CharinsertToken extends Token {
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		this.append(...wikitext.split('\n').map(str => new HasNowikiToken(str, 'charinsert-line', config, accum)));
+		const SingleLineHasNowikiToken = HasNowikiToken;
+		this.append(
+			...wikitext.split('\n').map(str => new SingleLineHasNowikiToken(str, 'charinsert-line', config, accum)),
+		);
 	}
 
 	/**
