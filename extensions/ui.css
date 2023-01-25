@@ -23,7 +23,7 @@
 	color: #14866d;
 	font-weight: bold;
 }
-.wpb-ext-attr-key, .wpb-html-attr-key {
+.wpb-ext-attr > .attr-key, .wpb-html-attr > .attr-key {
 	color: #179b1c;
 	text-decoration: none;
 }
@@ -77,7 +77,7 @@
 	color: #d08;
 	font-weight: bold;
 }
-.wpb-table-attr-key {
+.wpb-table-attr > .attr-key {
 	color: #f500d4;
 	text-decoration: none;
 }
