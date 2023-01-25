@@ -46,7 +46,7 @@ class TrToken extends attributeParent(Token, 1) {
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 			}),
-			new AttributesToken(attr, 'table-attr', 'tr', config, accum),
+			new AttributesToken(attr, 'table-attrs', 'tr', config, accum),
 		);
 		this.getAttribute('protectChildren')(0, 1);
 	}

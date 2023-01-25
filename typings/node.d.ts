@@ -17,7 +17,6 @@ declare global {
 		T extends 'pattern' ? RegExp :
 		T extends 'tags'|'flags' ? string[] :
 		T extends 'optional'|'keys' ? Set<string> :
-		T extends 'attr' ? Map<string, string|true> :
 		T extends 'acceptable' ? Record<string, Ranges> :
 		T extends 'args' ? Record<string, Set<ParameterToken>> :
 		T extends 'protectedChildren' ? Ranges :

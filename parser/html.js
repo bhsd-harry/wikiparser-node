@@ -23,7 +23,7 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 			continue;
 		}
 		const [, slash,, params = '', brace, rest] = mt,
-			attr = new AttributesToken(params, 'html-attr', name, config, accum),
+			attr = new AttributesToken(params, 'html-attrs', name, config, accum),
 			itemprop = attr.getAttr('itemprop');
 		if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
 			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)

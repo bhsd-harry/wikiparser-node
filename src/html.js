@@ -113,7 +113,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push(refError);
 		}
-		if (this.closest('html-attr')) {
+		if (this.closest('table-attrs')) {
 			refError ||= generateForSelf(this, {start}, '');
 			errors.push({...refError, message: '表格属性中的HTML标签'});
 		}

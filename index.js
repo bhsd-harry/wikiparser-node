@@ -41,7 +41,7 @@ const /** @type {Parser} */ Parser = {
 		include: ['includeonly', 'include-only'],
 		comment: undefined,
 		ext: ['extension'],
-		'ext-attr': ['extension-attr'],
+		'ext-attrs': ['extension-attrs', 'ext-attributes', 'extension-attributes'],
 		'ext-inner': ['extension-inner'],
 		// triple brackets
 		arg: ['argument'],
@@ -64,13 +64,13 @@ const /** @type {Parser} */ Parser = {
 		'heading-trail': ['header-trail'],
 		// html
 		html: undefined,
-		'html-attr': undefined,
+		'html-attrs': ['html-attributes'],
 		// table
 		table: undefined,
 		tr: ['table-row'],
 		td: ['table-cell', 'table-data'],
 		'table-syntax': undefined,
-		'table-attr': ['tr-attr', 'table-row-attr', 'td-attr', 'table-cell-attr', 'table-data-attr'],
+		'table-attrs': ['tr-attrs', 'td-attrs', 'table-attributes', 'tr-attributes', 'table-attributes'],
 		'table-inter': undefined,
 		'td-inner': ['table-cell-inner', 'table-data-inner'],
 		// hr and double-underscore

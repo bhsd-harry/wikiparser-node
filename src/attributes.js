@@ -1,22 +1,18 @@
 'use strict';
 
-const {toCase, removeComment, normalizeSpace} = require('../util/string'),
-	{externalUse} = require('../util/debug'),
+const {toCase, normalizeSpace, text} = require('../util/string'),
 	{generateForSelf} = require('../util/lint'),
 	Parser = require('..'),
-	Token = require('.');
+	Token = require('.'),
+	AttributeToken = require('./attribute');
 
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
+const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /**
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: [AstText]|(AstText|ArgToken|TranscludeToken)[]}`
+ * @classdesc `{childNodes: ...AstText|ArgToken|TranscludeToken|AttributeToken}`
  */
 class AttributesToken extends Token {
-	/** @type {Map<string, string|true>} */ #attr = new Map();
-	/** @type {{index: number}} */ #dirty;
-	#quoteBalance = true;
-
 	/**
 	 * @override
 	 * @param {string} key 属性键
@@ -81,104 +77,73 @@ class AttributesToken extends Token {
 		this.setAttr('id', id);
 	}
 
-	/** #dirty的反面 */
+	/** 是否含有无效属性 */
 	get sanitized() {
-		return !this.#dirty;
-	}
-
-	/** #quoteBalance */
-	get quoteBalance() {
-		return this.#quoteBalance;
-	}
-
-	/**
-	 * 从`this.#attr`更新`childNodes`
-	 * @complexity `n`
-	 */
-	#updateFromAttr() {
-		let equal = '=';
-		const ParameterToken = require('./parameter'),
-			TranscludeToken = require('./transclude');
-		const /** @type {ParameterToken & {parentNode: TranscludeToken}} */ parent = this.closest('ext, parameter');
-		if (parent instanceof ParameterToken && parent.anon && parent.parentNode?.isTemplate()) {
-			equal = '{{=}}';
-		}
-		return [...this.#attr].map(([k, v]) => {
-			if (v === true) {
-				return k;
-			}
-			const quote = v.includes('"') ? "'" : '"';
-			return `${k}${equal}${quote}${v}${quote}`;
-		}).join(' ');
-	}
-
-	/**
-	 * 清理标签属性
-	 * @complexity `n`
-	 */
-	sanitize() {
-		if (!Parser.running && this.#dirty) {
-			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
-		}
-		const token = Parser.parse(this.#updateFromAttr(), false, stages[this.type], this.getAttribute('config'));
-		Parser.run(() => {
-			this.replaceChildren(...token.childNodes, true);
-		});
-		this.#dirty = undefined;
-		this.#quoteBalance = true;
-	}
-
-	/**
-	 * 从`childNodes`更新`this.#attr`
-	 * @complexity `n`
-	 */
-	#parseAttr() {
-		this.#attr.clear();
-		let string = this.toString('comment, include, noinclude, heading, html'),
-			token;
-		if (this.type !== 'ext-attr' && !Parser.running) {
-			const config = this.getAttribute('config'),
-				include = this.getAttribute('include');
-			token = Parser.run(() => {
-				const newToken = new Token(string, config),
-					parseOnce = newToken.getAttribute('parseOnce');
-				parseOnce(0, include);
-				return parseOnce();
-			});
-			string = String(token);
-		}
-		string = removeComment(string).replace(/\0\d+~\x7F/gu, '=');
-
-		/**
-		 * 解析并重建标签属性
-		 * @param {string|boolean} str 半解析的标签属性文本
-		 */
-		const build = str =>
-			typeof str === 'boolean' || !token ? str : token.getAttribute('buildFromStr')(str).map(String).join('');
-		for (const {index, 1: key, 2: quoteStart, 3: quoted, 4: quoteEnd, 5: unquoted} of string
-			.matchAll(/([^\s/][^\s/=]*)(?:\s*=\s*(?:(["'])(.*?)(\2|$)|(\S*)))?/gsu)
-		) {
-			if (!this.setAttr(build(key), build(quoted ?? unquoted ?? true), true)) {
-				this.#dirty = {index};
-			} else if (quoteStart !== quoteEnd) {
-				this.#quoteBalance = false;
-			}
-		}
+		return this.getDirtyAttrs().length === 0;
 	}
 
 	/**
 	 * @param {string} attr 标签属性
-	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
+	 * @param {'ext-attrs'|'html-attrs'|'table-attrs'} type 标签类型
 	 * @param {string} name 标签名
 	 * @param {accum} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
+		const regex = new RegExp(
+			'((?!\0\\d+c\x7F)[^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
+			+ '(?:'
+			+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
+			+ '(?:=|\0\\d+~\x7F)' // `=`
+			+ '(?:\\s|\0\\d+c\x7F)*)' // `=`后的空白字符
+			+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
+			+ ')?',
+			'gsu',
+		);
+		attr = attr.replace(regex, (full, key, equal, quoteStart, quoted, quoteEnd, unquoted) => {
+			if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
+				const quotes = [quoteStart, quoteEnd];
+				new AttributeToken(type.slice(0, -1), key, equal, quoted ?? unquoted, quotes, config, accum);
+				return `\0${accum.length - 1}a\x7F`;
+			}
+			return full;
+		});
 		super(attr, config, true, accum, {
-			[`Stage-${stages[type]}`]: ':',
+			[`Stage-${stages[type]}`]: ':', AttributeToken: ':',
 		});
 		this.type = type;
-		this.#parseAttr();
 		this.setAttribute('name', name);
+	}
+
+	/**
+	 * 所有无效属性
+	 * @returns {(AstText|Token)[]}
+	 */
+	getDirtyAttrs() {
+		const AstText = require('../lib/text');
+		const unexpected = new Set(['ext', 'arg', 'magic-word', 'template', 'heading', 'html']),
+			/** @type {{childNodes: AstText[]}} */ {childNodes} = this;
+		return childNodes.filter(({type, data}) => type === 'text' && data.trim() || unexpected.has(type));
+	}
+
+	/**
+	 * 所有指定属性名的AttributeToken
+	 * @param {string} key 属性名
+	 * @returns {AttributeToken[]}
+	 */
+	getAttrTokens(key) {
+		return typeof key === 'string'
+			? this.childNodes.filter(
+				child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
+			)
+			: this.typeError('getAttrTokens', 'String');
+	}
+
+	/**
+	 * 制定属性名的最后一个AttributeToken
+	 * @param {string} key 属性名
+	 */
+	getAttrToken(key) {
+		return this.getAttrTokens(key).at(-1);
 	}
 
 	/**
@@ -186,29 +151,56 @@ class AttributesToken extends Token {
 	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
-		return typeof key === 'string' ? this.#attr.get(key.toLowerCase().trim()) : this.typeError('getAttr', 'String');
+		return this.getAttrToken(key).getValue();
+	}
+
+	/**
+	 * @override
+	 * @param {AttributeToken} token 待插入的子节点
+	 * @param {number} i 插入位置
+	 * @throws `RangeError` 不是AttributeToken
+	 */
+	insertAt(token, i = this.childNodes.length) {
+		if (!Parser.running && !(token instanceof AttributeToken)) {
+			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
+		} else if (i === this.childNodes.length) {
+			const {lastChild} = this;
+			if (lastChild instanceof AttributeToken) {
+				lastChild.close();
+			}
+		} else {
+			token.close();
+		}
+		if (this.closest('parameter')) {
+			token.escape();
+		}
+		return super.insertAt(token, i);
 	}
 
 	/**
 	 * 设置标签属性
 	 * @param {string} key 属性键
 	 * @param {string|boolean} value 属性值
-	 * @param {boolean} init 是否是初次解析
-	 * @complexity `n`
 	 * @throws `RangeError` 扩展标签属性不能包含">"
 	 * @throws `RangeError` 无效的属性名
 	 */
-	setAttr(key, value, init) {
-		init &&= !externalUse('setAttr');
+	setAttr(key, value) {
 		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
 			this.typeError('setAttr', 'String', 'Boolean');
-		} else if (!init && this.type === 'ext-attr' && typeof value === 'string' && value.includes('>')) {
+		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
 		key = key.toLowerCase().trim();
+		const attr = this.getAttrToken(key);
+		if (attr) {
+			attr.setValue(value);
+			return;
+		} else if (value === false) {
+			return;
+		}
 		const config = this.getAttribute('config'),
 			include = this.getAttribute('include'),
-			parsedKey = this.type === 'ext-attr' || init
+			parsedKey = this.type === 'ext-attrs'
 				? key
 				: Parser.run(() => {
 					const token = new Token(key, config),
@@ -217,19 +209,12 @@ class AttributesToken extends Token {
 					return String(parseOnce());
 				});
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
-			if (init) {
-				return false;
-			}
 			throw new RangeError(`无效的属性名：${key}！`);
-		} else if (value === false) {
-			this.#attr.delete(key);
-		} else {
-			this.#attr.set(key, value === true ? true : value.replace(/\s/gu, ' ').trim());
 		}
-		if (!init) {
-			this.sanitize();
-		}
-		return true;
+		const newAttr = Parser.run(() => new AttributeToken(
+			this.type.slice(0, -1), key, value === true ? '=' : '', ['"', '"'], value, config,
+		));
+		this.insertAt(newAttr);
 	}
 
 	/**
@@ -240,22 +225,39 @@ class AttributesToken extends Token {
 	lint(start = 0) {
 		const HtmlToken = require('./html');
 		const errors = super.lint(start);
-		let /** @type {{top: number, left: number}} */ rect;
-		if (this.type === 'html-attr' && this.parentNode.closing && this.text().trim()) {
-			rect = this.getRootNode().posFromIndex(start);
-			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
+		let refError;
+		if (this.type === 'html-attrs' && this.parentNode.closing && this.text().trim()) {
+			refError = generateForSelf(this, {start}, '位于闭合标签的属性');
+			errors.push(refError);
 		}
-		if (this.#dirty) {
-			rect ||= this.getRootNode().posFromIndex(start);
-			const {index} = this.#dirty,
-				error = generateForSelf(this, rect, '包含无效属性');
-			errors.push({...error, excerpt: String(this).slice(index, index + 50)});
-		} else if (!this.#quoteBalance) {
-			rect ||= this.getRootNode().posFromIndex(start);
-			const error = generateForSelf(this, rect, '未闭合的引号', 'warning');
-			errors.push({...error, excerpt: String(this).slice(-50)});
+		if (!this.sanitized) {
+			refError ||= generateForSelf(this, {start}, '');
+			refError.message = '包含无效属性';
+			const {childNodes} = this;
+			for (const attr of this.getDirtyAttrs()) {
+				const index = childNodes.indexOf(attr);
+				errors.push({...refError, excerpt: childNodes.slice(index).map(String).join('').slice(0, 50)});
+			}
 		}
 		return errors;
+	}
+
+	/** 清理标签属性 */
+	sanitize() {
+		const AstText = require('../lib/text');
+		const unexpected = new Set(['ext', 'arg', 'magic-word', 'template', 'heading', 'html']),
+			/** @type {{childNodes: AstText[]}} */ {childNodes} = this;
+		let dirty = false;
+		for (let i = childNodes.length - 1; i >= 0; i--) {
+			const {type, data} = childNodes[i];
+			if (type === 'text' && data.trim() || unexpected.has(type)) {
+				dirty = true;
+				this.removeAt(i);
+			}
+		}
+		if (!Parser.running && dirty) {
+			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
+		}
 	}
 
 	/** @override */
@@ -264,7 +266,7 @@ class AttributesToken extends Token {
 		return Parser.run(() => {
 			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
 			token.append(...cloned);
-			return token.afterBuild();
+			return token;
 		});
 	}
 
@@ -275,39 +277,7 @@ class AttributesToken extends Token {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		if (key === 'matchesAttr') {
-			return this.#matchesAttr;
-		}
-		return key === 'attr' ? new Map(this.#attr) : super.getAttribute(key);
-	}
-
-	/** @override */
-	afterBuild() {
-		if (this.type !== 'ext-attr') {
-			const buildFromStr = this.getAttribute('buildFromStr');
-			for (let [key, text] of this.#attr) {
-				let built = false;
-				if (key.includes('\0')) {
-					this.#attr.delete(key);
-					key = buildFromStr(key).map(String).join('');
-					built = true;
-				}
-				if (typeof text === 'string' && text.includes('\0')) {
-					text = buildFromStr(text).map(String).join('');
-					built = true;
-				}
-				if (built) {
-					this.#attr.set(key, text);
-				}
-			}
-		}
-		const /** @type {AstListener} */ attributeListener = ({type, target}) => {
-			if (type === 'text' || target !== this) {
-				this.#parseAttr();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], attributeListener);
-		return this;
+		return key === 'matchesAttr' ? this.#matchesAttr : super.getAttribute(key);
 	}
 
 	/**
@@ -315,36 +285,34 @@ class AttributesToken extends Token {
 	 * @param {string} key 属性键
 	 */
 	hasAttr(key) {
-		return typeof key === 'string' ? this.#attr.has(key.toLowerCase().trim()) : this.typeError('hasAttr', 'String');
+		return typeof key === 'string'
+			? this.getAttrTokens().length > 0
+			: this.typeError('hasAttr', 'String');
 	}
 
 	/** 获取全部的标签属性名 */
 	getAttrNames() {
-		return [...this.#attr.keys()];
+		return new Set(this.childNodes.filter(child => child instanceof AttributeToken).map(({name}) => name));
 	}
 
 	/** 标签是否具有任意属性 */
 	hasAttrs() {
-		return this.#attr.size > 0;
+		return this.getAttrNames().size > 0;
 	}
 
 	/** 获取全部标签属性 */
 	getAttrs() {
-		return Object.fromEntries(this.#attr);
+		const /** @type {AttributeToken[]} */ attrs = this.childNodes.filter(child => child instanceof AttributeToken);
+		return Object.fromEntries(attrs.map(({name, value}) => [name, value]));
 	}
 
 	/**
 	 * 移除标签属性
 	 * @param {string} key 属性键
-	 * @complexity `n`
 	 */
 	removeAttr(key) {
-		if (typeof key !== 'string') {
-			this.typeError('removeAttr', 'String');
-		}
-		key = key.toLowerCase().trim();
-		if (this.#attr.delete(key)) {
-			this.sanitize();
+		for (const attr of this.getAttrTokens(key)) {
+			attr.remove();
 		}
 	}
 
@@ -352,7 +320,6 @@ class AttributesToken extends Token {
 	 * 开关标签属性
 	 * @param {string} key 属性键
 	 * @param {boolean|undefined} force 强制开启或关闭
-	 * @complexity `n`
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key, force) {
@@ -362,11 +329,14 @@ class AttributesToken extends Token {
 			force = Boolean(force);
 		}
 		key = key.toLowerCase().trim();
-		const value = this.#attr.has(key) ? this.#attr.get(key) : false;
-		if (typeof value !== 'boolean') {
+		const attr = this.getAttrToken(key);
+		if (attr && attr.getValue() !== true) {
 			throw new RangeError(`${key} 属性的值不为 Boolean！`);
+		} else if (attr) {
+			attr.setValue(force === true);
+		} else if (force !== false) {
+			this.setAttr(key, true);
 		}
-		this.setAttr(key, force === true || force === undefined && value === false);
 	}
 
 	/**
@@ -375,17 +345,16 @@ class AttributesToken extends Token {
 	 */
 	#leadingSpace(str = super.toString()) {
 		const {type} = this,
-			leadingRegex = {'ext-attr': /^\s/u, 'html-attr': /^[/\s]/u};
-		return str && type !== 'table-attr' && !leadingRegex[type].test(str) ? ' ' : '';
+			leadingRegex = {'ext-attrs': /^\s/u, 'html-attrs': /^[/\s]/u};
+		return str && type !== 'table-attrs' && !leadingRegex[type].test(str) ? ' ' : '';
 	}
 
 	/**
 	 * @override
-	 * @this {AttributesToken & Token}
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		if (this.type === 'table-attr') {
+		if (this.type === 'table-attrs') {
 			normalizeSpace(this);
 		}
 		const str = super.toString(selector);
@@ -399,64 +368,11 @@ class AttributesToken extends Token {
 
 	/** @override */
 	text() {
-		if (this.type === 'table-attr') {
+		if (this.type === 'table-attrs') {
 			normalizeSpace(this);
 		}
-		const str = this.#updateFromAttr();
+		const str = text(this.childNodes.filter(child => child instanceof AttributeToken), ' ');
 		return `${this.#leadingSpace(str)}${str}`;
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @param {boolean} done 是否已解析过改变后的标签属性
-	 * @complexity `n`
-	 */
-	removeAt(i, done) {
-		done &&= !externalUse('removeAt');
-		done ||= Parser.running;
-		const token = super.removeAt(i);
-		if (!done) {
-			this.#parseAttr();
-		}
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @template {Token} T
-	 * @param {T} token 待插入的节点
-	 * @param {number} i 插入位置
-	 * @param {boolean} done 是否已解析过改变后的标签属性
-	 * @complexity `n`
-	 */
-	insertAt(token, i = this.childNodes.length, done = false) {
-		done &&= !externalUse('insertAt');
-		done ||= Parser.running;
-		super.insertAt(token, i);
-		if (!done) {
-			this.#parseAttr();
-		}
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @param {...Token} elements 待替换的子节点
-	 * @complexity `n²`
-	 */
-	replaceChildren(...elements) {
-		let done = false;
-		if (typeof elements.at(-1) === 'boolean') {
-			done = elements.pop();
-		}
-		done &&= !externalUse('replaceChildren');
-		for (let i = this.childNodes.length - 1; i >= 0; i--) {
-			this.removeAt(i, done);
-		}
-		for (const element of elements) {
-			this.insertAt(element, undefined, done);
-		}
 	}
 }
 

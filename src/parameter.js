@@ -203,9 +203,7 @@ class ParameterToken extends fixedToken(Token) {
 	 * @throws `RangeError` 更名造成重复参数
 	 */
 	rename(key, force) {
-		if (typeof key !== 'string') {
-			this.typeError('rename', 'String');
-		}
+		key = String(key);
 		const TranscludeToken = require('./transclude');
 		const {parentNode} = this;
 		// 必须检测是否是TranscludeToken
