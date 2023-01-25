@@ -6,9 +6,9 @@ const {explode} = require('../../util/string'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
 
-const frameKeys = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
-	horizAlignKeys = new Set(['left', 'right', 'center', 'none']),
-	vertAlignKeys = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
+const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
+	horizAlign = new Set(['left', 'right', 'center', 'none']),
+	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
 
 /**
  * 图片
@@ -35,25 +35,45 @@ class FileToken extends LinkToken {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			frameArgs = this.getFrameArgs(),
-			horizAlignArgs = this.getHorizAlignArgs(),
-			vertAlignArgs = this.getVertAlignArgs(),
-			captions = this.getArgs('caption'),
-			realCaptions = [...captions.slice(0, -1).filter(arg => arg.text()), captions[captions.length - 1]];
-		if (frameArgs.length > 1 || horizAlignArgs.length > 1 || vertAlignArgs.length > 1 || captions.size > 1) {
-			const rect = this.getRootNode().posFromIndex(start);
-			if (frameArgs.length > 1) {
-				errors.push(...frameArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片框架参数')));
+			args = this.getAllArgs(),
+			keys = [...new Set(args.map(({name}) => name))],
+			frameKeys = keys.filter(key => frame.has(key)),
+			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
+			vertAlignKeys = keys.filter(key => vertAlign.has(key));
+		if (args.length === keys.length
+			&& frameKeys.length < 2 && horizAlignKeys.length < 2 && vertAlignKeys.length < 2
+		) {
+			return errors;
+		}
+		const rect = this.getRootNode().posFromIndex(start);
+		for (const key of keys) {
+			let relevantArgs = args.filter(({name}) => name === key);
+			if (key === 'caption') {
+				relevantArgs = [
+					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
+					relevantArgs[relevantArgs.length - 1],
+				];
 			}
-			if (horizAlignArgs.length > 1) {
-				errors.push(...horizAlignArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片水平对齐参数')));
+			if (relevantArgs.length > 1) {
+				errors.push(...relevantArgs.map(arg => generateForChild(arg, rect, `重复的图片${key}参数`)));
 			}
-			if (vertAlignArgs.length > 1) {
-				errors.push(...vertAlignArgs.map(arg => generateForChild(arg, rect, '重复或冲突的图片垂直对齐参数')));
-			}
-			if (realCaptions.length > 1) {
-				errors.push(...realCaptions.map(arg => generateForChild(arg, rect, '重复的图片说明')));
-			}
+		}
+		if (frameKeys.size > 1) {
+			errors.push(
+				...args.filter(({name}) => frame.has(name)).map(arg => generateForChild(arg, rect, '冲突的图片框架参数')),
+			);
+		}
+		if (horizAlignKeys.size > 1) {
+			errors.push(
+				...args.filter(({name}) => horizAlign.has(name))
+					.map(arg => generateForChild(arg, rect, '冲突的图片水平对齐参数')),
+			);
+		}
+		if (vertAlignKeys.size > 1) {
+			errors.push(
+				...args.filter(({name}) => vertAlign.has(name))
+					.map(arg => generateForChild(arg, rect, '冲突的图片垂直对齐参数')),
+			);
 		}
 		return errors;
 	}
@@ -88,17 +108,17 @@ class FileToken extends LinkToken {
 
 	/** 获取图片框架属性参数节点 */
 	getFrameArgs() {
-		return this.#getTypedArgs(frameKeys, '框架');
+		return this.#getTypedArgs(frame, '框架');
 	}
 
 	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs() {
-		return this.#getTypedArgs(horizAlignKeys, '水平对齐');
+		return this.#getTypedArgs(horizAlign, '水平对齐');
 	}
 
 	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs() {
-		return this.#getTypedArgs(vertAlignKeys, '垂直对齐');
+		return this.#getTypedArgs(vertAlign, '垂直对齐');
 	}
 }
 
