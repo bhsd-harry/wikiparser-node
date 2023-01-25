@@ -1,8 +1,9 @@
 'use strict';
 
-const Parser = require('../..'),
-	path = require('path'),
+const {generateForSelf} = require('../../util/lint'),
 	attributeParent = require('../../mixin/attributeParent'),
+	path = require('path'),
+	Parser = require('../..'),
 	Token = require('..'),
 	TagPairToken = require('.'),
 	AttributesToken = require('../attributes');
@@ -115,6 +116,18 @@ class ExtToken extends attributeParent(TagPairToken) {
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start);
+		if (this.closest('html-attrs, table-attrs')) {
+			errors.push(generateForSelf(this, {start}, 'HTML标签属性中的扩展标签'));
+		}
+		return errors;
 	}
 }
 

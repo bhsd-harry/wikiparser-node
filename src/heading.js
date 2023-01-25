@@ -94,6 +94,10 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			refError ||= generateForSelf(this, {start}, '');
 			errors.push({...refError, message: '段落标题中不平衡的"="'});
 		}
+		if (this.closest('html-attrs, table-attrs')) {
+			refError ||= generateForSelf(this, {start}, '');
+			errors.push({...refError, message: 'HTML标签属性中的段落标题'});
+		}
 		return errors;
 	}
 
