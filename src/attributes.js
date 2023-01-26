@@ -206,7 +206,13 @@ class AttributesToken extends Token {
 	 */
 	print() {
 		const HtmlToken = require('./html');
-		return super.print({class: this.parentNode.closing && this.text().trim() && `${this.type} wpb-error`});
+		return String(this)
+			? `<span class="wpb-${this.type}${
+				this.parentNode.closing && this.text().trim() ? ' wpb-error' : ''
+			}">${this.childNodes.map(child => child.print({
+				class: child instanceof AtomToken && child.text().trim() && 'hidden',
+			})).join('')}</span>`
+			: '';
 	}
 
 	/** 清理标签属性 */
