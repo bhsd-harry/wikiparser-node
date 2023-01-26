@@ -7,8 +7,7 @@
 .wpb-error {
 	text-decoration: underline wavy #f00 1px;
 }
-.wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
-.wpb-ext-attr-dirty, .wpb-html-attr-dirty, .wpb-table-attr-dirty {
+.wpb-hidden, .wpb-table-inter, .wpb-table-inter span {
 	color: #f00;
 	font-weight: normal;
 	text-decoration: underline wavy 1px;
@@ -29,7 +28,7 @@
 .wpb-ext-attrs, .wpb-html-attrs {
 	font-weight: normal;
 }
-.wpb-ext-attr > .attr-value, .wpb-html-attr > .attr-value {
+.wpb-ext-attr > .wpb-attr-value, .wpb-html-attr > .wpb-attr-value {
 	color: #179b1c;
 }
 .wpb-ext-inner {
@@ -85,7 +84,7 @@
 .wpb-table-attrs {
 	font-weight: normal;
 }
-.wpb-table-attr > .attr-value {
+.wpb-table-attr > .wpb-attr-value {
 	color: #f500d4;
 }
 .wpb-td-inner {
