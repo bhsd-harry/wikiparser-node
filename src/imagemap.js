@@ -118,7 +118,7 @@ class ImagemapToken extends Token {
 
 	/** @override */
 	print() {
-		return super.print({sep: '\n'});
+		return super.print({sep: '\n', class: !this.image && 'ext-inner wpb-error'});
 	}
 
 	/**

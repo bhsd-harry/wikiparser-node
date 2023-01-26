@@ -57,7 +57,9 @@ class HtmlToken extends Token {
 	/** @override */
 	print() {
 		return super.print({
-			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`, post: `${this.#selfClosing ? '/' : ''}&gt;`,
+			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
+			post: `${this.#selfClosing ? '/' : ''}&gt;`,
+			class: this.closest('table-attrs') && 'html wpb-error',
 		});
 	}
 

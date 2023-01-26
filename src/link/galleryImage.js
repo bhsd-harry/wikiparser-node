@@ -60,6 +60,11 @@ class GalleryImageToken extends FileToken {
 		}
 		return errors;
 	}
+
+	/** @override */
+	print() {
+		return super.print({class: this.#invalid && 'gallery-image wpb-error'});
+	}
 }
 
 module.exports = GalleryImageToken;
