@@ -43,10 +43,11 @@ const sol = Constructor => class SolToken extends Constructor {
 
 	/**
 	 * 还原为wikitext
+	 * @this {SolToken & Token}
 	 * @param {string} selector
 	 */
 	toString(selector) {
-		return `${this.prependNewLine()}${super.toString(selector)}`;
+		return selector && this.matches(selector) ? '' : `${this.prependNewLine()}${super.toString(selector)}`;
 	}
 
 	/** 获取padding */

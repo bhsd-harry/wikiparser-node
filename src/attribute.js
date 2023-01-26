@@ -74,6 +74,9 @@ class AttributeToken extends fixedToken(Token) {
 	 * @returns {string}
 	 */
 	toString(selector) {
+		if (selector && this.matches(selector)) {
+			return '';
+		}
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
 			? `${super.toString(selector, `${this.#equal}${quoteStart}`)}${quoteEnd}`

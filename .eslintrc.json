@@ -221,7 +221,8 @@
 				"allow": [
 					"root",
 					"escape",
-					"constructor"
+					"constructor",
+					"process"
 				]
 			}
 		],
