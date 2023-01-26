@@ -38,20 +38,6 @@ declare global {
 		run<T>(callback: () => T): T;
 
 		/**
-		 * 以HTML格式显示wikitext
-		 * @param {string} wikitext wikitext
-		 * @param {boolean} include 是否嵌入
-		 */
-		print(wikitext: string, include?: boolean, config?: ParserConfig): string;
-
-		/**
-		 * 生成语法错误
-		 * @param {string} wikitext wikitext
-		 * @param {boolean} include 是否嵌入
-		 */
-		lint(wikitext: string, include?: boolean, config?: ParserConfig): LintError[];
-
-		/**
 		 * @param {string} msg 消息
 		 * @param {...*} args 更多信息
 		 */

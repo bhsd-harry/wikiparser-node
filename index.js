@@ -49,21 +49,11 @@ const /** @type {Parser} */ Parser = {
 	run(callback) {
 		return callback();
 	},
-
-	print(wikitext, include = false, config = Parser.getConfig()) {
-		const token = this.parse(wikitext, include, this.MAX_STAGE, config);
-		return `<div class="wikiparser">${token.print()} </div>`;
-	},
-
-	lint(wikitext, include = false, config = Parser.getConfig()) {
-		const token = this.parse(wikitext, include, this.MAX_STAGE, config);
-		return token.lint();
-	},
 };
 
 const /** @type {PropertyDescriptorMap} */ def = {},
 	immutable = new Set(['MAX_STAGE', 'minConfig']),
-	enumerable = new Set(['config', 'normalizeTitle', 'parse', 'print', 'lint']);
+	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
 for (const key in Parser) {
 	if (immutable.has(key)) {
 		def[key] = {enumerable: false, writable: false};
