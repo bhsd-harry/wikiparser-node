@@ -111,7 +111,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start);
-		if (this.closest('html-attrs, table-attrs')) {
+		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			errors.push(generateForSelf(this, {start}, 'HTML标签属性中的扩展标签'));
 		}
 		return errors;
@@ -119,7 +119,9 @@ class ExtToken extends attributeParent(TagPairToken) {
 
 	/** @override */
 	print() {
-		return super.print({class: this.closest('html-attrs, table-attrs') && 'ext wpb-error'});
+		return super.print({
+			class: this.name !== 'nowiki' && this.closest('html-attrs, table-attrs') && 'ext wpb-error',
+		});
 	}
 
 	/** @override */
