@@ -1,6 +1,7 @@
 'use strict';
 
 const {generateForSelf, generateForChild} = require('../util/lint'),
+	{removeComment} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom'),
@@ -29,7 +30,7 @@ class AttributesToken extends Token {
 		this.setAttribute('name', name);
 		if (attr) {
 			const regex = new RegExp(
-				'((?!\0\\d+c\x7F)[^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
+				`([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)` // 属性名
 				+ '(?:'
 				+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
 				+ '(?:=|\0\\d+~\x7F)' // `=`
@@ -51,7 +52,7 @@ class AttributesToken extends Token {
 			while (mt) {
 				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
 				out += attr.slice(lastIndex, index);
-				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(key)) {
+				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
 						token = new AttributeToken(type.slice(0, -1), key, equal, value, quotes, config, accum);
