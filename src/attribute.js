@@ -256,7 +256,7 @@ class AttributeToken extends fixedToken(Token) {
 			const e = generateForChild(lastChild, rect, '未闭合的引号', 'warning');
 			errors.push({...e, startCol: e.startCol - 1, excerpt: String(lastChild).slice(-50)});
 		}
-		if (this.text().trim() && (
+		if (!/\{\{[^{]+\}\}/u.test(name) && (
 			type === 'ext-attr' && !(tagName in htmlAttrs) && extAttrs[tagName] && !extAttrs[tagName].has(name)
 			|| (type === 'html-attr' || type === 'table-attr' || tagName in htmlAttrs) && !htmlAttrs[tagName]?.has(name)
 			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
