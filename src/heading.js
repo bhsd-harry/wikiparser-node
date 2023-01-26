@@ -74,8 +74,14 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/** @override */
 	print() {
-		const equals = '='.repeat(Number(this.name));
-		return super.print({pre: equals, sep: equals});
+		const equals = '='.repeat(Number(this.name)),
+			innerText = String(this.firstChild);
+		return super.print({
+			pre: equals,
+			sep: equals,
+			class: (innerText[0] === '=' || innerText.at(-1) === '=' || this.closest('html-attrs, table-attrs'))
+				&& 'heading wpb-error',
+		});
 	}
 
 	/**

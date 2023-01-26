@@ -98,6 +98,11 @@ class GalleryImageToken extends singleLine(FileToken) {
 		return errors;
 	}
 
+	/** @override */
+	print() {
+		return super.print({class: this.#invalid && 'gallery-image wpb-error'});
+	}
+
 	/**
 	 * @override
 	 * @param {string} link 链接目标

@@ -129,6 +129,11 @@ class ExtToken extends attributeParent(TagPairToken) {
 		}
 		return errors;
 	}
+
+	/** @override */
+	print() {
+		return super.print({class: this.closest('html-attrs, table-attrs') && 'ext wpb-error'});
+	}
 }
 
 Parser.classes.ExtToken = __filename;

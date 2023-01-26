@@ -184,7 +184,7 @@ class AttributesToken extends Token {
 		const HtmlToken = require('./html');
 		const errors = super.lint(start);
 		let rect;
-		if (this.type === 'html-attrs' && this.parentNode.closing && this.text().trim()) {
+		if (this.parentNode.closing && this.text().trim()) {
 			rect = this.getRootNode().posFromIndex(start);
 			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}
@@ -198,6 +198,15 @@ class AttributesToken extends Token {
 			}
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @this {AttributesToken & {parentNode: HtmlToken}}
+	 */
+	print() {
+		const HtmlToken = require('./html');
+		return super.print({class: this.parentNode.closing && this.text().trim() && `${this.type} wpb-error`});
 	}
 
 	/** 清理标签属性 */

@@ -32,6 +32,15 @@ class NowikiToken extends fixedToken(Token) {
 			: super.lint(start);
 	}
 
+	/** @override */
+	print() {
+		const {type, name} = this;
+		return super.print({
+			class: type === 'ext-inner' && (name === 'templatestyles' || name === 'section') && String(this)
+				&& 'ext-inner wpb-error',
+		});
+	}
+
 	/**
 	 * @override
 	 * @this {NowikiToken & {firstChild: AstText, constructor: typeof NowikiToken}}
