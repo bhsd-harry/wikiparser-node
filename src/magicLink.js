@@ -12,19 +12,6 @@ class MagicLinkToken extends Token {
 	type = 'free-ext-link';
 
 	/**
-	 * @param {string} url 网址
-	 * @param {boolean} doubleSlash 是否接受"//"作为协议
-	 * @param {accum} accum
-	 */
-	constructor(url, doubleSlash, config = Parser.getConfig(), accum = []) {
-		super(url, config, true, accum, {
-		});
-		if (doubleSlash) {
-			this.type = 'ext-link-url';
-		}
-	}
-
-	/**
 	 * @override
 	 * @param {number} start 起始位置
 	 */
@@ -52,6 +39,19 @@ class MagicLinkToken extends Token {
 			}
 		}
 		return errors;
+	}
+
+	/**
+	 * @param {string} url 网址
+	 * @param {boolean} doubleSlash 是否接受"//"作为协议
+	 * @param {accum} accum
+	 */
+	constructor(url, doubleSlash, config = Parser.getConfig(), accum = []) {
+		super(url, config, true, accum, {
+		});
+		if (doubleSlash) {
+			this.type = 'ext-link-url';
+		}
 	}
 }
 

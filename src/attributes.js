@@ -1,6 +1,6 @@
 'use strict';
 
-const {generateForSelf} = require('../util/lint'),
+const {generateForSelf, generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom'),
@@ -8,7 +8,7 @@ const {generateForSelf} = require('../util/lint'),
 
 /**
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: ...AstText|ArgToken|TranscludeToken|AttributeToken}`
+ * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
 class AttributesToken extends Token {
 	/** 是否含有无效属性 */
@@ -43,7 +43,7 @@ class AttributesToken extends Token {
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ () => {
 				if (out) {
-					this.insertAt(new AtomToken(out, `${type.slice(0, -1)}-dirty`, config, accum, {
+					super.insertAt(new AtomToken(out, `${type.slice(0, -1)}-dirty`, config, accum, {
 					}));
 					out = '';
 				}
@@ -56,7 +56,7 @@ class AttributesToken extends Token {
 						quotes = [quoteStart, quoteEnd],
 						token = new AttributeToken(type.slice(0, -1), key, equal, value, quotes, config, accum);
 					insertDirty();
-					this.insertAt(token);
+					super.insertAt(token);
 				} else {
 					out += full;
 				}
@@ -70,7 +70,7 @@ class AttributesToken extends Token {
 
 	/**
 	 * 所有无效属性
-	 * @returns {(AstText|Token)[]}
+	 * @returns {AtomToken[]}
 	 */
 	getDirtyAttrs() {
 		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
@@ -112,18 +112,18 @@ class AttributesToken extends Token {
 	lint(start = 0) {
 		const HtmlToken = require('./html');
 		const errors = super.lint(start);
-		let refError;
-		if (this.type === 'html-attrs' && this.parentNode.closing && this.text().trim()) {
-			refError = generateForSelf(this, {start}, '位于闭合标签的属性');
-			errors.push(refError);
+		let rect;
+		if (this.parentNode.closing && this.text().trim()) {
+			rect = this.getRootNode().posFromIndex(start);
+			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}
 		if (!this.sanitized) {
-			refError ||= generateForSelf(this, {start}, '');
-			refError.message = '包含无效属性';
+			rect ||= this.getRootNode().posFromIndex(start);
 			const {childNodes} = this;
 			for (const attr of this.getDirtyAttrs()) {
-				const index = childNodes.indexOf(attr);
-				errors.push({...refError, excerpt: childNodes.slice(index).map(String).join('').slice(0, 50)});
+				const index = childNodes.indexOf(attr),
+					error = generateForChild(attr, rect, '包含无效属性');
+				errors.push({...error, excerpt: childNodes.slice(index).map(String).join('').slice(0, 50)});
 			}
 		}
 		return errors;

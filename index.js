@@ -39,7 +39,9 @@ const /** @type {Parser} */ Parser = {
 				token = wikitext;
 				wikitext = String(token);
 			}
-			token.parse(maxStage, include);
+			try {
+				token.parse(maxStage, include);
+			} catch {}
 		});
 		return token;
 	},
