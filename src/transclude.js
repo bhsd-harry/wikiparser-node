@@ -68,7 +68,8 @@ class TranscludeToken extends Token {
 		}
 		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
 			const [magicWord, ...arg] = title.split(':'),
-				name = removeComment(magicWord)[arg.length > 0 ? 'trimStart' : 'trim'](),
+				cleaned = removeComment(magicWord),
+				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
 				isSensitive = sensitive.includes(name),
 				canonicalCame = insensitive[name.toLowerCase()];
 			if (isSensitive || canonicalCame) {
