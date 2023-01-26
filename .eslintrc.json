@@ -229,18 +229,7 @@
 		"no-shadow": [
 			2,
 			{
-				"builtinGlobals": true,
-				"allow": [
-					"root",
-					"parent",
-					"top",
-					"length",
-					"open",
-					"close",
-					"closed",
-					"name",
-					"print"
-				]
+				"builtinGlobals": false
 			}
 		],
 		"no-throw-literal": 2,
