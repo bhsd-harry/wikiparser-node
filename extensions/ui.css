@@ -4,6 +4,9 @@
 	font-family: monospace;
 }
 
+.wpb-error {
+	text-decoration: underline wavy #f00 1px;
+}
 .wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
 .wpb-ext-attr-dirty, .wpb-html-attr-dirty, .wpb-table-attr-dirty {
 	color: #f00;

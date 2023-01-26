@@ -63,7 +63,7 @@ class HeadingToken extends Token {
 		return super.print({
 			pre: equals,
 			sep: equals,
-			class: (innerText[0] === '=' || innerText.at(-1) === '=' || this.closest('html-attrs, table-attrs'))
+			class: (innerText[0] === '=' || innerText.endsWith('=') || this.closest('html-attrs, table-attrs'))
 				&& 'heading wpb-error',
 		});
 	}
