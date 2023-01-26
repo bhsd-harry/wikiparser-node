@@ -138,6 +138,18 @@ class AttributesToken extends Token {
 	}
 
 	/**
+	 * @override
+	 * @this {AttributesToken & {parentNode: TdToken}}
+	 */
+	afterBuild() {
+		const TdToken = require('./table/td');
+		if (this.type === 'table-attrs') {
+			this.setAttribute('name', this.parentNode?.subtype === 'caption' ? 'caption' : this.parentNode?.type);
+		}
+		return this;
+	}
+
+	/**
 	 * 所有无效属性
 	 * @returns {AtomToken[]}
 	 */
