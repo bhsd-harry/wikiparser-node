@@ -1,7 +1,7 @@
 .wikiparse-container {
 	position: relative;
 }
-.wikiparsed, #wikiPretty {
+#wikiPretty + .wikiparsed, #wikiPretty {
 	outline: none;
 	border: 1.5px solid #dedede !important;
 	border-radius: 0;
