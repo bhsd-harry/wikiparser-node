@@ -98,7 +98,10 @@ class FileToken extends LinkToken {
 		for (const key of keys) {
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {
-				relevantArgs = [...relevantArgs.slice(0, -1).filter(arg => arg.text()), relevantArgs.at(-1)];
+				relevantArgs = [
+					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
+					relevantArgs.at(-1),
+				];
 			}
 			if (relevantArgs.length > 1) {
 				errors.push(...relevantArgs.map(arg => generateForChild(arg, rect, `重复的图片${key}参数`)));

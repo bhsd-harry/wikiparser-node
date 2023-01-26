@@ -43,11 +43,11 @@
  * v: ConverterToken
  */
 
-const Parser = require('..'),
+const {text} = require('../util/string'),
 	{externalUse} = require('../util/debug'),
-	{text} = require('../util/string'),
-	Ranges = require('../lib/ranges'),
 	assert = require('assert/strict'),
+	Ranges = require('../lib/ranges'),
+	Parser = require('..'),
 	AstElement = require('../lib/element'),
 	AstText = require('../lib/text');
 const {MAX_STAGE, aliases} = Parser;
