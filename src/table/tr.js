@@ -25,7 +25,7 @@ class TrToken extends Token {
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 			}),
-			new AttributesToken(attr, 'table-attrs', 'tr', config, accum),
+			new AttributesToken(attr, 'table-attrs', this.type, config, accum),
 		);
 	}
 

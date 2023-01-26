@@ -6,6 +6,116 @@ const {generateForChild} = require('../util/lint'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 
+const commonHtmlAttrs = new Set([
+		'id',
+		'class',
+		'style',
+		'lang',
+		'dir',
+		'title',
+		'tabindex',
+		'aria-describedby',
+		'aria-flowto',
+		'aria-hidden',
+		'aria-label',
+		'aria-labelledby',
+		'aria-owns',
+		'role',
+		'about',
+		'property',
+		'resource',
+		'datatype',
+		'typeof',
+		'itemid',
+		'itemprop',
+		'itemref',
+		'itemscope',
+		'itemtype',
+	]),
+	blockAttrs = new Set(['align']),
+	citeAttrs = new Set(['cite']),
+	citeAndAttrs = new Set(['cite', 'datetime']),
+	widthAttrs = new Set(['width']),
+	tdAttrs = new Set(
+		['align', 'valign', 'abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'width', 'height', 'bgcolor'],
+	),
+	typeAttrs = new Set(['type']),
+	htmlAttrs = {
+		div: blockAttrs,
+		h1: blockAttrs,
+		h2: blockAttrs,
+		h3: blockAttrs,
+		h4: blockAttrs,
+		h5: blockAttrs,
+		h6: blockAttrs,
+		blockquote: citeAttrs,
+		q: citeAttrs,
+		p: blockAttrs,
+		br: new Set(['clear']),
+		pre: widthAttrs,
+		ins: citeAndAttrs,
+		del: citeAndAttrs,
+		ul: typeAttrs,
+		ol: new Set(['type', 'start', 'reversed']),
+		li: new Set(['type', 'value']),
+		table: new Set(
+			['summary', 'width', 'border', 'frame', 'rules', 'cellspacing', 'cellpadding', 'align', 'bgcolor'],
+		),
+		caption: blockAttrs,
+		tr: new Set(['bgcolor', 'align', 'valign']),
+		td: tdAttrs,
+		th: tdAttrs,
+		img: new Set(['alt', 'src', 'width', 'height', 'srcset']),
+		font: new Set(['size', 'color', 'face']),
+		hr: widthAttrs,
+		rt: new Set(['rbspan']),
+		data: new Set(['value']),
+		time: new Set(['datetime']),
+		meta: new Set(['itemprop', 'content']),
+		link: new Set(['itemprop', 'href', 'title']),
+		gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails', 'type']),
+		poem: new Set(['compact', 'align']),
+		categorytree: new Set(['align', 'hideroot', 'onlyroot', 'depth', 'mode', 'hideprefix']),
+		combooption: new Set(['name', 'for', 'inline', 'align']),
+	},
+	empty = new Set(),
+	extAttrs = {
+		nowiki: empty,
+		indicator: new Set(['name']),
+		langconvert: new Set(['from', 'to']),
+		ref: new Set(['group', 'name', 'extends', 'follow', 'dir']),
+		references: new Set(['group', 'responsive']),
+		charinsert: new Set(['label']),
+		choose: new Set(['uncached', 'before', 'after']),
+		option: new Set(['weight']),
+		imagemap: empty,
+		inputbox: empty,
+		templatestyles: new Set(['src', 'wrapper']),
+		dynamicpagelist: empty,
+		poll: new Set(['id', 'show-result-before-voting']),
+		sm2: typeAttrs,
+		flashmp3: typeAttrs,
+		tab: new Set([
+			'nested',
+			'name',
+			'index',
+			'class',
+			'block',
+			'inline',
+			'openname',
+			'closename',
+			'collapsed',
+			'dropdown',
+			'style',
+			'bgcolor',
+			'container',
+			'id',
+			'title',
+		]),
+		tabs: new Set(['plain', 'class', 'container', 'id', 'title', 'style']),
+		combobox: new Set(['placeholder', 'value', 'id', 'class', 'text', 'dropdown', 'style']),
+	};
+
 /**
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
@@ -40,7 +150,7 @@ class AttributeToken extends Token {
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = quotes;
-		this.setAttribute('name', removeComment(key).trim());
+		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
 	/** @override */
@@ -48,6 +158,7 @@ class AttributeToken extends Token {
 		if (this.#equal.includes('\0')) {
 			this.#equal = this.getAttribute('buildFromStr')(this.#equal, 'string');
 		}
+		return this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
 	/**
@@ -85,11 +196,23 @@ class AttributeToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const errors = super.lint(start);
-		if (!this.balanced) {
-			const {lastChild} = this,
-				e = generateForChild(lastChild, {token: this, start}, '未闭合的引号', 'warning');
+		const errors = super.lint(start),
+			{balanced, firstChild, lastChild, type, name, parentNode} = this,
+			tagName = parentNode?.name;
+		let rect;
+		if (!balanced) {
+			rect = this.getRootNode().posFromIndex(start);
+			const e = generateForChild(lastChild, rect, '未闭合的引号', 'warning');
 			errors.push({...e, startCol: e.startCol - 1});
+		}
+		if (this.text().trim() && (
+			type === 'ext-attr' && !(tagName in htmlAttrs) && extAttrs[tagName] && !extAttrs[tagName].has(name)
+			|| (type === 'html-attr' || type === 'table-attr' || tagName in htmlAttrs) && !htmlAttrs[tagName]?.has(name)
+			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
+			&& (tagName === 'meta' || tagName === 'link' || !commonHtmlAttrs.has(name))
+		)) {
+			rect ||= this.getRootNode().posFromIndex(start);
+			errors.push(generateForChild(firstChild, rect, '非法的属性名'));
 		}
 		return errors;
 	}
