@@ -217,13 +217,7 @@
 		"no-shadow": [
 			2,
 			{
-				"builtinGlobals": true,
-				"allow": [
-					"root",
-					"escape",
-					"constructor",
-					"process"
-				]
+				"builtinGlobals": false
 			}
 		],
 		"no-throw-literal": 2,
