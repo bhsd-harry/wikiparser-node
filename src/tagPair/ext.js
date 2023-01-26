@@ -105,19 +105,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
 
-	/** @override */
-	cloneNode() {
-		const inner = this.lastChild.cloneNode(),
-			tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			attr = String(this.firstChild);
-		return Parser.run(() => {
-			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
-			token.lastChild.safeReplaceWith(inner);
-			return token;
-		});
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置
@@ -133,6 +120,19 @@ class ExtToken extends attributeParent(TagPairToken) {
 	/** @override */
 	print() {
 		return super.print({class: this.closest('html-attrs, table-attrs') && 'ext wpb-error'});
+	}
+
+	/** @override */
+	cloneNode() {
+		const inner = this.lastChild.cloneNode(),
+			tags = this.getAttribute('tags'),
+			config = this.getAttribute('config'),
+			attr = String(this.firstChild);
+		return Parser.run(() => {
+			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
+			token.lastChild.safeReplaceWith(inner);
+			return token;
+		});
 	}
 }
 
