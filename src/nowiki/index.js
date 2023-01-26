@@ -29,15 +29,6 @@ class NowikiToken extends Token {
 			? [generateForSelf(this, {start}, `<${name}>标签内不应有任何内容`)]
 			: super.lint(start);
 	}
-
-	/** @override */
-	print() {
-		const {type, name} = this;
-		return super.print({
-			class: type === 'ext-inner' && (name === 'templatestyles' || name === 'section') && String(this)
-				&& 'ext-inner wpb-error',
-		});
-	}
 }
 
 module.exports = NowikiToken;
