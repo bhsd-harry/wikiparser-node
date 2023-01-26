@@ -13,6 +13,31 @@ class TdToken extends TrToken {
 	#innerSyntax = '';
 
 	/**
+	 * 单元格类型
+	 * @complexity `n`
+	 */
+	get subtype() {
+		return this.getSyntax().subtype;
+	}
+
+	/**
+	 * 获取单元格语法信息
+	 * @returns {{subtype: 'td'|'th'|'caption'}}
+	 * @complexity `n`
+	 */
+	getSyntax() {
+		const syntax = this.firstChild.text(),
+			char = syntax[syntax.length - 1];
+		let subtype = 'td';
+		if (char === '!') {
+			subtype = 'th';
+		} else if (char === '+') {
+			subtype = 'caption';
+		}
+		return {subtype};
+	}
+
+	/**
 	 * @param {string} syntax 单元格语法
 	 * @param {string} inner 内部wikitext
 	 * @param {accum} accum
