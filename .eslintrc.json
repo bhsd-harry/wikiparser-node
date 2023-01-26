@@ -216,10 +216,7 @@
 		"no-shadow": [
 			2,
 			{
-				"builtinGlobals": true,
-				"allow": [
-					"root"
-				]
+				"builtinGlobals": false
 			}
 		],
 		"no-throw-literal": 2,
