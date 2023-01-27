@@ -92,7 +92,7 @@ const commonHtmlAttrs = new Set([
 		inputbox: empty,
 		templatestyles: new Set(['src', 'wrapper']),
 		dynamicpagelist: empty,
-		poll: new Set(['id', 'show-result-before-voting']),
+		poll: new Set(['id', 'show-results-before-voting']),
 		sm2: typeAttrs,
 		flashmp3: typeAttrs,
 		tab: new Set([
