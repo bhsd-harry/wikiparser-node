@@ -96,7 +96,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 		inputbox: empty,
 		templatestyles: new Set(['src', 'wrapper']),
 		dynamicpagelist: empty,
-		poll: new Set(['id', 'show-result-before-voting']),
+		poll: new Set(['id', 'show-results-before-voting']),
 		sm2: typeAttrs,
 		flashmp3: typeAttrs,
 		score: new Set([
