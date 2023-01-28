@@ -107,8 +107,9 @@ class ExtToken extends TagPairToken {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
-				rect = {start, ...root.posFromIndex(start)};
-			errors.push(generateForSelf(this, rect, 'HTML标签属性中的扩展标签'));
+				rect = {start, ...root.posFromIndex(start)},
+				excerpt = String(root).slice(Math.max(0, start - 25), start + 25);
+			errors.push({...generateForSelf(this, rect, 'HTML标签属性中的扩展标签'), excerpt});
 		}
 		return errors;
 	}

@@ -75,7 +75,7 @@ class ParameterToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{firstChild} = this,
+			{firstChild, lastChild} = this,
 			link = new RegExp(`https?://${extUrlChar}$`, 'iu')
 				.exec(String(firstChild).replace(/<!--.*?-->/gu, ''))?.[0];
 		if (link && new URL(link).search) {
@@ -87,7 +87,7 @@ class ParameterToken extends Token {
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
-				excerpt: String(firstChild).slice(-50),
+				excerpt: `${String(firstChild).slice(-25)}=${String(lastChild).slice(0, 25)}`,
 			});
 		}
 		return errors;
