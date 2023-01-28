@@ -24,7 +24,7 @@ class ConverterRuleToken extends Token {
 
 	/** 是否是单向转换 */
 	get unidirectional() {
-		return this.childNodes.length === 3;
+		return this.length === 3;
 	}
 
 	set unidirectional(unidirectional) {
@@ -35,7 +35,7 @@ class ConverterRuleToken extends Token {
 
 	/** 是否是双向转换 */
 	get bidirectional() {
-		return this.childNodes.length === 2;
+		return this.length === 2;
 	}
 
 	/**
@@ -71,7 +71,7 @@ class ConverterRuleToken extends Token {
 	 * @returns {string}
 	 */
 	toString(selector) {
-		if (this.childNodes.length === 3 && !(selector && this.matches(selector))) {
+		if (this.length === 3 && !(selector && this.matches(selector))) {
 			const {childNodes: [from, variant, to]} = this;
 			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
 		}
@@ -83,7 +83,7 @@ class ConverterRuleToken extends Token {
 	 * @returns {string}
 	 */
 	text() {
-		if (this.childNodes.length === 3) {
+		if (this.length === 3) {
 			const {childNodes: [from, variant, to]} = this;
 			return `${from.text()}=>${variant.text()}:${to.text()}`;
 		}
@@ -102,7 +102,7 @@ class ConverterRuleToken extends Token {
 
 	/** @override */
 	print() {
-		if (this.childNodes.length === 3) {
+		if (this.length === 3) {
 			const {childNodes: [from, variant, to]} = this;
 			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
 		}
@@ -127,9 +127,9 @@ class ConverterRuleToken extends Token {
 	/** @override */
 	afterBuild() {
 		const /** @type {AstListener} */ converterRuleListener = (e, data) => {
-			const {childNodes} = this,
+			const {childNodes, length} = this,
 				{prevTarget} = e;
-			if (childNodes.length > 1 && childNodes.at(-2) === prevTarget) {
+			if (length > 1 && childNodes.at(-2) === prevTarget) {
 				const v = prevTarget.text().trim(),
 					{variants} = this.getAttribute('config');
 				if (!variants.includes(v)) {
@@ -149,11 +149,11 @@ class ConverterRuleToken extends Token {
 	 * @throws `Error` 至少保留1个子节点
 	 */
 	removeAt(i) {
-		if (this.childNodes.length === 1) {
+		if (this.length === 1) {
 			throw new Error(`${this.constructor.name} 需至少保留 1 个子节点！`);
 		}
 		const removed = super.removeAt(i);
-		if (this.childNodes.length === 1) {
+		if (this.length === 1) {
 			this.firstChild.type = 'converter-rule-noconvert';
 		}
 		return removed;
@@ -186,7 +186,7 @@ class ConverterRuleToken extends Token {
 			root = Parser.parse(`-{|${config.variants[0]}:${to}}-`, this.getAttribute('include'), undefined, config),
 			{length, firstChild: converter} = root,
 			{lastChild: converterRule, type, length: converterLength} = converter;
-		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 2) {
+		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.length !== 2) {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
 		const {lastChild} = converterRule;
@@ -207,7 +207,7 @@ class ConverterRuleToken extends Token {
 			v = variant.trim();
 		if (!config.variants.includes(v)) {
 			throw new RangeError(`无效的语言变体：${v}`);
-		} else if (this.childNodes.length === 1) {
+		} else if (this.length === 1) {
 			super.insertAt(Parser.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
 		} else {
 			this.childNodes.at(-2).setText(variant);
@@ -230,7 +230,7 @@ class ConverterRuleToken extends Token {
 			root = Parser.parse(`-{|${from}=>${variant}:}-`, this.getAttribute('include'), undefined, config),
 			{length, firstChild: converter} = root,
 			{type, length: converterLength, lastChild: converterRule} = converter;
-		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.childNodes.length !== 3) {
+		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		} else if (unidirectional) {
 			this.firstChild.safeReplaceWith(converterRule.firstChild);

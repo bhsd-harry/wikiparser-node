@@ -21,6 +21,8 @@ declare global {
 	interface LintError {
 		message: string;
 		severity: 'error'|'warning';
+		startIndex: number;
+		endIndex: number;
 		startLine: number;
 		startCol: number;
 		endLine: number;

@@ -27,7 +27,7 @@ const fixedToken = Constructor => class extends Constructor {
 	 * @param {number} i 插入位置
 	 * @throws `Error`
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		if (Parser.running) {
 			super.insertAt(token, i);
 			return token;

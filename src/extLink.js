@@ -40,7 +40,7 @@ class ExtLinkToken extends Token {
 
 	/** 链接显示文字 */
 	get innerText() {
-		return this.childNodes.length > 1
+		return this.length > 1
 			? this.lastChild.text()
 			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}
@@ -74,7 +74,7 @@ class ExtLinkToken extends Token {
 	toString(selector) {
 		if (selector && this.matches(selector)) {
 			return '';
-		} else if (this.childNodes.length === 1) {
+		} else if (this.length === 1) {
 			return `[${super.toString(selector)}${this.#space}]`;
 		}
 		this.#correct();
@@ -120,7 +120,7 @@ class ExtLinkToken extends Token {
 
 	/** 修正空白字符 */
 	#correct() {
-		if (!this.#space && this.childNodes.length > 1
+		if (!this.#space && this.length > 1
 			// 都替换成`<`肯定不对，但无妨
 			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
 		) {
@@ -145,7 +145,7 @@ class ExtLinkToken extends Token {
 		url = String(url);
 		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
-		if (length !== 1 || extLink.type !== 'ext-link' || extLink.childNodes.length !== 1) {
+		if (length !== 1 || extLink.type !== 'ext-link' || extLink.length !== 1) {
 			throw new SyntaxError(`非法的外链目标：${url}`);
 		}
 		const {firstChild} = extLink;
@@ -162,11 +162,11 @@ class ExtLinkToken extends Token {
 		text = String(text);
 		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
-		if (length !== 1 || extLink.type !== 'ext-link' || extLink.childNodes.length !== 2) {
+		if (length !== 1 || extLink.type !== 'ext-link' || extLink.length !== 2) {
 			throw new SyntaxError(`非法的外链文字：${noWrap(text)}`);
 		}
 		const {lastChild} = extLink;
-		if (this.childNodes.length === 1) {
+		if (this.length === 1) {
 			this.insertAt(lastChild);
 		} else {
 			this.lastChild.safeReplaceWith(lastChild);

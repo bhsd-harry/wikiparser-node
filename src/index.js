@@ -72,7 +72,7 @@ class Token extends AstElement {
 	 * @param {boolean} include 是否嵌入
 	 */
 	#parseOnce = (n = this.#stage, include = false) => {
-		if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
+		if (n < this.#stage || !this.isPlain() || this.length === 0) {
 			return this;
 		}
 		switch (n) {
@@ -306,18 +306,18 @@ class Token extends AstElement {
 	 * @returns {T extends Token ? Token : AstText}
 	 * @throws `RangeError` 不可插入的子节点
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		if (typeof token === 'string') {
 			token = new AstText(token);
 		}
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable)
-						.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length + 1)]),
+						.map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i),
 				{constructor: {name: insertedName}} = token,
-				k = i < 0 ? i + this.childNodes.length : i;
+				k = i < 0 ? i + this.length : i;
 			if (!acceptableIndices[insertedName].includes(k)) {
 				throw new RangeError(`${this.constructor.name} 的第 ${k} 个子节点不能为 ${insertedName}！`);
 			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(k + j + 1))) {
@@ -352,7 +352,7 @@ class Token extends AstElement {
 		if (!Number.isInteger(i)) {
 			this.typeError('removeAt', 'Number');
 		}
-		const iPos = i < 0 ? i + this.childNodes.length : i;
+		const iPos = i < 0 ? i + this.length : i;
 		if (!Parser.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
 			if (protectedIndices.includes(iPos)) {
@@ -360,7 +360,7 @@ class Token extends AstElement {
 			} else if (this.#acceptable) {
 				const acceptableIndices = Object.fromEntries(
 						Object.entries(this.#acceptable)
-							.map(([str, ranges]) => [str, ranges.applyTo(this.childNodes.length - 1)]),
+							.map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
 					),
 					nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
 				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name].includes(i + j))) {

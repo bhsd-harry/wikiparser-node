@@ -154,12 +154,12 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		const previous = this.childNodes.at(i - 1);
 		if (token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
-		} else if (i > 0 && i === this.childNodes.length && token instanceof SyntaxToken
+		} else if (i > 0 && i === this.length && token instanceof SyntaxToken
 			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
 		) {
 			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(String(token))}`);

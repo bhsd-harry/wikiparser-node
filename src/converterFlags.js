@@ -79,8 +79,8 @@ class ConverterFlagsToken extends Token {
 			return errors;
 		}
 		const rect = this.getRootNode().posFromIndex(start),
-			{childNodes} = this;
-		for (let i = 0; i < childNodes.length; i++) {
+			{childNodes, length} = this;
+		for (let i = 0; i < length; i++) {
 			const child = childNodes[i],
 				flag = child.text().trim();
 			if (flag && !variantFlags.has(flag) && !unknownFlags.has(flag)
@@ -156,7 +156,7 @@ class ConverterFlagsToken extends Token {
 	 * @param {number} i 插入位置
 	 * @complexity `n`
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		super.insertAt(token, i);
 		this.#flags?.splice(i, 0, token.text());
 		return token;

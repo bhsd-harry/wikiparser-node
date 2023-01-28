@@ -80,7 +80,7 @@ class GalleryToken extends Token {
 	lint(start = 0) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
 			/** @type {LintError[]} */ errors = [];
-		for (let i = 0, cur = start; i < this.childNodes.length; i++) {
+		for (let i = 0, cur = start; i < this.length; i++) {
 			const child = this.childNodes[i],
 				str = String(child),
 				trimmed = str.trim();
@@ -118,7 +118,7 @@ class GalleryToken extends Token {
 	 * @param {number} i 插入位置
 	 * @throws `SyntaxError` 非法的文件名
 	 */
-	insertImage(file, i = this.childNodes.length) {
+	insertImage(file, i = this.length) {
 		const title = this.normalizeTitle(file, 6, true, true);
 		if (title.valid) {
 			const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));

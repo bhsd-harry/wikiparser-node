@@ -179,7 +179,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @returns {T}
 	 * @complexity `n`
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		if (!Parser.running && !(token instanceof TrToken)) {
 			this.typeError('insertAt', 'TrToken');
 		}

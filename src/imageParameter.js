@@ -225,7 +225,7 @@ class ImageParameterToken extends Token {
 	 * @complexity `n`
 	 * @throws `Error` 不接受自定义输入的图片参数
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		if (!Parser.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}

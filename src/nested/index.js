@@ -68,7 +68,7 @@ class NestedToken extends Token {
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		return token.type === 'ext' && !this.#tags.includes(token.name)
 			? this.typeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`)
 			: super.insertAt(token, i);

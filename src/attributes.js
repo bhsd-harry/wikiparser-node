@@ -229,9 +229,9 @@ class AttributesToken extends Token {
 
 	/** 清理标签属性 */
 	sanitize() {
-		const {childNodes} = this;
+		const {childNodes, length} = this;
 		let dirty = false;
-		for (let i = childNodes.length - 1; i >= 0; i--) {
+		for (let i = length - 1; i >= 0; i--) {
 			const child = childNodes[i];
 			if (child instanceof AtomToken && child.text().trim()) {
 				dirty = true;
@@ -259,10 +259,10 @@ class AttributesToken extends Token {
 	 * @param {number} i 插入位置
 	 * @throws `RangeError` 不是AttributeToken
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		if (!(token instanceof AttributeToken)) {
 			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
-		} else if (i === this.childNodes.length) {
+		} else if (i === this.length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
 				lastChild.close();

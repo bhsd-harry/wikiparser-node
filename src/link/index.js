@@ -67,7 +67,7 @@ class LinkToken extends Token {
 	/** 链接显示文字 */
 	get innerText() {
 		if (this.type === 'link') {
-			return this.childNodes.length > 1
+			return this.length > 1
 				? this.lastChild.text()
 				: this.firstChild.text().replace(/^\s*:/u, '');
 		}
@@ -320,7 +320,7 @@ class LinkToken extends Token {
 					this.type === 'category' ? 'Category:' : ''
 				}L|${linkText}]]`, this.getAttribute('include'), 6, config),
 				{length, firstChild: wikiLink} = root;
-			if (length !== 1 || wikiLink.type !== this.type || wikiLink.childNodes.length !== 2) {
+			if (length !== 1 || wikiLink.type !== this.type || wikiLink.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}
 			({lastChild} = wikiLink);
@@ -328,7 +328,7 @@ class LinkToken extends Token {
 			lastChild = Parser.run(() => new Token('', config));
 			lastChild.setAttribute('stage', 7).type = 'link-text';
 		}
-		if (this.childNodes.length === 1) {
+		if (this.length === 1) {
 			this.insertAt(lastChild);
 		} else {
 			this.lastChild.safeReplaceWith(lastChild);

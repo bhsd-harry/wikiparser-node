@@ -18,7 +18,7 @@ class ConverterToken extends Token {
 	 * @this {ConverterToken & {lastChild: ConverterRuleToken}}
 	 */
 	get noConvert() {
-		return this.hasFlag('R') || this.childNodes.length === 2 && !this.lastChild.variant;
+		return this.hasFlag('R') || this.length === 2 && !this.lastChild.variant;
 	}
 
 	/** flags */
@@ -37,7 +37,7 @@ class ConverterToken extends Token {
 		const [firstRule] = rules,
 			hasColon = firstRule.includes(':'),
 			firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
-		if (hasColon && firstRuleToken.childNodes.length === 1) {
+		if (hasColon && firstRuleToken.length === 1) {
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum));
 		} else {
 			this.append(
@@ -57,7 +57,7 @@ class ConverterToken extends Token {
 		const {childNodes: [flags, ...rules]} = this;
 		return selector && this.matches(selector)
 			? ''
-			: `-{${flags.toString(selector)}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
+			: `-{${flags.toString(selector)}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
 	/**
@@ -79,15 +79,15 @@ class ConverterToken extends Token {
 	 * @param {number} i 子节点位置
 	 */
 	getGaps(i = 0) {
-		i = i < 0 ? i + this.childNodes.length : i;
-		return i || this.firstChild.childNodes.length > 0 ? 1 : 0;
+		i = i < 0 ? i + this.length : i;
+		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
 
 	/** @override */
 	print() {
 		const {childNodes: [flags, ...rules]} = this;
 		return `<span class="wpb-converter">-{${flags.print()}${
-			flags.childNodes.length > 0 ? '|' : ''
+			flags.length > 0 ? '|' : ''
 		}${print(rules, {sep: ';'})}}-</span>`;
 	}
 

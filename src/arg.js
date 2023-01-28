@@ -125,7 +125,7 @@ class ArgToken extends Token {
 	 */
 	removeRedundant() {
 		Parser.run(() => {
-			for (let i = this.childNodes.length - 1; i > 1; i--) {
+			for (let i = this.length - 1; i > 1; i--) {
 				super.removeAt(i);
 			}
 		});
@@ -149,8 +149,8 @@ class ArgToken extends Token {
 	 * @param {number} i 插入位置
 	 * @throws `RangeError` 不可插入多余子节点
 	 */
-	insertAt(token, i = this.childNodes.length) {
-		const j = i < 0 ? i + this.childNodes.length : i;
+	insertAt(token, i = this.length) {
+		const j = i < 0 ? i + this.length : i;
 		if (j > 1) {
 			throw new RangeError(`${this.constructor.name} 不可插入多余的子节点！`);
 		}
@@ -170,7 +170,7 @@ class ArgToken extends Token {
 		name = String(name);
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: arg} = root;
-		if (length !== 1 || arg.type !== 'arg' || arg.childNodes.length !== 1) {
+		if (length !== 1 || arg.type !== 'arg' || arg.length !== 1) {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
 		const {firstChild} = arg;
@@ -187,7 +187,7 @@ class ArgToken extends Token {
 		value = String(value);
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: arg} = root;
-		if (length !== 1 || arg.type !== 'arg' || arg.childNodes.length !== 2) {
+		if (length !== 1 || arg.type !== 'arg' || arg.length !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
 		const {childNodes: [, oldDefault]} = this,
