@@ -5,7 +5,7 @@ const Parser = require('../..'),
 
 /**
  * `<references>`
- * @classdesc `{childNodes: [...ExtToken|NoincludeToken]}`
+ * @classdesc `{childNodes: [...ExtToken|NoincludeToken|CommentToken]}`
  */
 class ReferencesToken extends NestedToken {
 	name = 'references';
@@ -15,7 +15,7 @@ class ReferencesToken extends NestedToken {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(wikitext, /<(ref)(\s[^>]*)?>(.*?)<\/(ref\s*)>/gisu, ['ref'], config, accum);
+		super(wikitext, /<!--.*?(?:-->|$)|<(ref)(\s[^>]*)?>(.*?)<\/(ref\s*)>/gisu, ['ref'], config, accum);
 	}
 }
 
