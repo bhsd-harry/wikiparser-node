@@ -4,11 +4,12 @@ const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
 	Token = require('..'),
 	ExtToken = require('../tagPair/ext'),
-	NoincludeToken = require('../nowiki/noinclude');
+	NoincludeToken = require('../nowiki/noinclude'),
+	CommentToken = require('../nowiki/comment');
 
 /**
  * 嵌套式的扩展标签
- * @classdesc `{childNodes: [...ExtToken|NoincludeToken]}`
+ * @classdesc `{childNodes: [...ExtToken|NoincludeToken|CommentToken]}`
  */
 class NestedToken extends Token {
 	type = 'ext-inner';
@@ -23,12 +24,17 @@ class NestedToken extends Token {
 	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
 		const text = wikitext?.replace(
 			regex,
-			/** @type {function(...string): string} */ (_, name, attr, inner, closing) => {
-				const str = `\0${accum.length + 1}e\x7F`;
-				new ExtToken(name, attr, inner, closing, config, accum);
+			/** @type {function(...string): string} */ (comment, name, attr, inner, closing) => {
+				const str = `\0${accum.length + 1}${name ? 'e' : 'c'}\x7F`;
+				if (name) {
+					new ExtToken(name, attr, inner, closing, config, accum);
+				} else {
+					const closed = comment.endsWith('-->');
+					new CommentToken(comment.slice(4, closed ? -3 : undefined), closed, config, accum);
+				}
 				return str;
 			},
-		)?.replace(/(?<=^|\0\d+e\x7F).*?(?=$|\0\d+e\x7F)/gsu, substr => {
+		)?.replace(/(?<=^|\0\d+[ce]\x7F).*?(?=$|\0\d+[ce]\x7F)/gsu, substr => {
 			if (substr === '') {
 				return '';
 			}
@@ -50,7 +56,7 @@ class NestedToken extends Token {
 		return [
 			...super.lint(start),
 			...this.childNodes.filter(child => {
-				if (child.type === 'ext') {
+				if (child.type === 'ext' || child.type === 'comment') {
 					return false;
 				}
 				const str = String(child).trim();
