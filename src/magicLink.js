@@ -32,12 +32,12 @@ class MagicLinkToken extends Token {
 					lines = str.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines[top - 1],
+					excerpt = str.slice(Math.max(0, index - 25), index + 25),
 					startIndex = start + index,
 					endIndex = startIndex + length,
 					startLine = refError.startLine + top - 1,
 					startCol = top > 1 ? left : refError.startCol + left,
-					endCol = startCol + length,
-					excerpt = str.slice(Math.max(0, index - 25), index + 25);
+					endCol = startCol + length;
 				errors.push({...refError, startIndex, endIndex, startLine, endLine: startLine, startCol, endCol, excerpt});
 			}
 		}
