@@ -110,26 +110,30 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start);
-		let /** @type {LintError} */ refError;
+		let wikitext, /** @type {LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
+			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
-			errors.push(refError);
+			errors.push({...refError, excerpt: wikitext.slice(start, start + 50)});
 		}
 		if (this.closest('table-attrs')) {
+			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
-			errors.push({...refError, message: '表格属性中的HTML标签'});
+			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
+			errors.push({...refError, message: '表格属性中的HTML标签', excerpt});
 		}
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
+			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
 			const [message] = errorMsg.split('：'),
 				error = {...refError, message, severity: message === '未闭合的标签' ? 'warning' : 'error'};
 			if (message === '未闭合的标签') {
-				error.excerpt = String(this.getRootNode()).slice(start, start + 50);
+				error.excerpt = wikitext.slice(start, start + 50);
 			} else if (message === '未匹配的闭合标签') {
 				const end = start + String(this).length;
-				error.excerpt = String(this.getRootNode()).slice(Math.max(0, end - 50), end);
+				error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
 			}
 			errors.push(error);
 		}

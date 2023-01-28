@@ -118,17 +118,19 @@ class ParameterToken extends fixedToken(Token) {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{firstChild} = this,
+			{firstChild, lastChild} = this,
 			link = new RegExp(`https?://${extUrlChar}$`, 'iu')
 				.exec(firstChild.toString('comment, noinclude, include'))?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {token: this, start}, '匿名参数中未转义的查询参数');
 			errors.push({
 				...e,
+				startIndex: e.endIndex,
+				endIndex: e.endIndex + 1,
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
-				excerpt: String(firstChild).slice(-50),
+				excerpt: `${String(firstChild).slice(-25)}=${String(lastChild).slice(0, 25)}`,
 			});
 		}
 		return errors;

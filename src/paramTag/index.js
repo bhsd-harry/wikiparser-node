@@ -66,7 +66,7 @@ class ParamTagToken extends Token {
 				str = (i >= 0 ? childNodes.slice(0, i).map(String).join('') : String(child)).trim();
 			return str && !(i >= 0 ? /^[a-z]+\s*(?:=|$)/iu : /^[a-z]+\s*=/iu).test(str);
 		}).map(child => {
-			rect ||= this.getRootNode().posFromIndex(start);
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			return generateForChild(child, rect, `${this.name}的无效参数`);
 		});
 	}

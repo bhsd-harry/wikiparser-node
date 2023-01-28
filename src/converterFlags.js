@@ -78,7 +78,7 @@ class ConverterFlagsToken extends Token {
 		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 			return errors;
 		}
-		const rect = this.getRootNode().posFromIndex(start),
+		const rect = {start, ...this.getRootNode().posFromIndex(start)},
 			{childNodes, length} = this;
 		for (let i = 0; i < length; i++) {
 			const child = childNodes[i],

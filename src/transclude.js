@@ -188,7 +188,7 @@ class TranscludeToken extends Token {
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
-			const rect = this.getRootNode().posFromIndex(start);
+			const rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
 				arg => generateForChild(arg, rect, '重复参数'),
 			));

@@ -34,18 +34,20 @@ class QuoteToken extends NowikiToken {
 		if (previousSibling?.type === 'text' && previousSibling.data.at(-1) === "'") {
 			refError = generateForSelf(this, {start}, message);
 			wikitext = String(this.getRootNode());
-			const {startLine, startCol} = refError,
+			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
 				[{length}] = previousSibling.data.match(/(?<!')'+$/u),
-				excerpt = wikitext.slice(start - length, start - length + 50);
-			errors.push({...refError, startCol: startCol - length, endLine: startLine, endCol: startCol, excerpt});
+				startIndex = start - length,
+				excerpt = wikitext.slice(startIndex, startIndex + 50);
+			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
 			refError ||= generateForSelf(this, {start}, message);
 			wikitext ||= String(this.getRootNode());
-			const {endLine, endCol} = refError,
+			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u),
-				excerpt = wikitext.slice(Math.max(0, start + length - 50), start + length);
-			errors.push({...refError, startLine: endLine, startCol: endCol, endCol: endCol + length, excerpt});
+				endIndex = startIndex + length,
+				excerpt = wikitext.slice(Math.max(0, endIndex - 50), endIndex);
+			errors.push({...refError, startIndex, endIndex, startLine, startCol, endCol: startCol + length, excerpt});
 		}
 		return errors;
 	}

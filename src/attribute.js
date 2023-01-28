@@ -252,9 +252,12 @@ class AttributeToken extends fixedToken(Token) {
 			tagName = parentNode?.name;
 		let rect;
 		if (!balanced) {
-			rect = this.getRootNode().posFromIndex(start);
-			const e = generateForChild(lastChild, rect, '未闭合的引号', 'warning');
-			errors.push({...e, startCol: e.startCol - 1, excerpt: String(lastChild).slice(-50)});
+			const root = this.getRootNode();
+			rect = {start, ...root.posFromIndex(start)};
+			const e = generateForChild(lastChild, rect, '未闭合的引号', 'warning'),
+				startIndex = e.startIndex - 1,
+				startCol = e.startCol - 1;
+			errors.push({...e, startIndex, startCol, excerpt: String(root).slice(startIndex, startIndex + 50)});
 		}
 		if (!/\{\{[^{]+\}\}/u.test(name) && (
 			type === 'ext-attr' && !(tagName in htmlAttrs) && extAttrs[tagName] && !extAttrs[tagName].has(name)
@@ -262,7 +265,7 @@ class AttributeToken extends fixedToken(Token) {
 			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
 			&& (tagName === 'meta' || tagName === 'link' || !commonHtmlAttrs.has(name))
 		)) {
-			rect ||= this.getRootNode().posFromIndex(start);
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, '非法的属性名'));
 		}
 		return errors;

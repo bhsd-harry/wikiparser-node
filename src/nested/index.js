@@ -56,7 +56,7 @@ class NestedToken extends Token {
 				const str = String(child).trim();
 				return str && !/^<!--.*-->$/u.test(str);
 			}).map(child => {
-				rect ||= this.getRootNode().posFromIndex(start);
+				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 				return generateForChild(child, rect, `<${this.name}>内的无效内容`);
 			}),
 		];
