@@ -35,7 +35,7 @@ class ExtLinkToken extends Token {
 	 * @override
 	 */
 	toString(selector) {
-		if (this.childNodes.length === 1) {
+		if (this.length === 1) {
 			return `[${super.toString(selector)}${this.#space}]`;
 		}
 		return `[${super.toString(selector, this.#space)}]`;

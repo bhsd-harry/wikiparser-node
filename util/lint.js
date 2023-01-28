@@ -11,14 +11,18 @@ const Token = require('../src');
  * @returns {LintError}
  */
 const generateForChild = (child, boundingRect, message, severity = 'error') => {
-	const {style: {top: offsetTop, left: offsetLeft, height, width}} = child,
+	const index = child.getRelativeIndex(),
+		{offsetHeight, offsetWidth, parentNode, length} = child,
+		{top: offsetTop, left: offsetLeft} = parentNode.posFromIndex(index),
 		{token, start} = boundingRect,
 		{top, left} = token ? token.getRootNode().posFromIndex(start) : boundingRect,
+		startIndex = start + index,
+		endIndex = startIndex + length,
 		startLine = top + offsetTop,
-		endLine = startLine + height - 1,
+		endLine = startLine + offsetHeight - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
-		endCol = height > 1 ? width : startCol + width;
-	return {message, severity, startLine, endLine, startCol, endCol, excerpt: String(child).slice(0, 50)};
+		endCol = offsetHeight > 1 ? offsetWidth : startCol + offsetWidth;
+	return {message, severity, startIndex, endIndex, startLine, endLine, startCol, endCol, excerpt: String(child).slice(0, 50)};
 };
 
 /**
@@ -31,11 +35,13 @@ const generateForChild = (child, boundingRect, message, severity = 'error') => {
  */
 const generateForSelf = (token, boundingRect, message, severity = 'error') => {
 	const {start} = boundingRect,
-		{offsetHeight, offsetWidth} = token,
-		{top, left} = start === undefined ? boundingRect : token.getRootNode().posFromIndex(start);
+		{offsetHeight, offsetWidth, length} = token,
+		{top, left} = 'top' in boundingRect ? boundingRect : token.getRootNode().posFromIndex(start);
 	return {
 		message,
 		severity,
+		startIndex: start,
+		endIndex: start + length,
 		startLine: top,
 		endLine: top + offsetHeight - 1,
 		startCol: left,

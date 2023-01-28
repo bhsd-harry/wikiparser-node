@@ -24,7 +24,7 @@ class ConverterToken extends Token {
 		const [firstRule] = rules,
 			hasColon = firstRule.includes(':'),
 			firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
-		if (hasColon && firstRuleToken.childNodes.length === 1) {
+		if (hasColon && firstRuleToken.length === 1) {
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum));
 		} else {
 			this.append(
@@ -40,7 +40,7 @@ class ConverterToken extends Token {
 	 */
 	toString(selector) {
 		const {childNodes: [flags, ...rules]} = this;
-		return `-{${flags.toString()}${flags.childNodes.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
+		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
 	/**
@@ -62,8 +62,8 @@ class ConverterToken extends Token {
 	 * @param {number} i 子节点位置
 	 */
 	getGaps(i = 0) {
-		i = i < 0 ? i + this.childNodes.length : i;
-		return i || this.firstChild.childNodes.length > 0 ? 1 : 0;
+		i = i < 0 ? i + this.length : i;
+		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
 }
 

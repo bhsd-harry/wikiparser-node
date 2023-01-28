@@ -92,7 +92,7 @@ class TdToken extends TrToken {
 	 * @param {number} i 子节点位置
 	 */
 	getGaps(i = 0) {
-		i = i < 0 ? i + this.childNodes.length : i;
+		i = i < 0 ? i + this.length : i;
 		if (i === 1) {
 			return this.#innerSyntax.length;
 		}

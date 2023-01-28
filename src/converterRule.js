@@ -42,7 +42,7 @@ class ConverterRuleToken extends Token {
 	 * @returns {string}
 	 */
 	toString(selector) {
-		if (this.childNodes.length === 3) {
+		if (this.length === 3) {
 			const {childNodes: [from, variant, to]} = this;
 			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
 		}
@@ -54,7 +54,7 @@ class ConverterRuleToken extends Token {
 	 * @returns {string}
 	 */
 	text() {
-		if (this.childNodes.length === 3) {
+		if (this.length === 3) {
 			const {childNodes: [from, variant, to]} = this;
 			return `${from.text()}=>${variant.text()}:${to.text()}`;
 		}
