@@ -17,24 +17,27 @@ class MagicLinkToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			source = '[，；。：！？（）]';
+			source = '[，；。：！？（）]+';
 		let /** @type {{top: number, left: number}} */ rect;
 		for (const child of this.childNodes) {
 			const str = String(child);
 			if (child.type !== 'text' || !new RegExp(source, 'u').test(str)) {
 				continue;
 			}
-			rect ||= this.getRootNode().posFromIndex(start);
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning'),
 				regex = new RegExp(source, 'gu');
 			for (let mt = regex.exec(str); mt; mt = regex.exec(str)) {
-				const {index} = mt,
+				const {index, 0: {length}} = mt,
 					lines = str.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines[top - 1],
+					startIndex = start + index,
+					endIndex = startIndex + length,
 					startLine = refError.startLine + top - 1,
-					startCol = top > 1 ? left : refError.startCol + left;
-				errors.push({...refError, startLine, endLine: startLine, startCol, endCol: startCol + 1});
+					startCol = top > 1 ? left : refError.startCol + left,
+					endCol = startCol + length;
+				errors.push({...refError, startIndex, endIndex, startLine, endLine: startLine, startCol, endCol});
 			}
 		}
 		return errors;

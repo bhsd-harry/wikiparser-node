@@ -81,7 +81,7 @@ class ArgToken extends Token {
 			errors.push(...argDefault.lint(start + 4 + String(argName).length));
 		}
 		if (rest.length > 0) {
-			const rect = this.getRootNode().posFromIndex(start);
+			const rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => generateForChild(child, rect, '三重括号内的不可见部分')));
 		}
 		return errors;

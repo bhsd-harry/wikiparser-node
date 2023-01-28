@@ -127,11 +127,11 @@ class AttributesToken extends Token {
 		const errors = super.lint(start);
 		let rect;
 		if (this.parentNode.closing && this.text().trim()) {
-			rect = this.getRootNode().posFromIndex(start);
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}
 		if (!this.sanitized) {
-			rect ||= this.getRootNode().posFromIndex(start);
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			for (const attr of this.getDirtyAttrs()) {
 				errors.push(generateForChild(attr, rect, '包含无效属性'));
 			}

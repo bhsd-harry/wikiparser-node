@@ -32,15 +32,17 @@ class QuoteToken extends NowikiToken {
 		let refError;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith("'")) {
 			refError = generateForSelf(this, {start}, message);
-			const {startLine, startCol} = refError,
-				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u);
-			errors.push({...refError, startCol: startCol - length, endLine: startLine, endCol: startCol});
+			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
+				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u),
+				startIndex = start - length;
+			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
 			refError ||= generateForSelf(this, {start}, message);
-			const {endLine, endCol} = refError,
-				[{length}] = nextSibling.data.match(/^'+/u);
-			errors.push({...refError, startLine: endLine, startCol: endCol, endCol: endCol + length});
+			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
+				[{length}] = nextSibling.data.match(/^'+/u),
+				endIndex = startIndex + length;
+			errors.push({...refError, startIndex, endIndex, startLine, startCol, endCol: startCol + length});
 		}
 		return errors;
 	}

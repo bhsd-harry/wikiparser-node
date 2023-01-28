@@ -45,7 +45,7 @@ class FileToken extends LinkToken {
 		) {
 			return errors;
 		}
-		const rect = this.getRootNode().posFromIndex(start);
+		const rect = {start, ...this.getRootNode().posFromIndex(start)};
 		for (const key of keys) {
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {

@@ -14,7 +14,7 @@ class ParameterToken extends Token {
 
 	/** 是否是匿名参数 */
 	get anon() {
-		return this.firstChild.childNodes.length === 0;
+		return this.firstChild.length === 0;
 	}
 
 	/**
@@ -87,6 +87,8 @@ class ParameterToken extends Token {
 			const e = generateForChild(firstChild, {token: this, start}, '匿名参数中未转义的查询参数');
 			errors.push({
 				...e,
+				startIndex: e.endIndex,
+				endIndex: e.endIndex + 1,
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,

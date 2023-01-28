@@ -127,7 +127,7 @@ class ImagemapToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			rect = this.getRootNode().posFromIndex(start);
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
 		if (this.image) {
 			errors.push(
 				...this.childNodes.filter(child => {

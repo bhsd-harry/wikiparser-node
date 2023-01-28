@@ -75,23 +75,28 @@ class GalleryToken extends Token {
 	lint(start = 0) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
 			/** @type {LintError[]} */ errors = [];
-		for (let i = 0, cur = start; i < this.childNodes.length; i++) {
+		for (let i = 0, startIndex = start; i < this.length; i++) {
 			const child = this.childNodes[i],
 				str = String(child),
-				trimmed = str.trim();
+				{length} = str,
+				trimmed = str.trim(),
+				startLine = top + i,
+				startCol = i ? 0 : left;
 			if (child.type === 'hidden' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				errors.push({
 					message: '图库中的无效内容',
 					severity: 'error',
-					startLine: top + i,
-					endLine: top + i,
-					startCol: i ? 0 : left,
-					endCol: i ? str.length : left + str.length,
+					startIndex,
+					endIndex: startIndex + length,
+					startLine,
+					endLine: startLine,
+					startCol,
+					endCol: startCol + length,
 				});
 			} else if (child.type !== 'hidden' && child.type !== 'text') {
-				errors.push(...child.lint(cur));
+				errors.push(...child.lint(startIndex));
 			}
-			cur += str.length + 1;
+			startIndex += length + 1;
 		}
 		return errors;
 	}

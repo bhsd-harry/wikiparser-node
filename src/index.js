@@ -67,7 +67,7 @@ class Token extends AstElement {
 	 * @param {boolean} include 是否嵌入
 	 */
 	#parseOnce = (n = this.#stage, include = false) => {
-		if (n < this.#stage || !this.isPlain() || this.childNodes.length === 0) {
+		if (n < this.#stage || !this.isPlain() || this.length === 0) {
 			return this;
 		}
 		switch (n) {
@@ -242,7 +242,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 * @returns {T extends Token ? Token : AstText}
 	 */
-	insertAt(token, i = this.childNodes.length) {
+	insertAt(token, i = this.length) {
 		if (typeof token === 'string') {
 			token = new AstText(token);
 		}
