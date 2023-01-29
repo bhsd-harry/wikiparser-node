@@ -105,11 +105,11 @@ class TdToken extends TrToken {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{lastChild} = this,
-			index = this.getRelativeIndex(-1);
+			{lastChild} = this;
+		start += this.getRelativeIndex(-1);
 		for (const child of lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
-				errors.push(generateForChild(child, {token: lastChild, start: start + index}, '表格单元格中多余的"|"'));
+				errors.push(generateForChild(child, {token: lastChild, start}, '表格单元格中多余的"|"', 'warning'));
 			}
 		}
 		return errors;
