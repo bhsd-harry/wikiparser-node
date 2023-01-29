@@ -10,7 +10,6 @@ declare global {
 		T extends 'config' ? ParserConfig :
 		T extends 'accum' ? accum :
 		T extends 'parentNode' ? Token|undefined :
-		T extends 'childNodes' ? (AstText|Token)[] :
 		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
 		T extends 'buildFromStr' ? buildFromStr :
 		T extends 'build' ? () => void :
