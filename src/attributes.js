@@ -149,14 +149,6 @@ class AttributesToken extends Token {
 	}
 
 	/**
-	 * 所有无效属性
-	 * @returns {AtomToken[]}
-	 */
-	getDirtyAttrs() {
-		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
-	}
-
-	/**
 	 * 所有指定属性名的AttributeToken
 	 * @param {string} key 属性名
 	 * @returns {AttributeToken[]}
@@ -193,19 +185,37 @@ class AttributesToken extends Token {
 	 */
 	lint(start = 0) {
 		const HtmlToken = require('./html');
-		const errors = super.lint(start);
+		const errors = super.lint(start),
+			{parentNode: {closing}, length, childNodes} = this,
+			/** @type {Record<string, AttributeToken[]>} */ attrs = {},
+			/** @type {Set<string>} */ duplicated = new Set();
 		let rect;
-		if (this.parentNode.closing && this.text().trim()) {
+		if (closing && this.text().trim()) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
 		}
-		if (!this.sanitized) {
+		for (let i = 0; i < length; i++) {
+			const /** @type {AtomToken|AttributeToken} */ attr = childNodes[i];
+			if (attr instanceof AtomToken && attr.text().trim()) {
+				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+				errors.push({
+					...generateForChild(attr, rect, '包含无效属性'),
+					excerpt: childNodes.slice(i).map(String).join('').slice(0, 50),
+				});
+			} else if (attr instanceof AttributeToken) {
+				const {name} = attr;
+				if (name in attrs) {
+					duplicated.add(name);
+					attrs[name].push(attr);
+				} else {
+					attrs[name] = [attr];
+				}
+			}
+		}
+		if (duplicated.size > 0) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			const {childNodes} = this;
-			for (const attr of this.getDirtyAttrs()) {
-				const index = childNodes.indexOf(attr),
-					error = generateForChild(attr, rect, '包含无效属性');
-				errors.push({...error, excerpt: childNodes.slice(index).map(String).join('').slice(0, 50)});
+			for (const key of duplicated) {
+				errors.push(...attrs[key].map(attr => generateForChild(attr, rect, `重复的${key}属性`)));
 			}
 		}
 		return errors;
@@ -250,6 +260,14 @@ class AttributesToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
+	}
+
+	/**
+	 * 所有无效属性
+	 * @returns {AtomToken[]}
+	 */
+	getDirtyAttrs() {
+		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
 	}
 
 	/**
