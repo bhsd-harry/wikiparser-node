@@ -135,7 +135,7 @@ class Token extends AstElement {
 	#buildFromStr = (str, type) => {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
-				return new AstText(s);
+				return new AstText(s, this.#config);
 			} else if (isNaN(s.at(-1))) {
 				return this.#accum[Number(s.slice(0, -1))];
 			}
@@ -308,7 +308,7 @@ class Token extends AstElement {
 	 */
 	insertAt(token, i = this.length) {
 		if (typeof token === 'string') {
-			token = new AstText(token);
+			token = new AstText(token, this.#config);
 		}
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
@@ -448,7 +448,7 @@ class Token extends AstElement {
 	 * @param {string} data 文本内容
 	 */
 	createTextNode(data = '') {
-		return typeof data === 'string' ? new AstText(data) : this.typeError('createComment', 'String');
+		return typeof data === 'string' ? new AstText(data, this.#config) : this.typeError('createComment', 'String');
 	}
 
 	/**
