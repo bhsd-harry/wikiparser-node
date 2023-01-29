@@ -61,7 +61,7 @@ class ParameterToken extends fixedToken(Token) {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
 			const name = this.firstChild.toString('comment, noinclude, include')
-					.replace(/^[ \t\n\0\v]+|[^ \t\n\0\v][ \t\n\0\v]+$/gu, ''),
+					.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, ''),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode instanceof TranscludeToken) {
@@ -74,7 +74,7 @@ class ParameterToken extends fixedToken(Token) {
 				const {firstChild, name} = this;
 				if (prevTarget === firstChild) {
 					const newKey = firstChild.toString('comment, noinclude, include')
-						.replace(/^[ \t\n\0\v]+|[^ \t\n\0\v][ \t\n\0\v]+$/gu, '');
+						.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 					data.oldKey = name;
 					data.newKey = newKey;
 					this.setAttribute('name', newKey);
