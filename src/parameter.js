@@ -60,7 +60,8 @@ class ParameterToken extends fixedToken(Token) {
 	afterBuild() {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
-			const name = this.firstChild.toString('comment, noinclude, include').trim(),
+			const name = this.firstChild.toString('comment, noinclude, include')
+					.replace(/^[ \t\n\0\v]+|[^ \t\n\0\v][ \t\n\0\v]+$/gu, ''),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode instanceof TranscludeToken) {
@@ -72,7 +73,8 @@ class ParameterToken extends fixedToken(Token) {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstChild, name} = this;
 				if (prevTarget === firstChild) {
-					const newKey = firstChild.toString('comment, noinclude, include').trim();
+					const newKey = firstChild.toString('comment, noinclude, include')
+						.replace(/^[ \t\n\0\v]+|[^ \t\n\0\v][ \t\n\0\v]+$/gu, '');
 					data.oldKey = name;
 					data.newKey = newKey;
 					this.setAttribute('name', newKey);
