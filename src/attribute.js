@@ -233,7 +233,7 @@ class AttributeToken extends Token {
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, '非法的属性名'));
-		} else if (name === 'style' && insecureStyle.test(value)) {
+		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(lastChild, rect, '不安全的样式'));
 		}
