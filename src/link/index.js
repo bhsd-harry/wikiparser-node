@@ -93,7 +93,7 @@ class LinkToken extends Token {
 		if (linkText?.childNodes?.some(
 			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
-			errors.push(generateForChild(linkText, {token: this, start}, '链接文本中多余的"|"'));
+			errors.push(generateForChild(linkText, {token: this, start}, '链接文本中多余的"|"', 'warning'));
 		}
 		return errors;
 	}
