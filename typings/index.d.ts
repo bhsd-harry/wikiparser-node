@@ -45,11 +45,11 @@ declare global {
 
 		/**
 		 * 解析wikitext
-		 * @param {string|Token} wikitext wikitext
+		 * @param {string} wikitext wikitext
 		 * @param {boolean} include 是否嵌入
 		 * @param {number} maxStage 最大解析层级
 		 */
-		parse(wikitext: string|Token, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
+		parse(wikitext: string, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
 
 		run<T>(callback: () => T): T;
 

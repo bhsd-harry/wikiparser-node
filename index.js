@@ -161,17 +161,13 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
+		if (typeof wikitext !== 'string') {
+			throw new TypeError('待解析的内容应为 String！');
+		}
 		const Token = require('./src');
 		let /** @type {Token} */ token;
 		this.run(() => {
-			if (typeof wikitext === 'string') {
-				token = new Token(wikitext, config);
-			} else if (wikitext instanceof Token) {
-				token = wikitext;
-				wikitext = String(token);
-			} else {
-				throw new TypeError('待解析的内容应为 String 或 Token！');
-			}
+			token = new Token(wikitext, config);
 			try {
 				token.parse(maxStage, include);
 			} catch (e) {
