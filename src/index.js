@@ -731,7 +731,6 @@ class Token extends AstElement {
 				token.afterBuild();
 			}
 		}
-		return this;
 	}
 
 	/**

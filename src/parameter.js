@@ -82,7 +82,6 @@ class ParameterToken extends fixedToken(Token) {
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
-		return this;
 	}
 
 	/**
@@ -156,7 +155,8 @@ class ParameterToken extends fixedToken(Token) {
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
-			return token.afterBuild();
+			token.afterBuild();
+			return token;
 		});
 	}
 

@@ -146,7 +146,6 @@ class AttributesToken extends Token {
 		if (this.type === 'table-attrs') {
 			this.setAttribute('name', this.parentNode?.subtype === 'caption' ? 'caption' : this.parentNode?.type);
 		}
-		return this;
 	}
 
 	/**

@@ -396,7 +396,6 @@ class TranscludeToken extends Token {
 			};
 			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
 		}
-		return this;
 	}
 
 	/** 替换引用 */

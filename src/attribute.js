@@ -205,7 +205,7 @@ class AttributeToken extends fixedToken(Token) {
 		if (this.#equal.includes('\0')) {
 			this.#equal = this.getAttribute('buildFromStr')(this.#equal, 'string');
 		}
-		return this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
+		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
 	/**
@@ -304,7 +304,8 @@ class AttributeToken extends fixedToken(Token) {
 			const token = new AttributeToken(this.type, '', this.#equal, '', this.#quotes, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
-			return token.afterBuild();
+			token.afterBuild();
+			return token;
 		});
 	}
 

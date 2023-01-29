@@ -78,7 +78,6 @@ class GalleryImageToken extends singleLine(FileToken) {
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
-		return this;
 	}
 
 	/** @override */

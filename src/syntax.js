@@ -37,7 +37,8 @@ class SyntaxToken extends Token {
 		return Parser.run(() => {
 			const token = new SyntaxToken(undefined, this.#pattern, this.type, config, [], acceptable);
 			token.append(...cloned);
-			return token.afterBuild();
+			token.afterBuild();
+			return token;
 		});
 	}
 
@@ -52,7 +53,6 @@ class SyntaxToken extends Token {
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
-		return this;
 	}
 
 	/**

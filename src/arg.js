@@ -103,7 +103,8 @@ class ArgToken extends Token {
 			const token = new ArgToken([''], this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(name);
 			token.append(...cloned);
-			return token.afterBuild();
+			token.afterBuild();
+			return token;
 		});
 	}
 
@@ -116,7 +117,6 @@ class ArgToken extends Token {
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
-		return this;
 	}
 
 	/**

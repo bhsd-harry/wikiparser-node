@@ -122,7 +122,6 @@ class TdToken extends fixedToken(TrToken) {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.getAttribute('buildFromStr')(this.#innerSyntax, 'string');
 		}
-		return this;
 	}
 
 	/**

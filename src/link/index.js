@@ -134,7 +134,6 @@ class LinkToken extends Token {
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
-		return this;
 	}
 
 	/**
@@ -211,7 +210,8 @@ class LinkToken extends Token {
 			const token = new this.constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
-			return token.afterBuild();
+			token.afterBuild();
+			return token;
 		});
 	}
 
