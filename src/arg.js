@@ -12,6 +12,11 @@ const {text} = require('../util/string'),
 class ArgToken extends Token {
 	type = 'arg';
 
+	/** default */
+	get default() {
+		return this.childNodes[1]?.text() ?? false;
+	}
+
 	/**
 	 * @param {string[]} parts 以'|'分隔的各部分
 	 * @param {accum} accum
