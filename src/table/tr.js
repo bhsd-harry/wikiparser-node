@@ -34,19 +34,21 @@ class TrToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const TranscludeToken = require('../transclude');
+		const TranscludeToken = require('../transclude'),
+			ArgToken = require('../arg');
 		const errors = super.lint(start),
-			/** @type {TranscludeToken} */ inter = this.childNodes.find(({type}) => type === 'table-inter');
+			inter = this.childNodes.find(({type}) => type === 'table-inter');
 		if (!inter) {
 			return errors;
 		}
-		const first = inter.childNodes.find(child => child.text().trim());
-		if (!first) {
+		const /** @type {TranscludeToken & ArgToken} */ first = inter.childNodes.find(child => child.text().trim()),
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
+		if (!first || first.type === 'arg' && tdPattern.test(first.default || '')) {
 			return errors;
-		} else if (first?.type === 'magic-word') {
+		} else if (first.type === 'magic-word') {
 			try {
 				const possibleValues = first.getPossibleValues();
-				if (possibleValues.every(token => /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u.test(token.text()))) {
+				if (possibleValues.every(token => tdPattern.test(token.text()))) {
 					return errors;
 				}
 			} catch {}

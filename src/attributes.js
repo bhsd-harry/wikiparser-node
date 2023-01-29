@@ -129,7 +129,7 @@ class AttributesToken extends Token {
 				if (name in attrs) {
 					duplicated.add(name);
 					attrs[name].push(attr);
-				} else {
+				} else if (name !== 'class') {
 					attrs[name] = [attr];
 				}
 			}
