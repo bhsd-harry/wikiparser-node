@@ -31,7 +31,6 @@ class ConverterFlagsToken extends Token {
 	 */
 	afterBuild() {
 		this.#flags = this.childNodes.map(child => child.text().trim());
-		return this;
 	}
 
 	/**

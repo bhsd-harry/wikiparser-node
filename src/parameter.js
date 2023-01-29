@@ -44,7 +44,6 @@ class ParameterToken extends Token {
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
-		return this;
 	}
 
 	/**

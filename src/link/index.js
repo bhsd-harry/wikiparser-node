@@ -42,7 +42,6 @@ class LinkToken extends Token {
 		if (this.#delimiter?.includes('\0')) {
 			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter, 'string');
 		}
-		return this;
 	}
 
 	/**
