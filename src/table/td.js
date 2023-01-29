@@ -1,9 +1,10 @@
 'use strict';
 
-const Parser = require('../..'),
+const {generateForChild} = require('../../util/lint'),
 	fixedToken = require('../../mixin/fixedToken'),
 	{typeError} = require('../../util/debug'),
 	{isPlainObject} = require('../../util/base'),
+	Parser = require('../..'),
 	Token = require('..'),
 	TrToken = require('./tr');
 
@@ -160,6 +161,22 @@ class TdToken extends fixedToken(TrToken) {
 			return this.#innerSyntax.length;
 		}
 		return 0;
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			{lastChild} = this,
+			index = this.getRelativeIndex(-1);
+		for (const child of lastChild.childNodes) {
+			if (child.type === 'text' && child.data.includes('|')) {
+				errors.push(generateForChild(child, {token: lastChild, start: start + index}, '表格单元格中多余的"|"'));
+			}
+		}
+		return errors;
 	}
 
 	/** @override */

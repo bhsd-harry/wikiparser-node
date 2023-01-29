@@ -45,7 +45,7 @@ class MagicLinkToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			source = '[，；。：！？（）]+';
+			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`;
 		let /** @type {{top: number, left: number}} */ rect;
 		for (const child of this.childNodes) {
 			const str = String(child);
@@ -53,18 +53,25 @@ class MagicLinkToken extends Token {
 				continue;
 			}
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			const refError = generateForChild(child, rect, 'URL中的全角标点', 'warning');
-			errors.push(...[...str.matchAll(new RegExp(source, 'gu'))].map(({index, 0: {length}}) => {
+			const refError = generateForChild(child, rect, '', 'warning');
+			errors.push(...[...str.matchAll(new RegExp(source, 'gu'))].map(({index, 0: {0: char, length}}) => {
 				const lines = str.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines.at(-1),
-					excerpt = str.slice(Math.max(0, index - 25), index + 25),
 					startIndex = start + index,
-					endIndex = startIndex + length,
 					startLine = refError.startLine + top - 1,
-					startCol = top > 1 ? left : refError.startCol + left,
-					endCol = startCol + length;
-				return {...refError, startIndex, endIndex, startLine, endLine: startLine, startCol, endCol, excerpt};
+					startCol = (top > 1 ? 0 : refError.startCol) + left;
+				return {
+					...refError,
+					message: char === '|' ? 'URL中的"|"' : 'URL中的全角标点',
+					startIndex,
+					endIndex: startIndex + length,
+					startLine,
+					endLine: startLine,
+					startCol,
+					endCol: startCol + length,
+					excerpt: str.slice(Math.max(0, index - 25), index + 25),
+				};
 			}));
 		}
 		return errors;
