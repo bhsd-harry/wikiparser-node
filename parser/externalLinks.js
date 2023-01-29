@@ -11,7 +11,7 @@ const {extUrlChar} = require('../util/string'),
  */
 const parseExternalLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = new RegExp(
-		`\\[((?:${config.protocol}|//)${extUrlChar}|\0\\d+m\x7F)(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
+		`\\[((?:${config.protocol}|//|\0\\d+m\x7F)${extUrlChar})(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
 		'giu',
 	);
 	return wikitext.replace(regex, /** @type {function(...string): string} */ (_, url, space, text) => {
