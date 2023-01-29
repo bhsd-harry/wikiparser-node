@@ -37,7 +37,7 @@ class ParameterToken extends Token {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
 			const name = String(this.firstChild).replace(/<!--.*?-->/gu, '')
-					.replace(/^[ \t\n\0\v]+|[^ \t\n\0\v][ \t\n\0\v]+$/gu, ''),
+					.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode instanceof TranscludeToken) {
