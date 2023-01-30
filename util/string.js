@@ -1,7 +1,7 @@
 'use strict';
 
-const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
-	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
+const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])',
+	extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
 /**
  * remove half-parsed comment-like tokens
@@ -55,4 +55,6 @@ const text = (childNodes, separator = '') => {
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
-module.exports = {extUrlChar, removeComment, escapeRegExp, explode, text};
+module.exports = {
+	extUrlCharFirst, extUrlChar, removeComment, escapeRegExp, explode, text,
+};
