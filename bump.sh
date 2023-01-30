@@ -9,9 +9,10 @@ then
 else
 	rm bundle/*.js
 	webpack
-	eslint .	
+	eslint .
 	if [[ $? -eq 0 ]]
 	then
+		sed -i '' -E "s|wikiparser-node@.+-b/bundle/|wikiparser-node@$1-b/bundle/|" extensions/editor.js
 		git add -A
 		git commit -m "chore: bump version to v$1-b"
 		git push
