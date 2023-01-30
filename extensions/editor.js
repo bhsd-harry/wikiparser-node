@@ -8,24 +8,32 @@
 		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@0.6.22-b/bundle/bundle.min.js');
 		const /** @type {{Parser: Parser}} */ {Parser} = self,
 			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-		/** @param {{data: ParserConfig|['print'|'lint', number, string, Boolean, number]}} */
+		/** @param {{data: ParserConfig|['print'|'lint'|'config', number, string, Boolean, number]}} */
 		self.onmessage = ({data}) => {
 			if (Array.isArray(data)) {
-				const [mode, id, ...args] = data,
+				const [mode, qid, ...args] = data,
 					stage = args[2] === undefined ? MAX_STAGE : args[2],
 					root = Parser.parse(...args);
-				self.postMessage([
-					id,
-					mode === 'print'
-						? root.childNodes.map(child => [
-							stage,
-							String(child),
-							child.type === 'text'
-								? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
-								: child.print(),
-						])
-						: root.lint(),
-				]);
+				switch (mode) {
+					case 'lint':
+						self.postMessage([qid, root.lint()]);
+						break;
+					case 'print':
+						self.postMessage([
+							qid,
+							root.childNodes.map(child => [
+								stage,
+								String(child),
+								child.type === 'text'
+									? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+									: child.print(),
+							]),
+						]);
+						break;
+					case 'config':
+						self.postMessage([qid, Parser.minConfig]);
+					// no default
+				}
 			} else {
 				Parser.config = data;
 			}
@@ -38,25 +46,44 @@
 	URL.revokeObjectURL(url);
 
 	/**
+	 * 获取Parser.minConfig
+	 * @returns {Promise<ParserConfig>}
+	 */
+	const getConfig = () => new Promise(resolve => {
+		/**
+		 * 临时的listener
+		 * @param {{data: [number, ParserConfig]}} e 事件
+		 */
+		const listener = ({data: [rid, config]}) => {
+			if (rid === -3) {
+				worker.removeEventListener('message', listener);
+				resolve(config);
+			}
+		};
+		worker.addEventListener('message', listener);
+		worker.postMessage(['config', -3]);
+	});
+
+	/**
 	 * 将语法分析改为异步执行
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} include 是否嵌入
-	 * @param {number} id Linter编号，暂时固定为`-1`
+	 * @param {number} qid Linter编号，暂时固定为`-2`
 	 * @returns {Promise<LintError[]>}
 	 */
-	const lint = (wikitext, include, id = -1) => new Promise(resolve => {
+	const lint = (wikitext, include, qid = -2) => new Promise(resolve => {
 		/**
 		 * 临时的listener
 		 * @param {{data: [number, LintError[]]}} e 事件
 		 */
 		const listener = ({data: [rid, errors]}) => {
-			if (id === rid) {
+			if (qid === rid) {
 				worker.removeEventListener('message', listener);
 				resolve(errors);
 			}
 		};
 		worker.addEventListener('message', listener);
-		worker.postMessage(['lint', id, wikitext, include]);
+		worker.postMessage(['lint', qid, wikitext, include]);
 	});
 
 	/**
@@ -64,22 +91,22 @@
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} include 是否嵌入
 	 * @param {number} stage 解析层级
-	 * @param {number} id Printer编号
+	 * @param {number} qid Printer编号
 	 * @returns {Promise<[number, string, string][]>}
 	 */
-	const print = (wikitext, include, stage, id = -1) => new Promise(resolve => {
+	const print = (wikitext, include, stage, qid = -1) => new Promise(resolve => {
 		/**
 		 * 临时的listener
 		 * @param {{data: [number, [number, string, string][]]}} e 事件
 		 */
 		const listener = ({data: [rid, parsed]}) => {
-			if (id === rid) {
+			if (qid === rid) {
 				worker.removeEventListener('message', listener);
 				resolve(parsed);
 			}
 		};
 		worker.addEventListener('message', listener);
-		worker.postMessage(['print', id, wikitext, include, stage]);
+		worker.postMessage(['print', qid, wikitext, include, stage]);
 	});
 
 	let id = 0;
@@ -274,5 +301,6 @@
 	wikiparse.print = print;
 	wikiparse.lint = lint;
 	wikiparse.setConfig = setConfig;
+	wikiparse.getConfig = getConfig;
 	window.wikiparse = wikiparse;
 })();
