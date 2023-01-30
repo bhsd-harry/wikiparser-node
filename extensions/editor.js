@@ -8,20 +8,23 @@
 		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@0.6.21-b/bundle/bundle.min.js');
 		const /** @type {{Parser: Parser}} */ {Parser} = self,
 			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-		self.onmessage = /** @param {{data: ParserConfig|[number, string, Boolean, number]}} */ ({data}) => {
+		/** @param {{data: ParserConfig|['print'|'lint', number, string, Boolean, number]}} */
+		self.onmessage = ({data}) => {
 			if (Array.isArray(data)) {
-				const [id, ...args] = data,
+				const [mode, id, ...args] = data,
 					stage = args[2] === undefined ? MAX_STAGE : args[2],
-					{childNodes} = Parser.parse(...args);
+					root = Parser.parse(...args);
 				self.postMessage([
 					id,
-					childNodes.map(child => [
-						stage,
-						String(child),
-						child.type === 'text'
-							? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
-							: child.print(),
-					]),
+					mode === 'print'
+						? root.childNodes.map(child => [
+							stage,
+							String(child),
+							child.type === 'text'
+								? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+								: child.print(),
+						])
+						: root.lint(),
 				]);
 			} else {
 				Parser.config = data;
@@ -35,6 +38,28 @@
 	URL.revokeObjectURL(url);
 
 	/**
+	 * 将语法分析改为异步执行
+	 * @param {string} wikitext wikitext
+	 * @param {boolean} include 是否嵌入
+	 * @param {number} id Linter编号，暂时固定为`-1`
+	 * @returns {Promise<LintError[]>}
+	 */
+	const lint = (wikitext, include, id = -1) => new Promise(resolve => {
+		/**
+		 * 临时的listener
+		 * @param {{data: [number, LintError[]]}} e 事件
+		 */
+		const listener = ({data: [rid, errors]}) => {
+			if (id === rid) {
+				worker.removeEventListener('message', listener);
+				resolve(errors);
+			}
+		};
+		worker.addEventListener('message', listener);
+		worker.postMessage(['lint', id, wikitext, include]);
+	});
+
+	/**
 	 * 将解析改为异步执行
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} include 是否嵌入
@@ -42,7 +67,7 @@
 	 * @param {number} id Printer编号
 	 * @returns {Promise<[number, string, string][]>}
 	 */
-	const parse = (wikitext, include, stage, id = -1) => new Promise(resolve => {
+	const print = (wikitext, include, stage, id = -1) => new Promise(resolve => {
 		/**
 		 * 临时的listener
 		 * @param {{data: [number, [number, string, string][]]}} e 事件
@@ -54,7 +79,7 @@
 			}
 		};
 		worker.addEventListener('message', listener);
-		worker.postMessage([id, wikitext, include, stage]);
+		worker.postMessage(['print', id, wikitext, include, stage]);
 	});
 
 	let id = 0;
@@ -121,7 +146,7 @@
 				return undefined;
 			}
 			const {option: {include}, textbox: {value}} = this,
-				parsed = await parse(value, include, 2, this.id);
+				parsed = await print(value, include, 2, this.id);
 			if (this.option.include !== include || this.textbox.value !== value) {
 				this.running = undefined;
 				this.running = this.coarsePrint();
@@ -174,7 +199,7 @@
 				this.running = undefined;
 				return undefined;
 			}
-			const parsed = await parse(text, include, undefined, this.id);
+			const parsed = await print(text, include, undefined, this.id);
 			if (this.option.include === include && this.textbox.value === value) {
 				this.root.splice(start, end - start, ...parsed);
 				this.paint();
@@ -246,7 +271,8 @@
 		worker.postMessage(config);
 	};
 
-	wikiparse.parse = parse;
+	wikiparse.print = print;
+	wikiparse.lint = lint;
 	wikiparse.setConfig = setConfig;
 	window.wikiparse = wikiparse;
 })();
