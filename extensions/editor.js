@@ -11,29 +11,25 @@
 		/** @param {{data: ParserConfig|['print'|'lint'|'config', number, string, Boolean, number]}} */
 		self.onmessage = ({data}) => {
 			if (Array.isArray(data)) {
-				const [mode, qid, ...args] = data,
-					stage = args[2] === undefined ? MAX_STAGE : args[2],
-					root = Parser.parse(...args);
-				switch (mode) {
-					case 'lint':
-						self.postMessage([qid, root.lint()]);
-						break;
-					case 'print':
-						self.postMessage([
-							qid,
-							root.childNodes.map(child => [
-								stage,
-								String(child),
-								child.type === 'text'
-									? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
-									: child.print(),
-							]),
-						]);
-						break;
-					case 'config':
-						self.postMessage([qid, Parser.minConfig]);
-					// no default
+				const [mode, qid, ...args] = data;
+				if (mode === 'config') {
+					self.postMessage([qid, Parser.minConfig]);
+					return;
 				}
+				const stage = args[2] === undefined ? MAX_STAGE : args[2],
+					root = Parser.parse(...args);
+				self.postMessage([
+					qid,
+					mode === 'lint'
+						? root.lint()
+						: root.childNodes.map(child => [
+							stage,
+							String(child),
+							child.type === 'text'
+								? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+								: child.print(),
+						]),
+				]);
 			} else {
 				Parser.config = data;
 			}
