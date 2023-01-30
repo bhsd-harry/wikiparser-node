@@ -43,7 +43,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 		let top = stack.pop();
 		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine),
 			line = outLine.slice(spaces.length),
-			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u.exec(line);
+			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u.exec(line);
 		if (matchesStart) {
 			while (top && top.type !== 'td') {
 				top = stack.pop();
