@@ -1,6 +1,6 @@
 'use strict';
 
-const {extUrlChar} = require('../util/string'),
+const {extUrlChar, extUrlCharFirst} = require('../util/string'),
 	Parser = require('..'),
 	MagicLinkToken = require('../src/magicLink');
 
@@ -10,7 +10,7 @@ const {extUrlChar} = require('../util/string'),
  * @param {accum} accum
  */
 const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
-	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlChar})`, 'giu');
+	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
 	return wikitext.replace(regex, /** @param {string} p1 */ (m, lead, p1) => {
 		let trail = '',
 			url = lead ? m.slice(1) : m;
