@@ -84,6 +84,6 @@ textarea {
 	max-height: 100vh;
 	direction: ltr;
 }
-#wpTextbox, div#wikiPretty {
+#wikiPretty + #wpTextbox, div#wikiPretty {
 	border-radius: 0.3em;
 }
