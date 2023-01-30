@@ -1,7 +1,7 @@
 'use strict';
 
-const extUrlChar = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])'
-	+ '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
+const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])',
+	extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
 /**
  * remove half-parsed comment-like tokens
@@ -102,4 +102,6 @@ const normalizeSpace = token => {
 	}
 };
 
-module.exports = {extUrlChar, removeComment, print, escapeRegExp, explode, text, toCase, noWrap, normalizeSpace};
+module.exports = {
+	extUrlCharFirst, extUrlChar, removeComment, print, escapeRegExp, explode, text, toCase, noWrap, normalizeSpace,
+};

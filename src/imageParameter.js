@@ -1,6 +1,6 @@
 'use strict';
 
-const {text, noWrap, print, extUrlChar} = require('../util/string'),
+const {text, noWrap, print, extUrlChar, extUrlCharFirst} = require('../util/string'),
 	Parser = require('..'),
 	AstText = require('../lib/text'),
 	Token = require('.');
@@ -28,7 +28,9 @@ class ImageParameterToken extends Token {
 				if (!value) {
 					return this.noLink;
 				}
-				const regex = new RegExp(`(?:${config.protocol}|//)${extUrlChar}(?=\0\\d+t\x7F|$)`, 'iu');
+				const regex = new RegExp(`(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${
+					extUrlChar
+				}(?=\0\\d+t\x7F|$)`, 'iu');
 				if (regex.test(value)) {
 					return value;
 				} else if (value.startsWith('[[') && value.endsWith(']]')) {

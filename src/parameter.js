@@ -1,6 +1,6 @@
 'use strict';
 
-const {noWrap, extUrlChar} = require('../util/string'),
+const {noWrap, extUrlChar, extUrlCharFirst} = require('../util/string'),
 	{generateForChild} = require('../util/lint'),
 	fixedToken = require('../mixin/fixedToken'),
 	Parser = require('..'),
@@ -120,7 +120,7 @@ class ParameterToken extends fixedToken(Token) {
 	lint(start = 0) {
 		const errors = super.lint(start),
 			{firstChild, lastChild} = this,
-			link = new RegExp(`https?://${extUrlChar}$`, 'iu')
+			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
 				.exec(firstChild.toString('comment, noinclude, include'))?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {token: this, start}, '匿名参数中未转义的查询参数');
