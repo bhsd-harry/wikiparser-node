@@ -5,7 +5,7 @@
 
 	/** web worker */
 	const workerJS = () => {
-		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@0.6.21-b/bundle/bundle.min.js');
+		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@0.6.22-b/bundle/bundle.min.js');
 		const /** @type {{Parser: Parser}} */ {Parser} = self,
 			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 		/** @param {{data: ParserConfig|['print'|'lint', number, string, Boolean, number]}} */
