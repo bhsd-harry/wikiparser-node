@@ -722,6 +722,65 @@ class Token extends AstElement {
 		this.normalize();
 	}
 
+	/** 解析部分魔术字 */
+	solveConst() {
+		const ArgToken = require('./arg'),
+			ParameterToken = require('./parameter');
+		const targets = this.querySelectorAll('magic-word, arg'),
+			magicWords = new Set(['if', 'ifeq', 'switch']);
+		for (let i = targets.length - 1; i >= 0; i--) {
+			const /** @type {ArgToken} */ target = targets[i],
+				{type, name, default: argDefault, childNodes, length} = target;
+			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
+				let replace = '';
+				if (type === 'arg') {
+					replace = argDefault === false ? String(target) : argDefault;
+				} else if (name === 'if' && !childNodes[1].querySelector('magic-word, template')) {
+					replace = String(childNodes[String(childNodes[1] ?? '').trim() ? 2 : 3] ?? '').trim();
+				} else if (name === 'ifeq'
+					&& !childNodes.slice(1, 3).some(child => child.querySelector('magic-word, template'))
+				) {
+					replace = String(childNodes[
+						String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '') ? 3 : 4
+					] ?? '').trim();
+				} else if (name === 'switch') {
+					const key = String(childNodes[1] ?? '').trim();
+					let defaultVal = '',
+						found = false,
+						transclusion = false,
+						j = 2;
+					for (; j < length; j++) {
+						const /** @type {ParameterToken} */ {anon, name: option, value, firstChild} = childNodes[j];
+						transclusion = firstChild.querySelector('magic-word, template');
+						if (anon) {
+							if (j === length - 1) {
+								defaultVal = value;
+							} else if (transclusion) {
+								break;
+							} else {
+								found ||= key === value;
+							}
+						} else if (transclusion) {
+							break;
+						} else if (found || option === key) {
+							replace = value;
+							break;
+						} else if (option.toLowerCase() === '#default') {
+							defaultVal = value;
+						}
+						if (j === length - 1) {
+							replace = defaultVal;
+						}
+					}
+					if (transclusion) {
+						continue;
+					}
+				}
+				target.replaceWith(replace);
+			}
+		}
+	}
+
 	/** 生成部分Token的`name`属性 */
 	afterBuild() {
 		if (!Parser.debugging && externalUse('afterBuild')) {
