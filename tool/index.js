@@ -26,7 +26,7 @@ class TokenCollection {
 		if (selector === undefined || typeof selector === 'string') {
 			return token => token instanceof Token && token.matches(selector);
 		} else if (selector?.[Symbol.iterator]) {
-			return token => new Set(selector).has(token);
+			return token => new WeakSet(selector).has(token);
 		}
 		return selector instanceof AstNode
 			? token => token === selector
