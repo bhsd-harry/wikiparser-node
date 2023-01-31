@@ -186,8 +186,8 @@ class LinkToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{childNodes: [, linkText]} = this;
-		if (linkText?.childNodes?.some(
+			{childNodes: [, linkText], type: linkType} = this;
+		if (linkType === 'link' && linkText?.childNodes?.some(
 			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
 			errors.push(generateForChild(linkText, {token: this, start}, '链接文本中多余的"|"', 'warning'));
