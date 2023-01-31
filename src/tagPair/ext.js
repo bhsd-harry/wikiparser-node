@@ -121,13 +121,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 	}
 
 	/** @override */
-	print() {
-		return super.print({
-			class: this.name !== 'nowiki' && this.closest('html-attrs, table-attrs') && 'ext wpb-error',
-		});
-	}
-
-	/** @override */
 	cloneNode() {
 		const inner = this.lastChild.cloneNode(),
 			tags = this.getAttribute('tags'),

@@ -100,7 +100,6 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		return super.print({
 			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
 			post: `${this.#selfClosing ? '/' : ''}&gt;`,
-			class: this.closest('table-attrs') && 'html wpb-error',
 		});
 	}
 

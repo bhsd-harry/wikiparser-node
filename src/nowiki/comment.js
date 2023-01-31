@@ -36,9 +36,7 @@ class CommentToken extends hidden(NowikiToken) {
 
 	/** @override */
 	print() {
-		return super.print({
-			pre: '&lt;!--', post: this.closed ? '--&gt;' : '', class: !this.closed && 'comment wpb-error',
-		});
+		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 
 	/**

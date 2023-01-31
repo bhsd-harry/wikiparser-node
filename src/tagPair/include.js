@@ -33,11 +33,6 @@ class IncludeToken extends hidden(TagPairToken) {
 	}
 
 	/** @override */
-	print() {
-		return super.print({class: !this.closed && `${this.type} wpb-error`});
-	}
-
-	/** @override */
 	cloneNode() {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
