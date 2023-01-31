@@ -8,30 +8,35 @@
 		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@0.6.24-b/bundle/bundle.min.js');
 		const /** @type {{Parser: Parser}} */ {Parser} = self,
 			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-		/** @param {{data: ParserConfig|['print'|'lint'|'config', number, string, Boolean, number]}} */
+
+		/**
+		 * @param {{data: ['setConfig', ParserConfig]|['getConfig'|'print'|'lint', number, string, Boolean, number]}}
+		 */
 		self.onmessage = ({data}) => {
-			if (Array.isArray(data)) {
-				const [mode, qid, ...args] = data;
-				if (mode === 'config') {
+			const [command, qid, ...args] = data;
+			switch (command) {
+				case 'setConfig':
+					Parser.config = qid;
+					break;
+				case 'getConfig':
 					self.postMessage([qid, Parser.minConfig]);
-					return;
-				}
-				const stage = args[2] === undefined ? MAX_STAGE : args[2],
-					root = Parser.parse(...args);
-				self.postMessage([
-					qid,
-					mode === 'lint'
-						? root.lint()
-						: root.childNodes.map(child => [
+					break;
+				case 'lint':
+					self.postMessage([qid, Parser.parse(...args).lint(), args[0]]);
+					break;
+				default: {
+					const stage = args[2] === undefined ? MAX_STAGE : args[2];
+					self.postMessage([
+						qid,
+						Parser.parse(...args).childNodes.map(child => [
 							stage,
 							String(child),
 							child.type === 'text'
 								? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
 								: child.print(),
 						]),
-				]);
-			} else {
-				Parser.config = data;
+					]);
+				}
 			}
 		};
 	};
@@ -42,44 +47,36 @@
 	URL.revokeObjectURL(url);
 
 	/**
+	 * 生成事件监听函数
+	 * @param {number|symbol} qid 输入id
+	 * @param {(res: *) => void} resolve Promise对象的resolve函数
+	 * @param {number|string|boolean|undefined} addition 额外需要匹配的参数
+	 */
+	const getListener = (qid, resolve, addition) => {
+		const listener = /** @param {{data: [number|symbol, *]}} e 消息事件 */ ({data: [rid, res, resAddition]}) => {
+			if (rid === qid && addition === resAddition) {
+				worker.removeEventListener('message', listener);
+				resolve(res);
+			}
+		};
+		return listener;
+	};
+
+	/**
+	 * 更新解析设置
+	 * @param {ParserConfig} config 设置
+	 */
+	const setConfig = config => {
+		worker.postMessage(['setConfig', config]);
+	};
+
+	/**
 	 * 获取Parser.minConfig
 	 * @returns {Promise<ParserConfig>}
 	 */
 	const getConfig = () => new Promise(resolve => {
-		/**
-		 * 临时的listener
-		 * @param {{data: [number, ParserConfig]}} e 事件
-		 */
-		const listener = ({data: [rid, config]}) => {
-			if (rid === -3) {
-				worker.removeEventListener('message', listener);
-				resolve(config);
-			}
-		};
-		worker.addEventListener('message', listener);
-		worker.postMessage(['config', -3]);
-	});
-
-	/**
-	 * 将语法分析改为异步执行
-	 * @param {string} wikitext wikitext
-	 * @param {boolean} include 是否嵌入
-	 * @param {number} qid Linter编号，暂时固定为`-2`
-	 * @returns {Promise<LintError[]>}
-	 */
-	const lint = (wikitext, include, qid = -2) => new Promise(resolve => {
-		/**
-		 * 临时的listener
-		 * @param {{data: [number, LintError[]]}} e 事件
-		 */
-		const listener = ({data: [rid, errors]}) => {
-			if (qid === rid) {
-				worker.removeEventListener('message', listener);
-				resolve(errors);
-			}
-		};
-		worker.addEventListener('message', listener);
-		worker.postMessage(['lint', qid, wikitext, include]);
+		worker.addEventListener('message', getListener(-3, resolve));
+		worker.postMessage(['getConfig', -3]);
 	});
 
 	/**
@@ -91,18 +88,20 @@
 	 * @returns {Promise<[number, string, string][]>}
 	 */
 	const print = (wikitext, include, stage, qid = -1) => new Promise(resolve => {
-		/**
-		 * 临时的listener
-		 * @param {{data: [number, [number, string, string][]]}} e 事件
-		 */
-		const listener = ({data: [rid, parsed]}) => {
-			if (qid === rid) {
-				worker.removeEventListener('message', listener);
-				resolve(parsed);
-			}
-		};
-		worker.addEventListener('message', listener);
+		worker.addEventListener('message', getListener(qid, resolve));
 		worker.postMessage(['print', qid, wikitext, include, stage]);
+	});
+
+	/**
+	 * 将语法分析改为异步执行
+	 * @param {string} wikitext wikitext
+	 * @param {boolean} include 是否嵌入
+	 * @param {number} qid Linter编号，暂时固定为`-2`
+	 * @returns {Promise<LintError[]>}
+	 */
+	const lint = (wikitext, include, qid = -2) => new Promise(resolve => {
+		worker.addEventListener('message', getListener(qid, resolve, wikitext));
+		worker.postMessage(['lint', qid, wikitext, include]);
 	});
 
 	let id = 0;
@@ -112,13 +111,13 @@
 		/**
 		 * @param {HTMLDivElement} preview 置于下层的代码高亮
 		 * @param {HTMLTextAreaElement} textbox 置于上层的文本框
-		 * @param {{include: boolean}} option 是否嵌入
+		 * @param {boolean} include 是否嵌入
 		 */
-		constructor(preview, textbox, option) {
+		constructor(preview, textbox, include) {
 			this.id = id++;
 			this.preview = preview;
 			this.textbox = textbox;
-			this.option = option;
+			this.include = Boolean(include);
 			/** @type {[number, string, string][]} */ this.root = [];
 			/** @type {Promise<void>} */ this.running = undefined;
 			this.viewportChanged = false;
@@ -168,9 +167,9 @@
 			if (this.running) {
 				return undefined;
 			}
-			const {option: {include}, textbox: {value}} = this,
+			const {include, textbox: {value}} = this,
 				parsed = await print(value, include, 2, this.id);
-			if (this.option.include !== include || this.textbox.value !== value) {
+			if (this.include !== include || this.textbox.value !== value) {
 				this.running = undefined;
 				this.running = this.coarsePrint();
 				return this.running;
@@ -192,7 +191,7 @@
 			const {
 				root,
 				preview: {scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]},
-				option: {include},
+				include,
 				textbox: {value},
 			} = this;
 			let text = value,
@@ -222,8 +221,8 @@
 				this.running = undefined;
 				return undefined;
 			}
-			const parsed = await print(text, include, undefined, this.id);
-			if (this.option.include === include && this.textbox.value === value) {
+			const parsed = await print(text, include, MAX_STAGE, this.id);
+			if (this.include === include && this.textbox.value === value) {
 				this.root.splice(start, end - start, ...parsed);
 				this.paint();
 				this.running = undefined;
@@ -238,21 +237,50 @@
 		}
 	}
 
+	/** 用于语法分析 */
+	class Linter {
+		/** @param {boolean} include 是否嵌入 */
+		constructor(include) {
+			this.id = id++;
+			this.include = Boolean(include);
+			this.wikitext = undefined;
+			/** @type {Promise<LintError[]>} */ this.running = undefined;
+		}
+
+		/**
+		 * 提交语法分析
+		 * @param {string} wikitext 待分析的文本
+		 */
+		queue(wikitext) {
+			this.wikitext = wikitext;
+			this.running = this.lint(wikitext);
+			return this.running;
+		}
+
+		/**
+		 * 执行语法分析
+		 * @param {string} wikitext 待分析的文本
+		 */
+		async lint(wikitext) {
+			const {include} = this,
+				errors = await lint(wikitext, include, this.id);
+			return this.include === include && this.wikitext === wikitext ? errors : this.running;
+		}
+	}
+
 	/**
 	 * 高亮textarea
 	 * @param {HTMLTextAreaElement} textbox textarea元素
-	 * @param {{include: boolean}} option 解析选项
+	 * @param {boolean} include 是否嵌入
 	 * @throws `TypeError` 不是textarea
 	 */
-	const wikiparse = (textbox, option = {}) => {
+	const wikiparse = (textbox, include) => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
 			throw new TypeError('wikiparse方法仅可用于textarea元素！');
-		} else if (typeof option !== 'object') {
-			option = {include: option};
 		}
 		const preview = document.createElement('div'),
 			container = document.createElement('div'),
-			printer = new Printer(preview, textbox, option);
+			printer = new Printer(preview, textbox, include);
 		preview.id = 'wikiPretty';
 		preview.classList.add('wikiparser', 'active');
 		container.classList.add('wikiparse-container');
@@ -286,17 +314,11 @@
 		return printer;
 	};
 
-	/**
-	 * 更新解析设置
-	 * @param {ParserConfig} config 设置
-	 */
-	const setConfig = config => {
-		worker.postMessage(config);
-	};
-
 	wikiparse.print = print;
 	wikiparse.lint = lint;
 	wikiparse.setConfig = setConfig;
 	wikiparse.getConfig = getConfig;
+	wikiparse.Printer = Printer;
+	wikiparse.Linter = Linter;
 	window.wikiparse = wikiparse;
 })();
