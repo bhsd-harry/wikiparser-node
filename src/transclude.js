@@ -19,7 +19,7 @@ class TranscludeToken extends Token {
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 	/** @type {Set<string>} */ #keys = new Set();
 	#fragment = '';
-	#encoded = false;
+	#valid = true;
 
 	/** 是否存在重复参数 */
 	get duplication() {
@@ -130,6 +130,53 @@ class TranscludeToken extends Token {
 		this.getAttribute('protectChildren')(0);
 	}
 
+	/** @override */
+	afterBuild() {
+		if (this.isTemplate()) {
+			const isTemplate = this.type === 'template',
+				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].text(), isTemplate ? 10 : 828);
+			this.setAttribute(isTemplate ? 'name' : 'module', titleObj.title);
+			this.#fragment = titleObj.fragment;
+			this.#valid = titleObj.valid;
+
+			/**
+			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
+			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
+			 * @type {AstListener}
+			 */
+			const transcludeListener = (e, data) => {
+				const {prevTarget} = e,
+					{oldKey, newKey} = data ?? {};
+				if (typeof oldKey === 'string') {
+					delete data.oldKey;
+					delete data.newKey;
+				}
+				if (prevTarget === this.firstChild && isTemplate
+					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke'
+				) {
+					const name = prevTarget.text(),
+						{title, fragment, valid} = this.normalizeTitle(name, 10);
+					if (!valid) {
+						undo(e, data);
+						throw new Error(`非法的模${isTemplate ? '板' : '块'}名称：${name}`);
+					}
+					this.setAttribute(isTemplate ? 'name' : 'module', title);
+					this.#fragment = fragment;
+					this.#valid = true;
+				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
+					const oldArgs = this.getArgs(oldKey, false, false);
+					oldArgs.delete(prevTarget);
+					this.getArgs(newKey, false, false).add(prevTarget);
+					this.#keys.add(newKey);
+					if (oldArgs.size === 0) {
+						this.#keys.delete(oldKey);
+					}
+				}
+			};
+			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
+		}
+	}
+
 	/**
 	 * @override
 	 * @param {string} selector
@@ -194,9 +241,9 @@ class TranscludeToken extends Token {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
 		}
-		if (this.#encoded) {
+		if (!this.#valid) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(childNodes[1], rect, '模块名不能包含URL编码'));
+			errors.push(generateForChild(childNodes[1], rect, '非法的模块名称'));
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
@@ -374,53 +421,6 @@ class TranscludeToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
-	}
-
-	/** @override */
-	afterBuild() {
-		if (this.isTemplate()) {
-			const isTemplate = this.type === 'template',
-				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].text(), isTemplate ? 10 : 828);
-			this.setAttribute(isTemplate ? 'name' : 'module', titleObj.title);
-			this.#fragment = titleObj.fragment;
-			this.#encoded = titleObj.encoded;
-
-			/**
-			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
-			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-			 * @type {AstListener}
-			 */
-			const transcludeListener = (e, data) => {
-				const {prevTarget} = e,
-					{oldKey, newKey} = data ?? {};
-				if (typeof oldKey === 'string') {
-					delete data.oldKey;
-					delete data.newKey;
-				}
-				if (prevTarget === this.firstChild && isTemplate
-					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke'
-				) {
-					const name = prevTarget.text(),
-						{title, fragment, encoded} = this.normalizeTitle(name, 10);
-					if (encoded && isTemplate) {
-						undo(e, data);
-						throw new Error(`模板名不能包含URL编码：${name}`);
-					}
-					this.setAttribute(isTemplate ? 'name' : 'module', title);
-					this.#fragment = fragment;
-					this.#encoded = encoded;
-				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
-					const oldArgs = this.getArgs(oldKey, false, false);
-					oldArgs.delete(prevTarget);
-					this.getArgs(newKey, false, false).add(prevTarget);
-					this.#keys.add(newKey);
-					if (oldArgs.size === 0) {
-						this.#keys.delete(oldKey);
-					}
-				}
-			};
-			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
-		}
 	}
 
 	/** 替换引用 */
