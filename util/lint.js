@@ -5,7 +5,7 @@ const Token = require('../src');
 /**
  * 生成对于子节点的LintError对象
  * @param {Token} child 子节点
- * @param {{top: number, left: number, token: Token, start: number}} boundingRect 父节点的绝对定位
+ * @param {{top: number, left: number, start: number}} boundingRect 父节点的绝对定位
  * @param {string} message 错误信息
  * @param {'error'|'warning'} severity 严重程度
  * @returns {LintError}
@@ -14,8 +14,8 @@ const generateForChild = (child, boundingRect, message, severity = 'error') => {
 	const index = child.getRelativeIndex(),
 		{offsetHeight, offsetWidth, parentNode, length} = child,
 		{top: offsetTop, left: offsetLeft} = parentNode.posFromIndex(index),
-		{token, start} = boundingRect,
-		{top, left} = token ? token.getRootNode().posFromIndex(start) : boundingRect,
+		{start} = boundingRect,
+		{top, left} = 'top' in boundingRect ? boundingRect : child.getRootNode().posFromIndex(start),
 		excerpt = String(child).slice(0, 50),
 		startIndex = start + index,
 		endIndex = startIndex + length,

@@ -1,7 +1,7 @@
 'use strict';
 
 const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/string'),
-	{externalUse} = require('../util/debug'),
+	{externalUse, undo} = require('../util/debug'),
 	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
@@ -18,6 +18,8 @@ class TranscludeToken extends Token {
 	modifier = '';
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 	/** @type {Set<string>} */ #keys = new Set();
+	#fragment = '';
+	#encoded = false;
 
 	/** 是否存在重复参数 */
 	get duplication() {
@@ -102,7 +104,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const name = removeComment(title).split('#')[0].trim();
-			if (/\0\d+[eh!+-]\x7F|[<>[\]{}\n]/u.test(name)) {
+			if (/\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
 			}
@@ -183,13 +185,22 @@ class TranscludeToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const errors = super.lint(start);
+		const errors = super.lint(start),
+			{type, childNodes} = this;
+		let rect;
 		if (!this.isTemplate()) {
 			return errors;
+		} else if (this.#fragment) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
+		}
+		if (this.#encoded) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(childNodes[1], rect, '模块名不能包含URL编码'));
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
-			const rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
 				arg => generateForChild(arg, rect, '重复参数'),
 			));
@@ -367,10 +378,13 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		if (this.type === 'template') {
-			this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 10).title);
-		}
 		if (this.isTemplate()) {
+			const isTemplate = this.type === 'template',
+				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].text(), isTemplate ? 10 : 828);
+			this.setAttribute(isTemplate ? 'name' : 'module', titleObj.title);
+			this.#fragment = titleObj.fragment;
+			this.#encoded = titleObj.encoded;
+
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
 			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
@@ -383,8 +397,18 @@ class TranscludeToken extends Token {
 					delete data.oldKey;
 					delete data.newKey;
 				}
-				if (prevTarget === this.firstChild && this.type === 'template') {
-					this.setAttribute('name', this.normalizeTitle(prevTarget.text(), 10).title);
+				if (prevTarget === this.firstChild && isTemplate
+					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke'
+				) {
+					const name = prevTarget.text(),
+						{title, fragment, encoded} = this.normalizeTitle(name, 10);
+					if (encoded && isTemplate) {
+						undo(e, data);
+						throw new Error(`模板名不能包含URL编码：${name}`);
+					}
+					this.setAttribute(isTemplate ? 'name' : 'module', title);
+					this.#fragment = fragment;
+					this.#encoded = encoded;
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey, false, false);
 					oldArgs.delete(prevTarget);

@@ -17,6 +17,8 @@ class LinkToken extends Token {
 	type = 'link';
 	#bracket = true;
 	#delimiter;
+	#fragment = '';
+	#encoded = false;
 
 	/** 完整链接，和FileToken保持一致 */
 	get link() {
@@ -105,7 +107,10 @@ class LinkToken extends Token {
 	 * @throws `Error` 不可更改命名空间
 	 */
 	afterBuild() {
-		this.setAttribute('name', this.normalizeTitle(this.firstChild.text(), 0, false, true).title);
+		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true);
+		this.setAttribute('name', titleObj.title);
+		this.#fragment = titleObj.fragment;
+		this.#encoded = titleObj.encoded;
 		if (this.#delimiter?.includes('\0')) {
 			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter, 'string');
 		}
@@ -113,7 +118,7 @@ class LinkToken extends Token {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, ns, valid} = this.normalizeTitle(name, 0, false, true);
+					{title, interwiki, ns, valid, fragment, encoded} = this.normalizeTitle(name, 0, false, true);
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
@@ -131,6 +136,8 @@ class LinkToken extends Token {
 					}
 				}
 				this.setAttribute('name', title);
+				this.#fragment = fragment;
+				this.#encoded = encoded;
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
@@ -186,11 +193,20 @@ class LinkToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{childNodes: [, linkText], type: linkType} = this;
+			{childNodes: [target, linkText], type: linkType} = this;
+		let rect;
+		if (this.#encoded) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(target, rect, '内链中不必要的URL编码'));
+		}
 		if (linkType === 'link' && linkText?.childNodes?.some(
 			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
-			errors.push(generateForChild(linkText, {token: this, start}, '链接文本中多余的"|"', 'warning'));
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(linkText, rect, '链接文本中多余的"|"', 'warning'));
+		} else if (linkType !== 'link' && this.#fragment) {
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(target, rect, '多余的fragment'));
 		}
 		return errors;
 	}

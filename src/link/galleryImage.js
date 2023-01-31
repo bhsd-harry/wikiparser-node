@@ -55,11 +55,9 @@ class GalleryImageToken extends singleLine(FileToken) {
 	 */
 	afterBuild() {
 		const initImagemap = this.type === 'imagemap-image',
-			{
-				title: initTitle, interwiki: initInterwiki, ns: initNs,
-			} = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
-		this.setAttribute('name', initTitle);
-		this.#invalid = initInterwiki || initNs !== 6; // 只用于gallery-image的首次解析
+			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
+		this.setAttribute('name', titleObj.title);
+		this.#invalid = titleObj.interwiki || titleObj.ns !== 6; // 只用于gallery-image的首次解析
 		const /** @type {AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {

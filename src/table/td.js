@@ -172,7 +172,7 @@ class TdToken extends fixedToken(TrToken) {
 		start += this.getRelativeIndex(-1);
 		for (const child of lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
-				errors.push(generateForChild(child, {token: lastChild, start}, '表格单元格中多余的"|"', 'warning'));
+				errors.push(generateForChild(child, {start}, '表格单元格中多余的"|"', 'warning'));
 			}
 		}
 		return errors;
