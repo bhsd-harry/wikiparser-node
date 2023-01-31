@@ -104,7 +104,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const name = removeComment(title).split('#')[0].trim();
-			if (/\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
+			if (!name || /\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
 			}
