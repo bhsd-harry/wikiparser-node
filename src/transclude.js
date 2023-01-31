@@ -1,7 +1,7 @@
 'use strict';
 
 const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/string'),
-	{externalUse, undo} = require('../util/debug'),
+	{externalUse} = require('../util/debug'),
 	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.'),
@@ -156,13 +156,9 @@ class TranscludeToken extends Token {
 				) {
 					const name = prevTarget.text(),
 						{title, fragment, valid} = this.normalizeTitle(name, 10);
-					if (!valid) {
-						undo(e, data);
-						throw new Error(`非法的模${isTemplate ? '板' : '块'}名称：${name}`);
-					}
 					this.setAttribute(isTemplate ? 'name' : 'module', title);
 					this.#fragment = fragment;
-					this.#valid = true;
+					this.#valid = valid;
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey, false, false);
 					oldArgs.delete(prevTarget);
