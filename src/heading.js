@@ -58,14 +58,8 @@ class HeadingToken extends Token {
 
 	/** @override */
 	print() {
-		const equals = '='.repeat(Number(this.name)),
-			innerText = String(this.firstChild);
-		return super.print({
-			pre: equals,
-			sep: equals,
-			class: (innerText[0] === '=' || innerText.endsWith('=') || this.closest('html-attrs, table-attrs'))
-				&& 'heading wpb-error',
-		});
+		const equals = '='.repeat(Number(this.name));
+		return super.print({pre: equals, sep: equals});
 	}
 
 	/**

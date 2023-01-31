@@ -112,13 +112,6 @@ class ExtToken extends TagPairToken {
 		}
 		return errors;
 	}
-
-	/** @override */
-	print() {
-		return super.print({
-			class: this.name !== 'nowiki' && this.closest('html-attrs, table-attrs') && 'ext wpb-error',
-		});
-	}
 }
 
 module.exports = ExtToken;

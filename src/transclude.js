@@ -16,6 +16,8 @@ class TranscludeToken extends Token {
 	type = 'template';
 	modifier = '';
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
+	#fragment = '';
+	#valid = true;
 
 	/**
 	 * 设置引用修饰符
@@ -86,7 +88,7 @@ class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const name = removeComment(title).split('#')[0].trim();
-			if (/\0\d+[eh!+-]\x7F|[<>[\]{}\n]/u.test(name)) {
+			if (/\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${name}`);
 			}
@@ -107,6 +109,16 @@ class TranscludeToken extends Token {
 				i++;
 			}
 			this.insertAt(new ParameterToken(...part, config, accum));
+		}
+	}
+
+	/** @override */
+	afterBuild() {
+		if (this.isTemplate()) {
+			const isTemplate = this.type === 'template',
+				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].text(), isTemplate ? 10 : 828);
+			this.#fragment = titleObj.fragment;
+			this.#valid = titleObj.valid;
 		}
 	}
 
@@ -161,13 +173,22 @@ class TranscludeToken extends Token {
 	 * @param {number} start 起始位置
 	 */
 	lint(start = 0) {
-		const errors = super.lint(start);
+		const errors = super.lint(start),
+			{type, childNodes} = this;
+		let rect;
 		if (!this.isTemplate()) {
 			return errors;
+		} else if (this.#fragment) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
+		}
+		if (!this.#valid) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(childNodes[1], rect, '非法的模块名称'));
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
-			const rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
 				arg => generateForChild(arg, rect, '重复参数'),
 			));

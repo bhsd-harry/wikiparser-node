@@ -37,10 +37,8 @@ class GalleryImageToken extends FileToken {
 	 */
 	afterBuild() {
 		const initImagemap = this.type === 'imagemap-image',
-			{
-				interwiki: initInterwiki, ns: initNs,
-			} = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
-		this.#invalid = initInterwiki || initNs !== 6; // 只用于gallery-image的首次解析
+			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
+		this.#invalid = titleObj.interwiki || titleObj.ns !== 6; // 只用于gallery-image的首次解析
 	}
 
 	/** @override */
@@ -58,11 +56,6 @@ class GalleryImageToken extends FileToken {
 			errors.push(generateForSelf(this, {start}, '无效的图库图片'));
 		}
 		return errors;
-	}
-
-	/** @override */
-	print() {
-		return super.print({class: this.#invalid && 'gallery-image wpb-error'});
 	}
 }
 

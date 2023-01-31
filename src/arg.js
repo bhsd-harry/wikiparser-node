@@ -66,9 +66,7 @@ class ArgToken extends Token {
 
 	/** @override */
 	print() {
-		return super.print({
-			pre: '{{{', post: '}}}', sep: '|', class: !this.getAttribute('include') && 'arg wpb-error',
-		});
+		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
 
 	/**

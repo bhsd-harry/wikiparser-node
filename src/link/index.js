@@ -14,6 +14,8 @@ class LinkToken extends Token {
 	type = 'link';
 	#bracket = true;
 	#delimiter;
+	#fragment = '';
+	#encoded = false;
 
 	/**
 	 * @param {string} link 链接标题
@@ -39,6 +41,9 @@ class LinkToken extends Token {
 	 * @override
 	 */
 	afterBuild() {
+		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true);
+		this.#fragment = titleObj.fragment;
+		this.#encoded = titleObj.encoded;
 		if (this.#delimiter?.includes('\0')) {
 			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter, 'string');
 		}
@@ -93,11 +98,20 @@ class LinkToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{childNodes: [, linkText]} = this;
-		if (linkText?.childNodes?.some(
+			{childNodes: [target, linkText], type: linkType} = this;
+		let rect;
+		if (this.#encoded) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(target, rect, '内链中不必要的URL编码'));
+		}
+		if (linkType === 'link' && linkText?.childNodes?.some(
 			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
-			errors.push(generateForChild(linkText, {token: this, start}, '链接文本中多余的"|"', 'warning'));
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(linkText, rect, '链接文本中多余的"|"', 'warning'));
+		} else if (linkType !== 'link' && this.#fragment) {
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(target, rect, '多余的fragment'));
 		}
 		return errors;
 	}

@@ -31,11 +31,6 @@ class IncludeToken extends hidden(TagPairToken) {
 	lint(start = 0) {
 		return this.closed ? [] : [generateForSelf(this, {start}, '未闭合的标签')];
 	}
-
-	/** @override */
-	print() {
-		return super.print({class: !this.closed && `${this.type} wpb-error`});
-	}
 }
 
 module.exports = IncludeToken;

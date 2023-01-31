@@ -150,9 +150,7 @@ class AttributesToken extends Token {
 	print() {
 		const HtmlToken = require('./html');
 		return String(this)
-			? `<span class="wpb-${this.type}${
-				this.parentNode.closing && this.text().trim() ? ' wpb-error' : ''
-			}">${this.childNodes.map(child => child.print({
+			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print({
 				class: child instanceof AtomToken && child.text().trim() && 'hidden',
 			})).join('')}</span>`
 			: '';
