@@ -107,7 +107,7 @@ class LinkToken extends Token {
 	 * @throws `Error` 不可更改命名空间
 	 */
 	afterBuild() {
-		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true);
+		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 		this.setAttribute('name', titleObj.title);
 		this.#fragment = titleObj.fragment;
 		this.#encoded = titleObj.encoded;
@@ -118,7 +118,7 @@ class LinkToken extends Token {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, ns, valid, fragment, encoded} = this.normalizeTitle(name, 0, false, true);
+					{title, interwiki, ns, valid, fragment, encoded} = this.normalizeTitle(name, 0, false, true, true);
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
@@ -213,7 +213,7 @@ class LinkToken extends Token {
 
 	/** 生成Title对象 */
 	#getTitle() {
-		return this.normalizeTitle(this.firstChild.text(), 0, false, true);
+		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 	}
 
 	/**

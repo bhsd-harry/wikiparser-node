@@ -33,6 +33,7 @@ declare global {
 		 * @param {boolean} include 是否嵌入
 		 * @param {boolean} halfParsed 是否是半解析状态
 		 * @param {boolean} decode 是否需要解码
+		 * @param {boolean} selfLink 是否允许selfLink
 		 */
 		normalizeTitle(
 			title: string,
@@ -41,6 +42,7 @@ declare global {
 			config?: ParserConfig,
 			halfParsed?: boolean,
 			decode?: boolean,
+			selfLink?: boolean,
 		): Title;
 
 		/**
