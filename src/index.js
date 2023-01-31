@@ -258,9 +258,10 @@ class Token extends AstElement {
 	 * @param {string} title 标题（含或不含命名空间前缀）
 	 * @param {number} defaultNs 命名空间
 	 * @param {boolean} decode 是否需要解码
+	 * @param {boolean} selfLink 是否允许selfLink
 	 */
-	normalizeTitle(title, defaultNs = 0, halfParsed = false, decode = false) {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode);
+	normalizeTitle(title, defaultNs = 0, halfParsed = false, decode = false, selfLink = false) {
+		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 
 	/** 生成部分Token的`name`属性 */

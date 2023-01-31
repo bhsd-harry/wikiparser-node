@@ -41,7 +41,7 @@ class LinkToken extends Token {
 	 * @override
 	 */
 	afterBuild() {
-		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true);
+		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 		this.#fragment = titleObj.fragment;
 		this.#encoded = titleObj.encoded;
 		if (this.#delimiter?.includes('\0')) {

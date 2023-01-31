@@ -11,7 +11,13 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	normalizeTitle(
-		title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false, decode = false,
+		title,
+		defaultNs = 0,
+		include = false,
+		config = Parser.getConfig(),
+		halfParsed = false,
+		decode = false,
+		selfLink = false,
 	) {
 		let /** @type {Token} */ token;
 		if (!halfParsed) {
@@ -25,7 +31,7 @@ const /** @type {Parser} */ Parser = {
 			title = token.firstChild;
 		}
 		const Title = require('./lib/title');
-		const titleObj = new Title(String(title), defaultNs, config, decode);
+		const titleObj = new Title(String(title), defaultNs, config, decode, selfLink);
 		return titleObj;
 	},
 

@@ -32,7 +32,7 @@ class ImageParameterToken extends Token {
 				} else if (value.startsWith('[[') && value.endsWith(']]')) {
 					value = value.slice(2, -2);
 				}
-				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true);
+				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true, true);
 				return title.valid;
 			}
 			case 'lang':
