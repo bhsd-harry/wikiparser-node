@@ -37,7 +37,7 @@ const getPages = async url => {
 (async () => {
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
-		Parser.getConfig(path.join('.', 'config', config));
+		Parser.config = require(path.join('..', 'config', config));
 		try {
 			const revs = await getPages(`${url}/api.php`);
 			for (const {title, ns, content} of revs) {
