@@ -14,7 +14,10 @@
   "license": "GPL-3.0",
   "author": "Bhsd",
   "files": [
-    "/bundle/bundle.min.js"
+    "/bundle/bundle.min.js",
+    "/extensions/",
+    "!/extensions/gh-page.*",
+    "!/extensions/.eslintrc.json"
   ],
   "browser": "/bundle/bundle.min.js",
   "repository": {
