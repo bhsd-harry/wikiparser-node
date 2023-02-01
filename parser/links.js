@@ -12,7 +12,7 @@ const Parser = require('..'),
  */
 const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js');
-	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
+	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
 		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
 		bits = wikitext.split('[[');
@@ -84,6 +84,9 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			} else if (ns === 14) {
 				SomeLinkToken = CategoryToken;
 			}
+		}
+		if (text === undefined && delimiter) {
+			text = '';
 		}
 		new SomeLinkToken(link, text, title, config, accum, delimiter);
 	}
