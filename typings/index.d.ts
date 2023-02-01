@@ -8,11 +8,8 @@ declare global {
 
 		readonly MAX_STAGE: number;
 
-		/**
-		 * 获取设置
-		 * @param {string} path 设置文件路径
-		 */
-		getConfig(path: string): ParserConfig;
+		/** 获取设置 */
+		getConfig(): ParserConfig;
 
 		/**
 		 * 规范化页面标题
