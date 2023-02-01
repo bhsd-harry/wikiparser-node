@@ -6,7 +6,10 @@ const /** @type {Parser} */ Parser = {
 
 	MAX_STAGE: 11,
 
-	getConfig() {
+	getConfig(path) {
+		if (path) {
+			this.config = require(path);
+		}
 		return {...this.minConfig, ...this.config};
 	},
 
