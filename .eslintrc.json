@@ -482,7 +482,6 @@
 		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
 		"es-x/no-array-string-prototype-at": 2,
-		"es-x/no-global-this": 2,
 		"es-x/no-object-fromentries": 2,
 		"es-x/no-object-hasown": 2,
 		"es-x/no-regexp-lookbehind-assertions": 2,
