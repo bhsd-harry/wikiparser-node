@@ -69,6 +69,8 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 					ch = marks[name]; // 标记{{!}}等
 				} else if (/^(?:fullurl|canonicalurl|filepath):.|^server$/iu.test(name)) {
 					ch = 'm';
+				} else if (/^#vardefine:./iu.test(name)) {
+					ch = 'c';
 				}
 				try {
 					new TranscludeToken(parts[0][0], parts.slice(1), config, accum);
