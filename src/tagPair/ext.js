@@ -25,11 +25,12 @@ class ExtToken extends TagPairToken {
 		attr = !attr || /^\s/u.test(attr) ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
-			newConfig = JSON.parse(JSON.stringify(config)),
+			/** @type {ParserConfig} */ newConfig = JSON.parse(JSON.stringify(config)),
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
 		ext.delete(lcName);
 		newConfig.ext = [...ext];
+		newConfig.inExt = true;
 		switch (lcName) {
 			case 'tab':
 				ext.delete('tabs');
