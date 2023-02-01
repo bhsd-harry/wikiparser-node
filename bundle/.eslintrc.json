@@ -14,8 +14,7 @@
 		"ecmaVersion": 13
 	},
 	"rules": {
-		"es-x/no-array-prototype-flat": 0,
-		"es-x/no-global-this": 0
+		"es-x/no-array-prototype-flat": 0
 	},
 	"settings": {
 		"es-x": {
