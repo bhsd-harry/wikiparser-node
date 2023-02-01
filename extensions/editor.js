@@ -288,15 +288,13 @@
 		textbox.classList.add('wikiparsed');
 		container.append(preview, textbox);
 
-		/** 更新高亮 */
-		const update = () => {
-			printer.queue(2000, 'coarsePrint');
-			textbox.style.color = '';
-			preview.classList.add('active');
-		};
-
-		textbox.addEventListener('input', update);
-		textbox.addEventListener('cut', update);
+		textbox.addEventListener('input', /** @param {InputEvent} */ ({isComposing}) => {
+			if (!isComposing) {
+				printer.queue(2000, 'coarsePrint');
+				textbox.style.color = '';
+				preview.classList.add('active');
+			}
+		});
 		textbox.addEventListener('scroll', () => {
 			if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
 				preview.scrollTop = textbox.scrollTop;
@@ -314,11 +312,6 @@
 		return printer;
 	};
 
-	wikiparse.print = print;
-	wikiparse.lint = lint;
-	wikiparse.setConfig = setConfig;
-	wikiparse.getConfig = getConfig;
-	wikiparse.Printer = Printer;
-	wikiparse.Linter = Linter;
+	Object.assign(wikiparse, {print, lint, setConfig, getConfig, Printer, Linter});
 	window.wikiparse = wikiparse;
 })();
