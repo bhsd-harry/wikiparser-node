@@ -28,12 +28,12 @@ declare global {
 
 		/**
 		 * 规范化页面标题
-		 * @param {string} title 标题（含或不含命名空间前缀）
-		 * @param {number} defaultNs 命名空间
-		 * @param {boolean} include 是否嵌入
-		 * @param {boolean} halfParsed 是否是半解析状态
-		 * @param {boolean} decode 是否需要解码
-		 * @param {boolean} selfLink 是否允许selfLink
+		 * @param title 标题（含或不含命名空间前缀）
+		 * @param defaultNs 命名空间
+		 * @param include 是否嵌入
+		 * @param halfParsed 是否是半解析状态
+		 * @param decode 是否需要解码
+		 * @param selfLink 是否允许selfLink
 		 */
 		normalizeTitle(
 			title: string,
@@ -47,9 +47,9 @@ declare global {
 
 		/**
 		 * 解析wikitext
-		 * @param {string} wikitext wikitext
-		 * @param {boolean} include 是否嵌入
-		 * @param {number} maxStage 最大解析层级
+		 * @param wikitext wikitext
+		 * @param include 是否嵌入
+		 * @param maxStage 最大解析层级
 		 */
 		parse(wikitext: string, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
 
@@ -57,32 +57,32 @@ declare global {
 
 		/**
 		 * 默认输出到console.warn
-		 * @param {string} msg 消息
-		 * @param {...*} args 更多信息
+		 * @param msg 消息
+		 * @param args 更多信息
 		 */
 		warn(msg: string, ...args: *[]): void;
 		/**
 		 * 默认不输出到console.debug
-		 * @param {string} msg 消息
-		 * @param {...*} args 更多信息
+		 * @param msg 消息
+		 * @param args 更多信息
 		 */
 		debug(msg: string, ...args: *[]): void;
 		/**
 		 * 总是输出到console.error
-		 * @param {string} msg 消息
-		 * @param {...*} args 更多信息
+		 * @param msg 消息
+		 * @param args 更多信息
 		 */
 		error(msg: string, ...args: *[]): void;
 		/**
 		 * 总是输出到console.info
-		 * @param {string} msg 消息
-		 * @param {...*} args 更多信息
+		 * @param msg 消息
+		 * @param args 更多信息
 		 */
 		info(msg: string, ...args: *[]): void;
 
 		/**
 		 * 打印函数定义
-		 * @param {Function} f 待打印的函数
+		 * @param f 待打印的函数
 		 */
 		log(f: Function): void;
 
@@ -91,13 +91,13 @@ declare global {
 
 		/**
 		 * 是否是跨维基链接
-		 * @param {string} title 链接标题
+		 * @param title 链接标题
 		 */
 		isInterwiki(title: string, config?: ParserConfig): RegExpMatchArray;
 
 		/**
 		 * 再次解析上次出错的wikitext
-		 * @param {string} date 错误日期
+		 * @param date 错误日期
 		 */
 		reparse(date: string): Token;
 
