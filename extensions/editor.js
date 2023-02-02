@@ -288,12 +288,12 @@
 		textbox.classList.add('wikiparsed');
 		container.append(preview, textbox);
 
-		textbox.addEventListener('input', /** @param {InputEvent} */ ({isComposing}) => {
+		textbox.addEventListener('input', ({isComposing}) => {
 			if (!isComposing) {
 				printer.queue(2000, 'coarsePrint');
-				textbox.style.color = '';
-				preview.classList.add('active');
 			}
+			textbox.style.color = '';
+			preview.classList.add('active');
 		});
 		textbox.addEventListener('scroll', () => {
 			if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
