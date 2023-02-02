@@ -43,7 +43,7 @@ class TrToken extends Token {
 		}
 		const /** @type {TranscludeToken & ArgToken} */ first = inter.childNodes.find(child => child.text().trim()),
 			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
-		if (!first || first.type === 'arg' && tdPattern.test(first.default || '')) {
+		if (!first || tdPattern.test(String(first)) || first.type === 'arg' && tdPattern.test(first.default || '')) {
 			return errors;
 		} else if (first.type === 'magic-word') {
 			try {
