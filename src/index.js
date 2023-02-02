@@ -744,7 +744,7 @@ class Token extends AstElement {
 					replace = String(childNodes[
 						String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '') ? 3 : 4
 					] ?? '').trim();
-				} else if (name === 'switch') {
+				} else if (name === 'switch' && !childNodes[1].querySelector('magic-word, template')) {
 					const key = String(childNodes[1] ?? '').trim();
 					let defaultVal = '',
 						found = false,
@@ -776,6 +776,8 @@ class Token extends AstElement {
 					if (transclusion) {
 						continue;
 					}
+				} else {
+					continue;
 				}
 				target.replaceWith(replace);
 			}
