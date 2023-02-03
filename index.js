@@ -56,11 +56,17 @@ const /** @type {Parser} */ Parser = {
 	run(callback) {
 		return callback();
 	},
+
+	isInterwiki(title, {interwiki} = Parser.getConfig()) {
+		title = String(title);
+		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'iu')
+			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
+	},
 };
 
 const /** @type {PropertyDescriptorMap} */ def = {},
 	immutable = new Set(['MAX_STAGE', 'minConfig']),
-	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
+	enumerable = new Set(['config', 'normalizeTitle', 'parse', 'isInterwiki']);
 for (const key in Parser) {
 	if (immutable.has(key)) {
 		def[key] = {enumerable: false, writable: false};
