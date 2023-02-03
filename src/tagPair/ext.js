@@ -44,7 +44,7 @@ class ExtToken extends TagPairToken {
 			case 'tabs':
 			case 'poll':
 			case 'seo':
-			case 'inputbox':
+				newConfig.noHeading = lcName === 'poem';
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
@@ -78,6 +78,11 @@ class ExtToken extends TagPairToken {
 			case 'dynamicpagelist': {
 				const ParamTagToken = require('../paramTag');
 				innerToken = new ParamTagToken(inner, newConfig, accum);
+				break;
+			}
+			case 'inputbox': {
+				const InputboxToken = require('../paramTag/inputbox');
+				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}
 

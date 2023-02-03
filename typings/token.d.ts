@@ -11,6 +11,7 @@ declare global {
 		protocol: string;
 		img: Record<string, string>;
 		variants: string[];
+		noHeading: boolean;
 		inExt: boolean;
 	}
 
