@@ -45,6 +45,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			case 'tabs':
 			case 'poll':
 			case 'seo':
+				newConfig.noHeading = lcName === 'poem';
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
