@@ -79,7 +79,7 @@ class ImagemapToken extends Token {
 					substr = line.slice(i),
 					mtIn = /^\[{2}([^|]+)(?:\|([^\]]+))?\]{2}[\w\s]*$/u.exec(substr);
 				if (mtIn) {
-					const title = this.normalizeTitle(mtIn[1], 0, true);
+					const title = this.normalizeTitle(mtIn[1], 0, true, false, true);
 					if (title.valid) {
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
