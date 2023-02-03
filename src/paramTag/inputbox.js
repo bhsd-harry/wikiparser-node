@@ -18,7 +18,6 @@ class InputboxToken extends ParamTagToken {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		config.noHeading = true;
 		super(undefined, config, accum);
 		wikitext = parseBrackets(wikitext, config, accum);
 		accum.splice(accum.indexOf(this), 1);
