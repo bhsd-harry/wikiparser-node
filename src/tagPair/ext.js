@@ -81,6 +81,7 @@ class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'inputbox': {
+				newConfig.noHeading = true;
 				const InputboxToken = require('../paramTag/inputbox');
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;

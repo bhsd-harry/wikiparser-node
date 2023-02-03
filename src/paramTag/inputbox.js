@@ -17,7 +17,6 @@ class InputboxToken extends ParamTagToken {
 	 * @param {accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		config.noHeading = true;
 		super(undefined, config, accum);
 		wikitext = parseBrackets(wikitext, config, accum);
 		accum.splice(accum.indexOf(this), 1);
@@ -25,7 +24,6 @@ class InputboxToken extends ParamTagToken {
 		if (wikitext) {
 			const SingleLineAtomToken = AtomToken;
 			this.append(...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-				AstText: ':', ArgToken: ':', TranscludeToken: ':',
 			})));
 		}
 	}
