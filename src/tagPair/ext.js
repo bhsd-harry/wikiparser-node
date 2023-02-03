@@ -57,11 +57,6 @@ class ExtToken extends TagPairToken {
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
-			case 'charinsert': {
-				const CharinsertToken = require('../charinsert');
-				innerToken = new CharinsertToken(inner, newConfig, accum);
-				break;
-			}
 			case 'references':
 			case 'choose':
 			case 'combobox': {

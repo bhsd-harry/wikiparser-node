@@ -29,5 +29,4 @@ class InputboxToken extends ParamTagToken {
 	}
 }
 
-Parser.classes.InputboxToken = __filename;
 module.exports = InputboxToken;
