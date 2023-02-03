@@ -43,7 +43,7 @@ class ExtToken extends TagPairToken {
 			case 'tabs':
 			case 'poll':
 			case 'seo':
-			case 'inputbox':
+				newConfig.noHeading = lcName === 'poem';
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
@@ -54,11 +54,6 @@ class ExtToken extends TagPairToken {
 			case 'pre': {
 				const PreToken = require('../hasNowiki/pre');
 				innerToken = new PreToken(inner, newConfig, accum);
-				break;
-			}
-			case 'charinsert': {
-				const CharinsertToken = require('../charinsert');
-				innerToken = new CharinsertToken(inner, newConfig, accum);
 				break;
 			}
 			case 'references':
@@ -77,6 +72,12 @@ class ExtToken extends TagPairToken {
 			case 'dynamicpagelist': {
 				const ParamTagToken = require('../paramTag');
 				innerToken = new ParamTagToken(inner, newConfig, accum);
+				break;
+			}
+			case 'inputbox': {
+				newConfig.noHeading = true;
+				const InputboxToken = require('../paramTag/inputbox');
+				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}
 
