@@ -195,7 +195,7 @@ class LinkToken extends Token {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
 		let rect;
-		if (this.#encoded) {
+		if (this.#encoded && !this.interwiki) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, '内链中不必要的URL编码'));
 		}
