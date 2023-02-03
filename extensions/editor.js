@@ -48,13 +48,13 @@
 
 	/**
 	 * 生成事件监听函数
-	 * @param {number|symbol} qid 输入id
+	 * @param {number} qid 输入id
 	 * @param {(res: *) => void} resolve Promise对象的resolve函数
-	 * @param {number|string|boolean|undefined} addition 额外需要匹配的参数
+	 * @param {string} raw 原始文本
 	 */
-	const getListener = (qid, resolve, addition) => {
-		const listener = /** @param {{data: [number|symbol, *]}} e 消息事件 */ ({data: [rid, res, resAddition]}) => {
-			if (rid === qid && addition === resAddition) {
+	const getListener = (qid, resolve, raw) => {
+		const listener = /** @param {{data: [number, *, string]}} e 消息事件 */ ({data: [rid, res, resRaw]}) => {
+			if (rid === qid && (raw === undefined || raw === resRaw)) {
 				worker.removeEventListener('message', listener);
 				resolve(res);
 			}
