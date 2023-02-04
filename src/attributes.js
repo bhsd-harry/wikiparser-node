@@ -123,7 +123,7 @@ class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
-						token = new AttributeToken(type.slice(0, -1), key, equal, value, quotes, config, accum);
+						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
 					insertDirty();
 					super.insertAt(token);
 				} else {
@@ -272,11 +272,13 @@ class AttributesToken extends Token {
 	 * @override
 	 * @param {AttributeToken} token 待插入的子节点
 	 * @param {number} i 插入位置
-	 * @throws `RangeError` 不是AttributeToken
+	 * @throws `RangeError` 不是AttributeToken或标签不匹配
 	 */
 	insertAt(token, i = this.length) {
 		if (!(token instanceof AttributeToken)) {
 			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
+		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {
+			throw new RangeError(`待插入的AttributeToken只可用于${token.tag}标签！`);
 		} else if (i === this.length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
@@ -337,7 +339,7 @@ class AttributesToken extends Token {
 			throw new RangeError(`无效的属性名：${key}！`);
 		}
 		const newAttr = Parser.run(() => new AttributeToken(
-			this.type.slice(0, -1), key, value === true ? '' : '=', value, ['"', '"'], config,
+			this.type.slice(0, -1), this.name, key, value === true ? '' : '=', value, ['"', '"'], config,
 		));
 		this.insertAt(newAttr);
 	}
