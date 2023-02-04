@@ -169,10 +169,12 @@ class AttributeToken extends Token {
 			valueToken = new Token(value, config, true, accum, {
 			}).setAttribute('type', 'attr-value').setAttribute('stage', Parser.MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
+			/** @type {ParserConfig} */
 			const newConfig = {...config, excludes: [...config.excludes, 'quote', 'extLink', 'magicLink', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
 			}).setAttribute('type', 'attr-value').setAttribute('stage', 5);
 		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
+			/** @type {ParserConfig} */
 			const newConfig = {...config, excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
 			}).setAttribute('type', 'attr-value').setAttribute('stage', 1);
