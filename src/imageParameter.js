@@ -147,7 +147,7 @@ class ImageParameterToken extends Token {
 				return;
 			}
 		}
-		super(str, config, true, accum);
+		super(str, {...config, excludes: [...config.excludes, 'list']}, true, accum);
 		this.setAttribute('name', 'caption').setAttribute('stage', 7);
 	}
 

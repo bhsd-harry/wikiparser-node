@@ -870,6 +870,9 @@ class Token extends AstElement {
 
 	/** 解析单引号 */
 	#parseQuotes() {
+		if (this.#config.excludes.includes('quote')) {
+			return;
+		}
 		const parseQuotes = require('../parser/quotes');
 		const lines = String(this.firstChild).split('\n');
 		for (let i = 0; i < lines.length; i++) {
@@ -880,19 +883,25 @@ class Token extends AstElement {
 
 	/** 解析外部链接 */
 	#parseExternalLinks() {
+		if (this.#config.excludes.includes('extLink')) {
+			return;
+		}
 		const parseExternalLinks = require('../parser/externalLinks');
 		this.setText(parseExternalLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析自由外链 */
 	#parseMagicLinks() {
+		if (this.#config.excludes.includes('magicLink')) {
+			return;
+		}
 		const parseMagicLinks = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析列表 */
 	#parseList() {
-		if (this.type === 'image-parameter') {
+		if (this.#config.excludes.includes('list')) {
 			return;
 		}
 		const parseList = require('../parser/list');

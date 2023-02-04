@@ -27,7 +27,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
-			newConfig = structuredClone(config),
+			newConfig = {...config, excludes: [...config.excludes]},
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
 		ext.delete(lcName);
@@ -45,7 +45,9 @@ class ExtToken extends attributeParent(TagPairToken) {
 			case 'tabs':
 			case 'poll':
 			case 'seo':
-				newConfig.noHeading = lcName === 'poem';
+				if (lcName === 'poem') {
+					newConfig.excludes.push('heading');
+				}
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'gallery': {
@@ -77,7 +79,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 				break;
 			}
 			case 'inputbox': {
-				newConfig.noHeading = true;
+				newConfig.excludes.push('heading');
 				const InputboxToken = require('../paramTag/inputbox');
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;

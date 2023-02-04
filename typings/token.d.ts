@@ -13,7 +13,7 @@ declare global {
 		img: Record<string, string>;
 		variants: string[];
 		interwiki: string[];
-		noHeading: boolean;
+		excludes: string[];
 	}
 
 	type accum = Token[];

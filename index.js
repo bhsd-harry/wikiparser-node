@@ -121,7 +121,7 @@ const /** @type {Parser} */ Parser = {
 	promises: [Promise.resolve()],
 
 	getConfig() {
-		return require(this.config);
+		return {...require(this.config), excludes: []};
 	},
 
 	normalizeTitle(

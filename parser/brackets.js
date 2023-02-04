@@ -13,7 +13,7 @@ const {removeComment} = require('../util/string'),
  * @throws TranscludeToken.constructor()
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
-	const source = `${config.noHeading ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
+	const source = `${config.excludes.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
