@@ -10,7 +10,7 @@ const /** @type {Parser} */ Parser = {
 		if (path) {
 			this.config = require(path);
 		}
-		return {...this.minConfig, ...this.config};
+		return {...this.minConfig, ...this.config, excludes: []};
 	},
 
 	normalizeTitle(

@@ -11,7 +11,7 @@ declare global {
 		protocol: string;
 		img: Record<string, string>;
 		variants: string[];
-		noHeading: boolean;
+		excludes: string[];
 	}
 
 	type accum = Token[];

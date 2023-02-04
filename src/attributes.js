@@ -50,7 +50,7 @@ class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
-						token = new AttributeToken(type.slice(0, -1), key, equal, value, quotes, config, accum);
+						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
 					insertDirty();
 					super.insertAt(token);
 				} else {
