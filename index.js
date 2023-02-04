@@ -115,6 +115,7 @@ const /** @type {Parser} */ Parser = {
 		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
 		// specific extensions
 		'param-line': ['parameter-line'],
+		'charinsert-line': undefined,
 		'imagemap-link': ['image-map-link'],
 	},
 
