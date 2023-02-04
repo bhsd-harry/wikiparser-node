@@ -7,7 +7,7 @@ const /** @type {Parser} */ Parser = {
 	MAX_STAGE: 11,
 
 	getConfig() {
-		return {...this.minConfig, ...this.config};
+		return {...this.minConfig, ...this.config, excludes: []};
 	},
 
 	normalizeTitle(

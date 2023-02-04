@@ -20,7 +20,7 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const newConfig = JSON.parse(JSON.stringify(config));
+		const newConfig = {...config, img: {...config.img}};
 		for (const [k, v] of Object.entries(config.img)) {
 			if (v === 'width') {
 				delete newConfig.img[k];
@@ -30,7 +30,7 @@ class GalleryToken extends Token {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
 				super.insertAt(line.trim()
-					? new HiddenToken(line, undefined, config, [], {
+					? new HiddenToken(line, undefined, newConfig, [], {
 					})
 					: line);
 				continue;
@@ -40,7 +40,7 @@ class GalleryToken extends Token {
 			if (title.valid) {
 				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
 			} else {
-				super.insertAt(new HiddenToken(line, undefined, config, [], {
+				super.insertAt(new HiddenToken(line, undefined, newConfig, [], {
 				}));
 			}
 		}

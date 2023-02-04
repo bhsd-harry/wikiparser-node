@@ -135,6 +135,7 @@ const commonHtmlAttrs = new Set([
 class AttributeToken extends Token {
 	#equal;
 	#quotes;
+	#tag;
 
 	/** 引号是否匹配 */
 	get balanced() {
@@ -146,27 +147,45 @@ class AttributeToken extends Token {
 		return this.getValue();
 	}
 
+	/** 标签名 */
+	get tag() {
+		return this.#tag;
+	}
+
 	/**
 	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
+	 * @param {string} tag 标签名
 	 * @param {string} key 属性名
 	 * @param {string} equal 等号
 	 * @param {string} value 属性值
 	 * @param {string[]} quotes 引号
 	 * @param {accum} accum
 	 */
-	constructor(type, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
+	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
-			}),
-			valueToken = key === 'title'
-				? new Token(value, config, true, accum, {
-				}).setAttribute('type', 'attr-value').setAttribute('stage', Parser.MAX_STAGE - 1)
-				: new AtomToken(value, 'attr-value', config, accum, {
-				});
+		});
+		let valueToken;
+		if (key === 'title') {
+			valueToken = new Token(value, config, true, accum, {
+			}).setAttribute('type', 'attr-value').setAttribute('stage', Parser.MAX_STAGE - 1);
+		} else if (tag === 'gallery' && key === 'caption') {
+			const newConfig = {...config, excludes: [...config.excludes, 'quote', 'extLink', 'magicLink', 'list']};
+			valueToken = new Token(value, newConfig, true, accum, {
+			}).setAttribute('type', 'attr-value').setAttribute('stage', 5);
+		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
+			const newConfig = {...config, excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list']};
+			valueToken = new Token(value, newConfig, true, accum, {
+			}).setAttribute('type', 'attr-value').setAttribute('stage', 1);
+		} else {
+			valueToken = new AtomToken(value, 'attr-value', config, accum, {
+			});
+		}
 		super(undefined, config, true, accum);
 		this.type = type;
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = quotes;
+		this.#tag = tag;
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
