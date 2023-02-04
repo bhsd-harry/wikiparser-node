@@ -26,13 +26,14 @@ class GalleryToken extends Token {
 		super(undefined, config, true, accum, {
 			AstText: ':', GalleryImageToken: ':', HiddenToken: ':',
 		});
-		const newConfig = structuredClone(config);
-		newConfig.img = Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width'));
+		const newConfig = {
+			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width')),
+		};
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
 				super.insertAt(line.trim()
-					? new HiddenToken(line, undefined, config, [], {
+					? new HiddenToken(line, undefined, newConfig, [], {
 						AstText: ':',
 					})
 					: line);
@@ -43,7 +44,7 @@ class GalleryToken extends Token {
 			if (title.valid) {
 				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
 			} else {
-				super.insertAt(new HiddenToken(line, undefined, config, [], {
+				super.insertAt(new HiddenToken(line, undefined, newConfig, [], {
 					AstText: ':',
 				}));
 			}
