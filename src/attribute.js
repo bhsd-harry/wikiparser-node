@@ -248,6 +248,9 @@ class AttributeToken extends fixedToken(Token) {
 		if (this.#equal.includes('\0')) {
 			this.#equal = this.getAttribute('buildFromStr')(this.#equal, 'string');
 		}
+		if (this.parentNode) {
+			this.#tag = this.parentNode.name;
+		}
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
