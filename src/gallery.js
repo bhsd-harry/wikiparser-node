@@ -26,7 +26,7 @@ class GalleryToken extends Token {
 		super(undefined, config, true, accum, {
 			AstText: ':', GalleryImageToken: ':', HiddenToken: ':',
 		});
-		const newConfig = {
+		const /** @type {ParserConfig} */ newConfig = {
 			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width')),
 		};
 		for (const line of inner?.split('\n') ?? []) {
