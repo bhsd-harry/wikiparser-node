@@ -833,12 +833,18 @@ class Token extends AstElement {
 
 	/** 解析HTML标签 */
 	#parseHtml() {
+		if (this.#config.excludes.includes('html')) {
+			return;
+		}
 		const parseHtml = require('../parser/html');
 		this.setText(parseHtml(String(this.firstChild), this.#config, this.#accum));
 	}
 
 	/** 解析表格 */
 	#parseTable() {
+		if (this.#config.excludes.includes('table')) {
+			return;
+		}
 		const parseTable = require('../parser/table'),
 			TableToken = require('./table');
 		this.setText(parseTable(this, this.#config, this.#accum));
@@ -858,6 +864,9 @@ class Token extends AstElement {
 
 	/** 解析\<hr\>和状态开关 */
 	#parseHrAndDoubleUndescore() {
+		if (this.#config.excludes.includes('hr')) {
+			return;
+		}
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
 		this.setText(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
 	}

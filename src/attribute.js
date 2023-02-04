@@ -202,7 +202,7 @@ class AttributeToken extends fixedToken(Token) {
 	 */
 	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
-			AstText: ':', ArgToken: ':', TranscludeToken: ':',
+			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
 		let valueToken;
 		if (key === 'title') {
@@ -214,6 +214,19 @@ class AttributeToken extends fixedToken(Token) {
 			valueToken = new Token(value, newConfig, true, accum, {
 				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
 			}).setAttribute('type', 'attr-value').setAttribute('stage', 5);
+		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
+			const newConfig = {...config, excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list']};
+			valueToken = new Token(value, newConfig, true, accum, {
+				ArgToken: ':',
+				TranscludeToken: ':',
+				LinkToken: ':',
+				FileToken: ':',
+				CategoryToken: ':',
+				QuoteToken: ':',
+				ExtLinkToken: ':',
+				MagicLinkToken: ':',
+				ConverterToken: ':',
+			}).setAttribute('type', 'attr-value').setAttribute('stage', 1);
 		} else {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
 				[`Stage-${stages[type]}`]: ':',
