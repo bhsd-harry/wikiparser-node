@@ -17,7 +17,7 @@ class QuoteToken extends NowikiToken {
 	 * @param {accum} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
-		super("'".repeat(n), config, accum);
+		super(`'`.repeat(n), config, accum);
 		this.setAttribute('name', String(n));
 	}
 
@@ -31,7 +31,7 @@ class QuoteToken extends NowikiToken {
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];
 		let refError, wikitext;
-		if (previousSibling?.type === 'text' && previousSibling.data.at(-1) === "'") {
+		if (previousSibling?.type === 'text' && previousSibling.data.at(-1) === `'`) {
 			refError = generateForSelf(this, {start}, message);
 			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
@@ -40,7 +40,7 @@ class QuoteToken extends NowikiToken {
 				excerpt = wikitext.slice(startIndex, startIndex + 50);
 			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});
 		}
-		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
+		if (nextSibling?.type === 'text' && nextSibling.data[0] === `'`) {
 			refError ||= generateForSelf(this, {start}, message);
 			wikitext ||= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
@@ -58,7 +58,7 @@ class QuoteToken extends NowikiToken {
 	 * @throws `RangeError` 错误的单引号语法
 	 */
 	setText(str) {
-		if (str === "''" || str === "'''" || str === "'''''") {
+		if (str === `''` || str === `'''` || str === `'''''`) {
 			return super.setText(str);
 		}
 		throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);

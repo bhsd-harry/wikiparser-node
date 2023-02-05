@@ -40,7 +40,7 @@ const /** @type {Set<pseudo>} */ simplePseudos = new Set([
 		['(', '&lpar;'],
 		[')', '&rpar;'],
 		['"', '&quot;'],
-		["'", '&apos;'],
+		[`'`, '&apos;'],
 		[':', '&colon;'],
 		['\\', '&bsol;'],
 		['&', '&amp;'],

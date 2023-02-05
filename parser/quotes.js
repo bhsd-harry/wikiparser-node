@@ -24,8 +24,8 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 				nItalic++;
 				break;
 			case 4:
-				arr[i - 1] += "'";
-				arr[i] = "'''";
+				arr[i - 1] += `'`;
+				arr[i] = `'''`;
 				// fall through
 			case 3:
 				nBold++;
@@ -42,16 +42,16 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 				}
 				break;
 			default:
-				arr[i - 1] += "'".repeat(len - 5);
-				arr[i] = "'''''";
+				arr[i - 1] += `'`.repeat(len - 5);
+				arr[i] = `'''''`;
 				nItalic++;
 				nBold++;
 		}
 	}
 	if (nItalic % 2 === 1 && nBold % 2 === 1) {
 		const i = firstSingle ?? firstMulti ?? firstSpace;
-		arr[i] = "''";
-		arr[i - 1] += "'";
+		arr[i] = `''`;
+		arr[i - 1] += `'`;
 	}
 	for (let i = 1; i < length; i += 2) {
 		new QuoteToken(arr[i].length, config, accum);
