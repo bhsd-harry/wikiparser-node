@@ -414,7 +414,6 @@
 			2,
 			"single",
 			{
-				"avoidEscape": true,
 				"allowTemplateLiterals": true
 			}
 		],

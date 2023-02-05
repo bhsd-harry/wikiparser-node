@@ -17,7 +17,7 @@ class QuoteToken extends NowikiToken {
 	 * @param {accum} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
-		super("'".repeat(n), config, accum);
+		super(`'`.repeat(n), config, accum);
 	}
 
 	/**
@@ -30,7 +30,7 @@ class QuoteToken extends NowikiToken {
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];
 		let refError, wikitext;
-		if (previousSibling?.type === 'text' && previousSibling.data.endsWith("'")) {
+		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
 			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
@@ -39,7 +39,7 @@ class QuoteToken extends NowikiToken {
 				excerpt = wikitext.slice(startIndex, startIndex + 50);
 			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});
 		}
-		if (nextSibling?.type === 'text' && nextSibling.data[0] === "'") {
+		if (nextSibling?.type === 'text' && nextSibling.data[0] === `'`) {
 			refError ||= generateForSelf(this, {start}, message);
 			wikitext ||= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
