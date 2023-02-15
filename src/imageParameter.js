@@ -126,26 +126,27 @@ class ImageParameterToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(str, config = Parser.getConfig(), accum = []) {
+		let mt;
 		const regexes = Object.entries(config.img).map(
 				/** @returns {[string, string, RegExp]} */
 				([syntax, param]) => [syntax, param, new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`, 'u')],
 			),
-			param = regexes.find(([,, regex]) => regex.test(str));
+			param = regexes.find(([, key, regex]) => {
+				mt = regex.exec(str);
+				return mt && (mt.length !== 4 || ImageParameterToken.#validate(key, mt[2], config, true));
+			});
 		if (param) {
-			const mt = param[2].exec(str);
-			if (mt.length !== 4 || ImageParameterToken.#validate(param[1], mt[2], config, true)) {
-				if (mt.length === 3) {
-					super(undefined, config, true, accum);
-					this.#syntax = str;
-				} else {
-					super(mt[2], config, true, accum, {
-						'Stage-2': ':', '!HeadingToken': ':',
-					});
-					this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
-				}
-				this.setAttribute('name', param[1]);
-				return;
+			if (mt.length === 3) {
+				super(undefined, config, true, accum);
+				this.#syntax = str;
+			} else {
+				super(mt[2], config, true, accum, {
+					'Stage-2': ':', '!HeadingToken': ':',
+				});
+				this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 			}
+			this.setAttribute('name', param[1]);
+			return;
 		}
 		super(str, {...config, excludes: [...config.excludes, 'list']}, true, accum);
 		this.setAttribute('name', 'caption').setAttribute('stage', 7);
