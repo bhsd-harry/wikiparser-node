@@ -260,7 +260,7 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	getArgs(key, exact, copy = true) {
-		const keyStr = String(key).trim();
+		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args;
 		if (Object.prototype.hasOwnProperty.call(this.#args, keyStr)) {
 			args = this.#args[keyStr];
