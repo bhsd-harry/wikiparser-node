@@ -390,7 +390,7 @@ class Token extends AstElement {
 		}
 		const parseList = require('../parser/list');
 		const lines = String(this.firstChild).split('\n');
-		let i = this.type === 'root' || this.type === 'ext-inner' && this.type === 'poem' ? 0 : 1;
+		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i], this.#config, this.#accum);
 		}
