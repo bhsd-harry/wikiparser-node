@@ -39,7 +39,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/**
 	 * @override
-	 * @this {{prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'} & HeadingToken}
+	 * @this {{prependNewLine(): ''|'\n'} & HeadingToken}
 	 * @param {string} selector
 	 * @returns {string}
 	 */
@@ -49,17 +49,17 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			? ''
 			: `${this.prependNewLine()}${equals}${
 				this.firstChild.toString(selector)
-			}${equals}${this.lastChild.toString(selector)}${this.appendNewLine()}`;
+			}${equals}${this.lastChild.toString(selector)}`;
 	}
 
 	/**
 	 * @override
-	 * @this {HeadingToken & {prependNewLine(): ''|'\n', appendNewLine(): ''|'\n'}}
+	 * @this {HeadingToken & {prependNewLine(): ''|'\n'}}
 	 * @returns {string}
 	 */
 	text() {
 		const equals = '='.repeat(Number(this.name));
-		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}${this.appendNewLine()}`;
+		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}`;
 	}
 
 	/** @override */

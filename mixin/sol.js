@@ -13,12 +13,11 @@ const sol = Constructor => class SolToken extends Constructor {
 	/**
 	 * 是否可以视为root节点
 	 * @this {Token}
-	 * @param {boolean} includeHeading 是否包括HeadingToken
 	 */
-	#isRoot(includeHeading) {
+	#isRoot() {
 		const {parentNode, type} = this;
 		return parentNode?.type === 'root'
-			|| parentNode?.type === 'ext-inner' && (includeHeading || type !== 'heading' && parentNode.name === 'poem');
+			|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem';
 	}
 
 	/**
@@ -27,16 +26,6 @@ const sol = Constructor => class SolToken extends Constructor {
 	 */
 	prependNewLine() {
 		return (this.previousVisibleSibling || !this.#isRoot()) && String(this.previousVisibleSibling).at(-1) !== '\n'
-			? '\n'
-			: '';
-	}
-
-	/**
-	 * 在后方插入newline
-	 * @this {SolToken & Token}
-	 */
-	appendNewLine() {
-		return (this.nextVisibleSibling || !this.#isRoot(true)) && String(this.nextVisibleSibling ?? '')[0] !== '\n'
 			? '\n'
 			: '';
 	}
