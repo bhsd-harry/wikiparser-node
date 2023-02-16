@@ -330,7 +330,7 @@ class TranscludeToken extends Token {
 			this.typeError('getArgs', 'String', 'Number');
 		}
 		copy ||= !Parser.debugging && externalUse('getArgs');
-		const keyStr = String(key).trim();
+		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args;
 		if (Object.hasOwn(this.#args, keyStr)) {
 			args = this.#args[keyStr];
