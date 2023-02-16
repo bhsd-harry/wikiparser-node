@@ -140,12 +140,14 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	text() {
-		const {childNodes, firstChild, modifier} = this;
-		return `{{${modifier}${modifier && ':'}${
-			this.type === 'magic-word'
-				? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
-				: super.text('|')
-		}}}`;
+		const {childNodes, firstChild, modifier, type, name} = this;
+		return type === 'magic-word' && name === 'vardefine'
+			? ''
+			: `{{${modifier}${modifier && ':'}${
+				this.type === 'magic-word'
+					? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
+					: super.text('|')
+			}}}`;
 	}
 
 	/** @override */
