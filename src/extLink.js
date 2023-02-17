@@ -18,7 +18,7 @@ class ExtLinkToken extends Token {
 	 * @param {string} text 链接文字
 	 * @param {accum} accum
 	 */
-	constructor(url, space, text, config = Parser.getConfig(), accum = []) {
+	constructor(url, space = '', text = '', config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
 		this.insertAt(new MagicLinkToken(url, true, config, accum));
