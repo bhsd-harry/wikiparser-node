@@ -85,7 +85,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 				SomeLinkToken = CategoryToken;
 			}
 		}
-		new SomeLinkToken(link, text, title, config, accum, delimiter);
+		new SomeLinkToken(link, text, config, accum, delimiter);
 	}
 	return s;
 };

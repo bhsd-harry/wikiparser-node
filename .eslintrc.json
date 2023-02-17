@@ -69,6 +69,8 @@
 			2,
 			{
 				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
+				"args": "all",
+				"argsIgnorePattern": "^_+$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}

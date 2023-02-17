@@ -42,7 +42,7 @@ class GalleryToken extends Token {
 			const [, file, alt] = matches,
 				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
-				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
+				super.insertAt(new GalleryImageToken(file, alt, newConfig, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, undefined, newConfig, [], {
 					AstText: ':',
@@ -127,7 +127,7 @@ class GalleryToken extends Token {
 	insertImage(file, i = this.length) {
 		const title = this.normalizeTitle(file, 6, true, true);
 		if (title.valid) {
-			const token = Parser.run(() => new GalleryImageToken(file, undefined, title, this.getAttribute('config')));
+			const token = Parser.run(() => new GalleryImageToken(file, undefined, this.getAttribute('config')));
 			return this.insertAt(token, i);
 		}
 		throw new SyntaxError(`非法的文件名：${file}`);

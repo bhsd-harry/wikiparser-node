@@ -3,7 +3,6 @@
 const {generateForSelf} = require('../../util/lint'),
 	{undo} = require('../../util/debug'),
 	singleLine = require('../../mixin/singleLine'),
-	Title = require('../../lib/title'),
 	Parser = require('../..'),
 	Token = require('..'),
 	FileToken = require('./file');
@@ -28,10 +27,9 @@ class GalleryImageToken extends singleLine(FileToken) {
 	/**
 	 * @param {string} link 图片文件名
 	 * @param {string|undefined} text 图片参数
-	 * @param {Title} title 图片文件标题对象
 	 * @param {accum} accum
 	 */
-	constructor(link, text, title, config = Parser.getConfig(), accum = []) {
+	constructor(link, text, config = Parser.getConfig(), accum = []) {
 		let token;
 		if (text !== undefined) {
 			token = new Token(text, config, true, accum);
@@ -41,7 +39,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 			}
 			accum.splice(accum.indexOf(token), 1);
 		}
-		super(link, token?.toString(), title, config, accum);
+		super(link, token?.toString(), config, accum);
 		this.setAttribute('bracket', false);
 		if (!Object.values(config.img).includes('width')) {
 			this.seal(['size', 'width', 'height'], true);

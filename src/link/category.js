@@ -1,7 +1,6 @@
 'use strict';
 
-const Title = require('../../lib/title'),
-	Parser = require('../..'),
+const Parser = require('../..'),
 	LinkToken = require('.');
 
 /**
@@ -27,12 +26,11 @@ class CategoryToken extends LinkToken {
 	/**
 	 * @param {string} link 分类名
 	 * @param {string|undefined} text 排序关键字
-	 * @param {Title} title 分类页面标题对象
 	 * @param {accum} accum
 	 * @param {string} delimiter `|`
 	 */
-	constructor(link, text, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
-		super(link, text, title, config, accum, delimiter);
+	constructor(link, text, config = Parser.getConfig(), accum = [], delimiter = '|') {
+		super(link, text, config, accum, delimiter);
 		this.seal(['selfLink', 'interwiki', 'setLangLink', 'setFragment', 'asSelfLink', 'pipeTrick'], true);
 	}
 

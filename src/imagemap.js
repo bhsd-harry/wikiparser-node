@@ -61,7 +61,7 @@ class ImagemapToken extends Token {
 					title = this.normalizeTitle(file, 0, true);
 				if (title.valid && !title.interwiki && title.ns === 6) {
 					const token = new GalleryImageToken(
-						file, options.length > 0 ? options.join('|') : undefined, title, config, accum,
+						file, options.length > 0 ? options.join('|') : undefined, config, accum,
 					);
 					token.type = 'imagemap-image';
 					super.insertAt(token);
@@ -83,7 +83,7 @@ class ImagemapToken extends Token {
 					if (title.valid) {
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
-							[...mtIn.slice(1), title],
+							mtIn.slice(1),
 							substr.slice(substr.indexOf(']]') + 2),
 							config,
 							accum,

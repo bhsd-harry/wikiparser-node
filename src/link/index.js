@@ -4,7 +4,6 @@ const {generateForChild} = require('../../util/lint'),
 	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
 	Parser = require('../..'),
-	Title = require('../../lib/title'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
 	AtomToken = require('../atom');
@@ -79,11 +78,10 @@ class LinkToken extends Token {
 	/**
 	 * @param {string} link 链接标题
 	 * @param {string|undefined} linkText 链接显示文字
-	 * @param {Title} title 链接标题对象
 	 * @param {accum} accum
 	 * @param {string} delimiter `|`
 	 */
-	constructor(link, linkText, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
+	constructor(link, linkText, config = Parser.getConfig(), accum = [], delimiter = '|') {
 		super(undefined, config, true, accum, {
 			AtomToken: 0, Token: 1,
 		});

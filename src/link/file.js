@@ -3,7 +3,6 @@
 const {explode, noWrap} = require('../../util/string'),
 	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
-	Title = require('../../lib/title'),
 	LinkToken = require('.'),
 	ImageParameterToken = require('../imageParameter');
 
@@ -63,13 +62,12 @@ class FileToken extends LinkToken {
 	/**
 	 * @param {string} link 文件名
 	 * @param {string|undefined} text 图片参数
-	 * @param {Title} title 文件标题对象
 	 * @param {accum} accum
 	 * @param {string} delimiter `|`
 	 * @complexity `n`
 	 */
-	constructor(link, text, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
-		super(link, undefined, title, config, accum, delimiter);
+	constructor(link, text, config = Parser.getConfig(), accum = [], delimiter = '|') {
+		super(link, undefined, config, accum, delimiter);
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 		this.seal(
