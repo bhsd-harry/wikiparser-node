@@ -367,6 +367,7 @@
 			"样式路径": "stylepath",
 			"stylepath": "stylepath",
 			"msgnw": "msgnw",
+			"#regex": "regex",
 			"#related": "related",
 			"#cscore": "cscore"
 		},

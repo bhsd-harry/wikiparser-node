@@ -105,6 +105,7 @@
 			"#vardefine": "vardefine",
 			"#vardefineecho": "vardefineecho",
 			"#widget": "widget",
+			"#regex": "regex",
 			"#related": "related",
 			"#cscore": "cscore"
 		},
