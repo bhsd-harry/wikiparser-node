@@ -20,7 +20,7 @@ class ImagemapLinkToken extends Token {
 	 * @param {accum} accum
 	 */
 	constructor(pre, linkStuff, post, config, accum) {
-		const SomeLinkToken = linkStuff[2] instanceof Title ? LinkToken : ExtLinkToken;
+		const SomeLinkToken = linkStuff.length === 2 ? LinkToken : ExtLinkToken;
 		super(undefined, config, true, accum);
 		this.append(pre, new SomeLinkToken(...linkStuff, config, accum), new NoincludeToken(post, config, accum));
 	}

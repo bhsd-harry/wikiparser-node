@@ -23,7 +23,7 @@ class LinkToken extends Token {
 	 * @param {accum} accum
 	 * @param {string} delimiter `|`
 	 */
-	constructor(link, linkText, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
+	constructor(link, linkText, config = Parser.getConfig(), accum = [], delimiter = '|') {
 		super(undefined, config, true, accum, {
 		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {

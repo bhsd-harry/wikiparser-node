@@ -24,8 +24,8 @@ class FileToken extends LinkToken {
 	 * @param {string} delimiter `|`
 	 * @complexity `n`
 	 */
-	constructor(link, text, title, config = Parser.getConfig(), accum = [], delimiter = '|') {
-		super(link, undefined, title, config, accum, delimiter);
+	constructor(link, text, config = Parser.getConfig(), accum = [], delimiter = '|') {
+		super(link, undefined, config, accum, delimiter);
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 	}
 

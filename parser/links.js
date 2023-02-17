@@ -90,7 +90,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 		if (text === undefined && delimiter) {
 			text = '';
 		}
-		new SomeLinkToken(link, text, title, config, accum, delimiter);
+		new SomeLinkToken(link, text, config, accum, delimiter);
 	}
 	return s;
 };

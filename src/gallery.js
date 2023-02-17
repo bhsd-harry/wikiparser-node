@@ -38,7 +38,7 @@ class GalleryToken extends Token {
 			const [, file, alt] = matches,
 				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
-				super.insertAt(new GalleryImageToken(file, alt, title, newConfig, accum));
+				super.insertAt(new GalleryImageToken(file, alt, newConfig, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, undefined, newConfig, [], {
 				}));
