@@ -180,11 +180,11 @@ class TranscludeToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{type, childNodes} = this;
+			{type, childNodes, firstChild} = this;
 		let rect;
 		if (!this.isTemplate()) {
 			return errors;
-		} else if (this.#fragment) {
+		} else if (this.#fragment && (type === 'magic-word' || !/^\s*\{{3}[^{}]+\}{3}\s*#/u.test(firstChild.text()))) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
 		}
