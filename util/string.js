@@ -72,6 +72,22 @@ const text = (childNodes, separator = '') => {
 	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 };
 
+/**
+ * decode HTML entities
+ * @param {string} str 原字符串
+ */
+const decodeHtml = str => str?.replace(
+	/&#(\d+|x[\da-f]+);/giu,
+	(_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
+);
+
 module.exports = {
-	extUrlCharFirst, extUrlChar, removeComment, print, escapeRegExp, explode, text,
+	extUrlCharFirst,
+	extUrlChar,
+	removeComment,
+	print,
+	escapeRegExp,
+	explode,
+	text,
+	decodeHtml,
 };
