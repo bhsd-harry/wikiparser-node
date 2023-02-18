@@ -195,7 +195,7 @@ class TranscludeToken extends Token {
 					 * 检测字符串是否是替换引用
 					 * @param {string} s 字符串
 					 */
-					isSubst = s => s.at(-1) === ':' && subst.includes(s.slice(0, -1).toLowerCase());
+					isSubst = s => s.endsWith(':') && subst.includes(s.slice(0, -1).toLowerCase());
 				if (!isSubst(str)) {
 					const ArgToken = require('./arg');
 					/** @type {ArgToken} */
