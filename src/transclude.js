@@ -184,9 +184,20 @@ class TranscludeToken extends Token {
 		let rect;
 		if (!this.isTemplate()) {
 			return errors;
-		} else if (this.#fragment && (type === 'magic-word' || !/^\s*\{{3}[^{}]+\}{3}\s*#/u.test(firstChild.text()))) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
+		} else if (this.#fragment) {
+			let flag = type === 'magic-word';
+			if (!flag) {
+				const include = this.getAttribute('include'),
+					config = this.getAttribute('config'),
+					{
+						length, firstChild: {type: t},
+					} = Parser.parse(firstChild.text().split('#')[0].trim(), include, 2, config);
+				flag = length !== 1 || t !== 'arg';
+			}
+			if (flag) {
+				rect = {start, ...this.getRootNode().posFromIndex(start)};
+				errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
+			}
 		}
 		if (!this.#valid) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
