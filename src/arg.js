@@ -89,7 +89,11 @@ class ArgToken extends Token {
 		}
 		if (rest.length > 0) {
 			const rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(...rest.map(child => generateForChild(child, rect, '三重括号内的不可见部分')));
+			errors.push(...rest.map(child => {
+				const error = generateForChild(child, rect, '三重括号内的不可见部分'),
+					{startIndex, startCol, excerpt} = error;
+				return {...error, startIndex: startIndex - 1, startCol: startCol - 1, excerpt: `|${excerpt}`};
+			}));
 		}
 		return errors;
 	}
