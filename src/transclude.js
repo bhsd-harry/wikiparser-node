@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment, escapeRegExp, text, noWrap, print} = require('../util/string'),
+const {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} = require('../util/string'),
 	{externalUse} = require('../util/debug'),
 	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
@@ -103,11 +103,7 @@ class TranscludeToken extends Token {
 			}
 		}
 		if (this.type === 'template') {
-			const decoded = title.replace(
-					/&#(\d+|x[\da-f]+);/giu,
-					(_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
-				),
-				name = removeComment(decoded).split('#')[0].trim();
+			const name = removeComment(decodeHtml(title)).split('#')[0].trim();
 			if (!name || /\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
 				accum.pop();
 				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);

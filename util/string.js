@@ -73,6 +73,15 @@ const text = (childNodes, separator = '') => {
 };
 
 /**
+ * decode HTML entities
+ * @param {string} str 原字符串
+ */
+const decodeHtml = str => str?.replace(
+	/&#(\d+|x[\da-f]+);/giu,
+	(_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
+);
+
+/**
  * optionally convert to lower cases
  * @param {string} val 属性值
  * @param {string|undefined} i 是否对大小写不敏感
@@ -103,5 +112,15 @@ const normalizeSpace = token => {
 };
 
 module.exports = {
-	extUrlCharFirst, extUrlChar, removeComment, print, escapeRegExp, explode, text, toCase, noWrap, normalizeSpace,
+	extUrlCharFirst,
+	extUrlChar,
+	removeComment,
+	print,
+	escapeRegExp,
+	explode,
+	text,
+	decodeHtml,
+	toCase,
+	noWrap,
+	normalizeSpace,
 };
