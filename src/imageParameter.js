@@ -10,14 +10,12 @@ const {text, noWrap, print, extUrlChar, extUrlCharFirst} = require('../util/stri
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 class ImageParameterToken extends Token {
-	static noLink = Symbol('no-link'); // 这个Symbol需要公开
-
 	/**
 	 * 检查图片参数是否合法
 	 * @template {string} T
 	 * @param {T} key 参数名
 	 * @param {string} value 参数值
-	 * @returns {T extends 'link' ? string|Symbol : boolean}
+	 * @returns {T extends 'link' ? string : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig(), halfParsed = false) {
 		value = value.replace(/\0\d+t\x7F/gu, '').trim();
@@ -26,7 +24,7 @@ class ImageParameterToken extends Token {
 				return /^\d*(?:x\d*)?$/u.test(value);
 			case 'link': {
 				if (!value) {
-					return this.noLink;
+					return '';
 				}
 				const regex = new RegExp(`(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${
 					extUrlChar
@@ -71,7 +69,6 @@ class ImageParameterToken extends Token {
 
 	set link(value) {
 		if (this.name === 'link') {
-			value = value === ImageParameterToken.noLink ? '' : value;
 			this.setValue(value);
 		}
 	}
@@ -133,7 +130,7 @@ class ImageParameterToken extends Token {
 			),
 			param = regexes.find(([, key, regex]) => {
 				mt = regex.exec(str);
-				return mt && (mt.length !== 4 || ImageParameterToken.#validate(key, mt[2], config, true));
+				return mt && (mt.length !== 4 || ImageParameterToken.#validate(key, mt[2], config, true) !== false);
 			});
 		if (param) {
 			if (mt.length === 3) {
