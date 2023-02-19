@@ -1,6 +1,8 @@
 'use strict';
 
 const {print, extUrlChar, extUrlCharFirst} = require('../util/string'),
+	{generateForSelf} = require('../util/lint'),
+	Title = require('../lib/title'),
 	Parser = require('..'),
 	Token = require('.');
 
@@ -14,6 +16,7 @@ class ImageParameterToken extends Token {
 	 * @template {string} T
 	 * @param {T} key 参数名
 	 * @param {string} value 参数值
+	 * @returns {T extends 'link' ? string|Title : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig(), halfParsed = false) {
 		value = value.replace(/\0\d+t\x7F/gu, '').trim();
@@ -22,18 +25,18 @@ class ImageParameterToken extends Token {
 				return /^\d*(?:x\d*)?$/u.test(value);
 			case 'link': {
 				if (!value) {
-					return true;
+					return '';
 				}
 				const regex = new RegExp(`(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${
 					extUrlChar
 				}(?=\0\\d+t\x7F|$)`, 'iu');
 				if (regex.test(value)) {
-					return true;
+					return value;
 				} else if (value.startsWith('[[') && value.endsWith(']]')) {
 					value = value.slice(2, -2);
 				}
 				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true, true);
-				return title.valid;
+				return title.valid && title;
 			}
 			case 'lang':
 				return config.variants.includes(value);
@@ -49,6 +52,13 @@ class ImageParameterToken extends Token {
 	type = 'image-parameter';
 	#syntax = '';
 
+	/** 图片链接 */
+	get link() {
+		return this.name === 'link'
+			? ImageParameterToken.#validate('link', super.text(), this.getAttribute('config'))
+			: undefined;
+	}
+
 	/**
 	 * @param {string} str 图片参数
 	 * @param {accum} accum
@@ -61,7 +71,7 @@ class ImageParameterToken extends Token {
 			),
 			param = regexes.find(([, key, regex]) => {
 				mt = regex.exec(str);
-				return mt && (mt.length !== 4 || ImageParameterToken.#validate(key, mt[2], config, true));
+				return mt && (mt.length !== 4 || ImageParameterToken.#validate(key, mt[2], config, true) !== false);
 			});
 		if (param) {
 			if (mt.length === 3) {
@@ -101,6 +111,19 @@ class ImageParameterToken extends Token {
 	/** @override */
 	getPadding() {
 		return Math.max(0, this.#syntax.indexOf('$1'));
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			/** @type {{link: Title}} */ {link} = this;
+		if (link?.encoded) {
+			errors.push(generateForSelf(this, {start}, '内链中不必要的URL编码'));
+		}
+		return errors;
 	}
 
 	/** @override */
