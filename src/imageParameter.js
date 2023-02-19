@@ -15,7 +15,7 @@ class ImageParameterToken extends Token {
 	 * @template {string} T
 	 * @param {T} key 参数名
 	 * @param {string} value 参数值
-	 * @returns {T extends 'link' ? string : boolean}
+	 * @returns {T extends 'link' ? string|Title : boolean}
 	 */
 	static #validate(key, value, config = Parser.getConfig(), halfParsed = false) {
 		value = value.replace(/\0\d+t\x7F/gu, '').trim();
@@ -34,8 +34,9 @@ class ImageParameterToken extends Token {
 				} else if (value.startsWith('[[') && value.endsWith(']]')) {
 					value = value.slice(2, -2);
 				}
+				const Title = require('../lib/title');
 				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true, true);
-				return title.valid && String(title);
+				return title.valid && title;
 			}
 			case 'lang':
 				return config.variants.includes(value);

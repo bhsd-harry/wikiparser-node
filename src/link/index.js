@@ -21,7 +21,7 @@ class LinkToken extends Token {
 
 	/** 完整链接，和FileToken保持一致 */
 	get link() {
-		return String(this.#getTitle());
+		return this.#getTitle();
 	}
 
 	set link(link) {
