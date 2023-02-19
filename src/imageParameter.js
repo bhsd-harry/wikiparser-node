@@ -1,6 +1,8 @@
 'use strict';
 
 const {text, noWrap, print, extUrlChar, extUrlCharFirst} = require('../util/string'),
+	{generateForSelf} = require('../util/lint'),
+	Title = require('../lib/title'),
 	Parser = require('..'),
 	AstText = require('../lib/text'),
 	Token = require('.');
@@ -34,7 +36,6 @@ class ImageParameterToken extends Token {
 				} else if (value.startsWith('[[') && value.endsWith(']]')) {
 					value = value.slice(2, -2);
 				}
-				const Title = require('../lib/title');
 				const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true, true);
 				return title.valid && title;
 			}
@@ -173,6 +174,19 @@ class ImageParameterToken extends Token {
 	/** @override */
 	getPadding() {
 		return Math.max(0, this.#syntax.indexOf('$1'));
+	}
+
+	/**
+	 * @override
+	 * @param {number} start 起始位置
+	 */
+	lint(start = 0) {
+		const errors = super.lint(start),
+			/** @type {{link: Title}} */ {link} = this;
+		if (link?.encoded) {
+			errors.push(generateForSelf(this, {start}, '内链中不必要的URL编码'));
+		}
+		return errors;
 	}
 
 	/** @override */

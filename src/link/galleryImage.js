@@ -21,7 +21,9 @@ class GalleryImageToken extends singleLine(FileToken) {
 	}
 
 	set link(value) {
-		super.link = value;
+		if (this.type !== 'imagemap-image') {
+			super.link = value;
+		}
 	}
 
 	/**
