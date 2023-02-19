@@ -67,7 +67,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				const name = removeComment(parts[0][0]).trim();
 				if (name in marks) {
 					ch = marks[name]; // 标记{{!}}等
-				} else if (/^(?:fullurl|canonicalurl|filepath):.|^server$/iu.test(name)) {
+				} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
 					ch = 'm';
 				} else if (/^#vardefine:./iu.test(name)) {
 					ch = 'c';
