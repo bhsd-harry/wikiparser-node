@@ -53,19 +53,10 @@ class ImageParameterToken extends Token {
 	type = 'image-parameter';
 	#syntax = '';
 
-	/** getValue()的getter */
-	get value() {
-		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
-	}
-
 	/** 图片链接 */
 	get link() {
 		return this.name === 'link'
-			? ImageParameterToken.#validate('link', this.getValue(), this.getAttribute('config'))
+			? ImageParameterToken.#validate('link', super.text(), this.getAttribute('config'))
 			: undefined;
 	}
 
@@ -73,6 +64,15 @@ class ImageParameterToken extends Token {
 		if (this.name === 'link') {
 			this.setValue(value);
 		}
+	}
+
+	/** getValue()的getter */
+	get value() {
+		return this.getValue();
+	}
+
+	set value(value) {
+		this.setValue(value);
 	}
 
 	/** 图片大小 */
