@@ -9,7 +9,7 @@ const {generateForChild} = require('../../util/lint'),
 	TrToken = require('./tr');
 
 const aliases = {td: '\n|', th: '\n!', caption: '\n|+'},
-	openingPattern = /^(?:\n[\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u;
+	openingPattern = /^(?:\n[^\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u;
 
 /**
  * `<td>`、`<th>`和`<caption>`
