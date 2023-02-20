@@ -131,7 +131,7 @@ class Token extends AstElement {
 	#buildFromStr = (str, type) => {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
-				return new AstText(s, this.#config);
+				return new AstText(s);
 			} else if (isNaN(s[s.length - 1])) {
 				return this.#accum[Number(s.slice(0, -1))];
 			}
@@ -245,7 +245,7 @@ class Token extends AstElement {
 	 */
 	insertAt(token, i = this.length) {
 		if (typeof token === 'string') {
-			token = new AstText(token, this.#config);
+			token = new AstText(token);
 		}
 		super.insertAt(token, i);
 		if (token.type === 'root') {
