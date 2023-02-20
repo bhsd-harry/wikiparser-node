@@ -29,6 +29,7 @@
  * -: `{{!-}}`专用
  * +: `{{!!}}`专用
  * ~: `{{=}}`专用
+ * s: `{{{|subst:}}}`
  * m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
  * t: ArgToken或TranscludeToken
  * h: HeadingToken

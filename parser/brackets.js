@@ -14,6 +14,7 @@ const {removeComment} = require('../util/string'),
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 	const source = `${config.excludes.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
+		{parserFunction: [,,, subst]} = config,
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
@@ -62,7 +63,12 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
-				new ArgToken(parts.map(part => part.join('=')), config, accum);
+				const argParts = parts.map(part => part.join('=')),
+					str = argParts.length > 1 && removeComment(argParts[1]).trim();
+				new ArgToken(argParts, config, accum);
+				if (str && str.endsWith(':') && subst.includes(str.slice(0, -1).toLowerCase())) {
+					ch = 's';
+				}
 			} else {
 				const name = removeComment(parts[0][0]).trim();
 				if (name in marks) {

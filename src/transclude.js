@@ -18,6 +18,7 @@ class TranscludeToken extends Token {
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 	#fragment = '';
 	#valid = true;
+	#raw = false;
 
 	/**
 	 * 设置引用修饰符
@@ -29,11 +30,16 @@ class TranscludeToken extends Token {
 			return false;
 		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
-			lcModifier = modifier.trim().toLowerCase(),
-			isRaw = raw.includes(lcModifier),
-			isSubst = subst.includes(lcModifier);
+			lcModifier = removeComment(modifier).trim();
+		if (modifier && !lcModifier.endsWith(':')) {
+			return false;
+		}
+		const magicWord = lcModifier.slice(0, -1).toLowerCase(),
+			isRaw = raw.includes(magicWord),
+			isSubst = subst.includes(magicWord);
 		if (isRaw || isSubst || modifier === '') {
 			this.setAttribute('modifier', modifier);
+			this.#raw = isRaw;
 			return Boolean(modifier);
 		}
 		return false;
@@ -49,14 +55,19 @@ class TranscludeToken extends Token {
 	constructor(title, parts, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const {parserFunction: [insensitive, sensitive, raw]} = config;
-		if (title.includes(':')) {
-			const [modifier, ...arg] = title.split(':');
-			if (this.setModifier(modifier)) {
-				title = arg.join(':');
+		const {parserFunction: [insensitive, sensitive]} = config,
+			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
+		if (argSubst) {
+			this.setAttribute('modifier', argSubst);
+			title = title.slice(argSubst.length);
+		} else if (title.includes(':')) {
+			const [modifier, ...arg] = title.split(':'),
+				[mt] = /^(?:\s|\0\d+c\x7F)*/u.exec(arg[0] ?? '');
+			if (this.setModifier(`${modifier}:${mt}`)) {
+				title = arg.join(':').slice(mt.length);
 			}
 		}
-		if (title.includes(':') || parts.length === 0 && !raw.includes(this.modifier.toLowerCase())) {
+		if (title.includes(':') || parts.length === 0 && !this.#raw) {
 			const [magicWord, ...arg] = title.split(':'),
 				cleaned = removeComment(magicWord),
 				name = cleaned.trim(),
@@ -114,6 +125,9 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	afterBuild() {
+		if (this.modifier.includes('\0')) {
+			this.setAttribute('modifier', this.getAttribute('buildFromStr')(this.modifier, 'string'));
+		}
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template',
 				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].text(), isTemplate ? 10 : 828);
@@ -127,7 +141,7 @@ class TranscludeToken extends Token {
 	 */
 	toString(selector) {
 		const {childNodes, firstChild, modifier} = this;
-		return `{{${modifier}${modifier && ':'}${
+		return `{{${modifier}${
 			this.type === 'magic-word'
 				? `${String(firstChild)}${childNodes.length > 1 ? ':' : ''}${childNodes.slice(1).map(String).join('|')}`
 				: super.toString(selector, '|')
@@ -143,7 +157,7 @@ class TranscludeToken extends Token {
 		const {childNodes, firstChild, modifier, type, name} = this;
 		return type === 'magic-word' && name === 'vardefine'
 			? ''
-			: `{{${modifier}${modifier && ':'}${
+			: `{{${modifier}${
 				this.type === 'magic-word'
 					? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
 					: super.text('|')
@@ -152,7 +166,7 @@ class TranscludeToken extends Token {
 
 	/** @override */
 	getPadding() {
-		return this.modifier ? this.modifier.length + 3 : 2;
+		return this.modifier.length + 2;
 	}
 
 	/** @override */
@@ -163,7 +177,7 @@ class TranscludeToken extends Token {
 	/** @override */
 	print() {
 		const {childNodes, firstChild, modifier} = this;
-		return `<span class="wpb-${this.type}">{{${modifier}${modifier && ':'}${
+		return `<span class="wpb-${this.type}">{{${modifier}${
 			this.type === 'magic-word'
 				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
 				: print(childNodes, {sep: '|'})
@@ -176,34 +190,13 @@ class TranscludeToken extends Token {
 	 */
 	lint(start = 0) {
 		const errors = super.lint(start),
-			{type, childNodes, firstChild} = this;
+			{type, childNodes} = this;
 		let rect;
 		if (!this.isTemplate()) {
 			return errors;
 		} else if (this.#fragment) {
-			let flag = type === 'magic-word';
-			if (!flag) {
-				const config = this.getAttribute('config'),
-					{parserFunction: [,,, subst]} = config,
-					str = firstChild.text().split('#')[0].trim(),
-
-					/**
-					 * 检测字符串是否是替换引用
-					 * @param {string} s 字符串
-					 */
-					isSubst = s => s.endsWith(':') && subst.includes(s.slice(0, -1).toLowerCase());
-				if (!isSubst(str)) {
-					const ArgToken = require('./arg');
-					/** @type {ArgToken} */
-					const {length, firstChild: arg} = Parser.parse(str, this.getAttribute('include'), 2, config),
-						modifier = arg.default && arg.default.trim();
-					flag = length !== 1 || arg.type !== 'arg' || !modifier || !isSubst(modifier);
-				}
-			}
-			if (flag) {
-				rect = {start, ...this.getRootNode().posFromIndex(start)};
-				errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
-			}
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
 		}
 		if (!this.#valid) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
