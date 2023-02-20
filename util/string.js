@@ -82,6 +82,16 @@ const decodeHtml = str => str?.replace(
 );
 
 /**
+ * check if subst
+ * @param {string} str 待测字符串
+ * @param {ParserConfig} config 解析设置
+ */
+const checkSubst = (str, config) => {
+	str = str.trim();
+	return str.at(-1) === ':' && config.parserFunction[3].includes(str.slice(0, -1).toLowerCase());
+};
+
+/**
  * optionally convert to lower cases
  * @param {string} val 属性值
  * @param {string|undefined} i 是否对大小写不敏感
@@ -120,6 +130,7 @@ module.exports = {
 	explode,
 	text,
 	decodeHtml,
+	checkSubst,
 	toCase,
 	noWrap,
 	normalizeSpace,

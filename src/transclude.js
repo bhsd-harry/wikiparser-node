@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} = require('../util/string'),
+const {removeComment, escapeRegExp, text, noWrap, print, decodeHtml, checkSubst} = require('../util/string'),
 	{externalUse} = require('../util/debug'),
 	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
@@ -60,9 +60,13 @@ class TranscludeToken extends Token {
 		super(undefined, config, true, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
-		const {parserFunction: [insensitive, sensitive, raw]} = config;
 		this.seal('modifier');
-		if (title.includes(':')) {
+		const {parserFunction: [insensitive, sensitive, raw]} = config,
+			argSubst = /^\s*\0\d+s\x7F/u.exec(title)?.[0];
+		if (argSubst) {
+			this.setAttribute('modifier', this.getAttribute('buildFromStr')(argSubst, 'string'));
+			title = title.slice(argSubst.length);
+		} else if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':');
 			if (this.setModifier(modifier)) {
 				title = arg.join(':');
@@ -235,30 +239,11 @@ class TranscludeToken extends Token {
 		let rect;
 		if (!this.isTemplate()) {
 			return errors;
-		} else if (this.#fragment) {
-			let flag = type === 'magic-word';
-			if (!flag) {
-				const config = this.getAttribute('config'),
-					{parserFunction: [,,, subst]} = config,
-					str = firstChild.text().split('#')[0].trim(),
-
-					/**
-					 * 检测字符串是否是替换引用
-					 * @param {string} s 字符串
-					 */
-					isSubst = s => s.at(-1) === ':' && subst.includes(s.slice(0, -1).toLowerCase());
-				if (!isSubst(str)) {
-					const ArgToken = require('./arg');
-					/** @type {ArgToken} */
-					const {length, firstChild: arg} = Parser.parse(str, this.getAttribute('include'), 2, config),
-						modifier = arg.default && arg.default.trim();
-					flag = length !== 1 || arg.type !== 'arg' || !modifier || !isSubst(modifier);
-				}
-			}
-			if (flag) {
-				rect = {start, ...this.getRootNode().posFromIndex(start)};
-				errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
-			}
+		} else if (this.#fragment
+			&& (type === 'magic-word' || checkSubst(firstChild.text().split('#')[0], this.getAttribute('config')))
+		) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
 		}
 		if (!this.#valid) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};

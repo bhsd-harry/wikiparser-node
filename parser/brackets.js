@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment} = require('../util/string'),
+const {removeComment, checkSubst} = require('../util/string'),
 	Parser = require('..'),
 	HeadingToken = require('../src/heading'),
 	TranscludeToken = require('../src/transclude'),
@@ -62,7 +62,9 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
-				new ArgToken(parts.map(part => part.join('=')), config, accum);
+				const argParts = parts.map(part => part.join('='));
+				new ArgToken(argParts, config, accum);
+				ch = checkSubst(argParts[1], config) ? 's' : 't';
 			} else {
 				const name = removeComment(parts[0][0]).trim();
 				if (name in marks) {
