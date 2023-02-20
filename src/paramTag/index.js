@@ -64,7 +64,7 @@ class ParamTagToken extends Token {
 			const {childNodes} = child,
 				i = childNodes.findIndex(({type}) => type !== 'text'),
 				str = (i >= 0 ? childNodes.slice(0, i).map(String).join('') : String(child)).trim();
-			return str && !(i >= 0 ? /^[a-z]+\s*(?:=|$)/iu : /^[a-z]+\s*=/iu).test(str);
+			return str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str);
 		}).map(child => {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			return generateForChild(child, rect, `${this.name}的无效参数`);
