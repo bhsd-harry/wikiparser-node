@@ -1,6 +1,6 @@
 'use strict';
 
-const {removeComment, checkSubst} = require('../util/string'),
+const {removeComment} = require('../util/string'),
 	Parser = require('..'),
 	HeadingToken = require('../src/heading'),
 	TranscludeToken = require('../src/transclude'),
@@ -14,6 +14,7 @@ const {removeComment, checkSubst} = require('../util/string'),
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 	const source = `${config.excludes.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
+		{parserFunction: [,,, subst]} = config,
 		/** @type {BracketExecArray[]} */ stack = [],
 		closes = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
 		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
@@ -62,9 +63,12 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
-				const argParts = parts.map(part => part.join('='));
+				const argParts = parts.map(part => part.join('=')),
+					str = argParts.length > 1 && removeComment(argParts[1]).trim();
 				new ArgToken(argParts, config, accum);
-				ch = checkSubst(argParts[1], config) ? 's' : 't';
+				if (str && str.at(-1) === ':' && subst.includes(str.slice(0, -1).toLowerCase())) {
+					ch = 's';
+				}
 			} else {
 				const name = removeComment(parts[0][0]).trim();
 				if (name in marks) {
