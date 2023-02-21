@@ -89,7 +89,7 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	getUnknownFlags() {
-		return new Set(this.#flags.filter(flag => /\{\{[^{}]+\}\}/u.test(flag)));
+		return new Set(this.#flags.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
 	/** 获取指定语言变体的转换标记 */
