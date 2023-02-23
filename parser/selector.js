@@ -48,7 +48,9 @@ const /** @type {Set<pseudo>} */ simplePseudos = new Set([
 	pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
 	regularRegex = /[[(,>+~]|\s+/u,
 	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
-	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u;
+	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u,
+	grouping = new Set([',', '>', '+', '~']),
+	combinator = new Set(['>', '+', '~', '']);
 
 /**
  * 清理转义符号
@@ -110,9 +112,7 @@ const pushSimple = (step, str) => {
  */
 const parseSelector = selector => {
 	selector = selector.trim();
-	const /** @type {SelectorArray[][]} */ stack = [[[]]],
-		grouping = new Set([',', '>', '+', '~']),
-		combinator = new Set(['>', '+', '~', '']);
+	const /** @type {SelectorArray[][]} */ stack = [[[]]];
 	let sanitized = sanitize(selector),
 		regex = regularRegex,
 		mt = regex.exec(sanitized),
