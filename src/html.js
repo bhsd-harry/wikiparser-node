@@ -7,6 +7,8 @@ const {generateForSelf} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.');
 
+const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
+
 /**
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
@@ -127,12 +129,17 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
 			const [message] = errorMsg.split('：'),
-				error = {...refError, message, severity: message === '未闭合的标签' ? 'warning' : 'error'};
+				error = {...refError, message};
 			if (message === '未闭合的标签') {
+				error.severity = 'warning';
 				error.excerpt = wikitext.slice(start, start + 50);
 			} else if (message === '未匹配的闭合标签') {
-				const end = start + String(this).length;
+				const end = start + String(this).length,
+					{parentNode: {name, type}} = this;
 				error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
+				if (type === 'magic-word' && magicWords.has(name)) {
+					error.severity = 'warning';
+				}
 			}
 			errors.push(error);
 		}
