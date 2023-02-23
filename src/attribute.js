@@ -302,7 +302,7 @@ class AttributeToken extends fixedToken(Token) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, parentNode, value} = this,
 			tagName = parentNode?.name;

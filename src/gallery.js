@@ -78,7 +78,7 @@ class GalleryToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
 			/** @type {LintError[]} */ errors = [];
 		for (let i = 0, startIndex = start; i < this.length; i++) {

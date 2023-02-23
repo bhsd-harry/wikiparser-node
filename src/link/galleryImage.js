@@ -87,7 +87,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
 		if (this.#invalid) {
 			errors.push(generateForSelf(this, {start}, '无效的图库图片'));

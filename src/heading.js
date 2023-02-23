@@ -82,7 +82,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
 			innerText = String(this.firstChild);
 		let refError;

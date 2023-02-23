@@ -55,7 +55,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const TranscludeToken = require('../transclude'),
 			ArgToken = require('../arg');
 		const errors = super.lint(start),

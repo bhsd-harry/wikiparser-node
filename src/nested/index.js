@@ -48,7 +48,7 @@ class NestedToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		let rect;
 		return [
 			...super.lint(start),

@@ -26,7 +26,7 @@ class QuoteToken extends NowikiToken {
 	 * @this {AstText}
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const {previousSibling, nextSibling} = this,
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];

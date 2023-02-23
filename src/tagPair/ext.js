@@ -113,7 +113,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),

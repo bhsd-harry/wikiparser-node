@@ -166,7 +166,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
 			{lastChild} = this;
 		start += this.getRelativeIndex(-1);

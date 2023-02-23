@@ -109,7 +109,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
 		let wikitext, /** @type {LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
