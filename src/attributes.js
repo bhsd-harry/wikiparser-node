@@ -108,7 +108,7 @@ class AttributesToken extends Token {
 	 * @this {AttributesToken & {parentNode: HtmlToken}}
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		const HtmlToken = require('./html');
 		const errors = super.lint(start),
 			{parentNode: {closing}, length, childNodes} = this,

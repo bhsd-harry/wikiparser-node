@@ -246,7 +246,7 @@ class AttributeToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, parentNode, value} = this,
 			tagName = parentNode?.name;

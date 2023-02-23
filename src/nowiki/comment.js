@@ -37,7 +37,7 @@ class CommentToken extends hidden(NowikiToken) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		return this.closed ? [] : [generateForSelf(this, {start}, '未闭合的HTML注释')];
 	}
 

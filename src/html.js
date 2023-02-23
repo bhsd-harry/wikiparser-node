@@ -68,7 +68,7 @@ class HtmlToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		const errors = super.lint(start);
 		let /** @type {LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
@@ -87,11 +87,8 @@ class HtmlToken extends Token {
 				error = {...refError, message};
 			if (message === '未闭合的标签') {
 				error.severity = 'warning';
-			} else if (message === '未匹配的闭合标签') {
-				const {parentNode: {name, type}} = this;
-				if (type === 'magic-word' && magicWords.has(name)) {
-					error.severity = 'warning';
-				}
+			} else if (message === '未匹配的闭合标签' && magicWords.has(this.closest('magic-word')?.name)) {
+				error.severity = 'warning';
 			}
 			errors.push(error);
 		}

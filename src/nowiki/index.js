@@ -23,7 +23,7 @@ class NowikiToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		const {type, name} = this;
 		return type === 'ext-inner' && (name === 'templatestyles' || name === 'section') && String(this)
 			? [generateForSelf(this, {start}, `<${name}>标签内不应有任何内容`)]

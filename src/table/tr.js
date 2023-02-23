@@ -33,7 +33,7 @@ class TrToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		const TranscludeToken = require('../transclude'),
 			ArgToken = require('../arg');
 		const errors = super.lint(start),

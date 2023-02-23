@@ -78,7 +78,7 @@ class ParameterToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = 0) {
+	lint(start) {
 		const errors = super.lint(start),
 			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')

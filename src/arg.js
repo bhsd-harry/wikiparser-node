@@ -74,7 +74,7 @@ class ArgToken extends Token {
 	 * @param {number} start 起始位置
 	 * @returns {LintError[]}
 	 */
-	lint(start = 0) {
+	lint(start) {
 		if (!this.getAttribute('include')) {
 			return [generateForSelf(this, {start}, '未预期的模板参数')];
 		}
