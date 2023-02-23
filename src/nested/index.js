@@ -13,7 +13,6 @@ const {generateForChild} = require('../../util/lint'),
  */
 class NestedToken extends Token {
 	type = 'ext-inner';
-	#tags;
 
 	/**
 	 * @param {string|undefined} wikitext wikitext
@@ -34,14 +33,12 @@ class NestedToken extends Token {
 				}
 				return str;
 			},
-		)?.replace(/(?<=^|\0\d+[ce]\x7F)[^\0]+(?=$|\0\d+[ce]\x7F)/gu, substr => {
+		)?.replace(/(^|\0\d+[ce]\x7F)([^\0]+)(?=$|\0\d+[ce]\x7F)/gu, (_, lead, substr) => {
 			new NoincludeToken(substr, config, accum);
-			return `\0${accum.length}c\x7F`;
+			return `${lead}\0${accum.length}c\x7F`;
 		});
 		super(text, config, true, accum, {
-			NoincludeToken: ':', ExtToken: ':',
 		});
-		this.#tags = tags;
 	}
 
 	/**
@@ -64,30 +61,6 @@ class NestedToken extends Token {
 			}),
 		];
 	}
-
-	/**
-	 * @override
-	 * @template {string|Token} T
-	 * @param {T} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 */
-	insertAt(token, i = this.length) {
-		return token.type === 'ext' && !this.#tags.includes(token.name)
-			? this.typeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`)
-			: super.insertAt(token, i);
-	}
-
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new this.constructor(undefined, config);
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
 
-Parser.classes.NestedToken = __filename;
 module.exports = NestedToken;

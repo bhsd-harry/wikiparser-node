@@ -1,6 +1,7 @@
 'use strict';
 
 const diff = require('../util/diff'),
+	path = require('path'),
 	Api = require('./api'),
 	Parser = require('../');
 
@@ -11,8 +12,12 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
-Parser.debugging = true;
-Parser.warning = false;
+Parser.debug = /** @implements */ (msg, ...args) => {
+	console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
+};
+Parser.error = /** @implements */ (msg, ...args) => {
+	console.error('\x1B[31m%s\x1B[0m', msg, ...args);
+};
 
 /**
  * 获取最近更改的页面源代码
@@ -32,7 +37,7 @@ const getPages = async url => {
 (async () => {
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
-		Parser.config = `./config/${config}`;
+		Parser.config = require(path.join('..', 'config', config));
 		try {
 			const revs = await getPages(`${url}/api.php`);
 			for (const {title, ns, content} of revs) {

@@ -24,21 +24,9 @@ class HasNowikiToken extends Token {
 			},
 		);
 		super(wikitext, config, true, accum, {
-			AstText: ':', NoincludeToken: ':',
 		});
 		this.type = type;
 	}
-
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new HasNowikiToken(undefined, this.type, this.getAttribute('config'));
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
 
-Parser.classes.HasNowikiToken = __filename;
 module.exports = HasNowikiToken;

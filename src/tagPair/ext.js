@@ -1,8 +1,6 @@
 'use strict';
 
 const {generateForSelf} = require('../../util/lint'),
-	attributeParent = require('../../mixin/attributeParent'),
-	path = require('path'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TagPairToken = require('.'),
@@ -12,7 +10,7 @@ const {generateForSelf} = require('../../util/lint'),
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, NowikiToken|Token]}`
  */
-class ExtToken extends attributeParent(TagPairToken) {
+class ExtToken extends TagPairToken {
 	type = 'ext';
 	closed = true;
 
@@ -24,7 +22,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
-		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
+		attr = !attr || /^\s/u.test(attr) ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
 			/** @type {ParserConfig} */ newConfig = {...config, excludes: [...config.excludes]},
@@ -60,16 +58,11 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
-			case 'charinsert': {
-				const CharinsertToken = require('../charinsert');
-				innerToken = new CharinsertToken(inner, newConfig, accum);
-				break;
-			}
 			case 'references':
 			case 'choose':
 			case 'combobox': {
 				const NestedToken = require('../nested'),
-					/** @type {typeof NestedToken} */ NestedExtToken = require(path.join('..', 'nested', lcName));
+					/** @type {typeof NestedToken} */ NestedExtToken = require(`../nested/${lcName}`);
 				innerToken = new NestedExtToken(inner, newConfig, accum);
 				break;
 			}
@@ -123,20 +116,6 @@ class ExtToken extends attributeParent(TagPairToken) {
 		}
 		return errors;
 	}
-
-	/** @override */
-	cloneNode() {
-		const inner = this.lastChild.cloneNode(),
-			tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			attr = String(this.firstChild);
-		return Parser.run(() => {
-			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
-			token.lastChild.safeReplaceWith(inner);
-			return token;
-		});
-	}
 }
 
-Parser.classes.ExtToken = __filename;
 module.exports = ExtToken;

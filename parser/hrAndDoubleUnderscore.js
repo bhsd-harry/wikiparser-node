@@ -34,5 +34,4 @@ const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = P
 	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
 };
 
-Parser.parsers.parseHrAndDoubleUnderscore = __filename;
 module.exports = parseHrAndDoubleUnderscore;

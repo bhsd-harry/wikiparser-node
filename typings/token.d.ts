@@ -1,5 +1,4 @@
 import Token from '../src';
-import Ranges from '../lib/ranges';
 
 declare global {
 	interface ParserConfig {
@@ -12,12 +11,10 @@ declare global {
 		protocol: string;
 		img: Record<string, string>;
 		variants: string[];
-		interwiki: string[];
 		excludes: string[];
 	}
 
 	type accum = Token[];
-	type acceptable = Record<string, number|string|Ranges|(number|string)[]>;
 
 	interface LintError {
 		message: string;

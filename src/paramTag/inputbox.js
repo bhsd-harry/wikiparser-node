@@ -1,7 +1,6 @@
 'use strict';
 
 const parseBrackets = require('../../parser/brackets'),
-	singleLine = require('../../mixin/singleLine'),
 	Parser = require('../..'),
 	ParamTagToken = require('.'),
 	AtomToken = require('../atom');
@@ -23,13 +22,11 @@ class InputboxToken extends ParamTagToken {
 		accum.splice(accum.indexOf(this), 1);
 		accum.push(this);
 		if (wikitext) {
-			const SingleLineAtomToken = singleLine(AtomToken);
+			const SingleLineAtomToken = AtomToken;
 			this.append(...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-				AstText: ':', ArgToken: ':', TranscludeToken: ':',
 			})));
 		}
 	}
 }
 
-Parser.classes.InputboxToken = __filename;
 module.exports = InputboxToken;

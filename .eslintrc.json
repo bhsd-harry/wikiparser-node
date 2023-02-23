@@ -69,8 +69,7 @@
 			2,
 			{
 				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
-				"args": "all",
-				"argsIgnorePattern": "^_+$",
+				"argsIgnorePattern": "^(?:acceptable|selector|halfParsed|copy|type|file)$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}
@@ -201,9 +200,7 @@
 		"no-octal-escape": 2,
 		"no-restricted-globals": [
 			2,
-			"root",
-			"escape",
-			"constructor"
+			"root"
 		],
 		"no-return-assign": [
 			2,
@@ -519,15 +516,8 @@
 			}
 		],
 		"unicorn/consistent-function-scoping": 2,
-		"unicorn/empty-brace-spaces": 2,
 		"unicorn/error-message": 2,
 		"unicorn/explicit-length-check": 2,
-		"unicorn/filename-case": [
-			2,
-			{
-				"case": "camelCase"
-			}
-		],
 		"unicorn/new-for-builtins": 2,
 		"unicorn/no-abusive-eslint-disable": 2,
 		"unicorn/no-array-for-each": 2,
@@ -579,7 +569,6 @@
 				"concat": "certain"
 			}
 		],
-		"unicorn/prefer-string-replace-all": 2,
 		"unicorn/prefer-string-starts-ends-with": 2,
 		"unicorn/prefer-switch": 2,
 		"unicorn/prefer-ternary": 2,
@@ -684,7 +673,10 @@
 				"exceptions": [
 					"_",
 					"config",
-					"halfParsed"
+					"halfParsed",
+					"selector",
+					"acceptable",
+					"title"
 				],
 				"contexts": [
 					"FunctionDeclaration",

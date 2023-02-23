@@ -1,16 +1,12 @@
 'use strict';
 
 const {generateForChild} = require('../util/lint'),
-	{noWrap, removeComment} = require('../util/string'),
-	fixedToken = require('../mixin/fixedToken'),
+	{removeComment} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.'),
 	AtomToken = require('./atom');
 
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
-	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
-	post = {'ext-attr': '/>', 'html-attr': '>', 'table-attr': ''},
-	commonHtmlAttrs = new Set([
+const commonHtmlAttrs = new Set([
 		'id',
 		'class',
 		'style',
@@ -109,37 +105,6 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 		poll: new Set(['id', 'show-results-before-voting']),
 		sm2: typeAttrs,
 		flashmp3: typeAttrs,
-		score: new Set([
-			'line_width_inches',
-			'lang',
-			'override_midi',
-			'raw',
-			'note-language',
-			'override_audio',
-			'override_ogg',
-			'sound',
-			'vorbis',
-		]),
-		seo: new Set([
-			'title',
-			'title_mode',
-			'title_separator',
-			'keywords',
-			'description',
-			'robots',
-			'google_bot',
-			'image',
-			'image_width',
-			'image_height',
-			'image_alt',
-			'type',
-			'site_name',
-			'locale',
-			'section',
-			'author',
-			'published_time',
-			'twitter_site',
-		]),
 		tab: new Set([
 			'nested',
 			'name',
@@ -177,7 +142,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-class AttributeToken extends fixedToken(Token) {
+class AttributeToken extends Token {
 	#equal;
 	#quotes;
 	#tag;
@@ -190,10 +155,6 @@ class AttributeToken extends fixedToken(Token) {
 	/** getValue()的getter */
 	get value() {
 		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
 	}
 
 	/** 标签名 */
@@ -212,36 +173,23 @@ class AttributeToken extends fixedToken(Token) {
 	 */
 	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
-			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
 		let valueToken;
 		if (key === 'title') {
 			valueToken = new Token(value, config, true, accum, {
-				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			}).setAttribute('type', 'attr-value').setAttribute('stage', Parser.MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
 			/** @type {ParserConfig} */
 			const newConfig = {...config, excludes: [...config.excludes, 'quote', 'extLink', 'magicLink', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
-				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
 			}).setAttribute('type', 'attr-value').setAttribute('stage', 5);
 		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
 			/** @type {ParserConfig} */
 			const newConfig = {...config, excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
-				ArgToken: ':',
-				TranscludeToken: ':',
-				LinkToken: ':',
-				FileToken: ':',
-				CategoryToken: ':',
-				QuoteToken: ':',
-				ExtLinkToken: ':',
-				MagicLinkToken: ':',
-				ConverterToken: ':',
 			}).setAttribute('type', 'attr-value').setAttribute('stage', 1);
 		} else {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
-				[`Stage-${stages[type]}`]: ':',
 			});
 		}
 		super(undefined, config, true, accum);
@@ -266,13 +214,9 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 * @returns {string}
 	 */
 	toString(selector) {
-		if (selector && this.matches(selector)) {
-			return '';
-		}
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
 			? `${super.toString(selector, `${this.#equal}${quoteStart}`)}${quoteEnd}`
@@ -334,131 +278,10 @@ class AttributeToken extends fixedToken(Token) {
 	getValue() {
 		if (this.#equal) {
 			const value = this.lastChild.text();
-			if (this.#quotes[1]) {
-				return value;
-			}
-			return this.#quotes[0] ? value.trimEnd() : value.trim();
+			return value;
 		}
 		return true;
 	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		if (key === 'equal') {
-			return this.#equal;
-		}
-		return key === 'quotes' ? this.#quotes : super.getAttribute(key);
-	}
-
-	/** @override */
-	cloneNode() {
-		const [key, value] = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config);
-			token.firstChild.safeReplaceWith(key);
-			token.lastChild.safeReplaceWith(value);
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/** 转义等号 */
-	escape() {
-		this.#equal = '{{=}}';
-	}
-
-	/** 闭合引号 */
-	close() {
-		[this.#quotes[1]] = this.#quotes;
-	}
-
-	/**
-	 * 设置属性值
-	 * @param {string|boolean} value 参数值
-	 * @throws `SyntaxError` 非法的标签属性
-	 */
-	setValue(value) {
-		if (value === false) {
-			this.remove();
-			return;
-		} else if (value === true) {
-			this.#equal = '';
-			return;
-		}
-		value = String(value);
-		const {type} = this,
-			key = this.name === 'title' ? 'title' : 'data',
-			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs;
-		if (length !== 1 || tag.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		} else if (type === 'table-attr') {
-			const {length: tableLength} = tag;
-			if (tableLength !== 2) {
-				throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-			}
-			attrs = tag.lastChild;
-		} else {
-			attrs = tag.firstChild;
-		}
-		const {length: attrsLength, firstChild} = attrs;
-		if (attrsLength !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		}
-		const {lastChild} = firstChild;
-		firstChild.destroy(true);
-		this.lastChild.safeReplaceWith(lastChild);
-		if (this.#quotes[0]) {
-			this.close();
-		} else {
-			this.#quotes = ['"', '"'];
-		}
-	}
-
-	/**
-	 * 修改属性名
-	 * @param {string} key 新属性名
-	 * @throws `Error` title属性不能更名
-	 * @throws `SyntaxError` 非法的模板参数名
-	 */
-	rename(key) {
-		if (this.name === 'title') {
-			throw new Error('title 属性不能更名！');
-		}
-		key = String(key);
-		const {type} = this,
-			wikitext = `${pre[type]}${key}${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs;
-		if (length !== 1 || tag.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		} else if (type === 'table-attr') {
-			const {length: tableLength} = tag;
-			if (tableLength !== 2) {
-				throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-			}
-			attrs = tag.lastChild;
-		} else {
-			attrs = tag.firstChild;
-		}
-		const {length: attrsLength, firstChild: attr} = attrs;
-		if (attrsLength !== 1 || attr.type !== this.type || attr.value !== true) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		}
-		const {firstChild} = attr;
-		attr.destroy(true);
-		this.firstChild.safeReplaceWith(firstChild);
-	}
 }
 
-Parser.classes.AttributeToken = __filename;
 module.exports = AttributeToken;

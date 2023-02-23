@@ -21,30 +21,6 @@ class IncludeToken extends hidden(TagPairToken) {
 	constructor(name, attr = '', inner = undefined, closed = undefined, config = Parser.getConfig(), accum = []) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
 	}
-
-	/** @override */
-	cloneNode() {
-		const tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			inner = this.selfClosing ? undefined : String(this.lastChild),
-			closing = this.selfClosing || !this.closed ? undefined : tags[1],
-			token = Parser.run(() => new IncludeToken(tags[0], String(this.firstChild), inner, closing, config));
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @param {string} str 新文本
-	 */
-	setText(str) {
-		return super.setText(str, 1);
-	}
-
-	/** 清除标签属性 */
-	removeAttr() {
-		super.setText('', 0);
-	}
 }
 
-Parser.classes.IncludeToken = __filename;
 module.exports = IncludeToken;

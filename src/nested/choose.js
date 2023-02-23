@@ -20,5 +20,4 @@ class ChooseToken extends NestedToken {
 	}
 }
 
-Parser.classes.ChooseToken = __filename;
 module.exports = ChooseToken;

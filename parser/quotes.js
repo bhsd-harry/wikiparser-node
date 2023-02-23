@@ -31,7 +31,7 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 				nBold++;
 				if (firstSingle) {
 					break;
-				} else if (arr[i - 1].at(-1) === ' ') {
+				} else if (arr[i - 1].endsWith(' ')) {
 					if (!firstMulti && !firstSpace) {
 						firstSpace = i;
 					}
@@ -60,5 +60,4 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	return arr.join('');
 };
 
-Parser.parsers.parseQuotes = __filename;
 module.exports = parseQuotes;

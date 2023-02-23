@@ -19,5 +19,4 @@ class ComboboxToken extends NestedToken {
 	}
 }
 
-Parser.classes.ComboboxToken = __filename;
 module.exports = ComboboxToken;

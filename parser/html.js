@@ -38,5 +38,4 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	return text;
 };
 
-Parser.parsers.parseHtml = __filename;
 module.exports = parseHtml;

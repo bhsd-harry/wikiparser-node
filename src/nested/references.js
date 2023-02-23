@@ -19,5 +19,4 @@ class ReferencesToken extends NestedToken {
 	}
 }
 
-Parser.classes.ReferencesToken = __filename;
 module.exports = ReferencesToken;

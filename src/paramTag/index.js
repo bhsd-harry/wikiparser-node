@@ -1,7 +1,6 @@
 'use strict';
 
 const {generateForChild} = require('../../util/lint'),
-	singleLine = require('../../mixin/singleLine'),
 	Parser = require('../..'),
 	Token = require('..'),
 	AtomToken = require('../atom');
@@ -19,13 +18,11 @@ class ParamTagToken extends Token {
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			SingleLineAtomToken: ':',
 		});
 		if (wikitext) {
-			const SingleLineAtomToken = singleLine(AtomToken);
+			const SingleLineAtomToken = AtomToken;
 			this.append(
 				...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-					AstText: ':',
 				})),
 			);
 		}
@@ -33,7 +30,6 @@ class ParamTagToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		return super.toString(selector, '\n');
@@ -47,11 +43,6 @@ class ParamTagToken extends Token {
 	/** @override */
 	getGaps() {
 		return 1;
-	}
-
-	/** @override */
-	print() {
-		return super.print({sep: '\n'});
 	}
 
 	/**
@@ -70,20 +61,6 @@ class ParamTagToken extends Token {
 			return generateForChild(child, rect, `${this.name}的无效参数`);
 		});
 	}
-
-	/**
-	 * @override
-	 * @this {ParamTagToken & {constructor: typeof ParamTagToken}}
-	 */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new this.constructor(undefined, this.getAttribute('config'));
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
 
-Parser.classes.ParamTagToken = __filename;
 module.exports = ParamTagToken;

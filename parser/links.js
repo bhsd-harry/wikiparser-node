@@ -44,12 +44,12 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			continue;
 		}
 		const title = Parser.normalizeTitle(link, 0, false, config, true, true, true),
-			{ns, interwiki, valid} = title;
+			{ns, valid} = title;
 		if (!valid) {
 			s += `[[${x}`;
 			continue;
 		} else if (mightBeImg) {
-			if (interwiki || ns !== 6) {
+			if (ns !== 6) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -79,9 +79,9 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 		s += `\0${accum.length}l\x7F${after}`;
 		let SomeLinkToken = LinkToken;
 		if (!force) {
-			if (!interwiki && ns === 6) {
+			if (ns === 6) {
 				SomeLinkToken = FileToken;
-			} else if (!interwiki && ns === 14) {
+			} else if (ns === 14) {
 				SomeLinkToken = CategoryToken;
 			}
 		}
@@ -90,5 +90,4 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	return s;
 };
 
-Parser.parsers.parseLinks = __filename;
 module.exports = parseLinks;

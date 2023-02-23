@@ -110,5 +110,4 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 	return out.slice(1);
 };
 
-Parser.parsers.parseTable = __filename;
 module.exports = parseTable;

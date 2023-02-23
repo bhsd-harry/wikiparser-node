@@ -1,7 +1,5 @@
 'use strict';
 
-const Parser = require('..');
-
 /**
  * 解析后不可见的类
  * @template T
@@ -17,5 +15,4 @@ const hidden = Constructor => class extends Constructor {
 	}
 };
 
-Parser.mixins.hidden = __filename;
 module.exports = hidden;

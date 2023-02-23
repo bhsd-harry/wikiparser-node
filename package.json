@@ -1,6 +1,6 @@
 {
   "name": "wikiparser-node",
-  "version": "0.8.1",
+  "version": "0.8.1-m",
   "description": "A Node.js parser for MediaWiki markup with AST",
   "keywords": [
     "mediawiki",
@@ -20,17 +20,16 @@
     "/lib/",
     "/src/",
     "/config/",
-    "/mixin/",
-    "/tool/"
+    "/mixin/"
   ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
   },
   "scripts": {
-    "test": "eslint . && node test/test.js",
+    "test": "eslint .",
     "real": "node test/real.js",
-    "single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
+    "single": "node test/single.js"
   },
   "devDependencies": {
     "@types/node": "^17.0.23",

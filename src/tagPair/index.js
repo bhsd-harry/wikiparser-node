@@ -1,14 +1,13 @@
 'use strict';
 
 const Parser = require('../..'),
-	fixedToken = require('../../mixin/fixedToken'),
 	Token = require('..');
 
 /**
  * 成对标签
  * @classdesc `{childNodes: [AstText|AttributesToken, AstText|Token]}`
  */
-class TagPairToken extends fixedToken(Token) {
+class TagPairToken extends Token {
 	#selfClosing;
 	#closed;
 	#tags;
@@ -16,28 +15,6 @@ class TagPairToken extends fixedToken(Token) {
 	/** getter */
 	get closed() {
 		return this.#closed;
-	}
-
-	set closed(value) {
-		this.#closed ||= Boolean(value);
-	}
-
-	/** getter */
-	get selfClosing() {
-		return this.#selfClosing;
-	}
-
-	set selfClosing(value) {
-		value = Boolean(value);
-		if (value !== this.#selfClosing && this.lastChild.text()) {
-			Parser.warn(`<${this.name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
-		}
-		this.#selfClosing = value;
-	}
-
-	/** 内部wikitext */
-	get innerText() {
-		return this.#selfClosing ? undefined : this.lastChild.text();
 	}
 
 	/**
@@ -66,17 +43,10 @@ class TagPairToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
-		const {firstChild, lastChild, nextSibling, name} = this,
+		const {firstChild, lastChild} = this,
 			[opening, closing] = this.#tags;
-		if (selector && this.matches(selector)) {
-			return '';
-		} else if (!this.#closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, lastChild);
-			this.#closed = true;
-		}
 		return this.#selfClosing
 			? `<${opening}${String(firstChild)}/>`
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
@@ -102,25 +72,6 @@ class TagPairToken extends fixedToken(Token) {
 	getGaps() {
 		return 1;
 	}
-
-	/** @override */
-	print() {
-		const [opening, closing] = this.#tags;
-		return super.print(this.#selfClosing
-			? {pre: `&lt;${opening}`, post: '/&gt;'}
-			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.#closed ? `&lt;/${closing}&gt;` : ''});
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		return key === 'tags' ? [...this.#tags] : super.getAttribute(key);
-	}
 }
 
-Parser.classes.TagPairToken = __filename;
 module.exports = TagPairToken;

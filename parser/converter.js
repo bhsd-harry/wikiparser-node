@@ -42,5 +42,4 @@ const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
 	return wikitext;
 };
 
-Parser.parsers.parseConverter = __filename;
 module.exports = parseConverter;

@@ -13,28 +13,24 @@ class GalleryToken extends Token {
 	type = 'ext-inner';
 	name = 'gallery';
 
-	/** 所有图片 */
-	get images() {
-		return this.childNodes.filter(({type}) => type === 'gallery-image');
-	}
-
 	/**
 	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			AstText: ':', GalleryImageToken: ':', HiddenToken: ':',
 		});
-		const /** @type {ParserConfig} */ newConfig = {
-			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width')),
-		};
+		const /** @type {ParserConfig} */ newConfig = {...config, img: {...config.img}};
+		for (const [k, v] of Object.entries(config.img)) {
+			if (v === 'width') {
+				delete newConfig.img[k];
+			}
+		}
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
 				super.insertAt(line.trim()
 					? new HiddenToken(line, undefined, newConfig, [], {
-						AstText: ':',
 					})
 					: line);
 				continue;
@@ -45,7 +41,6 @@ class GalleryToken extends Token {
 				super.insertAt(new GalleryImageToken(file, alt, newConfig, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, undefined, newConfig, [], {
-					AstText: ':',
 				}));
 			}
 		}
@@ -53,7 +48,6 @@ class GalleryToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		return super.toString(selector, '\n');
@@ -67,11 +61,6 @@ class GalleryToken extends Token {
 	/** @override */
 	getGaps() {
 		return 1;
-	}
-
-	/** @override */
-	print() {
-		return super.print({sep: '\n'});
 	}
 
 	/**
@@ -107,46 +96,6 @@ class GalleryToken extends Token {
 		}
 		return errors;
 	}
-
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new GalleryToken(undefined, this.getAttribute('config'));
-			token.append(...cloned);
-			return token;
-		});
-	}
-
-	/**
-	 * 插入图片
-	 * @param {string} file 图片文件名
-	 * @param {number} i 插入位置
-	 * @throws `SyntaxError` 非法的文件名
-	 */
-	insertImage(file, i = this.length) {
-		const title = this.normalizeTitle(file, 6, true, true);
-		if (title.valid) {
-			const token = Parser.run(() => new GalleryImageToken(file, undefined, this.getAttribute('config')));
-			return this.insertAt(token, i);
-		}
-		throw new SyntaxError(`非法的文件名：${file}`);
-	}
-
-	/**
-	 * @override
-	 * @template {string|Token} T
-	 * @param {T} token 待插入的节点
-	 * @param {number} i 插入位置
-	 * @throws `RangeError` 插入不可见内容
-	 */
-	insertAt(token, i = 0) {
-		if (typeof token === 'string' && token.trim() || token instanceof HiddenToken) {
-			throw new RangeError('请勿向图库中插入不可见内容！');
-		}
-		return super.insertAt(token, i);
-	}
 }
 
-Parser.classes.GalleryToken = __filename;
 module.exports = GalleryToken;

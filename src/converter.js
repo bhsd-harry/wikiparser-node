@@ -1,6 +1,6 @@
 'use strict';
 
-const {text, print} = require('../util/string'),
+const {text} = require('../util/string'),
 	Parser = require('..'),
 	Token = require('.'),
 	ConverterFlagsToken = require('./converterFlags'),
@@ -12,19 +12,6 @@ const {text, print} = require('../util/string'),
  */
 class ConverterToken extends Token {
 	type = 'converter';
-
-	/**
-	 * 是否无转换
-	 * @this {ConverterToken & {lastChild: ConverterRuleToken}}
-	 */
-	get noConvert() {
-		return this.hasFlag('R') || this.length === 2 && !this.lastChild.variant;
-	}
-
-	/** flags */
-	get flags() {
-		return this.getAllFlags();
-	}
 
 	/**
 	 * @param {string[]} flags 转换类型标记
@@ -45,19 +32,15 @@ class ConverterToken extends Token {
 				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum)),
 			);
 		}
-		this.getAttribute('protectChildren')(0);
 	}
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 * @returns {string}
 	 */
 	toString(selector) {
 		const {childNodes: [flags, ...rules]} = this;
-		return selector && this.matches(selector)
-			? ''
-			: `-{${flags.toString(selector)}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
+		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
 	/**
@@ -82,95 +65,6 @@ class ConverterToken extends Token {
 		i = i < 0 ? i + this.length : i;
 		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
-
-	/** @override */
-	print() {
-		const {childNodes: [flags, ...rules]} = this;
-		return `<span class="wpb-converter">-{${flags.print()}${
-			flags.length > 0 ? '|' : ''
-		}${print(rules, {sep: ';'})}}-</span>`;
-	}
-
-	/** @override */
-	cloneNode() {
-		const [flags, ...rules] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ConverterToken([], [], this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(flags);
-			token.append(...rules);
-			return token;
-		});
-	}
-
-	/**
-	 * 获取所有转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 */
-	getAllFlags() {
-		return this.firstChild.getAllFlags();
-	}
-
-	/**
-	 * 获取有效的转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 */
-	getEffectiveFlags() {
-		return this.firstChild.getEffectiveFlags();
-	}
-
-	/**
-	 * 获取未知的转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 */
-	getUnknownFlags() {
-		return this.firstChild.getUnknownFlags();
-	}
-
-	/**
-	 * 是否具有某转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 * @param {string} flag 转换类型标记
-	 */
-	hasFlag(flag) {
-		return this.firstChild.hasFlag(flag);
-	}
-
-	/**
-	 * 是否具有某有效的转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 * @param {string} flag 转换类型标记
-	 */
-	hasEffectiveFlag(flag) {
-		return this.firstChild.hasEffectiveFlag(flag);
-	}
-
-	/**
-	 * 移除转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 * @param {string} flag 转换类型标记
-	 */
-	removeFlag(flag) {
-		this.firstChild.removeFlag(flag);
-	}
-
-	/**
-	 * 设置转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 * @param {string} flag 转换类型标记
-	 */
-	setFlag(flag) {
-		this.firstChild.setFlag(flag);
-	}
-
-	/**
-	 * 开关某转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
-	 * @param {string} flag 转换类型标记
-	 */
-	toggleFlag(flag) {
-		this.firstChild.toggleFlag(flag);
-	}
 }
 
-Parser.classes.ConverterToken = __filename;
 module.exports = ConverterToken;

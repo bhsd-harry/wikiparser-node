@@ -14,7 +14,6 @@ class AtomToken extends Token {
 	 * @param {string} wikitext wikitext
 	 * @param {string|undefined} type Token.type
 	 * @param {accum} accum
-	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);
@@ -22,22 +21,6 @@ class AtomToken extends Token {
 			this.type = type;
 		}
 	}
-
-	/**
-	 * @override
-	 * @this {AtomToken & {constructor: typeof AtomToken}}
-	 */
-	cloneNode() {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable');
-		return Parser.run(() => {
-			const token = new this.constructor(undefined, this.type, config, [], acceptable);
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
 
-Parser.classes.AtomToken = __filename;
 module.exports = AtomToken;

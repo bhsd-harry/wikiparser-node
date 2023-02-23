@@ -1,7 +1,6 @@
 'use strict';
 
 const {generateForSelf, generateForChild} = require('../util/lint'),
-	singleLine = require('../mixin/singleLine'),
 	Parser = require('..'),
 	Token = require('.'),
 	NoincludeToken = require('./nowiki/noinclude'),
@@ -25,28 +24,19 @@ class ImagemapToken extends Token {
 	}
 
 	/**
-	 * 链接
-	 * @returns {ImagemapLinkToken[]}
-	 */
-	get links() {
-		return this.childNodes.filter(({type}) => type === 'imagemap-link');
-	}
-
-	/**
 	 * @param {string} inner 标签内部wikitext
 	 * @param {accum} accum
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', SingleLineNoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;
 		}
 		const lines = inner.split('\n'),
 			protocols = new Set(config.protocol.split('|')),
-			SingleLineNoincludeToken = singleLine(NoincludeToken),
+			SingleLineNoincludeToken = NoincludeToken,
 			fallback = /** @param {string} line 一行文本 */ line => {
 				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 			};
@@ -68,7 +58,6 @@ class ImagemapToken extends Token {
 					first = false;
 					continue;
 				} else {
-					Parser.error('<imagemap>标签内必须先包含一张合法图片！', line);
 					error = true;
 				}
 			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {
@@ -112,7 +101,6 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
 	 */
 	toString(selector) {
 		return super.toString(selector, '\n');
@@ -126,11 +114,6 @@ class ImagemapToken extends Token {
 	/** @override */
 	getGaps() {
 		return 1;
-	}
-
-	/** @override */
-	print() {
-		return super.print({sep: '\n'});
 	}
 
 	/**
@@ -152,48 +135,6 @@ class ImagemapToken extends Token {
 		}
 		return errors;
 	}
-
-	/**
-	 * @override
-	 * @template {string|Token} T
-	 * @param {T} token 待插入的节点
-	 * @param {number} i 插入位置
-	 * @throws `Error` 当前缺少合法图片
-	 * @throws `RangeError` 已有一张合法图片
-	 */
-	insertAt(token, i = 0) {
-		const {image} = this;
-		if (!image && (token.type === 'imagemap-link' || token.type === 'text')) {
-			throw new Error('当前缺少一张合法图片！');
-		} else if (image && token.type === 'imagemap-image') {
-			throw new RangeError('已有一张合法图片！');
-		}
-		return super.insertAt(token, i);
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @throws `Error` 禁止移除图片
-	 */
-	removeAt(i) {
-		const child = this.childNodes[i];
-		if (child.type === 'imagemap-image') {
-			throw new Error('禁止移除<imagemap>内的图片！');
-		}
-		return super.removeAt(i);
-	}
-
-	/** @override */
-	cloneNode() {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ImagemapToken(undefined, this.getAttribute('config'));
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
 
-Parser.classes.ImagemapToken = __filename;
 module.exports = ImagemapToken;

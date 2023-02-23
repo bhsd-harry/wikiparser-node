@@ -1,9 +1,6 @@
 'use strict';
 
 const Title = require('../lib/title'),
-	fixedToken = require('../mixin/fixedToken'),
-	singleLine = require('../mixin/singleLine'),
-	Parser = require('..'),
 	Token = require('.'),
 	NoincludeToken = require('./nowiki/noinclude'),
 	LinkToken = require('./link'),
@@ -13,16 +10,8 @@ const Title = require('../lib/title'),
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
+class ImagemapLinkToken extends Token {
 	type = 'imagemap-link';
-
-	/**
-	 * 内外链接
-	 * @this {{childNodes: (LinkToken|ExtLinkToken)[]}}
-	 */
-	get link() {
-		return this.childNodes[1].link;
-	}
 
 	/**
 	 * @param {string} pre 链接前的文本
@@ -37,5 +26,4 @@ class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
 	}
 }
 
-Parser.classes.ImagemapLinkToken = __filename;
 module.exports = ImagemapLinkToken;
