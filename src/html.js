@@ -134,10 +134,9 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 				error.severity = 'warning';
 				error.excerpt = wikitext.slice(start, start + 50);
 			} else if (message === '未匹配的闭合标签') {
-				const end = start + String(this).length,
-					{parentNode: {name, type}} = this;
+				const end = start + String(this).length;
 				error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
-				if (type === 'magic-word' && magicWords.has(name)) {
+				if (magicWords.has(this.closest('magic-word')?.name)) {
 					error.severity = 'warning';
 				}
 			}
