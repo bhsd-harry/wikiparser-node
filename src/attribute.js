@@ -278,7 +278,10 @@ class AttributeToken extends Token {
 	getValue() {
 		if (this.#equal) {
 			const value = this.lastChild.text();
-			return value;
+			if (this.#quotes[1]) {
+				return value;
+			}
+			return this.#quotes[0] ? value.trimEnd() : value.trim();
 		}
 		return true;
 	}

@@ -1,6 +1,7 @@
 'use strict';
 
 const {generateForSelf} = require('../../util/lint'),
+	path = require('path'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TagPairToken = require('.'),
@@ -22,7 +23,7 @@ class ExtToken extends TagPairToken {
 	 * @param {accum} accum
 	 */
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
-		attr = !attr || /^\s/u.test(attr) ? attr : ` ${attr}`;
+		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
 			/** @type {ParserConfig} */ newConfig = {...config, excludes: [...config.excludes]},
@@ -62,7 +63,7 @@ class ExtToken extends TagPairToken {
 			case 'choose':
 			case 'combobox': {
 				const NestedToken = require('../nested'),
-					/** @type {typeof NestedToken} */ NestedExtToken = require(`../nested/${lcName}`);
+					/** @type {typeof NestedToken} */ NestedExtToken = require(path.join('..', 'nested', lcName));
 				innerToken = new NestedExtToken(inner, newConfig, accum);
 				break;
 			}

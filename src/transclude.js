@@ -26,9 +26,6 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	setModifier(modifier = '') {
-		if (/\s$/u.test(modifier)) {
-			return false;
-		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = removeComment(modifier).trim();
 		if (modifier && !lcModifier.endsWith(':')) {
@@ -70,10 +67,10 @@ class TranscludeToken extends Token {
 		if (title.includes(':') || parts.length === 0 && !this.#raw) {
 			const [magicWord, ...arg] = title.split(':'),
 				cleaned = removeComment(magicWord),
-				name = cleaned.trim(),
+				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
 				isSensitive = sensitive.includes(name),
 				canonicalCame = insensitive[name.toLowerCase()];
-			if (!(arg.length > 0 && /\s$/u.test(cleaned)) && (isSensitive || canonicalCame)) {
+			if (isSensitive || canonicalCame) {
 				this.setAttribute('name', canonicalCame || name.toLowerCase()).type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
@@ -266,7 +263,7 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	getArgs(key, exact, copy = true) {
-		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args;
 		if (Object.hasOwn(this.#args, keyStr)) {
 			args = this.#args[keyStr];

@@ -518,6 +518,12 @@
 		"unicorn/consistent-function-scoping": 2,
 		"unicorn/error-message": 2,
 		"unicorn/explicit-length-check": 2,
+		"unicorn/filename-case": [
+			2,
+			{
+				"case": "camelCase"
+			}
+		],
 		"unicorn/new-for-builtins": 2,
 		"unicorn/no-abusive-eslint-disable": 2,
 		"unicorn/no-array-for-each": 2,
@@ -569,6 +575,7 @@
 				"concat": "certain"
 			}
 		],
+		"unicorn/prefer-string-replace-all": 2,
 		"unicorn/prefer-string-starts-ends-with": 2,
 		"unicorn/prefer-switch": 2,
 		"unicorn/prefer-ternary": 2,

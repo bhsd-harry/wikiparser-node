@@ -5,7 +5,6 @@ const fs = require('fs'),
 	path = require('path'),
 	diff = require('../util/diff'),
 	Parser = require('..');
-Parser.config = require('../config/default');
 
 const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.txt'), 'utf8');
 

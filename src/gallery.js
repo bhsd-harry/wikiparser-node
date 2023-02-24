@@ -20,12 +20,9 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const /** @type {ParserConfig} */ newConfig = {...config, img: {...config.img}};
-		for (const [k, v] of Object.entries(config.img)) {
-			if (v === 'width') {
-				delete newConfig.img[k];
-			}
-		}
+		const /** @type {ParserConfig} */ newConfig = {
+			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width')),
+		};
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {

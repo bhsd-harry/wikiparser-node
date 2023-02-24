@@ -17,11 +17,6 @@ class LinkToken extends Token {
 	#fragment;
 	#encoded = false;
 
-	/** interwiki */
-	get interwiki() {
-		return this.#getTitle().interwiki;
-	}
-
 	/**
 	 * @param {string} link 链接标题
 	 * @param {string|undefined} linkText 链接显示文字
@@ -114,11 +109,6 @@ class LinkToken extends Token {
 			errors.push(generateForChild(target, rect, '多余的fragment'));
 		}
 		return errors;
-	}
-
-	/** 生成Title对象 */
-	#getTitle() {
-		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 	}
 }
 

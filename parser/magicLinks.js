@@ -10,10 +10,10 @@ const {extUrlChar, extUrlCharFirst} = require('../util/string'),
  * @param {accum} accum
  */
 const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
-	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
-	return wikitext.replace(regex, /** @param {string} p1 */ (m, lead, p1) => {
+	const regex = new RegExp(`(?<![\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
+	return wikitext.replace(regex, /** @param {string} p1 */ (m, p1) => {
 		let trail = '',
-			url = lead ? m.slice(1) : m;
+			url = m;
 		const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);
 		if (m2) {
 			trail = url.slice(m2.index);
@@ -33,7 +33,7 @@ const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			return m;
 		}
 		new MagicLinkToken(url, false, config, accum);
-		return `${lead}\0${accum.length - 1}w\x7F${trail}`;
+		return `\0${accum.length - 1}w\x7F${trail}`;
 	});
 };
 

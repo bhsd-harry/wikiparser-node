@@ -25,17 +25,15 @@ class MagicLinkToken extends Token {
 				continue;
 			}
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			const refError = generateForChild(child, rect, '', 'warning'),
-				regex = new RegExp(source, 'gu');
-			for (let mt = regex.exec(str); mt; mt = regex.exec(str)) {
-				const {index, 0: {0: char, length}} = mt,
-					lines = str.slice(0, index).split('\n'),
+			const refError = generateForChild(child, rect, '', 'warning');
+			errors.push(...[...str.matchAll(new RegExp(source, 'gu'))].map(({index, 0: {0: char, length}}) => {
+				const lines = str.slice(0, index).split('\n'),
 					{length: top} = lines,
-					{length: left} = lines[top - 1],
+					{length: left} = lines.at(-1),
 					startIndex = start + index,
 					startLine = refError.startLine + top - 1,
 					startCol = (top > 1 ? 0 : refError.startCol) + left;
-				errors.push({
+				return {
 					...refError,
 					message: `URL中的${char === '|' ? '"|"' : '全角标点'}`,
 					startIndex,
@@ -45,8 +43,8 @@ class MagicLinkToken extends Token {
 					startCol,
 					endCol: startCol + length,
 					excerpt: str.slice(Math.max(0, index - 25), index + 25),
-				});
-			}
+				};
+			}));
 		}
 		return errors;
 	}

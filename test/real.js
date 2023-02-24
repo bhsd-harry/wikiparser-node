@@ -1,7 +1,6 @@
 'use strict';
 
 const diff = require('../util/diff'),
-	path = require('path'),
 	Api = require('./api'),
 	Parser = require('../');
 
@@ -37,7 +36,7 @@ const getPages = async url => {
 (async () => {
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
-		Parser.config = require(path.join('..', 'config', config));
+		Parser.config = `./config/${config}`;
 		try {
 			const revs = await getPages(`${url}/api.php`);
 			for (const {title, ns, content} of revs) {

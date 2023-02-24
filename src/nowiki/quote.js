@@ -34,7 +34,7 @@ class QuoteToken extends NowikiToken {
 			refError = generateForSelf(this, {start}, message);
 			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
-				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u),
+				[{length}] = previousSibling.data.match(/(?<!')'+$/u),
 				startIndex = start - length,
 				excerpt = wikitext.slice(startIndex, startIndex + 50);
 			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});

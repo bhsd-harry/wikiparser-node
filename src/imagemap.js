@@ -49,7 +49,7 @@ class ImagemapToken extends Token {
 			} else if (first) {
 				const [file, ...options] = line.split('|'),
 					title = this.normalizeTitle(file, 0, true);
-				if (title.valid && !title.interwiki && title.ns === 6) {
+				if (title.valid && title.ns === 6) {
 					const token = new GalleryImageToken(
 						file, options.length > 0 ? options.join('|') : undefined, config, accum,
 					);

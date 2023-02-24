@@ -20,9 +20,9 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 			const str = `\0${accum.length}e\x7F`;
 			new OnlyincludeToken(inner, config, accum);
 			return str;
-		}).replace(/(^|\0\d+e\x7F)([^\0]+)(?=$|\0\d+e\x7F)/gu, (_, lead, substr) => {
+		}).replace(/(?<=^|\0\d+e\x7F)[^\0]+(?=$|\0\d+e\x7F)/gu, substr => {
 			new NoincludeToken(substr, config, accum);
-			return `${lead}\0${accum.length - 1}c\x7F`;
+			return `\0${accum.length - 1}c\x7F`;
 		});
 	}
 	const ext = config.ext.join('|'),
