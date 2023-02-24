@@ -38,7 +38,7 @@ class TranscludeToken extends Token {
 		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = removeComment(modifier).trim();
-		if (modifier && lcModifier.at(-1) !== ':') {
+		if (modifier && !lcModifier.endsWith(':')) {
 			return false;
 		}
 		const magicWord = lcModifier.slice(0, -1).toLowerCase(),

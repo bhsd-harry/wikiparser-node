@@ -31,7 +31,7 @@ class QuoteToken extends NowikiToken {
 			message = `孤立的"'"`,
 			/** @type {LintError[]} */ errors = [];
 		let refError, wikitext;
-		if (previousSibling?.type === 'text' && previousSibling.data.at(-1) === `'`) {
+		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
 			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,

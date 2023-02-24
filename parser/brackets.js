@@ -66,7 +66,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				const argParts = parts.map(part => part.join('=')),
 					str = argParts.length > 1 && removeComment(argParts[1]).trim();
 				new ArgToken(argParts, config, accum);
-				if (str && str.at(-1) === ':' && subst.includes(str.slice(0, -1).toLowerCase())) {
+				if (str && str.endsWith(':') && subst.includes(str.slice(0, -1).toLowerCase())) {
 					ch = 's';
 				}
 			} else {

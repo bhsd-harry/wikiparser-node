@@ -276,7 +276,7 @@ const /** @type {Parser} */ Parser = {
 
 	reparse(date) {
 		const main = fs.readdirSync(path.join(__dirname, 'errors'))
-			.find(name => name.startsWith(date) && name.at(-1) === 'Z');
+			.find(name => name.startsWith(date) && name.endsWith('Z'));
 		if (!main) {
 			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
 		}

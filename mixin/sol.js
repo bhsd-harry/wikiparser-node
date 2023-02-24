@@ -25,7 +25,7 @@ const sol = Constructor => class SolToken extends Constructor {
 	 * @this {SolToken & Token}
 	 */
 	prependNewLine() {
-		return (this.previousVisibleSibling || !this.#isRoot()) && String(this.previousVisibleSibling).at(-1) !== '\n'
+		return (this.previousVisibleSibling || !this.#isRoot()) && !String(this.previousVisibleSibling).endsWith('\n')
 			? '\n'
 			: '';
 	}

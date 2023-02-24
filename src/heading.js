@@ -90,7 +90,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push(refError);
 		}
-		if (innerText[0] === '=' || innerText.at(-1) === '=') {
+		if (innerText[0] === '=' || innerText.endsWith('=')) {
 			refError ||= generateForSelf(this, {start}, '');
 			errors.push({...refError, message: '段落标题中不平衡的"="'});
 		}

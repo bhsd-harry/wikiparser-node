@@ -141,7 +141,7 @@ const parseSelector = selector => {
 		} else if (syntax === '[') { // 情形3：属性开启
 			pushSimple(step, sanitized.slice(0, index));
 			regex = attributeRegex;
-		} else if (syntax.at(-1) === ']') { // 情形4：属性闭合
+		} else if (syntax.endsWith(']')) { // 情形4：属性闭合
 			mt[3] = desanitize(deQuote(mt[3]));
 			step.push(mt.slice(1));
 			regex = regularRegex;

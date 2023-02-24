@@ -207,7 +207,7 @@ class TrToken extends attributeParent(Token, 1) {
 	getRowCount() {
 		const TdToken = require('./td');
 		return Number(this.childNodes.some(
-			child => child instanceof TdToken && child.isIndependent() && child.firstChild.text().at(-1) !== '+',
+			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
 		));
 	}
 
