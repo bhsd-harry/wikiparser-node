@@ -18,7 +18,7 @@ class TranscludeToken extends Token {
 	modifier = '';
 	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
 	/** @type {Set<string>} */ #keys = new Set();
-	#fragment = '';
+	#fragment;
 	#valid = true;
 	#raw = false;
 
@@ -248,7 +248,7 @@ class TranscludeToken extends Token {
 		let rect;
 		if (!this.isTemplate()) {
 			return errors;
-		} else if (this.#fragment) {
+		} else if (this.#fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
 		}

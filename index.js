@@ -154,7 +154,7 @@ const /** @type {Parser} */ Parser = {
 			 */
 			const build = keys => {
 				for (const key of keys) {
-					if (titleObj[key].includes('\0')) {
+					if (titleObj[key]?.includes('\0')) {
 						titleObj[key] = token.getAttribute('buildFromStr')(titleObj[key], 'text');
 					}
 				}

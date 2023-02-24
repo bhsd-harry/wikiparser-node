@@ -16,7 +16,7 @@ class LinkToken extends Token {
 	type = 'link';
 	#bracket = true;
 	#delimiter;
-	#fragment = '';
+	#fragment;
 	#encoded = false;
 
 	/** 完整链接，和FileToken保持一致 */
@@ -30,7 +30,8 @@ class LinkToken extends Token {
 
 	/** 是否链接到自身 */
 	get selfLink() {
-		return !this.#getTitle().title;
+		const {title, fragment} = this.#getTitle();
+		return !title && Boolean(fragment);
 	}
 
 	set selfLink(selfLink) {
@@ -45,7 +46,7 @@ class LinkToken extends Token {
 	}
 
 	set fragment(fragment) {
-		this.setFragment(fragment);
+		this.#setFragment(fragment);
 	}
 
 	/** interwiki */
@@ -58,7 +59,7 @@ class LinkToken extends Token {
 			this.typeError('set interwiki', 'String');
 		}
 		const {prefix, main, fragment} = this.#getTitle(),
-			link = `${interwiki}:${prefix}${main}${fragment && '#'}${fragment}`;
+			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
 		if (interwiki && !this.isInterwiki(link)) {
 			throw new RangeError(`${interwiki} 不是合法的跨维基前缀!`);
 		}
@@ -202,7 +203,7 @@ class LinkToken extends Token {
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, '链接文本中多余的"|"', 'warning'));
-		} else if (linkType !== 'link' && this.#fragment) {
+		} else if (linkType !== 'link' && this.#fragment !== undefined) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, '多余的fragment'));
 		}
@@ -284,10 +285,12 @@ class LinkToken extends Token {
 	 * @throws `SyntaxError` 非法的fragment
 	 */
 	#setFragment(fragment, page = true) {
-		fragment = String(fragment).replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
+		fragment &&= String(fragment).replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			root = Parser.parse(`[[${page ? `:${this.name}` : ''}#${fragment}]]`, include, 6, config),
+			root = Parser.parse(`[[${page ? `:${this.name}` : ''}${
+				fragment === undefined ? '' : `#${fragment}`
+			}]]`, include, 6, config),
 			{length, firstChild: wikiLink} = root,
 			{type, length: linkLength, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1) {
@@ -313,8 +316,8 @@ class LinkToken extends Token {
 	 * @throws `RangeError` 空fragment
 	 */
 	asSelfLink(fragment = this.fragment) {
-		fragment = String(fragment);
-		if (!fragment.trim()) {
+		fragment &&= String(fragment);
+		if (!fragment?.trim()) {
 			throw new RangeError(`${this.constructor.name}.asSelfLink 方法必须指定非空的 fragment！`);
 		}
 		this.#setFragment(fragment, false);
