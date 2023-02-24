@@ -26,9 +26,6 @@ class TranscludeToken extends Token {
 	 * @complexity `n`
 	 */
 	setModifier(modifier = '') {
-		if (/\s$/u.test(modifier)) {
-			return false;
-		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = removeComment(modifier).trim();
 		if (modifier && !lcModifier.endsWith(':')) {
