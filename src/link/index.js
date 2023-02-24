@@ -14,7 +14,7 @@ class LinkToken extends Token {
 	type = 'link';
 	#bracket = true;
 	#delimiter;
-	#fragment = '';
+	#fragment;
 	#encoded = false;
 
 	/**
@@ -109,7 +109,7 @@ class LinkToken extends Token {
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, '链接文本中多余的"|"', 'warning'));
-		} else if (linkType !== 'link' && this.#fragment) {
+		} else if (linkType !== 'link' && this.#fragment !== undefined) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, '多余的fragment'));
 		}
