@@ -10,11 +10,14 @@
 			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 		/**
-		 * @param {{data: ['setConfig', ParserConfig]|['getConfig'|'print'|'lint', number, string, Boolean, number]}}
+		 * @param {{data: ['setI18N|'setConfig', ParserConfig]|[string, number, string, Boolean, number]}}
 		 */
 		self.onmessage = ({data}) => {
 			const [command, qid, ...args] = data;
 			switch (command) {
+				case 'setI18N':
+					Parser.i18n = qid;
+					break;
 				case 'setConfig':
 					Parser.config = qid;
 					break;
@@ -60,6 +63,14 @@
 			}
 		};
 		return listener;
+	};
+
+	/**
+	 * 更新I18N消息
+	 * @param {Record<string, string>} i18n I18N消息
+	 */
+	const setI18N = i18n => {
+		worker.postMessage(['setI18N', i18n]);
 	};
 
 	/**
@@ -312,6 +323,6 @@
 		return printer;
 	};
 
-	Object.assign(wikiparse, {print, lint, setConfig, getConfig, Printer, Linter});
+	Object.assign(wikiparse, {print, lint, setI18N, setConfig, getConfig, Printer, Linter});
 	window.wikiparse = wikiparse;
 })();
