@@ -128,12 +128,12 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 		} catch ({message: errorMsg}) {
 			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
-			const [message] = errorMsg.split(':'),
-				error = {...refError, message};
-			if (message === 'unclosed tag') {
+			const [msg] = errorMsg.split(':'),
+				error = {...refError, message: Parser.msg(msg)};
+			if (msg === 'unclosed tag') {
 				error.severity = 'warning';
 				error.excerpt = wikitext.slice(start, start + 50);
-			} else if (message === 'unmatched closing tag') {
+			} else if (msg === 'unmatched closing tag') {
 				const end = start + String(this).length;
 				error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
 				if (magicWords.has(this.closest('magic-word')?.name)) {
