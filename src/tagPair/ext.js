@@ -59,12 +59,19 @@ class ExtToken extends TagPairToken {
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
-			case 'references':
-			case 'choose':
+			case 'references': {
+				const ReferencesToken = require('../nested/references');
+				innerToken = new ReferencesToken(inner, newConfig, accum);
+				break;
+			}
+			case 'choose': {
+				const ChooseToken = require('../nested/choose');
+				innerToken = new ChooseToken(inner, newConfig, accum);
+				break;
+			}
 			case 'combobox': {
-				const NestedToken = require('../nested'),
-					/** @type {typeof NestedToken} */ NestedExtToken = require(`../nested/${lcName}`);
-				innerToken = new NestedExtToken(inner, newConfig, accum);
+				const ComboboxToken = require('../nested/combobox');
+				innerToken = new ComboboxToken(inner, newConfig, accum);
 				break;
 			}
 			case 'imagemap': {
