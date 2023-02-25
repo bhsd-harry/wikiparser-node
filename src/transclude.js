@@ -250,7 +250,7 @@ class TranscludeToken extends Token {
 			return errors;
 		} else if (this.#fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, 'redundant fragment'));
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, 'useless fragment'));
 		}
 		if (!this.#valid) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
