@@ -106,7 +106,7 @@ class LinkToken extends Token {
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
 		} else if (linkType !== 'link' && this.#fragment !== undefined) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(target, rect, 'redundant fragment'));
+			errors.push(generateForChild(target, rect, 'useless fragment'));
 		}
 		return errors;
 	}
