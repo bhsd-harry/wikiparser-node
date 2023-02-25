@@ -27,7 +27,6 @@
 	"invisible content inside triple brackets": "三重括号内的不可见部分",
 	"lonely \"$1\"": "孤立的\"$1\"",
 	"nothing should be in <$1>": "<$1>标签内不应有任何内容",
-	"redundant fragment": "多余的fragment",
 	"section header in a HTML tag": "HTML标签属性中的段落标题",
 	"tag that is both closing and self-closing": "同时闭合和自封闭的标签",
 	"unbalanced \"=\" in a section header": "段落标题中不平衡的\"=\"",
@@ -39,5 +38,6 @@
 	"unexpected template argument": "未预期的模板参数",
 	"unmatched closing tag": "未匹配的闭合标签",
 	"unnecessary URL encoding in an internal link": "内链中不必要的URL编码",
+	"useless fragment": "多余的fragment",
 	"vertical-alignment": "垂直对齐"
 }
