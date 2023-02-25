@@ -6,7 +6,11 @@ const /** @type {Parser} */ Parser = {
 	MAX_STAGE: 11,
 
 	getConfig() {
-		return {...require(this.config), excludes: []};
+		const {config} = this;
+		if (typeof config === 'string') {
+			this.config = require(config);
+		}
+		return {...this.config, excludes: []};
 	},
 
 	normalizeTitle(

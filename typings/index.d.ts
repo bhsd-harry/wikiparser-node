@@ -3,7 +3,7 @@ import Title from '../lib/title';
 
 declare global {
 	interface Parser {
-		config: string;
+		config: string|ParserConfig;
 
 		readonly MAX_STAGE: number;
 
