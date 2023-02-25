@@ -122,7 +122,11 @@ const /** @type {Parser} */ Parser = {
 	promises: [Promise.resolve()],
 
 	getConfig() {
-		return {...require(this.config), excludes: []};
+		const {config} = this;
+		if (typeof config === 'string') {
+			this.config = require(config);
+		}
+		return {...this.config, excludes: []};
 	},
 
 	normalizeTitle(

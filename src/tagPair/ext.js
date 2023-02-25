@@ -2,7 +2,6 @@
 
 const {generateForSelf} = require('../../util/lint'),
 	attributeParent = require('../../mixin/attributeParent'),
-	path = require('path'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TagPairToken = require('.'),
@@ -65,12 +64,19 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new CharinsertToken(inner, newConfig, accum);
 				break;
 			}
-			case 'references':
-			case 'choose':
+			case 'references': {
+				const ReferencesToken = require('../nested/references');
+				innerToken = new ReferencesToken(inner, newConfig, accum);
+				break;
+			}
+			case 'choose': {
+				const ChooseToken = require('../nested/choose');
+				innerToken = new ChooseToken(inner, newConfig, accum);
+				break;
+			}
 			case 'combobox': {
-				const NestedToken = require('../nested'),
-					/** @type {typeof NestedToken} */ NestedExtToken = require(path.join('..', 'nested', lcName));
-				innerToken = new NestedExtToken(inner, newConfig, accum);
+				const ComboboxToken = require('../nested/combobox');
+				innerToken = new ComboboxToken(inner, newConfig, accum);
 				break;
 			}
 			case 'imagemap': {
