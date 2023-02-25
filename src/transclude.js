@@ -193,17 +193,17 @@ class TranscludeToken extends Token {
 			return errors;
 		} else if (this.#fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, '多余的fragment'));
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, 'redundant fragment'));
 		}
 		if (!this.#valid) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(childNodes[1], rect, '非法的模块名称'));
+			errors.push(generateForChild(childNodes[1], rect, 'illegal module name'));
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
-				arg => generateForChild(arg, rect, '重复参数'),
+				arg => generateForChild(arg, rect, 'duplicated parameter'),
 			));
 		}
 		return errors;

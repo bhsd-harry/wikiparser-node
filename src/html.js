@@ -77,17 +77,17 @@ class HtmlToken extends Token {
 		}
 		if (this.closest('table-attrs')) {
 			refError ||= generateForSelf(this, {start}, '');
-			errors.push({...refError, message: '表格属性中的HTML标签'});
+			errors.push({...refError, message: 'HTML tag in table attributes'});
 		}
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
 			refError ||= generateForSelf(this, {start}, '');
-			const [message] = errorMsg.split('：'),
-				error = {...refError, message};
-			if (message === '未闭合的标签') {
+			const [msg] = errorMsg.split(':'),
+				error = {...refError, message: Parser.msg(msg)};
+			if (msg === 'unclosed tag') {
 				error.severity = 'warning';
-			} else if (message === '未匹配的闭合标签' && magicWords.has(this.closest('magic-word')?.name)) {
+			} else if (msg === 'unmatched closing tag' && magicWords.has(this.closest('magic-word')?.name)) {
 				error.severity = 'warning';
 			}
 			errors.push(error);
@@ -107,11 +107,11 @@ class HtmlToken extends Token {
 			{name: tagName, parentNode} = this,
 			string = String(this);
 		if (this.#closing && (this.#selfClosing || html[2].includes(tagName))) {
-			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
+			throw new SyntaxError(`tag that is both closing and self-closing: ${string}`);
 		} else if (html[2].includes(tagName) || this.#selfClosing && html[1].includes(tagName)) { // 自封闭标签
 			return this;
 		} else if (this.#selfClosing && html[0].includes(tagName)) {
-			throw new SyntaxError(`无效自封闭标签：${string}`);
+			throw new SyntaxError(`invalid self-closing tag: ${string}`);
 		} else if (!parentNode) {
 			return undefined;
 		}
@@ -131,7 +131,7 @@ class HtmlToken extends Token {
 				return token;
 			}
 		}
-		throw new SyntaxError(`未${this.#closing ? '匹配的闭合' : '闭合的'}标签：${string}`);
+		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
 }
 

@@ -77,7 +77,7 @@ class ConverterFlagsToken extends Token {
 			if (flag && !variantFlags.has(flag) && !unknownFlags.has(flag)
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
-				const error = generateForChild(child, rect, '无效的转换标记');
+				const error = generateForChild(child, rect, 'invalid conversion flag');
 				errors.push(error);
 			}
 		}

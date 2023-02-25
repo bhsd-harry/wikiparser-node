@@ -5,11 +5,19 @@ declare global {
 	interface Parser {
 		config: ParserConfig;
 		minConfig: ParserConfig;
+		i18n: Record<string, string>;
 
 		readonly MAX_STAGE: number;
 
 		/** 获取设置 */
 		getConfig(): ParserConfig;
+
+		/**
+		 * 生成I18N消息
+		 * @param msg 消息名
+		 * @param arg 额外参数
+		 */
+		msg(msg: string, arg: string): string;
 
 		/**
 		 * 规范化页面标题

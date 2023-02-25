@@ -84,7 +84,7 @@ class ParameterToken extends Token {
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
 				.exec(String(firstChild).replace(/<!--.*?-->/gu, ''))?.[0];
 		if (link && new URL(link).search) {
-			const e = generateForChild(firstChild, {start}, '匿名参数中未转义的查询参数');
+			const e = generateForChild(firstChild, {start}, 'unescaped query string in an anonymous parameter');
 			errors.push({
 				...e,
 				startIndex: e.endIndex,

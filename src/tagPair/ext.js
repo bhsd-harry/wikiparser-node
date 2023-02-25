@@ -119,7 +119,7 @@ class ExtToken extends TagPairToken {
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
 				rect = {start, ...root.posFromIndex(start)};
-			errors.push(generateForSelf(this, rect, 'HTML标签属性中的扩展标签'));
+			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
 		}
 		return errors;
 	}

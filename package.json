@@ -17,7 +17,8 @@
     "/bundle/bundle.min.js",
     "/extensions/",
     "!/extensions/gh-page.*",
-    "!/extensions/.eslintrc.json"
+    "!/extensions/.eslintrc.json",
+    "/i18n/"
   ],
   "browser": "/bundle/bundle.min.js",
   "repository": {

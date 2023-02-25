@@ -133,10 +133,10 @@ class ImagemapToken extends Token {
 				...this.childNodes.filter(child => {
 					const str = String(child).trim();
 					return child.type === 'noinclude' && str && str[0] !== '#';
-				}).map(child => generateForChild(child, rect, '无效的<imagemap>链接')),
+				}).map(child => generateForChild(child, rect, 'invalid link in <imagemap>')),
 			);
 		} else {
-			errors.push(generateForSelf(this, rect, '缺少图片的<imagemap>'));
+			errors.push(generateForSelf(this, rect, '<imagemap> without an image'));
 		}
 		return errors;
 	}

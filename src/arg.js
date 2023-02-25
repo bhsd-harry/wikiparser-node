@@ -76,7 +76,7 @@ class ArgToken extends Token {
 	 */
 	lint(start) {
 		if (!this.getAttribute('include')) {
-			return [generateForSelf(this, {start}, '未预期的模板参数')];
+			return [generateForSelf(this, {start}, 'unexpected template argument')];
 		}
 		const {childNodes: [argName, argDefault, ...rest]} = this,
 			errors = argName.lint(start + 3);
@@ -86,7 +86,7 @@ class ArgToken extends Token {
 		if (rest.length > 0) {
 			const rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => {
-				const error = generateForChild(child, rect, '三重括号内的不可见部分'),
+				const error = generateForChild(child, rect, 'invisible content inside triple brackets'),
 					{startIndex, startCol} = error;
 				return {...error, startIndex: startIndex - 1, startCol: startCol - 1};
 			}));

@@ -27,7 +27,7 @@ class QuoteToken extends NowikiToken {
 	 */
 	lint(start) {
 		const {previousSibling, nextSibling} = this,
-			message = `孤立的"'"`,
+			message = Parser.msg('lonely "$1"', `'`),
 			/** @type {LintError[]} */ errors = [];
 		let refError;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {

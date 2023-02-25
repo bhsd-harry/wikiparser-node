@@ -3,11 +3,17 @@
 const /** @type {Parser} */ Parser = {
 	config: undefined,
 	minConfig: require('./config/minimum'),
+	i18n: undefined,
 
 	MAX_STAGE: 11,
 
 	getConfig() {
 		return {...this.minConfig, ...this.config, excludes: []};
+	},
+
+	msg(msg, arg) {
+		msg = this.i18n?.[msg] ?? msg;
+		return msg.replace('$1', arg);
 	},
 
 	normalizeTitle(

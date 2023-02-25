@@ -117,13 +117,13 @@ class AttributesToken extends Token {
 		let rect;
 		if (closing && this.text().trim()) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForSelf(this, rect, '位于闭合标签的属性'));
+			errors.push(generateForSelf(this, rect, 'attributes of a closing tag'));
 		}
 		for (let i = 0; i < length; i++) {
 			const /** @type {AtomToken|AttributeToken} */ attr = childNodes[i];
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-				errors.push(generateForChild(attr, rect, '包含无效属性'));
+				errors.push(generateForChild(attr, rect, 'containing invalid attribute'));
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
 				if (name in attrs) {
@@ -137,7 +137,7 @@ class AttributesToken extends Token {
 		if (duplicated.size > 0) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			for (const key of duplicated) {
-				errors.push(...attrs[key].map(attr => generateForChild(attr, rect, `重复的${key}属性`)));
+				errors.push(...attrs[key].map(attr => generateForChild(attr, rect, Parser.msg('duplicated $1 attribute', key))));
 			}
 		}
 		return errors;
