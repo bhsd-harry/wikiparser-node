@@ -196,16 +196,16 @@ class LinkToken extends Token {
 		let rect;
 		if (this.#encoded) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(target, rect, '内链中不必要的URL编码'));
+			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' && linkText?.childNodes?.some(
 			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(linkText, rect, '链接文本中多余的"|"', 'warning'));
+			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
 		} else if (linkType !== 'link' && this.#fragment !== undefined) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(target, rect, '多余的fragment'));
+			errors.push(generateForChild(target, rect, 'redundant fragment'));
 		}
 		return errors;
 	}

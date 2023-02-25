@@ -176,7 +176,7 @@ class TableToken extends TrToken {
 		if (!this.closed) {
 			const {firstChild, lastChild: tr} = this,
 				{lastChild: td} = tr,
-				error = generateForChild(firstChild, {start}, '未闭合的表格');
+				error = generateForChild(firstChild, {start}, 'unclosed table');
 			errors.push({...error, excerpt: String(td?.type === 'td' ? td : tr).slice(0, 50)});
 		}
 		return errors;

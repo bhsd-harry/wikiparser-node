@@ -121,19 +121,19 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
 			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
-			errors.push({...refError, message: '表格属性中的HTML标签', excerpt});
+			errors.push({...refError, message: Parser.msg('HTML tag in table attributes'), excerpt});
 		}
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
 			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
-			const [message] = errorMsg.split('：'),
+			const [message] = errorMsg.split(':'),
 				error = {...refError, message};
-			if (message === '未闭合的标签') {
+			if (message === 'unclosed tag') {
 				error.severity = 'warning';
 				error.excerpt = wikitext.slice(start, start + 50);
-			} else if (message === '未匹配的闭合标签') {
+			} else if (message === 'unmatched closing tag') {
 				const end = start + String(this).length;
 				error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
 				if (magicWords.has(this.closest('magic-word')?.name)) {
@@ -157,11 +157,11 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 			{name: tagName, parentNode} = this,
 			string = noWrap(String(this));
 		if (this.#closing && (this.#selfClosing || html[2].includes(tagName))) {
-			throw new SyntaxError(`同时闭合和自封闭的标签：${string}`);
+			throw new SyntaxError(`tag that is both closing and self-closing: ${string}`);
 		} else if (html[2].includes(tagName) || this.#selfClosing && html[1].includes(tagName)) { // 自封闭标签
 			return this;
 		} else if (this.#selfClosing && html[0].includes(tagName)) {
-			throw new SyntaxError(`无效自封闭标签：${string}`);
+			throw new SyntaxError(`invalid self-closing tag: ${string}`);
 		} else if (!parentNode) {
 			return undefined;
 		}
@@ -181,7 +181,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 				return token;
 			}
 		}
-		throw new SyntaxError(`未${this.#closing ? '匹配的闭合' : '闭合的'}标签：${string}`);
+		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
 
 	/** @override */

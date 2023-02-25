@@ -310,7 +310,7 @@ class AttributeToken extends fixedToken(Token) {
 		if (!balanced) {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)};
-			const e = generateForChild(lastChild, rect, '未闭合的引号', 'warning'),
+			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
 				startIndex = e.startIndex - 1,
 				startCol = e.startCol - 1;
 			errors.push({...e, startIndex, startCol, excerpt: String(root).slice(startIndex, startIndex + 50)});
@@ -322,10 +322,10 @@ class AttributeToken extends fixedToken(Token) {
 			&& (tagName === 'meta' || tagName === 'link' || !commonHtmlAttrs.has(name))
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(firstChild, rect, '非法的属性名'));
+			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForChild(lastChild, rect, '不安全的样式'));
+			errors.push(generateForChild(lastChild, rect, 'insecure style'));
 		}
 		return errors;
 	}

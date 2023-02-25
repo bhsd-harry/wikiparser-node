@@ -92,11 +92,11 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		}
 		if (innerText[0] === '=' || innerText.endsWith('=')) {
 			refError ||= generateForSelf(this, {start}, '');
-			errors.push({...refError, message: '段落标题中不平衡的"="'});
+			errors.push({...refError, message: Parser.msg('unbalanced "=" in a section header')});
 		}
 		if (this.closest('html-attrs, table-attrs')) {
 			refError ||= generateForSelf(this, {start}, '');
-			errors.push({...refError, message: 'HTML标签属性中的段落标题'});
+			errors.push({...refError, message: Parser.msg('section header in a HTML tag')});
 		}
 		return errors;
 	}

@@ -28,7 +28,7 @@ class NowikiToken extends fixedToken(Token) {
 	lint(start = this.getAbsoluteIndex()) {
 		const {type, name} = this;
 		return type === 'ext-inner' && (name === 'templatestyles' || name === 'section') && String(this)
-			? [generateForSelf(this, {start}, `<${name}>标签内不应有任何内容`)]
+			? [generateForSelf(this, {start}, Parser.msg('nothing should be in <$1>', name))]
 			: super.lint(start);
 	}
 

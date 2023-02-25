@@ -67,7 +67,7 @@ class ParamTagToken extends Token {
 			return str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str);
 		}).map(child => {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			return generateForChild(child, rect, `${this.name}的无效参数`);
+			return generateForChild(child, rect, Parser.msg('invalid parameter of $1', this.name));
 		});
 	}
 

@@ -102,24 +102,28 @@ class FileToken extends LinkToken {
 				];
 			}
 			if (relevantArgs.length > 1) {
-				errors.push(...relevantArgs.map(arg => generateForChild(arg, rect, `重复的图片${key}参数`)));
+				errors.push(...relevantArgs.map(
+					arg => generateForChild(arg, rect, Parser.msg('duplicated image $1 parameter', key)),
+				));
 			}
 		}
 		if (frameKeys.size > 1) {
 			errors.push(
-				...args.filter(({name}) => frame.has(name)).map(arg => generateForChild(arg, rect, '冲突的图片框架参数')),
+				...args.filter(({name}) => frame.has(name)).map(
+					arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'frame'),
+				),
 			);
 		}
 		if (horizAlignKeys.size > 1) {
 			errors.push(
 				...args.filter(({name}) => horizAlign.has(name))
-					.map(arg => generateForChild(arg, rect, '冲突的图片水平对齐参数')),
+					.map(arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'horizontal-alignment')),
 			);
 		}
 		if (vertAlignKeys.size > 1) {
 			errors.push(
 				...args.filter(({name}) => vertAlign.has(name))
-					.map(arg => generateForChild(arg, rect, '冲突的图片垂直对齐参数')),
+					.map(arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'vertical-alignment')),
 			);
 		}
 		return errors;

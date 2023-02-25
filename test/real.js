@@ -11,6 +11,7 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
+Parser.i18n = './i18n/zh-hans';
 Parser.debugging = true;
 Parser.warning = false;
 

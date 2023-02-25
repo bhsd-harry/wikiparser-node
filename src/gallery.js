@@ -90,7 +90,7 @@ class GalleryToken extends Token {
 				startCol = i ? 0 : left;
 			if (child.type === 'hidden' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				errors.push({
-					message: '图库中的无效内容',
+					message: Parser.msg('invalid content in <$1>', 'gallery'),
 					severity: 'error',
 					startIndex,
 					endIndex: startIndex + length,

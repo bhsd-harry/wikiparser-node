@@ -125,7 +125,7 @@ class ExtToken extends attributeParent(TagPairToken) {
 			const root = this.getRootNode(),
 				excerpt = String(root).slice(Math.max(0, start - 25), start + 25),
 				rect = {start, ...root.posFromIndex(start)};
-			errors.push({...generateForSelf(this, rect, 'HTML标签属性中的扩展标签'), excerpt});
+			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
 		}
 		return errors;
 	}

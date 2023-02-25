@@ -5,6 +5,7 @@ import Title from '../lib/title';
 declare global {
 	interface Parser {
 		config: string|ParserConfig;
+		i18n: string|Record<string, string>;
 
 		readonly MAX_STAGE: number;
 
@@ -25,6 +26,13 @@ declare global {
 
 		/** 获取设置 */
 		getConfig(): ParserConfig;
+
+		/**
+		 * 生成I18N消息
+		 * @param msg 消息名
+		 * @param arg 额外参数
+		 */
+		msg(msg: string, arg: string): string;
 
 		/**
 		 * 规范化页面标题
