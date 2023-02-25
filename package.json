@@ -15,12 +15,13 @@
   "author": "Bhsd",
   "files": [
     "/index.js",
-    "/parser/",
-    "/util/",
-    "/lib/",
-    "/src/",
     "/config/",
-    "/mixin/"
+    "/i18n/",
+    "/lib/",
+    "/mixin/",
+    "/parser/",
+    "/src/",
+    "/util/"
   ],
   "repository": {
     "type": "git",

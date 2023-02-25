@@ -53,7 +53,7 @@ class TrToken extends Token {
 				}
 			} catch {}
 		}
-		const error = generateForChild(inter, {start}, '将被移出表格的内容');
+		const error = generateForChild(inter, {start}, 'content to be moved out from the table');
 		errors.push({
 			...error,
 			startIndex: error.startIndex + 1,

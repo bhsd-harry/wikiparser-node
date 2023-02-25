@@ -53,7 +53,7 @@ class GalleryImageToken extends FileToken {
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
 		if (this.#invalid) {
-			errors.push(generateForSelf(this, {start}, '无效的图库图片'));
+			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;
 	}

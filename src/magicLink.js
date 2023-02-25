@@ -35,7 +35,7 @@ class MagicLinkToken extends Token {
 					startCol = (top > 1 ? 0 : refError.startCol) + left;
 				return {
 					...refError,
-					message: `URL中的${char === '|' ? '"|"' : '全角标点'}`,
+					message: Parser.msg('$1 in URL', char === '|' ? '"|"' : Parser.msg('full-width punctuation')),
 					startIndex,
 					endIndex: startIndex + length,
 					startLine,

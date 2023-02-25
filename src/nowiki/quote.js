@@ -27,7 +27,7 @@ class QuoteToken extends NowikiToken {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const {previousSibling, nextSibling} = this,
-			message = `孤立的"'"`,
+			message = Parser.msg('lonly "$1"', `'`),
 			/** @type {LintError[]} */ errors = [];
 		let refError, wikitext;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {

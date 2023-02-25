@@ -119,7 +119,7 @@ class ImageParameterToken extends Token {
 		const errors = super.lint(start),
 			/** @type {{link: Title}} */ {link} = this;
 		if (link?.encoded) {
-			errors.push(generateForSelf(this, {start}, '内链中不必要的URL编码'));
+			errors.push(generateForSelf(this, {start}, 'unnecessary URL encoding in an internal link'));
 		}
 		return errors;
 	}
