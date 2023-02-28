@@ -35,7 +35,10 @@ class FileToken extends LinkToken {
 	 */
 	lint(start) {
 		const errors = super.lint(start),
-			args = this.getAllArgs(),
+			args = this.getAllArgs().filter(({childNodes}) => {
+				const visibleNodes = childNodes.filter(node => node.text().trim());
+				return visibleNodes.length !== 1 || visibleNodes[0].type !== 'arg';
+			}),
 			keys = [...new Set(args.map(({name}) => name))],
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
