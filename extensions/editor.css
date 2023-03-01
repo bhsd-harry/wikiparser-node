@@ -1,17 +1,6 @@
 .wikiparse-container {
 	position: relative;
 }
-#wikiPretty + .wikiparsed, #wikiPretty {
-	outline: none;
-	border: 1.5px solid #dedede !important;
-	border-radius: 0;
-	padding: .4em;
-	line-height: 1.4 !important;
-	font-size: inherit;
-	tab-size: 4;
-	overflow-y: auto;
-	word-break: normal;
-}
 .wikiparsed {
 	position: relative;
 	display: block;
@@ -26,17 +15,22 @@
 	position: absolute;
 	inset: 0;
 	background-color: #fff;
+	-webkit-user-select: none;
 	user-select: none;
 }
-#wikiPretty.active span {
-	color: transparent;
-	background: none;
+#wikiPretty + .wikiparsed, #wikiPretty {
+	outline: none;
+	border: 1.5px solid #dedede !important;
+	border-radius: 0;
+	padding: .4em;
+	line-height: 1.4 !important;
+	font-size: inherit;
+	tab-size: 4;
+	overflow-y: auto;
+	word-break: normal;
 }
 
 /* compromise for font-weight: bold */
-#wikiPretty span {
-	font-weight: normal;
-}
 .wpb-ext, .wpb-html,
 .wpb-arg,
 .wpb-template,
@@ -57,4 +51,12 @@
 .wpb-table-attrs, .wpb-td-inner,
 .wpb-converter-rule {
 	-webkit-text-stroke-width: 0;
+}
+#wikiPretty span {
+	font-weight: normal;
+}
+
+#wikiPretty.active span {
+	color: transparent;
+	background: none;
 }
