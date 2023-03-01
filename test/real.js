@@ -52,6 +52,11 @@ const getPages = async url => {
 					const textErrors = errors.filter(
 						({message}) => /^(?:孤立的|URL中的全角标点|未匹配的闭合标签)/u.test(message),
 					);
+					const restored = String(root);
+					if (restored !== content) {
+						Parser.error('解析过程中不可逆地修改了原始文本！');
+						await diff(content, restored);
+					}
 					if (textErrors.length === 0) {
 						continue;
 					}
