@@ -39,7 +39,7 @@
 .wpb-table, .wpb-tr, .wpb-td,
 .wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd
 .wpb-converter {
-	-webkit-text-stroke-width: 0.1ex;
+	-webkit-text-stroke-width: .1ex;
 }
 .wpb-hidden, .wpb-table-inter, .wpb-table-inter span,
 .wpb-noinclude, .wpb-include, .wpb-comment,
