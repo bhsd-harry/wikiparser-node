@@ -5,6 +5,8 @@ const Parser = require('..'),
 	GalleryImageToken = require('./link/galleryImage'),
 	HiddenToken = require('./atom/hidden');
 
+const params = new Set(['alt', 'link']);
+
 /**
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
@@ -21,7 +23,7 @@ class GalleryToken extends Token {
 		super(undefined, config, true, accum, {
 		});
 		const /** @type {ParserConfig} */ newConfig = {
-			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => param !== 'width')),
+			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => params.has(param))),
 		};
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
