@@ -117,9 +117,14 @@ class ImageParameterToken extends Token {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
-			/** @type {{link: Title}} */ {link} = this;
-		if (link?.encoded) {
-			errors.push(generateForSelf(this, {start}, 'unnecessary URL encoding in an internal link'));
+			/** @type {{link: Title}} */ {link, name} = this;
+		let refError;
+		if (name === 'invalid') {
+			refError = generateForSelf(this, {start}, 'invalid gallery image parameter');
+			errors.push(refError);
+		} else if (link?.encoded) {
+			refError ||= generateForSelf(this, {start}, '');
+			errors.push({...refError, message: 'unnecessary URL encoding in an internal link'});
 		}
 		return errors;
 	}

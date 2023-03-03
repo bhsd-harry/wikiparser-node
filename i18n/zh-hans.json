@@ -21,6 +21,7 @@
 	"invalid content in <$1>": "<$1>内的无效内容",
 	"invalid conversion flag": "无效的转换标记",
 	"invalid gallery image": "无效的图库图片",
+	"invalid gallery image parameter": "无效的图库图片参数",
 	"invalid link in <imagemap>": "无效的<imagemap>链接",
 	"invalid parameter of $1": "$1的无效参数",
 	"invalid self-closing tag": "无效自封闭标签",
