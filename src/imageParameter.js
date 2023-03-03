@@ -180,8 +180,10 @@ class ImageParameterToken extends Token {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
-			/** @type {{link: Title}} */ {link} = this;
-		if (link?.encoded) {
+			/** @type {ImageParameterToken & {link: Title}} */ {link, name} = this;
+		if (name === 'invalid') {
+			errors.push(generateForSelf(this, {start}, 'invalid gallery image parameter'));
+		} else if (link?.encoded) {
 			errors.push(generateForSelf(this, {start}, 'unnecessary URL encoding in an internal link'));
 		}
 		return errors;
