@@ -72,13 +72,12 @@ const format = (cells, attr = {}, multi = false) => {
  */
 const fill = (y, rowToken, layout, maxCol, token) => {
 	const rowLayout = layout[y],
-		{childNodes} = rowToken,
-		lastIndex = childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption') + 1
-			|| undefined;
+		lastIndex = rowToken.childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption'),
+		pos = lastIndex + 1 || undefined;
 	Parser.run(() => {
 		for (let i = 0; i < maxCol; i++) {
 			if (!rowLayout[i]) {
-				rowToken.insertAt(token.cloneNode(), lastIndex);
+				rowToken.insertAt(token.cloneNode(), pos);
 			}
 		}
 	});

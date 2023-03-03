@@ -236,10 +236,9 @@ class AttributesToken extends Token {
 
 	/** 清理标签属性 */
 	sanitize() {
-		const {childNodes, length} = this;
 		let dirty = false;
-		for (let i = length - 1; i >= 0; i--) {
-			const child = childNodes[i];
+		for (let i = this.length - 1; i >= 0; i--) {
+			const child = this.childNodes[i];
 			if (child instanceof AtomToken && child.text().trim()) {
 				dirty = true;
 				this.removeAt(i);

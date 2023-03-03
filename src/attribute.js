@@ -409,8 +409,7 @@ class AttributeToken extends fixedToken(Token) {
 		if (length !== 1 || tag.type !== type.slice(0, -5)) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		} else if (type === 'table-attr') {
-			const {length: tableLength} = tag;
-			if (tableLength !== 2) {
+			if (tag.length !== 2) {
 				throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 			}
 			attrs = tag.lastChild;
@@ -450,8 +449,7 @@ class AttributeToken extends fixedToken(Token) {
 		if (length !== 1 || tag.type !== type.slice(0, -5)) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		} else if (type === 'table-attr') {
-			const {length: tableLength} = tag;
-			if (tableLength !== 2) {
+			if (tag.length !== 2) {
 				throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 			}
 			attrs = tag.lastChild;

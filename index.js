@@ -123,9 +123,8 @@ const /** @type {Parser} */ Parser = {
 	promises: [Promise.resolve()],
 
 	getConfig() {
-		const {config} = this;
-		if (typeof config === 'string') {
-			this.config = require(config);
+		if (typeof this.config === 'string') {
+			this.config = require(this.config);
 		}
 		return {...this.config, excludes: []};
 	},
