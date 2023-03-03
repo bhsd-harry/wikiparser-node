@@ -5,7 +5,7 @@ const Parser = require('..'),
 	GalleryImageToken = require('./link/galleryImage'),
 	HiddenToken = require('./atom/hidden');
 
-const params = new Set(['alt', 'link']);
+const params = new Set(['alt', 'link', 'lang', 'page']);
 
 /**
  * gallery标签
