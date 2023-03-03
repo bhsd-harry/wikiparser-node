@@ -5,6 +5,8 @@ const Parser = require('..'),
 	GalleryImageToken = require('./link/galleryImage'),
 	HiddenToken = require('./atom/hidden');
 
+const params = new Set(['alt', 'link']);
+
 /**
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
@@ -20,10 +22,11 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const /** @type {ParserConfig} */ newConfig = {...config, img: {...config.img}};
+		const img = {},
+			/** @type {ParserConfig} */ newConfig = {...config, img};
 		for (const [k, v] of Object.entries(config.img)) {
-			if (v === 'width') {
-				delete newConfig.img[k];
+			if (params.has(v)) {
+				img[k] = v;
 			}
 		}
 		for (const line of inner?.split('\n') ?? []) {
