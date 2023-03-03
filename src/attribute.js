@@ -355,6 +355,14 @@ class AttributeToken extends fixedToken(Token) {
 		return key === 'quotes' ? this.#quotes : super.getAttribute(key);
 	}
 
+	/**
+	 * @override
+	 * @param {PropertyKey} key 属性键
+	 */
+	hasAttribute(key) {
+		return key === 'equal' || key === 'quotes' || super.hasAttribute(key);
+	}
+
 	/** @override */
 	cloneNode() {
 		const [key, value] = this.cloneChildNodes(),
