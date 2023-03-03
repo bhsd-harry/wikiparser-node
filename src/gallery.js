@@ -22,11 +22,11 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const img = {},
+		const img = {...config.img},
 			/** @type {ParserConfig} */ newConfig = {...config, img};
-		for (const [k, v] of Object.entries(config.img)) {
-			if (params.has(v)) {
-				img[k] = v;
+		for (const [k, v] of Object.entries(img)) {
+			if (!params.has(v)) {
+				img[k] = 'invalid';
 			}
 		}
 		for (const line of inner?.split('\n') ?? []) {

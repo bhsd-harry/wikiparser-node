@@ -39,7 +39,7 @@ class FileToken extends LinkToken {
 				const visibleNodes = childNodes.filter(node => node.text().trim());
 				return visibleNodes.length !== 1 || visibleNodes[0].type !== 'arg';
 			}),
-			keys = [...new Set(args.map(({name}) => name))],
+			keys = [...new Set(args.map(({name}) => name))].filter(key => key !== 'invalid'),
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key));
