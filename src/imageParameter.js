@@ -7,6 +7,8 @@ const {text, noWrap, print, extUrlChar, extUrlCharFirst} = require('../util/stri
 	AstText = require('../lib/text'),
 	Token = require('.');
 
+const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
+
 /**
  * 检查图片参数是否合法
  * @template {string} T
@@ -18,7 +20,7 @@ const validate = (key, value, config = Parser.getConfig(), halfParsed = false) =
 	value = value.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
-			return /^\d*(?:x\d*)?$/u.test(value);
+			return /^(?:\d+x?|\d*x\d+)$/u.test(value);
 		case 'link': {
 			if (!value) {
 				return '';
@@ -147,6 +149,13 @@ class ImageParameterToken extends Token {
 		}
 		super(str, {...config, excludes: [...config.excludes, 'list']}, true, accum);
 		this.setAttribute('name', 'caption').setAttribute('stage', 7);
+	}
+
+	/** @override */
+	afterBuild() {
+		if (this.parentNode.type === 'gallery-image' && !params.has(this.name)) {
+			this.setAttribute('name', 'invalid');
+		}
 	}
 
 	/** @override */
