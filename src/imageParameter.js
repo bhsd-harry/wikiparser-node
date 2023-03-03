@@ -252,7 +252,7 @@ class ImageParameterToken extends Token {
 	 * @complexity `n`
 	 */
 	getValue() {
-		return this.#isVoid() || super.text();
+		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
 
 	/**
@@ -262,7 +262,9 @@ class ImageParameterToken extends Token {
 	 * @throws	SyntaxError` 非法的参数值
 	 */
 	setValue(value) {
-		if (this.#isVoid()) {
+		if (this.name === 'invalid') {
+			throw new Error('无效的图片参数！');
+		} else if (this.#isVoid()) {
 			if (typeof value !== 'boolean') {
 				this.typeError('setValue', 'Boolean');
 			} else if (value === false) {
