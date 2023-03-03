@@ -104,10 +104,9 @@ class TdToken extends TrToken {
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {
-		const errors = super.lint(start),
-			{lastChild} = this;
+		const errors = super.lint(start);
 		start += this.getRelativeIndex(-1);
-		for (const child of lastChild.childNodes) {
+		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
 				errors.push(generateForChild(child, {start}, 'additional "|" in a table cell', 'warning'));
 			}

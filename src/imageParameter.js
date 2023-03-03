@@ -122,14 +122,14 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @override
+	 * @this {ImageParameterToken & {link: Title}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {
-		const errors = super.lint(start),
-			/** @type {ImageParameterToken & {link: Title}} */ {link, name} = this;
-		if (name === 'invalid') {
+		const errors = super.lint(start);
+		if (this.name === 'invalid') {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image parameter'));
-		} else if (link?.encoded) {
+		} else if (this.link?.encoded) {
 			errors.push(generateForSelf(this, {start}, 'unnecessary URL encoding in an internal link'));
 		}
 		return errors;
