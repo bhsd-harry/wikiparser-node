@@ -29,7 +29,8 @@ class GalleryToken extends Token {
 			AstText: ':', GalleryImageToken: ':', HiddenToken: ':',
 		});
 		const /** @type {ParserConfig} */ newConfig = {
-			...config, img: Object.fromEntries(Object.entries(config.img).filter(([, param]) => params.has(param))),
+			...config,
+			img: Object.fromEntries(Object.entries(config.img).map(([k, v]) => [k, params.has(v) ? v : 'invalid'])),
 		};
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
