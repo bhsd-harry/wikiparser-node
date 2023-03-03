@@ -5,8 +5,6 @@ const Parser = require('..'),
 	GalleryImageToken = require('./link/galleryImage'),
 	HiddenToken = require('./atom/hidden');
 
-const params = new Set(['alt', 'link', 'lang', 'page']);
-
 /**
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
@@ -22,15 +20,11 @@ class GalleryToken extends Token {
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
 		});
-		const /** @type {ParserConfig} */ newConfig = {
-			...config,
-			img: Object.fromEntries(Object.entries(config.img).map(([k, v]) => [k, params.has(v) ? v : 'invalid'])),
-		};
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line);
 			if (!matches) {
 				super.insertAt(line.trim()
-					? new HiddenToken(line, undefined, newConfig, [], {
+					? new HiddenToken(line, undefined, config, [], {
 					})
 					: line);
 				continue;
@@ -38,9 +32,9 @@ class GalleryToken extends Token {
 			const [, file, alt] = matches,
 				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
-				super.insertAt(new GalleryImageToken(file, alt, newConfig, accum));
+				super.insertAt(new GalleryImageToken(file, alt, config, accum));
 			} else {
-				super.insertAt(new HiddenToken(line, undefined, newConfig, [], {
+				super.insertAt(new HiddenToken(line, undefined, config, [], {
 				}));
 			}
 		}
