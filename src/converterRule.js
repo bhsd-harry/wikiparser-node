@@ -21,9 +21,8 @@ class ConverterRuleToken extends Token {
 		if (hasColon) {
 			const i = rule.indexOf(':'),
 				j = rule.slice(0, i).indexOf('=>'),
-				v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i),
-				{variants} = config;
-			if (variants.includes(v.trim())) {
+				v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
+			if (config.variants.includes(v.trim())) {
 				super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 				super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
 				if (j !== -1) {
