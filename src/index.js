@@ -400,8 +400,10 @@ class Token extends AstElement {
 
 	/** 解析语言变体转换 */
 	#parseConverter() {
-		const parseConverter = require('../parser/converter');
-		this.setText(parseConverter(String(this.firstChild), this.#config, this.#accum));
+		if (this.#config.variants?.length > 0) {
+			const parseConverter = require('../parser/converter');
+			this.setText(parseConverter(String(this.firstChild), this.#config, this.#accum));
+		}
 	}
 }
 
