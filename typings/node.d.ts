@@ -13,7 +13,7 @@ declare global {
 		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
 		T extends 'buildFromStr' ? buildFromStr :
 		T extends 'build' ? () => void :
-		T extends 'bracket'|'include' ? boolean :
+		T extends 'bracket' ? boolean :
 		string;
 
 	interface printOpt {

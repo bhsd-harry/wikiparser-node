@@ -1,7 +1,7 @@
 'use strict';
 
 const {text} = require('../util/string'),
-	{generateForSelf, generateForChild} = require('../util/lint'),
+	{generateForChild} = require('../util/lint'),
 	Parser = require('..'),
 	Token = require('.');
 
@@ -75,9 +75,6 @@ class ArgToken extends Token {
 	 * @returns {LintError[]}
 	 */
 	lint(start) {
-		if (!this.getAttribute('include')) {
-			return [generateForSelf(this, {start}, 'unexpected template argument')];
-		}
 		const {childNodes: [argName, argDefault, ...rest]} = this,
 			errors = argName.lint(start + 3);
 		if (argDefault) {

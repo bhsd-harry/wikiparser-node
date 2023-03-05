@@ -196,16 +196,6 @@ class Token extends AstElement {
 				return this.#buildFromStr;
 			case 'build':
 				return this.#build;
-			case 'include': {
-				if (this.#include !== undefined) {
-					return this.#include;
-				}
-				const root = this.getRootNode();
-				if (root.type === 'root' && root !== this) {
-					return root.getAttribute('include');
-				}
-				return false;
-			}
 			default:
 				return super.getAttribute(key);
 		}

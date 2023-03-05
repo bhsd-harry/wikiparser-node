@@ -16,6 +16,6 @@
 		"unicorn/empty-brace-spaces": 2,
 		"unicorn/no-invalid-remove-event-listener": 2,
 		"unicorn/prefer-dom-node-text-content": 2,
-		"unicorn/prefer-keyboard-event-key": 2,
+		"unicorn/prefer-keyboard-event-key": 2
 	}
 }
