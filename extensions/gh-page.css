@@ -8,6 +8,7 @@ html, body, div, span, label, article, main, input, textarea {
 :root {
 	font-size: 14px;
 	font-family: sans-serif;
+	-webkit-text-size-adjust: none;
 }
 body {
 	display: flex;
