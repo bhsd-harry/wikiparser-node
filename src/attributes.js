@@ -118,9 +118,10 @@ class AttributesToken extends Token {
 				}
 			};
 			while (mt) {
-				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
+				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt,
+					trimmed = removeComment(key).trim();
 				out += attr.slice(lastIndex, index);
-				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
+				if (/^(?:[\w:]|\0\d+[tp!~{}+-]\x7F)(?:[\w:.-]|\0\d+[tp!~{}+-]\x7F)*$/u.test(trimmed)) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
 						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
@@ -334,7 +335,7 @@ class AttributesToken extends Token {
 					parseOnce(0, include);
 					return String(parseOnce());
 				});
-		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
+		if (!/^(?:[\w:]|\0\d+[tp!~{}+-]\x7F)(?:[\w:.-]|\0\d+[tp!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			throw new RangeError(`无效的属性名：${key}！`);
 		}
 		const newAttr = Parser.run(() => new AttributeToken(
