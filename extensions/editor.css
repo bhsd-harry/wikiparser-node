@@ -1,5 +1,6 @@
 .wikiparse-container {
 	position: relative;
+	-webkit-text-size-adjust: none;
 }
 .wikiparsed {
 	position: relative;

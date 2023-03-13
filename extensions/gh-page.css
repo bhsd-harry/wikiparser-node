@@ -8,7 +8,6 @@ html, body, div, span, label, article, main, input, textarea {
 :root {
 	font-size: 14px;
 	font-family: sans-serif;
-	-webkit-text-size-adjust: none;
 }
 body {
 	display: flex;
@@ -87,4 +86,18 @@ textarea {
 }
 #wikiPretty + #wpTextbox, div#wikiPretty {
 	border-radius: .3em;
+}
+
+@media screen and (max-width: 720px) {
+	main {
+		width: 100%;
+		margin: 0;
+		border-radius: 0;
+	}
+	article {
+		padding: 1rem;
+	}
+	.wikiparse-container {
+		font-size: 16px;
+	}
 }
