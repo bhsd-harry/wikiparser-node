@@ -13,23 +13,24 @@ const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
  * 检查图片参数是否合法
  * @template {string} T
  * @param {T} key 参数名
- * @param {string} value 参数值
+ * @param {string} val 参数值
  * @returns {T extends 'link' ? string|Title : boolean}
  */
-const validate = (key, value, config = Parser.getConfig(), halfParsed = false) => {
-	value = value.replace(/\0\d+tp\x7F/gu, '').trim();
+const validate = (key, val, config = Parser.getConfig(), halfParsed = false) => {
+	let value = val.replace(/\0\d+tp\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
 			return /^(?:\d+x?|\d*x\d+)$/u.test(value);
 		case 'link': {
 			if (!value) {
-				return '';
+				return val;
 			}
-			const regex = new RegExp(`(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${
-				extUrlChar
-			}(?=\0\\d+t\x7F|$)`, 'iu');
+			const regex = new RegExp(
+				`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}$`,
+				'iu',
+			);
 			if (regex.test(value)) {
-				return value;
+				return val;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
