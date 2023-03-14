@@ -30,6 +30,7 @@
 	"nothing should be in <$1>": "<$1>标签内不应有任何内容",
 	"section header in a HTML tag": "HTML标签属性中的段落标题",
 	"tag that is both closing and self-closing": "同时闭合和自封闭的标签",
+	"template in an internal link target": "内链目标包含模板",
 	"unbalanced \"=\" in a section header": "段落标题中不平衡的\"=\"",
 	"unclosed HTML comment": "未闭合的HTML注释",
 	"unclosed quotes": "未闭合的引号",

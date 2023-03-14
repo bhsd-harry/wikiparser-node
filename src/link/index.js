@@ -194,8 +194,12 @@ class LinkToken extends Token {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
 		let rect;
-		if (this.#encoded) {
+		if (target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
+		}
+		if (this.#encoded) {
+			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' && linkText?.childNodes?.some(
