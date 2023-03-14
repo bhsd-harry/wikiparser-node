@@ -61,7 +61,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
 			parts[parts.length - 1].push(text.slice(topPos, curIndex));
 			let skip = false,
-				ch = 't';
+				ch = 'p';
 			if (close.length === 3) {
 				const argParts = parts.map(part => part.join('=')),
 					str = argParts.length > 1 && removeComment(argParts[1]).trim();
@@ -70,16 +70,18 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 					ch = 's';
 				}
 			} else {
-				const name = removeComment(parts[0][0]).trim();
-				if (name in marks) {
-					ch = marks[name]; // 标记{{!}}等
-				} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
-					ch = 'm';
-				} else if (/^#vardefine:./iu.test(name)) {
-					ch = 'c';
-				}
 				try {
-					new TranscludeToken(parts[0][0], parts.slice(1), config, accum);
+					const name = removeComment(parts[0][0]).trim(),
+						{type} = new TranscludeToken(parts[0][0], parts.slice(1), config, accum);
+					if (name in marks) {
+						ch = marks[name]; // 标记{{!}}等
+					} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
+						ch = 'm';
+					} else if (/^#vardefine:./iu.test(name)) {
+						ch = 'c';
+					} else if (type === 'template') {
+						ch = 't';
+					}
 				} catch (e) {
 					if (e instanceof Error && e.message.startsWith('非法的模板名称：')) {
 						lastIndex = index + open.length;
