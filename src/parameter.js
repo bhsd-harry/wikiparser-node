@@ -36,7 +36,7 @@ class ParameterToken extends Token {
 	afterBuild() {
 		if (!this.anon) {
 			const TranscludeToken = require('./transclude');
-			const name = String(this.firstChild).replace(/<!--.*?-->/gu, '')
+			const name = String(this.firstChild).replace(/<!--.*?-->/gsu, '')
 					.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'),
 				{parentNode} = this;
 			this.setAttribute('name', name);
@@ -82,7 +82,7 @@ class ParameterToken extends Token {
 		const errors = super.lint(start),
 			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
-				.exec(String(firstChild).replace(/<!--.*?-->/gu, ''))?.[0];
+				.exec(String(firstChild).replace(/<!--.*?-->/gsu, ''))?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {start}, 'unescaped query string in an anonymous parameter');
 			errors.push({
