@@ -31,8 +31,7 @@
  * ~: `{{=}}`专用
  * s: `{{{|subst:}}}`
  * m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
- * t: ArgToken或'template'
- * p: ArgToken或'magic-word'
+ * t: ArgToken或TranscludeToken
  * h: HeadingToken
  * x: HtmlToken
  * b: TableToken

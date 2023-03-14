@@ -17,7 +17,7 @@ const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
  * @returns {T extends 'link' ? string|Title : boolean}
  */
 const validate = (key, val, config = Parser.getConfig(), halfParsed = false) => {
-	let value = val.replace(/\0\d+tp\x7F/gu, '').trim();
+	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
 			return /^(?:\d+x?|\d*x\d+)$/u.test(value);
