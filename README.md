@@ -1,4 +1,5 @@
 [![npm version](https://badge.fury.io/js/wikiparser-node.svg)](https://www.npmjs.com/package/wikiparser-node)
+[![CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/github-code-scanning/codeql)
 
 # 简介
 wikiparser-node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/en/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析绝大部分的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)，还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。语法树的每个节点对应一个仿照 [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement) 类设计的类 [Token](https://github.com/bhsd-harry/wikiparser-node/wiki/01.-Token)。
