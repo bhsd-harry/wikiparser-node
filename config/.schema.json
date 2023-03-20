@@ -1,0 +1,141 @@
+{
+	"type": "object",
+	"properties": {
+		"ext": {
+			"description": "extension tags",
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^\\w+$"
+			}
+		},
+		"html": {
+			"description": "valid HTML tags",
+			"type": "array",
+			"prefixItems": [
+				{
+					"description": "HTML tags not self-closing",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "HTML tags either self-closing or not",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "void HTML tags",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"additionalItems": false
+		},
+		"namespaces": {
+			"description": "formatted namespaces",
+			"type": "object",
+			"patternProperties": {
+				"^-?\\d+$": {
+					"type": "string"
+				}
+			},
+			"additionalProperties": false
+		},
+		"nsid": {
+			"description": "namespace IDs",
+			"type": "object",
+			"additionalProperties": {
+				"type": "integer"
+			}
+		},
+		"parserFunction": {
+			"type": "array",
+			"prefixedItems": [
+				{
+					"description": "case-insensitive parser functions",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string",
+						"pattern": "^\\w+$"
+					}
+				},
+				{
+					"description": "case-sensitive parser functions",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "msg and raw",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "subst and safesubst",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"additionalItems": false
+		},
+		"doubleUnderscore": {
+			"description": "behavior switches",
+			"type": "array",
+			"prefixItems": [
+				{
+					"description": "case-insensitive behavior switches",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "case-sensitive behavior switches",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				}
+			],
+			"additionalItems": false
+		},
+		"protocol": {
+			"description": "external link protocols",
+			"type": "string",
+			"pattern": "^[a-z:/]+(?:\\|[a-z:/]+)*$"
+		},
+		"interwiki": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
+		"img": {
+			"description": "image-related magic words",
+			"type": "object",
+			"additionalProperties": {
+				"type": "string",
+				"pattern": "^[-a-z]+$"
+			}
+		},
+		"variants": {
+			"description": "variants for language conversion",
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		}
+	},
+	"additionalProperties": false
+}
