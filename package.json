@@ -1,49 +1,50 @@
 {
-  "name": "wikiparser-node",
-  "version": "0.9.0",
-  "description": "A Node.js parser for MediaWiki markup with AST",
-  "keywords": [
-    "mediawiki",
-    "wikitext",
-    "parser"
-  ],
-  "homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
-  "bugs": {
-    "url": "https://github.com/bhsd-harry/wikiparser-node/issues"
-  },
-  "license": "GPL-3.0",
-  "author": "Bhsd",
-  "files": [
-    "/index.js",
-    "/config/",
-    "/i18n/",
-    "/lib/",
-    "/mixin/",
-    "/parser/",
-    "/src/",
-    "/tool/",
-    "/util/"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
-  },
-  "scripts": {
-    "test": "eslint . && node test/test.js",
-    "real": "node test/real.js",
-    "single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
-  },
-  "devDependencies": {
-    "@types/node": "^17.0.23",
-    "eslint": "^8.30.0",
-    "eslint-plugin-n": "^15.6.0",
-    "eslint-plugin-regexp": "^1.11.0",
-    "eslint-plugin-unicorn": "^45.0.2",
-    "eslint-plugin-jsdoc": "^1.0.0",
-    "eslint-plugin-json-schema-validator": "^4.3.0",
-    "request": "^2.88.2"
-  },
-  "engines": {
-    "node": "^18.4.0"
-  }
+	"name": "wikiparser-node",
+	"version": "0.9.0",
+	"description": "A Node.js parser for MediaWiki markup with AST",
+	"keywords": [
+		"mediawiki",
+		"wikitext",
+		"parser"
+	],
+	"homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
+	"bugs": {
+		"url": "https://github.com/bhsd-harry/wikiparser-node/issues"
+	},
+	"license": "GPL-3.0",
+	"author": "Bhsd",
+	"files": [
+		"/index.js",
+		"/config/",
+		"/i18n/",
+		"/lib/",
+		"/mixin/",
+		"/parser/",
+		"/src/",
+		"/tool/",
+		"/util/"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
+	},
+	"scripts": {
+		"test": "eslint . && node test/test.js",
+		"real": "node test/real.js",
+		"single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
+	},
+	"devDependencies": {
+		"@types/node": "^17.0.23",
+		"eslint": "^8.30.0",
+		"eslint-plugin-n": "^15.6.0",
+		"eslint-plugin-regexp": "^1.11.0",
+		"eslint-plugin-unicorn": "^45.0.2",
+		"eslint-plugin-jsdoc": "^1.0.0",
+		"eslint-plugin-jsonc": "^2.7.0",
+		"eslint-plugin-json-schema-validator": "^4.3.0",
+		"request": "^2.88.2"
+	},
+	"engines": {
+		"node": "^18.4.0"
+	}
 }

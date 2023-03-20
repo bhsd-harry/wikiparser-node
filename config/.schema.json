@@ -6,36 +6,21 @@
 			"type": "array",
 			"items": {
 				"type": "string",
-				"pattern": "^\\w+$"
+				"pattern": "^[a-z\\d_]+$"
 			}
 		},
 		"html": {
 			"description": "valid HTML tags",
 			"type": "array",
-			"prefixItems": [
-				{
-					"description": "HTML tags not self-closing",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
-				{
-					"description": "HTML tags either self-closing or not",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
-				{
-					"description": "void HTML tags",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"pattern": "^[a-z\\d]+$"
 				}
-			],
-			"additionalItems": false
+			},
+			"minItems": 3,
+			"maxItems": 3
 		},
 		"namespaces": {
 			"description": "formatted namespaces",
@@ -45,6 +30,10 @@
 					"type": "string"
 				}
 			},
+			"required": [
+				"6",
+				"10"
+			],
 			"additionalProperties": false
 		},
 		"nsid": {
@@ -56,13 +45,12 @@
 		},
 		"parserFunction": {
 			"type": "array",
-			"prefixedItems": [
+			"items": [
 				{
 					"description": "case-insensitive parser functions",
 					"type": "object",
 					"additionalProperties": {
-						"type": "string",
-						"pattern": "^\\w+$"
+						"type": "string"
 					}
 				},
 				{
@@ -87,28 +75,20 @@
 					}
 				}
 			],
-			"additionalItems": false
+			"minItems": 4,
+			"maxItems": 4
 		},
 		"doubleUnderscore": {
 			"description": "behavior switches",
 			"type": "array",
-			"prefixItems": [
-				{
-					"description": "case-insensitive behavior switches",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
-				},
-				{
-					"description": "case-sensitive behavior switches",
-					"type": "array",
-					"items": {
-						"type": "string"
-					}
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "string"
 				}
-			],
-			"additionalItems": false
+			},
+			"minItems": 2,
+			"maxItems": 2
 		},
 		"protocol": {
 			"description": "external link protocols",
@@ -133,9 +113,22 @@
 			"description": "variants for language conversion",
 			"type": "array",
 			"items": {
-				"type": "string"
+				"type": "string",
+				"pattern": "^[-a-z]+$"
 			}
 		}
 	},
+	"required": [
+		"ext",
+		"html",
+		"namespaces",
+		"nsid",
+		"parserFunction",
+		"doubleUnderscore",
+		"protocol",
+		"interwiki",
+		"img",
+		"variants"
+	],
 	"additionalProperties": false
 }
