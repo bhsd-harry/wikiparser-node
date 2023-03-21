@@ -112,16 +112,5 @@
 			}
 		}
 	},
-	"required": [
-		"ext",
-		"html",
-		"namespaces",
-		"nsid",
-		"parserFunction",
-		"doubleUnderscore",
-		"protocol",
-		"img",
-		"variants"
-	],
 	"additionalProperties": false
 }

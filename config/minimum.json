@@ -70,7 +70,10 @@
 			"img"
 		]
 	],
-	"namespaces": {},
+	"namespaces": {
+		"6": "File",
+		"10": "Template"
+	},
 	"nsid": {},
 	"parserFunction": [
 		{
