@@ -9,8 +9,7 @@
 		"regexp",
 		"unicorn",
 		"jsdoc",
-		"jsonc",
-		"json-schema-validator"
+		"jsonc"
 	],
 	"extends": [
 		"eslint:recommended",
@@ -746,29 +745,6 @@
 			"excludedFiles": "printed/*.json",
 			"rules": {
 				"jsonc/auto": 2
-			}
-		},
-		{
-			"files": "config/*.json",
-			"excludedFiles": "config/.schema.json",
-			"extends": [
-				"plugin:json-schema-validator/recommended"
-			],
-			"rules": {
-				"json-schema-validator/no-invalid": [
-					2,
-					{
-						"schemas": [
-							{
-								"fileMatch": [
-									"config/*.json"
-								],
-								"schema": "config/.schema.json"
-							}
-						],
-						"useSchemastoreCatalog": false
-					}
-				]
 			}
 		}
 	],

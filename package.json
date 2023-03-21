@@ -29,7 +29,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"test": "eslint . && node test/test.js",
+		"test": "eslint . && pajv -s config/.schema.json -d 'config/*.json' && node test/test.js",
 		"real": "node test/real.js",
 		"single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
 	},
@@ -41,7 +41,7 @@
 		"eslint-plugin-unicorn": "^45.0.2",
 		"eslint-plugin-jsdoc": "^1.0.0",
 		"eslint-plugin-jsonc": "^2.7.0",
-		"eslint-plugin-json-schema-validator": "^4.3.0",
+		"pajv": "^1.2.0",
 		"request": "^2.88.2"
 	},
 	"engines": {
