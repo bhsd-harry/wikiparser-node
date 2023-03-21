@@ -10,7 +10,9 @@
 		"promise",
 		"regexp",
 		"unicorn",
-		"jsdoc"
+		"jsdoc",
+		"jsonc",
+		"json-schema-validator"
 	],
 	"extends": [
 		"eslint:recommended",
@@ -22,7 +24,8 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"webpack.config.js"
+		"webpack.config.js",
+		"!config/.schema.json"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -123,7 +126,7 @@
 		"default-case": 2,
 		"default-case-last": 2,
 		"default-param-last": 2,
-		"dot-notation":2,
+		"dot-notation": 2,
 		"eqeqeq": 2,
 		"func-name-matching": [
 			2,
@@ -477,7 +480,6 @@
 			2,
 			"module.exports"
 		],
-		"n/no-path-concat": 2,
 		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
 		"es-x/no-array-string-prototype-at": 2,
@@ -719,6 +721,60 @@
 			"files": "./index.js",
 			"rules": {
 				"jsdoc/require-jsdoc": 0
+			}
+		},
+		{
+			"files": "**/*.json",
+			"extends": [
+				"plugin:jsonc/recommended-with-json"
+			],
+			"rules": {
+				"eol-last": 0,
+				"unicorn/filename-case": 0,
+				"jsonc/array-bracket-newline": [
+					2,
+					{
+						"minItems": 1
+					}
+				],
+				"jsonc/array-element-newline": 2,
+				"jsonc/object-curly-newline": [
+					2,
+					{
+						"minProperties": 1
+					}
+				],
+				"jsonc/object-property-newline": 2
+			}
+		},
+		{
+			"files": "**/*.json",
+			"excludedFiles": "printed/*.json",
+			"rules": {
+				"jsonc/auto": 2
+			}
+		},
+		{
+			"files": "config/*.json",
+			"excludedFiles": "config/.schema.json",
+			"extends": [
+				"plugin:json-schema-validator/recommended"
+			],
+			"rules": {
+				"json-schema-validator/no-invalid": [
+					2,
+					{
+						"schemas": [
+							{
+								"fileMatch": [
+									"config/*.json"
+								],
+								"schema": "config/.schema.json"
+							}
+						],
+						"useSchemastoreCatalog": false
+					}
+				]
 			}
 		}
 	],
