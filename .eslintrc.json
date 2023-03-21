@@ -720,7 +720,10 @@
 				"plugin:jsonc/recommended-with-json"
 			],
 			"rules": {
-				"eol-last": 0,
+				"eol-last": [
+					2,
+					"never"
+				],
 				"unicorn/filename-case": 0,
 				"jsonc/array-bracket-newline": [
 					2,
