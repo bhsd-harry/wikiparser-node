@@ -8,8 +8,7 @@
 		"promise",
 		"regexp",
 		"unicorn",
-		"jsdoc",
-		"jsonc"
+		"jsdoc"
 	],
 	"extends": [
 		"eslint:recommended",
@@ -715,36 +714,58 @@
 		},
 		{
 			"files": "**/*.json",
+			"parser": "eslint-plugin-json-es",
 			"extends": [
-				"plugin:jsonc/recommended-with-json"
+				"plugin:eslint-plugin-json-es/recommended"
 			],
 			"rules": {
-				"eol-last": [
-					2,
-					"never"
-				],
-				"unicorn/filename-case": 0,
-				"jsonc/array-bracket-newline": [
+				"array-bracket-newline": [
 					2,
 					{
 						"minItems": 1
 					}
 				],
-				"jsonc/array-element-newline": 2,
-				"jsonc/object-curly-newline": [
+				"array-element-newline": [
+					2,
+					"always"
+				],
+				"comma-dangle": [
+					2,
+					"never"
+				],
+				"eol-last": [
+					2,
+					"never"
+				],
+				"no-multiple-empty-lines": [
+					2,
+					{
+						"max": 0
+					}
+				],
+				"object-curly-newline": [
 					2,
 					{
 						"minProperties": 1
 					}
 				],
-				"jsonc/object-property-newline": 2
+				"object-property-newline": [
+					2,
+					{
+						"allowAllPropertiesOnSameLine": false
+					}
+				],
+				"strict": [
+					2,
+					"never"
+				],
+				"unicorn/filename-case": 0
 			}
 		},
 		{
-			"files": "**/*.json",
-			"excludedFiles": "printed/*.json",
+			"files": "printed/*.json",
 			"rules": {
-				"jsonc/auto": 2
+				"indent": 0
 			}
 		}
 	],
