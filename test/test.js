@@ -1,5 +1,5 @@
-'use strict';
 /* eslint-disable no-var */
+'use strict';
 const fs = require('fs/promises'),
 	assert = require('assert'), // eslint-disable-line no-unused-vars
 	path = require('path');

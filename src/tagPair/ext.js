@@ -95,17 +95,14 @@ class ExtToken extends attributeParent(TagPairToken) {
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}
-
-			/*
-			 * 更多定制扩展的代码示例：
-			 * ```
-			 * case 'extensionName': {
-			 * 	const ExtensionToken = require('../extension');
-			 * 	innerToken = new ExtensionToken(inner, newConfig, accum);
-			 * 	break;
-			 * }
-			 * ```
-			 */
+			// 更多定制扩展的代码示例：
+			// ```
+			// case 'extensionName': {
+			// 	const ExtensionToken = require('../extension');
+			// 	innerToken = new ExtensionToken(inner, newConfig, accum);
+			// 	break;
+			// }
+			// ```
 			default: {
 				const NowikiToken = require('../nowiki');
 				innerToken = new NowikiToken(inner, config);
