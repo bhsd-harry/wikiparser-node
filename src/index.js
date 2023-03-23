@@ -1,48 +1,44 @@
 'use strict';
 
-/*
- * PHP解析器的步骤：
- * -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
- * 0. 移除特定字符`\0`和`\x7F`，参见Parser::parse
- * 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
- * 2. 模板/模板变量/标题，注意rightmost法则，以及`-{`和`[[`可以破坏`{{`或`{{{`语法，
- *    参见Preprocessor_Hash::buildDomTreeArrayFromText
- * 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
- * 4. 表格，参见Parser::handleTables
- * 5. 水平线和状态开关，参见Parser::internalParse
- * 6. 内链，含文件和分类，参见Parser::handleInternalLinks2
- * 7. `'`，参见Parser::doQuotes
- * 8. 外链，参见Parser::handleExternalLinks
- * 9. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
- * 10. 段落和列表，参见BlockLevelPass::execute
- * 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
- */
+// PHP解析器的步骤：
+// -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
+// 0. 移除特定字符`\0`和`\x7F`，参见Parser::parse
+// 1. 注释/扩展标签（'<'相关），参见Preprocessor_Hash::buildDomTreeArrayFromText和Sanitizer::decodeTagAttributes
+// 2. 模板/模板变量/标题，注意rightmost法则，以及`-{`和`[[`可以破坏`{{`或`{{{`语法，
+//    参见Preprocessor_Hash::buildDomTreeArrayFromText
+// 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
+// 4. 表格，参见Parser::handleTables
+// 5. 水平线和状态开关，参见Parser::internalParse
+// 6. 内链，含文件和分类，参见Parser::handleInternalLinks2
+// 7. `'`，参见Parser::doQuotes
+// 8. 外链，参见Parser::handleExternalLinks
+// 9. ISBN、RFC（未来将废弃，不予支持）和自由外链，参见Parser::handleMagicLinks
+// 10. 段落和列表，参见BlockLevelPass::execute
+// 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
 
-/*
- * \0\d+.\x7F标记Token：
- * e: ExtToken
- * a: AttributeToken
- * c: CommentToken、NoIncludeToken和IncludeToken
- * !: `{{!}}`专用
- * {: `{{(!}}`专用
- * }: `{{!)}}`专用
- * -: `{{!-}}`专用
- * +: `{{!!}}`专用
- * ~: `{{=}}`专用
- * s: `{{{|subst:}}}`
- * m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
- * t: ArgToken或TranscludeToken
- * h: HeadingToken
- * x: HtmlToken
- * b: TableToken
- * r: HrToken
- * u: DoubleUnderscoreToken
- * l: LinkToken
- * q: QuoteToken
- * w: ExtLinkToken
- * d: ListToken
- * v: ConverterToken
- */
+// \0\d+.\x7F标记Token：
+// e: ExtToken
+// a: AttributeToken
+// c: CommentToken、NoIncludeToken和IncludeToken
+// !: `{{!}}`专用
+// {: `{{(!}}`专用
+// }: `{{!)}}`专用
+// -: `{{!-}}`专用
+// +: `{{!!}}`专用
+// ~: `{{=}}`专用
+// s: `{{{|subst:}}}`
+// m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
+// t: ArgToken或TranscludeToken
+// h: HeadingToken
+// x: HtmlToken
+// b: TableToken
+// r: HrToken
+// u: DoubleUnderscoreToken
+// l: LinkToken
+// q: QuoteToken
+// w: ExtLinkToken
+// d: ListToken
+// v: ConverterToken
 
 const {text} = require('../util/string'),
 	Parser = require('..'),
