@@ -1,4 +1,3 @@
-declare type wikiparseFunc = (textbox: HTMLTextAreaElement, include: boolean) => Printer;
 declare global {
 	class Printer {
 		include: boolean;
@@ -9,9 +8,12 @@ declare global {
 		queue(wikitext: string): Promise<LintError[]>;
 	}
 
-	interface wikiparse extends wikiparseFunc {
+	interface wikiparse {
+		MAX_STAGE: number;
+		id: number;
 		config: ParserConfig;
-		print: (wikitext: string, include: boolean, stage: number) => Promise<string[][]>;
+		edit: (textbox: HTMLTextAreaElement, include: boolean) => Printer;
+		print: (wikitext: string, include: boolean, stage: number) => Promise<[number, string, string][]>;
 		lint: (wikitext: string, include: boolean) => Promise<LintError[]>;
 		setConfig: (config: ParserConfig) => void;
 		getConfig: () => Promise<ParserConfig>;
