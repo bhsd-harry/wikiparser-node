@@ -69,7 +69,7 @@ class CharinsertToken extends Token {
 		const entities = {'\t': '&#9;', '\r': '&#12;', ' ': '&#32;'};
 		return String(child).replace(
 			/<nowiki>(.+?)<\/nowiki>/giu,
-			/** @type {function(...string): string} */ (_, inner) => inner.replace(/[\t\r ]/gu, s => entities[s]),
+			/** @param {string} inner */ (_, inner) => inner.replace(/[\t\r ]/gu, s => entities[s]),
 		).split(/\s/u).filter(Boolean)
 			.map(item => {
 				const parts = item.split('+');

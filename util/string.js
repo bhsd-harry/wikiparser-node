@@ -78,7 +78,7 @@ const text = (childNodes, separator = '') => {
  */
 const decodeHtml = str => str?.replace(
 	/&#(\d+|x[\da-f]+);/giu,
-	(_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
+	/** @param {string} code */ (_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
 );
 
 /**

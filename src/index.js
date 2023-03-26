@@ -8,7 +8,7 @@
 //    参见Preprocessor_Hash::buildDomTreeArrayFromText
 // 3. HTML标签（允许不匹配），参见Sanitizer::internalRemoveHtmlTags
 // 4. 表格，参见Parser::handleTables
-// 5. 水平线和状态开关，参见Parser::internalParse
+// 5. 水平线、状态开关和余下的标题，参见Parser::internalParse
 // 6. 内链，含文件和分类，参见Parser::handleInternalLinks2
 // 7. `'`，参见Parser::doQuotes
 // 8. 外链，参见Parser::handleExternalLinks

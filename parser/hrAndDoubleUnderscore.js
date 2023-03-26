@@ -4,7 +4,8 @@ const Parser = require('..'),
 	AstText = require('../lib/text'),
 	Token = require('../src'),
 	HrToken = require('../src/nowiki/hr'),
-	DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
+	DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore'),
+	HeadingToken = require('../src/heading');
 
 /**
  * 解析\<hr\>和状态开关
@@ -18,10 +19,13 @@ const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = P
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
-	data = data.replace(/^((?:\0\d+c\x7F)*)(-{4,})/gmu, (_, lead, m) => {
-		new HrToken(m.length, config, accum);
-		return `${lead}\0${accum.length - 1}r\x7F`;
-	}).replace(
+	data = data.replace(
+		/^((?:\0\d+c\x7F)*)(-{4,})/gmu,
+		/** @type {function(...string): string} */ (_, lead, m) => {
+			new HrToken(m.length, config, accum);
+			return `${lead}\0${accum.length - 1}r\x7F`;
+		},
+	).replace(
 		new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'giu'),
 		/** @param {string} p1 */ (m, p1) => {
 			if (insensitive.has(p1.toLowerCase()) || sensitive.has(p1)) {
@@ -29,6 +33,13 @@ const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = P
 				return `\0${accum.length - 1}u\x7F`;
 			}
 			return m;
+		},
+	).replace(
+		/^((?:\0\d+c\x7F)*)(={1,6})(.+)\2((?:[^\S\n]|\0\d+c\x7F)*)$/gmu,
+		/** @type {function(...string): string} */ (_, lead, equals, heading, trail) => {
+			const text = `${lead}\0${accum.length}h\x7F`;
+			new HeadingToken(equals.length, [heading, trail], config, accum);
+			return text;
 		},
 	);
 	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
