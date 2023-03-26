@@ -745,10 +745,6 @@
 					2,
 					"never"
 				],
-				"eol-last": [
-					2,
-					"never"
-				],
 				"no-multiple-empty-lines": [
 					2,
 					{
