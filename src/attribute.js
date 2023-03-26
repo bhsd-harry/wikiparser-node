@@ -236,12 +236,6 @@ class AttributeToken extends Token {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
-	/** @override */
-	print() {
-		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
-	}
-
 	/**
 	 * @override
 	 * @param {number} start 起始位置
