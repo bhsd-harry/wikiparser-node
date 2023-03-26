@@ -9,7 +9,7 @@ declare global {
 	}
 
 	interface wikiparse {
-		MAX_STAGE: number;
+		readonly MAX_STAGE: number;
 		id: number;
 		config: ParserConfig;
 		edit: (textbox: HTMLTextAreaElement, include: boolean) => Printer;

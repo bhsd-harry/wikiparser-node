@@ -115,7 +115,8 @@
 		worker.postMessage(['lint', qid, wikitext, include]);
 	});
 
-	const wikiparse = {id: 0, MAX_STAGE, setI18N, setConfig, getConfig, print, lint};
+	const wikiparse = {id: 0, setI18N, setConfig, getConfig, print, lint};
+	Object.defineProperty(wikiparse, 'MAX_STAGE', {value: MAX_STAGE, enumerable: true, configurable: true});
 
 	/** 用于语法分析 */
 	class Linter {
