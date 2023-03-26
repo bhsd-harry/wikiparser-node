@@ -41,6 +41,7 @@
 		"eslint-plugin-jsdoc": "^1.0.0",
 		"eslint-plugin-json-es": "^1.5.7",
 		"eslint-plugin-eslint-comments": "^3.2.0",
+		"eslint-plugin-wikitext": "^0.0.0",
 		"ajv-cli": "^5.0.0",
 		"request": "^2.88.2"
 	},
