@@ -6,7 +6,7 @@ const fs = require('fs'),
 	diff = require('../util/diff'),
 	Parser = require('..');
 
-const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.txt'), 'utf8');
+const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.wiki'), 'utf8');
 
 (async () => {
 	console.time('parse');

@@ -2,6 +2,6 @@
 /printed/*
 /.vscode/
 /wiki/
-/test/single-page.txt
+/test/single-page.wiki
 /test/processed.txt
 !README

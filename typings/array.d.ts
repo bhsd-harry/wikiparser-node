@@ -11,7 +11,7 @@ declare global {
 		 */
 		findLast<S extends T>(predicate: (this: void, value: T, index: number, obj: T[]) => value is S, thisArg?: *): S | undefined;
 		findLast(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: *): T | undefined;
-	
+
 		/**
 		 * Returns the index of the last element in the array where predicate is true, and -1
 		 * otherwise.
