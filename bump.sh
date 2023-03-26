@@ -12,7 +12,7 @@ else
 	eslint . && stylelint extensions/*.css
 	if [[ $? -eq 0 ]]
 	then
-		sed -i '' -E "s|wikiparser-node@.+-b/bundle/|wikiparser-node@$1-b/bundle/|" extensions/editor.js
+		sed -i '' -E "s|wikiparser-node@.+-b/bundle/|wikiparser-node@$1-b/bundle/|" extensions/base.js
 		git add -A
 		git commit -m "chore: bump version to v$1-b"
 		git push
