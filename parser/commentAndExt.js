@@ -20,10 +20,13 @@ const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], inclu
 			const str = `\0${accum.length}e\x7F`;
 			new OnlyincludeToken(inner, config, accum);
 			return str;
-		}).replace(/(^|\0\d+e\x7F)([^\0]+)(?=$|\0\d+e\x7F)/gu, (_, lead, substr) => {
-			new NoincludeToken(substr, config, accum);
-			return `${lead}\0${accum.length - 1}c\x7F`;
-		});
+		}).replace(
+			/(^|\0\d+e\x7F)([^\0]+)(?=$|\0\d+e\x7F)/gu,
+			/** @type {function(...string): string} */ (_, lead, substr) => {
+				new NoincludeToken(substr, config, accum);
+				return `${lead}\0${accum.length - 1}c\x7F`;
+			},
+		);
 	}
 	const ext = config.ext.join('|'),
 		includeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
