@@ -780,23 +780,16 @@
 			}
 		},
 		{
-			"files": "printed/*.json",
-			"rules": {
-				"indent": 0
-			}
-		},
-		{
-			"files": "**/*.wiki",
-			"extends": [
-				"plugin:wikitext/inherited"
+			"files": [
+				"errors/*.json",
+				"printed/*.json"
 			],
-			"parserOptions": {
-				"config": "./config/moegirl"
-			},
 			"rules": {
-				"no-multiple-empty-lines": 0,
-				"no-trailing-spaces": 0,
-				"unicorn/filename-case": 0
+				"eol-last": [
+					2,
+					"never"
+				],
+				"indent": 0
 			}
 		}
 	],
