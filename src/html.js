@@ -77,7 +77,7 @@ class HtmlToken extends Token {
 		}
 		if (this.closest('table-attrs')) {
 			refError ||= generateForSelf(this, {start}, '');
-			errors.push({...refError, message: 'HTML tag in table attributes'});
+			errors.push({...refError, message: Parser.msg('HTML tag in table attributes')});
 		}
 		try {
 			this.findMatchingTag();
