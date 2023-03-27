@@ -1,7 +1,7 @@
 {
-	"name": "wikiparser-node-mini",
-	"version": "0.10.0",
-	"description": "A Node.js parser for MediaWiki markup with AST (mini ver.)",
+	"name": "wikiparser-node",
+	"version": "0.10.0-m",
+	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
 		"wikitext",
