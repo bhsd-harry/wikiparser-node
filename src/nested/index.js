@@ -34,10 +34,13 @@ class NestedToken extends Token {
 				}
 				return str;
 			},
-		)?.replace(/(?<=^|\0\d+[ce]\x7F)[^\0]+(?=$|\0\d+[ce]\x7F)/gu, substr => {
-			new NoincludeToken(substr, config, accum);
-			return `\0${accum.length}c\x7F`;
-		});
+		)?.replace(
+			/(?<=^|\0\d+[ce]\x7F)[^\0]+(?=$|\0\d+[ce]\x7F)/gu,
+			substr => {
+				new NoincludeToken(substr, config, accum);
+				return `\0${accum.length}c\x7F`;
+			},
+		);
 		super(text, config, true, accum, {
 			NoincludeToken: ':', ExtToken: ':',
 		});
