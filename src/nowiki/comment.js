@@ -32,7 +32,7 @@ class CommentToken extends hidden(NowikiToken) {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
 	}
 

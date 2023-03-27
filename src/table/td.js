@@ -103,7 +103,7 @@ class TdToken extends TrToken {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start);
 		start += this.getRelativeIndex(-1);
 		for (const child of this.lastChild.childNodes) {

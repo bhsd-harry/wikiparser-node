@@ -61,7 +61,7 @@ class GalleryToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
 			/** @type {LintError[]} */ errors = [];
 		for (let i = 0, startIndex = start; i < this.length; i++) {
@@ -81,7 +81,6 @@ class GalleryToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + length,
-					excerpt: String(child).slice(0, 50),
 				});
 			} else if (child.type !== 'hidden' && child.type !== 'text') {
 				errors.push(...child.lint(startIndex));

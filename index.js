@@ -2,7 +2,6 @@
 
 const /** @type {Parser} */ Parser = {
 	config: './config/default',
-	i18n: undefined,
 
 	MAX_STAGE: 11,
 
@@ -14,10 +13,6 @@ const /** @type {Parser} */ Parser = {
 	},
 
 	msg(msg, arg) {
-		if (typeof this.i18n === 'string') {
-			this.i18n = require(this.i18n);
-		}
-		msg = this.i18n?.[msg] ?? msg;
 		return msg.replace('$1', arg);
 	},
 

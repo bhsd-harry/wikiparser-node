@@ -127,7 +127,7 @@ class ImageParameterToken extends Token {
 	 * @this {ImageParameterToken & {link: Title}}
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start);
 		if (this.name === 'invalid') {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image parameter'));

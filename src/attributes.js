@@ -108,7 +108,7 @@ class AttributesToken extends Token {
 	 * @this {AttributesToken & {parentNode: HtmlToken}}
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const HtmlToken = require('./html');
 		const errors = super.lint(start),
 			{parentNode: {closing}, length, childNodes} = this,
@@ -123,10 +123,7 @@ class AttributesToken extends Token {
 			const /** @type {AtomToken|AttributeToken} */ attr = childNodes[i];
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-				errors.push({
-					...generateForChild(attr, rect, 'containing invalid attribute'),
-					excerpt: childNodes.slice(i).map(String).join('').slice(0, 50),
-				});
+				errors.push(generateForChild(attr, rect, 'containing invalid attribute'));
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
 				if (name in attrs) {

@@ -54,7 +54,7 @@ class ConverterFlagsToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
 			validFlags = new Set(this.#flags.filter(flag => definedFlags.has(flag))),
@@ -73,7 +73,7 @@ class ConverterFlagsToken extends Token {
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
 				const error = generateForChild(child, rect, 'invalid conversion flag');
-				errors.push({...error, excerpt: childNodes.slice(0, i + 1).map(String).join(';').slice(-50)});
+				errors.push(error);
 			}
 		}
 		return errors;

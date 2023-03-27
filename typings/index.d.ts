@@ -4,7 +4,6 @@ import Title from '../lib/title';
 declare global {
 	interface Parser {
 		config: string|ParserConfig;
-		i18n: string|Record<string, string>;
 
 		readonly MAX_STAGE: number;
 

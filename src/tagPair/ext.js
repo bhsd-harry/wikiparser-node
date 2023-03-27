@@ -30,6 +30,7 @@ class ExtToken extends TagPairToken {
 		let /** @type {Token} */ innerToken;
 		ext.delete(lcName);
 		newConfig.ext = [...ext];
+		newConfig.inExt = true;
 		switch (lcName) {
 			case 'tab':
 				ext.delete('tabs');
@@ -110,13 +111,12 @@ class ExtToken extends TagPairToken {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
-				excerpt = String(root).slice(Math.max(0, start - 25), start + 25),
 				rect = {start, ...root.posFromIndex(start)};
-			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
+			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
 		}
 		return errors;
 	}

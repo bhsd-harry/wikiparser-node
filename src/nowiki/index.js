@@ -23,7 +23,7 @@ class NowikiToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const {type, name} = this;
 		return type === 'ext-inner' && (name === 'templatestyles' || name === 'section') && String(this)
 			? [generateForSelf(this, {start}, Parser.msg('nothing should be in <$1>', name))]

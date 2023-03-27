@@ -91,7 +91,7 @@ class LinkToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
 		let rect;

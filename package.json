@@ -1,13 +1,14 @@
 {
-	"name": "wikiparser-node",
-	"version": "0.10.0-m",
-	"description": "A Node.js parser for MediaWiki markup with AST",
+	"name": "wikilint",
+	"version": "0.10.0",
+	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
 		"wikitext",
-		"parser"
+		"lint",
+		"linter"
 	],
-	"homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
+	"homepage": "https://github.com/bhsd-harry/wikiparser-node/tree/lint#readme",
 	"bugs": {
 		"url": "https://github.com/bhsd-harry/wikiparser-node/issues"
 	},
@@ -16,7 +17,6 @@
 	"files": [
 		"/index.js",
 		"/config/",
-		"/i18n/",
 		"/lib/",
 		"/mixin/",
 		"/parser/",

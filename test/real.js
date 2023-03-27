@@ -11,7 +11,6 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
-Parser.i18n = './i18n/zh-hans';
 Parser.debug = /** @implements */ (msg, ...args) => {
 	console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
 };

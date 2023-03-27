@@ -73,9 +73,9 @@ class ParameterToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start),
-			{firstChild, lastChild} = this,
+			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
 				.exec(String(firstChild).replace(/<!--.*?-->/gsu, ''))?.[0];
 		if (link && new URL(link).search) {
@@ -87,7 +87,6 @@ class ParameterToken extends Token {
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
-				excerpt: `${String(firstChild).slice(-25)}=${String(lastChild).slice(0, 25)}`,
 			});
 		}
 		return errors;

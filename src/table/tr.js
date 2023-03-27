@@ -33,7 +33,7 @@ class TrToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const TranscludeToken = require('../transclude'),
 			ArgToken = require('../arg');
 		const errors = super.lint(start),
@@ -59,7 +59,6 @@ class TrToken extends Token {
 			startIndex: error.startIndex + 1,
 			startLine: error.startLine + 1,
 			startCol: 0,
-			excerpt: error.excerpt.slice(1),
 		});
 		return errors;
 	}

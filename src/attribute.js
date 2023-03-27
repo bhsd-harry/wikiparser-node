@@ -240,7 +240,7 @@ class AttributeToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, parentNode, value} = this,
 			tagName = parentNode?.name;
@@ -251,7 +251,7 @@ class AttributeToken extends Token {
 			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
 				startIndex = e.startIndex - 1,
 				startCol = e.startCol - 1;
-			errors.push({...e, startIndex, startCol, excerpt: String(root).slice(startIndex, startIndex + 50)});
+			errors.push({...e, startIndex, startCol});
 		}
 		if (!/\{\{[^{]+\}\}/u.test(name) && (
 			type === 'ext-attr' && !(tagName in htmlAttrs) && extAttrs[tagName] && !extAttrs[tagName].has(name)

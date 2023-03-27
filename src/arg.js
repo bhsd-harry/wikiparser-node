@@ -69,7 +69,7 @@ class ArgToken extends Token {
 	 * @param {number} start 起始位置
 	 * @returns {LintError[]}
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		if (!this.getAttribute('include')) {
 			return [generateForSelf(this, {start}, 'unexpected template argument')];
 		}
@@ -82,8 +82,8 @@ class ArgToken extends Token {
 			const rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => {
 				const error = generateForChild(child, rect, 'invisible content inside triple brackets'),
-					{startIndex, startCol, excerpt} = error;
-				return {...error, startIndex: startIndex - 1, startCol: startCol - 1, excerpt: `|${excerpt}`};
+					{startIndex, startCol} = error;
+				return {...error, startIndex: startIndex - 1, startCol: startCol - 1};
 			}));
 		}
 		return errors;

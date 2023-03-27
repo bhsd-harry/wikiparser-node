@@ -25,28 +25,24 @@ class QuoteToken extends NowikiToken {
 	 * @this {AstText}
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
 			/** @type {LintError[]} */ errors = [];
-		let refError, wikitext;
+		let refError;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
-			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
 				[{length}] = previousSibling.data.match(/(?<!')'+$/u),
-				startIndex = start - length,
-				excerpt = wikitext.slice(startIndex, startIndex + 50);
-			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});
+				startIndex = start - length;
+			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data[0] === `'`) {
 			refError ||= generateForSelf(this, {start}, message);
-			wikitext ||= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u),
-				endIndex = startIndex + length,
-				excerpt = wikitext.slice(Math.max(0, endIndex - 50), endIndex);
-			errors.push({...refError, startIndex, endIndex, startLine, startCol, endCol: startCol + length, excerpt});
+				endIndex = startIndex + length;
+			errors.push({...refError, startIndex, endIndex, startLine, startCol, endCol: startCol + length});
 		}
 		return errors;
 	}

@@ -15,7 +15,7 @@ class MagicLinkToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start),
 			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`;
 		let /** @type {{top: number, left: number}} */ rect;
@@ -42,7 +42,6 @@ class MagicLinkToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + length,
-					excerpt: str.slice(Math.max(0, index - 25), index + 25),
 				};
 			}));
 		}

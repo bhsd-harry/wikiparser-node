@@ -60,36 +60,27 @@ class HtmlToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start);
-		let wikitext, /** @type {LintError} */ refError;
+		let /** @type {LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
-			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
-			errors.push({...refError, excerpt: wikitext.slice(start, start + 50)});
+			errors.push(refError);
 		}
 		if (this.closest('table-attrs')) {
-			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
-			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
-			errors.push({...refError, message: Parser.msg('HTML tag in table attributes'), excerpt});
+			errors.push({...refError, message: Parser.msg('HTML tag in table attributes')});
 		}
 		try {
 			this.findMatchingTag();
 		} catch ({message: errorMsg}) {
-			wikitext ||= String(this.getRootNode());
 			refError ||= generateForSelf(this, {start}, '');
 			const [msg] = errorMsg.split(':'),
 				error = {...refError, message: Parser.msg(msg)};
 			if (msg === 'unclosed tag') {
 				error.severity = 'warning';
-				error.excerpt = wikitext.slice(start, start + 50);
-			} else if (msg === 'unmatched closing tag') {
-				const end = start + String(this).length;
-				error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
-				if (magicWords.has(this.closest('magic-word')?.name)) {
-					error.severity = 'warning';
-				}
+			} else if (msg === 'unmatched closing tag' && magicWords.has(this.closest('magic-word')?.name)) {
+				error.severity = 'warning';
 			}
 			errors.push(error);
 		}

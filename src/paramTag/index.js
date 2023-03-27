@@ -49,7 +49,7 @@ class ParamTagToken extends Token {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		let /** @type {{top: number, left: number}} */ rect;
 		return this.childNodes.filter(child => {
 			const {childNodes} = child,

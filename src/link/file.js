@@ -33,7 +33,7 @@ class FileToken extends LinkToken {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start),
 			args = this.getAllArgs().filter(({childNodes}) => {
 				const visibleNodes = childNodes.filter(node => node.text().trim());

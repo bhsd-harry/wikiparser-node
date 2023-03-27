@@ -12,6 +12,7 @@ declare global {
 		img: Record<string, string>;
 		variants: string[];
 		excludes: string[];
+		inExt: boolean;
 	}
 
 	type accum = Token[];
@@ -25,7 +26,6 @@ declare global {
 		startCol: number;
 		endLine: number;
 		endCol: number;
-		excerpt: string;
 	}
 }
 

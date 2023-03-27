@@ -17,14 +17,13 @@ const generateForChild = (child, boundingRect, msg, severity = 'error') => {
 		{top: offsetTop, left: offsetLeft} = parentNode.posFromIndex(index),
 		{start} = boundingRect,
 		{top, left} = 'top' in boundingRect ? boundingRect : child.getRootNode().posFromIndex(start),
-		excerpt = String(child).slice(0, 50),
 		startIndex = start + index,
 		endIndex = startIndex + length,
 		startLine = top + offsetTop,
 		endLine = startLine + offsetHeight - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
 		endCol = offsetHeight > 1 ? offsetWidth : startCol + offsetWidth;
-	return {message: Parser.msg(msg), severity, startIndex, endIndex, startLine, endLine, startCol, endCol, excerpt};
+	return {message: Parser.msg(msg), severity, startIndex, endIndex, startLine, endLine, startCol, endCol};
 };
 
 /**
@@ -48,7 +47,6 @@ const generateForSelf = (token, boundingRect, msg, severity = 'error') => {
 		endLine: top + offsetHeight - 1,
 		startCol: left,
 		endCol: offsetHeight > 1 ? offsetWidth : left + offsetWidth,
-		excerpt: String(token).slice(0, 50),
 	};
 };
 

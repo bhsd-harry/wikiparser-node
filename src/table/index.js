@@ -20,13 +20,12 @@ class TableToken extends TrToken {
 	 * @override
 	 * @param {number} start 起始位置
 	 */
-	lint(start = this.getAbsoluteIndex()) {
+	lint(start) {
 		const errors = super.lint(start);
 		if (!this.closed) {
-			const {firstChild, lastChild: tr} = this,
-				{lastChild: td} = tr,
+			const {firstChild} = this,
 				error = generateForChild(firstChild, {start}, 'unclosed table');
-			errors.push({...error, excerpt: String(td?.type === 'td' ? td : tr).slice(0, 50)});
+			errors.push(error);
 		}
 		return errors;
 	}
