@@ -8,7 +8,8 @@ However, you can also directly lint Wikitext articles using this package. Here i
 
 ```js
 const Parser = require('wikilint');
-Parser.config = './config/zhwiki'; // path to the configuration file, using Chinese Wikipedia as an example
+// path to the configuration file, using Chinese Wikipedia as an example
+Parser.config = './config/zhwiki';
 
 const wikitext = 'some text',
 	include = false; // whether this text will be transcluded on another page
