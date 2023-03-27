@@ -17,16 +17,18 @@ class MagicLinkToken extends Token {
 	 */
 	lint(start) {
 		const errors = super.lint(start),
-			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`;
+			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
+			regex = new RegExp(source, 'u'),
+			regexGlobal = new RegExp(source, 'gu');
 		let /** @type {{top: number, left: number}} */ rect;
 		for (const child of this.childNodes) {
 			const str = String(child);
-			if (child.type !== 'text' || !new RegExp(source, 'u').test(str)) {
+			if (child.type !== 'text' || !regex.test(str)) {
 				continue;
 			}
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			const refError = generateForChild(child, rect, '', 'warning');
-			errors.push(...[...str.matchAll(new RegExp(source, 'gu'))].map(({index, 0: {0: char, length}}) => {
+			errors.push(...[...str.matchAll(regexGlobal)].map(({index, 0: {0: char, length}}) => {
 				const lines = str.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines.at(-1),
