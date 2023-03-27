@@ -771,8 +771,15 @@
 			}
 		},
 		{
-			"files": "printed/*.json",
+			"files": [
+				"errors/*.json",
+				"printed/*.json"
+			],
 			"rules": {
+				"eol-last": [
+					2,
+					"never"
+				],
 				"indent": 0
 			}
 		},
