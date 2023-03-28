@@ -782,21 +782,6 @@
 				],
 				"indent": 0
 			}
-		},
-		{
-			"files": "**/*.wiki",
-			"extends": [
-				"plugin:wikitext/inherited"
-			],
-			"parserOptions": {
-				"config": "./config/moegirl"
-			},
-			"rules": {
-				"no-irregular-whitespace": 0,
-				"no-multiple-empty-lines": 0,
-				"no-trailing-spaces": 0,
-				"unicorn/filename-case": 0
-			}
 		}
 	],
 	"settings": {
