@@ -9,10 +9,12 @@ const fs = require('fs'),
 const man = `
 Available options:
 -c, --config <path or preset config>    Choose parser's configuration
+-h, --help                              Print available options
 -i, --include                           Parse for inclusion
 -q, --quiet                             Report errors only
 -s, --strict                            Exit 1 when there is an error or warning
                                         Override -q or --quiet
+-v, --version                           Print package version
 `,
 	preset = new Set(['default', 'zhwiki', 'moegirl', 'llwiki']),
 	{argv} = process,
@@ -58,6 +60,10 @@ for (let i = 2; i < argv.length; i++) {
 			config = option[++i];
 			throwOnConfig();
 			break;
+		case '-h':
+		case '--help':
+			console.log(man);
+			return;
 		case '-i':
 		case '--include':
 			include = true;
@@ -70,6 +76,12 @@ for (let i = 2; i < argv.length; i++) {
 		case '--strict':
 			strict = true;
 			break;
+		case '-v':
+		case '--version': {
+			const {version} = require('../package');
+			console.log(`wikilint v${version}`);
+			return;
+		}
 		default:
 			if (option.startsWith('--config=')) {
 				config = option.slice(9);
