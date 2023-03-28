@@ -111,7 +111,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 			throw new SyntaxError(`非法的图库文件名：${link}`);
 		}
 		const {firstChild} = image;
-		image.destroy(true);
+		image.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 }

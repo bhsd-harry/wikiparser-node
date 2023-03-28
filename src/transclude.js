@@ -667,7 +667,7 @@ class TranscludeToken extends Token {
 		} else if (this.length > 1) {
 			this.childNodes[1].replaceChildren(...lastChild.childNodes);
 		} else {
-			invoke.destroy(true);
+			invoke.destroy();
 			this.insertAt(lastChild);
 		}
 	}
@@ -697,7 +697,7 @@ class TranscludeToken extends Token {
 		} else if (this.length > 2) {
 			this.childNodes[2].replaceChildren(...lastChild.childNodes);
 		} else {
-			invoke.destroy(true);
+			invoke.destroy();
 			this.insertAt(lastChild);
 		}
 	}

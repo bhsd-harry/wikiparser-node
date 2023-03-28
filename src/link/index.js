@@ -251,7 +251,7 @@ class LinkToken extends Token {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
-		wikiLink.destroy(true);
+		wikiLink.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 
@@ -278,7 +278,7 @@ class LinkToken extends Token {
 		if (length !== 1 || type !== 'link' || linkLength !== 1 || interwiki !== lang.toLowerCase()) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
 		}
-		wikiLink.destroy(true);
+		wikiLink.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 
@@ -302,7 +302,7 @@ class LinkToken extends Token {
 		} else if (page) {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}
-		wikiLink.destroy(true);
+		wikiLink.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 

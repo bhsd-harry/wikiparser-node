@@ -193,7 +193,7 @@ class ParameterToken extends fixedToken(Token) {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
 		const {lastChild} = parameter;
-		parameter.destroy(true);
+		parameter.destroy();
 		this.lastChild.safeReplaceWith(lastChild);
 	}
 
@@ -230,7 +230,7 @@ class ParameterToken extends fixedToken(Token) {
 				throw new RangeError(`参数更名造成重复参数：${parameterName}`);
 			}
 		}
-		parameter.destroy(true);
+		parameter.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 }

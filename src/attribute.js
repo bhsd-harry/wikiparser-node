@@ -421,7 +421,7 @@ class AttributeToken extends fixedToken(Token) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
 		const {lastChild} = firstChild;
-		firstChild.destroy(true);
+		firstChild.destroy();
 		this.lastChild.safeReplaceWith(lastChild);
 		if (this.#quotes[0]) {
 			this.close();
@@ -461,7 +461,7 @@ class AttributeToken extends fixedToken(Token) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
 		const {firstChild} = attr;
-		attr.destroy(true);
+		attr.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 }

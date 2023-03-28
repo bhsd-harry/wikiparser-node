@@ -187,7 +187,7 @@ class ConverterRuleToken extends Token {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
 		const {lastChild} = converterRule;
-		converterRule.destroy(true);
+		converterRule.destroy();
 		this.lastChild.safeReplaceWith(lastChild);
 	}
 
