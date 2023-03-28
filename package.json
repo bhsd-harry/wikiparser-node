@@ -24,6 +24,9 @@
 		"/tool/",
 		"/util/"
 	],
+	"bin": {
+		"initdoc": "./bin/initdoc.js"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
