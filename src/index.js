@@ -41,10 +41,12 @@
 // v: ConverterToken
 
 const {text} = require('../util/string'),
+	v8 = require('v8'),
 	Parser = require('..'),
 	AstElement = require('../lib/element'),
 	AstText = require('../lib/text');
-const {MAX_STAGE} = Parser;
+const {MAX_STAGE} = Parser,
+	structuredClone = global.structuredClone || (obj => v8.deserialize(v8.serialize(obj)));
 
 /**
  * 所有节点的基类
@@ -183,7 +185,7 @@ class Token extends AstElement {
 	getAttribute(key) {
 		switch (key) {
 			case 'config':
-				return JSON.parse(JSON.stringify(this.#config));
+				return structuredClone(this.#config);
 			case 'accum':
 				return this.#accum;
 			case 'parseOnce':
