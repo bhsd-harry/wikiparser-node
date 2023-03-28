@@ -95,7 +95,7 @@ class LinkToken extends Token {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
 		let rect;
-		if (target.childNodes.some(({type}) => type === 'template')) {
+		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
 		}
