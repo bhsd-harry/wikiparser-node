@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "0.10.0",
+	"version": "1.0.0",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -23,12 +23,15 @@
 		"/src/",
 		"/util/"
 	],
+	"bin": {
+		"wikilint": "./bin/cli.js"
+	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
+		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false && npx wikilint test/single-page.wiki",
 		"real": "node test/real.js",
 		"single": "node test/single.js"
 	},
