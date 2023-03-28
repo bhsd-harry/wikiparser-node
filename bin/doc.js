@@ -8,7 +8,8 @@ const {prototype} = Node,
 	{constructor: {name}} = prototype,
 	filename = `wiki/${name}.md`,
 	properties = [],
-	methods = [];
+	methods = [],
+	ignoreMethods = new Set(['constructor', 'getAttribute', 'setAttribute']);
 
 if (fs.existsSync(filename)) {
 	throw new RangeError(`文档 ${name}.md 已存在！`);
@@ -17,7 +18,9 @@ if (fs.existsSync(filename)) {
 for (const key of Object.getOwnPropertyNames(prototype)) {
 	try {
 		if (typeof prototype[key] === 'function') {
-			methods.push(key);
+			if (!ignoreMethods.has(key)) {
+				methods.push(key);
+			}
 			continue;
 		}
 	} catch {}
