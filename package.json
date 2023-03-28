@@ -24,14 +24,12 @@
 		"/tool/",
 		"/util/"
 	],
-	"bin": {
-		"initdoc": "./bin/initdoc.js"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"doc": "node ./bin/doc.js",
 		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"real": "node test/real.js",
 		"single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"

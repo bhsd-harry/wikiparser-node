@@ -6,8 +6,13 @@ const fs = require('fs'),
 	/** @type {ObjectConstructor} */ Node = require(`.${file[0] === '.' ? '' : './'}${file}`);
 const {prototype} = Node,
 	{constructor: {name}} = prototype,
+	filename = `wiki/${name}.md`,
 	properties = [],
 	methods = [];
+
+if (fs.existsSync(filename)) {
+	throw new RangeError(`文档 ${name}.md 已存在！`);
+}
 
 for (const key of Object.getOwnPropertyNames(prototype)) {
 	try {
@@ -43,4 +48,4 @@ if (methods.length > 0) {
 	doc += `# Methods\n\n${methods.map(key => `## ${key}${details}`).join('')}`;
 }
 
-fs.writeFileSync(`wiki/${name}.md`, doc);
+fs.writeFileSync(filename, doc);
