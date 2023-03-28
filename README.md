@@ -1,17 +1,20 @@
-[![npm version](https://badge.fury.io/js/wikiparser-node.svg)](https://www.npmjs.com/package/wikilint)
+[![npm version](https://badge.fury.io/js/wikilint.svg)](https://www.npmjs.com/package/wikilint)
 [![CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/github-code-scanning/codeql)
 
 # wikilint
 This is a minimal version of [wikiparser-node](https://www.npmjs.com/package/wikiparser-node) specifically designed for [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext).
 
-However, you can also directly lint Wikitext articles using this package. Here is an example:
+You can also directly lint Wikitext articles in the command line using this package:
 
-```js
-const Parser = require('wikilint');
-// path to the configuration file, using Chinese Wikipedia as an example
-Parser.config = './config/zhwiki';
-
-const wikitext = 'some text',
-	include = false; // whether this text will be transcluded on another page
-console.log(Parser.parse(wikitext, include).lint());
+```sh
+wikilint --config zhwiki --include *.wiki
 ```
+
+## CLI Options
+
+| Option | Description | Default |
+| :----- | :---------- | :------ |
+| `-c`, `--config` \<path or preset config\> | Choose parser's configuration | `default` |
+| `-i`, `--include` | Parse for inclusion | no inclusion |
+| `-q`, `--quiet` | Report errors only | errors and warnings |
+| `-s`, `--strict` | Exit `1` when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
