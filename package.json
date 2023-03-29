@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
