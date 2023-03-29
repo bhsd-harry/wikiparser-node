@@ -18,6 +18,7 @@
 		"/extensions/",
 		"!/extensions/gh-page.*",
 		"!/extensions/.eslintrc.json",
+		"/config/",
 		"/i18n/"
 	],
 	"browser": "/bundle/bundle.min.js",
@@ -26,7 +27,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"tsc": "rm -r dist/ && /usr/local/bin/tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"test": "rm bundle/*.js; webpack && eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false && stylelint extensions/*.css",
 		"real": "node test/real.js",
 		"single": "node test/single.js"

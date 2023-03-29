@@ -24,7 +24,8 @@
 	},
 	"ignorePatterns": [
 		"webpack.config.js",
-		"!config/.schema.json"
+		"!config/.schema.json",
+		"wiki/"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -793,7 +794,7 @@
 			}
 		},
 		{
-			"files": "typings/*.d.ts",
+			"files": "**/*.ts",
 			"parser": "@typescript-eslint/parser",
 			"plugins": [
 				"@typescript-eslint"
