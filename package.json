@@ -22,7 +22,8 @@
 		"/parser/",
 		"/src/",
 		"/util/",
-		"/typings/"
+		"/typings/",
+		"/dist/"
 	],
 	"bin": {
 		"wikilint": "./bin/cli.js"
