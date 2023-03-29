@@ -15,6 +15,7 @@
 	"author": "Bhsd",
 	"files": [
 		"/index.js",
+		"/bin/",
 		"/config/",
 		"/i18n/",
 		"/lib/",
@@ -31,6 +32,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"postinstall": "npm run build",
 		"build": "rm -rf dist/ && tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
