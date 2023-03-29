@@ -16,7 +16,7 @@ class ConverterToken extends Token {
 	/**
 	 * @param {string[]} flags 转换类型标记
 	 * @param {string[]} rules 转换规则
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(flags, rules, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);

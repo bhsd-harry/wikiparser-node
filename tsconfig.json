@@ -1,0 +1,14 @@
+{
+	"include": [
+		"lib/*",
+		"mixin/*",
+		"parser/*",
+		"src/**/*"
+	],
+	"compilerOptions": {
+		"allowJs": true,
+		"declaration": true,
+		"emitDeclarationOnly": true,
+		"outDir": "dist"
+	}
+}

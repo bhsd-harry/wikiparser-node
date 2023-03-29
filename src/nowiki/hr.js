@@ -12,7 +12,7 @@ class HrToken extends NowikiToken {
 
 	/**
 	 * @param {number} n 字符串长度
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super('-'.repeat(n), config, accum);

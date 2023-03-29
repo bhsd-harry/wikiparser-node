@@ -41,7 +41,7 @@ class TdToken extends TrToken {
 	/**
 	 * @param {string} syntax 单元格语法
 	 * @param {string} inner 内部wikitext
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
 		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),

@@ -15,7 +15,7 @@ class GalleryToken extends Token {
 
 	/**
 	 * @param {string} inner 标签内部wikitext
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -63,7 +63,7 @@ class GalleryToken extends Token {
 	 */
 	lint(start) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
-			/** @type {LintError[]} */ errors = [];
+			/** @type {import('../typings/token').LintError[]} */ errors = [];
 		for (let i = 0, startIndex = start; i < this.length; i++) {
 			const child = this.childNodes[i],
 				str = String(child),

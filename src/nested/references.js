@@ -12,7 +12,7 @@ class ReferencesToken extends NestedToken {
 
 	/**
 	 * @param {string|undefined} wikitext wikitext
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, /<!--.*?(?:-->|$)|<(ref)(\s[^>]*)?>(.*?)<\/(ref\s*)>/gisu, ['ref'], config, accum);

@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = {
+const /** @type {import('./typings')} */ Parser = {
 	config: './config/default',
 
 	MAX_STAGE: 11,

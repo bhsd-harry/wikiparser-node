@@ -6,7 +6,7 @@ const Parser = require('..'),
 /**
  * 解析单引号
  * @param {string} text wikitext
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  */
 const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	const arr = text.split(/('{2,})/u),

@@ -1,27 +1,16 @@
-import Token from '../src';
-import AstText from '../lib/text';
+import Token = require('../src');
+import AstText = require('../lib/text');
+import {ParserConfig, accum} from './token';
 
-declare global {
-	type buildFromStr
-		= <S extends string>(str: string, type: S) => S extends 'string'|'text' ? string : (AstText|Token)[];
+type buildFromStr = <S extends string>(str: string, type: S) => S extends 'string'|'text' ? string : (AstText|Token)[];
 
-	type TokenAttribute<T> =
-		T extends 'stage' ? number :
-		T extends 'config' ? ParserConfig :
-		T extends 'accum' ? accum :
-		T extends 'parentNode' ? Token|undefined :
-		T extends 'parseOnce' ? (n: number, include: boolean) => Token :
-		T extends 'buildFromStr' ? buildFromStr :
-		T extends 'build' ? () => void :
-		T extends 'bracket'|'include' ? boolean :
-		string;
-
-	interface printOpt {
-		pre?: string;
-		post?: string;
-		sep?: string;
-		class?: string;
-	}
-}
-
-export {};
+export type TokenAttribute<T> =
+	T extends 'stage' ? number :
+	T extends 'config' ? ParserConfig :
+	T extends 'accum' ? accum :
+	T extends 'parentNode' ? Token|undefined :
+	T extends 'parseOnce' ? (n: number, include: boolean) => Token :
+	T extends 'buildFromStr' ? buildFromStr :
+	T extends 'build' ? () => void :
+	T extends 'bracket'|'include' ? boolean :
+	string;

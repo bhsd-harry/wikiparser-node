@@ -14,7 +14,7 @@ class InputboxToken extends ParamTagToken {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, accum);
