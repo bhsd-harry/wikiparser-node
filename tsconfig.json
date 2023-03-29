@@ -1,11 +1,7 @@
 {
 	"include": [
 		"lib/*",
-		"mixin/*",
-		"parser/*",
-		"src/**/*",
-		"tool/*",
-		"util/*"
+		"src/**/*"
 	],
 	"compilerOptions": {
 		"allowJs": true,
