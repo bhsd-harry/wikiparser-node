@@ -8,7 +8,7 @@ const Parser = require('..'),
 /**
  * 解析内部链接
  * @param {string} wikitext wikitext
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  */
 const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js');

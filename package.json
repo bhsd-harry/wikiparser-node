@@ -21,13 +21,16 @@
 		"/mixin/",
 		"/parser/",
 		"/src/",
-		"/util/"
+		"/util/",
+		"/dist/"
 	],
+	"types": "./dist/index.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"tsc": "rm -r dist/ && /usr/local/bin/tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"real": "node test/real.js",
 		"single": "node test/single.js"
@@ -41,6 +44,9 @@
 		"eslint-plugin-jsdoc": "^1.0.0",
 		"eslint-plugin-json-es": "^1.5.7",
 		"eslint-plugin-eslint-comments": "^3.2.0",
+		"typescript": "^4.6.3",
+		"@typescript-eslint/eslint-plugin": "^5.47.1",
+		"@typescript-eslint/parser": "^5.47.1",
 		"ajv-cli": "^5.0.0",
 		"request": "^2.88.2"
 	},

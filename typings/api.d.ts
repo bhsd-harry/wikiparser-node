@@ -1,13 +1,9 @@
-declare global {
-	interface MediaWikiRevision {
-		content: string;
-		contentmodel: string;
-	}
-	interface MediaWikiPage {
-		title: string;
-		ns: number;
-		revisions: MediaWikiRevision[];
-	};
+interface MediaWikiRevision {
+	content: string;
+	contentmodel: string;
 }
-
-export {};
+export interface MediaWikiPage {
+	title: string;
+	ns: number;
+	revisions: MediaWikiRevision[];
+}
