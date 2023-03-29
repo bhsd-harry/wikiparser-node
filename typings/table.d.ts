@@ -1,14 +1,10 @@
-declare global {
-	interface TableCoords {
-		row: number;
-		column: number;
-		start: boolean;
-	}
-
-	interface TableRenderedCoords {
-		x: number;
-		y: number;
-	}
+export interface TableCoords {
+	row: number;
+	column: number;
+	start: boolean;
 }
 
-export {};
+export interface TableRenderedCoords {
+	x: number;
+	y: number;
+}

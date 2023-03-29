@@ -12,7 +12,7 @@ class HasNowikiToken extends Token {
 	/**
 	 * @param {string} wikitext wikitext
 	 * @param {string} type type
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = []) {
 		wikitext = wikitext.replace(

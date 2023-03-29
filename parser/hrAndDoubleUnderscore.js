@@ -10,7 +10,7 @@ const Parser = require('..'),
 /**
  * 解析\<hr\>和状态开关
  * @param {Token & {firstChild: AstText}} root 根节点
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  */
 const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const {doubleUnderscore} = config,

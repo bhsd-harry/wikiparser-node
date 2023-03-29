@@ -19,7 +19,7 @@ class NestedToken extends Token {
 	 * @param {string|undefined} wikitext wikitext
 	 * @param {RegExp} regex 内层正则
 	 * @param {string[]} tags 内层标签名
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
 		const text = wikitext?.replace(

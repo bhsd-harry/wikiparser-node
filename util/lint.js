@@ -1,5 +1,7 @@
 'use strict';
 
+/** @typedef {import('../typings/token').LintError} LintError */
+
 const Parser = require('..'),
 	Token = require('../src');
 

@@ -23,7 +23,7 @@ class CategoryToken extends LinkToken {
 	/**
 	 * @param {string} link 分类名
 	 * @param {string|undefined} text 排序关键字
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 * @param {string} delimiter `|`
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = [], delimiter = '|') {

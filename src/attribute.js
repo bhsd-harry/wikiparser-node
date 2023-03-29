@@ -1,5 +1,7 @@
 'use strict';
 
+/** @typedef {import('../typings/token').ParserConfig} ParserConfig */
+
 const {generateForChild} = require('../util/lint'),
 	{noWrap, removeComment} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
@@ -208,7 +210,7 @@ class AttributeToken extends fixedToken(Token) {
 	 * @param {string} equal 等号
 	 * @param {string} value 属性值
 	 * @param {string[]} quotes 引号
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
@@ -346,7 +348,7 @@ class AttributeToken extends fixedToken(Token) {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
+	 * @returns {import('../typings/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		if (key === 'equal') {

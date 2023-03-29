@@ -62,7 +62,7 @@ class FileToken extends LinkToken {
 	/**
 	 * @param {string} link 文件名
 	 * @param {string|undefined} text 图片参数
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 * @param {string} delimiter `|`
 	 * @complexity `n`
 	 */

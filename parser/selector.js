@@ -1,5 +1,8 @@
 'use strict';
 
+/** @typedef {import('../typings/parser').SelectorArray} SelectorArray */
+/** @typedef {import('../typings/parser').pseudo} pseudo */
+
 const Parser = require('..');
 
 const /** @type {Set<pseudo>} */ simplePseudos = new Set([

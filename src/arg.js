@@ -19,7 +19,7 @@ class ArgToken extends Token {
 
 	/**
 	 * @param {string[]} parts 以'|'分隔的各部分
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 * @complexity `n`
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
@@ -76,7 +76,7 @@ class ArgToken extends Token {
 	/**
 	 * @override
 	 * @param {number} start 起始位置
-	 * @returns {LintError[]}
+	 * @returns {import('../typings/token').LintError[]}
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		if (!this.getAttribute('include')) {
@@ -113,7 +113,7 @@ class ArgToken extends Token {
 	/** @override */
 	afterBuild() {
 		this.setAttribute('name', this.firstChild.text().trim());
-		const /** @type {AstListener} */ argListener = ({prevTarget}) => {
+		const /** @type {import('../typings/event').AstListener} */ argListener = ({prevTarget}) => {
 			if (prevTarget === this.firstChild) {
 				this.setAttribute('name', prevTarget.text().trim());
 			}

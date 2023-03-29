@@ -7,7 +7,7 @@ const Parser = require('..'),
 /**
  * 解析HTML标签
  * @param {string} wikitext wikitext
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  */
 const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,

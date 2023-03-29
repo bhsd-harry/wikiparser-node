@@ -79,7 +79,7 @@ class LinkToken extends Token {
 	/**
 	 * @param {string} link 链接标题
 	 * @param {string|undefined} linkText 链接显示文字
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 * @param {string} delimiter `|`
 	 */
 	constructor(link, linkText, config = Parser.getConfig(), accum = [], delimiter = '|') {
@@ -113,7 +113,7 @@ class LinkToken extends Token {
 		if (this.#delimiter?.includes('\0')) {
 			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter, 'string');
 		}
-		const /** @type {AstListener} */ linkListener = (e, data) => {
+		const /** @type {import('../../typings/event').AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
@@ -146,7 +146,7 @@ class LinkToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @param {TokenAttribute<T>} value 属性值
+	 * @param {import('../../typings/node').TokenAttribute<T>} value 属性值
 	 */
 	setAttribute(key, value) {
 		if (key === 'bracket') {

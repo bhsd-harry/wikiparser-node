@@ -12,7 +12,7 @@ const removeComment = str => str.replace(/\0\d+c\x7F/gu, '');
 /**
  * 以HTML格式打印
  * @param {(AstText|AstElement)[]} childNodes 子节点
- * @param {printOpt} opt 选项
+ * @param {import('../typings/node').printOpt} opt 选项
  */
 const print = (childNodes, opt = {}) => {
 	const AstText = require('../lib/text'),

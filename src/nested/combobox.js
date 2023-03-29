@@ -12,7 +12,7 @@ class ComboboxToken extends NestedToken {
 
 	/**
 	 * @param {string|undefined} wikitext wikitext
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, /<(combooption)(\s[^>]*)?>(.*?)<\/(combooption\s*)>/gisu, ['combooption'], config, accum);

@@ -29,7 +29,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 	/**
 	 * @param {string} link 图片文件名
 	 * @param {string|undefined} text 图片参数
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = []) {
 		let token;
@@ -58,7 +58,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.setAttribute('name', titleObj.title);
 		this.#invalid = titleObj.interwiki || titleObj.ns !== 6; // 只用于gallery-image的首次解析
-		const /** @type {AstListener} */ linkListener = (e, data) => {
+		const /** @type {import('../../typings/event').AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),

@@ -1,5 +1,8 @@
 'use strict';
 
+/** @typedef {import('../../typings/table').TableCoords} TableCoords */
+/** @typedef {import('../../typings/table').TableRenderedCoords} TableRenderedCoords */
+
 const {generateForChild} = require('../../util/lint'),
 	{noWrap} = require('../../util/string'),
 	{isPlainObject} = require('../../util/base'),
@@ -135,7 +138,7 @@ class TableToken extends TrToken {
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
 		super(syntax, attr, config, accum, openingPattern);

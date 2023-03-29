@@ -35,7 +35,7 @@ class TrToken extends attributeParent(Token, 1) {
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 * @param {RegExp} pattern 表格语法正则
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
@@ -302,7 +302,7 @@ class TrToken extends attributeParent(Token, 1) {
 	/**
 	 * 插入新的单元格
 	 * @param {string|Token} inner 单元格内部wikitext
-	 * @param {TableCoords} coord 单元格坐标
+	 * @param {import('../../typings/table').TableCoords} coord 单元格坐标
 	 * @param {'td'|'th'|'caption'} subtype 单元格类型
 	 * @param {Record<string, string|boolean>} attr 单元格属性
 	 * @returns {TdToken}

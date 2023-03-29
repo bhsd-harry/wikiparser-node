@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @template T
+ * @typedef {import('../../typings/node').TokenAttribute<T>} TokenAttribute
+ */
+
 const Parser = require('../..'),
 	fixedToken = require('../../mixin/fixedToken'),
 	Token = require('..');
@@ -45,7 +50,7 @@ class TagPairToken extends fixedToken(Token) {
 	 * @param {string|Token} attr 标签属性
 	 * @param {string|Token} inner 内部wikitext
 	 * @param {string|undefined} closed 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
-	 * @param {accum} accum
+	 * @param {import('../../typings/token').accum} accum
 	 */
 	constructor(name, attr, inner, closed, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true);

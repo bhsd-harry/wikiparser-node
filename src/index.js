@@ -1,5 +1,11 @@
 'use strict';
 
+/** @typedef {import('../typings/token').acceptable} acceptable */
+/**
+ * @template T
+ * @typedef {import('../typings/node').TokenAttribute<T>} TokenAttribute
+ */
+
 // PHP解析器的步骤：
 // -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
 // 0. 移除特定字符`\0`和`\x7F`，参见Parser::parse
@@ -190,7 +196,7 @@ class Token extends AstElement {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 * @param {acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = undefined) {

@@ -1,5 +1,12 @@
 'use strict';
 
+/**
+ * @template T
+ * @template S
+ * @typedef {import('../typings/tool').CollectionCallback<T, S>} CollectionCallback
+ */
+/** @typedef {import('../typings/event').AstListener} AstListener */
+
 const {typeError} = require('../util/debug'),
 	{text} = require('../util/string'),
 	{isPlainObject} = require('../util/base'),
