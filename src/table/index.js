@@ -222,7 +222,6 @@ class TableToken extends TrToken {
 
 	/** @override */
 	getPreviousRow() { // eslint-disable-line class-methods-use-this
-		return undefined;
 	}
 
 	/**
