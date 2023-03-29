@@ -45,18 +45,6 @@ declare global {
 		parse(wikitext: string, include?: boolean, maxStage?: number, config?: ParserConfig): Token;
 
 		run<T>(callback: () => T): T;
-
-		/**
-		 * @param msg 消息
-		 * @param args 更多信息
-		 */
-		debug(msg: string, ...args: *[]): void;
-		/**
-		 * 总是输出到console.error
-		 * @param msg 消息
-		 * @param args 更多信息
-		 */
-		error(msg: string, ...args: *[]): void;
 	}
 }
 

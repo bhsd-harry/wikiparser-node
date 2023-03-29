@@ -15,13 +15,6 @@ declare global {
 		T extends 'build' ? () => void :
 		T extends 'bracket'|'include' ? boolean :
 		string;
-
-	interface printOpt {
-		pre?: string;
-		post?: string;
-		sep?: string;
-		class?: string;
-	}
 }
 
 export {};
