@@ -27,13 +27,12 @@
 		"/util/",
 		"/typings/"
 	],
-	"types": "./dist/index.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"postinstall": "npm run build",
+		"postinstall": "npm run build && node ./bin/update.js",
 		"build": "rm -rf dist/ && tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
