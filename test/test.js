@@ -15,7 +15,7 @@ Parser.debugging = true;
 		if (file.endsWith('.md') && file.toLowerCase().includes(title.toLowerCase())) {
 			Parser.debug(file);
 			const md = await fs.readFile(path.join(__dirname, '../wiki', file), 'utf8');
-			for (const [, code] of md.matchAll(/```js\n(.+?)\n```/gsu)) {
+			for (const [, code] of md.matchAll(/```js\n(.*?)\n```/gsu)) {
 				try {
 					Parser.config = './config/default';
 					Parser.i18n = undefined;
