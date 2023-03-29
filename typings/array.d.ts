@@ -1,5 +1,6 @@
 declare global {
 	interface Array<T> {
+
 		/**
 		 * Returns the value of the last element in the array where predicate is true, and undefined
 		 * otherwise.
@@ -9,8 +10,8 @@ declare global {
 		 * @param thisArg If provided, it will be used as the this value for each invocation of
 		 * predicate. If it is not provided, undefined is used instead.
 		 */
-		findLast<S extends T>(predicate: (this: void, value: T, index: number, obj: T[]) => value is S, thisArg?: *): S | undefined;
-		findLast(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: *): T | undefined;
+		findLast<S extends T>(predicate: (this: void, value: T, index: number, obj: T[]) => value is S, thisArg?: unknown): S | undefined;
+		findLast(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: unknown): T | undefined;
 
 		/**
 		 * Returns the index of the last element in the array where predicate is true, and -1
@@ -21,7 +22,7 @@ declare global {
 		 * @param thisArg If provided, it will be used as the this value for each invocation of
 		 * predicate. If it is not provided, undefined is used instead.
 		 */
-		findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: *): number;
+		findLastIndex(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: unknown): number;
 	}
 }
 

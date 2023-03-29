@@ -1,6 +1,6 @@
-import Token from '../src';
-import $ from '../tool';
-import Title from '../lib/title';
+import Token = require('../src');
+import $ = require('../tool');
+import Title = require('../lib/title');
 
 declare global {
 	interface Parser {
@@ -68,31 +68,34 @@ declare global {
 		 * @param msg 消息
 		 * @param args 更多信息
 		 */
-		warn(msg: string, ...args: *[]): void;
+		warn(msg: string, ...args: unknown[]): void;
+
 		/**
 		 * 默认不输出到console.debug
 		 * @param msg 消息
 		 * @param args 更多信息
 		 */
-		debug(msg: string, ...args: *[]): void;
+		debug(msg: string, ...args: unknown[]): void;
+
 		/**
 		 * 总是输出到console.error
 		 * @param msg 消息
 		 * @param args 更多信息
 		 */
-		error(msg: string, ...args: *[]): void;
+		error(msg: string, ...args: unknown[]): void;
+
 		/**
 		 * 总是输出到console.info
 		 * @param msg 消息
 		 * @param args 更多信息
 		 */
-		info(msg: string, ...args: *[]): void;
+		info(msg: string, ...args: unknown[]): void;
 
 		/**
 		 * 打印函数定义
 		 * @param f 待打印的函数
 		 */
-		log(f: Function): void;
+		log(f: (...args: unknown[]) => unknown): void;
 
 		/** 清除各模块的缓存 */
 		clearCache(): void;

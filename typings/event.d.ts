@@ -1,12 +1,14 @@
-import Token from '../src';
-import AstText from '../lib/text';
+import Token = require('../src');
+import AstText = require('../lib/text');
 
 declare global {
-	interface AstEvent extends Event {
+	interface AstEvent {
+		readonly type: string;
 		readonly target: Token & AstText;
 		currentTarget: Token;
-		prevTarget: ?Token;
-	};
+		prevTarget: Token;
+		bubbles: boolean;
+	}
 	interface AstEventData {
 		position: number;
 		removed: AstText|Token;
@@ -18,7 +20,7 @@ declare global {
 		oldKey: string;
 		newKey: string;
 	}
-	type AstListener = (e: AstEvent, data: AstEventData) => *;
+	type AstListener = (e: AstEvent, data: AstEventData) => unknown;
 }
 
 export {};

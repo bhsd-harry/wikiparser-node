@@ -1,5 +1,5 @@
-import Token from '../src';
-import Ranges from '../lib/ranges';
+import Token = require('../src');
+import Ranges = require('../lib/ranges');
 
 declare global {
 	interface ParserConfig {

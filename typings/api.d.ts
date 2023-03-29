@@ -7,7 +7,7 @@ declare global {
 		title: string;
 		ns: number;
 		revisions: MediaWikiRevision[];
-	};
+	}
 }
 
 export {};

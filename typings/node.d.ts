@@ -1,7 +1,7 @@
-import Ranges from '../lib/ranges';
-import Token from '../src';
-import AstText from '../lib/text';
-import ParameterToken from '../src/parameter';
+import Ranges = require('../lib/ranges');
+import Token = require('../src');
+import AstText = require('../lib/text');
+import ParameterToken = require('../src/parameter');
 
 declare global {
 	type buildFromStr
@@ -25,7 +25,7 @@ declare global {
 		T extends 'protectedChildren' ? Ranges :
 		T extends 'verifyChild' ? (i: number, addition: number) => void :
 		T extends 'matchesAttr' ? (key: string, equal: string, val: string, i: string) => boolean :
-		T extends 'protectChildren' ? (...args: string|number|Range) => void :
+		T extends 'protectChildren' ? (...args: (string|number|Range)[]) => void :
 		string;
 
 	interface printOpt {

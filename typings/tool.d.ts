@@ -1,5 +1,5 @@
-import Token from '../src';
-import AstText from '../lib/text';
+import Token = require('../src');
+import AstText = require('../lib/text');
 
 declare global {
 	interface CollectionCallback<T, S> extends Function {
