@@ -45,7 +45,7 @@ export function toCase(val: string, i: string | undefined): string;
  * escape newlines
  * @param {string} str 原字符串
  */
-export function noWrap(str: string): any;
+export function noWrap(str: string): string;
 /**
  * convert newline in text nodes to single whitespace
  * @param {Token & {childNodes: AstText[]}} token 父节点

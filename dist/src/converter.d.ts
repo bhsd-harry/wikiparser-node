@@ -50,7 +50,7 @@ declare class ConverterToken extends Token {
      */
     getEffectiveFlags(this: {
         firstChild: ConverterFlagsToken;
-    }): Set<any>;
+    }): Set<string>;
     /**
      * 获取未知的转换类型标记
      * @this {{firstChild: ConverterFlagsToken}}

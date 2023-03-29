@@ -14,7 +14,7 @@ declare class Ranges extends Array<number | Range> {
      * @param {number|*[]} arr 参考数组
      * @complexity `n`
      */
-    applyTo(arr: number | any[]): any[];
+    applyTo(arr: number | any[]): number[];
 }
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
 declare class Range {

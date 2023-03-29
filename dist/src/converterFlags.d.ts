@@ -47,7 +47,7 @@ declare class ConverterFlagsToken extends Token {
      * 获取有效转换类型标记
      * @complexity `n`
      */
-    getEffectiveFlags(): Set<any>;
+    getEffectiveFlags(): Set<string>;
     /**
      * 是否具有某转换类型标记
      * @param {string} flag 转换类型标记

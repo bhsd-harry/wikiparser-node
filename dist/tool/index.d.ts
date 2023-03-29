@@ -35,7 +35,7 @@ declare class TokenCollection {
      */
     typeError(method: string, ...types: string[]): never;
     /** 转换为数组 */
-    toArray(): any[];
+    toArray(): AstNode[];
     /**
      * 提取第n个元素
      * @template {unknown} T

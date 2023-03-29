@@ -61,7 +61,7 @@ declare class TranscludeToken extends Token {
      * @param {boolean} copy 是否返回一个备份
      * @complexity `n`
      */
-    getArgs(key: string | number, exact: boolean, copy?: boolean): Set<any>;
+    getArgs(key: string | number, exact: boolean, copy?: boolean): Set<ParameterToken>;
     /**
      * 获取重名参数
      * @complexity `n`
@@ -100,7 +100,7 @@ declare class TranscludeToken extends Token {
      * @param {boolean} exact 是否匹配匿名性
      * @complexity `n`
      */
-    getArg(key: string | number, exact: boolean): any;
+    getArg(key: string | number, exact: boolean): ParameterToken;
     /**
      * 移除指定参数
      * @param {string|number} key 参数名
@@ -112,13 +112,13 @@ declare class TranscludeToken extends Token {
      * 获取所有参数名
      * @complexity `n`
      */
-    getKeys(): any[];
+    getKeys(): string[];
     /**
      * 获取参数值
      * @param {string|number} key 参数名
      * @complexity `n`
      */
-    getValues(key: string | number): any[];
+    getValues(key: string | number): string[];
     /**
      * 获取生效的参数值
      * @template {string|number|undefined} T
