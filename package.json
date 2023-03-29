@@ -22,7 +22,8 @@
 		"/parser/",
 		"/src/",
 		"/util/",
-		"/typings/"
+		"/typings/",
+		"/dist/"
 	],
 	"types": "./dist/index.d.ts",
 	"repository": {
