@@ -791,6 +791,16 @@
 				],
 				"indent": 0
 			}
+		},
+		{
+			"files": "typings/*.d.ts",
+			"parser": "@typescript-eslint/parser",
+			"plugins": [
+				"@typescript-eslint"
+			],
+			"extends": [
+				"plugin:@typescript-eslint/recommended"
+			]
 		}
 	],
 	"settings": {

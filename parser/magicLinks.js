@@ -7,7 +7,7 @@ const {extUrlChar, extUrlCharFirst} = require('../util/string'),
 /**
  * 解析自由外链
  * @param {string} wikitext wikitext
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  */
 const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');

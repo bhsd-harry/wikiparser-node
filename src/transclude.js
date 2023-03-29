@@ -45,7 +45,7 @@ class TranscludeToken extends Token {
 	/**
 	 * @param {string} title 模板标题或魔术字
 	 * @param {[string, string|undefined][]} parts 参数各部分
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 * @complexity `n`
 	 * @throws `SyntaxError` 非法的模板名称
 	 */

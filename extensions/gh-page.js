@@ -3,7 +3,7 @@
 (async () => {
 	const /** @type {HTMLTextAreaElement} */ textbox = document.querySelector('#wpTextbox'),
 		/** @type {HTMLInputElement} */ input = document.querySelector('#wpInclude'),
-		/** @type {{wikiparse: wikiparse}} */ {wikiparse} = window,
+		/** @type {{wikiparse: import('../typings/extension')}} */ {wikiparse} = window,
 		config = await (await fetch('https://bhsd-harry.github.io/wikiparser-node/config/default.json')).json();
 	wikiparse.setConfig(config);
 	const printer = wikiparse.edit(textbox, input.checked);

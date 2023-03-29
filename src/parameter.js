@@ -20,7 +20,7 @@ class ParameterToken extends Token {
 	/**
 	 * @param {string|number} key 参数名
 	 * @param {string} value 参数值
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);

@@ -6,7 +6,7 @@ const Parser = require('..'),
 /**
  * 解析语言变体转换
  * @param {string} wikitext wikitext
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  */
 const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex1 = /-\{/gu,

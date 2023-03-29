@@ -1,7 +1,7 @@
 'use strict';
 
 (() => {
-	const /** @type {{wikiparse: wikiparse}} */ {wikiparse} = window;
+	const /** @type {{wikiparse: import('../typings/extension')}} */ {wikiparse} = window;
 
 	/**
 	 * 高亮代码块

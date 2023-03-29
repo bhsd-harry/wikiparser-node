@@ -12,7 +12,7 @@ class SyntaxToken extends Token {
 	 * @param {string} wikitext 语法wikitext
 	 * @param {RegExp} pattern 语法正则
 	 * @param {string} type Token.type
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);

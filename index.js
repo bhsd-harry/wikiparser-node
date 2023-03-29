@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {Parser} */ Parser = {
+const /** @type {import('./typings')} */ Parser = {
 	config: undefined,
 	minConfig: require('./config/minimum'),
 	i18n: undefined,

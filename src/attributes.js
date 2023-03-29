@@ -16,7 +16,7 @@ class AttributesToken extends Token {
 	 * @param {string} attr 标签属性
 	 * @param {'ext-attrs'|'html-attrs'|'table-attrs'} type 标签类型
 	 * @param {string} name 标签名
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {

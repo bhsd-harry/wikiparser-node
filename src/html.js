@@ -26,7 +26,7 @@ class HtmlToken extends Token {
 	 * @param {AttributesToken} attr 标签属性
 	 * @param {boolean} closing 是否闭合
 	 * @param {boolean} selfClosing 是否自封闭
-	 * @param {accum} accum
+	 * @param {import('../typings/token').accum} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -70,7 +70,7 @@ class HtmlToken extends Token {
 	 */
 	lint(start) {
 		const errors = super.lint(start);
-		let /** @type {LintError} */ refError;
+		let /** @type {import('../typings/token').LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push(refError);

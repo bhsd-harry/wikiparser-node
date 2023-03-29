@@ -10,7 +10,7 @@ const Parser = require('..'),
 /**
  * 解析HTML注释和扩展标签
  * @param {string} text wikitext
- * @param {accum} accum
+ * @param {import('../typings/token').accum} accum
  * @param {boolean} includeOnly 是否嵌入
  */
 const parseCommentAndExt = (text, config = Parser.getConfig(), accum = [], includeOnly = false) => {
