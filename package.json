@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "0.10.2",
+	"version": "0.10.3",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -15,8 +15,6 @@
 	"author": "Bhsd",
 	"files": [
 		"/index.js",
-		"/tsconfig.json",
-		"/bin/",
 		"/config/",
 		"/i18n/",
 		"/lib/",
@@ -25,14 +23,15 @@
 		"/src/",
 		"/tool/",
 		"/util/",
-		"/typings/"
+		"/typings/",
+		"/dist/"
 	],
+	"types": "./dist/index.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"postinstall": "npm run build && node ./bin/update.js",
 		"build": "rm -rf dist/ && tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
