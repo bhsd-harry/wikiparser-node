@@ -23,6 +23,7 @@
 		"/src/",
 		"/tool/",
 		"/util/",
+		"/typings/",
 		"/dist/"
 	],
 	"types": "./dist/index.d.ts",

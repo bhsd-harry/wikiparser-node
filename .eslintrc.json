@@ -21,7 +21,9 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"!config/.schema.json"
+		"!config/.schema.json",
+		"dist/",
+		"wiki/"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -784,7 +786,7 @@
 			}
 		},
 		{
-			"files": "typings/*.d.ts",
+			"files": "**/*.ts",
 			"parser": "@typescript-eslint/parser",
 			"plugins": [
 				"@typescript-eslint"
