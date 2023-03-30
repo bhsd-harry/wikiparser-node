@@ -1,6 +1,7 @@
 /errors/*
 /printed/*
 /.vscode/
+/dist/
 /wiki/
 /test/single-page.wiki
 /test/processed.txt
