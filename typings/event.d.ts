@@ -19,4 +19,4 @@ export interface AstEventData {
 	oldKey: string;
 	newKey: string;
 }
-export type AstListener = (e: AstEvent, data: AstEventData) => unknown;
+export type AstListener = (e: AstEvent, data: AstEventData) => void;

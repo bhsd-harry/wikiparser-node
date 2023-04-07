@@ -135,7 +135,7 @@ class Token extends AstElement {
 	 * @complexity `n`
 	 * @returns {T extends 'string|text' ? string : (Token|AstText)[]}
 	 */
-	#buildFromStr = (str, type) => {
+	#buildFromStr = (str, type = undefined) => {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);

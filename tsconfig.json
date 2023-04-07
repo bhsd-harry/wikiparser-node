@@ -1,8 +1,4 @@
 {
-	"include": [
-		"lib/*",
-		"src/**/*"
-	],
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,

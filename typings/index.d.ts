@@ -32,7 +32,7 @@ declare interface Parser {
 	 * @param msg 消息名
 	 * @param arg 额外参数
 	 */
-	msg(msg: string, arg: string): string;
+	msg(msg: string, arg?: string): string;
 
 	/**
 	 * 规范化页面标题

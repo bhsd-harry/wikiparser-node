@@ -61,7 +61,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/**
 	 * @param {string} name 标签名
-	 * @param {AttributesToken} attr 标签属性
+	 * @param {import('./attributes')} attr 标签属性
 	 * @param {boolean} closing 是否闭合
 	 * @param {boolean} selfClosing 是否自封闭
 	 * @param {import('../typings/token').accum} accum

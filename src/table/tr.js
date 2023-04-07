@@ -154,7 +154,7 @@ class TrToken extends attributeParent(Token, 1) {
 	 * @param {string} syntax 表格语法
 	 * @param {boolean} esc 是否需要转义
 	 */
-	setSyntax(syntax, esc) {
+	setSyntax(syntax, esc = false) {
 		const {firstChild} = this;
 		firstChild.replaceChildren(syntax);
 		if (esc) {
@@ -201,7 +201,6 @@ class TrToken extends attributeParent(Token, 1) {
 
 	/**
 	 * 获取行数
-	 * @returns {0|1}
 	 * @complexity `n`
 	 */
 	getRowCount() {

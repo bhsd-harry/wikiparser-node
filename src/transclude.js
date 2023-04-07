@@ -340,7 +340,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} copy 是否返回一个备份
 	 * @complexity `n`
 	 */
-	getArgs(key, exact, copy = true) {
+	getArgs(key, exact = false, copy = true) {
 		if (typeof key !== 'string' && typeof key !== 'number') {
 			this.typeError('getArgs', 'String', 'Number');
 		}
@@ -353,7 +353,7 @@ class TranscludeToken extends Token {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args[keyStr] = args;
 		}
-		if (exact && !isNaN(keyStr)) {
+		if (exact && !Number.isNaN(Number(keyStr))) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
 			args = new Set(args);
@@ -496,7 +496,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
-	hasArg(key, exact) {
+	hasArg(key, exact = false) {
 		return this.getArgs(key, exact, false).size > 0;
 	}
 
@@ -506,7 +506,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} exact 是否匹配匿名性
 	 * @complexity `n`
 	 */
-	getArg(key, exact) {
+	getArg(key, exact = false) {
 		return [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 

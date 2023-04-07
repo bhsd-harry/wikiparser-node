@@ -73,7 +73,7 @@ class TdToken extends fixedToken(TrToken) {
 		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
 			char = syntax.at(-1);
-		let subtype = 'td';
+		let /** @type {'td'|'th'|'caption'} */ subtype = 'td';
 		if (char === '!') {
 			subtype = 'th';
 		} else if (char === '+') {
@@ -250,7 +250,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {string} syntax 表格语法
 	 * @param {boolean} esc 是否需要转义
 	 */
-	setSyntax(syntax, esc) {
+	setSyntax(syntax, esc = false) {
 		super.setSyntax(aliases[syntax] ?? syntax, esc);
 	}
 
@@ -296,7 +296,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @returns {{rowspan: number, colspan: number, [key: string]: string|true}}
 	 */
 	getAttrs() {
-		const /** @type {record<string, string|true>} */ attr = super.getAttrs();
+		const /** @type {Record<string, string|true>} */ attr = super.getAttrs();
 		if ('rowspan' in attr) {
 			attr.rowspan = Number(attr.rowspan);
 		}

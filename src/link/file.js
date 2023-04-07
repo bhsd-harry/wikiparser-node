@@ -110,20 +110,20 @@ class FileToken extends LinkToken {
 				));
 			}
 		}
-		if (frameKeys.size > 1) {
+		if (frameKeys.length > 1) {
 			errors.push(
 				...args.filter(({name}) => frame.has(name)).map(
 					arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'frame'),
 				),
 			);
 		}
-		if (horizAlignKeys.size > 1) {
+		if (horizAlignKeys.length > 1) {
 			errors.push(
 				...args.filter(({name}) => horizAlign.has(name))
 					.map(arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'horizontal-alignment')),
 			);
 		}
-		if (vertAlignKeys.size > 1) {
+		if (vertAlignKeys.length > 1) {
 			errors.push(
 				...args.filter(({name}) => vertAlign.has(name))
 					.map(arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'vertical-alignment')),
