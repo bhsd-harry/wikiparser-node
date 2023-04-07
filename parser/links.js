@@ -1,6 +1,6 @@
 'use strict';
 
-const Parser = require('..'),
+const Parser = require('../index'),
 	LinkToken = require('../src/link'),
 	FileToken = require('../src/link/file'),
 	CategoryToken = require('../src/link/category');
@@ -8,7 +8,7 @@ const Parser = require('..'),
 /**
  * 解析内部链接
  * @param {string} wikitext wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js');

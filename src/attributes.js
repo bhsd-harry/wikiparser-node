@@ -1,12 +1,12 @@
 'use strict';
-
-const {generateForSelf, generateForChild} = require('../util/lint'),
-	{toCase, normalizeSpace, text, removeComment} = require('../util/string'),
-	Parser = require('..'),
-	Token = require('.'),
-	AtomToken = require('./atom'),
-	AttributeToken = require('./attribute');
-
+const lint_1 = require('../util/lint');
+const {generateForSelf, generateForChild} = lint_1;
+const string_1 = require('../util/string');
+const {toCase, normalizeSpace, text, removeComment} = string_1;
+const Parser = require('../index');
+const Token = require('.');
+const AtomToken = require('./atom');
+const AttributeToken = require('./attribute');
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /**
@@ -14,40 +14,6 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
 class AttributesToken extends Token {
-	/**
-	 * @override
-	 * @param {string} key 属性键
-	 * @param {string|undefined} equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
-	 * @param {string|undefined} val 属性值
-	 * @param {string|undefined} i 是否对大小写不敏感
-	 */
-	#matchesAttr = (key, equal, val, i) => {
-		if (!equal) {
-			return this.hasAttr(key);
-		} else if (!this.hasAttr(key)) {
-			return equal === '!=';
-		}
-		val = toCase(val, i);
-		const attr = this.getAttr(key),
-			thisVal = toCase(attr === true ? '' : attr, i);
-		switch (equal) {
-			case '~=':
-				return attr !== true && thisVal.split(/\s/u).includes(val);
-			case '|=': // 允许`val === ''`
-				return thisVal === val || thisVal.startsWith(`${val}-`);
-			case '^=':
-				return attr !== true && thisVal.startsWith(val);
-			case '$=':
-				return attr !== true && thisVal.endsWith(val);
-			case '*=':
-				return attr !== true && thisVal.includes(val);
-			case '!=':
-				return thisVal !== val;
-			default: // `=`
-				return thisVal === val;
-		}
-	};
-
 	/** getAttrs()方法的getter写法 */
 	get attributes() {
 		return this.getAttrs();
@@ -84,10 +50,10 @@ class AttributesToken extends Token {
 	}
 
 	/**
-	 * @param {string} attr 标签属性
-	 * @param {'ext-attrs'|'html-attrs'|'table-attrs'} type 标签类型
-	 * @param {string} name 标签名
-	 * @param {import('../typings/token').accum} accum
+	 * @browser
+	 * @param attr 标签属性
+	 * @param type 标签类型
+	 * @param name 标签名
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -96,24 +62,19 @@ class AttributesToken extends Token {
 		this.type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			const regex = new RegExp(
-				`([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)` // 属性名
+			const regex = new RegExp(`([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)` // 属性名
 				+ '(?:'
 				+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
 				+ '(?:=|\0\\d+~\x7F)' // `=`
 				+ '(?:\\s|\0\\d+c\x7F)*)' // `=`后的空白字符
 				+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
-				+ ')?',
-				'gsu',
-			);
+				+ ')?', 'gsu');
 			let out = '',
 				mt = regex.exec(attr),
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ () => {
 				if (out) {
-					super.insertAt(new AtomToken(out, `${type.slice(0, -1)}-dirty`, config, accum, {
-						[`Stage-${stages[type]}`]: ':',
-					}));
+					super.insertAt(new AtomToken(out, `${type.slice(0, -1)}-dirty`, config, accum, {[`Stage-${stages[type]}`]: ':'}));
 					out = '';
 				}
 			};
@@ -123,6 +84,7 @@ class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
+						// @ts-expect-error abstract class
 						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
 					insertDirty();
 					super.insertAt(token);
@@ -137,12 +99,8 @@ class AttributesToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @this {AttributesToken & {parentNode: TdToken}}
-	 */
+	/** @private */
 	afterBuild() {
-		const TdToken = require('./table/td');
 		if (this.type === 'table-attrs') {
 			this.setAttribute('name', this.parentNode?.subtype === 'caption' ? 'caption' : this.parentNode?.type);
 		}
@@ -150,20 +108,19 @@ class AttributesToken extends Token {
 
 	/**
 	 * 所有指定属性名的AttributeToken
-	 * @param {string} key 属性名
-	 * @returns {AttributeToken[]}
+	 * @browser
+	 * @param key 属性名
 	 */
 	getAttrTokens(key) {
 		return typeof key === 'string'
-			? this.childNodes.filter(
-				child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
-			)
+			? this.childNodes.filter(child => child instanceof AttributeToken && child.name === key.toLowerCase().trim())
 			: this.typeError('getAttrTokens', 'String');
 	}
 
 	/**
-	 * 制定属性名的最后一个AttributeToken
-	 * @param {string} key 属性名
+	 * 指定属性名的最后一个AttributeToken
+	 * @browser
+	 * @param key 属性名
 	 */
 	getAttrToken(key) {
 		const tokens = this.getAttrTokens(key);
@@ -172,7 +129,8 @@ class AttributesToken extends Token {
 
 	/**
 	 * 获取标签属性
-	 * @param {string} key 属性键
+	 * @browser
+	 * @param key 属性键
 	 */
 	getAttr(key) {
 		return this.getAttrToken(key)?.getValue();
@@ -180,11 +138,9 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: HtmlToken}}
-	 * @param {number} start 起始位置
+	 * @param start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
-		const HtmlToken = require('./html');
 		const errors = super.lint(start),
 			{parentNode: {closing}, length, childNodes} = this,
 			/** @type {Record<string, AttributeToken[]>} */ attrs = {},
@@ -195,7 +151,7 @@ class AttributesToken extends Token {
 			errors.push(generateForSelf(this, rect, 'attributes of a closing tag'));
 		}
 		for (let i = 0; i < length; i++) {
-			const /** @type {AtomToken|AttributeToken} */ attr = childNodes[i];
+			const attr = childNodes[i];
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 				errors.push({
@@ -223,14 +179,11 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: HtmlToken}}
+	 * @browser
 	 */
 	print() {
-		const HtmlToken = require('./html');
 		return String(this)
-			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print({
-				class: child instanceof AtomToken && child.text().trim() && 'hidden',
-			})).join('')}</span>`
+			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print(child instanceof AtomToken && child.text().trim() ? {class: 'hidden'} : undefined)).join('')}</span>`
 			: '';
 	}
 
@@ -253,24 +206,22 @@ class AttributesToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
+			// @ts-expect-error abstract class
 			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
 			token.append(...cloned);
 			return token;
 		});
 	}
 
-	/**
-	 * 所有无效属性
-	 * @returns {AtomToken[]}
-	 */
+	/** 所有无效属性 */
 	getDirtyAttrs() {
 		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
 	}
 
 	/**
 	 * @override
-	 * @param {AttributeToken} token 待插入的子节点
-	 * @param {number} i 插入位置
+	 * @param token 待插入的子节点
+	 * @param i 插入位置
 	 * @throws `RangeError` 不是AttributeToken或标签不匹配
 	 */
 	insertAt(token, i = this.length) {
@@ -305,8 +256,8 @@ class AttributesToken extends Token {
 
 	/**
 	 * 设置标签属性
-	 * @param {string} key 属性键
-	 * @param {string|boolean} value 属性值
+	 * @param key 属性键
+	 * @param value 属性值
 	 * @throws `RangeError` 扩展标签属性不能包含">"
 	 * @throws `RangeError` 无效的属性名
 	 */
@@ -316,7 +267,7 @@ class AttributesToken extends Token {
 		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
-		key = key.toLowerCase().trim();
+		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
 		const attr = this.getAttrToken(key);
 		if (attr) {
 			attr.setValue(value);
@@ -328,34 +279,46 @@ class AttributesToken extends Token {
 			include = this.getAttribute('include'),
 			parsedKey = this.type === 'ext-attrs'
 				? key
-				: Parser.run(() => {
-					const token = new Token(key, config),
-						parseOnce = token.getAttribute('parseOnce');
-					parseOnce(0, include);
-					return String(parseOnce());
-				});
+				: Parser.run(() => String(new Token(key, config).parseOnce(0, include).parseOnce()));
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			throw new RangeError(`无效的属性名：${key}！`);
 		}
-		const newAttr = Parser.run(() => new AttributeToken(
-			this.type.slice(0, -1), this.name, key, value === true ? '' : '=', value, ['"', '"'], config,
-		));
+		// @ts-expect-error abstract class
+		const newAttr = Parser.run(() => new AttributeToken(this.type.slice(0, -1), this.name, key, value === true ? '' : '=', value === true ? '' : value, ['"', '"'], config));
 		this.insertAt(newAttr);
 	}
 
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		return key === 'matchesAttr' ? this.#matchesAttr : super.getAttribute(key);
+	/** @private */
+	matchesAttr(key, equal, val = '', i) {
+		if (!equal) {
+			return this.hasAttr(key);
+		} else if (!this.hasAttr(key)) {
+			return equal === '!=';
+		}
+		val = toCase(val, i); // eslint-disable-line no-param-reassign
+		const attr = this.getAttr(key),
+			thisVal = toCase(attr === true ? '' : attr, i);
+		switch (equal) {
+			case '~=':
+				return attr !== true && thisVal.split(/\s/u).includes(val);
+			case '|=': // 允许`val === ''`
+				return thisVal === val || thisVal.startsWith(`${val}-`);
+			case '^=':
+				return attr !== true && thisVal.startsWith(val);
+			case '$=':
+				return attr !== true && thisVal.endsWith(val);
+			case '*=':
+				return attr !== true && thisVal.includes(val);
+			case '!=':
+				return thisVal !== val;
+			default: // `=`
+				return thisVal === val;
+		}
 	}
 
 	/**
 	 * 标签是否具有某属性
-	 * @param {string} key 属性键
+	 * @param key 属性键
 	 */
 	hasAttr(key) {
 		return typeof key === 'string'
@@ -375,13 +338,13 @@ class AttributesToken extends Token {
 
 	/** 获取全部标签属性 */
 	getAttrs() {
-		const /** @type {AttributeToken[]} */ attrs = this.childNodes.filter(child => child instanceof AttributeToken);
+		const attrs = this.childNodes.filter(child => child instanceof AttributeToken);
 		return Object.fromEntries(attrs.map(({name, value}) => [name, value]));
 	}
 
 	/**
 	 * 移除标签属性
-	 * @param {string} key 属性键
+	 * @param key 属性键
 	 */
 	removeAttr(key) {
 		for (const attr of this.getAttrTokens(key)) {
@@ -391,17 +354,15 @@ class AttributesToken extends Token {
 
 	/**
 	 * 开关标签属性
-	 * @param {string} key 属性键
-	 * @param {boolean|undefined} force 强制开启或关闭
+	 * @param key 属性键
+	 * @param force 强制开启或关闭
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key, force) {
 		if (typeof key !== 'string') {
 			this.typeError('toggleAttr', 'String');
-		} else if (force !== undefined) {
-			force = Boolean(force);
 		}
-		key = key.toLowerCase().trim();
+		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
 		const attr = this.getAttrToken(key);
 		if (attr && attr.getValue() !== true) {
 			throw new RangeError(`${key} 属性的值不为 Boolean！`);
@@ -414,18 +375,15 @@ class AttributesToken extends Token {
 
 	/**
 	 * 生成引导空格
-	 * @param {string} str 属性字符串
+	 * @param str 属性字符串
 	 */
-	#leadingSpace(str = super.toString()) {
+	#leadingSpace(str) {
 		const {type} = this,
 			leadingRegex = {'ext-attrs': /^\s/u, 'html-attrs': /^[/\s]/u};
 		return str && type !== 'table-attrs' && !leadingRegex[type].test(str) ? ' ' : '';
 	}
 
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
+	/** @override */
 	toString(selector) {
 		if (this.type === 'table-attrs') {
 			normalizeSpace(this);
@@ -434,9 +392,9 @@ class AttributesToken extends Token {
 		return `${this.#leadingSpace(str)}${str}`;
 	}
 
-	/** @override */
+	/** @private */
 	getPadding() {
-		return this.#leadingSpace().length;
+		return this.#leadingSpace(super.toString()).length;
 	}
 
 	/** @override */
@@ -448,6 +406,5 @@ class AttributesToken extends Token {
 		return `${this.#leadingSpace(str)}${str}`;
 	}
 }
-
 Parser.classes.AttributesToken = __filename;
 module.exports = AttributesToken;

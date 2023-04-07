@@ -1,13 +1,13 @@
 'use strict';
 
-const Parser = require('..'),
+const Parser = require('../index'),
 	ListToken = require('../src/nowiki/list'),
 	DdToken = require('../src/nowiki/dd');
 
 /**
  * 解析列表
  * @param {string} text wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(text);

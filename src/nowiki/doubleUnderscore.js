@@ -2,14 +2,14 @@
 
 const hidden = require('../../mixin/hidden'),
 	Parser = require('../..'),
-	NowikiToken = require('.');
+	NowikiBaseToken = require('./base');
 
 /**
  * 状态开关
  * @classdesc `{childNodes: [AstText]}`
  */
-class DoubleUnderscoreToken extends hidden(NowikiToken) {
-	type = 'double-underscore';
+class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
+	/** @type {'double-underscore'} */ type = 'double-underscore';
 
 	/** @override */
 	getPadding() {
@@ -31,7 +31,7 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 
 	/**
 	 * @param {string} word 状态开关名
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(word, config = Parser.getConfig(), accum = []) {
 		super(word, config, accum);
@@ -40,11 +40,14 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => new DoubleUnderscoreToken(String(this.firstChild), this.getAttribute('config')));
+		return Parser.run(() => /** @type {this} */ (new DoubleUnderscoreToken(
+			String(this.firstChild), this.getAttribute('config'),
+		)));
 	}
 
 	/**
 	 * @override
+	 * @returns {never}
 	 * @throws `Error` 禁止修改
 	 */
 	setText() {

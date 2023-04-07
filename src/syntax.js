@@ -1,28 +1,23 @@
 'use strict';
+const Parser = require('../index');
+const debug_1 = require('../util/debug');
+const {undo} = debug_1;
+const string_1 = require('../util/string');
+const {text} = string_1;
+const Token = require('.');
 
-const Parser = require('..'),
-	{undo} = require('../util/debug'),
-	{text} = require('../util/string'),
-	Token = require('.');
-
-/**
- * 满足特定语法格式的plain Token
- * @classdesc `{childNodes: ...AstText|Token}`
- */
+/** 满足特定语法格式的plain Token */
 class SyntaxToken extends Token {
 	#pattern;
 
 	/**
-	 * @param {string} wikitext 语法wikitext
-	 * @param {RegExp} pattern 语法正则
-	 * @param {string} type Token.type
-	 * @param {import('../typings/token').accum} accum
-	 * @param {import('../typings/token').acceptable} acceptable 可接受的子节点设置
+	 * @browser
+	 * @param pattern 语法正则
 	 * @throws `RangeError` 含有g修饰符的语法正则
 	 */
-	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = undefined) {
+	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable) {
 		if (pattern.global) {
-			throw new RangeError(`SyntaxToken 的语法正则不能含有 g 修饰符：${pattern}`);
+			throw new RangeError(`SyntaxToken 的语法正则不能含有 g 修饰符：${String(pattern)}`);
 		}
 		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
@@ -42,9 +37,9 @@ class SyntaxToken extends Token {
 		});
 	}
 
-	/** @override */
+	/** @private */
 	afterBuild() {
-		const /** @type {import('../typings/event').AstListener} */ syntaxListener = (e, data) => {
+		const /** @implements */ syntaxListener = (e, data) => {
 			const pattern = this.#pattern;
 			if (!Parser.running && !pattern.test(this.text())) {
 				undo(e, data);
@@ -55,28 +50,19 @@ class SyntaxToken extends Token {
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
 	}
 
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
-	 */
+	/** @private */
 	getAttribute(key) {
 		return key === 'pattern' ? this.#pattern : super.getAttribute(key);
 	}
 
-	/**
-	 * @override
-	 * @param {PropertyKey} key 属性键
-	 */
+	/** @private */
 	hasAttribute(key) {
 		return key === 'pattern' || super.hasAttribute(key);
 	}
 
 	/**
 	 * @override
-	 * @param {...Token} elements 待替换的子节点
-	 * @complexity `n`
+	 * @param elements 待替换的子节点
 	 */
 	replaceChildren(...elements) {
 		if (this.#pattern.test(text(elements))) {
@@ -86,6 +72,5 @@ class SyntaxToken extends Token {
 		}
 	}
 }
-
 Parser.classes.SyntaxToken = __filename;
 module.exports = SyntaxToken;

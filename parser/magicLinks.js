@@ -1,13 +1,13 @@
 'use strict';
 
 const {extUrlChar, extUrlCharFirst} = require('../util/string'),
-	Parser = require('..'),
+	Parser = require('../index'),
 	MagicLinkToken = require('../src/magicLink');
 
 /**
  * 解析自由外链
  * @param {string} wikitext wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseMagicLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = new RegExp(`(?<![\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');

@@ -1,9 +1,7 @@
 'use strict';
 
-/** @typedef {import('../typings/parser').BracketExecArray} BracketExecArray */
-
 const {removeComment} = require('../util/string'),
-	Parser = require('..'),
+	Parser = require('../index'),
 	HeadingToken = require('../src/heading'),
 	TranscludeToken = require('../src/transclude'),
 	ArgToken = require('../src/arg');
@@ -11,7 +9,7 @@ const {removeComment} = require('../util/string'),
 /**
  * 解析花括号
  * @param {string} text wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  * @throws TranscludeToken.constructor()
  */
 const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {

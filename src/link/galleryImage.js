@@ -12,7 +12,7 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
 class GalleryImageToken extends singleLine(FileToken) {
-	type = 'gallery-image';
+	/** @type {'gallery-image'|'imagemap-image'} */ type = 'gallery-image';
 	#invalid = false;
 
 	/** 图片链接 */
@@ -28,16 +28,16 @@ class GalleryImageToken extends singleLine(FileToken) {
 
 	/**
 	 * @param {string} link 图片文件名
-	 * @param {string|undefined} text 图片参数
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} text 图片参数
+	 * @param {import('..')[]} accum
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = []) {
 		let token;
 		if (text !== undefined) {
 			token = new Token(text, config, true, accum);
-			token.type = 'temp';
+			token.type = 'plain';
 			for (let n = 1; n < Parser.MAX_STAGE; n++) {
-				token.getAttribute('parseOnce')();
+				token.parseOnce();
 			}
 			accum.splice(accum.indexOf(token), 1);
 		}
@@ -57,8 +57,8 @@ class GalleryImageToken extends singleLine(FileToken) {
 		const initImagemap = this.type === 'imagemap-image',
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.setAttribute('name', titleObj.title);
-		this.#invalid = titleObj.interwiki || titleObj.ns !== 6; // 只用于gallery-image的首次解析
-		const /** @type {import('../../typings/event').AstListener} */ linkListener = (e, data) => {
+		this.#invalid = Boolean(titleObj.interwiki) || titleObj.ns !== 6; // 只用于gallery-image的首次解析
+		const /** @type {import('../../lib/node').AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
@@ -110,7 +110,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 		if (length !== 1 || type !== 'ext' || galleryLength !== 1 || image.type !== 'gallery-image') {
 			throw new SyntaxError(`非法的图库文件名：${link}`);
 		}
-		const {firstChild} = image;
+		const {firstChild} = /** @type {import('./galleryImage')} */ (image);
 		image.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}

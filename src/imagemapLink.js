@@ -1,7 +1,6 @@
 'use strict';
 
-const Title = require('../lib/title'),
-	fixedToken = require('../mixin/fixedToken'),
+const fixed = require('../mixin/fixed'),
 	singleLine = require('../mixin/singleLine'),
 	Parser = require('..'),
 	Token = require('.'),
@@ -13,7 +12,7 @@ const Title = require('../lib/title'),
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
+class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	type = 'imagemap-link';
 
 	/**
@@ -24,11 +23,16 @@ class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
 		return this.childNodes[1].link;
 	}
 
+	/** @this {{childNodes: (LinkToken|ExtLinkToken)[]}} */
+	set link(link) {
+		this.childNodes[1].link = link;
+	}
+
 	/**
 	 * @param {string} pre 链接前的文本
 	 * @param {[string, string, string|Title]} linkStuff 内外链接
 	 * @param {string} post 链接后的文本
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(pre, linkStuff, post, config, accum) {
 		const SomeLinkToken = linkStuff.length === 2 ? LinkToken : ExtLinkToken;

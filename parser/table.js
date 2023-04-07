@@ -1,7 +1,6 @@
 'use strict';
 
-const Parser = require('..'),
-	AstText = require('../lib/text'),
+const Parser = require('../index'),
 	Token = require('../src'),
 	TableToken = require('../src/table'),
 	TrToken = require('../src/table/tr'),
@@ -10,8 +9,8 @@ const Parser = require('..'),
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
- * @param {Token & {firstChild: AstText}} root 根节点
- * @param {import('../typings/token').accum} accum
+ * @param {Token & {firstChild: import('../lib/text')}} root 根节点
+ * @param {Token[]} accum
  */
 const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const /** @type {TrToken[]} */ stack = [],
@@ -30,7 +29,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 			out += str;
 			return;
 		}
-		const /** @type {Token}} */ {lastChild} = top;
+		const {lastChild} = top;
 		if (lastChild.constructor === Token) {
 			lastChild.setText(String(lastChild) + str);
 		} else {
@@ -70,7 +69,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 		}
 		const [, closing, row, cell, attr] = matches;
 		if (closing) {
-			while (!(top instanceof TableToken)) {
+			while (top.type !== 'table') {
 				top = stack.pop();
 			}
 			top.close(`\n${spaces}${closing}`, true);

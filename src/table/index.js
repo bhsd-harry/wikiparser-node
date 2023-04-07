@@ -1,7 +1,8 @@
 'use strict';
 
-/** @typedef {import('../../typings/table').TableCoords} TableCoords */
-/** @typedef {import('../../typings/table').TableRenderedCoords} TableRenderedCoords */
+/** @typedef {import('./tr').TableCoords} TableCoords */
+/** @typedef {import('.').TableRenderedCoords} TableRenderedCoords */
+/** @typedef {import('..')} Token */
 
 const {generateForChild} = require('../../util/lint'),
 	{noWrap} = require('../../util/string'),
@@ -101,9 +102,9 @@ class Layout extends Array {
 			vBorders = this.map(cur => new Array(cur.length + 1).fill().map((_, j) => cur[j - 1] !== cur[j]));
 		let out = '';
 		for (let i = 0; i <= this.length; i++) {
-			const hBorder = hBorders[i],
-				vBorderTop = vBorders[i - 1] ?? [],
-				vBorderBottom = vBorders[i] ?? [],
+			const hBorder = hBorders[i].map(Number),
+				vBorderTop = (vBorders[i - 1] ?? []).map(Number),
+				vBorderBottom = (vBorders[i] ?? []).map(Number),
 				// eslint-disable-next-line no-sparse-arrays
 				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
 			for (let j = 0; j <= hBorder.length; j++) {
@@ -122,7 +123,7 @@ class Layout extends Array {
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 class TableToken extends TrToken {
-	type = 'table';
+	/** @type {'table'} */ type = 'table';
 
 	/** 表格是否闭合 */
 	get closed() {
@@ -138,7 +139,7 @@ class TableToken extends TrToken {
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
 		super(syntax, attr, config, accum, openingPattern);
@@ -149,16 +150,15 @@ class TableToken extends TrToken {
 
 	/**
 	 * @override
-	 * @template {TrToken|SyntaxToken} T
+	 * @template {string|import('../../lib/text')|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
-	 * @returns {T}
 	 * @complexity `n`
 	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
 	insertAt(token, i = this.length) {
 		const previous = this.childNodes.at(i - 1);
-		if (token.type === 'td' && previous.type === 'tr') {
+		if (typeof token !== 'string' && token.type === 'td' && previous.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
 		} else if (i > 0 && i === this.length && token instanceof SyntaxToken
@@ -220,11 +220,13 @@ class TableToken extends TrToken {
 	 */
 	getRowCount() {
 		return super.getRowCount()
-			+ this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
+			+ this.childNodes.filter(child => child.type === 'tr' && /** @type {TrToken} */ (child).getRowCount())
+				.length;
 	}
 
 	/** @override */
 	getPreviousRow() { // eslint-disable-line class-methods-use-this
+		return undefined;
 	}
 
 	/**
@@ -232,19 +234,20 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	getNextRow() {
-		return this.getNthRow(super.getRowCount() ? 1 : 0);
+		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false);
 	}
 
 	/**
 	 * 获取第n行
+	 * @template {boolean} T
 	 * @param {number} n 行号
 	 * @param {boolean} force 是否将表格自身视为第一行
-	 * @param {boolean} insert 是否用于判断插入新行的位置
-	 * @returns {TrToken}
+	 * @param {T} insert 是否用于判断插入新行的位置
+	 * @returns {T extends false ? TrToken : TrToken|SyntaxToken}
 	 * @complexity `n`
 	 * @throws `RangeError` 不存在该行
 	 */
-	getNthRow(n, force, insert) {
+	getNthRow(n, force = false, insert = /** @type {T} */ (false)) {
 		if (!Number.isInteger(n)) {
 			this.typeError('getNthRow', 'Number');
 		}
@@ -252,20 +255,21 @@ class TableToken extends TrToken {
 			isRow = super.getRowCount();
 		n = n < 0 ? n + nRows : n;
 		if (n === 0 && (isRow || force && nRows === 0)) {
-			return this;
+			// eslint-disable-next-line no-extra-parens
+			return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (/** @type {TrToken} */ (this));
 		} else if (n < 0 || n > nRows || n === nRows && !insert) {
 			throw new RangeError(`不存在第 ${n} 行！`);
 		} else if (isRow) {
 			n--;
 		}
 		for (const child of this.childNodes.slice(2)) {
-			if (child.type === 'tr' && child.getRowCount()) {
+			if (child.type === 'tr' && /** @type {TrToken} */ (child).getRowCount()) {
 				n--;
 				if (n < 0) {
-					return child;
+					return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (child);
 				}
 			} else if (child.type === 'table-syntax') {
-				return child;
+				return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (child);
 			}
 		}
 		return undefined;
@@ -273,13 +277,13 @@ class TableToken extends TrToken {
 
 	/**
 	 * 获取所有行
-	 * @returns {TrToken[]}
 	 * @complexity `n`
 	 */
 	getAllRows() {
+		const {childNodes: [, ...childNodes]} = this;
 		return [
 			...super.getRowCount() ? [this] : [],
-			...this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()),
+			.../** @type {TrToken[]} */(childNodes).filter(child => child.type === 'tr' && child.getRowCount()),
 		];
 	}
 
@@ -292,7 +296,7 @@ class TableToken extends TrToken {
 		if (coords.row === undefined) {
 			coords = this.toRawCoords(coords);
 		}
-		return coords && this.getNthRow(coords.row).getNthCol(coords.column);
+		return coords && this.getNthRow(coords.row, false, false).getNthCol(coords.column);
 	}
 
 	/**
@@ -303,7 +307,7 @@ class TableToken extends TrToken {
 	getLayout(stop = {}) {
 		const rows = this.getAllRows(),
 			{length} = rows,
-			/** @type {Layout} */ layout = new Layout(length).fill().map(() => []);
+			layout = new Layout(...new Array(length).fill().map(() => []));
 		for (let i = 0; i < length; i++) {
 			if (i > (stop.row ?? stop.y)) {
 				break;
@@ -537,8 +541,7 @@ class TableToken extends TrToken {
 			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);
-		const AttributesToken = require('../attributes');
-		/** @type {TrToken & AttributesToken}} */
+		/** @type {TrToken & import('../attributes')}} */
 		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);
@@ -951,7 +954,8 @@ class TableToken extends TrToken {
 				if (start) {
 					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
 					rowToken.insertBefore(
-						token, col === undefined && rowToken.type === 'table'
+						token,
+						col === undefined && rowToken.type === 'table'
 							? rowToken.childNodes.slice(2).find(isRowEnd)
 							: col !== undefined && rowToken.getNthCol(col),
 					);

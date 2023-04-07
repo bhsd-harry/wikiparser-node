@@ -1,13 +1,13 @@
 'use strict';
 
 const {extUrlChar, extUrlCharFirst} = require('../util/string'),
-	Parser = require('..'),
+	Parser = require('../index'),
 	ExtLinkToken = require('../src/extLink');
 
 /**
  * 解析外部链接
  * @param {string} wikitext wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseExternalLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = new RegExp(

@@ -1,13 +1,13 @@
 'use strict';
 
-const Parser = require('..'),
+const Parser = require('../index'),
 	AttributesToken = require('../src/attributes'),
 	HtmlToken = require('../src/html');
 
 /**
  * 解析HTML标签
  * @param {string} wikitext wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,

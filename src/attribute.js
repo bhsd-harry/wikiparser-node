@@ -1,14 +1,12 @@
 'use strict';
-
-/** @typedef {import('../typings/token').ParserConfig} ParserConfig */
-
-const {generateForChild} = require('../util/lint'),
-	{noWrap, removeComment} = require('../util/string'),
-	fixedToken = require('../mixin/fixedToken'),
-	Parser = require('..'),
-	Token = require('.'),
-	AtomToken = require('./atom');
-
+const lint_1 = require('../util/lint');
+const {generateForChild} = lint_1;
+const string_1 = require('../util/string');
+const {noWrap, removeComment} = string_1;
+const fixed = require('../mixin/fixed');
+const Parser = require('../index');
+const Token = require('.');
+const AtomToken = require('./atom');
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
 	post = {'ext-attr': '/>', 'html-attr': '>', 'table-attr': ''},
@@ -42,9 +40,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 	citeAttrs = new Set(['cite']),
 	citeAndAttrs = new Set(['cite', 'datetime']),
 	widthAttrs = new Set(['width']),
-	tdAttrs = new Set(
-		['align', 'valign', 'abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'width', 'height', 'bgcolor'],
-	),
+	tdAttrs = new Set(['align', 'valign', 'abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'width', 'height', 'bgcolor']),
 	typeAttrs = new Set(['type']),
 	htmlAttrs = {
 		div: blockAttrs,
@@ -64,9 +60,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 		ul: typeAttrs,
 		ol: new Set(['type', 'start', 'reversed']),
 		li: new Set(['type', 'value']),
-		table: new Set(
-			['summary', 'width', 'border', 'frame', 'rules', 'cellspacing', 'cellpadding', 'align', 'bgcolor'],
-		),
+		table: new Set(['summary', 'width', 'border', 'frame', 'rules', 'cellspacing', 'cellpadding', 'align', 'bgcolor']),
 		caption: blockAttrs,
 		tr: new Set(['bgcolor', 'align', 'valign']),
 		td: tdAttrs,
@@ -162,34 +156,40 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 		tabs: new Set(['plain', 'class', 'container', 'id', 'title', 'style']),
 		combobox: new Set(['placeholder', 'value', 'id', 'class', 'text', 'dropdown', 'style']),
 	},
-	insecureStyle = new RegExp(
-		`${
-			'expression'
-		}|${
-			'(?:filter|accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
-		}|${
-			'(?:url|image(?:-set)?)\\s*\\('
-		}|${
-			'attr\\s*\\([^)]+[\\s,]url'
-		}`,
-		'u',
-	);
+	insecureStyle = new RegExp(`${'expression'}|${'(?:filter|accelerator|-o-link(?:-source)?|-o-replace)\\s*:'}|${'(?:url|image(?:-set)?)\\s*\\('}|${'attr\\s*\\([^)]+[\\s,]url'}`, 'u');
 
 /**
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-class AttributeToken extends fixedToken(Token) {
+class AttributeToken extends fixed(Token) {
+	/** @browser */
 	#equal;
+	/** @browser */
 	#quotes;
+	/** @browser */
 	#tag;
 
-	/** 引号是否匹配 */
+	/**
+	 * 引号是否匹配
+	 * @browser
+	 */
 	get balanced() {
 		return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
 
-	/** getValue()的getter */
+	/**
+	 * 标签名
+	 * @browser
+	 */
+	get tag() {
+		return this.#tag;
+	}
+
+	/**
+	 * getValue()的getter
+	 * @browser
+	 */
 	get value() {
 		return this.getValue();
 	}
@@ -198,21 +198,16 @@ class AttributeToken extends fixedToken(Token) {
 		this.setValue(value);
 	}
 
-	/** 标签名 */
-	get tag() {
-		return this.#tag;
-	}
-
 	/**
-	 * @param {'ext-attr'|'html-attr'|'table-attr'} type 标签类型
-	 * @param {string} tag 标签名
-	 * @param {string} key 属性名
-	 * @param {string} equal 等号
-	 * @param {string} value 属性值
-	 * @param {string[]} quotes 引号
-	 * @param {import('../typings/token').accum} accum
+	 * @browser
+	 * @param type 标签类型
+	 * @param tag 标签名
+	 * @param key 属性名
+	 * @param equal 等号
+	 * @param value 属性值
+	 * @param quotes 引号
 	 */
-	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
+	constructor(type, tag, key, equal = '', value = '', quotes = [undefined, undefined], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
 			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
@@ -220,15 +215,17 @@ class AttributeToken extends fixedToken(Token) {
 		if (key === 'title') {
 			valueToken = new Token(value, config, true, accum, {
 				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
-			}).setAttribute('type', 'attr-value').setAttribute('stage', Parser.MAX_STAGE - 1);
+			});
+			valueToken.type = 'attr-value';
+			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
-			/** @type {ParserConfig} */
 			const newConfig = {...config, excludes: [...config.excludes, 'quote', 'extLink', 'magicLink', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
 				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
-			}).setAttribute('type', 'attr-value').setAttribute('stage', 5);
+			});
+			valueToken.type = 'attr-value';
+			valueToken.setAttribute('stage', 5);
 		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
-			/** @type {ParserConfig} */
 			const newConfig = {...config, excludes: [...config.excludes, 'heading', 'html', 'table', 'hr', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
 				ArgToken: ':',
@@ -240,7 +237,9 @@ class AttributeToken extends fixedToken(Token) {
 				ExtLinkToken: ':',
 				MagicLinkToken: ':',
 				ConverterToken: ':',
-			}).setAttribute('type', 'attr-value').setAttribute('stage', 1);
+			});
+			valueToken.type = 'attr-value';
+			valueToken.setAttribute('stage', 1);
 		} else {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
 				[`Stage-${stages[type]}`]: ':',
@@ -255,10 +254,10 @@ class AttributeToken extends fixedToken(Token) {
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
-	/** @override */
+	/** @private */
 	afterBuild() {
 		if (this.#equal.includes('\0')) {
-			this.#equal = this.getAttribute('buildFromStr')(this.#equal, 'string');
+			this.#equal = this.buildFromStr(this.#equal, 'string');
 		}
 		if (this.parentNode) {
 			this.#tag = this.parentNode.name;
@@ -268,8 +267,7 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @param {string} selector
-	 * @returns {string}
+	 * @browser
 	 */
 	toString(selector) {
 		if (selector && this.matches(selector)) {
@@ -283,18 +281,21 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @returns {string}
+	 * @browser
 	 */
 	text() {
 		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
 	}
 
-	/** @override */
+	/** @private */
 	getGaps() {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
@@ -302,12 +303,13 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
+	 * @param start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
-			{balanced, firstChild, lastChild, type, name, parentNode, value} = this,
-			tagName = parentNode?.name;
+			{balanced, firstChild, lastChild, type, name, value} = this,
+			tag = this.#tag;
 		let rect;
 		if (!balanced) {
 			const root = this.getRootNode();
@@ -317,12 +319,10 @@ class AttributeToken extends fixedToken(Token) {
 				startCol = e.startCol - 1;
 			errors.push({...e, startIndex, startCol, excerpt: String(root).slice(startIndex, startIndex + 50)});
 		}
-		if (!/\{\{[^{]+\}\}/u.test(name) && (
-			type === 'ext-attr' && !(tagName in htmlAttrs) && extAttrs[tagName] && !extAttrs[tagName].has(name)
-			|| (type === 'html-attr' || type === 'table-attr' || tagName in htmlAttrs) && !htmlAttrs[tagName]?.has(name)
-			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
-			&& (tagName === 'meta' || tagName === 'link' || !commonHtmlAttrs.has(name))
-		)) {
+		if (extAttrs[tag] && !extAttrs[tag].has(name)
+			|| (type !== 'ext-attr' && !/\{\{[^{]+\}\}/u.test(name) || tag in htmlAttrs)
+			&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
+			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
@@ -332,7 +332,10 @@ class AttributeToken extends fixedToken(Token) {
 		return errors;
 	}
 
-	/** 获取属性值 */
+	/**
+	 * 获取属性值
+	 * @browser
+	 */
 	getValue() {
 		if (this.#equal) {
 			const value = this.lastChild.text();
@@ -341,15 +344,10 @@ class AttributeToken extends fixedToken(Token) {
 			}
 			return this.#quotes[0] ? value.trimEnd() : value.trim();
 		}
-		return true;
+		return this.type === 'ext-attr' || '';
 	}
 
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
-	 */
+	/** @private */
 	getAttribute(key) {
 		if (key === 'equal') {
 			return this.#equal;
@@ -357,10 +355,7 @@ class AttributeToken extends fixedToken(Token) {
 		return key === 'quotes' ? this.#quotes : super.getAttribute(key);
 	}
 
-	/**
-	 * @override
-	 * @param {PropertyKey} key 属性键
-	 */
+	/** @private */
 	hasAttribute(key) {
 		return key === 'equal' || key === 'quotes' || super.hasAttribute(key);
 	}
@@ -370,6 +365,7 @@ class AttributeToken extends fixedToken(Token) {
 		const [key, value] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
+			// @ts-expect-error abstract class
 			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
@@ -390,7 +386,7 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * 设置属性值
-	 * @param {string|boolean} value 参数值
+	 * @param value 参数值
 	 * @throws `SyntaxError` 非法的标签属性
 	 */
 	setValue(value) {
@@ -401,7 +397,6 @@ class AttributeToken extends fixedToken(Token) {
 			this.#equal = '';
 			return;
 		}
-		value = String(value);
 		const {type} = this,
 			key = this.name === 'title' ? 'title' : 'data',
 			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
@@ -434,7 +429,7 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * 修改属性名
-	 * @param {string} key 新属性名
+	 * @param key 新属性名
 	 * @throws `Error` title属性不能更名
 	 * @throws `SyntaxError` 非法的模板参数名
 	 */
@@ -442,7 +437,6 @@ class AttributeToken extends fixedToken(Token) {
 		if (this.name === 'title') {
 			throw new Error('title 属性不能更名！');
 		}
-		key = String(key);
 		const {type} = this,
 			wikitext = `${pre[type]}${key}${post[type]}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
@@ -467,6 +461,5 @@ class AttributeToken extends fixedToken(Token) {
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
-
 Parser.classes.AttributeToken = __filename;
 module.exports = AttributeToken;

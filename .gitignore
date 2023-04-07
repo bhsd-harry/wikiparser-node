@@ -1,7 +1,7 @@
 /errors/*
 /printed/*
 /.vscode/
-/dist/
+/.eslintcache*
 /wiki/
 /test/single-page.wiki
 /test/processed.txt

@@ -9,14 +9,14 @@ const hidden = require('../../mixin/hidden'),
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
 class IncludeToken extends hidden(TagPairToken) {
-	type = 'include';
+	/** @type {'include'} */ type = 'include';
 
 	/**
 	 * @param {string} name 标签名
 	 * @param {string} attr 标签属性
-	 * @param {string|undefined} inner 内部wikitext
-	 * @param {string|undefined} closed 是否封闭
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} inner 内部wikitext
+	 * @param {string} closed 是否封闭
+	 * @param {import('..')[]} accum
 	 */
 	constructor(name, attr = '', inner = undefined, closed = undefined, config = Parser.getConfig(), accum = []) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
@@ -28,7 +28,9 @@ class IncludeToken extends hidden(TagPairToken) {
 			config = this.getAttribute('config'),
 			inner = this.selfClosing ? undefined : String(this.lastChild),
 			closing = this.selfClosing || !this.closed ? undefined : tags[1],
-			token = Parser.run(() => new IncludeToken(tags[0], String(this.firstChild), inner, closing, config));
+			token = Parser.run(() => /** @type {this} */ (new IncludeToken(
+				tags[0], String(this.firstChild), inner, closing, config,
+			)));
 		return token;
 	}
 

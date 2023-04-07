@@ -1,12 +1,12 @@
 'use strict';
 
-const Parser = require('..'),
+const Parser = require('../index'),
 	QuoteToken = require('../src/nowiki/quote');
 
 /**
  * 解析单引号
  * @param {string} text wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	const arr = text.split(/('{2,})/u),

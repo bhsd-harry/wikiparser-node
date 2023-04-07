@@ -1,26 +1,31 @@
 'use strict';
-
-const {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} = require('../util/string'),
-	{externalUse} = require('../util/debug'),
-	{generateForChild} = require('../util/lint'),
-	Parser = require('..'),
-	Token = require('.'),
-	ParameterToken = require('./parameter'),
-	AtomToken = require('./atom'),
-	SyntaxToken = require('./syntax');
+const string_1 = require('../util/string');
+const {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} = string_1;
+const lint_1 = require('../util/lint');
+const {generateForChild} = lint_1;
+const Parser = require('../index');
+const Token = require('.');
+const ParameterToken = require('./parameter');
+const AtomToken = require('./atom');
+const SyntaxToken = require('./syntax');
 
 /**
  * 模板或魔术字
- * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...ParameterToken]}`
+ * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
 class TranscludeToken extends Token {
+	/** @browser */
 	type = 'template';
+	/** @browser */
 	modifier = '';
-	/** @type {Record<string, Set<ParameterToken>>} */ #args = {};
-	/** @type {Set<string>} */ #keys = new Set();
+	/** @browser */
 	#fragment;
+	/** @browser */
 	#valid = true;
+	/** @browser */
 	#raw = false;
+	#args = {};
+	#keys = new Set();
 
 	/** 是否存在重复参数 */
 	get duplication() {
@@ -28,9 +33,93 @@ class TranscludeToken extends Token {
 	}
 
 	/**
+	 * @browser
+	 * @param title 模板标题或魔术字
+	 * @param parts 参数各部分
+	 * @throws `SyntaxError` 非法的模板名称
+	 */
+	constructor(title, parts, config = Parser.getConfig(), accum = []) {
+		super(undefined, config, true, accum, {
+			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
+		});
+		this.seal('modifier');
+		const {parserFunction: [insensitive, sensitive]} = config,
+			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
+		if (argSubst) {
+			this.setAttribute('modifier', argSubst);
+			title = title.slice(argSubst.length); // eslint-disable-line no-param-reassign
+		} else if (title.includes(':')) {
+			const [modifier, ...arg] = title.split(':'),
+				[mt] = /^(?:\s|\0\d+c\x7F)*/u.exec(arg[0] ?? '');
+			if (this.setModifier(`${modifier}:${mt}`)) {
+				title = arg.join(':').slice(mt.length); // eslint-disable-line no-param-reassign
+			}
+		}
+		if (title.includes(':') || parts.length === 0 && !this.#raw) {
+			const [magicWord, ...arg] = title.split(':'),
+				cleaned = removeComment(magicWord),
+				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
+				isSensitive = sensitive.includes(name),
+				canonicalCame = insensitive[name.toLowerCase()];
+			if (isSensitive || canonicalCame) {
+				this.setAttribute('name', canonicalCame ?? name.toLowerCase()).type = 'magic-word';
+				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
+					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
+						'Stage-1': ':', '!ExtToken': '',
+					});
+				super.insertAt(token);
+				if (arg.length > 0) {
+					parts.unshift([arg.join(':')]);
+				}
+				if (this.name === 'invoke') {
+					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
+					for (let i = 0; i < 2; i++) {
+						const part = parts.shift();
+						if (!part) {
+							break;
+						}
+						const invoke = new AtomToken(part.join('='), `invoke-${i ? 'function' : 'module'}`, config, accum, {
+							'Stage-1': ':', '!ExtToken': '',
+						});
+						super.insertAt(invoke);
+					}
+					this.protectChildren('1:3');
+				}
+			}
+		}
+		if (this.type === 'template') {
+			const name = removeComment(decodeHtml(title)).split('#')[0].trim();
+			if (!name || /\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
+				accum.pop();
+				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
+			}
+			const token = new AtomToken(title, 'template-name', config, accum, {
+				'Stage-2': ':', '!HeadingToken': '',
+			});
+			super.insertAt(token);
+		}
+		const templateLike = this.isTemplate();
+		let i = 1;
+		for (let j = 0; j < parts.length; j++) {
+			const part = parts[j];
+			if (!templateLike && !(this.name === 'switch' && j > 0)) {
+				part[0] = part.join('=');
+				part.length = 1;
+			}
+			if (part.length === 1) {
+				part.unshift(i);
+				i++;
+			}
+			// @ts-expect-error abstract class
+			this.insertAt(new ParameterToken(...part, config, accum));
+		}
+		this.protectChildren(0);
+	}
+
+	/**
 	 * 设置引用修饰符
-	 * @param {string} modifier 引用修饰符
-	 * @complexity `n`
+	 * @browser
+	 * @param modifier 引用修饰符
 	 */
 	setModifier(modifier = '') {
 		if (typeof modifier !== 'string') {
@@ -45,8 +134,7 @@ class TranscludeToken extends Token {
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
 		if (this.#raw && isRaw || !this.#raw && (isSubst || modifier === '')
-			|| (Parser.running || this.length > 1) && (isRaw || isSubst || modifier === '')
-		) {
+			|| (Parser.running || this.length > 1) && (isRaw || isSubst || modifier === '')) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
 			return Boolean(modifier);
@@ -55,95 +143,17 @@ class TranscludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} title 模板标题或魔术字
-	 * @param {[string, string|undefined][]} parts 参数各部分
-	 * @param {import('../typings/token').accum} accum
-	 * @complexity `n`
-	 * @throws `SyntaxError` 非法的模板名称
+	 * 是否是模板
+	 * @browser
 	 */
-	constructor(title, parts, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, true, accum, {
-			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
-		});
-		this.seal('modifier');
-		const {parserFunction: [insensitive, sensitive]} = config,
-			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
-		if (argSubst) {
-			this.setAttribute('modifier', argSubst);
-			title = title.slice(argSubst.length);
-		} else if (title.includes(':')) {
-			const [modifier, ...arg] = title.split(':'),
-				[mt] = /^(?:\s|\0\d+c\x7F)*/u.exec(arg[0] ?? '');
-			if (this.setModifier(`${modifier}:${mt}`)) {
-				title = arg.join(':').slice(mt.length);
-			}
-		}
-		if (title.includes(':') || parts.length === 0 && !this.#raw) {
-			const [magicWord, ...arg] = title.split(':'),
-				cleaned = removeComment(magicWord),
-				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
-				isSensitive = sensitive.includes(name),
-				canonicalCame = insensitive[name.toLowerCase()];
-			if (isSensitive || canonicalCame) {
-				this.setAttribute('name', canonicalCame || name.toLowerCase()).type = 'magic-word';
-				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
-					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
-						'Stage-1': ':', '!ExtToken': '',
-					});
-				this.insertAt(token);
-				if (arg.length > 0) {
-					parts.unshift([arg.join(':')]);
-				}
-				if (this.name === 'invoke') {
-					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
-					for (let i = 0; i < 2; i++) {
-						const part = parts.shift();
-						if (!part) {
-							break;
-						}
-						const invoke = new AtomToken(part.join('='), `invoke-${
-							i ? 'function' : 'module'
-						}`, config, accum, {
-							'Stage-1': ':', '!ExtToken': '',
-						});
-						this.insertAt(invoke);
-					}
-					this.getAttribute('protectChildren')('1:3');
-				}
-			}
-		}
-		if (this.type === 'template') {
-			const name = removeComment(decodeHtml(title)).split('#')[0].trim();
-			if (!name || /\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
-				accum.pop();
-				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
-			}
-			const token = new AtomToken(title, 'template-name', config, accum, {
-				'Stage-2': ':', '!HeadingToken': '',
-			});
-			this.insertAt(token);
-		}
-		const templateLike = this.isTemplate();
-		let i = 1;
-		for (let j = 0; j < parts.length; j++) {
-			const part = parts[j];
-			if (!templateLike && !(this.name === 'switch' && j > 0)) {
-				part[0] = part.join('=');
-				part.length = 1;
-			}
-			if (part.length === 1) {
-				part.unshift(i);
-				i++;
-			}
-			this.insertAt(new ParameterToken(...part, config, accum));
-		}
-		this.getAttribute('protectChildren')(0);
+	isTemplate() {
+		return this.type === 'template' || this.name === 'invoke';
 	}
 
-	/** @override */
+	/** @private */
 	afterBuild() {
 		if (this.modifier.includes('\0')) {
-			this.setAttribute('modifier', this.getAttribute('buildFromStr')(this.modifier, 'string'));
+			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
 		}
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template',
@@ -155,24 +165,23 @@ class TranscludeToken extends Token {
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
 			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-			 * @type {import('../typings/event').AstListener}
+			 * @implements
 			 */
 			const transcludeListener = (e, data) => {
 				const {prevTarget} = e,
-					{oldKey, newKey} = data ?? {};
+					{oldKey, newKey} = data;
 				if (typeof oldKey === 'string') {
 					delete data.oldKey;
 					delete data.newKey;
 				}
 				if (prevTarget === this.firstChild && isTemplate
-					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke'
-				) {
+					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke') {
 					const name = prevTarget.text(),
 						{title, fragment, valid} = this.normalizeTitle(name, 10);
 					this.setAttribute(isTemplate ? 'name' : 'module', title);
 					this.#fragment = fragment;
 					this.#valid = valid;
-				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
+				} else if (oldKey !== newKey && prevTarget.type === 'parameter') {
 					const oldArgs = this.getArgs(oldKey, false, false);
 					oldArgs.delete(prevTarget);
 					this.getArgs(newKey, false, false).add(prevTarget);
@@ -188,59 +197,55 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		if (selector && this.matches(selector)) {
 			return '';
 		}
 		const {childNodes, firstChild, modifier} = this;
-		return `{{${modifier}${
-			this.type === 'magic-word'
-				? `${String(firstChild)}${childNodes.length > 1 ? ':' : ''}${childNodes.slice(1).map(String).join('|')}`
-				: super.toString(selector, '|')
-		}}}`;
+		return `{{${modifier}${this.type === 'magic-word'
+			? `${String(firstChild)}${childNodes.length > 1 ? ':' : ''}${childNodes.slice(1).map(String).join('|')}`
+			: super.toString(selector, '|')}}}`;
 	}
 
 	/**
 	 * @override
-	 * @returns {string}
-	 * @complexity `n`
+	 * @browser
 	 */
 	text() {
 		const {childNodes, firstChild, modifier, type, name} = this;
 		return type === 'magic-word' && name === 'vardefine'
 			? ''
-			: `{{${modifier}${
-				this.type === 'magic-word'
-					? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
-					: super.text('|')
-			}}}`;
+			: `{{${modifier}${this.type === 'magic-word'
+				? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
+				: super.text('|')}}}`;
 	}
 
-	/** @override */
+	/** @private */
 	getPadding() {
 		return this.modifier.length + 2;
 	}
 
-	/** @override */
+	/** @private */
 	getGaps() {
 		return 1;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		const {childNodes, firstChild, modifier} = this;
-		return `<span class="wpb-${this.type}">{{${modifier}${
-			this.type === 'magic-word'
-				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
-				: print(childNodes, {sep: '|'})
-		}}}</span>`;
+		return `<span class="wpb-${this.type}">{{${modifier}${this.type === 'magic-word'
+			? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
+			: print(childNodes, {sep: '|'})}}}</span>`;
 	}
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @param start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
@@ -259,22 +264,15 @@ class TranscludeToken extends Token {
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
-				arg => generateForChild(arg, rect, 'duplicated parameter'),
-			));
+			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(arg => generateForChild(arg, rect, 'duplicated parameter')));
 		}
 		return errors;
 	}
 
-	/** 是否是模板 */
-	isTemplate() {
-		return this.type === 'template' || this.type === 'magic-word' && this.name === 'invoke';
-	}
-
 	/**
 	 * 处理匿名参数更改
-	 * @param {number|ParameterToken} addedToken 新增的参数
-	 * @complexity `n`
+	 * @browser
+	 * @param addedToken 新增的参数
 	 */
 	#handleAnonArgChange(addedToken) {
 		const args = this.getAnonArgs(),
@@ -301,9 +299,9 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @override
-	 * @param {ParameterToken} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
+	 * @browser
+	 * @param token 待插入的子节点
+	 * @param i 插入位置
 	 */
 	insertAt(token, i = this.length) {
 		super.insertAt(token, i);
@@ -318,16 +316,15 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 获取所有参数
-	 * @returns {ParameterToken[]}
-	 * @complexity `n`
+	 * @browser
 	 */
 	getAllArgs() {
-		return this.childNodes.filter(child => child instanceof ParameterToken);
+		return this.childNodes.filter(child => child.type === 'parameter');
 	}
 
 	/**
 	 * 获取匿名参数
-	 * @complexity `n`
+	 * @browser
 	 */
 	getAnonArgs() {
 		return this.getAllArgs().filter(({anon}) => anon);
@@ -335,16 +332,15 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 获取指定参数
-	 * @param {string|number} key 参数名
-	 * @param {boolean} exact 是否匹配匿名性
-	 * @param {boolean} copy 是否返回一个备份
-	 * @complexity `n`
+	 * @browser
+	 * @param key 参数名
+	 * @param exact 是否匹配匿名性
+	 * @param copy 是否返回一个备份
 	 */
-	getArgs(key, exact, copy = true) {
+	getArgs(key, exact = false, copy = true) {
 		if (typeof key !== 'string' && typeof key !== 'number') {
 			this.typeError('getArgs', 'String', 'Number');
 		}
-		copy ||= !Parser.debugging && externalUse('getArgs');
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args;
 		if (Object.hasOwn(this.#args, keyStr)) {
@@ -353,6 +349,7 @@ class TranscludeToken extends Token {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args[keyStr] = args;
 		}
+		// @ts-expect-error isNaN
 		if (exact && !isNaN(keyStr)) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
@@ -363,8 +360,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 获取重名参数
-	 * @complexity `n`
-	 * @returns {[string, ParameterToken[]][]}
+	 * @browser
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs() {
@@ -377,7 +373,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 对特定魔术字获取可能的取值
-	 * @this {ParameterToken}}
+	 * @browser
 	 * @throws `Error` 不是可接受的魔术字
 	 */
 	getPossibleValues() {
@@ -399,9 +395,8 @@ class TranscludeToken extends Token {
 			default:
 				throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
 		}
-		const /** @type {Token[]} */ queue = childNodes.slice(start, start + 2).map(({childNodes: [, value]}) => value);
+		const queue = childNodes.slice(start, start + 2).map(({childNodes: [, value]}) => value);
 		for (let i = 0; i < queue.length;) {
-			/** @type {Token[] & {0: TranscludeToken}} */
 			const {length, 0: first} = queue[i].childNodes.filter(child => child.text().trim());
 			if (length === 0) {
 				queue.splice(i, 1);
@@ -425,6 +420,7 @@ class TranscludeToken extends Token {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
+			// @ts-expect-error abstract class
 			const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], config);
 			if (this.#raw) {
 				token.setModifier(this.modifier);
@@ -448,36 +444,27 @@ class TranscludeToken extends Token {
 		this.setModifier('safesubst:');
 	}
 
-	/**
-	 * @override
-	 * @param {PropertyKey} key 属性键
-	 */
+	/** @private */
 	hasAttribute(key) {
 		return key === 'keys' || super.hasAttribute(key);
 	}
 
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
-	 */
+	/** @private */
 	getAttribute(key) {
 		if (key === 'args') {
 			return {...this.#args};
 		} else if (key === 'keys') {
-			return !Parser.debugging && externalUse('getAttribute') ? new Set(this.#keys) : this.#keys;
+			return this.#keys;
 		}
 		return super.getAttribute(key);
 	}
 
 	/**
 	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
+	 * @param i 移除位置
 	 */
 	removeAt(i) {
-		const /** @type {ParameterToken} */ token = super.removeAt(i);
+		const token = super.removeAt(i);
 		if (token.anon) {
 			this.#handleAnonArgChange(Number(token.name));
 		} else {
@@ -492,31 +479,28 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 是否具有某参数
-	 * @param {string|number} key 参数名
-	 * @param {boolean} exact 是否匹配匿名性
-	 * @complexity `n`
+	 * @param key 参数名
+	 * @param exact 是否匹配匿名性
 	 */
-	hasArg(key, exact) {
+	hasArg(key, exact = false) {
 		return this.getArgs(key, exact, false).size > 0;
 	}
 
 	/**
 	 * 获取生效的指定参数
-	 * @param {string|number} key 参数名
-	 * @param {boolean} exact 是否匹配匿名性
-	 * @complexity `n`
+	 * @param key 参数名
+	 * @param exact 是否匹配匿名性
 	 */
-	getArg(key, exact) {
+	getArg(key, exact = false) {
 		return [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**
 	 * 移除指定参数
-	 * @param {string|number} key 参数名
-	 * @param {boolean} exact 是否匹配匿名性
-	 * @complexity `n`
+	 * @param key 参数名
+	 * @param exact 是否匹配匿名性
 	 */
-	removeArg(key, exact) {
+	removeArg(key, exact = false) {
 		Parser.run(() => {
 			for (const token of this.getArgs(key, exact, false)) {
 				this.removeChild(token);
@@ -524,10 +508,7 @@ class TranscludeToken extends Token {
 		});
 	}
 
-	/**
-	 * 获取所有参数名
-	 * @complexity `n`
-	 */
+	/** 获取所有参数名 */
 	getKeys() {
 		const args = this.getAllArgs();
 		if (this.#keys.size === 0 && args.length > 0) {
@@ -540,8 +521,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 获取参数值
-	 * @param {string|number} key 参数名
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	getValues(key) {
 		return [...this.getArgs(key, false, false)].map(token => token.getValue());
@@ -549,10 +529,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 获取生效的参数值
-	 * @template {string|number|undefined} T
-	 * @param {T} key 参数名
-	 * @returns {T extends undefined ? Record<string, string> : string}
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	getValue(key) {
 		return key === undefined
@@ -562,18 +539,14 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 插入匿名参数
-	 * @param {string} val 参数值
-	 * @returns {ParameterToken}
-	 * @complexity `n`
+	 * @param val 参数值
 	 * @throws `SyntaxError` 非法的匿名参数
 	 */
 	newAnonArg(val) {
-		val = String(val);
 		const templateLike = this.isTemplate(),
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: transclude} = root,
-			/** @type {Token & {lastChild: ParameterToken}} */
 			{type, name, length: transcludeLength, lastChild} = transclude,
 			targetType = templateLike ? 'template' : 'magic-word',
 			targetName = templateLike ? 'T' : 'lc';
@@ -585,9 +558,8 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 设置参数值
-	 * @param {string} key 参数名
-	 * @param {string} value 参数值
-	 * @complexity `n`
+	 * @param key 参数名
+	 * @param value 参数值
 	 * @throws `Error` 仅用于模板
 	 * @throws `SyntaxError` 非法的命名参数
 	 */
@@ -598,7 +570,6 @@ class TranscludeToken extends Token {
 			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
 		}
 		const token = this.getArg(key);
-		value = String(value);
 		if (token) {
 			token.setValue(value);
 			return;
@@ -615,7 +586,6 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 将匿名参数改写为命名参数
-	 * @complexity `n`
 	 * @throws `Error` 仅用于模板
 	 */
 	anonToNamed() {
@@ -629,7 +599,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 替换模板名
-	 * @param {string} title 模板名
+	 * @param title 模板名
 	 * @throws `Error` 仅用于模板
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
@@ -649,7 +619,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 替换模块名
-	 * @param {string} title 模块名
+	 * @param title 模块名
 	 * @throws `Error` 仅用于模块
 	 * @throws `SyntaxError` 非法的模块名称
 	 */
@@ -668,13 +638,13 @@ class TranscludeToken extends Token {
 			this.childNodes[1].replaceChildren(...lastChild.childNodes);
 		} else {
 			invoke.destroy();
-			this.insertAt(lastChild);
+			super.insertAt(lastChild);
 		}
 	}
 
 	/**
 	 * 替换模块函数
-	 * @param {string} func 模块函数名
+	 * @param func 模块函数名
 	 * @throws `Error` 仅用于模块
 	 * @throws `Error` 尚未指定模块名称
 	 * @throws `SyntaxError` 非法的模块函数名
@@ -687,9 +657,7 @@ class TranscludeToken extends Token {
 		} else if (this.length < 2) {
 			throw new Error('尚未指定模块名称！');
 		}
-		const root = Parser.parse(
-				`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config'),
-			),
+		const root = Parser.parse(`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: invoke} = root,
 			{type, name, length: invokeLength, lastChild} = invoke;
 		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invokeLength !== 3) {
@@ -698,13 +666,12 @@ class TranscludeToken extends Token {
 			this.childNodes[2].replaceChildren(...lastChild.childNodes);
 		} else {
 			invoke.destroy();
-			this.insertAt(lastChild);
+			super.insertAt(lastChild);
 		}
 	}
 
 	/**
 	 * 是否存在重名参数
-	 * @complexity `n`
 	 * @throws `Error` 仅用于模板
 	 */
 	hasDuplicatedArgs() {
@@ -718,20 +685,19 @@ class TranscludeToken extends Token {
 	 * 修复重名参数：
 	 * `aggressive = false`时只移除空参数和全同参数，优先保留匿名参数，否则将所有匿名参数更改为命名。
 	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数。
-	 * @param {boolean} aggressive 是否使用有更大风险的修复手段
-	 * @complexity `n²`
+	 * @param aggressive 是否使用有更大风险的修复手段
 	 */
-	fixDuplication(aggressive) {
+	fixDuplication(aggressive = false) {
 		if (!this.hasDuplicatedArgs()) {
 			return [];
 		}
-		const /** @type {string[]} */ duplicatedKeys = [];
+		const duplicatedKeys = [];
 		let {length: anonCount} = this.getAnonArgs();
 		for (const [key, args] of this.getDuplicatedArgs()) {
 			if (args.length <= 1) {
 				continue;
 			}
-			const /** @type {Record<string, ParameterToken[]>} */ values = {};
+			const values = {};
 			for (const arg of args) {
 				const val = arg.getValue().trim();
 				if (Object.hasOwn(values, val)) {
@@ -740,6 +706,7 @@ class TranscludeToken extends Token {
 					values[val] = [arg];
 				}
 			}
+			// @ts-expect-error isNaN
 			let noMoreAnon = anonCount === 0 || isNaN(key);
 			const emptyArgs = values[''] ?? [],
 				duplicatedArgs = Object.entries(values).filter(([val, {length}]) => val && length > 1)
@@ -766,7 +733,7 @@ class TranscludeToken extends Token {
 			if (remaining === 1) {
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
-				let /** @type {number} */ last;
+				let last;
 				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)[0].length),
 					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`, 'u'),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
@@ -792,10 +759,9 @@ class TranscludeToken extends Token {
 			if (remaining > 1) {
 				Parser.error(`${this.type === 'template'
 					? this.name
-					: this.normalizeTitle(this.childNodes[1]?.text() ?? '', 828).title
-				} 还留有 ${remaining} 个重复的 ${key} 参数：${[...this.getArgs(key)].map(arg => {
+					: this.normalizeTitle(this.childNodes[1]?.text() ?? '', 828).title} 还留有 ${remaining} 个重复的 ${key} 参数：${[...this.getArgs(key)].map(arg => {
 					const {top, left} = arg.getBoundingClientRect();
-					return `第 ${top} 行第 ${left} 列`;
+					return `第 ${String(top)} 行第 ${String(left)} 列`;
 				}).join('、')}`);
 				duplicatedKeys.push(key);
 				continue;
@@ -806,8 +772,6 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 转义模板内的表格
-	 * @returns {TranscludeToken}
-	 * @complexity `n`
 	 * @throws `Error` 转义失败
 	 */
 	escapeTables() {
@@ -838,6 +802,5 @@ class TranscludeToken extends Token {
 		return firstChild;
 	}
 }
-
 Parser.classes.TranscludeToken = __filename;
 module.exports = TranscludeToken;

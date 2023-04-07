@@ -9,11 +9,12 @@ const {decodeHtml} = require('../../util/string'),
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 class CategoryToken extends LinkToken {
-	type = 'category';
+	/** @type {'category'} */ type = 'category';
 
 	/** 分类排序关键字 */
 	get sortkey() {
-		return decodeHtml(this.childNodes[1]?.text());
+		const {childNodes: [, child]} = this;
+		return child && decodeHtml(child.text());
 	}
 
 	set sortkey(text) {
@@ -22,8 +23,8 @@ class CategoryToken extends LinkToken {
 
 	/**
 	 * @param {string} link 分类名
-	 * @param {string|undefined} text 排序关键字
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} text 排序关键字
+	 * @param {import('..')[]} accum
 	 * @param {string} delimiter `|`
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = [], delimiter = '|') {

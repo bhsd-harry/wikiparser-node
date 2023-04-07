@@ -1,22 +1,29 @@
 import Token = require('../src');
-import AstText = require('../lib/text');
+import AstNodeTypes = require('./node');
 
-export interface AstEvent {
+interface AstEvent extends Event {
 	readonly type: string;
-	readonly target: Token & AstText;
-	currentTarget: Token;
-	prevTarget: Token;
+	readonly target: EventTarget & AstNodeTypes;
+	currentTarget: EventTarget & Token;
+	prevTarget?: Token;
 	bubbles: boolean;
 }
-export interface AstEventData {
-	position: number;
-	removed: AstText|Token;
-	inserted: AstText|Token;
-	oldToken: Token;
-	newToken: Token;
-	oldText: string;
-	newText: string;
-	oldKey: string;
-	newKey: string;
+
+interface AstEventData {
+	position?: number;
+	removed?: AstNodeTypes;
+	inserted?: AstNodeTypes;
+	oldToken?: Token;
+	newToken?: Token;
+	oldText?: string;
+	newText?: string;
+	oldKey?: string;
+	newKey?: string;
 }
-export type AstListener = (e: AstEvent, data: AstEventData) => unknown;
+
+type AstListener = (e: AstEvent, data: AstEventData) => void;
+
+export {
+	AstListener,
+	AstEventData,
+};

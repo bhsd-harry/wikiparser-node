@@ -3,14 +3,14 @@
 const hidden = require('../../mixin/hidden'),
 	{generateForSelf} = require('../../util/lint'),
 	Parser = require('../..'),
-	NowikiToken = require('.');
+	NowikiBaseToken = require('./base');
 
 /**
  * HTML注释，不可见
  * @classdesc `{childNodes: [AstText]}`
  */
-class CommentToken extends hidden(NowikiToken) {
-	type = 'comment';
+class CommentToken extends hidden(NowikiBaseToken) {
+	/** @type {'comment'} */ type = 'comment';
 	closed;
 
 	/** 内部wikitext */
@@ -21,7 +21,7 @@ class CommentToken extends hidden(NowikiToken) {
 	/**
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} closed 是否闭合
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, accum);
@@ -63,7 +63,9 @@ class CommentToken extends hidden(NowikiToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => new CommentToken(String(this.firstChild), this.closed, this.getAttribute('config')));
+		return Parser.run(() => /** @type {this} */ (new CommentToken(
+			String(this.firstChild), this.closed, this.getAttribute('config'),
+		)));
 	}
 }
 

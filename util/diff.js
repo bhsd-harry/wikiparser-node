@@ -1,28 +1,26 @@
 'use strict';
-
-const {spawn} = require('child_process'),
-	fs = require('fs/promises');
-
+const child_process = require('child_process');
+const {spawn} = child_process;
+const fs = require('fs/promises');
 process.on('unhandledRejection', e => {
 	console.error(e);
 });
 
 /**
  * 将shell命令转化为Promise对象
- * @param {string} command shell指令
- * @param {string[]} args shell输入参数
- * @returns {Promise<?string>}
+ * @param command shell指令
+ * @param args shell输入参数
  */
 const cmd = (command, args) => new Promise(resolve => {
 	let timer, shell;
 
 	/**
 	 * 清除进程并返回
-	 * @param {*} val 返回值
+	 * @param val 返回值
 	 */
 	const r = val => {
 		clearTimeout(timer);
-		shell.kill('SIGINT');
+		shell?.kill('SIGINT');
 		resolve(val);
 	};
 	try {
@@ -32,7 +30,7 @@ const cmd = (command, args) => new Promise(resolve => {
 		}, 60 * 1000);
 		let buf = '';
 		shell.stdout.on('data', data => {
-			buf += data.toString();
+			buf += String(data);
 		});
 		shell.stdout.on('end', () => {
 			r(buf);
@@ -50,11 +48,11 @@ const cmd = (command, args) => new Promise(resolve => {
 
 /**
  * 比较两个文件
- * @param {string} oldStr 旧文本
- * @param {string} newStr 新文本
- * @param {string} uid 唯一标识
+ * @param oldStr 旧文本
+ * @param newStr 新文本
+ * @param uid 唯一标识
  */
-const diff = async (oldStr, newStr, uid = '') => {
+const diff = async (oldStr, newStr, uid = -1) => {
 	if (oldStr === newStr) {
 		return;
 	}
@@ -72,5 +70,4 @@ const diff = async (oldStr, newStr, uid = '') => {
 	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
 	console.log(stdout?.split('\n')?.slice(4)?.join('\n'));
 };
-
 module.exports = diff;

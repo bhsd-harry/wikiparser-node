@@ -74,9 +74,8 @@
 		"no-unused-vars": [
 			2,
 			{
-				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
 				"args": "all",
-				"argsIgnorePattern": "^_+$",
+				"argsIgnorePattern": "^(_+|i)$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}
@@ -109,14 +108,16 @@
 		"accessor-pairs": 2,
 		"arrow-body-style": 2,
 		"block-scoped-var": 2,
-		"camelcase": 2,
+		"camelcase": 0,
 		"class-methods-use-this": [
 			2,
 			{
 				"exceptMethods": [
 					"getPadding",
 					"getGaps",
-					"isPlain"
+					"isPlain",
+					"text",
+					"closed"
 				]
 			}
 		],
@@ -124,7 +125,7 @@
 		"curly": 2,
 		"default-case": 2,
 		"default-case-last": 2,
-		"default-param-last": 2,
+		"default-param-last": 0,
 		"dot-notation": 2,
 		"eqeqeq": 2,
 		"func-name-matching": [
@@ -219,12 +220,7 @@
 			"always"
 		],
 		"no-return-await": 2,
-		"no-sequences": [
-			2,
-			{
-				"allowInParentheses": false
-			}
-		],
+		"no-sequences": 2,
 		"no-shadow": [
 			2,
 			{
@@ -387,7 +383,13 @@
 				"ignoreChainWithDepth": 4
 			}
 		],
-		"no-extra-parens": 2,
+		"no-extra-parens": [
+			2,
+			"all",
+			{
+				"allowParensAfterCommentPattern": "@type"
+			}
+		],
 		"no-multi-spaces": [
 			2,
 			{
@@ -475,10 +477,7 @@
 		"n/no-unpublished-import": 0,
 		"n/no-unpublished-require": 0,
 		"n/shebang": 0,
-		"n/exports-style": [
-			2,
-			"module.exports"
-		],
+		"n/exports-style": 0,
 		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
 		"regexp/no-contradiction-with-assertion": 2,
@@ -549,7 +548,7 @@
 		"unicorn/no-negated-condition": 2,
 		"unicorn/no-object-as-default-parameter": 2,
 		"unicorn/no-static-only-class": 2,
-		"unicorn/no-this-assignment": 2,
+		"unicorn/no-this-assignment": 0,
 		"unicorn/no-typeof-undefined": [
 			2,
 			{
@@ -687,14 +686,21 @@
 				]
 			}
 		],
-		"jsdoc/require-param-type": 1,
+		"jsdoc/require-param-type": 0,
 		"jsdoc/require-param": [
 			1,
 			{
 				"exceptions": [
 					"_",
 					"config",
-					"halfParsed"
+					"halfParsed",
+					"accum",
+					"selector",
+					"callback",
+					"method",
+					"wikitext",
+					"type",
+					"acceptable"
 				],
 				"contexts": [
 					"FunctionDeclaration",
@@ -720,12 +726,6 @@
 		]
 	},
 	"overrides": [
-		{
-			"files": "./index.js",
-			"rules": {
-				"jsdoc/require-jsdoc": 0
-			}
-		},
 		{
 			"files": "**/*.json",
 			"parser": "eslint-plugin-json-es",
@@ -784,16 +784,6 @@
 				],
 				"indent": 0
 			}
-		},
-		{
-			"files": "**/*.ts",
-			"parser": "@typescript-eslint/parser",
-			"plugins": [
-				"@typescript-eslint"
-			],
-			"extends": [
-				"plugin:@typescript-eslint/recommended"
-			]
 		}
 	],
 	"settings": {
@@ -803,7 +793,14 @@
 			},
 			"overrideReplacesDocs": [
 				"require-description"
-			]
+			],
+			"structuredTags": {
+				"browser": {
+					"name": false,
+					"type": false
+				}
+			},
+			"ignorePrivate": true
 		}
 	}
 }

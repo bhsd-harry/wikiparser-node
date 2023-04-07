@@ -1,12 +1,13 @@
 'use strict';
 
 /**
- * @template T
- * @typedef {import('../../typings/node').TokenAttribute<T>} TokenAttribute
+ * @template {string} T
+ * @typedef {import('../../lib/node').TokenAttribute<T>} TokenAttribute
  */
+/** @typedef {import('./td').TdAttr} TdAttr */
 
 const {generateForChild} = require('../../util/lint'),
-	fixedToken = require('../../mixin/fixedToken'),
+	fixed = require('../../mixin/fixed'),
 	{typeError} = require('../../util/debug'),
 	{isPlainObject} = require('../../util/base'),
 	Parser = require('../..'),
@@ -20,8 +21,8 @@ const aliases = {td: '\n|', th: '\n!', caption: '\n|+'},
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-class TdToken extends fixedToken(TrToken) {
-	type = 'td';
+class TdToken extends fixed(TrToken) {
+	/** @type {'td'} */ type = 'td';
 	#innerSyntax = '';
 
 	/**
@@ -73,7 +74,7 @@ class TdToken extends fixedToken(TrToken) {
 		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
 			char = syntax.at(-1);
-		let subtype = 'td';
+		let /** @type {'td'|'th'|'caption'} */ subtype = 'td';
 		if (char === '!') {
 			subtype = 'th';
 		} else if (char === '+') {
@@ -86,7 +87,7 @@ class TdToken extends fixedToken(TrToken) {
 		if (previousSibling?.type !== 'td') {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = previousSibling.getSyntax();
+		const result = /** @type {TdToken} */ (previousSibling).getSyntax();
 		result.escape ||= esc;
 		result.correction = previousSibling.lastChild
 			.toString('comment, ext, include, noinclude, arg, template, magic-word')
@@ -101,7 +102,7 @@ class TdToken extends fixedToken(TrToken) {
 	/**
 	 * @param {string} syntax 单元格语法
 	 * @param {string} inner 内部wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
 		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),
@@ -125,7 +126,7 @@ class TdToken extends fixedToken(TrToken) {
 	/** @override */
 	afterBuild() {
 		if (this.#innerSyntax.includes('\0')) {
-			this.#innerSyntax = this.getAttribute('buildFromStr')(this.#innerSyntax, 'string');
+			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, 'string');
 		}
 	}
 
@@ -190,7 +191,7 @@ class TdToken extends fixedToken(TrToken) {
 
 	/** @override */
 	cloneNode() {
-		const /** @type {TdToken} */ token = super.cloneNode();
+		const token = super.cloneNode();
 		token.setAttribute('innerSyntax', this.#innerSyntax);
 		return token;
 	}
@@ -199,7 +200,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * 创建新的单元格
 	 * @param {string|Token} inner 内部wikitext
 	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string>} attr 单元格属性
+	 * @param {TdAttr} attr 单元格属性
 	 * @param {boolean} include 是否嵌入
 	 * @throws `RangeError` 非法的单元格类型
 	 */
@@ -213,9 +214,9 @@ class TdToken extends fixedToken(TrToken) {
 		}
 		const token = Parser.run(() => new TdToken('\n|', undefined, config));
 		token.setSyntax(subtype);
-		token.lastChild.safeReplaceWith(inner);
+		token.lastChild.safeReplaceWith(/** @type {Token} */ (inner));
 		for (const [k, v] of Object.entries(attr)) {
-			token.setAttr(k, v);
+			token.setAttr(k, /** @type {string} */ (v));
 		}
 		return token;
 	}
@@ -227,7 +228,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		return key === 'innerSyntax' ? this.#innerSyntax : super.getAttribute(key);
+		return key === 'innerSyntax' ? /** @type {TokenAttribute<T>} */ (this.#innerSyntax) : super.getAttribute(key);
 	}
 
 	/**
@@ -250,7 +251,7 @@ class TdToken extends fixedToken(TrToken) {
 	 * @param {string} syntax 表格语法
 	 * @param {boolean} esc 是否需要转义
 	 */
-	setSyntax(syntax, esc) {
+	setSyntax(syntax, esc = false) {
 		super.setSyntax(aliases[syntax] ?? syntax, esc);
 	}
 
@@ -283,48 +284,48 @@ class TdToken extends fixedToken(TrToken) {
 	 * 获取单元格属性
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {T extends 'rowspan'|'colspan' ? number : string|true}
 	 */
 	getAttr(key) {
-		const /** @type {string|true} */ value = super.getAttr(key);
-		key = key?.toLowerCase()?.trim();
-		return key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value;
+		const /** @type {string} */ value = super.getAttr(key);
+		key = /** @type {T} */ (key?.toLowerCase()?.trim());
+		return /** @type {T extends 'rowspan'|'colspan' ? number : string} */ (key === 'rowspan' || key === 'colspan'
+			? Number(value) || 1
+			: value);
 	}
 
-	/**
-	 * 获取全部单元格属性
-	 * @returns {{rowspan: number, colspan: number, [key: string]: string|true}}
-	 */
+	/** 获取全部单元格属性 */
 	getAttrs() {
-		const /** @type {record<string, string|true>} */ attr = super.getAttrs();
+		const /** @type {Record<string, string|number>} */ attr = super.getAttrs();
 		if ('rowspan' in attr) {
 			attr.rowspan = Number(attr.rowspan);
 		}
 		if ('colspan' in attr) {
 			attr.colspan = Number(attr.colspan);
 		}
-		return attr;
+		return /** @type {TdAttr} */ (attr);
 	}
 
 	/**
 	 * 设置单元格属性
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @param {T extends 'rowspan'|'colspan' ? number : string|boolean} value 属性值
+	 * @param {T extends 'rowspan'|'colspan' ? number|boolean : string|boolean} value 属性值
 	 */
 	setAttr(key, value) {
 		if (typeof key !== 'string') {
 			this.typeError('setAttr', 'String');
 		}
-		key = key.toLowerCase().trim();
+		key = /** @type {T} */ (key.toLowerCase().trim());
+		let v;
 		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
-			value = value === 1 ? false : String(value);
+			v = value === 1 ? false : String(value);
+		} else {
+			v = value;
 		}
-		const /** @type {boolean} */ result = super.setAttr(key, value);
+		super.setAttr(key, v);
 		if (!String(this.childNodes[1])) {
 			this.#innerSyntax = '';
 		}
-		return result;
 	}
 
 	/** @override */

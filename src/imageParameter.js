@@ -2,9 +2,7 @@
 
 const {text, noWrap, print, extUrlChar, extUrlCharFirst} = require('../util/string'),
 	{generateForSelf} = require('../util/lint'),
-	Title = require('../lib/title'),
 	Parser = require('..'),
-	AstText = require('../lib/text'),
 	Token = require('.');
 
 const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
@@ -64,7 +62,7 @@ class ImageParameterToken extends Token {
 
 	set link(value) {
 		if (this.name === 'link') {
-			this.setValue(value);
+			this.setValue(String(value));
 		}
 	}
 
@@ -124,7 +122,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @param {string} str 图片参数
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 */
 	constructor(str, config = Parser.getConfig(), accum = []) {
 		let mt;
@@ -187,7 +185,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @override
-	 * @this {ImageParameterToken & {link: Title}}
+	 * @this {this & {link: Title}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
@@ -224,7 +222,7 @@ class ImageParameterToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		return key === 'syntax' ? this.#syntax : super.getAttribute(key);

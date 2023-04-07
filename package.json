@@ -15,6 +15,8 @@
 	"author": "Bhsd",
 	"files": [
 		"/index.js",
+		"/errors/README",
+		"/printed/README",
 		"/config/",
 		"/i18n/",
 		"/lib/",
@@ -35,9 +37,11 @@
 		"build": "rm -rf dist/ && tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
-		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
-		"real": "node test/real.js",
-		"single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
+		"lint:js": "eslint --cache .",
+		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
+		"lint": "npm run lint:js && npm run lint:json",
+		"test:real": "node test/real.js",
+		"test:single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
 	},
 	"devDependencies": {
 		"@types/node": "^17.0.23",

@@ -1,10 +1,12 @@
 'use strict';
 
+/** @typedef {import('../../lib/text')} AstText */
+/** @typedef {import('../../lib/title')} Title */
+
 const {generateForChild} = require('../../util/lint'),
 	{noWrap} = require('../../util/string'),
 	{undo} = require('../../util/debug'),
 	Parser = require('../..'),
-	AstText = require('../../lib/text'),
 	Token = require('..'),
 	AtomToken = require('../atom');
 
@@ -13,17 +15,24 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 class LinkToken extends Token {
-	type = 'link';
+	/** @type {import('.').linkType} */ type = 'link';
 	#bracket = true;
 	#delimiter;
 	#fragment;
 	#encoded = false;
 
-	/** 完整链接，和FileToken保持一致 */
+	/**
+	 * 完整链接，和FileToken保持一致
+	 * @returns {Title}
+	 */
 	get link() {
 		return this.#getTitle();
 	}
 
+	/**
+	 * @this {import('.')}
+	 * @param {string|Title} link 链接目标
+	 */
 	set link(link) {
 		this.setTarget(link);
 	}
@@ -34,6 +43,7 @@ class LinkToken extends Token {
 		return !title && Boolean(fragment);
 	}
 
+	/** @this {this & import('.')} */
 	set selfLink(selfLink) {
 		if (selfLink === true) {
 			this.asSelfLink();
@@ -45,6 +55,7 @@ class LinkToken extends Token {
 		return this.#getTitle().fragment;
 	}
 
+	/** @this {this & import('.')} */
 	set fragment(fragment) {
 		this.#setFragment(fragment);
 	}
@@ -54,6 +65,7 @@ class LinkToken extends Token {
 		return this.#getTitle().interwiki;
 	}
 
+	/** @this {this & import('.')} */
 	set interwiki(interwiki) {
 		if (typeof interwiki !== 'string') {
 			this.typeError('set interwiki', 'String');
@@ -78,8 +90,8 @@ class LinkToken extends Token {
 
 	/**
 	 * @param {string} link 链接标题
-	 * @param {string|undefined} linkText 链接显示文字
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} linkText 链接显示文字
+	 * @param {Token[]} accum
 	 * @param {string} delimiter `|`
 	 */
 	constructor(link, linkText, config = Parser.getConfig(), accum = [], delimiter = '|') {
@@ -97,7 +109,7 @@ class LinkToken extends Token {
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.#delimiter = delimiter;
-		this.getAttribute('protectChildren')(0);
+		this.protectChildren(0);
 	}
 
 	/**
@@ -111,9 +123,9 @@ class LinkToken extends Token {
 		this.#fragment = titleObj.fragment;
 		this.#encoded = titleObj.encoded;
 		if (this.#delimiter?.includes('\0')) {
-			this.#delimiter = this.getAttribute('buildFromStr')(this.#delimiter, 'string');
+			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
-		const /** @type {import('../../typings/event').AstListener} */ linkListener = (e, data) => {
+		const /** @type {import('../../lib/node').AstListener} */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
@@ -127,7 +139,7 @@ class LinkToken extends Token {
 					undo(e, data);
 					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
 				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14) && name.trim()[0] !== ':') {
-					const /** @type {{firstChild: AstText}} */ {firstChild} = prevTarget;
+					const {firstChild} = prevTarget;
 					if (firstChild.type === 'text') {
 						firstChild.insertData(0, ':');
 					} else {
@@ -146,7 +158,7 @@ class LinkToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @param {import('../../typings/node').TokenAttribute<T>} value 属性值
+	 * @param {import('../../lib/node').TokenAttribute<T>} value 属性值
 	 */
 	setAttribute(key, value) {
 		if (key === 'bracket') {
@@ -188,6 +200,7 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
+	 * @this {this & import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
@@ -203,7 +216,7 @@ class LinkToken extends Token {
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' && linkText?.childNodes?.some(
-			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
+			/** @param {AstText} child */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
@@ -221,22 +234,23 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
-	 * @this {LinkToken & {constructor: typeof LinkToken}}
+	 * @this {import('.') & {constructor: typeof import('.')}}
 	 */
 	cloneNode() {
 		const [link, ...linkText] = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new this.constructor('', undefined, this.#getTitle(), this.getAttribute('config'));
+			const token = new this.constructor('', undefined, this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
 			token.afterBuild();
-			return token;
+			return /** @type {this} */ (token);
 		});
 	}
 
 	/**
 	 * 设置链接目标
-	 * @param {string} link 链接目标
+	 * @this {import('.')}
+	 * @param {string|Title} link 链接目标
 	 * @throws `SyntaxError` 非法的链接目标
 	 */
 	setTarget(link) {
@@ -245,7 +259,7 @@ class LinkToken extends Token {
 			link = `:${link}`;
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{length, firstChild: wikiLink} = root,
+			{length, firstChild: wikiLink} = /** @type {Token & {firstChild: import('.')}} */ (root),
 			{type, firstChild, length: linkLength} = wikiLink;
 		if (length !== 1 || type !== this.type || linkLength !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
@@ -257,6 +271,7 @@ class LinkToken extends Token {
 
 	/**
 	 * 设置跨语言链接
+	 * @this {import('.')}
 	 * @param {string} lang 语言前缀
 	 * @param {string} link 页面标题
 	 * @throws `SyntaxError` 非法的跨语言链接
@@ -273,7 +288,7 @@ class LinkToken extends Token {
 			link = link.slice(1);
 		}
 		const root = Parser.parse(`[[${lang}:${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			/** @type {Token & {firstChild: LinkToken}} */ {length, firstChild: wikiLink} = root,
+			{length, firstChild: wikiLink} = /** @type {Token & {firstChild: import('.')}} */ (root),
 			{type, length: linkLength, interwiki, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1 || interwiki !== lang.toLowerCase()) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
@@ -284,6 +299,7 @@ class LinkToken extends Token {
 
 	/**
 	 * 设置fragment
+	 * @this {import('.')}
 	 * @param {string} fragment fragment
 	 * @param {boolean} page 是否是其他页面
 	 * @throws `SyntaxError` 非法的fragment
@@ -295,7 +311,7 @@ class LinkToken extends Token {
 			root = Parser.parse(`[[${page ? `:${this.name}` : ''}${
 				fragment === undefined ? '' : `#${fragment}`
 			}]]`, include, 6, config),
-			{length, firstChild: wikiLink} = root,
+			{length, firstChild: wikiLink} = /** @type {Token & {firstChild: import('.')}} */ (root),
 			{type, length: linkLength, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
@@ -308,6 +324,7 @@ class LinkToken extends Token {
 
 	/**
 	 * 设置fragment
+	 * @this {this & import('.')}
 	 * @param {string} fragment fragment
 	 */
 	setFragment(fragment) {
@@ -316,6 +333,7 @@ class LinkToken extends Token {
 
 	/**
 	 * 修改为到自身的链接
+	 * @this {this & import('.')}
 	 * @param {string} fragment fragment
 	 * @throws `RangeError` 空fragment
 	 */
@@ -329,6 +347,7 @@ class LinkToken extends Token {
 
 	/**
 	 * 设置链接显示文字
+	 * @this {import('.')}
 	 * @param {string} linkText 链接显示文字
 	 * @throws `SyntaxError` 非法的链接显示文字
 	 */
@@ -344,7 +363,7 @@ class LinkToken extends Token {
 			if (length !== 1 || wikiLink.type !== this.type || wikiLink.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}
-			({lastChild} = wikiLink);
+			({lastChild} = /** @type {import('.')} */ (wikiLink));
 		} else {
 			lastChild = Parser.run(() => new Token('', config));
 			lastChild.setAttribute('stage', 7).type = 'link-text';
@@ -358,6 +377,7 @@ class LinkToken extends Token {
 
 	/**
 	 * 自动生成管道符后的链接文字
+	 * @this {import('.')}
 	 * @throws `Error` 带有"#"或"%"时不可用
 	 */
 	pipeTrick() {

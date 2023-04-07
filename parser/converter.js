@@ -1,12 +1,12 @@
 'use strict';
 
-const Parser = require('..'),
+const Parser = require('../index'),
 	ConverterToken = require('../src/converter');
 
 /**
  * 解析语言变体转换
  * @param {string} wikitext wikitext
- * @param {import('../typings/token').accum} accum
+ * @param {import('../src')[]} accum
  */
 const parseConverter = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex1 = /-\{/gu,

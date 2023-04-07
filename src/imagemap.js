@@ -34,7 +34,7 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @param {string} inner 标签内部wikitext
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
@@ -155,7 +155,7 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {string|Token|import('../lib/text')} T
 	 * @param {T} token 待插入的节点
 	 * @param {number} i 插入位置
 	 * @throws `Error` 当前缺少合法图片

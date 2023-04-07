@@ -2,8 +2,8 @@
 
 const {generateForSelf} = require('../util/lint'),
 	{noWrap} = require('../util/string'),
-	fixedToken = require('../mixin/fixedToken'),
-	attributeParent = require('../mixin/attributeParent'),
+	fixed = require('../mixin/fixed'),
+	attributesParent = require('../mixin/attributesParent'),
 	Parser = require('..'),
 	Token = require('.');
 
@@ -13,8 +13,8 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-class HtmlToken extends attributeParent(fixedToken(Token)) {
-	type = 'html';
+class HtmlToken extends attributesParent(fixed(Token)) {
+	/** @type {'html'} */ type = 'html';
 	#closing;
 	#selfClosing;
 	#tag;
@@ -61,10 +61,10 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 
 	/**
 	 * @param {string} name 标签名
-	 * @param {AttributesToken} attr 标签属性
+	 * @param {import('./attributes')} attr 标签属性
 	 * @param {boolean} closing 是否闭合
 	 * @param {boolean} selfClosing 是否自封闭
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -111,7 +111,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
-		let wikitext, /** @type {import('../typings/token').LintError} */ refError;
+		let wikitext, /** @type {import('..').LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
 			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
@@ -195,7 +195,7 @@ class HtmlToken extends attributeParent(fixedToken(Token)) {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		return key === 'tag' ? this.#tag : super.getAttribute(key);

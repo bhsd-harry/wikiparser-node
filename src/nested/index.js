@@ -12,14 +12,14 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [...ExtToken|NoincludeToken|CommentToken]}`
  */
 class NestedToken extends Token {
-	type = 'ext-inner';
+	/** @type {'ext-inner'} */ type = 'ext-inner';
 	#tags;
 
 	/**
-	 * @param {string|undefined} wikitext wikitext
+	 * @param {string} wikitext wikitext
 	 * @param {RegExp} regex 内层正则
 	 * @param {string[]} tags 内层标签名
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
 		const text = wikitext?.replace(
@@ -49,6 +49,7 @@ class NestedToken extends Token {
 
 	/**
 	 * @override
+	 * @this {import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
@@ -70,22 +71,25 @@ class NestedToken extends Token {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {string|Token|import('../../lib/text')} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 */
 	insertAt(token, i = this.length) {
-		return token.type === 'ext' && !this.#tags.includes(token.name)
+		return typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name)
 			? this.typeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`)
 			: super.insertAt(token, i);
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {this & {constructor: typeof Token}}
+	 */
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			const token = new this.constructor(undefined, config);
+			const token = /** @type {this} */ (new this.constructor(undefined, config));
 			token.append(...cloned);
 			return token;
 		});

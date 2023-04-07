@@ -1,23 +1,23 @@
 'use strict';
+const fs = require('fs');
+const path = require('path');
 
-const fs = require('fs'),
-	path = require('path');
-
-const /** @type {import('./typings')} */ Parser = {
-	config: './config/default',
+/**
+ * 从根路径require
+ * @param file 文件名
+ * @param dir 子路径
+ */
+const rootRequire = (file, dir = '') => require(`${file.includes('/') ? '' : `./${dir}`}${file}`);
+const Parser = {
+	config: 'default',
 	i18n: undefined,
-
 	MAX_STAGE: 11,
-
 	warning: true,
 	debugging: false,
 	running: false,
-
 	classes: {},
 	mixins: {},
 	parsers: {},
-	tool: {},
-
 	aliases: [
 		['AstText'],
 		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
@@ -77,8 +77,7 @@ const /** @type {import('./typings')} */ Parser = {
 		td: ['table-cell', 'table-data'],
 		'table-syntax': undefined,
 		'table-attrs': ['tr-attrs', 'td-attrs', 'table-attributes', 'tr-attributes', 'td-attributes'],
-		'table-attr-dirty':
-			['tr-attr-dirty', 'td-attr-dirty', 'table-attribute-dirty', 'tr-attribute-dirty', 'td-attribute-dirty'],
+		'table-attr-dirty': ['tr-attr-dirty', 'td-attr-dirty', 'table-attribute-dirty', 'tr-attribute-dirty', 'td-attribute-dirty'],
 		'table-attr': ['tr-attr', 'td-attr', 'table-attribute', 'tr-attribute', 'td-attribute'],
 		'table-inter': undefined,
 		'td-inner': ['table-cell-inner', 'table-data-inner'],
@@ -119,71 +118,56 @@ const /** @type {import('./typings')} */ Parser = {
 		'charinsert-line': undefined,
 		'imagemap-link': ['image-map-link'],
 	},
-
 	promises: [Promise.resolve()],
-
+	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
-			this.config = require(this.config);
+			this.config = rootRequire(this.config, 'config/');
+			return this.getConfig();
 		}
 		return {...this.config, excludes: []};
 	},
-
-	msg(msg, arg) {
+	/** @implements */
+	msg(msg, arg = '') {
 		if (typeof this.i18n === 'string') {
-			this.i18n = require(this.i18n);
+			this.i18n = rootRequire(this.i18n, 'i18n/');
+			return this.msg(msg, arg);
 		}
-		msg = this.i18n?.[msg] ?? msg;
-		return msg.replace('$1', arg);
+		return (this.i18n?.[msg] ?? msg).replace('$1', arg);
 	},
-
-	normalizeTitle(
-		title,
-		defaultNs = 0,
-		include = false,
-		config = Parser.getConfig(),
-		halfParsed = false,
-		decode = false,
-		selfLink = false,
-	) {
-		let /** @type {Token} */ token;
-		if (!halfParsed) {
-			const Token = require('./src');
-			token = this.run(() => {
-				const newToken = new Token(String(title), config),
-					parseOnce = newToken.getAttribute('parseOnce');
-				parseOnce(0, include);
-				return parseOnce();
-			});
-			title = token.firstChild;
-		}
+	/** @implements */
+	normalizeTitle(title, defaultNs = 0, include = false, config = Parser.getConfig(), halfParsed = false, decode = false, selfLink = false) {
 		const Title = require('./lib/title');
-		const titleObj = new Title(String(title), defaultNs, config, decode, selfLink);
-		if (token) {
-			/**
-			 * 重建部分属性值
-			 * @param {string[]} keys 属性键
-			 */
-			const build = keys => {
-				for (const key of keys) {
-					if (titleObj[key]?.includes('\0')) {
-						titleObj[key] = token.getAttribute('buildFromStr')(titleObj[key], 'text');
-					}
-				}
-			};
-			this.run(() => {
-				build(['title', 'main', 'fragment']);
-			});
+		if (halfParsed) {
+			return new Title(title, defaultNs, config, decode, selfLink);
 		}
+		const Token = require('./src');
+		const token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
+			titleObj = new Title(String(token.firstChild), defaultNs, config, decode, selfLink);
+
+		/**
+		 * 重建部分属性值
+		 * @param keys 属性键
+		 */
+		const build = keys => {
+			for (const key of keys) {
+				if (titleObj[key]?.includes('\0')) {
+					titleObj[key] = token.buildFromStr(titleObj[key], 'text');
+				}
+			}
+		};
+		this.run(() => {
+			build(['title', 'main', 'fragment']);
+		});
 		return titleObj;
 	},
-
+	/** @implements */
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		if (typeof wikitext !== 'string') {
 			throw new TypeError('待解析的内容应为 String！');
 		}
 		const Token = require('./src');
-		let /** @type {Token} */ token;
+		let token;
 		this.run(() => {
 			token = new Token(wikitext, config);
 			try {
@@ -206,10 +190,7 @@ const /** @type {import('./typings')} */ Parser = {
 				process = '解析';
 			if (restored === wikitext) {
 				const entities = {lt: '<', gt: '>', amp: '&'};
-				restored = token.print().replace(
-					/<[^<]+?>|&([lg]t|amp);/gu,
-					/** @param {string} s */ (_, s) => s ? entities[s] : '',
-				);
+				restored = token.print().replace(/<[^<]+?>|&([lg]t|amp);/gu, (_, s) => s ? entities[s] : '');
 				process = '渲染HTML';
 			}
 			if (restored !== wikitext) {
@@ -224,7 +205,7 @@ const /** @type {import('./typings')} */ Parser = {
 		}
 		return token;
 	},
-
+	/** @implements */
 	run(callback) {
 		const {running} = this;
 		this.running = true;
@@ -237,36 +218,38 @@ const /** @type {import('./typings')} */ Parser = {
 			throw e;
 		}
 	},
-
+	/** @implements */
 	warn(msg, ...args) {
 		if (this.warning) {
 			console.warn('\x1B[33m%s\x1B[0m', msg, ...args);
 		}
 	},
+	/** @implements */
 	debug(msg, ...args) {
 		if (this.debugging) {
 			console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
 		}
 	},
+	/** @implements */
 	error(msg, ...args) {
 		console.error('\x1B[31m%s\x1B[0m', msg, ...args);
 	},
+	/** @implements */
 	info(msg, ...args) {
 		console.info('\x1B[32m%s\x1B[0m', msg, ...args);
 	},
-
+	/** @implements */
 	log(f) {
 		if (typeof f === 'function') {
 			console.log(String(f));
 		}
 	},
-
+	/** @implements */
 	clearCache() {
 		const entries = [
 			...Object.entries(this.classes),
 			...Object.entries(this.mixins),
 			...Object.entries(this.parsers),
-			...Object.entries(this.tool),
 		];
 		for (const [, filePath] of entries) {
 			try {
@@ -275,17 +258,17 @@ const /** @type {import('./typings')} */ Parser = {
 		}
 		for (const [name, filePath] of entries) {
 			if (name in global) {
+				// @ts-expect-error noImplicitAny
 				global[name] = require(filePath);
 			}
 		}
 	},
-
+	/** @implements */
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		title = String(title);
 		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'iu')
 			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
 	},
-
+	/** @implements */
 	reparse(date) {
 		const main = fs.readdirSync(path.join(__dirname, 'errors'))
 			.find(name => name.startsWith(date) && name.endsWith('Z'));
@@ -301,7 +284,7 @@ const /** @type {import('./typings')} */ Parser = {
 			const halfParsed = stage < this.MAX_STAGE,
 				token = new Token(wikitext, this.getConfig(), halfParsed);
 			if (halfParsed) {
-				token.setAttribute('stage', stage).getAttribute('parseOnce')(stage, include);
+				token.setAttribute('stage', stage).parseOnce(stage, include);
 			} else {
 				token.parse(undefined, include);
 			}
@@ -311,16 +294,10 @@ const /** @type {import('./typings')} */ Parser = {
 			return token;
 		});
 	},
-
-	getTool() {
-		delete require.cache[require.resolve('./tool')];
-		return require('./tool');
-	},
 };
-
-const /** @type {PropertyDescriptorMap} */ def = {},
+const def = {},
 	immutable = new Set(['MAX_STAGE', 'aliases', 'typeAliases', 'promises']),
-	enumerable = new Set(['config', 'normalizeTitle', 'parse', 'isInterwiki', 'getTool']);
+	enumerable = new Set(['config', 'normalizeTitle', 'parse', 'isInterwiki']);
 for (const key in Parser) {
 	if (immutable.has(key)) {
 		def[key] = {enumerable: false, writable: false};
@@ -329,5 +306,4 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-
 module.exports = Parser;

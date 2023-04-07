@@ -2,18 +2,18 @@
 
 const Parser = require('../..'),
 	sol = require('../../mixin/sol'),
-	NowikiToken = require('.');
+	NowikiBaseToken = require('./base');
 
 /**
  * `<hr>`
  * @classdesc `{childNodes: [AstText]}`
  */
-class HrToken extends sol(NowikiToken) {
-	type = 'hr';
+class HrToken extends sol(NowikiBaseToken) {
+	/** @type {'hr'} */ type = 'hr';
 
 	/**
 	 * @param {number} n 字符串长度
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super('-'.repeat(n), config, accum);
@@ -21,7 +21,7 @@ class HrToken extends sol(NowikiToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => new HrToken(String(this).length, this.getAttribute('config')));
+		return Parser.run(() => /** @type {this} */ (new HrToken(String(this).length, this.getAttribute('config'))));
 	}
 
 	/**

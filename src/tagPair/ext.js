@@ -1,32 +1,35 @@
 'use strict';
-
-const {generateForSelf} = require('../../util/lint'),
-	attributeParent = require('../../mixin/attributeParent'),
-	Parser = require('../..'),
-	Token = require('..'),
-	TagPairToken = require('.'),
-	AttributesToken = require('../attributes');
+const lint_1 = require('../../util/lint');
+const {generateForSelf} = lint_1;
+const attributesParent = require('../../mixin/attributesParent');
+const Parser = require('../../index');
+const Token = require('..');
+const TagPairToken = require('.');
+const AttributesToken = require('../attributes');
 
 /**
  * 扩展标签
- * @classdesc `{childNodes: [AttributesToken, NowikiToken|Token]}`
+ * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-class ExtToken extends attributeParent(TagPairToken) {
+class ExtToken extends attributesParent(TagPairToken) {
 	type = 'ext';
-	closed = true;
+	/** @override */
+	get closed() {
+		return true;
+	}
 
 	/**
 	 * @param {string} name 标签名
 	 * @param {string} attr 标签属性
 	 * @param {string} inner 内部wikitext
-	 * @param {string|undefined} closed 是否封闭
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} closed 是否封闭
+	 * @param {Token[]} accum
 	 */
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
-			/** @type {import('../../typings/token').ParserConfig} */
+			/** @type {import('../..').ParserConfig} */
 			newConfig = {...config, excludes: [...config.excludes]},
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;
@@ -56,13 +59,8 @@ class ExtToken extends attributeParent(TagPairToken) {
 				break;
 			}
 			case 'pre': {
-				const PreToken = require('../hasNowiki/pre');
+				const PreToken = require('../pre');
 				innerToken = new PreToken(inner, newConfig, accum);
-				break;
-			}
-			case 'charinsert': {
-				const CharinsertToken = require('../charinsert');
-				innerToken = new CharinsertToken(inner, newConfig, accum);
 				break;
 			}
 			case 'references': {
@@ -128,19 +126,23 @@ class ExtToken extends attributeParent(TagPairToken) {
 		return errors;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./ext')}
+	 */
 	cloneNode() {
 		const inner = this.lastChild.cloneNode(),
 			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
 			attr = String(this.firstChild);
 		return Parser.run(() => {
-			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
+			const token = /** @type {this & import('./ext')} */ (new ExtToken(
+				tags[0], attr, '', this.selfClosing ? undefined : tags[1], config,
+			));
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});
 	}
 }
-
 Parser.classes.ExtToken = __filename;
 module.exports = ExtToken;

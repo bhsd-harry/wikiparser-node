@@ -1,19 +1,16 @@
 'use strict';
+const hidden = require('../../mixin/hidden');
+const Parser = require('../../index');
+const NowikiBaseToken = require('./base');
 
-const hidden = require('../../mixin/hidden'),
-	Parser = require('../..'),
-	NowikiToken = require('.');
-
-/**
- * `<noinclude>`和`</noinclude>`，不可进行任何更改
- * @classdesc `{childNodes: [AstText]}`
- */
-class NoincludeToken extends hidden(NowikiToken) {
+/** `<noinclude>`和`</noinclude>`，不可进行任何更改 */
+class NoincludeToken extends hidden(NowikiBaseToken) {
+	/** @browser */
 	type = 'noinclude';
 
 	/**
 	 * @override
-	 * @param {string} str 新文本
+	 * @param str 新文本
 	 * @throws `Error` 不可更改
 	 */
 	setText(str) {
@@ -23,6 +20,5 @@ class NoincludeToken extends hidden(NowikiToken) {
 		return super.setText(str);
 	}
 }
-
 Parser.classes.NoincludeToken = __filename;
 module.exports = NoincludeToken;

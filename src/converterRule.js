@@ -41,7 +41,7 @@ class ConverterRuleToken extends Token {
 	/**
 	 * @param {string} rule 转换规则
 	 * @param {boolean} hasColon 是否带有":"
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(rule, hasColon = true, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -61,7 +61,7 @@ class ConverterRuleToken extends Token {
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 		}
-		this.getAttribute('protectChildren')('1:');
+		this.protectChildren('1:');
 	}
 
 	/**
@@ -125,7 +125,7 @@ class ConverterRuleToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		const /** @type {import('../typings/event').AstListener} */ converterRuleListener = (e, data) => {
+		const /** @type {import('../lib/node').AstListener} */ converterRuleListener = (e, data) => {
 			const {prevTarget} = e;
 			if (this.length > 1 && this.childNodes.at(-2) === prevTarget) {
 				const v = prevTarget.text().trim(),

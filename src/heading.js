@@ -1,7 +1,7 @@
 'use strict';
 
 const {generateForSelf} = require('../util/lint'),
-	fixedToken = require('../mixin/fixedToken'),
+	fixed = require('../mixin/fixed'),
 	sol = require('../mixin/sol'),
 	Parser = require('..'),
 	Token = require('.'),
@@ -11,8 +11,8 @@ const {generateForSelf} = require('../util/lint'),
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-class HeadingToken extends fixedToken(sol(Token)) {
-	type = 'heading';
+class HeadingToken extends sol(fixed(Token)) {
+	/** @type {'heading'} */ type = 'heading';
 
 	/** 内部wikitext */
 	get innerText() {
@@ -22,7 +22,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 	/**
 	 * @param {number} level 标题层级
 	 * @param {string[]} input 标题文字
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -39,7 +39,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/**
 	 * @override
-	 * @this {{prependNewLine(): ''|'\n'} & HeadingToken}
 	 * @param {string} selector
 	 * @returns {string}
 	 */
@@ -54,7 +53,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/**
 	 * @override
-	 * @this {HeadingToken & {prependNewLine(): ''|'\n'}}
 	 * @returns {string}
 	 */
 	text() {
@@ -106,7 +104,7 @@ class HeadingToken extends fixedToken(sol(Token)) {
 		const [title, trail] = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new HeadingToken(Number(this.name), [], this.getAttribute('config'));
-			token.firsthild.safeReplaceWith(title);
+			token.firstChild.safeReplaceWith(title);
 			token.lastChild.safeReplaceWith(trail);
 			return token;
 		});

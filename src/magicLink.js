@@ -82,7 +82,7 @@ class MagicLinkToken extends Token {
 	/**
 	 * @param {string} url 网址
 	 * @param {boolean} doubleSlash 是否接受"//"作为协议
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 */
 	constructor(url, doubleSlash, config = Parser.getConfig(), accum = []) {
 		super(url, config, true, accum, {
@@ -141,7 +141,6 @@ class MagicLinkToken extends Token {
 
 	/** 是否是模板或魔术字参数 */
 	isParamValue() {
-		const ParameterToken = require('./parameter');
 		const /** @type {ParameterToken} */ parameter = this.closest('parameter');
 		return parameter?.getValue() === this.text();
 	}

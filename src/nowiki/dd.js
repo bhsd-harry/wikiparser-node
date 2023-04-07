@@ -1,14 +1,14 @@
 'use strict';
 
 const Parser = require('../..'),
-	NowikiToken = require('.');
+	NowikiBaseToken = require('./base');
 
 /**
  * :
  * @classdesc `{childNodes: [AstText]}`
  */
-class DdToken extends NowikiToken {
-	type = 'dd';
+class DdToken extends NowikiBaseToken {
+	/** @type {'dd'} */ type = 'dd';
 
 	/** 是否包含<dt> */
 	get dt() {

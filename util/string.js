@@ -1,43 +1,46 @@
 'use strict';
 
-const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])',
-	extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
+exports.extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])';
+exports.extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
 /**
  * remove half-parsed comment-like tokens
- * @param {string} str 原字符串
+ * @browser
+ * @param str 原字符串
  */
 const removeComment = str => str.replace(/\0\d+c\x7F/gu, '');
+exports.removeComment = removeComment;
 
 /**
  * 以HTML格式打印
- * @param {(AstText|AstElement)[]} childNodes 子节点
- * @param {import('../typings/node').printOpt} opt 选项
+ * @browser
+ * @param childNodes 子节点
+ * @param opt 选项
  */
 const print = (childNodes, opt = {}) => {
-	const AstText = require('../lib/text'),
-		AstElement = require('../lib/element');
 	const {pre = '', post = '', sep = ''} = opt,
 		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-	return `${pre}${childNodes.map(
-		child => child instanceof AstElement
-			? child.print()
-			: String(child).replace(/[&<>]/gu, p => `&${entities[p]};`),
-	).join(sep)}${post}`;
+	return `${pre}${childNodes.map(child => child.type === 'text'
+		? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+		: child.print()).join(sep)}${post}`;
 };
+exports.print = print;
 
 /**
  * escape special chars for RegExp constructor
- * @param {string} str RegExp source
+ * @browser
+ * @param str RegExp source
  */
 const escapeRegExp = str => str.replace(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
+exports.escapeRegExp = escapeRegExp;
 
 /**
  * a more sophisticated string-explode function
- * @param {string} start start syntax of a nested AST node
- * @param {string} end end syntax of a nested AST node
- * @param {string} separator syntax for explosion
- * @param {string} str string to be exploded
+ * @browser
+ * @param start start syntax of a nested AST node
+ * @param end end syntax of a nested AST node
+ * @param separator syntax for explosion
+ * @param str string to be exploded
  */
 const explode = (start, end, separator, str) => {
 	if (str === undefined) {
@@ -61,66 +64,51 @@ const explode = (start, end, separator, str) => {
 	exploded.push(str.slice(lastIndex));
 	return exploded;
 };
+exports.explode = explode;
 
 /**
  * extract effective wikitext
- * @param {(string|AstNode)[]} childNodes a Token's contents
- * @param {string} separator delimiter between nodes
+ * @browser
+ * @param childNodes a Token's contents
+ * @param separator delimiter between nodes
  */
-const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node');
-	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
-};
+const text = (childNodes, separator = '') => childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
+exports.text = text;
 
 /**
  * decode HTML entities
- * @param {string} str 原字符串
+ * @browser
+ * @param str 原字符串
  */
-const decodeHtml = str => str?.replace(
-	/&#(\d+|x[\da-f]+);/giu,
-	/** @param {string} code */ (_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
-);
+const decodeHtml = str => str.replace(/&#(\d+|x[\da-f]+);/giu, (_, code) => String.fromCodePoint(Number(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`)));
+exports.decodeHtml = decodeHtml;
 
 /**
  * optionally convert to lower cases
- * @param {string} val 属性值
- * @param {string|undefined} i 是否对大小写不敏感
+ * @param val 属性值
+ * @param i 是否对大小写不敏感
  */
 const toCase = (val, i) => i ? val.toLowerCase() : val;
+exports.toCase = toCase;
 
 /**
  * escape newlines
- * @param {string} str 原字符串
+ * @param str 原字符串
  */
 const noWrap = str => str.replaceAll('\n', '\\n');
+exports.noWrap = noWrap;
 
 /**
  * convert newline in text nodes to single whitespace
- * @param {Token & {childNodes: AstText[]}} token 父节点
+ * @param token 父节点
  */
 const normalizeSpace = token => {
-	if (token === undefined) {
-		return;
-	}
-	const Token = require('../src'),
-		AstText = require('../lib/text');
-	for (const child of token.childNodes) {
-		if (child.type === 'text') {
-			child.replaceData(child.data.replaceAll('\n', ' '));
+	if (token) {
+		for (const child of token.childNodes) {
+			if (child.type === 'text') {
+				child.replaceData(child.data.replaceAll('\n', ' '));
+			}
 		}
 	}
 };
-
-module.exports = {
-	extUrlCharFirst,
-	extUrlChar,
-	removeComment,
-	print,
-	escapeRegExp,
-	explode,
-	text,
-	decodeHtml,
-	toCase,
-	noWrap,
-	normalizeSpace,
-};
+exports.normalizeSpace = normalizeSpace;
