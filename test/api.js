@@ -7,7 +7,7 @@ const request = require('request'),
 /**
  * 规范化API请求参数
  * @param {Record<string, string|number|boolean|(string|number)[]>} obj 请求参数
- * @returns {Record<string, string}
+ * @returns {Record<string, string>}
  * @throws `TypeError` 部分参数不是字符串或数字
  */
 const normalizeValues = obj => {
@@ -50,9 +50,7 @@ class Api {
 	 */
 	async get(params) {
 		params = normalizeValues(params);
-		const /** @type {Record<string, string|number>} */ qs = {
-			action: 'query', format: 'json', formatversion: 2, errorformat: 'plaintext', ...params,
-		};
+		const qs = {action: 'query', format: 'json', formatversion: 2, errorformat: 'plaintext', ...params};
 		try {
 			return await new Promise((resolve, reject) => {
 				this.request.get({url: this.url, qs}, (e, response, body) => {

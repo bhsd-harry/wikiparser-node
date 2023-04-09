@@ -17,7 +17,7 @@ class SyntaxToken extends Token {
 	 * @param {RegExp} pattern 语法正则
 	 * @param {string} type Token.type
 	 * @param {import('../typings/token').accum} accum
-	 * @param {import('../typings/token').acceptable} acceptable 可接受的子节点设置
+	 * @param {import('.').Acceptable} acceptable 可接受的子节点设置
 	 * @throws `RangeError` 含有g修饰符的语法正则
 	 */
 	constructor(wikitext, pattern, type = 'plain', config = Parser.getConfig(), accum = [], acceptable = undefined) {

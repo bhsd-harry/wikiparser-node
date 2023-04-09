@@ -1,11 +1,12 @@
 'use strict';
 
-const Parser = require('..'),
-	Token = require('../src');
+/** @typedef {import('../src')} Token */
+
+const Parser = require('..');
 
 /**
  * 不可增删子节点的类
- * @template T
+ * @template {new (...args: any) => Token} T
  * @param {T} Constructor 基类
  * @returns {T}
  */
@@ -13,7 +14,8 @@ const fixedToken = Constructor => class extends Constructor {
 	static fixed = true;
 
 	/**
-	 * 移除子节点
+	 * @override
+	 * @returns {never}
 	 * @throws `Error`
 	 */
 	removeAt() {
@@ -21,16 +23,15 @@ const fixedToken = Constructor => class extends Constructor {
 	}
 
 	/**
-	 * 插入子节点
-	 * @template {Token} T
+	 * @override
+	 * @template {string|import('../lib/text')|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @throws `Error`
 	 */
 	insertAt(token, i = this.length) {
 		if (Parser.running) {
-			super.insertAt(token, i);
-			return token;
+			return super.insertAt(token, i);
 		}
 		throw new Error(`${this.constructor.name} 不可插入元素！`);
 	}

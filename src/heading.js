@@ -11,8 +11,8 @@ const {generateForSelf} = require('../util/lint'),
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-class HeadingToken extends fixedToken(sol(Token)) {
-	type = 'heading';
+class HeadingToken extends sol(fixedToken(Token)) {
+	/** @type {'heading'} */ type = 'heading';
 
 	/** 内部wikitext */
 	get innerText() {
@@ -39,7 +39,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/**
 	 * @override
-	 * @this {{prependNewLine(): ''|'\n'} & HeadingToken}
 	 * @param {string} selector
 	 * @returns {string}
 	 */
@@ -54,7 +53,6 @@ class HeadingToken extends fixedToken(sol(Token)) {
 
 	/**
 	 * @override
-	 * @this {HeadingToken & {prependNewLine(): ''|'\n'}}
 	 * @returns {string}
 	 */
 	text() {

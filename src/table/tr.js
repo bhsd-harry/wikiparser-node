@@ -1,7 +1,7 @@
 'use strict';
 
 const {generateForChild} = require('../../util/lint'),
-	attributeParent = require('../../mixin/attributeParent'),
+	attributesParent = require('../../mixin/attributesParent'),
 	Parser = require('../..'),
 	AstText = require('../../lib/text'),
 	Token = require('..'),
@@ -29,7 +29,7 @@ const escapeTable = syntax => {
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
-class TrToken extends attributeParent(Token, 1) {
+class TrToken extends attributesParent(Token, 1) {
 	type = 'tr';
 
 	/**

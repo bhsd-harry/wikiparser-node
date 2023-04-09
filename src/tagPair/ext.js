@@ -1,7 +1,7 @@
 'use strict';
 
 const {generateForSelf} = require('../../util/lint'),
-	attributeParent = require('../../mixin/attributeParent'),
+	attributesParent = require('../../mixin/attributesParent'),
 	Parser = require('../..'),
 	Token = require('..'),
 	TagPairToken = require('.'),
@@ -11,7 +11,7 @@ const {generateForSelf} = require('../../util/lint'),
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, NowikiToken|Token]}`
  */
-class ExtToken extends attributeParent(TagPairToken) {
+class ExtToken extends attributesParent(TagPairToken) {
 	type = 'ext';
 	closed = true;
 

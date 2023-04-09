@@ -1,29 +1,22 @@
 'use strict';
 
-const Parser = require('..'),
-	Token = require('../src');
+/** @typedef {import('../src')} Token */
+
+const Parser = require('..');
 
 /**
  * 只能位于行首的类
- * @template T
- * @param {T} Constructor 基类
- * @returns {T}
+ * @param {new (...args: any) => Token} Constructor 基类
  */
 const sol = Constructor => class SolToken extends Constructor {
-	/**
-	 * 是否可以视为root节点
-	 * @this {Token}
-	 */
+	/** 是否可以视为root节点 */
 	#isRoot() {
 		const {parentNode, type} = this;
 		return parentNode?.type === 'root'
 			|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem';
 	}
 
-	/**
-	 * 在前方插入newline
-	 * @this {SolToken & Token}
-	 */
+	/** 在前方插入newline */
 	prependNewLine() {
 		return (this.previousVisibleSibling || !this.#isRoot()) && !String(this.previousVisibleSibling).endsWith('\n')
 			? '\n'
@@ -31,20 +24,19 @@ const sol = Constructor => class SolToken extends Constructor {
 	}
 
 	/**
-	 * 还原为wikitext
-	 * @this {SolToken & Token}
+	 * @override
 	 * @param {string} selector
 	 */
 	toString(selector) {
 		return selector && this.matches(selector) ? '' : `${this.prependNewLine()}${super.toString(selector)}`;
 	}
 
-	/** 获取padding */
+	/** @override */
 	getPadding() {
 		return this.prependNewLine().length;
 	}
 
-	/** 可见部分 */
+	/** @override */
 	text() {
 		return `${this.prependNewLine()}${super.text()}`;
 	}

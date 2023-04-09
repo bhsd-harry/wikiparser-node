@@ -1,5 +1,8 @@
 'use strict';
 
+/** @typedef {import('../lib/text')} AstText */
+/** @typedef {import('../src')} Token */
+
 const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])',
 	extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
@@ -11,18 +14,16 @@ const removeComment = str => str.replace(/\0\d+c\x7F/gu, '');
 
 /**
  * 以HTML格式打印
- * @param {(AstText|AstElement)[]} childNodes 子节点
- * @param {import('../typings/node').printOpt} opt 选项
+ * @param {(AstText|Token)[]} childNodes 子节点
+ * @param {import('../lib/element').printOpt} opt 选项
  */
 const print = (childNodes, opt = {}) => {
-	const AstText = require('../lib/text'),
-		AstElement = require('../lib/element');
 	const {pre = '', post = '', sep = ''} = opt,
 		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 	return `${pre}${childNodes.map(
-		child => child instanceof AstElement
-			? child.print()
-			: String(child).replace(/[&<>]/gu, p => `&${entities[p]};`),
+		child => child.type === 'text'
+			? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
+			: child.print(),
 	).join(sep)}${post}`;
 };
 
@@ -64,13 +65,11 @@ const explode = (start, end, separator, str) => {
 
 /**
  * extract effective wikitext
- * @param {(string|AstNode)[]} childNodes a Token's contents
+ * @param {(string|AstText|Token)[]} childNodes a Token's contents
  * @param {string} separator delimiter between nodes
  */
-const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node');
-	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
-};
+const text = (childNodes, separator = '') =>
+	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
 /**
  * decode HTML entities
@@ -85,7 +84,7 @@ const decodeHtml = str => str?.replace(
 /**
  * optionally convert to lower cases
  * @param {string} val 属性值
- * @param {string|undefined} i 是否对大小写不敏感
+ * @param {string} i 是否对大小写不敏感
  */
 const toCase = (val, i) => i ? val.toLowerCase() : val;
 
@@ -97,14 +96,12 @@ const noWrap = str => str.replaceAll('\n', '\\n');
 
 /**
  * convert newline in text nodes to single whitespace
- * @param {Token & {childNodes: AstText[]}} token 父节点
+ * @param {Token} token 父节点
  */
 const normalizeSpace = token => {
 	if (token === undefined) {
 		return;
 	}
-	const Token = require('../src'),
-		AstText = require('../lib/text');
 	for (const child of token.childNodes) {
 		if (child.type === 'text') {
 			child.replaceData(child.data.replaceAll('\n', ' '));

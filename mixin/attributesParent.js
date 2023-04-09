@@ -1,16 +1,21 @@
 'use strict';
 
-const Parser = require('..'),
-	AttributesToken = require('../src/attributes');
+const Parser = require('..');
 
 /**
  * 子节点含有AttributesToken的类
- * @template T
- * @param {T} Constructor 基类
+ * @param {new (...args: *) => import('../src')} Constructor 基类
  * @param {number} i AttributesToken子节点的位置
- * @returns {T}
  */
-const attributeParent = (Constructor, i = 0) => class extends Constructor {
+const attributesParent = (Constructor, i = 0) => class AttributesParent extends Constructor {
+	/**
+	 * AttributesToken子节点
+	 * @returns {import('../src/attributes')}
+	 */
+	get attributesChild() {
+		return this.childNodes.at(i);
+	}
+
 	/** getAttrs()方法的getter写法 */
 	get attributes() {
 		return this.getAttrs();
@@ -43,75 +48,61 @@ const attributeParent = (Constructor, i = 0) => class extends Constructor {
 
 	/**
 	 * AttributesToken子节点是否具有某属性
-	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 */
 	hasAttr(key) {
-		return this.childNodes.at(i).hasAttr(key);
+		return this.attributesChild.hasAttr(key);
 	}
 
 	/**
 	 * 获取AttributesToken子节点的属性
-	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 */
 	getAttr(key) {
-		return this.childNodes.at(i).getAttr(key);
+		return this.attributesChild.getAttr(key);
 	}
 
-	/**
-	 * 列举AttributesToken子节点的属性键
-	 * @this {{childNodes: AttributesToken[]}}
-	 */
+	/** 列举AttributesToken子节点的属性键 */
 	getAttrNames() {
-		return this.childNodes.at(i).getAttrNames();
+		return this.attributesChild.getAttrNames();
 	}
 
-	/**
-	 * AttributesToken子节点是否具有任意属性
-	 * @this {{childNodes: AttributesToken[]}}
-	 */
+	/** AttributesToken子节点是否具有任意属性 */
 	hasAttrs() {
-		return this.childNodes.at(i).hasAttrs();
+		return this.attributesChild.hasAttrs();
 	}
 
-	/**
-	 * 获取AttributesToken子节点的全部标签属性
-	 * @this {{childNodes: AttributesToken[]}}
-	 */
+	/** 获取AttributesToken子节点的全部标签属性 */
 	getAttrs() {
-		return this.childNodes.at(i).getAttrs();
+		return this.attributesChild.getAttrs();
 	}
 
 	/**
 	 * 对AttributesToken子节点设置属性
-	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 * @param {string|boolean} value 属性值
 	 */
 	setAttr(key, value) {
-		return this.childNodes.at(i).setAttr(key, value);
+		return this.attributesChild.setAttr(key, value);
 	}
 
 	/**
 	 * 移除AttributesToken子节点的某属性
-	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
 	 */
 	removeAttr(key) {
-		this.childNodes.at(i).removeAttr(key);
+		this.attributesChild.removeAttr(key);
 	}
 
 	/**
 	 * 开关AttributesToken子节点的某属性
-	 * @this {{childNodes: AttributesToken[]}}
 	 * @param {string} key 属性键
-	 * @param {boolean|undefined} force 强制开启或关闭
+	 * @param {boolean} force 强制开启或关闭
 	 */
 	toggleAttr(key, force) {
-		this.childNodes.at(i).toggleAttr(key, force);
+		this.attributesChild.toggleAttr(key, force);
 	}
 };
 
-Parser.mixins.attributeParent = __filename;
-module.exports = attributeParent;
+Parser.mixins.attributesParent = __filename;
+module.exports = attributesParent;

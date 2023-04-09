@@ -3,7 +3,7 @@
 const {generateForSelf} = require('../util/lint'),
 	{noWrap} = require('../util/string'),
 	fixedToken = require('../mixin/fixedToken'),
-	attributeParent = require('../mixin/attributeParent'),
+	attributesParent = require('../mixin/attributesParent'),
 	Parser = require('..'),
 	Token = require('.');
 
@@ -13,8 +13,8 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-class HtmlToken extends attributeParent(fixedToken(Token)) {
-	type = 'html';
+class HtmlToken extends attributesParent(fixedToken(Token)) {
+	/** @type {'html'} */ type = 'html';
 	#closing;
 	#selfClosing;
 	#tag;

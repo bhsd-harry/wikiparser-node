@@ -129,7 +129,6 @@ declare interface Parser {
 
 	/**
 	 * 解析wikitext
-	 * @param wikitext wikitext
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */

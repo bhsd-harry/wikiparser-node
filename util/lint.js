@@ -1,9 +1,9 @@
 'use strict';
 
-/** @typedef {import('../typings/token').LintError} LintError */
+/** @typedef {import('..').LintError} LintError */
+/** @typedef {import('../src')} Token */
 
-const Parser = require('..'),
-	Token = require('../src');
+const Parser = require('..');
 
 /**
  * 生成对于子节点的LintError对象

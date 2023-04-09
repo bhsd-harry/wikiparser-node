@@ -302,7 +302,7 @@ class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {string|AstText|Token} T
 	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`

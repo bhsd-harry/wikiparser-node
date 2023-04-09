@@ -56,22 +56,13 @@ declare class AstElement extends AstNode {
 	/** 销毁 */
 	destroy(): void;
 
-	/**
-	 * 检查是否符合选择器
-	 * @param selector
-	 */
+	/** 检查是否符合选择器 */
 	matches(selector: string | SelectorArray[]): boolean;
 
-	/**
-	 * 符合选择器的第一个后代节点
-	 * @param selector
-	 */
+	/** 符合选择器的第一个后代节点 */
 	querySelector(selector: string): Token;
 
-	/**
-	 * 符合选择器的所有后代节点
-	 * @param selector
-	 */
+	/** 符合选择器的所有后代节点 */
 	querySelectorAll(selector: string): Token[];
 
 	/**
@@ -104,10 +95,7 @@ declare class AstElement extends AstNode {
 	 */
 	prepend(...elements: (AstText|Token)[]): void;
 
-	/**
-	 * 最近的祖先节点
-	 * @param selector
-	 */
+	/** 最近的祖先节点 */
 	closest(selector: string): Token;
 
 	/**
@@ -132,7 +120,6 @@ declare class AstElement extends AstNode {
 
 	/**
 	 * 还原为wikitext
-	 * @param selector
 	 * @param separator 子节点间的连接符
 	 */
 	toString(selector: string, separator?: string): string;

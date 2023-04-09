@@ -21,14 +21,14 @@ declare type TokenAttribute<T extends string> =
     T extends 'args' ? Record<string, Set<ParameterToken>> :
     T extends 'protectedChildren' ? Ranges :
     T extends 'verifyChild' ? (i: number, addition?: number) => void :
-    T extends 'matchesAttr' ? (key: string, equal: string, val: string, i: string) => boolean :
+    T extends 'matchesAttr' ? (key: string, equal?: string, val?: string, i?: string) => boolean :
     T extends 'protectChildren' ? (...args: (string|number|Range)[]) => void :
     string;
 
-declare interface AstEvent {
+declare interface AstEvent extends Event {
 	readonly type: string;
-	readonly target: Token & AstText;
-	currentTarget: Token;
+	readonly target: EventTarget & (Token | AstText);
+	currentTarget: EventTarget & Token;
 	prevTarget?: Token;
 	bubbles: boolean;
 }
@@ -84,14 +84,12 @@ declare class AstNode {
 
 	/**
 	 * 标记仅用于代码调试的方法
-	 * @param method
 	 * @throws `Error`
 	 */
 	debugOnly(method?: string): never;
 
 	/**
 	 * 抛出`TypeError`
-	 * @param method
 	 * @param types 可接受的参数类型
 	 */
 	typeError(method: string, ...types: string[]): never;
@@ -127,7 +125,7 @@ declare class AstNode {
 	 * @param key 属性键
 	 * @param value 属性值
 	 */
-	setAttribute<T extends string>(key: T, value: TokenAttribute<T>): this;
+	setAttribute<T extends string>(key: T, value?: TokenAttribute<T>): this;
 
 	/**
 	 * 可见部分
@@ -239,7 +237,7 @@ declare class AstNode {
 	 * @param e 事件对象
 	 * @param data 事件数据
 	 */
-	dispatchEvent(e: AstEvent, data: unknown): void;
+	dispatchEvent(e: Event, data: unknown): void;
 
 	/** 获取所有祖先节点 */
 	getAncestors(): Token[];
@@ -277,7 +275,7 @@ declare class AstNode {
 	getPadding(): number;
 
 	/** 子节点间距 */
-	getGaps(j?: number): number;
+	getGaps(i?: number): number;
 
 	/**
 	 * 获取当前节点的相对字符位置，或其第`j`个子节点的相对字符位置
@@ -328,7 +326,7 @@ declare class AstNode {
 }
 
 declare namespace AstNode {
-    export {TokenAttribute, AstEvent, AstListener};
+    export {TokenAttribute, AstEvent, AstEventData, AstListener};
 }
 
 export = AstNode;

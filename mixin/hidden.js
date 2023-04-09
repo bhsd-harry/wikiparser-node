@@ -4,7 +4,7 @@ const Parser = require('..');
 
 /**
  * 解析后不可见的类
- * @template T
+ * @template {new (...args: any) => import('../src')} T
  * @param {T} Constructor 基类
  * @returns {T}
  */

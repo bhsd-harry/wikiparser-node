@@ -34,8 +34,8 @@ const externalUse = name => {
 
 /**
  * 撤销最近一次Mutation
- * @param {import('../typings/event').AstEvent} e 事件
- * @param {import('../typings/event').AstEventData} data 事件数据
+ * @param {import('../lib/node').AstEvent} e 事件
+ * @param {import('../lib/node').AstEventData} data 事件数据
  * @throws `RangeError` 无法撤销的事件类型
  */
 const undo = (e, data) => {
@@ -63,7 +63,9 @@ const undo = (e, data) => {
 			break;
 		}
 		case 'text':
-			target.replaceData(data.oldText);
+			if (target.type === 'text') {
+				target.replaceData(data.oldText);
+			}
 			break;
 		default:
 			throw new RangeError(`无法撤销未知类型的事件：${type}`);
