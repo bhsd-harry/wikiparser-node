@@ -1,4 +1,4 @@
-import {ParserConfig} from '..';
+import {ParserConfig, LintError} from '..';
 import Ranges = require('./ranges');
 import Token = require('../src');
 import AstText = require('./text');
@@ -8,7 +8,7 @@ declare type TokenAttribute<T extends string> =
     T extends 'stage' ? number :
     T extends 'config' ? ParserConfig :
     T extends 'accum' ? Token[] :
-    T extends 'parentNode' ? Token|undefined :
+    T extends 'parentNode' ? Token :
     T extends 'childNodes' ? (AstText|Token)[] :
     T extends 'parseOnce' ? (n?: number, include?: boolean) => Token :
     T extends 'buildFromStr' ? <S extends string>(str: string, type: S) => S extends 'string'|'text' ? string : (AstText|Token)[] :
@@ -29,7 +29,7 @@ declare interface AstEvent {
 	readonly type: string;
 	readonly target: Token & AstText;
 	currentTarget: Token;
-	prevTarget: Token;
+	prevTarget?: Token;
 	bubbles: boolean;
 }
 
@@ -317,7 +317,14 @@ declare class AstNode {
         left: number;
     };
 
-	#private;
+	/**
+	 * Linter
+	 * @param start 起始位置
+	 */
+	lint(start?: number): LintError[];
+
+	/** 复制 */
+	cloneNode(): this;
 }
 
 declare namespace AstNode {

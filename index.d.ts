@@ -66,6 +66,18 @@ declare interface ParserConfig {
 	excludes?: string[];
 }
 
+declare interface LintError {
+	message: string;
+	severity: 'error'|'warning';
+	startIndex: number;
+	endIndex: number;
+	startLine: number;
+	startCol: number;
+	endLine: number;
+	endCol: number;
+	excerpt: string;
+}
+
 declare interface Parser {
 	config: string|ParserConfig;
 	i18n?: string|Record<string, string>;
@@ -180,6 +192,7 @@ declare const Parser: Parser;
 declare namespace Parser {
 	export {
 		ParserConfig,
+		LintError,
 		AstElement,
 		AstNode,
 		Ranges,
