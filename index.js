@@ -3,7 +3,7 @@
 const fs = require('fs'),
 	path = require('path');
 
-const /** @type {import('./typings')} */ Parser = {
+const /** @type {import('.')} */ Parser = {
 	config: './config/default',
 	i18n: undefined,
 
@@ -16,7 +16,7 @@ const /** @type {import('./typings')} */ Parser = {
 	classes: {},
 	mixins: {},
 	parsers: {},
-	tool: {},
+	// tool: {},
 
 	aliases: [
 		['AstText'],
@@ -125,6 +125,7 @@ const /** @type {import('./typings')} */ Parser = {
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = require(this.config);
+			return this.getConfig();
 		}
 		return {...this.config, excludes: []};
 	},
@@ -150,15 +151,15 @@ const /** @type {import('./typings')} */ Parser = {
 		if (!halfParsed) {
 			const Token = require('./src');
 			token = this.run(() => {
-				const newToken = new Token(String(title), config),
+				const newToken = new Token(title, config),
 					parseOnce = newToken.getAttribute('parseOnce');
 				parseOnce(0, include);
 				return parseOnce();
 			});
-			title = token.firstChild;
+			title = String(token.firstChild);
 		}
 		const Title = require('./lib/title');
-		const titleObj = new Title(String(title), defaultNs, config, decode, selfLink);
+		const titleObj = new Title(title, defaultNs, config, decode, selfLink);
 		if (token) {
 			/**
 			 * 重建部分属性值
@@ -266,7 +267,7 @@ const /** @type {import('./typings')} */ Parser = {
 			...Object.entries(this.classes),
 			...Object.entries(this.mixins),
 			...Object.entries(this.parsers),
-			...Object.entries(this.tool),
+			// ...Object.entries(this.tool),
 		];
 		for (const [, filePath] of entries) {
 			try {
@@ -312,10 +313,10 @@ const /** @type {import('./typings')} */ Parser = {
 		});
 	},
 
-	getTool() {
-		delete require.cache[require.resolve('./tool')];
-		return require('./tool');
-	},
+	// getTool() {
+	// 	delete require.cache[require.resolve('./tool')];
+	// 	return require('./tool');
+	// },
 };
 
 const /** @type {PropertyDescriptorMap} */ def = {},
