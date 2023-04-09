@@ -793,7 +793,10 @@
 			],
 			"extends": [
 				"plugin:@typescript-eslint/recommended"
-			]
+			],
+			"rules": {
+				"no-unused-private-class-members": 0
+			}
 		}
 	],
 	"settings": {
