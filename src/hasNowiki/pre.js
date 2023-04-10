@@ -12,7 +12,7 @@ class PreToken extends HasNowikiToken {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, 'ext-inner', config, accum);
@@ -29,7 +29,7 @@ class PreToken extends HasNowikiToken {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new PreToken(undefined, this.getAttribute('config'));
+			const token = /** @type {this} */ (new PreToken(undefined, this.getAttribute('config')));
 			token.append(...cloned);
 			return token;
 		});

@@ -202,7 +202,7 @@ class Token extends AstElement {
 	/**
 	 * @param {string} wikitext wikitext
 	 * @param {import('.')[]} accum
-	 * @param {import('.').Acceptable} acceptable 可接受的子节点设置
+	 * @param {import('../lib/node').Acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = undefined) {
 		super();
@@ -211,8 +211,7 @@ class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
-		// eslint-disable-next-line no-extra-parens
-		this.setAttribute('acceptable', /** @type {Record<string, Ranges>} */ (acceptable));
+		this.setAttribute('acceptable', acceptable);
 		// eslint-disable-next-line no-extra-parens
 		accum.push(/** @type {import('.')} */ (this));
 	}
@@ -710,7 +709,8 @@ class Token extends AstElement {
 	 * @throws `Error` 不接受QuoteToken作为子节点
 	 */
 	redoQuotes() {
-		const acceptable = this.getAttribute('acceptable');
+		// eslint-disable-next-line no-extra-parens
+		const acceptable = /** @type {Record<string, Ranges>} */ (this.getAttribute('acceptable'));
 		if (acceptable && !acceptable.QuoteToken?.some(
 			range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1,
 		)) {

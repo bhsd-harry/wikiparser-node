@@ -16,7 +16,7 @@ class AtomToken extends Token {
 	 * @param {string} wikitext wikitext
 	 * @param {atomType} type Token.type
 	 * @param {Token[]} accum
-	 * @param {import('..').Acceptable} acceptable 可接受的子节点设置
+	 * @param {import('../../lib/node').Acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);

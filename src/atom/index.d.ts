@@ -1,4 +1,6 @@
 import Token = require('..');
+import {ParserConfig} from '../..';
+import {Acceptable} from '../../lib/node';
 
 declare type atomType = 'plain'
 	|'hidden'
@@ -29,7 +31,7 @@ declare class AtomToken extends Token {
 	 * @param type Token.type
 	 * @param acceptable 可接受的子节点设置
 	 */
-	constructor(wikitext: string, type?: string, config?: import('../..').ParserConfig, accum?: Token[], acceptable?: import('..').Acceptable);
+	constructor(wikitext: string, type?: string, config?: ParserConfig, accum?: Token[], acceptable?: Acceptable);
 }
 
 declare namespace AtomToken {

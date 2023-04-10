@@ -4,6 +4,8 @@ import Token = require('../src');
 import AstText = require('./text');
 import ParameterToken = require('../src/parameter');
 
+declare type Acceptable = Record<string, number|string|Ranges|(number|string)[]>;
+
 declare type TokenAttribute<T extends string> =
 	T extends 'stage' ? number :
 	T extends 'config' ? ParserConfig :
@@ -17,7 +19,7 @@ declare type TokenAttribute<T extends string> =
 	T extends 'pattern' ? RegExp :
 	T extends 'tags'|'flags'|'quotes' ? string[] :
 	T extends 'optional'|'keys' ? Set<string> :
-	T extends 'acceptable' ? Record<string, Ranges> :
+	T extends 'acceptable' ? Acceptable :
 	T extends 'args' ? Record<string, Set<ParameterToken>> :
 	T extends 'protectedChildren' ? Ranges :
 	T extends 'verifyChild' ? (i: number, addition?: number) => void :
@@ -326,7 +328,7 @@ declare class AstNode {
 }
 
 declare namespace AstNode {
-	export {TokenAttribute, AstEvent, AstEventData, AstListener};
+	export {TokenAttribute, Acceptable, AstEvent, AstEventData, AstListener};
 }
 
 export = AstNode;

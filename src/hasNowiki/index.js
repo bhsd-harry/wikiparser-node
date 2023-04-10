@@ -11,8 +11,8 @@ const Parser = require('../..'),
 class HasNowikiToken extends Token {
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {string} type type
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {'ext-inner'} type type
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = []) {
 		wikitext = wikitext.replace(
@@ -33,7 +33,8 @@ class HasNowikiToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new HasNowikiToken(undefined, this.type, this.getAttribute('config'));
+			// eslint-disable-next-line no-extra-parens
+			const token = /** @type {this} */ (new HasNowikiToken(undefined, this.type, this.getAttribute('config')));
 			token.append(...cloned);
 			return token;
 		});

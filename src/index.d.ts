@@ -1,8 +1,12 @@
 import AstElement = require('../lib/element');
 import AstText = require('../lib/text');
 import HtmlToken = require('./html');
-
-declare type Acceptable = Record<string, number|string|import('../lib/ranges')|(number|string)[]>;
+import CommentToken = require('./nowiki/comment');
+import ExtToken = require('./tagPair/ext');
+import IncludeToken = require('./tagPair/include');
+import Title = require('../lib/title');
+import {Acceptable} from '../lib/node';
+import {ParserConfig} from '..';
 
 /**
  * 所有节点的基类
@@ -81,7 +85,7 @@ declare class Token extends AstElement {
 		|'imagemap-link';
 
 	/** @param acceptable 可接受的子节点设置 */
-	constructor(wikitext: string, config?: import('..').ParserConfig, halfParsed?: boolean, accum?: Token[], acceptable?: Acceptable);
+	constructor(wikitext: string, config?: ParserConfig, halfParsed?: boolean, accum?: Token[], acceptable?: Acceptable);
 
 	/** 所有图片，包括图库 */
 	get images(): Token[];
@@ -110,7 +114,7 @@ declare class Token extends AstElement {
 	 * @param decode 是否需要解码
 	 * @param selfLink 是否允许selfLink
 	 */
-	normalizeTitle(title: string, defaultNs?: number, halfParsed?: boolean, decode?: boolean, selfLink?: boolean): import('../lib/title');
+	normalizeTitle(title: string, defaultNs?: number, halfParsed?: boolean, decode?: boolean, selfLink?: boolean): Title;
 
 	/**
 	 * 替换为同类节点
@@ -124,7 +128,7 @@ declare class Token extends AstElement {
 	 * 创建HTML注释
 	 * @param data 注释内容
 	 */
-	createComment(data?: string): import('./nowiki/comment');
+	createComment(data?: string): CommentToken;
 
 	/**
 	 * 创建标签
@@ -135,7 +139,7 @@ declare class Token extends AstElement {
 	createElement(tagName: string, {selfClosing, closing}?: {
 		selfClosing: boolean;
 		closing: boolean;
-	}): import('./tagPair/include')|import('./tagPair/ext')|import('./html');
+	}): IncludeToken|ExtToken|HtmlToken;
 
 	/**
 	 * 创建纯文本节点
@@ -235,10 +239,6 @@ declare class Token extends AstElement {
 	 * @param include 是否嵌入
 	 */
 	parse(n?: number, include?: boolean): Token;
-}
-
-declare namespace Token {
-	export {Acceptable};
 }
 
 export = Token;
