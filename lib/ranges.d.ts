@@ -27,13 +27,17 @@ declare class Ranges extends Array<number | Range> {
 	 */
 	static nth(str: string, i: number): boolean;
 	/** @param arr 表达式数组 */
-	constructor(arr: number | string | Range | (number | string | Range)[]);
+	constructor(arr?: number | string | Range | (number | string | Range)[]);
 
 	/**
 	 * 将Ranges转换为针对特定Array的下标集
 	 * @param arr 参考数组
 	 */
 	applyTo(arr: number | unknown[]): number[];
+}
+
+declare namespace Ranges {
+	export {Range};
 }
 
 export = Ranges;

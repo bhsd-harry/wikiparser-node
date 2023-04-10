@@ -93,7 +93,7 @@ declare class AstElement extends AstNode {
 	 * 在开头批量插入子节点
 	 * @param elements 插入节点
 	 */
-	prepend(...elements: (AstText|Token)[]): void;
+	prepend(...elements: (string|AstText|Token)[]): void;
 
 	/** 最近的祖先节点 */
 	closest(selector: string): Token;
@@ -102,13 +102,13 @@ declare class AstElement extends AstNode {
 	 * 在末尾批量插入子节点
 	 * @param elements 插入节点
 	 */
-	append(...elements: (AstText|Token)[]): void;
+	append(...elements: (string|AstText|Token)[]): void;
 
 	/**
 	 * 批量替换子节点
 	 * @param elements 新的子节点
 	 */
-	replaceChildren(...elements: (AstText|Token)[]): void;
+	replaceChildren(...elements: (string|AstText|Token)[]): void;
 
 	/**
 	 * 修改文本子节点

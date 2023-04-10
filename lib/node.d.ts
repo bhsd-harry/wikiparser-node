@@ -22,7 +22,7 @@ declare type TokenAttribute<T extends string> =
     T extends 'protectedChildren' ? Ranges :
     T extends 'verifyChild' ? (i: number, addition?: number) => void :
     T extends 'matchesAttr' ? (key: string, equal?: string, val?: string, i?: string) => boolean :
-    T extends 'protectChildren' ? (...args: (string|number|Range)[]) => void :
+    T extends 'protectChildren' ? (...args: (string|number|Ranges.Range)[]) => void :
     string;
 
 declare interface AstEvent extends Event {
@@ -106,7 +106,7 @@ declare class AstNode {
 	 * @param node 待比较的节点
 	 * @throws `assert.AssertionError`
 	 */
-	isEqualNode(node: AstNode): boolean;
+	isEqualNode(node: AstText|Token): boolean;
 
 	/**
 	 * 是否具有某属性
@@ -157,33 +157,33 @@ declare class AstNode {
 	 * 在末尾插入子节点
 	 * @param node 插入节点
 	 */
-	appendChild<T extends AstText|Token>(node: T): T;
+	appendChild<T extends string|AstText|Token>(node: T): T extends Token ? T : AstText;
 
 	/**
 	 * 在指定位置前插入子节点
 	 * @param child 插入节点
 	 * @param reference 指定位置处的子节点
 	 */
-	insertBefore<T extends AstText|Token>(child: T, reference: AstNode): T;
+	insertBefore<T extends string|AstText|Token>(child: T, reference: AstText|Token): T extends Token ? T : AstText;
 
 	/**
 	 * 替换子节点
 	 * @param newChild 新子节点
 	 * @param oldChild 原子节点
 	 */
-	replaceChild<T extends AstText|Token>(newChild: AstText|Token, oldChild: T): T;
+	replaceChild<T extends AstText|Token>(newChild: string|AstText|Token, oldChild: T): T;
 
 	/**
 	 * 在后方批量插入兄弟节点
 	 * @param nodes 插入节点
 	 */
-	after(...nodes: (AstText|Token)[]): void;
+	after(...nodes: (string|AstText|Token)[]): void;
 
 	/**
 	 * 在前方批量插入兄弟节点
 	 * @param nodes 插入节点
 	 */
-	before(...nodes: (AstText|Token)[]): void;
+	before(...nodes: (string|AstText|Token)[]): void;
 
 	/**
 	 * 移除当前节点
@@ -195,7 +195,7 @@ declare class AstNode {
 	 * 将当前节点批量替换为新的节点
 	 * @param nodes 插入节点
 	 */
-	replaceWith(...nodes: (AstText|Token)[]): void;
+	replaceWith(...nodes: (string|AstText|Token)[]): void;
 
 	/**
 	 * 是自身或后代节点

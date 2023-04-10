@@ -1,10 +1,10 @@
 'use strict';
 
-/** @typedef {import('../typings/token').acceptable} acceptable */
 /**
- * @template T
- * @typedef {import('../typings/node').TokenAttribute<T>} TokenAttribute
+ * @template {string} T
+ * @typedef {import('../lib/node').TokenAttribute<T>} TokenAttribute
  */
+/** @typedef {import('./html')} HtmlToken */
 
 // PHP解析器的步骤：
 // -1. 替换签名和`{{subst:}}`，参见Parser::preSaveTransform；这在revision中不可能保留，可以跳过
@@ -133,13 +133,13 @@ class Token extends AstElement {
 	 * @param {string} str 半解析的字符串
 	 * @param {T} type 返回类型
 	 * @complexity `n`
-	 * @returns {T extends 'string|text' ? string : (Token|AstText)[]}
+	 * @returns {T extends 'string'|'text' ? string : (import('.')|AstText)[]}
 	 */
 	#buildFromStr = (str, type = undefined) => {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
-			} else if (isNaN(s.at(-1))) {
+			} else if (Number.isNaN(Number(s.at(-1)))) {
 				return this.#accum[Number(s.slice(0, -1))];
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
@@ -173,7 +173,7 @@ class Token extends AstElement {
 
 	/**
 	 * 保护部分子节点不被移除
-	 * @param {...string|number|Range} args 子节点范围
+	 * @param {...string|number|Ranges.Range} args 子节点范围
 	 */
 	#protectChildren = (...args) => {
 		this.#protectedChildren.push(...new Ranges(args));
@@ -196,8 +196,8 @@ class Token extends AstElement {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../typings/token').accum} accum
-	 * @param {acceptable} acceptable 可接受的子节点设置
+	 * @param {import('.')[]} accum
+	 * @param {import('.').Acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = undefined) {
 		super();
@@ -271,7 +271,7 @@ class Token extends AstElement {
 				this.#stage = value;
 				return this;
 			case 'acceptable': {
-				const /** @type {acceptable} */ acceptable = {};
+				const /** @type {Record<string, Ranges>} */ acceptable = {};
 				if (value) {
 					for (const [k, v] of Object.entries(value)) {
 						if (k.startsWith('Stage-')) {
@@ -302,17 +302,15 @@ class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @template {string|AstText|Token} T
-	 * @param {T} token 待插入的子节点
+	 * @template {string|AstText|import('.')} T
+	 * @param {T} child 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`
-	 * @returns {T extends Token ? Token : AstText}
 	 * @throws `RangeError` 不可插入的子节点
 	 */
-	insertAt(token, i = this.length) {
-		if (typeof token === 'string') {
-			token = new AstText(token);
-		}
+	insertAt(child, i = this.length) {
+		/** @type {T extends import('.') ? T : AstText} */
+		const token = typeof child === 'string' ? new AstText(child) : child;
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable)
@@ -348,7 +346,6 @@ class Token extends AstElement {
 	/**
 	 * @override
 	 * @param {number} i 移除位置
-	 * @returns {Token}
 	 * @complexity `n`
 	 * @throws `Error` 不可移除的子节点
 	 */
@@ -377,7 +374,8 @@ class Token extends AstElement {
 
 	/**
 	 * 替换为同类节点
-	 * @param {Token} token 待替换的节点
+	 * @this {this & import('.')}
+	 * @param {this} token 待替换的节点
 	 * @complexity `n`
 	 * @throws `Error` 不存在父节点
 	 * @throws `Error` 待替换的节点具有不同属性
@@ -423,7 +421,7 @@ class Token extends AstElement {
 	/**
 	 * 创建标签
 	 * @param {string} tagName 标签名
-	 * @param {{selfClosing: boolean, closing: boolean}} options 选项
+	 * @param {{selfClosing?: boolean, closing?: boolean}} options 选项
 	 * @throws `RangeError` 非法的标签名
 	 */
 	createElement(tagName, {selfClosing, closing} = {}) {
@@ -471,7 +469,7 @@ class Token extends AstElement {
 		} else if (index < 0) {
 			index += length;
 		}
-		let child = this, // eslint-disable-line unicorn/no-this-assignment
+		let /** @type {AstText|import('.')} */ child = this, // eslint-disable-line unicorn/no-this-assignment
 			acc = 0,
 			start = 0;
 		while (child.type !== 'text') {
@@ -572,7 +570,6 @@ class Token extends AstElement {
 	/**
 	 * 深拷贝所有子节点
 	 * @complexity `n`
-	 * @returns {(AstText|Token)[]}
 	 */
 	cloneChildNodes() {
 		return this.childNodes.map(child => child.cloneNode());
@@ -607,9 +604,9 @@ class Token extends AstElement {
 		}
 		const {childNodes} = this,
 			headings = [...childNodes.entries()].filter(([, {type}]) => type === 'heading')
-				.map(([i, {name}]) => [i, Number(name)]),
+				.map(/** @param {[number, import('./heading')]} arg */ ([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
-			/** @type {(AstText|Token)[][]} */ sections = new Array(headings.length);
+			/** @type {(AstText|import('.'))[][]} */ sections = new Array(headings.length);
 		for (let i = 0; i < headings.length; i++) {
 			const [index, level] = headings[i];
 			for (let j = level; j < 6; j++) {
@@ -640,8 +637,8 @@ class Token extends AstElement {
 
 	/**
 	 * 获取指定的外层HTML标签
-	 * @param {string|undefined} tag HTML标签名
-	 * @returns {[Token, Token]}
+	 * @param {string} tag HTML标签名
+	 * @returns {[HtmlToken, HtmlToken]}
 	 * @complexity `n`
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
@@ -661,7 +658,7 @@ class Token extends AstElement {
 			index = childNodes.indexOf(this);
 		let i;
 		for (i = index - 1; i >= 0; i--) {
-			const {type, name, selfClosing, closing} = childNodes[i];
+			const /** @type {HtmlToken} */ {type, name, selfClosing, closing} = childNodes[i];
 			if (type === 'html' && (!tag || name === tag) && selfClosing === false && closing === false) {
 				break;
 			}
@@ -669,24 +666,24 @@ class Token extends AstElement {
 		if (i === -1) {
 			return parentNode.findEnclosingHtml(tag);
 		}
-		const opening = childNodes[i];
+		const /** @type {HtmlToken} */ opening = childNodes[i];
 		for (i = index + 1; i < childNodes.length; i++) {
-			const {type, name, selfClosing, closing} = childNodes[i];
+			const /** @type {HtmlToken} */ {type, name, selfClosing, closing} = childNodes[i];
 			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
 				break;
 			}
 		}
-		return i === childNodes.length
-			? parentNode.findEnclosingHtml(tag)
-			: [opening, childNodes[i]];
+		return i === childNodes.length ? parentNode.findEnclosingHtml(tag) : [opening, childNodes[i]];
 	}
 
 	/**
 	 * 获取全部分类
 	 * @complexity `n`
+	 * @returns {[string, string][]}
 	 */
 	getCategories() {
-		return this.querySelectorAll('category').map(({name, sortkey}) => [name, sortkey]);
+		const /** @type {import('./link/category')[]} */ categories = this.querySelectorAll('category');
+		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
 	/**
@@ -716,9 +713,9 @@ class Token extends AstElement {
 		for (const quote of [...token.childNodes].reverse()) {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),
-					n = indices.findLastIndex(textIndex => textIndex <= index);
-				this.childNodes[n].splitText(index - indices[n]);
-				this.childNodes[n + 1].splitText(Number(quote.name));
+					n = indices.findLastIndex(textIndex => textIndex <= index),
+					/** @type {AstText} */ cur = this.childNodes[n];
+				cur.splitText(index - indices[n]).splitText(Number(quote.name));
 				this.removeAt(n + 1);
 				this.insertAt(quote, n + 1);
 			}
@@ -728,12 +725,10 @@ class Token extends AstElement {
 
 	/** 解析部分魔术字 */
 	solveConst() {
-		const ArgToken = require('./arg'),
-			ParameterToken = require('./parameter');
 		const targets = this.querySelectorAll('magic-word, arg'),
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
-			const /** @type {ArgToken} */ target = targets[i],
+			const /** @type {import('./arg')} */ target = targets[i],
 				{type, name, default: argDefault, childNodes, length} = target;
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
@@ -754,8 +749,9 @@ class Token extends AstElement {
 						transclusion = false,
 						j = 2;
 					for (; j < length; j++) {
-						const /** @type {ParameterToken} */ {anon, name: option, value, firstChild} = childNodes[j];
-						transclusion = firstChild.querySelector('magic-word, template');
+						/** @type {import('./parameter')} */
+						const {anon, name: option, value, childNodes: [firstChild]} = childNodes[j];
+						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {
 								defaultVal = value;
@@ -843,29 +839,22 @@ class Token extends AstElement {
 		this.setText(parseHtml(String(this.firstChild), this.#config, this.#accum));
 	}
 
-	/** 解析表格 */
+	/**
+	 * 解析表格
+	 * @this {this & import('.') & {firstChild: AstText}}
+	 */
 	#parseTable() {
 		if (this.#config.excludes.includes('table')) {
 			return;
 		}
-		const parseTable = require('../parser/table'),
-			TableToken = require('./table');
+		const parseTable = require('../parser/table');
 		this.setText(parseTable(this, this.#config, this.#accum));
-		for (const table of this.#accum) {
-			if (table instanceof TableToken && table.type !== 'td') {
-				table.normalize();
-				const {childNodes: [, child]} = table;
-				if (typeof child === 'string' && child.includes('\0')) {
-					table.removeAt(1);
-					const inner = new Token(child, this.#config, true, this.#accum);
-					table.insertAt(inner, 1);
-					inner.setAttribute('stage', 4);
-				}
-			}
-		}
 	}
 
-	/** 解析\<hr\>和状态开关 */
+	/**
+	 * 解析\<hr\>和状态开关
+	 * @this {this & import('.') & {firstChild: AstText}}
+	 */
 	#parseHrAndDoubleUndescore() {
 		if (this.#config.excludes.includes('hr')) {
 			return;
