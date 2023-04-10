@@ -34,7 +34,6 @@ class AtomToken extends Token {
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable');
 		return Parser.run(() => {
-			// eslint-disable-next-line no-extra-parens
 			const token = /** @type {this} */ (new this.constructor(undefined, this.type, config, [], acceptable));
 			token.append(...cloned);
 			return token;

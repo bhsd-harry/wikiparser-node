@@ -386,7 +386,13 @@
 				"ignoreChainWithDepth": 4
 			}
 		],
-		"no-extra-parens": 2,
+		"no-extra-parens": [
+			2,
+			"all",
+			{
+				"allowParensAfterCommentPattern": "@type"
+			}
+		],
 		"no-multi-spaces": [
 			2,
 			{

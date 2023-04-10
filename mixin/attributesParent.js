@@ -10,7 +10,6 @@ const Parser = require('..');
 const attributesParent = (Constructor, i = 0) => class AttributesParent extends Constructor {
 	/** AttributesToken子节点 */
 	get attributesChild() {
-		// eslint-disable-next-line no-extra-parens
 		return /** @type {import('../src/attributes')} */ (this.childNodes.at(i));
 	}
 

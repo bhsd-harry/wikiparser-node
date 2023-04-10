@@ -33,7 +33,6 @@ class HasNowikiToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			// eslint-disable-next-line no-extra-parens
 			const token = /** @type {this} */ (new HasNowikiToken(undefined, this.type, this.getAttribute('config')));
 			token.append(...cloned);
 			return token;

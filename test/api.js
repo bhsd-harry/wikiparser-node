@@ -21,7 +21,6 @@ const normalizeValues = obj => {
 			throw new TypeError('API请求的各项参数均为字符串或数字！');
 		}
 	}
-	// eslint-disable-next-line no-extra-parens
 	return /** @type {Record<string, string>} */ (obj);
 };
 
