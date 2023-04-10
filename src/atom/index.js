@@ -1,5 +1,7 @@
 'use strict';
 
+/** @typedef {import('.').atomType} atomType */
+
 const Parser = require('../..'),
 	Token = require('..');
 
@@ -8,13 +10,13 @@ const Parser = require('../..'),
  * @classdesc `{childNodes: ...AstText|Token}`
  */
 class AtomToken extends Token {
-	type = 'plain';
+	/** @type {atomType} */ type = 'plain';
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {string|undefined} type Token.type
-	 * @param {import('../../typings/token').accum} accum
-	 * @param {import('../../typings/token').acceptable} acceptable 可接受的子节点设置
+	 * @param {atomType} type Token.type
+	 * @param {Token[]} accum
+	 * @param {import('..').Acceptable} acceptable 可接受的子节点设置
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = [], acceptable = undefined) {
 		super(wikitext, config, true, accum, acceptable);
@@ -32,7 +34,8 @@ class AtomToken extends Token {
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable');
 		return Parser.run(() => {
-			const token = new this.constructor(undefined, this.type, config, [], acceptable);
+			// eslint-disable-next-line no-extra-parens
+			const token = /** @type {this} */ (new this.constructor(undefined, this.type, config, [], acceptable));
 			token.append(...cloned);
 			return token;
 		});

@@ -5,25 +5,25 @@ import AstText = require('./text');
 import ParameterToken = require('../src/parameter');
 
 declare type TokenAttribute<T extends string> =
-    T extends 'stage' ? number :
-    T extends 'config' ? ParserConfig :
-    T extends 'accum' ? Token[] :
-    T extends 'parentNode' ? Token :
-    T extends 'childNodes' ? (AstText|Token)[] :
-    T extends 'parseOnce' ? (n?: number, include?: boolean) => Token :
-    T extends 'buildFromStr' ? <S extends string>(str: string, type: S) => S extends 'string'|'text' ? string : (AstText|Token)[] :
-    T extends 'build' ? () => void :
-    T extends 'bracket'|'include' ? boolean :
-    T extends 'pattern' ? RegExp :
-    T extends 'tags'|'flags'|'quotes' ? string[] :
-    T extends 'optional'|'keys' ? Set<string> :
-    T extends 'acceptable' ? Record<string, Ranges> :
-    T extends 'args' ? Record<string, Set<ParameterToken>> :
-    T extends 'protectedChildren' ? Ranges :
-    T extends 'verifyChild' ? (i: number, addition?: number) => void :
-    T extends 'matchesAttr' ? (key: string, equal?: string, val?: string, i?: string) => boolean :
-    T extends 'protectChildren' ? (...args: (string|number|Ranges.Range)[]) => void :
-    string;
+	T extends 'stage' ? number :
+	T extends 'config' ? ParserConfig :
+	T extends 'accum' ? Token[] :
+	T extends 'parentNode' ? Token :
+	T extends 'childNodes' ? (AstText|Token)[] :
+	T extends 'parseOnce' ? (n?: number, include?: boolean) => Token :
+	T extends 'buildFromStr' ? <S extends string>(str: string, type: S) => S extends 'string'|'text' ? string : (AstText|Token)[] :
+	T extends 'build' ? () => void :
+	T extends 'bracket'|'include' ? boolean :
+	T extends 'pattern' ? RegExp :
+	T extends 'tags'|'flags'|'quotes' ? string[] :
+	T extends 'optional'|'keys' ? Set<string> :
+	T extends 'acceptable' ? Record<string, Ranges> :
+	T extends 'args' ? Record<string, Set<ParameterToken>> :
+	T extends 'protectedChildren' ? Ranges :
+	T extends 'verifyChild' ? (i: number, addition?: number) => void :
+	T extends 'matchesAttr' ? (key: string, equal?: string, val?: string, i?: string) => boolean :
+	T extends 'protectChildren' ? (...args: (string|number|Ranges.Range)[]) => void :
+	string;
 
 declare interface AstEvent extends Event {
 	readonly type: string;
@@ -210,8 +210,8 @@ declare class AstNode {
 	 * @param options 选项
 	 */
 	addEventListener(types: string | string[], listener: AstListener, options: {
-        once: boolean;
-    }): void;
+		once: boolean;
+	}): void;
 
 	/**
 	 * 移除事件监听
@@ -260,9 +260,9 @@ declare class AstNode {
 	 * @param index 字符位置
 	 */
 	posFromIndex(index: number): {
-        top: number;
-        left: number;
-    };
+		top: number;
+		left: number;
+	};
 
 	/**
 	 * 将行列号转换为字符位置
@@ -288,11 +288,11 @@ declare class AstNode {
 
 	/** 获取当前节点的行列位置和大小 */
 	getBoundingClientRect(): {
-        top: number;
-        left: number;
-        height: number;
-        width: number;
-    };
+		top: number;
+		left: number;
+		height: number;
+		width: number;
+	};
 
 	/** 行数 */
 	get offsetHeight(): number;
@@ -308,12 +308,12 @@ declare class AstNode {
 
 	/** 位置、大小和padding */
 	get style(): {
-        padding: number;
-        height: number;
-        width: number;
-        top: number;
-        left: number;
-    };
+		padding: number;
+		height: number;
+		width: number;
+		top: number;
+		left: number;
+	};
 
 	/**
 	 * Linter
@@ -326,7 +326,7 @@ declare class AstNode {
 }
 
 declare namespace AstNode {
-    export {TokenAttribute, AstEvent, AstEventData, AstListener};
+	export {TokenAttribute, AstEvent, AstEventData, AstListener};
 }
 
 export = AstNode;

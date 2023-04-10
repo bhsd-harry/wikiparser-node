@@ -144,7 +144,7 @@ declare class AstElement extends AstNode {
 }
 
 declare namespace AstElement {
-    export {SelectorArray, printOpt};
+	export {SelectorArray, printOpt};
 }
 
 export = AstElement;
