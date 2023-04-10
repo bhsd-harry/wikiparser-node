@@ -8,12 +8,10 @@ const Parser = require('..');
  * @param {number} i AttributesToken子节点的位置
  */
 const attributesParent = (Constructor, i = 0) => class AttributesParent extends Constructor {
-	/**
-	 * AttributesToken子节点
-	 * @returns {import('../src/attributes')}
-	 */
+	/** AttributesToken子节点 */
 	get attributesChild() {
-		return this.childNodes.at(i);
+		// eslint-disable-next-line no-extra-parens
+		return /** @type {import('../src/attributes')} */ (this.childNodes.at(i));
 	}
 
 	/** getAttrs()方法的getter写法 */

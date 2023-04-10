@@ -1,6 +1,6 @@
 'use strict';
 
-/** @typedef {import('../typings/parser').SelectorArray} SelectorArray */
+/** @typedef {import('../lib/element').SelectorArray} SelectorArray */
 /** @typedef {import('../typings/parser').pseudo} pseudo */
 
 const Parser = require('..');

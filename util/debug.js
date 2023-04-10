@@ -44,7 +44,8 @@ const undo = (e, data) => {
 		case 'remove': {
 			const childNodes = [...target.childNodes];
 			childNodes.splice(data.position, 0, data.removed);
-			data.removed.setAttribute('parentNode', target);
+			// eslint-disable-next-line no-extra-parens
+			data.removed.setAttribute('parentNode', /** @type {import('../src')} */ (target));
 			target.setAttribute('childNodes', childNodes);
 			break;
 		}

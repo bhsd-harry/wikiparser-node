@@ -4,6 +4,10 @@
  * @template {string} T
  * @typedef {import('../lib/node').TokenAttribute<T>} TokenAttribute
  */
+/**
+ * @template {string} T
+ * @typedef {T extends 'string'|'text' ? string : (import('.')|AstText)[]} built
+ */
 /** @typedef {import('./html')} HtmlToken */
 
 // PHP解析器的步骤：
@@ -133,7 +137,6 @@ class Token extends AstElement {
 	 * @param {string} str 半解析的字符串
 	 * @param {T} type 返回类型
 	 * @complexity `n`
-	 * @returns {T extends 'string'|'text' ? string : (import('.')|AstText)[]}
 	 */
 	#buildFromStr = (str, type = undefined) => {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
@@ -144,12 +147,14 @@ class Token extends AstElement {
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
 		});
+		/* eslint-disable no-extra-parens */
 		if (type === 'string') {
-			return nodes.map(String).join('');
+			return /** @type {built<T>} */ (nodes.map(String).join(''));
 		} else if (type === 'text') {
-			return text(nodes);
+			return /** @type {built<T>} */ (text(nodes));
 		}
-		return nodes;
+		return /** @type {built<T>} */ (nodes);
+		/* eslint-enable no-extra-parens */
 	};
 
 	/**
@@ -206,54 +211,58 @@ class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
-		this.setAttribute('acceptable', acceptable);
-		accum.push(this);
+		// eslint-disable-next-line no-extra-parens
+		this.setAttribute('acceptable', /** @type {Record<string, Ranges>} */ (acceptable));
+		// eslint-disable-next-line no-extra-parens
+		accum.push(/** @type {import('.')} */ (this));
 	}
 
 	/**
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
+		/* eslint-disable no-extra-parens */
 		switch (key) {
 			case 'config':
-				return structuredClone(this.#config);
+				return /** @type {TokenAttribute<T>} */ (structuredClone(this.#config));
 			case 'accum':
-				return this.#accum;
+				return /** @type {TokenAttribute<T>} */ (this.#accum);
 			case 'parseOnce':
-				return this.#parseOnce;
+				return /** @type {TokenAttribute<T>} */ (/** @type {unknown} */ (this.#parseOnce));
 			case 'buildFromStr':
-				return this.#buildFromStr;
+				return /** @type {TokenAttribute<T>} */ (this.#buildFromStr);
 			case 'build':
-				return this.#build;
+				return /** @type {TokenAttribute<T>} */ (this.#build);
 			case 'include': {
 				if (this.#include !== undefined) {
-					return this.#include;
+					return /** @type {TokenAttribute<T>} */ (this.#include);
 				}
 				const root = this.getRootNode();
 				if (root.type === 'root' && root !== this) {
-					return root.getAttribute('include');
+					return /** @type {TokenAttribute<T>} */ (root.getAttribute('include'));
 				}
 				const includeToken = root.querySelector('include');
 				if (includeToken) {
-					return includeToken.name === 'noinclude';
+					return /** @type {TokenAttribute<T>} */ (includeToken.name === 'noinclude');
 				}
 				const noincludeToken = root.querySelector('noinclude');
-				return Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken));
+				return /** @type {TokenAttribute<T>} */ (Boolean(noincludeToken)
+					&& !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken)));
 			}
 			case 'stage':
-				return this.#stage;
+				return /** @type {TokenAttribute<T>} */ (this.#stage);
 			case 'acceptable':
-				return this.#acceptable ? {...this.#acceptable} : undefined;
+				return this.#acceptable ? /** @type {TokenAttribute<T>} */ ({...this.#acceptable}) : undefined;
 			case 'protectChildren':
-				return this.#protectChildren;
+				return /** @type {TokenAttribute<T>} */ (this.#protectChildren);
 			case 'protectedChildren':
-				return new Ranges(this.#protectedChildren);
+				return /** @type {TokenAttribute<T>} */ (new Ranges(this.#protectedChildren));
 			default:
 				return super.getAttribute(key);
 		}
+		/* eslint-enable no-extra-parens */
 	}
 
 	/**
@@ -268,7 +277,8 @@ class Token extends AstElement {
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#stage = value;
+				// eslint-disable-next-line no-extra-parens
+				this.#stage = /** @type {number} */ (value);
 				return this;
 			case 'acceptable': {
 				const /** @type {Record<string, Ranges>} */ acceptable = {};
@@ -309,8 +319,10 @@ class Token extends AstElement {
 	 * @throws `RangeError` 不可插入的子节点
 	 */
 	insertAt(child, i = this.length) {
-		/** @type {T extends import('.') ? T : AstText} */
-		const token = typeof child === 'string' ? new AstText(child) : child;
+		// eslint-disable-next-line no-extra-parens
+		const token = /** @type {T extends import('.') ? T : AstText} */ (typeof child === 'string'
+			? new AstText(child)
+			: child);
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable)
@@ -469,7 +481,8 @@ class Token extends AstElement {
 		} else if (index < 0) {
 			index += length;
 		}
-		let /** @type {AstText|import('.')} */ child = this, // eslint-disable-line unicorn/no-this-assignment
+		// eslint-disable-next-line no-extra-parens, unicorn/no-this-assignment
+		let child = /** @type {AstText|import('.')} */ (this),
 			acc = 0,
 			start = 0;
 		while (child.type !== 'text') {
@@ -586,7 +599,8 @@ class Token extends AstElement {
 		}
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new Token(undefined, this.#config, false, [], this.#acceptable);
+			// eslint-disable-next-line no-extra-parens
+			const token = /** @type {this} */ (new Token(undefined, this.#config, false, [], this.#acceptable));
 			token.type = this.type;
 			token.append(...cloned);
 			token.getAttribute('protectChildren')(...this.#protectedChildren);
@@ -654,11 +668,12 @@ class Token extends AstElement {
 		if (!parentNode) {
 			return undefined;
 		}
+		/* eslint-disable no-extra-parens */
 		const {childNodes} = parentNode,
-			index = childNodes.indexOf(this);
+			index = childNodes.indexOf(/** @type {import('.') */ (this));
 		let i;
 		for (i = index - 1; i >= 0; i--) {
-			const /** @type {HtmlToken} */ {type, name, selfClosing, closing} = childNodes[i];
+			const {type, name, selfClosing, closing} = /** @type {HtmlToken} */ (childNodes[i]);
 			if (type === 'html' && (!tag || name === tag) && selfClosing === false && closing === false) {
 				break;
 			}
@@ -666,14 +681,17 @@ class Token extends AstElement {
 		if (i === -1) {
 			return parentNode.findEnclosingHtml(tag);
 		}
-		const /** @type {HtmlToken} */ opening = childNodes[i];
+		const opening = /** @type {HtmlToken} */ (childNodes[i]);
 		for (i = index + 1; i < childNodes.length; i++) {
-			const /** @type {HtmlToken} */ {type, name, selfClosing, closing} = childNodes[i];
+			const {type, name, selfClosing, closing} = /** @type {HtmlToken} */ (childNodes[i]);
 			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
 				break;
 			}
 		}
-		return i === childNodes.length ? parentNode.findEnclosingHtml(tag) : [opening, childNodes[i]];
+		return i === childNodes.length
+			? parentNode.findEnclosingHtml(tag)
+			: [opening, /** @type {HtmlToken} */ (childNodes[i])];
+		/* eslint-enable no-extra-parens */
 	}
 
 	/**
@@ -682,7 +700,8 @@ class Token extends AstElement {
 	 * @returns {[string, string][]}
 	 */
 	getCategories() {
-		const /** @type {import('./link/category')[]} */ categories = this.querySelectorAll('category');
+		// eslint-disable-next-line no-extra-parens
+		const categories = /** @type {import('./link/category')[]} */ (this.querySelectorAll('category'));
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
@@ -703,8 +722,10 @@ class Token extends AstElement {
 			}
 		}
 		this.normalize();
-		/** @type {[number, AstText][]} */
-		const textNodes = [...this.childNodes.entries()].filter(([, {type}]) => type === 'text'),
+		// eslint-disable-next-line no-extra-parens
+		const textNodes = /** @type {[number, AstText][]} */ ([...this.childNodes.entries()].filter(
+				([, {type}]) => type === 'text',
+			)),
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
 			token = Parser.run(() => {
 				const root = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
@@ -714,7 +735,8 @@ class Token extends AstElement {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),
 					n = indices.findLastIndex(textIndex => textIndex <= index),
-					/** @type {AstText} */ cur = this.childNodes[n];
+					// eslint-disable-next-line no-extra-parens
+					cur = /** @type {AstText} */ (this.childNodes[n]);
 				cur.splitText(index - indices[n]).splitText(Number(quote.name));
 				this.removeAt(n + 1);
 				this.insertAt(quote, n + 1);
@@ -728,7 +750,8 @@ class Token extends AstElement {
 		const targets = this.querySelectorAll('magic-word, arg'),
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
-			const /** @type {import('./arg')} */ target = targets[i],
+			// eslint-disable-next-line no-extra-parens
+			const target = /** @type {import('./arg')} */ (targets[i]),
 				{type, name, default: argDefault, childNodes, length} = target;
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
@@ -749,8 +772,10 @@ class Token extends AstElement {
 						transclusion = false,
 						j = 2;
 					for (; j < length; j++) {
-						/** @type {import('./parameter')} */
-						const {anon, name: option, value, childNodes: [firstChild]} = childNodes[j];
+						const {
+							anon, name: option, value, childNodes: [firstChild],
+							// eslint-disable-next-line no-extra-parens
+						} = /** @type {import('./parameter')} */ (childNodes[j]);
 						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {

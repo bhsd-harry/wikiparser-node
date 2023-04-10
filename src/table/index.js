@@ -951,7 +951,8 @@ class TableToken extends TrToken {
 				if (start) {
 					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
 					rowToken.insertBefore(
-						token, col === undefined && rowToken.type === 'table'
+						token,
+						col === undefined && rowToken.type === 'table'
 							? rowToken.childNodes.slice(2).find(isRowEnd)
 							: col !== undefined && rowToken.getNthCol(col),
 					);

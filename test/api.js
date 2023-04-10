@@ -7,7 +7,6 @@ const request = require('request'),
 /**
  * 规范化API请求参数
  * @param {Record<string, string|number|boolean|(string|number)[]>} obj 请求参数
- * @returns {Record<string, string>}
  * @throws `TypeError` 部分参数不是字符串或数字
  */
 const normalizeValues = obj => {
@@ -22,7 +21,8 @@ const normalizeValues = obj => {
 			throw new TypeError('API请求的各项参数均为字符串或数字！');
 		}
 	}
-	return obj;
+	// eslint-disable-next-line no-extra-parens
+	return /** @type {Record<string, string>} */ (obj);
 };
 
 /** 通用MediaWiki站点的请求 */

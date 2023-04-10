@@ -2,7 +2,7 @@ import AstNode = require('./node');
 import Token = require('../src');
 import AstText = require('./text');
 
-declare interface SelectorArray extends Array<string|RegExpExecArray> {
+declare interface SelectorArray extends Array<string|string[]> {
 	relation: string;
 }
 

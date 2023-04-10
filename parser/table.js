@@ -11,7 +11,7 @@ const Parser = require('..'),
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
  * @param {Token & {firstChild: AstText}} root 根节点
- * @param {import('../typings/token').accum} accum
+ * @param {Token[]} accum
  */
 const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const /** @type {TrToken[]} */ stack = [],
