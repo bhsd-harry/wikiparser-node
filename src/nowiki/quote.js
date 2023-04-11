@@ -2,7 +2,6 @@
 
 const {generateForSelf} = require('../../util/lint'),
 	Parser = require('../..'),
-	AstText = require('../../lib/text'),
 	NowikiToken = require('.');
 
 /**
@@ -10,7 +9,7 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class QuoteToken extends NowikiToken {
-	type = 'quote';
+	/** @type {'quote'} */ type = 'quote';
 
 	/**
 	 * @param {number} n 字符串长度
@@ -23,7 +22,6 @@ class QuoteToken extends NowikiToken {
 
 	/**
 	 * @override
-	 * @this {AstText}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {

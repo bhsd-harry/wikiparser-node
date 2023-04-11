@@ -83,13 +83,13 @@ class NestedToken extends Token {
 
 	/**
 	 * @override
-	 * @this {this & {constructor: typeof this}}
+	 * @this {this & {constructor: typeof Token}}
 	 */
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			const token = new this.constructor(undefined, config);
+			const token = /** @type {this} */ (new this.constructor(undefined, config));
 			token.append(...cloned);
 			return token;
 		});

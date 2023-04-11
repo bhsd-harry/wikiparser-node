@@ -27,7 +27,7 @@ class AtomToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AtomToken & {constructor: typeof AtomToken}}
+	 * @this {this & {constructor: typeof AtomToken}}
 	 */
 	cloneNode() {
 		const cloned = this.cloneChildNodes(),

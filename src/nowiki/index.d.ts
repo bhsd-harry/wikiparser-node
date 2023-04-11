@@ -8,7 +8,8 @@ declare type nowikiType = 'ext-inner'
 	|'double-underscore'
 	|'hr'
 	|'list'
-	|'noinclude';
+	|'noinclude'
+	|'quote';
 
 /**
  * 纯文字Token，不会被解析

@@ -33,7 +33,7 @@ class NowikiToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @this {import('.') & {constructor: typeof Token}}
+	 * @this {import('.') & {constructor: typeof NowikiToken}}
 	 */
 	cloneNode() {
 		const {constructor, firstChild: {data}, type} = this,
