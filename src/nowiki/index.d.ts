@@ -2,7 +2,7 @@ import Token = require('..');
 import AstText = require('../../lib/text');
 import {ParserConfig} from '../..';
 
-declare type nowikiType = 'ext-inner'|'comment';
+declare type nowikiType = 'ext-inner'|'comment'|'dd';
 
 /**
  * 纯文字Token，不会被解析

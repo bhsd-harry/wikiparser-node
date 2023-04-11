@@ -8,7 +8,7 @@ const Parser = require('../..'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class DdToken extends NowikiToken {
-	type = 'dd';
+	/** @type {'dd'} */ type = 'dd';
 
 	/** 是否包含<dt> */
 	get dt() {
