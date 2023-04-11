@@ -5,7 +5,8 @@ import {ParserConfig} from '../..';
 declare type nowikiType = 'ext-inner'
 	|'comment'
 	|'dd'
-	|'double-underscore';
+	|'double-underscore'
+	|'hr';
 
 /**
  * 纯文字Token，不会被解析

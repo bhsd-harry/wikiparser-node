@@ -9,7 +9,7 @@ const Parser = require('../..'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class HrToken extends sol(NowikiToken) {
-	type = 'hr';
+	/** @type {'hr'} */ type = 'hr';
 
 	/**
 	 * @param {number} n 字符串长度
@@ -21,7 +21,7 @@ class HrToken extends sol(NowikiToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => new HrToken(String(this).length, this.getAttribute('config')));
+		return Parser.run(() => /** @type {this} */ (new HrToken(String(this).length, this.getAttribute('config'))));
 	}
 
 	/**
