@@ -3,7 +3,6 @@
 const {generateForSelf} = require('../../util/lint'),
 	fixedToken = require('../../mixin/fixedToken'),
 	Parser = require('../..'),
-	AstText = require('../../lib/text'),
 	Token = require('..');
 
 /**
@@ -11,7 +10,7 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class NowikiToken extends fixedToken(Token) {
-	type = 'ext-inner';
+	/** @type {import('.').nowikiType} */ type = 'ext-inner';
 
 	/**
 	 * @param {string} wikitext wikitext
@@ -34,11 +33,11 @@ class NowikiToken extends fixedToken(Token) {
 
 	/**
 	 * @override
-	 * @this {NowikiToken & {firstChild: AstText, constructor: typeof NowikiToken}}
+	 * @this {import('.') & {constructor: typeof Token}}
 	 */
 	cloneNode() {
 		const {constructor, firstChild: {data}, type} = this,
-			token = Parser.run(() => new constructor(data, this.getAttribute('config')));
+			token = Parser.run(() => /** @type {this} */ (new constructor(data, this.getAttribute('config'))));
 		token.type = type;
 		return token;
 	}
