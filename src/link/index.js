@@ -200,14 +200,12 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
+	 * @this {this & import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
-			{
-				childNodes: [target, linkText], type: linkType,
-				// eslint-disable-next-line no-extra-parens
-			} = /** @type {import('.')} */ (/** @type {unknown} */ (this));
+			{childNodes: [target, linkText], type: linkType} = this;
 		let rect;
 		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
@@ -236,17 +234,16 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
-	 * @this {LinkToken & {constructor: typeof import('.')}}
+	 * @this {import('.') & {constructor: typeof import('.')}}
 	 */
 	cloneNode() {
-		const [link, ...linkText] = /** @type {[AtomToken]} */ (this.cloneChildNodes());
+		const [link, ...linkText] = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new this.constructor('', undefined, this.getAttribute('config'));
-			token.childNodes[0].safeReplaceWith(link);
+			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
 			token.afterBuild();
-			// eslint-disable-next-line no-extra-parens
-			return /** @type {this} */ (/** @type {unknown} */ (token));
+			return /** @type {this} */ (token);
 		});
 	}
 
@@ -263,13 +260,13 @@ class LinkToken extends Token {
 		}
 		const root = Parser.parse(`[[${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{length, firstChild: wikiLink} = /** @type {Token & {firstChild: import('.')}} */ (root),
-			{type, childNodes: [target], length: linkLength} = wikiLink;
+			{type, firstChild, length: linkLength} = wikiLink;
 		if (length !== 1 || type !== this.type || linkLength !== 1) {
 			const msgs = {link: '内链', file: '文件链接', category: '分类'};
 			throw new SyntaxError(`非法的${msgs[this.type]}目标：${link}`);
 		}
 		wikiLink.destroy();
-		this.childNodes[0].safeReplaceWith(target);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -292,12 +289,12 @@ class LinkToken extends Token {
 		}
 		const root = Parser.parse(`[[${lang}:${link}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{length, firstChild: wikiLink} = /** @type {Token & {firstChild: import('.')}} */ (root),
-			{type, length: linkLength, interwiki, childNodes: [target]} = wikiLink;
+			{type, length: linkLength, interwiki, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1 || interwiki !== lang.toLowerCase()) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${link}`);
 		}
 		wikiLink.destroy();
-		this.childNodes[0].safeReplaceWith(target);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -315,14 +312,14 @@ class LinkToken extends Token {
 				fragment === undefined ? '' : `#${fragment}`
 			}]]`, include, 6, config),
 			{length, firstChild: wikiLink} = /** @type {Token & {firstChild: import('.')}} */ (root),
-			{type, length: linkLength, childNodes: [target]} = wikiLink;
+			{type, length: linkLength, firstChild} = wikiLink;
 		if (length !== 1 || type !== 'link' || linkLength !== 1) {
 			throw new SyntaxError(`非法的 fragment：${fragment}`);
 		} else if (page) {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}
 		wikiLink.destroy();
-		this.childNodes[0].safeReplaceWith(target);
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
@@ -366,7 +363,7 @@ class LinkToken extends Token {
 			if (length !== 1 || wikiLink.type !== this.type || wikiLink.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkText)}`);
 			}
-			({childNodes: [, lastChild]} = /** @type {import('.')} */ (wikiLink));
+			({lastChild} = /** @type {import('.')} */ (wikiLink));
 		} else {
 			lastChild = Parser.run(() => new Token('', config));
 			lastChild.setAttribute('stage', 7).type = 'link-text';
@@ -374,7 +371,7 @@ class LinkToken extends Token {
 		if (this.length === 1) {
 			this.insertAt(lastChild);
 		} else {
-			this.childNodes[1].safeReplaceWith(lastChild);
+			this.lastChild.safeReplaceWith(lastChild);
 		}
 	}
 

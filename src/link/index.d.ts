@@ -1,5 +1,4 @@
 import Token = require('..');
-import AtomToken = require('../atom');
 import Title = require('../../lib/title');
 import {ParserConfig} from '../..';
 
@@ -11,7 +10,13 @@ declare type linkType = 'link'|'category'|'file'|'gallery-image'|'imagemap-image
  */
 declare class LinkToken extends Token {
 	override type: linkType;
-	override childNodes: [AtomToken]|[AtomToken, Token];
+	override childNodes: Token[];
+	/** @override */
+	override get firstChild(): Token;
+	/** @override */
+	override get lastChild(): Token;
+	/** @override */
+	override cloneChildNodes(): Token[];
 
 	/**
 	 * @param link 链接标题

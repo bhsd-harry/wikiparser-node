@@ -661,7 +661,7 @@ class Token extends AstElement {
 			return undefined;
 		}
 		const {childNodes} = parentNode,
-			index = childNodes.indexOf(/** @type {import('.') */ (this));
+			index = childNodes.indexOf(/** @type {import('.')} */ (this));
 		let i;
 		for (i = index - 1; i >= 0; i--) {
 			const {type, name, selfClosing, closing} = /** @type {HtmlToken} */ (childNodes[i]);
@@ -759,7 +759,7 @@ class Token extends AstElement {
 						j = 2;
 					for (; j < length; j++) {
 						const {
-							anon, name: option, value, childNodes: [firstChild],
+							anon, name: option, value, firstChild,
 						} = /** @type {import('./parameter')} */ (childNodes[j]);
 						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
 						if (anon) {

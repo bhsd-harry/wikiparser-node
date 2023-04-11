@@ -1,5 +1,5 @@
 import LinkToken = require('.');
-import AtomToken = require('../atom');
+import Token = require('..');
 import ImageParameterToken = require('../imageParameter');
 import Title = require('../../lib/title');
 
@@ -9,11 +9,17 @@ import Title = require('../../lib/title');
  */
 declare class FileToken extends LinkToken {
 	override type: 'file'|'gallery-image'|'imagemap-image';
-	override childNodes: [AtomToken, ...ImageParameterToken[]];
+	override childNodes: [Token, ...ImageParameterToken[]];
+	/** @override */
+	override get firstChild(): Token;
+	/** @override */
+	override get lastChild(): Token;
+	/** @override */
+	override cloneChildNodes(): [Token, ...ImageParameterToken[]];
 
 	/** 图片链接 */
 	override get link(): string | Title;
-	set link(arg: string|Title);
+	override set link(arg: string|Title);
 
 	/** 图片大小 */
 	get size(): {
