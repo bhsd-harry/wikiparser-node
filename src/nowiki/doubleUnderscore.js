@@ -9,7 +9,7 @@ const hidden = require('../../mixin/hidden'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class DoubleUnderscoreToken extends hidden(NowikiToken) {
-	type = 'double-underscore';
+	/** @type {'double-underscore'} */ type = 'double-underscore';
 
 	/** @override */
 	getPadding() {
@@ -40,11 +40,14 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => new DoubleUnderscoreToken(String(this.firstChild), this.getAttribute('config')));
+		return Parser.run(() => /** @type {this} */ (new DoubleUnderscoreToken(
+			String(this.firstChild), this.getAttribute('config'),
+		)));
 	}
 
 	/**
 	 * @override
+	 * @returns {never}
 	 * @throws `Error` 禁止修改
 	 */
 	setText() {
