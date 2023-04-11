@@ -11,7 +11,7 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: ...AtomToken}`
  */
 class ParamTagToken extends Token {
-	type = 'ext-inner';
+	/** @type {'ext-inner'} */ type = 'ext-inner';
 
 	/**
 	 * @param {string} wikitext wikitext
@@ -56,10 +56,11 @@ class ParamTagToken extends Token {
 
 	/**
 	 * @override
+	 * @this {import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
-		let /** @type {{top: number, left: number}} */ rect;
+		let /** @type {{top?: number, left?: number, start?: number}} */ rect;
 		return this.childNodes.filter(child => {
 			const {childNodes} = child,
 				i = childNodes.findIndex(({type}) => type !== 'text'),
@@ -73,12 +74,12 @@ class ParamTagToken extends Token {
 
 	/**
 	 * @override
-	 * @this {ParamTagToken & {constructor: typeof ParamTagToken}}
+	 * @this {this & {constructor: typeof ParamTagToken}}
 	 */
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new this.constructor(undefined, this.getAttribute('config'));
+			const token = /** @type {this} */ (new this.constructor(undefined, this.getAttribute('config')));
 			token.append(...cloned);
 			return token;
 		});
