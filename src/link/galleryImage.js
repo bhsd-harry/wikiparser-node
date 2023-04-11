@@ -28,7 +28,7 @@ class GalleryImageToken extends singleLine(FileToken) {
 
 	/**
 	 * @param {string} link 图片文件名
-	 * @param {string|undefined} text 图片参数
+	 * @param {string} text 图片参数
 	 * @param {import('..')[]} accum
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = []) {

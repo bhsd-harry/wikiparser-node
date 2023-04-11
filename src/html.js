@@ -64,7 +64,7 @@ class HtmlToken extends attributesParent(fixedToken(Token)) {
 	 * @param {import('./attributes')} attr 标签属性
 	 * @param {boolean} closing 是否闭合
 	 * @param {boolean} selfClosing 是否自封闭
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -111,7 +111,7 @@ class HtmlToken extends attributesParent(fixedToken(Token)) {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
-		let wikitext, /** @type {import('../typings/token').LintError} */ refError;
+		let wikitext, /** @type {import('..').LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
 			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
@@ -195,7 +195,7 @@ class HtmlToken extends attributesParent(fixedToken(Token)) {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		return key === 'tag' ? this.#tag : super.getAttribute(key);

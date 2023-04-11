@@ -22,7 +22,7 @@ class CategoryToken extends LinkToken {
 
 	/**
 	 * @param {string} link 分类名
-	 * @param {string|undefined} text 排序关键字
+	 * @param {string} text 排序关键字
 	 * @param {import('..')[]} accum
 	 * @param {string} delimiter `|`
 	 */

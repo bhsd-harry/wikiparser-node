@@ -72,7 +72,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * @param {string} link 文件名
-	 * @param {string|undefined} text 图片参数
+	 * @param {string} text 图片参数
 	 * @param {Token[]} accum
 	 * @param {string} delimiter `|`
 	 * @complexity `n`

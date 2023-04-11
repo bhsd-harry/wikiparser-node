@@ -1,7 +1,6 @@
 'use strict';
 
 /** @typedef {import('../lib/element').SelectorArray} SelectorArray */
-/** @typedef {import('../typings/parser').pseudo} pseudo */
 
 const Parser = require('..');
 
@@ -68,7 +67,7 @@ const sanitize = selector => {
 
 /**
  * 还原转义符号
- * @param {string|undefined} selector
+ * @param {string} selector
  */
 const desanitize = selector => {
 	if (selector === undefined) {
@@ -82,7 +81,7 @@ const desanitize = selector => {
 
 /**
  * 去除首尾的引号
- * @param {string|undefined} val 属性值或伪选择器函数的参数
+ * @param {string} val 属性值或伪选择器函数的参数
  */
 const deQuote = val => {
 	if (val === undefined) {

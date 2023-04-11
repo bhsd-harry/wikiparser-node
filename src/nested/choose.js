@@ -11,8 +11,8 @@ class ChooseToken extends NestedToken {
 	name = 'choose';
 
 	/**
-	 * @param {string|undefined} wikitext wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} wikitext wikitext
+	 * @param {import('..')[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		const regex = /<(option|choicetemplate)(\s[^>]*)?>(.*?)<\/(\1)>/gsu;

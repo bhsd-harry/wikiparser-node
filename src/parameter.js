@@ -43,7 +43,7 @@ class ParameterToken extends fixedToken(Token) {
 	/**
 	 * @param {string|number} key 参数名
 	 * @param {string} value 参数值
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 */
 	constructor(key, value, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -69,7 +69,7 @@ class ParameterToken extends fixedToken(Token) {
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
-		const /** @type {import('../typings/event').AstListener} */ parameterListener = ({prevTarget}, data) => {
+		const /** @type {import('../lib/node').AstListener} */ parameterListener = ({prevTarget}, data) => {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstChild, name} = this;
 				if (prevTarget === firstChild) {

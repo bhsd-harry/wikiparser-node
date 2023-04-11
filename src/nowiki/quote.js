@@ -14,7 +14,7 @@ class QuoteToken extends NowikiToken {
 
 	/**
 	 * @param {number} n 字符串长度
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super(`'`.repeat(n), config, accum);
@@ -29,7 +29,7 @@ class QuoteToken extends NowikiToken {
 	lint(start = this.getAbsoluteIndex()) {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
-			/** @type {import('../../typings/token').LintError[]} */ errors = [];
+			/** @type {import('../..').LintError[]} */ errors = [];
 		let refError, wikitext;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);

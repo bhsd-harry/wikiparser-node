@@ -21,7 +21,7 @@ class CommentToken extends hidden(NowikiToken) {
 	/**
 	 * @param {string} wikitext wikitext
 	 * @param {boolean} closed 是否闭合
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, accum);

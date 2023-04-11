@@ -15,7 +15,7 @@ class NowikiToken extends fixedToken(Token) {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, true, accum);

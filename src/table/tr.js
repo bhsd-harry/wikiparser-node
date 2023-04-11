@@ -35,7 +35,7 @@ class TrToken extends attributesParent(Token, 1) {
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @param {RegExp} pattern 表格语法正则
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {

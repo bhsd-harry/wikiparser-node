@@ -2,7 +2,7 @@
 
 /**
  * @template T
- * @typedef {import('../../typings/node').TokenAttribute<T>} TokenAttribute
+ * @typedef {import('../../lib/node').TokenAttribute<T>} TokenAttribute
  */
 
 const {generateForChild} = require('../../util/lint'),
@@ -101,7 +101,7 @@ class TdToken extends fixedToken(TrToken) {
 	/**
 	 * @param {string} syntax 单元格语法
 	 * @param {string} inner 内部wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
 		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),

@@ -28,7 +28,7 @@ class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
 	 * @param {string} pre 链接前的文本
 	 * @param {[string, string, string|Title]} linkStuff 内外链接
 	 * @param {string} post 链接后的文本
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(pre, linkStuff, post, config, accum) {
 		const SomeLinkToken = linkStuff.length === 2 ? LinkToken : ExtLinkToken;

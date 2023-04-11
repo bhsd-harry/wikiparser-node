@@ -13,7 +13,7 @@ class HrToken extends sol(NowikiToken) {
 
 	/**
 	 * @param {number} n 字符串长度
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super('-'.repeat(n), config, accum);

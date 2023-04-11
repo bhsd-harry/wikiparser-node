@@ -16,7 +16,7 @@ class SyntaxToken extends Token {
 	 * @param {string} wikitext 语法wikitext
 	 * @param {RegExp} pattern 语法正则
 	 * @param {string} type Token.type
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 * @param {import('../lib/node').Acceptable} acceptable 可接受的子节点设置
 	 * @throws `RangeError` 含有g修饰符的语法正则
 	 */
@@ -44,7 +44,7 @@ class SyntaxToken extends Token {
 
 	/** @override */
 	afterBuild() {
-		const /** @type {import('../typings/event').AstListener} */ syntaxListener = (e, data) => {
+		const /** @type {import('../lib/node').AstListener} */ syntaxListener = (e, data) => {
 			const pattern = this.#pattern;
 			if (!Parser.running && !pattern.test(this.text())) {
 				undo(e, data);
@@ -59,7 +59,7 @@ class SyntaxToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		return key === 'pattern' ? this.#pattern : super.getAttribute(key);

@@ -56,8 +56,8 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @param {string} title 模板标题或魔术字
-	 * @param {[string, string|undefined][]} parts 参数各部分
-	 * @param {import('../typings/token').accum} accum
+	 * @param {[string, string][]} parts 参数各部分
+	 * @param {Token} accum
 	 * @complexity `n`
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
@@ -155,7 +155,7 @@ class TranscludeToken extends Token {
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
 			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-			 * @type {import('../typings/event').AstListener}
+			 * @type {import('../lib/node').AstListener}
 			 */
 			const transcludeListener = (e, data) => {
 				const {prevTarget} = e,
@@ -460,7 +460,7 @@ class TranscludeToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		if (key === 'args') {
@@ -549,7 +549,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * 获取生效的参数值
-	 * @template {string|number|undefined} T
+	 * @template {string|number} T
 	 * @param {T} key 参数名
 	 * @returns {T extends undefined ? Record<string, string> : string}
 	 * @complexity `n`

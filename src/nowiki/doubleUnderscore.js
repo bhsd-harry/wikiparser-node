@@ -31,7 +31,7 @@ class DoubleUnderscoreToken extends hidden(NowikiToken) {
 
 	/**
 	 * @param {string} word 状态开关名
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(word, config = Parser.getConfig(), accum = []) {
 		super(word, config, accum);

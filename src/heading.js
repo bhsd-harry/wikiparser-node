@@ -22,7 +22,7 @@ class HeadingToken extends sol(fixedToken(Token)) {
 	/**
 	 * @param {number} level 标题层级
 	 * @param {string[]} input 标题文字
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);

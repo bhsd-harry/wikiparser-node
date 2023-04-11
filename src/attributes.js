@@ -17,9 +17,9 @@ class AttributesToken extends Token {
 	/**
 	 * @override
 	 * @param {string} key 属性键
-	 * @param {string|undefined} equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
-	 * @param {string|undefined} val 属性值
-	 * @param {string|undefined} i 是否对大小写不敏感
+	 * @param {string} equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
+	 * @param {string} val 属性值
+	 * @param {string} i 是否对大小写不敏感
 	 */
 	#matchesAttr = (key, equal, val, i) => {
 		if (!equal) {
@@ -87,7 +87,7 @@ class AttributesToken extends Token {
 	 * @param {string} attr 标签属性
 	 * @param {'ext-attrs'|'html-attrs'|'table-attrs'} type 标签类型
 	 * @param {string} name 标签名
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -347,7 +347,7 @@ class AttributesToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		return key === 'matchesAttr' ? this.#matchesAttr : super.getAttribute(key);
@@ -392,7 +392,7 @@ class AttributesToken extends Token {
 	/**
 	 * 开关标签属性
 	 * @param {string} key 属性键
-	 * @param {boolean|undefined} force 强制开启或关闭
+	 * @param {boolean} force 强制开启或关闭
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key, force) {

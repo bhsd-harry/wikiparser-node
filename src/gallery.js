@@ -20,7 +20,7 @@ class GalleryToken extends Token {
 
 	/**
 	 * @param {string} inner 标签内部wikitext
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -77,7 +77,7 @@ class GalleryToken extends Token {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
-			/** @type {import('../typings/token').LintError[]} */ errors = [];
+			/** @type {import('..').LintError[]} */ errors = [];
 		for (let i = 0, startIndex = start; i < this.length; i++) {
 			const child = this.childNodes[i],
 				str = String(child),
@@ -132,7 +132,7 @@ class GalleryToken extends Token {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
+	 * @template {string|Token|import('../lib/text')} T
 	 * @param {T} token 待插入的节点
 	 * @param {number} i 插入位置
 	 * @throws `RangeError` 插入不可见内容

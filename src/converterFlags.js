@@ -17,7 +17,7 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * @param {string[]} flags 转换类型标记
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(flags, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -32,7 +32,7 @@ class ConverterFlagsToken extends Token {
 	 */
 	afterBuild() {
 		this.#flags = this.childNodes.map(child => child.text().trim());
-		const /** @type {import('../typings/event').AstListener} */ converterFlagsListener = ({prevTarget}) => {
+		const /** @type {import('../lib/node').AstListener} */ converterFlagsListener = ({prevTarget}) => {
 			if (prevTarget) {
 				this.#flags[this.childNodes.indexOf(prevTarget)] = prevTarget.text().trim();
 			}
@@ -121,7 +121,7 @@ class ConverterFlagsToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		if (key === 'flags') {

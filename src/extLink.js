@@ -49,7 +49,7 @@ class ExtLinkToken extends Token {
 	 * @param {string} url 网址
 	 * @param {string} space 空白字符
 	 * @param {string} text 链接文字
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(url, space = '', text = '', config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {

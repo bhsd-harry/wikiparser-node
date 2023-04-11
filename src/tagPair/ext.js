@@ -19,14 +19,14 @@ class ExtToken extends attributesParent(TagPairToken) {
 	 * @param {string} name 标签名
 	 * @param {string} attr 标签属性
 	 * @param {string} inner 内部wikitext
-	 * @param {string|undefined} closed 是否封闭
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} closed 是否封闭
+	 * @param {Token[]} accum
 	 */
 	constructor(name, attr = '', inner = '', closed = undefined, config = Parser.getConfig(), accum = []) {
 		attr = !attr || attr.trimStart() !== attr ? attr : ` ${attr}`;
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(attr, 'ext-attrs', lcName, config, accum),
-			/** @type {import('../../typings/token').ParserConfig} */
+			/** @type {import('../..').ParserConfig} */
 			newConfig = {...config, excludes: [...config.excludes]},
 			ext = new Set(newConfig.ext);
 		let /** @type {Token} */ innerToken;

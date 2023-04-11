@@ -138,7 +138,7 @@ class TableToken extends TrToken {
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
 		super(syntax, attr, config, accum, openingPattern);

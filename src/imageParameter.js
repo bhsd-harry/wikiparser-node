@@ -124,7 +124,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @param {string} str 图片参数
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 */
 	constructor(str, config = Parser.getConfig(), accum = []) {
 		let mt;
@@ -224,7 +224,7 @@ class ImageParameterToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../typings/node').TokenAttribute<T>}
+	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		return key === 'syntax' ? this.#syntax : super.getAttribute(key);
