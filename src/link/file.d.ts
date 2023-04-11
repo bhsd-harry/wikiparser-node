@@ -18,7 +18,7 @@ declare class FileToken extends LinkToken {
 	override cloneChildNodes(): [Token, ...ImageParameterToken[]];
 
 	/** 图片链接 */
-	override get link(): string | Title;
+	override get link(): string|Title;
 	override set link(arg: string|Title);
 
 	/** 图片大小 */
@@ -78,13 +78,13 @@ declare class FileToken extends LinkToken {
 	 * 获取指定的图片参数值
 	 * @param key 参数名
 	 */
-	getValues(key: string): (string | true)[];
+	getValues(key: string): (string|true)[];
 
 	/**
 	 * 获取生效的指定图片参数值
 	 * @param key 参数名
 	 */
-	getValue(key: string): string | true;
+	getValue(key: string): string|true;
 
 	/**
 	 * 设置图片参数
@@ -93,7 +93,7 @@ declare class FileToken extends LinkToken {
 	 * @throws `RangeError` 未定义的图片参数
 	 * @throws `SyntaxError` 非法的参数
 	 */
-	setValue(key: string, value: string | boolean): void;
+	setValue(key: string, value: string|boolean): void;
 }
 
 export = FileToken;

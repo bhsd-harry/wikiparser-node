@@ -57,7 +57,7 @@ declare class AstElement extends AstNode {
 	destroy(): void;
 
 	/** 检查是否符合选择器 */
-	matches(selector: string | SelectorArray[]): boolean;
+	matches(selector: string|SelectorArray[]): boolean;
 
 	/** 符合选择器的第一个后代节点 */
 	querySelector(selector: string): Token;

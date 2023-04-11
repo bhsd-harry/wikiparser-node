@@ -6,7 +6,7 @@ declare class Range {
 	 * @throws `RangeError` n的系数不能为0
 	 * @throws `RangeError` 应使用CSS选择器或Python切片的格式
 	 */
-	constructor(str: string | Range);
+	constructor(str: string|Range);
 	start: number;
 	end: number;
 	step: number;
@@ -15,11 +15,11 @@ declare class Range {
 	 * 将Range转换为针对特定数组的下标集
 	 * @param arr 参考数组
 	 */
-	applyTo(arr: number | unknown[]): number[];
+	applyTo(arr: number|unknown[]): number[];
 }
 
 /** @extends {Array<number|Range>} */
-declare class Ranges extends Array<number | Range> {
+declare class Ranges extends Array<number|Range> {
 	/**
 	 * 检查某个下标是否符合表达式
 	 * @param str 表达式
@@ -27,13 +27,13 @@ declare class Ranges extends Array<number | Range> {
 	 */
 	static nth(str: string, i: number): boolean;
 	/** @param arr 表达式数组 */
-	constructor(arr?: number | string | Range | (number | string | Range)[]);
+	constructor(arr?: number|string|Range|(number|string|Range)[]);
 
 	/**
 	 * 将Ranges转换为针对特定Array的下标集
 	 * @param arr 参考数组
 	 */
-	applyTo(arr: number | unknown[]): number[];
+	applyTo(arr: number|unknown[]): number[];
 }
 
 declare namespace Ranges {

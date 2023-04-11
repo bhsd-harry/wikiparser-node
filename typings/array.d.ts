@@ -10,8 +10,8 @@ declare global {
 		 * @param thisArg If provided, it will be used as the this value for each invocation of
 		 * predicate. If it is not provided, undefined is used instead.
 		 */
-		findLast<S extends T>(predicate: (this: void, value: T, index: number, obj: T[]) => value is S, thisArg?: unknown): S | undefined;
-		findLast(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: unknown): T | undefined;
+		findLast<S extends T>(predicate: (this: void, value: T, index: number, obj: T[]) => value is S, thisArg?: unknown): S|undefined;
+		findLast(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: unknown): T|undefined;
 
 		/**
 		 * Returns the index of the last element in the array where predicate is true, and -1

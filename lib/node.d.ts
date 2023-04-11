@@ -29,7 +29,7 @@ declare type TokenAttribute<T extends string> =
 
 declare interface AstEvent extends Event {
 	readonly type: string;
-	readonly target: EventTarget & (Token | AstText);
+	readonly target: EventTarget & (Token|AstText);
 	currentTarget: EventTarget & Token;
 	prevTarget?: Token;
 	bubbles: boolean;
@@ -101,7 +101,7 @@ declare class AstNode {
 	 * @param keys 属性键
 	 * @param permanent 是否永久
 	 */
-	seal(keys: string | string[], permanent?: boolean): void;
+	seal(keys: string|string[], permanent?: boolean): void;
 
 	/**
 	 * 是否是全同节点
@@ -211,7 +211,7 @@ declare class AstNode {
 	 * @param listener 监听函数
 	 * @param options 选项
 	 */
-	addEventListener(types: string | string[], listener: AstListener, options?: {
+	addEventListener(types: string|string[], listener: AstListener, options?: {
 		once: boolean;
 	}): void;
 
@@ -220,13 +220,13 @@ declare class AstNode {
 	 * @param types 事件类型
 	 * @param listener 监听函数
 	 */
-	removeEventListener(types: string | string[], listener: AstListener): void;
+	removeEventListener(types: string|string[], listener: AstListener): void;
 
 	/**
 	 * 移除事件的所有监听
 	 * @param types 事件类型
 	 */
-	removeAllEventListeners(types: string | string[]): void;
+	removeAllEventListeners(types: string|string[]): void;
 
 	/**
 	 * 列举事件监听
