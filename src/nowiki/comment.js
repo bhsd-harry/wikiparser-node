@@ -10,7 +10,7 @@ const hidden = require('../../mixin/hidden'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class CommentToken extends hidden(NowikiToken) {
-	type = 'comment';
+	/** @type {'comment'} */ type = 'comment';
 	closed;
 
 	/** 内部wikitext */
@@ -63,7 +63,9 @@ class CommentToken extends hidden(NowikiToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => new CommentToken(String(this.firstChild), this.closed, this.getAttribute('config')));
+		return Parser.run(() => /** @type {this} */ (new CommentToken(
+			String(this.firstChild), this.closed, this.getAttribute('config'),
+		)));
 	}
 }
 
