@@ -122,7 +122,7 @@ declare class AstElement extends AstNode {
 	 * 还原为wikitext
 	 * @param separator 子节点间的连接符
 	 */
-	toString(selector: string, separator?: string): string;
+	toString(selector?: string, separator?: string): string;
 
 	/**
 	 * 以HTML格式打印

@@ -1,5 +1,7 @@
 'use strict';
 
+/** @typedef {import('..')} Token */
+
 const {explode, noWrap} = require('../../util/string'),
 	{generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
@@ -15,18 +17,25 @@ const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
 class FileToken extends LinkToken {
-	type = 'file';
+	/** @type {'file'|'gallery-image'|'imagemap-image'} */ type = 'file';
 
-	/** 图片链接 */
+	/**
+	 * 图片链接
+	 * @this {import('./file')}
+	 */
 	get link() {
 		return this.getArg('link')?.link;
 	}
 
+	/** @this {import('./file')} */
 	set link(value) {
-		this.setValue('link', value);
+		this.setValue('link', String(value));
 	}
 
-	/** 图片大小 */
+	/**
+	 * 图片大小
+	 * @this {import('./file')}
+	 */
 	get size() {
 		return this.getArg('width')?.size;
 	}
@@ -36,6 +45,7 @@ class FileToken extends LinkToken {
 		return this.size?.width;
 	}
 
+	/** @this {import('./file')} */
 	set width(width) {
 		const arg = this.getArg('width');
 		if (arg) {
@@ -50,6 +60,7 @@ class FileToken extends LinkToken {
 		return this.size?.height;
 	}
 
+	/** @this {import('./file')} */
 	set height(height) {
 		const arg = this.getArg('width');
 		if (arg) {
@@ -62,7 +73,7 @@ class FileToken extends LinkToken {
 	/**
 	 * @param {string} link 文件名
 	 * @param {string|undefined} text 图片参数
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @param {string} delimiter `|`
 	 * @complexity `n`
 	 */
@@ -78,6 +89,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * @override
+	 * @this {import('./file')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
@@ -105,28 +117,30 @@ class FileToken extends LinkToken {
 				];
 			}
 			if (relevantArgs.length > 1) {
-				errors.push(...relevantArgs.map(
-					arg => generateForChild(arg, rect, Parser.msg('duplicated image $1 parameter', key)),
-				));
+				errors.push(...relevantArgs.map(arg => generateForChild(
+					arg, rect, Parser.msg('duplicated image $1 parameter', key),
+				)));
 			}
 		}
 		if (frameKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => frame.has(name)).map(
-					arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'frame'),
-				),
+				...args.filter(({name}) => frame.has(name)).map(arg => generateForChild(
+					arg, rect, Parser.msg('conflicting image $1 parameter', 'frame'),
+				)),
 			);
 		}
 		if (horizAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => horizAlign.has(name))
-					.map(arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'horizontal-alignment')),
+				...args.filter(({name}) => horizAlign.has(name)).map(arg => generateForChild(
+					arg, rect, Parser.msg('conflicting image $1 parameter', 'horizontal-alignment'),
+				)),
 			);
 		}
 		if (vertAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => vertAlign.has(name))
-					.map(arg => generateForChild(arg, rect, 'conflicting image $1 parameter', 'vertical-alignment')),
+				...args.filter(({name}) => vertAlign.has(name)).map(arg => generateForChild(
+					arg, rect, Parser.msg('conflicting image $1 parameter', 'vertical-alignment'),
+				)),
 			);
 		}
 		return errors;
@@ -134,14 +148,17 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取所有图片参数节点
+	 * @this {import('./file')}
 	 * @returns {ImageParameterToken[]}
 	 */
 	getAllArgs() {
-		return this.childNodes.slice(1);
+		const {childNodes: [, ...args]} = this;
+		return args;
 	}
 
 	/**
 	 * 获取指定图片参数
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
@@ -153,8 +170,9 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取特定类型的图片属性参数节点
+	 * @this {import('./file')}
 	 * @param {Set<string>} keys 接受的参数名
-	 * @param {type} type 类型名
+	 * @param {string} type 类型名
 	 * @complexity `n`
 	 */
 	#getTypedArgs(keys, type) {
@@ -165,23 +183,33 @@ class FileToken extends LinkToken {
 		return args;
 	}
 
-	/** 获取图片框架属性参数节点 */
+	/**
+	 * 获取图片框架属性参数节点
+	 * @this {this & import('./file')}
+	 */
 	getFrameArgs() {
 		return this.#getTypedArgs(frame, '框架');
 	}
 
-	/** 获取图片水平对齐参数节点 */
+	/**
+	 * 获取图片水平对齐参数节点
+	 * @this {this & import('./file')}
+	 */
 	getHorizAlignArgs() {
 		return this.#getTypedArgs(horizAlign, '水平对齐');
 	}
 
-	/** 获取图片垂直对齐参数节点 */
+	/**
+	 * 获取图片垂直对齐参数节点
+	 * @this {this & import('./file')}
+	 */
 	getVertAlignArgs() {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
 	}
 
 	/**
 	 * 获取生效的指定图片参数
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
@@ -191,6 +219,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 是否具有指定图片参数
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
@@ -200,6 +229,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 移除指定图片参数
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
@@ -211,6 +241,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取图片参数名
+	 * @this {import('./file')}
 	 * @complexity `n`
 	 */
 	getKeys() {
@@ -219,6 +250,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取指定的图片参数值
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
@@ -228,6 +260,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取生效的指定图片参数值
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @complexity `n`
 	 */
@@ -237,6 +270,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 设置图片参数
+	 * @this {import('./file')}
 	 * @param {string} key 参数名
 	 * @param {string|boolean} value 参数值
 	 * @complexity `n`
@@ -275,7 +309,8 @@ class FileToken extends LinkToken {
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
 			{length, firstChild: file} = root,
-			{name, type, length: fileLength, lastChild: imageParameter} = file;
+			{name, type, length: fileLength, childNodes} = /** @type {import('./file')} */ (file),
+			imageParameter = childNodes.at(-1);
 		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2 || imageParameter.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
