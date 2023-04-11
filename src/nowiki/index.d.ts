@@ -6,7 +6,8 @@ declare type nowikiType = 'ext-inner'
 	|'comment'
 	|'dd'
 	|'double-underscore'
-	|'hr';
+	|'hr'
+	|'list';
 
 /**
  * 纯文字Token，不会被解析

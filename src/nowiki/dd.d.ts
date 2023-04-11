@@ -5,7 +5,7 @@ import NowikiToken = require('.');
  * @classdesc `{childNodes: [AstText]}`
  */
 declare class DdToken extends NowikiToken {
-	override type: 'dd';
+	override type: 'dd'|'list';
 
 	/** 是否包含<dt> */
 	get dt(): boolean;

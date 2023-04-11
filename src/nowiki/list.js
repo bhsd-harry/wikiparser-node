@@ -9,7 +9,7 @@ const sol = require('../../mixin/sol'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class ListToken extends sol(DdToken) {
-	type = 'list';
+	/** @type {'list'} */ type = 'list';
 }
 
 Parser.classes.ListToken = __filename;
