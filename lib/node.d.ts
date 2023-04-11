@@ -211,7 +211,7 @@ declare class AstNode {
 	 * @param listener 监听函数
 	 * @param options 选项
 	 */
-	addEventListener(types: string | string[], listener: AstListener, options: {
+	addEventListener(types: string | string[], listener: AstListener, options?: {
 		once: boolean;
 	}): void;
 

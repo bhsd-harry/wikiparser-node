@@ -25,7 +25,7 @@ declare type atomType = 'plain'
  * @classdesc `{childNodes: ...AstText|Token}`
  */
 declare class AtomToken extends Token {
-	type: atomType;
+	override type: atomType;
 
 	/**
 	 * @param type Token.type

@@ -7,7 +7,7 @@ import {ParserConfig} from '../..';
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
 declare class PreToken extends HasNowikiToken {
-	type: 'ext-inner';
+	override type: 'ext-inner';
 
 	/** @override */
 	constructor(wikitext: string, config?: ParserConfig, accum?: Token[]);
