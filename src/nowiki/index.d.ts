@@ -7,7 +7,8 @@ declare type nowikiType = 'ext-inner'
 	|'dd'
 	|'double-underscore'
 	|'hr'
-	|'list';
+	|'list'
+	|'noinclude';
 
 /**
  * 纯文字Token，不会被解析
