@@ -20,10 +20,7 @@ declare class CommentToken extends NowikiToken {
 	/** @override */
 	override print(): string;
 
-	/**
-	 * @override
-	 * @param selector
-	 */
+	/** @override */
 	override toString(selector: string): string;
 }
 

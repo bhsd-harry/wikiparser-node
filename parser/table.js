@@ -29,7 +29,7 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 			out += str;
 			return;
 		}
-		const /** @type {Token}} */ {lastChild} = top;
+		const {lastChild} = top;
 		if (lastChild.constructor === Token) {
 			lastChild.setText(String(lastChild) + str);
 		} else {

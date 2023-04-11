@@ -18,10 +18,7 @@ declare class ParamTagToken extends Token {
 	/** @override */
 	constructor(wikitext: string, config?: ParserConfig, accum?: Token[]);
 
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
+	/** @override */
 	override toString(selector: string): string;
 	/** @override */
 	override text(): string;

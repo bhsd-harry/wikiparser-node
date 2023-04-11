@@ -139,7 +139,7 @@ class LinkToken extends Token {
 					undo(e, data);
 					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
 				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14) && name.trim()[0] !== ':') {
-					const {firstChild} = /** @type {{firstChild: AstText}} */ (prevTarget);
+					const {firstChild} = prevTarget;
 					if (firstChild.type === 'text') {
 						firstChild.insertData(0, ':');
 					} else {
@@ -353,7 +353,7 @@ class LinkToken extends Token {
 	 */
 	setLinkText(linkText = '') {
 		linkText = String(linkText);
-		let /** @type {Token} */ lastChild;
+		let lastChild;
 		const config = this.getAttribute('config');
 		if (linkText) {
 			const root = Parser.parse(`[[${

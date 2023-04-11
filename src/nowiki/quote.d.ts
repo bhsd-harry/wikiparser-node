@@ -9,7 +9,7 @@ import {ParserConfig} from '../..';
 declare class QuoteToken extends NowikiToken {
 	override type: 'quote';
 
-	/** @param {number} n 字符串长度 */
+	/** @param n 字符串长度 */
 	constructor(n: number, config?: ParserConfig, accum?: Token[]);
 }
 

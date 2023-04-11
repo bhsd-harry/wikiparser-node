@@ -147,7 +147,7 @@ const /** @type {import('.')} */ Parser = {
 		decode = false,
 		selfLink = false,
 	) {
-		let /** @type {Token} */ token;
+		let token;
 		if (!halfParsed) {
 			const Token = require('./src');
 			token = this.run(() => {

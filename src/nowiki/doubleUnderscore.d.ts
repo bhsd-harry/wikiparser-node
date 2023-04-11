@@ -10,10 +10,7 @@ declare class DoubleUnderscoreToken extends NowikiToken {
 	/** @override */
 	override print(): string;
 
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
+	/** @override */
 	override toString(selector: string): string;
 
 	/**

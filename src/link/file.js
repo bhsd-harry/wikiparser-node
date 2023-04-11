@@ -149,7 +149,6 @@ class FileToken extends LinkToken {
 	/**
 	 * 获取所有图片参数节点
 	 * @this {import('./file')}
-	 * @returns {ImageParameterToken[]}
 	 */
 	getAllArgs() {
 		const {childNodes: [, ...args]} = this;

@@ -9,7 +9,7 @@ import {ParserConfig} from '../..';
 declare class HrToken extends NowikiToken {
 	override type: 'hr';
 
-	/** @param {number} n 字符串长度 */
+	/** @param n 字符串长度 */
 	constructor(n: number, config?: ParserConfig, accum?: Token[]);
 }
 
