@@ -123,7 +123,16 @@ class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
-						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
+						token = new AttributeToken(
+							/** @type {'ext-attr'|'html-attr'|'table-attr'} */ (type.slice(0, -1)),
+							name,
+							key,
+							equal,
+							value,
+							quotes,
+							config,
+							accum,
+						);
 					insertDirty();
 					super.insertAt(token);
 				} else {
@@ -139,10 +148,9 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: TdToken}}
+	 * @this {this & {parentNode: import('./table/td')}}
 	 */
 	afterBuild() {
-		const TdToken = require('./table/td');
 		if (this.type === 'table-attrs') {
 			this.setAttribute('name', this.parentNode?.subtype === 'caption' ? 'caption' : this.parentNode?.type);
 		}
@@ -155,9 +163,9 @@ class AttributesToken extends Token {
 	 */
 	getAttrTokens(key) {
 		return typeof key === 'string'
-			? this.childNodes.filter(
+			? /** @type {AttributeToken[]} */ (this.childNodes.filter(
 				child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
-			)
+			))
 			: this.typeError('getAttrTokens', 'String');
 	}
 
@@ -180,11 +188,10 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: HtmlToken}}
+	 * @this {import('./attribute') & {parentNode: import('./html')}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
-		const HtmlToken = require('./html');
 		const errors = super.lint(start),
 			{parentNode: {closing}, length, childNodes} = this,
 			/** @type {Record<string, AttributeToken[]>} */ attrs = {},
@@ -195,7 +202,7 @@ class AttributesToken extends Token {
 			errors.push(generateForSelf(this, rect, 'attributes of a closing tag'));
 		}
 		for (let i = 0; i < length; i++) {
-			const /** @type {AtomToken|AttributeToken} */ attr = childNodes[i];
+			const attr = childNodes[i];
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 				errors.push({
@@ -223,10 +230,9 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: HtmlToken}}
+	 * @this {import('./attribute') & {parentNode: import('./html')}}
 	 */
 	print() {
-		const HtmlToken = require('./html');
 		return String(this)
 			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print({
 				class: child instanceof AtomToken && child.text().trim() && 'hidden',
@@ -253,7 +259,9 @@ class AttributesToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
+			const token = /** @type {this} */ (new AttributesToken(
+				undefined, this.type, this.name, this.getAttribute('config'),
+			));
 			token.append(...cloned);
 			return token;
 		});
@@ -264,12 +272,15 @@ class AttributesToken extends Token {
 	 * @returns {AtomToken[]}
 	 */
 	getDirtyAttrs() {
-		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim());
+		return /** @type {AtomToken[]} */ (this.childNodes.filter(
+			child => child instanceof AtomToken && child.text().trim(),
+		));
 	}
 
 	/**
 	 * @override
-	 * @param {AttributeToken} token 待插入的子节点
+	 * @template {string|import('../lib/text')|Token} T
+	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @throws `RangeError` 不是AttributeToken或标签不匹配
 	 */
@@ -300,7 +311,8 @@ class AttributesToken extends Token {
 		if (previousVisibleSibling && !/\s$/u.test(String(previousVisibleSibling))) {
 			super.insertAt(Parser.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
 		}
-		return token;
+		// eslint-disable-next-line no-extra-parens
+		return /** @type {T extends Token ? T : import('../lib/text')} */ (/** @type {T} */ (token));
 	}
 
 	/**
@@ -338,7 +350,13 @@ class AttributesToken extends Token {
 			throw new RangeError(`无效的属性名：${key}！`);
 		}
 		const newAttr = Parser.run(() => new AttributeToken(
-			this.type.slice(0, -1), this.name, key, value === true ? '' : '=', value, ['"', '"'], config,
+			/** @type {'ext-attr'|'html-attr'|'table-attr'} */ (this.type.slice(0, -1)),
+			this.name,
+			key,
+			value === true ? '' : '=',
+			value === true ? '' : value,
+			['"', '"'],
+			config,
 		));
 		this.insertAt(newAttr);
 	}
@@ -350,7 +368,9 @@ class AttributesToken extends Token {
 	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		return key === 'matchesAttr' ? this.#matchesAttr : super.getAttribute(key);
+		return key === 'matchesAttr'
+			? /** @type {import('../lib/node').TokenAttribute<T>} */ (this.#matchesAttr)
+			: super.getAttribute(key);
 	}
 
 	/**
@@ -363,19 +383,25 @@ class AttributesToken extends Token {
 			: this.typeError('hasAttr', 'String');
 	}
 
-	/** 获取全部的标签属性名 */
+	/**
+	 * 获取全部的标签属性名
+	 * @this {import('./attributes')}
+	 */
 	getAttrNames() {
 		return new Set(this.childNodes.filter(child => child instanceof AttributeToken).map(({name}) => name));
 	}
 
-	/** 标签是否具有任意属性 */
+	/**
+	 * 标签是否具有任意属性
+	 * @this {import('./attributes')}
+	 */
 	hasAttrs() {
 		return this.getAttrNames().size > 0;
 	}
 
 	/** 获取全部标签属性 */
 	getAttrs() {
-		const /** @type {AttributeToken[]} */ attrs = this.childNodes.filter(child => child instanceof AttributeToken);
+		const attrs = /** @type {AttributeToken[]} */ (this.childNodes.filter(child => child instanceof AttributeToken));
 		return Object.fromEntries(attrs.map(({name, value}) => [name, value]));
 	}
 
