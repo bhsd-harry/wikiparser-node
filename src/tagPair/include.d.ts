@@ -1,5 +1,6 @@
 import TagPairToken = require('.');
 import Token = require('..');
+import AstText = require('../../lib/text');
 import {ParserConfig} from '../..';
 
 /**
@@ -8,6 +9,13 @@ import {ParserConfig} from '../..';
  */
 declare class IncludeToken extends TagPairToken {
 	override type: 'include';
+	override childNodes: [AstText, AstText];
+	/** @override */
+	override get firstChild(): AstText;
+	/** @override */
+	override get lastChild(): AstText;
+	/** @override */
+	override cloneChildNodes(): [AstText, AstText];
 
 	/**
 	 * @param name 标签名

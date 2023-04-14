@@ -12,8 +12,12 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AttributesToken, NowikiToken|Token]}`
  */
 class ExtToken extends attributesParent(TagPairToken) {
-	type = 'ext';
-	closed = true;
+	/** @type {'ext'} */ type = 'ext';
+
+	/** getter */
+	get closed() { // eslint-disable-line class-methods-use-this
+		return true;
+	}
 
 	/**
 	 * @param {string} name 标签名
@@ -128,14 +132,19 @@ class ExtToken extends attributesParent(TagPairToken) {
 		return errors;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./ext')}
+	 */
 	cloneNode() {
 		const inner = this.lastChild.cloneNode(),
 			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
 			attr = String(this.firstChild);
 		return Parser.run(() => {
-			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
+			const token = /** @type {this & import('./ext')} */ (new ExtToken(
+				tags[0], attr, '', this.selfClosing ? undefined : tags[1], config,
+			));
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});
