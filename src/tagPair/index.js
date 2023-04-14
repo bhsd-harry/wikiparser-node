@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * @template T
+ * @template {string} T
  * @typedef {import('../../lib/node').TokenAttribute<T>} TokenAttribute
  */
 
@@ -59,8 +59,8 @@ class TagPairToken extends fixedToken(Token) {
 		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
 		this.append(attr, inner);
-		let index = accum.indexOf(attr);
-		if (index === -1) {
+		let index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
+		if (index === -1 && typeof inner !== 'string') {
 			index = accum.indexOf(inner);
 		}
 		if (index === -1) {
@@ -123,7 +123,7 @@ class TagPairToken extends fixedToken(Token) {
 	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
-		return key === 'tags' ? [...this.#tags] : super.getAttribute(key);
+		return key === 'tags' ? /** @type {TokenAttribute<T>} */ ([...this.#tags]) : super.getAttribute(key);
 	}
 }
 
