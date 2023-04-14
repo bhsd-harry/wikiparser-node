@@ -11,17 +11,20 @@ const {text, print} = require('../util/string'),
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
 class ConverterToken extends Token {
-	type = 'converter';
+	/** @type {'converter'} */ type = 'converter';
 
 	/**
 	 * 是否无转换
-	 * @this {ConverterToken & {lastChild: ConverterRuleToken}}
+	 * @this {import('./converter')}
 	 */
 	get noConvert() {
 		return this.hasFlag('R') || this.length === 2 && !this.lastChild.variant;
 	}
 
-	/** flags */
+	/**
+	 * flags
+	 * @this {import('./converter')}
+	 */
 	get flags() {
 		return this.getAllFlags();
 	}
@@ -83,7 +86,10 @@ class ConverterToken extends Token {
 		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./converter')}
+	 */
 	print() {
 		const {childNodes: [flags, ...rules]} = this;
 		return `<span class="wpb-converter">-{${flags.print()}${
@@ -91,11 +97,16 @@ class ConverterToken extends Token {
 		}${print(rules, {sep: ';'})}}-</span>`;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./converter')}
+	 */
 	cloneNode() {
 		const [flags, ...rules] = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new ConverterToken([], [], this.getAttribute('config'));
+			const token = /** @type {this & import('./converter')} */ (new ConverterToken(
+				[], [], this.getAttribute('config'),
+			));
 			token.firstChild.safeReplaceWith(flags);
 			token.append(...rules);
 			return token;
@@ -104,7 +115,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 获取所有转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 */
 	getAllFlags() {
 		return this.firstChild.getAllFlags();
@@ -112,7 +123,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 获取有效的转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 */
 	getEffectiveFlags() {
 		return this.firstChild.getEffectiveFlags();
@@ -120,7 +131,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 获取未知的转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 */
 	getUnknownFlags() {
 		return this.firstChild.getUnknownFlags();
@@ -128,7 +139,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 是否具有某转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 * @param {string} flag 转换类型标记
 	 */
 	hasFlag(flag) {
@@ -137,7 +148,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 是否具有某有效的转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 * @param {string} flag 转换类型标记
 	 */
 	hasEffectiveFlag(flag) {
@@ -146,7 +157,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 移除转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 * @param {string} flag 转换类型标记
 	 */
 	removeFlag(flag) {
@@ -155,7 +166,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 设置转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 * @param {string} flag 转换类型标记
 	 */
 	setFlag(flag) {
@@ -164,7 +175,7 @@ class ConverterToken extends Token {
 
 	/**
 	 * 开关某转换类型标记
-	 * @this {{firstChild: ConverterFlagsToken}}
+	 * @this {import('./converter')}
 	 * @param {string} flag 转换类型标记
 	 */
 	toggleFlag(flag) {
