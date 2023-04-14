@@ -10,7 +10,7 @@ const {text, noWrap} = require('../util/string'),
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 class ArgToken extends Token {
-	type = 'arg';
+	/** @type {'arg'} */ type = 'arg';
 
 	/** default */
 	get default() {
@@ -19,7 +19,7 @@ class ArgToken extends Token {
 
 	/**
 	 * @param {string[]} parts 以'|'分隔的各部分
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @complexity `n`
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
@@ -50,10 +50,7 @@ class ArgToken extends Token {
 		return selector && this.matches(selector) ? '' : `{{{${super.toString(selector, '|')}}}}`;
 	}
 
-	/**
-	 * @override
-	 * @returns {string}
-	 */
+	/** @override */
 	text() {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
@@ -76,7 +73,6 @@ class ArgToken extends Token {
 	/**
 	 * @override
 	 * @param {number} start 起始位置
-	 * @returns {import('../typings/token').LintError[]}
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		if (!this.getAttribute('include')) {
@@ -98,22 +94,25 @@ class ArgToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./arg')}
+	 */
 	cloneNode() {
 		const [name, ...cloned] = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new ArgToken([''], this.getAttribute('config'));
+			const token = /** @type {import('./arg')} */ (new ArgToken([''], this.getAttribute('config')));
 			token.firstChild.safeReplaceWith(name);
 			token.append(...cloned);
 			token.afterBuild();
-			return token;
+			return /** @type {this} */ (token);
 		});
 	}
 
 	/** @override */
 	afterBuild() {
 		this.setAttribute('name', this.firstChild.text().trim());
-		const /** @type {import('../typings/event').AstListener} */ argListener = ({prevTarget}) => {
+		const /** @type {import('../lib/node').AstListener} */ argListener = ({prevTarget}) => {
 			if (prevTarget === this.firstChild) {
 				this.setAttribute('name', prevTarget.text().trim());
 			}
@@ -136,7 +135,6 @@ class ArgToken extends Token {
 	/**
 	 * 移除子节点，且在移除`arg-default`子节点时自动移除全部多余子节点
 	 * @param {number} i 移除位置
-	 * @returns {Token}
 	 */
 	removeAt(i) {
 		if (i === 1) {
@@ -147,7 +145,8 @@ class ArgToken extends Token {
 
 	/**
 	 * @override
-	 * @param {Token} token 待插入的子节点
+	 * @template {string|Token|import('../lib/text')} T
+	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @throws `RangeError` 不可插入多余子节点
 	 */
@@ -155,16 +154,19 @@ class ArgToken extends Token {
 		const j = i < 0 ? i + this.length : i;
 		if (j > 1) {
 			throw new RangeError(`${this.constructor.name} 不可插入多余的子节点！`);
+		} else if (typeof token === 'string') {
+			throw new TypeError(`${this.constructor.name} 不可插入文本节点！`);
 		}
 		super.insertAt(token, i);
 		if (j === 1) {
 			token.type = 'arg-default';
 		}
-		return token;
+		return /** @type {T extends Token ? T : import('../lib/text')} */ (token);
 	}
 
 	/**
 	 * 设置参数名
+	 * @this {import('./arg')}
 	 * @param {string} name 新参数名
 	 * @throws `SyntaxError` 非法的参数名
 	 */
@@ -175,13 +177,14 @@ class ArgToken extends Token {
 		if (length !== 1 || arg.type !== 'arg' || arg.length !== 1) {
 			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
-		const {firstChild} = arg;
+		const {firstChild} = /** @type {import('./arg')} */ (arg);
 		arg.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
 	 * 设置预设值
+	 * @this {import('./arg')}
 	 * @param {string} value 预设值
 	 * @throws `SyntaxError` 非法的参数预设值
 	 */
@@ -193,7 +196,7 @@ class ArgToken extends Token {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
 		const {childNodes: [, oldDefault]} = this,
-			{lastChild} = arg;
+			{lastChild} = /** @type {import('./arg')} */ (arg);
 		arg.destroy();
 		if (oldDefault) {
 			oldDefault.safeReplaceWith(lastChild);
