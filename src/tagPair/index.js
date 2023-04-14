@@ -78,13 +78,13 @@ class TagPairToken extends fixedToken(Token) {
 			[opening, closing] = this.#tags;
 		if (selector && this.matches(selector)) {
 			return '';
-		} else if (!this.#closed && nextSibling) {
+		} else if (!this.closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.#closed = true;
 		}
 		return this.#selfClosing
 			? `<${opening}${String(firstChild)}/>`
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/**
@@ -95,7 +95,7 @@ class TagPairToken extends fixedToken(Token) {
 		const [opening, closing] = this.#tags;
 		return this.#selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
+			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @override */
@@ -113,7 +113,7 @@ class TagPairToken extends fixedToken(Token) {
 		const [opening, closing] = this.#tags;
 		return super.print(this.#selfClosing
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
-			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.#closed ? `&lt;/${closing}&gt;` : ''});
+			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
 	}
 
 	/**
