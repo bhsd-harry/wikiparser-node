@@ -80,7 +80,7 @@ const attributesParent = (Constructor, i = 0) => class AttributesParent extends 
 	 * @param {string|boolean} value 属性值
 	 */
 	setAttr(key, value) {
-		return this.attributesChild.setAttr(key, value);
+		this.attributesChild.setAttr(key, value);
 	}
 
 	/**

@@ -2,12 +2,12 @@ import Token = require('..');
 import TdToken = require('./td');
 import TableToken = require('.');
 import SyntaxToken = require('../syntax');
-import {ParserConfig} from '../..';
+import {AttributeToken, ParserConfig} from '../..';
 
 declare interface TableCoords {
-	row: number;
-	column: number;
-	start: boolean;
+	row?: number;
+	column?: number;
+	start?: boolean;
 }
 
 /**
@@ -81,6 +81,64 @@ declare class TrToken extends Token {
 		subtype?: 'td'|'th'|'caption',
 		attr?: Record<string, string>
 	): TdToken;
+
+	/** AttributesToken子节点 */
+	get attributesChild(): AttributeToken;
+
+	/** getAttrs()方法的getter写法 */
+	get attributes(): Record<string, string>;
+
+	/** 以字符串表示的class属性 */
+	get className(): string;
+	set className(className: string);
+
+	/** 以Set表示的class属性 */
+	get classList(): Set<string>;
+
+	/** id属性 */
+	get id(): string;
+	set id(id: string);
+
+	/**
+	 * AttributesToken子节点是否具有某属性
+	 * @param key 属性键
+	 */
+	hasAttr(key: string): boolean
+
+	/**
+	 * 获取AttributesToken子节点的属性
+	 * @param key 属性键
+	 */
+	getAttr(key: string): string;
+
+	/** 列举AttributesToken子节点的属性键 */
+	getAttrNames(): Set<string>;
+
+	/** AttributesToken子节点是否具有任意属性 */
+	hasAttrs(): boolean;
+
+	/** 获取AttributesToken子节点的全部标签属性 */
+	getAttrs(): Record<string, string>;
+
+	/**
+	 * 对AttributesToken子节点设置属性
+	 * @param key 属性键
+	 * @param value 属性值
+	 */
+	setAttr(key: string, value: string|boolean): void;
+
+	/**
+	 * 移除AttributesToken子节点的某属性
+	 * @param key 属性键
+	 */
+	removeAttr(key: string): void;
+
+	/**
+	 * 开关AttributesToken子节点的某属性
+	 * @param key 属性键
+	 * @param force 强制开启或关闭
+	 */
+	toggleAttr(key: string, force?: boolean): void;
 }
 
 declare namespace TrToken {

@@ -7,7 +7,7 @@ const Parser = require('..');
 
 /**
  * 生成对于子节点的LintError对象
- * @param {Token} child 子节点
+ * @param {import('../lib/text')|Token} child 子节点
  * @param {{top?: number, left?: number, start?: number}} boundingRect 父节点的绝对定位
  * @param {string} msg 错误信息
  * @param {'error'|'warning'} severity 严重程度
