@@ -59,9 +59,7 @@ declare class AttributesToken extends Token {
 	 */
 	getAttr(key: string): string|true;
 	/** @override */
-	override print(this: AttributesToken & {
-		parentNode: import('./html');
-	}): string;
+	override print(): string;
 
 	/** 清理标签属性 */
 	sanitize(): void;

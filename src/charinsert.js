@@ -10,7 +10,7 @@ const Parser = require('..'),
  * @classdesc `{childNodes: [...HasNowikiToken]}`
  */
 class CharinsertToken extends Token {
-	type = 'ext-inner';
+	/** @type {'ext-inner'} */ type = 'ext-inner';
 	name = 'charinsert';
 
 	/**
@@ -49,7 +49,7 @@ class CharinsertToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new CharinsertToken(undefined, this.getAttribute('config'));
+			const token = /** @type {this} */ (new CharinsertToken(undefined, this.getAttribute('config')));
 			token.append(...cloned);
 			return token;
 		});
@@ -57,10 +57,11 @@ class CharinsertToken extends Token {
 
 	/**
 	 * 获取某一行的插入选项
+	 * @this {import('./charinsert')}
 	 * @param {number|HasNowikiToken} child 行号或子节点
 	 */
 	getLineItems(child) {
-		if (Number.isInteger(child)) {
+		if (typeof child === 'number' && Number.isInteger(child)) {
 			child = this.childNodes.at(child);
 		}
 		if (!(child instanceof HasNowikiToken)) {
@@ -80,12 +81,18 @@ class CharinsertToken extends Token {
 			});
 	}
 
-	/** 获取所有插入选项 */
+	/**
+	 * 获取所有插入选项
+	 * @this {import('./charinsert')}
+	 */
 	getAllItems() {
 		return this.childNodes.flatMap(child => this.getLineItems(child));
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./charinsert')}
+	 */
 	text() {
 		return this.childNodes.map(
 			child => this.getLineItems(child).map(str => Array.isArray(str) ? str.join('+') : str).join(' '),
