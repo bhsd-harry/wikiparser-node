@@ -194,6 +194,7 @@ class AttributeToken extends fixedToken(Token) {
 		return this.getValue();
 	}
 
+	/** @this {this & import('./attribute')} */
 	set value(value) {
 		this.setValue(value);
 	}
@@ -348,13 +349,14 @@ class AttributeToken extends fixedToken(Token) {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {import('../lib/node').TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		if (key === 'equal') {
-			return this.#equal;
+			return /** @type {import('../lib/node').TokenAttribute<T>} */ (this.#equal);
 		}
-		return key === 'quotes' ? this.#quotes : super.getAttribute(key);
+		return key === 'quotes'
+			? /** @type {import('../lib/node').TokenAttribute<T>} */ (this.#quotes)
+			: super.getAttribute(key);
 	}
 
 	/**
@@ -365,12 +367,18 @@ class AttributeToken extends fixedToken(Token) {
 		return key === 'equal' || key === 'quotes' || super.hasAttribute(key);
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @this {import('./attribute') & this}
+	 */
 	cloneNode() {
 		const [key, value] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config);
+			// eslint-disable-next-line no-extra-parens
+			const token = /** @type {this & import('./attribute')} */ (/** @type {unknown} */ (new AttributeToken(
+				this.type, this.#tag, '', this.#equal, '', this.#quotes, config,
+			)));
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			token.afterBuild();
@@ -390,6 +398,7 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * 设置属性值
+	 * @this {this & import('./attribute')}
 	 * @param {string|boolean} value 参数值
 	 * @throws `SyntaxError` 非法的标签属性
 	 */
@@ -422,7 +431,7 @@ class AttributeToken extends fixedToken(Token) {
 		if (attrsLength !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
-		const {lastChild} = firstChild;
+		const {lastChild} = /** @type {import('./attribute')} */ (firstChild);
 		firstChild.destroy();
 		this.lastChild.safeReplaceWith(lastChild);
 		if (this.#quotes[0]) {
@@ -434,6 +443,7 @@ class AttributeToken extends fixedToken(Token) {
 
 	/**
 	 * 修改属性名
+	 * @this {this & import('./attribute')}
 	 * @param {string} key 新属性名
 	 * @throws `Error` title属性不能更名
 	 * @throws `SyntaxError` 非法的模板参数名
@@ -458,7 +468,9 @@ class AttributeToken extends fixedToken(Token) {
 		} else {
 			attrs = tag.firstChild;
 		}
-		const {length: attrsLength, firstChild: attr} = attrs;
+		const {
+			length: attrsLength, firstChild: attr,
+		} = /** @type {Token & {firstChild: import('./attribute')}} */ (attrs);
 		if (attrsLength !== 1 || attr.type !== this.type || attr.value !== true) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
