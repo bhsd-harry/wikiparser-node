@@ -105,7 +105,7 @@ declare class Token extends AstElement {
 	 * @param i 插入位置
 	 * @throws `RangeError` 不可插入的子节点
 	 */
-	override insertAt<T extends string | AstText | Token>(token: T, i?: number): T extends Token ? T : AstText;
+	override insertAt<T extends string|AstText|Token>(token: T, i?: number): T extends Token ? T : AstText;
 
 	/**
 	 * 规范化页面标题
@@ -200,16 +200,16 @@ declare class Token extends AstElement {
 	isInterwiki(title: string): RegExpMatchArray;
 
 	/** 深拷贝所有子节点 */
-	cloneChildNodes(): (AstText | Token)[];
+	cloneChildNodes(): (AstText|Token)[];
 
 	/** 获取全部章节 */
-	sections(): (Token | AstText)[][];
+	sections(): (Token|AstText)[][];
 
 	/**
 	 * 获取指定章节
 	 * @param n 章节序号
 	 */
-	section(n: number): (Token | AstText)[];
+	section(n: number): (Token|AstText)[];
 
 	/**
 	 * 获取指定的外层HTML标签

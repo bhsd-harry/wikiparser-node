@@ -2,7 +2,8 @@ import Token = require('..');
 import TdToken = require('./td');
 import TableToken = require('.');
 import SyntaxToken = require('../syntax');
-import {AttributeToken, ParserConfig} from '../..';
+import AttributesToken = require('../attributes');
+import {ParserConfig} from '../..';
 
 declare interface TableCoords {
 	row?: number;
@@ -83,7 +84,7 @@ declare class TrToken extends Token {
 	): TdToken;
 
 	/** AttributesToken子节点 */
-	get attributesChild(): AttributeToken;
+	get attributesChild(): AttributesToken;
 
 	/** getAttrs()方法的getter写法 */
 	get attributes(): Record<string, string>;
