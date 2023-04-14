@@ -179,19 +179,20 @@ class TableToken extends TrToken {
 	 * @complexity `n`
 	 */
 	getNextRow() {
-		return this.getNthRow(super.getRowCount() ? 1 : 0);
+		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false);
 	}
 
 	/**
 	 * 获取第n行
+	 * @template {boolean} T
 	 * @param {number} n 行号
 	 * @param {boolean} force 是否将表格自身视为第一行
-	 * @param {boolean} insert 是否用于判断插入新行的位置
-	 * @returns {TableToken|TrToken|SyntaxToken}
+	 * @param {T} insert 是否用于判断插入新行的位置
+	 * @returns {T extends false ? TrToken : TrToken|SyntaxToken}
 	 * @complexity `n`
 	 * @throws `RangeError` 不存在该行
 	 */
-	getNthRow(n, force = false, insert = false) {
+	getNthRow(n, force = false, insert = /** @type {T} */ (false)) {
 		if (!Number.isInteger(n)) {
 			this.typeError('getNthRow', 'Number');
 		}
@@ -199,7 +200,8 @@ class TableToken extends TrToken {
 			isRow = super.getRowCount();
 		n = n < 0 ? n + nRows : n;
 		if (n === 0 && (isRow || force && nRows === 0)) {
-			return this;
+			// eslint-disable-next-line no-extra-parens
+			return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (/** @type {TrToken} */ (this));
 		} else if (n < 0 || n > nRows || n === nRows && !insert) {
 			throw new RangeError(`不存在第 ${n} 行！`);
 		} else if (isRow) {
@@ -209,10 +211,10 @@ class TableToken extends TrToken {
 			if (child.type === 'tr' && /** @type {TrToken} */ (child).getRowCount()) {
 				n--;
 				if (n < 0) {
-					return /** @type {TrToken} */ (child);
+					return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (child);
 				}
 			} else if (child.type === 'table-syntax') {
-				return /** @type {SyntaxToken} */ (child);
+				return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (child);
 			}
 		}
 		return undefined;
@@ -239,7 +241,7 @@ class TableToken extends TrToken {
 		if (coords.row === undefined) {
 			coords = this.toRawCoords(coords);
 		}
-		return coords && this.getNthRow(coords.row).getNthCol(coords.column);
+		return coords && this.getNthRow(coords.row, false, false).getNthCol(coords.column);
 	}
 
 	/**
