@@ -22,8 +22,6 @@ declare type TokenAttribute<T extends string> =
 	T extends 'acceptable' ? Acceptable :
 	T extends 'args' ? Record<string, Set<ParameterToken>> :
 	T extends 'protectedChildren' ? Ranges :
-	T extends 'verifyChild' ? (i: number, addition?: number) => void :
-	T extends 'matchesAttr' ? (key: string, equal?: string, val?: string, i?: string) => boolean :
 	T extends 'protectChildren' ? (...args: (string|number|Ranges.Range)[]) => void :
 	string;
 
@@ -114,7 +112,7 @@ declare class AstNode {
 	 * 是否具有某属性
 	 * @param key 属性键
 	 */
-	hasAttribute(key: PropertyKey): boolean;
+	hasAttribute(key: string): boolean;
 
 	/**
 	 * 获取属性值。除非用于私有属性，否则总是返回字符串。
@@ -174,6 +172,14 @@ declare class AstNode {
 	 * @param oldChild 原子节点
 	 */
 	replaceChild<T extends AstText|Token>(newChild: string|AstText|Token, oldChild: T): T;
+
+	/**
+	 * 检查在某个位置增删子节点是否合法
+	 * @param i 增删位置
+	 * @param addition 将会插入的子节点个数
+	 * @throws `RangeError` 指定位置不存在子节点
+	 */
+	verifyChild(i: number, addition?: number): void;
 
 	/**
 	 * 在后方批量插入兄弟节点
