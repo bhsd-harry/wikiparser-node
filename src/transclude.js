@@ -344,7 +344,6 @@ class TranscludeToken extends Token {
 		if (typeof key !== 'string' && typeof key !== 'number') {
 			this.typeError('getArgs', 'String', 'Number');
 		}
-		copy ||= !Parser.debugging && externalUse('getArgs');
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args;
 		if (Object.hasOwn(this.#args, keyStr)) {

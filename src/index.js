@@ -51,7 +51,6 @@
 // v: ConverterToken
 
 const {text} = require('../util/string'),
-	{externalUse} = require('../util/debug'),
 	assert = require('assert/strict'),
 	Ranges = require('../lib/ranges'),
 	Parser = require('..'),
@@ -795,9 +794,7 @@ class Token extends AstElement {
 
 	/** 生成部分Token的`name`属性 */
 	afterBuild() {
-		if (!Parser.debugging && externalUse('afterBuild')) {
-			this.debugOnly('afterBuild');
-		} else if (this.type === 'root') {
+		if (this.type === 'root') {
 			for (const token of this.#accum) {
 				token.afterBuild();
 			}

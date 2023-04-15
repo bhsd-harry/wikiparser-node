@@ -308,8 +308,7 @@ class FileToken extends LinkToken {
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
 			{length, firstChild: file} = root,
-			{name, type, length: fileLength, childNodes} = /** @type {import('./file')} */ (file),
-			imageParameter = childNodes.at(-1);
+			{name, type, length: fileLength, lastChild: imageParameter} = /** @type {import('./file')} */ (file);
 		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2 || imageParameter.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}

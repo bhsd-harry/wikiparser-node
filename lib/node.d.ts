@@ -83,12 +83,6 @@ declare class AstNode {
 	get eof(): boolean;
 
 	/**
-	 * 标记仅用于代码调试的方法
-	 * @throws `Error`
-	 */
-	debugOnly(method?: string): never;
-
-	/**
 	 * 抛出`TypeError`
 	 * @param types 可接受的参数类型
 	 */
