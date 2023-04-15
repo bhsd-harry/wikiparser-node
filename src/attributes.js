@@ -21,7 +21,7 @@ class AttributesToken extends Token {
 	 * @param {string} val 属性值
 	 * @param {string} i 是否对大小写不敏感
 	 */
-	#matchesAttr = (key, equal, val, i) => {
+	matchesAttr(key, equal, val, i) {
 		if (!equal) {
 			return this.hasAttr(key);
 		} else if (!this.hasAttr(key)) {
@@ -46,7 +46,7 @@ class AttributesToken extends Token {
 			default: // `=`
 				return thisVal === val;
 		}
-	};
+	}
 
 	/** getAttrs()方法的getter写法 */
 	get attributes() {
@@ -359,18 +359,6 @@ class AttributesToken extends Token {
 			config,
 		));
 		this.insertAt(newAttr);
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {import('../lib/node').TokenAttribute<T>}
-	 */
-	getAttribute(key) {
-		return key === 'matchesAttr'
-			? /** @type {import('../lib/node').TokenAttribute<T>} */ (this.#matchesAttr)
-			: super.getAttribute(key);
 	}
 
 	/**

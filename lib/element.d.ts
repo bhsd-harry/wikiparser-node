@@ -56,6 +56,16 @@ declare class AstElement extends AstNode {
 	/** 销毁 */
 	destroy(): void;
 
+	/**
+	 * 检查是否符合某条属性规则
+	 * @param key 属性键
+	 * @param equal 属性规则运算符，`equal`存在时`val`和`i`也一定存在
+	 * @param val 属性值
+	 * @param i 是否对大小写不敏感
+	 * @throws `RangeError` 复杂属性
+	 */
+	matchesAttr(key: string, equal?: string, val?: string, i?: string): boolean;
+
 	/** 检查是否符合选择器 */
 	matches(selector: string|SelectorArray[]): boolean;
 
