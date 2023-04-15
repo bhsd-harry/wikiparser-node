@@ -442,7 +442,7 @@ class AttributesToken extends Token {
 	 * 生成引导空格
 	 * @param {string} str 属性字符串
 	 */
-	#leadingSpace(str = super.toString()) {
+	#leadingSpace(str) {
 		const {type} = this,
 			leadingRegex = {'ext-attrs': /^\s/u, 'html-attrs': /^[/\s]/u};
 		return str && type !== 'table-attrs' && !leadingRegex[type].test(str) ? ' ' : '';
@@ -462,7 +462,7 @@ class AttributesToken extends Token {
 
 	/** @override */
 	getPadding() {
-		return this.#leadingSpace().length;
+		return this.#leadingSpace(super.toString()).length;
 	}
 
 	/** @override */
