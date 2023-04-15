@@ -109,7 +109,7 @@ class LinkToken extends Token {
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.#delimiter = delimiter;
-		this.getAttribute('protectChildren')(0);
+		this.protectChildren(0);
 	}
 
 	/**

@@ -39,7 +39,7 @@ class ArgToken extends Token {
 				super.insertAt(token.setAttribute('stage', 2));
 			}
 		}
-		this.getAttribute('protectChildren')(0);
+		this.protectChildren(0);
 	}
 
 	/**

@@ -61,7 +61,7 @@ class ConverterRuleToken extends Token {
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 		}
-		this.getAttribute('protectChildren')('1:');
+		this.protectChildren('1:');
 	}
 
 	/**

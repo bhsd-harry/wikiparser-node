@@ -22,7 +22,6 @@ declare type TokenAttribute<T extends string> =
 	T extends 'acceptable' ? Acceptable :
 	T extends 'args' ? Record<string, Set<ParameterToken>> :
 	T extends 'protectedChildren' ? Ranges :
-	T extends 'protectChildren' ? (...args: (string|number|Ranges.Range)[]) => void :
 	string;
 
 declare interface AstEvent extends Event {

@@ -177,9 +177,9 @@ class Token extends AstElement {
 	 * 保护部分子节点不被移除
 	 * @param {...string|number|Ranges.Range} args 子节点范围
 	 */
-	#protectChildren = (...args) => {
+	protectChildren(...args) {
 		this.#protectedChildren.push(...new Ranges(args));
-	};
+	}
 
 	/** 所有图片，包括图库 */
 	get images() {
@@ -250,8 +250,6 @@ class Token extends AstElement {
 				return /** @type {TokenAttribute<T>} */ (this.#stage);
 			case 'acceptable':
 				return this.#acceptable ? /** @type {TokenAttribute<T>} */ ({...this.#acceptable}) : undefined;
-			case 'protectChildren':
-				return /** @type {TokenAttribute<T>} */ (this.#protectChildren);
 			case 'protectedChildren':
 				return /** @type {TokenAttribute<T>} */ (new Ranges(this.#protectedChildren));
 			default:
@@ -594,7 +592,7 @@ class Token extends AstElement {
 			const token = /** @type {this} */ (new Token(undefined, this.#config, false, [], this.#acceptable));
 			token.type = this.type;
 			token.append(...cloned);
-			token.getAttribute('protectChildren')(...this.#protectedChildren);
+			token.protectChildren(...this.#protectedChildren);
 			return token;
 		});
 	}

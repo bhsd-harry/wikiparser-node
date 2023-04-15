@@ -49,7 +49,7 @@ class TrToken extends attributesParent(Token, 1) {
 			}),
 			new AttributesToken(attr, 'table-attrs', this.type, config, accum),
 		);
-		this.getAttribute('protectChildren')(0, 1);
+		this.protectChildren(0, 1);
 	}
 
 	/**

@@ -5,6 +5,7 @@ import CommentToken = require('./nowiki/comment');
 import ExtToken = require('./tagPair/ext');
 import IncludeToken = require('./tagPair/include');
 import Title = require('../lib/title');
+import {Range} from '../lib/ranges';
 import {Acceptable} from '../lib/node';
 import {ParserConfig} from '..';
 
@@ -95,6 +96,12 @@ declare class Token extends AstElement {
 
 	/** 所有模板和模块 */
 	get embeds(): Token[];
+
+	/**
+	 * 保护部分子节点不被移除
+	 * @param args 子节点范围
+	 */
+	protectChildren(...args: (string|number|Range)[]): void;
 
 	/** 是否是普通节点 */
 	isPlain(): boolean;

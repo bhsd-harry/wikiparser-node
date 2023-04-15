@@ -64,7 +64,7 @@ class ExtLinkToken extends Token {
 			inner.type = 'ext-link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
-		this.getAttribute('protectChildren')(0);
+		this.protectChildren(0);
 	}
 
 	/**

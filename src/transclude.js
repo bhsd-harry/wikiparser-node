@@ -108,7 +108,7 @@ class TranscludeToken extends Token {
 						});
 						this.insertAt(invoke);
 					}
-					this.getAttribute('protectChildren')('1:3');
+					this.protectChildren('1:3');
 				}
 			}
 		}
@@ -137,7 +137,7 @@ class TranscludeToken extends Token {
 			}
 			this.insertAt(new ParameterToken(...part, config, accum));
 		}
-		this.getAttribute('protectChildren')(0);
+		this.protectChildren(0);
 	}
 
 	/** @override */

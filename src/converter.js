@@ -48,7 +48,7 @@ class ConverterToken extends Token {
 				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum)),
 			);
 		}
-		this.getAttribute('protectChildren')(0);
+		this.protectChildren(0);
 	}
 
 	/**
