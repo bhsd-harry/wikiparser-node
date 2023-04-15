@@ -12,7 +12,7 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * @classdesc `{childNodes: ...AtomToken}`
  */
 class ConverterFlagsToken extends Token {
-	type = 'converter-flags';
+	/** @type {'converter-flags'} */ type = 'converter-flags';
 	/** @type {string[]} */ #flags;
 
 	/**
@@ -110,7 +110,7 @@ class ConverterFlagsToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new ConverterFlagsToken([], this.getAttribute('config'));
+			const token = /** @type {this} */ (new ConverterFlagsToken([], this.getAttribute('config')));
 			token.append(...cloned);
 			token.afterBuild();
 			return token;
@@ -125,7 +125,9 @@ class ConverterFlagsToken extends Token {
 	 */
 	getAttribute(key) {
 		if (key === 'flags') {
-			return Parser.debugging ? this.#flags : [...this.#flags];
+			return /** @type {import('../lib/node').TokenAttribute<T>} */ (Parser.debugging
+				? this.#flags
+				: [...this.#flags]);
 		}
 		return super.getAttribute(key);
 	}
@@ -144,21 +146,22 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	removeAt(i) {
-		const /** @type {AtomToken} */ token = super.removeAt(i);
+		const token = /** @type {Token} */ (super.removeAt(i));
 		this.#flags?.splice(i, 1);
 		return token;
 	}
 
 	/**
 	 * @override
-	 * @param {AtomToken} token 待插入的子节点
+	 * @template {string|import('../lib/text')|Token} T
+	 * @param {T} token 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`
 	 */
 	insertAt(token, i = this.length) {
 		super.insertAt(token, i);
-		this.#flags?.splice(i, 0, token.text());
-		return token;
+		this.#flags?.splice(i, 0, /** @type {Token} */ (token).text());
+		return /** @type {T extends Token ? T : import('../lib/text')} */ (token);
 	}
 
 	/** 获取所有转换类型标记 */
@@ -173,7 +176,9 @@ class ConverterFlagsToken extends Token {
 	 * @complexity `n`
 	 */
 	getFlagToken(flag) {
-		return this.#flags.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
+		return this.#flags.includes(flag)
+			? /** @type {AtomToken[]} */ (this.childNodes).filter(child => child.text().trim() === flag)
+			: [];
 	}
 
 	/**
