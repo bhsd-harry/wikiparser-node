@@ -8,7 +8,7 @@ const hidden = require('../../mixin/hidden'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class DoubleUnderscoreToken extends hidden(NowikiToken) {
-	type = 'double-underscore';
+	/** @type {'double-underscore'} */ type = 'double-underscore';
 
 	/** @override */
 	getPadding() {

@@ -1,6 +1,6 @@
 'use strict';
 
-const /** @type {import('./typings')} */ Parser = {
+const /** @type {import('.')} */ Parser = {
 	config: './config/default',
 
 	MAX_STAGE: 11,
@@ -8,6 +8,7 @@ const /** @type {import('./typings')} */ Parser = {
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = require(this.config);
+			return this.getConfig();
 		}
 		return {...this.config, excludes: []};
 	},
@@ -25,19 +26,19 @@ const /** @type {import('./typings')} */ Parser = {
 		decode = false,
 		selfLink = false,
 	) {
-		let /** @type {Token} */ token;
+		let token;
 		if (!halfParsed) {
 			const Token = require('./src');
 			token = this.run(() => {
-				const newToken = new Token(String(title), config),
+				const newToken = new Token(title, config),
 					parseOnce = newToken.getAttribute('parseOnce');
 				parseOnce(0, include);
 				return parseOnce();
 			});
-			title = token.firstChild;
+			title = String(token.firstChild);
 		}
 		const Title = require('./lib/title');
-		const titleObj = new Title(String(title), defaultNs, config, decode, selfLink);
+		const titleObj = new Title(title, defaultNs, config, decode, selfLink);
 		return titleObj;
 	},
 

@@ -74,8 +74,8 @@
 		"no-unused-vars": [
 			2,
 			{
-				"varsIgnorePattern": "^(?:Ast\\w*|\\w*Token|Title)$",
-				"argsIgnorePattern": "^(?:acceptable|selector|halfParsed|copy|type|file)$",
+				"args": "all",
+				"argsIgnorePattern": "^(?:_+|acceptable|selector|halfParsed|copy|type|file)$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}
@@ -384,7 +384,13 @@
 				"ignoreChainWithDepth": 4
 			}
 		],
-		"no-extra-parens": 2,
+		"no-extra-parens": [
+			2,
+			"all",
+			{
+				"allowParensAfterCommentPattern": "@type"
+			}
+		],
 		"no-multi-spaces": [
 			2,
 			{
@@ -792,7 +798,10 @@
 			],
 			"extends": [
 				"plugin:@typescript-eslint/recommended"
-			]
+			],
+			"rules": {
+				"no-unused-private-class-members": 0
+			}
 		}
 	],
 	"settings": {

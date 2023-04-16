@@ -1,14 +1,9 @@
 {
-	"include": [
-		"lib/*",
-		"src/**/*"
-	],
 	"compilerOptions": {
 		"allowJs": true,
+		"checkJs": true,
 		"target": "esnext",
 		"module": "CommonJS",
-		"declaration": true,
-		"emitDeclarationOnly": true,
-		"outDir": "dist"
+		"noEmit": true
 	}
 }

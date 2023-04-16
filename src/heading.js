@@ -10,12 +10,12 @@ const {generateForSelf} = require('../util/lint'),
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 class HeadingToken extends Token {
-	type = 'heading';
+	/** @type {'heading'} */ type = 'heading';
 
 	/**
 	 * @param {number} level 标题层级
 	 * @param {string[]} input 标题文字
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(level, input, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);

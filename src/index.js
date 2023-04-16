@@ -1,8 +1,12 @@
 'use strict';
 
 /**
- * @template T
- * @typedef {import('../typings/node').TokenAttribute<T>} TokenAttribute
+ * @template {string} T
+ * @typedef {import('../lib/node').TokenAttribute<T>} TokenAttribute
+ */
+/**
+ * @template {string} T
+ * @typedef {T extends 'string'|'text' ? string : (import('.')|AstText)[]} built
  */
 
 // PHP解析器的步骤：
@@ -129,23 +133,22 @@ class Token extends AstElement {
 	 * @param {string} str 半解析的字符串
 	 * @param {T} type 返回类型
 	 * @complexity `n`
-	 * @returns {T extends 'string|text' ? string : (Token|AstText)[]}
 	 */
-	#buildFromStr = (str, type) => {
+	#buildFromStr = (str, type = undefined) => {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
-			} else if (isNaN(s.at(-1))) {
+			} else if (Number.isNaN(Number(s.at(-1)))) {
 				return this.#accum[Number(s.slice(0, -1))];
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
 		});
 		if (type === 'string') {
-			return nodes.map(String).join('');
+			return /** @type {built<T>} */ (nodes.map(String).join(''));
 		} else if (type === 'text') {
-			return text(nodes);
+			return /** @type {built<T>} */ (text(nodes));
 		}
-		return nodes;
+		return /** @type {built<T>} */ (nodes);
 	};
 
 	/**
@@ -169,7 +172,7 @@ class Token extends AstElement {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../typings/token').accum} accum
+	 * @param {import('.')[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), halfParsed = false, accum = [], acceptable = undefined) {
 		super();
@@ -178,36 +181,36 @@ class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
-		accum.push(this);
+		accum.push(/** @type {import('.')} */ (this));
 	}
 
 	/**
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
 	 */
 	getAttribute(key) {
 		switch (key) {
 			case 'config':
-				return structuredClone(this.#config);
+				return /** @type {TokenAttribute<T>} */ (structuredClone(this.#config));
 			case 'accum':
-				return this.#accum;
+				return /** @type {TokenAttribute<T>} */ (this.#accum);
 			case 'parseOnce':
-				return this.#parseOnce;
+				// eslint-disable-next-line no-extra-parens
+				return /** @type {TokenAttribute<T>} */ (/** @type {unknown} */ (this.#parseOnce));
 			case 'buildFromStr':
-				return this.#buildFromStr;
+				return /** @type {TokenAttribute<T>} */ (this.#buildFromStr);
 			case 'build':
-				return this.#build;
+				return /** @type {TokenAttribute<T>} */ (this.#build);
 			case 'include': {
 				if (this.#include !== undefined) {
-					return this.#include;
+					return /** @type {TokenAttribute<T>} */ (this.#include);
 				}
 				const root = this.getRootNode();
 				if (root.type === 'root' && root !== this) {
-					return root.getAttribute('include');
+					return /** @type {TokenAttribute<T>} */ (root.getAttribute('include'));
 				}
-				return false;
+				return /** @type {TokenAttribute<T>} */ (false);
 			}
 			default:
 				return super.getAttribute(key);
@@ -226,7 +229,7 @@ class Token extends AstElement {
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#stage = value;
+				this.#stage = /** @type {number} */ (value);
 				return this;
 			default:
 				return super.setAttribute(key, value);
@@ -240,16 +243,15 @@ class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @template {string|Token} T
-	 * @param {T} token 待插入的子节点
+	 * @template {string|AstText|import('.')} T
+	 * @param {T} child 待插入的子节点
 	 * @param {number} i 插入位置
 	 * @complexity `n`
-	 * @returns {T extends Token ? Token : AstText}
 	 */
-	insertAt(token, i = this.length) {
-		if (typeof token === 'string') {
-			token = new AstText(token);
-		}
+	insertAt(child, i = this.length) {
+		const token = /** @type {T extends import('.') ? T : AstText} */ (typeof child === 'string'
+			? new AstText(child)
+			: child);
 		super.insertAt(token, i);
 		if (token.type === 'root') {
 			token.type = 'plain';
@@ -319,29 +321,22 @@ class Token extends AstElement {
 		this.setText(parseHtml(String(this.firstChild), this.#config, this.#accum));
 	}
 
-	/** 解析表格 */
+	/**
+	 * 解析表格
+	 * @this {this & import('.') & {firstChild: AstText}}
+	 */
 	#parseTable() {
 		if (this.#config.excludes.includes('table')) {
 			return;
 		}
-		const parseTable = require('../parser/table'),
-			TableToken = require('./table');
+		const parseTable = require('../parser/table');
 		this.setText(parseTable(this, this.#config, this.#accum));
-		for (const table of this.#accum) {
-			if (table instanceof TableToken && table.type !== 'td') {
-				table.normalize();
-				const {childNodes: [, child]} = table;
-				if (typeof child === 'string' && child.includes('\0')) {
-					table.removeAt(1);
-					const inner = new Token(child, this.#config, true, this.#accum);
-					table.insertAt(inner, 1);
-					inner.setAttribute('stage', 4);
-				}
-			}
-		}
 	}
 
-	/** 解析\<hr\>和状态开关 */
+	/**
+	 * 解析\<hr\>和状态开关
+	 * @this {this & import('.') & {firstChild: AstText}}
+	 */
 	#parseHrAndDoubleUndescore() {
 		if (this.#config.excludes.includes('hr')) {
 			return;

@@ -1,8 +1,9 @@
 'use strict';
 
+/** @typedef {import('../../lib/text')} AstText */
+
 const {generateForChild} = require('../../util/lint'),
 	Parser = require('../..'),
-	AstText = require('../../lib/text'),
 	Token = require('..'),
 	AtomToken = require('../atom');
 
@@ -11,7 +12,7 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 class LinkToken extends Token {
-	type = 'link';
+	/** @type {import('.').linkType} */ type = 'link';
 	#bracket = true;
 	#delimiter;
 	#fragment;
@@ -19,8 +20,8 @@ class LinkToken extends Token {
 
 	/**
 	 * @param {string} link 链接标题
-	 * @param {string|undefined} linkText 链接显示文字
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} linkText 链接显示文字
+	 * @param {Token[]} accum
 	 * @param {string} delimiter `|`
 	 */
 	constructor(link, linkText, config = Parser.getConfig(), accum = [], delimiter = '|') {
@@ -53,7 +54,7 @@ class LinkToken extends Token {
 	 * @override
 	 * @template {string} T
 	 * @param {T} key 属性键
-	 * @param {import('../../typings/node').TokenAttribute<T>} value 属性值
+	 * @param {import('../../lib/node').TokenAttribute<T>} value 属性值
 	 */
 	setAttribute(key, value) {
 		if (key === 'bracket') {
@@ -89,6 +90,7 @@ class LinkToken extends Token {
 
 	/**
 	 * @override
+	 * @this {this & import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {
@@ -104,7 +106,7 @@ class LinkToken extends Token {
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' && linkText?.childNodes?.some(
-			/** @param {AstText} */ ({type, data}) => type === 'text' && data.includes('|'),
+			/** @param {AstText} child */ ({type, data}) => type === 'text' && data.includes('|'),
 		)) {
 			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
