@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * @template {string} T
+ * @typedef {import('../../lib/node').TokenAttribute<T>} TokenAttribute
+ */
+
 const Parser = require('../..'),
 	Token = require('..');
 
@@ -21,8 +26,8 @@ class TagPairToken extends Token {
 	 * @param {string} name 标签名
 	 * @param {string|Token} attr 标签属性
 	 * @param {string|Token} inner 内部wikitext
-	 * @param {string|undefined} closed 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} closed 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
+	 * @param {Token[]} accum
 	 */
 	constructor(name, attr, inner, closed, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true);
@@ -31,8 +36,8 @@ class TagPairToken extends Token {
 		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
 		this.append(attr, inner);
-		let index = accum.indexOf(attr);
-		if (index === -1) {
+		let index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
+		if (index === -1 && typeof inner !== 'string') {
 			index = accum.indexOf(inner);
 		}
 		if (index === -1) {
@@ -49,7 +54,7 @@ class TagPairToken extends Token {
 			[opening, closing] = this.#tags;
 		return this.#selfClosing
 			? `<${opening}${String(firstChild)}/>`
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.#closed ? `</${closing}>` : ''}`;
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/**
@@ -60,7 +65,7 @@ class TagPairToken extends Token {
 		const [opening, closing] = this.#tags;
 		return this.#selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
+			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @override */

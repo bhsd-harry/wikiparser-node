@@ -9,11 +9,11 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class NowikiToken extends Token {
-	type = 'ext-inner';
+	/** @type {import('.').nowikiType} */ type = 'ext-inner';
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, true, accum);

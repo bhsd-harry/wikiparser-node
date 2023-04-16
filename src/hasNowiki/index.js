@@ -11,8 +11,8 @@ const Parser = require('../..'),
 class HasNowikiToken extends Token {
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {string} type type
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {'ext-inner'} type type
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, type, config = Parser.getConfig(), accum = []) {
 		wikitext = wikitext.replace(

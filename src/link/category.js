@@ -7,7 +7,7 @@ const LinkToken = require('.');
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 class CategoryToken extends LinkToken {
-	type = 'category';
+	/** @type {'category'} */ type = 'category';
 }
 
 module.exports = CategoryToken;

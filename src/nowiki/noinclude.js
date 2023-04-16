@@ -8,7 +8,7 @@ const hidden = require('../../mixin/hidden'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class NoincludeToken extends hidden(NowikiToken) {
-	type = 'noinclude';
+	/** @type {'noinclude'} */ type = 'noinclude';
 }
 
 module.exports = NoincludeToken;

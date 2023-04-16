@@ -52,9 +52,9 @@ const cmd = (command, args) => new Promise(resolve => {
  * 比较两个文件
  * @param {string} oldStr 旧文本
  * @param {string} newStr 新文本
- * @param {string} uid 唯一标识
+ * @param {number} uid 唯一标识
  */
-const diff = async (oldStr, newStr, uid = '') => {
+const diff = async (oldStr, newStr, uid = -1) => {
 	if (oldStr === newStr) {
 		return;
 	}

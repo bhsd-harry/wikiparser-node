@@ -10,11 +10,11 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: ...AtomToken}`
  */
 class ParamTagToken extends Token {
-	type = 'ext-inner';
+	/** @type {'ext-inner'} */ type = 'ext-inner';
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -52,10 +52,11 @@ class ParamTagToken extends Token {
 
 	/**
 	 * @override
+	 * @this {import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {
-		let /** @type {{top: number, left: number}} */ rect;
+		let /** @type {{top?: number, left?: number, start?: number}} */ rect;
 		return this.childNodes.filter(child => {
 			const {childNodes} = child,
 				i = childNodes.findIndex(({type}) => type !== 'text'),

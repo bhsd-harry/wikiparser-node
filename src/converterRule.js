@@ -14,7 +14,7 @@ class ConverterRuleToken extends Token {
 	/**
 	 * @param {string} rule 转换规则
 	 * @param {boolean} hasColon 是否带有":"
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(rule, hasColon = true, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);

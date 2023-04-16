@@ -10,7 +10,7 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 class TdToken extends TrToken {
-	type = 'td';
+	/** @type {'td'} */ type = 'td';
 	#innerSyntax = '';
 
 	/**
@@ -29,7 +29,7 @@ class TdToken extends TrToken {
 	getSyntax() {
 		const syntax = this.firstChild.text(),
 			char = syntax[syntax.length - 1];
-		let subtype = 'td';
+		let /** @type {'td'|'th'|'caption'} */ subtype = 'td';
 		if (char === '!') {
 			subtype = 'th';
 		} else if (char === '+') {
@@ -41,7 +41,7 @@ class TdToken extends TrToken {
 	/**
 	 * @param {string} syntax 单元格语法
 	 * @param {string} inner 内部wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
 		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),

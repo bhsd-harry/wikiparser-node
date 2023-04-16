@@ -63,7 +63,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @param {string} str 图片参数
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 */
 	constructor(str, config = Parser.getConfig(), accum = []) {
 		let mt;
@@ -124,7 +124,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @override
-	 * @this {ImageParameterToken & {link: Title}}
+	 * @this {this & {link: Title}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {

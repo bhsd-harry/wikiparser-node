@@ -8,11 +8,11 @@ const Parser = require('../..'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class HrToken extends NowikiToken {
-	type = 'hr';
+	/** @type {'hr'} */ type = 'hr';
 
 	/**
 	 * @param {number} n 字符串长度
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super('-'.repeat(n), config, accum);

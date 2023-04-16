@@ -9,7 +9,7 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 class TableToken extends TrToken {
-	type = 'table';
+	/** @type {'table'} */ type = 'table';
 
 	/** 表格是否闭合 */
 	get closed() {

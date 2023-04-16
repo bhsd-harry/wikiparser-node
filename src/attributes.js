@@ -16,7 +16,7 @@ class AttributesToken extends Token {
 	 * @param {string} attr 标签属性
 	 * @param {'ext-attrs'|'html-attrs'|'table-attrs'} type 标签类型
 	 * @param {string} name 标签名
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(attr, type, name, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -50,7 +50,16 @@ class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
-						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
+						token = new AttributeToken(
+							/** @type {'ext-attr'|'html-attr'|'table-attr'} */ (type.slice(0, -1)),
+							name,
+							key,
+							equal,
+							value,
+							quotes,
+							config,
+							accum,
+						);
 					insertDirty();
 					super.insertAt(token);
 				} else {
@@ -66,10 +75,9 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: TdToken}}
+	 * @this {this & {parentNode: import('./table/td')}}
 	 */
 	afterBuild() {
-		const TdToken = require('./table/td');
 		if (this.type === 'table-attrs') {
 			this.setAttribute('name', this.parentNode?.subtype === 'caption' ? 'caption' : this.parentNode?.type);
 		}
@@ -81,9 +89,9 @@ class AttributesToken extends Token {
 	 * @returns {AttributeToken[]}
 	 */
 	getAttrTokens(key) {
-		return this.childNodes.filter(
+		return /** @type {AttributeToken[]} */ (this.childNodes.filter(
 			child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
-		);
+		));
 	}
 
 	/**
@@ -105,11 +113,10 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @this {AttributesToken & {parentNode: HtmlToken}}
+	 * @this {import('./attribute') & {parentNode: import('./html')}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {
-		const HtmlToken = require('./html');
 		const errors = super.lint(start),
 			{parentNode: {closing}, length, childNodes} = this,
 			/** @type {Record<string, AttributeToken[]>} */ attrs = {},
@@ -120,7 +127,7 @@ class AttributesToken extends Token {
 			errors.push(generateForSelf(this, rect, 'attributes of a closing tag'));
 		}
 		for (let i = 0; i < length; i++) {
-			const /** @type {AtomToken|AttributeToken} */ attr = childNodes[i];
+			const attr = childNodes[i];
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
 				errors.push(generateForChild(attr, rect, 'containing invalid attribute'));

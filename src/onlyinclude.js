@@ -12,7 +12,7 @@ class OnlyincludeToken extends Token {
 
 	/**
 	 * @param {string} inner 标签内部wikitext
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token} accum
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(inner, config, true, accum);

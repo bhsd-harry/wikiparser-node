@@ -11,12 +11,12 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
 class TrToken extends Token {
-	type = 'tr';
+	/** @type {'tr'|'table'|'td'} */ type = 'tr';
 
 	/**
 	 * @param {string} syntax 表格语法
 	 * @param {string} attr 表格属性
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @param {RegExp} pattern 表格语法正则
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = undefined) {
@@ -31,17 +31,18 @@ class TrToken extends Token {
 
 	/**
 	 * @override
+	 * @this {import('./tr')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start) {
-		const TranscludeToken = require('../transclude'),
-			ArgToken = require('../arg');
 		const errors = super.lint(start),
 			inter = this.childNodes.find(({type}) => type === 'table-inter');
 		if (!inter) {
 			return errors;
 		}
-		const /** @type {TranscludeToken & ArgToken} */ first = inter.childNodes.find(child => child.text().trim()),
+		const first = /** @type {import('../transclude')|import('../arg')} */ (inter.childNodes.find(
+				child => child.text().trim(),
+			)),
 			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
 		if (!first || tdPattern.test(String(first)) || first.type === 'arg' && tdPattern.test(first.default || '')) {
 			return errors;
