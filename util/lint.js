@@ -15,13 +15,14 @@ const Parser = require('..');
  */
 const generateForChild = (child, boundingRect, msg, severity = 'error') => {
 	const index = child.getRelativeIndex(),
-		{offsetHeight, offsetWidth, parentNode, length} = child,
+		{offsetHeight, offsetWidth, parentNode} = child,
 		{top: offsetTop, left: offsetLeft} = parentNode.posFromIndex(index),
 		{start} = boundingRect,
 		{top, left} = 'top' in boundingRect ? boundingRect : child.getRootNode().posFromIndex(start),
-		excerpt = String(child).slice(0, 50),
+		str = String(child),
+		excerpt = str.slice(0, 50),
 		startIndex = start + index,
-		endIndex = startIndex + length,
+		endIndex = startIndex + str.length,
 		startLine = top + offsetTop,
 		endLine = startLine + offsetHeight - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
@@ -39,18 +40,19 @@ const generateForChild = (child, boundingRect, msg, severity = 'error') => {
  */
 const generateForSelf = (token, boundingRect, msg, severity = 'error') => {
 	const {start} = boundingRect,
-		{offsetHeight, offsetWidth, length} = token,
+		{offsetHeight, offsetWidth} = token,
+		str = String(token),
 		{top, left} = 'top' in boundingRect ? boundingRect : token.getRootNode().posFromIndex(start);
 	return {
 		message: Parser.msg(msg),
 		severity,
 		startIndex: start,
-		endIndex: start + length,
+		endIndex: start + str.length,
 		startLine: top,
 		endLine: top + offsetHeight - 1,
 		startCol: left,
 		endCol: offsetHeight > 1 ? offsetWidth : left + offsetWidth,
-		excerpt: String(token).slice(0, 50),
+		excerpt: str.slice(0, 50),
 	};
 };
 
