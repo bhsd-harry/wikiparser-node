@@ -12,7 +12,7 @@ class PreToken extends HasNowikiToken {
 
 	/**
 	 * @param {string} wikitext wikitext
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
 		super(wikitext, 'ext-inner', config, accum);

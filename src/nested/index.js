@@ -12,13 +12,13 @@ const {generateForChild} = require('../../util/lint'),
  * @classdesc `{childNodes: [...ExtToken|NoincludeToken|CommentToken]}`
  */
 class NestedToken extends Token {
-	type = 'ext-inner';
+	/** @type {'ext-inner'} */ type = 'ext-inner';
 
 	/**
-	 * @param {string|undefined} wikitext wikitext
+	 * @param {string} wikitext wikitext
 	 * @param {RegExp} regex 内层正则
 	 * @param {string[]} tags 内层标签名
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(wikitext, regex, tags, config = Parser.getConfig(), accum = []) {
 		const text = wikitext?.replace(
@@ -46,6 +46,7 @@ class NestedToken extends Token {
 
 	/**
 	 * @override
+	 * @this {import('.')}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {

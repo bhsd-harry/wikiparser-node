@@ -27,7 +27,7 @@ const getPages = async url => {
 	const api = new Api(url),
 		generatorParams = {generator: 'recentchanges', grcnamespace: '0|10', grclimit: 'max', grctype: 'edit'},
 		revisionParams = {prop: 'revisions', rvprop: 'contentmodel|content'};
-	/** @type {{query: {pages: import('../typings/api').MediaWikiPage[]}}} */
+	/** @type {{query: {pages: MediaWikiPage[]}}} */
 	const {query: {pages}} = await api.get({...generatorParams, ...revisionParams});
 	return pages.map(({title, ns, revisions}) => ({
 		title, ns, content: revisions?.[0]?.contentmodel === 'wikitext' && revisions?.[0]?.content,

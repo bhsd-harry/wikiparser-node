@@ -1,6 +1,6 @@
 'use strict';
 
-/** @typedef {import('../typings/token').ParserConfig} ParserConfig */
+/** @typedef {import('..').ParserConfig} ParserConfig */
 
 const {generateForChild} = require('../util/lint'),
 	{removeComment} = require('../util/string'),
@@ -171,7 +171,7 @@ class AttributeToken extends Token {
 	 * @param {string} equal 等号
 	 * @param {string} value 属性值
 	 * @param {string[]} quotes 引号
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {

@@ -11,7 +11,7 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * @classdesc `{childNodes: [AttributesToken]}`
  */
 class HtmlToken extends Token {
-	type = 'html';
+	/** @type {'html'} */ type = 'html';
 	#closing;
 	#selfClosing;
 	#tag;
@@ -23,10 +23,10 @@ class HtmlToken extends Token {
 
 	/**
 	 * @param {string} name 标签名
-	 * @param {AttributesToken} attr 标签属性
+	 * @param {import('./attributes')} attr 标签属性
 	 * @param {boolean} closing 是否闭合
 	 * @param {boolean} selfClosing 是否自封闭
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(name, attr, closing, selfClosing, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -62,7 +62,7 @@ class HtmlToken extends Token {
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
-		let wikitext, /** @type {import('../typings/token').LintError} */ refError;
+		let wikitext, /** @type {import('..').LintError} */ refError;
 		if (this.name === 'h1' && !this.#closing) {
 			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');

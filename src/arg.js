@@ -10,7 +10,7 @@ const {text} = require('../util/string'),
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 class ArgToken extends Token {
-	type = 'arg';
+	/** @type {'arg'} */ type = 'arg';
 
 	/** default */
 	get default() {
@@ -19,7 +19,7 @@ class ArgToken extends Token {
 
 	/**
 	 * @param {string[]} parts 以'|'分隔的各部分
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @complexity `n`
 	 */
 	constructor(parts, config = Parser.getConfig(), accum = []) {
@@ -46,10 +46,7 @@ class ArgToken extends Token {
 		return `{{{${super.toString(selector, '|')}}}}`;
 	}
 
-	/**
-	 * @override
-	 * @returns {string}
-	 */
+	/** @override */
 	text() {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
@@ -67,7 +64,6 @@ class ArgToken extends Token {
 	/**
 	 * @override
 	 * @param {number} start 起始位置
-	 * @returns {import('../typings/token').LintError[]}
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		if (!this.getAttribute('include')) {

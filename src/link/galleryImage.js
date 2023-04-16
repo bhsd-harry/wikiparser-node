@@ -10,19 +10,19 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
 class GalleryImageToken extends FileToken {
-	type = 'gallery-image';
+	/** @type {'gallery-image'|'imagemap-image'} */ type = 'gallery-image';
 	#invalid = false;
 
 	/**
 	 * @param {string} link 图片文件名
-	 * @param {string|undefined} text 图片参数
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {string} text 图片参数
+	 * @param {import('..')[]} accum
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = []) {
 		let token;
 		if (text !== undefined) {
 			token = new Token(text, config, true, accum);
-			token.type = 'temp';
+			token.type = 'plain';
 			for (let n = 1; n < Parser.MAX_STAGE; n++) {
 				token.getAttribute('parseOnce')();
 			}

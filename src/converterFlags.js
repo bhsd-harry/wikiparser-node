@@ -12,12 +12,12 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * @classdesc `{childNodes: ...AtomToken}`
  */
 class ConverterFlagsToken extends Token {
-	type = 'converter-flags';
+	/** @type {'converter-flags'} */ type = 'converter-flags';
 	/** @type {string[]} */ #flags;
 
 	/**
 	 * @param {string[]} flags 转换类型标记
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 */
 	constructor(flags, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {

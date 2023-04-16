@@ -2,7 +2,6 @@
 
 const {generateForSelf} = require('../../util/lint'),
 	Parser = require('../..'),
-	AstText = require('../../lib/text'),
 	NowikiToken = require('.');
 
 /**
@@ -10,11 +9,11 @@ const {generateForSelf} = require('../../util/lint'),
  * @classdesc `{childNodes: [AstText]}`
  */
 class QuoteToken extends NowikiToken {
-	type = 'quote';
+	/** @type {'quote'} */ type = 'quote';
 
 	/**
 	 * @param {number} n 字符串长度
-	 * @param {import('../../typings/token').accum} accum
+	 * @param {import('..')[]} accum
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super(`'`.repeat(n), config, accum);
@@ -22,13 +21,12 @@ class QuoteToken extends NowikiToken {
 
 	/**
 	 * @override
-	 * @this {AstText}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
-			/** @type {import('../../typings/token').LintError[]} */ errors = [];
+			/** @type {import('../..').LintError[]} */ errors = [];
 		let refError, wikitext;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);

@@ -44,8 +44,8 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @param {string} title 模板标题或魔术字
-	 * @param {[string, string|undefined][]} parts 参数各部分
-	 * @param {import('../typings/token').accum} accum
+	 * @param {[string, string][]} parts 参数各部分
+	 * @param {Token} accum
 	 * @complexity `n`
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
@@ -262,7 +262,7 @@ class TranscludeToken extends Token {
 	 * @param {boolean} copy 是否返回一个备份
 	 * @complexity `n`
 	 */
-	getArgs(key, exact, copy = true) {
+	getArgs(key, exact = false, copy = true) {
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args;
 		if (Object.hasOwn(this.#args, keyStr)) {

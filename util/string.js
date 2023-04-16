@@ -1,5 +1,8 @@
 'use strict';
 
+/** @typedef {import('../lib/text')} AstText */
+/** @typedef {import('../src')} Token */
+
 const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])',
 	extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
@@ -47,13 +50,11 @@ const explode = (start, end, separator, str) => {
 
 /**
  * extract effective wikitext
- * @param {(string|AstNode)[]} childNodes a Token's contents
+ * @param {(string|AstText|Token)[]} childNodes a Token's contents
  * @param {string} separator delimiter between nodes
  */
-const text = (childNodes, separator = '') => {
-	const AstNode = require('../lib/node');
-	return childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
-};
+const text = (childNodes, separator = '') =>
+	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
 /**
  * decode HTML entities
@@ -61,7 +62,8 @@ const text = (childNodes, separator = '') => {
  */
 const decodeHtml = str => str?.replace(
 	/&#(\d+|x[\da-f]+);/giu,
-	/** @param {string} code */ (_, code) => String.fromCodePoint(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`),
+	/** @param {string} code */
+	(_, code) => String.fromCodePoint(Number(`${code[0].toLowerCase() === 'x' ? '0' : ''}${code}`)),
 );
 
 module.exports = {

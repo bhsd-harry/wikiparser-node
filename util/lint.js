@@ -1,14 +1,14 @@
 'use strict';
 
-/** @typedef {import('../typings/token').LintError} LintError */
+/** @typedef {import('..').LintError} LintError */
+/** @typedef {import('../src')} Token */
 
-const Parser = require('..'),
-	Token = require('../src');
+const Parser = require('..');
 
 /**
  * 生成对于子节点的LintError对象
- * @param {Token} child 子节点
- * @param {{top: number, left: number, start: number}} boundingRect 父节点的绝对定位
+ * @param {import('../lib/text')|Token} child 子节点
+ * @param {{top?: number, left?: number, start?: number}} boundingRect 父节点的绝对定位
  * @param {string} msg 错误信息
  * @param {'error'|'warning'} severity 严重程度
  * @returns {LintError}
@@ -32,7 +32,7 @@ const generateForChild = (child, boundingRect, msg, severity = 'error') => {
 /**
  * 生成对于自己的LintError对象
  * @param {Token} token 节点
- * @param {{top: number, left: number, start: number}} boundingRect 绝对定位
+ * @param {{top?: number, left?: number, start?: number}} boundingRect 绝对定位
  * @param {string} msg 错误信息
  * @param {'error'|'warning'} severity 严重程度
  * @returns {LintError}

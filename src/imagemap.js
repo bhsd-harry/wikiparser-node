@@ -25,7 +25,7 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @param {string} inner 标签内部wikitext
-	 * @param {import('../typings/token').accum} accum
+	 * @param {Token[]} accum
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {

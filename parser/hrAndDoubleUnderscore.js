@@ -1,16 +1,16 @@
 'use strict';
 
+/** @typedef {import('../src')} Token */
+
 const Parser = require('..'),
-	AstText = require('../lib/text'),
-	Token = require('../src'),
 	HrToken = require('../src/nowiki/hr'),
 	DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore'),
 	HeadingToken = require('../src/heading');
 
 /**
  * 解析\<hr\>和状态开关
- * @param {Token & {firstChild: AstText}} root 根节点
- * @param {import('../typings/token').accum} accum
+ * @param {Token & {firstChild: import('../lib/text')}} root 根节点
+ * @param {Token[]} accum
  */
 const parseHrAndDoubleUnderscore = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
 	const {doubleUnderscore} = config,
