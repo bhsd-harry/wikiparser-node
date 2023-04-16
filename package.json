@@ -32,6 +32,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"build": "rm -rf dist/ && tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
 		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",

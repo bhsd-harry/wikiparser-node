@@ -64,7 +64,7 @@ class ImageParameterToken extends Token {
 
 	set link(value) {
 		if (this.name === 'link') {
-			this.setValue(value);
+			this.setValue(String(value));
 		}
 	}
 
@@ -187,7 +187,7 @@ class ImageParameterToken extends Token {
 
 	/**
 	 * @override
-	 * @this {ImageParameterToken & {link: Title}}
+	 * @this {this & {link: Title}}
 	 * @param {number} start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {

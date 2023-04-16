@@ -29,7 +29,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/**
 	 * 是否是重复参数
-	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 * @this {this & {parentNode: TranscludeToken}}
 	 */
 	get duplicated() {
 		const TranscludeToken = require('./transclude');
@@ -139,7 +139,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/**
 	 * 获取参数值
-	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 * @this {this & {parentNode: TranscludeToken}}
 	 */
 	getValue() {
 		const TranscludeToken = require('./transclude');
@@ -172,7 +172,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/**
 	 * 设置参数值
-	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 * @this {this & {parentNode: TranscludeToken}}
 	 * @param {string} value 参数值
 	 * @throws `SyntaxError` 非法的模板参数
 	 */
@@ -199,7 +199,7 @@ class ParameterToken extends fixedToken(Token) {
 
 	/**
 	 * 修改参数名
-	 * @this {ParameterToken & {parentNode: TranscludeToken}}
+	 * @this {this & {parentNode: TranscludeToken}}
 	 * @param {string} key 新参数名
 	 * @param {boolean} force 是否无视冲突命名
 	 * @throws `Error` 仅用于模板参数

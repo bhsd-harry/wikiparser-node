@@ -24,6 +24,11 @@ class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
 		return this.childNodes[1].link;
 	}
 
+	/** @this {{childNodes: (LinkToken|ExtLinkToken)[]}} */
+	set link(link) {
+		this.childNodes[1].link = link;
+	}
+
 	/**
 	 * @param {string} pre 链接前的文本
 	 * @param {[string, string, string|Title]} linkStuff 内外链接
