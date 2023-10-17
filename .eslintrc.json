@@ -664,6 +664,7 @@
 				"exceptions": [
 					"accum",
 					"selector",
+					"start",
 					"callback",
 					"method"
 				],
@@ -696,6 +697,7 @@
 					"halfParsed",
 					"accum",
 					"selector",
+					"start",
 					"callback",
 					"method",
 					"wikitext",

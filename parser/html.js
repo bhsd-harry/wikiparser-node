@@ -1,14 +1,9 @@
 'use strict';
+const Parser = require('../index');
+const AttributesToken = require('../src/attributes');
+const HtmlToken = require('../src/html');
 
-const Parser = require('../index'),
-	AttributesToken = require('../src/attributes'),
-	HtmlToken = require('../src/html');
-
-/**
- * 解析HTML标签
- * @param {string} wikitext wikitext
- * @param {import('../src')[]} accum
- */
+/** 解析HTML标签 */
 const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,
 		elements = new Set(config.html.flat()),
@@ -26,8 +21,7 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 			attr = new AttributesToken(params, 'html-attrs', name, config, accum),
 			itemprop = attr.getAttr('itemprop');
 		if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
-			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)
-		) {
+			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)) {
 			text += `<${x}`;
 			accum.pop();
 			continue;
@@ -37,6 +31,5 @@ const parseHtml = (wikitext, config = Parser.getConfig(), accum = []) => {
 	}
 	return text;
 };
-
 Parser.parsers.parseHtml = __filename;
 module.exports = parseHtml;

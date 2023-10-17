@@ -14,7 +14,7 @@ class NoincludeToken extends hidden(NowikiBaseToken) {
 	 * @throws `Error` 不可更改
 	 */
 	setText(str) {
-		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s.*)?\/?>$/isu.test(String(this))) {
+		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s.*)?\/?>$/isu.test(this.firstChild.data)) {
 			throw new Error(`${this.constructor.name} 不可更改文字内容！`);
 		}
 		return super.setText(str);

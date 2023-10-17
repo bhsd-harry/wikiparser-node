@@ -6,7 +6,6 @@ const Parser = require('../index');
  * @param constructor 基类
  * @param i AttributesToken子节点的位置
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const attributesParent = (constructor, i = 0) => {
 	/** 子节点含有AttributesToken的类 */
 	class AttributesParent extends constructor {

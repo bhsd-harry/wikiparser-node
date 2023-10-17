@@ -1,41 +1,39 @@
 'use strict';
+const Parser = require('../../index');
+const NowikiBaseToken = require('./base');
 
-const Parser = require('../..'),
-	NowikiBaseToken = require('./base');
-
-/**
- * :
- * @classdesc `{childNodes: [AstText]}`
- */
+/** `:` */
 class DdToken extends NowikiBaseToken {
-	/** @type {'dd'} */ type = 'dd';
+	/** @browser */
+	type = 'dd';
 
-	/** 是否包含<dt> */
+	/** 是否包含`;` */
 	get dt() {
-		return String(this).includes(';');
+		return this.firstChild.data.includes(';');
 	}
 
-	/** 是否包含<ul> */
+	/** 是否包含`*` */
 	get ul() {
-		return String(this).includes('*');
+		return this.firstChild.data.includes('*');
 	}
 
-	/** 是否包含<ol> */
+	/** 是否包含`#` */
 	get ol() {
-		return String(this).includes('#');
+		return this.firstChild.data.includes('#');
 	}
 
 	/** 缩进数 */
 	get indent() {
-		return String(this).split(':').length - 1;
+		return this.firstChild.data.split(':').length - 1;
 	}
 
+	/** @throws `RangeError` indent不是自然数 */
 	set indent(indent) {
 		if (this.type === 'dd') {
 			if (!Number.isInteger(indent)) {
-				this.typeError('set indent', 'Number');
+				this.typeError('indent setter', 'Number');
 			} else if (indent < 0) {
-				throw new RangeError(`indent 应为自然数！${indent}`);
+				throw new RangeError('indent 应为自然数！');
 			}
 			this.setText(':'.repeat(indent));
 		}
@@ -43,7 +41,7 @@ class DdToken extends NowikiBaseToken {
 
 	/**
 	 * @override
-	 * @param {string} str 新文本
+	 * @param str 新文本
 	 * @throws `RangeError` 错误的列表语法
 	 */
 	setText(str) {
@@ -54,6 +52,5 @@ class DdToken extends NowikiBaseToken {
 		return super.setText(str);
 	}
 }
-
 Parser.classes.DdToken = __filename;
 module.exports = DdToken;

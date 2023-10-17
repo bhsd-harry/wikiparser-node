@@ -1,35 +1,30 @@
 'use strict';
-
-const Parser = require('..'),
-	{noWrap, normalizeSpace} = require('../util/string'),
-	Token = require('.'),
-	MagicLinkToken = require('./magicLink');
+const string_1 = require('../util/string');
+const {noWrap, normalizeSpace} = string_1;
+const Parser = require('../index');
+const Token = require('.');
+const MagicLinkToken = require('./magicLink');
 
 /**
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
 class ExtLinkToken extends Token {
+	/** @browser */
 	type = 'ext-link';
+	/** @browser */
 	#space;
 
-	/**
-	 * 协议
-	 * @this {{firstChild: MagicLinkToken}}
-	 */
+	/** 协议 */
 	get protocol() {
 		return this.firstChild.protocol;
 	}
 
-	/** @this {{firstChild: MagicLinkToken}} */
 	set protocol(value) {
 		this.firstChild.protocol = value;
 	}
 
-	/**
-	 * 和内链保持一致
-	 * @this {{firstChild: MagicLinkToken}}
-	 */
+	/** 和内链保持一致 */
 	get link() {
 		return this.firstChild.link;
 	}
@@ -46,10 +41,10 @@ class ExtLinkToken extends Token {
 	}
 
 	/**
-	 * @param {string} url 网址
-	 * @param {string} space 空白字符
-	 * @param {string} text 链接文字
-	 * @param {Token[]} accum
+	 * @browser
+	 * @param url 网址
+	 * @param space 空白字符
+	 * @param text 链接文字
 	 */
 	constructor(url, space = '', text = '', config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -69,7 +64,7 @@ class ExtLinkToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		if (selector && this.matches(selector)) {
@@ -82,28 +77,32 @@ class ExtLinkToken extends Token {
 		return `[${super.toString(selector, this.#space)}]`;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	text() {
 		normalizeSpace(this.childNodes[1]);
 		return `[${super.text(' ')}]`;
 	}
 
-	/** @override */
+	/** @private */
 	getPadding() {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	getGaps() {
 		this.#correct();
 		return this.#space.length;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
-		return super.print(
-			this.length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`},
-		);
+		return super.print(this.length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`});
 	}
 
 	/** @override */
@@ -123,31 +122,27 @@ class ExtLinkToken extends Token {
 	#correct() {
 		if (!this.#space && this.length > 1
 			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
-		) {
+			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))) {
 			this.#space = ' ';
 		}
 	}
 
-	/**
-	 * 获取网址
-	 * @this {{firstChild: MagicLinkToken}}
-	 */
+	/** 获取网址 */
 	getUrl() {
 		return this.firstChild.getUrl();
 	}
 
 	/**
 	 * 设置链接目标
-	 * @param {string|URL} url 网址
+	 * @param url 网址
 	 * @throws `SyntaxError` 非法的外链目标
 	 */
 	setTarget(url) {
-		url = String(url);
-		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
+		const strUrl = String(url),
+			root = Parser.parse(`[${strUrl}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
 		if (length !== 1 || extLink.type !== 'ext-link' || extLink.length !== 1) {
-			throw new SyntaxError(`非法的外链目标：${url}`);
+			throw new SyntaxError(`非法的外链目标：${strUrl}`);
 		}
 		const {firstChild} = extLink;
 		extLink.destroy();
@@ -156,15 +151,14 @@ class ExtLinkToken extends Token {
 
 	/**
 	 * 设置链接显示文字
-	 * @param {string} text 链接显示文字
+	 * @param str 链接显示文字
 	 * @throws `SyntaxError` 非法的链接显示文字
 	 */
-	setLinkText(text) {
-		text = String(text);
-		const root = Parser.parse(`[//url ${text}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
+	setLinkText(str) {
+		const root = Parser.parse(`[//url ${str}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
 		if (length !== 1 || extLink.type !== 'ext-link' || extLink.length !== 2) {
-			throw new SyntaxError(`非法的外链文字：${noWrap(text)}`);
+			throw new SyntaxError(`非法的外链文字：${noWrap(str)}`);
 		}
 		const {lastChild} = extLink;
 		if (this.length === 1) {
@@ -175,6 +169,5 @@ class ExtLinkToken extends Token {
 		this.#space ||= ' ';
 	}
 }
-
 Parser.classes.ExtLinkToken = __filename;
 module.exports = ExtLinkToken;

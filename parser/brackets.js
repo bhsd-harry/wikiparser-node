@@ -1,44 +1,44 @@
 'use strict';
-
-const {removeComment} = require('../util/string'),
-	Parser = require('../index'),
-	HeadingToken = require('../src/heading'),
-	TranscludeToken = require('../src/transclude'),
-	ArgToken = require('../src/arg');
+const string_1 = require('../util/string');
+const {removeComment} = string_1;
+const Parser = require('../index');
+const HeadingToken = require('../src/heading');
+const TranscludeToken = require('../src/transclude');
+const ArgToken = require('../src/arg');
 
 /**
  * 解析花括号
- * @param {string} text wikitext
- * @param {import('../src')[]} accum
  * @throws TranscludeToken.constructor()
  */
-const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
-	const source = `${config.excludes.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
+const parseBrackets = (wikitext, config = Parser.getConfig(), accum = []) => {
+	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
-		/** @type {BracketExecArray[]} */ stack = [],
+		stack = [],
 		closes = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
-		/** @type {Record<string, string>} */ marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
-	let regex = new RegExp(source, 'gmu'),
-		/** @type {BracketExecArray} */ mt = regex.exec(text),
+		marks = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
+	let text = wikitext,
+		regex = new RegExp(source, 'gmu'),
+		mt = regex.exec(text),
 		moreBraces = text.includes('}}'),
 		lastIndex;
-	while (mt || lastIndex <= text.length && stack.at(-1)?.[0]?.[0] === '=') {
+	while (mt || Number(lastIndex) <= text.length && stack.at(-1)?.[0]?.startsWith('=')) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0].slice(length);
 			mt.index += length;
 		}
 		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
-			/** @type {BracketExecArray} */ top = stack.pop() ?? {},
+			top = stack.pop() ?? {},
 			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
 			innerEqual = syntax === '=' && topFindEqual;
 		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
 			lastIndex = curIndex + 2;
-		} else if (syntax === '\n') { // 情形2：闭合标题
+		} else if (syntax === '\n') { // 情形2：闭合标题或文末
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
-			if (!pos || findEqual || removeComment(text.slice(pos, index)) !== '') {
-				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u.exec(text.slice(index, curIndex));
+			if (pos === undefined || findEqual || removeComment(text.slice(pos, index)) !== '') {
+				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u
+					.exec(text.slice(index, curIndex));
 				if (rmt) {
 					text = `${text.slice(0, index)}\0${accum.length}h\x7F${text.slice(curIndex)}`;
 					lastIndex = index + 4 + String(accum.length).length;
@@ -73,7 +73,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 				try {
 					new TranscludeToken(parts[0][0], parts.slice(1), config, accum);
 					const name = removeComment(parts[0][0]).trim();
-					if (name in marks) {
+					if (Object.hasOwn(marks, name)) {
 						ch = marks[name]; // 标记{{!}}等
 					} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
 						ch = 'm';
@@ -81,7 +81,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 						ch = 'c';
 					}
 				} catch (e) {
-					if (e instanceof Error && e.message.startsWith('非法的模板名称：')) {
+					if (e instanceof SyntaxError && e.message.startsWith('非法的模板名称：')) {
 						lastIndex = index + open.length;
 						skip = true;
 					} else {
@@ -100,7 +100,7 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 			}
 		} else { // 情形5：开启
 			lastIndex = curIndex + syntax.length;
-			if (syntax[0] === '{') {
+			if (syntax.startsWith('{')) {
 				mt.pos = lastIndex;
 				mt.parts = [[]];
 			}
@@ -108,19 +108,17 @@ const parseBrackets = (text, config = Parser.getConfig(), accum = []) => {
 		}
 		moreBraces &&= text.slice(lastIndex).includes('}}');
 		let curTop = stack.at(-1);
-		if (!moreBraces && curTop?.[0]?.[0] === '{') {
+		if (!moreBraces && curTop?.[0]?.startsWith('{')) {
 			stack.pop();
 			curTop = stack.at(-1);
 		}
 		regex = new RegExp(source + (curTop
 			? `|${closes[curTop[0][0]]}${curTop.findEqual ? '|=' : ''}`
-			: ''
-		), 'gmu');
+			: ''), 'gmu');
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(text);
 	}
 	return text;
 };
-
 Parser.parsers.parseBrackets = __filename;
 module.exports = parseBrackets;

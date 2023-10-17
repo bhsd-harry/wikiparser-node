@@ -1,13 +1,13 @@
 'use strict';
-
-const Parser = require('..'),
-	Token = require('.');
+const Parser = require('../index');
+const Token = require('.');
 
 /**
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: ...AstText|Token}`
  */
 class OnlyincludeToken extends Token {
+	/** @browser */
 	type = 'onlyinclude';
 
 	/** 内部wikitext */
@@ -16,8 +16,8 @@ class OnlyincludeToken extends Token {
 	}
 
 	/**
-	 * @param {string} inner 标签内部wikitext
-	 * @param {Token} accum
+	 * @browser
+	 * @param inner 标签内部wikitext
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(inner, config, true, accum);
@@ -25,18 +25,24 @@ class OnlyincludeToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		return selector && this.matches(selector) ? '' : `<onlyinclude>${super.toString(selector)}</onlyinclude>`;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	getPadding() {
 		return 13;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		return super.print({
 			pre: '<span class="wpb-ext">&lt;onlyinclude&gt;</span>',
@@ -44,7 +50,10 @@ class OnlyincludeToken extends Token {
 		});
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	isPlain() {
 		return true;
 	}
@@ -59,6 +68,5 @@ class OnlyincludeToken extends Token {
 		});
 	}
 }
-
 Parser.classes.OnlyincludeToken = __filename;
 module.exports = OnlyincludeToken;

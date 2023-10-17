@@ -1,16 +1,18 @@
 'use strict';
-
-const Parser = require('..'),
-	{undo} = require('../util/debug'),
-	{noWrap} = require('../util/string'),
-	Token = require('.'),
-	AtomToken = require('./atom');
+const debug_1 = require('../util/debug');
+const {undo} = debug_1;
+const string_1 = require('../util/string');
+const {noWrap} = string_1;
+const Parser = require('../index');
+const Token = require('.');
+const AtomToken = require('./atom');
 
 /**
  * 转换规则
- * @classdesc `{childNodes: ...AtomToken)}`
+ * @classdesc `{childNodes: ...AtomToken}`
  */
 class ConverterRuleToken extends Token {
+	/** @browser */
 	type = 'converter-rule';
 
 	/** 语言变体 */
@@ -27,9 +29,15 @@ class ConverterRuleToken extends Token {
 		return this.length === 3;
 	}
 
-	set unidirectional(unidirectional) {
-		if (unidirectional === false) {
+	/** @throws `Error` 不能用于将双向转换或不转换更改为单向转换 */
+	set unidirectional(flag) {
+		const {length} = this;
+		if (length === 3 && !flag) {
 			this.makeBidirectional();
+		} else if (length === 2 && flag) {
+			throw new Error('想更改为单向转换请使用 makeUnidirectional 方法！');
+		} else if (length === 1 && flag) {
+			throw new Error('想更改为单向转换请先使用 setVariant 方法指定语言变体！');
 		}
 	}
 
@@ -38,10 +46,22 @@ class ConverterRuleToken extends Token {
 		return this.length === 2;
 	}
 
+	/** @throws `Error` 不能用于将双向转换更改为单向转换或将不转换更改为双向转换 */
+	set bidirectional(flag) {
+		const {length} = this;
+		if (length === 3 && flag) {
+			this.makeBidirectional();
+		} else if (length === 2 && !flag) {
+			throw new Error('想更改为单向转换请使用 makeUnidirectional 方法！');
+		} else if (length === 1 && flag) {
+			throw new Error('想更改为双向转换请使用 setVariant 方法！');
+		}
+	}
+
 	/**
-	 * @param {string} rule 转换规则
-	 * @param {boolean} hasColon 是否带有":"
-	 * @param {Token[]} accum
+	 * @browser
+	 * @param rule 转换规则
+	 * @param hasColon 是否带有":"
 	 */
 	constructor(rule, hasColon = true, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum);
@@ -66,12 +86,12 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
-	 * @returns {string}
+	 * @browser
 	 */
 	toString(selector) {
-		if (this.length === 3 && !(selector && this.matches(selector))) {
-			const {childNodes: [from, variant, to]} = this;
+		const {childNodes} = this;
+		if (childNodes.length === 3 && !(selector && this.matches(selector))) {
+			const [from, variant, to] = childNodes;
 			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
 		}
 		return super.toString(selector, ':');
@@ -79,30 +99,32 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
-	 * @returns {string}
+	 * @browser
 	 */
 	text() {
-		if (this.length === 3) {
-			const {childNodes: [from, variant, to]} = this;
+		const {childNodes} = this;
+		if (childNodes.length === 3) {
+			const [from, variant, to] = childNodes;
 			return `${from.text()}=>${variant.text()}:${to.text()}`;
 		}
 		return super.text(':');
 	}
 
-	/**
-	 * @override
-	 * @param {number} i 子节点序号
-	 */
+	/** @private */
 	getGaps(i = 0) {
-		const {length} = this;
-		i = i < 0 ? i + length : i;
-		return i === 0 && length === 3 ? 2 : 1;
+		const {length} = this,
+			j = i < 0 ? i + length : i;
+		return j === 0 && length === 3 ? 2 : 1;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
-		if (this.length === 3) {
-			const {childNodes: [from, variant, to]} = this;
+		const {childNodes} = this;
+		if (childNodes.length === 3) {
+			const [from, variant, to] = childNodes;
 			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
 		}
 		return super.print({sep: ':'});
@@ -123,9 +145,9 @@ class ConverterRuleToken extends Token {
 		});
 	}
 
-	/** @override */
+	/** @private */
 	afterBuild() {
-		const /** @type {import('../lib/node').AstListener} */ converterRuleListener = (e, data) => {
+		const /** @implements */ converterRuleListener = (e, data) => {
 			const {prevTarget} = e;
 			if (this.length > 1 && this.childNodes.at(-2) === prevTarget) {
 				const v = prevTarget.text().trim(),
@@ -141,8 +163,7 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
-	 * @param {number} i 移除位置
-	 * @returns {AtomToken}
+	 * @param i 移除位置
 	 * @throws `Error` 至少保留1个子节点
 	 */
 	removeAt(i) {
@@ -174,16 +195,19 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * 设置转换目标
-	 * @param {string} to 转换目标
+	 * @param to 转换目标
 	 * @throws `SyntaxError` 非法的转换目标
 	 */
 	setTo(to) {
-		to = String(to);
 		const config = this.getAttribute('config'),
-			root = Parser.parse(`-{|${config.variants[0]}:${to}}-`, this.getAttribute('include'), undefined, config),
-			{length, firstChild: converter} = root,
-			{lastChild: converterRule, type, length: converterLength} = converter;
-		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.length !== 2) {
+			include = this.getAttribute('include'),
+			root = Parser.parse(`-{|${config.variants[0] ?? 'zh'}:${to}}-`, include, undefined, config),
+			{length, firstChild: converter} = root;
+		if (length !== 1 || converter.type !== 'converter') {
+			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
+		}
+		const {lastChild: converterRule} = converter;
+		if (converter.length !== 2 || converterRule.length !== 2) {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
 		const {lastChild} = converterRule;
@@ -193,7 +217,7 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * 设置语言变体
-	 * @param {string} variant 语言变体
+	 * @param variant 语言变体
 	 * @throws `RangeError` 无效的语言变体
 	 */
 	setVariant(variant) {
@@ -213,7 +237,7 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * 设置转换原文
-	 * @param {string} from 转换原文
+	 * @param from 转换原文
 	 * @throws `Error` 尚未指定语言变体
 	 * @throws `SyntaxError` 非法的转换原文
 	 */
@@ -222,12 +246,14 @@ class ConverterRuleToken extends Token {
 		if (!variant) {
 			throw new Error('请先指定语言变体！');
 		}
-		from = String(from);
 		const config = this.getAttribute('config'),
 			root = Parser.parse(`-{|${from}=>${variant}:}-`, this.getAttribute('include'), undefined, config),
-			{length, firstChild: converter} = root,
-			{type, length: converterLength, lastChild: converterRule} = converter;
-		if (length !== 1 || type !== 'converter' || converterLength !== 2 || converterRule.length !== 3) {
+			{length, firstChild: converter} = root;
+		if (length !== 1 || converter.type !== 'converter') {
+			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
+		}
+		const {lastChild: converterRule} = converter;
+		if (converter.length !== 2 || converterRule.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		} else if (unidirectional) {
 			this.firstChild.safeReplaceWith(converterRule.firstChild);
@@ -238,7 +264,7 @@ class ConverterRuleToken extends Token {
 
 	/**
 	 * 修改为单向转换
-	 * @param {string} from 转换来源
+	 * @param from 转换原文
 	 */
 	makeUnidirectional(from) {
 		this.setFrom(from);
@@ -251,6 +277,5 @@ class ConverterRuleToken extends Token {
 		}
 	}
 }
-
 Parser.classes.ConverterRuleToken = __filename;
 module.exports = ConverterRuleToken;

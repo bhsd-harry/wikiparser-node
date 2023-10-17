@@ -1,38 +1,34 @@
 'use strict';
+const hidden = require('../../mixin/hidden');
+const Parser = require('../../index');
+const NowikiBaseToken = require('./base');
 
-const hidden = require('../../mixin/hidden'),
-	Parser = require('../..'),
-	NowikiBaseToken = require('./base');
-
-/**
- * 状态开关
- * @classdesc `{childNodes: [AstText]}`
- */
+/** 状态开关 */
 class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
-	/** @type {'double-underscore'} */ type = 'double-underscore';
-
-	/** @override */
+	/** @browser */
+	type = 'double-underscore';
+	/** @private */
 	getPadding() {
 		return 2;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		return super.print({pre: '__', post: '__'});
 	}
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
-		return selector && this.matches(selector) ? '' : `__${String(this.firstChild)}__`;
+		return selector && this.matches(selector) ? '' : `__${this.firstChild.data}__`;
 	}
 
-	/**
-	 * @param {string} word 状态开关名
-	 * @param {import('..')[]} accum
-	 */
+	/** @param word 状态开关名 */
 	constructor(word, config = Parser.getConfig(), accum = []) {
 		super(word, config, accum);
 		this.setAttribute('name', word.toLowerCase());
@@ -40,20 +36,16 @@ class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => /** @type {this} */ (new DoubleUnderscoreToken(
-			String(this.firstChild), this.getAttribute('config'),
-		)));
+		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @returns {never}
 	 * @throws `Error` 禁止修改
 	 */
 	setText() {
 		throw new Error(`禁止修改 ${this.constructor.name}！`);
 	}
 }
-
 Parser.classes.DoubleUnderscoreToken = __filename;
 module.exports = DoubleUnderscoreToken;

@@ -1,19 +1,14 @@
 'use strict';
-
 const Parser = require('../index');
 
 /**
  * 不可包含换行符的类
- * @template {new (...args: any) => import('../src')} T
- * @param {T} Constructor 基类
- * @returns {T}
+ * @param constructor 基类
  */
-const singleLine = Constructor => {
-	const SingleLineConstructor = class extends Constructor {
-		/**
-		 * @override
-		 * @param {string} selector
-		 */
+const singleLine = constructor => {
+	/** 不可包含换行符的类 */
+	class SingleLineToken extends constructor {
+		/** @override */
 		toString(selector) {
 			return super.toString(selector).replaceAll('\n', ' ');
 		}
@@ -22,10 +17,9 @@ const singleLine = Constructor => {
 		text() {
 			return super.text().replaceAll('\n', ' ');
 		}
-	};
-	Object.defineProperty(SingleLineConstructor, 'name', {value: `SingleLine${Constructor.name}`});
-	return SingleLineConstructor;
+	}
+	Object.defineProperty(SingleLineToken, 'name', {value: `SingleLine${constructor.name}`});
+	return SingleLineToken;
 };
-
 Parser.mixins.singleLine = __filename;
 module.exports = singleLine;

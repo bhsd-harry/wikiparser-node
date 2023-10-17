@@ -1,23 +1,18 @@
 'use strict';
+const Parser = require('../index');
+const ListToken = require('../src/nowiki/list');
+const DdToken = require('../src/nowiki/dd');
 
-const Parser = require('../index'),
-	ListToken = require('../src/nowiki/list'),
-	DdToken = require('../src/nowiki/dd');
-
-/**
- * 解析列表
- * @param {string} text wikitext
- * @param {import('../src')[]} accum
- */
-const parseList = (text, config = Parser.getConfig(), accum = []) => {
-	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(text);
+/** 解析列表 */
+const parseList = (wikitext, config = Parser.getConfig(), accum = []) => {
+	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(wikitext);
 	if (!mt) {
-		return text;
+		return wikitext;
 	}
 	const [total, comment, prefix] = mt;
-	text = `${comment}\0${accum.length}d\x7F${text.slice(total.length)}`;
+	let text = `${comment}\0${accum.length}d\x7F${wikitext.slice(total.length)}`,
+		dt = prefix.split(';').length - 1;
 	new ListToken(prefix, config, accum);
-	let dt = prefix.split(';').length - 1;
 	if (!dt) {
 		return text;
 	}
@@ -26,7 +21,7 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 		lc = 0;
 	while (ex && dt) {
 		const {0: syntax, index} = ex;
-		if (syntax[0] === ':') {
+		if (syntax.startsWith(':')) {
 			if (syntax.length >= dt) {
 				new DdToken(':'.repeat(dt), config, accum);
 				return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + dt)}`;
@@ -54,6 +49,5 @@ const parseList = (text, config = Parser.getConfig(), accum = []) => {
 	}
 	return text;
 };
-
 Parser.parsers.parseList = __filename;
 module.exports = parseList;

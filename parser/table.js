@@ -1,19 +1,17 @@
 'use strict';
-
-const Parser = require('../index'),
-	Token = require('../src'),
-	TableToken = require('../src/table'),
-	TrToken = require('../src/table/tr'),
-	TdToken = require('../src/table/td'),
-	DdToken = require('../src/nowiki/dd');
+const Parser = require('../index');
+const Token = require('../src');
+const TableToken = require('../src/table');
+const TrToken = require('../src/table/tr');
+const TdToken = require('../src/table/td');
+const DdToken = require('../src/nowiki/dd');
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
- * @param {Token & {firstChild: import('../lib/text')}} root 根节点
- * @param {Token[]} accum
+ * @param {Token & {firstChild: AstText}} root 根节点
  */
 const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(), accum = []) => {
-	const /** @type {TrToken[]} */ stack = [],
+	const stack = [],
 		lines = data.split('\n');
 	let out = type === 'root' || type === 'parameter-value' || type === 'ext-inner' && name === 'poem'
 		? ''
@@ -21,8 +19,8 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 
 	/**
 	 * 向表格中插入纯文本
-	 * @param {string} str 待插入的文本
-	 * @param {TrToken} top 当前解析的表格或表格行
+	 * @param str 待插入的文本
+	 * @param top 当前解析的表格或表格行
 	 */
 	const push = (str, top) => {
 		if (!top) {
@@ -42,7 +40,8 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 		let top = stack.pop();
 		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine),
 			line = outLine.slice(spaces.length),
-			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u.exec(line);
+			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
+				.exec(line);
 		if (matchesStart) {
 			while (top && top.type !== 'td') {
 				top = stack.pop();
@@ -59,12 +58,12 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 			out += `\n${outLine}`;
 			continue;
 		}
-		const matches = // eslint-disable-line operator-linebreak
-			/^(?:(\|\}|\0\d+!\x7F\}|\0\d+\}\x7F)|(\|-+|\0\d+!\x7F-+|\0\d+-\x7F-*)(?!-)|(!|(?:\||\0\d+!\x7F)\+?))(.*)$/u
-				.exec(line);
+		// eslint-disable-next-line operator-linebreak
+		const matches = /^(?:(\|\}|\0\d+!\x7F\}|\0\d+\}\x7F)|(\|-+|\0\d+!\x7F-+|\0\d+-\x7F-*)(?!-)|(!|(?:\||\0\d+!\x7F)\+?))(.*)$/u
+			.exec(line);
 		if (!matches) {
 			push(`\n${outLine}`, top);
-			stack.push(...top ? [top] : []);
+			stack.push(top);
 			continue;
 		}
 		const [, closing, row, cell, attr] = matches;
@@ -108,6 +107,5 @@ const parseTable = ({firstChild: {data}, type, name}, config = Parser.getConfig(
 	}
 	return out.slice(1);
 };
-
 Parser.parsers.parseTable = __filename;
 module.exports = parseTable;

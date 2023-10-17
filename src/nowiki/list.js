@@ -1,16 +1,12 @@
 'use strict';
+const sol = require('../../mixin/sol');
+const Parser = require('../../index');
+const DdToken = require('./dd');
 
-const sol = require('../../mixin/sol'),
-	Parser = require('../..'),
-	DdToken = require('./dd');
-
-/**
- * ;:*#
- * @classdesc `{childNodes: [AstText]}`
- */
+/** 位于行首的`;:*#` */
 class ListToken extends sol(DdToken) {
-	/** @type {'list'} */ type = 'list';
+	/** @browser */
+	type = 'list';
 }
-
 Parser.classes.ListToken = __filename;
 module.exports = ListToken;

@@ -207,7 +207,7 @@ class AttributeToken extends fixed(Token) {
 	 * @param value 属性值
 	 * @param quotes 引号
 	 */
-	constructor(type, tag, key, equal = '', value = '', quotes = [undefined, undefined], config = Parser.getConfig(), accum = []) {
+	constructor(type, tag, key, equal = '', value = '', quotes = [], config = Parser.getConfig(), accum = []) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
 			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
@@ -304,7 +304,6 @@ class AttributeToken extends fixed(Token) {
 	/**
 	 * @override
 	 * @browser
-	 * @param start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
@@ -323,11 +322,14 @@ class AttributeToken extends fixed(Token) {
 			|| (type !== 'ext-attr' && !/\{\{[^{]+\}\}/u.test(name) || tag in htmlAttrs)
 			&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
 			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))) {
-			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
-			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(lastChild, rect, 'insecure style'));
+		} else if (name === 'tabindex' && typeof value === 'string' && value.trim() !== '0') {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(lastChild, rect, 'nonzero tabindex'));
 		}
 		return errors;
 	}
@@ -365,7 +367,6 @@ class AttributeToken extends fixed(Token) {
 		const [key, value] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
 			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
@@ -381,7 +382,10 @@ class AttributeToken extends fixed(Token) {
 
 	/** 闭合引号 */
 	close() {
-		[this.#quotes[1]] = this.#quotes;
+		const [opening] = this.#quotes;
+		if (opening) {
+			this.#quotes[1] = opening;
+		}
 	}
 
 	/**
@@ -413,8 +417,8 @@ class AttributeToken extends fixed(Token) {
 		} else {
 			attrs = tag.firstChild;
 		}
-		const {length: attrsLength, firstChild} = attrs;
-		if (attrsLength !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
+		const {firstChild} = attrs;
+		if (attrs.length !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
 		const {lastChild} = firstChild;
@@ -452,8 +456,8 @@ class AttributeToken extends fixed(Token) {
 		} else {
 			attrs = tag.firstChild;
 		}
-		const {length: attrsLength, firstChild: attr} = attrs;
-		if (attrsLength !== 1 || attr.type !== this.type || attr.value !== true) {
+		const {firstChild: attr} = attrs;
+		if (attrs.length !== 1 || attr.type !== this.type || attr.value !== true) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
 		const {firstChild} = attr;

@@ -12,7 +12,7 @@ if (/^- \[[^\]]+\]\(#[^)]+\)$/mu.test(content)) {
 	throw new Error(`文档 ${filename} 中已包含目录！`);
 }
 
-const toc = content.split('\n').filter(line => line[0] === '#').map(line => line.replace(
+const toc = content.split('\n').filter(line => line.startsWith('#')).map(line => line.replace(
 	/^(#+)\s+(\S.*)$/u,
 	/** @type {function(...string): string} */
 	(_, level, title) => `${'\t'.repeat(level.length - 1)}- [${title}](#${

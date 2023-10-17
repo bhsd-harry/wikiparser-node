@@ -1,13 +1,11 @@
 'use strict';
-
-/** @typedef {import('..')} Token */
-
-const {explode, noWrap} = require('../../util/string'),
-	{generateForChild} = require('../../util/lint'),
-	Parser = require('../..'),
-	LinkToken = require('.'),
-	ImageParameterToken = require('../imageParameter');
-
+const string_1 = require('../../util/string');
+const {explode, noWrap} = string_1;
+const lint_1 = require('../../util/lint');
+const {generateForChild} = lint_1;
+const Parser = require('../../index');
+const LinkBaseToken = require('./base');
+const ImageParameterToken = require('../imageParameter');
 const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
 	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
@@ -16,26 +14,20 @@ const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
-class FileToken extends LinkToken {
-	/** @type {'file'|'gallery-image'|'imagemap-image'} */ type = 'file';
+class FileToken extends LinkBaseToken {
+	/** @browser */
+	type = 'file';
 
-	/**
-	 * 图片链接
-	 * @this {import('./file')}
-	 */
+	/** 图片链接 */
 	get link() {
-		return this.getArg('link')?.link;
+		return this.getArg('link')?.link ?? super.link;
 	}
 
-	/** @this {import('./file')} */
 	set link(value) {
 		this.setValue('link', String(value));
 	}
 
-	/**
-	 * 图片大小
-	 * @this {import('./file')}
-	 */
+	/** 图片大小 */
 	get size() {
 		return this.getArg('width')?.size;
 	}
@@ -45,7 +37,6 @@ class FileToken extends LinkToken {
 		return this.size?.width;
 	}
 
-	/** @this {import('./file')} */
 	set width(width) {
 		const arg = this.getArg('width');
 		if (arg) {
@@ -60,37 +51,32 @@ class FileToken extends LinkToken {
 		return this.size?.height;
 	}
 
-	/** @this {import('./file')} */
 	set height(height) {
 		const arg = this.getArg('width');
 		if (arg) {
 			arg.height = height;
 		} else {
-			this.setValue('width', `x${height}`);
+			this.setValue('width', height && `x${height}`);
 		}
 	}
 
 	/**
-	 * @param {string} link 文件名
-	 * @param {string} text 图片参数
-	 * @param {Token[]} accum
-	 * @param {string} delimiter `|`
-	 * @complexity `n`
+	 * @browser
+	 * @param link 文件名
+	 * @param text 图片参数
+	 * @param delimiter `|`
 	 */
 	constructor(link, text, config = Parser.getConfig(), accum = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
-		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
-		this.seal(
-			['selfLink', 'interwiki', 'setLangLink', 'setFragment', 'asSelfLink', 'setLinkText', 'pipeTrick'],
-			true,
-		);
+		this.append(...explode('-{', '}-', '|', text).map(
+			part => new ImageParameterToken(part, config, accum),
+		));
 	}
 
 	/**
 	 * @override
-	 * @this {import('./file')}
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
@@ -103,8 +89,7 @@ class FileToken extends LinkToken {
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key));
 		if (args.length === keys.length
-			&& frameKeys.length < 2 && horizAlignKeys.length < 2 && vertAlignKeys.length < 2
-		) {
+			&& frameKeys.length < 2 && horizAlignKeys.length < 2 && vertAlignKeys.length < 2) {
 			return errors;
 		}
 		const rect = {start, ...this.getRootNode().posFromIndex(start)};
@@ -113,42 +98,28 @@ class FileToken extends LinkToken {
 			if (key === 'caption') {
 				relevantArgs = [
 					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
-					relevantArgs.at(-1),
+					...relevantArgs.slice(-1),
 				];
 			}
 			if (relevantArgs.length > 1) {
-				errors.push(...relevantArgs.map(arg => generateForChild(
-					arg, rect, Parser.msg('duplicated image $1 parameter', key),
-				)));
+				errors.push(...relevantArgs.map(arg => generateForChild(arg, rect, Parser.msg('duplicated image $1 parameter', key))));
 			}
 		}
 		if (frameKeys.length > 1) {
-			errors.push(
-				...args.filter(({name}) => frame.has(name)).map(arg => generateForChild(
-					arg, rect, Parser.msg('conflicting image $1 parameter', 'frame'),
-				)),
-			);
+			errors.push(...args.filter(({name}) => frame.has(name)).map(arg => generateForChild(arg, rect, Parser.msg('conflicting image $1 parameter', 'frame'))));
 		}
 		if (horizAlignKeys.length > 1) {
-			errors.push(
-				...args.filter(({name}) => horizAlign.has(name)).map(arg => generateForChild(
-					arg, rect, Parser.msg('conflicting image $1 parameter', 'horizontal-alignment'),
-				)),
-			);
+			errors.push(...args.filter(({name}) => horizAlign.has(name)).map(arg => generateForChild(arg, rect, Parser.msg('conflicting image $1 parameter', 'horizontal-alignment'))));
 		}
 		if (vertAlignKeys.length > 1) {
-			errors.push(
-				...args.filter(({name}) => vertAlign.has(name)).map(arg => generateForChild(
-					arg, rect, Parser.msg('conflicting image $1 parameter', 'vertical-alignment'),
-				)),
-			);
+			errors.push(...args.filter(({name}) => vertAlign.has(name)).map(arg => generateForChild(arg, rect, Parser.msg('conflicting image $1 parameter', 'vertical-alignment'))));
 		}
 		return errors;
 	}
 
 	/**
 	 * 获取所有图片参数节点
-	 * @this {import('./file')}
+	 * @browser
 	 */
 	getAllArgs() {
 		const {childNodes: [, ...args]} = this;
@@ -157,9 +128,8 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取指定图片参数
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @complexity `n`
+	 * @browser
+	 * @param key 参数名
 	 */
 	getArgs(key) {
 		return typeof key === 'string'
@@ -169,10 +139,9 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取特定类型的图片属性参数节点
-	 * @this {import('./file')}
-	 * @param {Set<string>} keys 接受的参数名
-	 * @param {string} type 类型名
-	 * @complexity `n`
+	 * @browser
+	 * @param keys 接受的参数名
+	 * @param type 类型名
 	 */
 	#getTypedArgs(keys, type) {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
@@ -184,7 +153,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取图片框架属性参数节点
-	 * @this {this & import('./file')}
+	 * @browser
 	 */
 	getFrameArgs() {
 		return this.#getTypedArgs(frame, '框架');
@@ -192,7 +161,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取图片水平对齐参数节点
-	 * @this {this & import('./file')}
+	 * @browser
 	 */
 	getHorizAlignArgs() {
 		return this.#getTypedArgs(horizAlign, '水平对齐');
@@ -200,7 +169,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取图片垂直对齐参数节点
-	 * @this {this & import('./file')}
+	 * @browser
 	 */
 	getVertAlignArgs() {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
@@ -208,9 +177,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取生效的指定图片参数
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	getArg(key) {
 		return this.getArgs(key).at(-1);
@@ -218,9 +185,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 是否具有指定图片参数
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	hasArg(key) {
 		return this.getArgs(key).length > 0;
@@ -228,9 +193,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 移除指定图片参数
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	removeArg(key) {
 		for (const token of this.getArgs(key)) {
@@ -238,20 +201,14 @@ class FileToken extends LinkToken {
 		}
 	}
 
-	/**
-	 * 获取图片参数名
-	 * @this {import('./file')}
-	 * @complexity `n`
-	 */
+	/** 获取图片参数名 */
 	getKeys() {
-		return this.getAllArgs().map(({name}) => name);
+		return new Set(this.getAllArgs().map(({name}) => name));
 	}
 
 	/**
 	 * 获取指定的图片参数值
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	getValues(key) {
 		return this.getArgs(key).map(token => token.getValue());
@@ -259,9 +216,7 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 获取生效的指定图片参数值
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @complexity `n`
+	 * @param key 参数名
 	 */
 	getValue(key) {
 		return this.getArg(key)?.getValue();
@@ -269,14 +224,12 @@ class FileToken extends LinkToken {
 
 	/**
 	 * 设置图片参数
-	 * @this {import('./file')}
-	 * @param {string} key 参数名
-	 * @param {string|boolean} value 参数值
-	 * @complexity `n`
+	 * @param key 参数名
+	 * @param value 参数值
 	 * @throws `RangeError` 未定义的图片参数
 	 * @throws `SyntaxError` 非法的参数
 	 */
-	setValue(key, value) {
+	setValue(key, value = false) {
 		if (typeof key !== 'string') {
 			this.typeError('setValue', 'String');
 		} else if (value === false) {
@@ -284,7 +237,6 @@ class FileToken extends LinkToken {
 			return;
 		}
 		const token = this.getArg(key);
-		value = value === true ? value : String(value);
 		if (token) {
 			token.setValue(value);
 			return;
@@ -307,14 +259,16 @@ class FileToken extends LinkToken {
 		}
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
-			{length, firstChild: file} = root,
-			{name, type, length: fileLength, lastChild: imageParameter} = /** @type {import('./file')} */ (file);
-		if (length !== 1 || type !== 'file' || name !== 'File:F' || fileLength !== 2 || imageParameter.name !== key) {
+			{length, firstChild: file} = root;
+		if (length !== 1 || file.type !== 'file' || file.length !== 2) {
+			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
+		}
+		const {name, lastChild: imageParameter} = file;
+		if (name !== 'File:F' || imageParameter.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
 		this.insertAt(imageParameter);
 	}
 }
-
 Parser.classes.FileToken = __filename;
 module.exports = FileToken;

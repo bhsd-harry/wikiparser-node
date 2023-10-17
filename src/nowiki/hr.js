@@ -1,19 +1,16 @@
 'use strict';
+const sol = require('../../mixin/sol');
+const Parser = require('../../index');
+const NowikiBaseToken = require('./base');
 
-const Parser = require('../..'),
-	sol = require('../../mixin/sol'),
-	NowikiBaseToken = require('./base');
-
-/**
- * `<hr>`
- * @classdesc `{childNodes: [AstText]}`
- */
+/** `<hr>` */
 class HrToken extends sol(NowikiBaseToken) {
-	/** @type {'hr'} */ type = 'hr';
+	/** @browser */
+	type = 'hr';
 
 	/**
-	 * @param {number} n 字符串长度
-	 * @param {import('..')[]} accum
+	 * @browser
+	 * @param n 字符串长度
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super('-'.repeat(n), config, accum);
@@ -21,13 +18,13 @@ class HrToken extends sol(NowikiBaseToken) {
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => /** @type {this} */ (new HrToken(String(this).length, this.getAttribute('config'))));
+		return Parser.run(() => new HrToken(this.firstChild.data.length, this.getAttribute('config')));
 	}
 
 	/**
 	 * @override
-	 * @param {string} str 新文本
-	 * @throws `RangeError` 错误的\<hr\>语法
+	 * @param str 新文本
+	 * @throws `RangeError` 错误的`<hr>`语法
 	 */
 	setText(str) {
 		if (str.length < 4 || /[^-]/u.test(str)) {
@@ -36,6 +33,5 @@ class HrToken extends sol(NowikiBaseToken) {
 		return super.setText(str);
 	}
 }
-
 Parser.classes.HrToken = __filename;
 module.exports = HrToken;

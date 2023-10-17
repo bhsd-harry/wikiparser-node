@@ -1,27 +1,24 @@
 'use strict';
+const hidden = require('../../mixin/hidden');
+const lint_1 = require('../../util/lint');
+const {generateForSelf} = lint_1;
+const Parser = require('../../index');
+const NowikiBaseToken = require('./base');
 
-const hidden = require('../../mixin/hidden'),
-	{generateForSelf} = require('../../util/lint'),
-	Parser = require('../..'),
-	NowikiBaseToken = require('./base');
-
-/**
- * HTML注释，不可见
- * @classdesc `{childNodes: [AstText]}`
- */
+/** HTML注释，不可见 */
 class CommentToken extends hidden(NowikiBaseToken) {
-	/** @type {'comment'} */ type = 'comment';
+	/** @browser */
+	type = 'comment';
 	closed;
 
 	/** 内部wikitext */
 	get innerText() {
-		return String(this.firstChild);
+		return this.firstChild.data;
 	}
 
 	/**
-	 * @param {string} wikitext wikitext
-	 * @param {boolean} closed 是否闭合
-	 * @param {import('..')[]} accum
+	 * @browser
+	 * @param closed 是否闭合
 	 */
 	constructor(wikitext, closed = true, config = Parser.getConfig(), accum = []) {
 		super(wikitext, config, accum);
@@ -29,19 +26,22 @@ class CommentToken extends hidden(NowikiBaseToken) {
 		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
-	/** @override */
+	/** @private */
 	getPadding() {
 		return 4;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
@@ -49,7 +49,7 @@ class CommentToken extends hidden(NowikiBaseToken) {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		if (!this.closed && this.nextSibling) {
@@ -58,16 +58,13 @@ class CommentToken extends hidden(NowikiBaseToken) {
 		}
 		return selector && this.matches(selector)
 			? ''
-			: `<!--${String(this.firstChild)}${this.closed ? '-->' : ''}`;
+			: `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @override */
 	cloneNode() {
-		return Parser.run(() => /** @type {this} */ (new CommentToken(
-			String(this.firstChild), this.closed, this.getAttribute('config'),
-		)));
+		return Parser.run(() => new CommentToken(this.firstChild.data, this.closed, this.getAttribute('config')));
 	}
 }
-
 Parser.classes.CommentToken = __filename;
 module.exports = CommentToken;

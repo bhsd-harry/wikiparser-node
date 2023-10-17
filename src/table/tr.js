@@ -1,223 +1,29 @@
 'use strict';
-
-/** @typedef {import('../../lib/text')} AstText */
-
-const {generateForChild} = require('../../util/lint'),
-	attributesParent = require('../../mixin/attributesParent'),
-	Parser = require('../..'),
-	Token = require('..'),
-	SyntaxToken = require('../syntax'),
-	AttributesToken = require('../attributes');
-
-const openingPattern = /^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u;
-
-/**
- * 转义表格语法
- * @param {SyntaxToken} syntax 表格语法节点
- */
-const escapeTable = syntax => {
-	const templates = {'{|': '(!', '|}': '!)', '||': '!!', '|': '!'},
-		wikitext = syntax.childNodes.map(
-			child => child.type === 'text'
-				? String(child).replace(/\{\||\|\}|\|{2}|\|/gu, p => `{{${templates[p]}}}`)
-				: String(child),
-		).join(''),
-		token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
-	syntax.replaceChildren(...token.childNodes);
-};
+const Parser = require('../../index');
+const TrBaseToken = require('./trBase');
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
-class TrToken extends attributesParent(Token, 1) {
-	/** @type {'tr'|'table'|'td'} */ type = 'tr';
+class TrToken extends TrBaseToken {
+	/** @browser */
+	type = 'tr';
 
 	/**
-	 * @param {string} syntax 表格语法
-	 * @param {string} attr 表格属性
-	 * @param {Token[]} accum
-	 * @param {RegExp} pattern 表格语法正则
+	 * @browser
+	 * @param syntax 表格语法
+	 * @param attr 表格属性
 	 */
-	constructor(syntax, attr = '', config = Parser.getConfig(), accum = [], pattern = openingPattern) {
-		super(undefined, config, true, accum, {
+	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
+		super(/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u, syntax, attr, config, accum, {
 			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
 		});
-		this.append(
-			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
-				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-			}),
-			new AttributesToken(attr, 'table-attrs', this.type, config, accum),
-		);
-		this.protectChildren(0, 1);
-	}
-
-	/**
-	 * @override
-	 * @this {import('./tr')}
-	 * @param {number} start 起始位置
-	 */
-	lint(start = this.getAbsoluteIndex()) {
-		const errors = super.lint(start),
-			inter = this.childNodes.find(({type}) => type === 'table-inter');
-		if (!inter) {
-			return errors;
-		}
-		const first = /** @type {import('../transclude')|import('../arg')} */ (inter.childNodes.find(
-				child => child.text().trim(),
-			)),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
-		if (!first || tdPattern.test(String(first)) || first.type === 'arg' && tdPattern.test(first.default || '')) {
-			return errors;
-		} else if (first.type === 'magic-word') {
-			try {
-				const possibleValues = first.getPossibleValues();
-				if (possibleValues.every(token => tdPattern.test(token.text()))) {
-					return errors;
-				}
-			} catch {}
-		}
-		const error = generateForChild(inter, {start}, 'content to be moved out from the table');
-		errors.push({
-			...error,
-			startIndex: error.startIndex + 1,
-			startLine: error.startLine + 1,
-			startCol: 0,
-			excerpt: error.excerpt.slice(1),
-		});
-		return errors;
-	}
-
-	/** @override */
-	text() {
-		this.#correct();
-		const str = super.text();
-		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
-	}
-
-	/**
-	 * @override
-	 * @this {import('./tr') & {constructor: typeof import('./tr')}}
-	 */
-	cloneNode() {
-		const [syntax, attr, inner, ...cloned] = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new this.constructor(undefined, undefined, this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(syntax);
-			token.childNodes[1].safeReplaceWith(attr);
-			if (token.type === 'td') { // TdToken
-				token.childNodes[2].safeReplaceWith(inner);
-			} else if (inner !== undefined) {
-				token.insertAt(inner);
-			}
-			token.append(...cloned);
-			// eslint-disable-next-line no-extra-parens
-			return /** @type {this} */ (/** @type {unknown} */ (token));
-		});
-	}
-
-	/** 修复简单的表格语法错误 */
-	#correct() {
-		const {childNodes: [,, child]} = this;
-		if (child?.constructor === Token) {
-			const {firstChild} = child;
-			if (firstChild.type !== 'text') {
-				child.prepend('\n');
-			} else if (firstChild.data[0] !== '\n') {
-				firstChild.insertData(0, '\n');
-			}
-		}
-	}
-
-	/**
-	 * @override
-	 * @param {string} selector
-	 */
-	toString(selector) {
-		this.#correct();
-		return super.toString(selector);
-	}
-
-	/**
-	 * 转义表格语法
-	 * @complexity `n`
-	 */
-	escape() {
-		for (const child of this.childNodes) {
-			if (child instanceof SyntaxToken) {
-				escapeTable(child);
-			} else if (child instanceof TrToken) {
-				child.escape();
-			}
-		}
-	}
-
-	/**
-	 * 设置表格语法
-	 * @this {import('./tr')}
-	 * @param {string} syntax 表格语法
-	 * @param {boolean} esc 是否需要转义
-	 */
-	setSyntax(syntax, esc = false) {
-		const {firstChild} = this;
-		firstChild.replaceChildren(syntax);
-		if (esc) {
-			escapeTable(firstChild);
-		}
-	}
-
-	/**
-	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
-	 */
-	removeAt(i) {
-		const TdToken = require('./td');
-		const child = this.childNodes.at(i);
-		if (child instanceof TdToken && child.isIndependent()) {
-			const {nextSibling} = child;
-			if (nextSibling?.type === 'td') {
-				/** @type {TdToken} */ (nextSibling).independence();
-			}
-		}
-		return super.removeAt(i);
-	}
-
-	/**
-	 * @override
-	 * @template {string|AstText|Token} T
-	 * @param {T} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
-	 */
-	insertAt(token, i = this.length) {
-		if (!Parser.running && !(token instanceof TrToken)) {
-			this.typeError('insertAt', 'TrToken');
-		}
-		const TdToken = require('./td');
-		const child = this.childNodes.at(i);
-		if (token instanceof TdToken && token.isIndependent() && child instanceof TdToken) {
-			child.independence();
-		}
-		return super.insertAt(token, i);
-	}
-
-	/**
-	 * 获取行数
-	 * @complexity `n`
-	 */
-	getRowCount() {
-		const TdToken = require('./td');
-		return Number(this.childNodes.some(
-			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
-		));
 	}
 
 	/**
 	 * 获取相邻行
-	 * @this {import('./tr')}
-	 * @param {(childNodes: Token[], index: number) => Token[]} subset 筛选兄弟节点的方法
-	 * @complexity `n`
+	 * @param subset 筛选兄弟节点的方法
 	 */
 	#getSiblingRow(subset) {
 		const {parentNode} = this;
@@ -234,93 +40,15 @@ class TrToken extends attributesParent(Token, 1) {
 		return undefined;
 	}
 
-	/**
-	 * 获取下一行
-	 * @this {this & import('./tr')}
-	 * @complexity `n`
-	 */
+	/** 获取下一行 */
 	getNextRow() {
 		return this.#getSiblingRow((childNodes, index) => childNodes.slice(index + 1));
 	}
 
-	/**
-	 * 获取前一行
-	 * @this {this & import('./tr')}
-	 * @complexity `n`
-	 */
+	/** 获取前一行 */
 	getPreviousRow() {
 		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).reverse());
 	}
-
-	/**
-	 * 获取列数
-	 * @complexity `n`
-	 */
-	getColCount() {
-		const TdToken = require('./td');
-		let count = 0,
-			last = 0;
-		for (const child of this.childNodes) {
-			if (child instanceof TdToken) {
-				last = child.isIndependent() ? Number(child.subtype !== 'caption') : last;
-				count += last;
-			}
-		}
-		return count;
-	}
-
-	/**
-	 * 获取第n列
-	 * @this {import('./tr')}
-	 * @param {number} n 列号
-	 * @param {boolean} insert 是否用于判断插入新列的位置
-	 * @returns {TdToken|TrToken|SyntaxToken}
-	 * @complexity `n`
-	 * @throws `RangeError` 不存在对应单元格
-	 */
-	getNthCol(n, insert = false) {
-		if (!Number.isInteger(n)) {
-			this.typeError('getNthCol', 'Number');
-		}
-		const nCols = this.getColCount();
-		n = n < 0 ? n + nCols : n;
-		if (n < 0 || n > nCols || n === nCols && !insert) {
-			throw new RangeError(`不存在第 ${n} 个单元格！`);
-		}
-		const TdToken = require('./td');
-		let last = 0;
-		for (const child of this.childNodes.slice(2)) {
-			if (child instanceof TdToken) {
-				if (child.isIndependent()) {
-					last = Number(child.subtype !== 'caption');
-				}
-				n -= last;
-				if (n < 0) {
-					return child;
-				}
-			} else if (child.type === 'tr' || child.type === 'table-syntax') {
-				return /** @type {TrToken|SyntaxToken} */ (child);
-			}
-		}
-		return undefined;
-	}
-
-	/**
-	 * 插入新的单元格
-	 * @this {import('./tr')}
-	 * @param {string|Token} inner 单元格内部wikitext
-	 * @param {import('./tr').TableCoords} coord 单元格坐标
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string>} attr 单元格属性
-	 * @returns {TdToken}
-	 * @complexity `n`
-	 */
-	insertTableCell(inner, {column}, subtype = 'td', attr = {}) {
-		const TdToken = require('./td');
-		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		return this.insertBefore(token, this.getNthCol(column, true));
-	}
 }
-
 Parser.classes.TrToken = __filename;
 module.exports = TrToken;

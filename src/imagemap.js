@@ -1,40 +1,37 @@
 'use strict';
-
-const {generateForSelf, generateForChild} = require('../util/lint'),
-	singleLine = require('../mixin/singleLine'),
-	Parser = require('..'),
-	Token = require('.'),
-	NoincludeToken = require('./nowiki/noinclude'),
-	GalleryImageToken = require('./link/galleryImage'),
-	ImagemapLinkToken = require('./imagemapLink');
+const lint_1 = require('../util/lint');
+const {generateForSelf, generateForChild} = lint_1;
+const singleLine = require('../mixin/singleLine');
+const Parser = require('../index');
+const Token = require('.');
+const NoincludeToken = require('./nowiki/noinclude');
+const GalleryImageToken = require('./link/galleryImage');
+const ImagemapLinkToken = require('./imagemapLink');
 
 /**
  * `<imagemap>`
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
 class ImagemapToken extends Token {
+	/** @browser */
 	type = 'ext-inner';
-	name = 'imagemap';
 
 	/**
 	 * 图片
-	 * @returns {GalleryImageToken}
+	 * @browser
 	 */
 	get image() {
 		return this.childNodes.find(({type}) => type === 'imagemap-image');
 	}
 
-	/**
-	 * 链接
-	 * @returns {ImagemapLinkToken[]}
-	 */
+	/** 链接 */
 	get links() {
 		return this.childNodes.filter(({type}) => type === 'imagemap-link');
 	}
 
 	/**
-	 * @param {string} inner 标签内部wikitext
-	 * @param {Token[]} accum
+	 * @browser
+	 * @param inner 标签内部wikitext
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
@@ -47,23 +44,20 @@ class ImagemapToken extends Token {
 		const lines = inner.split('\n'),
 			protocols = new Set(config.protocol.split('|')),
 			SingleLineNoincludeToken = singleLine(NoincludeToken),
-			fallback = /** @param {string} line 一行文本 */ line => {
+			fallback = /** @param line 一行文本 */ line => {
 				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 			};
 		let first = true,
 			error = false;
 		for (const line of lines) {
 			const trimmed = line.trim();
-			if (error || !trimmed || trimmed[0] === '#') {
+			if (error || !trimmed || trimmed.startsWith('#')) {
 				//
 			} else if (first) {
 				const [file, ...options] = line.split('|'),
 					title = this.normalizeTitle(file, 0, true);
 				if (title.valid && !title.interwiki && title.ns === 6) {
-					const token = new GalleryImageToken(
-						file, options.length > 0 ? options.join('|') : undefined, config, accum,
-					);
-					token.type = 'imagemap-image';
+					const token = new GalleryImageToken('imagemap', file, options.length > 0 ? options.join('|') : undefined, config, accum);
 					super.insertAt(token);
 					first = false;
 					continue;
@@ -77,31 +71,20 @@ class ImagemapToken extends Token {
 			} else if (line.includes('[')) {
 				const i = line.indexOf('['),
 					substr = line.slice(i),
-					mtIn = /^\[{2}([^|]+)(?:\|([^\]]+))?\]{2}[\w\s]*$/u.exec(substr);
+					mtIn = /^\[{2}([^|]+)(?:\|([^\]]+))?\]{2}[\w\s]*$/u
+						.exec(substr);
 				if (mtIn) {
 					const title = this.normalizeTitle(mtIn[1], 0, true, false, true);
 					if (title.valid) {
-						super.insertAt(new ImagemapLinkToken(
-							line.slice(0, i),
-							mtIn.slice(1),
-							substr.slice(substr.indexOf(']]') + 2),
-							config,
-							accum,
-						));
+						super.insertAt(new ImagemapLinkToken(line.slice(0, i), mtIn.slice(1), substr.slice(substr.indexOf(']]') + 2), config, accum));
 						continue;
 					}
 				} else if (protocols.has(substr.slice(1, substr.indexOf(':') + 1))
-					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
-				) {
-					const mtEx = /^\[([^\]\s]+)(?:(\s+)(\S[^\]]*)?)?\][\w\s]*$/u.exec(substr);
+					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))) {
+					const mtEx = /^\[([^\]\s]+)(?:(\s+)(\S[^\]]*)?)?\][\w\s]*$/u
+						.exec(substr);
 					if (mtEx) {
-						super.insertAt(new ImagemapLinkToken(
-							line.slice(0, i),
-							mtEx.slice(1),
-							substr.slice(substr.indexOf(']') + 1),
-							config,
-							accum,
-						));
+						super.insertAt(new ImagemapLinkToken(line.slice(0, i), mtEx.slice(1), substr.slice(substr.indexOf(']') + 1), config, accum));
 						continue;
 					}
 				}
@@ -112,60 +95,57 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		return super.toString(selector, '\n');
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	text() {
 		return super.text('\n').replace(/\n{2,}/gu, '\n');
 	}
 
-	/** @override */
+	/** @private */
 	getGaps() {
 		return 1;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		return super.print({sep: '\n'});
 	}
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 		if (this.image) {
-			errors.push(
-				...this.childNodes.filter(child => {
-					const str = String(child).trim();
-					return child.type === 'noinclude' && str && str[0] !== '#';
-				}).map(child => generateForChild(child, rect, 'invalid link in <imagemap>')),
-			);
+			errors.push(...this.childNodes.filter(child => {
+				const str = String(child).trim();
+				return child.type === 'noinclude' && str && !str.startsWith('#');
+			}).map(child => generateForChild(child, rect, 'invalid link in <imagemap>')));
 		} else {
 			errors.push(generateForSelf(this, rect, '<imagemap> without an image'));
 		}
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @template {string|Token|import('../lib/text')} T
-	 * @param {T} token 待插入的节点
-	 * @param {number} i 插入位置
-	 * @throws `Error` 当前缺少合法图片
-	 * @throws `RangeError` 已有一张合法图片
-	 */
+	/** @ignore */
 	insertAt(token, i = 0) {
 		const {image} = this;
-		if (!image && (token.type === 'imagemap-link' || token.type === 'text')) {
+		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
 			throw new Error('当前缺少一张合法图片！');
-		} else if (image && token.type === 'imagemap-image') {
+		} else if (image && typeof token !== 'string' && token.type === 'imagemap-image') {
 			throw new RangeError('已有一张合法图片！');
 		}
 		return super.insertAt(token, i);
@@ -173,7 +153,7 @@ class ImagemapToken extends Token {
 
 	/**
 	 * @override
-	 * @param {number} i 移除位置
+	 * @param i 移除位置
 	 * @throws `Error` 禁止移除图片
 	 */
 	removeAt(i) {
@@ -194,6 +174,5 @@ class ImagemapToken extends Token {
 		});
 	}
 }
-
 Parser.classes.ImagemapToken = __filename;
 module.exports = ImagemapToken;

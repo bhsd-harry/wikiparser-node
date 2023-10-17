@@ -11,19 +11,13 @@ class PreToken extends Token {
 	/** @browser */
 	type = 'ext-inner';
 	/** @browser */
-	name = 'pre';
-	/** @browser */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		wikitext = wikitext?.replace(// eslint-disable-line no-param-reassign
-			/(<nowiki>)(.*?)(<\/nowiki>)/giu, (_, opening, inner, closing) => {
-				// @ts-expect-error abstract class
-				new NoincludeToken(opening, config, accum);
-				// @ts-expect-error abstract class
-				new NoincludeToken(closing, config, accum);
-				return `\0${accum.length - 1}c\x7F${inner}\0${accum.length}c\x7F`;
-			},
-		);
-		super(wikitext, config, true, accum, {
+		const text = wikitext?.replace(/(<nowiki>)(.*?)(<\/nowiki>)/giu, (_, opening, inner, closing) => {
+			new NoincludeToken(opening, config, accum);
+			new NoincludeToken(closing, config, accum);
+			return `\0${accum.length - 1}c\x7F${inner}\0${accum.length}c\x7F`;
+		});
+		super(text, config, true, accum, {
 			AstText: ':', NoincludeToken: ':', ConverterToken: ':',
 		});
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);
@@ -38,7 +32,6 @@ class PreToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
 			const token = new PreToken(undefined, this.getAttribute('config'));
 			token.append(...cloned);
 			return token;

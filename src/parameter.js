@@ -35,7 +35,7 @@ class ParameterToken extends fixed(Token) {
 	/** 是否是重复参数 */
 	get duplicated() {
 		try {
-			return Boolean(this.parentNode.getDuplicatedArgs().some(([key]) => key === this.name));
+			return Boolean(this.parentNode?.getDuplicatedArgs()?.some(([key]) => key === this.name));
 		} catch {
 			return false;
 		}
@@ -118,7 +118,6 @@ class ParameterToken extends fixed(Token) {
 	/**
 	 * @override
 	 * @browser
-	 * @param start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
@@ -145,7 +144,6 @@ class ParameterToken extends fixed(Token) {
 		const [key, value] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config);
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
@@ -166,7 +164,7 @@ class ParameterToken extends fixed(Token) {
 	/** 获取参数值 */
 	getValue() {
 		const value = this.lastChild.text();
-		return this.anon && this.parentNode.isTemplate() ? value : value.trim();
+		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 
 	/**
@@ -175,15 +173,17 @@ class ParameterToken extends fixed(Token) {
 	 * @throws `SyntaxError` 非法的模板参数
 	 */
 	setValue(value) {
-		const templateLike = this.parentNode.isTemplate(),
+		const templateLike = this.parentNode?.isTemplate() !== false,
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: transclude} = root,
-			{lastChild: parameter, type, name, length: transcludeLength} = transclude,
-			targetType = templateLike ? 'template' : 'magic-word',
+			targetType = templateLike ? 'template' : 'magic-word';
+		if (length !== 1 || transclude.type !== targetType) {
+			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
+		}
+		const {lastChild: parameter, name} = transclude,
 			targetName = templateLike ? 'T' : 'lc';
-		if (length !== 1 || type !== targetType || name !== targetName || transcludeLength !== 2
-			|| parameter.anon !== this.anon || parameter.name !== '1') {
+		if (name !== targetName || transclude.length !== 2 || parameter.anon !== this.anon || parameter.name !== '1') {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
 		const {lastChild} = parameter;
@@ -202,23 +202,23 @@ class ParameterToken extends fixed(Token) {
 	rename(key, force = false) {
 		const {parentNode} = this;
 		// 必须检测是否是TranscludeToken
-		if (!parentNode.isTemplate()) {
+		if (parentNode?.isTemplate() === false) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
 		}
 		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: template} = root,
-			{type, name, lastChild: parameter, length: templateLength} = template;
-		if (length !== 1 || type !== 'template' || name !== 'T' || templateLength !== 2) {
+			{length, firstChild: template} = root;
+		if (length !== 1 || template.type !== 'template' || template.name !== 'T' || template.length !== 2) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
 		}
-		const {name: parameterName, firstChild} = parameter;
-		if (this.name === parameterName) {
-			Parser.warn('未改变实际参数名', parameterName);
-		} else if (parentNode.hasArg(parameterName)) {
+		const {lastChild: parameter} = template,
+			{name, firstChild} = parameter;
+		if (this.name === name) {
+			Parser.warn('未改变实际参数名', name);
+		} else if (parentNode?.hasArg(name)) {
 			if (force) {
-				Parser.warn('参数更名造成重复参数', parameterName);
+				Parser.warn('参数更名造成重复参数', name);
 			} else {
-				throw new RangeError(`参数更名造成重复参数：${parameterName}`);
+				throw new RangeError(`参数更名造成重复参数：${name}`);
 			}
 		}
 		parameter.destroy();

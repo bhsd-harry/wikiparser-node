@@ -11,6 +11,8 @@ const rootRequire = (file, dir = '') => require(`${file.includes('/') ? '' : `./
 const Parser = {
 	config: 'default',
 	i18n: undefined,
+	conversionTable: new Map(),
+	redirects: new Map(),
 	MAX_STAGE: 11,
 	warning: true,
 	debugging: false,
@@ -157,8 +159,10 @@ const Parser = {
 			}
 		};
 		this.run(() => {
-			build(['title', 'main', 'fragment']);
+			build(['main', 'fragment']);
 		});
+		titleObj.autoConvert(this.conversionTable);
+		titleObj.redirects = this.redirects;
 		return titleObj;
 	},
 	/** @implements */
@@ -258,7 +262,6 @@ const Parser = {
 		}
 		for (const [name, filePath] of entries) {
 			if (name in global) {
-				// @ts-expect-error noImplicitAny
 				global[name] = require(filePath);
 			}
 		}
@@ -297,7 +300,7 @@ const Parser = {
 };
 const def = {},
 	immutable = new Set(['MAX_STAGE', 'aliases', 'typeAliases', 'promises']),
-	enumerable = new Set(['config', 'normalizeTitle', 'parse', 'isInterwiki']);
+	enumerable = new Set(['config', 'conversionTable', 'redirects', 'normalizeTitle', 'parse', 'isInterwiki']);
 for (const key in Parser) {
 	if (immutable.has(key)) {
 		def[key] = {enumerable: false, writable: false};

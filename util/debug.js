@@ -2,8 +2,7 @@
 
 /**
  * 定制TypeError消息
- * @param Constructor 类
- * @param Constructor.name 类名
+ * @param {Function} Constructor 类
  * @param args 可接受的参数类型
  * @throws `TypeError`
  */

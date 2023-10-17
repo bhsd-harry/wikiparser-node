@@ -1,19 +1,17 @@
 'use strict';
+const lint_1 = require('../../util/lint');
+const {generateForSelf} = lint_1;
+const Parser = require('../../index');
+const NowikiBaseToken = require('./base');
 
-const {generateForSelf} = require('../../util/lint'),
-	Parser = require('../..'),
-	NowikiBaseToken = require('./base');
-
-/**
- * `<hr>`
- * @classdesc `{childNodes: [AstText]}`
- */
+/** `''`和`'''` */
 class QuoteToken extends NowikiBaseToken {
-	/** @type {'quote'} */ type = 'quote';
+	/** @browser */
+	type = 'quote';
 
 	/**
-	 * @param {number} n 字符串长度
-	 * @param {import('..')[]} accum
+	 * @browser
+	 * @param n 字符串长度
 	 */
 	constructor(n, config = Parser.getConfig(), accum = []) {
 		super(`'`.repeat(n), config, accum);
@@ -22,12 +20,12 @@ class QuoteToken extends NowikiBaseToken {
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
-			/** @type {import('../..').LintError[]} */ errors = [];
+			errors = [];
 		let refError, wikitext;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
@@ -38,9 +36,9 @@ class QuoteToken extends NowikiBaseToken {
 				excerpt = wikitext.slice(startIndex, startIndex + 50);
 			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});
 		}
-		if (nextSibling?.type === 'text' && nextSibling.data[0] === `'`) {
-			refError ||= generateForSelf(this, {start}, message);
-			wikitext ||= String(this.getRootNode());
+		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
+			refError ??= generateForSelf(this, {start}, message);
+			wikitext ??= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u),
 				endIndex = startIndex + length,
@@ -50,9 +48,14 @@ class QuoteToken extends NowikiBaseToken {
 		return errors;
 	}
 
+	/** @override */
+	cloneNode() {
+		return Parser.run(() => new QuoteToken(Number(this.name), this.getAttribute('config')));
+	}
+
 	/**
 	 * @override
-	 * @param {string} str 新文本
+	 * @param str 新文本
 	 * @throws `RangeError` 错误的单引号语法
 	 */
 	setText(str) {
@@ -62,6 +65,5 @@ class QuoteToken extends NowikiBaseToken {
 		throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);
 	}
 }
-
 Parser.classes.QuoteToken = __filename;
 module.exports = QuoteToken;

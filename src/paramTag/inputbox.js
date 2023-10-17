@@ -1,35 +1,20 @@
 'use strict';
+const parseBrackets = require('../../parser/brackets');
+const Parser = require('../../index');
+const ParamTagToken = require('.');
 
-const parseBrackets = require('../../parser/brackets'),
-	singleLine = require('../../mixin/singleLine'),
-	Parser = require('../..'),
-	ParamTagToken = require('.'),
-	AtomToken = require('../atom');
-
-/**
- * `<inputbox>`
- * @classdesc `{childNodes: ...SingleLineAtomToken}`
- */
+/** `<inputbox>` */
 class InputboxToken extends ParamTagToken {
-	name = 'inputbox';
-
-	/**
-	 * @param {string} wikitext wikitext
-	 * @param {import('..')[]} accum
-	 */
+	/** @browser */
 	constructor(wikitext, config = Parser.getConfig(), accum = []) {
-		super(undefined, config, accum);
-		wikitext = parseBrackets(wikitext, config, accum);
-		accum.splice(accum.indexOf(this), 1);
-		accum.push(this);
-		if (wikitext) {
-			const SingleLineAtomToken = singleLine(AtomToken);
-			this.append(...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-				AstText: ':', ArgToken: ':', TranscludeToken: ':',
-			})));
-		}
+		const placeholder = Symbol('InputboxToken');
+		accum.push(placeholder);
+		const text = wikitext && parseBrackets(wikitext, config, accum);
+		accum.splice(accum.indexOf(placeholder), 1);
+		super(text, config, accum, {
+			ArgToken: ':', TranscludeToken: ':',
+		});
 	}
 }
-
 Parser.classes.InputboxToken = __filename;
 module.exports = InputboxToken;

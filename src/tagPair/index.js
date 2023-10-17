@@ -46,12 +46,12 @@ class TagPairToken extends fixed(Token) {
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
-	 * @param closed 是否封闭；约定`undefined`表示自闭合，`''`表示未闭合
+	 * @param closed 是否封闭；约定`undefined`表示自封闭，`''`表示未闭合
 	 */
 	constructor(name, attr, inner, closed, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true);
 		this.setAttribute('name', name.toLowerCase());
-		this.#tags = [name, closed || name]; // eslint-disable-line @typescript-eslint/prefer-nullish-coalescing
+		this.#tags = [name, closed || name];
 		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
 		this.append(attr, inner);
@@ -79,8 +79,8 @@ class TagPairToken extends fixed(Token) {
 			this.#closed = true;
 		}
 		return this.#selfClosing
-			? `<${opening}${String(firstChild)}/>`
-			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
+			? `<${opening}${firstChild.toString(selector)}/>`
+			: `<${opening}${firstChild.toString(selector)}>${lastChild.toString(selector)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/**

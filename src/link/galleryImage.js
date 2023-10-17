@@ -1,23 +1,21 @@
 'use strict';
+const lint_1 = require('../../util/lint');
+const {generateForSelf} = lint_1;
+const debug_1 = require('../../util/debug');
+const {undo} = debug_1;
+const singleLine = require('../../mixin/singleLine');
+const Parser = require('../../index');
+const Token = require('..');
+const FileToken = require('./file');
 
-const {generateForSelf} = require('../../util/lint'),
-	{undo} = require('../../util/debug'),
-	singleLine = require('../../mixin/singleLine'),
-	Parser = require('../..'),
-	Token = require('..'),
-	FileToken = require('./file');
-
-/**
- * 图片
- * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
- */
+/** 图库图片 */
 class GalleryImageToken extends singleLine(FileToken) {
-	/** @type {'gallery-image'|'imagemap-image'} */ type = 'gallery-image';
+	/** @browser */
 	#invalid = false;
 
 	/** 图片链接 */
 	get link() {
-		return this.type === 'imagemap-image' ? undefined : super.link;
+		return this.type === 'imagemap-image' ? '' : super.link;
 	}
 
 	set link(value) {
@@ -27,11 +25,12 @@ class GalleryImageToken extends singleLine(FileToken) {
 	}
 
 	/**
-	 * @param {string} link 图片文件名
-	 * @param {string} text 图片参数
-	 * @param {import('..')[]} accum
+	 * @browser
+	 * @param type 图片类型
+	 * @param link 图片文件名
+	 * @param text 图片参数
 	 */
-	constructor(link, text, config = Parser.getConfig(), accum = []) {
+	constructor(type, link, text, config = Parser.getConfig(), accum = []) {
 		let token;
 		if (text !== undefined) {
 			token = new Token(text, config, true, accum);
@@ -42,23 +41,16 @@ class GalleryImageToken extends singleLine(FileToken) {
 			accum.splice(accum.indexOf(token), 1);
 		}
 		super(link, token?.toString(), config, accum);
-		this.setAttribute('bracket', false);
-		if (!Object.values(config.img).includes('width')) {
-			this.seal(['size', 'width', 'height'], true);
-		}
+		this.setAttribute('bracket', false).type = `${type}-image`;
 	}
 
-	/**
-	 * @override
-	 * @throws `Error` 非法的内链目标
-	 * @throws `Error` 不可更改命名空间
-	 */
+	/** @private */
 	afterBuild() {
 		const initImagemap = this.type === 'imagemap-image',
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.setAttribute('name', titleObj.title);
 		this.#invalid = Boolean(titleObj.interwiki) || titleObj.ns !== 6; // 只用于gallery-image的首次解析
-		const /** @type {import('../../lib/node').AstListener} */ linkListener = (e, data) => {
+		const /** @implements */ linkListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
@@ -78,14 +70,14 @@ class GalleryImageToken extends singleLine(FileToken) {
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
 
-	/** @override */
+	/** @private */
 	getPadding() {
 		return 0;
 	}
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
@@ -97,24 +89,26 @@ class GalleryImageToken extends singleLine(FileToken) {
 
 	/**
 	 * @override
-	 * @param {string} link 链接目标
+	 * @param link 链接目标
 	 * @throws `SyntaxError` 非法的链接目标
 	 */
 	setTarget(link) {
-		link = String(link);
 		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(`<gallery>${link}</gallery>`, include, 1, config),
-			{length, firstChild: gallery} = root,
-			{type, lastChild: {length: galleryLength, firstChild: image}} = gallery;
-		if (length !== 1 || type !== 'ext' || galleryLength !== 1 || image.type !== 'gallery-image') {
+			{length, firstChild: ext} = root;
+		if (length !== 1 || ext.type !== 'ext') {
 			throw new SyntaxError(`非法的图库文件名：${link}`);
 		}
-		const {firstChild} = /** @type {import('./galleryImage')} */ (image);
+		const {lastChild: gallery} = ext,
+			{firstChild: image} = gallery;
+		if (gallery.length !== 1 || image.type !== 'gallery-image') {
+			throw new SyntaxError(`非法的图库文件名：${link}`);
+		}
+		const {firstChild} = image;
 		image.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
-
 Parser.classes.GalleryImageToken = __filename;
 module.exports = GalleryImageToken;

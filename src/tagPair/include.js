@@ -1,22 +1,22 @@
 'use strict';
-
-const hidden = require('../../mixin/hidden'),
-	Parser = require('../..'),
-	TagPairToken = require('.');
+const hidden = require('../../mixin/hidden');
+const Parser = require('../../index');
+const TagPairToken = require('.');
 
 /**
- * `<includeonly>`或`<noinclude>`
+ * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
 class IncludeToken extends hidden(TagPairToken) {
-	/** @type {'include'} */ type = 'include';
+	/** @browser */
+	type = 'include';
 
 	/**
-	 * @param {string} name 标签名
-	 * @param {string} attr 标签属性
-	 * @param {string} inner 内部wikitext
-	 * @param {string} closed 是否封闭
-	 * @param {import('..')[]} accum
+	 * @browser
+	 * @param name 标签名
+	 * @param attr 标签属性
+	 * @param inner 内部wikitext
+	 * @param closed 是否封闭
 	 */
 	constructor(name, attr = '', inner = undefined, closed = undefined, config = Parser.getConfig(), accum = []) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
@@ -26,17 +26,14 @@ class IncludeToken extends hidden(TagPairToken) {
 	cloneNode() {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
-			inner = this.selfClosing ? undefined : String(this.lastChild),
-			closing = this.selfClosing || !this.closed ? undefined : tags[1],
-			token = Parser.run(() => /** @type {this} */ (new IncludeToken(
-				tags[0], String(this.firstChild), inner, closing, config,
-			)));
-		return token;
+			inner = this.selfClosing ? undefined : this.lastChild.data,
+			closing = this.selfClosing || !this.closed ? undefined : tags[1];
+		return Parser.run(() => new IncludeToken(tags[0], this.firstChild.data, inner, closing, config));
 	}
 
 	/**
 	 * @override
-	 * @param {string} str 新文本
+	 * @param str 新文本
 	 */
 	setText(str) {
 		return super.setText(str, 1);
@@ -44,9 +41,8 @@ class IncludeToken extends hidden(TagPairToken) {
 
 	/** 清除标签属性 */
 	removeAttr() {
-		super.setText('', 0);
+		super.setText('');
 	}
 }
-
 Parser.classes.IncludeToken = __filename;
 module.exports = IncludeToken;

@@ -1,18 +1,13 @@
 'use strict';
+const Parser = require('../index');
+const QuoteToken = require('../src/nowiki/quote');
 
-const Parser = require('../index'),
-	QuoteToken = require('../src/nowiki/quote');
-
-/**
- * 解析单引号
- * @param {string} text wikitext
- * @param {import('../src')[]} accum
- */
-const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
-	const arr = text.split(/('{2,})/u),
+/** 解析单引号 */
+const parseQuotes = (wikitext, config = Parser.getConfig(), accum = []) => {
+	const arr = wikitext.split(/('{2,})/u),
 		{length} = arr;
 	if (length === 1) {
-		return text;
+		return wikitext;
 	}
 	let nBold = 0,
 		nItalic = 0,
@@ -38,7 +33,7 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 				} else if (arr[i - 1].at(-2) === ' ') {
 					firstSingle = i;
 				} else {
-					firstMulti ||= i;
+					firstMulti ??= i;
 				}
 				break;
 			default:
@@ -59,6 +54,5 @@ const parseQuotes = (text, config = Parser.getConfig(), accum = []) => {
 	}
 	return arr.join('');
 };
-
 Parser.parsers.parseQuotes = __filename;
 module.exports = parseQuotes;

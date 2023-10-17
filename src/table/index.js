@@ -1,26 +1,23 @@
 'use strict';
-
-/** @typedef {import('./tr').TableCoords} TableCoords */
-/** @typedef {import('.').TableRenderedCoords} TableRenderedCoords */
-/** @typedef {import('..')} Token */
-
-const {generateForChild} = require('../../util/lint'),
-	{noWrap} = require('../../util/string'),
-	{isPlainObject} = require('../../util/base'),
-	assert = require('assert/strict'),
-	Parser = require('../..'),
-	Token = require('..'),
-	TrToken = require('./tr'),
-	TdToken = require('./td'),
-	SyntaxToken = require('../syntax');
-
-const openingPattern = /^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u,
-	closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
+const lint_1 = require('../../util/lint');
+const {generateForChild} = lint_1;
+const string_1 = require('../../util/string');
+const {noWrap} = string_1;
+const base_1 = require('../../util/base');
+const {isPlainObject} = base_1;
+const assert = require('assert/strict');
+const Parser = require('../../index');
+const Token = require('..');
+const TrToken = require('./tr');
+const TrBaseToken = require('./trBase');
+const TdToken = require('./td');
+const SyntaxToken = require('../syntax');
+const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
 /**
  * 比较两个表格坐标
- * @param {TableCoords} coords1 坐标1
- * @param {TableCoords} coords2 坐标2
+ * @param coords1 坐标1
+ * @param coords2 坐标2
  */
 const cmpCoords = (coords1, coords2) => {
 	const diff = coords1.row - coords2.row;
@@ -35,9 +32,9 @@ const isRowEnd = ({type}) => type === 'tr' || type === 'table-syntax';
 
 /**
  * 是否是合并单元格的第一列
- * @param {TableCoords[]} rowLayout 行布局
- * @param {number} i 单元格序号
- * @param {boolean} oneCol 是否仅有一列
+ * @param rowLayout 行布局
+ * @param i 单元格序号
+ * @param oneCol 是否仅有一列
  */
 const isStartCol = (rowLayout, i, oneCol = false) => {
 	const coords = rowLayout[i];
@@ -46,10 +43,9 @@ const isStartCol = (rowLayout, i, oneCol = false) => {
 
 /**
  * 设置表格格式
- * @param {Map<TdToken, boolean>} cells 单元格
- * @param {string|Record<string, string|boolean>} attr 属性
- * @param {boolean} multi 是否对所有单元格设置，或是仅对行首单元格设置
- * @complexity `n`
+ * @param cells 单元格
+ * @param attr 属性
+ * @param multi 是否对所有单元格设置，或是仅对行首单元格设置
  */
 const format = (cells, attr = {}, multi = false) => {
 	for (const [token, start] of cells) {
@@ -67,12 +63,11 @@ const format = (cells, attr = {}, multi = false) => {
 
 /**
  * 填补缺失单元格
- * @param {number} y 行号
- * @param {TrToken} rowToken 表格行
- * @param {TableCoords[][]} layout 表格布局
- * @param {number} maxCol 最大列数
- * @param {Token} token 待填充的单元格
- * @complexity `n`
+ * @param y 行号
+ * @param rowToken 表格行
+ * @param layout 表格布局
+ * @param maxCol 最大列数
+ * @param token 待填充的单元格
  */
 const fill = (y, rowToken, layout, maxCol, token) => {
 	const rowLayout = layout[y],
@@ -86,20 +81,17 @@ const fill = (y, rowToken, layout, maxCol, token) => {
 		}
 	});
 };
-
 /** @extends {Array<TableCoords[]>} */
 class Layout extends Array {
-	/**
-	 * 打印表格布局
-	 * @complexity `n`
-	 */
+	/** 打印表格布局 */
 	print() {
-		const hBorders = new Array(this.length + 1).fill().map((_, i) => {
+		const hBorders = new Array(this.length + 1).fill(undefined).map((_, i) => {
 				const prev = this[i - 1] ?? [],
 					next = this[i] ?? [];
-				return new Array(Math.max(prev.length, next.length)).fill().map((__, j) => prev[j] !== next[j]);
+				return new Array(Math.max(prev.length, next.length)).fill(undefined)
+					.map((__, j) => prev[j] !== next[j]);
 			}),
-			vBorders = this.map(cur => new Array(cur.length + 1).fill().map((_, j) => cur[j - 1] !== cur[j]));
+			vBorders = this.map(cur => new Array(cur.length + 1).fill(undefined).map((_, j) => cur[j - 1] !== cur[j]));
 		let out = '';
 		for (let i = 0; i <= this.length; i++) {
 			const hBorder = hBorders[i].map(Number),
@@ -108,8 +100,8 @@ class Layout extends Array {
 				// eslint-disable-next-line no-sparse-arrays
 				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
 			for (let j = 0; j <= hBorder.length; j++) {
-				// eslint-disable-next-line no-bitwise
-				const bit = (vBorderTop[j] << 3) + (vBorderBottom[j] << 0) + (hBorder[j - 1] << 2) + (hBorder[j] << 1);
+				const bit = (vBorderTop[j] << 3) + (vBorderBottom[j] << 0) // eslint-disable-line no-bitwise
+					+ (hBorder[j - 1] << 2) + (hBorder[j] << 1); // eslint-disable-line no-bitwise
 				out += `${border[bit]}${hBorder[j] ? '─' : ' '}`;
 			}
 			out += '\n';
@@ -122,56 +114,38 @@ class Layout extends Array {
  * 表格
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
-class TableToken extends TrToken {
-	/** @type {'table'} */ type = 'table';
+class TableToken extends TrBaseToken {
+	/** @browser */
+	type = 'table';
 
-	/** 表格是否闭合 */
+	/**
+	 * 表格是否闭合
+	 * @browser
+	 */
 	get closed() {
 		return this.lastChild.type === 'table-syntax';
 	}
 
 	set closed(closed) {
-		if (closed === true && !this.closed) {
+		if (closed && !this.closed) {
 			this.close(this.closest('parameter') ? '\n{{!)}}' : '\n|}');
 		}
 	}
 
 	/**
-	 * @param {string} syntax 表格语法
-	 * @param {string} attr 表格属性
-	 * @param {Token[]} accum
+	 * @browser
+	 * @param syntax 表格语法
+	 * @param attr 表格属性
 	 */
 	constructor(syntax, attr = '', config = Parser.getConfig(), accum = []) {
-		super(syntax, attr, config, accum, openingPattern);
-		this.setAttribute('acceptable', {
+		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, attr, config, accum, {
 			Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:',
 		});
 	}
 
 	/**
 	 * @override
-	 * @template {string|import('../../lib/text')|Token} T
-	 * @param {T} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
-	 * @throws `SyntaxError` 表格的闭合部分非法
-	 */
-	insertAt(token, i = this.length) {
-		const previous = this.childNodes.at(i - 1);
-		if (typeof token !== 'string' && token.type === 'td' && previous.type === 'tr') {
-			Parser.warn('改为将单元格插入当前行。');
-			return previous.insertAt(token);
-		} else if (i > 0 && i === this.length && token instanceof SyntaxToken
-			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
-		) {
-			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(String(token))}`);
-		}
-		return super.insertAt(token, i);
-	}
-
-	/**
-	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start);
@@ -186,18 +160,18 @@ class TableToken extends TrToken {
 
 	/**
 	 * 闭合表格语法
-	 * @complexity `n`
-	 * @param {string} syntax 表格结尾语法
+	 * @browser
+	 * @param syntax 表格结尾语法
 	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false) {
-		halfParsed &&= Parser.running;
-		const config = this.getAttribute('config'),
+		const isHalfParsed = halfParsed && Parser.running,
+			config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
-			inner = !halfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
+			inner = !isHalfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
 			{lastChild} = this;
-		if (!halfParsed && !closingPattern.test(inner.text())) {
-			throw new SyntaxError(`表格的闭合部分不符合语法！${noWrap(syntax)}`);
+		if (inner && !closingPattern.test(inner.text())) {
+			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(syntax)}`);
 		} else if (lastChild instanceof SyntaxToken) {
 			lastChild.replaceChildren(...inner.childNodes);
 		} else {
@@ -215,101 +189,92 @@ class TableToken extends TrToken {
 
 	/**
 	 * @override
-	 * @returns {number}
-	 * @complexity `n`
+	 * @param token 待插入的子节点
+	 * @param i 插入位置
+	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
-	getRowCount() {
-		return super.getRowCount()
-			+ this.childNodes.filter(child => child.type === 'tr' && /** @type {TrToken} */ (child).getRowCount())
-				.length;
+	insertAt(token, i = this.length) {
+		const previous = this.childNodes.at(i - 1);
+		if (typeof token !== 'string' && token.type === 'td' && previous?.type === 'tr') {
+			Parser.warn('改为将单元格插入当前行。');
+			return previous.insertAt(token);
+		} else if (i > 0 && i === this.length && token instanceof SyntaxToken
+			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))) {
+			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(String(token))}`);
+		}
+		return super.insertAt(token, i);
 	}
 
 	/** @override */
-	getPreviousRow() { // eslint-disable-line class-methods-use-this
-		return undefined;
+	getRowCount() {
+		return super.getRowCount() + this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
-	/**
-	 * @override
-	 * @complexity `n`
-	 */
+	/** 获取下一行 */
 	getNextRow() {
 		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false);
 	}
 
-	/**
-	 * 获取第n行
-	 * @template {boolean} T
-	 * @param {number} n 行号
-	 * @param {boolean} force 是否将表格自身视为第一行
-	 * @param {T} insert 是否用于判断插入新行的位置
-	 * @returns {T extends false ? TrToken : TrToken|SyntaxToken}
-	 * @complexity `n`
-	 * @throws `RangeError` 不存在该行
-	 */
-	getNthRow(n, force = false, insert = /** @type {T} */ (false)) {
+	/** @ignore */
+	getNthRow(n, force = false, insert = false) {
 		if (!Number.isInteger(n)) {
 			this.typeError('getNthRow', 'Number');
 		}
 		const nRows = this.getRowCount(),
 			isRow = super.getRowCount();
-		n = n < 0 ? n + nRows : n;
-		if (n === 0 && (isRow || force && nRows === 0)) {
-			// eslint-disable-next-line no-extra-parens
-			return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (/** @type {TrToken} */ (this));
-		} else if (n < 0 || n > nRows || n === nRows && !insert) {
-			throw new RangeError(`不存在第 ${n} 行！`);
+		let m = n < 0 ? n + nRows : n;
+		if (m === 0 && (isRow || force && nRows === 0)) {
+			return this;
+		} else if (m < 0 || m > nRows || m === nRows && !insert) {
+			throw new RangeError(`不存在第 ${m} 行！`);
 		} else if (isRow) {
-			n--;
+			m--;
 		}
 		for (const child of this.childNodes.slice(2)) {
-			if (child.type === 'tr' && /** @type {TrToken} */ (child).getRowCount()) {
-				n--;
-				if (n < 0) {
-					return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (child);
+			if (child.type === 'tr' && child.getRowCount()) {
+				m--;
+				if (m < 0) {
+					return child;
 				}
 			} else if (child.type === 'table-syntax') {
-				return /** @type {T extends false ? TrToken : TrToken|SyntaxToken} */ (child);
+				return child;
 			}
 		}
 		return undefined;
 	}
 
-	/**
-	 * 获取所有行
-	 * @complexity `n`
-	 */
+	/** 获取所有行 */
 	getAllRows() {
 		const {childNodes: [, ...childNodes]} = this;
 		return [
 			...super.getRowCount() ? [this] : [],
-			.../** @type {TrToken[]} */(childNodes).filter(child => child.type === 'tr' && child.getRowCount()),
+			...childNodes.filter(child => child.type === 'tr' && child.getRowCount()),
 		];
 	}
 
 	/**
 	 * 获取指定坐标的单元格
-	 * @param {TableCoords & TableRenderedCoords} coords 表格坐标
-	 * @complexity `n`
+	 * @param coords 表格坐标
 	 */
 	getNthCell(coords) {
-		if (coords.row === undefined) {
-			coords = this.toRawCoords(coords);
-		}
-		return coords && this.getNthRow(coords.row, false, false).getNthCol(coords.column);
+		const rawCoords = coords.row === undefined ? this.toRawCoords(coords) : coords;
+		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 
 	/**
 	 * 获取表格布局
-	 * @param {TableCoords & TableRenderedCoords} stop 中止条件
-	 * @complexity `n`
+	 * @param stop 中止条件
+	 * @param stop.row 中止行
+	 * @param stop.column 中止列
+	 * @param stop.x 中止行
+	 * @param stop.y 中止列
 	 */
-	getLayout(stop = {}) {
+	getLayout(stop) {
 		const rows = this.getAllRows(),
 			{length} = rows,
-			layout = new Layout(...new Array(length).fill().map(() => []));
+			layout = new Layout(...new Array(length).fill(undefined).map(() => []));
 		for (let i = 0; i < length; i++) {
-			if (i > (stop.row ?? stop.y)) {
+			if (i > (stop?.row ?? stop?.y ?? NaN)) {
 				break;
 			}
 			const rowLayout = layout[i];
@@ -322,13 +287,13 @@ class TableToken extends TrToken {
 						last = cell.subtype !== 'caption';
 					}
 					if (last) {
-						const /** @type {TableCoords} */ coords = {row: i, column: j},
+						const coords = {row: i, column: j},
 							{rowspan, colspan} = cell;
 						j++;
 						while (rowLayout[k]) {
 							k++;
 						}
-						if (i === stop.row && j > stop.column) {
+						if (i === stop?.row && j > (stop.column ?? NaN)) {
 							layout[i][k] = coords;
 							return layout;
 						}
@@ -338,7 +303,7 @@ class TableToken extends TrToken {
 							}
 						}
 						k += colspan;
-						if (i === stop.y && k > stop.x) {
+						if (i === stop?.y && k > (stop.x ?? NaN)) {
 							return layout;
 						}
 					}
@@ -350,10 +315,7 @@ class TableToken extends TrToken {
 		return layout;
 	}
 
-	/**
-	 * 打印表格布局
-	 * @complexity `n`
-	 */
+	/** 打印表格布局 */
 	printLayout() {
 		this.getLayout().print();
 	}
@@ -361,8 +323,6 @@ class TableToken extends TrToken {
 	/**
 	 * 转换为渲染后的表格坐标
 	 * @param {TableCoords} coord wikitext中的表格坐标
-	 * @returns {TableRenderedCoords}
-	 * @complexity `n`
 	 */
 	toRenderedCoords({row, column}) {
 		if (!Number.isInteger(row) || !Number.isInteger(column)) {
@@ -376,7 +336,6 @@ class TableToken extends TrToken {
 	/**
 	 * 转换为wikitext中的表格坐标
 	 * @param {TableRenderedCoords} coord 渲染后的表格坐标
-	 * @complexity `n`
 	 */
 	toRawCoords({x, y}) {
 		if (!Number.isInteger(x) || !Number.isInteger(y)) {
@@ -396,23 +355,19 @@ class TableToken extends TrToken {
 
 	/**
 	 * 获取完整行
-	 * @param {number} y 行号
-	 * @complexity `n²`
+	 * @param y 行号
 	 */
 	getFullRow(y) {
 		if (!Number.isInteger(y)) {
 			this.typeError('getFullRow', 'Number');
 		}
 		const rows = this.getAllRows();
-		return new Map(
-			this.getLayout({y})[y]?.map(({row, column}) => [rows[row].getNthCol(column), row === y]),
-		);
+		return new Map(this.getLayout({y})[y]?.map(({row, column}) => [rows[row].getNthCol(column), row === y]));
 	}
 
 	/**
 	 * 获取完整列
-	 * @param {number} x 列号
-	 * @complexity `n`
+	 * @param x 列号
 	 */
 	getFullCol(x) {
 		if (!Number.isInteger(x)) {
@@ -421,17 +376,14 @@ class TableToken extends TrToken {
 		const layout = this.getLayout(),
 			colLayout = layout.map(row => row[x]).filter(Boolean),
 			rows = this.getAllRows();
-		return new Map(
-			colLayout.map(coords => [rows[coords.row].getNthCol(coords.column), layout[coords.row][x - 1] !== coords]),
-		);
+		return new Map(colLayout.map(coords => [rows[coords.row].getNthCol(coords.column), layout[coords.row][x - 1] !== coords]));
 	}
 
 	/**
 	 * 设置行格式
-	 * @param {number} y 行号
-	 * @param {string|Record<string, string|boolean>} attr 表格属性
-	 * @param {boolean} multiRow 是否对所有单元格设置，或是仅对行首单元格设置
-	 * @complexity `n²`
+	 * @param y 行号
+	 * @param attr 表格属性
+	 * @param multiRow 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
 	formatTableRow(y, attr = {}, multiRow = false) {
 		format(this.getFullRow(y), attr, multiRow);
@@ -439,10 +391,9 @@ class TableToken extends TrToken {
 
 	/**
 	 * 设置列格式
-	 * @param {number} x 列号
-	 * @param {string|Record<string, string|boolean>} attr 表格属性
-	 * @param {boolean} multiCol 是否对所有单元格设置，或是仅对行首单元格设置
-	 * @complexity `n`
+	 * @param x 列号
+	 * @param attr 表格属性
+	 * @param multiCol 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
 	formatTableCol(x, attr = {}, multiCol = false) {
 		format(this.getFullCol(x), attr, multiCol);
@@ -450,11 +401,10 @@ class TableToken extends TrToken {
 
 	/**
 	 * 填补表格行
-	 * @param {number} y 行号
-	 * @param {string|Token} inner 填充内容
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string>} attr 表格属性
-	 * @complexity `n`
+	 * @param y 行号
+	 * @param inner 填充内容
+	 * @param subtype 单元格类型
+	 * @param attr 表格属性
 	 */
 	fillTableRow(y, inner, subtype = 'td', attr = {}) {
 		const rowToken = this.getNthRow(y),
@@ -466,10 +416,9 @@ class TableToken extends TrToken {
 
 	/**
 	 * 填补表格
-	 * @param {string|Token} inner 填充内容
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string>} attr 表格属性
-	 * @complexity `n`
+	 * @param inner 填充内容
+	 * @param subtype 单元格类型
+	 * @param attr 表格属性
 	 */
 	fillTable(inner, subtype = 'td', attr = {}) {
 		const rowTokens = this.getAllRows(),
@@ -483,38 +432,36 @@ class TableToken extends TrToken {
 
 	/**
 	 * @override
-	 * @param {string|Token} inner 单元格内部wikitext
-	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string|boolean>} attr 单元格属性
-	 * @returns {TdToken}
-	 * @complexity `n`
+	 * @param inner 单元格内部wikitext
+	 * @param coords 单元格坐标
+	 * @param subtype 单元格类型
+	 * @param attr 单元格属性
 	 * @throws `RangeError` 指定的坐标不是单元格起始点
 	 */
 	insertTableCell(inner, coords, subtype = 'td', attr = {}) {
+		let rawCoords;
 		if (coords.column === undefined) {
 			const {x, y} = coords;
-			coords = this.toRawCoords(coords);
-			if (!coords?.start) {
+			rawCoords = this.toRawCoords(coords);
+			if (!rawCoords?.start) {
 				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
 			}
+		} else {
+			rawCoords = coords;
 		}
-		const rowToken = this.getNthRow(coords.row ?? 0, true);
+		const rowToken = this.getNthRow(rawCoords.row, true);
 		return rowToken === this
-			? super.insertTableCell(inner, coords, subtype, attr)
-			: rowToken.insertTableCell(inner, coords, subtype, attr);
+			? super.insertTableCell(inner, rawCoords, subtype, attr)
+			: rowToken.insertTableCell(inner, rawCoords, subtype, attr);
 	}
 
-	/**
-	 * 在开头插入一行
-	 * @complexity `n`
-	 */
+	/** 在开头插入一行 */
 	#prependTableRow() {
 		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
 			start = plain?.constructor === Token ? 3 : 2,
-			/** @type {TdToken[]} */ tdChildren = childNodes.slice(start),
+			tdChildren = childNodes.slice(start),
 			index = tdChildren.findIndex(({type}) => type !== 'td');
 		this.insertAt(row, index === -1 ? -1 : index + start);
 		Parser.run(() => {
@@ -529,30 +476,28 @@ class TableToken extends TrToken {
 
 	/**
 	 * 插入表格行
-	 * @param {number} y 行号
-	 * @param {Record<string, string|boolean>} attr 表格行属性
-	 * @param {string|Token} inner 内部wikitext
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string|boolean>} innerAttr 单元格属性
-	 * @complexity `n`
+	 * @param y 行号
+	 * @param attr 表格行属性
+	 * @param inner 内部wikitext
+	 * @param subtype 单元格类型
+	 * @param innerAttr 单元格属性
 	 */
 	insertTableRow(y, attr = {}, inner = undefined, subtype = 'td', innerAttr = {}) {
 		if (!isPlainObject(attr)) {
 			this.typeError('insertTableRow', 'Object');
 		}
 		let reference = this.getNthRow(y, false, true);
-		/** @type {TrToken & import('../attributes')}} */
 		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);
 		}
-		if (reference.type === 'table') { // `row === 0`且表格自身是有效行
+		if (reference?.type === 'table') { // `row === 0`且表格自身是有效行
 			reference = this.#prependTableRow();
 		}
 		this.insertBefore(token, reference);
 		if (inner !== undefined) {
-			const td = token.insertTableCell(inner, {column: 0}, subtype, innerAttr),
-				/** @type {WeakSet<TableCoords>} */ set = new WeakSet(),
+			const td = token.insertTableCell(inner, {row: 0, column: 0}, subtype, innerAttr),
+				set = new WeakSet(),
 				layout = this.getLayout({y}),
 				maxCol = Math.max(...layout.map(({length}) => length)),
 				rowLayout = layout[y];
@@ -575,11 +520,10 @@ class TableToken extends TrToken {
 
 	/**
 	 * 插入表格列
-	 * @param {number} x 列号
-	 * @param {string|Token} inner 内部wikitext
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {Record<string, string>} attr 单元格属性
-	 * @complexity `n²`
+	 * @param x 列号
+	 * @param inner 内部wikitext
+	 * @param subtype 单元格类型
+	 * @param attr 单元格属性
 	 * @throws `RangeError` 列号过大
 	 */
 	insertTableCol(x, inner, subtype = 'td', attr = {}) {
@@ -609,14 +553,13 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移除表格行
-	 * @param {number} y 行号
-	 * @complexity `n²`
+	 * @param y 行号
 	 */
 	removeTableRow(y) {
 		const rows = this.getAllRows(),
 			layout = this.getLayout(),
 			rowLayout = layout[y],
-			/** @type {WeakSet<TableCoords>} */ set = new WeakSet();
+			set = new WeakSet();
 		for (let x = rowLayout.length - 1; x >= 0; x--) {
 			const coords = rowLayout[x];
 			if (set.has(coords)) {
@@ -633,7 +576,7 @@ class TableToken extends TrToken {
 					for (let i = y + 1; rowspan && i < rows.length; i++, rowspan--) {
 						const {column} = layout[i].slice(x + colspan).find(({row}) => row === i) ?? {};
 						if (column !== undefined) {
-							rows[i].insertTableCell('', {column}, subtype, {...attr, rowspan});
+							rows[i].insertTableCell('', {row: 0, column}, subtype, {...attr, rowspan});
 							break;
 						}
 					}
@@ -647,8 +590,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移除表格列
-	 * @param {number} x 列号
-	 * @complexity `n²`
+	 * @param x 列号
 	 */
 	removeTableCol(x) {
 		for (const [token, start] of this.getFullCol(x)) {
@@ -666,9 +608,8 @@ class TableToken extends TrToken {
 
 	/**
 	 * 合并单元格
-	 * @param {[number, number]} xlim 列范围
-	 * @param {[number, number]} ylim 行范围
-	 * @complexity `n²`
+	 * @param xlim 列范围
+	 * @param ylim 行范围
 	 * @throws `RangeError` 待合并区域与外侧区域有重叠
 	 */
 	mergeCells(xlim, ylim) {
@@ -676,15 +617,14 @@ class TableToken extends TrToken {
 			this.typeError('mergeCells', 'Number');
 		}
 		const layout = this.getLayout(),
-			maxCol = Math.max(...layout.map(({length}) => length));
-		xlim = xlim.map(x => x < 0 ? x + maxCol : x);
-		ylim = ylim.map(y => y < 0 ? y + layout.length : y);
-		const [xmin, xmax] = xlim.sort(),
-			[ymin, ymax] = ylim.sort(),
+			maxCol = Math.max(...layout.map(({length}) => length)),
+			posXlim = xlim.map(x => x < 0 ? x + maxCol : x),
+			posYlim = ylim.map(y => y < 0 ? y + layout.length : y),
+			[xmin, xmax] = posXlim.sort(),
+			[ymin, ymax] = posYlim.sort(),
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
 		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
-			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]) || set.has(rowLayout[xmax]))
-		) {
+			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]) || set.has(rowLayout[xmax]))) {
 			throw new RangeError('待合并区域与外侧区域有重叠！');
 		}
 		const corner = layout[ymin][xmin],
@@ -701,9 +641,8 @@ class TableToken extends TrToken {
 
 	/**
 	 * 分裂单元格
-	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
-	 * @param {Set<'rowspan'|'colspan'>} dirs 分裂方向
-	 * @complexity `n²`
+	 * @param coords 单元格坐标
+	 * @param dirs 分裂方向
 	 * @throws `RangeError` 指定的坐标不是单元格起始点
 	 */
 	#split(coords, dirs) {
@@ -721,11 +660,9 @@ class TableToken extends TrToken {
 			return;
 		}
 		let {x, y} = coords;
-		if (x !== undefined) {
-			coords = this.toRawCoords(coords);
-		}
-		if (coords.start === false || x === undefined) {
-			({x, y} = this.toRenderedCoords(coords));
+		const rawCoords = x === undefined ? coords : this.toRawCoords(coords);
+		if (rawCoords.start === false || x === undefined) {
+			({x, y} = this.toRenderedCoords(rawCoords));
 		}
 		const splitting = {rowspan: 1, colspan: 1};
 		for (const dir of dirs) {
@@ -751,8 +688,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * 分裂成多行
-	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
-	 * @complexity `n²`
+	 * @param coords 单元格坐标
 	 */
 	splitIntoRows(coords) {
 		this.#split(coords, new Set(['rowspan']));
@@ -760,8 +696,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * 分裂成多列
-	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
-	 * @complexity `n²`
+	 * @param coords 单元格坐标
 	 */
 	splitIntoCols(coords) {
 		this.#split(coords, new Set(['colspan']));
@@ -769,8 +704,7 @@ class TableToken extends TrToken {
 
 	/**
 	 * 分裂成单元格
-	 * @param {TableCoords & TableRenderedCoords} coords 单元格坐标
-	 * @complexity `n²`
+	 * @param coords 单元格坐标
 	 */
 	splitIntoCells(coords) {
 		this.#split(coords, new Set(['rowspan', 'colspan']));
@@ -778,15 +712,14 @@ class TableToken extends TrToken {
 
 	/**
 	 * 复制一行并插入该行之前
-	 * @param {number} row 行号
-	 * @complexity `n²`
+	 * @param row 行号
 	 */
 	replicateTableRow(row) {
 		let rowToken = this.getNthRow(row);
 		if (rowToken.type === 'table') {
 			rowToken = this.#prependTableRow();
 		}
-		const /** @type {TrToken} */ replicated = this.insertBefore(rowToken.cloneNode(), rowToken);
+		const replicated = this.insertBefore(rowToken.cloneNode(), rowToken);
 		for (const [token, start] of this.getFullRow(row)) {
 			if (start) {
 				token.rowspan = 1;
@@ -799,11 +732,10 @@ class TableToken extends TrToken {
 
 	/**
 	 * 复制一列并插入该列之前
-	 * @param {number} x 列号
-	 * @complexity `n`
+	 * @param x 列号
 	 */
 	replicateTableCol(x) {
-		const /** @type {TdToken[]} */ replicated = [];
+		const replicated = [];
 		for (const [token, start] of this.getFullCol(x)) {
 			if (start) {
 				const newToken = token.cloneNode();
@@ -819,22 +751,17 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移动表格行
-	 * @param {number} y 行号
-	 * @param {number} before 新位置
-	 * @complexity `n²`
+	 * @param y 行号
+	 * @param before 新位置
 	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowBefore(y, before) {
 		if (!Number.isInteger(y) || !Number.isInteger(before)) {
 			this.typeError('moveTableRowBefore', 'Number');
 		}
-		const layout = this.getLayout();
-
-		/**
-		 * @type {(i: number) => number[]}
-		 * @complexity `n`
-		 */
-		const occupied = i => layout[i].map(({row}, j) => row === i ? j : undefined).filter(j => j !== undefined);
+		const layout = this.getLayout(),
+			/** @ignore */
+			occupied = i => layout[i].map(({row}, j) => row === i ? j : undefined).filter(j => j !== undefined);
 		try {
 			assert.deepStrictEqual(occupied(y), occupied(before));
 		} catch (e) {
@@ -859,9 +786,8 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移动表格行
-	 * @param {number} y 行号
-	 * @param {number} after 新位置
-	 * @complexity `n²`
+	 * @param y 行号
+	 * @param after 新位置
 	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowAfter(y, after) {
@@ -870,16 +796,9 @@ class TableToken extends TrToken {
 		}
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after),
-			/** @type {TdToken[]} */
-			cells = afterToken.childNodes.filter(child => child instanceof TdToken && child.subtype !== 'caption');
-
-		/**
-		 * @type {(i: number, oneRow?: boolean) => number[]}
-		 * @complexity `n`
-		 */
-		const occupied = (i, oneRow = false) => layout[i].map(
-			({row, column}, j) => row === i && (!oneRow || cells[column].rowspan === 1) ? j : undefined,
-		).filter(j => j !== undefined);
+			cells = afterToken.childNodes.filter(child => child instanceof TdToken && child.subtype !== 'caption'),
+			/** @ignore */
+			occupied = (i, oneRow = false) => layout[i].map(({row, column}, j) => row === i && (!oneRow || cells[column].rowspan === 1) ? j : undefined).filter(j => j !== undefined);
 		try {
 			assert.deepStrictEqual(occupied(y), occupied(after, true));
 		} catch (e) {
@@ -911,10 +830,9 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移动表格列
-	 * @param {number} x 列号
-	 * @param {number} reference 新位置
-	 * @param {boolean} after 在新位置之后或之前
-	 * @complexity `n`
+	 * @param x 列号
+	 * @param reference 新位置
+	 * @param after 在新位置之后或之前
 	 * @throws `RangeError` 无法移动
 	 */
 	#moveCol(x, reference, after = false) {
@@ -925,8 +843,8 @@ class TableToken extends TrToken {
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);
 		}
-		const /** @type {WeakSet<TableCoords>} */ setX = new WeakSet(),
-			/** @type {WeakSet<TableCoords>} */ setRef = new WeakSet(),
+		const setX = new WeakSet(),
+			setRef = new WeakSet(),
 			rows = this.getAllRows();
 		for (let i = 0; i < layout.length; i++) {
 			const rowLayout = layout[i],
@@ -953,12 +871,7 @@ class TableToken extends TrToken {
 				}
 				if (start) {
 					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
-					rowToken.insertBefore(
-						token,
-						col === undefined && rowToken.type === 'table'
-							? rowToken.childNodes.slice(2).find(isRowEnd)
-							: col !== undefined && rowToken.getNthCol(col),
-					);
+					rowToken.insertBefore(token, col === undefined ? rowToken.childNodes.slice(2).find(isRowEnd) : rowToken.getNthCol(col));
 				}
 			}
 		}
@@ -966,9 +879,8 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移动表格列
-	 * @param {number} x 列号
-	 * @param {number} before 新位置
-	 * @complexity `n`
+	 * @param x 列号
+	 * @param before 新位置
 	 */
 	moveTableColBefore(x, before) {
 		this.#moveCol(x, before);
@@ -976,14 +888,12 @@ class TableToken extends TrToken {
 
 	/**
 	 * 移动表格列
-	 * @param {number} x 列号
-	 * @param {number} after 新位置
-	 * @complexity `n`
+	 * @param x 列号
+	 * @param after 新位置
 	 */
 	moveTableColAfter(x, after) {
 		this.#moveCol(x, after, true);
 	}
 }
-
 Parser.classes.TableToken = __filename;
 module.exports = TableToken;

@@ -1,5 +1,4 @@
 'use strict';
-
 exports.extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])';
 exports.extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x7F)*';
 
@@ -46,8 +45,8 @@ const explode = (start, end, separator, str) => {
 	if (str === undefined) {
 		return [];
 	}
-	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'gu'),
-		/** @type {string[]} */ exploded = [];
+	const regex = new RegExp(`${[start, end, separator].map(exports.escapeRegExp).join('|')}`, 'gu'),
+		exploded = [];
 	let mt = regex.exec(str),
 		depth = 0,
 		lastIndex = 0;

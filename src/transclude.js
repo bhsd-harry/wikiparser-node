@@ -110,7 +110,6 @@ class TranscludeToken extends Token {
 				part.unshift(i);
 				i++;
 			}
-			// @ts-expect-error abstract class
 			this.insertAt(new ParameterToken(...part, config, accum));
 		}
 		this.protectChildren(0);
@@ -205,7 +204,7 @@ class TranscludeToken extends Token {
 		}
 		const {childNodes, firstChild, modifier} = this;
 		return `{{${modifier}${this.type === 'magic-word'
-			? `${String(firstChild)}${childNodes.length > 1 ? ':' : ''}${childNodes.slice(1).map(String).join('|')}`
+			? `${firstChild.toString(selector)}${childNodes.length > 1 ? ':' : ''}${childNodes.slice(1).map(child => child.toString(selector)).join('|')}`
 			: super.toString(selector, '|')}}}`;
 	}
 
@@ -245,7 +244,7 @@ class TranscludeToken extends Token {
 
 	/**
 	 * @override
-	 * @param start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
@@ -263,7 +262,7 @@ class TranscludeToken extends Token {
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
-			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(arg => generateForChild(arg, rect, 'duplicated parameter')));
 		}
 		return errors;
@@ -349,7 +348,6 @@ class TranscludeToken extends Token {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args[keyStr] = args;
 		}
-		// @ts-expect-error isNaN
 		if (exact && !isNaN(keyStr)) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
@@ -420,7 +418,6 @@ class TranscludeToken extends Token {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
 			const token = new TranscludeToken(this.type === 'template' ? '' : first.text(), [], config);
 			if (this.#raw) {
 				token.setModifier(this.modifier);
@@ -631,8 +628,8 @@ class TranscludeToken extends Token {
 		}
 		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: invoke} = root,
-			{type, name, length: invokeLength, lastChild} = invoke;
-		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invokeLength !== 2) {
+			{type, name, lastChild} = invoke;
+		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invoke.length !== 2) {
 			throw new SyntaxError(`非法的模块名称：${title}`);
 		} else if (this.length > 1) {
 			this.childNodes[1].replaceChildren(...lastChild.childNodes);
@@ -659,8 +656,8 @@ class TranscludeToken extends Token {
 		}
 		const root = Parser.parse(`{{#invoke:M|${func}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: invoke} = root,
-			{type, name, length: invokeLength, lastChild} = invoke;
-		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invokeLength !== 3) {
+			{type, name, lastChild} = invoke;
+		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invoke.length !== 3) {
 			throw new SyntaxError(`非法的模块函数名：${func}`);
 		} else if (this.length > 2) {
 			this.childNodes[2].replaceChildren(...lastChild.childNodes);
@@ -706,7 +703,6 @@ class TranscludeToken extends Token {
 					values[val] = [arg];
 				}
 			}
-			// @ts-expect-error isNaN
 			let noMoreAnon = anonCount === 0 || isNaN(key);
 			const emptyArgs = values[''] ?? [],
 				duplicatedArgs = Object.entries(values).filter(([val, {length}]) => val && length > 1)
@@ -783,9 +779,8 @@ class TranscludeToken extends Token {
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			parsed = Parser.parse(stripped, include, 4, config);
-		const TableToken = require('./table');
 		for (const table of parsed.childNodes) {
-			if (table instanceof TableToken) {
+			if (table.type === 'table') {
 				table.escape();
 			}
 		}

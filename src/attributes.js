@@ -84,7 +84,6 @@ class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd],
-						// @ts-expect-error abstract class
 						token = new AttributeToken(type.slice(0, -1), name, key, equal, value, quotes, config, accum);
 					insertDirty();
 					super.insertAt(token);
@@ -102,7 +101,8 @@ class AttributesToken extends Token {
 	/** @private */
 	afterBuild() {
 		if (this.type === 'table-attrs') {
-			this.setAttribute('name', this.parentNode?.subtype === 'caption' ? 'caption' : this.parentNode?.type);
+			const {parentNode} = this;
+			this.setAttribute('name', parentNode?.type === 'td' && parentNode.subtype === 'caption' ? 'caption' : parentNode?.type);
 		}
 	}
 
@@ -138,29 +138,29 @@ class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @param start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const errors = super.lint(start),
-			{parentNode: {closing}, length, childNodes} = this,
-			/** @type {Record<string, AttributeToken[]>} */ attrs = {},
-			/** @type {Set<string>} */ duplicated = new Set();
+			{parentNode, length, childNodes} = this,
+			attrs = {},
+			duplicated = new Set();
 		let rect;
-		if (closing && this.text().trim()) {
+		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForSelf(this, rect, 'attributes of a closing tag'));
 		}
 		for (let i = 0; i < length; i++) {
 			const attr = childNodes[i];
 			if (attr instanceof AtomToken && attr.text().trim()) {
-				rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+				rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 				errors.push({
 					...generateForChild(attr, rect, 'containing invalid attribute'),
 					excerpt: childNodes.slice(i).map(String).join('').slice(0, 50),
 				});
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
-				if (name in attrs) {
+				if (Object.hasOwn(attrs, name)) {
 					duplicated.add(name);
 					attrs[name].push(attr);
 				} else if (name !== 'class') {
@@ -169,7 +169,7 @@ class AttributesToken extends Token {
 			}
 		}
 		if (duplicated.size > 0) {
-			rect ||= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			for (const key of duplicated) {
 				errors.push(...attrs[key].map(attr => generateForChild(attr, rect, Parser.msg('duplicated $1 attribute', key))));
 			}
@@ -206,7 +206,6 @@ class AttributesToken extends Token {
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
 			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
 			token.append(...cloned);
 			return token;
@@ -267,8 +266,8 @@ class AttributesToken extends Token {
 		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
-		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
-		const attr = this.getAttrToken(key);
+		const k = key.toLowerCase().trim(),
+			attr = this.getAttrToken(k);
 		if (attr) {
 			attr.setValue(value);
 			return;
@@ -278,13 +277,12 @@ class AttributesToken extends Token {
 		const config = this.getAttribute('config'),
 			include = this.getAttribute('include'),
 			parsedKey = this.type === 'ext-attrs'
-				? key
-				: Parser.run(() => String(new Token(key, config).parseOnce(0, include).parseOnce()));
+				? k
+				: Parser.run(() => String(new Token(k, config).parseOnce(0, include).parseOnce()));
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
-			throw new RangeError(`无效的属性名：${key}！`);
+			throw new RangeError(`无效的属性名：${k}！`);
 		}
-		// @ts-expect-error abstract class
-		const newAttr = Parser.run(() => new AttributeToken(this.type.slice(0, -1), this.name, key, value === true ? '' : '=', value === true ? '' : value, ['"', '"'], config));
+		const newAttr = Parser.run(() => new AttributeToken(this.type.slice(0, -1), this.name, k, value === true ? '' : '=', value === true ? '' : value, ['"', '"'], config));
 		this.insertAt(newAttr);
 	}
 
@@ -295,24 +293,24 @@ class AttributesToken extends Token {
 		} else if (!this.hasAttr(key)) {
 			return equal === '!=';
 		}
-		val = toCase(val, i); // eslint-disable-line no-param-reassign
-		const attr = this.getAttr(key),
+		const v = toCase(val, i),
+			attr = this.getAttr(key),
 			thisVal = toCase(attr === true ? '' : attr, i);
 		switch (equal) {
 			case '~=':
-				return attr !== true && thisVal.split(/\s/u).includes(val);
+				return attr !== true && thisVal.split(/\s/u).includes(v);
 			case '|=': // 允许`val === ''`
-				return thisVal === val || thisVal.startsWith(`${val}-`);
+				return thisVal === v || thisVal.startsWith(`${v}-`);
 			case '^=':
-				return attr !== true && thisVal.startsWith(val);
+				return attr !== true && thisVal.startsWith(v);
 			case '$=':
-				return attr !== true && thisVal.endsWith(val);
+				return attr !== true && thisVal.endsWith(v);
 			case '*=':
-				return attr !== true && thisVal.includes(val);
+				return attr !== true && thisVal.includes(v);
 			case '!=':
-				return thisVal !== val;
+				return thisVal !== v;
 			default: // `=`
-				return thisVal === val;
+				return thisVal === v;
 		}
 	}
 
@@ -362,14 +360,14 @@ class AttributesToken extends Token {
 		if (typeof key !== 'string') {
 			this.typeError('toggleAttr', 'String');
 		}
-		key = key.toLowerCase().trim(); // eslint-disable-line no-param-reassign
-		const attr = this.getAttrToken(key);
+		const k = key.toLowerCase().trim(),
+			attr = this.getAttrToken(k);
 		if (attr && attr.getValue() !== true) {
-			throw new RangeError(`${key} 属性的值不为 Boolean！`);
+			throw new RangeError(`${k} 属性的值不为 Boolean！`);
 		} else if (attr) {
 			attr.setValue(force === true);
 		} else if (force !== false) {
-			this.setAttr(key, true);
+			this.setAttr(k, true);
 		}
 	}
 

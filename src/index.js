@@ -109,7 +109,7 @@ class Token extends AstElement {
 				if (this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#include = Boolean(include);
+				this.#include = include;
 				this.#parseCommentAndExt(include);
 				break;
 			case 1:
@@ -122,7 +122,7 @@ class Token extends AstElement {
 				this.#parseTable();
 				break;
 			case 4:
-				this.#parseHrAndDoubleUndescore();
+				this.#parseHrAndDoubleUnderscore();
 				break;
 			case 5:
 				this.#parseLinks();
@@ -130,7 +130,6 @@ class Token extends AstElement {
 			case 6:
 				this.#parseQuotes();
 				break;
-
 			case 7:
 				this.#parseExternalLinks();
 				break;
@@ -158,7 +157,6 @@ class Token extends AstElement {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
-				// @ts-expect-error isNaN
 			} else if (isNaN(s.at(-1))) {
 				return this.#accum[Number(s.slice(0, -1))];
 			}
@@ -223,7 +221,7 @@ class Token extends AstElement {
 	/**
 	 * 解析HTML注释和扩展标签
 	 * @browser
-	 * @param {boolean} includeOnly 是否嵌入
+	 * @param includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly) {
 		const parseCommentAndExt = require('../parser/commentAndExt');
@@ -246,7 +244,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseHtml() {
-		if (this.#config.excludes.includes('html')) {
+		if (this.#config.excludes?.includes('html')) {
 			return;
 		}
 		const parseHtml = require('../parser/html');
@@ -256,10 +254,9 @@ class Token extends AstElement {
 	/**
 	 * 解析表格
 	 * @browser
-	 * @this {this & import('.') & {firstChild: AstText}}
 	 */
 	#parseTable() {
-		if (this.#config.excludes.includes('table')) {
+		if (this.#config.excludes?.includes('table')) {
 			return;
 		}
 		const parseTable = require('../parser/table');
@@ -267,12 +264,11 @@ class Token extends AstElement {
 	}
 
 	/**
-	 * 解析\<hr\>和状态开关
+	 * 解析`<hr>`和状态开关
 	 * @browser
-	 * @this {this & import('.') & {firstChild: AstText}}
 	 */
-	#parseHrAndDoubleUndescore() {
-		if (this.#config.excludes.includes('hr')) {
+	#parseHrAndDoubleUnderscore() {
+		if (this.#config.excludes?.includes('hr')) {
 			return;
 		}
 		const parseHrAndDoubleUnderscore = require('../parser/hrAndDoubleUnderscore');
@@ -293,7 +289,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseQuotes() {
-		if (this.#config.excludes.includes('quote')) {
+		if (this.#config.excludes?.includes('quote')) {
 			return;
 		}
 		const parseQuotes = require('../parser/quotes');
@@ -309,7 +305,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseExternalLinks() {
-		if (this.#config.excludes.includes('extLink')) {
+		if (this.#config.excludes?.includes('extLink')) {
 			return;
 		}
 		const parseExternalLinks = require('../parser/externalLinks');
@@ -321,7 +317,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseMagicLinks() {
-		if (this.#config.excludes.includes('magicLink')) {
+		if (this.#config.excludes?.includes('magicLink')) {
 			return;
 		}
 		const parseMagicLinks = require('../parser/magicLinks');
@@ -333,7 +329,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseList() {
-		if (this.#config.excludes.includes('list')) {
+		if (this.#config.excludes?.includes('list')) {
 			return;
 		}
 		const parseList = require('../parser/list');
@@ -350,7 +346,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseConverter() {
-		if (this.#config.variants?.length > 0) {
+		if (this.#config.variants.length > 0) {
 			const parseConverter = require('../parser/converter');
 			this.setText(parseConverter(String(this.firstChild), this.#config, this.#accum));
 		}
@@ -428,13 +424,7 @@ class Token extends AstElement {
 		return this.constructor === Token;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 * @param child 待插入的子节点
-	 * @param i 插入位置
-	 * @throws `RangeError` 不可插入的子节点
-	 */
+	/** @ignore */
 	insertAt(child, i = this.length) {
 		const token = typeof child === 'string' ? new AstText(child) : child;
 		if (!Parser.running && this.#acceptable) {
@@ -530,7 +520,7 @@ class Token extends AstElement {
 
 	/**
 	 * 创建HTML注释
-	 * @param {string} data 注释内容
+	 * @param data 注释内容
 	 */
 	createComment(data = '') {
 		if (typeof data === 'string') {
@@ -543,8 +533,10 @@ class Token extends AstElement {
 
 	/**
 	 * 创建标签
-	 * @param {string} tagName 标签名
-	 * @param {{selfClosing?: boolean, closing?: boolean}} options 选项
+	 * @param tagName 标签名
+	 * @param options 选项
+	 * @param options.selfClosing 是否自封闭
+	 * @param options.closing 是否是闭合标签
 	 * @throws `RangeError` 非法的标签名
 	 */
 	createElement(tagName, {selfClosing, closing} = {}) {
@@ -565,15 +557,15 @@ class Token extends AstElement {
 			const HtmlToken = require('./html');
 			return Parser.run(() => new HtmlToken(tagName, '', closing, selfClosing, config));
 		}
-		throw new RangeError(`非法的标签名！${tagName}`);
+		throw new RangeError(`非法的标签名：${tagName}`);
 	}
 
 	/**
 	 * 创建纯文本节点
-	 * @param {string} data 文本内容
+	 * @param data 文本内容
 	 */
 	createTextNode(data = '') {
-		return typeof data === 'string' ? new AstText(data) : this.typeError('createComment', 'String');
+		return typeof data === 'string' ? new AstText(data) : this.typeError('createTextNode', 'String');
 	}
 
 	/**
@@ -589,32 +581,31 @@ class Token extends AstElement {
 		const {length} = String(this);
 		if (index > length || index < -length) {
 			return undefined;
-		} else if (index < 0) {
-			index += length; // eslint-disable-line no-param-reassign
 		}
-		let child = this, // eslint-disable-line @typescript-eslint/no-this-alias
+		const idx = index < 0 ? index + length : index;
+		let self = this,
 			acc = 0,
 			start = 0;
-		while (child.type !== 'text') {
-			const {childNodes} = child;
-			acc += child.getPadding();
-			for (let i = 0; acc <= index && i < childNodes.length; i++) {
+		while (self.type !== 'text') {
+			const {childNodes} = self;
+			acc += self.getPadding();
+			for (let i = 0; acc <= idx && i < childNodes.length; i++) {
 				const cur = childNodes[i],
 					{length: l} = String(cur);
 				acc += l;
-				if (acc >= index) {
-					child = cur;
+				if (acc >= idx) {
+					self = cur;
 					acc -= l;
 					start = acc;
 					break;
 				}
-				acc += child.getGaps(i);
+				acc += self.getGaps(i);
 			}
-			if (child.childNodes === childNodes) {
-				return {offsetNode: child, offset: index - start};
+			if (self.childNodes === childNodes) {
+				return {offsetNode: self, offset: idx - start};
 			}
 		}
-		return {offsetNode: child, offset: index - start};
+		return {offsetNode: self, offset: idx - start};
 	}
 
 	/**
@@ -642,13 +633,12 @@ class Token extends AstElement {
 		const {length} = String(this);
 		if (index > length || index < -length) {
 			return undefined;
-		} else if (index < 0) {
-			index += length; // eslint-disable-line no-param-reassign
 		}
-		const {childNodes} = this;
+		const idx = index < 0 ? index + length : index,
+			{childNodes} = this;
 		let acc = 0,
 			i = 0;
-		for (; acc < index && i < childNodes.length; i++) {
+		for (; acc < idx && i < childNodes.length; i++) {
 			const {length: l} = String(childNodes[i]);
 			acc += l;
 		}
@@ -713,19 +703,17 @@ class Token extends AstElement {
 		});
 	}
 
-	/**
-	 * 获取全部章节
-	 * @complexity `n`
-	 */
+	/** 获取全部章节 */
 	sections() {
 		if (this.type !== 'root') {
 			return undefined;
 		}
 		const {childNodes} = this,
-			headings = [...childNodes.entries()].filter(([, {type}]) => type === 'heading')
-				.map(/** @param {[number, import('./heading')]} arg */ ([i, {name}]) => [i, Number(name)]),
+			headings = [...childNodes.entries()]
+				.filter(([, {type}]) => type === 'heading')
+				.map(([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
-			/** @type {(AstText|import('.'))[][]} */ sections = new Array(headings.length);
+			sections = new Array(headings.length);
 		for (let i = 0; i < headings.length; i++) {
 			const [index, level] = headings[i];
 			for (let j = level; j < 6; j++) {
@@ -747,8 +735,7 @@ class Token extends AstElement {
 
 	/**
 	 * 获取指定章节
-	 * @param {number} n 章节序号
-	 * @complexity `n`
+	 * @param n 章节序号
 	 */
 	section(n) {
 		return Number.isInteger(n) ? this.sections()?.[n] : this.typeError('section', 'Number');
@@ -756,54 +743,48 @@ class Token extends AstElement {
 
 	/**
 	 * 获取指定的外层HTML标签
-	 * @param {string} tag HTML标签名
-	 * @returns {[HtmlToken, HtmlToken]}
-	 * @complexity `n`
+	 * @param tag HTML标签名
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
 	findEnclosingHtml(tag) {
 		if (tag !== undefined && typeof tag !== 'string') {
 			this.typeError('findEnclosingHtml', 'String');
 		}
-		tag = tag?.toLowerCase();
-		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
-			throw new RangeError(`非法的标签或空标签：${tag}`);
+		const lcTag = tag?.toLowerCase();
+		if (lcTag !== undefined && !this.#config.html.slice(0, 2).flat().includes(lcTag)) {
+			throw new RangeError(`非法的标签或空标签：${lcTag}`);
 		}
 		const {parentNode} = this;
 		if (!parentNode) {
 			return undefined;
 		}
 		const {childNodes} = parentNode,
-			index = childNodes.indexOf(/** @type {import('.')} */ (this));
+			index = childNodes.indexOf(this);
 		let i;
 		for (i = index - 1; i >= 0; i--) {
-			const {type, name, selfClosing, closing} = /** @type {HtmlToken} */ (childNodes[i]);
-			if (type === 'html' && (!tag || name === tag) && selfClosing === false && closing === false) {
+			const {type, name, selfClosing, closing} = childNodes[i];
+			if (type === 'html' && (!lcTag || name === lcTag) && selfClosing === false && closing === false) {
 				break;
 			}
 		}
 		if (i === -1) {
-			return parentNode.findEnclosingHtml(tag);
+			return parentNode.findEnclosingHtml(lcTag);
 		}
-		const opening = /** @type {HtmlToken} */ (childNodes[i]);
+		const opening = childNodes[i];
 		for (i = index + 1; i < childNodes.length; i++) {
-			const {type, name, selfClosing, closing} = /** @type {HtmlToken} */ (childNodes[i]);
+			const {type, name, selfClosing, closing} = childNodes[i];
 			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
 				break;
 			}
 		}
 		return i === childNodes.length
-			? parentNode.findEnclosingHtml(tag)
-			: [opening, /** @type {HtmlToken} */ (childNodes[i])];
+			? parentNode.findEnclosingHtml(lcTag)
+			: [opening, childNodes[i]];
 	}
 
-	/**
-	 * 获取全部分类
-	 * @complexity `n`
-	 * @returns {[string, string][]}
-	 */
+	/** 获取全部分类 */
 	getCategories() {
-		const categories = /** @type {import('./link/category')[]} */ (this.querySelectorAll('category'));
+		const categories = this.querySelectorAll('category');
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
@@ -812,10 +793,8 @@ class Token extends AstElement {
 	 * @throws `Error` 不接受QuoteToken作为子节点
 	 */
 	redoQuotes() {
-		const acceptable = /** @type {Record<string, Ranges>} */ (this.getAttribute('acceptable'));
-		if (acceptable && !acceptable.QuoteToken?.some(
-			range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1,
-		)) {
+		const acceptable = this.getAttribute('acceptable');
+		if (acceptable && !acceptable.QuoteToken?.some(range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1)) {
 			throw new Error(`${this.constructor.name} 不接受 QuoteToken 作为子节点！`);
 		}
 		for (const quote of this.childNodes) {
@@ -824,9 +803,8 @@ class Token extends AstElement {
 			}
 		}
 		this.normalize();
-		const textNodes = /** @type {[number, AstText][]} */ ([...this.childNodes.entries()].filter(
-				([, {type}]) => type === 'text',
-			)),
+		const textNodes = [...this.childNodes.entries()]
+				.filter(([, {type}]) => type === 'text'),
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
 			token = Parser.run(() => {
 				const root = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
@@ -836,7 +814,7 @@ class Token extends AstElement {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),
 					n = indices.findLastIndex(textIndex => textIndex <= index),
-					cur = /** @type {AstText} */ (this.childNodes[n]);
+					cur = this.childNodes[n];
 				cur.splitText(index - indices[n]).splitText(Number(quote.name));
 				this.removeAt(n + 1);
 				this.insertAt(quote, n + 1);
@@ -850,30 +828,24 @@ class Token extends AstElement {
 		const targets = this.querySelectorAll('magic-word, arg'),
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
-			const target = /** @type {import('./arg')} */ (targets[i]),
+			const target = targets[i],
 				{type, name, default: argDefault, childNodes, length} = target;
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
 				if (type === 'arg') {
 					replace = argDefault === false ? String(target) : argDefault;
-				} else if (name === 'if' && !childNodes[1].querySelector('magic-word, template')) {
+				} else if (name === 'if' && !childNodes[1]?.querySelector('magic-word, template')) {
 					replace = String(childNodes[String(childNodes[1] ?? '').trim() ? 2 : 3] ?? '').trim();
 				} else if (name === 'ifeq'
-					&& !childNodes.slice(1, 3).some(child => child.querySelector('magic-word, template'))
-				) {
-					replace = String(childNodes[
-						String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '') ? 3 : 4
-					] ?? '').trim();
-				} else if (name === 'switch' && !childNodes[1].querySelector('magic-word, template')) {
+					&& !childNodes.slice(1, 3).some(child => child.querySelector('magic-word, template'))) {
+					replace = String(childNodes[String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '').trim() ? 3 : 4] ?? '').trim();
+				} else if (name === 'switch' && !childNodes[1]?.querySelector('magic-word, template')) {
 					const key = String(childNodes[1] ?? '').trim();
 					let defaultVal = '',
 						found = false,
-						transclusion = false,
-						j = 2;
-					for (; j < length; j++) {
-						const {
-							anon, name: option, value, firstChild,
-						} = /** @type {import('./parameter')} */ (childNodes[j]);
+						transclusion = false;
+					for (let j = 2; j < length; j++) {
+						const {anon, name: option, value, firstChild} = childNodes[j];
 						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {
@@ -898,10 +870,8 @@ class Token extends AstElement {
 					if (transclusion) {
 						continue;
 					}
-				} else {
-					continue;
+					target.replaceWith(replace);
 				}
-				target.replaceWith(replace);
 			}
 		}
 	}

@@ -5,7 +5,6 @@ const Parser = require('../index');
  * 解析后不可见的类
  * @param constructor 基类
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const hidden = constructor => {
 	/** 解析后不可见的类 */
 	class AnyHiddenToken extends constructor {

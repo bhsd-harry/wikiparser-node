@@ -1,33 +1,28 @@
 'use strict';
-
-/**
- * @template {string} T
- * @typedef {import('../../lib/node').TokenAttribute<T>} TokenAttribute
- */
-/** @typedef {import('./td').TdAttr} TdAttr */
-
-const {generateForChild} = require('../../util/lint'),
-	fixed = require('../../mixin/fixed'),
-	{typeError} = require('../../util/debug'),
-	{isPlainObject} = require('../../util/base'),
-	Parser = require('../..'),
-	Token = require('..'),
-	TrToken = require('./tr');
-
-const aliases = {td: '\n|', th: '\n!', caption: '\n|+'},
-	openingPattern = /^(?:\n[^\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u;
+const lint_1 = require('../../util/lint');
+const {generateForChild} = lint_1;
+const fixed = require('../../mixin/fixed');
+const debug_1 = require('../../util/debug');
+const {typeError} = debug_1;
+const base_1 = require('../../util/base');
+const {isPlainObject} = base_1;
+const Parser = require('../../index');
+const Token = require('..');
+const TableBaseToken = require('./base');
 
 /**
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-class TdToken extends fixed(TrToken) {
-	/** @type {'td'} */ type = 'td';
+class TdToken extends fixed(TableBaseToken) {
+	/** @browser */
+	type = 'td';
+	/** @browser */
 	#innerSyntax = '';
 
 	/**
 	 * 单元格类型
-	 * @complexity `n`
+	 * @browser
 	 */
 	get subtype() {
 		return this.getSyntax().subtype;
@@ -60,21 +55,33 @@ class TdToken extends fixed(TrToken) {
 		return this.lastChild.text();
 	}
 
-	/** 是否位于行首 */
-	isIndependent() {
-		return this.firstChild.text()[0] === '\n';
+	/**
+	 * @browser
+	 * @param syntax 单元格语法
+	 * @param inner 内部wikitext
+	 */
+	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
+		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),
+			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
+		if (/\[\[|-\{/u.test(attr)) {
+			innerSyntax = undefined;
+			attr = '';
+		}
+		super(/^(?:\n[^\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u, syntax, attr, config, accum, {SyntaxToken: 0, AttributesToken: 1, Token: 2});
+		if (innerSyntax) {
+			[this.#innerSyntax] = innerSyntax;
+		}
+		const innerToken = new Token(inner?.slice((innerSyntax?.index ?? NaN) + this.#innerSyntax.length), config, true, accum);
+		innerToken.type = 'td-inner';
+		this.insertAt(innerToken.setAttribute('stage', 4));
 	}
 
-	/**
-	 * 获取单元格语法信息
-	 * @returns {{subtype: 'td'|'th'|'caption', escape: boolean, correction: boolean}}
-	 * @complexity `n`
-	 */
+	/** @private */
 	getSyntax() {
 		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
 			char = syntax.at(-1);
-		let /** @type {'td'|'th'|'caption'} */ subtype = 'td';
+		let subtype = 'td';
 		if (char === '!') {
 			subtype = 'th';
 		} else if (char === '+') {
@@ -87,7 +94,7 @@ class TdToken extends fixed(TrToken) {
 		if (previousSibling?.type !== 'td') {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = /** @type {TdToken} */ (previousSibling).getSyntax();
+		const result = previousSibling.getSyntax();
 		result.escape ||= esc;
 		result.correction = previousSibling.lastChild
 			.toString('comment, ext, include, noinclude, arg, template, magic-word')
@@ -99,31 +106,7 @@ class TdToken extends fixed(TrToken) {
 		return result;
 	}
 
-	/**
-	 * @param {string} syntax 单元格语法
-	 * @param {string} inner 内部wikitext
-	 * @param {Token[]} accum
-	 */
-	constructor(syntax, inner, config = Parser.getConfig(), accum = []) {
-		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),
-			attr = innerSyntax ? inner.slice(0, innerSyntax.index) : '';
-		if (/\[\[|-\{/u.test(attr)) {
-			innerSyntax = undefined;
-			attr = '';
-		}
-		super(syntax, attr, config, accum, openingPattern);
-		if (innerSyntax) {
-			[this.#innerSyntax] = innerSyntax;
-		}
-		// eslint-disable-next-line no-unsafe-optional-chaining
-		const innerToken = new Token(inner?.slice(innerSyntax?.index + this.#innerSyntax.length), config, true, accum);
-		innerToken.type = 'td-inner';
-		this.insertAt(innerToken.setAttribute('stage', 4));
-		this.setAttribute('acceptable', {SyntaxToken: 0, AttributesToken: 1, Token: 2})
-			.seal(['getRowCount', 'getNthCol', 'insertTableCell'], true);
-	}
-
-	/** @override */
+	/** @private */
 	afterBuild() {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, 'string');
@@ -132,9 +115,7 @@ class TdToken extends fixed(TrToken) {
 
 	/**
 	 * @override
-	 * @param {string} selector
-	 * @returns {string}
-	 * @complexity `n`
+	 * @browser
 	 */
 	toString(selector) {
 		this.#correct();
@@ -146,8 +127,7 @@ class TdToken extends fixed(TrToken) {
 
 	/**
 	 * @override
-	 * @returns {string}
-	 * @complexity `n`
+	 * @browser
 	 */
 	text() {
 		this.#correct();
@@ -155,13 +135,10 @@ class TdToken extends fixed(TrToken) {
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
 
-	/**
-	 * @override
-	 * @param {number} i 子节点位置
-	 */
+	/** @private */
 	getGaps(i = 0) {
-		i = i < 0 ? i + this.length : i;
-		if (i === 1) {
+		const j = i < 0 ? i + this.length : i;
+		if (j === 1) {
 			this.#correct();
 			return this.#innerSyntax.length;
 		}
@@ -170,23 +147,31 @@ class TdToken extends fixed(TrToken) {
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
-		const errors = super.lint(start);
-		start += this.getRelativeIndex(-1);
+		const errors = super.lint(start),
+			newStart = start + this.getRelativeIndex(-1);
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
-				errors.push(generateForChild(child, {start}, 'additional "|" in a table cell', 'warning'));
+				errors.push(generateForChild(child, {start: newStart}, 'additional "|" in a table cell', 'warning'));
 			}
 		}
 		return errors;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
+	}
+
+	/** 是否位于行首 */
+	isIndependent() {
+		return this.firstChild.text().startsWith('\n');
 	}
 
 	/** @override */
@@ -196,51 +181,15 @@ class TdToken extends fixed(TrToken) {
 		return token;
 	}
 
-	/**
-	 * 创建新的单元格
-	 * @param {string|Token} inner 内部wikitext
-	 * @param {'td'|'th'|'caption'} subtype 单元格类型
-	 * @param {TdAttr} attr 单元格属性
-	 * @param {boolean} include 是否嵌入
-	 * @throws `RangeError` 非法的单元格类型
-	 */
-	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
-		if (typeof inner !== 'string' && inner?.constructor !== Token || !isPlainObject(attr)) {
-			typeError(this, 'create', 'String', 'Token', 'Object');
-		} else if (subtype !== 'td' && subtype !== 'th' && subtype !== 'caption') {
-			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
-		} else if (typeof inner === 'string') {
-			inner = Parser.parse(inner, include, undefined, config);
-		}
-		const token = Parser.run(() => new TdToken('\n|', undefined, config));
-		token.setSyntax(subtype);
-		token.lastChild.safeReplaceWith(/** @type {Token} */ (inner));
-		for (const [k, v] of Object.entries(attr)) {
-			token.setAttr(k, /** @type {string} */ (v));
-		}
-		return token;
-	}
-
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {TokenAttribute<T>}
-	 */
+	/** @private */
 	getAttribute(key) {
-		return key === 'innerSyntax' ? /** @type {TokenAttribute<T>} */ (this.#innerSyntax) : super.getAttribute(key);
+		return key === 'innerSyntax' ? this.#innerSyntax : super.getAttribute(key);
 	}
 
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @param {TokenAttribute<T>} value 属性值
-	 * @returns {this}
-	 */
+	/** @private */
 	setAttribute(key, value) {
 		if (key === 'innerSyntax') {
-			this.#innerSyntax = String(value);
+			this.#innerSyntax = value ?? '';
 			return this;
 		}
 		return super.setAttribute(key, value);
@@ -248,17 +197,15 @@ class TdToken extends fixed(TrToken) {
 
 	/**
 	 * @override
-	 * @param {string} syntax 表格语法
-	 * @param {boolean} esc 是否需要转义
+	 * @param syntax 表格语法
+	 * @param esc 是否需要转义
 	 */
 	setSyntax(syntax, esc = false) {
+		const aliases = {td: '\n|', th: '\n!', caption: '\n|+'};
 		super.setSyntax(aliases[syntax] ?? syntax, esc);
 	}
 
-	/**
-	 * 修复\<td\>语法
-	 * @complexity `n`
-	 */
+	/** 修复\<td\>语法 */
 	#correct() {
 		if (String(this.childNodes[1])) {
 			this.#innerSyntax ||= '|';
@@ -269,10 +216,7 @@ class TdToken extends fixed(TrToken) {
 		}
 	}
 
-	/**
-	 * 改为独占一行
-	 * @complexity `n`
-	 */
+	/** 改为独占一行 */
 	independence() {
 		if (!this.isIndependent()) {
 			const {subtype, escape} = this.getSyntax();
@@ -281,48 +225,46 @@ class TdToken extends fixed(TrToken) {
 	}
 
 	/**
-	 * 获取单元格属性
-	 * @template {string} T
-	 * @param {T} key 属性键
+	 * @override
+	 * @param key 属性键
 	 */
 	getAttr(key) {
-		const /** @type {string} */ value = super.getAttr(key);
-		key = /** @type {T} */ (key?.toLowerCase()?.trim());
-		return /** @type {T extends 'rowspan'|'colspan' ? number : string} */ (key === 'rowspan' || key === 'colspan'
+		const value = super.getAttr(key),
+			lcKey = key.toLowerCase().trim();
+		return lcKey === 'rowspan' || lcKey === 'colspan'
 			? Number(value) || 1
-			: value);
+			: value;
 	}
 
-	/** 获取全部单元格属性 */
+	/** @override */
 	getAttrs() {
-		const /** @type {Record<string, string|number>} */ attr = super.getAttrs();
+		const attr = super.getAttrs();
 		if ('rowspan' in attr) {
 			attr.rowspan = Number(attr.rowspan);
 		}
 		if ('colspan' in attr) {
 			attr.colspan = Number(attr.colspan);
 		}
-		return /** @type {TdAttr} */ (attr);
+		return attr;
 	}
 
 	/**
-	 * 设置单元格属性
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @param {T extends 'rowspan'|'colspan' ? number|boolean : string|boolean} value 属性值
+	 * @override
+	 * @param key 属性键
+	 * @param value 属性值
 	 */
 	setAttr(key, value) {
 		if (typeof key !== 'string') {
 			this.typeError('setAttr', 'String');
 		}
-		key = /** @type {T} */ (key.toLowerCase().trim());
+		const lcKey = key.toLowerCase().trim();
 		let v;
-		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
+		if (typeof value === 'number' && (lcKey === 'rowspan' || lcKey === 'colspan')) {
 			v = value === 1 ? false : String(value);
 		} else {
 			v = value;
 		}
-		super.setAttr(key, v);
+		super.setAttr(lcKey, v);
 		if (!String(this.childNodes[1])) {
 			this.#innerSyntax = '';
 		}
@@ -338,7 +280,30 @@ class TdToken extends fixed(TrToken) {
 			this.#innerSyntax = '{{!}}';
 		}
 	}
-}
 
+	/**
+	 * 创建新的单元格
+	 * @param inner 内部wikitext
+	 * @param subtype 单元格类型
+	 * @param attr 单元格属性
+	 * @param include 是否嵌入
+	 * @throws `RangeError` 非法的单元格类型
+	 */
+	static create(inner, subtype = 'td', attr = {}, include = false, config = Parser.getConfig()) {
+		if (typeof inner !== 'string' && inner?.constructor !== Token || !isPlainObject(attr)) {
+			typeError(this, 'create', 'String', 'Token', 'Object');
+		} else if (subtype !== 'td' && subtype !== 'th' && subtype !== 'caption') {
+			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
+		}
+		const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
+			token = Parser.run(() => new TdToken('\n|', undefined, config));
+		token.setSyntax(subtype);
+		token.lastChild.safeReplaceWith(innerToken);
+		for (const [k, v] of Object.entries(attr)) {
+			token.setAttr(k, v);
+		}
+		return token;
+	}
+}
 Parser.classes.TdToken = __filename;
 module.exports = TdToken;

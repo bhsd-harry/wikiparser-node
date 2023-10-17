@@ -1,10 +1,9 @@
 'use strict';
-
-const {generateForChild} = require('../util/lint'),
-	Parser = require('..'),
-	Token = require('.'),
-	AtomToken = require('./atom');
-
+const lint_1 = require('../util/lint');
+const {generateForChild} = lint_1;
+const Parser = require('../index');
+const Token = require('.');
+const AtomToken = require('./atom');
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
 
 /**
@@ -12,12 +11,14 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * @classdesc `{childNodes: ...AtomToken}`
  */
 class ConverterFlagsToken extends Token {
-	/** @type {'converter-flags'} */ type = 'converter-flags';
-	/** @type {string[]} */ #flags;
+	/** @browser */
+	type = 'converter-flags';
+	/** @browser */
+	#flags;
 
 	/**
-	 * @param {string[]} flags 转换类型标记
-	 * @param {Token[]} accum
+	 * @browser
+	 * @param flags 转换类型标记
 	 */
 	constructor(flags, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -26,13 +27,10 @@ class ConverterFlagsToken extends Token {
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
 
-	/**
-	 * @override
-	 * @complexity `n`
-	 */
+	/** @private */
 	afterBuild() {
 		this.#flags = this.childNodes.map(child => child.text().trim());
-		const /** @type {import('../lib/node').AstListener} */ converterFlagsListener = ({prevTarget}) => {
+		const /** @implements */ converterFlagsListener = ({prevTarget}) => {
 			if (prevTarget) {
 				this.#flags[this.childNodes.indexOf(prevTarget)] = prevTarget.text().trim();
 			}
@@ -42,30 +40,53 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		return super.toString(selector, ';');
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	text() {
 		return super.text(';');
 	}
 
-	/** @override */
+	/** @private */
 	getGaps() {
 		return 1;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		return super.print({sep: ';'});
 	}
 
 	/**
+	 * 获取未知的转换类型标记
+	 * @browser
+	 */
+	getUnknownFlags() {
+		return new Set(this.#flags.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
+	}
+
+	/**
+	 * 获取指定语言变体的转换标记
+	 * @browser
+	 */
+	getVariantFlags() {
+		const variants = new Set(this.getAttribute('config').variants);
+		return new Set(this.#flags.filter(flag => variants.has(flag)));
+	}
+
+	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const variantFlags = this.getVariantFlags(),
@@ -83,8 +104,7 @@ class ConverterFlagsToken extends Token {
 			const child = childNodes[i],
 				flag = child.text().trim();
 			if (flag && !variantFlags.has(flag) && !unknownFlags.has(flag)
-				&& (variantFlags.size > 0 || !validFlags.has(flag))
-			) {
+				&& (variantFlags.size > 0 || !validFlags.has(flag))) {
 				const error = generateForChild(child, rect, 'invalid conversion flag');
 				errors.push({...error, excerpt: childNodes.slice(0, i + 1).map(String).join(';').slice(-50)});
 			}
@@ -92,71 +112,46 @@ class ConverterFlagsToken extends Token {
 		return errors;
 	}
 
-	/**
-	 * 获取未知转换类型标记
-	 * @complexity `n`
-	 */
-	getUnknownFlags() {
-		return new Set(this.#flags.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
-	}
-
-	/** 获取指定语言变体的转换标记 */
-	getVariantFlags() {
-		const variants = new Set(this.getAttribute('config').variants);
-		return new Set(this.#flags.filter(flag => variants.has(flag)));
-	}
-
 	/** @override */
 	cloneNode() {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = /** @type {this} */ (new ConverterFlagsToken([], this.getAttribute('config')));
+			const token = new ConverterFlagsToken([], this.getAttribute('config'));
 			token.append(...cloned);
 			token.afterBuild();
 			return token;
 		});
 	}
 
-	/**
-	 * @override
-	 * @template {string} T
-	 * @param {T} key 属性键
-	 * @returns {import('../lib/node').TokenAttribute<T>}
-	 */
+	/** @private */
 	getAttribute(key) {
 		return key === 'flags' ? this.#flags : super.getAttribute(key);
 	}
 
-	/**
-	 * @override
-	 * @param {PropertyKey} key 属性键
-	 */
+	/** @private */
 	hasAttribute(key) {
 		return key === 'flags' || super.hasAttribute(key);
 	}
 
 	/**
 	 * @override
-	 * @param {number} i 移除位置
-	 * @complexity `n`
+	 * @param i 移除位置
 	 */
 	removeAt(i) {
-		const token = /** @type {Token} */ (super.removeAt(i));
+		const token = super.removeAt(i);
 		this.#flags?.splice(i, 1);
 		return token;
 	}
 
 	/**
 	 * @override
-	 * @template {string|import('../lib/text')|Token} T
-	 * @param {T} token 待插入的子节点
-	 * @param {number} i 插入位置
-	 * @complexity `n`
+	 * @param token 待插入的子节点
+	 * @param i 插入位置
 	 */
 	insertAt(token, i = this.length) {
 		super.insertAt(token, i);
-		this.#flags?.splice(i, 0, /** @type {Token} */ (token).text());
-		return /** @type {T extends Token ? T : import('../lib/text')} */ (token);
+		this.#flags?.splice(i, 0, token.text().trim());
+		return token;
 	}
 
 	/** 获取所有转换类型标记 */
@@ -166,20 +161,13 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * 获取转换类型标记节点
-	 * @param {string} flag 转换类型标记
-	 * @returns {AtomToken[]}
-	 * @complexity `n`
+	 * @param flag 转换类型标记
 	 */
 	getFlagToken(flag) {
-		return this.#flags.includes(flag)
-			? /** @type {AtomToken[]} */ (this.childNodes).filter(child => child.text().trim() === flag)
-			: [];
+		return this.#flags.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 
-	/**
-	 * 获取有效转换类型标记
-	 * @complexity `n`
-	 */
+	/** 获取有效的转换类型标记 */
 	getEffectiveFlags() {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags();
@@ -217,25 +205,23 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * 是否具有某转换类型标记
-	 * @param {string} flag 转换类型标记
+	 * @param flag 转换类型标记
 	 */
 	hasFlag(flag) {
 		return typeof flag === 'string' ? this.#flags.includes(flag) : this.typeError('hasFlag', 'String');
 	}
 
 	/**
-	 * 是否具有某有效转换类型标记
-	 * @param {string} flag 转换类型标记
-	 * @complexity `n`
+	 * 是否具有某有效的转换类型标记
+	 * @param flag 转换类型标记
 	 */
 	hasEffectiveFlag(flag) {
-		return typeof flag === 'string' ? this.getEffectiveFlags().has(flag) : this.typeError('hasFlag', 'String');
+		return typeof flag === 'string' ? this.getEffectiveFlags().has(flag) : this.typeError('hasEffectiveFlag', 'String');
 	}
 
 	/**
 	 * 移除某转换类型标记
-	 * @param {string} flag 转换类型标记
-	 * @complexity `n²`
+	 * @param flag 转换类型标记
 	 */
 	removeFlag(flag) {
 		for (const token of this.getFlagToken(flag)) {
@@ -245,8 +231,7 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * 添加转换类型标记
-	 * @param {string} flag 转换类型标记
-	 * @complexity `n`
+	 * @param flag 转换类型标记
 	 */
 	#newFlag(flag) {
 		const token = Parser.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config')));
@@ -255,21 +240,17 @@ class ConverterFlagsToken extends Token {
 
 	/**
 	 * 设置转换类型标记
-	 * @param {string} flag 转换类型标记
-	 * @complexity `n`
+	 * @param flag 转换类型标记
 	 */
 	setFlag(flag) {
 		if (!this.#flags.includes(flag)) {
 			this.#newFlag(flag);
-		} else if (!this.getEffectiveFlags().has(flag)) {
-			Parser.error('此 flag 不会生效', flag);
 		}
 	}
 
 	/**
 	 * 开关转换类型标记
-	 * @param {string} flag 转换类型标记
-	 * @complexity `n²`
+	 * @param flag 转换类型标记
 	 */
 	toggleFlag(flag) {
 		if (this.#flags.includes(flag)) {
@@ -279,6 +260,5 @@ class ConverterFlagsToken extends Token {
 		}
 	}
 }
-
 Parser.classes.ConverterFlagsToken = __filename;
 module.exports = ConverterFlagsToken;

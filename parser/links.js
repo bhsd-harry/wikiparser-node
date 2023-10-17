@@ -1,15 +1,10 @@
 'use strict';
+const Parser = require('../index');
+const LinkToken = require('../src/link');
+const FileToken = require('../src/link/file');
+const CategoryToken = require('../src/link/category');
 
-const Parser = require('../index'),
-	LinkToken = require('../src/link'),
-	FileToken = require('../src/link/file'),
-	CategoryToken = require('../src/link/category');
-
-/**
- * 解析内部链接
- * @param {string} wikitext wikitext
- * @param {import('../src')[]} accum
- */
+/** 解析内部链接 */
 const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	const parseQuotes = require('./quotes.js');
 	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
@@ -18,12 +13,13 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 		bits = wikitext.split('[[');
 	let s = bits.shift();
 	for (let i = 0; i < bits.length; i++) {
-		let mightBeImg, link, delimiter, text, after;
+		let mightBeImg = false,
+			link, delimiter, text, after;
 		const x = bits[i],
 			m = regex.exec(x);
 		if (m) {
 			[, link, delimiter, text, after] = m;
-			if (after[0] === ']' && text?.includes('[')) {
+			if (after.startsWith(']') && text?.includes('[')) {
 				text += ']';
 				after = after.slice(1);
 			}
@@ -38,7 +34,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 			s += `[[${x}`;
 			continue;
 		}
-		const force = link.trim()[0] === ':';
+		const force = link.trim().startsWith(':');
 		if (force && mightBeImg) {
 			s += `[[${x}`;
 			continue;
@@ -53,7 +49,7 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 				s += `[[${x}`;
 				continue;
 			}
-			let found;
+			let found = false;
 			for (i++; i < bits.length; i++) {
 				const next = bits[i],
 					p = next.split(']]');
@@ -89,6 +85,5 @@ const parseLinks = (wikitext, config = Parser.getConfig(), accum = []) => {
 	}
 	return s;
 };
-
 Parser.parsers.parseLinks = __filename;
 module.exports = parseLinks;

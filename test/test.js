@@ -4,7 +4,7 @@ const fs = require('fs/promises'),
 	assert = require('assert'), // eslint-disable-line no-unused-vars
 	path = require('path');
 
-var Parser = require('..');
+var Parser = require('../index');
 var wikitext = ''; // eslint-disable-line no-unused-vars
 const {argv: [,, title = '']} = process;
 Parser.debugging = true;

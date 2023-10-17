@@ -12,11 +12,10 @@ class NowikiToken extends NowikiBaseToken {
 	/**
 	 * @override
 	 * @browser
-	 * @param start 起始位置
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const {name} = this;
-		return (name === 'templatestyles' || name === 'section') && String(this)
+		return (name === 'templatestyles' || name === 'section') && this.firstChild.data
 			? [generateForSelf(this, {start}, Parser.msg('nothing should be in <$1>', name))]
 			: super.lint(start);
 	}

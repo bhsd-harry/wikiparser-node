@@ -1,17 +1,16 @@
 'use strict';
-
-const Parser = require('..'),
-	Token = require('.'),
-	GalleryImageToken = require('./link/galleryImage'),
-	HiddenToken = require('./hidden');
+const Parser = require('../index');
+const Token = require('.');
+const GalleryImageToken = require('./link/galleryImage');
+const HiddenToken = require('./hidden');
 
 /**
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
  */
 class GalleryToken extends Token {
+	/** @browser */
 	type = 'ext-inner';
-	name = 'gallery';
 
 	/** 所有图片 */
 	get images() {
@@ -19,8 +18,8 @@ class GalleryToken extends Token {
 	}
 
 	/**
-	 * @param {string} inner 标签内部wikitext
-	 * @param {Token[]} accum
+	 * @browser
+	 * @param inner 标签内部wikitext
 	 */
 	constructor(inner, config = Parser.getConfig(), accum = []) {
 		super(undefined, config, true, accum, {
@@ -39,7 +38,7 @@ class GalleryToken extends Token {
 			const [, file, alt] = matches,
 				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
-				super.insertAt(new GalleryImageToken(file, alt, config, accum));
+				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {
 					AstText: ':',
@@ -50,34 +49,40 @@ class GalleryToken extends Token {
 
 	/**
 	 * @override
-	 * @param {string} selector
+	 * @browser
 	 */
 	toString(selector) {
 		return super.toString(selector, '\n');
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	text() {
 		return super.text('\n').replace(/\n\s*\n/gu, '\n');
 	}
 
-	/** @override */
+	/** @private */
 	getGaps() {
 		return 1;
 	}
 
-	/** @override */
+	/**
+	 * @override
+	 * @browser
+	 */
 	print() {
 		return super.print({sep: '\n'});
 	}
 
 	/**
 	 * @override
-	 * @param {number} start 起始位置
+	 * @browser
 	 */
 	lint(start = this.getAbsoluteIndex()) {
 		const {top, left} = this.getRootNode().posFromIndex(start),
-			/** @type {import('..').LintError[]} */ errors = [];
+			errors = [];
 		for (let i = 0, startIndex = start; i < this.length; i++) {
 			const child = this.childNodes[i],
 				str = String(child),
@@ -117,26 +122,22 @@ class GalleryToken extends Token {
 
 	/**
 	 * 插入图片
-	 * @param {string} file 图片文件名
-	 * @param {number} i 插入位置
+	 * @param file 图片文件名
+	 * @param i 插入位置
 	 * @throws `SyntaxError` 非法的文件名
 	 */
 	insertImage(file, i = this.length) {
 		const title = this.normalizeTitle(file, 6, true, true);
 		if (title.valid) {
-			const token = Parser.run(() => new GalleryImageToken(file, undefined, this.getAttribute('config')));
+			const token = Parser.run(
+				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
+			);
 			return this.insertAt(token, i);
 		}
 		throw new SyntaxError(`非法的文件名：${file}`);
 	}
 
-	/**
-	 * @override
-	 * @template {string|Token|import('../lib/text')} T
-	 * @param {T} token 待插入的节点
-	 * @param {number} i 插入位置
-	 * @throws `RangeError` 插入不可见内容
-	 */
+	/** @ignore */
 	insertAt(token, i = 0) {
 		if (typeof token === 'string' && token.trim() || token instanceof HiddenToken) {
 			throw new RangeError('请勿向图库中插入不可见内容！');
@@ -144,6 +145,5 @@ class GalleryToken extends Token {
 		return super.insertAt(token, i);
 	}
 }
-
 Parser.classes.GalleryToken = __filename;
 module.exports = GalleryToken;

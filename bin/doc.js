@@ -2,7 +2,7 @@
 
 const {argv: [,, file]} = process;
 const fs = require('fs'),
-	/** @type {ObjectConstructor} */ Node = require(`.${file[0] === '.' ? '' : './'}${file}`);
+	/** @type {ObjectConstructor} */ Node = require(`.${file.startsWith('.') ? '' : './'}${file}`);
 const {prototype} = Node,
 	{constructor: {name}} = prototype,
 	filename = `wiki/${name}.md`,
@@ -32,9 +32,9 @@ let doc = `# ${name} 简介\n\n`,
 for (const line of String(Node).split('\n').slice(1)) {
 	if (!line) {
 		break;
-	} else if (line.at(-1) === ';') {
+	} else if (line.endsWith(';')) {
 		const key = line.replace(/\/\*\* [^/]+ \*\/| = [^;]+|;$/gu, '').trim();
-		if (key[0] !== '#') {
+		if (!key.startsWith('#')) {
 			if (!instance) {
 				doc += `# Instance Properties\n\n`;
 				instance = true;
