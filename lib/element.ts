@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {toCase, noWrap, print, text, escapeRegExp} from '../util/string';
+import {toCase, noWrap, print, text} from '../util/string';
 import * as Ranges from './ranges';
 const {nth} = Ranges;
 import * as parseSelector from '../parser/selector';
@@ -466,7 +466,7 @@ abstract class AstElement extends AstNode {
 						throw new SyntaxError('错误的伪选择器用法。请使用形如 ":regex(attr, /re/i)" 的格式。');
 					}
 					try {
-						const regex = new RegExp(escapeRegExp(mt[2]), mt[3]);
+						const regex = new RegExp(mt[2], mt[3]);
 						return regex.test(String(this.getAttribute(mt[1].trim())));
 					} catch {
 						throw new SyntaxError(`错误的正则表达式：/${mt[2]}/${mt[3]}`);
