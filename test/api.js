@@ -48,8 +48,8 @@ class Api {
 	 * @returns {Promise<*>}
 	 */
 	async get(params) {
-		params = normalizeValues(params);
-		const qs = {action: 'query', format: 'json', formatversion: 2, errorformat: 'plaintext', ...params};
+		const normalizedParams = normalizeValues(params),
+			qs = {action: 'query', format: 'json', formatversion: 2, errorformat: 'plaintext', ...normalizedParams};
 		try {
 			return await new Promise((resolve, reject) => {
 				this.request.get({url: this.url, qs}, (e, response, body) => {
@@ -70,7 +70,7 @@ class Api {
 			if ([500, 502, 504].includes(e.statusCode)) {
 				info(`对网址 ${this.url} 发出的GET请求触发错误代码 ${e.statusCode}，30秒后将再次尝试。`);
 				await sleep(30);
-				return this.get(params);
+				return this.get(normalizedParams);
 			}
 			throw e;
 		}

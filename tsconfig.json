@@ -1,9 +1,30 @@
 {
+	"include": [
+		"lib/**/*",
+		"mixin/**/*",
+		"parser/**/*",
+		"src/**/*",
+		"typings/**/*",
+		"util/**/*",
+		"index.ts"
+	],
 	"compilerOptions": {
 		"allowJs": true,
-		"checkJs": false,
+		"checkJs": true,
 		"target": "esnext",
 		"module": "CommonJS",
-		"noEmit": true
+		"declaration": true,
+		"outDir": "dist",
+		"alwaysStrict": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"useUnknownInCatchVariables": true
 	}
 }

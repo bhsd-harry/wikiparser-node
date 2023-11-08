@@ -1,4 +1,4 @@
-import AstNodeTypes = require('./node');
+import type {AstNodeTypes} from '../lib/node';
 import Token = require('../src');
 
 declare global {
