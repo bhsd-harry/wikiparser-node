@@ -13,6 +13,8 @@ declare interface Config {
 	variants: string[];
 	interwiki: string[];
 	excludes?: string[];
+	conversionTable?: [string, string][];
+	redirects?: [string, string][];
 }
 
 declare interface LintError {
@@ -254,6 +256,13 @@ const Parser: Parser = {
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config/') as Config;
+			const {config: {conversionTable, redirects}} = this;
+			if (conversionTable) {
+				this.conversionTable = new Map(conversionTable);
+			}
+			if (redirects) {
+				this.redirects = new Map(redirects);
+			}
 			return this.getConfig();
 		}
 		return {...this.config, excludes: []};
@@ -300,7 +309,7 @@ const Parser: Parser = {
 		this.run(() => {
 			build(['main', 'fragment']);
 		});
-		titleObj.autoConvert(this.conversionTable);
+		titleObj.conversionTable = this.conversionTable;
 		titleObj.redirects = this.redirects;
 		return titleObj;
 	},

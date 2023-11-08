@@ -116,6 +116,32 @@
 				"type": "string",
 				"pattern": "^[-a-z]+$"
 			}
+		},
+		"conversionTable": {
+			"description": "table of unidirectional conversions",
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"pattern": "^[^_<>[\\]{}|]+$"
+				},
+				"minItems": 2,
+				"maxItems": 2
+			}
+		},
+		"redirects": {
+			"description": "table of redirects",
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"pattern": "^[^_<>[\\]{}|]+$"
+				},
+				"minItems": 2,
+				"maxItems": 2
+			}
 		}
 	},
 	"required": [

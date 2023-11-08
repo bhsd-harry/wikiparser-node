@@ -14,11 +14,18 @@ class Title {
 	main = '';
 	prefix = '';
 	interwiki = '';
+	conversionTable = new Map<string, string>();
 	redirects = new Map<string, string>();
 
 	/** 完整标题 */
 	get title(): string {
-		const title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
+		let title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
+		const redirected = this.redirects.get(title);
+		if (redirected) {
+			return redirected;
+		}
+		this.autoConvert();
+		title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
 		return this.redirects.get(title) ?? title;
 	}
 
@@ -91,7 +98,8 @@ class Title {
 	 * 转换
 	 * @param conversionTable 单向转换表
 	 */
-	autoConvert(conversionTable: Map<string, string>): void {
+	autoConvert(): void {
+		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
 			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
