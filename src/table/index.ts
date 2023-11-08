@@ -582,8 +582,7 @@ abstract class TableToken extends TrBaseToken {
 			} else if (prevCoords !== coords) {
 				const rowToken = this.getNthRow(i)!;
 				rowToken.insertBefore(token.cloneNode(), rowToken.getNthCol(coords!.column, true));
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-			} else if (coords?.row === i) {
+			} else if (coords.row === i) {
 				this.getNthCell(coords)!.colspan++;
 			}
 		}

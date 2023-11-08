@@ -688,7 +688,7 @@ abstract class AstElement extends AstNode {
 	 */
 	echo(depth = 0): void {
 		if (!Number.isInteger(depth) || depth < 0) {
-			this.typeError('print', 'Number');
+			this.typeError('echo', 'Number');
 		}
 		const indent = '  '.repeat(depth),
 			str = String(this),

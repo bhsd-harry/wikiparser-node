@@ -129,7 +129,7 @@ declare interface Parser {
  * @param file 文件名
  * @param dir 子路径
  */
-const rootRequire = (file: string, dir = ''): unknown => require(`${file.includes('/') ? '' : `../${dir}`}${file}`);
+const rootRequire = (file: string, dir = ''): unknown => require(`../${file.includes('/') ? '' : dir}${file}`);
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
