@@ -276,8 +276,7 @@
 			{
 				"VariableDeclarator": {
 					"array": true,
-					"object": true,
-					"enforceForRenamedProperties": "literal"
+					"object": true
 				},
 				"AssignmentExpression": {
 					"array": true,
@@ -592,7 +591,7 @@
 		"unicorn/prefer-optional-catch-binding": 2,
 		"unicorn/prefer-prototype-methods": 2,
 		"unicorn/prefer-spread": 2,
-		"unicorn/prefer-string-replace-all": 2,
+		"unicorn/prefer-string-replace-all": 0,
 		"unicorn/prefer-string-starts-ends-with": 2,
 		"unicorn/prefer-switch": 2,
 		"unicorn/prefer-ternary": 2,
@@ -607,10 +606,6 @@
 		"jsdoc/check-tag-names": 1,
 		"jsdoc/check-types": 0,
 		"jsdoc/multiline-blocks": 1,
-		"jsdoc/newline-after-description": [
-			1,
-			"never"
-		],
 		"jsdoc/no-bad-blocks": [
 			1,
 			{
@@ -677,30 +672,7 @@
 			}
 		],
 		"jsdoc/require-param-type": 0,
-		"jsdoc/require-param": [
-			1,
-			{
-				"exceptions": [
-					"_",
-					"config",
-					"halfParsed",
-					"accum",
-					"selector",
-					"start",
-					"callback",
-					"method",
-					"wikitext",
-					"type",
-					"acceptable"
-				],
-				"contexts": [
-					"FunctionDeclaration",
-					"VariableDeclarator > FunctionExpression",
-					"MethodDefinition > FunctionExpression",
-					"VariableDeclarator > ArrowFunctionExpression"
-				]
-			}
-		],
+		"jsdoc/require-param": 0,
 		"jsdoc/require-returns-check": 0,
 		"jsdoc/require-returns-type": 0,
 		"jsdoc/require-throws": 1,

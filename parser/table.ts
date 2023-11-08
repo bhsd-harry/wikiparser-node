@@ -79,7 +79,7 @@ const parseTable = (
 			while (top!.type !== 'table') {
 				top = stack.pop();
 			}
-			(top as TableToken).close(`\n${spaces}${closing}`, true);
+			top!.close(`\n${spaces}${closing}`, true);
 			push(attr, stack.at(-1));
 		} else if (row) {
 			if (top.type === 'td') {

@@ -58,7 +58,12 @@ abstract class ImagemapToken extends Token {
 		const lines = inner.split('\n'),
 			protocols = new Set(config.protocol.split('|')),
 			SingleLineNoincludeToken = singleLine(NoincludeToken),
-			fallback = /** @param line 一行文本 */ (line: string): void => {
+
+			/**
+			 * 无效文本
+			 * @param line 一行文本
+			 */
+			fallback = (line: string): void => {
 				// @ts-expect-error abstract class
 				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 			};

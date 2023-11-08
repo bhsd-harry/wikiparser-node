@@ -62,8 +62,8 @@ abstract class TranscludeToken extends Token {
 		} else if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':'),
 				[mt] = /^(?:\s|\0\d+c\x7F)*/u.exec(arg[0] ?? '')!;
-			if (this.setModifier(`${modifier!}:${mt!}`)) {
-				title = arg.join(':').slice(mt!.length); // eslint-disable-line no-param-reassign
+			if (this.setModifier(`${modifier!}:${mt}`)) {
+				title = arg.join(':').slice(mt.length); // eslint-disable-line no-param-reassign
 			}
 		}
 		if (title.includes(':') || parts.length === 0 && !this.#raw) {

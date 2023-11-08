@@ -78,13 +78,13 @@ class MagicLinkToken extends Token {
 					startCol = (top > 1 ? 0 : refError.startCol) + left;
 				return {
 					...refError,
-					message: Parser.msg('$1 in URL', s!.startsWith('|') ? '"|"' : Parser.msg('full-width punctuation')),
+					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : Parser.msg('full-width punctuation')),
 					startIndex,
-					endIndex: startIndex + s!.length,
+					endIndex: startIndex + s.length,
 					startLine,
 					endLine: startLine,
 					startCol,
-					endCol: startCol + s!.length,
+					endCol: startCol + s.length,
 					excerpt: str.slice(Math.max(0, index! - 25), index! + 25),
 				};
 			}));

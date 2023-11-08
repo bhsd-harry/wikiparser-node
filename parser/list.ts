@@ -22,14 +22,14 @@ const parseList = (wikitext: string, config = Parser.getConfig(), accum: Token[]
 		lc = 0;
 	while (ex && dt) {
 		const {0: syntax, index} = ex;
-		if (syntax!.startsWith(':')) {
-			if (syntax!.length >= dt) {
+		if (syntax.startsWith(':')) {
+			if (syntax.length >= dt) {
 				// @ts-expect-error abstract class
 				new DdToken(':'.repeat(dt), config, accum);
 				return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + dt)}`;
 			}
 			text = `${text.slice(0, index)}\0${accum.length}d\x7F${text.slice(regex.lastIndex)}`;
-			dt -= syntax!.length;
+			dt -= syntax.length;
 			regex.lastIndex = index + 4 + String(accum.length).length;
 			// @ts-expect-error abstract class
 			new DdToken(syntax, config, accum);

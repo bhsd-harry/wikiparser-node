@@ -74,7 +74,6 @@ abstract class TrBaseToken extends TableBaseToken {
 	/** 修复简单的表格语法错误 */
 	#correct(): void {
 		const {childNodes: [,, child]} = this;
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		if (child?.constructor === Token) {
 			const {firstChild} = child;
 			if (firstChild?.type !== 'text') {

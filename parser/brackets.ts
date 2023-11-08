@@ -36,6 +36,7 @@ const parseBrackets = (wikitext: string, config = Parser.getConfig(), accum: Tok
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (pos === undefined || findEqual || removeComment(text.slice(pos, index)) !== '') {
+				// eslint-disable-next-line regexp/no-misleading-capturing-group
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u
 					.exec(text.slice(index, curIndex)) as [string, string, string, string] | null;
 				if (rmt) {
