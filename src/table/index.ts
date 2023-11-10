@@ -1,7 +1,6 @@
 import * as assert from 'assert/strict';
 import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
-import {isPlainObject} from '../../util/base';
 import {Parser} from '../../index';
 import {Token} from '..';
 import {TrToken} from './tr';
@@ -9,9 +8,7 @@ import {TrBaseToken} from './trBase';
 import {TdToken} from './td';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../index';
-import type {AttributesToken} from '../attributes';
-import type {TableCoords, TableRenderedCoords} from './trBase';
-import type {TdAttrs} from './td';
+import type {AttributesToken, TableCoords, TableRenderedCoords, TdAttrs} from '../../internal';
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
@@ -235,9 +232,6 @@ export abstract class TableToken extends TrBaseToken {
 	getNthRow(n: number, force: boolean, insert: true): TrBaseToken | SyntaxToken | undefined;
 	/** @ignore */
 	getNthRow(n: number, force = false, insert = false): TrBaseToken | SyntaxToken | undefined {
-		if (!Number.isInteger(n)) {
-			this.typeError('getNthRow', 'Number');
-		}
 		const nRows = this.getRowCount(),
 			isRow = super.getRowCount();
 		let m = n < 0 ? n + nRows : n;
@@ -343,9 +337,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param {TableCoords} coord wikitext中的表格坐标
 	 */
 	toRenderedCoords({row, column}: TableCoords): TableRenderedCoords | undefined {
-		if (!Number.isInteger(row) || !Number.isInteger(column)) {
-			this.typeError('toRenderedCoords', 'Number');
-		}
 		const rowLayout = this.getLayout({row, column})[row],
 			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}) === 0);
 		return rowLayout && (x === -1 ? undefined : {y: row, x: x!});
@@ -356,9 +347,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param {TableRenderedCoords} coord 渲染后的表格坐标
 	 */
 	toRawCoords({x, y}: TableRenderedCoords): TableCoords | undefined {
-		if (!Number.isInteger(x) || !Number.isInteger(y)) {
-			this.typeError('toRawCoords', 'Number');
-		}
 		const rowLayout = this.getLayout({x, y})[y],
 			coords = rowLayout?.[x];
 		if (coords) {
@@ -376,9 +364,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param y 行号
 	 */
 	getFullRow(y: number): Map<TdToken, boolean> {
-		if (!Number.isInteger(y)) {
-			this.typeError('getFullRow', 'Number');
-		}
 		const rows = this.getAllRows();
 		return new Map(this.getLayout({y})[y]?.map(({row, column}) => [rows[row]!.getNthCol(column)!, row === y]));
 	}
@@ -388,9 +373,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param x 列号
 	 */
 	getFullCol(x: number): Map<TdToken, boolean> {
-		if (!Number.isInteger(x)) {
-			this.typeError('getFullCol', 'Number');
-		}
 		const layout = this.getLayout(),
 			colLayout = layout.map(row => row[x]).filter(Boolean) as TableCoords[],
 			rows = this.getAllRows();
@@ -516,9 +498,6 @@ export abstract class TableToken extends TrBaseToken {
 		subtype: 'td' | 'th' | 'caption' = 'td',
 		innerAttr: TdAttrs = {},
 	): TrToken {
-		if (!isPlainObject(attr)) {
-			this.typeError('insertTableRow', 'Object');
-		}
 		let reference = this.getNthRow(y, false, true);
 		// @ts-expect-error abstract class
 		const token: TrToken = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
@@ -566,9 +545,6 @@ export abstract class TableToken extends TrBaseToken {
 		subtype: 'td' | 'th' | 'caption' = 'td',
 		attr: TdAttrs = {},
 	): void {
-		if (!Number.isInteger(x)) {
-			this.typeError('insertTableCol', 'Number');
-		}
 		const layout = this.getLayout(),
 			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);
@@ -652,9 +628,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 待合并区域与外侧区域有重叠
 	 */
 	mergeCells(xlim: [number, number], ylim: [number, number]): TdToken {
-		if (![...xlim, ...ylim].every(Number.isInteger)) {
-			this.typeError('mergeCells', 'Number');
-		}
 		const layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			posXlim = xlim.map(x => x < 0 ? x + maxCol : x) as [number, number],
@@ -798,9 +771,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowBefore(y: number, before: number): TrToken {
-		if (!Number.isInteger(y) || !Number.isInteger(before)) {
-			this.typeError('moveTableRowBefore', 'Number');
-		}
 		const layout = this.getLayout(),
 			/** @ignore */
 			occupied = (i: number): number[] =>
@@ -834,9 +804,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 无法移动
 	 */
 	moveTableRowAfter(y: number, after: number): TrToken {
-		if (!Number.isInteger(y) || !Number.isInteger(after)) {
-			this.typeError('moveTableRowAfter', 'Number');
-		}
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after)!,
 			cells = afterToken.childNodes.filter(
@@ -883,9 +850,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 无法移动
 	 */
 	#moveCol(x: number, reference: number, after = false): void {
-		if (!Number.isInteger(x) || !Number.isInteger(reference)) {
-			this.typeError(`moveTableCol${after ? 'After' : 'Before'}`, 'Number');
-		}
 		const layout = this.getLayout();
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);

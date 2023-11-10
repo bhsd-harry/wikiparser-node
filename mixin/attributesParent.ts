@@ -1,6 +1,5 @@
 import {Parser} from '../index';
-import type {AstNodeTypes} from '../lib/node';
-import type {AttributesToken} from '../src/attributes';
+import type {AstNodeTypes, AttributesToken} from '../internal';
 
 /**
  * 子节点含有AttributesToken的类

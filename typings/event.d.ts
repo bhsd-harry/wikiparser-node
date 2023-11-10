@@ -1,5 +1,5 @@
-import type {Token} from '../src';
 import type {AstNodeTypes} from '../lib/node';
+import type {Token} from '../src';
 
 declare global {
 	type AstEventType = 'insert' | 'remove' | 'text' | 'replace';

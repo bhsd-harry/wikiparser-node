@@ -2,8 +2,7 @@ import {Parser} from '../index';
 import {LinkToken} from '../src/link';
 import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';
-import type {Token} from '../src';
-import type {LinkBaseToken} from '../src/link/base';
+import type {Token, LinkBaseToken} from '../internal';
 
 /**
  * 解析内部链接

@@ -99,9 +99,10 @@ export abstract class NestedToken extends Token {
 	 * @param i 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		return typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name)
-			? this.typeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`)
-			: super.insertAt(token, i);
+		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name)) {
+			throw new TypeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`);
+		}
+		return super.insertAt(token, i);
 	}
 
 	/** @override */

@@ -5,8 +5,7 @@ import {Token} from '..';
 import {AtomToken} from '../atom';
 import type {BoundingRect} from '../../util/lint';
 import type {LintError} from '../../index';
-import type {AttributesToken} from '../attributes';
-import type {ExtToken} from '../tagPair/ext';
+import type {AttributesToken, ExtToken} from '../../internal';
 
 /**
  * `<dynamicpagelist>`

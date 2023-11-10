@@ -150,9 +150,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
 	/** @ignore */
 	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
-		if (!Number.isInteger(n)) {
-			this.typeError('getNthCol', 'Number');
-		}
 		const nCols = this.getColCount();
 		let m = n < 0 ? n + nCols : n;
 		if (m < 0 || m > nCols || m === nCols && !insert) {

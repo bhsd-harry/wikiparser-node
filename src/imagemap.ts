@@ -6,10 +6,7 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
 import type {LintError} from '../index';
-import type {AstNodeTypes} from '../lib/node';
-import type {AstText} from '../lib/text';
-import type {AttributesToken} from './attributes';
-import type {ExtToken} from './tagPair/ext';
+import type {AstNodeTypes, AstText, AttributesToken, ExtToken} from '../internal';
 
 /**
  * `<imagemap>`

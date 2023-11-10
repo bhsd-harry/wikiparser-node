@@ -1,8 +1,8 @@
 'use strict';
 
-const diff = require('../util/diff'),
+const {diff} = require('../dist/util/diff'),
 	{Api} = require('./api'),
-	Parser = require('../');
+	{Parser} = require('..');
 
 const {argv: [,, site = '']} = process,
 	apis = [

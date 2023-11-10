@@ -240,9 +240,7 @@ export class AstText extends AstNode {
 	 * @throws `Error` 没有父节点
 	 */
 	splitText(offset: number): AstText {
-		if (!Number.isInteger(offset)) {
-			this.typeError('splitText', 'Number');
-		} else if (offset > this.length || offset < -this.length) {
+		if (offset > this.length || offset < -this.length) {
 			throw new RangeError(`错误的断开位置：${offset}`);
 		}
 		const {parentNode, data} = this;

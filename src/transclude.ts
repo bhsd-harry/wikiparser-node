@@ -136,9 +136,6 @@ export abstract class TranscludeToken extends Token {
 	 * @param modifier 引用修饰符
 	 */
 	setModifier(modifier = ''): boolean {
-		if (typeof modifier !== 'string') {
-			this.typeError('setModifier', 'String');
-		}
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = removeComment(modifier).trim();
 		if (modifier && !lcModifier.endsWith(':')) {
@@ -364,9 +361,6 @@ export abstract class TranscludeToken extends Token {
 	 * @param copy 是否返回一个备份
 	 */
 	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
-		if (typeof key !== 'string' && typeof key !== 'number') {
-			this.typeError('getArgs', 'String', 'Number');
-		}
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args: Set<ParameterToken>;
 		if (Object.hasOwn(this.#args, keyStr)) {
@@ -601,9 +595,7 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `SyntaxError` 非法的命名参数
 	 */
 	setValue(key: string, value: string): void {
-		if (typeof key !== 'string') {
-			this.typeError('setValue', 'String');
-		} else if (!this.isTemplate()) {
+		if (!this.isTemplate()) {
 			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
 		}
 		const token = this.getArg(key);
@@ -645,8 +637,6 @@ export abstract class TranscludeToken extends Token {
 	replaceTemplate(title: string): void {
 		if (this.type === 'magic-word') {
 			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
-		} else if (typeof title !== 'string') {
-			this.typeError('replaceTemplate', 'String');
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: template} = root as Token & {firstChild: TranscludeToken};
@@ -665,8 +655,6 @@ export abstract class TranscludeToken extends Token {
 	replaceModule(title: string): void {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
-		} else if (typeof title !== 'string') {
-			this.typeError('replaceModule', 'String');
 		}
 		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: invoke} = root as Token & {firstChild: TranscludeToken},
@@ -691,8 +679,6 @@ export abstract class TranscludeToken extends Token {
 	replaceFunction(func: string): void {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
-		} else if (typeof func !== 'string') {
-			this.typeError('replaceFunction', 'String');
 		} else if (this.length < 2) {
 			throw new Error('尚未指定模块名称！');
 		}

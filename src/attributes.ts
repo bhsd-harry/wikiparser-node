@@ -156,11 +156,9 @@ export abstract class AttributesToken extends Token {
 	 * @param key 属性名
 	 */
 	getAttrTokens(key: string): AttributeToken[] {
-		return typeof key === 'string'
-			? this.childNodes.filter(
-				child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
-			) as AttributeToken[]
-			: this.typeError('getAttrTokens', 'String');
+		return this.childNodes.filter(
+			child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
+		) as AttributeToken[];
 	}
 
 	/**
@@ -312,9 +310,7 @@ export abstract class AttributesToken extends Token {
 	 * @throws `RangeError` 无效的属性名
 	 */
 	setAttr(key: string, value: string | boolean): void {
-		if (typeof key !== 'string' || typeof value !== 'string' && typeof value !== 'boolean') {
-			this.typeError('setAttr', 'String', 'Boolean');
-		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
+		if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
 		const k = key.toLowerCase().trim(),
@@ -379,9 +375,7 @@ export abstract class AttributesToken extends Token {
 	 * @param key 属性键
 	 */
 	hasAttr(key: string): boolean {
-		return typeof key === 'string'
-			? this.getAttrTokens(key).length > 0
-			: this.typeError('hasAttr', 'String');
+		return this.getAttrTokens(key).length > 0;
 	}
 
 	/** 获取全部的标签属性名 */
@@ -417,9 +411,6 @@ export abstract class AttributesToken extends Token {
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key: string, force?: boolean): void {
-		if (typeof key !== 'string') {
-			this.typeError('toggleAttr', 'String');
-		}
 		const k = key.toLowerCase().trim(),
 			attr = this.getAttrToken(k);
 		if (attr && attr.getValue() !== true) {

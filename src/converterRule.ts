@@ -232,9 +232,6 @@ export abstract class ConverterRuleToken extends Token {
 	 * @throws `RangeError` 无效的语言变体
 	 */
 	setVariant(variant: string): void {
-		if (typeof variant !== 'string') {
-			this.typeError('setVariant', 'String');
-		}
 		const config = this.getAttribute('config'),
 			v = variant.trim();
 		if (!config.variants.includes(v)) {

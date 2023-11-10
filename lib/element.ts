@@ -164,9 +164,7 @@ export abstract class AstElement extends AstNode {
 	 * @throws `RangeError` 不能插入祖先节点
 	 */
 	insertAt<T extends AstNodeTypes>(node: T, i = this.childNodes.length): T {
-		if (!(node instanceof AstNode)) {
-			return this.typeError('insertAt', 'AstNode');
-		} else if (node.contains(this)) {
+		if (node.contains(this)) {
 			Parser.error('不能插入祖先节点！', node);
 			throw new RangeError('不能插入祖先节点！');
 		}
@@ -465,7 +463,7 @@ export abstract class AstElement extends AstNode {
 				case 'regex': {
 					const mt = /^([^,]+),\s*\/(.+)\/([a-z]*)$/u.exec(s) as [string, string, string, string] | null;
 					if (!mt) {
-						throw new SyntaxError('错误的伪选择器用法。请使用形如 ":regex(attr, /re/i)" 的格式。');
+						throw new SyntaxError('错误的伪选择器用法。请使用形如 ":regex(\'attr, /re/i\')" 的格式。');
 					}
 					try {
 						const regex = new RegExp(mt[2], mt[3]);
@@ -523,12 +521,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	matches(selector?: string): boolean {
-		if (selector === undefined) {
-			return true;
-		}
-		return typeof selector === 'string'
-			? this.#matchesStack(parseSelector(selector))
-			: this.typeError('matches', 'String');
+		return selector === undefined || this.#matchesStack(parseSelector(selector));
 	}
 
 	/**
@@ -584,11 +577,8 @@ export abstract class AstElement extends AstNode {
 	 * @param id id名
 	 */
 	getElementById(id: string): Token | undefined {
-		if (typeof id === 'string') {
-			const eid = id.replace(/(?<!\\)"/gu, '\\"');
-			return this.querySelector(`ext[id="${eid}"], html[id="${eid}"]`);
-		}
-		return this.typeError('getElementById', 'String');
+		const eid = id.replace(/(?<!\\)"/gu, '\\"');
+		return this.querySelector(`ext[id="${eid}"], html[id="${eid}"]`);
 	}
 
 	/**
@@ -596,9 +586,7 @@ export abstract class AstElement extends AstNode {
 	 * @param className 类名之一
 	 */
 	getElementsByClassName(className: string): Token[] {
-		return typeof className === 'string'
-			? this.querySelectorAll(`[className~="${className.replace(/(?<!\\)"/gu, '\\"')}"]`)
-			: this.typeError('getElementsByClassName', 'String');
+		return this.querySelectorAll(`[className~="${className.replace(/(?<!\\)"/gu, '\\"')}"]`);
 	}
 
 	/**
@@ -606,11 +594,8 @@ export abstract class AstElement extends AstNode {
 	 * @param name 标签名
 	 */
 	getElementsByTagName(name: string): Token[] {
-		if (typeof name === 'string') {
-			const ename = name.replace(/(?<!\\)"/gu, '\\"');
-			return this.querySelectorAll(`ext[name="${ename}"], html[name="${ename}"]`);
-		}
-		return this.typeError('getElementsByTagName', 'String');
+		const ename = name.replace(/(?<!\\)"/gu, '\\"');
+		return this.querySelectorAll(`ext[name="${ename}"], html[name="${ename}"]`);
 	}
 
 	/**
@@ -698,9 +683,6 @@ export abstract class AstElement extends AstNode {
 	 * @param depth 当前深度
 	 */
 	echo(depth = 0): void {
-		if (!Number.isInteger(depth) || depth < 0) {
-			this.typeError('echo', 'Number');
-		}
 		const indent = '  '.repeat(depth),
 			str = String(this),
 			{childNodes, type, length} = this;

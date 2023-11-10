@@ -3,8 +3,8 @@
 const fs = require('fs'),
 	assert = require('assert'),
 	path = require('path'),
-	diff = require('../util/diff'),
-	Parser = require('../index');
+	{diff} = require('../util/diff'),
+	{Parser} = require('..');
 
 const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.wiki'), 'utf8');
 

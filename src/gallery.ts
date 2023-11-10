@@ -3,10 +3,7 @@ import {Token} from '.';
 import {GalleryImageToken} from './link/galleryImage';
 import {HiddenToken} from './hidden';
 import type {LintError} from '../index';
-import type {AstNodeTypes} from '../lib/node';
-import type {AstText} from '../lib/text';
-import type {AttributesToken} from './attributes';
-import type {ExtToken} from './tagPair/ext';
+import type {AstNodeTypes, AstText, AttributesToken, ExtToken} from '../internal';
 
 /**
  * gallery标签

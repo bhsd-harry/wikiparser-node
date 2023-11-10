@@ -4,8 +4,7 @@ import {TableToken} from '../src/table';
 import {TrToken} from '../src/table/tr';
 import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';
-import type {AstText} from '../lib/text';
-import type {TrBaseToken} from '../src/table/trBase';
+import type {AstText, TrBaseToken} from '../internal';
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行

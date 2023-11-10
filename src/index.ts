@@ -303,9 +303,6 @@ export class Token extends AstElement {
 	 * @param include 是否嵌入
 	 */
 	parse(n = MAX_STAGE, include = false): this {
-		if (!Number.isInteger(n)) {
-			this.typeError('parse', 'Number');
-		}
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);
 		}
@@ -588,9 +585,6 @@ export class Token extends AstElement {
 	 * @throws `Error` 不可移除的子节点
 	 */
 	override removeAt(i: number): AstNodeTypes {
-		if (!Number.isInteger(i)) {
-			this.typeError('removeAt', 'Number');
-		}
 		const iPos = i < 0 ? i + this.length : i;
 		if (!Parser.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
@@ -645,13 +639,10 @@ export class Token extends AstElement {
 	 * @param data 注释内容
 	 */
 	createComment(data = ''): CommentToken {
-		if (typeof data === 'string') {
-			const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
-			const config = this.getAttribute('config');
-			// @ts-expect-error abstract class
-			return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
-		}
-		return this.typeError('createComment', 'String');
+		const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
+		const config = this.getAttribute('config');
+		// @ts-expect-error abstract class
+		return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
 	}
 
 	/**
@@ -663,9 +654,6 @@ export class Token extends AstElement {
 	 * @throws `RangeError` 非法的标签名
 	 */
 	createElement(tagName: string, {selfClosing, closing}: {selfClosing?: boolean, closing?: boolean} = {}): TagToken {
-		if (typeof tagName !== 'string') {
-			this.typeError('createElement', 'String');
-		}
 		const config = this.getAttribute('config'),
 			include = this.getAttribute('include');
 		if (tagName === (include ? 'noinclude' : 'includeonly')) {
@@ -690,8 +678,9 @@ export class Token extends AstElement {
 	 * 创建纯文本节点
 	 * @param data 文本内容
 	 */
+	// eslint-disable-next-line class-methods-use-this
 	createTextNode(data = ''): AstText {
-		return typeof data === 'string' ? new AstText(data) : this.typeError('createTextNode', 'String');
+		return new AstText(data);
 	}
 
 	/**
@@ -701,8 +690,6 @@ export class Token extends AstElement {
 	caretPositionFromIndex(index?: number): CaretPosition | undefined {
 		if (index === undefined) {
 			return undefined;
-		} else if (!Number.isInteger(index)) {
-			this.typeError('caretPositionFromIndex', 'Number');
 		}
 		const {length} = String(this);
 		if (index > length || index < -length) {
@@ -751,8 +738,6 @@ export class Token extends AstElement {
 	elementFromIndex(index?: number): AstNodeTypes | undefined {
 		if (index === undefined) {
 			return undefined;
-		} else if (!Number.isInteger(index)) {
-			this.typeError('elementFromIndex', 'Number');
 		} else if (this.type !== 'root') {
 			throw new Error('elementFromIndex方法只可用于根节点！');
 		}
@@ -864,7 +849,7 @@ export class Token extends AstElement {
 	 * @param n 章节序号
 	 */
 	section(n: number): (AstText | Token)[] | undefined {
-		return Number.isInteger(n) ? this.sections()?.[n] : this.typeError('section', 'Number');
+		return this.sections()?.[n];
 	}
 
 	/**
@@ -873,9 +858,6 @@ export class Token extends AstElement {
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
 	findEnclosingHtml(tag?: string): [HtmlToken, HtmlToken] | undefined {
-		if (tag !== undefined && typeof tag !== 'string') {
-			this.typeError('findEnclosingHtml', 'String');
-		}
 		const lcTag = tag?.toLowerCase();
 		if (lcTag !== undefined && !this.#config.html.slice(0, 2).flat().includes(lcTag)) {
 			throw new RangeError(`非法的标签或空标签：${lcTag}`);

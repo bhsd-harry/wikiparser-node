@@ -5,8 +5,7 @@ import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
-import type {Token} from '..';
-import type {AtomToken} from '../atom';
+import type {Token, AtomToken} from '../../internal';
 
 const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
@@ -154,9 +153,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @param key 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
-		return typeof key === 'string'
-			? this.getAllArgs().filter(({name}) => key === name)
-			: this.typeError('getArgs', 'String');
+		return this.getAllArgs().filter(({name}) => key === name);
 	}
 
 	/**
@@ -252,9 +249,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @throws `SyntaxError` 非法的参数
 	 */
 	setValue(key: string, value: string | boolean | undefined = false): void {
-		if (typeof key !== 'string') {
-			this.typeError('setValue', 'String');
-		} else if (value === false) {
+		if (value === false) {
 			this.removeArg(key);
 			return;
 		}

@@ -1,10 +1,7 @@
 import {Parser} from '../index';
 import {Token} from '.';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {AstText} from '../lib/text';
-import type {AttributesToken} from './attributes';
-import type {ExtToken} from './tagPair/ext';
-import type {ConverterToken} from './converter';
+import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
 /**
  * `<pre>`

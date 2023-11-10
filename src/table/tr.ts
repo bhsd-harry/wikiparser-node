@@ -1,9 +1,6 @@
 import {Parser} from '../../index';
 import {TrBaseToken} from './trBase';
-import type {Token} from '..';
-import type {TdToken} from './td';
-import type {SyntaxToken} from '../syntax';
-import type {AttributesToken} from '../attributes';
+import type {Token, TdToken, SyntaxToken, AttributesToken} from '../../internal';
 
 /**
  * 表格行，含开头的换行，不含结尾的换行

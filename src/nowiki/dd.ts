@@ -29,11 +29,6 @@ export abstract class DdToken extends NowikiBaseToken {
 	/** @throws `RangeError` indent不是自然数 */
 	set indent(indent) {
 		if (this.type === 'dd') {
-			if (!Number.isInteger(indent)) {
-				this.typeError('indent setter', 'Number');
-			} else if (indent < 0) {
-				throw new RangeError('indent 应为自然数！');
-			}
 			this.setText(':'.repeat(indent));
 		}
 	}

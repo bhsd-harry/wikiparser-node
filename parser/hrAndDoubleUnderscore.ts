@@ -2,8 +2,7 @@ import {Parser} from '../index';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';
-import type {AstText} from '../lib/text';
-import type {Token} from '../src';
+import type {AstText, Token} from '../internal';
 
 /**
  * 解析`<hr>`和状态开关

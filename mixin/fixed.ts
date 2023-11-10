@@ -1,6 +1,5 @@
 import {Parser} from '../index';
-import type {AstNodeTypes} from '../lib/node';
-import type {AstText} from '../lib/text';
+import type {AstNodeTypes, AstText} from '../internal';
 
 /**
  * 不可增删子节点的类

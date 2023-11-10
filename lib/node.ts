@@ -172,7 +172,7 @@ export abstract class AstNode {
 
 	/** @private */
 	protected hasAttribute(key: string): boolean {
-		return typeof key === 'string' ? key in this : this.typeError('hasAttribute', 'String');
+		return key in this;
 	}
 
 	/** @private */
@@ -227,9 +227,6 @@ export abstract class AstNode {
 	 * @param index 字符位置
 	 */
 	posFromIndex(index: number): Position | undefined {
-		if (!Number.isInteger(index)) {
-			this.typeError('posFromIndex', 'Number');
-		}
 		const str = String(this);
 		if (index >= -str.length && index <= str.length) {
 			const lines = str.slice(0, index).split('\n');
@@ -384,16 +381,11 @@ export abstract class AstNode {
 	 * @param node 待检测节点
 	 */
 	contains(node: AstNode): boolean {
-		return node instanceof AstNode
-			? node === this || this.childNodes.some(child => child.contains(node))
-			: this.typeError('contains', 'AstNode');
+		return node === this || this.childNodes.some(child => child.contains(node));
 	}
 
 	/** @private */
 	protected verifyChild(i: number, addition = 0): void {
-		if (!Number.isInteger(i)) {
-			this.typeError('verifyChild', 'Number');
-		}
 		const {childNodes: {length}} = this;
 		if (i < -length || i >= length + addition) {
 			throw new RangeError(`不存在第 ${i} 个子节点！`);
@@ -412,10 +404,8 @@ export abstract class AstNode {
 			for (const type of types) {
 				this.addEventListener(type, listener, options);
 			}
-		} else if (typeof types === 'string' && typeof listener === 'function') {
-			this.#events[options?.once ? 'once' : 'on'](types, listener);
 		} else {
-			this.typeError('addEventListener', 'String', 'Function');
+			this.#events[options?.once ? 'once' : 'on'](types, listener);
 		}
 	}
 
@@ -429,10 +419,8 @@ export abstract class AstNode {
 			for (const type of types) {
 				this.removeEventListener(type, listener);
 			}
-		} else if (typeof types === 'string' && typeof listener === 'function') {
-			this.#events.off(types, listener);
 		} else {
-			this.typeError('removeEventListener', 'String', 'Function');
+			this.#events.off(types, listener);
 		}
 	}
 
@@ -445,10 +433,8 @@ export abstract class AstNode {
 			for (const type of types) {
 				this.removeAllEventListeners(type);
 			}
-		} else if (types === undefined || typeof types === 'string') {
-			this.#events.removeAllListeners(types);
 		} else {
-			this.typeError('removeAllEventListeners', 'String');
+			this.#events.removeAllListeners(types);
 		}
 	}
 
@@ -457,7 +443,7 @@ export abstract class AstNode {
 	 * @param type 事件类型
 	 */
 	listEventListeners(type: AstEventType): Function[] {
-		return typeof type === 'string' ? this.#events.listeners(type) : this.typeError('listEventListeners', 'String');
+		return this.#events.listeners(type);
 	}
 
 	/**
@@ -466,9 +452,7 @@ export abstract class AstNode {
 	 * @param data 事件数据
 	 */
 	dispatchEvent(e: Event, data: AstEventData): void {
-		if (!(e instanceof Event)) {
-			this.typeError('dispatchEvent', 'Event');
-		} else if (!e.target) { // 初始化
+		if (!e.target) { // 初始化
 			Object.defineProperty(e, 'target', {value: this, enumerable: true});
 
 			/** 终止冒泡 */
@@ -503,9 +487,7 @@ export abstract class AstNode {
 	 * @throws `Error` 不在同一个语法树
 	 */
 	compareDocumentPosition(other: AstNodeTypes): number {
-		if (!(other instanceof AstNode)) {
-			this.typeError('compareDocumentPosition', 'AstNode');
-		} else if ((this as AstNode as AstNodeTypes) === other) {
+		if ((this as AstNode as AstNodeTypes) === other) {
 			return 0;
 		} else if (this.contains(other)) {
 			return -1;
@@ -529,9 +511,6 @@ export abstract class AstNode {
 	 * @param left 列号
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
-		if (!Number.isInteger(top) || !Number.isInteger(left)) {
-			this.typeError('indexFromPos', 'Number');
-		}
 		const lines = String(this).split('\n');
 		return top >= 0 && left >= 0 && lines.length >= top + 1 && lines[top]!.length >= left
 			? lines.slice(0, top).reduce((acc, curLine) => acc + curLine.length + 1, 0) + left

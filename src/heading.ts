@@ -145,9 +145,6 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	 * @param n 标题层级
 	 */
 	setLevel(n: number): void {
-		if (!Number.isInteger(n)) {
-			this.typeError('setLevel', 'Number');
-		}
 		const level = String(Math.min(Math.max(n, 1), 6));
 		this.setAttribute('name', level);
 	}

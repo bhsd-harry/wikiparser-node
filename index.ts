@@ -309,9 +309,6 @@ export const Parser: Parser = {
 
 	/** @implements */
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
-		if (typeof wikitext !== 'string') {
-			throw new TypeError('待解析的内容应为 String！');
-		}
 		const {Token}: typeof import('./src') = require('./src');
 		let token: Token;
 		this.run(() => {

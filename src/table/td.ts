@@ -1,6 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {typeError} from '../../util/debug';
-import {isPlainObject} from '../../util/base';
 import {fixed} from '../../mixin/fixed';
 import {Parser} from '../../index';
 import {Token} from '..';
@@ -283,9 +281,6 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 * @param value 属性值
 	 */
 	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void {
-		if (typeof key !== 'string') {
-			this.typeError('setAttr', 'String');
-		}
 		const lcKey = key.toLowerCase().trim();
 		let v: string | boolean;
 		if (typeof value === 'number' && (lcKey === 'rowspan' || lcKey === 'colspan')) {
@@ -326,12 +321,6 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 		include = false,
 		config = Parser.getConfig(),
 	): TdToken {
-		if (typeof inner !== 'string' && inner?.constructor !== Token || !isPlainObject(attr)) {
-			typeError(this, 'create', 'String', 'Token', 'Object');
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		} else if (subtype !== 'td' && subtype !== 'th' && subtype !== 'caption') {
-			throw new RangeError('单元格的子类型只能为 "td"、"th" 或 "caption"！');
-		}
 		const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner!,
 			// @ts-expect-error abstract class
 			token: TdToken = Parser.run(() => new TdToken('\n|', undefined, config));

@@ -1,8 +1,7 @@
 import {hidden} from '../../mixin/hidden';
 import {Parser} from '../../index';
 import {TagPairToken} from '.';
-import type {AstText} from '../../lib/text';
-import type {Token} from '..';
+import type {AstText, Token} from '../../internal';
 
 /**
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`

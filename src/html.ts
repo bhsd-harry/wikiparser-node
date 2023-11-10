@@ -5,8 +5,7 @@ import {attributesParent} from '../mixin/attributesParent';
 import {Parser} from '../index';
 import {Token} from '.';
 import type {LintError} from '../index';
-import type {TokenAttributeGetter} from '../lib/node';
-import type {AttributesToken} from './attributes';
+import type {TokenAttributeGetter, AttributesToken} from '../internal';
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
 

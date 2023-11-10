@@ -1,8 +1,7 @@
 import {Parser} from '../../index';
 import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
-import type {Token} from '..';
-import type {AtomToken} from '../atom';
+import type {Token, AtomToken} from '../../internal';
 
 /**
  * 内链
@@ -43,9 +42,6 @@ export abstract class LinkToken extends LinkBaseToken {
 	}
 
 	set interwiki(interwiki) {
-		if (typeof interwiki !== 'string') {
-			this.typeError('interwiki setter', 'String');
-		}
 		const {link: {prefix, main, fragment}} = this,
 			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
 		if (interwiki && !this.isInterwiki(link)) {
@@ -61,9 +57,6 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * @throws `SyntaxError` 非法的跨语言链接
 	 */
 	setLangLink(lang: string, link: string | Title): void {
-		if (typeof lang !== 'string') {
-			this.typeError('setLangLink', 'String');
-		}
 		let strLink = String(link).trim();
 		const [char] = strLink;
 		if (char === '#') {

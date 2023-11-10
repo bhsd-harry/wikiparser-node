@@ -224,7 +224,7 @@ export abstract class ConverterFlagsToken extends Token {
 	 * @param flag 转换类型标记
 	 */
 	hasFlag(flag: string): boolean {
-		return typeof flag === 'string' ? this.#flags!.includes(flag) : this.typeError('hasFlag', 'String');
+		return this.#flags!.includes(flag);
 	}
 
 	/**
@@ -232,7 +232,7 @@ export abstract class ConverterFlagsToken extends Token {
 	 * @param flag 转换类型标记
 	 */
 	hasEffectiveFlag(flag: string): boolean {
-		return typeof flag === 'string' ? this.getEffectiveFlags().has(flag) : this.typeError('hasEffectiveFlag', 'String');
+		return this.getEffectiveFlags().has(flag);
 	}
 
 	/**
