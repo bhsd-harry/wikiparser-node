@@ -1,16 +1,17 @@
+import * as assert from 'assert/strict';
 import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
 import {isPlainObject} from '../../util/base';
-import * as assert from 'assert/strict';
-import * as Parser from '../../index';
-import Token = require('..');
-import TrToken = require('./tr');
-import TrBaseToken = require('./trBase');
+import {Parser} from '../../index';
+import {Token} from '..';
+import {TrToken} from './tr';
+import {TrBaseToken} from './trBase';
+import {TdToken} from './td';
+import {SyntaxToken} from '../syntax';
+import type {LintError} from '../../index';
+import type {AttributesToken} from '../attributes';
 import type {TableCoords, TableRenderedCoords} from './trBase';
-import TdToken = require('./td');
 import type {TdAttrs} from './td';
-import SyntaxToken = require('../syntax');
-import AttributesToken = require('../attributes');
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
@@ -115,7 +116,7 @@ class Layout extends Array<TableCoords[]> {
  * 表格
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
-abstract class TableToken extends TrBaseToken {
+export abstract class TableToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'table';
 	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
@@ -152,7 +153,7 @@ abstract class TableToken extends TrBaseToken {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (!this.closed) {
 			const {firstChild, lastChild: tr} = this,
@@ -167,6 +168,7 @@ abstract class TableToken extends TrBaseToken {
 	 * 闭合表格语法
 	 * @browser
 	 * @param syntax 表格结尾语法
+	 * @param halfParsed
 	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false): void {
@@ -510,7 +512,7 @@ abstract class TableToken extends TrBaseToken {
 	insertTableRow(
 		y: number,
 		attr: Record<string, string | true> = {},
-		inner: string | Token | undefined = undefined,
+		inner?: string | Token,
 		subtype: 'td' | 'th' | 'caption' = 'td',
 		innerAttr: TdAttrs = {},
 	): TrToken {
@@ -945,4 +947,3 @@ abstract class TableToken extends TrBaseToken {
 }
 
 Parser.classes['TableToken'] = __filename;
-export = TableToken;

@@ -1,7 +1,7 @@
-import * as Parser from '../index';
+import {Parser} from '../index';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
-class Range {
+export class Range {
 	start: number;
 	end: number;
 	step: number;
@@ -71,7 +71,7 @@ class Range {
 }
 
 /** @extends {Array<number|Range>} */
-class Ranges extends Array<number | Range> {
+export class Ranges extends Array<number | Range> {
 	/** @param a 表达式数组 */
 	constructor(a?: number | string | Range | (number | string | Range)[]) {
 		super();
@@ -113,20 +113,13 @@ class Ranges extends Array<number | Range> {
 			),
 		].filter(i => i >= 0 && i < length).sort();
 	}
-
-	/**
-	 * 检查某个下标是否符合表达式
-	 * @param str 表达式
-	 * @param i 待检查的下标
-	 */
-	static nth(this: void, str: string, i: number): boolean {
-		return new Ranges(str.split(',')).applyTo(i + 1).includes(i);
-	}
 }
 
-declare namespace Ranges {
-	export {Range};
-}
+/**
+ * 检查某个下标是否符合表达式
+ * @param str 表达式
+ * @param i 待检查的下标
+ */
+export const nth = (str: string, i: number): boolean => new Ranges(str.split(',')).applyTo(i + 1).includes(i);
 
 Parser.classes['Ranges'] = __filename;
-export = Ranges;

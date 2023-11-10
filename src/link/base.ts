@@ -1,18 +1,19 @@
 import {generateForChild} from '../../util/lint';
-import type {BoundingRect} from '../../util/lint';
 import {noWrap} from '../../util/string';
 import {undo} from '../../util/debug';
-import Title = require('../../lib/title');
-import * as Parser from '../../index';
-import Token = require('..');
-import AtomToken = require('../atom');
+import {Parser} from '../../index';
+import {Token} from '..';
+import {AtomToken} from '../atom';
+import type {BoundingRect} from '../../util/lint';
+import type {LintError} from '../../index';
+import type {Title} from '../../lib/title';
 import type {TokenAttributeSetter} from '../../lib/node';
 
 /**
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token]}`
  */
-abstract class LinkBaseToken extends Token {
+export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	declare name: string;
 	declare childNodes: [AtomToken, ...Token[]];
@@ -164,7 +165,7 @@ abstract class LinkBaseToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
 		let rect: BoundingRect | undefined;
@@ -257,4 +258,3 @@ abstract class LinkBaseToken extends Token {
 }
 
 Parser.classes['LinkBaseToken'] = __filename;
-export = LinkBaseToken;

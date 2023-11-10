@@ -1,11 +1,12 @@
 import {explode, noWrap} from '../../util/string';
 import {generateForChild} from '../../util/lint';
-import Title = require('../../lib/title');
-import * as Parser from '../../index';
-import LinkBaseToken = require('./base');
-import ImageParameterToken = require('../imageParameter');
-import AtomToken = require('../atom');
-import Token = require('..');
+import {Parser} from '../../index';
+import {LinkBaseToken} from './base';
+import {ImageParameterToken} from '../imageParameter';
+import type {Title} from '../../lib/title';
+import type {LintError} from '../../index';
+import type {Token} from '..';
+import type {AtomToken} from '../atom';
 
 const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
@@ -15,7 +16,7 @@ const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
-abstract class FileToken extends LinkBaseToken {
+export abstract class FileToken extends LinkBaseToken {
 	/** @browser */
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
@@ -84,7 +85,7 @@ abstract class FileToken extends LinkBaseToken {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			args = this.getAllArgs().filter(({childNodes}) => {
 				const visibleNodes = childNodes.filter(node => node.text().trim());
@@ -294,4 +295,3 @@ abstract class FileToken extends LinkBaseToken {
 }
 
 Parser.classes['FileToken'] = __filename;
-export = FileToken;

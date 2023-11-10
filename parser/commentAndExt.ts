@@ -1,16 +1,19 @@
-import * as Parser from '../index';
-import OnlyincludeToken = require('../src/onlyinclude');
-import NoincludeToken = require('../src/nowiki/noinclude');
-import IncludeToken = require('../src/tagPair/include');
-import ExtToken = require('../src/tagPair/ext');
-import CommentToken = require('../src/nowiki/comment');
-import Token = require('../src');
+import {Parser} from '../index';
+import {OnlyincludeToken} from '../src/onlyinclude';
+import {NoincludeToken} from '../src/nowiki/noinclude';
+import {IncludeToken} from '../src/tagPair/include';
+import {ExtToken} from '../src/tagPair/ext';
+import {CommentToken} from '../src/nowiki/comment';
+import type {Token} from '../src';
 
 /**
  * 解析HTML注释和扩展标签
+ * @param wikitext
+ * @param config
+ * @param accum
  * @param includeOnly 是否嵌入
  */
-const parseCommentAndExt = (
+export const parseCommentAndExt = (
 	wikitext: string,
 	config = Parser.getConfig(),
 	accum: Token[] = [],
@@ -75,4 +78,3 @@ const parseCommentAndExt = (
 };
 
 Parser.parsers['parseCommentAndExt'] = __filename;
-export = parseCommentAndExt;

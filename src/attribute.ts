@@ -1,11 +1,12 @@
 import {generateForChild} from '../util/lint';
-import type {BoundingRect} from '../util/lint';
 import {noWrap, removeComment} from '../util/string';
-import * as fixed from '../mixin/fixed';
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
-import type {TokenAttributeGetter} from '../lib/node';
+import {fixed} from '../mixin/fixed';
+import {Parser} from '../index';
+import {Token} from '.';
+import {AtomToken} from './atom';
+import type {BoundingRect} from '../util/lint';
+import type {LintError} from '../index';
+import type {TokenAttributeGetter, AttributesToken} from '../internal';
 
 declare type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
@@ -179,7 +180,7 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-abstract class AttributeToken extends fixed(Token) {
+export abstract class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
 	declare name: string;
 	declare childNodes: [AtomToken, Token];
@@ -187,8 +188,8 @@ abstract class AttributeToken extends fixed(Token) {
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
 	abstract override get lastElementChild(): Token;
-	abstract override get parentNode(): import('./attributes') | undefined;
-	abstract override get parentElement(): import('./attributes') | undefined;
+	abstract override get parentNode(): AttributesToken | undefined;
+	abstract override get parentElement(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get nextElementSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
@@ -345,7 +346,7 @@ abstract class AttributeToken extends fixed(Token) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, value} = this,
 			tag = this.#tag;
@@ -448,16 +449,16 @@ abstract class AttributeToken extends fixed(Token) {
 			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
 			{length, firstChild: tag} = root;
-		let attrs: import('./attributes');
+		let attrs: AttributesToken;
 		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		} else if (type === 'table-attr') {
 			if (tag!.length !== 2) {
 				throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 			}
-			attrs = tag!.lastChild as import('./attributes');
+			attrs = tag!.lastChild as AttributesToken;
 		} else {
-			attrs = tag!.firstChild as import('./attributes');
+			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild} = attrs;
 		if (attrs.length !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
@@ -487,16 +488,16 @@ abstract class AttributeToken extends fixed(Token) {
 			wikitext = `${pre[type]}${key}${post[type]}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
 			{length, firstChild: tag} = root;
-		let attrs: import('./attributes');
+		let attrs: AttributesToken;
 		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		} else if (type === 'table-attr') {
 			if (tag!.length !== 2) {
 				throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 			}
-			attrs = tag!.lastChild as import('./attributes');
+			attrs = tag!.lastChild as AttributesToken;
 		} else {
-			attrs = tag!.firstChild as import('./attributes');
+			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild: attr} = attrs;
 		if (attrs.length !== 1 || attr.type !== this.type || attr.value !== true) {
@@ -509,4 +510,3 @@ abstract class AttributeToken extends fixed(Token) {
 }
 
 Parser.classes['AttributeToken'] = __filename;
-export = AttributeToken;

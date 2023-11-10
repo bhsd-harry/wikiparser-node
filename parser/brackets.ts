@@ -1,15 +1,18 @@
 import {removeComment} from '../util/string';
-import * as Parser from '../index';
-import Token = require('../src');
-import HeadingToken = require('../src/heading');
-import TranscludeToken = require('../src/transclude');
-import ArgToken = require('../src/arg');
+import {Parser} from '../index';
+import {HeadingToken} from '../src/heading';
+import {TranscludeToken} from '../src/transclude';
+import {ArgToken} from '../src/arg';
+import type {Token} from '../src';
 
 /**
  * 解析花括号
+ * @param wikitext
+ * @param config
+ * @param accum
  * @throws TranscludeToken.constructor()
  */
-const parseBrackets = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseBrackets = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BracketExecArrayOrEmpty[] = [],
@@ -126,4 +129,3 @@ const parseBrackets = (wikitext: string, config = Parser.getConfig(), accum: Tok
 };
 
 Parser.parsers['parseBrackets'] = __filename;
-export = parseBrackets;

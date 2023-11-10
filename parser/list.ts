@@ -1,10 +1,15 @@
-import * as Parser from '../index';
-import ListToken = require('../src/nowiki/list');
-import DdToken = require('../src/nowiki/dd');
-import Token = require('../src');
+import {Parser} from '../index';
+import {ListToken} from '../src/nowiki/list';
+import {DdToken} from '../src/nowiki/dd';
+import type {Token} from '../src';
 
-/** 解析列表 */
-const parseList = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+/**
+ * 解析列表
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseList = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(wikitext) as [string, string, string] | null;
 	if (!mt) {
 		return wikitext;
@@ -54,4 +59,3 @@ const parseList = (wikitext: string, config = Parser.getConfig(), accum: Token[]
 };
 
 Parser.parsers['parseList'] = __filename;
-export = parseList;

@@ -1,13 +1,13 @@
-import * as Parser from '../index';
 import {undo} from '../util/debug';
 import {text} from '../util/string';
-import Token = require('.');
+import {Parser} from '../index';
+import {Token} from '.';
 import type {TokenAttributeGetter, AstNodeTypes} from '../lib/node';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
 
 /** 满足特定语法格式的plain Token */
-class SyntaxToken extends Token {
+export class SyntaxToken extends Token {
 	declare type: SyntaxTypes;
 	#pattern;
 
@@ -82,4 +82,3 @@ class SyntaxToken extends Token {
 }
 
 Parser.classes['SyntaxToken'] = __filename;
-export = SyntaxToken;

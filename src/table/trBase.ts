@@ -1,21 +1,19 @@
 import {generateForChild} from '../../util/lint';
-import * as Parser from '../../index';
-import Token = require('..');
-import TableBaseToken = require('./base');
-import TdToken = require('./td');
-import SyntaxToken = require('../syntax');
-import ArgToken = require('../arg');
-import TranscludeToken = require('../transclude');
-import type {AstNodeTypes} from '../../lib/node';
+import {Parser} from '../../index';
+import {Token} from '..';
+import {TableBaseToken} from './base';
+import {TdToken} from './td';
+import type {LintError} from '../../index';
+import type {AstNodeTypes, SyntaxToken, ArgToken, TranscludeToken, TdAttrs, TrToken} from '../../internal';
 
-declare interface TableCoords {
+export interface TableCoords {
 	row: number;
 	column: number;
 	x?: undefined;
 	y?: undefined;
 	start?: boolean;
 }
-declare interface TableRenderedCoords {
+export interface TableRenderedCoords {
 	row?: undefined;
 	column?: undefined;
 	x: number;
@@ -23,14 +21,14 @@ declare interface TableRenderedCoords {
 }
 
 /** 表格行或表格 */
-abstract class TrBaseToken extends TableBaseToken {
+export abstract class TrBaseToken extends TableBaseToken {
 	declare type: 'table' | 'tr';
 
 	/**
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			inter = this.childNodes.find(({type}) => type === 'table-inter');
 		if (!inter) {
@@ -149,9 +147,9 @@ abstract class TrBaseToken extends TableBaseToken {
 	 */
 	getNthCol(n: number, insert?: false): TdToken | undefined;
 	/** @ignore */
-	getNthCol(n: number, insert: true): TdToken | import('./tr') | SyntaxToken | undefined;
+	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
 	/** @ignore */
-	getNthCol(n: number, insert = false): TdToken | import('./tr') | SyntaxToken | undefined {
+	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
 		if (!Number.isInteger(n)) {
 			this.typeError('getNthCol', 'Number');
 		}
@@ -171,7 +169,7 @@ abstract class TrBaseToken extends TableBaseToken {
 					return child;
 				}
 			} else if (child.type === 'tr' || child.type === 'table-syntax') {
-				return child as import('./tr') | SyntaxToken;
+				return child as TrToken | SyntaxToken;
 			}
 		}
 		return undefined;
@@ -188,19 +186,11 @@ abstract class TrBaseToken extends TableBaseToken {
 		inner: string | Token,
 		{column}: TableCoords,
 		subtype: 'td' | 'th' | 'caption' = 'td',
-		attr: TdToken.TdAttrs = {},
+		attr: TdAttrs = {},
 	): TdToken {
 		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		return this.insertBefore(token, this.getNthCol(column, true));
 	}
 }
 
-declare namespace TrBaseToken {
-	export type {
-		TableCoords,
-		TableRenderedCoords,
-	};
-}
-
 Parser.classes['TrBaseToken'] = __filename;
-export = TrBaseToken;

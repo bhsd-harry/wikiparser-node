@@ -1,13 +1,13 @@
-import * as Parser from '../index';
+import {Parser} from '../index';
 import type {AstNodeTypes} from '../lib/node';
-import AstText = require('../lib/text');
+import type {AstText} from '../lib/text';
 
 /**
  * 不可增删子节点的类
  * @param constructor 基类
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const fixed = <S extends AstConstructor>(constructor: S) => {
+export const fixed = <S extends AstConstructor>(constructor: S) => {
 	/** 不可增删子节点的类 */
 	abstract class FixedToken extends constructor {
 		static readonly fixed = true;
@@ -41,4 +41,3 @@ const fixed = <S extends AstConstructor>(constructor: S) => {
 };
 
 Parser.mixins['fixed'] = __filename;
-export = fixed;

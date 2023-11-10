@@ -1,15 +1,17 @@
-import * as Parser from '../index';
-import HrToken = require('../src/nowiki/hr');
-import DoubleUnderscoreToken = require('../src/nowiki/doubleUnderscore');
-import HeadingToken = require('../src/heading');
-import Token = require('../src');
-import AstText = require('../lib/text');
+import {Parser} from '../index';
+import {HrToken} from '../src/nowiki/hr';
+import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
+import {HeadingToken} from '../src/heading';
+import type {AstText} from '../lib/text';
+import type {Token} from '../src';
 
 /**
  * 解析`<hr>`和状态开关
  * @param {Token} root 根节点
+ * @param config
+ * @param accum
  */
-const parseHrAndDoubleUnderscore = (
+export const parseHrAndDoubleUnderscore = (
 	{firstChild, type, name}: Token,
 	config = Parser.getConfig(),
 	accum: Token[] = [],
@@ -52,4 +54,3 @@ const parseHrAndDoubleUnderscore = (
 };
 
 Parser.parsers['parseHrAndDoubleUnderscore'] = __filename;
-export = parseHrAndDoubleUnderscore;

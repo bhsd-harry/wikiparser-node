@@ -1,9 +1,9 @@
-import * as hidden from '../../mixin/hidden';
-import * as Parser from '../../index';
-import NowikiBaseToken = require('./base');
+import {hidden} from '../../mixin/hidden';
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
 
 /** `<noinclude>`和`</noinclude>`，不可进行任何更改 */
-abstract class NoincludeToken extends hidden(NowikiBaseToken) {
+export abstract class NoincludeToken extends hidden(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'noinclude';
 
@@ -21,4 +21,3 @@ abstract class NoincludeToken extends hidden(NowikiBaseToken) {
 }
 
 Parser.classes['NoincludeToken'] = __filename;
-export = NoincludeToken;

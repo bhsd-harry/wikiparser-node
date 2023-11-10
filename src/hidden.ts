@@ -1,9 +1,9 @@
-import * as hidden from '../mixin/hidden';
-import * as Parser from '../index';
-import Token = require('.');
+import {hidden} from '../mixin/hidden';
+import {Parser} from '../index';
+import {Token} from '.';
 
 /** 不可见的节点 */
-class HiddenToken extends hidden(Token) {
+export class HiddenToken extends hidden(Token) {
 	/** @browser */
 	override readonly type = 'hidden';
 
@@ -26,4 +26,3 @@ class HiddenToken extends hidden(Token) {
 }
 
 Parser.classes['HiddenToken'] = __filename;
-export = HiddenToken;

@@ -1,20 +1,21 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import * as singleLine from '../mixin/singleLine';
-import * as Parser from '../index';
-import AstText = require('../lib/text');
-import Token = require('.');
-import NoincludeToken = require('./nowiki/noinclude');
-import GalleryImageToken = require('./link/galleryImage');
-import ImagemapLinkToken = require('./imagemapLink');
-import AttributesToken = require('./attributes');
-import ExtToken = require('./tagPair/ext');
+import {singleLine} from '../mixin/singleLine';
+import {Parser} from '../index';
+import {Token} from '.';
+import {NoincludeToken} from './nowiki/noinclude';
+import {GalleryImageToken} from './link/galleryImage';
+import {ImagemapLinkToken} from './imagemapLink';
+import type {LintError} from '../index';
 import type {AstNodeTypes} from '../lib/node';
+import type {AstText} from '../lib/text';
+import type {AttributesToken} from './attributes';
+import type {ExtToken} from './tagPair/ext';
 
 /**
  * `<imagemap>`
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
-abstract class ImagemapToken extends Token {
+export abstract class ImagemapToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
@@ -57,16 +58,7 @@ abstract class ImagemapToken extends Token {
 		}
 		const lines = inner.split('\n'),
 			protocols = new Set(config.protocol.split('|')),
-			SingleLineNoincludeToken = singleLine(NoincludeToken),
-
-			/**
-			 * 无效文本
-			 * @param line 一行文本
-			 */
-			fallback = (line: string): void => {
-				// @ts-expect-error abstract class
-				super.insertAt(new SingleLineNoincludeToken(line, config, accum));
-			};
+			SingleLineNoincludeToken = singleLine(NoincludeToken);
 		let first = true,
 			error = false;
 		for (const line of lines) {
@@ -127,7 +119,8 @@ abstract class ImagemapToken extends Token {
 					}
 				}
 			}
-			fallback(line);
+			// @ts-expect-error abstract class
+			super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 		}
 	}
 
@@ -164,7 +157,7 @@ abstract class ImagemapToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 		if (this.image) {
@@ -227,4 +220,3 @@ abstract class ImagemapToken extends Token {
 }
 
 Parser.classes['ImagemapToken'] = __filename;
-export = ImagemapToken;

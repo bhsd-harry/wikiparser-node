@@ -1,15 +1,16 @@
 import {text, noWrap} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
-import HiddenToken = require('./hidden');
+import {Parser} from '../index';
+import {Token} from '.';
+import {AtomToken} from './atom';
+import {HiddenToken} from './hidden';
+import type {LintError} from '../index';
 
 /**
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
-abstract class ArgToken extends Token {
+export abstract class ArgToken extends Token {
 	/** @browser */
 	override readonly type = 'arg';
 	declare name: string;
@@ -93,7 +94,7 @@ abstract class ArgToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (!this.getAttribute('include')) {
 			return [generateForSelf(this, {start}, 'unexpected template argument')];
 		}
@@ -217,4 +218,3 @@ abstract class ArgToken extends Token {
 }
 
 Parser.classes['ArgToken'] = __filename;
-export = ArgToken;

@@ -1,10 +1,10 @@
-import * as hidden from '../../mixin/hidden';
-import * as Parser from '../../index';
-import NowikiBaseToken = require('./base');
-import Token = require('..');
+import {hidden} from '../../mixin/hidden';
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
+import type {Token} from '..';
 
 /** 状态开关 */
-abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
+export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'double-underscore';
 	declare name: string;
@@ -52,4 +52,3 @@ abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 }
 
 Parser.classes['DoubleUnderscoreToken'] = __filename;
-export = DoubleUnderscoreToken;

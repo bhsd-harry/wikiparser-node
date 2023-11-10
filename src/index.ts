@@ -37,14 +37,30 @@
 // d: ListToken
 // v: ConverterToken
 
-import {text} from '../util/string';
-import type {AstNodeTypes, TokenAttributeGetter, TokenAttributeSetter, CaretPosition} from '../lib/node';
 import * as assert from 'assert/strict';
-import * as Ranges from '../lib/ranges';
-import * as Parser from '../index';
-import AstElement = require('../lib/element');
-import AstText = require('../lib/text');
+import {text} from '../util/string';
+import {Ranges} from '../lib/ranges';
+import {Parser} from '../index';
 const {MAX_STAGE, aliases} = Parser;
+import {AstElement} from '../lib/element';
+import {AstText} from '../lib/text';
+import type {Range} from '../lib/ranges';
+import type {Title} from '../lib/title';
+import type {
+	AstNodeTypes,
+	TokenAttributeGetter,
+	TokenAttributeSetter,
+	CaretPosition,
+	IncludeToken,
+	HtmlToken,
+	ExtToken,
+	ArgToken,
+	TranscludeToken,
+	CommentToken,
+	HeadingToken,
+	CategoryToken,
+	ParameterToken,
+} from '../internal';
 
 declare type TokenTypes = 'root'
 	| 'plain'
@@ -114,15 +130,14 @@ declare type TokenTypes = 'root'
 	| 'converter-rule-to'
 	| 'converter-rule-from'
 	| 'param-line'
-	| 'charinsert-line'
 	| 'imagemap-link';
-declare type TagToken = import('./tagPair/include') | import('./tagPair/ext') | import('./html');
+declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
 /**
  * 所有节点的基类
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
-class Token extends AstElement {
+export class Token extends AstElement {
 	/** @browser */
 	override type: TokenTypes = 'root';
 
@@ -155,8 +170,8 @@ class Token extends AstElement {
 	}
 
 	/** 所有模板和模块 */
-	get embeds(): import('./transclude')[] {
-		return this.querySelectorAll('template, magic-word#invoke') as import('./transclude')[];
+	get embeds(): TranscludeToken[] {
+		return this.querySelectorAll('template, magic-word#invoke') as TranscludeToken[];
 	}
 
 	/** @browser */
@@ -307,7 +322,7 @@ class Token extends AstElement {
 	 * @param includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
-		const parseCommentAndExt: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
+		const {parseCommentAndExt}: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
 		this.setText(parseCommentAndExt(String(this.firstChild), this.#config, this.#accum, includeOnly));
 	}
 
@@ -316,7 +331,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseBrackets(): void {
-		const parseBrackets: typeof import('../parser/brackets') = require('../parser/brackets');
+		const {parseBrackets}: typeof import('../parser/brackets') = require('../parser/brackets');
 		const str = this.type === 'root' ? String(this.firstChild!) : `\0${String(this.firstChild!)}`,
 			parsed = parseBrackets(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
@@ -330,7 +345,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('html')) {
 			return;
 		}
-		const parseHtml: typeof import('../parser/html') = require('../parser/html');
+		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
 		this.setText(parseHtml(String(this.firstChild), this.#config, this.#accum));
 	}
 
@@ -342,7 +357,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('table')) {
 			return;
 		}
-		const parseTable: typeof import('../parser/table') = require('../parser/table');
+		const {parseTable}: typeof import('../parser/table') = require('../parser/table');
 		this.setText(parseTable(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
 
@@ -354,7 +369,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('hr')) {
 			return;
 		}
-		const parseHrAndDoubleUnderscore: typeof import('../parser/hrAndDoubleUnderscore')
+		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore')
 			= require('../parser/hrAndDoubleUnderscore');
 		this.setText(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
 	}
@@ -364,7 +379,7 @@ class Token extends AstElement {
 	 * @browser
 	 */
 	#parseLinks(): void {
-		const parseLinks: typeof import('../parser/links') = require('../parser/links');
+		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
 		this.setText(parseLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
@@ -376,7 +391,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('quote')) {
 			return;
 		}
-		const parseQuotes: typeof import('../parser/quotes') = require('../parser/quotes');
+		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
 		const lines = String(this.firstChild).split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum);
@@ -392,7 +407,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('extLink')) {
 			return;
 		}
-		const parseExternalLinks: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
+		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
 		this.setText(parseExternalLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
@@ -404,7 +419,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('magicLink')) {
 			return;
 		}
-		const parseMagicLinks: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
+		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
 		this.setText(parseMagicLinks(String(this.firstChild), this.#config, this.#accum));
 	}
 
@@ -416,7 +431,7 @@ class Token extends AstElement {
 		if (this.#config.excludes?.includes('list')) {
 			return;
 		}
-		const parseList: typeof import('../parser/list') = require('../parser/list');
+		const {parseList}: typeof import('../parser/list') = require('../parser/list');
 		const lines = String(this.firstChild).split('\n');
 		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
@@ -431,7 +446,7 @@ class Token extends AstElement {
 	 */
 	#parseConverter(): void {
 		if (this.#config.variants.length > 0) {
-			const parseConverter: typeof import('../parser/converter') = require('../parser/converter');
+			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
 			this.setText(parseConverter(String(this.firstChild), this.#config, this.#accum));
 		}
 	}
@@ -548,6 +563,7 @@ class Token extends AstElement {
 	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
+	 * @param halfParsed 仅供内部使用
 	 * @param decode 是否需要解码
 	 * @param selfLink 是否允许selfLink
 	 */
@@ -557,12 +573,12 @@ class Token extends AstElement {
 		halfParsed = false,
 		decode = false,
 		selfLink = false,
-	): import('../lib/title') {
+	): Title {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 
 	/** @private */
-	protected protectChildren(...args: (string | number | Ranges.Range)[]): void {
+	protected protectChildren(...args: (string | number | Range)[]): void {
 		this.#protectedChildren.push(...new Ranges(args));
 	}
 
@@ -628,10 +644,11 @@ class Token extends AstElement {
 	 * 创建HTML注释
 	 * @param data 注释内容
 	 */
-	createComment(data = ''): import('./nowiki/comment') {
+	createComment(data = ''): CommentToken {
 		if (typeof data === 'string') {
-			const CommentToken = require('./nowiki/comment');
+			const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
 			const config = this.getAttribute('config');
+			// @ts-expect-error abstract class
 			return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
 		}
 		return this.typeError('createComment', 'String');
@@ -652,17 +669,17 @@ class Token extends AstElement {
 		const config = this.getAttribute('config'),
 			include = this.getAttribute('include');
 		if (tagName === (include ? 'noinclude' : 'includeonly')) {
-			const IncludeToken: typeof import('./tagPair/include') = require('./tagPair/include');
+			const {IncludeToken}: typeof import('./tagPair/include') = require('./tagPair/include');
 			return Parser.run(
 				// @ts-expect-error abstract class
 				() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
 			);
 		} else if (config.ext.includes(tagName)) {
-			const ExtToken: typeof import('./tagPair/ext') = require('./tagPair/ext');
+			const {ExtToken}: typeof import('./tagPair/ext') = require('./tagPair/ext');
 			// @ts-expect-error abstract class
 			return Parser.run(() => new ExtToken(tagName, '', '', selfClosing ? undefined : '', config));
 		} else if (config.html.flat().includes(tagName)) {
-			const HtmlToken: typeof import('./html') = require('./html');
+			const {HtmlToken}: typeof import('./html') = require('./html');
 			// @ts-expect-error abstract class
 			return Parser.run(() => new HtmlToken(tagName, '', closing, selfClosing, config));
 		}
@@ -819,7 +836,7 @@ class Token extends AstElement {
 		}
 		const {childNodes} = this,
 			headings: [number, number][] = ([...childNodes.entries()]
-				.filter(([, {type}]) => type === 'heading') as [number, import('./heading')][])
+				.filter(([, {type}]) => type === 'heading') as [number, HeadingToken][])
 				.map(([i, {name}]) => [i, Number(name)]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
 			sections: (AstText | Token)[][] = new Array(headings.length);
@@ -855,7 +872,7 @@ class Token extends AstElement {
 	 * @param tag HTML标签名
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
-	findEnclosingHtml(tag?: string): [import('./html'), import('./html')] | undefined {
+	findEnclosingHtml(tag?: string): [HtmlToken, HtmlToken] | undefined {
 		if (tag !== undefined && typeof tag !== 'string') {
 			this.typeError('findEnclosingHtml', 'String');
 		}
@@ -881,7 +898,7 @@ class Token extends AstElement {
 		if (i === -1) {
 			return parentNode.findEnclosingHtml(lcTag);
 		}
-		const opening = childNodes[i] as import('./html');
+		const opening = childNodes[i] as HtmlToken;
 		for (i = index + 1; i < childNodes.length; i++) {
 			const {
 				type, name, selfClosing, closing,
@@ -892,12 +909,12 @@ class Token extends AstElement {
 		}
 		return i === childNodes.length
 			? parentNode.findEnclosingHtml(lcTag)
-			: [opening, childNodes[i] as import('./html')];
+			: [opening, childNodes[i] as HtmlToken];
 	}
 
 	/** 获取全部分类 */
 	getCategories(): [string, string | undefined][] {
-		const categories = this.querySelectorAll('category') as import('./link/category')[];
+		const categories = this.querySelectorAll('category') as CategoryToken[];
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
@@ -943,7 +960,7 @@ class Token extends AstElement {
 		const targets = this.querySelectorAll('magic-word, arg'),
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
-			const target = targets[i] as import('./arg') | import('./transclude') & {default: undefined},
+			const target = targets[i] as ArgToken | TranscludeToken & {default: undefined},
 				{type, name, default: argDefault, childNodes, length} = target;
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
@@ -963,7 +980,9 @@ class Token extends AstElement {
 						found = false,
 						transclusion = false;
 					for (let j = 2; j < length; j++) {
-						const {anon, name: option, value, firstChild} = childNodes[j] as import('./parameter');
+						const {
+							anon, name: option, value, firstChild,
+						} = childNodes[j] as ParameterToken;
 						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {
@@ -996,4 +1015,3 @@ class Token extends AstElement {
 }
 
 Parser.classes['Token'] = __filename;
-export = Token;

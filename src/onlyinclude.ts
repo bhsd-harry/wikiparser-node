@@ -1,11 +1,11 @@
-import * as Parser from '../index';
-import Token = require('.');
+import {Parser} from '../index';
+import {Token} from '.';
 
 /**
  * 嵌入时的`<onlyinclude>`
  * @classdesc `{childNodes: ...AstText|Token}`
  */
-class OnlyincludeToken extends Token {
+export class OnlyincludeToken extends Token {
 	/** @browser */
 	override readonly type = 'onlyinclude';
 
@@ -69,4 +69,3 @@ class OnlyincludeToken extends Token {
 }
 
 Parser.classes['OnlyincludeToken'] = __filename;
-export = OnlyincludeToken;

@@ -1,50 +1,52 @@
-import {typeError} from '../util/debug';
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
-import * as Parser from '../index';
-import type * as Ranges from './ranges';
+import {typeError} from '../util/debug';
+import {Parser} from '../index';
+import type {Config} from '../index';
+import type {Ranges} from './ranges';
+import type {AstText, Token, ParameterToken} from '../internal';
 
-declare type AstNodeTypes = import('./text') | import('../src');
+export type AstNodeTypes = AstText | Token;
 declare type TokenAttribute<T extends string> =
 	T extends 'stage' ? number :
-	T extends 'config' ? Parser.Config :
-	T extends 'accum' ? import('../src')[] :
-	T extends 'parentNode' ? import('../src') | undefined :
+	T extends 'config' ? Config :
+	T extends 'accum' ? Token[] :
+	T extends 'parentNode' ? Token | undefined :
 	T extends 'childNodes' ? AstNodeTypes[] :
 	T extends 'bracket' | 'include' ? boolean :
 	T extends 'pattern' ? RegExp :
 	T extends 'tags' | 'flags' ? string[] :
 	T extends 'quotes' ? [string?, string?] :
 	T extends 'optional' | 'keys' ? Set<string> :
-	T extends 'args' ? Record<string, Set<import('../src/parameter')>> :
+	T extends 'args' ? Record<string, Set<ParameterToken>> :
 	T extends 'protectedChildren' ? Ranges :
 	string;
-declare type TokenAttributeGetter<T extends string> =
+export type TokenAttributeGetter<T extends string> =
 	T extends 'acceptable' ? Record<string, Ranges> | undefined : TokenAttribute<T>;
 
-declare type TokenAttributeSetter<T extends string> =
+export type TokenAttributeSetter<T extends string> =
 	T extends 'acceptable' ? Acceptable | undefined : TokenAttribute<T> | undefined;
-declare interface Dimension {
+export interface Dimension {
 	height: number;
 	width: number;
 }
-declare interface Position {
+export interface Position {
 	top: number;
 	left: number;
 }
-declare interface CaretPosition {
+export interface CaretPosition {
 	offsetNode: AstNodeTypes;
 	offset: number;
 }
 
 /** 类似Node */
-abstract class AstNode {
+export abstract class AstNode {
 	/** @browser */
 	type: string;
 	/** @browser */
 	readonly childNodes: AstNodeTypes[] = [];
 	/** @browser */
-	#parentNode: import('../src') | undefined;
+	#parentNode: Token | undefined;
 	#optional = new Set<string>();
 	#events = new EventEmitter();
 
@@ -68,7 +70,7 @@ abstract class AstNode {
 	 * 父节点
 	 * @browser
 	 */
-	get parentNode(): import('../src') | undefined {
+	get parentNode(): Token | undefined {
 		return this.#parentNode;
 	}
 
@@ -107,17 +109,17 @@ abstract class AstNode {
 	}
 
 	/** 后一个非文本兄弟节点 */
-	get nextElementSibling(): import('../src') | undefined {
+	get nextElementSibling(): Token | undefined {
 		const childNodes = this.#parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodeTypes);
-		return childNodes?.slice(i! + 1)?.find(({type}) => type !== 'text') as import('../src') | undefined;
+		return childNodes?.slice(i! + 1)?.find(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 前一个非文本兄弟节点 */
-	get previousElementSibling(): import('../src') | undefined {
+	get previousElementSibling(): Token | undefined {
 		const childNodes = this.#parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodeTypes);
-		return childNodes?.slice(0, i)?.findLast(({type}) => type !== 'text') as import('../src') | undefined;
+		return childNodes?.slice(0, i)?.findLast(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 是否具有根节点 */
@@ -126,9 +128,9 @@ abstract class AstNode {
 	}
 
 	/** 不是自身的根节点 */
-	get ownerDocument(): import('../src') | undefined {
+	get ownerDocument(): Token | undefined {
 		const root = this.getRootNode();
-		return root.type === 'root' && root !== this ? root as import('../src') : undefined;
+		return root.type === 'root' && root !== this ? root as Token : undefined;
 	}
 
 	/** 后方是否还有其他节点（不含后代） */
@@ -211,7 +213,7 @@ abstract class AstNode {
 	 * 获取根节点
 	 * @browser
 	 */
-	getRootNode(): import('../src') | this {
+	getRootNode(): Token | this {
 		let {parentNode} = this;
 		while (parentNode?.parentNode) {
 			({parentNode} = parentNode);
@@ -251,7 +253,7 @@ abstract class AstNode {
 	}
 
 	/** @private */
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	protected getGaps(i?: number): number {
 		return 0;
 	}
@@ -485,8 +487,8 @@ abstract class AstNode {
 	}
 
 	/** 获取所有祖先节点 */
-	getAncestors(): import('../src')[] {
-		const ancestors: import('../src')[] = [];
+	getAncestors(): Token[] {
+		const ancestors: Token[] = [];
 		let {parentNode} = this;
 		while (parentNode) {
 			ancestors.push(parentNode);
@@ -552,16 +554,4 @@ abstract class AstNode {
 	}
 }
 
-declare namespace AstNode {
-	export type {
-		AstNodeTypes,
-		TokenAttributeGetter,
-		TokenAttributeSetter,
-		Dimension,
-		Position,
-		CaretPosition,
-	};
-}
-
 Parser.classes['AstNode'] = __filename;
-export = AstNode;

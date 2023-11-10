@@ -1,7 +1,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import type {Title} from './lib/title';
+import type {Token} from './internal';
 
-declare interface Config {
+export interface Config {
 	ext: string[];
 	html: [string[], string[], string[]];
 	namespaces: Record<string, string>;
@@ -17,7 +19,7 @@ declare interface Config {
 	redirects?: [string, string][];
 }
 
-declare interface LintError {
+export interface LintError {
 	message: string;
 	severity: 'error' | 'warning';
 	startIndex: number;
@@ -86,7 +88,7 @@ declare interface Parser {
 		halfParsed?: boolean,
 		decode?: boolean,
 		selfLink?: boolean,
-	): import('./lib/title');
+	): Title;
 
 	/**
 	 * 解析wikitext
@@ -94,7 +96,7 @@ declare interface Parser {
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): import('./src');
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
 	/** @private */
 	run<T>(this: Parser, callback: () => T): T;
@@ -121,7 +123,7 @@ declare interface Parser {
 	isInterwiki(title: string, config?: Config): [string, string] | null;
 
 	/** @private */
-	reparse(date: string): import('./src');
+	reparse(date: string): Token;
 }
 
 /**
@@ -132,7 +134,7 @@ declare interface Parser {
 const rootRequire = (file: string, dir = ''): unknown => require(`../${file.includes('/') ? '' : dir}${file}`);
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-const Parser: Parser = {
+export const Parser: Parser = {
 	config: 'default',
 	i18n: undefined,
 	conversionTable: new Map(),
@@ -246,7 +248,6 @@ const Parser: Parser = {
 		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
 		// specific extensions
 		'param-line': ['parameter-line'],
-		'charinsert-line': undefined,
 		'imagemap-link': ['image-map-link'],
 	},
 
@@ -287,27 +288,19 @@ const Parser: Parser = {
 		decode = false,
 		selfLink = false,
 	) {
-		const Title: typeof import('./lib/title') = require('./lib/title');
+		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		if (halfParsed) {
 			return new Title(title, defaultNs, config, decode, selfLink);
 		}
-		const Token: typeof import('./src') = require('./src');
+		const {Token}: typeof import('./src') = require('./src');
 		const token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token.firstChild), defaultNs, config, decode, selfLink);
-
-		/**
-		 * 重建部分属性值
-		 * @param keys 属性键
-		 */
-		const build = (keys: ['main', 'fragment']): void => {
-			for (const key of keys) {
+		this.run(() => {
+			for (const key of ['main', 'fragment'] as ('main' | 'fragment')[]) {
 				if (titleObj[key]?.includes('\0')) {
 					titleObj[key] = token.buildFromStr(titleObj[key]!, 'text');
 				}
 			}
-		};
-		this.run(() => {
-			build(['main', 'fragment']);
 		});
 		titleObj.conversionTable = this.conversionTable;
 		titleObj.redirects = this.redirects;
@@ -319,8 +312,8 @@ const Parser: Parser = {
 		if (typeof wikitext !== 'string') {
 			throw new TypeError('待解析的内容应为 String！');
 		}
-		const Token: typeof import('./src') = require('./src');
-		let token: import('./src');
+		const {Token}: typeof import('./src') = require('./src');
+		let token: Token;
 		this.run(() => {
 			token = new Token(wikitext, config);
 			try {
@@ -350,7 +343,7 @@ const Parser: Parser = {
 				process = '渲染HTML';
 			}
 			if (restored !== wikitext) {
-				const diff: typeof import('./util/diff') = require('./util/diff');
+				const {diff}: typeof import('./util/diff') = require('./util/diff');
 				const {promises: {0: cur, length}} = this;
 				this.promises.unshift((async (): Promise<void> => {
 					await cur;
@@ -440,7 +433,7 @@ const Parser: Parser = {
 		const file = path.join(__dirname, '..', 'errors', main),
 			wikitext = fs.readFileSync(file, 'utf8');
 		const {stage, include, config}: {stage: number, include: boolean, config: Config} = require(`${file}.json`),
-			Token: typeof import('./src') = require('./src');
+			{Token}: typeof import('./src') = require('./src');
 		this.config = config;
 		return this.run(() => {
 			const halfParsed = stage < this.MAX_STAGE,
@@ -470,11 +463,4 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-declare namespace Parser { // eslint-disable-line @typescript-eslint/no-redeclare
-	export type {
-		Config,
-		LintError,
-	};
-}
-
-export = Parser;
+export type * from './internal';

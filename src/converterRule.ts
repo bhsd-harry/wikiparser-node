@@ -1,14 +1,15 @@
 import {undo} from '../util/debug';
 import {noWrap} from '../util/string';
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
+import {Parser} from '../index';
+import {Token} from '.';
+import {AtomToken} from './atom';
+import type {ConverterToken, ConverterFlagsToken} from '../internal';
 
 /**
  * 转换规则
  * @classdesc `{childNodes: ...AtomToken}`
  */
-abstract class ConverterRuleToken extends Token {
+export abstract class ConverterRuleToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-rule';
 	declare childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
@@ -17,10 +18,10 @@ abstract class ConverterRuleToken extends Token {
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): AtomToken;
 	abstract override get lastElementChild(): AtomToken;
-	abstract override get parentNode(): import('./converter') | undefined;
-	abstract override get parentElement(): import('./converter') | undefined;
-	abstract override get previousSibling(): import('./converterFlags') | this;
-	abstract override get previousElementSibling(): import('./converterFlags') | this;
+	abstract override get parentNode(): ConverterToken | undefined;
+	abstract override get parentElement(): ConverterToken | undefined;
+	abstract override get previousSibling(): ConverterFlagsToken | this;
+	abstract override get previousElementSibling(): ConverterFlagsToken | this;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get nextElementSibling(): this | undefined;
 
@@ -216,7 +217,7 @@ abstract class ConverterRuleToken extends Token {
 		if (length !== 1 || converter!.type !== 'converter') {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
-		const {lastChild: converterRule} = converter as import('./converter');
+		const {lastChild: converterRule} = converter as ConverterToken;
 		if (converter!.length !== 2 || converterRule.length !== 2) {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
@@ -262,7 +263,7 @@ abstract class ConverterRuleToken extends Token {
 		if (length !== 1 || converter!.type !== 'converter') {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		}
-		const {lastChild: converterRule} = converter as import('./converter');
+		const {lastChild: converterRule} = converter as ConverterToken;
 		if (converter!.length !== 2 || converterRule.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		} else if (unidirectional) {
@@ -289,4 +290,3 @@ abstract class ConverterRuleToken extends Token {
 }
 
 Parser.classes['ConverterRuleToken'] = __filename;
-export = ConverterRuleToken;

@@ -1,5 +1,6 @@
-import * as Parser from '../index';
-import type {AstNodeTypes} from '../lib/node';
+import {Parser} from '../index';
+import type {LintError} from '../index';
+import type {AstNodeTypes, Token} from '../internal';
 
 export type BoundingRect = {top: number, left: number, start: number} | {start: number};
 
@@ -15,7 +16,7 @@ export const generateForChild = (
 	boundingRect: BoundingRect,
 	msg: string,
 	severity: 'error' | 'warning' = 'error',
-): Parser.LintError => {
+): LintError => {
 	const index = child.getRelativeIndex(),
 		{offsetHeight, offsetWidth, parentNode} = child,
 		{top: offsetTop, left: offsetLeft} = parentNode!.posFromIndex(index)!,
@@ -40,11 +41,11 @@ export const generateForChild = (
  * @param severity 严重程度
  */
 export const generateForSelf = (
-	token: import('../src'),
+	token: Token,
 	boundingRect: BoundingRect,
 	msg: string,
 	severity: 'error' | 'warning' = 'error',
-): Parser.LintError => {
+): LintError => {
 	const {start} = boundingRect,
 		{offsetHeight, offsetWidth} = token,
 		str = String(token),

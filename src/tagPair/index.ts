@@ -1,10 +1,10 @@
-import * as Parser from '../../index';
-import * as fixed from '../../mixin/fixed';
-import Token = require('..');
+import {fixed} from '../../mixin/fixed';
+import {Parser} from '../../index';
+import {Token} from '..';
 import type {AstNodeTypes, TokenAttributeGetter} from '../../lib/node';
 
 /** 成对标签 */
-abstract class TagPairToken extends fixed(Token) {
+export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare name: string;
 	abstract override get firstChild(): AstNodeTypes;
@@ -136,4 +136,3 @@ abstract class TagPairToken extends fixed(Token) {
 }
 
 Parser.classes['TagPairToken'] = __filename;
-export = TagPairToken;

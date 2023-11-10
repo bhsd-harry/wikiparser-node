@@ -1,6 +1,9 @@
+import type {Token} from '../internal';
+
 /**
  * 定制TypeError消息
  * @param {Function} Constructor 类
+ * @param method
  * @param args 可接受的参数类型
  * @throws `TypeError`
  */
@@ -20,7 +23,7 @@ export const undo = (e: AstEvent, data: AstEventData): void => {
 		case 'remove': {
 			const childNodes = [...target.childNodes];
 			childNodes.splice(data.position!, 0, data.removed!);
-			data.removed!.setAttribute('parentNode', target as import('../src'));
+			data.removed!.setAttribute('parentNode', target as Token);
 			target.setAttribute('childNodes', childNodes);
 			break;
 		}

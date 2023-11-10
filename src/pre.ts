@@ -1,16 +1,16 @@
-import * as Parser from '../index';
-import AstText = require('../lib/text');
-import Token = require('.');
-import NoincludeToken = require('./nowiki/noinclude');
-import AttributesToken = require('./attributes');
-import ExtToken = require('./tagPair/ext');
-import ConverterToken = require('./converter');
+import {Parser} from '../index';
+import {Token} from '.';
+import {NoincludeToken} from './nowiki/noinclude';
+import type {AstText} from '../lib/text';
+import type {AttributesToken} from './attributes';
+import type {ExtToken} from './tagPair/ext';
+import type {ConverterToken} from './converter';
 
 /**
  * `<pre>`
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-abstract class PreToken extends Token {
+export abstract class PreToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
@@ -62,4 +62,3 @@ abstract class PreToken extends Token {
 }
 
 Parser.classes['PreToken'] = __filename;
-export = PreToken;

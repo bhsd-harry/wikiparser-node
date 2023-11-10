@@ -1,14 +1,14 @@
 import {text, print} from '../util/string';
-import * as Parser from '../index';
-import Token = require('.');
-import ConverterFlagsToken = require('./converterFlags');
-import ConverterRuleToken = require('./converterRule');
+import {Parser} from '../index';
+import {Token} from '.';
+import {ConverterFlagsToken} from './converterFlags';
+import {ConverterRuleToken} from './converterRule';
 
 /**
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-abstract class ConverterToken extends Token {
+export abstract class ConverterToken extends Token {
 	/** @browser */
 	override readonly type = 'converter';
 	declare childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
@@ -167,4 +167,3 @@ abstract class ConverterToken extends Token {
 }
 
 Parser.classes['ConverterToken'] = __filename;
-export = ConverterToken;

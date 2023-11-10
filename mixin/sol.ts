@@ -1,12 +1,12 @@
-import * as Parser from '../index';
-import Token = require('../src');
+import {Parser} from '../index';
+import type {Token} from '../src';
 
 /**
  * 只能位于行首的类
  * @param constructor 基类
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const sol = <T extends AstConstructor>(constructor: T) => {
+export const sol = <T extends AstConstructor>(constructor: T) => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
 		/** 是否可以视为root节点 */
@@ -45,4 +45,3 @@ const sol = <T extends AstConstructor>(constructor: T) => {
 };
 
 Parser.mixins['sol'] = __filename;
-export = sol;

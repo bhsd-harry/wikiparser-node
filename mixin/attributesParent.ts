@@ -1,6 +1,6 @@
-import * as Parser from '../index';
-import AttributesToken = require('../src/attributes');
+import {Parser} from '../index';
 import type {AstNodeTypes} from '../lib/node';
+import type {AttributesToken} from '../src/attributes';
 
 /**
  * 子节点含有AttributesToken的类
@@ -8,7 +8,7 @@ import type {AstNodeTypes} from '../lib/node';
  * @param i AttributesToken子节点的位置
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const attributesParent = <T extends AstConstructor>(constructor: T, i = 0) => {
+export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0) => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {
 		declare childNodes: AstNodeTypes[];
@@ -107,4 +107,3 @@ const attributesParent = <T extends AstConstructor>(constructor: T, i = 0) => {
 };
 
 Parser.mixins['attributesParent'] = __filename;
-export = attributesParent;

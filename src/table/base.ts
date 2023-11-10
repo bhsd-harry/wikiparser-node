@@ -1,8 +1,8 @@
-import * as attributesParent from '../../mixin/attributesParent';
-import * as Parser from '../../index';
-import Token = require('..');
-import SyntaxToken = require('../syntax');
-import AttributesToken = require('../attributes');
+import {attributesParent} from '../../mixin/attributesParent';
+import {Parser} from '../../index';
+import {Token} from '..';
+import {SyntaxToken} from '../syntax';
+import {AttributesToken} from '../attributes';
 
 /**
  * 转义表格语法
@@ -23,7 +23,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
-abstract class TableBaseToken extends attributesParent(Token, 1) {
+export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	declare type: 'table' | 'tr' | 'td';
 	declare childNodes: [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
@@ -100,4 +100,3 @@ abstract class TableBaseToken extends attributesParent(Token, 1) {
 }
 
 Parser.classes['TableBaseToken'] = __filename;
-export = TableBaseToken;

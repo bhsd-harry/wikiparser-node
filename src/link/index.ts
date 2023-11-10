@@ -1,14 +1,14 @@
-import Title = require('../../lib/title');
-import * as Parser from '../../index';
-import LinkBaseToken = require('./base');
-import Token = require('..');
-import AtomToken = require('../atom');
+import {Parser} from '../../index';
+import {LinkBaseToken} from './base';
+import type {Title} from '../../lib/title';
+import type {Token} from '..';
+import type {AtomToken} from '../atom';
 
 /**
  * 内链
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
-abstract class LinkToken extends LinkBaseToken {
+export abstract class LinkToken extends LinkBaseToken {
 	/** @browser */
 	override readonly type: 'link' | 'category' = 'link';
 	declare childNodes: [AtomToken] | [AtomToken, Token];
@@ -160,4 +160,3 @@ abstract class LinkToken extends LinkBaseToken {
 }
 
 Parser.classes['LinkToken'] = __filename;
-export = LinkToken;

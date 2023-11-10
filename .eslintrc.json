@@ -34,9 +34,7 @@
 		"no-constant-binary-expression": 2,
 		"no-constructor-return": 2,
 		"no-control-regex": 0,
-		"no-empty-character-class": 0,
 		"no-fallthrough": 2,
-		"no-import-assign": 0,
 		"no-inner-declarations": [
 			2,
 			"both"
@@ -136,7 +134,13 @@
 			2,
 			"never"
 		],
-		"func-style": 2,
+		"func-style": [
+			2,
+			"declaration",
+			{
+				"allowArrowFunctions": true
+			}
+		],
 		"grouped-accessor-pairs": [
 			2,
 			"getBeforeSet"
@@ -472,17 +476,15 @@
 		],
 		"promise/no-multiple-resolved": 2,
 		"promise/prefer-await-to-then": 2,
-		"n/no-extraneous-import": 0,
+		"n/exports-style": [
+			2,
+			"exports"
+		],
 		"n/no-missing-import": 0,
-		"n/no-new-require": 2,
-		"n/no-path-concat": 2,
-		"n/no-unpublished-bin": 0,
-		"n/no-unpublished-import": 0,
-		"n/no-unpublished-require": 0,
-		"n/shebang": 0,
-		"n/exports-style": 0,
 		"n/no-missing-require": 0,
 		"n/no-mixed-requires": 2,
+		"n/no-new-require": 2,
+		"n/no-path-concat": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,
@@ -604,7 +606,7 @@
 		"jsdoc/check-alignment": 1,
 		"jsdoc/check-indentation": 1,
 		"jsdoc/check-tag-names": 1,
-		"jsdoc/check-types": 0,
+		"jsdoc/check-types": 1,
 		"jsdoc/multiline-blocks": 1,
 		"jsdoc/no-bad-blocks": [
 			1,
@@ -649,17 +651,7 @@
 				"checkSetters": "no-getter"
 			}
 		],
-		"jsdoc/require-param-description": [
-			1,
-			{
-				"contexts": [
-					"FunctionDeclaration",
-					"VariableDeclarator > FunctionExpression",
-					"MethodDefinition > FunctionExpression",
-					"VariableDeclarator > ArrowFunctionExpression"
-				]
-			}
-		],
+		"jsdoc/require-param-description": 0,
 		"jsdoc/require-param-name": [
 			1,
 			{
@@ -672,7 +664,18 @@
 			}
 		],
 		"jsdoc/require-param-type": 0,
-		"jsdoc/require-param": 0,
+		"jsdoc/require-param": [
+			1,
+			{
+				"contexts": [
+					"FunctionDeclaration",
+					"VariableDeclarator > FunctionExpression",
+					"MethodDefinition > FunctionExpression",
+					"VariableDeclarator > ArrowFunctionExpression"
+				],
+				"checkConstructors": false
+			}
+		],
 		"jsdoc/require-returns-check": 0,
 		"jsdoc/require-returns-type": 0,
 		"jsdoc/require-throws": 1,
@@ -797,7 +800,6 @@
 						"exceptAfterSingleLine": true
 					}
 				],
-				"no-array-constructor": 0,
 				"no-dupe-class-members": 0,
 				"@typescript-eslint/no-dupe-class-members": 2,
 				"no-empty-function": 0,
@@ -811,8 +813,6 @@
 				],
 				"no-extra-parens": 0,
 				"@typescript-eslint/no-extra-parens": 2,
-				"no-extra-semi": 0,
-				"no-implied-eval": 0,
 				"no-invalid-this": 0,
 				"@typescript-eslint/no-invalid-this": [
 					2,
@@ -822,7 +822,6 @@
 				],
 				"no-loop-func": 0,
 				"@typescript-eslint/no-loop-func": 2,
-				"no-loss-of-precision": 0,
 				"no-redeclare": 0,
 				"@typescript-eslint/no-redeclare": 2,
 				"no-shadow": 0,
@@ -997,18 +996,37 @@
 		{
 			"files": "dist/**/*.js",
 			"rules": {
-				"camelcase": 0,
-				"class-methods-use-this": 0,
-				"no-multi-assign": 0,
+				"camelcase": [
+					2,
+					{
+						"allow": [
+							"\\w+_\\d"
+						]
+					}
+				],
+				"no-multi-assign": [
+					2,
+					{
+						"ignoreNonDeclaration": true
+					}
+				],
 				"no-sequences": [
 					2,
 					{
 						"allowInParentheses": true
 					}
 				],
-				"no-unused-vars": 0,
+				"no-underscore-dangle": [
+					2,
+					{
+						"allow": [
+							"_1",
+							"__1"
+						]
+					}
+				],
 				"no-void": 0,
-				"n/exports-style": 0
+				"n/no-unpublished-require": 0
 			}
 		}
 	],

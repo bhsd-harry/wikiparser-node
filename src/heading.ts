@@ -1,15 +1,16 @@
 import {generateForSelf} from '../util/lint';
-import * as fixed from '../mixin/fixed';
-import * as sol from '../mixin/sol';
-import * as Parser from '../index';
-import Token = require('.');
-import SyntaxToken = require('./syntax');
+import {fixed} from '../mixin/fixed';
+import {sol} from '../mixin/sol';
+import {Parser} from '../index';
+import {Token} from '.';
+import {SyntaxToken} from './syntax';
+import type {LintError} from '../index';
 
 /**
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-abstract class HeadingToken extends sol(fixed(Token)) {
+export abstract class HeadingToken extends sol(fixed(Token)) {
 	/** @browser */
 	override readonly type = 'heading';
 	declare name: string;
@@ -108,10 +109,10 @@ abstract class HeadingToken extends sol(fixed(Token)) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			innerStr = String(this.firstChild);
-		let refError: Parser.LintError | undefined;
+		let refError: LintError | undefined;
 		if (this.name === '1') {
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push(refError);
@@ -158,4 +159,3 @@ abstract class HeadingToken extends sol(fixed(Token)) {
 }
 
 Parser.classes['HeadingToken'] = __filename;
-export = HeadingToken;

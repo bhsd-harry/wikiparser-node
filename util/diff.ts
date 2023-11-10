@@ -1,6 +1,6 @@
+import * as fs from 'fs/promises';
 import {spawn} from 'child_process';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
-import * as fs from 'fs/promises';
 
 process.on('unhandledRejection', e => {
 	console.error(e);
@@ -53,7 +53,7 @@ const cmd = (command: string, args: string[]): Promise<string | undefined> => ne
  * @param newStr 新文本
  * @param uid 唯一标识
  */
-const diff = async (oldStr: string, newStr: string, uid = -1): Promise<void> => {
+export const diff = async (oldStr: string, newStr: string, uid = -1): Promise<void> => {
 	if (oldStr === newStr) {
 		return;
 	}
@@ -71,5 +71,3 @@ const diff = async (oldStr: string, newStr: string, uid = -1): Promise<void> => 
 	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
 	console.log(stdout?.split('\n')?.slice(4)?.join('\n'));
 };
-
-export = diff;

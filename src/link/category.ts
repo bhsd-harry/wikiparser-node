@@ -1,9 +1,9 @@
 import {decodeHtml} from '../../util/string';
-import * as Parser from '../../index';
-import LinkToken = require('.');
+import {Parser} from '../../index';
+import {LinkToken} from '.';
 
 /** 分类 */
-abstract class CategoryToken extends LinkToken {
+export abstract class CategoryToken extends LinkToken {
 	/** @browser */
 	override readonly type = 'category';
 
@@ -27,4 +27,3 @@ abstract class CategoryToken extends LinkToken {
 }
 
 Parser.classes['CategoryToken'] = __filename;
-export = CategoryToken;

@@ -1,8 +1,8 @@
-import * as Parser from '../../index';
-import NowikiBaseToken = require('./base');
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
 
 /** `:` */
-abstract class DdToken extends NowikiBaseToken {
+export abstract class DdToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type: 'dd' | 'list' = 'dd';
 
@@ -53,4 +53,3 @@ abstract class DdToken extends NowikiBaseToken {
 }
 
 Parser.classes['DdToken'] = __filename;
-export = DdToken;

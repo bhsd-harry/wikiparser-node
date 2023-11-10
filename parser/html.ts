@@ -1,10 +1,15 @@
-import * as Parser from '../index';
-import AttributesToken = require('../src/attributes');
-import HtmlToken = require('../src/html');
-import Token = require('../src');
+import {Parser} from '../index';
+import {AttributesToken} from '../src/attributes';
+import {HtmlToken} from '../src/html';
+import type {Token} from '../src';
 
-/** 解析HTML标签 */
-const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+/**
+ * 解析HTML标签
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,
 		elements = new Set<string | undefined>(config.html.flat()),
 		bits = wikitext.split('<');
@@ -36,4 +41,3 @@ const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: Token[]
 };
 
 Parser.parsers['parseHtml'] = __filename;
-export = parseHtml;

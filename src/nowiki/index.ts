@@ -1,11 +1,12 @@
 import {generateForSelf} from '../../util/lint';
-import * as Parser from '../../index';
-import NowikiBaseToken = require('./base');
-import AttributesToken = require('../attributes');
-import ExtToken = require('../tagPair/ext');
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
+import type {LintError} from '../../index';
+import type {AttributesToken} from '../attributes';
+import type {ExtToken} from '../tagPair/ext';
 
 /** 扩展标签内的纯文字Token */
-abstract class NowikiToken extends NowikiBaseToken {
+export abstract class NowikiToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	abstract override get nextSibling(): undefined;
@@ -19,7 +20,7 @@ abstract class NowikiToken extends NowikiBaseToken {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name} = this;
 		return (name === 'templatestyles' || name === 'section') && this.firstChild.data
 			? [generateForSelf(this, {start}, Parser.msg('nothing should be in <$1>', name))]
@@ -28,4 +29,3 @@ abstract class NowikiToken extends NowikiBaseToken {
 }
 
 Parser.classes['NowikiToken'] = __filename;
-export = NowikiToken;

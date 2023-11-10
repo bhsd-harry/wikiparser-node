@@ -1,9 +1,14 @@
-import * as Parser from '../index';
-import QuoteToken = require('../src/nowiki/quote');
-import Token = require('../src');
+import {Parser} from '../index';
+import {QuoteToken} from '../src/nowiki/quote';
+import type {Token} from '../src';
 
-/** 解析单引号 */
-const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+/**
+ * 解析单引号
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const arr = wikitext.split(/('{2,})/u),
 		{length} = arr;
 	if (length === 1) {
@@ -59,4 +64,3 @@ const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum: Token
 };
 
 Parser.parsers['parseQuotes'] = __filename;
-export = parseQuotes;

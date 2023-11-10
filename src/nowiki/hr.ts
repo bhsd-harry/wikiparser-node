@@ -1,10 +1,10 @@
-import * as sol from '../../mixin/sol';
-import * as Parser from '../../index';
-import NowikiBaseToken = require('./base');
-import Token = require('..');
+import {sol} from '../../mixin/sol';
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
+import type {Token} from '..';
 
 /** `<hr>` */
-abstract class HrToken extends sol(NowikiBaseToken) {
+export abstract class HrToken extends sol(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'hr';
 
@@ -36,4 +36,3 @@ abstract class HrToken extends sol(NowikiBaseToken) {
 }
 
 Parser.classes['HrToken'] = __filename;
-export = HrToken;

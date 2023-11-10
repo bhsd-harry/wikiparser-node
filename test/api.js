@@ -77,4 +77,4 @@ class Api {
 	}
 }
 
-module.exports = Api;
+exports.Api = Api;

@@ -1,10 +1,11 @@
 import {generateForSelf} from '../../util/lint';
-import * as Parser from '../../index';
-import NowikiBaseToken = require('./base');
-import Token = require('..');
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
+import type {LintError} from '../../index';
+import type {Token} from '..';
 
 /** `''`和`'''` */
-abstract class QuoteToken extends NowikiBaseToken {
+export abstract class QuoteToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'quote';
 	declare name: string;
@@ -22,11 +23,11 @@ abstract class QuoteToken extends NowikiBaseToken {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
-			errors: Parser.LintError[] = [];
-		let refError: Parser.LintError | undefined,
+			errors: LintError[] = [];
+		let refError: LintError | undefined,
 			wikitext: string | undefined;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
@@ -69,4 +70,3 @@ abstract class QuoteToken extends NowikiBaseToken {
 }
 
 Parser.classes['QuoteToken'] = __filename;
-export = QuoteToken;

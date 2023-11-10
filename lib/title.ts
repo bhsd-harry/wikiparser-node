@@ -1,8 +1,8 @@
 import {decodeHtml, escapeRegExp} from '../util/string';
-import * as Parser from '../index';
+import {Parser} from '../index';
 
 /** MediaWiki页面标题对象 */
-class Title {
+export class Title {
 	/** @browser */
 	valid = true;
 	/** @browser */
@@ -108,4 +108,3 @@ class Title {
 }
 
 Parser.classes['Title'] = __filename;
-export = Title;

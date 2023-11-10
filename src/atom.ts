@@ -1,5 +1,5 @@
-import * as Parser from '../index';
-import Token = require('.');
+import {Parser} from '../index';
+import {Token} from '.';
 
 declare type AtomTypes = 'arg-name'
 	| 'attr-key'
@@ -19,7 +19,7 @@ declare type AtomTypes = 'arg-name'
 	| 'param-line';
 
 /** 不会被继续解析的plain Token */
-class AtomToken extends Token {
+export class AtomToken extends Token {
 	declare type: AtomTypes;
 
 	/** @browser */
@@ -48,4 +48,3 @@ class AtomToken extends Token {
 }
 
 Parser.classes['AtomToken'] = __filename;
-export = AtomToken;

@@ -1,16 +1,16 @@
 import {noWrap, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
-import * as fixed from '../mixin/fixed';
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
-import SyntaxToken = require('./syntax');
+import {fixed} from '../mixin/fixed';
+import {Parser} from '../index';
+import {Token} from '.';
+import type {LintError} from '../index';
+import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-abstract class ParameterToken extends fixed(Token) {
+export abstract class ParameterToken extends fixed(Token) {
 	/** @browser */
 	override readonly type = 'parameter';
 	declare name: string;
@@ -20,8 +20,8 @@ abstract class ParameterToken extends fixed(Token) {
 	abstract override get firstElementChild(): Token;
 	abstract override get lastChild(): Token;
 	abstract override get lastElementChild(): Token;
-	abstract override get parentNode(): import('./transclude') | undefined;
-	abstract override get parentElement(): import('./transclude') | undefined;
+	abstract override get parentNode(): TranscludeToken | undefined;
+	abstract override get parentElement(): TranscludeToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
@@ -131,7 +131,7 @@ abstract class ParameterToken extends fixed(Token) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{firstChild, lastChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
@@ -223,7 +223,7 @@ abstract class ParameterToken extends fixed(Token) {
 		if (length !== 1 || template!.type !== 'template' || template!.name !== 'T' || template!.length !== 2) {
 			throw new SyntaxError(`非法的模板参数名：${key}`);
 		}
-		const {lastChild: parameter} = template as import('./transclude') & {lastChild: ParameterToken},
+		const {lastChild: parameter} = template as TranscludeToken & {lastChild: ParameterToken},
 			{name, firstChild} = parameter;
 		if (this.name === name) {
 			Parser.warn('未改变实际参数名', name);
@@ -240,4 +240,3 @@ abstract class ParameterToken extends fixed(Token) {
 }
 
 Parser.classes['ParameterToken'] = __filename;
-export = ParameterToken;

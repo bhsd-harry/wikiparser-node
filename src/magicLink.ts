@@ -1,14 +1,15 @@
 import {generateForChild} from '../util/lint';
+import {Parser} from '../index';
+import {Token} from '.';
 import type {BoundingRect} from '../util/lint';
-import * as Parser from '../index';
-import Token = require('.');
-import ParameterToken = require('./parameter');
+import type {LintError} from '../index';
+import type {ParameterToken} from './parameter';
 
 /**
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
-class MagicLinkToken extends Token {
+export class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
 	#protocolRegex;
 
@@ -56,7 +57,7 @@ class MagicLinkToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
 			regex = new RegExp(source, 'u'),
@@ -149,4 +150,3 @@ class MagicLinkToken extends Token {
 }
 
 Parser.classes['MagicLinkToken'] = __filename;
-export = MagicLinkToken;

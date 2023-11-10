@@ -1,13 +1,14 @@
 import {generateForChild} from '../../util/lint';
-import * as fixed from '../../mixin/fixed';
 import {typeError} from '../../util/debug';
 import {isPlainObject} from '../../util/base';
-import * as Parser from '../../index';
-import Token = require('..');
-import TableBaseToken = require('./base');
-import SyntaxToken = require('../syntax');
-import AttributesToken = require('../attributes');
-import type {TokenAttributeGetter, TokenAttributeSetter} from '../../lib/node';
+import {fixed} from '../../mixin/fixed';
+import {Parser} from '../../index';
+import {Token} from '..';
+import {TableBaseToken} from './base';
+import type {LintError} from '../../index';
+import type {
+	TokenAttributeGetter, TokenAttributeSetter, SyntaxToken, AttributesToken, TrBaseToken, TrToken,
+} from '../../internal';
 
 declare interface TdSyntax {
 	subtype: 'td' | 'th' | 'caption';
@@ -16,21 +17,21 @@ declare interface TdSyntax {
 }
 declare type TdAttrGetter<T extends string> = T extends 'rowspan' | 'colspan' ? number : string | true | undefined;
 declare type TdAttrSetter<T extends string> = T extends 'rowspan' | 'colspan' ? number : string | boolean;
-declare type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan?: number};
+export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan?: number};
 
 /**
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-abstract class TdToken extends fixed(TableBaseToken) {
+export abstract class TdToken extends fixed(TableBaseToken) {
 	/** @browser */
 	override readonly type = 'td';
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
-	abstract override get parentNode(): import('./trBase') | undefined;
-	abstract override get parentElement(): import('./trBase') | undefined;
-	abstract override get nextSibling(): this | import('./tr') | SyntaxToken | undefined;
-	abstract override get nextElementSibling(): this | import('./tr') | SyntaxToken | undefined;
+	abstract override get parentNode(): TrBaseToken | undefined;
+	abstract override get parentElement(): TrBaseToken | undefined;
+	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
+	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token | undefined;
 
 	/** @browser */
@@ -177,7 +178,7 @@ abstract class TdToken extends fixed(TableBaseToken) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			newStart = start + this.getRelativeIndex(-1);
 		for (const child of this.lastChild.childNodes) {
@@ -315,6 +316,7 @@ abstract class TdToken extends fixed(TableBaseToken) {
 	 * @param subtype 单元格类型
 	 * @param attr 单元格属性
 	 * @param include 是否嵌入
+	 * @param config
 	 * @throws `RangeError` 非法的单元格类型
 	 */
 	static create(
@@ -342,11 +344,4 @@ abstract class TdToken extends fixed(TableBaseToken) {
 	}
 }
 
-declare namespace TdToken {
-	export type {
-		TdAttrs,
-	};
-}
-
 Parser.classes['TdToken'] = __filename;
-export = TdToken;

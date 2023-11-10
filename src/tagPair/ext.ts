@@ -1,16 +1,17 @@
 import {generateForSelf} from '../../util/lint';
 import {del} from '../../util/base';
-import * as attributesParent from '../../mixin/attributesParent';
-import * as Parser from '../../index';
-import Token = require('..');
-import TagPairToken = require('.');
-import AttributesToken = require('../attributes');
+import {attributesParent} from '../../mixin/attributesParent';
+import {Parser} from '../../index';
+import {Token} from '..';
+import {TagPairToken} from '.';
+import {AttributesToken} from '../attributes';
+import type {LintError, Config} from '../../index';
 
 /**
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-abstract class ExtToken extends attributesParent(TagPairToken) {
+export abstract class ExtToken extends attributesParent(TagPairToken) {
 	override readonly type = 'ext';
 	declare childNodes: [AttributesToken, Token];
 	abstract override get children(): [AttributesToken, Token];
@@ -19,7 +20,8 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 	abstract override get lastChild(): Token;
 
 	/** @override */
-	override get closed(): boolean { // eslint-disable-line class-methods-use-this
+	// eslint-disable-next-line class-methods-use-this
+	override get closed(): boolean {
 		return true;
 	}
 
@@ -34,7 +36,7 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 		name: string,
 		attr = '',
 		inner = '',
-		closed: string | undefined = undefined,
+		closed?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
@@ -47,7 +49,7 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 				config,
 				accum,
 			),
-			newConfig: Parser.Config = {...config, ext: del(config.ext, lcName), excludes: [...config.excludes ?? []]};
+			newConfig: Config = {...config, ext: del(config.ext, lcName), excludes: [...config.excludes ?? []]};
 		let innerToken: Token;
 		switch (lcName) {
 			case 'tab':
@@ -67,26 +69,26 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 				innerToken = new Token(inner, newConfig, true, accum);
 				break;
 			case 'pre': {
-				const PreToken: typeof import('../pre') = require('../pre');
+				const {PreToken}: typeof import('../pre') = require('../pre');
 				// @ts-expect-error abstract class
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
 			case 'dynamicpagelist': {
-				const ParamTagToken: typeof import('../paramTag') = require('../paramTag');
+				const {ParamTagToken}: typeof import('../paramTag') = require('../paramTag');
 				// @ts-expect-error abstract class
 				innerToken = new ParamTagToken(inner, newConfig, accum);
 				break;
 			}
 			case 'inputbox': {
 				newConfig.excludes!.push('heading');
-				const InputboxToken: typeof import('../paramTag/inputbox') = require('../paramTag/inputbox');
+				const {InputboxToken}: typeof import('../paramTag/inputbox') = require('../paramTag/inputbox');
 				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}
 			case 'references': {
-				const NestedToken: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof import('../nested') = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -98,7 +100,7 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 				break;
 			}
 			case 'choose': {
-				const NestedToken: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof import('../nested') = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -110,7 +112,7 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 				break;
 			}
 			case 'combobox': {
-				const NestedToken: typeof import('../nested') = require('../nested');
+				const {NestedToken}: typeof import('../nested') = require('../nested');
 				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
@@ -122,13 +124,13 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 				break;
 			}
 			case 'gallery': {
-				const GalleryToken: typeof import('../gallery') = require('../gallery');
+				const {GalleryToken}: typeof import('../gallery') = require('../gallery');
 				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			case 'imagemap': {
-				const ImagemapToken: typeof import('../imagemap') = require('../imagemap');
+				const {ImagemapToken}: typeof import('../imagemap') = require('../imagemap');
 				// @ts-expect-error abstract class
 				innerToken = new ImagemapToken(inner, newConfig, accum);
 				break;
@@ -136,13 +138,13 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 			// 更多定制扩展的代码示例：
 			// ```
 			// case 'extensionName': {
-			//	const ExtensionToken: typeof import('../extension') = require('../extension');
+			//	const {ExtensionToken}: typeof import('../extension') = require('../extension');
 			//	innerToken = new ExtensionToken(inner, newConfig, accum);
 			//	break;
 			// }
 			// ```
 			default: {
-				const NowikiToken: typeof import('../nowiki') = require('../nowiki');
+				const {NowikiToken}: typeof import('../nowiki') = require('../nowiki');
 				// @ts-expect-error abstract class
 				innerToken = new NowikiToken(inner, newConfig);
 			}
@@ -155,7 +157,7 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
@@ -182,4 +184,3 @@ abstract class ExtToken extends attributesParent(TagPairToken) {
 }
 
 Parser.classes['ExtToken'] = __filename;
-export = ExtToken;

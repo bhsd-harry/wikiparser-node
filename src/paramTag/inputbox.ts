@@ -1,10 +1,10 @@
-import * as parseBrackets from '../../parser/brackets';
-import * as Parser from '../../index';
-import ParamTagToken = require('.');
-import Token = require('..');
+import {parseBrackets} from '../../parser/brackets';
+import {Parser} from '../../index';
+import {ParamTagToken} from '.';
+import type {Token} from '..';
 
 /** `<inputbox>` */
-abstract class InputboxToken extends ParamTagToken {
+export abstract class InputboxToken extends ParamTagToken {
 	/** @browser */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken');
@@ -18,4 +18,3 @@ abstract class InputboxToken extends ParamTagToken {
 }
 
 Parser.classes['InputboxToken'] = __filename;
-export = InputboxToken;

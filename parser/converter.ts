@@ -1,9 +1,14 @@
-import * as Parser from '../index';
-import ConverterToken = require('../src/converter');
-import Token = require('../src');
+import {Parser} from '../index';
+import {ConverterToken} from '../src/converter';
+import type {Token} from '../src';
 
-/** 解析语言变体转换 */
-const parseConverter = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+/**
+ * 解析语言变体转换
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseConverter = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
 		stack: RegExpExecArray[] = [];
@@ -40,4 +45,3 @@ const parseConverter = (wikitext: string, config = Parser.getConfig(), accum: To
 };
 
 Parser.parsers['parseConverter'] = __filename;
-export = parseConverter;

@@ -1,17 +1,18 @@
 import {generateForChild} from '../../util/lint';
+import {singleLine} from '../../mixin/singleLine';
+import {Parser} from '../../index';
+import {Token} from '..';
+import {AtomToken} from '../atom';
 import type {BoundingRect} from '../../util/lint';
-import * as singleLine from '../../mixin/singleLine';
-import * as Parser from '../../index';
-import Token = require('..');
-import AtomToken = require('../atom');
-import AttributesToken = require('../attributes');
-import ExtToken = require('../tagPair/ext');
+import type {LintError} from '../../index';
+import type {AttributesToken} from '../attributes';
+import type {ExtToken} from '../tagPair/ext';
 
 /**
  * `<dynamicpagelist>`
  * @classdesc `{childNodes: ...AtomToken}`
  */
-abstract class ParamTagToken extends Token {
+export abstract class ParamTagToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: AtomToken[];
@@ -75,7 +76,7 @@ abstract class ParamTagToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return this.childNodes.filter(child => {
 			const {childNodes} = child,
@@ -100,4 +101,3 @@ abstract class ParamTagToken extends Token {
 }
 
 Parser.classes['ParamTagToken'] = __filename;
-export = ParamTagToken;

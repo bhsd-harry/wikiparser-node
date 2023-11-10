@@ -1,11 +1,12 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
-import * as fixed from '../mixin/fixed';
-import * as attributesParent from '../mixin/attributesParent';
-import * as Parser from '../index';
-import Token = require('.');
-import AttributesToken = require('./attributes');
+import {fixed} from '../mixin/fixed';
+import {attributesParent} from '../mixin/attributesParent';
+import {Parser} from '../index';
+import {Token} from '.';
+import type {LintError} from '../index';
 import type {TokenAttributeGetter} from '../lib/node';
+import type {AttributesToken} from './attributes';
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
 
@@ -13,7 +14,7 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-abstract class HtmlToken extends attributesParent(fixed(Token)) {
+export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
@@ -137,10 +138,10 @@ abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		let wikitext: string | undefined,
-			refError: Parser.LintError | undefined;
+			refError: LintError | undefined;
 		if (this.name === 'h1' && !this.#closing) {
 			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
@@ -278,4 +279,3 @@ abstract class HtmlToken extends attributesParent(fixed(Token)) {
 }
 
 Parser.classes['HtmlToken'] = __filename;
-export = HtmlToken;

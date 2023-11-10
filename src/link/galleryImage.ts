@@ -1,13 +1,15 @@
 import {generateForSelf} from '../../util/lint';
 import {undo} from '../../util/debug';
-import * as singleLine from '../../mixin/singleLine';
-import Title = require('../../lib/title');
-import * as Parser from '../../index';
-import Token = require('..');
-import FileToken = require('./file');
+import {singleLine} from '../../mixin/singleLine';
+import {Parser} from '../../index';
+import {Token} from '..';
+import {FileToken} from './file';
+import type {Title} from '../../lib/title';
+import type {LintError} from '../../index';
+import type {ExtToken, GalleryToken} from '../../internal';
 
 /** 图库图片 */
-abstract class GalleryImageToken extends singleLine(FileToken) {
+export abstract class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
 	/** @browser */
 	#invalid = false;
@@ -84,7 +86,7 @@ abstract class GalleryImageToken extends singleLine(FileToken) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.#invalid) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
@@ -105,8 +107,8 @@ abstract class GalleryImageToken extends singleLine(FileToken) {
 		if (length !== 1 || ext!.type !== 'ext') {
 			throw new SyntaxError(`非法的图库文件名：${link}`);
 		}
-		const {lastChild: gallery} = ext as import('../tagPair/ext'),
-			{firstChild: image} = gallery as import('../gallery');
+		const {lastChild: gallery} = ext as ExtToken,
+			{firstChild: image} = gallery as GalleryToken;
 		if (gallery.length !== 1 || image!.type !== 'gallery-image') {
 			throw new SyntaxError(`非法的图库文件名：${link}`);
 		}
@@ -117,4 +119,3 @@ abstract class GalleryImageToken extends singleLine(FileToken) {
 }
 
 Parser.classes['GalleryImageToken'] = __filename;
-export = GalleryImageToken;

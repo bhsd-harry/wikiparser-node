@@ -1,8 +1,9 @@
 import {generateForChild} from '../util/lint';
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
-import type {TokenAttributeGetter} from '../lib/node';
+import {Parser} from '../index';
+import {Token} from '.';
+import {AtomToken} from './atom';
+import type {LintError} from '../index';
+import type {TokenAttributeGetter, ConverterToken, ConverterRuleToken} from '../internal';
 
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
 
@@ -10,7 +11,7 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: ...AtomToken}`
  */
-abstract class ConverterFlagsToken extends Token {
+export abstract class ConverterFlagsToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-flags';
 	declare childNodes: AtomToken[];
@@ -19,12 +20,12 @@ abstract class ConverterFlagsToken extends Token {
 	abstract override get firstElementChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
 	abstract override get lastElementChild(): AtomToken | undefined;
-	abstract override get parentNode(): import('./converter') | undefined;
-	abstract override get parentElement(): import('./converter') | undefined;
+	abstract override get parentNode(): ConverterToken | undefined;
+	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousSibling(): undefined;
 	abstract override get previousElementSibling(): undefined;
-	abstract override get nextSibling(): import('./converterRule') | undefined;
-	abstract override get nextElementSibling(): import('./converterRule') | undefined;
+	abstract override get nextSibling(): ConverterRuleToken | undefined;
+	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
 	/** @browser */
 	#flags?: string[];
@@ -101,7 +102,7 @@ abstract class ConverterFlagsToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
 			validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
@@ -277,4 +278,3 @@ abstract class ConverterFlagsToken extends Token {
 }
 
 Parser.classes['ConverterFlagsToken'] = __filename;
-export = ConverterFlagsToken;

@@ -1,7 +1,7 @@
-import * as fixed from '../../mixin/fixed';
-import * as Parser from '../../index';
-import Token = require('..');
-import AstText = require('../../lib/text');
+import {fixed} from '../../mixin/fixed';
+import {Parser} from '../../index';
+import {Token} from '..';
+import type {AstText} from '../../lib/text';
 
 declare type NowikiTypes = 'ext-inner'
 	| 'comment'
@@ -16,7 +16,7 @@ declare type NowikiTypes = 'ext-inner'
  * 纯文字Token，不会被解析
  * @classdesc `{childNodes: [AstText]}`
  */
-abstract class NowikiBaseToken extends fixed(Token) {
+export abstract class NowikiBaseToken extends fixed(Token) {
 	declare type: NowikiTypes;
 	declare childNodes: [AstText];
 	abstract override get children(): [];
@@ -48,4 +48,3 @@ abstract class NowikiBaseToken extends fixed(Token) {
 }
 
 Parser.classes['NowikiBaseToken'] = __filename;
-export = NowikiBaseToken;

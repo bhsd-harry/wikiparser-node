@@ -1,11 +1,11 @@
-import * as Parser from '../index';
+import {Parser} from '../index';
 
 /**
  * 不可包含换行符的类
  * @param constructor 基类
  */
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const singleLine = <T extends AstConstructor>(constructor: T) => {
+export const singleLine = <T extends AstConstructor>(constructor: T) => {
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
 		/** @override */
@@ -23,4 +23,3 @@ const singleLine = <T extends AstConstructor>(constructor: T) => {
 };
 
 Parser.mixins['singleLine'] = __filename;
-export = singleLine;

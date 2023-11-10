@@ -1,10 +1,12 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import type {BoundingRect} from '../util/lint';
 import {toCase, normalizeSpace, text, removeComment} from '../util/string';
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
-import AttributeToken = require('./attribute');
+import {Parser} from '../index';
+import {Token} from '.';
+import {AtomToken} from './atom';
+import {AttributeToken} from './attribute';
+import type {BoundingRect} from '../util/lint';
+import type {LintError} from '../index';
+import type {ExtToken, HtmlToken, TableBaseToken, TrBaseToken, TdToken} from '../internal';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
@@ -14,7 +16,7 @@ declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
-abstract class AttributesToken extends Token {
+export abstract class AttributesToken extends Token {
 	declare type: AttributesTypes;
 	declare name: string;
 	declare childNodes: (AtomToken | AttributeToken)[];
@@ -23,8 +25,8 @@ abstract class AttributesToken extends Token {
 	abstract override get firstElementChild(): AtomToken | AttributeToken;
 	abstract override get lastChild(): AtomToken | AttributeToken;
 	abstract override get lastElementChild(): AtomToken | AttributeToken;
-	abstract override get parentNode(): import('./tagPair/ext') | import('./html') | import('./table/base') | undefined;
-	abstract override get parentElement(): import('./tagPair/ext') | import('./html') | import('./table/base') | undefined;
+	abstract override get parentNode(): ExtToken | HtmlToken | TableBaseToken | undefined;
+	abstract override get parentElement(): ExtToken | HtmlToken | TableBaseToken | undefined;
 
 	/** getAttrs()方法的getter写法 */
 	get attributes(): Record<string, string | true> {
@@ -140,7 +142,7 @@ abstract class AttributesToken extends Token {
 	/** @private */
 	protected override afterBuild(): void {
 		if (this.type === 'table-attrs') {
-			const {parentNode} = this as this & {parentNode?: import('./table/trBase') | import('./table/td')};
+			const {parentNode} = this as this & {parentNode?: TrBaseToken | TdToken};
 			this.setAttribute(
 				'name',
 				parentNode?.type === 'td' && parentNode.subtype === 'caption' ? 'caption' : parentNode?.type,
@@ -184,7 +186,7 @@ abstract class AttributesToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{parentNode, length, childNodes} = this,
 			attrs: Record<string, AttributeToken[]> = {},
@@ -464,4 +466,3 @@ abstract class AttributesToken extends Token {
 }
 
 Parser.classes['AttributesToken'] = __filename;
-export = AttributesToken;

@@ -1,17 +1,19 @@
-import * as Parser from '../index';
-import Token = require('../src');
-import TableToken = require('../src/table');
-import TrToken = require('../src/table/tr');
-import TdToken = require('../src/table/td');
-import DdToken = require('../src/nowiki/dd');
-import AstText = require('../lib/text');
-import TrBaseToken = require('../src/table/trBase');
+import {Parser} from '../index';
+import {Token} from '../src';
+import {TableToken} from '../src/table';
+import {TrToken} from '../src/table/tr';
+import {TdToken} from '../src/table/td';
+import {DdToken} from '../src/nowiki/dd';
+import type {AstText} from '../lib/text';
+import type {TrBaseToken} from '../src/table/trBase';
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
  * @param {Token & {firstChild: AstText}} root 根节点
+ * @param config
+ * @param accum
  */
-const parseTable = (
+export const parseTable = (
 	{firstChild: {data}, type, name}: Token & {firstChild: AstText},
 	config = Parser.getConfig(),
 	accum: Token[] = [],
@@ -120,4 +122,3 @@ const parseTable = (
 };
 
 Parser.parsers['parseTable'] = __filename;
-export = parseTable;

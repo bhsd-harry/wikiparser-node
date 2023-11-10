@@ -1,4 +1,4 @@
-import type * as Ranges from '../lib/ranges';
+import type {Ranges} from '../lib/ranges';
 
 declare global {
 	interface PrintOpt {

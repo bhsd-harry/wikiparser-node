@@ -1,10 +1,15 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
-import * as Parser from '../index';
-import MagicLinkToken = require('../src/magicLink');
-import Token = require('../src');
+import {Parser} from '../index';
+import {MagicLinkToken} from '../src/magicLink';
+import type {Token} from '../src';
 
-/** 解析自由外链 */
-const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+/**
+ * 解析自由外链
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const regex = new RegExp(`(?<![\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
 	return wikitext.replace(regex, (m, p1: string) => {
 		let trail = '',
@@ -33,4 +38,3 @@ const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), accum: T
 };
 
 Parser.parsers['parseMagicLinks'] = __filename;
-export = parseMagicLinks;

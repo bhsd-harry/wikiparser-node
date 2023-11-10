@@ -1,13 +1,18 @@
-import * as Parser from '../index';
-import LinkToken = require('../src/link');
-import FileToken = require('../src/link/file');
-import CategoryToken = require('../src/link/category');
-import Token = require('../src');
-import LinkBaseToken = require('../src/link/base');
+import {Parser} from '../index';
+import {LinkToken} from '../src/link';
+import {FileToken} from '../src/link/file';
+import {CategoryToken} from '../src/link/category';
+import type {Token} from '../src';
+import type {LinkBaseToken} from '../src/link/base';
 
-/** 解析内部链接 */
-const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
-	const parseQuotes = require('./quotes.js');
+/**
+ * 解析内部链接
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+	const {parseQuotes} = require('./quotes.js');
 	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
 		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
@@ -92,4 +97,3 @@ const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[
 };
 
 Parser.parsers['parseLinks'] = __filename;
-export = parseLinks;

@@ -1,15 +1,15 @@
-import * as Parser from '../../index';
-import Token = require('..');
-import TrBaseToken = require('./trBase');
-import TdToken = require('./td');
-import SyntaxToken = require('../syntax');
-import AttributesToken = require('../attributes');
+import {Parser} from '../../index';
+import {TrBaseToken} from './trBase';
+import type {Token} from '..';
+import type {TdToken} from './td';
+import type {SyntaxToken} from '../syntax';
+import type {AttributesToken} from '../attributes';
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
-abstract class TrToken extends TrBaseToken {
+export abstract class TrToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'tr';
 	declare childNodes: [SyntaxToken, AttributesToken, ...TdToken[]];
@@ -65,4 +65,3 @@ abstract class TrToken extends TrBaseToken {
 }
 
 Parser.classes['TrToken'] = __filename;
-export = TrToken;

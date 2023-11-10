@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Parser} from '../index';
 
 const simplePseudos = new Set<string>([
 	'root',
@@ -51,7 +51,10 @@ const pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
 	grouping = new Set([',', '>', '+', '~']),
 	combinator = new Set(['>', '+', '~', '']);
 
-/** 清理转义符号 */
+/**
+ * 清理转义符号
+ * @param selector
+ */
 const sanitize = (selector: string): string => {
 	let s = selector;
 	for (const [c, escaped] of specialChars) {
@@ -60,7 +63,10 @@ const sanitize = (selector: string): string => {
 	return s;
 };
 
-/** 还原转义符号 */
+/**
+ * 还原转义符号
+ * @param selector
+ */
 const desanitize = (selector: string): string => {
 	let str = selector;
 	for (const [c, escaped] of specialChars) {
@@ -96,9 +102,10 @@ const pushSimple = (step: SelectorArray, str: string): void => {
 
 /**
  * 解析选择器
+ * @param selector
  * @throws `SyntaxError` 非法的选择器
  */
-const parseSelector = (selector: string): SelectorArray[][] => {
+export const parseSelector = (selector: string): SelectorArray[][] => {
 	const s = selector.trim(),
 		stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let sanitized = sanitize(s),
@@ -166,4 +173,3 @@ const parseSelector = (selector: string): SelectorArray[][] => {
 };
 
 Parser.parsers['parseSelector'] = __filename;
-export = parseSelector;

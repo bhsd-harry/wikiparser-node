@@ -1,5 +1,6 @@
-import * as Parser from '../index';
-import * as AstNode from './node';
+import {Parser} from '../index';
+import {AstNode} from './node';
+import type {LintError} from '../index';
 
 const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
@@ -57,7 +58,7 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\
 	];
 
 /** 文本节点 */
-class AstText extends AstNode {
+export class AstText extends AstNode {
 	/** @browser */
 	override readonly type = 'text';
 	declare name: undefined;
@@ -101,8 +102,9 @@ class AstText extends AstNode {
 	/**
 	 * Linter
 	 * @browser
+	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this,
 			type = parentNode?.type,
 			name = parentNode?.name,
@@ -161,7 +163,7 @@ class AstText extends AstNode {
 						endCol: startCol + length,
 						excerpt: rootStr.slice(Math.max(0, end - 50), end),
 					};
-				}).filter(Boolean) as Parser.LintError[];
+				}).filter(Boolean) as LintError[];
 		}
 		return [];
 	}
@@ -258,4 +260,3 @@ class AstText extends AstNode {
 }
 
 Parser.classes['AstText'] = __filename;
-export = AstText;

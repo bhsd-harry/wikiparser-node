@@ -1,14 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {toCase, noWrap, print, text} from '../util/string';
-import * as Ranges from './ranges';
-const {nth} = Ranges;
-import * as parseSelector from '../parser/selector';
-import Title = require('./title');
-import * as Parser from '../index';
-import * as AstNode from './node';
-import AstText = require('./text');
-import type {AstNodeTypes} from './node';
+import {parseSelector} from '../parser/selector';
+import {nth} from './ranges';
+import {Title} from './title';
+import {Parser} from '../index';
+import {AstNode} from './node';
+import type {LintError} from '../index';
+import type {AstNodeTypes, AstText, Token} from '../internal';
 
 const lintIgnoredExt = new Set<string | undefined>([
 	'nowiki',
@@ -29,7 +28,7 @@ const lintIgnoredExt = new Set<string | undefined>([
 ]);
 
 /** 类似HTMLElement */
-abstract class AstElement extends AstNode {
+export abstract class AstElement extends AstNode {
 	/** @browser */
 	name?: string;
 
@@ -42,17 +41,17 @@ abstract class AstElement extends AstNode {
 	}
 
 	/** 全部非文本子节点 */
-	get children(): import('../src')[] {
-		return this.childNodes.filter(({type}) => type !== 'text') as import('../src')[];
+	get children(): Token[] {
+		return this.childNodes.filter(({type}) => type !== 'text') as Token[];
 	}
 
 	/** 首位非文本子节点 */
-	get firstElementChild(): import('../src') | undefined {
-		return this.childNodes.find(({type}) => type !== 'text') as import('../src') | undefined;
+	get firstElementChild(): Token | undefined {
+		return this.childNodes.find(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 末位非文本子节点 */
-	get lastElementChild(): import('../src') | undefined {
+	get lastElementChild(): Token | undefined {
 		return this.children.at(-1);
 	}
 
@@ -62,7 +61,7 @@ abstract class AstElement extends AstNode {
 	}
 
 	/** 父节点 */
-	get parentElement(): import('../src') | undefined {
+	get parentElement(): Token | undefined {
 		return this.parentNode;
 	}
 
@@ -177,7 +176,7 @@ abstract class AstElement extends AstNode {
 			j = Parser.running ? -1 : childNodes.indexOf(node);
 		if (j === -1) {
 			node.parentNode?.removeChild(node);
-			node.setAttribute('parentNode', this as AstElement as import('../src'));
+			node.setAttribute('parentNode', this as AstElement as Token);
 		} else {
 			childNodes.splice(j, 1);
 		}
@@ -190,8 +189,9 @@ abstract class AstElement extends AstNode {
 	/**
 	 * 最近的祖先节点
 	 * @browser
+	 * @param selector 选择器
 	 */
-	closest(selector: string): import('../src') | undefined {
+	closest(selector: string): Token | undefined {
 		let {parentNode} = this;
 		const stack = parseSelector(selector);
 		while (parentNode) {
@@ -248,6 +248,7 @@ abstract class AstElement extends AstNode {
 	/**
 	 * 还原为wikitext
 	 * @browser
+	 * @param selector
 	 * @param separator 子节点间的连接符
 	 */
 	override toString(selector?: string, separator = ''): string {
@@ -259,15 +260,16 @@ abstract class AstElement extends AstNode {
 	/**
 	 * Linter
 	 * @browser
+	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
-		const SyntaxToken: typeof import('../src/syntax') = require('../src/syntax');
+	lint(start = this.getAbsoluteIndex()): LintError[] {
+		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
 		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
 			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name)
 		) {
 			return [];
 		}
-		const errors: Parser.LintError[] = [];
+		const errors: LintError[] = [];
 		for (let i = 0, cur = start + this.getPadding(); i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			errors.push(...child.lint(cur));
@@ -323,7 +325,7 @@ abstract class AstElement extends AstNode {
 		}
 		const {childNodes, fixed} = parentNode,
 			protectedIndices = parentNode.getAttribute('protectedChildren').applyTo(childNodes);
-		return fixed || protectedIndices.includes(childNodes.indexOf(this as AstElement as import('../src')));
+		return fixed || protectedIndices.includes(childNodes.indexOf(this as AstElement as Token));
 	}
 
 	/** @private */
@@ -377,8 +379,8 @@ abstract class AstElement extends AstNode {
 			childrenOfType = children?.filter(({type: t}) => t === type),
 			siblingsCount = children?.length ?? 1,
 			siblingsCountOfType = childrenOfType?.length ?? 1,
-			index = (children?.indexOf(this as AstElement as import('../src')) ?? 0) + 1,
-			indexOfType = (childrenOfType?.indexOf(this as AstElement as import('../src')) ?? 0) + 1,
+			index = (children?.indexOf(this as AstElement as Token) ?? 0) + 1,
+			indexOfType = (childrenOfType?.indexOf(this as AstElement as Token) ?? 0) + 1,
 			lastIndex = siblingsCount - index + 1,
 			lastIndexOfType = siblingsCountOfType - indexOfType + 1;
 		return step.every(selector => {
@@ -498,7 +500,7 @@ abstract class AstElement extends AstNode {
 						return false;
 					}
 					const {children} = parentNode,
-						i = children.indexOf(this as AstElement as import('../src'));
+						i = children.indexOf(this as AstElement as Token);
 					return children.slice(0, i).some(child => child.#matchesArray(condition));
 				}
 				default: // ' '
@@ -516,7 +518,10 @@ abstract class AstElement extends AstNode {
 		return stack.some(condition => this.#matchesArray([...condition]));
 	}
 
-	/** 检查是否符合选择器 */
+	/**
+	 * 检查是否符合选择器
+	 * @param selector 选择器
+	 */
 	matches(selector?: string): boolean {
 		if (selector === undefined) {
 			return true;
@@ -530,7 +535,7 @@ abstract class AstElement extends AstNode {
 	 * 符合组合选择器的第一个后代节点
 	 * @param stack 解析后的一组选择器
 	 */
-	#queryStack(stack: SelectorArray[][]): import('../src') | undefined {
+	#queryStack(stack: SelectorArray[][]): Token | undefined {
 		for (const child of this.children) {
 			if (child.#matchesStack(stack)) {
 				return child;
@@ -543,8 +548,11 @@ abstract class AstElement extends AstNode {
 		return undefined;
 	}
 
-	/** 符合选择器的第一个后代节点 */
-	querySelector(selector: string): import('../src') | undefined {
+	/**
+	 * 符合选择器的第一个后代节点
+	 * @param selector 选择器
+	 */
+	querySelector(selector: string): Token | undefined {
 		return this.#queryStack(parseSelector(selector));
 	}
 
@@ -552,8 +560,8 @@ abstract class AstElement extends AstNode {
 	 * 符合组合选择器的所有后代节点
 	 * @param stack 解析后的一组选择器
 	 */
-	#queryStackAll(stack: SelectorArray[][]): import('../src')[] {
-		const descendants: import('../src')[] = [];
+	#queryStackAll(stack: SelectorArray[][]): Token[] {
+		const descendants: Token[] = [];
 		for (const child of this.children) {
 			if (child.#matchesStack(stack)) {
 				descendants.push(child);
@@ -563,8 +571,11 @@ abstract class AstElement extends AstNode {
 		return descendants;
 	}
 
-	/** 符合选择器的所有后代节点 */
-	querySelectorAll(selector: string): import('../src')[] {
+	/**
+	 * 符合选择器的所有后代节点
+	 * @param selector 选择器
+	 */
+	querySelectorAll(selector: string): Token[] {
 		return this.#queryStackAll(parseSelector(selector));
 	}
 
@@ -572,7 +583,7 @@ abstract class AstElement extends AstNode {
 	 * id选择器
 	 * @param id id名
 	 */
-	getElementById(id: string): import('../src') | undefined {
+	getElementById(id: string): Token | undefined {
 		if (typeof id === 'string') {
 			const eid = id.replace(/(?<!\\)"/gu, '\\"');
 			return this.querySelector(`ext[id="${eid}"], html[id="${eid}"]`);
@@ -584,7 +595,7 @@ abstract class AstElement extends AstNode {
 	 * 类选择器
 	 * @param className 类名之一
 	 */
-	getElementsByClassName(className: string): import('../src')[] {
+	getElementsByClassName(className: string): Token[] {
 		return typeof className === 'string'
 			? this.querySelectorAll(`[className~="${className.replace(/(?<!\\)"/gu, '\\"')}"]`)
 			: this.typeError('getElementsByClassName', 'String');
@@ -594,7 +605,7 @@ abstract class AstElement extends AstNode {
 	 * 标签名选择器
 	 * @param name 标签名
 	 */
-	getElementsByTagName(name: string): import('../src')[] {
+	getElementsByTagName(name: string): Token[] {
 		if (typeof name === 'string') {
 			const ename = name.replace(/(?<!\\)"/gu, '\\"');
 			return this.querySelectorAll(`ext[name="${ename}"], html[name="${ename}"]`);
@@ -741,4 +752,3 @@ const matchesLang = (
 };
 
 Parser.classes['AstElement'] = __filename;
-export = AstElement;

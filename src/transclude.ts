@@ -1,18 +1,19 @@
 import {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} from '../util/string';
 import {generateForChild} from '../util/lint';
+import {Parser} from '../index';
+import {Token} from '.';
+import {ParameterToken} from './parameter';
+import {AtomToken} from './atom';
+import {SyntaxToken} from './syntax';
 import type {BoundingRect} from '../util/lint';
-import * as Parser from '../index';
-import Token = require('.');
-import ParameterToken = require('./parameter');
-import AtomToken = require('./atom');
-import SyntaxToken = require('./syntax');
-import type {TokenAttributeGetter} from '../lib/node';
+import type {LintError} from '../index';
+import type {TokenAttributeGetter, TableToken} from '../internal';
 
 /**
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
-abstract class TranscludeToken extends Token {
+export abstract class TranscludeToken extends Token {
 	/** @browser */
 	override type: 'template' | 'magic-word' = 'template';
 	declare name: string;
@@ -270,7 +271,7 @@ abstract class TranscludeToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{type, childNodes} = this;
 		let rect: BoundingRect | undefined;
@@ -829,7 +830,7 @@ abstract class TranscludeToken extends Token {
 			parsed = Parser.parse(stripped, include, 4, config);
 		for (const table of parsed.childNodes) {
 			if (table.type === 'table') {
-				(table as import('./table')).escape();
+				(table as TableToken).escape();
 			}
 		}
 		const {firstChild, childNodes} = Parser.parse(`{{${String(parsed)}}}`, include, 2, config);
@@ -847,4 +848,3 @@ abstract class TranscludeToken extends Token {
 }
 
 Parser.classes['TranscludeToken'] = __filename;
-export = TranscludeToken;

@@ -1,14 +1,14 @@
-import * as hidden from '../../mixin/hidden';
-import * as Parser from '../../index';
-import TagPairToken = require('.');
-import Token = require('..');
-import AstText = require('../../lib/text');
+import {hidden} from '../../mixin/hidden';
+import {Parser} from '../../index';
+import {TagPairToken} from '.';
+import type {AstText} from '../../lib/text';
+import type {Token} from '..';
 
 /**
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
-abstract class IncludeToken extends hidden(TagPairToken) {
+export abstract class IncludeToken extends hidden(TagPairToken) {
 	/** @browser */
 	override readonly type = 'include';
 	declare childNodes: [AstText, AstText];
@@ -28,8 +28,8 @@ abstract class IncludeToken extends hidden(TagPairToken) {
 	constructor(
 		name: string,
 		attr = '',
-		inner: string | undefined = undefined,
-		closed: string | undefined = undefined,
+		inner?: string,
+		closed?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
@@ -61,4 +61,3 @@ abstract class IncludeToken extends hidden(TagPairToken) {
 }
 
 Parser.classes['IncludeToken'] = __filename;
-export = IncludeToken;

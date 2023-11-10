@@ -1,13 +1,13 @@
 import {noWrap, normalizeSpace} from '../util/string';
-import * as Parser from '../index';
-import Token = require('.');
-import MagicLinkToken = require('./magicLink');
+import {Parser} from '../index';
+import {Token} from '.';
+import {MagicLinkToken} from './magicLink';
 
 /**
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-abstract class ExtLinkToken extends Token {
+export abstract class ExtLinkToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-link';
 	declare childNodes: [MagicLinkToken] | [MagicLinkToken, Token];
@@ -180,4 +180,3 @@ abstract class ExtLinkToken extends Token {
 }
 
 Parser.classes['ExtLinkToken'] = __filename;
-export = ExtLinkToken;

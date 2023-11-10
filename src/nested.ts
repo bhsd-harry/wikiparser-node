@@ -1,17 +1,18 @@
 import {generateForChild} from '../util/lint';
+import {Parser} from '../index';
+import {Token} from '.';
+import {ExtToken} from './tagPair/ext';
+import {NoincludeToken} from './nowiki/noinclude';
+import {CommentToken} from './nowiki/comment';
 import type {BoundingRect} from '../util/lint';
-import * as Parser from '../index';
-import Token = require('.');
-import ExtToken = require('./tagPair/ext');
-import NoincludeToken = require('./nowiki/noinclude');
-import CommentToken = require('./nowiki/comment');
-import AttributesToken = require('./attributes');
+import type {LintError} from '../index';
+import type {AttributesToken} from './attributes';
 
 /**
  * 嵌套式的扩展标签
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
-abstract class NestedToken extends Token {
+export abstract class NestedToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
@@ -75,7 +76,7 @@ abstract class NestedToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return [
 			...super.lint(start),
@@ -117,4 +118,3 @@ abstract class NestedToken extends Token {
 }
 
 Parser.classes['NestedToken'] = __filename;
-export = NestedToken;

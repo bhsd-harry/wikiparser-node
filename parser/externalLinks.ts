@@ -1,10 +1,15 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
-import * as Parser from '../index';
-import ExtLinkToken = require('../src/extLink');
-import Token = require('../src');
+import {Parser} from '../index';
+import {ExtLinkToken} from '../src/extLink';
+import type {Token} from '../src';
 
-/** 解析外部链接 */
-const parseExternalLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+/**
+ * 解析外部链接
+ * @param wikitext
+ * @param config
+ * @param accum
+ */
+export const parseExternalLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const regex = new RegExp(
 		`\\[((?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${
 			extUrlChar
@@ -28,4 +33,3 @@ const parseExternalLinks = (wikitext: string, config = Parser.getConfig(), accum
 };
 
 Parser.parsers['parseExternalLinks'] = __filename;
-export = parseExternalLinks;

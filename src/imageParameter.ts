@@ -1,11 +1,10 @@
 import {text, noWrap, print, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
-import Title = require('../lib/title');
-import * as Parser from '../index';
-import Token = require('.');
-import AtomToken = require('./atom');
-import AstText = require('../lib/text');
-import type {TokenAttributeGetter, AstNodeTypes} from '../lib/node';
+import {Parser} from '../index';
+import {Token} from '.';
+import type {LintError, Config} from '../index';
+import type {Title} from '../lib/title';
+import type {TokenAttributeGetter, AstNodeTypes, AstText, AtomToken, FileToken} from '../internal';
 
 const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
@@ -15,11 +14,10 @@ const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
  * @param key 参数名
  * @param val 参数值
  */
-function validate(key: 'link', val: string, config?: Parser.Config, halfParsed?: boolean): string | Title;
+function validate(key: 'link', val: string, config?: Config, halfParsed?: boolean): string | Title;
 /** @ignore */
-function validate(key: string, val: string, config?: Parser.Config, halfParsed?: boolean): boolean;
+function validate(key: string, val: string, config?: Config, halfParsed?: boolean): boolean;
 /** @ignore */
-// eslint-disable-next-line func-style
 function validate(key: string, val: string, config = Parser.getConfig(), halfParsed = false): string | Title | boolean {
 	const trimmedVal = val.trim();
 	let value = trimmedVal.replace(/\0\d+t\x7F/gu, '').trim();
@@ -55,12 +53,12 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 }
 
 /** 图片参数 */
-abstract class ImageParameterToken extends Token {
+export abstract class ImageParameterToken extends Token {
 	/** @browser */
 	override readonly type = 'image-parameter';
 	declare name: string;
-	abstract override get parentNode(): import('./link/file');
-	abstract override get parentElement(): import('./link/file');
+	abstract override get parentNode(): FileToken;
+	abstract override get parentElement(): FileToken;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | this;
@@ -211,7 +209,7 @@ abstract class ImageParameterToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{link} = this;
 		if (this.name === 'invalid') {
@@ -308,7 +306,7 @@ abstract class ImageParameterToken extends Token {
 		if (length !== 1 || file!.type !== 'file' || file!.length !== 2) {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}
-		const {lastChild: imageParameter, name} = file as import('./link/file');
+		const {lastChild: imageParameter, name} = file as FileToken;
 		if (name !== 'File:F' || imageParameter.name !== this.name) {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}
@@ -317,4 +315,3 @@ abstract class ImageParameterToken extends Token {
 }
 
 Parser.classes['ImageParameterToken'] = __filename;
-export = ImageParameterToken;

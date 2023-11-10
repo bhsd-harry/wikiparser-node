@@ -1,11 +1,12 @@
-import * as hidden from '../../mixin/hidden';
 import {generateForSelf} from '../../util/lint';
-import * as Parser from '../../index';
-import Token = require('..');
-import NowikiBaseToken = require('./base');
+import {hidden} from '../../mixin/hidden';
+import {Parser} from '../../index';
+import {NowikiBaseToken} from './base';
+import type {LintError} from '../../index';
+import type {Token} from '..';
 
 /** HTML注释，不可见 */
-abstract class CommentToken extends hidden(NowikiBaseToken) {
+export abstract class CommentToken extends hidden(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'comment';
 	closed;
@@ -42,7 +43,7 @@ abstract class CommentToken extends hidden(NowikiBaseToken) {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
 	}
 
@@ -68,4 +69,3 @@ abstract class CommentToken extends hidden(NowikiBaseToken) {
 }
 
 Parser.classes['CommentToken'] = __filename;
-export = CommentToken;

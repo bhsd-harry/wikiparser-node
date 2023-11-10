@@ -1,18 +1,18 @@
-import * as fixed from '../mixin/fixed';
-import * as singleLine from '../mixin/singleLine';
-import * as Parser from '../index';
-import Title = require('../lib/title');
-import AstText = require('../lib/text');
-import Token = require('.');
-import NoincludeToken = require('./nowiki/noinclude');
-import LinkToken = require('./link');
-import ExtLinkToken = require('./extLink');
+import {fixed} from '../mixin/fixed';
+import {singleLine} from '../mixin/singleLine';
+import {Parser} from '../index';
+import {Token} from '.';
+import {NoincludeToken} from './nowiki/noinclude';
+import {LinkToken} from './link';
+import {ExtLinkToken} from './extLink';
+import type {Title} from '../lib/title';
+import type {AstText, ImagemapToken} from '../internal';
 
 /**
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
+export abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	/** @browser */
 	override readonly type = 'imagemap-link';
 	declare childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
@@ -21,8 +21,8 @@ abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
 	abstract override get lastChild(): NoincludeToken;
 	abstract override get lastElementChild(): NoincludeToken;
-	abstract override get parentNode(): import('./imagemap') | undefined;
-	abstract override get parentElement(): import('./imagemap') | undefined;
+	abstract override get parentNode(): ImagemapToken | undefined;
+	abstract override get parentElement(): ImagemapToken | undefined;
 
 	/** 内外链接 */
 	get link(): string | Title {
@@ -61,4 +61,3 @@ abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
 }
 
 Parser.classes['ImagemapLinkToken'] = __filename;
-export = ImagemapLinkToken;

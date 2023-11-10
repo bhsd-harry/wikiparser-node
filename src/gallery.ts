@@ -1,17 +1,18 @@
-import * as Parser from '../index';
-import AstText = require('../lib/text');
-import Token = require('.');
-import GalleryImageToken = require('./link/galleryImage');
-import HiddenToken = require('./hidden');
-import AttributesToken = require('./attributes');
-import ExtToken = require('./tagPair/ext');
+import {Parser} from '../index';
+import {Token} from '.';
+import {GalleryImageToken} from './link/galleryImage';
+import {HiddenToken} from './hidden';
+import type {LintError} from '../index';
 import type {AstNodeTypes} from '../lib/node';
+import type {AstText} from '../lib/text';
+import type {AttributesToken} from './attributes';
+import type {ExtToken} from './tagPair/ext';
 
 /**
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
  */
-abstract class GalleryToken extends Token {
+export abstract class GalleryToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: (GalleryImageToken | HiddenToken | AstText)[];
@@ -96,9 +97,9 @@ abstract class GalleryToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override lint(start = this.getAbsoluteIndex()): Parser.LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
-			errors: Parser.LintError[] = [];
+			errors: LintError[] = [];
 		for (let i = 0, startIndex = start; i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				str = String(child),
@@ -174,4 +175,3 @@ abstract class GalleryToken extends Token {
 }
 
 Parser.classes['GalleryToken'] = __filename;
-export = GalleryToken;
