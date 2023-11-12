@@ -18,18 +18,17 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 		stack: BracketExecArrayOrEmpty[] = [],
 		closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
 		marks = new Map<string, string>([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]);
-	let text = wikitext,
-		regex = new RegExp(source, 'gmu'),
-		mt: BracketExecArray | null = regex.exec(text),
-		moreBraces = text.includes('}}'),
+	let regex = new RegExp(source, 'gmu'),
+		mt: BracketExecArray | null = regex.exec(wikitext),
+		moreBraces = wikitext.includes('}}'),
 		lastIndex: number | undefined;
-	while (mt || lastIndex !== undefined && lastIndex <= text.length && stack.at(-1)?.[0]?.startsWith('=')) {
+	while (mt || lastIndex !== undefined && lastIndex <= wikitext.length && stack.at(-1)?.[0]?.startsWith('=')) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0]!.slice(length);
 			mt.index += length;
 		}
-		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: text.length},
+		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: wikitext.length},
 			top: BracketExecArrayOrEmpty = stack.pop() ?? {},
 			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
 			innerEqual = syntax === '=' && topFindEqual;
@@ -38,11 +37,11 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 		} else if (syntax === '\n') { // 情形2：闭合标题或文末
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
-			if (pos === undefined || findEqual || removeComment(text.slice(pos, index)) !== '') {
+			if (pos === undefined || findEqual || removeComment(wikitext.slice(pos, index)) !== '') {
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u
-					.exec(text.slice(index, curIndex)) as [string, string, string, string] | null;
+					.exec(wikitext.slice(index, curIndex)) as [string, string, string, string] | null;
 				if (rmt) {
-					text = `${text.slice(0, index)}\0${accum.length}h\x7F${text.slice(curIndex)}`;
+					wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${wikitext.slice(curIndex)}`;
 					lastIndex = index! + 4 + String(accum.length).length;
 					// @ts-expect-error abstract class
 					new HeadingToken(rmt[1].length, rmt.slice(2), config, accum);
@@ -50,7 +49,7 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
 			lastIndex = curIndex + 1;
-			parts!.at(-1)!.push(text.slice(topPos, curIndex));
+			parts!.at(-1)!.push(wikitext.slice(topPos, curIndex));
 			if (syntax === '|') {
 				parts!.push([]);
 			}
@@ -62,7 +61,7 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 				rest = open!.length - close.length,
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-			parts!.at(-1)!.push(text.slice(topPos, curIndex));
+			parts!.at(-1)!.push(wikitext.slice(topPos, curIndex));
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
@@ -95,11 +94,11 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 				}
 			}
 			if (!skip) {
-				text = `${text.slice(0, index! + rest)}\0${length}${ch}\x7F${text.slice(lastIndex)}`;
+				wikitext = `${wikitext.slice(0, index! + rest)}\0${length}${ch}\x7F${wikitext.slice(lastIndex)}`;
 				lastIndex = index! + rest + 3 + String(length).length;
 				if (rest > 1) {
 					stack.push({0: open!.slice(0, rest), index: index!, pos: index! + rest, parts: [[]]});
-				} else if (rest === 1 && text[index! - 1] === '-') {
+				} else if (rest === 1 && wikitext[index! - 1] === '-') {
 					stack.push({0: '-{', index: index! - 1, pos: index! + 1, parts: [[]]});
 				}
 			}
@@ -111,7 +110,7 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 			}
 			stack.push(...'0' in top ? [top] : [], mt!);
 		}
-		moreBraces &&= text.slice(lastIndex).includes('}}');
+		moreBraces &&= wikitext.slice(lastIndex).includes('}}');
 		let curTop = stack.at(-1);
 		if (!moreBraces && curTop?.[0]?.startsWith('{')) {
 			stack.pop();
@@ -122,9 +121,9 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 			: ''
 		), 'gmu');
 		regex.lastIndex = lastIndex;
-		mt = regex.exec(text);
+		mt = regex.exec(wikitext);
 	}
-	return text;
+	return wikitext;
 };
 
 Parser.parsers['parseBrackets'] = __filename;

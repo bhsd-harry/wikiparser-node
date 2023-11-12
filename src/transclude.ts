@@ -40,12 +40,12 @@ export abstract class TranscludeToken extends Token {
 
 	/**
 	 * @browser
-	 * @param key 模板标题或魔术字
+	 * @param title 模板标题或魔术字
 	 * @param parts 参数各部分
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
 	constructor(
-		key: string,
+		title: string,
 		parts: ([string] | [string | number, string])[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -54,7 +54,6 @@ export abstract class TranscludeToken extends Token {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
 		this.seal('modifier');
-		let title = key;
 		const {parserFunction: [insensitive, sensitive]} = config,
 			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
@@ -306,8 +305,7 @@ export abstract class TranscludeToken extends Token {
 		} else if (!this.hasArg(maxAnon, true)) {
 			this.#keys.delete(maxAnon);
 		}
-		const j = added ? args.indexOf(addedToken) : addedToken - 1;
-		for (let i = j; i < args.length; i++) {
+		for (let i = added ? args.indexOf(addedToken) : addedToken - 1; i < args.length; i++) {
 			const token = args[i]!,
 				{name} = token,
 				newName = String(i + 1);

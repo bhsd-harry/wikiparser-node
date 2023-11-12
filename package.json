@@ -37,17 +37,17 @@
 		"test:single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
 	},
 	"devDependencies": {
-		"@types/node": "^17.0.45",
+		"@types/node": "^20.9.0",
 		"eslint": "^8.53.0",
-		"eslint-plugin-n": "^16.3.0",
+		"eslint-plugin-n": "^16.3.1",
 		"eslint-plugin-regexp": "^2.1.1",
 		"eslint-plugin-unicorn": "^49.0.0",
 		"eslint-plugin-jsdoc": "^46.8.2",
 		"eslint-plugin-json-es": "^1.5.7",
 		"eslint-plugin-eslint-comments": "^3.2.0",
 		"typescript": "^5.0.3",
-		"@typescript-eslint/eslint-plugin": "^5.57.0",
-		"@typescript-eslint/parser": "^5.57.0",
+		"@typescript-eslint/eslint-plugin": "^5.62.0",
+		"@typescript-eslint/parser": "^5.62.0",
 		"ajv-cli": "^5.0.0",
 		"request": "^2.88.2"
 	},

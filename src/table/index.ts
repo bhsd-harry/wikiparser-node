@@ -643,11 +643,9 @@ export abstract class TableToken extends TrBaseToken {
 			posYlim = ylim.map(y => y < 0 ? y + layout.length : y) as [number, number],
 			[xmin, xmax] = posXlim.sort(),
 			[ymin, ymax] = posYlim.sort(),
-			set = new Set<TableCoords | undefined>(
-				layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)),
-			);
+			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
 		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
-			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]) || set.has(rowLayout[xmax]))
+			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]!) || set.has(rowLayout[xmax]!))
 		) {
 			throw new RangeError('待合并区域与外侧区域有重叠！');
 		}

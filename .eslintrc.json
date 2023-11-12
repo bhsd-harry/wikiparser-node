@@ -218,7 +218,6 @@
 		"no-new-object": 2,
 		"no-new-wrappers": 2,
 		"no-octal-escape": 2,
-		"no-param-reassign": 2,
 		"no-restricted-globals": [
 			2,
 			"root",

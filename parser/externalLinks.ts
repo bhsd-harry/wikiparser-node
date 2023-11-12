@@ -16,10 +16,7 @@ export const parseExternalLinks = (wikitext: string, config = Parser.getConfig()
 		})(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
 		'giu',
 	);
-	return wikitext.replace(regex, (_, rawUrl: string, rawSpace: string, rawText: string) => {
-		let url = rawUrl,
-			space = rawSpace,
-			text = rawText;
+	return wikitext.replace(regex, (_, url: string, space: string, text: string) => {
 		const {length} = accum,
 			mt = /&[lg]t;/u.exec(url);
 		if (mt) {

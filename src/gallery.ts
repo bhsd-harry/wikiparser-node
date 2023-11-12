@@ -97,7 +97,7 @@ export abstract class GalleryToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];
-		for (let i = 0, startIndex = start; i < this.length; i++) {
+		for (let i = 0; i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				str = String(child),
 				{length} = str,
@@ -108,8 +108,8 @@ export abstract class GalleryToken extends Token {
 				errors.push({
 					message: Parser.msg('invalid content in <$1>', 'gallery'),
 					severity: 'error',
-					startIndex,
-					endIndex: startIndex + length,
+					startIndex: start,
+					endIndex: start + length,
 					startLine,
 					endLine: startLine,
 					startCol,
@@ -117,9 +117,9 @@ export abstract class GalleryToken extends Token {
 					excerpt: String(child).slice(0, 50),
 				});
 			} else if (child.type !== 'hidden' && child.type !== 'text') {
-				errors.push(...child.lint(startIndex));
+				errors.push(...child.lint(start));
 			}
-			startIndex += length + 1;
+			start += length + 1;
 		}
 		return errors;
 	}

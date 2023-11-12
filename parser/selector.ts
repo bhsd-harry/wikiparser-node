@@ -56,11 +56,10 @@ const pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
  * @param selector
  */
 const sanitize = (selector: string): string => {
-	let s = selector;
 	for (const [c, escaped] of specialChars) {
-		s = s.replaceAll(`\\${c}`, escaped);
+		selector = selector.replaceAll(`\\${c}`, escaped);
 	}
-	return s;
+	return selector;
 };
 
 /**
@@ -68,11 +67,10 @@ const sanitize = (selector: string): string => {
  * @param selector
  */
 const desanitize = (selector: string): string => {
-	let str = selector;
 	for (const [c, escaped] of specialChars) {
-		str = str.replaceAll(escaped, c);
+		selector = selector.replaceAll(escaped, c);
 	}
-	return str.trim();
+	return selector.trim();
 };
 
 /**

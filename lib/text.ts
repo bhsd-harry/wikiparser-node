@@ -121,15 +121,13 @@ export class AstText extends AstNode {
 				{top, left} = root.posFromIndex(start)!,
 				tags = new Set([ext, html, disallowedTags].flat(2));
 			return (errors as unknown as {0: string, 1: string, 2?: string, index: number}[])
-				.map(({0: e, 1: prefix, 2: tag, index}) => {
-					let error = e,
-						idx = index;
+				.map(({0: error, 1: prefix, 2: tag, index}) => {
 					if (prefix) {
-						idx += prefix.length;
+						index += prefix.length;
 						error = error.slice(prefix.length);
 					}
-					const startIndex = start + idx,
-						lines = data.slice(0, idx).split('\n'),
+					const startIndex = start + index,
+						lines = data.slice(0, index).split('\n'),
 						startLine = lines.length + top - 1,
 						line = lines.at(-1)!,
 						startCol = lines.length > 1 ? line.length : left + line.length,
@@ -144,15 +142,15 @@ export class AstText extends AstNode {
 							|| char === '}' && (previousChar === char || nextChar === '-')
 							|| char === '[' && (
 								nextChar === char || type === 'ext-link-text'
-								|| !data.slice(idx + 1).trim() && nextType === 'free-ext-link'
+								|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
 							)
 							|| char === ']' && (
 								previousChar === char
-								|| !data.slice(0, idx).trim() && previousType === 'free-ext-link'
+								|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
 							)
 							? 'error'
 							: 'warning';
-					return (char !== 'h' || idx > 0) && (char !== '<' || tags.has(tag!.toLowerCase())) && {
+					return (char !== 'h' || index > 0) && (char !== '<' || tags.has(tag!.toLowerCase())) && {
 						message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
 						severity,
 						startIndex,

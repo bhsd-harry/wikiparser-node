@@ -9,7 +9,7 @@ import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';
 
-const lintIgnoredExt = new Set<string | undefined>([
+const lintIgnoredExt = new Set([
 	'nowiki',
 	'pre',
 	'charinsert',
@@ -263,7 +263,7 @@ export abstract class AstElement extends AstNode {
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
 		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
-			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name)
+			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name!)
 		) {
 			return [];
 		}

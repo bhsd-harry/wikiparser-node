@@ -5,9 +5,9 @@ import {attributesParent} from '../mixin/attributesParent';
 import {Parser} from '../index';
 import {Token} from '.';
 import type {LintError} from '../index';
-import type {AttributesToken} from '../internal';
+import type {AttributesToken, TranscludeToken} from '../internal';
 
-const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
+const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
 
 /**
  * HTML标签
@@ -165,9 +165,10 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 					error.severity = 'warning';
 					error.excerpt = wikitext.slice(start, start + 50);
 				} else if (msg === 'unmatched closing tag') {
-					const end = start + String(this).length;
+					const end = start + String(this).length,
+						ancestor = this.closest('magic-word') as TranscludeToken | undefined;
 					error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
-					if (magicWords.has(this.closest('magic-word')?.name)) {
+					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';
 					}
 				}
