@@ -4,10 +4,8 @@ import {undo} from '../../util/debug';
 import {Parser} from '../../index';
 import {Token} from '..';
 import {AtomToken} from '../atom';
-import type {BoundingRect} from '../../util/lint';
 import type {LintError} from '../../index';
 import type {Title} from '../../lib/title';
-import type {TokenAttributeSetter} from '../../lib/node';
 
 /**
  * 内链
@@ -196,7 +194,7 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @override */
-	override cloneNode(this: this & {constructor: new (...args: unknown[]) => unknown}): this {
+	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...Token[]];
 		return Parser.run(() => {
 			const token = new this.constructor('', undefined, this.getAttribute('config')) as this;

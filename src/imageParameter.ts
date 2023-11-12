@@ -4,7 +4,7 @@ import {Parser} from '../index';
 import {Token} from '.';
 import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';
-import type {TokenAttributeGetter, AstNodeTypes, AstText, AtomToken, FileToken} from '../internal';
+import type {AstNodes, AstText, AtomToken, FileToken} from '../internal';
 
 const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
@@ -267,9 +267,9 @@ export abstract class ImageParameterToken extends Token {
 	 */
 	override insertAt(token: string, i?: number): AstText;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(token: T, i?: number): T;
+	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(token: string | T, i = this.length): AstText | T {
+	override insertAt<T extends AstNodes>(token: string | T, i = this.length): AstText | T {
 		if (!Parser.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}

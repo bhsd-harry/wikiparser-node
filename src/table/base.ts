@@ -40,7 +40,7 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	 */
 	constructor(
 		pattern: RegExp,
-		syntax: string | undefined,
+		syntax?: string,
 		attr = '',
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -61,7 +61,7 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	override cloneNode(): this {
 		const [syntax, attr, ...cloned] = this.cloneChildNodes() as [SyntaxToken, AttributesToken, ...Token[]];
 		return Parser.run(() => {
-			const {constructor} = this as this & {constructor: new (...args: unknown[]) => unknown},
+			const {constructor} = this as this & {constructor: new (...args: any[]) => unknown},
 				token = new constructor(undefined, undefined, this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(syntax);
 			token.childNodes[1].safeReplaceWith(attr);

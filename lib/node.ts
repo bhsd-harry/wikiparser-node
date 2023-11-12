@@ -1,31 +1,78 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
-import {typeError} from '../util/debug';
 import {Parser} from '../index';
-import type {Config} from '../index';
-import type {Ranges} from './ranges';
-import type {AstText, Token, ParameterToken} from '../internal';
+import type {AstText, Token} from '../internal';
 
-export type AstNodeTypes = AstText | Token;
-declare type TokenAttribute<T extends string> =
-	T extends 'stage' ? number :
-	T extends 'config' ? Config :
-	T extends 'accum' ? Token[] :
-	T extends 'parentNode' ? Token | undefined :
-	T extends 'childNodes' ? AstNodeTypes[] :
-	T extends 'bracket' | 'include' ? boolean :
-	T extends 'pattern' ? RegExp :
-	T extends 'tags' | 'flags' ? string[] :
-	T extends 'quotes' ? [string?, string?] :
-	T extends 'optional' | 'keys' ? Set<string> :
-	T extends 'args' ? Record<string, Set<ParameterToken>> :
-	T extends 'protectedChildren' ? Ranges :
-	string;
-export type TokenAttributeGetter<T extends string> =
-	T extends 'acceptable' ? Record<string, Ranges> | undefined : TokenAttribute<T>;
-
-export type TokenAttributeSetter<T extends string> =
-	T extends 'acceptable' ? Acceptable | undefined : TokenAttribute<T> | undefined;
+export type AstNodes = AstText | Token;
+export type TokenTypes = 'root'
+	| 'plain'
+	| 'onlyinclude'
+	| 'noinclude'
+	| 'include'
+	| 'comment'
+	| 'ext'
+	| 'ext-attrs'
+	| 'ext-attr-dirty'
+	| 'ext-attr'
+	| 'attr-key'
+	| 'attr-value'
+	| 'ext-inner'
+	| 'arg'
+	| 'arg-name'
+	| 'arg-default'
+	| 'hidden'
+	| 'magic-word'
+	| 'magic-word-name'
+	| 'invoke-function'
+	| 'invoke-module'
+	| 'template'
+	| 'template-name'
+	| 'parameter'
+	| 'parameter-key'
+	| 'parameter-value'
+	| 'heading'
+	| 'heading-title'
+	| 'heading-trail'
+	| 'html'
+	| 'html-attrs'
+	| 'html-attr-dirty'
+	| 'html-attr'
+	| 'table'
+	| 'tr'
+	| 'td'
+	| 'table-syntax'
+	| 'table-attrs'
+	| 'table-attr-dirty'
+	| 'table-attr'
+	| 'table-inter'
+	| 'td-inner'
+	| 'hr'
+	| 'double-underscore'
+	| 'link'
+	| 'link-target'
+	| 'link-text'
+	| 'category'
+	| 'file'
+	| 'gallery-image'
+	| 'imagemap-image'
+	| 'image-parameter'
+	| 'quote'
+	| 'ext-link'
+	| 'ext-link-text'
+	| 'ext-link-url'
+	| 'free-ext-link'
+	| 'list'
+	| 'dd'
+	| 'converter'
+	| 'converter-flags'
+	| 'converter-flag'
+	| 'converter-rule'
+	| 'converter-rule-noconvert'
+	| 'converter-rule-variant'
+	| 'converter-rule-to'
+	| 'converter-rule-from'
+	| 'param-line'
+	| 'imagemap-link';
 export interface Dimension {
 	height: number;
 	width: number;
@@ -35,16 +82,27 @@ export interface Position {
 	left: number;
 }
 export interface CaretPosition {
-	offsetNode: AstNodeTypes;
+	offsetNode: AstNodes;
 	offset: number;
 }
+
+/**
+ * 定制TypeError消息
+ * @param {Function} Constructor 类
+ * @param method
+ * @param args 可接受的参数类型
+ * @throws `TypeError`
+ */
+const typeError = ({name}: Function, method: string, ...args: string[]): never => {
+	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
+};
 
 /** 类似Node */
 export abstract class AstNode {
 	/** @browser */
-	type: string;
+	type: TokenTypes | 'text';
 	/** @browser */
-	readonly childNodes: AstNodeTypes[] = [];
+	readonly childNodes: AstNodes[] = [];
 	/** @browser */
 	#parentNode: Token | undefined;
 	#optional = new Set<string>();
@@ -54,7 +112,7 @@ export abstract class AstNode {
 	 * 首位子节点
 	 * @browser
 	 */
-	get firstChild(): AstNodeTypes | undefined {
+	get firstChild(): AstNodes | undefined {
 		return this.childNodes[0];
 	}
 
@@ -62,7 +120,7 @@ export abstract class AstNode {
 	 * 末位子节点
 	 * @browser
 	 */
-	get lastChild(): AstNodeTypes | undefined {
+	get lastChild(): AstNodes | undefined {
 		return this.childNodes.at(-1);
 	}
 
@@ -78,18 +136,18 @@ export abstract class AstNode {
 	 * 后一个兄弟节点
 	 * @browser
 	 */
-	get nextSibling(): AstNodeTypes | undefined {
+	get nextSibling(): AstNodes | undefined {
 		const childNodes = this.#parentNode?.childNodes;
-		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodeTypes) + 1];
+		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) + 1];
 	}
 
 	/**
 	 * 前一个兄弟节点
 	 * @browser
 	 */
-	get previousSibling(): AstNodeTypes | undefined {
+	get previousSibling(): AstNodes | undefined {
 		const childNodes = this.#parentNode?.childNodes;
-		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodeTypes) - 1];
+		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) - 1];
 	}
 
 	/**
@@ -111,14 +169,14 @@ export abstract class AstNode {
 	/** 后一个非文本兄弟节点 */
 	get nextElementSibling(): Token | undefined {
 		const childNodes = this.#parentNode?.childNodes,
-			i = childNodes?.indexOf(this as AstNode as AstNodeTypes);
+			i = childNodes?.indexOf(this as AstNode as AstNodes);
 		return childNodes?.slice(i! + 1)?.find(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 前一个非文本兄弟节点 */
 	get previousElementSibling(): Token | undefined {
 		const childNodes = this.#parentNode?.childNodes,
-			i = childNodes?.indexOf(this as AstNode as AstNodeTypes);
+			i = childNodes?.indexOf(this as AstNode as AstNodes);
 		return childNodes?.slice(0, i)?.findLast(({type}) => type !== 'text') as Token | undefined;
 	}
 
@@ -261,7 +319,7 @@ export abstract class AstNode {
 	 * @param j 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
-		let childNodes: AstNodeTypes[];
+		let childNodes: AstNodes[];
 
 		/**
 		 * 获取子节点相对于父节点的字符位置，使用前需要先给`childNodes`赋值
@@ -275,7 +333,7 @@ export abstract class AstNode {
 			const {parentNode} = this;
 			if (parentNode) {
 				({childNodes} = parentNode);
-				return getIndex(childNodes.indexOf(this as AstNode as AstNodeTypes), parentNode);
+				return getIndex(childNodes.indexOf(this as AstNode as AstNodes), parentNode);
 			}
 			return 0;
 		}
@@ -328,14 +386,14 @@ export abstract class AstNode {
 	 * @param offset 插入的相对位置
 	 * @throws `Error` 不存在父节点
 	 */
-	#insertAdjacent(nodes: (AstNodeTypes | string)[], offset: number): void {
+	#insertAdjacent(nodes: (AstNodes | string)[], offset: number): void {
 		const {parentNode} = this;
 		if (!parentNode) {
 			throw new Error('不存在父节点！');
 		}
-		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodeTypes) + offset;
+		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
 		for (let j = 0; j < nodes.length; j++) {
-			parentNode.insertAt(nodes[j] as AstNodeTypes, i + j);
+			parentNode.insertAt(nodes[j] as AstNodes, i + j);
 		}
 	}
 
@@ -343,7 +401,7 @@ export abstract class AstNode {
 	 * 在后方批量插入兄弟节点
 	 * @param nodes 插入节点
 	 */
-	after(...nodes: (AstNodeTypes | string)[]): void {
+	after(...nodes: (AstNodes | string)[]): void {
 		this.#insertAdjacent(nodes, 1);
 	}
 
@@ -351,7 +409,7 @@ export abstract class AstNode {
 	 * 在前方批量插入兄弟节点
 	 * @param nodes 插入节点
 	 */
-	before(...nodes: (AstNodeTypes | string)[]): void {
+	before(...nodes: (AstNodes | string)[]): void {
 		this.#insertAdjacent(nodes, 0);
 	}
 
@@ -364,14 +422,14 @@ export abstract class AstNode {
 		if (!parentNode) {
 			throw new Error('不存在父节点！');
 		}
-		parentNode.removeChild(this as AstNode as AstNodeTypes);
+		parentNode.removeChild(this as AstNode as AstNodes);
 	}
 
 	/**
 	 * 将当前节点批量替换为新的节点
 	 * @param nodes 插入节点
 	 */
-	replaceWith(...nodes: (AstNodeTypes | string)[]): void {
+	replaceWith(...nodes: (AstNodes | string)[]): void {
 		this.after(...nodes);
 		this.remove();
 	}
@@ -399,7 +457,7 @@ export abstract class AstNode {
 	 * @param options 选项
 	 * @param options.once 仅执行一次
 	 */
-	addEventListener(types: AstEventType | AstEventType[], listener: AstListener, options?: {once?: boolean}): void {
+	addEventListener(types: string | string[], listener: (...args: any[]) => void, options?: {once?: boolean}): void {
 		if (Array.isArray(types)) {
 			for (const type of types) {
 				this.addEventListener(type, listener, options);
@@ -414,7 +472,7 @@ export abstract class AstNode {
 	 * @param types 事件类型
 	 * @param listener 监听函数
 	 */
-	removeEventListener(types: AstEventType | AstEventType[], listener: AstListener): void {
+	removeEventListener(types: string | string[], listener: (...args: any[]) => void): void {
 		if (Array.isArray(types)) {
 			for (const type of types) {
 				this.removeEventListener(type, listener);
@@ -428,7 +486,7 @@ export abstract class AstNode {
 	 * 移除事件的所有监听
 	 * @param types 事件类型
 	 */
-	removeAllEventListeners(types?: AstEventType | AstEventType[]): void {
+	removeAllEventListeners(types?: string | string[]): void {
 		if (Array.isArray(types)) {
 			for (const type of types) {
 				this.removeAllEventListeners(type);
@@ -442,7 +500,7 @@ export abstract class AstNode {
 	 * 列举事件监听
 	 * @param type 事件类型
 	 */
-	listEventListeners(type: AstEventType): Function[] {
+	listEventListeners(type: string): Function[] {
 		return this.#events.listeners(type);
 	}
 
@@ -451,7 +509,7 @@ export abstract class AstNode {
 	 * @param e 事件对象
 	 * @param data 事件数据
 	 */
-	dispatchEvent(e: Event, data: AstEventData): void {
+	dispatchEvent(e: Event, data: unknown): void {
 		if (!e.target) { // 初始化
 			Object.defineProperty(e, 'target', {value: this, enumerable: true});
 
@@ -486,8 +544,8 @@ export abstract class AstNode {
 	 * @param other 待比较的节点
 	 * @throws `Error` 不在同一个语法树
 	 */
-	compareDocumentPosition(other: AstNodeTypes): number {
-		if ((this as AstNode as AstNodeTypes) === other) {
+	compareDocumentPosition(other: AstNodes): number {
+		if ((this as AstNode as AstNodes) === other) {
 			return 0;
 		} else if (this.contains(other)) {
 			return -1;
@@ -496,7 +554,7 @@ export abstract class AstNode {
 		} else if (this.getRootNode() !== other.getRootNode()) {
 			throw new Error('不在同一个语法树！');
 		}
-		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodeTypes],
+		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],
 			bAncestors = [...other.getAncestors().reverse(), other],
 			depth = aAncestors.findIndex((ancestor, i) => bAncestors[i] !== ancestor),
 			commonAncestor = aAncestors[depth - 1]!,

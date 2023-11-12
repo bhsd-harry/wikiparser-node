@@ -1,5 +1,5 @@
 import {Parser} from '../index';
-import type {AstNodeTypes, AttributesToken} from '../internal';
+import type {AstNodes, AttributesToken} from '../internal';
 
 /**
  * 子节点含有AttributesToken的类
@@ -10,7 +10,7 @@ import type {AstNodeTypes, AttributesToken} from '../internal';
 export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0) => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {
-		declare childNodes: AstNodeTypes[];
+		declare childNodes: AstNodes[];
 
 		/** AttributesToken子节点 */
 		get #attributesChild(): AttributesToken {

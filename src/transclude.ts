@@ -5,9 +5,8 @@ import {Token} from '.';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
-import type {BoundingRect} from '../util/lint';
 import type {LintError} from '../index';
-import type {TokenAttributeGetter, TableToken} from '../internal';
+import type {TableToken} from '../internal';
 
 /**
  * 模板或魔术字
@@ -25,7 +24,7 @@ export abstract class TranscludeToken extends Token {
 	#valid = true;
 	/** @browser */
 	#raw = false;
-	#args: Record<string, Set<ParameterToken>> = {};
+	#args = new Map<string, Set<ParameterToken>>();
 	#keys = new Set<string>();
 
 	declare childNodes: [AtomToken | SyntaxToken, ...Token[]];
@@ -41,12 +40,12 @@ export abstract class TranscludeToken extends Token {
 
 	/**
 	 * @browser
-	 * @param title 模板标题或魔术字
+	 * @param key 模板标题或魔术字
 	 * @param parts 参数各部分
 	 * @throws `SyntaxError` 非法的模板名称
 	 */
 	constructor(
-		title: string,
+		key: string,
 		parts: ([string] | [string | number, string])[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -55,16 +54,17 @@ export abstract class TranscludeToken extends Token {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
 		this.seal('modifier');
+		let title = key;
 		const {parserFunction: [insensitive, sensitive]} = config,
 			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
-			title = title.slice(argSubst.length); // eslint-disable-line no-param-reassign
+			title = title.slice(argSubst.length);
 		} else if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':'),
 				[mt] = /^(?:\s|\0\d+c\x7F)*/u.exec(arg[0] ?? '')!;
 			if (this.setModifier(`${modifier!}:${mt}`)) {
-				title = arg.join(':').slice(mt.length); // eslint-disable-line no-param-reassign
+				title = arg.join(':').slice(mt.length);
 			}
 		}
 		if (title.includes(':') || parts.length === 0 && !this.#raw) {
@@ -363,11 +363,11 @@ export abstract class TranscludeToken extends Token {
 	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args: Set<ParameterToken>;
-		if (Object.hasOwn(this.#args, keyStr)) {
-			args = this.#args[keyStr]!;
+		if (this.#args.has(keyStr)) {
+			args = this.#args.get(keyStr)!;
 		} else {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
-			this.#args[keyStr] = args;
+			this.#args.set(keyStr, args);
 		}
 		// @ts-expect-error isNaN
 		if (exact && !isNaN(keyStr)) {
@@ -385,8 +385,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
 		if (this.isTemplate()) {
-			return Object.entries(this.#args).filter(([, {size}]) => size > 1)
-				.map(([key, args]) => [key, [...args]]);
+			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
 		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
 	}
@@ -472,7 +471,7 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		if (key === 'args') {
-			return {...this.#args} as TokenAttributeGetter<T>;
+			return new Map(this.#args) as TokenAttributeGetter<T>;
 		} else if (key === 'keys') {
 			return this.#keys as TokenAttributeGetter<T>;
 		}
@@ -727,27 +726,26 @@ export abstract class TranscludeToken extends Token {
 			if (args.length <= 1) {
 				continue;
 			}
-			const values: Record<string, ParameterToken[]> = {};
+			const values = new Map<string, ParameterToken[]>();
 			for (const arg of args) {
 				const val = arg.getValue().trim();
-				if (Object.hasOwn(values, val)) {
-					values[val]!.push(arg);
+				if (values.has(val)) {
+					values.get(val)!.push(arg);
 				} else {
-					values[val] = [arg];
+					values.set(val, [arg]);
 				}
 			}
 			// @ts-expect-error isNaN
 			let noMoreAnon = anonCount === 0 || isNaN(key);
-			const emptyArgs = values[''] ?? [],
-				duplicatedArgs = Object.entries(values).filter(([val, {length}]) => val && length > 1)
-					.flatMap(([, curArgs]) => {
-						const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
-						if (anonIndex !== -1) {
-							noMoreAnon = true;
-						}
-						curArgs.splice(anonIndex, 1);
-						return curArgs;
-					}),
+			const emptyArgs = values.get('') ?? [],
+				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
+					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
+					if (anonIndex !== -1) {
+						noMoreAnon = true;
+					}
+					curArgs.splice(anonIndex, 1);
+					return curArgs;
+				}),
 				badArgs = [...emptyArgs, ...duplicatedArgs],
 				index = noMoreAnon ? -1 : emptyArgs.findIndex(({anon}) => anon);
 			if (badArgs.length === args.length) {

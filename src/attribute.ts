@@ -4,9 +4,8 @@ import {fixed} from '../mixin/fixed';
 import {Parser} from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
-import type {BoundingRect} from '../util/lint';
 import type {LintError} from '../index';
-import type {TokenAttributeGetter, AttributesToken} from '../internal';
+import type {AttributesToken} from '../internal';
 
 declare type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 

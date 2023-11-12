@@ -2,7 +2,7 @@ import {undo} from '../util/debug';
 import {text} from '../util/string';
 import {Parser} from '../index';
 import {Token} from '.';
-import type {TokenAttributeGetter, AstNodeTypes} from '../lib/node';
+import type {AstNodes} from '../lib/node';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
 
@@ -72,7 +72,7 @@ export class SyntaxToken extends Token {
 	 * @override
 	 * @param elements 待替换的子节点
 	 */
-	override replaceChildren(...elements: (AstNodeTypes | string)[]): void {
+	override replaceChildren(...elements: (AstNodes | string)[]): void {
 		if (this.#pattern.test(text(elements))) {
 			Parser.run(() => {
 				super.replaceChildren(...elements);

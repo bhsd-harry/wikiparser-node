@@ -7,7 +7,7 @@ import {Title} from './title';
 import {Parser} from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
-import type {AstNodeTypes, AstText, Token} from '../internal';
+import type {AstNodes, AstText, Token} from '../internal';
 
 const lintIgnoredExt = new Set<string | undefined>([
 	'nowiki',
@@ -76,7 +76,7 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/** 后一个可见的兄弟节点 */
-	get nextVisibleSibling(): AstNodeTypes | undefined {
+	get nextVisibleSibling(): AstNodes | undefined {
 		let {nextSibling} = this;
 		while (nextSibling?.text() === '') {
 			({nextSibling} = nextSibling);
@@ -85,7 +85,7 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/** 前一个可见的兄弟节点 */
-	get previousVisibleSibling(): AstNodeTypes | undefined {
+	get previousVisibleSibling(): AstNodes | undefined {
 		let {previousSibling} = this;
 		while (previousSibling?.text() === '') {
 			({previousSibling} = previousSibling);
@@ -145,11 +145,11 @@ export abstract class AstElement extends AstNode {
 	 * @browser
 	 * @param i 移除位置
 	 */
-	removeAt(i: number): AstNodeTypes {
+	removeAt(i: number): AstNodes {
 		this.verifyChild(i);
 		const childNodes = [...this.childNodes],
 			e = new Event('remove', {bubbles: true}),
-			[node] = childNodes.splice(i, 1) as [AstNodeTypes];
+			[node] = childNodes.splice(i, 1) as [AstNodes];
 		node.setAttribute('parentNode', undefined);
 		this.setAttribute('childNodes', childNodes);
 		this.dispatchEvent(e, {position: i, removed: node});
@@ -163,7 +163,7 @@ export abstract class AstElement extends AstNode {
 	 * @param i 插入位置
 	 * @throws `RangeError` 不能插入祖先节点
 	 */
-	insertAt<T extends AstNodeTypes>(node: T, i = this.childNodes.length): T {
+	insertAt<T extends AstNodes>(node: T, i = this.childNodes.length): T {
 		if (node.contains(this)) {
 			Parser.error('不能插入祖先节点！', node);
 			throw new RangeError('不能插入祖先节点！');
@@ -206,9 +206,9 @@ export abstract class AstElement extends AstNode {
 	 * @browser
 	 * @param elements 插入节点
 	 */
-	append(...elements: (AstNodeTypes | string)[]): void {
+	append(...elements: (AstNodes | string)[]): void {
 		for (const element of elements) {
-			this.insertAt(element as AstNodeTypes);
+			this.insertAt(element as AstNodes);
 		}
 	}
 
@@ -217,7 +217,7 @@ export abstract class AstElement extends AstNode {
 	 * @browser
 	 * @param elements 新的子节点
 	 */
-	replaceChildren(...elements: (AstNodeTypes | string)[]): void {
+	replaceChildren(...elements: (AstNodes | string)[]): void {
 		for (let i = this.length - 1; i >= 0; i--) {
 			this.removeAt(i);
 		}
@@ -610,9 +610,9 @@ export abstract class AstElement extends AstNode {
 	 * 在开头批量插入子节点
 	 * @param elements 插入节点
 	 */
-	prepend(...elements: (AstNodeTypes | string)[]): void {
+	prepend(...elements: (AstNodes | string)[]): void {
 		for (let i = 0; i < elements.length; i++) {
-			this.insertAt(elements[i] as AstNodeTypes, i);
+			this.insertAt(elements[i] as AstNodes, i);
 		}
 	}
 
@@ -621,7 +621,7 @@ export abstract class AstElement extends AstNode {
 	 * @param node 子节点
 	 * @throws `RangeError` 找不到子节点
 	 */
-	#getChildIndex(node: AstNodeTypes): number {
+	#getChildIndex(node: AstNodes): number {
 		const i = this.childNodes.indexOf(node);
 		if (i === -1) {
 			Parser.error('找不到子节点！', node);
@@ -634,7 +634,7 @@ export abstract class AstElement extends AstNode {
 	 * 移除子节点
 	 * @param node 子节点
 	 */
-	removeChild<T extends AstNodeTypes>(node: T): T {
+	removeChild<T extends AstNodes>(node: T): T {
 		this.removeAt(this.#getChildIndex(node));
 		return node;
 	}
@@ -645,9 +645,9 @@ export abstract class AstElement extends AstNode {
 	 */
 	appendChild(node: string): AstText;
 	/** @ignore */
-	appendChild<T extends AstNodeTypes>(node: T): T;
+	appendChild<T extends AstNodes>(node: T): T;
 	/** @ignore */
-	appendChild<T extends AstNodeTypes>(node: T | string): T | AstText {
+	appendChild<T extends AstNodes>(node: T | string): T | AstText {
 		return this.insertAt(node as T);
 	}
 
@@ -656,11 +656,11 @@ export abstract class AstElement extends AstNode {
 	 * @param child 插入节点
 	 * @param reference 指定位置处的子节点
 	 */
-	insertBefore(child: string, reference?: AstNodeTypes): AstText;
+	insertBefore(child: string, reference?: AstNodes): AstText;
 	/** @ignore */
-	insertBefore<T extends AstNodeTypes>(child: T, reference?: AstNodeTypes): T;
+	insertBefore<T extends AstNodes>(child: T, reference?: AstNodes): T;
 	/** @ignore */
-	insertBefore<T extends AstNodeTypes>(child: T | string, reference?: AstNodeTypes): T | AstText {
+	insertBefore<T extends AstNodes>(child: T | string, reference?: AstNodes): T | AstText {
 		return reference === undefined
 			? this.insertAt(child as T)
 			: this.insertAt(child as T, this.#getChildIndex(reference));
@@ -671,10 +671,10 @@ export abstract class AstElement extends AstNode {
 	 * @param newChild 新子节点
 	 * @param oldChild 原子节点
 	 */
-	replaceChild<T extends AstNodeTypes>(newChild: AstNodeTypes | string, oldChild: T): T {
+	replaceChild<T extends AstNodes>(newChild: AstNodes | string, oldChild: T): T {
 		const i = this.#getChildIndex(oldChild);
 		this.removeAt(i);
-		this.insertAt(newChild as AstNodeTypes, i);
+		this.insertAt(newChild as AstNodes, i);
 		return oldChild;
 	}
 

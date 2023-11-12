@@ -16,15 +16,16 @@ export const parseExternalLinks = (wikitext: string, config = Parser.getConfig()
 		})(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
 		'giu',
 	);
-	return wikitext.replace(regex, (_, url: string, space: string, text: string) => {
+	return wikitext.replace(regex, (_, rawUrl: string, rawSpace: string, rawText: string) => {
+		let url = rawUrl,
+			space = rawSpace,
+			text = rawText;
 		const {length} = accum,
 			mt = /&[lg]t;/u.exec(url);
 		if (mt) {
-			/* eslint-disable no-param-reassign */
 			url = url.slice(0, mt.index);
 			space = '';
 			text = `${url.slice(mt.index)}${space}${text}`;
-			/* eslint-enable no-param-reassign */
 		}
 		// @ts-expect-error abstract class
 		new ExtLinkToken(url, space, text, config, accum);

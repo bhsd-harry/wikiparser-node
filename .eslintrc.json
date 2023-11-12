@@ -164,7 +164,14 @@
 			}
 		],
 		"no-array-constructor": 2,
-		"no-bitwise": 2,
+		"no-bitwise": [
+			2,
+			{
+				"allow": [
+					"<<"
+				]
+			}
+		],
 		"no-caller": 2,
 		"no-else-return": 2,
 		"no-empty": [
@@ -493,6 +500,12 @@
 			}
 		],
 		"regexp/no-empty-character-class": 2,
+		"regexp/no-misleading-capturing-group": [
+			2,
+			{
+				"reportBacktrackingEnds": false
+			}
+		],
 		"regexp/no-misleading-unicode-character": 2,
 		"regexp/no-missing-g-flag": 2,
 		"regexp/no-super-linear-backtracking": 2,
@@ -525,7 +538,12 @@
 				"minAlternatives": 2
 			}
 		],
-		"regexp/prefer-lookaround": 2,
+		"regexp/prefer-lookaround": [
+			2,
+			{
+				"lookbehind": false
+			}
+		],
 		"unicorn/catch-error-name": [
 			2,
 			{
@@ -761,6 +779,12 @@
 				"plugin:@typescript-eslint/recommended-requiring-type-checking"
 			],
 			"rules": {
+				"max-len": [
+					2,
+					{
+						"code": 120
+					}
+				],
 				"brace-style": 0,
 				"@typescript-eslint/brace-style": 2,
 				"comma-dangle": 0,

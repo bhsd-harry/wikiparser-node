@@ -3,7 +3,7 @@ import {Parser} from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import type {LintError} from '../index';
-import type {TokenAttributeGetter, ConverterToken, ConverterRuleToken} from '../internal';
+import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
 

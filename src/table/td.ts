@@ -4,9 +4,7 @@ import {Parser} from '../../index';
 import {Token} from '..';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {
-	TokenAttributeGetter, TokenAttributeSetter, SyntaxToken, AttributesToken, TrBaseToken, TrToken,
-} from '../../internal';
+import type {SyntaxToken, AttributesToken, TrBaseToken, TrToken} from '../../internal';
 
 declare interface TdSyntax {
 	subtype: 'td' | 'th' | 'caption';

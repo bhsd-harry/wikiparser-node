@@ -8,7 +8,16 @@ import {TrBaseToken} from './trBase';
 import {TdToken} from './td';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../index';
-import type {AttributesToken, TableCoords, TableRenderedCoords, TdAttrs} from '../../internal';
+import type {AttributesToken} from '../../internal';
+import type {TableCoords} from './trBase';
+import type {TdAttrs} from './td';
+
+declare interface TableRenderedCoords {
+	row?: undefined;
+	column?: undefined;
+	x: number;
+	y: number;
+}
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
@@ -99,8 +108,8 @@ class Layout extends Array<TableCoords[]> {
 				// eslint-disable-next-line no-sparse-arrays
 				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
 			for (let j = 0; j <= hBorder.length; j++) {
-				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0) // eslint-disable-line no-bitwise
-					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1); // eslint-disable-line no-bitwise
+				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0)
+					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1);
 				out += `${border[bit]!}${hBorder[j] ? '─' : ' '}`;
 			}
 			out += '\n';

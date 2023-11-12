@@ -47,10 +47,7 @@ import {AstText} from '../lib/text';
 import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
-	AstNodeTypes,
-	TokenAttributeGetter,
-	TokenAttributeSetter,
-	CaretPosition,
+	AstNodes,
 	IncludeToken,
 	HtmlToken,
 	ExtToken,
@@ -61,76 +58,8 @@ import type {
 	CategoryToken,
 	ParameterToken,
 } from '../internal';
+import type {TokenTypes, CaretPosition} from '../lib/node';
 
-declare type TokenTypes = 'root'
-	| 'plain'
-	| 'onlyinclude'
-	| 'noinclude'
-	| 'include'
-	| 'comment'
-	| 'ext'
-	| 'ext-attrs'
-	| 'ext-attr-dirty'
-	| 'ext-attr'
-	| 'attr-key'
-	| 'attr-value'
-	| 'ext-inner'
-	| 'arg'
-	| 'arg-name'
-	| 'arg-default'
-	| 'hidden'
-	| 'magic-word'
-	| 'magic-word-name'
-	| 'invoke-function'
-	| 'invoke-module'
-	| 'template'
-	| 'template-name'
-	| 'parameter'
-	| 'parameter-key'
-	| 'parameter-value'
-	| 'heading'
-	| 'heading-title'
-	| 'heading-trail'
-	| 'html'
-	| 'html-attrs'
-	| 'html-attr-dirty'
-	| 'html-attr'
-	| 'table'
-	| 'tr'
-	| 'td'
-	| 'table-syntax'
-	| 'table-attrs'
-	| 'table-attr-dirty'
-	| 'table-attr'
-	| 'table-inter'
-	| 'td-inner'
-	| 'hr'
-	| 'double-underscore'
-	| 'link'
-	| 'link-target'
-	| 'link-text'
-	| 'category'
-	| 'file'
-	| 'gallery-image'
-	| 'imagemap-image'
-	| 'image-parameter'
-	| 'quote'
-	| 'ext-link'
-	| 'ext-link-text'
-	| 'ext-link-url'
-	| 'free-ext-link'
-	| 'list'
-	| 'dd'
-	| 'converter'
-	| 'converter-flags'
-	| 'converter-flag'
-	| 'converter-rule'
-	| 'converter-rule-noconvert'
-	| 'converter-rule-variant'
-	| 'converter-rule-to'
-	| 'converter-rule-from'
-	| 'param-line'
-	| 'imagemap-link';
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
 /**
@@ -248,9 +177,9 @@ export class Token extends AstElement {
 	/** @private */
 	buildFromStr(str: string, type: 'string' | 'text'): string;
 	/** @private */
-	buildFromStr(str: string): AstNodeTypes[];
+	buildFromStr(str: string): AstNodes[];
 	/** @private */
-	buildFromStr(str: string, type?: string): string | AstNodeTypes[] {
+	buildFromStr(str: string, type?: string): string | AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
@@ -531,9 +460,9 @@ export class Token extends AstElement {
 	 */
 	override insertAt(child: string, i?: number): AstText;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(child: T, i?: number): T;
+	override insertAt<T extends AstNodes>(child: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(child: T | string, i = this.length): T | AstText {
+	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
 		if (!Parser.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
@@ -584,7 +513,7 @@ export class Token extends AstElement {
 	 * @param i 移除位置
 	 * @throws `Error` 不可移除的子节点
 	 */
-	override removeAt(i: number): AstNodeTypes {
+	override removeAt(i: number): AstNodes {
 		const iPos = i < 0 ? i + this.length : i;
 		if (!Parser.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
@@ -696,14 +625,14 @@ export class Token extends AstElement {
 			return undefined;
 		}
 		const idx = index < 0 ? index + length : index;
-		let self: AstNodeTypes = this,
+		let self: AstNodes = this,
 			acc = 0,
 			start = 0;
 		while (self.type !== 'text') {
 			const {childNodes}: Token = self;
 			acc += self.getPadding();
 			for (let i = 0; acc <= idx && i < childNodes.length; i++) {
-				const cur: AstNodeTypes = childNodes[i]!,
+				const cur: AstNodes = childNodes[i]!,
 					{length: l} = String(cur);
 				acc += l;
 				if (acc >= idx) {
@@ -735,7 +664,7 @@ export class Token extends AstElement {
 	 * @param index 位置
 	 * @throws `Error` 不是根节点
 	 */
-	elementFromIndex(index?: number): AstNodeTypes | undefined {
+	elementFromIndex(index?: number): AstNodes | undefined {
 		if (index === undefined) {
 			return undefined;
 		} else if (this.type !== 'root') {
@@ -761,7 +690,7 @@ export class Token extends AstElement {
 	 * @param x 列数
 	 * @param y 行数
 	 */
-	elementFromPoint(x: number, y: number): AstNodeTypes | undefined {
+	elementFromPoint(x: number, y: number): AstNodes | undefined {
 		return this.elementFromIndex(this.indexFromPos(y, x));
 	}
 
@@ -769,7 +698,7 @@ export class Token extends AstElement {
 	 * 找到给定位置所在的所有节点
 	 * @param index 位置
 	 */
-	elementsFromIndex(index?: number): AstNodeTypes[] {
+	elementsFromIndex(index?: number): AstNodes[] {
 		const offsetNode = this.caretPositionFromIndex(index)?.offsetNode;
 		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
 	}
@@ -779,7 +708,7 @@ export class Token extends AstElement {
 	 * @param x 列数
 	 * @param y 行数
 	 */
-	elementsFromPoint(x: number, y: number): AstNodeTypes[] {
+	elementsFromPoint(x: number, y: number): AstNodes[] {
 		return this.elementsFromIndex(this.indexFromPos(y, x));
 	}
 
@@ -792,7 +721,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	protected cloneChildNodes(): AstNodeTypes[] {
+	protected cloneChildNodes(): AstNodes[] {
 		return this.childNodes.map(child => child.cloneNode());
 	}
 
@@ -872,7 +801,7 @@ export class Token extends AstElement {
 		for (i = index - 1; i >= 0; i--) {
 			const {
 				type, name, selfClosing, closing,
-			} = childNodes[i] as AstNodeTypes & {selfClosing?: boolean, closing?: boolean};
+			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
 			if (type === 'html' && (!lcTag || name === lcTag) && selfClosing === false && closing === false) {
 				break;
 			}
@@ -884,7 +813,7 @@ export class Token extends AstElement {
 		for (i = index + 1; i < childNodes.length; i++) {
 			const {
 				type, name, selfClosing, closing,
-			} = childNodes[i] as AstNodeTypes & {selfClosing?: boolean, closing?: boolean};
+			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
 			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
 				break;
 			}

@@ -1,7 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {Parser} from '../index';
 import {Token} from '.';
-import type {BoundingRect} from '../util/lint';
 import type {LintError} from '../index';
 import type {ParameterToken} from './parameter';
 

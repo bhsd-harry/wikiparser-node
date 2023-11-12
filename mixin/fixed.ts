@@ -1,5 +1,5 @@
 import {Parser} from '../index';
-import type {AstNodeTypes, AstText} from '../internal';
+import type {AstNodes, AstText} from '../internal';
 
 /**
  * 不可增删子节点的类
@@ -27,9 +27,9 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 		 */
 		override insertAt(token: string, i?: number): AstText;
 		/** @ignore */
-		override insertAt<T extends AstNodeTypes>(token: T, i?: number): T;
+		override insertAt<T extends AstNodes>(token: T, i?: number): T;
 		/** @ignore */
-		override insertAt<T extends AstNodeTypes>(token: T | string, i = this.length): T | AstText {
+		override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
 			if (Parser.running) {
 				return super.insertAt(token, i) as T | AstText;
 			}

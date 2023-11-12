@@ -1,4 +1,4 @@
-export type * from './lib/node';
+export type {AstNode, AstNodes} from './lib/node';
 export type * from './lib/text';
 export type * from './lib/element';
 export type * from './src';
@@ -20,8 +20,8 @@ export type * from './src/transclude';
 export type * from './src/heading';
 export type * from './src/html';
 export type * from './src/table/base';
-export type * from './src/table/td';
-export type * from './src/table/trBase';
+export type {TdToken} from './src/table/td';
+export type {TrBaseToken} from './src/table/trBase';
 export type * from './src/table/tr';
 export type * from './src/table';
 export type * from './src/nowiki/hr';

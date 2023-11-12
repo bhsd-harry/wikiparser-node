@@ -1,17 +1,6 @@
 import type {Token} from '../internal';
 
 /**
- * 定制TypeError消息
- * @param {Function} Constructor 类
- * @param method
- * @param args 可接受的参数类型
- * @throws `TypeError`
- */
-export const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
-};
-
-/**
  * 撤销最近一次Mutation
  * @param e 事件
  * @param data 事件数据
@@ -47,6 +36,6 @@ export const undo = (e: AstEvent, data: AstEventData): void => {
 			}
 			break;
 		default:
-			throw new RangeError(`无法撤销未知类型的事件：${type as string}`);
+			throw new RangeError(`无法撤销未知类型的事件：${String(type)}`);
 	}
 };

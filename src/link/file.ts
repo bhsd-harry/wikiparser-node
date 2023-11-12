@@ -1,4 +1,4 @@
-import {explode, noWrap} from '../../util/string';
+import {noWrap, escapeRegExp} from '../../util/string';
 import {generateForChild} from '../../util/lint';
 import {Parser} from '../../index';
 import {LinkBaseToken} from './base';
@@ -10,6 +10,37 @@ import type {Token, AtomToken} from '../../internal';
 const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
 	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
+
+/**
+ * a more sophisticated string-explode function
+ * @browser
+ * @param start start syntax of a nested AST node
+ * @param end end syntax of a nested AST node
+ * @param separator syntax for explosion
+ * @param str string to be exploded
+ */
+const explode = (start: string, end: string, separator: string, str?: string): string[] => {
+	if (str === undefined) {
+		return [];
+	}
+	const regex = new RegExp(`${[start, end, separator].map(escapeRegExp).join('|')}`, 'gu'),
+		exploded: string[] = [];
+	let mt = regex.exec(str),
+		depth = 0,
+		lastIndex = 0;
+	while (mt) {
+		const {0: match, index} = mt;
+		if (match !== separator) {
+			depth += match === start ? 1 : -1;
+		} else if (depth === 0) {
+			exploded.push(str.slice(lastIndex, index));
+			({lastIndex} = regex);
+		}
+		mt = regex.exec(str);
+	}
+	exploded.push(str.slice(lastIndex));
+	return exploded;
+};
 
 /**
  * 图片
@@ -248,7 +279,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @throws `RangeError` 未定义的图片参数
 	 * @throws `SyntaxError` 非法的参数
 	 */
-	setValue(key: string, value: string | boolean | undefined = false): void {
+	setValue(key: string, value: string | boolean = false): void {
 		if (value === false) {
 			this.removeArg(key);
 			return;

@@ -6,7 +6,7 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
 import type {LintError} from '../index';
-import type {AstNodeTypes, AstText, AttributesToken, ExtToken} from '../internal';
+import type {AstNodes, AstText, AttributesToken, ExtToken} from '../internal';
 
 /**
  * `<imagemap>`
@@ -179,9 +179,9 @@ export abstract class ImagemapToken extends Token {
 	 */
 	override insertAt(token: string, i?: number): AstText;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(token: T, i?: number): T;
+	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(token: T | string, i = 0): T | AstText {
+	override insertAt<T extends AstNodes>(token: T | string, i = 0): T | AstText {
 		const {image} = this;
 		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
 			throw new Error('当前缺少一张合法图片！');
@@ -196,7 +196,7 @@ export abstract class ImagemapToken extends Token {
 	 * @param i 移除位置
 	 * @throws `Error` 禁止移除图片
 	 */
-	override removeAt(i: number): AstNodeTypes {
+	override removeAt(i: number): AstNodes {
 		const child = this.childNodes[i]!;
 		if (child.type === 'imagemap-image') {
 			throw new Error('禁止移除<imagemap>内的图片！');

@@ -1,4 +1,4 @@
-import type {AstNodeTypes} from '../lib/node';
+import type {AstNodes} from '../lib/node';
 import type {Token} from '../src';
 
 declare global {
@@ -6,7 +6,7 @@ declare global {
 
 	interface AstEvent extends Event {
 		readonly type: AstEventType;
-		readonly target: EventTarget & AstNodeTypes;
+		readonly target: EventTarget & AstNodes;
 		currentTarget: EventTarget & Token;
 		prevTarget?: Token;
 		bubbles: boolean;
@@ -14,8 +14,8 @@ declare global {
 
 	interface AstEventData {
 		position?: number;
-		removed?: AstNodeTypes;
-		inserted?: AstNodeTypes;
+		removed?: AstNodes;
+		inserted?: AstNodes;
 		oldToken?: Token;
 		newToken?: Token;
 		oldText?: string;

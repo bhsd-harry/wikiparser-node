@@ -4,7 +4,6 @@ import {Token} from '.';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 import {CommentToken} from './nowiki/comment';
-import type {BoundingRect} from '../util/lint';
 import type {LintError} from '../index';
 import type {AttributesToken} from './attributes';
 

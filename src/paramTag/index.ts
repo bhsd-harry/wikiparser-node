@@ -3,7 +3,6 @@ import {singleLine} from '../../mixin/singleLine';
 import {Parser} from '../../index';
 import {Token} from '..';
 import {AtomToken} from '../atom';
-import type {BoundingRect} from '../../util/lint';
 import type {LintError} from '../../index';
 import type {AttributesToken, ExtToken} from '../../internal';
 
@@ -89,7 +88,7 @@ export abstract class ParamTagToken extends Token {
 	}
 
 	/** @override */
-	override cloneNode(this: this & {constructor: new (...args: unknown[]) => unknown}): this {
+	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
 			const token = new this.constructor(undefined, this.getAttribute('config')) as this;

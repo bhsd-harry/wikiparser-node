@@ -3,7 +3,7 @@ import {Token} from '.';
 import {GalleryImageToken} from './link/galleryImage';
 import {HiddenToken} from './hidden';
 import type {LintError} from '../index';
-import type {AstNodeTypes, AstText, AttributesToken, ExtToken} from '../internal';
+import type {AstNodes, AstText, AttributesToken, ExtToken} from '../internal';
 
 /**
  * gallery标签
@@ -161,9 +161,9 @@ export abstract class GalleryToken extends Token {
 	 */
 	override insertAt(token: string, i?: number): AstText;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(token: T, i?: number): T;
+	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodeTypes>(token: T | string, i = 0): T | AstText {
+	override insertAt<T extends AstNodes>(token: T | string, i = 0): T | AstText {
 		if (typeof token === 'string' && token.trim() || token instanceof HiddenToken) {
 			throw new RangeError('请勿向图库中插入不可见内容！');
 		}

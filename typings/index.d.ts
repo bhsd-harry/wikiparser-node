@@ -16,4 +16,6 @@ declare global {
 		text(separator?: string): string;
 		insertAt(token: unknown, i?: number): unknown;
 	};
+
+	type BoundingRect = {top: number, left: number, start: number} | {start: number};
 }

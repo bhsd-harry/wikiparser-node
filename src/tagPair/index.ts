@@ -1,14 +1,14 @@
 import {fixed} from '../../mixin/fixed';
 import {Parser} from '../../index';
 import {Token} from '..';
-import type {AstNodeTypes, TokenAttributeGetter} from '../../lib/node';
+import type {AstNodes} from '../../lib/node';
 
 /** 成对标签 */
 export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare name: string;
-	abstract override get firstChild(): AstNodeTypes;
-	abstract override get lastChild(): AstNodeTypes;
+	abstract override get firstChild(): AstNodes;
+	abstract override get lastChild(): AstNodes;
 
 	/** @browser */
 	#selfClosing;
@@ -57,7 +57,7 @@ export abstract class TagPairToken extends fixed(Token) {
 		name: string,
 		attr: string | Token,
 		inner: string | Token,
-		closed: string | undefined,
+		closed?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {

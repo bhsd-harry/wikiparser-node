@@ -4,7 +4,8 @@ import {Token} from '..';
 import {TableBaseToken} from './base';
 import {TdToken} from './td';
 import type {LintError} from '../../index';
-import type {AstNodeTypes, SyntaxToken, ArgToken, TranscludeToken, TdAttrs, TrToken} from '../../internal';
+import type {AstNodes, SyntaxToken, ArgToken, TranscludeToken, TrToken} from '../../internal';
+import type {TdAttrs} from './td';
 
 export interface TableCoords {
 	row: number;
@@ -12,12 +13,6 @@ export interface TableCoords {
 	x?: undefined;
 	y?: undefined;
 	start?: boolean;
-}
-export interface TableRenderedCoords {
-	row?: undefined;
-	column?: undefined;
-	x: number;
-	y: number;
 }
 
 /** 表格行或表格 */
@@ -34,7 +29,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		if (!inter) {
 			return errors;
 		}
-		const first = (inter.childNodes as AstNodeTypes[]).find(child => child.text().trim()),
+		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
 			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
 		if (!first || tdPattern.test(String(first))
 			|| first.type === 'arg' && tdPattern.test((first as ArgToken).default || '')
@@ -92,7 +87,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @override
 	 * @param i 移除位置
 	 */
-	override removeAt(i: number): AstNodeTypes {
+	override removeAt(i: number): AstNodes {
 		const child = this.childNodes.at(i);
 		if (child instanceof TdToken && child.isIndependent()) {
 			const {nextSibling} = child;

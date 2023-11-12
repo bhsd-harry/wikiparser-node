@@ -17,13 +17,13 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 		{parserFunction: [,,, subst]} = config,
 		stack: BracketExecArrayOrEmpty[] = [],
 		closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
-		marks: Record<string, string> = {'!': '!', '!!': '+', '(!': '{', '!)': '}', '!-': '-', '=': '~'};
+		marks = new Map<string, string>([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]);
 	let text = wikitext,
 		regex = new RegExp(source, 'gmu'),
 		mt: BracketExecArray | null = regex.exec(text),
 		moreBraces = text.includes('}}'),
 		lastIndex: number | undefined;
-	while (mt || Number(lastIndex) <= text.length && stack.at(-1)?.[0]?.startsWith('=')) {
+	while (mt || lastIndex !== undefined && lastIndex <= text.length && stack.at(-1)?.[0]?.startsWith('=')) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0]!.slice(length);
@@ -39,7 +39,6 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (pos === undefined || findEqual || removeComment(text.slice(pos, index)) !== '') {
-				// eslint-disable-next-line regexp/no-misleading-capturing-group
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u
 					.exec(text.slice(index, curIndex)) as [string, string, string, string] | null;
 				if (rmt) {
@@ -79,8 +78,8 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 					// @ts-expect-error absstract class
 					new TranscludeToken(parts![0]![0], parts!.slice(1), config, accum);
 					const name = removeComment(parts![0]![0]!).trim();
-					if (Object.hasOwn(marks, name)) {
-						ch = marks[name]!; // 标记{{!}}等
+					if (marks.has(name)) {
+						ch = marks.get(name)!; // 标记{{!}}等
 					} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
 						ch = 'm';
 					} else if (/^#vardefine:./iu.test(name)) {

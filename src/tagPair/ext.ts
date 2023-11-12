@@ -1,11 +1,21 @@
 import {generateForSelf} from '../../util/lint';
-import {del} from '../../util/base';
 import {attributesParent} from '../../mixin/attributesParent';
 import {Parser} from '../../index';
 import {Token} from '..';
 import {TagPairToken} from '.';
 import {AttributesToken} from '../attributes';
 import type {LintError, Config} from '../../index';
+
+/**
+ * 从数组中删除指定元素
+ * @param arr 数组
+ * @param ele 元素
+ */
+const del = <T>(arr: T[], ele: T): T[] => {
+	const set = new Set(arr);
+	set.delete(ele);
+	return [...set];
+};
 
 /**
  * 扩展标签

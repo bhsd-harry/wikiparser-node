@@ -4,7 +4,6 @@ import {Parser} from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
-import type {BoundingRect} from '../util/lint';
 import type {LintError} from '../index';
 import type {ExtToken, HtmlToken, TableBaseToken, TrBaseToken, TdToken} from '../internal';
 
@@ -187,7 +186,7 @@ export abstract class AttributesToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{parentNode, length, childNodes} = this,
-			attrs: Record<string, AttributeToken[]> = {},
+			attrs = new Map<string, AttributeToken[]>(),
 			duplicated = new Set<string>();
 		let rect: BoundingRect | undefined;
 		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
@@ -204,18 +203,18 @@ export abstract class AttributesToken extends Token {
 				});
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
-				if (Object.hasOwn(attrs, name)) {
+				if (attrs.has(name)) {
 					duplicated.add(name);
-					attrs[name]!.push(attr);
+					attrs.get(name)!.push(attr);
 				} else if (name !== 'class') {
-					attrs[name] = [attr];
+					attrs.set(name, [attr]);
 				}
 			}
 		}
 		if (duplicated.size > 0) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			for (const key of duplicated) {
-				errors.push(...attrs[key]!.map(
+				errors.push(...attrs.get(key)!.map(
 					attr => generateForChild(attr, rect!, Parser.msg('duplicated $1 attribute', key)),
 				));
 			}

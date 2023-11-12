@@ -1,8 +1,6 @@
 import {Parser} from '../index';
 import type {LintError} from '../index';
-import type {AstNodeTypes, Token} from '../internal';
-
-export type BoundingRect = {top: number, left: number, start: number} | {start: number};
+import type {AstNodes, Token} from '../internal';
 
 /**
  * 生成对于子节点的LintError对象
@@ -12,7 +10,7 @@ export type BoundingRect = {top: number, left: number, start: number} | {start: 
  * @param severity 严重程度
  */
 export const generateForChild = (
-	child: AstNodeTypes,
+	child: AstNodes,
 	boundingRect: BoundingRect,
 	msg: string,
 	severity: 'error' | 'warning' = 'error',
