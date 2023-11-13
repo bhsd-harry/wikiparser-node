@@ -1,6 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {singleLine} from '../../mixin/singleLine';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {Token} from '..';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';

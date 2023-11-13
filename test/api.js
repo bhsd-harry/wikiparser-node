@@ -1,7 +1,7 @@
 /** @file 为MediaWiki API请求提供Promise界面 */
 'use strict';
 const request = require('request'),
-	{Parser: {info}} = require('..');
+	{default: {info}} = require('..');
 
 /**
  * 延时

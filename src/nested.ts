@@ -1,5 +1,5 @@
 import {generateForChild} from '../util/lint';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -27,7 +27,7 @@ export abstract class NestedToken extends Token {
 	abstract override get parentNode(): ExtToken | undefined;
 	abstract override get parentElement(): ExtToken | undefined;
 
-	#tags: (string | undefined)[];
+	#tags: string[];
 	#regex;
 
 	/**
@@ -98,7 +98,7 @@ export abstract class NestedToken extends Token {
 	 * @param i 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name)) {
+		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {
 			throw new TypeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`);
 		}
 		return super.insertAt(token, i);

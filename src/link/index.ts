@@ -1,4 +1,4 @@
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';

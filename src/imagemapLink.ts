@@ -1,6 +1,6 @@
 import {fixed} from '../mixin/fixed';
 import {singleLine} from '../mixin/singleLine';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link';

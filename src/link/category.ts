@@ -1,5 +1,5 @@
 import {decodeHtml} from '../../util/string';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {LinkToken} from '.';
 
 /** 分类 */

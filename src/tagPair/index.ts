@@ -1,5 +1,5 @@
 import {fixed} from '../../mixin/fixed';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {Token} from '..';
 import type {AstNodes} from '../../lib/node';
 

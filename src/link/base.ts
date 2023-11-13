@@ -1,7 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
 import {undo} from '../../util/debug';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {Token} from '..';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';

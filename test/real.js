@@ -2,7 +2,7 @@
 
 const {diff} = require('../dist/util/diff'),
 	{Api} = require('./api'),
-	{Parser} = require('..');
+	{default: Parser} = require('..');
 
 const {argv: [,, site = '']} = process,
 	apis = [

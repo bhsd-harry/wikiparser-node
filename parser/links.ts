@@ -1,8 +1,9 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import {LinkToken} from '../src/link';
 import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';
-import type {Token, LinkBaseToken} from '../internal';
+import type {Token} from '../internal';
+import type {LinkBaseToken} from '../src/link/base';
 
 /**
  * 解析内部链接
@@ -11,7 +12,7 @@ import type {Token, LinkBaseToken} from '../internal';
  * @param accum
  */
 export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
-	const {parseQuotes} = require('./quotes.js');
+	const {parseQuotes}: typeof import('./quotes') = require('./quotes.js');
 	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
 		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),

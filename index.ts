@@ -134,7 +134,7 @@ declare interface Parser {
 const rootRequire = (file: string, dir = ''): unknown => require(`../${file.includes('/') ? '' : dir}${file}`);
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
-export const Parser: Parser = {
+const Parser: Parser = {
 	config: 'default',
 	i18n: undefined,
 	conversionTable: new Map(),
@@ -179,12 +179,12 @@ export const Parser: Parser = {
 		'attr-key': ['attribute-key'],
 		'attr-value': ['attribute-value', 'attr-val', 'attribute-val'],
 		'ext-inner': ['extension-inner'],
-		// triple brackets
+		// triple braces
 		arg: ['argument'],
 		'arg-name': ['argument-name'],
 		'arg-default': ['argument-default'],
 		hidden: ['arg-redundant'],
-		// double brackets
+		// double braces
 		'magic-word': ['parser-function', 'parser-func'],
 		'magic-word-name': ['parser-function-name', 'parser-func-name'],
 		'invoke-function': ['invoke-func', 'lua-function', 'lua-func', 'module-function', 'module-func'],
@@ -429,7 +429,7 @@ export const Parser: Parser = {
 		}
 		const file = path.join(__dirname, '..', 'errors', main),
 			wikitext = fs.readFileSync(file, 'utf8');
-		const {stage, include, config}: {stage: number, include: boolean, config: Config} = require(`${file}.json`),
+		const {stage, include, config}: ParsingError = require(`${file}.json`),
 			{Token}: typeof import('./src') = require('./src');
 		this.config = config;
 		return this.run(() => {
@@ -460,4 +460,5 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
+export default Parser;
 export type * from './internal';

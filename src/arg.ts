@@ -1,6 +1,6 @@
 import {text, noWrap} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
@@ -106,7 +106,7 @@ export abstract class ArgToken extends Token {
 		if (rest.length > 0) {
 			const rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => {
-				const error = generateForChild(child, rect, 'invisible content inside triple brackets'),
+				const error = generateForChild(child, rect, 'invisible content inside triple braces'),
 					{startIndex, startCol, excerpt} = error;
 				return {...error, startIndex: startIndex - 1, startCol: startCol - 1, excerpt: `|${excerpt}`};
 			}));

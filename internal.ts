@@ -1,11 +1,14 @@
-export type {AstNode, AstNodes} from './lib/node';
+export type {
+	// AstNode,
+	AstNodes,
+} from './lib/node';
 export type * from './lib/text';
-export type * from './lib/element';
+// export type * from './lib/element';
 export type * from './src';
 export type * from './src/onlyinclude';
-export type * from './src/nowiki/base';
+// export type * from './src/nowiki/base';
 export type * from './src/nowiki/noinclude';
-export type * from './src/tagPair';
+// export type * from './src/tagPair';
 export type * from './src/tagPair/include';
 export type * from './src/nowiki/comment';
 export type * from './src/atom';
@@ -19,14 +22,14 @@ export type * from './src/parameter';
 export type * from './src/transclude';
 export type * from './src/heading';
 export type * from './src/html';
-export type * from './src/table/base';
+// export type * from './src/table/base';
 export type {TdToken} from './src/table/td';
-export type {TrBaseToken} from './src/table/trBase';
+// export type {TrBaseToken} from './src/table/trBase';
 export type * from './src/table/tr';
 export type * from './src/table';
 export type * from './src/nowiki/hr';
 export type * from './src/nowiki/doubleUnderscore';
-export type * from './src/link/base';
+// export type * from './src/link/base';
 export type * from './src/link';
 export type * from './src/link/category';
 export type * from './src/imageParameter';

@@ -40,7 +40,7 @@
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
 import {Ranges} from '../lib/ranges';
-import {Parser} from '../index';
+import Parser from '../index';
 const {MAX_STAGE, aliases} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
@@ -135,7 +135,7 @@ export class Token extends AstElement {
 				this.#parseCommentAndExt(include);
 				break;
 			case 1:
-				this.#parseBrackets();
+				this.#parseBraces();
 				break;
 			case 2:
 				this.#parseHtml();
@@ -256,10 +256,10 @@ export class Token extends AstElement {
 	 * 解析花括号
 	 * @browser
 	 */
-	#parseBrackets(): void {
-		const {parseBrackets}: typeof import('../parser/brackets') = require('../parser/brackets');
+	#parseBraces(): void {
+		const {parseBraces}: typeof import('../parser/braces') = require('../parser/braces');
 		const str = this.type === 'root' ? String(this.firstChild!) : `\0${String(this.firstChild!)}`,
-			parsed = parseBrackets(str, this.#config, this.#accum);
+			parsed = parseBraces(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
 	}
 

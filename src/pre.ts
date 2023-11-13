@@ -1,4 +1,4 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';

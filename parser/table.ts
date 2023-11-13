@@ -1,10 +1,10 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '../src';
 import {TableToken} from '../src/table';
 import {TrToken} from '../src/table/tr';
 import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';
-import type {AstText, TrBaseToken} from '../internal';
+import type {AstText} from '../internal';
 
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
@@ -39,12 +39,12 @@ export const parseTable = (
 		} else {
 			const token = new Token(str, config, true, accum);
 			token.type = 'table-inter';
-			(top as TrBaseToken).insertAt(token.setAttribute('stage', 3));
+			(top as TrToken | TableToken).insertAt(token.setAttribute('stage', 3));
 		}
 	};
 	for (const outLine of lines) {
 		let top = stack.pop();
-		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine) as string[] as [string],
+		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine) as [string],
 			line = outLine.slice(spaces.length),
 			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
 				.exec(line) as [string, string, string, string, string] | null;
@@ -84,18 +84,18 @@ export const parseTable = (
 			push(attr, stack.at(-1));
 		} else if (row) {
 			if (top.type === 'td') {
-				top = stack.pop();
+				top = stack.pop() as TrToken | TableToken;
 			}
-			if (top!.type === 'tr') {
-				top = stack.pop();
+			if (top.type === 'tr') {
+				top = stack.pop() as TableToken;
 			}
 			// @ts-expect-error abstract class
 			const tr: TrToken = new TrToken(`\n${spaces}${row}`, attr, config, accum);
-			stack.push(top!, tr);
-			(top as TableToken).insertAt(tr);
+			stack.push(top, tr);
+			top.insertAt(tr);
 		} else {
 			if (top.type === 'td') {
-				top = stack.pop();
+				top = stack.pop() as TrToken | TableToken;
 			}
 			const regex = cell === '!'
 				? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu
@@ -106,15 +106,15 @@ export const parseTable = (
 			while (mt) {
 				// @ts-expect-error abstract class
 				const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), config, accum);
-				(top as TrBaseToken).insertAt(td);
+				top.insertAt(td);
 				({lastIndex} = regex);
-				[lastSyntax] = mt as string[] as [string];
+				[lastSyntax] = mt as [string];
 				mt = regex.exec(attr);
 			}
 			// @ts-expect-error abstract class
 			const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);
-			stack.push(top!, td);
-			(top as TrBaseToken).insertAt(td);
+			stack.push(top, td);
+			top.insertAt(td);
 		}
 	}
 	return out.slice(1);

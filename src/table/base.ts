@@ -1,5 +1,5 @@
 import {attributesParent} from '../../mixin/attributesParent';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {Token} from '..';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';

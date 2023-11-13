@@ -1,5 +1,5 @@
-import {parseBrackets} from '../../parser/brackets';
-import {Parser} from '../../index';
+import {parseBraces} from '../../parser/braces';
+import Parser from '../../index';
 import {ParamTagToken} from '.';
 import type {Token} from '..';
 
@@ -9,7 +9,7 @@ export abstract class InputboxToken extends ParamTagToken {
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken');
 		accum.push(placeholder as unknown as Token);
-		const text = wikitext && parseBrackets(wikitext, config, accum);
+		const text = wikitext && parseBraces(wikitext, config, accum);
 		accum.splice(accum.indexOf(placeholder as unknown as Token), 1);
 		super(text, config, accum, {
 			ArgToken: ':', TranscludeToken: ':',

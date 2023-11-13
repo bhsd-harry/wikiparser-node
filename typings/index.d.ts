@@ -1,3 +1,4 @@
+import type {Config} from '../index';
 import type {Ranges} from '../lib/ranges';
 
 declare global {
@@ -18,4 +19,10 @@ declare global {
 	};
 
 	type BoundingRect = {top: number, left: number, start: number} | {start: number};
+
+	interface ParsingError {
+		stage: number;
+		include: boolean;
+		config: Config;
+	}
 }

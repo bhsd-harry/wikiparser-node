@@ -7,13 +7,13 @@ declare global {
 		relation?: string;
 	}
 
-	interface BracketExecArray extends RegExpExecArray {
+	interface BraceExecArray extends RegExpExecArray {
 		parts?: string[][];
 		findEqual?: boolean;
 		pos?: number;
 	}
 
-	type BracketExecArrayOrEmpty = BracketExecArray | {
+	type BraceExecArrayOrEmpty = BraceExecArray | {
 		0?: string;
 		index?: number;
 		parts?: string[][];

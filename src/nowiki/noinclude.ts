@@ -1,5 +1,5 @@
 import {hidden} from '../../mixin/hidden';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 
 /** `<noinclude>`和`</noinclude>`，不可进行任何更改 */

@@ -1,5 +1,5 @@
 import {generateForChild} from '../../util/lint';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {Token} from '..';
 import {TableBaseToken} from './base';
 import {TdToken} from './td';
@@ -104,8 +104,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @param i 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		if (!Parser.running && !(token instanceof TrBaseToken)) {
-			this.typeError('insertAt', 'TrToken');
+		if (!Parser.running && token.type !== 'td') {
+			if (this.type === 'tr') {
+				this.typeError('insertAt', 'TdToken');
+			} else if (token.type !== 'tr') {
+				this.typeError('insertAt', 'TrToken', 'TdToken');
+			}
 		}
 		const child = this.childNodes.at(i);
 		if (token instanceof TdToken && token.isIndependent() && child instanceof TdToken) {

@@ -1,6 +1,6 @@
 import {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} from '../util/string';
 import {generateForChild} from '../util/lint';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
@@ -193,10 +193,10 @@ export abstract class TranscludeToken extends Token {
 					this.setAttribute(isTemplate ? 'name' : 'module', title);
 					this.#fragment = fragment;
 					this.#valid = valid;
-				} else if (oldKey !== newKey && prevTarget!.type === 'parameter') {
+				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey!, false, false);
-					oldArgs.delete(prevTarget as ParameterToken);
-					this.getArgs(newKey!, false, false).add(prevTarget as ParameterToken);
+					oldArgs.delete(prevTarget);
+					this.getArgs(newKey!, false, false).add(prevTarget);
 					this.#keys.add(newKey!);
 					if (oldArgs.size === 0) {
 						this.#keys.delete(oldKey!);
@@ -327,9 +327,9 @@ export abstract class TranscludeToken extends Token {
 	override insertAt<T extends ParameterToken>(token: T, i = this.length): T {
 		super.insertAt(token, i);
 		if (token.anon) {
-			this.#handleAnonArgChange(token as unknown as ParameterToken);
+			this.#handleAnonArgChange(token);
 		} else if (token.name) {
-			this.getArgs(token.name, false, false).add(token as unknown as ParameterToken);
+			this.getArgs(token.name, false, false).add(token);
 			this.#keys.add(token.name);
 		}
 		return token;

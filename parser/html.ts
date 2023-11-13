@@ -1,4 +1,4 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import {AttributesToken} from '../src/attributes';
 import {HtmlToken} from '../src/html';
 import type {Token} from '../src';

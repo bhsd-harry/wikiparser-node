@@ -1,7 +1,7 @@
 import {generateForChild} from '../util/lint';
 import {noWrap, removeComment} from '../util/string';
 import {fixed} from '../mixin/fixed';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import type {LintError} from '../index';

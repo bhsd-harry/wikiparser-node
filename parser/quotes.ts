@@ -1,4 +1,4 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import {QuoteToken} from '../src/nowiki/quote';
 import type {Token} from '../src';
 
@@ -31,10 +31,10 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 				// fall through
 			case 3:
 				nBold++;
-				if (firstSingle) {
+				if (firstSingle !== undefined) {
 					break;
 				} else if (arr[i - 1]!.endsWith(' ')) {
-					if (!firstMulti && !firstSpace) {
+					if (firstMulti === undefined && firstSpace === undefined) {
 						firstSpace = i;
 					}
 				} else if (arr[i - 1]!.at(-2) === ' ') {
@@ -51,9 +51,11 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 		}
 	}
 	if (nItalic % 2 === 1 && nBold % 2 === 1) {
-		const i = firstSingle ?? firstMulti ?? firstSpace!;
-		arr[i] = `''`;
-		arr[i - 1] += `'`;
+		const i = firstSingle ?? firstMulti ?? firstSpace;
+		if (i !== undefined) {
+			arr[i] = `''`;
+			arr[i - 1] += `'`;
+		}
 	}
 	for (let i = 1; i < length; i += 2) {
 		// @ts-expect-error abstract class

@@ -1,5 +1,5 @@
 import {removeComment} from '../util/string';
-import {Parser} from '../index';
+import Parser from '../index';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';
@@ -12,14 +12,14 @@ import type {Token} from '../src';
  * @param accum
  * @throws TranscludeToken.constructor()
  */
-export const parseBrackets = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
-		stack: BracketExecArrayOrEmpty[] = [],
+		stack: BraceExecArrayOrEmpty[] = [],
 		closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
-		marks = new Map<string, string>([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]);
+		marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]);
 	let regex = new RegExp(source, 'gmu'),
-		mt: BracketExecArray | null = regex.exec(wikitext),
+		mt: BraceExecArray | null = regex.exec(wikitext),
 		moreBraces = wikitext.includes('}}'),
 		lastIndex: number | undefined;
 	while (mt || lastIndex !== undefined && lastIndex <= wikitext.length && stack.at(-1)?.[0]?.startsWith('=')) {
@@ -29,7 +29,7 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 			mt.index += length;
 		}
 		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: wikitext.length},
-			top: BracketExecArrayOrEmpty = stack.pop() ?? {},
+			top: BraceExecArrayOrEmpty = stack.pop() ?? {},
 			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
 			innerEqual = syntax === '=' && topFindEqual;
 		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
@@ -126,4 +126,4 @@ export const parseBrackets = (wikitext: string, config = Parser.getConfig(), acc
 	return wikitext;
 };
 
-Parser.parsers['parseBrackets'] = __filename;
+Parser.parsers['parseBraces'] = __filename;

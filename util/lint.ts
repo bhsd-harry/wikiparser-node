@@ -1,4 +1,4 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import type {LintError} from '../index';
 import type {AstNodes, Token} from '../internal';
 

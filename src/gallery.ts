@@ -1,4 +1,4 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {GalleryImageToken} from './link/galleryImage';
 import {HiddenToken} from './hidden';

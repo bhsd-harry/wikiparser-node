@@ -1,6 +1,6 @@
 import {noWrap, escapeRegExp} from '../../util/string';
 import {generateForChild} from '../../util/lint';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {Title} from '../../lib/title';

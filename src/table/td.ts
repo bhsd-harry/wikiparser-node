@@ -1,10 +1,11 @@
 import {generateForChild} from '../../util/lint';
 import {fixed} from '../../mixin/fixed';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {Token} from '..';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {SyntaxToken, AttributesToken, TrBaseToken, TrToken} from '../../internal';
+import type {SyntaxToken, AttributesToken, TrToken} from '../../internal';
+import type {TrBaseToken} from './trBase';
 
 declare interface TdSyntax {
 	subtype: 'td' | 'th' | 'caption';

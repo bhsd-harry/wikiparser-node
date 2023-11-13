@@ -1,11 +1,13 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {toCase, normalizeSpace, text, removeComment} from '../util/string';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../index';
-import type {ExtToken, HtmlToken, TableBaseToken, TrBaseToken, TdToken} from '../internal';
+import type {ExtToken, HtmlToken, TdToken} from '../internal';
+import type {TableBaseToken} from './table/base';
+import type {TrBaseToken} from './table/trBase';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
@@ -329,7 +331,7 @@ export abstract class AttributesToken extends Token {
 			throw new RangeError(`无效的属性名：${k}！`);
 		}
 		// @ts-expect-error abstract class
-		const newAttr = Parser.run(() => new AttributeToken(
+		const newAttr: AttributeToken = Parser.run(() => new AttributeToken(
 			this.type.slice(0, -1) as 'ext-attr' | 'html-attr' | 'table-attr',
 			this.name,
 			k,
@@ -337,7 +339,7 @@ export abstract class AttributesToken extends Token {
 			value === true ? '' : value,
 			['"', '"'],
 			config,
-		) as AttributeToken);
+		));
 		this.insertAt(newAttr);
 	}
 

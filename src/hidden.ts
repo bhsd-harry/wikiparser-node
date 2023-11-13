@@ -1,5 +1,5 @@
 import {hidden} from '../mixin/hidden';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 
 /** 不可见的节点 */

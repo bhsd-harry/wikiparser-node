@@ -1,5 +1,5 @@
 import {text, print} from '../util/string';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
@@ -40,7 +40,7 @@ export abstract class ConverterToken extends Token {
 		const [firstRule] = rules,
 			hasColon = firstRule.includes(':'),
 			// @ts-expect-error abstract class
-			firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum) as ConverterRuleToken;
+			firstRuleToken: ConverterRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
 		if (hasColon && firstRuleToken.length === 1) {
 			// @ts-expect-error abstract class
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum));
@@ -100,11 +100,11 @@ export abstract class ConverterToken extends Token {
 
 	/** @override */
 	override cloneNode(): this {
-		const [flags, ...rules] = this.cloneChildNodes();
+		const [flags, ...rules] = this.cloneChildNodes() as [ConverterFlagsToken, ...ConverterRuleToken[]];
 		return Parser.run(() => {
 			// @ts-expect-error abstract class
 			const token: this = new ConverterToken([], [], this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(flags as ConverterFlagsToken);
+			token.firstChild.safeReplaceWith(flags);
 			token.append(...rules);
 			return token;
 		});

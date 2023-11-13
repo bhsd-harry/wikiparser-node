@@ -1,5 +1,5 @@
 import {hidden} from '../../mixin/hidden';
-import {Parser} from '../../index';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {Token} from '..';
 

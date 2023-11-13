@@ -2,7 +2,7 @@ import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import {fixed} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
-import {Parser} from '../index';
+import Parser from '../index';
 import {Token} from '.';
 import type {LintError} from '../index';
 import type {AttributesToken, TranscludeToken} from '../internal';

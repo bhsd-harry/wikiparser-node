@@ -1,4 +1,4 @@
-import {Parser} from '../index';
+import Parser from '../index';
 import type {Token} from '../src';
 
 /**

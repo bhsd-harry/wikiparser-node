@@ -1,6 +1,6 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
-import {Parser} from '../index';
+import Parser from '../index';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;
@@ -393,7 +393,7 @@ export abstract class AstNode {
 		}
 		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
 		for (let j = 0; j < nodes.length; j++) {
-			parentNode.insertAt(nodes[j] as AstNodes, i + j);
+			parentNode.insertAt(nodes[j] as string, i + j);
 		}
 	}
 

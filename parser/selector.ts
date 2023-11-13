@@ -1,6 +1,6 @@
-import {Parser} from '../index';
+import Parser from '../index';
 
-const simplePseudos = new Set<string>([
+const simplePseudos = new Set([
 	'root',
 	'first-child',
 	'first-of-type',
@@ -21,7 +21,7 @@ const simplePseudos = new Set<string>([
 	'required',
 	'optional',
 ]);
-const complexPseudos: string[] = [
+const complexPseudos = [
 	'is',
 	'not',
 	'nth-child',
@@ -108,7 +108,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 		stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let sanitized = sanitize(s),
 		regex = regularRegex,
-		mt = regex.exec(sanitized) as RegExpExecArray & {0: string} | null,
+		mt = regex.exec(sanitized),
 		[condition] = stack,
 		[step] = condition;
 	while (mt) {
@@ -157,7 +157,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 		if (grouping.has(syntax)) {
 			sanitized = sanitized.trim();
 		}
-		mt = regex.exec(sanitized) as RegExpExecArray & {0: string} | null;
+		mt = regex.exec(sanitized);
 	}
 	if (regex === regularRegex) {
 		pushSimple(step, sanitized);
