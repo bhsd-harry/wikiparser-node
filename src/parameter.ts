@@ -196,12 +196,12 @@ export abstract class ParameterToken extends fixed(Token) {
 		}
 		const {lastChild: parameter, name} = transclude as Token & {lastChild: ParameterToken},
 			targetName = templateLike ? 'T' : 'lc';
-		if (name === targetName && transclude!.length === 2 && parameter.anon === this.anon && parameter.name === '1') {
-			const {lastChild} = parameter;
-			parameter.destroy();
-			this.lastChild.safeReplaceWith(lastChild);
+		if (name !== targetName || transclude!.length !== 2 || parameter.anon !== this.anon || parameter.name !== '1') {
+			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
-		throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
+		const {lastChild} = parameter;
+		parameter.destroy();
+		this.lastChild.safeReplaceWith(lastChild);
 	}
 
 	/**

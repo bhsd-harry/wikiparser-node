@@ -313,10 +313,10 @@ export abstract class FileToken extends LinkBaseToken {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
 		const {name, lastChild: imageParameter} = file as this;
-		if (name === 'File:F' && imageParameter.name === key) {
-			this.insertAt(imageParameter);
+		if (name !== 'File:F' || imageParameter.name !== key) {
+			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
-		throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
+		this.insertAt(imageParameter);
 	}
 }
 

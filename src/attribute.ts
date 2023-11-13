@@ -499,12 +499,12 @@ export abstract class AttributeToken extends fixed(Token) {
 			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild: attr} = attrs;
-		if (attrs.length === 1 && attr.type === this.type && attr.value === true) {
-			const {firstChild} = attr;
-			attr.destroy();
-			this.firstChild.safeReplaceWith(firstChild);
+		if (attrs.length !== 1 || attr.type !== this.type || attr.value !== true) {
+			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
-		throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
+		const {firstChild} = attr;
+		attr.destroy();
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

@@ -220,13 +220,13 @@ export abstract class LinkBaseToken extends Token {
 		}
 		const root = Parser.parse(`[[${strLink}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
 			{length, firstChild: wikiLink} = root;
-		if (length === 1 && wikiLink?.type === this.type && wikiLink.length === 1) {
-			const {firstChild} = wikiLink as this;
-			wikiLink.destroy();
-			this.firstChild.safeReplaceWith(firstChild);
+		if (length !== 1 || wikiLink?.type !== this.type || wikiLink.length !== 1) {
+			const msgs: Record<string, string> = {link: '内链', file: '文件链接', category: '分类'};
+			throw new SyntaxError(`非法的${msgs[this.type]!}目标：${strLink}`);
 		}
-		const msgs: Record<string, string> = {link: '内链', file: '文件链接', category: '分类'};
-		throw new SyntaxError(`非法的${msgs[this.type]!}目标：${strLink}`);
+		const {firstChild} = wikiLink as this;
+		wikiLink.destroy();
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**

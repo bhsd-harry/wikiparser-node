@@ -308,10 +308,10 @@ export abstract class ImageParameterToken extends Token {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}
 		const {lastChild: imageParameter, name} = file as FileToken;
-		if (name === 'File:F' && imageParameter.name === this.name) {
-			this.replaceChildren(...imageParameter.childNodes);
+		if (name !== 'File:F' || imageParameter.name !== this.name) {
+			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
 		}
-		throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
+		this.replaceChildren(...imageParameter.childNodes);
 	}
 }
 

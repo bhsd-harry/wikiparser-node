@@ -187,12 +187,12 @@ export abstract class ArgToken extends Token {
 	setName(name: string): void {
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: arg} = root;
-		if (length === 1 && arg instanceof ArgToken && arg.length === 1) {
-			const {firstChild} = arg;
-			arg.destroy();
-			this.firstChild.safeReplaceWith(firstChild);
+		if (length !== 1 || !(arg instanceof ArgToken) || arg.length !== 1) {
+			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
 		}
-		throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
+		const {firstChild} = arg;
+		arg.destroy();
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**

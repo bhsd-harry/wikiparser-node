@@ -217,12 +217,12 @@ export abstract class ConverterRuleToken extends Token {
 			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
 		const {lastChild: converterRule} = converter as ConverterToken;
-		if (converter!.length === 2 && converterRule.length === 2) {
-			const {lastChild} = converterRule as this;
-			converterRule.destroy();
-			this.lastChild.safeReplaceWith(lastChild);
+		if (converter!.length !== 2 || converterRule.length !== 2) {
+			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
 		}
-		throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
+		const {lastChild} = converterRule as this;
+		converterRule.destroy();
+		this.lastChild.safeReplaceWith(lastChild);
 	}
 
 	/**

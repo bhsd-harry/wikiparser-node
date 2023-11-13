@@ -608,10 +608,10 @@ export abstract class TranscludeToken extends Token {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
 		const {name, lastChild: parameter} = template as this & {lastChild: ParameterToken};
-		if (name === 'T' && parameter.name === key) {
-			this.insertAt(parameter);
+		if (name !== 'T' || parameter.name !== key) {
+			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
-		throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
+		this.insertAt(parameter);
 	}
 
 	/**
@@ -639,10 +639,10 @@ export abstract class TranscludeToken extends Token {
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: template} = root as Token & {firstChild: TranscludeToken};
-		if (length === 1 && template.type === 'template' && template.length === 1) {
-			this.firstChild.replaceChildren(...template.firstChild.childNodes);
+		if (length !== 1 || template.type !== 'template' || template.length !== 1) {
+			throw new SyntaxError(`非法的模板名称：${title}`);
 		}
-		throw new SyntaxError(`非法的模板名称：${title}`);
+		this.firstChild.replaceChildren(...template.firstChild.childNodes);
 	}
 
 	/**

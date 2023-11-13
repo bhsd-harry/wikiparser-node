@@ -109,12 +109,12 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 		}
 		const {lastChild: gallery} = ext as ExtToken,
 			{firstChild: image} = gallery as GalleryToken;
-		if (gallery.length === 1 && image!.type === 'gallery-image') {
-			const {firstChild} = image as this;
-			(image as this).destroy();
-			this.firstChild.safeReplaceWith(firstChild);
+		if (gallery.length !== 1 || image!.type !== 'gallery-image') {
+			throw new SyntaxError(`非法的图库文件名：${link}`);
 		}
-		throw new SyntaxError(`非法的图库文件名：${link}`);
+		const {firstChild} = image as this;
+		(image as this).destroy();
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

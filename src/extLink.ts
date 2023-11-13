@@ -150,12 +150,12 @@ export abstract class ExtLinkToken extends Token {
 		const strUrl = String(url),
 			root = Parser.parse(`[${strUrl}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
-		if (length === 1 && extLink instanceof ExtLinkToken && extLink.length === 1) {
-			const {firstChild} = extLink;
-			extLink.destroy();
-			this.firstChild.safeReplaceWith(firstChild);
+		if (length !== 1 || !(extLink instanceof ExtLinkToken) || extLink.length !== 1) {
+			throw new SyntaxError(`非法的外链目标：${strUrl}`);
 		}
-		throw new SyntaxError(`非法的外链目标：${strUrl}`);
+		const {firstChild} = extLink;
+		extLink.destroy();
+		this.firstChild.safeReplaceWith(firstChild);
 	}
 
 	/**
