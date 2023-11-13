@@ -135,10 +135,10 @@ export class MagicLinkToken extends Token {
 		const strUrl = String(url),
 			root = Parser.parse(strUrl, this.getAttribute('include'), 9, this.getAttribute('config')),
 			{length, firstChild: freeExtLink} = root;
-		if (length !== 1 || freeExtLink!.type !== 'free-ext-link') {
-			throw new SyntaxError(`非法的自由外链目标：${strUrl}`);
+		if (length === 1 && freeExtLink!.type === 'free-ext-link') {
+			this.replaceChildren(...freeExtLink!.childNodes);
 		}
-		this.replaceChildren(...freeExtLink!.childNodes);
+		throw new SyntaxError(`非法的自由外链目标：${strUrl}`);
 	}
 
 	/** 是否是模板或魔术字参数 */

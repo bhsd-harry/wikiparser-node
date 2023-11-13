@@ -573,12 +573,13 @@ export abstract class TranscludeToken extends Token {
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: transclude} = root,
-			{type, name, length: transcludeLength, lastChild} = transclude as this & {
-				lastChild: ParameterToken;
-			},
-			targetType = templateLike ? 'template' : 'magic-word',
+			targetType = templateLike ? 'template' : 'magic-word';
+		if (length !== 1 || transclude!.type !== targetType || transclude!.length !== 2) {
+			throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
+		}
+		const {name, lastChild} = transclude as this & {lastChild: ParameterToken},
 			targetName = templateLike ? 'T' : 'lc';
-		if (length === 1 && type === targetType && name === targetName && transcludeLength === 2 && lastChild.anon) {
+		if (name === targetName && lastChild.anon) {
 			return this.insertAt(lastChild as ParameterToken);
 		}
 		throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
@@ -602,14 +603,15 @@ export abstract class TranscludeToken extends Token {
 		}
 		const wikitext = `{{:T|${key}=${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: template} = root,
-			{type, name, length: templateLength, lastChild: parameter} = template as this & {
-				lastChild: ParameterToken;
-			};
-		if (length !== 1 || type !== 'template' || name !== 'T' || templateLength !== 2 || parameter.name !== key) {
+			{length, firstChild: template} = root;
+		if (length !== 1 || template!.type !== 'template' || template!.length !== 2) {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
-		this.insertAt(parameter);
+		const {name, lastChild: parameter} = template as this & {lastChild: ParameterToken};
+		if (name === 'T' && parameter.name === key) {
+			this.insertAt(parameter);
+		}
+		throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 	}
 
 	/**
@@ -637,10 +639,10 @@ export abstract class TranscludeToken extends Token {
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: template} = root as Token & {firstChild: TranscludeToken};
-		if (length !== 1 || template.type !== 'template' || template.length !== 1) {
-			throw new SyntaxError(`非法的模板名称：${title}`);
+		if (length === 1 && template.type === 'template' && template.length === 1) {
+			this.firstChild.replaceChildren(...template.firstChild.childNodes);
 		}
-		this.firstChild.replaceChildren(...template.firstChild.childNodes);
+		throw new SyntaxError(`非法的模板名称：${title}`);
 	}
 
 	/**
