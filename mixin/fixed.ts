@@ -13,7 +13,7 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 
 		/**
 		 * @override
-		 * @throws `Error`
+		 * @throws `Error` 不可用
 		 */
 		removeAt(): never {
 			throw new Error(`${this.constructor.name} 不可删除元素！`);
@@ -23,7 +23,7 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 		 * @override
 		 * @param token 待插入的子节点
 		 * @param i 插入位置
-		 * @throws `Error`
+		 * @throws `Error` 不可用
 		 */
 		override insertAt(token: string, i?: number): AstText;
 		/** @ignore */

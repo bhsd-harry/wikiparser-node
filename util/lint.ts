@@ -27,7 +27,7 @@ export const generateForChild = (
 		startLine = top + offsetTop,
 		endLine = startLine + offsetHeight - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
-		endCol = offsetHeight > 1 ? offsetWidth : startCol + offsetWidth;
+		endCol = offsetHeight === 1 ? startCol + offsetWidth : offsetWidth;
 	return {message: Parser.msg(msg), severity, startIndex, endIndex, startLine, endLine, startCol, endCol, excerpt};
 };
 
@@ -56,7 +56,7 @@ export const generateForSelf = (
 		startLine: top,
 		endLine: top + offsetHeight - 1,
 		startCol: left,
-		endCol: offsetHeight > 1 ? offsetWidth : left + offsetWidth,
+		endCol: offsetHeight === 1 ? left + offsetWidth : offsetWidth,
 		excerpt: str.slice(0, 50),
 	};
 };

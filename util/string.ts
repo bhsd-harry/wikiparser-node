@@ -21,7 +21,7 @@ export const print = (childNodes: AstNodes[], opt: PrintOpt = {}): string => {
 		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 	return `${pre}${childNodes.map(
 		child => child.type === 'text'
-			? String(child).replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
+			? child.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
 			: child.print(),
 	).join(sep)}${post}`;
 };

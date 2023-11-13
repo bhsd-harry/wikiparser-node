@@ -78,8 +78,8 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
-		return 1;
+	protected override getGaps(i: number): number {
+		return i < this.length - 1 ? 1 : 0;
 	}
 
 	/**
@@ -187,9 +187,9 @@ export abstract class ArgToken extends Token {
 	setName(name: string): void {
 		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: arg} = root;
-		if (length === 1 && arg!.type === 'arg' && arg!.length === 1) {
-			const {firstChild} = arg as this;
-			arg!.destroy();
+		if (length === 1 && arg instanceof ArgToken && arg.length === 1) {
+			const {firstChild} = arg;
+			arg.destroy();
 			this.firstChild.safeReplaceWith(firstChild);
 		}
 		throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
@@ -203,12 +203,12 @@ export abstract class ArgToken extends Token {
 	setDefault(value: string): void {
 		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
 			{length, firstChild: arg} = root;
-		if (length !== 1 || arg!.type !== 'arg' || arg!.length !== 2) {
+		if (length !== 1 || !(arg instanceof ArgToken) || arg.length !== 2) {
 			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
 		}
 		const {childNodes: [, oldDefault]} = this,
-			{lastChild} = arg as this;
-		arg!.destroy();
+			{lastChild} = arg;
+		arg.destroy();
 		if (oldDefault) {
 			oldDefault.safeReplaceWith(lastChild);
 		} else {

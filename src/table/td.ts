@@ -4,8 +4,7 @@ import Parser from '../../index';
 import {Token} from '..';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {SyntaxToken, AttributesToken, TrToken} from '../../internal';
-import type {TrBaseToken} from './trBase';
+import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
 declare interface TdSyntax {
 	subtype: 'td' | 'th' | 'caption';
@@ -25,8 +24,8 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	override readonly type = 'td';
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
-	abstract override get parentNode(): TrBaseToken | undefined;
-	abstract override get parentElement(): TrBaseToken | undefined;
+	abstract override get parentNode(): TrToken | TableToken | undefined;
+	abstract override get parentElement(): TrToken | TableToken | undefined;
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token | undefined;
@@ -117,12 +116,12 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 			return {subtype, escape: esc, correction: false};
 		}
 		const {previousSibling} = this;
-		if (previousSibling?.type !== 'td') {
+		if (!(previousSibling instanceof TdToken)) {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = (previousSibling as this).getSyntax();
+		const result = previousSibling.getSyntax();
 		result.escape ||= esc;
-		result.correction = (previousSibling as this).lastChild
+		result.correction = previousSibling.lastChild
 			.toString('comment, ext, include, noinclude, arg, template, magic-word')
 			.includes('\n');
 		if (subtype === 'th' && result.subtype !== 'th') {
@@ -162,9 +161,8 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	}
 
 	/** @private */
-	protected override getGaps(i = 0): number {
-		const j = i < 0 ? i + this.length : i;
-		if (j === 1) {
+	protected override getGaps(i: number): number {
+		if (i === 1) {
 			this.#correct();
 			return this.#innerSyntax.length;
 		}
@@ -177,7 +175,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			newStart = start + this.getRelativeIndex(-1);
+			newStart = start + this.getRelativeIndex(this.length - 1);
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
 				errors.push(generateForChild(child, {start: newStart}, 'additional "|" in a table cell', 'warning'));

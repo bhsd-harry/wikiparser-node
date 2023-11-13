@@ -96,6 +96,7 @@ export abstract class NestedToken extends Token {
 	 * @override
 	 * @param token 待插入的子节点
 	 * @param i 插入位置
+	 * @throws `TypeError` 不是许可的标签
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {

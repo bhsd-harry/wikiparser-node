@@ -328,8 +328,8 @@ export abstract class AttributeToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
-		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
+	protected override getGaps(i: number): number {
+		return this.#equal && i === 0 ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
 	/**
@@ -477,7 +477,7 @@ export abstract class AttributeToken extends fixed(Token) {
 	 * 修改属性名
 	 * @param key 新属性名
 	 * @throws `Error` title属性不能更名
-	 * @throws `SyntaxError` 非法的模板参数名
+	 * @throws `SyntaxError` 非法的标签属性名
 	 */
 	rename(key: string): void {
 		if (this.name === 'title') {

@@ -5,9 +5,7 @@ import {Token} from '.';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../index';
-import type {ExtToken, HtmlToken, TdToken} from '../internal';
-import type {TableBaseToken} from './table/base';
-import type {TrBaseToken} from './table/trBase';
+import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
@@ -26,8 +24,8 @@ export abstract class AttributesToken extends Token {
 	abstract override get firstElementChild(): AtomToken | AttributeToken;
 	abstract override get lastChild(): AtomToken | AttributeToken;
 	abstract override get lastElementChild(): AtomToken | AttributeToken;
-	abstract override get parentNode(): ExtToken | HtmlToken | TableBaseToken | undefined;
-	abstract override get parentElement(): ExtToken | HtmlToken | TableBaseToken | undefined;
+	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/** getAttrs()方法的getter写法 */
 	get attributes(): Record<string, string | true> {
@@ -143,7 +141,7 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	protected override afterBuild(): void {
 		if (this.type === 'table-attrs') {
-			const {parentNode} = this as this & {parentNode?: TrBaseToken | TdToken};
+			const {parentNode} = this as this & {parentNode?: TableToken | TrToken | TdToken};
 			this.setAttribute(
 				'name',
 				parentNode?.type === 'td' && parentNode.subtype === 'caption' ? 'caption' : parentNode?.type,

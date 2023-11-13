@@ -225,8 +225,8 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** 获取下一行 */
-	getNextRow(): TrBaseToken | undefined {
-		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false);
+	getNextRow(): TrToken | undefined {
+		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false) as TrToken | undefined;
 	}
 
 	/**
@@ -236,11 +236,11 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param insert 是否用于判断插入新行的位置
 	 * @throws `RangeError` 不存在该行
 	 */
-	getNthRow(n: number, force?: boolean, insert?: false): TrBaseToken | undefined;
+	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	/** @ignore */
-	getNthRow(n: number, force: boolean, insert: true): TrBaseToken | SyntaxToken | undefined;
+	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
 	/** @ignore */
-	getNthRow(n: number, force = false, insert = false): TrBaseToken | SyntaxToken | undefined {
+	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
 		const nRows = this.getRowCount(),
 			isRow = super.getRowCount();
 		let m = n < 0 ? n + nRows : n;
@@ -265,7 +265,7 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** 获取所有行 */
-	getAllRows(): TrBaseToken[] {
+	getAllRows(): (TrToken | this)[] {
 		const {childNodes: [, ...childNodes]} = this;
 		return [
 			...super.getRowCount() ? [this] : [],
@@ -741,7 +741,7 @@ export abstract class TableToken extends TrBaseToken {
 		if (rowToken.type === 'table') {
 			rowToken = this.#prependTableRow();
 		}
-		const replicated = this.insertBefore((rowToken as TrToken).cloneNode(), rowToken);
+		const replicated = this.insertBefore(rowToken.cloneNode(), rowToken);
 		for (const [token, start] of this.getFullRow(row)) {
 			if (start) {
 				token.rowspan = 1;

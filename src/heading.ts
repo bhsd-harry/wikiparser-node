@@ -92,8 +92,8 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
-		return this.level;
+	protected override getGaps(i: number): number {
+		return i === 0 ? this.level : 0;
 	}
 
 	/**

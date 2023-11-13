@@ -130,7 +130,7 @@ export class AstText extends AstNode {
 						lines = data.slice(0, index).split('\n'),
 						startLine = lines.length + top - 1,
 						line = lines.at(-1)!,
-						startCol = lines.length > 1 ? line.length : left + line.length,
+						startCol = lines.length === 1 ? left + line.length : line.length,
 						{0: char, length} = error,
 						endIndex = startIndex + length,
 						end = char === '}' || char === ']' ? endIndex + 1 : startIndex + 49,
@@ -252,6 +252,20 @@ export class AstText extends AstNode {
 		newText.setAttribute('parentNode', parentNode);
 		parentNode.setAttribute('childNodes', childNodes);
 		return newText;
+	}
+
+	/**
+	 * @override
+	 * @param j 字符位置
+	 * @throws `RangeError` 超出文本长度范围
+	 */
+	override getRelativeIndex(j?: number): number {
+		if (j === undefined) {
+			return super.getRelativeIndex();
+		} else if (j < 0 || j > this.length) {
+			throw new RangeError(`超出文本长度范围！`);
+		}
+		return j;
 	}
 }
 

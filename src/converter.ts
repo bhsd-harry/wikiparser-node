@@ -82,9 +82,8 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i = 0): number {
-		const j = i < 0 ? i + this.length : i;
-		return j || this.firstChild.length > 0 ? 1 : 0;
+	protected override getGaps(i: number): number {
+		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
 
 	/**

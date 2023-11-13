@@ -41,6 +41,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		return this.link.interwiki;
 	}
 
+	/** @throws `RangeError` 非法的跨维基前缀 */
 	set interwiki(interwiki) {
 		const {link: {prefix, main, fragment}} = this,
 			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
@@ -54,6 +55,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * 设置跨语言链接
 	 * @param lang 语言前缀
 	 * @param link 页面标题
+	 * @throws `SyntaxError` 仅有fragment
 	 * @throws `SyntaxError` 非法的跨语言链接
 	 */
 	setLangLink(lang: string, link: string | Title): void {
@@ -68,14 +70,14 @@ export abstract class LinkToken extends LinkBaseToken {
 			include = this.getAttribute('include'),
 			root = Parser.parse(`[[${lang}:${strLink}]]`, include, 6, config),
 			{length, firstChild: wikiLink} = root;
-		if (length !== 1 || wikiLink!.type !== 'link' || wikiLink!.length !== 1) {
+		if (length !== 1 || !(wikiLink instanceof LinkToken) || wikiLink.length !== 1) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${strLink}`);
 		}
-		const {interwiki, firstChild} = wikiLink as this;
+		const {interwiki, firstChild} = wikiLink;
 		if (interwiki !== lang.toLowerCase()) {
 			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${strLink}`);
 		}
-		(wikiLink as this).destroy();
+		wikiLink.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 
@@ -93,13 +95,13 @@ export abstract class LinkToken extends LinkBaseToken {
 				frag === undefined ? '' : `#${frag}`
 			}]]`, include, 6, config),
 			{length, firstChild: wikiLink} = root;
-		if (length !== 1 || wikiLink!.type !== 'link' || wikiLink!.length !== 1) {
+		if (length !== 1 || !(wikiLink instanceof LinkToken) || wikiLink.length !== 1) {
 			throw new SyntaxError(`非法的 fragment：${frag ?? ''}`);
 		} else if (page) {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}
-		const {firstChild} = wikiLink as this;
-		(wikiLink as this).destroy();
+		const {firstChild} = wikiLink;
+		wikiLink.destroy();
 		this.firstChild.safeReplaceWith(firstChild);
 	}
 

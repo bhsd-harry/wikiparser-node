@@ -1,6 +1,6 @@
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
-import type {Token, TdToken, SyntaxToken, AttributesToken} from '../../internal';
+import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../../internal';
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
@@ -13,8 +13,8 @@ export abstract class TrToken extends TrBaseToken {
 	abstract override get children(): [SyntaxToken, AttributesToken, ...TdToken[]];
 	abstract override get lastChild(): AttributesToken | TdToken;
 	abstract override get lastElementChild(): AttributesToken | TdToken;
-	abstract override get parentNode(): TrBaseToken | undefined;
-	abstract override get parentElement(): TrBaseToken | undefined;
+	abstract override get parentNode(): TableToken | undefined;
+	abstract override get parentElement(): TableToken | undefined;
 	abstract override get nextSibling(): this | SyntaxToken | undefined;
 	abstract override get nextElementSibling(): this | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token;

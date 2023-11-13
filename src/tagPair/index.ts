@@ -7,6 +7,7 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare name: string;
+	declare childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 
@@ -114,8 +115,8 @@ export abstract class TagPairToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
-		return 1;
+	protected override getGaps(i: number): number {
+		return i === 0 ? 1 : 1;
 	}
 
 	/**

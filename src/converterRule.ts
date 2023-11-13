@@ -121,10 +121,9 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i = 0): number {
-		const {length} = this,
-			j = i < 0 ? i + length : i;
-		return j === 0 && length === 3 ? 2 : 1;
+	protected override getGaps(i: number): number {
+		const {length} = this;
+		return i === 0 && length === 3 ? 2 : 1;
 	}
 
 	/**

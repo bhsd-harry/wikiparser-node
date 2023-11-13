@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {toCase, noWrap, print, text} from '../util/string';
 import {parseSelector} from '../parser/selector';
-import {nth} from './ranges';
+import {Ranges} from './ranges';
 import {Title} from './title';
 import Parser from '../index';
 import {AstNode} from './node';
@@ -26,6 +26,13 @@ const lintIgnoredExt = new Set([
 	'templatedata',
 	'timeline',
 ]);
+
+/**
+ * 检查某个下标是否符合表达式
+ * @param str 表达式
+ * @param i 待检查的下标
+ */
+const nth = (str: string, i: number): boolean => new Ranges(str.split(',')).applyTo(i + 1).includes(i);
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
@@ -163,7 +170,7 @@ export abstract class AstElement extends AstNode {
 	 * @param i 插入位置
 	 * @throws `RangeError` 不能插入祖先节点
 	 */
-	insertAt<T extends AstNodes>(node: T, i = this.childNodes.length): T {
+	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		if (node.contains(this)) {
 			Parser.error('不能插入祖先节点！', node);
 			throw new RangeError('不能插入祖先节点！');
@@ -180,7 +187,7 @@ export abstract class AstElement extends AstNode {
 		}
 		childNodes.splice(i, 0, node);
 		this.setAttribute('childNodes', childNodes);
-		this.dispatchEvent(e, {position: i < 0 ? i + this.childNodes.length - 1 : i, inserted: node});
+		this.dispatchEvent(e, {position: i < 0 ? i + this.length - 1 : i, inserted: node});
 		return node;
 	}
 
@@ -295,7 +302,7 @@ export abstract class AstElement extends AstNode {
 	json(file?: string): unknown {
 		const json: unknown = {
 			...this,
-			childNodes: this.childNodes.map(child => child.type === 'text' ? String(child) : child.json()),
+			childNodes: this.childNodes.map(child => child.type === 'text' ? child.data : child.json()),
 		};
 		if (typeof file === 'string') {
 			fs.writeFileSync(
@@ -367,6 +374,7 @@ export abstract class AstElement extends AstNode {
 	/**
 	 * 检查是否符合解析后的选择器，不含节点关系
 	 * @param step 解析后的选择器
+	 * @throws `SyntaxError` 错误的正则伪选择器
 	 * @throws `SyntaxError` 未定义的伪选择器
 	 */
 	#matches(step: SelectorArray): boolean {
@@ -401,9 +409,9 @@ export abstract class AstElement extends AstNode {
 					case ':only-of-type':
 						return siblingsCountOfType === 1;
 					case ':empty':
-						return !childNodes.some(child => child.type !== 'text' || String(child));
+						return !childNodes.some(child => child.type !== 'text' || child.data);
 					case ':parent':
-						return childNodes.some(child => child.type !== 'text' || String(child));
+						return childNodes.some(child => child.type !== 'text' || child.data);
 					case ':header':
 						return type === 'heading';
 					case ':hidden':
@@ -702,7 +710,7 @@ export abstract class AstElement extends AstNode {
 			if (!childStr) {
 				// pass
 			} else if (child.type === 'text') {
-				console.log(`${indent}  ${noWrap(String(child))}`);
+				console.log(`${indent}  ${noWrap(child.data)}`);
 			} else {
 				child.echo(depth + 1);
 			}

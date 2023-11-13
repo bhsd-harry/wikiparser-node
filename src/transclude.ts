@@ -215,10 +215,10 @@ export abstract class TranscludeToken extends Token {
 		if (selector && this.matches(selector)) {
 			return '';
 		}
-		const {childNodes, firstChild, modifier} = this;
+		const {childNodes, length, firstChild, modifier} = this;
 		return `{{${modifier}${
 			this.type === 'magic-word'
-				? `${firstChild.toString(selector)}${childNodes.length > 1 ? ':' : ''}${
+				? `${firstChild.toString(selector)}${length === 1 ? '' : ':'}${
 					childNodes.slice(1).map(child => child.toString(selector)).join('|')
 				}`
 				: super.toString(selector, '|')
@@ -230,12 +230,12 @@ export abstract class TranscludeToken extends Token {
 	 * @browser
 	 */
 	override text(): string {
-		const {childNodes, firstChild, modifier, type, name} = this;
+		const {childNodes, length, firstChild, modifier, type, name} = this;
 		return type === 'magic-word' && name === 'vardefine'
 			? ''
 			: `{{${modifier}${
 				this.type === 'magic-word'
-					? `${firstChild.text()}${childNodes.length > 1 ? ':' : ''}${text(childNodes.slice(1), '|')}`
+					? `${firstChild.text()}${length === 1 ? '' : ':'}${text(childNodes.slice(1), '|')}`
 					: super.text('|')
 			}}}`;
 	}
@@ -246,8 +246,8 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
-		return 1;
+	protected override getGaps(i: number): number {
+		return i < this.length - 1 ? 1 : 0;
 	}
 
 	/**
@@ -255,10 +255,10 @@ export abstract class TranscludeToken extends Token {
 	 * @browser
 	 */
 	override print(): string {
-		const {childNodes, firstChild, modifier} = this;
+		const {childNodes, length, firstChild, modifier} = this;
 		return `<span class="wpb-${this.type}">{{${modifier}${
 			this.type === 'magic-word'
-				? `${firstChild.print()}${childNodes.length > 1 ? ':' : ''}${print(childNodes.slice(1), {sep: '|'})}`
+				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
@@ -817,8 +817,8 @@ export abstract class TranscludeToken extends Token {
 				(table as TableToken).escape();
 			}
 		}
-		const {firstChild, childNodes} = Parser.parse(`{{${String(parsed)}}}`, include, 2, config);
-		if (childNodes.length !== 1 || !(firstChild instanceof TranscludeToken)) {
+		const {firstChild, length} = Parser.parse(`{{${String(parsed)}}}`, include, 2, config);
+		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('转义表格失败！');
 		}
 		const newCount = firstChild.hasDuplicatedArgs();

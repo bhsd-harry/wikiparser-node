@@ -284,6 +284,7 @@ export abstract class ImageParameterToken extends Token {
 	/**
 	 * 设置参数值
 	 * @param value 参数值
+	 * @throws `Error` 无效参数
 	 * @throws	SyntaxError` 非法的参数值
 	 */
 	setValue(value: string | boolean): void {

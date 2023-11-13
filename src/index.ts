@@ -40,6 +40,7 @@
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
 import {Ranges} from '../lib/ranges';
+import {AstRange} from '../lib/range';
 import Parser from '../index';
 const {MAX_STAGE, aliases} = Parser;
 import {AstElement} from '../lib/element';
@@ -85,7 +86,7 @@ export class Token extends AstElement {
 	#accum;
 	/** @browser */
 	#include?: boolean;
-	#acceptable: Record<string, Ranges> | undefined;
+	#acceptable?: Record<string, Ranges>;
 	#protectedChildren = new Ranges();
 
 	/** 所有图片，包括图库 */
@@ -607,9 +608,13 @@ export class Token extends AstElement {
 	 * 创建纯文本节点
 	 * @param data 文本内容
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	createTextNode(data = ''): AstText {
 		return new AstText(data);
+	}
+
+	/** 创建AstRange对象 */
+	createRange(): AstRange {
+		return new AstRange();
 	}
 
 	/**
@@ -795,7 +800,7 @@ export class Token extends AstElement {
 		if (!parentNode) {
 			return undefined;
 		}
-		const {childNodes} = parentNode,
+		const {childNodes, length} = parentNode,
 			index = childNodes.indexOf(this);
 		let i: number;
 		for (i = index - 1; i >= 0; i--) {
@@ -810,7 +815,7 @@ export class Token extends AstElement {
 			return parentNode.findEnclosingHtml(lcTag);
 		}
 		const opening = childNodes[i] as HtmlToken;
-		for (i = index + 1; i < childNodes.length; i++) {
+		for (i = index + 1; i < length; i++) {
 			const {
 				type, name, selfClosing, closing,
 			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
@@ -818,9 +823,7 @@ export class Token extends AstElement {
 				break;
 			}
 		}
-		return i === childNodes.length
-			? parentNode.findEnclosingHtml(lcTag)
-			: [opening, childNodes[i] as HtmlToken];
+		return i === length ? parentNode.findEnclosingHtml(lcTag) : [opening, childNodes[i] as HtmlToken];
 	}
 
 	/** 获取全部分类 */

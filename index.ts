@@ -35,7 +35,7 @@ declare interface Parser {
 	/** @browser */
 	config: string | Config;
 	/** @browser */
-	i18n: string | Record<string, string> | undefined;
+	i18n?: string | Record<string, string>;
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 
@@ -136,7 +136,6 @@ const rootRequire = (file: string, dir = ''): unknown => require(`../${file.incl
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	config: 'default',
-	i18n: undefined,
 	conversionTable: new Map(),
 	redirects: new Map(),
 

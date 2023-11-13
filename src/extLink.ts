@@ -97,9 +97,9 @@ export abstract class ExtLinkToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	protected override getGaps(i: number): number {
 		this.#correct();
-		return this.#space.length;
+		return i === 0 ? this.#space.length : 0;
 	}
 
 	/**
@@ -108,7 +108,7 @@ export abstract class ExtLinkToken extends Token {
 	 */
 	override print(): string {
 		return super.print(
-			this.length > 1 ? {pre: '[', sep: this.#space, post: ']'} : {pre: '[', post: `${this.#space}]`},
+			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
 		);
 	}
 
@@ -150,9 +150,9 @@ export abstract class ExtLinkToken extends Token {
 		const strUrl = String(url),
 			root = Parser.parse(`[${strUrl}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
-		if (length === 1 && extLink!.type === 'ext-link' && extLink!.length === 1) {
-			const {firstChild} = extLink as this;
-			extLink!.destroy();
+		if (length === 1 && extLink instanceof ExtLinkToken && extLink.length === 1) {
+			const {firstChild} = extLink;
+			extLink.destroy();
 			this.firstChild.safeReplaceWith(firstChild);
 		}
 		throw new SyntaxError(`非法的外链目标：${strUrl}`);
@@ -166,10 +166,10 @@ export abstract class ExtLinkToken extends Token {
 	setLinkText(str: string): void {
 		const root = Parser.parse(`[//url ${str}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
-		if (length !== 1 || extLink!.type !== 'ext-link' || extLink!.length !== 2) {
+		if (length !== 1 || !(extLink instanceof ExtLinkToken) || extLink.length !== 2) {
 			throw new SyntaxError(`非法的外链文字：${noWrap(str)}`);
 		}
-		const {lastChild} = extLink as this;
+		const {lastChild} = extLink;
 		if (this.length === 1) {
 			this.insertAt(lastChild);
 		} else {

@@ -116,11 +116,4 @@ export class Ranges extends Array<number | Range> {
 	}
 }
 
-/**
- * 检查某个下标是否符合表达式
- * @param str 表达式
- * @param i 待检查的下标
- */
-export const nth = (str: string, i: number): boolean => new Ranges(str.split(',')).applyTo(i + 1).includes(i);
-
 Parser.classes['Ranges'] = __filename;

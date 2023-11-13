@@ -197,7 +197,7 @@ export abstract class AstNode {
 			return true;
 		}
 		let {nextSibling} = this;
-		while (nextSibling?.type === 'text' && String(nextSibling).trim() === '') {
+		while (nextSibling?.type === 'text' && nextSibling.data.trim() === '') {
 			({nextSibling} = nextSibling);
 		}
 		return nextSibling === undefined && this.parentNode?.eof;
@@ -309,7 +309,7 @@ export abstract class AstNode {
 
 	/** @private */
 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-	protected getGaps(i?: number): number {
+	protected getGaps(i: number): number {
 		return 0;
 	}
 
@@ -575,14 +575,9 @@ export abstract class AstNode {
 			: undefined;
 	}
 
-	/**
-	 * 获取当前节点的相对位置，或其第`j`个子节点的相对位置
-	 * @param j 子节点序号
-	 */
-	#getPosition(j?: number): Position {
-		return j === undefined
-			? this.parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0}
-			: this.posFromIndex(this.getRelativeIndex(j))!;
+	/** 获取当前节点的相对位置 */
+	#getPosition(): Position {
+		return this.parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
 	}
 
 	/** 获取当前节点的行列位置和大小 */

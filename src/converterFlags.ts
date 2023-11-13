@@ -69,8 +69,8 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
-		return 1;
+	protected override getGaps(i: number): number {
+		return i < this.length - 1 ? 1 : 0;
 	}
 
 	/**

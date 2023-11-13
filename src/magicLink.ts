@@ -17,6 +17,10 @@ export class MagicLinkToken extends Token {
 		return this.#protocolRegex.exec(this.text())?.[0];
 	}
 
+	/**
+	 * @throws `RangeError` 非法协议
+	 * @throws `Error` 特殊外链无法更改协议
+	 */
 	set protocol(value) {
 		if (typeof value !== 'string') {
 			this.typeError('protocol', 'String');
@@ -63,19 +67,19 @@ export class MagicLinkToken extends Token {
 			regexGlobal = new RegExp(source, 'gu');
 		let rect: BoundingRect | undefined;
 		for (const child of this.childNodes) {
-			const str = String(child);
-			if (child.type !== 'text' || !regex.test(str)) {
+			if (child.type !== 'text' || !regex.test(child.data)) {
 				continue;
 			}
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
-			const refError = generateForChild(child, rect, '', 'warning');
-			errors.push(...[...str.matchAll(regexGlobal)].map(({index, 0: s}) => {
-				const lines = str.slice(0, index).split('\n'),
+			const {data} = child,
+				refError = generateForChild(child, rect, '', 'warning');
+			errors.push(...[...data.matchAll(regexGlobal)].map(({index, 0: s}) => {
+				const lines = data.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines.at(-1)!,
 					startIndex = start + index!,
 					startLine = refError.startLine + top - 1,
-					startCol = (top > 1 ? 0 : refError.startCol) + left;
+					startCol = top === 1 ? refError.startCol + left : left;
 				return {
 					...refError,
 					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : Parser.msg('full-width punctuation')),
@@ -85,7 +89,7 @@ export class MagicLinkToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + s.length,
-					excerpt: str.slice(Math.max(0, index! - 25), index! + 25),
+					excerpt: data.slice(Math.max(0, index! - 25), index! + 25),
 				};
 			}));
 		}
