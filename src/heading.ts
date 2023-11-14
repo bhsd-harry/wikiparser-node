@@ -80,15 +80,6 @@ export abstract class HeadingToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		const equals = this.#equals;
-		return super.print({pre: equals, sep: equals});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			innerStr = String(this.firstChild);

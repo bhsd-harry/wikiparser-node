@@ -63,14 +63,4 @@ export abstract class ExtLinkToken extends Token {
 	protected override getGaps(i: number): number {
 		return i === 0 ? this.#space.length : 0;
 	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return super.print(
-			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
-		);
-	}
 }

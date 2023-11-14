@@ -1,8 +1,9 @@
 'use strict';
 
-const diff = require('../util/diff'),
-	Api = require('./api'),
-	Parser = require('../');
+const path = require('path'),
+	{diff} = require('../dist/util/diff'),
+	{Api} = require('./api'),
+	{default: Parser} = require('..');
 
 const {argv: [,, site = '']} = process,
 	apis = [
@@ -11,6 +12,7 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	].filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
+Parser.i18n = './i18n/zh-hans';
 Parser.debug = /** @implements */ (msg, ...args) => {
 	console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
 };
@@ -36,7 +38,7 @@ const getPages = async url => {
 (async () => {
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
-		Parser.config = `./config/${config}`;
+		Parser.config = require(path.join('..', 'config', config));
 		try {
 			const revs = await getPages(`${url}/api.php`);
 			for (const {title, ns, content} of revs) {

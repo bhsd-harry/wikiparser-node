@@ -29,14 +29,6 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
 	}

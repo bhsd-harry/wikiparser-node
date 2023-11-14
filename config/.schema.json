@@ -95,6 +95,12 @@
 			"type": "string",
 			"pattern": "^[a-z:/]+(?:\\|[a-z:/]+)*$"
 		},
+		"interwiki": {
+			"type": "array",
+			"items": {
+				"type": "string"
+			}
+		},
 		"img": {
 			"description": "image-related magic words",
 			"type": "object",
@@ -110,6 +116,32 @@
 				"type": "string",
 				"pattern": "^[-a-z]+$"
 			}
+		},
+		"conversionTable": {
+			"description": "table of unidirectional conversions",
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"pattern": "^[^ <>[\\]{}|]+$"
+				},
+				"minItems": 2,
+				"maxItems": 2
+			}
+		},
+		"redirects": {
+			"description": "table of redirects",
+			"type": "array",
+			"items": {
+				"type": "array",
+				"items": {
+					"type": "string",
+					"pattern": "^[^ <>[\\]{}|]+$"
+				},
+				"minItems": 2,
+				"maxItems": 2
+			}
 		}
 	},
 	"required": [
@@ -120,6 +152,7 @@
 		"parserFunction",
 		"doubleUnderscore",
 		"protocol",
+		"interwiki",
 		"img",
 		"variants"
 	],

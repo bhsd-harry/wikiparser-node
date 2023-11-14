@@ -90,15 +90,4 @@ export abstract class TagPairToken extends Token {
 	protected override getGaps(i: number): number {
 		return i === 0 ? 1 : 1;
 	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		const [opening, closing] = this.#tags;
-		return super.print(this.#selfClosing
-			? {pre: `&lt;${opening}`, post: '/&gt;'}
-			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
-	}
 }

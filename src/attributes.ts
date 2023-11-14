@@ -124,7 +124,7 @@ export abstract class AttributesToken extends Token {
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
 		const tokens = this.getAttrTokens(key);
-		return tokens[tokens.length - 1];
+		return tokens.at(-1);
 	}
 
 	/**
@@ -174,17 +174,5 @@ export abstract class AttributesToken extends Token {
 			}
 		}
 		return errors;
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return String(this)
-			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print(
-				child instanceof AtomToken && child.text().trim() ? {class: 'hidden'} : undefined,
-			)).join('')}</span>`
-			: '';
 	}
 }

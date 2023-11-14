@@ -80,14 +80,6 @@ export abstract class ArgToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({pre: '{{{', post: '}}}', sep: '|'});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this,
 			errors = argName.lint(start + 3);

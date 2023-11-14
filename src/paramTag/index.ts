@@ -57,14 +57,6 @@ export abstract class ParamTagToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return this.childNodes.filter(child => {

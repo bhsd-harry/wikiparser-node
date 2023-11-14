@@ -72,14 +72,6 @@ export abstract class GalleryToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];

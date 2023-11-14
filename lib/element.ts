@@ -1,4 +1,4 @@
-import {print, text} from '../util/string';
+import {text} from '../util/string';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';
@@ -169,16 +169,5 @@ export abstract class AstElement extends AstNode {
 			cur += String(child).length + this.getGaps(i);
 		}
 		return errors;
-	}
-
-	/**
-	 * 以HTML格式打印
-	 * @browser
-	 * @param opt 选项
-	 */
-	print(opt: PrintOpt = {}): string {
-		return String(this)
-			? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>`
-			: '';
 	}
 }

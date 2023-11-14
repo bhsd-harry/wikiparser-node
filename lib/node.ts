@@ -105,7 +105,7 @@ export abstract class AstNode {
 	 * @browser
 	 */
 	get lastChild(): AstNodes | undefined {
-		return this.childNodes[this.childNodes.length - 1];
+		return this.childNodes.at(-1);
 	}
 
 	/**
@@ -195,7 +195,7 @@ export abstract class AstNode {
 		const str = String(this);
 		if (index >= -str.length && index <= str.length) {
 			const lines = str.slice(0, index).split('\n');
-			return {top: lines.length - 1, left: lines[lines.length - 1]!.length};
+			return {top: lines.length - 1, left: lines.at(-1)!.length};
 		}
 		return undefined;
 	}
@@ -206,7 +206,7 @@ export abstract class AstNode {
 	 */
 	#getDimension(): Dimension {
 		const lines = String(this).split('\n');
-		return {height: lines.length, width: lines[lines.length - 1]!.length};
+		return {height: lines.length, width: lines.at(-1)!.length};
 	}
 
 	/** @private */

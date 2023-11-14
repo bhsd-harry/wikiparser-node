@@ -43,7 +43,7 @@ export class MagicLinkToken extends Token {
 				const {index, 0: s} = mt,
 					lines = data.slice(0, index).split('\n'),
 					{length: top} = lines,
-					{length: left} = lines[lines.length - 1]!,
+					{length: left} = lines.at(-1)!,
 					startIndex = start + index,
 					startLine = refError.startLine + top - 1,
 					startCol = top === 1 ? refError.startCol + left : left;

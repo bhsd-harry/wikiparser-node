@@ -1,4 +1,4 @@
-import {print, extUrlChar, extUrlCharFirst} from '../util/string';
+import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from '.';
@@ -155,17 +155,5 @@ export abstract class ImageParameterToken extends Token {
 			errors.push(generateForSelf(this, {start}, 'unnecessary URL encoding in an internal link'));
 		}
 		return errors;
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return this.#syntax
-			? `<span class="wpb-image-parameter">${
-				this.#syntax.replace('$1', `<span class="wpb-image-caption">${print(this.childNodes)}</span>`)
-			}</span>`
-			: super.print({class: 'image-caption'});
 	}
 }

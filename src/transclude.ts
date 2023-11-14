@@ -1,4 +1,4 @@
-import {removeComment, text, noWrap, print, decodeHtml} from '../util/string';
+import {removeComment, text, noWrap, decodeHtml} from '../util/string';
 import {generateForChild} from '../util/lint';
 import Parser from '../index';
 import {Token} from '.';
@@ -195,19 +195,6 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	protected override getGaps(i: number): number {
 		return i < this.length - 1 ? 1 : 0;
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		const {childNodes, length, firstChild, modifier} = this;
-		return `<span class="wpb-${this.type}">{{${modifier}${
-			this.type === 'magic-word'
-				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
-				: print(childNodes, {sep: '|'})
-		}}}</span>`;
 	}
 
 	/**

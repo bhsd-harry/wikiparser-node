@@ -11,22 +11,6 @@ export const extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x
 export const removeComment = (str: string): string => str.replace(/\0\d+c\x7F/gu, '');
 
 /**
- * 以HTML格式打印
- * @browser
- * @param childNodes 子节点
- * @param opt 选项
- */
-export const print = (childNodes: AstNodes[], opt: PrintOpt = {}): string => {
-	const {pre = '', post = '', sep = ''} = opt,
-		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-	return `${pre}${childNodes.map(
-		child => child.type === 'text'
-			? child.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
-			: child.print(),
-	).join(sep)}${post}`;
-};
-
-/**
  * escape special chars for RegExp constructor
  * @browser
  * @param str RegExp source

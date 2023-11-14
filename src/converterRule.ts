@@ -73,17 +73,4 @@ export abstract class ConverterRuleToken extends Token {
 		const {length} = this;
 		return i === 0 && length === 3 ? 2 : 1;
 	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		const {childNodes} = this;
-		if (childNodes.length === 3) {
-			const [from, variant, to] = childNodes;
-			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
-		}
-		return super.print({sep: ':'});
-	}
 }

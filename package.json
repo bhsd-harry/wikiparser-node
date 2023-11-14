@@ -18,6 +18,7 @@
 		"errors/README",
 		"/config/",
 		"/i18n/",
+		"/bin/",
 		"/dist/"
 	],
 	"bin": {

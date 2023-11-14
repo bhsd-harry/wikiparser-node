@@ -68,7 +68,7 @@ export abstract class TdToken extends TableBaseToken {
 	/** @private */
 	protected getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
-			char = syntax[syntax.length - 1]!;
+			char = syntax.at(-1)!;
 		let subtype: 'td' | 'th' | 'caption' = 'td';
 		if (char === '!') {
 			subtype = 'th';
@@ -124,14 +124,5 @@ export abstract class TdToken extends TableBaseToken {
 			}
 		}
 		return errors;
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 }

@@ -97,7 +97,7 @@ export class AstText extends AstNode {
 				const startIndex = start + index,
 					lines = data.slice(0, index).split('\n'),
 					startLine = lines.length + top - 1,
-					line = lines[lines.length - 1]!,
+					line = lines.at(-1)!,
 					startCol = lines.length === 1 ? left + line.length : line.length,
 					{0: char, length} = error,
 					endIndex = startIndex + length,

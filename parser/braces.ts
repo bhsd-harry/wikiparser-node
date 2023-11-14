@@ -23,7 +23,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 		moreBraces = wikitext.includes('}}'),
 		lastIndex: number | undefined;
 	while (mt || lastIndex !== undefined && lastIndex <= wikitext.length
-		&& stack[stack.length - 1]?.[0]?.startsWith('=')
+		&& stack.at(-1)?.[0]?.startsWith('=')
 	) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
@@ -38,7 +38,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			lastIndex = curIndex + 2;
 		} else if (syntax === '\n') { // 情形2：闭合标题或文末
 			lastIndex = curIndex + 1;
-			const {pos, findEqual} = stack[stack.length - 1] ?? {};
+			const {pos, findEqual} = stack.at(-1) ?? {};
 			if (pos === undefined || findEqual || removeComment(wikitext.slice(pos, index)) !== '') {
 				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u
 					.exec(wikitext.slice(index, curIndex)) as [string, string, string, string] | null;
@@ -113,10 +113,10 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			stack.push(...'0' in top ? [top] : [], mt!);
 		}
 		moreBraces &&= wikitext.slice(lastIndex).includes('}}');
-		let curTop = stack[stack.length - 1];
+		let curTop = stack.at(-1);
 		if (!moreBraces && curTop?.[0]?.startsWith('{')) {
 			stack.pop();
-			curTop = stack[stack.length - 1];
+			curTop = stack.at(-1);
 		}
 		regex = new RegExp(source + (curTop
 			? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}`
