@@ -34,6 +34,20 @@ const lintIgnoredExt = new Set([
  */
 const nth = (str: string, i: number): boolean => new Ranges(str.split(',')).applyTo(i + 1).includes(i);
 
+/**
+ * 检测:lang()伪选择器
+ * @param node 节点
+ * @param node.attributes 节点属性
+ * @param regex 语言正则
+ */
+const matchesLang = (
+	{attributes}: AstElement & {attributes?: Record<string, string | true>},
+	regex: RegExp,
+): boolean => {
+	const lang = attributes?.['lang'];
+	return typeof lang === 'string' && regex.test(lang);
+};
+
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
 	/** @browser */
@@ -296,7 +310,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 保存为JSON
-	 * @browser
 	 * @param file 文件名
 	 */
 	json(file?: string): unknown {
@@ -726,19 +739,5 @@ export abstract class AstElement extends AstNode {
 		Parser.info(`${indent}</${type}>`);
 	}
 }
-
-/**
- * 检测:lang()伪选择器
- * @param node 节点
- * @param node.attributes 节点属性
- * @param regex 语言正则
- */
-const matchesLang = (
-	{attributes}: AstElement & {attributes?: Record<string, string | true>},
-	regex: RegExp,
-): boolean => {
-	const lang = attributes?.['lang'];
-	return typeof lang === 'string' && regex.test(lang);
-};
 
 Parser.classes['AstElement'] = __filename;

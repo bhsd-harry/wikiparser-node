@@ -107,8 +107,17 @@ export abstract class ArgToken extends Token {
 			const rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => {
 				const error = generateForChild(child, rect, 'invisible content inside triple braces'),
-					{startIndex, startCol, excerpt} = error;
-				return {...error, startIndex: startIndex - 1, startCol: startCol - 1, excerpt: `|${excerpt}`};
+					{
+						startIndex,
+						startCol,
+						excerpt,
+					} = error;
+				return {
+					...error,
+					startIndex: startIndex - 1,
+					startCol: startCol - 1,
+					excerpt: `|${excerpt}`,
+				};
 			}));
 		}
 		return errors;

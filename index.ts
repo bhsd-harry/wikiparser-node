@@ -36,11 +36,12 @@ declare interface Parser {
 	config: string | Config;
 	/** @browser */
 	i18n?: string | Record<string, string>;
-	conversionTable: Map<string, string>;
-	redirects: Map<string, string>;
 
 	/** @private */
 	readonly MAX_STAGE: number;
+
+	conversionTable: Map<string, string>;
+	redirects: Map<string, string>;
 
 	/** @private */
 	warning: boolean;
@@ -136,10 +137,11 @@ const rootRequire = (file: string, dir = ''): unknown => require(`../${file.incl
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	config: 'default',
-	conversionTable: new Map(),
-	redirects: new Map(),
 
 	MAX_STAGE: 11,
+
+	conversionTable: new Map(),
+	redirects: new Map(),
 
 	warning: true,
 	debugging: false,

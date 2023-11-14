@@ -28,6 +28,7 @@
 	"scripts": {
 		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm dist/[mpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.js' '@ts' dist/ | xargs gsed -i '/@ts/d'; eslint --fix dist/",
+		"diff": "git diff --ignore-all-space --color-moved",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
 		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",

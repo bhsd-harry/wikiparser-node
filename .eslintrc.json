@@ -539,12 +539,7 @@
 				"minAlternatives": 2
 			}
 		],
-		"regexp/prefer-lookaround": [
-			2,
-			{
-				"lookbehind": false
-			}
-		],
+		"regexp/prefer-lookaround": 2,
 		"unicorn/catch-error-name": [
 			2,
 			{
@@ -907,7 +902,6 @@
 				],
 				"space-infix-ops": 0,
 				"@typescript-eslint/space-infix-ops": 2,
-				"no-unused-private-class-members": 0,
 				"@typescript-eslint/ban-types": [
 					2,
 					{

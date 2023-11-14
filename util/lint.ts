@@ -28,7 +28,17 @@ export const generateForChild = (
 		endLine = startLine + offsetHeight - 1,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft,
 		endCol = offsetHeight === 1 ? startCol + offsetWidth : offsetWidth;
-	return {message: Parser.msg(msg), severity, startIndex, endIndex, startLine, endLine, startCol, endCol, excerpt};
+	return {
+		message: Parser.msg(msg),
+		severity,
+		startIndex,
+		endIndex,
+		startLine,
+		endLine,
+		startCol,
+		endCol,
+		excerpt,
+	};
 };
 
 /**

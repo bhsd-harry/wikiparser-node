@@ -150,7 +150,11 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 			wikitext ??= String(this.getRootNode());
 			refError ??= generateForSelf(this, {start}, '');
 			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
-			errors.push({...refError, message: Parser.msg('HTML tag in table attributes'), excerpt});
+			errors.push({
+				...refError,
+				message: Parser.msg('HTML tag in table attributes'),
+				excerpt,
+			});
 		}
 		try {
 			this.findMatchingTag();

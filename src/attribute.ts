@@ -356,7 +356,12 @@ export abstract class AttributeToken extends fixed(Token) {
 			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
 				startIndex = e.startIndex - 1,
 				startCol = e.startCol - 1;
-			errors.push({...e, startIndex, startCol, excerpt: String(root).slice(startIndex, startIndex + 50)});
+			errors.push({
+				...e,
+				startIndex,
+				startCol,
+				excerpt: String(root).slice(startIndex, startIndex + 50),
+			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
 			|| (type !== 'ext-attr' && !/\{\{[^{]+\}\}/u.test(name) || tag in htmlAttrs)

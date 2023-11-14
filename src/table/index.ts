@@ -178,10 +178,10 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false): void {
-		const isHalfParsed = halfParsed && Parser.running,
-			config = this.getAttribute('config'),
+		halfParsed &&= Parser.running;
+		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
-			inner = !isHalfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
+			inner = !halfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
 			{lastChild} = this;
 		if (inner && !closingPattern.test(inner.text())) {
 			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(syntax)}`);

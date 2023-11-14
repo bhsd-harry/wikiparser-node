@@ -36,7 +36,15 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				[{length}] = previousSibling.data.match(/(?<!')'+$/u) as [string],
 				startIndex = start - length,
 				excerpt = wikitext.slice(startIndex, startIndex + 50);
-			errors.push({...refError, startIndex, endIndex, startCol: endCol - length, endLine, endCol, excerpt});
+			errors.push({
+				...refError,
+				startIndex,
+				endIndex,
+				startCol: endCol - length,
+				endLine,
+				endCol,
+				excerpt,
+			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
 			refError ??= generateForSelf(this, {start}, message);
@@ -45,7 +53,15 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				[{length}] = nextSibling.data.match(/^'+/u) as [string],
 				endIndex = startIndex + length,
 				excerpt = wikitext.slice(Math.max(0, endIndex - 50), endIndex);
-			errors.push({...refError, startIndex, endIndex, startLine, startCol, endCol: startCol + length, excerpt});
+			errors.push({
+				...refError,
+				startIndex,
+				endIndex,
+				startLine,
+				startCol,
+				endCol: startCol + length,
+				excerpt,
+			});
 		}
 		return errors;
 	}

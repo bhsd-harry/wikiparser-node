@@ -53,17 +53,18 @@ export const decodeHtml = (str: string): string => str.replace(
 );
 
 /**
+ * escape newlines
+ * @browser
+ * @param str 原字符串
+ */
+export const noWrap = (str: string): string => str.replaceAll('\n', '\\n');
+
+/**
  * optionally convert to lower cases
  * @param val 属性值
  * @param i 是否对大小写不敏感
  */
 export const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
-
-/**
- * escape newlines
- * @param str 原字符串
- */
-export const noWrap = (str: string): string => str.replaceAll('\n', '\\n');
 
 /**
  * convert newline in text nodes to single whitespace
