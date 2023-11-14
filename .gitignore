@@ -1,6 +1,9 @@
+/node_modules/
+/dist/
 /errors/*
 /printed/*
 /.vscode/
+/.eslintcache*
 /wiki/
 /test/single-page.wiki
 /test/processed.txt

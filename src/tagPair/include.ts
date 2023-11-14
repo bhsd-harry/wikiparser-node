@@ -1,0 +1,34 @@
+import {hidden} from '../../mixin/hidden';
+import Parser from '../../index';
+import {TagPairToken} from '.';
+import type {AstText, Token} from '../../internal';
+
+/**
+ * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
+ * @classdesc `{childNodes: [AstText, AstText]}`
+ */
+export abstract class IncludeToken extends hidden(TagPairToken) {
+	/** @browser */
+	override readonly type = 'include';
+	declare childNodes: [AstText, AstText];
+	abstract override get firstChild(): AstText;
+	abstract override get lastChild(): AstText;
+
+	/**
+	 * @browser
+	 * @param name 标签名
+	 * @param attr 标签属性
+	 * @param inner 内部wikitext
+	 * @param closed 是否封闭
+	 */
+	constructor(
+		name: string,
+		attr = '',
+		inner?: string,
+		closed?: string,
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+	) {
+		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
+	}
+}

@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "1.1.0",
+	"version": "2.0.0-beta.0",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -15,46 +15,46 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [
-		"/index.js",
+		"errors/README",
 		"/config/",
-		"/lib/",
-		"/mixin/",
-		"/parser/",
-		"/src/",
-		"/util/",
-		"/typings/",
+		"/i18n/",
 		"/dist/"
 	],
 	"bin": {
 		"wikilint": "./bin/cli.js"
 	},
-	"types": "./dist/index.d.ts",
+	"main": "./dist/index.js",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"build": "rm -rf dist/ && tsc && grep -rl '/typings' dist/ | xargs gsed -i 's|/typings|/../typings|g' && node ./bin/tsc.js",
+		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm dist/[mpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
+		"build": "rm -rf dist/; tsc; grep -rl --include='*.js' '@ts' dist/ | xargs gsed -i '/@ts/d'; eslint --fix dist/",
+		"diff": "git diff --ignore-all-space --color-moved",
+		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
+		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
+		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false && npx wikilint test/single-page.wiki",
-		"real": "node test/real.js",
-		"single": "node test/single.js"
+		"test:real": "node test/real.js",
+		"test:single": "node test/single.js"
 	},
 	"devDependencies": {
-		"@types/node": "^17.0.23",
-		"eslint": "^8.30.0",
-		"eslint-plugin-n": "^15.6.0",
-		"eslint-plugin-regexp": "^1.11.0",
-		"eslint-plugin-unicorn": "^45.0.2",
-		"eslint-plugin-jsdoc": "^1.0.0",
+		"@types/node": "^20.9.0",
+		"eslint": "^8.53.0",
+		"eslint-plugin-n": "^16.3.1",
+		"eslint-plugin-regexp": "^2.1.1",
+		"eslint-plugin-unicorn": "^49.0.0",
+		"eslint-plugin-jsdoc": "^46.8.2",
 		"eslint-plugin-json-es": "^1.5.7",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"typescript": "^4.6.3",
-		"@typescript-eslint/eslint-plugin": "^5.47.1",
-		"@typescript-eslint/parser": "^5.47.1",
+		"typescript": "^5.0.3",
+		"@typescript-eslint/eslint-plugin": "^5.62.0",
+		"@typescript-eslint/parser": "^5.62.0",
 		"ajv-cli": "^5.0.0",
 		"request": "^2.88.2"
 	},
 	"engines": {
-		"node": "^18.4.0"
+		"node": "^20.9.0"
 	}
 }
