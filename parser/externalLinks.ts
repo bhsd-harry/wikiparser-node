@@ -29,5 +29,3 @@ export const parseExternalLinks = (wikitext: string, config = Parser.getConfig()
 		return `\0${length}w\x7F`;
 	});
 };
-
-Parser.parsers['parseExternalLinks'] = __filename;

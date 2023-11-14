@@ -11,11 +11,6 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 	override readonly type = 'comment';
 	closed;
 
-	/** 内部wikitext */
-	get innerText(): string {
-		return this.firstChild.data;
-	}
-
 	/**
 	 * @browser
 	 * @param closed 是否闭合
@@ -23,7 +18,6 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 	constructor(wikitext: string, closed = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 		this.closed = closed;
-		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/** @private */
@@ -52,20 +46,6 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		if (!this.closed && this.nextSibling) {
-			Parser.error('自动闭合HTML注释', this);
-			this.closed = true;
-		}
-		return selector && this.matches(selector)
-			? ''
-			: `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Parser.run(() => new CommentToken(this.firstChild.data, this.closed, this.getAttribute('config')));
+		return `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
 	}
 }
-
-Parser.classes['CommentToken'] = __filename;

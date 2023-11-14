@@ -1,4 +1,4 @@
-import {decodeHtml, escapeRegExp} from '../util/string';
+import {decodeHtml} from '../util/string';
 import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
@@ -11,23 +11,6 @@ export class Title {
 	fragment;
 	/** @browser */
 	encoded = false;
-	main = '';
-	prefix = '';
-	interwiki = '';
-	conversionTable = new Map<string, string>();
-	redirects = new Map<string, string>();
-
-	/** 完整标题 */
-	get title(): string {
-		let title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
-		const redirected = this.redirects.get(title);
-		if (redirected) {
-			return redirected;
-		}
-		this.autoConvert();
-		title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
-		return this.redirects.get(title) ?? title;
-	}
 
 	/**
 	 * @browser
@@ -47,15 +30,10 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replaceAll('_', ' ').trim();
+		title = title.replace(/_/gu, ' ').trim();
 		if (title.startsWith(':')) {
 			namespace = '';
 			title = title.slice(1).trim();
-		}
-		const iw = defaultNs ? undefined : Parser.isInterwiki(title, config);
-		if (iw) {
-			this.interwiki = iw[1].toLowerCase();
-			title = title.slice(iw[0].length);
 		}
 		const m = title.split(':');
 		if (m.length > 1) {
@@ -70,41 +48,11 @@ export class Title {
 		const i = title.indexOf('#');
 		let fragment: string | undefined;
 		if (i !== -1) {
-			fragment = title.slice(i + 1).trimEnd();
-			if (fragment.includes('%')) {
-				try {
-					fragment = decodeURIComponent(fragment);
-				} catch {}
-			} else if (fragment.includes('.')) {
-				try {
-					fragment = decodeURIComponent(fragment.replaceAll('.', '%'));
-				} catch {}
-			}
+			fragment = title.slice(i + 1).trim();
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || selfLink && fragment !== undefined || this.interwiki)
+		this.valid = Boolean(title || selfLink && fragment !== undefined)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
-		this.main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
-		this.prefix = `${namespace}${namespace && ':'}`;
-	}
-
-	/** 完整链接 */
-	toString(): string {
-		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
-	}
-
-	/**
-	 * 转换
-	 * @param conversionTable 单向转换表
-	 */
-	autoConvert(): void {
-		const {conversionTable} = this;
-		if (conversionTable.size > 0) {
-			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
-			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
-		}
 	}
 }
-
-Parser.classes['Title'] = __filename;

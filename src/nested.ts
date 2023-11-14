@@ -15,20 +15,11 @@ export abstract class NestedToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
-	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	abstract override get firstElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	abstract override get lastChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	abstract override get lastElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
-
-	#tags: string[];
-	#regex;
 
 	/**
 	 * @browser
@@ -38,6 +29,7 @@ export abstract class NestedToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		regex: RegExp,
+		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 		tags: string[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -57,18 +49,15 @@ export abstract class NestedToken extends Token {
 				return str;
 			},
 		)?.replace(
-			/(?<=^|\0\d+[ce]\x7F)[^\0]+(?=$|\0\d+[ce]\x7F)/gu,
-			substr => {
+			/(^|\0\d+[ce]\x7F)([^\0]+)(?=$|\0\d+[ce]\x7F)/gu,
+			(_, lead: string, substr: string) => {
 				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
-				return `\0${accum.length}c\x7F`;
+				return `${lead}\0${accum.length}c\x7F`;
 			},
 		);
 		super(text, config, true, accum, {
-			NoincludeToken: ':', ExtToken: ':',
 		});
-		this.#tags = tags;
-		this.#regex = regex;
 	}
 
 	/**
@@ -91,31 +80,4 @@ export abstract class NestedToken extends Token {
 			}),
 		];
 	}
-
-	/**
-	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
-	 * @throws `TypeError` 不是许可的标签
-	 */
-	override insertAt<T extends Token>(token: T, i = this.length): T {
-		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {
-			throw new TypeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`);
-		}
-		return super.insertAt(token, i);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new NestedToken(undefined, this.#regex, this.#tags, config);
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-Parser.classes['NestedToken'] = __filename;

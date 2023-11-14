@@ -10,15 +10,10 @@ export abstract class TrToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'tr';
 	declare childNodes: [SyntaxToken, AttributesToken, ...TdToken[]];
-	abstract override get children(): [SyntaxToken, AttributesToken, ...TdToken[]];
 	abstract override get lastChild(): AttributesToken | TdToken;
-	abstract override get lastElementChild(): AttributesToken | TdToken;
 	abstract override get parentNode(): TableToken | undefined;
-	abstract override get parentElement(): TableToken | undefined;
 	abstract override get nextSibling(): this | SyntaxToken | undefined;
-	abstract override get nextElementSibling(): this | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token;
-	abstract override get previousElementSibling(): Token;
 
 	/**
 	 * @browser
@@ -27,38 +22,6 @@ export abstract class TrToken extends TrBaseToken {
 	 */
 	constructor(syntax: string, attr = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u, syntax, attr, config, accum, {
-			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
 		});
 	}
-
-	/**
-	 * 获取相邻行
-	 * @param subset 筛选兄弟节点的方法
-	 */
-	#getSiblingRow(subset: (childNodes: Token[], index: number) => Token[]): TrToken | undefined {
-		const {parentNode} = this;
-		if (!parentNode) {
-			return undefined;
-		}
-		const {childNodes} = parentNode,
-			index = childNodes.indexOf(this);
-		for (const child of subset(childNodes, index)) {
-			if (child instanceof TrToken && child.getRowCount()) {
-				return child;
-			}
-		}
-		return undefined;
-	}
-
-	/** 获取下一行 */
-	getNextRow(): TrToken | undefined {
-		return this.#getSiblingRow((childNodes, index) => childNodes.slice(index + 1));
-	}
-
-	/** 获取前一行 */
-	getPreviousRow(): TrToken | undefined {
-		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).reverse());
-	}
 }
-
-Parser.classes['TrToken'] = __filename;

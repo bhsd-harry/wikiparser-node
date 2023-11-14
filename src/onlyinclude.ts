@@ -9,11 +9,6 @@ export class OnlyincludeToken extends Token {
 	/** @browser */
 	override readonly type = 'onlyinclude';
 
-	/** 内部wikitext */
-	get innerText(): string {
-		return this.text();
-	}
-
 	/**
 	 * @browser
 	 * @param inner 标签内部wikitext
@@ -27,7 +22,7 @@ export class OnlyincludeToken extends Token {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		return selector && this.matches(selector) ? '' : `<onlyinclude>${super.toString(selector)}</onlyinclude>`;
+		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
 	/**
@@ -56,16 +51,4 @@ export class OnlyincludeToken extends Token {
 	override isPlain(): boolean {
 		return true;
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new OnlyincludeToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-Parser.classes['OnlyincludeToken'] = __filename;

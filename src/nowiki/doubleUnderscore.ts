@@ -27,7 +27,7 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		return selector && this.matches(selector) ? '' : `__${this.firstChild.data}__`;
+		return `__${this.firstChild.data}__`;
 	}
 
 	/** @param word 状态开关名 */
@@ -35,20 +35,4 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 		super(word, config, accum);
 		this.setAttribute('name', word.toLowerCase());
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')));
-	}
-
-	/**
-	 * @override
-	 * @throws `Error` 禁止修改
-	 */
-	override setText(): never {
-		throw new Error(`禁止修改 ${this.constructor.name}！`);
-	}
 }
-
-Parser.classes['DoubleUnderscoreToken'] = __filename;

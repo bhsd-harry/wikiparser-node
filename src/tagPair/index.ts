@@ -1,10 +1,9 @@
-import {fixed} from '../../mixin/fixed';
 import Parser from '../../index';
 import {Token} from '..';
 import type {AstNodes} from '../../lib/node';
 
 /** 成对标签 */
-export abstract class TagPairToken extends fixed(Token) {
+export abstract class TagPairToken extends Token {
 	declare type: 'ext' | 'include';
 	declare name: string;
 	declare childNodes: [AstNodes, AstNodes];
@@ -24,27 +23,6 @@ export abstract class TagPairToken extends fixed(Token) {
 	 */
 	get closed(): boolean {
 		return this.#closed;
-	}
-
-	set closed(value) {
-		this.#closed ||= value;
-	}
-
-	/** 是否自封闭 */
-	get selfClosing(): boolean {
-		return this.#selfClosing;
-	}
-
-	set selfClosing(value) {
-		if (value !== this.#selfClosing && this.lastChild.text()) {
-			Parser.warn(`<${this.name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
-		}
-		this.#selfClosing = value;
-	}
-
-	/** 内部wikitext */
-	get innerText(): string | undefined {
-		return this.#selfClosing ? undefined : this.lastChild.text();
 	}
 
 	/**
@@ -83,14 +61,8 @@ export abstract class TagPairToken extends fixed(Token) {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		const {firstChild, lastChild, nextSibling, name} = this,
+		const {firstChild, lastChild} = this,
 			[opening, closing] = this.#tags;
-		if (selector && this.matches(selector)) {
-			return '';
-		} else if (!this.closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, lastChild);
-			this.#closed = true;
-		}
 		return this.#selfClosing
 			? `<${opening}${firstChild.toString(selector)}/>`
 			: `<${opening}${firstChild.toString(selector)}>${lastChild.toString(selector)}${
@@ -129,11 +101,4 @@ export abstract class TagPairToken extends fixed(Token) {
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
 	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'tags' ? [...this.#tags] as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
 }
-
-Parser.classes['TagPairToken'] = __filename;

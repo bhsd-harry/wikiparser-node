@@ -1,5 +1,4 @@
 import {generateForSelf} from '../../util/lint';
-import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '..';
 import {TagPairToken} from '.';
@@ -21,19 +20,11 @@ const del = <T>(arr: T[], ele: T): T[] => {
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-export abstract class ExtToken extends attributesParent(TagPairToken) {
+export abstract class ExtToken extends TagPairToken {
 	override readonly type = 'ext';
 	declare childNodes: [AttributesToken, Token];
-	abstract override get children(): [AttributesToken, Token];
 	abstract override get firstChild(): AttributesToken;
-	abstract override get firstElementChild(): AttributesToken;
 	abstract override get lastChild(): Token;
-
-	/** @override */
-	// eslint-disable-next-line class-methods-use-this
-	override get closed(): boolean {
-		return true;
-	}
 
 	/**
 	 * @browser
@@ -53,7 +44,7 @@ export abstract class ExtToken extends attributesParent(TagPairToken) {
 		const lcName = name.toLowerCase(),
 			// @ts-expect-error abstract class
 			attrToken: AttributesToken = new AttributesToken(
-				!attr || attr.trimStart() !== attr ? attr : ` ${attr}`,
+				!attr || /^\s/u.test(attr) ? attr : ` ${attr}`,
 				'ext-attrs',
 				lcName,
 				config,
@@ -61,6 +52,7 @@ export abstract class ExtToken extends attributesParent(TagPairToken) {
 			),
 			newConfig: Config = {...config, ext: del(config.ext, lcName), excludes: [...config.excludes ?? []]};
 		let innerToken: Token;
+		newConfig.inExt = true;
 		switch (lcName) {
 			case 'tab':
 				newConfig.ext = del(newConfig.ext, 'tabs');
@@ -171,26 +163,9 @@ export abstract class ExtToken extends attributesParent(TagPairToken) {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
-				excerpt = String(root).slice(Math.max(0, start - 25), start + 25),
 				rect = {start, ...root.posFromIndex(start)};
-			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
+			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
 		}
 		return errors;
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		const inner = this.lastChild.cloneNode(),
-			tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			attr = String(this.firstChild);
-		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config);
-			token.lastChild.safeReplaceWith(inner);
-			return token;
-		});
-	}
 }
-
-Parser.classes['ExtToken'] = __filename;

@@ -39,5 +39,3 @@ export const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: 
 	}
 	return text;
 };
-
-Parser.parsers['parseHtml'] = __filename;

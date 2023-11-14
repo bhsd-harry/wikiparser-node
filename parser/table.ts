@@ -34,7 +34,7 @@ export const parseTable = (
 			return;
 		}
 		const {lastChild} = top;
-		if (lastChild.constructor === Token) {
+		if ((lastChild as Token).constructor === Token) {
 			lastChild.setText(String(lastChild) + str);
 		} else {
 			const token = new Token(str, config, true, accum);
@@ -81,7 +81,7 @@ export const parseTable = (
 				top = stack.pop();
 			}
 			top!.close(`\n${spaces}${closing}`, true);
-			push(attr, stack.at(-1));
+			push(attr, stack[stack.length - 1]);
 		} else if (row) {
 			if (top.type === 'td') {
 				top = stack.pop() as TrToken | TableToken;
@@ -119,5 +119,3 @@ export const parseTable = (
 	}
 	return out.slice(1);
 };
-
-Parser.parsers['parseTable'] = __filename;

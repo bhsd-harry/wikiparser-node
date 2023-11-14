@@ -1,29 +1,14 @@
 import {generateForSelf} from '../../util/lint';
-import {undo} from '../../util/debug';
-import {singleLine} from '../../mixin/singleLine';
 import Parser from '../../index';
 import {Token} from '..';
 import {FileToken} from './file';
-import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
-import type {ExtToken, GalleryToken} from '../../internal';
 
 /** 图库图片 */
-export abstract class GalleryImageToken extends singleLine(FileToken) {
+export abstract class GalleryImageToken extends FileToken {
 	declare type: 'gallery-image' | 'imagemap-image';
 	/** @browser */
 	#invalid = false;
-
-	/** 图片链接 */
-	override get link(): string | Title {
-		return this.type === 'imagemap-image' ? '' : super.link;
-	}
-
-	override set link(value) {
-		if (this.type !== 'imagemap-image') {
-			super.link = value;
-		}
-	}
 
 	/**
 	 * @browser
@@ -55,26 +40,7 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 	protected override afterBuild(): void {
 		const initImagemap = this.type === 'imagemap-image',
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
-		this.setAttribute('name', titleObj.title);
-		this.#invalid = Boolean(titleObj.interwiki) || titleObj.ns !== 6; // 只用于gallery-image的首次解析
-		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e;
-			if (prevTarget?.type === 'link-target') {
-				const name = String(prevTarget),
-					imagemap = this.type === 'imagemap-image',
-					{title, interwiki, ns, valid} = this.normalizeTitle(name, imagemap ? 0 : 6, true, !imagemap);
-				if (!valid) {
-					undo(e, data);
-					throw new Error(`非法的图片文件名：${name}`);
-				} else if (interwiki || ns !== 6) {
-					undo(e, data);
-					throw new Error(`图片链接不可更改命名空间：${name}`);
-				}
-				this.setAttribute('name', title);
-				this.#invalid = false;
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
+		this.#invalid = titleObj.ns !== 6; // 只用于gallery-image的首次解析
 	}
 
 	/** @private */
@@ -93,29 +59,4 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 		}
 		return errors;
 	}
-
-	/**
-	 * @override
-	 * @param link 链接目标
-	 * @throws `SyntaxError` 非法的链接目标
-	 */
-	override setTarget(link: string): void {
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			root = Parser.parse(`<gallery>${link}</gallery>`, include, 1, config),
-			{length, firstChild: ext} = root;
-		if (length !== 1 || ext!.type !== 'ext') {
-			throw new SyntaxError(`非法的图库文件名：${link}`);
-		}
-		const {lastChild: gallery} = ext as ExtToken,
-			{firstChild: image} = gallery as GalleryToken;
-		if (gallery.length !== 1 || image!.type !== 'gallery-image') {
-			throw new SyntaxError(`非法的图库文件名：${link}`);
-		}
-		const {firstChild} = image as this;
-		(image as this).destroy();
-		this.firstChild.safeReplaceWith(firstChild);
-	}
 }
-
-Parser.classes['GalleryImageToken'] = __filename;

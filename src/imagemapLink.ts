@@ -1,5 +1,3 @@
-import {fixed} from '../mixin/fixed';
-import {singleLine} from '../mixin/singleLine';
 import Parser from '../index';
 import {Token} from '.';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -12,26 +10,13 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
+export abstract class ImagemapLinkToken extends Token {
 	/** @browser */
 	override readonly type = 'imagemap-link';
 	declare childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
-	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;
-	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
 	abstract override get lastChild(): NoincludeToken;
-	abstract override get lastElementChild(): NoincludeToken;
 	abstract override get parentNode(): ImagemapToken | undefined;
-	abstract override get parentElement(): ImagemapToken | undefined;
-
-	/** 内外链接 */
-	get link(): string | Title {
-		return this.childNodes[1].link;
-	}
-
-	set link(link) {
-		this.childNodes[1].link = link;
-	}
 
 	/**
 	 * @browser
@@ -59,5 +44,3 @@ export abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
 		);
 	}
 }
-
-Parser.classes['ImagemapLinkToken'] = __filename;

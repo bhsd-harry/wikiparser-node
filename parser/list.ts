@@ -57,5 +57,3 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 	}
 	return text;
 };
-
-Parser.parsers['parseList'] = __filename;

@@ -13,7 +13,9 @@ import type {LinkBaseToken} from '../src/link/base';
  */
 export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const {parseQuotes}: typeof import('./quotes') = require('./quotes.js');
-	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
+	const regex = config.inExt
+			? /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
+			: /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
 		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
 		bits = wikitext.split('[[');
@@ -49,12 +51,12 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 			continue;
 		}
 		const title = Parser.normalizeTitle(link, 0, false, config, true, true, true),
-			{ns, interwiki, valid} = title;
+			{ns, valid} = title;
 		if (!valid) {
 			s += `[[${x}`;
 			continue;
 		} else if (mightBeImg) {
-			if (interwiki || ns !== 6) {
+			if (ns !== 6) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -84,16 +86,17 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 		s += `\0${accum.length}l\x7F${after!}`;
 		let SomeLinkToken: typeof LinkBaseToken = LinkToken;
 		if (!force) {
-			if (!interwiki && ns === 6) {
+			if (ns === 6) {
 				SomeLinkToken = FileToken;
-			} else if (!interwiki && ns === 14) {
+			} else if (ns === 14) {
 				SomeLinkToken = CategoryToken;
 			}
+		}
+		if (text === undefined && delimiter) {
+			text = '';
 		}
 		// @ts-expect-error abstract class
 		new SomeLinkToken(link, text, config, accum, delimiter);
 	}
 	return s;
 };
-
-Parser.parsers['parseLinks'] = __filename;

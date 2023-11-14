@@ -53,28 +53,8 @@ export const decodeHtml = (str: string): string => str.replace(
 );
 
 /**
- * optionally convert to lower cases
- * @param val 属性值
- * @param i 是否对大小写不敏感
- */
-export const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
-
-/**
  * escape newlines
+ * @browser
  * @param str 原字符串
  */
-export const noWrap = (str: string): string => str.replaceAll('\n', '\\n');
-
-/**
- * convert newline in text nodes to single whitespace
- * @param token 父节点
- */
-export const normalizeSpace = (token?: AstNodes): void => {
-	if (token) {
-		for (const child of token.childNodes) {
-			if (child.type === 'text') {
-				child.replaceData(child.data.replaceAll('\n', ' '));
-			}
-		}
-	}
-};
+export const noWrap = (str: string): string => str.replace(/\n/gu, '\\n');

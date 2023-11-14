@@ -12,9 +12,6 @@ export abstract class InputboxToken extends ParamTagToken {
 		const text = wikitext && parseBraces(wikitext, config, accum);
 		accum.splice(accum.indexOf(placeholder as unknown as Token), 1);
 		super(text, config, accum, {
-			ArgToken: ':', TranscludeToken: ':',
 		});
 	}
 }
-
-Parser.classes['InputboxToken'] = __filename;

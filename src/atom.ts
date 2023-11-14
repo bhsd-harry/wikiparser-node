@@ -33,18 +33,4 @@ export class AtomToken extends Token {
 		super(wikitext, config, true, accum, acceptable);
 		this.type = type;
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable');
-		return Parser.run(() => {
-			const token = new AtomToken(undefined, this.type, config, [], acceptable) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-Parser.classes['AtomToken'] = __filename;

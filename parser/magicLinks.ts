@@ -10,10 +10,10 @@ import type {Token} from '../src';
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
-	const regex = new RegExp(`(?<![\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
-	return wikitext.replace(regex, (m, p1: string) => {
+	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
+	return wikitext.replace(regex, (m, lead: string, p1: string) => {
 		let trail = '',
-			url = m;
+			url = lead ? m.slice(1) : m;
 		const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);
 		if (m2) {
 			trail = url.slice(m2.index);
@@ -33,8 +33,6 @@ export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), a
 			return m;
 		}
 		new MagicLinkToken(url, false, config, accum);
-		return `\0${accum.length - 1}w\x7F${trail}`;
+		return `${lead}\0${accum.length - 1}w\x7F${trail}`;
 	});
 };
-
-Parser.parsers['parseMagicLinks'] = __filename;

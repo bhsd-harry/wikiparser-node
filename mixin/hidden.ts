@@ -1,5 +1,3 @@
-import Parser from '../index';
-
 /**
  * 解析后不可见的类
  * @param constructor 基类
@@ -18,5 +16,3 @@ export const hidden = <T extends AstConstructor>(constructor: T) => {
 	}
 	return AnyHiddenToken;
 };
-
-Parser.mixins['hidden'] = __filename;

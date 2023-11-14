@@ -26,11 +26,11 @@ export const parseCommentAndExt = (
 			new OnlyincludeToken(inner, config, accum);
 			return str;
 		}).replace(
-			/(?<=^|\0\d+e\x7F)[^\0]+(?=$|\0\d+e\x7F)/gu,
-			substr => {
+			/(^|\0\d+e\x7F)([^\0]+)(?=$|\0\d+e\x7F)/gu,
+			(_, lead: string, substr: string) => {
 				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
-				return `\0${accum.length - 1}c\x7F`;
+				return `${lead}\0${accum.length - 1}c\x7F`;
 			},
 		);
 	}
@@ -76,5 +76,3 @@ export const parseCommentAndExt = (
 		},
 	);
 };
-
-Parser.parsers['parseCommentAndExt'] = __filename;

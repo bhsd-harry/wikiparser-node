@@ -1,6 +1,4 @@
 import {generateForSelf} from '../util/lint';
-import {fixed} from '../mixin/fixed';
-import {sol} from '../mixin/sol';
 import Parser from '../index';
 import {Token} from '.';
 import {SyntaxToken} from './syntax';
@@ -10,16 +8,13 @@ import type {LintError} from '../index';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export abstract class HeadingToken extends sol(fixed(Token)) {
+export abstract class HeadingToken extends Token {
 	/** @browser */
 	override readonly type = 'heading';
 	declare name: string;
 	declare childNodes: [Token, SyntaxToken];
-	abstract override get children(): [Token, SyntaxToken];
 	abstract override get firstChild(): Token;
-	abstract override get firstElementChild(): Token;
 	abstract override get lastChild(): SyntaxToken;
-	abstract override get lastElementChild(): SyntaxToken;
 
 	/**
 	 * 标题层级
@@ -29,22 +24,12 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 		return Number(this.name);
 	}
 
-	/** @throws `RangeError` 标题层级应为 1 - 6 之间的整数 */
-	set level(n) {
-		this.setLevel(n);
-	}
-
 	/**
 	 * 标题格式的等号
 	 * @browser
 	 */
 	get #equals(): string {
 		return '='.repeat(this.level);
-	}
-
-	/** 内部wikitext */
-	get innerText(): string {
-		return this.firstChild.text();
 	}
 
 	/**
@@ -59,7 +44,6 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
-			'Stage-1': ':', '!ExtToken': '',
 		});
 		this.append(token, trail);
 	}
@@ -70,11 +54,7 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	 */
 	override toString(selector?: string): string {
 		const equals = this.#equals;
-		return selector && this.matches(selector)
-			? ''
-			: `${this.prependNewLine()}${equals}${
-				this.firstChild.toString(selector)
-			}${equals}${this.lastChild.toString(selector)}`;
+		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;
 	}
 
 	/**
@@ -83,7 +63,7 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	 */
 	override text(): string {
 		const equals = this.#equals;
-		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}`;
+		return `${equals}${this.firstChild.text()}${equals}`;
 	}
 
 	/** @private */
@@ -127,32 +107,4 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
-		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new HeadingToken(this.level, [], this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(title);
-			token.lastChild.safeReplaceWith(trail);
-			return token;
-		});
-	}
-
-	/**
-	 * 设置标题层级
-	 * @param n 标题层级
-	 */
-	setLevel(n: number): void {
-		const level = String(Math.min(Math.max(n, 1), 6));
-		this.setAttribute('name', level);
-	}
-
-	/** 移除标题后的不可见内容 */
-	removeTrail(): void {
-		this.lastChild.replaceChildren();
-	}
 }
-
-Parser.classes['HeadingToken'] = __filename;

@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {singleLine} from '../../mixin/singleLine';
 import Parser from '../../index';
 import {Token} from '..';
 import {AtomToken} from '../atom';
@@ -14,28 +13,20 @@ export abstract class ParamTagToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare childNodes: AtomToken[];
-	abstract override get children(): AtomToken[];
 	abstract override get firstChild(): AtomToken | undefined;
-	abstract override get firstElementChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
-	abstract override get lastElementChild(): AtomToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @browser */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
 		super(undefined, config, true, accum, {
-			SingleLineAtomToken: ':',
 		});
 		if (wikitext) {
-			const SingleLineAtomToken = singleLine(AtomToken);
+			const SingleLineAtomToken = AtomToken;
 			this.append(
 				...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-					AstText: ':', ...acceptable,
 				})),
 			);
 		}
@@ -86,16 +77,4 @@ export abstract class ParamTagToken extends Token {
 			return generateForChild(child, rect, Parser.msg('invalid parameter of $1', this.name));
 		});
 	}
-
-	/** @override */
-	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new this.constructor(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-Parser.classes['ParamTagToken'] = __filename;

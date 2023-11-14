@@ -1,10 +1,10 @@
-import {text, noWrap, print, extUrlChar, extUrlCharFirst} from '../util/string';
+import {print, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from '.';
 import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';
-import type {AstNodes, AstText, AtomToken, FileToken} from '../internal';
+import type {AtomToken, FileToken} from '../internal';
 
 const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
@@ -58,11 +58,8 @@ export abstract class ImageParameterToken extends Token {
 	override readonly type = 'image-parameter';
 	declare name: string;
 	abstract override get parentNode(): FileToken;
-	abstract override get parentElement(): FileToken;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | this;
-	abstract override get previousElementSibling(): AtomToken | this;
 
 	/** @browser */
 	#syntax = '';
@@ -73,65 +70,6 @@ export abstract class ImageParameterToken extends Token {
 	 */
 	get link(): string | Title | undefined {
 		return this.name === 'link' ? validate('link', super.text(), this.getAttribute('config')) : undefined;
-	}
-
-	set link(value) {
-		if (this.name === 'link') {
-			this.setValue(String(value));
-		}
-	}
-
-	/** getValue()的getter */
-	get value(): string | true {
-		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
-	}
-
-	/** 图片大小 */
-	get size(): {width: string, height: string} | undefined {
-		if (this.name === 'width') {
-			const size = (this.getValue() as string).trim();
-			if (!size.includes('{{')) {
-				const [width, height = ''] = size.split('x') as [string] | [string, string];
-				return {width, height};
-			}
-			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
-				i = token.childNodes.findIndex(child => child.type === 'text' && child.data.includes('x')),
-				str = token.childNodes[i] as AstText;
-			if (i === -1) {
-				return {width: size, height: ''};
-			}
-			str.splitText(str.data.indexOf('x'));
-			(str.nextSibling as AstText).splitText(1);
-			return {width: text(token.childNodes.slice(0, i + 1)), height: text(token.childNodes.slice(i + 2))};
-		}
-		return undefined;
-	}
-
-	/** 图片宽度 */
-	get width(): string | undefined {
-		return this.size?.width;
-	}
-
-	set width(width) {
-		if (this.name === 'width') {
-			const {height} = this;
-			this.setValue(`${width || ''}${height! && 'x'}${height!}`);
-		}
-	}
-
-	/** 图片高度 */
-	get height(): string | undefined {
-		return this.size?.height;
-	}
-
-	set height(height) {
-		if (this.name === 'width') {
-			this.setValue(`${this.width!}${height ? `x${height}` : ''}`);
-		}
 	}
 
 	/**
@@ -159,7 +97,6 @@ export abstract class ImageParameterToken extends Token {
 				this.#syntax = str;
 			} else {
 				super(mt[2], config, true, accum, {
-					'Stage-2': ':', '!HeadingToken': ':',
 				});
 				this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
 			}
@@ -187,7 +124,7 @@ export abstract class ImageParameterToken extends Token {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		return this.#syntax && !(selector && this.matches(selector))
+		return this.#syntax
 			? this.#syntax.replace('$1', super.toString(selector))
 			: super.toString(selector);
 	}
@@ -231,88 +168,4 @@ export abstract class ImageParameterToken extends Token {
 			}</span>`
 			: super.print({class: 'image-caption'});
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new ImageParameterToken(this.#syntax.replace('$1', ''), config);
-			token.replaceChildren(...cloned);
-			return token;
-		});
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'syntax' ? this.#syntax as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	protected override hasAttribute(key: string): boolean {
-		return key === 'syntax' || super.hasAttribute(key);
-	}
-
-	/** 是否是不可变参数 */
-	#isVoid(): string | boolean {
-		return this.#syntax && !this.#syntax.includes('$1');
-	}
-
-	/**
-	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
-	 * @throws `Error` 不接受自定义输入的图片参数
-	 */
-	override insertAt(token: string, i?: number): AstText;
-	/** @ignore */
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	/** @ignore */
-	override insertAt<T extends AstNodes>(token: string | T, i = this.length): AstText | T {
-		if (!Parser.running && this.#isVoid()) {
-			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
-		}
-		return super.insertAt(token as T, i);
-	}
-
-	/** 获取参数值 */
-	getValue(): string | true {
-		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
-	}
-
-	/**
-	 * 设置参数值
-	 * @param value 参数值
-	 * @throws `Error` 无效参数
-	 * @throws	SyntaxError` 非法的参数值
-	 */
-	setValue(value: string | boolean): void {
-		if (this.name === 'invalid') {
-			throw new Error('无效的图片参数！');
-		} else if (this.#isVoid()) {
-			if (typeof value !== 'boolean') {
-				this.typeError('setValue', 'Boolean');
-			} else if (!value) {
-				this.remove();
-			}
-			return;
-		} else if (typeof value !== 'string') {
-			this.typeError('setValue', 'String');
-		}
-		const root = Parser.parse(`[[File:F|${
-				this.#syntax ? this.#syntax.replace('$1', value) : value
-			}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{length, firstChild: file} = root;
-		if (length !== 1 || file!.type !== 'file' || file!.length !== 2) {
-			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
-		}
-		const {lastChild: imageParameter, name} = file as FileToken;
-		if (name !== 'File:F' || imageParameter.name !== this.name) {
-			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
-		}
-		this.replaceChildren(...imageParameter.childNodes);
-	}
 }
-
-Parser.classes['ImageParameterToken'] = __filename;

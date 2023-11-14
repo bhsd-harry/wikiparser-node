@@ -1,7 +1,5 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
-import {fixed} from '../mixin/fixed';
-import {attributesParent} from '../mixin/attributesParent';
 import Parser from '../index';
 import {Token} from '.';
 import type {LintError} from '../index';
@@ -13,16 +11,13 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export abstract class HtmlToken extends attributesParent(fixed(Token)) {
+export abstract class HtmlToken extends Token {
 	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
 	declare childNodes: [AttributesToken];
-	abstract override get children(): [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
-	abstract override get firstElementChild(): AttributesToken;
 	abstract override get lastChild(): AttributesToken;
-	abstract override get lastElementChild(): AttributesToken;
 
 	/** @browser */
 	#closing;
@@ -37,41 +32,6 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	 */
 	get closing(): boolean {
 		return this.#closing;
-	}
-
-	/** @throws `Error` 自封闭标签或空标签 */
-	set closing(value) {
-		if (!value) {
-			this.#closing = false;
-			return;
-		} else if (this.#selfClosing) {
-			throw new Error('这是一个自封闭标签！');
-		}
-		const {html: [,, tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error('这是一个空标签！');
-		}
-		this.#closing = true;
-	}
-
-	/** 是否自封闭 */
-	get selfClosing(): boolean {
-		return this.#selfClosing;
-	}
-
-	/** @throws `Error` 闭合标签或无效自封闭标签 */
-	set selfClosing(value) {
-		if (!value) {
-			this.#selfClosing = false;
-			return;
-		} else if (this.#closing) {
-			throw new Error('这是一个闭合标签！');
-		}
-		const {html: [tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error(`<${this.name}>标签自封闭无效！`);
-		}
-		this.#selfClosing = true;
 	}
 
 	/**
@@ -102,9 +62,7 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		return selector && this.matches(selector)
-			? ''
-			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(selector)}${this.#selfClosing ? '/' : ''}>`;
+		return `<${this.#closing ? '/' : ''}${this.#tag}${super.toString()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/**
@@ -139,35 +97,30 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
-		let wikitext: string | undefined,
-			refError: LintError | undefined;
+		let refError: LintError | undefined;
 		if (this.name === 'h1' && !this.#closing) {
-			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
-			errors.push({...refError, excerpt: wikitext.slice(start, start + 50)});
+			errors.push(refError);
 		}
 		if (this.closest('table-attrs')) {
-			wikitext ??= String(this.getRootNode());
 			refError ??= generateForSelf(this, {start}, '');
-			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
-			errors.push({...refError, message: Parser.msg('HTML tag in table attributes'), excerpt});
+			errors.push({
+				...refError,
+				message: Parser.msg('HTML tag in table attributes'),
+			});
 		}
 		try {
 			this.findMatchingTag();
 		} catch (e) {
 			if (e instanceof SyntaxError) {
 				const {message: errorMsg} = e;
-				wikitext ??= String(this.getRootNode());
 				refError ??= generateForSelf(this, {start}, '');
 				const [msg] = errorMsg.split(':'),
 					error = {...refError, message: Parser.msg(msg!)};
 				if (msg === 'unclosed tag') {
 					error.severity = 'warning';
-					error.excerpt = wikitext.slice(start, start + 50);
 				} else if (msg === 'unmatched closing tag') {
-					const end = start + String(this).length,
-						ancestor = this.closest('magic-word') as TranscludeToken | undefined;
-					error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
+					const ancestor = this.closest('magic-word') as TranscludeToken | undefined;
 					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';
 					}
@@ -216,66 +169,4 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 		}
 		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [attr] = this.cloneChildNodes() as [AttributesToken],
-			config = this.getAttribute('config');
-		// @ts-expect-error abstract class
-		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config));
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'tag' ? this.#tag as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/**
-	 * 更换标签名
-	 * @param tag 标签名
-	 * @throws `RangeError` 非法的HTML标签
-	 */
-	replaceTag(tag: string): void {
-		const name = tag.toLowerCase();
-		if (!this.getAttribute('config').html.flat().includes(name)) {
-			throw new RangeError(`非法的HTML标签：${tag}`);
-		}
-		this.setAttribute('name', name).#tag = tag;
-	}
-
-	/** 局部闭合 */
-	#localMatch(): void {
-		this.#selfClosing = false;
-		const root = Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'));
-		this.after(root.firstChild!);
-	}
-
-	/**
-	 * 修复无效自封闭标签
-	 * @throws `Error` 无法修复无效自封闭标签
-	 */
-	fix(): void {
-		const config = this.getAttribute('config'),
-			{parentNode, name: tagName, firstChild} = this;
-		if (!parentNode || !this.#selfClosing || !config.html[0].includes(tagName)) {
-			return;
-		} else if (firstChild.text().trim()) {
-			this.#localMatch();
-			return;
-		}
-		const {childNodes} = parentNode,
-			i = childNodes.indexOf(this),
-			prevSiblings = childNodes.slice(0, i)
-				.filter(({type, name}) => type === 'html' && name === tagName) as this[],
-			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
-		if (imbalance < 0) {
-			this.#selfClosing = false;
-			this.#closing = true;
-		} else {
-			Parser.warn('无法修复无效自封闭标签', noWrap(String(this)));
-			throw new Error(`无法修复无效自封闭标签：前文共有 ${imbalance} 个未匹配的闭合标签`);
-		}
-	}
 }
-
-Parser.classes['HtmlToken'] = __filename;

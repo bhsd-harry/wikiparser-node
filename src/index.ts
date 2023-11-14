@@ -37,31 +37,16 @@
 // d: ListToken
 // v: ConverterToken
 
-import * as assert from 'assert/strict';
 import {text} from '../util/string';
-import {Ranges} from '../lib/ranges';
-import {AstRange} from '../lib/range';
 import Parser from '../index';
-const {MAX_STAGE, aliases} = Parser;
+const {MAX_STAGE} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
-import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
-	IncludeToken,
-	HtmlToken,
-	ExtToken,
-	ArgToken,
-	TranscludeToken,
-	CommentToken,
-	HeadingToken,
-	CategoryToken,
-	ParameterToken,
 } from '../internal';
-import type {TokenTypes, CaretPosition} from '../lib/node';
-
-declare type TagToken = IncludeToken | ExtToken | HtmlToken;
+import type {TokenTypes} from '../lib/node';
 
 /**
  * 所有节点的基类
@@ -86,23 +71,6 @@ export class Token extends AstElement {
 	#accum;
 	/** @browser */
 	#include?: boolean;
-	#acceptable?: Record<string, Ranges>;
-	#protectedChildren = new Ranges();
-
-	/** 所有图片，包括图库 */
-	get images(): Token[] {
-		return this.querySelectorAll('file, gallery-image, imagemap-image');
-	}
-
-	/** 所有内链、外链和自由外链 */
-	get links(): Token[] {
-		return this.querySelectorAll('link, ext-link, free-ext-link, image-parameter#link');
-	}
-
-	/** 所有模板和模块 */
-	get embeds(): TranscludeToken[] {
-		return this.querySelectorAll('template, magic-word#invoke') as TranscludeToken[];
-	}
 
 	/** @browser */
 	constructor(
@@ -118,7 +86,6 @@ export class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
-		this.setAttribute('acceptable', acceptable);
 		accum.push(this);
 	}
 
@@ -185,7 +152,7 @@ export class Token extends AstElement {
 			if (i % 2 === 0) {
 				return new AstText(s);
 			// @ts-expect-error isNaN
-			} else if (isNaN(s.at(-1))) {
+			} else if (isNaN(s[s.lengtht - 1])) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
@@ -382,7 +349,7 @@ export class Token extends AstElement {
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		switch (key) {
 			case 'config':
-				return structuredClone(this.#config) as TokenAttributeGetter<T>;
+				return JSON.parse(JSON.stringify(this.#config)) as TokenAttributeGetter<T>;
 			case 'accum':
 				return this.#accum as TokenAttributeGetter<T>;
 			case 'include': {
@@ -390,24 +357,8 @@ export class Token extends AstElement {
 					return this.#include as TokenAttributeGetter<T>;
 				}
 				const root = this.getRootNode();
-				if (root.type === 'root' && root !== this) {
-					return root.getAttribute('include') as TokenAttributeGetter<T>;
-				}
-				const includeToken = root.querySelector('include');
-				if (includeToken) {
-					return (includeToken.name === 'noinclude') as TokenAttributeGetter<T>;
-				}
-				const noincludeToken = root.querySelector('noinclude');
-				return (
-					Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken))
-				) as TokenAttributeGetter<T>;
+				return root.getAttribute('include') as TokenAttributeGetter<T>;
 			}
-			case 'stage':
-				return this.#stage as TokenAttributeGetter<T>;
-			case 'acceptable':
-				return (this.#acceptable ? {...this.#acceptable} : undefined) as TokenAttributeGetter<T>;
-			case 'protectedChildren':
-				return new Ranges(this.#protectedChildren) as TokenAttributeGetter<T>;
 			default:
 				return super.getAttribute(key);
 		}
@@ -422,26 +373,6 @@ export class Token extends AstElement {
 				}
 				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
 				return this;
-			case 'acceptable': {
-				const acceptable: Record<string, Ranges> = {};
-				if (value) {
-					for (const [k, v] of Object.entries(value as unknown as Acceptable)) {
-						if (k.startsWith('Stage-')) {
-							for (let i = 0; i <= Number(k.slice(6)); i++) {
-								for (const type of aliases[i]!) {
-									acceptable[type] = new Ranges(v);
-								}
-							}
-						} else if (k.startsWith('!')) { // `!`项必须放在最后
-							delete acceptable[k.slice(1)];
-						} else {
-							acceptable[k] = new Ranges(v);
-						}
-					}
-				}
-				this.#acceptable = value && acceptable;
-				return this;
-			}
 			default:
 				return super.setAttribute(key, value);
 		}
@@ -465,19 +396,6 @@ export class Token extends AstElement {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
-		if (!Parser.running && this.#acceptable) {
-			const acceptableIndices = Object.fromEntries(
-					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
-				),
-				nodesAfter = this.childNodes.slice(i),
-				{constructor: {name: insertedName}} = token,
-				k = i < 0 ? i + this.length : i;
-			if (!acceptableIndices[insertedName]?.includes(k)) {
-				throw new RangeError(`${this.constructor.name} 的第 ${k} 个子节点不能为 ${insertedName}！`);
-			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(k + j + 1))) {
-				throw new Error(`${this.constructor.name} 插入新的第 ${k} 个子节点会破坏规定的顺序！`);
-			}
-		}
 		super.insertAt(token, i);
 		if (token.type === 'root') {
 			token.type = 'plain';
@@ -503,431 +421,4 @@ export class Token extends AstElement {
 	): Title {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
-
-	/** @private */
-	protected protectChildren(...args: (string | number | Range)[]): void {
-		this.#protectedChildren.push(...new Ranges(args));
-	}
-
-	/**
-	 * @override
-	 * @param i 移除位置
-	 * @throws `Error` 不可移除的子节点
-	 */
-	override removeAt(i: number): AstNodes {
-		const iPos = i < 0 ? i + this.length : i;
-		if (!Parser.running) {
-			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
-			if (protectedIndices.includes(iPos)) {
-				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
-			} else if (this.#acceptable) {
-				const acceptableIndices = Object.fromEntries(
-						Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
-					),
-					nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
-				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
-					throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
-				}
-			}
-		}
-		return super.removeAt(i);
-	}
-
-	/**
-	 * 替换为同类节点
-	 * @param token 待替换的节点
-	 * @throws `Error` 不存在父节点
-	 * @throws `Error` 待替换的节点具有不同属性
-	 */
-	safeReplaceWith(token: this): void {
-		const {parentNode} = this;
-		if (!parentNode) {
-			throw new Error('不存在父节点！');
-		} else if (token.constructor !== this.constructor) {
-			this.typeError('safeReplaceWith', this.constructor.name);
-		}
-		try {
-			assert.deepEqual(token.getAttribute('acceptable'), this.#acceptable);
-		} catch (e) {
-			if (e instanceof assert.AssertionError) {
-				throw new Error(`待替换的 ${this.constructor.name} 带有不同的 #acceptable 属性！`);
-			}
-			throw e;
-		}
-		const i = parentNode.childNodes.indexOf(this);
-		super.removeAt.call(parentNode, i);
-		super.insertAt.call(parentNode, token, i);
-		if (token.type === 'root') {
-			token.type = 'plain';
-		}
-		const e = new Event('replace', {bubbles: true});
-		token.dispatchEvent(e, {position: i, oldToken: this, newToken: token});
-	}
-
-	/**
-	 * 创建HTML注释
-	 * @param data 注释内容
-	 */
-	createComment(data = ''): CommentToken {
-		const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
-		const config = this.getAttribute('config');
-		// @ts-expect-error abstract class
-		return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
-	}
-
-	/**
-	 * 创建标签
-	 * @param tagName 标签名
-	 * @param options 选项
-	 * @param options.selfClosing 是否自封闭
-	 * @param options.closing 是否是闭合标签
-	 * @throws `RangeError` 非法的标签名
-	 */
-	createElement(tagName: string, {selfClosing, closing}: {selfClosing?: boolean, closing?: boolean} = {}): TagToken {
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include');
-		if (tagName === (include ? 'noinclude' : 'includeonly')) {
-			const {IncludeToken}: typeof import('./tagPair/include') = require('./tagPair/include');
-			return Parser.run(
-				// @ts-expect-error abstract class
-				() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
-			);
-		} else if (config.ext.includes(tagName)) {
-			const {ExtToken}: typeof import('./tagPair/ext') = require('./tagPair/ext');
-			// @ts-expect-error abstract class
-			return Parser.run(() => new ExtToken(tagName, '', '', selfClosing ? undefined : '', config));
-		} else if (config.html.flat().includes(tagName)) {
-			const {HtmlToken}: typeof import('./html') = require('./html');
-			// @ts-expect-error abstract class
-			return Parser.run(() => new HtmlToken(tagName, '', closing, selfClosing, config));
-		}
-		throw new RangeError(`非法的标签名：${tagName}`);
-	}
-
-	/**
-	 * 创建纯文本节点
-	 * @param data 文本内容
-	 */
-	createTextNode(data = ''): AstText {
-		return new AstText(data);
-	}
-
-	/** 创建AstRange对象 */
-	createRange(): AstRange {
-		return new AstRange();
-	}
-
-	/**
-	 * 找到给定位置所在的节点
-	 * @param index 位置
-	 */
-	caretPositionFromIndex(index?: number): CaretPosition | undefined {
-		if (index === undefined) {
-			return undefined;
-		}
-		const {length} = String(this);
-		if (index > length || index < -length) {
-			return undefined;
-		}
-		const idx = index < 0 ? index + length : index;
-		let self: AstNodes = this,
-			acc = 0,
-			start = 0;
-		while (self.type !== 'text') {
-			const {childNodes}: Token = self;
-			acc += self.getPadding();
-			for (let i = 0; acc <= idx && i < childNodes.length; i++) {
-				const cur: AstNodes = childNodes[i]!,
-					{length: l} = String(cur);
-				acc += l;
-				if (acc >= idx) {
-					self = cur;
-					acc -= l;
-					start = acc;
-					break;
-				}
-				acc += self.getGaps(i);
-			}
-			if (self.childNodes === childNodes) {
-				return {offsetNode: self, offset: idx - start};
-			}
-		}
-		return {offsetNode: self, offset: idx - start};
-	}
-
-	/**
-	 * 找到给定位置所在的节点
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	caretPositionFromPoint(x: number, y: number): CaretPosition | undefined {
-		return this.caretPositionFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param index 位置
-	 * @throws `Error` 不是根节点
-	 */
-	elementFromIndex(index?: number): AstNodes | undefined {
-		if (index === undefined) {
-			return undefined;
-		} else if (this.type !== 'root') {
-			throw new Error('elementFromIndex方法只可用于根节点！');
-		}
-		const {length} = String(this);
-		if (index > length || index < -length) {
-			return undefined;
-		}
-		const idx = index < 0 ? index + length : index,
-			{childNodes} = this;
-		let acc = 0,
-			i = 0;
-		for (; acc < idx && i < childNodes.length; i++) {
-			const {length: l} = String(childNodes[i]);
-			acc += l;
-		}
-		return childNodes[i && i - 1];
-	}
-
-	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	elementFromPoint(x: number, y: number): AstNodes | undefined {
-		return this.elementFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
-	 * 找到给定位置所在的所有节点
-	 * @param index 位置
-	 */
-	elementsFromIndex(index?: number): AstNodes[] {
-		const offsetNode = this.caretPositionFromIndex(index)?.offsetNode;
-		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
-	}
-
-	/**
-	 * 找到给定位置所在的所有节点
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	elementsFromPoint(x: number, y: number): AstNodes[] {
-		return this.elementsFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
-	 * 判断标题是否是跨维基链接
-	 * @param title 标题
-	 */
-	isInterwiki(title: string): [string, string] | null {
-		return Parser.isInterwiki(title, this.#config);
-	}
-
-	/** @private */
-	protected cloneChildNodes(): AstNodes[] {
-		return this.childNodes.map(child => child.cloneNode());
-	}
-
-	/**
-	 * 深拷贝节点
-	 * @throws `Error` 未定义复制方法
-	 */
-	cloneNode(): this {
-		if (this.constructor !== Token) {
-			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
-		}
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new Token(undefined, this.#config, false, [], this.#acceptable) as this;
-			token.type = this.type;
-			token.append(...cloned);
-			token.protectChildren(...this.#protectedChildren);
-			return token;
-		});
-	}
-
-	/** 获取全部章节 */
-	sections(): (AstText | Token)[][] | undefined {
-		if (this.type !== 'root') {
-			return undefined;
-		}
-		const {childNodes} = this,
-			headings: [number, number][] = ([...childNodes.entries()]
-				.filter(([, {type}]) => type === 'heading') as [number, HeadingToken][])
-				.map(([i, {name}]) => [i, Number(name)]),
-			lastHeading = [-1, -1, -1, -1, -1, -1],
-			sections: (AstText | Token)[][] = new Array(headings.length);
-		for (let i = 0; i < headings.length; i++) {
-			const [index, level] = headings[i]!;
-			for (let j = level; j < 6; j++) {
-				const last = lastHeading[j]!;
-				if (last >= 0) {
-					sections[last] = childNodes.slice(headings[last]![0], index);
-				}
-				lastHeading[j] = j === level ? i : -1;
-			}
-		}
-		for (const last of lastHeading) {
-			if (last >= 0) {
-				sections[last] = childNodes.slice(headings[last]![0]);
-			}
-		}
-		sections.unshift(childNodes.slice(0, headings[0]?.[0]));
-		return sections;
-	}
-
-	/**
-	 * 获取指定章节
-	 * @param n 章节序号
-	 */
-	section(n: number): (AstText | Token)[] | undefined {
-		return this.sections()?.[n];
-	}
-
-	/**
-	 * 获取指定的外层HTML标签
-	 * @param tag HTML标签名
-	 * @throws `RangeError` 非法的标签或空标签
-	 */
-	findEnclosingHtml(tag?: string): [HtmlToken, HtmlToken] | undefined {
-		const lcTag = tag?.toLowerCase();
-		if (lcTag !== undefined && !this.#config.html.slice(0, 2).flat().includes(lcTag)) {
-			throw new RangeError(`非法的标签或空标签：${lcTag}`);
-		}
-		const {parentNode} = this;
-		if (!parentNode) {
-			return undefined;
-		}
-		const {childNodes, length} = parentNode,
-			index = childNodes.indexOf(this);
-		let i: number;
-		for (i = index - 1; i >= 0; i--) {
-			const {
-				type, name, selfClosing, closing,
-			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
-			if (type === 'html' && (!lcTag || name === lcTag) && selfClosing === false && closing === false) {
-				break;
-			}
-		}
-		if (i === -1) {
-			return parentNode.findEnclosingHtml(lcTag);
-		}
-		const opening = childNodes[i] as HtmlToken;
-		for (i = index + 1; i < length; i++) {
-			const {
-				type, name, selfClosing, closing,
-			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
-			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
-				break;
-			}
-		}
-		return i === length ? parentNode.findEnclosingHtml(lcTag) : [opening, childNodes[i] as HtmlToken];
-	}
-
-	/** 获取全部分类 */
-	getCategories(): [string, string | undefined][] {
-		const categories = this.querySelectorAll('category') as CategoryToken[];
-		return categories.map(({name, sortkey}) => [name, sortkey]);
-	}
-
-	/**
-	 * 重新解析单引号
-	 * @throws `Error` 不接受QuoteToken作为子节点
-	 */
-	redoQuotes(): void {
-		const acceptable = this.getAttribute('acceptable');
-		if (acceptable && !acceptable['QuoteToken']?.some(
-			range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1,
-		)) {
-			throw new Error(`${this.constructor.name} 不接受 QuoteToken 作为子节点！`);
-		}
-		for (const quote of this.childNodes) {
-			if (quote.type === 'quote') {
-				quote.replaceWith(String(quote));
-			}
-		}
-		this.normalize();
-		const textNodes = [...this.childNodes.entries()]
-			.filter(([, {type}]) => type === 'text') as [number, AstText][],
-			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
-			token = Parser.run(() => {
-				const root = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
-				return root.setAttribute('stage', 6).parse(7);
-			});
-		for (const quote of [...token.childNodes].reverse()) {
-			if (quote.type === 'quote') {
-				const index = quote.getRelativeIndex(),
-					n = indices.findLastIndex(textIndex => textIndex <= index),
-					cur = this.childNodes[n] as AstText;
-				cur.splitText(index - indices[n]!).splitText(Number(quote.name));
-				this.removeAt(n + 1);
-				this.insertAt(quote, n + 1);
-			}
-		}
-		this.normalize();
-	}
-
-	/** 解析部分魔术字 */
-	solveConst(): void {
-		const targets = this.querySelectorAll('magic-word, arg'),
-			magicWords = new Set(['if', 'ifeq', 'switch']);
-		for (let i = targets.length - 1; i >= 0; i--) {
-			const target = targets[i] as ArgToken | TranscludeToken & {default: undefined},
-				{type, name, default: argDefault, childNodes, length} = target;
-			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
-				let replace = '';
-				if (type === 'arg') {
-					replace = argDefault === false ? String(target) : argDefault;
-				} else if (name === 'if' && !childNodes[1]?.querySelector('magic-word, template')) {
-					replace = String(childNodes[String(childNodes[1] ?? '').trim() ? 2 : 3] ?? '').trim();
-				} else if (name === 'ifeq'
-					&& !childNodes.slice(1, 3).some(child => child.querySelector('magic-word, template'))
-				) {
-					replace = String(childNodes[
-						String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '').trim() ? 3 : 4
-					] ?? '').trim();
-				} else if (name === 'switch' && !childNodes[1]?.querySelector('magic-word, template')) {
-					const key = String(childNodes[1] ?? '').trim();
-					let defaultVal = '',
-						found = false,
-						transclusion = false;
-					for (let j = 2; j < length; j++) {
-						const {
-							anon, name: option, value, firstChild,
-						} = childNodes[j] as ParameterToken;
-						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
-						if (anon) {
-							if (j === length - 1) {
-								defaultVal = value;
-							} else if (transclusion) {
-								break;
-							} else {
-								found ||= key === value;
-							}
-						} else if (transclusion) {
-							break;
-						} else if (found || option === key) {
-							replace = value;
-							break;
-						} else if (option.toLowerCase() === '#default') {
-							defaultVal = value;
-						}
-						if (j === length - 1) {
-							replace = defaultVal;
-						}
-					}
-					if (transclusion) {
-						continue;
-					}
-				} else {
-					continue;
-				}
-				target.replaceWith(replace);
-			}
-		}
-	}
 }
-
-Parser.classes['Token'] = __filename;

@@ -37,7 +37,7 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 					if (firstMulti === undefined && firstSpace === undefined) {
 						firstSpace = i;
 					}
-				} else if (arr[i - 1]!.at(-2) === ' ') {
+				} else if (arr[i - 1]!.slice(-2, -1) === ' ') {
 					firstSingle = i;
 				} else {
 					firstMulti ??= i;
@@ -64,5 +64,3 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 	}
 	return arr.join('');
 };
-
-Parser.parsers['parseQuotes'] = __filename;

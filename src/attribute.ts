@@ -1,6 +1,5 @@
 import {generateForChild} from '../util/lint';
-import {noWrap, removeComment} from '../util/string';
-import {fixed} from '../mixin/fixed';
+import {removeComment} from '../util/string';
 import Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
@@ -9,10 +8,7 @@ import type {AttributesToken} from '../internal';
 
 declare type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
-	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
-	post = {'ext-attr': '/>', 'html-attr': '>', 'table-attr': ''},
-	commonHtmlAttrs = new Set([
+const commonHtmlAttrs = new Set([
 		'id',
 		'class',
 		'style',
@@ -111,37 +107,6 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 		poll: new Set(['id', 'show-results-before-voting']),
 		sm2: typeAttrs,
 		flashmp3: typeAttrs,
-		score: new Set([
-			'line_width_inches',
-			'lang',
-			'override_midi',
-			'raw',
-			'note-language',
-			'override_audio',
-			'override_ogg',
-			'sound',
-			'vorbis',
-		]),
-		seo: new Set([
-			'title',
-			'title_mode',
-			'title_separator',
-			'keywords',
-			'description',
-			'robots',
-			'google_bot',
-			'image',
-			'image_width',
-			'image_height',
-			'image_alt',
-			'type',
-			'site_name',
-			'locale',
-			'section',
-			'author',
-			'published_time',
-			'twitter_site',
-		]),
 		tab: new Set([
 			'nested',
 			'name',
@@ -179,20 +144,15 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export abstract class AttributeToken extends fixed(Token) {
+export abstract class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare name: string;
 	declare childNodes: [AtomToken, Token];
 	abstract override get firstChild(): AtomToken;
-	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
-	abstract override get lastElementChild(): Token;
 	abstract override get parentNode(): AttributesToken | undefined;
-	abstract override get parentElement(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
-	abstract override get nextElementSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
-	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/** @browser */
 	#equal;
@@ -225,10 +185,6 @@ export abstract class AttributeToken extends fixed(Token) {
 		return this.getValue();
 	}
 
-	set value(value) {
-		this.setValue(value);
-	}
-
 	/**
 	 * @browser
 	 * @param type 标签类型
@@ -249,40 +205,27 @@ export abstract class AttributeToken extends fixed(Token) {
 		accum: Token[] = [],
 	) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
-			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
 		let valueToken: Token;
 		if (key === 'title') {
 			valueToken = new Token(value, config, true, accum, {
-				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
 			const newConfig = {...config, excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
-				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 5);
 		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
 			const newConfig = {...config, excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list']};
 			valueToken = new Token(value, newConfig, true, accum, {
-				ArgToken: ':',
-				TranscludeToken: ':',
-				LinkToken: ':',
-				FileToken: ':',
-				CategoryToken: ':',
-				QuoteToken: ':',
-				ExtLinkToken: ':',
-				MagicLinkToken: ':',
-				ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
-				[`Stage-${stages[type]}`]: ':',
 			});
 		}
 		super(undefined, config, true, accum);
@@ -310,9 +253,6 @@ export abstract class AttributeToken extends fixed(Token) {
 	 * @browser
 	 */
 	override toString(selector?: string): string {
-		if (selector && this.matches(selector)) {
-			return '';
-		}
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
 			? `${super.toString(selector, `${this.#equal}${quoteStart}`)}${quoteEnd}`
@@ -356,7 +296,11 @@ export abstract class AttributeToken extends fixed(Token) {
 			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
 				startIndex = e.startIndex - 1,
 				startCol = e.startCol - 1;
-			errors.push({...e, startIndex, startCol, excerpt: String(root).slice(startIndex, startIndex + 50)});
+			errors.push({
+				...e,
+				startIndex,
+				startCol,
+			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
 			|| (type !== 'ext-attr' && !/\{\{[^{]+\}\}/u.test(name) || tag in htmlAttrs)
@@ -385,127 +329,8 @@ export abstract class AttributeToken extends fixed(Token) {
 			if (this.#quotes[1]) {
 				return value;
 			}
-			return this.#quotes[0] ? value.trimEnd() : value.trim();
+			return value.trim();
 		}
 		return this.type === 'ext-attr' || '';
 	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'equal') {
-			return this.#equal as TokenAttributeGetter<T>;
-		}
-		return key === 'quotes' ? this.#quotes as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	protected override hasAttribute(key: string): boolean {
-		return key === 'equal' || key === 'quotes' || super.hasAttribute(key);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config);
-			token.firstChild.safeReplaceWith(key);
-			token.lastChild.safeReplaceWith(value);
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/** 转义等号 */
-	escape(): void {
-		this.#equal = '{{=}}';
-	}
-
-	/** 闭合引号 */
-	close(): void {
-		const [opening] = this.#quotes;
-		if (opening) {
-			this.#quotes[1] = opening;
-		}
-	}
-
-	/**
-	 * 设置属性值
-	 * @param value 参数值
-	 * @throws `SyntaxError` 非法的标签属性
-	 */
-	setValue(value: string | boolean): void {
-		if (value === false) {
-			this.remove();
-			return;
-		} else if (value === true) {
-			this.#equal = '';
-			return;
-		}
-		const {type} = this,
-			key = this.name === 'title' ? 'title' : 'data',
-			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs: AttributesToken;
-		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		} else if (type === 'table-attr') {
-			if (tag!.length !== 2) {
-				throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-			}
-			attrs = tag!.lastChild as AttributesToken;
-		} else {
-			attrs = tag!.firstChild as AttributesToken;
-		}
-		const {firstChild} = attrs;
-		if (attrs.length !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		}
-		const {lastChild} = firstChild;
-		firstChild.destroy();
-		this.lastChild.safeReplaceWith(lastChild);
-		if (this.#quotes[0]) {
-			this.close();
-		} else {
-			this.#quotes = ['"', '"'] as [string, string];
-		}
-	}
-
-	/**
-	 * 修改属性名
-	 * @param key 新属性名
-	 * @throws `Error` title属性不能更名
-	 * @throws `SyntaxError` 非法的标签属性名
-	 */
-	rename(key: string): void {
-		if (this.name === 'title') {
-			throw new Error('title 属性不能更名！');
-		}
-		const {type} = this,
-			wikitext = `${pre[type]}${key}${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs: AttributesToken;
-		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		} else if (type === 'table-attr') {
-			if (tag!.length !== 2) {
-				throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-			}
-			attrs = tag!.lastChild as AttributesToken;
-		} else {
-			attrs = tag!.firstChild as AttributesToken;
-		}
-		const {firstChild: attr} = attrs;
-		if (attrs.length !== 1 || attr.type !== this.type || attr.value !== true) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		}
-		const {firstChild} = attr;
-		attr.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
-	}
 }
-
-Parser.classes['AttributeToken'] = __filename;
