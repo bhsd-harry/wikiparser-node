@@ -370,7 +370,7 @@ export abstract class AstNode {
 	 */
 	isEqualNode(node: AstNode): boolean {
 		try {
-			assert.deepStrictEqual(this, node);
+			assert.deepEqual(this, node);
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				return false;

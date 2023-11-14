@@ -783,7 +783,7 @@ export abstract class TableToken extends TrBaseToken {
 			occupied = (i: number): number[] =>
 				layout[i]!.map(({row}, j) => row === i ? j : undefined).filter(j => j !== undefined) as number[];
 		try {
-			assert.deepStrictEqual(occupied(y), occupied(before));
+			assert.deepEqual(occupied(y), occupied(before));
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				throw new RangeError(`第 ${y} 行与第 ${before} 行的构造不同，无法移动！`);
@@ -821,7 +821,7 @@ export abstract class TableToken extends TrBaseToken {
 				({row, column}, j) => row === i && (!oneRow || cells[column]!.rowspan === 1) ? j : undefined,
 			).filter(j => j !== undefined) as number[];
 		try {
-			assert.deepStrictEqual(occupied(y), occupied(after, true));
+			assert.deepEqual(occupied(y), occupied(after, true));
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				throw new RangeError(`第 ${y} 行与第 ${after} 行的构造不同，无法移动！`);

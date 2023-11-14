@@ -921,8 +921,10 @@ export class Token extends AstElement {
 					if (transclusion) {
 						continue;
 					}
-					target.replaceWith(replace);
+				} else {
+					continue;
 				}
+				target.replaceWith(replace);
 			}
 		}
 	}

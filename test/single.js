@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs'),
-	assert = require('assert'),
+	assert = require('assert/strict'),
 	path = require('path'),
 	{diff} = require('../util/diff'),
 	{default: Parser} = require('..');
@@ -34,5 +34,5 @@ const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.wiki'), 'utf8
 	console.time('lint');
 	const errors = token.lint();
 	console.timeEnd('lint');
-	assert.deepStrictEqual(errors, []);
+	assert.deepEqual(errors, []);
 })();
