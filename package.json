@@ -50,7 +50,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
 		"ajv-cli": "^5.0.0",
-		"request": "^2.88.2"
+		"@cypress/request": "^3.0.1"
 	},
 	"engines": {
 		"node": "^20.9.0"
