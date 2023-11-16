@@ -131,6 +131,14 @@ export abstract class FileToken extends LinkBaseToken {
 			return errors;
 		}
 		const rect = {start, ...this.getRootNode().posFromIndex(start)};
+
+		/**
+		 * 图片参数到语法错误的映射
+		 * @param msg 消息键
+		 * @param p1 替换$1
+		 */
+		const generate = (msg: string, p1: string) =>
+			(arg: ImageParameterToken) => generateForChild(arg, rect, Parser.msg(`${msg} image $1 parameter`, p1));
 		for (const key of keys) {
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {
@@ -140,30 +148,22 @@ export abstract class FileToken extends LinkBaseToken {
 				];
 			}
 			if (relevantArgs.length > 1) {
-				errors.push(...relevantArgs.map(arg => generateForChild(
-					arg, rect, Parser.msg('duplicated image $1 parameter', key),
-				)));
+				errors.push(...relevantArgs.map(generate('duplicated', key)));
 			}
 		}
 		if (frameKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => frame.has(name)).map(arg => generateForChild(
-					arg, rect, Parser.msg('conflicting image $1 parameter', 'frame'),
-				)),
+				...args.filter(({name}) => frame.has(name)).map(generate('conflicting', 'frame')),
 			);
 		}
 		if (horizAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => horizAlign.has(name)).map(arg => generateForChild(
-					arg, rect, Parser.msg('conflicting image $1 parameter', 'horizontal-alignment'),
-				)),
+				...args.filter(({name}) => horizAlign.has(name)).map(generate('conflicting', 'horizontal-alignment')),
 			);
 		}
 		if (vertAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => vertAlign.has(name)).map(arg => generateForChild(
-					arg, rect, Parser.msg('conflicting image $1 parameter', 'vertical-alignment'),
-				)),
+				...args.filter(({name}) => vertAlign.has(name)).map(generate('conflicting', 'vertical-alignment')),
 			);
 		}
 		return errors;

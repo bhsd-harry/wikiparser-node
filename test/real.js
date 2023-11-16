@@ -26,7 +26,9 @@ const getPages = async url => {
 	/** @type {{query: {pages: MediaWikiPage[]}}} */
 	const {query: {pages}} = await api.get({...generatorParams, ...revisionParams});
 	return pages.map(({title, ns, revisions}) => ({
-		title, ns, content: revisions?.[0]?.contentmodel === 'wikitext' && revisions?.[0]?.content,
+		title,
+		ns,
+		content: revisions?.[0]?.contentmodel === 'wikitext' && revisions?.[0]?.content,
 	})).filter(({content}) => content);
 };
 

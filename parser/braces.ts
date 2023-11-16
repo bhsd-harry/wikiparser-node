@@ -22,9 +22,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		moreBraces = wikitext.includes('}}'),
 		lastIndex: number | undefined;
-	while (mt || lastIndex !== undefined && lastIndex <= wikitext.length
-		&& stack.at(-1)?.[0]?.startsWith('=')
-	) {
+	while (mt || lastIndex !== undefined && lastIndex <= wikitext.length && stack.at(-1)?.[0]?.startsWith('=')) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
 			mt[0] = mt[0]!.slice(length);
@@ -118,10 +116,10 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			stack.pop();
 			curTop = stack.at(-1);
 		}
-		regex = new RegExp(source + (curTop
-			? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}`
-			: ''
-		), 'gmu');
+		regex = new RegExp(
+			source + (curTop ? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}` : ''),
+			'gmu',
+		);
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(wikitext);
 	}

@@ -43,9 +43,7 @@ export abstract class LinkBaseToken extends Token {
 	/** 链接显示文字 */
 	get innerText(): string | undefined {
 		if (this.type === 'link') {
-			return this.length > 1
-				? this.lastChild.text()
-				: this.firstChild.text().replace(/^\s*:/u, '');
+			return this.length > 1 ? this.lastChild.text() : this.firstChild.text().replace(/^\s*:/u, '');
 		}
 		return undefined;
 	}
@@ -238,9 +236,12 @@ export abstract class LinkBaseToken extends Token {
 		let lastChild: Token;
 		const config = this.getAttribute('config');
 		if (linkStr) {
-			const root = Parser.parse(`[[${
-					this.type === 'category' ? 'Category:' : ''
-				}L|${linkStr}]]`, this.getAttribute('include'), 6, config),
+			const root = Parser.parse(
+					`[[${this.type === 'category' ? 'Category:' : ''}L|${linkStr}]]`,
+					this.getAttribute('include'),
+					6,
+					config,
+				),
 				{length, firstChild: wikiLink} = root;
 			if (length !== 1 || wikiLink?.type !== this.type || wikiLink.length !== 2) {
 				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkStr)}`);

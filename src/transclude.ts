@@ -89,11 +89,13 @@ export abstract class TranscludeToken extends Token {
 						if (!part) {
 							break;
 						}
-						const invoke = new AtomToken(part.join('='), `invoke-${
-							i ? 'function' : 'module'
-						}`, config, accum, {
-							'Stage-1': ':', '!ExtToken': '',
-						});
+						const invoke = new AtomToken(
+							part.join('='),
+							`invoke-${i ? 'function' : 'module'}`,
+							config,
+							accum,
+							{'Stage-1': ':', '!ExtToken': ''},
+						);
 						super.insertAt(invoke);
 					}
 					this.protectChildren('1:3');

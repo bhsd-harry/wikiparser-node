@@ -91,9 +91,12 @@ export abstract class LinkToken extends LinkBaseToken {
 		const frag = fragment && fragment.replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p)),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			root = Parser.parse(`[[${page ? `:${this.name}` : ''}${
-				frag === undefined ? '' : `#${frag}`
-			}]]`, include, 6, config),
+			root = Parser.parse(
+				`[[${page ? `:${this.name}` : ''}${frag === undefined ? '' : `#${frag}`}]]`,
+				include,
+				6,
+				config,
+			),
 			{length, firstChild: wikiLink} = root;
 		if (length !== 1 || !(wikiLink instanceof LinkToken) || wikiLink.length !== 1) {
 			throw new SyntaxError(`非法的 fragment：${frag ?? ''}`);
