@@ -38,16 +38,14 @@ export class MagicLinkToken extends Token {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			const {data} = child,
 				refError = generateForChild(child, rect, '', 'warning');
-			regexGlobal.lastIndex = 0;
-			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
-				const {index, 0: s} = mt,
-					lines = data.slice(0, index).split('\n'),
+			errors.push(...[...data.matchAll(regexGlobal)].map(({index, 0: s}) => {
+				const lines = data.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines.at(-1)!,
-					startIndex = start + index,
+					startIndex = start + index!,
 					startLine = refError.startLine + top - 1,
 					startCol = top === 1 ? refError.startCol + left : left;
-				errors.push({
+				return {
 					...refError,
 					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : Parser.msg('full-width punctuation')),
 					startIndex,
@@ -56,8 +54,9 @@ export class MagicLinkToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + s.length,
-				});
-			}
+					excerpt: data.slice(Math.max(0, index! - 25), index! + 25),
+				};
+			}));
 		}
 		return errors;
 	}

@@ -2,8 +2,8 @@ import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 
-const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|<\s*\/?([a-z]\w*)/giu,
-	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|<\s*\/?([a-z]\w*)/giu,
+const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
+	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	disallowedTags = [
 		'html',
 		'head',
@@ -80,45 +80,43 @@ export class AstText extends AstNode {
 			= type === 'free-ext-link' || type === 'ext-link-url' || type === 'image-parameter' && name === 'link'
 				? errorSyntaxUrl
 				: errorSyntax,
-			errors: LintError[] = [],
+			errors = [...data.matchAll(errorRegex)],
 			{ext, html} = this.getRootNode().getAttribute('config');
-		if (data.search(errorRegex) !== -1) {
-			errorRegex.lastIndex = 0;
+		if (errors.length > 0) {
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
 				tags = new Set([ext, html, disallowedTags].flat(2));
-			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
-				const [, prefix, tag] = mt;
-				let {0: error, index} = mt;
-				if (prefix && prefix !== ']') {
-					index += prefix.length;
-					error = error.slice(prefix.length);
-				}
-				const startIndex = start + index,
-					lines = data.slice(0, index).split('\n'),
-					startLine = lines.length + top - 1,
-					line = lines.at(-1)!,
-					startCol = lines.length === 1 ? left + line.length : line.length,
-					{0: char, length} = error,
-					endIndex = startIndex + length,
-					rootStr = String(root),
-					nextChar = rootStr[endIndex],
-					previousChar = rootStr[startIndex - 1],
-					severity = length > 1 && (char !== '<' || /[\s/>]/u.test(nextChar ?? ''))
-						|| char === '{' && (nextChar === char || previousChar === '-')
-						|| char === '}' && (previousChar === char || nextChar === '-')
-						|| char === '[' && (
-							nextChar === char || type === 'ext-link-text'
-							|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
-						)
-						|| char === ']' && (
-							previousChar === char
-							|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
-						)
-						? 'error'
-						: 'warning';
-				if ((char !== 'h' || index > 0) && (char !== '<' || tags.has(tag!.toLowerCase()))) {
-					errors.push({
+			return (errors as unknown as {0: string, 1?: string, 2?: string, index: number}[])
+				.map(({0: error, 1: prefix, 2: tag, index}) => {
+					if (prefix) {
+						index += prefix.length;
+						error = error.slice(prefix.length);
+					}
+					const startIndex = start + index,
+						lines = data.slice(0, index).split('\n'),
+						startLine = lines.length + top - 1,
+						line = lines.at(-1)!,
+						startCol = lines.length === 1 ? left + line.length : line.length,
+						{0: char, length} = error,
+						endIndex = startIndex + length,
+						end = char === '}' || char === ']' ? endIndex + 1 : startIndex + 49,
+						rootStr = String(root),
+						nextChar = rootStr[endIndex],
+						previousChar = rootStr[startIndex - 1],
+						severity = length > 1 && (char !== '<' || /[\s/>]/u.test(nextChar ?? ''))
+							|| char === '{' && (nextChar === char || previousChar === '-')
+							|| char === '}' && (previousChar === char || nextChar === '-')
+							|| char === '[' && (
+								nextChar === char || type === 'ext-link-text'
+								|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
+							)
+							|| char === ']' && (
+								previousChar === char
+								|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
+							)
+							? 'error'
+							: 'warning';
+					return (char !== 'h' || index > 0) && (char !== '<' || tags.has(tag!.toLowerCase())) && {
 						message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
 						severity,
 						startIndex,
@@ -127,10 +125,9 @@ export class AstText extends AstNode {
 						endLine: startLine,
 						startCol,
 						endCol: startCol + length,
-					});
-				}
-			}
-			return errors;
+						excerpt: rootStr.slice(Math.max(0, end - 50), end),
+					};
+				}).filter(Boolean) as LintError[];
 		}
 		return [];
 	}

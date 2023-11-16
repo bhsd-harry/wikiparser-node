@@ -34,8 +34,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
 				[{length}] = previousSibling.data.match(/(?<!')'+$/u) as [string],
-				startIndex = start - length,
-				excerpt = wikitext.slice(startIndex, startIndex + 50);
+				startIndex = start - length;
 			errors.push({
 				...refError,
 				startIndex,
@@ -43,7 +42,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startCol: endCol - length,
 				endLine,
 				endCol,
-				excerpt,
+				excerpt: wikitext.slice(startIndex, startIndex + 50),
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
@@ -51,8 +50,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			wikitext ??= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u) as [string],
-				endIndex = startIndex + length,
-				excerpt = wikitext.slice(Math.max(0, endIndex - 50), endIndex);
+				endIndex = startIndex + length;
 			errors.push({
 				...refError,
 				startIndex,
@@ -60,7 +58,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startLine,
 				startCol,
 				endCol: startCol + length,
-				excerpt,
+				excerpt: wikitext.slice(Math.max(0, endIndex - 50), endIndex),
 			});
 		}
 		return errors;

@@ -296,6 +296,7 @@
 		],
 		"prefer-exponentiation-operator": 2,
 		"prefer-numeric-literals": 2,
+		"prefer-object-has-own": 2,
 		"prefer-object-spread": 2,
 		"prefer-regex-literals": [
 			2,
@@ -552,6 +553,12 @@
 		],
 		"unicorn/error-message": 2,
 		"unicorn/explicit-length-check": 2,
+		"unicorn/filename-case": [
+			2,
+			{
+				"case": "camelCase"
+			}
+		],
 		"unicorn/new-for-builtins": 2,
 		"unicorn/no-abusive-eslint-disable": 2,
 		"unicorn/no-array-for-each": 2,

@@ -152,7 +152,7 @@ export class Token extends AstElement {
 			if (i % 2 === 0) {
 				return new AstText(s);
 			// @ts-expect-error isNaN
-			} else if (isNaN(s[s.lengtht - 1])) {
+			} else if (isNaN(s.at(-1))) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
@@ -349,7 +349,7 @@ export class Token extends AstElement {
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		switch (key) {
 			case 'config':
-				return JSON.parse(JSON.stringify(this.#config)) as TokenAttributeGetter<T>;
+				return structuredClone(this.#config) as TokenAttributeGetter<T>;
 			case 'accum':
 				return this.#accum as TokenAttributeGetter<T>;
 			case 'include': {

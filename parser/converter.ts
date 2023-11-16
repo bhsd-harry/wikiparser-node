@@ -27,7 +27,7 @@ export const parseConverter = (wikitext: string, config = Parser.getConfig(), ac
 				temp = raw.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
 				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`, 'u'))
-					.map(rule => rule.replace(/\x01/gu, ';'));
+					.map(rule => rule.replaceAll('\x01', ';'));
 			// @ts-expect-error abstract class
 			new ConverterToken(flags, rules, config, accum);
 			text = `${text.slice(0, top.index)}\0${length}v\x7F${text.slice(index + 2)}`;

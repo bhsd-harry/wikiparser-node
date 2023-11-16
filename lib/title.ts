@@ -4,9 +4,9 @@ import Parser from '../index';
 /** MediaWiki页面标题对象 */
 export class Title {
 	/** @browser */
-	valid = true;
+	valid;
 	/** @browser */
-	ns = 0;
+	ns;
 	/** @browser */
 	fragment;
 	/** @browser */
@@ -30,7 +30,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replace(/_/gu, ' ').trim();
+		title = title.replaceAll('_', ' ').trim();
 		if (title.startsWith(':')) {
 			namespace = '';
 			title = title.slice(1).trim();
@@ -48,7 +48,7 @@ export class Title {
 		const i = title.indexOf('#');
 		let fragment: string | undefined;
 		if (i !== -1) {
-			fragment = title.slice(i + 1).trim();
+			fragment = title.slice(i + 1).trimEnd();
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(title || selfLink && fragment !== undefined)

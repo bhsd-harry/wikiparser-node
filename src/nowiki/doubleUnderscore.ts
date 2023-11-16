@@ -9,6 +9,12 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	override readonly type = 'double-underscore';
 	declare name: string;
 
+	/** @param word 状态开关名 */
+	constructor(word: string, config = Parser.getConfig(), accum: Token[] = []) {
+		super(word, config, accum);
+		this.setAttribute('name', word.toLowerCase());
+	}
+
 	/** @private */
 	protected override getPadding(): number {
 		return 2;
@@ -20,11 +26,5 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	 */
 	override toString(selector?: string): string {
 		return `__${this.firstChild.data}__`;
-	}
-
-	/** @param word 状态开关名 */
-	constructor(word: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(word, config, accum);
-		this.setAttribute('name', word.toLowerCase());
 	}
 }

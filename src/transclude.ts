@@ -58,10 +58,10 @@ export abstract class TranscludeToken extends Token {
 		if (title.includes(':') || parts.length === 0 && !this.#raw) {
 			const [magicWord, ...arg] = title.split(':'),
 				cleaned = removeComment(magicWord!),
-				name = cleaned.trim(),
+				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
 				isSensitive = sensitive.includes(name),
 				canonicalCame = insensitive[name.toLowerCase()];
-			if (!(arg.length > 0 && /\s$/u.test(cleaned)) && (isSensitive || canonicalCame)) {
+			if (isSensitive || canonicalCame) {
 				this.setAttribute('name', canonicalCame ?? name.toLowerCase()).type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
@@ -284,7 +284,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
-		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args: Set<ParameterToken>;
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;

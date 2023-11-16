@@ -44,7 +44,7 @@ export abstract class ExtToken extends TagPairToken {
 		const lcName = name.toLowerCase(),
 			// @ts-expect-error abstract class
 			attrToken: AttributesToken = new AttributesToken(
-				!attr || /^\s/u.test(attr) ? attr : ` ${attr}`,
+				!attr || attr.trimStart() !== attr ? attr : ` ${attr}`,
 				'ext-attrs',
 				lcName,
 				config,
@@ -52,7 +52,6 @@ export abstract class ExtToken extends TagPairToken {
 			),
 			newConfig: Config = {...config, ext: del(config.ext, lcName), excludes: [...config.excludes ?? []]};
 		let innerToken: Token;
-		newConfig.inExt = true;
 		switch (lcName) {
 			case 'tab':
 				newConfig.ext = del(newConfig.ext, 'tabs');
@@ -163,8 +162,9 @@ export abstract class ExtToken extends TagPairToken {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
+				excerpt = String(root).slice(Math.max(0, start - 25), start + 25),
 				rect = {start, ...root.posFromIndex(start)};
-			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
+			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
 		}
 		return errors;
 	}

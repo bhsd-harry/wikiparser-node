@@ -285,12 +285,11 @@ export abstract class AttributeToken extends Token {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)};
 			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
-				startIndex = e.startIndex - 1,
-				startCol = e.startCol - 1;
+				startIndex = e.startIndex - 1;
 			errors.push({
 				...e,
 				startIndex,
-				startCol,
+				startCol: e.startCol - 1,
 				excerpt: String(root).slice(startIndex, startIndex + 50),
 			});
 		}
@@ -321,7 +320,7 @@ export abstract class AttributeToken extends Token {
 			if (this.#quotes[1]) {
 				return value;
 			}
-			return value.trim();
+			return this.#quotes[0] ? value.trimEnd() : value.trim();
 		}
 		return this.type === 'ext-attr' || '';
 	}

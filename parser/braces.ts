@@ -51,7 +51,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
 			lastIndex = curIndex + 1;
-			parts![parts!.length - 1]!.push(wikitext.slice(topPos, curIndex));
+			parts!.at(-1)!.push(wikitext.slice(topPos, curIndex));
 			if (syntax === '|') {
 				parts!.push([]);
 			}
@@ -63,7 +63,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 				rest = open!.length - close.length,
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-			parts![parts!.length - 1]!.push(wikitext.slice(topPos, curIndex));
+			parts!.at(-1)!.push(wikitext.slice(topPos, curIndex));
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {

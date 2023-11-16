@@ -47,7 +47,7 @@ export abstract class ParameterToken extends Token {
 	protected override afterBuild(): void {
 		if (!this.anon) {
 			const name = this.firstChild.toString('comment, noinclude, include')
-					.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'),
+					.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, ''),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode) {
@@ -85,7 +85,7 @@ export abstract class ParameterToken extends Token {
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{firstChild} = this,
+			{firstChild, lastChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
 				.exec(firstChild.toString('comment, noinclude, include'))?.[0];
 		if (link && new URL(link).search) {
@@ -97,6 +97,7 @@ export abstract class ParameterToken extends Token {
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
+				excerpt: `${String(firstChild).slice(-25)}=${String(lastChild).slice(0, 25)}`,
 			});
 		}
 		return errors;

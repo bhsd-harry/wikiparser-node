@@ -96,11 +96,10 @@ export abstract class HtmlToken extends Token {
 		if (this.closest('table-attrs')) {
 			wikitext ??= String(this.getRootNode());
 			refError ??= generateForSelf(this, {start}, '');
-			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
 			errors.push({
 				...refError,
 				message: Parser.msg('HTML tag in table attributes'),
-				excerpt,
+				excerpt: wikitext.slice(Math.max(0, start - 25), start + 25),
 			});
 		}
 		try {

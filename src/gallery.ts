@@ -92,6 +92,7 @@ export abstract class GalleryToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + length,
+					excerpt: String(child).slice(0, 50),
 				});
 			} else if (child.type !== 'hidden' && child.type !== 'text') {
 				errors.push(...child.lint(start));

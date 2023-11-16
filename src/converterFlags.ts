@@ -100,7 +100,7 @@ export abstract class ConverterFlagsToken extends Token {
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
 				const error = generateForChild(child, rect, 'invalid conversion flag');
-				errors.push(error);
+				errors.push({...error, excerpt: childNodes.slice(0, i + 1).map(String).join(';').slice(-50)});
 			}
 		}
 		return errors;
