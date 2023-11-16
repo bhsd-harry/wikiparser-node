@@ -177,8 +177,6 @@ export abstract class AstElement extends AstNode {
 	 * @param opt 选项
 	 */
 	print(opt: PrintOpt = {}): string {
-		return String(this)
-			? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>`
-			: '';
+		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
 	}
 }

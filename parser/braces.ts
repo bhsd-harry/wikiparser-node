@@ -118,10 +118,10 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			stack.pop();
 			curTop = stack[stack.length - 1];
 		}
-		regex = new RegExp(source + (curTop
-			? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}`
-			: ''
-		), 'gmu');
+		regex = new RegExp(
+			source + (curTop ? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}` : ''),
+			'gmu',
+		);
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(wikitext);
 	}
