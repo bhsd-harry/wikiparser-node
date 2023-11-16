@@ -61,14 +61,6 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return super.print({sep: ';'});
-	}
-
-	/**
 	 * 获取未知的转换类型标记
 	 * @browser
 	 */
@@ -112,5 +104,13 @@ export abstract class ConverterFlagsToken extends Token {
 			}
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({sep: ';'});
 	}
 }

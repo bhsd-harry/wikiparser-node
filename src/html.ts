@@ -84,17 +84,6 @@ export abstract class HtmlToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({
-			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
-			post: `${this.#selfClosing ? '/' : ''}&gt;`,
-		});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		let refError: LintError | undefined;
@@ -168,5 +157,16 @@ export abstract class HtmlToken extends Token {
 			}
 		}
 		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({
+			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
+			post: `${this.#selfClosing ? '/' : ''}&gt;`,
+		});
 	}
 }

@@ -4,9 +4,9 @@ import Parser from '../index';
 /** MediaWiki页面标题对象 */
 export class Title {
 	/** @browser */
-	valid = true;
+	valid;
 	/** @browser */
-	ns = 0;
+	ns;
 	/** @browser */
 	fragment;
 	/** @browser */

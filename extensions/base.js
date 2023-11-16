@@ -56,7 +56,11 @@
 	 * @param {string} raw 原始文本
 	 */
 	const getListener = (qid, resolve, raw) => {
-		const listener = /** @param {{data: [number, *, string]}} e 消息事件 */ ({data: [rid, res, resRaw]}) => {
+		/**
+		 * 事件监听函数
+		 * @param {{data: [number, *, string]}} e 消息事件
+		 */
+		const listener = ({data: [rid, res, resRaw]}) => {
 			if (rid === qid && (raw === undefined || raw === resRaw)) {
 				worker.removeEventListener('message', listener);
 				resolve(res);

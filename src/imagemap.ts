@@ -132,14 +132,6 @@ export abstract class ImagemapToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
@@ -154,5 +146,13 @@ export abstract class ImagemapToken extends Token {
 			errors.push(generateForSelf(this, rect, '<imagemap> without an image'));
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({sep: '\n'});
 	}
 }

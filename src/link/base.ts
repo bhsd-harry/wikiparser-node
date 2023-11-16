@@ -94,14 +94,6 @@ export abstract class LinkBaseToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
@@ -125,5 +117,13 @@ export abstract class LinkBaseToken extends Token {
 			errors.push(generateForChild(target, rect, 'useless fragment'));
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
 	}
 }

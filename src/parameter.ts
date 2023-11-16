@@ -83,14 +83,6 @@ export abstract class ParameterToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({sep: this.anon ? '' : '='});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{firstChild} = this,
@@ -108,5 +100,13 @@ export abstract class ParameterToken extends Token {
 			});
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({sep: this.anon ? '' : '='});
 	}
 }

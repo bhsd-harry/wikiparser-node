@@ -276,15 +276,6 @@ export abstract class AttributeToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, value} = this,
@@ -294,12 +285,11 @@ export abstract class AttributeToken extends Token {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)};
 			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
-				startIndex = e.startIndex - 1,
-				startCol = e.startCol - 1;
+				startIndex = e.startIndex - 1;
 			errors.push({
 				...e,
 				startIndex,
-				startCol,
+				startCol: e.startCol - 1,
 			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
@@ -332,5 +322,14 @@ export abstract class AttributeToken extends Token {
 			return value.trim();
 		}
 		return this.type === 'ext-attr' || '';
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
+		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
 	}
 }
