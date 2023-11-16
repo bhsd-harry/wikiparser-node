@@ -559,8 +559,7 @@ export abstract class AstNode {
 			depth = aAncestors.findIndex((ancestor, i) => bAncestors[i] !== ancestor),
 			commonAncestor = aAncestors[depth - 1]!,
 			{childNodes} = commonAncestor;
-		return childNodes.indexOf(aAncestors[depth]!)
-			- childNodes.indexOf(bAncestors[depth]!);
+		return childNodes.indexOf(aAncestors[depth]!) - childNodes.indexOf(bAncestors[depth]!);
 	}
 
 	/**

@@ -126,17 +126,6 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({
-			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
-			post: `${this.#selfClosing ? '/' : ''}&gt;`,
-		});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		let wikitext: string | undefined,
@@ -149,11 +138,10 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 		if (this.closest('table-attrs')) {
 			wikitext ??= String(this.getRootNode());
 			refError ??= generateForSelf(this, {start}, '');
-			const excerpt = wikitext.slice(Math.max(0, start - 25), start + 25);
 			errors.push({
 				...refError,
 				message: Parser.msg('HTML tag in table attributes'),
-				excerpt,
+				excerpt: wikitext.slice(Math.max(0, start - 25), start + 25),
 			});
 		}
 		try {
@@ -219,6 +207,17 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 			}
 		}
 		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({
+			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
+			post: `${this.#selfClosing ? '/' : ''}&gt;`,
+		});
 	}
 
 	/** @override */

@@ -254,19 +254,6 @@ export abstract class TranscludeToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		const {childNodes, length, firstChild, modifier} = this;
-		return `<span class="wpb-${this.type}">{{${modifier}${
-			this.type === 'magic-word'
-				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
-				: print(childNodes, {sep: '|'})
-		}}}</span>`;
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{type, childNodes} = this;
@@ -430,6 +417,19 @@ export abstract class TranscludeToken extends Token {
 			}
 		}
 		return queue;
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		const {childNodes, length, firstChild, modifier} = this;
+		return `<span class="wpb-${this.type}">{{${modifier}${
+			this.type === 'magic-word'
+				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
+				: print(childNodes, {sep: '|'})
+		}}}</span>`;
 	}
 
 	/** @override */

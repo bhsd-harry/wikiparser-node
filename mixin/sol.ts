@@ -19,7 +19,7 @@ export const sol = <T extends AstConstructor>(constructor: T) => {
 		/** 在前方插入newline */
 		prependNewLine(): string {
 			const {previousVisibleSibling} = this as unknown as Token;
-			return (previousVisibleSibling ?? !this.#isRoot()) && !String(previousVisibleSibling).endsWith('\n')
+			return (previousVisibleSibling && !String(previousVisibleSibling).endsWith('\n')) ?? !this.#isRoot()
 				? '\n'
 				: '';
 		}

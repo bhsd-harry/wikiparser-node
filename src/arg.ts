@@ -86,14 +86,6 @@ export abstract class ArgToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override print(): string {
-		return super.print({pre: '{{{', post: '}}}', sep: '|'});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (!this.getAttribute('include')) {
 			return [generateForSelf(this, {start}, 'unexpected template argument')];
@@ -121,6 +113,14 @@ export abstract class ArgToken extends Token {
 			}));
 		}
 		return errors;
+	}
+
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
 
 	/** @override */

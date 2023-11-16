@@ -9,17 +9,15 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	override readonly type = 'double-underscore';
 	declare name: string;
 
+	/** @param word 状态开关名 */
+	constructor(word: string, config = Parser.getConfig(), accum: Token[] = []) {
+		super(word, config, accum);
+		this.setAttribute('name', word.toLowerCase());
+	}
+
 	/** @private */
 	protected override getPadding(): number {
 		return 2;
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return super.print({pre: '__', post: '__'});
 	}
 
 	/**
@@ -30,10 +28,12 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 		return selector && this.matches(selector) ? '' : `__${this.firstChild.data}__`;
 	}
 
-	/** @param word 状态开关名 */
-	constructor(word: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(word, config, accum);
-		this.setAttribute('name', word.toLowerCase());
+	/**
+	 * @override
+	 * @browser
+	 */
+	override print(): string {
+		return super.print({pre: '__', post: '__'});
 	}
 
 	/** @override */

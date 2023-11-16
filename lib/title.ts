@@ -4,15 +4,15 @@ import Parser from '../index';
 /** MediaWiki页面标题对象 */
 export class Title {
 	/** @browser */
-	valid = true;
+	valid;
 	/** @browser */
-	ns = 0;
+	ns;
 	/** @browser */
 	fragment;
 	/** @browser */
 	encoded = false;
-	main = '';
-	prefix = '';
+	main;
+	prefix;
 	interwiki = '';
 	conversionTable = new Map<string, string>();
 	redirects = new Map<string, string>();
@@ -52,7 +52,7 @@ export class Title {
 			namespace = '';
 			title = title.slice(1).trim();
 		}
-		const iw = defaultNs ? undefined : Parser.isInterwiki(title, config);
+		const iw = defaultNs ? null : Parser.isInterwiki(title, config);
 		if (iw) {
 			this.interwiki = iw[1].toLowerCase();
 			title = title.slice(iw[0].length);
