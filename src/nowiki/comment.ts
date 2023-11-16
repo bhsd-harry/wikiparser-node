@@ -56,9 +56,7 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
-		return selector && this.matches(selector)
-			? ''
-			: `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
+		return selector && this.matches(selector) ? '' : `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @override */

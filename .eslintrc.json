@@ -361,7 +361,7 @@
 		],
 		"function-paren-newline": [
 			2,
-			"consistent"
+			"multiline-arguments"
 		],
 		"indent": [
 			2,
@@ -423,6 +423,7 @@
 		"object-curly-newline": [
 			2,
 			{
+				"multiline": true,
 				"consistent": true
 			}
 		],

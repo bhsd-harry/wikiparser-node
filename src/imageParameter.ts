@@ -300,9 +300,12 @@ export abstract class ImageParameterToken extends Token {
 		} else if (typeof value !== 'string') {
 			this.typeError('setValue', 'String');
 		}
-		const root = Parser.parse(`[[File:F|${
-				this.#syntax ? this.#syntax.replace('$1', value) : value
-			}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
+		const root = Parser.parse(
+				`[[File:F|${this.#syntax ? this.#syntax.replace('$1', value) : value}]]`,
+				this.getAttribute('include'),
+				6,
+				this.getAttribute('config'),
+			),
 			{length, firstChild: file} = root;
 		if (length !== 1 || file!.type !== 'file' || file!.length !== 2) {
 			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);

@@ -255,9 +255,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key),
 			lcKey = key.toLowerCase().trim();
-		return (lcKey === 'rowspan' || lcKey === 'colspan'
-			? Number(value) || 1
-			: value) as TdAttrGetter<T>;
+		return (lcKey === 'rowspan' || lcKey === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
 	}
 
 	/** @override */

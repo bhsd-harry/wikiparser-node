@@ -68,7 +68,11 @@ export abstract class ImagemapToken extends Token {
 				if (title.valid && !title.interwiki && title.ns === 6) {
 					// @ts-expect-error abstract class
 					const token = new GalleryImageToken(
-						'imagemap', file, options.length > 0 ? options.join('|') : undefined, config, accum,
+						'imagemap',
+						file,
+						options.length > 0 ? options.join('|') : undefined,
+						config,
+						accum,
 					);
 					super.insertAt(token);
 					first = false;
