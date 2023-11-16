@@ -14,6 +14,7 @@ import type {AttributesToken} from './attributes';
 export abstract class NestedToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
+	declare name: string;
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	abstract override get lastChild(): ExtToken | NoincludeToken | CommentToken | undefined;

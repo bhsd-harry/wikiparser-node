@@ -12,6 +12,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
 export abstract class ParamTagToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
+	declare name: string;
 	declare childNodes: AtomToken[];
 	abstract override get firstChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;

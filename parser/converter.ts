@@ -4,16 +4,15 @@ import type {Token} from '../src';
 
 /**
  * 解析语言变体转换
- * @param wikitext
+ * @param text
  * @param config
  * @param accum
  */
-export const parseConverter = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseConverter = (text: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
 		stack: RegExpExecArray[] = [];
 	let regex = regex1,
-		text = wikitext,
 		mt = regex.exec(text);
 	while (mt) {
 		const {0: syntax, index} = mt;

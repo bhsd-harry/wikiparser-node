@@ -49,7 +49,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/** @browser */
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
-	abstract override get lastChild(): ImageParameterToken;
+	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
 	/**
 	 * @browser

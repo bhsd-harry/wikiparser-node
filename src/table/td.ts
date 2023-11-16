@@ -116,11 +116,11 @@ export abstract class TdToken extends TableBaseToken {
 	 * @browser
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
-			newStart = start + this.getRelativeIndex(this.length - 1);
+		const errors = super.lint(start);
+		start += this.getRelativeIndex(this.length - 1);
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
-				errors.push(generateForChild(child, {start: newStart}, 'additional "|" in a table cell', 'warning'));
+				errors.push(generateForChild(child, {start}, 'additional "|" in a table cell', 'warning'));
 			}
 		}
 		return errors;

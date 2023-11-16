@@ -14,6 +14,7 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
 export abstract class ImagemapToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
+	declare name: 'imagemap';
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
 	abstract override get firstChild(): NoincludeToken | GalleryImageToken;
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText;

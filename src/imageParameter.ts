@@ -19,21 +19,21 @@ function validate(key: 'link', val: string, config?: Config, halfParsed?: boolea
 function validate(key: string, val: string, config?: Config, halfParsed?: boolean): boolean;
 /** @ignore */
 function validate(key: string, val: string, config = Parser.getConfig(), halfParsed = false): string | Title | boolean {
-	const trimmedVal = val.trim();
-	let value = trimmedVal.replace(/\0\d+t\x7F/gu, '').trim();
+	val = val.trim();
+	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
 			return /^(?:\d+x?|\d*x\d+)$/u.test(value);
 		case 'link': {
 			if (!value) {
-				return trimmedVal;
+				return val;
 			}
 			const regex = new RegExp(
 				`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}$`,
 				'iu',
 			);
 			if (regex.test(value)) {
-				return trimmedVal;
+				return val;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
