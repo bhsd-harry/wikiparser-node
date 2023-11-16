@@ -76,10 +76,12 @@ export abstract class TranscludeToken extends Token {
 						if (!part) {
 							break;
 						}
-						const invoke = new AtomToken(part.join('='), `invoke-${
-							i ? 'function' : 'module'
-						}`, config, accum, {
-						});
+						const invoke = new AtomToken(
+							part.join('='),
+							`invoke-${i ? 'function' : 'module'}`,
+							config,
+							accum,
+						);
 						super.insertAt(invoke);
 					}
 				}

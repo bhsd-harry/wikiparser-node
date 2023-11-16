@@ -97,9 +97,7 @@ export const parseTable = (
 			if (top.type === 'td') {
 				top = stack.pop() as TrToken | TableToken;
 			}
-			const regex = cell === '!'
-				? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu
-				: /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
+			const regex = cell === '!' ? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu : /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
 			let mt = regex.exec(attr),
 				lastIndex = 0,
 				lastSyntax = `\n${spaces}${cell!}`;
