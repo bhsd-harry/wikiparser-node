@@ -915,7 +915,6 @@
 				],
 				"space-infix-ops": 0,
 				"@typescript-eslint/space-infix-ops": 2,
-				"no-unused-private-class-members": 0,
 				"@typescript-eslint/ban-types": [
 					2,
 					{

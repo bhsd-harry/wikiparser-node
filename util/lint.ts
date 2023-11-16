@@ -22,20 +22,17 @@ export const generateForChild = (
 		{top, left} = 'top' in boundingRect ? boundingRect : child.getRootNode().posFromIndex(start)!,
 		str = String(child),
 		startIndex = start + index,
-		endIndex = startIndex + str.length,
 		startLine = top + offsetTop,
-		endLine = startLine + offsetHeight - 1,
-		startCol = offsetTop ? offsetLeft : left + offsetLeft,
-		endCol = offsetHeight === 1 ? startCol + offsetWidth : offsetWidth;
+		startCol = offsetTop ? offsetLeft : left + offsetLeft;
 	return {
 		message: Parser.msg(msg),
 		severity,
 		startIndex,
-		endIndex,
+		endIndex: startIndex + str.length,
 		startLine,
-		endLine,
+		endLine: startLine + offsetHeight - 1,
 		startCol,
-		endCol,
+		endCol: offsetHeight === 1 ? startCol + offsetWidth : offsetWidth,
 	};
 };
 
