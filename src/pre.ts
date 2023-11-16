@@ -10,6 +10,7 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
 export abstract class PreToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
+	declare name: 'pre';
 	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
 	abstract override get children(): (NoincludeToken | ConverterToken)[];
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;

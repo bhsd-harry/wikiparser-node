@@ -88,18 +88,18 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * @throws `SyntaxError` 非法的fragment
 	 */
 	#setFragment(fragment?: string, page = true): void {
-		const frag = fragment && fragment.replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p)),
-			include = this.getAttribute('include'),
+		fragment &&= fragment.replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
+		const include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			root = Parser.parse(
-				`[[${page ? `:${this.name}` : ''}${frag === undefined ? '' : `#${frag}`}]]`,
+				`[[${page ? `:${this.name}` : ''}${fragment === undefined ? '' : `#${fragment}`}]]`,
 				include,
 				6,
 				config,
 			),
 			{length, firstChild: wikiLink} = root;
 		if (length !== 1 || !(wikiLink instanceof LinkToken) || wikiLink.length !== 1) {
-			throw new SyntaxError(`非法的 fragment：${frag ?? ''}`);
+			throw new SyntaxError(`非法的 fragment：${fragment ?? ''}`);
 		} else if (page) {
 			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
 		}

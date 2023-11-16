@@ -243,18 +243,18 @@ export abstract class TableToken extends TrBaseToken {
 	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
 		const nRows = this.getRowCount(),
 			isRow = super.getRowCount();
-		let m = n < 0 ? n + nRows : n;
-		if (m === 0 && (isRow || force && nRows === 0)) {
+		n += n < 0 ? nRows : 0;
+		if (n === 0 && (isRow || force && nRows === 0)) {
 			return this;
-		} else if (m < 0 || m > nRows || m === nRows && !insert) {
-			throw new RangeError(`不存在第 ${m} 行！`);
+		} else if (n < 0 || n > nRows || n === nRows && !insert) {
+			throw new RangeError(`不存在第 ${n} 行！`);
 		} else if (isRow) {
-			m--;
+			n--;
 		}
 		for (const child of this.childNodes.slice(2)) {
 			if (child.type === 'tr' && child.getRowCount()) {
-				m--;
-				if (m < 0) {
+				n--;
+				if (n < 0) {
 					return child;
 				}
 			} else if (child.type === 'table-syntax') {

@@ -51,8 +51,8 @@ export abstract class FileToken extends LinkBaseToken {
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
 	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
-	abstract override get lastChild(): ImageParameterToken;
-	abstract override get lastElementChild(): ImageParameterToken;
+	abstract override get lastChild(): AtomToken | ImageParameterToken;
+	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
 
 	/** 图片链接 */
 	override get link(): string | Title {

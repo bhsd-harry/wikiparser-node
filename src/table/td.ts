@@ -174,11 +174,11 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 * @browser
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
-			newStart = start + this.getRelativeIndex(this.length - 1);
+		const errors = super.lint(start);
+		start += this.getRelativeIndex(this.length - 1);
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text' && child.data.includes('|')) {
-				errors.push(generateForChild(child, {start: newStart}, 'additional "|" in a table cell', 'warning'));
+				errors.push(generateForChild(child, {start}, 'additional "|" in a table cell', 'warning'));
 			}
 		}
 		return errors;
@@ -253,9 +253,9 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 * @param key 属性键
 	 */
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		const value = super.getAttr(key),
-			lcKey = key.toLowerCase().trim();
-		return (lcKey === 'rowspan' || lcKey === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
+		const value = super.getAttr(key);
+		key = key.toLowerCase().trim() as T;
+		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
 	}
 
 	/** @override */
@@ -276,14 +276,14 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 * @param value 属性值
 	 */
 	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void {
-		const lcKey = key.toLowerCase().trim();
+		key = key.toLowerCase().trim() as T;
 		let v: string | boolean;
-		if (typeof value === 'number' && (lcKey === 'rowspan' || lcKey === 'colspan')) {
+		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
 			v = value === 1 ? false : String(value);
 		} else {
 			v = value!;
 		}
-		super.setAttr(lcKey, v);
+		super.setAttr(key, v);
 		if (!String(this.childNodes[1])) {
 			this.#innerSyntax = '';
 		}

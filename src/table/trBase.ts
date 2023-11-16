@@ -150,9 +150,9 @@ export abstract class TrBaseToken extends TableBaseToken {
 	/** @ignore */
 	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
 		const nCols = this.getColCount();
-		let m = n < 0 ? n + nCols : n;
-		if (m < 0 || m > nCols || m === nCols && !insert) {
-			throw new RangeError(`不存在第 ${m} 个单元格！`);
+		n += n < 0 ? nCols : 0;
+		if (n < 0 || n > nCols || n === nCols && !insert) {
+			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
 		let last = 0;
 		for (const child of this.childNodes.slice(2)) {
@@ -160,8 +160,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 				if (child.isIndependent()) {
 					last = Number(child.subtype !== 'caption');
 				}
-				m -= last;
-				if (m < 0) {
+				n -= last;
+				if (n < 0) {
 					return child;
 				}
 			} else if (child.type === 'tr' || child.type === 'table-syntax') {

@@ -31,15 +31,15 @@ export class Title {
 
 	/**
 	 * @browser
-	 * @param str 标题（含或不含命名空间前缀）
+	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param decode 是否需要解码
 	 * @param selfLink 是否允许selfLink
 	 */
-	constructor(str: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
+	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
 		const {namespaces, nsid} = config;
-		let namespace = namespaces[defaultNs]!,
-			title = decodeHtml(str);
+		let namespace = namespaces[defaultNs]!;
+		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
 				const encoded = /%(?!21|3[ce]|5[bd]|7[b-d])[\da-f]{2}/iu.test(title);

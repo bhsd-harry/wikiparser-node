@@ -470,12 +470,12 @@ export class Token extends AstElement {
 					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i),
-				{constructor: {name: insertedName}} = token,
-				k = i < 0 ? i + this.length : i;
-			if (!acceptableIndices[insertedName]?.includes(k)) {
-				throw new RangeError(`${this.constructor.name} 的第 ${k} 个子节点不能为 ${insertedName}！`);
-			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(k + j + 1))) {
-				throw new Error(`${this.constructor.name} 插入新的第 ${k} 个子节点会破坏规定的顺序！`);
+				{constructor: {name: insertedName}} = token;
+			i += i < 0 ? this.length : 0;
+			if (!acceptableIndices[insertedName]?.includes(i)) {
+				throw new RangeError(`${this.constructor.name} 的第 ${i} 个子节点不能为 ${insertedName}！`);
+			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j + 1))) {
+				throw new Error(`${this.constructor.name} 插入新的第 ${i} 个子节点会破坏规定的顺序！`);
 			}
 		}
 		super.insertAt(token, i);
@@ -515,16 +515,16 @@ export class Token extends AstElement {
 	 * @throws `Error` 不可移除的子节点
 	 */
 	override removeAt(i: number): AstNodes {
-		const iPos = i < 0 ? i + this.length : i;
+		i += i < 0 ? this.length : 0;
 		if (!Parser.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
-			if (protectedIndices.includes(iPos)) {
+			if (protectedIndices.includes(i)) {
 				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
 			} else if (this.#acceptable) {
 				const acceptableIndices = Object.fromEntries(
 						Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
 					),
-					nodesAfter = i === -1 ? [] : this.childNodes.slice(i + 1);
+					nodesAfter = this.childNodes.slice(i + 1);
 				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
 					throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
 				}
@@ -629,18 +629,18 @@ export class Token extends AstElement {
 		if (index > length || index < -length) {
 			return undefined;
 		}
-		const idx = index < 0 ? index + length : index;
+		index += index < 0 ? length : 0;
 		let self: AstNodes = this,
 			acc = 0,
 			start = 0;
 		while (self.type !== 'text') {
 			const {childNodes}: Token = self;
 			acc += self.getPadding();
-			for (let i = 0; acc <= idx && i < childNodes.length; i++) {
+			for (let i = 0; acc <= index && i < childNodes.length; i++) {
 				const cur: AstNodes = childNodes[i]!,
 					{length: l} = String(cur);
 				acc += l;
-				if (acc >= idx) {
+				if (acc >= index) {
 					self = cur;
 					acc -= l;
 					start = acc;
@@ -649,10 +649,10 @@ export class Token extends AstElement {
 				acc += self.getGaps(i);
 			}
 			if (self.childNodes === childNodes) {
-				return {offsetNode: self, offset: idx - start};
+				return {offsetNode: self, offset: index - start};
 			}
 		}
-		return {offsetNode: self, offset: idx - start};
+		return {offsetNode: self, offset: index - start};
 	}
 
 	/**
@@ -679,11 +679,11 @@ export class Token extends AstElement {
 		if (index > length || index < -length) {
 			return undefined;
 		}
-		const idx = index < 0 ? index + length : index,
-			{childNodes} = this;
+		index += index < 0 ? length : 0;
+		const {childNodes} = this;
 		let acc = 0,
 			i = 0;
-		for (; acc < idx && i < childNodes.length; i++) {
+		for (; acc < index && i < childNodes.length; i++) {
 			const {length: l} = String(childNodes[i]);
 			acc += l;
 		}

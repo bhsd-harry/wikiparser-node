@@ -12,6 +12,7 @@ import type {AstNodes, AstText, AttributesToken, ExtToken} from '../internal';
 export abstract class GalleryToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
+	declare name: 'gallery';
 	declare childNodes: (GalleryImageToken | HiddenToken | AstText)[];
 	abstract override get children(): (GalleryImageToken | HiddenToken)[];
 	abstract override get firstChild(): GalleryImageToken | HiddenToken | AstText | undefined;

@@ -9,9 +9,9 @@ export abstract class InputboxToken extends ParamTagToken {
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken');
 		accum.push(placeholder as unknown as Token);
-		const text = wikitext && parseBraces(wikitext, config, accum);
+		wikitext &&= parseBraces(wikitext, config, accum);
 		accum.splice(accum.indexOf(placeholder as unknown as Token), 1);
-		super(text, config, accum, {
+		super(wikitext, config, accum, {
 			ArgToken: ':', TranscludeToken: ':',
 		});
 	}

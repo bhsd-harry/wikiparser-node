@@ -8,6 +8,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
 export abstract class NowikiToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'ext-inner';
+	declare name: string;
 	abstract override get nextSibling(): undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;

@@ -175,14 +175,14 @@ export abstract class ArgToken extends Token {
 	 * @throws `TypeError` 不可插入文本节点
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		const j = i < 0 ? i + this.length : i;
-		if (j > 1) {
+		i += i < 0 ? this.length : 0;
+		if (i > 1) {
 			throw new RangeError(`${this.constructor.name}不可插入多余的子节点！`);
 		} else if (typeof token === 'string') {
 			throw new TypeError(`${this.constructor.name}不可插入文本节点！`);
 		}
 		super.insertAt(token, i);
-		if (j === 1) {
+		if (i === 1) {
 			token.type = 'arg-default';
 		}
 		return token;
