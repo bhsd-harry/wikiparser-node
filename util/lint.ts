@@ -21,23 +21,19 @@ export const generateForChild = (
 		{start} = boundingRect,
 		{top, left} = 'top' in boundingRect ? boundingRect : child.getRootNode().posFromIndex(start)!,
 		str = String(child),
-		excerpt = str.slice(0, 50),
 		startIndex = start + index,
-		endIndex = startIndex + str.length,
 		startLine = top + offsetTop,
-		endLine = startLine + offsetHeight - 1,
-		startCol = offsetTop ? offsetLeft : left + offsetLeft,
-		endCol = offsetHeight === 1 ? startCol + offsetWidth : offsetWidth;
+		startCol = offsetTop ? offsetLeft : left + offsetLeft;
 	return {
 		message: Parser.msg(msg),
 		severity,
 		startIndex,
-		endIndex,
+		endIndex: startIndex + str.length,
 		startLine,
-		endLine,
+		endLine: startLine + offsetHeight - 1,
 		startCol,
-		endCol,
-		excerpt,
+		endCol: offsetHeight === 1 ? startCol + offsetWidth : offsetWidth,
+		excerpt: str.slice(0, 50),
 	};
 };
 

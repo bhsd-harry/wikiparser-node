@@ -804,8 +804,11 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 转义失败
 	 */
 	escapeTables(): TranscludeToken {
-		const count = this.hasDuplicatedArgs();
-		if (!/\n[^\S\n]*(?::+\s*)?\{\|[^\n]*\n\s*(?:\S[^\n]*\n\s*)*\|\}/u.test(this.text()) || !count) {
+		const count = this.hasDuplicatedArgs(),
+			str = this.text(),
+			i = str.search(/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u),
+			j = str.slice(i).search(/\n[^\S\n]*\|\}/u);
+		if (i === -1 || j === -1 || !count) {
 			return this;
 		}
 		const stripped = String(this).slice(2, -2),
