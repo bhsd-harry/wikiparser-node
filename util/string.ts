@@ -41,4 +41,4 @@ export const decodeHtml = (str: string): string => str.replace(
  * @browser
  * @param str 原字符串
  */
-export const noWrap = (str: string): string => str.replace(/\n/gu, '\\n');
+export const noWrap = (str: string): string => str.replaceAll('\n', '\\n');

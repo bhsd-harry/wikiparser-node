@@ -291,6 +291,7 @@ export abstract class AttributeToken extends Token {
 				...e,
 				startIndex,
 				startCol,
+				excerpt: String(root).slice(startIndex, startIndex + 50),
 			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)

@@ -19,20 +19,30 @@ export const parseCommentAndExt = (
 	accum: Token[] = [],
 	includeOnly = false,
 ): string => {
-	const onlyinclude = /<onlyinclude>(.*?)<\/onlyinclude>/gsu;
-	if (includeOnly && wikitext.search(onlyinclude) !== -1) { // `<onlyinclude>`拥有最高优先级
-		return wikitext.replace(onlyinclude, (_, inner: string) => {
-			const str = `\0${accum.length}e\x7F`;
-			new OnlyincludeToken(inner, config, accum);
-			return str;
-		}).replace(
-			/(^|\0\d+e\x7F)([^\0]+)(?=$|\0\d+e\x7F)/gu,
-			(_, lead: string, substr: string) => {
-				// @ts-expect-error abstract class
-				new NoincludeToken(substr, config, accum);
-				return `${lead}\0${accum.length - 1}c\x7F`;
-			},
-		);
+	const onlyincludeLeft = '<onlyinclude>',
+		onlyincludeRight = '</onlyinclude>',
+		{length} = onlyincludeLeft;
+	if (includeOnly) {
+		let i = wikitext.indexOf(onlyincludeLeft),
+			j = wikitext.indexOf(onlyincludeRight, i + length);
+		if (i !== -1 && j !== -1) { // `<onlyinclude>`拥有最高优先级
+			let str = '';
+			while (i !== -1 && j !== -1) {
+				const token = `\0${accum.length}e\x7F`;
+				new OnlyincludeToken(wikitext.slice(i + length, j), config, accum);
+				if (i > 0) {
+					// @ts-expect-error abstract class
+					new NoincludeToken(wikitext.slice(0, i), config, accum);
+					str += `\0${accum.length - 1}c\x7F${token}`;
+				} else {
+					str += token;
+				}
+				wikitext = wikitext.slice(j + length + 1);
+				i = wikitext.indexOf(onlyincludeLeft);
+				j = wikitext.indexOf(onlyincludeRight, i + length);
+			}
+			return `${str}${wikitext}`;
+		}
 	}
 	const ext = config.ext.join('|'),
 		includeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',

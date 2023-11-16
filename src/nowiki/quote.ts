@@ -27,12 +27,15 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
 			errors: LintError[] = [];
-		let refError: LintError | undefined;
+		let refError: LintError | undefined,
+			wikitext: string | undefined;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
+			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
-				[, {length}] = previousSibling.data.match(/(?:^|[^'])('+)$/u) as [string, string],
-				startIndex = start - length;
+				[{length}] = previousSibling.data.match(/(?<!')'+$/u) as [string],
+				startIndex = start - length,
+				excerpt = wikitext.slice(startIndex, startIndex + 50);
 			errors.push({
 				...refError,
 				startIndex,
@@ -40,13 +43,16 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startCol: endCol - length,
 				endLine,
 				endCol,
+				excerpt,
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
 			refError ??= generateForSelf(this, {start}, message);
+			wikitext ??= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u) as [string],
-				endIndex = startIndex + length;
+				endIndex = startIndex + length,
+				excerpt = wikitext.slice(Math.max(0, endIndex - 50), endIndex);
 			errors.push({
 				...refError,
 				startIndex,
@@ -54,6 +60,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startLine,
 				startCol,
 				endCol: startCol + length,
+				excerpt,
 			});
 		}
 		return errors;

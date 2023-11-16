@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -12,7 +14,6 @@ export interface Config {
 	img: Record<string, string>;
 	variants: string[];
 	excludes?: string[];
-	inExt?: boolean;
 }
 
 export interface LintError {
@@ -24,14 +25,14 @@ export interface LintError {
 	startCol: number;
 	endLine: number;
 	endCol: number;
+	excerpt: string;
 }
 
 declare interface Parser {
 	/** @browser */
-	config?: Config;
-	minConfig: Config;
+	config: string | Config;
 	/** @browser */
-	i18n?: Record<string, string>;
+	i18n?: string | Record<string, string>;
 
 	/** @private */
 	readonly MAX_STAGE: number;
@@ -74,19 +75,34 @@ declare interface Parser {
 	run<T>(this: Parser, callback: () => T): T;
 }
 
+/**
+ * 从根路径require
+ * @param file 文件名
+ * @param dir 子路径
+ */
+const rootRequire = (file: string, dir = ''): unknown => require(`../${file.includes('/') ? '' : dir}${file}`);
+
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
-	minConfig: require('../config/minimum'),
+	config: 'default',
 
 	MAX_STAGE: 11,
 
 	/** @implements */
 	getConfig() {
-		return {...this.minConfig, ...this.config, excludes: []};
+		if (typeof this.config === 'string') {
+			this.config = rootRequire(this.config, 'config/') as Config;
+			return this.getConfig();
+		}
+		return {...this.config, excludes: []};
 	},
 
 	/** @implements */
 	msg(msg, arg = '') {
+		if (typeof this.i18n === 'string') {
+			this.i18n = rootRequire(this.i18n, 'i18n/') as Record<string, string>;
+			return this.msg(msg, arg);
+		}
 		return (this.i18n?.[msg] ?? msg).replace('$1', arg);
 	},
 
@@ -118,7 +134,18 @@ const Parser: Parser = {
 			token = new Token(wikitext, config);
 			try {
 				token.parse(maxStage, include);
-			} catch {}
+			} catch (e) {
+				if (e instanceof Error) {
+					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
+						stage = token.getAttribute('stage');
+					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : String(token));
+					fs.writeFileSync(`${file}.err`, e.stack!);
+					fs.writeFileSync(`${file}.json`, JSON.stringify({
+						stage, include: token.getAttribute('include'), config: this.config,
+					}, null, '\t'));
+				}
+				throw e;
+			}
 		});
 		return token!;
 	},
@@ -131,7 +158,7 @@ const Parser: Parser = {
 };
 
 const def: PropertyDescriptorMap = {},
-	immutable = new Set(['MAX_STAGE', 'minConfig']),
+	immutable = new Set(['MAX_STAGE']),
 	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
 for (const key in Parser) {
 	if (immutable.has(key)) {
@@ -142,7 +169,5 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-if (typeof self === 'object') {
-	Object.assign(self, {Parser});
-}
 export default Parser;
+export type * from './internal';

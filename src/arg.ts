@@ -93,11 +93,13 @@ export abstract class ArgToken extends Token {
 					{
 						startIndex,
 						startCol,
+						excerpt,
 					} = error;
 				return {
 					...error,
 					startIndex: startIndex - 1,
 					startCol: startCol - 1,
+					excerpt: `|${excerpt}`,
 				};
 			}));
 		}

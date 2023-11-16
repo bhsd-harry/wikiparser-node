@@ -19,17 +19,28 @@ export abstract class PreToken extends Token {
 
 	/** @browser */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		const text = wikitext?.replace(
-			/(<nowiki>)(.*?)(<\/nowiki>)/giu,
-			(_, opening: string, inner: string, closing: string) => {
+		if (wikitext) {
+			const opening = '<nowiki>',
+				closing = '</nowiki>',
+				{length} = opening;
+			let i = wikitext.indexOf(opening),
+				j = wikitext.indexOf(closing, i + length),
+				str = '';
+			while (i !== -1 && j !== -1) {
 				// @ts-expect-error abstract class
 				new NoincludeToken(opening, config, accum);
 				// @ts-expect-error abstract class
 				new NoincludeToken(closing, config, accum);
-				return `\0${accum.length - 1}c\x7F${inner}\0${accum.length}c\x7F`;
-			},
-		);
-		super(text, config, true, accum, {
+				str += `${wikitext.slice(0, i)}\0${accum.length - 1}c\x7F${
+					wikitext.slice(i + length, j)
+				}\0${accum.length}c\x7F`;
+				wikitext = wikitext.slice(j + length + 1);
+				i = wikitext.indexOf(opening);
+				j = wikitext.indexOf(closing, i + length);
+			}
+			wikitext = `${str}${wikitext}`;
+		}
+		super(wikitext, config, true, accum, {
 		});
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);
 	}
