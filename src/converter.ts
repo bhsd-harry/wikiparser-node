@@ -58,12 +58,12 @@ export abstract class ConverterToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const {childNodes: [flags, ...rules]} = this;
-		return selector && this.matches(selector)
+		return omit && this.matchesTypes(omit)
 			? ''
-			: `-{${flags.toString(selector)}${flags.length > 0 ? '|' : ''}${
-				rules.map(rule => rule.toString(selector)).join(';')
+			: `-{${flags.toString(omit)}${flags.length > 0 ? '|' : ''}${
+				rules.map(rule => rule.toString(omit)).join(';')
 			}}-`;
 	}
 

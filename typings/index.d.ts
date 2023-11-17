@@ -13,7 +13,7 @@ declare global {
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		length: number;
-		toString(selector?: string, separator?: string): string;
+		toString(omit?: Set<string>, separator?: string): string;
 		text(separator?: string): string;
 		insertAt(token: unknown, i?: number): unknown;
 	};

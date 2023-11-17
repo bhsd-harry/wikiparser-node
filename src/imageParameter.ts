@@ -186,10 +186,10 @@ export abstract class ImageParameterToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		return this.#syntax && !(selector && this.matches(selector))
-			? this.#syntax.replace('$1', super.toString(selector))
-			: super.toString(selector);
+	override toString(omit?: Set<string>): string {
+		return this.#syntax && !(omit && this.matchesTypes(omit))
+			? this.#syntax.replace('$1', super.toString(omit))
+			: super.toString(omit);
 	}
 
 	/**

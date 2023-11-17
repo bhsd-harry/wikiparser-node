@@ -393,11 +393,11 @@ export class Token extends AstElement {
 				if (root.type === 'root' && root !== this) {
 					return root.getAttribute('include') as TokenAttributeGetter<T>;
 				}
-				const includeToken = root.querySelector('include');
+				const includeToken = root.getElementByTypes('include');
 				if (includeToken) {
 					return (includeToken.name === 'noinclude') as TokenAttributeGetter<T>;
 				}
-				const noincludeToken = root.querySelector('noinclude');
+				const noincludeToken = root.getElementByTypes('noinclude');
 				return (
 					Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken))
 				) as TokenAttributeGetter<T>;
@@ -880,15 +880,15 @@ export class Token extends AstElement {
 				let replace = '';
 				if (type === 'arg') {
 					replace = argDefault === false ? String(target) : argDefault;
-				} else if (name === 'if' && !childNodes[1]?.querySelector('magic-word, template')) {
+				} else if (name === 'if' && !childNodes[1]?.getElementByTypes('magic-word, template')) {
 					replace = String(childNodes[String(childNodes[1] ?? '').trim() ? 2 : 3] ?? '').trim();
 				} else if (name === 'ifeq'
-					&& !childNodes.slice(1, 3).some(child => child.querySelector('magic-word, template'))
+					&& !childNodes.slice(1, 3).some(child => child.getElementByTypes('magic-word, template'))
 				) {
 					replace = String(childNodes[
 						String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '').trim() ? 3 : 4
 					] ?? '').trim();
-				} else if (name === 'switch' && !childNodes[1]?.querySelector('magic-word, template')) {
+				} else if (name === 'switch' && !childNodes[1]?.getElementByTypes('magic-word, template')) {
 					const key = String(childNodes[1] ?? '').trim();
 					let defaultVal = '',
 						found = false,
@@ -897,7 +897,7 @@ export class Token extends AstElement {
 						const {
 							anon, name: option, value, firstChild,
 						} = childNodes[j] as ParameterToken;
-						transclusion = Boolean(firstChild.querySelector('magic-word, template'));
+						transclusion = Boolean(firstChild.getElementByTypes('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {
 								defaultVal = value;

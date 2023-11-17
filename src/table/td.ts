@@ -122,7 +122,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 		const result = previousSibling.getSyntax();
 		result.escape ||= esc;
 		result.correction = previousSibling.lastChild
-			.toString('comment, ext, include, noinclude, arg, template, magic-word')
+			.toString(new Set(['comment', 'ext', 'include', 'noinclude', 'arg', 'template', 'magic-word']))
 			.includes('\n');
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
@@ -142,12 +142,12 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		this.#correct();
 		const {childNodes: [syntax, attr, inner]} = this;
-		return selector && this.matches(selector)
+		return omit && this.matchesTypes(omit)
 			? ''
-			: `${syntax.toString(selector)}${attr.toString(selector)}${this.#innerSyntax}${inner.toString(selector)}`;
+			: `${syntax.toString(omit)}${attr.toString(omit)}${this.#innerSyntax}${inner.toString(omit)}`;
 	}
 
 	/**

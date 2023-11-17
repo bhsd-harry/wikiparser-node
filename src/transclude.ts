@@ -213,17 +213,17 @@ export abstract class TranscludeToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		if (selector && this.matches(selector)) {
+	override toString(omit?: Set<string>): string {
+		if (omit && this.matchesTypes(omit)) {
 			return '';
 		}
 		const {childNodes, length, firstChild, modifier} = this;
 		return `{{${modifier}${
 			this.type === 'magic-word'
-				? `${firstChild.toString(selector)}${length === 1 ? '' : ':'}${
-					childNodes.slice(1).map(child => child.toString(selector)).join('|')
+				? `${firstChild.toString(omit)}${length === 1 ? '' : ':'}${
+					childNodes.slice(1).map(child => child.toString(omit)).join('|')
 				}`
-				: super.toString(selector, '|')
+				: super.toString(omit, '|')
 		}}}`;
 	}
 

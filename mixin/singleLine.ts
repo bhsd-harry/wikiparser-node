@@ -9,8 +9,8 @@ export const singleLine = <T extends AstConstructor>(constructor: T) => {
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
 		/** @override */
-		override toString(selector?: string): string {
-			return super.toString(selector).replaceAll('\n', ' ');
+		override toString(omit?: Set<string>): string {
+			return super.toString(omit).replaceAll('\n', ' ');
 		}
 
 		/** @override */

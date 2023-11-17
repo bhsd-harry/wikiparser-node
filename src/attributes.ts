@@ -432,11 +432,11 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @override */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		if (this.type === 'table-attrs') {
 			normalizeSpace(this);
 		}
-		const str = super.toString(selector);
+		const str = super.toString(omit);
 		return `${this.#leadingSpace(str)}${str}`;
 	}
 

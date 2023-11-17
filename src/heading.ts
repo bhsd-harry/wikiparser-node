@@ -68,13 +68,13 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const equals = this.#equals;
-		return selector && this.matches(selector)
+		return omit && this.matchesTypes(omit)
 			? ''
 			: `${this.prependNewLine()}${equals}${
-				this.firstChild.toString(selector)
-			}${equals}${this.lastChild.toString(selector)}`;
+				this.firstChild.toString(omit)
+			}${equals}${this.lastChild.toString(omit)}`;
 	}
 
 	/**

@@ -98,13 +98,13 @@ export abstract class ConverterRuleToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const {childNodes} = this;
-		if (childNodes.length === 3 && !(selector && this.matches(selector))) {
+		if (childNodes.length === 3 && !(omit && this.matchesTypes(omit))) {
 			const [from, variant, to] = childNodes;
-			return `${from.toString(selector)}=>${variant.toString(selector)}:${to.toString(selector)}`;
+			return `${from.toString(omit)}=>${variant.toString(omit)}:${to.toString(omit)}`;
 		}
-		return super.toString(selector, ':');
+		return super.toString(omit, ':');
 	}
 
 	/**

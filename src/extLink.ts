@@ -71,15 +71,15 @@ export abstract class ExtLinkToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		if (selector && this.matches(selector)) {
+	override toString(omit?: Set<string>): string {
+		if (omit && this.matchesTypes(omit)) {
 			return '';
 		} else if (this.length === 1) {
-			return `[${super.toString(selector)}${this.#space}]`;
+			return `[${super.toString(omit)}${this.#space}]`;
 		}
 		this.#correct();
 		normalizeSpace(this.lastChild);
-		return `[${super.toString(selector, this.#space)}]`;
+		return `[${super.toString(omit, this.#space)}]`;
 	}
 
 	/**

@@ -25,10 +25,10 @@ export const sol = <T extends AstConstructor>(constructor: T) => {
 		}
 
 		/** @override */
-		override toString(selector?: string): string {
-			return selector && (this as unknown as Token).matches(selector)
+		override toString(omit?: Set<string>): string {
+			return omit && (this as unknown as Token).matchesTypes(omit)
 				? ''
-				: `${this.prependNewLine()}${super.toString(selector)}`;
+				: `${this.prependNewLine()}${super.toString(omit)}`;
 		}
 
 		/** @override */

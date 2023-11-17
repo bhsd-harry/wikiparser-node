@@ -82,18 +82,18 @@ export abstract class TagPairToken extends fixed(Token) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const {firstChild, lastChild, nextSibling, name} = this,
 			[opening, closing] = this.#tags;
-		if (selector && this.matches(selector)) {
+		if (omit && this.matchesTypes(omit)) {
 			return '';
 		} else if (!this.closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.#closed = true;
 		}
 		return this.#selfClosing
-			? `<${opening}${firstChild.toString(selector)}/>`
-			: `<${opening}${firstChild.toString(selector)}>${lastChild.toString(selector)}${
+			? `<${opening}${firstChild.toString(omit)}/>`
+			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
 				this.closed ? `</${closing}>` : ''
 			}`;
 	}

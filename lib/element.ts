@@ -211,10 +211,17 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	closest(selector: string): Token | undefined {
-		let {parentNode} = this;
-		const stack = parseSelector(selector);
+		let {parentNode} = this,
+			condition: (token: Token) => boolean;
+		if (/[^a-z\-,\s]/u.test(selector)) {
+			const stack = parseSelector(selector);
+			condition = /** @implements */ (token: Token): boolean => token.#matchesStack(stack);
+		} else {
+			const types = new Set(selector.split(',').map(str => str.trim()));
+			condition = /** @implements */ ({type}): boolean => types.has(type);
+		}
 		while (parentNode) {
-			if (parentNode.#matchesStack(stack)) {
+			if (condition(parentNode)) {
 				return parentNode;
 			}
 			({parentNode} = parentNode);
@@ -267,13 +274,13 @@ export abstract class AstElement extends AstNode {
 	/**
 	 * 还原为wikitext
 	 * @browser
-	 * @param selector
+	 * @param omit 忽略的节点类型
 	 * @param separator 子节点间的连接符
 	 */
-	override toString(selector?: string, separator = ''): string {
-		return selector && this.matches(selector)
+	override toString(omit?: Set<string>, separator = ''): string {
+		return omit && this.matchesTypes(omit)
 			? ''
-			: this.childNodes.map(child => child.toString(selector)).join(separator);
+			: this.childNodes.map(child => child.toString(omit)).join(separator);
 	}
 
 	/**
@@ -295,6 +302,11 @@ export abstract class AstElement extends AstNode {
 			cur += String(child).length + this.getGaps(i);
 		}
 		return errors;
+	}
+
+	/** @private */
+	matchesTypes(types: Set<string>): boolean {
+		return types.has(this.type);
 	}
 
 	/**
@@ -544,15 +556,15 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 符合组合选择器的第一个后代节点
-	 * @param stack 解析后的一组选择器
+	 * 符合条件的第一个后代节点
+	 * @param condition 条件
 	 */
-	#queryStack(stack: SelectorArray[][]): Token | undefined {
+	#getElementBy(condition: (token: Token) => boolean): Token | undefined {
 		for (const child of this.children) {
-			if (child.#matchesStack(stack)) {
+			if (condition(child)) {
 				return child;
 			}
-			const descendant = child.#queryStack(stack);
+			const descendant = child.#getElementBy(condition);
 			if (descendant) {
 				return descendant;
 			}
@@ -565,20 +577,38 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelector(selector: string): Token | undefined {
-		return this.#queryStack(parseSelector(selector));
+		const stack = parseSelector(selector);
+		return this.#getElementBy(token => token.#matchesStack(stack));
 	}
 
 	/**
-	 * 符合组合选择器的所有后代节点
-	 * @param stack 解析后的一组选择器
+	 * 类型选择器
+	 * @param types
 	 */
-	#queryStackAll(stack: SelectorArray[][]): Token[] {
+	getElementByTypes(types: string): Token | undefined {
+		const typeSet = new Set(types.split(',').map(str => str.trim()));
+		return this.#getElementBy(({type}) => typeSet.has(type));
+	}
+
+	/**
+	 * id选择器
+	 * @param id id名
+	 */
+	getElementById(id: string): Token | undefined {
+		return this.#getElementBy(token => 'id' in token && token.id === id);
+	}
+
+	/**
+	 * 符合条件的所有后代节点
+	 * @param condition 条件
+	 */
+	#getElementsBy(condition: (token: Token) => boolean): Token[] {
 		const descendants: Token[] = [];
 		for (const child of this.children) {
-			if (child.#matchesStack(stack)) {
+			if (condition(child)) {
 				descendants.push(child);
 			}
-			descendants.push(...child.#queryStackAll(stack));
+			descendants.push(...child.#getElementsBy(condition));
 		}
 		return descendants;
 	}
@@ -588,16 +618,8 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelectorAll(selector: string): Token[] {
-		return this.#queryStackAll(parseSelector(selector));
-	}
-
-	/**
-	 * id选择器
-	 * @param id id名
-	 */
-	getElementById(id: string): Token | undefined {
-		const eid = id.replace(/(?<!\\)"/gu, '\\"');
-		return this.querySelector(`ext[id="${eid}"], html[id="${eid}"]`);
+		const stack = parseSelector(selector);
+		return this.#getElementsBy(token => token.#matchesStack(stack));
 	}
 
 	/**
@@ -605,16 +627,15 @@ export abstract class AstElement extends AstNode {
 	 * @param className 类名之一
 	 */
 	getElementsByClassName(className: string): Token[] {
-		return this.querySelectorAll(`[className~="${className.replace(/(?<!\\)"/gu, '\\"')}"]`);
+		return this.#getElementsBy(token => 'classList' in token && (token.classList as Set<string>).has(className));
 	}
 
 	/**
 	 * 标签名选择器
-	 * @param name 标签名
+	 * @param tag 标签名
 	 */
-	getElementsByTagName(name: string): Token[] {
-		const ename = name.replace(/(?<!\\)"/gu, '\\"');
-		return this.querySelectorAll(`ext[name="${ename}"], html[name="${ename}"]`);
+	getElementsByTagName(tag: string): Token[] {
+		return this.#getElementsBy(({type, name}) => name === tag && (type === 'html' || type === 'ext'));
 	}
 
 	/**

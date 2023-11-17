@@ -60,8 +60,8 @@ export abstract class ArgToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		return selector && this.matches(selector) ? '' : `{{{${super.toString(selector, '|')}}}}`;
+	override toString(omit?: Set<string>): string {
+		return omit && this.matchesTypes(omit) ? '' : `{{{${super.toString(omit, '|')}}}}`;
 	}
 
 	/**

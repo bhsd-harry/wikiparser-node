@@ -125,9 +125,9 @@ export abstract class LinkBaseToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		const str = super.toString(selector, this.#delimiter);
-		return this.#bracket && !(selector && this.matches(selector)) ? `[[${str}]]` : str;
+	override toString(omit?: Set<string>): string {
+		const str = super.toString(omit, this.#delimiter);
+		return this.#bracket && !(omit && this.matchesTypes(omit)) ? `[[${str}]]` : str;
 	}
 
 	/**

@@ -101,10 +101,10 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		return selector && this.matches(selector)
+	override toString(omit?: Set<string>): string {
+		return omit && this.matchesTypes(omit)
 			? ''
-			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(selector)}${this.#selfClosing ? '/' : ''}>`;
+			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(omit)}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/**

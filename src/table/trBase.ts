@@ -78,9 +78,9 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/** @override */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		this.#correct();
-		return super.toString(selector);
+		return super.toString(omit);
 	}
 
 	/**

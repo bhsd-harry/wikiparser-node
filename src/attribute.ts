@@ -309,14 +309,14 @@ export abstract class AttributeToken extends fixed(Token) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		if (selector && this.matches(selector)) {
+	override toString(omit?: Set<string>): string {
+		if (omit && this.matchesTypes(omit)) {
 			return '';
 		}
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
-			? `${super.toString(selector, `${this.#equal}${quoteStart}`)}${quoteEnd}`
-			: this.firstChild.toString(selector);
+			? `${super.toString(omit, `${this.#equal}${quoteStart}`)}${quoteEnd}`
+			: this.firstChild.toString(omit);
 	}
 
 	/**

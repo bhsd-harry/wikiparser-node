@@ -130,8 +130,8 @@ export abstract class ImagemapToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		return super.toString(selector, '\n');
+	override toString(omit?: Set<string>): string {
+		return super.toString(omit, '\n');
 	}
 
 	/**
