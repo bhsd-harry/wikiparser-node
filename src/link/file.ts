@@ -128,8 +128,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @browser
 	 */
 	getAllArgs(): ImageParameterToken[] {
-		const {childNodes: [, ...args]} = this;
-		return args;
+		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**

@@ -110,7 +110,7 @@ export abstract class HtmlToken extends Token {
 					error.severity = 'warning';
 				} else if (msg === 'unmatched closing tag') {
 					const ancestor = this.closest('magic-word') as TranscludeToken | undefined;
-					if (ancestor && magicWords.has(ancestor.name)) {
+					if (ancestor && magicWords.has(ancestor.name!)) {
 						error.severity = 'warning';
 					}
 				}

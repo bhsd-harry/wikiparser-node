@@ -8,7 +8,6 @@ import type {Token} from '..';
 export abstract class QuoteToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'quote';
-	declare name: string;
 
 	/**
 	 * @browser
@@ -16,7 +15,6 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	 */
 	constructor(n: number, config = Parser.getConfig(), accum: Token[] = []) {
 		super(`'`.repeat(n), config, accum);
-		this.setAttribute('name', String(n));
 	}
 
 	/**

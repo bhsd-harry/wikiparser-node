@@ -46,14 +46,8 @@ export abstract class TagPairToken extends Token {
 		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
 		this.append(attr, inner);
-		let index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
-		if (index === -1 && typeof inner !== 'string') {
-			index = accum.indexOf(inner);
-		}
-		if (index === -1) {
-			index = Infinity;
-		}
-		accum.splice(index, 0, this);
+		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
+		accum.splice(index === -1 ? Infinity : index, 0, this);
 	}
 
 	/**
