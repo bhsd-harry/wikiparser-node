@@ -154,10 +154,7 @@ export abstract class AttributesToken extends Token {
 			const attr = childNodes[i]!;
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ??= {start, ...this.getRootNode().posFromIndex(start)};
-				errors.push({
-					...generateForChild(attr, rect, 'containing invalid attribute'),
-					excerpt: childNodes.slice(i).map(String).join('').slice(0, 50),
-				});
+				errors.push(generateForChild(attr, rect, 'containing invalid attribute'));
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
 				if (attrs.has(name)) {

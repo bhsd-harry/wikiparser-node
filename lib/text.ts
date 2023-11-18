@@ -99,7 +99,6 @@ export class AstText extends AstNode {
 						startCol = lines.length === 1 ? left + line.length : line.length,
 						{0: char, length} = error,
 						endIndex = startIndex + length,
-						end = char === '}' || char === ']' ? endIndex + 1 : startIndex + 49,
 						rootStr = String(root),
 						nextChar = rootStr[endIndex],
 						previousChar = rootStr[startIndex - 1],
@@ -125,7 +124,6 @@ export class AstText extends AstNode {
 						endLine: startLine,
 						startCol,
 						endCol: startCol + length,
-						excerpt: rootStr.slice(Math.max(0, end - 50), end),
 					};
 				}).filter(Boolean) as LintError[];
 		}

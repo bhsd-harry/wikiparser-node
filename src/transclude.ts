@@ -14,7 +14,6 @@ import type {LintError} from '../index';
 export abstract class TranscludeToken extends Token {
 	/** @browser */
 	override type: 'template' | 'magic-word' = 'template';
-	declare name: string;
 	/** @browser */
 	modifier = '';
 	/** @browser */

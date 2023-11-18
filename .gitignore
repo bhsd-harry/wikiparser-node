@@ -5,6 +5,6 @@
 /.vscode/
 /.eslintcache*
 /wiki/
-/test/single-page.wiki
-/test/processed.txt
+/test/*.wiki
+/test/*.txt
 !README

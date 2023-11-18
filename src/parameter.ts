@@ -85,7 +85,7 @@ export abstract class ParameterToken extends Token {
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{firstChild, lastChild} = this,
+			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
 				.exec(firstChild.toString(new Set(['comment', 'noinclude', 'include'])))?.[0];
 		if (link && new URL(link).search) {
@@ -97,7 +97,6 @@ export abstract class ParameterToken extends Token {
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
-				excerpt: `${String(firstChild).slice(-25)}=${String(lastChild).slice(0, 25)}`,
 			});
 		}
 		return errors;

@@ -33,7 +33,6 @@ export const generateForChild = (
 		endLine: startLine + offsetHeight - 1,
 		startCol,
 		endCol: offsetHeight === 1 ? startCol + offsetWidth : offsetWidth,
-		excerpt: str.slice(0, 50),
 	};
 };
 
@@ -63,6 +62,5 @@ export const generateForSelf = (
 		endLine: top + offsetHeight - 1,
 		startCol: left,
 		endCol: offsetHeight === 1 ? left + offsetWidth : offsetWidth,
-		excerpt: str.slice(0, 50),
 	};
 };

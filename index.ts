@@ -25,7 +25,6 @@ export interface LintError {
 	startCol: number;
 	endLine: number;
 	endCol: number;
-	excerpt: string;
 }
 
 declare interface Parser {

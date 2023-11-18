@@ -8,6 +8,7 @@ Available options:
 -c, --config <path or preset config>    Choose parser's configuration
 -h, --help                              Print available options
 -i, --include                           Parse for inclusion
+-l, --lang                              Choose i18n language
 -q, --quiet                             Report errors only
 -s, --strict                            Exit when there is an error or warning
                                         Override -q or --quiet
@@ -16,14 +17,15 @@ Available options:
 	preset = new Set(['default', 'zhwiki', 'moegirl', 'llwiki']),
 	{argv} = process,
 	files: string[] = [];
-let option = '',
-	include = false,
+let include = false,
 	quiet = false,
 	strict = false,
 	exit = false,
 	nErr = 0,
 	nWarn = 0,
-	config: string | undefined;
+	option: string,
+	config: string | undefined,
+	lang: string | undefined;
 
 /**
  * throw if `-c` or `--config` option is incorrect
@@ -68,6 +70,10 @@ for (let i = 2; i < argv.length; i++) {
 		case '--include':
 			include = true;
 			break;
+		case '-l':
+		case '--lang':
+			lang = argv[++i];
+			break;
 		case '-q':
 		case '--quiet':
 			quiet = true;
@@ -88,6 +94,9 @@ for (let i = 2; i < argv.length; i++) {
 				config = option.slice(9);
 				throwOnConfig();
 				break;
+			} else if (option.startsWith('--lang=')) {
+				lang = option.slice(7);
+				break;
 			} else if (option.startsWith('-')) {
 				throw new Error(`Unknown wikilint option: ${option}\n${man}`);
 			}
@@ -98,6 +107,9 @@ if (files.length === 0) {
 	throw new Error('No target file is specified');
 } else if (config) {
 	Parser.config = config.includes('/') ? resolve(config) : `./config/${config}`;
+}
+if (lang) {
+	Parser.i18n = lang;
 }
 if (quiet && strict) {
 	quiet = false;

@@ -54,7 +54,6 @@ export class MagicLinkToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + s.length,
-					excerpt: data.slice(Math.max(0, index! - 25), index! + 25),
 				};
 			}));
 		}

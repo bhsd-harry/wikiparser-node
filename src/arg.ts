@@ -13,7 +13,6 @@ import type {LintError} from '../index';
 export abstract class ArgToken extends Token {
 	/** @browser */
 	override readonly type = 'arg';
-	declare name: string;
 	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -93,13 +92,11 @@ export abstract class ArgToken extends Token {
 					{
 						startIndex,
 						startCol,
-						excerpt,
 					} = error;
 				return {
 					...error,
 					startIndex: startIndex - 1,
 					startCol: startCol - 1,
-					excerpt: `|${excerpt}`,
 				};
 			}));
 		}
