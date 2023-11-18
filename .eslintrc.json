@@ -1044,6 +1044,7 @@
 					}
 				],
 				"no-void": 0,
+				"eslint-comments/disable-enable-pair": 0,
 				"n/no-unpublished-require": 0
 			}
 		}

@@ -1,69 +1,69 @@
-#!/usr/bin/env node
 /* eslint-disable n/no-process-exit */
 
-'use strict';
-
-const fs = require('fs'),
-	path = require('path'),
-	Parser = require('..');
+import {readFileSync} from 'fs';
+import {resolve} from 'path';
+import Parser from '../index';
 const man = `
 Available options:
 -c, --config <path or preset config>    Choose parser's configuration
 -h, --help                              Print available options
 -i, --include                           Parse for inclusion
 -q, --quiet                             Report errors only
--s, --strict                            Exit 1 when there is an error or warning
+-s, --strict                            Exit when there is an error or warning
                                         Override -q or --quiet
 -v, --version                           Print package version
 `,
 	preset = new Set(['default', 'zhwiki', 'moegirl', 'llwiki']),
 	{argv} = process,
-	files = [];
+	files: string[] = [];
 let option = '',
-	config = '',
 	include = false,
 	quiet = false,
 	strict = false,
 	exit = false,
 	nErr = 0,
-	nWarn = 0;
+	nWarn = 0,
+	config: string | undefined;
 
-/** throw if `-c` or `--config` option is incorrect */
-const throwOnConfig = () => {
-		if (!config || config[0] === '-') {
-			console.error(`The option ${option} must be followed by a path or a preset config`);
-			process.exit(1);
-		} else if (!config.includes('/') && !preset.has(config)) {
-			console.error(`Unrecognized preset config: ${config}`);
-			process.exit(1);
-		}
-	},
+/**
+ * throw if `-c` or `--config` option is incorrect
+ * @throws `Error` unrecognized config input
+ */
+const throwOnConfig = (): void => {
+	if (!config || config.startsWith('-')) {
+		throw new Error('The option -c/--config must be followed by a path or a preset config');
+	} else if (!config.includes('/') && !preset.has(config)) {
+		throw new Error(`Unrecognized preset config: ${config}`);
+	}
+};
 
-	/**
-	 * generate plural form if necessary
-	 * @param {number} n number of items
-	 * @param {string} word item name
-	 */
-	plural = (n, word) => `${n} ${word}${n > 1 ? 's' : ''}`,
+/**
+ * generate plural form if necessary
+ * @param n number of items
+ * @param word item name
+ */
+const plural = (n: number, word: string): string => `${n} ${word}${n > 1 ? 's' : ''}`;
 
-	/**
-	 * color the severity
-	 * @param {'error'|'warning'} severity problem severity
-	 */
-	coloredSeverity = severity => `\x1B[${severity === 'error' ? 31 : 33}m${severity}\x1B[0m`.padEnd(16);
+/**
+ * color the severity
+ * @param severity problem severity
+ */
+const coloredSeverity = (severity: 'error' | 'warning'): string =>
+	`\x1B[${severity === 'error' ? 31 : 33}m${severity}\x1B[0m`.padEnd(16);
 
 for (let i = 2; i < argv.length; i++) {
-	option = argv[i];
+	option = argv[i]!;
 	switch (option) {
 		case '-c':
 		case '--config':
-			config = option[++i];
+			config = argv[++i];
 			throwOnConfig();
 			break;
 		case '-h':
 		case '--help':
 			console.log(man);
-			return;
+			process.exit(0);
+			break;
 		case '-i':
 		case '--include':
 			include = true;
@@ -78,27 +78,26 @@ for (let i = 2; i < argv.length; i++) {
 			break;
 		case '-v':
 		case '--version': {
-			const {version} = require('../package');
+			const {version} = require('../../package') as {version: string};
 			console.log(`wikilint v${version}`);
-			return;
+			process.exit(0);
+			break;
 		}
 		default:
 			if (option.startsWith('--config=')) {
 				config = option.slice(9);
 				throwOnConfig();
 				break;
-			} else if (option[0] === '-') {
-				console.error(`Unknown wikilint option: ${option}\n${man}`);
-				process.exit(1);
+			} else if (option.startsWith('-')) {
+				throw new Error(`Unknown wikilint option: ${option}\n${man}`);
 			}
 			files.push(option);
 	}
 }
 if (files.length === 0) {
-	console.error('No target file is specified');
-	process.exit(1);
+	throw new Error('No target file is specified');
 } else if (config) {
-	Parser.config = config.includes('/') ? path.resolve(config) : `./config/${config}`;
+	Parser.config = config.includes('/') ? resolve(config) : `./config/${config}`;
 }
 if (quiet && strict) {
 	quiet = false;
@@ -106,7 +105,7 @@ if (quiet && strict) {
 }
 
 for (const file of files) {
-	const wikitext = fs.readFileSync(file, 'utf8');
+	const wikitext = readFileSync(file, 'utf8');
 	let problems = Parser.parse(wikitext, include).lint();
 	const errors = problems.filter(({severity}) => severity === 'error'),
 		{length: nLocalErr} = errors,
@@ -117,7 +116,7 @@ for (const file of files) {
 		nWarn += nLocalWarn;
 	}
 	if (problems.length > 0) {
-		console.error('\x1B[4m%s\x1B[0m', path.resolve(file));
+		console.error('\x1B[4m%s\x1B[0m', resolve(file));
 		const {length: maxLineChars} = String(Math.max(...problems.map(({startLine}) => startLine))),
 			{length: maxColChars} = String(Math.max(...problems.map(({startCol}) => startCol)));
 		for (const {message, severity, startLine, startCol} of problems) {
@@ -130,7 +129,7 @@ for (const file of files) {
 		console.error();
 	}
 	nErr += nLocalErr;
-	exit ||= nLocalErr || strict && nLocalWarn;
+	exit ||= Boolean(nLocalErr || strict && nLocalWarn);
 }
 if (nErr || nWarn) {
 	console.error(

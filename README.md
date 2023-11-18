@@ -18,5 +18,5 @@ npx wikilint --config zhwiki --include *.wiki
 | `-h`, `--help` | Print available options | |
 | `-i`, `--include` | Parse for inclusion | no inclusion |
 | `-q`, `--quiet` | Report errors only | errors and warnings |
-| `-s`, `--strict` | Exit `1` when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
+| `-s`, `--strict` | Exit when there is an error or warning<br>Override `-q` or `--quiet` | Exit `1` only where there is an error |
 | `-v`, `--version` | Print package version | |
