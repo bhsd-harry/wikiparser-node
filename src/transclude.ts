@@ -163,11 +163,10 @@ export abstract class TranscludeToken extends Token {
 	 * @browser
 	 */
 	override toString(omit?: Set<string>): string {
-		const {childNodes, length, firstChild, modifier} = this;
-		return `{{${modifier}${
+		return `{{${this.modifier}${
 			this.type === 'magic-word'
-				? `${firstChild.toString(omit)}${length === 1 ? '' : ':'}${
-					childNodes.slice(1).map(child => child.toString(omit)).join('|')
+				? `${this.firstChild.toString(omit)}${this.length === 1 ? '' : ':'}${
+					this.childNodes.slice(1).map(child => child.toString(omit)).join('|')
 				}`
 				: super.toString(omit, '|')
 		}}}`;
@@ -182,7 +181,7 @@ export abstract class TranscludeToken extends Token {
 		return type === 'magic-word' && name === 'vardefine'
 			? ''
 			: `{{${modifier}${
-				this.type === 'magic-word'
+				type === 'magic-word'
 					? `${firstChild.text()}${length === 1 ? '' : ':'}${text(childNodes.slice(1), '|')}`
 					: super.text('|')
 			}}}`;
