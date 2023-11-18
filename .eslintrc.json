@@ -73,7 +73,7 @@
 			2,
 			{
 				"args": "all",
-				"argsIgnorePattern": "^(?:_+|acceptable|selector|halfParsed)$",
+				"argsIgnorePattern": "^(?:_+|acceptable|omit|halfParsed)$",
 				"caughtErrors": "all",
 				"ignoreRestSiblings": true
 			}
@@ -859,7 +859,7 @@
 					2,
 					{
 						"args": "all",
-						"argsIgnorePattern": "^(?:_+|acceptable|selector|halfParsed)$",
+						"argsIgnorePattern": "^(?:_+|acceptable|omit|halfParsed)$",
 						"caughtErrors": "all",
 						"ignoreRestSiblings": true
 					}

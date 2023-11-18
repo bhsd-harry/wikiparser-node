@@ -94,10 +94,13 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	closest(selector: string): Token | undefined {
-		const types = new Set(selector.split(',').map(type => type.trim()));
-		let {parentNode} = this;
+		let {parentNode} = this,
+			condition: (token: Token) => boolean;
+		const types = new Set(selector.split(',').map(str => str.trim()));
+		// eslint-disable-next-line prefer-const
+		condition = /** @implements */ ({type}): boolean => types.has(type);
 		while (parentNode) {
-			if (types.has(parentNode.type)) {
+			if (condition(parentNode)) {
 				return parentNode;
 			}
 			({parentNode} = parentNode);
@@ -143,10 +146,10 @@ export abstract class AstElement extends AstNode {
 	/**
 	 * 还原为wikitext
 	 * @browser
-	 * @param selector
+	 * @param omit 忽略的节点类型
 	 * @param separator 子节点间的连接符
 	 */
-	override toString(selector?: string, separator = ''): string {
+	override toString(omit?: Set<string>, separator = ''): string {
 		return this.childNodes.map(child => child.toString()).join(separator);
 	}
 

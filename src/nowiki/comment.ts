@@ -37,7 +37,7 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		return `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
 	}
 }

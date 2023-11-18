@@ -24,7 +24,7 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		return `__${this.firstChild.data}__`;
 	}
 }

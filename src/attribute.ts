@@ -207,7 +207,7 @@ export abstract class AttributeToken extends Token {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
 		});
 		let valueToken: Token;
-		if (key === 'title') {
+		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, true, accum, {
 			});
 			valueToken.type = 'attr-value';
@@ -252,11 +252,11 @@ export abstract class AttributeToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
-			? `${super.toString(selector, `${this.#equal}${quoteStart}`)}${quoteEnd}`
-			: this.firstChild.toString(selector);
+			? `${super.toString(omit, `${this.#equal}${quoteStart}`)}${quoteEnd}`
+			: this.firstChild.toString(omit);
 	}
 
 	/**

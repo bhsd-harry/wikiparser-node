@@ -21,7 +21,7 @@ export class OnlyincludeToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 

@@ -89,7 +89,7 @@ export abstract class TdToken extends TableBaseToken {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}

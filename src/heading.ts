@@ -52,7 +52,7 @@ export abstract class HeadingToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const equals = this.#equals;
 		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;
 	}
