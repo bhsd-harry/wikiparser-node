@@ -217,11 +217,10 @@ export abstract class TranscludeToken extends Token {
 		if (omit && this.matchesTypes(omit)) {
 			return '';
 		}
-		const {childNodes, length, firstChild, modifier} = this;
-		return `{{${modifier}${
+		return `{{${this.modifier}${
 			this.type === 'magic-word'
-				? `${firstChild.toString(omit)}${length === 1 ? '' : ':'}${
-					childNodes.slice(1).map(child => child.toString(omit)).join('|')
+				? `${this.firstChild.toString(omit)}${this.length === 1 ? '' : ':'}${
+					this.childNodes.slice(1).map(child => child.toString(omit)).join('|')
 				}`
 				: super.toString(omit, '|')
 		}}}`;
@@ -236,7 +235,7 @@ export abstract class TranscludeToken extends Token {
 		return type === 'magic-word' && name === 'vardefine'
 			? ''
 			: `{{${modifier}${
-				this.type === 'magic-word'
+				type === 'magic-word'
 					? `${firstChild.text()}${length === 1 ? '' : ':'}${text(childNodes.slice(1), '|')}`
 					: super.text('|')
 			}}}`;
@@ -426,9 +425,9 @@ export abstract class TranscludeToken extends Token {
 	 * @browser
 	 */
 	override print(): string {
-		const {childNodes, length, firstChild, modifier} = this;
-		return `<span class="wpb-${this.type}">{{${modifier}${
-			this.type === 'magic-word'
+		const {childNodes, length, firstChild, modifier, type} = this;
+		return `<span class="wpb-${type}">{{${modifier}${
+			type === 'magic-word'
 				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;

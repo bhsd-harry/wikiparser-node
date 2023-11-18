@@ -147,8 +147,7 @@ export class MagicLinkToken extends Token {
 
 	/** 是否是模板或魔术字参数 */
 	isParamValue(): boolean {
-		const parameter = this.closest('parameter') as ParameterToken | undefined;
-		return parameter?.getValue() === this.text();
+		return (this.closest('parameter') as ParameterToken | undefined)?.getValue() === this.text();
 	}
 }
 

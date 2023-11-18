@@ -122,8 +122,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	protected override getGaps(i: number): number {
-		const {length} = this;
-		return i === 0 && length === 3 ? 2 : 1;
+		return i === 0 && this.length === 3 ? 2 : 1;
 	}
 
 	/**
@@ -249,7 +248,7 @@ export abstract class ConverterRuleToken extends Token {
 	 * @throws `SyntaxError` 非法的转换原文
 	 */
 	setFrom(from: string): void {
-		const {variant, unidirectional} = this;
+		const {variant, unidirectional, firstChild} = this;
 		if (!variant) {
 			throw new Error('请先指定语言变体！');
 		}
@@ -263,7 +262,7 @@ export abstract class ConverterRuleToken extends Token {
 		if (converter!.length !== 2 || converterRule.length !== 3) {
 			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
 		} else if (unidirectional) {
-			this.firstChild.safeReplaceWith(converterRule.firstChild!);
+			firstChild.safeReplaceWith(converterRule.firstChild!);
 		} else {
 			super.insertAt(converterRule.firstChild!, 0);
 		}

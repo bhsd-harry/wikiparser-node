@@ -77,10 +77,7 @@ const desanitize = (selector: string): string => {
  * 去除首尾的引号
  * @param val 属性值或伪选择器函数的参数
  */
-const deQuote = (val: string): string => {
-	const quotes = /^(["']).*\1$/u.exec(val)?.[1];
-	return quotes ? val.slice(1, -1) : val.trim();
-};
+const deQuote = (val: string): string => /^(["']).*\1$/u.exec(val)?.[1] ? val.slice(1, -1) : val.trim();
 
 /**
  * 解析简单伪选择器

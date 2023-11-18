@@ -39,8 +39,7 @@ export class AstRange {
 
 	/** 起点绝对位置 */
 	get startIndex(): number {
-		const {startContainer, startOffset} = this;
-		return getIndex(startContainer, startOffset);
+		return getIndex(this.startContainer, this.startOffset);
 	}
 
 	/** 终点容器 */
@@ -55,8 +54,7 @@ export class AstRange {
 
 	/** 终点绝对位置 */
 	get endIndex(): number {
-		const {endContainer, endOffset} = this;
-		return getIndex(endContainer, endOffset);
+		return getIndex(this.endContainer, this.endOffset);
 	}
 
 	/** 起始和终止位置是否重合 */
@@ -410,8 +408,7 @@ export class AstRange {
 
 	/** 范围内的全部文本 */
 	toString(): string {
-		const {startContainer, startIndex, endIndex} = this;
-		return String(startContainer.getRootNode()).slice(startIndex, endIndex);
+		return String(this.startContainer.getRootNode()).slice(this.startIndex, this.endIndex);
 	}
 }
 

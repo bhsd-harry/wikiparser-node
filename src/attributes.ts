@@ -166,8 +166,7 @@ export abstract class AttributesToken extends Token {
 	 * @param key 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
-		const tokens = this.getAttrTokens(key);
-		return tokens.at(-1);
+		return this.getAttrTokens(key).at(-1);
 	}
 
 	/**

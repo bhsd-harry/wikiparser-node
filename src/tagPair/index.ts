@@ -68,14 +68,8 @@ export abstract class TagPairToken extends fixed(Token) {
 		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
 		this.append(attr, inner);
-		let index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
-		if (index === -1 && typeof inner !== 'string') {
-			index = accum.indexOf(inner);
-		}
-		if (index === -1) {
-			index = Infinity;
-		}
-		accum.splice(index, 0, this);
+		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
+		accum.splice(index === -1 ? Infinity : index, 0, this);
 	}
 
 	/**
@@ -83,11 +77,11 @@ export abstract class TagPairToken extends fixed(Token) {
 	 * @browser
 	 */
 	override toString(omit?: Set<string>): string {
-		const {firstChild, lastChild, nextSibling, name} = this,
+		const {firstChild, lastChild, nextSibling, name, closed} = this,
 			[opening, closing] = this.#tags;
 		if (omit && this.matchesTypes(omit)) {
 			return '';
-		} else if (!this.closed && nextSibling) {
+		} else if (!closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.#closed = true;
 		}

@@ -266,10 +266,9 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** 获取所有行 */
 	getAllRows(): (TrToken | this)[] {
-		const {childNodes: [, ...childNodes]} = this;
 		return [
 			...super.getRowCount() ? [this] : [],
-			...childNodes.filter(child => child.type === 'tr' && child.getRowCount()) as TrToken[],
+			...this.childNodes.slice(1).filter(child => child.type === 'tr' && child.getRowCount()) as TrToken[],
 		];
 	}
 

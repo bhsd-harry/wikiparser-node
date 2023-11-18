@@ -447,8 +447,8 @@ export abstract class AttributeToken extends fixed(Token) {
 			this.#equal = '';
 			return;
 		}
-		const {type} = this,
-			key = this.name === 'title' ? 'title' : 'data',
+		const {type, name} = this,
+			key = name === 'title' ? 'title' : 'data',
 			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
 			{length, firstChild: tag} = root;
@@ -464,7 +464,7 @@ export abstract class AttributeToken extends fixed(Token) {
 			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild} = attrs;
-		if (attrs.length !== 1 || firstChild.type !== this.type || firstChild.name !== key) {
+		if (attrs.length !== 1 || firstChild.type !== type || firstChild.name !== key) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
 		const {lastChild} = firstChild;
@@ -503,7 +503,7 @@ export abstract class AttributeToken extends fixed(Token) {
 			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild: attr} = attrs;
-		if (attrs.length !== 1 || attr.type !== this.type || attr.value !== true) {
+		if (attrs.length !== 1 || attr.type !== type || attr.value !== true) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
 		const {firstChild} = attr;

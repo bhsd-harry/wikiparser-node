@@ -497,8 +497,7 @@ export abstract class AstElement extends AstNode {
 						throw new SyntaxError('错误的伪选择器用法。请使用形如 ":regex(\'attr, /re/i\')" 的格式。');
 					}
 					try {
-						const regex = new RegExp(mt[2], mt[3]);
-						return regex.test(String(this.getAttribute(mt[1].trim())));
+						return new RegExp(mt[2], mt[3]).test(String(this.getAttribute(mt[1].trim())));
 					} catch {
 						throw new SyntaxError(`错误的正则表达式：/${mt[2]}/${mt[3]}`);
 					}

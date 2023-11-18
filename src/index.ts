@@ -852,10 +852,11 @@ export class Token extends AstElement {
 		const textNodes = [...this.childNodes.entries()]
 			.filter(([, {type}]) => type === 'text') as [number, AstText][],
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
-			token = Parser.run(() => {
-				const root = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
-				return root.setAttribute('stage', 6).parse(7);
-			});
+			token = Parser.run(
+				() => new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'))
+					.setAttribute('stage', 6)
+					.parse(7),
+			);
 		for (const quote of [...token.childNodes].reverse()) {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),
