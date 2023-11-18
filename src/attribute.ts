@@ -252,7 +252,7 @@ export abstract class AttributeToken extends fixed(Token) {
 			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
 		let valueToken: Token;
-		if (key === 'title') {
+		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, true, accum, {
 				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
