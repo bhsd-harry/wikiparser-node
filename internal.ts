@@ -12,7 +12,7 @@ export type * from './src/nowiki/noinclude';
 export type * from './src/tagPair/include';
 export type * from './src/nowiki/comment';
 export type * from './src/atom';
-export type * from './src/attribute';
+export type {AttributeToken} from './src/attribute';
 export type * from './src/attributes';
 export type * from './src/tagPair/ext';
 export type * from './src/hidden';

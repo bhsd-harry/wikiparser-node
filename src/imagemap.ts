@@ -153,7 +153,7 @@ export abstract class ImagemapToken extends Token {
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
 		if (this.image) {
 			errors.push(
 				...this.childNodes.filter(child => {

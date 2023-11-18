@@ -6,8 +6,9 @@ import {TableBaseToken} from './base';
 import type {LintError} from '../../index';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
+export type TdSubtypes = 'td' | 'th' | 'caption';
 declare interface TdSyntax {
-	subtype: 'td' | 'th' | 'caption';
+	subtype: TdSubtypes;
 	escape: boolean;
 	correction: boolean;
 }
@@ -37,7 +38,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 * 单元格类型
 	 * @browser
 	 */
-	get subtype(): 'td' | 'th' | 'caption' {
+	get subtype(): TdSubtypes {
 		return this.getSyntax().subtype;
 	}
 
@@ -106,7 +107,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
 			char = syntax.at(-1)!;
-		let subtype: 'td' | 'th' | 'caption' = 'td';
+		let subtype: TdSubtypes = 'td';
 		if (char === '!') {
 			subtype = 'th';
 		} else if (char === '+') {
@@ -311,7 +312,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 	 */
 	static create(
 		inner?: string | Token,
-		subtype: 'td' | 'th' | 'caption' = 'td',
+		subtype: TdSubtypes = 'td',
 		attr: TdAttrs = {},
 		include = false,
 		config = Parser.getConfig(),

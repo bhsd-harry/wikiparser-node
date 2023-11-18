@@ -142,10 +142,10 @@ export abstract class ConverterRuleToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes() as AtomToken[],
 			placeholders = ['', 'zh:', '=>zh:'],
-			placeholder = placeholders[cloned.length - 1];
+			placeholder = placeholders[cloned.length - 1]!;
 		return Parser.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new ConverterRuleToken(placeholder, placeholder, this.getAttribute('config'));
+			const token: this = new ConverterRuleToken(placeholder, Boolean(placeholder), this.getAttribute('config'));
 			for (let i = 0; i < cloned.length; i++) {
 				token.childNodes[i]!.safeReplaceWith(cloned[i]!);
 			}

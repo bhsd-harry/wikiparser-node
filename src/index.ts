@@ -597,9 +597,14 @@ export class Token extends AstElement {
 			// @ts-expect-error abstract class
 			return Parser.run(() => new ExtToken(tagName, '', '', selfClosing ? undefined : '', config));
 		} else if (config.html.flat().includes(tagName)) {
-			const {HtmlToken}: typeof import('./html') = require('./html');
-			// @ts-expect-error abstract class
-			return Parser.run(() => new HtmlToken(tagName, '', closing, selfClosing, config));
+			const {HtmlToken}: typeof import('./html') = require('./html'),
+				{AttributesToken}: typeof import('./attributes') = require('./attributes');
+			return Parser.run(() => {
+				// @ts-expect-error abstract class
+				const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
+				// @ts-expect-error abstract class
+				return new HtmlToken(tagName, attr, closing, selfClosing, config);
+			});
 		}
 		throw new RangeError(`非法的标签名：${tagName}`);
 	}

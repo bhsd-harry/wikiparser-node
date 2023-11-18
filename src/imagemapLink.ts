@@ -41,7 +41,7 @@ export abstract class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	 */
 	constructor(
 		pre: string,
-		linkStuff: [string, string | undefined, string | Title | undefined] | [string, string | undefined],
+		linkStuff: [string, string | undefined, string | undefined] | [string, string | undefined],
 		post: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],

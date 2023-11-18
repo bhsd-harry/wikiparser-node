@@ -5,7 +5,7 @@ import {TableBaseToken} from './base';
 import {TdToken} from './td';
 import type {LintError} from '../../index';
 import type {AstNodes, SyntaxToken, ArgToken, TranscludeToken, TrToken} from '../../internal';
-import type {TdAttrs} from './td';
+import type {TdAttrs, TdSubtypes} from './td';
 
 export interface TableCoords {
 	row: number;
@@ -181,7 +181,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	insertTableCell(
 		inner: string | Token,
 		{column}: TableCoords,
-		subtype: 'td' | 'th' | 'caption' = 'td',
+		subtype: TdSubtypes = 'td',
 		attr: TdAttrs = {},
 	): TdToken {
 		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));

@@ -51,7 +51,7 @@ export abstract class ExtLinkToken extends Token {
 	 * @param space 空白字符
 	 * @param text 链接文字
 	 */
-	constructor(url: string, space = '', text = '', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(url?: string, space = '', text = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, true, accum, {
 			MagicLinkToken: 0, Token: 1,
 		});

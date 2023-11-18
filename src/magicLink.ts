@@ -48,7 +48,7 @@ export class MagicLinkToken extends Token {
 	 * @param url 网址
 	 * @param doubleSlash 是否接受"//"作为协议
 	 */
-	constructor(url: string | undefined, doubleSlash: boolean, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(url?: string, doubleSlash = false, config = Parser.getConfig(), accum: Token[] = []) {
 		super(url, config, true, accum, {
 			'Stage-1': ':', '!ExtToken': '',
 		});

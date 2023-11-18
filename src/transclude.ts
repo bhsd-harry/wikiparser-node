@@ -136,7 +136,7 @@ export abstract class TranscludeToken extends Token {
 	 * @browser
 	 * @param modifier 引用修饰符
 	 */
-	setModifier(modifier = ''): boolean {
+	setModifier(modifier: string): boolean {
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
 			lcModifier = removeComment(modifier).trim();
 		if (modifier && !lcModifier.endsWith(':')) {

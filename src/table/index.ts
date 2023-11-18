@@ -10,7 +10,7 @@ import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../index';
 import type {AttributesToken} from '../../internal';
 import type {TableCoords} from './trBase';
-import type {TdAttrs} from './td';
+import type {TdAttrs, TdSubtypes} from './td';
 
 declare interface TableRenderedCoords {
 	row?: undefined;
@@ -149,7 +149,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
-	constructor(syntax: string, attr = '', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(syntax: string, attr?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, attr, config, accum, {
 			Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:',
 		});
@@ -416,7 +416,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param subtype 单元格类型
 	 * @param attr 表格属性
 	 */
-	fillTableRow(y: number, inner: string | Token, subtype: 'td' | 'th' | 'caption' = 'td', attr: TdAttrs = {}): void {
+	fillTableRow(y: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
 		const rowToken = this.getNthRow(y)!,
 			layout = this.getLayout({y}),
 			maxCol = Math.max(...layout.map(({length}) => length)),
@@ -430,7 +430,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param subtype 单元格类型
 	 * @param attr 表格属性
 	 */
-	fillTable(inner: string | Token, subtype: 'td' | 'th' | 'caption' = 'td', attr: TdAttrs = {}): void {
+	fillTable(inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
@@ -451,7 +451,7 @@ export abstract class TableToken extends TrBaseToken {
 	override insertTableCell(
 		inner: string | Token,
 		coords: TableCoords | TableRenderedCoords,
-		subtype: 'td' | 'th' | 'caption' = 'td',
+		subtype: TdSubtypes = 'td',
 		attr: TdAttrs = {},
 	): TdToken {
 		let rawCoords: TableCoords | undefined;
@@ -503,7 +503,7 @@ export abstract class TableToken extends TrBaseToken {
 		y: number,
 		attr: Record<string, string | true> = {},
 		inner?: string | Token,
-		subtype: 'td' | 'th' | 'caption' = 'td',
+		subtype: TdSubtypes = 'td',
 		innerAttr: TdAttrs = {},
 	): TrToken {
 		let reference = this.getNthRow(y, false, true);
@@ -547,12 +547,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 单元格属性
 	 * @throws `RangeError` 列号过大
 	 */
-	insertTableCol(
-		x: number,
-		inner: string | Token,
-		subtype: 'td' | 'th' | 'caption' = 'td',
-		attr: TdAttrs = {},
-	): void {
+	insertTableCol(x: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
 		const layout = this.getLayout(),
 			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);

@@ -11,7 +11,8 @@ declare global {
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' ? boolean :
 		T extends 'pattern' ? RegExp :
-		T extends 'tags' | 'flags' ? string[] :
+		T extends 'flags' ? string[] :
+		T extends 'tags' ? [string, string] :
 		T extends 'quotes' ? [string?, string?] :
 		T extends 'optional' | 'keys' ? Set<string> :
 		T extends 'args' ? Map<string, Set<ParameterToken>> :

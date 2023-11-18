@@ -130,7 +130,7 @@ export abstract class FileToken extends LinkBaseToken {
 		) {
 			return errors;
 		}
-		const rect = {start, ...this.getRootNode().posFromIndex(start)};
+		const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
 
 		/**
 		 * 图片参数到语法错误的映射
@@ -301,7 +301,7 @@ export abstract class FileToken extends LinkBaseToken {
 				this.typeError('setValue', 'Boolean');
 			}
 			// @ts-expect-error abstract class
-			const newArg = Parser.run(() => new ImageParameterToken(syntax, config) as ImageParameterToken);
+			const newArg = Parser.run(() => new ImageParameterToken(syntax!, config) as ImageParameterToken);
 			this.insertAt(newArg);
 			return;
 		}

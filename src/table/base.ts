@@ -41,7 +41,7 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	constructor(
 		pattern: RegExp,
 		syntax?: string,
-		attr = '',
+		attr?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 		acceptable: Acceptable = {},

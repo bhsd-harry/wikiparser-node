@@ -32,7 +32,7 @@ export const undo = (e: AstEvent, data: AstEventData): void => {
 		}
 		case 'text':
 			if (target.type === 'text') {
-				target.replaceData(data.oldText);
+				target.replaceData(data.oldText!);
 			}
 			break;
 		default:

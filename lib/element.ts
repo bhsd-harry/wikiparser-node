@@ -136,7 +136,7 @@ export abstract class AstElement extends AstNode {
 	 * @browser
 	 * @param separator 子节点间的连接符
 	 */
-	text(separator = ''): string {
+	text(separator?: string): string {
 		return text(this.childNodes, separator);
 	}
 

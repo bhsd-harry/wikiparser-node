@@ -6,6 +6,7 @@ import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../index';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
+import type {AttributeTypes} from './attribute';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
@@ -113,10 +114,10 @@ export abstract class AttributesToken extends Token {
 				out += attr.slice(lastIndex, index);
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
-						quotes = [quoteStart, quoteEnd],
+						quotes: [string | undefined, string | undefined] = [quoteStart, quoteEnd],
 						// @ts-expect-error abstract class
 						token: AttributeToken = new AttributeToken(
-							type.slice(0, -1) as 'ext-attr' | 'html-attr' | 'table-attr',
+							type.slice(0, -1) as AttributeTypes,
 							name,
 							key,
 							equal,
@@ -237,7 +238,7 @@ export abstract class AttributesToken extends Token {
 	sanitize(): void {
 		let dirty = false;
 		for (let i = this.length - 1; i >= 0; i--) {
-			const child = this.childNodes[i];
+			const child = this.childNodes[i]!;
 			if (child instanceof AtomToken && child.text().trim()) {
 				dirty = true;
 				this.removeAt(i);
@@ -329,7 +330,7 @@ export abstract class AttributesToken extends Token {
 		}
 		// @ts-expect-error abstract class
 		const newAttr: AttributeToken = Parser.run(() => new AttributeToken(
-			this.type.slice(0, -1) as 'ext-attr' | 'html-attr' | 'table-attr',
+			this.type.slice(0, -1) as AttributeTypes,
 			this.name,
 			k,
 			value === true ? '' : '=',

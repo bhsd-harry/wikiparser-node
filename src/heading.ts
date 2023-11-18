@@ -52,7 +52,7 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	 * @param level 标题层级
 	 * @param input 标题文字
 	 */
-	constructor(level: number, input: string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(level: number, input: [string?, string?], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, true, accum);
 		this.setAttribute('name', String(level));
 		const token = new Token(input[0], config, true, accum);

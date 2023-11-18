@@ -232,7 +232,7 @@ export abstract class LinkBaseToken extends Token {
 	 * @param linkStr 链接显示文字
 	 * @throws `SyntaxError` 非法的链接显示文字
 	 */
-	setLinkText(linkStr = ''): void {
+	setLinkText(linkStr?: string): void {
 		let lastChild: Token;
 		const config = this.getAttribute('config');
 		if (linkStr) {

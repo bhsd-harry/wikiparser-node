@@ -4,10 +4,10 @@ import {fixed} from '../mixin/fixed';
 import Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
-import type {LintError} from '../index';
+import type {LintError, Config} from '../index';
 import type {AttributesToken} from '../internal';
 
-declare type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
+export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
@@ -243,7 +243,7 @@ export abstract class AttributeToken extends fixed(Token) {
 		tag: string,
 		key: string,
 		equal = '',
-		value = '',
+		value?: string,
 		quotes: [string?, string?] = [],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -259,14 +259,20 @@ export abstract class AttributeToken extends fixed(Token) {
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
-			const newConfig = {...config, excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list']};
+			const newConfig: Config = {
+				...config,
+				excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list'],
+			};
 			valueToken = new Token(value, newConfig, true, accum, {
 				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 5);
 		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
-			const newConfig = {...config, excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list']};
+			const newConfig: Config = {
+				...config,
+				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
+			};
 			valueToken = new Token(value, newConfig, true, accum, {
 				ArgToken: ':',
 				TranscludeToken: ':',
