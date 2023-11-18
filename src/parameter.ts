@@ -45,9 +45,9 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	protected override afterBuild(): void {
+		const omit = new Set(['comment', 'noinclude', 'include']);
 		if (!this.anon) {
-			const name = this.firstChild.toString('comment, noinclude, include')
-					.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'),
+			const name = this.firstChild.toString(omit).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'),
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode) {
@@ -60,10 +60,10 @@ export abstract class ParameterToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		return this.anon
-			? this.lastChild.toString(selector)
-			: super.toString(selector, '=');
+			? this.lastChild.toString(omit)
+			: super.toString(omit, '=');
 	}
 
 	/**
@@ -87,7 +87,7 @@ export abstract class ParameterToken extends Token {
 		const errors = super.lint(start),
 			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
-				.exec(firstChild.toString('comment, noinclude, include'))?.[0];
+				.exec(firstChild.toString(new Set(['comment', 'noinclude', 'include'])))?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {start}, 'unescaped query string in an anonymous parameter');
 			errors.push({

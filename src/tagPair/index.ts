@@ -60,12 +60,12 @@ export abstract class TagPairToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		const {firstChild, lastChild} = this,
 			[opening, closing] = this.#tags;
 		return this.#selfClosing
-			? `<${opening}${firstChild.toString(selector)}/>`
-			: `<${opening}${firstChild.toString(selector)}>${lastChild.toString(selector)}${
+			? `<${opening}${firstChild.toString(omit)}/>`
+			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
 				this.closed ? `</${closing}>` : ''
 			}`;
 	}

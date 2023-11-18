@@ -43,8 +43,8 @@ export abstract class ConverterFlagsToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
-		return super.toString(selector, ';');
+	override toString(omit?: Set<string>): string {
+		return super.toString(omit, ';');
 	}
 
 	/**

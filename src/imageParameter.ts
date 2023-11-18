@@ -123,10 +123,10 @@ export abstract class ImageParameterToken extends Token {
 	 * @override
 	 * @browser
 	 */
-	override toString(selector?: string): string {
+	override toString(omit?: Set<string>): string {
 		return this.#syntax
-			? this.#syntax.replace('$1', super.toString(selector))
-			: super.toString(selector);
+			? this.#syntax.replace('$1', super.toString(omit))
+			: super.toString(omit);
 	}
 
 	/**
