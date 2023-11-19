@@ -1,5 +1,5 @@
-import * as Parser from '../index';
-import {Token} from '.';
+import Parser from '../index';
+import {Token} from './index';
 
 declare type AtomTypes = 'arg-name'
 	| 'attr-key'

@@ -1,10 +1,10 @@
-import * as Parser from '../index';
+import Parser from '../index';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
-import type {Token} from '../src';
+import type {Token} from '../src/index';
 
 /**
  * 解析HTML注释和扩展标签

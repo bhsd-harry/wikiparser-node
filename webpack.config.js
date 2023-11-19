@@ -1,52 +1,49 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
+/* eslint n/exports-style: [2, "module.exports"] */
+'use strict';
 
 const path = require('path'),
-	{ESBuildMinifyPlugin} = require('esbuild-loader');
+	{EsbuildPlugin} = require('esbuild-loader');
 
-// const mode = 'development';
-const mode = 'production';
-
-const config = mode === 'production'
-	? {
-		entry: './index.js',
-		output: {
-			path: path.resolve(__dirname, 'bundle'),
-			filename: `bundle.min.js`,
-			iife: true,
+const output = {
+		path: path.resolve(__dirname, 'bundle'),
+		filename: 'bundle.js',
+		iife: true,
+	},
+	config = {
+		entry: './index.ts',
+		output,
+		resolve: {
+			extensions: ['.ts', '.json'],
 		},
 		plugins: [],
 		module: {
-			rules: [],
+			rules: [
+				{
+					test: /\.ts$/u,
+					loader: 'esbuild-loader',
+					options: {
+						target: 'es2018',
+					},
+				},
+			],
 		},
-		optimization: {
+	};
+
+module.exports = /** @implements */ (_, {mode}) => {
+	config.mode = mode;
+	if (mode === 'production') {
+		output.filename = 'bundle.min.js';
+		config.optimization = {
 			minimize: true,
 			minimizer: [
-				new ESBuildMinifyPlugin({
+				new EsbuildPlugin({
 					target: 'es2018',
 					format: 'iife',
 				}),
 			],
-		},
-		mode,
+		};
 	}
-	: {
-		entry: './index.js',
-		output: {
-			path: path.resolve(__dirname, 'bundle'),
-			filename: `bundle.js`,
-			iife: true,
-		},
-		plugins: [],
-		module: {
-			rules: [{
-				test: /\.js$/,
-				loader: 'esbuild-loader',
-				options: {
-					target: 'es2018',
-				},
-			}],
-		},
-		mode,
-	};
 
-module.exports = config;
+	return config;
+};

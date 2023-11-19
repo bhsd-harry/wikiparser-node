@@ -1,5 +1,5 @@
-import * as Parser from '../index';
-import {LinkToken} from '../src/link';
+import Parser from '../index';
+import {LinkToken} from '../src/link/index';
 import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';
 import type {Token} from '../internal';
@@ -11,7 +11,7 @@ import type {Token} from '../internal';
  * @param accum
  */
 export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
-	const {parseQuotes}: typeof import('./quotes') = require('./quotes.js');
+	const {parseQuotes}: typeof import('./quotes') = require('./quotes');
 	const regex = config.inExt
 			? /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
 			: /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,

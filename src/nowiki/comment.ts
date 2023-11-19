@@ -1,9 +1,9 @@
 import {generateForSelf} from '../../util/lint';
 import {hidden} from '../../mixin/hidden';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {Token} from '..';
+import type {Token} from '../index';
 
 /** HTML注释，不可见 */
 // @ts-expect-error not implementing all abstract methods

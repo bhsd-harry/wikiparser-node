@@ -1,7 +1,7 @@
-import * as Parser from '../index';
+import Parser from '../index';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
-import type {Token} from '../src';
+import type {Token} from '../src/index';
 
 /**
  * 解析列表

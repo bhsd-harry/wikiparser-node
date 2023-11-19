@@ -22,17 +22,18 @@
 		"/i18n/"
 	],
 	"browser": "/bundle/bundle.min.js",
-	"main": "./dist/index.js",
+	"main": "./bundle/bundle.js",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"build": "rm -rf dist/; tsc; grep -rl --include='*.js' '@ts' dist/ | xargs gsed -i '/@ts/d'; eslint --fix dist/",
+		"build": "rm bundle/*.js; webpack build --mode development; webpack build --mode production",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
-		"lint": "npm run lint:ts && npm run lint:json"
+		"lint:css": "stylelint extensions/*.css",
+		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
@@ -41,7 +42,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
 		"ajv-cli": "^5.0.0",
-		"esbuild-loader": "^2.20.0",
+		"esbuild-loader": "^4.0.2",
 		"eslint": "^8.53.0",
 		"eslint-plugin-es-x": "^5.4.0",
 		"eslint-plugin-eslint-comments": "^3.2.0",

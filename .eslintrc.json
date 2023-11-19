@@ -23,7 +23,6 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"webpack.config.js",
 		"!config/.schema.json",
 		"wiki/",
 		"dist/**/*.ts"

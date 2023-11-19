@@ -1,6 +1,6 @@
 import {generateForChild} from '../util/lint';
-import * as Parser from '../index';
-import {Token} from '.';
+import Parser from '../index';
+import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 import {CommentToken} from './nowiki/comment';

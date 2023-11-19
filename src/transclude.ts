@@ -1,7 +1,7 @@
 import {removeComment, text, noWrap, print, decodeHtml} from '../util/string';
 import {generateForChild} from '../util/lint';
-import * as Parser from '../index';
-import {Token} from '.';
+import Parser from '../index';
+import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';

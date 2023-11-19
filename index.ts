@@ -78,7 +78,7 @@ declare interface Parser {
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
-	minConfig: require('../config/minimum'),
+	minConfig: require('./config/minimum'),
 
 	MAX_STAGE: 11,
 
@@ -106,7 +106,7 @@ const Parser: Parser = {
 		if (halfParsed) {
 			return new Title(title, defaultNs, config, decode, selfLink);
 		}
-		const {Token}: typeof import('./src') = require('./src');
+		const {Token}: typeof import('./src/index') = require('./src/index');
 		const token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
 		return titleObj;
@@ -114,7 +114,7 @@ const Parser: Parser = {
 
 	/** @implements */
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
-		const {Token}: typeof import('./src') = require('./src');
+		const {Token}: typeof import('./src/index') = require('./src/index');
 		let token: Token;
 		this.run(() => {
 			token = new Token(wikitext.replace(/[\0\x7F]/gu, ''), config);
@@ -146,6 +146,10 @@ Object.defineProperties(Parser, def);
 
 if (typeof self === 'object') {
 	Object.assign(self, {Parser});
+/* eslint-disable es-x/no-global-this */
+} else if (typeof globalThis === 'object') {
+	Object.assign(globalThis, {Parser});
+/* eslint-enable es-x/no-global-this */
 }
-// @ts-expect-error mixed export styles
-export = Parser;
+
+export default Parser;

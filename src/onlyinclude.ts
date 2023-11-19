@@ -1,4 +1,4 @@
-import {Token} from '.';
+import {Token} from './index';
 
 /**
  * 嵌入时的`<onlyinclude>`

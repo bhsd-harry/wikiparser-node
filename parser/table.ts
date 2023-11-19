@@ -1,6 +1,6 @@
-import * as Parser from '../index';
-import {Token} from '../src';
-import {TableToken} from '../src/table';
+import Parser from '../index';
+import {Token} from '../src/index';
+import {TableToken} from '../src/table/index';
 import {TrToken} from '../src/table/tr';
 import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';

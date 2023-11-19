@@ -1,4 +1,4 @@
-import {Token} from '..';
+import {Token} from '../index';
 import type {AstText} from '../../lib/text';
 
 declare type NowikiTypes = 'ext-inner'

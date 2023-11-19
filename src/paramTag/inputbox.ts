@@ -1,7 +1,7 @@
 import {parseBraces} from '../../parser/braces';
-import * as Parser from '../../index';
-import {ParamTagToken} from '.';
-import type {Token} from '..';
+import Parser from '../../index';
+import {ParamTagToken} from './index';
+import type {Token} from '../index';
 
 /** `<inputbox>` */
 // @ts-expect-error not implementing all abstract methods

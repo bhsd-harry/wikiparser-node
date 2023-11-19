@@ -7,4 +7,5 @@
 /wiki/
 /test/*.wiki
 /test/*.txt
+/bundle/bundle.min.js
 !README
