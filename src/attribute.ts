@@ -263,7 +263,7 @@ export class AttributeToken extends fixed(Token) {
 		});
 		let valueToken: Token;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
-			valueToken = new Token(value, config, true, accum, {
+			valueToken = new Token(value, config, accum, {
 				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
@@ -273,7 +273,7 @@ export class AttributeToken extends fixed(Token) {
 				...config,
 				excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list'],
 			};
-			valueToken = new Token(value, newConfig, true, accum, {
+			valueToken = new Token(value, newConfig, accum, {
 				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
@@ -283,7 +283,7 @@ export class AttributeToken extends fixed(Token) {
 				...config,
 				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
 			};
-			valueToken = new Token(value, newConfig, true, accum, {
+			valueToken = new Token(value, newConfig, accum, {
 				ArgToken: ':',
 				TranscludeToken: ':',
 				LinkToken: ':',
@@ -301,7 +301,7 @@ export class AttributeToken extends fixed(Token) {
 				[`Stage-${stages[type]}`]: ':',
 			});
 		}
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		this.type = type;
 		this.append(keyToken, valueToken);
 		this.#equal = equal;

@@ -55,14 +55,14 @@ export abstract class LinkBaseToken extends Token {
 	 * @param delimiter `|`
 	 */
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 			AtomToken: 0, Token: 1,
 		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
 			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
-			const inner = new Token(linkText, config, true, accum, {
+			const inner = new Token(linkText, config, accum, {
 				'Stage-5': ':', ConverterToken: ':',
 			});
 			inner.type = 'link-text';
@@ -248,7 +248,7 @@ export abstract class LinkBaseToken extends Token {
 			}
 			({lastChild} = wikiLink as this);
 		} else {
-			lastChild = Parser.run(() => new Token('', config, true));
+			lastChild = Parser.run(() => new Token(undefined, config));
 			lastChild.setAttribute('stage', 7).type = 'link-text';
 		}
 		if (this.length === 1) {

@@ -56,7 +56,7 @@ export class PreToken extends Token {
 			}
 			wikitext = `${str}${wikitext}`;
 		}
-		super(wikitext, config, true, accum, {
+		super(wikitext, config, accum, {
 			AstText: ':', NoincludeToken: ':', ConverterToken: ':',
 		});
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);

@@ -46,7 +46,7 @@ export class ConverterFlagsToken extends Token {
 	 * @param flags 转换类型标记
 	 */
 	constructor(flags: string[], config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 			AtomToken: ':',
 		});
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));

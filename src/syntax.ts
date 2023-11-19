@@ -27,7 +27,7 @@ export class SyntaxToken extends Token {
 		if (pattern.global) {
 			throw new RangeError(`SyntaxToken 的语法正则不能含有 g 修饰符：${String(pattern)}`);
 		}
-		super(wikitext, config, true, accum, acceptable);
+		super(wikitext, config, accum, acceptable);
 		this.type = type;
 		this.#pattern = pattern;
 	}

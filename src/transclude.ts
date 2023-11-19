@@ -54,7 +54,7 @@ export class TranscludeToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
 		this.seal('modifier');

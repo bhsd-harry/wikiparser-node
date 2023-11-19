@@ -316,7 +316,7 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src') = require('./src');
 		let token: Token;
 		this.run(() => {
-			token = new Token(wikitext, config);
+			token = new Token(wikitext.replace(/[\0\x7F]/gu, ''), config);
 			try {
 				token.parse(maxStage, include);
 			} catch (e) {
@@ -438,7 +438,7 @@ const Parser: Parser = {
 		this.config = config;
 		return this.run(() => {
 			const halfParsed = stage < this.MAX_STAGE,
-				token = new Token(wikitext, this.getConfig(), halfParsed);
+				token = new Token(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''), this.getConfig());
 			if (halfParsed) {
 				token.setAttribute('stage', stage).parseOnce(stage, include);
 			} else {

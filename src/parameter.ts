@@ -70,11 +70,11 @@ export class ParameterToken extends fixed(Token) {
 	 * @param value 参数值
 	 */
 	constructor(key?: string | number, value?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum);
-		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, true, accum, {
+		super(undefined, config, accum);
+		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, accum, {
 				'Stage-11': ':', '!HeadingToken': '',
 			}),
-			token = new Token(value, config, true, accum);
+			token = new Token(value, config, accum);
 		keyToken.type = 'parameter-key';
 		token.type = 'parameter-value';
 		this.append(keyToken, token.setAttribute('stage', 2));

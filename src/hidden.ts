@@ -7,11 +7,6 @@ export class HiddenToken extends hidden(Token) {
 	/** @browser */
 	override readonly type = 'hidden';
 
-	/** @browser */
-	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
-		super(wikitext, config, true, accum, acceptable);
-	}
-
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),

@@ -37,7 +37,7 @@ export const parseTable = (
 		if (lastChild.constructor === Token) {
 			lastChild.setText(String(lastChild) + str);
 		} else {
-			const token = new Token(str, config, true, accum);
+			const token = new Token(str, config, accum);
 			token.type = 'table-inter';
 			(top as TrToken | TableToken).insertAt(token.setAttribute('stage', 3));
 		}

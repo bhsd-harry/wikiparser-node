@@ -79,7 +79,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 				if (lcName === 'poem') {
 					newConfig.excludes!.push('heading');
 				}
-				innerToken = new Token(inner, newConfig, true, accum);
+				innerToken = new Token(inner, newConfig, accum);
 				break;
 			case 'pre': {
 				const {PreToken}: typeof import('../pre') = require('../pre');

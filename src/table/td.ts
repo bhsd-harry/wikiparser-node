@@ -102,7 +102,6 @@ export class TdToken extends fixed(TableBaseToken) {
 		const innerToken = new Token(
 			inner?.slice((innerSyntax?.index ?? NaN) + this.#innerSyntax.length),
 			config,
-			true,
 			accum,
 		);
 		innerToken.type = 'td-inner';

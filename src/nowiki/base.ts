@@ -25,11 +25,6 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	abstract override get lastChild(): AstText;
 	abstract override get lastElementChild(): undefined;
 
-	/** @browser */
-	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
-		super(wikitext, config, true, accum);
-	}
-
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const {constructor, firstChild: {data}, type} = this,

@@ -83,7 +83,7 @@ export class AttributesToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 			AtomToken: ':', AttributeToken: ':',
 		});
 		this.type = type;

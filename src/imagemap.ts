@@ -59,7 +59,7 @@ export class ImagemapToken extends Token {
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 			GalleryImageToken: ':', ImagemapLinkToken: ':', SingleLineNoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {

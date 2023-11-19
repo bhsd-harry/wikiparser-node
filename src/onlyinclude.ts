@@ -15,14 +15,6 @@ export class OnlyincludeToken extends Token {
 	}
 
 	/**
-	 * @browser
-	 * @param inner 标签内部wikitext
-	 */
-	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(inner, config, true, accum);
-	}
-
-	/**
 	 * @override
 	 * @browser
 	 */

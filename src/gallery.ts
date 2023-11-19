@@ -47,7 +47,7 @@ export class GalleryToken extends Token {
 	 * @param inner 标签内部wikitext
 	 */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 			AstText: ':', GalleryImageToken: ':', HiddenToken: ':',
 		});
 		for (const line of inner?.split('\n') ?? []) {

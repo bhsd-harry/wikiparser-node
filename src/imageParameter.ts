@@ -161,10 +161,10 @@ export class ImageParameterToken extends Token {
 		// @ts-expect-error mt already assigned
 		if (param && mt) {
 			if (mt.length === 3) {
-				super(undefined, config, true, accum);
+				super(undefined, config, accum);
 				this.#syntax = str;
 			} else {
-				super(mt[2], config, true, accum, {
+				super(mt[2], config, accum, {
 					'Stage-2': ':', '!HeadingToken': ':',
 				});
 				this.#syntax = `${mt[1]}${param[0]}${mt[3]!}`;
@@ -172,7 +172,7 @@ export class ImageParameterToken extends Token {
 			this.setAttribute('name', param[1]);
 			return;
 		}
-		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, true, accum);
+		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, accum);
 		this.setAttribute('name', 'caption').setAttribute('stage', 7);
 	}
 

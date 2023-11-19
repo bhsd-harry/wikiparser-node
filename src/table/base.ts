@@ -46,7 +46,7 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 		accum: Token[] = [],
 		acceptable: Acceptable = {},
 	) {
-		super(undefined, config, true, accum, acceptable);
+		super(undefined, config, accum, acceptable);
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',

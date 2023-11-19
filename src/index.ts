@@ -108,13 +108,12 @@ export class Token extends AstElement {
 	constructor(
 		wikitext?: string,
 		config = Parser.getConfig(),
-		halfParsed = false,
 		accum: Token[] = [],
 		acceptable?: Acceptable,
 	) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.insertAt(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''));
+			this.insertAt(wikitext);
 		}
 		this.#config = config;
 		this.#accum = accum;
@@ -740,7 +739,7 @@ export class Token extends AstElement {
 		}
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			const token = new Token(undefined, this.#config, false, [], this.#acceptable) as this;
+			const token = new Token(undefined, this.#config, [], this.#acceptable) as this;
 			token.type = this.type;
 			token.append(...cloned);
 			token.protectChildren(...this.#protectedChildren);

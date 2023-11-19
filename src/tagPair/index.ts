@@ -62,7 +62,7 @@ export abstract class TagPairToken extends fixed(Token) {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		super(undefined, config, true);
+		super(undefined, config);
 		this.setAttribute('name', name.toLowerCase());
 		this.#tags = [name, closed || name];
 		this.#selfClosing = closed === undefined;
