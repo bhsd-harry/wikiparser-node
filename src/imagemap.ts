@@ -11,15 +11,20 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
  * `<imagemap>`
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
-export abstract class ImagemapToken extends Token {
+export class ImagemapToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'imagemap';
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): NoincludeToken | GalleryImageToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/**
@@ -54,7 +59,6 @@ export abstract class ImagemapToken extends Token {
 				const [file, ...options] = line.split('|') as [string, ...string[]],
 					title = this.normalizeTitle(file, 0, true);
 				if (title.valid && title.ns === 6) {
-					// @ts-expect-error abstract class
 					const token = new GalleryImageToken(
 						'imagemap',
 						file,
@@ -79,10 +83,9 @@ export abstract class ImagemapToken extends Token {
 				if (mtIn) {
 					const title = this.normalizeTitle(mtIn[1], 0, true, false, true);
 					if (title.valid) {
-						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
-							mtIn.slice(1),
+							mtIn.slice(1) as [string, string | undefined],
 							substr.slice(substr.indexOf(']]') + 2),
 							config,
 							accum,
@@ -95,10 +98,9 @@ export abstract class ImagemapToken extends Token {
 					const mtEx = /^\[([^\]\s]+)(?:(\s+)(\S[^\]]*)?)?\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined, string | undefined] | null;
 					if (mtEx) {
-						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
-							mtEx.slice(1),
+							mtEx.slice(1) as [string, string | undefined, string | undefined],
 							substr.slice(substr.indexOf(']') + 1),
 							config,
 							accum,
@@ -107,7 +109,6 @@ export abstract class ImagemapToken extends Token {
 					}
 				}
 			}
-			// @ts-expect-error abstract class
 			super.insertAt(new SingleLineNoincludeToken(line, config, accum));
 		}
 	}

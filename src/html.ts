@@ -11,12 +11,14 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export abstract class HtmlToken extends Token {
+export class HtmlToken extends Token {
 	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
 	declare childNodes: [AttributesToken];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken;
 
 	/** @browser */

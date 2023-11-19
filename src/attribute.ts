@@ -144,14 +144,19 @@ const commonHtmlAttrs = new Set([
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export abstract class AttributeToken extends Token {
+export class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare name: string;
 	declare childNodes: [AtomToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): AttributesToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): AtomToken | this | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	/** @browser */

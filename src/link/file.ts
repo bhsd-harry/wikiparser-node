@@ -45,10 +45,12 @@ const explode = (start: string, end: string, separator: string, str?: string): s
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
-export abstract class FileToken extends LinkBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class FileToken extends LinkBaseToken {
 	/** @browser */
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
 	/**
@@ -59,10 +61,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
-		this.append(...explode('-{', '}-', '|', text).map(
-			// @ts-expect-error abstract class
-			part => new ImageParameterToken(part, config, accum) as ImageParameterToken,
-		));
+		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 	}
 
 	/**

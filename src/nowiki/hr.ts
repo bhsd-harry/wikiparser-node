@@ -1,7 +1,8 @@
 import {NowikiBaseToken} from './base';
 
 /** `<hr>` */
-export abstract class HrToken extends NowikiBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class HrToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'hr';
 }

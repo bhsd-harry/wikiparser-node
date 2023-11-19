@@ -7,15 +7,20 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * `<pre>`
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-export abstract class PreToken extends Token {
+export class PreToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'pre';
 	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/** @browser */
@@ -28,9 +33,7 @@ export abstract class PreToken extends Token {
 				j = wikitext.indexOf(closing, i + length),
 				str = '';
 			while (i !== -1 && j !== -1) {
-				// @ts-expect-error abstract class
 				new NoincludeToken(opening, config, accum);
-				// @ts-expect-error abstract class
 				new NoincludeToken(closing, config, accum);
 				str += `${wikitext.slice(0, i)}\0${accum.length - 1}c\x7F${
 					wikitext.slice(i + length, j)

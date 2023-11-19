@@ -31,8 +31,7 @@ export abstract class TableBaseToken extends Token {
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 			}),
-			// @ts-expect-error abstract class
-			new AttributesToken(attr, 'table-attrs', this.type, config, accum) as AttributesToken,
+			new AttributesToken(attr, 'table-attrs', this.type, config, accum),
 		);
 	}
 }

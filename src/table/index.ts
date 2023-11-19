@@ -11,10 +11,12 @@ const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$
  * 表格
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
-export abstract class TableToken extends TrBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class TableToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'table';
 	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	/**

@@ -8,11 +8,13 @@ import {ConverterRuleToken} from './converterRule';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-export abstract class ConverterToken extends Token {
+export class ConverterToken extends Token {
 	/** @browser */
 	override readonly type = 'converter';
 	declare childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): ConverterFlagsToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/**
@@ -22,20 +24,16 @@ export abstract class ConverterToken extends Token {
 	 */
 	constructor(flags: string[], rules: [string, ...string[]], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, true, accum);
-		// @ts-expect-error abstract class
-		this.append(new ConverterFlagsToken(flags, config, accum) as ConverterFlagsToken);
+		this.append(new ConverterFlagsToken(flags, config, accum));
 		const [firstRule] = rules,
 			hasColon = firstRule.includes(':'),
-			// @ts-expect-error abstract class
-			firstRuleToken: ConverterRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
+			firstRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
 		if (hasColon && firstRuleToken.length === 1) {
-			// @ts-expect-error abstract class
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum));
 		} else {
 			this.append(
 				firstRuleToken,
-				// @ts-expect-error abstract class
-				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum) as ConverterRuleToken),
+				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum)),
 			);
 		}
 	}

@@ -9,15 +9,20 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export abstract class ParameterToken extends Token {
+export class ParameterToken extends Token {
 	/** @browser */
 	override readonly type = 'parameter';
 	declare name: string;
 	declare childNodes: [Token, Token];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): TranscludeToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
 
 	/**

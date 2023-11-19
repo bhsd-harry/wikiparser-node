@@ -7,14 +7,19 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
  * 转换规则
  * @classdesc `{childNodes: ...AtomToken}`
  */
-export abstract class ConverterRuleToken extends Token {
+export class ConverterRuleToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-rule';
 	declare childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): ConverterFlagsToken | this;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
 
 	/**
