@@ -7,7 +7,7 @@ This is a minimal version of [wikiparser-node](https://www.npmjs.com/package/wik
 You can also directly lint Wikitext articles in the command line using this package:
 
 ```sh
-npx wikilint --config zhwiki --include *.wiki
+npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 ```
 
 ## CLI Options
