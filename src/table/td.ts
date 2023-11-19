@@ -5,8 +5,9 @@ import {TableBaseToken} from './base';
 import type {LintError} from '../../index';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
+export type TdSubtypes = 'td' | 'th' | 'caption';
 declare interface TdSyntax {
-	subtype: 'td' | 'th' | 'caption';
+	subtype: TdSubtypes;
 }
 export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan?: number};
 
@@ -29,7 +30,7 @@ export abstract class TdToken extends TableBaseToken {
 	 * 单元格类型
 	 * @browser
 	 */
-	get subtype(): 'td' | 'th' | 'caption' {
+	get subtype(): TdSubtypes {
 		return this.getSyntax().subtype;
 	}
 
@@ -69,7 +70,7 @@ export abstract class TdToken extends TableBaseToken {
 	protected getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
 			char = syntax[syntax.length - 1]!;
-		let subtype: 'td' | 'th' | 'caption' = 'td';
+		let subtype: TdSubtypes = 'td';
 		if (char === '!') {
 			subtype = 'th';
 		} else if (char === '+') {

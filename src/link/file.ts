@@ -84,7 +84,7 @@ export abstract class FileToken extends LinkBaseToken {
 		) {
 			return errors;
 		}
-		const rect = {start, ...this.getRootNode().posFromIndex(start)};
+		const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
 
 		/**
 		 * 图片参数到语法错误的映射

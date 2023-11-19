@@ -30,7 +30,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
-	constructor(syntax: string, attr = '', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(syntax: string, attr?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, attr, config, accum, {
 		});
 	}

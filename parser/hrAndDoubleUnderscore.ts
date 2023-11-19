@@ -26,7 +26,7 @@ export const parseHrAndDoubleUnderscore = (
 		/^((?:\0\d+c\x7F)*)(-{4,})/gmu,
 		(_, lead: string, m: string) => {
 			// @ts-expect-error abstract class
-			new HrToken(m.length, config, accum);
+			new HrToken(m, config, accum);
 			return `${lead}\0${accum.length - 1}r\x7F`;
 		},
 	).replace(

@@ -2,20 +2,11 @@ import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {Token} from '..';
 
 /** `''`和`'''` */
 export abstract class QuoteToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'quote';
-
-	/**
-	 * @browser
-	 * @param n 字符串长度
-	 */
-	constructor(n: number, config = Parser.getConfig(), accum: Token[] = []) {
-		super(`'`.repeat(n), config, accum);
-	}
 
 	/**
 	 * @override

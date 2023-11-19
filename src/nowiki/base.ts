@@ -22,7 +22,7 @@ export abstract class NowikiBaseToken extends Token {
 	abstract override get lastChild(): AstText;
 
 	/** @browser */
-	constructor(wikitext: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, true, accum);
 	}
 }

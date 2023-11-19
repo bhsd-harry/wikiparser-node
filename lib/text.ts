@@ -44,7 +44,7 @@ export class AstText extends AstNode {
 	 * @browser
 	 * @param text 包含文本
 	 */
-	constructor(text = '') {
+	constructor(text: string) {
 		super();
 		this.data = text;
 	}
@@ -149,7 +149,7 @@ export class AstText extends AstNode {
 	 * @browser
 	 * @param text 替换的字符串
 	 */
-	replaceData(text = ''): void {
+	replaceData(text: string): void {
 		this.#setData(text);
 	}
 }

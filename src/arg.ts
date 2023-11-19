@@ -86,7 +86,7 @@ export abstract class ArgToken extends Token {
 			errors.push(...argDefault.lint(start + 4 + String(argName).length));
 		}
 		if (rest.length > 0) {
-			const rect = {start, ...this.getRootNode().posFromIndex(start)};
+			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => {
 				const error = generateForChild(child, rect, 'invisible content inside triple braces'),
 					{

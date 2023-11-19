@@ -3,7 +3,6 @@ import {Token} from '.';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link';
 import {ExtLinkToken} from './extLink';
-import type {Title} from '../lib/title';
 import type {AstText, ImagemapToken} from '../internal';
 
 /**
@@ -26,7 +25,7 @@ export abstract class ImagemapLinkToken extends Token {
 	 */
 	constructor(
 		pre: string,
-		linkStuff: [string, string | undefined, string | Title | undefined] | [string, string | undefined],
+		linkStuff: [string, string | undefined, string | undefined] | [string, string | undefined],
 		post: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
