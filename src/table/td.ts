@@ -15,12 +15,16 @@ export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-export abstract class TdToken extends TableBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class TdToken extends TableBaseToken {
 	/** @browser */
 	override readonly type = 'td';
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): TrToken | TableToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token | undefined;
 
 	/** @browser */

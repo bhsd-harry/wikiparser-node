@@ -9,15 +9,20 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
  */
-export abstract class GalleryToken extends Token {
+export class GalleryToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'gallery';
 	declare childNodes: (GalleryImageToken | HiddenToken | AstText)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): GalleryImageToken | HiddenToken | AstText | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | HiddenToken | AstText | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/**
@@ -39,7 +44,6 @@ export abstract class GalleryToken extends Token {
 			const [, file, alt] = matches,
 				title = this.normalizeTitle(file, 6, true, true);
 			if (title.valid) {
-				// @ts-expect-error abstract class
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {

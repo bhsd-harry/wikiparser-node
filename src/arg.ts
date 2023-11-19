@@ -10,11 +10,13 @@ import type {LintError} from '../index';
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
-export abstract class ArgToken extends Token {
+export class ArgToken extends Token {
 	/** @browser */
 	override readonly type = 'arg';
 	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
 	/**

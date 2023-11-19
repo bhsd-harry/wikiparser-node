@@ -20,10 +20,12 @@ const del = <T>(arr: T[], ele: T): T[] => {
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-export abstract class ExtToken extends TagPairToken {
+export class ExtToken extends TagPairToken {
 	override readonly type = 'ext';
 	declare childNodes: [AttributesToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
 	/**
@@ -42,8 +44,7 @@ export abstract class ExtToken extends TagPairToken {
 		accum: Token[] = [],
 	) {
 		const lcName = name.toLowerCase(),
-			// @ts-expect-error abstract class
-			attrToken: AttributesToken = new AttributesToken(
+			attrToken = new AttributesToken(
 				!attr || attr.trimStart() !== attr ? attr : ` ${attr}`,
 				'ext-attrs',
 				lcName,
@@ -71,26 +72,22 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			case 'pre': {
 				const {PreToken}: typeof import('../pre') = require('../pre');
-				// @ts-expect-error abstract class
 				innerToken = new PreToken(inner, newConfig, accum);
 				break;
 			}
 			case 'dynamicpagelist': {
 				const {ParamTagToken}: typeof import('../paramTag') = require('../paramTag');
-				// @ts-expect-error abstract class
 				innerToken = new ParamTagToken(inner, newConfig, accum);
 				break;
 			}
 			case 'inputbox': {
 				newConfig.excludes!.push('heading');
 				const {InputboxToken}: typeof import('../paramTag/inputbox') = require('../paramTag/inputbox');
-				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}
 			case 'references': {
 				const {NestedToken}: typeof import('../nested') = require('../nested');
-				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
 					/<!--.*?(?:-->|$)|<(ref)(\s[^>]*)?>(.*?)<\/(ref\s*)>/gisu,
@@ -102,7 +99,6 @@ export abstract class ExtToken extends TagPairToken {
 			}
 			case 'choose': {
 				const {NestedToken}: typeof import('../nested') = require('../nested');
-				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
 					/<(option|choicetemplate)(\s[^>]*)?>(.*?)<\/(\1)>/gsu,
@@ -114,7 +110,6 @@ export abstract class ExtToken extends TagPairToken {
 			}
 			case 'combobox': {
 				const {NestedToken}: typeof import('../nested') = require('../nested');
-				// @ts-expect-error abstract class
 				innerToken = new NestedToken(
 					inner,
 					/<(combooption)(\s[^>]*)?>(.*?)<\/(combooption\s*)>/gisu,
@@ -126,13 +121,11 @@ export abstract class ExtToken extends TagPairToken {
 			}
 			case 'gallery': {
 				const {GalleryToken}: typeof import('../gallery') = require('../gallery');
-				// @ts-expect-error abstract class
 				innerToken = new GalleryToken(inner, newConfig, accum);
 				break;
 			}
 			case 'imagemap': {
 				const {ImagemapToken}: typeof import('../imagemap') = require('../imagemap');
-				// @ts-expect-error abstract class
 				innerToken = new ImagemapToken(inner, newConfig, accum);
 				break;
 			}
@@ -146,7 +139,6 @@ export abstract class ExtToken extends TagPairToken {
 			// ```
 			default: {
 				const {NowikiToken}: typeof import('../nowiki') = require('../nowiki');
-				// @ts-expect-error abstract class
 				innerToken = new NowikiToken(inner, newConfig);
 			}
 		}

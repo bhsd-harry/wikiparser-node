@@ -11,14 +11,19 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: ...AtomToken}`
  */
-export abstract class ConverterFlagsToken extends Token {
+export class ConverterFlagsToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-flags';
 	declare childNodes: AtomToken[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
 
 	/** @browser */

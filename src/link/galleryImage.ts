@@ -5,7 +5,8 @@ import {FileToken} from './file';
 import type {LintError} from '../../index';
 
 /** 图库图片 */
-export abstract class GalleryImageToken extends FileToken {
+// @ts-expect-error not implementing all abstract methods
+export class GalleryImageToken extends FileToken {
 	declare type: 'gallery-image' | 'imagemap-image';
 	/** @browser */
 	#invalid = false;

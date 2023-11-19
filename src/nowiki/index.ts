@@ -5,12 +5,16 @@ import type {LintError} from '../../index';
 import type {AttributesToken, ExtToken} from '../../internal';
 
 /** 扩展标签内的纯文字Token */
-export abstract class NowikiToken extends NowikiBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class NowikiToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: string;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/**

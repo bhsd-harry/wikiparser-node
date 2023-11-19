@@ -11,7 +11,7 @@ import type {LintError} from '../index';
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
-export abstract class TranscludeToken extends Token {
+export class TranscludeToken extends Token {
 	/** @browser */
 	override type: 'template' | 'magic-word' = 'template';
 	/** @browser */
@@ -25,7 +25,9 @@ export abstract class TranscludeToken extends Token {
 	#args = new Map<string, Set<ParameterToken>>();
 
 	declare childNodes: [AtomToken | SyntaxToken, ...Token[]];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/**
@@ -108,7 +110,6 @@ export abstract class TranscludeToken extends Token {
 				(part as (number | string)[]).unshift(i);
 				i++;
 			}
-			// @ts-expect-error abstract class
 			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum));
 		}
 	}

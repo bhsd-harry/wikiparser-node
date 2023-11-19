@@ -14,12 +14,15 @@ declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
-export abstract class AttributesToken extends Token {
+export class AttributesToken extends Token {
 	declare type: AttributesTypes;
 	declare name: string;
 	declare childNodes: (AtomToken | AttributeToken)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | AttributeToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/**
@@ -71,9 +74,8 @@ export abstract class AttributesToken extends Token {
 				out += attr.slice(lastIndex, index);
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
-						quotes: [string | undefined, string | undefined] = [quoteStart, quoteEnd],
-						// @ts-expect-error abstract class
-						token: AttributeToken = new AttributeToken(
+						quotes = [quoteStart, quoteEnd] as [string?, string?],
+						token = new AttributeToken(
 							type.slice(0, -1) as AttributeTypes,
 							name,
 							key,

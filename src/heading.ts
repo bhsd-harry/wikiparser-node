@@ -8,12 +8,14 @@ import type {LintError} from '../index';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export abstract class HeadingToken extends Token {
+export class HeadingToken extends Token {
 	/** @browser */
 	override readonly type = 'heading';
 	declare name: string;
 	declare childNodes: [Token, SyntaxToken];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): SyntaxToken;
 
 	/**

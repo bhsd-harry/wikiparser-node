@@ -9,15 +9,20 @@ import type {AttributesToken, ExtToken} from '../../internal';
  * `<dynamicpagelist>`
  * @classdesc `{childNodes: ...AtomToken}`
  */
-export abstract class ParamTagToken extends Token {
+export class ParamTagToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: string;
 	declare childNodes: AtomToken[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/** @browser */

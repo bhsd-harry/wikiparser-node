@@ -3,7 +3,6 @@ import {LinkToken} from '../src/link';
 import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';
 import type {Token} from '../internal';
-import type {LinkBaseToken} from '../src/link/base';
 
 /**
  * 解析内部链接
@@ -82,7 +81,7 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 		}
 		text &&= parseQuotes(text, config, accum);
 		s += `\0${accum.length}l\x7F${after!}`;
-		let SomeLinkToken: typeof LinkBaseToken = LinkToken;
+		let SomeLinkToken: typeof LinkToken | typeof FileToken | typeof CategoryToken = LinkToken;
 		if (!force) {
 			if (ns === 6) {
 				SomeLinkToken = FileToken;
@@ -90,7 +89,6 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 				SomeLinkToken = CategoryToken;
 			}
 		}
-		// @ts-expect-error abstract class
 		new SomeLinkToken(link, text, config, accum, delimiter);
 	}
 	return s;
