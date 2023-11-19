@@ -58,16 +58,18 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					if (errors.length === 0) {
 						continue;
 					}
-					errors.sort(
-						({startLine: aLine, startCol: aCol}, {startLine: bLine, startCol: bCol}) =>
-							bLine - aLine || bCol - aCol,
-					);
-					const lines = content.split('\n');
-					for (const {startLine, startCol, endCol} of errors) {
-						const line = lines[startLine]!;
-						lines[startLine] = `${line.slice(0, startCol)}${line.slice(endCol)}`;
+					errors.sort(({startIndex: a}, {startIndex: b}) => b - a);
+					let text = content,
+						firstStart = Infinity;
+					for (const {startIndex, endIndex} of errors) {
+						if (endIndex < firstStart) {
+							text = `${text.slice(0, startIndex)}${text.slice(endIndex)}`;
+							firstStart = startIndex;
+						} else {
+							firstStart = Math.min(firstStart, startIndex);
+						}
 					}
-					await diff(content, lines.join('\n'));
+					await diff(content, text);
 				} catch (e) {
 					error(`解析${name}的 ${title} 页面时出错！`, e);
 				}
