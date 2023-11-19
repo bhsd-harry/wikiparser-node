@@ -135,12 +135,11 @@ export class MagicLinkToken extends Token {
 	 * @param url 含协议的网址
 	 * @throws `SyntaxError` 非法的自由外链目标
 	 */
-	setTarget(url: string | URL): void {
-		const strUrl = String(url),
-			root = Parser.parse(strUrl, this.getAttribute('include'), 9, this.getAttribute('config')),
+	setTarget(url: string): void {
+		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),
 			{length, firstChild: freeExtLink} = root;
 		if (length !== 1 || freeExtLink!.type !== 'free-ext-link') {
-			throw new SyntaxError(`非法的自由外链目标：${strUrl}`);
+			throw new SyntaxError(`非法的自由外链目标：${url}`);
 		}
 		this.replaceChildren(...freeExtLink!.childNodes);
 	}

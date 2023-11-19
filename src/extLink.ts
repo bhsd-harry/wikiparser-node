@@ -146,12 +146,11 @@ export abstract class ExtLinkToken extends Token {
 	 * @param url 网址
 	 * @throws `SyntaxError` 非法的外链目标
 	 */
-	setTarget(url: string | URL): void {
-		const strUrl = String(url),
-			root = Parser.parse(`[${strUrl}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
+	setTarget(url: string): void {
+		const root = Parser.parse(`[${url}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
 			{length, firstChild: extLink} = root;
 		if (length !== 1 || !(extLink instanceof ExtLinkToken) || extLink.length !== 1) {
-			throw new SyntaxError(`非法的外链目标：${strUrl}`);
+			throw new SyntaxError(`非法的外链目标：${url}`);
 		}
 		const {firstChild} = extLink;
 		extLink.destroy();
