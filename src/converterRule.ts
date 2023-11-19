@@ -173,9 +173,8 @@ export class ConverterRuleToken extends Token {
 		const /** @implements */ converterRuleListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (this.length > 1 && this.childNodes.at(-2) === prevTarget) {
-				const v = prevTarget!.text().trim(),
-					{variants} = this.getAttribute('config');
-				if (!variants.includes(v)) {
+				const v = prevTarget!.text().trim();
+				if (!this.getAttribute('config').variants.includes(v)) {
 					undo(e, data);
 					throw new Error(`无效的语言变体：${v}`);
 				}
@@ -210,8 +209,7 @@ export class ConverterRuleToken extends Token {
 
 	/** 修改为不转换 */
 	noConvert(): void {
-		const {length} = this;
-		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
+		for (let i = 0; i < this.length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
 			this.removeAt(0);
 		}
 	}

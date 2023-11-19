@@ -6,6 +6,10 @@ import * as Parser from '../index';
 const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');
 
 (async (): Promise<void> => {
+	if (process.execArgv.includes('--prof')) {
+		Parser.parse(wikitext);
+		return;
+	}
 	console.time('parse');
 	const token = Parser.parse(wikitext);
 	console.timeEnd('parse');

@@ -580,9 +580,8 @@ export class TranscludeToken extends Token {
 		if (length !== 1 || transclude!.type !== targetType || transclude!.length !== 2) {
 			throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
 		}
-		const {name, lastChild} = transclude as this & {lastChild: ParameterToken},
-			targetName = templateLike ? 'T' : 'lc';
-		if (name === targetName && lastChild.anon) {
+		const {name, lastChild} = transclude as this & {lastChild: ParameterToken};
+		if (name === (templateLike ? 'T' : 'lc') && lastChild.anon) {
 			return this.insertAt(lastChild as ParameterToken);
 		}
 		throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
@@ -809,9 +808,8 @@ export class TranscludeToken extends Token {
 	escapeTables(): TranscludeToken {
 		const count = this.hasDuplicatedArgs(),
 			str = this.text(),
-			i = str.search(/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u),
-			j = str.slice(i).search(/\n[^\S\n]*\|\}/u);
-		if (i === -1 || j === -1 || !count) {
+			i = str.search(/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u);
+		if (i === -1 || str.slice(i).search(/\n[^\S\n]*\|\}/u) === -1 || !count) {
 			return this;
 		}
 		const stripped = String(this).slice(2, -2),

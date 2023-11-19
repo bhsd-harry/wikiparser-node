@@ -56,7 +56,9 @@ export class Api {
 	 * GET请求
 	 * @param params 请求参数
 	 */
-	async get(params: Record<string, string | number | boolean | (string | number)[] | undefined>): Promise<unknown> {
+	async get(
+		params: Record<string, string | number | boolean | (string | number)[] | undefined>,
+	): Promise<MediaWikiResponse> {
 		params = normalizeValues(params);
 		const qs: Record<string, string | number> = {
 			action: 'query', format: 'json', formatversion: 2, errorformat: 'plaintext', ...params,
@@ -69,7 +71,7 @@ export class Api {
 						reject({statusCode, ...e});
 					} else {
 						try {
-							const data = JSON.parse(body as string);
+							const data: MediaWikiResponse = JSON.parse(body as string);
 							resolve(data);
 						} catch {
 							reject({statusCode, body});

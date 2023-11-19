@@ -60,9 +60,8 @@ export class GalleryToken extends Token {
 					: line) as string);
 				continue;
 			}
-			const [, file, alt] = matches,
-				title = this.normalizeTitle(file, 6, true, true);
-			if (title.valid) {
+			const [, file, alt] = matches;
+			if (this.normalizeTitle(file, 6, true, true).valid) {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {

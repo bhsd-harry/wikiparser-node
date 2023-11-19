@@ -26,7 +26,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm dist/[mpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
+		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm -r dist/test; rm dist/[mpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.js' '@ts' dist/ | xargs gsed -i '/@ts/d'; eslint --fix dist/",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"doc": "node ./bin/doc.js",
@@ -34,8 +34,8 @@
 		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
-		"test:real": "node test/real.js",
-		"test:single": "node --prof test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
+		"test:real": "node dist/test/real.js",
+		"test:single": "node dist/test/single.js; node --prof dist/test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",

@@ -527,9 +527,9 @@ export abstract class AstElement extends AstNode {
 					if (!parentNode) {
 						return false;
 					}
-					const {children} = parentNode,
-						i = children.indexOf(this as AstElement as Token);
-					return children.slice(0, i).some(child => child.#matchesArray(condition));
+					const {children} = parentNode;
+					return children.slice(0, children.indexOf(this as AstElement as Token))
+						.some(child => child.#matchesArray(condition));
 				}
 				default: // ' '
 					return this.getAncestors().some(ancestor => ancestor.#matchesArray(condition));

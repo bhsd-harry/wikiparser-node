@@ -199,9 +199,8 @@ export class ParameterToken extends fixed(Token) {
 		const templateLike = this.parentNode?.isTemplate() !== false,
 			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: transclude} = root,
-			targetType = templateLike ? 'template' : 'magic-word';
-		if (length !== 1 || transclude!.type !== targetType) {
+			{length, firstChild: transclude} = root;
+		if (length !== 1 || transclude!.type !== (templateLike ? 'template' : 'magic-word')) {
 			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
 		}
 		const {lastChild: parameter, name} = transclude as Token & {lastChild: ParameterToken},
