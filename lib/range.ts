@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
 

@@ -1,3 +1,4 @@
+/* eslint n/exports-style: 0 */
 import * as fs from 'fs';
 import * as path from 'path';
 import type {Title} from './lib/title';
@@ -463,5 +464,6 @@ for (const key in Parser) {
 }
 Object.defineProperties(Parser, def);
 
-export default Parser;
+// @ts-expect-error mixed export styles
+export = Parser;
 export type * from './internal';

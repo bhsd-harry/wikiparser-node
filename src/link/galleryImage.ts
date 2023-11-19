@@ -1,7 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import {undo} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {Token} from '..';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';

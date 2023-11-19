@@ -1,6 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {attributesParent} from '../../mixin/attributesParent';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {Token} from '..';
 import {TagPairToken} from '.';
 import {AttributesToken} from '../attributes';

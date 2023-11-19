@@ -1,5 +1,5 @@
 import {sol} from '../../mixin/sol';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {DdToken} from './dd';
 
 /** 位于行首的`;:*#` */

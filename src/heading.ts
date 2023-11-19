@@ -1,7 +1,7 @@
 import {generateForSelf} from '../util/lint';
 import {fixed} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../index';

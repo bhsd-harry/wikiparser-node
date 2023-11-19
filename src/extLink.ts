@@ -1,5 +1,5 @@
 import {noWrap, normalizeSpace} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {MagicLinkToken} from './magicLink';
 

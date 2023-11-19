@@ -41,7 +41,7 @@ import * as assert from 'assert/strict';
 import {text} from '../util/string';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
-import Parser from '../index';
+import * as Parser from '../index';
 const {MAX_STAGE, aliases} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';

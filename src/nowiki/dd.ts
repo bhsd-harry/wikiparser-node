@@ -1,4 +1,4 @@
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 
 /** `:` */

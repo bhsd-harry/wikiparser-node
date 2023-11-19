@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 import {QuoteToken} from '../src/nowiki/quote';
 import type {Token} from '../src';
 

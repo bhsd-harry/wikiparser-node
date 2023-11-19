@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 
 const simplePseudos = new Set([
 	'root',

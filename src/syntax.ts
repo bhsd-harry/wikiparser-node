@@ -1,6 +1,6 @@
 import {undo} from '../util/debug';
 import {text} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import type {AstNodes} from '../lib/node';
 

@@ -4,7 +4,7 @@ import {toCase, noWrap, print, text} from '../util/string';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
-import Parser from '../index';
+import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';

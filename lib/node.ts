@@ -1,6 +1,6 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
-import Parser from '../index';
+import * as Parser from '../index';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;

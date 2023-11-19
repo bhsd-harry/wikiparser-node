@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 
 declare type AtomTypes = 'arg-name'

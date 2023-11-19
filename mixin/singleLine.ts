@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 
 /**
  * 不可包含换行符的类

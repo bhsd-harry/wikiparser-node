@@ -1,5 +1,5 @@
 import {generateForSelf} from '../../util/lint';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
 import type {AttributesToken, ExtToken} from '../../internal';

@@ -1,6 +1,6 @@
 import {text, noWrap, print, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';

@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 
 /**
  * 解析后不可见的类

@@ -1,5 +1,5 @@
 import {parseBraces} from '../../parser/braces';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {ParamTagToken} from '.';
 import type {Token} from '..';
 

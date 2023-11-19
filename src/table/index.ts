@@ -1,7 +1,7 @@
 import * as assert from 'assert/strict';
 import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {Token} from '..';
 import {TrToken} from './tr';
 import {TrBaseToken} from './trBase';
