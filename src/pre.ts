@@ -44,7 +44,7 @@ export class PreToken extends Token {
 			}
 			wikitext = `${str}${wikitext}`;
 		}
-		super(wikitext, config, true, accum, {
+		super(wikitext, config, accum, {
 		});
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);
 	}

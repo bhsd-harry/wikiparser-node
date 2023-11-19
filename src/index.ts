@@ -76,13 +76,12 @@ export class Token extends AstElement {
 	constructor(
 		wikitext?: string,
 		config = Parser.getConfig(),
-		halfParsed = false,
 		accum: Token[] = [],
 		acceptable?: Acceptable,
 	) {
 		super();
 		if (typeof wikitext === 'string') {
-			this.insertAt(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''));
+			this.insertAt(wikitext);
 		}
 		this.#config = config;
 		this.#accum = accum;
@@ -217,7 +216,7 @@ export class Token extends AstElement {
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
 		const {parseCommentAndExt}: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
-		this.setText(parseCommentAndExt(String(this.firstChild), this.#config, this.#accum, includeOnly));
+		this.setText(parseCommentAndExt(String(this), this.#config, this.#accum, includeOnly));
 	}
 
 	/**
@@ -240,7 +239,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
-		this.setText(parseHtml(String(this.firstChild), this.#config, this.#accum));
+		this.setText(parseHtml(String(this), this.#config, this.#accum));
 	}
 
 	/**
@@ -274,7 +273,7 @@ export class Token extends AstElement {
 	 */
 	#parseLinks(): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(String(this.firstChild), this.#config, this.#accum));
+		this.setText(parseLinks(String(this), this.#config, this.#accum));
 	}
 
 	/**
@@ -286,7 +285,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
-		const lines = String(this.firstChild).split('\n');
+		const lines = String(this).split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum);
 		}
@@ -302,7 +301,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(String(this.firstChild), this.#config, this.#accum));
+		this.setText(parseExternalLinks(String(this), this.#config, this.#accum));
 	}
 
 	/**
@@ -314,7 +313,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(String(this.firstChild), this.#config, this.#accum));
+		this.setText(parseMagicLinks(String(this), this.#config, this.#accum));
 	}
 
 	/**
@@ -326,7 +325,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const lines = String(this.firstChild).split('\n');
+		const lines = String(this).split('\n');
 		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, this.#config, this.#accum);
@@ -341,7 +340,7 @@ export class Token extends AstElement {
 	#parseConverter(): void {
 		if (this.#config.variants.length > 0) {
 			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
-			this.setText(parseConverter(String(this.firstChild), this.#config, this.#accum));
+			this.setText(parseConverter(String(this), this.#config, this.#accum));
 		}
 	}
 

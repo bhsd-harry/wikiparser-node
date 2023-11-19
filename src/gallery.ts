@@ -30,7 +30,7 @@ export class GalleryToken extends Token {
 	 * @param inner 标签内部wikitext
 	 */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 		});
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
@@ -41,9 +41,8 @@ export class GalleryToken extends Token {
 					: line) as string);
 				continue;
 			}
-			const [, file, alt] = matches,
-				title = this.normalizeTitle(file, 6, true, true);
-			if (title.valid) {
+			const [, file, alt] = matches;
+			if (this.normalizeTitle(file, 6, true, true).valid) {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {

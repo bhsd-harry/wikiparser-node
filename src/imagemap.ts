@@ -41,7 +41,7 @@ export class ImagemapToken extends Token {
 	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 		});
 		if (!inner) {
 			return;
@@ -81,8 +81,7 @@ export class ImagemapToken extends Token {
 					mtIn = /^\[{2}([^|]+)(?:\|([^\]]+))?\]{2}[\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
-					const title = this.normalizeTitle(mtIn[1], 0, true, false, true);
-					if (title.valid) {
+					if (this.normalizeTitle(mtIn[1], 0, true, false, true).valid) {
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
 							mtIn.slice(1) as [string, string | undefined],

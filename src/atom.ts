@@ -30,7 +30,7 @@ export class AtomToken extends Token {
 		accum: Token[] = [],
 		acceptable?: Acceptable,
 	) {
-		super(wikitext, config, true, accum, acceptable);
+		super(wikitext, config, accum, acceptable);
 		this.type = type;
 	}
 }

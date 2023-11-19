@@ -59,7 +59,7 @@ export class NestedToken extends Token {
 				return `\0${accum.length}c\x7F`;
 			},
 		);
-		super(text, config, true, accum, {
+		super(text, config, accum, {
 		});
 	}
 

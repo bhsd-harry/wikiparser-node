@@ -40,9 +40,9 @@ export class HeadingToken extends Token {
 	 * @param input 标题文字
 	 */
 	constructor(level: number, input: [string?, string?], config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		this.setAttribute('name', String(level));
-		const token = new Token(input[0], config, true, accum);
+		const token = new Token(input[0], config, accum);
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {

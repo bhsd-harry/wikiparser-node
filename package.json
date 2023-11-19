@@ -29,19 +29,20 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm dist/[bmpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
+		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm -r dist/test; rm dist/[bmpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.js' '@ts' dist/ | xargs gsed -i '/@ts/d'; eslint --fix dist/",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
-		"test": "eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false && npx wikilint test/single-page.wiki",
-		"test:real": "node test/real.js",
-		"test:single": "node test/single.js"
+		"test": "wikilint test/single-page.wiki",
+		"test:real": "node dist/test/real.js",
+		"test:single": "node dist/test/single.js; node --prof dist/test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
 		"@types/node": "^20.9.0",
+		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
 		"ajv-cli": "^5.0.0",

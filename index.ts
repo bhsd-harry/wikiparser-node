@@ -124,7 +124,7 @@ const Parser: Parser = {
 		}
 		const {Token}: typeof import('./src') = require('./src');
 		const token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
-			titleObj = new Title(String(token.firstChild), defaultNs, config, decode, selfLink);
+			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
 		return titleObj;
 	},
 
@@ -133,7 +133,7 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src') = require('./src');
 		let token: Token;
 		this.run(() => {
-			token = new Token(wikitext, config);
+			token = new Token(wikitext.replace(/[\0\x7F]/gu, ''), config);
 			try {
 				token.parse(maxStage, include);
 			} catch (e) {

@@ -942,6 +942,12 @@
 						"ignoreRestArgs": true
 					}
 				],
+				"@typescript-eslint/no-floating-promises": [
+					2,
+					{
+						"ignoreIIFE": true
+					}
+				],
 				"@typescript-eslint/no-invalid-void-type": [
 					2,
 					{

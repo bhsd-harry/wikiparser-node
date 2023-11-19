@@ -1,4 +1,3 @@
-import * as Parser from '../index';
 import {Token} from '.';
 
 /**
@@ -8,14 +7,6 @@ import {Token} from '.';
 export class OnlyincludeToken extends Token {
 	/** @browser */
 	override readonly type = 'onlyinclude';
-
-	/**
-	 * @browser
-	 * @param inner 标签内部wikitext
-	 */
-	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		super(inner, config, true, accum);
-	}
 
 	/**
 	 * @override

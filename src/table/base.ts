@@ -27,7 +27,7 @@ export abstract class TableBaseToken extends Token {
 		accum: Token[] = [],
 		acceptable: Acceptable = {},
 	) {
-		super(undefined, config, true, accum, acceptable);
+		super(undefined, config, accum, acceptable);
 		this.append(
 			new SyntaxToken(syntax, pattern, 'table-syntax', config, accum, {
 			}),

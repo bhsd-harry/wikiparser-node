@@ -28,7 +28,7 @@ export class ConverterRuleToken extends Token {
 	 * @param hasColon 是否带有":"
 	 */
 	constructor(rule: string, hasColon = true, config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		if (hasColon) {
 			const i = rule.indexOf(':'),
 				j = rule.slice(0, i).indexOf('=>'),

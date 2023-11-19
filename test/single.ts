@@ -1,15 +1,15 @@
-'use strict';
+import * as fs from 'fs';
+import * as assert from 'assert/strict';
+import {diff} from '../util/diff';
+import * as Parser from '../index';
 
-const fs = require('fs'),
-	assert = require('assert/strict'),
-	path = require('path'),
-	{diff} = require('../util/diff'),
-	{default: Parser} = require('..');
-Parser.config = require('../config/default');
+const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');
 
-const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.wiki'), 'utf8');
-
-(async () => {
+(async (): Promise<void> => {
+	if (process.execArgv.includes('--prof')) {
+		Parser.parse(wikitext);
+		return;
+	}
 	console.time('parse');
 	const token = Parser.parse(wikitext);
 	console.timeEnd('parse');

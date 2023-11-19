@@ -51,7 +51,7 @@ export class HtmlToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		this.insertAt(attr);
 		this.setAttribute('name', name.toLowerCase());
 		this.#closing = closing;
