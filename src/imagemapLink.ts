@@ -33,7 +33,7 @@ export class ImagemapLinkToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		this.append(
 			pre,
 			linkStuff.length === 2

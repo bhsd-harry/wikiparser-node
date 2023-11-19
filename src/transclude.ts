@@ -42,7 +42,7 @@ export class TranscludeToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 		});
 		const {parserFunction: [insensitive, sensitive]} = config,
 			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];

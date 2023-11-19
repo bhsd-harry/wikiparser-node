@@ -27,7 +27,7 @@ export class ParamTagToken extends Token {
 
 	/** @browser */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 		});
 		if (wikitext) {
 			const SingleLineAtomToken = AtomToken;

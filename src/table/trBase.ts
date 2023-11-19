@@ -33,8 +33,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		} else if (first.type === 'magic-word') {
 			try {
-				const possibleValues = (first as TranscludeToken).getPossibleValues();
-				if (possibleValues.every(token => tdPattern.test(token.text()))) {
+				if ((first as TranscludeToken).getPossibleValues().every(token => tdPattern.test(token.text()))) {
 					return errors;
 				}
 			} catch {}

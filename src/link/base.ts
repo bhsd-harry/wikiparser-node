@@ -26,12 +26,12 @@ export abstract class LinkBaseToken extends Token {
 	 * @param delimiter `|`
 	 */
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
 		}));
 		if (linkText !== undefined) {
-			const inner = new Token(linkText, config, true, accum, {
+			const inner = new Token(linkText, config, accum, {
 			});
 			inner.type = 'link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));

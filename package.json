@@ -32,14 +32,12 @@
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
-		"lint": "npm run lint:ts && npm run lint:json",
-		"test": "rm bundle/*.js; webpack && eslint . && ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false && stylelint extensions/*.css",
-		"test:real": "node test/real.js",
-		"test:single": "node test/single.js"
+		"lint": "npm run lint:ts && npm run lint:json"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
 		"@types/node": "^20.9.0",
+		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^5.62.0",
 		"@typescript-eslint/parser": "^5.62.0",
 		"ajv-cli": "^5.0.0",

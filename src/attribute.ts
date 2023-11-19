@@ -213,7 +213,7 @@ export class AttributeToken extends Token {
 		});
 		let valueToken: Token;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
-			valueToken = new Token(value, config, true, accum, {
+			valueToken = new Token(value, config, accum, {
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
@@ -222,7 +222,7 @@ export class AttributeToken extends Token {
 				...config,
 				excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list'],
 			};
-			valueToken = new Token(value, newConfig, true, accum, {
+			valueToken = new Token(value, newConfig, accum, {
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 5);
@@ -231,7 +231,7 @@ export class AttributeToken extends Token {
 				...config,
 				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
 			};
-			valueToken = new Token(value, newConfig, true, accum, {
+			valueToken = new Token(value, newConfig, accum, {
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
@@ -239,7 +239,7 @@ export class AttributeToken extends Token {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
 			});
 		}
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		this.type = type;
 		this.append(keyToken, valueToken);
 		this.#equal = equal;

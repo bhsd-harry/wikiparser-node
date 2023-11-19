@@ -32,7 +32,7 @@ export class ArgToken extends Token {
 	 * @param parts 以'|'分隔的各部分
 	 */
 	constructor(parts: string[], config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum, {
+		super(undefined, config, accum, {
 		});
 		for (let i = 0; i < parts.length; i++) {
 			if (i === 0) {
@@ -44,7 +44,7 @@ export class ArgToken extends Token {
 				});
 				super.insertAt(token);
 			} else {
-				const token = new Token(parts[i], config, true, accum);
+				const token = new Token(parts[i], config, accum);
 				token.type = 'arg-default';
 				super.insertAt(token.setAttribute('stage', 2));
 			}

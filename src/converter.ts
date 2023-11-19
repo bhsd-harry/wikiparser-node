@@ -23,7 +23,7 @@ export class ConverterToken extends Token {
 	 * @param rules 转换规则
 	 */
 	constructor(flags: string[], rules: [string, ...string[]], config = Parser.getConfig(), accum: Token[] = []) {
-		super(undefined, config, true, accum);
+		super(undefined, config, accum);
 		this.append(new ConverterFlagsToken(flags, config, accum));
 		const [firstRule] = rules,
 			hasColon = firstRule.includes(':'),
