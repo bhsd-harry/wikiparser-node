@@ -1,5 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';

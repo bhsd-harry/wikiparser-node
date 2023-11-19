@@ -1,5 +1,5 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 import {ExtLinkToken} from '../src/extLink';
 import type {Token} from '../src';
 

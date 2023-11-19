@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';

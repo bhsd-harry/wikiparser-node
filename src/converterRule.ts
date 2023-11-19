@@ -1,4 +1,4 @@
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import type {ConverterToken, ConverterFlagsToken} from '../internal';

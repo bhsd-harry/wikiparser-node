@@ -1,5 +1,5 @@
 import {generateForSelf} from '../../util/lint';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {Token} from '..';
 import {TagPairToken} from '.';
 import {AttributesToken} from '../attributes';

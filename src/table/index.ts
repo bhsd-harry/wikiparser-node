@@ -1,5 +1,5 @@
 import {generateForChild} from '../../util/lint';
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../index';

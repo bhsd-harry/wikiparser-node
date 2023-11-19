@@ -2,7 +2,7 @@
 
 import {readFileSync} from 'fs';
 import {resolve} from 'path';
-import Parser from '../index';
+import Parser = require('../index');
 const man = `
 Available options:
 -c, --config <path or preset config>    Choose parser's configuration
