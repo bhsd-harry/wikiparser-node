@@ -32,6 +32,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 	})).filter(({content}) => content) as {title: string, ns: number, content: string}[];
 
 (async (): Promise<void> => {
+	const {error} = Parser;
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
 		Parser.config = config;
@@ -41,6 +42,11 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					console.time(title);
 					const root = Parser.parse(content, ns === 10 && !title.endsWith('/doc'));
 					console.timeEnd(title);
+					const restored = String(root);
+					if (restored !== content) {
+						error('解析过程中不可逆地修改了原始文本！');
+						await diff(content, restored);
+					}
 					console.time(title);
 					const errors = root.lint();
 					console.timeEnd(title);
@@ -48,22 +54,24 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					if (errors.length === 0) {
 						continue;
 					}
-					errors.sort(
-						({startLine: aLine, startCol: aCol}, {startLine: bLine, startCol: bCol}) =>
-							bLine - aLine || bCol - aCol,
-					);
-					const lines = content.split('\n');
-					for (const {startLine, startCol, endCol} of errors) {
-						const line = lines[startLine]!;
-						lines[startLine] = `${line.slice(0, startCol)}${line.slice(endCol)}`;
+					errors.sort(({startIndex: a}, {startIndex: b}) => b - a);
+					let text = content,
+						firstStart = Infinity;
+					for (const {startIndex, endIndex} of errors) {
+						if (endIndex < firstStart) {
+							text = `${text.slice(0, startIndex)}${text.slice(endIndex)}`;
+							firstStart = startIndex;
+						} else {
+							firstStart = Math.min(firstStart, startIndex);
+						}
 					}
-					await diff(content, lines.join('\n'));
+					await diff(content, text);
 				} catch (e) {
-					Parser.error(`解析${name}的 ${title} 页面时出错！`, e);
+					error(`解析${name}的 ${title} 页面时出错！`, e);
 				}
 			}
 		} catch (e) {
-			Parser.error(`访问${name}的API端口时出错！`, e);
+			error(`访问${name}的API端口时出错！`, e);
 		}
 	}
 })();
