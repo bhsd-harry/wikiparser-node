@@ -11,21 +11,32 @@ import type {AttributesToken} from './attributes';
  * 嵌套式的扩展标签
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
-export abstract class NestedToken extends Token {
+export class NestedToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: string;
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
+	// @ts-expect-error abstract method
 	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
 	#tags: string[];
@@ -48,11 +59,9 @@ export abstract class NestedToken extends Token {
 			(comment, name?: string, attr?: string, inner?: string, closing?: string) => {
 				const str = `\0${accum.length + 1}${name ? 'e' : 'c'}\x7F`;
 				if (name) {
-					// @ts-expect-error abstract class
 					new ExtToken(name, attr, inner, closing, config, accum);
 				} else {
 					const closed = comment.endsWith('-->');
-					// @ts-expect-error abstract class
 					new CommentToken(comment.slice(4, closed ? -3 : undefined), closed, config, accum);
 				}
 				return str;
@@ -60,7 +69,6 @@ export abstract class NestedToken extends Token {
 		)?.replace(
 			/(?<=^|\0\d+[ce]\x7F)[^\0]+(?=$|\0\d+[ce]\x7F)/gu,
 			substr => {
-				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
 				return `\0${accum.length}c\x7F`;
 			},
@@ -111,8 +119,7 @@ export abstract class NestedToken extends Token {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new NestedToken(undefined, this.#regex, this.#tags, config);
+			const token = new NestedToken(undefined, this.#regex, this.#tags, config) as this;
 			token.append(...cloned);
 			return token;
 		});

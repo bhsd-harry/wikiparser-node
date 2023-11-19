@@ -4,7 +4,8 @@ import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
 
 /** `''`和`'''` */
-export abstract class QuoteToken extends NowikiBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class QuoteToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'quote';
 
@@ -55,8 +56,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @override */
 	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Parser.run(() => new QuoteToken(this.firstChild.data, this.getAttribute('config')));
+		return Parser.run(() => new QuoteToken(this.firstChild.data, this.getAttribute('config')) as this);
 	}
 
 	/**

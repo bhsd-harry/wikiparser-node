@@ -3,14 +3,14 @@ import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 
 /** `<hr>` */
-export abstract class HrToken extends sol(NowikiBaseToken) {
+// @ts-expect-error not implementing all abstract methods
+export class HrToken extends sol(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'hr';
 
 	/** @override */
 	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Parser.run(() => new HrToken(this.firstChild.data, this.getAttribute('config')));
+		return Parser.run(() => new HrToken(this.firstChild.data, this.getAttribute('config')) as this);
 	}
 
 	/**

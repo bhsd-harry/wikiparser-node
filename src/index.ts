@@ -571,7 +571,6 @@ export class Token extends AstElement {
 	createComment(data = ''): CommentToken {
 		const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
 		const config = this.getAttribute('config');
-		// @ts-expect-error abstract class
 		return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
 	}
 
@@ -589,21 +588,17 @@ export class Token extends AstElement {
 		if (tagName === (include ? 'noinclude' : 'includeonly')) {
 			const {IncludeToken}: typeof import('./tagPair/include') = require('./tagPair/include');
 			return Parser.run(
-				// @ts-expect-error abstract class
 				() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
 			);
 		} else if (config.ext.includes(tagName)) {
 			const {ExtToken}: typeof import('./tagPair/ext') = require('./tagPair/ext');
-			// @ts-expect-error abstract class
 			return Parser.run(() => new ExtToken(tagName, '', '', selfClosing ? undefined : '', config));
 		} else if (config.html.flat().includes(tagName)) {
 			const {HtmlToken}: typeof import('./html') = require('./html'),
 				{AttributesToken}: typeof import('./attributes') = require('./attributes');
 			return Parser.run(() => {
-				// @ts-expect-error abstract class
-				const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
-				// @ts-expect-error abstract class
-				return new HtmlToken(tagName, attr, closing, selfClosing, config);
+				const attr = new AttributesToken(undefined, 'html-attrs', tagName, config);
+				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});
 		}
 		throw new RangeError(`非法的标签名：${tagName}`);

@@ -122,12 +122,16 @@ class Layout extends Array<TableCoords[]> {
  * 表格
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
-export abstract class TableToken extends TrBaseToken {
+// @ts-expect-error not implementing all abstract methods
+export class TableToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'table';
 	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
+	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	/**
@@ -472,8 +476,7 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** 在开头插入一行 */
 	#prependTableRow(): TrToken {
-		// @ts-expect-error abstract class
-		const row: TrToken = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
+		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
 			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -507,8 +510,7 @@ export abstract class TableToken extends TrBaseToken {
 		innerAttr: TdAttrs = {},
 	): TrToken {
 		let reference = this.getNthRow(y, false, true);
-		// @ts-expect-error abstract class
-		const token: TrToken = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
+		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);
 		}

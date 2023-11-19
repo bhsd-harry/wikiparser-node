@@ -16,16 +16,23 @@ declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
-export abstract class AttributesToken extends Token {
+export class AttributesToken extends Token {
 	declare type: AttributesTypes;
 	declare name: string;
 	declare childNodes: (AtomToken | AttributeToken)[];
+	// @ts-expect-error abstract method
 	abstract override get children(): (AtomToken | AttributeToken)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken | AttributeToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | AttributeToken;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | AttributeToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/** getAttrs()方法的getter写法 */
@@ -114,9 +121,8 @@ export abstract class AttributesToken extends Token {
 				out += attr.slice(lastIndex, index);
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
-						quotes: [string | undefined, string | undefined] = [quoteStart, quoteEnd],
-						// @ts-expect-error abstract class
-						token: AttributeToken = new AttributeToken(
+						quotes = [quoteStart, quoteEnd] as [string?, string?],
+						token = new AttributeToken(
 							type.slice(0, -1) as AttributeTypes,
 							name,
 							key,
@@ -253,8 +259,7 @@ export abstract class AttributesToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config'));
+			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
 		});
@@ -328,8 +333,7 @@ export abstract class AttributesToken extends Token {
 		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
 			throw new RangeError(`无效的属性名：${k}！`);
 		}
-		// @ts-expect-error abstract class
-		const newAttr: AttributeToken = Parser.run(() => new AttributeToken(
+		this.insertAt(Parser.run(() => new AttributeToken(
 			this.type.slice(0, -1) as AttributeTypes,
 			this.name,
 			k,
@@ -337,8 +341,7 @@ export abstract class AttributesToken extends Token {
 			value === true ? '' : value,
 			['"', '"'],
 			config,
-		));
-		this.insertAt(newAttr);
+		)));
 	}
 
 	/** @private */

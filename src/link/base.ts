@@ -248,7 +248,7 @@ export abstract class LinkBaseToken extends Token {
 			}
 			({lastChild} = wikiLink as this);
 		} else {
-			lastChild = Parser.run(() => new Token('', config));
+			lastChild = Parser.run(() => new Token('', config, true));
 			lastChild.setAttribute('stage', 7).type = 'link-text';
 		}
 		if (this.length === 1) {

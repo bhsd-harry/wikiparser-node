@@ -54,13 +54,10 @@ export const parseTable = (
 			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
-				// @ts-expect-error abstract class
 				new DdToken(indent, config, accum);
 			}
 			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7F`}${moreSpaces}\0${accum.length}b\x7F`, top);
-			// @ts-expect-error abstract class
-			const table: TableToken = new TableToken(tableSyntax, attr, config, accum);
-			stack.push(...top ? [top] : [], table);
+			stack.push(...top ? [top] : [], new TableToken(tableSyntax, attr, config, accum));
 			continue;
 		} else if (!top) {
 			out += `\n${outLine}`;
@@ -89,8 +86,7 @@ export const parseTable = (
 			if (top.type === 'tr') {
 				top = stack.pop() as TableToken;
 			}
-			// @ts-expect-error abstract class
-			const tr: TrToken = new TrToken(`\n${spaces}${row}`, attr, config, accum);
+			const tr = new TrToken(`\n${spaces}${row}`, attr, config, accum);
 			stack.push(top, tr);
 			top.insertAt(tr);
 		} else {
@@ -102,15 +98,12 @@ export const parseTable = (
 				lastIndex = 0,
 				lastSyntax = `\n${spaces}${cell!}`;
 			while (mt) {
-				// @ts-expect-error abstract class
-				const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), config, accum);
-				top.insertAt(td);
+				top.insertAt(new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), config, accum));
 				({lastIndex} = regex);
 				[lastSyntax] = mt as [string];
 				mt = regex.exec(attr);
 			}
-			// @ts-expect-error abstract class
-			const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);
+			const td = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);
 			stack.push(top, td);
 			top.insertAt(td);
 		}

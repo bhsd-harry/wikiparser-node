@@ -11,20 +11,31 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: ...AtomToken}`
  */
-export abstract class ConverterFlagsToken extends Token {
+export class ConverterFlagsToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-flags';
 	declare childNodes: AtomToken[];
+	// @ts-expect-error abstract method
 	abstract override get children(): AtomToken[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
 	/** @browser */
@@ -131,8 +142,7 @@ export abstract class ConverterFlagsToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new ConverterFlagsToken([], this.getAttribute('config'));
+			const token = new ConverterFlagsToken([], this.getAttribute('config')) as this;
 			token.append(...cloned);
 			token.afterBuild();
 			return token;

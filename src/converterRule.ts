@@ -9,20 +9,31 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
  * 转换规则
  * @classdesc `{childNodes: ...AtomToken}`
  */
-export abstract class ConverterRuleToken extends Token {
+export class ConverterRuleToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-rule';
 	declare childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
+	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): ConverterFlagsToken | this;
+	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): ConverterFlagsToken | this;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | undefined;
 
 	/** 语言变体 */
@@ -144,8 +155,11 @@ export abstract class ConverterRuleToken extends Token {
 			placeholders = ['', 'zh:', '=>zh:'],
 			placeholder = placeholders[cloned.length - 1]!;
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new ConverterRuleToken(placeholder, Boolean(placeholder), this.getAttribute('config'));
+			const token = new ConverterRuleToken(
+				placeholder,
+				Boolean(placeholder),
+				this.getAttribute('config'),
+			) as this;
 			for (let i = 0; i < cloned.length; i++) {
 				token.childNodes[i]!.safeReplaceWith(cloned[i]!);
 			}

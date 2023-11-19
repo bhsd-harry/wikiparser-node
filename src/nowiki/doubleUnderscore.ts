@@ -4,7 +4,8 @@ import {NowikiBaseToken} from './base';
 import type {Token} from '..';
 
 /** 状态开关 */
-export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
+// @ts-expect-error not implementing all abstract methods
+export class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'double-underscore';
 	declare name: string;
@@ -38,8 +39,7 @@ export abstract class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')));
+		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')) as this);
 	}
 
 	/**

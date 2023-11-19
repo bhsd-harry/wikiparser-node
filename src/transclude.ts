@@ -12,7 +12,7 @@ import type {TableToken} from '../internal';
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
-export abstract class TranscludeToken extends Token {
+export class TranscludeToken extends Token {
 	/** @browser */
 	override type: 'template' | 'magic-word' = 'template';
 	declare name: string;
@@ -28,9 +28,13 @@ export abstract class TranscludeToken extends Token {
 	#keys = new Set<string>();
 
 	declare childNodes: [AtomToken | SyntaxToken, ...Token[]];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken | SyntaxToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/** 是否存在重复参数 */
@@ -125,7 +129,6 @@ export abstract class TranscludeToken extends Token {
 				(part as (number | string)[]).unshift(i);
 				i++;
 			}
-			// @ts-expect-error abstract class
 			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum));
 		}
 		this.protectChildren(0);
@@ -438,8 +441,7 @@ export abstract class TranscludeToken extends Token {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new TranscludeToken(this.type === 'template' ? '' : first!.text(), [], config);
+			const token = new TranscludeToken(this.type === 'template' ? '' : first!.text(), [], config) as this;
 			if (this.#raw) {
 				token.setModifier(this.modifier);
 			} else {

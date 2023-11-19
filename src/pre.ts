@@ -7,21 +7,32 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * `<pre>`
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-export abstract class PreToken extends Token {
+export class PreToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'pre';
 	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
+	// @ts-expect-error abstract method
 	abstract override get children(): (NoincludeToken | ConverterToken)[];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @browser */
@@ -34,9 +45,7 @@ export abstract class PreToken extends Token {
 				j = wikitext.indexOf(closing, i + length),
 				str = '';
 			while (i !== -1 && j !== -1) {
-				// @ts-expect-error abstract class
 				new NoincludeToken(opening, config, accum);
-				// @ts-expect-error abstract class
 				new NoincludeToken(closing, config, accum);
 				str += `${wikitext.slice(0, i)}\0${accum.length - 1}c\x7F${
 					wikitext.slice(i + length, j)
@@ -62,8 +71,7 @@ export abstract class PreToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new PreToken(undefined, this.getAttribute('config'));
+			const token = new PreToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
 		});

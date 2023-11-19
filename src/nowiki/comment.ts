@@ -6,7 +6,8 @@ import type {LintError} from '../../index';
 import type {Token} from '..';
 
 /** HTML注释，不可见 */
-export abstract class CommentToken extends hidden(NowikiBaseToken) {
+// @ts-expect-error not implementing all abstract methods
+export class CommentToken extends hidden(NowikiBaseToken) {
 	/** @browser */
 	override readonly type = 'comment';
 	closed;
@@ -61,8 +62,11 @@ export abstract class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Parser.run(() => new CommentToken(this.firstChild.data, this.closed, this.getAttribute('config')));
+		return Parser.run(() => new CommentToken(
+			this.firstChild.data,
+			this.closed,
+			this.getAttribute('config'),
+		) as this);
 	}
 }
 

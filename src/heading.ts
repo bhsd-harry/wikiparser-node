@@ -10,15 +10,20 @@ import type {LintError} from '../index';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export abstract class HeadingToken extends sol(fixed(Token)) {
+export class HeadingToken extends sol(fixed(Token)) {
 	/** @browser */
 	override readonly type = 'heading';
 	declare name: string;
 	declare childNodes: [Token, SyntaxToken];
+	// @ts-expect-error abstract method
 	abstract override get children(): [Token, SyntaxToken];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): SyntaxToken;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): SyntaxToken;
 
 	/**
@@ -132,8 +137,7 @@ export abstract class HeadingToken extends sol(fixed(Token)) {
 	override cloneNode(): this {
 		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new HeadingToken(this.level, [], this.getAttribute('config'));
+			const token = new HeadingToken(this.level, [], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(title);
 			token.lastChild.safeReplaceWith(trail);
 			return token;

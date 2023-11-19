@@ -7,14 +7,19 @@ import {MagicLinkToken} from './magicLink';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export abstract class ExtLinkToken extends Token {
+export class ExtLinkToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-link';
 	declare childNodes: [MagicLinkToken] | [MagicLinkToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): MagicLinkToken;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): MagicLinkToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
 
 	/** @browser */
@@ -116,8 +121,7 @@ export abstract class ExtLinkToken extends Token {
 	override cloneNode(): this {
 		const [url, text] = this.cloneChildNodes() as [MagicLinkToken, Token?];
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new ExtLinkToken(undefined, '', '', this.getAttribute('config'));
+			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(url);
 			if (text) {
 				token.insertAt(text);

@@ -179,19 +179,29 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export abstract class AttributeToken extends fixed(Token) {
+export class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
 	declare name: string;
 	declare childNodes: [AtomToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): AttributesToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): AttributesToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): AtomToken | this | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): AtomToken | this | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/** @browser */
@@ -418,8 +428,7 @@ export abstract class AttributeToken extends fixed(Token) {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			// @ts-expect-error abstract class
-			const token: this = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config);
+			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			token.afterBuild();

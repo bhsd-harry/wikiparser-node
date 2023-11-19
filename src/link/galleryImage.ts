@@ -9,7 +9,8 @@ import type {LintError} from '../../index';
 import type {ExtToken, GalleryToken} from '../../internal';
 
 /** 图库图片 */
-export abstract class GalleryImageToken extends singleLine(FileToken) {
+// @ts-expect-error not implementing all abstract methods
+export class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
 	/** @browser */
 	#invalid = false;

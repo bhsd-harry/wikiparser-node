@@ -20,15 +20,22 @@ export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-export abstract class TdToken extends fixed(TableBaseToken) {
+// @ts-expect-error not implementing all abstract methods
+export class TdToken extends fixed(TableBaseToken) {
 	/** @browser */
 	override readonly type = 'td';
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
+	// @ts-expect-error abstract method
 	abstract override get parentNode(): TrToken | TableToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get parentElement(): TrToken | TableToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
+	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token | undefined;
 
 	/** @browser */
@@ -318,8 +325,7 @@ export abstract class TdToken extends fixed(TableBaseToken) {
 		config = Parser.getConfig(),
 	): TdToken {
 		const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner!,
-			// @ts-expect-error abstract class
-			token: TdToken = Parser.run(() => new TdToken('\n|', undefined, config));
+			token = Parser.run(() => new TdToken('\n|', undefined, config));
 		token.setSyntax(subtype);
 		token.lastChild.safeReplaceWith(innerToken);
 		for (const [k, v] of Object.entries(attr)) {

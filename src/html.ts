@@ -13,15 +13,20 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export abstract class HtmlToken extends attributesParent(fixed(Token)) {
+export class HtmlToken extends attributesParent(fixed(Token)) {
 	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
 	declare childNodes: [AttributesToken];
+	// @ts-expect-error abstract method
 	abstract override get children(): [AttributesToken];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken;
+	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken;
 
 	/** @browser */
@@ -224,8 +229,7 @@ export abstract class HtmlToken extends attributesParent(fixed(Token)) {
 	override cloneNode(): this {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');
-		// @ts-expect-error abstract class
-		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config));
+		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config) as this);
 	}
 
 	/** @private */
