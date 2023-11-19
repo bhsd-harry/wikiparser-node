@@ -1,4 +1,4 @@
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {Token} from '..';
 import type {AstText} from '../../lib/text';
 

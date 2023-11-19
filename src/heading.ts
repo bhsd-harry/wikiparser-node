@@ -1,5 +1,5 @@
 import {generateForSelf} from '../util/lint';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../index';

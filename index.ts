@@ -1,3 +1,5 @@
+/* eslint n/exports-style: 0 */
+
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -145,4 +147,5 @@ Object.defineProperties(Parser, def);
 if (typeof self === 'object') {
 	Object.assign(self, {Parser});
 }
-export default Parser;
+// @ts-expect-error mixed export styles
+export = Parser;

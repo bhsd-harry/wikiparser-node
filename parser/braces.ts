@@ -1,5 +1,5 @@
 import {removeComment} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';

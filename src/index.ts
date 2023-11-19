@@ -38,7 +38,7 @@
 // v: ConverterToken
 
 import {text} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 const {MAX_STAGE} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';

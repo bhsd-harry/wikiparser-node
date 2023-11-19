@@ -1,4 +1,4 @@
-import Parser from '../../index';
+import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../../internal';
 

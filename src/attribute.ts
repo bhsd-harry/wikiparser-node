@@ -1,6 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../index';

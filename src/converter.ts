@@ -1,5 +1,5 @@
 import {text, print} from '../util/string';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';

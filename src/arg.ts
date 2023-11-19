@@ -1,6 +1,6 @@
 import {text} from '../util/string';
 import {generateForChild} from '../util/lint';
-import Parser from '../index';
+import * as Parser from '../index';
 import {Token} from '.';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
