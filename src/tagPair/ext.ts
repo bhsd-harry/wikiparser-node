@@ -35,8 +35,8 @@ export abstract class ExtToken extends TagPairToken {
 	 */
 	constructor(
 		name: string,
-		attr = '',
-		inner = '',
+		attr?: string,
+		inner?: string,
 		closed?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -162,7 +162,7 @@ export abstract class ExtToken extends TagPairToken {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
-				rect = {start, ...root.posFromIndex(start)};
+				rect: BoundingRect = {start, ...root.posFromIndex(start)};
 			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
 		}
 		return errors;

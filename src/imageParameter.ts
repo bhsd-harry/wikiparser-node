@@ -77,7 +77,7 @@ export abstract class ImageParameterToken extends Token {
 	 * @param str 图片参数
 	 */
 	constructor(str: string, config = Parser.getConfig(), accum: Token[] = []) {
-		let mt: [string, string, string, string] | [string, string, string] | null;
+		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img).map(
 				([syntax, param]): [string, string, RegExp] => [
 					syntax,
@@ -86,7 +86,7 @@ export abstract class ImageParameterToken extends Token {
 				],
 			),
 			param = regexes.find(([, key, regex]) => {
-				mt = regex.exec(str) as [string, string, string, string] | [string, string, string] | null;
+				mt = regex.exec(str) as [string, string, string, string?] | null;
 				return mt
 					&& (mt.length !== 4 || validate(key, mt[2], config, true) as string | Title | boolean !== false);
 			});
@@ -98,7 +98,7 @@ export abstract class ImageParameterToken extends Token {
 			} else {
 				super(mt[2], config, true, accum, {
 				});
-				this.#syntax = `${mt[1]}${param[0]}${mt[3]}`;
+				this.#syntax = `${mt[1]}${param[0]}${mt[3]!}`;
 			}
 			this.setAttribute('name', param[1]);
 			return;

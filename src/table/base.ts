@@ -22,7 +22,7 @@ export abstract class TableBaseToken extends Token {
 	constructor(
 		pattern: RegExp,
 		syntax?: string,
-		attr = '',
+		attr?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 		acceptable: Acceptable = {},

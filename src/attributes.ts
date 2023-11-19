@@ -6,6 +6,7 @@ import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../index';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
+import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
 
@@ -70,10 +71,10 @@ export abstract class AttributesToken extends Token {
 				out += attr.slice(lastIndex, index);
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
-						quotes = [quoteStart, quoteEnd],
+						quotes: [string | undefined, string | undefined] = [quoteStart, quoteEnd],
 						// @ts-expect-error abstract class
 						token: AttributeToken = new AttributeToken(
-							type.slice(0, -1) as 'ext-attr' | 'html-attr' | 'table-attr',
+							type.slice(0, -1) as AttributeTypes,
 							name,
 							key,
 							equal,
