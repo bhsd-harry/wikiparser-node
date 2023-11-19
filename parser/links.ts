@@ -11,7 +11,7 @@ import type {Token} from '../internal';
  * @param accum
  */
 export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
-	const {parseQuotes}: typeof import('./quotes') = require('./quotes.js');
+	const {parseQuotes}: typeof import('./quotes') = require('./quotes');
 	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
 		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
