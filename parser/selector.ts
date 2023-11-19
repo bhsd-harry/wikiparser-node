@@ -144,8 +144,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 			step.push(pseudoExec[1]); // 临时存放复杂伪选择器
 			regex = functionRegex;
 		} else { // 情形6：伪选择器闭合
-			const pseudo = step.pop() as string;
-			mt.push(pseudo);
+			mt.push(step.pop() as string);
 			mt[1] &&= deQuote(mt[1]);
 			step.push(mt.slice(1) as [string, string]);
 			regex = regularRegex;

@@ -115,9 +115,7 @@ export class AttributesToken extends Token {
 				}
 			};
 			while (mt) {
-				const {
-					index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted,
-				} = mt;
+				const {index, 0: full, 1: key, 2: equal, 3: quoteStart, 4: quoted, 5: quoteEnd, 6: unquoted} = mt;
 				out += attr.slice(lastIndex, index);
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,

@@ -260,8 +260,7 @@ export class ConverterFlagsToken extends Token {
 	 * @param flag 转换类型标记
 	 */
 	#newFlag(flag: string): void {
-		const token = Parser.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config')));
-		this.insertAt(token);
+		this.insertAt(Parser.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config'))));
 	}
 
 	/**

@@ -739,7 +739,7 @@ export abstract class AstElement extends AstNode {
 				childStr = String(child),
 				gap = j === length - 1 ? 0 : this.getGaps(j);
 			if (!childStr) {
-				// pass
+				//
 			} else if (child.type === 'text') {
 				console.log(`${indent}  ${noWrap(child.data)}`);
 			} else {

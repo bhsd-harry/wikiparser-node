@@ -149,8 +149,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 	 * @param n 标题层级
 	 */
 	setLevel(n: number): void {
-		const level = String(Math.min(Math.max(n, 1), 6));
-		this.setAttribute('name', level);
+		this.setAttribute('name', String(Math.min(Math.max(n, 1), 6)));
 	}
 
 	/** 移除标题后的不可见内容 */

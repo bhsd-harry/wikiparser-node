@@ -79,8 +79,7 @@ export class Ranges extends Array<number | Range> {
 		if (a === undefined) {
 			return;
 		}
-		const arr = Array.isArray(a) ? a : [a];
-		for (const ele of arr) {
+		for (const ele of Array.isArray(a) ? a : [a]) {
 			if (ele instanceof Range) {
 				this.push(new Range(ele));
 				continue;
@@ -90,8 +89,7 @@ export class Ranges extends Array<number | Range> {
 				this.push(number);
 			} else if (typeof ele === 'string' && Number.isNaN(number)) {
 				try {
-					const range = new Range(ele);
-					this.push(range);
+					this.push(new Range(ele));
 				} catch {}
 			}
 		}

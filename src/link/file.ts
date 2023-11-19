@@ -143,19 +143,14 @@ export class FileToken extends LinkBaseToken {
 		for (const key of keys) {
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {
-				relevantArgs = [
-					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
-					...relevantArgs.slice(-1),
-				];
+				relevantArgs = [...relevantArgs.slice(0, -1).filter(arg => arg.text()), ...relevantArgs.slice(-1)];
 			}
 			if (relevantArgs.length > 1) {
 				errors.push(...relevantArgs.map(generate('duplicated', key)));
 			}
 		}
 		if (frameKeys.length > 1) {
-			errors.push(
-				...args.filter(({name}) => frame.has(name)).map(generate('conflicting', 'frame')),
-			);
+			errors.push(...args.filter(({name}) => frame.has(name)).map(generate('conflicting', 'frame')));
 		}
 		if (horizAlignKeys.length > 1) {
 			errors.push(

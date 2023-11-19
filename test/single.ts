@@ -1,14 +1,11 @@
-'use strict';
+import * as fs from 'fs';
+import * as assert from 'assert/strict';
+import {diff} from '../util/diff';
+import * as Parser from '../index';
 
-const fs = require('fs'),
-	assert = require('assert/strict'),
-	path = require('path'),
-	{diff} = require('../util/diff'),
-	{default: Parser} = require('..');
+const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');
 
-const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.wiki'), 'utf8');
-
-(async () => {
+(async (): Promise<void> => {
 	console.time('parse');
 	const token = Parser.parse(wikitext);
 	console.timeEnd('parse');
@@ -22,10 +19,7 @@ const wikitext = fs.readFileSync(path.join(__dirname, 'single-page.wiki'), 'utf8
 	const printed = token.print();
 	console.timeEnd('print');
 	const entities = {lt: '<', gt: '>', amp: '&'},
-		restored = printed.replace(
-			/<[^<]+?>|&([lg]t|amp);/gu,
-			/** @param {string} s */ (_, s) => s ? entities[s] : '',
-		);
+		restored = printed.replace(/<[^<]+?>|&([lg]t|amp);/gu, (_, s?: 'lt' | 'gt' | 'amp') => s ? entities[s] : '');
 	if (restored !== wikitext) {
 		await diff(wikitext, restored);
 		throw new Error('渲染HTML过程中不可逆地修改了原始文本！');

@@ -895,9 +895,7 @@ export class Token extends AstElement {
 						found = false,
 						transclusion = false;
 					for (let j = 2; j < length; j++) {
-						const {
-							anon, name: option, value, firstChild,
-						} = childNodes[j] as ParameterToken;
+						const {anon, name: option, value, firstChild} = childNodes[j] as ParameterToken;
 						transclusion = Boolean(firstChild.getElementByTypes('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {

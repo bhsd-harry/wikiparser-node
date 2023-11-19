@@ -253,8 +253,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	/** 局部闭合 */
 	#localMatch(): void {
 		this.#selfClosing = false;
-		const root = Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'));
-		this.after(root.firstChild!);
+		this.after(Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config')).firstChild!);
 	}
 
 	/**

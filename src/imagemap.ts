@@ -101,8 +101,7 @@ export class ImagemapToken extends Token {
 					mtIn = /^\[{2}([^|]+)(?:\|([^\]]+))?\]{2}[\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
-					const title = this.normalizeTitle(mtIn[1], 0, true, false, true);
-					if (title.valid) {
+					if (this.normalizeTitle(mtIn[1], 0, true, false, true).valid) {
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
 							mtIn.slice(1) as [string, string | undefined],
@@ -209,8 +208,7 @@ export class ImagemapToken extends Token {
 	 * @throws `Error` 禁止移除图片
 	 */
 	override removeAt(i: number): AstNodes {
-		const child = this.childNodes[i]!;
-		if (child.type === 'imagemap-image') {
+		if (this.childNodes[i]!.type === 'imagemap-image') {
 			throw new Error('禁止移除<imagemap>内的图片！');
 		}
 		return super.removeAt(i);
