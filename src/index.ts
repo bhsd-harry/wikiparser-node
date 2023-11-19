@@ -867,7 +867,7 @@ export class Token extends AstElement {
 				const index = quote.getRelativeIndex(),
 					n = indices.findLastIndex(textIndex => textIndex <= index),
 					cur = this.childNodes[n] as AstText;
-				cur.splitText(index - indices[n]!).splitText(Number(quote.name));
+				cur.splitText(index - indices[n]!).splitText(String(quote).length);
 				this.removeAt(n + 1);
 				this.insertAt(quote, n + 1);
 			}

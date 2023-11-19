@@ -2,22 +2,11 @@ import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {Token} from '..';
 
 /** `''`和`'''` */
 export abstract class QuoteToken extends NowikiBaseToken {
 	/** @browser */
 	override readonly type = 'quote';
-	declare name: string;
-
-	/**
-	 * @browser
-	 * @param n 字符串长度
-	 */
-	constructor(n: number, config = Parser.getConfig(), accum: Token[] = []) {
-		super(`'`.repeat(n), config, accum);
-		this.setAttribute('name', String(n));
-	}
 
 	/**
 	 * @override
@@ -67,7 +56,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	/** @override */
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
-		return Parser.run(() => new QuoteToken(Number(this.name), this.getAttribute('config')));
+		return Parser.run(() => new QuoteToken(this.firstChild.data, this.getAttribute('config')));
 	}
 
 	/**
