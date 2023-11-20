@@ -1,5 +1,6 @@
 /node_modules/
 /dist/
+/bundle/
 /errors/*
 /printed/*
 /.vscode/
@@ -7,5 +8,4 @@
 /wiki/
 /test/*.wiki
 /test/*.txt
-/bundle/bundle.min.js
 !README
