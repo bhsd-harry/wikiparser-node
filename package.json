@@ -30,7 +30,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublish": "webpack build --mode production && npm run build:ext",
+		"prepublishOnly": "webpack build --mode production && npm run build:ext",
 		"build:core": "rm bundle/*.js; webpack build --mode development; webpack build --mode production",
 		"build:ext": "rm -rf extensions/dist/; tsc --project extensions/tsconfig.json; ls extensions/dist/*.js | xargs gsed -i '/export {};/d'",
 		"build:test": "tsc; gsed -i 's|./config/minimum|../config/minimum|' dist/index.js",
