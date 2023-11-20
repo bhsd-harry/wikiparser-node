@@ -5,7 +5,7 @@ import * as Parser from '../index';
 
 const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');
 
-(async (): Promise<void> => {
+(async () => {
 	if (process.execArgv.includes('--prof')) {
 		Parser.parse(wikitext);
 		return;

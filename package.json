@@ -31,7 +31,7 @@
 		"diff": "git diff --ignore-all-space --color-moved",
 		"doc": "node ./bin/doc.js",
 		"toc": "node ./bin/toc.js",
-		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
+		"lint:ts": "eslint --cache --ignore-pattern 'dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test:real": "node dist/test/real.js",

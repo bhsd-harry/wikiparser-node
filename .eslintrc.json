@@ -922,7 +922,12 @@
 						"disallowTypeAnnotations": false
 					}
 				],
-				"@typescript-eslint/explicit-function-return-type": 2,
+				"@typescript-eslint/explicit-function-return-type": [
+					2,
+					{
+						"allowIIFEs": true
+					}
+				],
 				"@typescript-eslint/member-delimiter-style": [
 					2,
 					{

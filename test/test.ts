@@ -6,7 +6,7 @@ import Parser = require('../index');
 const {argv: [,, title = '']} = process;
 Parser.debugging = true;
 
-(async (): Promise<void> => {
+(async () => {
 	var wikitext = ''; // eslint-disable-line no-var, @typescript-eslint/no-unused-vars, no-unused-vars
 	for (const file of await fs.readdir(path.join(__dirname, '../wiki'))) {
 		if (file.endsWith('.md') && file.toLowerCase().includes(title.toLowerCase())) {

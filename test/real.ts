@@ -31,7 +31,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 		content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
 	})).filter(({content}) => content) as {title: string, ns: number, content: string}[];
 
-(async (): Promise<void> => {
+(async () => {
 	const {error} = Parser;
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
