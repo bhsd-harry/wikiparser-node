@@ -1,7 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
-import {Token} from '..';
+import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';
 import type {AttributesToken, ExtToken} from '../../internal';

@@ -2,7 +2,7 @@ import {generateForChild} from '../util/lint';
 import {noWrap, removeComment} from '../util/string';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../index';
 import type {AttributesToken} from '../internal';

@@ -2,7 +2,7 @@ import {generateForSelf} from '../util/lint';
 import {fixed} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../index';
 

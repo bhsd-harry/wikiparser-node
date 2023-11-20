@@ -9,6 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "monthly"
+    target-branch: "browser"
     assignees:
       - "bhsd-harry"
     commit-message:

@@ -1,7 +1,7 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';

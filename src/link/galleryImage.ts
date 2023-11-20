@@ -2,7 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import {undo} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
-import {Token} from '..';
+import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';

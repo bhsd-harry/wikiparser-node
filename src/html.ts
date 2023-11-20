@@ -3,7 +3,7 @@ import {noWrap} from '../util/string';
 import {fixed} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import type {LintError} from '../index';
 import type {AttributesToken, TranscludeToken} from '../internal';
 

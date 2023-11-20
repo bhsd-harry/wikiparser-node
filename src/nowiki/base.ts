@@ -1,6 +1,6 @@
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
-import {Token} from '..';
+import {Token} from '../index';
 import type {AstText} from '../../lib/text';
 
 declare type NowikiTypes = 'ext-inner'
@@ -24,6 +24,14 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	abstract override get firstElementChild(): undefined;
 	abstract override get lastChild(): AstText;
 	abstract override get lastElementChild(): undefined;
+
+	/**
+	 * @param wikitext default: `''`
+	 * @browser
+	 */
+	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
+		super(wikitext, config, accum);
+	}
 
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {

@@ -1,7 +1,7 @@
 import {undo} from '../util/debug';
 import {noWrap} from '../util/string';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {AtomToken} from './atom';
 import type {ConverterToken, ConverterFlagsToken} from '../internal';
 

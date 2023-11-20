@@ -2,7 +2,7 @@ import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
 import {undo} from '../../util/debug';
 import * as Parser from '../../index';
-import {Token} from '..';
+import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';
 import type {Title} from '../../lib/title';
