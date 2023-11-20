@@ -33,7 +33,7 @@
 		"prepublishOnly": "rm -rf dist/; tsc; rm dist/internal.js; rm -r dist/test; rm dist/[bmpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.js' '@ts' dist/ | xargs gsed -i '/@ts/d'; eslint --fix dist/",
 		"diff": "git diff --ignore-all-space --color-moved",
-		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
+		"lint:ts": "eslint --cache --ignore-pattern 'dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "npx wikilint test/single-page.wiki",
