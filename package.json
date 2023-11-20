@@ -15,7 +15,7 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [
-		"errors/README",
+		"/errors/README",
 		"/config/",
 		"/i18n/",
 		"/bin/cli",
