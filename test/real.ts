@@ -32,7 +32,6 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 	})).filter(({content}) => content) as {title: string, ns: number, content: string}[];
 
 (async () => {
-	const {error} = Parser;
 	for (const [name, url, config] of apis) {
 		Parser.debug(`开始检查${name}：`);
 		Parser.config = config;
@@ -44,7 +43,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					console.timeEnd(title);
 					const restored = String(root);
 					if (restored !== content) {
-						error('解析过程中不可逆地修改了原始文本！');
+						Parser.error('解析过程中不可逆地修改了原始文本！');
 						await diff(content, restored);
 					}
 					console.time(title);
@@ -67,11 +66,11 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					}
 					await diff(content, text);
 				} catch (e) {
-					error(`解析${name}的 ${title} 页面时出错！`, e);
+					Parser.error(`解析${name}的 ${title} 页面时出错！`, e);
 				}
 			}
 		} catch (e) {
-			error(`访问${name}的API端口时出错！`, e);
+			Parser.error(`访问${name}的API端口时出错！`, e);
 		}
 	}
 })();

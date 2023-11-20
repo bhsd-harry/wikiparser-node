@@ -1,9 +1,9 @@
-'use strict';
+import * as fs from 'fs';
 
 const {argv: [,, filename]} = process;
-const fs = require('fs');
-
-if (!fs.existsSync(filename)) {
+if (!filename) {
+	throw new RangeError('请指定文档文件！');
+} else if (!fs.existsSync(filename)) {
 	throw new RangeError(`文档 ${filename} 不存在！`);
 }
 
@@ -14,9 +14,9 @@ if (/^- \[[^\]]+\]\(#[^)]+\)$/mu.test(content)) {
 
 const toc = content.split('\n').filter(line => line.startsWith('#')).map(line => line.replace(
 	/^(#+)\s+(\S.*)$/u,
-	/** @type {function(...string): string} */
-	(_, level, title) => `${'\t'.repeat(level.length - 1)}- [${title}](#${
+	(_, {length}: string, title: string) => `${'\t'.repeat(length - 1)}- [${title}](#${
 		title.toLowerCase().replaceAll(' ', '-').replaceAll('.', '')
 	})`,
 )).join('\n');
+
 fs.writeFileSync(filename, `<details>\n\t<summary>目录</summary>\n\n${toc}\n</details>\n\n${content}`);
