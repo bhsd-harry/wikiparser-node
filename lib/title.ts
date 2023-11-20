@@ -38,7 +38,7 @@ export class Title {
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
 		const {namespaces, nsid} = config;
-		let namespace = namespaces[defaultNs]!;
+		let namespace = namespaces[defaultNs] ?? '';
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
