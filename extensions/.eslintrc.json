@@ -4,6 +4,9 @@
 		"node": false,
 		"es2022": true
 	},
+	"parserOptions": {
+		"project": "./extensions/tsconfig.json"
+	},
 	"extends": [
 		"plugin:es-x/restrict-to-es2018"
 	],
@@ -15,6 +18,7 @@
 		"es-x/no-array-prototype-flat": 0,
 		"unicorn/empty-brace-spaces": 2,
 		"unicorn/no-invalid-remove-event-listener": 2,
-		"unicorn/prefer-keyboard-event-key": 2
+		"unicorn/prefer-keyboard-event-key": 2,
+		"@typescript-eslint/no-floating-promises": 0
 	}
 }

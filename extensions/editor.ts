@@ -1,44 +1,55 @@
-'use strict';
+import type {wikiparse} from './typings';
 
 (() => {
-	const /** @type {{wikiparse: import('../typings/extension')}} */ {wikiparse} = window,
-		{MAX_STAGE, print} = wikiparse;
+	const {wikiparse} = window as unknown as {wikiparse: wikiparse},
+		{MAX_STAGE} = wikiparse;
 
 	/** 用于打印AST */
 	class Printer {
+		/* eslint-disable es-x/no-class-fields */
+		declare private id;
+		declare include;
+		declare private preview;
+		declare private textbox;
+		declare private root: [number, string, string][];
+		declare running: Promise<void> | undefined;
+		declare private viewportChanged: boolean;
+		declare ticks: [number, 'coarsePrint' | 'finePrint' | undefined];
+		/* eslint-enable es-x/no-class-fields */
+
 		/**
-		 * @param {HTMLDivElement} preview 置于下层的代码高亮
-		 * @param {HTMLTextAreaElement} textbox 置于上层的文本框
-		 * @param {boolean} include 是否嵌入
+		 * @param preview 置于下层的代码高亮
+		 * @param textbox 置于上层的文本框
+		 * @param include 是否嵌入
 		 */
-		constructor(preview, textbox, include) {
+		constructor(preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) {
 			this.id = wikiparse.id++;
+			this.include = Boolean(include);
 			this.preview = preview;
 			this.textbox = textbox;
-			this.include = Boolean(include);
-			/** @type {[number, string, string][]} */ this.root = [];
-			/** @type {Promise<void>} */ this.running = undefined;
+			this.root = [];
+			this.running = undefined;
 			this.viewportChanged = false;
-			/** @type {[number, string]} */ this.ticks = [0, undefined];
+			this.ticks = [0, undefined];
 		}
 
 		/** 倒计时 */
-		tick() {
+		private tick(): void {
 			setTimeout(() => {
 				const {ticks} = this;
 				if (ticks[0] > 0) {
 					ticks[0] -= 500;
-					this[ticks[0] <= 0 ? ticks[1] : 'tick']();
+					this[ticks[0] <= 0 ? ticks[1]! : 'tick']();
 				}
 			}, 500);
 		}
 
 		/**
 		 * 用于debounce
-		 * @param {number} delay 延迟
-		 * @param {string} method 方法
+		 * @param delay 延迟
+		 * @param method 方法
 		 */
-		queue(delay, method) {
+		queue(delay: number, method: 'coarsePrint' | 'finePrint'): void {
 			const {ticks} = this,
 				[state] = ticks;
 			if (state <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
@@ -51,7 +62,7 @@
 		}
 
 		/** 渲染 */
-		paint() {
+		private paint(): void {
 			this.preview.innerHTML = `<span class="wpb-root">${
 				this.root.map(([,, printed]) => printed).join('')
 			}</span> `;
@@ -61,12 +72,12 @@
 		}
 
 		/** 初步解析 */
-		async coarsePrint() {
+		async coarsePrint(): Promise<void> {
 			if (this.running) {
 				return undefined;
 			}
 			const {include, textbox: {value}} = this,
-				parsed = await print(value, include, 2, this.id);
+				parsed = await wikiparse.print(value, include, 2, this.id);
 			if (this.include !== include || this.textbox.value !== value) {
 				this.running = undefined;
 				this.running = this.coarsePrint();
@@ -80,7 +91,7 @@
 		}
 
 		/** 根据可见范围精细解析 */
-		async finePrint() {
+		private async finePrint(): Promise<void> {
 			if (this.running) {
 				this.viewportChanged = true;
 				return undefined;
@@ -96,7 +107,7 @@
 				start = 0,
 				{length: end} = root;
 			if (scrollHeight > parentHeight) {
-				const /** @type {HTMLElement[]} */ childNodes = [...rootNode.childNodes],
+				const childNodes = [...rootNode!.childNodes] as HTMLElement[],
 					headings = childNodes.filter(({className}) => className === 'wpb-heading'),
 					{length} = headings;
 				if (length > 0) {
@@ -104,13 +115,13 @@
 					i = i === -1 ? length : i;
 					let j = headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
 					j = j === -1 ? length : i + j;
-					start = i ? childNodes.indexOf(headings[i - 1]) : 0;
-					while (i <= j && root[start][0] === MAX_STAGE) {
-						start = childNodes.indexOf(headings[i++]);
+					start = i ? childNodes.indexOf(headings[i - 1]!) : 0;
+					while (i <= j && root[start]![0] === MAX_STAGE) {
+						start = childNodes.indexOf(headings[i++]!);
 					}
-					end = j === length ? end : childNodes.indexOf(headings[j]);
-					while (i <= j && root[end - 1][0] === MAX_STAGE) {
-						end = childNodes.indexOf(headings[--j]);
+					end = j === length ? end : childNodes.indexOf(headings[j]!);
+					while (i <= j && root[end - 1]![0] === MAX_STAGE) {
+						end = childNodes.indexOf(headings[--j]!);
 					}
 					text = root.slice(start, end).map(([, str]) => str).join('');
 				}
@@ -119,12 +130,12 @@
 				this.running = undefined;
 				return undefined;
 			}
-			const parsed = await print(text, include, MAX_STAGE, this.id);
+			const parsed = await wikiparse.print(text, include, MAX_STAGE, this.id);
 			if (this.include === include && this.textbox.value === value) {
 				this.root.splice(start, end - start, ...parsed);
 				this.paint();
 				this.running = undefined;
-				if (this.viewportChanged) {
+				if (this.viewportChanged as boolean) {
 					this.running = this.finePrint();
 				}
 			} else {
@@ -137,11 +148,11 @@
 
 	/**
 	 * 高亮textarea
-	 * @param {HTMLTextAreaElement} textbox textarea元素
-	 * @param {boolean} include 是否嵌入
+	 * @param textbox textarea元素
+	 * @param include 是否嵌入
 	 * @throws `TypeError` 不是textarea
 	 */
-	const edit = (textbox, include) => {
+	const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
 			throw new TypeError('wikiparse.edit方法仅可用于textarea元素！');
 		}
@@ -155,8 +166,8 @@
 		textbox.classList.add('wikiparsed');
 		container.append(preview, textbox);
 
-		textbox.addEventListener('input', ({isComposing}) => {
-			if (!isComposing) {
+		textbox.addEventListener('input', e => {
+			if (!(e as InputEvent).isComposing) {
 				printer.queue(2000, 'coarsePrint');
 			}
 			textbox.style.color = '';
@@ -179,5 +190,6 @@
 		return printer;
 	};
 
-	Object.assign(wikiparse, {edit, Printer});
+	wikiparse.Printer = Printer;
+	wikiparse.edit = edit;
 })();

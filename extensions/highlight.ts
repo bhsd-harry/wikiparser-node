@@ -1,15 +1,15 @@
-'use strict';
+import type {wikiparse} from './typings';
 
 (() => {
-	const /** @type {{wikiparse: import('../typings/extension')}} */ {wikiparse} = window;
+	const {wikiparse} = window as unknown as {wikiparse: wikiparse};
 
 	/**
 	 * 高亮代码块
-	 * @param {HTMLElement} ele 代码块
-	 * @param {boolean} linenums 是否添加行号
-	 * @param {number} start 起始行号
+	 * @param ele 代码块
+	 * @param linenums 是否添加行号
+	 * @param start 起始行号
 	 */
-	const highlight = async (ele, linenums, start = 1) => {
+	const highlight = async (ele: HTMLElement, linenums: boolean, start = 1): Promise<void> => {
 		if (ele.classList.contains('highlighted')) {
 			return;
 		}
@@ -23,7 +23,7 @@
 				li.innerHTML = line;
 				return li;
 			});
-			if (!lines[lines.length - 1].textContent) {
+			if (!lines[lines.length - 1]!.textContent) {
 				lines.pop();
 			}
 			const ol = document.createElement('ol');

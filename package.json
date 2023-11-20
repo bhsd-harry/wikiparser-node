@@ -15,10 +15,12 @@
 	"author": "Bhsd",
 	"files": [
 		"/bundle/bundle.min.js",
-		"/extensions/",
-		"!/extensions/gh-page.*",
-		"!/extensions/.eslintrc.json",
+		"/extensions/dist/",
+		"/extensions/*.css",
+		"!/extensions/dist/gh-page.js",
+		"!/extensions/gh-page.css",
 		"/config/",
+		"!/config/.schema.json",
 		"/i18n/"
 	],
 	"browser": "/bundle/bundle.min.js",
@@ -28,9 +30,12 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"build": "rm bundle/*.js; webpack build --mode development; webpack build --mode production",
+		"prepublish": "webpack build --mode production && npm run build:ext",
+		"build:core": "rm bundle/*.js; webpack build --mode development; webpack build --mode production",
+		"build:ext": "rm -rf extensions/dist/; tsc --project extensions/tsconfig.json; ls extensions/dist/*.js | xargs gsed -i '/export {};/d'",
+		"build": "npm run build:core && npm run build:ext",
 		"diff": "git diff --ignore-all-space --color-moved",
-		"lint:ts": "eslint --cache --ignore-pattern '/dist/' .",
+		"lint:ts": "eslint --cache --ignore-pattern 'dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css"
