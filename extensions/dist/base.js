@@ -2,7 +2,7 @@
     const MAX_STAGE = 11;
     /** web worker */
     const workerJS = () => {
-        self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@browser/bundle/bundle.min.js');
+        self.importScripts('https://fastly.jsdelivr.net/npm/wikiparser-node@1.0.0-b/bundle/bundle.min.js');
         const { Parser } = self, entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
         /** @implements */
         self.onmessage = ({ data }) => {
