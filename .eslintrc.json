@@ -222,18 +222,6 @@
 		"no-new-object": 2,
 		"no-new-wrappers": 2,
 		"no-octal-escape": 2,
-		"no-restricted-globals": [
-			2,
-			"root",
-			"parent",
-			"top",
-			"length",
-			"open",
-			"close",
-			"closed",
-			"name",
-			"print"
-		],
 		"no-return-assign": [
 			2,
 			"always"

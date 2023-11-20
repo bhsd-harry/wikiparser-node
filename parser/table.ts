@@ -34,7 +34,7 @@ export const parseTable = (
 			return;
 		}
 		const {lastChild} = top;
-		if ((lastChild as Token).constructor === Token) {
+		if (lastChild.constructor === Token) {
 			lastChild.setText(String(lastChild) + str);
 		} else {
 			const token = new Token(str, config, accum);

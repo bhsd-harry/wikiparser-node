@@ -1,5 +1,5 @@
 import {text} from '../util/string';
-import {generateForChild} from '../util/lint';
+import {generateForSelf, generateForChild} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -82,6 +82,9 @@ export class ArgToken extends Token {
 	 * @browser
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		if (!this.getAttribute('include')) {
+			return [generateForSelf(this, {start}, 'unexpected template argument')];
+		}
 		const {childNodes: [argName, argDefault, ...rest]} = this,
 			errors = argName.lint(start + 3);
 		if (argDefault) {
