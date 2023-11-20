@@ -33,12 +33,15 @@
 		"prepublish": "webpack build --mode production && npm run build:ext",
 		"build:core": "rm bundle/*.js; webpack build --mode development; webpack build --mode production",
 		"build:ext": "rm -rf extensions/dist/; tsc --project extensions/tsconfig.json; ls extensions/dist/*.js | xargs gsed -i '/export {};/d'",
+		"build:test": "tsc; gsed -i 's|./config/minimum|../config/minimum|' dist/index.js",
 		"build": "npm run build:core && npm run build:ext",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "eslint --cache --ignore-pattern 'dist/' .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint:css": "stylelint extensions/*.css",
-		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css"
+		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
+		"test:real": "node dist/test/real.js",
+		"test:single": "node dist/test/single.js"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
