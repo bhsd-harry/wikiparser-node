@@ -4,12 +4,12 @@
 		"node": false,
 		"es2022": true
 	},
-	"parserOptions": {
-		"project": "./extensions/tsconfig.json"
-	},
 	"extends": [
 		"plugin:es-x/restrict-to-es2018"
 	],
+	"parserOptions": {
+		"project": "./extensions/tsconfig.json"
+	},
 	"rules": {
 		"no-await-in-loop": 2,
 		"no-control-regex": 2,
