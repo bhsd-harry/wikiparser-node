@@ -24,7 +24,8 @@ export class TranscludeToken extends Token {
 	#raw = false;
 	#args = new Map<string, Set<ParameterToken>>();
 
-	declare childNodes: [AtomToken | SyntaxToken, ...Token[]];
+	declare childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
+		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	// @ts-expect-error abstract method

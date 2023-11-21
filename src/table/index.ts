@@ -15,7 +15,8 @@ const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$
 export class TableToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'table';
-	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
+	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
+		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 

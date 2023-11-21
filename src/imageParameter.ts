@@ -57,15 +57,15 @@ export class ImageParameterToken extends Token {
 	/** @browser */
 	override readonly type = 'image-parameter';
 	declare name: string;
+	/** @browser */
+	#syntax = '';
+
 	// @ts-expect-error abstract method
-	abstract override get parentNode(): FileToken;
+	abstract override get parentNode(): FileToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this;
-
-	/** @browser */
-	#syntax = '';
 
 	/**
 	 * 图片链接
@@ -112,7 +112,7 @@ export class ImageParameterToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.parentNode.type === 'gallery-image' && !params.has(this.name)) {
+		if (this.parentNode?.type === 'gallery-image' && !params.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
 	}

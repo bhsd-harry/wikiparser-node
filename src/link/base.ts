@@ -10,14 +10,14 @@ import type {LintError} from '../../index';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
-	declare childNodes: [AtomToken, ...Token[]];
-	abstract override get firstChild(): AtomToken;
-	abstract override get lastChild(): Token;
-
 	#bracket = true;
 	#delimiter;
 	#fragment: string | undefined;
 	#encoded = false;
+
+	declare childNodes: [AtomToken, ...Token[]];
+	abstract override get firstChild(): AtomToken;
+	abstract override get lastChild(): Token;
 
 	/**
 	 * @browser

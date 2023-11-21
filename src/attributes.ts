@@ -19,9 +19,9 @@ export class AttributesToken extends Token {
 	declare name: string;
 	declare childNodes: (AtomToken | AttributeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): AtomToken | AttributeToken;
+	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): AtomToken | AttributeToken;
+	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 

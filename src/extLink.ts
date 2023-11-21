@@ -9,14 +9,14 @@ import {MagicLinkToken} from './magicLink';
 export class ExtLinkToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-link';
+	/** @browser */
+	#space;
+
 	declare childNodes: [MagicLinkToken] | [MagicLinkToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): MagicLinkToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-
-	/** @browser */
-	#space;
 
 	/**
 	 * @browser
