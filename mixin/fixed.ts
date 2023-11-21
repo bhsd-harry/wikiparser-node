@@ -5,7 +5,6 @@ import type {AstNodes, AstText} from '../internal';
  * 不可增删子节点的类
  * @param constructor 基类
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const fixed = <S extends AstConstructor>(constructor: S) => {
 	/** 不可增删子节点的类 */
 	abstract class FixedToken extends constructor {

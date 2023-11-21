@@ -6,7 +6,6 @@ import type {AstNodes, AttributesToken} from '../internal';
  * @param constructor 基类
  * @param i AttributesToken子节点的位置
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0) => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {

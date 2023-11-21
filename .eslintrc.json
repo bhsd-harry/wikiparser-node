@@ -919,7 +919,14 @@
 				"@typescript-eslint/explicit-function-return-type": [
 					2,
 					{
-						"allowIIFEs": true
+						"allowIIFEs": true,
+						"allowedNames": [
+							"attributesParent",
+							"fixed",
+							"hidden",
+							"singleLine",
+							"sol"
+						]
 					}
 				],
 				"@typescript-eslint/member-delimiter-style": [
