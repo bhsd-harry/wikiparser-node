@@ -17,4 +17,4 @@ updates:
     versioning-strategy: increase-if-necessary
     ignore:
       - dependency-name: "*"
-        update-types: ["version-update:semver-patch"]
+        update-types: ["version-update:semver-minor"]
