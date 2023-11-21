@@ -5,7 +5,6 @@ import type {Token} from '../src';
  * 只能位于行首的类
  * @param constructor 基类
  */
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const sol = <T extends AstConstructor>(constructor: T) => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
