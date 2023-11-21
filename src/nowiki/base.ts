@@ -1,3 +1,4 @@
+import Parser from '../../index';
 import {Token} from '../index';
 import type {AstText} from '../../lib/text';
 
@@ -19,4 +20,12 @@ export abstract class NowikiBaseToken extends Token {
 	declare childNodes: [AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
+
+	/**
+	 * @param wikitext default: `''`
+	 * @browser
+	 */
+	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
+		super(wikitext, config, accum);
+	}
 }
