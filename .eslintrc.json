@@ -925,11 +925,7 @@
 					{
 						"allowIIFEs": true,
 						"allowedNames": [
-							"attributesParent",
-							"fixed",
-							"hidden",
-							"singleLine",
-							"sol"
+							"hidden"
 						]
 					}
 				],
