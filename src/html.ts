@@ -15,18 +15,18 @@ export class HtmlToken extends Token {
 	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
-	declare childNodes: [AttributesToken];
-	// @ts-expect-error abstract method
-	abstract override get firstChild(): AttributesToken;
-	// @ts-expect-error abstract method
-	abstract override get lastChild(): AttributesToken;
-
 	/** @browser */
 	#closing;
 	/** @browser */
 	#selfClosing;
 	/** @browser */
 	#tag;
+
+	declare childNodes: [AttributesToken];
+	// @ts-expect-error abstract method
+	abstract override get firstChild(): AttributesToken;
+	// @ts-expect-error abstract method
+	abstract override get lastChild(): AttributesToken;
 
 	/**
 	 * 是否是闭合标签

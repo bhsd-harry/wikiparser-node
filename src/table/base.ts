@@ -5,7 +5,7 @@ import {AttributesToken} from '../attributes';
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
 export abstract class TableBaseToken extends Token {
 	declare type: 'table' | 'tr' | 'td';

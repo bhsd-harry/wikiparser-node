@@ -2,6 +2,7 @@ import {generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
+import type {AstText, CommentToken, IncludeToken, NoincludeToken} from '../internal';
 
 /**
  * 自由外链
@@ -9,6 +10,11 @@ import type {LintError} from '../index';
  */
 export class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
+	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
+	// @ts-expect-error abstract method
+	abstract override get firstChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	// @ts-expect-error abstract method
+	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
 
 	/**
 	 * @browser

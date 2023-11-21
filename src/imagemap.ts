@@ -17,9 +17,9 @@ export class ImagemapToken extends Token {
 	declare name: 'imagemap';
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): NoincludeToken | GalleryImageToken;
+	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText;
+	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
 	// @ts-expect-error abstract method
