@@ -182,7 +182,16 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 export class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
 	declare name: string;
+	/** @browser */
+	#equal;
+	/** @browser */
+	#quotes;
+	/** @browser */
+	#tag;
+
 	declare childNodes: [AtomToken, Token];
+	// @ts-expect-error abstract method
+	abstract override get children(): [AtomToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method
@@ -203,13 +212,6 @@ export class AttributeToken extends fixed(Token) {
 	abstract override get previousSibling(): AtomToken | this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
-
-	/** @browser */
-	#equal;
-	/** @browser */
-	#quotes;
-	/** @browser */
-	#tag;
 
 	/**
 	 * 引号是否匹配
@@ -479,7 +481,7 @@ export class AttributeToken extends fixed(Token) {
 			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild} = attrs;
-		if (attrs.length !== 1 || firstChild.type !== type || firstChild.name !== key) {
+		if (attrs.length !== 1 || firstChild?.type !== type || firstChild.name !== key) {
 			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
 		}
 		const {lastChild} = firstChild;
@@ -518,7 +520,7 @@ export class AttributeToken extends fixed(Token) {
 			attrs = tag!.firstChild as AttributesToken;
 		}
 		const {firstChild: attr} = attrs;
-		if (attrs.length !== 1 || attr.type !== type || attr.value !== true) {
+		if (attrs.length !== 1 || attr?.type !== type || attr.value !== true) {
 			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
 		}
 		const {firstChild} = attr;

@@ -126,9 +126,11 @@ class Layout extends Array<TableCoords[]> {
 export class TableToken extends TrBaseToken {
 	/** @browser */
 	override readonly type = 'table';
-	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
+	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
+		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
-	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken];
+	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
+		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 	// @ts-expect-error abstract method
@@ -479,9 +481,8 @@ export class TableToken extends TrBaseToken {
 		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 			start = plain?.constructor === Token ? 3 : 2,
-			tdChildren = childNodes.slice(start) as [...TdToken[], SyntaxToken],
+			tdChildren = childNodes.slice(start) as [...TdToken[], SyntaxToken] | TdToken[],
 			index = tdChildren.findIndex(({type}) => type !== 'td');
 		this.insertAt(row, index === -1 ? -1 : index + start);
 		Parser.run(() => {

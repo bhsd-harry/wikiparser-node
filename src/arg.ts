@@ -16,6 +16,8 @@ export class ArgToken extends Token {
 	declare name: string;
 	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
+	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
+	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken;

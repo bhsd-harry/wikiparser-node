@@ -15,6 +15,9 @@ export class NestedToken extends Token {
 	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: string;
+	#tags: string[];
+	#regex;
+
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
@@ -38,9 +41,6 @@ export class NestedToken extends Token {
 	abstract override get parentNode(): ExtToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
-
-	#tags: string[];
-	#regex;
 
 	/**
 	 * @browser

@@ -24,6 +24,9 @@ export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan
 export class TdToken extends fixed(TableBaseToken) {
 	/** @browser */
 	override readonly type = 'td';
+	/** @browser */
+	#innerSyntax = '';
+
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
@@ -37,9 +40,6 @@ export class TdToken extends fixed(TableBaseToken) {
 	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token | undefined;
-
-	/** @browser */
-	#innerSyntax = '';
 
 	/**
 	 * 单元格类型

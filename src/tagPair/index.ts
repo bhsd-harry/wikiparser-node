@@ -7,16 +7,16 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare name: string;
-	declare childNodes: [AstNodes, AstNodes];
-	abstract override get firstChild(): AstNodes;
-	abstract override get lastChild(): AstNodes;
-
 	/** @browser */
 	#selfClosing;
 	/** @browser */
 	#closed;
 	/** @browser */
 	#tags: [string, string];
+
+	declare childNodes: [AstNodes, AstNodes];
+	abstract override get firstChild(): AstNodes;
+	abstract override get lastChild(): AstNodes;
 
 	/**
 	 * 是否闭合

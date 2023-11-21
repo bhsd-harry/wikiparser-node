@@ -17,6 +17,13 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
+	/** @browser */
+	#closing;
+	/** @browser */
+	#selfClosing;
+	/** @browser */
+	#tag;
+
 	declare childNodes: [AttributesToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AttributesToken];
@@ -28,13 +35,6 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	abstract override get lastChild(): AttributesToken;
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken;
-
-	/** @browser */
-	#closing;
-	/** @browser */
-	#selfClosing;
-	/** @browser */
-	#tag;
 
 	/**
 	 * 是否是闭合标签

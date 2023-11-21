@@ -14,6 +14,9 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
 export class ConverterFlagsToken extends Token {
 	/** @browser */
 	override readonly type = 'converter-flags';
+	/** @browser */
+	#flags?: string[];
+
 	declare childNodes: AtomToken[];
 	// @ts-expect-error abstract method
 	abstract override get children(): AtomToken[];
@@ -37,9 +40,6 @@ export class ConverterFlagsToken extends Token {
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
-
-	/** @browser */
-	#flags?: string[];
 
 	/**
 	 * @browser

@@ -20,13 +20,13 @@ export class ImagemapToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): NoincludeToken | GalleryImageToken;
+	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken;
+	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText;
+	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken;
+	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
 	// @ts-expect-error abstract method

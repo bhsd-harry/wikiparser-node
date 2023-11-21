@@ -2,7 +2,7 @@ import {generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
-import type {ParameterToken} from './parameter';
+import type {ParameterToken, AstText, CommentToken, IncludeToken, NoincludeToken} from '../internal';
 
 /**
  * 自由外链
@@ -11,6 +11,18 @@ import type {ParameterToken} from './parameter';
 export class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
 	#protocolRegex;
+
+	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
+	// @ts-expect-error abstract method
+	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken)[];
+	// @ts-expect-error abstract method
+	abstract override get firstChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	// @ts-expect-error abstract method
+	abstract override get firstElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
+	// @ts-expect-error abstract method
+	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	// @ts-expect-error abstract method
+	abstract override get lastElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
 
 	/** 协议 */
 	get protocol(): string | undefined {

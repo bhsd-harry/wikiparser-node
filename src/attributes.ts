@@ -23,13 +23,13 @@ export class AttributesToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get children(): (AtomToken | AttributeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): AtomToken | AttributeToken;
+	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken | AttributeToken;
+	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): AtomToken | AttributeToken;
+	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken | AttributeToken;
+	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 	// @ts-expect-error abstract method

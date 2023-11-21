@@ -14,17 +14,17 @@ import type {Title} from '../../lib/title';
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	declare name: string;
+	#bracket = true;
+	#delimiter;
+	#fragment: string | undefined;
+	#encoded = false;
+
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
 	abstract override get lastElementChild(): Token;
-
-	#bracket = true;
-	#delimiter;
-	#fragment: string | undefined;
-	#encoded = false;
 
 	/** 完整链接 */
 	get link(): string | Title {

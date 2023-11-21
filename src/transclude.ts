@@ -27,7 +27,11 @@ export class TranscludeToken extends Token {
 	#args = new Map<string, Set<ParameterToken>>();
 	#keys = new Set<string>();
 
-	declare childNodes: [AtomToken | SyntaxToken, ...Token[]];
+	declare childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
+		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+	// @ts-expect-error abstract method
+	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
+		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	// @ts-expect-error abstract method
@@ -582,7 +586,7 @@ export class TranscludeToken extends Token {
 		}
 		const {name, lastChild} = transclude as this & {lastChild: ParameterToken};
 		if (name === (templateLike ? 'T' : 'lc') && lastChild.anon) {
-			return this.insertAt(lastChild as ParameterToken);
+			return this.insertAt(lastChild);
 		}
 		throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
 	}
@@ -789,6 +793,7 @@ export class TranscludeToken extends Token {
 			if (remaining > 1) {
 				Parser.error(`${this.type === 'template'
 					? this.name
+					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 					: this.normalizeTitle(this.childNodes[1]?.text() ?? '', 828).title
 				} 还留有 ${remaining} 个重复的 ${key} 参数：${[...this.getArgs(key)].map(arg => {
 					const {top, left} = arg.getBoundingClientRect();
