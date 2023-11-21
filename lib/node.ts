@@ -215,7 +215,6 @@ export abstract class AstNode {
 	}
 
 	/** @private */
-	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	protected getGaps(i: number): number {
 		return 0;
 	}

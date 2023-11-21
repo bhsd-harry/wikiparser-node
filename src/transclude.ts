@@ -283,7 +283,6 @@ export class TranscludeToken extends Token {
 	 * @param exact 是否匹配匿名性
 	 * @param copy 是否返回一个备份
 	 */
-	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 		let args: Set<ParameterToken>;

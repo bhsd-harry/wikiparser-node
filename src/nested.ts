@@ -35,7 +35,6 @@ export class NestedToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		regex: RegExp,
-		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 		tags: string[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
