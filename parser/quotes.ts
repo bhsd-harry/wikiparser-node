@@ -1,6 +1,6 @@
 import * as Parser from '../index';
 import {QuoteToken} from '../src/nowiki/quote';
-import type {Token} from '../src';
+import type {Token} from '../src/index';
 
 /**
  * 解析单引号

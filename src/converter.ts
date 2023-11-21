@@ -1,6 +1,6 @@
 import {text} from '../util/string';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
 

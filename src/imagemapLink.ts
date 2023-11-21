@@ -1,7 +1,7 @@
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
-import {LinkToken} from './link';
+import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
 import type {AstText, ImagemapToken} from '../internal';
 

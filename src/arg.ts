@@ -1,7 +1,7 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
 import type {LintError} from '../index';

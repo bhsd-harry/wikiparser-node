@@ -1,6 +1,6 @@
 import {generateForChild} from '../util/lint';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import type {LintError} from '../index';
 
 /**

@@ -1,7 +1,7 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import type {LintError} from '../index';
 import type {AttributesToken, TranscludeToken} from '../internal';
 
