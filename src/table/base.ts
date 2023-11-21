@@ -1,5 +1,5 @@
 import * as Parser from '../../index';
-import {Token} from '..';
+import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
 

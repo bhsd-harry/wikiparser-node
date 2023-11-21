@@ -1,7 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import * as Parser from '../../index';
-import {Token} from '..';
-import {TagPairToken} from '.';
+import {Token} from '../index';
+import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
 import type {LintError, Config} from '../../index';
 
@@ -76,7 +76,7 @@ export class ExtToken extends TagPairToken {
 				break;
 			}
 			case 'dynamicpagelist': {
-				const {ParamTagToken}: typeof import('../paramTag') = require('../paramTag');
+				const {ParamTagToken}: typeof import('../paramTag/index') = require('../paramTag/index');
 				innerToken = new ParamTagToken(inner, newConfig, accum);
 				break;
 			}
@@ -138,7 +138,7 @@ export class ExtToken extends TagPairToken {
 			// }
 			// ```
 			default: {
-				const {NowikiToken}: typeof import('../nowiki') = require('../nowiki');
+				const {NowikiToken}: typeof import('../nowiki/index') = require('../nowiki/index');
 				innerToken = new NowikiToken(inner, newConfig);
 			}
 		}

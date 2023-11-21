@@ -1,5 +1,5 @@
 import * as Parser from '../../index';
-import {Token} from '..';
+import {Token} from '../index';
 import type {AstNodes} from '../../lib/node';
 
 /** 成对标签 */
