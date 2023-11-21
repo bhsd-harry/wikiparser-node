@@ -105,8 +105,7 @@ export abstract class LinkBaseToken extends Token {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		if (linkType === 'link' && linkText?.childNodes?.some(
+		if (linkType === 'link' && linkText?.childNodes.some(
 			child => child.type === 'text' && child.data.includes('|'),
 		)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
