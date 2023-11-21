@@ -140,7 +140,6 @@ export class FileToken extends LinkBaseToken {
 	 * @param keys 接受的参数名
 	 * @param type 类型名
 	 */
-	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	#getTypedArgs(keys: Set<string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 		return args;

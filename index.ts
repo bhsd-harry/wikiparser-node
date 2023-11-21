@@ -1,5 +1,3 @@
-/* eslint n/exports-style: 0 */
-
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 

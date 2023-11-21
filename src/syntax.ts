@@ -14,7 +14,6 @@ export class SyntaxToken extends Token {
 	 */
 	constructor(
 		wikitext: string | undefined,
-		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 		pattern: RegExp,
 		type: SyntaxTypes = 'plain',
 		config = Parser.getConfig(),
