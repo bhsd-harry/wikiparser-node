@@ -58,6 +58,7 @@ import type {
 	HeadingToken,
 	CategoryToken,
 	ParameterToken,
+	SyntaxToken,
 } from '../internal';
 import type {TokenTypes, CaretPosition} from '../lib/node';
 
@@ -875,21 +876,22 @@ export class Token extends AstElement {
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
 			const target = targets[i] as ArgToken | TranscludeToken & {default: undefined},
-				{type, name, default: argDefault, childNodes, length} = target;
+				{type, name, default: argDefault, childNodes, length} = target,
+				[, var1, var2] = childNodes as [SyntaxToken, ...ParameterToken[]];
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
 				if (type === 'arg') {
 					replace = argDefault === false ? String(target) : argDefault;
-				} else if (name === 'if' && !childNodes[1]?.getElementByTypes('magic-word, template')) {
-					replace = String(childNodes[String(childNodes[1] ?? '').trim() ? 2 : 3] ?? '').trim();
+				} else if (name === 'if' && !var1?.getElementByTypes('magic-word, template')) {
+					replace = String(childNodes[String(var1 ?? '').trim() ? 2 : 3] ?? '').trim();
 				} else if (name === 'ifeq'
 					&& !childNodes.slice(1, 3).some(child => child.getElementByTypes('magic-word, template'))
 				) {
 					replace = String(childNodes[
-						String(childNodes[1] ?? '').trim() === String(childNodes[2] ?? '').trim() ? 3 : 4
+						String(var1 ?? '').trim() === String(var2 ?? '').trim() ? 3 : 4
 					] ?? '').trim();
-				} else if (name === 'switch' && !childNodes[1]?.getElementByTypes('magic-word, template')) {
-					const key = String(childNodes[1] ?? '').trim();
+				} else if (name === 'switch' && !var1?.getElementByTypes('magic-word, template')) {
+					const key = String(var1 ?? '').trim();
 					let defaultVal = '',
 						found = false,
 						transclusion = false;

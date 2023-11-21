@@ -58,7 +58,7 @@ export class ParameterToken extends fixed(Token) {
 	/** 是否是重复参数 */
 	get duplicated(): boolean {
 		try {
-			return Boolean(this.parentNode?.getDuplicatedArgs()?.some(([key]) => key === this.name));
+			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
 		} catch {
 			return false;
 		}

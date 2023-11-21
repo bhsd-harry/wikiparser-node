@@ -69,5 +69,5 @@ export const diff = async (oldStr: string, newStr: string, uid = -1): Promise<vo
 		newFile,
 	]);
 	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
-	console.log(stdout?.split('\n')?.slice(4)?.join('\n'));
+	console.log(stdout?.split('\n').slice(4).join('\n'));
 };

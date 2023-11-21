@@ -793,8 +793,8 @@ export class TranscludeToken extends Token {
 			if (remaining > 1) {
 				Parser.error(`${this.type === 'template'
 					? this.name
-					// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-					: this.normalizeTitle(this.childNodes[1]?.text() ?? '', 828).title
+					: this.normalizeTitle((this.childNodes as [AtomToken, ...ParameterToken[]])[1]?.text() ?? '', 828)
+						.title
 				} 还留有 ${remaining} 个重复的 ${key} 参数：${[...this.getArgs(key)].map(arg => {
 					const {top, left} = arg.getBoundingClientRect();
 					return `第 ${String(top)} 行第 ${String(left)} 列`;

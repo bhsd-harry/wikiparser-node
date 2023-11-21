@@ -38,7 +38,7 @@ export class ConverterRuleToken extends Token {
 
 	/** 语言变体 */
 	get variant(): string {
-		return this.childNodes.at(-2)?.text()?.trim() ?? '';
+		return this.childNodes.at(-2)?.text().trim() ?? '';
 	}
 
 	set variant(variant) {

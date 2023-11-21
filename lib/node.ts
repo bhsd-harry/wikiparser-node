@@ -170,14 +170,14 @@ export abstract class AstNode {
 	get nextElementSibling(): Token | undefined {
 		const childNodes = this.#parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(i! + 1)?.find(({type}) => type !== 'text') as Token | undefined;
+		return childNodes?.slice(i! + 1).find(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 前一个非文本兄弟节点 */
 	get previousElementSibling(): Token | undefined {
 		const childNodes = this.#parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(0, i)?.findLast(({type}) => type !== 'text') as Token | undefined;
+		return childNodes?.slice(0, i).findLast(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 是否具有根节点 */
