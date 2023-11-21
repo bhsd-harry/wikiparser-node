@@ -2,7 +2,7 @@ import {noWrap, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import type {LintError} from '../index';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 

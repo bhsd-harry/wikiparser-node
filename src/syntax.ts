@@ -1,7 +1,7 @@
 import {undo} from '../util/debug';
 import {text} from '../util/string';
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import type {AstNodes} from '../lib/node';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';

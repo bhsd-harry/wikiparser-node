@@ -13,6 +13,8 @@ Parser.i18n = 'zh-hans';
 Parser.debugging = true;
 Parser.warning = false;
 
+const {error} = Parser; // eslint-disable-line @typescript-eslint/unbound-method
+
 /**
  * 获取最近更改的页面源代码
  * @param url api.php网址
@@ -43,7 +45,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					console.timeEnd(title);
 					const restored = String(root);
 					if (restored !== content) {
-						Parser.error('解析过程中不可逆地修改了原始文本！');
+						error('解析过程中不可逆地修改了原始文本！');
 						await diff(content, restored);
 					}
 					console.time(title);
@@ -66,11 +68,11 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					}
 					await diff(content, text);
 				} catch (e) {
-					Parser.error(`解析${name}的 ${title} 页面时出错！`, e);
+					error(`解析${name}的 ${title} 页面时出错！`, e);
 				}
 			}
 		} catch (e) {
-			Parser.error(`访问${name}的API端口时出错！`, e);
+			error(`访问${name}的API端口时出错！`, e);
 		}
 	}
 })();

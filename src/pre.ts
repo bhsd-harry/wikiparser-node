@@ -1,5 +1,5 @@
 import * as Parser from '../index';
-import {Token} from '.';
+import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
