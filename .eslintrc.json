@@ -21,9 +21,9 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"!config/.schema.json",
-		"wiki/",
-		"dist/**/*.ts"
+		"/wiki/",
+		"/bundle/",
+		"dist/"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -1017,43 +1017,6 @@
 					}
 				],
 				"@typescript-eslint/unified-signatures": 2
-			}
-		},
-		{
-			"files": "dist/**/*.js",
-			"rules": {
-				"camelcase": [
-					2,
-					{
-						"allow": [
-							"\\w+_\\d"
-						]
-					}
-				],
-				"no-multi-assign": [
-					2,
-					{
-						"ignoreNonDeclaration": true
-					}
-				],
-				"no-sequences": [
-					2,
-					{
-						"allowInParentheses": true
-					}
-				],
-				"no-underscore-dangle": [
-					2,
-					{
-						"allow": [
-							"_1",
-							"__1"
-						]
-					}
-				],
-				"no-void": 0,
-				"eslint-comments/disable-enable-pair": 0,
-				"n/no-unpublished-require": 0
 			}
 		}
 	],

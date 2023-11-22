@@ -25,6 +25,7 @@
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
-		"useUnknownInCatchVariables": true
+		"useUnknownInCatchVariables": true,
+		"removeComments": true
 	}
 }
