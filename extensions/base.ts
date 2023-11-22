@@ -1,7 +1,6 @@
 import type {Parser, Config, LintError, wikiparse} from './typings';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-declare type WorkerListener = ({data: [rid, res, resRaw]}: {data: [number, any, string]}) => void;
+declare type WorkerListener<T> = ({data: [rid, res, resRaw]}: {data: [number, T, string]}) => void;
 
 (() => {
 	const MAX_STAGE = 11;
@@ -16,15 +15,17 @@ declare type WorkerListener = ({data: [rid, res, resRaw]}: {data: [number, any, 
 		self.onmessage = ({data}: {
 			data: ['setI18N', Record<string, string>]
 				| ['setConfig', Config]
-				| [string, number, string?, boolean?, number?];
+				| ['getConfig', number]
+				| ['lint', number, string, boolean]
+				| ['print', number, string, boolean?, number?];
 		}): void => {
 			const [command, qid, ...args] = data;
 			switch (command) {
 				case 'setI18N':
-					Parser.i18n = qid as Record<string, string>;
+					Parser.i18n = qid;
 					break;
 				case 'setConfig':
-					Parser.config = qid as Config;
+					Parser.config = qid;
 					break;
 				case 'getConfig':
 					self.postMessage([qid, Parser.minConfig]);
@@ -64,13 +65,12 @@ declare type WorkerListener = ({data: [rid, res, resRaw]}: {data: [number, any, 
 	 * @param resolve Promise对象的resolve函数
 	 * @param raw 原始文本
 	 */
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const getListener = (qid: number, resolve: (res: any) => void, raw?: string): WorkerListener => {
+	const getListener = <T>(qid: number, resolve: (res: T) => void, raw?: string): WorkerListener<T> => {
 		/**
 		 * 事件监听函数
-		 * @param {{data: [number, unknown, string]}} e 消息事件
+		 * @param {{data: [number, T, string]}} e 消息事件
 		 */
-		const listener: WorkerListener = ({data: [rid, res, resRaw]}) => {
+		const listener: WorkerListener<T> = ({data: [rid, res, resRaw]}) => {
 			if (rid === qid && (raw === undefined || raw === resRaw)) {
 				worker.removeEventListener('message', listener);
 				resolve(res);

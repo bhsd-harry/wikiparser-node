@@ -6,11 +6,11 @@ import type {wikiparse} from './typings';
 
 	/** 用于打印AST */
 	class Printer {
-		private id;
-		private preview;
-		private textbox;
-		private root: [number, string, string][];
-		private viewportChanged: boolean;
+		#id;
+		#preview;
+		#textbox;
+		#root: [number, string, string][];
+		#viewportChanged;
 		include;
 		running: Promise<void> | undefined;
 		ticks: [number, 'coarsePrint' | 'finePrint' | undefined];
@@ -21,23 +21,28 @@ import type {wikiparse} from './typings';
 		 * @param include 是否嵌入
 		 */
 		constructor(preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) {
-			this.id = wikiparse.id++;
+			this.#id = wikiparse.id++;
+			this.#preview = preview;
+			this.#textbox = textbox;
+			this.#root = [];
+			this.#viewportChanged = false;
 			this.include = Boolean(include);
-			this.preview = preview;
-			this.textbox = textbox;
-			this.root = [];
 			this.running = undefined;
-			this.viewportChanged = false;
 			this.ticks = [0, undefined];
 		}
 
 		/** 倒计时 */
-		private tick(): void {
+		#tick(): void {
 			setTimeout(() => {
-				const {ticks} = this;
-				if (ticks[0] > 0) {
+				const {ticks} = this,
+					[t, method] = ticks;
+				if (t > 0) {
 					ticks[0] -= 500;
-					this[ticks[0] <= 0 ? ticks[1]! : 'tick']();
+					if (t <= 500) {
+						this[method!]();
+					} else {
+						this.#tick();
+					}
 				}
 			}, 500);
 		}
@@ -54,19 +59,19 @@ import type {wikiparse} from './typings';
 				ticks[0] = delay;
 				ticks[1] = method;
 				if (state <= 0) {
-					this.tick();
+					this.#tick();
 				}
 			}
 		}
 
 		/** 渲染 */
-		private paint(): void {
-			this.preview.innerHTML = `<span class="wpb-root">${
-				this.root.map(([,, printed]) => printed).join('')
+		#paint(): void {
+			this.#preview.innerHTML = `<span class="wpb-root">${
+				this.#root.map(([,, printed]) => printed).join('')
 			}</span> `;
-			this.preview.scrollTop = this.textbox.scrollTop;
-			this.preview.classList.remove('active');
-			this.textbox.style.color = 'transparent';
+			this.#preview.scrollTop = this.#textbox.scrollTop;
+			this.#preview.classList.remove('active');
+			this.#textbox.style.color = 'transparent';
 		}
 
 		/** 初步解析 */
@@ -74,36 +79,34 @@ import type {wikiparse} from './typings';
 			if (this.running) {
 				return undefined;
 			}
-			const {include, textbox: {value}} = this,
-				parsed = await wikiparse.print(value, include, 2, this.id);
-			if (this.include !== include || this.textbox.value !== value) {
+			const {include} = this,
+				{value} = this.#textbox,
+				parsed = await wikiparse.print(value, include, 2, this.#id);
+			if (this.include !== include || this.#textbox.value !== value) {
 				this.running = undefined;
 				this.running = this.coarsePrint();
 				return this.running;
 			}
-			this.root = parsed;
-			this.paint();
+			this.#root = parsed;
+			this.#paint();
 			this.running = undefined;
 			this.running = this.finePrint();
 			return this.running;
 		}
 
 		/** 根据可见范围精细解析 */
-		private async finePrint(): Promise<void> {
+		async finePrint(): Promise<void> {
 			if (this.running) {
-				this.viewportChanged = true;
+				this.#viewportChanged = true;
 				return undefined;
 			}
-			this.viewportChanged = false;
-			const {
-				root,
-				preview: {scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]},
-				include,
-				textbox: {value},
-			} = this;
+			this.#viewportChanged = false;
+			const {include} = this,
+				{value}	= this.#textbox,
+				{scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]}	= this.#preview;
 			let text = value,
 				start = 0,
-				{length: end} = root;
+				{length: end} = this.#root;
 			if (scrollHeight > parentHeight) {
 				const childNodes = [...rootNode!.childNodes] as HTMLElement[],
 					headings = childNodes.filter(({className}) => className === 'wpb-heading'),
@@ -114,26 +117,26 @@ import type {wikiparse} from './typings';
 					let j = headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
 					j = j === -1 ? length : i + j;
 					start = i ? childNodes.indexOf(headings[i - 1]!) : 0;
-					while (i <= j && root[start]![0] === MAX_STAGE) {
+					while (i <= j && this.#root[start]![0] === MAX_STAGE) {
 						start = childNodes.indexOf(headings[i++]!);
 					}
 					end = j === length ? end : childNodes.indexOf(headings[j]!);
-					while (i <= j && root[end - 1]![0] === MAX_STAGE) {
+					while (i <= j && this.#root[end - 1]![0] === MAX_STAGE) {
 						end = childNodes.indexOf(headings[--j]!);
 					}
-					text = root.slice(start, end).map(([, str]) => str).join('');
+					text = this.#root.slice(start, end).map(([, str]) => str).join('');
 				}
 			}
 			if (start === end) {
 				this.running = undefined;
 				return undefined;
 			}
-			const parsed = await wikiparse.print(text, include, MAX_STAGE, this.id);
-			if (this.include === include && this.textbox.value === value) {
-				this.root.splice(start, end - start, ...parsed);
-				this.paint();
+			const parsed = await wikiparse.print(text, include, MAX_STAGE, this.#id);
+			if (this.include === include && this.#textbox.value === value) {
+				this.#root.splice(start, end - start, ...parsed);
+				this.#paint();
 				this.running = undefined;
-				if (this.viewportChanged as boolean) {
+				if (this.#viewportChanged as boolean) {
 					this.running = this.finePrint();
 				}
 			} else {

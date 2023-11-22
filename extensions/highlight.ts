@@ -28,7 +28,7 @@ import type {wikiparse} from './typings';
 			}
 			const ol = document.createElement('ol');
 			ol.start = start;
-			ol.style.paddingLeft = `${(lines.length + start - 1).toString().length + 2.5}ch`;
+			ol.style.paddingLeft = `${String(lines.length + start - 1).length + 2.5}ch`;
 			ol.append(...lines);
 			ele.replaceChildren(ol);
 		} else {

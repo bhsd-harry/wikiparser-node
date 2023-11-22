@@ -1,4 +1,3 @@
-/* eslint-disable es-x/no-class-fields */
 export interface Config {
 	ext: string[];
 	html: [string[], string[], string[]];
@@ -54,6 +53,8 @@ export interface Parser {
 
 /** 用于语法分析 */
 declare class Linter {
+	include: boolean;
+
 	/** @param include 是否嵌入 */
 	constructor(include?: boolean);
 
@@ -86,6 +87,9 @@ declare class Printer {
 
 	/** 初步解析 */
 	coarsePrint(): Promise<void>;
+
+	/** 根据可见范围精细解析 */
+	async finePrint(): Promise<void>;
 }
 
 export interface wikiparse {
