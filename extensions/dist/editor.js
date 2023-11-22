@@ -9,14 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 (() => {
     const { wikiparse } = window, { MAX_STAGE } = wikiparse;
-    /** 用于打印AST */
     class Printer {
-        /* eslint-enable es-x/no-class-fields */
-        /**
-         * @param preview 置于下层的代码高亮
-         * @param textbox 置于上层的文本框
-         * @param include 是否嵌入
-         */
         constructor(preview, textbox, include) {
             this.id = wikiparse.id++;
             this.include = Boolean(include);
@@ -27,7 +20,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
             this.viewportChanged = false;
             this.ticks = [0, undefined];
         }
-        /** 倒计时 */
         tick() {
             setTimeout(() => {
                 const { ticks } = this;
@@ -37,11 +29,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                 }
             }, 500);
         }
-        /**
-         * 用于debounce
-         * @param delay 延迟
-         * @param method 方法
-         */
         queue(delay, method) {
             const { ticks } = this, [state] = ticks;
             if (state <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
@@ -52,14 +39,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                 }
             }
         }
-        /** 渲染 */
         paint() {
             this.preview.innerHTML = `<span class="wpb-root">${this.root.map(([, , printed]) => printed).join('')}</span> `;
             this.preview.scrollTop = this.textbox.scrollTop;
             this.preview.classList.remove('active');
             this.textbox.style.color = 'transparent';
         }
-        /** 初步解析 */
         coarsePrint() {
             return __awaiter(this, void 0, void 0, function* () {
                 if (this.running) {
@@ -78,7 +63,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
                 return this.running;
             });
         }
-        /** 根据可见范围精细解析 */
         finePrint() {
             return __awaiter(this, void 0, void 0, function* () {
                 if (this.running) {
@@ -127,12 +111,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
             });
         }
     }
-    /**
-     * 高亮textarea
-     * @param textbox textarea元素
-     * @param include 是否嵌入
-     * @throws `TypeError` 不是textarea
-     */
     const edit = (textbox, include) => {
         if (!(textbox instanceof HTMLTextAreaElement)) {
             throw new TypeError('wikiparse.edit方法仅可用于textarea元素！');

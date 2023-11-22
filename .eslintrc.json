@@ -23,9 +23,9 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"!config/.schema.json",
-		"wiki/",
-		"dist/**/*.ts"
+		"/wiki/",
+		"/bundle/",
+		"dist/"
 	],
 	"rules": {
 		"array-callback-return": 2,
@@ -1026,39 +1026,18 @@
 			}
 		},
 		{
-			"files": "dist/**/*.js",
+			"files": "extensions/*.ts",
+			"parserOptions": {
+				"project": "./extensions/tsconfig.json"
+			},
 			"rules": {
-				"camelcase": [
-					2,
-					{
-						"allow": [
-							"\\w+_\\d"
-						]
-					}
-				],
-				"no-multi-assign": [
-					2,
-					{
-						"ignoreNonDeclaration": true
-					}
-				],
-				"no-sequences": [
-					2,
-					{
-						"allowInParentheses": true
-					}
-				],
-				"no-underscore-dangle": [
-					2,
-					{
-						"allow": [
-							"_1",
-							"__1"
-						]
-					}
-				],
-				"no-void": 0,
-				"n/no-unpublished-require": 0
+				"no-await-in-loop": 2,
+				"no-control-regex": 2,
+				"no-alert": 2,
+				"unicorn/empty-brace-spaces": 2,
+				"unicorn/no-invalid-remove-event-listener": 2,
+				"unicorn/prefer-keyboard-event-key": 2,
+				"@typescript-eslint/no-floating-promises": 0
 			}
 		}
 	],

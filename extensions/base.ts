@@ -34,7 +34,7 @@ declare type WorkerListener = ({data: [rid, res, resRaw]}: {data: [number, any, 
 					break;
 				// case 'print':
 				default: {
-					const stage = args[2] === undefined ? MAX_STAGE : args[2];
+					const stage = args[2] ?? MAX_STAGE;
 					self.postMessage([
 						qid,
 						Parser.parse(...(args as [string, boolean?, number?])).childNodes.map(child => [

@@ -9,29 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 (() => {
     const { wikiparse } = window;
-    /** 用于语法分析 */
     class Linter {
-        /* eslint-enable es-x/no-class-fields */
-        /** @param include 是否嵌入 */
         constructor(include) {
             this.id = wikiparse.id++;
             this.include = Boolean(include);
             this.wikitext = undefined;
             this.running = undefined;
         }
-        /**
-         * 提交语法分析
-         * @param wikitext 待分析的文本
-         */
         queue(wikitext) {
             this.wikitext = wikitext;
             this.running = this.lint(wikitext);
             return this.running;
         }
-        /**
-         * 执行语法分析
-         * @param wikitext 待分析的文本
-         */
         lint(wikitext) {
             return __awaiter(this, void 0, void 0, function* () {
                 const { include } = this, errors = yield wikiparse.lint(wikitext, include, this.id);

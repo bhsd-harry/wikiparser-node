@@ -9,12 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 (() => {
     const { wikiparse } = window;
-    /**
-     * 高亮代码块
-     * @param ele 代码块
-     * @param linenums 是否添加行号
-     * @param start 起始行号
-     */
     const highlight = (ele, linenums, start = 1) => __awaiter(void 0, void 0, void 0, function* () {
         if (ele.classList.contains('highlighted')) {
             return;
@@ -22,7 +16,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         const html = (yield wikiparse.print(ele.innerText)).map(([, , printed]) => printed).join('');
         ele.classList.add('highlighted');
         if (linenums) {
-            // 添加行号。这里不使用<table>排版，而是使用<ol>
             const lines = html.split('\n').map((line, i) => {
                 const li = document.createElement('li');
                 li.id = `L${i + start}`;

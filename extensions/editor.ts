@@ -6,16 +6,14 @@ import type {wikiparse} from './typings';
 
 	/** 用于打印AST */
 	class Printer {
-		/* eslint-disable es-x/no-class-fields */
-		declare private id;
-		declare include;
-		declare private preview;
-		declare private textbox;
-		declare private root: [number, string, string][];
-		declare running: Promise<void> | undefined;
-		declare private viewportChanged: boolean;
-		declare ticks: [number, 'coarsePrint' | 'finePrint' | undefined];
-		/* eslint-enable es-x/no-class-fields */
+		private id;
+		private preview;
+		private textbox;
+		private root: [number, string, string][];
+		private viewportChanged: boolean;
+		include;
+		running: Promise<void> | undefined;
+		ticks: [number, 'coarsePrint' | 'finePrint' | undefined];
 
 		/**
 		 * @param preview 置于下层的代码高亮
