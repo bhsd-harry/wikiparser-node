@@ -1,7 +1,7 @@
 import {hidden} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {Token} from '../../index';
+import type {Token} from '../index';
 
 /** 状态开关 */
 // @ts-expect-error not implementing all abstract methods
