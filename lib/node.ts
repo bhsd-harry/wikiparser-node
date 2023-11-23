@@ -85,67 +85,43 @@ export interface CaretPosition {
 
 /** 类似Node */
 export abstract class AstNode {
-	/** @browser */
 	type: TokenTypes | 'text';
-	/** @browser */
 	readonly childNodes: AstNodes[] = [];
-	/** @browser */
 	#parentNode: Token | undefined;
 
-	/**
-	 * 首位子节点
-	 * @browser
-	 */
+	/** 首位子节点 */
 	get firstChild(): AstNodes | undefined {
 		return this.childNodes[0];
 	}
 
-	/**
-	 * 末位子节点
-	 * @browser
-	 */
+	/** 末位子节点 */
 	get lastChild(): AstNodes | undefined {
 		return this.childNodes.at(-1);
 	}
 
-	/**
-	 * 父节点
-	 * @browser
-	 */
+	/** 父节点 */
 	get parentNode(): Token | undefined {
 		return this.#parentNode;
 	}
 
-	/**
-	 * 后一个兄弟节点
-	 * @browser
-	 */
+	/** 后一个兄弟节点 */
 	get nextSibling(): AstNodes | undefined {
 		const childNodes = this.#parentNode?.childNodes;
 		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) + 1];
 	}
 
-	/**
-	 * 前一个兄弟节点
-	 * @browser
-	 */
+	/** 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
 		const childNodes = this.#parentNode?.childNodes;
 		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) - 1];
 	}
 
-	/**
-	 * 行数
-	 * @browser
-	 */
+	/** 行数 */
 	get offsetHeight(): number {
 		return this.#getDimension().height;
 	}
 
-	/**
-	 * 最后一行的列数
-	 * @browser
-	 */
+	/** 最后一行的列数 */
 	get offsetWidth(): number {
 		return this.#getDimension().width;
 	}
@@ -174,10 +150,7 @@ export abstract class AstNode {
 		return this;
 	}
 
-	/**
-	 * 获取根节点
-	 * @browser
-	 */
+	/** 获取根节点 */
 	getRootNode(): Token | this {
 		let {parentNode} = this;
 		while (parentNode?.parentNode) {
@@ -188,7 +161,6 @@ export abstract class AstNode {
 
 	/**
 	 * 将字符位置转换为行列号
-	 * @browser
 	 * @param index 字符位置
 	 */
 	posFromIndex(index: number): Position | undefined {
@@ -200,10 +172,7 @@ export abstract class AstNode {
 		return undefined;
 	}
 
-	/**
-	 * 获取行数和最后一行的列数
-	 * @browser
-	 */
+	/** 获取行数和最后一行的列数 */
 	#getDimension(): Dimension {
 		const lines = String(this).split('\n');
 		return {height: lines.length, width: lines.at(-1)!.length};
@@ -221,7 +190,6 @@ export abstract class AstNode {
 
 	/**
 	 * 获取当前节点的相对字符位置，或其第`j`个子节点的相对字符位置
-	 * @browser
 	 * @param j 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
@@ -247,10 +215,7 @@ export abstract class AstNode {
 		return getIndex(j, this);
 	}
 
-	/**
-	 * 获取当前节点的绝对位置
-	 * @browser
-	 */
+	/** 获取当前节点的绝对位置 */
 	getAbsoluteIndex(): number {
 		const {parentNode} = this;
 		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;

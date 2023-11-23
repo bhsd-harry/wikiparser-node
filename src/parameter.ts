@@ -10,9 +10,9 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  * @classdesc `{childNodes: [Token, Token]}`
  */
 export class ParameterToken extends Token {
-	/** @browser */
 	override readonly type = 'parameter';
 	declare name: string;
+
 	declare childNodes: [Token, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
@@ -25,16 +25,12 @@ export class ParameterToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
 
-	/**
-	 * 是否是匿名参数
-	 * @browser
-	 */
+	/** 是否是匿名参数 */
 	get anon(): boolean {
 		return this.firstChild.length === 0;
 	}
 
 	/**
-	 * @browser
 	 * @param key 参数名
 	 * @param value 参数值
 	 */
@@ -61,20 +57,14 @@ export class ParameterToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return this.anon
 			? this.lastChild.toString(omit)
 			: super.toString(omit, '=');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}
@@ -84,10 +74,7 @@ export class ParameterToken extends Token {
 		return this.anon || i === 1 ? 0 : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{firstChild} = this,

@@ -10,9 +10,9 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
  * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
  */
 export class GalleryToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'gallery';
+
 	declare childNodes: (GalleryImageToken | HiddenToken | AstText)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): GalleryImageToken | HiddenToken | AstText | undefined;
@@ -25,10 +25,7 @@ export class GalleryToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/**
-	 * @browser
-	 * @param inner 标签内部wikitext
-	 */
+	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
@@ -51,18 +48,12 @@ export class GalleryToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, '\n');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return super.text('\n').replace(/\n\s*\n/gu, '\n');
 	}
@@ -72,10 +63,7 @@ export class GalleryToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];

@@ -5,29 +5,19 @@ import {Token} from './index';
  * @classdesc `{childNodes: ...AstText|Token}`
  */
 export class OnlyincludeToken extends Token {
-	/** @browser */
 	override readonly type = 'onlyinclude';
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override getPadding(): number {
 		return 13;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override isPlain(): boolean {
 		return true;
 	}

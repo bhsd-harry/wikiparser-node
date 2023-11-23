@@ -13,23 +13,19 @@ const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$
  */
 // @ts-expect-error not implementing all abstract methods
 export class TableToken extends TrBaseToken {
-	/** @browser */
 	override readonly type = 'table';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
-	/**
-	 * 表格是否闭合
-	 * @browser
-	 */
+	/** 表格是否闭合 */
 	get closed(): boolean {
 		return this.lastChild.type === 'table-syntax';
 	}
 
 	/**
-	 * @browser
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
@@ -38,10 +34,7 @@ export class TableToken extends TrBaseToken {
 		});
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (!this.closed) {
@@ -54,7 +47,6 @@ export class TableToken extends TrBaseToken {
 
 	/**
 	 * 闭合表格语法
-	 * @browser
 	 * @param syntax 表格结尾语法
 	 * @param halfParsed
 	 * @throws `SyntaxError` 表格的闭合部分不符合语法

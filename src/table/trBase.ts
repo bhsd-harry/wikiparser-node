@@ -15,10 +15,7 @@ export interface TableCoords {
 export abstract class TrBaseToken extends TableBaseToken {
 	declare type: 'table' | 'tr';
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			inter = this.childNodes.find(({type}) => type === 'table-inter');
@@ -48,10 +45,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const str = super.text();
 		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;

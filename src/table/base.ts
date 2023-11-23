@@ -9,12 +9,12 @@ import {AttributesToken} from '../attributes';
  */
 export abstract class TableBaseToken extends Token {
 	declare type: 'table' | 'tr' | 'td';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): Token;
 
 	/**
-	 * @browser
 	 * @param pattern 表格语法正则
 	 * @param syntax 表格语法
 	 * @param attr 表格属性

@@ -23,30 +23,22 @@ const lintIgnoredExt = new Set([
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
-	/** @browser */
 	name?: string;
 
-	/**
-	 * 子节点总数
-	 * @browser
-	 */
+	/** 子节点总数 */
 	get length(): number {
 		return this.childNodes.length;
 	}
 
 	/**
 	 * 可见部分
-	 * @browser
 	 * @param separator 子节点间的连接符
 	 */
 	text(separator?: string): string {
 		return text(this.childNodes, separator);
 	}
 
-	/**
-	 * 合并相邻的文本子节点
-	 * @browser
-	 */
+	/** 合并相邻的文本子节点 */
 	normalize(): void {
 		const {childNodes} = this;
 		for (let i = childNodes.length - 1; i >= 0; i--) {
@@ -65,7 +57,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 移除子节点
-	 * @browser
 	 * @param i 移除位置
 	 */
 	removeAt(i: number): AstNodes {
@@ -76,7 +67,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 插入子节点
-	 * @browser
 	 * @param node 待插入的子节点
 	 * @param i 插入位置
 	 * @throws `RangeError` 不能插入祖先节点
@@ -90,7 +80,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 最近的祖先节点
-	 * @browser
 	 * @param selector 选择器
 	 */
 	closest(selector: string): Token | undefined {
@@ -110,7 +99,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 在末尾批量插入子节点
-	 * @browser
 	 * @param elements 插入节点
 	 */
 	append(...elements: (AstNodes | string)[]): void {
@@ -121,7 +109,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 批量替换子节点
-	 * @browser
 	 * @param elements 新的子节点
 	 */
 	replaceChildren(...elements: (AstNodes | string)[]): void {
@@ -131,7 +118,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 修改文本子节点
-	 * @browser
 	 * @param str 新文本
 	 * @param i 子节点位置
 	 * @throws `RangeError` 对应位置的子节点不是文本节点
@@ -145,7 +131,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 还原为wikitext
-	 * @browser
 	 * @param omit 忽略的节点类型
 	 * @param separator 子节点间的连接符
 	 */
@@ -155,7 +140,6 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * Linter
-	 * @browser
 	 * @param start
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {

@@ -10,7 +10,6 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption'])
 
 /**
  * 检查图片参数是否合法
- * @browser
  * @param key 参数名
  * @param val 参数值
  */
@@ -54,10 +53,8 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 
 /** 图片参数 */
 export class ImageParameterToken extends Token {
-	/** @browser */
 	override readonly type = 'image-parameter';
 	declare name: string;
-	/** @browser */
 	#syntax = '';
 
 	// @ts-expect-error abstract method
@@ -67,18 +64,12 @@ export class ImageParameterToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this;
 
-	/**
-	 * 图片链接
-	 * @browser
-	 */
+	/** 图片链接 */
 	get link(): string | Title | undefined {
 		return this.name === 'link' ? validate('link', super.text(), this.getAttribute('config')) : undefined;
 	}
 
-	/**
-	 * @browser
-	 * @param str 图片参数
-	 */
+	/** @param str 图片参数 */
 	constructor(str: string, config = Parser.getConfig(), accum: Token[] = []) {
 		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img).map(
@@ -122,20 +113,14 @@ export class ImageParameterToken extends Token {
 		return this.name === 'caption';
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return this.#syntax
 			? this.#syntax.replace('$1', super.toString(omit))
 			: super.toString(omit);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
 	}
@@ -145,10 +130,7 @@ export class ImageParameterToken extends Token {
 		return Math.max(0, this.#syntax.indexOf('$1'));
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{link, name} = this;

@@ -11,7 +11,6 @@ import type {LintError} from '../index';
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 export class ArgToken extends Token {
-	/** @browser */
 	override readonly type = 'arg';
 	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
@@ -19,18 +18,12 @@ export class ArgToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
-	/**
-	 * 预设值
-	 * @browser
-	 */
+	/** 预设值 */
 	get default(): string | false {
 		return this.childNodes[1]?.text() ?? false;
 	}
 
-	/**
-	 * @browser
-	 * @param parts 以'|'分隔的各部分
-	 */
+	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
@@ -51,18 +44,12 @@ export class ArgToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return `{{{${super.toString(omit, '|')}}}}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
@@ -77,10 +64,7 @@ export class ArgToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (!this.getAttribute('include')) {
 			return [generateForSelf(this, {start}, 'unexpected template argument')];

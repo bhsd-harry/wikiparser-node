@@ -10,6 +10,7 @@ import type {AstText, CommentToken, IncludeToken, NoincludeToken} from '../inter
  */
 export class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
+
 	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
@@ -17,7 +18,6 @@ export class MagicLinkToken extends Token {
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
 
 	/**
-	 * @browser
 	 * @param url 网址
 	 * @param doubleSlash 是否接受"//"作为协议
 	 */
@@ -27,10 +27,7 @@ export class MagicLinkToken extends Token {
 		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,

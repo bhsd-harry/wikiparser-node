@@ -12,9 +12,7 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export class ConverterFlagsToken extends Token {
-	/** @browser */
 	override readonly type = 'converter-flags';
-	/** @browser */
 	#flags?: string[];
 
 	declare childNodes: AtomToken[];
@@ -29,10 +27,7 @@ export class ConverterFlagsToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
 
-	/**
-	 * @browser
-	 * @param flags 转换类型标记
-	 */
+	/** @param flags 转换类型标记 */
 	constructor(flags: string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
@@ -44,18 +39,12 @@ export class ConverterFlagsToken extends Token {
 		this.#flags = this.childNodes.map(child => child.text().trim());
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, ';');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return super.text(';');
 	}
@@ -65,27 +54,18 @@ export class ConverterFlagsToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * 获取未知的转换类型标记
-	 * @browser
-	 */
+	/** 获取未知的转换类型标记 */
 	getUnknownFlags(): Set<string> {
 		return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
-	/**
-	 * 获取指定语言变体的转换标记
-	 * @browser
-	 */
+	/** 获取指定语言变体的转换标记 */
 	getVariantFlags(): Set<string> {
 		const variants = new Set(this.getAttribute('config').variants);
 		return new Set(this.#flags!.filter(flag => variants.has(flag)));
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),

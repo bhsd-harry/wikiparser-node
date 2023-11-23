@@ -20,7 +20,6 @@ export abstract class LinkBaseToken extends Token {
 	abstract override get lastChild(): Token;
 
 	/**
-	 * @browser
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
@@ -58,19 +57,13 @@ export abstract class LinkBaseToken extends Token {
 		return super.setAttribute(key, value);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const str = super.toString(omit, this.#delimiter);
 		return this.#bracket ? `[[${str}]]` : str;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const str = super.text('|');
 		return this.#bracket ? `[[${str}]]` : str;
@@ -89,10 +82,7 @@ export abstract class LinkBaseToken extends Token {
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;

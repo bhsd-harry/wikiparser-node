@@ -1025,12 +1025,6 @@
 			"tagNamePreference": {
 				"augments": "extends"
 			},
-			"structuredTags": {
-				"browser": {
-					"name": false,
-					"type": false
-				}
-			},
 			"ignorePrivate": true
 		}
 	}

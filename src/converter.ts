@@ -9,8 +9,8 @@ import {ConverterRuleToken} from './converterRule';
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
 export class ConverterToken extends Token {
-	/** @browser */
 	override readonly type = 'converter';
+
 	declare childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): ConverterFlagsToken;
@@ -18,7 +18,6 @@ export class ConverterToken extends Token {
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/**
-	 * @browser
 	 * @param flags 转换类型标记
 	 * @param rules 转换规则
 	 */
@@ -38,19 +37,13 @@ export class ConverterToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(rule => rule.toString()).join(';')}}-`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;

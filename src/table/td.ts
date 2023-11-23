@@ -17,9 +17,7 @@ export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan
  */
 // @ts-expect-error not implementing all abstract methods
 export class TdToken extends TableBaseToken {
-	/** @browser */
 	override readonly type = 'td';
-	/** @browser */
 	#innerSyntax = '';
 
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
@@ -30,16 +28,12 @@ export class TdToken extends TableBaseToken {
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token | undefined;
 
-	/**
-	 * 单元格类型
-	 * @browser
-	 */
+	/** 单元格类型 */
 	get subtype(): TdSubtypes {
 		return this.getSyntax().subtype;
 	}
 
 	/**
-	 * @browser
 	 * @param syntax 单元格语法
 	 * @param inner 内部wikitext
 	 */
@@ -89,19 +83,13 @@ export class TdToken extends TableBaseToken {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
@@ -115,10 +103,7 @@ export class TdToken extends TableBaseToken {
 		return 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		start += this.getRelativeIndex(this.length - 1);

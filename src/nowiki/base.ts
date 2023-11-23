@@ -17,14 +17,12 @@ declare type NowikiTypes = 'ext-inner'
  */
 export abstract class NowikiBaseToken extends Token {
 	declare type: NowikiTypes;
+
 	declare childNodes: [AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
 
-	/**
-	 * @param wikitext default: `''`
-	 * @browser
-	 */
+	/** @param wikitext default: `''` */
 	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 	}

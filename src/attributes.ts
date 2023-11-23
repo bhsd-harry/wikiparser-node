@@ -17,6 +17,7 @@ declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
 export class AttributesToken extends Token {
 	declare type: AttributesTypes;
 	declare name: string;
+
 	declare childNodes: (AtomToken | AttributeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
@@ -26,7 +27,6 @@ export class AttributesToken extends Token {
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/**
-	 * @browser
 	 * @param attr 标签属性
 	 * @param type 标签类型
 	 * @param name 标签名
@@ -109,7 +109,6 @@ export class AttributesToken extends Token {
 
 	/**
 	 * 所有指定属性名的AttributeToken
-	 * @browser
 	 * @param key 属性名
 	 */
 	getAttrTokens(key: string): AttributeToken[] {
@@ -120,7 +119,6 @@ export class AttributesToken extends Token {
 
 	/**
 	 * 指定属性名的最后一个AttributeToken
-	 * @browser
 	 * @param key 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
@@ -129,17 +127,13 @@ export class AttributesToken extends Token {
 
 	/**
 	 * 获取标签属性
-	 * @browser
 	 * @param key 属性键
 	 */
 	getAttr(key: string): string | true | undefined {
 		return this.getAttrToken(key)?.getValue();
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{parentNode, length, childNodes} = this,

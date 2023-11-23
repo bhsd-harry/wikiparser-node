@@ -12,9 +12,9 @@ import type {AstText, AttributesToken, ExtToken} from '../internal';
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
 export class ImagemapToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'imagemap';
+
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
@@ -27,18 +27,12 @@ export class ImagemapToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/**
-	 * 图片
-	 * @browser
-	 */
+	/** 图片 */
 	get image(): GalleryImageToken | undefined {
 		return this.childNodes.find(({type}) => type === 'imagemap-image') as GalleryImageToken | undefined;
 	}
 
-	/**
-	 * @browser
-	 * @param inner 标签内部wikitext
-	 */
+	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
@@ -111,18 +105,12 @@ export class ImagemapToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, '\n');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return super.text('\n').replace(/\n{2,}/gu, '\n');
 	}
@@ -132,10 +120,7 @@ export class ImagemapToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
