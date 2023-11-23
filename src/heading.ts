@@ -11,9 +11,9 @@ import type {LintError} from '../index';
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 export class HeadingToken extends sol(fixed(Token)) {
-	/** @browser */
 	override readonly type = 'heading';
 	declare name: string;
+
 	declare childNodes: [Token, SyntaxToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [Token, SyntaxToken];
@@ -26,24 +26,20 @@ export class HeadingToken extends sol(fixed(Token)) {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): SyntaxToken;
 
-	/**
-	 * 标题层级
-	 * @browser
-	 */
+	/** 标题格式的等号 */
+	get #equals(): string {
+		return '='.repeat(this.level);
+	}
+
+	/** 标题层级 */
 	get level(): number {
 		return Number(this.name);
 	}
 
+	/* NOT FOR BROWSER */
+
 	set level(n) {
 		this.setLevel(n);
-	}
-
-	/**
-	 * 标题格式的等号
-	 * @browser
-	 */
-	get #equals(): string {
-		return '='.repeat(this.level);
 	}
 
 	/** 内部wikitext */
@@ -51,8 +47,9 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return this.firstChild.text();
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param level 标题层级
 	 * @param input 标题文字
 	 */
@@ -68,10 +65,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 		this.append(token, trail);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const equals = this.#equals;
 		return omit && this.matchesTypes(omit)
@@ -81,10 +75,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 			}${equals}${this.lastChild.toString(omit)}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const equals = this.#equals;
 		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}`;
@@ -100,10 +91,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return i === 0 ? this.level : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			innerStr = String(this.firstChild);
@@ -123,14 +111,13 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const equals = this.#equals;
 		return super.print({pre: equals, sep: equals});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

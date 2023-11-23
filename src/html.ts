@@ -14,14 +14,10 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * @classdesc `{childNodes: [AttributesToken]}`
  */
 export class HtmlToken extends attributesParent(fixed(Token)) {
-	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
-	/** @browser */
 	#closing;
-	/** @browser */
 	#selfClosing;
-	/** @browser */
 	#tag;
 
 	declare childNodes: [AttributesToken];
@@ -36,13 +32,12 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken;
 
-	/**
-	 * 是否是闭合标签
-	 * @browser
-	 */
+	/** 是否是闭合标签 */
 	get closing(): boolean {
 		return this.#closing;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @throws `Error` 自封闭标签或空标签 */
 	set closing(value) {
@@ -79,8 +74,9 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		this.#selfClosing = true;
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param closing 是否闭合
@@ -102,20 +98,14 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		this.#tag = name;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return omit && this.matchesTypes(omit)
 			? ''
 			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(omit)}${this.#selfClosing ? '/' : ''}>`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return `<${this.#closing ? '/' : ''}${this.#tag}${
 			this.#closing ? '' : super.text()
@@ -127,10 +117,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		return this.#tag.length + (this.#closing ? 2 : 1);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		let wikitext: string | undefined,
@@ -177,7 +164,6 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 
 	/**
 	 * 搜索匹配的标签
-	 * @browser
 	 * @throws `SyntaxError` 同时闭合和自封闭的标签
 	 * @throws `SyntaxError` 无效自封闭标签
 	 * @throws `SyntaxError` 未闭合的标签
@@ -214,16 +200,15 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print({
 			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
 			post: `${this.#selfClosing ? '/' : ''}&gt;`,
 		});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

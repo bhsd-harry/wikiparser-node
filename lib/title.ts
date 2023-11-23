@@ -3,14 +3,13 @@ import * as Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	/** @browser */
 	valid;
-	/** @browser */
 	ns;
-	/** @browser */
 	fragment;
-	/** @browser */
 	encoded = false;
+
+	/* NOT FOR BROWSER */
+
 	main;
 	prefix;
 	interwiki = '';
@@ -29,8 +28,9 @@ export class Title {
 		return this.redirects.get(title) ?? title;
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param decode 是否需要解码
@@ -88,6 +88,8 @@ export class Title {
 		this.main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
 		this.prefix = `${namespace}${namespace && ':'}`;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** 完整链接 */
 	toString(): string {

@@ -8,9 +8,7 @@ import {MagicLinkToken} from './magicLink';
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
 export class ExtLinkToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-link';
-	/** @browser */
 	#space;
 
 	declare childNodes: [MagicLinkToken] | [MagicLinkToken, Token];
@@ -24,6 +22,8 @@ export class ExtLinkToken extends Token {
 	abstract override get lastChild(): Token;
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
+
+	/* NOT FOR BROWSER */
 
 	/** 协议 */
 	get protocol(): string | undefined {
@@ -50,8 +50,9 @@ export class ExtLinkToken extends Token {
 			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param url 网址
 	 * @param space 空白字符
 	 * @param text 链接文字
@@ -72,10 +73,7 @@ export class ExtLinkToken extends Token {
 		this.protectChildren(0);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		if (omit && this.matchesTypes(omit)) {
 			return '';
@@ -87,10 +85,7 @@ export class ExtLinkToken extends Token {
 		return `[${super.toString(omit, this.#space)}]`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		normalizeSpace(this.childNodes[1]);
 		return `[${super.text(' ')}]`;
@@ -107,15 +102,14 @@ export class ExtLinkToken extends Token {
 		return i === 0 ? this.#space.length : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print(
 			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
 		);
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

@@ -13,7 +13,6 @@ const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
 
 /**
  * a more sophisticated string-explode function
- * @browser
  * @param start start syntax of a nested AST node
  * @param end end syntax of a nested AST node
  * @param separator syntax for explosion
@@ -48,8 +47,8 @@ const explode = (start: string, end: string, separator: string, str?: string): s
  */
 // @ts-expect-error not implementing all abstract methods
 export class FileToken extends LinkBaseToken {
-	/** @browser */
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
+
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
@@ -57,6 +56,8 @@ export class FileToken extends LinkBaseToken {
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
+
+	/* NOT FOR BROWSER */
 
 	/** 图片链接 */
 	override get link(): string | Title {
@@ -100,8 +101,9 @@ export class FileToken extends LinkBaseToken {
 		}
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param link 文件名
 	 * @param text 图片参数
 	 * @param delimiter `|`
@@ -112,10 +114,7 @@ export class FileToken extends LinkBaseToken {
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			args = this.getAllArgs().filter(({childNodes}) => {
@@ -165,17 +164,13 @@ export class FileToken extends LinkBaseToken {
 		return errors;
 	}
 
-	/**
-	 * 获取所有图片参数节点
-	 * @browser
-	 */
+	/** 获取所有图片参数节点 */
 	getAllArgs(): ImageParameterToken[] {
 		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**
 	 * 获取指定图片参数
-	 * @browser
 	 * @param key 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
@@ -184,7 +179,6 @@ export class FileToken extends LinkBaseToken {
 
 	/**
 	 * 获取特定类型的图片属性参数节点
-	 * @browser
 	 * @param keys 接受的参数名
 	 * @param type 类型名
 	 */
@@ -196,29 +190,22 @@ export class FileToken extends LinkBaseToken {
 		return args;
 	}
 
-	/**
-	 * 获取图片框架属性参数节点
-	 * @browser
-	 */
+	/** 获取图片框架属性参数节点 */
 	getFrameArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(frame, '框架');
 	}
 
-	/**
-	 * 获取图片水平对齐参数节点
-	 * @browser
-	 */
+	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(horizAlign, '水平对齐');
 	}
 
-	/**
-	 * 获取图片垂直对齐参数节点
-	 * @browser
-	 */
+	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
 	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * 获取生效的指定图片参数

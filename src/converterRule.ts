@@ -10,8 +10,8 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export class ConverterRuleToken extends Token {
-	/** @browser */
 	override readonly type = 'converter-rule';
+
 	declare childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
@@ -35,6 +35,8 @@ export class ConverterRuleToken extends Token {
 	abstract override get nextSibling(): this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | undefined;
+
+	/* NOT FOR BROWSER */
 
 	/** 语言变体 */
 	get variant(): string {
@@ -79,8 +81,9 @@ export class ConverterRuleToken extends Token {
 		}
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param rule 转换规则
 	 * @param hasColon 是否带有":"
 	 */
@@ -105,10 +108,7 @@ export class ConverterRuleToken extends Token {
 		this.protectChildren('1:');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const {childNodes} = this;
 		if (childNodes.length === 3 && !(omit && this.matchesTypes(omit))) {
@@ -118,10 +118,7 @@ export class ConverterRuleToken extends Token {
 		return super.toString(omit, ':');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const {childNodes} = this;
 		if (childNodes.length === 3) {
@@ -136,10 +133,7 @@ export class ConverterRuleToken extends Token {
 		return i === 0 && this.length === 3 ? 2 : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const {childNodes} = this;
 		if (childNodes.length === 3) {
@@ -148,6 +142,8 @@ export class ConverterRuleToken extends Token {
 		}
 		return super.print({sep: ':'});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

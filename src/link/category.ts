@@ -5,8 +5,9 @@ import {LinkToken} from './index';
 /** 分类 */
 // @ts-expect-error not implementing all abstract methods
 export class CategoryToken extends LinkToken {
-	/** @browser */
 	override readonly type = 'category';
+
+	/* NOT FOR BROWSER */
 
 	/** 分类排序关键字 */
 	get sortkey(): string | undefined {

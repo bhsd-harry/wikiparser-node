@@ -33,13 +33,13 @@ export interface LintError {
 }
 
 declare interface Parser {
-	/** @browser */
 	config: string | Config;
-	/** @browser */
 	i18n?: string | Record<string, string>;
 
 	/** @private */
 	readonly MAX_STAGE: number;
+
+	/* NOT FOR BROWSER */
 
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
@@ -66,6 +66,8 @@ declare interface Parser {
 	/** @private */
 	readonly promises: Promise<void>[];
 
+	/* NOT FOR BROWSER END */
+
 	/** @private */
 	getConfig(this: Parser): Config;
 
@@ -74,7 +76,6 @@ declare interface Parser {
 
 	/**
 	 * 规范化页面标题
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param include 是否嵌入
@@ -94,11 +95,12 @@ declare interface Parser {
 
 	/**
 	 * 解析wikitext
-	 * @browser
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
+
+	/* NOT FOR BROWSER */
 
 	/** @private */
 	run<T>(this: Parser, callback: () => T): T;
@@ -142,6 +144,8 @@ const Parser: Parser = {
 	config: 'default',
 
 	MAX_STAGE: 11,
+
+	/* NOT FOR BROWSER */
 
 	conversionTable: new Map(),
 	redirects: new Map(),
@@ -257,6 +261,8 @@ const Parser: Parser = {
 
 	promises: [Promise.resolve()],
 
+	/* NOT FOR BROWSER END */
+
 	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
@@ -355,6 +361,8 @@ const Parser: Parser = {
 		}
 		return token!;
 	},
+
+	/* NOT FOR BROWSER */
 
 	/** @implements */
 	run(callback) {

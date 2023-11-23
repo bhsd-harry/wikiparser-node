@@ -69,24 +69,18 @@ declare type TagToken = IncludeToken | ExtToken | HtmlToken;
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 export class Token extends AstElement {
-	/** @browser */
 	override type: TokenTypes = 'root';
 
-	/**
-	 * 解析阶段，参见顶部注释。只对plain Token有意义。
-	 * @browser
-	 */
+	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */
 	#stage = 0;
-	/** @browser */
 	#config;
 
-	/**
-	 * 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。
-	 * @browser
-	 */
+	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	#accum;
-	/** @browser */
 	#include?: boolean;
+
+	/* NOT FOR BROWSER */
+
 	#acceptable?: Record<string, Ranges>;
 	#protectedChildren = new Ranges();
 
@@ -105,7 +99,9 @@ export class Token extends AstElement {
 		return this.querySelectorAll('template, magic-word#invoke') as TranscludeToken[];
 	}
 
-	/** @browser */
+	/* NOT FOR BROWSER END */
+
+	/** @class */
 	constructor(
 		wikitext?: string,
 		config = Parser.getConfig(),
@@ -198,10 +194,7 @@ export class Token extends AstElement {
 		return nodes;
 	}
 
-	/**
-	 * 将占位符替换为子Token
-	 * @browser
-	 */
+	/** 将占位符替换为子Token */
 	#build(): void {
 		this.#stage = MAX_STAGE;
 		const {length, firstChild} = this,
@@ -228,7 +221,6 @@ export class Token extends AstElement {
 
 	/**
 	 * 解析、重构、生成部分Token的`name`属性
-	 * @browser
 	 * @param n 最大解析层级
 	 * @param include 是否嵌入
 	 */
@@ -245,7 +237,6 @@ export class Token extends AstElement {
 
 	/**
 	 * 解析HTML注释和扩展标签
-	 * @browser
 	 * @param includeOnly 是否嵌入
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
@@ -253,10 +244,7 @@ export class Token extends AstElement {
 		this.setText(parseCommentAndExt(String(this), this.#config, this.#accum, includeOnly));
 	}
 
-	/**
-	 * 解析花括号
-	 * @browser
-	 */
+	/** 解析花括号 */
 	#parseBraces(): void {
 		const {parseBraces}: typeof import('../parser/braces') = require('../parser/braces');
 		const str = this.type === 'root' ? String(this.firstChild!) : `\0${String(this.firstChild!)}`,
@@ -264,10 +252,7 @@ export class Token extends AstElement {
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
 	}
 
-	/**
-	 * 解析HTML标签
-	 * @browser
-	 */
+	/** 解析HTML标签 */
 	#parseHtml(): void {
 		if (this.#config.excludes?.includes('html')) {
 			return;
@@ -276,10 +261,7 @@ export class Token extends AstElement {
 		this.setText(parseHtml(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析表格
-	 * @browser
-	 */
+	/** 解析表格 */
 	#parseTable(): void {
 		if (this.#config.excludes?.includes('table')) {
 			return;
@@ -288,10 +270,7 @@ export class Token extends AstElement {
 		this.setText(parseTable(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析`<hr>`和状态开关
-	 * @browser
-	 */
+	/** 解析`<hr>`和状态开关 */
 	#parseHrAndDoubleUnderscore(): void {
 		if (this.#config.excludes?.includes('hr')) {
 			return;
@@ -301,19 +280,13 @@ export class Token extends AstElement {
 		this.setText(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析内部链接
-	 * @browser
-	 */
+	/** 解析内部链接 */
 	#parseLinks(): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
 		this.setText(parseLinks(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析单引号
-	 * @browser
-	 */
+	/** 解析单引号 */
 	#parseQuotes(): void {
 		if (this.#config.excludes?.includes('quote')) {
 			return;
@@ -326,10 +299,7 @@ export class Token extends AstElement {
 		this.setText(lines.join('\n'));
 	}
 
-	/**
-	 * 解析外部链接
-	 * @browser
-	 */
+	/** 解析外部链接 */
 	#parseExternalLinks(): void {
 		if (this.#config.excludes?.includes('extLink')) {
 			return;
@@ -338,10 +308,7 @@ export class Token extends AstElement {
 		this.setText(parseExternalLinks(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析自由外链
-	 * @browser
-	 */
+	/** 解析自由外链 */
 	#parseMagicLinks(): void {
 		if (this.#config.excludes?.includes('magicLink')) {
 			return;
@@ -350,10 +317,7 @@ export class Token extends AstElement {
 		this.setText(parseMagicLinks(String(this), this.#config, this.#accum));
 	}
 
-	/**
-	 * 解析列表
-	 * @browser
-	 */
+	/** 解析列表 */
 	#parseList(): void {
 		if (this.#config.excludes?.includes('list')) {
 			return;
@@ -367,10 +331,7 @@ export class Token extends AstElement {
 		this.setText(lines.join('\n'));
 	}
 
-	/**
-	 * 解析语言变体转换
-	 * @browser
-	 */
+	/** 解析语言变体转换 */
 	#parseConverter(): void {
 		if (this.#config.variants.length > 0) {
 			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
@@ -454,7 +415,6 @@ export class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @browser
 	 * @param child 待插入的子节点
 	 * @param i 插入位置
 	 * @throws `RangeError` 不可插入的子节点
@@ -487,7 +447,6 @@ export class Token extends AstElement {
 
 	/**
 	 * 规范化页面标题
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param halfParsed 仅供内部使用
@@ -503,6 +462,8 @@ export class Token extends AstElement {
 	): Title {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @private */
 	protected protectChildren(...args: (string | number | Range)[]): void {

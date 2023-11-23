@@ -13,8 +13,8 @@ import type {AstText, ImagemapToken} from '../internal';
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
 export class ImagemapLinkToken extends fixed(singleLine(Token)) {
-	/** @browser */
 	override readonly type = 'imagemap-link';
+
 	declare childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
@@ -31,6 +31,8 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	// @ts-expect-error abstract method
 	abstract override get parentElement(): ImagemapToken | undefined;
 
+	/* NOT FOR BROWSER */
+
 	/** 内外链接 */
 	get link(): string | Title {
 		return this.childNodes[1].link;
@@ -40,8 +42,9 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 		this.childNodes[1].link = link;
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param pre 链接前的文本
 	 * @param linkStuff 内外链接
 	 * @param post 链接后的文本

@@ -18,6 +18,7 @@ declare type NowikiTypes = 'ext-inner'
  */
 export abstract class NowikiBaseToken extends fixed(Token) {
 	declare type: NowikiTypes;
+
 	declare childNodes: [AstText];
 	abstract override get children(): [];
 	abstract override get firstChild(): AstText;
@@ -25,13 +26,12 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	abstract override get lastChild(): AstText;
 	abstract override get lastElementChild(): undefined;
 
-	/**
-	 * @param wikitext default: `''`
-	 * @browser
-	 */
+	/** @param wikitext default: `''` */
 	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {

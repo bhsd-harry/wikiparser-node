@@ -124,8 +124,8 @@ class Layout extends Array<TableCoords[]> {
  */
 // @ts-expect-error not implementing all abstract methods
 export class TableToken extends TrBaseToken {
-	/** @browser */
 	override readonly type = 'table';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
@@ -136,13 +136,12 @@ export class TableToken extends TrBaseToken {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
-	/**
-	 * 表格是否闭合
-	 * @browser
-	 */
+	/** 表格是否闭合 */
 	get closed(): boolean {
 		return this.lastChild.type === 'table-syntax';
 	}
+
+	/* NOT FOR BROWSER */
 
 	set closed(closed) {
 		if (closed && !this.closed) {
@@ -150,8 +149,9 @@ export class TableToken extends TrBaseToken {
 		}
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
@@ -161,10 +161,7 @@ export class TableToken extends TrBaseToken {
 		});
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (!this.closed) {
@@ -178,7 +175,6 @@ export class TableToken extends TrBaseToken {
 
 	/**
 	 * 闭合表格语法
-	 * @browser
 	 * @param syntax 表格结尾语法
 	 * @param halfParsed
 	 * @throws `SyntaxError` 表格的闭合部分不符合语法
@@ -205,6 +201,8 @@ export class TableToken extends TrBaseToken {
 			}));
 		}
 	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * @override

@@ -14,10 +14,15 @@ import type {Title} from '../../lib/title';
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	declare name: string;
+
+	/* NOT FOR BROWSER */
+
 	#bracket = true;
 	#delimiter;
 	#fragment: string | undefined;
 	#encoded = false;
+
+	/* NOT FOR BROWSER END */
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];
@@ -25,6 +30,8 @@ export abstract class LinkBaseToken extends Token {
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
 	abstract override get lastElementChild(): Token;
+
+	/* NOT FOR BROWSER */
 
 	/** 完整链接 */
 	get link(): string | Title {
@@ -48,8 +55,9 @@ export abstract class LinkBaseToken extends Token {
 		return undefined;
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
@@ -121,19 +129,13 @@ export abstract class LinkBaseToken extends Token {
 		return super.setAttribute(key, value);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const str = super.toString(omit, this.#delimiter);
 		return this.#bracket && !(omit && this.matchesTypes(omit)) ? `[[${str}]]` : str;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const str = super.text('|');
 		return this.#bracket ? `[[${str}]]` : str;
@@ -152,10 +154,7 @@ export abstract class LinkBaseToken extends Token {
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
@@ -180,13 +179,12 @@ export abstract class LinkBaseToken extends Token {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** 生成Title对象 */
 	#getTitle(): Title {

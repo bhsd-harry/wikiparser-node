@@ -11,9 +11,9 @@ import type {AttributesToken, ExtToken} from '../../internal';
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export class ParamTagToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: string;
+
 	declare childNodes: AtomToken[];
 	// @ts-expect-error abstract method
 	abstract override get children(): AtomToken[];
@@ -38,7 +38,7 @@ export class ParamTagToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
-	/** @browser */
+	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
 		super(undefined, config, accum, {
 			SingleLineAtomToken: ':',
@@ -53,18 +53,12 @@ export class ParamTagToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, '\n');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return super.text('\n');
 	}
@@ -74,18 +68,7 @@ export class ParamTagToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return this.childNodes.filter(child => {
@@ -98,6 +81,13 @@ export class ParamTagToken extends Token {
 			return generateForChild(child, rect, Parser.msg('invalid parameter of $1', this.name));
 		});
 	}
+
+	/** @override */
+	override print(): string {
+		return super.print({sep: '\n'});
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {

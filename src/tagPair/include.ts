@@ -8,8 +8,8 @@ import type {AstText, Token} from '../../internal';
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
 export class IncludeToken extends hidden(TagPairToken) {
-	/** @browser */
 	override readonly type = 'include';
+
 	declare childNodes: [AstText, AstText];
 	// @ts-expect-error abstract method
 	abstract override get children(): [];
@@ -23,7 +23,6 @@ export class IncludeToken extends hidden(TagPairToken) {
 	abstract override get lastElementChild(): undefined;
 
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
@@ -39,6 +38,8 @@ export class IncludeToken extends hidden(TagPairToken) {
 	) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

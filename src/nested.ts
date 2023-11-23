@@ -12,11 +12,15 @@ import type {AttributesToken} from './attributes';
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
 export class NestedToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
+
+	/* NOT FOR BROWSER */
+
 	declare name: string;
 	#tags: string[];
 	#regex;
+
+	/* NOT FOR BROWSER END */
 
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
@@ -43,7 +47,6 @@ export class NestedToken extends Token {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/**
-	 * @browser
 	 * @param regex 内层正则
 	 * @param tags 内层标签名
 	 */
@@ -80,10 +83,7 @@ export class NestedToken extends Token {
 		this.#regex = regex;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return [
@@ -100,6 +100,8 @@ export class NestedToken extends Token {
 			}),
 		];
 	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * @override

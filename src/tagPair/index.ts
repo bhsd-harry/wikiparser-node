@@ -7,24 +7,20 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare name: string;
-	/** @browser */
 	#selfClosing;
-	/** @browser */
 	#closed;
-	/** @browser */
 	#tags: [string, string];
 
 	declare childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 
-	/**
-	 * 是否闭合
-	 * @browser
-	 */
+	/** 是否闭合 */
 	get closed(): boolean {
 		return this.#closed;
 	}
+
+	/* NOT FOR BROWSER */
 
 	set closed(value) {
 		this.#closed ||= value;
@@ -47,8 +43,9 @@ export abstract class TagPairToken extends fixed(Token) {
 		return this.#selfClosing ? undefined : this.lastChild.text();
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
@@ -72,10 +69,7 @@ export abstract class TagPairToken extends fixed(Token) {
 		accum.splice(index === -1 ? Infinity : index, 0, this);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const {firstChild, lastChild, nextSibling, name, closed} = this,
 			[opening, closing] = this.#tags;
@@ -92,10 +86,7 @@ export abstract class TagPairToken extends fixed(Token) {
 			}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const [opening, closing] = this.#tags;
 		return this.#selfClosing
@@ -113,16 +104,15 @@ export abstract class TagPairToken extends fixed(Token) {
 		return i === 0 ? 1 : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const [opening, closing] = this.#tags;
 		return super.print(this.#selfClosing
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {

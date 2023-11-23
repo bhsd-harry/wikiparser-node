@@ -7,13 +7,9 @@ import type {LintError} from '../../index';
 /** `''`和`'''` */
 // @ts-expect-error not implementing all abstract methods
 export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
-	/** @browser */
 	override readonly type = 'quote';
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),

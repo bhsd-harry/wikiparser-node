@@ -11,9 +11,9 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  * @classdesc `{childNodes: [Token, Token]}`
  */
 export class ParameterToken extends fixed(Token) {
-	/** @browser */
 	override readonly type = 'parameter';
 	declare name: string;
+
 	declare childNodes: [Token, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [Token, Token];
@@ -38,13 +38,12 @@ export class ParameterToken extends fixed(Token) {
 	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
 
-	/**
-	 * 是否是匿名参数
-	 * @browser
-	 */
+	/** 是否是匿名参数 */
 	get anon(): boolean {
 		return this.firstChild.length === 0;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** getValue()的getter */
 	get value(): string {
@@ -64,8 +63,9 @@ export class ParameterToken extends fixed(Token) {
 		}
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param key 参数名
 	 * @param value 参数值
 	 */
@@ -107,20 +107,14 @@ export class ParameterToken extends fixed(Token) {
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return this.anon && !(omit && this.matchesTypes(omit))
 			? this.lastChild.toString(omit)
 			: super.toString(omit, '=');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}
@@ -130,10 +124,7 @@ export class ParameterToken extends fixed(Token) {
 		return this.anon || i === 1 ? 0 : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{firstChild, lastChild} = this,
@@ -154,13 +145,12 @@ export class ParameterToken extends fixed(Token) {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print({sep: this.anon ? '' : '='});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

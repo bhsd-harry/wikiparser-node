@@ -22,7 +22,7 @@ declare type AtomTypes = 'arg-name'
 export class AtomToken extends Token {
 	declare type: AtomTypes;
 
-	/** @browser */
+	/** @class */
 	constructor(
 		wikitext: string | undefined,
 		type: AtomTypes,
@@ -33,6 +33,8 @@ export class AtomToken extends Token {
 		super(wikitext, config, accum, acceptable);
 		this.type = type;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

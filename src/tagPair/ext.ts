@@ -23,6 +23,7 @@ const del = <T>(arr: T[], ele: T): T[] => {
  */
 export class ExtToken extends attributesParent(TagPairToken) {
 	override readonly type = 'ext';
+
 	declare childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AttributesToken, Token];
@@ -33,14 +34,17 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
+	/* NOT FOR BROWSER */
+
 	/** @override */
 	// eslint-disable-next-line class-methods-use-this
 	override get closed(): boolean {
 		return true;
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
@@ -157,10 +161,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
@@ -171,6 +172,8 @@ export class ExtToken extends attributesParent(TagPairToken) {
 		}
 		return errors;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

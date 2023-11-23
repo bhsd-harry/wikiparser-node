@@ -8,8 +8,8 @@ import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../
  */
 // @ts-expect-error not implementing all abstract methods
 export class TrToken extends TrBaseToken {
-	/** @browser */
 	override readonly type = 'tr';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...TdToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, ...TdToken[]];
@@ -31,7 +31,6 @@ export class TrToken extends TrBaseToken {
 	abstract override get previousElementSibling(): Token;
 
 	/**
-	 * @browser
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
@@ -40,6 +39,8 @@ export class TrToken extends TrBaseToken {
 			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
 		});
 	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * 获取相邻行

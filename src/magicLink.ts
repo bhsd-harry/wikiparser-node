@@ -11,6 +11,7 @@ import type {ParameterToken, AstText, CommentToken, IncludeToken, NoincludeToken
  */
 export class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
+
 	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken)[];
@@ -22,6 +23,8 @@ export class MagicLinkToken extends syntax(Token) {
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
+
+	/* NOT FOR BROWSER */
 
 	/** 协议 */
 	get protocol(): string | undefined {
@@ -55,8 +58,9 @@ export class MagicLinkToken extends syntax(Token) {
 		this.setTarget(url);
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/**
-	 * @browser
 	 * @param url 网址
 	 * @param doubleSlash 是否接受"//"作为协议
 	 */
@@ -68,10 +72,7 @@ export class MagicLinkToken extends syntax(Token) {
 		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
@@ -107,6 +108,8 @@ export class MagicLinkToken extends syntax(Token) {
 		}
 		return errors;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

@@ -5,8 +5,9 @@ import {NowikiBaseToken} from './base';
 /** `;:*#` */
 // @ts-expect-error not implementing all abstract methods
 export class ListBaseToken extends syntax(NowikiBaseToken, /^[;:*#]+$/u) {
-	/** @browser */
 	declare type: 'dd' | 'list';
+
+	/* NOT FOR BROWSER */
 
 	/** 是否包含`;` */
 	get dt(): boolean {

@@ -25,6 +25,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
  */
 export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	declare type: 'table' | 'tr' | 'td';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
@@ -33,7 +34,6 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	abstract override get lastElementChild(): Token;
 
 	/**
-	 * @browser
 	 * @param pattern 表格语法正则
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
@@ -55,6 +55,8 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 		);
 		this.protectChildren(0, 1);
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {

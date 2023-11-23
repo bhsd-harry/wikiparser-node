@@ -19,10 +19,7 @@ export interface TableCoords {
 export abstract class TrBaseToken extends TableBaseToken {
 	declare type: 'table' | 'tr';
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			inter = this.childNodes.find(({type}) => type === 'table-inter');
@@ -53,15 +50,14 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		this.#correct();
 		const str = super.text();
 		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** 修复简单的表格语法错误 */
 	#correct(): void {
