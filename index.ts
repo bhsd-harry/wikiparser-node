@@ -100,10 +100,10 @@ declare interface Parser {
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
-	/* NOT FOR BROWSER */
-
 	/** @private */
 	run<T>(this: Parser, callback: () => T): T;
+
+	/* NOT FOR BROWSER */
 
 	/** @private */
 	warn(this: Parser, msg: string, ...args: unknown[]): void;
@@ -362,8 +362,6 @@ const Parser: Parser = {
 		return token!;
 	},
 
-	/* NOT FOR BROWSER */
-
 	/** @implements */
 	run(callback) {
 		const {running} = this;
@@ -377,6 +375,8 @@ const Parser: Parser = {
 			throw e;
 		}
 	},
+
+	/* NOT FOR BROWSER */
 
 	/** @implements */
 	warn(msg, ...args) {
