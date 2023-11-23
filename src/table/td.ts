@@ -83,7 +83,7 @@ export class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, 'string');
 		}

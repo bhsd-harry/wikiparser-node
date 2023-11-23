@@ -148,7 +148,7 @@ export class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
 		}

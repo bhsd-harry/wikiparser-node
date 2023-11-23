@@ -184,7 +184,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	protected afterBuild(): void {
+	afterBuild(): void {
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
 				token.afterBuild();

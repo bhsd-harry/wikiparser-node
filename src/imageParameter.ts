@@ -6,7 +6,7 @@ import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';
 import type {AtomToken, FileToken} from '../internal';
 
-const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
+export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
 /**
  * 检查图片参数是否合法
@@ -112,7 +112,7 @@ export class ImageParameterToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.parentNode?.type === 'gallery-image' && !params.has(this.name)) {
+		if (this.parentNode?.type === 'gallery-image' && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
 	}

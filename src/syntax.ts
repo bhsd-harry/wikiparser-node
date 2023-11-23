@@ -10,7 +10,6 @@ export class SyntaxToken extends Token {
 	/**
 	 * @browser
 	 * @param pattern 语法正则
-	 * @throws `RangeError` 含有g修饰符的语法正则
 	 */
 	constructor(
 		wikitext: string | undefined,

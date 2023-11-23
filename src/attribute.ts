@@ -249,7 +249,7 @@ export class AttributeToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.#equal.includes('\0')) {
 			this.#equal = this.buildFromStr(this.#equal, 'string');
 		}

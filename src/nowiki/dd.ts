@@ -1,8 +1,8 @@
-import {NowikiBaseToken} from './base';
+import {ListBaseToken} from './listBase';
 
 /** `:` */
 // @ts-expect-error not implementing all abstract methods
-export class DdToken extends NowikiBaseToken {
+export class DdToken extends ListBaseToken {
 	/** @browser */
-	override readonly type: 'dd' | 'list' = 'dd';
+	override readonly type = 'dd';
 }
