@@ -1,4 +1,3 @@
-import * as Parser from '../index';
 import {Token} from './index';
 
 /**
@@ -31,5 +30,3 @@ export class OnlyincludeToken extends Token {
 		});
 	}
 }
-
-Parser.classes['OnlyincludeToken'] = __filename;

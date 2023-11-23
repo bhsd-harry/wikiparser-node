@@ -1,10 +1,4 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import {toCase, noWrap, print, text} from '../util/string';
-import {parseSelector} from '../parser/selector';
-import {Ranges} from './ranges';
-import {Title} from './title';
-import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';
@@ -59,7 +53,6 @@ export abstract class AstElement extends AstNode {
 				childNodes.splice(i, 1);
 			}
 		}
-		this.setAttribute('childNodes', childNodes);
 	}
 
 	/**
@@ -67,13 +60,8 @@ export abstract class AstElement extends AstNode {
 	 * @param i 移除位置
 	 */
 	removeAt(i: number): AstNodes {
-		this.verifyChild(i);
 		const childNodes = [...this.childNodes],
-			e = new Event('remove', {bubbles: true}),
 			[node] = childNodes.splice(i, 1) as [AstNodes];
-		node.setAttribute('parentNode', undefined);
-		this.setAttribute('childNodes', childNodes);
-		this.dispatchEvent(e, {position: i, removed: node});
 		return node;
 	}
 
@@ -84,11 +72,6 @@ export abstract class AstElement extends AstNode {
 	 * @throws `RangeError` 不能插入祖先节点
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
-		if (node.contains(this)) {
-			Parser.error('不能插入祖先节点！', node);
-			throw new RangeError('不能插入祖先节点！');
-		}
-		this.verifyChild(i, 1);
 		const childNodes = [...this.childNodes],
 			e = new Event('insert', {bubbles: true}),
 			j = Parser.running ? -1 : childNodes.indexOf(node);
@@ -99,8 +82,6 @@ export abstract class AstElement extends AstNode {
 			childNodes.splice(j, 1);
 		}
 		childNodes.splice(i, 0, node);
-		this.setAttribute('childNodes', childNodes);
-		this.dispatchEvent(e, {position: i < 0 ? i + this.length - 1 : i, inserted: node});
 		return node;
 	}
 
@@ -155,7 +136,6 @@ export abstract class AstElement extends AstNode {
 	 * @throws `RangeError` 对应位置的子节点不是文本节点
 	 */
 	setText(str: string, i = 0): string {
-		this.verifyChild(i);
 		const oldText = this.childNodes.at(i)!,
 			{type, constructor: {name}} = oldText;
 		if (type === 'text') {
@@ -163,7 +143,6 @@ export abstract class AstElement extends AstNode {
 			oldText.replaceData(str);
 			return data;
 		}
-		throw new RangeError(`第 ${i} 个子节点是 ${name}！`);
 	}
 
 	/**

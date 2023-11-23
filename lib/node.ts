@@ -1,6 +1,3 @@
-import * as assert from 'assert/strict';
-import * as EventEmitter from 'events';
-import * as Parser from '../index';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;
@@ -86,17 +83,6 @@ export interface CaretPosition {
 	offset: number;
 }
 
-/**
- * 定制TypeError消息
- * @param {Function} Constructor 类
- * @param method
- * @param args 可接受的参数类型
- * @throws `TypeError`
- */
-const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
-};
-
 /** 类似Node */
 export abstract class AstNode {
 	type: TokenTypes | 'text';
@@ -147,9 +133,6 @@ export abstract class AstNode {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'optional') {
-			return new Set(this.#optional) as TokenAttributeGetter<T>;
-		}
 		return this.hasAttribute(key)
 			// @ts-expect-error noImplicitAny
 			? String(this[key as string]) as TokenAttributeGetter<T>
@@ -160,18 +143,6 @@ export abstract class AstNode {
 	setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
 		if (key === 'parentNode') {
 			this.#parentNode = value as TokenAttributeSetter<'parentNode'>;
-		} else if (Object.hasOwn(this, key)) {
-			const descriptor = Object.getOwnPropertyDescriptor(this, key)!;
-			if (this.#optional.has(key)) {
-				descriptor.enumerable = Boolean(value);
-			}
-			// @ts-expect-error noImplicitAny
-			const oldValue = this[key as string],
-				frozen = oldValue !== null && typeof oldValue === 'object' && Object.isFrozen(oldValue);
-			Object.defineProperty(this, key, {...descriptor, value});
-			if (frozen && typeof value === 'object') {
-				Object.freeze(value);
-			}
 		} else {
 			// @ts-expect-error noImplicitAny
 			this[key as string] = value;
@@ -241,7 +212,6 @@ export abstract class AstNode {
 			}
 			return 0;
 		}
-		this.verifyChild(j, 1);
 		({childNodes} = this);
 		return getIndex(j, this);
 	}

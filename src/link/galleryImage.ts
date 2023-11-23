@@ -1,13 +1,8 @@
 import {generateForSelf} from '../../util/lint';
-import {undo} from '../../util/debug';
-import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
-import {galleryParams} from '../../index';
-import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
-import type {ExtToken, GalleryToken, AtomToken, ImageParameterToken} from '../../internal';
 
 /** 图库图片 */
 // @ts-expect-error not implementing all abstract methods
@@ -44,26 +39,7 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	override afterBuild(): void {
 		const initImagemap = this.type === 'imagemap-image',
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
-		this.setAttribute('name', titleObj.title);
 		this.#invalid = Boolean(titleObj.interwiki) || titleObj.ns !== 6; // 只用于gallery-image的首次解析
-		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e;
-			if (prevTarget?.type === 'link-target') {
-				const name = String(prevTarget),
-					imagemap = this.type === 'imagemap-image',
-					{title, interwiki, ns, valid} = this.normalizeTitle(name, imagemap ? 0 : 6, true, !imagemap);
-				if (!valid) {
-					undo(e, data);
-					throw new Error(`非法的图片文件名：${name}`);
-				} else if (interwiki || ns !== 6) {
-					undo(e, data);
-					throw new Error(`图片链接不可更改命名空间：${name}`);
-				}
-				this.setAttribute('name', title);
-				this.#invalid = false;
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
 
 	/** @private */
@@ -80,5 +56,3 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		return errors;
 	}
 }
-
-Parser.classes['GalleryImageToken'] = __filename;

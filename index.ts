@@ -14,10 +14,7 @@ export interface Config {
 	protocol: string;
 	img: Record<string, string>;
 	variants: string[];
-	interwiki: string[];
 	excludes?: string[];
-	conversionTable?: [string, string][];
-	redirects?: [string, string][];
 }
 
 export interface LintError {
@@ -29,7 +26,6 @@ export interface LintError {
 	startCol: number;
 	endLine: number;
 	endCol: number;
-	excerpt: string;
 }
 
 declare interface Parser {
@@ -70,6 +66,9 @@ declare interface Parser {
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
+
+	/** @private */
+	run<T>(this: Parser, callback: () => T): T;
 }
 
 /**
@@ -91,13 +90,6 @@ const Parser: Parser = {
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config/') as Config;
-			const {config: {conversionTable, redirects}} = this;
-			if (conversionTable) {
-				this.conversionTable = new Map(conversionTable);
-			}
-			if (redirects) {
-				this.redirects = new Map(redirects);
-			}
 			return this.getConfig();
 		}
 		return {...this.config, excludes: []};
@@ -129,15 +121,6 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
-		this.run(() => {
-			for (const key of ['main', 'fragment'] as ('main' | 'fragment')[]) {
-				if (titleObj[key]?.includes('\0')) {
-					titleObj[key] = token.buildFromStr(titleObj[key]!, 'text');
-				}
-			}
-		});
-		titleObj.conversionTable = this.conversionTable;
-		titleObj.redirects = this.redirects;
 		return titleObj;
 	},
 
@@ -162,28 +145,21 @@ const Parser: Parser = {
 				throw e;
 			}
 		});
-		if (this.debugging) {
-			let restored = String(token!),
-				process = '解析';
-			if (restored === wikitext) {
-				const entities = {lt: '<', gt: '>', amp: '&'};
-				restored = token!.print().replace(
-					/<[^<]+?>|&([lg]t|amp);/gu,
-					(_, s?: 'lt' | 'gt' | 'amp') => s ? entities[s] : '',
-				);
-				process = '渲染HTML';
-			}
-			if (restored !== wikitext) {
-				const {diff}: typeof import('./util/diff') = require('./util/diff');
-				const {promises: {0: cur, length}} = this;
-				this.promises.unshift((async (): Promise<void> => {
-					await cur;
-					this.error(`${process}过程中不可逆地修改了原始文本！`);
-					return diff(wikitext, restored, length);
-				})());
-			}
-		}
 		return token!;
+	},
+
+	/** @implements */
+	run(callback) {
+		const {running} = this;
+		this.running = true;
+		try {
+			const result = callback();
+			this.running = running;
+			return result;
+		} catch (e) {
+			this.running = running;
+			throw e;
+		}
 	},
 };
 

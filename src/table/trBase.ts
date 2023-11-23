@@ -1,11 +1,7 @@
 import {generateForChild} from '../../util/lint';
-import * as Parser from '../../index';
-import {Token} from '..';
 import {TableBaseToken} from './base';
-import {TdToken, createTd} from './td';
 import type {LintError} from '../../index';
 import type {AstNodes, SyntaxToken, ArgToken, TranscludeToken, TrToken} from '../../internal';
-import type {TdAttrs, TdSubtypes} from './td';
 
 export interface TableCoords {
 	row: number;
@@ -45,17 +41,13 @@ export abstract class TrBaseToken extends TableBaseToken {
 			startIndex: error.startIndex + 1,
 			startLine: error.startLine + 1,
 			startCol: 0,
-			excerpt: error.excerpt.slice(1),
 		});
 		return errors;
 	}
 
 	/** @override */
 	override text(): string {
-		this.#correct();
 		const str = super.text();
 		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
 	}
 }
-
-Parser.classes['TrBaseToken'] = __filename;

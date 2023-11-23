@@ -6,7 +6,6 @@ import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../index';
-import type {TableToken} from '../internal';
 
 /**
  * 模板或魔术字
@@ -14,7 +13,6 @@ import type {TableToken} from '../internal';
  */
 export class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
-	declare name: string;
 	modifier = '';
 	#fragment: string | undefined;
 	#valid = true;
@@ -24,16 +22,9 @@ export class TranscludeToken extends Token {
 	declare childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
-		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken | SyntaxToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/**
 	 * @param title 模板标题或魔术字
@@ -47,9 +38,7 @@ export class TranscludeToken extends Token {
 		accum: Token[] = [],
 	) {
 		super(undefined, config, accum, {
-			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
-		this.seal('modifier');
 		const {parserFunction: [insensitive, sensitive]} = config,
 			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
@@ -72,14 +61,12 @@ export class TranscludeToken extends Token {
 				this.setAttribute('name', canonicalCame ?? name.toLowerCase()).type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
-						'Stage-1': ':', '!ExtToken': '',
 					});
 				super.insertAt(token);
 				if (arg.length > 0) {
 					parts.unshift([arg.join(':')]);
 				}
 				if (this.name === 'invoke') {
-					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
 					for (let i = 0; i < 2; i++) {
 						const part = parts.shift();
 						if (!part) {
@@ -90,11 +77,9 @@ export class TranscludeToken extends Token {
 							`invoke-${i ? 'function' : 'module'}`,
 							config,
 							accum,
-							{'Stage-1': ':', '!ExtToken': ''},
 						);
 						super.insertAt(invoke);
 					}
-					this.protectChildren('1:3');
 				}
 			}
 		}
@@ -105,7 +90,6 @@ export class TranscludeToken extends Token {
 				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
-				'Stage-2': ':', '!HeadingToken': '',
 			});
 			super.insertAt(token);
 		}
@@ -123,7 +107,6 @@ export class TranscludeToken extends Token {
 			}
 			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum));
 		}
-		this.protectChildren(0);
 	}
 
 	/**
@@ -162,49 +145,13 @@ export class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template',
 				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1]!.text(), isTemplate ? 10 : 828);
-			this.setAttribute(isTemplate ? 'name' : 'module', titleObj.title);
 			this.#fragment = titleObj.fragment;
 			this.#valid = titleObj.valid;
-
-			/**
-			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
-			 * 当继续bubble到`template`时，处理并删除`oldKey`和`newKey`。
-			 * @implements
-			 */
-			const transcludeListener: AstListener = (e, data) => {
-				const {prevTarget} = e,
-					{oldKey, newKey} = data;
-				if (typeof oldKey === 'string') {
-					delete data.oldKey;
-					delete data.newKey;
-				}
-				if (prevTarget === this.firstChild && isTemplate
-					|| prevTarget === this.childNodes[1]! && !isTemplate && this.name === 'invoke'
-				) {
-					const name = prevTarget.text(),
-						{title, fragment, valid} = this.normalizeTitle(name, 10);
-					this.setAttribute(isTemplate ? 'name' : 'module', title);
-					this.#fragment = fragment;
-					this.#valid = valid;
-				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
-					const oldArgs = this.getArgs(oldKey!, false, false);
-					oldArgs.delete(prevTarget);
-					this.getArgs(newKey!, false, false).add(prevTarget);
-					this.#keys.add(newKey!);
-					if (oldArgs.size === 0) {
-						this.#keys.delete(oldKey!);
-					}
-				}
-			};
-			this.addEventListener(['remove', 'insert', 'replace', 'text'], transcludeListener);
 		}
 	}
 
 	/** @override */
 	override toString(omit?: Set<string>): string {
-		if (omit && this.matchesTypes(omit)) {
-			return '';
-		}
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
 				? `${this.firstChild.toString(omit)}${this.length === 1 ? '' : ':'}${
@@ -269,11 +216,6 @@ export class TranscludeToken extends Token {
 		const args = this.getAnonArgs(),
 			added = typeof addedToken !== 'number',
 			maxAnon = String(args.length + (added ? 0 : 1));
-		if (added) {
-			this.#keys.add(maxAnon);
-		} else if (!this.hasArg(maxAnon, true)) {
-			this.#keys.delete(maxAnon);
-		}
 		for (let i = added ? args.indexOf(addedToken) : addedToken - 1; i < args.length; i++) {
 			const token = args[i]!,
 				{name} = token,
@@ -298,7 +240,6 @@ export class TranscludeToken extends Token {
 			this.#handleAnonArgChange(token);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
-			this.#keys.add(token.name);
 		}
 		return token;
 	}
@@ -327,12 +268,6 @@ export class TranscludeToken extends Token {
 		} else {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args.set(keyStr, args);
-		}
-		// @ts-expect-error isNaN
-		if (exact && !isNaN(keyStr)) {
-			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
-		} else if (copy) {
-			args = new Set(args);
 		}
 		return args;
 	}
@@ -401,5 +336,3 @@ export class TranscludeToken extends Token {
 		}}}</span>`;
 	}
 }
-
-Parser.classes['TranscludeToken'] = __filename;

@@ -8,8 +8,6 @@ import type {LintError} from '../index';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
-const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
-
 declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
 
 /**
@@ -22,19 +20,11 @@ export class AttributesToken extends Token {
 
 	declare childNodes: (AtomToken | AttributeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (AtomToken | AttributeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/**
 	 * @param attr 标签属性
@@ -49,7 +39,6 @@ export class AttributesToken extends Token {
 		accum: Token[] = [],
 	) {
 		super(undefined, config, accum, {
-			AtomToken: ':', AttributeToken: ':',
 		});
 		this.type = type;
 		this.setAttribute('name', name);
@@ -74,7 +63,6 @@ export class AttributesToken extends Token {
 						`${type.slice(0, -1)}-dirty` as 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty',
 						config,
 						accum,
-						{[`Stage-${stages[type]}`]: ':'},
 					));
 					out = '';
 				}
@@ -162,7 +150,6 @@ export class AttributesToken extends Token {
 				rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 				errors.push({
 					...generateForChild(attr, rect, 'containing invalid attribute'),
-					excerpt: childNodes.slice(i).map(String).join('').slice(0, 50),
 				});
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
@@ -194,5 +181,3 @@ export class AttributesToken extends Token {
 			: '';
 	}
 }
-
-Parser.classes['AttributesToken'] = __filename;

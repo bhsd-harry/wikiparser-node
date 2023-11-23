@@ -1,11 +1,8 @@
-import {fixed} from '../mixin/fixed';
-import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
-import type {Title} from '../lib/title';
 import type {AstText, ImagemapToken} from '../internal';
 
 /**
@@ -17,19 +14,11 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 
 	declare childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	// @ts-expect-error abstract method
-	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): NoincludeToken;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): NoincludeToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ImagemapToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ImagemapToken | undefined;
 
 	/**
 	 * @param pre 链接前的文本
@@ -53,5 +42,3 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 		);
 	}
 }
-
-Parser.classes['ImagemapLinkToken'] = __filename;

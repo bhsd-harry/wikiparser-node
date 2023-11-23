@@ -30,11 +30,6 @@ export class Title {
 			namespace = '';
 			title = title.slice(1).trim();
 		}
-		const iw = defaultNs ? null : Parser.isInterwiki(title, config);
-		if (iw) {
-			this.interwiki = iw[1].toLowerCase();
-			title = title.slice(iw[0].length);
-		}
 		const m = title.split(':');
 		if (m.length > 1) {
 			const ns = nsid[m[0]!.trim().toLowerCase()],
@@ -49,23 +44,10 @@ export class Title {
 		let fragment: string | undefined;
 		if (i !== -1) {
 			fragment = title.slice(i + 1).trimEnd();
-			if (fragment.includes('%')) {
-				try {
-					fragment = decodeURIComponent(fragment);
-				} catch {}
-			} else if (fragment.includes('.')) {
-				try {
-					fragment = decodeURIComponent(fragment.replaceAll('.', '%'));
-				} catch {}
-			}
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(title || selfLink && fragment !== undefined || this.interwiki)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
-		this.main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
-		this.prefix = `${namespace}${namespace && ':'}`;
 	}
 }
-
-Parser.classes['Title'] = __filename;

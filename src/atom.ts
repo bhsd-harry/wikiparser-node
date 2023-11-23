@@ -34,5 +34,3 @@ export class AtomToken extends Token {
 		this.type = type;
 	}
 }
-
-Parser.classes['AtomToken'] = __filename;

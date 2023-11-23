@@ -37,32 +37,16 @@
 // d: ListToken
 // v: ConverterToken
 
-import * as assert from 'assert/strict';
 import {text} from '../util/string';
-import {Ranges} from '../lib/ranges';
-import {AstRange} from '../lib/range';
 import * as Parser from '../index';
 const {MAX_STAGE, aliases} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
-import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
-	IncludeToken,
-	HtmlToken,
-	ExtToken,
-	ArgToken,
-	TranscludeToken,
-	CommentToken,
-	HeadingToken,
-	CategoryToken,
-	ParameterToken,
-	SyntaxToken,
 } from '../internal';
 import type {TokenTypes, CaretPosition} from '../lib/node';
-
-declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
 /**
  * 所有节点的基类
@@ -92,7 +76,6 @@ export class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
-		this.setAttribute('acceptable', acceptable);
 		accum.push(this);
 	}
 
@@ -332,21 +315,7 @@ export class Token extends AstElement {
 				if (root.type === 'root' && root !== this) {
 					return root.getAttribute('include') as TokenAttributeGetter<T>;
 				}
-				const includeToken = root.getElementByTypes('include');
-				if (includeToken) {
-					return (includeToken.name === 'noinclude') as TokenAttributeGetter<T>;
-				}
-				const noincludeToken = root.getElementByTypes('noinclude');
-				return (
-					Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken))
-				) as TokenAttributeGetter<T>;
 			}
-			case 'stage':
-				return this.#stage as TokenAttributeGetter<T>;
-			case 'acceptable':
-				return (this.#acceptable ? {...this.#acceptable} : undefined) as TokenAttributeGetter<T>;
-			case 'protectedChildren':
-				return new Ranges(this.#protectedChildren) as TokenAttributeGetter<T>;
 			default:
 				return super.getAttribute(key);
 		}
@@ -361,26 +330,6 @@ export class Token extends AstElement {
 				}
 				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
 				return this;
-			case 'acceptable': {
-				const acceptable: Record<string, Ranges> = {};
-				if (value) {
-					for (const [k, v] of Object.entries(value as unknown as Acceptable)) {
-						if (k.startsWith('Stage-')) {
-							for (let i = 0; i <= Number(k.slice(6)); i++) {
-								for (const type of aliases[i]!) {
-									acceptable[type] = new Ranges(v);
-								}
-							}
-						} else if (k.startsWith('!')) { // `!`项必须放在最后
-							delete acceptable[k.slice(1)];
-						} else {
-							acceptable[k] = new Ranges(v);
-						}
-					}
-				}
-				this.#acceptable = value && acceptable;
-				return this;
-			}
 			default:
 				return super.setAttribute(key, value);
 		}
@@ -403,19 +352,6 @@ export class Token extends AstElement {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
-		if (!Parser.running && this.#acceptable) {
-			const acceptableIndices = Object.fromEntries(
-					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
-				),
-				nodesAfter = this.childNodes.slice(i),
-				{constructor: {name: insertedName}} = token;
-			i += i < 0 ? this.length : 0;
-			if (!acceptableIndices[insertedName]?.includes(i)) {
-				throw new RangeError(`${this.constructor.name} 的第 ${i} 个子节点不能为 ${insertedName}！`);
-			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j + 1))) {
-				throw new Error(`${this.constructor.name} 插入新的第 ${i} 个子节点会破坏规定的顺序！`);
-			}
-		}
 		super.insertAt(token, i);
 		if (token.type === 'root') {
 			token.type = 'plain';
@@ -441,5 +377,3 @@ export class Token extends AstElement {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 }
-
-Parser.classes['Token'] = __filename;

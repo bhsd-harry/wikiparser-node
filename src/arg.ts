@@ -12,19 +12,12 @@ import type {LintError} from '../index';
  */
 export class ArgToken extends Token {
 	override readonly type = 'arg';
-	declare name: string;
 
 	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): Token;
 
 	/** 预设值 */
 	get default(): string | false {
@@ -34,17 +27,14 @@ export class ArgToken extends Token {
 	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AtomToken: 0, Token: 1, HiddenToken: '2:',
 		});
 		for (let i = 0; i < parts.length; i++) {
 			if (i === 0) {
 				const token = new AtomToken(parts[i], 'arg-name', config, accum, {
-					'Stage-2': ':', '!HeadingToken': '',
 				});
 				super.insertAt(token);
 			} else if (i > 1) {
 				const token = new HiddenToken(parts[i], config, accum, {
-					'Stage-2': ':', '!HeadingToken': '',
 				});
 				super.insertAt(token);
 			} else {
@@ -53,7 +43,6 @@ export class ArgToken extends Token {
 				super.insertAt(token.setAttribute('stage', 2));
 			}
 		}
-		this.protectChildren(0);
 	}
 
 	/** @override */
@@ -93,13 +82,11 @@ export class ArgToken extends Token {
 					{
 						startIndex,
 						startCol,
-						excerpt,
 					} = error;
 				return {
 					...error,
 					startIndex: startIndex - 1,
 					startCol: startCol - 1,
-					excerpt: `|${excerpt}`,
 				};
 			}));
 		}
@@ -111,5 +98,3 @@ export class ArgToken extends Token {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
 }
-
-Parser.classes['ArgToken'] = __filename;

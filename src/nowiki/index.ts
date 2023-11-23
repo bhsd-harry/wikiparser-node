@@ -13,15 +13,9 @@ export class NowikiToken extends NowikiBaseToken {
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
 	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
@@ -31,5 +25,3 @@ export class NowikiToken extends NowikiBaseToken {
 			: super.lint(start);
 	}
 }
-
-Parser.classes['NowikiToken'] = __filename;

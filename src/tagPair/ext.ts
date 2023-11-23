@@ -1,5 +1,4 @@
 import {generateForSelf} from '../../util/lint';
-import {attributesParent} from '../../mixin/attributesParent';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {TagPairToken} from './index';
@@ -26,11 +25,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 
 	declare childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AttributesToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AttributesToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
@@ -156,12 +151,9 @@ export class ExtToken extends attributesParent(TagPairToken) {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			const root = this.getRootNode(),
-				excerpt = String(root).slice(Math.max(0, start - 25), start + 25),
 				rect: BoundingRect = {start, ...root.posFromIndex(start)};
 			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
 		}
 		return errors;
 	}
 }
-
-Parser.classes['ExtToken'] = __filename;

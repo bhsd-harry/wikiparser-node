@@ -1,4 +1,3 @@
-import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
 
@@ -19,8 +18,5 @@ export class SyntaxToken extends syntax(Token) {
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.type = type;
-		this.setAttribute('pattern', pattern);
 	}
 }
-
-Parser.classes['SyntaxToken'] = __filename;

@@ -1,5 +1,3 @@
-import {undo} from '../util/debug';
-import {noWrap} from '../util/string';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -14,27 +12,15 @@ export class ConverterRuleToken extends Token {
 
 	declare childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ConverterToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): ConverterFlagsToken | this;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): ConverterFlagsToken | this;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): this | undefined;
 
 	/**
 	 * @param rule 转换规则
@@ -58,7 +44,6 @@ export class ConverterRuleToken extends Token {
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
 		}
-		this.protectChildren('1:');
 	}
 
 	/** @override */
@@ -96,5 +81,3 @@ export class ConverterRuleToken extends Token {
 		return super.print({sep: ':'});
 	}
 }
-
-Parser.classes['ConverterRuleToken'] = __filename;

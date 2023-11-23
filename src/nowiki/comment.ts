@@ -15,7 +15,6 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	constructor(wikitext: string, closed = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 		this.closed = closed;
-		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/** @private */
@@ -30,10 +29,6 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override toString(omit?: Set<string>): string {
-		if (!this.closed && this.nextSibling) {
-			Parser.error('自动闭合HTML注释', this);
-			this.closed = true;
-		}
 		return omit && this.matchesTypes(omit) ? '' : `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
 	}
 
@@ -42,5 +37,3 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 }
-
-Parser.classes['CommentToken'] = __filename;

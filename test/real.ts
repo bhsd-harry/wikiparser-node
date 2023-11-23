@@ -10,8 +10,6 @@ const {argv: [,, site = '']} = process,
 	] as [string, string, string][]).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 Parser.i18n = 'zh-hans';
-Parser.debugging = true;
-Parser.warning = false;
 
 const {error} = Parser; // eslint-disable-line @typescript-eslint/unbound-method
 

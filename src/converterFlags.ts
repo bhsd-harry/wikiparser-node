@@ -17,32 +17,19 @@ export class ConverterFlagsToken extends Token {
 
 	declare childNodes: AtomToken[];
 	// @ts-expect-error abstract method
-	abstract override get children(): AtomToken[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ConverterToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): undefined;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
 	/** @param flags 转换类型标记 */
 	constructor(flags: string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AtomToken: ':',
 		});
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
 	}
@@ -50,12 +37,6 @@ export class ConverterFlagsToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		this.#flags = this.childNodes.map(child => child.text().trim());
-		const /** @implements */ converterFlagsListener: AstListener = ({prevTarget}) => {
-			if (prevTarget) {
-				this.#flags![this.childNodes.indexOf(prevTarget as AtomToken)] = prevTarget.text().trim();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'text', 'replace'], converterFlagsListener);
 	}
 
 	/** @override */
@@ -115,5 +96,3 @@ export class ConverterFlagsToken extends Token {
 		return super.print({sep: ';'});
 	}
 }
-
-Parser.classes['ConverterFlagsToken'] = __filename;

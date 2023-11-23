@@ -13,30 +13,19 @@ import type {AttributesToken} from './attributes';
  */
 export class NestedToken extends Token {
 	override readonly type = 'ext-inner';
+	declare name: string;
 
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/**
 	 * @param regex 内层正则
@@ -69,10 +58,7 @@ export class NestedToken extends Token {
 			},
 		);
 		super(text, config, accum, {
-			NoincludeToken: ':', ExtToken: ':',
 		});
-		this.#tags = tags;
-		this.#regex = regex;
 	}
 
 	/** @override */
@@ -93,5 +79,3 @@ export class NestedToken extends Token {
 		];
 	}
 }
-
-Parser.classes['NestedToken'] = __filename;

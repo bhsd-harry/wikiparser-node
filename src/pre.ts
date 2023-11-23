@@ -13,27 +13,15 @@ export class PreToken extends Token {
 
 	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (NoincludeToken | ConverterToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
@@ -57,10 +45,7 @@ export class PreToken extends Token {
 			wikitext = `${str}${wikitext}`;
 		}
 		super(wikitext, config, accum, {
-			AstText: ':', NoincludeToken: ':', ConverterToken: ':',
 		});
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);
 	}
 }
-
-Parser.classes['PreToken'] = __filename;

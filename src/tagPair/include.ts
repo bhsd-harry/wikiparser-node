@@ -12,15 +12,9 @@ export class IncludeToken extends hidden(TagPairToken) {
 
 	declare childNodes: [AstText, AstText];
 	// @ts-expect-error abstract method
-	abstract override get children(): [];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): undefined;
 
 	/**
 	 * @param name 标签名
@@ -39,5 +33,3 @@ export class IncludeToken extends hidden(TagPairToken) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
 	}
 }
-
-Parser.classes['IncludeToken'] = __filename;

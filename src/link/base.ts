@@ -1,11 +1,8 @@
 import {generateForChild} from '../../util/lint';
-import {noWrap} from '../../util/string';
-import {undo} from '../../util/debug';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';
-import type {Title} from '../../lib/title';
 
 /**
  * 内链
@@ -13,14 +10,14 @@ import type {Title} from '../../lib/title';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
-	declare name: string;
+	#bracket = true;
+	#delimiter;
+	#fragment: string | undefined;
+	#encoded = false;
 
 	declare childNodes: [AtomToken, ...Token[]];
-	abstract override get children(): [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
-	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
-	abstract override get lastElementChild(): Token;
 
 	/**
 	 * @param link 链接标题
@@ -29,60 +26,26 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
-			AtomToken: 0, Token: 1,
 		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
-			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
 			const inner = new Token(linkText, config, accum, {
-				'Stage-5': ':', ConverterToken: ':',
 			});
 			inner.type = 'link-text';
 			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
 		}
 		this.#delimiter = delimiter;
-		this.protectChildren(0);
 	}
 
 	/** @private */
 	override afterBuild(): void {
 		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
-		this.setAttribute('name', titleObj.title);
 		this.#fragment = titleObj.fragment;
 		this.#encoded = titleObj.encoded;
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
-		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e;
-			if (prevTarget?.type === 'link-target') {
-				const name = prevTarget.text(),
-					{title, interwiki, ns, valid, fragment, encoded} = this.normalizeTitle(name, 0, false, true, true);
-				if (!valid) {
-					undo(e, data);
-					throw new Error(`非法的内链目标：${name}`);
-				} else if (this.type === 'category' && (interwiki || ns !== 14)
-					|| this.type === 'file' && (interwiki || ns !== 6)
-				) {
-					undo(e, data);
-					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
-				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14)
-					&& !name.trim().startsWith(':')
-				) {
-					const {firstChild} = prevTarget;
-					if (firstChild?.type === 'text') {
-						firstChild.insertData(0, ':');
-					} else {
-						prevTarget.prepend(':');
-					}
-				}
-				this.setAttribute('name', title);
-				this.#fragment = fragment;
-				this.#encoded = encoded;
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
 
 	/** @private */
@@ -149,5 +112,3 @@ export abstract class LinkBaseToken extends Token {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
 	}
 }
-
-Parser.classes['LinkBaseToken'] = __filename;

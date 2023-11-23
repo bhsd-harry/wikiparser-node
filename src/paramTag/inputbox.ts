@@ -13,9 +13,6 @@ export class InputboxToken extends ParamTagToken {
 		wikitext &&= parseBraces(wikitext, config, accum);
 		accum.splice(accum.indexOf(placeholder as unknown as Token), 1);
 		super(wikitext, config, accum, {
-			ArgToken: ':', TranscludeToken: ':',
 		});
 	}
 }
-
-Parser.classes['InputboxToken'] = __filename;

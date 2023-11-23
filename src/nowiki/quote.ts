@@ -1,5 +1,4 @@
 import {generateForSelf} from '../../util/lint';
-import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
@@ -18,7 +17,6 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 			wikitext: string | undefined;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
-			wikitext = String(this.getRootNode());
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
 				[{length}] = previousSibling.data.match(/(?<!')'+$/u) as [string],
 				startIndex = start - length;
@@ -29,12 +27,10 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 				startCol: endCol - length,
 				endLine,
 				endCol,
-				excerpt: wikitext.slice(startIndex, startIndex + 50),
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
 			refError ??= generateForSelf(this, {start}, message);
-			wikitext ??= String(this.getRootNode());
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = nextSibling.data.match(/^'+/u) as [string],
 				endIndex = startIndex + length;
@@ -45,11 +41,8 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 				startLine,
 				startCol,
 				endCol: startCol + length,
-				excerpt: wikitext.slice(Math.max(0, endIndex - 50), endIndex),
 			});
 		}
 		return errors;
 	}
 }
-
-Parser.classes['QuoteToken'] = __filename;

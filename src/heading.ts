@@ -1,6 +1,4 @@
 import {generateForSelf} from '../util/lint';
-import {fixed} from '../mixin/fixed';
-import {sol} from '../mixin/sol';
 import * as Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -16,15 +14,9 @@ export class HeadingToken extends sol(fixed(Token)) {
 
 	declare childNodes: [Token, SyntaxToken];
 	// @ts-expect-error abstract method
-	abstract override get children(): [Token, SyntaxToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): SyntaxToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): SyntaxToken;
 
 	/** 标题格式的等号 */
 	get #equals(): string {
@@ -47,7 +39,6 @@ export class HeadingToken extends sol(fixed(Token)) {
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
 		const trail = new SyntaxToken(input[1], /^[^\S\n]*$/u, 'heading-trail', config, accum, {
-			'Stage-1': ':', '!ExtToken': '',
 		});
 		this.append(token, trail);
 	}
@@ -104,5 +95,3 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return super.print({pre: equals, sep: equals});
 	}
 }
-
-Parser.classes['HeadingToken'] = __filename;

@@ -15,39 +15,25 @@ export class GalleryToken extends Token {
 
 	declare childNodes: (GalleryImageToken | HiddenToken | AstText)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (GalleryImageToken | HiddenToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): GalleryImageToken | HiddenToken | AstText | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): GalleryImageToken | HiddenToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | HiddenToken | AstText | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): GalleryImageToken | HiddenToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', GalleryImageToken: ':', HiddenToken: ':',
 		});
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
 				super.insertAt((line.trim()
 					? new HiddenToken(line, config, [], {
-						AstText: ':',
 					})
 					: line) as string);
 				continue;
@@ -57,7 +43,6 @@ export class GalleryToken extends Token {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {
-					AstText: ':',
 				}));
 			}
 		}
@@ -99,7 +84,6 @@ export class GalleryToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + length,
-					excerpt: String(child).slice(0, 50),
 				});
 			} else if (child.type !== 'hidden' && child.type !== 'text') {
 				errors.push(...child.lint(start));
@@ -113,5 +97,3 @@ export class GalleryToken extends Token {
 	override print(): string {
 		return super.print({sep: '\n'});
 }
-
-Parser.classes['GalleryToken'] = __filename;

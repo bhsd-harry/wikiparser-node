@@ -1,6 +1,5 @@
 import {generateForChild} from '../util/lint';
 import {noWrap, removeComment} from '../util/string';
-import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -111,37 +110,6 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 		poll: new Set(['id', 'show-results-before-voting']),
 		sm2: typeAttrs,
 		flashmp3: typeAttrs,
-		score: new Set([
-			'line_width_inches',
-			'lang',
-			'override_midi',
-			'raw',
-			'note-language',
-			'override_audio',
-			'override_ogg',
-			'sound',
-			'vorbis',
-		]),
-		seo: new Set([
-			'title',
-			'title_mode',
-			'title_separator',
-			'keywords',
-			'description',
-			'robots',
-			'google_bot',
-			'image',
-			'image_width',
-			'image_height',
-			'image_alt',
-			'type',
-			'site_name',
-			'locale',
-			'section',
-			'author',
-			'published_time',
-			'twitter_site',
-		]),
 		tab: new Set([
 			'nested',
 			'name',
@@ -188,27 +156,15 @@ export class AttributeToken extends fixed(Token) {
 
 	declare childNodes: [AtomToken, Token];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AtomToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): AttributesToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): AttributesToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): AtomToken | this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
-	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {
@@ -244,12 +200,10 @@ export class AttributeToken extends fixed(Token) {
 		accum: Token[] = [],
 	) {
 		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
-			[type === 'ext-attr' ? 'AstText' : 'Stage-1']: ':', ArgToken: ':', TranscludeToken: ':',
 		});
 		let valueToken: Token;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, accum, {
-				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
@@ -259,7 +213,6 @@ export class AttributeToken extends fixed(Token) {
 				excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
-				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 5);
@@ -269,21 +222,11 @@ export class AttributeToken extends fixed(Token) {
 				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
-				ArgToken: ':',
-				TranscludeToken: ':',
-				LinkToken: ':',
-				FileToken: ':',
-				CategoryToken: ':',
-				QuoteToken: ':',
-				ExtLinkToken: ':',
-				MagicLinkToken: ':',
-				ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
-				[`Stage-${stages[type]}`]: ':',
 			});
 		}
 		super(undefined, config, accum);
@@ -308,9 +251,6 @@ export class AttributeToken extends fixed(Token) {
 
 	/** @override */
 	override toString(omit?: Set<string>): string {
-		if (omit && this.matchesTypes(omit)) {
-			return '';
-		}
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
 			? `${super.toString(omit, `${this.#equal}${quoteStart}`)}${quoteEnd}`
@@ -342,7 +282,6 @@ export class AttributeToken extends fixed(Token) {
 				...e,
 				startIndex,
 				startCol: e.startCol - 1,
-				excerpt: String(root).slice(startIndex, startIndex + 50),
 			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
@@ -380,5 +319,3 @@ export class AttributeToken extends fixed(Token) {
 		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
 	}
 }
-
-Parser.classes['AttributeToken'] = __filename;

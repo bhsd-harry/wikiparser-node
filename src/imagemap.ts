@@ -1,5 +1,4 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -18,27 +17,15 @@ export class ImagemapToken extends Token {
 
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
@@ -48,7 +35,6 @@ export class ImagemapToken extends Token {
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', SingleLineNoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;
@@ -77,7 +63,6 @@ export class ImagemapToken extends Token {
 					first = false;
 					continue;
 				} else {
-					Parser.error('<imagemap>标签内必须先包含一张合法图片！', line);
 					error = true;
 				}
 			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {
@@ -157,5 +142,3 @@ export class ImagemapToken extends Token {
 		return super.print({sep: '\n'});
 	}
 }
-
-Parser.classes['ImagemapToken'] = __filename;

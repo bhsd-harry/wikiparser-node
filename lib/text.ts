@@ -6,24 +6,17 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\
 	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	disallowedTags = [
 		'html',
-		'base',
 		'head',
 		'style',
 		'title',
 		'body',
-		'menu',
 		'a',
-		'area',
 		'audio',
 		'img',
-		'map',
-		'track',
 		'video',
 		'embed',
 		'iframe',
 		'object',
-		'picture',
-		'source',
 		'canvas',
 		'script',
 		'col',
@@ -32,29 +25,11 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\
 		'tfoot',
 		'thead',
 		'button',
-		'datalist',
-		'fieldset',
-		'form',
 		'input',
 		'label',
-		'legend',
-		'meter',
-		'optgroup',
 		'option',
-		'output',
-		'progress',
 		'select',
 		'textarea',
-		'details',
-		'dialog',
-		'slot',
-		'template',
-		'dir',
-		'frame',
-		'frameset',
-		'marquee',
-		'param',
-		'xmp',
 	];
 
 /** 文本节点 */
@@ -116,7 +91,6 @@ export class AstText extends AstNode {
 						startCol = lines.length === 1 ? left + line.length : line.length,
 						{0: char, length} = error,
 						endIndex = startIndex + length,
-						end = char === '}' || char === ']' ? endIndex + 1 : startIndex + 49,
 						rootStr = String(root),
 						nextChar = rootStr[endIndex],
 						previousChar = rootStr[startIndex - 1],
@@ -142,7 +116,6 @@ export class AstText extends AstNode {
 						endLine: startLine,
 						startCol,
 						endCol: startCol + length,
-						excerpt: rootStr.slice(Math.max(0, end - 50), end),
 					};
 				}).filter(Boolean) as LintError[];
 		}
@@ -154,12 +127,7 @@ export class AstText extends AstNode {
 	 * @param text 新内容
 	 */
 	#setData(text: string): void {
-		const {data} = this,
-			e = new Event('text', {bubbles: true});
 		this.setAttribute('data', text);
-		if (data !== text) {
-			this.dispatchEvent(e, {oldText: data, newText: text});
-		}
 	}
 
 	/**
@@ -170,5 +138,3 @@ export class AstText extends AstNode {
 		this.#setData(text);
 	}
 }
-
-Parser.classes['AstText'] = __filename;

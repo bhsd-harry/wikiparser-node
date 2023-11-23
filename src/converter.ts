@@ -13,15 +13,9 @@ export class ConverterToken extends Token {
 
 	declare childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
 	// @ts-expect-error abstract method
-	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): ConverterFlagsToken;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): ConverterFlagsToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/**
 	 * @param flags 转换类型标记
@@ -41,7 +35,6 @@ export class ConverterToken extends Token {
 				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum)),
 			);
 		}
-		this.protectChildren(0);
 	}
 
 	/** @override */
@@ -78,5 +71,3 @@ export class ConverterToken extends Token {
 		}${print(rules, {sep: ';'})}}-</span>`;
 	}
 }
-
-Parser.classes['ConverterToken'] = __filename;

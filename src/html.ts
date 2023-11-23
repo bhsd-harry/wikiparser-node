@@ -1,7 +1,5 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
-import {fixed} from '../mixin/fixed';
-import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
@@ -22,15 +20,9 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 
 	declare childNodes: [AttributesToken];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AttributesToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AttributesToken;
 
 	/** 是否是闭合标签 */
 	get closing(): boolean {
@@ -84,17 +76,14 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		let wikitext: string | undefined,
 			refError: LintError | undefined;
 		if (this.name === 'h1' && !this.#closing) {
-			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push({...refError, excerpt: wikitext.slice(start, start + 50)});
 		}
 		if (this.closest('table-attrs')) {
-			wikitext ??= String(this.getRootNode());
 			refError ??= generateForSelf(this, {start}, '');
 			errors.push({
 				...refError,
 				message: Parser.msg('HTML tag in table attributes'),
-				excerpt: wikitext.slice(Math.max(0, start - 25), start + 25),
 			});
 		}
 		try {
@@ -102,17 +91,14 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		} catch (e) {
 			if (e instanceof SyntaxError) {
 				const {message: errorMsg} = e;
-				wikitext ??= String(this.getRootNode());
 				refError ??= generateForSelf(this, {start}, '');
 				const [msg] = errorMsg.split(':'),
 					error = {...refError, message: Parser.msg(msg!)};
 				if (msg === 'unclosed tag') {
 					error.severity = 'warning';
-					error.excerpt = wikitext.slice(start, start + 50);
 				} else if (msg === 'unmatched closing tag') {
 					const end = start + String(this).length,
 						ancestor = this.closest('magic-word') as TranscludeToken | undefined;
-					error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
 					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';
 					}
@@ -169,5 +155,3 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		});
 	}
 }
-
-Parser.classes['HtmlToken'] = __filename;

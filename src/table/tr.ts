@@ -12,23 +12,13 @@ export class TrToken extends TrBaseToken {
 
 	declare childNodes: [SyntaxToken, AttributesToken, ...TdToken[]];
 	// @ts-expect-error abstract method
-	abstract override get children(): [SyntaxToken, AttributesToken, ...TdToken[]];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AttributesToken | TdToken;
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): TableToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get parentElement(): TableToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | SyntaxToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): this | SyntaxToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token;
-	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): Token;
 
 	/**
 	 * @param syntax 表格语法
@@ -36,9 +26,6 @@ export class TrToken extends TrBaseToken {
 	 */
 	constructor(syntax: string, attr?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u, syntax, attr, config, accum, {
-			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
 		});
 	}
 }
-
-Parser.classes['TrToken'] = __filename;

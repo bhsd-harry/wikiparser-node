@@ -1,6 +1,5 @@
 import {noWrap, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
-import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
@@ -16,27 +15,15 @@ export class ParameterToken extends fixed(Token) {
 
 	declare childNodes: [Token, Token];
 	// @ts-expect-error abstract method
-	abstract override get children(): [Token, Token];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): Token;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): TranscludeToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): TranscludeToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
 	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
-	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
 
 	/** 是否是匿名参数 */
 	get anon(): boolean {
@@ -50,7 +37,6 @@ export class ParameterToken extends fixed(Token) {
 	constructor(key?: string | number, value?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum);
 		const keyToken = new Token(typeof key === 'number' ? undefined : key, config, accum, {
-				'Stage-11': ':', '!HeadingToken': '',
 			}),
 			token = new Token(value, config, accum);
 		keyToken.type = 'parameter-key';
@@ -66,23 +52,9 @@ export class ParameterToken extends fixed(Token) {
 				{parentNode} = this;
 			this.setAttribute('name', name);
 			if (parentNode) {
-				parentNode.getAttribute('keys').add(name);
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
-		const /** @implements */ parameterListener: AstListener = ({prevTarget}, data) => {
-			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
-				const {firstChild, name} = this;
-				if (prevTarget === firstChild) {
-					const newKey = firstChild.toString(omit)
-						.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
-					data.oldKey = name;
-					data.newKey = newKey;
-					this.setAttribute('name', newKey);
-				}
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
 	}
 
 	/** @override */
@@ -117,7 +89,6 @@ export class ParameterToken extends fixed(Token) {
 				startLine: e.endLine,
 				startCol: e.endCol,
 				endCol: e.endCol + 1,
-				excerpt: `${String(firstChild).slice(-25)}=${String(lastChild).slice(0, 25)}`,
 			});
 		}
 		return errors;
@@ -128,5 +99,3 @@ export class ParameterToken extends fixed(Token) {
 		return super.print({sep: this.anon ? '' : '='});
 	}
 }
-
-Parser.classes['ParameterToken'] = __filename;

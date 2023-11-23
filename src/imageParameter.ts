@@ -60,15 +60,9 @@ export class ImageParameterToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): FileToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get parentElement(): FileToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
 	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this;
-	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AtomToken | this;
 
 	/** 图片链接 */
 	get link(): string | Title | undefined {
@@ -97,7 +91,6 @@ export class ImageParameterToken extends Token {
 				this.#syntax = str;
 			} else {
 				super(mt[2], config, accum, {
-					'Stage-2': ':', '!HeadingToken': ':',
 				});
 				this.#syntax = `${mt[1]}${param[0]}${mt[3]!}`;
 			}
@@ -158,5 +151,3 @@ export class ImageParameterToken extends Token {
 			: super.print({class: 'image-caption'});
 	}
 }
-
-Parser.classes['ImageParameterToken'] = __filename;

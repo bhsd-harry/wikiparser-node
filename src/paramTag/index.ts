@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -16,38 +15,24 @@ export class ParamTagToken extends Token {
 
 	declare childNodes: AtomToken[];
 	// @ts-expect-error abstract method
-	abstract override get children(): AtomToken[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): AtomToken | undefined;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
-	abstract override get nextElementSibling(): undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
 	// @ts-expect-error abstract method
-	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
 		super(undefined, config, accum, {
-			SingleLineAtomToken: ':',
 		});
 		if (wikitext) {
 			const SingleLineAtomToken = singleLine(AtomToken);
 			this.append(
 				...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-					AstText: ':', ...acceptable,
 				})),
 			);
 		}
@@ -87,5 +72,3 @@ export class ParamTagToken extends Token {
 		return super.print({sep: '\n'});
 	}
 }
-
-Parser.classes['ParamTagToken'] = __filename;

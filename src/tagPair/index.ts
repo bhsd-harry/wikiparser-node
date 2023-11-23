@@ -1,4 +1,3 @@
-import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import type {AstNodes} from '../../lib/node';
@@ -48,12 +47,6 @@ export abstract class TagPairToken extends fixed(Token) {
 	override toString(omit?: Set<string>): string {
 		const {firstChild, lastChild, nextSibling, name, closed} = this,
 			[opening, closing] = this.#tags;
-		if (omit && this.matchesTypes(omit)) {
-			return '';
-		} else if (!closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, lastChild);
-			this.#closed = true;
-		}
 		return this.#selfClosing
 			? `<${opening}${firstChild.toString(omit)}/>`
 			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
@@ -87,5 +80,3 @@ export abstract class TagPairToken extends fixed(Token) {
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
 	}
 }
-
-Parser.classes['TagPairToken'] = __filename;

@@ -1,5 +1,3 @@
-import {syntax} from '../../mixin/syntax';
-import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 
 /** `;:*#` */
@@ -7,5 +5,3 @@ import {NowikiBaseToken} from './base';
 export class ListBaseToken extends syntax(NowikiBaseToken, /^[;:*#]+$/u) {
 	declare type: 'dd' | 'list';
 }
-
-Parser.classes['ListBase'] = __filename;

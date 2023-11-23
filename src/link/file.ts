@@ -3,7 +3,6 @@ import {generateForChild} from '../../util/lint';
 import * as Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
-import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
 import type {Token, AtomToken} from '../../internal';
 
@@ -51,11 +50,7 @@ export class FileToken extends LinkBaseToken {
 
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
 	// @ts-expect-error abstract method
-	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
 
 	/**
 	 * @param link 文件名
@@ -64,7 +59,6 @@ export class FileToken extends LinkBaseToken {
 	 */
 	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
-		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 	}
 
@@ -138,9 +132,6 @@ export class FileToken extends LinkBaseToken {
 	 */
 	#getTypedArgs(keys: Set<string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
-		if (args.length > 1) {
-			Parser.warn(`图片 ${this.name} 带有 ${args.length} 个${type}参数，只有最后 1 个 ${args[0]!.name} 会生效！`);
-		}
 		return args;
 	}
 
@@ -159,5 +150,3 @@ export class FileToken extends LinkBaseToken {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
 	}
 }
-
-Parser.classes['FileToken'] = __filename;

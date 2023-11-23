@@ -16,7 +16,6 @@ declare global {
 		T extends 'quotes' ? [string?, string?] :
 		T extends 'optional' | 'keys' ? Set<string> :
 		T extends 'args' ? Map<string, Set<ParameterToken>> :
-		T extends 'protectedChildren' ? Ranges :
 		string;
 
 	type TokenAttributeGetter<T extends string> =

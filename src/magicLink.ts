@@ -1,5 +1,4 @@
 import {generateForChild} from '../util/lint';
-import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
@@ -14,15 +13,9 @@ export class MagicLinkToken extends syntax(Token) {
 
 	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
-	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
 
 	/**
 	 * @param url 网址
@@ -30,10 +23,8 @@ export class MagicLinkToken extends syntax(Token) {
 	 */
 	constructor(url?: string, doubleSlash = false, config = Parser.getConfig(), accum: Token[] = []) {
 		super(url, config, accum, {
-			'Stage-1': ':', '!ExtToken': '',
 		});
 		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
-		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
 	}
 
 	/** @override */
@@ -66,12 +57,9 @@ export class MagicLinkToken extends syntax(Token) {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + s.length,
-					excerpt: data.slice(Math.max(0, index! - 25), index! + 25),
 				};
 			}));
 		}
 		return errors;
 	}
 }
-
-Parser.classes['MagicLinkToken'] = __filename;
