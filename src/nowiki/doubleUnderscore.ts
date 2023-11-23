@@ -2,7 +2,7 @@ import {hidden} from '../../mixin/hidden';
 import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {Token} from '..';
+import type {Token} from '../index';
 
 /** 状态开关 */
 // @ts-expect-error not implementing all abstract methods
@@ -13,6 +13,7 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	declare name: string;
 
 	/**
+	 * @browser
 	 * @param word 状态开关名
 	 * @param fixed 是否固定大小写
 	 */
