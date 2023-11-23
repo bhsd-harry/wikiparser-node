@@ -62,12 +62,12 @@ export class PreToken extends Token {
 		this.setAttribute('stage', Parser.MAX_STAGE - 1);
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** @private */
 	protected override isPlain(): boolean {
 		return true;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {
