@@ -36,15 +36,12 @@ declare class AstNode {
 }
 
 export interface Parser {
-	/** @browser */
 	config?: Config;
 	minConfig: Config;
-	/** @browser */
 	i18n?: Record<string, string>;
 
 	/**
 	 * 解析wikitext
-	 * @browser
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */

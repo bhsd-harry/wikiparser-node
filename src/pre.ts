@@ -8,9 +8,9 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
 export class PreToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'pre';
+
 	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
@@ -23,7 +23,7 @@ export class PreToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/** @browser */
+	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		if (wikitext) {
 			const opening = '<nowiki>',

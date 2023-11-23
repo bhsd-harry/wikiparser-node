@@ -147,11 +147,8 @@ const commonHtmlAttrs = new Set([
 export class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare name: string;
-	/** @browser */
 	#equal;
-	/** @browser */
 	#quotes;
-	/** @browser */
 	#tag;
 
 	declare childNodes: [AtomToken, Token];
@@ -166,32 +163,22 @@ export class AttributeToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
 
-	/**
-	 * 引号是否匹配
-	 * @browser
-	 */
+	/** 引号是否匹配 */
 	get balanced(): boolean {
 		return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
 
-	/**
-	 * 标签名
-	 * @browser
-	 */
+	/** 标签名 */
 	get tag(): string {
 		return this.#tag;
 	}
 
-	/**
-	 * getValue()的getter
-	 * @browser
-	 */
+	/** getValue()的getter */
 	get value(): string | true {
 		return this.getValue();
 	}
 
 	/**
-	 * @browser
 	 * @param type 标签类型
 	 * @param tag 标签名
 	 * @param key 属性名
@@ -259,10 +246,7 @@ export class AttributeToken extends Token {
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal
@@ -270,10 +254,7 @@ export class AttributeToken extends Token {
 			: this.firstChild.toString(omit);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
 	}
@@ -283,10 +264,7 @@ export class AttributeToken extends Token {
 		return this.#equal && i === 0 ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, value} = this,
@@ -320,10 +298,7 @@ export class AttributeToken extends Token {
 		return errors;
 	}
 
-	/**
-	 * 获取属性值
-	 * @browser
-	 */
+	/** 获取属性值 */
 	getValue(): string | true {
 		if (this.#equal) {
 			const value = this.lastChild.text();
@@ -335,10 +310,7 @@ export class AttributeToken extends Token {
 		return this.type === 'ext-attr' || '';
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();

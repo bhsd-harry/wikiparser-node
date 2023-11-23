@@ -10,8 +10,8 @@ import type {AstText, ImagemapToken} from '../internal';
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
 export class ImagemapLinkToken extends Token {
-	/** @browser */
 	override readonly type = 'imagemap-link';
+
 	declare childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
@@ -21,7 +21,6 @@ export class ImagemapLinkToken extends Token {
 	abstract override get parentNode(): ImagemapToken | undefined;
 
 	/**
-	 * @browser
 	 * @param pre 链接前的文本
 	 * @param linkStuff 内外链接
 	 * @param post 链接后的文本

@@ -7,7 +7,7 @@ import type {Token, AtomToken} from '../../internal';
  */
 // @ts-expect-error not implementing all abstract methods
 export class LinkToken extends LinkBaseToken {
-	/** @browser */
 	override readonly type: 'link' | 'category' = 'link';
+
 	declare childNodes: [AtomToken] | [AtomToken, Token];
 }

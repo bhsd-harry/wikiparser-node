@@ -5,21 +5,18 @@ export const extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+c\\x
 
 /**
  * remove half-parsed comment-like tokens
- * @browser
  * @param str 原字符串
  */
 export const removeComment = (str: string): string => str.replace(/\0\d+c\x7F/gu, '');
 
 /**
  * escape special chars for RegExp constructor
- * @browser
  * @param str RegExp source
  */
 export const escapeRegExp = (str: string): string => str.replace(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
 
 /**
  * extract effective wikitext
- * @browser
  * @param childNodes a Token's contents
  * @param separator delimiter between nodes
  */
@@ -28,7 +25,6 @@ export const text = (childNodes: (string | AstNodes)[], separator = ''): string 
 
 /**
  * decode HTML entities
- * @browser
  * @param str 原字符串
  */
 export const decodeHtml = (str: string): string => str.replace(
@@ -38,14 +34,12 @@ export const decodeHtml = (str: string): string => str.replace(
 
 /**
  * escape newlines
- * @browser
  * @param str 原字符串
  */
 export const noWrap = (str: string): string => str.replace(/\n/gu, '\\n');
 
 /**
  * 以HTML格式打印
- * @browser
  * @param childNodes 子节点
  * @param opt 选项
  */

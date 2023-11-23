@@ -12,15 +12,10 @@ import type {LintError} from '../index';
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
 export class TranscludeToken extends Token {
-	/** @browser */
 	override type: 'template' | 'magic-word' = 'template';
-	/** @browser */
 	modifier = '';
-	/** @browser */
 	#fragment: string | undefined;
-	/** @browser */
 	#valid = true;
-	/** @browser */
 	#raw = false;
 	#args = new Map<string, Set<ParameterToken>>();
 
@@ -32,7 +27,6 @@ export class TranscludeToken extends Token {
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/**
-	 * @browser
 	 * @param title 模板标题或魔术字
 	 * @param parts 参数各部分
 	 * @throws `SyntaxError` 非法的模板名称
@@ -117,7 +111,6 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * 设置引用修饰符
-	 * @browser
 	 * @param modifier 引用修饰符
 	 */
 	setModifier(modifier: string): boolean {
@@ -139,10 +132,7 @@ export class TranscludeToken extends Token {
 		return false;
 	}
 
-	/**
-	 * 是否是模板
-	 * @browser
-	 */
+	/** 是否是模板 */
 	isTemplate(): boolean {
 		return this.type === 'template' || this.name === 'invoke';
 	}
@@ -160,10 +150,7 @@ export class TranscludeToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
@@ -174,10 +161,7 @@ export class TranscludeToken extends Token {
 		}}}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const {childNodes, length, firstChild, modifier, type, name} = this;
 		return type === 'magic-word' && name === 'vardefine'
@@ -199,10 +183,7 @@ export class TranscludeToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{type, childNodes} = this;
@@ -229,7 +210,6 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * 处理匿名参数更改
-	 * @browser
 	 * @param addedToken 新增的参数
 	 */
 	#handleAnonArgChange(addedToken: number | ParameterToken): void {
@@ -247,7 +227,6 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * @override
-	 * @browser
 	 * @param token 待插入的子节点
 	 * @param i 插入位置
 	 */
@@ -261,25 +240,18 @@ export class TranscludeToken extends Token {
 		return token;
 	}
 
-	/**
-	 * 获取所有参数
-	 * @browser
-	 */
+	/** 获取所有参数 */
 	getAllArgs(): ParameterToken[] {
 		return this.childNodes.filter(child => child.type === 'parameter') as ParameterToken[];
 	}
 
-	/**
-	 * 获取匿名参数
-	 * @browser
-	 */
+	/** 获取匿名参数 */
 	getAnonArgs(): ParameterToken[] {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
 	/**
 	 * 获取指定参数
-	 * @browser
 	 * @param key 参数名
 	 * @param exact 是否匹配匿名性
 	 * @param copy 是否返回一个备份
@@ -298,7 +270,6 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * 获取重名参数
-	 * @browser
 	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
@@ -310,7 +281,6 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * 对特定魔术字获取可能的取值
-	 * @browser
 	 * @throws `Error` 不是可接受的魔术字
 	 */
 	getPossibleValues(): Token[] {
@@ -352,10 +322,7 @@ export class TranscludeToken extends Token {
 		return queue;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const {childNodes, length, firstChild, modifier, type} = this;
 		return `<span class="wpb-${type}">{{${modifier}${

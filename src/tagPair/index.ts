@@ -6,27 +6,20 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends Token {
 	declare type: 'ext' | 'include';
 	declare name: string;
-	/** @browser */
 	#selfClosing;
-	/** @browser */
 	#closed;
-	/** @browser */
 	#tags: [string, string];
 
 	declare childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 
-	/**
-	 * 是否闭合
-	 * @browser
-	 */
+	/** 是否闭合 */
 	get closed(): boolean {
 		return this.#closed;
 	}
 
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
@@ -50,10 +43,7 @@ export abstract class TagPairToken extends Token {
 		accum.splice(index === -1 ? Infinity : index, 0, this);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const {firstChild, lastChild} = this,
 			[opening, closing] = this.#tags;
@@ -64,10 +54,7 @@ export abstract class TagPairToken extends Token {
 			}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const [opening, closing] = this.#tags;
 		return this.#selfClosing
@@ -85,10 +72,7 @@ export abstract class TagPairToken extends Token {
 		return i === 0 ? 1 : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const [opening, closing] = this.#tags;
 		return super.print(this.#selfClosing

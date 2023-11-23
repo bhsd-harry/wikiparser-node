@@ -8,11 +8,9 @@ import type {LintError} from '../../index';
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends FileToken {
 	declare type: 'gallery-image' | 'imagemap-image';
-	/** @browser */
 	#invalid = false;
 
 	/**
-	 * @browser
 	 * @param type 图片类型
 	 * @param link 图片文件名
 	 * @param text 图片参数
@@ -49,10 +47,7 @@ export class GalleryImageToken extends FileToken {
 		return 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.#invalid) {

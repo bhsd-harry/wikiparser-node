@@ -27,10 +27,8 @@ export interface LintError {
 }
 
 declare interface Parser {
-	/** @browser */
 	config?: Config;
 	minConfig: Config;
-	/** @browser */
 	i18n?: Record<string, string>;
 
 	/** @private */
@@ -44,7 +42,6 @@ declare interface Parser {
 
 	/**
 	 * 规范化页面标题
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param include 是否嵌入
@@ -64,7 +61,6 @@ declare interface Parser {
 
 	/**
 	 * 解析wikitext
-	 * @browser
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */

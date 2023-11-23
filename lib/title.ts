@@ -3,17 +3,12 @@ import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	/** @browser */
 	valid;
-	/** @browser */
 	ns;
-	/** @browser */
 	fragment;
-	/** @browser */
 	encoded = false;
 
 	/**
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param decode 是否需要解码

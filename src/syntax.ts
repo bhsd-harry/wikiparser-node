@@ -7,10 +7,7 @@ declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'tabl
 export class SyntaxToken extends Token {
 	declare type: SyntaxTypes;
 
-	/**
-	 * @browser
-	 * @param pattern 语法正则
-	 */
+	/** @param pattern 语法正则 */
 	constructor(
 		wikitext: string | undefined,
 		pattern: RegExp,

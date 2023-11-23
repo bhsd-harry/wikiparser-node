@@ -34,40 +34,28 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]
 
 /** 文本节点 */
 export class AstText extends AstNode {
-	/** @browser */
 	override readonly type = 'text';
 	declare name: undefined;
-	/** @browser */
 	data: string;
 
-	/**
-	 * @browser
-	 * @param text 包含文本
-	 */
+	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
 		this.data = text;
 	}
 
-	/**
-	 * 输出字符串
-	 * @browser
-	 */
+	/** 输出字符串 */
 	override toString(): string {
 		return this.data;
 	}
 
-	/**
-	 * 可见部分
-	 * @browser
-	 */
+	/** 可见部分 */
 	text(): string {
 		return this.data;
 	}
 
 	/**
 	 * Linter
-	 * @browser
 	 * @param start
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
@@ -137,7 +125,6 @@ export class AstText extends AstNode {
 
 	/**
 	 * 修改内容
-	 * @browser
 	 * @param text 新内容
 	 */
 	#setData(text: string): void {
@@ -146,7 +133,6 @@ export class AstText extends AstNode {
 
 	/**
 	 * 替换字符串
-	 * @browser
 	 * @param text 替换的字符串
 	 */
 	replaceData(text: string): void {

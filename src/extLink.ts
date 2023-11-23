@@ -7,9 +7,7 @@ import {MagicLinkToken} from './magicLink';
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
 export class ExtLinkToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-link';
-	/** @browser */
 	#space;
 
 	declare childNodes: [MagicLinkToken] | [MagicLinkToken, Token];
@@ -19,7 +17,6 @@ export class ExtLinkToken extends Token {
 	abstract override get lastChild(): Token;
 
 	/**
-	 * @browser
 	 * @param url 网址
 	 * @param space 空白字符
 	 * @param text 链接文字
@@ -37,10 +34,7 @@ export class ExtLinkToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		if (this.length === 1) {
 			return `[${super.toString(omit)}${this.#space}]`;
@@ -48,10 +42,7 @@ export class ExtLinkToken extends Token {
 		return `[${super.toString(omit, this.#space)}]`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return `[${super.text(' ')}]`;
 	}
@@ -66,10 +57,7 @@ export class ExtLinkToken extends Token {
 		return i === 0 ? this.#space.length : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print(
 			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},

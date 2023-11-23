@@ -8,8 +8,8 @@ import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../
  */
 // @ts-expect-error not implementing all abstract methods
 export class TrToken extends TrBaseToken {
-	/** @browser */
 	override readonly type = 'tr';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...TdToken[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken;
@@ -21,7 +21,6 @@ export class TrToken extends TrBaseToken {
 	abstract override get previousSibling(): Token;
 
 	/**
-	 * @browser
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */

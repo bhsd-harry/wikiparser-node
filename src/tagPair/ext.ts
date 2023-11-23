@@ -22,6 +22,7 @@ const del = <T>(arr: T[], ele: T): T[] => {
  */
 export class ExtToken extends TagPairToken {
 	override readonly type = 'ext';
+
 	declare childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
@@ -29,7 +30,6 @@ export class ExtToken extends TagPairToken {
 	abstract override get lastChild(): Token;
 
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
@@ -147,10 +147,7 @@ export class ExtToken extends TagPairToken {
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
