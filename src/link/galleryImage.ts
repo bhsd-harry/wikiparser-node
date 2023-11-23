@@ -38,7 +38,7 @@ export class GalleryImageToken extends FileToken {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		const initImagemap = this.type === 'imagemap-image',
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.#invalid = titleObj.ns !== 6; // 只用于gallery-image的首次解析

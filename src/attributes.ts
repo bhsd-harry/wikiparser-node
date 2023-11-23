@@ -97,7 +97,7 @@ export class AttributesToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.type === 'table-attrs') {
 			const {parentNode} = this as this & {parentNode?: TableToken | TrToken | TdToken};
 			this.setAttribute(

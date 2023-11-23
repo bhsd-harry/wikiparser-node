@@ -31,8 +31,9 @@ export const parseHrAndDoubleUnderscore = (
 	).replace(
 		new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'giu'),
 		(m, p1: string) => {
-			if (insensitive.has(p1.toLowerCase()) || sensitive.has(p1)) {
-				new DoubleUnderscoreToken(p1, config, accum);
+			const fixed = sensitive.has(p1);
+			if (fixed || insensitive.has(p1.toLowerCase())) {
+				new DoubleUnderscoreToken(p1, fixed, config, accum);
 				return `\0${accum.length - 1}u\x7F`;
 			}
 			return m;

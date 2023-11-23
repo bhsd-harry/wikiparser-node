@@ -40,7 +40,7 @@ export class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		this.#flags = this.childNodes.map(child => child.text().trim());
 	}
 

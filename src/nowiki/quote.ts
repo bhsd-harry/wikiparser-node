@@ -1,11 +1,12 @@
 import {generateForSelf} from '../../util/lint';
+import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
 
 /** `''`和`'''` */
 // @ts-expect-error not implementing all abstract methods
-export class QuoteToken extends NowikiBaseToken {
+export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 	/** @browser */
 	override readonly type = 'quote';
 

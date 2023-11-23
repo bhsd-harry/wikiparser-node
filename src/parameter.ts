@@ -49,7 +49,7 @@ export class ParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		const omit = new Set(['comment', 'noinclude', 'include']);
 		if (!this.anon) {
 			const name = this.firstChild.toString(omit).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, ''),
