@@ -27,6 +27,8 @@ const lintIgnoredExt = new Set([
 	'timeline',
 ]);
 
+/* NOT FOR BROWSER */
+
 /**
  * 检查某个下标是否符合表达式
  * @param str 表达式
@@ -47,6 +49,8 @@ const matchesLang = (
 	const lang = attributes?.['lang'];
 	return typeof lang === 'string' && regex.test(lang);
 };
+
+/* NOT FOR BROWSER END */
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
