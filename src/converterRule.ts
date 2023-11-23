@@ -169,7 +169,7 @@ export class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		const /** @implements */ converterRuleListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (this.length > 1 && this.childNodes.at(-2) === prevTarget) {

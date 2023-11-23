@@ -73,7 +73,7 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 		this.setAttribute('name', titleObj.title);
 		this.#fragment = titleObj.fragment;

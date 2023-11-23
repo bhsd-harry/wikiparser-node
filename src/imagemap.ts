@@ -56,7 +56,6 @@ export class ImagemapToken extends Token {
 	/**
 	 * @browser
 	 * @param inner 标签内部wikitext
-	 * @throws `SyntaxError` 没有合法图片
 	 */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {

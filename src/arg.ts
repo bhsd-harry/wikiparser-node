@@ -142,7 +142,7 @@ export class ArgToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		this.setAttribute('name', this.firstChild.text().trim());
 		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
 			if (prevTarget === this.firstChild) {

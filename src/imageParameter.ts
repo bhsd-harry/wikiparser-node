@@ -6,7 +6,7 @@ import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';
 import type {AstNodes, AstText, AtomToken, FileToken} from '../internal';
 
-const params = new Set(['alt', 'link', 'lang', 'page', 'caption']);
+export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
 /**
  * 检查图片参数是否合法
@@ -178,7 +178,7 @@ export class ImageParameterToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.parentNode?.type === 'gallery-image' && !params.has(this.name)) {
+		if (this.parentNode?.type === 'gallery-image' && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
 	}
@@ -245,6 +245,7 @@ export class ImageParameterToken extends Token {
 		return Parser.run(() => {
 			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), config) as this;
 			token.replaceChildren(...cloned);
+			token.setAttribute('name', this.name).setAttribute('syntax', this.#syntax);
 			return token;
 		});
 	}
@@ -255,8 +256,12 @@ export class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override hasAttribute(key: string): boolean {
-		return key === 'syntax' || super.hasAttribute(key);
+	override setAttribute<T extends string>(key: T, value: TokenAttributeGetter<T>): this {
+		if (key === 'syntax') {
+			this.#syntax = value;
+			return this;
+		}
+		return super.setAttribute(key, value);
 	}
 
 	/** 是否是不可变参数 */

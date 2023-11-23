@@ -313,7 +313,7 @@ export class AttributeToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.#equal.includes('\0')) {
 			this.#equal = this.buildFromStr(this.#equal, 'string');
 		}
@@ -420,11 +420,6 @@ export class AttributeToken extends fixed(Token) {
 		return key === 'quotes' ? this.#quotes as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
-	/** @private */
-	protected override hasAttribute(key: string): boolean {
-		return key === 'equal' || key === 'quotes' || super.hasAttribute(key);
-	}
-
 	/** @override */
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
@@ -497,11 +492,11 @@ export class AttributeToken extends fixed(Token) {
 	/**
 	 * 修改属性名
 	 * @param key 新属性名
-	 * @throws `Error` title属性不能更名
+	 * @throws `Error` title和alt属性不能更名
 	 * @throws `SyntaxError` 非法的标签属性名
 	 */
 	rename(key: string): void {
-		if (this.name === 'title') {
+		if (this.name === 'title' || this.name === 'alt' && this.#tag === 'img') {
 			throw new Error('title 属性不能更名！');
 		}
 		const {type} = this,

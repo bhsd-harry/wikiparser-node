@@ -171,7 +171,7 @@ export class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
 		}
@@ -305,7 +305,7 @@ export class TranscludeToken extends Token {
 				{name} = token,
 				newName = String(i + 1);
 			if (name !== newName) {
-				this.getArgs(newName, false, false).add(token.setAttribute('name', newName));
+				this.getArgs(newName, false, false).add(token.setAttribute('name', newName) as ParameterToken);
 				if (name) {
 					this.getArgs(name, false, false).delete(token);
 				}
@@ -466,11 +466,6 @@ export class TranscludeToken extends Token {
 	/** 安全的替换引用 */
 	safesubst(): void {
 		this.setModifier('safesubst:');
-	}
-
-	/** @private */
-	protected override hasAttribute(key: string): boolean {
-		return key === 'keys' || super.hasAttribute(key);
 	}
 
 	/** @private */

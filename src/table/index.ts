@@ -5,7 +5,7 @@ import * as Parser from '../../index';
 import {Token} from '..';
 import {TrToken} from './tr';
 import {TrBaseToken} from './trBase';
-import {TdToken} from './td';
+import {TdToken, createTd} from './td';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../index';
 import type {AttributesToken} from '../../internal';
@@ -426,7 +426,7 @@ export class TableToken extends TrBaseToken {
 		const rowToken = this.getNthRow(y)!,
 			layout = this.getLayout({y}),
 			maxCol = Math.max(...layout.map(({length}) => length)),
-			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		fill(y, rowToken, layout, maxCol, token);
 	}
 
@@ -440,7 +440,7 @@ export class TableToken extends TrBaseToken {
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
-			token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let y = 0; y < rowTokens.length; y++) {
 			fill(y, rowTokens[y]!, layout, maxCol, token);
 		}
@@ -557,7 +557,7 @@ export class TableToken extends TrBaseToken {
 		if (x > minCol) {
 			throw new RangeError(`表格第 ${rowLength.indexOf(minCol)} 行仅有 ${minCol} 列！`);
 		}
-		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let i = 0; i < layout.length; i++) {
 			const coords = layout[i]![x],
 				prevCoords = x === 0 ? true : layout[i]![x - 1];

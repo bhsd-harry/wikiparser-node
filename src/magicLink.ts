@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
@@ -8,10 +9,8 @@ import type {ParameterToken, AstText, CommentToken, IncludeToken, NoincludeToken
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
-export class MagicLinkToken extends Token {
+export class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
-	#protocolRegex;
-
 	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken)[];
@@ -26,7 +25,7 @@ export class MagicLinkToken extends Token {
 
 	/** 协议 */
 	get protocol(): string | undefined {
-		return this.#protocolRegex.exec(this.text())?.[0];
+		return this.getAttribute('pattern').exec(this.text())?.[0];
 	}
 
 	/**
@@ -34,16 +33,17 @@ export class MagicLinkToken extends Token {
 	 * @throws `Error` 特殊外链无法更改协议
 	 */
 	set protocol(value) {
+		const pattern = this.getAttribute('pattern');
 		if (typeof value !== 'string') {
 			this.typeError('protocol', 'String');
-		} else if (!new RegExp(`${this.#protocolRegex.source}$`, 'iu').test(value)) {
+		} else if (!new RegExp(`${pattern.source}$`, 'iu').test(value)) {
 			throw new RangeError(`非法的外链协议：${value}`);
 		}
 		const {link} = this;
-		if (!this.#protocolRegex.test(link)) {
+		if (!pattern.test(link)) {
 			throw new Error(`特殊外链无法更改协议：${link}`);
 		}
-		this.replaceChildren(link.replace(this.#protocolRegex, value));
+		this.replaceChildren(link.replace(pattern, value));
 	}
 
 	/** 和内链保持一致 */
@@ -65,7 +65,7 @@ export class MagicLinkToken extends Token {
 			'Stage-1': ':', '!ExtToken': '',
 		});
 		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
-		this.#protocolRegex = new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu');
+		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
 	}
 
 	/**

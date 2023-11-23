@@ -1,19 +1,26 @@
 import {hidden} from '../../mixin/hidden';
+import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {Token} from '..';
 
 /** 状态开关 */
 // @ts-expect-error not implementing all abstract methods
-export class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
+export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
+	#fixed;
 	/** @browser */
 	override readonly type = 'double-underscore';
 	declare name: string;
 
-	/** @param word 状态开关名 */
-	constructor(word: string, config = Parser.getConfig(), accum: Token[] = []) {
+	/**
+	 * @param word 状态开关名
+	 * @param fixed 是否固定大小写
+	 */
+	constructor(word: string, fixed: boolean, config = Parser.getConfig(), accum: Token[] = []) {
 		super(word, config, accum);
-		this.setAttribute('name', word.toLowerCase());
+		this.#fixed = fixed;
+		this.setAttribute('name', word.toLowerCase())
+			.setAttribute('pattern', new RegExp(`^${word}$`, fixed ? 'u' : 'iu'));
 	}
 
 	/** @private */
@@ -39,15 +46,12 @@ export class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override cloneNode(): this {
-		return Parser.run(() => new DoubleUnderscoreToken(this.firstChild.data, this.getAttribute('config')) as this);
-	}
-
-	/**
-	 * @override
-	 * @throws `Error` 禁止修改
-	 */
-	override setText(): never {
-		throw new Error(`禁止修改 ${this.constructor.name}！`);
+		const config = this.getAttribute('config');
+		return Parser.run(() => {
+			const token = new DoubleUnderscoreToken(this.firstChild.data, this.#fixed, config) as this;
+			token.afterBuild();
+			return token;
+		});
 	}
 }
 

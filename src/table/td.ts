@@ -139,7 +139,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, 'string');
 		}
@@ -306,32 +306,31 @@ export class TdToken extends fixed(TableBaseToken) {
 			this.#innerSyntax = '{{!}}';
 		}
 	}
-
-	/**
-	 * 创建新的单元格
-	 * @param inner 内部wikitext
-	 * @param subtype 单元格类型
-	 * @param attr 单元格属性
-	 * @param include 是否嵌入
-	 * @param config
-	 * @throws `RangeError` 非法的单元格类型
-	 */
-	static create(
-		inner?: string | Token,
-		subtype: TdSubtypes = 'td',
-		attr: TdAttrs = {},
-		include = false,
-		config = Parser.getConfig(),
-	): TdToken {
-		const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner!,
-			token = Parser.run(() => new TdToken('\n|', undefined, config));
-		token.setSyntax(subtype);
-		token.lastChild.safeReplaceWith(innerToken);
-		for (const [k, v] of Object.entries(attr)) {
-			token.setAttr(k, v as string | true);
-		}
-		return token;
-	}
 }
+
+/**
+ * 创建新的单元格
+ * @param inner 内部wikitext
+ * @param subtype 单元格类型
+ * @param attr 单元格属性
+ * @param include 是否嵌入
+ * @param config
+ */
+export const createTd = (
+	inner?: string | Token,
+	subtype: TdSubtypes = 'td',
+	attr: TdAttrs = {},
+	include = false,
+	config = Parser.getConfig(),
+): TdToken => {
+	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner!,
+		token = Parser.run(() => new TdToken('\n|', undefined, config));
+	token.setSyntax(subtype);
+	token.lastChild.safeReplaceWith(innerToken);
+	for (const [k, v] of Object.entries(attr)) {
+		token.setAttr(k, v as string | true);
+	}
+	return token;
+};
 
 Parser.classes['TdToken'] = __filename;

@@ -1,11 +1,12 @@
 import {generateForSelf} from '../../util/lint';
+import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
 
 /** `''`和`'''` */
 // @ts-expect-error not implementing all abstract methods
-export class QuoteToken extends NowikiBaseToken {
+export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 	/** @browser */
 	override readonly type = 'quote';
 
@@ -52,23 +53,6 @@ export class QuoteToken extends NowikiBaseToken {
 			});
 		}
 		return errors;
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		return Parser.run(() => new QuoteToken(this.firstChild.data, this.getAttribute('config')) as this);
-	}
-
-	/**
-	 * @override
-	 * @param str 新文本
-	 * @throws `RangeError` 错误的单引号语法
-	 */
-	override setText(str: string): string {
-		if (str === `''` || str === `'''` || str === `'''''`) {
-			return super.setText(str);
-		}
-		throw new RangeError(`${this.constructor.name} 的内部文本只能为连续 2/3/5 个"'"！`);
 	}
 }
 

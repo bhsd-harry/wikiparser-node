@@ -30,7 +30,7 @@
 		"prepublishOnly": "npm run build; rm dist/internal.js; rm -r dist/test; rm dist/[bmpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"diff": "git diff --ignore-all-space --color-moved",
-		"lint:ts": "eslint --cache .",
+		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "node dist/test/test.js",

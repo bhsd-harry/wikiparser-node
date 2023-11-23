@@ -2,7 +2,7 @@ import {generateForChild} from '../../util/lint';
 import * as Parser from '../../index';
 import {Token} from '..';
 import {TableBaseToken} from './base';
-import {TdToken} from './td';
+import {TdToken, createTd} from './td';
 import type {LintError} from '../../index';
 import type {AstNodes, SyntaxToken, ArgToken, TranscludeToken, TrToken} from '../../internal';
 import type {TdAttrs, TdSubtypes} from './td';
@@ -183,7 +183,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		subtype: TdSubtypes = 'td',
 		attr: TdAttrs = {},
 	): TdToken {
-		const token = TdToken.create(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		return this.insertBefore(token, this.getNthCol(column, true));
 	}
 }

@@ -925,6 +925,7 @@
 							"fixed",
 							"singleLine",
 							"sol",
+							"syntax",
 							"hidden"
 						]
 					}

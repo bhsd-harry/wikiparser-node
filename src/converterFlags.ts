@@ -53,7 +53,7 @@ export class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		this.#flags = this.childNodes.map(child => child.text().trim());
 		const /** @implements */ converterFlagsListener: AstListener = ({prevTarget}) => {
 			if (prevTarget) {
@@ -152,11 +152,6 @@ export class ConverterFlagsToken extends Token {
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		return key === 'flags' ? this.#flags as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	protected override hasAttribute(key: string): boolean {
-		return key === 'flags' || super.hasAttribute(key);
 	}
 
 	/**

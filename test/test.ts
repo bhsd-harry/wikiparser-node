@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as assert from 'assert'; // eslint-disable-line @typescript-eslint/no-unused-vars, no-unused-vars
+import * as assert from 'assert';
 import Parser = require('../index');
 
 const {argv: [,, title = '']} = process;

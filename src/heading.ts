@@ -34,7 +34,6 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return Number(this.name);
 	}
 
-	/** @throws `RangeError` 标题层级应为 1 - 6 之间的整数 */
 	set level(n) {
 		this.setLevel(n);
 	}

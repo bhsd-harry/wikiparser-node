@@ -4,9 +4,10 @@ import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
+import {galleryParams} from '../../index';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
-import type {ExtToken, GalleryToken} from '../../internal';
+import type {ExtToken, GalleryToken, AtomToken, ImageParameterToken} from '../../internal';
 
 /** 图库图片 */
 // @ts-expect-error not implementing all abstract methods
@@ -49,11 +50,11 @@ export class GalleryImageToken extends singleLine(FileToken) {
 			accum.splice(accum.indexOf(token), 1);
 		}
 		super(link, token?.toString(), config, accum);
-		this.setAttribute('bracket', false).type = `${type}-image`;
+		(this.setAttribute('bracket', false) as this).type = `${type}-image`;
 	}
 
 	/** @private */
-	protected override afterBuild(): void {
+	override afterBuild(): void {
 		const initImagemap = this.type === 'imagemap-image',
 			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
 		this.setAttribute('name', titleObj.title);
@@ -116,6 +117,20 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		const {firstChild} = image as this;
 		(image as this).destroy();
 		this.firstChild.safeReplaceWith(firstChild);
+	}
+
+	/**
+	 * @override
+	 * @param token 待插入的子节点
+	 * @param i 插入位置
+	 * @throws `RangeError` 不可插入多余子节点
+	 * @throws `TypeError` 不可插入文本节点
+	 */
+	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
+		if (this.type === 'gallery-image' && child.type === 'image-parameter' && !galleryParams.has(child.name)) {
+			child.setAttribute('name', 'invalid');
+		}
+		return super.insertAt(child, i) as T;
 	}
 }
 
