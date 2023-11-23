@@ -93,5 +93,3 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 	}
 	return s;
 };
-
-Parser.parsers['parseLinks'] = __filename;

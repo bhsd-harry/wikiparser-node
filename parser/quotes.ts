@@ -63,5 +63,3 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 	}
 	return arr.join('');
 };
-
-Parser.parsers['parseQuotes'] = __filename;

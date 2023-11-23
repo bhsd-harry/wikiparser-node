@@ -222,9 +222,6 @@ export class TranscludeToken extends Token {
 				newName = String(i + 1);
 			if (name !== newName) {
 				this.getArgs(newName, false, false).add(token.setAttribute('name', newName) as ParameterToken);
-				if (name) {
-					this.getArgs(name, false, false).delete(token);
-				}
 			}
 		}
 	}

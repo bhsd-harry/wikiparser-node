@@ -48,5 +48,3 @@ export const parseHrAndDoubleUnderscore = (
 	);
 	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
 };
-
-Parser.parsers['parseHrAndDoubleUnderscore'] = __filename;

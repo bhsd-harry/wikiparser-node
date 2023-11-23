@@ -81,5 +81,3 @@ export const parseCommentAndExt = (
 		},
 	);
 };
-
-Parser.parsers['parseCommentAndExt'] = __filename;

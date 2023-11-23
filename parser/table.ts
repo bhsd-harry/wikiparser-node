@@ -110,5 +110,3 @@ export const parseTable = (
 	}
 	return out.slice(1);
 };
-
-Parser.parsers['parseTable'] = __filename;

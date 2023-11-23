@@ -127,5 +127,3 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 	}
 	return wikitext;
 };
-
-Parser.parsers['parseBraces'] = __filename;

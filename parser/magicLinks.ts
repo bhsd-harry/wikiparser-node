@@ -36,5 +36,3 @@ export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), a
 		return `\0${accum.length - 1}w\x7F${trail}`;
 	});
 };
-
-Parser.parsers['parseMagicLinks'] = __filename;

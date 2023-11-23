@@ -42,5 +42,3 @@ export const parseConverter = (text: string, config = Parser.getConfig(), accum:
 	}
 	return text;
 };
-
-Parser.parsers['parseConverter'] = __filename;
