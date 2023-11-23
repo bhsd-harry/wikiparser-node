@@ -304,11 +304,6 @@ export abstract class AstElement extends AstNode {
 		return errors;
 	}
 
-	/** @private */
-	matchesTypes(types: Set<string>): boolean {
-		return types.has(this.type);
-	}
-
 	/**
 	 * 以HTML格式打印
 	 * @browser
@@ -316,6 +311,11 @@ export abstract class AstElement extends AstNode {
 	 */
 	print(opt: PrintOpt = {}): string {
 		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
+	}
+
+	/** @private */
+	matchesTypes(types: Set<string>): boolean {
+		return types.has(this.type);
 	}
 
 	/**
