@@ -3,34 +3,12 @@ import * as Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	/** @browser */
 	valid;
-	/** @browser */
 	ns;
-	/** @browser */
 	fragment;
-	/** @browser */
 	encoded = false;
-	main;
-	prefix;
-	interwiki = '';
-	conversionTable = new Map<string, string>();
-	redirects = new Map<string, string>();
-
-	/** 完整标题 */
-	get title(): string {
-		let title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
-		const redirected = this.redirects.get(title);
-		if (redirected) {
-			return redirected;
-		}
-		this.autoConvert();
-		title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
-		return this.redirects.get(title) ?? title;
-	}
 
 	/**
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param decode 是否需要解码
@@ -87,23 +65,6 @@ export class Title {
 		this.fragment = fragment;
 		this.main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
 		this.prefix = `${namespace}${namespace && ':'}`;
-	}
-
-	/** 完整链接 */
-	toString(): string {
-		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
-	}
-
-	/**
-	 * 转换
-	 * @param conversionTable 单向转换表
-	 */
-	autoConvert(): void {
-		const {conversionTable} = this;
-		if (conversionTable.size > 0) {
-			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
-			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
-		}
 	}
 }
 

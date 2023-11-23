@@ -8,10 +8,7 @@ declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'tabl
 export class SyntaxToken extends syntax(Token) {
 	declare type: SyntaxTypes;
 
-	/**
-	 * @browser
-	 * @param pattern 语法正则
-	 */
+	/** @param pattern 语法正则 */
 	constructor(
 		wikitext: string | undefined,
 		pattern: RegExp,
@@ -23,20 +20,6 @@ export class SyntaxToken extends syntax(Token) {
 		super(wikitext, config, accum, acceptable);
 		this.type = type;
 		this.setAttribute('pattern', pattern);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable'),
-			pattern = this.getAttribute('pattern');
-		return Parser.run(() => {
-			const token = new SyntaxToken(undefined, pattern, this.type, config, [], acceptable) as this;
-			token.append(...cloned);
-			token.afterBuild();
-			return token;
-		});
 	}
 }
 

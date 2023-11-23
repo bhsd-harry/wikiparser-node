@@ -12,11 +12,7 @@ import type {AttributesToken} from './attributes';
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
 export class NestedToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
-	declare name: string;
-	#tags: string[];
-	#regex;
 
 	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
@@ -43,7 +39,6 @@ export class NestedToken extends Token {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/**
-	 * @browser
 	 * @param regex 内层正则
 	 * @param tags 内层标签名
 	 */
@@ -80,10 +75,7 @@ export class NestedToken extends Token {
 		this.#regex = regex;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return [
@@ -99,30 +91,6 @@ export class NestedToken extends Token {
 				return generateForChild(child, rect, Parser.msg('invalid content in <$1>', this.name));
 			}),
 		];
-	}
-
-	/**
-	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
-	 * @throws `TypeError` 不是许可的标签
-	 */
-	override insertAt<T extends Token>(token: T, i = this.length): T {
-		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {
-			throw new TypeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`);
-		}
-		return super.insertAt(token, i);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new NestedToken(undefined, this.#regex, this.#tags, config) as this;
-			token.append(...cloned);
-			return token;
-		});
 	}
 }
 

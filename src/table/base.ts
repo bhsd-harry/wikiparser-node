@@ -25,6 +25,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
  */
 export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	declare type: 'table' | 'tr' | 'td';
+
 	declare childNodes: [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
@@ -33,7 +34,6 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	abstract override get lastElementChild(): Token;
 
 	/**
-	 * @browser
 	 * @param pattern 表格语法正则
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
@@ -54,47 +54,6 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 			new AttributesToken(attr, 'table-attrs', this.type, config, accum),
 		);
 		this.protectChildren(0, 1);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [syntax, attr, ...cloned] = this.cloneChildNodes() as [SyntaxToken, AttributesToken, ...Token[]];
-		return Parser.run(() => {
-			const {constructor} = this as this & {constructor: new (...args: any[]) => unknown},
-				token = new constructor(undefined, undefined, this.getAttribute('config')) as this;
-			token.firstChild.safeReplaceWith(syntax);
-			token.childNodes[1].safeReplaceWith(attr);
-			if (token.type === 'td') { // TdToken
-				token.childNodes[2]!.safeReplaceWith(cloned[0]!);
-			} else {
-				token.append(...cloned);
-			}
-			return token;
-		});
-	}
-
-	/** 转义表格语法 */
-	escape(): void {
-		for (const child of this.childNodes) {
-			if (child instanceof SyntaxToken) {
-				escapeTable(child);
-			} else if (child instanceof TableBaseToken) {
-				child.escape();
-			}
-		}
-	}
-
-	/**
-	 * 设置表格语法
-	 * @param syntax 表格语法
-	 * @param esc 是否需要转义
-	 */
-	setSyntax(syntax: string, esc = false): void {
-		const {firstChild} = this;
-		firstChild.replaceChildren(syntax);
-		if (esc) {
-			escapeTable(firstChild);
-		}
 	}
 }
 

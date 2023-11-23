@@ -13,7 +13,6 @@ const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
 
 /**
  * a more sophisticated string-explode function
- * @browser
  * @param start start syntax of a nested AST node
  * @param end end syntax of a nested AST node
  * @param separator syntax for explosion
@@ -48,8 +47,8 @@ const explode = (start: string, end: string, separator: string, str?: string): s
  */
 // @ts-expect-error not implementing all abstract methods
 export class FileToken extends LinkBaseToken {
-	/** @browser */
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
+
 	declare childNodes: [AtomToken, ...ImageParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
@@ -58,50 +57,7 @@ export class FileToken extends LinkBaseToken {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
 
-	/** 图片链接 */
-	override get link(): string | Title {
-		return this.getArg('link')?.link ?? super.link;
-	}
-
-	override set link(value) {
-		this.setValue('link', String(value));
-	}
-
-	/** 图片大小 */
-	get size(): {width: string, height: string} | undefined {
-		return this.getArg('width')?.size;
-	}
-
-	/** 图片宽度 */
-	get width(): string | undefined {
-		return this.size?.width;
-	}
-
-	set width(width) {
-		const arg = this.getArg('width');
-		if (arg) {
-			arg.width = width;
-		} else {
-			this.setValue('width', width);
-		}
-	}
-
-	/** 图片高度 */
-	get height(): string | undefined {
-		return this.size?.height;
-	}
-
-	set height(height) {
-		const arg = this.getArg('width');
-		if (arg) {
-			arg.height = height;
-		} else {
-			this.setValue('width', height && `x${height}`);
-		}
-	}
-
 	/**
-	 * @browser
 	 * @param link 文件名
 	 * @param text 图片参数
 	 * @param delimiter `|`
@@ -112,10 +68,7 @@ export class FileToken extends LinkBaseToken {
 		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			args = this.getAllArgs().filter(({childNodes}) => {
@@ -165,17 +118,13 @@ export class FileToken extends LinkBaseToken {
 		return errors;
 	}
 
-	/**
-	 * 获取所有图片参数节点
-	 * @browser
-	 */
+	/** 获取所有图片参数节点 */
 	getAllArgs(): ImageParameterToken[] {
 		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**
 	 * 获取指定图片参数
-	 * @browser
 	 * @param key 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
@@ -184,7 +133,6 @@ export class FileToken extends LinkBaseToken {
 
 	/**
 	 * 获取特定类型的图片属性参数节点
-	 * @browser
 	 * @param keys 接受的参数名
 	 * @param type 类型名
 	 */
@@ -196,120 +144,19 @@ export class FileToken extends LinkBaseToken {
 		return args;
 	}
 
-	/**
-	 * 获取图片框架属性参数节点
-	 * @browser
-	 */
+	/** 获取图片框架属性参数节点 */
 	getFrameArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(frame, '框架');
 	}
 
-	/**
-	 * 获取图片水平对齐参数节点
-	 * @browser
-	 */
+	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(horizAlign, '水平对齐');
 	}
 
-	/**
-	 * 获取图片垂直对齐参数节点
-	 * @browser
-	 */
+	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
-	}
-
-	/**
-	 * 获取生效的指定图片参数
-	 * @param key 参数名
-	 */
-	getArg(key: string): ImageParameterToken | undefined {
-		return this.getArgs(key).at(-1);
-	}
-
-	/**
-	 * 是否具有指定图片参数
-	 * @param key 参数名
-	 */
-	hasArg(key: string): boolean {
-		return this.getArgs(key).length > 0;
-	}
-
-	/**
-	 * 移除指定图片参数
-	 * @param key 参数名
-	 */
-	removeArg(key: string): void {
-		for (const token of this.getArgs(key)) {
-			this.removeChild(token);
-		}
-	}
-
-	/** 获取图片参数名 */
-	getKeys(): Set<string> {
-		return new Set(this.getAllArgs().map(({name}) => name));
-	}
-
-	/**
-	 * 获取指定的图片参数值
-	 * @param key 参数名
-	 */
-	getValues(key: string): (string | true)[] {
-		return this.getArgs(key).map(token => token.getValue());
-	}
-
-	/**
-	 * 获取生效的指定图片参数值
-	 * @param key 参数名
-	 */
-	getValue(key: string): string | true | undefined {
-		return this.getArg(key)?.getValue();
-	}
-
-	/**
-	 * 设置图片参数
-	 * @param key 参数名
-	 * @param value 参数值
-	 * @throws `RangeError` 未定义的图片参数
-	 * @throws `SyntaxError` 非法的参数
-	 */
-	setValue(key: string, value: string | boolean = false): void {
-		if (value === false) {
-			this.removeArg(key);
-			return;
-		}
-		const token = this.getArg(key);
-		if (token) {
-			token.setValue(value);
-			return;
-		}
-		let syntax: string | undefined = '';
-		const config = this.getAttribute('config');
-		if (key !== 'caption') {
-			syntax = Object.entries(config.img).find(([, name]) => name === key)?.[0];
-			if (!syntax) {
-				throw new RangeError(`未定义的图片参数： ${key}`);
-			}
-		}
-		if (value === true) {
-			if (syntax.includes('$1')) {
-				this.typeError('setValue', 'Boolean');
-			}
-			this.insertAt(Parser.run(() => new ImageParameterToken(syntax!, config)));
-			return;
-		}
-		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
-			{length, firstChild: file} = root;
-		if (length !== 1 || file!.type !== 'file' || file!.length !== 2) {
-			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
-		}
-		const {name, lastChild: imageParameter} = file as this;
-		if (name !== 'File:F' || imageParameter.name !== key) {
-			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
-		}
-		this.insertAt(imageParameter);
 	}
 }
 

@@ -7,9 +7,9 @@ import type {AttributesToken, ExtToken} from '../../internal';
 /** 扩展标签内的纯文字Token */
 // @ts-expect-error not implementing all abstract methods
 export class NowikiToken extends NowikiBaseToken {
-	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: string;
+
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
 	// @ts-expect-error abstract method
@@ -23,10 +23,7 @@ export class NowikiToken extends NowikiBaseToken {
 	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name, firstChild} = this;
 		return (name === 'templatestyles' || name === 'section') && firstChild.data

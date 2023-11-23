@@ -182,11 +182,8 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 export class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
 	declare name: string;
-	/** @browser */
 	#equal;
-	/** @browser */
 	#quotes;
-	/** @browser */
 	#tag;
 
 	declare childNodes: [AtomToken, Token];
@@ -213,36 +210,22 @@ export class AttributeToken extends fixed(Token) {
 	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
 
-	/**
-	 * 引号是否匹配
-	 * @browser
-	 */
+	/** 引号是否匹配 */
 	get balanced(): boolean {
 		return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
 
-	/**
-	 * 标签名
-	 * @browser
-	 */
+	/** 标签名 */
 	get tag(): string {
 		return this.#tag;
 	}
 
-	/**
-	 * getValue()的getter
-	 * @browser
-	 */
+	/** getValue()的getter */
 	get value(): string | true {
 		return this.getValue();
 	}
 
-	set value(value) {
-		this.setValue(value);
-	}
-
 	/**
-	 * @browser
 	 * @param type 标签类型
 	 * @param tag 标签名
 	 * @param key 属性名
@@ -323,10 +306,7 @@ export class AttributeToken extends fixed(Token) {
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		if (omit && this.matchesTypes(omit)) {
 			return '';
@@ -337,10 +317,7 @@ export class AttributeToken extends fixed(Token) {
 			: this.firstChild.toString(omit);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
 	}
@@ -350,10 +327,7 @@ export class AttributeToken extends fixed(Token) {
 		return this.#equal && i === 0 ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{balanced, firstChild, lastChild, type, name, value} = this,
@@ -388,10 +362,7 @@ export class AttributeToken extends fixed(Token) {
 		return errors;
 	}
 
-	/**
-	 * 获取属性值
-	 * @browser
-	 */
+	/** 获取属性值 */
 	getValue(): string | true {
 		if (this.#equal) {
 			const value = this.lastChild.text();
@@ -403,124 +374,10 @@ export class AttributeToken extends fixed(Token) {
 		return this.type === 'ext-attr' || '';
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'equal') {
-			return this.#equal as TokenAttributeGetter<T>;
-		}
-		return key === 'quotes' ? this.#quotes as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config) as this;
-			token.firstChild.safeReplaceWith(key);
-			token.lastChild.safeReplaceWith(value);
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/** 转义等号 */
-	escape(): void {
-		this.#equal = '{{=}}';
-	}
-
-	/** 闭合引号 */
-	close(): void {
-		const [opening] = this.#quotes;
-		if (opening) {
-			this.#quotes[1] = opening;
-		}
-	}
-
-	/**
-	 * 设置属性值
-	 * @param value 参数值
-	 * @throws `SyntaxError` 非法的标签属性
-	 */
-	setValue(value: string | boolean): void {
-		if (value === false) {
-			this.remove();
-			return;
-		} else if (value === true) {
-			this.#equal = '';
-			return;
-		}
-		const {type, name} = this,
-			key = name === 'title' ? 'title' : 'data',
-			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs: AttributesToken;
-		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		} else if (type === 'table-attr') {
-			if (tag!.length !== 2) {
-				throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-			}
-			attrs = tag!.lastChild as AttributesToken;
-		} else {
-			attrs = tag!.firstChild as AttributesToken;
-		}
-		const {firstChild} = attrs;
-		if (attrs.length !== 1 || firstChild?.type !== type || firstChild.name !== key) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		}
-		const {lastChild} = firstChild;
-		firstChild.destroy();
-		this.lastChild.safeReplaceWith(lastChild);
-		if (this.#quotes[0]) {
-			this.close();
-		} else {
-			this.#quotes = ['"', '"'] as [string, string];
-		}
-	}
-
-	/**
-	 * 修改属性名
-	 * @param key 新属性名
-	 * @throws `Error` title和alt属性不能更名
-	 * @throws `SyntaxError` 非法的标签属性名
-	 */
-	rename(key: string): void {
-		if (this.name === 'title' || this.name === 'alt' && this.#tag === 'img') {
-			throw new Error('title 属性不能更名！');
-		}
-		const {type} = this,
-			wikitext = `${pre[type]}${key}${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs: AttributesToken;
-		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		} else if (type === 'table-attr') {
-			if (tag!.length !== 2) {
-				throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-			}
-			attrs = tag!.lastChild as AttributesToken;
-		} else {
-			attrs = tag!.firstChild as AttributesToken;
-		}
-		const {firstChild: attr} = attrs;
-		if (attrs.length !== 1 || attr?.type !== type || attr.value !== true) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		}
-		const {firstChild} = attr;
-		attr.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

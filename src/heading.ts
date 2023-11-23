@@ -11,9 +11,9 @@ import type {LintError} from '../index';
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 export class HeadingToken extends sol(fixed(Token)) {
-	/** @browser */
 	override readonly type = 'heading';
 	declare name: string;
+
 	declare childNodes: [Token, SyntaxToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [Token, SyntaxToken];
@@ -26,33 +26,17 @@ export class HeadingToken extends sol(fixed(Token)) {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): SyntaxToken;
 
-	/**
-	 * 标题层级
-	 * @browser
-	 */
-	get level(): number {
-		return Number(this.name);
-	}
-
-	set level(n) {
-		this.setLevel(n);
-	}
-
-	/**
-	 * 标题格式的等号
-	 * @browser
-	 */
+	/** 标题格式的等号 */
 	get #equals(): string {
 		return '='.repeat(this.level);
 	}
 
-	/** 内部wikitext */
-	get innerText(): string {
-		return this.firstChild.text();
+	/** 标题层级 */
+	get level(): number {
+		return Number(this.name);
 	}
 
 	/**
-	 * @browser
 	 * @param level 标题层级
 	 * @param input 标题文字
 	 */
@@ -68,10 +52,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 		this.append(token, trail);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const equals = this.#equals;
 		return omit && this.matchesTypes(omit)
@@ -81,10 +62,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 			}${equals}${this.lastChild.toString(omit)}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const equals = this.#equals;
 		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}`;
@@ -100,10 +78,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return i === 0 ? this.level : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			innerStr = String(this.firstChild);
@@ -123,37 +98,10 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const equals = this.#equals;
 		return super.print({pre: equals, sep: equals});
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
-		return Parser.run(() => {
-			const token = new HeadingToken(this.level, [], this.getAttribute('config')) as this;
-			token.firstChild.safeReplaceWith(title);
-			token.lastChild.safeReplaceWith(trail);
-			return token;
-		});
-	}
-
-	/**
-	 * 设置标题层级
-	 * @param n 标题层级
-	 */
-	setLevel(n: number): void {
-		this.setAttribute('name', String(Math.min(Math.max(n, 1), 6)));
-	}
-
-	/** 移除标题后的不可见内容 */
-	removeTrail(): void {
-		this.lastChild.replaceChildren();
 	}
 }
 

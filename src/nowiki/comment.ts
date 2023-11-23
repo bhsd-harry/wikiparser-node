@@ -8,19 +8,10 @@ import type {Token} from '../index';
 /** HTML注释，不可见 */
 // @ts-expect-error not implementing all abstract methods
 export class CommentToken extends hidden(NowikiBaseToken) {
-	/** @browser */
 	override readonly type = 'comment';
 	closed;
 
-	/** 内部wikitext */
-	get innerText(): string {
-		return this.firstChild.data;
-	}
-
-	/**
-	 * @browser
-	 * @param closed 是否闭合
-	 */
+	/** @param closed 是否闭合 */
 	constructor(wikitext: string, closed = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 		this.closed = closed;
@@ -32,26 +23,12 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 		return 4;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
-	override print(): string {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
-	}
-
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		if (!this.closed && this.nextSibling) {
 			Parser.error('自动闭合HTML注释', this);
@@ -61,12 +38,8 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	}
 
 	/** @override */
-	override cloneNode(): this {
-		return Parser.run(() => new CommentToken(
-			this.firstChild.data,
-			this.closed,
-			this.getAttribute('config'),
-		) as this);
+	override print(): string {
+		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 }
 

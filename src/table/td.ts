@@ -22,9 +22,7 @@ export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan
  */
 // @ts-expect-error not implementing all abstract methods
 export class TdToken extends fixed(TableBaseToken) {
-	/** @browser */
 	override readonly type = 'td';
-	/** @browser */
 	#innerSyntax = '';
 
 	declare childNodes: [SyntaxToken, AttributesToken, Token];
@@ -41,43 +39,12 @@ export class TdToken extends fixed(TableBaseToken) {
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token | undefined;
 
-	/**
-	 * 单元格类型
-	 * @browser
-	 */
+	/** 单元格类型 */
 	get subtype(): TdSubtypes {
 		return this.getSyntax().subtype;
 	}
 
-	set subtype(subtype) {
-		this.setSyntax(subtype);
-	}
-
-	/** rowspan */
-	get rowspan(): number {
-		return this.getAttr('rowspan');
-	}
-
-	set rowspan(rowspan) {
-		this.setAttr('rowspan', rowspan);
-	}
-
-	/** colspan */
-	get colspan(): number {
-		return this.getAttr('colspan');
-	}
-
-	set colspan(colspan) {
-		this.setAttr('colspan', colspan);
-	}
-
-	/** 内部wikitext */
-	get innerText(): string {
-		return this.lastChild.text();
-	}
-
 	/**
-	 * @browser
 	 * @param syntax 单元格语法
 	 * @param inner 内部wikitext
 	 */
@@ -145,10 +112,7 @@ export class TdToken extends fixed(TableBaseToken) {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		this.#correct();
 		const {childNodes: [syntax, attr, inner]} = this;
@@ -157,10 +121,7 @@ export class TdToken extends fixed(TableBaseToken) {
 			: `${syntax.toString(omit)}${attr.toString(omit)}${this.#innerSyntax}${inner.toString(omit)}`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		this.#correct();
 		const {childNodes: [syntax, attr, inner]} = this;
@@ -176,10 +137,7 @@ export class TdToken extends fixed(TableBaseToken) {
 		return 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		start += this.getRelativeIndex(this.length - 1);
@@ -191,120 +149,10 @@ export class TdToken extends fixed(TableBaseToken) {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
-	}
-
-	/** 是否位于行首 */
-	isIndependent(): boolean {
-		return this.firstChild.text().startsWith('\n');
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const token = super.cloneNode();
-		token.setAttribute('innerSyntax', this.#innerSyntax);
-		return token;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'innerSyntax' ? this.#innerSyntax as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
-		if (key === 'innerSyntax') {
-			this.#innerSyntax = value ?? '';
-			return this;
-		}
-		return super.setAttribute(key, value);
-	}
-
-	/**
-	 * @override
-	 * @param syntax 表格语法
-	 * @param esc 是否需要转义
-	 */
-	override setSyntax(syntax: string, esc = false): void {
-		const aliases: Record<string, string> = {td: '\n|', th: '\n!', caption: '\n|+'};
-		super.setSyntax(aliases[syntax] ?? syntax, esc);
-	}
-
-	/** 修复\<td\>语法 */
-	#correct(): void {
-		if (String(this.childNodes[1])) {
-			this.#innerSyntax ||= '|';
-		}
-		const {subtype, escape, correction} = this.getSyntax();
-		if (correction) {
-			this.setSyntax(subtype, escape);
-		}
-	}
-
-	/** 改为独占一行 */
-	independence(): void {
-		if (!this.isIndependent()) {
-			const {subtype, escape} = this.getSyntax();
-			this.setSyntax(subtype, escape);
-		}
-	}
-
-	/**
-	 * @override
-	 * @param key 属性键
-	 */
-	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		const value = super.getAttr(key);
-		key = key.toLowerCase().trim() as T;
-		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
-	}
-
-	/** @override */
-	override getAttrs(): TdAttrs {
-		const attr: TdAttrs = super.getAttrs();
-		if ('rowspan' in attr) {
-			attr.rowspan = Number(attr.rowspan);
-		}
-		if ('colspan' in attr) {
-			attr.colspan = Number(attr.colspan);
-		}
-		return attr;
-	}
-
-	/**
-	 * @override
-	 * @param key 属性键
-	 * @param value 属性值
-	 */
-	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void {
-		key = key.toLowerCase().trim() as T;
-		let v: string | boolean;
-		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
-			v = value === 1 ? false : String(value);
-		} else {
-			v = value!;
-		}
-		super.setAttr(key, v);
-		if (!String(this.childNodes[1])) {
-			this.#innerSyntax = '';
-		}
-	}
-
-	/** @override */
-	override escape(): void {
-		super.escape();
-		if (String(this.childNodes[1])) {
-			this.#innerSyntax ||= '{{!}}';
-		}
-		if (this.#innerSyntax === '|') {
-			this.#innerSyntax = '{{!}}';
-		}
 	}
 }
 

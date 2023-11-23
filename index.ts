@@ -33,38 +33,11 @@ export interface LintError {
 }
 
 declare interface Parser {
-	/** @browser */
 	config: string | Config;
-	/** @browser */
 	i18n?: string | Record<string, string>;
 
 	/** @private */
 	readonly MAX_STAGE: number;
-
-	conversionTable: Map<string, string>;
-	redirects: Map<string, string>;
-
-	/** @private */
-	warning: boolean;
-	/** @private */
-	debugging: boolean;
-	/** @private */
-	running: boolean;
-
-	/** @private */
-	classes: Record<string, string>;
-	/** @private */
-	mixins: Record<string, string>;
-	/** @private */
-	parsers: Record<string, string>;
-
-	/** @private */
-	readonly aliases: string[][];
-	/** @private */
-	readonly typeAliases: Record<string, string[] | undefined>;
-
-	/** @private */
-	readonly promises: Promise<void>[];
 
 	/** @private */
 	getConfig(this: Parser): Config;
@@ -74,7 +47,6 @@ declare interface Parser {
 
 	/**
 	 * 规范化页面标题
-	 * @browser
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param include 是否嵌入
@@ -94,38 +66,10 @@ declare interface Parser {
 
 	/**
 	 * 解析wikitext
-	 * @browser
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
-
-	/** @private */
-	run<T>(this: Parser, callback: () => T): T;
-
-	/** @private */
-	warn(this: Parser, msg: string, ...args: unknown[]): void;
-	/** @private */
-	debug(this: Parser, msg: string, ...args: unknown[]): void;
-	/** @private */
-	error(msg: string, ...args: unknown[]): void;
-	/** @private */
-	info(msg: string, ...args: unknown[]): void;
-
-	/** @private */
-	log(f: Function): void;
-
-	/** @private */
-	clearCache(this: Parser): void;
-
-	/**
-	 * 是否是跨维基链接
-	 * @param title 链接标题
-	 */
-	isInterwiki(title: string, config?: Config): [string, string] | null;
-
-	/** @private */
-	reparse(date: string): Token;
 }
 
 /**
@@ -142,120 +86,6 @@ const Parser: Parser = {
 	config: 'default',
 
 	MAX_STAGE: 11,
-
-	conversionTable: new Map(),
-	redirects: new Map(),
-
-	warning: true,
-	debugging: false,
-	running: false,
-
-	classes: {},
-	mixins: {},
-	parsers: {},
-
-	aliases: [
-		['AstText'],
-		['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],
-		['ArgToken', 'TranscludeToken', 'HeadingToken'],
-		['HtmlToken'],
-		['TableToken'],
-		['HrToken', 'DoubleUnderscoreToken'],
-		['LinkToken', 'FileToken', 'CategoryToken'],
-		['QuoteToken'],
-		['ExtLinkToken'],
-		['MagicLinkToken'],
-		['ListToken', 'DdToken'],
-		['ConverterToken'],
-	],
-	typeAliases: {
-		text: ['string', 'str'],
-		plain: ['regular', 'normal'],
-		// comment and extension
-		onlyinclude: ['only-include'],
-		noinclude: ['no-include'],
-		include: ['includeonly', 'include-only'],
-		comment: undefined,
-		ext: ['extension'],
-		'ext-attrs': ['extension-attrs', 'ext-attributes', 'extension-attributes'],
-		'ext-attr-dirty': ['extension-attr-dirty', 'ext-attribute-dirty', 'extension-attribute-dirty'],
-		'ext-attr': ['extension-attr', 'ext-attribute', 'extension-attribute'],
-		'attr-key': ['attribute-key'],
-		'attr-value': ['attribute-value', 'attr-val', 'attribute-val'],
-		'ext-inner': ['extension-inner'],
-		// triple braces
-		arg: ['argument'],
-		'arg-name': ['argument-name'],
-		'arg-default': ['argument-default'],
-		hidden: ['arg-redundant'],
-		// double braces
-		'magic-word': ['parser-function', 'parser-func'],
-		'magic-word-name': ['parser-function-name', 'parser-func-name'],
-		'invoke-function': ['invoke-func', 'lua-function', 'lua-func', 'module-function', 'module-func'],
-		'invoke-module': ['lua-module'],
-		template: undefined,
-		'template-name': undefined,
-		parameter: ['param'],
-		'parameter-key': ['param-key'],
-		'parameter-value': ['parameter-val', 'param-value', 'param-val'],
-		// heading
-		heading: ['header'],
-		'heading-title': ['header-title'],
-		'heading-trail': ['header-trail'],
-		// html
-		html: undefined,
-		'html-attrs': ['html-attributes'],
-		'html-attr-dirty': ['html-attribute-dirty'],
-		'html-attr': ['html-attribute'],
-		// table
-		table: undefined,
-		tr: ['table-row'],
-		td: ['table-cell', 'table-data'],
-		'table-syntax': undefined,
-		'table-attrs': ['tr-attrs', 'td-attrs', 'table-attributes', 'tr-attributes', 'td-attributes'],
-		'table-attr-dirty':
-			['tr-attr-dirty', 'td-attr-dirty', 'table-attribute-dirty', 'tr-attribute-dirty', 'td-attribute-dirty'],
-		'table-attr': ['tr-attr', 'td-attr', 'table-attribute', 'tr-attribute', 'td-attribute'],
-		'table-inter': undefined,
-		'td-inner': ['table-cell-inner', 'table-data-inner'],
-		// hr and double-underscore
-		hr: ['horizontal'],
-		'double-underscore': ['underscore', 'behavior-switch', 'behaviour-switch'],
-		// link
-		link: ['wikilink'],
-		'link-target': ['wikilink-target'],
-		'link-text': ['wikilink-text'],
-		category: ['category-link', 'cat', 'cat-link'],
-		file: ['file-link', 'image', 'image-link', 'img', 'img-link'],
-		'gallery-image': ['gallery-file', 'gallery-img'],
-		'imagemap-image': ['imagemap-file', 'imagemap-img', 'image-map-image', 'image-map-file', 'image-map-img'],
-		'image-parameter': ['img-parameter', 'image-param', 'img-param'],
-		// quotes
-		quote: ['quotes', 'quot', 'apostrophe', 'apostrophes', 'apos'],
-		// external link
-		'ext-link': ['external-link'],
-		'ext-link-text': ['external-link-text'],
-		'ext-link-url': ['external-link-url'],
-		// magic link
-		'free-ext-link': ['free-external-link', 'magic-link'],
-		// list
-		list: ['ol', 'ordered-list', 'ul', 'unordered-list', 'dl', 'description-list'],
-		dd: ['indent', 'indentation'],
-		// converter
-		converter: ['convert', 'conversion'],
-		'converter-flags': ['convert-flags', 'conversion-flags'],
-		'converter-flag': ['convert-flag', 'conversion-flag'],
-		'converter-rule': ['convert-rule', 'conversion-rule'],
-		'converter-rule-noconvert': ['convert-rule-noconvert', 'conversion-rule-noconvert'],
-		'converter-rule-variant': ['convert-rule-variant', 'conversion-rule-variant'],
-		'converter-rule-to': ['convert-rule-to', 'conversion-rule-to'],
-		'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
-		// specific extensions
-		'param-line': ['parameter-line'],
-		'imagemap-link': ['image-map-link'],
-	},
-
-	promises: [Promise.resolve()],
 
 	/** @implements */
 	getConfig() {
@@ -354,101 +184,6 @@ const Parser: Parser = {
 			}
 		}
 		return token!;
-	},
-
-	/** @implements */
-	run(callback) {
-		const {running} = this;
-		this.running = true;
-		try {
-			const result = callback();
-			this.running = running;
-			return result;
-		} catch (e) {
-			this.running = running;
-			throw e;
-		}
-	},
-
-	/** @implements */
-	warn(msg, ...args) {
-		if (this.warning) {
-			console.warn('\x1B[33m%s\x1B[0m', msg, ...args);
-		}
-	},
-	/** @implements */
-	debug(msg, ...args) {
-		if (this.debugging) {
-			console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
-		}
-	},
-	/** @implements */
-	error(msg, ...args) {
-		console.error('\x1B[31m%s\x1B[0m', msg, ...args);
-	},
-	/** @implements */
-	info(msg, ...args) {
-		console.info('\x1B[32m%s\x1B[0m', msg, ...args);
-	},
-
-	/** @implements */
-	log(f) {
-		if (typeof f === 'function') {
-			console.log(String(f));
-		}
-	},
-
-	/** @implements */
-	clearCache() {
-		const entries = [
-			...Object.entries(this.classes),
-			...Object.entries(this.mixins),
-			...Object.entries(this.parsers),
-		];
-		for (const [, filePath] of entries) {
-			try {
-				delete require.cache[require.resolve(filePath)];
-			} catch {}
-		}
-		for (const [name, filePath] of entries) {
-			if (name in global) {
-				// @ts-expect-error noImplicitAny
-				global[name] = require(filePath);
-			}
-		}
-	},
-
-	/** @implements */
-	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'iu')
-			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, '')) as [string, string] | null;
-	},
-
-	/** @implements */
-	reparse(date) {
-		const main = fs.readdirSync(path.join(__dirname, '..', 'errors'))
-			.find(name => name.startsWith(date) && name.endsWith('Z'));
-		if (!main) {
-			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
-		}
-		const file = path.join(__dirname, '..', 'errors', main),
-			wikitext = fs.readFileSync(file, 'utf8');
-		const {stage, include, config}: ParsingError = require(`${file}.json`),
-			{Token}: typeof import('./src') = require('./src');
-		this.config = config;
-		return this.run(() => {
-			const halfParsed = stage < this.MAX_STAGE,
-				token = new Token(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''), this.getConfig());
-			if (halfParsed) {
-				token.setAttribute('stage', stage).parseOnce(stage, include);
-			} else {
-				token.parse(undefined, include);
-			}
-			fs.unlinkSync(file);
-			fs.unlinkSync(`${file}.err`);
-			fs.unlinkSync(`${file}.json`);
-			return token;
-		});
 	},
 };
 

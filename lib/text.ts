@@ -59,21 +59,11 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\
 
 /** 文本节点 */
 export class AstText extends AstNode {
-	/** @browser */
 	override readonly type = 'text';
 	declare name: undefined;
-	/** @browser */
 	data: string;
 
-	/** 文本长度 */
-	get length(): number {
-		return this.data.length;
-	}
-
-	/**
-	 * @browser
-	 * @param text 包含文本
-	 */
+	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
 		Object.defineProperties(this, {
@@ -83,25 +73,18 @@ export class AstText extends AstNode {
 		});
 	}
 
-	/**
-	 * 输出字符串
-	 * @browser
-	 */
+	/** 输出字符串 */
 	override toString(): string {
 		return this.data;
 	}
 
-	/**
-	 * 可见部分
-	 * @browser
-	 */
+	/** 可见部分 */
 	text(): string {
 		return this.data;
 	}
 
 	/**
 	 * Linter
-	 * @browser
 	 * @param start
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
@@ -168,7 +151,6 @@ export class AstText extends AstNode {
 
 	/**
 	 * 修改内容
-	 * @browser
 	 * @param text 新内容
 	 */
 	#setData(text: string): void {
@@ -182,90 +164,10 @@ export class AstText extends AstNode {
 
 	/**
 	 * 替换字符串
-	 * @browser
 	 * @param text 替换的字符串
 	 */
 	replaceData(text: string): void {
 		this.#setData(text);
-	}
-
-	/** 复制 */
-	cloneNode(): AstText {
-		return new AstText(this.data);
-	}
-
-	/**
-	 * 在后方添加字符串
-	 * @param text 添加的字符串
-	 */
-	appendData(text: string): void {
-		this.#setData(this.data + text);
-	}
-
-	/**
-	 * 删减字符串
-	 * @param offset 起始位置
-	 * @param count 删减字符数
-	 */
-	deleteData(offset: number, count: number): void {
-		this.#setData(
-			this.data.slice(0, offset) + (offset < 0 && offset + count >= 0 ? '' : this.data.slice(offset + count)),
-		);
-	}
-
-	/**
-	 * 插入字符串
-	 * @param offset 插入位置
-	 * @param text 待插入的字符串
-	 */
-	insertData(offset: number, text: string): void {
-		this.#setData(this.data.slice(0, offset) + text + this.data.slice(offset));
-	}
-
-	/**
-	 * 提取子串
-	 * @param offset 起始位置
-	 * @param count 字符数
-	 */
-	substringData(offset: number, count: number): string {
-		return this.data.substr(offset, count);
-	}
-
-	/**
-	 * 将文本子节点分裂为两部分
-	 * @param offset 分裂位置
-	 * @throws `RangeError` 错误的断开位置
-	 * @throws `Error` 没有父节点
-	 */
-	splitText(offset: number): AstText {
-		if (offset > this.length || offset < -this.length) {
-			throw new RangeError(`错误的断开位置：${offset}`);
-		}
-		const {parentNode, data} = this;
-		if (!parentNode) {
-			throw new Error('待分裂的文本节点没有父节点！');
-		}
-		const newText = new AstText(data.slice(offset)),
-			childNodes = [...parentNode.childNodes];
-		this.setAttribute('data', data.slice(0, offset));
-		childNodes.splice(childNodes.indexOf(this) + 1, 0, newText);
-		newText.setAttribute('parentNode', parentNode);
-		parentNode.setAttribute('childNodes', childNodes);
-		return newText;
-	}
-
-	/**
-	 * @override
-	 * @param j 字符位置
-	 * @throws `RangeError` 超出文本长度范围
-	 */
-	override getRelativeIndex(j?: number): number {
-		if (j === undefined) {
-			return super.getRelativeIndex();
-		} else if (j < 0 || j > this.length) {
-			throw new RangeError(`超出文本长度范围！`);
-		}
-		return j;
 	}
 }
 

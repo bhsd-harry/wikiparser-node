@@ -11,6 +11,7 @@ import type {ParameterToken, AstText, CommentToken, IncludeToken, NoincludeToken
  */
 export class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
+
 	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken)[];
@@ -23,40 +24,7 @@ export class MagicLinkToken extends syntax(Token) {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
 
-	/** 协议 */
-	get protocol(): string | undefined {
-		return this.getAttribute('pattern').exec(this.text())?.[0];
-	}
-
 	/**
-	 * @throws `RangeError` 非法协议
-	 * @throws `Error` 特殊外链无法更改协议
-	 */
-	set protocol(value) {
-		const pattern = this.getAttribute('pattern');
-		if (typeof value !== 'string') {
-			this.typeError('protocol', 'String');
-		} else if (!new RegExp(`${pattern.source}$`, 'iu').test(value)) {
-			throw new RangeError(`非法的外链协议：${value}`);
-		}
-		const {link} = this;
-		if (!pattern.test(link)) {
-			throw new Error(`特殊外链无法更改协议：${link}`);
-		}
-		this.replaceChildren(link.replace(pattern, value));
-	}
-
-	/** 和内链保持一致 */
-	get link(): string {
-		return this.text();
-	}
-
-	set link(url) {
-		this.setTarget(url);
-	}
-
-	/**
-	 * @browser
 	 * @param url 网址
 	 * @param doubleSlash 是否接受"//"作为协议
 	 */
@@ -68,10 +36,7 @@ export class MagicLinkToken extends syntax(Token) {
 		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
@@ -106,59 +71,6 @@ export class MagicLinkToken extends syntax(Token) {
 			}));
 		}
 		return errors;
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new MagicLinkToken(
-				undefined,
-				this.type === 'ext-link-url',
-				this.getAttribute('config'),
-			) as this;
-			token.append(...cloned);
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/**
-	 * 获取网址
-	 * @throws `Error` 非标准协议
-	 */
-	getUrl(): URL {
-		let url = this.text();
-		if (url.startsWith('//')) {
-			url = `https:${url}`;
-		}
-		try {
-			return new URL(url);
-		} catch (e) {
-			if (e instanceof TypeError && e.message === 'Invalid URL') {
-				throw new Error(`非标准协议的外部链接：${url}`);
-			}
-			throw e;
-		}
-	}
-
-	/**
-	 * 设置外链目标
-	 * @param url 含协议的网址
-	 * @throws `SyntaxError` 非法的自由外链目标
-	 */
-	setTarget(url: string): void {
-		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),
-			{length, firstChild: freeExtLink} = root;
-		if (length !== 1 || freeExtLink!.type !== 'free-ext-link') {
-			throw new SyntaxError(`非法的自由外链目标：${url}`);
-		}
-		this.replaceChildren(...freeExtLink!.childNodes);
-	}
-
-	/** 是否是模板或魔术字参数 */
-	isParamValue(): boolean {
-		return (this.closest('parameter') as ParameterToken | undefined)?.getValue() === this.text();
 	}
 }
 

@@ -14,14 +14,10 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * @classdesc `{childNodes: [AttributesToken]}`
  */
 export class HtmlToken extends attributesParent(fixed(Token)) {
-	/** @browser */
 	override readonly type = 'html';
 	declare name: string;
-	/** @browser */
 	#closing;
-	/** @browser */
 	#selfClosing;
-	/** @browser */
 	#tag;
 
 	declare childNodes: [AttributesToken];
@@ -36,51 +32,12 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken;
 
-	/**
-	 * 是否是闭合标签
-	 * @browser
-	 */
+	/** 是否是闭合标签 */
 	get closing(): boolean {
 		return this.#closing;
 	}
 
-	/** @throws `Error` 自封闭标签或空标签 */
-	set closing(value) {
-		if (!value) {
-			this.#closing = false;
-			return;
-		} else if (this.#selfClosing) {
-			throw new Error('这是一个自封闭标签！');
-		}
-		const {html: [,, tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error('这是一个空标签！');
-		}
-		this.#closing = true;
-	}
-
-	/** 是否自封闭 */
-	get selfClosing(): boolean {
-		return this.#selfClosing;
-	}
-
-	/** @throws `Error` 闭合标签或无效自封闭标签 */
-	set selfClosing(value) {
-		if (!value) {
-			this.#selfClosing = false;
-			return;
-		} else if (this.#closing) {
-			throw new Error('这是一个闭合标签！');
-		}
-		const {html: [tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error(`<${this.name}>标签自封闭无效！`);
-		}
-		this.#selfClosing = true;
-	}
-
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param closing 是否闭合
@@ -102,20 +59,14 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		this.#tag = name;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return omit && this.matchesTypes(omit)
 			? ''
 			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(omit)}${this.#selfClosing ? '/' : ''}>`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return `<${this.#closing ? '/' : ''}${this.#tag}${
 			this.#closing ? '' : super.text()
@@ -127,10 +78,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		return this.#tag.length + (this.#closing ? 2 : 1);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		let wikitext: string | undefined,
@@ -177,7 +125,6 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 
 	/**
 	 * 搜索匹配的标签
-	 * @browser
 	 * @throws `SyntaxError` 同时闭合和自封闭的标签
 	 * @throws `SyntaxError` 无效自封闭标签
 	 * @throws `SyntaxError` 未闭合的标签
@@ -214,73 +161,12 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print({
 			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
 			post: `${this.#selfClosing ? '/' : ''}&gt;`,
 		});
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [attr] = this.cloneChildNodes() as [AttributesToken],
-			config = this.getAttribute('config');
-		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config) as this);
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'tag' ? this.#tag as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/**
-	 * 更换标签名
-	 * @param tag 标签名
-	 * @throws `RangeError` 非法的HTML标签
-	 */
-	replaceTag(tag: string): void {
-		const name = tag.toLowerCase();
-		if (!this.getAttribute('config').html.flat().includes(name)) {
-			throw new RangeError(`非法的HTML标签：${tag}`);
-		}
-		(this.setAttribute('name', name) as this).#tag = tag;
-	}
-
-	/** 局部闭合 */
-	#localMatch(): void {
-		this.#selfClosing = false;
-		this.after(Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config')).firstChild!);
-	}
-
-	/**
-	 * 修复无效自封闭标签
-	 * @throws `Error` 无法修复无效自封闭标签
-	 */
-	fix(): void {
-		const config = this.getAttribute('config'),
-			{parentNode, name: tagName, firstChild} = this;
-		if (!parentNode || !this.#selfClosing || !config.html[0].includes(tagName)) {
-			return;
-		} else if (firstChild.text().trim()) {
-			this.#localMatch();
-			return;
-		}
-		const {childNodes} = parentNode,
-			i = childNodes.indexOf(this),
-			prevSiblings = childNodes.slice(0, i)
-				.filter(({type, name}) => type === 'html' && name === tagName) as this[],
-			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
-		if (imbalance < 0) {
-			this.#selfClosing = false;
-			this.#closing = true;
-		} else {
-			Parser.warn('无法修复无效自封闭标签', noWrap(String(this)));
-			throw new Error(`无法修复无效自封闭标签：前文共有 ${imbalance} 个未匹配的闭合标签`);
-		}
 	}
 }
 

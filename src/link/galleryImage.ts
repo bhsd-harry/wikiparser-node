@@ -13,22 +13,9 @@ import type {ExtToken, GalleryToken, AtomToken, ImageParameterToken} from '../..
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
-	/** @browser */
 	#invalid = false;
 
-	/** 图片链接 */
-	override get link(): string | Title {
-		return this.type === 'imagemap-image' ? '' : super.link;
-	}
-
-	override set link(value) {
-		if (this.type !== 'imagemap-image') {
-			super.link = value;
-		}
-	}
-
 	/**
-	 * @browser
 	 * @param type 图片类型
 	 * @param link 图片文件名
 	 * @param text 图片参数
@@ -84,53 +71,13 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		return 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.#invalid) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;
-	}
-
-	/**
-	 * @override
-	 * @param link 链接目标
-	 * @throws `SyntaxError` 非法的链接目标
-	 */
-	override setTarget(link: string): void {
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			root = Parser.parse(`<gallery>${link}</gallery>`, include, 1, config),
-			{length, firstChild: ext} = root;
-		if (length !== 1 || ext!.type !== 'ext') {
-			throw new SyntaxError(`非法的图库文件名：${link}`);
-		}
-		const {lastChild: gallery} = ext as ExtToken,
-			{firstChild: image} = gallery as GalleryToken;
-		if (gallery.length !== 1 || image!.type !== 'gallery-image') {
-			throw new SyntaxError(`非法的图库文件名：${link}`);
-		}
-		const {firstChild} = image as this;
-		(image as this).destroy();
-		this.firstChild.safeReplaceWith(firstChild);
-	}
-
-	/**
-	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
-	 * @throws `RangeError` 不可插入多余子节点
-	 * @throws `TypeError` 不可插入文本节点
-	 */
-	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (this.type === 'gallery-image' && child.type === 'image-parameter' && !galleryParams.has(child.name)) {
-			child.setAttribute('name', 'invalid');
-		}
-		return super.insertAt(child, i) as T;
 	}
 }
 

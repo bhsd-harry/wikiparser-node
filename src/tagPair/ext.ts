@@ -23,6 +23,7 @@ const del = <T>(arr: T[], ele: T): T[] => {
  */
 export class ExtToken extends attributesParent(TagPairToken) {
 	override readonly type = 'ext';
+
 	declare childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AttributesToken, Token];
@@ -33,14 +34,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
-	/** @override */
-	// eslint-disable-next-line class-methods-use-this
-	override get closed(): boolean {
-		return true;
-	}
-
 	/**
-	 * @browser
 	 * @param name 标签名
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
@@ -157,10 +151,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
@@ -170,19 +161,6 @@ export class ExtToken extends attributesParent(TagPairToken) {
 			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
 		}
 		return errors;
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const inner = this.lastChild.cloneNode(),
-			tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			attr = String(this.firstChild);
-		return Parser.run(() => {
-			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config) as this;
-			token.lastChild.safeReplaceWith(inner);
-			return token;
-		});
 	}
 }
 

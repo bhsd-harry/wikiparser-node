@@ -7,13 +7,10 @@ import type {Token} from '../index';
 /** 状态开关 */
 // @ts-expect-error not implementing all abstract methods
 export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
-	#fixed;
-	/** @browser */
 	override readonly type = 'double-underscore';
 	declare name: string;
 
 	/**
-	 * @browser
 	 * @param word 状态开关名
 	 * @param fixed 是否固定大小写
 	 */
@@ -29,30 +26,14 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 		return 2;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return omit && this.matchesTypes(omit) ? '' : `__${this.firstChild.data}__`;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print({pre: '__', post: '__'});
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new DoubleUnderscoreToken(this.firstChild.data, this.#fixed, config) as this;
-			token.afterBuild();
-			return token;
-		});
 	}
 }
 

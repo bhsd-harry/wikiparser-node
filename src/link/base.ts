@@ -14,10 +14,6 @@ import type {Title} from '../../lib/title';
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	declare name: string;
-	#bracket = true;
-	#delimiter;
-	#fragment: string | undefined;
-	#encoded = false;
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];
@@ -26,30 +22,7 @@ export abstract class LinkBaseToken extends Token {
 	abstract override get lastChild(): Token;
 	abstract override get lastElementChild(): Token;
 
-	/** 完整链接 */
-	get link(): string | Title {
-		return this.#getTitle();
-	}
-
-	set link(link) {
-		this.setTarget(link);
-	}
-
-	/** fragment */
-	get fragment(): string | undefined {
-		return this.#getTitle().fragment;
-	}
-
-	/** 链接显示文字 */
-	get innerText(): string | undefined {
-		if (this.type === 'link') {
-			return this.length > 1 ? this.lastChild.text() : this.firstChild.text().replace(/^\s*:/u, '');
-		}
-		return undefined;
-	}
-
 	/**
-	 * @browser
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
@@ -121,19 +94,13 @@ export abstract class LinkBaseToken extends Token {
 		return super.setAttribute(key, value);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		const str = super.toString(omit, this.#delimiter);
 		return this.#bracket && !(omit && this.matchesTypes(omit)) ? `[[${str}]]` : str;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		const str = super.text('|');
 		return this.#bracket ? `[[${str}]]` : str;
@@ -152,10 +119,7 @@ export abstract class LinkBaseToken extends Token {
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this;
@@ -180,81 +144,9 @@ export abstract class LinkBaseToken extends Token {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
-	}
-
-	/** 生成Title对象 */
-	#getTitle(): Title {
-		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
-	}
-
-	/** @override */
-	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
-		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...Token[]];
-		return Parser.run(() => {
-			const token = new this.constructor('', undefined, this.getAttribute('config')) as this;
-			token.firstChild.safeReplaceWith(link);
-			token.append(...linkText);
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/**
-	 * 设置链接目标
-	 * @param link 链接目标
-	 * @throws `SyntaxError` 非法的链接目标
-	 */
-	setTarget(link: string | Title): void {
-		let strLink = String(link);
-		if (this.type === 'link' && !/^\s*[:#]/u.test(strLink)) {
-			strLink = `:${strLink}`;
-		}
-		const root = Parser.parse(`[[${strLink}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{length, firstChild: wikiLink} = root;
-		if (length !== 1 || wikiLink?.type !== this.type || wikiLink.length !== 1) {
-			const msgs: Record<string, string> = {link: '内链', file: '文件链接', category: '分类'};
-			throw new SyntaxError(`非法的${msgs[this.type]!}目标：${strLink}`);
-		}
-		const {firstChild} = wikiLink as this;
-		wikiLink.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
-	}
-
-	/**
-	 * 设置链接显示文字
-	 * @param linkStr 链接显示文字
-	 * @throws `SyntaxError` 非法的链接显示文字
-	 */
-	setLinkText(linkStr?: string): void {
-		let lastChild: Token;
-		const config = this.getAttribute('config');
-		if (linkStr) {
-			const root = Parser.parse(
-					`[[${this.type === 'category' ? 'Category:' : ''}L|${linkStr}]]`,
-					this.getAttribute('include'),
-					6,
-					config,
-				),
-				{length, firstChild: wikiLink} = root;
-			if (length !== 1 || wikiLink?.type !== this.type || wikiLink.length !== 2) {
-				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkStr)}`);
-			}
-			({lastChild} = wikiLink as this);
-		} else {
-			lastChild = Parser.run(() => new Token(undefined, config));
-			lastChild.setAttribute('stage', 7).type = 'link-text';
-		}
-		if (this.length === 1) {
-			this.insertAt(lastChild);
-		} else {
-			this.lastChild.safeReplaceWith(lastChild);
-		}
 	}
 }
 

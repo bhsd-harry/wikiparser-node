@@ -13,9 +13,9 @@ import type {AstNodes, AstText, AttributesToken, ExtToken} from '../internal';
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
 export class ImagemapToken extends Token {
-	/** @browser */
 	override readonly type = 'ext-inner';
 	declare name: 'imagemap';
+
 	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
@@ -40,23 +40,12 @@ export class ImagemapToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
-	/**
-	 * 图片
-	 * @browser
-	 */
+	/** 图片 */
 	get image(): GalleryImageToken | undefined {
 		return this.childNodes.find(({type}) => type === 'imagemap-image') as GalleryImageToken | undefined;
 	}
 
-	/** 链接 */
-	override get links(): ImagemapLinkToken[] {
-		return this.childNodes.filter(({type}) => type === 'imagemap-link') as ImagemapLinkToken[];
-	}
-
-	/**
-	 * @browser
-	 * @param inner 标签内部wikitext
-	 */
+	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 			GalleryImageToken: ':', ImagemapLinkToken: ':', SingleLineNoincludeToken: ':', AstText: ':',
@@ -131,18 +120,12 @@ export class ImagemapToken extends Token {
 		}
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, '\n');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return super.text('\n').replace(/\n{2,}/gu, '\n');
 	}
@@ -152,10 +135,7 @@ export class ImagemapToken extends Token {
 		return i < this.length - 1 ? 1 : 0;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
@@ -172,55 +152,9 @@ export class ImagemapToken extends Token {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print({sep: '\n'});
-	}
-
-	/**
-	 * @override
-	 * @param token 待插入的节点
-	 * @param i 插入位置
-	 * @throws `Error` 当前缺少合法图片
-	 * @throws `RangeError` 已有一张合法图片
-	 */
-	override insertAt(token: string, i?: number): AstText;
-	/** @ignore */
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	/** @ignore */
-	override insertAt<T extends AstNodes>(token: T | string, i = 0): T | AstText {
-		const {image} = this;
-		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
-			throw new Error('当前缺少一张合法图片！');
-		} else if (image && typeof token !== 'string' && token.type === 'imagemap-image') {
-			throw new RangeError('已有一张合法图片！');
-		}
-		return super.insertAt(token as T, i);
-	}
-
-	/**
-	 * @override
-	 * @param i 移除位置
-	 * @throws `Error` 禁止移除图片
-	 */
-	override removeAt(i: number): AstNodes {
-		if (this.childNodes[i]!.type === 'imagemap-image') {
-			throw new Error('禁止移除<imagemap>内的图片！');
-		}
-		return super.removeAt(i);
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
-			const token = new ImagemapToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
-			return token;
-		});
 	}
 }
 

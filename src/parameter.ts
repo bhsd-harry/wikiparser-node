@@ -11,9 +11,9 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  * @classdesc `{childNodes: [Token, Token]}`
  */
 export class ParameterToken extends fixed(Token) {
-	/** @browser */
 	override readonly type = 'parameter';
 	declare name: string;
+
 	declare childNodes: [Token, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [Token, Token];
@@ -38,34 +38,12 @@ export class ParameterToken extends fixed(Token) {
 	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
 
-	/**
-	 * 是否是匿名参数
-	 * @browser
-	 */
+	/** 是否是匿名参数 */
 	get anon(): boolean {
 		return this.firstChild.length === 0;
 	}
 
-	/** getValue()的getter */
-	get value(): string {
-		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
-	}
-
-	/** 是否是重复参数 */
-	get duplicated(): boolean {
-		try {
-			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-		} catch {
-			return false;
-		}
-	}
-
 	/**
-	 * @browser
 	 * @param key 参数名
 	 * @param value 参数值
 	 */
@@ -107,20 +85,14 @@ export class ParameterToken extends fixed(Token) {
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override toString(omit?: Set<string>): string {
 		return this.anon && !(omit && this.matchesTypes(omit))
 			? this.lastChild.toString(omit)
 			: super.toString(omit, '=');
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override text(): string {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}
@@ -130,10 +102,7 @@ export class ParameterToken extends fixed(Token) {
 		return this.anon || i === 1 ? 0 : 1;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{firstChild, lastChild} = this,
@@ -154,97 +123,9 @@ export class ParameterToken extends fixed(Token) {
 		return errors;
 	}
 
-	/**
-	 * @override
-	 * @browser
-	 */
+	/** @override */
 	override print(): string {
 		return super.print({sep: this.anon ? '' : '='});
-	}
-
-	/** @override */
-	override cloneNode(): this {
-		const [key, value] = this.cloneChildNodes() as [Token, Token],
-			config = this.getAttribute('config');
-		return Parser.run(() => {
-			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config) as this;
-			token.firstChild.safeReplaceWith(key);
-			token.lastChild.safeReplaceWith(value);
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/**
-	 * @override
-	 * @param token 待替换的节点
-	 */
-	override safeReplaceWith(token: this): void {
-		Parser.warn(`${this.constructor.name}.safeReplaceWith 方法退化到 replaceWith。`);
-		this.replaceWith(token);
-	}
-
-	/** 获取参数值 */
-	getValue(): string {
-		const value = this.lastChild.text();
-		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
-	}
-
-	/**
-	 * 设置参数值
-	 * @param value 参数值
-	 * @throws `SyntaxError` 非法的模板参数
-	 */
-	setValue(value: string): void {
-		const templateLike = this.parentNode?.isTemplate() !== false,
-			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: transclude} = root;
-		if (length !== 1 || transclude!.type !== (templateLike ? 'template' : 'magic-word')) {
-			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
-		}
-		const {lastChild: parameter, name} = transclude as Token & {lastChild: ParameterToken},
-			targetName = templateLike ? 'T' : 'lc';
-		if (name !== targetName || transclude!.length !== 2 || parameter.anon !== this.anon || parameter.name !== '1') {
-			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
-		}
-		const {lastChild} = parameter;
-		parameter.destroy();
-		this.lastChild.safeReplaceWith(lastChild);
-	}
-
-	/**
-	 * 修改参数名
-	 * @param key 新参数名
-	 * @param force 是否无视冲突命名
-	 * @throws `Error` 仅用于模板参数
-	 * @throws `SyntaxError` 非法的模板参数名
-	 * @throws `RangeError` 更名造成重复参数
-	 */
-	rename(key: string, force = false): void {
-		const {parentNode} = this;
-		// 必须检测是否是TranscludeToken
-		if (parentNode?.isTemplate() === false) {
-			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
-		}
-		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: template} = root;
-		if (length !== 1 || template!.type !== 'template' || template!.name !== 'T' || template!.length !== 2) {
-			throw new SyntaxError(`非法的模板参数名：${key}`);
-		}
-		const {lastChild: parameter} = template as TranscludeToken & {lastChild: ParameterToken},
-			{name, firstChild} = parameter;
-		if (this.name === name) {
-			Parser.warn('未改变实际参数名', name);
-		} else if (parentNode?.hasArg(name)) {
-			if (force) {
-				Parser.warn('参数更名造成重复参数', name);
-			} else {
-				throw new RangeError(`参数更名造成重复参数：${name}`);
-			}
-		}
-		parameter.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
 	}
 }
 

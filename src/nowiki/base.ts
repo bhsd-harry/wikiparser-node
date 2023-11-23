@@ -18,6 +18,7 @@ declare type NowikiTypes = 'ext-inner'
  */
 export abstract class NowikiBaseToken extends fixed(Token) {
 	declare type: NowikiTypes;
+
 	declare childNodes: [AstText];
 	abstract override get children(): [];
 	abstract override get firstChild(): AstText;
@@ -25,31 +26,9 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	abstract override get lastChild(): AstText;
 	abstract override get lastElementChild(): undefined;
 
-	/**
-	 * @param wikitext default: `''`
-	 * @browser
-	 */
+	/** @param wikitext default: `''` */
 	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
-	}
-
-	/** @override */
-	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
-		const {constructor, firstChild: {data}, type} = this;
-		return Parser.run(() => {
-			const token = new constructor(data, this.getAttribute('config')) as this;
-			token.type = type;
-			token.afterBuild();
-			return token;
-		});
-	}
-
-	/**
-	 * @override
-	 * @param str 新文本
-	 */
-	override setText(str: string): string {
-		return super.setText(str, 0);
 	}
 }
 
