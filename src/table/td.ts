@@ -296,6 +296,8 @@ export class TdToken extends fixed(TableBaseToken) {
 	}
 }
 
+/* NOT FOR BROWSER */
+
 /**
  * 创建新的单元格
  * @param inner 内部wikitext
@@ -320,5 +322,7 @@ export const createTd = (
 	}
 	return token;
 };
+
+/* NOT FOR BROWSER END */
 
 Parser.classes['TdToken'] = __filename;

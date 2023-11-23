@@ -13,10 +13,10 @@ import type {AttributesToken} from './attributes';
  */
 export class NestedToken extends Token {
 	override readonly type = 'ext-inner';
+	declare name: string;
 
 	/* NOT FOR BROWSER */
 
-	declare name: string;
 	#tags: string[];
 	#regex;
 

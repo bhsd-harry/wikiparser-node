@@ -4,6 +4,8 @@ import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
 
+/* NOT FOR BROWSER */
+
 /**
  * 转义表格语法
  * @param syntax 表格语法节点
@@ -18,6 +20,8 @@ const escapeTable = (syntax: SyntaxToken): void => {
 		token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
 	syntax.replaceChildren(...token.childNodes);
 };
+
+/* NOT FOR BROWSER END */
 
 /**
  * 表格行，含开头的换行，不含结尾的换行

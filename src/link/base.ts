@@ -14,15 +14,10 @@ import type {Title} from '../../lib/title';
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	declare name: string;
-
-	/* NOT FOR BROWSER */
-
 	#bracket = true;
 	#delimiter;
 	#fragment: string | undefined;
 	#encoded = false;
-
-	/* NOT FOR BROWSER END */
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];

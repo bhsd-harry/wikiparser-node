@@ -21,6 +21,8 @@ declare interface TableRenderedCoords {
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
+/* NOT FOR BROWSER */
+
 /**
  * 比较两个表格坐标
  * @param coords1 坐标1
@@ -117,6 +119,8 @@ class Layout extends Array<TableCoords[]> {
 		console.log(out.slice(0, -1));
 	}
 }
+
+/* NOT FOR BROWSER END */
 
 /**
  * 表格

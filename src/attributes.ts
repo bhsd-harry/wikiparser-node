@@ -8,7 +8,11 @@ import type {LintError} from '../index';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
+/* NOT FOR BROWSER */
+
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
+
+/* NOT FOR BROWSER END */
 
 declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
 

@@ -86,6 +86,8 @@ export interface CaretPosition {
 	offset: number;
 }
 
+/* NOT FOR BROWSER */
+
 /**
  * 定制TypeError消息
  * @param {Function} Constructor 类
@@ -96,6 +98,8 @@ export interface CaretPosition {
 const typeError = ({name}: Function, method: string, ...args: string[]): never => {
 	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
 };
+
+/* NOT FOR BROWSER END */
 
 /** 类似Node */
 export abstract class AstNode {
