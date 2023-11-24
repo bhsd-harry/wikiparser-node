@@ -73,14 +73,8 @@ export abstract class AstElement extends AstNode {
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		const childNodes = [...this.childNodes],
-			e = new Event('insert', {bubbles: true}),
 			j = Parser.running ? -1 : childNodes.indexOf(node);
-		if (j === -1) {
-			node.parentNode?.removeChild(node);
 			node.setAttribute('parentNode', this as AstElement as Token);
-		} else {
-			childNodes.splice(j, 1);
-		}
 		childNodes.splice(i, 0, node);
 		return node;
 	}
@@ -92,13 +86,8 @@ export abstract class AstElement extends AstNode {
 	closest(selector: string): Token | undefined {
 		let {parentNode} = this,
 			condition: (token: Token) => boolean;
-		if (/[^a-z\-,\s]/u.test(selector)) {
-			const stack = parseSelector(selector);
-			condition = /** @implements */ (token: Token): boolean => token.#matchesStack(stack);
-		} else {
 			const types = new Set(selector.split(',').map(str => str.trim()));
 			condition = /** @implements */ ({type}): boolean => types.has(type);
-		}
 		while (parentNode) {
 			if (condition(parentNode)) {
 				return parentNode;
@@ -138,11 +127,9 @@ export abstract class AstElement extends AstNode {
 	setText(str: string, i = 0): string {
 		const oldText = this.childNodes.at(i)!,
 			{type, constructor: {name}} = oldText;
-		if (type === 'text') {
 			const {data} = oldText;
 			oldText.replaceData(str);
 			return data;
-		}
 	}
 
 	/**

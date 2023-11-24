@@ -43,8 +43,6 @@ export class AstText extends AstNode {
 		super();
 		Object.defineProperties(this, {
 			data: {value: text, writable: false},
-			childNodes: {enumerable: false, configurable: false},
-			type: {enumerable: false, writable: false, configurable: false},
 		});
 	}
 

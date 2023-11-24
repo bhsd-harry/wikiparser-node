@@ -56,16 +56,10 @@ export class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			{lastChild} = this;
-		if (inner && !closingPattern.test(inner.text())) {
-			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(syntax)}`);
-		} else if (lastChild instanceof SyntaxToken) {
-			lastChild.replaceChildren(...(inner as Token).childNodes);
-		} else {
 			super.insertAt(Parser.run(() => {
 				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
 				});
 				return token;
 			}));
-		}
 	}
 }

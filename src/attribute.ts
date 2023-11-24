@@ -9,8 +9,6 @@ import type {AttributesToken} from '../internal';
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
-	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
-	post = {'ext-attr': '/>', 'html-attr': '>', 'table-attr': ''},
 	commonHtmlAttrs = new Set([
 		'id',
 		'class',

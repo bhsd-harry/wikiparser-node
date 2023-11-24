@@ -150,16 +150,8 @@ const Parser: Parser = {
 
 	/** @implements */
 	run(callback) {
-		const {running} = this;
-		this.running = true;
-		try {
 			const result = callback();
-			this.running = running;
 			return result;
-		} catch (e) {
-			this.running = running;
-			throw e;
-		}
 	},
 };
 
