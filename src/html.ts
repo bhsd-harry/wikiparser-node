@@ -98,7 +98,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		this.#tag = name;
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return omit && this.matchesTypes(omit)
 			? ''

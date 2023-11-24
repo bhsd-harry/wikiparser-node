@@ -108,7 +108,7 @@ export class ParameterToken extends fixed(Token) {
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], parameterListener);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return this.anon && !(omit && this.matchesTypes(omit))
 			? this.lastChild.toString(omit)

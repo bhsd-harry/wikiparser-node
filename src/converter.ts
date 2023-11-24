@@ -58,7 +58,7 @@ export class ConverterToken extends Token {
 		this.protectChildren(0);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return omit && this.matchesTypes(omit)

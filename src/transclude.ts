@@ -216,7 +216,7 @@ export class TranscludeToken extends Token {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (omit && this.matchesTypes(omit)) {
 			return '';

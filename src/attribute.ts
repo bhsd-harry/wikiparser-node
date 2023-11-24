@@ -314,7 +314,7 @@ export class AttributeToken extends fixed(Token) {
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (omit && this.matchesTypes(omit)) {
 			return '';

@@ -433,7 +433,7 @@ export class AttributesToken extends Token {
 		return str && type !== 'table-attrs' && !leadingRegex[type].test(str) ? ' ' : '';
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (this.type === 'table-attrs') {
 			normalizeSpace(this);

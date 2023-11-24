@@ -69,7 +69,7 @@ export abstract class TagPairToken extends fixed(Token) {
 		accum.splice(index === -1 ? Infinity : index, 0, this);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const {firstChild, lastChild, nextSibling, name, closed} = this,
 			[opening, closing] = this.#tags;

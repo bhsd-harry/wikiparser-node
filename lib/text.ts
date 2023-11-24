@@ -82,7 +82,7 @@ export class AstText extends AstNode {
 		});
 	}
 
-	/** 输出字符串 */
+	/** @private */
 	override toString(): string {
 		return this.data;
 	}

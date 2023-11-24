@@ -74,7 +74,7 @@ export class ExtLinkToken extends Token {
 		this.protectChildren(0);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (omit && this.matchesTypes(omit)) {
 			return '';

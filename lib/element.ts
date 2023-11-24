@@ -265,11 +265,7 @@ export abstract class AstElement extends AstNode {
 		throw new RangeError(`第 ${i} 个子节点是 ${name}！`);
 	}
 
-	/**
-	 * 还原为wikitext
-	 * @param omit 忽略的节点类型
-	 * @param separator 子节点间的连接符
-	 */
+	/** @private */
 	override toString(omit?: Set<string>, separator = ''): string {
 		return omit && this.matchesTypes(omit)
 			? ''

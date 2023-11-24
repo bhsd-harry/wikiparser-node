@@ -37,7 +37,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (!this.closed && this.nextSibling) {
 			Parser.error('自动闭合HTML注释', this);

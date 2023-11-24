@@ -65,7 +65,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 		this.append(token, trail);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const equals = this.#equals;
 		return omit && this.matchesTypes(omit)
