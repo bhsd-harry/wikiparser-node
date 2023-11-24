@@ -42,6 +42,11 @@ export class AstRange {
 		return getIndex(this.startContainer, this.startOffset);
 	}
 
+	/** 起点行列位置 */
+	get startPos(): Position {
+		return this.startContainer.getRootNode().posFromIndex(this.startIndex)!;
+	}
+
 	/** 终点容器 */
 	get endContainer(): AstNodes {
 		return this.#endContainer ?? this.#notInit(false);
@@ -55,6 +60,11 @@ export class AstRange {
 	/** 终点绝对位置 */
 	get endIndex(): number {
 		return getIndex(this.endContainer, this.endOffset);
+	}
+
+	/** 终点行列位置 */
+	get endPos(): Position {
+		return this.endContainer.getRootNode().posFromIndex(this.endIndex)!;
 	}
 
 	/** 起始和终止位置是否重合 */
@@ -375,20 +385,7 @@ export class AstRange {
 
 	/** 获取行列位置和大小 */
 	getBoundingClientRect(): Dimension & Position {
-		let {startContainer, startOffset, endContainer, endOffset} = this,
-			parentNode: Token | undefined;
-		while (!startContainer.contains(endContainer)) {
-			({parentNode} = startContainer);
-			startOffset = parentNode!.childNodes.indexOf(startContainer);
-			startContainer = parentNode!;
-		}
-		while (endContainer !== startContainer) {
-			({parentNode} = endContainer);
-			endOffset = parentNode!.childNodes.indexOf(endContainer) + 1;
-			endContainer = parentNode!;
-		}
-		const {top, left} = startContainer.posFromIndex(startContainer.getRelativeIndex(startOffset))!,
-			{top: bottom, left: right} = startContainer.posFromIndex(startContainer.getRelativeIndex(endOffset))!;
+		const {startPos: {top, left}, endPos: {top: bottom, left: right}} = this;
 		return {top, left, height: bottom - top + 1, width: bottom === top ? right - left : right};
 	}
 
@@ -409,6 +406,38 @@ export class AstRange {
 	/** 范围内的全部文本 */
 	toString(): string {
 		return String(this.startContainer.getRootNode()).slice(this.startIndex, this.endIndex);
+	}
+
+	/**
+	 * 在满足条件时获取范围内的全部节点
+	 * @throws `Error` 不是某个节点的连续子节点
+	 */
+	extractContents(): AstNodes[] {
+		if (this.collapsed) {
+			return [];
+		}
+		const {startContainer, endContainer, commonAncestorContainer} = this;
+		if (commonAncestorContainer.type === 'text') {
+			commonAncestorContainer.splitText(this.endOffset);
+			commonAncestorContainer.splitText(this.startOffset);
+			return [commonAncestorContainer.nextSibling!];
+		} else if (startContainer !== commonAncestorContainer
+			&& (startContainer.type !== 'text' || startContainer.parentNode !== commonAncestorContainer)
+			|| endContainer !== commonAncestorContainer
+			&& (endContainer.type !== 'text' || endContainer.parentNode !== commonAncestorContainer)
+		) {
+			throw new Error('extractContents 方法只能用于获取某个节点的连续子节点！');
+		}
+		let {startOffset, endOffset} = this;
+		if (startContainer.type === 'text' && startContainer.parentNode === commonAncestorContainer) {
+			startContainer.splitText(this.startOffset);
+			startOffset = commonAncestorContainer.childNodes.indexOf(startContainer) + 1;
+		}
+		if (endContainer.type === 'text' && endContainer.parentNode === commonAncestorContainer) {
+			endContainer.splitText(this.endOffset);
+			endOffset = commonAncestorContainer.childNodes.indexOf(endContainer);
+		}
+		return commonAncestorContainer.childNodes.slice(startOffset, endOffset);
 	}
 }
 
