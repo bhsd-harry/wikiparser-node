@@ -11,14 +11,13 @@ import type {AstText, Token} from '../internal';
  * @param accum
  */
 export const parseHrAndDoubleUnderscore = (
-	{firstChild, type, name}: Token,
+	{firstChild: {data}, type, name}: Token & {firstChild: AstText},
 	config = Parser.getConfig(),
 	accum: Token[] = [],
 ): string => {
 	const {doubleUnderscore} = config,
 		insensitive = new Set(doubleUnderscore[0]),
 		sensitive = new Set(doubleUnderscore[1]);
-	let {data} = firstChild as AstText;
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}

@@ -48,7 +48,7 @@ export class GalleryToken extends Token {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, '\n');
 	}

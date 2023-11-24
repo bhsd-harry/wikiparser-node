@@ -46,7 +46,7 @@ export class ConverterRuleToken extends Token {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const {childNodes} = this;
 		if (childNodes.length === 3) {

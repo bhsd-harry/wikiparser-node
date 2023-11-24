@@ -46,7 +46,7 @@ export class ArgToken extends Token {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return `{{{${super.toString(omit, '|')}}}}`;
 	}

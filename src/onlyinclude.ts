@@ -7,17 +7,17 @@ import {Token} from './index';
 export class OnlyincludeToken extends Token {
 	override readonly type = 'onlyinclude';
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
-	/** @override */
+	/** @private */
 	protected override getPadding(): number {
 		return 13;
 	}
 
-	/** @override */
+	/** @private */
 	protected override isPlain(): boolean {
 		return true;
 	}
