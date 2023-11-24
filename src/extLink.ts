@@ -35,7 +35,7 @@ export class ExtLinkToken extends Token {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (omit && this.matchesTypes(omit)) {
 		} else if (this.length === 1) {

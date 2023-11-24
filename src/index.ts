@@ -180,11 +180,7 @@ export class Token extends AstElement {
 		}
 	}
 
-	/**
-	 * 解析、重构、生成部分Token的`name`属性
-	 * @param n 最大解析层级
-	 * @param include 是否嵌入
-	 */
+	/** @private */
 	parse(n = MAX_STAGE, include = false): this {
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);

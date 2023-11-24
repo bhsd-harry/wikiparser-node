@@ -7,7 +7,7 @@ import {Token} from './index';
 export class OnlyincludeToken extends Token {
 	override readonly type = 'onlyinclude';
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return omit && this.matchesTypes(omit) ? '' : `<onlyinclude>${super.toString(omit)}</onlyinclude>`;
 	}

@@ -114,7 +114,7 @@ export class ImageParameterToken extends Token {
 		return this.name === 'caption';
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return this.#syntax && !(omit && this.matchesTypes(omit))
 			? this.#syntax.replace('$1', super.toString(omit))

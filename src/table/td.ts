@@ -84,7 +84,7 @@ export class TdToken extends fixed(TableBaseToken) {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return omit && this.matchesTypes(omit)

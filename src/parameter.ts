@@ -58,7 +58,7 @@ export class ParameterToken extends fixed(Token) {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return this.anon && !(omit && this.matchesTypes(omit))
 			? this.lastChild.toString(omit)
