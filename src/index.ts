@@ -219,11 +219,7 @@ export class Token extends AstElement {
 		}
 	}
 
-	/**
-	 * 解析、重构、生成部分Token的`name`属性
-	 * @param n 最大解析层级
-	 * @param include 是否嵌入
-	 */
+	/** @private */
 	parse(n = MAX_STAGE, include = false): this {
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);
@@ -556,7 +552,7 @@ export class Token extends AstElement {
 			);
 		} else if (config.ext.includes(tagName)) {
 			const {ExtToken}: typeof import('./tagPair/ext') = require('./tagPair/ext');
-			return Parser.run(() => new ExtToken(tagName, '', '', selfClosing ? undefined : '', config));
+			return Parser.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config));
 		} else if (config.html.flat().includes(tagName)) {
 			const {HtmlToken}: typeof import('./html') = require('./html'),
 				{AttributesToken}: typeof import('./attributes') = require('./attributes');
@@ -582,7 +578,7 @@ export class Token extends AstElement {
 	}
 
 	/**
-	 * 找到给定位置所在的节点
+	 * 找到给定位置
 	 * @param index 位置
 	 */
 	caretPositionFromIndex(index?: number): CaretPosition | undefined {
@@ -620,7 +616,7 @@ export class Token extends AstElement {
 	}
 
 	/**
-	 * 找到给定位置所在的节点
+	 * 找到给定位置
 	 * @param x 列数
 	 * @param y 行数
 	 */
@@ -631,13 +627,10 @@ export class Token extends AstElement {
 	/**
 	 * 找到给定位置所在的最外层节点
 	 * @param index 位置
-	 * @throws `Error` 不是根节点
 	 */
 	elementFromIndex(index?: number): AstNodes | undefined {
 		if (index === undefined) {
 			return undefined;
-		} else if (this.type !== 'root') {
-			throw new Error('elementFromIndex方法只可用于根节点！');
 		}
 		const {length} = String(this);
 		if (index > length || index < -length) {
@@ -797,7 +790,7 @@ export class Token extends AstElement {
 	}
 
 	/**
-	 * 解析残留的单引号
+	 * 重新解析单引号
 	 * @throws `Error` 不接受QuoteToken作为子节点
 	 */
 	redoQuotes(): void {
