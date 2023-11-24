@@ -32,7 +32,8 @@ export class GalleryImageToken extends FileToken {
 			accum.splice(accum.indexOf(token), 1);
 		}
 		super(link, token?.toString(), config, accum);
-		this.setAttribute('bracket', false).type = `${type}-image`;
+		this.setAttribute('bracket', false);
+		this.type = `${type}-image`;
 	}
 
 	/** @private */

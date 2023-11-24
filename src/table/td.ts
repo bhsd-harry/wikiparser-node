@@ -60,7 +60,8 @@ export class TdToken extends TableBaseToken {
 			accum,
 		);
 		innerToken.type = 'td-inner';
-		this.insertAt(innerToken.setAttribute('stage', 4));
+		innerToken.setAttribute('stage', 4);
+		this.insertAt(innerToken);
 	}
 
 	/** @private */

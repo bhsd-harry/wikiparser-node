@@ -140,14 +140,13 @@ export abstract class AstNode {
 	}
 
 	/** @private */
-	setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+	setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		if (key === 'parentNode') {
 			this.#parentNode = value as TokenAttributeSetter<'parentNode'>;
 		} else {
 			// @ts-expect-error noImplicitAny
 			this[key as string] = value;
 		}
-		return this;
 	}
 
 	/** 获取根节点 */
