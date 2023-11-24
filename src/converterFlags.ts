@@ -39,7 +39,7 @@ export class ConverterFlagsToken extends Token {
 		this.#flags = this.childNodes.map(child => child.text().trim());
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		return super.toString(omit, ';');
 	}

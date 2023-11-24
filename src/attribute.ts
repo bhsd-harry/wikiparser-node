@@ -246,7 +246,7 @@ export class AttributeToken extends Token {
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal

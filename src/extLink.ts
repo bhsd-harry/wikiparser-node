@@ -35,7 +35,7 @@ export class ExtLinkToken extends Token {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		if (this.length === 1) {
 			return `[${super.toString(omit)}${this.#space}]`;

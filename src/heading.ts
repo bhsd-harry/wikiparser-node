@@ -43,7 +43,7 @@ export class HeadingToken extends Token {
 		this.append(token, trail);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(omit?: Set<string>): string {
 		const equals = this.#equals;
 		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;

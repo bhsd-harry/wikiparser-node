@@ -44,7 +44,7 @@ export class AstText extends AstNode {
 		this.data = text;
 	}
 
-	/** 输出字符串 */
+	/** @private */
 	override toString(): string {
 		return this.data;
 	}
