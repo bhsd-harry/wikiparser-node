@@ -30,7 +30,8 @@ export class ExtLinkToken extends Token {
 			const inner = new Token(text, config, accum, {
 			});
 			inner.type = 'ext-link-text';
-			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			this.insertAt(inner);
 		}
 	}
 

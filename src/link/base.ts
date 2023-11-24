@@ -33,7 +33,8 @@ export abstract class LinkBaseToken extends Token {
 			const inner = new Token(linkText, config, accum, {
 			});
 			inner.type = 'link-text';
-			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
 	}
@@ -49,12 +50,12 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = Boolean(value);
-			return this;
+		} else {
+			super.setAttribute(key, value);
 		}
-		return super.setAttribute(key, value);
 	}
 
 	/** @override */

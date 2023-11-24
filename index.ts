@@ -35,10 +35,10 @@ declare interface Parser {
 	readonly MAX_STAGE: number;
 
 	/** @private */
-	getConfig(this: Parser): Config;
+	getConfig(): Config;
 
 	/** @private */
-	msg(this: Parser, msg: string, arg?: string): string;
+	msg(msg: string, arg?: string): string;
 
 	/**
 	 * 规范化页面标题
@@ -67,7 +67,7 @@ declare interface Parser {
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
 	/** @private */
-	run<T>(this: Parser, callback: () => T): T;
+	run<T>(callback: () => T): T;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare

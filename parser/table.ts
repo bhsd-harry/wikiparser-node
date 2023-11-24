@@ -39,7 +39,8 @@ export const parseTable = (
 		} else {
 			const token = new Token(str, config, accum);
 			token.type = 'table-inter';
-			(top as TrToken | TableToken).insertAt(token.setAttribute('stage', 3));
+			token.setAttribute('stage', 3);
+			(top as TrToken | TableToken).insertAt(token);
 		}
 	};
 	for (const outLine of lines) {
