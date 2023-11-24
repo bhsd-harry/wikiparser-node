@@ -13,12 +13,12 @@ export class OnlyincludeToken extends Token {
 	}
 
 	/** @override */
-	override getPadding(): number {
+	protected override getPadding(): number {
 		return 13;
 	}
 
 	/** @override */
-	override isPlain(): boolean {
+	protected override isPlain(): boolean {
 		return true;
 	}
 

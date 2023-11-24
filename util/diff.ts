@@ -11,7 +11,7 @@ process.on('unhandledRejection', e => {
  * @param command shell指令
  * @param args shell输入参数
  */
-const cmd = (command: string, args: string[]): Promise<string | undefined> => new Promise(resolve => {
+export const cmd = (command: string, args: string[]): Promise<string | undefined> => new Promise(resolve => {
 	let timer: NodeJS.Timeout | undefined,
 		shell: ChildProcessWithoutNullStreams | undefined;
 

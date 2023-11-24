@@ -322,16 +322,16 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		switch (key) {
 			case 'stage':
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
 				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
-				return this;
+				break;
 			default:
-				return super.setAttribute(key, value);
+				super.setAttribute(key, value);
 		}
 	}
 
@@ -353,6 +353,9 @@ export class Token extends AstElement {
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
 		super.insertAt(token, i);
+		if (token.type !== 'text' && this.isPlain() && token.isPlain()) {
+			Parser.warn('您正将一个普通节点作为另一个普通节点的子节点，请考虑要不要执行 flatten 方法。');
+		}
 		if (token.type === 'root') {
 			token.type = 'plain';
 		}

@@ -58,7 +58,8 @@ export class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name),
 				canonicalCame = insensitive[name.toLowerCase()];
 			if (isSensitive || canonicalCame) {
-				this.setAttribute('name', canonicalCame ?? name.toLowerCase()).type = 'magic-word';
+				this.setAttribute('name', canonicalCame ?? name.toLowerCase());
+				this.type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 					});
@@ -221,7 +222,8 @@ export class TranscludeToken extends Token {
 				{name} = token,
 				newName = String(i + 1);
 			if (name !== newName) {
-				this.getArgs(newName, false, false).add(token.setAttribute('name', newName) as ParameterToken);
+				token.setAttribute('name', newName);
+				this.getArgs(newName, false, false).add(token);
 			}
 		}
 	}
