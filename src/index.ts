@@ -794,7 +794,7 @@ export class Token extends AstElement {
 	}
 
 	/**
-	 * 重新解析单引号
+	 * 解析残留的单引号
 	 * @throws `Error` 不接受QuoteToken作为子节点
 	 */
 	redoQuotes(): void {

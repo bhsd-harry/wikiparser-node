@@ -1,6 +1,7 @@
 /* eslint n/exports-style: 0 */
 import * as fs from 'fs';
 import * as path from 'path';
+import {cmd} from './util/diff';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -69,10 +70,10 @@ declare interface Parser {
 	/* NOT FOR BROWSER END */
 
 	/** @private */
-	getConfig(this: Parser): Config;
+	getConfig(): Config;
 
 	/** @private */
-	msg(this: Parser, msg: string, arg?: string): string;
+	msg(msg: string, arg?: string): string;
 
 	/**
 	 * 规范化页面标题
@@ -101,14 +102,14 @@ declare interface Parser {
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
 	/** @private */
-	run<T>(this: Parser, callback: () => T): T;
+	run<T>(callback: () => T): T;
 
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	warn(this: Parser, msg: string, ...args: unknown[]): void;
+	warn(msg: string, ...args: unknown[]): void;
 	/** @private */
-	debug(this: Parser, msg: string, ...args: unknown[]): void;
+	debug(msg: string, ...args: unknown[]): void;
 	/** @private */
 	error(msg: string, ...args: unknown[]): void;
 	/** @private */
@@ -118,7 +119,7 @@ declare interface Parser {
 	log(f: Function): void;
 
 	/** @private */
-	clearCache(this: Parser): void;
+	clearCache(): Promise<void>;
 
 	/**
 	 * 是否是跨维基链接
@@ -407,23 +408,26 @@ const Parser: Parser = {
 	},
 
 	/** @implements */
-	clearCache() {
-		const entries = [
-			...Object.entries(this.classes),
-			...Object.entries(this.mixins),
-			...Object.entries(this.parsers),
-		];
+	async clearCache(): Promise<void> {
+		const promise = cmd('npm', ['run', 'build']),
+			entries = [
+				...Object.entries(this.classes),
+				...Object.entries(this.mixins),
+				...Object.entries(this.parsers),
+			];
 		for (const [, filePath] of entries) {
 			try {
 				delete require.cache[require.resolve(filePath)];
 			} catch {}
 		}
+		await promise;
 		for (const [name, filePath] of entries) {
 			if (name in global) {
 				// @ts-expect-error noImplicitAny
 				global[name] = require(filePath);
 			}
 		}
+		this.info('已重新加载Parser');
 	},
 
 	/** @implements */

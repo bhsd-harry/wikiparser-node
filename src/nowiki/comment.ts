@@ -51,7 +51,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
 
-	/* NOT FOR BROWSER END */
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override cloneNode(): this {
