@@ -22,12 +22,12 @@ export class OnlyincludeToken extends Token {
 		return omit && this.matchesTypes(omit) ? '' : `<onlyinclude>${super.toString(omit)}</onlyinclude>`;
 	}
 
-	/** @override */
+	/** @private */
 	protected override getPadding(): number {
 		return 13;
 	}
 
-	/** @override */
+	/** @private */
 	protected override isPlain(): boolean {
 		return true;
 	}

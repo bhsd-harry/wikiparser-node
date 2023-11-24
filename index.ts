@@ -424,7 +424,8 @@ const Parser: Parser = {
 		for (const [name, filePath] of entries) {
 			if (name in global) {
 				// @ts-expect-error noImplicitAny
-				global[name] = require(filePath);
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+				global[name] = require(filePath)[name];
 			}
 		}
 		this.info('已重新加载Parser');

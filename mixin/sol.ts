@@ -30,7 +30,7 @@ export const sol = <T extends AstConstructor>(constructor: T) => {
 				: `${this.prependNewLine()}${super.toString(omit)}`;
 		}
 
-		/** @override */
+		/** @private */
 		getPadding(): number {
 			return this.prependNewLine().length;
 		}

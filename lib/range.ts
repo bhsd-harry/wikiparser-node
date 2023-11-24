@@ -403,7 +403,7 @@ export class AstRange {
 		}
 	}
 
-	/** 范围内的全部文本 */
+	/** @private */
 	toString(): string {
 		return String(this.startContainer.getRootNode()).slice(this.startIndex, this.endIndex);
 	}

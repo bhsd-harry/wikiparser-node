@@ -237,7 +237,7 @@ export class Token extends AstElement {
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
 		const {parseCommentAndExt}: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
-		this.setText(parseCommentAndExt(String(this), this.#config, this.#accum, includeOnly));
+		this.setText(parseCommentAndExt(String(this.firstChild!), this.#config, this.#accum, includeOnly));
 	}
 
 	/** 解析花括号 */
@@ -254,7 +254,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
-		this.setText(parseHtml(String(this), this.#config, this.#accum));
+		this.setText(parseHtml(String(this.firstChild!), this.#config, this.#accum));
 	}
 
 	/** 解析表格 */
@@ -273,13 +273,13 @@ export class Token extends AstElement {
 		}
 		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore')
 			= require('../parser/hrAndDoubleUnderscore');
-		this.setText(parseHrAndDoubleUnderscore(this, this.#config, this.#accum));
+		this.setText(parseHrAndDoubleUnderscore(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
 
 	/** 解析内部链接 */
 	#parseLinks(): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(String(this), this.#config, this.#accum));
+		this.setText(parseLinks(String(this.firstChild!), this.#config, this.#accum));
 	}
 
 	/** 解析单引号 */
@@ -288,7 +288,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
-		const lines = String(this).split('\n');
+		const lines = String(this.firstChild!).split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum);
 		}
@@ -301,7 +301,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(String(this), this.#config, this.#accum));
+		this.setText(parseExternalLinks(String(this.firstChild!), this.#config, this.#accum));
 	}
 
 	/** 解析自由外链 */
@@ -310,7 +310,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(String(this), this.#config, this.#accum));
+		this.setText(parseMagicLinks(String(this.firstChild!), this.#config, this.#accum));
 	}
 
 	/** 解析列表 */
@@ -319,7 +319,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const lines = String(this).split('\n');
+		const lines = String(this.firstChild!).split('\n');
 		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, this.#config, this.#accum);
@@ -331,7 +331,7 @@ export class Token extends AstElement {
 	#parseConverter(): void {
 		if (this.#config.variants.length > 0) {
 			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
-			this.setText(parseConverter(String(this), this.#config, this.#accum));
+			this.setText(parseConverter(String(this.firstChild!), this.#config, this.#accum));
 		}
 	}
 
@@ -435,7 +435,7 @@ export class Token extends AstElement {
 			}
 		}
 		super.insertAt(token, i);
-		if (token.type !== 'text' && this.isPlain() && token.isPlain()) {
+		if (token.constructor === Token && this.isPlain()) {
 			Parser.warn('您正将一个普通节点作为另一个普通节点的子节点，请考虑要不要执行 flatten 方法。');
 		}
 		if (token.type === 'root') {
