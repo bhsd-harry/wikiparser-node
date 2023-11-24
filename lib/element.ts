@@ -74,7 +74,7 @@ export abstract class AstElement extends AstNode {
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		const childNodes = [...this.childNodes],
 			j = Parser.running ? -1 : childNodes.indexOf(node);
-			node.setAttribute('parentNode', this as AstElement as Token);
+		node.setAttribute('parentNode', this as AstElement as Token);
 		childNodes.splice(i, 0, node);
 		return node;
 	}
@@ -86,8 +86,8 @@ export abstract class AstElement extends AstNode {
 	closest(selector: string): Token | undefined {
 		let {parentNode} = this,
 			condition: (token: Token) => boolean;
-			const types = new Set(selector.split(',').map(str => str.trim()));
-			condition = /** @implements */ ({type}): boolean => types.has(type);
+		const types = new Set(selector.split(',').map(str => str.trim()));
+		condition = /** @implements */ ({type}): boolean => types.has(type);
 		while (parentNode) {
 			if (condition(parentNode)) {
 				return parentNode;
@@ -127,9 +127,9 @@ export abstract class AstElement extends AstNode {
 	setText(str: string, i = 0): string {
 		const oldText = this.childNodes.at(i)!,
 			{type, constructor: {name}} = oldText;
-			const {data} = oldText;
-			oldText.replaceData(str);
-			return data;
+		const {data} = oldText;
+		oldText.replaceData(str);
+		return data;
 	}
 
 	/**

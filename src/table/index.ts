@@ -56,10 +56,10 @@ export class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			{lastChild} = this;
-			super.insertAt(Parser.run(() => {
-				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
-				});
-				return token;
-			}));
+		super.insertAt(Parser.run(() => {
+			const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
+			});
+			return token;
+		}));
 	}
 }

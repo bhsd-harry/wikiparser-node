@@ -96,4 +96,5 @@ export class GalleryToken extends Token {
 	/** @override */
 	override print(): string {
 		return super.print({sep: '\n'});
+	}
 }

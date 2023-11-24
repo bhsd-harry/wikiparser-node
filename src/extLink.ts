@@ -64,3 +64,4 @@ export class ExtLinkToken extends Token {
 			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
 		);
 	}
+}

@@ -150,8 +150,8 @@ const Parser: Parser = {
 
 	/** @implements */
 	run(callback) {
-			const result = callback();
-			return result;
+		const result = callback();
+		return result;
 	},
 };
 
