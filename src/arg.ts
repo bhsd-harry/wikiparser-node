@@ -50,7 +50,8 @@ export class ArgToken extends Token {
 			} else {
 				const token = new Token(parts[i], config, accum);
 				token.type = 'arg-default';
-				super.insertAt(token.setAttribute('stage', 2));
+				token.setAttribute('stage', 2);
+				super.insertAt(token);
 			}
 		}
 		this.protectChildren(0);

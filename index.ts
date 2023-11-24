@@ -452,7 +452,8 @@ const Parser: Parser = {
 			const halfParsed = stage < this.MAX_STAGE,
 				token = new Token(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''), this.getConfig());
 			if (halfParsed) {
-				token.setAttribute('stage', stage).parseOnce(stage, include);
+				token.setAttribute('stage', stage);
+				token.parseOnce(stage, include);
 			} else {
 				token.parse(undefined, include);
 			}

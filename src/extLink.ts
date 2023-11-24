@@ -68,7 +68,8 @@ export class ExtLinkToken extends Token {
 				'Stage-7': ':', ConverterToken: ':',
 			});
 			inner.type = 'ext-link-text';
-			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			this.insertAt(inner);
 		}
 		this.protectChildren(0);
 	}

@@ -69,7 +69,8 @@ export abstract class LinkBaseToken extends Token {
 				'Stage-5': ':', ConverterToken: ':',
 			});
 			inner.type = 'link-text';
-			this.insertAt(inner.setAttribute('stage', Parser.MAX_STAGE - 1));
+			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
 		this.protectChildren(0);
@@ -116,12 +117,12 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = Boolean(value);
-			return this;
+		} else {
+			super.setAttribute(key, value);
 		}
-		return super.setAttribute(key, value);
 	}
 
 	/** @override */
@@ -241,7 +242,8 @@ export abstract class LinkBaseToken extends Token {
 			({lastChild} = wikiLink as this);
 		} else {
 			lastChild = Parser.run(() => new Token(undefined, config));
-			lastChild.setAttribute('stage', 7).type = 'link-text';
+			lastChild.type = 'link-text';
+			lastChild.setAttribute('stage', 7);
 		}
 		if (this.length === 1) {
 			this.insertAt(lastChild);

@@ -103,7 +103,8 @@ export class TdToken extends fixed(TableBaseToken) {
 			accum,
 		);
 		innerToken.type = 'td-inner';
-		this.insertAt(innerToken.setAttribute('stage', 4));
+		innerToken.setAttribute('stage', 4);
+		this.insertAt(innerToken);
 	}
 
 	/** @private */
@@ -206,12 +207,12 @@ export class TdToken extends fixed(TableBaseToken) {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		if (key === 'innerSyntax') {
 			this.#innerSyntax = value ?? '';
-			return this;
+		} else {
+			super.setAttribute(key, value);
 		}
-		return super.setAttribute(key, value);
 	}
 
 	/**

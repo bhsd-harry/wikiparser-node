@@ -232,7 +232,8 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		if (!this.getAttribute('config').html.flat().includes(name)) {
 			throw new RangeError(`非法的HTML标签：${tag}`);
 		}
-		(this.setAttribute('name', name) as this).#tag = tag;
+		this.setAttribute('name', name);
+		this.#tag = tag;
 	}
 
 	/** 局部闭合 */

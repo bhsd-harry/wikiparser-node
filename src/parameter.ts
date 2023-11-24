@@ -77,7 +77,8 @@ export class ParameterToken extends fixed(Token) {
 			token = new Token(value, config, accum);
 		keyToken.type = 'parameter-key';
 		token.type = 'parameter-value';
-		this.append(keyToken, token.setAttribute('stage', 2));
+		token.setAttribute('stage', 2);
+		this.append(keyToken, token);
 	}
 
 	/** @private */

@@ -375,14 +375,14 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		switch (key) {
 			case 'stage':
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
 				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
-				return this;
+				break;
 			case 'acceptable': {
 				const acceptable: Record<string, Ranges> = {};
 				if (value) {
@@ -401,10 +401,10 @@ export class Token extends AstElement {
 					}
 				}
 				this.#acceptable = value && acceptable;
-				return this;
+				break;
 			}
 			default:
-				return super.setAttribute(key, value);
+				super.setAttribute(key, value);
 		}
 	}
 
@@ -813,11 +813,11 @@ export class Token extends AstElement {
 		const textNodes = [...this.childNodes.entries()]
 			.filter(([, {type}]) => type === 'text') as [number, AstText][],
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
-			token = Parser.run(
-				() => new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'))
-					.setAttribute('stage', 6)
-					.parse(7),
-			);
+			token = Parser.run(() => {
+				const node = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
+				node.setAttribute('stage', 6);
+				return node.parse(7);
+			});
 		for (const quote of [...token.childNodes].reverse()) {
 			if (quote.type === 'quote') {
 				const index = quote.getRelativeIndex(),

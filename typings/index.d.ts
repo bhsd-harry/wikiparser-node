@@ -19,8 +19,7 @@ declare global {
 		insertAt(token: unknown, i?: number): unknown;
 		afterBuild(): void;
 		getAttribute<T extends string>(key: T): TokenAttributeGetter<T>;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): any;
+		setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void;
 		addEventListener(events: string | string[], listener: AstListener): void;
 		replaceChildren(...elements: (AstNodes | string)[]): void;
 	};

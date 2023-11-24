@@ -157,7 +157,8 @@ export class ExtToken extends attributesParent(TagPairToken) {
 				innerToken = new NowikiToken(inner, newConfig);
 			}
 		}
-		innerToken.setAttribute('name', lcName).type = 'ext-inner';
+		innerToken.setAttribute('name', lcName);
+		innerToken.type = 'ext-inner';
 		super(name, attrToken, innerToken, closed, config, accum);
 	}
 

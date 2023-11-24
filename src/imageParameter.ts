@@ -168,7 +168,8 @@ export class ImageParameterToken extends Token {
 			return;
 		}
 		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, accum);
-		this.setAttribute('name', 'caption').setAttribute('stage', 7);
+		this.setAttribute('name', 'caption');
+		this.setAttribute('stage', 7);
 	}
 
 	/** @private */
@@ -230,7 +231,8 @@ export class ImageParameterToken extends Token {
 		return Parser.run(() => {
 			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), config) as this;
 			token.replaceChildren(...cloned);
-			token.setAttribute('name', this.name).setAttribute('syntax', this.#syntax);
+			token.setAttribute('name', this.name);
+			token.setAttribute('syntax', this.#syntax);
 			return token;
 		});
 	}
@@ -241,12 +243,12 @@ export class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeGetter<T>): this {
+	override setAttribute<T extends string>(key: T, value: TokenAttributeGetter<T>): void {
 		if (key === 'syntax') {
 			this.#syntax = value;
-			return this;
+		} else {
+			super.setAttribute(key, value);
 		}
-		return super.setAttribute(key, value);
 	}
 
 	/** 是否是不可变参数 */

@@ -23,8 +23,8 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	constructor(word: string, fixed: boolean, config = Parser.getConfig(), accum: Token[] = []) {
 		super(word, config, accum);
 		this.#fixed = fixed;
-		this.setAttribute('name', word.toLowerCase())
-			.setAttribute('pattern', new RegExp(`^${word}$`, fixed ? 'u' : 'iu'));
+		this.setAttribute('name', word.toLowerCase());
+		this.setAttribute('pattern', new RegExp(`^${word}$`, fixed ? 'u' : 'iu'));
 	}
 
 	/** @private */

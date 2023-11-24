@@ -31,12 +31,12 @@ export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegEx
 		}
 
 		/** @private */
-		override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): this {
+		override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 			if (key === 'pattern') {
 				this.#pattern = (value as TokenAttributeSetter<'pattern'>)!;
-				return this;
+			} else {
+				super.setAttribute(key, value);
 			}
-			return super.setAttribute(key, value);
 		}
 
 		/**
