@@ -13,7 +13,9 @@ export class Title {
 	main;
 	prefix;
 	interwiki = '';
+	/** @private */
 	conversionTable = new Map<string, string>();
+	/** @private */
 	redirects = new Map<string, string>();
 
 	/** 完整标题 */
@@ -91,15 +93,12 @@ export class Title {
 
 	/* NOT FOR BROWSER */
 
-	/** 完整链接 */
+	/** @private */
 	toString(): string {
 		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
 	}
 
-	/**
-	 * 转换
-	 * @param conversionTable 单向转换表
-	 */
+	/** @private */
 	autoConvert(): void {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
