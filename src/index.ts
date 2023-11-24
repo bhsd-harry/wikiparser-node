@@ -439,6 +439,9 @@ export class Token extends AstElement {
 			}
 		}
 		super.insertAt(token, i);
+		if (token.type !== 'text' && this.isPlain() && token.isPlain()) {
+			Parser.warn('您正将一个普通节点作为另一个普通节点的子节点，请考虑要不要执行 flatten 方法。');
+		}
 		if (token.type === 'root') {
 			token.type = 'plain';
 		}
@@ -886,6 +889,17 @@ export class Token extends AstElement {
 					continue;
 				}
 				target.replaceWith(replace);
+			}
+		}
+	}
+
+	/** 合并普通节点的普通子节点 */
+	flatten(): void {
+		if (this.isPlain()) {
+			for (const child of this.childNodes) {
+				if (child.type !== 'text' && child.isPlain()) {
+					child.replaceWith(...child.childNodes);
+				}
 			}
 		}
 	}
