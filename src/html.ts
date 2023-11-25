@@ -236,12 +236,6 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		this.#tag = tag;
 	}
 
-	/** 局部闭合 */
-	#localMatch(): void {
-		this.#selfClosing = false;
-		this.after(Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config')).firstChild!);
-	}
-
 	/**
 	 * 修复无效自封闭标签
 	 * @throws `Error` 无法修复无效自封闭标签
@@ -252,7 +246,8 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		if (!parentNode || !this.#selfClosing || !config.html[0].includes(tagName)) {
 			return;
 		} else if (firstChild.text().trim()) {
-			this.#localMatch();
+			this.#selfClosing = false;
+			this.after(Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config')).firstChild!);
 			return;
 		}
 		const {childNodes} = parentNode,

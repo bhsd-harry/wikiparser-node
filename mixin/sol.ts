@@ -8,19 +8,16 @@ import type {Token} from '../src';
 export const sol = <T extends AstConstructor>(constructor: T) => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
-		/** 是否可以视为root节点 */
-		#isRoot(): boolean {
-			const {parentNode, type} = this as unknown as Token;
-			return parentNode?.type === 'root'
-				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem';
-		}
-
 		/** 在前方插入newline */
 		prependNewLine(): string {
-			const {previousVisibleSibling} = this as unknown as Token;
-			return (previousVisibleSibling && !String(previousVisibleSibling).endsWith('\n')) ?? !this.#isRoot()
-				? '\n'
-				: '';
+			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
+			if (previousVisibleSibling) {
+				return String(previousVisibleSibling).endsWith('\n') ? '' : '\n';
+			}
+			return parentNode?.type === 'root'
+				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem'
+				? ''
+				: '\n';
 		}
 
 		/** @private */

@@ -65,11 +65,6 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			return this.#attributesChild.getAttrNames();
 		}
 
-		/** AttributesToken子节点是否具有任意属性 */
-		hasAttrs(): boolean {
-			return this.#attributesChild.hasAttrs();
-		}
-
 		/** 获取AttributesToken子节点的全部标签属性 */
 		getAttrs(): Record<string, string | true> {
 			return this.#attributesChild.getAttrs();

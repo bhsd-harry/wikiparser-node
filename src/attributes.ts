@@ -74,7 +74,7 @@ export class AttributesToken extends Token {
 
 	/** 是否含有无效属性 */
 	get sanitized(): boolean {
-		return this.getDirtyAttrs().length === 0;
+		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim()).length === 0;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -264,11 +264,6 @@ export class AttributesToken extends Token {
 		});
 	}
 
-	/** 所有无效属性 */
-	getDirtyAttrs(): AtomToken[] {
-		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim()) as AtomToken[];
-	}
-
 	/**
 	 * @override
 	 * @param token 待插入的子节点
@@ -357,11 +352,6 @@ export class AttributesToken extends Token {
 	/** 获取全部的属性名 */
 	getAttrNames(): Set<string> {
 		return new Set(this.childNodes.filter(child => child instanceof AttributeToken).map(({name}) => name!));
-	}
-
-	/** 标签是否具有任意属性 */
-	hasAttrs(): boolean {
-		return this.getAttrNames().size > 0;
 	}
 
 	/** 获取全部属性 */
