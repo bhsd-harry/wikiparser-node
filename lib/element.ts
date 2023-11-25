@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {toCase, noWrap, print, text} from '../util/string';
+import {noWrap, print, text} from '../util/string';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
@@ -8,6 +8,13 @@ import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';
+
+declare interface AttributesParent {
+	/* eslint-disable @typescript-eslint/method-signature-style */
+	hasAttr?: (key: string) => boolean;
+	getAttr?: (key: string) => string | true | undefined;
+	/* eslint-enable @typescript-eslint/method-signature-style */
+}
 
 const lintIgnoredExt = new Set([
 	'nowiki',
@@ -28,6 +35,13 @@ const lintIgnoredExt = new Set([
 ]);
 
 /* NOT FOR BROWSER */
+
+/**
+ * optionally convert to lower cases
+ * @param val 属性值
+ * @param i 是否对大小写不敏感
+ */
+const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
 
 /**
  * 检查某个下标是否符合表达式
@@ -346,14 +360,19 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/** @private */
-	protected matchesAttr(key: string, equal?: string, val = '', i?: string): boolean {
-		if (!(key in this)) {
+	#matchesAttr(this: AstElement & AttributesParent, key: string, equal?: string, val = '', i?: string): boolean {
+		const isAttr = typeof this.hasAttr === 'function' && typeof this.getAttr === 'function';
+		if (!(key in this) && (!isAttr || !this.hasAttr!(key))) {
 			return equal === '!=';
 		} else if (!equal) {
 			return true;
 		}
 		const v = toCase(val, i);
 		let thisVal = this.getAttribute(key) as unknown;
+		if (isAttr && thisVal === undefined) {
+			const attr = this.getAttr!(key);
+			thisVal = attr === true ? '' : attr;
+		}
 		if (thisVal instanceof RegExp) {
 			thisVal = thisVal.source;
 		}
@@ -455,7 +474,7 @@ export abstract class AstElement extends AstNode {
 					}
 				}
 			} else if (selector.length === 4) { // 情形2：属性选择器
-				return this.matchesAttr(...selector);
+				return this.#matchesAttr(...selector);
 			}
 			const [s, pseudo] = selector; // 情形3：复杂伪选择器
 			switch (pseudo) {
@@ -668,18 +687,6 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 在末尾插入子节点
-	 * @param node 插入节点
-	 */
-	appendChild(node: string): AstText;
-	/** @ignore */
-	appendChild<T extends AstNodes>(node: T): T;
-	/** @ignore */
-	appendChild<T extends AstNodes>(node: T | string): T | AstText {
-		return this.insertAt(node as T);
-	}
-
-	/**
 	 * 在指定位置前插入子节点
 	 * @param child 插入节点
 	 * @param reference 指定位置处的子节点
@@ -692,18 +699,6 @@ export abstract class AstElement extends AstNode {
 		return reference === undefined
 			? this.insertAt(child as T)
 			: this.insertAt(child as T, this.#getChildIndex(reference));
-	}
-
-	/**
-	 * 替换子节点
-	 * @param newChild 新子节点
-	 * @param oldChild 原子节点
-	 */
-	replaceChild<T extends AstNodes>(newChild: AstNodes | string, oldChild: T): T {
-		const i = this.#getChildIndex(oldChild);
-		this.removeAt(i);
-		this.insertAt(newChild as AstNodes, i);
-		return oldChild;
 	}
 
 	/**

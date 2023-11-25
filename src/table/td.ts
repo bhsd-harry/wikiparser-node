@@ -41,7 +41,7 @@ export class TdToken extends fixed(TableBaseToken) {
 
 	/** 单元格类型 */
 	get subtype(): TdSubtypes {
-		return this.getSyntax().subtype;
+		return this.#getSyntax().subtype;
 	}
 
 	/* NOT FOR BROWSER */
@@ -107,8 +107,8 @@ export class TdToken extends fixed(TableBaseToken) {
 		this.insertAt(innerToken);
 	}
 
-	/** @private */
-	protected getSyntax(): TdSyntax {
+	/** 表格语法信息 */
+	#getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
 			char = syntax.at(-1)!;
@@ -125,7 +125,7 @@ export class TdToken extends fixed(TableBaseToken) {
 		if (!(previousSibling instanceof TdToken)) {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = previousSibling.getSyntax();
+		const result = previousSibling.#getSyntax();
 		result.escape ||= esc;
 		result.correction = previousSibling.lastChild
 			.toString(new Set(['comment', 'ext', 'include', 'noinclude', 'arg', 'template', 'magic-word']))
@@ -230,7 +230,7 @@ export class TdToken extends fixed(TableBaseToken) {
 		if (String(this.childNodes[1])) {
 			this.#innerSyntax ||= '|';
 		}
-		const {subtype, escape, correction} = this.getSyntax();
+		const {subtype, escape, correction} = this.#getSyntax();
 		if (correction) {
 			this.setSyntax(subtype, escape);
 		}
@@ -239,7 +239,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	/** 改为独占一行 */
 	independence(): void {
 		if (!this.isIndependent()) {
-			const {subtype, escape} = this.getSyntax();
+			const {subtype, escape} = this.#getSyntax();
 			this.setSyntax(subtype, escape);
 		}
 	}
