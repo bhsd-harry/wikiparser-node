@@ -56,13 +56,6 @@ export const print = (childNodes: AstNodes[], opt: PrintOpt = {}): string => {
 /* NOT FOR BROWSER */
 
 /**
- * optionally convert to lower cases
- * @param val 属性值
- * @param i 是否对大小写不敏感
- */
-export const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
-
-/**
  * convert newline in text nodes to single whitespace
  * @param token 父节点
  */

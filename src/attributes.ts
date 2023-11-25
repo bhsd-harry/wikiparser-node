@@ -1,5 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {toCase, normalizeSpace, text, removeComment} from '../util/string';
+import {normalizeSpace, text, removeComment} from '../util/string';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -344,34 +344,6 @@ export class AttributesToken extends Token {
 			['"', '"'],
 			config,
 		)));
-	}
-
-	/** @private */
-	protected override matchesAttr(key: string, equal?: string, val = '', i?: string): boolean {
-		if (!equal) {
-			return this.hasAttr(key);
-		} else if (!this.hasAttr(key)) {
-			return equal === '!=';
-		}
-		const v = toCase(val, i),
-			attr = this.getAttr(key)!,
-			thisVal = toCase(attr === true ? '' : attr, i);
-		switch (equal) {
-			case '~=':
-				return attr !== true && thisVal.split(/\s/u).includes(v);
-			case '|=': // 允许`val === ''`
-				return thisVal === v || thisVal.startsWith(`${v}-`);
-			case '^=':
-				return attr !== true && thisVal.startsWith(v);
-			case '$=':
-				return attr !== true && thisVal.endsWith(v);
-			case '*=':
-				return attr !== true && thisVal.includes(v);
-			case '!=':
-				return thisVal !== v;
-			default: // `=`
-				return thisVal === v;
-		}
 	}
 
 	/**
