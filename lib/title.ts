@@ -10,23 +10,30 @@ export class Title {
 
 	/* NOT FOR BROWSER */
 
+	#namespaces;
 	main;
-	prefix;
 	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
 	redirects = new Map<string, string>();
 
+	/** 命名空间前缀 */
+	get prefix(): string {
+		const namespace = this.#namespaces[this.ns]!;
+		return `${namespace}${namespace && ':'}`;
+	}
+
 	/** 完整标题 */
 	get title(): string {
-		let title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
+		const prefix = `${this.interwiki && `${this.interwiki}:`}${this.prefix}`;
+		let title = `${prefix}${this.main.replaceAll(' ', '_')}`;
 		const redirected = this.redirects.get(title);
 		if (redirected) {
 			return redirected;
 		}
 		this.autoConvert();
-		title = `${this.interwiki && `${this.interwiki}:`}${this.prefix}${this.main.replaceAll(' ', '_')}`;
+		title = `${prefix}${this.main.replaceAll(' ', '_')}`;
 		return this.redirects.get(title) ?? title;
 	}
 
@@ -40,6 +47,7 @@ export class Title {
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
 		const {namespaces, nsid} = config;
+		this.#namespaces = namespaces;
 		let namespace = namespaces[defaultNs] ?? '';
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
@@ -88,7 +96,6 @@ export class Title {
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
 		this.main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
-		this.prefix = `${namespace}${namespace && ':'}`;
 	}
 
 	/* NOT FOR BROWSER */
