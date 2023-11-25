@@ -181,7 +181,7 @@ export class AttributesToken extends Token {
 	}
 
 	/**
-	 * 获取标签属性
+	 * 获取指定属性
 	 * @param key 属性键
 	 */
 	getAttr(key: string): string | true | undefined {
@@ -239,7 +239,7 @@ export class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 清理标签属性 */
+	/** 清理无效属性 */
 	sanitize(): void {
 		let dirty = false;
 		for (let i = this.length - 1; i >= 0; i--) {
@@ -309,7 +309,7 @@ export class AttributesToken extends Token {
 	}
 
 	/**
-	 * 设置标签属性
+	 * 设置指定属性
 	 * @param key 属性键
 	 * @param value 属性值
 	 * @throws `RangeError` 扩展标签属性不能包含">"
@@ -354,7 +354,7 @@ export class AttributesToken extends Token {
 		return this.getAttrTokens(key).length > 0;
 	}
 
-	/** 获取全部的标签属性名 */
+	/** 获取全部的属性名 */
 	getAttrNames(): Set<string> {
 		return new Set(this.childNodes.filter(child => child instanceof AttributeToken).map(({name}) => name!));
 	}
@@ -364,14 +364,14 @@ export class AttributesToken extends Token {
 		return this.getAttrNames().size > 0;
 	}
 
-	/** 获取全部标签属性 */
+	/** 获取全部属性 */
 	getAttrs(): Record<string, string | true> {
 		const attrs = this.childNodes.filter(child => child instanceof AttributeToken) as AttributeToken[];
 		return Object.fromEntries(attrs.map(({name, value}) => [name, value]));
 	}
 
 	/**
-	 * 移除标签属性
+	 * 移除指定属性
 	 * @param key 属性键
 	 */
 	removeAttr(key: string): void {
@@ -381,7 +381,7 @@ export class AttributesToken extends Token {
 	}
 
 	/**
-	 * 开关标签属性
+	 * 开关指定属性
 	 * @param key 属性键
 	 * @param force 强制开启或关闭
 	 * @throws `RangeError` 不为Boolean类型的属性值

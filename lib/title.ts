@@ -11,12 +11,22 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#namespaces;
-	main;
+	#main;
 	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
 	redirects = new Map<string, string>();
+
+	/** 不含命名空间的标题主体部分 */
+	get main(): string {
+		return this.#main;
+	}
+
+	set main(title) {
+		title = title.replaceAll('_', ' ').trim();
+		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+	}
 
 	/** 命名空间前缀 */
 	get prefix(): string {
@@ -27,13 +37,13 @@ export class Title {
 	/** 完整标题 */
 	get title(): string {
 		const prefix = `${this.interwiki && `${this.interwiki}:`}${this.prefix}`;
-		let title = `${prefix}${this.main.replaceAll(' ', '_')}`;
+		let title = `${prefix}${this.#main.replaceAll(' ', '_')}`;
 		const redirected = this.redirects.get(title);
 		if (redirected) {
 			return redirected;
 		}
 		this.autoConvert();
-		title = `${prefix}${this.main.replaceAll(' ', '_')}`;
+		title = `${prefix}${this.#main.replaceAll(' ', '_')}`;
 		return this.redirects.get(title) ?? title;
 	}
 
@@ -95,7 +105,7 @@ export class Title {
 		this.valid = Boolean(title || selfLink && fragment !== undefined || this.interwiki)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
-		this.main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
 	}
 
 	/* NOT FOR BROWSER */
@@ -110,7 +120,7 @@ export class Title {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
-			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
+			this.#main = this.#main.replace(regex, p => conversionTable.get(p)!);
 		}
 	}
 }
