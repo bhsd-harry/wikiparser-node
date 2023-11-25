@@ -347,10 +347,10 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	protected matchesAttr(key: string, equal?: string, val = '', i?: string): boolean {
-		if (!equal) {
-			return this.hasAttribute(key);
-		} else if (!this.hasAttribute(key)) {
+		if (!(key in this)) {
 			return equal === '!=';
+		} else if (!equal) {
+			return true;
 		}
 		const v = toCase(val, i);
 		let thisVal = this.getAttribute(key) as unknown;

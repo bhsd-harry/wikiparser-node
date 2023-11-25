@@ -275,9 +275,12 @@ export class AttributesToken extends Token {
 	 * @param i 插入位置
 	 * @throws `RangeError` 不是AttributeToken或标签不匹配
 	 */
-	override insertAt<T extends AttributeToken>(token: T, i = this.length): T {
+	override insertAt<T extends AttributeToken | AtomToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
-			throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
+			if (String(token).trim()) {
+				throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
+			}
+			return super.insertAt(token, i);
 		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {
 			throw new RangeError(`待插入的AttributeToken只可用于${token.tag}标签！`);
 		} else if (i === this.length) {

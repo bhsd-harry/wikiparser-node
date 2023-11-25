@@ -699,6 +699,7 @@ export class Token extends AstElement {
 		return Parser.run(() => {
 			const token = new Token(undefined, this.#config, [], this.#acceptable) as this;
 			token.type = this.type;
+			token.setAttribute('name', this.name);
 			token.append(...cloned);
 			token.protectChildren(...this.#protectedChildren);
 			return token;

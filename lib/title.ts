@@ -98,7 +98,7 @@ export class Title {
 		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
 	}
 
-	/** @private */
+	/** 执行单向转换 */
 	autoConvert(): void {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {

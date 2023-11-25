@@ -218,16 +218,11 @@ export abstract class AstNode {
 	/* NOT FOR BROWSER END */
 
 	/** @private */
-	protected hasAttribute(key: string): boolean {
-		return key in this;
-	}
-
-	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		if (key === 'optional') {
 			return new Set(this.#optional) as TokenAttributeGetter<T>;
 		}
-		return this.hasAttribute(key)
+		return key in this
 			// @ts-expect-error noImplicitAny
 			? String(this[key as string]) as TokenAttributeGetter<T>
 			: undefined as TokenAttributeGetter<T>;
