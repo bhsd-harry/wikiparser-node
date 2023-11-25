@@ -227,8 +227,8 @@ export class AstRange {
 	 * 根据行列号设置
 	 * @param method 方法名
 	 * @param root 根节点
-	 * @param x 列
-	 * @param y 行
+	 * @param x 列号
+	 * @param y 行号
 	 */
 	#setPoint(method: 'setStart' | 'setEnd', root: Token, x: number, y: number): void {
 		this.#setIndex(method, root, root.indexFromPos(y, x));
@@ -237,8 +237,8 @@ export class AstRange {
 	/**
 	 * 根据行列号设置起点
 	 * @param root 根节点
-	 * @param x 列
-	 * @param y 行
+	 * @param x 列号
+	 * @param y 行号
 	 */
 	setStartPoint(root: Token, x: number, y: number): void {
 		this.#setPoint('setStart', root, x, y);
@@ -247,8 +247,8 @@ export class AstRange {
 	/**
 	 * 根据行列号设置终点
 	 * @param root 根节点
-	 * @param x 列
-	 * @param y 行
+	 * @param x 列号
+	 * @param y 行号
 	 */
 	setEndPoint(root: Token, x: number, y: number): void {
 		this.#setPoint('setEnd', root, x, y);
@@ -338,7 +338,7 @@ export class AstRange {
 		return index < endIndex && index + String(referenceNode).length > startIndex;
 	}
 
-	/** 复制 */
+	/** 复制AstRange对象 */
 	cloneRange(): AstRange {
 		const range = new AstRange();
 		range.setStart(this.startContainer, this.startOffset);
@@ -346,7 +346,7 @@ export class AstRange {
 		return range;
 	}
 
-	/** 删除 */
+	/** 删除Range中的内容 */
 	deleteContents(): void {
 		const {startContainer, startOffset} = this;
 		let {endContainer, endOffset} = this,
@@ -393,13 +393,13 @@ export class AstRange {
 	 * 在起始位置插入节点
 	 * @param newNode 插入的节点
 	 */
-	insertNode(newNode: AstNodes): void {
+	insertNode(newNode: AstNodes | string): void {
 		const {startContainer, startOffset} = this;
 		if (startContainer.type === 'text') {
 			startContainer.splitText(startOffset);
 			startContainer.after(newNode);
 		} else {
-			startContainer.insertAt(newNode, startOffset);
+			startContainer.insertAt(newNode as string, startOffset);
 		}
 	}
 
@@ -417,9 +417,10 @@ export class AstRange {
 			return [];
 		}
 		const {startContainer, endContainer, commonAncestorContainer} = this;
+		let {startOffset, endOffset} = this;
 		if (commonAncestorContainer.type === 'text') {
-			commonAncestorContainer.splitText(this.endOffset);
-			commonAncestorContainer.splitText(this.startOffset);
+			commonAncestorContainer.splitText(endOffset);
+			commonAncestorContainer.splitText(startOffset);
 			return [commonAncestorContainer.nextSibling!];
 		} else if (startContainer !== commonAncestorContainer
 			&& (startContainer.type !== 'text' || startContainer.parentNode !== commonAncestorContainer)
@@ -428,16 +429,21 @@ export class AstRange {
 		) {
 			throw new Error('extractContents 方法只能用于获取某个节点的连续子节点！');
 		}
-		let {startOffset, endOffset} = this;
-		if (startContainer.type === 'text' && startContainer.parentNode === commonAncestorContainer) {
-			startContainer.splitText(this.startOffset);
-			startOffset = commonAncestorContainer.childNodes.indexOf(startContainer) + 1;
-		}
 		if (endContainer.type === 'text' && endContainer.parentNode === commonAncestorContainer) {
-			endContainer.splitText(this.endOffset);
+			endContainer.splitText(endOffset);
 			endOffset = commonAncestorContainer.childNodes.indexOf(endContainer);
 		}
+		if (startContainer.type === 'text' && startContainer.parentNode === commonAncestorContainer) {
+			startContainer.splitText(startOffset);
+			startOffset = commonAncestorContainer.childNodes.indexOf(startContainer) + 1;
+			endOffset++;
+		}
 		return commonAncestorContainer.childNodes.slice(startOffset, endOffset);
+	}
+
+	/** 在满足条件时拷贝范围内的全部节点 */
+	cloneContents(): AstNodes[] {
+		return this.extractContents().map(node => node.cloneNode());
 	}
 }
 
