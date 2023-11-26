@@ -15,6 +15,15 @@ export class OnlyincludeToken extends Token {
 		return this.text();
 	}
 
+	set innerText(text) {
+		const config = this.getAttribute('config'),
+			{length, firstChild} = Parser.parse(`<onlyinclude>${text}</onlyinclude>`, true, undefined, config);
+		if (length !== 1 || firstChild!.type !== 'onlyinclude') {
+			throw new RangeError('不允许包含一个 <onlyinclude> 标签！');
+		}
+		this.replaceChildren(...firstChild!.childNodes);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/** @private */
