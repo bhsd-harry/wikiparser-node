@@ -18,6 +18,16 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 		return this.firstChild.data;
 	}
 
+	set innerText(text) {
+		const include = this.getAttribute('include'),
+			config = this.getAttribute('config'),
+			{length, firstChild} = Parser.parse(`<!--${text}-->`, include, 1, config);
+		if (length !== 1 || firstChild!.type !== 'comment') {
+			throw new RangeError('不允许包含 "-->"！');
+		}
+		this.setText(text);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/** @param closed 是否闭合 */
