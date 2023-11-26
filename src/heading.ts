@@ -47,6 +47,15 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return this.firstChild.text();
 	}
 
+	/** @throws `RangeError` 首尾包含`=` */
+	set innerText(text) {
+		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
+			throw new RangeError(`修改标题层级请使用 ${this.constructor.name}.setLevel 方法！`);
+		}
+		const {childNodes} = Parser.parse(text, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		this.firstChild.replaceChildren(...childNodes);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
