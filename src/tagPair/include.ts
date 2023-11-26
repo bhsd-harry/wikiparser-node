@@ -22,6 +22,24 @@ export class IncludeToken extends hidden(TagPairToken) {
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): undefined;
 
+	/* NOT FOR BROWSER */
+
+	/**	@override */
+	override get innerText(): string | undefined {
+		return this.selfClosing ? undefined : this.lastChild.data;
+	}
+
+	override set innerText(text) {
+		if (text === undefined) {
+			this.selfClosing = true;
+		} else {
+			this.selfClosing = false;
+			this.setText(text);
+		}
+	}
+
+	/* NOT FOR BROWSER END */
+
 	/**
 	 * @param name 标签名
 	 * @param attr 标签属性
