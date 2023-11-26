@@ -73,6 +73,10 @@ export class TdToken extends fixed(TableBaseToken) {
 		return this.lastChild.text();
 	}
 
+	set innerText(text) {
+		this.lastChild.replaceChildren(...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
