@@ -1,9 +1,16 @@
-import {noWrap, extUrlChar, extUrlCharFirst} from '../util/string';
+import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
+
+/**
+ * 准确获取参数名
+ * @param name 预定的参数名
+ */
+const getName = (name: Token): string => name.toString(new Set(['comment', 'noinclude', 'include']))
+	.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 
 /**
  * 模板或魔术字参数
@@ -47,10 +54,9 @@ export class ParameterToken extends fixed(Token) {
 
 	/** @private */
 	override afterBuild(): void {
-		const omit = new Set(['comment', 'noinclude', 'include']);
 		if (!this.anon) {
-			const name = this.firstChild.toString(omit).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, ''),
-				{parentNode} = this;
+			const {parentNode, firstChild} = this,
+				name = getName(firstChild);
 			this.setAttribute('name', name);
 			if (parentNode) {
 				parentNode.getArgs(name, false, false).add(this);

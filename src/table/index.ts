@@ -39,9 +39,9 @@ export class TableToken extends TrBaseToken {
 		const errors = super.lint(start);
 		if (!this.closed) {
 			const {firstChild, lastChild: tr} = this,
-				{lastChild: td} = tr,
+				{lastChild} = tr,
 				error = generateForChild(firstChild, {start}, 'unclosed table');
-			errors.push({...error, excerpt: String(td?.type === 'td' ? td : tr).slice(0, 50)});
+			errors.push({...error, excerpt: String(lastChild?.type === 'td' ? lastChild : tr).slice(0, 50)});
 		}
 		return errors;
 	}
@@ -50,16 +50,21 @@ export class TableToken extends TrBaseToken {
 	 * 闭合表格语法
 	 * @param syntax 表格结尾语法
 	 * @param halfParsed
-	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
-			{lastChild} = this;
-		super.insertAt(Parser.run(() => {
-			const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
-			});
-			return token;
-		}));
+			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
+		if (!(this.lastChild instanceof SyntaxToken)) {
+			const token = super.insertAt(
+				Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
+				})),
+			);
+			if (!halfParsed) {
+				token.afterBuild();
+			}
+		}
+		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 }

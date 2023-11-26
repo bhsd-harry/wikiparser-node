@@ -1,4 +1,4 @@
-import {noWrap, escapeRegExp} from '../../util/string';
+import {escapeRegExp} from '../../util/string';
 import {generateForChild} from '../../util/lint';
 import * as Parser from '../../index';
 import {LinkBaseToken} from './base';

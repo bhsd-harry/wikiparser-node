@@ -1,4 +1,4 @@
-import {text, noWrap} from '../util/string';
+import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
