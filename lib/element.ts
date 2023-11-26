@@ -68,7 +68,8 @@ const matchesLang = (
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
-	name?: string;
+	declare name?: string;
+	declare data: undefined;
 
 	/** 子节点总数 */
 	get length(): number {
@@ -161,14 +162,14 @@ export abstract class AstElement extends AstNode {
 	normalize(): void {
 		const childNodes = [...this.childNodes];
 		for (let i = childNodes.length - 1; i >= 0; i--) {
-			const cur = childNodes[i]!,
+			const {type, data} = childNodes[i]!,
 				prev = childNodes[i - 1];
-			if (cur.type !== 'text' || this.getGaps(i - 1)) {
+			if (type !== 'text' || this.getGaps(i - 1)) {
 				//
-			} else if (cur.data === '') {
+			} else if (data === '') {
 				childNodes.splice(i, 1);
 			} else if (prev?.type === 'text') {
-				prev.setAttribute('data', prev.data + cur.data);
+				prev.setAttribute('data', prev.data + data);
 				childNodes.splice(i, 1);
 			}
 		}
@@ -440,9 +441,9 @@ export abstract class AstElement extends AstNode {
 					case ':only-of-type':
 						return siblingsCountOfType === 1;
 					case ':empty':
-						return !childNodes.some(child => child.type !== 'text' || child.data);
+						return !childNodes.some(({type: t, data}) => t !== 'text' || data);
 					case ':parent':
-						return childNodes.some(child => child.type !== 'text' || child.data);
+						return childNodes.some(({type: t, data}) => t !== 'text' || data);
 					case ':header':
 						return type === 'heading';
 					case ':hidden':

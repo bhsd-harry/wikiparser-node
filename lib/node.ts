@@ -103,7 +103,8 @@ const typeError = ({name}: Function, method: string, ...args: string[]): never =
 
 /** 类似Node */
 export abstract class AstNode {
-	type: TokenTypes | 'text';
+	declare type: TokenTypes | 'text';
+	declare data?: string | undefined;
 	readonly childNodes: AstNodes[] = [];
 	#parentNode: Token | undefined;
 

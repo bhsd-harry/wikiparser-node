@@ -164,7 +164,7 @@ export abstract class LinkBaseToken extends Token {
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' && linkText?.childNodes.some(
-			child => child.type === 'text' && child.data.includes('|'),
+			({type, data}) => type === 'text' && data.includes('|'),
 		)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));

@@ -101,7 +101,7 @@ export class ImageParameterToken extends Token {
 				return {width, height};
 			}
 			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
-				i = token.childNodes.findIndex(child => child.type === 'text' && child.data.includes('x')),
+				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x')),
 				str = token.childNodes[i] as AstText;
 			if (i === -1) {
 				return {width: size, height: ''};
