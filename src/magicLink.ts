@@ -35,12 +35,12 @@ export class MagicLinkToken extends Token {
 			regexGlobal = new RegExp(source, 'gu');
 		let rect: BoundingRect | undefined;
 		for (const child of this.childNodes) {
-			if (child.type !== 'text' || !regex.test(child.data)) {
+			const {type, data} = child;
+			if (type !== 'text' || !regex.test(data)) {
 				continue;
 			}
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
-			const {data} = child,
-				refError = generateForChild(child, rect, '', 'warning');
+			const refError = generateForChild(child, rect, '', 'warning');
 			regexGlobal.lastIndex = 0;
 			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
 				const {index, 0: s} = mt,

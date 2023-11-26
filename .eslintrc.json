@@ -881,7 +881,8 @@
 					2,
 					"single",
 					{
-						"allowTemplateLiterals": true
+						"allowTemplateLiterals": true,
+						"avoidEscape": true
 					}
 				],
 				"require-await": 0,

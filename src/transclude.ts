@@ -1,5 +1,5 @@
 import {removeComment, text, noWrap, print, decodeHtml} from '../util/string';
-import {generateForChild} from '../util/lint';
+import {generateForChild, generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -145,9 +145,12 @@ export class TranscludeToken extends Token {
 		}
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template',
-				titleObj = this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1]!.text(), isTemplate ? 10 : 828);
-			this.#fragment = titleObj.fragment;
-			this.#valid = titleObj.valid;
+				child = this.childNodes[isTemplate ? 0 : 1];
+			if (child) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+				const titleObj = this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
+				this.#fragment = titleObj.fragment;
+				this.#valid = titleObj.valid;
+			}
 		}
 	}
 
@@ -196,8 +199,11 @@ export class TranscludeToken extends Token {
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
 		}
 		if (!this.#valid) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
+		} else if (type === 'magic-word') {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'missing module name'));
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {

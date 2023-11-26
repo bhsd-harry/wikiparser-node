@@ -127,7 +127,7 @@ export class AttributesToken extends Token {
 	}
 
 	/**
-	 * 获取标签属性
+	 * 获取指定属性
 	 * @param key 属性键
 	 */
 	getAttr(key: string): string | true | undefined {

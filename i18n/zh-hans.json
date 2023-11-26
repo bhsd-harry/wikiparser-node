@@ -27,6 +27,7 @@
 	"invalid self-closing tag": "无效自封闭标签",
 	"invisible content inside triple brackets": "三重括号内的不可见部分",
 	"lonely \"$1\"": "孤立的\"$1\"",
+	"missing module name": "缺少模块名称",
 	"nonzero tabindex": "不为0的tabindex",
 	"nothing should be in <$1>": "<$1>标签内不应有任何内容",
 	"section header in a HTML tag": "HTML标签属性中的段落标题",
