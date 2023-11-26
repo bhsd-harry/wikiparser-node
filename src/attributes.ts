@@ -260,6 +260,7 @@ export class AttributesToken extends Token {
 		return Parser.run(() => {
 			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')) as this;
 			token.append(...cloned);
+			token.afterBuild();
 			return token;
 		});
 	}
@@ -321,7 +322,7 @@ export class AttributesToken extends Token {
 		} else if (value === false) {
 			return;
 		}
-		this.insertAt(Parser.run(() => new AttributeToken(
+		const token = Parser.run(() => new AttributeToken(
 			this.type.slice(0, -1) as AttributeTypes,
 			this.name,
 			k,
@@ -329,7 +330,9 @@ export class AttributesToken extends Token {
 			value === true ? '' : value,
 			['"', '"'],
 			this.getAttribute('config'),
-		)));
+		));
+		token.afterBuild();
+		this.insertAt(token);
 	}
 
 	/**

@@ -558,6 +558,7 @@ export class Token extends AstElement {
 				{AttributesToken}: typeof import('./attributes') = require('./attributes');
 			return Parser.run(() => {
 				const attr = new AttributesToken(undefined, 'html-attrs', tagName, config);
+				attr.afterBuild();
 				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});
 		}

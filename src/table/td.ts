@@ -316,6 +316,7 @@ export const createTd = (
 ): TdToken => {
 	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner!,
 		token = Parser.run(() => new TdToken('\n|', undefined, config));
+	token.afterBuild();
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
 	for (const [k, v] of Object.entries(attr)) {

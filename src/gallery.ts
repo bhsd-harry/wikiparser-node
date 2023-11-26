@@ -143,9 +143,10 @@ export class GalleryToken extends Token {
 	 */
 	insertImage(file: string, i = this.length): GalleryImageToken {
 		if (this.normalizeTitle(file, 6, true, true).valid) {
-			const token: GalleryImageToken = Parser.run(
+			const token = Parser.run(
 				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
+			token.afterBuild();
 			return this.insertAt(token, i);
 		}
 		throw new SyntaxError(`非法的文件名：${file}`);

@@ -283,7 +283,9 @@ export class FileToken extends LinkBaseToken {
 			if (syntax.includes('$1')) {
 				this.typeError('setValue', 'Boolean');
 			}
-			this.insertAt(Parser.run(() => new ImageParameterToken(syntax!, config)));
+			const parameter = Parser.run(() => new ImageParameterToken(syntax!, config));
+			parameter.afterBuild();
+			this.insertAt(parameter);
 			return;
 		}
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,

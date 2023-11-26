@@ -233,6 +233,7 @@ export class ImageParameterToken extends Token {
 			token.replaceChildren(...cloned);
 			token.setAttribute('name', this.name);
 			token.setAttribute('syntax', this.#syntax);
+			token.afterBuild();
 			return token;
 		});
 	}

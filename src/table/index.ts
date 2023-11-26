@@ -170,9 +170,9 @@ export class TableToken extends TrBaseToken {
 		const errors = super.lint(start);
 		if (!this.closed) {
 			const {firstChild, lastChild: tr} = this,
-				{lastChild: td} = tr,
+				{lastChild} = tr,
 				error = generateForChild(firstChild, {start}, 'unclosed table');
-			errors.push({...error, excerpt: String(td?.type === 'td' ? td : tr).slice(0, 50)});
+			errors.push({...error, excerpt: String(lastChild?.type === 'td' ? lastChild : tr).slice(0, 50)});
 		}
 		return errors;
 	}
@@ -200,6 +200,9 @@ export class TableToken extends TrBaseToken {
 				});
 				if (inner) {
 					token.replaceChildren(...inner.childNodes);
+				}
+				if (!halfParsed) {
+					token.afterBuild();
 				}
 				return token;
 			}));
