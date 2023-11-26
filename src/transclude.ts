@@ -148,7 +148,6 @@ export class TranscludeToken extends Token {
 				child = this.childNodes[isTemplate ? 0 : 1];
 			if (child) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 				const titleObj = this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
-				this.setAttribute(isTemplate ? 'name' : 'module', titleObj.title);
 				this.#fragment = titleObj.fragment;
 				this.#valid = titleObj.valid;
 			}

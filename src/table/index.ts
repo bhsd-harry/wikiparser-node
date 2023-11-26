@@ -39,7 +39,6 @@ export class TableToken extends TrBaseToken {
 		const errors = super.lint(start);
 		if (!this.closed) {
 			const {firstChild, lastChild: tr} = this,
-				{lastChild} = tr,
 				error = generateForChild(firstChild, {start}, 'unclosed table');
 			errors.push({...error, excerpt: String(lastChild?.type === 'td' ? lastChild : tr).slice(0, 50)});
 		}
@@ -55,16 +54,10 @@ export class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
-		if (!(this.lastChild instanceof SyntaxToken)) {
-			const token = super.insertAt(
-				Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
-					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-				})),
-			);
-			if (!halfParsed) {
-				token.afterBuild();
-			}
-		}
+		const token = super.insertAt(
+			Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			})),
+		);
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 }
