@@ -1,4 +1,4 @@
-import {noWrap, escapeRegExp} from '../../util/string';
+import {escapeRegExp} from '../../util/string';
 import {generateForChild} from '../../util/lint';
 import * as Parser from '../../index';
 import {LinkBaseToken} from './base';
@@ -259,7 +259,6 @@ export class FileToken extends LinkBaseToken {
 	 * @param key 参数名
 	 * @param value 参数值
 	 * @throws `RangeError` 未定义的图片参数
-	 * @throws `SyntaxError` 非法的参数
 	 */
 	setValue(key: string, value: string | boolean = false): void {
 		if (value === false) {
@@ -271,34 +270,22 @@ export class FileToken extends LinkBaseToken {
 			token.setValue(value);
 			return;
 		}
-		let syntax: string | undefined = '';
-		const config = this.getAttribute('config');
-		if (key !== 'caption') {
-			syntax = Object.entries(config.img).find(([, name]) => name === key)?.[0];
-			if (!syntax) {
-				throw new RangeError(`未定义的图片参数： ${key}`);
-			}
+		const config = this.getAttribute('config'),
+			syntax = key === 'caption' ? '$1' : Object.entries(config.img).find(([, name]) => name === key)?.[0];
+		if (syntax === undefined) {
+			throw new RangeError(`未定义的图片参数： ${key}`);
 		}
-		if (value === true) {
-			if (syntax.includes('$1')) {
-				this.typeError('setValue', 'Boolean');
-			}
-			const parameter = Parser.run(() => new ImageParameterToken(syntax!, config));
-			parameter.afterBuild();
-			this.insertAt(parameter);
-			return;
+		const free = syntax.includes('$1');
+		if (value === true && free) {
+			this.typeError('setValue', 'Boolean');
 		}
-		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), undefined, config),
-			{length, firstChild} = root;
-		if (length !== 1 || firstChild!.type !== 'file' || firstChild!.length !== 2) {
-			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
+		const parameter = Parser.run(() => new ImageParameterToken(syntax.replace('$1', ''), config));
+		if (free) {
+			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);
+			parameter.replaceChildren(...childNodes);
 		}
-		const {name, lastChild} = firstChild as this;
-		if (name !== 'File:F' || lastChild.name !== key) {
-			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
-		}
-		this.insertAt(lastChild);
+		parameter.afterBuild();
+		this.insertAt(parameter);
 	}
 
 	/**

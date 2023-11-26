@@ -308,15 +308,14 @@ export class TdToken extends fixed(TableBaseToken) {
  * @param config
  */
 export const createTd = (
-	inner?: string | Token,
+	inner: string | Token,
 	subtype: TdSubtypes = 'td',
 	attr: TdAttrs = {},
 	include = false,
 	config = Parser.getConfig(),
 ): TdToken => {
-	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner!,
+	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
 		token = Parser.run(() => new TdToken('\n|', undefined, config));
-	token.afterBuild();
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
 	for (const [k, v] of Object.entries(attr)) {

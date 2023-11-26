@@ -17,8 +17,8 @@ const escapeTable = (syntax: SyntaxToken): void => {
 				? child.data.replace(/\{\||\|\}|\|{1,2}/gu, p => `{{${templates[p]!}}}`)
 				: String(child),
 		).join(''),
-		token = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
-	syntax.replaceChildren(...token.childNodes);
+		{childNodes} = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
+	syntax.replaceChildren(...childNodes);
 };
 
 /* NOT FOR BROWSER END */

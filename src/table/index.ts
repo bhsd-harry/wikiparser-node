@@ -181,32 +181,22 @@ export class TableToken extends TrBaseToken {
 	 * 闭合表格语法
 	 * @param syntax 表格结尾语法
 	 * @param halfParsed
-	 * @throws `SyntaxError` 表格的闭合部分不符合语法
 	 */
 	close(syntax = '\n|}', halfParsed = false): void {
-		halfParsed &&= Parser.running;
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
-			inner = !halfParsed && Parser.parse(syntax, this.getAttribute('include'), 2, config),
-			{lastChild} = this;
-		if (inner && !closingPattern.test(inner.text())) {
-			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(syntax)}`);
-		} else if (lastChild instanceof SyntaxToken) {
-			lastChild.replaceChildren(...(inner as Token).childNodes);
-		} else {
-			super.insertAt(Parser.run(() => {
-				const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
+			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
+		if (!(this.lastChild instanceof SyntaxToken)) {
+			const token = super.insertAt(
+				Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-				});
-				if (inner) {
-					token.replaceChildren(...inner.childNodes);
-				}
-				if (!halfParsed) {
-					token.afterBuild();
-				}
-				return token;
-			}));
+				})),
+			);
+			if (!halfParsed) {
+				token.afterBuild();
+			}
 		}
+		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 
 	/* NOT FOR BROWSER */
@@ -222,9 +212,7 @@ export class TableToken extends TrBaseToken {
 		if (typeof token !== 'string' && token.type === 'td' && previous?.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
-		} else if (i > 0 && i === this.length && token instanceof SyntaxToken
-			&& (token.getAttribute('pattern') !== closingPattern || !closingPattern.test(token.text()))
-		) {
+		} else if (i > 0 && token instanceof SyntaxToken && token.getAttribute('pattern') !== closingPattern) {
 			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(String(token))}`);
 		}
 		return super.insertAt(token, i);

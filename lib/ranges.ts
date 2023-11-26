@@ -12,12 +12,12 @@ export class Range {
 	 * @throws `RangeError` n的系数不能为0
 	 * @throws `RangeError` 应使用CSS选择器或Python切片的格式
 	 */
-	constructor(s: string | Range) {
-		if (s instanceof Range) {
-			Object.assign(this, s);
+	constructor(str: string | Range) {
+		if (str instanceof Range) {
+			Object.assign(this, str);
 			return;
 		}
-		const str = s.trim();
+		str = str.trim();
 		if (str === 'odd') {
 			Object.assign(this, {start: 1, end: Infinity, step: 2});
 		} else if (str === 'even') {

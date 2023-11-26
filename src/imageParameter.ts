@@ -22,7 +22,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
-			return /^(?:\d+x?|\d*x\d+)$/u.test(value);
+			return !value || /^(?:\d+x?|\d*x\d+)$/u.test(value);
 		case 'link': {
 			if (!value) {
 				return val;
@@ -40,7 +40,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 			return title.valid && title;
 		}
 		case 'lang':
-			return config.variants.includes(value);
+			return !value || config.variants.includes(value);
 		case 'alt':
 		case 'class':
 		case 'manualthumb':
@@ -233,7 +233,6 @@ export class ImageParameterToken extends Token {
 			token.replaceChildren(...cloned);
 			token.setAttribute('name', this.name);
 			token.setAttribute('syntax', this.#syntax);
-			token.afterBuild();
 			return token;
 		});
 	}
@@ -287,7 +286,7 @@ export class ImageParameterToken extends Token {
 	setValue(value: string | boolean): void {
 		const {name} = this;
 		if (name === 'invalid') {
-			throw new Error('无效的图片参数！');
+			throw new Error('当前节点是一个无效的图片参数！');
 		} else if (this.#isVoid()) {
 			if (typeof value !== 'boolean') {
 				this.typeError('setValue', 'Boolean');

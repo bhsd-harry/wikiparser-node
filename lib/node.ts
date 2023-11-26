@@ -388,16 +388,12 @@ export abstract class AstNode {
 		this.#insertAdjacent(nodes, 0);
 	}
 
-	/**
-	 * 移除当前节点
-	 * @throws `Error` 不存在父节点
-	 */
+	/** 移除当前节点 */
 	remove(): void {
 		const {parentNode} = this;
-		if (!parentNode) {
-			throw new Error('不存在父节点！');
+		if (parentNode) {
+			parentNode.removeChild(this as AstNode as AstNodes);
 		}
-		parentNode.removeChild(this as AstNode as AstNodes);
 	}
 
 	/**
@@ -517,7 +513,7 @@ export abstract class AstNode {
 	/**
 	 * 比较和另一个节点的相对位置
 	 * @param other 待比较的节点
-	 * @throws `Error` 不在同一个语法树
+	 * @throws `RangeError` 不在同一个语法树
 	 */
 	compareDocumentPosition(other: AstNodes): number {
 		if ((this as AstNode as AstNodes) === other) {
@@ -527,7 +523,7 @@ export abstract class AstNode {
 		} else if (other.contains(this)) {
 			return 1;
 		} else if (this.getRootNode() !== other.getRootNode()) {
-			throw new Error('不在同一个语法树！');
+			throw new RangeError('不在同一个语法树！');
 		}
 		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],
 			bAncestors = [...other.getAncestors().reverse(), other],

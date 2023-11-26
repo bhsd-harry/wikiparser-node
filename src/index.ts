@@ -558,7 +558,6 @@ export class Token extends AstElement {
 				{AttributesToken}: typeof import('./attributes') = require('./attributes');
 			return Parser.run(() => {
 				const attr = new AttributesToken(undefined, 'html-attrs', tagName, config);
-				attr.afterBuild();
 				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});
 		}
@@ -751,9 +750,9 @@ export class Token extends AstElement {
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
 	findEnclosingHtml(tag?: string): [HtmlToken, HtmlToken] | undefined {
-		const lcTag = tag?.toLowerCase();
-		if (lcTag !== undefined && !this.#config.html.slice(0, 2).flat().includes(lcTag)) {
-			throw new RangeError(`非法的标签或空标签：${lcTag}`);
+		tag = tag?.toLowerCase();
+		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
+			throw new RangeError(`非法的标签或空标签：${tag}`);
 		}
 		const {parentNode} = this;
 		if (!parentNode) {
@@ -766,12 +765,12 @@ export class Token extends AstElement {
 			const {
 				type, name, selfClosing, closing,
 			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
-			if (type === 'html' && (!lcTag || name === lcTag) && selfClosing === false && closing === false) {
+			if (type === 'html' && (!tag || name === tag) && selfClosing === false && closing === false) {
 				break;
 			}
 		}
 		if (i === -1) {
-			return parentNode.findEnclosingHtml(lcTag);
+			return parentNode.findEnclosingHtml(tag);
 		}
 		const opening = childNodes[i] as HtmlToken;
 		for (i = index + 1; i < length; i++) {
@@ -782,7 +781,7 @@ export class Token extends AstElement {
 				break;
 			}
 		}
-		return i === length ? parentNode.findEnclosingHtml(lcTag) : [opening, childNodes[i] as HtmlToken];
+		return i === length ? parentNode.findEnclosingHtml(tag) : [opening, childNodes[i] as HtmlToken];
 	}
 
 	/** 获取全部分类 */
@@ -791,16 +790,13 @@ export class Token extends AstElement {
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
-	/**
-	 * 重新解析单引号
-	 * @throws `Error` 不接受QuoteToken作为子节点
-	 */
+	/** 重新解析单引号 */
 	redoQuotes(): void {
 		const acceptable = this.getAttribute('acceptable');
 		if (acceptable && !acceptable['QuoteToken']?.some(
 			range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1,
 		)) {
-			throw new Error(`${this.constructor.name} 不接受 QuoteToken 作为子节点！`);
+			return;
 		}
 		for (const quote of this.childNodes) {
 			if (quote.type === 'quote') {

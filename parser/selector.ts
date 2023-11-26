@@ -101,9 +101,9 @@ const pushSimple = (step: SelectorArray, str: string): void => {
  * @throws `SyntaxError` 非法的选择器
  */
 export const parseSelector = (selector: string): SelectorArray[][] => {
-	const s = selector.trim(),
-		stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
-	let sanitized = sanitize(s),
+	selector = selector.trim();
+	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
+	let sanitized = sanitize(selector),
 		regex = regularRegex,
 		mt = regex.exec(sanitized),
 		[condition] = stack,
@@ -123,7 +123,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 		} else if (combinator.has(syntax)) { // 情形2：关系
 			pushSimple(step, sanitized.slice(0, index));
 			if (!step.some(Boolean)) {
-				throw new SyntaxError(`非法的选择器！\n${s}\n可能需要通用选择器'*'。`);
+				throw new SyntaxError(`非法的选择器！\n${selector}\n可能需要通用选择器'*'。`);
 			}
 			step.relation = syntax;
 			step = [];
@@ -163,7 +163,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 		}
 		return stack;
 	}
-	throw new SyntaxError(`非法的选择器！\n${s}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
+	throw new SyntaxError(`非法的选择器！\n${selector}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
 };
 
 Parser.parsers['parseSelector'] = __filename;

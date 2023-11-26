@@ -260,7 +260,7 @@ export class AttributesToken extends Token {
 		return Parser.run(() => {
 			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')) as this;
 			token.append(...cloned);
-			token.afterBuild();
+			token.setAttribute('name', this.name);
 			return token;
 		});
 	}
@@ -314,8 +314,8 @@ export class AttributesToken extends Token {
 		if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
-		const k = key.toLowerCase().trim(),
-			attr = this.getAttrToken(k);
+		key = key.toLowerCase().trim();
+		const attr = this.getAttrToken(key);
 		if (attr) {
 			attr.setValue(value);
 			return;
@@ -325,13 +325,13 @@ export class AttributesToken extends Token {
 		const token = Parser.run(() => new AttributeToken(
 			this.type.slice(0, -1) as AttributeTypes,
 			this.name,
-			k,
+			key,
 			value === true ? '' : '=',
 			value === true ? '' : value,
 			['"', '"'],
 			this.getAttribute('config'),
 		));
-		token.afterBuild();
+		token.setAttribute('name', key);
 		this.insertAt(token);
 	}
 
@@ -371,14 +371,14 @@ export class AttributesToken extends Token {
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key: string, force?: boolean): void {
-		const k = key.toLowerCase().trim(),
-			attr = this.getAttrToken(k);
+		key = key.toLowerCase().trim();
+		const attr = this.getAttrToken(key);
 		if (attr && attr.getValue() !== true) {
-			throw new RangeError(`${k} 属性的值不为 Boolean！`);
+			throw new RangeError(`${key} 属性的值不为 Boolean！`);
 		} else if (attr) {
 			attr.setValue(force === true);
 		} else if (force !== false) {
-			this.setAttr(k, true);
+			this.setAttr(key, true);
 		}
 	}
 

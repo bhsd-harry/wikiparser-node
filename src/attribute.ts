@@ -1,5 +1,5 @@
 import {generateForChild} from '../util/lint';
-import {noWrap, removeComment} from '../util/string';
+import {removeComment} from '../util/string';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -10,8 +10,6 @@ import type {AttributesToken} from '../internal';
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
-	pre = {'ext-attr': '<pre ', 'html-attr': '<p ', 'table-attr': '{|'},
-	post = {'ext-attr': '/>', 'html-attr': '>', 'table-attr': ''},
 	commonHtmlAttrs = new Set([
 		'id',
 		'class',
@@ -406,7 +404,7 @@ export class AttributeToken extends fixed(Token) {
 			const token = new AttributeToken(this.type, this.#tag, '', this.#equal, '', this.#quotes, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
-			token.afterBuild();
+			token.setAttribute('name', this.name);
 			return token;
 		});
 	}
@@ -427,7 +425,8 @@ export class AttributeToken extends fixed(Token) {
 	/**
 	 * 设置属性值
 	 * @param value 参数值
-	 * @throws `SyntaxError` 非法的标签属性
+	 * @throws `RangeError` 扩展标签属性不能包含 ">"
+	 * @throws `RangeError` 同时包含单引号和双引号
 	 */
 	setValue(value: string | boolean): void {
 		if (value === false) {
@@ -436,34 +435,20 @@ export class AttributeToken extends fixed(Token) {
 		} else if (value === true) {
 			this.#equal = '';
 			return;
+		} else if (this.type === 'ext-attr' && value.includes('>')) {
+			throw new RangeError('扩展标签属性不能包含 ">"！');
+		} else if (value.includes('"') && value.includes("'")) {
+			throw new RangeError('属性值不能同时包含单引号和双引号！');
 		}
-		const {type, name} = this,
-			key = name === 'title' ? 'title' : 'data',
-			wikitext = `${pre[type]}${key}="${value}"${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs: AttributesToken;
-		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		} else if (type === 'table-attr') {
-			if (tag!.length !== 2) {
-				throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-			}
-			attrs = tag!.lastChild as AttributesToken;
-		} else {
-			attrs = tag!.firstChild as AttributesToken;
-		}
-		const {firstChild} = attrs;
-		if (attrs.length !== 1 || firstChild?.type !== type || firstChild.name !== key) {
-			throw new SyntaxError(`非法的标签属性：${noWrap(value)}`);
-		}
-		const {lastChild} = firstChild;
-		firstChild.destroy();
-		this.lastChild.safeReplaceWith(lastChild);
-		if (this.#quotes[0]) {
-			this.close();
-		} else {
+		const config = this.getAttribute('config'),
+			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[this.type] + 1, config);
+		this.lastChild.replaceChildren(...childNodes);
+		if (value.includes('"')) {
+			this.#quotes = ["'", "'"] as [string, string];
+		} else if (value.includes("'") || !this.#quotes[0]) {
 			this.#quotes = ['"', '"'] as [string, string];
+		} else {
+			this.close();
 		}
 	}
 
@@ -471,34 +456,14 @@ export class AttributeToken extends fixed(Token) {
 	 * 修改属性名
 	 * @param key 新属性名
 	 * @throws `Error` title和alt属性不能更名
-	 * @throws `SyntaxError` 非法的标签属性名
 	 */
 	rename(key: string): void {
 		if (this.name === 'title' || this.name === 'alt' && this.#tag === 'img') {
-			throw new Error('title 属性不能更名！');
+			throw new Error(`${this.name} 属性不能更名！`);
 		}
-		const {type} = this,
-			wikitext = `${pre[type]}${key}${post[type]}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), stages[type] + 1, this.getAttribute('config')),
-			{length, firstChild: tag} = root;
-		let attrs: AttributesToken;
-		if (length !== 1 || tag!.type !== type.slice(0, -5)) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		} else if (type === 'table-attr') {
-			if (tag!.length !== 2) {
-				throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-			}
-			attrs = tag!.lastChild as AttributesToken;
-		} else {
-			attrs = tag!.firstChild as AttributesToken;
-		}
-		const {firstChild: attr} = attrs;
-		if (attrs.length !== 1 || attr?.type !== type || attr.value !== true) {
-			throw new SyntaxError(`非法的标签属性名：${noWrap(key)}`);
-		}
-		const {firstChild} = attr;
-		attr.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		const config = this.getAttribute('config'),
+			{childNodes} = Parser.parse(key, this.getAttribute('include'), stages[this.type] + 1, config);
+		this.firstChild.replaceChildren(...childNodes);
 	}
 }
 

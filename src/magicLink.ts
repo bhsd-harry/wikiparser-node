@@ -31,22 +31,17 @@ export class MagicLinkToken extends syntax(Token) {
 		return this.getAttribute('pattern').exec(this.text())?.[0];
 	}
 
-	/**
-	 * @throws `RangeError` 非法协议
-	 * @throws `Error` 特殊外链无法更改协议
-	 */
+	/** @throws `Error` 特殊外链无法更改协议n */
 	set protocol(value) {
-		const pattern = this.getAttribute('pattern');
 		if (typeof value !== 'string') {
 			this.typeError('protocol', 'String');
-		} else if (!new RegExp(`${pattern.source}$`, 'iu').test(value)) {
-			throw new RangeError(`非法的外链协议：${value}`);
 		}
-		const {link} = this;
+		const {link} = this,
+			pattern = this.getAttribute('pattern');
 		if (!pattern.test(link)) {
 			throw new Error(`特殊外链无法更改协议：${link}`);
 		}
-		this.replaceChildren(link.replace(pattern, value));
+		this.setTarget(link.replace(pattern, value));
 	}
 
 	/** 和内链保持一致 */
@@ -148,15 +143,10 @@ export class MagicLinkToken extends syntax(Token) {
 	/**
 	 * 设置外链目标
 	 * @param url 含协议的网址
-	 * @throws `SyntaxError` 非法的自由外链目标
 	 */
 	setTarget(url: string): void {
-		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),
-			{length, firstChild} = root;
-		if (length !== 1 || firstChild!.type !== 'free-ext-link') {
-			throw new SyntaxError(`非法的自由外链目标：${url}`);
-		}
-		this.replaceChildren(...firstChild!.childNodes);
+		const {childNodes} = Parser.parse(url, this.getAttribute('include'), 1, this.getAttribute('config'));
+		this.replaceChildren(...childNodes);
 	}
 
 	/** 是否是模板或魔术字参数 */

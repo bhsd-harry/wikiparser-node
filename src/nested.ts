@@ -57,7 +57,7 @@ export class NestedToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		const text = wikitext?.replace(
+		wikitext = wikitext?.replace(
 			regex,
 			(comment, name?: string, attr?: string, inner?: string, closing?: string) => {
 				const str = `\0${accum.length + 1}${name ? 'e' : 'c'}\x7F`;
@@ -76,7 +76,7 @@ export class NestedToken extends Token {
 				return `\0${accum.length}c\x7F`;
 			},
 		);
-		super(text, config, accum, {
+		super(wikitext, config, accum, {
 			NoincludeToken: ':', ExtToken: ':',
 		});
 		this.#tags = tags;

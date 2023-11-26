@@ -221,14 +221,10 @@ export class ConverterRuleToken extends Token {
 	/**
 	 * 设置语言变体
 	 * @param variant 语言变体
-	 * @throws `RangeError` 无效的语言变体
 	 */
 	setVariant(variant: string): void {
-		const config = this.getAttribute('config'),
-			v = variant.trim();
-		if (!config.variants.includes(v)) {
-			throw new RangeError(`无效的语言变体：${v}`);
-		} else if (this.length === 1) {
+		const config = this.getAttribute('config');
+		if (this.length === 1) {
 			super.insertAt(Parser.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
 		} else {
 			this.childNodes.at(-2)!.setText(variant);
@@ -241,19 +237,16 @@ export class ConverterRuleToken extends Token {
 	 * @throws `Error` 尚未指定语言变体
 	 */
 	setFrom(from: string): void {
-		const {variant, unidirectional, firstChild} = this;
+		const {variant, unidirectional} = this;
 		if (!variant) {
 			throw new Error('请先指定语言变体！');
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config);
-		if (unidirectional) {
-			firstChild.replaceChildren(...childNodes);
-		} else {
-			const token = Parser.run(() => new AtomToken(undefined, 'converter-rule-from', config));
-			token.append(...childNodes);
-			super.insertAt(token, 0);
+		if (!unidirectional) {
+			super.insertAt(Parser.run(() => new AtomToken(undefined, 'converter-rule-from', config)), 0);
 		}
+		this.firstChild.replaceChildren(...childNodes);
 	}
 
 	/**
