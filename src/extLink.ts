@@ -50,6 +50,10 @@ export class ExtLinkToken extends Token {
 			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}
 
+	set innerText(text) {
+		this.setLinkText(text);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
