@@ -22,7 +22,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
-			return /^(?:\d+x?|\d*x\d+)$/u.test(value);
+			return !value || /^(?:\d+x?|\d*x\d+)$/u.test(value);
 		case 'link': {
 			if (!value) {
 				return val;
@@ -40,7 +40,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 			return title.valid && title;
 		}
 		case 'lang':
-			return config.variants.includes(value);
+			return !value || config.variants.includes(value);
 		case 'alt':
 		case 'class':
 		case 'manualthumb':

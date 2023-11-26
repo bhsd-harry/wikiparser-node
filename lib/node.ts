@@ -85,7 +85,8 @@ export interface CaretPosition {
 
 /** 类似Node */
 export abstract class AstNode {
-	type: TokenTypes | 'text';
+	declare type: TokenTypes | 'text';
+	declare data?: string | undefined;
 	readonly childNodes: AstNodes[] = [];
 	#parentNode: Token | undefined;
 
@@ -127,13 +128,8 @@ export abstract class AstNode {
 	}
 
 	/** @private */
-	protected hasAttribute(key: string): boolean {
-		return key in this;
-	}
-
-	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return this.hasAttribute(key)
+		return key in this
 			// @ts-expect-error noImplicitAny
 			? String(this[key as string]) as TokenAttributeGetter<T>
 			: undefined as TokenAttributeGetter<T>;

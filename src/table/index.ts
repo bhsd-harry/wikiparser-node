@@ -45,19 +45,16 @@ export class TableToken extends TrBaseToken {
 		return errors;
 	}
 
-	/**
-	 * 闭合表格语法
-	 * @param syntax 表格结尾语法
-	 * @param halfParsed
-	 * @throws `SyntaxError` 表格的闭合部分不符合语法
-	 */
+	/** @private */
 	close(syntax = '\n|}', halfParsed = false): void {
 		const config = this.getAttribute('config'),
-			accum = this.getAttribute('accum');
-		super.insertAt(Parser.run(() => {
-			const token = new SyntaxToken(syntax, closingPattern, 'table-syntax', config, accum, {
-			});
-			return token;
-		}));
+			accum = this.getAttribute('accum'),
+			inner = [syntax];
+		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+		const token = super.insertAt(
+			Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			})),
+		);
+		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 }

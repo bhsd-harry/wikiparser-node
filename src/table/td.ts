@@ -30,7 +30,7 @@ export class TdToken extends TableBaseToken {
 
 	/** 单元格类型 */
 	get subtype(): TdSubtypes {
-		return this.getSyntax().subtype;
+		return this.#getSyntax().subtype;
 	}
 
 	/**
@@ -64,8 +64,8 @@ export class TdToken extends TableBaseToken {
 		this.insertAt(innerToken);
 	}
 
-	/** @private */
-	protected getSyntax(): TdSyntax {
+	/** 表格语法信息 */
+	#getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
 			char = syntax.at(-1)!;
 		let subtype: TdSubtypes = 'td';
