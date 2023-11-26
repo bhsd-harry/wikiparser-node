@@ -1,5 +1,5 @@
 import {removeComment, text, noWrap, decodeHtml} from '../util/string';
-import {generateForChild} from '../util/lint';
+import {generateForChild, generateForSelf} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
