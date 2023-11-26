@@ -50,6 +50,10 @@ export abstract class LinkBaseToken extends Token {
 		return undefined;
 	}
 
+	set innerText(text) {
+		this.setLinkText(text);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
