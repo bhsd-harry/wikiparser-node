@@ -287,16 +287,24 @@ export class FileToken extends LinkBaseToken {
 			return;
 		}
 		const wikitext = `[[File:F|${syntax ? syntax.replace('$1', value) : value}]]`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), 6, config),
-			{length, firstChild: file} = root;
-		if (length !== 1 || file!.type !== 'file' || file!.length !== 2) {
+			root = Parser.parse(wikitext, this.getAttribute('include'), undefined, config),
+			{length, firstChild} = root;
+		if (length !== 1 || firstChild!.type !== 'file' || firstChild!.length !== 2) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
-		const {name, lastChild: imageParameter} = file as this;
-		if (name !== 'File:F' || imageParameter.name !== key) {
+		const {name, lastChild} = firstChild as this;
+		if (name !== 'File:F' || lastChild.name !== key) {
 			throw new SyntaxError(`非法的 ${key} 参数：${noWrap(value)}`);
 		}
-		this.insertAt(imageParameter);
+		this.insertAt(lastChild);
+	}
+
+	/**
+	 * @override
+	 * @throws `Error` 不适用于图片
+	 */
+	override setLinkText(): never {
+		throw new Error(`${this.constructor.name}.setLinkText 方法不适用于图片！`);
 	}
 }
 

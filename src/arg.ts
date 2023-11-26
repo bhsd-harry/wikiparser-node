@@ -1,4 +1,4 @@
-import {text, noWrap} from '../util/string';
+import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -181,37 +181,24 @@ export class ArgToken extends Token {
 	/**
 	 * 设置参数名
 	 * @param name 新参数名
-	 * @throws `SyntaxError` 非法的参数名
 	 */
 	setName(name: string): void {
-		const root = Parser.parse(`{{{${name}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: arg} = root;
-		if (length !== 1 || !(arg instanceof ArgToken) || arg.length !== 1) {
-			throw new SyntaxError(`非法的参数名称：${noWrap(name)}`);
-		}
-		const {firstChild} = arg;
-		arg.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		const {childNodes} = Parser.parse(name, this.getAttribute('include'), 2, this.getAttribute('config'));
+		this.firstChild.replaceChildren(...childNodes);
 	}
 
 	/**
 	 * 设置预设值
 	 * @param value 预设值
-	 * @throws `SyntaxError` 非法的参数预设值
 	 */
 	setDefault(value: string): void {
-		const root = Parser.parse(`{{{|${value}}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: arg} = root;
-		if (length !== 1 || !(arg instanceof ArgToken) || arg.length !== 2) {
-			throw new SyntaxError(`非法的参数预设值：${noWrap(value)}`);
-		}
-		const {childNodes: [, oldDefault]} = this,
-			{lastChild} = arg;
-		arg.destroy();
+		const root = Parser.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config')),
+			{childNodes: [, oldDefault]} = this;
 		if (oldDefault) {
-			oldDefault.safeReplaceWith(lastChild);
+			oldDefault.replaceChildren(...root.childNodes);
 		} else {
-			this.insertAt(lastChild);
+			root.type = 'arg-default';
+			this.insertAt(root);
 		}
 	}
 }

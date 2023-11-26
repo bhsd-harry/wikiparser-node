@@ -1,4 +1,4 @@
-import {text, noWrap, print, extUrlChar, extUrlCharFirst} from '../util/string';
+import {text, print, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -101,11 +101,11 @@ export class ImageParameterToken extends Token {
 				return {width, height};
 			}
 			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
-				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x')),
-				str = token.childNodes[i] as AstText;
+				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x'));
 			if (i === -1) {
 				return {width: size, height: ''};
 			}
+			const str = token.childNodes[i] as AstText;
 			str.splitText(str.data.indexOf('x'));
 			(str.nextSibling as AstText).splitText(1);
 			return {width: text(token.childNodes.slice(0, i + 1)), height: text(token.childNodes.slice(i + 2))};
@@ -282,10 +282,10 @@ export class ImageParameterToken extends Token {
 	 * 设置参数值
 	 * @param value 参数值
 	 * @throws `Error` 无效参数
-	 * @throws	SyntaxError` 非法的参数值
 	 */
 	setValue(value: string | boolean): void {
-		if (this.name === 'invalid') {
+		const {name} = this;
+		if (name === 'invalid') {
 			throw new Error('无效的图片参数！');
 		} else if (this.#isVoid()) {
 			if (typeof value !== 'boolean') {
@@ -297,21 +297,10 @@ export class ImageParameterToken extends Token {
 		} else if (typeof value !== 'string') {
 			this.typeError('setValue', 'String');
 		}
-		const root = Parser.parse(
-				`[[File:F|${this.#syntax ? this.#syntax.replace('$1', value) : value}]]`,
-				this.getAttribute('include'),
-				6,
-				this.getAttribute('config'),
-			),
-			{length, firstChild: file} = root;
-		if (length !== 1 || file!.type !== 'file' || file!.length !== 2) {
-			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
-		}
-		const {lastChild: imageParameter, name} = file as FileToken;
-		if (name !== 'File:F' || imageParameter.name !== this.name) {
-			throw new SyntaxError(`非法的 ${this.name} 参数：${noWrap(value)}`);
-		}
-		this.replaceChildren(...imageParameter.childNodes);
+		const include = this.getAttribute('include'),
+			config = this.getAttribute('config'),
+			{childNodes} = Parser.parse(value, include, name === 'caption' ? undefined : 5, config);
+		this.replaceChildren(...childNodes);
 	}
 }
 

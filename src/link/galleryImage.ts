@@ -7,7 +7,7 @@ import {FileToken} from './file';
 import {galleryParams} from '../../index';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
-import type {ExtToken, GalleryToken, AtomToken, ImageParameterToken} from '../../internal';
+import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /** 图库图片 */
 // @ts-expect-error not implementing all abstract methods
@@ -97,29 +97,6 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	}
 
 	/* NOT FOR BROWSER */
-
-	/**
-	 * @override
-	 * @param link 链接目标
-	 * @throws `SyntaxError` 非法的链接目标
-	 */
-	override setTarget(link: string): void {
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			root = Parser.parse(`<gallery>${link}</gallery>`, include, 1, config),
-			{length, firstChild: ext} = root;
-		if (length !== 1 || ext!.type !== 'ext') {
-			throw new SyntaxError(`非法的图库文件名：${link}`);
-		}
-		const {lastChild: gallery} = ext as ExtToken,
-			{firstChild: image} = gallery as GalleryToken;
-		if (gallery.length !== 1 || image!.type !== 'gallery-image') {
-			throw new SyntaxError(`非法的图库文件名：${link}`);
-		}
-		const {firstChild} = image as this;
-		(image as this).destroy();
-		this.firstChild.safeReplaceWith(firstChild);
-	}
 
 	/**
 	 * @override

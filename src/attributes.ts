@@ -308,7 +308,6 @@ export class AttributesToken extends Token {
 	 * @param key 属性键
 	 * @param value 属性值
 	 * @throws `RangeError` 扩展标签属性不能包含">"
-	 * @throws `RangeError` 无效的属性名
 	 */
 	setAttr(key: string, value: string | boolean): void {
 		if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
@@ -322,14 +321,6 @@ export class AttributesToken extends Token {
 		} else if (value === false) {
 			return;
 		}
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			parsedKey = this.type === 'ext-attrs'
-				? k
-				: Parser.run(() => String(new Token(k, config).parseOnce(0, include).parseOnce()));
-		if (!/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(parsedKey)) {
-			throw new RangeError(`无效的属性名：${k}！`);
-		}
 		this.insertAt(Parser.run(() => new AttributeToken(
 			this.type.slice(0, -1) as AttributeTypes,
 			this.name,
@@ -337,7 +328,7 @@ export class AttributesToken extends Token {
 			value === true ? '' : '=',
 			value === true ? '' : value,
 			['"', '"'],
-			config,
+			this.getAttribute('config'),
 		)));
 	}
 

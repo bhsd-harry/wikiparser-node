@@ -15,13 +15,12 @@ export class OnlyincludeToken extends Token {
 		return this.text();
 	}
 
+	/** @throws `RangeError` 不允许包含`</onlyinclude>` */
 	set innerText(text) {
-		const config = this.getAttribute('config'),
-			{length, firstChild} = Parser.parse(`<onlyinclude>${text}</onlyinclude>`, true, undefined, config);
-		if (length !== 1 || firstChild!.type !== 'onlyinclude') {
+		if (text.includes('</onlyinclude>')) {
 			throw new RangeError('不允许包含 "</onlyinclude>"！');
 		}
-		this.replaceChildren(...firstChild!.childNodes);
+		this.replaceChildren(...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes);
 	}
 
 	/* NOT FOR BROWSER END */

@@ -19,12 +19,6 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	}
 
 	set innerText(text) {
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			{length, firstChild} = Parser.parse(`<!--${text}-->`, include, 1, config);
-		if (length !== 1 || firstChild!.type !== 'comment') {
-			throw new RangeError('不允许包含 "-->"！');
-		}
 		this.setText(text);
 	}
 
@@ -70,6 +64,17 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 			this.closed,
 			this.getAttribute('config'),
 		) as this);
+	}
+
+	/**
+	 * @override
+	 * @throws `RangeError` 不允许包含`-->`
+	 */
+	override setText(text: string): string {
+		if (text.includes('-->')) {
+			throw new RangeError('不允许包含 "-->"！');
+		}
+		return super.setText(text);
 	}
 }
 

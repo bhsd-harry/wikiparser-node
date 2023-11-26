@@ -1,4 +1,4 @@
-import {noWrap, normalizeSpace} from '../util/string';
+import {normalizeSpace} from '../util/string';
 import * as Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
@@ -163,19 +163,17 @@ export class ExtLinkToken extends Token {
 	/**
 	 * 设置链接显示文字
 	 * @param str 链接显示文字
-	 * @throws `SyntaxError` 非法的链接显示文字
 	 */
 	setLinkText(str: string): void {
-		const root = Parser.parse(`[//url ${str}]`, this.getAttribute('include'), 8, this.getAttribute('config')),
-			{length, firstChild: extLink} = root;
-		if (length !== 1 || !(extLink instanceof ExtLinkToken) || extLink.length !== 2) {
-			throw new SyntaxError(`非法的外链文字：${noWrap(str)}`);
-		}
-		const {lastChild} = extLink;
+		const root = Parser.parse(str, this.getAttribute('include'), 7, this.getAttribute('config'));
 		if (this.length === 1) {
-			this.insertAt(lastChild);
+			root.type = 'ext-link-text';
+			root.setAttribute('acceptable', {
+				'Stage-7': ':', ConverterToken: ':',
+			});
+			this.insertAt(root);
 		} else {
-			this.lastChild.safeReplaceWith(lastChild);
+			this.lastChild.replaceChildren(...root.childNodes);
 		}
 		this.#space ||= ' ';
 	}

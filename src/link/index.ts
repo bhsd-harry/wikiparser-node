@@ -62,56 +62,24 @@ export class LinkToken extends LinkBaseToken {
 	 * @param lang 语言前缀
 	 * @param link 页面标题
 	 * @throws `SyntaxError` 仅有fragment
-	 * @throws `SyntaxError` 非法的跨语言链接
 	 */
 	setLangLink(lang: string, link: string | Title): void {
-		let strLink = String(link).trim();
-		const [char] = strLink;
+		const strLink = String(link).trim(),
+			[char] = strLink;
 		if (char === '#') {
 			throw new SyntaxError('跨语言链接不能仅为fragment！');
-		} else if (char === ':') {
-			strLink = strLink.slice(1);
 		}
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			root = Parser.parse(`[[${lang}:${strLink}]]`, include, 6, config),
-			{length, firstChild: wikiLink} = root;
-		if (length !== 1 || !(wikiLink instanceof LinkToken) || wikiLink.length !== 1) {
-			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${strLink}`);
-		}
-		const {interwiki, firstChild} = wikiLink;
-		if (interwiki !== lang.toLowerCase()) {
-			throw new SyntaxError(`非法的跨语言链接目标：${lang}:${strLink}`);
-		}
-		wikiLink.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		this.setTarget(`${lang}${char === ':' ? '' : ':'}${strLink}`);
 	}
 
 	/**
 	 * 设置fragment
 	 * @param fragment fragment
 	 * @param page 是否是其他页面
-	 * @throws `SyntaxError` 非法的fragment
 	 */
 	#setFragment(fragment?: string, page = true): void {
 		fragment &&= fragment.replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			root = Parser.parse(
-				`[[${page ? `:${this.name}` : ''}${fragment === undefined ? '' : `#${fragment}`}]]`,
-				include,
-				6,
-				config,
-			),
-			{length, firstChild: wikiLink} = root;
-		if (length !== 1 || !(wikiLink instanceof LinkToken) || wikiLink.length !== 1) {
-			throw new SyntaxError(`非法的 fragment：${fragment ?? ''}`);
-		} else if (page) {
-			Parser.warn(`${this.constructor.name}.setFragment 方法会同时规范化页面名！`);
-		}
-		const {firstChild} = wikiLink;
-		wikiLink.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		this.setTarget(`${page ? this.name : ''}${fragment === undefined ? '' : `#${fragment}`}`);
 	}
 
 	/**

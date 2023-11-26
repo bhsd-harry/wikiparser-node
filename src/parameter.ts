@@ -1,10 +1,17 @@
-import {noWrap, extUrlChar, extUrlCharFirst} from '../util/string';
+import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
+
+/**
+ * 准确获取参数名
+ * @param name 预定的参数名
+ */
+const getName = (name: Token): string => name.toString(new Set(['comment', 'noinclude', 'include']))
+	.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
 
 /**
  * 模板或魔术字参数
@@ -83,10 +90,9 @@ export class ParameterToken extends fixed(Token) {
 
 	/** @private */
 	override afterBuild(): void {
-		const omit = new Set(['comment', 'noinclude', 'include']);
 		if (!this.anon) {
-			const name = this.firstChild.toString(omit).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, ''),
-				{parentNode} = this;
+			const {parentNode, firstChild} = this,
+				name = getName(firstChild);
 			this.setAttribute('name', name);
 			if (parentNode) {
 				parentNode.getAttribute('keys').add(name);
@@ -97,8 +103,7 @@ export class ParameterToken extends fixed(Token) {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstChild, name} = this;
 				if (prevTarget === firstChild) {
-					const newKey = firstChild.toString(omit)
-						.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
+					const newKey = getName(firstChild);
 					data.oldKey = name;
 					data.newKey = newKey;
 					this.setAttribute('name', newKey);
@@ -184,24 +189,14 @@ export class ParameterToken extends fixed(Token) {
 	/**
 	 * 设置参数值
 	 * @param value 参数值
-	 * @throws `SyntaxError` 非法的模板参数
 	 */
 	setValue(value: string): void {
-		const templateLike = this.parentNode?.isTemplate() !== false,
-			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${this.anon ? '' : '1='}${value}}}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: transclude} = root;
-		if (length !== 1 || transclude!.type !== (templateLike ? 'template' : 'magic-word')) {
-			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
+		const {anon, parentNode} = this;
+		if (anon && parentNode?.isTemplate()) {
+			parentNode.anonToNamed();
 		}
-		const {lastChild: parameter, name} = transclude as Token & {lastChild: ParameterToken},
-			targetName = templateLike ? 'T' : 'lc';
-		if (name !== targetName || transclude!.length !== 2 || parameter.anon !== this.anon || parameter.name !== '1') {
-			throw new SyntaxError(`非法的模板参数：${noWrap(value)}`);
-		}
-		const {lastChild} = parameter;
-		parameter.destroy();
-		this.lastChild.safeReplaceWith(lastChild);
+		const {childNodes} = Parser.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		this.lastChild.replaceChildren(...childNodes);
 	}
 
 	/**
@@ -209,22 +204,18 @@ export class ParameterToken extends fixed(Token) {
 	 * @param key 新参数名
 	 * @param force 是否无视冲突命名
 	 * @throws `Error` 仅用于模板参数
-	 * @throws `SyntaxError` 非法的模板参数名
 	 * @throws `RangeError` 更名造成重复参数
 	 */
 	rename(key: string, force = false): void {
-		const {parentNode} = this;
+		const {parentNode, anon} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {
 			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
+		} else if (anon) {
+			parentNode?.anonToNamed();
 		}
-		const root = Parser.parse(`{{:T|${key}=}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: template} = root;
-		if (length !== 1 || template!.type !== 'template' || template!.name !== 'T' || template!.length !== 2) {
-			throw new SyntaxError(`非法的模板参数名：${key}`);
-		}
-		const {lastChild: parameter} = template as TranscludeToken & {lastChild: ParameterToken},
-			{name, firstChild} = parameter;
+		const root = Parser.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
+			name = getName(root);
 		if (this.name === name) {
 			Parser.warn('未改变实际参数名', name);
 		} else if (parentNode?.hasArg(name)) {
@@ -234,8 +225,7 @@ export class ParameterToken extends fixed(Token) {
 				throw new RangeError(`参数更名造成重复参数：${name}`);
 			}
 		}
-		parameter.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		this.firstChild.replaceChildren(...root.childNodes);
 	}
 }
 

@@ -548,22 +548,14 @@ export class TranscludeToken extends Token {
 	/**
 	 * 插入匿名参数
 	 * @param val 参数值
-	 * @throws `SyntaxError` 非法的匿名参数
 	 */
 	newAnonArg(val: string): ParameterToken {
-		const templateLike = this.isTemplate(),
-			wikitext = `{{${templateLike ? ':T|' : 'lc:'}${val}}}`,
-			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: transclude} = root,
-			targetType = templateLike ? 'template' : 'magic-word';
-		if (length !== 1 || transclude!.type !== targetType || transclude!.length !== 2) {
-			throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
-		}
-		const {name, lastChild} = transclude as this & {lastChild: ParameterToken};
-		if (name === (templateLike ? 'T' : 'lc') && lastChild.anon) {
-			return this.insertAt(lastChild);
-		}
-		throw new SyntaxError(`非法的匿名参数：${noWrap(val)}`);
+		const config = this.getAttribute('config'),
+			{childNodes} = Parser.parse(val, this.getAttribute('include'), undefined, config),
+			token = Parser.run(() => new ParameterToken(undefined, undefined, config));
+		token.lastChild.append(...childNodes);
+		token.afterBuild();
+		return this.insertAt(token);
 	}
 
 	/**
@@ -584,15 +576,15 @@ export class TranscludeToken extends Token {
 		}
 		const wikitext = `{{:T|${key}=${value}}}`,
 			root = Parser.parse(wikitext, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: template} = root;
-		if (length !== 1 || template!.type !== 'template' || template!.length !== 2) {
+			{length, firstChild} = root;
+		if (length !== 1 || firstChild!.type !== 'template' || firstChild!.length !== 2) {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
-		const {name, lastChild: parameter} = template as this & {lastChild: ParameterToken};
-		if (name !== 'T' || parameter.name !== key) {
+		const {name, lastChild} = firstChild as this & {lastChild: ParameterToken};
+		if (name !== 'T' || lastChild.name !== key) {
 			throw new SyntaxError(`非法的命名参数：${key}=${noWrap(value)}`);
 		}
-		this.insertAt(parameter);
+		this.insertAt(lastChild);
 	}
 
 	/**
@@ -619,11 +611,11 @@ export class TranscludeToken extends Token {
 			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
 		}
 		const root = Parser.parse(`{{${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: template} = root as Token & {firstChild: TranscludeToken};
-		if (length !== 1 || template.type !== 'template' || template.length !== 1) {
+			{length, firstChild} = root as Token & {firstChild: TranscludeToken};
+		if (length !== 1 || firstChild.type !== 'template' || firstChild.length !== 1) {
 			throw new SyntaxError(`非法的模板名称：${title}`);
 		}
-		this.firstChild.replaceChildren(...template.firstChild.childNodes);
+		this.firstChild.replaceChildren(...firstChild.firstChild.childNodes);
 	}
 
 	/**
@@ -637,14 +629,14 @@ export class TranscludeToken extends Token {
 			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
 		}
 		const root = Parser.parse(`{{#invoke:${title}}}`, this.getAttribute('include'), 2, this.getAttribute('config')),
-			{length, firstChild: invoke} = root as Token & {firstChild: TranscludeToken},
-			{type, name, lastChild} = invoke;
-		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invoke.length !== 2) {
+			{length, firstChild} = root as Token & {firstChild: TranscludeToken},
+			{type, name, lastChild} = firstChild;
+		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || firstChild.length !== 2) {
 			throw new SyntaxError(`非法的模块名称：${title}`);
 		} else if (this.length > 1) {
 			this.childNodes[1]!.replaceChildren(...lastChild.childNodes);
 		} else {
-			invoke.destroy();
+			firstChild.destroy();
 			super.insertAt(lastChild);
 		}
 	}
@@ -668,14 +660,14 @@ export class TranscludeToken extends Token {
 				2,
 				this.getAttribute('config'),
 			),
-			{length, firstChild: invoke} = root as Token & {firstChild: TranscludeToken},
-			{type, name, lastChild} = invoke;
-		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || invoke.length !== 3) {
+			{length, firstChild} = root as Token & {firstChild: TranscludeToken},
+			{type, name, lastChild} = firstChild;
+		if (length !== 1 || type !== 'magic-word' || name !== 'invoke' || firstChild.length !== 3) {
 			throw new SyntaxError(`非法的模块函数名：${func}`);
 		} else if (this.length > 2) {
 			this.childNodes[2]!.replaceChildren(...lastChild.childNodes);
 		} else {
-			invoke.destroy();
+			firstChild.destroy();
 			super.insertAt(lastChild);
 		}
 	}

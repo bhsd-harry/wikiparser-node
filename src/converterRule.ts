@@ -1,5 +1,4 @@
 import {undo} from '../util/debug';
-import {noWrap} from '../util/string';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -213,23 +212,10 @@ export class ConverterRuleToken extends Token {
 	/**
 	 * 设置转换目标
 	 * @param to 转换目标
-	 * @throws `SyntaxError` 非法的转换目标
 	 */
 	setTo(to: string): void {
-		const config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			root = Parser.parse(`-{|${config.variants[0] ?? 'zh'}:${to}}-`, include, undefined, config),
-			{length, firstChild: converter} = root;
-		if (length !== 1 || converter!.type !== 'converter') {
-			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
-		}
-		const {lastChild: converterRule} = converter as ConverterToken;
-		if (converter!.length !== 2 || converterRule.length !== 2) {
-			throw new SyntaxError(`非法的转换目标：${noWrap(to)}`);
-		}
-		const {lastChild} = converterRule as this;
-		converterRule.destroy();
-		this.lastChild.safeReplaceWith(lastChild);
+		const {childNodes} = Parser.parse(to, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		this.lastChild.replaceChildren(...childNodes);
 	}
 
 	/**
@@ -253,7 +239,6 @@ export class ConverterRuleToken extends Token {
 	 * 设置转换原文
 	 * @param from 转换原文
 	 * @throws `Error` 尚未指定语言变体
-	 * @throws `SyntaxError` 非法的转换原文
 	 */
 	setFrom(from: string): void {
 		const {variant, unidirectional, firstChild} = this;
@@ -261,18 +246,13 @@ export class ConverterRuleToken extends Token {
 			throw new Error('请先指定语言变体！');
 		}
 		const config = this.getAttribute('config'),
-			root = Parser.parse(`-{|${from}=>${variant}:}-`, this.getAttribute('include'), undefined, config),
-			{length, firstChild: converter} = root;
-		if (length !== 1 || converter!.type !== 'converter') {
-			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
-		}
-		const {lastChild: converterRule} = converter as ConverterToken;
-		if (converter!.length !== 2 || converterRule.length !== 3) {
-			throw new SyntaxError(`非法的转换原文：${noWrap(from)}`);
-		} else if (unidirectional) {
-			firstChild.safeReplaceWith(converterRule.firstChild!);
+			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config);
+		if (unidirectional) {
+			firstChild.replaceChildren(...childNodes);
 		} else {
-			super.insertAt(converterRule.firstChild!, 0);
+			const token = Parser.run(() => new AtomToken(undefined, 'converter-rule-from', config));
+			token.append(...childNodes);
+			super.insertAt(token, 0);
 		}
 	}
 

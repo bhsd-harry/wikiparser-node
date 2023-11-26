@@ -152,11 +152,11 @@ export class MagicLinkToken extends syntax(Token) {
 	 */
 	setTarget(url: string): void {
 		const root = Parser.parse(url, this.getAttribute('include'), 9, this.getAttribute('config')),
-			{length, firstChild: freeExtLink} = root;
-		if (length !== 1 || freeExtLink!.type !== 'free-ext-link') {
+			{length, firstChild} = root;
+		if (length !== 1 || firstChild!.type !== 'free-ext-link') {
 			throw new SyntaxError(`非法的自由外链目标：${url}`);
 		}
-		this.replaceChildren(...freeExtLink!.childNodes);
+		this.replaceChildren(...firstChild!.childNodes);
 	}
 
 	/** 是否是模板或魔术字参数 */

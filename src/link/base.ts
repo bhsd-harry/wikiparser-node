@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {noWrap} from '../../util/string';
 import {undo} from '../../util/debug';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -70,7 +69,7 @@ export abstract class LinkBaseToken extends Token {
 		}));
 		if (linkText !== undefined) {
 			const inner = new Token(linkText, config, accum, {
-				'Stage-5': ':', ConverterToken: ':',
+				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
 			});
 			inner.type = 'link-text';
 			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
@@ -206,53 +205,39 @@ export abstract class LinkBaseToken extends Token {
 	/**
 	 * 设置链接目标
 	 * @param link 链接目标
-	 * @throws `SyntaxError` 非法的链接目标
 	 */
 	setTarget(link: string | Title): void {
 		let strLink = String(link);
 		if (this.type === 'link' && !/^\s*[:#]/u.test(strLink)) {
 			strLink = `:${strLink}`;
 		}
-		const root = Parser.parse(`[[${strLink}]]`, this.getAttribute('include'), 6, this.getAttribute('config')),
-			{length, firstChild: wikiLink} = root;
-		if (length !== 1 || wikiLink?.type !== this.type || wikiLink.length !== 1) {
-			const msgs: Record<string, string> = {link: '内链', file: '文件链接', category: '分类'};
-			throw new SyntaxError(`非法的${msgs[this.type]!}目标：${strLink}`);
-		}
-		const {firstChild} = wikiLink as this;
-		wikiLink.destroy();
-		this.firstChild.safeReplaceWith(firstChild);
+		const config = this.getAttribute('config'),
+			{childNodes} = Parser.parse(strLink, this.getAttribute('include'), 2, config),
+			token = Parser.run(() => new AtomToken(undefined, 'link-target', config, [], {
+				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
+			}));
+		token.append(...childNodes);
+		this.firstChild.safeReplaceWith(token);
 	}
 
 	/**
 	 * 设置链接显示文字
 	 * @param linkStr 链接显示文字
-	 * @throws `SyntaxError` 非法的链接显示文字
 	 */
 	setLinkText(linkStr?: string): void {
-		let lastChild: Token;
-		const config = this.getAttribute('config');
-		if (linkStr) {
-			const root = Parser.parse(
-					`[[${this.type === 'category' ? 'Category:' : ''}L|${linkStr}]]`,
-					this.getAttribute('include'),
-					6,
-					config,
-				),
-				{length, firstChild: wikiLink} = root;
-			if (length !== 1 || wikiLink?.type !== this.type || wikiLink.length !== 2) {
-				throw new SyntaxError(`非法的${this.type === 'link' ? '内链文字' : '分类关键字'}：${noWrap(linkStr)}`);
-			}
-			({lastChild} = wikiLink as this);
-		} else {
-			lastChild = Parser.run(() => new Token(undefined, config));
-			lastChild.type = 'link-text';
-			lastChild.setAttribute('stage', 7);
+		if (linkStr === undefined) {
+			this.childNodes[1]?.remove();
+			return;
 		}
+		const root = Parser.parse(linkStr, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		if (this.length === 1) {
-			this.insertAt(lastChild);
+			root.type = 'link-text';
+			root.setAttribute('acceptable', {
+				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
+			});
+			this.insertAt(root);
 		} else {
-			this.lastChild.safeReplaceWith(lastChild);
+			this.lastChild.replaceChildren(...root.childNodes);
 		}
 	}
 }
