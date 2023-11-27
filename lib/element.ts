@@ -553,7 +553,7 @@ export abstract class AstElement extends AstNode {
 	 * @param stack 解析后的一组选择器
 	 */
 	#matchesStack(stack: SelectorArray[][]): boolean {
-		return stack.some(condition => this.#matchesArray([...condition]));
+		return stack.some(condition => this.#matchesArray(condition));
 	}
 
 	/**

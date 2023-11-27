@@ -40,7 +40,7 @@ export class ExtLinkToken extends Token {
 	}
 
 	set link(url) {
-		this.setTarget(url);
+		this.firstChild.link = url;
 	}
 
 	/** 链接显示文字 */

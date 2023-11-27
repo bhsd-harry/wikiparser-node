@@ -13,7 +13,6 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
-	#invalid = false;
 
 	/* NOT FOR BROWSER */
 
@@ -56,18 +55,20 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		this.type = `${type}-image`;
 	}
 
+	/** 生成Title对象 */
+	#getTitle(): Title {
+		const imagemap = this.type === 'imagemap-image';
+		return this.normalizeTitle(String(this.firstChild), imagemap ? 0 : 6, true, !imagemap);
+	}
+
 	/** @private */
 	override afterBuild(): void {
-		const initImagemap = this.type === 'imagemap-image',
-			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
-		this.setAttribute('name', titleObj.title);
-		this.#invalid = Boolean(titleObj.interwiki) || titleObj.ns !== 6; // 只用于gallery-image的首次解析
+		this.setAttribute('name', this.#getTitle().title);
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
-					imagemap = this.type === 'imagemap-image',
-					{title, interwiki, ns, valid} = this.normalizeTitle(name, imagemap ? 0 : 6, true, !imagemap);
+					{title, interwiki, ns, valid} = this.#getTitle();
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的图片文件名：${name}`);
@@ -76,7 +77,6 @@ export class GalleryImageToken extends singleLine(FileToken) {
 					throw new Error(`图片链接不可更改命名空间：${name}`);
 				}
 				this.setAttribute('name', title);
-				this.#invalid = false;
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
@@ -89,8 +89,9 @@ export class GalleryImageToken extends singleLine(FileToken) {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
-		if (this.#invalid) {
+		const errors = super.lint(start),
+			{interwiki, ns} = this.#getTitle();
+		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;

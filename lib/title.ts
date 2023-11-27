@@ -11,7 +11,7 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#namespaces;
-	#main;
+	#main: string;
 	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
@@ -105,7 +105,7 @@ export class Title {
 		this.valid = Boolean(title || selfLink && fragment !== undefined || this.interwiki)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
-		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+		this.main = title;
 	}
 
 	/* NOT FOR BROWSER */
@@ -120,7 +120,7 @@ export class Title {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
-			this.#main = this.#main.replace(regex, p => conversionTable.get(p)!);
+			this.main = this.#main.replace(regex, p => conversionTable.get(p)!);
 		}
 	}
 }

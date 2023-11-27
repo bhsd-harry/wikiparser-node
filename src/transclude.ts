@@ -6,6 +6,7 @@ import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../index';
+import type {Title} from '../lib/title';
 import type {TableToken} from '../internal';
 
 /**
@@ -16,8 +17,6 @@ export class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
 	declare name: string;
 	modifier = '';
-	#fragment: string | undefined;
-	#valid = true;
 	#raw = false;
 	#args = new Map<string, Set<ParameterToken>>();
 
@@ -46,6 +45,12 @@ export class TranscludeToken extends Token {
 	/** 是否存在重复参数 */
 	get duplication(): boolean {
 		return this.isTemplate() && Boolean(this.hasDuplicatedArgs());
+	}
+
+	set duplication(duplication) {
+		if (this.duplication && !duplication) {
+			this.fixDuplication();
+		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -170,19 +175,21 @@ export class TranscludeToken extends Token {
 		return this.type === 'template' || this.name === 'invoke';
 	}
 
+	/** 获取模板或模块名 */
+	#getTitle(): Title {
+		const isTemplate = this.type === 'template';
+		return this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1]!.text(), isTemplate ? 10 : 828);
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
 		}
 		if (this.isTemplate()) {
-			const isTemplate = this.type === 'template',
-				child = this.childNodes[isTemplate ? 0 : 1];
-			if (child) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-				const titleObj = this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
-				this.setAttribute(isTemplate ? 'name' : 'module', titleObj.title);
-				this.#fragment = titleObj.fragment;
-				this.#valid = titleObj.valid;
+			const isTemplate = this.type === 'template';
+			if (isTemplate || this.length > 1) {
+				this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle().title);
 			}
 
 			/**
@@ -200,11 +207,7 @@ export class TranscludeToken extends Token {
 				if (prevTarget === this.firstChild && isTemplate
 					|| prevTarget === this.childNodes[1]! && !isTemplate && this.name === 'invoke'
 				) {
-					const name = prevTarget.text(),
-						{title, fragment, valid} = this.normalizeTitle(name, 10);
-					this.setAttribute(isTemplate ? 'name' : 'module', title);
-					this.#fragment = fragment;
-					this.#valid = valid;
+					this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle().title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey!, false, false);
 					oldArgs.delete(prevTarget);
@@ -262,11 +265,13 @@ export class TranscludeToken extends Token {
 		let rect: BoundingRect | undefined;
 		if (!this.isTemplate()) {
 			return errors;
-		} else if (this.#fragment !== undefined) {
+		}
+		const {fragment, valid} = this.#getTitle();
+		if (fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
 		}
-		if (!this.#valid) {
+		if (!valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
 		} else if (type === 'magic-word') {

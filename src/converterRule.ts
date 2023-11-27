@@ -168,10 +168,10 @@ export class ConverterRuleToken extends Token {
 		const /** @implements */ converterRuleListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (this.length > 1 && this.childNodes.at(-2) === prevTarget) {
-				const v = prevTarget!.text().trim();
-				if (!this.getAttribute('config').variants.includes(v)) {
+				const {variant} = this;
+				if (!this.getAttribute('config').variants.includes(variant)) {
 					undo(e, data);
-					throw new Error(`无效的语言变体：${v}`);
+					throw new Error(`无效的语言变体：${variant}`);
 				}
 			}
 		};

@@ -62,7 +62,7 @@ export class GalleryToken extends Token {
 				continue;
 			}
 			const [, file, alt] = matches;
-			if (this.normalizeTitle(file, 6, true, true).valid) {
+			if (this.#checkFile(file)) {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {
@@ -70,6 +70,14 @@ export class GalleryToken extends Token {
 				}));
 			}
 		}
+	}
+
+	/**
+	 * 检查文件名是否有效
+	 * @param file 文件名
+	 */
+	#checkFile(file: string): boolean {
+		return this.normalizeTitle(file, 6, true, true).valid;
 	}
 
 	/** @private */
@@ -142,7 +150,7 @@ export class GalleryToken extends Token {
 	 * @throws `SyntaxError` 非法的文件名
 	 */
 	insertImage(file: string, i = this.length): GalleryImageToken {
-		if (this.normalizeTitle(file, 6, true, true).valid) {
+		if (this.#checkFile(file)) {
 			const token = Parser.run(
 				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
