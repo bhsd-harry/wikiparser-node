@@ -2,6 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
+import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
 
 /** 图库图片 */

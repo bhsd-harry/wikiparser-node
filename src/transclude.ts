@@ -6,6 +6,7 @@ import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../index';
+import type {Title} from '../lib/title';
 
 /**
  * 模板或魔术字
