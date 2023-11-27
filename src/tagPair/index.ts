@@ -50,7 +50,7 @@ export abstract class TagPairToken extends Token {
 		return this.#selfClosing
 			? `<${opening}${firstChild.toString(omit)}/>`
 			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
-				this.#closed ? `</${closing}>` : ''
+				this.closed ? `</${closing}>` : ''
 			}`;
 	}
 
@@ -59,7 +59,7 @@ export abstract class TagPairToken extends Token {
 		const [opening, closing] = this.#tags;
 		return this.#selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
+			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @private */
