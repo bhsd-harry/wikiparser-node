@@ -1,13 +1,14 @@
 {
 	"include": [
+		"addon/**/*",
 		"bin/**/*",
 		"lib/**/*",
 		"mixin/**/*",
 		"parser/**/*",
 		"src/**/*",
+		"test/**/*",
 		"typings/**/*",
 		"util/**/*",
-		"test/**/*",
 		"index.ts"
 	],
 	"compilerOptions": {

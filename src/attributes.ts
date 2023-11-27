@@ -61,7 +61,7 @@ export class AttributesToken extends Token {
 	}
 
 	set className(className) {
-		this.setAttr('class', className);
+		this.setAttr('class', className || false);
 	}
 
 	/** 以Set表示的class属性 */
@@ -80,7 +80,7 @@ export class AttributesToken extends Token {
 	}
 
 	set id(id) {
-		this.setAttr('id', id);
+		this.setAttr('id', id || false);
 	}
 
 	/** 是否含有无效属性 */
