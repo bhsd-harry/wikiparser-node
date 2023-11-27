@@ -163,19 +163,14 @@ export class AttributeToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
 
-	/** 引号是否匹配 */
-	get balanced(): boolean {
-		return !this.#equal || this.#quotes[0] === this.#quotes[1];
-	}
-
 	/** 标签名 */
 	get tag(): string {
 		return this.#tag;
 	}
 
-	/** getValue()的getter */
-	get value(): string | true {
-		return this.getValue();
+	/** 引号是否匹配 */
+	get balanced(): boolean {
+		return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
 
 	/**
@@ -267,7 +262,8 @@ export class AttributeToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{balanced, firstChild, lastChild, type, name, value} = this,
+			{balanced, firstChild, lastChild, type, name} = this,
+			value = this.getValue(),
 			tag = this.#tag;
 		let rect: BoundingRect | undefined;
 		if (!balanced) {

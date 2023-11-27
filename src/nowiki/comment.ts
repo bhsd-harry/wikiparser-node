@@ -29,6 +29,6 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
+		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 }

@@ -14,8 +14,6 @@ import type {LintError} from '../index';
 export class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
 	modifier = '';
-	#fragment: string | undefined;
-	#valid = true;
 	#raw = false;
 	#args = new Map<string, Set<ParameterToken>>();
 
@@ -138,19 +136,16 @@ export class TranscludeToken extends Token {
 		return this.type === 'template' || this.name === 'invoke';
 	}
 
+	/** 获取模板或模块名 */
+	#getTitle(): Title {
+		const isTemplate = this.type === 'template';
+		return this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1]!.text(), isTemplate ? 10 : 828);
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
-		}
-		if (this.isTemplate()) {
-			const isTemplate = this.type === 'template',
-				child = this.childNodes[isTemplate ? 0 : 1];
-			if (child) { // eslint-disable-line @typescript-eslint/no-unnecessary-condition
-				const titleObj = this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
-				this.#fragment = titleObj.fragment;
-				this.#valid = titleObj.valid;
-			}
 		}
 	}
 
@@ -194,11 +189,13 @@ export class TranscludeToken extends Token {
 		let rect: BoundingRect | undefined;
 		if (!this.isTemplate()) {
 			return errors;
-		} else if (this.#fragment !== undefined) {
+		}
+		const {fragment, valid} = this.#getTitle();
+		if (fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
 		}
-		if (!this.#valid) {
+		if (!valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
 		} else if (type === 'magic-word') {

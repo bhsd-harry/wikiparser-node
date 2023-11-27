@@ -23,6 +23,6 @@ export class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return `__${this.firstChild.data}__`;
+		return `__${this.innerText}__`;
 	}
 }
