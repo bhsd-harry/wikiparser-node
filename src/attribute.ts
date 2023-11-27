@@ -279,9 +279,9 @@ export class AttributeToken extends fixed(Token) {
 			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
-			|| (type !== 'ext-attr' && !/\{\{[^{]+\}\}/u.test(name) || tag in htmlAttrs)
-			&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
-			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			|| (type === 'ext-attr' ? tag in htmlAttrs : !/\{\{[^{]+\}\}/u.test(name))
+				&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
+				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));

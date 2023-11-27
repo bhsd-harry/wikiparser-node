@@ -138,9 +138,10 @@ export class TranscludeToken extends Token {
 	}
 
 	/** 获取模板或模块名 */
-	#getTitle(): Title {
-		const isTemplate = this.type === 'template';
-		return this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1]!.text(), isTemplate ? 10 : 828);
+	#getTitle(): Title | undefined {
+		const isTemplate = this.type === 'template',
+			child = this.childNodes[isTemplate ? 0 : 1] as AtomToken | undefined;
+		return child && this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
 	}
 
 	/** @private */
@@ -191,17 +192,18 @@ export class TranscludeToken extends Token {
 		if (!this.isTemplate()) {
 			return errors;
 		}
-		const {fragment, valid} = this.#getTitle();
-		if (fragment !== undefined) {
+		const title = this.#getTitle();
+		if (!title) {
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'missing module name'));
+			return errors;
+		} else if (title.fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
 		}
-		if (!valid) {
+		if (!title.valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
-		} else if (type === 'magic-word') {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForSelf(this, rect, 'missing module name'));
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
