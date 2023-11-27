@@ -1,4 +1,5 @@
 import {text, print} from '../util/string';
+import {flagsParent} from '../mixin/flagsParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
@@ -8,16 +9,12 @@ import {ConverterRuleToken} from './converterRule';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-export class ConverterToken extends Token {
+export class ConverterToken extends flagsParent(Token) {
 	override readonly type = 'converter';
 
 	declare childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
-	// @ts-expect-error abstract method
-	abstract override get firstChild(): ConverterFlagsToken;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): ConverterFlagsToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 	// @ts-expect-error abstract method
@@ -35,15 +32,6 @@ export class ConverterToken extends Token {
 			throw new Error('无法稳健地修改为不转换！');
 		}
 		this.setFlag('R');
-	}
-
-	/** 所有转换类型标记 */
-	get flags(): Set<string> {
-		return this.firstChild.flags;
-	}
-
-	set flags(value) {
-		this.firstChild.flags = value;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -114,61 +102,6 @@ export class ConverterToken extends Token {
 			token.append(...rules);
 			return token;
 		});
-	}
-
-	/** 获取所有转换类型标记 */
-	getAllFlags(): Set<string> {
-		return this.firstChild.getAllFlags();
-	}
-
-	/** 获取有效的转换类型标记 */
-	getEffectiveFlags(): Set<string> {
-		return this.firstChild.getEffectiveFlags();
-	}
-
-	/** 获取未知的转换类型标记 */
-	getUnknownFlags(): Set<string> {
-		return this.firstChild.getUnknownFlags();
-	}
-
-	/**
-	 * 是否具有某转换类型标记
-	 * @param flag 转换类型标记
-	 */
-	hasFlag(flag: string): boolean {
-		return this.firstChild.hasFlag(flag);
-	}
-
-	/**
-	 * 是否具有某有效的转换类型标记
-	 * @param flag 转换类型标记
-	 */
-	hasEffectiveFlag(flag: string): boolean {
-		return this.firstChild.hasEffectiveFlag(flag);
-	}
-
-	/**
-	 * 移除转换类型标记
-	 * @param flag 转换类型标记
-	 */
-	removeFlag(flag: string): void {
-		this.firstChild.removeFlag(flag);
-	}
-
-	/**
-	 * 设置转换类型标记
-	 * @param flag 转换类型标记
-	 */
-	setFlag(flag: string): void {
-		this.firstChild.setFlag(flag);
-	}
-
-	/**
-	 * 开关某转换类型标记
-	 * @param flag 转换类型标记
-	 */
-	toggleFlag(flag: string): void {
-		this.firstChild.toggleFlag(flag);
 	}
 }
 
