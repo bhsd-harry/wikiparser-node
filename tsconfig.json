@@ -4,9 +4,9 @@
 		"mixin/**/*",
 		"parser/**/*",
 		"src/**/*",
+		"test/**/*",
 		"typings/**/*",
 		"util/**/*",
-		"test/**/*",
 		"index.ts"
 	],
 	"compilerOptions": {
