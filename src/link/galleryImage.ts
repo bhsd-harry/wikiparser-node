@@ -62,6 +62,23 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	}
 
 	/** @private */
+	protected override getPadding(): number {
+		return 0;
+	}
+
+	/** @override */
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const errors = super.lint(start),
+			{interwiki, ns} = this.#getTitle();
+		if (interwiki || ns !== 6) {
+			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
+		}
+		return errors;
+	}
+
+	/* NOT FOR BROWSER */
+
+	/** @private */
 	override afterBuild(): void {
 		this.setAttribute('name', this.#getTitle().title);
 		const /** @implements */ linkListener: AstListener = (e, data) => {
@@ -81,23 +98,6 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
-
-	/** @private */
-	protected override getPadding(): number {
-		return 0;
-	}
-
-	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
-			{interwiki, ns} = this.#getTitle();
-		if (interwiki || ns !== 6) {
-			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
-		}
-		return errors;
-	}
-
-	/* NOT FOR BROWSER */
 
 	/**
 	 * @override
