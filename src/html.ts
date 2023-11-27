@@ -188,7 +188,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 				: childNodes.slice(i + 1).filter(({type, name}) => type === 'html' && name === tagName);
 		let imbalance = this.#closing ? -1 : 1;
 		for (const token of siblings as this[]) {
-			if (token.closing) {
+			if (token.#closing) {
 				imbalance--;
 			} else {
 				imbalance++;

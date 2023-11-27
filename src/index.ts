@@ -347,7 +347,7 @@ export class Token extends AstElement {
 					return this.#include as TokenAttributeGetter<T>;
 				}
 				const root = this.getRootNode();
-				if (root.type === 'root' && root !== this) {
+				if (root !== this) {
 					return root.getAttribute('include') as TokenAttributeGetter<T>;
 				}
 				const includeToken = root.getElementByTypes('include');

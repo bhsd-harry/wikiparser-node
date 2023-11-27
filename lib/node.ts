@@ -181,14 +181,14 @@ export abstract class AstNode {
 
 	/** 后方是否还有其他节点（不含后代） */
 	get eof(): boolean | undefined {
-		if (this.type === 'root') {
+		if (!this.#parentNode) {
 			return true;
 		}
 		let {nextSibling} = this;
 		while (nextSibling?.type === 'text' && nextSibling.data.trim() === '') {
 			({nextSibling} = nextSibling);
 		}
-		return nextSibling === undefined && this.parentNode?.eof;
+		return nextSibling === undefined && this.#parentNode.eof;
 	}
 
 	/** 相对于父容器的行号 */
@@ -494,8 +494,8 @@ export abstract class AstNode {
 			currentTarget: {value: this, enumerable: true, configurable: true},
 		});
 		this.#events.emit(e.type, e, data);
-		if (e.bubbles && this.parentNode) {
-			this.parentNode.dispatchEvent(e, data);
+		if (e.bubbles && this.#parentNode) {
+			this.#parentNode.dispatchEvent(e, data);
 		}
 	}
 
@@ -547,7 +547,7 @@ export abstract class AstNode {
 
 	/** 获取当前节点的相对位置 */
 	#getPosition(): Position {
-		return this.parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
+		return this.#parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
 	}
 
 	/** 获取当前节点的行列位置和大小 */

@@ -130,11 +130,11 @@ export class AstRange {
 	 * @param referenceNode 节点
 	 */
 	#setAfter(method: 'setStart' | 'setEnd', referenceNode: AstNodes): void {
-		if (referenceNode.type === 'root') {
-			this[method](referenceNode, referenceNode.length);
+		const {parentNode} = referenceNode;
+		if (parentNode) {
+			this[method](parentNode, parentNode.childNodes.indexOf(referenceNode) + 1);
 		} else {
-			const {parentNode} = referenceNode;
-			this[method](parentNode!, parentNode!.childNodes.indexOf(referenceNode) + 1);
+			this[method](referenceNode, referenceNode.length);
 		}
 	}
 
@@ -160,11 +160,11 @@ export class AstRange {
 	 * @param referenceNode 节点
 	 */
 	#setBefore(method: 'setStart' | 'setEnd', referenceNode: AstNodes): void {
-		if (referenceNode.type === 'root') {
-			this[method](referenceNode, 0);
+		const {parentNode} = referenceNode;
+		if (parentNode) {
+			this[method](parentNode, parentNode.childNodes.indexOf(referenceNode));
 		} else {
-			const {parentNode} = referenceNode;
-			this[method](parentNode!, parentNode!.childNodes.indexOf(referenceNode));
+			this[method](referenceNode, 0);
 		}
 	}
 
@@ -196,9 +196,12 @@ export class AstRange {
 		if (caretPosition === undefined) {
 			throw new RangeError('字符坐标超出有效的范围！');
 		}
-		const {offsetNode, offset} = caretPosition;
+		const {offsetNode, offset} = caretPosition,
+			{parentNode} = offsetNode;
 		if (offsetNode.type === 'text') {
 			this[method](offsetNode, offset);
+		} else if (parentNode && (offset === 0 || offset === String(offsetNode).length)) {
+			this[method](parentNode, parentNode.childNodes.indexOf(offsetNode) + (offset && 1));
 		} else {
 			const i = offsetNode.childNodes.findIndex(child => child.getRelativeIndex() >= offset);
 			this[method](offsetNode, i === -1 ? offsetNode.length : i);
@@ -270,15 +273,15 @@ export class AstRange {
 	 * @param referenceNode 节点
 	 */
 	selectNode(referenceNode: AstNodes): void {
-		if (referenceNode.type === 'root') {
-			this.selectNodeContents(referenceNode);
-		} else {
-			const {parentNode} = referenceNode,
-				i = parentNode!.childNodes.indexOf(referenceNode);
+		const {parentNode} = referenceNode;
+		if (parentNode) {
+			const i = parentNode.childNodes.indexOf(referenceNode);
 			this.#startContainer = parentNode!;
 			this.#startOffset = i;
 			this.#endContainer = parentNode!;
 			this.#endOffset = i + 1;
+		} else {
+			this.selectNodeContents(referenceNode);
 		}
 	}
 
