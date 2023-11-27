@@ -920,6 +920,8 @@
 					{
 						"allowIIFEs": true,
 						"allowedNames": [
+							"flagsParent",
+							"magicLinkParent",
 							"hidden"
 						]
 					}

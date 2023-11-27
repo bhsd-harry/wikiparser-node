@@ -3,7 +3,7 @@ import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../index';
-import type {Token, AttributesToken, TdToken, TrToken} from '../../internal';
+import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
