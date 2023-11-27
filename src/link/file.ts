@@ -73,6 +73,10 @@ export class FileToken extends LinkBaseToken {
 		return this.getArg('width')?.size;
 	}
 
+	set size(size) {
+		this.setValue('width', size && `${size.width}${size.height && 'x'}${size.height}`);
+	}
+
 	/** 图片宽度 */
 	get width(): string | undefined {
 		return this.size?.width;

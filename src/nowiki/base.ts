@@ -26,6 +26,11 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	abstract override get lastChild(): AstText;
 	abstract override get lastElementChild(): undefined;
 
+	/** 纯文本部分 */
+	get innerText(): string {
+		return this.firstChild.data;
+	}
+
 	/** @param wikitext default: `''` */
 	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);

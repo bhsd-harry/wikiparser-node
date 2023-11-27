@@ -47,6 +47,13 @@ export class AttributesToken extends Token {
 		return this.getAttrs();
 	}
 
+	set attributes(attrs) {
+		this.replaceChildren();
+		for (const [key, value] of Object.entries(attrs)) {
+			this.setAttr(key, value);
+		}
+	}
+
 	/** 以字符串表示的class属性 */
 	get className(): string {
 		const attr = this.getAttr('class');
@@ -62,6 +69,10 @@ export class AttributesToken extends Token {
 		return new Set(this.className.split(/\s/u));
 	}
 
+	set classList(classList) {
+		this.setAttr('class', [...classList].join(' '));
+	}
+
 	/** id属性 */
 	get id(): string {
 		const attr = this.getAttr('id');
@@ -75,6 +86,12 @@ export class AttributesToken extends Token {
 	/** 是否含有无效属性 */
 	get sanitized(): boolean {
 		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim()).length === 0;
+	}
+
+	set sanitized(sanitized) {
+		if (sanitized) {
+			this.sanitize();
+		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -166,9 +183,9 @@ export class AttributesToken extends Token {
 	 * 所有指定属性名的AttributeToken
 	 * @param key 属性名
 	 */
-	getAttrTokens(key: string): AttributeToken[] {
+	getAttrTokens(key?: string): AttributeToken[] {
 		return this.childNodes.filter(
-			child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
+			child => child instanceof AttributeToken && (!key || child.name === key.toLowerCase().trim()),
 		) as AttributeToken[];
 	}
 
@@ -345,13 +362,12 @@ export class AttributesToken extends Token {
 
 	/** 获取全部的属性名 */
 	getAttrNames(): Set<string> {
-		return new Set(this.childNodes.filter(child => child instanceof AttributeToken).map(({name}) => name!));
+		return new Set(this.getAttrTokens().map(({name}) => name));
 	}
 
 	/** 获取全部属性 */
 	getAttrs(): Record<string, string | true> {
-		const attrs = this.childNodes.filter(child => child instanceof AttributeToken) as AttributeToken[];
-		return Object.fromEntries(attrs.map(({name, value}) => [name, value]));
+		return Object.fromEntries(this.getAttrTokens().map(({name, value}) => [name, value]));
 	}
 
 	/**

@@ -34,7 +34,7 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return omit && this.matchesTypes(omit) ? '' : `__${this.firstChild.data}__`;
+		return omit && this.matchesTypes(omit) ? '' : `__${this.innerText}__`;
 	}
 
 	/** @override */
@@ -48,7 +48,7 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	override cloneNode(): this {
 		const config = this.getAttribute('config');
 		return Parser.run(() => {
-			const token = new DoubleUnderscoreToken(this.firstChild.data, this.#fixed, config) as this;
+			const token = new DoubleUnderscoreToken(this.innerText, this.#fixed, config) as this;
 			token.afterBuild();
 			return token;
 		});

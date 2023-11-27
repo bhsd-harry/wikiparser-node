@@ -39,6 +39,20 @@ export class ConverterFlagsToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
+	/* NOT FOR BROWSER */
+
+	/** 所有转换类型标记 */
+	get flags(): Set<string> {
+		return this.getAllFlags();
+	}
+
+	set flags(value) {
+		this.replaceChildren();
+		for (const flag of value) {
+			this.#newFlag(flag);
+		}
+	}
+
 	/** @param flags 转换类型标记 */
 	constructor(flags: string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {

@@ -52,6 +52,14 @@ export class ParameterToken extends fixed(Token) {
 
 	/* NOT FOR BROWSER */
 
+	set anon(value) {
+		if (value) {
+			this.parentNode?.anonToNamed();
+		} else {
+			throw new Error('无法将命名参数转换为匿名参数！');
+		}
+	}
+
 	/** getValue()的getter */
 	get value(): string {
 		return this.getValue();
@@ -67,6 +75,12 @@ export class ParameterToken extends fixed(Token) {
 			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
 		} catch {
 			return false;
+		}
+	}
+
+	set duplicated(value) {
+		if (this.duplicated && !value) {
+			this.parentNode!.fixDuplication();
 		}
 	}
 

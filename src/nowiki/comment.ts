@@ -14,11 +14,11 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	/* NOT FOR BROWSER */
 
 	/** 内部wikitext */
-	get innerText(): string {
-		return this.firstChild.data;
+	override get innerText(): string {
+		return super.innerText;
 	}
 
-	set innerText(text) {
+	override set innerText(text) {
 		this.setText(text);
 	}
 
@@ -47,7 +47,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
-		return omit && this.matchesTypes(omit) ? '' : `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
+		return omit && this.matchesTypes(omit) ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @override */
@@ -59,11 +59,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override cloneNode(): this {
-		return Parser.run(() => new CommentToken(
-			this.firstChild.data,
-			this.closed,
-			this.getAttribute('config'),
-		) as this);
+		return Parser.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);
 	}
 
 	/**

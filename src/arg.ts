@@ -31,6 +31,14 @@ export class ArgToken extends Token {
 		return this.childNodes[1]?.text() ?? false;
 	}
 
+	/* NOT FOR BROWSER */
+
+	set default(value) {
+		this.setDefault(value);
+	}
+
+	/* NOT FOR BROWSER END */
+
 	/** @param parts 以'|'分隔的各部分 */
 	constructor(parts: string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
@@ -126,12 +134,17 @@ export class ArgToken extends Token {
 		});
 	}
 
+	/** 设置name */
+	#setName(): void {
+		this.setAttribute('name', this.firstChild.text().trim());
+	}
+
 	/** @private */
 	override afterBuild(): void {
-		this.setAttribute('name', this.firstChild.text().trim());
+		this.#setName();
 		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
 			if (prevTarget === this.firstChild) {
-				this.setAttribute('name', prevTarget.text().trim());
+				this.#setName();
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
@@ -191,7 +204,11 @@ export class ArgToken extends Token {
 	 * 设置预设值
 	 * @param value 预设值
 	 */
-	setDefault(value: string): void {
+	setDefault(value: string | false): void {
+		if (value === false) {
+			this.removeAt(1);
+			return;
+		}
 		const root = Parser.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config')),
 			{childNodes: [, oldDefault]} = this;
 		if (oldDefault) {

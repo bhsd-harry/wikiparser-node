@@ -63,9 +63,9 @@ export class IncludeToken extends hidden(TagPairToken) {
 	override cloneNode(): this {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
-			inner = this.selfClosing ? undefined : this.lastChild.data,
+			{innerText} = this,
 			closing = this.selfClosing || !this.closed ? undefined : tags[1];
-		return Parser.run(() => new IncludeToken(tags[0], this.firstChild.data, inner, closing, config) as this);
+		return Parser.run(() => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config) as this);
 	}
 
 	/**

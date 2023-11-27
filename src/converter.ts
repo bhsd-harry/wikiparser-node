@@ -30,9 +30,20 @@ export class ConverterToken extends Token {
 		return this.hasFlag('R') || this.length === 2 && this.lastChild.length === 1;
 	}
 
+	set noConvert(value) {
+		if (!value) {
+			throw new Error('无法稳健地修改为不转换！');
+		}
+		this.setFlag('R');
+	}
+
 	/** 所有转换类型标记 */
 	get flags(): Set<string> {
-		return this.getAllFlags();
+		return this.firstChild.flags;
+	}
+
+	set flags(value) {
+		this.firstChild.flags = value;
 	}
 
 	/* NOT FOR BROWSER END */

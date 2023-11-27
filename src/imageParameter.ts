@@ -113,6 +113,12 @@ export class ImageParameterToken extends Token {
 		return undefined;
 	}
 
+	set size(size) {
+		if (this.name === 'width') {
+			this.setValue(size && `${size.width}${size.height && 'x'}${size.height}`);
+		}
+	}
+
 	/** 图片宽度 */
 	get width(): string | undefined {
 		return this.size?.width;
@@ -283,24 +289,23 @@ export class ImageParameterToken extends Token {
 	 * @param value 参数值
 	 * @throws `Error` 无效参数
 	 */
-	setValue(value: string | boolean): void {
+	setValue(value: string | boolean = false): void {
 		const {name} = this;
-		if (name === 'invalid') {
-			throw new Error('当前节点是一个无效的图片参数！');
-		} else if (this.#isVoid()) {
-			if (typeof value !== 'boolean') {
-				this.typeError('setValue', 'Boolean');
-			} else if (!value) {
-				this.remove();
-			}
+		if (value === false) {
+			this.remove();
 			return;
-		} else if (typeof value !== 'string') {
-			this.typeError('setValue', 'String');
+		} else if (name === 'invalid') {
+			throw new Error('当前节点是一个无效的图片参数！');
 		}
-		const include = this.getAttribute('include'),
-			config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(value, include, name === 'caption' ? undefined : 5, config);
-		this.replaceChildren(...childNodes);
+		const type = this.#isVoid() ? 'Boolean' : 'String';
+		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof
+			this.typeError('setValue', type);
+		} else if (value !== true) {
+			const include = this.getAttribute('include'),
+				config = this.getAttribute('config'),
+				{childNodes} = Parser.parse(value, include, name === 'caption' ? undefined : 5, config);
+			this.replaceChildren(...childNodes);
+		}
 	}
 }
 

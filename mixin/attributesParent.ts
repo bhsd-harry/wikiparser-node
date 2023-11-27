@@ -21,6 +21,10 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			return this.#attributesChild.attributes;
 		}
 
+		set attributes(attributes) {
+			this.#attributesChild.attributes = attributes;
+		}
+
 		/** 以字符串表示的class属性 */
 		get className(): string {
 			return this.#attributesChild.className;
@@ -33,6 +37,10 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 		/** 以Set表示的class属性 */
 		get classList(): Set<string> {
 			return this.#attributesChild.classList;
+		}
+
+		set classList(classList) {
+			this.#attributesChild.classList = classList;
 		}
 
 		/** id属性 */

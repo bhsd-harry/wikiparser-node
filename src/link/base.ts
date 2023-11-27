@@ -15,8 +15,6 @@ export abstract class LinkBaseToken extends Token {
 	declare name: string;
 	#bracket = true;
 	#delimiter;
-	#fragment: string | undefined;
-	#encoded = false;
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];
@@ -39,6 +37,12 @@ export abstract class LinkBaseToken extends Token {
 	/** fragment */
 	get fragment(): string | undefined {
 		return this.#getTitle().fragment;
+	}
+
+	set fragment(fragment) {
+		if (fragment === undefined) {
+			this.setTarget(this.name);
+		}
 	}
 
 	/** 链接显示文字 */
@@ -81,10 +85,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
-		this.setAttribute('name', titleObj.title);
-		this.#fragment = titleObj.fragment;
-		this.#encoded = titleObj.encoded;
+		this.setAttribute('name', this.#getTitle().title);
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
@@ -92,7 +93,7 @@ export abstract class LinkBaseToken extends Token {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, ns, valid, fragment, encoded} = this.normalizeTitle(name, 0, false, true, true);
+					{title, interwiki, ns, valid} = this.#getTitle();
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
@@ -112,8 +113,6 @@ export abstract class LinkBaseToken extends Token {
 					}
 				}
 				this.setAttribute('name', title);
-				this.#fragment = fragment;
-				this.#encoded = encoded;
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
@@ -156,13 +155,14 @@ export abstract class LinkBaseToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{childNodes: [target, linkText], type: linkType} = this;
+			{childNodes: [target, linkText], type: linkType} = this,
+			{encoded, fragment} = this.#getTitle();
 		let rect: BoundingRect | undefined;
 		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
 		}
-		if (this.#encoded) {
+		if (encoded) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
@@ -171,11 +171,16 @@ export abstract class LinkBaseToken extends Token {
 		)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
-		} else if (linkType !== 'link' && this.#fragment !== undefined) {
+		} else if (linkType !== 'link' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'useless fragment'));
 		}
 		return errors;
+	}
+
+	/** 生成Title对象 */
+	#getTitle(): Title {
+		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 	}
 
 	/** @override */
@@ -184,11 +189,6 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/* NOT FOR BROWSER */
-
-	/** 生成Title对象 */
-	#getTitle(): Title {
-		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
-	}
 
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
