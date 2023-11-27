@@ -39,13 +39,21 @@ export class GalleryToken extends Token {
 				continue;
 			}
 			const [, file, alt] = matches;
-			if (this.normalizeTitle(file, 6, true, true).valid) {
+			if (this.#checkFile(file)) {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
 				super.insertAt(new HiddenToken(line, config, [], {
 				}));
 			}
 		}
+	}
+
+	/**
+	 * 检查文件名是否有效
+	 * @param file 文件名
+	 */
+	#checkFile(file: string): boolean {
+		return this.normalizeTitle(file, 6, true, true).valid;
 	}
 
 	/** @private */

@@ -29,7 +29,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return omit && this.matchesTypes(omit) ? '' : `<!--${this.firstChild.data}${this.closed ? '-->' : ''}`;
+		return omit && this.matchesTypes(omit) ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @override */

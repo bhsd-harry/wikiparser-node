@@ -23,7 +23,7 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return omit && this.matchesTypes(omit) ? '' : `__${this.firstChild.data}__`;
+		return omit && this.matchesTypes(omit) ? '' : `__${this.innerText}__`;
 	}
 
 	/** @override */
