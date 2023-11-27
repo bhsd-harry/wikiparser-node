@@ -2,6 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
+import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
 
 /** 图库图片 */
@@ -49,8 +50,8 @@ export class GalleryImageToken extends FileToken {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{interwiki, ns} = this.#getTitle();
-		if (interwiki || ns !== 6) {
+			{ns} = this.#getTitle();
+		if (ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;

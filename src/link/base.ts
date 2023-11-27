@@ -3,6 +3,7 @@ import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';
+import type {Title} from '../../lib/title';
 
 /**
  * 内链
