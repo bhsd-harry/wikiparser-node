@@ -50,7 +50,7 @@ export abstract class TagPairToken extends fixed(Token) {
 		return this.#selfClosing
 			? `<${opening}${firstChild.toString(omit)}/>`
 			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
-				this.#closed ? `</${closing}>` : ''
+				this.closed ? `</${closing}>` : ''
 			}`;
 	}
 
@@ -59,7 +59,7 @@ export abstract class TagPairToken extends fixed(Token) {
 		const [opening, closing] = this.#tags;
 		return this.#selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
-			: `<${opening}${super.text('>')}${this.#closed ? `</${closing}>` : ''}`;
+			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @private */
@@ -77,6 +77,6 @@ export abstract class TagPairToken extends fixed(Token) {
 		const [opening, closing] = this.#tags;
 		return super.print(this.#selfClosing
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
-			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.#closed ? `&lt;/${closing}&gt;` : ''});
+			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
 	}
 }
