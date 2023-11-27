@@ -3,6 +3,7 @@ import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../index';
+import type {Title} from '../../lib/title';
 
 /**
  * 内链
@@ -12,8 +13,6 @@ export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	#bracket = true;
 	#delimiter;
-	#fragment: string | undefined;
-	#encoded = false;
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
@@ -41,9 +40,6 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		const titleObj = this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
-		this.#fragment = titleObj.fragment;
-		this.#encoded = titleObj.encoded;
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
@@ -86,13 +82,14 @@ export abstract class LinkBaseToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{childNodes: [target, linkText], type: linkType} = this;
+			{childNodes: [target, linkText], type: linkType} = this,
+			{encoded, fragment} = this.#getTitle();
 		let rect: BoundingRect | undefined;
 		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
 		}
-		if (this.#encoded) {
+		if (encoded) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
@@ -101,11 +98,16 @@ export abstract class LinkBaseToken extends Token {
 		)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
-		} else if (linkType !== 'link' && this.#fragment !== undefined) {
+		} else if (linkType !== 'link' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'useless fragment'));
 		}
 		return errors;
+	}
+
+	/** 生成Title对象 */
+	#getTitle(): Title {
+		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 	}
 
 	/** @override */

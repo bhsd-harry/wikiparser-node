@@ -111,9 +111,9 @@ export class AttributesToken extends Token {
 	 * 所有指定属性名的AttributeToken
 	 * @param key 属性名
 	 */
-	getAttrTokens(key: string): AttributeToken[] {
+	getAttrTokens(key?: string): AttributeToken[] {
 		return this.childNodes.filter(
-			child => child instanceof AttributeToken && child.name === key.toLowerCase().trim(),
+			child => child instanceof AttributeToken && (!key || child.name === key.toLowerCase().trim()),
 		) as AttributeToken[];
 	}
 

@@ -2,13 +2,13 @@ import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
+import type {Title} from '../../lib/title';
 import type {LintError} from '../../index';
 
 /** 图库图片 */
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends FileToken {
 	declare type: 'gallery-image' | 'imagemap-image';
-	#invalid = false;
 
 	/**
 	 * @param type 图片类型
@@ -36,11 +36,10 @@ export class GalleryImageToken extends FileToken {
 		this.type = `${type}-image`;
 	}
 
-	/** @private */
-	override afterBuild(): void {
-		const initImagemap = this.type === 'imagemap-image',
-			titleObj = this.normalizeTitle(String(this.firstChild), initImagemap ? 0 : 6, true, !initImagemap);
-		this.#invalid = titleObj.ns !== 6; // 只用于gallery-image的首次解析
+	/** 生成Title对象 */
+	#getTitle(): Title {
+		const imagemap = this.type === 'imagemap-image';
+		return this.normalizeTitle(String(this.firstChild), imagemap ? 0 : 6, true, !imagemap);
 	}
 
 	/** @private */
@@ -50,8 +49,9 @@ export class GalleryImageToken extends FileToken {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
-		if (this.#invalid) {
+		const errors = super.lint(start),
+			{ns} = this.#getTitle();
+		if (ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;
