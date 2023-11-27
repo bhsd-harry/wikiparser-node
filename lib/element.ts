@@ -519,10 +519,11 @@ export abstract class AstElement extends AstNode {
 
 	/**
 	 * 检查是否符合解析后的选择器
-	 * @param condition 解析后的选择器
+	 * @param copy 解析后的选择器
 	 */
-	#matchesArray(condition: SelectorArray[]): boolean {
-		const step = condition.pop()!;
+	#matchesArray(copy: SelectorArray[]): boolean {
+		const condition = [...copy],
+			step = condition.pop()!;
 		if (this.#matches(step)) {
 			const {parentNode, previousElementSibling} = this;
 			switch (condition.at(-1)?.relation) {
