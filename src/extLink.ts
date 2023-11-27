@@ -1,4 +1,5 @@
 import {normalizeSpace} from '../util/string';
+import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
@@ -7,7 +8,7 @@ import {MagicLinkToken} from './magicLink';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export class ExtLinkToken extends Token {
+export class ExtLinkToken extends magicLinkParent(Token) {
 	override readonly type = 'ext-link';
 	#space;
 
@@ -15,33 +16,11 @@ export class ExtLinkToken extends Token {
 	// @ts-expect-error abstract method
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): MagicLinkToken;
-	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): MagicLinkToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER */
-
-	/** 协议 */
-	get protocol(): string | undefined {
-		return this.firstChild.protocol;
-	}
-
-	set protocol(value) {
-		this.firstChild.protocol = value;
-	}
-
-	/** 和内链保持一致 */
-	get link(): string {
-		return this.firstChild.link;
-	}
-
-	set link(url) {
-		this.firstChild.link = url;
-	}
 
 	/** 链接显示文字 */
 	get innerText(): string {
@@ -137,19 +116,6 @@ export class ExtLinkToken extends Token {
 		) {
 			this.#space = ' ';
 		}
-	}
-
-	/** 获取网址 */
-	getUrl(): URL {
-		return this.firstChild.getUrl();
-	}
-
-	/**
-	 * 设置链接目标
-	 * @param url 网址
-	 */
-	setTarget(url: string): void {
-		this.firstChild.setTarget(url);
 	}
 
 	/**
