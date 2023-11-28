@@ -148,9 +148,9 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
 export class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
 	declare name: string;
+	declare tag;
 	#equal;
 	#quotes;
-	#tag;
 
 	declare childNodes: [AtomToken, Token];
 	// @ts-expect-error abstract method
@@ -163,11 +163,6 @@ export class AttributeToken extends fixed(Token) {
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
-
-	/** 标签名 */
-	get tag(): string {
-		return this.#tag;
-	}
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {
@@ -227,7 +222,7 @@ export class AttributeToken extends fixed(Token) {
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = quotes;
-		this.#tag = tag;
+		this.tag = tag;
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
@@ -237,7 +232,7 @@ export class AttributeToken extends fixed(Token) {
 			this.#equal = this.buildFromStr(this.#equal, 'string');
 		}
 		if (this.parentNode) {
-			this.#tag = this.parentNode.name;
+			this.setAttribute('tag', this.parentNode.name);
 		}
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
@@ -263,9 +258,8 @@ export class AttributeToken extends fixed(Token) {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{balanced, firstChild, lastChild, type, name} = this,
-			value = this.getValue(),
-			tag = this.#tag;
+			{balanced, firstChild, lastChild, type, name, tag} = this,
+			value = this.getValue();
 		let rect: BoundingRect | undefined;
 		if (!balanced) {
 			const root = this.getRootNode();
