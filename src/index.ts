@@ -586,7 +586,7 @@ export class Token extends AstElement {
 			return undefined;
 		}
 		const {length} = String(this);
-		if (index > length || index < -length) {
+		if (index >= length || index < -length) {
 			return undefined;
 		}
 		index += index < 0 ? length : 0;
@@ -600,7 +600,7 @@ export class Token extends AstElement {
 				const cur: AstNodes = childNodes[i]!,
 					{length: l} = String(cur);
 				acc += l;
-				if (acc >= index) {
+				if (acc > index) {
 					self = cur;
 					acc -= l;
 					start = acc;
@@ -629,22 +629,7 @@ export class Token extends AstElement {
 	 * @param index 位置
 	 */
 	elementFromIndex(index?: number): AstNodes | undefined {
-		if (index === undefined) {
-			return undefined;
-		}
-		const {length} = String(this);
-		if (index > length || index < -length) {
-			return undefined;
-		}
-		index += index < 0 ? length : 0;
-		const {childNodes} = this;
-		let acc = 0,
-			i = 0;
-		for (; acc < index && i < childNodes.length; i++) {
-			const {length: l} = String(childNodes[i]);
-			acc += l;
-		}
-		return childNodes[i && i - 1];
+		return this.caretPositionFromIndex(index)?.offsetNode;
 	}
 
 	/**
