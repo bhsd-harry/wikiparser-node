@@ -170,7 +170,7 @@ export class TranscludeToken extends Token {
 		return false;
 	}
 
-	/** 是否是模板 */
+	/** 是否是模板或模块 */
 	isTemplate(): boolean {
 		return this.type === 'template' || this.name === 'invoke';
 	}
@@ -262,7 +262,7 @@ export class TranscludeToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{type, childNodes} = this;
+			{type, childNodes, length} = this;
 		let rect: BoundingRect | undefined;
 		if (!this.isTemplate()) {
 			return errors;
@@ -279,6 +279,11 @@ export class TranscludeToken extends Token {
 		if (!title.valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
+		}
+		if (type === 'magic-word' && length === 2) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'missing module function'));
+			return errors;
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
@@ -338,7 +343,7 @@ export class TranscludeToken extends Token {
 		return this.childNodes.filter(child => child.type === 'parameter') as ParameterToken[];
 	}
 
-	/** 获取匿名参数 */
+	/** 获取所有匿名参数 */
 	getAnonArgs(): ParameterToken[] {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
@@ -438,7 +443,7 @@ export class TranscludeToken extends Token {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Parser.run(() => {
-			const token = new TranscludeToken(this.type === 'template' ? '' : first!.text(), [], config) as this;
+			const token = new TranscludeToken(this.type === 'template' ? 'T' : first!.text(), [], config) as this;
 			if (this.#raw) {
 				token.setModifier(this.modifier);
 			} else {
@@ -667,7 +672,7 @@ export class TranscludeToken extends Token {
 	}
 
 	/**
-	 * 是否存在重名参数
+	 * 重复参数计数
 	 * @throws `Error` 仅用于模板
 	 */
 	hasDuplicatedArgs(): number {
@@ -775,7 +780,7 @@ export class TranscludeToken extends Token {
 		const count = this.hasDuplicatedArgs(),
 			str = this.text(),
 			i = str.search(/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u);
-		if (i === -1 || str.slice(i).search(/\n[^\S\n]*\|\}/u) === -1 || !count) {
+		if (i === -1 || str.slice(i).search(/\n[^\S\n]*\|\}/u) === -1) {
 			return this;
 		}
 		const stripped = String(this).slice(2, -2),
@@ -791,11 +796,10 @@ export class TranscludeToken extends Token {
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('转义表格失败！');
 		}
-		const newCount = firstChild.hasDuplicatedArgs();
-		if (newCount === count) {
-			return this;
+		const fixed = count - firstChild.hasDuplicatedArgs();
+		if (fixed) {
+			Parser.info(`共修复了 ${fixed} 个重复参数。`);
 		}
-		Parser.info(`共修复了 ${count - newCount} 个重复参数。`);
 		this.safeReplaceWith(firstChild as this);
 		return firstChild;
 	}
