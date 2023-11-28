@@ -147,9 +147,9 @@ const commonHtmlAttrs = new Set([
 export class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare name: string;
+	declare tag;
 	#equal;
 	#quotes;
-	#tag;
 
 	declare childNodes: [AtomToken, Token];
 	// @ts-expect-error abstract method
@@ -162,11 +162,6 @@ export class AttributeToken extends Token {
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
-
-	/** 标签名 */
-	get tag(): string {
-		return this.#tag;
-	}
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {
@@ -226,7 +221,7 @@ export class AttributeToken extends Token {
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = quotes;
-		this.#tag = tag;
+		this.tag = tag;
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
@@ -236,7 +231,7 @@ export class AttributeToken extends Token {
 			this.#equal = this.buildFromStr(this.#equal, 'string');
 		}
 		if (this.parentNode) {
-			this.#tag = this.parentNode.name;
+			this.setAttribute('tag', this.parentNode.name);
 		}
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
@@ -262,9 +257,8 @@ export class AttributeToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{balanced, firstChild, lastChild, type, name} = this,
-			value = this.getValue(),
-			tag = this.#tag;
+			{balanced, firstChild, lastChild, type, name, tag} = this,
+			value = this.getValue();
 		let rect: BoundingRect | undefined;
 		if (!balanced) {
 			const root = this.getRootNode();
@@ -278,9 +272,9 @@ export class AttributeToken extends Token {
 			});
 		}
 		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
-			|| (type !== 'ext-attr' && !/\{\{[^{]+\}\}/u.test(name) || tag in htmlAttrs)
-			&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
-			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			|| (type === 'ext-attr' ? tag in htmlAttrs : !/\{\{[^{]+\}\}/u.test(name))
+				&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
+				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));
