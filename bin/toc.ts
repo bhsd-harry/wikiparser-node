@@ -5,7 +5,8 @@ const {argv: [,, filename]} = process;
 if (!filename) {
 	throw new RangeError('请指定文档文件！');
 }
-const fullpath = path.join(__dirname, '..', '..', 'wiki', `${filename}.md`);
+const fullpath = path.join(__dirname, '..', '..', 'wiki', `${filename}.md`),
+	isEnglish = filename.endsWith('.en');
 if (!fs.existsSync(fullpath)) {
 	throw new RangeError(`文档 ${filename}.md 不存在！`);
 }
@@ -22,4 +23,10 @@ const toc = content.split('\n').filter(line => line.startsWith('#')).map(line =>
 	})`,
 )).join('\n');
 
-fs.writeFileSync(fullpath, `<details>\n\t<summary>目录</summary>\n\n${toc}\n</details>\n\n${content}`);
+fs.writeFileSync(fullpath, `<details>\n\t<summary>${
+	isEnglish ? 'Table of Contents' : '目录'
+}</summary>\n\n${toc}\n</details>\n\n## Other Languages\n\n- [${
+	isEnglish ? '简体中文' : 'English'
+}](./${
+	isEnglish ? filename.slice(0, -3) : `${filename}.en`
+})\n\n${content}`);

@@ -173,12 +173,6 @@ export abstract class AstNode {
 		return this.getRootNode().type === 'root';
 	}
 
-	/** 不是自身的根节点 */
-	get ownerDocument(): Token | undefined {
-		const root = this.getRootNode();
-		return root.type === 'root' && root !== this ? root as Token : undefined;
-	}
-
 	/** 后方是否还有其他节点（不含后代） */
 	get eof(): boolean | undefined {
 		if (!this.#parentNode) {
