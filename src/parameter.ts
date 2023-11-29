@@ -54,10 +54,9 @@ export class ParameterToken extends fixed(Token) {
 
 	set anon(value) {
 		if (value) {
-			this.parentNode?.anonToNamed();
-		} else {
 			throw new Error('无法将命名参数转换为匿名参数！');
 		}
+		this.parentNode?.anonToNamed();
 	}
 
 	/** getValue()的getter */
@@ -181,6 +180,9 @@ export class ParameterToken extends fixed(Token) {
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			token.afterBuild();
+			if (this.anon) {
+				token.setAttribute('name', this.name);
+			}
 			return token;
 		});
 	}
