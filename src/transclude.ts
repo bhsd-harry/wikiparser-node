@@ -132,7 +132,7 @@ export class TranscludeToken extends Token {
 		return false;
 	}
 
-	/** 是否是模板 */
+	/** 是否是模板或模块 */
 	isTemplate(): boolean {
 		return this.type === 'template' || this.name === 'invoke';
 	}
@@ -187,7 +187,7 @@ export class TranscludeToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{type, childNodes} = this;
+			{type, childNodes, length} = this;
 		let rect: BoundingRect | undefined;
 		if (!this.isTemplate()) {
 			return errors;
@@ -204,6 +204,11 @@ export class TranscludeToken extends Token {
 		if (!title.valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
+		}
+		if (type === 'magic-word' && length === 2) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'missing module function'));
+			return errors;
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
@@ -253,7 +258,7 @@ export class TranscludeToken extends Token {
 		return this.childNodes.filter(child => child.type === 'parameter') as ParameterToken[];
 	}
 
-	/** 获取匿名参数 */
+	/** 获取所有匿名参数 */
 	getAnonArgs(): ParameterToken[] {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
