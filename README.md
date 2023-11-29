@@ -2,6 +2,10 @@
 [![CodeQL](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/codeql.yml)
 [![CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml)
 
+# Other Languages
+
+- [English](./README.en.md)
+
 # 简介
 
 wikiparser-node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)，还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
@@ -46,7 +50,7 @@ npm i wikilint
 <script src="//unpkg.com/wikiparser-node@browser/bundle/bundle.min.js"></script>
 ```
 
-更多浏览器端可用的插件请查阅对应文档。
+更多浏览器端可用的插件请查阅对应[文档](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)。
 
 # 使用方法
 
