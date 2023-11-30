@@ -54,10 +54,10 @@ export class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
-		const token = super.insertAt(
-			Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
-			})),
-		);
+		const token = Parser.run(() => super.insertAt(
+			new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			}),
+		));
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 }
