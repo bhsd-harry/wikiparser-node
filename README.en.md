@@ -52,6 +52,6 @@ or
 
 For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser.en).
 
-## Usage
+# Usage
 
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home.en).
