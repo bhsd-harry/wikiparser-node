@@ -45,7 +45,7 @@ export class TableToken extends TrBaseToken {
 
 	set closed(closed) {
 		if (closed && !this.closed) {
-			this.close(this.closest('parameter') ? '\n{{!)}}' : '\n|}');
+			this.close(this.closest('parameter') ? '\n{{!}}}' : '\n|}');
 		}
 	}
 
@@ -83,11 +83,11 @@ export class TableToken extends TrBaseToken {
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
 		if (!(this.lastChild instanceof SyntaxToken)) {
-			const token = super.insertAt(
-				Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			const token = Parser.run(() => super.insertAt(
+				new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
-				})),
-			);
+				}),
+			));
 			if (!halfParsed) {
 				token.afterBuild();
 			}

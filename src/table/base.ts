@@ -11,10 +11,9 @@ import {AttributesToken} from '../attributes';
  * @param syntax 表格语法节点
  */
 const escapeTable = (syntax: SyntaxToken): void => {
-	const templates: Record<string, string> = {'{|': '(!', '|}': '!)', '||': '!!', '|': '!'},
-		wikitext = syntax.childNodes.map(
+	const wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
-				? child.data.replace(/\{\||\|\}|\|{1,2}/gu, p => `{{${templates[p]!}}}`)
+				? child.data.replaceAll('|', '{{!}}')
 				: String(child),
 		).join(''),
 		{childNodes} = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
@@ -90,11 +89,7 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 		}
 	}
 
-	/**
-	 * 设置表格语法
-	 * @param syntax 表格语法
-	 * @param esc 是否需要转义
-	 */
+	/** @private */
 	setSyntax(syntax: string, esc = false): void {
 		const {firstChild} = this;
 		firstChild.replaceChildren(syntax);
