@@ -51,10 +51,10 @@ export class TableToken extends TrBaseToken {
 			accum = this.getAttribute('accum'),
 			inner = [syntax];
 		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-		const token = super.insertAt(
-			Parser.run(() => new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
-			})),
-		);
+		const token = Parser.run(() => super.insertAt(
+			new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			}),
+		));
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 }
