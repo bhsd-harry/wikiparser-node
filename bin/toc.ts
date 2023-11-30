@@ -25,7 +25,7 @@ const toc = content.split('\n').filter(line => line.startsWith('#')).map(line =>
 
 fs.writeFileSync(fullpath, `<details>\n\t<summary>${
 	isEnglish ? 'Table of Contents' : '目录'
-}</summary>\n\n${toc}\n</details>\n\n## Other Languages\n\n- [${
+}</summary>\n\n${toc}\n</details>\n\n# Other Languages\n\n- [${
 	isEnglish ? '简体中文' : 'English'
 }](./${
 	isEnglish ? filename.slice(0, -3) : `${filename}.en`
