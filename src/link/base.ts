@@ -67,15 +67,12 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 2;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */
 	protected override getGaps(i: number): number {
-		if (i >= this.length - 1) {
-			return 0;
-		}
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 

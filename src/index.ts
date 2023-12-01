@@ -39,7 +39,6 @@
 
 import {text} from '../util/string';
 import * as Parser from '../index';
-const {MAX_STAGE} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {Title} from '../lib/title';
@@ -47,6 +46,8 @@ import type {
 	AstNodes,
 } from '../internal';
 import type {TokenTypes} from '../lib/node';
+
+const {MAX_STAGE} = Parser;
 
 /**
  * 所有节点的基类

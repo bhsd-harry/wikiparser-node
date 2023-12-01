@@ -129,6 +129,9 @@ export abstract class AstNode {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		if (key === 'padding') {
+			return 0 as TokenAttributeGetter<T>;
+		}
 		return key in this
 			// @ts-expect-error noImplicitAny
 			? String(this[key as string]) as TokenAttributeGetter<T>
@@ -174,11 +177,6 @@ export abstract class AstNode {
 	}
 
 	/** @private */
-	protected getPadding(): number {
-		return 0;
-	}
-
-	/** @private */
 	protected getGaps(i: number): number {
 		return 0;
 	}
@@ -197,7 +195,7 @@ export abstract class AstNode {
 		 */
 		const getIndex = (end: number, parent: AstNode): number =>
 			childNodes.slice(0, end).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
-			+ parent.getPadding();
+			+ parent.getAttribute('padding');
 		if (j === undefined) {
 			const {parentNode} = this;
 			if (parentNode) {

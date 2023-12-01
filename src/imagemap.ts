@@ -116,8 +116,8 @@ export class ImagemapToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i < this.length - 1 ? 1 : 0;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** @override */

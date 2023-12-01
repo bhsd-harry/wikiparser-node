@@ -127,8 +127,10 @@ export class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return Math.max(0, this.#syntax.indexOf('$1'));
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding'
+			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>
+			: super.getAttribute(key);
 	}
 
 	/** @override */

@@ -49,8 +49,8 @@ export class ConverterToken extends flagsParent(Token) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 2;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

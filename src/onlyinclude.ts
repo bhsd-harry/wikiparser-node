@@ -13,8 +13,8 @@ export class OnlyincludeToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 13;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 13 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

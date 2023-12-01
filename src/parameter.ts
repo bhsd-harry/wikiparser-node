@@ -77,8 +77,8 @@ export class ParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return this.anon || i === 1 ? 0 : 1;
+	protected override getGaps(): number {
+		return this.anon ? 0 : 1;
 	}
 
 	/** @override */

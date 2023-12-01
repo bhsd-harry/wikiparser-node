@@ -175,13 +175,18 @@ export class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.modifier.length + 2;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		switch (key) {
+			case 'padding':
+				return this.modifier.length + 2 as TokenAttributeGetter<T>;
+			default:
+				return super.getAttribute(key);
+		}
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i < this.length - 1 ? 1 : 0;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** @override */
