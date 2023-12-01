@@ -188,11 +188,6 @@ export class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override isPlain(): boolean {
-		return this.name === 'caption';
-	}
-
-	/** @private */
 	override toString(omit?: Set<string>): string {
 		return this.#syntax && !(omit && this.matchesTypes(omit))
 			? this.#syntax.replace('$1', super.toString(omit))
@@ -206,7 +201,9 @@ export class ImageParameterToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'syntax') {
+		if (key === 'plain') {
+			return (this.name === 'caption') as TokenAttributeGetter<T>;
+		} else if (key === 'syntax') {
 			return this.#syntax as TokenAttributeGetter<T>;
 		}
 		return key === 'padding'

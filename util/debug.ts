@@ -1,7 +1,6 @@
 import type {Token} from '../internal';
 
 declare interface Shadow {
-	/** @private */
 	running: boolean;
 
 	/** @private */

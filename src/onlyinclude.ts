@@ -34,12 +34,10 @@ export class OnlyincludeToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? 13 as TokenAttributeGetter<T> : super.getAttribute(key);
-	}
-
-	/** @private */
-	protected override isPlain(): boolean {
-		return true;
+		if (key === 'padding') {
+			return 13 as TokenAttributeGetter<T>;
+		}
+		return (key === 'plain') as TokenAttributeGetter<T> || super.getAttribute(key);
 	}
 
 	/** @override */

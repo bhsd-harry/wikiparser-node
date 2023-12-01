@@ -9,7 +9,7 @@ declare global {
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'childNodes' ? AstNodes[] :
-		T extends 'bracket' | 'include' ? boolean :
+		T extends 'bracket' | 'include' | 'plain' ? boolean :
 		T extends 'pattern' ? RegExp :
 		T extends 'flags' ? string[] :
 		T extends 'tags' ? [string, string] :
