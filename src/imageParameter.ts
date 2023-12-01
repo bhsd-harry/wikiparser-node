@@ -205,10 +205,12 @@ export class ImageParameterToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'padding') {
-			return Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>;
+		if (key === 'syntax') {
+			return this.#syntax as TokenAttributeGetter<T>;
 		}
-		return key === 'syntax' ? this.#syntax as TokenAttributeGetter<T> : super.getAttribute(key);
+		return key === 'padding'
+			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>
+			: super.getAttribute(key);
 	}
 
 	/** @override */

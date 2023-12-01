@@ -97,10 +97,10 @@ export abstract class TagPairToken extends fixed(Token) {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'padding') {
-			return this.#tags[0].length + 1 as TokenAttributeGetter<T>;
+		if (key === 'tags') {
+			return [...this.#tags] as TokenAttributeGetter<T>;
 		}
-		return key === 'tags' ? [...this.#tags] as TokenAttributeGetter<T> : super.getAttribute(key);
+		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

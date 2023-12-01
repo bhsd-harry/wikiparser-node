@@ -214,10 +214,10 @@ export abstract class AstNode {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'optional') {
-			return new Set(this.#optional) as TokenAttributeGetter<T>;
-		} else if (key === 'padding') {
+		if (key === 'padding') {
 			return 0 as TokenAttributeGetter<T>;
+		} else if (key === 'optional') {
+			return new Set(this.#optional) as TokenAttributeGetter<T>;
 		}
 		return key in this
 			// @ts-expect-error noImplicitAny
