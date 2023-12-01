@@ -1,4 +1,5 @@
 import {Shadow} from './util/debug';
+import {MAX_STAGE, minConfig} from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -29,11 +30,7 @@ export interface LintError {
 
 declare interface Parser {
 	config?: Config;
-	minConfig: Config;
 	i18n?: Record<string, string>;
-
-	/** @private */
-	readonly MAX_STAGE: number;
 
 	/** @private */
 	getConfig(): Config;
@@ -70,13 +67,9 @@ declare interface Parser {
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
-	minConfig: require('./config/minimum'),
-
-	MAX_STAGE: 11,
-
 	/** @implements */
 	getConfig() {
-		return {...this.minConfig, ...this.config, excludes: []};
+		return {...minConfig, ...this.config, excludes: []};
 	},
 
 	/** @implements */
@@ -105,7 +98,7 @@ const Parser: Parser = {
 	},
 
 	/** @implements */
-	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		let token: Token;
 		Shadow.run(() => {
@@ -118,7 +111,7 @@ const Parser: Parser = {
 	},
 };
 
-const def: PropertyDescriptorMap = {MAX_STAGE: {writable: false}, minConfig: {writable: false}},
+const def: PropertyDescriptorMap = {},
 	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {

@@ -38,6 +38,7 @@
 // v: ConverterToken
 
 import {text} from '../util/string';
+import {MAX_STAGE} from '../util/constants';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
@@ -46,8 +47,6 @@ import type {
 	AstNodes,
 } from '../internal';
 import type {TokenTypes} from '../lib/node';
-
-const {MAX_STAGE} = Parser;
 
 /**
  * 所有节点的基类

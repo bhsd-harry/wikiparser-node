@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {MAX_STAGE} from '../../util/constants';
 import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
@@ -26,7 +27,7 @@ export class GalleryImageToken extends FileToken {
 		if (text !== undefined) {
 			token = new Token(text, config, accum);
 			token.type = 'plain';
-			for (let n = 1; n < Parser.MAX_STAGE; n++) {
+			for (let n = 1; n < MAX_STAGE; n++) {
 				token.parseOnce();
 			}
 			accum.splice(accum.indexOf(token), 1);
