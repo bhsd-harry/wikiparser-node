@@ -1,5 +1,4 @@
 import {noWrap, print, text} from '../util/string';
-import {Shadow} from '../util/debug';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';

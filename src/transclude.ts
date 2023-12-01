@@ -1,6 +1,5 @@
 import {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
-import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
