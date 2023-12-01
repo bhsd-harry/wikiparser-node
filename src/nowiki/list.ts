@@ -10,6 +10,11 @@ export class ListToken extends sol(ListBaseToken) {
 
 	/* NOT FOR BROWSER */
 
+	/** 是否包含`:` */
+	get dd(): boolean {
+		return this.innerText.includes(':');
+	}
+
 	/** 获取列表行的范围 */
 	getRange(): AstRange {
 		const range = this.createRange();
