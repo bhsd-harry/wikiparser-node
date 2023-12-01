@@ -147,7 +147,7 @@ export abstract class AstElement extends AstNode {
 			return [];
 		}
 		const errors: LintError[] = [];
-		for (let i = 0, cur = start + this.getPadding(); i < this.length; i++) {
+		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			errors.push(...child.lint(cur));
 			cur += String(child).length + this.getGaps(i);

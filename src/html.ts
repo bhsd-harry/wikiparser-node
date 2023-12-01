@@ -64,8 +64,10 @@ export class HtmlToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.#tag.length + (this.#closing ? 2 : 1);
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding'
+			? this.#tag.length + (this.#closing ? 2 : 1) as TokenAttributeGetter<T>
+			: super.getAttribute(key);
 	}
 
 	/** @override */

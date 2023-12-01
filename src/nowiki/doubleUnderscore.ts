@@ -17,8 +17,8 @@ export class DoubleUnderscoreToken extends hidden(NowikiBaseToken) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 2;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

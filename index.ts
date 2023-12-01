@@ -1,3 +1,4 @@
+import {Shadow} from './util/debug';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -65,9 +66,6 @@ declare interface Parser {
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
-
-	/** @private */
-	run<T>(callback: () => T): T;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
@@ -101,7 +99,7 @@ const Parser: Parser = {
 			return new Title(title, defaultNs, config, decode, selfLink);
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
-		const token = this.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
+		const token = Shadow.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
 		return titleObj;
 	},
@@ -110,7 +108,7 @@ const Parser: Parser = {
 	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		let token: Token;
-		this.run(() => {
+		Shadow.run(() => {
 			token = new Token(wikitext.replace(/[\0\x7F]/gu, ''), config);
 			try {
 				token.parse(maxStage, include);
@@ -118,21 +116,12 @@ const Parser: Parser = {
 		});
 		return token!;
 	},
-
-	/** @implements */
-	run(callback) {
-		const result = callback();
-		return result;
-	},
 };
 
-const def: PropertyDescriptorMap = {},
-	immutable = new Set(['MAX_STAGE', 'minConfig']),
+const def: PropertyDescriptorMap = {MAX_STAGE: {writable: false}, minConfig: {writable: false}},
 	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
 for (const key in Parser) {
-	if (immutable.has(key)) {
-		def[key] = {enumerable: false, writable: false};
-	} else if (!enumerable.has(key)) {
+	if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};
 	}
 }
