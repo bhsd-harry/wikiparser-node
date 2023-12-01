@@ -15,6 +15,21 @@ export class ListToken extends sol(ListBaseToken) {
 		return this.innerText.includes(':');
 	}
 
+	/** 是否包含`;` */
+	get dt(): boolean {
+		return this.innerText.includes(';');
+	}
+
+	/** 是否包含`*` */
+	get ul(): boolean {
+		return this.innerText.includes('*');
+	}
+
+	/** 是否包含`#` */
+	get ol(): boolean {
+		return this.innerText.includes('#');
+	}
+
 	/** 获取列表行的范围 */
 	getRange(): AstRange {
 		const range = this.createRange();
