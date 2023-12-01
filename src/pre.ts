@@ -51,7 +51,7 @@ export class PreToken extends Token {
 	}
 
 	/** @private */
-	protected override isPlain(): boolean {
-		return true;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return (key === 'plain') as TokenAttributeGetter<T> || super.getAttribute(key);
 	}
 }
