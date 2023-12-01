@@ -1,5 +1,6 @@
 import {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -123,7 +124,7 @@ export class TranscludeToken extends Token {
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
 		if (this.#raw && isRaw || !this.#raw && (isSubst || modifier === '')
-			|| (Parser.running || this.length > 1) && (isRaw || isSubst || modifier === '')
+			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -175,13 +176,18 @@ export class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.modifier.length + 2;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		switch (key) {
+			case 'padding':
+				return this.modifier.length + 2 as TokenAttributeGetter<T>;
+			default:
+				return super.getAttribute(key);
+		}
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i < this.length - 1 ? 1 : 0;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** @override */

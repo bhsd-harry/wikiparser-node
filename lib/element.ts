@@ -1,4 +1,5 @@
 import {noWrap, print, text} from '../util/string';
+import {Shadow} from '../util/debug';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';
@@ -74,7 +75,7 @@ export abstract class AstElement extends AstNode {
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		const childNodes = [...this.childNodes],
-			j = Parser.running ? -1 : childNodes.indexOf(node);
+			j = Shadow.running ? -1 : childNodes.indexOf(node);
 		node.setAttribute('parentNode', this as AstElement as Token);
 		childNodes.splice(i, 0, node);
 		return node;
@@ -152,7 +153,7 @@ export abstract class AstElement extends AstNode {
 			return [];
 		}
 		const errors: LintError[] = [];
-		for (let i = 0, cur = start + this.getPadding(); i < this.length; i++) {
+		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			errors.push(...child.lint(cur));
 			cur += String(child).length + this.getGaps(i);

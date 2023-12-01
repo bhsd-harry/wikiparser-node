@@ -57,13 +57,13 @@ export class ArgToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 3;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 3 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i < this.length - 1 ? 1 : 0;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** @override */

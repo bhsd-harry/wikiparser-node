@@ -60,13 +60,15 @@ export class HeadingToken extends sol(fixed(Token)) {
 	}
 
 	/** @private */
-	override getPadding(): number {
-		return super.getPadding() + this.level;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding'
+			? super.getAttribute('padding') + this.level as TokenAttributeGetter<T>
+			: super.getAttribute(key);
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i === 0 ? this.level : 0;
+	protected override getGaps(): number {
+		return this.level;
 	}
 
 	/** @override */
