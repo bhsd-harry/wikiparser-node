@@ -44,10 +44,4 @@ export abstract class TrBaseToken extends TableBaseToken {
 		});
 		return errors;
 	}
-
-	/** @override */
-	override text(): string {
-		const str = super.text();
-		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
-	}
 }
