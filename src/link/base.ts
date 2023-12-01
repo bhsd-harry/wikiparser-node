@@ -30,7 +30,7 @@ export abstract class LinkBaseToken extends Token {
 		return this.#getTitle();
 	}
 
-	set link(link) {
+	set link(link: string) {
 		this.setTarget(link);
 	}
 
@@ -43,18 +43,6 @@ export abstract class LinkBaseToken extends Token {
 		if (fragment === undefined) {
 			this.setTarget(this.name);
 		}
-	}
-
-	/** 链接显示文字 */
-	get innerText(): string | undefined {
-		if (this.type === 'link') {
-			return this.length > 1 ? this.lastChild.text() : this.firstChild.text().replace(/^\s*:/u, '');
-		}
-		return undefined;
-	}
-
-	set innerText(text) {
-		this.setLinkText(text);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -206,13 +194,9 @@ export abstract class LinkBaseToken extends Token {
 	 * 设置链接目标
 	 * @param link 链接目标
 	 */
-	setTarget(link: string | Title): void {
-		let strLink = String(link);
-		if (this.type === 'link' && !/^\s*[:#]/u.test(strLink)) {
-			strLink = `:${strLink}`;
-		}
+	setTarget(link: string): void {
 		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(strLink, this.getAttribute('include'), 2, config),
+			{childNodes} = Parser.parse(String(link), this.getAttribute('include'), 2, config),
 			token = Parser.run(() => new AtomToken(undefined, 'link-target', config, [], {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			}));

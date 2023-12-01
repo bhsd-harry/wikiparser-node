@@ -77,9 +77,9 @@ export class ImageParameterToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	set link(value) {
+	set link(value: string) {
 		if (this.name === 'link') {
-			this.setValue(String(value));
+			this.setValue(value);
 		}
 	}
 

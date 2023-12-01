@@ -21,7 +21,7 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		return this.type === 'imagemap-image' ? '' : super.link;
 	}
 
-	override set link(value) {
+	override set link(value: string) {
 		if (this.type !== 'imagemap-image') {
 			super.link = value;
 		}

@@ -64,8 +64,8 @@ export class FileToken extends LinkBaseToken {
 		return this.getArg('link')?.link ?? super.link;
 	}
 
-	override set link(value) {
-		this.setValue('link', String(value));
+	override set link(value: string) {
+		this.setValue('link', value);
 	}
 
 	/** 图片大小 */

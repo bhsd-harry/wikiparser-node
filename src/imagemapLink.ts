@@ -38,7 +38,7 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 		return this.childNodes[1].link;
 	}
 
-	set link(link) {
+	set link(link: string) {
 		this.childNodes[1].link = link;
 	}
 
