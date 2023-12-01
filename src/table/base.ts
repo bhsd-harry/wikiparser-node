@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import {attributesParent} from '../../mixin/attributesParent';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -64,7 +65,7 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	/** @override */
 	override cloneNode(): this {
 		const [syntax, attr, ...cloned] = this.cloneChildNodes() as [SyntaxToken, AttributesToken, ...Token[]];
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const {constructor} = this as this & {constructor: new (...args: any[]) => unknown},
 				token = new constructor(undefined, undefined, this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(syntax);
@@ -99,4 +100,4 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	}
 }
 
-Parser.classes['TableBaseToken'] = __filename;
+Shadow.classes['TableBaseToken'] = __filename;

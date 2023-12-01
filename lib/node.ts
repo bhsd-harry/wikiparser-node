@@ -1,6 +1,6 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;
@@ -547,4 +547,4 @@ export abstract class AstNode {
 	}
 }
 
-Parser.classes['AstNode'] = __filename;
+Shadow.classes['AstNode'] = __filename;

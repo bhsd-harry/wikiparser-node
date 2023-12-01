@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import type {MagicLinkToken} from '../src/magicLink';
 
 /**
@@ -45,4 +45,4 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
 	return MagicLinkParent;
 };
 
-Parser.mixins['magicLinkParent'] = __filename;
+Shadow.mixins['magicLinkParent'] = __filename;

@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
 
@@ -377,4 +377,4 @@ export class AstRange {
 	}
 }
 
-Parser.classes['AstRange'] = __filename;
+Shadow.classes['AstRange'] = __filename;

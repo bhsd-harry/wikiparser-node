@@ -39,10 +39,10 @@
 
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
+import {Shadow} from '../util/debug';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import * as Parser from '../index';
-const {MAX_STAGE, aliases} = Parser;
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {Range} from '../lib/ranges';
@@ -61,6 +61,9 @@ import type {
 	SyntaxToken,
 } from '../internal';
 import type {TokenTypes, CaretPosition} from '../lib/node';
+
+const {MAX_STAGE} = Parser,
+	{aliases} = Shadow;
 
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
@@ -421,7 +424,7 @@ export class Token extends AstElement {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
-		if (!Parser.running && this.#acceptable) {
+		if (!Shadow.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
 				),
@@ -476,7 +479,7 @@ export class Token extends AstElement {
 	 */
 	override removeAt(i: number): AstNodes {
 		i += i < 0 ? this.length : 0;
-		if (!Parser.running) {
+		if (!Shadow.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
 			if (protectedIndices.includes(i)) {
 				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
@@ -531,7 +534,7 @@ export class Token extends AstElement {
 	createComment(data = ''): CommentToken {
 		const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
 		const config = this.getAttribute('config');
-		return Parser.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
+		return Shadow.run(() => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
 	}
 
 	/**
@@ -547,16 +550,16 @@ export class Token extends AstElement {
 			include = this.getAttribute('include');
 		if (tagName === (include ? 'noinclude' : 'includeonly')) {
 			const {IncludeToken}: typeof import('./tagPair/include') = require('./tagPair/include');
-			return Parser.run(
+			return Shadow.run(
 				() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
 			);
 		} else if (config.ext.includes(tagName)) {
 			const {ExtToken}: typeof import('./tagPair/ext') = require('./tagPair/ext');
-			return Parser.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config));
+			return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config));
 		} else if (config.html.flat().includes(tagName)) {
 			const {HtmlToken}: typeof import('./html') = require('./html'),
 				{AttributesToken}: typeof import('./attributes') = require('./attributes');
-			return Parser.run(() => {
+			return Shadow.run(() => {
 				const attr = new AttributesToken(undefined, 'html-attrs', tagName, config);
 				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});
@@ -681,7 +684,7 @@ export class Token extends AstElement {
 			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
 		}
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new Token(undefined, this.#config, [], this.#acceptable) as this;
 			token.type = this.type;
 			token.setAttribute('name', this.name);
@@ -792,7 +795,7 @@ export class Token extends AstElement {
 		const textNodes = [...this.childNodes.entries()]
 			.filter(([, {type}]) => type === 'text') as [number, AstText][],
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
-			token = Parser.run(() => {
+			token = Shadow.run(() => {
 				const node = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
 				node.setAttribute('stage', 6);
 				return node.parse(7);
@@ -881,4 +884,4 @@ export class Token extends AstElement {
 	}
 }
 
-Parser.classes['Token'] = __filename;
+Shadow.classes['Token'] = __filename;

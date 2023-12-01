@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {QuoteToken} from '../src/nowiki/quote';
 import type {Token} from '../src/index';
@@ -64,4 +65,4 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 	return arr.join('');
 };
 
-Parser.parsers['parseQuotes'] = __filename;
+Shadow.parsers['parseQuotes'] = __filename;

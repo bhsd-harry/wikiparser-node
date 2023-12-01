@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -134,7 +135,7 @@ export class ConverterFlagsToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ConverterFlagsToken([], this.getAttribute('config')) as this;
 			token.append(...cloned);
 			token.afterBuild();
@@ -248,7 +249,7 @@ export class ConverterFlagsToken extends Token {
 	 * @param flag 转换类型标记
 	 */
 	#newFlag(flag: string): void {
-		this.insertAt(Parser.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config'))));
+		this.insertAt(Shadow.run(() => new AtomToken(flag, 'converter-flag', this.getAttribute('config'))));
 	}
 
 	/**
@@ -274,4 +275,4 @@ export class ConverterFlagsToken extends Token {
 	}
 }
 
-Parser.classes['ConverterFlagsToken'] = __filename;
+Shadow.classes['ConverterFlagsToken'] = __filename;

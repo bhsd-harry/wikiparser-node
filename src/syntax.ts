@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -30,7 +31,7 @@ export class SyntaxToken extends syntax(Token) {
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable'),
 			pattern = this.getAttribute('pattern');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new SyntaxToken(undefined, pattern, this.type, config, [], acceptable) as this;
 			token.append(...cloned);
 			token.afterBuild();
@@ -39,4 +40,4 @@ export class SyntaxToken extends syntax(Token) {
 	}
 }
 
-Parser.classes['SyntaxToken'] = __filename;
+Shadow.classes['SyntaxToken'] = __filename;

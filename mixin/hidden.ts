@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 
 /**
  * 解析后不可见的类
@@ -18,4 +18,4 @@ export const hidden = <T extends AstConstructor>(constructor: T) => {
 	return AnyHiddenToken;
 };
 
-Parser.mixins['hidden'] = __filename;
+Shadow.mixins['hidden'] = __filename;

@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
@@ -55,4 +56,4 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 	return text;
 };
 
-Parser.parsers['parseList'] = __filename;
+Shadow.parsers['parseList'] = __filename;

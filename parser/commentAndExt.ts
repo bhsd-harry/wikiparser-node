@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
@@ -82,4 +83,4 @@ export const parseCommentAndExt = (
 	);
 };
 
-Parser.parsers['parseCommentAndExt'] = __filename;
+Shadow.parsers['parseCommentAndExt'] = __filename;

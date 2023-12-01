@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {ConverterToken} from '../src/converter';
 import type {Token} from '../src/index';
@@ -43,4 +44,4 @@ export const parseConverter = (text: string, config = Parser.getConfig(), accum:
 	return text;
 };
 
-Parser.parsers['parseConverter'] = __filename;
+Shadow.parsers['parseConverter'] = __filename;

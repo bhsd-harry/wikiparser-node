@@ -1,5 +1,6 @@
 import {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -161,7 +162,7 @@ export class TranscludeToken extends Token {
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
 		if (this.#raw && isRaw || !this.#raw && (isSubst || modifier === '')
-			|| (Parser.running || this.length > 1) && (isRaw || isSubst || modifier === '')
+			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -451,7 +452,7 @@ export class TranscludeToken extends Token {
 	override cloneNode(): this {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new TranscludeToken(this.type === 'template' ? 'T' : first!.text(), [], config) as this;
 			if (this.#raw) {
 				token.setModifier(this.modifier);
@@ -517,7 +518,7 @@ export class TranscludeToken extends Token {
 	 * @param exact 是否匹配匿名性
 	 */
 	removeArg(key: string | number, exact = false): void {
-		Parser.run(() => {
+		Shadow.run(() => {
 			for (const token of this.getArgs(key, exact, false)) {
 				this.removeChild(token);
 			}
@@ -569,7 +570,7 @@ export class TranscludeToken extends Token {
 	newAnonArg(val: string): ParameterToken {
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(val, this.getAttribute('include'), undefined, config),
-			token = Parser.run(() => new ParameterToken(undefined, undefined, config));
+			token = Shadow.run(() => new ParameterToken(undefined, undefined, config));
 		token.lastChild.append(...childNodes);
 		token.afterBuild();
 		return this.insertAt(token);
@@ -594,7 +595,7 @@ export class TranscludeToken extends Token {
 			config = this.getAttribute('config'),
 			k = Parser.parse(key, include, undefined, config),
 			v = Parser.parse(value, include, undefined, config),
-			token = Parser.run(() => new ParameterToken(undefined, undefined, config));
+			token = Shadow.run(() => new ParameterToken(undefined, undefined, config));
 		token.firstChild.append(...k.childNodes);
 		token.lastChild.append(...v.childNodes);
 		token.afterBuild();
@@ -804,4 +805,4 @@ export class TranscludeToken extends Token {
 	}
 }
 
-Parser.classes['TranscludeToken'] = __filename;
+Shadow.classes['TranscludeToken'] = __filename;

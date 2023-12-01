@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -116,4 +117,4 @@ export abstract class TagPairToken extends fixed(Token) {
 	}
 }
 
-Parser.classes['TagPairToken'] = __filename;
+Shadow.classes['TagPairToken'] = __filename;

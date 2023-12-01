@@ -1,4 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
+import {Shadow} from '../util/debug';
 import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -204,7 +205,7 @@ export class ImagemapToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ImagemapToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
@@ -212,4 +213,4 @@ export class ImagemapToken extends Token {
 	}
 }
 
-Parser.classes['ImagemapToken'] = __filename;
+Shadow.classes['ImagemapToken'] = __filename;

@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../../internal';
@@ -78,4 +79,4 @@ export class TrToken extends TrBaseToken {
 	}
 }
 
-Parser.classes['TrToken'] = __filename;
+Shadow.classes['TrToken'] = __filename;

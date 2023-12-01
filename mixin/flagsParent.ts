@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import type {ConverterFlagsToken} from '../src/converterFlags';
 
 /**
@@ -78,4 +78,4 @@ export const flagsParent = <T extends AstConstructor>(constructor: T) => {
 	return FlagsParent;
 };
 
-Parser.mixins['flagsParent'] = __filename;
+Shadow.mixins['flagsParent'] = __filename;

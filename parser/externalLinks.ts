@@ -1,4 +1,5 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {ExtLinkToken} from '../src/extLink';
 import type {Token} from '../src/index';
@@ -29,4 +30,4 @@ export const parseExternalLinks = (wikitext: string, config = Parser.getConfig()
 	});
 };
 
-Parser.parsers['parseExternalLinks'] = __filename;
+Shadow.parsers['parseExternalLinks'] = __filename;

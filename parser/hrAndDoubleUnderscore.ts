@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
@@ -48,4 +49,4 @@ export const parseHrAndDoubleUnderscore = (
 	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
 };
 
-Parser.parsers['parseHrAndDoubleUnderscore'] = __filename;
+Shadow.parsers['parseHrAndDoubleUnderscore'] = __filename;

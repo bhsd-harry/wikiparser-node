@@ -1,5 +1,5 @@
 import * as assert from 'assert/strict';
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import {Token} from '../src';
 import {TrToken} from '../src/table/tr';
 import {TableToken} from '../src/table';
@@ -75,7 +75,7 @@ const fill = (y: number, rowToken: TrBaseToken, layout: Layout, maxCol: number, 
 	const rowLayout = layout[y]!,
 		lastIndex = rowToken.childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption'),
 		pos = lastIndex + 1 || undefined;
-	Parser.run(() => {
+	Shadow.run(() => {
 		for (let i = 0; i < maxCol; i++) {
 			if (!rowLayout[i]) {
 				rowToken.insertAt(token.cloneNode(), pos);
@@ -271,14 +271,14 @@ Object.assign(TableToken.prototype, {
 
 	/** @implements */
 	prependTableRow(this: TableToken): TrToken {
-		const row = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
+		const row = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
 			start = plain?.constructor === Token ? 3 : 2,
 			tdChildren = childNodes.slice(start) as [...TdToken[], SyntaxToken] | TdToken[],
 			index = tdChildren.findIndex(({type}) => type !== 'td');
 		this.insertAt(row, index === -1 ? -1 : index + start);
-		Parser.run(() => {
+		Shadow.run(() => {
 			for (const cell of tdChildren.slice(0, index === -1 ? undefined : index) as TdToken[]) {
 				if (cell.subtype !== 'caption') {
 					row.insertAt(cell);
@@ -298,7 +298,7 @@ Object.assign(TableToken.prototype, {
 		innerAttr: TdAttrs = {},
 	): TrToken {
 		let reference = this.getNthRow(y, false, true);
-		const token = Parser.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
+		const token = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		for (const [k, v] of Object.entries(attr)) {
 			token.setAttr(k, v);
 		}
@@ -312,7 +312,7 @@ Object.assign(TableToken.prototype, {
 				layout = this.getLayout({y}),
 				maxCol = Math.max(...layout.map(({length}) => length)),
 				rowLayout = layout[y]!;
-			Parser.run(() => {
+			Shadow.run(() => {
 				for (let i = 0; i < maxCol; i++) {
 					const coords = rowLayout[i];
 					if (!coords) {
@@ -644,3 +644,5 @@ Object.assign(TableToken.prototype, {
 		this.moveCol(x, after, true);
 	},
 });
+
+Shadow.classes['ExtendTableToken'] = __filename;

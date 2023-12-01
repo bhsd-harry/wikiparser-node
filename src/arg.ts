@@ -1,5 +1,6 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -125,7 +126,7 @@ export class ArgToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const [name, ...cloned] = this.cloneChildNodes() as [AtomToken, ...Token[]];
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ArgToken([''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(name);
 			token.append(...cloned);
@@ -152,7 +153,7 @@ export class ArgToken extends Token {
 
 	/** 移除无效部分 */
 	removeRedundant(): void {
-		Parser.run(() => {
+		Shadow.run(() => {
 			for (let i = this.length - 1; i > 1; i--) {
 				super.removeAt(i);
 			}
@@ -220,4 +221,4 @@ export class ArgToken extends Token {
 	}
 }
 
-Parser.classes['ArgToken'] = __filename;
+Shadow.classes['ArgToken'] = __filename;

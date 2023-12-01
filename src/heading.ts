@@ -1,4 +1,5 @@
 import {generateForSelf} from '../util/lint';
+import {Shadow} from '../util/debug';
 import {fixed} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import * as Parser from '../index';
@@ -133,7 +134,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 	/** @override */
 	override cloneNode(): this {
 		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new HeadingToken(this.level, [], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(title);
 			token.lastChild.safeReplaceWith(trail);
@@ -155,4 +156,4 @@ export class HeadingToken extends sol(fixed(Token)) {
 	}
 }
 
-Parser.classes['HeadingToken'] = __filename;
+Shadow.classes['HeadingToken'] = __filename;

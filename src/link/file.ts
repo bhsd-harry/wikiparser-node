@@ -1,5 +1,6 @@
 import {escapeRegExp} from '../../util/string';
 import {generateForChild} from '../../util/lint';
+import {Shadow} from '../../util/debug';
 import * as Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
@@ -283,7 +284,7 @@ export class FileToken extends LinkBaseToken {
 		if (value === true && free) {
 			this.typeError('setValue', 'Boolean');
 		}
-		const parameter = Parser.run(() => new ImageParameterToken(syntax.replace('$1', ''), config));
+		const parameter = Shadow.run(() => new ImageParameterToken(syntax.replace('$1', ''), config));
 		if (free) {
 			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);
 			parameter.replaceChildren(...childNodes);
@@ -301,4 +302,4 @@ export class FileToken extends LinkBaseToken {
 	}
 }
 
-Parser.classes['FileToken'] = __filename;
+Shadow.classes['FileToken'] = __filename;

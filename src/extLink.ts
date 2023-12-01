@@ -1,4 +1,5 @@
 import {normalizeSpace} from '../util/string';
+import {Shadow} from '../util/debug';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -98,7 +99,7 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 	/** @override */
 	override cloneNode(): this {
 		const [url, text] = this.cloneChildNodes() as [MagicLinkToken, Token?];
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(url);
 			if (text) {
@@ -137,4 +138,4 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 	}
 }
 
-Parser.classes['ExtLinkToken'] = __filename;
+Shadow.classes['ExtLinkToken'] = __filename;

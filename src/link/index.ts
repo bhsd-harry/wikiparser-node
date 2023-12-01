@@ -1,4 +1,4 @@
-import * as Parser from '../../index';
+import {Shadow} from '../../util/debug';
 import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
@@ -144,4 +144,4 @@ export class LinkToken extends LinkBaseToken {
 	}
 }
 
-Parser.classes['LinkToken'] = __filename;
+Shadow.classes['LinkToken'] = __filename;

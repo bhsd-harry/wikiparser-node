@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {Shadow} from '../../util/debug';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../index';
@@ -32,4 +33,4 @@ export class NowikiToken extends NowikiBaseToken {
 	}
 }
 
-Parser.classes['NowikiToken'] = __filename;
+Shadow.classes['NowikiToken'] = __filename;

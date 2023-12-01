@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import type {AstNodes, AstText} from '../internal';
 
 /**
@@ -29,7 +29,7 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 		override insertAt<T extends AstNodes>(token: T, i?: number): T;
 		/** @ignore */
 		override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
-			if (Parser.running) {
+			if (Shadow.running) {
 				return super.insertAt(token, i) as T | AstText;
 			}
 			throw new Error(`${this.constructor.name} 不可插入元素！`);
@@ -38,4 +38,4 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 	return FixedToken;
 };
 
-Parser.mixins['fixed'] = __filename;
+Shadow.mixins['fixed'] = __filename;

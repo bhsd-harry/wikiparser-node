@@ -1,5 +1,5 @@
 import {generateForChild} from '../../util/lint';
-import {undo} from '../../util/debug';
+import {undo, Shadow} from '../../util/debug';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -178,7 +178,7 @@ export abstract class LinkBaseToken extends Token {
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...Token[]];
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new this.constructor('', undefined, this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
@@ -194,7 +194,7 @@ export abstract class LinkBaseToken extends Token {
 	setTarget(link: string): void {
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(String(link), this.getAttribute('include'), 2, config),
-			token = Parser.run(() => new AtomToken(undefined, 'link-target', config, [], {
+			token = Shadow.run(() => new AtomToken(undefined, 'link-target', config, [], {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			}));
 		token.append(...childNodes);
@@ -223,4 +223,4 @@ export abstract class LinkBaseToken extends Token {
 	}
 }
 
-Parser.classes['LinkBaseToken'] = __filename;
+Shadow.classes['LinkBaseToken'] = __filename;

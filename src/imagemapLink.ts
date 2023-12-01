@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import {fixed} from '../mixin/fixed';
 import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
@@ -67,4 +68,4 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	}
 }
 
-Parser.classes['ImagemapLinkToken'] = __filename;
+Shadow.classes['ImagemapLinkToken'] = __filename;

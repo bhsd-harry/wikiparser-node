@@ -1,4 +1,4 @@
-import {undo} from '../util/debug';
+import {undo, Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -149,7 +149,7 @@ export class ConverterRuleToken extends Token {
 		const cloned = this.cloneChildNodes() as AtomToken[],
 			placeholders = ['', 'zh:', '=>zh:'],
 			placeholder = placeholders[cloned.length - 1]!;
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ConverterRuleToken(
 				placeholder,
 				Boolean(placeholder),
@@ -225,7 +225,7 @@ export class ConverterRuleToken extends Token {
 	setVariant(variant: string): void {
 		const config = this.getAttribute('config');
 		if (this.length === 1) {
-			super.insertAt(Parser.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
+			super.insertAt(Shadow.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
 		} else {
 			this.childNodes.at(-2)!.setText(variant);
 		}
@@ -244,7 +244,7 @@ export class ConverterRuleToken extends Token {
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config);
 		if (!unidirectional) {
-			super.insertAt(Parser.run(() => new AtomToken(undefined, 'converter-rule-from', config)), 0);
+			super.insertAt(Shadow.run(() => new AtomToken(undefined, 'converter-rule-from', config)), 0);
 		}
 		this.firstChild.replaceChildren(...childNodes);
 	}
@@ -265,4 +265,4 @@ export class ConverterRuleToken extends Token {
 	}
 }
 
-Parser.classes['ConverterRuleToken'] = __filename;
+Shadow.classes['ConverterRuleToken'] = __filename;

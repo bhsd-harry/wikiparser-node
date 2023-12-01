@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 import type {Token} from '../src';
 
 /**
@@ -42,4 +42,4 @@ export const sol = <T extends AstConstructor>(constructor: T) => {
 	return SolToken;
 };
 
-Parser.mixins['sol'] = __filename;
+Shadow.mixins['sol'] = __filename;

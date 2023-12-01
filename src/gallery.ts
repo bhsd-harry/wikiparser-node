@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
@@ -136,7 +137,7 @@ export class GalleryToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new GalleryToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
@@ -151,7 +152,7 @@ export class GalleryToken extends Token {
 	 */
 	insertImage(file: string, i = this.length): GalleryImageToken {
 		if (this.#checkFile(file)) {
-			const token = Parser.run(
+			const token = Shadow.run(
 				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
 			token.afterBuild();
@@ -178,4 +179,4 @@ export class GalleryToken extends Token {
 	}
 }
 
-Parser.classes['GalleryToken'] = __filename;
+Shadow.classes['GalleryToken'] = __filename;

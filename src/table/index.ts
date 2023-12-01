@@ -1,5 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
+import {Shadow} from '../../util/debug';
 import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
@@ -83,7 +84,7 @@ export class TableToken extends TrBaseToken {
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
 		if (!(this.lastChild instanceof SyntaxToken)) {
-			const token = Parser.run(() => super.insertAt(
+			const token = Shadow.run(() => super.insertAt(
 				new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 				}),
@@ -443,4 +444,4 @@ export class TableToken extends TrBaseToken {
 	}
 }
 
-Parser.classes['TableToken'] = __filename;
+Shadow.classes['TableToken'] = __filename;

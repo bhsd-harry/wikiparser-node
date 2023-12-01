@@ -1,4 +1,4 @@
-import * as Parser from '../../index';
+import {Shadow} from '../../util/debug';
 import {ListBaseToken} from './listBase';
 
 /** `:` */
@@ -24,4 +24,4 @@ export class DdToken extends ListBaseToken {
 	}
 }
 
-Parser.classes['DdToken'] = __filename;
+Shadow.classes['DdToken'] = __filename;

@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {Shadow} from '../util/debug';
 import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -109,7 +110,7 @@ export class MagicLinkToken extends syntax(Token) {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new MagicLinkToken(
 				undefined,
 				this.type === 'ext-link-url',
@@ -155,4 +156,4 @@ export class MagicLinkToken extends syntax(Token) {
 	}
 }
 
-Parser.classes['MagicLinkToken'] = __filename;
+Shadow.classes['MagicLinkToken'] = __filename;

@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {Shadow} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -92,7 +93,7 @@ export class ParamTagToken extends Token {
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new this.constructor(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
@@ -100,4 +101,4 @@ export class ParamTagToken extends Token {
 	}
 }
 
-Parser.classes['ParamTagToken'] = __filename;
+Shadow.classes['ParamTagToken'] = __filename;

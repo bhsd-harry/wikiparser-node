@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -72,7 +73,7 @@ export class PreToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new PreToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
@@ -80,4 +81,4 @@ export class PreToken extends Token {
 	}
 }
 
-Parser.classes['PreToken'] = __filename;
+Shadow.classes['PreToken'] = __filename;

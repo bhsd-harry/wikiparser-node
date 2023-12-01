@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 
@@ -53,7 +54,7 @@ export class OnlyincludeToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new OnlyincludeToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
@@ -61,4 +62,4 @@ export class OnlyincludeToken extends Token {
 	}
 }
 
-Parser.classes['OnlyincludeToken'] = __filename;
+Shadow.classes['OnlyincludeToken'] = __filename;

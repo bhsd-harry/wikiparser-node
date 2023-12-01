@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {Shadow} from '../../util/debug';
 import {hidden} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
@@ -59,7 +60,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override cloneNode(): this {
-		return Parser.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);
+		return Shadow.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);
 	}
 
 	/**
@@ -74,4 +75,4 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	}
 }
 
-Parser.classes['CommentToken'] = __filename;
+Shadow.classes['CommentToken'] = __filename;

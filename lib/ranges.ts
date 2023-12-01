@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import {Shadow} from '../util/debug';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
 export class Range {
@@ -114,4 +114,4 @@ export class Ranges extends Array<number | Range> {
 	}
 }
 
-Parser.classes['Ranges'] = __filename;
+Shadow.classes['Ranges'] = __filename;

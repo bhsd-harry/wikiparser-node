@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {Shadow} from '../../util/debug';
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -319,7 +320,7 @@ export const createTd = (
 	config = Parser.getConfig(),
 ): TdToken => {
 	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
-		token = Parser.run(() => new TdToken('\n|', undefined, config));
+		token = Shadow.run(() => new TdToken('\n|', undefined, config));
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
 	for (const [k, v] of Object.entries(attr)) {
@@ -330,4 +331,4 @@ export const createTd = (
 
 /* NOT FOR BROWSER END */
 
-Parser.classes['TdToken'] = __filename;
+Shadow.classes['TdToken'] = __filename;

@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {LinkToken} from '../src/link/index';
 import {FileToken} from '../src/link/file';
@@ -94,4 +95,4 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 	return s;
 };
 
-Parser.parsers['parseLinks'] = __filename;
+Shadow.parsers['parseLinks'] = __filename;

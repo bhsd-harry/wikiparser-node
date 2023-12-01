@@ -1,5 +1,6 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {normalizeSpace, text, removeComment} from '../util/string';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -266,7 +267,7 @@ export class AttributesToken extends Token {
 				this.removeAt(i);
 			}
 		}
-		if (!Parser.running && dirty) {
+		if (!Shadow.running && dirty) {
 			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
 		}
 	}
@@ -274,7 +275,7 @@ export class AttributesToken extends Token {
 	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			token.setAttribute('name', this.name);
@@ -313,10 +314,10 @@ export class AttributesToken extends Token {
 			config = this.getAttribute('config'),
 			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
 		if (nextVisibleSibling && !/^\s/u.test(String(nextVisibleSibling))) {
-			super.insertAt(Parser.run(() => new AtomToken(' ', type, config, [], acceptable)), i + 1);
+			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i + 1);
 		}
 		if (previousVisibleSibling && !/\s$/u.test(String(previousVisibleSibling))) {
-			super.insertAt(Parser.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
+			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
 		}
 		return token;
 	}
@@ -339,7 +340,7 @@ export class AttributesToken extends Token {
 		} else if (value === false) {
 			return;
 		}
-		const token = Parser.run(() => new AttributeToken(
+		const token = Shadow.run(() => new AttributeToken(
 			this.type.slice(0, -1) as AttributeTypes,
 			this.name,
 			key,
@@ -434,4 +435,4 @@ export class AttributesToken extends Token {
 	}
 }
 
-Parser.classes['AttributesToken'] = __filename;
+Shadow.classes['AttributesToken'] = __filename;

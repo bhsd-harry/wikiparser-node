@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {Shadow} from '../../util/debug';
 import {attributesParent} from '../../mixin/attributesParent';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -182,7 +183,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
 			attr = String(this.firstChild);
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config) as this;
 			token.lastChild.safeReplaceWith(inner);
 			return token;
@@ -190,4 +191,4 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	}
 }
 
-Parser.classes['ExtToken'] = __filename;
+Shadow.classes['ExtToken'] = __filename;

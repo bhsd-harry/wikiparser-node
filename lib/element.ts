@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {noWrap, print, text} from '../util/string';
+import {Shadow} from '../util/debug';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
@@ -205,7 +206,7 @@ export abstract class AstElement extends AstNode {
 		this.verifyChild(i, 1);
 		const childNodes = [...this.childNodes],
 			e = new Event('insert', {bubbles: true}),
-			j = Parser.running ? -1 : childNodes.indexOf(node);
+			j = Shadow.running ? -1 : childNodes.indexOf(node);
 		if (j === -1) {
 			node.parentNode?.removeChild(node);
 			node.setAttribute('parentNode', this as AstElement as Token);
@@ -470,7 +471,7 @@ export abstract class AstElement extends AstNode {
 						return this.#isProtected() === false;
 					default: {
 						const [t, n] = selector.split('#');
-						return (!t || t === type || Boolean(Parser.typeAliases[type]?.includes(t)))
+						return (!t || t === type || Boolean(Shadow.typeAliases[type]?.includes(t)))
 							&& (!n || n === name);
 					}
 				}
@@ -744,4 +745,4 @@ export abstract class AstElement extends AstNode {
 	}
 }
 
-Parser.classes['AstElement'] = __filename;
+Shadow.classes['AstElement'] = __filename;

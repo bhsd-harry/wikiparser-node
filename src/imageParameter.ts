@@ -1,5 +1,6 @@
 import {text, print, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../index';
@@ -237,7 +238,7 @@ export class ImageParameterToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), config) as this;
 			token.replaceChildren(...cloned);
 			token.setAttribute('name', this.name);
@@ -271,7 +272,7 @@ export class ImageParameterToken extends Token {
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
 	override insertAt<T extends AstNodes>(token: string | T, i = this.length): AstText | T {
-		if (!Parser.running && this.#isVoid()) {
+		if (!Shadow.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}
 		return super.insertAt(token as T, i);
@@ -307,4 +308,4 @@ export class ImageParameterToken extends Token {
 	}
 }
 
-Parser.classes['ImageParameterToken'] = __filename;
+Shadow.classes['ImageParameterToken'] = __filename;

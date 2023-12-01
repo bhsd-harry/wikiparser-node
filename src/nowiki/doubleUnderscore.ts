@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import {hidden} from '../../mixin/hidden';
 import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
@@ -47,7 +48,7 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	/** @override */
 	override cloneNode(): this {
 		const config = this.getAttribute('config');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new DoubleUnderscoreToken(this.innerText, this.#fixed, config) as this;
 			token.afterBuild();
 			return token;
@@ -55,4 +56,4 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	}
 }
 
-Parser.classes['DoubleUnderscoreToken'] = __filename;
+Shadow.classes['DoubleUnderscoreToken'] = __filename;

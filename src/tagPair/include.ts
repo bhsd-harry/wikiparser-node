@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import {hidden} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {TagPairToken} from './index';
@@ -65,7 +66,7 @@ export class IncludeToken extends hidden(TagPairToken) {
 			config = this.getAttribute('config'),
 			{innerText} = this,
 			closing = this.selfClosing || !this.closed ? undefined : tags[1];
-		return Parser.run(() => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config) as this);
+		return Shadow.run(() => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config) as this);
 	}
 
 	/**
@@ -82,4 +83,4 @@ export class IncludeToken extends hidden(TagPairToken) {
 	}
 }
 
-Parser.classes['IncludeToken'] = __filename;
+Shadow.classes['IncludeToken'] = __filename;

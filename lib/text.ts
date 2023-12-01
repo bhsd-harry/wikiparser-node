@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
@@ -261,4 +262,4 @@ export class AstText extends AstNode {
 	}
 }
 
-Parser.classes['AstText'] = __filename;
+Shadow.classes['AstText'] = __filename;

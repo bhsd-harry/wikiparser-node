@@ -1,5 +1,6 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
+import {Shadow} from '../util/debug';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -175,7 +176,7 @@ export class ParameterToken extends fixed(Token) {
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [Token, Token],
 			config = this.getAttribute('config');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
@@ -245,4 +246,4 @@ export class ParameterToken extends fixed(Token) {
 	}
 }
 
-Parser.classes['ParameterToken'] = __filename;
+Shadow.classes['ParameterToken'] = __filename;

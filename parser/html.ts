@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {AttributesToken} from '../src/attributes';
 import {HtmlToken} from '../src/html';
@@ -38,4 +39,4 @@ export const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: 
 	return text;
 };
 
-Parser.parsers['parseHtml'] = __filename;
+Shadow.parsers['parseHtml'] = __filename;

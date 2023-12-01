@@ -1,3 +1,4 @@
+import {Shadow} from '../../util/debug';
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -41,7 +42,7 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const {constructor, firstChild: {data}, type} = this;
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new constructor(data, this.getAttribute('config')) as this;
 			token.type = type;
 			token.afterBuild();
@@ -58,4 +59,4 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	}
 }
 
-Parser.classes['NowikiBaseToken'] = __filename;
+Shadow.classes['NowikiBaseToken'] = __filename;

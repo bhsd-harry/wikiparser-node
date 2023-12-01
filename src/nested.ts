@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
@@ -120,7 +121,7 @@ export class NestedToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new NestedToken(undefined, this.#regex, this.#tags, config) as this;
 			token.append(...cloned);
 			return token;
@@ -128,4 +129,4 @@ export class NestedToken extends Token {
 	}
 }
 
-Parser.classes['NestedToken'] = __filename;
+Shadow.classes['NestedToken'] = __filename;

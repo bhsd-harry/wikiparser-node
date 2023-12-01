@@ -1,5 +1,5 @@
+import {Shadow} from '../../util/debug';
 import {hidden} from '../../mixin/hidden';
-import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 
 /** `<noinclude>`和`</noinclude>`，不可进行任何更改 */
@@ -22,4 +22,4 @@ export class NoincludeToken extends hidden(NowikiBaseToken) {
 	}
 }
 
-Parser.classes['NoincludeToken'] = __filename;
+Shadow.classes['NoincludeToken'] = __filename;

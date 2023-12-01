@@ -1,4 +1,5 @@
 import {text, print} from '../util/string';
+import {Shadow} from '../util/debug';
 import {flagsParent} from '../mixin/flagsParent';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -96,7 +97,7 @@ export class ConverterToken extends flagsParent(Token) {
 	/** @override */
 	override cloneNode(): this {
 		const [flags, ...rules] = this.cloneChildNodes() as [ConverterFlagsToken, ...ConverterRuleToken[]];
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new ConverterToken([], [''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(flags);
 			token.append(...rules);
@@ -105,4 +106,4 @@ export class ConverterToken extends flagsParent(Token) {
 	}
 }
 
-Parser.classes['ConverterToken'] = __filename;
+Shadow.classes['ConverterToken'] = __filename;

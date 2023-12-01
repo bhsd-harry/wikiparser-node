@@ -1,5 +1,5 @@
+import {Shadow} from '../util/debug';
 import {hidden} from '../mixin/hidden';
-import * as Parser from '../index';
 import {Token} from './index';
 
 /** 不可见的节点 */
@@ -13,7 +13,7 @@ export class HiddenToken extends hidden(Token) {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new HiddenToken(undefined, config, [], acceptable) as this;
 			token.append(...cloned);
 			return token;
@@ -21,4 +21,4 @@ export class HiddenToken extends hidden(Token) {
 	}
 }
 
-Parser.classes['HiddenToken'] = __filename;
+Shadow.classes['HiddenToken'] = __filename;

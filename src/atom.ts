@@ -1,3 +1,4 @@
+import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 
@@ -41,7 +42,7 @@ export class AtomToken extends Token {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
 			acceptable = this.getAttribute('acceptable');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new AtomToken(undefined, this.type, config, [], acceptable) as this;
 			token.append(...cloned);
 			return token;
@@ -49,4 +50,4 @@ export class AtomToken extends Token {
 	}
 }
 
-Parser.classes['AtomToken'] = __filename;
+Shadow.classes['AtomToken'] = __filename;

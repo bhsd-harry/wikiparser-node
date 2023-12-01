@@ -1,5 +1,5 @@
 import {decodeHtml} from '../../util/string';
-import * as Parser from '../../index';
+import {Shadow} from '../../util/debug';
 import {LinkBaseToken} from './base';
 
 /** 分类 */
@@ -28,4 +28,4 @@ export class CategoryToken extends LinkBaseToken {
 	}
 }
 
-Parser.classes['CategoryToken'] = __filename;
+Shadow.classes['CategoryToken'] = __filename;

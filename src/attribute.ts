@@ -1,5 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
+import {Shadow} from '../util/debug';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -402,7 +403,7 @@ export class AttributeToken extends fixed(Token) {
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
 			config = this.getAttribute('config');
-		return Parser.run(() => {
+		return Shadow.run(() => {
 			const token = new AttributeToken(this.type, this.tag, '', this.#equal, '', this.#quotes, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
@@ -469,4 +470,4 @@ export class AttributeToken extends fixed(Token) {
 	}
 }
 
-Parser.classes['AttributeToken'] = __filename;
+Shadow.classes['AttributeToken'] = __filename;

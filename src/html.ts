@@ -1,5 +1,6 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
+import {Shadow} from '../util/debug';
 import {fixed} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
@@ -217,7 +218,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	override cloneNode(): this {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');
-		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config) as this);
+		return Shadow.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config) as this);
 	}
 
 	/**
@@ -263,4 +264,4 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	}
 }
 
-Parser.classes['HtmlToken'] = __filename;
+Shadow.classes['HtmlToken'] = __filename;

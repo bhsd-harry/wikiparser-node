@@ -1,5 +1,5 @@
 import {generateForSelf} from '../../util/lint';
-import {undo} from '../../util/debug';
+import {undo, Shadow} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -114,4 +114,4 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	}
 }
 
-Parser.classes['GalleryImageToken'] = __filename;
+Shadow.classes['GalleryImageToken'] = __filename;
