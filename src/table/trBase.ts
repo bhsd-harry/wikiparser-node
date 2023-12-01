@@ -50,13 +50,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return errors;
 	}
 
-	/** @override */
-	override text(): string {
-		this.#correct();
-		const str = super.text();
-		return this.type === 'tr' && !str.trim().includes('\n') ? '' : str;
-	}
-
 	/* NOT FOR BROWSER */
 
 	/** 修复简单的表格语法错误 */
@@ -70,6 +63,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 				firstChild.insertData(0, '\n');
 			}
 		}
+	}
+
+	/** @override */
+	override text(): string {
+		this.#correct();
+		return super.text();
 	}
 
 	/** @private */

@@ -42,6 +42,12 @@ export class TrToken extends TrBaseToken {
 
 	/* NOT FOR BROWSER */
 
+	/** @override */
+	override text(): string {
+		const str = super.text();
+		return str.trim().includes('\n') ? str : '';
+	}
+
 	/**
 	 * 获取相邻行
 	 * @param subset 筛选兄弟节点的方法
