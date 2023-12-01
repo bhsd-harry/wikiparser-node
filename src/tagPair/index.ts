@@ -95,13 +95,16 @@ export abstract class TagPairToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.#tags[0].length + 1;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		if (key === 'padding') {
+			return this.#tags[0].length + 1 as TokenAttributeGetter<T>;
+		}
+		return key === 'tags' ? [...this.#tags] as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i === 0 ? 1 : 1;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** @override */
@@ -110,13 +113,6 @@ export abstract class TagPairToken extends fixed(Token) {
 		return super.print(this.#selfClosing
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
-	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'tags' ? [...this.#tags] as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 }
 

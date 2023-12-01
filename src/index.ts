@@ -595,7 +595,7 @@ export class Token extends AstElement {
 			start = 0;
 		while (self.type !== 'text') {
 			const {childNodes}: Token = self;
-			acc += self.getPadding();
+			acc += self.getAttribute('padding');
 			for (let i = 0; acc <= index && i < childNodes.length; i++) {
 				const cur: AstNodes = childNodes[i]!,
 					{length: l} = String(cur);

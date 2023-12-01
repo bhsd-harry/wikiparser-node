@@ -418,8 +418,10 @@ export class AttributesToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.#leadingSpace(super.toString()).length;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding'
+			? this.#leadingSpace(super.toString()).length as TokenAttributeGetter<T>
+			: super.getAttribute(key);
 	}
 
 	/** @override */

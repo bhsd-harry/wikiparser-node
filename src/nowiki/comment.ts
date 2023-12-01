@@ -32,8 +32,8 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 4;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 4 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @override */

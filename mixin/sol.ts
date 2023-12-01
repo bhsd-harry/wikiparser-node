@@ -28,8 +28,10 @@ export const sol = <T extends AstConstructor>(constructor: T) => {
 		}
 
 		/** @private */
-		getPadding(): number {
-			return this.prependNewLine().length;
+		override getAttribute<S extends string>(key: S): TokenAttributeGetter<S> {
+			return key === 'padding'
+				? this.prependNewLine().length as TokenAttributeGetter<S>
+				: super.getAttribute(key);
 		}
 
 		/** @override */

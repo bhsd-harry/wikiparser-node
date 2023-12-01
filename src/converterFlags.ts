@@ -83,8 +83,8 @@ export class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i < this.length - 1 ? 1 : 0;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** 获取未知的转换类型标记 */

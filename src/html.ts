@@ -113,8 +113,11 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.#tag.length + (this.#closing ? 2 : 1);
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		if (key === 'padding') {
+			return this.#tag.length + (this.#closing ? 2 : 1) as TokenAttributeGetter<T>;
+		}
+		return key === 'tag' ? this.#tag as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @override */
@@ -215,11 +218,6 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');
 		return Parser.run(() => new HtmlToken(this.#tag, attr, this.#closing, this.#selfClosing, config) as this);
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'tag' ? this.#tag as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/**

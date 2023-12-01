@@ -203,8 +203,11 @@ export class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return Math.max(0, this.#syntax.indexOf('$1'));
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		if (key === 'padding') {
+			return Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>;
+		}
+		return key === 'syntax' ? this.#syntax as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @override */
@@ -241,11 +244,6 @@ export class ImageParameterToken extends Token {
 			token.setAttribute('syntax', this.#syntax);
 			return token;
 		});
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'syntax' ? this.#syntax as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

@@ -62,8 +62,8 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 0;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 0 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @override */

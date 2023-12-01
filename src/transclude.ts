@@ -250,13 +250,22 @@ export class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return this.modifier.length + 2;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		switch (key) {
+			case 'padding':
+				return this.modifier.length + 2 as TokenAttributeGetter<T>;
+			case 'args':
+				return new Map(this.#args) as TokenAttributeGetter<T>;
+			case 'keys':
+				return this.#keys as TokenAttributeGetter<T>;
+			default:
+				return super.getAttribute(key);
+		}
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
-		return i < this.length - 1 ? 1 : 0;
+	protected override getGaps(): number {
+		return 1;
 	}
 
 	/** @override */
@@ -464,16 +473,6 @@ export class TranscludeToken extends Token {
 	/** 安全的替换引用 */
 	safesubst(): void {
 		this.setModifier('safesubst:');
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		if (key === 'args') {
-			return new Map(this.#args) as TokenAttributeGetter<T>;
-		} else if (key === 'keys') {
-			return this.#keys as TokenAttributeGetter<T>;
-		}
-		return super.getAttribute(key);
 	}
 
 	/**

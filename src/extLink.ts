@@ -76,14 +76,14 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 	}
 
 	/** @private */
-	protected override getPadding(): number {
-		return 1;
+	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		return key === 'padding' ? 1 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	protected override getGaps(): number {
 		this.#correct();
-		return i === 0 ? this.#space.length : 0;
+		return this.#space.length;
 	}
 
 	/** @override */

@@ -197,7 +197,7 @@ export abstract class AstNode {
 
 	/** 位置、大小和padding */
 	get style(): Position & Dimension & {padding: number} {
-		return {...this.#getPosition(), ...this.#getDimension(), padding: this.getPadding()};
+		return {...this.#getPosition(), ...this.#getDimension(), padding: this.getAttribute('padding')};
 	}
 
 	/** @private */
@@ -216,6 +216,8 @@ export abstract class AstNode {
 	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		if (key === 'optional') {
 			return new Set(this.#optional) as TokenAttributeGetter<T>;
+		} else if (key === 'padding') {
+			return 0 as TokenAttributeGetter<T>;
 		}
 		return key in this
 			// @ts-expect-error noImplicitAny
@@ -274,11 +276,6 @@ export abstract class AstNode {
 	}
 
 	/** @private */
-	protected getPadding(): number {
-		return 0;
-	}
-
-	/** @private */
 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 	protected getGaps(i: number): number {
 		return 0;
@@ -298,7 +295,7 @@ export abstract class AstNode {
 		 */
 		const getIndex = (end: number, parent: AstNode): number =>
 			childNodes.slice(0, end).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
-			+ parent.getPadding();
+			+ parent.getAttribute('padding');
 		if (j === undefined) {
 			const {parentNode} = this;
 			if (parentNode) {
