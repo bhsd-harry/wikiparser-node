@@ -23,17 +23,6 @@ export class ListBaseToken extends syntax(NowikiBaseToken, /^[;:*#]+$/u) {
 	get ol(): boolean {
 		return this.innerText.includes('#');
 	}
-
-	/** 缩进数 */
-	get indent(): number {
-		return this.innerText.split(':').length - 1;
-	}
-
-	set indent(indent) {
-		if (this.type === 'dd') {
-			this.setText(':'.repeat(indent));
-		}
-	}
 }
 
 Parser.classes['ListBase'] = __filename;
