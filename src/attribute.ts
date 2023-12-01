@@ -1,5 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
+import {MAX_STAGE, classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -194,7 +195,7 @@ export class AttributeToken extends fixed(Token) {
 			valueToken = new Token(value, config, accum, {
 			});
 			valueToken.type = 'attr-value';
-			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
+			valueToken.setAttribute('stage', MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
 			const newConfig: Config = {
 				...config,
