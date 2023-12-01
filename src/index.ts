@@ -81,7 +81,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false): this {
-		if (n < this.#stage || !this.isPlain() || this.length === 0) {
+		if (n < this.#stage || !this.getAttribute('plain') || this.length === 0) {
 			return this;
 		}
 		switch (n) {
@@ -299,6 +299,8 @@ export class Token extends AstElement {
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		switch (key) {
+			case 'plain':
+				return (this.constructor === Token) as TokenAttributeGetter<T>;
 			case 'config':
 				return structuredClone(this.#config) as TokenAttributeGetter<T>;
 			case 'accum':
@@ -330,11 +332,6 @@ export class Token extends AstElement {
 			default:
 				super.setAttribute(key, value);
 		}
-	}
-
-	/** @private */
-	protected isPlain(): boolean {
-		return this.constructor === Token;
 	}
 
 	/**

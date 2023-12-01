@@ -124,8 +124,8 @@ export abstract class AstElement extends AstNode {
 	 * @throws `RangeError` 对应位置的子节点不是文本节点
 	 */
 	setText(str: string, i = 0): string {
-		const oldText = this.childNodes.at(i) as AstText,
-			{data} = oldText;
+		const oldText = this.childNodes.at(i) as AstText;
+		const {data} = oldText;
 		oldText.replaceData(str);
 		return data;
 	}
