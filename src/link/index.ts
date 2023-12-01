@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
@@ -144,4 +144,4 @@ export class LinkToken extends LinkBaseToken {
 	}
 }
 
-Shadow.classes['LinkToken'] = __filename;
+classes['LinkToken'] = __filename;

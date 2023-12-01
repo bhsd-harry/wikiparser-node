@@ -1,4 +1,5 @@
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {attributesParent} from '../../mixin/attributesParent';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -100,4 +101,4 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	}
 }
 
-Shadow.classes['TableBaseToken'] = __filename;
+classes['TableBaseToken'] = __filename;

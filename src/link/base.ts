@@ -1,5 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {undo, Shadow} from '../../util/debug';
+import {MAX_STAGE, classes} from '../../util/constants';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -64,7 +65,7 @@ export abstract class LinkBaseToken extends Token {
 				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
 			});
 			inner.type = 'link-text';
-			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
@@ -223,4 +224,4 @@ export abstract class LinkBaseToken extends Token {
 	}
 }
 
-Shadow.classes['LinkBaseToken'] = __filename;
+classes['LinkBaseToken'] = __filename;

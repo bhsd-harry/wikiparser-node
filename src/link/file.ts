@@ -1,6 +1,7 @@
 import {escapeRegExp} from '../../util/string';
 import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import * as Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
@@ -302,4 +303,4 @@ export class FileToken extends LinkBaseToken {
 	}
 }
 
-Shadow.classes['FileToken'] = __filename;
+classes['FileToken'] = __filename;

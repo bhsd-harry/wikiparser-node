@@ -1,5 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {attributesParent} from '../../mixin/attributesParent';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -191,4 +192,4 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	}
 }
 
-Shadow.classes['ExtToken'] = __filename;
+classes['ExtToken'] = __filename;

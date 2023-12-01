@@ -1,5 +1,5 @@
 import {generateForSelf} from '../../util/lint';
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
@@ -53,4 +53,4 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 	}
 }
 
-Shadow.classes['QuoteToken'] = __filename;
+classes['QuoteToken'] = __filename;

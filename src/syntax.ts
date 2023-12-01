@@ -1,4 +1,5 @@
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -40,4 +41,4 @@ export class SyntaxToken extends syntax(Token) {
 	}
 }
 
-Shadow.classes['SyntaxToken'] = __filename;
+classes['SyntaxToken'] = __filename;

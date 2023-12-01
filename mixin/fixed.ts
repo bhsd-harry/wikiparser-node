@@ -1,4 +1,5 @@
 import {Shadow} from '../util/debug';
+import {mixins} from '../util/constants';
 import type {AstNodes, AstText} from '../internal';
 
 /**
@@ -38,4 +39,4 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 	return FixedToken;
 };
 
-Shadow.mixins['fixed'] = __filename;
+mixins['fixed'] = __filename;

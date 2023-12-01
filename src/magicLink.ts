@@ -1,5 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -156,4 +157,4 @@ export class MagicLinkToken extends syntax(Token) {
 	}
 }
 
-Shadow.classes['MagicLinkToken'] = __filename;
+classes['MagicLinkToken'] = __filename;

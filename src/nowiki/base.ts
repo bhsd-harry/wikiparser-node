@@ -1,4 +1,5 @@
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -59,4 +60,4 @@ export abstract class NowikiBaseToken extends fixed(Token) {
 	}
 }
 
-Shadow.classes['NowikiBaseToken'] = __filename;
+classes['NowikiBaseToken'] = __filename;

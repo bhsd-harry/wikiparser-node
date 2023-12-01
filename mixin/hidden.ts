@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {mixins} from '../util/constants';
 
 /**
  * 解析后不可见的类
@@ -18,4 +18,4 @@ export const hidden = <T extends AstConstructor>(constructor: T) => {
 	return AnyHiddenToken;
 };
 
-Shadow.mixins['hidden'] = __filename;
+mixins['hidden'] = __filename;

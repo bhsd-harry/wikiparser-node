@@ -1,4 +1,5 @@
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 
@@ -50,4 +51,4 @@ export class AtomToken extends Token {
 	}
 }
 
-Shadow.classes['AtomToken'] = __filename;
+classes['AtomToken'] = __filename;

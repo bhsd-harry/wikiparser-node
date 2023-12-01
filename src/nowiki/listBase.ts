@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
 import {NowikiBaseToken} from './base';
 
@@ -8,4 +8,4 @@ export class ListBaseToken extends syntax(NowikiBaseToken, /^[;:*#]+$/u) {
 	declare type: 'dd' | 'list';
 }
 
-Shadow.classes['ListBase'] = __filename;
+classes['ListBase'] = __filename;

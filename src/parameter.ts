@@ -1,6 +1,7 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -246,4 +247,4 @@ export class ParameterToken extends fixed(Token) {
 	}
 }
 
-Shadow.classes['ParameterToken'] = __filename;
+classes['ParameterToken'] = __filename;

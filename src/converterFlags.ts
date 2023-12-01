@@ -1,5 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -275,4 +276,4 @@ export class ConverterFlagsToken extends Token {
 	}
 }
 
-Shadow.classes['ConverterFlagsToken'] = __filename;
+classes['ConverterFlagsToken'] = __filename;

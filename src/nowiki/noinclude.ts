@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {hidden} from '../../mixin/hidden';
 import {NowikiBaseToken} from './base';
 
@@ -22,4 +22,4 @@ export class NoincludeToken extends hidden(NowikiBaseToken) {
 	}
 }
 
-Shadow.classes['NoincludeToken'] = __filename;
+classes['NoincludeToken'] = __filename;

@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {parseBraces} from '../../parser/braces';
 import * as Parser from '../../index';
 import {ParamTagToken} from './index';
@@ -19,4 +19,4 @@ export class InputboxToken extends ParamTagToken {
 	}
 }
 
-Shadow.classes['InputboxToken'] = __filename;
+classes['InputboxToken'] = __filename;

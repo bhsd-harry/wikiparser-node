@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {parsers} from '../util/constants';
 import * as Parser from '../index';
 
 const simplePseudos = new Set([
@@ -167,4 +167,4 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 	throw new SyntaxError(`非法的选择器！\n${selector}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
 };
 
-Shadow.parsers['parseSelector'] = __filename;
+parsers['parseSelector'] = __filename;

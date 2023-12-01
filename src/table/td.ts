@@ -1,5 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -331,4 +332,4 @@ export const createTd = (
 
 /* NOT FOR BROWSER END */
 
-Shadow.classes['TdToken'] = __filename;
+classes['TdToken'] = __filename;

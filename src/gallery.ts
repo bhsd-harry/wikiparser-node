@@ -1,4 +1,5 @@
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
@@ -179,4 +180,4 @@ export class GalleryToken extends Token {
 	}
 }
 
-Shadow.classes['GalleryToken'] = __filename;
+classes['GalleryToken'] = __filename;

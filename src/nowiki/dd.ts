@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {ListBaseToken} from './listBase';
 
 /** `:` */
@@ -24,4 +24,4 @@ export class DdToken extends ListBaseToken {
 	}
 }
 
-Shadow.classes['DdToken'] = __filename;
+classes['DdToken'] = __filename;

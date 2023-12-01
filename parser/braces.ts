@@ -1,5 +1,5 @@
 import {removeComment} from '../util/string';
-import {Shadow} from '../util/debug';
+import {parsers} from '../util/constants';
 import * as Parser from '../index';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
@@ -129,4 +129,4 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 	return wikitext;
 };
 
-Shadow.parsers['parseBraces'] = __filename;
+parsers['parseBraces'] = __filename;

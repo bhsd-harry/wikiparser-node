@@ -1,4 +1,5 @@
 import {Shadow} from '../util/debug';
+import {MAX_STAGE, classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -60,7 +61,7 @@ export class PreToken extends Token {
 		super(wikitext, config, accum, {
 			AstText: ':', NoincludeToken: ':', ConverterToken: ':',
 		});
-		this.setAttribute('stage', Parser.MAX_STAGE - 1);
+		this.setAttribute('stage', MAX_STAGE - 1);
 	}
 
 	/** @private */
@@ -81,4 +82,4 @@ export class PreToken extends Token {
 	}
 }
 
-Shadow.classes['PreToken'] = __filename;
+classes['PreToken'] = __filename;

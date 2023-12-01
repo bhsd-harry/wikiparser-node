@@ -1,5 +1,5 @@
 import {decodeHtml, escapeRegExp} from '../util/string';
-import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 
 /** MediaWiki页面标题对象 */
@@ -126,4 +126,4 @@ export class Title {
 	}
 }
 
-Shadow.classes['Title'] = __filename;
+classes['Title'] = __filename;

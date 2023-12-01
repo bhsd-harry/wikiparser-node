@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
 
@@ -377,4 +377,4 @@ export class AstRange {
 	}
 }
 
-Shadow.classes['AstRange'] = __filename;
+classes['AstRange'] = __filename;

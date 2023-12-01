@@ -1,5 +1,6 @@
 import * as assert from 'assert/strict';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {Token} from '../src';
 import {TrToken} from '../src/table/tr';
 import {TableToken} from '../src/table';
@@ -645,4 +646,4 @@ Object.assign(TableToken.prototype, {
 	},
 });
 
-Shadow.classes['ExtendTableToken'] = __filename;
+classes['ExtendTableToken'] = __filename;

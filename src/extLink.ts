@@ -1,5 +1,6 @@
 import {normalizeSpace} from '../util/string';
 import {Shadow} from '../util/debug';
+import {MAX_STAGE, classes} from '../util/constants';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -52,7 +53,7 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 				'Stage-7': ':', ConverterToken: ':',
 			});
 			inner.type = 'ext-link-text';
-			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);
 		}
 		this.protectChildren(0);
@@ -138,4 +139,4 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 	}
 }
 
-Shadow.classes['ExtLinkToken'] = __filename;
+classes['ExtLinkToken'] = __filename;

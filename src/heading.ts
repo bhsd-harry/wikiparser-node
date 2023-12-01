@@ -1,5 +1,6 @@
 import {generateForSelf} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {fixed} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import * as Parser from '../index';
@@ -156,4 +157,4 @@ export class HeadingToken extends sol(fixed(Token)) {
 	}
 }
 
-Shadow.classes['HeadingToken'] = __filename;
+classes['HeadingToken'] = __filename;

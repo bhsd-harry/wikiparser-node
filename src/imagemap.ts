@@ -1,5 +1,6 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -213,4 +214,4 @@ export class ImagemapToken extends Token {
 	}
 }
 
-Shadow.classes['ImagemapToken'] = __filename;
+classes['ImagemapToken'] = __filename;

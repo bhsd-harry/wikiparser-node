@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {parsers} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from '../src/index';
 import {TableToken} from '../src/table/index';
@@ -112,4 +112,4 @@ export const parseTable = (
 	}
 	return out.slice(1);
 };
-Shadow.parsers['parseTable'] = __filename;
+parsers['parseTable'] = __filename;

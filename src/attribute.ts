@@ -1,6 +1,7 @@
 import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
 import {Shadow} from '../util/debug';
+import {MAX_STAGE, classes} from '../util/constants';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -260,7 +261,7 @@ export class AttributeToken extends fixed(Token) {
 				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
-			valueToken.setAttribute('stage', Parser.MAX_STAGE - 1);
+			valueToken.setAttribute('stage', MAX_STAGE - 1);
 		} else if (tag === 'gallery' && key === 'caption') {
 			const newConfig: Config = {
 				...config,
@@ -470,4 +471,4 @@ export class AttributeToken extends fixed(Token) {
 	}
 }
 
-Shadow.classes['AttributeToken'] = __filename;
+classes['AttributeToken'] = __filename;

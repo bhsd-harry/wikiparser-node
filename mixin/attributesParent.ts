@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {mixins} from '../util/constants';
 import type {AstNodes, AttributesToken} from '../internal';
 
 /**
@@ -107,4 +107,4 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 	return AttributesParent;
 };
 
-Shadow.mixins['attributesParent'] = __filename;
+mixins['attributesParent'] = __filename;

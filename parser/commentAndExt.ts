@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {parsers} from '../util/constants';
 import * as Parser from '../index';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
@@ -83,4 +83,4 @@ export const parseCommentAndExt = (
 	);
 };
 
-Shadow.parsers['parseCommentAndExt'] = __filename;
+parsers['parseCommentAndExt'] = __filename;

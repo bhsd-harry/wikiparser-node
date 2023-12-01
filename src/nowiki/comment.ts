@@ -1,5 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {hidden} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
@@ -75,4 +76,4 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	}
 }
 
-Shadow.classes['CommentToken'] = __filename;
+classes['CommentToken'] = __filename;

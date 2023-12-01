@@ -1,4 +1,5 @@
 import {undo, Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -265,4 +266,4 @@ export class ConverterRuleToken extends Token {
 	}
 }
 
-Shadow.classes['ConverterRuleToken'] = __filename;
+classes['ConverterRuleToken'] = __filename;

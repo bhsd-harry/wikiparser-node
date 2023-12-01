@@ -1,4 +1,5 @@
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {hidden} from '../../mixin/hidden';
 import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
@@ -56,4 +57,4 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	}
 }
 
-Shadow.classes['DoubleUnderscoreToken'] = __filename;
+classes['DoubleUnderscoreToken'] = __filename;

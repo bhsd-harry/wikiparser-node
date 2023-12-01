@@ -1,5 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {Token} from '..';
 import {TableBaseToken} from './base';
 import {TdToken, createTd} from './td';
@@ -183,4 +184,4 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 }
 
-Shadow.classes['TrBaseToken'] = __filename;
+classes['TrBaseToken'] = __filename;

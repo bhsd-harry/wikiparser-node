@@ -1,4 +1,5 @@
 import {undo, Shadow} from '../util/debug';
+import {mixins} from '../util/constants';
 import {text} from '../util/string';
 import * as Parser from '../index';
 import type {AstNodes} from '../lib/node';
@@ -54,4 +55,4 @@ export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegEx
 	return SyntaxToken;
 };
 
-Shadow.mixins['syntax'] = __filename;
+mixins['syntax'] = __filename;

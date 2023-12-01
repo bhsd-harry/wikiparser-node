@@ -1,6 +1,7 @@
 import {text, print, extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForSelf} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../index';
@@ -310,4 +311,4 @@ export class ImageParameterToken extends Token {
 	}
 }
 
-Shadow.classes['ImageParameterToken'] = __filename;
+classes['ImageParameterToken'] = __filename;

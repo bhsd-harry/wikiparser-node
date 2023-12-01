@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {ListBaseToken} from './listBase';
 import type {AstRange} from '../../lib/range';
@@ -48,4 +48,4 @@ export class ListToken extends sol(ListBaseToken) {
 	}
 }
 
-Shadow.classes['ListToken'] = __filename;
+classes['ListToken'] = __filename;

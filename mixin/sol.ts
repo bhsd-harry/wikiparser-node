@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {mixins} from '../util/constants';
 import type {Token} from '../src';
 
 /**
@@ -42,4 +42,4 @@ export const sol = <T extends AstConstructor>(constructor: T) => {
 	return SolToken;
 };
 
-Shadow.mixins['sol'] = __filename;
+mixins['sol'] = __filename;

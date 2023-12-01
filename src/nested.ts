@@ -1,5 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
@@ -129,4 +130,4 @@ export class NestedToken extends Token {
 	}
 }
 
-Shadow.classes['NestedToken'] = __filename;
+classes['NestedToken'] = __filename;

@@ -1,6 +1,7 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {fixed} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
@@ -266,4 +267,4 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	}
 }
 
-Shadow.classes['HtmlToken'] = __filename;
+classes['HtmlToken'] = __filename;

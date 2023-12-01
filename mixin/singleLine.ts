@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {mixins} from '../util/constants';
 
 /**
  * 不可包含换行符的类
@@ -21,4 +21,4 @@ export const singleLine = <T extends AstConstructor>(constructor: T) => {
 	return SingleLineToken;
 };
 
-Shadow.mixins['singleLine'] = __filename;
+mixins['singleLine'] = __filename;

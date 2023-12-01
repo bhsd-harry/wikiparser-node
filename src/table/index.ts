@@ -1,6 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {noWrap} from '../../util/string';
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
@@ -444,4 +445,4 @@ export class TableToken extends TrBaseToken {
 	}
 }
 
-Shadow.classes['TableToken'] = __filename;
+classes['TableToken'] = __filename;

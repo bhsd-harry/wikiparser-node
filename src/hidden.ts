@@ -1,4 +1,5 @@
 import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import {hidden} from '../mixin/hidden';
 import {Token} from './index';
 
@@ -21,4 +22,4 @@ export class HiddenToken extends hidden(Token) {
 	}
 }
 
-Shadow.classes['HiddenToken'] = __filename;
+classes['HiddenToken'] = __filename;

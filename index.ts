@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {cmd} from './util/diff';
 import {Shadow} from './util/debug';
+import {MAX_STAGE, promises, classes, mixins, parsers} from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -38,17 +39,12 @@ declare interface Parser {
 	config: string | Config;
 	i18n?: string | Record<string, string>;
 
-	/** @private */
-	readonly MAX_STAGE: number;
-
 	/* NOT FOR BROWSER */
 
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 
-	/** @private */
 	warning: boolean;
-	/** @private */
 	debugging: boolean;
 
 	/* NOT FOR BROWSER END */
@@ -125,8 +121,6 @@ const rootRequire = (file: string, dir: string): unknown => require(
 const Parser: Parser = {
 	config: 'default',
 
-	MAX_STAGE: 11,
-
 	/* NOT FOR BROWSER */
 
 	conversionTable: new Map(),
@@ -192,7 +186,7 @@ const Parser: Parser = {
 	},
 
 	/** @implements */
-	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		let token: Token;
 		Shadow.run(() => {
@@ -203,7 +197,7 @@ const Parser: Parser = {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
-					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : String(token));
+					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : String(token));
 					fs.writeFileSync(`${file}.err`, e.stack!);
 					fs.writeFileSync(`${file}.json`, JSON.stringify({
 						stage, include: token.getAttribute('include'), config: this.config,
@@ -225,8 +219,8 @@ const Parser: Parser = {
 			}
 			if (restored !== wikitext) {
 				const {diff}: typeof import('./util/diff') = require('./util/diff');
-				const {promises: {0: cur, length}} = Shadow;
-				Shadow.promises.unshift((async (): Promise<void> => {
+				const {0: cur, length} = promises;
+				promises.unshift((async (): Promise<void> => {
 					await cur;
 					this.error(`${process}过程中不可逆地修改了原始文本！`);
 					return diff(wikitext, restored, length);
@@ -270,9 +264,9 @@ const Parser: Parser = {
 	async clearCache(): Promise<void> {
 		const promise = cmd('npm', ['run', 'build']),
 			entries = [
-				...Object.entries(Shadow.classes),
-				...Object.entries(Shadow.mixins),
-				...Object.entries(Shadow.parsers),
+				...Object.entries(classes),
+				...Object.entries(mixins),
+				...Object.entries(parsers),
 			];
 		for (const [, filePath] of entries) {
 			try {
@@ -309,7 +303,7 @@ const Parser: Parser = {
 			{Token}: typeof import('./src') = require('./src');
 		this.config = config;
 		return Shadow.run(() => {
-			const halfParsed = stage < this.MAX_STAGE,
+			const halfParsed = stage < MAX_STAGE,
 				token = new Token(halfParsed ? wikitext : wikitext.replace(/[\0\x7F]/gu, ''), this.getConfig());
 			if (halfParsed) {
 				token.setAttribute('stage', stage);
@@ -325,7 +319,7 @@ const Parser: Parser = {
 	},
 };
 
-const def: PropertyDescriptorMap = {MAX_STAGE: {writable: false}},
+const def: PropertyDescriptorMap = {},
 	enumerable = new Set(['config', 'conversionTable', 'redirects', 'normalizeTitle', 'parse', 'isInterwiki']);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {

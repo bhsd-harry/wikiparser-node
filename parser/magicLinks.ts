@@ -1,5 +1,5 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
-import {Shadow} from '../util/debug';
+import {parsers} from '../util/constants';
 import * as Parser from '../index';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Token} from '../src/index';
@@ -38,4 +38,4 @@ export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), a
 	});
 };
 
-Shadow.parsers['parseMagicLinks'] = __filename;
+parsers['parseMagicLinks'] = __filename;

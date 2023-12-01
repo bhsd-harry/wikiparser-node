@@ -1,4 +1,5 @@
 import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {hidden} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {TagPairToken} from './index';
@@ -83,4 +84,4 @@ export class IncludeToken extends hidden(TagPairToken) {
 	}
 }
 
-Shadow.classes['IncludeToken'] = __filename;
+classes['IncludeToken'] = __filename;

@@ -1,5 +1,6 @@
 import {generateForSelf} from '../../util/lint';
-import {undo, Shadow} from '../../util/debug';
+import {undo} from '../../util/debug';
+import {MAX_STAGE, classes} from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -45,7 +46,7 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		if (text !== undefined) {
 			token = new Token(text, config, accum);
 			token.type = 'plain';
-			for (let n = 1; n < Parser.MAX_STAGE; n++) {
+			for (let n = 1; n < MAX_STAGE; n++) {
 				token.parseOnce();
 			}
 			accum.splice(accum.indexOf(token), 1);
@@ -114,4 +115,4 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	}
 }
 
-Shadow.classes['GalleryImageToken'] = __filename;
+classes['GalleryImageToken'] = __filename;

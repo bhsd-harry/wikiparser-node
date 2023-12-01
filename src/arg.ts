@@ -1,5 +1,6 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
+import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -221,4 +222,4 @@ export class ArgToken extends Token {
 	}
 }
 
-Shadow.classes['ArgToken'] = __filename;
+classes['ArgToken'] = __filename;

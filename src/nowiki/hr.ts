@@ -1,4 +1,4 @@
-import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {syntax} from '../../mixin/syntax';
 import {NowikiBaseToken} from './base';
@@ -9,4 +9,4 @@ export class HrToken extends syntax(sol(NowikiBaseToken), /^-{4,}$/u) {
 	override readonly type = 'hr';
 }
 
-Shadow.classes['HrToken'] = __filename;
+classes['HrToken'] = __filename;

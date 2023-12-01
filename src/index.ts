@@ -40,6 +40,7 @@
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
 import {Shadow} from '../util/debug';
+import {MAX_STAGE, aliases, classes} from '../util/constants';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import * as Parser from '../index';
@@ -61,9 +62,6 @@ import type {
 	SyntaxToken,
 } from '../internal';
 import type {TokenTypes, CaretPosition} from '../lib/node';
-
-const {MAX_STAGE} = Parser,
-	{aliases} = Shadow;
 
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
@@ -884,4 +882,4 @@ export class Token extends AstElement {
 	}
 }
 
-Shadow.classes['Token'] = __filename;
+classes['Token'] = __filename;
