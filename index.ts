@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {Shadow} from './util/debug';
+import {MAX_STAGE} from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -32,9 +33,6 @@ export interface LintError {
 declare interface Parser {
 	config: string | Config;
 	i18n?: string | Record<string, string>;
-
-	/** @private */
-	readonly MAX_STAGE: number;
 
 	/** @private */
 	getConfig(): Config;
@@ -82,8 +80,6 @@ const rootRequire = (file: string, dir: string): unknown => require(
 const Parser: Parser = {
 	config: 'default',
 
-	MAX_STAGE: 11,
-
 	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
@@ -123,7 +119,7 @@ const Parser: Parser = {
 	},
 
 	/** @implements */
-	parse(wikitext, include, maxStage = Parser.MAX_STAGE, config = Parser.getConfig()) {
+	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		let token: Token;
 		Shadow.run(() => {
@@ -134,7 +130,7 @@ const Parser: Parser = {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
-					fs.writeFileSync(file, stage === this.MAX_STAGE ? wikitext : String(token));
+					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : String(token));
 					fs.writeFileSync(`${file}.err`, e.stack!);
 					fs.writeFileSync(`${file}.json`, JSON.stringify({
 						stage, include: token.getAttribute('include'), config: this.config,
@@ -147,7 +143,7 @@ const Parser: Parser = {
 	},
 };
 
-const def: PropertyDescriptorMap = {MAX_STAGE: {writable: false}},
+const def: PropertyDescriptorMap = {},
 	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {

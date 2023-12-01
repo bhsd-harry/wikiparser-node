@@ -1,3 +1,4 @@
+import {MAX_STAGE} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -46,7 +47,7 @@ export class PreToken extends Token {
 		}
 		super(wikitext, config, accum, {
 		});
-		this.setAttribute('stage', Parser.MAX_STAGE - 1);
+		this.setAttribute('stage', MAX_STAGE - 1);
 	}
 
 	/** @private */

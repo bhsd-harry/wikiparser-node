@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {MAX_STAGE} from '../../util/constants';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -32,7 +33,7 @@ export abstract class LinkBaseToken extends Token {
 			const inner = new Token(linkText, config, accum, {
 			});
 			inner.type = 'link-text';
-			inner.setAttribute('stage', Parser.MAX_STAGE - 1);
+			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
