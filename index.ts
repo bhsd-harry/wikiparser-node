@@ -74,7 +74,11 @@ const Parser: Parser = {
 
 	/** @implements */
 	getConfig() {
-		return {...minConfig, ...this.config, excludes: []};
+		return {
+			...minConfig,
+			...this.config,
+			excludes: [],
+		};
 	},
 
 	/** @implements */

@@ -48,7 +48,10 @@ export class Title {
 			fragment = title.slice(i + 1).trim();
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || selfLink && fragment !== undefined)
+		this.valid = Boolean(
+			title
+			|| selfLink && fragment !== undefined,
+		)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
 	}

@@ -45,7 +45,9 @@ export class ExtToken extends TagPairToken {
 	) {
 		const lcName = name.toLowerCase(),
 			attrToken = new AttributesToken(
-				!attr || /^\s/u.test(attr) ? attr : ` ${attr}`,
+				!attr || /^\s/u.test(attr)
+					? attr
+					: ` ${attr}`,
 				'ext-attrs',
 				lcName,
 				config,
