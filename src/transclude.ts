@@ -1,4 +1,9 @@
-import {removeComment, text, noWrap, decodeHtml} from '../util/string';
+import {
+	removeComment,
+	text,
+	noWrap,
+	decodeHtml,
+} from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -123,7 +128,8 @@ export class TranscludeToken extends Token {
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
 		if (this.#raw && isRaw || !this.#raw && (isSubst || modifier === '')
-			|| this.length > 1 && (isRaw || isSubst || modifier === '')
+			|| this.length > 1
+			&& (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;

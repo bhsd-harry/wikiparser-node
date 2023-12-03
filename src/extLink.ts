@@ -1,4 +1,6 @@
-import {MAX_STAGE} from '../util/constants';
+import {
+	MAX_STAGE,
+} from '../util/constants';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';

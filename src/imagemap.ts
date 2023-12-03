@@ -5,7 +5,11 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
 import type {LintError} from '../index';
-import type {AstText, AttributesToken, ExtToken} from '../internal';
+import type {
+	AstText,
+	AttributesToken,
+	ExtToken,
+} from '../internal';
 
 /**
  * `<imagemap>`
@@ -51,7 +55,9 @@ export class ImagemapToken extends Token {
 			} else if (first) {
 				const [file, ...options] = line.split('|') as [string, ...string[]],
 					title = this.normalizeTitle(file, 0, true);
-				if (title.valid && title.ns === 6) {
+				if (title.valid
+					&& title.ns === 6
+				) {
 					const token = new GalleryImageToken(
 						'imagemap',
 						file,

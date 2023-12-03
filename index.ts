@@ -2,7 +2,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {Shadow} from './util/debug';
-import {MAX_STAGE} from './util/constants';
+import {
+	MAX_STAGE,
+} from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -32,7 +34,7 @@ export interface LintError {
 
 declare interface Parser {
 	config: string | Config;
-	i18n?: string | Record<string, string>;
+	i18n: string | Record<string, string> | undefined;
 
 	/** @private */
 	getConfig(): Config;
@@ -79,6 +81,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	config: 'default',
+	i18n: undefined,
 
 	/** @implements */
 	getConfig() {
@@ -86,7 +89,10 @@ const Parser: Parser = {
 			this.config = rootRequire(this.config, 'config/') as Config;
 			return this.getConfig();
 		}
-		return {...this.config, excludes: []};
+		return {
+			...this.config,
+			excludes: [],
+		};
 	},
 
 	/** @implements */
@@ -144,7 +150,10 @@ const Parser: Parser = {
 };
 
 const def: PropertyDescriptorMap = {},
-	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
+	enumerable = new Set([
+		'normalizeTitle',
+		'parse',
+	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};

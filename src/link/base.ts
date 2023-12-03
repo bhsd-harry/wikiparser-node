@@ -1,5 +1,7 @@
 import {generateForChild} from '../../util/lint';
-import {MAX_STAGE} from '../../util/constants';
+import {
+	MAX_STAGE,
+} from '../../util/constants';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -58,7 +60,9 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override toString(omit?: Set<string>): string {
 		const str = super.toString(omit, this.#delimiter);
-		return this.#bracket ? `[[${str}]]` : str;
+		return this.#bracket
+			? `[[${str}]]`
+			: str;
 	}
 
 	/** @override */

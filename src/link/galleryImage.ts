@@ -1,5 +1,7 @@
 import {generateForSelf} from '../../util/lint';
-import {MAX_STAGE} from '../../util/constants';
+import {
+	MAX_STAGE,
+} from '../../util/constants';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
@@ -51,7 +53,9 @@ export class GalleryImageToken extends FileToken {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{ns} = this.#getTitle();
+			{
+				ns,
+			} = this.#getTitle();
 		if (ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}

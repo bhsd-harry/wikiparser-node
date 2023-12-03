@@ -1,5 +1,7 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {removeComment} from '../util/string';
+import {
+	removeComment,
+} from '../util/string';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -122,7 +124,8 @@ export class AttributesToken extends Token {
 	 * @param key 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
-		return this.getAttrTokens(key).at(-1);
+		const tokens = this.getAttrTokens(key);
+		return tokens.at(-1);
 	}
 
 	/**

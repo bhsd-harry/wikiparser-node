@@ -1,4 +1,6 @@
-import {text} from '../util/string';
+import {
+	text,
+} from '../util/string';
 import {flagsParent} from '../mixin/flagsParent';
 import * as Parser from '../index';
 import {Token} from './index';

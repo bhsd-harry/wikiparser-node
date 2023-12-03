@@ -38,7 +38,9 @@
 // v: ConverterToken
 
 import {text} from '../util/string';
-import {MAX_STAGE} from '../util/constants';
+import {
+	MAX_STAGE,
+} from '../util/constants';
 import * as Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
@@ -46,7 +48,9 @@ import type {Title} from '../lib/title';
 import type {
 	AstNodes,
 } from '../internal';
-import type {TokenTypes} from '../lib/node';
+import type {
+	TokenTypes,
+} from '../lib/node';
 
 /**
  * 所有节点的基类

@@ -1,6 +1,8 @@
 import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
-import {MAX_STAGE} from '../util/constants';
+import {
+	MAX_STAGE,
+} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';

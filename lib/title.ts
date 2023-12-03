@@ -1,4 +1,6 @@
-import {decodeHtml} from '../util/string';
+import {
+	decodeHtml,
+} from '../util/string';
 import * as Parser from '../index';
 
 /** MediaWiki页面标题对象 */
@@ -46,7 +48,10 @@ export class Title {
 			fragment = title.slice(i + 1).trimEnd();
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || selfLink && fragment !== undefined)
+		this.valid = Boolean(
+			title
+			|| selfLink && fragment !== undefined,
+		)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
 	}
