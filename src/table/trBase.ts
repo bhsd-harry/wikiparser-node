@@ -1,7 +1,11 @@
 import {generateForChild} from '../../util/lint';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../index';
-import type {AstNodes, SyntaxToken, ArgToken, TranscludeToken, TrToken} from '../../internal';
+import type {
+	AstNodes,
+	ArgToken,
+	TranscludeToken,
+} from '../../internal';
 
 export interface TableCoords {
 	row: number;

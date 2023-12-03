@@ -1,10 +1,17 @@
-import {text, print, extUrlChar, extUrlCharFirst} from '../util/string';
+import {
+	print,
+	extUrlChar,
+	extUrlCharFirst,
+} from '../util/string';
 import {generateForSelf} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';
-import type {AstNodes, AstText, AtomToken, FileToken} from '../internal';
+import type {
+	AtomToken,
+	FileToken,
+} from '../internal';
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
@@ -111,7 +118,7 @@ export class ImageParameterToken extends Token {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return this.#syntax && !(omit && this.matchesTypes(omit))
+		return this.#syntax
 			? this.#syntax.replace('$1', super.toString(omit))
 			: super.toString(omit);
 	}

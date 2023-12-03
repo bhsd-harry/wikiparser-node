@@ -66,7 +66,7 @@ export class ParameterToken extends fixed(Token) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		return this.anon && !(omit && this.matchesTypes(omit))
+		return this.anon
 			? this.lastChild.toString(omit)
 			: super.toString(omit, '=');
 	}
@@ -84,7 +84,9 @@ export class ParameterToken extends fixed(Token) {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{firstChild, lastChild} = this,
+			{
+				firstChild,
+			} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
 				.exec(firstChild.toString(new Set(['comment', 'noinclude', 'include'])))?.[0];
 		if (link && new URL(link).search) {

@@ -13,8 +13,7 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 		const {previousSibling, nextSibling} = this,
 			message = Parser.msg('lonely "$1"', `'`),
 			errors: LintError[] = [];
-		let refError: LintError | undefined,
-			wikitext: string | undefined;
+		let refError: LintError | undefined;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,

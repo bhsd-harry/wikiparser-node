@@ -1,4 +1,7 @@
-import {noWrap, print, text} from '../util/string';
+import {
+	print,
+	text,
+} from '../util/string';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 import type {AstNodes, AstText, Token} from '../internal';
