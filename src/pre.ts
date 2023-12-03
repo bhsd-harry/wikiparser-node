@@ -1,4 +1,6 @@
-import {MAX_STAGE} from '../util/constants';
+import {
+	MAX_STAGE,
+} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';

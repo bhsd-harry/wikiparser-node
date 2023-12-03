@@ -1,10 +1,17 @@
-import {print, extUrlChar, extUrlCharFirst} from '../util/string';
+import {
+	print,
+	extUrlChar,
+	extUrlCharFirst,
+} from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../index';
 import type {Title} from '../lib/title';
-import type {AtomToken, FileToken} from '../internal';
+import type {
+	AtomToken,
+	FileToken,
+} from '../internal';
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 

@@ -1,5 +1,8 @@
 import {Shadow} from './util/debug';
-import {MAX_STAGE, minConfig} from './util/constants';
+import {
+	MAX_STAGE,
+	minConfig,
+} from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -30,7 +33,7 @@ export interface LintError {
 
 declare interface Parser {
 	config?: Config;
-	i18n?: Record<string, string>;
+	i18n: Record<string, string> | undefined;
 
 	/** @private */
 	getConfig(): Config;
@@ -67,6 +70,8 @@ declare interface Parser {
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
+	i18n: undefined,
+
 	/** @implements */
 	getConfig() {
 		return {...minConfig, ...this.config, excludes: []};
@@ -112,7 +117,10 @@ const Parser: Parser = {
 };
 
 const def: PropertyDescriptorMap = {},
-	enumerable = new Set(['config', 'normalizeTitle', 'parse']);
+	enumerable = new Set([
+		'normalizeTitle',
+		'parse',
+	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
 		def[key] = {enumerable: false};

@@ -1,4 +1,6 @@
-import {decodeHtml} from '../util/string';
+import {
+	decodeHtml,
+} from '../util/string';
 import Parser from '../index';
 
 /** MediaWiki页面标题对象 */

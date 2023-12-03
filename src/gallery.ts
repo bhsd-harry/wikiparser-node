@@ -3,7 +3,11 @@ import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {HiddenToken} from './hidden';
 import type {LintError} from '../index';
-import type {AstText, AttributesToken, ExtToken} from '../internal';
+import type {
+	AstText,
+	AttributesToken,
+	ExtToken,
+} from '../internal';
 
 /**
  * gallery标签

@@ -1,4 +1,10 @@
-import {removeComment, text, noWrap, print, decodeHtml} from '../util/string';
+import {
+	removeComment,
+	text,
+	noWrap,
+	print,
+	decodeHtml,
+} from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';

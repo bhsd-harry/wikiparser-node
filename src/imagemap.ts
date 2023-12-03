@@ -5,7 +5,11 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
 import type {LintError} from '../index';
-import type {AstText, AttributesToken, ExtToken} from '../internal';
+import type {
+	AstText,
+	AttributesToken,
+	ExtToken,
+} from '../internal';
 
 /**
  * `<imagemap>`

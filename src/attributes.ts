@@ -1,5 +1,7 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {removeComment} from '../util/string';
+import {
+	removeComment,
+} from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';

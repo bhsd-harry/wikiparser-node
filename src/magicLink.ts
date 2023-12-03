@@ -2,7 +2,12 @@ import {generateForChild} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
-import type {AstText, CommentToken, IncludeToken, NoincludeToken} from '../internal';
+import type {
+	AstText,
+	CommentToken,
+	IncludeToken,
+	NoincludeToken,
+} from '../internal';
 
 /**
  * 自由外链
