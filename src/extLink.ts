@@ -39,8 +39,7 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		if (omit && this.matchesTypes(omit)) {
-		} else if (this.length === 1) {
+		if (this.length === 1) {
 			return `[${super.toString(omit)}${this.#space}]`;
 		}
 		return `[${super.toString(omit, this.#space)}]`;

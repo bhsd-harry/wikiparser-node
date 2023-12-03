@@ -124,7 +124,8 @@ export class AttributesToken extends Token {
 	 * @param key 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
-		return this.getAttrTokens(key).at(-1);
+		const tokens = this.getAttrTokens(key);
+		return tokens.at(-1);
 	}
 
 	/**

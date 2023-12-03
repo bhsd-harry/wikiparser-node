@@ -165,7 +165,10 @@ export abstract class AstNode {
 		const str = String(this);
 		if (index >= -str.length && index <= str.length) {
 			const lines = str.slice(0, index).split('\n');
-			return {top: lines.length - 1, left: lines.at(-1)!.length};
+			return {
+				top: lines.length - 1,
+				left: lines.at(-1)!.length,
+			};
 		}
 		return undefined;
 	}
@@ -173,7 +176,10 @@ export abstract class AstNode {
 	/** 获取行数和最后一行的列数 */
 	#getDimension(): Dimension {
 		const lines = String(this).split('\n');
-		return {height: lines.length, width: lines.at(-1)!.length};
+		return {
+			height: lines.length,
+			width: lines.at(-1)!.length,
+		};
 	}
 
 	/** @private */

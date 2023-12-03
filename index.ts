@@ -93,7 +93,10 @@ const Parser: Parser = {
 			this.config = rootRequire(this.config, 'config/') as Config;
 			return this.getConfig();
 		}
-		return {...this.config, excludes: []};
+		return {
+			...this.config,
+			excludes: [],
+		};
 	},
 
 	/** @implements */
