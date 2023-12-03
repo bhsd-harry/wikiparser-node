@@ -127,8 +127,8 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
-		let wikitext: string | undefined,
-			refError: LintError | undefined;
+		let wikitext: string | undefined;
+		let refError: LintError | undefined;
 		if (this.name === 'h1' && !this.#closing) {
 			wikitext = String(this.getRootNode());
 			refError = generateForSelf(this, {start}, '<h1>');
@@ -156,8 +156,8 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 					error.severity = 'warning';
 					error.excerpt = wikitext.slice(start, start + 50);
 				} else if (msg === 'unmatched closing tag') {
-					const end = start + String(this).length,
-						ancestor = this.closest('magic-word') as TranscludeToken | undefined;
+					const end = start + String(this).length;
+					const ancestor = this.closest('magic-word') as TranscludeToken | undefined;
 					error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
 					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';

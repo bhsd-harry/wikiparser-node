@@ -1,5 +1,8 @@
 import {Shadow} from '../util/debug';
-import {MAX_STAGE, classes} from '../util/constants';
+import {
+	MAX_STAGE,
+	classes,
+} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';

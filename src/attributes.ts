@@ -1,5 +1,9 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {normalizeSpace, text, removeComment} from '../util/string';
+import {
+	normalizeSpace,
+	text,
+	removeComment,
+} from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import * as Parser from '../index';

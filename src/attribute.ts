@@ -1,7 +1,10 @@
 import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
 import {Shadow} from '../util/debug';
-import {MAX_STAGE, classes} from '../util/constants';
+import {
+	MAX_STAGE,
+	classes,
+} from '../util/constants';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -11,8 +14,8 @@ import type {AttributesToken} from '../internal';
 
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3},
-	commonHtmlAttrs = new Set([
+const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
+const commonHtmlAttrs = new Set([
 		'id',
 		'class',
 		'style',

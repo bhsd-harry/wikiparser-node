@@ -5,7 +5,13 @@ import {Token} from '..';
 import {TableBaseToken} from './base';
 import {TdToken, createTd} from './td';
 import type {LintError} from '../../index';
-import type {AstNodes, SyntaxToken, ArgToken, TranscludeToken, TrToken} from '../../internal';
+import type {
+	AstNodes,
+	SyntaxToken,
+	ArgToken,
+	TranscludeToken,
+	TrToken,
+} from '../../internal';
 import type {TdAttrs, TdSubtypes} from './td';
 
 export interface TableCoords {

@@ -5,7 +5,13 @@ import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../index';
-import type {ParameterToken, AstText, CommentToken, IncludeToken, NoincludeToken} from '../internal';
+import type {
+	ParameterToken,
+	AstText,
+	CommentToken,
+	IncludeToken,
+	NoincludeToken,
+} from '../internal';
 
 /**
  * 自由外链

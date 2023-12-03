@@ -1,4 +1,7 @@
-import {text, print} from '../util/string';
+import {
+	text,
+	print,
+} from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {flagsParent} from '../mixin/flagsParent';

@@ -1,4 +1,11 @@
-import {removeComment, escapeRegExp, text, noWrap, print, decodeHtml} from '../util/string';
+import {
+	removeComment,
+	escapeRegExp,
+	text,
+	noWrap,
+	print,
+	decodeHtml,
+} from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
@@ -312,8 +319,8 @@ export class TranscludeToken extends Token {
 	 */
 	#handleAnonArgChange(addedToken: number | ParameterToken): void {
 		const args = this.getAnonArgs(),
-			added = typeof addedToken !== 'number',
-			maxAnon = String(args.length + (added ? 0 : 1));
+			added = typeof addedToken !== 'number';
+		const maxAnon = String(args.length + (added ? 0 : 1));
 		if (added) {
 			this.#keys.add(maxAnon);
 		} else if (!this.hasArg(maxAnon, true)) {

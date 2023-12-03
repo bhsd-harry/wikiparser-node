@@ -1,6 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import {noWrap, print, text} from '../util/string';
+import {
+	noWrap,
+	print,
+	text,
+} from '../util/string';
 import {Shadow} from '../util/debug';
 import {typeAliases, classes} from '../util/constants';
 import {parseSelector} from '../parser/selector';

@@ -40,7 +40,11 @@
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
 import {Shadow} from '../util/debug';
-import {MAX_STAGE, aliases, classes} from '../util/constants';
+import {
+	MAX_STAGE,
+	aliases,
+	classes,
+} from '../util/constants';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import * as Parser from '../index';
@@ -61,7 +65,10 @@ import type {
 	ParameterToken,
 	SyntaxToken,
 } from '../internal';
-import type {TokenTypes, CaretPosition} from '../lib/node';
+import type {
+	TokenTypes,
+	CaretPosition,
+} from '../lib/node';
 
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 

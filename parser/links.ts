@@ -49,7 +49,11 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 			continue;
 		}
 		const title = Parser.normalizeTitle(link, 0, false, config, true, true, true),
-			{ns, interwiki, valid} = title;
+			{
+				ns,
+				interwiki,
+				valid,
+			} = title;
 		if (!valid) {
 			s += `[[${x}`;
 			continue;

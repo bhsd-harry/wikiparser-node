@@ -72,7 +72,13 @@ export abstract class TagPairToken extends fixed(Token) {
 
 	/** @private */
 	override toString(omit?: Set<string>): string {
-		const {firstChild, lastChild, nextSibling, name, closed} = this,
+		const {
+				firstChild,
+				lastChild,
+				nextSibling,
+				name,
+				closed,
+			} = this,
 			[opening, closing] = this.#tags;
 		if (omit && this.matchesTypes(omit)) {
 			return '';

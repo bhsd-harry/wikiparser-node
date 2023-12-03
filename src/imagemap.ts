@@ -8,7 +8,12 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
 import type {LintError} from '../index';
-import type {AstNodes, AstText, AttributesToken, ExtToken} from '../internal';
+import type {
+	AstNodes,
+	AstText,
+	AttributesToken,
+	ExtToken,
+} from '../internal';
 
 /**
  * `<imagemap>`

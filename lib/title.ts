@@ -1,4 +1,7 @@
-import {decodeHtml, escapeRegExp} from '../util/string';
+import {
+	decodeHtml,
+	escapeRegExp,
+} from '../util/string';
 import {classes} from '../util/constants';
 import * as Parser from '../index';
 

@@ -1,6 +1,9 @@
 import {generateForSelf} from '../../util/lint';
 import {undo} from '../../util/debug';
-import {MAX_STAGE, classes} from '../../util/constants';
+import {
+	MAX_STAGE,
+	classes,
+} from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -70,7 +73,10 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{interwiki, ns} = this.#getTitle();
+			{
+				interwiki,
+				ns,
+			} = this.#getTitle();
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
