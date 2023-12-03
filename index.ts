@@ -151,7 +151,10 @@ const Parser: Parser = {
 			}
 			return this.getConfig();
 		}
-		return {...this.config, excludes: []};
+		return {
+			...this.config,
+			excludes: [],
+		};
 	},
 
 	/** @implements */

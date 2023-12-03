@@ -15,7 +15,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
 			try {
 				Parser.config = 'default';
-				delete Parser.i18n;
+				Parser.i18n = undefined;
 				Parser.conversionTable.clear();
 				Parser.redirects.clear();
 				eval(code); // eslint-disable-line no-eval

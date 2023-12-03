@@ -106,7 +106,11 @@ export class Title {
 			}
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || selfLink && fragment !== undefined || this.interwiki)
+		this.valid = Boolean(
+			title
+			|| this.interwiki
+			|| selfLink && fragment !== undefined,
+		)
 			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.fragment = fragment;
 		this.main = title;
