@@ -179,7 +179,7 @@ export class ConverterFlagsToken extends Token {
 	 * 获取转换类型标记节点
 	 * @param flag 转换类型标记
 	 */
-	getFlagToken(flag: string): AtomToken[] {
+	getFlagTokens(flag: string): AtomToken[] {
 		return this.#flags!.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 
@@ -240,7 +240,7 @@ export class ConverterFlagsToken extends Token {
 	 * @param flag 转换类型标记
 	 */
 	removeFlag(flag: string): void {
-		for (const token of this.getFlagToken(flag)) {
+		for (const token of this.getFlagTokens(flag)) {
 			token.remove();
 		}
 	}

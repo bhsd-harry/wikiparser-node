@@ -32,13 +32,6 @@ export class ConverterToken extends flagsParent(Token) {
 		return this.hasFlag('R') || this.length === 2 && this.lastChild.length === 1;
 	}
 
-	set noConvert(value) {
-		if (!value) {
-			throw new Error('无法稳健地修改为不转换！');
-		}
-		this.setFlag('R');
-	}
-
 	/* NOT FOR BROWSER END */
 
 	/**
@@ -104,6 +97,7 @@ export class ConverterToken extends flagsParent(Token) {
 		return Shadow.run(() => {
 			const token = new ConverterToken([], [''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(flags);
+			token.removeAt(1);
 			token.append(...rules);
 			return token;
 		});
