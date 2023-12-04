@@ -6,7 +6,7 @@ then
 	git commit -m "chore: publish v$1 to npm"
 	npm publish
 else
-	npm run lint && npm run build
+	npm run lint
 	if [[ $? -eq 0 ]]
 	then
 		git add -A
