@@ -12,10 +12,10 @@ const getIndex = (referenceNode: AstNodes, offset: number): number =>
 
 /** 模拟Range对象 */
 export class AstRange {
-	#startContainer?: AstNodes;
-	#startOffset?: number;
-	#endContainer?: AstNodes;
-	#endOffset?: number;
+	#startContainer: AstNodes | undefined;
+	#startOffset: number | undefined;
+	#endContainer: AstNodes | undefined;
+	#endOffset: number | undefined;
 
 	/**
 	 * 未初始化时抛出错误
@@ -68,59 +68,97 @@ export class AstRange {
 
 	/** 起始和终止位置是否重合 */
 	get collapsed(): boolean {
-		return this.startIndex === this.endIndex;
+		return this.startContainer === this.endContainer && this.startOffset === this.endOffset;
 	}
 
 	/** 最近的公共祖先 */
 	get commonAncestorContainer(): AstNodes {
 		const {startContainer, endContainer} = this;
-		let parentNode: AstNodes | undefined = startContainer;
-		while (!parentNode!.contains(endContainer)) {
-			({parentNode} = parentNode!);
+		return startContainer.contains(endContainer) ? startContainer : startContainer.parentNode!;
+	}
+
+	/**
+	 * 检查起点和终点的设置是否有效
+	 * @throws `RangeError` 起点和终点不是兄弟节点
+	 * @throws `RangeError` 起点位于终点之后
+	 */
+	#check(): void {
+		const {startContainer, startOffset, endContainer, endOffset} = this;
+		if (startContainer === endContainer) {
+			if (startOffset > endOffset) {
+				throw new RangeError('起点不能位于终点之后！');
+			}
+			return;
 		}
-		return parentNode!;
+		const {type: startType, parentNode: startParent} = startContainer,
+			{type: endType, parentNode: endParent} = endContainer;
+		if (startType !== 'text') {
+			if (endType !== 'text' || startContainer !== endParent) {
+				throw new RangeError('起点和终点不是兄弟节点！');
+			} else if (startOffset > endParent.childNodes.indexOf(endContainer)) {
+				throw new RangeError('起点不能位于终点之后！');
+			}
+		} else if (endType === 'text') {
+			if (!startParent || startParent !== endParent) {
+				throw new RangeError('起点和终点不是兄弟节点！');
+			}
+			const {childNodes} = startParent;
+			if (childNodes.indexOf(startContainer) > childNodes.indexOf(endContainer)) {
+				throw new RangeError('起点不能位于终点之后！');
+			}
+		} else if (startParent !== endContainer) {
+			throw new RangeError('起点和终点不是兄弟节点！');
+		} else if (endOffset <= startParent.childNodes.indexOf(startContainer)) {
+			throw new RangeError('起点不能位于终点之后！');
+		}
 	}
 
 	/**
 	 * 设置起点
 	 * @param startNode 起点容器
 	 * @param startOffset 起点位置
-	 * @throws `RangeError` 不在同一个文档
 	 * @throws `RangeError` offset取值超出范围
 	 */
 	setStart(startNode: AstNodes, startOffset: number): void {
-		const root = this.#endContainer?.getRootNode(),
-			{length} = startNode;
-		if (root && root !== startNode.getRootNode()) {
-			throw new RangeError('起点不在同一个文档中！');
-		} else if (startOffset < 0 || startOffset > length) {
+		const {length} = startNode;
+		if (startOffset < 0 || startOffset > length) {
 			throw new RangeError(`offset取值范围应为 0 ~ ${length}`);
-		} else if (root && getIndex(startNode, startOffset) > this.endIndex) {
-			throw new RangeError('起点不能位于终点之后！');
+		} else if (!this.#endContainer) {
+			//
 		}
 		this.#startContainer = startNode;
 		this.#startOffset = startOffset;
+		try {
+			this.#check();
+		} catch (e) {
+			this.#startContainer = undefined;
+			this.#startOffset = undefined;
+			throw e;
+		}
 	}
 
 	/**
 	 * 设置终点
 	 * @param endNode 终点容器
 	 * @param endOffset 终点位置
-	 * @throws `RangeError` 不在同一个文档
 	 * @throws `RangeError` offset取值超出范围
 	 */
 	setEnd(endNode: AstNodes, endOffset: number): void {
-		const root = this.#startContainer?.getRootNode(),
-			{length} = endNode;
-		if (root && root !== endNode.getRootNode()) {
-			throw new RangeError('终点不在同一个文档中！');
-		} else if (endOffset < 0 || endOffset > length) {
+		const {length} = endNode;
+		if (endOffset < 0 || endOffset > length) {
 			throw new RangeError(`offset取值范围应为 0 ~ ${length}`);
-		} else if (root && getIndex(endNode, endOffset) < this.startIndex) {
-			throw new RangeError('终点不能位于起点之前！');
+		} else if (!this.#startContainer) {
+			//
 		}
 		this.#endContainer = endNode;
 		this.#endOffset = endOffset;
+		try {
+			this.#check();
+		} catch (e) {
+			this.#endContainer = undefined;
+			this.#endOffset = undefined;
+			throw e;
+		}
 	}
 
 	/**
