@@ -13,3 +13,12 @@ First TypeScript version
 **Fixed**
 
 - Replacing remaining spaces in [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title) property with underscores  
+- [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) now maintains its content after `insertNode`, `deleteContents`, `extractContents` and `cloneContents` methods
+
+**Changed**
+
+- `startContainer` and `endContainer` properties of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) now must be siblings  
+
+**Removed**
+
+- `AstRange.intersectsNode` method  

@@ -783,9 +783,7 @@ export class Token extends AstElement {
 	/** 重新解析单引号 */
 	redoQuotes(): void {
 		const acceptable = this.getAttribute('acceptable');
-		if (acceptable && !acceptable['QuoteToken']?.some(
-			range => typeof range !== 'number' && range.start === 0 && range.end === Infinity && range.step === 1,
-		)) {
+		if (acceptable && !('QuoteToken' in acceptable)) {
 			return;
 		}
 		for (const quote of this.childNodes) {
