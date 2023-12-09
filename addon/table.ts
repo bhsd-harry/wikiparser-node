@@ -412,10 +412,8 @@ Object.assign(TableToken.prototype, {
 	mergeCells(this: TableToken, xlim: [number, number], ylim: [number, number]): TdToken {
 		const layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
-			posXlim = xlim.map(x => x < 0 ? x + maxCol : x) as [number, number],
-			posYlim = ylim.map(y => y < 0 ? y + layout.length : y) as [number, number],
-			[xmin, xmax] = posXlim.sort(),
-			[ymin, ymax] = posYlim.sort(),
+			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort() as [number, number],
+			[ymin, ymax] = ylim.map(y => y < 0 ? y + layout.length : y).sort() as [number, number],
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
 		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
 			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]!) || set.has(rowLayout[xmax]!))

@@ -51,6 +51,19 @@ export class Title {
 		return this.redirects.get(title) ?? title;
 	}
 
+	/** 扩展名 */
+	get extension(): string | undefined {
+		const {main} = this,
+			i = main.lastIndexOf('.');
+		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
+	}
+
+	set extension(extension) {
+		const {main} = this,
+			i = main.lastIndexOf('.');
+		this.main = `${i === -1 ? main : main.slice(0, i)}.${extension}`;
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
@@ -130,6 +143,31 @@ export class Title {
 			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
 			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
 		}
+	}
+
+	/** 转换为主页面 */
+	toSubjectPage(): void {
+		this.ns -= this.ns % 2;
+	}
+
+	/** 转换为讨论页面 */
+	toTalkPage(): void {
+		this.ns += 1 - this.ns % 2;
+	}
+
+	/** 是否是讨论页 */
+	isTalkPage(): boolean {
+		return this.ns % 2 === 1;
+	}
+
+	/** 转换为上一级页面 */
+	toBasePage(): void {
+		this.main = this.main.replace(/\/[^/]*$/u, '');
+	}
+
+	/** 转换为根页面 */
+	toRootPage(): void {
+		this.main = this.main.replace(/\/.*/u, '');
 	}
 }
 
