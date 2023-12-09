@@ -68,6 +68,12 @@ declare interface Parser {
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 }
 
+/**
+ * 清理解析专用的不可见字符
+ * @param text 源文本
+ */
+const tidy = (text: string): string => text.replace(/[\0\x7F]/gu, '');
+
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	i18n: undefined,
@@ -109,14 +115,11 @@ const Parser: Parser = {
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		const {Token}: typeof import('./src/index') = require('./src/index');
-		let token: Token;
-		Shadow.run(() => {
-			token = new Token(wikitext.replace(/[\0\x7F]/gu, ''), config);
-			try {
-				token.parse(maxStage, include);
-			} catch {}
+		const root = Shadow.run(() => {
+			const token = new Token(tidy(wikitext), config);
+			return token.parse(maxStage, include);
 		});
-		return token!;
+		return root;
 	},
 };
 
