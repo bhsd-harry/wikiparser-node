@@ -55,20 +55,19 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	override toString(omit?: Set<string>): string {
 		return omit && this.matchesTypes(omit)
 			? ''
-			: `<${this.#closing ? '/' : ''}${this.#tag}${super.toString(omit)}${this.#selfClosing ? '/' : ''}>`;
+			: `<${this.closing ? '/' : ''}${this.#tag}${super.toString(omit)}${this.selfClosing ? '/' : ''}>`;
 	}
 
 	/** @override */
 	override text(): string {
-		return `<${this.#closing ? '/' : ''}${this.#tag}${
-			this.#closing ? '' : super.text()
-		}${this.#selfClosing ? '/' : ''}>`;
+		const {closing} = this;
+		return `<${closing ? '/' : ''}${this.#tag}${closing ? '' : super.text()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		return key === 'padding'
-			? this.#tag.length + (this.#closing ? 2 : 1) as TokenAttributeGetter<T>
+			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttributeGetter<T>
 			: super.getAttribute(key);
 	}
 
@@ -76,7 +75,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		let refError: LintError | undefined;
-		if (this.name === 'h1' && !this.#closing) {
+		if (this.name === 'h1' && !this.closing) {
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push({...refError, excerpt: wikitext.slice(start, start + 50)});
 		}
@@ -117,9 +116,9 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 	 */
 	findMatchingTag(): this | undefined {
 		const {html} = this.getAttribute('config'),
-			{name: tagName, parentNode} = this,
+			{name: tagName, parentNode, closing} = this,
 			string = noWrap(String(this));
-		if (this.#closing && (this.#selfClosing || html[2].includes(tagName))) {
+		if (closing && (this.#selfClosing || html[2].includes(tagName))) {
 			throw new SyntaxError(`tag that is both closing and self-closing: ${string}`);
 		} else if (html[2].includes(tagName) || this.#selfClosing && html[1].includes(tagName)) { // 自封闭标签
 			return this;
@@ -130,10 +129,10 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		}
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
-			siblings = this.#closing
+			siblings = closing
 				? childNodes.slice(0, i).reverse().filter(({type, name}) => type === 'html' && name === tagName)
 				: childNodes.slice(i + 1).filter(({type, name}) => type === 'html' && name === tagName);
-		let imbalance = this.#closing ? -1 : 1;
+		let imbalance = closing ? -1 : 1;
 		for (const token of siblings as this[]) {
 			if (token.#closing) {
 				imbalance--;
@@ -144,13 +143,13 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 				return token;
 			}
 		}
-		throw new SyntaxError(`${this.#closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
+		throw new SyntaxError(`${closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
 
 	/** @override */
 	override print(): string {
 		return super.print({
-			pre: `&lt;${this.#closing ? '/' : ''}${this.#tag}`,
+			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`,
 			post: `${this.#selfClosing ? '/' : ''}&gt;`,
 		});
 	}
