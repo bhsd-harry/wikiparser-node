@@ -3,8 +3,8 @@ import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../index';
 
-const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/dgiu,
-	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/dgiu,
+const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
+	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	disallowedTags = [
 		'html',
 		'base',
@@ -114,11 +114,11 @@ export class AstText extends AstNode {
 				{top, left} = root.posFromIndex(start)!,
 				tags = new Set([ext, html, disallowedTags].flat(2));
 			return (errors as (RegExpMatchArray & {index: number})[])
-				.map(({0: error, 2: tag, index, indices}) => {
-					const [, prefix] = indices!;
+				.map(({0: error, 1: prefix, 2: tag, index}) => {
 					if (prefix) {
-						[, index] = prefix;
-						error = error.slice(index - prefix[0]);
+						const {length} = prefix;
+						index += length;
+						error = error.slice(length);
 					}
 					const startIndex = start + index,
 						lines = data.slice(0, index).split('\n'),
