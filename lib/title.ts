@@ -8,6 +8,7 @@ export class Title {
 	valid;
 	ns;
 	fragment;
+	/** @private */
 	encoded = false;
 
 	/**
@@ -18,7 +19,6 @@ export class Title {
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
 		const {namespaces, nsid} = config;
-		let namespace = namespaces[defaultNs] ?? '';
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
@@ -28,31 +28,29 @@ export class Title {
 			} catch {}
 		}
 		title = title.replaceAll('_', ' ').trim();
+		let ns = defaultNs;
 		if (title.startsWith(':')) {
-			namespace = '';
+			ns = 0;
 			title = title.slice(1).trim();
 		}
 		const m = title.split(':');
 		if (m.length > 1) {
-			const ns = nsid[m[0]!.trim().toLowerCase()],
-				id = ns === undefined ? undefined : namespaces[ns];
+			const id = nsid[m[0]!.trim().toLowerCase()];
 			if (id !== undefined) {
-				namespace = id;
+				ns = id;
 				title = m.slice(1).join(':').trim();
 			}
 		}
-		this.ns = nsid[namespace.toLowerCase()]!;
+		this.ns = ns;
 		const i = title.indexOf('#');
-		let fragment: string | undefined;
 		if (i !== -1) {
-			fragment = title.slice(i + 1).trimEnd();
+			let fragment = title.slice(i + 1).trimEnd();
+			this.fragment = fragment;
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(
 			title
-			|| selfLink && fragment !== undefined,
-		)
-			&& !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
-		this.fragment = fragment;
+			|| selfLink && this.fragment !== undefined,
+		) && !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 	}
 }
