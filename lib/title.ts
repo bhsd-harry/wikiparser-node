@@ -79,7 +79,10 @@ export class Title {
 			conversionTable: {enumerable: false},
 			redirects: {enumerable: false},
 		});
-		const {namespaces, nsid} = config;
+		const {
+			namespaces,
+			nsid,
+		} = config;
 		this.#namespaces = namespaces;
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
