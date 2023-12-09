@@ -18,7 +18,9 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
-		const {namespaces, nsid} = config;
+		const {
+			nsid,
+		} = config;
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
