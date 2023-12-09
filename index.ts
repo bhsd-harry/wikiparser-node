@@ -108,7 +108,7 @@ declare interface Parser {
 	 * 是否是跨维基链接
 	 * @param title 链接标题
 	 */
-	isInterwiki(title: string, config?: Config): [string, string] | null;
+	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
 
 	/** @private */
 	reparse(date: string): Token;
@@ -296,8 +296,8 @@ const Parser: Parser = {
 
 	/** @implements */
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'iu')
-			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, '')) as [string, string] | null;
+		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'diu')
+			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
 	},
 
 	/** @implements */

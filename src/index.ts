@@ -668,7 +668,7 @@ export class Token extends AstElement {
 	 * 判断标题是否是跨维基链接
 	 * @param title 标题
 	 */
-	isInterwiki(title: string): [string, string] | null {
+	isInterwiki(title: string): RegExpExecArray | null {
 		return Parser.isInterwiki(title, this.#config);
 	}
 
