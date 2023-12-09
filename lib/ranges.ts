@@ -2,9 +2,9 @@ import {classes} from '../util/constants';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
 export class Range {
-	declare start: number;
-	declare end: number;
-	declare step: number;
+	#start: number;
+	#end: number;
+	#step: number;
 
 	/**
 	 * @param s 表达式
@@ -12,11 +12,7 @@ export class Range {
 	 * @throws `RangeError` n的系数不能为0
 	 * @throws `RangeError` 应使用CSS选择器或Python切片的格式
 	 */
-	constructor(str: string | Range) {
-		if (str instanceof Range) {
-			Object.assign(this, str);
-			return;
-		}
+	constructor(str: string) {
 		str = str.trim();
 		if (str === 'odd') {
 			Object.assign(this, {start: 1, end: Infinity, step: 2});
@@ -24,15 +20,15 @@ export class Range {
 			Object.assign(this, {start: 0, end: Infinity, step: 2});
 		} else if (str.includes(':')) {
 			const [start, end, step = '1'] = str.split(':', 3) as [string, string | undefined, string | undefined];
-			this.start = Number(start);
-			this.end = Number(end || Infinity);
-			this.step = Math.max(Number(step), 1);
-			if (!Number.isInteger(this.start)) {
-				throw new RangeError(`起点 ${this.start} 应为整数！`);
-			} else if (this.end !== Infinity && !Number.isInteger(this.end)) {
-				throw new RangeError(`终点 ${this.end} 应为整数！`);
-			} else if (!Number.isInteger(this.step)) {
-				throw new RangeError(`步长 ${this.step} 应为整数！`);
+			this.#start = Number(start);
+			this.#end = Number(end || Infinity);
+			this.#step = Math.max(Number(step), 1);
+			if (!Number.isInteger(this.#start)) {
+				throw new RangeError(`起点 ${this.#start} 应为整数！`);
+			} else if (this.#end !== Infinity && !Number.isInteger(this.#end)) {
+				throw new RangeError(`终点 ${this.#end} 应为整数！`);
+			} else if (!Number.isInteger(this.#step)) {
+				throw new RangeError(`步长 ${this.#step} 应为整数！`);
 			}
 		} else {
 			const mt = /^([+-])?(\d+)?n(?:([+-])(\d+))?$/u
@@ -41,18 +37,18 @@ export class Range {
 			if (mt) {
 				const [, sgnA = '+', a = 1, sgnB = '+'] = mt,
 					b = Number(mt[4] ?? 0);
-				this.step = Number(a);
-				if (this.step === 0) {
+				this.#step = Number(a);
+				if (this.#step === 0) {
 					throw new RangeError(`参数 ${str} 中 "n" 的系数不允许为 0！`);
 				} else if (sgnA === '+') {
-					this.start = sgnB === '+' || b === 0 ? b : this.step - 1 - (b - 1) % this.step;
-					this.end = Infinity;
+					this.#start = sgnB === '+' || b === 0 ? b : this.#step - 1 - (b - 1) % this.#step;
+					this.#end = Infinity;
 				} else if (sgnB === '-') {
-					this.start = 0;
-					this.end = b > 0 ? 0 : this.step;
+					this.#start = 0;
+					this.#end = b > 0 ? 0 : this.#step;
 				} else {
-					this.start = b % this.step;
-					this.end = this.step + b;
+					this.#start = b % this.#step;
+					this.#end = this.#step + b;
 				}
 			} else {
 				throw new RangeError(`参数 ${str} 应写作CSS选择器的 "an+b" 形式或Python切片！`);
@@ -62,12 +58,10 @@ export class Range {
 
 	/**
 	 * 将Range转换为针对特定数组的下标集
-	 * @param arr 参考数组
+	 * @param arr 参考数组`[0, 1, 2, ...]`
 	 */
-	applyTo(arr: number | unknown[]): number[] {
-		return new Array(typeof arr === 'number' ? arr : arr.length).fill(undefined).map((_, i) => i)
-			.slice(this.start, this.end)
-			.filter((_, j) => j % this.step === 0);
+	applyTo(arr: number[]): number[] {
+		return arr.slice(this.#start, this.#end).filter((_, j) => j % this.#step === 0);
 	}
 }
 
@@ -81,7 +75,7 @@ export class Ranges extends Array<number | Range> {
 		}
 		for (const ele of Array.isArray(a) ? a : [a]) {
 			if (ele instanceof Range) {
-				this.push(new Range(ele));
+				this.push(ele);
 				continue;
 			}
 			const number = Number(ele);
@@ -100,14 +94,15 @@ export class Ranges extends Array<number | Range> {
 	 * @param arr 参考数组
 	 */
 	applyTo(arr: number | unknown[]): number[] {
-		const length = typeof arr === 'number' ? arr : arr.length;
+		const length = typeof arr === 'number' ? arr : arr.length,
+			a = new Array(length).fill(undefined).map((_, i) => i);
 		return [
 			...new Set(
 				[...this].flatMap(ele => {
 					if (typeof ele === 'number') {
 						return ele < 0 ? ele + length : ele;
 					}
-					return ele.applyTo(length);
+					return ele.applyTo(a);
 				}),
 			),
 		].filter(i => i >= 0 && i < length).sort();
