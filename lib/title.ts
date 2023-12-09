@@ -10,6 +10,7 @@ export class Title {
 	valid;
 	ns;
 	fragment;
+	/** @private */
 	encoded = false;
 
 	/* NOT FOR BROWSER */
@@ -40,14 +41,14 @@ export class Title {
 
 	/** 完整标题 */
 	get title(): string {
-		const prefix = `${this.interwiki && `${this.interwiki}:`}${this.prefix}`;
-		let title = `${prefix}${this.main.replaceAll(' ', '_')}`;
+		const prefix = `${this.interwiki}${this.interwiki && ':'}${this.prefix}`;
+		let title = `${prefix}${this.main}`.replaceAll(' ', '_');
 		const redirected = this.redirects.get(title);
 		if (redirected) {
 			return redirected;
 		}
 		this.autoConvert();
-		title = `${prefix}${this.main.replaceAll(' ', '_')}`;
+		title = `${prefix}${this.main}`.replaceAll(' ', '_');
 		return this.redirects.get(title) ?? title;
 	}
 
@@ -73,6 +74,11 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
+		Object.defineProperties(this, {
+			encoded: {enumerable: false},
+			conversionTable: {enumerable: false},
+			redirects: {enumerable: false},
+		});
 		const {namespaces, nsid} = config;
 		this.#namespaces = namespaces;
 		let namespace = namespaces[defaultNs] ?? '';
