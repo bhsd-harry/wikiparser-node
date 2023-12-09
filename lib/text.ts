@@ -79,8 +79,9 @@ export class AstText extends AstNode {
 				const [, prefix, tag] = mt;
 				let {0: error, index} = mt;
 				if (prefix && prefix !== ']') {
-					index += prefix.length;
-					error = error.slice(prefix.length);
+					const {length} = prefix;
+					index += length;
+					error = error.slice(length);
 				}
 				const startIndex = start + index,
 					lines = data.slice(0, index).split('\n'),
