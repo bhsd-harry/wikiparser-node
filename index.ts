@@ -78,6 +78,12 @@ const rootRequire = (file: string, dir: string): unknown => require(
 	file.startsWith('/') ? file : `../${file.includes('/') ? '' : dir}${file}`,
 );
 
+/**
+ * 清理解析专用的不可见字符
+ * @param text 源文本
+ */
+const tidy = (text: string): string => text.replace(/[\0\x7F]/gu, '');
+
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	config: 'default',
@@ -127,11 +133,10 @@ const Parser: Parser = {
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		const {Token}: typeof import('./src/index') = require('./src/index');
-		let token: Token;
-		Shadow.run(() => {
-			token = new Token(wikitext.replace(/[\0\x7F]/gu, ''), config);
+		const root = Shadow.run(() => {
+			const token = new Token(tidy(wikitext), config);
 			try {
-				token.parse(maxStage, include);
+				return token.parse(maxStage, include);
 			} catch (e) {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
@@ -145,7 +150,7 @@ const Parser: Parser = {
 				throw e;
 			}
 		});
-		return token!;
+		return root;
 	},
 };
 
