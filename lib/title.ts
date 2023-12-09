@@ -41,13 +41,13 @@ export class Title {
 	/** 完整标题 */
 	get title(): string {
 		const prefix = `${this.interwiki && `${this.interwiki}:`}${this.prefix}`;
-		let title = `${prefix}${this.#main.replaceAll(' ', '_')}`;
+		let title = `${prefix}${this.main.replaceAll(' ', '_')}`;
 		const redirected = this.redirects.get(title);
 		if (redirected) {
 			return redirected;
 		}
 		this.autoConvert();
-		title = `${prefix}${this.#main.replaceAll(' ', '_')}`;
+		title = `${prefix}${this.main.replaceAll(' ', '_')}`;
 		return this.redirects.get(title) ?? title;
 	}
 
@@ -128,7 +128,7 @@ export class Title {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
 			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
-			this.main = this.#main.replace(regex, p => conversionTable.get(p)!);
+			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
 		}
 	}
 }

@@ -22,7 +22,6 @@ export class AstRange {
 	 * @param start 是否未初始化起点
 	 * @throws `Error` 未初始化
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	#notInit(start: boolean): never {
 		throw new Error(`请先指定${start ? '起始' : '终止'}位置！`);
 	}

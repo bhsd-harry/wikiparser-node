@@ -132,13 +132,13 @@ export abstract class AstNode {
 
 	/** 后一个兄弟节点 */
 	get nextSibling(): AstNodes | undefined {
-		const childNodes = this.#parentNode?.childNodes;
+		const childNodes = this.parentNode?.childNodes;
 		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) + 1];
 	}
 
 	/** 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
-		const childNodes = this.#parentNode?.childNodes;
+		const childNodes = this.parentNode?.childNodes;
 		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) - 1];
 	}
 
@@ -156,14 +156,14 @@ export abstract class AstNode {
 
 	/** 后一个非文本兄弟节点 */
 	get nextElementSibling(): Token | undefined {
-		const childNodes = this.#parentNode?.childNodes,
+		const childNodes = this.parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
 		return childNodes?.slice(i! + 1).find(({type}) => type !== 'text') as Token | undefined;
 	}
 
 	/** 前一个非文本兄弟节点 */
 	get previousElementSibling(): Token | undefined {
-		const childNodes = this.#parentNode?.childNodes,
+		const childNodes = this.parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
 		return childNodes?.slice(0, i).findLast(({type}) => type !== 'text') as Token | undefined;
 	}
@@ -175,14 +175,15 @@ export abstract class AstNode {
 
 	/** 后方是否还有其他节点（不含后代） */
 	get eof(): boolean | undefined {
-		if (!this.#parentNode) {
+		const {parentNode} = this;
+		if (!parentNode) {
 			return true;
 		}
 		let {nextSibling} = this;
 		while (nextSibling?.type === 'text' && nextSibling.data.trim() === '') {
 			({nextSibling} = nextSibling);
 		}
-		return nextSibling === undefined && this.#parentNode.eof;
+		return nextSibling === undefined && parentNode.eof;
 	}
 
 	/** 相对于父容器的行号 */
@@ -491,8 +492,8 @@ export abstract class AstNode {
 			currentTarget: {value: this, enumerable: true, configurable: true},
 		});
 		this.#events.emit(e.type, e, data);
-		if (e.bubbles && this.#parentNode) {
-			this.#parentNode.dispatchEvent(e, data);
+		if (e.bubbles && this.parentNode) {
+			this.parentNode.dispatchEvent(e, data);
 		}
 	}
 
@@ -544,7 +545,7 @@ export abstract class AstNode {
 
 	/** 获取当前节点的相对位置 */
 	#getPosition(): Position {
-		return this.#parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
+		return this.parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
 	}
 
 	/** 获取当前节点的行列位置和大小 */

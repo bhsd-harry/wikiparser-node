@@ -33,7 +33,7 @@ export abstract class TagPairToken extends fixed(Token) {
 	}
 
 	set selfClosing(value) {
-		if (value !== this.#selfClosing && this.lastChild.text()) {
+		if (value !== this.selfClosing && this.lastChild.text()) {
 			Parser.warn(`<${this.name}>标签内部的${value ? '文本将被隐藏' : '原有文本将再次可见'}！`);
 		}
 		this.#selfClosing = value;
@@ -41,7 +41,7 @@ export abstract class TagPairToken extends fixed(Token) {
 
 	/** 内部wikitext */
 	get innerText(): string | undefined {
-		return this.#selfClosing ? undefined : this.lastChild.text();
+		return this.selfClosing ? undefined : this.lastChild.text();
 	}
 
 	/* NOT FOR BROWSER END */
