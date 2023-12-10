@@ -4,7 +4,7 @@
 		"*.ts"
 	],
 	"compilerOptions": {
-		"target": "ES6",
+		"target": "ES2018",
 		"module": "ES6",
 		"declaration": false,
 		"outDir": "dist",

@@ -1,4 +1,6 @@
 import type {Config, LintError, ParserBase} from '../base';
+import type {Printer} from './editor';
+import type {Linter} from './lint';
 
 /** 类似Node */
 declare class AstNode {
@@ -20,47 +22,6 @@ export interface Parser extends ParserBase {
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstNode;
-}
-
-/** 用于语法分析 */
-declare class Linter {
-	include: boolean;
-
-	/** @param include 是否嵌入 */
-	constructor(include?: boolean);
-
-	/**
-	 * 提交语法分析
-	 * @param wikitext 待分析的文本
-	 */
-	queue(wikitext: string): Promise<LintError[]>;
-}
-
-/** 用于打印AST */
-declare class Printer {
-	include: boolean;
-	running: Promise<void> | undefined;
-	ticks: [number, 'coarsePrint' | 'finePrint' | undefined];
-
-	/**
-	 * @param preview 置于下层的代码高亮
-	 * @param textbox 置于上层的文本框
-	 * @param include 是否嵌入
-	 */
-	constructor(preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean);
-
-	/**
-	 * 用于debounce
-	 * @param delay 延迟
-	 * @param method 方法
-	 */
-	queue(delay: number, method: 'coarsePrint' | 'finePrint'): void;
-
-	/** 初步解析 */
-	coarsePrint(): Promise<void>;
-
-	/** 根据可见范围精细解析 */
-	finePrint(): Promise<void>;
 }
 
 export interface wikiparse {
