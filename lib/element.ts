@@ -366,7 +366,14 @@ export abstract class AstElement extends AstNode {
 		return fixed || protectedIndices.includes(childNodes.indexOf(this as AstElement as Token));
 	}
 
-	/** @private */
+	/**
+	 * 检查是否符合属性选择器
+	 * @param key 属性键
+	 * @param equal 比较符
+	 * @param val 属性值
+	 * @param i 是否对大小写不敏感
+	 * @throws `RangeError` 复杂属性不能用于选择器
+	 */
 	#matchesAttr(this: AstElement & AttributesParent, key: string, equal?: string, val = '', i?: string): boolean {
 		const isAttr = typeof this.hasAttr === 'function' && typeof this.getAttr === 'function';
 		if (!(key in this) && (!isAttr || !this.hasAttr!(key))) {
@@ -376,9 +383,11 @@ export abstract class AstElement extends AstNode {
 		}
 		const v = toCase(val, i);
 		let thisVal = this.getAttribute(key) as unknown;
-		if (isAttr && thisVal === undefined) {
+		if (isAttr) {
 			const attr = this.getAttr!(key);
-			thisVal = attr === true ? '' : attr;
+			if (attr !== undefined) {
+				thisVal = attr === true ? '' : attr;
+			}
 		}
 		if (thisVal instanceof RegExp) {
 			thisVal = thisVal.source;
