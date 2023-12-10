@@ -4,10 +4,6 @@ import * as path from 'path';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
-	promises,
-	classes,
-	mixins,
-	parsers,
 } from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
@@ -160,13 +156,8 @@ const Parser: Parser = {
 
 const def: PropertyDescriptorMap = {},
 	enumerable = new Set([
-		'conversionTable',
-		'redirects',
-		'warning',
-		'debugging',
 		'normalizeTitle',
 		'parse',
-		'isInterwiki',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {
