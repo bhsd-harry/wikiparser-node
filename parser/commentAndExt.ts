@@ -41,7 +41,11 @@ export const parseCommentAndExt = (
 				i = wikitext.indexOf(onlyincludeLeft);
 				j = wikitext.indexOf(onlyincludeRight, i + length);
 			}
-			return `${str}${wikitext}`;
+			if (wikitext) {
+				new NoincludeToken(wikitext, config, accum);
+				str += `\0${accum.length - 1}c\x7F`;
+			}
+			return str;
 		}
 	}
 	const ext = config.ext.join('|'),
