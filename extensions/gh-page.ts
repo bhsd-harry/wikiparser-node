@@ -1,4 +1,5 @@
-import type {Config, wikiparse} from './typings';
+import type {Config} from '../base';
+import type {wikiparse} from './typings';
 
 (async () => {
 	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox')!,

@@ -1,4 +1,5 @@
-import type {Parser, Config, LintError, wikiparse} from './typings';
+import type {Config, LintError} from '../base';
+import type {Parser, wikiparse} from './typings';
 
 declare type WorkerListener<T> = ({data: [rid, res, resRaw]}: {data: [number, T, string]}) => void;
 

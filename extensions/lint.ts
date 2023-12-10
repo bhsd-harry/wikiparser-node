@@ -1,4 +1,5 @@
-import type {LintError, wikiparse} from './typings';
+import type {LintError} from '../base';
+import type {wikiparse} from './typings';
 
 (() => {
 	const {wikiparse} = window as unknown as {wikiparse: wikiparse};

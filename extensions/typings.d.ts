@@ -1,27 +1,4 @@
-export interface Config {
-	ext: string[];
-	html: [string[], string[], string[]];
-	namespaces: Record<string, string>;
-	nsid: Record<string, number>;
-	parserFunction: [Record<string, string>, string[], string[], string[]];
-	doubleUnderscore: [string[], string[]];
-	protocol: string;
-	img: Record<string, string>;
-	variants: string[];
-	excludes?: string[];
-	inExt?: boolean;
-}
-
-export interface LintError {
-	message: string;
-	severity: 'error' | 'warning';
-	startIndex: number;
-	endIndex: number;
-	startLine: number;
-	startCol: number;
-	endLine: number;
-	endCol: number;
-}
+import type {Config, LintError, ParserBase} from '../base';
 
 /** 类似Node */
 declare class AstNode {
@@ -35,12 +12,7 @@ declare class AstNode {
 	print(): string;
 }
 
-export interface Parser {
-	config?: Config;
-	i18n?: Record<string, string>;
-
-	/** @private */
-	getConfig(): Config;
+export interface Parser extends ParserBase {
 
 	/**
 	 * 解析wikitext
@@ -88,7 +60,7 @@ declare class Printer {
 	coarsePrint(): Promise<void>;
 
 	/** 根据可见范围精细解析 */
-	async finePrint(): Promise<void>;
+	finePrint(): Promise<void>;
 }
 
 export interface wikiparse {
