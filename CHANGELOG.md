@@ -12,6 +12,7 @@ First TypeScript version
 
 **Fixed**
 
+- Wrapping the text after the last `</onlyinclude>` in a `NoincludeToken`.
 - Replacing remaining spaces in [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title) property with underscores  
 - [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) now maintains its content after `insertNode`, `deleteContents`, `extractContents` and `cloneContents` methods
 
