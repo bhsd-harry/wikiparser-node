@@ -7,6 +7,7 @@ import type {Title} from './lib/title';
 import type {Token} from './internal';
 import type {
 	Config,
+	LintError,
 	ParserBase,
 } from './base';
 
@@ -118,3 +119,4 @@ if (typeof self === 'object') {
 }
 
 export default Parser;
+export type {Config, LintError};
