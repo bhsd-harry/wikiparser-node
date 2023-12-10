@@ -1,3 +1,4 @@
+import {utils} from './constants';
 import * as Parser from '../index';
 import type {LintError} from '../index';
 import type {AstNodes, Token} from '../internal';
@@ -66,3 +67,5 @@ export const generateForSelf = (
 		excerpt: str.slice(0, 50),
 	};
 };
+
+utils['lint'] = __filename;

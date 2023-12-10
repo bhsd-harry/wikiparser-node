@@ -1,3 +1,4 @@
+import {utils} from './constants';
 import type {Token} from '../internal';
 
 declare interface Shadow {
@@ -72,3 +73,5 @@ export const undo = (e: AstEvent, data: AstEventData): void => {
 			throw new RangeError(`无法撤销未知类型的事件：${String(type)}`);
 	}
 };
+
+utils['debug'] = __filename;

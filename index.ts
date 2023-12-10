@@ -9,6 +9,7 @@ import {
 	classes,
 	mixins,
 	parsers,
+	utils,
 } from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
@@ -282,6 +283,7 @@ const Parser: Parser = {
 				...Object.entries(classes),
 				...Object.entries(mixins),
 				...Object.entries(parsers),
+				...Object.entries(utils),
 			];
 		for (const [, filePath] of entries) {
 			try {

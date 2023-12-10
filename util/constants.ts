@@ -8,6 +8,8 @@ export const mixins: Record<string, string> = {};
 
 export const parsers: Record<string, string> = {};
 
+export const utils: Record<string, string> = {};
+
 export const aliases = [
 	['AstText'],
 	['CommentToken', 'ExtToken', 'IncludeToken', 'NoincludeToken'],

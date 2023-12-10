@@ -1,3 +1,4 @@
+import {utils} from './constants';
 import type {AstNodes} from '../lib/node';
 
 export const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD])';
@@ -68,3 +69,5 @@ export const normalizeSpace = (token?: AstNodes): void => {
 		}
 	}
 };
+
+utils['string'] = __filename;
