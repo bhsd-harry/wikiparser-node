@@ -7,7 +7,7 @@ declare type WorkerListener<T> = ({data: [rid, res, resRaw]}: {data: [number, T,
 
 	/** web worker */
 	const workerJS = (): void => {
-		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.0.3-b/bundle/bundle.min.js');
+		self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.0-b/bundle/bundle.min.js');
 		const {Parser} = self as unknown as {Parser: Parser},
 			entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
