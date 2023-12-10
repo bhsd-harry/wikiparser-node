@@ -9,7 +9,8 @@
 		"test/**/*",
 		"typings/**/*",
 		"util/**/*",
-		"index.ts"
+		"index.ts",
+		"base.d.ts"
 	],
 	"compilerOptions": {
 		"target": "esnext",
