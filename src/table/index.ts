@@ -299,6 +299,12 @@ export class TableToken extends TrBaseToken {
 		return this.insertTableCell(inner, coords, subtype, attr);
 	}
 
+	/** @private */
+	prependTableRow(): TrToken {
+		require('../../addon/table');
+		return this.prependTableRow();
+	}
+
 	/**
 	 * 插入表格行
 	 * @param y 行号
@@ -360,6 +366,12 @@ export class TableToken extends TrBaseToken {
 		return this.mergeCells(xlim, ylim);
 	}
 
+	/** @private */
+	split(coords: TableCoords | TableRenderedCoords, dirs: Set<'rowspan' | 'colspan'>): void {
+		require('../../addon/table');
+		this.split(coords, dirs);
+	}
+
 	/**
 	 * 分裂成多行
 	 * @param coords 单元格坐标
@@ -403,6 +415,12 @@ export class TableToken extends TrBaseToken {
 	replicateTableCol(x: number): TdToken[] {
 		require('../../addon/table');
 		return this.replicateTableCol(x);
+	}
+
+	/** @private */
+	moveCol(x: number, reference: number, after?: boolean): void {
+		require('../../addon/table');
+		this.moveCol(x, reference, after);
 	}
 
 	/**

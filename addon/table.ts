@@ -1,3 +1,5 @@
+/* eslint operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
+
 import * as assert from 'assert/strict';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
@@ -10,12 +12,6 @@ import {TrBaseToken} from '../src/table/trBase';
 import type {TableCoords} from '../src/table/trBase';
 import type {TableRenderedCoords} from '../src/table';
 import type {TdAttrs, TdSubtypes} from '../src/table/td';
-
-declare interface ExtendedTableToken extends TableToken {
-	prependTableRow(): TrToken;
-	split(coords: TableCoords | TableRenderedCoords, dirs: Set<'rowspan' | 'colspan'>): void;
-	moveCol(x: number, reference: number, after?: boolean): void;
-}
 
 /**
  * 比较两个表格坐标
@@ -114,15 +110,16 @@ export class Layout extends Array<TableCoords[]> {
 	}
 }
 
-Object.assign(TableToken.prototype, {
+TableToken.prototype.getNthCell =
 	/** @implements */
-	getNthCell(this: TableToken, coords: TableCoords | TableRenderedCoords): TdToken | undefined {
+	function(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
 		const rawCoords = coords.row === undefined ? this.toRawCoords(coords) : coords;
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
-	},
+	};
 
+TableToken.prototype.getLayout	=
 	/** @implements */
-	getLayout(this: TableToken, stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
+	function(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
 		const rows = this.getAllRows(),
 			{length} = rows,
 			layout = new Layout(...new Array(length).fill(undefined).map(() => []));
@@ -166,22 +163,25 @@ Object.assign(TableToken.prototype, {
 			}
 		}
 		return layout;
-	},
+	};
 
+TableToken.prototype.printLayout =
 	/** @implements */
-	printLayout(this: TableToken): void {
+	function(): void {
 		this.getLayout().print();
-	},
+	};
 
+TableToken.prototype.toRenderedCoords =
 	/** @implements */
-	toRenderedCoords(this: TableToken, {row, column}: TableCoords): TableRenderedCoords | undefined {
+	function({row, column}: TableCoords): TableRenderedCoords | undefined {
 		const rowLayout = this.getLayout({row, column})[row],
 			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}) === 0);
 		return rowLayout && (x === -1 ? undefined : {y: row, x: x!});
-	},
+	};
 
+TableToken.prototype.toRawCoords =
 	/** @implements */
-	toRawCoords(this: TableToken, {x, y}: TableRenderedCoords): TableCoords | undefined {
+	function({x, y}: TableRenderedCoords): TableCoords | undefined {
 		const rowLayout = this.getLayout({x, y})[y],
 			coords = rowLayout?.[x];
 		if (coords) {
@@ -192,51 +192,51 @@ Object.assign(TableToken.prototype, {
 				: undefined;
 		}
 		return {row: 0, column: 0, start: true};
-	},
+	};
 
+TableToken.prototype.getFullRow =
 	/** @implements */
-	getFullRow(this: TableToken, y: number): Map<TdToken, boolean> {
+	function(y: number): Map<TdToken, boolean> {
 		const rows = this.getAllRows();
 		return new Map(this.getLayout({y})[y]?.map(({row, column}) => [rows[row]!.getNthCol(column)!, row === y]));
-	},
+	};
 
+TableToken.prototype.getFullCol =
 	/** @implements */
-	getFullCol(this: TableToken, x: number): Map<TdToken, boolean> {
+	function(x: number): Map<TdToken, boolean> {
 		const layout = this.getLayout(),
 			colLayout = layout.map(row => row[x]).filter(Boolean) as TableCoords[],
 			rows = this.getAllRows();
 		return new Map(colLayout.map(
 			coords => [rows[coords.row]!.getNthCol(coords.column)!, layout[coords.row]![x - 1] !== coords],
 		));
-	},
+	};
 
+TableToken.prototype.formatTableRow =
 	/** @implements */
-	formatTableRow(this: TableToken, y: number, attr: TdAttrs | string = {}, multiRow = false): void {
+	function(y: number, attr: TdAttrs | string = {}, multiRow = false): void {
 		format(this.getFullRow(y), attr, multiRow);
-	},
+	};
 
+TableToken.prototype.formatTableCol =
 	/** @implements */
-	formatTableCol(this: TableToken, x: number, attr: TdAttrs | string = {}, multiCol = false): void {
+	function(x: number, attr: TdAttrs | string = {}, multiCol = false): void {
 		format(this.getFullCol(x), attr, multiCol);
-	},
+	};
 
+TableToken.prototype.fillTableRow =
 	/** @implements */
-	fillTableRow(
-		this: TableToken,
-		y: number,
-		inner: string | Token,
-		subtype: TdSubtypes = 'td',
-		attr: TdAttrs = {},
-	): void {
+	function(y: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
 		const rowToken = this.getNthRow(y)!,
 			layout = this.getLayout({y}),
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		fill(y, rowToken, layout, maxCol, token);
-	},
+	};
 
+TableToken.prototype.fillTable =
 	/** @implements */
-	fillTable(this: TableToken, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	function(inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
@@ -244,11 +244,11 @@ Object.assign(TableToken.prototype, {
 		for (let y = 0; y < rowTokens.length; y++) {
 			fill(y, rowTokens[y]!, layout, maxCol, token);
 		}
-	},
+	};
 
+TableToken.prototype.insertTableCell =
 	/** @implements */
-	insertTableCell(
-		this: TableToken,
+	function(
 		inner: string | Token,
 		coords: TableCoords | TableRenderedCoords,
 		subtype: TdSubtypes = 'td',
@@ -268,10 +268,11 @@ Object.assign(TableToken.prototype, {
 		return rowToken === this
 			? TrBaseToken.prototype.insertTableCell.call(this, inner, rawCoords, subtype, attr)
 			: rowToken!.insertTableCell(inner, rawCoords, subtype, attr);
-	},
+	};
 
+TableToken.prototype.prependTableRow =
 	/** @implements */
-	prependTableRow(this: TableToken): TrToken {
+	function(): TrToken {
 		const row = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
@@ -287,11 +288,11 @@ Object.assign(TableToken.prototype, {
 			}
 		});
 		return row;
-	},
+	};
 
+TableToken.prototype.insertTableRow =
 	/** @implements */
-	insertTableRow(
-		this: ExtendedTableToken,
+	function(
 		y: number,
 		attr: Record<string, string | true> = {},
 		inner?: string | Token,
@@ -328,16 +329,11 @@ Object.assign(TableToken.prototype, {
 			});
 		}
 		return token;
-	},
+	};
 
+TableToken.prototype.insertTableCol =
 	/** @implements */
-	insertTableCol(
-		this: TableToken,
-		x: number,
-		inner: string | Token,
-		subtype: TdSubtypes = 'td',
-		attr: TdAttrs = {},
-	): void {
+	function(x: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
 		const layout = this.getLayout(),
 			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);
@@ -357,10 +353,11 @@ Object.assign(TableToken.prototype, {
 				this.getNthCell(coords)!.colspan++;
 			}
 		}
-	},
+	};
 
+TableToken.prototype.removeTableRow =
 	/** @implements */
-	removeTableRow(this: ExtendedTableToken, y: number): TrToken {
+	function(y: number): TrToken {
 		const rows = this.getAllRows(),
 			layout = this.getLayout(),
 			rowLayout = layout[y]!,
@@ -391,10 +388,11 @@ Object.assign(TableToken.prototype, {
 		const rowToken = rows[y]!.type === 'table' ? this.prependTableRow() : rows[y] as TrToken;
 		rowToken.remove();
 		return rowToken;
-	},
+	};
 
+TableToken.prototype.removeTableCol =
 	/** @implements */
-	removeTableCol(this: TableToken, x: number): void {
+	function(x: number): void {
 		for (const [token, start] of this.getFullCol(x)) {
 			const {colspan, lastChild} = token;
 			if (colspan > 1) {
@@ -406,10 +404,11 @@ Object.assign(TableToken.prototype, {
 				token.remove();
 			}
 		}
-	},
+	};
 
+TableToken.prototype.mergeCells =
 	/** @implements */
-	mergeCells(this: TableToken, xlim: [number, number], ylim: [number, number]): TdToken {
+	function(xlim: [number, number], ylim: [number, number]): TdToken {
 		const layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort() as [number, number],
@@ -430,10 +429,11 @@ Object.assign(TableToken.prototype, {
 			token.remove();
 		}
 		return cornerCell;
-	},
+	};
 
+TableToken.prototype.split =
 	/** @implements */
-	split(this: TableToken, coords: TableCoords | TableRenderedCoords, dirs: Set<'rowspan' | 'colspan'>): void {
+	function(coords: TableCoords | TableRenderedCoords, dirs: Set<'rowspan' | 'colspan'>): void {
 		const cell = this.getNthCell(coords)!,
 			attr = cell.getAttrs(),
 			{subtype} = cell;
@@ -472,25 +472,29 @@ Object.assign(TableToken.prototype, {
 				}
 			}
 		}
-	},
+	};
 
+TableToken.prototype.splitIntoRows =
 	/** @implements */
-	splitIntoRows(this: ExtendedTableToken, coords: TableCoords | TableRenderedCoords): void {
+	function(coords: TableCoords | TableRenderedCoords): void {
 		this.split(coords, new Set(['rowspan']));
-	},
+	};
 
+TableToken.prototype.splitIntoCols =
 	/** @implements */
-	splitIntoCols(this: ExtendedTableToken, coords: TableCoords | TableRenderedCoords): void {
+	function(coords: TableCoords | TableRenderedCoords): void {
 		this.split(coords, new Set(['colspan']));
-	},
+	};
 
+TableToken.prototype.splitIntoCells =
 	/** @implements */
-	splitIntoCells(this: ExtendedTableToken, coords: TableCoords | TableRenderedCoords): void {
+	function(coords: TableCoords | TableRenderedCoords): void {
 		this.split(coords, new Set(['rowspan', 'colspan']));
-	},
+	};
 
+TableToken.prototype.replicateTableRow =
 	/** @implements */
-	replicateTableRow(this: ExtendedTableToken, row: number): TrToken {
+	function(row: number): TrToken {
 		let rowToken = this.getNthRow(row)!;
 		if (rowToken.type === 'table') {
 			rowToken = this.prependTableRow();
@@ -504,10 +508,11 @@ Object.assign(TableToken.prototype, {
 			}
 		}
 		return replicated;
-	},
+	};
 
+TableToken.prototype.replicateTableCol =
 	/** @implements */
-	replicateTableCol(this: TableToken, x: number): TdToken[] {
+	function(x: number): TdToken[] {
 		const replicated: TdToken[] = [];
 		for (const [token, start] of this.getFullCol(x)) {
 			if (start) {
@@ -520,10 +525,11 @@ Object.assign(TableToken.prototype, {
 			}
 		}
 		return replicated;
-	},
+	};
 
+TableToken.prototype.moveTableRowBefore =
 	/** @implements */
-	moveTableRowBefore(this: ExtendedTableToken, y: number, before: number): TrToken {
+	function(y: number, before: number): TrToken {
 		const layout = this.getLayout(),
 			/** @ignore */
 			occupied = (i: number): number[] =>
@@ -548,10 +554,11 @@ Object.assign(TableToken.prototype, {
 		}
 		this.insertBefore(rowToken, beforeToken);
 		return rowToken;
-	},
+	};
 
+TableToken.prototype.moveTableRowAfter =
 	/** @implements */
-	moveTableRowAfter(this: TableToken, y: number, after: number): TrToken {
+	function(y: number, after: number): TrToken {
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after)!,
 			cells = afterToken.childNodes.filter(
@@ -588,10 +595,11 @@ Object.assign(TableToken.prototype, {
 			this.insertBefore(rowToken, afterToken);
 		}
 		return rowToken;
-	},
+	};
 
+TableToken.prototype.moveCol =
 	/** @implements */
-	moveCol(this: TableToken, x: number, reference: number, after = false): void {
+	function(x: number, reference: number, after = false): void {
 		const layout = this.getLayout();
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);
@@ -631,17 +639,18 @@ Object.assign(TableToken.prototype, {
 				}
 			}
 		}
-	},
+	};
 
+TableToken.prototype.moveTableColBefore =
 	/** @implements */
-	moveTableColBefore(this: ExtendedTableToken, x: number, before: number): void {
+	function(x: number, before: number): void {
 		this.moveCol(x, before);
-	},
+	};
 
+TableToken.prototype.moveTableColAfter =
 	/** @implements */
-	moveTableColAfter(this: ExtendedTableToken, x: number, after: number): void {
+	function(x: number, after: number): void {
 		this.moveCol(x, after, true);
-	},
-});
+	};
 
 classes['ExtendTableToken'] = __filename;
