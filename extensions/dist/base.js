@@ -1,7 +1,7 @@
 (() => {
     const MAX_STAGE = 11;
     const workerJS = () => {
-        self.importScripts('https://fastly.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.0-b/bundle/bundle.min.js');
+        self.importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.1-b/bundle/bundle.min.js');
         const { Parser } = self, entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
         self.onmessage = ({ data }) => {
             var _a;
@@ -14,7 +14,7 @@
                     Parser.config = qid;
                     break;
                 case 'getConfig':
-                    self.postMessage([qid, Parser.minConfig]);
+                    self.postMessage([qid, Parser.getConfig()]);
                     break;
                 case 'lint':
                     self.postMessage([qid, Parser.parse(...args).lint(), args[0]]);
