@@ -6,6 +6,8 @@ First TypeScript version
 
 # v1.1.0
 
+2023-12-11
+
 **Added**
 
 - New properties and methods for [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) objects: `extension`, `toSubjectPage`, `toTalkPage`, `isTalkPage`, `toBasePage`, `toRootPage`  
