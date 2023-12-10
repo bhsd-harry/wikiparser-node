@@ -42,7 +42,8 @@ export class ListToken extends sol(ListBaseToken) {
 			const i = nextSibling.data.indexOf('\n');
 			range.setEnd(nextSibling, i);
 		} else {
-			range.setEndAfter(this.parentNode!);
+			const {parentNode} = this;
+			range.setEnd(parentNode!, parentNode!.length);
 		}
 		return range;
 	}
