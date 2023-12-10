@@ -37,8 +37,10 @@ declare class AstNode {
 
 export interface Parser {
 	config?: Config;
-	minConfig: Config;
 	i18n?: Record<string, string>;
+
+	/** @private */
+	getConfig(): Config;
 
 	/**
 	 * 解析wikitext
