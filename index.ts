@@ -13,38 +13,9 @@ import {
 } from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
+import type {Config, LintError, ParserBase} from './base';
 
-export interface Config {
-	ext: string[];
-	html: [string[], string[], string[]];
-	namespaces: Record<string, string>;
-	nsid: Record<string, number>;
-	parserFunction: [Record<string, string>, string[], string[], string[]];
-	doubleUnderscore: [string[], string[]];
-	protocol: string;
-	img: Record<string, string>;
-	variants: string[];
-	interwiki: string[];
-	excludes?: string[];
-	conversionTable?: [string, string][];
-	redirects?: [string, string][];
-}
-
-export interface LintError {
-	message: string;
-	severity: 'error' | 'warning';
-	startIndex: number;
-	endIndex: number;
-	startLine: number;
-	startCol: number;
-	endLine: number;
-	endCol: number;
-	excerpt: string;
-}
-
-declare interface Parser {
-	config: string | Config;
-	i18n: string | Record<string, string> | undefined;
+declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
 
@@ -55,9 +26,6 @@ declare interface Parser {
 	debugging: boolean;
 
 	/* NOT FOR BROWSER END */
-
-	/** @private */
-	getConfig(): Config;
 
 	/** @private */
 	msg(msg: string, arg?: string): string;
@@ -355,4 +323,5 @@ Object.defineProperties(Parser, def);
 
 // @ts-expect-error mixed export styles
 export = Parser;
+export type {Config, LintError};
 export type * from './internal';
