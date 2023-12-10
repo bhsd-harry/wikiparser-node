@@ -5,11 +5,7 @@ import {
 } from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
-import type {
-	Config,
-	LintError,
-	ParserBase,
-} from './base';
+import type {Config, LintError, ParserBase} from './base';
 
 declare interface Parser extends ParserBase {
 
