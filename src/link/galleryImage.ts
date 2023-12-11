@@ -56,7 +56,7 @@ export class GalleryImageToken extends FileToken {
 		const errors = super.lint(start),
 			{
 				ns,
-			} = this.title;
+			} = this.#title;
 		if (ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
