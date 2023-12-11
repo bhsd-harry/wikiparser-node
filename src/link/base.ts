@@ -44,7 +44,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		this.#title = this.#getTitle();
+		this.#title = this.getTitle();
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
@@ -54,6 +54,8 @@ export abstract class LinkBaseToken extends Token {
 	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		if (key === 'bracket') {
 			this.#bracket = Boolean(value);
+		} else if (key === 'title') {
+			this.#title = (value as TokenAttributeSetter<'title'>)!;
 		} else {
 			super.setAttribute(key, value);
 		}
@@ -75,6 +77,9 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		if (key === 'title') {
+			return this.#title as TokenAttributeGetter<T>;
+		}
 		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
@@ -109,8 +114,8 @@ export abstract class LinkBaseToken extends Token {
 		return errors;
 	}
 
-	/** 生成Title对象 */
-	#getTitle(): Title {
+	/** @private */
+	getTitle(): Title {
 		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 	}
 }

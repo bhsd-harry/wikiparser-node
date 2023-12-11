@@ -1,3 +1,4 @@
+import type {Title} from '../lib/title';
 import type {Config} from '../base';
 import type {AstNodes, Token, ParameterToken} from '../internal';
 
@@ -15,6 +16,7 @@ declare global {
 		T extends 'quotes' ? [string?, string?] :
 		T extends 'optional' | 'keys' ? Set<string> :
 		T extends 'args' ? Map<string, Set<ParameterToken>> :
+		T extends 'title' ? Title :
 		string;
 
 	type TokenAttributeGetter<T extends string> =
