@@ -5,14 +5,15 @@ const {wikiparse} = window as unknown as {wikiparse: Wikiparse};
 /**
  * 高亮代码块
  * @param ele 代码块
+ * @param include 是否嵌入
  * @param linenums 是否添加行号
  * @param start 起始行号
  */
-const highlight = async (ele: HTMLElement, linenums: boolean, start = 1): Promise<void> => {
+const highlight = async (ele: HTMLElement, include?: boolean, linenums = false, start = 1): Promise<void> => {
 	if (ele.classList.contains('highlighted')) {
 		return;
 	}
-	const html = (await wikiparse.print(ele.innerText)).map(([,, printed]) => printed).join('');
+	const html = (await wikiparse.print(ele.innerText, include)).map(([,, printed]) => printed).join('');
 	ele.classList.add('highlighted');
 	if (linenums) {
 		// 添加行号。这里不使用<table>排版，而是使用<ol>

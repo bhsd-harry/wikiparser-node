@@ -9,9 +9,9 @@ export interface wikiparse {
 	setConfig(config: Config): void;
 	getConfig(): Promise<Config>;
 	print(wikitext: string, include?: boolean, stage?: number, qid?: number): Promise<[number, string, string][]>;
-	lint(wikitext: string, include: boolean, qid?: number): Promise<LintError[]>;
+	lint(wikitext: string, include?: boolean, qid?: number): Promise<LintError[]>;
 	/* eslint-disable @typescript-eslint/method-signature-style */
-	highlight?: (ele: HTMLElement, linenums: boolean, start?: number) => Promise<void>;
+	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => Printer;
 	/* eslint-enable @typescript-eslint/method-signature-style */
 	Printer?: typeof Printer;

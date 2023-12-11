@@ -16,7 +16,7 @@ const workerJS = (): void => {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
 			| ['getConfig', number]
-			| ['lint', number, string, boolean]
+			| ['lint', number, string, boolean?]
 			| ['print', number, string, boolean?, number?];
 	}): void => {
 		const [command, qid, ...args] = data;
@@ -31,7 +31,7 @@ const workerJS = (): void => {
 				self.postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'lint':
-				self.postMessage([qid, Parser.parse(...(args as [string, boolean])).lint(), args[0]!]);
+				self.postMessage([qid, Parser.parse(...(args as [string, boolean?])).lint(), args[0]!]);
 				break;
 			// case 'print':
 			default: {
@@ -125,7 +125,7 @@ const print = (
  * @param include 是否嵌入
  * @param qid Linter编号，暂时固定为`-2`
  */
-const lint = (wikitext: string, include: boolean, qid = -2): Promise<LintError[]> => new Promise(resolve => {
+const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[]> => new Promise(resolve => {
 	worker.addEventListener('message', getListener(qid, resolve, wikitext));
 	worker.postMessage(['lint', qid, wikitext, include]);
 });

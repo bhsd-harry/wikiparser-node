@@ -1,10 +1,10 @@
 (() => {
 const { wikiparse } = window;
-const highlight = async (ele, linenums, start = 1) => {
+const highlight = async (ele, include, linenums = false, start = 1) => {
     if (ele.classList.contains('highlighted')) {
         return;
     }
-    const html = (await wikiparse.print(ele.innerText)).map(([, , printed]) => printed).join('');
+    const html = (await wikiparse.print(ele.innerText, include)).map(([, , printed]) => printed).join('');
     ele.classList.add('highlighted');
     if (linenums) {
         const lines = html.split('\n').map((line, i) => {
