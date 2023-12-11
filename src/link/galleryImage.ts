@@ -12,7 +12,6 @@ import type {LintError} from '../../base';
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
-	#title: Title;
 
 	/**
 	 * @param type 图片类型
@@ -40,8 +39,8 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		this.type = `${type}-image`;
 	}
 
-	/** 生成Title对象 */
-	#getTitle(): Title {
+	/** private */
+	override getTitle(): Title {
 		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(String(this.firstChild), imagemap ? 0 : 6, true, !imagemap);
 	}
@@ -56,15 +55,23 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		const errors = super.lint(start),
 			{
 				ns,
-			} = this.#title;
+			} = this.getAttribute('title');
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;
 	}
 
+	/**
+	 * 设置`#title`
+	 * @param title Title对象
+	 */
+	#setName(title: Title): void {
+		this.setAttribute('title', title);
+	}
+
 	/** @private */
 	override afterBuild(): void {
-		this.#title = this.#getTitle();
+		this.#setName(this.getTitle());
 	}
 }
