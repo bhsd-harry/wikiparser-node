@@ -12,6 +12,7 @@ import type {LintError} from '../../index';
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends FileToken {
 	declare type: 'gallery-image' | 'imagemap-image';
+	#title: Title;
 
 	/**
 	 * @param type 图片类型
@@ -55,10 +56,15 @@ export class GalleryImageToken extends FileToken {
 		const errors = super.lint(start),
 			{
 				ns,
-			} = this.#getTitle();
+			} = this.title;
 		if (ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;
+	}
+
+	/** @private */
+	override afterBuild(): void {
+		this.#title = this.#getTitle();
 	}
 }
