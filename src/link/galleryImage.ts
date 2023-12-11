@@ -17,7 +17,6 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
-	#title: Title;
 
 	/* NOT FOR BROWSER */
 
@@ -60,8 +59,8 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		this.type = `${type}-image`;
 	}
 
-	/** 生成Title对象 */
-	#getTitle(): Title {
+	/** private */
+	override getTitle(): Title {
 		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(String(this.firstChild), imagemap ? 0 : 6, true, !imagemap);
 	}
@@ -77,23 +76,31 @@ export class GalleryImageToken extends singleLine(FileToken) {
 			{
 				interwiki,
 				ns,
-			} = this.#title;
+			} = this.getAttribute('title');
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
 		return errors;
 	}
 
+	/**
+	 * 设置`#title`
+	 * @param title Title对象
+	 */
+	#setName(title: Title): void {
+		this.setAttribute('title', title);
+		this.setAttribute('name', title.title);
+	}
+
 	/** @private */
 	override afterBuild(): void {
-		this.#title = this.#getTitle();
-		this.setAttribute('name', this.#title.title);
+		this.#setName(this.getTitle());
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
-					titleObj = this.#getTitle(),
-					{title, interwiki, ns, valid} = titleObj;
+					title = this.getTitle(),
+					{interwiki, ns, valid} = title;
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的图片文件名：${name}`);
@@ -101,8 +108,7 @@ export class GalleryImageToken extends singleLine(FileToken) {
 					undo(e, data);
 					throw new Error(`图片链接不可更改命名空间：${name}`);
 				}
-				this.#title = titleObj;
-				this.setAttribute('name', title);
+				this.#setName(title);
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
