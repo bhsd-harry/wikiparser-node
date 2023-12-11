@@ -23,10 +23,29 @@ export interface LintError {
 	endCol: number;
 }
 
-export interface ParserBase {
+/** 类似Node */
+export abstract class AstNode {
+	type: string;
+	childNodes: AstNode[];
+
+	/** Linter */
+	lint(): LintError[];
+
+	/** 以HTML格式打印 */
+	print(): string;
+}
+
+export interface Parser {
 	config?: Config;
 	i18n: Record<string, string> | undefined;
 
 	/** @private */
 	getConfig(): Config;
+
+	/**
+	 * 解析wikitext
+	 * @param include 是否嵌入
+	 * @param maxStage 最大解析层级
+	 */
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstNode;
 }

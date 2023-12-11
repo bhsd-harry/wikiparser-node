@@ -1,3 +1,4 @@
+import {AstNode as AstNodeBase} from '../base';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;
@@ -84,10 +85,10 @@ export interface CaretPosition {
 }
 
 /** 类似Node */
-export abstract class AstNode {
+export abstract class AstNode extends AstNodeBase {
 	declare type: TokenTypes | 'text';
 	declare data?: string | undefined;
-	readonly childNodes: AstNodes[] = [];
+	override readonly childNodes: AstNodes[] = [];
 	#parentNode: Token | undefined;
 
 	/** 首位子节点 */

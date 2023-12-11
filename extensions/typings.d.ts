@@ -1,28 +1,6 @@
-import type {Config, LintError, ParserBase} from '../base';
+import type {Config, LintError} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
-
-/** 类似Node */
-declare class AstNode {
-	type: string;
-	childNodes: AstNode[];
-
-	/** Linter */
-	lint(): LintError[];
-
-	/** 以HTML格式打印 */
-	print(): string;
-}
-
-export interface Parser extends ParserBase {
-
-	/**
-	 * 解析wikitext
-	 * @param include 是否嵌入
-	 * @param maxStage 最大解析层级
-	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstNode;
-}
 
 export interface wikiparse {
 	readonly MAX_STAGE: number;

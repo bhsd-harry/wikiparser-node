@@ -139,10 +139,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Linter
+	 * @override
 	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
 		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
 			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name!)
@@ -159,10 +159,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 以HTML格式打印
+	 * @override
 	 * @param opt 选项
 	 */
-	print(opt: PrintOpt = {}): string {
+	override print(opt: PrintOpt = {}): string {
 		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
 	}
 }
