@@ -11,7 +11,7 @@ import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {Title} from '../lib/title';
 
 /**

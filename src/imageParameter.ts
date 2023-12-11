@@ -6,7 +6,7 @@ import {
 import {generateForSelf} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
-import type {LintError, Config} from '../index';
+import type {LintError, Config} from '../base';
 import type {Title} from '../lib/title';
 import type {
 	AtomToken,
