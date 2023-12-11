@@ -1,15 +1,7 @@
 import {utils} from './constants';
 import type {Token} from '../internal';
 
-declare interface Shadow {
-	running: boolean;
-
-	/** @private */
-	run<T>(callback: () => T): T;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const Shadow: Shadow = {
+export const Shadow = {
 
 	/* NOT FOR BROWSER */
 
@@ -17,8 +9,8 @@ export const Shadow: Shadow = {
 
 	/* NOT FOR BROWSER END */
 
-	/** @implements */
-	run(callback) {
+	/** @private */
+	run<T>(callback: () => T): T {
 		const {running} = this;
 		this.running = true;
 		try {

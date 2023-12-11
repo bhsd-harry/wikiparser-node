@@ -14,7 +14,6 @@ import type {LintError} from '../index';
  */
 export class ArgToken extends Token {
 	override readonly type = 'arg';
-	declare name: string;
 
 	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
@@ -37,6 +36,12 @@ export class ArgToken extends Token {
 
 	set default(value) {
 		this.setDefault(value);
+	}
+
+	/** 参数名 */
+	// @ts-expect-error getter for property
+	override get name(): string {
+		return this.firstChild.text().trim();
 	}
 
 	/* NOT FOR BROWSER END */
@@ -134,22 +139,6 @@ export class ArgToken extends Token {
 			token.afterBuild();
 			return token;
 		});
-	}
-
-	/** 设置name */
-	#setName(): void {
-		this.setAttribute('name', this.firstChild.text().trim());
-	}
-
-	/** @private */
-	override afterBuild(): void {
-		this.#setName();
-		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
-			if (prevTarget === this.firstChild) {
-				this.#setName();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
 	}
 
 	/** 移除无效部分 */
