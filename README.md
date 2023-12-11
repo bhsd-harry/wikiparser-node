@@ -16,7 +16,7 @@ wikiparser-node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/)
 
 提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext) 插件。
 
-## Browser
+## Browser-compatible
 
 兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror5](https://codemirror.net/5/) 编辑器作为语法分析插件。（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）
 
