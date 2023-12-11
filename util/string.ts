@@ -44,11 +44,6 @@ export const noWrap = (str: string): string => str.replace(/\n/gu, '\\n');
  * @param opt 选项
  */
 export const print = (childNodes: AstNodes[], opt: PrintOpt = {}): string => {
-	const {pre = '', post = '', sep = ''} = opt,
-		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-	return `${pre}${childNodes.map(
-		child => child.type === 'text'
-			? child.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
-			: child.print(),
-	).join(sep)}${post}`;
+	const {pre = '', post = '', sep = ''} = opt;
+	return `${pre}${childNodes.map(child => child.print()).join(sep)}${post}`;
 };

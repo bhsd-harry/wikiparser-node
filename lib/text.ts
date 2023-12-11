@@ -31,6 +31,7 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]
 		'select',
 		'textarea',
 	];
+const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 /** 文本节点 */
 export class AstText extends AstNode {
@@ -138,5 +139,10 @@ export class AstText extends AstNode {
 	 */
 	replaceData(text: string): void {
 		this.#setData(text);
+	}
+
+	/** 打印 */
+	print(): string {
+		return this.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`);
 	}
 }
