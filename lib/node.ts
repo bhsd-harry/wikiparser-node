@@ -1,6 +1,8 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
+import type {LintError} from '../index';
+import type {AstNode as AstNodeBase} from '../base';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;
@@ -102,7 +104,7 @@ const typeError = ({name}: Function, method: string, ...args: string[]): never =
 /* NOT FOR BROWSER END */
 
 /** 类似Node */
-export abstract class AstNode {
+export abstract class AstNode implements AstNodeBase {
 	declare type: TokenTypes | 'text';
 	declare data?: string | undefined;
 	readonly childNodes: AstNodes[] = [];
@@ -114,6 +116,9 @@ export abstract class AstNode {
 	#events = new EventEmitter();
 
 	/* NOT FOR BROWSER END */
+
+	abstract lint(): LintError[];
+	abstract print(): string;
 
 	/** 首位子节点 */
 	get firstChild(): AstNodes | undefined {
