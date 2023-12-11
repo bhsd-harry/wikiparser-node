@@ -28,21 +28,17 @@ export class ConverterRuleToken extends Token {
 	 */
 	constructor(rule: string, hasColon = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum);
-		if (hasColon) {
-			const i = rule.indexOf(':'),
-				j = rule.slice(0, i).indexOf('=>'),
-				v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
-			if (config.variants.includes(v.trim())) {
-				super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
-				super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
-				if (j !== -1) {
-					super.insertAt(new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum), 0);
-				}
-			} else {
-				super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
+		const i = rule.indexOf(':'),
+			j = rule.slice(0, i).indexOf('=>'),
+			v = j === -1 ? rule.slice(0, i) : rule.slice(j + 2, i);
+		if (hasColon && config.variants.includes(v.trim())) {
+			super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
+			super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
+			if (j !== -1) {
+				super.insertAt(new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum), 0);
 			}
 		} else {
-			super.insertAt(new AtomToken(rule, 'converter-rule-noconvert', config, accum));
+			super.insertAt(new AtomToken(rule, 'converter-rule-to', config, accum));
 		}
 	}
 

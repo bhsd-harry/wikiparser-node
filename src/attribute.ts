@@ -1,5 +1,4 @@
 import {generateForChild} from '../util/lint';
-import {removeComment} from '../util/string';
 import {
 	MAX_STAGE,
 } from '../util/constants';
@@ -149,7 +148,6 @@ const commonHtmlAttrs = new Set([
  */
 export class AttributeToken extends Token {
 	declare type: AttributeTypes;
-	declare name: string;
 	declare tag;
 	#equal;
 	#quotes;
@@ -165,6 +163,12 @@ export class AttributeToken extends Token {
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
+
+	/** 属性键 */
+	// @ts-expect-error getter for property
+	get name(): string {
+		return this.firstChild.text().trim().toLowerCase();
+	}
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {
@@ -225,7 +229,6 @@ export class AttributeToken extends Token {
 		this.#equal = equal;
 		this.#quotes = quotes;
 		this.tag = tag;
-		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
 	/** @private */
@@ -236,7 +239,6 @@ export class AttributeToken extends Token {
 		if (this.parentNode) {
 			this.setAttribute('tag', this.parentNode.name);
 		}
-		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
 	/** @private */
