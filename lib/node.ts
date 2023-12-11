@@ -1,3 +1,5 @@
+import type {LintError} from '../index';
+import type {AstNode as AstNodeBase} from '../base';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;
@@ -84,11 +86,13 @@ export interface CaretPosition {
 }
 
 /** 类似Node */
-export abstract class AstNode {
+export abstract class AstNode implements AstNodeBase {
 	declare type: TokenTypes | 'text';
 	declare data?: string | undefined;
 	readonly childNodes: AstNodes[] = [];
 	#parentNode: Token | undefined;
+
+	abstract lint(): LintError[];
 
 	/** 首位子节点 */
 	get firstChild(): AstNodes | undefined {

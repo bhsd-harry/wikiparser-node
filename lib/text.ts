@@ -55,10 +55,10 @@ export class AstText extends AstNode {
 	}
 
 	/**
-	 * Linter
+	 * @override
 	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this,
 			type = parentNode?.type,
 			name = parentNode?.name,

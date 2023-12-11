@@ -22,10 +22,26 @@ export interface LintError {
 	endCol: number;
 }
 
-export interface ParserBase {
+/** 类似Node */
+export interface AstNode {
+	type: string;
+	childNodes: AstNode[];
+
+	/** Linter */
+	lint(): LintError[];
+}
+
+export interface Parser {
 	config: string | Config;
 	i18n: string | Record<string, string> | undefined;
 
 	/** @private */
 	getConfig(): Config;
+
+	/**
+	 * 解析wikitext
+	 * @param include 是否嵌入
+	 * @param maxStage 最大解析层级
+	 */
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstNode;
 }

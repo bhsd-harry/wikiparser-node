@@ -138,10 +138,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * Linter
+	 * @override
 	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
 		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
 			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name!)
