@@ -16,9 +16,9 @@ import type {Title} from '../../lib/title';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
-	declare name: string;
 	#bracket = true;
 	#delimiter;
+	#title: Title;
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];
@@ -29,9 +29,15 @@ export abstract class LinkBaseToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	/** 链接目标名 */
+	// @ts-expect-error getter for property
+	override get name(): string {
+		return this.#title.title;
+	}
+
 	/** 完整链接 */
 	get link(): string | Title {
-		return this.#getTitle();
+		return this.#title;
 	}
 
 	set link(link: string) {
@@ -40,7 +46,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** fragment */
 	get fragment(): string | undefined {
-		return this.#getTitle().fragment;
+		return this.#title.fragment;
 	}
 
 	set fragment(fragment) {
@@ -77,7 +83,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		this.setAttribute('name', this.#getTitle().title);
+		this.#title = this.#getTitle();
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
@@ -85,7 +91,8 @@ export abstract class LinkBaseToken extends Token {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.text(),
-					{title, interwiki, ns, valid} = this.#getTitle();
+					title = this.#getTitle(),
+					{interwiki, ns, valid} = title;
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
@@ -104,7 +111,7 @@ export abstract class LinkBaseToken extends Token {
 						prevTarget.prepend(':');
 					}
 				}
-				this.setAttribute('name', title);
+				this.#title = title;
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
@@ -148,7 +155,7 @@ export abstract class LinkBaseToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this,
-			{encoded, fragment} = this.#getTitle();
+			{encoded, fragment} = this.#title;
 		let rect: BoundingRect | undefined;
 		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};

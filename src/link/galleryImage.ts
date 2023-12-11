@@ -17,8 +17,14 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 // @ts-expect-error not implementing all abstract methods
 export class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
+	#title: Title;
 
 	/* NOT FOR BROWSER */
+
+	/** 图片名 */
+	override get name(): string {
+		return this.#title.title;
+	}
 
 	/** 图片链接 */
 	override get link(): string | Title {
@@ -83,16 +89,15 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		return errors;
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** @private */
 	override afterBuild(): void {
-		this.setAttribute('name', this.#getTitle().title);
+		this.#title = this.#getTitle();
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
-					{title, interwiki, ns, valid} = this.#getTitle();
+					title = this.#getTitle(),
+					{interwiki, ns, valid} = title;
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的图片文件名：${name}`);
@@ -100,11 +105,13 @@ export class GalleryImageToken extends singleLine(FileToken) {
 					undo(e, data);
 					throw new Error(`图片链接不可更改命名空间：${name}`);
 				}
-				this.setAttribute('name', title);
+				this.#title = title;
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * @override
