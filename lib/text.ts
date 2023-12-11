@@ -62,7 +62,6 @@ const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 /** 文本节点 */
 export class AstText extends AstNode {
 	override readonly type = 'text';
-	declare name: undefined;
 	override data: string = '';
 
 	/* NOT FOR BROWSER */

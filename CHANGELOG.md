@@ -39,3 +39,7 @@ First TypeScript version
 **Changed**
 
 - Token type `converter-rule-noconvert` now regarded as `converter-rule-to`
+
+**Removed**
+
+- `HeadingToken.name` property
