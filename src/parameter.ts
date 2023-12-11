@@ -5,7 +5,7 @@ import {classes} from '../util/constants';
 import {fixed} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**

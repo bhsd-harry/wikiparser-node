@@ -4,7 +4,7 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {HiddenToken} from './hidden';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {
 	AstNodes,
 	AstText,

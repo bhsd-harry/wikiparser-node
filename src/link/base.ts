@@ -7,7 +7,7 @@ import {
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
 
 /**

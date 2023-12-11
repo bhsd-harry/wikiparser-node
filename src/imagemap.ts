@@ -7,7 +7,7 @@ import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {
 	AstNodes,
 	AstText,

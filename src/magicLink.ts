@@ -4,7 +4,7 @@ import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {
 	ParameterToken,
 	AstText,

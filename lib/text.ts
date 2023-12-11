@@ -1,7 +1,7 @@
 import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {AstNode} from './node';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 
 const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,

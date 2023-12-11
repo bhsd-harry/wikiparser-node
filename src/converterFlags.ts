@@ -4,7 +4,7 @@ import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);

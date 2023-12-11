@@ -6,7 +6,7 @@ import {fixed} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {AttributesToken, TranscludeToken} from '../internal';
 
 const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);

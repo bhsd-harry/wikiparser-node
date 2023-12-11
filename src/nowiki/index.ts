@@ -2,7 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import {classes} from '../../util/constants';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
 
 /** 扩展标签内的纯文字Token */

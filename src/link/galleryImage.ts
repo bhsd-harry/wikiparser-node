@@ -10,7 +10,7 @@ import {Token} from '../index';
 import {FileToken} from './file';
 import {galleryParams} from '../../index';
 import type {Title} from '../../lib/title';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /** 图库图片 */

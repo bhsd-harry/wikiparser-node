@@ -6,7 +6,7 @@ import * as Parser from '../../index';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
-import type {LintError, Config} from '../../index';
+import type {LintError, Config} from '../../base';
 
 /**
  * 从数组中删除指定元素

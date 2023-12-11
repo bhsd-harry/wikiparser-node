@@ -3,7 +3,7 @@ import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 
 /** `''`和`'''` */
 // @ts-expect-error not implementing all abstract methods

@@ -5,7 +5,7 @@ import {classes} from '../../util/constants';
 import * as Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 import type {TdAttrs, TdSubtypes} from './td';

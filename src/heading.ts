@@ -6,7 +6,7 @@ import {sol} from '../mixin/sol';
 import * as Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 
 /**
  * 章节标题

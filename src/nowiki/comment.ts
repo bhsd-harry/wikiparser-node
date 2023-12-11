@@ -4,7 +4,7 @@ import {classes} from '../../util/constants';
 import {hidden} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {Token} from '../index';
 
 /** HTML注释，不可见 */
