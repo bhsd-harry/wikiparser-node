@@ -24,7 +24,7 @@ export interface LintError {
 }
 
 /** 类似Node */
-export abstract class AstNode {
+export interface AstNode {
 	type: string;
 	childNodes: AstNode[];
 
