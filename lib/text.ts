@@ -58,10 +58,10 @@ export class AstText extends AstNode {
 	}
 
 	/**
-	 * Linter
+	 * @override
 	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this,
 			type = parentNode?.type,
 			name = parentNode?.name,
@@ -138,8 +138,8 @@ export class AstText extends AstNode {
 		this.#setData(text);
 	}
 
-	/** 打印 */
-	print(): string {
+	/** @override */
+	override print(): string {
 		return this.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`);
 	}
 }
