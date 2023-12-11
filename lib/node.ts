@@ -1,5 +1,4 @@
-import type {LintError} from '../index';
-import type {AstNode as AstNodeBase} from '../base';
+import type {LintError, AstNode as AstNodeBase} from '../base';
 import type {AstText, Token} from '../internal';
 
 export type AstNodes = AstText | Token;

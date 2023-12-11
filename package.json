@@ -30,7 +30,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build; rm dist/internal.js; rm -r dist/test; rm dist/[bmpu]*/*.d.ts; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
+		"prepublishOnly": "npm run build; rm dist/internal.js dist/base.js dist/[bmpu]*/*.d.ts; rm -r dist/test; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && eslint --cache .",

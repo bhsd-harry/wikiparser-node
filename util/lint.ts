@@ -1,5 +1,5 @@
 import * as Parser from '../index';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {AstNodes, Token} from '../internal';
 
 /**

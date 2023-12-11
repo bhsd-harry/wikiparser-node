@@ -6,7 +6,7 @@ import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 
 /** 图库图片 */
 // @ts-expect-error not implementing all abstract methods
@@ -56,7 +56,7 @@ export class GalleryImageToken extends FileToken {
 		const errors = super.lint(start),
 			{
 				ns,
-			} = this.title;
+			} = this.#title;
 		if (ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}

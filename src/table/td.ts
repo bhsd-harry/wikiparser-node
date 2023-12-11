@@ -2,7 +2,7 @@ import {generateForChild} from '../../util/lint';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
 export type TdSubtypes = 'td' | 'th' | 'caption';

@@ -1,6 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {TableBaseToken} from './base';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {
 	AstNodes,
 	ArgToken,
