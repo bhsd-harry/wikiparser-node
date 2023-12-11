@@ -3,7 +3,7 @@ import {generateForChild} from '../../util/lint';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 import type {Token, AtomToken} from '../../internal';
 
 const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),

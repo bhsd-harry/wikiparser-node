@@ -4,7 +4,7 @@ import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
 import {CommentToken} from './nowiki/comment';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {AttributesToken} from './attributes';
 
 /**

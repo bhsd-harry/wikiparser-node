@@ -6,7 +6,7 @@ import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
-import type {LintError} from '../../index';
+import type {LintError} from '../../base';
 
 /** 图库图片 */
 // @ts-expect-error not implementing all abstract methods

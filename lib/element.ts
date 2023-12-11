@@ -3,7 +3,7 @@ import {
 	text,
 } from '../util/string';
 import {AstNode} from './node';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {AstNodes, AstText, Token} from '../internal';
 
 const lintIgnoredExt = new Set([

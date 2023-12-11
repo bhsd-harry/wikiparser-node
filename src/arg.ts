@@ -4,7 +4,7 @@ import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 
 /**
  * `{{{}}}`包裹的参数

@@ -1,4 +1,4 @@
-import type {Config} from '../index';
+import type {Config} from '../base';
 import type {AstNodes, Token, ParameterToken} from '../internal';
 
 declare global {

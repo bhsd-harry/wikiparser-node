@@ -5,7 +5,6 @@ import type {Linter} from './lint';
 export interface wikiparse {
 	readonly MAX_STAGE: number;
 	id: number;
-	config?: Config;
 	setI18N(i18n: Record<string, string>): void;
 	setConfig(config: Config): void;
 	getConfig(): Promise<Config>;

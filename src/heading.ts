@@ -2,7 +2,7 @@ import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 
 /**
  * 章节标题

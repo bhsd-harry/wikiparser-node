@@ -6,7 +6,7 @@ import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
-import type {LintError} from '../index';
+import type {LintError} from '../base';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 

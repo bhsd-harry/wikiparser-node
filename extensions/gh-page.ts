@@ -5,7 +5,7 @@ import type {wikiparse} from './typings';
 	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox')!,
 		input: HTMLInputElement = document.querySelector('#wpInclude')!,
 		{wikiparse} = window as unknown as {wikiparse: wikiparse},
-		config: Config = await (await fetch('https://bhsd-harry.github.io/wikiparser-node/config/default.json')).json();
+		config: Config = await (await fetch('/wikiparser-node/config/default.json')).json();
 	wikiparse.setConfig(config);
 	const printer = wikiparse.edit!(textbox, input.checked);
 	input.addEventListener('change', () => {
