@@ -3,6 +3,7 @@
 [![CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml)
 
 # wikilint
+
 This is a minimal version of [wikiparser-node](https://www.npmjs.com/package/wikiparser-node) customized for [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext).
 
 You can also directly lint Wikitext articles in the command line using this package:
