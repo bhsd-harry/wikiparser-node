@@ -82,7 +82,7 @@ export class GalleryImageToken extends singleLine(FileToken) {
 			{
 				interwiki,
 				ns,
-			} = this.#getTitle();
+			} = this.#title;
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
