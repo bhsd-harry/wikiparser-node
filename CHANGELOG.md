@@ -1,10 +1,10 @@
-# v1.0.3
+## v1.0.3
 
 *2023-12-05*
 
 First TypeScript version
 
-# v1.1.0
+## v1.1.0
 
 *2023-12-11*
 
@@ -26,7 +26,7 @@ First TypeScript version
 
 - `AstRange.intersectsNode` method
 
-# v1.1.1
+## v1.1.1
 
 *2023-12-11*
 

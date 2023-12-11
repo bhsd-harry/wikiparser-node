@@ -16,7 +16,7 @@ wikiparser-node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext
 
 This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used in the [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext) plugin.
 
-## Browser
+## Browser-compatible
 
 A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with the [CodeMirror5](https://codemirror.net/5/) editor. ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
 
