@@ -33,3 +33,9 @@ First TypeScript version
 **Changed**
 
 - [`getAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#getAttr) as the preferred method for [attribute selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#属性)
+
+## v1.1.2
+
+**Changed**
+
+- Token type `converter-rule-noconvert` now regarded as `converter-rule-to`

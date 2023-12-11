@@ -50,7 +50,7 @@ declare interface Parser extends ParserBase {
 	): Title;
 
 	/**
-	 * 解析wikitext
+	 * @override
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */

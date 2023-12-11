@@ -15,7 +15,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/* NOT FOR BROWSER */
 
-	/** 内部wikitext */
+	/** 内部文本 */
 	override get innerText(): string {
 		return super.innerText;
 	}

@@ -103,9 +103,8 @@ export const typeAliases: Record<string, string[] | undefined> = {
 	'converter-flags': ['convert-flags', 'conversion-flags'],
 	'converter-flag': ['convert-flag', 'conversion-flag'],
 	'converter-rule': ['convert-rule', 'conversion-rule'],
-	'converter-rule-noconvert': ['convert-rule-noconvert', 'conversion-rule-noconvert'],
 	'converter-rule-variant': ['convert-rule-variant', 'conversion-rule-variant'],
-	'converter-rule-to': ['convert-rule-to', 'conversion-rule-to'],
+	'converter-rule-to': ['convert-rule-to', 'conversion-rule-to', 'converter-rule-noconvert'],
 	'converter-rule-from': ['convert-rule-from', 'conversion-rule-from'],
 	// specific extensions
 	'param-line': ['parameter-line'],
