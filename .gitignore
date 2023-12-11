@@ -5,6 +5,7 @@ dist/
 /printed/*
 /.vscode/
 /.eslintcache*
+/.markdownlint.json
 /wiki/
 /test/*.wiki
 /test/*.txt
