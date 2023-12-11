@@ -16,6 +16,7 @@ export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
 	#bracket = true;
 	#delimiter;
+	#title: Title;
 
 	declare childNodes: [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
@@ -43,6 +44,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
+		this.#title = this.#getTitle();
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
 		}
@@ -85,7 +87,7 @@ export abstract class LinkBaseToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{childNodes: [target, linkText], type: linkType} = this,
-			{encoded, fragment} = this.#getTitle();
+			{encoded, fragment} = this.#title;
 		let rect: BoundingRect | undefined;
 		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};

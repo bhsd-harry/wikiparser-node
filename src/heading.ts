@@ -10,7 +10,7 @@ import type {LintError} from '../index';
  */
 export class HeadingToken extends sol(fixed(Token)) {
 	override readonly type = 'heading';
-	declare name: string;
+	#level;
 
 	declare childNodes: [Token, SyntaxToken];
 	// @ts-expect-error abstract method
@@ -25,7 +25,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 
 	/** 标题层级 */
 	get level(): number {
-		return Number(this.name);
+		return this.#level;
 	}
 
 	/**
@@ -34,7 +34,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 	 */
 	constructor(level: number, input: [string?, string?], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum);
-		this.setAttribute('name', String(level));
+		this.#level = level;
 		const token = new Token(input[0], config, accum);
 		token.type = 'heading-title';
 		token.setAttribute('stage', 2);
@@ -76,7 +76,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 		const errors = super.lint(start),
 			innerStr = String(this.firstChild);
 		let refError: LintError | undefined;
-		if (this.name === '1') {
+		if (this.level === 1) {
 			refError = generateForSelf(this, {start}, '<h1>');
 			errors.push(refError);
 		}
