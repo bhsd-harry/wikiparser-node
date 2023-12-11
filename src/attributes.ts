@@ -355,7 +355,6 @@ export class AttributesToken extends Token {
 			['"', '"'],
 			this.getAttribute('config'),
 		));
-		token.setAttribute('name', key);
 		this.insertAt(token);
 	}
 
