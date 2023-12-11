@@ -56,7 +56,7 @@ export class GalleryImageToken extends singleLine(FileToken) {
 		const errors = super.lint(start),
 			{
 				ns,
-			} = this.#getTitle();
+			} = this.#title;
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
 		}
