@@ -21,11 +21,6 @@ export class GalleryImageToken extends singleLine(FileToken) {
 
 	/* NOT FOR BROWSER */
 
-	/** 图片名 */
-	override get name(): string {
-		return this.#title.title;
-	}
-
 	/** 图片链接 */
 	override get link(): string | Title {
 		return this.type === 'imagemap-image' ? '' : super.link;
@@ -92,12 +87,13 @@ export class GalleryImageToken extends singleLine(FileToken) {
 	/** @private */
 	override afterBuild(): void {
 		this.#title = this.#getTitle();
+		this.setAttribute('name', this.#title.title);
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
 				const name = String(prevTarget),
-					title = this.#getTitle(),
-					{interwiki, ns, valid} = title;
+					titleObj = this.#getTitle(),
+					{title, interwiki, ns, valid} = titleObj;
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的图片文件名：${name}`);
@@ -105,7 +101,8 @@ export class GalleryImageToken extends singleLine(FileToken) {
 					undo(e, data);
 					throw new Error(`图片链接不可更改命名空间：${name}`);
 				}
-				this.#title = title;
+				this.#title = titleObj;
+				this.setAttribute('name', title);
 			}
 		};
 		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);

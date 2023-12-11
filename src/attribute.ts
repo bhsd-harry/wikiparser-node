@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {removeComment} from '../util/string';
 import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
@@ -183,6 +184,7 @@ const commonHtmlAttrs = new Set([
  */
 export class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
+	declare name: string;
 	declare tag;
 	#equal;
 	#quotes;
@@ -210,12 +212,6 @@ export class AttributeToken extends fixed(Token) {
 	abstract override get previousSibling(): AtomToken | this | undefined;
 	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
-
-	/** 属性键 */
-	// @ts-expect-error getter for property
-	get name(): string {
-		return this.firstChild.text().trim().toLowerCase();
-	}
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {
@@ -309,6 +305,7 @@ export class AttributeToken extends fixed(Token) {
 		this.#quotes = quotes;
 		this.tag = tag;
 		this.seal('tag');
+		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
 	/** @private */
@@ -319,6 +316,7 @@ export class AttributeToken extends fixed(Token) {
 		if (this.parentNode) {
 			this.setAttribute('tag', this.parentNode.name);
 		}
+		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
 
 	/** @private */
@@ -413,6 +411,7 @@ export class AttributeToken extends fixed(Token) {
 			const token = new AttributeToken(this.type, this.tag, '', this.#equal, '', this.#quotes, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
+			token.setAttribute('name', this.name);
 			return token;
 		});
 	}
