@@ -223,16 +223,10 @@
 		"no-octal-escape": 2,
 		"no-restricted-globals": [
 			2,
-			"close",
-			"closed",
+			"escape",
+			"Range",
 			"constructor",
-			"length",
-			"name",
-			"open",
-			"parent",
-			"print",
 			"root",
-			"top",
 			"Request"
 		],
 		"no-return-assign": [
