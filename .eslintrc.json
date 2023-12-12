@@ -221,6 +221,20 @@
 		"no-new-object": 2,
 		"no-new-wrappers": 2,
 		"no-octal-escape": 2,
+		"no-restricted-globals": [
+			2,
+			"close",
+			"closed",
+			"constructor",
+			"length",
+			"name",
+			"open",
+			"parent",
+			"print",
+			"root",
+			"top",
+			"Request"
+		],
 		"no-return-assign": [
 			2,
 			"always"
@@ -440,7 +454,8 @@
 			2,
 			"single",
 			{
-				"allowTemplateLiterals": true
+				"allowTemplateLiterals": true,
+				"avoidEscape": true
 			}
 		],
 		"rest-spread-spacing": 2,
@@ -525,6 +540,7 @@
 		],
 		"regexp/prefer-escape-replacement-dollar-char": 2,
 		"regexp/prefer-quantifier": 2,
+		"regexp/prefer-regexp-exec": 2,
 		"regexp/prefer-regexp-test": 2,
 		"regexp/use-ignore-case": 2,
 		"regexp/hexadecimal-escape": 2,
