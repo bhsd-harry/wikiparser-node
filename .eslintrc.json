@@ -225,14 +225,14 @@
 			2,
 			"close",
 			"closed",
-			"constructor",
 			"length",
 			"name",
 			"open",
 			"parent",
 			"print",
-			"root",
 			"top",
+			"constructor",
+			"root",
 			"Request"
 		],
 		"no-return-assign": [
