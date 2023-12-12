@@ -38,10 +38,10 @@ export class TdToken extends fixed(TableBaseToken) {
 	 * @param inner 内部wikitext
 	 */
 	constructor(syntax: string, inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		let innerSyntax = inner?.match(/\||\0\d+!\x7F/u),
+		let innerSyntax = /\||\0\d+!\x7F/u.exec(inner ?? ''),
 			attr = innerSyntax ? inner!.slice(0, innerSyntax.index) : '';
 		if (/\[\[|-\{/u.test(attr)) {
-			innerSyntax = undefined;
+			innerSyntax = null;
 			attr = '';
 		}
 		super(
