@@ -9,7 +9,6 @@ import {
 	classes,
 	mixins,
 	parsers,
-	utils,
 } from './util/constants';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
@@ -18,6 +17,8 @@ import type {Config, LintError, Parser as ParserBase} from './base';
 declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
+
+	Shadow: typeof Shadow;
 
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
@@ -104,6 +105,8 @@ const Parser: Parser = {
 	i18n: undefined,
 
 	/* NOT FOR BROWSER */
+
+	Shadow,
 
 	conversionTable: new Map(),
 	redirects: new Map(),
@@ -251,7 +254,6 @@ const Parser: Parser = {
 				...Object.entries(classes),
 				...Object.entries(mixins),
 				...Object.entries(parsers),
-				...Object.entries(utils),
 			];
 		for (const [, filePath] of entries) {
 			try {

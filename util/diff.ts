@@ -1,6 +1,5 @@
 import * as fs from 'fs/promises';
 import {spawn} from 'child_process';
-import {utils} from './constants';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 process.on('unhandledRejection', e => {
@@ -72,5 +71,3 @@ export const diff = async (oldStr: string, newStr: string, uid = -1): Promise<vo
 	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
 	console.log(stdout?.split('\n').slice(4).join('\n'));
 };
-
-utils['diff'] = __filename;
