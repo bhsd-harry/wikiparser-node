@@ -4,7 +4,7 @@ then
 	sed -i '' -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 	git add -A
 	git commit -m "chore: publish v$1 to npm"
-	npm publish
+	npm publish --tag ${3-latest}
 else
 	npm run lint
 	if [[ $? -eq 0 ]]
