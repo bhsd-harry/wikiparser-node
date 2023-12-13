@@ -84,8 +84,11 @@ textarea {
 	max-height: 100vh;
 	direction: ltr;
 }
-#wikiPretty + #wpTextbox, div#wikiPretty {
+#wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor {
 	border-radius: .3em;
+}
+.cm-editor {
+	border: 1.5px solid #dedede;
 }
 
 @media screen and (max-width: 720px) {

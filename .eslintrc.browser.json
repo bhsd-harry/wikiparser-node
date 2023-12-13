@@ -17,6 +17,14 @@
 		"es-x/no-array-prototype-flat": 0,
 		"es-x/no-global-this": 0
 	},
+	"overrides": [
+		{
+			"files": "extensions/dist/gh-page.js",
+			"parserOptions": {
+				"sourceType": "module"
+			}
+		}
+	],
 	"settings": {
 		"es-x": {
 			"aggressive": true

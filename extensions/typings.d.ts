@@ -8,7 +8,7 @@ export type {EditorView};
 export type {Diagnostic} from '@codemirror/lint';
 
 declare global {
-	module 'http://*' {
+	module 'https://*' {
 		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
 		declare class CodeMirror6 {
 			/** @class */

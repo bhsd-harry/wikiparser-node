@@ -8,7 +8,8 @@
 		<link rel="stylesheet" href="extensions/editor.css">
 		<script defer="" src="extensions/dist/base.js"></script>
 		<script defer="" src="extensions/dist/editor.js"></script>
-		<script defer="" src="extensions/dist/gh-page.js"></script>
+		<script defer="" src="extensions/dist/lint.js"></script>
+		<script defer="" src="extensions/dist/gh-page.js" type="module"></script>
 	</head>
 	<body>
 		<main>
@@ -16,7 +17,7 @@
 				<h2>请在下面输入维基文本测试 wikiparser-node 的解析功能</h2>
 				<div class="fieldLayout">
 					<span class="field">
-						<input type="checkbox" name="wpInclude" id="wpInclude">
+						<input type="checkbox" name="wpInclude1" id="wpInclude1">
 						<span></span>
 					</span>
 					<span class="header">
@@ -24,7 +25,20 @@
 					</span>
 				</div>
 				<div>
-					<textarea id="wpTextbox" rows="25"></textarea>
+					<textarea id="wpTextbox1" rows="25"></textarea>
+				</div>
+				<h2>请在下面输入维基文本测试 wikiparser-node 的语法检查功能</h2>
+				<div class="fieldLayout">
+					<span class="field">
+						<input type="checkbox" name="wpInclude2" id="wpInclude2">
+						<span></span>
+					</span>
+					<span class="header">
+						<label for="wpInclude2">作为模板</label>
+					</span>
+				</div>
+				<div>
+					<textarea id="wpTextbox2" rows="25"></textarea>
 				</div>
 			</article>
 		</main>
