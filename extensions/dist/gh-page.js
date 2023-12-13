@@ -1,4 +1,4 @@
-import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.5/dist/main.min.js';
+import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.6/dist/main.min.js';
 (async () => {
     const textbox = document.querySelector('#wpTextbox1'), input = document.querySelector('#wpInclude1'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
@@ -11,6 +11,7 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
     input.addEventListener('change', () => {
         Linter.include = input.checked;
+        instance.update();
     });
 })();
 (() => {
