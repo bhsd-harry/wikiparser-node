@@ -1,5 +1,5 @@
 import type {LintError} from '../base';
-import type {wikiparse as Wikiparse} from './typings';
+import type {wikiparse as Wikiparse, Diagnostic} from './typings';
 
 const {wikiparse} = window as unknown as {wikiparse: Wikiparse};
 
@@ -36,6 +36,19 @@ class Linter {
 		const {include} = this,
 			errors = await wikiparse.lint(wikitext, include, this.#id);
 		return this.include === include && this.#wikitext === wikitext ? errors : this.#running!;
+	}
+
+	/**
+	 * 用于 CodeMirror 的语法分析
+	 * @param wikitext 待分析的文本
+	 */
+	async codemirror(wikitext: string): Promise<Diagnostic[]> {
+		return (await this.queue(wikitext)).map(({startIndex, endIndex, severity, message}) => ({
+			from: startIndex,
+			to: endIndex,
+			severity,
+			message,
+		}));
 	}
 }
 

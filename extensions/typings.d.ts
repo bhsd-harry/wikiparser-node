@@ -1,6 +1,23 @@
+import type {EditorView} from '@codemirror/view';
+import type {LintSource} from '@codemirror/lint';
 import type {Config, LintError} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
+
+export type {EditorView};
+export type {Diagnostic} from '@codemirror/lint';
+
+declare global {
+	module 'http://*' {
+		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
+		declare class CodeMirror6 {
+			/** @class */
+			constructor(textarea: HTMLTextAreaElement);
+			view: EditorView;
+			lint: (source: LintSource) => void;
+		}
+	}
+}
 
 export interface wikiparse {
 	readonly MAX_STAGE: number;

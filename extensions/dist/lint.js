@@ -28,6 +28,14 @@ class Linter {
         __classPrivateFieldSet(this, _Linter_running, __classPrivateFieldGet(this, _Linter_instances, "m", _Linter_lint).call(this, wikitext), "f");
         return __classPrivateFieldGet(this, _Linter_running, "f");
     }
+    async codemirror(wikitext) {
+        return (await this.queue(wikitext)).map(({ startIndex, endIndex, severity, message }) => ({
+            from: startIndex,
+            to: endIndex,
+            severity,
+            message,
+        }));
+    }
 }
 _Linter_id = new WeakMap(), _Linter_wikitext = new WeakMap(), _Linter_running = new WeakMap(), _Linter_instances = new WeakSet(), _Linter_lint = async function _Linter_lint(wikitext) {
     const { include } = this, errors = await wikiparse.lint(wikitext, include, __classPrivateFieldGet(this, _Linter_id, "f"));
