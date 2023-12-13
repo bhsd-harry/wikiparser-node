@@ -36,9 +36,12 @@ First TypeScript version
 
 ## v1.1.2
 
+*2023-12-13*
+
 **Changed**
 
 - Token type `converter-rule-noconvert` now regarded as `converter-rule-to`
+- Anonymous parameters will remain anonymous after [`ParameterToken.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#setvalue)
 
 **Removed**
 

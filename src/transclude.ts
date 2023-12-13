@@ -786,10 +786,7 @@ export class TranscludeToken extends Token {
 	 * @throws `Error` 转义失败
 	 */
 	escapeTables(): TranscludeToken {
-		const count = this.hasDuplicatedArgs(),
-			str = this.text(),
-			i = str.search(/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u);
-		if (i === -1 || str.slice(i).search(/\n[^\S\n]*\|\}/u) === -1) {
+		if (!/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u.test(this.text())) {
 			return this;
 		}
 		const stripped = String(this).slice(2, -2),
@@ -804,10 +801,6 @@ export class TranscludeToken extends Token {
 		const {firstChild, length} = Parser.parse(`{{${String(parsed)}}}`, include, undefined, config);
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('转义表格失败！');
-		}
-		const fixed = count - firstChild.hasDuplicatedArgs();
-		if (fixed) {
-			Parser.info(`共修复了 ${fixed} 个重复参数。`);
 		}
 		this.safeReplaceWith(firstChild as this);
 		return firstChild;

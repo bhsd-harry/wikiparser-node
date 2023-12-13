@@ -213,10 +213,6 @@ export class ParameterToken extends fixed(Token) {
 	 * @param value 参数值
 	 */
 	setValue(value: string): void {
-		const {anon, parentNode} = this;
-		if (anon && parentNode?.isTemplate()) {
-			parentNode.anonToNamed();
-		}
 		const {childNodes} = Parser.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		this.lastChild.replaceChildren(...childNodes);
 	}
