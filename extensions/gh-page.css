@@ -91,6 +91,36 @@ textarea {
 	border: 1.5px solid #dedede;
 }
 
+.tab {
+	overflow: hidden;
+	margin: 1rem 0;
+}
+
+button {
+	float: left;
+	font-size: 1.3em;
+	font-weight: bold;
+	background-color: #f1f1f1;
+	border: 1px solid #ccc;
+	outline: none;
+	cursor: pointer;
+	padding: 1rem 1.5rem;
+	transition: .3s;
+}
+button:hover {
+	background-color: #ddd;
+}
+button.active {
+	background-color: #ccc;
+}
+
+.tabcontent {
+	display: none;
+}
+#tabcontent1 {
+	display: block;
+}
+
 @media screen and (max-width: 720px) {
 	main {
 		width: 100%;
@@ -100,7 +130,7 @@ textarea {
 	article {
 		padding: 1rem;
 	}
-	.wikiparse-container {
+	.wikiparse-container, .cm-editor {
 		font-size: 16px;
 	}
 }

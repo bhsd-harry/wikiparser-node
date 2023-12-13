@@ -13,3 +13,20 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
         Linter.include = input.checked;
     });
 })();
+(() => {
+    const tabcontents = document.getElementsByClassName('tabcontent');
+    const handler = (e) => {
+        var _a;
+        (_a = document.querySelector('.active')) === null || _a === void 0 ? void 0 : _a.classList.remove('active');
+        const { currentTarget } = e, { value } = currentTarget;
+        currentTarget.classList.add('active');
+        for (const tabcontent of tabcontents) {
+            tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
+        }
+    };
+    for (const button of document.getElementsByTagName('button')) {
+        if (button.value) {
+            button.addEventListener('click', handler);
+        }
+    }
+})();

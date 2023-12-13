@@ -26,3 +26,26 @@ import type {wikiparse, EditorView} from './typings';
 		// instance.view.dispatch({docChanged: true});
 	});
 })();
+
+(() => {
+	const tabcontents = document.getElementsByClassName('tabcontent') as HTMLCollectionOf<HTMLDivElement>;
+
+	/**
+	 * 切换 tab
+	 * @param e 事件
+	 */
+	const handler = (e: MouseEvent): void => {
+		document.querySelector('.active')?.classList.remove('active');
+		const {currentTarget} = e as MouseEvent & {currentTarget: HTMLButtonElement},
+			{value} = currentTarget;
+		currentTarget.classList.add('active');
+		for (const tabcontent of tabcontents) {
+			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
+		}
+	};
+	for (const button of document.getElementsByTagName('button')) {
+		if (button.value) {
+			button.addEventListener('click', handler);
+		}
+	}
+})();
