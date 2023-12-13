@@ -23,7 +23,7 @@ import type {wikiparse, EditorView} from './typings';
 	instance.lint((view: EditorView) => Linter.codemirror(view.state.doc.toString()));
 	input.addEventListener('change', () => {
 		Linter.include = input.checked;
-		// instance.view.dispatch({docChanged: true});
+		instance.update();
 	});
 })();
 

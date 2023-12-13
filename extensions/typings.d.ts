@@ -14,7 +14,12 @@ declare global {
 			/** @class */
 			constructor(textarea: HTMLTextAreaElement);
 			view: EditorView;
-			lint: (source: LintSource) => void;
+
+			/** 添加 linter */
+			lint(source: LintSource): void;
+
+			/** 立即执行 lint */
+			update: () => void;
 		}
 	}
 }
