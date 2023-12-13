@@ -21,8 +21,8 @@ import type {wikiparse, EditorView} from './typings';
 		instance = new CodeMirror6(textbox2),
 		Linter = new wikiparse.Linter!(input2.checked);
 	instance.lint((view: EditorView) => Linter.codemirror(view.state.doc.toString()));
-	input.addEventListener('change', () => {
-		Linter.include = input.checked;
+	input2.addEventListener('change', () => {
+		Linter.include = input2.checked;
 		instance.update();
 	});
 })();

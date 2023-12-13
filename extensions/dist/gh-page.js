@@ -9,8 +9,8 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     });
     const textbox2 = document.querySelector('#wpTextbox2'), input2 = document.querySelector('#wpInclude2'), instance = new CodeMirror6(textbox2), Linter = new wikiparse.Linter(input2.checked);
     instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
-    input.addEventListener('change', () => {
-        Linter.include = input.checked;
+    input2.addEventListener('change', () => {
+        Linter.include = input2.checked;
         instance.update();
     });
 })();
