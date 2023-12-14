@@ -17,13 +17,11 @@ on:
       - '**.ts'
       - '**/*.ts'
       - '!**/*.d.ts'
-      - '**/*.js'
   pull_request:
     paths:
       - '**.ts'
       - '**/*.ts'
       - '!**/*.d.ts'
-      - '**/*.js'
 
 jobs:
   analyze:
