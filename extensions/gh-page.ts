@@ -48,7 +48,7 @@ import type {wikiparse, EditorView} from './typings';
 		}
 		active.classList.remove('active');
 		currentTarget.classList.add('active');
-		if (value === 'tabcontent1') {
+		if (value === 'editor') {
 			update(instance.view.state.doc.toString());
 		} else {
 			instance.view.dispatch({changes: {from: 0, to: instance.view.state.doc.length, insert: textbox.value}});
@@ -57,6 +57,7 @@ import type {wikiparse, EditorView} from './typings';
 		for (const tabcontent of tabcontents) {
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}
+		history.replaceState(null, '', `#${value}`);
 	};
 	for (const button of buttons) {
 		if (button.value) {
