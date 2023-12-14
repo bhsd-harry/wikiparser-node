@@ -10,9 +10,9 @@ class Printer {
 	#textbox;
 	#root: [number, string, string][];
 	#viewportChanged;
+	#running: Promise<void> | undefined;
+	#ticks: [number, 'coarse' | 'fine' | undefined];
 	include;
-	running: Promise<void> | undefined;
-	ticks: [number, 'coarsePrint' | 'finePrint' | undefined];
 
 	/**
 	 * @param preview 置于下层的代码高亮
@@ -26,19 +26,22 @@ class Printer {
 		this.#root = [];
 		this.#viewportChanged = false;
 		this.include = Boolean(include);
-		this.running = undefined;
-		this.ticks = [0, undefined];
+		this.#ticks = [0, undefined];
 	}
 
-	/** 倒计时 */
+	/**
+	 * 倒计时
+	 * @description
+	 * - 每`0.5`秒检查一次，如果倒计时结束则执行预定的方法
+	 * - 没有进行中的倒计时则无效果
+	 */
 	#tick(): void {
 		setTimeout(() => {
-			const {ticks} = this,
-				[t, method] = ticks;
+			const [t, method] = this.#ticks;
 			if (t > 0) {
-				ticks[0] -= 500;
+				this.#ticks[0] -= 500;
 				if (t <= 500) {
-					this[method!]();
+					this.#exec(method!);
 				} else {
 					this.#tick();
 				}
@@ -47,17 +50,33 @@ class Printer {
 	}
 
 	/**
+	 * 执行私有方法
+	 * @param method 方法名
+	 */
+	#exec(method: 'coarse' | 'fine'): void {
+		if (method === 'coarse') {
+			this.#coarsePrint();
+		} else {
+			this.#finePrint();
+		}
+	}
+
+	/**
 	 * 用于debounce
 	 * @param delay 延迟
 	 * @param method 方法
+	 * @description
+	 * - 定时执行预定的方法
+	 * - 当前有倒计时且新指令优先级较低则无效果
+	 * - 延迟为`0`时立即执行
 	 */
-	queue(delay: number, method: 'coarsePrint' | 'finePrint'): void {
-		const {ticks} = this,
-			[state] = ticks;
-		if (state <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
-			ticks[0] = delay;
-			ticks[1] = method;
-			if (state <= 0) {
+	queue(delay: number, method: 'coarse' | 'fine'): void {
+		const [state] = this.#ticks;
+		if (delay === 0 || state <= 0 || method === 'coarse' || this.#ticks[1] !== 'coarse') {
+			this.#ticks = [delay, method];
+			if (delay === 0) {
+				this.#exec(method);
+			} else if (state <= 0) {
 				this.#tick();
 			}
 		}
@@ -73,31 +92,51 @@ class Printer {
 		this.#textbox.style.color = 'transparent';
 	}
 
-	/** 初步解析 */
-	async coarsePrint(): Promise<void> {
-		if (this.running) {
-			return undefined;
+	/**
+	 * 初步解析
+	 * @description
+	 * - 已有进行中的解析则无效果
+	 * - 解析完成后
+	 *   - 如果解析设置或文本框内容发生变化则重新解析
+	 *   - 否则初步渲染并开始精细解析
+	 * - 无论是否被执行，可以保证只渲染正确的结果
+	 * - 仅在二次渲染（`finePrint`）后才返回
+	 */
+	async #coarsePrint(): Promise<void> {
+		if (this.#running) {
+			return this.#running;
 		}
 		const {include} = this,
 			{value} = this.#textbox,
 			parsed = await wikiparse.print(value, include, 2, this.#id);
 		if (this.include !== include || this.#textbox.value !== value) {
-			this.running = undefined;
-			this.running = this.coarsePrint();
-			return this.running;
+			this.#running = undefined;
+			this.#running = this.#coarsePrint();
+			return this.#running;
 		}
 		this.#root = parsed;
 		this.#paint();
-		this.running = undefined;
-		this.running = this.finePrint();
-		return this.running;
+		this.#running = undefined;
+		this.#running = this.#finePrint();
+		return this.#running;
 	}
 
-	/** 根据可见范围精细解析 */
-	async finePrint(): Promise<void> {
-		if (this.running) {
+	/**
+	 * 根据可见范围精细解析
+	 * @description
+	 * - 已有进行中的解析则仅标记视口已变化
+	 * - 仅解析可见范围内的内容
+	 * - 解析完成后
+	 *   - 如果解析设置或文本框内容发生变化则重新粗略解析
+	 *   - 否则二次渲染
+	 *   - 如果视口发生变化则额外进行精细解析
+	 * - 无论是否被执行，可以保证只渲染正确的结果
+	 * - 仅在二次渲染后才返回
+	 */
+	async #finePrint(): Promise<void> {
+		if (this.#running) {
 			this.#viewportChanged = true;
-			return undefined;
+			return this.#running;
 		}
 		this.#viewportChanged = false;
 		const {include} = this,
@@ -127,22 +166,22 @@ class Printer {
 			}
 		}
 		if (start === end) {
-			this.running = undefined;
+			this.#running = undefined;
 			return undefined;
 		}
 		const parsed = await wikiparse.print(text, include, MAX_STAGE, this.#id);
 		if (this.include === include && this.#textbox.value === value) {
 			this.#root.splice(start, end - start, ...parsed);
 			this.#paint();
-			this.running = undefined;
+			this.#running = undefined;
 			if (this.#viewportChanged as boolean) {
-				this.running = this.finePrint();
+				this.#running = this.#finePrint();
 			}
 		} else {
-			this.running = undefined;
-			this.running = this.coarsePrint();
+			this.#running = undefined;
+			this.#running = this.#coarsePrint();
 		}
-		return this.running;
+		return this.#running;
 	}
 }
 
@@ -168,7 +207,7 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 
 	textbox.addEventListener('input', e => {
 		if (!(e as InputEvent).isComposing) {
-			printer.queue(2000, 'coarsePrint');
+			printer.queue(2000, 'coarse');
 		}
 		textbox.style.color = '';
 		preview.classList.add('active');
@@ -176,17 +215,16 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 	textbox.addEventListener('scroll', () => {
 		if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
 			preview.scrollTop = textbox.scrollTop;
-			printer.queue(500, 'finePrint');
+			printer.queue(500, 'fine');
 		}
 	});
 	textbox.addEventListener('keydown', e => {
 		if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
 			e.preventDefault();
-			printer.ticks[0] = 0;
-			printer.running = printer.coarsePrint();
+			printer.queue(0, 'coarse');
 		}
 	});
-	printer.running = printer.coarsePrint();
+	printer.queue(0, 'coarse');
 	return printer;
 };
 

@@ -10,7 +10,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
-var _Printer_instances, _Printer_id, _Printer_preview, _Printer_textbox, _Printer_root, _Printer_viewportChanged, _Printer_tick, _Printer_paint;
+var _Printer_instances, _Printer_id, _Printer_preview, _Printer_textbox, _Printer_root, _Printer_viewportChanged, _Printer_running, _Printer_ticks, _Printer_tick, _Printer_exec, _Printer_paint, _Printer_coarsePrint, _Printer_finePrint;
 const { wikiparse } = window, { MAX_STAGE } = wikiparse;
 class Printer {
     constructor(preview, textbox, include) {
@@ -20,105 +20,113 @@ class Printer {
         _Printer_textbox.set(this, void 0);
         _Printer_root.set(this, void 0);
         _Printer_viewportChanged.set(this, void 0);
+        _Printer_running.set(this, void 0);
+        _Printer_ticks.set(this, void 0);
         __classPrivateFieldSet(this, _Printer_id, wikiparse.id++, "f");
         __classPrivateFieldSet(this, _Printer_preview, preview, "f");
         __classPrivateFieldSet(this, _Printer_textbox, textbox, "f");
         __classPrivateFieldSet(this, _Printer_root, [], "f");
         __classPrivateFieldSet(this, _Printer_viewportChanged, false, "f");
         this.include = Boolean(include);
-        this.running = undefined;
-        this.ticks = [0, undefined];
+        __classPrivateFieldSet(this, _Printer_ticks, [0, undefined], "f");
     }
     queue(delay, method) {
-        const { ticks } = this, [state] = ticks;
-        if (state <= 0 || method === 'coarsePrint' || ticks[1] !== 'coarsePrint') {
-            ticks[0] = delay;
-            ticks[1] = method;
-            if (state <= 0) {
+        const [state] = __classPrivateFieldGet(this, _Printer_ticks, "f");
+        if (delay === 0 || state <= 0 || method === 'coarse' || __classPrivateFieldGet(this, _Printer_ticks, "f")[1] !== 'coarse') {
+            __classPrivateFieldSet(this, _Printer_ticks, [delay, method], "f");
+            if (delay === 0) {
+                __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_exec).call(this, method);
+            }
+            else if (state <= 0) {
                 __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_tick).call(this);
             }
         }
     }
-    async coarsePrint() {
-        if (this.running) {
-            return undefined;
-        }
-        const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), parsed = await wikiparse.print(value, include, 2, __classPrivateFieldGet(this, _Printer_id, "f"));
-        if (this.include !== include || __classPrivateFieldGet(this, _Printer_textbox, "f").value !== value) {
-            this.running = undefined;
-            this.running = this.coarsePrint();
-            return this.running;
-        }
-        __classPrivateFieldSet(this, _Printer_root, parsed, "f");
-        __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_paint).call(this);
-        this.running = undefined;
-        this.running = this.finePrint();
-        return this.running;
-    }
-    async finePrint() {
-        if (this.running) {
-            __classPrivateFieldSet(this, _Printer_viewportChanged, true, "f");
-            return undefined;
-        }
-        __classPrivateFieldSet(this, _Printer_viewportChanged, false, "f");
-        const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), { scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode] } = __classPrivateFieldGet(this, _Printer_preview, "f");
-        let text = value, start = 0, { length: end } = __classPrivateFieldGet(this, _Printer_root, "f");
-        if (scrollHeight > parentHeight) {
-            const childNodes = [...rootNode.childNodes], headings = childNodes.filter(({ className }) => className === 'wpb-heading'), { length } = headings;
-            if (length > 0) {
-                let i = headings.findIndex(({ offsetTop, offsetHeight }) => offsetTop + offsetHeight > scrollTop);
-                i = i === -1 ? length : i;
-                let j = headings.slice(i).findIndex(({ offsetTop }) => offsetTop >= scrollTop + parentHeight);
-                j = j === -1 ? length : i + j;
-                start = i ? childNodes.indexOf(headings[i - 1]) : 0;
-                while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[start][0] === MAX_STAGE) {
-                    start = childNodes.indexOf(headings[i++]);
-                }
-                end = j === length ? end : childNodes.indexOf(headings[j]);
-                while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[end - 1][0] === MAX_STAGE) {
-                    end = childNodes.indexOf(headings[--j]);
-                }
-                text = __classPrivateFieldGet(this, _Printer_root, "f").slice(start, end).map(([, str]) => str).join('');
-            }
-        }
-        if (start === end) {
-            this.running = undefined;
-            return undefined;
-        }
-        const parsed = await wikiparse.print(text, include, MAX_STAGE, __classPrivateFieldGet(this, _Printer_id, "f"));
-        if (this.include === include && __classPrivateFieldGet(this, _Printer_textbox, "f").value === value) {
-            __classPrivateFieldGet(this, _Printer_root, "f").splice(start, end - start, ...parsed);
-            __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_paint).call(this);
-            this.running = undefined;
-            if (__classPrivateFieldGet(this, _Printer_viewportChanged, "f")) {
-                this.running = this.finePrint();
-            }
-        }
-        else {
-            this.running = undefined;
-            this.running = this.coarsePrint();
-        }
-        return this.running;
-    }
 }
-_Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox = new WeakMap(), _Printer_root = new WeakMap(), _Printer_viewportChanged = new WeakMap(), _Printer_instances = new WeakSet(), _Printer_tick = function _Printer_tick() {
+_Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox = new WeakMap(), _Printer_root = new WeakMap(), _Printer_viewportChanged = new WeakMap(), _Printer_running = new WeakMap(), _Printer_ticks = new WeakMap(), _Printer_instances = new WeakSet(), _Printer_tick = function _Printer_tick() {
     setTimeout(() => {
-        const { ticks } = this, [t, method] = ticks;
+        const [t, method] = __classPrivateFieldGet(this, _Printer_ticks, "f");
         if (t > 0) {
-            ticks[0] -= 500;
+            __classPrivateFieldGet(this, _Printer_ticks, "f")[0] -= 500;
             if (t <= 500) {
-                this[method]();
+                __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_exec).call(this, method);
             }
             else {
                 __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_tick).call(this);
             }
         }
     }, 500);
+}, _Printer_exec = function _Printer_exec(method) {
+    if (method === 'coarse') {
+        __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_coarsePrint).call(this);
+    }
+    else {
+        __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_finePrint).call(this);
+    }
 }, _Printer_paint = function _Printer_paint() {
     __classPrivateFieldGet(this, _Printer_preview, "f").innerHTML = `<span class="wpb-root">${__classPrivateFieldGet(this, _Printer_root, "f").map(([, , printed]) => printed).join('')}</span> `;
     __classPrivateFieldGet(this, _Printer_preview, "f").scrollTop = __classPrivateFieldGet(this, _Printer_textbox, "f").scrollTop;
     __classPrivateFieldGet(this, _Printer_preview, "f").classList.remove('active');
     __classPrivateFieldGet(this, _Printer_textbox, "f").style.color = 'transparent';
+}, _Printer_coarsePrint = async function _Printer_coarsePrint() {
+    if (__classPrivateFieldGet(this, _Printer_running, "f")) {
+        return __classPrivateFieldGet(this, _Printer_running, "f");
+    }
+    const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), parsed = await wikiparse.print(value, include, 2, __classPrivateFieldGet(this, _Printer_id, "f"));
+    if (this.include !== include || __classPrivateFieldGet(this, _Printer_textbox, "f").value !== value) {
+        __classPrivateFieldSet(this, _Printer_running, undefined, "f");
+        __classPrivateFieldSet(this, _Printer_running, __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_coarsePrint).call(this), "f");
+        return __classPrivateFieldGet(this, _Printer_running, "f");
+    }
+    __classPrivateFieldSet(this, _Printer_root, parsed, "f");
+    __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_paint).call(this);
+    __classPrivateFieldSet(this, _Printer_running, undefined, "f");
+    __classPrivateFieldSet(this, _Printer_running, __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_finePrint).call(this), "f");
+    return __classPrivateFieldGet(this, _Printer_running, "f");
+}, _Printer_finePrint = async function _Printer_finePrint() {
+    if (__classPrivateFieldGet(this, _Printer_running, "f")) {
+        __classPrivateFieldSet(this, _Printer_viewportChanged, true, "f");
+        return __classPrivateFieldGet(this, _Printer_running, "f");
+    }
+    __classPrivateFieldSet(this, _Printer_viewportChanged, false, "f");
+    const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), { scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode] } = __classPrivateFieldGet(this, _Printer_preview, "f");
+    let text = value, start = 0, { length: end } = __classPrivateFieldGet(this, _Printer_root, "f");
+    if (scrollHeight > parentHeight) {
+        const childNodes = [...rootNode.childNodes], headings = childNodes.filter(({ className }) => className === 'wpb-heading'), { length } = headings;
+        if (length > 0) {
+            let i = headings.findIndex(({ offsetTop, offsetHeight }) => offsetTop + offsetHeight > scrollTop);
+            i = i === -1 ? length : i;
+            let j = headings.slice(i).findIndex(({ offsetTop }) => offsetTop >= scrollTop + parentHeight);
+            j = j === -1 ? length : i + j;
+            start = i ? childNodes.indexOf(headings[i - 1]) : 0;
+            while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[start][0] === MAX_STAGE) {
+                start = childNodes.indexOf(headings[i++]);
+            }
+            end = j === length ? end : childNodes.indexOf(headings[j]);
+            while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[end - 1][0] === MAX_STAGE) {
+                end = childNodes.indexOf(headings[--j]);
+            }
+            text = __classPrivateFieldGet(this, _Printer_root, "f").slice(start, end).map(([, str]) => str).join('');
+        }
+    }
+    if (start === end) {
+        __classPrivateFieldSet(this, _Printer_running, undefined, "f");
+        return undefined;
+    }
+    const parsed = await wikiparse.print(text, include, MAX_STAGE, __classPrivateFieldGet(this, _Printer_id, "f"));
+    if (this.include === include && __classPrivateFieldGet(this, _Printer_textbox, "f").value === value) {
+        __classPrivateFieldGet(this, _Printer_root, "f").splice(start, end - start, ...parsed);
+        __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_paint).call(this);
+        __classPrivateFieldSet(this, _Printer_running, undefined, "f");
+        if (__classPrivateFieldGet(this, _Printer_viewportChanged, "f")) {
+            __classPrivateFieldSet(this, _Printer_running, __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_finePrint).call(this), "f");
+        }
+    }
+    else {
+        __classPrivateFieldSet(this, _Printer_running, undefined, "f");
+        __classPrivateFieldSet(this, _Printer_running, __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_coarsePrint).call(this), "f");
+    }
+    return __classPrivateFieldGet(this, _Printer_running, "f");
 };
 const edit = (textbox, include) => {
     if (!(textbox instanceof HTMLTextAreaElement)) {
@@ -133,7 +141,7 @@ const edit = (textbox, include) => {
     container.append(preview, textbox);
     textbox.addEventListener('input', e => {
         if (!e.isComposing) {
-            printer.queue(2000, 'coarsePrint');
+            printer.queue(2000, 'coarse');
         }
         textbox.style.color = '';
         preview.classList.add('active');
@@ -141,17 +149,16 @@ const edit = (textbox, include) => {
     textbox.addEventListener('scroll', () => {
         if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
             preview.scrollTop = textbox.scrollTop;
-            printer.queue(500, 'finePrint');
+            printer.queue(500, 'fine');
         }
     });
     textbox.addEventListener('keydown', e => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
             e.preventDefault();
-            printer.ticks[0] = 0;
-            printer.running = printer.coarsePrint();
+            printer.queue(0, 'coarse');
         }
     });
-    printer.running = printer.coarsePrint();
+    printer.queue(0, 'coarse');
     return printer;
 };
 wikiparse.Printer = Printer;

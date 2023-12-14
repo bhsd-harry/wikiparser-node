@@ -634,7 +634,14 @@
 		"unicorn/text-encoding-identifier-case": 2,
 		"unicorn/throw-new-error": 2,
 		"jsdoc/check-alignment": 1,
-		"jsdoc/check-indentation": 1,
+		"jsdoc/check-indentation": [
+			1,
+			{
+				"excludeTags": [
+					"description"
+				]
+			}
+		],
 		"jsdoc/check-tag-names": 1,
 		"jsdoc/check-types": 1,
 		"jsdoc/multiline-blocks": 1,
