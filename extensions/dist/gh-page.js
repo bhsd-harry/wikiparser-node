@@ -1,26 +1,36 @@
 import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.6/dist/main.min.js';
 (async () => {
-    const textbox = document.querySelector('#wpTextbox1'), input = document.querySelector('#wpInclude1'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
-    const printer = wikiparse.edit(textbox, input.checked);
+    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
+    instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
+    const update = (str) => {
+        if (str) {
+            textbox.value = str;
+        }
+        textbox.dispatchEvent(new Event('input'));
+    };
     input.addEventListener('change', () => {
         printer.include = input.checked;
-        textbox.dispatchEvent(new Event('input'));
-    });
-    const textbox2 = document.querySelector('#wpTextbox2'), input2 = document.querySelector('#wpInclude2'), instance = new CodeMirror6(textbox2), Linter = new wikiparse.Linter(input2.checked);
-    instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
-    input2.addEventListener('change', () => {
-        Linter.include = input2.checked;
+        Linter.include = input.checked;
+        update();
         instance.update();
     });
-})();
-(() => {
-    const tabcontents = document.getElementsByClassName('tabcontent');
     const handler = (e) => {
-        var _a;
-        (_a = document.querySelector('.active')) === null || _a === void 0 ? void 0 : _a.classList.remove('active');
-        const { currentTarget } = e, { value } = currentTarget;
+        e.preventDefault();
+        const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget;
+        if (active === currentTarget) {
+            return;
+        }
+        active.classList.remove('active');
         currentTarget.classList.add('active');
+        if (value === 'tabcontent1') {
+            update(instance.view.state.doc.toString());
+        }
+        else {
+            instance.view.dispatch({ changes: { from: 0, to: instance.view.state.doc.length, insert: textbox.value } });
+            instance.update();
+        }
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
