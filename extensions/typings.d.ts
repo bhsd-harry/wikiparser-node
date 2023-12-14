@@ -1,32 +1,16 @@
 import type {EditorView} from '@codemirror/view';
-import type {LintSource} from '@codemirror/lint';
 import type {Config, LintError} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
 
 export type {EditorView};
 export type {Diagnostic} from '@codemirror/lint';
+export type {MwConfig, CodeMirror6} from '@bhsd/codemirror-mediawiki';
 
 declare global {
 	module 'https://*' {
 		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
-		declare class CodeMirror6 {
-			/** @class */
-			constructor(textarea: HTMLTextAreaElement);
-			view: EditorView;
-
-			/** 添加 linter */
-			lint(source: LintSource): void;
-
-			/** 立即执行 lint */
-			update(): void;
-
-			/** 更新至文本框 */
-			save(): void;
-
-			/** 设置语言 */
-			setLanguage(lang: string, config?: unknown): void;
-		}
+		class CodeMirror6 {}
 	}
 }
 

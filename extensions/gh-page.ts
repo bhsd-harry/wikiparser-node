@@ -1,14 +1,6 @@
 import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.7/dist/main.min.js';
 import type {Config} from '../base';
-import type {wikiparse, EditorView} from './typings';
-
-declare interface MwConfig {
-	urlProtocols: string;
-	tags: Record<string, string>;
-	tagModes: Record<string, string>;
-	functionSynonyms: [Record<string, string>, Record<string, string>];
-	doubleUnderscore: [Record<string, string>, Record<string, string>];
-}
+import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
 (async () => {
 	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox1')!,
@@ -22,7 +14,7 @@ declare interface MwConfig {
 	wikiparse.setConfig(config);
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
-		instance = new CodeMirror6(textbox2);
+		instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2);
 	instance.lint((view: EditorView) => Linter.codemirror(view.state.doc.toString()));
 
 	/**
@@ -66,7 +58,7 @@ declare interface MwConfig {
 			target[entry] = entry;
 		}
 	};
-	fromEntries(config.ext, mwConfig.tags);
+	fromEntries(config.ext, mwConfig.tags as unknown as Record<string, string>);
 	fromEntries(config.doubleUnderscore[0], mwConfig.doubleUnderscore[0]);
 	fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
 	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
