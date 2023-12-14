@@ -6,6 +6,7 @@ import type {wikiparse, EditorView} from './typings';
 	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox1')!,
 		textbox2: HTMLTextAreaElement = document.querySelector('#wpTextbox2')!,
 		input: HTMLInputElement = document.querySelector('#wpInclude')!,
+		buttons = document.getElementsByTagName('button'),
 		tabcontents = document.getElementsByClassName('tabcontent') as HTMLCollectionOf<HTMLDivElement>,
 		{wikiparse} = window as unknown as {wikiparse: wikiparse},
 		config: Config = await (await fetch('/wikiparser-node/config/default.json')).json();
@@ -57,9 +58,23 @@ import type {wikiparse, EditorView} from './typings';
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}
 	};
-	for (const button of document.getElementsByTagName('button')) {
+	for (const button of buttons) {
 		if (button.value) {
 			button.addEventListener('click', handler);
 		}
 	}
+
+	if (location.hash === '#editor') {
+		buttons[0]!.click();
+	}
+	window.addEventListener('hashchange', () => {
+		switch (location.hash) {
+			case '#editor':
+				buttons[0]!.click();
+				break;
+			case '#linter':
+				buttons[1]!.click();
+			// no default
+		}
+	});
 })();

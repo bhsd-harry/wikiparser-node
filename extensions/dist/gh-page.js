@@ -1,6 +1,6 @@
 import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.6/dist/main.min.js';
 (async () => {
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), buttons = document.getElementsByTagName('button'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
     instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
@@ -35,9 +35,21 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
     };
-    for (const button of document.getElementsByTagName('button')) {
+    for (const button of buttons) {
         if (button.value) {
             button.addEventListener('click', handler);
         }
     }
+    if (location.hash === '#editor') {
+        buttons[0].click();
+    }
+    window.addEventListener('hashchange', () => {
+        switch (location.hash) {
+            case '#editor':
+                buttons[0].click();
+                break;
+            case '#linter':
+                buttons[1].click();
+        }
+    });
 })();
