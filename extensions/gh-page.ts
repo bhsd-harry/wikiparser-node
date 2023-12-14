@@ -78,4 +78,8 @@ import type {wikiparse, EditorView} from './typings';
 			// no default
 		}
 	});
+
+	window.addEventListener('beforeunload', () => {
+		instance.save();
+	});
 })();

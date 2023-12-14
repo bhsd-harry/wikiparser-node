@@ -53,4 +53,7 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
                 buttons[1].click();
         }
     });
+    window.addEventListener('beforeunload', () => {
+        instance.save();
+    });
 })();

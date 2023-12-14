@@ -20,6 +20,9 @@ declare global {
 
 			/** 立即执行 lint */
 			update(): void;
+
+			/** 更新至文本框 */
+			save(): void;
 		}
 	}
 }
