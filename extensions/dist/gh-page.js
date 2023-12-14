@@ -3,7 +3,6 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
-    instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
     const update = (str) => {
         if (str) {
             textbox.value = str;
@@ -38,9 +37,14 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
     fromEntries(config.parserFunction.slice(2).flat(), mwConfig.functionSynonyms[0]);
     fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
+    const lint = () => {
+        instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
+    };
     input2.addEventListener('change', () => {
         instance.setLanguage(input2.checked ? 'html' : 'plain', mwConfig);
+        lint();
     });
+    input2.dispatchEvent(new Event('change'));
     const handler = (e) => {
         e.preventDefault();
         const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget;

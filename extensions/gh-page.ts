@@ -15,7 +15,6 @@ import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from '.
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
 		instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2);
-	instance.lint((view: EditorView) => Linter.codemirror(view.state.doc.toString()));
 
 	/**
 	 * 更新第一个文本框
@@ -64,9 +63,16 @@ import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from '.
 	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
 	fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
 
+	/** 开始语法检查 */
+	const lint = (): void => {
+		instance.lint((view: EditorView) => Linter.codemirror(view.state.doc.toString()));
+	};
+
 	input2.addEventListener('change', () => {
 		instance.setLanguage(input2.checked ? 'html' : 'plain', mwConfig);
+		lint();
 	});
+	input2.dispatchEvent(new Event('change'));
 
 	/**
 	 * 切换 tab
