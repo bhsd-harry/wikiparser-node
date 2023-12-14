@@ -2,10 +2,19 @@ import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-m
 import type {Config} from '../base';
 import type {wikiparse, EditorView} from './typings';
 
+declare interface MwConfig {
+	urlProtocols: string;
+	tags: Record<string, string>;
+	tagModes: Record<string, string>;
+	functionSynonyms: [Record<string, string>, Record<string, string>];
+	doubleUnderscore: [Record<string, string>, Record<string, string>];
+}
+
 (async () => {
 	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox1')!,
 		textbox2: HTMLTextAreaElement = document.querySelector('#wpTextbox2')!,
 		input: HTMLInputElement = document.querySelector('#wpInclude')!,
+		input2: HTMLInputElement = document.querySelector('#wpHighlight')!,
 		buttons = document.getElementsByTagName('button'),
 		tabcontents = document.getElementsByClassName('tabcontent') as HTMLCollectionOf<HTMLDivElement>,
 		{wikiparse} = window as unknown as {wikiparse: wikiparse},
@@ -32,6 +41,39 @@ import type {wikiparse, EditorView} from './typings';
 		Linter.include = input.checked;
 		update();
 		instance.update();
+	});
+
+	const mwConfig: MwConfig = {
+		tags: {},
+		tagModes: {
+			pre: 'mw-tag-pre',
+			nowiki: 'mw-tag-nowiki',
+			ref: 'text/mediawiki',
+			references: 'text/mediawiki',
+		},
+		doubleUnderscore: [{}, {}],
+		functionSynonyms: [config.parserFunction[0], {}],
+		urlProtocols: config.protocol,
+	};
+
+	/**
+	 * Object.fromEntries polyfill
+	 * @param entries
+	 * @param target
+	 */
+	const fromEntries = (entries: string[], target: Record<string, string>): void => {
+		for (const entry of entries) {
+			target[entry] = entry;
+		}
+	};
+	fromEntries(config.ext, mwConfig.tags);
+	fromEntries(config.doubleUnderscore[0], mwConfig.doubleUnderscore[0]);
+	fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
+	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
+	fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
+
+	input2.addEventListener('change', () => {
+		instance.setLanguage(input2.checked ? 'html' : 'plain', mwConfig);
 	});
 
 	/**

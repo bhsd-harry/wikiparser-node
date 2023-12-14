@@ -1,6 +1,6 @@
 import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.7/dist/main.min.js';
 (async () => {
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), buttons = document.getElementsByTagName('button'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
     instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
@@ -15,6 +15,31 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
         Linter.include = input.checked;
         update();
         instance.update();
+    });
+    const mwConfig = {
+        tags: {},
+        tagModes: {
+            pre: 'mw-tag-pre',
+            nowiki: 'mw-tag-nowiki',
+            ref: 'text/mediawiki',
+            references: 'text/mediawiki',
+        },
+        doubleUnderscore: [{}, {}],
+        functionSynonyms: [config.parserFunction[0], {}],
+        urlProtocols: config.protocol,
+    };
+    const fromEntries = (entries, target) => {
+        for (const entry of entries) {
+            target[entry] = entry;
+        }
+    };
+    fromEntries(config.ext, mwConfig.tags);
+    fromEntries(config.doubleUnderscore[0], mwConfig.doubleUnderscore[0]);
+    fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
+    fromEntries(config.parserFunction.slice(2).flat(), mwConfig.functionSynonyms[0]);
+    fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
+    input2.addEventListener('change', () => {
+        instance.setLanguage(input2.checked ? 'html' : 'plain', mwConfig);
     });
     const handler = (e) => {
         e.preventDefault();

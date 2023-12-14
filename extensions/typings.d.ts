@@ -23,6 +23,9 @@ declare global {
 
 			/** 更新至文本框 */
 			save(): void;
+
+			/** 设置语言 */
+			setLanguage(lang: string, config?: unknown): void;
 		}
 	}
 }
