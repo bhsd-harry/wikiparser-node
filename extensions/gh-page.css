@@ -117,7 +117,7 @@ button.active {
 .tabcontent {
 	display: none;
 }
-#tabcontent2 {
+#linter {
 	display: block;
 }
 
