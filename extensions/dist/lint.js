@@ -19,13 +19,12 @@ class Linter {
         _Linter_wikitext.set(this, void 0);
         _Linter_running.set(this, void 0);
         __classPrivateFieldSet(this, _Linter_id, wikiparse.id++, "f");
-        __classPrivateFieldSet(this, _Linter_wikitext, undefined, "f");
-        __classPrivateFieldSet(this, _Linter_running, undefined, "f");
         this.include = Boolean(include);
     }
     queue(wikitext) {
+        var _a;
         __classPrivateFieldSet(this, _Linter_wikitext, wikitext, "f");
-        __classPrivateFieldSet(this, _Linter_running, __classPrivateFieldGet(this, _Linter_instances, "m", _Linter_lint).call(this, wikitext), "f");
+        __classPrivateFieldSet(this, _Linter_running, (_a = __classPrivateFieldGet(this, _Linter_running, "f")) !== null && _a !== void 0 ? _a : __classPrivateFieldGet(this, _Linter_instances, "m", _Linter_lint).call(this, wikitext), "f");
         return __classPrivateFieldGet(this, _Linter_running, "f");
     }
     async codemirror(wikitext) {
@@ -39,7 +38,12 @@ class Linter {
 }
 _Linter_id = new WeakMap(), _Linter_wikitext = new WeakMap(), _Linter_running = new WeakMap(), _Linter_instances = new WeakSet(), _Linter_lint = async function _Linter_lint(wikitext) {
     const { include } = this, errors = await wikiparse.lint(wikitext, include, __classPrivateFieldGet(this, _Linter_id, "f"));
-    return this.include === include && __classPrivateFieldGet(this, _Linter_wikitext, "f") === wikitext ? errors : __classPrivateFieldGet(this, _Linter_running, "f");
+    if (this.include === include && __classPrivateFieldGet(this, _Linter_wikitext, "f") === wikitext) {
+        __classPrivateFieldSet(this, _Linter_running, undefined, "f");
+        return errors;
+    }
+    __classPrivateFieldSet(this, _Linter_running, __classPrivateFieldGet(this, _Linter_instances, "m", _Linter_lint).call(this, __classPrivateFieldGet(this, _Linter_wikitext, "f")), "f");
+    return __classPrivateFieldGet(this, _Linter_running, "f");
 };
 wikiparse.Linter = Linter;
 })();

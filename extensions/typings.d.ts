@@ -19,7 +19,7 @@ declare global {
 			lint(source: LintSource): void;
 
 			/** 立即执行 lint */
-			update: () => void;
+			update(): void;
 		}
 	}
 }
