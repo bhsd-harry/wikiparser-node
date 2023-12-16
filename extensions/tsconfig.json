@@ -5,7 +5,6 @@
 	],
 	"compilerOptions": {
 		"target": "ES2018",
-		"module": "NodeNext",
 		"declaration": false,
 		"outDir": "dist",
 		"skipLibCheck": true

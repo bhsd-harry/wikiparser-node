@@ -1,6 +1,6 @@
-import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.7/dist/main.min.js';
+import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.8/dist/main.min.js';
 import type {Config} from '../base';
-import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from './typings';
+import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
 (async () => {
 	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox1')!,
@@ -15,6 +15,12 @@ import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from '.
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
 		instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2);
+	instance.prefer([
+		'highlightSpecialChars',
+		'highlightTrailingWhitespace',
+		'bracketMatching',
+		'closeBrackets',
+	]);
 
 	/**
 	 * 更新第一个文本框
@@ -44,7 +50,7 @@ import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from '.
 		},
 		doubleUnderscore: [{}, {}],
 		functionSynonyms: [config.parserFunction[0], {}],
-		urlProtocols: config.protocol,
+		urlProtocols: `${config.protocol}|//`,
 	};
 
 	/**
@@ -63,14 +69,9 @@ import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from '.
 	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
 	fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
 
-	/** 开始语法检查 */
-	const lint = (): void => {
-		instance.lint((view: EditorView) => Linter.codemirror(view.state.doc.toString()));
-	};
-
 	input2.addEventListener('change', () => {
 		instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
-		lint();
+		instance.lint((str: string) => Linter.codemirror(str));
 	});
 	input2.dispatchEvent(new Event('change'));
 

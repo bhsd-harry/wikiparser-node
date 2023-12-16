@@ -1,9 +1,7 @@
-import type {EditorView} from '@codemirror/view';
 import type {Config, LintError} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
 
-export type {EditorView};
 export type {Diagnostic} from '@codemirror/lint';
 export type {MwConfig, CodeMirror6} from '@bhsd/codemirror-mediawiki';
 
