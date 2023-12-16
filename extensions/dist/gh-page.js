@@ -41,7 +41,7 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
         instance.lint((view) => Linter.codemirror(view.state.doc.toString()));
     };
     input2.addEventListener('change', () => {
-        instance.setLanguage(input2.checked ? 'html' : 'plain', mwConfig);
+        instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
         lint();
     });
     input2.dispatchEvent(new Event('change'));

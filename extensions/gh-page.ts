@@ -69,7 +69,7 @@ import type {wikiparse, EditorView, MwConfig, CodeMirror6 as CodeMirror} from '.
 	};
 
 	input2.addEventListener('change', () => {
-		instance.setLanguage(input2.checked ? 'html' : 'plain', mwConfig);
+		instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
 		lint();
 	});
 	input2.dispatchEvent(new Event('change'));
