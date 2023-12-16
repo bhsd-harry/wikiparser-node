@@ -1,4 +1,4 @@
-import {generateForSelf} from '../util/lint';
+import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixed} from '../mixin/fixed';
@@ -107,18 +107,21 @@ export class HeadingToken extends sol(fixed(Token)) {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			innerStr = String(this.firstChild);
+			{firstChild} = this,
+			innerStr = String(firstChild);
+		const equals = this.#equals,
+			excerpt = `${equals}${innerStr}${equals}`.slice(0, 50);
 		let refError: LintError | undefined;
 		if (this.level === 1) {
-			refError = generateForSelf(this, {start}, '<h1>');
+			refError = {...generateForChild(firstChild, {start}, '<h1>'), excerpt};
 			errors.push(refError);
 		}
 		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
-			refError ??= generateForSelf(this, {start}, '');
+			refError ??= {...generateForChild(firstChild, {start}, ''), excerpt};
 			errors.push({...refError, message: Parser.msg('unbalanced "=" in a section header')});
 		}
 		if (this.closest('html-attrs, table-attrs')) {
-			refError ??= generateForSelf(this, {start}, '');
+			refError ??= {...generateForChild(firstChild, {start}, ''), excerpt};
 			errors.push({...refError, message: Parser.msg('section header in a HTML tag')});
 		}
 		return errors;
