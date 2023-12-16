@@ -7,7 +7,7 @@ const MAX_STAGE = 11;
 
 /** web worker */
 const workerJS = (): void => {
-	self.importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.2-b/bundle/bundle.min.js');
+	self.importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.3-b/bundle/bundle.min.js');
 	const {Parser} = self as unknown as {Parser: Parser},
 		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
