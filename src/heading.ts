@@ -1,4 +1,4 @@
-import {generateForChild} from '../util/lint';
+import {generateForChild, generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -82,8 +82,7 @@ export class HeadingToken extends Token {
 			errors.push({...refError, message: Parser.msg('unbalanced "=" in a section header')});
 		}
 		if (this.closest('html-attrs, table-attrs')) {
-			refError ??= generateForChild(firstChild, {start}, '');
-			errors.push({...refError, message: Parser.msg('section header in a HTML tag')});
+			errors.push({...generateForSelf(this, {start}, ''), message: Parser.msg('section header in a HTML tag')});
 		}
 		return errors;
 	}
