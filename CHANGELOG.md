@@ -46,3 +46,11 @@ First TypeScript version
 **Removed**
 
 - `HeadingToken.name` property
+
+## v1.1.3
+
+*2023-12-16*
+
+**Changed**
+
+- [`Token.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now returns an [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) object

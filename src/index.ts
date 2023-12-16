@@ -739,7 +739,7 @@ export class Token extends AstElement {
 	 * @param tag HTML标签名
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
-	findEnclosingHtml(tag?: string): [HtmlToken, HtmlToken] | undefined {
+	findEnclosingHtml(tag?: string): AstRange | undefined {
 		tag = tag?.toLowerCase();
 		if (tag !== undefined && !this.#config.html.slice(0, 2).flat().includes(tag)) {
 			throw new RangeError(`非法的标签或空标签：${tag}`);
@@ -771,7 +771,13 @@ export class Token extends AstElement {
 				break;
 			}
 		}
-		return i === length ? parentNode.findEnclosingHtml(tag) : [opening, childNodes[i] as HtmlToken];
+		if (i === length) {
+			return parentNode.findEnclosingHtml(tag);
+		}
+		const range = this.createRange();
+		range.setStartBefore(opening);
+		range.setEnd(parentNode, i + 1);
+		return range;
 	}
 
 	/** 获取全部分类 */
