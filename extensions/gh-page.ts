@@ -123,4 +123,6 @@ import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 	window.addEventListener('beforeunload', () => {
 		instance.save();
 	});
+
+	Object.assign(window, {cm: instance});
 })();

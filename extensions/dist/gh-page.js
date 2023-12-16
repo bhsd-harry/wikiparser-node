@@ -88,4 +88,5 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     window.addEventListener('beforeunload', () => {
         instance.save();
     });
+    Object.assign(window, { cm: instance });
 })();
