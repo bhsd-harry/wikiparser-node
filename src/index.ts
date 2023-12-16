@@ -704,7 +704,7 @@ export class Token extends AstElement {
 		const {childNodes} = this,
 			headings: [number, number][] = ([...childNodes.entries()]
 				.filter(([, {type}]) => type === 'heading') as [number, HeadingToken][])
-				.map(([i, {name}]) => [i, Number(name)]),
+				.map(([i, {level}]) => [i, level]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
 			sections: (AstText | Token)[][] = new Array(headings.length);
 		for (let i = 0; i < headings.length; i++) {

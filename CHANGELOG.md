@@ -51,6 +51,10 @@ First TypeScript version
 
 *2023-12-16*
 
+**Fixed**
+
+- Fixing [`Token.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#sections) since [v1.1.2](#v112)
+
 **Changed**
 
 - [`Token.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now returns an [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) object
