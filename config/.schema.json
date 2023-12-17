@@ -30,15 +30,15 @@
 					"type": "string"
 				}
 			},
-			"required": [
-				"6",
-				"10"
-			],
 			"additionalProperties": false
 		},
 		"nsid": {
 			"description": "namespace IDs",
 			"type": "object",
+			"required": [
+				"file",
+				"category"
+			],
 			"additionalProperties": {
 				"type": "integer"
 			}
