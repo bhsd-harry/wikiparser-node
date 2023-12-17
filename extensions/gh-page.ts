@@ -3,12 +3,12 @@ import type {Config} from '../base';
 import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
 (async () => {
-	const textbox: HTMLTextAreaElement = document.querySelector('#wpTextbox1')!,
-		textbox2: HTMLTextAreaElement = document.querySelector('#wpTextbox2')!,
-		input: HTMLInputElement = document.querySelector('#wpInclude')!,
-		input2: HTMLInputElement = document.querySelector('#wpHighlight')!,
+	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
+		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
+		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
+		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
 		buttons = document.getElementsByTagName('button'),
-		tabcontents = document.getElementsByClassName('tabcontent') as HTMLCollectionOf<HTMLDivElement>,
+		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		{wikiparse} = window as unknown as {wikiparse: wikiparse},
 		config: Config = await (await fetch('/wikiparser-node/config/default.json')).json();
 	wikiparse.setConfig(config);
