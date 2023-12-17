@@ -1,10 +1,11 @@
 import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.8/dist/main.min.js';
 (async () => {
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.getElementsByClassName('tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
     instance.prefer([
         'highlightSpecialChars',
+        'highlightWhitespace',
         'highlightTrailingWhitespace',
         'bracketMatching',
         'closeBrackets',
@@ -84,9 +85,6 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
             case '#linter':
                 buttons[1].click();
         }
-    });
-    window.addEventListener('beforeunload', () => {
-        instance.save();
     });
     Object.assign(window, { cm: instance });
 })();

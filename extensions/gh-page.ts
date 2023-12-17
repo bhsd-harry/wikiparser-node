@@ -17,6 +17,7 @@ import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 		instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2);
 	instance.prefer([
 		'highlightSpecialChars',
+		'highlightWhitespace',
 		'highlightTrailingWhitespace',
 		'bracketMatching',
 		'closeBrackets',
