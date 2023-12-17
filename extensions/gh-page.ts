@@ -1,4 +1,4 @@
-import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.11/dist/main.min.js';
+import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.12/dist/main.min.js';
 import type {Config} from '../base';
 import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
