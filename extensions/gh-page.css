@@ -50,11 +50,6 @@ h2 {
 	position: relative;
 }
 input {
-	outline: none;
-	border: 1.5px solid #dedede;
-	border-radius: .2em;
-	box-shadow: none;
-	padding: .4em;
 	position: relative;
 	z-index: 1;
 	opacity: 0;

@@ -218,12 +218,6 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 			printer.queue(500, 'fine');
 		}
 	});
-	textbox.addEventListener('keydown', e => {
-		if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-			e.preventDefault();
-			printer.queue(0, 'coarse');
-		}
-	});
 	printer.queue(0, 'coarse');
 	return printer;
 };
