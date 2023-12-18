@@ -29,7 +29,7 @@ export const text = (childNodes: (string | AstNodes)[], separator = ''): string 
  */
 export const decodeHtml = (str: string): string => str.replace(
 	/&#(\d+|x[\da-f]+);/giu,
-	(_, code: string) => String.fromCodePoint(Number(`${code[0]!.toLowerCase() === 'x' ? '0' : ''}${code}`)),
+	(_, code: string) => String.fromCodePoint(Number(`${code.toLowerCase().startsWith('x') ? '0' : ''}${code}`)),
 );
 
 /**
@@ -58,7 +58,7 @@ export const normalizeSpace = (token?: AstNodes): void => {
 	if (token) {
 		for (const child of token.childNodes) {
 			if (child.type === 'text') {
-				child.replaceData(child.data.replaceAll('\n', ' '));
+				child.replaceData(child.data.replace(/\n+/gu, ' '));
 			}
 		}
 	}
