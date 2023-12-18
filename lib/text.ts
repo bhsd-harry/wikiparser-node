@@ -60,8 +60,8 @@ export class AstText extends AstNode {
 	 * @param start
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {data, parentNode, nextSibling, previousSibling} = this as this & {parentNode: AstNode};
-		const {type, name} = parentNode,
+		const {data, parentNode, nextSibling, previousSibling} = this;
+		const {type, name} = parentNode!,
 			nextType = nextSibling?.type,
 			previousType = previousSibling?.type,
 			errorRegex
@@ -69,7 +69,7 @@ export class AstText extends AstNode {
 				? errorSyntaxUrl
 				: errorSyntax,
 			errors: LintError[] = [],
-			{ext, html} = parentNode.getAttribute('config');
+			{ext, html} = this.getRootNode().getAttribute('config');
 		if (data.search(errorRegex) !== -1) {
 			errorRegex.lastIndex = 0;
 			const root = this.getRootNode(),
