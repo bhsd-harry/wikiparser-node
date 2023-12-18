@@ -189,7 +189,7 @@ export class ImagemapToken extends Token {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodes>(token: T | string, i = 0): T | AstText {
+	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		const {image} = this;
 		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
 			throw new Error('当前缺少一张合法图片！');

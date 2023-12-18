@@ -29,7 +29,7 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 		/** @ignore */
 		override insertAt<T extends AstNodes>(token: T, i?: number): T;
 		/** @ignore */
-		override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
+		override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 			if (Shadow.running) {
 				return super.insertAt(token, i) as T | AstText;
 			}

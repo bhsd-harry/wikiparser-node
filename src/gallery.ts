@@ -156,7 +156,7 @@ export class GalleryToken extends Token {
 	 * @param i 插入位置
 	 * @throws `SyntaxError` 非法的文件名
 	 */
-	insertImage(file: string, i = this.length): GalleryImageToken {
+	insertImage(file: string, i?: number): GalleryImageToken {
 		if (this.#checkFile(file)) {
 			const token = Shadow.run(
 				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
@@ -177,7 +177,7 @@ export class GalleryToken extends Token {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodes>(token: T | string, i = 0): T | AstText {
+	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
 		if (typeof token === 'string' && token.trim() || token instanceof HiddenToken) {
 			throw new RangeError('请勿向图库中插入不可见内容！');
 		}

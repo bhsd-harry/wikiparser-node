@@ -282,7 +282,7 @@ export class ImageParameterToken extends Token {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodes>(token: string | T, i = this.length): AstText | T {
+	override insertAt<T extends AstNodes>(token: string | T, i?: number): AstText | T {
 		if (!Shadow.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}
