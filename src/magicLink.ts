@@ -59,12 +59,10 @@ export class MagicLinkToken extends syntax(Token) {
 
 	/** 和内链保持一致 */
 	get link(): string {
+		const map = {'!': '|', '=': '='};
 		return text(this.childNodes.map(child => {
 			const {type, name} = child;
-			if (type === 'magic-word') {
-				return name === '!' ? '|' : '=';
-			}
-			return child;
+			return type === 'magic-word' && name in map ? map[name as '!' | '='] : child;
 		}));
 	}
 
