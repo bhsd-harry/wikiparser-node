@@ -1,16 +1,19 @@
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {text} from '../util/string';
 import {syntax} from '../mixin/syntax';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
 import type {
+	AstNodes,
 	ParameterToken,
 	AstText,
 	CommentToken,
 	IncludeToken,
 	NoincludeToken,
+	TranscludeToken,
 } from '../internal';
 
 /**
@@ -20,17 +23,19 @@ import type {
 export class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
-	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
+	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken)[];
+	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	abstract override get firstChild(): AstText | TranscludeToken;
 	// @ts-expect-error abstract method
-	abstract override get firstElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
+	abstract override get firstElementChild():
+		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
 	// @ts-expect-error abstract method
-	abstract override get lastElementChild(): CommentToken | IncludeToken | NoincludeToken | undefined;
+	abstract override get lastElementChild():
+		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -54,7 +59,13 @@ export class MagicLinkToken extends syntax(Token) {
 
 	/** 和内链保持一致 */
 	get link(): string {
-		return this.text();
+		return text(this.childNodes.map(child => {
+			const {type, name} = child;
+			if (type === 'magic-word') {
+				return name === '!' ? '|' : '=';
+			}
+			return child;
+		}));
 	}
 
 	set link(url) {
@@ -69,7 +80,7 @@ export class MagicLinkToken extends syntax(Token) {
 	 */
 	constructor(url?: string, doubleSlash = false, config = Parser.getConfig(), accum: Token[] = []) {
 		super(url, config, accum, {
-			'Stage-1': ':', '!ExtToken': '',
+			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
 		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
 		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
@@ -130,19 +141,41 @@ export class MagicLinkToken extends syntax(Token) {
 	}
 
 	/**
+	 * @override
+	 * @param token 待插入的节点
+	 * @param i 插入位置
+	 * @throws `RangeError` 插入`{{!}}`或`{{=}}`以外的魔术字或模板
+	 */
+	override insertAt(token: string, i?: number): AstText;
+	/** @ignore */
+	override insertAt<T extends AstNodes>(token: T, i?: number): T;
+	/** @ignore */
+	override insertAt<T extends AstNodes>(token: T | string, i = 0): T | AstText {
+		if (typeof token !== 'string') {
+			const {type, name} = token;
+			if (type === 'template') {
+				throw new RangeError(`${this.constructor.name} 不可插入模板！`);
+			} else if (type === 'magic-word' && name !== '!' && name !== '=') {
+				throw new RangeError(`${this.constructor.name} 不可插入 \`{{!}}\` 或 \`{{=}}\` 以外的魔术字！`);
+			}
+		}
+		return super.insertAt(token, i) as T;
+	}
+
+	/**
 	 * 获取网址
 	 * @throws `Error` 非标准协议
 	 */
 	getUrl(): URL {
-		let url = this.text();
-		if (url.startsWith('//')) {
-			url = `https:${url}`;
+		let {link} = this;
+		if (link.startsWith('//')) {
+			link = `https:${link}`;
 		}
 		try {
-			return new URL(url);
+			return new URL(link);
 		} catch (e) {
 			if (e instanceof TypeError && e.message === 'Invalid URL') {
-				throw new Error(`非标准协议的外部链接：${url}`);
+				throw new Error(`非标准协议的外部链接：${link}`);
 			}
 			throw e;
 		}
@@ -153,7 +186,7 @@ export class MagicLinkToken extends syntax(Token) {
 	 * @param url 含协议的网址
 	 */
 	setTarget(url: string): void {
-		const {childNodes} = Parser.parse(url, this.getAttribute('include'), 1, this.getAttribute('config'));
+		const {childNodes} = Parser.parse(url, this.getAttribute('include'), 2, this.getAttribute('config'));
 		this.replaceChildren(...childNodes);
 	}
 

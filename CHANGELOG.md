@@ -5,6 +5,7 @@
 **Fixed**
 
 - Unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
+- `{{!}}` and `{{=}}` can be part of an external link now
 
 **Changed**
 
@@ -59,7 +60,7 @@
 
 **Changed**
 
-- `startContainer` and `endContainer` properties of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) now must be siblings
+- `startContainer` and `endContainer` properties of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) must be siblings now
 
 **Removed**
 
