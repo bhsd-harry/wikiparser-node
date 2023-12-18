@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="zh-CN">
+<html dir="ltr" lang="en-US">
 	<head>
+		<title>Demo: wikiparser-node</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0, width=device-width">
 		<link rel="stylesheet" href="extensions/gh-page.css">
 		<link rel="stylesheet" href="extensions/ui.css">
 		<link rel="stylesheet" href="extensions/editor.css">
-		<link rel="stylesheet" href="//testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.7/mediawiki.min.css">
+		<link rel="stylesheet" href="//testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.12/mediawiki.min.css">
 		<script defer="" src="extensions/dist/base.js"></script>
 		<script defer="" src="extensions/dist/editor.js"></script>
 		<script defer="" src="extensions/dist/lint.js"></script>
@@ -25,7 +26,7 @@
 				<h2>Please input wikitext into the text box below.</h2>
 				<div class="fieldLayout">
 					<span class="field">
-						<input type="checkbox" name="wpInclude" id="wpInclude">
+						<input type="checkbox" id="wpInclude">
 						<span></span>
 					</span>
 					<span class="header">
@@ -38,7 +39,7 @@
 				<div class="tabcontent" id="linter">
 					<div class="fieldLayout">
 						<span class="field">
-							<input type="checkbox" name="wpHighlight" id="wpHighlight">
+							<input type="checkbox" id="wpHighlight">
 							<span></span>
 						</span>
 						<span class="header">
