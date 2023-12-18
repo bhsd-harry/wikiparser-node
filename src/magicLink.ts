@@ -7,6 +7,7 @@ import type {
 	CommentToken,
 	IncludeToken,
 	NoincludeToken,
+	TranscludeToken,
 } from '../internal';
 
 /**
@@ -16,11 +17,11 @@ import type {
 export class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
-	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken)[];
+	declare childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	abstract override get firstChild(): AstText | TranscludeToken;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken;
+	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
 
 	/**
 	 * @param url 网址

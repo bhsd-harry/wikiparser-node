@@ -341,7 +341,6 @@ export class Token extends AstElement {
 	 * @override
 	 * @param child 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 不可插入的子节点
 	 */
 	override insertAt(child: string, i?: number): AstText;
 	/** @ignore */

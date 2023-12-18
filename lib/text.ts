@@ -61,10 +61,9 @@ export class AstText extends AstNode {
 	 * @override
 	 * @param start
 	 */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {data, parentNode, nextSibling, previousSibling} = this,
-			type = parentNode?.type,
-			name = parentNode?.name,
+	lint(start = this.getAbsoluteIndex()): LintError[] {
+		const {data, parentNode, nextSibling, previousSibling} = this;
+		const {type, name} = parentNode,
 			nextType = nextSibling?.type,
 			previousType = previousSibling?.type,
 			errorRegex
@@ -72,7 +71,7 @@ export class AstText extends AstNode {
 				? errorSyntaxUrl
 				: errorSyntax,
 			errors = [...data.matchAll(errorRegex)],
-			{ext, html} = this.getRootNode().getAttribute('config');
+			{ext, html} = parentNode.getAttribute('config');
 		if (errors.length > 0) {
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
@@ -139,7 +138,7 @@ export class AstText extends AstNode {
 	}
 
 	/** @override */
-	override print(): string {
+	print(): string {
 		return this.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`);
 	}
 }
