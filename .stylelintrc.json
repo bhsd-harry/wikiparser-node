@@ -1,5 +1,5 @@
 {
-  "extends": "/usr/local/lib/node_modules/stylelint-config-recommended",
+  "extends": "stylelint-config-recommended",
   "rules": {
     "declaration-property-value-no-unknown": true,
     "no-unknown-animations": true,
