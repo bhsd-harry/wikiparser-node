@@ -72,7 +72,6 @@ export abstract class AstElement extends AstNode {
 	 * 插入子节点
 	 * @param node 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 不能插入祖先节点
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		const {childNodes} = this;
@@ -123,7 +122,6 @@ export abstract class AstElement extends AstNode {
 	 * 修改文本子节点
 	 * @param str 新文本
 	 * @param i 子节点位置
-	 * @throws `RangeError` 对应位置的子节点不是文本节点
 	 */
 	setText(str: string, i = 0): string {
 		const oldText = this.childNodes.at(i) as AstText;
@@ -141,7 +139,7 @@ export abstract class AstElement extends AstNode {
 	 * @override
 	 * @param start
 	 */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
 		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
 			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name!)
