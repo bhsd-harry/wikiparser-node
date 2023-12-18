@@ -8,7 +8,7 @@
 
 **Fixed**
 
-- Unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
+- Removing unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
 - `{{!}}` and `{{=}}` can be part of an external link now
 
 **Changed**
