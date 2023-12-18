@@ -12,17 +12,26 @@ declare global {
 		bubbles: boolean;
 	}
 
-	interface AstEventData {
-		position?: number;
-		removed?: AstNodes;
-		inserted?: AstNodes;
-		oldToken?: Token;
-		newToken?: Token;
-		oldText?: string;
-		newText?: string;
+	type AstEventData = ({
+		type: 'insert';
+		position: number;
+		inserted: AstNodes;
+	} | {
+		type: 'remove';
+		position: number;
+		removed: AstNodes;
+	} | {
+		type: 'text';
+		oldText: string;
+	} | {
+		type: 'replace';
+		position: number;
+		oldToken: Token;
+		newToken: Token;
+	}) & {
 		oldKey?: string;
 		newKey?: string;
-	}
+	};
 
 	type AstListener = (e: AstEvent, data: AstEventData) => void;
 }

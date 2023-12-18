@@ -33,31 +33,33 @@ export const Shadow = {
  */
 export const undo = (e: AstEvent, data: AstEventData): void => {
 	const {target, type} = e;
-	switch (type) {
+	switch (data.type) {
 		case 'remove': {
 			const childNodes = [...target.childNodes];
-			childNodes.splice(data.position!, 0, data.removed!);
-			data.removed!.setAttribute('parentNode', target as Token);
+			childNodes.splice(data.position, 0, data.removed);
+			data.removed.setAttribute('parentNode', target as Token);
 			target.setAttribute('childNodes', childNodes);
 			break;
 		}
 		case 'insert': {
 			const childNodes = [...target.childNodes];
-			childNodes.splice(data.position!, 1);
+			childNodes.splice(data.position, 1);
+			data.inserted.setAttribute('parentNode', undefined);
 			target.setAttribute('childNodes', childNodes);
 			break;
 		}
 		case 'replace': {
 			const {parentNode} = target,
 				childNodes = [...parentNode!.childNodes];
-			childNodes.splice(data.position!, 1, data.oldToken!);
-			data.oldToken!.setAttribute('parentNode', parentNode);
+			childNodes.splice(data.position, 1, data.oldToken);
+			data.oldToken.setAttribute('parentNode', parentNode);
+			data.newToken.setAttribute('parentNode', undefined);
 			parentNode!.setAttribute('childNodes', childNodes);
 			break;
 		}
 		case 'text':
 			if (target.type === 'text') {
-				target.replaceData(data.oldText!);
+				target.replaceData(data.oldText);
 			}
 			break;
 		default:

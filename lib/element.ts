@@ -189,11 +189,9 @@ export abstract class AstElement extends AstNode {
 	removeAt(i: number): AstNodes {
 		this.verifyChild(i);
 		const childNodes = [...this.childNodes],
-			e = new Event('remove', {bubbles: true}),
 			[node] = childNodes.splice(i, 1) as [AstNodes];
 		node.setAttribute('parentNode', undefined);
 		this.setAttribute('childNodes', childNodes);
-		this.dispatchEvent(e, {position: i, removed: node});
 		return node;
 	}
 
@@ -210,7 +208,6 @@ export abstract class AstElement extends AstNode {
 		}
 		this.verifyChild(i, 1);
 		const childNodes = [...this.childNodes],
-			e = new Event('insert', {bubbles: true}),
 			j = Shadow.running ? -1 : childNodes.indexOf(node);
 		if (j === -1) {
 			node.parentNode?.removeChild(node);
@@ -220,7 +217,6 @@ export abstract class AstElement extends AstNode {
 		}
 		childNodes.splice(i, 0, node);
 		this.setAttribute('childNodes', childNodes);
-		this.dispatchEvent(e, {position: i < 0 ? i + this.length - 1 : i, inserted: node});
 		return node;
 	}
 

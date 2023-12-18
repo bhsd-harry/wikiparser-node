@@ -170,7 +170,7 @@ export class AstText extends AstNode {
 			e = new Event('text', {bubbles: true});
 		this.setAttribute('data', text);
 		if (data !== text) {
-			this.dispatchEvent(e, {oldText: data, newText: text});
+			this.dispatchEvent(e, {type: 'text', oldText: data});
 		}
 	}
 

@@ -440,6 +440,8 @@ export class Token extends AstElement {
 			}
 		}
 		super.insertAt(token, i);
+		const e = new Event('insert', {bubbles: true});
+		this.dispatchEvent(e, {type: 'insert', position: i < 0 ? i + this.length - 1 : i, inserted: token});
 		if (token.constructor === Token && this.getAttribute('plain')) {
 			Parser.warn('您正将一个普通节点作为另一个普通节点的子节点，请考虑要不要执行 flatten 方法。');
 		}
@@ -495,7 +497,10 @@ export class Token extends AstElement {
 				}
 			}
 		}
-		return super.removeAt(i);
+		const node = super.removeAt(i);
+		const e = new Event('remove', {bubbles: true});
+		this.dispatchEvent(e, {type: 'remove', position: i, removed: node});
+		return node;
 	}
 
 	/**
@@ -526,7 +531,7 @@ export class Token extends AstElement {
 			token.type = 'plain';
 		}
 		const e = new Event('replace', {bubbles: true});
-		token.dispatchEvent(e, {position: i, oldToken: this, newToken: token});
+		token.dispatchEvent(e, {type: 'replace', position: i, oldToken: this, newToken: token});
 	}
 
 	/**

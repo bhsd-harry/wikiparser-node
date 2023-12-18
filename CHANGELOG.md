@@ -1,3 +1,11 @@
+## v1.1.4
+
+*2023-12-18*
+
+**Fixed**
+
+- Unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
+
 ## v1.1.3
 
 *2023-12-16*
