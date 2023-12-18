@@ -245,6 +245,15 @@ export class ParameterToken extends fixed(Token) {
 		}
 		this.firstChild.replaceChildren(...root.childNodes);
 	}
+
+	/** 转义 `=` */
+	escape(): void {
+		for (const child of this.lastChild.childNodes) {
+			if (child.type === 'text') {
+				child.escape();
+			}
+		}
+	}
 }
 
 classes['ParameterToken'] = __filename;

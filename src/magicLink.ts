@@ -155,7 +155,7 @@ export class MagicLinkToken extends syntax(Token) {
 			const {type, name} = token;
 			if (type === 'template') {
 				throw new RangeError(`${this.constructor.name} 不可插入模板！`);
-			} else if (type === 'magic-word' && name !== '!' && name !== '=') {
+			} else if (!Shadow.running && type === 'magic-word' && name !== '!' && name !== '=') {
 				throw new RangeError(`${this.constructor.name} 不可插入 \`{{!}}\` 或 \`{{=}}\` 以外的魔术字！`);
 			}
 		}
@@ -193,6 +193,15 @@ export class MagicLinkToken extends syntax(Token) {
 	/** 是否是模板或魔术字参数 */
 	isParamValue(): boolean {
 		return (this.closest('parameter') as ParameterToken | undefined)?.getValue() === this.text();
+	}
+
+	/** 转义 `=` */
+	escape(): void {
+		for (const child of this.childNodes) {
+			if (child.type === 'text') {
+				child.escape();
+			}
+		}
 	}
 }
 

@@ -97,11 +97,14 @@ export class AstText extends AstNode {
 	/**
 	 * @override
 	 * @param start
+	 * @throws `Error` 孤立文本节点
 	 */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {data, parentNode, nextSibling, previousSibling} = this,
-			type = parentNode?.type,
-			name = parentNode?.name,
+		const {data, parentNode, nextSibling, previousSibling} = this;
+		if (!parentNode) {
+			throw new Error('无法对孤立文本节点进行语法分析！');
+		}
+		const {type, name} = parentNode,
 			nextType = nextSibling?.type,
 			previousType = previousSibling?.type,
 			errorRegex
@@ -109,7 +112,7 @@ export class AstText extends AstNode {
 				? errorSyntaxUrl
 				: errorSyntax,
 			errors = [...data.matchAll(errorRegex)],
-			{ext, html} = this.getRootNode().getAttribute('config');
+			{ext, html} = parentNode.getAttribute('config');
 		if (errors.length > 0) {
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
@@ -266,6 +269,18 @@ export class AstText extends AstNode {
 			throw new RangeError(`超出文本长度范围！`);
 		}
 		return j;
+	}
+
+	/** 转义 `=` */
+	escape(): void {
+		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
+		for (let i = this.data.lastIndexOf('='); i >= 0; i = this.data.lastIndexOf('=', i - 1)) {
+			if (i < this.length - 1) {
+				this.splitText(i + 1);
+			}
+			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')));
+			this.setAttribute('data', this.data.slice(0, i));
+		}
 	}
 }
 

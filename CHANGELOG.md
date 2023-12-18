@@ -2,6 +2,10 @@
 
 *2023-12-18*
 
+**Added**
+
+- New methods [`AstText.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#escape), [`ParameterToken.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parameter#escape) and [`MagicLinkToken.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#escape)
+
 **Fixed**
 
 - Unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
