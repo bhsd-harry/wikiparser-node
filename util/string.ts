@@ -29,7 +29,7 @@ export const text = (childNodes: (string | AstNodes)[], separator = ''): string 
  */
 export const decodeHtml = (str: string): string => str.replace(
 	/&#(\d+|x[\da-f]+);/giu,
-	(_, code: string) => String.fromCodePoint(Number(`${code[0]!.toLowerCase() === 'x' ? '0' : ''}${code}`)),
+	(_, code: string) => String.fromCodePoint(Number(`${code.toLowerCase().startsWith('x') ? '0' : ''}${code}`)),
 );
 
 /**
