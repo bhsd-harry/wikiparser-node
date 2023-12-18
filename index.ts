@@ -50,11 +50,6 @@ declare interface Parser extends ParserBase {
 		selfLink?: boolean,
 	): Title;
 
-	/**
-	 * @override
-	 * @param include 是否嵌入
-	 * @param maxStage 最大解析层级
-	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
 	/* NOT FOR BROWSER */

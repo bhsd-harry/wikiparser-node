@@ -99,7 +99,7 @@ export class AstText extends AstNode {
 	 * @param start
 	 * @throws `Error` 孤立文本节点
 	 */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
 			throw new Error('无法对孤立文本节点进行语法分析！');
@@ -186,7 +186,7 @@ export class AstText extends AstNode {
 	}
 
 	/** @override */
-	override print(): string {
+	print(): string {
 		return this.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`);
 	}
 
@@ -257,11 +257,7 @@ export class AstText extends AstNode {
 		return newText;
 	}
 
-	/**
-	 * @override
-	 * @param j 字符位置
-	 * @throws `RangeError` 超出文本长度范围
-	 */
+	/** @private */
 	override getRelativeIndex(j?: number): number {
 		if (j === undefined) {
 			return super.getRelativeIndex();

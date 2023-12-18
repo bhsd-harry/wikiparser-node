@@ -291,7 +291,7 @@ export abstract class AstElement extends AstNode {
 	 * @override
 	 * @param start
 	 */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
 		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
 			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name!)
@@ -311,7 +311,7 @@ export abstract class AstElement extends AstNode {
 	 * @override
 	 * @param opt 选项
 	 */
-	override print(opt: PrintOpt = {}): string {
+	print(opt: PrintOpt = {}): string {
 		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
 	}
 
