@@ -57,7 +57,6 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\
 		'param',
 		'xmp',
 	];
-const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 /** 文本节点 */
 export class AstText extends AstNode {
@@ -187,6 +186,7 @@ export class AstText extends AstNode {
 
 	/** @override */
 	print(): string {
+		const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 		return this.data.replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`);
 	}
 
