@@ -87,7 +87,7 @@ export class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
-		if (!(this.lastChild instanceof SyntaxToken)) {
+		if (this.lastChild.type !== 'table-syntax') {
 			const token = Shadow.run(() => super.insertAt(
 				new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',

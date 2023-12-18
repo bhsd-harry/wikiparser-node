@@ -132,7 +132,7 @@ TableToken.prototype.getLayout	=
 				k = 0,
 				last: boolean | undefined;
 			for (const cell of rows[i]!.childNodes.slice(2)) {
-				if (cell instanceof TdToken) {
+				if (cell.type === 'td') {
 					if (cell.isIndependent()) {
 						last = cell.subtype !== 'caption';
 					}
@@ -562,7 +562,7 @@ TableToken.prototype.moveTableRowAfter =
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after)!,
 			cells = afterToken.childNodes.filter(
-				child => child instanceof TdToken && child.subtype !== 'caption',
+				child => child.type === 'td' && child.subtype !== 'caption',
 			) as TdToken[],
 			/** @ignore */
 			occupied = (i: number, oneRow = false): number[] => layout[i]!.map(

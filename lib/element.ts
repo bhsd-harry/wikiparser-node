@@ -5,7 +5,6 @@ import {
 	print,
 	text,
 } from '../util/string';
-import {Shadow} from '../util/debug';
 import {typeAliases, classes} from '../util/constants';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
@@ -199,22 +198,21 @@ export abstract class AstElement extends AstNode {
 	 * 插入子节点
 	 * @param node 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 不能插入祖先节点
+	 * @throws `RangeError` 不能插入祖先或子节点
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		if (node.contains(this)) {
 			Parser.error('不能插入祖先节点！', node);
 			throw new RangeError('不能插入祖先节点！');
 		}
-		this.verifyChild(i, 1);
-		const childNodes = [...this.childNodes],
-			j = Shadow.running ? -1 : childNodes.indexOf(node);
-		if (j === -1) {
-			node.parentNode?.removeChild(node);
-			node.setAttribute('parentNode', this as AstElement as Token);
-		} else {
-			childNodes.splice(j, 1);
+		const childNodes = [...this.childNodes];
+		if (childNodes.includes(node)) {
+			Parser.error('不能插入子节点！', node);
+			throw new RangeError('不能插入子节点！');
 		}
+		this.verifyChild(i, 1);
+		node.parentNode?.removeChild(node);
+		node.setAttribute('parentNode', this as AstElement as Token);
 		childNodes.splice(i, 0, node);
 		this.setAttribute('childNodes', childNodes);
 		return node;

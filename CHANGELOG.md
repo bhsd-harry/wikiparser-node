@@ -6,6 +6,10 @@
 
 - Unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
 
+**Changed**
+
+- Inserting a child node is now forbidden
+
 ## v1.1.3
 
 *2023-12-16*
