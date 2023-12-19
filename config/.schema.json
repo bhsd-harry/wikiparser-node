@@ -56,6 +56,18 @@
 				{
 					"description": "case-sensitive parser functions",
 					"type": "array",
+					"allOf": [
+						{
+							"contains": {
+								"const": "!"
+							}
+						},
+						{
+							"contains": {
+								"const": "="
+							}
+						}
+					],
 					"items": {
 						"type": "string"
 					}
