@@ -1,3 +1,11 @@
+## v1.1.5
+
+*2023-12-19*
+
+**Fixed**
+
+- Magic words `!` and `=` are now required in parser configurations.
+
 ## v1.1.4
 
 *2023-12-18*
