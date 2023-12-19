@@ -559,7 +559,8 @@
 			"内容语言",
 			"CONTENTLANGUAGE",
 			"CONTENTLANG",
-			"PAGELANGUAGE"
+			"PAGELANGUAGE",
+			"="
 		],
 		[
 			"msg",

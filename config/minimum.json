@@ -112,7 +112,10 @@
 			"#related": "related",
 			"#cscore": "cscore"
 		},
-		[],
+		[
+			"!",
+			"="
+		],
 		[
 			"msg",
 			"原始",
