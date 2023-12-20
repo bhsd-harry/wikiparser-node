@@ -3,7 +3,7 @@ import type {Printer} from './editor';
 import type {Linter} from './lint';
 
 export type {Diagnostic} from '@codemirror/lint';
-export type {MwConfig, CodeMirror6} from '@bhsd/codemirror-mediawiki';
+export type {MwConfig, CodeMirror6 as CodeMirror} from '@bhsd/codemirror-mediawiki';
 
 declare global {
 	module 'https://*' {
