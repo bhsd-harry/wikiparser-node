@@ -1,18 +1,16 @@
+import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.13/dist/main.min.js';
 import type {Config} from '../base';
 import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
 (async () => {
-	const {CodeMirror6} = await import(
-			'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.13/dist/main.min.js'
-		),
-		textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
+	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
 		buttons = document.getElementsByTagName('button'),
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		{wikiparse} = window as unknown as {wikiparse: wikiparse},
-		config: Config = await (await fetch('/wikiparser-node/config/default.json')).json();
+		config: Config = await (await fetch('./config/default.json')).json();
 	wikiparse.setConfig(config);
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),

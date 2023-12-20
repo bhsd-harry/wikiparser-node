@@ -41,6 +41,9 @@
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
+		"server": "http-server -c-1 --cors &",
+		"test": "npm run server; open http://127.0.0.1:8080/index.html",
+		"test:end": "killall http-server",
 		"test:real": "node dist/test/real.js",
 		"test:single": "node dist/test/single.js"
 	},
@@ -64,6 +67,7 @@
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-regexp": "^2.1.1",
 		"eslint-plugin-unicorn": "^49.0.0",
+		"http-server": "^14.1.0",
 		"stylelint": "^15.11.0",
 		"stylelint-config-recommended": "^13.0.0",
 		"webpack-cli": "^5.1.4",
