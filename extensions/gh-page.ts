@@ -1,9 +1,11 @@
-import {CodeMirror6} from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.12/dist/main.min.js';
 import type {Config} from '../base';
 import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
 (async () => {
-	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
+	const {CodeMirror6} = await import(
+			'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.13/dist/main.min.js'
+		),
+		textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
@@ -59,7 +61,7 @@ import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 	 * @param entries
 	 * @param target
 	 */
-	const fromEntries = (entries: string[], target: Record<string, string>): void => {
+	const fromEntries = (entries: string[], target: Record<string, string | true>): void => {
 		for (const entry of entries) {
 			target[entry] = entry;
 		}
@@ -72,7 +74,7 @@ import type {wikiparse, MwConfig, CodeMirror6 as CodeMirror} from './typings';
 
 	input2.addEventListener('change', () => {
 		instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
-		instance.lint((str: string) => Linter.codemirror(str));
+		instance.lint((doc: unknown) => Linter.codemirror(String(doc)));
 	});
 	input2.dispatchEvent(new Event('change'));
 

@@ -1,6 +1,5 @@
-import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.12/dist/main.min.js';
 (async () => {
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
+    const { CodeMirror6 } = await import('https://testingcf.jsdelivr.net/npm/@bhsd/codemirror-mediawiki@2.0.13/dist/main.min.js'), textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), { wikiparse } = window, config = await (await fetch('/wikiparser-node/config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
     instance.prefer([
@@ -46,7 +45,7 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
     input2.addEventListener('change', () => {
         instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
-        instance.lint((str) => Linter.codemirror(str));
+        instance.lint((doc) => Linter.codemirror(String(doc)));
     });
     input2.dispatchEvent(new Event('change'));
     const handler = (e) => {

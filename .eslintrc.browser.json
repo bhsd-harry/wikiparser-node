@@ -22,6 +22,9 @@
 			"files": "extensions/dist/gh-page.js",
 			"parserOptions": {
 				"sourceType": "module"
+			},
+			"rules": {
+				"es-x/no-dynamic-import": 0
 			}
 		}
 	],
