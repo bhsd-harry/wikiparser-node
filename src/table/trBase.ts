@@ -34,14 +34,18 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
+			/** @ignore */
+			isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
+			/** @ignore */
+			isTransclude = (token: AstNodes): token is TranscludeToken => token.type === 'magic-word';
 		if (!first || tdPattern.test(String(first))
-			|| first.type === 'arg' && tdPattern.test((first as ArgToken).default || '')
+			|| isArg(first) && tdPattern.test(first.default || '')
 		) {
 			return errors;
-		} else if (first.type === 'magic-word') {
+		} else if (isTransclude(first)) {
 			try {
-				if ((first as TranscludeToken).getPossibleValues().every(token => tdPattern.test(token.text()))) {
+				if (first.getPossibleValues().every(token => tdPattern.test(token.text()))) {
 					return errors;
 				}
 			} catch {}
@@ -156,6 +160,10 @@ export abstract class TrBaseToken extends TableBaseToken {
 			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
 		let last = 0;
+		/** @ignore */
+		const isTr = (token: Token): token is TrToken => token.type === 'tr',
+			/** @ignore */
+			isSyntax = (token: Token): token is SyntaxToken => token.type === 'table-syntax';
 		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {
 				if (child.isIndependent()) {
@@ -165,8 +173,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 				if (n < 0) {
 					return child;
 				}
-			} else if (child.type === 'tr' || child.type === 'table-syntax') {
-				return child as TrToken | SyntaxToken;
+			} else if (isTr(child) || isSyntax(child)) {
+				return child;
 			}
 		}
 		return undefined;

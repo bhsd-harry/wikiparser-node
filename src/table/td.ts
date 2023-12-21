@@ -14,9 +14,13 @@ declare interface TdSyntax {
 	escape: boolean;
 	correction: boolean;
 }
-declare type TdAttrGetter<T extends string> = T extends 'rowspan' | 'colspan' ? number : string | true | undefined;
-declare type TdAttrSetter<T extends string> = T extends 'rowspan' | 'colspan' ? number : string | boolean;
-export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan?: number};
+export interface TdSpanAttrs {
+	rowspan?: number;
+	colspan?: number;
+}
+declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
+declare type TdAttrSetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | boolean;
+export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
  * `<td>`、`<th>`和`<caption>`
@@ -325,7 +329,7 @@ export const createTd = (
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
 	for (const [k, v] of Object.entries(attr)) {
-		token.setAttr(k, v as string | true);
+		token.setAttr(k, v);
 	}
 	return token;
 };

@@ -158,7 +158,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 	}
 	if (regex === regularRegex) {
 		pushSimple(step, sanitized);
-		const pseudos = new Set(stack.flat(2).filter(e => typeof e === 'string' && e.startsWith(':')) as string[]);
+		const pseudos = new Set(stack.flat(2).filter((e): e is string => typeof e === 'string' && e.startsWith(':')));
 		if (pseudos.size > 0) {
 			Parser.warn('检测到伪选择器，请确认是否需要将":"转义成"\\:"。', pseudos);
 		}

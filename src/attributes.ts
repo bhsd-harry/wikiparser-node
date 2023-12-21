@@ -21,6 +21,12 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 /* NOT FOR BROWSER END */
 
 declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
+declare type AttributeDirty = 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty';
+
+/** @ignore */
+const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
+/** @ignore */
+const toDirty = (type: AttributesTypes): AttributeDirty => `${type.slice(0, -1)}-dirty` as AttributeDirty;
 
 /**
  * 扩展和HTML标签属性
@@ -135,13 +141,9 @@ export class AttributesToken extends Token {
 				lastIndex = 0;
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
-					super.insertAt(new AtomToken(
-						out,
-						`${type.slice(0, -1)}-dirty` as 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty',
-						config,
-						accum,
-						{[`Stage-${stages[type]}`]: ':'},
-					));
+					super.insertAt(new AtomToken(out, toDirty(type), config, accum, {
+						[`Stage-${stages[type]}`]: ':',
+					}));
 					out = '';
 				}
 			};
@@ -152,7 +154,7 @@ export class AttributesToken extends Token {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd] as [string?, string?],
 						token = new AttributeToken(
-							type.slice(0, -1) as AttributeTypes,
+							toAttributeType(type),
 							name,
 							key,
 							equal,
@@ -191,8 +193,9 @@ export class AttributesToken extends Token {
 	 */
 	getAttrTokens(key?: string): AttributeToken[] {
 		return this.childNodes.filter(
-			child => child instanceof AttributeToken && (!key || child.name === key.toLowerCase().trim()),
-		) as AttributeToken[];
+			(child): child is AttributeToken =>
+				child instanceof AttributeToken && (!key || child.name === key.toLowerCase().trim()),
+		);
 	}
 
 	/**
@@ -316,7 +319,7 @@ export class AttributesToken extends Token {
 		}
 		super.insertAt(token, i);
 		const {previousVisibleSibling, nextVisibleSibling} = token,
-			type = `${this.type.slice(0, -1)}-dirty` as 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty',
+			type = toDirty(this.type),
 			config = this.getAttribute('config'),
 			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
 		if (nextVisibleSibling && !/^\s/u.test(String(nextVisibleSibling))) {
@@ -347,7 +350,7 @@ export class AttributesToken extends Token {
 			return;
 		}
 		const token = Shadow.run(() => new AttributeToken(
-			this.type.slice(0, -1) as AttributeTypes,
+			toAttributeType(this.type),
 			this.name,
 			key,
 			value === true ? '' : '=',

@@ -49,14 +49,14 @@ export class ImagemapToken extends Token {
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
-		return this.childNodes.find(({type}) => type === 'imagemap-image') as GalleryImageToken | undefined;
+		return this.childNodes.find((child): child is GalleryImageToken => child.type === 'imagemap-image');
 	}
 
 	/* NOT FOR BROWSER */
 
 	/** 链接 */
 	override get links(): ImagemapLinkToken[] {
-		return this.childNodes.filter(({type}) => type === 'imagemap-link') as ImagemapLinkToken[];
+		return this.childNodes.filter((child): child is ImagemapLinkToken => child.type === 'imagemap-link');
 	}
 
 	/* NOT FOR BROWSER END */

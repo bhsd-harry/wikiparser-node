@@ -16,7 +16,7 @@ import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
 import type {Title} from '../lib/title';
-import type {TableToken} from '../internal';
+import type {AstNodes, TableToken} from '../internal';
 
 /**
  * 模板或魔术字
@@ -359,7 +359,7 @@ export class TranscludeToken extends Token {
 
 	/** 获取所有参数 */
 	getAllArgs(): ParameterToken[] {
-		return this.childNodes.filter(child => child.type === 'parameter') as ParameterToken[];
+		return this.childNodes.filter((child): child is ParameterToken => child.type === 'parameter');
 	}
 
 	/** 获取所有匿名参数 */
@@ -382,8 +382,7 @@ export class TranscludeToken extends Token {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args.set(keyStr, args);
 		}
-		// @ts-expect-error isNaN
-		if (exact && !isNaN(keyStr)) {
+		if (exact && !isNaN(Number(keyStr))) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
 			args = new Set(args);
@@ -648,9 +647,9 @@ export class TranscludeToken extends Token {
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 1) {
-			this.insertAt(new AtomToken(undefined, 'invoke-module', config, [], {
+			super.insertAt(new AtomToken(undefined, 'invoke-module', config, [], {
 				'Stage-1': ':', '!ExtToken': '',
-			}) as unknown as ParameterToken);
+			}));
 			return;
 		}
 		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, config);
@@ -671,9 +670,9 @@ export class TranscludeToken extends Token {
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 2) {
-			this.insertAt(new AtomToken(undefined, 'invoke-function', config, [], {
+			super.insertAt(new AtomToken(undefined, 'invoke-function', config, [], {
 				'Stage-1': ':', '!ExtToken': '',
-			}) as unknown as ParameterToken);
+			}));
 			return;
 		}
 		const {childNodes} = Parser.parse(func, this.getAttribute('include'), 2, config);
@@ -716,8 +715,7 @@ export class TranscludeToken extends Token {
 					values.set(val, [arg]);
 				}
 			}
-			// @ts-expect-error isNaN
-			let noMoreAnon = anonCount === 0 || isNaN(key);
+			let noMoreAnon = anonCount === 0 || isNaN(Number(key));
 			const emptyArgs = values.get('') ?? [],
 				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
@@ -792,10 +790,12 @@ export class TranscludeToken extends Token {
 		const stripped = String(this).slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			parsed = Parser.parse(stripped, include, 4, config);
+			parsed = Parser.parse(stripped, include, 4, config),
+			/** @ignore */
+			isTable = (token: AstNodes): token is TableToken => token.type === 'table';
 		for (const table of parsed.childNodes) {
-			if (table.type === 'table') {
-				(table as TableToken).escape();
+			if (isTable(table)) {
+				table.escape();
 			}
 		}
 		const {firstChild, length} = Parser.parse(`{{${String(parsed)}}}`, include, undefined, config);

@@ -188,8 +188,7 @@ export class Token extends AstElement {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
-			// @ts-expect-error isNaN
-			} else if (isNaN(s.at(-1))) {
+			} else if (isNaN(Number(s.at(-1)))) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
@@ -707,8 +706,8 @@ export class Token extends AstElement {
 			return undefined;
 		}
 		const {childNodes} = this,
-			headings: [number, number][] = ([...childNodes.entries()]
-				.filter(([, {type}]) => type === 'heading') as [number, HeadingToken][])
+			headings: [number, number][] = [...childNodes.entries()]
+				.filter((entry): entry is [number, HeadingToken] => entry[1].type === 'heading')
 				.map(([i, {level}]) => [i, level]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
 			sections: (AstText | Token)[][] = new Array(headings.length);
@@ -753,14 +752,14 @@ export class Token extends AstElement {
 		if (!parentNode) {
 			return undefined;
 		}
-		const {childNodes, length} = parentNode,
+		/** @ignore */
+		const isHtml = (node: AstNodes): node is HtmlToken => node.type === 'html',
+			{childNodes, length} = parentNode,
 			index = childNodes.indexOf(this);
 		let i: number;
 		for (i = index - 1; i >= 0; i--) {
-			const {
-				type, name, selfClosing, closing,
-			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
-			if (type === 'html' && (!tag || name === tag) && selfClosing === false && closing === false) {
+			const child = childNodes[i]!;
+			if (isHtml(child) && (!tag || child.name === tag) && !child.selfClosing && !child.closing) {
 				break;
 			}
 		}
@@ -769,10 +768,8 @@ export class Token extends AstElement {
 		}
 		const opening = childNodes[i] as HtmlToken;
 		for (i = index + 1; i < length; i++) {
-			const {
-				type, name, selfClosing, closing,
-			} = childNodes[i] as AstNodes & {selfClosing?: boolean, closing?: boolean};
-			if (type === 'html' && name === opening.name && selfClosing === false && closing === true) {
+			const child = childNodes[i]!;
+			if (isHtml(child) && child.name === opening.name && !child.selfClosing && child.closing) {
 				break;
 			}
 		}
@@ -804,7 +801,7 @@ export class Token extends AstElement {
 		}
 		this.normalize();
 		const textNodes = [...this.childNodes.entries()]
-			.filter(([, {type}]) => type === 'text') as [number, AstText][],
+				.filter((entry): entry is [number, AstText] => entry[1].type === 'text'),
 			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
 			token = Shadow.run(() => {
 				const node = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
@@ -829,13 +826,13 @@ export class Token extends AstElement {
 		const targets = this.querySelectorAll('magic-word, arg'),
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
-			const target = targets[i] as ArgToken | TranscludeToken & {default: undefined},
-				{type, name, default: argDefault, childNodes, length} = target,
+			const target = targets[i] as ArgToken | TranscludeToken,
+				{type, name, childNodes, length} = target,
 				[, var1, var2] = childNodes as [SyntaxToken, ...ParameterToken[]];
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
 				if (type === 'arg') {
-					replace = argDefault === false ? String(target) : argDefault;
+					replace = target.default === false ? String(target) : target.default;
 				} else if (name === 'if' && !var1?.getElementByTypes('magic-word, template')) {
 					replace = String(childNodes[String(var1 ?? '').trim() ? 2 : 3] ?? '').trim();
 				} else if (name === 'ifeq'

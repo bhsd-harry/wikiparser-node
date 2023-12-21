@@ -8,7 +8,7 @@ import {singleLine} from '../../mixin/singleLine';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
-import {galleryParams} from '../../index';
+import {galleryParams} from '../imageParameter';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../base';
 import type {AtomToken, ImageParameterToken} from '../../internal';

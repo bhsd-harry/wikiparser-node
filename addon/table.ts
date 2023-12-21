@@ -7,11 +7,17 @@ import {Token} from '../src';
 import {TrToken} from '../src/table/tr';
 import {TableToken} from '../src/table';
 import {TdToken, createTd} from '../src/table/td';
-import type {SyntaxToken} from '../internal';
 import {TrBaseToken} from '../src/table/trBase';
+import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
 import type {TableRenderedCoords} from '../src/table';
-import type {TdAttrs, TdSubtypes} from '../src/table/td';
+import type {TdAttrs, TdSubtypes, TdSpanAttrs} from '../src/table/td';
+
+/**
+ * 检查坐标形式
+ * @param coords 坐标
+ */
+const isTableCoords = (coords: TableCoords | TableRenderedCoords): coords is TableCoords => coords.x === undefined;
 
 /**
  * 比较两个表格坐标
@@ -53,7 +59,7 @@ const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | string = {}, multi
 				token.setSyntax(attr);
 			} else {
 				for (const [k, v] of Object.entries(attr)) {
-					token.setAttr(k, v as string | true);
+					token.setAttr(k, v);
 				}
 			}
 		}
@@ -385,7 +391,8 @@ TableToken.prototype.removeTableRow =
 				}
 			}
 		}
-		const rowToken = rows[y]!.type === 'table' ? this.prependTableRow() : rows[y] as TrToken;
+		const row = rows[y]!,
+			rowToken = row.type === 'tr' ? row : this.prependTableRow();
 		rowToken.remove();
 		return rowToken;
 	};
@@ -425,7 +432,7 @@ TableToken.prototype.mergeCells =
 		cornerCell.rowspan = ymax - ymin;
 		cornerCell.colspan = xmax - xmin;
 		set.delete(corner);
-		for (const token of ([...set] as TableCoords[]).map(({row, column}) => rows[row]!.getNthCol(column)!)) {
+		for (const token of [...set].map(({row, column}) => rows[row]!.getNthCol(column)!)) {
 			token.remove();
 		}
 		return cornerCell;
@@ -433,7 +440,7 @@ TableToken.prototype.mergeCells =
 
 TableToken.prototype.split =
 	/** @implements */
-	function(coords: TableCoords | TableRenderedCoords, dirs: Set<'rowspan' | 'colspan'>): void {
+	function(coords: TableCoords | TableRenderedCoords, dirs: Set<keyof TdSpanAttrs>): void {
 		const cell = this.getNthCell(coords)!,
 			attr = cell.getAttrs(),
 			{subtype} = cell;
@@ -448,7 +455,7 @@ TableToken.prototype.split =
 			return;
 		}
 		let {x, y} = coords;
-		const rawCoords = x === undefined ? coords as TableCoords : this.toRawCoords(coords as TableRenderedCoords)!;
+		const rawCoords = isTableCoords(coords) ? coords : this.toRawCoords(coords)!;
 		if (rawCoords.start === false || x === undefined) {
 			({x, y} = this.toRenderedCoords(rawCoords)!);
 		}
@@ -533,7 +540,7 @@ TableToken.prototype.moveTableRowBefore =
 		const layout = this.getLayout(),
 			/** @ignore */
 			occupied = (i: number): number[] =>
-				layout[i]!.map(({row}, j) => row === i ? j : undefined).filter(j => j !== undefined) as number[];
+				layout[i]!.map(({row}, j) => row === i ? j : undefined).filter((j): j is number => j !== undefined);
 		try {
 			assert.deepEqual(occupied(y), occupied(before));
 		} catch (e) {
@@ -567,7 +574,7 @@ TableToken.prototype.moveTableRowAfter =
 			/** @ignore */
 			occupied = (i: number, oneRow = false): number[] => layout[i]!.map(
 				({row, column}, j) => row === i && (!oneRow || cells[column]!.rowspan === 1) ? j : undefined,
-			).filter(j => j !== undefined) as number[];
+			).filter((j): j is number => j !== undefined);
 		try {
 			assert.deepEqual(occupied(y), occupied(after, true));
 		} catch (e) {

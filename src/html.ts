@@ -7,7 +7,7 @@ import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
-import type {AttributesToken, TranscludeToken} from '../internal';
+import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
 
 const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
 
@@ -189,11 +189,10 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		}
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
-			siblings = closing
-				? childNodes.slice(0, i).reverse().filter(({type, name}) => type === 'html' && name === tagName)
-				: childNodes.slice(i + 1).filter(({type, name}) => type === 'html' && name === tagName);
+			siblings = (closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1))
+				.filter((child: AstNodes): child is this => child.type === 'html' && child.name === tagName);
 		let imbalance = closing ? -1 : 1;
-		for (const token of siblings as this[]) {
+		for (const token of siblings) {
 			if (token.#closing) {
 				imbalance--;
 			} else {
@@ -254,7 +253,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
 			prevSiblings = childNodes.slice(0, i)
-				.filter(({type, name}) => type === 'html' && name === tagName) as this[],
+				.filter((child): child is this => child.type === 'html' && child.name === tagName),
 			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
 		if (imbalance < 0) {
 			this.#selfClosing = false;

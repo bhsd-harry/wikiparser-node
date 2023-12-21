@@ -161,14 +161,14 @@ export abstract class AstNode implements AstNodeBase {
 	get nextElementSibling(): Token | undefined {
 		const childNodes = this.parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(i! + 1).find(({type}) => type !== 'text') as Token | undefined;
+		return childNodes?.slice(i! + 1).find((child): child is Token => child.type !== 'text');
 	}
 
 	/** 前一个非文本兄弟节点 */
 	get previousElementSibling(): Token | undefined {
 		const childNodes = this.parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(0, i).findLast(({type}) => type !== 'text') as Token | undefined;
+		return childNodes?.slice(0, i).findLast((child): child is Token => child.type !== 'text');
 	}
 
 	/** 是否具有根节点 */
@@ -224,8 +224,7 @@ export abstract class AstNode implements AstNodeBase {
 			return new Set(this.#optional) as TokenAttributeGetter<T>;
 		}
 		return key in this
-			// @ts-expect-error noImplicitAny
-			? String(this[key as string]) as TokenAttributeGetter<T>
+			? String(this[key as keyof this]) as TokenAttributeGetter<T>
 			: undefined as TokenAttributeGetter<T>;
 	}
 
@@ -238,16 +237,14 @@ export abstract class AstNode implements AstNodeBase {
 			if (this.#optional.has(key)) {
 				descriptor.enumerable = Boolean(value);
 			}
-			// @ts-expect-error noImplicitAny
-			const oldValue = this[key as string],
-				frozen = oldValue !== null && typeof oldValue === 'object' && Object.isFrozen(oldValue);
+			const oldValue = this[key as keyof this],
+				frozen = typeof oldValue === 'object' && Object.isFrozen(oldValue);
 			Object.defineProperty(this, key, {...descriptor, value});
 			if (frozen && typeof value === 'object') {
 				Object.freeze(value);
 			}
 		} else {
-			// @ts-expect-error noImplicitAny
-			this[key as string] = value;
+			this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
 	}
 
@@ -335,8 +332,11 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	protected seal(key: string): void {
 		this.#optional.add(key);
-		// @ts-expect-error noImplicitAny
-		Object.defineProperty(this, key, {writable: false, enumerable: Boolean(this[key]), configurable: true});
+		Object.defineProperty(this, key, {
+			writable: false,
+			enumerable: Boolean(this[key as keyof this]),
+			configurable: true,
+		});
 	}
 
 	/**

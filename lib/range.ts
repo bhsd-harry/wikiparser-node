@@ -1,5 +1,5 @@
 import {classes} from '../util/constants';
-import type {AstNodes, AstText} from '../internal';
+import type {AstNodes} from '../internal';
 import type {Dimension, Position} from './node';
 
 /**
@@ -378,8 +378,7 @@ export class AstRange {
 				return [];
 			}
 			commonAncestorContainer.splitText(endOffset);
-			commonAncestorContainer.splitText(startOffset);
-			const {nextSibling} = commonAncestorContainer as {nextSibling: AstText};
+			const nextSibling = commonAncestorContainer.splitText(startOffset);
 			this.#startContainer = nextSibling;
 			this.#startOffset = 0;
 			this.#endContainer = nextSibling;
