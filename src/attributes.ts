@@ -21,6 +21,7 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 /* NOT FOR BROWSER END */
 
 declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
+declare type AttributeDirty = 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty';
 
 /**
  * 扩展和HTML标签属性
@@ -137,7 +138,7 @@ export class AttributesToken extends Token {
 				if (out) {
 					super.insertAt(new AtomToken(
 						out,
-						`${type.slice(0, -1)}-dirty` as 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty',
+						`${type.slice(0, -1)}-dirty` as AttributeDirty,
 						config,
 						accum,
 						{[`Stage-${stages[type]}`]: ':'},
@@ -316,7 +317,7 @@ export class AttributesToken extends Token {
 		}
 		super.insertAt(token, i);
 		const {previousVisibleSibling, nextVisibleSibling} = token,
-			type = `${this.type.slice(0, -1)}-dirty` as 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty',
+			type = `${this.type.slice(0, -1)}-dirty` as AttributeDirty,
 			config = this.getAttribute('config'),
 			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
 		if (nextVisibleSibling && !/^\s/u.test(String(nextVisibleSibling))) {

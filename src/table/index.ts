@@ -8,7 +8,7 @@ import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../base';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
-import type {TdAttrs, TdSubtypes} from './td';
+import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 import type {Layout} from '../../addon/table';
 
 export interface TableRenderedCoords {
@@ -367,7 +367,7 @@ export class TableToken extends TrBaseToken {
 	}
 
 	/** @private */
-	split(coords: TableCoords | TableRenderedCoords, dirs: Set<'rowspan' | 'colspan'>): void {
+	split(coords: TableCoords | TableRenderedCoords, dirs: Set<keyof TdSpanAttrs>): void {
 		require('../../addon/table');
 		this.split(coords, dirs);
 	}

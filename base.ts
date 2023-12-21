@@ -14,9 +14,11 @@ export interface Config {
 	redirects?: [string, string][];
 }
 
+export type Severity = 'error' | 'warning';
+
 export interface LintError {
 	message: string;
-	severity: 'error' | 'warning';
+	severity: Severity;
 	startIndex: number;
 	endIndex: number;
 	startLine: number;

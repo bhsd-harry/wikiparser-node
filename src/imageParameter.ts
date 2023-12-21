@@ -58,8 +58,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 		case 'manualthumb':
 			return true;
 		default:
-			// @ts-expect-error isNaN
-			return !isNaN(value);
+			return !isNaN(Number(value));
 	}
 }
 
@@ -282,7 +281,7 @@ export class ImageParameterToken extends Token {
 	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	/** @ignore */
-	override insertAt<T extends AstNodes>(token: string | T, i?: number): AstText | T {
+	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		if (!Shadow.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}

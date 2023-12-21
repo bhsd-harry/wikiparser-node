@@ -388,10 +388,8 @@ export abstract class AstElement extends AstNode {
 		}
 		if (equal === '~=') {
 			const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
-			// @ts-expect-error noImplicitAny
-			return Boolean(thisVals?.[Symbol.iterator])
-				// @ts-expect-error spread unknown
-				&& [...thisVals].some(w => typeof w === 'string' && toCase(w, i) === v);
+			return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
+				&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
 		} else if (typeof thisVal !== 'string') {
 			throw new RangeError(`复杂属性 ${key} 不能用于选择器！`);
 		}

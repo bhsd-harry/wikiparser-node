@@ -1,5 +1,5 @@
 import * as Parser from '../index';
-import type {LintError} from '../base';
+import type {LintError, Severity} from '../base';
 import type {AstNodes, Token} from '../internal';
 
 /**
@@ -13,7 +13,7 @@ export const generateForChild = (
 	child: AstNodes,
 	boundingRect: BoundingRect,
 	msg: string,
-	severity: 'error' | 'warning' = 'error',
+	severity: Severity = 'error',
 ): LintError => {
 	const index = child.getRelativeIndex(),
 		{offsetHeight, offsetWidth, parentNode} = child,
@@ -48,7 +48,7 @@ export const generateForSelf = (
 	token: Token,
 	boundingRect: BoundingRect,
 	msg: string,
-	severity: 'error' | 'warning' = 'error',
+	severity: Severity = 'error',
 ): LintError => {
 	const {start} = boundingRect,
 		{offsetHeight, offsetWidth} = token,
