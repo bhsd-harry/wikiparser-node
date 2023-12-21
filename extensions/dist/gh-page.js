@@ -36,7 +36,7 @@ import { CodeMirror6 } from 'https://testingcf.jsdelivr.net/npm/@bhsd/codemirror
     };
     const fromEntries = (entries, target) => {
         for (const entry of entries) {
-            target[entry] = entry;
+            target[entry] = true;
         }
     };
     fromEntries(config.ext, mwConfig.tags);

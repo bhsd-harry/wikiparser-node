@@ -58,12 +58,12 @@ import type {MwConfig, CodeMirror} from './typings';
 	 * @param entries
 	 * @param target
 	 */
-	const fromEntries = (entries: string[], target: Record<string, string | true>): void => {
+	const fromEntries = (entries: string[], target: Record<string, unknown>): void => {
 		for (const entry of entries) {
-			target[entry] = entry;
+			target[entry] = true;
 		}
 	};
-	fromEntries(config.ext, mwConfig.tags as unknown as Record<string, string>);
+	fromEntries(config.ext, mwConfig.tags);
 	fromEntries(config.doubleUnderscore[0], mwConfig.doubleUnderscore[0]);
 	fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
 	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);

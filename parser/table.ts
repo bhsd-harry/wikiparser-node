@@ -6,6 +6,10 @@ import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';
 import type {AstText} from '../internal';
 
+/** @ignore */
+const isTr = (token: TrToken | TableToken | TdToken): token is TrToken | TableToken =>
+	token.lastChild.constructor !== Token;
+
 /**
  * 解析表格，注意`tr`和`td`包含开头的换行
  * @param {Token & {firstChild: AstText}} root 根节点
@@ -34,13 +38,13 @@ export const parseTable = (
 			return;
 		}
 		const {lastChild} = top;
-		if (lastChild.constructor === Token) {
-			lastChild.setText(String(lastChild) + str);
-		} else {
+		if (isTr(top)) {
 			const token = new Token(str, config, accum);
 			token.type = 'table-inter';
 			token.setAttribute('stage', 3);
-			(top as TrToken | TableToken).insertAt(token);
+			top.insertAt(token);
+		} else {
+			lastChild.setText(String(lastChild) + str);
 		}
 	};
 	for (const outLine of lines) {
