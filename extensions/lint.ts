@@ -1,7 +1,5 @@
 import type {LintError} from '../base';
-import type {wikiparse as Wikiparse, Diagnostic} from './typings';
-
-const {wikiparse} = window as unknown as {wikiparse: Wikiparse};
+import type {Diagnostic} from './typings';
 
 /** 用于语法分析 */
 class Linter {

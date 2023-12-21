@@ -1,15 +1,12 @@
-import type {Config, LintError, Parser} from '../base';
+import type {Config, LintError} from '../base';
 import type {wikiparse as Wikiparse} from './typings';
 
 declare type WorkerListener<T> = ({data: [rid, res, resRaw]}: {data: [number, T, string]}) => void;
 
-const MAX_STAGE = 11;
-
 /** web worker */
 const workerJS = (): void => {
-	self.importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.5-b/bundle/bundle.min.js');
-	const {Parser} = self as unknown as {Parser: Parser},
-		entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+	importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.5-b/bundle/bundle.min.js');
+	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
 	self.onmessage = ({data}: {
@@ -28,15 +25,15 @@ const workerJS = (): void => {
 				Parser.config = qid;
 				break;
 			case 'getConfig':
-				self.postMessage([qid, Parser.getConfig()]);
+				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'lint':
-				self.postMessage([qid, Parser.parse(...(args as [string, boolean?])).lint(), args[0]!]);
+				postMessage([qid, Parser.parse(...(args as [string, boolean?])).lint(), args[0]!]);
 				break;
 			// case 'print':
 			default: {
-				const stage = args[2] ?? MAX_STAGE;
-				self.postMessage([
+				const stage = args[2] ?? Infinity;
+				postMessage([
 					qid,
 					Parser.parse(...(args as [string, boolean?, number?])).childNodes.map(child => [
 						stage,
@@ -51,10 +48,7 @@ const workerJS = (): void => {
 	};
 };
 
-const blob = new Blob(
-		[`(${String(workerJS).replace(/MAX_STAGE/gu, String(MAX_STAGE))})()`],
-		{type: 'text/javascript'},
-	),
+const blob = new Blob([`(${String(workerJS)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
 	worker = new Worker(url);
 URL.revokeObjectURL(url);
@@ -130,6 +124,5 @@ const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[
 	worker.postMessage(['lint', qid, wikitext, include]);
 });
 
-const wikiparse: Wikiparse = {MAX_STAGE, id: 0, setI18N, setConfig, getConfig, print, lint};
-Object.defineProperty(wikiparse, 'MAX_STAGE', {enumerable: true, configurable: true});
+const wikiparse: Wikiparse = {id: 0, setI18N, setConfig, getConfig, print, lint};
 Object.assign(window, {wikiparse});

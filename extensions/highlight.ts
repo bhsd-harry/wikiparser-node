@@ -1,7 +1,3 @@
-import type {wikiparse as Wikiparse} from './typings';
-
-const {wikiparse} = window as unknown as {wikiparse: Wikiparse};
-
 /**
  * 高亮代码块
  * @param ele 代码块

@@ -11,7 +11,6 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Printer_instances, _Printer_id, _Printer_preview, _Printer_textbox, _Printer_root, _Printer_viewportChanged, _Printer_running, _Printer_ticks, _Printer_tick, _Printer_exec, _Printer_paint, _Printer_coarsePrint, _Printer_finePrint;
-const { wikiparse } = window, { MAX_STAGE } = wikiparse;
 class Printer {
     constructor(preview, textbox, include) {
         _Printer_instances.add(this);
@@ -99,11 +98,11 @@ _Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox 
             let j = headings.slice(i).findIndex(({ offsetTop }) => offsetTop >= scrollTop + parentHeight);
             j = j === -1 ? length : i + j;
             start = i ? childNodes.indexOf(headings[i - 1]) : 0;
-            while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[start][0] === MAX_STAGE) {
+            while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[start][0] === Infinity) {
                 start = childNodes.indexOf(headings[i++]);
             }
             end = j === length ? end : childNodes.indexOf(headings[j]);
-            while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[end - 1][0] === MAX_STAGE) {
+            while (i <= j && __classPrivateFieldGet(this, _Printer_root, "f")[end - 1][0] === Infinity) {
                 end = childNodes.indexOf(headings[--j]);
             }
             text = __classPrivateFieldGet(this, _Printer_root, "f").slice(start, end).map(([, str]) => str).join('');
@@ -113,7 +112,7 @@ _Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox 
         __classPrivateFieldSet(this, _Printer_running, undefined, "f");
         return undefined;
     }
-    const parsed = await wikiparse.print(text, include, MAX_STAGE, __classPrivateFieldGet(this, _Printer_id, "f"));
+    const parsed = await wikiparse.print(text, include, undefined, __classPrivateFieldGet(this, _Printer_id, "f"));
     if (this.include === include && __classPrivateFieldGet(this, _Printer_textbox, "f").value === value) {
         __classPrivateFieldGet(this, _Printer_root, "f").splice(start, end - start, ...parsed);
         __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_paint).call(this);

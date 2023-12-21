@@ -1,8 +1,3 @@
-import type {wikiparse as Wikiparse} from './typings';
-
-const {wikiparse} = window as unknown as {wikiparse: Wikiparse},
-	{MAX_STAGE} = wikiparse;
-
 /** 用于打印AST */
 class Printer {
 	#id;
@@ -155,11 +150,11 @@ class Printer {
 				let j = headings.slice(i).findIndex(({offsetTop}) => offsetTop >= scrollTop + parentHeight);
 				j = j === -1 ? length : i + j;
 				start = i ? childNodes.indexOf(headings[i - 1]!) : 0;
-				while (i <= j && this.#root[start]![0] === MAX_STAGE) {
+				while (i <= j && this.#root[start]![0] === Infinity) {
 					start = childNodes.indexOf(headings[i++]!);
 				}
 				end = j === length ? end : childNodes.indexOf(headings[j]!);
-				while (i <= j && this.#root[end - 1]![0] === MAX_STAGE) {
+				while (i <= j && this.#root[end - 1]![0] === Infinity) {
 					end = childNodes.indexOf(headings[--j]!);
 				}
 				text = this.#root.slice(start, end).map(([, str]) => str).join('');
@@ -169,7 +164,7 @@ class Printer {
 			this.#running = undefined;
 			return undefined;
 		}
-		const parsed = await wikiparse.print(text, include, MAX_STAGE, this.#id);
+		const parsed = await wikiparse.print(text, include, undefined, this.#id);
 		if (this.include === include && this.#textbox.value === value) {
 			this.#root.splice(start, end - start, ...parsed);
 			this.#paint();

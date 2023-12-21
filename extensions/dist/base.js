@@ -1,8 +1,7 @@
 (() => {
-const MAX_STAGE = 11;
 const workerJS = () => {
-    self.importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.5-b/bundle/bundle.min.js');
-    const { Parser } = self, entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
+    importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.1.5-b/bundle/bundle.min.js');
+    const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         var _a;
         const [command, qid, ...args] = data;
@@ -14,14 +13,14 @@ const workerJS = () => {
                 Parser.config = qid;
                 break;
             case 'getConfig':
-                self.postMessage([qid, Parser.getConfig()]);
+                postMessage([qid, Parser.getConfig()]);
                 break;
             case 'lint':
-                self.postMessage([qid, Parser.parse(...args).lint(), args[0]]);
+                postMessage([qid, Parser.parse(...args).lint(), args[0]]);
                 break;
             default: {
-                const stage = (_a = args[2]) !== null && _a !== void 0 ? _a : MAX_STAGE;
-                self.postMessage([
+                const stage = (_a = args[2]) !== null && _a !== void 0 ? _a : Infinity;
+                postMessage([
                     qid,
                     Parser.parse(...args).childNodes.map(child => [
                         stage,
@@ -35,7 +34,7 @@ const workerJS = () => {
         }
     };
 };
-const blob = new Blob([`(${String(workerJS).replace(/MAX_STAGE/gu, String(MAX_STAGE))})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
+const blob = new Blob([`(${String(workerJS)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
 URL.revokeObjectURL(url);
 const getListener = (qid, resolve, raw) => {
     const listener = ({ data: [rid, res, resRaw] }) => {
@@ -64,7 +63,6 @@ const lint = (wikitext, include, qid = -2) => new Promise(resolve => {
     worker.addEventListener('message', getListener(qid, resolve, wikitext));
     worker.postMessage(['lint', qid, wikitext, include]);
 });
-const wikiparse = { MAX_STAGE, id: 0, setI18N, setConfig, getConfig, print, lint };
-Object.defineProperty(wikiparse, 'MAX_STAGE', { enumerable: true, configurable: true });
+const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint };
 Object.assign(window, { wikiparse });
 })();

@@ -1,4 +1,4 @@
-import type {Config, LintError} from '../base';
+import type {Config, LintError, Parser} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
 
@@ -10,10 +10,12 @@ declare global {
 		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
 		class CodeMirror6 {}
 	}
+
+	const Parser: Parser;
+	const wikiparse: wikiparse;
 }
 
 export interface wikiparse {
-	readonly MAX_STAGE: number;
 	id: number;
 	setI18N(i18n: Record<string, string>): void;
 	setConfig(config: Config): void;

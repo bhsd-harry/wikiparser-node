@@ -1,5 +1,5 @@
 (() => {
-const { wikiparse } = window;
+"use strict";
 const highlight = async (ele, include, linenums = false, start = 1) => {
     if (ele.classList.contains('highlighted')) {
         return;

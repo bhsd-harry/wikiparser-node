@@ -11,7 +11,6 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _Linter_instances, _Linter_id, _Linter_wikitext, _Linter_running, _Linter_lint;
-const { wikiparse } = window;
 class Linter {
     constructor(include) {
         _Linter_instances.add(this);
