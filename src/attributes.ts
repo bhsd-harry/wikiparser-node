@@ -11,6 +11,7 @@ import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../interna
 import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
+declare type AttributeDirty = 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty';
 
 /**
  * 扩展和HTML标签属性
@@ -62,7 +63,7 @@ export class AttributesToken extends Token {
 				if (out) {
 					super.insertAt(new AtomToken(
 						out,
-						`${type.slice(0, -1)}-dirty` as 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty',
+						`${type.slice(0, -1)}-dirty` as AttributeDirty,
 						config,
 						accum,
 					));

@@ -135,8 +135,7 @@ export abstract class AstNode implements AstNodeBase {
 			return 0 as TokenAttributeGetter<T>;
 		}
 		return key in this
-			// @ts-expect-error noImplicitAny
-			? String(this[key as string]) as TokenAttributeGetter<T>
+			? String(this[key as keyof this]) as TokenAttributeGetter<T>
 			: undefined as TokenAttributeGetter<T>;
 	}
 
@@ -145,8 +144,7 @@ export abstract class AstNode implements AstNodeBase {
 		if (key === 'parentNode') {
 			this.#parentNode = value as TokenAttributeSetter<'parentNode'>;
 		} else {
-			// @ts-expect-error noImplicitAny
-			this[key as string] = value;
+			this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
 	}
 

@@ -27,14 +27,18 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
+			/** @ignore */
+			isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
+			/** @ignore */
+			isTransclude = (token: AstNodes): token is TranscludeToken => token.type === 'magic-word';
 		if (!first || tdPattern.test(String(first))
-			|| first.type === 'arg' && tdPattern.test((first as ArgToken).default || '')
+			|| isArg(first) && tdPattern.test(first.default || '')
 		) {
 			return errors;
-		} else if (first.type === 'magic-word') {
+		} else if (isTransclude(first)) {
 			try {
-				if ((first as TranscludeToken).getPossibleValues().every(token => tdPattern.test(token.text()))) {
+				if (first.getPossibleValues().every(token => tdPattern.test(token.text()))) {
 					return errors;
 				}
 			} catch {}

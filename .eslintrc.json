@@ -987,7 +987,7 @@
 				"@typescript-eslint/no-type-alias": [
 					2,
 					{
-						"allowAliases": "in-unions",
+						"allowAliases": "in-unions-and-intersections",
 						"allowCallbacks": "always",
 						"allowConditionalTypes": "always",
 						"allowConstructors": "always",
