@@ -9,7 +9,11 @@ export type TdSubtypes = 'td' | 'th' | 'caption';
 declare interface TdSyntax {
 	subtype: TdSubtypes;
 }
-export type TdAttrs = Record<string, string | true> & {rowspan?: number, colspan?: number};
+export interface TdSpanAttrs {
+	rowspan?: number;
+	colspan?: number;
+}
+export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
  * `<td>`、`<th>`和`<caption>`

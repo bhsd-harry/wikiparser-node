@@ -53,8 +53,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 		case 'manualthumb':
 			return true;
 		default:
-			// @ts-expect-error isNaN
-			return !isNaN(value);
+			return !isNaN(Number(value));
 	}
 }
 
