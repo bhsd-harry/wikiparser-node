@@ -266,7 +266,7 @@ export class TranscludeToken extends Token {
 
 	/** 获取所有参数 */
 	getAllArgs(): ParameterToken[] {
-		return this.childNodes.filter(child => child.type === 'parameter') as ParameterToken[];
+		return this.childNodes.filter((child): child is ParameterToken => child.type === 'parameter');
 	}
 
 	/** 获取所有匿名参数 */

@@ -33,7 +33,7 @@ export class ImagemapToken extends Token {
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
-		return this.childNodes.find(({type}) => type === 'imagemap-image') as GalleryImageToken | undefined;
+		return this.childNodes.find((child): child is GalleryImageToken => child.type === 'imagemap-image');
 	}
 
 	/** @param inner 标签内部wikitext */
