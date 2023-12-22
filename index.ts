@@ -258,9 +258,8 @@ const Parser: Parser = {
 		await promise;
 		for (const [name, filePath] of entries) {
 			if (name in global) {
-				// @ts-expect-error noImplicitAny
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				global[name] = require(filePath)[name];
+				Object.assign(global, {[name]: require(filePath)[name]});
 			}
 		}
 		this.info('已重新加载Parser');

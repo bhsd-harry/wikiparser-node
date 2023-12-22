@@ -156,7 +156,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 					error.excerpt = wikitext.slice(start, start + 50);
 				} else if (msg === 'unmatched closing tag') {
 					const end = start + String(this).length;
-					const ancestor = this.closest('magic-word') as TranscludeToken | undefined;
+					const ancestor = this.closest<TranscludeToken>('magic-word');
 					error.excerpt = wikitext.slice(Math.max(0, end - 50), end);
 					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';

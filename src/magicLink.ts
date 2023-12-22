@@ -190,7 +190,7 @@ export class MagicLinkToken extends syntax(Token) {
 
 	/** 是否是模板或魔术字参数 */
 	isParamValue(): boolean {
-		return (this.closest('parameter') as ParameterToken | undefined)?.getValue() === this.text();
+		return this.closest<ParameterToken>('parameter')?.getValue() === this.text();
 	}
 
 	/** 转义 `=` */

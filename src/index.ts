@@ -62,6 +62,7 @@ import type {
 	CommentToken,
 	HeadingToken,
 	CategoryToken,
+	FileToken,
 	ParameterToken,
 	SyntaxToken,
 } from '../internal';
@@ -93,7 +94,7 @@ export class Token extends AstElement {
 	#protectedChildren = new Ranges();
 
 	/** 所有图片，包括图库 */
-	get images(): Token[] {
+	get images(): FileToken[] {
 		return this.querySelectorAll('file, gallery-image, imagemap-image');
 	}
 
@@ -104,7 +105,7 @@ export class Token extends AstElement {
 
 	/** 所有模板和模块 */
 	get embeds(): TranscludeToken[] {
-		return this.querySelectorAll('template, magic-word#invoke') as TranscludeToken[];
+		return this.querySelectorAll('template, magic-word#invoke');
 	}
 
 	/* NOT FOR BROWSER END */
@@ -784,7 +785,7 @@ export class Token extends AstElement {
 
 	/** 获取全部分类 */
 	getCategories(): [string, string | undefined][] {
-		const categories = this.querySelectorAll('category') as CategoryToken[];
+		const categories = this.querySelectorAll<CategoryToken>('category');
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
@@ -823,10 +824,10 @@ export class Token extends AstElement {
 
 	/** 解析部分魔术字 */
 	solveConst(): void {
-		const targets = this.querySelectorAll('magic-word, arg'),
+		const targets = this.querySelectorAll<ArgToken | TranscludeToken>('magic-word, arg'),
 			magicWords = new Set(['if', 'ifeq', 'switch']);
 		for (let i = targets.length - 1; i >= 0; i--) {
-			const target = targets[i] as ArgToken | TranscludeToken,
+			const target = targets[i]!,
 				{type, name, childNodes, length} = target,
 				[, var1, var2] = childNodes as [SyntaxToken, ...ParameterToken[]];
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {

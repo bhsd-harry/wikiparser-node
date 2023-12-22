@@ -12,7 +12,7 @@ import {Title} from './title';
 import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {AstNodes, AstText, Token} from '../internal';
+import type {AstNodes, AstText, Token, HtmlToken, ExtToken} from '../internal';
 
 declare interface AttributesParent {
 	/* eslint-disable @typescript-eslint/method-signature-style */
@@ -222,15 +222,15 @@ export abstract class AstElement extends AstNode {
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
-	closest(selector: string): Token | undefined {
+	closest<T extends Token>(selector: string): T | undefined {
 		let {parentNode} = this,
-			condition: (token: Token) => boolean;
+			condition: (token: Token) => token is T;
 		if (/[^a-z\-,\s]/u.test(selector)) {
 			const stack = parseSelector(selector);
-			condition = /** @implements */ (token: Token): boolean => token.#matchesStack(stack);
+			condition = /** @implements */ (token): token is T => token.#matchesStack(stack);
 		} else {
 			const types = new Set(selector.split(',').map(str => str.trim()));
-			condition = /** @implements */ ({type}): boolean => types.has(type);
+			condition = /** @implements */ (token): token is T => types.has(token.type);
 		}
 		while (parentNode) {
 			if (condition(parentNode)) {
@@ -591,18 +591,18 @@ export abstract class AstElement extends AstNode {
 	 * 符合选择器的第一个后代节点
 	 * @param selector 选择器
 	 */
-	querySelector(selector: string): Token | undefined {
+	querySelector<T extends Token>(selector: string): T | undefined {
 		const stack = parseSelector(selector);
-		return this.#getElementBy(token => token.#matchesStack(stack));
+		return this.#getElementBy(token => token.#matchesStack(stack)) as T | undefined;
 	}
 
 	/**
 	 * 类型选择器
 	 * @param types
 	 */
-	getElementByTypes(types: string): Token | undefined {
+	getElementByTypes<T extends Token>(types: string): T | undefined {
 		const typeSet = new Set(types.split(',').map(str => str.trim()));
-		return this.#getElementBy(({type}) => typeSet.has(type));
+		return this.#getElementBy(({type}) => typeSet.has(type)) as T | undefined;
 	}
 
 	/**
@@ -632,9 +632,9 @@ export abstract class AstElement extends AstNode {
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
-	querySelectorAll(selector: string): Token[] {
+	querySelectorAll<T extends Token>(selector: string): T[] {
 		const stack = parseSelector(selector);
-		return this.#getElementsBy(token => token.#matchesStack(stack));
+		return this.#getElementsBy(token => token.#matchesStack(stack)) as T[];
 	}
 
 	/**
@@ -649,8 +649,10 @@ export abstract class AstElement extends AstNode {
 	 * 标签名选择器
 	 * @param tag 标签名
 	 */
-	getElementsByTagName(tag: string): Token[] {
-		return this.#getElementsBy(({type, name}) => name === tag && (type === 'html' || type === 'ext'));
+	getElementsByTagName(tag: string): (HtmlToken | ExtToken)[] {
+		return this.#getElementsBy(
+			({type, name}) => name === tag && (type === 'html' || type === 'ext'),
+		) as (HtmlToken | ExtToken)[];
 	}
 
 	/**
