@@ -4,7 +4,11 @@ import {
 } from '../util/string';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {AstNodes, AstText, Token, HtmlToken, ExtToken} from '../internal';
+import type {
+	AstNodes,
+	AstText,
+	Token,
+} from '../internal';
 
 const lintIgnoredExt = new Set([
 	'nowiki',
