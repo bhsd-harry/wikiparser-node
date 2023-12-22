@@ -11,6 +11,7 @@ else
 	then
 		sed -i '' -E "s|wikiparser-node@.+-b|wikiparser-node@$1-b|" extensions/base.ts
 		npm run build
+		sed -i '' -E "s|/npm/|/gh/bhsd-harry/|" extensions/dist/base.js
 		git add -A
 		git commit -m "chore: bump version to v$1-b"
 		git push
