@@ -12,7 +12,13 @@ import {Title} from './title';
 import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {AstNodes, AstText, Token, HtmlToken, ExtToken} from '../internal';
+import type {
+	AstNodes,
+	AstText,
+	Token,
+	HtmlToken,
+	ExtToken,
+} from '../internal';
 
 declare interface AttributesParent {
 	/* eslint-disable @typescript-eslint/method-signature-style */
