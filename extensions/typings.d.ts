@@ -6,7 +6,7 @@ export type {Diagnostic} from '@codemirror/lint';
 export type {MwConfig, CodeMirror6 as CodeMirror} from '@bhsd/codemirror-mediawiki';
 
 declare global {
-	module 'https://*' {
+	module '/*' {
 		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
 		class CodeMirror6 {}
 	}
