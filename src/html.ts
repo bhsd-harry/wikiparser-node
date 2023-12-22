@@ -97,7 +97,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 				if (msg === 'unclosed tag') {
 					error.severity = 'warning';
 				} else if (msg === 'unmatched closing tag') {
-					const ancestor = this.closest('magic-word') as TranscludeToken | undefined;
+					const ancestor = this.closest<TranscludeToken>('magic-word');
 					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';
 					}
