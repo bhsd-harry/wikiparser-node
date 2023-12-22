@@ -4,7 +4,11 @@ import {
 } from '../util/string';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {AstNodes, AstText, Token} from '../internal';
+import type {
+	AstNodes,
+	AstText,
+	Token,
+} from '../internal';
 
 const lintIgnoredExt = new Set([
 	'nowiki',
@@ -85,12 +89,12 @@ export abstract class AstElement extends AstNode {
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
-	closest(selector: string): Token | undefined {
+	closest<T extends Token>(selector: string): T | undefined {
 		let {parentNode} = this,
-			condition: (token: Token) => boolean;
+			condition: (token: Token) => token is T;
 		const types = new Set(selector.split(',').map(str => str.trim()));
 		// eslint-disable-next-line prefer-const
-		condition = /** @implements */ ({type}): boolean => types.has(type);
+		condition = /** @implements */ (token): token is T => types.has(token.type);
 		while (parentNode) {
 			if (condition(parentNode)) {
 				return parentNode;
