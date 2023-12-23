@@ -20,13 +20,13 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /* NOT FOR BROWSER END */
 
-declare type AttributesTypes = 'ext-attrs' | 'html-attrs' | 'table-attrs';
-declare type AttributeDirty = 'ext-attr-dirty' | 'html-attr-dirty' | 'table-attr-dirty';
+declare type AttributesTypes = `${AttributeTypes}s`;
+declare type AttributeDirty = `${AttributeTypes}-dirty`;
 
 /** @ignore */
 const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
 /** @ignore */
-const toDirty = (type: AttributesTypes): AttributeDirty => `${type.slice(0, -1)}-dirty` as AttributeDirty;
+const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
 
 /**
  * 扩展和HTML标签属性
