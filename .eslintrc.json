@@ -985,17 +985,6 @@
 						]
 					}
 				],
-				"@typescript-eslint/no-type-alias": [
-					2,
-					{
-						"allowAliases": "in-unions-and-intersections",
-						"allowCallbacks": "always",
-						"allowConditionalTypes": "always",
-						"allowConstructors": "always",
-						"allowLiterals": "in-unions-and-intersections",
-						"allowGenerics": "always"
-					}
-				],
 				"@typescript-eslint/no-unnecessary-boolean-literal-compare": 2,
 				"@typescript-eslint/no-unnecessary-condition": [
 					2,
