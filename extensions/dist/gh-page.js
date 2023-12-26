@@ -1,5 +1,33 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
+const fromEntries = (entries, target) => {
+    for (const entry of entries) {
+        target[entry] = true;
+    }
+};
+export const getMwConfig = (config) => {
+    const mwConfig = {
+        tags: {},
+        tagModes: {
+            pre: 'mw-tag-pre',
+            nowiki: 'mw-tag-nowiki',
+            ref: 'text/mediawiki',
+            references: 'text/mediawiki',
+        },
+        doubleUnderscore: [{}, {}],
+        functionSynonyms: [config.parserFunction[0], {}],
+        urlProtocols: `${config.protocol}|//`,
+    };
+    fromEntries(config.ext, mwConfig.tags);
+    fromEntries(config.doubleUnderscore[0].map(s => `__${s}__`), mwConfig.doubleUnderscore[0]);
+    fromEntries(config.doubleUnderscore[1].map(s => `__${s}__`), mwConfig.doubleUnderscore[1]);
+    fromEntries(config.parserFunction.slice(2).flat(), mwConfig.functionSynonyms[0]);
+    fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
+    return mwConfig;
+};
 (async () => {
+    if (!location.pathname.startsWith('/wikiparser-node')) {
+        return;
+    }
     const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), config = await (await fetch('./config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
@@ -22,28 +50,7 @@ import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
         update();
         instance.update();
     });
-    const mwConfig = {
-        tags: {},
-        tagModes: {
-            pre: 'mw-tag-pre',
-            nowiki: 'mw-tag-nowiki',
-            ref: 'text/mediawiki',
-            references: 'text/mediawiki',
-        },
-        doubleUnderscore: [{}, {}],
-        functionSynonyms: [config.parserFunction[0], {}],
-        urlProtocols: `${config.protocol}|//`,
-    };
-    const fromEntries = (entries, target) => {
-        for (const entry of entries) {
-            target[entry] = true;
-        }
-    };
-    fromEntries(config.ext, mwConfig.tags);
-    fromEntries(config.doubleUnderscore[0], mwConfig.doubleUnderscore[0]);
-    fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
-    fromEntries(config.parserFunction.slice(2).flat(), mwConfig.functionSynonyms[0]);
-    fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
+    const mwConfig = getMwConfig(config);
     input2.addEventListener('change', () => {
         instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
         instance.lint((doc) => Linter.codemirror(String(doc)));

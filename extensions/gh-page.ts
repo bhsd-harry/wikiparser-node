@@ -2,7 +2,47 @@ import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
 import type {Config} from '../base';
 import type {MwConfig, CodeMirror} from './typings';
 
+/**
+ * Object.fromEntries polyfill
+ * @param entries
+ * @param target
+ */
+const fromEntries = (entries: string[], target: Record<string, unknown>): void => {
+	for (const entry of entries) {
+		target[entry] = true;
+	}
+};
+
+/**
+ * 将wikiparser-node设置转换为codemirror-mediawiki设置
+ * @param config
+ */
+export const getMwConfig = (config: Config): MwConfig => {
+	const mwConfig: MwConfig = {
+		tags: {},
+		tagModes: {
+			pre: 'mw-tag-pre',
+			nowiki: 'mw-tag-nowiki',
+			ref: 'text/mediawiki',
+			references: 'text/mediawiki',
+		},
+		doubleUnderscore: [{}, {}],
+		functionSynonyms: [config.parserFunction[0], {}],
+		urlProtocols: `${config.protocol}|//`,
+	};
+	fromEntries(config.ext, mwConfig.tags);
+	fromEntries(config.doubleUnderscore[0].map(s => `__${s}__`), mwConfig.doubleUnderscore[0]);
+	fromEntries(config.doubleUnderscore[1].map(s => `__${s}__`), mwConfig.doubleUnderscore[1]);
+	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
+	fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
+	return mwConfig;
+};
+
 (async () => {
+	if (!location.pathname.startsWith('/wikiparser-node')) {
+		return;
+	}
+
 	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
@@ -40,35 +80,7 @@ import type {MwConfig, CodeMirror} from './typings';
 		instance.update();
 	});
 
-	const mwConfig: MwConfig = {
-		tags: {},
-		tagModes: {
-			pre: 'mw-tag-pre',
-			nowiki: 'mw-tag-nowiki',
-			ref: 'text/mediawiki',
-			references: 'text/mediawiki',
-		},
-		doubleUnderscore: [{}, {}],
-		functionSynonyms: [config.parserFunction[0], {}],
-		urlProtocols: `${config.protocol}|//`,
-	};
-
-	/**
-	 * Object.fromEntries polyfill
-	 * @param entries
-	 * @param target
-	 */
-	const fromEntries = (entries: string[], target: Record<string, unknown>): void => {
-		for (const entry of entries) {
-			target[entry] = true;
-		}
-	};
-	fromEntries(config.ext, mwConfig.tags);
-	fromEntries(config.doubleUnderscore[0], mwConfig.doubleUnderscore[0]);
-	fromEntries(config.doubleUnderscore[1], mwConfig.doubleUnderscore[1]);
-	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
-	fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
-
+	const mwConfig = getMwConfig(config);
 	input2.addEventListener('change', () => {
 		instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
 		instance.lint((doc: unknown) => Linter.codemirror(String(doc)));
