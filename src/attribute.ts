@@ -184,12 +184,12 @@ const commonHtmlAttrs = new Set([
  */
 export class AttributeToken extends fixed(Token) {
 	declare type: AttributeTypes;
-	declare name: string;
-	declare tag;
+	declare readonly name: string;
+	declare readonly tag;
 	#equal;
-	#quotes;
+	#quotes: [string?, string?];
 
-	declare childNodes: [AtomToken, Token];
+	declare readonly childNodes: [AtomToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken, Token];
 	// @ts-expect-error abstract method
@@ -251,7 +251,7 @@ export class AttributeToken extends fixed(Token) {
 		key: string,
 		equal = '',
 		value?: string,
-		quotes: [string?, string?] = [],
+		quotes: readonly [string?, string?] = [],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
@@ -302,7 +302,7 @@ export class AttributeToken extends fixed(Token) {
 		this.type = type;
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
-		this.#quotes = quotes;
+		this.#quotes = [...quotes];
 		this.tag = tag;
 		this.seal('tag');
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());

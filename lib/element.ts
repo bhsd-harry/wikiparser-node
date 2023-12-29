@@ -79,8 +79,8 @@ const matchesLang = (
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
-	declare name?: string;
-	declare data: undefined;
+	declare readonly name?: string;
+	declare readonly data: undefined;
 
 	/** 子节点总数 */
 	get length(): number {

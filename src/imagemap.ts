@@ -21,9 +21,9 @@ import type {
  */
 export class ImagemapToken extends Token {
 	override readonly type = 'ext-inner';
-	declare name: 'imagemap';
+	declare readonly name: 'imagemap';
 
-	declare childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
+	declare readonly childNodes: (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
 	// @ts-expect-error abstract method

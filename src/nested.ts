@@ -15,16 +15,16 @@ import type {AttributesToken} from './attributes';
  */
 export class NestedToken extends Token {
 	override readonly type = 'ext-inner';
-	declare name: string;
+	declare readonly name: string;
 
 	/* NOT FOR BROWSER */
 
-	#tags: string[];
-	#regex;
+	readonly #tags: string[];
+	readonly #regex;
 
 	/* NOT FOR BROWSER END */
 
-	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
+	declare readonly childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
@@ -55,7 +55,7 @@ export class NestedToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		regex: RegExp,
-		tags: string[],
+		tags: readonly string[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
@@ -81,7 +81,7 @@ export class NestedToken extends Token {
 		super(wikitext, config, accum, {
 			NoincludeToken: ':', ExtToken: ':',
 		});
-		this.#tags = tags;
+		this.#tags = [...tags];
 		this.#regex = regex;
 	}
 

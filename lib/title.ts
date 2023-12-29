@@ -7,15 +7,15 @@ import * as Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	valid;
+	readonly valid;
 	ns;
 	fragment;
 	/** @private */
-	encoded = false;
+	readonly encoded: boolean = false;
 
 	/* NOT FOR BROWSER */
 
-	#namespaces;
+	readonly #namespaces;
 	#main: string;
 	interwiki = '';
 	/** @private */

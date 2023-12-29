@@ -10,11 +10,11 @@ import type {Token} from '../index';
 // @ts-expect-error not implementing all abstract methods
 export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	override readonly type = 'double-underscore';
-	declare name: string;
+	declare readonly name: string;
 
 	/* NOT FOR BROWSER */
 
-	#fixed;
+	readonly #fixed;
 
 	/* NOT FOR BROWSER END */
 

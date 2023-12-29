@@ -16,12 +16,12 @@ import type {Title} from '../../lib/title';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
-	declare name: string;
+	declare readonly name: string;
 	#bracket = true;
 	#delimiter;
 	#title: Title;
 
-	declare childNodes: [AtomToken, ...Token[]];
+	declare readonly childNodes: [AtomToken, ...Token[]];
 	abstract override get children(): [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get firstElementChild(): AtomToken;

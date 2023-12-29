@@ -110,8 +110,8 @@ export abstract class AstNode implements AstNodeBase {
 
 	/* NOT FOR BROWSER */
 
-	#optional = new Set<string>();
-	#events = new EventEmitter();
+	readonly #optional = new Set<string>();
+	readonly #events = new EventEmitter();
 
 	/* NOT FOR BROWSER END */
 

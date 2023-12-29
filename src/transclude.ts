@@ -24,18 +24,18 @@ import type {AstNodes, TableToken} from '../internal';
  */
 export class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
-	declare name: string;
-	modifier = '';
+	declare readonly name: string;
+	readonly modifier = '';
 	#raw = false;
-	#args = new Map<string, Set<ParameterToken>>();
+	readonly #args = new Map<string, Set<ParameterToken>>();
 
 	/* NOT FOR BROWSER */
 
-	#keys = new Set<string>();
+	readonly #keys = new Set<string>();
 
 	/* NOT FOR BROWSER END */
 
-	declare childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
+	declare readonly childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]

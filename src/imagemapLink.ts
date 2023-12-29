@@ -16,7 +16,7 @@ import type {AstText, ImagemapToken} from '../internal';
 export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	override readonly type = 'imagemap-link';
 
-	declare childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
+	declare readonly childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
 	// @ts-expect-error abstract method

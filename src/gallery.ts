@@ -18,9 +18,9 @@ import type {
  */
 export class GalleryToken extends Token {
 	override readonly type = 'ext-inner';
-	declare name: 'gallery';
+	declare readonly name: 'gallery';
 
-	declare childNodes: (GalleryImageToken | HiddenToken | AstText)[];
+	declare readonly childNodes: (GalleryImageToken | HiddenToken | AstText)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (GalleryImageToken | HiddenToken)[];
 	// @ts-expect-error abstract method

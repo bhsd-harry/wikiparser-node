@@ -82,16 +82,16 @@ export class Token extends AstElement {
 
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */
 	#stage = 0;
-	#config;
+	readonly #config;
 
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
-	#accum;
+	readonly #accum;
 	#include?: boolean;
 
 	/* NOT FOR BROWSER */
 
 	#acceptable?: Record<string, Ranges>;
-	#protectedChildren = new Ranges();
+	readonly #protectedChildren = new Ranges();
 
 	/** 所有图片，包括图库 */
 	get images(): FileToken[] {

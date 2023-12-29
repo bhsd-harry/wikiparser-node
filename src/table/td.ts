@@ -31,7 +31,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	override readonly type = 'td';
 	#innerSyntax = '';
 
-	declare childNodes: [SyntaxToken, AttributesToken, Token];
+	declare readonly childNodes: [SyntaxToken, AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
 	// @ts-expect-error abstract method

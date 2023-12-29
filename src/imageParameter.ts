@@ -65,7 +65,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 /** 图片参数 */
 export class ImageParameterToken extends Token {
 	override readonly type = 'image-parameter';
-	declare name: string;
+	declare readonly name: string;
 	#syntax = '';
 
 	// @ts-expect-error abstract method

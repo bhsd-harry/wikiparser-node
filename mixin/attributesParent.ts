@@ -9,7 +9,7 @@ import type {AstNodes, AttributesToken} from '../internal';
 export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0) => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {
-		declare childNodes: AstNodes[];
+		declare readonly childNodes: AstNodes[];
 
 		/** AttributesToken子节点 */
 		get #attributesChild(): AttributesToken {

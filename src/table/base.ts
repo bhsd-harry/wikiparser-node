@@ -31,7 +31,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
 export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	declare type: 'table' | 'tr' | 'td';
 
-	declare childNodes: [SyntaxToken, AttributesToken, ...Token[]];
+	declare readonly childNodes: [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get firstElementChild(): SyntaxToken;
