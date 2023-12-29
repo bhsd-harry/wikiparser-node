@@ -55,7 +55,7 @@ export class ImagemapToken extends Token {
 	/* NOT FOR BROWSER */
 
 	/** 链接 */
-	override get links(): ImagemapLinkToken[] {
+	override get links(): readonly ImagemapLinkToken[] {
 		return this.childNodes.filter((child): child is ImagemapLinkToken => child.type === 'imagemap-link');
 	}
 

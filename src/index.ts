@@ -92,17 +92,17 @@ export class Token extends AstElement {
 	readonly #protectedChildren = new Ranges();
 
 	/** 所有图片，包括图库 */
-	get images(): FileToken[] {
+	get images(): readonly FileToken[] {
 		return this.querySelectorAll('file, gallery-image, imagemap-image');
 	}
 
 	/** 所有内链、外链和自由外链 */
-	get links(): Token[] {
+	get links(): readonly Token[] {
 		return this.querySelectorAll('link, ext-link, free-ext-link, image-parameter#link');
 	}
 
 	/** 所有模板和模块 */
-	get embeds(): TranscludeToken[] {
+	get embeds(): readonly TranscludeToken[] {
 		return this.querySelectorAll('template, magic-word#invoke');
 	}
 
@@ -181,9 +181,9 @@ export class Token extends AstElement {
 	/** @private */
 	buildFromStr(str: string, type: 'string' | 'text'): string;
 	/** @private */
-	buildFromStr(str: string): AstNodes[];
+	buildFromStr(str: string): readonly AstNodes[];
 	/** @private */
-	buildFromStr(str: string, type?: string): string | AstNodes[] {
+	buildFromStr(str: string, type?: string): string | readonly AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
@@ -653,7 +653,7 @@ export class Token extends AstElement {
 	 * 找到给定位置所在的所有节点
 	 * @param index 位置
 	 */
-	elementsFromIndex(index?: number): AstNodes[] {
+	elementsFromIndex(index?: number): readonly AstNodes[] {
 		const offsetNode = this.caretPositionFromIndex(index)?.offsetNode;
 		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
 	}
@@ -663,7 +663,7 @@ export class Token extends AstElement {
 	 * @param x 列数
 	 * @param y 行数
 	 */
-	elementsFromPoint(x: number, y: number): AstNodes[] {
+	elementsFromPoint(x: number, y: number): readonly AstNodes[] {
 		return this.elementsFromIndex(this.indexFromPos(y, x));
 	}
 
@@ -676,7 +676,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	protected cloneChildNodes(): AstNodes[] {
+	protected cloneChildNodes(): readonly AstNodes[] {
 		return this.childNodes.map(child => child.cloneNode());
 	}
 
@@ -782,7 +782,7 @@ export class Token extends AstElement {
 	}
 
 	/** 获取全部分类 */
-	getCategories(): [string, string | undefined][] {
+	getCategories(): readonly [string, string | undefined][] {
 		const categories = this.querySelectorAll<CategoryToken>('category');
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}

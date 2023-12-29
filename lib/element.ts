@@ -90,7 +90,7 @@ export abstract class AstElement extends AstNode {
 	/* NOT FOR BROWSER */
 
 	/** 全部非文本子节点 */
-	get children(): Token[] {
+	get children(): readonly Token[] {
 		return this.childNodes.filter((child): child is Token => child.type !== 'text');
 	}
 
@@ -623,7 +623,7 @@ export abstract class AstElement extends AstNode {
 	 * 符合条件的所有后代节点
 	 * @param condition 条件
 	 */
-	#getElementsBy(condition: (token: Token) => boolean): Token[] {
+	#getElementsBy(condition: (token: Token) => boolean): readonly Token[] {
 		const descendants: Token[] = [];
 		for (const child of this.children) {
 			if (condition(child)) {
@@ -638,7 +638,7 @@ export abstract class AstElement extends AstNode {
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
-	querySelectorAll<T extends Token>(selector: string): T[] {
+	querySelectorAll<T extends Token>(selector: string): readonly T[] {
 		const stack = parseSelector(selector);
 		return this.#getElementsBy(token => token.#matchesStack(stack)) as T[];
 	}
@@ -647,7 +647,7 @@ export abstract class AstElement extends AstNode {
 	 * 类选择器
 	 * @param className 类名之一
 	 */
-	getElementsByClassName(className: string): Token[] {
+	getElementsByClassName(className: string): readonly Token[] {
 		return this.#getElementsBy(token => 'classList' in token && (token.classList as Set<string>).has(className));
 	}
 
@@ -655,7 +655,7 @@ export abstract class AstElement extends AstNode {
 	 * 标签名选择器
 	 * @param tag 标签名
 	 */
-	getElementsByTagName(tag: string): (HtmlToken | ExtToken)[] {
+	getElementsByTagName(tag: string): readonly (HtmlToken | ExtToken)[] {
 		return this.#getElementsBy(
 			({type, name}) => name === tag && (type === 'html' || type === 'ext'),
 		) as (HtmlToken | ExtToken)[];

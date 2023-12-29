@@ -47,7 +47,7 @@ export class GalleryToken extends Token {
 	/* NOT FOR BROWSER */
 
 	/** 所有图片 */
-	override get images(): GalleryImageToken[] {
+	override get images(): readonly GalleryImageToken[] {
 		return this.childNodes.filter((child): child is GalleryImageToken => child.type === 'gallery-image');
 	}
 

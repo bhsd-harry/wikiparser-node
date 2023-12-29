@@ -405,7 +405,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * 列举事件监听
 	 * @param type 事件类型
 	 */
-	listEventListeners(type: string): Function[] {
+	listEventListeners(type: string): readonly Function[] {
 		return this.#events.listeners(type);
 	}
 

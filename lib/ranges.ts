@@ -60,7 +60,7 @@ export class Range {
 	 * 将Range转换为针对特定数组的下标集
 	 * @param arr 参考数组`[0, 1, 2, ...]`
 	 */
-	applyTo(arr: readonly number[]): number[] {
+	applyTo(arr: readonly number[]): readonly number[] {
 		return arr.slice(this.#start, this.#end).filter((_, j) => j % this.#step === 0);
 	}
 }
@@ -93,7 +93,7 @@ export class Ranges extends Array<number | Range> {
 	 * 将Ranges转换为针对特定Array的下标集
 	 * @param arr 参考数组
 	 */
-	applyTo(arr: number | readonly unknown[]): number[] {
+	applyTo(arr: number | readonly unknown[]): readonly number[] {
 		const length = typeof arr === 'number' ? arr : arr.length,
 			a = new Array(length).fill(undefined).map((_, i) => i);
 		return [
