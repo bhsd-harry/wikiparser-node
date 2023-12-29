@@ -66,10 +66,8 @@ import type {
 	ParameterToken,
 	SyntaxToken,
 } from '../internal';
-import type {
-	TokenTypes,
-	CaretPosition,
-} from '../lib/node';
+import type {CaretPosition} from '../lib/node';
+import type {TokenTypes} from '../util/constants';
 
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
