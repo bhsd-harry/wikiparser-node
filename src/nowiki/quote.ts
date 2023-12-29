@@ -17,7 +17,7 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
-				[{length}] = /(?<!')'+$/u.exec(previousSibling.data) as [string],
+				[{length}] = /(?<!')'+$/u.exec(previousSibling.data)!,
 				startIndex = start - length;
 			errors.push({
 				...refError,
@@ -31,7 +31,7 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
 			refError ??= generateForSelf(this, {start}, message);
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
-				[{length}] = /^'+/u.exec(nextSibling.data) as [string],
+				[{length}] = /^'+/u.exec(nextSibling.data)!,
 				endIndex = startIndex + length;
 			errors.push({
 				...refError,

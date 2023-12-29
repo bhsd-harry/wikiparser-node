@@ -20,11 +20,11 @@ import type {Title} from '../lib/title';
  */
 export class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
-	modifier = '';
+	readonly modifier = '';
 	#raw = false;
-	#args = new Map<string, Set<ParameterToken>>();
+	readonly #args = new Map<string, Set<ParameterToken>>();
 
-	declare childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
+	declare readonly childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
 		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;

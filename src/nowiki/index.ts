@@ -8,7 +8,7 @@ import type {AttributesToken, ExtToken} from '../../internal';
 // @ts-expect-error not implementing all abstract methods
 export class NowikiToken extends NowikiBaseToken {
 	override readonly type = 'ext-inner';
-	declare name: string;
+	declare readonly name: string;
 
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;

@@ -9,5 +9,5 @@ import type {Token, AtomToken} from '../../internal';
 export class LinkToken extends LinkBaseToken {
 	override readonly type = 'link';
 
-	declare childNodes: [AtomToken] | [AtomToken, Token];
+	declare readonly childNodes: [AtomToken] | [AtomToken, Token];
 }

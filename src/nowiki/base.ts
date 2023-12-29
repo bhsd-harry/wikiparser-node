@@ -18,7 +18,7 @@ declare type NowikiTypes = 'ext-inner'
 export abstract class NowikiBaseToken extends fixed(Token) {
 	declare type: NowikiTypes;
 
-	declare childNodes: [AstText];
+	declare readonly childNodes: [AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
 
