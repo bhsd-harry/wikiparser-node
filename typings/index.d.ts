@@ -32,6 +32,8 @@ declare global {
 		readonly start: number;
 	};
 
+	/* NOT FOR BROWSER */
+
 	interface ParsingError {
 		readonly stage: number;
 		readonly include: boolean;
