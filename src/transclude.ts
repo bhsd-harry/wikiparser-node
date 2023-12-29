@@ -382,7 +382,7 @@ export class TranscludeToken extends Token {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args.set(keyStr, args);
 		}
-		if (exact && !isNaN(Number(keyStr))) {
+		if (exact && !Number.isNaN(Number(keyStr))) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
 			args = new Set(args);
@@ -715,7 +715,7 @@ export class TranscludeToken extends Token {
 					values.set(val, [arg]);
 				}
 			}
-			let noMoreAnon = anonCount === 0 || isNaN(Number(key));
+			let noMoreAnon = anonCount === 0 || Number.isNaN(Number(key));
 			const emptyArgs = values.get('') ?? [],
 				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {
 					const anonIndex = noMoreAnon ? -1 : curArgs.findIndex(({anon}) => anon);
