@@ -295,7 +295,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param offset 插入的相对位置
 	 * @throws `Error` 不存在父节点
 	 */
-	#insertAdjacent(nodes: (AstNodes | string)[], offset: number): void {
+	#insertAdjacent(nodes: readonly (AstNodes | string)[], offset: number): void {
 		const {parentNode} = this;
 		if (!parentNode) {
 			throw new Error('不存在父节点！');

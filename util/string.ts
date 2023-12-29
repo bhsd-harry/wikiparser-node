@@ -20,7 +20,7 @@ export const escapeRegExp = (str: string): string => str.replace(/[\\{}()|.?*+^$
  * @param childNodes a Token's contents
  * @param separator delimiter between nodes
  */
-export const text = (childNodes: (string | AstNodes)[], separator = ''): string =>
+export const text = (childNodes: readonly (string | AstNodes)[], separator = ''): string =>
 	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
 /**
