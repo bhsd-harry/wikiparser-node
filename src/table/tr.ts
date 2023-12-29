@@ -53,7 +53,7 @@ export class TrToken extends TrBaseToken {
 	 * 获取相邻行
 	 * @param subset 筛选兄弟节点的方法
 	 */
-	#getSiblingRow(subset: (childNodes: Token[], index: number) => Token[]): TrToken | undefined {
+	#getSiblingRow(subset: (childNodes: readonly Token[], index: number) => Token[]): TrToken | undefined {
 		const {parentNode} = this;
 		if (!parentNode) {
 			return undefined;

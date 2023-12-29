@@ -362,7 +362,7 @@ export class TableToken extends TrBaseToken {
 	 * @param ylim 行范围
 	 * @throws `RangeError` 待合并区域与外侧区域有重叠
 	 */
-	mergeCells(xlim: [number, number], ylim: [number, number]): TdToken {
+	mergeCells(xlim: readonly [number, number], ylim: readonly [number, number]): TdToken {
 		require('../../addon/table');
 		return this.mergeCells(xlim, ylim);
 	}

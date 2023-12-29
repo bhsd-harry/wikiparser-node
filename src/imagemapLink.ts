@@ -52,7 +52,7 @@ export class ImagemapLinkToken extends fixed(singleLine(Token)) {
 	 */
 	constructor(
 		pre: string,
-		linkStuff: [string, string | undefined, string | undefined] | [string, string | undefined],
+		linkStuff: readonly [string, string | undefined, string | undefined] | readonly [string, string | undefined],
 		post: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],

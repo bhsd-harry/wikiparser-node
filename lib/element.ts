@@ -533,7 +533,7 @@ export abstract class AstElement extends AstNode {
 	 * 检查是否符合解析后的选择器
 	 * @param copy 解析后的选择器
 	 */
-	#matchesArray(copy: SelectorArray[]): boolean {
+	#matchesArray(copy: readonly SelectorArray[]): boolean {
 		const condition = [...copy],
 			step = condition.pop()!;
 		if (this.#matches(step)) {
@@ -564,7 +564,7 @@ export abstract class AstElement extends AstNode {
 	 * 检查是否符合解析后的组合选择器
 	 * @param stack 解析后的一组选择器
 	 */
-	#matchesStack(stack: SelectorArray[][]): boolean {
+	#matchesStack(stack: readonly SelectorArray[][]): boolean {
 		return stack.some(condition => this.#matchesArray(condition));
 	}
 

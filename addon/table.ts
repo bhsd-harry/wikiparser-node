@@ -41,7 +41,7 @@ const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 'table-sy
  * @param i 单元格序号
  * @param oneCol 是否仅有一列
  */
-const isStartCol = (rowLayout: TableCoords[], i: number, oneCol = false): boolean => {
+const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false): boolean => {
 	const coords = rowLayout[i];
 	return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
 };
@@ -415,7 +415,7 @@ TableToken.prototype.removeTableCol =
 
 TableToken.prototype.mergeCells =
 	/** @implements */
-	function(xlim: [number, number], ylim: [number, number]): TdToken {
+	function(xlim: readonly [number, number], ylim: readonly [number, number]): TdToken {
 		const layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort() as [number, number],

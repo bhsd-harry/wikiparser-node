@@ -42,7 +42,7 @@ export class ArgToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/** @param parts 以'|'分隔的各部分 */
-	constructor(parts: string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(parts: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 			AtomToken: 0, Token: 1, HiddenToken: '2:',
 		});

@@ -56,7 +56,7 @@ export class ConverterFlagsToken extends Token {
 	}
 
 	/** @param flags 转换类型标记 */
-	constructor(flags: string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(flags: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 			AtomToken: ':',
 		});
