@@ -53,7 +53,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 		case 'manualthumb':
 			return true;
 		default:
-			return !isNaN(Number(value));
+			return !Number.isNaN(Number(value));
 	}
 }
 
