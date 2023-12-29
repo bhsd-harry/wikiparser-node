@@ -12,10 +12,10 @@ import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 import type {Layout} from '../../addon/table';
 
 export interface TableRenderedCoords {
-	row?: undefined;
-	column?: undefined;
-	x: number;
-	y: number;
+	readonly row?: undefined;
+	readonly column?: undefined;
+	readonly x: number;
+	readonly y: number;
 }
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;

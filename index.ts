@@ -18,7 +18,7 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
 
-	Shadow: typeof Shadow;
+	readonly Shadow: typeof Shadow;
 
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;

@@ -74,16 +74,16 @@ export type TokenTypes = 'root'
 	| 'param-line'
 	| 'imagemap-link';
 export interface Dimension {
-	height: number;
-	width: number;
+	readonly height: number;
+	readonly width: number;
 }
 export interface Position {
-	top: number;
-	left: number;
+	readonly top: number;
+	readonly left: number;
 }
 export interface CaretPosition {
-	offsetNode: AstNodes;
-	offset: number;
+	readonly offsetNode: AstNodes;
+	readonly offset: number;
 }
 
 /* NOT FOR BROWSER */

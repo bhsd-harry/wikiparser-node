@@ -4,10 +4,10 @@ import type {AstNodes} from '../lib/node';
 
 declare global {
 	interface PrintOpt {
-		pre?: string;
-		post?: string;
-		sep?: string;
-		class?: string;
+		readonly pre?: string;
+		readonly post?: string;
+		readonly sep?: string;
+		readonly class?: string;
 	}
 
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
@@ -27,8 +27,8 @@ declare global {
 	type BoundingRect = {top: number, left: number, start: number} | {start: number};
 
 	interface ParsingError {
-		stage: number;
-		include: boolean;
-		config: Config;
+		readonly stage: number;
+		readonly include: boolean;
+		readonly config: Config;
 	}
 }
