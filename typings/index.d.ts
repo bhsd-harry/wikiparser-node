@@ -13,7 +13,7 @@ declare global {
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
-		length: number;
+		readonly length: number;
 		toString(omit?: Set<string>, separator?: string): string;
 		text(separator?: string): string;
 		insertAt(token: unknown, i?: number): unknown;
@@ -24,7 +24,13 @@ declare global {
 		replaceChildren(...elements: (AstNodes | string)[]): void;
 	};
 
-	type BoundingRect = {top: number, left: number, start: number} | {start: number};
+	type BoundingRect = {
+		readonly top: number;
+		readonly left: number;
+		readonly start: number;
+	} | {
+		readonly start: number;
+	};
 
 	interface ParsingError {
 		readonly stage: number;

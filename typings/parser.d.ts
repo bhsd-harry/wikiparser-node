@@ -14,8 +14,8 @@ declare global {
 	}
 
 	type BraceExecArrayOrEmpty = BraceExecArray | {
-		0?: string;
-		index?: number;
+		readonly 0?: string;
+		readonly index?: number;
 		parts?: string[][];
 		findEqual?: boolean;
 		pos?: number;

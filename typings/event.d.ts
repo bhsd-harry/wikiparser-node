@@ -6,27 +6,27 @@ declare global {
 	interface AstEvent extends Event {
 		readonly type: AstEventType;
 		readonly target: EventTarget & AstNodes;
-		currentTarget: EventTarget & Token;
-		prevTarget?: Token;
-		bubbles: boolean;
+		readonly currentTarget: EventTarget & Token;
+		readonly prevTarget?: Token;
+		readonly bubbles: boolean;
 	}
 
 	type AstEventData = ({
-		type: 'insert';
-		position: number;
-		inserted: AstNodes;
+		readonly type: 'insert';
+		readonly position: number;
+		readonly inserted: AstNodes;
 	} | {
-		type: 'remove';
-		position: number;
-		removed: AstNodes;
+		readonly type: 'remove';
+		readonly position: number;
+		readonly removed: AstNodes;
 	} | {
-		type: 'text';
-		oldText: string;
+		readonly type: 'text';
+		readonly oldText: string;
 	} | {
-		type: 'replace';
-		position: number;
-		oldToken: Token;
-		newToken: Token;
+		readonly type: 'replace';
+		readonly position: number;
+		readonly oldToken: Token;
+		readonly newToken: Token;
 	}) & {
 		oldKey?: string;
 		newKey?: string;

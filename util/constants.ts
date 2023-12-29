@@ -21,7 +21,7 @@ export const aliases = [
 	['MagicLinkToken'],
 	['ListToken', 'DdToken'],
 	['ConverterToken'],
-];
+] as const;
 
 export const typeAliases: Record<string, string[] | undefined> = {
 	text: ['string', 'str'],
