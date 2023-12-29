@@ -8,11 +8,11 @@ import type {
 } from '../../internal';
 
 export interface TableCoords {
-	row: number;
-	column: number;
-	x?: undefined;
-	y?: undefined;
-	start?: boolean;
+	readonly row: number;
+	readonly column: number;
+	readonly x?: undefined;
+	readonly y?: undefined;
+	readonly start?: boolean;
 }
 
 /** 表格行或表格 */

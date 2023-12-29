@@ -1,33 +1,33 @@
 export interface Config {
 	ext: string[];
-	html: [string[], string[], string[]];
-	namespaces: Record<string, string>;
-	nsid: Record<string, number>;
-	parserFunction: [Record<string, string>, string[], string[], string[]];
-	doubleUnderscore: [string[], string[]];
-	protocol: string;
-	img: Record<string, string>;
-	variants: string[];
-	excludes?: string[];
+	readonly html: [string[], string[], string[]];
+	readonly namespaces: Record<string, string>;
+	readonly nsid: Record<string, number>;
+	readonly parserFunction: [Record<string, string>, string[], string[], string[]];
+	readonly doubleUnderscore: [string[], string[]];
+	readonly protocol: string;
+	readonly img: Record<string, string>;
+	readonly variants: string[];
+	readonly excludes?: string[];
 }
 
 export type Severity = 'error' | 'warning';
 
 export interface LintError {
-	message: string;
-	severity: Severity;
-	startIndex: number;
-	endIndex: number;
-	startLine: number;
-	startCol: number;
-	endLine: number;
-	endCol: number;
+	readonly message: string;
+	readonly severity: Severity;
+	readonly startIndex: number;
+	readonly endIndex: number;
+	readonly startLine: number;
+	readonly startCol: number;
+	readonly endLine: number;
+	readonly endCol: number;
 }
 
 /** 类似Node */
 export interface AstNode {
 	type: string;
-	childNodes: AstNode[];
+	readonly childNodes: AstNode[];
 
 	/** Linter */
 	lint(): LintError[];

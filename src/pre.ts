@@ -12,9 +12,9 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  */
 export class PreToken extends Token {
 	override readonly type = 'ext-inner';
-	declare name: 'pre';
+	declare readonly name: 'pre';
 
-	declare childNodes: (AstText | NoincludeToken | ConverterToken)[];
+	declare readonly childNodes: (AstText | NoincludeToken | ConverterToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
 	// @ts-expect-error abstract method

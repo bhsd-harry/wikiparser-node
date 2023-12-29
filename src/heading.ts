@@ -12,7 +12,7 @@ export class HeadingToken extends Token {
 	override readonly type = 'heading';
 	#level;
 
-	declare childNodes: [Token, SyntaxToken];
+	declare readonly childNodes: [Token, SyntaxToken];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
 	// @ts-expect-error abstract method
@@ -32,7 +32,7 @@ export class HeadingToken extends Token {
 	 * @param level 标题层级
 	 * @param input 标题文字
 	 */
-	constructor(level: number, input: [string?, string?], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(level: number, input: readonly [string?, string?], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum);
 		this.#level = level;
 		const token = new Token(input[0], config, accum);

@@ -1,14 +1,14 @@
 declare global {
 	interface MediaWikiPage {
-		title: string;
-		ns: number;
-		revisions?: {
+		readonly title: string;
+		readonly ns: number;
+		readonly revisions?: {
 			content: string;
 			contentmodel: string;
 		}[];
 	}
 	interface MediaWikiResponse {
-		query: {
+		readonly query: {
 			pages: MediaWikiPage[];
 		};
 	}

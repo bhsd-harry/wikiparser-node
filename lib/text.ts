@@ -35,8 +35,8 @@ const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\
 /** 文本节点 */
 export class AstText extends AstNode {
 	override readonly type = 'text';
-	declare name: undefined;
-	override data: string = '';
+	declare readonly name: undefined;
+	override readonly data: string = '';
 
 	/** @param text 包含文本 */
 	constructor(text: string) {

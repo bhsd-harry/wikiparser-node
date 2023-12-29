@@ -18,9 +18,9 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  */
 export class ParameterToken extends Token {
 	override readonly type = 'parameter';
-	declare name: string;
+	declare readonly name: string;
 
-	declare childNodes: [Token, Token];
+	declare readonly childNodes: [Token, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
 	// @ts-expect-error abstract method

@@ -10,7 +10,7 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
 export class ConverterRuleToken extends Token {
 	override readonly type = 'converter-rule';
 
-	declare childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
+	declare readonly childNodes: [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method

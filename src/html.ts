@@ -13,12 +13,12 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  */
 export class HtmlToken extends Token {
 	override readonly type = 'html';
-	declare name: string;
+	declare readonly name: string;
 	#closing;
 	#selfClosing;
 	#tag;
 
-	declare childNodes: [AttributesToken];
+	declare readonly childNodes: [AttributesToken];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
 	// @ts-expect-error abstract method
