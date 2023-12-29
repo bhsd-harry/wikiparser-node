@@ -13,9 +13,9 @@ import type {AttributesToken} from './attributes';
  */
 export class NestedToken extends Token {
 	override readonly type = 'ext-inner';
-	declare name: string;
+	declare readonly name: string;
 
-	declare childNodes: (ExtToken | NoincludeToken | CommentToken)[];
+	declare readonly childNodes: (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	// @ts-expect-error abstract method
@@ -34,7 +34,7 @@ export class NestedToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		regex: RegExp,
-		tags: string[],
+		tags: readonly string[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {

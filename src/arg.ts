@@ -13,7 +13,7 @@ import type {LintError} from '../base';
 export class ArgToken extends Token {
 	override readonly type = 'arg';
 
-	declare childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
+	declare readonly childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method
@@ -25,7 +25,7 @@ export class ArgToken extends Token {
 	}
 
 	/** @param parts 以'|'分隔的各部分 */
-	constructor(parts: string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(parts: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		for (let i = 0; i < parts.length; i++) {

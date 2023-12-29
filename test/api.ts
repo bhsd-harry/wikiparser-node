@@ -37,8 +37,8 @@ const normalizeValues = (
 
 /** 通用MediaWiki站点的请求 */
 export class Api {
-	url;
-	request = (request as RequestAPI<Request, CoreOptions, RequiredUriUrl>).defaults({jar: true});
+	readonly url;
+	readonly request = (request as RequestAPI<Request, CoreOptions, RequiredUriUrl>).defaults({jar: true});
 
 	/**
 	 * @param url 网址

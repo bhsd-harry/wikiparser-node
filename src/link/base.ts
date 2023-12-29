@@ -18,7 +18,7 @@ export abstract class LinkBaseToken extends Token {
 	#delimiter;
 	#title: Title;
 
-	declare childNodes: [AtomToken, ...Token[]];
+	declare readonly childNodes: [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
 

@@ -49,7 +49,7 @@ export const parseTable = (
 	};
 	for (const outLine of lines) {
 		let top = stack.pop();
-		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine) as [string],
+		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine)!,
 			line = outLine.slice(spaces.length),
 			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
 				.exec(line) as [string, string, string, string, string] | null;
@@ -105,7 +105,7 @@ export const parseTable = (
 			while (mt) {
 				top.insertAt(new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), config, accum));
 				({lastIndex} = regex);
-				[lastSyntax] = mt as [string];
+				[lastSyntax] = mt;
 				mt = regex.exec(attr);
 			}
 			const td = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);

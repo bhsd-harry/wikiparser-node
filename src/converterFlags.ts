@@ -15,7 +15,7 @@ export class ConverterFlagsToken extends Token {
 	override readonly type = 'converter-flags';
 	#flags?: string[];
 
-	declare childNodes: AtomToken[];
+	declare readonly childNodes: AtomToken[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
 	// @ts-expect-error abstract method
@@ -28,7 +28,7 @@ export class ConverterFlagsToken extends Token {
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
 
 	/** @param flags 转换类型标记 */
-	constructor(flags: string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(flags: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));

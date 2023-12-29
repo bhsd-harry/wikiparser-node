@@ -43,7 +43,7 @@ export const noWrap = (str: string): string => str.replace(/\n/gu, '\\n');
  * @param childNodes 子节点
  * @param opt 选项
  */
-export const print = (childNodes: AstNodes[], opt: PrintOpt = {}): string => {
+export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): string => {
 	const {pre = '', post = '', sep = ''} = opt;
 	return `${pre}${childNodes.map(child => child.print()).join(sep)}${post}`;
 };

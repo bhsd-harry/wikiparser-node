@@ -31,7 +31,7 @@ export class QuoteToken extends NowikiBaseToken {
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
 			refError ??= generateForSelf(this, {start}, message);
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
-				[{length}] = /^'+/u.exec(nextSibling.data) as [string],
+				[{length}] = /^'+/u.exec(nextSibling.data)!,
 				endIndex = startIndex + length;
 			errors.push({
 				...refError,

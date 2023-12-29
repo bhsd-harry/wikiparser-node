@@ -5,11 +5,11 @@ import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	valid;
+	readonly valid;
 	ns;
 	fragment;
 	/** @private */
-	encoded = false;
+	readonly encoded: boolean = false;
 
 	/**
 	 * @param title 标题（含或不含命名空间前缀）

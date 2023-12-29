@@ -24,9 +24,9 @@ const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(ty
  */
 export class AttributesToken extends Token {
 	declare type: AttributesTypes;
-	declare name: string;
+	declare readonly name: string;
 
-	declare childNodes: (AtomToken | AttributeToken)[];
+	declare readonly childNodes: (AtomToken | AttributeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method

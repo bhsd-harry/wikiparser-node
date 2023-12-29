@@ -10,7 +10,7 @@ import type {LintError, Config} from '../../base';
  * @param arr 数组
  * @param ele 元素
  */
-const del = <T>(arr: T[], ele: T): T[] => {
+const del = <T>(arr: readonly T[], ele: T): T[] => {
 	const set = new Set(arr);
 	set.delete(ele);
 	return [...set];
@@ -23,7 +23,7 @@ const del = <T>(arr: T[], ele: T): T[] => {
 export class ExtToken extends TagPairToken {
 	override readonly type = 'ext';
 
-	declare childNodes: [AttributesToken, Token];
+	declare readonly childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
 	// @ts-expect-error abstract method

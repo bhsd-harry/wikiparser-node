@@ -24,7 +24,7 @@ export class TdToken extends TableBaseToken {
 	override readonly type = 'td';
 	#innerSyntax = '';
 
-	declare childNodes: [SyntaxToken, AttributesToken, Token];
+	declare readonly childNodes: [SyntaxToken, AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get parentNode(): TrToken | TableToken | undefined;
 	// @ts-expect-error abstract method
@@ -56,7 +56,7 @@ export class TdToken extends TableBaseToken {
 			accum,
 		);
 		if (innerSyntax) {
-			[this.#innerSyntax] = innerSyntax as [string];
+			[this.#innerSyntax] = innerSyntax;
 		}
 		const innerToken = new Token(
 			inner?.slice((innerSyntax?.index ?? NaN) + this.#innerSyntax.length),

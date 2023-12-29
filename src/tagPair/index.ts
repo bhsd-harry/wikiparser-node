@@ -5,12 +5,12 @@ import type {AstNodes} from '../../lib/node';
 /** 成对标签 */
 export abstract class TagPairToken extends Token {
 	declare type: 'ext' | 'include';
-	declare name: string;
+	declare readonly name: string;
 	#selfClosing;
 	#closed;
-	#tags: [string, string];
+	readonly #tags: [string, string];
 
-	declare childNodes: [AstNodes, AstNodes];
+	declare readonly childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 

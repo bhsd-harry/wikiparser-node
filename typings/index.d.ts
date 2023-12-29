@@ -1,9 +1,9 @@
 declare global {
 	interface PrintOpt {
-		pre?: string;
-		post?: string;
-		sep?: string;
-		class?: string;
+		readonly pre?: string;
+		readonly post?: string;
+		readonly sep?: string;
+		readonly class?: string;
 	}
 
 	type Acceptable = Record<string, number | string | (number | string)[]>;
