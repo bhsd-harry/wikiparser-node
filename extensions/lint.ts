@@ -3,7 +3,7 @@ import type {Diagnostic} from './typings';
 
 /** 用于语法分析 */
 class Linter {
-	#id;
+	readonly #id;
 	#wikitext: string;
 	#running: Promise<LintError[]> | undefined;
 	include;

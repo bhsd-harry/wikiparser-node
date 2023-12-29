@@ -7,7 +7,7 @@ import type {MwConfig, CodeMirror} from './typings';
  * @param entries
  * @param target
  */
-const fromEntries = (entries: string[], target: Record<string, unknown>): void => {
+const fromEntries = (entries: readonly string[], target: Record<string, unknown>): void => {
 	for (const entry of entries) {
 		target[entry] = true;
 	}

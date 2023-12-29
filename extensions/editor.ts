@@ -1,8 +1,8 @@
 /** 用于打印AST */
 class Printer {
-	#id;
-	#preview;
-	#textbox;
+	readonly #id;
+	readonly #preview;
+	readonly #textbox;
 	#root: [number, string, string][];
 	#viewportChanged;
 	#running: Promise<void> | undefined;
