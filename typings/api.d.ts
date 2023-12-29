@@ -3,13 +3,13 @@ declare global {
 		readonly title: string;
 		readonly ns: number;
 		readonly revisions?: {
-			content: string;
-			contentmodel: string;
+			readonly content: string;
+			readonly contentmodel: string;
 		}[];
 	}
 	interface MediaWikiResponse {
 		readonly query: {
-			pages: MediaWikiPage[];
+			readonly pages: MediaWikiPage[];
 		};
 	}
 }

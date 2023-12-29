@@ -6,7 +6,13 @@ declare global {
 		text(separator?: string): string;
 	};
 
-	type BoundingRect = {top: number, left: number, start: number} | {start: number};
+	type BoundingRect = {
+		readonly top: number;
+		readonly left: number;
+		readonly start: number;
+	} | {
+		readonly start: number;
+	};
 }
 
 export {};
