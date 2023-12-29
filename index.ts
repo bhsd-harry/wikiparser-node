@@ -157,7 +157,7 @@ const Parser: Parser = {
 		const token = Shadow.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
 		Shadow.run(() => {
-			for (const key of ['main', 'fragment'] as ('main' | 'fragment')[]) {
+			for (const key of ['main', 'fragment'] as const) {
 				if (titleObj[key]?.includes('\0')) {
 					titleObj[key] = token.buildFromStr(titleObj[key]!, 'text');
 				}

@@ -105,7 +105,7 @@ export class TdToken extends fixed(TableBaseToken) {
 			{SyntaxToken: 0, AttributesToken: 1, Token: 2},
 		);
 		if (innerSyntax) {
-			[this.#innerSyntax] = innerSyntax as [string];
+			[this.#innerSyntax] = innerSyntax;
 		}
 		const innerToken = new Token(
 			inner?.slice((innerSyntax?.index ?? NaN) + this.#innerSyntax.length),
