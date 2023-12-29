@@ -48,9 +48,7 @@ import type {Title} from '../lib/title';
 import type {
 	AstNodes,
 } from '../internal';
-import type {
-	TokenTypes,
-} from '../lib/node';
+import type {TokenTypes} from '../util/constants';
 
 /**
  * 所有节点的基类
@@ -145,7 +143,7 @@ export class Token extends AstElement {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
-			} else if (isNaN(Number(s[s.length - 1]))) {
+			} else if (Number.isNaN(Number(s[s.length - 1]))) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
