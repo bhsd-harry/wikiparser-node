@@ -137,9 +137,9 @@ export class Token extends AstElement {
 	/** @private */
 	buildFromStr(str: string, type: 'string' | 'text'): string;
 	/** @private */
-	buildFromStr(str: string): AstNodes[];
+	buildFromStr(str: string): readonly AstNodes[];
 	/** @private */
-	buildFromStr(str: string, type?: string): string | AstNodes[] {
+	buildFromStr(str: string, type?: string): string | readonly AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
