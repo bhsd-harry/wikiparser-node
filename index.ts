@@ -136,7 +136,7 @@ const Parser: Parser = {
 			this.i18n = rootRequire(this.i18n, 'i18n/') as Record<string, string>;
 			return this.msg(msg, arg);
 		}
-		return (this.i18n?.[msg] ?? msg).replace('$1', arg);
+		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
 	/** @implements */
