@@ -7,6 +7,7 @@ dist/
 /.eslintcache*
 /.markdownlint.json
 /wiki/
+/extensions/
 /test/*.wiki
 /test/*.txt
 !README
