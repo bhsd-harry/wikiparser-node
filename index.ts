@@ -55,7 +55,7 @@ const Parser: Parser = {
 
 	/** @implements */
 	msg(msg, arg = '') {
-		return (this.i18n?.[msg] ?? msg).replace('$1', arg);
+		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
 	/** @implements */
