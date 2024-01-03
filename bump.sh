@@ -2,9 +2,9 @@
 if [[ $2 == 'npm' ]]
 then
 	sed -i '' -E "s/\"version\": \".+\"/\"version\": \"$1-b\"/" package.json
+	npm publish --tag browser
 	git add -A
 	git commit -m "chore: publish v$1-b to npm"
-	npm publish --tag browser
 else
 	npm run lint
 	if [[ $? -eq 0 ]]
