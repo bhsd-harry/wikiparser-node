@@ -1,3 +1,11 @@
+## v1.1.6
+
+*2024-01-03*
+
+**Fixed**
+
+- Fully localized message in `LintError`.
+
 ## v1.1.5
 
 *2023-12-19*
