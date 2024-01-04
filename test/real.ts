@@ -5,7 +5,7 @@ import Parser = require('../index');
 const {argv: [,, site = '']} = process,
 	apis = ([
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
-		['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
+		// ['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
