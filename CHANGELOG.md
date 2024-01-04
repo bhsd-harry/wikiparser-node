@@ -1,10 +1,14 @@
-## v1.1.7
+## v1.2.0
 
 *2024-01-04*
 
 **Fixed**
 
 - Allowing `<` and `>` in the fragment of an internal link.
+
+**Changed**
+
+- `HiddenToken` child nodes of `GalleryToken` are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken).
 
 ## v1.1.6
 
