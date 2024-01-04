@@ -42,7 +42,7 @@
 .wpb-converter {
 	-webkit-text-stroke-width: .1ex;
 }
-.wpb-image-invalid, .wpb-table-inter, .wpb-table-inter span,
+.wpb-image-invalid, .wpb-table-inter,
 .wpb-hidden, .wpb-noinclude, .wpb-include, .wpb-comment, .wpb-attr-dirty,
 .wpb-ext-attrs, .wpb-html-attrs,
 .wpb-ext-inner,
