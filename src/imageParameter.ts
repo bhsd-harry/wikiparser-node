@@ -234,11 +234,12 @@ export class ImageParameterToken extends Token {
 
 	/** @override */
 	override print(): string {
-		return this.#syntax
+		const invalid = this.name === 'invalid' && 'image-invalid';
+		return this.#syntax && !invalid
 			? `<span class="wpb-image-parameter">${
 				this.#syntax.replace('$1', `<span class="wpb-image-caption">${print(this.childNodes)}</span>`)
 			}</span>`
-			: super.print({class: 'image-caption'});
+			: super.print({class: invalid || 'image-caption'});
 	}
 
 	/* NOT FOR BROWSER */
