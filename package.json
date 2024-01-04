@@ -31,10 +31,12 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "webpack build --mode production && npm run build:ext",
-		"build:core": "rm bundle/*.js; webpack build --mode development; webpack build --mode production; eslint --no-eslintrc -c .eslintrc.browser.json bundle/",
+		"prepublishOnly": "npm run build:prod && npm run build:ext",
+		"build:dev": "esbuild index.ts --bundle --target=es2018 --outfile=bundle/bundle.js",
+		"build:prod": "esbuild index.ts --bundle --minify --target=es2018 --outfile=bundle/bundle.min.js",
+		"build:core": "rm bundle/*.js; npm run build:dev; npm run build:prod; eslint --no-eslintrc -c .eslintrc.browser.json bundle/",
 		"build:ext": "bash build-ext.sh",
-		"build:test": "rm -rf dist/; tsc; gsed -i 's|./config/minimum|../config/minimum|' dist/index.js",
+		"build:test": "rm -rf dist/; tsc; gsed -i 's|../config/minimum|../../config/minimum|' dist/util/constants.js",
 		"build": "npm run build:core && npm run build:ext",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && eslint --cache .",
@@ -57,7 +59,7 @@
 		"@typescript-eslint/eslint-plugin": "^6.12.0",
 		"@typescript-eslint/parser": "^6.12.0",
 		"ajv-cli": "^5.0.0",
-		"esbuild-loader": "^4.0.2",
+		"esbuild": "^0.19.7",
 		"eslint": "^8.56.0",
 		"eslint-plugin-es-x": "^7.3.0",
 		"eslint-plugin-eslint-comments": "^3.2.0",
@@ -70,8 +72,6 @@
 		"http-server": "^14.1.0",
 		"stylelint": "^15.11.0",
 		"stylelint-config-recommended": "^13.0.0",
-		"webpack-cli": "^5.1.4",
-		"webpack": "^5.89.0",
 		"typescript": "^5.1.6"
 	},
 	"engines": {
