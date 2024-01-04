@@ -4,12 +4,16 @@
 
 **Fixed**
 
-- Allowing `<` and `>` in the fragment of an internal link.
+- Allowing `<` and `>` in the fragment of an internal link
 
 **Changed**
 
-- `HiddenToken` child nodes of `GalleryToken` are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken).
-- The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken).
+- `HiddenToken` child nodes of `GalleryToken` are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
+- The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
+
+**Removed**
+
+- Pseudo selectors `:read-only` and `:read-write`
 
 ## v1.1.6
 
@@ -17,7 +21,7 @@
 
 **Fixed**
 
-- Fully localized message in `LintError`.
+- Fully localized message in `LintError`
 
 ## v1.1.5
 
@@ -25,7 +29,7 @@
 
 **Fixed**
 
-- Magic words `!` and `=` are now required in parser configurations.
+- Magic words `!` and `=` are now required in parser configurations
 
 ## v1.1.4
 
