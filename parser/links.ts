@@ -13,8 +13,8 @@ import type {Token} from '../internal';
  */
 export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
 	const {parseQuotes}: typeof import('./quotes') = require('./quotes');
-	const regex = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
-		regexImg = /^((?:(?!\0\d+!\x7F)[^\n<>[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
+	const regex = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su,
+		regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
 		regexExt = new RegExp(`^\\s*(?:${config.protocol})`, 'iu'),
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;

@@ -1,3 +1,11 @@
+## v1.1.7
+
+*2024-01-04*
+
+**Fixed**
+
+- Allowing `<` and `>` in the fragment of an internal link.
+
 ## v1.1.6
 
 *2024-01-03*
