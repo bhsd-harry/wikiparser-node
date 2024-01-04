@@ -423,7 +423,7 @@ export abstract class AstElement extends AstNode {
 	 * @throws `SyntaxError` 未定义的伪选择器
 	 */
 	#matches(step: SelectorArray): boolean {
-		const {parentNode, type, name, childNodes, link, fixed} = this as AstElement & {link?: string | Title},
+		const {parentNode, type, name, childNodes, link} = this as AstElement & {link?: string | Title},
 			children = parentNode?.children,
 			childrenOfType = children?.filter(({type: t}) => t === type),
 			siblingsCount = children?.length ?? 1,
@@ -469,10 +469,6 @@ export abstract class AstElement extends AstNode {
 					case ':local-link':
 						return (type === 'link' || type === 'file' || type === 'gallery-image')
 							&& link instanceof Title && link.title === '';
-					case ':read-only':
-						return fixed;
-					case ':read-write':
-						return !fixed;
 					case ':invalid':
 						return type === 'table-inter' || type === 'image-parameter' && name === 'invalid';
 					case ':required':
