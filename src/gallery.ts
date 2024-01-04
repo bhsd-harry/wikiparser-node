@@ -1,7 +1,7 @@
 import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
-import {HiddenToken} from './hidden';
+import {NoincludeToken} from './nowiki/noinclude';
 import type {LintError} from '../base';
 import type {
 	AstText,
@@ -11,17 +11,17 @@ import type {
 
 /**
  * gallery标签
- * @classdesc `{childNodes: ...(GalleryImageToken|HiddenToken|AstText)}`
+ * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
  */
 export class GalleryToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: (GalleryImageToken | HiddenToken | AstText)[];
+	declare readonly childNodes: (GalleryImageToken | NoincludeToken | AstText)[];
 	// @ts-expect-error abstract method
-	abstract override get firstChild(): GalleryImageToken | HiddenToken | AstText | undefined;
+	abstract override get firstChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
 	// @ts-expect-error abstract method
-	abstract override get lastChild(): GalleryImageToken | HiddenToken | AstText | undefined;
+	abstract override get lastChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
 	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
 	// @ts-expect-error abstract method
@@ -36,18 +36,14 @@ export class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
-				super.insertAt((line.trim()
-					? new HiddenToken(line, config, [], {
-					})
-					: line) as string);
+				super.insertAt((line.trim() ? new NoincludeToken(line, config) : line) as string);
 				continue;
 			}
 			const [, file, alt] = matches;
 			if (this.#checkFile(file)) {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
 			} else {
-				super.insertAt(new HiddenToken(line, config, [], {
-				}));
+				super.insertAt(new NoincludeToken(line, config));
 			}
 		}
 	}
@@ -86,7 +82,7 @@ export class GalleryToken extends Token {
 				trimmed = str.trim(),
 				startLine = top + i,
 				startCol = i ? 0 : left;
-			if (child.type === 'hidden' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
+			if (child.type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				errors.push({
 					message: Parser.msg('invalid content in <$1>', 'gallery'),
 					severity: 'error',
@@ -97,7 +93,7 @@ export class GalleryToken extends Token {
 					startCol,
 					endCol: startCol + length,
 				});
-			} else if (child.type !== 'hidden' && child.type !== 'text') {
+			} else if (child.type !== 'noinclude' && child.type !== 'text') {
 				errors.push(...child.lint(start));
 			}
 			start += length + 1;
