@@ -8,7 +8,7 @@
 
 **Changed**
 
-- `HiddenToken` child nodes of `GalleryToken` are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
+- `HiddenToken` child nodes of [`GalleryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken) are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
 - The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
 
 **Removed**
@@ -21,7 +21,7 @@
 
 **Fixed**
 
-- Fully localized message in `LintError`
+- Fully localized message in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
 
 ## v1.1.5
 
@@ -29,7 +29,7 @@
 
 **Fixed**
 
-- Magic words `!` and `=` are now required in parser configurations
+- Magic words `!` and `=` are now required in [parser configurations](./config/.schema.json)
 
 ## v1.1.4
 
@@ -91,7 +91,7 @@
 
 **Fixed**
 
-- Wrapping the text after the last `</onlyinclude>` in a `NoincludeToken`
+- Wrapping the text after the last `</onlyinclude>` in a [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
 - Replacing remaining spaces in [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title) property with underscores
 - [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) now maintains its content after `insertNode`, `deleteContents`, `extractContents` and `cloneContents` methods
 
