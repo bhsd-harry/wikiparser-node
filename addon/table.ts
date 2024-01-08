@@ -1,4 +1,4 @@
-/* eslint operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
+/* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import * as assert from 'assert/strict';
 import {Shadow} from '../util/debug';

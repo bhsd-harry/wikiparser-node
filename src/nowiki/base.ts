@@ -6,13 +6,13 @@ import {Token} from '../index';
 import type {AstText} from '../../lib/text';
 
 declare type NowikiTypes = 'ext-inner'
-	| 'comment'
-	| 'dd'
-	| 'double-underscore'
-	| 'hr'
-	| 'list'
-	| 'noinclude'
-	| 'quote';
+| 'comment'
+| 'dd'
+| 'double-underscore'
+| 'hr'
+| 'list'
+| 'noinclude'
+| 'quote';
 
 /**
  * 纯文字Token，不会被解析

@@ -39,6 +39,7 @@
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
+		"@stylistic/eslint-plugin": "^1.5.3",
 		"@types/node": "^20.9.0",
 		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^6.12.0",

@@ -4,6 +4,7 @@ import type {Config} from '../base';
 import type {AstNodes, Token, ParameterToken} from '../internal';
 
 declare global {
+	/* eslint-disable @stylistic/indent */
 	type TokenAttribute<T extends string> =
 		T extends 'stage' | 'padding' ? number :
 		T extends 'config' ? Config :
@@ -20,6 +21,7 @@ declare global {
 		T extends 'title' ? Title :
 		T extends 'protectedChildren' ? Ranges :
 		string;
+	/* eslint-enable @stylistic/indent */
 
 	type TokenAttributeGetter<T extends string> =
 		T extends 'acceptable' ? Record<string, Ranges> | undefined : TokenAttribute<T>;

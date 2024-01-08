@@ -36,10 +36,10 @@ export class TranscludeToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	declare readonly childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
-		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
-		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	// @ts-expect-error abstract method

@@ -135,16 +135,16 @@ export class AstText extends AstNode {
 						nextChar = rootStr[endIndex],
 						previousChar = rootStr[startIndex - 1],
 						severity = length > 1 && (char !== '<' || /[\s/>]/u.test(nextChar ?? ''))
-							|| char === '{' && (nextChar === char || previousChar === '-')
-							|| char === '}' && (previousChar === char || nextChar === '-')
-							|| char === '[' && (
-								nextChar === char || type === 'ext-link-text'
-								|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
-							)
-							|| char === ']' && (
-								previousChar === char
-								|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
-							)
+						|| char === '{' && (nextChar === char || previousChar === '-')
+						|| char === '}' && (previousChar === char || nextChar === '-')
+						|| char === '[' && (
+							nextChar === char || type === 'ext-link-text'
+							|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
+						)
+						|| char === ']' && (
+							previousChar === char
+							|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
+						)
 							? 'error'
 							: 'warning';
 					return (char !== 'h' || index > 0) && (char !== '<' || tags.has(tag!.toLowerCase())) && {

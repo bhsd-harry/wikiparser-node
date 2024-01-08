@@ -29,10 +29,10 @@ export class TableToken extends TrBaseToken {
 	override readonly type = 'table';
 
 	declare readonly childNodes: [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
-		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
+	| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
-		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
+	| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 	// @ts-expect-error abstract method
