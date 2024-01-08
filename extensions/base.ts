@@ -11,10 +11,10 @@ const workerJS = (): void => {
 	/** @implements */
 	self.onmessage = ({data}: {
 		data: ['setI18N', Record<string, string>]
-			| ['setConfig', Config]
-			| ['getConfig', number]
-			| ['lint', number, string, boolean?]
-			| ['print', number, string, boolean?, number?];
+		| ['setConfig', Config]
+		| ['getConfig', number]
+		| ['lint', number, string, boolean?]
+		| ['print', number, string, boolean?, number?];
 	}): void => {
 		const [command, qid, ...args] = data;
 		switch (command) {

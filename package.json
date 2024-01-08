@@ -54,6 +54,7 @@
 		"@codemirror/lint": "^6.4.2",
 		"@codemirror/view": "^6.22.2",
 		"@cypress/request": "^3.0.1",
+		"@stylistic/eslint-plugin": "^1.5.3",
 		"@types/node": "^20.9.0",
 		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^6.12.0",
