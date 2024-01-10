@@ -42,6 +42,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 		debug(`开始检查${name}：`);
 		Parser.config = require(path.join('..', '..', 'config', config));
 		try {
+			/* eslint-disable no-await-in-loop */
 			for (const {title, ns, content} of await getPages(`${url}/api.php`)) {
 				try {
 					console.time(title);
@@ -75,6 +76,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 					error(`解析${name}的 ${title} 页面时出错！`, e);
 				}
 			}
+			/* eslint-enable no-await-in-loop */
 		} catch (e) {
 			error(`访问${name}的API端口时出错！`, e);
 		}
