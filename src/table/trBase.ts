@@ -56,7 +56,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 			startIndex: error.startIndex + 1,
 			startLine: error.startLine + 1,
 			startCol: 0,
-			excerpt: error.excerpt.slice(1),
 		});
 		return errors;
 	}

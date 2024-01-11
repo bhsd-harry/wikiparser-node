@@ -67,13 +67,7 @@ export class TableToken extends TrBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (!this.closed) {
-			const {
-					firstChild,
-					lastChild: tr,
-				} = this,
-				{lastChild} = tr,
-				error = generateForChild(firstChild, {start}, 'unclosed table');
-			errors.push({...error, excerpt: String(lastChild?.type === 'td' ? lastChild : tr).slice(0, 50)});
+			errors.push(generateForChild(this.firstChild, {start}, 'unclosed table'));
 		}
 		return errors;
 	}

@@ -25,7 +25,6 @@ export interface LintError {
 	readonly startCol: number;
 	readonly endLine: number;
 	readonly endCol: number;
-	readonly excerpt: string;
 }
 
 /** 类似Node */

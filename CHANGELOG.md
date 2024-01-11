@@ -1,3 +1,11 @@
+## v1.3.0
+
+*2024-01-11*
+
+**Removed**
+
+- `excerpt` field in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
+
 ## v1.2.0
 
 *2024-01-04*

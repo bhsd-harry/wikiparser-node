@@ -109,15 +109,13 @@ export class HeadingToken extends sol(fixed(Token)) {
 		const errors = super.lint(start),
 			{firstChild} = this,
 			innerStr = String(firstChild);
-		const equals = this.#equals,
-			excerpt = `${equals}${innerStr}${equals}`.slice(0, 50);
 		let refError: LintError | undefined;
 		if (this.level === 1) {
-			refError = {...generateForChild(firstChild, {start}, '<h1>'), excerpt};
+			refError = generateForChild(firstChild, {start}, '<h1>');
 			errors.push(refError);
 		}
 		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
-			refError ??= {...generateForChild(firstChild, {start}, ''), excerpt};
+			refError ??= generateForChild(firstChild, {start}, '');
 			errors.push({...refError, message: Parser.msg('unbalanced "=" in a section header')});
 		}
 		if (this.closest('html-attrs, table-attrs')) {

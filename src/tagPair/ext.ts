@@ -170,10 +170,8 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
-			const root = this.getRootNode(),
-				excerpt = String(root).slice(Math.max(0, start - 25), start + 25),
-				rect: BoundingRect = {start, ...root.posFromIndex(start)};
-			errors.push({...generateForSelf(this, rect, 'extension tag in HTML tag attributes'), excerpt});
+			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
 		}
 		return errors;
 	}

@@ -117,7 +117,6 @@ export class GalleryToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + length,
-					excerpt: String(child).slice(0, 50),
 				});
 			} else if (child.type !== 'noinclude' && child.type !== 'text') {
 				errors.push(...child.lint(start));

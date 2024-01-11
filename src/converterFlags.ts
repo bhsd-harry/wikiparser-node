@@ -119,8 +119,7 @@ export class ConverterFlagsToken extends Token {
 			if (flag && !variantFlags.has(flag) && !unknownFlags.has(flag)
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
-				const error = generateForChild(child, rect, 'invalid conversion flag');
-				errors.push({...error, excerpt: childNodes.slice(0, i + 1).map(String).join(';').slice(-50)});
+				errors.push(generateForChild(child, rect, 'invalid conversion flag'));
 			}
 		}
 		return errors;

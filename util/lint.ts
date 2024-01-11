@@ -20,7 +20,6 @@ export const generateForChild = (
 		{top: offsetTop, left: offsetLeft} = parentNode!.posFromIndex(index)!,
 		{start} = boundingRect,
 		{top, left} = 'top' in boundingRect ? boundingRect : child.getRootNode().posFromIndex(start)!,
-		str = String(child),
 		startIndex = start + index,
 		startLine = top + offsetTop,
 		startCol = offsetTop ? offsetLeft : left + offsetLeft;
@@ -28,12 +27,11 @@ export const generateForChild = (
 		message: Parser.msg(msg),
 		severity,
 		startIndex,
-		endIndex: startIndex + str.length,
+		endIndex: startIndex + String(child).length,
 		startLine,
 		endLine: startLine + offsetHeight - 1,
 		startCol,
 		endCol: offsetHeight === 1 ? startCol + offsetWidth : offsetWidth,
-		excerpt: str.slice(0, 50),
 	};
 };
 
@@ -52,17 +50,15 @@ export const generateForSelf = (
 ): LintError => {
 	const {start} = boundingRect,
 		{offsetHeight, offsetWidth} = token,
-		str = String(token),
 		{top, left} = 'top' in boundingRect ? boundingRect : token.getRootNode().posFromIndex(start)!;
 	return {
 		message: Parser.msg(msg),
 		severity,
 		startIndex: start,
-		endIndex: start + str.length,
+		endIndex: start + String(token).length,
 		startLine: top,
 		endLine: top + offsetHeight - 1,
 		startCol: left,
 		endCol: offsetHeight === 1 ? left + offsetWidth : offsetWidth,
-		excerpt: str.slice(0, 50),
 	};
 };
