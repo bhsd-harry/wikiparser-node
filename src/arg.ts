@@ -79,15 +79,11 @@ export class ArgToken extends Token {
 		if (rest.length > 0) {
 			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(...rest.map(child => {
-				const error = generateForChild(child, rect, 'invisible content inside triple braces'),
-					{
-						startIndex,
-						startCol,
-					} = error;
+				const error = generateForChild(child, rect, 'invisible content inside triple braces');
 				return {
 					...error,
-					startIndex: startIndex - 1,
-					startCol: startCol - 1,
+					startIndex: error.startIndex - 1,
+					startCol: error.startCol - 1,
 				};
 			}));
 		}
