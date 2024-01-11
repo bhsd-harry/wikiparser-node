@@ -2,6 +2,10 @@
 
 *2024-01-11*
 
+**Changed**
+
+- Ingoring `'http'` in tag attribute values when [linting](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint)
+
 **Removed**
 
 - `excerpt` field in [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
