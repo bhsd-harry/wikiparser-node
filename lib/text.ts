@@ -2,7 +2,7 @@ import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 
-const errorSyntax = /https?:\/\/|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
+const errorSyntax = /https?[:/]\/+|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
 	disallowedTags = [
 		'html',
@@ -67,6 +67,7 @@ export class AstText extends AstNode {
 			previousType = previousSibling?.type,
 			errorRegex
 			= type === 'free-ext-link' || type === 'ext-link-url' || type === 'image-parameter' && name === 'link'
+			|| type === 'attr-value'
 				? errorSyntaxUrl
 				: errorSyntax,
 			errors = [...data.matchAll(errorRegex)],
@@ -105,7 +106,7 @@ export class AstText extends AstNode {
 						)
 							? 'error'
 							: 'warning';
-					return (char !== 'h' || index > 0) && (char !== '<' || tags.has(tag!.toLowerCase())) && {
+					return (char !== '<' || tags.has(tag!.toLowerCase())) && {
 						message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
 						severity,
 						startIndex,

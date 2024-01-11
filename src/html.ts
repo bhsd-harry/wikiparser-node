@@ -77,7 +77,7 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		let refError: LintError | undefined;
 		if (this.name === 'h1' && !this.closing) {
 			refError = generateForSelf(this, {start}, '<h1>');
-			errors.push({...refError, excerpt: wikitext.slice(start, start + 50)});
+			errors.push(refError);
 		}
 		if (this.closest('table-attrs')) {
 			refError ??= generateForSelf(this, {start}, '');

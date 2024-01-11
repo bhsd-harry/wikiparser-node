@@ -266,11 +266,10 @@ export class AttributeToken extends fixed(Token) {
 		if (!balanced) {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)};
-			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning'),
-				startIndex = e.startIndex - 1;
+			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning');
 			errors.push({
 				...e,
-				startIndex,
+				startIndex: e.startIndex - 1,
 				startCol: e.startCol - 1,
 			});
 		}
