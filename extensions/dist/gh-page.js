@@ -8,14 +8,12 @@ export const getMwConfig = (config) => {
     const mwConfig = {
         tags: {},
         tagModes: {
-            pre: 'mw-tag-pre',
-            nowiki: 'mw-tag-nowiki',
             ref: 'text/mediawiki',
-            references: 'text/mediawiki',
         },
         doubleUnderscore: [{}, {}],
         functionSynonyms: [config.parserFunction[0], {}],
         urlProtocols: `${config.protocol}|//`,
+        nsid: config.nsid,
     };
     fromEntries(config.ext, mwConfig.tags);
     fromEntries(config.doubleUnderscore[0].map(s => `__${s}__`), mwConfig.doubleUnderscore[0]);
