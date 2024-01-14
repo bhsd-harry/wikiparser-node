@@ -1,3 +1,11 @@
+## v1.3.1
+
+*2024-01-14*
+
+**Fixed**
+
+- Parsing an illegal template name, e.g., `{{#if:{{<}}}}`
+
 ## v1.3.0
 
 *2024-01-11*
