@@ -49,13 +49,13 @@ export const parseCommentAndExt = (
 		}
 	}
 	const ext = config.ext.join('|'),
-		includeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
-		noincludeRegex = includeOnly ? 'noinclude' : 'includeonly',
+		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
+		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
 		regex = new RegExp(
 			'<!--.*?(?:-->|$)|' // comment
-			+ `<${includeRegex}(?:\\s[^>]*?)?>|</${includeRegex}\\s*>|` // <includeonly>
+			+ `<${noincludeRegex}(?:\\s[^>]*?)?>|</${noincludeRegex}\\s*>|` // <noinclude>
 			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
-			+ `<(${noincludeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(\\5\\s*)>|$))`, // <noinclude>
+			+ `<(${includeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\\s*)>|$))`, // <includeonly>
 			'gisu',
 		);
 	return wikitext.replace(
