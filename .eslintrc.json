@@ -124,7 +124,7 @@
 		"curly": 2,
 		"default-case": 2,
 		"default-case-last": 2,
-		"default-param-last": 0,
+		"default-param-last": 2,
 		"dot-notation": 2,
 		"eqeqeq": 2,
 		"func-name-matching": [
@@ -806,6 +806,7 @@
 				"plugin:@typescript-eslint/recommended-requiring-type-checking"
 			],
 			"rules": {
+				"default-param-last": 0,
 				"@typescript-eslint/default-param-last": 2,
 				"dot-notation": 0,
 				"@typescript-eslint/dot-notation": [
