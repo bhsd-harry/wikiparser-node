@@ -67,10 +67,11 @@ export class AstText extends AstNode {
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
 			errorRegex = new RegExp(`<\\s*\\/?(${name})\\b`, 'giu');
-		} else if (type === 'free-ext-link'
-			|| type === 'ext-link-url'
-			|| type === 'image-parameter' && name === 'link'
-			|| type === 'attr-value'
+		} else if (
+			type === 'free-ext-link'
+				|| type === 'ext-link-url'
+				|| type === 'image-parameter' && name === 'link'
+				|| type === 'attr-value'
 		) {
 			errorRegex = errorSyntaxUrl;
 		} else {
