@@ -22,9 +22,9 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		moreBraces = wikitext.includes('}}'),
 		lastIndex: number | undefined;
-	while (mt
-		|| lastIndex !== undefined && lastIndex <= wikitext.length
-		&& stack.at(-1)?.[0]?.startsWith('=')
+	while (
+		mt
+		|| lastIndex !== undefined && lastIndex <= wikitext.length && stack.at(-1)?.[0]?.startsWith('=')
 	) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;

@@ -24,7 +24,7 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return this.closed ? [] : [generateForSelf(this, {start}, 'unclosed HTML comment')];
+		return this.closed ? [] : [generateForSelf(this, {start}, Parser.msg('unclosed $1', 'HTML comment'))];
 	}
 
 	/** @private */
