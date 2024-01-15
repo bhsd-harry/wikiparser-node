@@ -27,24 +27,6 @@ declare interface AttributesParent {
 	/* eslint-enable @typescript-eslint/method-signature-style */
 }
 
-const lintIgnoredExt = new Set([
-	'nowiki',
-	'pre',
-	'charinsert',
-	'score',
-	'syntaxhighlight',
-	'source',
-	'math',
-	'chem',
-	'ce',
-	'graph',
-	'mapframe',
-	'maplink',
-	'quiz',
-	'templatedata',
-	'timeline',
-]);
-
 /* NOT FOR BROWSER */
 
 /**
@@ -298,12 +280,6 @@ export abstract class AstElement extends AstNode {
 	 * @param start
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {SyntaxToken}: typeof import('../src/syntax') = require('../src/syntax');
-		if (this instanceof SyntaxToken || (this.constructor as {hidden?: true}).hidden
-			|| this.type === 'ext-inner' && lintIgnoredExt.has(this.name!)
-		) {
-			return [];
-		}
 		const errors: LintError[] = [];
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;

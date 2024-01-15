@@ -1,4 +1,5 @@
 import {mixins} from '../util/constants';
+import type {LintError} from '../base';
 
 /**
  * 解析后不可见的类
@@ -13,6 +14,11 @@ export const hidden = <T extends AstConstructor>(constructor: T) => {
 		// eslint-disable-next-line class-methods-use-this
 		override text(): string {
 			return '';
+		}
+
+		/** @override */
+		override lint(): LintError[] {
+			return [];
 		}
 	}
 	return AnyHiddenToken;

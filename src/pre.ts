@@ -6,6 +6,7 @@ import {
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
+import type {LintError} from '../base';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
 
 /**
@@ -70,6 +71,11 @@ export class PreToken extends Token {
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		return (key === 'plain') as TokenAttributeGetter<T> || super.getAttribute(key);
+	}
+
+	/** @override */
+	override lint(): LintError[] {
+		return [];
 	}
 
 	/* NOT FOR BROWSER */
