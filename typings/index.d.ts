@@ -1,18 +1,15 @@
 import type {Ranges} from '../lib/ranges';
+import type {
+	LintError,
+} from '../base';
 
 declare global {
-	interface PrintOpt {
-		readonly pre?: string;
-		readonly post?: string;
-		readonly sep?: string;
-		readonly class?: string;
-	}
-
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		toString(omit?: Set<string>, separator?: string): string;
 		text(separator?: string): string;
+		lint(start?: number): LintError[];
 	};
 
 	type BoundingRect = {

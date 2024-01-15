@@ -32,7 +32,9 @@ export abstract class TrBaseToken extends TableBaseToken {
 			isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
 			/** @ignore */
 			isTransclude = (token: AstNodes): token is TranscludeToken => token.type === 'magic-word';
-		if (!first || tdPattern.test(String(first))
+		if (
+			!first
+			|| tdPattern.test(String(first))
 			|| isArg(first) && tdPattern.test(first.default || '')
 		) {
 			return errors;

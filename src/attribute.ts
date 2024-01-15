@@ -266,16 +266,18 @@ export class AttributeToken extends fixed(Token) {
 		if (!balanced) {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)};
-			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning');
+			const e = generateForChild(lastChild, rect, Parser.msg('unclosed $1', 'quotes'), 'warning');
 			errors.push({
 				...e,
 				startIndex: e.startIndex - 1,
 				startCol: e.startCol - 1,
 			});
 		}
-		if (extAttrs[tag] && !extAttrs[tag]!.has(name)
+		if (
+			extAttrs[tag] && !extAttrs[tag]!.has(name)
 			|| (type === 'ext-attr' ? tag in htmlAttrs : !/\{\{[^{]+\}\}/u.test(name))
-			&& !htmlAttrs[tag]?.has(name) && !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
+			&& !htmlAttrs[tag]?.has(name)
+			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
 			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};

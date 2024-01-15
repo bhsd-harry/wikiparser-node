@@ -1,5 +1,6 @@
 import * as Parser from '../index';
 import {Token} from './index';
+import type {LintError} from '../base';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
 
@@ -18,5 +19,11 @@ export class SyntaxToken extends syntax(Token) {
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.type = type;
+	}
+
+	/** @override */
+	override lint(): LintError[] {
+		return [];
+	}
 	}
 }

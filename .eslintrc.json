@@ -115,9 +115,8 @@
 				"exceptMethods": [
 					"createTextNode",
 					"createRange",
-					"getPadding",
 					"getGaps",
-					"isPlain"
+					"lint"
 				]
 			}
 		],
