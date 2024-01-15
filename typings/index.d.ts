@@ -19,5 +19,3 @@ declare global {
 		readonly start: number;
 	};
 }
-
-export {};
