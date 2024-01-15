@@ -5,6 +5,8 @@
 **Fixed**
 
 - A case-sensitive parser function requires a colon after the function name
+- External links like `[[//xyz]]`
+- Invalid closing void HTML tag except `</br>`
 
 ## v1.3.2
 
