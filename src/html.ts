@@ -60,8 +60,13 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 
 	/** @override */
 	override text(): string {
-		const {closing} = this;
-		return `<${closing ? '/' : ''}${this.#tag}${closing ? '' : super.text()}${this.#selfClosing ? '/' : ''}>`;
+		const {closing, name} = this,
+			tag = `${this.#tag}${closing ? '' : super.text()}`,
+			{html} = this.getAttribute('config');
+		if (html[2].includes(name)) {
+			return closing && name !== 'br' ? '' : `<${tag}>`;
+		}
+		return `<${closing ? '/' : ''}${tag}${this.#selfClosing && html[1].includes(name) ? '/' : ''}>`;
 	}
 
 	/** @private */
@@ -147,9 +152,12 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 
 	/** @override */
 	override print(): string {
+		const {closing, name} = this,
+			{html} = this.getAttribute('config');
 		return super.print({
 			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`,
 			post: `${this.#selfClosing ? '/' : ''}&gt;`,
+			class: closing && html[2].includes(name) && name !== 'br' ? 'html-invalid' : 'html',
 		});
 	}
 }
