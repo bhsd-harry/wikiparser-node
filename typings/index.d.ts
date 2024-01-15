@@ -1,4 +1,3 @@
-import type {Ranges} from '../lib/ranges';
 import type {
 	LintError,
 } from '../base';

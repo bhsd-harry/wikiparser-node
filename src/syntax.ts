@@ -25,5 +25,4 @@ export class SyntaxToken extends syntax(Token) {
 	override lint(): LintError[] {
 		return [];
 	}
-	}
 }
