@@ -116,7 +116,7 @@ export class AstText extends AstNode {
 		if (errors.length > 0) {
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
-				tags = new Set([ext, html, disallowedTags].flat(2));
+				tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
 			return (errors as (RegExpMatchArray & {index: number})[])
 				.map(({0: error, 1: prefix, 2: tag, index}) => {
 					if (prefix) {
