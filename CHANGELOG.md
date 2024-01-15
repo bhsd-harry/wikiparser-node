@@ -1,3 +1,11 @@
+## v1.3.3
+
+*2024-01-15*
+
+**Fixed**
+
+- A case-sensitive parser function requires a colon after the function name
+
 ## v1.3.2
 
 *2024-01-15*
