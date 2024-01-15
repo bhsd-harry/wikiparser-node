@@ -92,13 +92,17 @@ export abstract class LinkBaseToken extends Token {
 				if (!valid) {
 					undo(e, data);
 					throw new Error(`非法的内链目标：${name}`);
-				} else if (this.type === 'category' && (interwiki || ns !== 14)
-				|| this.type === 'file' && (interwiki || ns !== 6)
+				} else if (
+					this.type === 'category' && (interwiki || ns !== 14)
+						|| this.type === 'file' && (interwiki || ns !== 6)
 				) {
 					undo(e, data);
 					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
-				} else if (this.type === 'link' && !interwiki && (ns === 6 || ns === 14)
-				&& !name.trim().startsWith(':')
+				} else if (
+					this.type === 'link'
+						&& !interwiki
+						&& (ns === 6 || ns === 14)
+						&& !name.trim().startsWith(':')
 				) {
 					const {firstChild} = prevTarget;
 					if (firstChild?.type === 'text') {

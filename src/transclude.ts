@@ -169,9 +169,10 @@ export class TranscludeToken extends Token {
 		const magicWord = lcModifier.slice(0, -1).toLowerCase(),
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
-		if (this.#raw && isRaw || !this.#raw && (isSubst || modifier === '')
-			|| (Shadow.running || this.length > 1)
-			&& (isRaw || isSubst || modifier === '')
+		if (
+			this.#raw && isRaw
+				|| !this.#raw && (isSubst || modifier === '')
+				|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -215,7 +216,8 @@ export class TranscludeToken extends Token {
 					delete data.oldKey;
 					delete data.newKey;
 				}
-				if (prevTarget === this.firstChild && isTemplate
+				if (
+					prevTarget === this.firstChild && isTemplate
 					|| prevTarget === this.childNodes[1]! && !isTemplate && this.name === 'invoke'
 				) {
 					this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle()!.title);

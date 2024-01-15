@@ -26,7 +26,8 @@ export const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: 
 		const [, slash,, params = '', brace, rest] = mt,
 			attr = new AttributesToken(params, 'html-attrs', name!, config, accum),
 			itemprop = attr.getAttr('itemprop');
-		if (name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
+		if (
+			name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
 			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)
 		) {
 			text += `<${x}`;

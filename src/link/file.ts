@@ -131,8 +131,11 @@ export class FileToken extends LinkBaseToken {
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key));
-		if (args.length === keys.length
-			&& frameKeys.length < 2 && horizAlignKeys.length < 2 && vertAlignKeys.length < 2
+		if (
+			args.length === keys.length
+			&& frameKeys.length < 2
+			&& horizAlignKeys.length < 2
+			&& vertAlignKeys.length < 2
 		) {
 			return errors;
 		}

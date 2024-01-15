@@ -834,8 +834,9 @@ export class Token extends AstElement {
 					replace = target.default === false ? String(target) : target.default;
 				} else if (name === 'if' && !var1?.getElementByTypes('magic-word, template')) {
 					replace = String(childNodes[String(var1 ?? '').trim() ? 2 : 3] ?? '').trim();
-				} else if (name === 'ifeq'
-				&& !childNodes.slice(1, 3).some(child => child.getElementByTypes('magic-word, template'))
+				} else if (
+					name === 'ifeq'
+					&& !childNodes.slice(1, 3).some(child => child.getElementByTypes('magic-word, template'))
 				) {
 					replace = String(childNodes[
 						String(var1 ?? '').trim() === String(var2 ?? '').trim() ? 3 : 4

@@ -116,7 +116,9 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 
 	/** 修正空白字符 */
 	#correct(): void {
-		if (!this.#space && this.length > 1
+		if (
+			!this.#space
+			&& this.length > 1
 			// 都替换成`<`肯定不对，但无妨
 			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
 		) {

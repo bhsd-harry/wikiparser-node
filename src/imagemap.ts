@@ -81,7 +81,8 @@ export class ImagemapToken extends Token {
 			} else if (first) {
 				const [file, ...options] = line.split('|') as [string, ...string[]],
 					title = this.normalizeTitle(file, 0, true);
-				if (title.valid
+				if (
+					title.valid
 					&& !title.interwiki
 					&& title.ns === 6
 				) {
@@ -118,8 +119,9 @@ export class ImagemapToken extends Token {
 						));
 						continue;
 					}
-				} else if (protocols.has(substr.slice(1, substr.indexOf(':') + 1))
-				|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
+				} else if (
+					protocols.has(substr.slice(1, substr.indexOf(':') + 1))
+					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
 				) {
 					const mtEx = /^\[([^\]\s]+)(?:(\s+)(\S[^\]]*)?)?\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined, string | undefined] | null;

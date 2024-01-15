@@ -440,11 +440,14 @@ export abstract class AstElement extends AstNode {
 					case ':only-whitespace':
 						return this.text().trim() === '';
 					case ':any-link':
-						return type === 'link' || type === 'free-ext-link' || type === 'ext-link'
+						return type === 'link'
+							|| type === 'free-ext-link'
+							|| type === 'ext-link'
 							|| (type === 'file' || type === 'gallery-image' && link);
 					case ':local-link':
 						return (type === 'link' || type === 'file' || type === 'gallery-image')
-							&& link instanceof Title && link.title === '';
+							&& link instanceof Title
+							&& link.title === '';
 					case ':invalid':
 						return type === 'table-inter' || type === 'image-parameter' && name === 'invalid';
 					case ':required':

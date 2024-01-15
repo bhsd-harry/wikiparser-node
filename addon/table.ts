@@ -421,7 +421,8 @@ TableToken.prototype.mergeCells =
 			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort() as [number, number],
 			[ymin, ymax] = ylim.map(y => y < 0 ? y + layout.length : y).sort() as [number, number],
 			set = new Set(layout.slice(ymin, ymax).flatMap(rowLayout => rowLayout.slice(xmin, xmax)));
-		if ([...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
+		if (
+			[...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
 			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]!) || set.has(rowLayout[xmax]!))
 		) {
 			throw new RangeError('待合并区域与外侧区域有重叠！');
