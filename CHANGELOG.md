@@ -1,3 +1,13 @@
+## v1.3.2
+
+*2024-01-15*
+
+**Added**
+
+- Reporting unclosed [`IncludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken#lint)
+- Reporting lonely `<onlyinclude>`, `<noinclude>` and `<includeonly>`
+- Reporting errors such as `<pre>` inside [`PreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/PreToken)
+
 ## v1.3.1
 
 *2024-01-14*
