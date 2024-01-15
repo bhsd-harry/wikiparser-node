@@ -2,8 +2,8 @@ import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 
-const errorSyntax = /https?[:/]\/+|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|<\s*\/?([a-z]\w*)/giu,
-	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|<\s*\/?([a-z]\w*)/giu,
+const errorSyntax = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
+	errorSyntaxUrl = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
 	disallowedTags = [
 		'html',
 		'head',
@@ -60,23 +60,31 @@ export class AstText extends AstNode {
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
+		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
 		const {type, name} = parentNode!,
 			nextType = nextSibling?.type,
-			previousType = previousSibling?.type,
-			errorRegex
-			= type === 'free-ext-link' || type === 'ext-link-url' || type === 'image-parameter' && name === 'link'
+			previousType = previousSibling?.type;
+		let errorRegex;
+		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
+			errorRegex = new RegExp(`<\\s*\\/?(${name})\\b`, 'giu');
+		} else if (type === 'free-ext-link'
+			|| type === 'ext-link-url'
+			|| type === 'image-parameter' && name === 'link'
 			|| type === 'attr-value'
-				? errorSyntaxUrl
-				: errorSyntax,
-			errors: LintError[] = [],
+		) {
+			errorRegex = errorSyntaxUrl;
+		} else {
+			errorRegex = errorSyntax;
+		}
+		const errors: LintError[] = [],
 			{ext, html} = this.getRootNode().getAttribute('config');
 		if (data.search(errorRegex) !== -1) {
 			errorRegex.lastIndex = 0;
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
-				tags = new Set([ext, html, disallowedTags].flat(2));
+				tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
-				const [, prefix, tag] = mt;
+				const [, tag, prefix] = mt;
 				let {0: error, index} = mt;
 				if (prefix && prefix !== ']') {
 					const {length} = prefix;
@@ -97,7 +105,8 @@ export class AstText extends AstNode {
 					|| char === '{' && (nextChar === char || previousChar === '-')
 					|| char === '}' && (previousChar === char || nextChar === '-')
 					|| char === '[' && (
-						nextChar === char || type === 'ext-link-text'
+						nextChar === char
+						|| type === 'ext-link-text'
 						|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
 					)
 					|| char === ']' && (

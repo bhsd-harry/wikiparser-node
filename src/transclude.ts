@@ -128,9 +128,10 @@ export class TranscludeToken extends Token {
 		const magicWord = lcModifier.slice(0, -1).toLowerCase(),
 			isRaw = raw.includes(magicWord),
 			isSubst = subst.includes(magicWord);
-		if (this.#raw && isRaw || !this.#raw && (isSubst || modifier === '')
-			|| this.length > 1
-			&& (isRaw || isSubst || modifier === '')
+		if (
+			this.#raw && isRaw
+				|| !this.#raw && (isSubst || modifier === '')
+				|| this.length > 1 && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;

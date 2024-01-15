@@ -1,6 +1,8 @@
+import {generateForSelf} from '../../util/lint';
 import {hidden} from '../../mixin/hidden';
 import Parser from '../../index';
 import {TagPairToken} from './index';
+import type {LintError} from '../../base';
 import type {AstText, Token} from '../../internal';
 
 /**
@@ -31,5 +33,10 @@ export class IncludeToken extends hidden(TagPairToken) {
 		accum: Token[] = [],
 	) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
+	}
+
+	/** @override */
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		return this.closed ? [] : [generateForSelf(this, {start}, Parser.msg('unclosed $1', `<${this.name}>`))];
 	}
 }

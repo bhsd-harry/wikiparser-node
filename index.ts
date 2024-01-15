@@ -3,9 +3,9 @@ import {
 	MAX_STAGE,
 	minConfig,
 } from './util/constants';
+import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
-import type {Config, LintError, Parser as ParserBase} from './base';
 
 declare interface Parser extends ParserBase {
 

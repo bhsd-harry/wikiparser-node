@@ -81,7 +81,10 @@ export class ConverterFlagsToken extends Token {
 		for (let i = 0; i < length; i++) {
 			const child = childNodes[i]!,
 				flag = child.text().trim();
-			if (flag && !variantFlags.has(flag) && !unknownFlags.has(flag)
+			if (
+				flag
+				&& !variantFlags.has(flag)
+				&& !unknownFlags.has(flag)
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
 				errors.push(generateForChild(child, rect, 'invalid conversion flag'));
