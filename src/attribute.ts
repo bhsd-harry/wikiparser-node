@@ -349,7 +349,7 @@ export class AttributeToken extends fixed(Token) {
 		if (!balanced) {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)};
-			const e = generateForChild(lastChild, rect, 'unclosed quotes', 'warning');
+			const e = generateForChild(lastChild, rect, Parser.msg('unclosed $1', 'quotes'), 'warning');
 			errors.push({
 				...e,
 				startIndex: e.startIndex - 1,
