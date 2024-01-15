@@ -18,4 +18,11 @@ declare global {
 	} | {
 		readonly start: number;
 	};
+
+	interface PrintOpt {
+		readonly pre?: string;
+		readonly post?: string;
+		readonly sep?: string;
+		readonly class?: string;
+	}
 }
