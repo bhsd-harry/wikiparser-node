@@ -4,10 +4,7 @@
 	font-family: monospace;
 }
 
-.wpb-error {
-	text-decoration: underline wavy #f00 1px;
-}
-.wpb-image-invalid, .wpb-table-inter {
+.wpb-html-invalid, .wpb-image-invalid, .wpb-table-inter {
 	color: #f00;
 	font-weight: normal;
 	text-decoration: underline wavy 1px;

@@ -56,14 +56,15 @@ export class TranscludeToken extends Token {
 				title = arg.join(':').slice(mt.length);
 			}
 		}
-		if (title.includes(':') || parts.length === 0 && !this.#raw) {
+		const isFunction = title.includes(':');
+		if (isFunction || parts.length === 0 && !this.#raw) {
 			const [magicWord, ...arg] = title.split(':'),
 				cleaned = removeComment(magicWord!),
 				name = cleaned.trim(),
 				isSensitive = sensitive.includes(name),
-				canonicalCame = insensitive[name.toLowerCase()];
+				canonicalCame = isFunction && insensitive[name.toLowerCase()];
 			if (!(arg.length > 0 && /\s$/u.test(cleaned)) && (isSensitive || canonicalCame)) {
-				this.setAttribute('name', canonicalCame ?? name.toLowerCase());
+				this.setAttribute('name', canonicalCame || name.toLowerCase());
 				this.type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
