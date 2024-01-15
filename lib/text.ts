@@ -3,8 +3,8 @@ import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 
-const errorSyntax = /https?[:/]\/+|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
-	errorSyntaxUrl = /\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|<\s*\/?([a-z]\w*)/giu,
+const errorSyntax = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|https?[:/]\/+/giu,
+	errorSyntaxUrl = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}/giu,
 	disallowedTags = [
 		'html',
 		'base',
@@ -103,22 +103,31 @@ export class AstText extends AstNode {
 		if (!parentNode) {
 			throw new Error('无法对孤立文本节点进行语法分析！');
 		}
+		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
 		const {type, name} = parentNode,
 			nextType = nextSibling?.type,
-			previousType = previousSibling?.type,
-			errorRegex
-			= type === 'free-ext-link' || type === 'ext-link-url' || type === 'image-parameter' && name === 'link'
-			|| type === 'attr-value'
-				? errorSyntaxUrl
-				: errorSyntax,
-			errors = [...data.matchAll(errorRegex)],
+			previousType = previousSibling?.type;
+		let errorRegex;
+		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
+			errorRegex = new RegExp(`<\\s*\\/?(${name})\\b`, 'giu');
+		} else if (
+			type === 'free-ext-link'
+				|| type === 'ext-link-url'
+				|| type === 'image-parameter' && name === 'link'
+				|| type === 'attr-value'
+		) {
+			errorRegex = errorSyntaxUrl;
+		} else {
+			errorRegex = errorSyntax;
+		}
+		const errors = [...data.matchAll(errorRegex)],
 			{ext, html} = this.getRootNode().getAttribute('config');
 		if (errors.length > 0) {
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
 				tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
 			return (errors as (RegExpMatchArray & {index: number})[])
-				.map(({0: error, 1: prefix, 2: tag, index}) => {
+				.map(({0: error, 1: tag, 2: prefix, index}) => {
 					if (prefix) {
 						const {length} = prefix;
 						index += length;
@@ -138,7 +147,8 @@ export class AstText extends AstNode {
 						|| char === '{' && (nextChar === char || previousChar === '-')
 						|| char === '}' && (previousChar === char || nextChar === '-')
 						|| char === '[' && (
-							nextChar === char || type === 'ext-link-text'
+							nextChar === char
+							|| type === 'ext-link-text'
 							|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
 						)
 						|| char === ']' && (

@@ -29,7 +29,7 @@ export class NowikiToken extends NowikiBaseToken {
 		const {name, firstChild: {data}} = this;
 		return (name === 'templatestyles' || name === 'section') && data
 			? [generateForSelf(this, {start}, Parser.msg('nothing should be in <$1>', name))]
-			: [];
+			: super.lint();
 	}
 }
 
