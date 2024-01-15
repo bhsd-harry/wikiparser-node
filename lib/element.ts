@@ -20,14 +20,14 @@ import type {
 	ExtToken,
 } from '../internal';
 
+/* NOT FOR BROWSER */
+
 declare interface AttributesParent {
 	/* eslint-disable @typescript-eslint/method-signature-style */
 	hasAttr?: (key: string) => boolean;
 	getAttr?: (key: string) => string | true | undefined;
 	/* eslint-enable @typescript-eslint/method-signature-style */
 }
-
-/* NOT FOR BROWSER */
 
 /**
  * optionally convert to lower cases
