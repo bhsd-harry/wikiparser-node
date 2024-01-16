@@ -308,13 +308,12 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * 获取重名参数
-	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs(): readonly [string, ParameterToken[]][] {
 		if (this.isTemplate()) {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
-		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
+		throw new Error('getDuplicatedArgs 方法仅供模板使用！');
 	}
 
 	/**
