@@ -28,31 +28,35 @@ export const parseTable = (
 	const stack: (TrToken | TableToken | TdToken)[] = [],
 		lines = data.split('\n');
 	let out = type === 'root' || type === 'parameter-value' || type === 'ext-inner' && name === 'poem'
-		? ''
-		: `\n${lines.shift()!}`;
+			? ''
+			: `\n${lines.shift()!}`,
+		top: TrToken | TableToken | TdToken | undefined;
 
 	/**
 	 * 向表格中插入纯文本
 	 * @param str 待插入的文本
-	 * @param top 当前解析的表格或表格行
+	 * @param topToken 当前解析的表格或表格行
 	 */
-	const push = (str: string, top?: TrToken | TableToken | TdToken): void => {
-		if (!top) {
-			out += str;
-			return;
-		}
-		const {lastChild} = top;
-		if (isTr(top)) {
-			const token = new Token(str, config, accum);
-			token.type = 'table-inter';
-			token.setAttribute('stage', 3);
-			top.insertAt(token);
-		} else {
-			lastChild.setText(String(lastChild) + str);
-		}
-	};
+	const push = (str: string, topToken?: TrToken | TableToken | TdToken): void => {
+			if (!topToken) {
+				out += str;
+				return;
+			}
+			const {lastChild} = topToken;
+			if (isTr(topToken)) {
+				const token = new Token(str, config, accum);
+				token.type = 'table-inter';
+				token.setAttribute('stage', 3);
+				topToken.insertAt(token);
+			} else {
+				lastChild.setText(String(lastChild) + str);
+			}
+		},
+
+		/** 取出最近的表格行 */
+		pop = (): TrToken | TableToken => top!.type === 'td' ? stack.pop() as TrToken | TableToken : top!;
 	for (const outLine of lines) {
-		let top = stack.pop();
+		top = stack.pop();
 		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine)!,
 			line = outLine.slice(spaces.length),
 			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
@@ -89,9 +93,7 @@ export const parseTable = (
 			top!.close(`\n${spaces}${closing}`, true);
 			push(attr, stack.at(-1));
 		} else if (row) {
-			if (top.type === 'td') {
-				top = stack.pop() as TrToken | TableToken;
-			}
+			top = pop();
 			if (top.type === 'tr') {
 				top = stack.pop() as TableToken;
 			}
@@ -99,22 +101,28 @@ export const parseTable = (
 			stack.push(top, tr);
 			top.insertAt(tr);
 		} else {
-			if (top.type === 'td') {
-				top = stack.pop() as TrToken | TableToken;
-			}
+			top = pop();
 			const regex = cell === '!' ? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu : /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
 			let mt = regex.exec(attr),
 				lastIndex = 0,
 				lastSyntax = `\n${spaces}${cell!}`;
+
+			/**
+			 * 创建表格单元格
+			 * @param tr 当前表格行
+			 */
+			const createTd = (tr: TrToken | TableToken): TdToken => {
+				const td = new TdToken(lastSyntax, attr.slice(lastIndex, mt?.index), config, accum);
+				tr.insertAt(td);
+				return td;
+			};
 			while (mt) {
-				top.insertAt(new TdToken(lastSyntax, attr.slice(lastIndex, mt.index), config, accum));
+				createTd(top);
 				({lastIndex} = regex);
 				[lastSyntax] = mt;
 				mt = regex.exec(attr);
 			}
-			const td = new TdToken(lastSyntax, attr.slice(lastIndex), config, accum);
-			stack.push(top, td);
-			top.insertAt(td);
+			stack.push(top, createTd(top));
 		}
 	}
 	return out.slice(1);

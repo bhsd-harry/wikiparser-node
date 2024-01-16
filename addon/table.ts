@@ -54,7 +54,7 @@ const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false
  * @param cells 改行全部单元格
  */
 function occupied(layout: Layout, i: number, oneRow: true, cells: TdToken[]): number[];
-function occupied(layout: Layout, i: number, oneRow?: false): number[];
+function occupied(layout: Layout, i: number): number[];
 function occupied(layout: Layout, i: number, oneRow = false, cells?: TdToken[]): number[] {
 	return layout[i]!.map(
 		({row, column}, j) => row === i && (!oneRow || cells![column]!.rowspan === 1) ? j : undefined,
