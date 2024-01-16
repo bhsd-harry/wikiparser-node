@@ -127,7 +127,7 @@ export class AttributesToken extends Token {
 		this.setAttribute('name', name);
 		if (attr) {
 			const regex = new RegExp(
-				`([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)` // 属性名
+				'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
 				+ '(?:'
 				+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
 				+ '(?:=|\0\\d+~\x7F)' // `=`
@@ -293,12 +293,12 @@ export class AttributesToken extends Token {
 	 * @override
 	 * @param token 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 不是AttributeToken或标签不匹配
+	 * @throws `RangeError` 标签不匹配
 	 */
 	override insertAt<T extends AttributeToken | AtomToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
 			if (String(token).trim()) {
-				throw new RangeError(`${this.constructor.name}只能插入AttributeToken！`);
+				this.constructorError('只能插入 AttributeToken');
 			}
 			return super.insertAt(token, i);
 		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {

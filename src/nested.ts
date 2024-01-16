@@ -109,11 +109,10 @@ export class NestedToken extends Token {
 	 * @override
 	 * @param token 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `TypeError` 不是许可的标签
 	 */
 	override insertAt<T extends Token>(token: T, i?: number): T {
 		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {
-			throw new TypeError(`${this.constructor.name}只能以${this.#tags.join('或')}标签作为子节点！`);
+			this.constructorError(`只能以 ${this.#tags.join(' 或 ')} 标签作为子节点`);
 		}
 		return super.insertAt(token, i);
 	}

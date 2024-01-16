@@ -11,29 +11,22 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 	abstract class FixedToken extends constructor {
 		static readonly fixed = true;
 
-		/**
-		 * @override
-		 * @throws `Error` 不可用
-		 */
+		/** @override */
 		removeAt(): never {
-			throw new Error(`${this.constructor.name} 不可删除元素！`);
+			this.constructorError('不可删除元素');
 		}
 
 		/**
 		 * @override
 		 * @param token 待插入的子节点
 		 * @param i 插入位置
-		 * @throws `Error` 不可用
 		 */
 		override insertAt(token: string, i?: number): AstText;
 		/** @ignore */
 		override insertAt<T extends AstNodes>(token: T, i?: number): T;
 		/** @ignore */
 		override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-			if (Shadow.running) {
-				return super.insertAt(token, i) as T | AstText;
-			}
-			throw new Error(`${this.constructor.name} 不可插入元素！`);
+			return Shadow.running ? super.insertAt(token, i) as T | AstText : this.constructorError('不可插入元素');
 		}
 	}
 	return FixedToken;

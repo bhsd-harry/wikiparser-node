@@ -263,6 +263,11 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
+	constructorError(msg: string): never {
+		throw new Error(`${this.constructor.name} ${msg}！`);
+	}
+
+	/** @private */
 	protected seal(key: string): void {
 		this.#optional.add(key);
 		Object.defineProperty(this, key, {

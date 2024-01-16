@@ -412,7 +412,7 @@ export class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
-		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
+		throw new Error('getDuplicatedArgs 方法仅供模板使用！');
 	}
 
 	/**
@@ -606,7 +606,7 @@ export class TranscludeToken extends Token {
 	 */
 	setValue(key: string, value: string): void {
 		if (!this.isTemplate()) {
-			throw new Error(`${this.constructor.name}.setValue 方法仅供模板使用！`);
+			throw new Error('setValue 方法仅供模板使用！');
 		}
 		const arg = this.getArg(key);
 		if (arg) {
@@ -630,7 +630,7 @@ export class TranscludeToken extends Token {
 	 */
 	anonToNamed(): void {
 		if (!this.isTemplate()) {
-			throw new Error(`${this.constructor.name}.anonToNamed 方法仅供模板使用！`);
+			throw new Error('anonToNamed 方法仅供模板使用！');
 		}
 		for (const token of this.getAnonArgs()) {
 			token.firstChild.replaceChildren(token.name);
@@ -644,7 +644,7 @@ export class TranscludeToken extends Token {
 	 */
 	replaceTemplate(title: string): void {
 		if (this.type === 'magic-word') {
-			throw new Error(`${this.constructor.name}.replaceTemplate 方法仅用于更换模板！`);
+			throw new Error('replaceTemplate 方法仅用于更换模板！');
 		}
 		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, this.getAttribute('config'));
 		(this.firstChild as AtomToken).replaceChildren(...childNodes);
@@ -657,7 +657,7 @@ export class TranscludeToken extends Token {
 	 */
 	replaceModule(title: string): void {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
-			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
+			throw new Error('replaceModule 方法仅用于更换模块！');
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 1) {
@@ -678,7 +678,7 @@ export class TranscludeToken extends Token {
 	 */
 	replaceFunction(func: string): void {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
-			throw new Error(`${this.constructor.name}.replaceModule 方法仅用于更换模块！`);
+			throw new Error('replaceModule 方法仅用于更换模块！');
 		} else if (this.length < 2) {
 			throw new Error('尚未指定模块名称！');
 		}
@@ -701,7 +701,7 @@ export class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return this.getAllArgs().length - this.getKeys().length;
 		}
-		throw new Error(`${this.constructor.name}.hasDuplicatedArgs 方法仅供模板使用！`);
+		throw new Error('hasDuplicatedArgs 方法仅供模板使用！');
 	}
 
 	/**

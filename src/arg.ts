@@ -170,15 +170,13 @@ export class ArgToken extends Token {
 	 * @override
 	 * @param token 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 不可插入多余子节点
-	 * @throws `TypeError` 不可插入文本节点
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
 		if (i > 1) {
-			throw new RangeError(`${this.constructor.name}不可插入多余的子节点！`);
+			this.constructorError('不可插入多余的子节点');
 		} else if (typeof token === 'string') {
-			throw new TypeError(`${this.constructor.name}不可插入文本节点！`);
+			this.constructorError('不可插入文本节点');
 		}
 		super.insertAt(token, i);
 		if (i === 1) {

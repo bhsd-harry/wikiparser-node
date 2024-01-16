@@ -141,7 +141,6 @@ export class MagicLinkToken extends syntax(Token) {
 	 * @override
 	 * @param token 待插入的节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 插入`{{!}}`或`{{=}}`以外的魔术字或模板
 	 */
 	override insertAt(token: string, i?: number): AstText;
 	/** @ignore */
@@ -151,9 +150,9 @@ export class MagicLinkToken extends syntax(Token) {
 		if (typeof token !== 'string') {
 			const {type, name} = token;
 			if (type === 'template') {
-				throw new RangeError(`${this.constructor.name} 不可插入模板！`);
+				this.constructorError('不可插入模板');
 			} else if (!Shadow.running && type === 'magic-word' && name !== '!' && name !== '=') {
-				throw new RangeError(`${this.constructor.name} 不可插入 \`{{!}}\` 或 \`{{=}}\` 以外的魔术字！`);
+				this.constructorError('不可插入 `{{!}}` 或 `{{=}}` 以外的魔术字');
 			}
 		}
 		return super.insertAt(token, i) as T;

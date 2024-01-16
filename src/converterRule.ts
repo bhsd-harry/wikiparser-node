@@ -178,21 +178,17 @@ export class ConverterRuleToken extends Token {
 	/**
 	 * @override
 	 * @param i 移除位置
-	 * @throws `Error` 至少保留1个子节点
 	 */
 	override removeAt(i: number): AtomToken {
 		if (this.length === 1) {
-			throw new Error(`${this.constructor.name} 需至少保留 1 个子节点！`);
+			this.constructorError('需至少保留 1 个子节点');
 		}
 		return super.removeAt(i) as AtomToken;
 	}
 
-	/**
-	 * @override
-	 * @throws `Error` 请勿手动插入子节点
-	 */
+	/** @override */
 	override insertAt(): never {
-		throw new Error(`转换规则语法复杂，请勿尝试对 ${this.constructor.name} 手动插入子节点！`);
+		this.constructorError('语法复杂，请勿尝试手动插入子节点');
 	}
 
 	/** 修改为不转换 */

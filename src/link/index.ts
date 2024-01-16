@@ -110,7 +110,7 @@ export class LinkToken extends LinkBaseToken {
 	 */
 	asSelfLink(fragment = this.fragment): void {
 		if (!fragment?.trim()) {
-			throw new RangeError(`${this.constructor.name}.asSelfLink 方法必须指定非空的 fragment！`);
+			throw new RangeError('asSelfLink 方法必须指定非空的 fragment！');
 		}
 		this.#setFragment(fragment, false);
 	}

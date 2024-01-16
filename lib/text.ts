@@ -269,7 +269,7 @@ export class AstText extends AstNode {
 		if (j === undefined) {
 			return super.getRelativeIndex();
 		} else if (j < 0 || j > this.length) {
-			throw new RangeError(`超出文本长度范围！`);
+			throw new RangeError('超出文本长度范围！');
 		}
 		return j;
 	}

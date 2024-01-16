@@ -422,7 +422,6 @@ export class Token extends AstElement {
 	 * @override
 	 * @param child 待插入的子节点
 	 * @param i 插入位置
-	 * @throws `RangeError` 不可插入的子节点
 	 */
 	override insertAt(child: string, i?: number): AstText;
 	/** @ignore */
@@ -438,9 +437,9 @@ export class Token extends AstElement {
 				{constructor: {name: insertedName}} = token;
 			i += i < 0 ? this.length : 0;
 			if (!acceptableIndices[insertedName]?.includes(i)) {
-				throw new RangeError(`${this.constructor.name} 的第 ${i} 个子节点不能为 ${insertedName}！`);
+				this.constructorError(`的第 ${i} 个子节点不能为 ${insertedName}`);
 			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j + 1))) {
-				throw new Error(`${this.constructor.name} 插入新的第 ${i} 个子节点会破坏规定的顺序！`);
+				this.constructorError(`插入新的第 ${i} 个子节点会破坏规定的顺序`);
 			}
 		}
 		super.insertAt(token, i);
@@ -483,21 +482,20 @@ export class Token extends AstElement {
 	/**
 	 * @override
 	 * @param i 移除位置
-	 * @throws `Error` 不可移除的子节点
 	 */
 	override removeAt(i: number): AstNodes {
 		i += i < 0 ? this.length : 0;
 		if (!Shadow.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
 			if (protectedIndices.includes(i)) {
-				throw new Error(`${this.constructor.name} 的第 ${i} 个子节点不可移除！`);
+				this.constructorError(`的第 ${i} 个子节点不可移除`);
 			} else if (this.#acceptable) {
 				const acceptableIndices = Object.fromEntries(
 						Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
 					),
 					nodesAfter = this.childNodes.slice(i + 1);
 				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
-					throw new Error(`移除 ${this.constructor.name} 的第 ${i} 个子节点会破坏规定的顺序！`);
+					this.constructorError(`移除第 ${i} 个子节点会破坏规定的顺序`);
 				}
 			}
 		}
@@ -511,7 +509,6 @@ export class Token extends AstElement {
 	 * 替换为同类节点
 	 * @param token 待替换的节点
 	 * @throws `Error` 不存在父节点
-	 * @throws `Error` 待替换的节点具有不同属性
 	 */
 	safeReplaceWith(token: this): void {
 		const {parentNode} = this;
@@ -524,7 +521,7 @@ export class Token extends AstElement {
 			assert.deepEqual(token.getAttribute('acceptable'), this.#acceptable);
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
-				throw new Error(`待替换的 ${this.constructor.name} 带有不同的 #acceptable 属性！`);
+				this.constructorError('带有不同的 #acceptable 属性');
 			}
 			throw e;
 		}
@@ -686,13 +683,10 @@ export class Token extends AstElement {
 		return this.childNodes.map(child => child.cloneNode());
 	}
 
-	/**
-	 * 深拷贝节点
-	 * @throws `Error` 未定义复制方法
-	 */
+	/** 深拷贝节点 */
 	cloneNode(): this {
 		if (this.constructor !== Token) {
-			throw new Error(`未定义 ${this.constructor.name} 的复制方法！`);
+			this.constructorError('未定义复制方法');
 		}
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

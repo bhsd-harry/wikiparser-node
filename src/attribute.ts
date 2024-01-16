@@ -444,15 +444,15 @@ export class AttributeToken extends fixed(Token) {
 			return;
 		} else if (this.type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
-		} else if (value.includes('"') && value.includes("'")) {
+		} else if (value.includes('"') && value.includes(`'`)) {
 			throw new RangeError('属性值不能同时包含单引号和双引号！');
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[this.type] + 1, config);
 		this.lastChild.replaceChildren(...childNodes);
 		if (value.includes('"')) {
-			this.#quotes = ["'", "'"] as [string, string];
-		} else if (value.includes("'") || !this.#quotes[0]) {
+			this.#quotes = [`'`, `'`] as [string, string];
+		} else if (value.includes(`'`) || !this.#quotes[0]) {
 			this.#quotes = ['"', '"'] as [string, string];
 		} else {
 			this.close();

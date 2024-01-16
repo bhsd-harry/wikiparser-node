@@ -224,7 +224,7 @@ export class ParameterToken extends fixed(Token) {
 		const {parentNode, anon} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {
-			throw new Error(`${this.constructor.name}.rename 方法仅用于模板参数！`);
+			throw new Error('rename 方法仅用于模板参数！');
 		} else if (anon) {
 			parentNode?.anonToNamed();
 		}
