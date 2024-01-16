@@ -308,7 +308,6 @@ export class TranscludeToken extends Token {
 
 	/**
 	 * 获取重名参数
-	 * @throws `Error` 仅用于模板
 	 */
 	getDuplicatedArgs(): readonly [string, ParameterToken[]][] {
 		if (this.isTemplate()) {
