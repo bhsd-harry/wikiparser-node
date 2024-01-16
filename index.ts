@@ -14,6 +14,8 @@ import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
+declare type log = (msg: string, ...args: unknown[]) => void;
+
 declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
@@ -55,13 +57,13 @@ declare interface Parser extends ParserBase {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	warn(msg: string, ...args: unknown[]): void;
+	warn: log;
 	/** @private */
-	debug(msg: string, ...args: unknown[]): void;
+	debug: log;
 	/** @private */
-	error(msg: string, ...args: unknown[]): void;
+	error: log;
 	/** @private */
-	info(msg: string, ...args: unknown[]): void;
+	info: log;
 
 	/** @private */
 	log(f: Function): void;
