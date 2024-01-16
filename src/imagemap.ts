@@ -1,5 +1,8 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {Shadow} from '../util/debug';
+import {
+	Shadow,
+	isToken,
+} from '../util/debug';
 import {classes} from '../util/constants';
 import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
@@ -49,14 +52,14 @@ export class ImagemapToken extends Token {
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
-		return this.childNodes.find((child): child is GalleryImageToken => child.type === 'imagemap-image');
+		return this.childNodes.find(isToken<GalleryImageToken>('imagemap-image'));
 	}
 
 	/* NOT FOR BROWSER */
 
 	/** 链接 */
 	override get links(): readonly ImagemapLinkToken[] {
-		return this.childNodes.filter((child): child is ImagemapLinkToken => child.type === 'imagemap-link');
+		return this.childNodes.filter(isToken<ImagemapLinkToken>('imagemap-link'));
 	}
 
 	/* NOT FOR BROWSER END */

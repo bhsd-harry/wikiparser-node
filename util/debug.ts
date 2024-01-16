@@ -32,6 +32,12 @@ export const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
 	new Array(n).fill(undefined).map((_, i) => callback(i));
 
 /**
+ * 是否是某一特定类型的节点
+ * @param type 节点类型
+ */
+export const isToken = <T extends Token>(type: string) => (node: AstNodes): node is T => node.type === type;
+
+/**
  * 更新chldNodes
  * @param parent 父节点
  * @param position 子节点位置

@@ -1,5 +1,8 @@
 import {generateForChild} from '../../util/lint';
-import {Shadow} from '../../util/debug';
+import {
+	Shadow,
+	isToken,
+} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {Token} from '..';
 import {TableBaseToken} from './base';
@@ -34,19 +37,9 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
-
-		/**
-		 * 判断是否为参数
-		 * @param token 节点
-		 */
-		const isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
-
-			/**
-			 * 判断是否为魔术字
-			 * @param token 节点
-			 */
-			isTransclude = (token: AstNodes): token is TranscludeToken => token.type === 'magic-word';
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
+			isArg = isToken<ArgToken>('arg'),
+			isTransclude = isToken<TranscludeToken>('magic-word');
 		if (
 			!first
 			|| tdPattern.test(String(first))
@@ -167,18 +160,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
 		let last = 0;
-
-		/**
-		 * 判断是否为表格行
-		 * @param token 节点
-		 */
-		const isTr = (token: Token): token is TrToken => token.type === 'tr',
-
-			/**
-			 * 判断是否为表格语法节点
-			 * @param token 节点
-			 */
-			isSyntax = (token: Token): token is SyntaxToken => token.type === 'table-syntax';
+		const isTr = isToken<TrToken>('tr'),
+			isSyntax = isToken<SyntaxToken>('table-syntax');
 		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {
 				if (child.isIndependent()) {

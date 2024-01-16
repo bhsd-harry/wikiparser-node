@@ -7,7 +7,10 @@ import {
 	decodeHtml,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
-import {Shadow} from '../util/debug';
+import {
+	Shadow,
+	isToken,
+} from '../util/debug';
 import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -16,7 +19,7 @@ import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
 import type {Title} from '../lib/title';
-import type {AstNodes, TableToken} from '../internal';
+import type {TableToken} from '../internal';
 
 const insensitiveVars = new Set<string | undefined>([
 	'pageid',
@@ -373,7 +376,7 @@ export class TranscludeToken extends Token {
 
 	/** 获取所有参数 */
 	getAllArgs(): readonly ParameterToken[] {
-		return this.childNodes.filter((child): child is ParameterToken => child.type === 'parameter');
+		return this.childNodes.filter(isToken<ParameterToken>('parameter'));
 	}
 
 	/** 获取所有匿名参数 */
@@ -804,13 +807,8 @@ export class TranscludeToken extends Token {
 		const stripped = String(this).slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			parsed = Parser.parse(stripped, include, 4, config);
-
-		/**
-		 * 是否是表格
-		 * @param token 节点
-		 */
-		const isTable = (token: AstNodes): token is TableToken => token.type === 'table';
+			parsed = Parser.parse(stripped, include, 4, config),
+			isTable = isToken<TableToken>('table');
 		for (const table of parsed.childNodes) {
 			if (isTable(table)) {
 				table.escape();

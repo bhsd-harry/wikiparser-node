@@ -39,7 +39,7 @@
 
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
-import {Shadow} from '../util/debug';
+import {Shadow, isToken} from '../util/debug';
 import {
 	MAX_STAGE,
 	aliases,
@@ -749,13 +749,8 @@ export class Token extends AstElement {
 		if (!parentNode) {
 			return undefined;
 		}
-
-		/**
-		 * 判断是否是HTML标签
-		 * @param node 节点
-		 */
-		const isHtml = (node: AstNodes): node is HtmlToken => node.type === 'html';
-		const {childNodes, length} = parentNode,
+		const isHtml = isToken<HtmlToken>('html'),
+			{childNodes, length} = parentNode,
 			index = childNodes.indexOf(this);
 		let i: number;
 		for (i = index - 1; i >= 0; i--) {

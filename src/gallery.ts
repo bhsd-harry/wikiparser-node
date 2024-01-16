@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {Shadow, isToken} from '../util/debug';
 import {classes} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -48,7 +48,7 @@ export class GalleryToken extends Token {
 
 	/** 所有图片 */
 	override get images(): readonly GalleryImageToken[] {
-		return this.childNodes.filter((child): child is GalleryImageToken => child.type === 'gallery-image');
+		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
 	}
 
 	/* NOT FOR BROWSER END */
