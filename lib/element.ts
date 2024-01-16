@@ -6,6 +6,7 @@ import {
 	text,
 } from '../util/string';
 import {typeAliases, classes} from '../util/constants';
+import {setChildNodes} from '../util/debug';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
@@ -175,11 +176,7 @@ export abstract class AstElement extends AstNode {
 	 */
 	removeAt(i: number): AstNodes {
 		this.verifyChild(i);
-		const childNodes = [...this.childNodes],
-			[node] = childNodes.splice(i, 1) as [AstNodes];
-		node.setAttribute('parentNode', undefined);
-		this.setAttribute('childNodes', childNodes);
-		return node;
+		return setChildNodes(this as AstElement as Token, i, 1)[0]!;
 	}
 
 	/**
@@ -192,15 +189,12 @@ export abstract class AstElement extends AstNode {
 		if (node.contains(this)) {
 			throw new RangeError('不能插入祖先节点！');
 		}
-		const childNodes = [...this.childNodes];
-		if (childNodes.includes(node)) {
+		if (this.childNodes.includes(node)) {
 			throw new RangeError('不能插入子节点！');
 		}
 		this.verifyChild(i, 1);
 		node.parentNode?.removeChild(node);
-		node.setAttribute('parentNode', this as AstElement as Token);
-		childNodes.splice(i, 0, node);
-		this.setAttribute('childNodes', childNodes);
+		setChildNodes(this as AstElement as Token, i, 0, [node]);
 		return node;
 	}
 

@@ -1,4 +1,4 @@
-import type {Token} from '../internal';
+import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
 
@@ -23,6 +23,31 @@ export const Shadow = {
 	},
 };
 
+/**
+ * 更新chldNodes
+ * @param parent 父节点
+ * @param position 子节点位置
+ * @param deleteCount 移除的子节点数量
+ * @param inserted 插入的子节点
+ */
+export const setChildNodes = (
+	parent: Token,
+	position: number,
+	deleteCount: number,
+	inserted: AstNodes[] = [],
+): AstNodes[] => {
+	const childNodes = [...parent.childNodes],
+		removed = childNodes.splice(position, deleteCount, ...inserted);
+	parent.setAttribute('childNodes', childNodes);
+	for (const node of inserted) {
+		node.setAttribute('parentNode', parent);
+	}
+	for (const node of removed) {
+		node.setAttribute('parentNode', undefined);
+	}
+	return removed;
+};
+
 /* NOT FOR BROWSER */
 
 /**
@@ -34,29 +59,15 @@ export const Shadow = {
 export const undo = (e: AstEvent, data: AstEventData): void => {
 	const {target, type} = e;
 	switch (data.type) {
-		case 'remove': {
-			const childNodes = [...target.childNodes];
-			childNodes.splice(data.position, 0, data.removed);
-			data.removed.setAttribute('parentNode', target as Token);
-			target.setAttribute('childNodes', childNodes);
+		case 'remove':
+			setChildNodes(target as Token, data.position, 0, [data.removed]);
 			break;
-		}
-		case 'insert': {
-			const childNodes = [...target.childNodes];
-			childNodes.splice(data.position, 1);
-			data.inserted.setAttribute('parentNode', undefined);
-			target.setAttribute('childNodes', childNodes);
+		case 'insert':
+			setChildNodes(target as Token, data.position, 1);
 			break;
-		}
-		case 'replace': {
-			const {parentNode} = target,
-				childNodes = [...parentNode!.childNodes];
-			childNodes.splice(data.position, 1, data.oldToken);
-			data.oldToken.setAttribute('parentNode', parentNode);
-			data.newToken.setAttribute('parentNode', undefined);
-			parentNode!.setAttribute('childNodes', childNodes);
+		case 'replace':
+			setChildNodes(target.parentNode!, data.position, 1, [data.oldToken]);
 			break;
-		}
 		case 'text':
 			if (target.type === 'text') {
 				target.replaceData(data.oldText);

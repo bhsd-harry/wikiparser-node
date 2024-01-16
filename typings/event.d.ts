@@ -14,7 +14,6 @@ declare global {
 	type AstEventData = ({
 		readonly type: 'insert';
 		readonly position: number;
-		readonly inserted: AstNodes;
 	} | {
 		readonly type: 'remove';
 		readonly position: number;
@@ -26,7 +25,6 @@ declare global {
 		readonly type: 'replace';
 		readonly position: number;
 		readonly oldToken: Token;
-		readonly newToken: Token;
 	}) & {
 		oldKey?: string;
 		newKey?: string;

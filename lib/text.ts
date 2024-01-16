@@ -1,4 +1,5 @@
 import {classes} from '../util/constants';
+import {setChildNodes} from '../util/debug';
 import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
@@ -257,12 +258,9 @@ export class AstText extends AstNode {
 		if (!parentNode) {
 			throw new Error('待分裂的文本节点没有父节点！');
 		}
-		const newText = new AstText(data.slice(offset)),
-			childNodes = [...parentNode.childNodes];
+		const newText = new AstText(data.slice(offset));
+		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
 		this.setAttribute('data', data.slice(0, offset));
-		childNodes.splice(childNodes.indexOf(this) + 1, 0, newText);
-		newText.setAttribute('parentNode', parentNode);
-		parentNode.setAttribute('childNodes', childNodes);
 		return newText;
 	}
 
