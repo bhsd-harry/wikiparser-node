@@ -14,6 +14,15 @@ import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
 import type {Title} from '../lib/title';
 
+const insensitiveVars = new Set<string | undefined>([
+	'pageid',
+	'articlepath',
+	'server',
+	'servername',
+	'scriptpath',
+	'stylepath',
+]);
+
 /**
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
@@ -61,10 +70,12 @@ export class TranscludeToken extends Token {
 			const [magicWord, ...arg] = title.split(':'),
 				cleaned = removeComment(magicWord!),
 				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
+				lcName = name.toLowerCase(),
+				canonicalName = insensitive[lcName],
 				isSensitive = sensitive.includes(name),
-				canonicalCame = isFunction && insensitive[name.toLowerCase()];
-			if (isSensitive || canonicalCame) {
-				this.setAttribute('name', canonicalCame || name.toLowerCase());
+				isVar = isSensitive || insensitiveVars.has(canonicalName);
+			if (isVar || isFunction && canonicalName) {
+				this.setAttribute('name', canonicalName ?? lcName);
 				this.type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
