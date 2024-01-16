@@ -102,7 +102,7 @@ export class MagicLinkToken extends syntax(Token) {
 				const lines = data.slice(0, index).split('\n'),
 					{length: top} = lines,
 					{length: left} = lines.at(-1)!,
-					startIndex = start + index!,
+					startIndex = refError.startIndex + index!,
 					startLine = refError.startLine + top - 1,
 					startCol = top === 1 ? refError.startCol + left : left;
 				return {

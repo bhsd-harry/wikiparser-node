@@ -5,6 +5,7 @@
 **Fixed**
 
 - Case-insensitive magic variables like `{{server}}`
+- `startIndex` and `endIndex` of [`MagicLinkToken.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
 
 ## v1.3.3
 
