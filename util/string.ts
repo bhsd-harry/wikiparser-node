@@ -4,16 +4,20 @@ export const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\\0-\\x1F\\x7F\\p{
 export const extUrlChar = '(?:[^[\\]<>"\\0-\\x1F\\x7F\\p{Zs}\\uFFFD]|\\0\\d+[c!~]\\x7F)*';
 
 /**
- * remove half-parsed comment-like tokens
- * @param str 原字符串
+ * 生成正则替换函数
+ * @param regex 正则表达式
+ * @param replace 替换字符串或函数
  */
-export const removeComment = (str: string): string => str.replace(/\0\d+c\x7F/gu, '');
+const factory = (
+	regex: RegExp,
+	replace: string | ((str: string, ...args: any[]) => string),
+) => (str: string): string => str.replace(regex, replace as string);
 
-/**
- * escape special chars for RegExp constructor
- * @param str RegExp source
- */
-export const escapeRegExp = (str: string): string => str.replace(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
+/** remove half-parsed comment-like tokens */
+export const removeComment = factory(/\0\d+c\x7F/gu, '');
+
+/** escape special chars for RegExp constructor */
+export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
 
 /**
  * extract effective wikitext
@@ -23,11 +27,8 @@ export const escapeRegExp = (str: string): string => str.replace(/[\\{}()|.?*+^$
 export const text = (childNodes: readonly (string | AstNodes)[], separator = ''): string =>
 	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
-/**
- * decode HTML entities
- * @param str 原字符串
- */
-export const decodeHtml = (str: string): string => str.replace(
+/** decode HTML entities */
+export const decodeHtml = factory(
 	/&#(\d+|x[\da-f]+);/giu,
 	(_, code: string) => String.fromCodePoint(Number(`${code.toLowerCase().startsWith('x') ? '0' : ''}${code}`)),
 );
@@ -36,7 +37,7 @@ export const decodeHtml = (str: string): string => str.replace(
  * escape newlines
  * @param str 原字符串
  */
-export const noWrap = (str: string): string => str.replace(/\n/gu, '\\n');
+export const noWrap = factory(/\n/gu, '\\n');
 
 /**
  * 以HTML格式打印
