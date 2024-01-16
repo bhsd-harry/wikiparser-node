@@ -23,7 +23,8 @@ export const parseCommentAndExt = (
 	const onlyincludeLeft = '<onlyinclude>',
 		onlyincludeRight = '</onlyinclude>',
 		{length} = onlyincludeLeft;
-	/** @ignore */
+
+	/** 更新`<onlyinclude>`和`</onlyinclude>`的位置 */
 	const update = (): {i: number, j: number} => {
 		const i = wikitext.indexOf(onlyincludeLeft);
 		return {i, j: wikitext.indexOf(onlyincludeRight, i + length)};
@@ -32,7 +33,11 @@ export const parseCommentAndExt = (
 		let {i, j} = update();
 		if (i !== -1 && j !== -1) { // `<onlyinclude>`拥有最高优先级
 			let str = '';
-			/** @ignore */
+
+			/**
+			 * 忽略未被`<onlyinclude>`和`</onlyinclude>`包裹的内容
+			 * @param text 未被包裹的内容
+			 */
 			const noinclude = (text: string): void => {
 				new NoincludeToken(text, config, accum);
 				str += `\0${accum.length - 1}c\x7F`;

@@ -34,10 +34,18 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
-			/** @ignore */
-			isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
-			/** @ignore */
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
+
+		/**
+		 * 判断是否为参数
+		 * @param token 节点
+		 */
+		const isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
+
+			/**
+			 * 判断是否为魔术字
+			 * @param token 节点
+			 */
 			isTransclude = (token: AstNodes): token is TranscludeToken => token.type === 'magic-word';
 		if (
 			!first
@@ -159,9 +167,17 @@ export abstract class TrBaseToken extends TableBaseToken {
 			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
 		let last = 0;
-		/** @ignore */
+
+		/**
+		 * 判断是否为表格行
+		 * @param token 节点
+		 */
 		const isTr = (token: Token): token is TrToken => token.type === 'tr',
-			/** @ignore */
+
+			/**
+			 * 判断是否为表格语法节点
+			 * @param token 节点
+			 */
 			isSyntax = (token: Token): token is SyntaxToken => token.type === 'table-syntax';
 		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {

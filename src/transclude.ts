@@ -804,9 +804,13 @@ export class TranscludeToken extends Token {
 		const stripped = String(this).slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			parsed = Parser.parse(stripped, include, 4, config),
-			/** @ignore */
-			isTable = (token: AstNodes): token is TableToken => token.type === 'table';
+			parsed = Parser.parse(stripped, include, 4, config);
+
+		/**
+		 * 是否是表格
+		 * @param token 节点
+		 */
+		const isTable = (token: AstNodes): token is TableToken => token.type === 'table';
 		for (const table of parsed.childNodes) {
 			if (isTable(table)) {
 				table.escape();

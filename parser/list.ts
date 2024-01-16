@@ -25,7 +25,12 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 	let regex = /:+|-\{/gu,
 		ex = regex.exec(text),
 		lc = 0;
-	/** @ignore */
+
+	/**
+	 * 创建`DdToken`
+	 * @param syntax `:`
+	 * @param index 起点
+	 */
 	const dd = (syntax: string, index: number): string => {
 		new DdToken(syntax, config, accum);
 		return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + syntax.length)}`;

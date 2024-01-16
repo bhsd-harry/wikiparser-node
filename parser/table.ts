@@ -7,7 +7,10 @@ import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';
 import type {AstText} from '../internal';
 
-/** @ignore */
+/**
+ * 判断是否为表格行或表格
+ * @param token 表格节点
+ */
 const isTr = (token: TrToken | TableToken | TdToken): token is TrToken | TableToken =>
 	token.lastChild.constructor !== Token;
 

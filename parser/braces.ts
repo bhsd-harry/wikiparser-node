@@ -36,7 +36,11 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			top: BraceExecArrayOrEmpty = stack.pop() ?? {},
 			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
 			innerEqual = syntax === '=' && topFindEqual;
-		/** @ignore */
+
+		/**
+		 * 填入模板内容
+		 * @param text wikitext全文
+		 */
 		const push = (text: string): void => {
 			parts!.at(-1)!.push(text.slice(topPos, curIndex));
 		};

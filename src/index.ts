@@ -749,9 +749,13 @@ export class Token extends AstElement {
 		if (!parentNode) {
 			return undefined;
 		}
-		/** @ignore */
-		const isHtml = (node: AstNodes): node is HtmlToken => node.type === 'html',
-			{childNodes, length} = parentNode,
+
+		/**
+		 * 判断是否是HTML标签
+		 * @param node 节点
+		 */
+		const isHtml = (node: AstNodes): node is HtmlToken => node.type === 'html';
+		const {childNodes, length} = parentNode,
 			index = childNodes.indexOf(this);
 		let i: number;
 		for (i = index - 1; i >= 0; i--) {
