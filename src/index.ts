@@ -185,7 +185,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parse(n = MAX_STAGE, include = false): this {
-		n = Math.max(n, MAX_STAGE);
+		n = Math.min(n, MAX_STAGE);
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);
 		}
