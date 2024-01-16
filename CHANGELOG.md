@@ -1,3 +1,11 @@
+## v1.3.5
+
+*2024-01-17*
+
+**Changed**
+
+- [`AttributesToken.prototype.setAttr`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#setattr) now also accepts an attribute object as argument
+
 ## v1.3.4
 
 *2024-01-16*

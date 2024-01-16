@@ -73,9 +73,7 @@ const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | string = {}, multi
 			if (typeof attr === 'string') {
 				token.setSyntax(attr);
 			} else {
-				for (const [k, v] of Object.entries(attr)) {
-					token.setAttr(k, v);
-				}
+				token.setAttr(attr);
 			}
 		}
 	}
@@ -322,9 +320,7 @@ TableToken.prototype.insertTableRow =
 	): TrToken {
 		let reference = this.getNthRow(y, false, true);
 		const token = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
-		for (const [k, v] of Object.entries(attr)) {
-			token.setAttr(k, v);
-		}
+		token.setAttr(attr);
 		if (reference?.type === 'table') { // `row === 0`且表格自身是有效行
 			reference = this.prependTableRow();
 		}

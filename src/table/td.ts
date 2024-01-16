@@ -280,9 +280,19 @@ export class TdToken extends fixed(TableBaseToken) {
 	 * @override
 	 * @param key 属性键
 	 * @param value 属性值
+	 * @param prop 属性对象
 	 */
-	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void {
-		key = key.toLowerCase().trim() as T;
+	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void;
+	override setAttr(prop: Record<string, string | number | boolean>): void;
+	override setAttr<T extends string>(
+		keyOrProp: T | Record<string, string | number | boolean>,
+		value?: TdAttrSetter<T>,
+	): void {
+		if (typeof keyOrProp !== 'string') {
+			super.setAttr(keyOrProp as Record<string, string | boolean>);
+			return;
+		}
+		const key = keyOrProp.toLowerCase().trim() as T;
 		let v: string | boolean;
 		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
 			v = value === 1 ? false : String(value);
@@ -328,9 +338,7 @@ export const createTd = (
 		token = Shadow.run(() => new TdToken('\n|', undefined, config));
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
-	for (const [k, v] of Object.entries(attr)) {
-		token.setAttr(k, v);
-	}
+	token.setAttr(attr);
 	return token;
 };
 

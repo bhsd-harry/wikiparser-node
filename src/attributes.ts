@@ -68,9 +68,7 @@ export class AttributesToken extends Token {
 
 	set attributes(attrs) {
 		this.replaceChildren();
-		for (const [key, value] of Object.entries(attrs)) {
-			this.setAttr(key, value);
-		}
+		this.setAttr(attrs);
 	}
 
 	/** 以字符串表示的class属性 */
@@ -339,16 +337,24 @@ export class AttributesToken extends Token {
 	 * 设置指定属性
 	 * @param key 属性键
 	 * @param value 属性值
+	 * @param prop 属性对象
 	 * @throws `RangeError` 扩展标签属性不能包含">"
 	 */
-	setAttr(key: string, value: string | boolean): void {
-		if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
+	setAttr(key: string, value: string | boolean): void;
+	setAttr(prop: Record<string, string | boolean>): void;
+	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
+		if (typeof keyOrProp !== 'string') {
+			for (const [key, val] of Object.entries(keyOrProp)) {
+				this.setAttr(key, val);
+			}
+			return;
+		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('扩展标签属性不能包含 ">"！');
 		}
-		key = key.toLowerCase().trim();
-		const attr = this.getAttrToken(key);
+		const key = keyOrProp.toLowerCase().trim(),
+			attr = this.getAttrToken(key);
 		if (attr) {
-			attr.setValue(value);
+			attr.setValue(value!);
 			return;
 		} else if (value === false) {
 			return;

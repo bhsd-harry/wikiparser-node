@@ -82,9 +82,12 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 		 * 对AttributesToken子节点设置属性
 		 * @param key 属性键
 		 * @param value 属性值
+		 * @param prop 属性对象
 		 */
-		setAttr(key: string, value: string | boolean): void {
-			this.#attributesChild.setAttr(key, value);
+		setAttr(key: string, value: string | boolean): void;
+		setAttr(prop: Record<string, string | boolean>): void;
+		setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
+			this.#attributesChild.setAttr(keyOrProp as string, value!);
 		}
 
 		/**
