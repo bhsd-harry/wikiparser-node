@@ -47,6 +47,21 @@ const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false
 };
 
 /**
+ * 起点位于第`i`行的单元格序号
+ * @param layout 表格布局
+ * @param i 行号
+ * @param oneRow 是否要求单元格跨行数为1
+ * @param cells 改行全部单元格
+ */
+function occupied(layout: Layout, i: number, oneRow: true, cells: TdToken[]): number[];
+function occupied(layout: Layout, i: number, oneRow?: false): number[];
+function occupied(layout: Layout, i: number, oneRow = false, cells?: TdToken[]): number[] {
+	return layout[i]!.map(
+		({row, column}, j) => row === i && (!oneRow || cells![column]!.rowspan === 1) ? j : undefined,
+	).filter((j): j is number => j !== undefined);
+}
+
+/**
  * 设置表格格式
  * @param cells 单元格
  * @param attr 属性
@@ -538,12 +553,9 @@ TableToken.prototype.replicateTableCol =
 TableToken.prototype.moveTableRowBefore =
 	/** @implements */
 	function(y: number, before: number): TrToken {
-		const layout = this.getLayout(),
-			/** @ignore */
-			occupied = (i: number): number[] =>
-				layout[i]!.map(({row}, j) => row === i ? j : undefined).filter((j): j is number => j !== undefined);
+		const layout = this.getLayout();
 		try {
-			assert.deepEqual(occupied(y), occupied(before));
+			assert.deepEqual(occupied(layout, y), occupied(layout, before));
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				throw new RangeError(`第 ${y} 行与第 ${before} 行的构造不同，无法移动！`);
@@ -571,13 +583,9 @@ TableToken.prototype.moveTableRowAfter =
 			afterToken = this.getNthRow(after)!,
 			cells = afterToken.childNodes.filter(
 				child => child.type === 'td' && child.subtype !== 'caption',
-			) as TdToken[],
-			/** @ignore */
-			occupied = (i: number, oneRow = false): number[] => layout[i]!.map(
-				({row, column}, j) => row === i && (!oneRow || cells[column]!.rowspan === 1) ? j : undefined,
-			).filter((j): j is number => j !== undefined);
+			) as TdToken[];
 		try {
-			assert.deepEqual(occupied(y), occupied(after, true));
+			assert.deepEqual(occupied(layout, y), occupied(layout, after, true, cells));
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				throw new RangeError(`第 ${y} 行与第 ${after} 行的构造不同，无法移动！`);
