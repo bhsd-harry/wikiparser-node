@@ -259,7 +259,6 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 			this.#selfClosing = false;
 			this.#closing = true;
 		} else {
-			Parser.warn('无法修复无效自封闭标签', noWrap(String(this)));
 			throw new Error(`无法修复无效自封闭标签：前文共有 ${imbalance} 个未匹配的闭合标签`);
 		}
 	}

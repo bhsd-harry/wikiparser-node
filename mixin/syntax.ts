@@ -1,7 +1,6 @@
 import {undo, Shadow} from '../util/debug';
 import {mixins} from '../util/constants';
 import {text} from '../util/string';
-import * as Parser from '../index';
 import type {AstNodes} from '../lib/node';
 
 /**
@@ -19,7 +18,6 @@ export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegEx
 			const /** @implements */ syntaxListener: AstListener = (e, data) => {
 				if (!Shadow.running && !this.#pattern.test(this.text())) {
 					undo(e, data);
-					Parser.error(`不可修改 ${this.constructor.name} 的语法！`, this.#pattern);
 					throw new Error(`不可修改 ${this.constructor.name} 的语法！`);
 				}
 			};

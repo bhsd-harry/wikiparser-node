@@ -190,12 +190,10 @@ export abstract class AstElement extends AstNode {
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		if (node.contains(this)) {
-			Parser.error('不能插入祖先节点！', node);
 			throw new RangeError('不能插入祖先节点！');
 		}
 		const childNodes = [...this.childNodes];
 		if (childNodes.includes(node)) {
-			Parser.error('不能插入子节点！', node);
 			throw new RangeError('不能插入子节点！');
 		}
 		this.verifyChild(i, 1);
@@ -660,7 +658,6 @@ export abstract class AstElement extends AstNode {
 	#getChildIndex(node: AstNodes): number {
 		const i = this.childNodes.indexOf(node);
 		if (i === -1) {
-			Parser.error('找不到子节点！', node);
 			throw new RangeError('找不到子节点！');
 		}
 		return i;
