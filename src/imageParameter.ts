@@ -26,9 +26,7 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption'])
  * @param val 参数值
  */
 function validate(key: 'link', val: string, config?: Config, halfParsed?: boolean): string | Title;
-/** @ignore */
 function validate(key: string, val: string, config?: Config, halfParsed?: boolean): boolean;
-/** @ignore */
 function validate(key: string, val: string, config = Parser.getConfig(), halfParsed = false): string | Title | boolean {
 	val = val.trim();
 	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
@@ -280,9 +278,7 @@ export class ImageParameterToken extends Token {
 	 * @throws `Error` 不接受自定义输入的图片参数
 	 */
 	override insertAt(token: string, i?: number): AstText;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		if (!Shadow.running && this.#isVoid()) {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);

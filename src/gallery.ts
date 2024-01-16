@@ -167,9 +167,7 @@ export class GalleryToken extends Token {
 	 * @throws `RangeError` 插入不可见内容
 	 */
 	override insertAt(token: string, i?: number): AstText;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
 		if (typeof token === 'string' && token.trim() || token instanceof NoincludeToken) {
 			throw new RangeError('请勿向图库中插入不可见内容！');

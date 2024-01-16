@@ -22,9 +22,7 @@ export const fixed = <S extends AstConstructor>(constructor: S) => {
 		 * @param i 插入位置
 		 */
 		override insertAt(token: string, i?: number): AstText;
-		/** @ignore */
 		override insertAt<T extends AstNodes>(token: T, i?: number): T;
-		/** @ignore */
 		override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 			return Shadow.running ? super.insertAt(token, i) as T | AstText : this.constructorError('不可插入元素');
 		}

@@ -131,9 +131,7 @@ export class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 不存在该行
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
-	/** @ignore */
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
-	/** @ignore */
 	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
 		const nRows = this.getRowCount(),
 			isRow = super.getRowCount();

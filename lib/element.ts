@@ -672,9 +672,7 @@ export abstract class AstElement extends AstNode {
 	 * @param reference 指定位置处的子节点
 	 */
 	insertBefore(child: string, reference?: AstNodes): AstText;
-	/** @ignore */
 	insertBefore<T extends AstNodes>(child: T, reference?: AstNodes): T;
-	/** @ignore */
 	insertBefore<T extends AstNodes>(child: T | string, reference?: AstNodes): T | AstText {
 		return reference === undefined
 			? this.insertAt(child as T)

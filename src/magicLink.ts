@@ -143,9 +143,7 @@ export class MagicLinkToken extends syntax(Token) {
 	 * @param i 插入位置
 	 */
 	override insertAt(token: string, i?: number): AstText;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		if (typeof token !== 'string') {
 			const {type, name} = token;

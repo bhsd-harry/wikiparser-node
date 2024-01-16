@@ -151,9 +151,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @throws `RangeError` 不存在对应单元格
 	 */
 	getNthCol(n: number, insert?: false): TdToken | undefined;
-	/** @ignore */
 	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
-	/** @ignore */
 	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
 		const nCols = this.getColCount();
 		n += n < 0 ? nCols : 0;

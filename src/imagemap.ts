@@ -188,9 +188,7 @@ export class ImagemapToken extends Token {
 	 * @throws `RangeError` 已有一张合法图片
 	 */
 	override insertAt(token: string, i?: number): AstText;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		const {image} = this;
 		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {

@@ -682,12 +682,17 @@
 		"jsdoc/require-jsdoc": [
 			1,
 			{
+				"contexts": [
+					"FunctionDeclaration:not(TSDeclareFunction + FunctionDeclaration)",
+					"TSDeclareFunction:not(TSDeclareFunction + TSDeclareFunction)",
+					"MethodDefinition:not(MethodDefinition:has(TSEmptyBodyFunctionExpression) + MethodDefinition, [kind='get'] + [kind='set'])"
+				],
 				"require": {
 					"ArrowFunctionExpression": true,
 					"ClassDeclaration": true,
-					"FunctionDeclaration": true,
+					"FunctionDeclaration": false,
 					"FunctionExpression": true,
-					"MethodDefinition": true
+					"MethodDefinition": false
 				},
 				"exemptEmptyConstructors": true,
 				"checkGetters": true,
