@@ -314,7 +314,7 @@ export class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
-		throw new Error(`${this.constructor.name}.getDuplicatedArgs 方法仅供模板使用！`);
+		throw new Error('getDuplicatedArgs 方法仅供模板使用！');
 	}
 
 	/**

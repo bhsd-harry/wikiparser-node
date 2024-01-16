@@ -52,7 +52,7 @@ export class AttributesToken extends Token {
 		this.setAttribute('name', name);
 		if (attr) {
 			const regex = new RegExp(
-				`([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)` // 属性名
+				'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
 				+ '(?:'
 				+ '((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
 				+ '(?:=|\0\\d+~\x7F)' // `=`
