@@ -1,6 +1,7 @@
 import {
 	text,
 } from '../util/string';
+import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 import type {
@@ -49,9 +50,7 @@ export abstract class AstElement extends AstNode {
 	 * @param i 移除位置
 	 */
 	removeAt(i: number): AstNodes {
-		const {childNodes} = this,
-			[node] = childNodes.splice(i, 1) as [AstNodes];
-		return node;
+		return setChildNodes(this as AstElement as Token, i, 1)[0]!;
 	}
 
 	/**
@@ -60,9 +59,7 @@ export abstract class AstElement extends AstNode {
 	 * @param i 插入位置
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
-		const {childNodes} = this;
-		node.setAttribute('parentNode', this as AstElement as Token);
-		childNodes.splice(i, 0, node);
+		setChildNodes(this as AstElement as Token, i, 0, [node]);
 		return node;
 	}
 
