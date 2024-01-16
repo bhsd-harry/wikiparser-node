@@ -25,17 +25,20 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 	let regex = /:+|-\{/gu,
 		ex = regex.exec(text),
 		lc = 0;
+	/** @ignore */
+	const dd = (syntax: string, index: number): string => {
+		new DdToken(syntax, config, accum);
+		return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + syntax.length)}`;
+	};
 	while (ex && dt) {
 		const {0: syntax, index} = ex;
 		if (syntax.startsWith(':')) {
 			if (syntax.length >= dt) {
-				new DdToken(':'.repeat(dt), config, accum);
-				return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + dt)}`;
+				return dd(syntax.slice(0, dt), index);
 			}
-			text = `${text.slice(0, index)}\0${accum.length}d\x7F${text.slice(regex.lastIndex)}`;
 			dt -= syntax.length;
 			regex.lastIndex = index + 4 + String(accum.length).length;
-			new DdToken(syntax, config, accum);
+			text = dd(syntax, index);
 		} else if (syntax === '-{') {
 			if (!lc) {
 				const {lastIndex} = regex;

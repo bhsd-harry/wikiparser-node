@@ -10,7 +10,7 @@ export class DdToken extends ListBaseToken {
 
 	/** 缩进数 */
 	get indent(): number {
-		return this.innerText.split(':').length - 1;
+		return this.innerText.length;
 	}
 
 	set indent(indent) {
