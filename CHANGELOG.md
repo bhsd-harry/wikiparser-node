@@ -1,3 +1,11 @@
+## v1.3.4
+
+*2024-01-16*
+
+**Fixed**
+
+- Case-insensitive magic variables like `{{server}}`
+
 ## v1.3.3
 
 *2024-01-15*
