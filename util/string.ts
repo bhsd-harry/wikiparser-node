@@ -33,8 +33,5 @@ export const decodeHtml = factory(
 	(_, code: string) => String.fromCodePoint(Number(`${code.toLowerCase().startsWith('x') ? '0' : ''}${code}`)),
 );
 
-/**
- * escape newlines
- * @param str 原字符串
- */
+/** escape newlines */
 export const noWrap = factory(/\n/gu, '\\n');
