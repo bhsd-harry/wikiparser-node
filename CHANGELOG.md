@@ -5,7 +5,7 @@
 **Fixed**
 
 - Case-insensitive magic variables like `{{server}}`
-- `startIndex` and `endIndex` of [`MagicLinkToken.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
+- `startIndex` and `endIndex` of [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
 
 ## v1.3.3
 
@@ -86,11 +86,11 @@
 
 **Added**
 
-- New methods [`AstText.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#escape), [`ParameterToken.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parameter#escape) and [`MagicLinkToken.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#escape)
+- New methods [`AstText.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#escape), [`ParameterToken.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parameter#escape) and [`MagicLinkToken.prototype.escape`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#escape)
 
 **Fixed**
 
-- Removing unexpected `remove` and `insert` events dispatched by [`Token.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
+- Removing unexpected `remove` and `insert` events dispatched by [`Token.prototype.safeReplaceWith`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#safereplacewith)
 - `{{!}}` and `{{=}}` can be part of an external link now
 
 **Changed**
@@ -103,11 +103,11 @@
 
 **Fixed**
 
-- Fixing [`Token.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#sections) since [v1.1.2](#v112)
+- Fixing [`Token.prototype.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#sections) since [v1.1.2](#v112)
 
 **Changed**
 
-- [`Token.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now returns an [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) object
+- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now returns an [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) object
 
 ## v1.1.2
 
@@ -116,7 +116,7 @@
 **Changed**
 
 - Token type `converter-rule-noconvert` now regarded as `converter-rule-to`
-- Anonymous parameters will remain anonymous after [`ParameterToken.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#setvalue)
+- Anonymous parameters will remain anonymous after [`ParameterToken.prototype.setValue`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#setvalue)
 
 **Removed**
 
@@ -150,7 +150,7 @@
 
 **Removed**
 
-- `AstRange.intersectsNode` method
+- `AstRange.prototype.intersectsNode` method
 
 ## v1.0.3
 
