@@ -19,7 +19,7 @@ const {error} = Parser; // eslint-disable-line @typescript-eslint/unbound-method
  * 获取最近更改的页面源代码
  * @param url api.php网址
  */
-const getPages = async (url: string): Promise<{title: string, ns: number, content: string}[]> =>
+const getPages = async (url: string): Promise<SimplePage[]> =>
 	(await new Api(url).get({
 		generator: 'recentchanges',
 		grcnamespace: '0|10',
@@ -31,7 +31,7 @@ const getPages = async (url: string): Promise<{title: string, ns: number, conten
 		title,
 		ns,
 		content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
-	})).filter((page): page is {title: string, ns: number, content: string} => page.content !== false);
+	})).filter((page): page is SimplePage => page.content !== false);
 
 (async () => {
 	for (const [name, url, config] of apis) {
