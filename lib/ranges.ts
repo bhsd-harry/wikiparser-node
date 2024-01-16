@@ -1,4 +1,5 @@
 import {classes} from '../util/constants';
+import {emptyArray} from '../util/debug';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
 export class Range {
@@ -95,7 +96,7 @@ export class Ranges extends Array<number | Range> {
 	 */
 	applyTo(arr: number | readonly unknown[]): readonly number[] {
 		const length = typeof arr === 'number' ? arr : arr.length,
-			a = new Array(length).fill(undefined).map((_, i) => i);
+			a = emptyArray(length, i => i);
 		return [
 			...new Set(
 				[...this].flatMap(ele => {

@@ -1,7 +1,7 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import * as assert from 'assert/strict';
-import {Shadow} from '../util/debug';
+import {Shadow, emptyArray} from '../util/debug';
 import {classes} from '../util/constants';
 import {Token} from '../src';
 import {TrToken} from '../src/table/tr';
@@ -53,9 +53,9 @@ const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false
  * @param oneRow 是否要求单元格跨行数为1
  * @param cells 改行全部单元格
  */
-function occupied(layout: Layout, i: number, oneRow: true, cells: TdToken[]): number[];
+function occupied(layout: Layout, i: number, oneRow: true, cells: readonly TdToken[]): number[];
 function occupied(layout: Layout, i: number): number[];
-function occupied(layout: Layout, i: number, oneRow = false, cells?: TdToken[]): number[] {
+function occupied(layout: Layout, i: number, oneRow = false, cells?: readonly TdToken[]): number[] {
 	return layout[i]!.map(
 		({row, column}, j) => row === i && (!oneRow || cells![column]!.rowspan === 1) ? j : undefined,
 	).filter((j): j is number => j !== undefined);
@@ -104,13 +104,12 @@ const fill = (y: number, rowToken: TrBaseToken, layout: Layout, maxCol: number, 
 export class Layout extends Array<TableCoords[]> {
 	/** 打印表格布局 */
 	print(): void {
-		const hBorders = new Array(this.length + 1).fill(undefined).map((_, i) => {
+		const hBorders = emptyArray(this.length + 1, i => {
 				const prev = this[i - 1] ?? [],
 					next = this[i] ?? [];
-				return new Array(Math.max(prev.length, next.length)).fill(undefined)
-					.map((__, j) => prev[j] !== next[j]);
+				return emptyArray(Math.max(prev.length, next.length), j => prev[j] !== next[j]);
 			}),
-			vBorders = this.map(cur => new Array(cur.length + 1).fill(undefined).map((_, j) => cur[j - 1] !== cur[j]));
+			vBorders = this.map(cur => emptyArray(cur.length + 1, j => cur[j - 1] !== cur[j]));
 		let out = '';
 		for (let i = 0; i <= this.length; i++) {
 			const hBorder = hBorders[i]!.map(Number),
@@ -141,7 +140,7 @@ TableToken.prototype.getLayout	=
 	function(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
 		const rows = this.getAllRows(),
 			{length} = rows,
-			layout = new Layout(...new Array(length).fill(undefined).map(() => []));
+			layout = new Layout(...emptyArray(length, () => []));
 		for (let i = 0; i < length; i++) {
 			if (i > (stop?.row ?? stop?.y ?? NaN)) {
 				break;
