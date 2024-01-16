@@ -18,7 +18,7 @@ wikiparser-node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/)
 
 ## Browser-compatible
 
-兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror5](https://codemirror.net/5/) 编辑器作为语法分析插件。（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）
+兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://codemirror.net/) 编辑器作为语法分析插件。（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）
 
 # 安装方法
 
