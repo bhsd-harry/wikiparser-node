@@ -221,7 +221,8 @@ export class FileToken extends LinkBaseToken {
 	 * @param key 参数名
 	 */
 	getArg(key: string): ImageParameterToken | undefined {
-		return this.getArgs(key).at(-1);
+		const args = this.getArgs(key);
+		return args[args.length - 1];
 	}
 
 	/**
