@@ -13,7 +13,7 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  * @param name 预定的参数名
  */
 const getName = (name: Token): string => name.toString(new Set(['comment', 'noinclude', 'include']))
-	.replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
+	.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 
 /**
  * 模板或魔术字参数
