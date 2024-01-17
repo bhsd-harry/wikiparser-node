@@ -17,7 +17,7 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, {start}, message);
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
-				[{length}] = /(?<!')'+$/u.exec(previousSibling.data)!,
+				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousSibling.data) as string[] as [string, string],
 				startIndex = start - length;
 			errors.push({
 				...refError,
