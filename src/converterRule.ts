@@ -40,7 +40,7 @@ export class ConverterRuleToken extends Token {
 
 	/** 语言变体 */
 	get variant(): string {
-		return this.childNodes.at(-2)?.text().trim() ?? '';
+		return this.childNodes[this.length - 2]?.text().trim() ?? '';
 	}
 
 	set variant(variant) {
@@ -164,7 +164,7 @@ export class ConverterRuleToken extends Token {
 	override afterBuild(): void {
 		const /** @implements */ converterRuleListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
-			if (this.length > 1 && this.childNodes.at(-2) === prevTarget) {
+			if (this.length > 1 && this.childNodes[this.length - 2] === prevTarget) {
 				const {variant} = this;
 				if (!this.getAttribute('config').variants.includes(variant)) {
 					undo(e, data);
@@ -217,7 +217,7 @@ export class ConverterRuleToken extends Token {
 		if (this.length === 1) {
 			super.insertAt(Shadow.run(() => new AtomToken(variant, 'converter-rule-variant', config)), 0);
 		} else {
-			this.childNodes.at(-2)!.setText(variant);
+			this.childNodes[this.length - 2]!.setText(variant);
 		}
 	}
 

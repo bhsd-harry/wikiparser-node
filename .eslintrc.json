@@ -521,7 +521,6 @@
 		"n/no-path-concat": 2,
 		"es-x/no-array-string-prototype-at": 2,
 		"es-x/no-global-this": 2,
-		"es-x/no-object-fromentries": 2,
 		"es-x/no-object-hasown": 2,
 		"es-x/no-regexp-lookbehind-assertions": 2,
 		"es-x/no-string-prototype-matchall": 2,
