@@ -529,7 +529,6 @@
 		"es-x/no-regexp-lookbehind-assertions": 2,
 		"es-x/no-string-prototype-matchall": 2,
 		"es-x/no-string-prototype-replaceall": 2,
-		"es-x/no-string-prototype-trimstart-trimend": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,
