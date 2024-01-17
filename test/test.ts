@@ -12,6 +12,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 	if (file.endsWith('.md') && (!title || (title.endsWith('.md') ? lcFile === title : lcFile.includes(title)))) {
 		Parser.debug(file);
 		const md = fs.readFileSync(path.join(__dirname, '..', '..', 'wiki', file), 'utf8');
+		// eslint-disable-next-line es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
 			try {
 				Parser.config = 'default';
