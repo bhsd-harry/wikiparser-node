@@ -270,7 +270,7 @@ const Parser: Parser = {
 	/** @implements */
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
 		return new RegExp(`^(${interwiki.join('|')})\\s*:`, 'diu')
-			.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
+			.exec(title.replace(/_/gu, ' ').replace(/^\s*:?\s*/u, ''));
 	},
 
 	/** @implements */

@@ -29,7 +29,7 @@ export class Title {
 	}
 
 	set main(title) {
-		title = title.replaceAll('_', ' ').trim();
+		title = title.replace(/_/gu, ' ').trim();
 		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
 	}
 
@@ -42,13 +42,13 @@ export class Title {
 	/** 完整标题 */
 	get title(): string {
 		const prefix = `${this.interwiki}${this.interwiki && ':'}${this.prefix}`;
-		let title = `${prefix}${this.main}`.replaceAll(' ', '_');
+		let title = `${prefix}${this.main}`.replace(/ /gu, '_');
 		const redirected = this.redirects.get(title);
 		if (redirected) {
 			return redirected;
 		}
 		this.autoConvert();
-		title = `${prefix}${this.main}`.replaceAll(' ', '_');
+		title = `${prefix}${this.main}`.replace(/ /gu, '_');
 		return this.redirects.get(title) ?? title;
 	}
 
@@ -92,7 +92,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replaceAll('_', ' ').trim();
+		title = title.replace(/_/gu, ' ').trim();
 		let ns = defaultNs;
 		if (title.startsWith(':')) {
 			ns = 0;
@@ -121,7 +121,7 @@ export class Title {
 				} catch {}
 			} else if (fragment.includes('.')) {
 				try {
-					fragment = decodeURIComponent(fragment.replaceAll('.', '%'));
+					fragment = decodeURIComponent(fragment.replace(/\./gu, '%'));
 				} catch {}
 			}
 			this.fragment = fragment;

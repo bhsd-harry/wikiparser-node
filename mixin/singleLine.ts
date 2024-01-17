@@ -9,12 +9,12 @@ export const singleLine = <T extends AstConstructor>(constructor: T) => {
 	abstract class SingleLineToken extends constructor {
 		/** @private */
 		override toString(omit?: Set<string>): string {
-			return super.toString(omit).replaceAll('\n', ' ');
+			return super.toString(omit).replace(/\n/gu, ' ');
 		}
 
 		/** @override */
 		override text(): string {
-			return super.text().replaceAll('\n', ' ');
+			return super.text().replace(/\n/gu, ' ');
 		}
 	}
 	Object.defineProperty(SingleLineToken, 'name', {value: `SingleLine${constructor.name}`});

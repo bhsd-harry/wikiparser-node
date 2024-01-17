@@ -84,7 +84,7 @@ export abstract class AstElement extends AstNode {
 
 	/** 末位非文本子节点 */
 	get lastElementChild(): Token | undefined {
-		return this.children.at(-1);
+		return this.children[this.childElementCount - 1];
 	}
 
 	/** 非文本子节点总数 */
@@ -134,7 +134,11 @@ export abstract class AstElement extends AstNode {
 	/** 内部宽度 */
 	get clientWidth(): number | undefined {
 		const {innerText} = this as {innerText?: string};
-		return typeof innerText === 'string' ? innerText.split('\n').at(-1)!.length : undefined;
+		if (typeof innerText === 'string') {
+			const lines = innerText.split('\n');
+			return lines[lines.length - 1]!.length;
+		}
+		return undefined;
 	}
 
 	constructor() {
@@ -250,7 +254,8 @@ export abstract class AstElement extends AstNode {
 	 */
 	setText(str: string, i = 0): string {
 		this.verifyChild(i);
-		const oldText = this.childNodes.at(i)!,
+		i += i < 0 ? this.length : 0;
+		const oldText = this.childNodes[i]!,
 			{type, constructor: {name}} = oldText;
 		if (type === 'text') {
 			const {data} = oldText;
@@ -503,7 +508,7 @@ export abstract class AstElement extends AstNode {
 			step = condition.pop()!;
 		if (this.#matches(step)) {
 			const {parentNode, previousElementSibling} = this;
-			switch (condition.at(-1)?.relation) {
+			switch (condition[condition.length - 1]?.relation) {
 				case undefined:
 					return true;
 				case '>':

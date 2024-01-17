@@ -57,7 +57,7 @@ const pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
  */
 const sanitize = (selector: string): string => {
 	for (const [c, escaped] of specialChars) {
-		selector = selector.replaceAll(`\\${c}`, escaped);
+		selector = selector.replace(new RegExp(`\\${c}`, 'g'), escaped); // eslint-disable-line require-unicode-regexp
 	}
 	return selector;
 };
@@ -68,7 +68,7 @@ const sanitize = (selector: string): string => {
  */
 const desanitize = (selector: string): string => {
 	for (const [c, escaped] of specialChars) {
-		selector = selector.replaceAll(escaped, c);
+		selector = selector.replace(new RegExp(escaped, 'gu'), c);
 	}
 	return selector.trim();
 };

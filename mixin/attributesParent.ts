@@ -13,7 +13,7 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 
 		/** AttributesToken子节点 */
 		get #attributesChild(): AttributesToken {
-			return this.childNodes.at(i) as AttributesToken;
+			return this.childNodes[i] as AttributesToken;
 		}
 
 		/** getAttrs()方法的getter写法 */
