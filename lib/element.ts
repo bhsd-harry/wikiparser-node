@@ -30,7 +30,7 @@ export abstract class AstElement extends AstNode {
 
 	/** 合并相邻的文本子节点 */
 	normalize(): void {
-		const {childNodes} = this;
+		const childNodes = [...this.childNodes];
 		for (let i = childNodes.length - 1; i >= 0; i--) {
 			const {type, data} = childNodes[i]!,
 				prev = childNodes[i - 1];
@@ -43,6 +43,7 @@ export abstract class AstElement extends AstNode {
 				childNodes.splice(i, 1);
 			}
 		}
+		this.setAttribute('childNodes', childNodes);
 	}
 
 	/**
@@ -97,7 +98,9 @@ export abstract class AstElement extends AstNode {
 	 * @param elements 新的子节点
 	 */
 	replaceChildren(...elements: (AstNodes | string)[]): void {
-		this.childNodes.length = 0;
+		for (let i = this.length - 1; i >= 0; i--) {
+			this.removeAt(i);
+		}
 		this.append(...elements);
 	}
 
