@@ -29,7 +29,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replaceAll('_', ' ').trim();
+		title = title.replace(/_/gu, ' ').trim();
 		let ns = defaultNs;
 		if (title.startsWith(':')) {
 			ns = 0;

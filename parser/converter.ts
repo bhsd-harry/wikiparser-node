@@ -26,7 +26,7 @@ export const parseConverter = (text: string, config = Parser.getConfig(), accum:
 				temp = raw.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
 				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`, 'u'))
-					.map(rule => rule.replaceAll('\x01', ';')) as [string, ...string[]];
+					.map(rule => rule.replace(/\x01/gu, ';')) as [string, ...string[]];
 			new ConverterToken(flags, rules, config, accum);
 			text = `${text.slice(0, top.index)}\0${length}v\x7F${text.slice(index + 2)}`;
 			if (stack.length === 0) {

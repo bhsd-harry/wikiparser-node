@@ -6,6 +6,7 @@
 	},
 	"plugins": [
 		"@stylistic",
+		"es-x",
 		"promise",
 		"regexp",
 		"unicorn",
@@ -304,7 +305,6 @@
 		],
 		"prefer-exponentiation-operator": 2,
 		"prefer-numeric-literals": 2,
-		"prefer-object-has-own": 2,
 		"prefer-object-spread": 2,
 		"prefer-regex-literals": [
 			2,
@@ -514,6 +514,13 @@
 		"n/no-mixed-requires": 2,
 		"n/no-new-require": 2,
 		"n/no-path-concat": 2,
+		"es-x/no-array-string-prototype-at": 2,
+		"es-x/no-global-this": 2,
+		"es-x/no-object-fromentries": 2,
+		"es-x/no-object-hasown": 2,
+		"es-x/no-regexp-lookbehind-assertions": 2,
+		"es-x/no-string-prototype-matchall": 2,
+		"es-x/no-string-prototype-replaceall": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,
@@ -561,7 +568,12 @@
 				"minAlternatives": 2
 			}
 		],
-		"regexp/prefer-lookaround": 2,
+		"regexp/prefer-lookaround": [
+			2,
+			{
+				"lookbehind": false
+			}
+		],
 		"unicorn/catch-error-name": [
 			2,
 			{
@@ -619,7 +631,6 @@
 		"unicorn/prefer-array-flat-map": 2,
 		"unicorn/prefer-array-index-of": 2,
 		"unicorn/prefer-array-some": 2,
-		"unicorn/prefer-at": 2,
 		"unicorn/prefer-code-point": 2,
 		"unicorn/prefer-default-parameters": 2,
 		"unicorn/prefer-includes": 2,
@@ -995,6 +1006,9 @@
 				"augments": "extends"
 			},
 			"ignorePrivate": true
+		},
+		"es-x": {
+			"aggressive": true
 		}
 	}
 }
