@@ -72,10 +72,10 @@ export class NestedToken extends Token {
 				return str;
 			},
 		)?.replace(
-			/(?<=^|\0\d+[ce]\x7F)[^\0]+(?=$|\0\d+[ce]\x7F)/gu,
-			substr => {
+			/(^|\0\d+[ce]\x7F)([^\0]+)(?=$|\0\d+[ce]\x7F)/gu,
+			(_, lead: string, substr: string) => {
 				new NoincludeToken(substr, config, accum);
-				return `\0${accum.length}c\x7F`;
+				return `${lead}\0${accum.length}c\x7F`;
 			},
 		);
 		super(wikitext, config, accum, {
