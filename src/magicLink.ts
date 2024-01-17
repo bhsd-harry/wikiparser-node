@@ -47,14 +47,16 @@ export class MagicLinkToken extends syntax(Token) {
 			}
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			const refError = generateForChild(child, rect, '', 'warning');
-			errors.push(...[...data.matchAll(regexGlobal)].map(({index, 0: s}) => {
-				const lines = data.slice(0, index).split('\n'),
+			regexGlobal.lastIndex = 0;
+			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
+				const {index, 0: s} = mt,
+					lines = data.slice(0, index).split('\n'),
 					{length: top} = lines,
-					{length: left} = lines.at(-1)!,
-					startIndex = refError.startIndex + index!,
+					{length: left} = lines[lines.length - 1]!,
+					startIndex = refError.startIndex + index,
 					startLine = refError.startLine + top - 1,
 					startCol = top === 1 ? refError.startCol + left : left;
-				return {
+				errors.push({
 					...refError,
 					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : Parser.msg('full-width punctuation')),
 					startIndex,
@@ -63,8 +65,8 @@ export class MagicLinkToken extends syntax(Token) {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + s.length,
-				};
-			}));
+				});
+			}
 		}
 		return errors;
 	}
