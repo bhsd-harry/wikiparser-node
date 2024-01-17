@@ -32,7 +32,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 末位子节点 */
 	get lastChild(): AstNodes | undefined {
-		return this.childNodes.at(-1);
+		return this.childNodes[this.childNodes.length - 1];
 	}
 
 	/** 父节点 */
@@ -97,22 +97,18 @@ export abstract class AstNode implements AstNodeBase {
 	posFromIndex(index: number): Position | undefined {
 		const str = String(this);
 		if (index >= -str.length && index <= str.length) {
-			const lines = str.slice(0, index).split('\n');
-			return {
-				top: lines.length - 1,
-				left: lines.at(-1)!.length,
-			};
+			const lines = str.slice(0, index).split('\n'),
+				top = lines.length - 1;
+			return {top, left: lines[top]!.length};
 		}
 		return undefined;
 	}
 
 	/** 获取行数和最后一行的列数 */
 	#getDimension(): Dimension {
-		const lines = String(this).split('\n');
-		return {
-			height: lines.length,
-			width: lines.at(-1)!.length,
-		};
+		const lines = String(this).split('\n'),
+			height = lines.length;
+		return {height, width: lines[height - 1]!.length};
 	}
 
 	/** @private */

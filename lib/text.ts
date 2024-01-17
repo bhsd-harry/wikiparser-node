@@ -2,8 +2,8 @@ import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 
-const errorSyntax = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}|https?[:/]\/+/giu,
-	errorSyntaxUrl = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|(?<=^|\])([^[]*?)\]+|\]{2,}/giu,
+const errorSyntax = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
+	errorSyntaxUrl = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
 	disallowedTags = [
 		'html',
 		'head',
@@ -77,44 +77,47 @@ export class AstText extends AstNode {
 		} else {
 			errorRegex = errorSyntax;
 		}
-		const errors = [...data.matchAll(errorRegex)],
+		const errors: LintError[] = [],
 			{ext, html} = this.getRootNode().getAttribute('config');
-		if (errors.length > 0) {
+		if (data.search(errorRegex) !== -1) {
+			errorRegex.lastIndex = 0;
 			const root = this.getRootNode(),
 				{top, left} = root.posFromIndex(start)!,
 				tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
-			return (errors as (RegExpMatchArray & {index: number})[])
-				.map(({0: error, 1: tag, 2: prefix, index}) => {
-					if (prefix) {
-						const {length} = prefix;
-						index += length;
-						error = error.slice(length);
-					}
-					const startIndex = start + index,
-						lines = data.slice(0, index).split('\n'),
-						startLine = lines.length + top - 1,
-						line = lines.at(-1)!,
-						startCol = lines.length === 1 ? left + line.length : line.length,
-						{0: char, length} = error,
-						endIndex = startIndex + length,
-						rootStr = String(root),
-						nextChar = rootStr[endIndex],
-						previousChar = rootStr[startIndex - 1],
-						severity = length > 1 && (char !== '<' || /[\s/>]/u.test(nextChar ?? ''))
-						|| char === '{' && (nextChar === char || previousChar === '-')
-						|| char === '}' && (previousChar === char || nextChar === '-')
-						|| char === '[' && (
-							nextChar === char
-							|| type === 'ext-link-text'
-							|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
-						)
-						|| char === ']' && (
-							previousChar === char
-							|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
-						)
-							? 'error'
-							: 'warning';
-					return (char !== '<' || tags.has(tag!.toLowerCase())) && {
+			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
+				const [, tag, prefix] = mt;
+				let {0: error, index} = mt;
+				if (prefix && prefix !== ']') {
+					const {length} = prefix;
+					index += length;
+					error = error.slice(length);
+				}
+				const startIndex = start + index,
+					lines = data.slice(0, index).split('\n'),
+					startLine = lines.length + top - 1,
+					line = lines[lines.length - 1]!,
+					startCol = lines.length === 1 ? left + line.length : line.length,
+					{0: char, length} = error,
+					endIndex = startIndex + length,
+					rootStr = String(root),
+					nextChar = rootStr[endIndex],
+					previousChar = rootStr[startIndex - 1],
+					severity = length > 1 && (char !== '<' || /[\s/>]/u.test(nextChar ?? ''))
+					|| char === '{' && (nextChar === char || previousChar === '-')
+					|| char === '}' && (previousChar === char || nextChar === '-')
+					|| char === '[' && (
+						nextChar === char
+						|| type === 'ext-link-text'
+						|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
+					)
+					|| char === ']' && (
+						previousChar === char
+						|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
+					)
+						? 'error'
+						: 'warning';
+				if (char !== '<' || tags.has(tag!.toLowerCase())) {
+					errors.push({
 						message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
 						severity,
 						startIndex,
@@ -123,8 +126,10 @@ export class AstText extends AstNode {
 						endLine: startLine,
 						startCol,
 						endCol: startCol + length,
-					};
-				}).filter(Boolean) as LintError[];
+					});
+				}
+			}
+			return errors;
 		}
 		return [];
 	}

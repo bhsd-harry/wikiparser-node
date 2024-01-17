@@ -107,7 +107,8 @@ export abstract class AstElement extends AstNode {
 	 * @param i 子节点位置
 	 */
 	setText(str: string, i = 0): string {
-		const oldText = this.childNodes.at(i) as AstText;
+		i += i < 0 ? this.length : 0;
+		const oldText = this.childNodes[i] as AstText;
 		const {data} = oldText;
 		oldText.replaceData(str);
 		return data;
