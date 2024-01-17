@@ -44,11 +44,7 @@ export class TableToken extends TrBaseToken {
 		return errors;
 	}
 
-	/**
-	 * 闭合表格语法
-	 * @param syntax 表格结尾语法
-	 * @param halfParsed
-	 */
+	/** @private */
 	close(syntax = '\n|}', halfParsed = false): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
