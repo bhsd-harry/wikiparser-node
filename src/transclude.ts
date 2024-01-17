@@ -297,7 +297,7 @@ export class TranscludeToken extends Token {
 	 * @param copy 是否返回一个备份
 	 */
 	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
-		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
+		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args: Set<ParameterToken>;
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;
