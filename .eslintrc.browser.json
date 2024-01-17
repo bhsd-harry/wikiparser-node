@@ -15,7 +15,8 @@
 	},
 	"rules": {
 		"es-x/no-array-prototype-flat": 0,
-		"es-x/no-global-this": 0
+		"es-x/no-global-this": 0,
+		"es-x/no-string-prototype-trimstart-trimend": 0
 	},
 	"overrides": [
 		{
