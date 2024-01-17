@@ -299,7 +299,7 @@ export class AttributeToken extends Token {
 			if (this.#quotes[1]) {
 				return value;
 			}
-			return value.trim();
+			return value[this.#quotes[0] ? 'trimEnd' : 'trim']();
 		}
 		return this.type === 'ext-attr' || '';
 	}
