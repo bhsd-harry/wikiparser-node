@@ -13,9 +13,16 @@ import type {AttributeTypes} from './attribute';
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
 
-/** @ignore */
+/**
+ * 将属性类型转换为单属性类型
+ * @param type 属性类型
+ */
 const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0, -1) as AttributeTypes;
-/** @ignore */
+
+/**
+ * 将属性类型转换为无效属性类型
+ * @param type 属性类型
+ */
 const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
 
 /**

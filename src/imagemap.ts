@@ -1,4 +1,7 @@
 import {generateForSelf, generateForChild} from '../util/lint';
+import {
+	isToken,
+} from '../util/debug';
 import * as Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -33,7 +36,7 @@ export class ImagemapToken extends Token {
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
-		return this.childNodes.find((child): child is GalleryImageToken => child.type === 'imagemap-image');
+		return this.childNodes.find(isToken<GalleryImageToken>('imagemap-image'));
 	}
 
 	/** @param inner 标签内部wikitext */

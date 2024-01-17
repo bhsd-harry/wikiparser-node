@@ -1,4 +1,7 @@
 import {generateForChild} from '../../util/lint';
+import {
+	isToken,
+} from '../../util/debug';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {
@@ -28,10 +31,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
 			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
-			/** @ignore */
-			isArg = (token: AstNodes): token is ArgToken => token.type === 'arg',
-			/** @ignore */
-			isTransclude = (token: AstNodes): token is TranscludeToken => token.type === 'magic-word';
+			isArg = isToken<ArgToken>('arg'),
+			isTransclude = isToken<TranscludeToken>('magic-word');
 		if (
 			!first
 			|| tdPattern.test(String(first))

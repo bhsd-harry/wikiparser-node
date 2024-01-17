@@ -20,9 +20,7 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption'])
  * @param val 参数值
  */
 function validate(key: 'link', val: string, config?: Config, halfParsed?: boolean): string | Title;
-/** @ignore */
 function validate(key: string, val: string, config?: Config, halfParsed?: boolean): boolean;
-/** @ignore */
 function validate(key: string, val: string, config = Parser.getConfig(), halfParsed = false): string | Title | boolean {
 	val = val.trim();
 	let value = val.replace(/\0\d+t\x7F/gu, '').trim();

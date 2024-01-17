@@ -22,27 +22,37 @@ export const parseCommentAndExt = (
 	const onlyincludeLeft = '<onlyinclude>',
 		onlyincludeRight = '</onlyinclude>',
 		{length} = onlyincludeLeft;
+
+	/** 更新`<onlyinclude>`和`</onlyinclude>`的位置 */
+	const update = (): {i: number, j: number} => {
+		const i = wikitext.indexOf(onlyincludeLeft);
+		return {i, j: wikitext.indexOf(onlyincludeRight, i + length)};
+	};
 	if (includeOnly) {
-		let i = wikitext.indexOf(onlyincludeLeft),
-			j = wikitext.indexOf(onlyincludeRight, i + length);
+		let {i, j} = update();
 		if (i !== -1 && j !== -1) { // `<onlyinclude>`拥有最高优先级
 			let str = '';
+
+			/**
+			 * 忽略未被`<onlyinclude>`和`</onlyinclude>`包裹的内容
+			 * @param text 未被包裹的内容
+			 */
+			const noinclude = (text: string): void => {
+				new NoincludeToken(text, config, accum);
+				str += `\0${accum.length - 1}c\x7F`;
+			};
 			while (i !== -1 && j !== -1) {
 				const token = `\0${accum.length}e\x7F`;
 				new OnlyincludeToken(wikitext.slice(i + length, j), config, accum);
 				if (i > 0) {
-					new NoincludeToken(wikitext.slice(0, i), config, accum);
-					str += `\0${accum.length - 1}c\x7F${token}`;
-				} else {
-					str += token;
+					noinclude(wikitext.slice(0, i));
 				}
+				str += token;
 				wikitext = wikitext.slice(j + length + 1);
-				i = wikitext.indexOf(onlyincludeLeft);
-				j = wikitext.indexOf(onlyincludeRight, i + length);
+				({i, j} = update());
 			}
 			if (wikitext) {
-				new NoincludeToken(wikitext, config, accum);
-				str += `\0${accum.length - 1}c\x7F`;
+				noinclude(wikitext);
 			}
 			return str;
 		}
