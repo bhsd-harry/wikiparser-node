@@ -391,7 +391,7 @@ export class TranscludeToken extends Token {
 	 * @param copy 是否返回一个备份
 	 */
 	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
-		const keyStr = String(key).replace(/^[ \t\n\0\v]+|(?<=[^ \t\n\0\v])[ \t\n\0\v]+$/gu, '');
+		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args: Set<ParameterToken>;
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;
@@ -759,6 +759,7 @@ export class TranscludeToken extends Token {
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
 				let last: number;
+				// eslint-disable-next-line es-x/no-regexp-lookbehind-assertions
 				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0]!.length),
 					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`, 'u'),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
