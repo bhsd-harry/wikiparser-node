@@ -22,7 +22,6 @@ export const parseConverter = (text: string, config = Parser.getConfig(), accum:
 				str = text.slice(top.index + 2, index),
 				i = str.indexOf('|'),
 				[flags, raw] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
-				// eslint-disable-next-line regexp/prefer-lookaround
 				temp = raw.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
 				rules = temp.split(new RegExp(`;(?=\\s*(?:${variants}|[^;]*?=>\\s*${variants})\\s*:)`, 'u'))
