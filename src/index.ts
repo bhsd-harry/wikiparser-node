@@ -344,9 +344,7 @@ export class Token extends AstElement {
 	 * @param i 插入位置
 	 */
 	override insertAt(child: string, i?: number): AstText;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(child: T, i?: number): T;
-	/** @ignore */
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
 		super.insertAt(token, i);

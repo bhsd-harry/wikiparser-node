@@ -6,6 +6,9 @@ import {
 	decodeHtml,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
+import {
+	isToken,
+} from '../util/debug';
 import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -280,7 +283,7 @@ export class TranscludeToken extends Token {
 
 	/** 获取所有参数 */
 	getAllArgs(): readonly ParameterToken[] {
-		return this.childNodes.filter((child): child is ParameterToken => child.type === 'parameter');
+		return this.childNodes.filter(isToken<ParameterToken>('parameter'));
 	}
 
 	/** 获取所有匿名参数 */

@@ -9,6 +9,12 @@ export const Shadow = {
 };
 
 /**
+ * 是否是某一特定类型的节点
+ * @param type 节点类型
+ */
+export const isToken = <T extends Token>(type: string) => (node: AstNodes): node is T => node.type === type;
+
+/**
  * 更新chldNodes
  * @param parent 父节点
  * @param position 子节点位置
@@ -19,7 +25,7 @@ export const setChildNodes = (
 	parent: Token,
 	position: number,
 	deleteCount: number,
-	inserted: AstNodes[] = [],
+	inserted: readonly AstNodes[] = [],
 ): AstNodes[] => {
 	const childNodes = [...parent.childNodes],
 		removed = childNodes.splice(position, deleteCount, ...inserted);
