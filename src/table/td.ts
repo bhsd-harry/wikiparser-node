@@ -71,7 +71,7 @@ export class TdToken extends TableBaseToken {
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
-			char = syntax.at(-1)!;
+			char = syntax.slice(-1);
 		let subtype: TdSubtypes = 'td';
 		if (char === '!') {
 			subtype = 'th';
