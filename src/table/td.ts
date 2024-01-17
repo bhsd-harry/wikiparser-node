@@ -289,7 +289,9 @@ export class TdToken extends fixed(TableBaseToken) {
 		value?: TdAttrSetter<T>,
 	): void {
 		if (typeof keyOrProp !== 'string') {
-			super.setAttr(keyOrProp as Record<string, string | boolean>);
+			for (const [key, val] of Object.entries(keyOrProp)) {
+				this.setAttr(key, val as string | boolean);
+			}
 			return;
 		}
 		const key = keyOrProp.toLowerCase().trim() as T;
