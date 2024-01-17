@@ -47,7 +47,7 @@ export class Title {
 		const i = title.indexOf('#');
 		if (i !== -1) {
 			// eslint-disable-next-line prefer-const
-			let fragment = title.slice(i + 1).trim();
+			let fragment = title.slice(i + 1).trimEnd();
 			this.fragment = fragment;
 			title = title.slice(0, i).trim();
 		}
