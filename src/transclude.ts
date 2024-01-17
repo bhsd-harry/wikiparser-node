@@ -72,12 +72,12 @@ export class TranscludeToken extends Token {
 		if (isFunction || parts.length === 0 && !this.#raw) {
 			const [magicWord, ...arg] = title.split(':'),
 				cleaned = removeComment(magicWord!),
-				name = cleaned.trim(),
+				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
 				lcName = name.toLowerCase(),
 				canonicalName = insensitive[lcName],
 				isSensitive = sensitive.includes(name),
 				isVar = isSensitive || insensitiveVars.has(canonicalName);
-			if (!(arg.length > 0 && /\s$/u.test(cleaned)) && (isVar || isFunction && canonicalName)) {
+			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName ?? lcName);
 				this.type = 'magic-word';
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
