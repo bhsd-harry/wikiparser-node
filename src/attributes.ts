@@ -135,7 +135,7 @@ export class AttributesToken extends Token {
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
 		const tokens = this.getAttrTokens(key);
-		return tokens.at(-1);
+		return tokens[tokens.length - 1];
 	}
 
 	/**
