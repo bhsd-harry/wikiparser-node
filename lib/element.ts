@@ -44,6 +44,7 @@ export abstract class AstElement extends AstNode {
 				childNodes.splice(i, 1);
 			}
 		}
+		this.setAttribute('childNodes', childNodes);
 	}
 
 	/**
