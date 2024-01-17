@@ -95,7 +95,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @param i 移除位置
 	 */
 	override removeAt(i: number): AstNodes {
-		const child = this.childNodes.at(i);
+		i += i < 0 ? this.length : 0;
+		const child = this.childNodes[i];
 		if (child instanceof TdToken && child.isIndependent()) {
 			const {nextSibling} = child;
 			if (nextSibling?.type === 'td') {
@@ -118,7 +119,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 				this.typeError('insertAt', 'TrToken', 'TdToken');
 			}
 		}
-		const child = this.childNodes.at(i);
+		i += i < 0 ? this.length : 0;
+		const child = this.childNodes[i];
 		if (token instanceof TdToken && token.isIndependent() && child instanceof TdToken) {
 			child.independence();
 		}

@@ -121,7 +121,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	#getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
 			esc = syntax.includes('{{'),
-			char = syntax.at(-1)!;
+			char = syntax.slice(-1);
 		let subtype: TdSubtypes = 'td';
 		if (char === '!') {
 			subtype = 'th';

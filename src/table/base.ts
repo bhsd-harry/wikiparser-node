@@ -15,7 +15,7 @@ import {AttributesToken} from '../attributes';
 const escapeTable = (syntax: SyntaxToken): void => {
 	const wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
-				? child.data.replaceAll('|', '{{!}}')
+				? child.data.replace(/\|/gu, '{{!}}')
 				: String(child),
 		).join(''),
 		{childNodes} = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));

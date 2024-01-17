@@ -534,7 +534,8 @@ export class TranscludeToken extends Token {
 	 * @param exact 是否匹配匿名性
 	 */
 	getArg(key: string | number, exact = false): ParameterToken | undefined {
-		return [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
+		const args = [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b));
+		return args[args.length - 1];
 	}
 
 	/**

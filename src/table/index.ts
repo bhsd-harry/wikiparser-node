@@ -103,7 +103,8 @@ export class TableToken extends TrBaseToken {
 	 * @throws `SyntaxError` 表格的闭合部分非法
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
-		const previous = this.childNodes.at(i - 1);
+		i += i < 0 ? this.length : 0;
+		const previous = this.childNodes[i - 1];
 		if (typeof token !== 'string' && token.type === 'td' && previous?.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
