@@ -35,6 +35,14 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			top: BraceExecArrayOrEmpty = stack.pop() ?? {},
 			{0: open, index, parts, findEqual: topFindEqual, pos: topPos} = top,
 			innerEqual = syntax === '=' && topFindEqual;
+
+		/**
+		 * 填入模板内容
+		 * @param text wikitext全文
+		 */
+		const push = (text: string): void => {
+			parts!.at(-1)!.push(text.slice(topPos, curIndex));
+		};
 		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
 			lastIndex = curIndex + 2;
 		} else if (syntax === '\n') { // 情形2：闭合标题或文末
@@ -51,7 +59,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			}
 		} else if (syntax === '|' || innerEqual) { // 情形3：模板内部，含行首单个'='
 			lastIndex = curIndex + 1;
-			parts!.at(-1)!.push(wikitext.slice(topPos, curIndex));
+			push(wikitext);
 			if (syntax === '|') {
 				parts!.push([]);
 			}
@@ -63,7 +71,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 				rest = open!.length - close.length,
 				{length} = accum;
 			lastIndex = curIndex + close.length; // 这不是最终的lastIndex
-			parts!.at(-1)!.push(wikitext.slice(topPos, curIndex));
+			push(wikitext);
 			let skip = false,
 				ch = 't';
 			if (close.length === 3) {
