@@ -42,7 +42,9 @@ export class AstText extends AstNode {
 	constructor(text: string) {
 		super();
 		Object.defineProperties(this, {
-			data: {value: text, writable: false},
+			data: {
+				value: text,
+			},
 		});
 	}
 
