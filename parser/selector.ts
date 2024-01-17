@@ -1,4 +1,5 @@
 import {parsers} from '../util/constants';
+import {escapeRegExp} from '../util/string';
 import * as Parser from '../index';
 
 const simplePseudos = new Set([
@@ -57,7 +58,7 @@ const pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
  */
 const sanitize = (selector: string): string => {
 	for (const [c, escaped] of specialChars) {
-		selector = selector.replace(new RegExp(`\\${c}`, 'g'), escaped); // eslint-disable-line require-unicode-regexp
+		selector = selector.replace(new RegExp(escapeRegExp(`\\${c}`), 'gu'), escaped);
 	}
 	return selector;
 };
