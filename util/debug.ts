@@ -27,7 +27,7 @@ export const setChildNodes = (
 	deleteCount: number,
 	inserted: readonly AstNodes[] = [],
 ): AstNodes[] => {
-	const childNodes = [...parent.childNodes],
+	const {childNodes} = parent,
 		removed = childNodes.splice(position, deleteCount, ...inserted);
 	for (const node of inserted) {
 		node.setAttribute('parentNode', parent);
