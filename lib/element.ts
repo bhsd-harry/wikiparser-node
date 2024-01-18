@@ -144,4 +144,16 @@ export abstract class AstElement extends AstNode {
 	print(opt: PrintOpt = {}): string {
 		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
 	}
+
+	/**
+	 * 保存为JSON
+	 * @param file 文件名
+	 */
+	json(file?: string): unknown {
+		const json: unknown = {
+			...this,
+			childNodes: this.childNodes.map(child => child.type === 'text' ? child.data : child.json()),
+		};
+		return json;
+	}
 }
