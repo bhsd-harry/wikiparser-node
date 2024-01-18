@@ -71,6 +71,11 @@ import type {TokenTypes} from '../util/constants';
 
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
 
+const enum BuildMethod {
+	String,
+	Text,
+}
+
 /**
  * 所有节点的基类
  * @classdesc `{childNodes: ...(AstText|Token)}`
@@ -184,11 +189,11 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	buildFromStr(str: string, type: 'string' | 'text'): string;
+	buildFromStr(str: string, type: BuildMethod): string;
 	/** @private */
 	buildFromStr(str: string): readonly AstNodes[];
 	/** @private */
-	buildFromStr(str: string, type?: string): string | readonly AstNodes[] {
+	buildFromStr(str: string, type?: BuildMethod): string | readonly AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {
 			if (i % 2 === 0) {
 				return new AstText(s);
@@ -197,9 +202,9 @@ export class Token extends AstElement {
 			}
 			throw new Error(`解析错误！未正确标记的 Token：${s}`);
 		});
-		if (type === 'string') {
+		if (type === BuildMethod.String) {
 			return nodes.map(String).join('');
-		} else if (type === 'text') {
+		} else if (type === BuildMethod.Text) {
 			return text(nodes);
 		}
 		return nodes;
