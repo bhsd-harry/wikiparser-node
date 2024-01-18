@@ -2,6 +2,7 @@ import {generateForChild} from '../../util/lint';
 import {undo, Shadow} from '../../util/debug';
 import {
 	MAX_STAGE,
+	BuildMethod,
 	classes,
 } from '../../util/constants';
 import * as Parser from '../../index';
@@ -81,7 +82,7 @@ export abstract class LinkBaseToken extends Token {
 		this.#title = this.getTitle();
 		this.setAttribute('name', this.#title.title);
 		if (this.#delimiter.includes('\0')) {
-			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
+			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;

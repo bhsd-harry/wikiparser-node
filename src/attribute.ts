@@ -3,6 +3,7 @@ import {removeComment} from '../util/string';
 import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
+	BuildMethod,
 	classes,
 } from '../util/constants';
 import {fixed} from '../mixin/fixed';
@@ -311,7 +312,7 @@ export class AttributeToken extends fixed(Token) {
 	/** @private */
 	override afterBuild(): void {
 		if (this.#equal.includes('\0')) {
-			this.#equal = this.buildFromStr(this.#equal, 'string');
+			this.#equal = this.buildFromStr(this.#equal, BuildMethod.String);
 		}
 		if (this.parentNode) {
 			this.setAttribute('tag', this.parentNode.name);

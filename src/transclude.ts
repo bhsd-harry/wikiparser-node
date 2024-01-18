@@ -11,7 +11,10 @@ import {
 	Shadow,
 	isToken,
 } from '../util/debug';
-import {classes} from '../util/constants';
+import {
+	BuildMethod,
+	classes,
+} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -211,7 +214,7 @@ export class TranscludeToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
-			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
+			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';

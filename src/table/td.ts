@@ -1,6 +1,9 @@
 import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
+import {
+	BuildMethod,
+	classes,
+} from '../../util/constants';
 import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
@@ -150,7 +153,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	/** @private */
 	override afterBuild(): void {
 		if (this.#innerSyntax.includes('\0')) {
-			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, 'string');
+			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, BuildMethod.String);
 		}
 	}
 

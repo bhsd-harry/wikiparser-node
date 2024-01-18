@@ -5,6 +5,7 @@ import {cmd} from './util/diff';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
+	BuildMethod,
 	promises,
 	classes,
 	mixins,
@@ -161,7 +162,7 @@ const Parser: Parser = {
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
 				if (titleObj[key]?.includes('\0')) {
-					titleObj[key] = token.buildFromStr(titleObj[key]!, 'text');
+					titleObj[key] = token.buildFromStr(titleObj[key]!, BuildMethod.Text);
 				}
 			}
 		});

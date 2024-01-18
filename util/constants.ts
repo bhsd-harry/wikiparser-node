@@ -69,6 +69,11 @@ export type TokenTypes = 'root'
 
 export const MAX_STAGE = 11;
 
+export enum BuildMethod {
+	String,
+	Text,
+}
+
 /* NOT FOR BROWSER */
 
 export const classes: Record<string, string> = {};
