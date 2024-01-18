@@ -1,4 +1,7 @@
 import {generateForChild} from '../../util/lint';
+import {
+	BuildMethod,
+} from '../../util/constants';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
@@ -84,7 +87,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	/** @private */
 	override afterBuild(): void {
 		if (this.#innerSyntax.includes('\0')) {
-			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, 'string');
+			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, BuildMethod.String);
 		}
 	}
 
