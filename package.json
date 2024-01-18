@@ -18,7 +18,8 @@
 		"/printed/README",
 		"/config/",
 		"/i18n/",
-		"/dist/"
+		"/dist/",
+		"!/dist/[bt]*/"
 	],
 	"main": "./dist/index.js",
 	"repository": {
@@ -26,7 +27,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build; rm dist/internal.js dist/base.js dist/[bmpu]*/*.d.ts; rm -r dist/test",
+		"prepublishOnly": "npm run build; rm dist/internal.js dist/base.js dist/[mpu]*/*.d.ts",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
