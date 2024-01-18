@@ -9,7 +9,7 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
-Parser.i18n = 'zh-hans';
+Parser.i18n = require('../../i18n/zh-hans');
 
 const debug = /** @implements */ (msg: string, ...args: unknown[]): void => {
 	console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
@@ -39,7 +39,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 (async () => {
 	for (const [name, url, config] of apis) {
 		debug(`开始检查${name}：`);
-		Parser.config = config;
+		Parser.config = require(`../../config/${config}`);
 		try {
 			/* eslint-disable no-await-in-loop */
 			for (const {title, ns, content} of await getPages(`${url}/api.php`)) {

@@ -20,7 +20,7 @@
 		"/i18n/",
 		"/bin/cli",
 		"/dist/",
-		"!/dist/[bt]*/"
+		"!/dist/test/"
 	],
 	"bin": {
 		"wikilint": "./bin/cli.js"
@@ -31,7 +31,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build; rm dist/internal.js dist/base.js dist/[mpu]*/*.d.ts",
+		"prepublishOnly": "npm run build; rm dist/internal.js dist/base.js dist/[bmpu]*/*.d.ts",
 		"build": "rm -rf dist/; tsc; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
