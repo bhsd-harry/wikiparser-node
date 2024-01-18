@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {diff} from '../util/diff';
 import {Api} from './api';
 import Parser from '../index';
@@ -40,7 +39,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 (async () => {
 	for (const [name, url, config] of apis) {
 		debug(`开始检查${name}：`);
-		Parser.config = require(path.join('..', '..', 'config', config));
+		Parser.config = require(`../../config/${config}`);
 		try {
 			/* eslint-disable no-await-in-loop */
 			for (const {title, ns, content} of await getPages(`${url}/api.php`)) {
