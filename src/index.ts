@@ -361,17 +361,7 @@ export class Token extends AstElement {
 					return this.#include as TokenAttributeGetter<T>;
 				}
 				const root = this.getRootNode();
-				if (root !== this) {
-					return root.getAttribute('include') as TokenAttributeGetter<T>;
-				}
-				const includeToken = root.getElementByTypes('include');
-				if (includeToken) {
-					return (includeToken.name === 'noinclude') as TokenAttributeGetter<T>;
-				}
-				const noincludeToken = root.getElementByTypes('noinclude');
-				return (
-					Boolean(noincludeToken) && !/^<\/?noinclude(?:\s[^>]*)?\/?>$/iu.test(String(noincludeToken))
-				) as TokenAttributeGetter<T>;
+				return (root !== this && root.getAttribute('include')) as TokenAttributeGetter<T>;
 			}
 			case 'stage':
 				return this.#stage as TokenAttributeGetter<T>;
