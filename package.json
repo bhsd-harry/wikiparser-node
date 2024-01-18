@@ -31,15 +31,15 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build; rm dist/internal.js dist/base.js dist/[bmpu]*/*.d.ts",
-		"build": "rm -rf dist/; tsc; grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
+		"prepublishOnly": "npm run build && rm dist/internal.js dist/base.js dist/[bmpu]*/*.d.ts",
+		"build": "rm -rf dist/; tsc && grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i '/@private/,+1d'",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "npx wikilint test/single-page.wiki",
 		"test:real": "node dist/test/real.js",
-		"test:single": "node dist/test/single.js; node --prof dist/test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
+		"test:single": "node dist/test/single.js && node --prof dist/test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
