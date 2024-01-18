@@ -11,8 +11,6 @@ const {argv: [,, site = '']} = process,
 
 Parser.i18n = require('../../i18n/zh-hans');
 
-const {error} = Parser; // eslint-disable-line @typescript-eslint/unbound-method
-
 /**
  * 获取最近更改的页面源代码
  * @param url api.php网址
@@ -33,7 +31,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 
 (async () => {
 	for (const [name, url, config] of apis) {
-		Parser.debug(`开始检查${name}：`);
+		info(`开始检查${name}：`);
 		Parser.config = require(`../../config/${config}`);
 		try {
 			/* eslint-disable no-await-in-loop */
