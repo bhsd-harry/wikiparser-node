@@ -14,8 +14,8 @@ const {argv: [,, site = '']} = process,
 
 Parser.i18n = require('../../i18n/zh-hans');
 
-const debug = /** @implements */ (msg: string, ...args: unknown[]): void => {
-	console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
+const info = /** @implements */ (msg: string, ...args: unknown[]): void => {
+	console.info('\x1B[32m%s\x1B[0m', msg, ...args);
 };
 const error = /** @implements */ (msg: string, ...args: unknown[]): void => {
 	console.error('\x1B[31m%s\x1B[0m', msg, ...args);
@@ -41,7 +41,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 
 (async () => {
 	for (const [name, url, config] of apis) {
-		debug(`开始检查${name}：`);
+		info(`开始检查${name}：`);
 		Parser.config = require(`../../config/${config}`);
 		try {
 			/* eslint-disable no-await-in-loop */
