@@ -1,6 +1,7 @@
 import {generateForChild} from '../../util/lint';
 import {
 	MAX_STAGE,
+	BuildMethod,
 } from '../../util/constants';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -46,7 +47,7 @@ export abstract class LinkBaseToken extends Token {
 	override afterBuild(): void {
 		this.#title = this.getTitle();
 		if (this.#delimiter.includes('\0')) {
-			this.#delimiter = this.buildFromStr(this.#delimiter, 'string');
+			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
 	}
 

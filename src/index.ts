@@ -40,6 +40,7 @@
 import {text} from '../util/string';
 import {
 	MAX_STAGE,
+	BuildMethod,
 } from '../util/constants';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
@@ -49,11 +50,6 @@ import type {
 	AstNodes,
 } from '../internal';
 import type {TokenTypes} from '../util/constants';
-
-const enum BuildMethod {
-	String,
-	Text,
-}
 
 /**
  * 所有节点的基类
