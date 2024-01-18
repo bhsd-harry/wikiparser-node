@@ -1,3 +1,8 @@
+const enum PrintType {
+	Coarse,
+	Fine,
+}
+
 /** 用于打印AST */
 class Printer {
 	readonly #id;
@@ -6,7 +11,7 @@ class Printer {
 	#root: [number, string, string][];
 	#viewportChanged;
 	#running: Promise<void> | undefined;
-	#ticks: [number, 'coarse' | 'fine' | undefined];
+	#ticks: [number, PrintType | undefined];
 	include;
 
 	/**
@@ -48,8 +53,8 @@ class Printer {
 	 * 执行私有方法
 	 * @param method 方法名
 	 */
-	#exec(method: 'coarse' | 'fine'): void {
-		if (method === 'coarse') {
+	#exec(method: PrintType): void {
+		if (method === PrintType.Coarse) {
 			this.#coarsePrint();
 		} else {
 			this.#finePrint();
@@ -65,9 +70,9 @@ class Printer {
 	 * - 当前有倒计时且新指令优先级较低则无效果
 	 * - 延迟为`0`时立即执行
 	 */
-	queue(delay: number, method: 'coarse' | 'fine'): void {
+	queue(delay: number, method: PrintType): void {
 		const [state] = this.#ticks;
-		if (delay === 0 || state <= 0 || method === 'coarse' || this.#ticks[1] !== 'coarse') {
+		if (delay === 0 || state <= 0 || method === PrintType.Coarse || this.#ticks[1] !== PrintType.Coarse) {
 			this.#ticks = [delay, method];
 			if (delay === 0) {
 				this.#exec(method);
@@ -202,7 +207,7 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 
 	textbox.addEventListener('input', e => {
 		if (!(e as InputEvent).isComposing) {
-			printer.queue(2000, 'coarse');
+			printer.queue(2000, PrintType.Coarse);
 		}
 		textbox.style.color = '';
 		preview.classList.add('active');
@@ -210,10 +215,10 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 	textbox.addEventListener('scroll', () => {
 		if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
 			preview.scrollTop = textbox.scrollTop;
-			printer.queue(500, 'fine');
+			printer.queue(500, PrintType.Fine);
 		}
 	});
-	printer.queue(0, 'coarse');
+	printer.queue(0, PrintType.Coarse);
 	return printer;
 };
 
