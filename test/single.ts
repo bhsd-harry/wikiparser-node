@@ -1,7 +1,10 @@
 import * as fs from 'fs';
 import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
-import Parser from '../index';
+import '../../bundle/bundle.js';
+import type {Parser as ParserBase} from '../base';
+
+declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
 
 const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');

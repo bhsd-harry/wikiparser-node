@@ -1,6 +1,9 @@
 import {diff} from '../util/diff';
 import {Api} from './api';
-import Parser from '../index';
+import '../../bundle/bundle.js';
+import type {Parser as ParserBase} from '../base';
+
+declare const Parser: ParserBase;
 
 const {argv: [,, site = '']} = process,
 	apis = ([
