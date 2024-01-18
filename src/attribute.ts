@@ -2,6 +2,7 @@ import {generateForChild} from '../util/lint';
 import {removeComment} from '../util/string';
 import {
 	MAX_STAGE,
+	BuildMethod,
 } from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -231,7 +232,7 @@ export class AttributeToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		if (this.#equal.includes('\0')) {
-			this.#equal = this.buildFromStr(this.#equal, 'string');
+			this.#equal = this.buildFromStr(this.#equal, BuildMethod.String);
 		}
 		if (this.parentNode) {
 			this.setAttribute('tag', this.parentNode.name);

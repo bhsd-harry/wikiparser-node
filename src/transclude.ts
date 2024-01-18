@@ -8,6 +8,9 @@ import {generateForChild, generateForSelf} from '../util/lint';
 import {
 	isToken,
 } from '../util/debug';
+import {
+	BuildMethod,
+} from '../util/constants';
 import * as Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
@@ -169,7 +172,7 @@ export class TranscludeToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
-			this.setAttribute('modifier', this.buildFromStr(this.modifier, 'string'));
+			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
 	}
 
