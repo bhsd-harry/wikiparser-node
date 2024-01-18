@@ -294,13 +294,6 @@ export abstract class AstElement extends AstNode {
 		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	matchesTypes(types: Set<string>): boolean {
-		return types.has(this.type);
-	}
-
 	/**
 	 * 保存为JSON
 	 * @param file 文件名
@@ -317,6 +310,13 @@ export abstract class AstElement extends AstNode {
 			);
 		}
 		return json;
+	}
+
+	/* NOT FOR BROWSER */
+
+	/** @private */
+	matchesTypes(types: Set<string>): boolean {
+		return types.has(this.type);
 	}
 
 	/** 销毁 */
