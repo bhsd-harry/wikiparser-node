@@ -62,9 +62,12 @@ export const parseCommentAndExt = (
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
 		regex = new RegExp(
-			'<!--.*?(?:-->|$)|' // comment
-			+ `<${noincludeRegex}(?:\\s[^>]*?)?>|</${noincludeRegex}\\s*>|` // <noinclude>
-			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)|` // 扩展标签
+			'<!--.*?(?:-->|$)' // comment
+			+ '|'
+			+ `<${noincludeRegex}(?:\\s[^>]*?)?>|</${noincludeRegex}\\s*>` // <noinclude>
+			+ '|'
+			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)` // 扩展标签
+			+ '|'
 			+ `<(${includeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\\s*)>|$))`, // <includeonly>
 			'gisu',
 		);

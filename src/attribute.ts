@@ -167,15 +167,13 @@ const commonHtmlAttrs = new Set([
 		combobox: new Set(['placeholder', 'value', 'id', 'class', 'text', 'dropdown', 'style']),
 	},
 	insecureStyle = new RegExp(
-		`${
-			'expression'
-		}|${
-			'(?:filter|accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
-		}|${
-			'(?:url|image(?:-set)?)\\s*\\('
-		}|${
-			'attr\\s*\\([^)]+[\\s,]url'
-		}`,
+		'expression'
+		+ '|'
+		+ '(?:filter|accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
+		+ '|'
+		+ '(?:url|image(?:-set)?)\\s*\\('
+		+ '|'
+		+ 'attr\\s*\\([^)]+[\\s,]url',
 		'u',
 	);
 
