@@ -1,0 +1,22 @@
+{
+	"include": [
+		"test/**/*"
+	],
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "CommonJS",
+		"declaration": false,
+		"outDir": "dist",
+		"alwaysStrict": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"useUnknownInCatchVariables": true
+	}
+}

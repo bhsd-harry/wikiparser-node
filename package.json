@@ -36,7 +36,7 @@
 		"build:prod": "esbuild index.ts --bundle --minify --target=es2018 --outfile=bundle/bundle.min.js",
 		"build:core": "rm bundle/*.js; npm run build:dev && npm run build:prod && eslint --no-eslintrc -c .eslintrc.browser.json bundle/",
 		"build:ext": "bash build-ext.sh",
-		"build:node": "rm -rf dist/; tsc && gsed -i 's|../config/minimum|../../config/minimum|' dist/util/constants.js",
+		"build:test": "tsc --project tsconfig.test.json",
 		"build": "npm run build:core && npm run build:ext",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && eslint --cache .",
