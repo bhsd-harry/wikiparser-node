@@ -1,6 +1,7 @@
 {
 	"include": [
-		"test/**/*"
+		"test/**/*",
+		"typings/api.d.ts"
 	],
 	"compilerOptions": {
 		"target": "esnext",
