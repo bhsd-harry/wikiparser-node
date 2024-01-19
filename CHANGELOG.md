@@ -1,3 +1,15 @@
+## v1.3.7
+
+*2024-01-19*
+
+**Fixed**
+
+- Trailing whitespace as the last [`ConverterRuleToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken) is now allowed
+
+**Changed**
+
+- Double pipes in [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#lint) will now report an `'error'` instead of a `'warning'`
+
 ## v1.3.6
 
 *2024-01-17*
