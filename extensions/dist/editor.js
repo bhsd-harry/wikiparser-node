@@ -31,7 +31,7 @@ class Printer {
     }
     queue(delay, method) {
         const [state] = __classPrivateFieldGet(this, _Printer_ticks, "f");
-        if (delay === 0 || state <= 0 || method === 'coarse' || __classPrivateFieldGet(this, _Printer_ticks, "f")[1] !== 'coarse') {
+        if (delay === 0 || state <= 0 || method === 0 || __classPrivateFieldGet(this, _Printer_ticks, "f")[1] !== 0) {
             __classPrivateFieldSet(this, _Printer_ticks, [delay, method], "f");
             if (delay === 0) {
                 __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_exec).call(this, method);
@@ -56,7 +56,7 @@ _Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox 
         }
     }, 500);
 }, _Printer_exec = function _Printer_exec(method) {
-    if (method === 'coarse') {
+    if (method === 0) {
         __classPrivateFieldGet(this, _Printer_instances, "m", _Printer_coarsePrint).call(this);
     }
     else {
@@ -140,7 +140,7 @@ const edit = (textbox, include) => {
     container.append(preview, textbox);
     textbox.addEventListener('input', e => {
         if (!e.isComposing) {
-            printer.queue(2000, 'coarse');
+            printer.queue(2000, 0);
         }
         textbox.style.color = '';
         preview.classList.add('active');
@@ -148,10 +148,10 @@ const edit = (textbox, include) => {
     textbox.addEventListener('scroll', () => {
         if (preview.scrollHeight > preview.offsetHeight && !preview.classList.contains('active')) {
             preview.scrollTop = textbox.scrollTop;
-            printer.queue(500, 'fine');
+            printer.queue(500, 1);
         }
     });
-    printer.queue(0, 'coarse');
+    printer.queue(0, 0);
     return printer;
 };
 wikiparse.Printer = Printer;
