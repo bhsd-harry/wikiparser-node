@@ -187,8 +187,16 @@ export class TdToken extends fixed(TableBaseToken) {
 		const errors = super.lint(start);
 		start += this.getRelativeIndex(this.length - 1);
 		for (const child of this.lastChild.childNodes) {
-			if (child.type === 'text' && child.data.includes('|')) {
-				errors.push(generateForChild(child, {start}, 'additional "|" in a table cell', 'warning'));
+			if (child.type === 'text') {
+				const {data} = child;
+				if (data.includes('|')) {
+					errors.push(generateForChild(
+						child,
+						{start},
+						'additional "|" in a table cell',
+						data.includes('||') ? 'error' : 'warning',
+					));
+				}
 			}
 		}
 		return errors;
