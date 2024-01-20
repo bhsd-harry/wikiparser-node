@@ -11,10 +11,11 @@ import type {Token} from '../src/index';
  * @param accum
  */
 export const parseExternalLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	/\[((?:\[[\da-f:.]+\]|[^[\]\t\n\p{Zs}])[^[\]\t\n\p{Zs}]*(?=[[\]\t\p{Zs}]|\0\d))(\p{Zs}*(?=\P{Zs}))([^\]\n]*)\]/giu;
 	const regex = new RegExp(
-		`\\[((?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${
-			extUrlChar
-		})(\\p{Zs}*)([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]`,
+		`\\[((?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}(?=[[\\]<>"\\t\\p{Zs}]|\0\\d))`
+		+ '(\\p{Zs}*(?=\\P{Zs}))([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)\\]',
 		'giu',
 	);
 	return wikitext.replace(regex, (_, url: string, space: string, text: string) => {

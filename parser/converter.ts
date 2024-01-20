@@ -18,6 +18,8 @@ export const parseConverter = (text: string, config = Parser.getConfig(), accum:
 	while (mt) {
 		const {0: syntax, index} = mt;
 		if (syntax === '}-') {
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+			/;(?=(?:[^;]*?=>)?\s*foo\s*:|(?:\s|\0\d+c\x7F)*$)/u;
 			const top = stack.pop()!,
 				{length} = accum,
 				str = text.slice(top.index + 2, index),
@@ -25,14 +27,8 @@ export const parseConverter = (text: string, config = Parser.getConfig(), accum:
 				[flags, raw] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
 				temp = raw.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
 				variants = `(?:${config.variants.join('|')})`,
-				rules = temp.split(new RegExp(
-					`;(?=\\s*(?:${
-						`(?:${variants}|[^;]*?=>\\s*${variants})\\s*:`
-						+ '|'
-						+ '(?:\0\\d+c\x7f(?:\\s|\0\\d+c\x7f)*)?$' // 末尾的空白
-					}))`,
-					'u',
-				)).map(rule => rule.replace(/\x01/gu, ';')) as [string, ...string[]];
+				rules = temp.split(new RegExp(`;(?=(?:[^;]*?=>)?\\s*${variants}\\s*:|(?:\\s|\0\\d+c\x7F)*$)`, 'u'))
+					.map(rule => rule.replace(/\x01/gu, ';')) as [string, ...string[]];
 			new ConverterToken(flags, rules, config, accum);
 			text = `${text.slice(0, top.index)}\0${length}v\x7F${text.slice(index + 2)}`;
 			if (stack.length === 0) {

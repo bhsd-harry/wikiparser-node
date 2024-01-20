@@ -148,6 +148,8 @@ export class ParameterToken extends fixed(Token) {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		/https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
 		const errors = super.lint(start),
 			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
