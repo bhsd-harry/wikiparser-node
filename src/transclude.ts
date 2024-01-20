@@ -205,10 +205,10 @@ export class TranscludeToken extends Token {
 	}
 
 	/** 获取模板或模块名 */
-	#getTitle(): Title | undefined {
+	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
-			child = this.childNodes[isTemplate ? 0 : 1] as AtomToken | undefined;
-		return child && this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
+			child = this.childNodes[isTemplate ? 0 : 1] as AtomToken;
+		return this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
 	}
 
 	/** @private */
@@ -307,11 +307,7 @@ export class TranscludeToken extends Token {
 			return errors;
 		}
 		const title = this.#getTitle();
-		if (!title) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
-			errors.push(generateForSelf(this, rect, 'missing module name'));
-			return errors;
-		} else if (title.fragment !== undefined) {
+		if (title.fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
 		}
