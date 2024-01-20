@@ -57,13 +57,18 @@ export const parseCommentAndExt = (
 			return str;
 		}
 	}
+	/* eslint-disable @typescript-eslint/no-unused-expressions */
+	/<foo(?:\s[^>]*)?>|<\/foo\s*>/giu;
+	/<(bar)(\s[^>]*?)?(?:\/>|>(.*?)<\/(\1\s*)>)/gisu;
+	/<(baz)(\s[^>]*?)?(?:\/>|>(.*?)(?:<\/(baz\s*)>|$))/gisu;
+	/* eslint-enable @typescript-eslint/no-unused-expressions */
 	const ext = config.ext.join('|'),
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
 		regex = new RegExp(
 			'<!--.*?(?:-->|$)' // comment
 			+ '|'
-			+ `<${noincludeRegex}(?:\\s[^>]*?)?>|</${noincludeRegex}\\s*>` // <noinclude>
+			+ `<${noincludeRegex}(?:\\s[^>]*)?>|</${noincludeRegex}\\s*>` // <noinclude>
 			+ '|'
 			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)` // 扩展标签
 			+ '|'
