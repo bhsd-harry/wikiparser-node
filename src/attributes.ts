@@ -58,12 +58,12 @@ export class AttributesToken extends Token {
 		this.type = type;
 		this.setAttribute('name', name);
 		if (attr) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+			/([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:(\s*(?:=|\0\d+~\x7F)\s*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 			const regex = new RegExp(
 				'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
 				+ `(?:${
-					'((?:\\s|\0\\d+c\x7F)*' // `=`前的空白字符
-					+ '(?:=|\0\\d+~\x7F)' // `=`
-					+ '(?:\\s|\0\\d+c\x7F)*)' // `=`后的空白字符
+					'((?:\\s|\0\\d+c\x7F)*(?:=|\0\\d+~\x7F)(?:\\s|\0\\d+c\x7F)*)' // `=`和前后的空白字符
 					+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
 				})?`,
 				'gsu',
