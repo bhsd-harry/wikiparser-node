@@ -8,6 +8,14 @@ html, body, main, article, div, button, a, h2, span, input, label, textarea, dl,
 :root {
 	font-size: 14px;
 	font-family: sans-serif;
+	--font-size-header: 1.3rem;
+	--max-height: 95vh;
+	--color-checked: #36c;
+	--color-hover: #447ff5;
+	--color-active: #2a4b8d;
+	--color-border: #ccc;
+	--padding: 1rem;
+	--border: 1px solid;
 }
 body {
 	display: flex;
@@ -28,10 +36,10 @@ main {
 article {
 	display: block;
 	width: 100%;
-	padding: 1rem 2rem 2rem;
+	padding: var(--padding) 2rem 2rem;
 }
 h2 {
-	font-size: 1.3em;
+	font-size: var(--font-size-header);
 	margin: .5rem 0;
 	font-weight: bold;
 }
@@ -63,32 +71,32 @@ input + span {
 	width: 1em;
 	height: 1em;
 	background-color: #fff;
-	border: 1px solid #72777d;
+	border: var(--border) #72777d;
 	border-radius: 2px;
 }
 input:focus + span {
-	border-color: #36c;
-	box-shadow: inset 0 0 0 1px #36c;
+	border-color: var(--color-checked);
+	box-shadow: inset 0 0 0 1px var(--color-checked);
 	outline: none;
 }
 input:checked + span {
-	background-color: #36c;
-	border-color: #36c;
+	background-color: var(--color-checked);
+	border-color: var(--color-checked);
 	background-size: 1em 1em;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Cg fill=%22%23fff%22%3E%3Ctitle xmlns:default=%22http://www.w3.org/2000/svg%22%3Echeck%3C/title%3E%3Cpath xmlns:default=%22http://www.w3.org/2000/svg%22 d=%22M7 14.17L2.83 10l-1.41 1.41L7 17 19 5l-1.41-1.42L7 14.17z%22/%3E%3C/g%3E%3C/svg%3E");
 }
 input:hover + span {
-	border-color: #447ff5;
+	border-color: var(--color-hover);
 }
 input:active + span {
-	background-color: #2a4b8d;
-	border-color: #2a4b8d;
+	background-color: var(--color-active);
+	border-color: var(--color-active);
 }
 label {
 	padding-left: .7em;
 }
 textarea {
-	max-height: 100vh;
+	max-height: var(--max-height);
 	direction: ltr;
 }
 #wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor {
@@ -105,20 +113,20 @@ textarea {
 
 button {
 	float: left;
-	font-size: 1.3em;
+	font-size: var(--font-size-header);
 	font-weight: bold;
 	background-color: #f1f1f1;
-	border: 1px solid #ccc;
+	border: var(--border) var(--color-border);
 	outline: none;
 	cursor: pointer;
-	padding: 1rem 1.5rem;
+	padding: .7rem 1rem;
 	transition: .3s;
 }
 button:hover {
 	background-color: #ddd;
 }
 button.active {
-	background-color: #ccc;
+	background-color: var(--color-border);
 }
 
 .tabcontent {
@@ -128,9 +136,14 @@ button.active {
 	display: block;
 }
 
+#ast {
+	max-height: var(--max-height);
+	overflow-x: auto;
+}
 dt {
 	color: #2b91af;
 	cursor: pointer;
+	white-space: nowrap;
 }
 dt:hover {
 	color: #1b43d4;
@@ -148,6 +161,7 @@ dt.inactive::before {
 dd {
 	margin-left: 1em;
 	color: #d00;
+	white-space: nowrap;
 }
 dt.inactive ~ *,
 dt:not(.inactive) > :nth-child(n+2) {
@@ -161,7 +175,7 @@ dt > :nth-child(2) {
 }
 .string {
 	color: #a31515;
-	display: inline-block;
+	display: inline-flex;
 	white-space: pre-wrap;
 }
 .number {
@@ -175,10 +189,14 @@ dt > :nth-child(2) {
 	.wikiparse-container {
 		width: 70%;
 		float: left;
-		margin-right: 1em;
+		margin-right: 1rem;
 	}
-	#ast {
-		overflow-x: auto;
+}
+
+@media screen and (max-width: 1200px) {
+	.wikiparse-container {
+		max-height: 60vh;
+		margin-bottom: .5rem;
 	}
 }
 
@@ -189,7 +207,7 @@ dt > :nth-child(2) {
 		border-radius: 0;
 	}
 	article {
-		padding: 1rem;
+		padding: var(--padding);
 	}
 	.wikiparse-container, .cm-editor {
 		font-size: 16px;
