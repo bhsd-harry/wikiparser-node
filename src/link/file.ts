@@ -302,7 +302,6 @@ export class FileToken extends LinkBaseToken {
 	 * @override
 	 * @throws `Error` 不适用于图片
 	 */
-	// eslint-disable-next-line class-methods-use-this
 	override setLinkText(): never {
 		throw new Error('setLinkText 方法不适用于图片！');
 	}

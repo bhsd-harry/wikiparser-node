@@ -39,7 +39,6 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	/* NOT FOR BROWSER */
 
 	/** @override */
-	// eslint-disable-next-line class-methods-use-this
 	override get closed(): boolean {
 		return true;
 	}
