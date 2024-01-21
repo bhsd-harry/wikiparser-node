@@ -22,7 +22,7 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
  */
 export class ExtToken extends attributesParent(TagPairToken) {
 	override readonly type = 'ext';
-	override readonly closed = true;
+	declare closed: true;
 
 	declare readonly childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
