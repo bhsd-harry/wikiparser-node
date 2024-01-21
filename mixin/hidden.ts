@@ -10,7 +10,6 @@ export const hidden = <T extends AstConstructor>(constructor: T) => {
 		static readonly hidden = true;
 
 		/** 没有可见部分 */
-		// eslint-disable-next-line class-methods-use-this
 		override text(): string {
 			return '';
 		}
