@@ -1,6 +1,6 @@
 (() => {
 const workerJS = () => {
-    importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.3.7-beta.1-b/bundle/bundle.min.js');
+    importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.3.7-b/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         var _a;

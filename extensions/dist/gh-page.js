@@ -57,23 +57,25 @@ export const getMwConfig = (config) => {
     const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
     const createAST = (ast) => {
         var _a;
-        const dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd');
+        const entries = Object.entries(ast).filter(([key]) => key !== 'type' && key !== 'childNodes'), dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd'), dds = entries.map(([key, value]) => {
+            const dd = document.createElement('dd'), code = document.createElement('code');
+            code.textContent = typeof value === 'string' ? `"${value.replace(/'/gu, '\\"')}"` : String(value);
+            code.className = typeof value;
+            dd.textContent = `${key}: `;
+            dd.append(code);
+            return dd;
+        }), lbrace = document.createElement('span'), rbrace1 = document.createElement('span'), rbrace2 = document.createElement('span'), prop = document.createElement('span');
         dt.textContent = (_a = transform(ast.type)) !== null && _a !== void 0 ? _a : 'Text';
-        childNodes.textContent = 'childNodes: Array';
+        dt.classList.add('inactive');
         if ('childNodes' in ast) {
             childNodes.append(...ast.childNodes.map(createAST));
         }
-        else {
-            childNodes.style.display = 'none';
-        }
-        dl.append(dt, childNodes, ...Object.entries(ast).flatMap(([key, value]) => {
-            if (key === 'type' || key === 'childNodes') {
-                return [];
-            }
-            const dd = document.createElement('dd');
-            dd.textContent = `${key}: ${value}`;
-            return dd;
-        }));
+        lbrace.textContent = ' { ';
+        rbrace1.textContent = ' }';
+        rbrace2.textContent = '}';
+        prop.textContent = entries.map(([key]) => key).join(', ');
+        dt.append(lbrace, prop, rbrace1);
+        dl.append(dt, ...dds, childNodes, rbrace2);
         return dl;
     };
     let timer;
@@ -81,10 +83,16 @@ export const getMwConfig = (config) => {
         if (!e.isComposing) {
             clearTimeout(timer);
             timer = window.setTimeout((async () => {
+                const astDom = createAST(await wikiparse.json(textbox.value, printer.include, qid));
+                astDom.children[0].classList.remove('inactive');
                 astContainer.innerHTML = '';
-                astContainer.append(createAST(await wikiparse.json(textbox.value, printer.include, qid)));
+                astContainer.append(astDom);
             }), 2000);
         }
+    });
+    astContainer.addEventListener('click', ({ target }) => {
+        var _a;
+        (_a = target.closest('dt')) === null || _a === void 0 ? void 0 : _a.classList.toggle('inactive');
     });
     const handler = (e) => {
         e.preventDefault();

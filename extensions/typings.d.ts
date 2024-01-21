@@ -18,7 +18,7 @@ declare global {
 export interface AST {
 	type?: string;
 	childNodes?: AST[];
-	[x: string]: string;
+	[x: string]: string | number | boolean;
 }
 
 export interface wikiparse {

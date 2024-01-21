@@ -1,4 +1,4 @@
-html, body, div, span, label, article, main, input, textarea {
+html, body, main, article, div, button, a, h2, span, input, label, textarea, dl, dt, dd, code {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -126,6 +126,60 @@ button.active {
 }
 #linter {
 	display: block;
+}
+
+dt {
+	color: #2b91af;
+	cursor: pointer;
+}
+dt:hover {
+	color: #1b43d4;
+	text-decoration: underline;
+}
+dt::before {
+	content: "-";
+	font-family: monospace;
+	display: inline-block;
+	width: 1em;
+}
+dt.inactive::before {
+	content: "+";
+}
+dd {
+	margin-left: 1em;
+	color: #d00;
+}
+dt.inactive ~ *,
+dt:not(.inactive) > :nth-child(n+2) {
+	display: none;
+}
+dl > span, dt > span { /* stylelint-disable-line no-descending-specificity */
+	color: initial;
+}
+dt > :nth-child(2) {
+	color: #080;
+}
+.string {
+	color: #a31515;
+	display: inline-block;
+	white-space: pre-wrap;
+}
+.number {
+	color: #098658;
+}
+.boolean {
+	color: #00f;
+}
+
+@media screen and (min-width: 1200px) {
+	.wikiparse-container {
+		width: 70%;
+		float: left;
+		margin-right: 1em;
+	}
+	#ast {
+		overflow-x: auto;
+	}
 }
 
 @media screen and (max-width: 720px) {

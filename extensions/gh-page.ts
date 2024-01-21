@@ -99,24 +99,34 @@ export const getMwConfig = (config: Config): MwConfig => {
 	 * @param ast AST
 	 */
 	const createAST = (ast: AST): HTMLDListElement => {
-		const dl = document.createElement('dl'),
+		const entries = Object.entries(ast).filter(([key]) => key !== 'type' && key !== 'childNodes'),
+			dl = document.createElement('dl'),
 			dt = document.createElement('dt'),
-			childNodes = document.createElement('dd');
+			childNodes = document.createElement('dd'),
+			dds = entries.map(([key, value]) => {
+				const dd = document.createElement('dd'),
+					code = document.createElement('code');
+				code.textContent = typeof value === 'string' ? `"${value.replace(/'/gu, '\\"')}"` : String(value);
+				code.className = typeof value;
+				dd.textContent = `${key}: `;
+				dd.append(code);
+				return dd;
+			}),
+			lbrace = document.createElement('span'),
+			rbrace1 = document.createElement('span'),
+			rbrace2 = document.createElement('span'),
+			prop = document.createElement('span');
 		dt.textContent = transform(ast.type) ?? 'Text';
-		childNodes.textContent = 'childNodes: Array';
+		dt.classList.add('inactive');
 		if ('childNodes' in ast) {
 			childNodes.append(...ast.childNodes.map(createAST));
-		} else {
-			childNodes.style.display = 'none';
 		}
-		dl.append(dt, childNodes, ...Object.entries(ast).flatMap(([key, value]) => {
-			if (key === 'type' || key === 'childNodes') {
-				return [];
-			}
-			const dd = document.createElement('dd');
-			dd.textContent = `${key}: ${value}`;
-			return dd;
-		}));
+		lbrace.textContent = ' { ';
+		rbrace1.textContent = ' }';
+		rbrace2.textContent = '}';
+		prop.textContent = entries.map(([key]) => key).join(', ');
+		dt.append(lbrace, prop, rbrace1);
+		dl.append(dt, ...dds, childNodes, rbrace2);
 		return dl;
 	};
 
@@ -125,10 +135,15 @@ export const getMwConfig = (config: Config): MwConfig => {
 		if (!(e as InputEvent).isComposing) {
 			clearTimeout(timer);
 			timer = window.setTimeout((async () => {
+				const astDom = createAST(await wikiparse.json(textbox.value, printer.include, qid));
+				astDom.children[0]!.classList.remove('inactive');
 				astContainer.innerHTML = '';
-				astContainer.append(createAST(await wikiparse.json(textbox.value, printer.include, qid)));
+				astContainer.append(astDom);
 			}) as () => void, 2000);
 		}
+	});
+	astContainer.addEventListener('click', ({target}) => {
+		(target as HTMLElement).closest('dt')?.classList.toggle('inactive');
 	});
 
 	/**
