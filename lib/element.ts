@@ -149,10 +149,10 @@ export abstract class AstElement extends AstNode {
 	 * 保存为JSON
 	 * @param file 文件名
 	 */
-	json(file?: string): unknown {
-		const json: unknown = {
+	json(file?: string): object {
+		const json: object = {
 			...this,
-			childNodes: this.childNodes.map(child => child.type === 'text' ? child.data : child.json()),
+			childNodes: this.childNodes.map(child => child.type === 'text' ? {data: child.data} : child.json()),
 		};
 		return json;
 	}

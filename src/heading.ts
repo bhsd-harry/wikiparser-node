@@ -92,4 +92,12 @@ export class HeadingToken extends Token {
 		const equals = this.#equals;
 		return super.print({pre: equals, sep: equals});
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			level: this.level,
+		};
+	}
 }

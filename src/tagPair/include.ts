@@ -39,4 +39,12 @@ export class IncludeToken extends hidden(TagPairToken) {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return this.closed ? [] : [generateForSelf(this, {start}, Parser.msg('unclosed $1', `<${this.name}>`))];
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			closed: this.closed,
+		};
+	}
 }
