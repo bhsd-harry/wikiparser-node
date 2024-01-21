@@ -109,15 +109,7 @@
 		"arrow-body-style": 2,
 		"block-scoped-var": 2,
 		"camelcase": 2,
-		"class-methods-use-this": [
-			2,
-			{
-				"exceptMethods": [
-					"getGaps",
-					"lint"
-				]
-			}
-		],
+		"class-methods-use-this": 2,
 		"consistent-return": 2,
 		"curly": 2,
 		"default-case": 2,
@@ -825,6 +817,16 @@
 				"plugin:@typescript-eslint/recommended-requiring-type-checking"
 			],
 			"rules": {
+				"class-methods-use-this": 0,
+				"@typescript-eslint/class-methods-use-this": [
+					2,
+					{
+						"ignoreOverrideMethods": true,
+						"exceptMethods": [
+							"getGaps"
+						]
+					}
+				],
 				"default-param-last": 0,
 				"@typescript-eslint/default-param-last": 2,
 				"dot-notation": 0,
@@ -886,6 +888,20 @@
 				],
 				"no-useless-constructor": 0,
 				"@typescript-eslint/no-useless-constructor": 2,
+				"prefer-desctructuring": 0,
+				"@typescript-eslint/prefer-destructuring": [
+					2,
+					{
+						"VariableDeclarator": {
+							"array": true,
+							"object": true
+						},
+						"AssignmentExpression": {
+							"array": true,
+							"object": true
+						}
+					}
+				],
 				"require-await": 0,
 				"@typescript-eslint/require-await": 2,
 				"@typescript-eslint/ban-types": [
