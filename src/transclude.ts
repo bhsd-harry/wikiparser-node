@@ -34,7 +34,7 @@ const insensitiveVars = new Set<string | undefined>([
  */
 export class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
-	readonly modifier = '';
+	readonly modifier: string = '';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 
