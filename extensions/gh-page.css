@@ -14,7 +14,8 @@ html, body, main, article, div, button, a, h2, span, input, label, textarea, dl,
 	--color-hover: #447ff5;
 	--color-active: #2a4b8d;
 	--color-border: #ccc;
-	--padding: 1rem;
+	--padding-large: 1rem;
+	--padding-small: .5rem;
 	--border: 1px solid;
 }
 body {
@@ -36,16 +37,16 @@ main {
 article {
 	display: block;
 	width: 100%;
-	padding: var(--padding) 2rem 2rem;
+	padding: var(--padding-large) 2rem 2rem;
 }
 h2 {
 	font-size: var(--font-size-header);
-	margin: .5rem 0;
+	margin: var(--padding-small) 0;
 	font-weight: bold;
 }
 .fieldLayout {
 	display: table;
-	padding: .5em 0;
+	padding: var(--padding-small) 0;
 }
 .field, .header {
 	display: table-cell;
@@ -108,7 +109,7 @@ textarea {
 
 .tab {
 	overflow: hidden;
-	margin: 1rem 0;
+	margin: var(--padding-large) 0;
 }
 
 button {
@@ -139,6 +140,7 @@ button.active {
 #ast {
 	max-height: var(--max-height);
 	overflow: auto;
+	padding: var(--padding-small);
 }
 dt {
 	color: #2b91af;
@@ -189,14 +191,14 @@ dt > :nth-child(2) {
 	.wikiparse-container {
 		width: 70%;
 		float: left;
-		margin-right: 1rem;
+		margin-right: var(--padding-small);
 	}
 }
 
 @media screen and (max-width: 1200px) {
-	.wikiparse-container {
+	.wikiparse-container, #wpTextbox1 {
 		max-height: 60vh;
-		margin-bottom: .5rem;
+		margin-bottom: var(--padding-small);
 	}
 }
 
@@ -207,7 +209,7 @@ dt > :nth-child(2) {
 		border-radius: 0;
 	}
 	article {
-		padding: var(--padding);
+		padding: var(--padding-large);
 	}
 	.wikiparse-container, .cm-editor {
 		font-size: 16px;
