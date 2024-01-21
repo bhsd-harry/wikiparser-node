@@ -1,6 +1,6 @@
 (() => {
 const workerJS = () => {
-    importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.3.7-b/bundle/bundle.min.js');
+    importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.3.7-beta.1-b/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         var _a;
@@ -14,6 +14,9 @@ const workerJS = () => {
                 break;
             case 'getConfig':
                 postMessage([qid, Parser.getConfig()]);
+                break;
+            case 'json':
+                postMessage([qid, JSON.parse(JSON.stringify(Parser.parse(...args)))]);
                 break;
             case 'lint':
                 postMessage([qid, Parser.parse(...args).lint(), args[0]]);
@@ -55,6 +58,10 @@ const getConfig = () => new Promise(resolve => {
     worker.addEventListener('message', getListener(-3, resolve));
     worker.postMessage(['getConfig', -3]);
 });
+const json = (wikitext, include, qid) => new Promise(resolve => {
+    worker.addEventListener('message', getListener(qid, resolve));
+    worker.postMessage(['json', qid, wikitext, include]);
+});
 const print = (wikitext, include, stage, qid = -1) => new Promise(resolve => {
     worker.addEventListener('message', getListener(qid, resolve));
     worker.postMessage(['print', qid, wikitext, include, stage]);
@@ -63,6 +70,6 @@ const lint = (wikitext, include, qid = -2) => new Promise(resolve => {
     worker.addEventListener('message', getListener(qid, resolve, wikitext));
     worker.postMessage(['lint', qid, wikitext, include]);
 });
-const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint };
+const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint, json };
 Object.assign(window, { wikiparse });
 })();

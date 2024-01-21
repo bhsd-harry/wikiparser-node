@@ -26,9 +26,9 @@ export const getMwConfig = (config) => {
     if (!location.pathname.startsWith('/wikiparser-node')) {
         return;
     }
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), config = await (await fetch('./config/default.json')).json();
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.querySelector('#ast'), config = await (await fetch('./config/default.json')).json();
     wikiparse.setConfig(config);
-    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), instance = new CodeMirror6(textbox2);
+    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++, instance = new CodeMirror6(textbox2);
     instance.prefer([
         'highlightSpecialChars',
         'highlightWhitespace',
@@ -54,6 +54,38 @@ export const getMwConfig = (config) => {
         instance.lint((doc) => Linter.codemirror(String(doc)));
     });
     input2.dispatchEvent(new Event('change'));
+    const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
+    const createAST = (ast) => {
+        var _a;
+        const dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd');
+        dt.textContent = (_a = transform(ast.type)) !== null && _a !== void 0 ? _a : 'Text';
+        childNodes.textContent = 'childNodes: Array';
+        if ('childNodes' in ast) {
+            childNodes.append(...ast.childNodes.map(createAST));
+        }
+        else {
+            childNodes.style.display = 'none';
+        }
+        dl.append(dt, childNodes, ...Object.entries(ast).flatMap(([key, value]) => {
+            if (key === 'type' || key === 'childNodes') {
+                return [];
+            }
+            const dd = document.createElement('dd');
+            dd.textContent = `${key}: ${value}`;
+            return dd;
+        }));
+        return dl;
+    };
+    let timer;
+    textbox.addEventListener('input', e => {
+        if (!e.isComposing) {
+            clearTimeout(timer);
+            timer = window.setTimeout((async () => {
+                astContainer.innerHTML = '';
+                astContainer.append(createAST(await wikiparse.json(textbox.value, printer.include, qid)));
+            }), 2000);
+        }
+    });
     const handler = (e) => {
         e.preventDefault();
         const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget;
