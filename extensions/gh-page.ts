@@ -106,7 +106,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 			dds = entries.map(([key, value]) => {
 				const dd = document.createElement('dd'),
 					code = document.createElement('code');
-				code.textContent = typeof value === 'string' ? `"${value.replace(/'/gu, '\\"')}"` : String(value);
+				code.textContent = typeof value === 'string' ? `"${value.replace(/"/gu, '\\"')}"` : String(value);
 				code.className = typeof value;
 				dd.textContent = `${key}: `;
 				dd.append(code);
