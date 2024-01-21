@@ -16,7 +16,7 @@ const workerJS = (): void => {
 		| ['json' | 'lint', number, string, boolean?]
 		| ['print', number, string, boolean?, number?];
 	}): void => {
-		const [command, qid, ...args] = data;
+		const [command, qid, wikitext, include, stage] = data;
 		switch (command) {
 			case 'setI18N':
 				Parser.i18n = qid;
@@ -28,25 +28,23 @@ const workerJS = (): void => {
 				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, JSON.parse(JSON.stringify(Parser.parse(...(args as [string, boolean?]))))]);
+				postMessage([qid, JSON.parse(JSON.stringify(Parser.parse(wikitext, include)))]);
 				break;
 			case 'lint':
-				postMessage([qid, Parser.parse(...(args as [string, boolean?])).lint(), args[0]!]);
+				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
 				break;
 			// case 'print':
-			default: {
-				const stage = args[2] ?? Infinity;
+			default:
 				postMessage([
 					qid,
-					Parser.parse(...(args as [string, boolean?, number?])).childNodes.map(child => [
-						stage,
+					Parser.parse(wikitext, include, stage).childNodes.map(child => [
+						stage ?? Infinity,
 						String(child),
 						child.type === 'text'
 							? String(child).replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
 							: child.print(),
 					]),
 				]);
-			}
 		}
 	};
 };
@@ -92,11 +90,22 @@ const setConfig = (config: Config): void => {
 	worker.postMessage(['setConfig', config]);
 };
 
+/**
+ * 获取反馈
+ * @param command 指令名
+ * @param qid 编号
+ * @param strict 严格模式
+ * @param raw 原始文本
+ * @param args 参数
+ */
+const getFeedback = <T>(command: string, qid: number, strict?: boolean, raw?: string, ...args: unknown[]): Promise<T> =>
+	new Promise(resolve => {
+		worker.addEventListener('message', getListener(qid, resolve, strict ? raw : undefined));
+		worker.postMessage([command, qid, raw, ...args]);
+	});
+
 /** 获取Parser.minConfig */
-const getConfig = (): Promise<Config> => new Promise(resolve => {
-	worker.addEventListener('message', getListener(-3, resolve));
-	worker.postMessage(['getConfig', -3]);
-});
+const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
 
 /**
  * 获取JSON
@@ -104,10 +113,8 @@ const getConfig = (): Promise<Config> => new Promise(resolve => {
  * @param include 是否嵌入
  * @param qid 编号
  */
-const json = (wikitext: string, include: boolean, qid: number): Promise<AST> => new Promise(resolve => {
-	worker.addEventListener('message', getListener(qid, resolve));
-	worker.postMessage(['json', qid, wikitext, include]);
-});
+const json = (wikitext: string, include: boolean, qid: number): Promise<AST> =>
+	getFeedback('json', qid, false, wikitext, include);
 
 /**
  * 将解析改为异步执行
@@ -121,11 +128,7 @@ const print = (
 	include?: boolean,
 	stage?: number,
 	qid = -1,
-): Promise<[number, string, string][]> =>
-	new Promise(resolve => {
-		worker.addEventListener('message', getListener(qid, resolve));
-		worker.postMessage(['print', qid, wikitext, include, stage]);
-	});
+): Promise<[number, string, string][]> => getFeedback('print', qid, false, wikitext, include, stage);
 
 /**
  * 将语法分析改为异步执行
@@ -133,10 +136,8 @@ const print = (
  * @param include 是否嵌入
  * @param qid Linter编号，暂时固定为`-2`
  */
-const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[]> => new Promise(resolve => {
-	worker.addEventListener('message', getListener(qid, resolve, wikitext));
-	worker.postMessage(['lint', qid, wikitext, include]);
-});
+const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[]> =>
+	getFeedback('lint', qid, true, wikitext, include);
 
 const wikiparse: Wikiparse = {id: 0, setI18N, setConfig, getConfig, print, lint, json};
 Object.assign(window, {wikiparse});

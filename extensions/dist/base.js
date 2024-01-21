@@ -3,8 +3,7 @@ const workerJS = () => {
     importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.3.7-b/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
-        var _a;
-        const [command, qid, ...args] = data;
+        const [command, qid, wikitext, include, stage] = data;
         switch (command) {
             case 'setI18N':
                 Parser.i18n = qid;
@@ -16,24 +15,22 @@ const workerJS = () => {
                 postMessage([qid, Parser.getConfig()]);
                 break;
             case 'json':
-                postMessage([qid, JSON.parse(JSON.stringify(Parser.parse(...args)))]);
+                postMessage([qid, JSON.parse(JSON.stringify(Parser.parse(wikitext, include)))]);
                 break;
             case 'lint':
-                postMessage([qid, Parser.parse(...args).lint(), args[0]]);
+                postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
                 break;
-            default: {
-                const stage = (_a = args[2]) !== null && _a !== void 0 ? _a : Infinity;
+            default:
                 postMessage([
                     qid,
-                    Parser.parse(...args).childNodes.map(child => [
-                        stage,
+                    Parser.parse(wikitext, include, stage).childNodes.map(child => [
+                        stage !== null && stage !== void 0 ? stage : Infinity,
                         String(child),
                         child.type === 'text'
                             ? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
                             : child.print(),
                     ]),
                 ]);
-            }
         }
     };
 };
@@ -54,22 +51,14 @@ const setI18N = (i18n) => {
 const setConfig = (config) => {
     worker.postMessage(['setConfig', config]);
 };
-const getConfig = () => new Promise(resolve => {
-    worker.addEventListener('message', getListener(-3, resolve));
-    worker.postMessage(['getConfig', -3]);
+const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve => {
+    worker.addEventListener('message', getListener(qid, resolve, strict ? raw : undefined));
+    worker.postMessage([command, qid, raw, ...args]);
 });
-const json = (wikitext, include, qid) => new Promise(resolve => {
-    worker.addEventListener('message', getListener(qid, resolve));
-    worker.postMessage(['json', qid, wikitext, include]);
-});
-const print = (wikitext, include, stage, qid = -1) => new Promise(resolve => {
-    worker.addEventListener('message', getListener(qid, resolve));
-    worker.postMessage(['print', qid, wikitext, include, stage]);
-});
-const lint = (wikitext, include, qid = -2) => new Promise(resolve => {
-    worker.addEventListener('message', getListener(qid, resolve, wikitext));
-    worker.postMessage(['lint', qid, wikitext, include]);
-});
+const getConfig = () => getFeedback('getConfig', -3);
+const json = (wikitext, include, qid) => getFeedback('json', qid, false, wikitext, include);
+const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
+const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
 const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint, json };
 Object.assign(window, { wikiparse });
 })();
