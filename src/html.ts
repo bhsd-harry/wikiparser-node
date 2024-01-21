@@ -160,4 +160,13 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 			class: closing && html[2].includes(name) && name !== 'br' ? 'html-invalid' : 'html',
 		});
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			closing: this.closing,
+			selfClosing: this.#selfClosing,
+		};
+	}
 }

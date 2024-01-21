@@ -138,4 +138,12 @@ export class TdToken extends fixed(TableBaseToken) {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			subtype: this.subtype,
+		};
+	}
 }

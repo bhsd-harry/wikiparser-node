@@ -59,4 +59,12 @@ export class TableToken extends TrBaseToken {
 		));
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			closed: this.closed,
+		};
+	}
 }

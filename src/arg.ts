@@ -94,4 +94,12 @@ export class ArgToken extends Token {
 	override print(): string {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			default: this.default,
+		};
+	}
 }

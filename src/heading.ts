@@ -96,4 +96,12 @@ export class HeadingToken extends sol(fixed(Token)) {
 		const equals = this.#equals;
 		return super.print({pre: equals, sep: equals});
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			level: this.level,
+		};
+	}
 }

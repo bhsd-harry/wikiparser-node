@@ -224,6 +224,7 @@ export class AttributeToken extends fixed(Token) {
 		this.#equal = equal;
 		this.#quotes = [...quotes];
 		this.tag = tag;
+		Object.defineProperty(this, 'tag', {enumerable: false});
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
