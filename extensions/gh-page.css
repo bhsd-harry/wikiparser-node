@@ -138,7 +138,7 @@ button.active {
 
 #ast {
 	max-height: var(--max-height);
-	overflow-x: auto;
+	overflow: auto;
 }
 dt {
 	color: #2b91af;
