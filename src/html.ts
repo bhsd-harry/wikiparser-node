@@ -115,7 +115,7 @@ export class HtmlToken extends Token {
 	 * 搜索匹配的标签
 	 * @throws `SyntaxError` 同时闭合和自封闭的标签
 	 * @throws `SyntaxError` 无效自封闭标签
-	 * @throws `SyntaxError` 未闭合的标签
+	 * @throws `SyntaxError` 未匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
 		const {html} = this.getAttribute('config'),
