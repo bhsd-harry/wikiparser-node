@@ -8,24 +8,13 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare readonly name: string;
-	#closed;
 	readonly #tags: [string, string];
+	closed;
 	selfClosing;
 
 	declare readonly childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
-
-	/** 是否闭合 */
-	get closed(): boolean {
-		return this.#closed;
-	}
-
-	/* NOT FOR BROWSER */
-
-	set closed(value) {
-		this.#closed ||= value;
-	}
 
 	/** 内部wikitext */
 	get innerText(): string | undefined {
@@ -51,11 +40,12 @@ export abstract class TagPairToken extends fixed(Token) {
 		super(undefined, config);
 		this.setAttribute('name', name.toLowerCase());
 		this.#tags = [name, closed || name];
-		this.#closed = closed !== '';
+		this.closed = closed !== '';
 		this.selfClosing = closed === undefined;
 		this.append(attr, inner);
 		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
 		accum.splice(index === -1 ? Infinity : index, 0, this);
+		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/** @private */
@@ -73,7 +63,7 @@ export abstract class TagPairToken extends fixed(Token) {
 			return '';
 		} else if (!closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
-			this.#closed = true;
+			this.closed = true;
 		}
 		return selfClosing
 			? `<${opening}${firstChild.toString(omit)}/>`

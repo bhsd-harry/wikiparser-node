@@ -83,7 +83,7 @@ export class AstText extends AstNode {
 				writable: false,
 			},
 			childNodes: {enumerable: false, configurable: false},
-			type: {enumerable: false, writable: false, configurable: false},
+			type: {enumerable: false, writable: false},
 		});
 	}
 

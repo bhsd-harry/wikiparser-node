@@ -25,6 +25,7 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
  */
 export class ExtToken extends attributesParent(TagPairToken) {
 	override readonly type = 'ext';
+	override readonly closed = true;
 
 	declare readonly childNodes: [AttributesToken, Token];
 	// @ts-expect-error abstract method
@@ -35,15 +36,6 @@ export class ExtToken extends attributesParent(TagPairToken) {
 	abstract override get firstElementChild(): AttributesToken;
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-
-	/* NOT FOR BROWSER */
-
-	/** @override */
-	override get closed(): boolean {
-		return true;
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param name 标签名
@@ -161,6 +153,7 @@ export class ExtToken extends attributesParent(TagPairToken) {
 		innerToken.setAttribute('name', lcName);
 		innerToken.type = 'ext-inner';
 		super(name, attrToken, innerToken, closed, config, accum);
+		this.seal('closed', true);
 	}
 
 	/** @override */

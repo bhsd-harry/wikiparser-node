@@ -74,11 +74,6 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
-		Object.defineProperties(this, {
-			encoded: {enumerable: false},
-			conversionTable: {enumerable: false},
-			redirects: {enumerable: false},
-		});
 		const {
 			namespaces,
 			nsid,
@@ -133,6 +128,12 @@ export class Title {
 			|| selfLink && this.fragment !== undefined,
 		) && !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.main = title;
+		Object.defineProperties(this, {
+			valid: {writable: false},
+			encoded: {enumerable: false, writable: false},
+			conversionTable: {enumerable: false},
+			redirects: {enumerable: false},
+		});
 	}
 
 	/* NOT FOR BROWSER */
