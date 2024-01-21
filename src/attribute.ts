@@ -149,7 +149,7 @@ const commonHtmlAttrs = new Set([
 export class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare readonly name: string;
-	declare readonly tag;
+	readonly tag;
 	#equal;
 	#quotes: [string?, string?];
 
