@@ -6,9 +6,9 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends fixed(Token) {
 	declare type: 'ext' | 'include';
 	declare readonly name: string;
-	#selfClosing;
 	#closed;
 	readonly #tags: [string, string];
+	selfClosing;
 
 	declare readonly childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
@@ -36,8 +36,8 @@ export abstract class TagPairToken extends fixed(Token) {
 		super(undefined, config);
 		this.setAttribute('name', name.toLowerCase());
 		this.#tags = [name, closed || name];
-		this.#selfClosing = closed === undefined;
 		this.#closed = closed !== '';
+		this.selfClosing = closed === undefined;
 		this.append(attr, inner);
 		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
 		accum.splice(index === -1 ? Infinity : index, 0, this);
@@ -46,11 +46,12 @@ export abstract class TagPairToken extends fixed(Token) {
 	/** @private */
 	override toString(omit?: Set<string>): string {
 		const {
+				selfClosing,
 				firstChild,
 				lastChild,
 			} = this,
 			[opening, closing] = this.#tags;
-		return this.#selfClosing
+		return selfClosing
 			? `<${opening}${firstChild.toString(omit)}/>`
 			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
 				this.closed ? `</${closing}>` : ''
@@ -60,7 +61,7 @@ export abstract class TagPairToken extends fixed(Token) {
 	/** @override */
 	override text(): string {
 		const [opening, closing] = this.#tags;
-		return this.#selfClosing
+		return this.selfClosing
 			? `<${opening}${this.firstChild.text()}/>`
 			: `<${opening}${super.text('>')}${this.closed ? `</${closing}>` : ''}`;
 	}
@@ -78,16 +79,8 @@ export abstract class TagPairToken extends fixed(Token) {
 	/** @override */
 	override print(): string {
 		const [opening, closing] = this.#tags;
-		return super.print(this.#selfClosing
+		return super.print(this.selfClosing
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
-	}
-
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			selfClosing: this.#selfClosing,
-		};
 	}
 }
