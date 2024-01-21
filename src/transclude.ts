@@ -370,4 +370,12 @@ export class TranscludeToken extends Token {
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			modifier: this.modifier || undefined,
+		};
+	}
 }
