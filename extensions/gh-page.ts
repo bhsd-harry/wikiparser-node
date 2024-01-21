@@ -1,6 +1,6 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
 import type {Config} from '../base';
-import type {MwConfig, CodeMirror} from './typings';
+import type {MwConfig, CodeMirror, AST} from './typings';
 
 /**
  * Object.fromEntries polyfill
@@ -47,10 +47,12 @@ export const getMwConfig = (config: Config): MwConfig => {
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
 		buttons = document.getElementsByTagName('button'),
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
+		astContainer = document.querySelector<HTMLDivElement>('#ast')!,
 		config: Config = await (await fetch('./config/default.json')).json();
 	wikiparse.setConfig(config);
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
+		qid = wikiparse.id++,
 		instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2);
 	instance.prefer([
 		'highlightSpecialChars',
@@ -84,6 +86,50 @@ export const getMwConfig = (config: Config): MwConfig => {
 		instance.lint((doc: unknown) => Linter.codemirror(String(doc)));
 	});
 	input2.dispatchEvent(new Event('change'));
+
+	/**
+	 * Kebab case to Pascal case
+	 * @param type AST节点类型
+	 */
+	const transform = (type?: string): string | undefined =>
+		type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
+
+	/**
+	 * 创建AST的HTML表示
+	 * @param ast AST
+	 */
+	const createAST = (ast: AST): HTMLDListElement => {
+		const dl = document.createElement('dl'),
+			dt = document.createElement('dt'),
+			childNodes = document.createElement('dd');
+		dt.textContent = transform(ast.type) ?? 'Text';
+		childNodes.textContent = 'childNodes: Array';
+		if ('childNodes' in ast) {
+			childNodes.append(...ast.childNodes.map(createAST));
+		} else {
+			childNodes.style.display = 'none';
+		}
+		dl.append(dt, childNodes, ...Object.entries(ast).flatMap(([key, value]) => {
+			if (key === 'type' || key === 'childNodes') {
+				return [];
+			}
+			const dd = document.createElement('dd');
+			dd.textContent = `${key}: ${value}`;
+			return dd;
+		}));
+		return dl;
+	};
+
+	let timer: number;
+	textbox.addEventListener('input', e => {
+		if (!(e as InputEvent).isComposing) {
+			clearTimeout(timer);
+			timer = window.setTimeout((async () => {
+				astContainer.innerHTML = '';
+				astContainer.append(createAST(await wikiparse.json(textbox.value, printer.include, qid)));
+			}) as () => void, 2000);
+		}
+	});
 
 	/**
 	 * 切换 tab

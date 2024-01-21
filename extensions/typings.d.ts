@@ -15,11 +15,18 @@ declare global {
 	const wikiparse: wikiparse;
 }
 
+export interface AST {
+	type?: string;
+	childNodes?: AST[];
+	[x: string]: string;
+}
+
 export interface wikiparse {
 	id: number;
 	setI18N(i18n: Record<string, string>): void;
 	setConfig(config: Config): void;
 	getConfig(): Promise<Config>;
+	json(wikitext: string, include: boolean, qid: number): Promise<AST>;
 	print(wikitext: string, include?: boolean, stage?: number, qid?: number): Promise<[number, string, string][]>;
 	lint(wikitext: string, include?: boolean, qid?: number): Promise<LintError[]>;
 	/* eslint-disable @typescript-eslint/method-signature-style */

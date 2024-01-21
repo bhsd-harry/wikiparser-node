@@ -890,7 +890,7 @@
 				],
 				"no-useless-constructor": 0,
 				"@typescript-eslint/no-useless-constructor": 2,
-				"prefer-desctructuring": 0,
+				"prefer-destructuring": 0,
 				"@typescript-eslint/prefer-destructuring": [
 					2,
 					{
@@ -1028,12 +1028,22 @@
 				"project": "./extensions/tsconfig.json"
 			},
 			"rules": {
-				"no-await-in-loop": 2,
 				"no-control-regex": 2,
-				"no-alert": 2,
+				"no-bitwise": 2,
+				"no-new": 2,
+				"no-param-reassign": 2,
+				"es-x/no-object-fromentries": 2,
 				"unicorn/empty-brace-spaces": 2,
-				"unicorn/no-invalid-remove-event-listener": 2,
-				"unicorn/prefer-keyboard-event-key": 2,
+				"unicorn/no-this-assignment": 2,
+				"@typescript-eslint/no-unused-vars": [
+					2,
+					{
+						"args": "all",
+						"caughtErrors": "all",
+						"ignoreRestSiblings": true
+					}
+				],
+				"@typescript-eslint/no-this-alias": 2,
 				"@typescript-eslint/no-floating-promises": 0
 			}
 		}
