@@ -28,7 +28,7 @@ const workerJS = (): void => {
 				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, JSON.parse(JSON.stringify(Parser.parse(wikitext, include)))]);
+				postMessage([qid, Parser.parse(wikitext, include).json()]);
 				break;
 			case 'lint':
 				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
