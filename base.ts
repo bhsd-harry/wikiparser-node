@@ -39,6 +39,13 @@ export interface AstNode {
 	print(): string;
 }
 
+/** 类似HTMLElement */
+interface AstElement extends AstNode {
+
+	/** 保存为JSON */
+	json(): object;
+}
+
 export interface Parser {
 	config: string | Config;
 	i18n: string | Record<string, string> | undefined;
@@ -51,5 +58,5 @@ export interface Parser {
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstNode;
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstElement;
 }
