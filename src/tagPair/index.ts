@@ -121,6 +121,14 @@ export abstract class TagPairToken extends fixed(Token) {
 			? {pre: `&lt;${opening}`, post: '/&gt;'}
 			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
 	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			selfClosing: this.#selfClosing,
+		};
+	}
 }
 
 classes['TagPairToken'] = __filename;

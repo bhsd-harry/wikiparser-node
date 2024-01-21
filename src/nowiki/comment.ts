@@ -60,6 +60,14 @@ export class CommentToken extends hidden(NowikiBaseToken) {
 	/* NOT FOR BROWSER */
 
 	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			closed: this.closed,
+		};
+	}
+
+	/** @override */
 	override cloneNode(): this {
 		return Shadow.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);
 	}

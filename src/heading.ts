@@ -130,6 +130,14 @@ export class HeadingToken extends sol(fixed(Token)) {
 		return super.print({pre: equals, sep: equals});
 	}
 
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			level: this.level,
+		};
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** @override */

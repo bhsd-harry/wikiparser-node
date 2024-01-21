@@ -208,6 +208,14 @@ export class TdToken extends fixed(TableBaseToken) {
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			subtype: this.subtype,
+		};
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** 是否位于行首 */

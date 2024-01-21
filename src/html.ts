@@ -213,6 +213,15 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 		});
 	}
 
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			closing: this.closing,
+			selfClosing: this.#selfClosing,
+		};
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** @override */

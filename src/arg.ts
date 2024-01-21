@@ -116,6 +116,14 @@ export class ArgToken extends Token {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
 
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			default: this.default,
+		};
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** @override */

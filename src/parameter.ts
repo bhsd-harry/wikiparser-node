@@ -173,6 +173,14 @@ export class ParameterToken extends fixed(Token) {
 		return super.print({sep: this.anon ? '' : '='});
 	}
 
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			anon: this.anon,
+		};
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** @override */

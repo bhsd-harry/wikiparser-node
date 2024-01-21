@@ -264,11 +264,11 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	protected seal(key: string): void {
+	protected seal(key: string, hidden?: boolean): void {
 		this.#optional.add(key);
 		Object.defineProperty(this, key, {
 			writable: false,
-			enumerable: Boolean(this[key as keyof this]),
+			enumerable: !hidden && Boolean(this[key as keyof this]),
 			configurable: true,
 		});
 	}

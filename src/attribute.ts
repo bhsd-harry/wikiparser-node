@@ -303,7 +303,7 @@ export class AttributeToken extends fixed(Token) {
 		this.#equal = equal;
 		this.#quotes = [...quotes];
 		this.tag = tag;
-		this.seal('tag');
+		this.seal('tag', true);
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
