@@ -29,7 +29,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 	(await new Api(url).get({
 		generator: 'recentchanges',
 		grcnamespace: '0|10',
-		grclimit: 'max',
+		grclimit: 10,
 		grctype: 'edit',
 		prop: 'revisions',
 		rvprop: 'contentmodel|content',

@@ -6,18 +6,13 @@ import type {AstNodes} from '../../lib/node';
 export abstract class TagPairToken extends Token {
 	declare type: 'ext' | 'include';
 	declare readonly name: string;
-	#closed;
 	readonly #tags: [string, string];
+	closed;
 	selfClosing;
 
 	declare readonly childNodes: [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
-
-	/** 是否闭合 */
-	get closed(): boolean {
-		return this.#closed;
-	}
 
 	/**
 	 * @param name 标签名
@@ -36,11 +31,12 @@ export abstract class TagPairToken extends Token {
 		super(undefined, config);
 		this.setAttribute('name', name.toLowerCase());
 		this.#tags = [name, closed || name];
-		this.#closed = closed !== '';
+		this.closed = closed !== '';
 		this.selfClosing = closed === undefined;
 		this.append(attr, inner);
 		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
 		accum.splice(index === -1 ? Infinity : index, 0, this);
+		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/** @private */
