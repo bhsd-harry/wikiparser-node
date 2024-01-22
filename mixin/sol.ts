@@ -1,6 +1,10 @@
 import {mixins} from '../util/constants';
 import type {Token} from '../src';
 
+export interface SolTokenBase {
+	prependNewLine(): string;
+}
+
 /**
  * 只能位于行首的类
  * @param constructor 基类

@@ -3,9 +3,10 @@ import {fixed} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import type {AstNodes} from '../../lib/node';
+import type {FixedTokenBase} from '../../mixin/fixed';
 
 /** 成对标签 */
-export abstract class TagPairToken extends fixed(Token) {
+export abstract class TagPairToken extends fixed(Token) implements FixedTokenBase {
 	declare type: 'ext' | 'include';
 	declare readonly name: string;
 	readonly #tags: [string, string];

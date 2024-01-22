@@ -1,6 +1,13 @@
 import {mixins} from '../util/constants';
 import type {MagicLinkToken} from '../src/magicLink';
 
+export interface MagicLinkParentBase {
+	protocol: string | undefined;
+	link: string;
+	getUrl(): URL;
+	setTarget(url: string): void;
+}
+
 /**
  * ExtLinkToken
  * @param constructor 基类

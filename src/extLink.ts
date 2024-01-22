@@ -8,12 +8,13 @@ import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
+import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
 
 /**
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export class ExtLinkToken extends magicLinkParent(Token) {
+export class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
 	override readonly type = 'ext-link';
 	#space;
 

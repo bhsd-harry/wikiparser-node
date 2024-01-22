@@ -7,6 +7,7 @@ import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
 import type {LintError, Config} from '../../base';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /**
  * 从数组中删除指定元素
@@ -23,7 +24,7 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-export class ExtToken extends attributesParent(TagPairToken) {
+export class ExtToken extends attributesParent(TagPairToken) implements AttributesParentBase {
 	override readonly type = 'ext';
 	declare closed: true;
 

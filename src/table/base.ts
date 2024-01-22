@@ -5,6 +5,7 @@ import * as Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER */
 
@@ -28,7 +29,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
-export abstract class TableBaseToken extends attributesParent(Token, 1) {
+export abstract class TableBaseToken extends attributesParent(Token, 1) implements AttributesParentBase {
 	declare type: 'table' | 'tr' | 'td';
 
 	declare readonly childNodes: [SyntaxToken, AttributesToken, ...Token[]];

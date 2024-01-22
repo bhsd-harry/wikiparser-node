@@ -11,6 +11,7 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AttributesToken} from '../internal';
 
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
@@ -203,7 +204,7 @@ const commonHtmlAttrs = new Set([
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export class AttributeToken extends fixed(Token) {
+export class AttributeToken extends fixed(Token) implements FixedTokenBase {
 	declare type: AttributeTypes;
 	declare readonly name: string;
 	readonly tag;

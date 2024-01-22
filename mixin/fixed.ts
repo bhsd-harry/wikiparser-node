@@ -2,6 +2,10 @@ import {Shadow} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {AstNodes, AstText} from '../internal';
 
+export interface FixedTokenBase {
+	removeAt(): never;
+}
+
 /**
  * 不可增删子节点的类
  * @param constructor 基类

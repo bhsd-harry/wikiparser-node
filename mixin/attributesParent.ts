@@ -1,6 +1,21 @@
 import {mixins} from '../util/constants';
 import type {AstNodes, AttributesToken} from '../internal';
 
+export interface AttributesParentBase {
+	attributes: Record<string, string | true>;
+	className: string;
+	classList: Set<string>;
+	id: string;
+	hasAttr(key: string): boolean;
+	getAttr(key: string): string | true | undefined;
+	getAttrNames(): Set<string>;
+	getAttrs(): Record<string, string | true>;
+	setAttr(key: string, value: string | boolean): void;
+	setAttr(prop: Record<string, string | boolean>): void;
+	removeAttr(key: string): void;
+	toggleAttr(key: string, force?: boolean): void;
+}
+
 /**
  * 子节点含有AttributesToken的类
  * @param constructor 基类

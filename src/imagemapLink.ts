@@ -7,13 +7,14 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
 import type {Title} from '../lib/title';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AstText, ImagemapToken} from '../internal';
 
 /**
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export class ImagemapLinkToken extends fixed(singleLine(Token)) {
+export class ImagemapLinkToken extends fixed(singleLine(Token)) implements FixedTokenBase {
 	override readonly type = 'imagemap-link';
 
 	declare readonly childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];
