@@ -52,7 +52,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 					console.time(title);
 					const errors = root.lint();
 					console.timeEnd(title);
-					console.log(errors);
+					console.log(errors.map(({message, severity}) => ({message, severity})));
 					if (errors.length === 0) {
 						continue;
 					}
