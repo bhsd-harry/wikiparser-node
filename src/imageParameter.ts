@@ -149,6 +149,11 @@ export class ImageParameterToken extends Token {
 		return errors;
 	}
 
+	/** 获取参数值 */
+	getValue(): string | true {
+		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+	}
+
 	/** @override */
 	override print(): string {
 		if (this.#syntax) {
