@@ -1,5 +1,5 @@
 import {escapeRegExp} from '../../util/string';
-import {generateForChild} from '../../util/lint';
+import {generateForChild, generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
@@ -73,6 +73,9 @@ export class FileToken extends LinkBaseToken {
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key));
+		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
+			errors.push(generateForSelf(this, {start}, 'internal link in an external link'));
+		}
 		if (
 			args.length === keys.length
 			&& frameKeys.length < 2
@@ -151,5 +154,22 @@ export class FileToken extends LinkBaseToken {
 	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs(): readonly ImageParameterToken[] {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
+	}
+
+	/**
+	 * 获取生效的指定图片参数
+	 * @param key 参数名
+	 */
+	getArg(key: string): ImageParameterToken | undefined {
+		const args = this.getArgs(key);
+		return args[args.length - 1];
+	}
+
+	/**
+	 * 获取生效的指定图片参数值
+	 * @param key 参数名
+	 */
+	getValue(key: string): string | true | undefined {
+		return this.getArg(key)?.getValue();
 	}
 }
