@@ -1,4 +1,4 @@
-import {generateForChild, generateForSelf} from '../../util/lint';
+import {generateForChild} from '../../util/lint';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -95,7 +95,7 @@ export abstract class LinkBaseToken extends Token {
 			{childNodes: [target, linkText], type: linkType} = this,
 			{encoded, fragment} = this.#title;
 		let rect: BoundingRect | undefined;
-		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
+		if (target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
 		}
@@ -103,7 +103,7 @@ export abstract class LinkBaseToken extends Token {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
-		if (linkType === 'link' && linkText?.childNodes.some(
+		if ((linkType === 'link' || linkType === 'category') && linkText?.childNodes.some(
 			({type, data}) => type === 'text' && data.includes('|'),
 		)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
@@ -111,10 +111,6 @@ export abstract class LinkBaseToken extends Token {
 		} else if (linkType !== 'link' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'useless fragment'));
-		}
-		if (linkType === 'link' && this.closest('ext-link-text')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForSelf(this, rect, 'internal link in an external link'));
 		}
 		return errors;
 	}
