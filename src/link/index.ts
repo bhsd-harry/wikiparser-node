@@ -1,5 +1,7 @@
 import {classes} from '../../util/constants';
+import {generateForSelf} from '../../util/lint';
 import {LinkBaseToken} from './base';
+import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
@@ -65,6 +67,19 @@ export class LinkToken extends LinkBaseToken {
 		}
 		this.setTarget(link);
 	}
+
+	/* NOT FOR BROWSER END */
+
+	/** @override */
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const errors = super.lint(start);
+		if (this.closest('ext-link-text')) {
+			errors.push(generateForSelf(this, {start}, 'internal link in an external link'));
+		}
+		return errors;
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** @override */
 	override setTarget(link: string): void {

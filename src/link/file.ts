@@ -1,5 +1,5 @@
 import {escapeRegExp} from '../../util/string';
-import {generateForChild} from '../../util/lint';
+import {generateForChild, generateForSelf} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import * as Parser from '../../index';
@@ -131,6 +131,9 @@ export class FileToken extends LinkBaseToken {
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key));
+		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
+			errors.push(generateForSelf(this, {start}, 'internal link in an external link'));
+		}
 		if (
 			args.length === keys.length
 			&& frameKeys.length < 2
@@ -214,8 +217,6 @@ export class FileToken extends LinkBaseToken {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
 	}
 
-	/* NOT FOR BROWSER */
-
 	/**
 	 * 获取生效的指定图片参数
 	 * @param key 参数名
@@ -224,6 +225,16 @@ export class FileToken extends LinkBaseToken {
 		const args = this.getArgs(key);
 		return args[args.length - 1];
 	}
+
+	/**
+	 * 获取生效的指定图片参数值
+	 * @param key 参数名
+	 */
+	getValue(key: string): string | true | undefined {
+		return this.getArg(key)?.getValue();
+	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * 是否具有指定图片参数
@@ -254,14 +265,6 @@ export class FileToken extends LinkBaseToken {
 	 */
 	getValues(key: string): readonly (string | true)[] {
 		return this.getArgs(key).map(token => token.getValue());
-	}
-
-	/**
-	 * 获取生效的指定图片参数值
-	 * @param key 参数名
-	 */
-	getValue(key: string): string | true | undefined {
-		return this.getArg(key)?.getValue();
 	}
 
 	/**

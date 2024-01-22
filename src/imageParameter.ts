@@ -232,6 +232,11 @@ export class ImageParameterToken extends Token {
 		return errors;
 	}
 
+	/** 获取参数值 */
+	getValue(): string | true {
+		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
+	}
+
 	/** @override */
 	override print(): string {
 		if (this.#syntax) {
@@ -286,11 +291,6 @@ export class ImageParameterToken extends Token {
 			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
 		}
 		return super.insertAt(token as T, i);
-	}
-
-	/** 获取参数值 */
-	getValue(): string | true {
-		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
 
 	/**
