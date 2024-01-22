@@ -6,6 +6,10 @@
 
 - New categories of linting errors, including obsolete HTML tags and attributes, and internal links in external links
 
+**Fixed**
+
+- [`Parser.isInterwiki`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#isinterwiki) now returns `null` if no interwiki prefix is found from the configuration
+
 ## v1.3.8
 
 *2024-01-22*
