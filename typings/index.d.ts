@@ -22,13 +22,11 @@ declare global {
 		constructorError(msg: string): never;
 	};
 
-	type BoundingRect = {
+	interface BoundingRect {
 		readonly top: number;
 		readonly left: number;
 		readonly start: number;
-	} | {
-		readonly start: number;
-	};
+	}
 
 	interface PrintOpt {
 		readonly pre?: string;

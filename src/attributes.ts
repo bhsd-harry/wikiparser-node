@@ -228,13 +228,13 @@ export class AttributesToken extends Token {
 			duplicated = new Set<string>();
 		let rect: BoundingRect | undefined;
 		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'attributes of a closing tag'));
 		}
 		for (let i = 0; i < length; i++) {
 			const attr = childNodes[i]!;
 			if (attr instanceof AtomToken && attr.text().trim()) {
-				rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 				errors.push(generateForChild(attr, rect, 'containing invalid attribute'));
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
@@ -247,7 +247,7 @@ export class AttributesToken extends Token {
 			}
 		}
 		if (duplicated.size > 0) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			for (const key of duplicated) {
 				errors.push(...attrs.get(key)!.map(
 					attr => generateForChild(attr, rect!, Parser.msg('duplicated $1 attribute', key)),

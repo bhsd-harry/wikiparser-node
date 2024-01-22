@@ -96,7 +96,7 @@ export class MagicLinkToken extends syntax(Token) {
 			if (type !== 'text' || !regex.test(data)) {
 				continue;
 			}
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			const refError = generateForChild(child, rect, '', 'warning');
 			regexGlobal.lastIndex = 0;
 			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
