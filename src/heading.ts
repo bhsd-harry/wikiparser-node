@@ -101,7 +101,7 @@ export class HeadingToken extends sol(fixed(Token)) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.level;
 	}
 

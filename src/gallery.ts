@@ -47,7 +47,7 @@ export class GalleryToken extends Token {
 	/* NOT FOR BROWSER */
 
 	/** 所有图片 */
-	override get images(): readonly GalleryImageToken[] {
+	override get images(): GalleryImageToken[] {
 		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
 	}
 
@@ -92,7 +92,7 @@ export class GalleryToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return 1;
 	}
 

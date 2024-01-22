@@ -295,7 +295,7 @@ export class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return 1;
 	}
 
@@ -375,12 +375,12 @@ export class TranscludeToken extends Token {
 	}
 
 	/** 获取所有参数 */
-	getAllArgs(): readonly ParameterToken[] {
+	getAllArgs(): ParameterToken[] {
 		return this.childNodes.filter(isToken<ParameterToken>('parameter'));
 	}
 
 	/** 获取所有匿名参数 */
-	getAnonArgs(): readonly ParameterToken[] {
+	getAnonArgs(): ParameterToken[] {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
@@ -411,7 +411,7 @@ export class TranscludeToken extends Token {
 	 * 获取重名参数
 	 * @throws `Error` 仅用于模板
 	 */
-	getDuplicatedArgs(): readonly [string, ParameterToken[]][] {
+	getDuplicatedArgs(): [string, ParameterToken[]][] {
 		if (this.isTemplate()) {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
@@ -422,7 +422,7 @@ export class TranscludeToken extends Token {
 	 * 对特定魔术字获取可能的取值
 	 * @throws `Error` 不是可接受的魔术字
 	 */
-	getPossibleValues(): readonly Token[] {
+	getPossibleValues(): Token[] {
 		const {type, name, childNodes, constructor: {name: cName}} = this;
 		if (type === 'template') {
 			throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
@@ -552,7 +552,7 @@ export class TranscludeToken extends Token {
 	}
 
 	/** 获取所有参数名 */
-	getKeys(): readonly string[] {
+	getKeys(): string[] {
 		const args = this.getAllArgs();
 		if (this.#keys.size === 0 && args.length > 0) {
 			for (const {name} of args) {
@@ -566,7 +566,7 @@ export class TranscludeToken extends Token {
 	 * 获取参数值
 	 * @param key 参数名
 	 */
-	getValues(key: string | number): readonly string[] {
+	getValues(key: string | number): string[] {
 		return [...this.getArgs(key, false, false)].map(token => token.getValue());
 	}
 
@@ -714,7 +714,7 @@ export class TranscludeToken extends Token {
 	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数。
 	 * @param aggressive 是否使用有更大风险的修复手段
 	 */
-	fixDuplication(aggressive = false): readonly string[] {
+	fixDuplication(aggressive = false): string[] {
 		if (!this.hasDuplicatedArgs()) {
 			return [];
 		}

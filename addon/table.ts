@@ -530,7 +530,7 @@ TableToken.prototype.replicateTableRow =
 
 TableToken.prototype.replicateTableCol =
 	/** @implements */
-	function(x: number): readonly TdToken[] {
+	function(x: number): TdToken[] {
 		const replicated: TdToken[] = [];
 		for (const [token, start] of this.getFullCol(x)) {
 			if (start) {

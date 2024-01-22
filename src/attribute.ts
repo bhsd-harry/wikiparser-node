@@ -357,7 +357,7 @@ export class AttributeToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 

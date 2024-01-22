@@ -58,7 +58,7 @@ export class ImagemapToken extends Token {
 	/* NOT FOR BROWSER */
 
 	/** 链接 */
-	override get links(): readonly ImagemapLinkToken[] {
+	override get links(): ImagemapLinkToken[] {
 		return this.childNodes.filter(isToken<ImagemapLinkToken>('imagemap-link'));
 	}
 
@@ -155,7 +155,7 @@ export class ImagemapToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return 1;
 	}
 

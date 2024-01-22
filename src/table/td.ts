@@ -174,7 +174,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	override getGaps(i: number): number {
 		if (i === 1) {
 			this.#correct();
 			return this.#innerSyntax.length;

@@ -138,7 +138,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	protected get fixed(): boolean {
+	get fixed(): boolean {
 		return 'fixed' in this.constructor;
 	}
 
@@ -213,7 +213,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-	protected getGaps(i: number): number {
+	getGaps(i: number): number {
 		return 0;
 	}
 
@@ -254,7 +254,7 @@ export abstract class AstNode implements AstNodeBase {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	protected typeError(method: string, ...types: string[]): never {
+	typeError(method: string, ...types: string[]): never {
 		return typeError(this.constructor, method, ...types);
 	}
 
@@ -264,7 +264,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	protected seal(key: string, hidden?: boolean): void {
+	seal(key: string, hidden?: boolean): void {
 		if (!hidden) {
 			this.#optional.add(key);
 		}
@@ -351,7 +351,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	protected verifyChild(i: number, addition = 0): void {
+	verifyChild(i: number, addition = 0): void {
 		const {childNodes: {length}} = this;
 		if (i < -length || i >= length + addition) {
 			throw new RangeError(`不存在第 ${i} 个子节点！`);
@@ -408,7 +408,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * 列举事件监听
 	 * @param type 事件类型
 	 */
-	listEventListeners(type: string): readonly Function[] {
+	listEventListeners(type: string): Function[] {
 		return this.#events.listeners(type);
 	}
 

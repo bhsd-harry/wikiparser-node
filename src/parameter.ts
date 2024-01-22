@@ -142,7 +142,7 @@ export class ParameterToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.anon ? 0 : 1;
 	}
 

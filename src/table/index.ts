@@ -166,7 +166,7 @@ export class TableToken extends TrBaseToken {
 	}
 
 	/** 获取所有行 */
-	getAllRows(): readonly (TrToken | this)[] {
+	getAllRows(): (TrToken | this)[] {
 		return [
 			...super.getRowCount() ? [this] : [],
 			...this.childNodes.slice(1)
@@ -414,7 +414,7 @@ export class TableToken extends TrBaseToken {
 	 * 复制一列并插入该列之前
 	 * @param x 列号
 	 */
-	replicateTableCol(x: number): readonly TdToken[] {
+	replicateTableCol(x: number): TdToken[] {
 		require('../../addon/table');
 		return this.replicateTableCol(x);
 	}

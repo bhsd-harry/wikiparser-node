@@ -370,7 +370,7 @@ export class AstRange {
 	}
 
 	/** 获取范围内的全部节点 */
-	extractContents(): readonly AstNodes[] {
+	extractContents(): AstNodes[] {
 		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
 			{childNodes} = commonAncestorContainer;
 		if (commonAncestorContainer.type === 'text') {
@@ -403,7 +403,7 @@ export class AstRange {
 	}
 
 	/** 在满足条件时拷贝范围内的全部节点 */
-	cloneContents(): readonly AstNodes[] {
+	cloneContents(): AstNodes[] {
 		return this.extractContents().map(node => node.cloneNode());
 	}
 }

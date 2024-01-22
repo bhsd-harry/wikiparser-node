@@ -85,7 +85,7 @@ export class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return 1;
 	}
 
@@ -181,7 +181,7 @@ export class ConverterFlagsToken extends Token {
 	 * 获取转换类型标记节点
 	 * @param flag 转换类型标记
 	 */
-	getFlagTokens(flag: string): readonly AtomToken[] {
+	getFlagTokens(flag: string): AtomToken[] {
 		return this.#flags!.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 

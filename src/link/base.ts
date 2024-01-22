@@ -154,7 +154,7 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	override getGaps(i: number): number {
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 

@@ -89,7 +89,7 @@ export abstract class TagPairToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return 1;
 	}
 

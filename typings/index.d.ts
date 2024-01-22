@@ -9,7 +9,7 @@ declare global {
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
-		readonly length: number;
+		get length(): number;
 		toString(omit?: Set<string>, separator?: string): string;
 		text(separator?: string): string;
 		lint(start?: number): LintError[];
