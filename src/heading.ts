@@ -75,37 +75,37 @@ export class HeadingToken extends sol(fixed(Token)) {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
-			{firstChild} = this,
+			{firstChild, level} = this,
 			innerStr = String(firstChild),
 			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),
 			boldQuotes = quotes.filter(({bold}) => bold),
 			italicQuotes = quotes.filter(({italic}) => italic);
 		let rect: BoundingRect | undefined;
 		if (this.level === 1) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(firstChild, rect, '<h1>'));
 		}
 		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(firstChild, rect, Parser.msg('unbalanced $1 in a section header', '"="')));
 		}
 		if (this.closest('html-attrs, table-attrs')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'section header in a HTML tag'));
 		}
 		if (boldQuotes.length % 2) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(
 				boldQuotes[boldQuotes.length - 1]!,
-				rect,
+				{...rect, start: start + level, left: rect.left + level},
 				Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
 			));
 		}
 		if (italicQuotes.length % 2) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(
 				italicQuotes[italicQuotes.length - 1]!,
-				rect,
+				{start: start + level},
 				Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
 			));
 		}
