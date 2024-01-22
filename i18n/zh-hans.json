@@ -32,6 +32,8 @@
 	"missing module name": "缺少模块名称",
 	"nonzero tabindex": "不为0的tabindex",
 	"nothing should be in <$1>": "<$1>标签内不应有任何内容",
+	"obsolete attribute": "过时的属性",
+	"obsolete HTML tag": "过时的HTML标签",
 	"quotes": "引号",
 	"section header in a HTML tag": "HTML标签属性中的段落标题",
 	"table": "表格",
