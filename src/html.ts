@@ -179,8 +179,16 @@ export class HtmlToken extends attributesParent(fixed(Token)) {
 				refError ??= generateForSelf(this, {start}, '');
 				const [msg] = errorMsg.split(':'),
 					error = {...refError, message: Parser.msg(msg!)};
-				if (msg === 'unclosed tag' && !formattingTags.has(this.name)) {
-					error.severity = 'warning';
+				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
+					if (formattingTags.has(this.name)) {
+						const childNodes = this.parentNode?.childNodes,
+							i = childNodes?.indexOf(this);
+						if (!childNodes?.slice(0, i).some(({type, name}) => type === 'html' && name === this.name)) {
+							error.severity = 'warning';
+						}
+					} else {
+						error.severity = 'warning';
+					}
 				} else if (msg === 'unmatched closing tag') {
 					const ancestor = this.closest<TranscludeToken>('magic-word');
 					if (ancestor && magicWords.has(ancestor.name)) {

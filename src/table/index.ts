@@ -47,7 +47,7 @@ export class TableToken extends TrBaseToken {
 
 	set closed(closed) {
 		if (closed && !this.closed) {
-			this.close(this.closest('parameter') ? '\n{{!}}}' : '\n|}');
+			this.close(this.closest('parameter-value') ? '\n{{!}}}' : '\n|}');
 		}
 	}
 
