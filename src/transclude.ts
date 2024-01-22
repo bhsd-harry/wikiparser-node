@@ -1,7 +1,6 @@
 import {
 	removeComment,
 	text,
-	noWrap,
 	decodeHtml,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
