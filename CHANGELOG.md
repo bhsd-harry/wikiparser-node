@@ -9,6 +9,7 @@
 **Fixed**
 
 - [`Parser.isInterwiki`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#isinterwiki) now returns `null` if no interwiki prefix is found from the configuration
+- Title starting with multiple colons is invalid
 
 ## v1.3.8
 
