@@ -7,6 +7,7 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
+import type {QuoteToken} from '../internal';
 
 /**
  * 章节标题
@@ -108,18 +109,38 @@ export class HeadingToken extends sol(fixed(Token)) {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{firstChild} = this,
-			innerStr = String(firstChild);
-		let refError: LintError | undefined;
+			innerStr = String(firstChild),
+			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),
+			boldQuotes = quotes.filter(({bold}) => bold),
+			italicQuotes = quotes.filter(({italic}) => italic);
+		let rect: BoundingRect | undefined;
 		if (this.level === 1) {
-			refError = generateForChild(firstChild, {start}, '<h1>');
-			errors.push(refError);
+			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(firstChild, rect, '<h1>'));
 		}
 		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
-			refError ??= generateForChild(firstChild, {start}, '');
-			errors.push({...refError, message: Parser.msg('unbalanced "=" in a section header')});
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(firstChild, rect, Parser.msg('unbalanced $1 in a section header', '"="')));
 		}
 		if (this.closest('html-attrs, table-attrs')) {
-			errors.push({...generateForSelf(this, {start}, ''), message: Parser.msg('section header in a HTML tag')});
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'section header in a HTML tag'));
+		}
+		if (boldQuotes.length % 2) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(
+				boldQuotes[boldQuotes.length - 1]!,
+				rect,
+				Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
+			));
+		}
+		if (italicQuotes.length % 2) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(
+				italicQuotes[italicQuotes.length - 1]!,
+				rect,
+				Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
+			));
 		}
 		return errors;
 	}
