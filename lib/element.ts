@@ -11,6 +11,8 @@ import type {
 	Token,
 } from '../internal';
 
+declare type TokenPredicate<T extends Token = Token> = (token: Token) => token is T;
+
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
 	declare readonly name?: string;
@@ -66,14 +68,23 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * 将选择器转化为类型谓词
+	 * @param selector 选择器
+	 */
+	#getCondition<T extends Token>(selector: string): TokenPredicate<T> {
+		let condition: TokenPredicate<T>;
+		const types = new Set(selector.split(',').map(str => str.trim()));
+		condition = (token => types.has(token.type)) as TokenPredicate<T>;
+		return condition;
+	}
+
+	/**
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
 	closest<T extends Token>(selector: string): T | undefined {
-		let {parentNode} = this,
-			condition: (token: Token) => token is T;
-		const types = new Set(selector.split(',').map(str => str.trim()));
-		condition = /** @implements */ (token): token is T => types.has(token.type);
+		const condition = this.#getCondition<T>(selector);
+		let {parentNode} = this;
 		while (parentNode) {
 			if (condition(parentNode)) {
 				return parentNode;
