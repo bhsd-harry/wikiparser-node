@@ -98,7 +98,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 						ch = 'c';
 					}
 				} catch (e) {
-					if (e instanceof SyntaxError && e.message.startsWith('非法的模板名称：')) {
+					if (e instanceof SyntaxError && e.message === '非法的模板名称') {
 						skip = true;
 					} else {
 						throw e;
