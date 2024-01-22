@@ -19,6 +19,7 @@
 	"illegal attribute name": "非法的屬性名",
 	"illegal module name": "非法的模組名稱",
 	"insecure style": "不安全的樣式",
+	"internal link in an external link": "外部連結中的內部連結",
 	"invalid content in <$1>": "<$1>內的無效內容",
 	"invalid conversion flag": "無效的轉換標記",
 	"invalid gallery image": "無效的圖庫圖片",

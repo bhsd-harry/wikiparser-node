@@ -1,4 +1,4 @@
-import {generateForChild} from '../../util/lint';
+import {generateForChild, generateForSelf} from '../../util/lint';
 import {undo, Shadow} from '../../util/debug';
 import {
 	MAX_STAGE,
@@ -180,6 +180,10 @@ export abstract class LinkBaseToken extends Token {
 		} else if (linkType !== 'link' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(target, rect, 'useless fragment'));
+		}
+		if (linkType === 'link' && this.closest('ext-link-text')) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForSelf(this, rect, 'internal link in an external link'));
 		}
 		return errors;
 	}

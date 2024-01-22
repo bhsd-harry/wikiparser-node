@@ -1,3 +1,11 @@
+## v1.3.9
+
+*2024-01-22*
+
+**Added**
+
+- New categories of linting errors, including obsolete HTML tags and attributes, and internal links in external links
+
 ## v1.3.8
 
 *2024-01-22*
