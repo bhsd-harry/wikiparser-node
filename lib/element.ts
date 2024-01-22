@@ -22,7 +22,8 @@ import type {
 	CategoryToken,
 } from '../internal';
 
-declare type TokenPredicate<T extends Token = Token> = (token: Token) => token is T;
+// @ts-expect-error unconstrained predicate
+declare type TokenPredicate<T = Token> = (token: Token) => token is T;
 
 /* NOT FOR BROWSER */
 
@@ -209,7 +210,7 @@ export abstract class AstElement extends AstNode {
 	 * 将选择器转化为类型谓词
 	 * @param selector 选择器
 	 */
-	#getCondition<T extends Token>(selector: string): TokenPredicate<T> {
+	#getCondition<T>(selector: string): TokenPredicate<T> {
 		let condition: TokenPredicate<T>;
 		if (/[^a-z\-,\s]/u.test(selector)) {
 			const stack = parseSelector(selector);
@@ -225,7 +226,7 @@ export abstract class AstElement extends AstNode {
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
-	closest<T extends Token>(selector: string): T | undefined {
+	closest<T = Token>(selector: string): T | undefined {
 		const condition = this.#getCondition<T>(selector);
 		let {parentNode} = this;
 		while (parentNode) {
@@ -497,7 +498,7 @@ export abstract class AstElement extends AstNode {
 				case 'contains':
 					return this.text().includes(s);
 				case 'has':
-					return Boolean(this.querySelector(s));
+					return Boolean(this.querySelector<Token>(s));
 				case 'lang': {
 					const regex = new RegExp(`^${s}(?:-|$)`, 'u');
 					return matchesLang(this, regex)
@@ -555,7 +556,7 @@ export abstract class AstElement extends AstNode {
 	 * 检查是否符合选择器
 	 * @param selector 选择器
 	 */
-	matches<T extends Token>(selector?: string): this is T {
+	matches<T>(selector?: string): this is T {
 		return selector === undefined || this.#getCondition<T>(selector)(this as unknown as Token);
 	}
 
@@ -563,7 +564,7 @@ export abstract class AstElement extends AstNode {
 	 * 符合条件的第一个后代节点
 	 * @param condition 条件
 	 */
-	#getElementBy<T extends Token>(condition: TokenPredicate<T>): T | undefined {
+	#getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
 		for (const child of this.children) {
 			if (condition(child)) {
 				return child;
@@ -580,7 +581,7 @@ export abstract class AstElement extends AstNode {
 	 * 符合选择器的第一个后代节点
 	 * @param selector 选择器
 	 */
-	querySelector<T extends Token>(selector: string): T | undefined {
+	querySelector<T = Token>(selector: string): T | undefined {
 		const condition = this.#getCondition<T>(selector);
 		return this.#getElementBy(condition);
 	}
@@ -589,7 +590,7 @@ export abstract class AstElement extends AstNode {
 	 * 类型选择器
 	 * @param types
 	 */
-	getElementByTypes<T extends Token>(types: string): T | undefined {
+	getElementByTypes<T = Token>(types: string): T | undefined {
 		const typeSet = new Set(types.split(',').map(str => str.trim()));
 		return this.#getElementBy((({type}) => typeSet.has(type)) as TokenPredicate<T>);
 	}
@@ -598,15 +599,15 @@ export abstract class AstElement extends AstNode {
 	 * id选择器
 	 * @param id id名
 	 */
-	getElementById(id: string): Token | undefined {
-		return this.#getElementBy((token => 'id' in token && token.id === id) as TokenPredicate);
+	getElementById<T = Token>(id: string): T | undefined {
+		return this.#getElementBy((token => 'id' in token && token.id === id) as TokenPredicate<T>);
 	}
 
 	/**
 	 * 符合条件的所有后代节点
 	 * @param condition 条件
 	 */
-	#getElementsBy<T extends Token>(condition: TokenPredicate<T>): T[] {
+	#getElementsBy<T = Token>(condition: TokenPredicate<T>): T[] {
 		const descendants: T[] = [];
 		for (const child of this.children) {
 			if (condition(child)) {
@@ -621,7 +622,7 @@ export abstract class AstElement extends AstNode {
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
-	querySelectorAll<T extends Token>(selector: string): T[] {
+	querySelectorAll<T = Token>(selector: string): T[] {
 		const condition = this.#getCondition<T>(selector);
 		return this.#getElementsBy(condition);
 	}
@@ -630,9 +631,9 @@ export abstract class AstElement extends AstNode {
 	 * 类选择器
 	 * @param className 类名之一
 	 */
-	getElementsByClassName(className: string): Token[] {
+	getElementsByClassName<T = Token>(className: string): T[] {
 		return this.#getElementsBy(
-			(token => 'classList' in token && (token.classList as Set<string>).has(className)) as TokenPredicate,
+			(token => 'classList' in token && (token.classList as Set<string>).has(className)) as TokenPredicate<T>,
 		);
 	}
 
@@ -640,7 +641,7 @@ export abstract class AstElement extends AstNode {
 	 * 标签名选择器
 	 * @param tag 标签名
 	 */
-	getElementsByTagName<T extends Token>(tag: string): T[] {
+	getElementsByTagName<T = Token>(tag: string): T[] {
 		return this.#getElementsBy<T>(
 			(({type, name}) => name === tag && (type === 'html' || type === 'ext')) as TokenPredicate<T>,
 		);
