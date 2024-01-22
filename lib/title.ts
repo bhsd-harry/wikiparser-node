@@ -38,7 +38,7 @@ export class Title {
 		const m = title.split(':');
 		if (m.length > 1) {
 			const id = nsid[m[0]!.trim().toLowerCase()];
-			if (id !== undefined) {
+			if (id) {
 				ns = id;
 				title = m.slice(1).join(':').trim();
 			}
@@ -54,6 +54,6 @@ export class Title {
 		this.valid = Boolean(
 			title
 			|| selfLink && this.fragment !== undefined,
-		) && !/\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
+		) && !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 	}
 }

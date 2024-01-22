@@ -33,6 +33,10 @@ export interface AstNode {
 	lint(): LintError[];
 }
 
+/** 类似HTMLElement */
+interface AstElement extends AstNode {
+}
+
 export interface Parser {
 	config: string | Config;
 	i18n: string | Record<string, string> | undefined;
@@ -45,5 +49,5 @@ export interface Parser {
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstNode;
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstElement;
 }

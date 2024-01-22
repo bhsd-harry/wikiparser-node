@@ -5,7 +5,35 @@ import {Token} from './index';
 import type {LintError} from '../base';
 import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
 
-const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']);
+const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
+	formattingTags = new Set([
+		'b',
+		'big',
+		'center',
+		'cite',
+		'code',
+		'del',
+		'dfn',
+		'em',
+		'font',
+		'i',
+		'ins',
+		'kbd',
+		'mark',
+		'pre',
+		'q',
+		's',
+		'samp',
+		'small',
+		'strike',
+		'strong',
+		'sub',
+		'sup',
+		'tt',
+		'u',
+		'var',
+	]),
+	obsoleteTags = new Set(['strike', 'big', 'center', 'font', 'tt']);
 
 /**
  * HTML标签
@@ -97,7 +125,7 @@ export class HtmlToken extends Token {
 				refError ??= generateForSelf(this, {start}, '');
 				const [msg] = errorMsg.split(':'),
 					error = {...refError, message: Parser.msg(msg!)};
-				if (msg === 'unclosed tag') {
+				if (msg === 'unclosed tag' && !formattingTags.has(this.name)) {
 					error.severity = 'warning';
 				} else if (msg === 'unmatched closing tag') {
 					const ancestor = this.closest<TranscludeToken>('magic-word');
@@ -107,6 +135,14 @@ export class HtmlToken extends Token {
 				}
 				errors.push(error);
 			}
+		}
+		if (obsoleteTags.has(this.name)) {
+			refError ??= generateForSelf(this, {start}, '');
+			errors.push({
+				...refError,
+				message: Parser.msg('obsolete HTML tag'),
+				severity: 'warning',
+			});
 		}
 		return errors;
 	}
