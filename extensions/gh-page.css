@@ -135,7 +135,7 @@ button.active {
 .tabcontent {
 	display: none;
 }
-#editor {
+#linter {
 	display: block;
 }
 
