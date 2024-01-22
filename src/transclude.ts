@@ -224,21 +224,21 @@ export class TranscludeToken extends Token {
 		}
 		const title = this.#getTitle();
 		if (title.fragment !== undefined) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
 		}
 		if (!title.valid) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
 		}
 		if (type === 'magic-word' && length === 2) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'missing module function'));
 			return errors;
 		}
 		const duplicatedArgs = this.getDuplicatedArgs();
 		if (duplicatedArgs.length > 0) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
 				arg => generateForChild(arg, rect!, 'duplicated parameter'),
 			));

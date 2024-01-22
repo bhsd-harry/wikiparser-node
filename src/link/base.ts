@@ -96,24 +96,24 @@ export abstract class LinkBaseToken extends Token {
 			{encoded, fragment} = this.#title;
 		let rect: BoundingRect | undefined;
 		if (linkType === 'link' && target.childNodes.some(({type}) => type === 'template')) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)};
+			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
 		}
 		if (encoded) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' && linkText?.childNodes.some(
 			({type, data}) => type === 'text' && data.includes('|'),
 		)) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
 		} else if (linkType !== 'link' && fragment !== undefined) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'useless fragment'));
 		}
 		if (linkType === 'link' && this.closest('ext-link-text')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'internal link in an external link'));
 		}
 		return errors;

@@ -2,7 +2,12 @@ import Parser from '../index';
 import type {LintError, Severity} from '../base';
 import type {AstNodes} from '../internal';
 
-declare type generator = (token: AstNodes, boundingRect: BoundingRect, msg: string, severity?: Severity) => LintError;
+declare type generator = (
+	token: AstNodes,
+	boundingRect: BoundingRect | {start: number},
+	msg: string,
+	severity?: Severity,
+) => LintError;
 
 /**
  * 生成lint函数
