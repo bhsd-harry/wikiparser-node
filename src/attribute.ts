@@ -42,10 +42,14 @@ const commonHtmlAttrs = new Set([
 	citeAttrs = new Set(['cite']),
 	citeAndAttrs = new Set(['cite', 'datetime']),
 	widthAttrs = new Set(['width']),
-	tdAttrs = new Set(
-		['align', 'valign', 'abbr', 'axis', 'headers', 'scope', 'rowspan', 'colspan', 'width', 'height', 'bgcolor'],
-	),
+	obsoleteTdAttrs = new Set(['axis', 'align', 'bgcolor', 'height', 'width', 'valign']),
+	tdAttrs = new Set([...obsoleteTdAttrs, 'abbr', 'headers', 'scope', 'rowspan', 'colspan']),
 	typeAttrs = new Set(['type']),
+	obsoleteTableAttrs = new Set(
+		['summary', 'align', 'bgcolor', 'cellpadding', 'cellspacing', 'frame', 'rules', 'width'],
+	),
+	brAttrs = new Set(['clear']),
+	trAttrs = new Set(['bgcolor', 'align', 'valign']),
 	htmlAttrs: Record<string, Set<string>> = {
 		div: blockAttrs,
 		h1: blockAttrs,
@@ -57,18 +61,16 @@ const commonHtmlAttrs = new Set([
 		blockquote: citeAttrs,
 		q: citeAttrs,
 		p: blockAttrs,
-		br: new Set(['clear']),
+		br: brAttrs,
 		pre: widthAttrs,
 		ins: citeAndAttrs,
 		del: citeAndAttrs,
 		ul: typeAttrs,
 		ol: new Set(['type', 'start', 'reversed']),
 		li: new Set(['type', 'value']),
-		table: new Set(
-			['summary', 'width', 'border', 'frame', 'rules', 'cellspacing', 'cellpadding', 'align', 'bgcolor'],
-		),
+		table: new Set([...obsoleteTableAttrs, 'border']),
 		caption: blockAttrs,
-		tr: new Set(['bgcolor', 'align', 'valign']),
+		tr: trAttrs,
 		td: tdAttrs,
 		th: tdAttrs,
 		img: new Set(['alt', 'src', 'width', 'height', 'srcset']),
@@ -140,7 +142,27 @@ const commonHtmlAttrs = new Set([
 		+ '|'
 		+ 'attr\\s*\\([^)]+[\\s,]url',
 		'u',
-	);
+	),
+	obsoleteAttrs: Record<string, Set<string>> = {
+		table: obsoleteTableAttrs,
+		td: new Set([...obsoleteTdAttrs, 'scope']),
+		th: obsoleteTdAttrs,
+		br: brAttrs,
+		caption: blockAttrs,
+		div: blockAttrs,
+		hr: widthAttrs,
+		h1: blockAttrs,
+		h2: blockAttrs,
+		h3: blockAttrs,
+		h4: blockAttrs,
+		h5: blockAttrs,
+		h6: blockAttrs,
+		li: typeAttrs,
+		p: blockAttrs,
+		pre: widthAttrs,
+		tr: trAttrs,
+		ul: typeAttrs,
+	};
 
 /**
  * 扩展和HTML标签属性
@@ -282,6 +304,9 @@ export class AttributeToken extends Token {
 		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));
+		} else if (obsoleteAttrs[tag]?.has(name)) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+			errors.push(generateForChild(firstChild, rect, 'obsolete attribute', 'warning'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)};
 			errors.push(generateForChild(lastChild, rect, 'insecure style'));

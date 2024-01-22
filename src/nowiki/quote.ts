@@ -8,6 +8,16 @@ import type {LintError} from '../../base';
 export class QuoteToken extends NowikiBaseToken {
 	override readonly type = 'quote';
 
+	/** 是否粗体 */
+	get bold(): boolean {
+		return this.innerText.length !== 2;
+	}
+
+	/** 是否斜体 */
+	get italic(): boolean {
+		return this.innerText.length !== 3;
+	}
+
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {previousSibling, nextSibling} = this,
@@ -43,5 +53,14 @@ export class QuoteToken extends NowikiBaseToken {
 			});
 		}
 		return errors;
+	}
+
+	/** @override */
+	override json(): object {
+		return {
+			...super.json(),
+			bold: this.bold,
+			italic: this.italic,
+		};
 	}
 }

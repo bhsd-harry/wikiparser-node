@@ -1,7 +1,6 @@
 import {
 	removeComment,
 	text,
-	noWrap,
 	print,
 	decodeHtml,
 } from '../util/string';
@@ -109,9 +108,9 @@ export class TranscludeToken extends Token {
 		}
 		if (this.type === 'template') {
 			const name = removeComment(decodeHtml(title)).split('#')[0]!.trim();
-			if (!name || /\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/u.test(name)) {
+			if (!name || /^:[\s_]*:|\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/iu.test(name)) {
 				accum.pop();
-				throw new SyntaxError(`非法的模板名称：${noWrap(name)}`);
+				throw new SyntaxError('非法的模板名称');
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
 			});
