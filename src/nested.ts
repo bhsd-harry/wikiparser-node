@@ -73,7 +73,7 @@ export class NestedToken extends Token {
 				const str = String(child).trim();
 				return str && !/^<!--.*-->$/su.test(str);
 			}).map(child => {
-				rect ??= {start, ...this.getRootNode().posFromIndex(start)};
+				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 				return generateForChild(child, rect, Parser.msg('invalid content in <$1>', this.name));
 			}),
 		];

@@ -11,11 +11,9 @@ declare global {
 		lint(start?: number): LintError[];
 	};
 
-	type BoundingRect = {
+	interface BoundingRect {
 		readonly top: number;
 		readonly left: number;
 		readonly start: number;
-	} | {
-		readonly start: number;
-	};
+	}
 }
