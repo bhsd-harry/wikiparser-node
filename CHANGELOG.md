@@ -1,3 +1,11 @@
+## v1.3.10
+
+*2024-01-23*
+
+**Added**
+
+- Linting errors for [`LinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken) are now also reported from [`CategoryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken) and [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken) where applicable
+
 ## v1.3.9
 
 *2024-01-22*

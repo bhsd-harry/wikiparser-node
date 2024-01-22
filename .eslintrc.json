@@ -827,6 +827,7 @@
 						"ignoreOverrideMethods": true,
 						"exceptMethods": [
 							"#notInit",
+							"#getCondition",
 							"createTextNode",
 							"createRange",
 							"getGaps"
