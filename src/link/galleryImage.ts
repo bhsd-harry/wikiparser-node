@@ -39,7 +39,7 @@ export class GalleryImageToken extends FileToken {
 		this.type = `${type}-image`;
 	}
 
-	/** private */
+	/** @private */
 	override getTitle(): Title {
 		const imagemap = this.type === 'imagemap-image';
 		return this.normalizeTitle(String(this.firstChild), imagemap ? 0 : 6, true, !imagemap);

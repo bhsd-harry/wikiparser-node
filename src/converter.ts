@@ -62,7 +62,7 @@ export class ConverterToken extends flagsParent(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	override getGaps(i: number): number {
 		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
 

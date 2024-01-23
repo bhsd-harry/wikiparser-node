@@ -113,7 +113,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	protected getGaps(i: number): number {
+	getGaps(i: number): number {
 		return 0;
 	}
 

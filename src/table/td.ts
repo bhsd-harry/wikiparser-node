@@ -104,7 +104,7 @@ export class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	override getGaps(i: number): number {
 		if (i === 1) {
 			return this.#innerSyntax.length;
 		}

@@ -56,7 +56,7 @@ export class ExtLinkToken extends magicLinkParent(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.#space.length;
 	}
 

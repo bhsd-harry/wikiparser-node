@@ -64,7 +64,7 @@ export class HeadingToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.level;
 	}
 

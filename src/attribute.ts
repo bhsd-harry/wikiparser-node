@@ -246,7 +246,6 @@ export class AttributeToken extends Token {
 		this.#equal = equal;
 		this.#quotes = [...quotes];
 		this.tag = tag;
-		Object.defineProperty(this, 'tag', {enumerable: false});
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
@@ -275,7 +274,7 @@ export class AttributeToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
