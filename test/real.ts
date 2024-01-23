@@ -1,4 +1,5 @@
 import {diff} from '../util/diff';
+import {tidy} from '../util/string';
 import {Api} from './api';
 import Parser = require('../index');
 
@@ -40,14 +41,15 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 		try {
 			/* eslint-disable no-await-in-loop */
 			for (const {title, ns, content} of await getPages(`${url}/api.php`)) {
+				const cleaned = tidy(content);
 				try {
 					console.time(title);
-					const root = Parser.parse(content, ns === 10 && !title.endsWith('/doc'));
+					const root = Parser.parse(cleaned, ns === 10 && !title.endsWith('/doc'));
 					console.timeEnd(title);
 					const restored = String(root);
-					if (restored !== content) {
+					if (restored !== cleaned) {
 						error('解析过程中不可逆地修改了原始文本！');
-						await diff(content, restored);
+						await diff(cleaned, restored);
 					}
 					console.time(title);
 					const errors = root.lint();
@@ -57,7 +59,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 						continue;
 					}
 					errors.sort(({startIndex: a}, {startIndex: b}) => b - a);
-					let text = content,
+					let text = cleaned,
 						firstStart = Infinity;
 					for (const {startIndex, endIndex} of errors) {
 						if (endIndex < firstStart) {
@@ -67,7 +69,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 							firstStart = Math.min(firstStart, startIndex);
 						}
 					}
-					await diff(content, text);
+					await diff(cleaned, text);
 				} catch (e) {
 					error(`解析${name}的 ${title} 页面时出错！`, e);
 				}

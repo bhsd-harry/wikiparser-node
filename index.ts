@@ -11,6 +11,7 @@ import {
 	mixins,
 	parsers,
 } from './util/constants';
+import {tidy} from './util/string';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
@@ -91,12 +92,6 @@ const rootRequire = (file: string, dir: string): unknown => require(
 	file.startsWith('/') ? file : `../${file.includes('/') ? '' : dir}${file}`,
 );
 
-/**
- * 清理解析专用的不可见字符
- * @param text 源文本
- */
-const tidy = (text: string): string => text.replace(/[\0\x7F]/gu, '');
-
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	config: 'default',
@@ -173,9 +168,10 @@ const Parser: Parser = {
 
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
+		wikitext = tidy(wikitext);
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const root = Shadow.run(() => {
-			const token = new Token(tidy(wikitext), config);
+			const token = new Token(wikitext, config);
 			try {
 				return token.parse(maxStage, include);
 			} catch (e) {
