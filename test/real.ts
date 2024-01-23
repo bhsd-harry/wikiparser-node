@@ -8,6 +8,7 @@ const {argv: [,, site = '']} = process,
 		['LLWiki', 'https://llwiki.org/mediawiki', 'llwiki'],
 		// ['萌娘百科', 'https://zh.moegirl.org.cn', 'moegirl'],
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
+		['Wikipedia', 'https://en.wikipedia.org/w', 'enwiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 Parser.i18n = require('../../i18n/zh-hans');

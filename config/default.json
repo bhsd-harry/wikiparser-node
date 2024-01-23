@@ -31,6 +31,7 @@
 		"mapframe",
 		"maplink",
 		"math",
+		"phonos",
 		"quiz",
 		"section",
 		"source",
@@ -139,6 +140,10 @@
 		"711": "TimedText talk",
 		"828": "Module",
 		"829": "Module talk",
+		"2300": "Gadget",
+		"2301": "Gadget talk",
+		"2302": "Gadget definition",
+		"2303": "Gadget definition talk",
 		"2600": "Topic"
 	},
 	"nsid": {
@@ -295,7 +300,11 @@
 		"模組討論": 829,
 		"模组对话": 829,
 		"模组讨论": 829,
-		"モジュール・トーク": 829
+		"モジュール・トーク": 829,
+		"gadget": 2300,
+		"gadget talk": 2301,
+		"gadget definition": 2302,
+		"gadget definition talk": 2303
 	},
 	"parserFunction": [
 		{
@@ -414,6 +423,7 @@
 			"#rel2abs": "rel2abs",
 			"#标题组成部分": "titleparts",
 			"#titleparts": "titleparts",
+			"pendingchangelevel": "pendingchangelevel",
 			"#categorytree": "categorytree",
 			"#分類樹": "categorytree",
 			"#分类树": "categorytree",
@@ -463,6 +473,7 @@
 			"#lst": "lst",
 			"#lsth": "lsth",
 			"#lstx": "lstx",
+			"#assessment": "assessment",
 			"#mentor": "mentor",
 			"#property": "property",
 			"#屬性": "property",
@@ -606,6 +617,7 @@
 			"显示标题",
 			"顯示標題",
 			"DISPLAYTITLE",
+			"SHORTDESC",
 			"!",
 			"本月",
 			"本月2",
@@ -729,7 +741,9 @@
 			"無目錄",
 			"toc",
 			"目录",
-			"目錄"
+			"目錄",
+			"archivedtalk",
+			"notalk"
 		],
 		[
 			"EXPECTUNUSEDCATEGORY",
@@ -816,7 +830,8 @@
 		"page=$1": "page",
 		"page $1": "page",
 		"页数=$1": "page",
-		"$1页": "page"
+		"$1页": "page",
+		"lossy=$1": "lossy"
 	},
 	"variants": [
 		"zh",
