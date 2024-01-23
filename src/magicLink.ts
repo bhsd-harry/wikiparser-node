@@ -58,7 +58,7 @@ export class MagicLinkToken extends Token {
 					startCol = top === 1 ? refError.startCol + left : left;
 				errors.push({
 					...refError,
-					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : Parser.msg('full-width punctuation')),
+					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : 'full-width punctuation'),
 					startIndex,
 					endIndex: startIndex + s.length,
 					startLine,
