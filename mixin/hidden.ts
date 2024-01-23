@@ -14,7 +14,7 @@ export const hiddenToken = <T extends AstConstructor>(constructor: T) => {
 		}
 
 		/** @override */
-		override lint(): LintError[] {
+		lint(): LintError[] { // eslint-disable-line @typescript-eslint/class-methods-use-this
 			return [];
 		}
 	}

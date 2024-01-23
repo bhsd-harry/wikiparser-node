@@ -1,20 +1,14 @@
 import type {Ranges} from '../lib/ranges';
-import type {
-	Config,
-	LintError,
-} from '../base';
+import type {Config} from '../base';
 import type {AstNodes} from '../lib/node';
 
 declare global {
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
 
 	type AstConstructor = abstract new (...args: any[]) => {
-		get length(): number;
 		toString(omit?: Set<string>, separator?: string): string;
 		text(separator?: string): string;
-		lint(start?: number): LintError[];
 		insertAt(token: unknown, i?: number): unknown;
-		afterBuild(): void;
 		getAttribute<T extends string>(key: T): TokenAttributeGetter<T>;
 		setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void;
 		addEventListener(events: string | string[], listener: AstListener): void;

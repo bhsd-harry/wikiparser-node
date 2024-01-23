@@ -14,7 +14,7 @@ export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegEx
 		#pattern = pattern!;
 
 		/** @private */
-		override afterBuild(): void {
+		afterBuild(): void {
 			const /** @implements */ syntaxListener: AstListener = (e, data) => {
 				if (!Shadow.running && !this.#pattern.test(this.text())) {
 					undo(e, data);
