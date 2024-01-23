@@ -10,3 +10,4 @@ dist/
 /test/*.wiki
 /test/*.txt
 !README
+/build.log

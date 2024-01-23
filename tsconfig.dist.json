@@ -1,0 +1,22 @@
+{
+	"include": [
+		"typings/**/*",
+		"dist/**/*.d.ts"
+	],
+	"compilerOptions": {
+		"target": "esnext",
+		"module": "CommonJS",
+		"noEmit": true,
+		"alwaysStrict": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitAny": true,
+		"noImplicitOverride": true,
+		"noImplicitThis": true,
+		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
+		"strictBindCallApply": true,
+		"strictFunctionTypes": true,
+		"strictNullChecks": true,
+		"useUnknownInCatchVariables": true
+	}
+}
