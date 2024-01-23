@@ -139,7 +139,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	get fixed(): boolean {
-		return 'fixed' in this.constructor;
+		return false;
 	}
 
 	constructor() {

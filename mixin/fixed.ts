@@ -13,7 +13,10 @@ export interface FixedTokenBase {
 export const fixed = <S extends AstConstructor>(constructor: S) => {
 	/** 不可增删子节点的类 */
 	abstract class FixedToken extends constructor {
-		static readonly fixed = true;
+		/** @private */
+		get fixed() {
+			return true;
+		}
 
 		/** @override */
 		removeAt(): never {

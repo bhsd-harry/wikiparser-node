@@ -830,6 +830,8 @@
 							"#getCondition",
 							"createTextNode",
 							"createRange",
+							"fixed",
+							"hidden",
 							"getGaps"
 						]
 					}

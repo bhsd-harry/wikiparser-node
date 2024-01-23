@@ -30,7 +30,7 @@
 		"toc": "node ./dist/bin/toc.js",
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs gsed -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '#private' dist/ | xargs gsed -i '/#private/d'; node ./dist/bin/declaration.js",
 		"prepublishOnly": "npm run build && rm dist/internal.js dist/base.js dist/[pu]*/*.d.ts",
-		"build": "rm -rf dist/; tsc && npm run declaration && tsc --project tsconfig.dist.json &> build.log; gsed -i -E '/error TS(1244|2309|18052):/d' build.log; cat build.log",
+		"build": "bash build.sh",
 		"diff": "git diff --ignore-all-space --color-moved",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
