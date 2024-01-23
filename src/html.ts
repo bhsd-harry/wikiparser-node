@@ -152,6 +152,14 @@ export class HtmlToken extends Token {
 				severity: 'warning',
 			});
 		}
+		if ((this.name === 'b' || this.name === 'strong') && this.closest('heading-title')) {
+			refError ??= generateForSelf(this, {start}, '');
+			errors.push({
+				...refError,
+				message: Parser.msg('bold in section header'),
+				severity: 'warning',
+			});
+		}
 		return errors;
 	}
 
