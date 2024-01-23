@@ -98,14 +98,16 @@ label {
 	padding-left: .7em;
 }
 textarea {
+	width: 100%;
 	height: var(--height);
 	max-height: var(--max-height);
 	direction: ltr;
+	padding: .4em;
 }
-#wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor {
+#wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor, #wpTextbox2 {
 	border-radius: .3em;
 }
-.cm-editor {
+.cm-editor, textarea {
 	border: 1.5px solid #dedede;
 }
 
