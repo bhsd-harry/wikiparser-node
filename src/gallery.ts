@@ -17,7 +17,7 @@ export class GalleryToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: (GalleryImageToken | NoincludeToken | AstText)[];
+	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
 	// @ts-expect-error abstract method

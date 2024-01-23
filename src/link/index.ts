@@ -11,7 +11,7 @@ import type {Token, AtomToken} from '../../internal';
 export class LinkToken extends LinkBaseToken {
 	override readonly type = 'link';
 
-	declare readonly childNodes: [AtomToken] | [AtomToken, Token];
+	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {

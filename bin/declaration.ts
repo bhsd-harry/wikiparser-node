@@ -19,7 +19,7 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 				(_, mixins: string, parser: string | undefined, base: string, exp: string, impl: string): string => {
 					const str = `${exp}${base}${impl}${
 							mixins.split(/\n\}\) & \(+abstract new .+/u)
-								.map(mixin => mixin.slice(0, mixin.lastIndexOf('readonly'))
+								.map(mixin => mixin.slice(0, mixin.indexOf('toString'))
 									.replace(/^[ \t]+(?:$|readonly .+\n)/gmu, ''))
 								.join('\n')
 						}`,

@@ -15,7 +15,7 @@ export class ConverterFlagsToken extends Token {
 	override readonly type = 'converter-flags';
 	#flags?: string[];
 
-	declare readonly childNodes: AtomToken[];
+	declare readonly childNodes: readonly AtomToken[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
 	// @ts-expect-error abstract method

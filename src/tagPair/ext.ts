@@ -24,7 +24,7 @@ export class ExtToken extends attributesParent(TagPairToken) implements Attribut
 	override readonly type = 'ext';
 	declare closed: true;
 
-	declare readonly childNodes: [AttributesToken, Token];
+	declare readonly childNodes: readonly [AttributesToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
 	// @ts-expect-error abstract method

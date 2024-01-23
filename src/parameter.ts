@@ -20,7 +20,7 @@ export class ParameterToken extends fixedToken(Token) implements FixedTokenBase 
 	override readonly type = 'parameter';
 	declare readonly name: string;
 
-	declare readonly childNodes: [Token, Token];
+	declare readonly childNodes: readonly [Token, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
 	// @ts-expect-error abstract method

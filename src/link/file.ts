@@ -48,7 +48,7 @@ const explode = (start: string, end: string, separator: string, str?: string): s
 export class FileToken extends LinkBaseToken {
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
 
-	declare readonly childNodes: [AtomToken, ...ImageParameterToken[]];
+	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 

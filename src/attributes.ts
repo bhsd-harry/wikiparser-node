@@ -33,7 +33,7 @@ export class AttributesToken extends Token {
 	declare type: AttributesTypes;
 	declare readonly name: string;
 
-	declare readonly childNodes: (AtomToken | AttributeToken)[];
+	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	// @ts-expect-error abstract method
