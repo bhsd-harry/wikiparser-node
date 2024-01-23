@@ -1,3 +1,15 @@
+## v1.4.1
+
+*2024-01-24*
+
+**Added**
+
+- New category of linting errors: `<ref>` in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
+
+**Changed**
+
+- Reported duplicated categories do not need to be child nodes of the same parent node
+
 ## v1.4.0
 
 *2024-01-23*

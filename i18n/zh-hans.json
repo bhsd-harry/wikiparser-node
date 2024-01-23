@@ -1,5 +1,6 @@
 {
 	"<imagemap> without an image": "缺少图片的<imagemap>",
+	"<ref> in section header": "段落标题中的<ref>",
 	"$1 in URL": "URL中的$1",
 	"additional \"|\" in a table cell": "表格单元格中多余的\"|\"",
 	"additional \"|\" in the link text": "链接文本中多余的\"|\"",

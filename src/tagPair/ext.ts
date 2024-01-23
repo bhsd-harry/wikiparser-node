@@ -160,9 +160,14 @@ export class ExtToken extends attributesParent(TagPairToken) implements Attribut
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
+		let rect: BoundingRect | undefined;
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
-			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
+			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
+		}
+		if (this.name === 'ref' && this.closest('heading-title')) {
+			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
+			errors.push(generateForSelf(this, rect, '<ref> in section header'));
 		}
 		return errors;
 	}
