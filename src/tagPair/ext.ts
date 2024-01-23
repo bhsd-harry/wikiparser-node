@@ -4,7 +4,6 @@ import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
 import type {LintError, Config} from '../../base';
-import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /**
  * 从数组中删除指定元素

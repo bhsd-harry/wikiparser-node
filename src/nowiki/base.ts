@@ -1,7 +1,6 @@
 import * as Parser from '../../index';
 import {Token} from '../index';
 import type {AstText} from '../../lib/text';
-import type {FixedTokenBase} from '../../mixin/fixed';
 
 declare type NowikiTypes = 'ext-inner'
 | 'comment'
