@@ -1,9 +1,10 @@
 import * as fs from 'fs';
 import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
+import {tidy} from '../util/string';
 import * as Parser from '../index';
 
-const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');
+const wikitext = tidy(fs.readFileSync('./test/single-page.wiki', 'utf8'));
 
 (async () => {
 	if (process.execArgv.includes('--prof')) {
