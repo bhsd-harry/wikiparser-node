@@ -20,7 +20,7 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const {previousSibling, nextSibling} = this,
+		const {previousSibling, nextSibling, bold} = this,
 			message = Parser.msg('lonely "$1"', `'`),
 			errors: LintError[] = [];
 		let refError: LintError | undefined;
@@ -50,6 +50,14 @@ export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 				startLine,
 				startCol,
 				endCol: startCol + length,
+			});
+		}
+		if (bold && this.closest('heading-title')) {
+			refError ??= generateForSelf(this, {start}, message);
+			errors.push({
+				...refError,
+				message: Parser.msg('bold in section header'),
+				severity: 'warning',
 			});
 		}
 		return errors;
