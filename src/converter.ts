@@ -11,7 +11,7 @@ import {ConverterRuleToken} from './converterRule';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-export class ConverterToken extends flagsParent(Token) implements FlagsParentBase {
+export class ConverterToken extends flagsParent(Token) {
 	override readonly type = 'converter';
 
 	declare readonly childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
