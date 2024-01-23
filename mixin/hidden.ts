@@ -5,11 +5,9 @@ import type {LintError} from '../base';
  * 解析后不可见的类
  * @param constructor 基类
  */
-export const hidden = <T extends AstConstructor>(constructor: T) => {
+export const hiddenToken = <T extends AstConstructor>(constructor: T) => {
 	/** 解析后不可见的类 */
 	abstract class AnyHiddenToken extends constructor {
-		static readonly hidden = true;
-
 		/** 没有可见部分 */
 		override text(): string {
 			return '';
@@ -23,4 +21,4 @@ export const hidden = <T extends AstConstructor>(constructor: T) => {
 	return AnyHiddenToken;
 };
 
-mixins['hidden'] = __filename;
+mixins['hiddenToken'] = __filename;

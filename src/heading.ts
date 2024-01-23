@@ -1,7 +1,7 @@
 import {generateForChild, generateForSelf} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {fixed} from '../mixin/fixed';
+import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -15,7 +15,7 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export class HeadingToken extends sol(fixed(Token)) implements FixedTokenBase, SolTokenBase {
+export class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBase, SolTokenBase {
 	override readonly type = 'heading';
 	#level;
 

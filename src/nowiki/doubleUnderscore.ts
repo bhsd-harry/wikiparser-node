@@ -1,6 +1,6 @@
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
-import {hidden} from '../../mixin/hidden';
+import {hiddenToken} from '../../mixin/hidden';
 import {syntax} from '../../mixin/syntax';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
@@ -8,25 +8,25 @@ import type {Token} from '../index';
 
 /** 状态开关 */
 // @ts-expect-error not implementing all abstract methods
-export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
+export class DoubleUnderscoreToken extends syntax(hiddenToken(NowikiBaseToken)) {
 	override readonly type = 'double-underscore';
 
 	/* NOT FOR BROWSER */
 
 	declare readonly name: string;
-	readonly #fixed;
+	readonly #sensitive;
 
 	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param word 状态开关名
-	 * @param fixed 是否固定大小写
+	 * @param sensitive 是否固定大小写
 	 */
-	constructor(word: string, fixed: boolean, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(word: string, sensitive: boolean, config = Parser.getConfig(), accum: Token[] = []) {
 		super(word, config, accum);
-		this.#fixed = fixed;
+		this.#sensitive = sensitive;
 		this.setAttribute('name', word.toLowerCase());
-		this.setAttribute('pattern', new RegExp(`^${word}$`, fixed ? 'u' : 'iu'));
+		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));
 	}
 
 	/** @private */
@@ -50,7 +50,7 @@ export class DoubleUnderscoreToken extends syntax(hidden(NowikiBaseToken)) {
 	override cloneNode(): this {
 		const config = this.getAttribute('config');
 		return Shadow.run(() => {
-			const token = new DoubleUnderscoreToken(this.innerText, this.#fixed, config) as this;
+			const token = new DoubleUnderscoreToken(this.innerText, this.#sensitive, config) as this;
 			token.afterBuild();
 			return token;
 		});

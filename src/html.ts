@@ -2,7 +2,7 @@ import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {fixed} from '../mixin/fixed';
+import {fixedToken} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -45,7 +45,7 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export class HtmlToken extends attributesParent(fixed(Token)) implements AttributesParentBase, FixedTokenBase {
+export class HtmlToken extends attributesParent(fixedToken(Token)) implements AttributesParentBase, FixedTokenBase {
 	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;

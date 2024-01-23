@@ -841,7 +841,7 @@ export class Token extends AstElement {
 						transclusion = false;
 					for (let j = 2; j < length; j++) {
 						const {anon, name: option, value, firstChild} = childNodes[j] as ParameterToken;
-						transclusion = Boolean(firstChild.getElementByTypes('magic-word, template'));
+						transclusion = Boolean(firstChild.getElementByTypes<TranscludeToken>('magic-word, template'));
 						if (anon) {
 							if (j === length - 1) {
 								defaultVal = value;

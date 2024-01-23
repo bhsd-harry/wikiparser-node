@@ -830,6 +830,8 @@
 							"#getCondition",
 							"createTextNode",
 							"createRange",
+							"fixed",
+							"hidden",
 							"getGaps"
 						]
 					}
@@ -939,11 +941,11 @@
 							"attributesParent",
 							"flagsParent",
 							"magicLinkParent",
-							"fixed",
+							"fixedToken",
 							"singleLine",
 							"sol",
 							"syntax",
-							"hidden"
+							"hiddenToken"
 						]
 					}
 				],

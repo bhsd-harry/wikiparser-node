@@ -1,5 +1,5 @@
 import {classes} from '../util/constants';
-import {fixed} from '../mixin/fixed';
+import {fixedToken} from '../mixin/fixed';
 import {singleLine} from '../mixin/singleLine';
 import * as Parser from '../index';
 import {Token} from './index';
@@ -14,7 +14,7 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export class ImagemapLinkToken extends fixed(singleLine(Token)) implements FixedTokenBase {
+export class ImagemapLinkToken extends fixedToken(singleLine(Token)) implements FixedTokenBase {
 	override readonly type = 'imagemap-link';
 
 	declare readonly childNodes: [AstText, LinkToken | ExtLinkToken, NoincludeToken];

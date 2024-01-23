@@ -6,7 +6,7 @@ import {
 	BuildMethod,
 	classes,
 } from '../util/constants';
-import {fixed} from '../mixin/fixed';
+import {fixedToken} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -204,7 +204,7 @@ const commonHtmlAttrs = new Set([
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export class AttributeToken extends fixed(Token) implements FixedTokenBase {
+export class AttributeToken extends fixedToken(Token) implements FixedTokenBase {
 	declare type: AttributeTypes;
 	declare readonly name: string;
 	readonly tag;

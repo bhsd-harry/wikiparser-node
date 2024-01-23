@@ -1,4 +1,4 @@
-## v1.3.10
+## v1.4.0
 
 *2024-01-23*
 
@@ -6,6 +6,10 @@
 
 - Linting errors for [`LinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken) are now also reported from [`CategoryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken) and [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken) where applicable
 - New category of linting errors: duplicated categories
+
+**Fixed**
+
+- Type declarations
 
 ## v1.3.9
 

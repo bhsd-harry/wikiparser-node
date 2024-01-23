@@ -4,7 +4,7 @@ import {
 	BuildMethod,
 	classes,
 } from '../../util/constants';
-import {fixed} from '../../mixin/fixed';
+import {fixedToken} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
@@ -31,7 +31,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 // @ts-expect-error not implementing all abstract methods
-export class TdToken extends fixed(TableBaseToken) implements FixedTokenBase {
+export class TdToken extends fixedToken(TableBaseToken) implements FixedTokenBase {
 	override readonly type = 'td';
 	#innerSyntax = '';
 

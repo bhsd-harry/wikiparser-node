@@ -2,7 +2,7 @@ import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {fixed} from '../mixin/fixed';
+import {fixedToken} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
@@ -20,7 +20,7 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export class ParameterToken extends fixed(Token) implements FixedTokenBase {
+export class ParameterToken extends fixedToken(Token) implements FixedTokenBase {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 

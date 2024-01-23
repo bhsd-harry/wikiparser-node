@@ -1,10 +1,10 @@
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {hidden} from '../mixin/hidden';
+import {hiddenToken} from '../mixin/hidden';
 import {Token} from './index';
 
 /** 不可见的节点 */
-export class HiddenToken extends hidden(Token) {
+export class HiddenToken extends hiddenToken(Token) {
 	override readonly type = 'hidden';
 
 	/* NOT FOR BROWSER */

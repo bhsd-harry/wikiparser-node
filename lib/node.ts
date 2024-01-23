@@ -139,7 +139,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	get fixed(): boolean {
-		return 'fixed' in this.constructor;
+		return false;
 	}
 
 	constructor() {
@@ -264,13 +264,13 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	seal(key: string, hidden?: boolean): void {
-		if (!hidden) {
+	seal(key: string, permanent?: boolean): void {
+		if (!permanent) {
 			this.#optional.add(key);
 		}
 		Object.defineProperty(this, key, {
 			writable: false,
-			enumerable: !hidden && Boolean(this[key as keyof this]),
+			enumerable: !permanent && Boolean(this[key as keyof this]),
 			configurable: true,
 		});
 	}
