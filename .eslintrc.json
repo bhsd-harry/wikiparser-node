@@ -933,7 +933,7 @@
 						"allowedNames": [
 							"flagsParent",
 							"magicLinkParent",
-							"hidden"
+							"hiddenToken"
 						]
 					}
 				],

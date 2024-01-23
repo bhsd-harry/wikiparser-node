@@ -1,5 +1,5 @@
 import {generateForSelf} from '../../util/lint';
-import {hidden} from '../../mixin/hidden';
+import {hiddenToken} from '../../mixin/hidden';
 import Parser from '../../index';
 import {TagPairToken} from './index';
 import type {LintError} from '../../base';
@@ -9,7 +9,7 @@ import type {AstText, Token} from '../../internal';
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
-export class IncludeToken extends hidden(TagPairToken) {
+export class IncludeToken extends hiddenToken(TagPairToken) {
 	override readonly type = 'include';
 
 	declare readonly childNodes: [AstText, AstText];
