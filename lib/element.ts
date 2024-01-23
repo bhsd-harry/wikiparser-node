@@ -7,8 +7,6 @@ import {
 } from '../util/string';
 import {typeAliases, classes} from '../util/constants';
 import {setChildNodes} from '../util/debug';
-import {isToken} from '../util/debug';
-import {generateForSelf} from '../util/lint';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
@@ -19,7 +17,6 @@ import type {
 	AstNodes,
 	AstText,
 	Token,
-	CategoryToken,
 } from '../internal';
 
 // @ts-expect-error unconstrained predicate
@@ -291,18 +288,9 @@ export abstract class AstElement extends AstNode {
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors: LintError[] = [];
-		const cats = new Set<string>(),
-			isCategory = isToken<CategoryToken>('category');
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			errors.push(...child.lint(cur));
-			if (isCategory(child)) {
-				if (cats.has(child.name)) {
-					errors.push(generateForSelf(child, {start: cur}, 'duplicated category'));
-				} else {
-					cats.add(child.name);
-				}
-			}
 			cur += String(child).length + this.getGaps(i);
 		}
 		return errors;

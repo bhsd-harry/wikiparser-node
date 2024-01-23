@@ -46,11 +46,13 @@ import {
 	aliases,
 	classes,
 } from '../util/constants';
+import {generateForSelf} from '../util/lint';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import * as Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
+import type {LintError} from '../base';
 import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
@@ -467,6 +469,30 @@ export class Token extends AstElement {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/** @override */
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const errors = super.lint(start);
+		if (this.type === 'root') {
+			const record: Record<string, Set<CategoryToken>> = {};
+			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
+				const thisCat = record[cat.name];
+				if (thisCat) {
+					thisCat.add(cat);
+				} else {
+					record[cat.name] = new Set([cat]);
+				}
+			}
+			for (const value of Object.values(record)) {
+				if (value.size > 1) {
+					errors.push(...[...value].map(
+						cat => generateForSelf(cat, {start: cat.getAbsoluteIndex()}, 'duplicated category'),
+					));
+				}
+			}
+		}
+		return errors;
+	}
 
 	/** @private */
 	protectChildren(...args: (string | number | Range)[]): void {
