@@ -8,7 +8,6 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';
-import type {FixedTokenBase} from '../mixin/fixed';
 import type {AttributesToken} from '../internal';
 
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
