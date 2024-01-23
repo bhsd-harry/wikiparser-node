@@ -4,8 +4,8 @@ import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 
-const errorSyntax = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
-	errorSyntaxUrl = /<\s*\/?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
+const errorSyntax = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
+	errorSyntaxUrl = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
 	disallowedTags = [
 		'html',
 		'base',
@@ -109,11 +109,15 @@ export class AstText extends AstNode {
 		}
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
 		const {type, name} = parentNode,
+			nowiki = name === 'nowiki' || name === 'pre',
 			nextType = nextSibling?.type,
 			previousType = previousSibling?.type;
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
-			errorRegex = new RegExp(`<\\s*\\/?(${name})\\b`, 'giu');
+			errorRegex = new RegExp(
+				`<\\s*(?:\\/\\s*)${nowiki ? '' : '?'}(${name})\\b`,
+				'giu',
+			);
 		} else if (
 			type === 'free-ext-link'
 				|| type === 'ext-link-url'
@@ -149,7 +153,7 @@ export class AstText extends AstNode {
 					rootStr = String(root),
 					nextChar = rootStr[endIndex],
 					previousChar = rootStr[startIndex - 1],
-					severity = length > 1 && (char !== '<' || /[\s/>]/u.test(nextChar ?? ''))
+					severity = length > 1 && (char !== '<' || !nowiki && /[\s/>]/u.test(nextChar ?? ''))
 					|| char === '{' && (nextChar === char || previousChar === '-')
 					|| char === '}' && (previousChar === char || nextChar === '-')
 					|| char === '[' && (
