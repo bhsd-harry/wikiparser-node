@@ -13,7 +13,7 @@ import type {LintError} from '../base';
 export class ArgToken extends Token {
 	override readonly type = 'arg';
 
-	declare readonly childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
+	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method

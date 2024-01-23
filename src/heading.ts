@@ -13,7 +13,7 @@ export class HeadingToken extends Token {
 	override readonly type = 'heading';
 	#level;
 
-	declare readonly childNodes: [Token, SyntaxToken];
+	declare readonly childNodes: readonly [Token, SyntaxToken];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
 	// @ts-expect-error abstract method

@@ -10,7 +10,7 @@ import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../
 export class TrToken extends TrBaseToken {
 	override readonly type = 'tr';
 
-	declare readonly childNodes: [SyntaxToken, AttributesToken, ...TdToken[]];
+	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...TdToken[]];
 	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken;
 	// @ts-expect-error abstract method

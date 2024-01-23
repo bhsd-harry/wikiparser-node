@@ -46,7 +46,7 @@ export class HtmlToken extends Token {
 	#selfClosing;
 	#tag;
 
-	declare readonly childNodes: [AttributesToken];
+	declare readonly childNodes: readonly [AttributesToken];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
 	// @ts-expect-error abstract method

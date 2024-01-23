@@ -15,7 +15,7 @@ export class NestedToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: string;
 
-	declare readonly childNodes: (ExtToken | NoincludeToken | CommentToken)[];
+	declare readonly childNodes: readonly (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	// @ts-expect-error abstract method
