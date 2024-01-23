@@ -3,6 +3,7 @@ import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AstText, ImagemapToken} from '../internal';
 
 /**

@@ -3,6 +3,7 @@ import {generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**
@@ -77,7 +78,7 @@ export class ParameterToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.anon ? 0 : 1;
 	}
 

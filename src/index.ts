@@ -140,7 +140,7 @@ export class Token extends AstElement {
 	/** @private */
 	buildFromStr(str: string, type: BuildMethod): string;
 	/** @private */
-	buildFromStr(str: string): readonly AstNodes[];
+	buildFromStr(str: string): AstNodes[];
 	/** @private */
 	buildFromStr(str: string, type?: BuildMethod): string | readonly AstNodes[] {
 		const nodes = str.split(/[\0\x7F]/u).map((s, i) => {

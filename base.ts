@@ -41,7 +41,7 @@ export interface Parser {
 	config: string | Config;
 	i18n: string | Record<string, string> | undefined;
 
-	/** @private */
+	/** 获取解析设置 */
 	getConfig(): Config;
 
 	/**

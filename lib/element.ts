@@ -10,7 +10,8 @@ import type {
 	Token,
 } from '../internal';
 
-declare type TokenPredicate<T extends Token = Token> = (token: Token) => token is T;
+// @ts-expect-error unconstrained predicate
+declare type TokenPredicate<T = Token> = (token: Token) => token is T;
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
@@ -70,7 +71,7 @@ export abstract class AstElement extends AstNode {
 	 * 将选择器转化为类型谓词
 	 * @param selector 选择器
 	 */
-	#getCondition<T extends Token>(selector: string): TokenPredicate<T> {
+	#getCondition<T>(selector: string): TokenPredicate<T> {
 		let condition: TokenPredicate<T>;
 		const types = new Set(selector.split(',').map(str => str.trim()));
 		// eslint-disable-next-line prefer-const
@@ -82,7 +83,7 @@ export abstract class AstElement extends AstNode {
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
-	closest<T extends Token>(selector: string): T | undefined {
+	closest<T = Token>(selector: string): T | undefined {
 		const condition = this.#getCondition<T>(selector);
 		let {parentNode} = this;
 		while (parentNode) {
