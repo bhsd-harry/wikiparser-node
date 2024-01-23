@@ -1,17 +1,5 @@
 import type {ConverterFlagsToken} from '../src/converterFlags';
 
-export interface FlagsParentBase {
-	flags: Set<string>;
-	getAllFlags(): Set<string>;
-	getEffectiveFlags(): Set<string>;
-	getUnknownFlags(): Set<string>;
-	hasFlag(flag: string): boolean;
-	hasEffectiveFlag(flag: string): boolean;
-	removeFlag(flag: string): void;
-	setFlag(flag: string): void;
-	toggleFlag(flag: string): void;
-}
-
 /**
  * ConverterToken
  * @param constructor 基类

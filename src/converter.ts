@@ -6,13 +6,12 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
-import type {FlagsParentBase} from '../mixin/flagsParent';
 
 /**
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-export class ConverterToken extends flagsParent(Token) implements FlagsParentBase {
+export class ConverterToken extends flagsParent(Token) {
 	override readonly type = 'converter';
 
 	declare readonly childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
