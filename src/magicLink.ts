@@ -23,7 +23,7 @@ import type {
 export class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
-	declare readonly childNodes: (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
+	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	// @ts-expect-error abstract method

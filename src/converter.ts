@@ -18,7 +18,7 @@ import type {FlagsParentBase} from '../mixin/flagsParent';
 export class ConverterToken extends flagsParent(Token) implements FlagsParentBase {
 	override readonly type = 'converter';
 
-	declare readonly childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]];
+	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
 	// @ts-expect-error abstract method

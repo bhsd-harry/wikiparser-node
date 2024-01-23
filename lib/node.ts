@@ -38,7 +38,7 @@ const typeError = ({name}: Function, method: string, ...args: string[]): never =
 export abstract class AstNode implements AstNodeBase {
 	declare type: TokenTypes | 'text';
 	declare data?: string | undefined;
-	readonly childNodes: AstNodes[] = [];
+	readonly childNodes: readonly AstNodes[] = [];
 	#parentNode: Token | undefined;
 
 	/* NOT FOR BROWSER */
@@ -222,7 +222,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param j 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
-		let childNodes: AstNodes[];
+		let childNodes: readonly AstNodes[];
 
 		/**
 		 * 获取子节点相对于父节点的字符位置，使用前需要先给`childNodes`赋值

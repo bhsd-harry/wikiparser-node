@@ -16,7 +16,7 @@ export class ParamTagToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: string;
 
-	declare readonly childNodes: AtomToken[];
+	declare readonly childNodes: readonly AtomToken[];
 	// @ts-expect-error abstract method
 	abstract override get children(): AtomToken[];
 	// @ts-expect-error abstract method

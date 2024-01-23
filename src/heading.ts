@@ -19,7 +19,7 @@ export class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBa
 	override readonly type = 'heading';
 	#level;
 
-	declare readonly childNodes: [Token, SyntaxToken];
+	declare readonly childNodes: readonly [Token, SyntaxToken];
 	// @ts-expect-error abstract method
 	abstract override get children(): [Token, SyntaxToken];
 	// @ts-expect-error abstract method

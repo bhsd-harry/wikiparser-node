@@ -211,7 +211,7 @@ export class AttributeToken extends fixedToken(Token) implements FixedTokenBase 
 	#equal;
 	#quotes: [string?, string?];
 
-	declare readonly childNodes: [AtomToken, Token];
+	declare readonly childNodes: readonly [AtomToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken, Token];
 	// @ts-expect-error abstract method

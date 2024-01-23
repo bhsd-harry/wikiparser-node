@@ -16,7 +16,7 @@ export class PreToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'pre';
 
-	declare readonly childNodes: (AstText | NoincludeToken | ConverterToken)[];
+	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (NoincludeToken | ConverterToken)[];
 	// @ts-expect-error abstract method

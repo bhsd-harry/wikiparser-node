@@ -13,7 +13,7 @@ import type {Token, AtomToken} from '../../internal';
 export class LinkToken extends LinkBaseToken {
 	override readonly type = 'link';
 
-	declare readonly childNodes: [AtomToken] | [AtomToken, Token];
+	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
 	// @ts-expect-error abstract method

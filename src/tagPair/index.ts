@@ -13,7 +13,7 @@ export abstract class TagPairToken extends fixedToken(Token) implements FixedTok
 	closed;
 	selfClosing;
 
-	declare readonly childNodes: [AstNodes, AstNodes];
+	declare readonly childNodes: readonly [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 

@@ -24,7 +24,7 @@ export class NestedToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
-	declare readonly childNodes: (ExtToken | NoincludeToken | CommentToken)[];
+	declare readonly childNodes: readonly (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method
 	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
 	// @ts-expect-error abstract method

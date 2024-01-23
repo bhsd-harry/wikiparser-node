@@ -16,7 +16,7 @@ export class ArgToken extends Token {
 	override readonly type = 'arg';
 	declare readonly name: string;
 
-	declare readonly childNodes: [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
+	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	// @ts-expect-error abstract method
