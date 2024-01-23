@@ -27,7 +27,7 @@ export interface LintError {
 /** 类似Node */
 export interface AstNode {
 	type: string;
-	readonly childNodes: AstNode[];
+	readonly childNodes: readonly AstNode[];
 
 	/** Linter */
 	lint(): LintError[];

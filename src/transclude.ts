@@ -37,8 +37,8 @@ export class TranscludeToken extends Token {
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 
-	declare readonly childNodes: [AtomToken | SyntaxToken, ...ParameterToken[]]
-	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
+	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	// @ts-expect-error abstract method

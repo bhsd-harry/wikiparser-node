@@ -10,7 +10,7 @@ import {AttributesToken} from '../attributes';
 export abstract class TableBaseToken extends Token {
 	declare type: 'table' | 'tr' | 'td';
 
-	declare readonly childNodes: [SyntaxToken, AttributesToken, ...Token[]];
+	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): Token;
 

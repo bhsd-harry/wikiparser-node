@@ -175,7 +175,7 @@ export class AttributeToken extends Token {
 	#equal;
 	#quotes: [string?, string?];
 
-	declare readonly childNodes: [AtomToken, Token];
+	declare readonly childNodes: readonly [AtomToken, Token];
 	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
 	// @ts-expect-error abstract method
