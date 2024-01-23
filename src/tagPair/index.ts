@@ -1,7 +1,6 @@
 import * as Parser from '../../index';
 import {Token} from '../index';
 import type {AstNodes} from '../../lib/node';
-import type {FixedTokenBase} from '../../mixin/fixed';
 
 /** 成对标签 */
 export abstract class TagPairToken extends Token {
