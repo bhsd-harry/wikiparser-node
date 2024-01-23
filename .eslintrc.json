@@ -831,7 +831,6 @@
 							"createTextNode",
 							"createRange",
 							"fixed",
-							"hidden",
 							"getGaps"
 						]
 					}
