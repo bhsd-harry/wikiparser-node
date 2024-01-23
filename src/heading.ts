@@ -9,7 +9,7 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export class HeadingToken extends sol(fixed(Token)) implements FixedTokenBase, SolTokenBase {
+export class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBase, SolTokenBase {
 	override readonly type = 'heading';
 	#level;
 

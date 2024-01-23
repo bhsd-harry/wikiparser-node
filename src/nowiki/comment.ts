@@ -1,5 +1,5 @@
 import {generateForSelf} from '../../util/lint';
-import {hidden} from '../../mixin/hidden';
+import {hiddenToken} from '../../mixin/hidden';
 import * as Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
@@ -7,7 +7,7 @@ import type {Token} from '../index';
 
 /** HTML注释，不可见 */
 // @ts-expect-error not implementing all abstract methods
-export class CommentToken extends hidden(NowikiBaseToken) {
+export class CommentToken extends hiddenToken(NowikiBaseToken) {
 	override readonly type = 'comment';
 	closed;
 

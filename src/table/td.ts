@@ -23,7 +23,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 // @ts-expect-error not implementing all abstract methods
-export class TdToken extends fixed(TableBaseToken) implements FixedTokenBase {
+export class TdToken extends fixedToken(TableBaseToken) implements FixedTokenBase {
 	override readonly type = 'td';
 	#innerSyntax = '';
 
