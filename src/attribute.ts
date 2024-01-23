@@ -8,6 +8,7 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AttributesToken} from '../internal';
 
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
@@ -168,7 +169,7 @@ const commonHtmlAttrs = new Set([
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export class AttributeToken extends fixed(Token) {
+export class AttributeToken extends fixed(Token) implements FixedTokenBase {
 	declare type: AttributeTypes;
 	declare readonly name: string;
 	readonly tag;
@@ -246,7 +247,6 @@ export class AttributeToken extends fixed(Token) {
 		this.#equal = equal;
 		this.#quotes = [...quotes];
 		this.tag = tag;
-		Object.defineProperty(this, 'tag', {enumerable: false});
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
@@ -275,7 +275,7 @@ export class AttributeToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 

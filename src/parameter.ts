@@ -3,6 +3,7 @@ import {generateForChild} from '../util/lint';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**
@@ -16,7 +17,7 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export class ParameterToken extends fixed(Token) {
+export class ParameterToken extends fixed(Token) implements FixedTokenBase {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 
@@ -77,7 +78,7 @@ export class ParameterToken extends fixed(Token) {
 	}
 
 	/** @private */
-	protected override getGaps(): number {
+	override getGaps(): number {
 		return this.anon ? 0 : 1;
 	}
 

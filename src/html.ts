@@ -3,6 +3,8 @@ import {noWrap} from '../util/string';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
+import type {AttributesParentBase} from '../mixin/attributesParent';
+import type {FixedTokenBase} from '../mixin/fixed';
 import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
 
 const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
@@ -39,7 +41,7 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export class HtmlToken extends attributesParent(fixed(Token)) {
+export class HtmlToken extends attributesParent(fixed(Token)) implements AttributesParentBase, FixedTokenBase {
 	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;

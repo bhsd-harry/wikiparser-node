@@ -119,7 +119,7 @@ export class FileToken extends LinkBaseToken {
 	}
 
 	/** 获取所有图片参数节点 */
-	getAllArgs(): readonly ImageParameterToken[] {
+	getAllArgs(): ImageParameterToken[] {
 		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
@@ -127,7 +127,7 @@ export class FileToken extends LinkBaseToken {
 	 * 获取指定图片参数
 	 * @param key 参数名
 	 */
-	getArgs(key: string): readonly ImageParameterToken[] {
+	getArgs(key: string): ImageParameterToken[] {
 		return this.getAllArgs().filter(({name}) => key === name);
 	}
 
@@ -136,23 +136,23 @@ export class FileToken extends LinkBaseToken {
 	 * @param keys 接受的参数名
 	 * @param type 类型名
 	 */
-	#getTypedArgs(keys: Set<string>, type: string): readonly ImageParameterToken[] {
+	#getTypedArgs(keys: Set<string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 		return args;
 	}
 
 	/** 获取图片框架属性参数节点 */
-	getFrameArgs(): readonly ImageParameterToken[] {
+	getFrameArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(frame, '框架');
 	}
 
 	/** 获取图片水平对齐参数节点 */
-	getHorizAlignArgs(): readonly ImageParameterToken[] {
+	getHorizAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(horizAlign, '水平对齐');
 	}
 
 	/** 获取图片垂直对齐参数节点 */
-	getVertAlignArgs(): readonly ImageParameterToken[] {
+	getVertAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(vertAlign, '垂直对齐');
 	}
 

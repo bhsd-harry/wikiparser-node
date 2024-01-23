@@ -63,7 +63,7 @@ export class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	override getGaps(i: number): number {
 		return i === 0 && this.length === 3 ? 2 : 1;
 	}
 

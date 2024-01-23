@@ -6,6 +6,7 @@ import * as Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../base';
+import type {FixedTokenBase} from '../../mixin/fixed';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
 export type TdSubtypes = 'td' | 'th' | 'caption';
@@ -23,7 +24,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 // @ts-expect-error not implementing all abstract methods
-export class TdToken extends fixed(TableBaseToken) {
+export class TdToken extends fixed(TableBaseToken) implements FixedTokenBase {
 	override readonly type = 'td';
 	#innerSyntax = '';
 
@@ -106,7 +107,7 @@ export class TdToken extends fixed(TableBaseToken) {
 	}
 
 	/** @private */
-	protected override getGaps(i: number): number {
+	override getGaps(i: number): number {
 		if (i === 1) {
 			return this.#innerSyntax.length;
 		}

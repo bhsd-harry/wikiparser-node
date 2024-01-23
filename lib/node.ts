@@ -113,8 +113,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-	protected getGaps(i: number): number {
+	getGaps(i: number): number {
 		return 0;
 	}
 
