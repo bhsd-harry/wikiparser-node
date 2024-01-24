@@ -151,7 +151,7 @@ export abstract class MagicLinkToken extends syntax(Token) {
 				this.constructorError('不可插入 `{{!}}` 或 `{{=}}` 以外的魔术字');
 			}
 		}
-		return super.insertAt(token, i) as T;
+		return super.insertAt(token as string, i);
 	}
 
 	/**

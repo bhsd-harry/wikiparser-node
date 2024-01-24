@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-const regex = /declare [^\n]+?\(abstract new .+\) & typeof (?:\w+\.)?(\w+)\b.+(export [^\n]+ extends )\w+\b/isu;
+const regex = /^declare const \w+_base:(?:.+\) &)? typeof (?:\w+\.)?(\w+)\b.+(export [^\n]+ extends )\w+\b/imsu;
 
 for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 	if (!file.endsWith('.d.ts')) {
@@ -9,8 +9,8 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 	}
 	const fullPath = path.join('dist/src', file),
 		content = fs.readFileSync(fullPath, 'utf8');
-	if (content.includes('(abstract new ')) {
-		// console.log(file);
+	if (/^declare const \w+_base: /mu.test(content)) {
+		console.log('\x1B[32mCleaning declaration:\x1B[0m %s', file);
 		fs.writeFileSync(
 			fullPath,
 			content.replace(
