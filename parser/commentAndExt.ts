@@ -39,6 +39,7 @@ export const parseCommentAndExt = (
 			 * @param text 未被包裹的内容
 			 */
 			const noinclude = (text: string): void => {
+				// @ts-expect-error abstract class
 				new NoincludeToken(text, config, accum);
 				str += `\0${accum.length - 1}c\x7F`;
 			};
@@ -95,11 +96,13 @@ export const parseCommentAndExt = (
 				new ExtToken(name, attr, inner, closing, config, accum);
 			} else if (substr.startsWith('<!--')) {
 				const closed = substr.endsWith('-->');
+				// @ts-expect-error abstract class
 				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
 			} else if (include) {
 				// @ts-expect-error abstract class
 				new IncludeToken(include, includeAttr, includeInner, includeClosing, config, accum);
 			} else {
+				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
 			}
 			return str;

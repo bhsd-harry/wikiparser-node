@@ -50,14 +50,17 @@ export abstract class GalleryToken extends Token {
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
+				// @ts-expect-error abstract class
 				super.insertAt((line.trim() ? new NoincludeToken(line, config) : line) as string);
 				continue;
 			}
 			const [, file, alt] = matches;
 			if (this.#checkFile(file)) {
-				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum));
+				// @ts-expect-error abstract class
+				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
-				super.insertAt(new NoincludeToken(line, config));
+				// @ts-expect-error abstract class
+				super.insertAt(new NoincludeToken(line, config) as NoincludeToken);
 			}
 		}
 	}
@@ -141,7 +144,8 @@ export abstract class GalleryToken extends Token {
 	 */
 	insertImage(file: string, i?: number): GalleryImageToken {
 		if (this.#checkFile(file)) {
-			const token = Shadow.run(
+			const token: GalleryImageToken = Shadow.run(
+				// @ts-expect-error abstract class
 				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
 			token.afterBuild();

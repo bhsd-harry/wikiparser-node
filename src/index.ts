@@ -562,7 +562,8 @@ export class Token extends AstElement {
 	createComment(data = ''): CommentToken {
 		const {CommentToken}: typeof import('./nowiki/comment') = require('./nowiki/comment');
 		const config = this.getAttribute('config');
-		return Shadow.run(() => new CommentToken(data.replace(/-->/gu, '--&gt;'), true, config));
+		// @ts-expect-error abstract class
+		return Shadow.run((): CommentToken => new CommentToken(data.replace(/-->/gu, '--&gt;'), true, config));
 	}
 
 	/**

@@ -6,8 +6,7 @@ import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 
 /** `''`和`'''` */
-// @ts-expect-error not implementing all abstract methods
-export class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
+export abstract class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
 	override readonly type = 'quote';
 
 	/** 是否粗体 */

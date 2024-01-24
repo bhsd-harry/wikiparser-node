@@ -14,8 +14,7 @@ import type {LintError} from '../../base';
 import type {AtomToken, ImageParameterToken} from '../../internal';
 
 /** 图库图片 */
-// @ts-expect-error not implementing all abstract methods
-export class GalleryImageToken extends singleLine(FileToken) {
+export abstract class GalleryImageToken extends singleLine(FileToken) {
 	declare type: 'gallery-image' | 'imagemap-image';
 
 	/* NOT FOR BROWSER */

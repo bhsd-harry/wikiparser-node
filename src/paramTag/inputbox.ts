@@ -5,8 +5,7 @@ import {ParamTagToken} from './index';
 import type {Token} from '../index';
 
 /** `<inputbox>` */
-// @ts-expect-error not implementing all abstract methods
-export class InputboxToken extends ParamTagToken {
+export abstract class InputboxToken extends ParamTagToken {
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		const placeholder = Symbol('InputboxToken');
