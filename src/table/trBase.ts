@@ -56,6 +56,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		const error = generateForChild(inter, {start}, 'content to be moved out from the table');
 		errors.push({
 			...error,
+			severity: first.type === 'template' ? 'warning' : 'error',
 			startIndex: error.startIndex + 1,
 			startLine: error.startLine + 1,
 			startCol: 0,
