@@ -24,6 +24,7 @@ export const parseHrAndDoubleUnderscore = (
 	data = data.replace(
 		/^((?:\0\d+c\x7F)*)(-{4,})/gmu,
 		(_, lead: string, m: string) => {
+			// @ts-expect-error abstract class
 			new HrToken(m, config, accum);
 			return `${lead}\0${accum.length - 1}r\x7F`;
 		},
@@ -32,6 +33,7 @@ export const parseHrAndDoubleUnderscore = (
 		(m, p1: string) => {
 			const caseSensitive = sensitive.has(p1);
 			if (caseSensitive || insensitive.has(p1.toLowerCase())) {
+				// @ts-expect-error abstract class
 				new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
 				return `\0${accum.length - 1}u\x7F`;
 			}

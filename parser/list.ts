@@ -17,6 +17,7 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 	const [total, comment, prefix] = mt;
 	let text = `${comment}\0${accum.length}d\x7F${wikitext.slice(total.length)}`,
 		dt = prefix.split(';').length - 1;
+	// @ts-expect-error abstract class
 	new ListToken(prefix, config, accum);
 	if (!dt) {
 		return text;
@@ -31,6 +32,7 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 	 * @param index 起点
 	 */
 	const dd = (syntax: string, index: number): string => {
+		// @ts-expect-error abstract class
 		new DdToken(syntax, config, accum);
 		return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + syntax.length)}`;
 	};

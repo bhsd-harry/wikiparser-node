@@ -6,8 +6,7 @@ import type {LintError} from '../../base';
 import type {Token} from '../index';
 
 /** HTML注释，不可见 */
-// @ts-expect-error not implementing all abstract methods
-export class CommentToken extends hiddenToken(NowikiBaseToken) {
+export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 	override readonly type = 'comment';
 	closed;
 

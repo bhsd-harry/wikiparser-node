@@ -42,6 +42,7 @@ export abstract class NestedToken extends Token {
 					new ExtToken(name, attr, inner, closing, config, accum);
 				} else {
 					const closed = comment.endsWith('-->');
+					// @ts-expect-error abstract class
 					new CommentToken(comment.slice(4, closed ? -3 : undefined), closed, config, accum);
 				}
 				return str;
@@ -49,6 +50,7 @@ export abstract class NestedToken extends Token {
 		)?.replace(
 			/(^|\0\d+[ce]\x7F)([^\0]+)(?=$|\0\d+[ce]\x7F)/gu,
 			(_, lead: string, substr: string) => {
+				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
 				return `${lead}\0${accum.length}c\x7F`;
 			},

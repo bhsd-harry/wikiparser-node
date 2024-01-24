@@ -66,6 +66,7 @@ export const parseTable = (
 			}
 			const [, indent, moreSpaces, tableSyntax, attr] = matchesStart;
 			if (indent) {
+				// @ts-expect-error abstract class
 				new DdToken(indent, config, accum);
 			}
 			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7F`}${moreSpaces}\0${accum.length}b\x7F`, top);

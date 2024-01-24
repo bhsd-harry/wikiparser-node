@@ -58,6 +58,7 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 		}
 	}
 	for (let i = 1; i < length; i += 2) {
+		// @ts-expect-error abstract class
 		new QuoteToken(arr[i], config, accum);
 		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
