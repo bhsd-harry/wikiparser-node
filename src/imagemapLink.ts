@@ -37,7 +37,8 @@ export abstract class ImagemapLinkToken extends fixedToken(singleLine(Token)) im
 				? new LinkToken(...linkStuff, config, accum) as LinkToken
 				// @ts-expect-error abstract class
 				: new ExtLinkToken(...linkStuff, config, accum) as ExtLinkToken,
-			new NoincludeToken(post, config, accum),
+			// @ts-expect-error abstract class
+			new NoincludeToken(post, config, accum) as NoincludeToken,
 		);
 	}
 }

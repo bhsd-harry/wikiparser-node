@@ -57,7 +57,8 @@ export abstract class ImagemapToken extends Token {
 					title.valid
 					&& title.ns === 6
 				) {
-					const token = new GalleryImageToken(
+					// @ts-expect-error abstract class
+					const token: GalleryImageToken = new GalleryImageToken(
 						'imagemap',
 						file,
 						options.length > 0 ? options.join('|') : undefined,
@@ -109,7 +110,8 @@ export abstract class ImagemapToken extends Token {
 					}
 				}
 			}
-			super.insertAt(new SingleLineNoincludeToken(line, config, accum));
+			// @ts-expect-error abstract class
+			super.insertAt(new SingleLineNoincludeToken(line, config, accum) as SingleLineNoincludeToken);
 		}
 	}
 
