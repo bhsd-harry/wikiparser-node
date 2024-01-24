@@ -85,6 +85,7 @@ export abstract class ExtToken extends TagPairToken {
 			case 'inputbox': {
 				newConfig.excludes!.push('heading');
 				const {InputboxToken}: typeof import('../paramTag/inputbox') = require('../paramTag/inputbox');
+				// @ts-expect-error abstract class
 				innerToken = new InputboxToken(inner, newConfig, accum);
 				break;
 			}

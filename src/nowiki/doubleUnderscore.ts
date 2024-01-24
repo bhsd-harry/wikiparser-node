@@ -4,8 +4,7 @@ import {NowikiBaseToken} from './base';
 import type {Token} from '../index';
 
 /** 状态开关 */
-// @ts-expect-error not implementing all abstract methods
-export class DoubleUnderscoreToken extends hiddenToken(NowikiBaseToken) {
+export abstract class DoubleUnderscoreToken extends hiddenToken(NowikiBaseToken) {
 	override readonly type = 'double-underscore';
 
 	/**
