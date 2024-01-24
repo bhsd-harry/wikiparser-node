@@ -9,15 +9,12 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export class ImagemapLinkToken extends Token {
+export abstract class ImagemapLinkToken extends Token {
 	override readonly type = 'imagemap-link';
 
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): NoincludeToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ImagemapToken | undefined;
 
 	/**
@@ -36,8 +33,10 @@ export class ImagemapLinkToken extends Token {
 		this.append(
 			pre,
 			linkStuff.length === 2
-				? new LinkToken(...linkStuff, config, accum)
-				: new ExtLinkToken(...linkStuff, config, accum),
+				// @ts-expect-error abstract class
+				? new LinkToken(...linkStuff, config, accum) as LinkToken
+				// @ts-expect-error abstract class
+				: new ExtLinkToken(...linkStuff, config, accum) as ExtLinkToken,
 			new NoincludeToken(post, config, accum),
 		);
 	}

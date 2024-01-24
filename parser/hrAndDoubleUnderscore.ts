@@ -41,6 +41,7 @@ export const parseHrAndDoubleUnderscore = (
 		/^((?:\0\d+c\x7F)*)(={1,6})(.+)\2((?:[^\S\n]|\0\d+c\x7F)*)$/gmu,
 		(_, lead: string, equals: string, heading: string, trail: string) => {
 			const text = `${lead}\0${accum.length}h\x7F`;
+			// @ts-expect-error abstract class
 			new HeadingToken(equals.length, [heading, trail], config, accum);
 			return text;
 		},

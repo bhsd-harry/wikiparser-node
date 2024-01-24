@@ -13,20 +13,15 @@ import type {
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
  */
-export class GalleryToken extends Token {
+export abstract class GalleryToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/** @param inner 标签内部wikitext */

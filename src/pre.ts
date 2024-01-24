@@ -10,20 +10,15 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * `<pre>`
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-export class PreToken extends Token {
+export abstract class PreToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'pre';
 
 	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/** @class */

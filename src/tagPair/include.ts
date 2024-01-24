@@ -9,13 +9,11 @@ import type {AstText, Token} from '../../internal';
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
-export class IncludeToken extends hiddenToken(TagPairToken) {
+export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 	override readonly type = 'include';
 
 	declare readonly childNodes: readonly [AstText, AstText];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText;
 
 	/**
