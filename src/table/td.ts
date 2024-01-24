@@ -22,7 +22,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-export abstract class TdToken extends fixedToken(TableBaseToken) implements FixedTokenBase {
+export abstract class TdToken extends fixedToken(TableBaseToken) {
 	override readonly type = 'td';
 	#innerSyntax = '';
 

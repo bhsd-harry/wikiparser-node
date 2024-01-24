@@ -996,6 +996,7 @@
 				"@typescript-eslint/no-unnecessary-qualifier": 2,
 				"@typescript-eslint/no-unsafe-assignment": 0,
 				"@typescript-eslint/no-unsafe-call": 0,
+				"@typescript-eslint/no-unsafe-declaration-merging": 0,
 				"@typescript-eslint/no-unsafe-return": 0,
 				"@typescript-eslint/no-useless-empty-export": 2,
 				"@typescript-eslint/no-var-requires": 0,

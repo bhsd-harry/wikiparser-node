@@ -10,7 +10,7 @@ import {MagicLinkToken} from './magicLink';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export abstract class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
+export abstract class ExtLinkToken extends magicLinkParent(Token) {
 	override readonly type = 'ext-link';
 	#space;
 

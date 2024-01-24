@@ -20,7 +20,7 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-export abstract class ExtToken extends attributesParent(TagPairToken) implements AttributesParentBase {
+export abstract class ExtToken extends attributesParent(TagPairToken) {
 	override readonly type = 'ext';
 	declare closed: true;
 

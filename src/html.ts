@@ -39,9 +39,7 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export abstract class HtmlToken extends attributesParent(
-	fixedToken(Token),
-) implements AttributesParentBase, FixedTokenBase {
+export abstract class HtmlToken extends attributesParent(fixedToken(Token)) {
 	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;

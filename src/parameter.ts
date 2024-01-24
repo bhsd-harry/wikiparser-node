@@ -16,7 +16,7 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export abstract class ParameterToken extends fixedToken(Token) implements FixedTokenBase {
+export abstract class ParameterToken extends fixedToken(Token) {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 
