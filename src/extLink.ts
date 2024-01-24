@@ -1,10 +1,12 @@
 import {
 	MAX_STAGE,
 } from '../util/constants';
+import {generateForSelf} from '../util/lint';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
+import type {LintError} from '../base';
 
 /**
  * 外链
@@ -58,6 +60,15 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 	/** @private */
 	override getGaps(): number {
 		return this.#space.length;
+	}
+
+	/** @override */
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const errors = super.lint(start);
+		if (this.length === 1 && this.closest('heading-title')) {
+			errors.push(generateForSelf(this, {start}, 'variable anchor in a section header'));
+		}
+		return errors;
 	}
 
 	/** @override */

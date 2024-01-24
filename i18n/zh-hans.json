@@ -1,6 +1,5 @@
 {
 	"<imagemap> without an image": "缺少图片的<imagemap>",
-	"<ref> in section header": "段落标题中的<ref>",
 	"$1 in URL": "URL中的$1",
 	"additional \"|\" in a table cell": "表格单元格中多余的\"|\"",
 	"additional \"|\" in the link text": "链接文本中多余的\"|\"",
@@ -52,5 +51,6 @@
 	"unmatched closing tag": "未匹配的闭合标签",
 	"unnecessary URL encoding in an internal link": "内链中不必要的URL编码",
 	"useless fragment": "多余的fragment",
+	"variable anchor in a section header": "段落标题中可变的锚点",
 	"vertical-alignment": "垂直对齐"
 }
