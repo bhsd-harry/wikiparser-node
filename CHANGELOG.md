@@ -5,6 +5,7 @@
 **Added**
 
 - New category of linting errors: `<ref>` in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
+- New preset configuration [`enwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/enwiki.json) for English Wikipedia
 
 **Changed**
 
