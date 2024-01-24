@@ -1,6 +1,7 @@
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
+import type {ExtToken} from '../internal';
 
 const errorSyntax = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
 	errorSyntaxUrl = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
@@ -68,6 +69,7 @@ export class AstText extends AstNode {
 		const {type, name} = parentNode!,
 			nowiki = name === 'nowiki' || name === 'pre',
 			nextType = nextSibling?.type,
+			nextName = nextSibling?.name,
 			previousType = previousSibling?.type;
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
@@ -116,6 +118,12 @@ export class AstText extends AstNode {
 					|| char === '[' && (
 						nextChar === char
 						|| type === 'ext-link-text'
+						&& !/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
+						&& !(
+							nextType === 'ext'
+							&& nextName === 'nowiki'
+							&& (nextSibling as ExtToken).innerText?.includes(']')
+						)
 						|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
 					)
 					|| char === ']' && (
