@@ -23,13 +23,15 @@ const escapeTable = (syntax: SyntaxToken): void => {
 	syntax.replaceChildren(...childNodes);
 };
 
+export interface TableBaseToken extends AttributesParentBase {}
+
 /* NOT FOR BROWSER END */
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
-export abstract class TableBaseToken extends attributesParent(Token, 1) implements AttributesParentBase {
+export abstract class TableBaseToken extends attributesParent(Token, 1) {
 	declare type: 'table' | 'tr' | 'td';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];

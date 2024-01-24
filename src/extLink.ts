@@ -10,11 +10,13 @@ import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
 
+export interface ExtLinkToken extends MagicLinkParentBase {}
+
 /**
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export abstract class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
+export abstract class ExtLinkToken extends magicLinkParent(Token) {
 	override readonly type = 'ext-link';
 	#space;
 

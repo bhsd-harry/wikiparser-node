@@ -7,15 +7,16 @@ import * as Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
-import type {FixedTokenBase} from '../mixin/fixed';
 import type {SolTokenBase} from '../mixin/sol';
 import type {QuoteToken} from '../internal';
+
+export interface HeadingToken extends SolTokenBase {}
 
 /**
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export abstract class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBase, SolTokenBase {
+export abstract class HeadingToken extends sol(fixedToken(Token)) {
 	override readonly type = 'heading';
 	#level;
 

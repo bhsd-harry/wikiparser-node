@@ -4,7 +4,6 @@ import {fixedToken} from '../../mixin/fixed';
 import * as Parser from '../../index';
 import {Token} from '../index';
 import type {AstText} from '../../lib/text';
-import type {FixedTokenBase} from '../../mixin/fixed';
 
 declare type NowikiTypes = 'ext-inner'
 | 'comment'
@@ -19,7 +18,7 @@ declare type NowikiTypes = 'ext-inner'
  * 纯文字Token，不会被解析
  * @classdesc `{childNodes: [AstText]}`
  */
-export abstract class NowikiBaseToken extends fixedToken(Token) implements FixedTokenBase {
+export abstract class NowikiBaseToken extends fixedToken(Token) {
 	declare type: NowikiTypes;
 
 	declare readonly childNodes: readonly [AstText];

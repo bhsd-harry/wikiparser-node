@@ -6,7 +6,6 @@ import {fixedToken} from '../mixin/fixed';
 import * as Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
-import type {FixedTokenBase} from '../mixin/fixed';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**
@@ -20,7 +19,7 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export abstract class ParameterToken extends fixedToken(Token) implements FixedTokenBase {
+export abstract class ParameterToken extends fixedToken(Token) {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 
