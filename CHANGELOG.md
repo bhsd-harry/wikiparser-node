@@ -9,6 +9,7 @@
 **Changed**
 
 - Reported duplicated categories do not need to be child nodes of the same parent node
+- Better recognition of bracket pair (`[]`) that actually breaks the [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken)
 
 ## v1.4.0
 

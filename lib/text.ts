@@ -3,6 +3,7 @@ import {setChildNodes} from '../util/debug';
 import * as Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
+import type {ExtToken} from '../internal';
 
 const errorSyntax = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
 	errorSyntaxUrl = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
@@ -111,6 +112,7 @@ export class AstText extends AstNode {
 		const {type, name} = parentNode,
 			nowiki = name === 'nowiki' || name === 'pre',
 			nextType = nextSibling?.type,
+			nextName = nextSibling?.name,
 			previousType = previousSibling?.type;
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
@@ -143,12 +145,24 @@ export class AstText extends AstNode {
 					index += length;
 					error = error.slice(length);
 				}
+				const {0: char, length} = error;
+				if (
+					char === '['
+					&& type === 'ext-link-text'
+					&& (
+						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
+						|| nextType === 'ext'
+						&& nextName === 'nowiki'
+						&& (nextSibling as ExtToken).innerText?.includes(']')
+					)
+				) {
+					continue;
+				}
 				const startIndex = start + index,
 					lines = data.slice(0, index).split('\n'),
 					startLine = lines.length + top - 1,
 					line = lines[lines.length - 1]!,
 					startCol = lines.length === 1 ? left + line.length : line.length,
-					{0: char, length} = error,
 					endIndex = startIndex + length,
 					rootStr = String(root),
 					nextChar = rootStr[endIndex],
