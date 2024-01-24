@@ -102,12 +102,24 @@ export class AstText extends AstNode {
 					index += length;
 					error = error.slice(length);
 				}
+				const {0: char, length} = error;
+				if (
+					char === '['
+					&& type === 'ext-link-text'
+					&& (
+						/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
+						|| nextType === 'ext'
+						&& nextName === 'nowiki'
+						&& (nextSibling as ExtToken).innerText?.includes(']')
+					)
+				) {
+					continue;
+				}
 				const startIndex = start + index,
 					lines = data.slice(0, index).split('\n'),
 					startLine = lines.length + top - 1,
 					line = lines[lines.length - 1]!,
 					startCol = lines.length === 1 ? left + line.length : line.length,
-					{0: char, length} = error,
 					endIndex = startIndex + length,
 					rootStr = String(root),
 					nextChar = rootStr[endIndex],
@@ -118,12 +130,6 @@ export class AstText extends AstNode {
 					|| char === '[' && (
 						nextChar === char
 						|| type === 'ext-link-text'
-						&& !/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-						&& !(
-							nextType === 'ext'
-							&& nextName === 'nowiki'
-							&& (nextSibling as ExtToken).innerText?.includes(']')
-						)
 						|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
 					)
 					|| char === ']' && (
