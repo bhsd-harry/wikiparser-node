@@ -9,7 +9,7 @@ export interface SolTokenBase {
  * 只能位于行首的类
  * @param constructor 基类
  */
-export const sol = <T extends AstConstructor>(constructor: T) => {
+export const sol = <T extends AstConstructor>(constructor: T): T => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
 		/** 在前方插入newline */

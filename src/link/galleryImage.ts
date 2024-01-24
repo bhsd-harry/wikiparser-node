@@ -126,7 +126,7 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 		if (this.type === 'gallery-image' && child.type === 'image-parameter' && !galleryParams.has(child.name)) {
 			child.setAttribute('name', 'invalid');
 		}
-		return super.insertAt(child, i) as T;
+		return super.insertAt(child, i);
 	}
 }
 

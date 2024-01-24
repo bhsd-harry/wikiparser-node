@@ -124,7 +124,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		if (token instanceof TdToken && token.isIndependent() && child instanceof TdToken) {
 			child.independence();
 		}
-		return super.insertAt(token, i) as T;
+		return super.insertAt(token, i);
 	}
 
 	/** 获取行数 */

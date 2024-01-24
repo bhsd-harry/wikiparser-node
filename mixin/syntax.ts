@@ -8,7 +8,7 @@ import type {AstNodes} from '../lib/node';
  * @param constructor 基类
  * @param pattern 语法正则
  */
-export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegExp) => {
+export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegExp): S => {
 	/** 满足特定语法格式的Token */
 	abstract class SyntaxToken extends constructor {
 		#pattern = pattern!;
