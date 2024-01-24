@@ -216,7 +216,7 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
 			if (isTemplate || this.length > 1) {
-				this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle()!.title);
+				this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle().title);
 			}
 
 			/**
@@ -233,9 +233,9 @@ export abstract class TranscludeToken extends Token {
 				}
 				if (
 					prevTarget === this.firstChild && isTemplate
-					|| prevTarget === this.childNodes[1]! && !isTemplate && this.name === 'invoke'
+					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke'
 				) {
-					this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle()!.title);
+					this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle().title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey!, false, false);
 					oldArgs.delete(prevTarget);
@@ -306,11 +306,11 @@ export abstract class TranscludeToken extends Token {
 		const title = this.#getTitle();
 		if (title.fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1]!, rect, 'useless fragment'));
+			errors.push(generateForChild(childNodes[type === 'template' ? 0 : 1], rect, 'useless fragment'));
 		}
 		if (!title.valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(childNodes[1]!, rect, 'illegal module name'));
+			errors.push(generateForChild(childNodes[1], rect, 'illegal module name'));
 		}
 		if (type === 'magic-word' && length === 2) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
@@ -759,7 +759,7 @@ export abstract class TranscludeToken extends Token {
 			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
 				let last: number;
 				// eslint-disable-next-line es-x/no-regexp-lookbehind-assertions
-				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0]!.length),
+				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0].length),
 					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`, 'u'),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
