@@ -55,6 +55,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 				if (rmt) {
 					wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${wikitext.slice(curIndex)}`;
 					lastIndex = index! + 4 + String(accum.length).length;
+					// @ts-expect-error abstract class
 					new HeadingToken(rmt[1].length, rmt.slice(2) as [string, string], config, accum);
 				}
 			}
@@ -78,12 +79,14 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 			if (close.length === 3) {
 				const argParts = parts!.map(part => part.join('=')),
 					str = argParts.length > 1 && removeComment(argParts[1]!).trim();
+				// @ts-expect-error abstract class
 				new ArgToken(argParts, config, accum);
 				if (str && str.endsWith(':') && subst.includes(str.slice(0, -1).toLowerCase())) {
 					ch = 's';
 				}
 			} else {
 				try {
+					// @ts-expect-error abstract class
 					new TranscludeToken(
 						parts![0]![0]!,
 						parts!.slice(1) as ([string] | [string, string])[],

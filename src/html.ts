@@ -45,7 +45,9 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-export class HtmlToken extends attributesParent(fixedToken(Token)) implements AttributesParentBase, FixedTokenBase {
+export abstract class HtmlToken extends attributesParent(
+	fixedToken(Token),
+) implements AttributesParentBase, FixedTokenBase {
 	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;
@@ -53,15 +55,10 @@ export class HtmlToken extends attributesParent(fixedToken(Token)) implements At
 	#tag;
 
 	declare readonly childNodes: readonly [AttributesToken];
-	// @ts-expect-error abstract method
 	abstract override get children(): [AttributesToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken;
 
 	/** 是否是闭合标签 */
@@ -282,6 +279,7 @@ export class HtmlToken extends attributesParent(fixedToken(Token)) implements At
 	override cloneNode(): this {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');
+		// @ts-expect-error abstract class
 		return Shadow.run(() => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config) as this);
 	}
 

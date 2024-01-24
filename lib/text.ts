@@ -307,7 +307,8 @@ export class AstText extends AstNode {
 			if (i < this.length - 1) {
 				this.splitText(i + 1);
 			}
-			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')));
+			// @ts-expect-error abstract class
+			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')) as Parser.TranscludeToken);
 			this.setAttribute('data', this.data.slice(0, i));
 		}
 	}

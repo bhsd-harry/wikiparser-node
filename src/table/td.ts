@@ -30,23 +30,16 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-// @ts-expect-error not implementing all abstract methods
-export class TdToken extends fixedToken(TableBaseToken) implements FixedTokenBase {
+export abstract class TdToken extends fixedToken(TableBaseToken) implements FixedTokenBase {
 	override readonly type = 'td';
 	#innerSyntax = '';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): TrToken | TableToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): TrToken | TableToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token | undefined;
 
 	/** 单元格类型 */
@@ -357,7 +350,8 @@ export const createTd = (
 	config = Parser.getConfig(),
 ): TdToken => {
 	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
-		token = Shadow.run(() => new TdToken('\n|', undefined, config));
+		// @ts-expect-error abstract class
+		token = Shadow.run(() => new TdToken('\n|', undefined, config) as TdToken);
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
 	token.setAttr(attr);

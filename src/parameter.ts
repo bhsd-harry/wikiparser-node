@@ -20,32 +20,21 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export class ParameterToken extends fixedToken(Token) implements FixedTokenBase {
+export abstract class ParameterToken extends fixedToken(Token) implements FixedTokenBase {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [Token, Token];
-	// @ts-expect-error abstract method
 	abstract override get children(): [Token, Token];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): TranscludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): TranscludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
-	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
 
 	/** 是否是匿名参数 */
@@ -189,6 +178,7 @@ export class ParameterToken extends fixedToken(Token) implements FixedTokenBase 
 		const [key, value] = this.cloneChildNodes() as [Token, Token],
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);

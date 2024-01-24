@@ -47,16 +47,12 @@ const explode = (start: string, end: string, separator: string, str?: string): s
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
-// @ts-expect-error not implementing all abstract methods
-export class FileToken extends LinkBaseToken {
+export abstract class FileToken extends LinkBaseToken {
 	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
 
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
 
 	/* NOT FOR BROWSER */
@@ -117,7 +113,10 @@ export class FileToken extends LinkBaseToken {
 	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
-		this.append(...explode('-{', '}-', '|', text).map(part => new ImageParameterToken(part, config, accum)));
+		this.append(...explode('-{', '}-', '|', text).map(
+			// @ts-expect-error abstract class
+			part => new ImageParameterToken(part, config, accum) as ImageParameterToken,
+		));
 	}
 
 	/** @override */
@@ -292,7 +291,10 @@ export class FileToken extends LinkBaseToken {
 		if (value === true && free) {
 			this.typeError('setValue', 'Boolean');
 		}
-		const parameter = Shadow.run(() => new ImageParameterToken(syntax.replace('$1', ''), config));
+		const parameter: ImageParameterToken = Shadow.run(
+			// @ts-expect-error abstract class
+			() => new ImageParameterToken(syntax.replace('$1', ''), config),
+		);
 		if (free) {
 			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);
 			parameter.replaceChildren(...childNodes);

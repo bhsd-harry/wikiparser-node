@@ -9,16 +9,12 @@ import type {Token, AtomToken} from '../../internal';
  * 内链
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
-// @ts-expect-error not implementing all abstract methods
-export class LinkToken extends LinkBaseToken {
+export abstract class LinkToken extends LinkBaseToken {
 	override readonly type = 'link';
 
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get link(): Title;
-	// @ts-expect-error abstract method
 	abstract override set link(link);
 
 	/* NOT FOR BROWSER */

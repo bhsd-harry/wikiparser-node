@@ -291,7 +291,8 @@ TableToken.prototype.insertTableCell =
 TableToken.prototype.prependTableRow =
 	/** @implements */
 	function(): TrToken {
-		const row = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
+		// @ts-expect-error abstract class
+		const row: TrToken = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config'))),
 			{childNodes} = this,
 			[,, plain] = childNodes,
 			start = plain?.constructor === Token ? 3 : 2,
@@ -318,7 +319,8 @@ TableToken.prototype.insertTableRow =
 		innerAttr: TdAttrs = {},
 	): TrToken {
 		let reference = this.getNthRow(y, false, true);
-		const token = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
+		// @ts-expect-error abstract class
+		const token: TrToken = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
 		token.setAttr(attr);
 		if (reference?.type === 'table') { // `row === 0`且表格自身是有效行
 			reference = this.prependTableRow();

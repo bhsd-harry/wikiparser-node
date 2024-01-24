@@ -35,6 +35,7 @@ export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), a
 		if (trail.length >= p1.length) {
 			return m;
 		}
+		// @ts-expect-error abstract class
 		new MagicLinkToken(url, false, config, accum);
 		return `${lead}\0${accum.length - 1}w\x7F${trail}`;
 	});

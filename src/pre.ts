@@ -12,32 +12,21 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * `<pre>`
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
-export class PreToken extends Token {
+export abstract class PreToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'pre';
 
 	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
-	// @ts-expect-error abstract method
 	abstract override get children(): (NoincludeToken | ConverterToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/** @class */
@@ -78,6 +67,7 @@ export class PreToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new PreToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;

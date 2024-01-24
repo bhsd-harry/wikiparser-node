@@ -94,6 +94,7 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 				SomeLinkToken = CategoryToken;
 			}
 		}
+		// @ts-expect-error abstract class
 		new SomeLinkToken(link, text, config, accum, delimiter);
 	}
 	return s;

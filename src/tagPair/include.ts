@@ -11,19 +11,14 @@ import type {AstText, Token} from '../../internal';
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
-export class IncludeToken extends hiddenToken(TagPairToken) {
+export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 	override readonly type = 'include';
 
 	declare readonly childNodes: readonly [AstText, AstText];
-	// @ts-expect-error abstract method
 	abstract override get children(): [];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): undefined;
 
 	/* NOT FOR BROWSER */
@@ -82,6 +77,7 @@ export class IncludeToken extends hiddenToken(TagPairToken) {
 			config = this.getAttribute('config'),
 			{innerText} = this,
 			closing = this.selfClosing || !this.closed ? undefined : tags[1];
+		// @ts-expect-error abstract class
 		return Shadow.run(() => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config) as this);
 	}
 

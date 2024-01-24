@@ -579,16 +579,20 @@ export class Token extends AstElement {
 		if (tagName === (include ? 'noinclude' : 'includeonly')) {
 			const {IncludeToken}: typeof import('./tagPair/include') = require('./tagPair/include');
 			return Shadow.run(
+				// @ts-expect-error abstract class
 				() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
 			);
 		} else if (config.ext.includes(tagName)) {
 			const {ExtToken}: typeof import('./tagPair/ext') = require('./tagPair/ext');
+			// @ts-expect-error abstract class
 			return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config));
 		} else if (config.html.flat().includes(tagName)) {
 			const {HtmlToken}: typeof import('./html') = require('./html'),
 				{AttributesToken}: typeof import('./attributes') = require('./attributes');
 			return Shadow.run(() => {
-				const attr = new AttributesToken(undefined, 'html-attrs', tagName, config);
+				// @ts-expect-error abstract class
+				const attr: Parser.AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
+				// @ts-expect-error abstract class
 				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});
 		}

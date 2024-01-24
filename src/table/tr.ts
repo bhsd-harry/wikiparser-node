@@ -7,28 +7,18 @@ import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
-// @ts-expect-error not implementing all abstract methods
-export class TrToken extends TrBaseToken {
+export abstract class TrToken extends TrBaseToken {
 	override readonly type = 'tr';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...TdToken[]];
-	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, ...TdToken[]];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken | TdToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): TableToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): TableToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | SyntaxToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | SyntaxToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): Token;
-	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): Token;
 
 	/**

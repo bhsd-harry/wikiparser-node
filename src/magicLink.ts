@@ -20,20 +20,15 @@ import type {
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
-export class MagicLinkToken extends syntax(Token) {
+export abstract class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | TranscludeToken;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild():
 		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild():
 		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
@@ -128,6 +123,7 @@ export class MagicLinkToken extends syntax(Token) {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new MagicLinkToken(
 				undefined,
 				this.type === 'ext-link-url',

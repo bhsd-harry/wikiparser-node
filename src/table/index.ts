@@ -24,18 +24,14 @@ const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$
  * 表格
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
-// @ts-expect-error not implementing all abstract methods
-export class TableToken extends TrBaseToken {
+export abstract class TableToken extends TrBaseToken {
 	override readonly type = 'table';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 	| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
-	// @ts-expect-error abstract method
 	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 	| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	/** 表格是否闭合 */

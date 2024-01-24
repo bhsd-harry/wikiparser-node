@@ -22,32 +22,21 @@ import type {
  * `<imagemap>`
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
-export class ImagemapToken extends Token {
+export abstract class ImagemapToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'imagemap';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
-	// @ts-expect-error abstract method
 	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/** 图片 */
@@ -113,13 +102,14 @@ export class ImagemapToken extends Token {
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
 					if (this.normalizeTitle(mtIn[1], 0, true, false, true).valid) {
+						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
 							mtIn.slice(1) as [string, string | undefined],
 							substr.slice(substr.indexOf(']]') + 2),
 							config,
 							accum,
-						));
+						) as ImagemapLinkToken);
 						continue;
 					}
 				} else if (
@@ -129,13 +119,14 @@ export class ImagemapToken extends Token {
 					const mtEx = /^\[([^\]\s]+)(?:(\s+(?=\S))([^\]]*))?\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined, string | undefined] | null;
 					if (mtEx) {
+						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
 							mtEx.slice(1) as [string, string | undefined, string | undefined],
 							substr.slice(substr.indexOf(']') + 1),
 							config,
 							accum,
-						));
+						) as ImagemapLinkToken);
 						continue;
 					}
 				}
@@ -218,6 +209,7 @@ export class ImagemapToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new ImagemapToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;

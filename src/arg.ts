@@ -12,20 +12,15 @@ import type {LintError} from '../base';
  * `{{{}}}`包裹的参数
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
-export class ArgToken extends Token {
+export abstract class ArgToken extends Token {
 	override readonly type = 'arg';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
-	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
 
 	/** 预设值 */
@@ -130,6 +125,7 @@ export class ArgToken extends Token {
 	override cloneNode(): this {
 		const [name, ...cloned] = this.cloneChildNodes() as [AtomToken, ...Token[]];
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new ArgToken([''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(name);
 			token.append(...cloned);

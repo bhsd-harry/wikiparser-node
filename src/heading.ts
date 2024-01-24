@@ -15,20 +15,15 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBase, SolTokenBase {
+export abstract class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBase, SolTokenBase {
 	override readonly type = 'heading';
 	#level;
 
 	declare readonly childNodes: readonly [Token, SyntaxToken];
-	// @ts-expect-error abstract method
 	abstract override get children(): [Token, SyntaxToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): SyntaxToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): SyntaxToken;
 
 	/** 标题格式的等号 */
@@ -167,6 +162,7 @@ export class HeadingToken extends sol(fixedToken(Token)) implements FixedTokenBa
 	override cloneNode(): this {
 		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new HeadingToken(this.level, [], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(title);
 			token.lastChild.safeReplaceWith(trail);

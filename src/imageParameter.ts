@@ -63,22 +63,16 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 }
 
 /** 图片参数 */
-export class ImageParameterToken extends Token {
+export abstract class ImageParameterToken extends Token {
 	override readonly type = 'image-parameter';
 	declare readonly name: string;
 	#syntax = '';
 
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): FileToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): FileToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this;
-	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AtomToken | this;
 
 	/** 图片链接 */
@@ -261,6 +255,7 @@ export class ImageParameterToken extends Token {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), config) as this;
 			token.replaceChildren(...cloned);
 			token.setAttribute('name', this.name);

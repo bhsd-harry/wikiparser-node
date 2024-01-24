@@ -14,16 +14,13 @@ import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
+export abstract class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
 	override readonly type = 'ext-link';
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER */
@@ -50,7 +47,8 @@ export class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkPar
 		super(undefined, config, accum, {
 			MagicLinkToken: 0, Token: 1,
 		});
-		this.insertAt(new MagicLinkToken(url, true, config, accum));
+		// @ts-expect-error abstract class
+		this.insertAt(new MagicLinkToken(url, true, config, accum) as MagicLinkToken);
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, accum, {
@@ -106,6 +104,7 @@ export class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkPar
 	override cloneNode(): this {
 		const [url, text] = this.cloneChildNodes() as [MagicLinkToken, Token?];
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new ExtLinkToken(undefined, '', '', this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(url);
 			if (text) {

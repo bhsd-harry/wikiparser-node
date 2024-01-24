@@ -14,23 +14,16 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export class ImagemapLinkToken extends fixedToken(singleLine(Token)) implements FixedTokenBase {
+export abstract class ImagemapLinkToken extends fixedToken(singleLine(Token)) implements FixedTokenBase {
 	override readonly type = 'imagemap-link';
 
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
-	// @ts-expect-error abstract method
 	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): NoincludeToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): NoincludeToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ImagemapToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): ImagemapToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -62,8 +55,10 @@ export class ImagemapLinkToken extends fixedToken(singleLine(Token)) implements 
 		this.append(
 			pre,
 			linkStuff.length === 2
-				? new LinkToken(...linkStuff, config, accum)
-				: new ExtLinkToken(...linkStuff, config, accum),
+				// @ts-expect-error abstract class
+				? new LinkToken(...linkStuff, config, accum) as LinkToken
+				// @ts-expect-error abstract class
+				: new ExtLinkToken(...linkStuff, config, accum) as ExtLinkToken,
 			new NoincludeToken(post, config, accum),
 		);
 	}

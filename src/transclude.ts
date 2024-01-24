@@ -37,7 +37,7 @@ const insensitiveVars = new Set<string | undefined>([
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
-export class TranscludeToken extends Token {
+export abstract class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
 	declare readonly name: string;
 	readonly modifier: string = '';
@@ -52,16 +52,11 @@ export class TranscludeToken extends Token {
 
 	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
 	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): AtomToken | SyntaxToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/* NOT FOR BROWSER */
@@ -170,7 +165,8 @@ export class TranscludeToken extends Token {
 				(part as (number | string)[]).unshift(i);
 				i++;
 			}
-			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum));
+			// @ts-expect-error abstract class
+			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
 		}
 		this.protectChildren(0);
 	}
@@ -478,6 +474,7 @@ export class TranscludeToken extends Token {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new TranscludeToken(this.type === 'template' ? 'T' : first!.text(), [], config) as this;
 			if (this.#raw) {
 				token.setModifier(this.modifier);
@@ -596,7 +593,8 @@ export class TranscludeToken extends Token {
 	newAnonArg(val: string): ParameterToken {
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(val, this.getAttribute('include'), undefined, config),
-			token = Shadow.run(() => new ParameterToken(undefined, undefined, config));
+			// @ts-expect-error abstract class
+			token: ParameterToken = Shadow.run(() => new ParameterToken(undefined, undefined, config));
 		token.lastChild.append(...childNodes);
 		token.afterBuild();
 		return this.insertAt(token);
@@ -621,7 +619,8 @@ export class TranscludeToken extends Token {
 			config = this.getAttribute('config'),
 			k = Parser.parse(key, include, undefined, config),
 			v = Parser.parse(value, include, undefined, config),
-			token = Shadow.run(() => new ParameterToken(undefined, undefined, config));
+			// @ts-expect-error abstract class
+			token: ParameterToken = Shadow.run(() => new ParameterToken(undefined, undefined, config));
 		token.firstChild.append(...k.childNodes);
 		token.lastChild.append(...v.childNodes);
 		token.afterBuild();

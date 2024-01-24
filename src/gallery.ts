@@ -16,32 +16,21 @@ import type {
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
  */
-export class GalleryToken extends Token {
+export abstract class GalleryToken extends Token {
 	override readonly type = 'ext-inner';
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
-	// @ts-expect-error abstract method
 	abstract override get children(): (GalleryImageToken | NoincludeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	// @ts-expect-error abstract method
 	abstract override get firstElementChild(): GalleryImageToken | NoincludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextElementSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get previousElementSibling(): AttributesToken;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
@@ -137,6 +126,7 @@ export class GalleryToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
+			// @ts-expect-error abstract class
 			const token = new GalleryToken(undefined, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			return token;
