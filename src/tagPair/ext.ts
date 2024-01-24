@@ -167,7 +167,7 @@ export abstract class ExtToken extends TagPairToken {
 		}
 		if (this.name === 'ref' && this.closest('heading-title')) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForSelf(this, rect, '<ref> in section header'));
+			errors.push(generateForSelf(this, rect, 'variable anchor in a section header'));
 		}
 		return errors;
 	}
