@@ -1,10 +1,10 @@
 ## v1.4.1
 
-*2024-01-24*
+*2024-01-25*
 
 **Added**
 
-- New category of linting errors: `<ref>` in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
+- New category of linting errors: `<ref>` or external links without specified text in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
 - New preset configuration [`enwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/enwiki.json) for English Wikipedia
 
 **Changed**

@@ -4,10 +4,12 @@ import {
 	MAX_STAGE,
 	classes,
 } from '../util/constants';
+import {generateForSelf} from '../util/lint';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import * as Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
+import type {LintError} from '../base';
 import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
 
 export interface ExtLinkToken extends MagicLinkParentBase {}
@@ -91,6 +93,15 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 	override getGaps(): number {
 		this.#correct();
 		return this.#space.length;
+	}
+
+	/** @override */
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const errors = super.lint(start);
+		if (this.length === 1 && this.closest('heading-title')) {
+			errors.push(generateForSelf(this, {start}, 'variable anchor in a section header'));
+		}
+		return errors;
 	}
 
 	/** @override */
