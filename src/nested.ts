@@ -47,7 +47,7 @@ export abstract class NestedToken extends Token {
 				}
 				return str;
 			},
-		)?.replace(
+		).replace(
 			/(^|\0\d+[ce]\x7F)([^\0]+)(?=$|\0\d+[ce]\x7F)/gu,
 			(_, lead: string, substr: string) => {
 				// @ts-expect-error abstract class
