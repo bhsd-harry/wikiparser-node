@@ -28,7 +28,7 @@ export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum
 	) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
-			mt[0] = mt[0]!.slice(length);
+			mt[0] = mt[0].slice(length);
 			mt.index += length;
 		}
 		const {0: syntax, index: curIndex} = mt ?? {0: '\n', index: wikitext.length},
