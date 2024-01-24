@@ -29,16 +29,13 @@ const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(ty
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
-export class AttributesToken extends Token {
+export abstract class AttributesToken extends Token {
 	declare type: AttributesTypes;
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/**
@@ -84,7 +81,8 @@ export class AttributesToken extends Token {
 				if (/^(?:[\w:]|\0\d+[t!~{}+-]\x7F)(?:[\w:.-]|\0\d+[t!~{}+-]\x7F)*$/u.test(removeComment(key).trim())) {
 					const value = quoted ?? unquoted,
 						quotes = [quoteStart, quoteEnd] as [string?, string?],
-						token = new AttributeToken(
+						// @ts-expect-error abstract class
+						token: AttributeToken = new AttributeToken(
 							toAttributeType(type),
 							name,
 							key,

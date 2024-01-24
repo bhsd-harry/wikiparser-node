@@ -168,7 +168,7 @@ const commonHtmlAttrs = new Set([
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export class AttributeToken extends fixedToken(Token) implements FixedTokenBase {
+export abstract class AttributeToken extends fixedToken(Token) implements FixedTokenBase {
 	declare type: AttributeTypes;
 	declare readonly name: string;
 	readonly tag;
@@ -176,15 +176,10 @@ export class AttributeToken extends fixedToken(Token) implements FixedTokenBase 
 	#quotes: [string?, string?];
 
 	declare readonly childNodes: readonly [AtomToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): AttributesToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): AtomToken | this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this | undefined;
 
 	/** 引号是否匹配 */

@@ -11,20 +11,15 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * 转换flags
  * @classdesc `{childNodes: ...AtomToken}`
  */
-export class ConverterFlagsToken extends Token {
+export abstract class ConverterFlagsToken extends Token {
 	override readonly type = 'converter-flags';
 	#flags?: string[];
 
 	declare readonly childNodes: readonly AtomToken[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): ConverterToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
 
 	/** @param flags 转换类型标记 */

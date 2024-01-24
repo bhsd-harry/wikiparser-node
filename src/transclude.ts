@@ -32,7 +32,7 @@ const insensitiveVars = new Set<string | undefined>([
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
-export class TranscludeToken extends Token {
+export abstract class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
 	readonly modifier: string = '';
 	#raw = false;
@@ -40,9 +40,7 @@ export class TranscludeToken extends Token {
 
 	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AtomToken | SyntaxToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/**
@@ -128,7 +126,8 @@ export class TranscludeToken extends Token {
 				(part as (number | string)[]).unshift(i);
 				i++;
 			}
-			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum));
+			// @ts-expect-error abstract class
+			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
 		}
 	}
 

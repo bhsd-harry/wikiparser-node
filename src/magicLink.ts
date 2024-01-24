@@ -14,13 +14,11 @@ import type {
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
-export class MagicLinkToken extends syntax(Token) {
+export abstract class MagicLinkToken extends syntax(Token) {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): AstText | TranscludeToken;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
 
 	/**

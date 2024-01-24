@@ -10,12 +10,11 @@ import {MagicLinkToken} from './magicLink';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
+export abstract class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkParentBase {
 	override readonly type = 'ext-link';
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
 
 	/**
@@ -26,7 +25,8 @@ export class ExtLinkToken extends magicLinkParent(Token) implements MagicLinkPar
 	constructor(url?: string, space = '', text = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		this.insertAt(new MagicLinkToken(url, true, config, accum));
+		// @ts-expect-error abstract class
+		this.insertAt(new MagicLinkToken(url, true, config, accum) as MagicLinkToken);
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, accum, {

@@ -69,7 +69,8 @@ export const parseTable = (
 				new DdToken(indent, config, accum);
 			}
 			push(`\n${spaces}${indent && `\0${accum.length - 1}d\x7F`}${moreSpaces}\0${accum.length}b\x7F`, top);
-			stack.push(...top ? [top] : [], new TableToken(tableSyntax, attr, config, accum));
+			// @ts-expect-error abstract class
+			stack.push(...top ? [top] : [], new TableToken(tableSyntax, attr, config, accum) as TableToken);
 			continue;
 		} else if (!top) {
 			out += `\n${outLine}`;
@@ -96,7 +97,8 @@ export const parseTable = (
 			if (top.type === 'tr') {
 				top = stack.pop() as TableToken;
 			}
-			const tr = new TrToken(`\n${spaces}${row}`, attr, config, accum);
+			// @ts-expect-error abstract class
+			const tr: TrToken = new TrToken(`\n${spaces}${row}`, attr, config, accum);
 			stack.push(top, tr);
 			top.insertAt(tr);
 		} else {
@@ -111,7 +113,8 @@ export const parseTable = (
 			 * @param tr 当前表格行
 			 */
 			const createTd = (tr: TrToken | TableToken): TdToken => {
-				const td = new TdToken(lastSyntax, attr.slice(lastIndex, mt?.index), config, accum);
+				// @ts-expect-error abstract class
+				const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex, mt?.index), config, accum);
 				tr.insertAt(td);
 				return td;
 			};
