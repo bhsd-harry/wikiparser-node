@@ -97,6 +97,7 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 		if (text === undefined && delimiter) {
 			text = '';
 		}
+		// @ts-expect-error abstract class
 		new SomeLinkToken(link, text, config, accum, delimiter);
 	}
 	return s;

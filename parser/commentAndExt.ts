@@ -90,11 +90,13 @@ export const parseCommentAndExt = (
 		) => {
 			const str = `\0${accum.length}${name ? 'e' : 'c'}\x7F`;
 			if (name) {
+				// @ts-expect-error abstract class
 				new ExtToken(name, attr, inner, closing, config, accum);
 			} else if (substr.startsWith('<!--')) {
 				const closed = substr.endsWith('-->');
 				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
 			} else if (include) {
+				// @ts-expect-error abstract class
 				new IncludeToken(include, includeAttr, includeInner, includeClosing, config, accum);
 			} else {
 				new NoincludeToken(substr, config, accum);

@@ -25,6 +25,7 @@ export const parseExternalLinks = (wikitext: string, config = Parser.getConfig()
 			space = '';
 			text = `${url.slice(mt.index)}${space}${text}`;
 		}
+		// @ts-expect-error abstract class
 		new ExtLinkToken(url, space, text, config, accum);
 		return `\0${length}w\x7F`;
 	});

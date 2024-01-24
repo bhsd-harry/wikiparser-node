@@ -16,20 +16,15 @@ const getName = (name: Token): string => name.toString(new Set(['comment', 'noin
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export class ParameterToken extends Token {
+export abstract class ParameterToken extends Token {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [Token, Token];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): TranscludeToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
 
 	/** 是否是匿名参数 */

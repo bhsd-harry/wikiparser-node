@@ -58,16 +58,13 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 }
 
 /** 图片参数 */
-export class ImageParameterToken extends Token {
+export abstract class ImageParameterToken extends Token {
 	override readonly type = 'image-parameter';
 	declare readonly name: string;
 	#syntax = '';
 
-	// @ts-expect-error abstract method
 	abstract override get parentNode(): FileToken | undefined;
-	// @ts-expect-error abstract method
 	abstract override get nextSibling(): this | undefined;
-	// @ts-expect-error abstract method
 	abstract override get previousSibling(): AtomToken | this;
 
 	/** 图片链接 */

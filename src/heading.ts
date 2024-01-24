@@ -9,14 +9,12 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export class HeadingToken extends Token {
+export abstract class HeadingToken extends Token {
 	override readonly type = 'heading';
 	#level;
 
 	declare readonly childNodes: readonly [Token, SyntaxToken];
-	// @ts-expect-error abstract method
 	abstract override get firstChild(): Token;
-	// @ts-expect-error abstract method
 	abstract override get lastChild(): SyntaxToken;
 
 	/** 标题格式的等号 */
