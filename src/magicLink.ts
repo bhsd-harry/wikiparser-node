@@ -57,7 +57,7 @@ export abstract class MagicLinkToken extends syntax(Token) {
 		const map = {'!': '|', '=': '='};
 		return text(this.childNodes.map(child => {
 			const {type, name} = child;
-			return type === 'magic-word' && name in map ? map[name as '!' | '='] : child;
+			return type === 'magic-word' && name in map ? map[name as keyof typeof map] : child;
 		}));
 	}
 

@@ -194,7 +194,7 @@ const Parser: Parser = {
 				const entities = {lt: '<', gt: '>', amp: '&'};
 				restored = root.print().replace(
 					/<[^<]+?>|&([lg]t|amp);/gu,
-					(_, s?: 'lt' | 'gt' | 'amp') => s ? entities[s] : '',
+					(_, s?: keyof typeof entities) => s ? entities[s] : '',
 				);
 				process = '渲染HTML';
 			}

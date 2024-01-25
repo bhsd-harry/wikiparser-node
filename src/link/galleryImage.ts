@@ -13,9 +13,11 @@ import type {Title} from '../../lib/title';
 import type {LintError} from '../../base';
 import type {AtomToken, ImageParameterToken} from '../../internal';
 
+declare type GalleryTypes = 'gallery' | 'imagemap';
+
 /** 图库图片 */
 export abstract class GalleryImageToken extends singleLine(FileToken) {
-	declare type: 'gallery-image' | 'imagemap-image';
+	declare type: `${GalleryTypes}-image`;
 
 	/* NOT FOR BROWSER */
 
@@ -38,7 +40,7 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 	 * @param text 图片参数
 	 */
 	constructor(
-		type: 'gallery' | 'imagemap',
+		type: GalleryTypes,
 		link: string,
 		text?: string,
 		config = Parser.getConfig(),
