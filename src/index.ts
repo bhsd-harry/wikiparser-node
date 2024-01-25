@@ -14,28 +14,28 @@
 // 10. 段落和列表，参见BlockLevelPass::execute
 // 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
 // \0\d+.\x7F标记Token：
-// e: ExtToken
-// a: AttributeToken
-// c: CommentToken、NoIncludeToken和IncludeToken
 // !: `{{!}}`专用
 // {: `{{(!}}`专用
 // }: `{{!)}}`专用
 // -: `{{!-}}`专用
 // +: `{{!!}}`专用
 // ~: `{{=}}`专用
-// s: `{{{|subst:}}}`
-// m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// t: ArgToken或TranscludeToken
-// h: HeadingToken
-// x: HtmlToken
+// a: AttributeToken
 // b: TableToken
-// r: HrToken
-// u: DoubleUnderscoreToken
-// l: LinkToken
-// q: QuoteToken
-// w: ExtLinkToken
+// c: CommentToken、NoIncludeToken和IncludeToken
 // d: ListToken
+// e: ExtToken
+// h: HeadingToken
+// l: LinkToken
+// m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
+// q: QuoteToken
+// r: HrToken
+// s: `{{{|subst:}}}`
+// t: ArgToken或TranscludeToken
+// u: DoubleUnderscoreToken
 // v: ConverterToken
+// w: ExtLinkToken
+// x: HtmlToken
 
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
@@ -817,31 +817,20 @@ export class Token extends AstElement {
 		if (acceptable && !('QuoteToken' in acceptable)) {
 			return;
 		}
-		for (const quote of this.childNodes) {
-			if (quote.type === 'quote') {
-				quote.replaceWith(String(quote));
+		const accum: Token[] = [];
+		for (const child of this.childNodes) {
+			if (child.type !== 'quote' && child.type !== 'text') {
+				child.replaceWith(`\0${accum.length}e\x7F`);
+				accum.push(child);
 			}
 		}
-		this.normalize();
-		const textNodes = [...this.childNodes.entries()]
-				.filter((entry): entry is [number, AstText] => entry[1].type === 'text'),
-			indices = textNodes.map(([i]) => this.getRelativeIndex(i)),
-			token = Shadow.run(() => {
-				const node = new Token(text(textNodes.map(([, str]) => str)), this.getAttribute('config'));
-				node.setAttribute('stage', 6);
-				return node.parse(7);
-			});
-		for (const quote of [...token.childNodes].reverse()) {
-			if (quote.type === 'quote') {
-				const index = quote.getRelativeIndex(),
-					n = indices.findLastIndex(textIndex => textIndex <= index),
-					cur = this.childNodes[n] as AstText;
-				cur.splitText(index - indices[n]!).splitText(String(quote).length);
-				this.removeAt(n + 1);
-				this.insertAt(quote, n + 1);
-			}
-		}
-		this.normalize();
+		const token = Shadow.run(() => {
+			const node = new Token(String(this), this.getAttribute('config'), accum);
+			node.type = 'plain';
+			node.setAttribute('stage', 6);
+			return node.parse(7);
+		});
+		this.setAttribute('childNodes', [...token.childNodes]);
 	}
 
 	/** 解析部分魔术字 */

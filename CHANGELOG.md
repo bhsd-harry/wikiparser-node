@@ -7,6 +7,10 @@
 - New category of linting errors: `<ref>` or external links without specified text in [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken)
 - New preset configuration [`enwiki`](https://github.com/bhsd-harry/wikiparser-node/blob/main/config/enwiki.json) for English Wikipedia
 
+**Fixed**
+
+- [`Token.prototype.redoQuotes`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#redoquotes)
+
 **Changed**
 
 - Reported duplicated categories do not need to be child nodes of the same parent node
