@@ -101,8 +101,10 @@ export abstract class AstElement extends AstNode {
 	 */
 	#getElementsBy<T = Token>(condition: TokenPredicate<T>): T[] {
 		const descendants: T[] = [];
-		for (const child of this.children) {
-			if (condition(child)) {
+		for (const child of this.childNodes) {
+			if (child.type === 'text') {
+				continue;
+			} else if (condition(child)) {
 				descendants.push(child);
 			}
 			descendants.push(...child.#getElementsBy(condition));
