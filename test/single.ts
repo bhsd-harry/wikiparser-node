@@ -23,7 +23,7 @@ const wikitext = fs.readFileSync('./test/single-page.wiki', 'utf8');
 	const printed = token.print();
 	console.timeEnd('print');
 	const entities = {lt: '<', gt: '>', amp: '&'},
-		restored = printed.replace(/<[^<]+?>|&([lg]t|amp);/gu, (_, s?: 'lt' | 'gt' | 'amp') => s ? entities[s] : '');
+		restored = printed.replace(/<[^<]+?>|&([lg]t|amp);/gu, (_, s?: keyof typeof	entities) => s ? entities[s] : '');
 	if (restored !== wikitext) {
 		await diff(wikitext, restored);
 		throw new Error('渲染HTML过程中不可逆地修改了原始文本！');
