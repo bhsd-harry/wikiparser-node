@@ -4,7 +4,7 @@
 		"dist/**/*.d.ts"
 	],
 	"compilerOptions": {
-		"target": "esnext",
+		"target": "es2022",
 		"module": "CommonJS",
 		"noEmit": true,
 		"alwaysStrict": true,
