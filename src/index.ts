@@ -14,28 +14,28 @@
 // 10. 段落和列表，参见BlockLevelPass::execute
 // 11. 转换，参见LanguageConverter::recursiveConvertTopLevel
 // \0\d+.\x7F标记Token：
-// e: ExtToken
-// a: AttributeToken
-// c: CommentToken、NoIncludeToken和IncludeToken
 // !: `{{!}}`专用
 // {: `{{(!}}`专用
 // }: `{{!)}}`专用
 // -: `{{!-}}`专用
 // +: `{{!!}}`专用
 // ~: `{{=}}`专用
-// s: `{{{|subst:}}}`
-// m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// t: ArgToken或TranscludeToken
-// h: HeadingToken
-// x: HtmlToken
+// a: AttributeToken
 // b: TableToken
-// r: HrToken
-// u: DoubleUnderscoreToken
-// l: LinkToken
-// q: QuoteToken
-// w: ExtLinkToken
+// c: CommentToken、NoIncludeToken和IncludeToken
 // d: ListToken
+// e: ExtToken
+// h: HeadingToken
+// l: LinkToken
+// m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
+// q: QuoteToken
+// r: HrToken
+// s: `{{{|subst:}}}`
+// t: ArgToken或TranscludeToken
+// u: DoubleUnderscoreToken
 // v: ConverterToken
+// w: ExtLinkToken
+// x: HtmlToken
 
 import {text} from '../util/string';
 import {
