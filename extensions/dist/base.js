@@ -1,6 +1,6 @@
 (() => {
 const workerJS = () => {
-    importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.4.1-b/bundle/bundle.min.js');
+    importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.4.0-b/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
@@ -15,12 +15,12 @@ const workerJS = () => {
                 postMessage([qid, Parser.getConfig()]);
                 break;
             case 'json':
-                postMessage([qid, Parser.parse(wikitext, include).json()]);
+                postMessage([qid, JSON.stringify(Parser.parse(wikitext, include).json())]);
                 break;
             case 'lint':
                 postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
                 break;
-            default:
+            case 'print':
                 postMessage([
                     qid,
                     Parser.parse(wikitext, include, stage).childNodes.map(child => [
@@ -56,7 +56,7 @@ const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve 
     worker.postMessage([command, qid, raw, ...args]);
 });
 const getConfig = () => getFeedback('getConfig', -3);
-const json = (wikitext, include, qid) => getFeedback('json', qid, false, wikitext, include);
+const json = async (wikitext, include, qid) => JSON.parse(await getFeedback('json', qid, false, wikitext, include));
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
 const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint, json };

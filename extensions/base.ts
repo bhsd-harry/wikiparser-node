@@ -5,7 +5,7 @@ declare type WorkerListener<T> = ({data: [rid, res, resRaw]}: {data: [number, T,
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.4.1-b/bundle/bundle.min.js');
+	importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.4.0-b/bundle/bundle.min.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
@@ -28,13 +28,12 @@ const workerJS = (): void => {
 				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, Parser.parse(wikitext, include).json()]);
+				postMessage([qid, JSON.stringify(Parser.parse(wikitext, include).json())]);
 				break;
 			case 'lint':
 				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
 				break;
-			// case 'print':
-			default:
+			case 'print':
 				postMessage([
 					qid,
 					Parser.parse(wikitext, include, stage).childNodes.map(child => [
@@ -45,6 +44,7 @@ const workerJS = (): void => {
 							: child.print(),
 					]),
 				]);
+			// no default
 		}
 	};
 };
@@ -113,8 +113,8 @@ const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
  * @param include 是否嵌入
  * @param qid 编号
  */
-const json = (wikitext: string, include: boolean, qid: number): Promise<AST> =>
-	getFeedback('json', qid, false, wikitext, include);
+const json = async (wikitext: string, include: boolean, qid: number): Promise<AST> =>
+	JSON.parse(await getFeedback('json', qid, false, wikitext, include));
 
 /**
  * 将解析改为异步执行
