@@ -101,7 +101,7 @@ export abstract class AstNode implements AstNodeBase {
 	get previousElementSibling(): Token | undefined {
 		const childNodes = this.parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(0, i).findLast((child): child is Token => child.type !== 'text');
+		return childNodes?.slice(0, i).reverse().find((child): child is Token => child.type !== 'text');
 	}
 
 	/** 是否具有根节点 */
