@@ -12,7 +12,7 @@
 		"base.ts"
 	],
 	"compilerOptions": {
-		"target": "esnext",
+		"target": "es2022",
 		"module": "CommonJS",
 		"declaration": true,
 		"outDir": "dist",
