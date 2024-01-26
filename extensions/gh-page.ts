@@ -164,9 +164,10 @@ export const getMwConfig = (config: Config): MwConfig => {
 	 * 切换tab
 	 * @param e 事件
 	 */
-	const changeTab = (e: MouseEvent): void => {
+	const switchTab = (e: MouseEvent): void => {
 		e.preventDefault();
-		const active = document.querySelector('.active')!,
+		const active = document.querySelector<HTMLButtonElement>('.active')!,
+			activeValue = active.value,
 			{currentTarget} = e as MouseEvent & {currentTarget: HTMLButtonElement},
 			{value} = currentTarget;
 		if (active === currentTarget) {
@@ -182,19 +183,25 @@ export const getMwConfig = (config: Config): MwConfig => {
 		}
 		const text1 = textbox.value,
 			text2 = instance.view.state.doc.toString();
+		switch (activeValue) {
+			case 'linter':
+				// 离开linter时，将linter的文本同步到editor
+				if (text1 !== text2) {
+					updateDoc(text2);
+				}
+			// no default
+		}
 		switch (value) {
 			case 'linter':
+				// 进入linter时，将editor的文本同步到linter
 				if (text1 !== text2) {
 					instance.view.dispatch({changes: {from: 0, to: text2.length, insert: text1}});
 					instance.update();
 				}
 				break;
-			case 'editor':
 			case 'highlighter':
-				if (text1 !== text2) {
-					updateDoc(text2);
-				}
-				if (value === 'editor' || pres[0].childElementCount && pres[0].innerText === text1.trimEnd()) {
+				// 进入highlighter时，将editor的文本同步到highlighter
+				if (pres[0].childElementCount && pres[0].innerText === textbox.value.trimEnd()) {
 					break;
 				}
 				(async () => {
@@ -209,7 +216,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 		history.replaceState(null, '', `#${value}`);
 	};
 	for (const button of buttons.slice(0, -1)) {
-		button.addEventListener('click', changeTab);
+		button.addEventListener('click', switchTab);
 	}
 
 	/** hashchange事件处理 */

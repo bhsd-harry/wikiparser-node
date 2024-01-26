@@ -100,9 +100,9 @@ export const getMwConfig = (config) => {
         var _a;
         (_a = target.closest('dt')) === null || _a === void 0 ? void 0 : _a.classList.toggle('inactive');
     });
-    const changeTab = (e) => {
+    const switchTab = (e) => {
         e.preventDefault();
-        const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget;
+        const active = document.querySelector('.active'), activeValue = active.value, { currentTarget } = e, { value } = currentTarget;
         if (active === currentTarget) {
             return;
         }
@@ -113,6 +113,12 @@ export const getMwConfig = (config) => {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
         const text1 = textbox.value, text2 = instance.view.state.doc.toString();
+        switch (activeValue) {
+            case 'linter':
+                if (text1 !== text2) {
+                    updateDoc(text2);
+                }
+        }
         switch (value) {
             case 'linter':
                 if (text1 !== text2) {
@@ -120,12 +126,8 @@ export const getMwConfig = (config) => {
                     instance.update();
                 }
                 break;
-            case 'editor':
             case 'highlighter':
-                if (text1 !== text2) {
-                    updateDoc(text2);
-                }
-                if (value === 'editor' || pres[0].childElementCount && pres[0].innerText === text1.trimEnd()) {
+                if (pres[0].childElementCount && pres[0].innerText === textbox.value.trimEnd()) {
                     break;
                 }
                 (async () => {
@@ -139,7 +141,7 @@ export const getMwConfig = (config) => {
         history.replaceState(null, '', `#${value}`);
     };
     for (const button of buttons.slice(0, -1)) {
-        button.addEventListener('click', changeTab);
+        button.addEventListener('click', switchTab);
     }
     const hashchange = () => {
         var _a;
