@@ -3,7 +3,7 @@ import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';

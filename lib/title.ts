@@ -3,7 +3,7 @@ import {
 	escapeRegExp,
 } from '../util/string';
 import {classes} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {

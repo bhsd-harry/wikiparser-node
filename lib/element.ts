@@ -10,7 +10,7 @@ import {setChildNodes} from '../util/debug';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
-import * as Parser from '../index';
+import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 import type {

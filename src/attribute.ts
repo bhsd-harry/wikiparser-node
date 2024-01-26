@@ -7,7 +7,7 @@ import {
 	classes,
 } from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';

@@ -1,7 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 

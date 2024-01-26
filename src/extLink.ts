@@ -6,7 +6,7 @@ import {
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
 import {magicLinkParent} from '../mixin/magicLinkParent';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {LintError} from '../base';

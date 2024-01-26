@@ -1,6 +1,6 @@
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 
 declare type AtomTypes = 'arg-name'

@@ -1,5 +1,5 @@
 import {parsers} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {LinkToken} from '../src/link/index';
 import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';

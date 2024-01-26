@@ -2,7 +2,7 @@ import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../base';

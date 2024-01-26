@@ -2,7 +2,7 @@ import {escapeRegExp} from '../../util/string';
 import {generateForChild, generateForSelf} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {Title} from '../../lib/title';

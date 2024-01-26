@@ -1,7 +1,7 @@
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
 import {singleLine} from '../mixin/singleLine';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';

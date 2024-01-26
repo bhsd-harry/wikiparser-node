@@ -3,7 +3,7 @@ import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';

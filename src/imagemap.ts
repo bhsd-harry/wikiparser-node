@@ -5,7 +5,7 @@ import {
 } from '../util/debug';
 import {classes} from '../util/constants';
 import {singleLine} from '../mixin/singleLine';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';

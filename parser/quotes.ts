@@ -1,5 +1,5 @@
 import {parsers} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {QuoteToken} from '../src/nowiki/quote';
 import type {Token} from '../src/index';
 

@@ -2,7 +2,7 @@ import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {generateForSelf} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {TagPairToken} from './index';
 import type {LintError} from '../../base';
 import type {AstText, Token} from '../../internal';

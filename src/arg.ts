@@ -2,7 +2,7 @@ import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';

@@ -1,5 +1,5 @@
 import {parsers} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';

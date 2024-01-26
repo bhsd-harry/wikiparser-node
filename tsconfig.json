@@ -15,6 +15,7 @@
 	"compilerOptions": {
 		"target": "es2022",
 		"module": "CommonJS",
+		"allowSyntheticDefaultImports": true,
 		"declaration": true,
 		"outDir": "dist",
 		"alwaysStrict": true,

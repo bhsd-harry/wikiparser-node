@@ -1,6 +1,6 @@
 import {Shadow, isToken} from '../util/debug';
 import {classes} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';

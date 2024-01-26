@@ -1,5 +1,5 @@
 import {parsers} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';

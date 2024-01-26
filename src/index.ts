@@ -49,7 +49,7 @@ import {
 import {generateForSelf} from '../util/lint';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
-import * as Parser from '../index';
+import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {LintError} from '../base';

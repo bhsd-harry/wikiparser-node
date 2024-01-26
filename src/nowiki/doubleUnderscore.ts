@@ -2,7 +2,7 @@ import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {hiddenToken} from '../../mixin/hidden';
 import {syntax} from '../../mixin/syntax';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {Token} from '../index';
 

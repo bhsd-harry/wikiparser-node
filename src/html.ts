@@ -4,7 +4,7 @@ import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
 import {attributesParent} from '../mixin/attributesParent';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
 import type {AttributesParentBase} from '../mixin/attributesParent';

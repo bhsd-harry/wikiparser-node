@@ -1,7 +1,7 @@
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {fixedToken} from '../../mixin/fixed';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import type {AstText} from '../../lib/text';
 

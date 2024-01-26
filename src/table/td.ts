@@ -5,7 +5,7 @@ import {
 	classes,
 } from '../../util/constants';
 import {fixedToken} from '../../mixin/fixed';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../base';

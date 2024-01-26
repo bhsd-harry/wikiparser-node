@@ -1,6 +1,6 @@
 import {parsers} from '../util/constants';
 import {escapeRegExp} from '../util/string';
-import * as Parser from '../index';
+import Parser from '../index';
 
 const simplePseudos = new Set([
 	'root',

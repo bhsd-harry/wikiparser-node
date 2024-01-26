@@ -5,7 +5,7 @@ import {
 	classes,
 } from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import {galleryParams} from '../imageParameter';

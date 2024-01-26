@@ -1,6 +1,6 @@
 import {classes} from '../../util/constants';
 import {parseBraces} from '../../parser/braces';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {ParamTagToken} from './index';
 import type {Token} from '../index';
 

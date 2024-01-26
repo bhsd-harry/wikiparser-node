@@ -1,5 +1,5 @@
 import {parsers} from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
 import type {Token} from '../src/index';

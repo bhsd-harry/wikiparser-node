@@ -1,6 +1,6 @@
 import {classes} from '../util/constants';
 import {setChildNodes} from '../util/debug';
-import * as Parser from '../index';
+import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
 import type {ExtToken} from '../internal';

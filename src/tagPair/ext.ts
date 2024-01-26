@@ -2,7 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {attributesParent} from '../../mixin/attributesParent';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
