@@ -114,19 +114,18 @@ export const getMwConfig = (config) => {
         }
         const text1 = textbox.value, text2 = instance.view.state.doc.toString();
         switch (value) {
-            case 'editor':
-                if (text1 !== text2) {
-                    updateDoc(text2);
-                }
-                break;
             case 'linter':
                 if (text1 !== text2) {
                     instance.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
                     instance.update();
                 }
                 break;
+            case 'editor':
             case 'highlighter':
-                if (pres[0].childElementCount && pres[0].innerText === text1.trimEnd()) {
+                if (text1 !== text2) {
+                    updateDoc(text2);
+                }
+                if (value === 'editor' || pres[0].childElementCount && pres[0].innerText === text1.trimEnd()) {
                     break;
                 }
                 (async () => {
