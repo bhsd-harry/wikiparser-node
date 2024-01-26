@@ -35,8 +35,8 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
-		return super.toString(omit, ';');
+	override toString(): string {
+		return super.toString(';');
 	}
 
 	/** @override */

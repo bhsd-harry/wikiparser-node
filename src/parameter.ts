@@ -9,8 +9,7 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  * 准确获取参数名
  * @param name 预定的参数名
  */
-const getName = (name: Token): string => name.toString(new Set(['comment', 'noinclude', 'include']))
-	.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+const getName = (name: Token): string => name.text().replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 
 /**
  * 模板或魔术字参数
@@ -60,10 +59,8 @@ export abstract class ParameterToken extends fixedToken(Token) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
-		return this.anon
-			? this.lastChild.toString(omit)
-			: super.toString(omit, '=');
+	override toString(): string {
+		return this.anon ? String(this.lastChild) : super.toString('=');
 	}
 
 	/** @override */
@@ -82,8 +79,7 @@ export abstract class ParameterToken extends fixedToken(Token) {
 		/https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
 		const errors = super.lint(start),
 			{firstChild} = this,
-			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu')
-				.exec(firstChild.toString(new Set(['comment', 'noinclude', 'include'])))?.[0];
+			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu').exec(firstChild.text())?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(firstChild, {start}, 'unescaped query string in an anonymous parameter');
 			errors.push({

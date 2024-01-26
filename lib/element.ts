@@ -131,10 +131,8 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>, separator = ''): string {
-		return omit && this.matchesTypes(omit)
-			? ''
-			: this.childNodes.map(child => child.toString(omit)).join(separator);
+	override toString(separator = ''): string {
+		return this.childNodes.map(String).join(separator);
 	}
 
 	/**
