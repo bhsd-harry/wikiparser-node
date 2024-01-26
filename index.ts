@@ -301,7 +301,9 @@ const Parser: Parser = {
 	},
 };
 
-const def: PropertyDescriptorMap = {default: {value: Parser}},
+const def: PropertyDescriptorMap = {
+		default: {value: Parser},
+	},
 	enumerable = new Set([
 		'conversionTable',
 		'redirects',

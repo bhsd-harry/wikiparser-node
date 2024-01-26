@@ -897,7 +897,7 @@
 				],
 				"no-useless-constructor": 0,
 				"@typescript-eslint/no-useless-constructor": 2,
-				"prefer-desctructuring": 0,
+				"prefer-destructuring": 0,
 				"@typescript-eslint/prefer-destructuring": [
 					2,
 					{
