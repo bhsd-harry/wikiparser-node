@@ -85,7 +85,8 @@ const Parser: Parser = {
 	},
 };
 
-const def: PropertyDescriptorMap = {},
+const def: PropertyDescriptorMap = {
+	},
 	enumerable = new Set([
 		'normalizeTitle',
 		'parse',
