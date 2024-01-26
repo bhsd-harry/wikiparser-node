@@ -48,9 +48,9 @@ export abstract class ConverterToken extends flagsParent(Token) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const {childNodes: [flags, ...rules]} = this;
-		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(rule => rule.toString()).join(';')}}-`;
+		return `-{${String(flags)}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
 	/** @override */

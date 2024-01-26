@@ -43,9 +43,9 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const equals = this.#equals;
-		return `${equals}${this.firstChild.toString()}${equals}${this.lastChild.toString()}`;
+		return `${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
 	}
 
 	/** @override */

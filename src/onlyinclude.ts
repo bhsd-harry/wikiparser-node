@@ -8,7 +8,7 @@ export class OnlyincludeToken extends Token {
 	override readonly type = 'onlyinclude';
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
