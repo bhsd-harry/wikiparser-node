@@ -28,8 +28,8 @@ export class OnlyincludeToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
-		return omit && this.matchesTypes(omit) ? '' : `<onlyinclude>${super.toString(omit)}</onlyinclude>`;
+	override toString(): string {
+		return `<onlyinclude>${super.toString()}</onlyinclude>`;
 	}
 
 	/** @private */

@@ -131,11 +131,14 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 		if (!(previousSibling instanceof TdToken)) {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = previousSibling.#getSyntax();
+		const result = previousSibling.#getSyntax(),
+			str = String(previousSibling.lastChild);
 		result.escape ||= esc;
-		result.correction = previousSibling.lastChild
-			.toString(new Set(['comment', 'ext', 'include', 'noinclude', 'arg', 'template', 'magic-word']))
-			.includes('\n');
+		result.correction = str.includes('\n') && Shadow.run(() => {
+			const config = this.getAttribute('config'),
+				include = this.getAttribute('include');
+			return String(new Token(str, config).parseOnce(0, include).parseOnce()).includes('\n');
+		});
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
 			result.correction = true;
@@ -151,12 +154,10 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		this.#correct();
 		const {childNodes: [syntax, attr, inner]} = this;
-		return omit && this.matchesTypes(omit)
-			? ''
-			: `${syntax.toString(omit)}${attr.toString(omit)}${this.#innerSyntax}${inner.toString(omit)}`;
+		return `${String(syntax)}${String(attr)}${this.#innerSyntax}${String(inner)}`;
 	}
 
 	/** @override */

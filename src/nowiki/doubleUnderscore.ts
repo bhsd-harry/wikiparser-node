@@ -34,8 +34,8 @@ export abstract class DoubleUnderscoreToken extends syntax(hiddenToken(NowikiBas
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
-		return omit && this.matchesTypes(omit) ? '' : `__${this.innerText}__`;
+	override toString(): string {
+		return `__${this.innerText}__`;
 	}
 
 	/** @override */

@@ -43,12 +43,12 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		if (!this.closed && this.nextSibling) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
-		return omit && this.matchesTypes(omit) ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
+		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @override */

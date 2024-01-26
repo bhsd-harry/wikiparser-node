@@ -25,10 +25,8 @@ export const sol = <T extends AstConstructor>(constructor: T): T => {
 		}
 
 		/** @private */
-		override toString(omit?: Set<string>): string {
-			return omit && (this as unknown as Token).matchesTypes(omit)
-				? ''
-				: `${this.prependNewLine()}${super.toString(omit)}`;
+		override toString(): string {
+			return `${this.prependNewLine()}${super.toString()}`;
 		}
 
 		/** @private */

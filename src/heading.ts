@@ -76,13 +76,9 @@ export abstract class HeadingToken extends sol(fixedToken(Token)) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const equals = this.#equals;
-		return omit && this.matchesTypes(omit)
-			? ''
-			: `${this.prependNewLine()}${equals}${
-				this.firstChild.toString(omit)
-			}${equals}${this.lastChild.toString(omit)}`;
+		return `${this.prependNewLine()}${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
 	}
 
 	/** @override */

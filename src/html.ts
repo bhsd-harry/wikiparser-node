@@ -127,10 +127,8 @@ export abstract class HtmlToken extends attributesParent(fixedToken(Token)) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
-		return omit && this.matchesTypes(omit)
-			? ''
-			: `<${this.closing ? '/' : ''}${this.#tag}${super.toString(omit)}${this.selfClosing ? '/' : ''}>`;
+	override toString(): string {
+		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.selfClosing ? '/' : ''}>`;
 	}
 
 	/** @override */

@@ -49,7 +49,7 @@ export abstract class TagPairToken extends fixedToken(Token) {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const {
 				selfClosing,
 				firstChild,
@@ -59,17 +59,13 @@ export abstract class TagPairToken extends fixedToken(Token) {
 				closed,
 			} = this,
 			[opening, closing] = this.#tags;
-		if (omit && this.matchesTypes(omit)) {
-			return '';
-		} else if (!closed && nextSibling) {
+		if (!closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.closed = true;
 		}
 		return selfClosing
-			? `<${opening}${firstChild.toString(omit)}/>`
-			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
-				this.closed ? `</${closing}>` : ''
-			}`;
+			? `<${opening}${String(firstChild)}/>`
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @override */
