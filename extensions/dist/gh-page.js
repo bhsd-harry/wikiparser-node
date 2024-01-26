@@ -27,10 +27,11 @@ export const getMwConfig = (config) => {
     if (!location.pathname.startsWith('/wikiparser-node')) {
         return;
     }
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), field = input.closest('.fieldLayout'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), pres = [...document.getElementsByClassName('highlight')];
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++;
+    highlighters[1 - Number(input.checked)].style.display = 'none';
     const instance = new CodeMirror6(textbox2), mwConfig = getMwConfig(config);
     instance.prefer([
         'highlightSpecialChars',
@@ -46,10 +47,13 @@ export const getMwConfig = (config) => {
         textbox.dispatchEvent(new Event('input'));
     };
     input.addEventListener('change', () => {
-        printer.include = input.checked;
-        Linter.include = input.checked;
+        const { checked } = input;
+        printer.include = checked;
+        Linter.include = checked;
         updateDoc();
         instance.update();
+        highlighters[Number(checked)].style.display = '';
+        highlighters[1 - Number(checked)].style.display = 'none';
     });
     const setLang = () => {
         instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
@@ -98,14 +102,13 @@ export const getMwConfig = (config) => {
     });
     const changeTab = (e) => {
         e.preventDefault();
-        const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget, noTextbox = value === 'highlighter';
+        const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget;
         if (active === currentTarget) {
             return;
         }
         active.classList.remove('active');
         currentTarget.classList.add('active');
-        field.style.display = noTextbox ? 'none' : '';
-        h2.textContent = `Please input wikitext into the text box ${noTextbox ? 'under the first tab' : 'below'}.`;
+        h2.textContent = `Please input wikitext into the text box ${value === 'highlighter' ? 'under the first tab' : 'below'}.`;
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }

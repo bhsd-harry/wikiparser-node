@@ -53,11 +53,11 @@ export const getMwConfig = (config: Config): MwConfig => {
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
-		field = input.closest<HTMLDivElement>('.fieldLayout')!,
 		h2 = document.querySelector<HTMLHeadingElement>('h2')!,
 		buttons = [...document.querySelectorAll<HTMLButtonElement>('.tab > button')],
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		astContainer = document.getElementById('ast')!,
+		highlighters = document.getElementById('highlighter')!.children as HTMLCollectionOf<HTMLDivElement>,
 		pres = [...document.getElementsByClassName('highlight')] as [HTMLPreElement, HTMLPreElement];
 
 	// Parser初始化
@@ -66,6 +66,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
 		qid = wikiparse.id++;
+	highlighters[1 - Number(input.checked)]!.style.display = 'none';
 
 	// CodeMirror初始化
 	const instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2),
@@ -91,10 +92,13 @@ export const getMwConfig = (config: Config): MwConfig => {
 
 	// 切换是否嵌入
 	input.addEventListener('change', () => {
-		printer.include = input.checked;
-		Linter.include = input.checked;
+		const {checked} = input;
+		printer.include = checked;
+		Linter.include = checked;
 		updateDoc();
 		instance.update();
+		highlighters[Number(checked)]!.style.display = '';
+		highlighters[1 - Number(checked)]!.style.display = 'none';
 	});
 
 	/** 切换CodeMirror语言 */
@@ -164,15 +168,15 @@ export const getMwConfig = (config: Config): MwConfig => {
 		e.preventDefault();
 		const active = document.querySelector('.active')!,
 			{currentTarget} = e as MouseEvent & {currentTarget: HTMLButtonElement},
-			{value} = currentTarget,
-			noTextbox = value === 'highlighter';
+			{value} = currentTarget;
 		if (active === currentTarget) {
 			return;
 		}
 		active.classList.remove('active');
 		currentTarget.classList.add('active');
-		field.style.display = noTextbox ? 'none' : '';
-		h2.textContent = `Please input wikitext into the text box ${noTextbox ? 'under the first tab' : 'below'}.`;
+		h2.textContent = `Please input wikitext into the text box ${
+			value === 'highlighter' ? 'under the first tab' : 'below'
+		}.`;
 		for (const tabcontent of tabcontents) {
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}

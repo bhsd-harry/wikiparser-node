@@ -194,7 +194,7 @@ dt > :nth-child(2) {
 }
 
 h3 {
-	margin: 1.5rem 0 .5rem;
+	margin: .5rem 0;
 	font-size: var(--font-size-h3);
 	font-weight: bold;
 }
