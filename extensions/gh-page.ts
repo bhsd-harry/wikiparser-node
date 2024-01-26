@@ -167,7 +167,6 @@ export const getMwConfig = (config: Config): MwConfig => {
 	const switchTab = (e: MouseEvent): void => {
 		e.preventDefault();
 		const active = document.querySelector<HTMLButtonElement>('.active')!,
-			activeValue = active.value,
 			{currentTarget} = e as MouseEvent & {currentTarget: HTMLButtonElement},
 			{value} = currentTarget;
 		if (active === currentTarget) {
@@ -183,7 +182,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 		}
 		const text1 = textbox.value,
 			text2 = instance.view.state.doc.toString();
-		switch (activeValue) {
+		switch (active.value) {
 			case 'linter':
 				// 离开linter时，将linter的文本同步到editor
 				if (text1 !== text2) {
