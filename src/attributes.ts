@@ -2,7 +2,7 @@ import {generateForSelf, generateForChild} from '../util/lint';
 import {
 	removeComment,
 } from '../util/string';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';

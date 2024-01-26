@@ -2,7 +2,7 @@ import {generateForSelf, generateForChild} from '../util/lint';
 import {
 	isToken,
 } from '../util/debug';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {GalleryImageToken} from './link/galleryImage';

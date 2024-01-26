@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
 import {tidy} from '../util/string';
-import * as Parser from '../index';
+import Parser from '../index';
 
 const wikitext = tidy(fs.readFileSync('./test/single-page.wiki', 'utf8'));
 

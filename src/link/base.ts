@@ -3,7 +3,7 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../../util/constants';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../base';

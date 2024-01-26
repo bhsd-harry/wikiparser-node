@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import Parser from '../index';
 import {ConverterToken} from '../src/converter';
 import type {Token} from '../src/index';
 

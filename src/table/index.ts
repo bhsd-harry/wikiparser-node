@@ -1,6 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../base';

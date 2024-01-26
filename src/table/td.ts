@@ -2,7 +2,7 @@ import {generateForChild} from '../../util/lint';
 import {
 	BuildMethod,
 } from '../../util/constants';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {LintError} from '../../base';
