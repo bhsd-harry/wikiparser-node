@@ -3,6 +3,13 @@ import type {Config} from '../base';
 import type {MwConfig, CodeMirror, AST} from './typings';
 
 /**
+ * Kebab case to Pascal case
+ * @param type AST节点类型
+ */
+const transform = (type?: string): string | undefined =>
+	type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
+
+/**
  * Object.fromEntries polyfill
  * @param entries
  * @param target
@@ -41,19 +48,28 @@ export const getMwConfig = (config: Config): MwConfig => {
 		return;
 	}
 
+	// DOM元素
 	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
-		buttons = document.getElementsByTagName('button'),
+		field = input.closest<HTMLDivElement>('.fieldLayout')!,
+		h2 = document.querySelector<HTMLHeadingElement>('h2')!,
+		buttons = [...document.querySelectorAll<HTMLButtonElement>('.tab > button')],
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
-		astContainer = document.querySelector<HTMLDivElement>('#ast')!,
-		config: Config = await (await fetch('./config/default.json')).json();
+		astContainer = document.getElementById('ast')!,
+		pres = [...document.getElementsByClassName('highlight')] as [HTMLPreElement, HTMLPreElement];
+
+	// Parser初始化
+	const config: Config = await (await fetch('./config/default.json')).json();
 	wikiparse.setConfig(config);
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
-		qid = wikiparse.id++,
-		instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2);
+		qid = wikiparse.id++;
+
+	// CodeMirror初始化
+	const instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2),
+		mwConfig = getMwConfig(config);
 	instance.prefer([
 		'highlightSpecialChars',
 		'highlightWhitespace',
@@ -66,33 +82,28 @@ export const getMwConfig = (config: Config): MwConfig => {
 	 * 更新第一个文本框
 	 * @param str 新文本
 	 */
-	const update = (str?: string): void => {
+	const updateDoc = (str?: string): void => {
 		if (str) {
 			textbox.value = str;
 		}
 		textbox.dispatchEvent(new Event('input'));
 	};
 
+	// 切换是否嵌入
 	input.addEventListener('change', () => {
 		printer.include = input.checked;
 		Linter.include = input.checked;
-		update();
+		updateDoc();
 		instance.update();
 	});
 
-	const mwConfig = getMwConfig(config);
-	input2.addEventListener('change', () => {
+	/** 切换CodeMirror语言 */
+	const setLang = (): void => {
 		instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
 		instance.lint((doc: unknown) => Linter.codemirror(String(doc)));
-	});
-	input2.dispatchEvent(new Event('change'));
-
-	/**
-	 * Kebab case to Pascal case
-	 * @param type AST节点类型
-	 */
-	const transform = (type?: string): string | undefined =>
-		type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
+	};
+	setLang();
+	input2.addEventListener('change', setLang);
 
 	/**
 	 * 创建AST的HTML表示
@@ -117,7 +128,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 			rbrace2 = document.createElement('span'),
 			prop = document.createElement('span');
 		dt.textContent = transform(ast.type) ?? 'Text';
-		dt.classList.add('inactive');
+		dt.className = 'inactive';
 		if ('childNodes' in ast) {
 			childNodes.append(...ast.childNodes.map(createAST));
 		}
@@ -129,7 +140,6 @@ export const getMwConfig = (config: Config): MwConfig => {
 		dl.append(dt, ...dds, childNodes, rbrace2);
 		return dl;
 	};
-
 	let timer: number;
 	textbox.addEventListener('input', e => {
 		if (!(e as InputEvent).isComposing) {
@@ -147,49 +157,64 @@ export const getMwConfig = (config: Config): MwConfig => {
 	});
 
 	/**
-	 * 切换 tab
+	 * 切换tab
 	 * @param e 事件
 	 */
-	const handler = (e: MouseEvent): void => {
+	const changeTab = (e: MouseEvent): void => {
 		e.preventDefault();
 		const active = document.querySelector('.active')!,
 			{currentTarget} = e as MouseEvent & {currentTarget: HTMLButtonElement},
-			{value} = currentTarget;
+			{value} = currentTarget,
+			noTextbox = value === 'highlighter';
 		if (active === currentTarget) {
 			return;
 		}
 		active.classList.remove('active');
 		currentTarget.classList.add('active');
-		if (value === 'editor') {
-			update(instance.view.state.doc.toString());
-		} else {
-			instance.view.dispatch({changes: {from: 0, to: instance.view.state.doc.length, insert: textbox.value}});
-			instance.update();
-		}
+		field.style.display = noTextbox ? 'none' : '';
+		h2.textContent = `Please input wikitext into the text box ${noTextbox ? 'under the first tab' : 'below'}.`;
 		for (const tabcontent of tabcontents) {
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}
-		history.replaceState(null, '', `#${value}`);
-	};
-	for (const button of buttons) {
-		if (button.value) {
-			button.addEventListener('click', handler);
-		}
-	}
-
-	if (location.hash === '#editor') {
-		buttons[0]!.click();
-	}
-	window.addEventListener('hashchange', () => {
-		switch (location.hash) {
-			case '#editor':
-				buttons[0]!.click();
+		const text1 = textbox.value,
+			text2 = instance.view.state.doc.toString();
+		switch (value) {
+			case 'editor':
+				if (text1 !== text2) {
+					updateDoc(text2);
+				}
 				break;
-			case '#linter':
-				buttons[1]!.click();
+			case 'linter':
+				if (text1 !== text2) {
+					instance.view.dispatch({changes: {from: 0, to: text2.length, insert: text1}});
+					instance.update();
+				}
+				break;
+			case 'highlighter':
+				if (pres[0].childElementCount && pres[0].innerText === text1.trimEnd()) {
+					break;
+				}
+				(async () => {
+					for (const [i, pre] of pres.entries()) {
+						pre.classList.remove('wikiparser');
+						pre.textContent = textbox.value;
+						await wikiparse.highlight!(pre, Boolean(i), true); // eslint-disable-line no-await-in-loop
+					}
+				})();
 			// no default
 		}
-	});
+		history.replaceState(null, '', `#${value}`);
+	};
+	for (const button of buttons.slice(0, -1)) {
+		button.addEventListener('click', changeTab);
+	}
+
+	/** hashchange事件处理 */
+	const hashchange = (): void => {
+		buttons.find(({value}) => value === location.hash.slice(1))?.click();
+	};
+	hashchange();
+	window.addEventListener('hashchange', hashchange);
 
 	Object.assign(window, {cm: instance});
 })();

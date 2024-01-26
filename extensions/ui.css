@@ -2,6 +2,33 @@
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 	font-family: monospace;
+	border: 1.5px solid #dedede;
+}
+.wikiparser > ol {
+	background-color: #f5f5f5;
+	list-style: none;
+}
+.wikiparser > ol > li {
+	background-color: #fff;
+	padding: 0 6px;
+	border-left: 1px solid #ddd;
+	counter-increment: wikiparser;
+}
+.wikiparser > ol > li:first-child {
+	padding-top: 4px;
+}
+.wikiparser > ol > li:last-child {
+	padding-bottom: 4px;
+}
+.wikiparser > ol > li::before {
+	content: counter(wikiparser);
+	position: absolute;
+	transform: translateX(calc(-100% - 10px));
+	color: #6c6c6c;
+}
+.wikiparser > ol > li::after {
+	content: "";
+	display: inline-block;
 }
 
 .wpb-html-invalid, .wpb-image-invalid, .wpb-table-inter {

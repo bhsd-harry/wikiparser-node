@@ -1,4 +1,4 @@
-html, body, main, article, div, button, a, h2, span, input, label, textarea, dl, dt, dd, code {
+html, body, main, article, div, button, a, h2, h3, span, input, label, textarea, dl, dt, dd, code, pre, ol, li {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -8,16 +8,17 @@ html, body, main, article, div, button, a, h2, span, input, label, textarea, dl,
 :root {
 	font-size: 14px;
 	font-family: sans-serif;
-	--font-size-header: 1.3rem;
-	--height: 500px;
-	--max-height: 95vh;
-	--color-checked: #36c;
-	--color-hover: #447ff5;
-	--color-active: #2a4b8d;
-	--color-border: #ccc;
-	--padding-large: 1rem;
-	--padding-small: .5rem;
-	--border: 1px solid;
+	--font-size-h2: 1.3rem; /* font-size of h2 and button */
+	--font-size-h3: 1.1rem; /* font-size of h3 */
+	--font-size-tablet: 16px; /* font-size of textarea on tablet */
+	--height-editor: 500px; /* height of textarea and editor */
+	--max-height-editor: 95vh; /* max-height of textarea and editor */
+	--color-input: #72777d; /* border-color of input */
+	--color-checked: #36c; /* color of checked checkbox */
+	--color-hover: #447ff5; /* color of hovered checkbox */
+	--color-active: #2a4b8d; /* color of active checkbox */
+	--color-background: #fff; /* background-color of main */
+	--color-button: #ccc; /* border-color of button */
 }
 body {
 	display: flex;
@@ -31,23 +32,23 @@ main {
 	width: 90vw;
 	max-width: 1200px;
 	margin: 3rem 0;
-	background-color: #fff;
+	background-color: var(--color-background);
 	box-shadow: 0 0 .5rem rgba(0, 0, 0, .1);
 	border-radius: .5rem;
 }
 article {
 	display: block;
 	width: 100%;
-	padding: var(--padding-large) 2rem 2rem;
+	padding: 1rem 2rem 2rem;
 }
 h2 {
-	font-size: var(--font-size-header);
-	margin: var(--padding-small) 0;
+	font-size: var(--font-size-h2);
+	margin: .5rem 0;
 	font-weight: bold;
 }
 .fieldLayout {
 	display: table;
-	padding: var(--padding-small) 0;
+	padding: .5em 0;
 }
 .field, .header {
 	display: table-cell;
@@ -72,8 +73,8 @@ input + span {
 	display: inline-block;
 	width: 1em;
 	height: 1em;
-	background-color: #fff;
-	border: var(--border) #72777d;
+	background-color: var(--color-background);
+	border: 1px solid var(--color-input);
 	border-radius: 2px;
 }
 input:focus + span {
@@ -99,12 +100,12 @@ label {
 }
 textarea {
 	width: 100%;
-	height: var(--height);
-	max-height: var(--max-height);
+	height: var(--height-editor);
+	max-height: var(--max-height-editor);
 	direction: ltr;
 	padding: .4em;
 }
-#wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor, #wpTextbox2 {
+#wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor, #wpTextbox2, pre {
 	border-radius: .3em;
 }
 .cm-editor, textarea {
@@ -113,15 +114,15 @@ textarea {
 
 .tab {
 	overflow: hidden;
-	margin: var(--padding-large) 0;
+	margin: 1rem 0;
 }
 
 button {
 	float: left;
-	font-size: var(--font-size-header);
+	font-size: var(--font-size-h2);
 	font-weight: bold;
 	background-color: #f1f1f1;
-	border: var(--border) var(--color-border);
+	border: 1px solid var(--color-button);
 	outline: none;
 	cursor: pointer;
 	padding: .7rem 1rem;
@@ -131,7 +132,7 @@ button:hover {
 	background-color: #ddd;
 }
 button.active {
-	background-color: var(--color-border);
+	background-color: var(--color-button);
 }
 
 .tabcontent {
@@ -142,10 +143,10 @@ button.active {
 }
 
 #ast {
-	height: var(--height);
-	max-height: var(--max-height);
+	height: var(--height-editor);
+	max-height: var(--max-height-editor);
 	overflow: auto;
-	padding: 0 var(--padding-small);
+	padding: 0 .5rem;
 }
 dt {
 	color: #2b91af;
@@ -192,18 +193,27 @@ dt > :nth-child(2) {
 	color: #00f;
 }
 
+h3 {
+	margin: 1.5rem 0 .5rem;
+	font-size: var(--font-size-h3);
+	font-weight: bold;
+}
+pre.highlight span {
+	font-weight: normal;
+}
+
 @media screen and (min-width: 1200px) {
 	.wikiparse-container {
 		width: 70%;
 		float: left;
-		margin-right: var(--padding-small);
+		margin-right: .5rem;
 	}
 }
 
 @media screen and (max-width: 1200px) {
 	.wikiparse-container, #wpTextbox1 {
 		max-height: 60vh;
-		margin-bottom: var(--padding-small);
+		margin-bottom: .5rem;
 	}
 }
 
@@ -214,9 +224,9 @@ dt > :nth-child(2) {
 		border-radius: 0;
 	}
 	article {
-		padding: var(--padding-large);
+		padding: 1rem;
 	}
 	.wikiparse-container, .cm-editor {
-		font-size: 16px;
+		font-size: var(--font-size-tablet);
 	}
 }

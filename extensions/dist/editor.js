@@ -134,7 +134,7 @@ const edit = (textbox, include) => {
     const preview = document.createElement('div'), container = document.createElement('div'), printer = new Printer(preview, textbox, include);
     preview.id = 'wikiPretty';
     preview.classList.add('wikiparser', 'active');
-    container.classList.add('wikiparse-container');
+    container.className = 'wikiparse-container';
     textbox.replaceWith(container);
     textbox.classList.add('wikiparsed');
     container.append(preview, textbox);

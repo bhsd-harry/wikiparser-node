@@ -54,17 +54,18 @@ const highlight = async (ele: HTMLElement, include?: boolean, linenums = false, 
 		root.innerHTML = html;
 		// 添加行号。这里不使用<table>排版，而是使用<ol>
 		const lines = splitNewLine(root).map((line, i) => {
-			const li = document.createElement('li');
-			li.id = `L${i + start}`;
-			li.append(line);
-			return li;
-		});
-		if (!lines[lines.length - 1]!.textContent) {
+				const li = document.createElement('li');
+				li.id = `L${i + start}`;
+				li.append(line);
+				return li;
+			}),
+			{length} = lines;
+		if (length > 1 && !lines[length - 1]!.textContent) {
 			lines.pop();
 		}
 		const ol = document.createElement('ol');
-		ol.start = start;
-		ol.style.paddingLeft = `${String(lines.length + start - 1).length + 2.5}ch`;
+		ol.style.counterReset = `wikiparser ${start - 1}`;
+		ol.style.paddingLeft = `${String(lines.length + start - 1).length + 1.5}ch`;
 		ol.replaceChildren(...lines);
 		ele.replaceChildren(ol);
 	} else {

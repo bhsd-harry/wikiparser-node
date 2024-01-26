@@ -41,13 +41,13 @@ const highlight = async (ele, include, linenums = false, start = 1) => {
             li.id = `L${i + start}`;
             li.append(line);
             return li;
-        });
-        if (!lines[lines.length - 1].textContent) {
+        }), { length } = lines;
+        if (length > 1 && !lines[length - 1].textContent) {
             lines.pop();
         }
         const ol = document.createElement('ol');
-        ol.start = start;
-        ol.style.paddingLeft = `${String(lines.length + start - 1).length + 2.5}ch`;
+        ol.style.counterReset = `wikiparser ${start - 1}`;
+        ol.style.paddingLeft = `${String(lines.length + start - 1).length + 1.5}ch`;
         ol.replaceChildren(...lines);
         ele.replaceChildren(ol);
     }

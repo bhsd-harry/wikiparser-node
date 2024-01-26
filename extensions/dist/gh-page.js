@@ -1,4 +1,5 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
+const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const fromEntries = (entries, target) => {
     for (const entry of entries) {
         target[entry] = true;
@@ -26,9 +27,11 @@ export const getMwConfig = (config) => {
     if (!location.pathname.startsWith('/wikiparser-node')) {
         return;
     }
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), buttons = document.getElementsByTagName('button'), tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.querySelector('#ast'), config = await (await fetch('./config/default.json')).json();
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), field = input.closest('.fieldLayout'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), pres = [...document.getElementsByClassName('highlight')];
+    const config = await (await fetch('./config/default.json')).json();
     wikiparse.setConfig(config);
-    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++, instance = new CodeMirror6(textbox2);
+    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++;
+    const instance = new CodeMirror6(textbox2), mwConfig = getMwConfig(config);
     instance.prefer([
         'highlightSpecialChars',
         'highlightWhitespace',
@@ -36,7 +39,7 @@ export const getMwConfig = (config) => {
         'bracketMatching',
         'closeBrackets',
     ]);
-    const update = (str) => {
+    const updateDoc = (str) => {
         if (str) {
             textbox.value = str;
         }
@@ -45,16 +48,15 @@ export const getMwConfig = (config) => {
     input.addEventListener('change', () => {
         printer.include = input.checked;
         Linter.include = input.checked;
-        update();
+        updateDoc();
         instance.update();
     });
-    const mwConfig = getMwConfig(config);
-    input2.addEventListener('change', () => {
+    const setLang = () => {
         instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
         instance.lint((doc) => Linter.codemirror(String(doc)));
-    });
-    input2.dispatchEvent(new Event('change'));
-    const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
+    };
+    setLang();
+    input2.addEventListener('change', setLang);
     const createAST = (ast) => {
         var _a;
         const entries = Object.entries(ast).filter(([key]) => key !== 'type' && key !== 'childNodes'), dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd'), dds = entries.map(([key, value]) => {
@@ -66,7 +68,7 @@ export const getMwConfig = (config) => {
             return dd;
         }), lbrace = document.createElement('span'), rbrace1 = document.createElement('span'), rbrace2 = document.createElement('span'), prop = document.createElement('span');
         dt.textContent = (_a = transform(ast.type)) !== null && _a !== void 0 ? _a : 'Text';
-        dt.classList.add('inactive');
+        dt.className = 'inactive';
         if ('childNodes' in ast) {
             childNodes.append(...ast.childNodes.map(createAST));
         }
@@ -94,42 +96,54 @@ export const getMwConfig = (config) => {
         var _a;
         (_a = target.closest('dt')) === null || _a === void 0 ? void 0 : _a.classList.toggle('inactive');
     });
-    const handler = (e) => {
+    const changeTab = (e) => {
         e.preventDefault();
-        const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget;
+        const active = document.querySelector('.active'), { currentTarget } = e, { value } = currentTarget, noTextbox = value === 'highlighter';
         if (active === currentTarget) {
             return;
         }
         active.classList.remove('active');
         currentTarget.classList.add('active');
-        if (value === 'editor') {
-            update(instance.view.state.doc.toString());
-        }
-        else {
-            instance.view.dispatch({ changes: { from: 0, to: instance.view.state.doc.length, insert: textbox.value } });
-            instance.update();
-        }
+        field.style.display = noTextbox ? 'none' : '';
+        h2.textContent = `Please input wikitext into the text box ${noTextbox ? 'under the first tab' : 'below'}.`;
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
+        const text1 = textbox.value, text2 = instance.view.state.doc.toString();
+        switch (value) {
+            case 'editor':
+                if (text1 !== text2) {
+                    updateDoc(text2);
+                }
+                break;
+            case 'linter':
+                if (text1 !== text2) {
+                    instance.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
+                    instance.update();
+                }
+                break;
+            case 'highlighter':
+                if (pres[0].childElementCount && pres[0].innerText === text1.trimEnd()) {
+                    break;
+                }
+                (async () => {
+                    for (const [i, pre] of pres.entries()) {
+                        pre.classList.remove('wikiparser');
+                        pre.textContent = textbox.value;
+                        await wikiparse.highlight(pre, Boolean(i), true);
+                    }
+                })();
+        }
         history.replaceState(null, '', `#${value}`);
     };
-    for (const button of buttons) {
-        if (button.value) {
-            button.addEventListener('click', handler);
-        }
+    for (const button of buttons.slice(0, -1)) {
+        button.addEventListener('click', changeTab);
     }
-    if (location.hash === '#editor') {
-        buttons[0].click();
-    }
-    window.addEventListener('hashchange', () => {
-        switch (location.hash) {
-            case '#editor':
-                buttons[0].click();
-                break;
-            case '#linter':
-                buttons[1].click();
-        }
-    });
+    const hashchange = () => {
+        var _a;
+        (_a = buttons.find(({ value }) => value === location.hash.slice(1))) === null || _a === void 0 ? void 0 : _a.click();
+    };
+    hashchange();
+    window.addEventListener('hashchange', hashchange);
     Object.assign(window, { cm: instance });
 })();
