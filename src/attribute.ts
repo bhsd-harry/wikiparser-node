@@ -256,11 +256,9 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal
-			? `${super.toString(omit, `${this.#equal}${quoteStart}`)}${quoteEnd}`
-			: this.firstChild.toString(omit);
+		return this.#equal ? `${super.toString(`${this.#equal}${quoteStart}`)}${quoteEnd}` : String(this.firstChild);
 	}
 
 	/** @override */

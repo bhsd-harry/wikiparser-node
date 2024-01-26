@@ -112,10 +112,8 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
-		return this.#syntax
-			? this.#syntax.replace('$1', super.toString(omit))
-			: super.toString(omit);
+	override toString(): string {
+		return this.#syntax ? this.#syntax.replace('$1', super.toString()) : super.toString();
 	}
 
 	/** @override */

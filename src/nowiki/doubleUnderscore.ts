@@ -21,7 +21,7 @@ export abstract class DoubleUnderscoreToken extends hiddenToken(NowikiBaseToken)
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		return `__${this.innerText}__`;
 	}
 }

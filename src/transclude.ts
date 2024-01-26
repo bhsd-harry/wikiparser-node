@@ -175,13 +175,13 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
-				? `${this.firstChild.toString(omit)}${this.length === 1 ? '' : ':'}${
-					this.childNodes.slice(1).map(child => child.toString(omit)).join('|')
+				? `${String(this.firstChild)}${this.length === 1 ? '' : ':'}${
+					this.childNodes.slice(1).map(String).join('|')
 				}`
-				: super.toString(omit, '|')
+				: super.toString('|')
 		}}}`;
 	}
 

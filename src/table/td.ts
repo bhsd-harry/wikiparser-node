@@ -88,9 +88,9 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const {childNodes: [syntax, attr, inner]} = this;
-		return `${syntax.toString()}${attr.toString()}${this.#innerSyntax}${inner.toString()}`;
+		return `${String(syntax)}${String(attr)}${this.#innerSyntax}${String(inner)}`;
 	}
 
 	/** @override */

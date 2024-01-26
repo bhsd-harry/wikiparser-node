@@ -46,7 +46,7 @@ export abstract class TagPairToken extends Token {
 	}
 
 	/** @private */
-	override toString(omit?: Set<string>): string {
+	override toString(): string {
 		const {
 				selfClosing,
 				firstChild,
@@ -54,10 +54,8 @@ export abstract class TagPairToken extends Token {
 			} = this,
 			[opening, closing] = this.#tags;
 		return selfClosing
-			? `<${opening}${firstChild.toString(omit)}/>`
-			: `<${opening}${firstChild.toString(omit)}>${lastChild.toString(omit)}${
-				this.closed ? `</${closing}>` : ''
-			}`;
+			? `<${opening}${String(firstChild)}/>`
+			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
 	}
 
 	/** @override */
