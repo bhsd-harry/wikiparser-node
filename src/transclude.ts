@@ -11,7 +11,7 @@ import {
 import {
 	BuildMethod,
 } from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';

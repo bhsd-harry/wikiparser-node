@@ -3,7 +3,7 @@ import {
 	print,
 } from '../util/string';
 import {flagsParent} from '../mixin/flagsParent';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';

@@ -1,6 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {Token} from '../index';

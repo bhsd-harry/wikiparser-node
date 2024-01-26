@@ -1,7 +1,7 @@
 import {
 	MAX_STAGE,
 } from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';

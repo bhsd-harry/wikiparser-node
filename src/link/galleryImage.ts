@@ -2,7 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import {
 	MAX_STAGE,
 } from '../../util/constants';
-import * as Parser from '../../index';
+import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';

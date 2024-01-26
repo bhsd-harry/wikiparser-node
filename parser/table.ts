@@ -1,4 +1,4 @@
-import * as Parser from '../index';
+import Parser from '../index';
 import {Token} from '../src/index';
 import {TableToken} from '../src/table/index';
 import {TrToken} from '../src/table/tr';

@@ -1,7 +1,7 @@
 import {
 	decodeHtml,
 } from '../util/string';
-import * as Parser from '../index';
+import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {

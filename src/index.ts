@@ -42,7 +42,7 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
-import * as Parser from '../index';
+import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {Title} from '../lib/title';
