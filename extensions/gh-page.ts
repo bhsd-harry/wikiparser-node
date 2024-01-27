@@ -12,11 +12,11 @@ const transform = (type?: string): string | undefined =>
 /**
  * Object.fromEntries polyfill
  * @param entries
- * @param target
+ * @param obj
  */
-const fromEntries = (entries: readonly string[], target: Record<string, unknown>): void => {
+const fromEntries = (entries: readonly string[], obj: Record<string, unknown>): void => {
 	for (const entry of entries) {
-		target[entry] = true;
+		obj[entry] = true;
 	}
 };
 
@@ -164,16 +164,15 @@ export const getMwConfig = (config: Config): MwConfig => {
 	 * 切换tab
 	 * @param e 事件
 	 */
-	const switchTab = (e: MouseEvent): void => {
+	const switchTab = function(this: HTMLButtonElement, e: MouseEvent): void {
 		e.preventDefault();
 		const active = document.querySelector<HTMLButtonElement>('.active')!,
-			{currentTarget} = e as MouseEvent & {currentTarget: HTMLButtonElement},
-			{value} = currentTarget;
-		if (active === currentTarget) {
+			{value} = this;
+		if (active === this) {
 			return;
 		}
 		active.classList.remove('active');
-		currentTarget.classList.add('active');
+		this.classList.add('active');
 		h2.textContent = `Please input wikitext into the text box ${
 			value === 'highlighter' ? 'under the first tab' : 'below'
 		}.`;

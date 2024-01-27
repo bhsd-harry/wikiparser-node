@@ -1,8 +1,8 @@
 import {
 	removeComment,
 	text,
-	print,
 	decodeHtml,
+	print,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import {
