@@ -1,4 +1,4 @@
-import {diff} from '../util/diff';
+import {diff, error, info} from '../util/diff';
 import {tidy} from '../util/string';
 import {Api} from './api';
 import Parser = require('../index');
@@ -12,13 +12,6 @@ const {argv: [,, site = '']} = process,
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 Parser.i18n = require('../../i18n/zh-hans');
-
-const info = /** @implements */ (msg: string, ...args: unknown[]): void => {
-	console.info('\x1B[32m%s\x1B[0m', msg, ...args);
-};
-const error = /** @implements */ (msg: string, ...args: unknown[]): void => {
-	console.error('\x1B[31m%s\x1B[0m', msg, ...args);
-};
 
 /**
  * 获取最近更改的页面源代码

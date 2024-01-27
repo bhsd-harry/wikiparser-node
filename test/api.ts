@@ -1,9 +1,8 @@
 /** @file 为MediaWiki API请求提供Promise界面 */
 // @ts-expect-error untyped module
 import * as request from '@cypress/request';
+import {info} from '../util/diff';
 import type {RequestAPI, Request, CoreOptions, RequiredUriUrl} from 'request';
-
-const {info} = console;
 
 /**
  * 延时
