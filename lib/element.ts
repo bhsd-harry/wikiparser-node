@@ -286,9 +286,14 @@ export abstract class AstElement extends AstNode {
 		/* NOT FOR BROWSER */
 
 		this.verifyChild(i);
-		const oldText = this.childNodes[i]!,
-			{type, constructor: {name}} = oldText;
-		if (type === 'text') {
+
+		/* NOT FOR BROWSER END */
+
+		const oldText = this.childNodes[i]!;
+
+		/* NOT FOR BROWSER */
+
+		if (oldText.type === 'text') {
 		/* NOT FOR BROWSER END */
 
 			const {data} = oldText;
@@ -298,7 +303,7 @@ export abstract class AstElement extends AstNode {
 
 		/* NOT FOR BROWSER */
 
-		throw new RangeError(`第 ${i} 个子节点是 ${name}！`);
+		throw new RangeError(`第 ${i} 个子节点是 ${oldText.constructor.name}！`);
 	}
 
 	/** @private */
