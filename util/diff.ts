@@ -6,6 +6,8 @@ process.on('unhandledRejection', e => {
 	console.error(e);
 });
 
+export type log = (msg: string, ...args: unknown[]) => void;
+
 /**
  * 将shell命令转化为Promise对象
  * @param command shell指令
@@ -70,4 +72,14 @@ export const diff = async (oldStr: string, newStr: string, uid = -1): Promise<vo
 	]);
 	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
 	console.log(stdout?.split('\n').slice(4).join('\n'));
+};
+
+/** @implements */
+export const error: log = (msg, ...args) => {
+	console.error('\x1B[31m%s\x1B[0m', msg, ...args);
+};
+
+/** @implements */
+export const info: log = (msg, ...args) => {
+	console.info('\x1B[32m%s\x1B[0m', msg, ...args);
 };
