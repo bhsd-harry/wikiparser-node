@@ -123,6 +123,7 @@ export abstract class AstElement extends AstNode {
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;
+		const oldText = this.childNodes[i]!;
 		const {data} = oldText;
 		oldText.replaceData(str);
 		return data;
