@@ -1,6 +1,6 @@
 import {
-	print,
 	text,
+	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
@@ -123,8 +123,6 @@ export abstract class AstElement extends AstNode {
 	 */
 	setText(str: string, i = 0): string {
 		i += i < 0 ? this.length : 0;
-		const oldText = this.childNodes[i]!,
-			{type, constructor: {name}} = oldText;
 		const {data} = oldText;
 		oldText.replaceData(str);
 		return data;
