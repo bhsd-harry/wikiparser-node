@@ -46,8 +46,16 @@ export class Title {
 		this.ns = ns;
 		const i = title.indexOf('#');
 		if (i !== -1) {
-			// eslint-disable-next-line prefer-const
 			let fragment = title.slice(i + 1).trimEnd();
+			if (fragment.includes('%')) {
+				try {
+					fragment = decodeURIComponent(fragment);
+				} catch {}
+			} else if (fragment.includes('.')) {
+				try {
+					fragment = decodeURIComponent(fragment.replace(/\./gu, '%'));
+				} catch {}
+			}
 			this.fragment = fragment;
 			title = title.slice(0, i).trim();
 		}
