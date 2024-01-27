@@ -1,6 +1,8 @@
 import {mixins} from '../util/constants';
 import type {ConverterFlagsToken} from '../src/converterFlags';
 
+/* NOT FOR BROWSER */
+
 export interface FlagsParentBase {
 	flags: Set<string>;
 	getAllFlags(): Set<string>;
@@ -13,6 +15,8 @@ export interface FlagsParentBase {
 	toggleFlag(flag: string): void;
 }
 
+/* NOT FOR BROWSER END */
+
 /**
  * ConverterToken
  * @param constructor 基类
@@ -22,6 +26,8 @@ export const flagsParent = <T extends AstConstructor>(constructor: T) => {
 	abstract class FlagsParent extends constructor {
 		abstract get firstChild(): ConverterFlagsToken;
 		abstract get firstElementChild(): ConverterFlagsToken;
+
+		/* NOT FOR BROWSER */
 
 		/** 所有转换类型标记 */
 		get flags(): Set<string> {

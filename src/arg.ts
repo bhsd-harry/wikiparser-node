@@ -59,6 +59,9 @@ export abstract class ArgToken extends Token {
 				super.insertAt(token);
 			}
 		}
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren(0);
 	}
 

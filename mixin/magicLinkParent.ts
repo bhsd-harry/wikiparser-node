@@ -1,12 +1,16 @@
 import {mixins} from '../util/constants';
 import type {MagicLinkToken} from '../src/magicLink';
 
+/* NOT FOR BROWSER */
+
 export interface MagicLinkParentBase {
 	protocol: string | undefined;
 	link: string;
 	getUrl(): URL;
 	setTarget(url: string): void;
 }
+
+/* NOT FOR BROWSER END */
 
 /**
  * ExtLinkToken
@@ -17,6 +21,8 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
 	abstract class MagicLinkParent extends constructor {
 		abstract get firstChild(): MagicLinkToken;
 		abstract get firstElementChild(): MagicLinkToken;
+
+		/* NOT FOR BROWSER */
 
 		/** 协议 */
 		get protocol(): string | undefined {

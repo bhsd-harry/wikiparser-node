@@ -4,6 +4,9 @@ import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
@@ -15,7 +18,12 @@ import type {AttributesToken} from '../internal';
 
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
+/* NOT FOR BROWSER */
+
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
+
+/* NOT FOR BROWSER END */
+
 const commonHtmlAttrs = new Set([
 		'id',
 		'class',
@@ -314,7 +322,13 @@ export abstract class AttributeToken extends fixedToken(Token) {
 		this.#equal = equal;
 		this.#quotes = [...quotes];
 		this.tag = tag;
+
+		/* NOT FOR BROWSER */
+
 		this.seal('tag', true);
+
+		/* NOT FOR BROWSER END */
+
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
