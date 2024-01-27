@@ -1,7 +1,7 @@
 import {
-	print,
 	extUrlChar,
 	extUrlCharFirst,
+	print,
 
 	/* NOT FOR BROWSER */
 

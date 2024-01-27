@@ -1,8 +1,8 @@
 import {
 	removeComment,
 	text,
-	print,
 	decodeHtml,
+	print,
 
 	/* NOT FOR BROWSER */
 
