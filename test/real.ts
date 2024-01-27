@@ -1,4 +1,4 @@
-import {diff} from '../util/diff';
+import {diff, error, info} from '../util/diff';
 import {tidy} from '../util/string';
 import {Api} from './api';
 import Parser = require('../index');
