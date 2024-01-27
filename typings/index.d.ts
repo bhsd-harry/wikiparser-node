@@ -1,5 +1,5 @@
 declare global {
-	type Acceptable = Record<string, number | string | (number | string)[]>;
+	type Acceptable = unknown;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		toString(separator?: string): string;
