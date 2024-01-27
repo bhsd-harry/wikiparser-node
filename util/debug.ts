@@ -88,7 +88,7 @@ export const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
  * @param data 事件数据
  * @throws `RangeError` 无法撤销的事件类型
  */
-export const undo = (e: AstEvent, data: AstEventData): void => {
+export const undo: AstListener = (e, data): void => {
 	const {target, type} = e;
 	switch (data.type) {
 		case 'remove':

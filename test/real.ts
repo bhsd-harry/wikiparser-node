@@ -1,4 +1,4 @@
-import {diff} from '../util/diff';
+import {diff, error, info} from '../util/diff';
 import {tidy} from '../util/string';
 import {Api} from './api';
 import Parser = require('../index');
@@ -16,8 +16,6 @@ Parser.i18n = require('../../i18n/zh-hans');
 /* NOt FOR BROWSER */
 
 Parser.warning = false;
-
-const {error, info} = Parser; // eslint-disable-line @typescript-eslint/unbound-method
 
 /* NOT FOR BROWSER END */
 

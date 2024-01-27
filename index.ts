@@ -14,16 +14,11 @@ import {
 	parsers,
 } from './util/constants';
 import {tidy} from './util/string';
-import {cmd} from './util/diff';
+import {cmd, info, error} from './util/diff';
+import type {log} from './util/diff';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
-
-/* NOT FOR BROWSER */
-
-declare type log = (msg: string, ...args: unknown[]) => void;
-
-/* NOT FOR BROWSER END */
 
 declare interface Parser extends ParserBase {
 
@@ -250,14 +245,8 @@ const Parser: Parser = {
 			console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
 		}
 	},
-	/** @implements */
-	error(msg, ...args) {
-		console.error('\x1B[31m%s\x1B[0m', msg, ...args);
-	},
-	/** @implements */
-	info(msg, ...args) {
-		console.info('\x1B[32m%s\x1B[0m', msg, ...args);
-	},
+	error,
+	info,
 
 	/** @implements */
 	log(f) {
