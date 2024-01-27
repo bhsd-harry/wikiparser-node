@@ -1,7 +1,7 @@
 import {
-	print,
 	extUrlChar,
 	extUrlCharFirst,
+	print,
 } from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
