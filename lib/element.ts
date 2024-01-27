@@ -1,6 +1,6 @@
 import {
-	print,
 	text,
+	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
