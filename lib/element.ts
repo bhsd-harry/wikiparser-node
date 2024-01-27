@@ -1,12 +1,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
-	noWrap,
-	print,
 	text,
+	print,
+
+	/* NOT FOR BROWSER */
+
+	noWrap,
 } from '../util/string';
-import {typeAliases, classes} from '../util/constants';
 import {setChildNodes} from '../util/debug';
+import {typeAliases, classes} from '../util/constants';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
@@ -180,7 +183,12 @@ export abstract class AstElement extends AstNode {
 	 * @param i 移除位置
 	 */
 	removeAt(i: number): AstNodes {
+		/* NOT FOR BROWSER */
+
 		this.verifyChild(i);
+
+		/* NOT FOR BROWSER END */
+
 		return setChildNodes(this as AstElement as Token, i, 1)[0]!;
 	}
 
@@ -191,6 +199,8 @@ export abstract class AstElement extends AstNode {
 	 * @throws `RangeError` 不能插入祖先或子节点
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
+		/* NOT FOR BROWSER */
+
 		if (node.contains(this)) {
 			throw new RangeError('不能插入祖先节点！');
 		}
@@ -199,6 +209,9 @@ export abstract class AstElement extends AstNode {
 		}
 		this.verifyChild(i, 1);
 		node.parentNode?.removeChild(node);
+
+		/* NOT FOR BROWSER END */
+
 		setChildNodes(this as AstElement as Token, i, 0, [node]);
 		return node;
 	}
@@ -209,10 +222,15 @@ export abstract class AstElement extends AstNode {
 	 */
 	#getCondition<T>(selector: string): TokenPredicate<T> {
 		let condition: TokenPredicate<T>;
+
+		/* NOT FOR BROWSER */
+
 		if (/[^a-z\-,\s]/u.test(selector)) {
 			const stack = parseSelector(selector);
 			condition = (token => stack.some(copy => token.#matchesArray(copy))) as TokenPredicate<T>;
 		} else {
+		/* NOT FOR BROWSER END */
+
 			const types = new Set(selector.split(',').map(str => str.trim()));
 			condition = (token => types.has(token.type)) as TokenPredicate<T>;
 		}
@@ -263,15 +281,23 @@ export abstract class AstElement extends AstNode {
 	 * @throws `RangeError` 对应位置的子节点不是文本节点
 	 */
 	setText(str: string, i = 0): string {
-		this.verifyChild(i);
 		i += i < 0 ? this.length : 0;
+
+		/* NOT FOR BROWSER */
+
+		this.verifyChild(i);
 		const oldText = this.childNodes[i]!,
 			{type, constructor: {name}} = oldText;
 		if (type === 'text') {
+		/* NOT FOR BROWSER END */
+
 			const {data} = oldText;
 			oldText.replaceData(str);
 			return data;
 		}
+
+		/* NOT FOR BROWSER */
+
 		throw new RangeError(`第 ${i} 个子节点是 ${name}！`);
 	}
 
@@ -311,12 +337,18 @@ export abstract class AstElement extends AstNode {
 			...this,
 			childNodes: this.childNodes.map(child => child.type === 'text' ? {data: child.data} : child.json()),
 		};
+
+		/* NOT FOR BROWSER */
+
 		if (typeof file === 'string') {
 			fs.writeFileSync(
 				path.join(__dirname.slice(0, -4), '..', 'printed', `${file}${file.endsWith('.json') ? '' : '.json'}`),
 				JSON.stringify(json, null, 2),
 			);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return json;
 	}
 

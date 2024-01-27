@@ -81,8 +81,14 @@ export class AstText extends AstNode {
 		Object.defineProperties(this, {
 			data: {
 				value: text,
+
+				/* NOT FOR BROWSER */
+
 				writable: false,
 			},
+
+			/* NOT FOR BROWSER */
+
 			childNodes: {enumerable: false, configurable: false},
 			type: {enumerable: false, writable: false},
 		});
@@ -105,9 +111,15 @@ export class AstText extends AstNode {
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
+
+		/* NOT FOR BROWSER */
+
 		if (!parentNode) {
 			throw new Error('无法对孤立文本节点进行语法分析！');
 		}
+
+		/* NOT FOR BROWSER END */
+
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
 		const {type, name} = parentNode,
 			nowiki = name === 'nowiki' || name === 'pre',
@@ -204,9 +216,17 @@ export class AstText extends AstNode {
 	 * @param text 新内容
 	 */
 	#setData(text: string): void {
+		/* NOT FOR BROWSER */
+
 		const {data} = this,
 			e = new Event('text', {bubbles: true});
+
+		/* NOT FOR BROWSER END */
+
 		this.setAttribute('data', text);
+
+		/* NOT FOR BROWSER */
+
 		if (data !== text) {
 			this.dispatchEvent(e, {type: 'text', oldText: data});
 		}

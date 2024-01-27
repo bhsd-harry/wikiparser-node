@@ -1,10 +1,12 @@
 /* eslint n/exports-style: 0 */
 import * as fs from 'fs';
 import * as path from 'path';
-import {cmd} from './util/diff';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
+
+	/* NOT FOR BROWSER */
+
 	BuildMethod,
 	promises,
 	classes,
@@ -12,11 +14,16 @@ import {
 	parsers,
 } from './util/constants';
 import {tidy} from './util/string';
+import {cmd} from './util/diff';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
+/* NOT FOR BROWSER */
+
 declare type log = (msg: string, ...args: unknown[]) => void;
+
+/* NOT FOR BROWSER END */
 
 declare interface Parser extends ParserBase {
 
@@ -113,6 +120,9 @@ const Parser: Parser = {
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config/') as Config;
+
+			/* NOT FOR BROWSER */
+
 			const {config: {conversionTable, redirects}} = this;
 			if (conversionTable) {
 				this.conversionTable = new Map(conversionTable);
@@ -120,6 +130,9 @@ const Parser: Parser = {
 			if (redirects) {
 				this.redirects = new Map(redirects);
 			}
+
+			/* NOT FOR BROWSER END */
+
 			return this.getConfig();
 		}
 		return {
@@ -154,6 +167,9 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const token = Shadow.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
+
+		/* NOT FOR BROWSER */
+
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
 				if (titleObj[key]?.includes('\0')) {
@@ -163,6 +179,9 @@ const Parser: Parser = {
 		});
 		titleObj.conversionTable = this.conversionTable;
 		titleObj.redirects = this.redirects;
+
+		/* NOT FOR BROWSER END */
+
 		return titleObj;
 	},
 
@@ -187,6 +206,9 @@ const Parser: Parser = {
 				throw e;
 			}
 		});
+
+		/* NOT FOR BROWSER */
+
 		if (this.debugging) {
 			let restored = String(root),
 				process = '解析';
@@ -208,6 +230,9 @@ const Parser: Parser = {
 				})());
 			}
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return root;
 	},
 
@@ -305,12 +330,15 @@ const def: PropertyDescriptorMap = {
 		default: {value: Parser},
 	},
 	enumerable = new Set([
+		'normalizeTitle',
+		'parse',
+
+		/* NOT FOR BROWSER */
+
 		'conversionTable',
 		'redirects',
 		'warning',
 		'debugging',
-		'normalizeTitle',
-		'parse',
 		'isInterwiki',
 	]);
 for (const key in Parser) {

@@ -1,5 +1,8 @@
 import {
 	decodeHtml,
+
+	/* NOT FOR BROWSER */
+
 	escapeRegExp,
 } from '../util/string';
 import {classes} from '../util/constants';
@@ -75,10 +78,19 @@ export class Title {
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
 		const {
-			namespaces,
 			nsid,
+
+			/* NOT FOR BROWSER */
+
+			namespaces,
 		} = config;
+
+		/* NOT FOR BROWSER */
+
 		this.#namespaces = namespaces;
+
+		/* NOT FOR BROWSER END */
+
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
@@ -93,11 +105,17 @@ export class Title {
 			ns = 0;
 			title = title.slice(1).trim();
 		}
+
+		/* NOT FOR BROWSER */
+
 		const iw = defaultNs ? null : Parser.isInterwiki(title, config);
 		if (iw) {
 			this.interwiki = iw[1]!.toLowerCase();
 			title = title.slice(iw.indices![0]![1]);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		const m = title.split(':');
 		if (m.length > 1) {
 			const id = nsid[m[0]!.trim().toLowerCase()];
@@ -124,9 +142,18 @@ export class Title {
 		}
 		this.valid = Boolean(
 			title
+
+			/* NOT FOR BROWSER */
+
 			|| this.interwiki
+
+			/* NOT FOR BROWSER END */
+
 			|| selfLink && this.fragment !== undefined,
 		) && !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
+
+		/* NOT FOR BROWSER */
+
 		this.main = title;
 		Object.defineProperties(this, {
 			valid: {writable: false},
