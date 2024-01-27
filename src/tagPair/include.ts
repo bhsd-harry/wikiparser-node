@@ -1,6 +1,6 @@
+import {generateForSelf} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
-import {generateForSelf} from '../../util/lint';
 import {hiddenToken} from '../../mixin/hidden';
 import Parser from '../../index';
 import {TagPairToken} from './index';

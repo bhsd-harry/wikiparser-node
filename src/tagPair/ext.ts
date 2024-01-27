@@ -20,7 +20,11 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
 	return [...set];
 };
 
+/* NOT FOR BROWSER */
+
 export interface ExtToken extends AttributesParentBase {}
+
+/* NOT FOR BROWSER END */
 
 /**
  * 扩展标签
@@ -162,6 +166,9 @@ export abstract class ExtToken extends attributesParent(TagPairToken) {
 		innerToken.setAttribute('name', lcName);
 		innerToken.type = 'ext-inner';
 		super(name, attrToken, innerToken, closed, config, accum);
+
+		/* istanbul ignore next */
+
 		this.seal('closed', true);
 	}
 

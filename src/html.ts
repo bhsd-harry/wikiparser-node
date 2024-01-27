@@ -40,7 +40,11 @@ const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switc
 	]),
 	obsoleteTags = new Set(['strike', 'big', 'center', 'font', 'tt']);
 
+/* NOT FOR BROWSER */
+
 export interface HtmlToken extends AttributesParentBase {}
+
+/* NOT FOR BROWSER END */
 
 /**
  * HTML标签
@@ -144,9 +148,14 @@ export abstract class HtmlToken extends attributesParent(fixedToken(Token)) {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		/* NOT FOR BROWSER */
+
 		if (key === 'tag') {
 			return this.#tag as TokenAttributeGetter<T>;
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return key === 'padding'
 			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttributeGetter<T>
 			: super.getAttribute(key);

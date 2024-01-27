@@ -4,7 +4,11 @@ import {ListBaseToken} from './listBase';
 import type {AstRange} from '../../lib/range';
 import type {SolTokenBase} from '../../mixin/sol';
 
+/* NOT FOR BROWSER */
+
 export interface ListToken extends SolTokenBase {}
+
+/* NOT FOR BROWSER END */
 
 /** 位于行首的`;:*#` */
 export abstract class ListToken extends sol(ListBaseToken) {

@@ -19,7 +19,13 @@ declare global {
 		T extends 'optional' | 'keys' ? Set<string> :
 		T extends 'args' ? Map<string, Set<ParameterToken>> :
 		T extends 'title' ? Title :
+
+		/* NOT FOR BROWSER */
+
 		T extends 'protectedChildren' ? Ranges :
+
+		/* NOT FOR BROWSER END */
+
 		string;
 	/* eslint-enable @stylistic/indent */
 

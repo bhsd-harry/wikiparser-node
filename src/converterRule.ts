@@ -92,6 +92,9 @@ export abstract class ConverterRuleToken extends Token {
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-to', config, accum));
 		}
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren('1:');
 	}
 

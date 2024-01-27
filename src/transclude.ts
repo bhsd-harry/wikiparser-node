@@ -1,18 +1,27 @@
 import {
 	removeComment,
-	escapeRegExp,
 	text,
-	noWrap,
 	print,
 	decodeHtml,
+
+	/* NOT FOR BROWSER */
+
+	escapeRegExp,
+	noWrap,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import {
-	Shadow,
 	isToken,
+
+	/* NOT FOR BROWSER */
+
+	Shadow,
 } from '../util/debug';
 import {
 	BuildMethod,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../util/constants';
 import Parser from '../index';
@@ -39,7 +48,13 @@ const insensitiveVars = new Set<string | undefined>([
  */
 export abstract class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
+
+	/* NOT FOR BROWSER */
+
 	declare readonly name: string;
+
+	/* NOT FOR BROWSER END */
+
 	readonly modifier: string = '';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
@@ -88,7 +103,13 @@ export abstract class TranscludeToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
+
+		/* NOT FOR BROWSER */
+
 		this.seal('modifier');
+
+		/* NOT FOR BROWSER END */
+
 		const {parserFunction: [insensitive, sensitive]} = config,
 			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
@@ -122,7 +143,12 @@ export abstract class TranscludeToken extends Token {
 					parts.unshift([arg.join(':')]);
 				}
 				if (this.name === 'invoke') {
+					/* NOT FOR BROWSER */
+
 					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
+
+					/* NOT FOR BROWSER END */
+
 					for (let i = 0; i < 2; i++) {
 						const part = parts.shift();
 						if (!part) {
@@ -137,6 +163,9 @@ export abstract class TranscludeToken extends Token {
 						);
 						super.insertAt(invoke);
 					}
+
+					/* NOT FOR BROWSER */
+
 					this.protectChildren('1:3');
 				}
 			}
@@ -145,7 +174,13 @@ export abstract class TranscludeToken extends Token {
 			const name = removeComment(decodeHtml(title)).split('#')[0]!.trim();
 			if (!name || /^:[\s_]*:|\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/iu.test(name)) {
 				accum.pop();
+
+				/* NOT FOR BROWSER */
+
 				Parser.debug(`非法的模板名称：${noWrap(name)}`);
+
+				/* NOT FOR BROWSER END */
+
 				throw new SyntaxError('非法的模板名称');
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
@@ -168,6 +203,9 @@ export abstract class TranscludeToken extends Token {
 			// @ts-expect-error abstract class
 			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
 		}
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren(0);
 	}
 
@@ -213,6 +251,9 @@ export abstract class TranscludeToken extends Token {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
+
+		/* NOT FOR BROWSER */
+
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
 			if (isTemplate || this.length > 1) {
@@ -278,10 +319,16 @@ export abstract class TranscludeToken extends Token {
 		switch (key) {
 			case 'padding':
 				return this.modifier.length + 2 as TokenAttributeGetter<T>;
+
+				/* NOT FOR BROWSER */
+
 			case 'args':
 				return new Map(this.#args) as TokenAttributeGetter<T>;
 			case 'keys':
 				return this.#keys as TokenAttributeGetter<T>;
+
+				/* NOT FOR BROWSER END */
+
 			default:
 				return super.getAttribute(key);
 		}
@@ -331,12 +378,18 @@ export abstract class TranscludeToken extends Token {
 	#handleAnonArgChange(addedToken: number | ParameterToken): void {
 		const args = this.getAnonArgs(),
 			added = typeof addedToken !== 'number';
+
+		/* NOT FOR BROWSER */
+
 		const maxAnon = String(args.length + (added ? 0 : 1));
 		if (added) {
 			this.#keys.add(maxAnon);
 		} else if (!this.hasArg(maxAnon, true)) {
 			this.#keys.delete(maxAnon);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		for (let i = added ? args.indexOf(addedToken) : addedToken - 1; i < args.length; i++) {
 			const token = args[i]!,
 				{name} = token,
@@ -344,6 +397,9 @@ export abstract class TranscludeToken extends Token {
 			if (name !== newName) {
 				token.setAttribute('name', newName);
 				this.getArgs(newName, false, false).add(token);
+
+				/* NOT FOR BROWSER */
+
 				if (name) {
 					this.getArgs(name, false, false).delete(token);
 				}
@@ -362,6 +418,9 @@ export abstract class TranscludeToken extends Token {
 			this.#handleAnonArgChange(token);
 		} else if (token.name) {
 			this.getArgs(token.name, false, false).add(token);
+
+			/* NOT FOR BROWSER */
+
 			this.#keys.add(token.name);
 		}
 		return token;
@@ -392,11 +451,17 @@ export abstract class TranscludeToken extends Token {
 			args = new Set(this.getAllArgs().filter(({name}) => keyStr === name));
 			this.#args.set(keyStr, args);
 		}
+
+		/* NOT FOR BROWSER */
+
 		if (exact && !Number.isNaN(Number(keyStr))) {
 			args = new Set([...args].filter(({anon}) => typeof key === 'number' === anon));
 		} else if (copy) {
 			args = new Set(args);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return args;
 	}
 

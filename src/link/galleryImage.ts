@@ -1,9 +1,12 @@
 import {generateForSelf} from '../../util/lint';
-import {undo} from '../../util/debug';
 import {
 	MAX_STAGE,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../../util/constants';
+import {undo} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -75,8 +78,11 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start),
 			{
-				interwiki,
 				ns,
+
+				/* NOT FOR BROWSER */
+
+				interwiki,
 			} = this.getAttribute('title');
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid gallery image'));
@@ -90,12 +96,18 @@ export abstract class GalleryImageToken extends singleLine(FileToken) {
 	 */
 	#setName(title: Title): void {
 		this.setAttribute('title', title);
+
+		/* NOT FOR BROWSER */
+
 		this.setAttribute('name', title.title);
 	}
 
 	/** @private */
 	override afterBuild(): void {
 		this.#setName(this.getTitle());
+
+		/* NOT FOR BROWSER */
+
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {

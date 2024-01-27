@@ -1,8 +1,11 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {
+	removeComment,
+
+	/* NOT FOR BROWSER */
+
 	normalizeSpace,
 	text,
-	removeComment,
 } from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';

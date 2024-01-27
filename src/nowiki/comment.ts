@@ -29,6 +29,9 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 	constructor(wikitext: string, closed = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 		this.closed = closed;
+
+		/* NOT FOR BROWSER */
+
 		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
@@ -44,10 +47,15 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 
 	/** @private */
 	override toString(): string {
+		/* NOT FOR BROWSER */
+
 		if (!this.closed && this.nextSibling) {
 			Parser.error('自动闭合HTML注释', this);
 			this.closed = true;
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 

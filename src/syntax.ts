@@ -22,6 +22,9 @@ export class SyntaxToken extends syntax(Token) {
 	) {
 		super(wikitext, config, accum, acceptable);
 		this.type = type;
+
+		/* NOT FOR BROWSER */
+
 		this.setAttribute('pattern', pattern);
 	}
 

@@ -12,9 +12,14 @@ const {argv: [,, site = '']} = process,
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
 
 Parser.i18n = require('../../i18n/zh-hans');
+
+/* NOt FOR BROWSER */
+
 Parser.warning = false;
 
 const {error, info} = Parser; // eslint-disable-line @typescript-eslint/unbound-method
+
+/* NOT FOR BROWSER END */
 
 /**
  * 获取最近更改的页面源代码

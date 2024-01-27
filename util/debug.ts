@@ -10,12 +10,24 @@ export const Shadow = {
 
 	/** @private */
 	run<T>(callback: () => T): T {
+		/* NOT FOR BROWSER */
+
 		const {running} = this;
 		this.running = true;
 		try {
+			/* NOT FOR BROWSER END */
+
 			const result = callback();
+
+			/* NOT FOR BROWSER */
+
 			this.running = running;
+
+			/* NOT FOR BROWSER END */
+
 			return result;
+
+			/* NOT FOR BROWSER */
 		} catch (e) {
 			this.running = running;
 			throw e;
@@ -48,9 +60,15 @@ export const setChildNodes = (
 	for (const node of inserted) {
 		node.setAttribute('parentNode', parent);
 	}
+
+	/* NOT FOR BROWSER */
+
 	for (const node of removed) {
 		node.setAttribute('parentNode', undefined);
 	}
+
+	/* NOT FOR BROWSER END */
+
 	return removed;
 };
 

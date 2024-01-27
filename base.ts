@@ -8,8 +8,11 @@ export interface Config {
 	readonly protocol: string;
 	readonly img: Record<string, string>;
 	readonly variants: string[];
-	readonly interwiki: string[];
 	readonly excludes?: string[];
+
+	/* NOT FOR BROWSER */
+
+	readonly interwiki: string[];
 	readonly conversionTable?: [string, string][];
 	readonly redirects?: [string, string][];
 }

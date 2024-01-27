@@ -1,6 +1,6 @@
 import {generateForChild} from '../../util/lint';
-import {noWrap} from '../../util/string';
 import {Shadow} from '../../util/debug';
+import {noWrap} from '../../util/string';
 import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
@@ -11,12 +11,16 @@ import type {TableCoords} from './trBase';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 import type {Layout} from '../../addon/table';
 
+/* NOT FOR BROWSER */
+
 export interface TableRenderedCoords {
 	readonly row?: undefined;
 	readonly column?: undefined;
 	readonly x: number;
 	readonly y: number;
 }
+
+/* NOT FOR BROWSER END */
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
@@ -77,15 +81,25 @@ export abstract class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
+
+		/* NOT FOR BROWSER */
+
 		if (this.lastChild.type !== 'table-syntax') {
+			/* NOT FOR BROWSER END */
+
 			const token = Shadow.run(() => super.insertAt(
 				new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 					'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 				}),
 			));
+
+			/* NOT FOR BROWSER */
+
 			if (!halfParsed) {
 				token.afterBuild();
 			}
+
+			/* NOT FOR BROWSER END */
 		}
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}

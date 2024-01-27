@@ -1,7 +1,10 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {
-	Shadow,
 	isToken,
+
+	/* NOT FOR BROWSER */
+
+	Shadow,
 } from '../util/debug';
 import {classes} from '../util/constants';
 import {singleLine} from '../mixin/singleLine';
@@ -12,10 +15,13 @@ import {GalleryImageToken} from './link/galleryImage';
 import {ImagemapLinkToken} from './imagemapLink';
 import type {LintError} from '../base';
 import type {
-	AstNodes,
 	AstText,
 	AttributesToken,
 	ExtToken,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
 } from '../internal';
 
 /**
@@ -75,7 +81,13 @@ export abstract class ImagemapToken extends Token {
 					title = this.normalizeTitle(file, 0, true);
 				if (
 					title.valid
+
+					/* NOT FOR BROWSER */
+
 					&& !title.interwiki
+
+					/* NOT FOR BROWSER END */
+
 					&& title.ns === 6
 				) {
 					// @ts-expect-error abstract class
@@ -90,7 +102,12 @@ export abstract class ImagemapToken extends Token {
 					first = false;
 					continue;
 				} else {
+					/* NOT FOR BROWSER */
+
 					Parser.error('<imagemap>标签内必须先包含一张合法图片！', line);
+
+					/* NOT FOR BROWSER END */
+
 					error = true;
 				}
 			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {

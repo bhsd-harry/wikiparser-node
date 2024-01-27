@@ -1,10 +1,13 @@
-import {normalizeSpace} from '../util/string';
-import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
+import {normalizeSpace} from '../util/string';
+import {Shadow} from '../util/debug';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import Parser from '../index';
 import {Token} from './index';
@@ -62,6 +65,9 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);
 		}
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren(0);
 	}
 
@@ -70,14 +76,25 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 		if (this.length === 1) {
 			return `[${super.toString()}${this.#space}]`;
 		}
+
+		/* NOT FOR BROWSER */
+
 		this.#correct();
 		normalizeSpace(this.lastChild);
+
+		/* NOT FOR BROWSER END */
+
 		return `[${super.toString(this.#space)}]`;
 	}
 
 	/** @override */
 	override text(): string {
+		/* NOT FOR BROWSER */
+
 		normalizeSpace(this.childNodes[1]);
+
+		/* NOT FOR BROWSER END */
+
 		return `[${super.text(' ')}]`;
 	}
 
@@ -88,7 +105,12 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 
 	/** @private */
 	override getGaps(): number {
+		/* NOT FOR BROWSER */
+
 		this.#correct();
+
+		/* NOT FOR BROWSER END */
+
 		return this.#space.length;
 	}
 

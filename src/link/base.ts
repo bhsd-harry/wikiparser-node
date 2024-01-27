@@ -1,10 +1,13 @@
 import {generateForChild} from '../../util/lint';
-import {undo, Shadow} from '../../util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../../util/constants';
+import {undo, Shadow} from '../../util/debug';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -17,7 +20,13 @@ import type {Title} from '../../lib/title';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
+
+	/* NOT FOR BROWSER */
+
 	declare readonly name: string;
+
+	/* NOT FOR BROWSER END */
+
 	#bracket = true;
 	#delimiter;
 	#title: Title;
@@ -74,16 +83,28 @@ export abstract class LinkBaseToken extends Token {
 			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren(0);
 	}
 
 	/** @private */
 	override afterBuild(): void {
 		this.#title = this.getTitle();
+
+		/* NOT FOR BROWSER */
+
 		this.setAttribute('name', this.#title.title);
+
+		/* NOT FOR BROWSER END */
+
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
+
+		/* NOT FOR BROWSER */
+
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {

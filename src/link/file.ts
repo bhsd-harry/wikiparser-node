@@ -112,7 +112,13 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
+
+		/* NOT FOR BROWSER */
+
 		this.setAttribute('acceptable', {AtomToken: 0, ImageParameterToken: '1:'});
+
+		/* NOT FOR BROWSER END */
+
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class
 			part => new ImageParameterToken(part, config, accum) as ImageParameterToken,
@@ -195,9 +201,15 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	#getTypedArgs(keys: Set<string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
+
+		/* NOT FOR BROWSER */
+
 		if (args.length > 1) {
 			Parser.warn(`图片 ${this.name} 带有 ${args.length} 个${type}参数，只有最后 1 个 ${args[0]!.name} 会生效！`);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return args;
 	}
 

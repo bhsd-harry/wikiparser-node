@@ -1,9 +1,12 @@
 import {generateForChild} from '../../util/lint';
-import {Shadow} from '../../util/debug';
 import {
 	BuildMethod,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../../util/constants';
+import {Shadow} from '../../util/debug';
 import {fixedToken} from '../../mixin/fixed';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -14,6 +17,9 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 export type TdSubtypes = 'td' | 'th' | 'caption';
 declare interface TdSyntax {
 	subtype: TdSubtypes;
+
+	/* NOT FOR BROWSER */
+
 	escape: boolean;
 	correction: boolean;
 }
@@ -21,8 +27,14 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
+
+/* NOT FOR BROWSER */
+
 declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
 declare type TdAttrSetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | boolean;
+
+/* NOT FOR BROWSER END */
+
 export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
@@ -116,7 +128,13 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
+
+			/* NOT FOR BROWSER */
+
 			esc = syntax.includes('{{'),
+
+			/* NOT FOR BROWSER END */
+
 			char = syntax.slice(-1);
 		let subtype: TdSubtypes = 'td';
 		if (char === '!') {
@@ -124,6 +142,9 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 		} else if (char === '+') {
 			subtype = 'caption';
 		}
+
+		/* NOT FOR BROWSER */
+
 		if (this.isIndependent()) {
 			return {subtype, escape: esc, correction: false};
 		}
@@ -143,6 +164,9 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 			result.subtype = 'th';
 			result.correction = true;
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return result;
 	}
 
@@ -155,14 +179,24 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 
 	/** @private */
 	override toString(): string {
+		/* NOT FOR BROWSER */
+
 		this.#correct();
+
+		/* NOT FOR BROWSER END */
+
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `${String(syntax)}${String(attr)}${this.#innerSyntax}${String(inner)}`;
 	}
 
 	/** @override */
 	override text(): string {
+		/* NOT FOR BROWSER */
+
 		this.#correct();
+
+		/* NOT FOR BROWSER END */
+
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
 	}
@@ -170,7 +204,12 @@ export abstract class TdToken extends fixedToken(TableBaseToken) {
 	/** @private */
 	override getGaps(i: number): number {
 		if (i === 1) {
+			/* NOT FOR BROWSER */
+
 			this.#correct();
+
+			/* NOT FOR BROWSER END */
+
 			return this.#innerSyntax.length;
 		}
 		return 0;

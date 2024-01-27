@@ -44,6 +44,8 @@ export abstract class ConverterFlagsToken extends Token {
 		}
 	}
 
+	/* NOT FOR BROWSER END */
+
 	/** @param flags 转换类型标记 */
 	constructor(flags: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
@@ -55,6 +57,9 @@ export abstract class ConverterFlagsToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		this.#flags = this.childNodes.map(child => child.text().trim());
+
+		/* NOT FOR BROWSER */
+
 		const /** @implements */ converterFlagsListener: AstListener = ({prevTarget}) => {
 			if (prevTarget) {
 				this.#flags![this.childNodes.indexOf(prevTarget as AtomToken)] = prevTarget.text().trim();

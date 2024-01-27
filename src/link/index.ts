@@ -1,5 +1,5 @@
-import {classes} from '../../util/constants';
 import {generateForSelf} from '../../util/lint';
+import {classes} from '../../util/constants';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';

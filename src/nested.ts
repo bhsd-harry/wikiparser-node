@@ -73,6 +73,9 @@ export abstract class NestedToken extends Token {
 		super(wikitext, config, accum, {
 			NoincludeToken: ':', ExtToken: ':',
 		});
+
+		/* NOT FOR BROWSER */
+
 		this.#tags = [...tags];
 		this.#regex = regex;
 	}

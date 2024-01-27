@@ -8,6 +8,9 @@ declare global {
 	type AstConstructor = abstract new (...args: any[]) => {
 		toString(separator?: string): string;
 		text(separator?: string): string;
+
+		/* NOT FOR BROWSER */
+
 		insertAt(token: unknown, i?: number): unknown;
 		getAttribute<T extends string>(key: T): TokenAttributeGetter<T>;
 		setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void;

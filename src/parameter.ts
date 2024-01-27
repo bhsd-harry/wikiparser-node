@@ -98,10 +98,18 @@ export abstract class ParameterToken extends fixedToken(Token) {
 				name = getName(firstChild);
 			this.setAttribute('name', name);
 			if (parentNode) {
+				/* NOT FOR BROWSER */
+
 				parentNode.getAttribute('keys').add(name);
+
+				/* NOT FOR BROWSER END */
+
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
+
+		/* NOT FOR BROWSER */
+
 		const /** @implements */ parameterListener: AstListener = ({prevTarget}, data) => {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstChild, name} = this;

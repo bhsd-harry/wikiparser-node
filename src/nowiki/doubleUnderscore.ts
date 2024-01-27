@@ -23,6 +23,9 @@ export abstract class DoubleUnderscoreToken extends syntax(hiddenToken(NowikiBas
 	 */
 	constructor(word: string, sensitive: boolean, config = Parser.getConfig(), accum: Token[] = []) {
 		super(word, config, accum);
+
+		/* NOT FOR BROWSER */
+
 		this.#sensitive = sensitive;
 		this.setAttribute('name', word.toLowerCase());
 		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));

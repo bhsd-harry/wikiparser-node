@@ -62,6 +62,9 @@ export abstract class TableBaseToken extends attributesParent(Token, 1) {
 			// @ts-expect-error abstract class
 			new AttributesToken(attr, 'table-attrs', this.type, config, accum) as AttributesToken,
 		);
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren(0, 1);
 	}
 

@@ -54,15 +54,24 @@ export abstract class TagPairToken extends fixedToken(Token) {
 				selfClosing,
 				firstChild,
 				lastChild,
+
+				/* NOT FOR BROWSER */
+
 				nextSibling,
 				name,
 				closed,
 			} = this,
 			[opening, closing] = this.#tags;
+
+		/* NOT FOR BROWSER */
+
 		if (!closed && nextSibling) {
 			Parser.error(`自动闭合 <${name}>`, lastChild);
 			this.closed = true;
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return selfClosing
 			? `<${opening}${String(firstChild)}/>`
 			: `<${opening}${String(firstChild)}>${String(lastChild)}${this.closed ? `</${closing}>` : ''}`;
@@ -78,9 +87,14 @@ export abstract class TagPairToken extends fixedToken(Token) {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+		/* NOT FOR BROWSER */
+
 		if (key === 'tags') {
 			return [...this.#tags] as TokenAttributeGetter<T>;
 		}
+
+		/* NOT FOR BROWSER END */
+
 		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 

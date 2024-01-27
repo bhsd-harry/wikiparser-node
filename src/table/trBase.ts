@@ -1,7 +1,10 @@
 import {generateForChild} from '../../util/lint';
 import {
-	Shadow,
 	isToken,
+
+	/* NOT FOR BROWSER */
+
+	Shadow,
 } from '../../util/debug';
 import {classes} from '../../util/constants';
 import {Token} from '..';
@@ -10,9 +13,12 @@ import {TdToken, createTd} from './td';
 import type {LintError} from '../../base';
 import type {
 	AstNodes,
-	SyntaxToken,
 	ArgToken,
 	TranscludeToken,
+
+	/* NOT FOR BROWSER */
+
+	SyntaxToken,
 	TrToken,
 } from '../../internal';
 import type {TdAttrs, TdSubtypes} from './td';

@@ -61,6 +61,9 @@ export abstract class ConverterToken extends flagsParent(Token) {
 				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum) as ConverterRuleToken),
 			);
 		}
+
+		/* NOT FOR BROWSER */
+
 		this.protectChildren(0);
 	}
 

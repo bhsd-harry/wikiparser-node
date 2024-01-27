@@ -1,8 +1,11 @@
 import {
-	text,
 	print,
 	extUrlChar,
 	extUrlCharFirst,
+
+	/* NOT FOR BROWSER */
+
+	text,
 } from '../util/string';
 import {generateForSelf} from '../util/lint';
 import {Shadow} from '../util/debug';
@@ -12,10 +15,13 @@ import {Token} from './index';
 import type {LintError, Config} from '../base';
 import type {Title} from '../lib/title';
 import type {
-	AstNodes,
-	AstText,
 	AtomToken,
 	FileToken,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
+	AstText,
 } from '../internal';
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
@@ -203,8 +209,12 @@ export abstract class ImageParameterToken extends Token {
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
 		if (key === 'plain') {
 			return (this.name === 'caption') as TokenAttributeGetter<T>;
+
+			/* NOT FOR BROWSER */
 		} else if (key === 'syntax') {
 			return this.#syntax as TokenAttributeGetter<T>;
+
+			/* NOT FOR BROWSER END */
 		}
 		return key === 'padding'
 			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>

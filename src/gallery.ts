@@ -6,10 +6,13 @@ import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {LintError} from '../base';
 import type {
-	AstNodes,
 	AstText,
 	AttributesToken,
 	ExtToken,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
 } from '../internal';
 
 /**

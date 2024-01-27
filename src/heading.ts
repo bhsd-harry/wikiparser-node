@@ -10,7 +10,11 @@ import type {LintError} from '../base';
 import type {SolTokenBase} from '../mixin/sol';
 import type {QuoteToken} from '../internal';
 
+/* NOT FOR BROWSER */
+
 export interface HeadingToken extends SolTokenBase {}
+
+/* NOT FOR BROWSER END */
 
 /**
  * 章节标题

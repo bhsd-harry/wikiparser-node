@@ -39,13 +39,16 @@
 
 import * as assert from 'assert/strict';
 import {text} from '../util/string';
-import {Shadow, isToken} from '../util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
+
+	/* NOT FOR BROWSER */
+
 	aliases,
 	classes,
 } from '../util/constants';
+import {Shadow, isToken} from '../util/debug';
 import {generateForSelf} from '../util/lint';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
@@ -57,6 +60,9 @@ import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
+
+	/* NOT FOR BROWSER */
+
 	IncludeToken,
 	HtmlToken,
 	ExtToken,
@@ -77,7 +83,11 @@ import type {
 import type {CaretPosition} from '../lib/node';
 import type {TokenTypes} from '../util/constants';
 
+/* NOT FOR BROWSER */
+
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
+
+/* NOT FOR BROWSER END */
 
 /**
  * 所有节点的基类
@@ -129,7 +139,13 @@ export class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
+
+		/* NOT FOR BROWSER */
+
 		this.setAttribute('acceptable', acceptable);
+
+		/* NOT FOR BROWSER END */
+
 		accum.push(this);
 	}
 
@@ -138,9 +154,14 @@ export class Token extends AstElement {
 		if (n < this.#stage || !this.getAttribute('plain') || this.length === 0) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
+			/* NOt FOR BROWSER */
+
 			if (this.type === 'root') {
 				Parser.error('已完全解析！');
 			}
+
+			/* NOT FOR BROWSER END */
+
 			return this;
 		}
 		switch (n) {
@@ -371,12 +392,18 @@ export class Token extends AstElement {
 				const root = this.getRootNode();
 				return (root !== this && root.getAttribute('include')) as TokenAttributeGetter<T>;
 			}
+
+			/* NOT FOR BROWSER */
+
 			case 'stage':
 				return this.#stage as TokenAttributeGetter<T>;
 			case 'acceptable':
 				return (this.#acceptable ? {...this.#acceptable} : undefined) as TokenAttributeGetter<T>;
 			case 'protectedChildren':
 				return new Ranges(this.#protectedChildren) as TokenAttributeGetter<T>;
+
+				/* NOT FOR BROWSER END */
+
 			default:
 				return super.getAttribute(key);
 		}
@@ -391,6 +418,9 @@ export class Token extends AstElement {
 				}
 				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
 				break;
+
+				/* NOT FOR BROWSER */
+
 			case 'acceptable': {
 				const acceptable: Record<string, Ranges> = {};
 				if (value) {
@@ -411,6 +441,9 @@ export class Token extends AstElement {
 				this.#acceptable = value && acceptable;
 				break;
 			}
+
+			/* NOT FOR BROWSER END */
+
 			default:
 				super.setAttribute(key, value);
 		}
@@ -425,6 +458,9 @@ export class Token extends AstElement {
 	override insertAt<T extends AstNodes>(child: T, i?: number): T;
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
+
+		/* NOT FOR BROWSER */
+
 		if (!Shadow.running && this.#acceptable) {
 			const acceptableIndices = Object.fromEntries(
 					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
@@ -438,12 +474,21 @@ export class Token extends AstElement {
 				this.constructorError(`插入新的第 ${i} 个子节点会破坏规定的顺序`);
 			}
 		}
+
+		/* NOT FOR BROWSER END */
+
 		super.insertAt(token, i);
+
+		/* NOT FOR BROWSER */
+
 		const e = new Event('insert', {bubbles: true});
 		this.dispatchEvent(e, {type: 'insert', position: i < 0 ? i + this.length - 1 : i});
 		if (token.constructor === Token && this.getAttribute('plain')) {
 			Parser.warn('您正将一个普通节点作为另一个普通节点的子节点，请考虑要不要执行 flatten 方法。');
 		}
+
+		/* NOT FOR BROWSER END */
+
 		if (token.type === 'root') {
 			token.type = 'plain';
 		}

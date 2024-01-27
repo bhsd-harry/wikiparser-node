@@ -1,8 +1,11 @@
-import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
+
+	/* NOT FOR BROWSER */
+
 	classes,
 } from '../util/constants';
+import {Shadow} from '../util/debug';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';

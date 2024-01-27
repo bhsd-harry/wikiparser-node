@@ -7,13 +7,16 @@ import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
 import type {
-	AstNodes,
-	ParameterToken,
 	AstText,
 	CommentToken,
 	IncludeToken,
 	NoincludeToken,
 	TranscludeToken,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
+	ParameterToken,
 } from '../internal';
 
 /**
@@ -76,6 +79,9 @@ export abstract class MagicLinkToken extends syntax(Token) {
 			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
 		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
+
+		/* NOT FOR BROWSER */
+
 		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
 	}
 
