@@ -1,8 +1,8 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
-const fromEntries = (entries, target) => {
+const fromEntries = (entries, obj) => {
     for (const entry of entries) {
-        target[entry] = true;
+        obj[entry] = true;
     }
 };
 export const getMwConfig = (config) => {
@@ -100,20 +100,20 @@ export const getMwConfig = (config) => {
         var _a;
         (_a = target.closest('dt')) === null || _a === void 0 ? void 0 : _a.classList.toggle('inactive');
     });
-    const switchTab = (e) => {
+    const switchTab = function (e) {
         e.preventDefault();
-        const active = document.querySelector('.active'), activeValue = active.value, { currentTarget } = e, { value } = currentTarget;
-        if (active === currentTarget) {
+        const active = document.querySelector('.active'), { value } = this;
+        if (active === this) {
             return;
         }
         active.classList.remove('active');
-        currentTarget.classList.add('active');
+        this.classList.add('active');
         h2.textContent = `Please input wikitext into the text box ${value === 'highlighter' ? 'under the first tab' : 'below'}.`;
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
         const text1 = textbox.value, text2 = instance.view.state.doc.toString();
-        switch (activeValue) {
+        switch (active.value) {
             case 'linter':
                 if (text1 !== text2) {
                     updateDoc(text2);
