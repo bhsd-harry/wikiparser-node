@@ -3,8 +3,25 @@ import {AstNode} from './node';
 import type {LintError} from '../base';
 import type {ExtToken} from '../internal';
 
-const errorSyntax = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu,
-	errorSyntaxUrl = /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*\])|((?:^|\])[^[]*?)\]+/giu,
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/<\s*(?:\/\s*)?([a-z]\w*)|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
+const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
+	+ '|'
+	+ '\\{{2,}|\\{(?![^{]*?\\})' // `{`
+	+ '|'
+	+ '((?:^|\\})[^{]*?)\\}+' // `}`
+	+ '|'
+	+ '\\[{2,}|\\[(?![^[]*?\\])' // `[`
+	+ '|'
+	+ '((?:^|\\])[^[]*?)\\]+', // `]`
+	errorSyntax = new RegExp(`${source}|https?[:/]\\/+`, 'giu'),
+	errorSyntaxUrl = new RegExp(source, 'giu'),
+	regexes = {
+		'[': /[[\]]/u,
+		'{': /[{}]/u,
+		']': /[[\]](?=[^[\]]*$)/u,
+		'}': /[{}](?=[^{}]*$)/u,
+	},
 	disallowedTags = [
 		'html',
 		'head',
@@ -95,14 +112,17 @@ export class AstText extends AstNode {
 				{top, left} = root.posFromIndex(start)!,
 				tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
-				const [, tag, prefix] = mt;
+				const [, tag, prefix1, prefix2] = mt;
 				let {0: error, index} = mt;
-				if (prefix && prefix !== ']') {
-					const {length} = prefix;
+				if (prefix1 && prefix1 !== '}' || prefix2 && prefix2 !== ']') {
+					const {length} = prefix1 || prefix2!;
 					index += length;
 					error = error.slice(length);
 				}
 				const {0: char, length} = error;
+				if ((char === '}' || char === ']') && (index || length > 1)) {
+					errorRegex.lastIndex--;
+				}
 				if (
 					char === '['
 					&& type === 'ext-link-text'
@@ -114,6 +134,22 @@ export class AstText extends AstNode {
 					)
 				) {
 					continue;
+				} else if (
+					length === 1
+					&& (
+						(char === '[' || char === '{') && !data.slice(index + 1).includes(char)
+						|| (char === ']' || char === '}') && !data.slice(0, index).includes(char)
+					)
+				) {
+					const sibling = char === '[' || char === '{' ? 'nextSibling' : 'previousSibling',
+						regex = regexes[char];
+					let cur = this[sibling];
+					while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
+						cur = cur[sibling];
+					}
+					if (cur && regex.exec(cur.data)![0] !== char) {
+						continue;
+					}
 				}
 				const startIndex = start + index,
 					lines = data.slice(0, index).split('\n'),

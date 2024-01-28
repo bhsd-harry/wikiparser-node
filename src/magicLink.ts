@@ -49,8 +49,8 @@ export abstract class MagicLinkToken extends Token {
 			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
 				const {index, 0: s} = mt,
 					lines = data.slice(0, index).split('\n'),
-					{length: top} = lines,
-					{length: left} = lines[lines.length - 1]!,
+					top = lines.length,
+					left = lines[top - 1]!.length,
 					startIndex = refError.startIndex + index,
 					startLine = refError.startLine + top - 1,
 					startCol = top === 1 ? refError.startCol + left : left;
