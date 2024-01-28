@@ -780,7 +780,7 @@ export abstract class TranscludeToken extends Token {
 			return [];
 		}
 		const duplicatedKeys: string[] = [];
-		let {length: anonCount} = this.getAnonArgs();
+		let anonCount = this.getAnonArgs().length;
 		for (const [key, args] of this.getDuplicatedArgs()) {
 			if (args.length <= 1) {
 				continue;

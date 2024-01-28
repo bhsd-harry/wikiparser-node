@@ -466,7 +466,7 @@ export class Token extends AstElement {
 					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i),
-				{constructor: {name: insertedName}} = token;
+				insertedName = token.constructor.name;
 			i += i < 0 ? this.length : 0;
 			if (!acceptableIndices[insertedName]?.includes(i)) {
 				this.constructorError(`的第 ${i} 个子节点不能为 ${insertedName}`);
@@ -679,7 +679,7 @@ export class Token extends AstElement {
 			acc += self.getAttribute('padding');
 			for (let i = 0; acc <= index && i < childNodes.length; i++) {
 				const cur: AstNodes = childNodes[i]!,
-					{length: l} = String(cur);
+					l = String(cur).length;
 				acc += l;
 				if (acc > index) {
 					self = cur;

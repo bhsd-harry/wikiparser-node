@@ -99,7 +99,7 @@ export abstract class ConverterFlagsToken extends Token {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
 			validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
-			{length: emptyFlagCount} = this.#flags!.filter(flag => !flag),
+			emptyFlagCount = this.#flags!.filter(flag => !flag).length,
 			knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
 			errors = super.lint(start);
 		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {

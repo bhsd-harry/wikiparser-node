@@ -1,3 +1,11 @@
+## v1.4.2
+
+*2024-01-29*
+
+**Fixed**
+
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports warnings for matched single brace or bracket
+
 ## v1.4.1
 
 *2024-01-27*
