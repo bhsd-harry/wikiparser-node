@@ -160,11 +160,11 @@ export class AstText extends AstNode {
 			errorRegex = errorSyntax;
 		}
 		const errors: LintError[] = [],
-			{ext, html} = this.getRootNode().getAttribute('config');
+			root = this.getRootNode(),
+			{ext, html} = root.getAttribute('config');
 		if (data.search(errorRegex) !== -1) {
 			errorRegex.lastIndex = 0;
-			const root = this.getRootNode(),
-				{top, left} = root.posFromIndex(start)!,
+			const {top, left} = root.posFromIndex(start)!,
 				tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
 			for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 				const [, tag, prefix1, prefix2] = mt;

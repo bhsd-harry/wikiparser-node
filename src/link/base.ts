@@ -190,9 +190,10 @@ export abstract class LinkBaseToken extends Token {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
 		}
-		if ((linkType === 'link' || linkType === 'category') && linkText?.childNodes.some(
-			({type, data}) => type === 'text' && data.includes('|'),
-		)) {
+		if (
+			(linkType === 'link' || linkType === 'category')
+			&& linkText?.childNodes.some(({type, data}) => type === 'text' && data.includes('|'))
+		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
 		} else if (linkType !== 'link' && fragment !== undefined) {
