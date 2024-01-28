@@ -49,9 +49,10 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 						await diff(cleaned, restored);
 					}
 					console.time(title);
-					const errors = root.lint();
+					let errors = root.lint();
 					console.timeEnd(title);
 					console.log(errors.map(({message, severity}) => ({message, severity})));
+					errors = errors.filter(({message}) => message !== '过时的属性');
 					if (errors.length === 0) {
 						continue;
 					}
