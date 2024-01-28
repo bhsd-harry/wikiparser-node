@@ -128,13 +128,7 @@
 			2,
 			"never"
 		],
-		"func-style": [
-			2,
-			"declaration",
-			{
-				"allowArrowFunctions": true
-			}
-		],
+		"func-style": 0,
 		"grouped-accessor-pairs": [
 			2,
 			"getBeforeSet"
