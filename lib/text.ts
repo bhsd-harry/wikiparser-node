@@ -189,22 +189,6 @@ export class AstText extends AstNode {
 					)
 				) {
 					continue;
-				} else if (
-					length === 1
-					&& (
-						(char === '[' || char === '{') && !data.slice(index + 1).includes(char)
-						|| (char === ']' || char === '}') && !data.slice(0, index).includes(char)
-					)
-				) {
-					const sibling = char === '[' || char === '{' ? 'nextSibling' : 'previousSibling',
-						regex = regexes[char];
-					let cur = this[sibling];
-					while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
-						cur = cur[sibling];
-					}
-					if (cur && regex.exec(cur.data)![0] !== char) {
-						continue;
-					}
 				}
 				const startIndex = start + index,
 					lines = data.slice(0, index).split('\n'),
@@ -229,6 +213,22 @@ export class AstText extends AstNode {
 					)
 						? 'error'
 						: 'warning';
+				if (severity === 'warning'
+					&& (
+						(char === '[' || char === '{') && !data.slice(index + 1).includes(char)
+						|| (char === ']' || char === '}') && !data.slice(0, index).includes(char)
+					)
+				) {
+					const sibling = char === '[' || char === '{' ? 'nextSibling' : 'previousSibling',
+						regex = regexes[char];
+					let cur = this[sibling];
+					while (cur && (cur.type !== 'text' || !regex.test(cur.data))) {
+						cur = cur[sibling];
+					}
+					if (cur && regex.exec(cur.data)![0] !== char) {
+						continue;
+					}
+				}
 				if (char !== '<' || tags.has(tag!.toLowerCase())) {
 					errors.push({
 						message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
