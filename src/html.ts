@@ -119,9 +119,9 @@ export abstract class HtmlToken extends attributesParent(fixedToken(Token)) {
 			this.findMatchingTag();
 		} catch (e) {
 			if (e instanceof SyntaxError) {
-				const {message: errorMsg} = e;
+				const {message} = e;
 				refError ??= generateForSelf(this, {start}, '');
-				const [msg] = errorMsg.split(':'),
+				const [msg] = message.split(':'),
 					error = {...refError, message: Parser.msg(msg!)};
 				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
 					if (formattingTags.has(this.name)) {

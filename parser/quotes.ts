@@ -20,7 +20,7 @@ export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum
 		firstMulti: number | undefined,
 		firstSpace: number | undefined;
 	for (let i = 1; i < length; i += 2) {
-		const {length: len} = arr[i]!;
+		const len = arr[i]!.length;
 		switch (len) {
 			case 2:
 				nItalic++;
