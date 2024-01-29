@@ -56,9 +56,7 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding'
-			? super.getAttribute('padding') + this.level as TokenAttributeGetter<T>
-			: super.getAttribute(key);
+		return key === 'padding' ? this.level as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */
