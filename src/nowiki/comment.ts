@@ -29,10 +29,6 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 	constructor(wikitext: string, closed = true, config = Parser.getConfig(), accum: Token[] = []) {
 		super(wikitext, config, accum);
 		this.closed = closed;
-
-		/* NOT FOR BROWSER */
-
-		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/** @private */

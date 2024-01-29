@@ -46,7 +46,6 @@ export abstract class TagPairToken extends Token {
 		this.append(attr, inner);
 		const index = typeof attr === 'string' ? -1 : accum.indexOf(attr);
 		accum.splice(index === -1 ? Infinity : index, 0, this);
-		Object.defineProperty(this, 'closed', {enumerable: false});
 	}
 
 	/** @private */

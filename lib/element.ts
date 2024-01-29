@@ -16,11 +16,7 @@ import {Title} from './title';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {
-	AstNodes,
-	AstText,
-	Token,
-} from '../internal';
+import type {AstNodes, AstText, Token} from '../internal';
 
 // @ts-expect-error unconstrained predicate
 declare type TokenPredicate<T = Token> = (token: Token) => token is T;
