@@ -148,12 +148,19 @@ export abstract class TdToken extends TableBaseToken {
 		} else if (char === '+') {
 			subtype = 'caption';
 		}
+		if (this.isIndependent()) {
+			return {
+				subtype,
+
+				/* NOT FOR BROWSER */
+
+				escape: esc,
+				correction: false,
+			};
+		}
 
 		/* NOT FOR BROWSER */
 
-		if (this.isIndependent()) {
-			return {subtype, escape: esc, correction: false};
-		}
 		const {previousSibling} = this;
 		if (!(previousSibling instanceof TdToken)) {
 			return {subtype, escape: esc, correction: true};
@@ -170,9 +177,6 @@ export abstract class TdToken extends TableBaseToken {
 			result.subtype = 'th';
 			result.correction = true;
 		}
-
-		/* NOT FOR BROWSER END */
-
 		return result;
 	}
 
