@@ -10,13 +10,7 @@ import {
 	noWrap,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
-import {
-	isToken,
-
-	/* NOT FOR BROWSER */
-
-	Shadow,
-} from '../util/debug';
+import {isToken, Shadow} from '../util/debug';
 import {
 	BuildMethod,
 
