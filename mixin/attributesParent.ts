@@ -2,17 +2,57 @@ import {mixins} from '../util/constants';
 import type {AstNodes, AttributesToken} from '../internal';
 
 export interface AttributesParentBase {
+
+	/** getAttrs()方法的getter写法 */
 	attributes: Record<string, string | true>;
+
+	/** 以字符串表示的class属性 */
 	className: string;
+
+	/** 以Set表示的class属性 */
 	classList: Set<string>;
+
+	/** id属性 */
 	id: string;
+
+	/**
+	 * AttributesToken子节点是否具有某属性
+	 * @param key 属性键
+	 */
 	hasAttr(key: string): boolean;
+
+	/**
+	 * 获取AttributesToken子节点的属性
+	 * @param key 属性键
+	 */
 	getAttr(key: string): string | true | undefined;
+
+	/** 列举AttributesToken子节点的属性键 */
 	getAttrNames(): Set<string>;
+
+	/** 获取AttributesToken子节点的全部标签属性 */
 	getAttrs(): Record<string, string | true>;
+
+	/**
+	 * 对AttributesToken子节点设置属性
+	 * @param key 属性键
+	 * @param value 属性值
+	 * @param prop 属性对象
+	 */
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
+
+	/**
+	 * 移除AttributesToken子节点的某属性
+	 * @param key 属性键
+	 */
 	removeAttr(key: string): void;
+
+	/**
+	 * 开关AttributesToken子节点的某属性
+	 * @param key 属性键
+	 * @param force 强制开启或关闭
+	 */
 	toggleAttr(key: string, force?: boolean): void;
 }
 
@@ -31,7 +71,7 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			return this.childNodes[i] as AttributesToken;
 		}
 
-		/** getAttrs()方法的getter写法 */
+		/** @implements */
 		get attributes(): Record<string, string | true> {
 			return this.#attributesChild.attributes;
 		}
@@ -40,7 +80,7 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			this.#attributesChild.attributes = attributes;
 		}
 
-		/** 以字符串表示的class属性 */
+		/** @implements */
 		get className(): string {
 			return this.#attributesChild.className;
 		}
@@ -49,7 +89,7 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			this.#attributesChild.className = className;
 		}
 
-		/** 以Set表示的class属性 */
+		/** @implements */
 		get classList(): Set<string> {
 			return this.#attributesChild.classList;
 		}
@@ -58,7 +98,7 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			this.#attributesChild.classList = classList;
 		}
 
-		/** id属性 */
+		/** @implements */
 		get id(): string {
 			return this.#attributesChild.id;
 		}
@@ -67,57 +107,39 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			this.#attributesChild.id = id;
 		}
 
-		/**
-		 * AttributesToken子节点是否具有某属性
-		 * @param key 属性键
-		 */
+		/** @implements */
 		hasAttr(key: string): boolean {
 			return this.#attributesChild.hasAttr(key);
 		}
 
-		/**
-		 * 获取AttributesToken子节点的属性
-		 * @param key 属性键
-		 */
+		/** @implements */
 		getAttr(key: string): string | true | undefined {
 			return this.#attributesChild.getAttr(key);
 		}
 
-		/** 列举AttributesToken子节点的属性键 */
+		/** @implements */
 		getAttrNames(): Set<string> {
 			return this.#attributesChild.getAttrNames();
 		}
 
-		/** 获取AttributesToken子节点的全部标签属性 */
+		/** @implements */
 		getAttrs(): Record<string, string | true> {
 			return this.#attributesChild.getAttrs();
 		}
 
-		/**
-		 * 对AttributesToken子节点设置属性
-		 * @param key 属性键
-		 * @param value 属性值
-		 * @param prop 属性对象
-		 */
+		/** @implements */
 		setAttr(key: string, value: string | boolean): void;
 		setAttr(prop: Record<string, string | boolean>): void;
 		setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
 			this.#attributesChild.setAttr(keyOrProp as string, value!);
 		}
 
-		/**
-		 * 移除AttributesToken子节点的某属性
-		 * @param key 属性键
-		 */
+		/** @implements */
 		removeAttr(key: string): void {
 			this.#attributesChild.removeAttr(key);
 		}
 
-		/**
-		 * 开关AttributesToken子节点的某属性
-		 * @param key 属性键
-		 * @param force 强制开启或关闭
-		 */
+		/** @implements */
 		toggleAttr(key: string, force?: boolean): void {
 			this.#attributesChild.toggleAttr(key, force);
 		}

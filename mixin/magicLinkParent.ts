@@ -4,9 +4,20 @@ import type {MagicLinkToken} from '../src/magicLink';
 /* NOT FOR BROWSER */
 
 export interface MagicLinkParentBase {
+
+	/** 协议 */
 	protocol: string | undefined;
+
+	/** 和内链保持一致 */
 	link: string;
+
+	/** 获取网址 */
 	getUrl(): URL;
+
+	/**
+	 * 设置链接目标
+	 * @param url 网址
+	 */
 	setTarget(url: string): void;
 }
 
@@ -24,7 +35,7 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
 
 		/* NOT FOR BROWSER */
 
-		/** 协议 */
+		/** @implements */
 		get protocol(): string | undefined {
 			return this.firstChild.protocol;
 		}
@@ -33,7 +44,7 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
 			this.firstChild.protocol = value;
 		}
 
-		/** 和内链保持一致 */
+		/** @implements */
 		get link(): string {
 			return this.firstChild.link;
 		}
@@ -42,15 +53,12 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
 			this.firstChild.link = url;
 		}
 
-		/** 获取网址 */
+		/** @implements */
 		getUrl(): URL {
 			return this.firstChild.getUrl();
 		}
 
-		/**
-		 * 设置链接目标
-		 * @param url 网址
-		 */
+		/** @implements */
 		setTarget(url: string): void {
 			this.firstChild.setTarget(url);
 		}

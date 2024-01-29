@@ -2,6 +2,8 @@ import {mixins} from '../util/constants';
 import type {Token} from '../src';
 
 export interface SolTokenBase {
+
+	/** 在前方插入newline */
 	prependNewLine(): string;
 }
 
@@ -12,7 +14,7 @@ export interface SolTokenBase {
 export const sol = <T extends AstConstructor>(constructor: T): T => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
-		/** 在前方插入newline */
+		/** @implements */
 		prependNewLine(): string {
 			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
 			if (previousVisibleSibling) {
