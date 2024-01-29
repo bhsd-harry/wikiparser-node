@@ -4,9 +4,7 @@ import {
 	decodeHtml,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
-import {
-	isToken,
-} from '../util/debug';
+import {isToken, Shadow} from '../util/debug';
 import {
 	BuildMethod,
 } from '../util/constants';
