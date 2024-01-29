@@ -72,10 +72,8 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	#getCondition<T>(selector: string): TokenPredicate<T> {
-		let condition: TokenPredicate<T>;
 		const types = new Set(selector.split(',').map(str => str.trim()));
-		condition = (token => types.has(token.type)) as TokenPredicate<T>;
-		return condition;
+		return (({type}) => types.has(type)) as TokenPredicate<T>;
 	}
 
 	/**
