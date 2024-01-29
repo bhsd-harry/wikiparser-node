@@ -53,8 +53,9 @@ export interface FlagsParentBase {
 /**
  * ConverterToken
  * @param constructor 基类
+ * @param _ context
  */
-export const flagsParent = <T extends AstConstructor>(constructor: T) => {
+export const flagsParent = <T extends AstConstructor>(constructor: T, _?: unknown) => {
 	/** 子节点含有ConverterFlagsToken的类 */
 	abstract class FlagsParent extends constructor {
 		abstract get firstChild(): ConverterFlagsToken;
@@ -111,6 +112,7 @@ export const flagsParent = <T extends AstConstructor>(constructor: T) => {
 			this.firstChild.toggleFlag(flag);
 		}
 	}
+	Object.defineProperty(FlagsParent, 'name', {value: constructor.name});
 	return FlagsParent;
 };
 

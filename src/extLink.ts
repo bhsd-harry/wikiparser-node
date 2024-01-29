@@ -21,19 +21,18 @@ export interface ExtLinkToken extends MagicLinkParentBase {}
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export abstract class ExtLinkToken extends magicLinkParent(Token) {
+@magicLinkParent
+export abstract class ExtLinkToken extends Token {
 	override readonly type = 'ext-link';
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
-	// @ts-expect-error ts bug
 	abstract override get firstChild(): MagicLinkToken;
 	abstract override get lastChild(): Token;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
-	// @ts-expect-error ts bug
 	abstract override get firstElementChild(): MagicLinkToken;
 	abstract override get lastElementChild(): Token;
 

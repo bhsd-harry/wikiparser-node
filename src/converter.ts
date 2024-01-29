@@ -17,18 +17,17 @@ export interface ConverterToken extends FlagsParentBase {}
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-export abstract class ConverterToken extends flagsParent(Token) {
+@flagsParent
+export abstract class ConverterToken extends Token {
 	override readonly type = 'converter';
 
 	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
-	// @ts-expect-error ts bug
 	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
-	// @ts-expect-error ts bug
 	abstract override get firstElementChild(): ConverterFlagsToken;
 	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
 

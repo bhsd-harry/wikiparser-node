@@ -26,8 +26,9 @@ export interface MagicLinkParentBase {
 /**
  * ExtLinkToken
  * @param constructor 基类
+ * @param _ context
  */
-export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
+export const magicLinkParent = <T extends AstConstructor>(constructor: T, _?: unknown) => {
 	/** 子节点含有MagicLinkParent的类 */
 	abstract class MagicLinkParent extends constructor {
 		abstract get firstChild(): MagicLinkToken;
@@ -63,6 +64,7 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T) => {
 			this.firstChild.setTarget(url);
 		}
 	}
+	Object.defineProperty(MagicLinkParent, 'name', {value: constructor.name});
 	return MagicLinkParent;
 };
 
