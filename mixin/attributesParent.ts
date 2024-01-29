@@ -58,10 +58,11 @@ export interface AttributesParentBase {
 
 /**
  * 子节点含有AttributesToken的类
- * @param constructor 基类
  * @param i AttributesToken子节点的位置
+ * @param constructor 基类
+ * @param _ context
  */
-export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0): T => {
+export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {
 		declare readonly childNodes: readonly AstNodes[];
@@ -144,6 +145,7 @@ export const attributesParent = <T extends AstConstructor>(constructor: T, i = 0
 			this.#attributesChild.toggleAttr(key, force);
 		}
 	}
+	Object.defineProperty(AttributesParent, 'name', {value: constructor.name});
 	return AttributesParent;
 };
 

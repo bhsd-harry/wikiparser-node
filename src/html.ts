@@ -51,7 +51,8 @@ export interface HtmlToken extends AttributesParentBase {}
  * @classdesc `{childNodes: [AttributesToken]}`
  */
 @fixedToken
-export abstract class HtmlToken extends attributesParent(Token) {
+@attributesParent()
+export abstract class HtmlToken extends Token {
 	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;

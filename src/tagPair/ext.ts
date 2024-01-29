@@ -30,7 +30,8 @@ export interface ExtToken extends AttributesParentBase {}
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
-export abstract class ExtToken extends attributesParent(TagPairToken) {
+@attributesParent()
+export abstract class ExtToken extends TagPairToken {
 	override readonly type = 'ext';
 	declare closed: true;
 
