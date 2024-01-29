@@ -310,10 +310,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取重名参数
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		if (this.isTemplate()) {
-			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
-		}
-		throw new Error('getDuplicatedArgs 方法仅供模板使用！');
+		return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 	}
 
 	/**
