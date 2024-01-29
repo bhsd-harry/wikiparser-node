@@ -77,7 +77,9 @@ export abstract class TdToken extends TableBaseToken {
 		} else if (char === '+') {
 			subtype = 'caption';
 		}
-		return result;
+		return {
+			subtype,
+		};
 	}
 
 	/** @private */
