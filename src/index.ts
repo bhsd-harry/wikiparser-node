@@ -308,8 +308,6 @@ export class Token extends AstElement {
 				return (this.constructor === Token) as TokenAttributeGetter<T>;
 			case 'config':
 				return JSON.parse(JSON.stringify(this.#config)) as TokenAttributeGetter<T>;
-			case 'accum':
-				return this.#accum as TokenAttributeGetter<T>;
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include as TokenAttributeGetter<T>;
@@ -317,6 +315,8 @@ export class Token extends AstElement {
 				const root = this.getRootNode();
 				return (root !== this && root.getAttribute('include')) as TokenAttributeGetter<T>;
 			}
+			case 'accum':
+				return this.#accum as TokenAttributeGetter<T>;
 			default:
 				return super.getAttribute(key);
 		}
