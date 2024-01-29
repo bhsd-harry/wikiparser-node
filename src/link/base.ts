@@ -93,19 +93,13 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		this.#title = this.getTitle();
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('name', this.#title.title);
-
-		/* NOT FOR BROWSER END */
-
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
 
 		/* NOT FOR BROWSER */
 
+		this.setAttribute('name', this.#title.title);
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {

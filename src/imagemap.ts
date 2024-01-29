@@ -97,12 +97,6 @@ export abstract class ImagemapToken extends Token {
 					first = false;
 					continue;
 				} else {
-					/* NOT FOR BROWSER */
-
-					Parser.error('<imagemap>标签内必须先包含一张合法图片！', line);
-
-					/* NOT FOR BROWSER END */
-
 					error = true;
 				}
 			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {

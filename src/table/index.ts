@@ -21,15 +21,11 @@ export interface TableRenderedCoords {
 	readonly y: number;
 }
 
+export interface TableToken extends SyntaxBase {}
+
 /* NOT FOR BROWSER END */
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
-
-/** NOT FOR BROWSER */
-
-export interface TableToken extends SyntaxBase {}
-
-/** NOT FOR BROWSER END */
 
 /**
  * 表格

@@ -16,19 +16,13 @@ import {Title} from './title';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
+import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AstNodes, AstText, Token} from '../internal';
 
 // @ts-expect-error unconstrained predicate
 declare type TokenPredicate<T = Token> = (token: Token) => token is T;
 
 /* NOT FOR BROWSER */
-
-declare interface AttributesParent {
-	/* eslint-disable @typescript-eslint/method-signature-style */
-	hasAttr?: (key: string) => boolean;
-	getAttr?: (key: string) => string | true | undefined;
-	/* eslint-enable @typescript-eslint/method-signature-style */
-}
 
 /**
  * optionally convert to lower cases
@@ -283,12 +277,7 @@ export abstract class AstElement extends AstNode {
 		/* NOT FOR BROWSER END */
 
 		const oldText = this.childNodes[i]!;
-
-		/* NOT FOR BROWSER */
-
 		if (oldText.type === 'text') {
-		/* NOT FOR BROWSER END */
-
 			const {data} = oldText;
 			oldText.replaceData(str);
 			return data;
@@ -385,7 +374,13 @@ export abstract class AstElement extends AstNode {
 	 * @param i 是否对大小写不敏感
 	 * @throws `RangeError` 复杂属性不能用于选择器
 	 */
-	#matchesAttr(this: AstElement & AttributesParent, key: string, equal?: string, val = '', i?: string): boolean {
+	#matchesAttr(
+		this: AstElement & Partial<AttributesParentBase>,
+		key: string,
+		equal?: string,
+		val = '',
+		i?: string,
+	): boolean {
 		const isAttr = typeof this.hasAttr === 'function' && typeof this.getAttr === 'function';
 		if (!(key in this) && (!isAttr || !this.hasAttr!(key))) {
 			return equal === '!=';

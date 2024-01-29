@@ -31,8 +31,6 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
 
-	readonly Shadow: typeof Shadow;
-
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 
@@ -107,8 +105,6 @@ const Parser: Parser = {
 	i18n: undefined,
 
 	/* NOT FOR BROWSER */
-
-	Shadow,
 
 	conversionTable: new Map(),
 	redirects: new Map(),

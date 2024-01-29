@@ -42,22 +42,17 @@ const insensitiveVars = new Set<string | undefined>([
  */
 export abstract class TranscludeToken extends Token {
 	override type: 'template' | 'magic-word' = 'template';
+	readonly modifier: string = '';
 
 	/* NOT FOR BROWSER */
 
 	declare readonly name: string;
-
-	/* NOT FOR BROWSER END */
-
-	readonly modifier: string = '';
-	#raw = false;
-	readonly #args = new Map<string, Set<ParameterToken>>();
-
-	/* NOT FOR BROWSER */
-
 	readonly #keys = new Set<string>();
 
 	/* NOT FOR BROWSER END */
+
+	#raw = false;
+	readonly #args = new Map<string, Set<ParameterToken>>();
 
 	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
@@ -134,6 +129,7 @@ export abstract class TranscludeToken extends Token {
 					/* NOT FOR BROWSER */
 
 					this.setAttribute('acceptable', {SyntaxToken: 0, AtomToken: '1:3', ParameterToken: '3:'});
+					this.protectChildren('1:3');
 
 					/* NOT FOR BROWSER END */
 
@@ -151,10 +147,6 @@ export abstract class TranscludeToken extends Token {
 						);
 						super.insertAt(invoke);
 					}
-
-					/* NOT FOR BROWSER */
-
-					this.protectChildren('1:3');
 				}
 			}
 		}

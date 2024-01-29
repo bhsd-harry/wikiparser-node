@@ -139,14 +139,11 @@ export class Token extends AstElement {
 		}
 		this.#config = config;
 		this.#accum = accum;
+		accum.push(this);
 
 		/* NOT FOR BROWSER */
 
 		this.setAttribute('acceptable', acceptable);
-
-		/* NOT FOR BROWSER END */
-
-		accum.push(this);
 	}
 
 	/** @private */
@@ -383,8 +380,6 @@ export class Token extends AstElement {
 				return (this.constructor === Token) as TokenAttributeGetter<T>;
 			case 'config':
 				return structuredClone(this.#config) as TokenAttributeGetter<T>;
-			case 'accum':
-				return this.#accum as TokenAttributeGetter<T>;
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include as TokenAttributeGetter<T>;
@@ -392,8 +387,10 @@ export class Token extends AstElement {
 				const root = this.getRootNode();
 				return (root !== this && root.getAttribute('include')) as TokenAttributeGetter<T>;
 			}
+			case 'accum':
+				return this.#accum as TokenAttributeGetter<T>;
 
-			/* NOT FOR BROWSER */
+				/* NOT FOR BROWSER */
 
 			case 'stage':
 				return this.#stage as TokenAttributeGetter<T>;

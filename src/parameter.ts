@@ -104,13 +104,11 @@ export abstract class ParameterToken extends Token {
 				name = getName(firstChild);
 			this.setAttribute('name', name);
 			if (parentNode) {
+				parentNode.getArgs(name, false, false).add(this);
+
 				/* NOT FOR BROWSER */
 
 				parentNode.getAttribute('keys').add(name);
-
-				/* NOT FOR BROWSER END */
-
-				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
 

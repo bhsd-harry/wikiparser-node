@@ -77,12 +77,6 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
-		/* NOT FOR BROWSER */
-
-		this.#namespaces = config.namespaces;
-
-		/* NOT FOR BROWSER END */
-
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
@@ -137,6 +131,7 @@ export class Title {
 
 		/* NOT FOR BROWSER */
 
+		this.#namespaces = config.namespaces;
 		this.main = title;
 		Object.defineProperties(this, {
 			valid: {writable: false},
