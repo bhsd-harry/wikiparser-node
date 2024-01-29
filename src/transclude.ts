@@ -364,15 +364,4 @@ export abstract class TranscludeToken extends Token {
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
-
-	/**
-	 * @override
-	 * 临时代替`this.seal('modifier')`
-	 */
-	override json(): object {
-		return {
-			...super.json(),
-			modifier: this.modifier || undefined,
-		};
-	}
 }
