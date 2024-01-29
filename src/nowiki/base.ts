@@ -18,7 +18,8 @@ declare type NowikiTypes = 'ext-inner'
  * 纯文字Token，不会被解析
  * @classdesc `{childNodes: [AstText]}`
  */
-export abstract class NowikiBaseToken extends fixedToken(Token) {
+@fixedToken
+export abstract class NowikiBaseToken extends Token {
 	declare type: NowikiTypes;
 
 	declare readonly childNodes: readonly [AstText];

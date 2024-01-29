@@ -5,8 +5,9 @@ import type {AstNodes, AstText} from '../internal';
 /**
  * 不可增删子节点的类
  * @param constructor 基类
+ * @param _ context
  */
-export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
+export const fixedToken = <S extends AstConstructor>(constructor: S, _?: unknown): S => {
 	/** 不可增删子节点的类 */
 	abstract class FixedToken extends constructor {
 		/** @private */
@@ -30,6 +31,7 @@ export const fixedToken = <S extends AstConstructor>(constructor: S): S => {
 			return Shadow.running ? super.insertAt(token, i) as T | AstText : this.constructorError('不可插入元素');
 		}
 	}
+	Object.defineProperty(FixedToken, 'name', {value: constructor.name});
 	return FixedToken;
 };
 

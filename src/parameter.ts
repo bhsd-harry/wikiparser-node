@@ -18,7 +18,8 @@ const getName = (name: Token): string => name.text().replace(/^[ \t\n\0\v]+|([^ 
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
-export abstract class ParameterToken extends fixedToken(Token) {
+@fixedToken
+export abstract class ParameterToken extends Token {
 	override readonly type = 'parameter';
 	declare readonly name: string;
 

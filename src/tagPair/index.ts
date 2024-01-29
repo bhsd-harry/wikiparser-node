@@ -5,7 +5,8 @@ import {Token} from '../index';
 import type {AstNodes} from '../../lib/node';
 
 /** 成对标签 */
-export abstract class TagPairToken extends fixedToken(Token) {
+@fixedToken
+export abstract class TagPairToken extends Token {
 	declare type: 'ext' | 'include';
 	declare readonly name: string;
 	readonly #tags: [string, string];

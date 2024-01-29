@@ -41,7 +41,8 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  * `<td>`、`<th>`和`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
-export abstract class TdToken extends fixedToken(TableBaseToken) {
+@fixedToken
+export abstract class TdToken extends TableBaseToken {
 	override readonly type = 'td';
 	#innerSyntax = '';
 

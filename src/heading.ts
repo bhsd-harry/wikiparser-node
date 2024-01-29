@@ -20,7 +20,8 @@ export interface HeadingToken extends SolTokenBase {}
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export abstract class HeadingToken extends sol(fixedToken(Token)) {
+@fixedToken
+export abstract class HeadingToken extends sol(Token) {
 	override readonly type = 'heading';
 	#level;
 

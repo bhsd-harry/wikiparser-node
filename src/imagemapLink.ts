@@ -13,7 +13,6 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-// @ts-expect-error class decorator
 @fixedToken
 @singleLine
 export abstract class ImagemapLinkToken extends Token {
