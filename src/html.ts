@@ -5,7 +5,7 @@ import {Token} from './index';
 import type {LintError} from '../base';
 import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
 
-const magicWords = new Set(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
+const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
 	formattingTags = new Set([
 		'b',
 		'big',
@@ -135,7 +135,7 @@ export abstract class HtmlToken extends Token {
 					}
 				} else if (msg === 'unmatched closing tag') {
 					const ancestor = this.closest<TranscludeToken>('magic-word');
-					if (ancestor && magicWords.has(ancestor.name!)) {
+					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';
 					}
 				}
