@@ -1,3 +1,11 @@
+## v1.4.3
+
+*2024-01-30*
+
+**Fixed**
+
+- Missing type declarations for `ExtLinkToken.firstChild` and `ConverterToken.firstChild` are added
+
 ## v1.4.2
 
 *2024-01-29*

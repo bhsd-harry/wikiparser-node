@@ -26,11 +26,15 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
+	// @ts-expect-error ts bug
+	abstract override get firstChild(): MagicLinkToken;
 	abstract override get lastChild(): Token;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
+	// @ts-expect-error ts bug
+	abstract override get firstElementChild(): MagicLinkToken;
 	abstract override get lastElementChild(): Token;
 
 	/** 链接显示文字 */
