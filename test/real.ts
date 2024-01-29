@@ -41,7 +41,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 		try {
 			/* eslint-disable no-await-in-loop */
 			for (const page of await getPages(`${url}/api.php`)) {
-				await single(page);
+				await single(Parser, page);
 			}
 			/* eslint-enable no-await-in-loop */
 		} catch (e) {
