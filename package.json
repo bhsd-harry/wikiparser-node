@@ -41,8 +41,7 @@
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "npx wikilint test/single-page.wiki",
 		"test:end": "pkill -x http-server",
-		"test:real": "node dist/test/real.js",
-		"test:single": "node dist/test/single.js && node --prof dist/test/single.js && node --prof-process isolate-0x*-v8.log > test/processed.txt && rm isolate-0x*-v8.log"
+		"test:real": "node dist/test/real.js"
 	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
