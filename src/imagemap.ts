@@ -84,17 +84,7 @@ export abstract class ImagemapToken extends Token {
 			} else if (first) {
 				const [file, ...options] = line.split('|') as [string, ...string[]],
 					title = this.normalizeTitle(file, 0, true);
-				if (
-					title.valid
-
-					/* NOT FOR BROWSER */
-
-					&& !title.interwiki
-
-					/* NOT FOR BROWSER END */
-
-					&& title.ns === 6
-				) {
+				if (title.valid && !title.interwiki && title.ns === 6) {
 					// @ts-expect-error abstract class
 					const token: GalleryImageToken = new GalleryImageToken(
 						'imagemap',
