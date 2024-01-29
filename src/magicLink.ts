@@ -14,7 +14,7 @@ import type {
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
-export abstract class MagicLinkToken extends syntax(Token) {
+export abstract class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];

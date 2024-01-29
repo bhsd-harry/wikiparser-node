@@ -5,7 +5,7 @@ import type {LintError} from '../base';
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
 
 /** 满足特定语法格式的plain Token */
-export class SyntaxToken extends syntax(Token) {
+export class SyntaxToken extends Token {
 	declare type: SyntaxTypes;
 
 	/** @param pattern 语法正则 */

@@ -4,7 +4,7 @@ import {NowikiBaseToken} from './base';
 import type {Token} from '../index';
 
 /** 状态开关 */
-export abstract class DoubleUnderscoreToken extends syntax(hiddenToken(NowikiBaseToken)) {
+export abstract class DoubleUnderscoreToken extends hiddenToken(NowikiBaseToken) {
 	override readonly type = 'double-underscore';
 
 	/**
