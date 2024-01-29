@@ -7,21 +7,15 @@ import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
-import type {SolTokenBase} from '../mixin/sol';
 import type {QuoteToken} from '../internal';
-
-/* NOT FOR BROWSER */
-
-export interface HeadingToken extends SolTokenBase {}
-
-/* NOT FOR BROWSER END */
 
 /**
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 @fixedToken
-export abstract class HeadingToken extends sol(Token) {
+@sol
+export abstract class HeadingToken extends Token {
 	override readonly type = 'heading';
 	#level;
 
@@ -83,20 +77,18 @@ export abstract class HeadingToken extends sol(Token) {
 	/** @private */
 	override toString(): string {
 		const equals = this.#equals;
-		return `${this.prependNewLine()}${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
+		return `${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
 	}
 
 	/** @override */
 	override text(): string {
 		const equals = this.#equals;
-		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}`;
+		return `${equals}${this.firstChild.text()}${equals}`;
 	}
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding'
-			? super.getAttribute('padding') + this.level as TokenAttributeGetter<T>
-			: super.getAttribute(key);
+		return key === 'padding' ? this.level as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

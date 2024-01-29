@@ -2,16 +2,10 @@ import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {ListBaseToken} from './listBase';
 import type {AstRange} from '../../lib/range';
-import type {SolTokenBase} from '../../mixin/sol';
-
-/* NOT FOR BROWSER */
-
-export interface ListToken extends SolTokenBase {}
-
-/* NOT FOR BROWSER END */
 
 /** 位于行首的`;:*#` */
-export abstract class ListToken extends sol(ListBaseToken) {
+@sol
+export abstract class ListToken extends ListBaseToken {
 	override readonly type = 'list';
 
 	/* NOT FOR BROWSER */
