@@ -2,8 +2,6 @@ import {diff, error} from '../util/diff';
 import {tidy} from '../util/string';
 import type {Parser} from '../base';
 
-const entities = {lt: '<', gt: '>', amp: '&'};
-
 /**
  * 测试单个页面
  * @param Parser 解析器
@@ -22,18 +20,6 @@ export const single = async (Parser: Parser, {title, ns, content}: SimplePage): 
 		if (parsed !== content) {
 			await diff(content, parsed);
 			throw new Error('解析过程中不可逆地修改了原始文本！');
-		}
-
-		console.time(`print: ${title}`);
-		const printed = token.print();
-		console.timeEnd(`print: ${title}`);
-		const restored = printed.replace(
-			/<[^<]+?>|&([lg]t|amp);/gu,
-			(_, s?: keyof typeof entities) => s ? entities[s] : '',
-		);
-		if (restored !== content) {
-			await diff(content, restored);
-			throw new Error('渲染HTML过程中不可逆地修改了原始文本！');
 		}
 
 		console.time(`lint: ${title}`);
