@@ -41,3 +41,5 @@ declare global {
 		readonly config: Config;
 	}
 }
+
+export {};
