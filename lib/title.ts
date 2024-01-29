@@ -18,8 +18,6 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
-		const {nsid} = config;
-
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
@@ -36,7 +34,7 @@ export class Title {
 		}
 		const m = title.split(':');
 		if (m.length > 1) {
-			const id = nsid[m[0]!.trim().toLowerCase()];
+			const id = config.nsid[m[0]!.trim().toLowerCase()];
 			if (id) {
 				ns = id;
 				title = m.slice(1).join(':').trim();
