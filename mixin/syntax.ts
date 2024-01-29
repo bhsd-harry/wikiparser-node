@@ -3,20 +3,34 @@ import {mixins} from '../util/constants';
 import {text} from '../util/string';
 import type {AstNodes} from '../lib/node';
 
+export interface SyntaxBase {
+	pattern: RegExp;
+}
+
 /**
  * 满足特定语法格式的Token
- * @param constructor 基类
  * @param pattern 语法正则
+ * @param constructor 基类
+ * @param _ context
  */
-export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegExp): S => {
+export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(constructor: S, _?: unknown): S => {
 	/** 满足特定语法格式的Token */
 	abstract class SyntaxToken extends constructor {
-		#pattern = pattern!;
+		declare pattern: RegExp;
+
+		/** @override */
+		constructor(...args: any[]) {
+			super(...args); // eslint-disable-line @typescript-eslint/no-unsafe-argument
+			if (pattern) {
+				this.pattern = pattern;
+			}
+			this.seal('pattern', true);
+		}
 
 		/** @private */
 		afterBuild(): void {
 			const /** @implements */ syntaxListener: AstListener = (e, data) => {
-				if (!Shadow.running && !this.#pattern.test(this.text())) {
+				if (!Shadow.running && !this.pattern.test(this.text())) {
 					undo(e, data);
 					this.constructorError('不可修改语法');
 				}
@@ -24,32 +38,19 @@ export const syntax = <S extends AstConstructor>(constructor: S, pattern?: RegEx
 			this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
 		}
 
-		/** @private */
-		override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-			return key === 'pattern' ? this.#pattern as TokenAttributeGetter<T> : super.getAttribute(key);
-		}
-
-		/** @private */
-		override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
-			if (key === 'pattern') {
-				this.#pattern = (value as TokenAttributeSetter<'pattern'>)!;
-			} else {
-				super.setAttribute(key, value);
-			}
-		}
-
 		/**
 		 * @override
 		 * @param elements 待替换的子节点
 		 */
 		override replaceChildren(...elements: (AstNodes | string)[]): void {
-			if (Shadow.running || this.#pattern.test(text(elements))) {
+			if (Shadow.running || this.pattern.test(text(elements))) {
 				Shadow.run(() => {
 					super.replaceChildren(...elements);
 				});
 			}
 		}
 	}
+	Object.defineProperty(SyntaxToken, 'name', {value: constructor.name});
 	return SyntaxToken;
 };
 

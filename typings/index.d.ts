@@ -17,6 +17,7 @@ declare global {
 		addEventListener(events: string | string[], listener: AstListener): void;
 		replaceChildren(...elements: (AstNodes | string)[]): void;
 		constructorError(msg: string): never;
+		seal(key: string, permanent?: boolean): void;
 	};
 
 	interface BoundingRect {

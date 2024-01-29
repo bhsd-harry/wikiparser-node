@@ -5,7 +5,8 @@ import {NowikiBaseToken} from './base';
 
 /** `<hr>` */
 @sol
-export abstract class HrToken extends syntax(NowikiBaseToken, /^-{4,}$/u) {
+@syntax(/^-{4,}$/u)
+export abstract class HrToken extends NowikiBaseToken {
 	override readonly type = 'hr';
 }
 

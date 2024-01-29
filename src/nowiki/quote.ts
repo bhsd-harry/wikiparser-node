@@ -6,7 +6,8 @@ import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 
 /** `''`和`'''` */
-export abstract class QuoteToken extends syntax(NowikiBaseToken, /^(?:'{5}|'''?)$/u) {
+@syntax(/^(?:'{5}|'''?)$/u)
+export abstract class QuoteToken extends NowikiBaseToken {
 	override readonly type = 'quote';
 
 	/** 是否粗体 */

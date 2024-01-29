@@ -6,6 +6,7 @@ import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {LintError} from '../../base';
+import type {SyntaxBase} from '../../mixin/syntax';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
@@ -23,6 +24,12 @@ export interface TableRenderedCoords {
 /* NOT FOR BROWSER END */
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
+
+/** NOT FOR BROWSER */
+
+export interface TableToken extends SyntaxBase {}
+
+/** NOT FOR BROWSER END */
 
 /**
  * 表格
@@ -126,7 +133,7 @@ export abstract class TableToken extends TrBaseToken {
 		if (typeof token !== 'string' && token.type === 'td' && previous?.type === 'tr') {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
-		} else if (i > 0 && token instanceof SyntaxToken && token.getAttribute('pattern') !== closingPattern) {
+		} else if (i > 0 && token instanceof SyntaxToken && token.pattern !== closingPattern) {
 			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(String(token))}`);
 		}
 		return super.insertAt(token, i);

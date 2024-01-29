@@ -6,6 +6,7 @@ import {syntax} from '../mixin/syntax';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
+import type {SyntaxBase} from '../mixin/syntax';
 import type {
 	AstText,
 	CommentToken,
@@ -19,11 +20,18 @@ import type {
 	ParameterToken,
 } from '../internal';
 
+/** NOT FOR BROWSER */
+
+export interface MagicLinkToken extends SyntaxBase {}
+
+/** NOT FOR BROWSER END */
+
 /**
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
-export abstract class MagicLinkToken extends syntax(Token) {
+@syntax()
+export abstract class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
@@ -39,7 +47,7 @@ export abstract class MagicLinkToken extends syntax(Token) {
 
 	/** 协议 */
 	get protocol(): string | undefined {
-		return this.getAttribute('pattern').exec(this.text())?.[0];
+		return this.pattern.exec(this.text())?.[0];
 	}
 
 	/** @throws `Error` 特殊外链无法更改协议n */
@@ -47,8 +55,7 @@ export abstract class MagicLinkToken extends syntax(Token) {
 		if (typeof value !== 'string') {
 			this.typeError('protocol', 'String');
 		}
-		const {link} = this,
-			pattern = this.getAttribute('pattern');
+		const {link, pattern} = this;
 		if (!pattern.test(link)) {
 			throw new Error(`特殊外链无法更改协议：${link}`);
 		}

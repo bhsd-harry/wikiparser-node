@@ -4,11 +4,19 @@ import {syntax} from '../mixin/syntax';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
+import type {SyntaxBase} from '../mixin/syntax';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
 
+/** NOT FOR BROWSER */
+
+export interface SyntaxToken extends SyntaxBase {}
+
+/** NOT FOR BROWSER END */
+
 /** 满足特定语法格式的plain Token */
-export class SyntaxToken extends syntax(Token) {
+@syntax()
+export class SyntaxToken extends Token {
 	declare type: SyntaxTypes;
 
 	/** @param pattern 语法正则 */
@@ -39,10 +47,9 @@ export class SyntaxToken extends syntax(Token) {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable'),
-			pattern = this.getAttribute('pattern');
+			acceptable = this.getAttribute('acceptable');
 		return Shadow.run(() => {
-			const token = new SyntaxToken(undefined, pattern, this.type, config, [], acceptable) as this;
+			const token = new SyntaxToken(undefined, this.pattern, this.type, config, [], acceptable) as this;
 			token.append(...cloned);
 			token.afterBuild();
 			return token;
