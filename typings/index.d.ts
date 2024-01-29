@@ -19,3 +19,5 @@ declare global {
 		readonly class?: string;
 	}
 }
+
+export {};
