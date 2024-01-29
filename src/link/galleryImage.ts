@@ -11,7 +11,7 @@ import type {LintError} from '../../base';
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
 /** 图库图片 */
-export abstract class GalleryImageToken extends singleLine(FileToken) {
+export abstract class GalleryImageToken extends FileToken {
 	declare type: `${GalleryTypes}-image`;
 
 	/**

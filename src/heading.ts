@@ -9,7 +9,7 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-export abstract class HeadingToken extends sol(fixedToken(Token)) {
+export abstract class HeadingToken extends Token {
 	override readonly type = 'heading';
 	#level;
 
@@ -45,20 +45,18 @@ export abstract class HeadingToken extends sol(fixedToken(Token)) {
 	/** @private */
 	override toString(): string {
 		const equals = this.#equals;
-		return `${this.prependNewLine()}${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
+		return `${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
 	}
 
 	/** @override */
 	override text(): string {
 		const equals = this.#equals;
-		return `${this.prependNewLine()}${equals}${this.firstChild.text()}${equals}`;
+		return `${equals}${this.firstChild.text()}${equals}`;
 	}
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding'
-			? super.getAttribute('padding') + this.level as TokenAttributeGetter<T>
-			: super.getAttribute(key);
+		return key === 'padding' ? this.level as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
 	/** @private */

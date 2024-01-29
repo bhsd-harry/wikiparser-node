@@ -199,7 +199,7 @@ const commonHtmlAttrs = new Set([
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-export abstract class AttributeToken extends fixedToken(Token) {
+export abstract class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare readonly name: string;
 	readonly tag;

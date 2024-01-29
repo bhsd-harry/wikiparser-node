@@ -9,7 +9,7 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-export abstract class ImagemapLinkToken extends fixedToken(singleLine(Token)) {
+export abstract class ImagemapLinkToken extends Token {
 	override readonly type = 'imagemap-link';
 
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
