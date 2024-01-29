@@ -1,12 +1,7 @@
 import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
-
-	/* NOT FOR BROWSER */
-
 	running: false,
-
-	/* NOT FOR BROWSER END */
 
 	/** @private */
 	run<T>(callback: () => T): T {
