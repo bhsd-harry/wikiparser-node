@@ -77,17 +77,11 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
-		const {
-			nsid,
-
-			/* NOT FOR BROWSER */
-
-			namespaces,
-		} = config;
+		const {nsid} = config;
 
 		/* NOT FOR BROWSER */
 
-		this.#namespaces = namespaces;
+		this.#namespaces = config.namespaces;
 
 		/* NOT FOR BROWSER END */
 
@@ -140,17 +134,8 @@ export class Title {
 			this.fragment = fragment;
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(
-			title
-
-			/* NOT FOR BROWSER */
-
-			|| this.interwiki
-
-			/* NOT FOR BROWSER END */
-
-			|| selfLink && this.fragment !== undefined,
-		) && !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
+		this.valid = Boolean(title || this.interwiki || selfLink && this.fragment !== undefined)
+			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 
 		/* NOT FOR BROWSER */
 
