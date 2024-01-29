@@ -1,6 +1,8 @@
 import type {AstNodes, Token} from '../internal';
 
 export const Shadow = {
+	running: false,
+
 	/** @private */
 	run<T>(callback: () => T): T {
 		const result = callback();
