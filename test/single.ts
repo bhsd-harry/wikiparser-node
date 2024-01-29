@@ -1,17 +1,18 @@
 import {diff, error} from '../util/diff';
 import {tidy} from '../util/string';
-import Parser from '../index';
+import type {Parser} from '../base';
 
 const entities = {lt: '<', gt: '>', amp: '&'};
 
 /**
  * 测试单个页面
+ * @param Parser 解析器
  * @param page 页面
  * @param page.title 页面标题
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export const single = async ({title, ns, content}: SimplePage): Promise<void> => {
+export const single = async (Parser: Parser, {title, ns, content}: SimplePage): Promise<void> => {
 	content = tidy(content);
 	try {
 		console.time(`parse: ${title}`);
