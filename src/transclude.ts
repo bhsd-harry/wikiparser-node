@@ -146,7 +146,7 @@ export abstract class TranscludeToken extends Token {
 		if (
 			this.#raw && isRaw
 				|| !this.#raw && (isSubst || modifier === '')
-				|| this.length > 1 && (isRaw || isSubst || modifier === '')
+				|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;
@@ -309,10 +309,7 @@ export abstract class TranscludeToken extends Token {
 	 * 获取重名参数
 	 */
 	getDuplicatedArgs(): [string, ParameterToken[]][] {
-		if (this.isTemplate()) {
-			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
-		}
-		return [];
+		return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 	}
 
 	/**
