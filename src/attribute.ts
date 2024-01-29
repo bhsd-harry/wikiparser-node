@@ -202,7 +202,7 @@ const commonHtmlAttrs = new Set([
 export abstract class AttributeToken extends Token {
 	declare type: AttributeTypes;
 	declare readonly name: string;
-	readonly tag;
+	#tag;
 	#equal;
 	#quotes: [string?, string?];
 
@@ -212,6 +212,11 @@ export abstract class AttributeToken extends Token {
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
+
+	/** @private */
+	get tag(): string {
+		return this.#tag;
+	}
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {
@@ -271,7 +276,7 @@ export abstract class AttributeToken extends Token {
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = [...quotes];
-		this.tag = tag;
+		this.#tag = tag;
 		this.setAttribute('name', removeComment(key).trim().toLowerCase());
 	}
 
@@ -281,7 +286,7 @@ export abstract class AttributeToken extends Token {
 			this.#equal = this.buildFromStr(this.#equal, BuildMethod.String);
 		}
 		if (this.parentNode) {
-			this.setAttribute('tag', this.parentNode.name);
+			this.#tag = this.parentNode.name;
 		}
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
 	}
