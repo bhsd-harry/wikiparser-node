@@ -2,7 +2,6 @@ import {
 	text,
 	print,
 } from '../util/string';
-import {flagsParent} from '../mixin/flagsParent';
 import Parser from '../index';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
@@ -12,11 +11,10 @@ import {ConverterRuleToken} from './converterRule';
  * 转换
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
-export abstract class ConverterToken extends flagsParent(Token) {
+export abstract class ConverterToken extends Token {
 	override readonly type = 'converter';
 
 	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
-	// @ts-expect-error ts bug
 	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 

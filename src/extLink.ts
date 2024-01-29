@@ -2,7 +2,6 @@ import {
 	MAX_STAGE,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
-import {magicLinkParent} from '../mixin/magicLinkParent';
 import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
@@ -12,12 +11,11 @@ import type {LintError} from '../base';
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
-export abstract class ExtLinkToken extends magicLinkParent(Token) {
+export abstract class ExtLinkToken extends Token {
 	override readonly type = 'ext-link';
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
-	// @ts-expect-error ts bug
 	abstract override get firstChild(): MagicLinkToken;
 	abstract override get lastChild(): Token;
 
