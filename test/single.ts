@@ -1,5 +1,4 @@
-import {diff, error} from '../util/diff';
-import {tidy} from '../util/string';
+import {diff, error, tidy} from '../util/diff';
 import type {Parser} from '../base';
 
 const entities = {lt: '<', gt: '>', amp: '&'};
