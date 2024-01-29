@@ -149,4 +149,13 @@ export abstract class AstNode implements AstNodeBase {
 		const {parentNode} = this;
 		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
 	}
+
+	/** @private */
+	seal(key: string, permanent?: boolean): void {
+		Object.defineProperty(this, key, {
+			writable: false,
+			enumerable: !permanent && Boolean(this[key as keyof this]),
+			configurable: true,
+		});
+	}
 }
