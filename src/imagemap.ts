@@ -62,7 +62,7 @@ export abstract class ImagemapToken extends Token {
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', SingleLineNoincludeToken: ':', AstText: ':',
+			GalleryImageToken: ':', ImagemapLinkToken: ':', NoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;

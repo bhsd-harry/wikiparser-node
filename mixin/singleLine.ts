@@ -3,8 +3,9 @@ import {mixins} from '../util/constants';
 /**
  * 不可包含换行符的类
  * @param constructor 基类
+ * @param _ context
  */
-export const singleLine = <T extends AstConstructor>(constructor: T): T => {
+export const singleLine = <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
 		/** @private */
@@ -17,7 +18,7 @@ export const singleLine = <T extends AstConstructor>(constructor: T): T => {
 			return super.text().replace(/\n/gu, ' ');
 		}
 	}
-	Object.defineProperty(SingleLineToken, 'name', {value: `SingleLine${constructor.name}`});
+	Object.defineProperty(SingleLineToken, 'name', {value: constructor.name});
 	return SingleLineToken;
 };
 

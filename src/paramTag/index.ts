@@ -32,7 +32,7 @@ export abstract class ParamTagToken extends Token {
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
 		super(undefined, config, accum, {
-			SingleLineAtomToken: ':',
+			AtomToken: ':',
 		});
 		if (wikitext) {
 			const SingleLineAtomToken = singleLine(AtomToken);

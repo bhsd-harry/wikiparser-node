@@ -19,7 +19,8 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
 /** 图库图片 */
-export abstract class GalleryImageToken extends singleLine(FileToken) {
+@singleLine
+export abstract class GalleryImageToken extends FileToken {
 	declare type: `${GalleryTypes}-image`;
 
 	/* NOT FOR BROWSER */
