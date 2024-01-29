@@ -17,6 +17,8 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
+	// @ts-expect-error ts bug
+	abstract override get firstChild(): MagicLinkToken;
 	abstract override get lastChild(): Token;
 
 	/**

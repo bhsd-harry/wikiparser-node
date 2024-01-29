@@ -16,6 +16,8 @@ export abstract class ConverterToken extends flagsParent(Token) {
 	override readonly type = 'converter';
 
 	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
+	// @ts-expect-error ts bug
+	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/**
