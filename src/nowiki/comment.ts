@@ -63,14 +63,6 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 	/* NOT FOR BROWSER */
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			closed: this.closed,
-		};
-	}
-
-	/** @override */
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
 		return Shadow.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);

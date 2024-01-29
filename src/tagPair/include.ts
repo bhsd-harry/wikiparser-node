@@ -62,14 +62,6 @@ export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 		return this.closed ? [] : [generateForSelf(this, {start}, Parser.msg('unclosed $1', `<${this.name}>`))];
 	}
 
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			closed: this.closed,
-		};
-	}
-
 	/* NOT FOR BROWSER */
 
 	/** @override */
