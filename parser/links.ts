@@ -51,12 +51,13 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 			{
 				ns,
 				valid,
+				interwiki,
 			} = title;
 		if (!valid) {
 			s += `[[${x}`;
 			continue;
 		} else if (mightBeImg) {
-			if (ns !== 6) {
+			if (interwiki || ns !== 6) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -86,9 +87,9 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 		s += `\0${accum.length}l\x7F${after!}`;
 		let SomeLinkToken: typeof LinkToken | typeof FileToken | typeof CategoryToken = LinkToken;
 		if (!force) {
-			if (ns === 6) {
+			if (!interwiki && ns === 6) {
 				SomeLinkToken = FileToken;
-			} else if (ns === 14) {
+			} else if (!interwiki && ns === 14) {
 				SomeLinkToken = CategoryToken;
 			}
 		}
