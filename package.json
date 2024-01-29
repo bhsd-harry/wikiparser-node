@@ -36,7 +36,7 @@
 		"prepublishOnly": "npm run build && rm dist/internal.js dist/base.js dist/[bmpu]*/*.d.ts",
 		"build": "bash build.sh",
 		"diff": "git diff --ignore-all-space --color-moved",
-		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 | grep '\\.ts'; }; f",
+		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
