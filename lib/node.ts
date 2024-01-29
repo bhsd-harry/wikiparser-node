@@ -265,6 +265,23 @@ export abstract class AstNode implements AstNodeBase {
 		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
 	}
 
+	/** @private */
+	seal(key: string, permanent?: boolean): void {
+		/* NOT FOR BROWSER */
+
+		if (!permanent) {
+			this.#optional.add(key);
+		}
+
+		/* NOT FOR BROWSER END */
+
+		Object.defineProperty(this, key, {
+			writable: false,
+			enumerable: !permanent && Boolean(this[key as keyof this]),
+			configurable: true,
+		});
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** @private */
@@ -275,18 +292,6 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	constructorError(msg: string): never {
 		throw new Error(`${this.constructor.name} ${msg}！`);
-	}
-
-	/** @private */
-	seal(key: string, permanent?: boolean): void {
-		if (!permanent) {
-			this.#optional.add(key);
-		}
-		Object.defineProperty(this, key, {
-			writable: false,
-			enumerable: !permanent && Boolean(this[key as keyof this]),
-			configurable: true,
-		});
 	}
 
 	/**

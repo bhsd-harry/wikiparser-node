@@ -98,13 +98,6 @@ export abstract class TranscludeToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
-
-		/* NOT FOR BROWSER */
-
-		this.seal('modifier');
-
-		/* NOT FOR BROWSER END */
-
 		const {parserFunction: [insensitive, sensitive]} = config,
 			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
@@ -198,6 +191,7 @@ export abstract class TranscludeToken extends Token {
 			// @ts-expect-error abstract class
 			this.insertAt(new ParameterToken(...part as [string | number, string], config, accum) as ParameterToken);
 		}
+		this.seal('modifier');
 
 		/* NOT FOR BROWSER */
 
