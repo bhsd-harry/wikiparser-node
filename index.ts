@@ -3,7 +3,9 @@ import {
 	MAX_STAGE,
 	minConfig,
 } from './util/constants';
-import {tidy} from './util/string';
+import {
+	tidy,
+} from './util/diff';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';

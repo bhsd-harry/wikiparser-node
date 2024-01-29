@@ -38,7 +38,7 @@
 		"build:ext": "bash build-ext.sh",
 		"build": "npm run build:core && npm run build:ext",
 		"diff": "git diff --ignore-all-space --color-moved",
-		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 | grep '\\.ts'; }; f",
+		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint:css": "stylelint extensions/*.css",
