@@ -14,8 +14,6 @@ export abstract class TagPairToken extends Token {
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
 
-	/* NOT FOR BROWSER END */
-
 	/** 内部wikitext */
 	get innerText(): string | undefined {
 		return this.selfClosing ? undefined : this.lastChild.text();
