@@ -46,12 +46,14 @@ export abstract class TableToken extends TrBaseToken {
 	close(syntax = '\n|}', halfParsed = false): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
-			inner = [syntax];
-		// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
 		const token = Shadow.run(() => super.insertAt(
 			new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 			}),
 		));
+		if (!halfParsed) {
+			token.afterBuild();
+		}
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 }
