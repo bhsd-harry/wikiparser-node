@@ -118,9 +118,4 @@ export abstract class LinkBaseToken extends Token {
 	getTitle(): Title {
 		return this.normalizeTitle(this.firstChild.text(), 0, false, true, true);
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
-	}
 }

@@ -70,11 +70,4 @@ export abstract class ExtLinkToken extends magicLinkParent(Token) {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print(
-			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
-		);
-	}
 }

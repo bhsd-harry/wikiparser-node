@@ -351,10 +351,4 @@ export abstract class AttributeToken extends Token {
 		}
 		return this.type === 'ext-attr' || '';
 	}
-
-	/** @override */
-	override print(): string {
-		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
-	}
 }

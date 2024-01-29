@@ -98,9 +98,4 @@ export abstract class GalleryToken extends Token {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
 }

@@ -61,13 +61,4 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			bold: this.bold,
-			italic: this.italic,
-		};
-	}
 }

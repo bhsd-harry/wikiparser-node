@@ -30,9 +30,4 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 	override toString(): string {
 		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
-	}
 }

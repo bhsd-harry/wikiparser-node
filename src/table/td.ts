@@ -126,18 +126,4 @@ export abstract class TdToken extends TableBaseToken {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override print(): string {
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
-	}
-
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			subtype: this.subtype,
-		};
-	}
 }

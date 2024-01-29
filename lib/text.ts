@@ -208,10 +208,4 @@ export class AstText extends AstNode {
 	replaceData(text: string): void {
 		this.#setData(text);
 	}
-
-	/** @override */
-	print(): string {
-		const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-		return this.data.replace(/[&<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
-	}
 }

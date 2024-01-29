@@ -24,9 +24,4 @@ export abstract class DoubleUnderscoreToken extends hiddenToken(NowikiBaseToken)
 	override toString(): string {
 		return `__${this.innerText}__`;
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print({pre: '__', post: '__'});
-	}
 }

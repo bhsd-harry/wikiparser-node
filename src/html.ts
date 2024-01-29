@@ -197,24 +197,4 @@ export abstract class HtmlToken extends Token {
 		}
 		throw new SyntaxError(`${closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
 	}
-
-	/** @override */
-	override print(): string {
-		const {closing, name} = this,
-			{html} = this.getAttribute('config');
-		return super.print({
-			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`,
-			post: `${this.#selfClosing ? '/' : ''}&gt;`,
-			class: closing && html[2].includes(name) && name !== 'br' ? 'html-invalid' : 'html',
-		});
-	}
-
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			closing: this.closing,
-			selfClosing: this.#selfClosing,
-		};
-	}
 }

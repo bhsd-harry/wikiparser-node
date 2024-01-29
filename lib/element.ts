@@ -1,6 +1,5 @@
 import {
 	text,
-	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
@@ -146,25 +145,5 @@ export abstract class AstElement extends AstNode {
 			cur += String(child).length + this.getGaps(i);
 		}
 		return errors;
-	}
-
-	/**
-	 * @override
-	 * @param opt 选项
-	 */
-	print(opt: PrintOpt = {}): string {
-		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
-	}
-
-	/**
-	 * 保存为JSON
-	 * @param file 文件名
-	 */
-	json(file?: string): object {
-		const json: object = {
-			...this,
-			childNodes: this.childNodes.map(child => child.type === 'text' ? {data: child.data} : child.json()),
-		};
-		return json;
 	}
 }

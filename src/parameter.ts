@@ -93,17 +93,4 @@ export abstract class ParameterToken extends Token {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print({sep: this.anon ? '' : '='});
-	}
-
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			anon: this.anon,
-		};
-	}
 }

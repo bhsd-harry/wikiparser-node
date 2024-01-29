@@ -24,7 +24,6 @@ export abstract class AstNode implements AstNodeBase {
 	#parentNode: Token | undefined;
 
 	abstract lint(): LintError[];
-	abstract print(): string;
 
 	/** 首位子节点 */
 	get firstChild(): AstNodes | undefined {

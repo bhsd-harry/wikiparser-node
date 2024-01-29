@@ -61,9 +61,4 @@ export abstract class ParamTagToken extends Token {
 			return generateForChild(child, rect, Parser.msg('invalid parameter of <$1>', this.name));
 		});
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
 }

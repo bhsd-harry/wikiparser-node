@@ -2,7 +2,6 @@ import {
 	removeComment,
 	text,
 	decodeHtml,
-	print,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import {
@@ -357,15 +356,5 @@ export abstract class TranscludeToken extends Token {
 			}
 		}
 		return queue;
-	}
-
-	/** @override */
-	override print(): string {
-		const {childNodes, length, firstChild, modifier, type} = this;
-		return `<span class="wpb-${type}">{{${modifier}${
-			type === 'magic-word'
-				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
-				: print(childNodes, {sep: '|'})
-		}}}</span>`;
 	}
 }

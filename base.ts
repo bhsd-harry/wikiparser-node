@@ -31,16 +31,10 @@ export interface AstNode {
 
 	/** Linter */
 	lint(): LintError[];
-
-	/** 以HTML格式打印 */
-	print(): string;
 }
 
 /** 类似HTMLElement */
 interface AstElement extends AstNode {
-
-	/** 保存为JSON */
-	json(): object;
 }
 
 export interface Parser {

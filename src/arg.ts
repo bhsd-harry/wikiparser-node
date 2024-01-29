@@ -87,17 +87,4 @@ export abstract class ArgToken extends Token {
 		}
 		return errors;
 	}
-
-	/** @override */
-	override print(): string {
-		return super.print({pre: '{{{', post: '}}}', sep: '|'});
-	}
-
-	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			default: this.default,
-		};
-	}
 }
