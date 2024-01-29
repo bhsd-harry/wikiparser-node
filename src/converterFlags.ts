@@ -18,19 +18,20 @@ export abstract class ConverterFlagsToken extends Token {
 	#flags?: string[];
 
 	declare readonly childNodes: readonly AtomToken[];
-	abstract override get children(): AtomToken[];
 	abstract override get firstChild(): AtomToken | undefined;
-	abstract override get firstElementChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
-	abstract override get lastElementChild(): AtomToken | undefined;
 	abstract override get parentNode(): ConverterToken | undefined;
-	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousSibling(): undefined;
-	abstract override get previousElementSibling(): undefined;
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
-	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): AtomToken[];
+	abstract override get firstElementChild(): AtomToken | undefined;
+	abstract override get lastElementChild(): AtomToken | undefined;
+	abstract override get parentElement(): ConverterToken | undefined;
+	abstract override get previousElementSibling(): undefined;
+	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
 
 	/** 所有转换类型标记 */
 	get flags(): Set<string> {

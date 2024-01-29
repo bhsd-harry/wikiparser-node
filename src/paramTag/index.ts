@@ -17,17 +17,22 @@ export abstract class ParamTagToken extends Token {
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly AtomToken[];
-	abstract override get children(): AtomToken[];
 	abstract override get firstChild(): AtomToken | undefined;
-	abstract override get firstElementChild(): AtomToken | undefined;
 	abstract override get lastChild(): AtomToken | undefined;
-	abstract override get lastElementChild(): AtomToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): AtomToken[];
+	abstract override get firstElementChild(): AtomToken | undefined;
+	abstract override get lastElementChild(): AtomToken | undefined;
+	abstract override get nextElementSibling(): undefined;
+	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentElement(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {

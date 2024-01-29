@@ -67,14 +67,15 @@ export abstract class TranscludeToken extends Token {
 
 	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
-	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstChild(): AtomToken | SyntaxToken;
-	abstract override get firstElementChild(): AtomToken | SyntaxToken;
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
-	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
+	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+	abstract override get firstElementChild(): AtomToken | SyntaxToken;
+	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
 
 	/** 是否存在重复参数 */
 	get duplication(): boolean {

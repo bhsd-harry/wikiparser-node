@@ -13,21 +13,21 @@ import type {AstText, ImagemapToken} from '../internal';
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
-@fixedToken
-@singleLine
+@fixedToken @singleLine
 export abstract class ImagemapLinkToken extends Token {
 	override readonly type = 'imagemap-link';
 
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
-	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;
-	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
 	abstract override get lastChild(): NoincludeToken;
-	abstract override get lastElementChild(): NoincludeToken;
 	abstract override get parentNode(): ImagemapToken | undefined;
-	abstract override get parentElement(): ImagemapToken | undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [LinkToken | ExtLinkToken, NoincludeToken];
+	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
+	abstract override get lastElementChild(): NoincludeToken;
+	abstract override get parentElement(): ImagemapToken | undefined;
 
 	/** 内外链接 */
 	get link(): string | Title {

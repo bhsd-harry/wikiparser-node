@@ -13,11 +13,12 @@ export abstract class LinkToken extends LinkBaseToken {
 	override readonly type = 'link';
 
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
+
+	/* NOT FOR BROWSER */
+
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
 	abstract override get link(): Title;
 	abstract override set link(link);
-
-	/* NOT FOR BROWSER */
 
 	/** 链接显示文字 */
 	get innerText(): string {

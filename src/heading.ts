@@ -13,18 +13,22 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-@fixedToken
-@sol
+@fixedToken @sol
 export abstract class HeadingToken extends Token {
 	override readonly type = 'heading';
 	#level;
 
 	declare readonly childNodes: readonly [Token, SyntaxToken];
-	abstract override get children(): [Token, SyntaxToken];
 	abstract override get firstChild(): Token;
-	abstract override get firstElementChild(): Token;
 	abstract override get lastChild(): SyntaxToken;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [Token, SyntaxToken];
+	abstract override get firstElementChild(): Token;
 	abstract override get lastElementChild(): SyntaxToken;
+
+	/* NOT FOR BROWSER END */
 
 	/** 标题格式的等号 */
 	get #equals(): string {

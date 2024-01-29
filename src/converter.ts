@@ -21,11 +21,12 @@ export abstract class ConverterToken extends flagsParent(Token) {
 	override readonly type = 'converter';
 
 	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
-	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
-	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
+	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/** 是否不转换 */
 	get noConvert(): boolean {

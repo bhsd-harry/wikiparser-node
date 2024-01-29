@@ -24,17 +24,22 @@ export abstract class ParameterToken extends Token {
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [Token, Token];
-	abstract override get children(): [Token, Token];
 	abstract override get firstChild(): Token;
-	abstract override get firstElementChild(): Token;
 	abstract override get lastChild(): Token;
-	abstract override get lastElementChild(): Token;
 	abstract override get parentNode(): TranscludeToken | undefined;
-	abstract override get parentElement(): TranscludeToken | undefined;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [Token, Token];
+	abstract override get firstElementChild(): Token;
+	abstract override get lastElementChild(): Token;
+	abstract override get parentElement(): TranscludeToken | undefined;
+	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
+
+	/* NOT FOR BROWSER END */
 
 	/** 是否是匿名参数 */
 	get anon(): boolean {

@@ -24,19 +24,20 @@ export abstract class GalleryToken extends Token {
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
-	abstract override get children(): (GalleryImageToken | NoincludeToken)[];
 	abstract override get firstChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	abstract override get firstElementChild(): GalleryImageToken | NoincludeToken | undefined;
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
-	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): (GalleryImageToken | NoincludeToken)[];
+	abstract override get firstElementChild(): GalleryImageToken | NoincludeToken | undefined;
+	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | undefined;
+	abstract override get nextElementSibling(): undefined;
+	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get parentElement(): ExtToken | undefined;
 
 	/** 所有图片 */
 	override get images(): GalleryImageToken[] {

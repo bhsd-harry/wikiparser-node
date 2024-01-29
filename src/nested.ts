@@ -25,17 +25,22 @@ export abstract class NestedToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	declare readonly childNodes: readonly (ExtToken | NoincludeToken | CommentToken)[];
-	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
 	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	abstract override get firstElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	abstract override get lastChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	abstract override get lastElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
+	abstract override get firstElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	abstract override get lastElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param regex 内层正则

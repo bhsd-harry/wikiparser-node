@@ -36,11 +36,16 @@ export abstract class TableBaseToken extends Token {
 	declare type: 'table' | 'tr' | 'td';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
-	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
-	abstract override get firstElementChild(): SyntaxToken;
 	abstract override get lastChild(): Token;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [SyntaxToken, AttributesToken, ...Token[]];
+	abstract override get firstElementChild(): SyntaxToken;
 	abstract override get lastElementChild(): Token;
+
+	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param pattern 表格语法正则

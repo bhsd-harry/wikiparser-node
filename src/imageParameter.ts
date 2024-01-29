@@ -75,11 +75,16 @@ export abstract class ImageParameterToken extends Token {
 	#syntax = '';
 
 	abstract override get parentNode(): FileToken | undefined;
-	abstract override get parentElement(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | this;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get parentElement(): FileToken | undefined;
+	abstract override get nextElementSibling(): this | undefined;
 	abstract override get previousElementSibling(): AtomToken | this;
+
+	/* NOT FOR BROWSER END */
 
 	/** 图片链接 */
 	get link(): string | Title | undefined {

@@ -220,17 +220,22 @@ export abstract class AttributeToken extends Token {
 	#quotes: [string?, string?];
 
 	declare readonly childNodes: readonly [AtomToken, Token];
-	abstract override get children(): [AtomToken, Token];
 	abstract override get firstChild(): AtomToken;
-	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
-	abstract override get lastElementChild(): Token;
 	abstract override get parentNode(): AttributesToken | undefined;
-	abstract override get parentElement(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
-	abstract override get nextElementSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AtomToken, Token];
+	abstract override get firstElementChild(): AtomToken;
+	abstract override get lastElementChild(): Token;
+	abstract override get parentElement(): AttributesToken | undefined;
+	abstract override get nextElementSibling(): AtomToken | this | undefined;
 	abstract override get previousElementSibling(): AtomToken | this | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** 引号是否匹配 */
 	get balanced(): boolean {

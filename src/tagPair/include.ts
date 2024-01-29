@@ -15,13 +15,14 @@ export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 	override readonly type = 'include';
 
 	declare readonly childNodes: readonly [AstText, AstText];
-	abstract override get children(): [];
 	abstract override get firstChild(): AstText;
-	abstract override get firstElementChild(): undefined;
 	abstract override get lastChild(): AstText;
-	abstract override get lastElementChild(): undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [];
+	abstract override get firstElementChild(): undefined;
+	abstract override get lastElementChild(): undefined;
 
 	/**	@override */
 	override get innerText(): string | undefined {

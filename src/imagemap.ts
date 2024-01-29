@@ -33,17 +33,22 @@ export abstract class ImagemapToken extends Token {
 	declare readonly name: 'imagemap';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
-	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
 	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
-	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken | undefined;
 	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
-	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
+	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken | undefined;
+	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | undefined;
+	abstract override get nextElementSibling(): undefined;
+	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentElement(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {

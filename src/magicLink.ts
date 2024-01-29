@@ -35,15 +35,16 @@ export abstract class MagicLinkToken extends Token {
 	declare type: 'free-ext-link' | 'ext-link-url';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
-	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
-	abstract override get firstElementChild():
-		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
-	abstract override get lastElementChild():
-		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
+	abstract override get firstElementChild():
+		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
+	abstract override get lastElementChild():
+		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
 	/** 协议 */
 	get protocol(): string | undefined {

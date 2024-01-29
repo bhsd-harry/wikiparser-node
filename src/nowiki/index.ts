@@ -11,11 +11,16 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	declare readonly name: string;
 
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get nextElementSibling(): undefined;
+	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentElement(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {

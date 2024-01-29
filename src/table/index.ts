@@ -40,10 +40,15 @@ export abstract class TableToken extends TrBaseToken {
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 	| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
+	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
+
+	/* NOT FOR BROWSER */
+
 	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 	| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
-	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 	abstract override get lastElementChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
+
+	/* NOT FOR BROWSER END */
 
 	/** 表格是否闭合 */
 	get closed(): boolean {

@@ -4,6 +4,7 @@ import {text} from '../util/string';
 import type {AstNodes} from '../lib/node';
 
 export interface SyntaxBase {
+	/** @private */
 	pattern: RegExp;
 }
 
@@ -18,7 +19,7 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 	abstract class SyntaxToken extends constructor {
 		declare pattern: RegExp;
 
-		/** @override */
+		/** @class */
 		constructor(...args: any[]) {
 			super(...args); // eslint-disable-line @typescript-eslint/no-unsafe-argument
 			if (pattern) {

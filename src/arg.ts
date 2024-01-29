@@ -17,11 +17,16 @@ export abstract class ArgToken extends Token {
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
-	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
 	abstract override get firstChild(): AtomToken;
-	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AtomToken] | [AtomToken, Token, ...HiddenToken[]];
+	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastElementChild(): Token;
+
+	/* NOT FOR BROWSER END */
 
 	/** 预设值 */
 	get default(): string | false {

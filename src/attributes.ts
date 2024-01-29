@@ -47,15 +47,16 @@ export abstract class AttributesToken extends Token {
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
-	abstract override get children(): (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
-	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
-	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
-	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): (AtomToken | AttributeToken)[];
+	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
+	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
+	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
 
 	/** getAttrs()方法的getter写法 */
 	get attributes(): Record<string, string | true> {

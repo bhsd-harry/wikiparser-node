@@ -50,8 +50,7 @@ export interface HtmlToken extends AttributesParentBase {}
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-@fixedToken
-@attributesParent()
+@fixedToken @attributesParent()
 export abstract class HtmlToken extends Token {
 	override readonly type = 'html';
 	declare readonly name: string;
@@ -60,11 +59,16 @@ export abstract class HtmlToken extends Token {
 	#tag;
 
 	declare readonly childNodes: readonly [AttributesToken];
-	abstract override get children(): [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
-	abstract override get firstElementChild(): AttributesToken;
 	abstract override get lastChild(): AttributesToken;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AttributesToken];
+	abstract override get firstElementChild(): AttributesToken;
 	abstract override get lastElementChild(): AttributesToken;
+
+	/* NOT FOR BROWSER END */
 
 	/** 是否是闭合标签 */
 	get closing(): boolean {

@@ -47,12 +47,17 @@ export abstract class TdToken extends TableBaseToken {
 	#innerSyntax = '';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
-	abstract override get children(): [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
-	abstract override get parentElement(): TrToken | TableToken | undefined;
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
-	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [SyntaxToken, AttributesToken, Token];
+	abstract override get parentElement(): TrToken | TableToken | undefined;
+	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** 单元格类型 */
 	get subtype(): TdSubtypes {

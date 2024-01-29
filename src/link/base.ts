@@ -32,13 +32,14 @@ export abstract class LinkBaseToken extends Token {
 	#title: Title;
 
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
-	abstract override get children(): [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
-	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): Token;
-	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AtomToken, ...Token[]];
+	abstract override get firstElementChild(): AtomToken;
+	abstract override get lastElementChild(): Token;
 
 	/** 完整链接 */
 	get link(): string | Title {

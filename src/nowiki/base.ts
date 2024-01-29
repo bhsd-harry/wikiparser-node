@@ -23,11 +23,16 @@ export abstract class NowikiBaseToken extends Token {
 	declare type: NowikiTypes;
 
 	declare readonly childNodes: readonly [AstText];
-	abstract override get children(): [];
 	abstract override get firstChild(): AstText;
-	abstract override get firstElementChild(): undefined;
 	abstract override get lastChild(): AstText;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [];
+	abstract override get firstElementChild(): undefined;
 	abstract override get lastElementChild(): undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** 纯文本部分 */
 	get innerText(): string {

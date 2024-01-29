@@ -36,10 +36,15 @@ export abstract class ExtToken extends TagPairToken {
 	declare closed: true;
 
 	declare readonly childNodes: readonly [AttributesToken, Token];
-	abstract override get children(): [AttributesToken, Token];
 	abstract override get firstChild(): AttributesToken;
-	abstract override get firstElementChild(): AttributesToken;
 	abstract override get lastChild(): Token;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AttributesToken, Token];
+	abstract override get firstElementChild(): AttributesToken;
+
+	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param name 标签名

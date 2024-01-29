@@ -20,17 +20,22 @@ export abstract class PreToken extends Token {
 	declare readonly name: 'pre';
 
 	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
-	abstract override get children(): (NoincludeToken | ConverterToken)[];
 	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
 	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
 	abstract override get nextSibling(): undefined;
-	abstract override get nextElementSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
-	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER */
+
+	abstract override get children(): (NoincludeToken | ConverterToken)[];
+	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
+	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
+	abstract override get previousElementSibling(): AttributesToken;
+	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER END */
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {

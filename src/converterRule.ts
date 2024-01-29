@@ -15,19 +15,20 @@ export abstract class ConverterRuleToken extends Token {
 	declare readonly childNodes: readonly [AtomToken]
 	| readonly [AtomToken, AtomToken]
 	| readonly [AtomToken, AtomToken, AtomToken];
-	abstract override get children(): [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
 	abstract override get firstChild(): AtomToken;
-	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastChild(): AtomToken;
-	abstract override get lastElementChild(): AtomToken;
 	abstract override get parentNode(): ConverterToken | undefined;
-	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousSibling(): ConverterFlagsToken | this;
-	abstract override get previousElementSibling(): ConverterFlagsToken | this;
 	abstract override get nextSibling(): this | undefined;
-	abstract override get nextElementSibling(): this | undefined;
 
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AtomToken] | [AtomToken, AtomToken] | [AtomToken, AtomToken, AtomToken];
+	abstract override get firstElementChild(): AtomToken;
+	abstract override get lastElementChild(): AtomToken;
+	abstract override get parentElement(): ConverterToken | undefined;
+	abstract override get previousElementSibling(): ConverterFlagsToken | this;
+	abstract override get nextElementSibling(): this | undefined;
 
 	/** 语言变体 */
 	get variant(): string {
