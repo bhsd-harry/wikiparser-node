@@ -167,8 +167,9 @@ const Parser: Parser = {
 
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
-				if (titleObj[key]?.includes('\0')) {
-					titleObj[key] = token.buildFromStr(titleObj[key]!, BuildMethod.Text);
+				const str = titleObj[key];
+				if (str?.includes('\0')) {
+					titleObj[key] = token.buildFromStr(str, BuildMethod.Text);
 				}
 			}
 		});

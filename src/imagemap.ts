@@ -223,7 +223,7 @@ export abstract class ImagemapToken extends Token {
 	 * @throws `Error` 禁止移除图片
 	 */
 	override removeAt(i: number): AstNodes {
-		if (this.childNodes[i]!.type === 'imagemap-image') {
+		if (this.childNodes[i]?.type === 'imagemap-image') {
 			throw new Error('禁止移除<imagemap>内的图片！');
 		}
 		return super.removeAt(i);

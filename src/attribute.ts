@@ -381,8 +381,9 @@ export abstract class AttributeToken extends Token {
 				startCol: e.startCol - 1,
 			});
 		}
+		const attrs = extAttrs[tag];
 		if (
-			extAttrs[tag] && !extAttrs[tag]!.has(name)
+			attrs && !attrs.has(name)
 			|| (type === 'ext-attr' ? tag in htmlAttrs : !/\{\{[^{]+\}\}/u.test(name))
 			&& !htmlAttrs[tag]?.has(name)
 			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)

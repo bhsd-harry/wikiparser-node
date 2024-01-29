@@ -56,9 +56,13 @@ const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false
 function occupied(layout: Layout, i: number, oneRow: true, cells: readonly TdToken[]): number[];
 function occupied(layout: Layout, i: number): number[];
 function occupied(layout: Layout, i: number, oneRow = false, cells?: readonly TdToken[]): number[] {
-	return layout[i]!.map(
-		({row, column}, j) => row === i && (!oneRow || cells![column]!.rowspan === 1) ? j : undefined,
-	).filter((j): j is number => j !== undefined);
+	const rowLayout = layout[i];
+	if (rowLayout) {
+		return rowLayout.map(
+			({row, column}, j) => row === i && (!oneRow || cells![column]?.rowspan === 1) ? j : undefined,
+		).filter((j): j is number => j !== undefined);
+	}
+	throw new RangeError(`表格没有第 ${i} 行！`);
 }
 
 /**
