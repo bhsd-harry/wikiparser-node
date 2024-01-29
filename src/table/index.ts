@@ -55,6 +55,9 @@ export abstract class TableToken extends TrBaseToken {
 			new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
 			}),
 		));
+		if (!halfParsed) {
+			token.afterBuild();
+		}
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 
