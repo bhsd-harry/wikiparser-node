@@ -221,20 +221,17 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	#getCondition<T>(selector: string): TokenPredicate<T> {
-		let condition: TokenPredicate<T>;
-
 		/* NOT FOR BROWSER */
 
 		if (/[^a-z\-,\s]/u.test(selector)) {
 			const stack = parseSelector(selector);
-			condition = (token => stack.some(copy => token.#matchesArray(copy))) as TokenPredicate<T>;
-		} else {
+			return (token => stack.some(copy => token.#matchesArray(copy))) as TokenPredicate<T>;
+		}
+
 		/* NOT FOR BROWSER END */
 
-			const types = new Set(selector.split(',').map(str => str.trim()));
-			condition = (token => types.has(token.type)) as TokenPredicate<T>;
-		}
-		return condition;
+		const types = new Set(selector.split(',').map(str => str.trim()));
+		return (({type}) => types.has(type)) as TokenPredicate<T>;
 	}
 
 	/**
