@@ -11,6 +11,9 @@ export class Title {
 	/** @private */
 	readonly encoded: boolean = false;
 
+	/** @private */
+	declare interwiki: string;
+
 	/**
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
