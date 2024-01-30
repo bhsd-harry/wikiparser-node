@@ -138,13 +138,14 @@ export const getMwConfig = (config) => {
     };
     astContainer.addEventListener('mouseover', ({ target }) => {
         const dl = target.closest('dl');
-        if (!dl) {
-            return;
-        }
-        else if (dl !== curDl) {
+        if (dl !== curDl) {
             curDl === null || curDl === void 0 ? void 0 : curDl.classList.remove('hover');
-            dl.classList.add('hover');
+            dl === null || dl === void 0 ? void 0 : dl.classList.add('hover');
             curDl = dl;
+        }
+        if (!dl) {
+            updateHover(undefined);
+            return;
         }
         let nextNode = nodeMap.get(dl);
         if (nextNode === null || nextNode === void 0 ? void 0 : nextNode.isConnected) {

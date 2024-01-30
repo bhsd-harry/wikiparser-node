@@ -167,7 +167,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 	// 鼠标悬停AST节点时，高亮对应的文本
 	const nodeMap = new WeakMap<HTMLDListElement, HTMLElement | undefined>();
 	let curNode: HTMLElement | undefined,
-		curDl: HTMLDListElement | undefined;
+		curDl: HTMLDListElement | null;
 
 	/**
 	 * 更新hover状态
@@ -212,12 +212,14 @@ export const getMwConfig = (config: Config): MwConfig => {
 	};
 	astContainer.addEventListener('mouseover', ({target}) => {
 		const dl = (target as HTMLElement).closest('dl');
-		if (!dl) {
-			return;
-		} else if (dl !== curDl) {
+		if (dl !== curDl) {
 			curDl?.classList.remove('hover');
-			dl.classList.add('hover');
+			dl?.classList.add('hover');
 			curDl = dl;
+		}
+		if (!dl) {
+			updateHover(undefined);
+			return;
 		}
 		let nextNode = nodeMap.get(dl);
 		if (nextNode?.isConnected) {
