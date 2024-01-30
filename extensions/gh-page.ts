@@ -55,7 +55,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
-		h2 = document.querySelector<HTMLHeadingElement>('h2')!,
+		h2 = document.querySelector('h2')!,
 		buttons = [...document.querySelectorAll<HTMLButtonElement>('.tab > button')],
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		astContainer = document.getElementById('ast')!,
@@ -162,6 +162,73 @@ export const getMwConfig = (config: Config): MwConfig => {
 	});
 	astContainer.addEventListener('click', ({target}) => {
 		(target as HTMLElement).closest('dt')?.classList.toggle('inactive');
+	});
+
+	// 鼠标悬停AST节点时，高亮对应的文本
+	const nodeMap = new WeakMap<HTMLDListElement, HTMLElement | undefined>();
+	let curNode: HTMLElement | undefined,
+		curDl: HTMLDListElement | undefined;
+
+	/**
+	 * 更新hover状态
+	 * @param curNode 旧的hover节点
+	 * @param nextNode 新的hover节点
+	 */
+	const updateHover = (nextNode: HTMLElement | undefined): void => {
+		if (curNode !== nextNode) {
+			curNode?.classList.remove('hover');
+			nextNode?.classList.add('hover');
+			curNode = nextNode;
+		}
+	};
+
+	/**
+	 * 根据字符位置区间查找对应的DOM节点
+	 * @param start 字符位置起点
+	 * @param end 字符位置终点
+	 */
+	const findNode = (start: number, end: number): HTMLElement | undefined => {
+		/* eslint-disable no-param-reassign */
+		if (start === end) {
+			return undefined;
+		}
+		let cur = document.getElementById('wikiPretty')!.firstChild;
+		while (cur) {
+			const {length} = cur.textContent!;
+			if (start >= length) {
+				cur = cur.nextSibling;
+				start -= length;
+				end -= length;
+			} else if (end > length || cur.nodeType === Node.TEXT_NODE) {
+				return undefined;
+			} else if (start === 0 && end === length) {
+				return cur as HTMLElement;
+			} else {
+				cur = cur.firstChild;
+			}
+		}
+		return undefined;
+		/* eslint-enable no-param-reassign */
+	};
+	astContainer.addEventListener('mouseover', ({target}) => {
+		const dl = (target as HTMLElement).closest('dl');
+		if (!dl) {
+			return;
+		} else if (dl !== curDl) {
+			curDl?.classList.remove('hover');
+			dl.classList.add('hover');
+			curDl = dl;
+		}
+		let nextNode = nodeMap.get(dl);
+		if (nextNode?.isConnected) {
+			updateHover(nextNode);
+			return;
+		}
+		const start = Number(dl.dataset['start']),
+			end = Number(dl.dataset['end']);
+		nextNode = findNode(start, end);
+		nodeMap.set(dl, nextNode);
+		updateHover(nextNode);
 	});
 
 	/**
