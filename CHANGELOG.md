@@ -1,14 +1,10 @@
-## v1.4.4
+## v1.4.3
 
-*2024-01-31*
+*2024-01-30*
 
 **Added**
 
 - New field `range` in the return value of [`AstElement.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#json)
-
-## v1.4.3
-
-*2024-01-30*
 
 **Fixed**
 
