@@ -276,9 +276,12 @@ export abstract class AstNode implements AstNodeBase {
 		/* NOT FOR BROWSER END */
 
 		Object.defineProperty(this, key, {
-			writable: false,
 			enumerable: !permanent && Boolean(this[key as keyof this]),
 			configurable: true,
+
+			/* NOT FOR BROWSER */
+
+			writable: false,
 		});
 	}
 
