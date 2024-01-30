@@ -153,7 +153,6 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	seal(key: string, permanent?: boolean): void {
 		Object.defineProperty(this, key, {
-			writable: false,
 			enumerable: !permanent && Boolean(this[key as keyof this]),
 			configurable: true,
 		});
