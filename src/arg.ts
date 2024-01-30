@@ -6,7 +6,10 @@ import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 
 /**
  * `{{{}}}`包裹的参数
@@ -120,11 +123,10 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			default: this.default,
-		};
+	override json(): AST {
+		const json = super.json();
+		json['default'] = this.default;
+		return json;
 	}
 
 	/* NOT FOR BROWSER */

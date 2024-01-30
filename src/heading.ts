@@ -6,7 +6,10 @@ import {sol} from '../mixin/sol';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 import type {QuoteToken} from '../internal';
 
 /**
@@ -147,11 +150,10 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			level: this.level,
-		};
+	override json(): AST {
+		const json = super.json();
+		json['level'] = this.level;
+		return json;
 	}
 
 	/* NOT FOR BROWSER */

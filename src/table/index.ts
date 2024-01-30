@@ -5,7 +5,10 @@ import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 import type {SyntaxBase} from '../../mixin/syntax';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
@@ -103,11 +106,10 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			closed: this.closed,
-		};
+	override json(): AST {
+		const json = super.json();
+		json['closed'] = this.closed;
+		return json;
 	}
 
 	/* NOT FOR BROWSER */

@@ -5,7 +5,10 @@ import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**
@@ -170,11 +173,10 @@ export abstract class ParameterToken extends Token {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			anon: this.anon,
-		};
+	override json(): AST {
+		const json = super.json();
+		json['anon'] = this.anon;
+		return json;
 	}
 
 	/* NOT FOR BROWSER */
