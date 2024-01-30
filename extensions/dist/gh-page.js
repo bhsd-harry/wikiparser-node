@@ -5,6 +5,7 @@ const fromEntries = (entries, obj) => {
         obj[entry] = true;
     }
 };
+const keys = new Set(['type', 'childNodes', 'range']);
 export const getMwConfig = (config) => {
     const mwConfig = {
         tags: {},
@@ -63,7 +64,7 @@ export const getMwConfig = (config) => {
     input2.addEventListener('change', setLang);
     const createAST = (ast) => {
         var _a;
-        const entries = Object.entries(ast).filter(([key]) => key !== 'type' && key !== 'childNodes'), dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd'), dds = entries.map(([key, value]) => {
+        const entries = Object.entries(ast).filter(([key]) => !keys.has(key)), dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd'), dds = entries.map(([key, value]) => {
             const dd = document.createElement('dd'), code = document.createElement('code');
             code.textContent = typeof value === 'string' ? `"${value.replace(/[\\"]/gu, '\\$&')}"` : String(value);
             code.className = typeof value;
@@ -73,6 +74,8 @@ export const getMwConfig = (config) => {
         }), lbrace = document.createElement('span'), rbrace1 = document.createElement('span'), rbrace2 = document.createElement('span'), prop = document.createElement('span');
         dt.textContent = (_a = transform(ast.type)) !== null && _a !== void 0 ? _a : 'Text';
         dt.className = 'inactive';
+        dl.dataset['start'] = String(ast.range[0]);
+        dl.dataset['end'] = String(ast.range[1]);
         if ('childNodes' in ast) {
             childNodes.append(...ast.childNodes.map(createAST));
         }
