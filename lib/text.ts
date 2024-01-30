@@ -81,7 +81,7 @@ export class AstText extends AstNode {
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
-		const {type, name} = parentNode,
+		const {type, name} = parentNode!,
 			nowiki = name === 'nowiki' || name === 'pre';
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
