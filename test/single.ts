@@ -1,4 +1,4 @@
-import {diff, error, tidy} from '../util/diff';
+import {diff, error} from '../util/diff';
 import type {Parser} from '../base';
 
 const entities = {lt: '<', gt: '>', amp: '&'};
@@ -12,7 +12,7 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.content 页面源代码
  */
 export const single = async (Parser: Parser, {title, ns, content}: SimplePage): Promise<void> => {
-	content = tidy(content);
+	content = content.replace(/[\0\x7F]/gu, '');
 	try {
 		console.time(`parse: ${title}`);
 		const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
