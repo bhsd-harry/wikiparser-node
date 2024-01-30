@@ -2,7 +2,9 @@ import {generateForChild, generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
-import type {LintError} from '../base';
+import type {
+	LintError,
+} from '../base';
 import type {QuoteToken} from '../internal';
 
 /**
