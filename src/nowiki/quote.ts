@@ -1,7 +1,10 @@
 import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 
 /** `''`和`'''` */
 export abstract class QuoteToken extends NowikiBaseToken {
@@ -63,11 +66,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			bold: this.bold,
-			italic: this.italic,
-		};
+	override json(): AST {
+		const json = super.json();
+		Object.assign(json, {bold: this.bold, italic: this.italic});
+		return json;
 	}
 }

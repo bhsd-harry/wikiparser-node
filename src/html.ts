@@ -2,7 +2,10 @@ import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
@@ -210,11 +213,9 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			closing: this.closing,
-			selfClosing: this.#selfClosing,
-		};
+	override json(): AST {
+		const json = super.json();
+		Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
+		return json;
 	}
 }

@@ -24,6 +24,12 @@ export interface LintError {
 	readonly endCol: number;
 }
 
+export type AST = Record<string, string | number | boolean> & {
+	range: [number, number];
+	type?: string;
+	childNodes?: AST[];
+};
+
 /** 类似Node */
 export interface AstNode {
 	type: string;
@@ -40,7 +46,7 @@ export interface AstNode {
 interface AstElement extends AstNode {
 
 	/** 保存为JSON */
-	json(): object;
+	json(): AST;
 }
 
 export interface Parser {

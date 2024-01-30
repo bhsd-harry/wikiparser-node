@@ -5,7 +5,10 @@ import {
 import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
 export type TdSubtypes = 'td' | 'th' | 'caption';
@@ -136,10 +139,9 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @override */
-	override json(): object {
-		return {
-			...super.json(),
-			subtype: this.subtype,
-		};
+	override json(): AST {
+		const json = super.json();
+		json['subtype'] = this.subtype;
+		return json;
 	}
 }

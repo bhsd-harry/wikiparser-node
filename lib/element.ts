@@ -4,7 +4,10 @@ import {
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 import type {AstNodes, AstText, Token} from '../internal';
 
 // @ts-expect-error unconstrained predicate
@@ -153,12 +156,24 @@ export abstract class AstElement extends AstNode {
 	/**
 	 * 保存为JSON
 	 * @param file 文件名
+	 * @param start
 	 */
-	json(file?: string): object {
-		const json: object = {
+	json(file?: string, start = this.getAbsoluteIndex()): AST {
+		const json = {
 			...this,
-			childNodes: this.childNodes.map(child => child.type === 'text' ? {data: child.data} : child.json()),
-		};
+			range: [start, start + String(this).length],
+			childNodes: [],
+		} as unknown as AST;
+		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
+			const child = this.childNodes[i]!,
+				{length} = String(child);
+			if (child.type === 'text') {
+				json.childNodes!.push({data: child.data, range: [cur, cur + length]} as unknown as AST);
+			} else {
+				json.childNodes!.push(child.json(undefined, cur));
+			}
+			cur += length + this.getGaps(i);
+		}
 		return json;
 	}
 }
