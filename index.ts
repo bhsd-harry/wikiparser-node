@@ -13,15 +13,8 @@ import {
 	mixins,
 	parsers,
 } from './util/constants';
-import {
-	tidy,
-
-	/* NOT FOR BROWSER */
-
-	cmd,
-	info,
-	error,
-} from './util/diff';
+import {tidy} from './util/string';
+import {cmd, info, error} from './util/diff';
 import type {log} from './util/diff';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
