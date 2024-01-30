@@ -127,7 +127,8 @@ export class AstText extends AstNode {
 		/* NOT FOR BROWSER END */
 
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
-		const {type, name} = parentNode,
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		const {type, name} = parentNode!,
 			nowiki = name === 'nowiki' || name === 'pre';
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
