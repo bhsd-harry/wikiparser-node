@@ -1,6 +1,6 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
-import type {Config} from '../base';
-import type {MwConfig, CodeMirror, AST} from './typings';
+import type {Config, AST} from '../base';
+import type {MwConfig, CodeMirror} from './typings';
 
 /**
  * Kebab case to Pascal case
@@ -19,6 +19,8 @@ const fromEntries = (entries: readonly string[], obj: Record<string, unknown>): 
 		obj[entry] = true;
 	}
 };
+
+const keys = new Set(['type', 'childNodes', 'range']);
 
 /**
  * 将wikiparser-node设置转换为codemirror-mediawiki设置
@@ -114,7 +116,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 	 * @param ast AST
 	 */
 	const createAST = (ast: AST): HTMLDListElement => {
-		const entries = Object.entries(ast).filter(([key]) => key !== 'type' && key !== 'childNodes'),
+		const entries = Object.entries(ast).filter(([key]) => !keys.has(key)) as [string, string | number | boolean][],
 			dl = document.createElement('dl'),
 			dt = document.createElement('dt'),
 			childNodes = document.createElement('dd'),

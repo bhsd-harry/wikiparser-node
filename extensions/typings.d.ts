@@ -1,4 +1,4 @@
-import type {Config, LintError, Parser} from '../base';
+import type {Config, LintError, Parser, AST} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
 
@@ -13,12 +13,6 @@ declare global {
 
 	const Parser: Parser;
 	const wikiparse: wikiparse;
-}
-
-export interface AST {
-	type?: string;
-	childNodes?: AST[];
-	[x: string]: string | number | boolean;
 }
 
 export interface wikiparse {
