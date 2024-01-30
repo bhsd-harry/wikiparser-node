@@ -2,7 +2,9 @@ import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
+import type {
+	LintError,
+} from '../base';
 import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),

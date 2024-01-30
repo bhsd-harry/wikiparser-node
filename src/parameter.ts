@@ -2,7 +2,9 @@ import {extUrlChar, extUrlCharFirst} from '../util/string';
 import {generateForChild} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
+import type {
+	LintError,
+} from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
 /**

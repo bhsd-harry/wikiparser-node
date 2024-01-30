@@ -1,7 +1,9 @@
 import {generateForSelf} from '../../util/lint';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+} from '../../base';
 
 /** `''`和`'''` */
 export abstract class QuoteToken extends NowikiBaseToken {

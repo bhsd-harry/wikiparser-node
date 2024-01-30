@@ -83,9 +83,3 @@ export const error: log = (msg, ...args) => {
 export const info: log = (msg, ...args) => {
 	console.info('\x1B[32m%s\x1B[0m', msg, ...args);
 };
-
-/**
- * 清理解析专用的不可见字符
- * @param str 字符串
- */
-export const tidy = (str: string): string => str.replace(/[\0\x7F]/gu, '');
