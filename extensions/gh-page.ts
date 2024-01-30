@@ -135,6 +135,8 @@ export const getMwConfig = (config: Config): MwConfig => {
 			prop = document.createElement('span');
 		dt.textContent = transform(ast.type) ?? 'Text';
 		dt.className = 'inactive';
+		dl.dataset['start'] = String(ast.range[0]);
+		dl.dataset['end'] = String(ast.range[1]);
 		if ('childNodes' in ast) {
 			childNodes.append(...ast.childNodes.map(createAST));
 		}

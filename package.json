@@ -46,7 +46,7 @@
 		"server": "npm run test:end; http-server .. -c-1 --cors &",
 		"test": "npm run build:prod && npm run build:ext && npm run server",
 		"test:end": "pkill -x http-server",
-		"test:real": "tsc --project tsconfig.test.json && node dist/test/real.js"
+		"test:real": "tsc --project tsconfig.dist.json && node dist/test/real.js"
 	},
 	"devDependencies": {
 		"@bhsd/codemirror-mediawiki": "^2.1.11",
