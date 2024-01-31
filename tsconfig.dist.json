@@ -1,23 +1,7 @@
 {
+	"extends": "./tsconfig.json",
 	"include": [
 		"test/**/*",
 		"typings/api.d.ts"
-	],
-	"compilerOptions": {
-		"target": "es2022",
-		"module": "CommonJS",
-		"declaration": false,
-		"outDir": "dist",
-		"alwaysStrict": true,
-		"exactOptionalPropertyTypes": true,
-		"noImplicitAny": true,
-		"noImplicitOverride": true,
-		"noImplicitThis": true,
-		"noPropertyAccessFromIndexSignature": true,
-		"noUncheckedIndexedAccess": true,
-		"strictBindCallApply": true,
-		"strictFunctionTypes": true,
-		"strictNullChecks": true,
-		"useUnknownInCatchVariables": true
-	}
+	]
 }
