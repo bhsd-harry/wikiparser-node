@@ -1,23 +1,10 @@
 {
+	"extends": "./tsconfig.json",
 	"include": [
 		"typings/**/*",
 		"dist/**/*.d.ts"
 	],
 	"compilerOptions": {
-		"target": "es2022",
-		"module": "CommonJS",
-		"allowSyntheticDefaultImports": true,
-		"noEmit": true,
-		"alwaysStrict": true,
-		"exactOptionalPropertyTypes": true,
-		"noImplicitAny": true,
-		"noImplicitOverride": true,
-		"noImplicitThis": true,
-		"noPropertyAccessFromIndexSignature": true,
-		"noUncheckedIndexedAccess": true,
-		"strictBindCallApply": true,
-		"strictFunctionTypes": true,
-		"strictNullChecks": true,
-		"useUnknownInCatchVariables": true
+		"noEmit": true
 	}
 }
