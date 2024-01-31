@@ -13,7 +13,7 @@
 	"compilerOptions": {
 		"target": "es2022",
 		"module": "CommonJS",
-		"declaration": true,
+		"declaration": false,
 		"outDir": "dist",
 		"alwaysStrict": true,
 		"exactOptionalPropertyTypes": true,

@@ -1,33 +1,8 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
+import { getMwConfig } from '/codemirror-mediawiki/gh-page.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
-const fromEntries = (entries, obj) => {
-    for (const entry of entries) {
-        obj[entry] = true;
-    }
-};
 const keys = new Set(['type', 'childNodes', 'range']);
-export const getMwConfig = (config) => {
-    const mwConfig = {
-        tags: {},
-        tagModes: {
-            ref: 'text/mediawiki',
-        },
-        doubleUnderscore: [{}, {}],
-        functionSynonyms: [config.parserFunction[0], {}],
-        urlProtocols: `${config.protocol}|//`,
-        nsid: config.nsid,
-    };
-    fromEntries(config.ext, mwConfig.tags);
-    fromEntries(config.doubleUnderscore[0].map(s => `__${s}__`), mwConfig.doubleUnderscore[0]);
-    fromEntries(config.doubleUnderscore[1].map(s => `__${s}__`), mwConfig.doubleUnderscore[1]);
-    fromEntries(config.parserFunction.slice(2).flat(), mwConfig.functionSynonyms[0]);
-    fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
-    return mwConfig;
-};
 (async () => {
-    if (!location.pathname.startsWith('/wikiparser-node')) {
-        return;
-    }
     const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
     wikiparse.setConfig(config);

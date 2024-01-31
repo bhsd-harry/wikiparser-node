@@ -1,14 +1,20 @@
+import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
 import type {Config, LintError, Parser, AST} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
 
 export type {Diagnostic} from '@codemirror/lint';
-export type {MwConfig, CodeMirror6 as CodeMirror} from '@bhsd/codemirror-mediawiki';
 
 declare global {
 	module '/*' {
 		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
-		class CodeMirror6 {}
+		export {CodeMirror6};
+
+		/**
+		 * 将wikiparser-node设置转换为codemirror-mediawiki设置
+		 * @param config
+		 */
+		export function getMwConfig(config: Config): MwConfig;
 	}
 
 	const Parser: Parser;

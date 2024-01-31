@@ -4,8 +4,7 @@
 		"*.ts"
 	],
 	"compilerOptions": {
-		"target": "ES2018",
-		"declaration": false,
+		"target": "es2018",
 		"outDir": "dist",
 		"skipLibCheck": true
 	}

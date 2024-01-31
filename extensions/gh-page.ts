@@ -1,6 +1,6 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
+import {getMwConfig} from '/codemirror-mediawiki/gh-page.js';
 import type {Config, AST} from '../base';
-import type {MwConfig, CodeMirror} from './typings';
 
 /**
  * Kebab case to Pascal case
@@ -9,47 +9,9 @@ import type {MwConfig, CodeMirror} from './typings';
 const transform = (type?: string): string | undefined =>
 	type && type.split('-').map(s => s[0]!.toUpperCase() + s.slice(1)).join('');
 
-/**
- * Object.fromEntries polyfill
- * @param entries
- * @param obj
- */
-const fromEntries = (entries: readonly string[], obj: Record<string, unknown>): void => {
-	for (const entry of entries) {
-		obj[entry] = true;
-	}
-};
-
 const keys = new Set(['type', 'childNodes', 'range']);
 
-/**
- * 将wikiparser-node设置转换为codemirror-mediawiki设置
- * @param config
- */
-export const getMwConfig = (config: Config): MwConfig => {
-	const mwConfig: MwConfig = {
-		tags: {},
-		tagModes: {
-			ref: 'text/mediawiki',
-		},
-		doubleUnderscore: [{}, {}],
-		functionSynonyms: [config.parserFunction[0], {}],
-		urlProtocols: `${config.protocol}|//`,
-		nsid: config.nsid,
-	};
-	fromEntries(config.ext, mwConfig.tags);
-	fromEntries(config.doubleUnderscore[0].map(s => `__${s}__`), mwConfig.doubleUnderscore[0]);
-	fromEntries(config.doubleUnderscore[1].map(s => `__${s}__`), mwConfig.doubleUnderscore[1]);
-	fromEntries((config.parserFunction.slice(2) as string[][]).flat(), mwConfig.functionSynonyms[0]);
-	fromEntries(config.parserFunction[1], mwConfig.functionSynonyms[1]);
-	return mwConfig;
-};
-
 (async () => {
-	if (!location.pathname.startsWith('/wikiparser-node')) {
-		return;
-	}
-
 	// DOM元素
 	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
@@ -71,7 +33,7 @@ export const getMwConfig = (config: Config): MwConfig => {
 	highlighters[1 - Number(input.checked)]!.style.display = 'none';
 
 	// CodeMirror初始化
-	const instance = new (CodeMirror6 as unknown as typeof CodeMirror)(textbox2),
+	const instance = new CodeMirror6(textbox2),
 		mwConfig = getMwConfig(config);
 	instance.prefer([
 		'highlightSpecialChars',

@@ -2,7 +2,7 @@
 if [[ $2 == 'npm' ]]
 then
 	sed -i '' -E "s/\"version\": \".+\"/\"version\": \"$1-b\"/" package.json
-	gsed -i "s|/gh/bhsd-harry/wikiparser-node|/npm/wikiparser-node|" extensions/base.ts
+	gsed -i 's|/gh/bhsd-harry/wikiparser-node|/npm/wikiparser-node|' extensions/base.ts
 	npm publish --tag browser
 	git add -A
 	git commit -m "chore: publish v$1-b to npm"
@@ -11,7 +11,7 @@ else
 	if [[ $? -eq 0 ]]
 	then
 		gsed -i -E "s|wikiparser-node@.+-b|wikiparser-node@$1-b|" extensions/base.ts
-		gsed -i "s|/npm/wikiparser-node|/gh/bhsd-harry/wikiparser-node|" extensions/base.ts
+		gsed -i 's|/npm/wikiparser-node|/gh/bhsd-harry/wikiparser-node|' extensions/base.ts
 		npm run build
 		git add -A
 		git commit -m "chore: bump version to v$1-b"
