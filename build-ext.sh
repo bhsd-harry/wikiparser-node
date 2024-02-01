@@ -5,7 +5,7 @@ for x in extensions/dist/*.js
 do
 	if [[ $x != 'extensions/dist/gh-page.js' ]]
 	then
-		bash sed.sh -i '/export {};/d' $x
+		gsed -i '/export {};/d' $x
 		printf '%s\n%s\n%s\n' '(() => {' "$(cat $x)" '})();' > $x
 	fi
 done

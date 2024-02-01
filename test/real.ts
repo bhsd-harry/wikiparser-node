@@ -1,7 +1,7 @@
 import {error, info} from '../util/diff';
 import {Api} from './api';
 import {single} from './single';
-import '../../bundle/bundle.js';
+import '../../bundle/bundle.min.js';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;
