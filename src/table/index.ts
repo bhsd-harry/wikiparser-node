@@ -80,6 +80,18 @@ export abstract class TableToken extends TrBaseToken {
 		if (!this.closed) {
 			errors.push(generateForChild(this.firstChild, {start}, Parser.msg('unclosed $1', 'table')));
 		}
+
+		/* NOT FOR BROWSER */
+
+		const layout = this.getLayout(),
+			j = new Array(layout.length - 1).fill(undefined)
+				.findIndex((_, i) => layout[i]!.length !== layout[i + 1]!.length) + 1;
+		if (j) {
+			errors.push(generateForChild(this.getNthRow(j)!, {start}, 'inconsistent table layout', 'warning'));
+		}
+
+		/* NOT FOR BROWSER END */
+
 		return errors;
 	}
 

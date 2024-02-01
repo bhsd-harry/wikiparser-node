@@ -1,3 +1,11 @@
+## v1.4.4
+
+*2024-02-02*
+
+**Added**
+
+- New category of linting errors: inconsistent [table layout](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#getlayout)
+
 ## v1.4.3
 
 *2024-01-31*
