@@ -11,12 +11,6 @@ declare global {
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' | 'plain' ? boolean :
-		T extends 'pattern' ? RegExp :
-		T extends 'flags' ? string[] :
-		T extends 'tags' ? [string, string] :
-		T extends 'quotes' ? [string?, string?] :
-		T extends 'optional' | 'keys' ? Set<string> :
-		T extends 'args' ? Map<string, Set<ParameterToken>> :
 		T extends 'title' ? Title :
 		string;
 
