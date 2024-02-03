@@ -1,7 +1,10 @@
 /* eslint-disable @stylistic/indent */
 import type {Title} from '../lib/title';
 import type {Config} from '../base';
-import type {AstNodes, Token, ParameterToken} from '../internal';
+import type {
+	AstNodes,
+	Token,
+} from '../internal';
 
 declare global {
 	type TokenAttribute<T extends string> =
@@ -11,12 +14,6 @@ declare global {
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' | 'plain' ? boolean :
-		T extends 'pattern' ? RegExp :
-		T extends 'flags' ? string[] :
-		T extends 'tags' ? [string, string] :
-		T extends 'quotes' ? [string?, string?] :
-		T extends 'optional' | 'keys' ? Set<string> :
-		T extends 'args' ? Map<string, Set<ParameterToken>> :
 		T extends 'title' ? Title :
 		string;
 
