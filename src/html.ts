@@ -146,13 +146,25 @@ export abstract class HtmlToken extends Token {
 
 	/** @override */
 	override text(): string {
-		const {closing, name} = this,
-			tag = `${this.#tag}${closing ? '' : super.text()}`,
-			{html} = this.getAttribute('config');
-		if (html[2].includes(name)) {
-			return closing && name !== 'br' ? '' : `<${tag}>`;
+		const {
+				closing,
+
+				/* NOT FOR BROWSER */
+
+				name,
+			} = this,
+			{html: [,, voidTags]} = this.getAttribute('config'),
+			tag = `${this.#tag}${closing ? '' : super.text()}`;
+
+		/* NOT FOR BROWSER */
+
+		if (voidTags.includes(name)) {
+			return closing && name !== 'br' ? '' : `<${tag}/>`;
 		}
-		return `<${closing ? '/' : ''}${tag}${this.#selfClosing && html[1].includes(name) ? '/' : ''}>`;
+
+		/* NOT FOR BROWSER END */
+
+		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/** @private */
