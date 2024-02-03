@@ -21,6 +21,7 @@
 	"HTML tag in table attributes": "表格属性中的HTML标签",
 	"illegal attribute name": "非法的属性名",
 	"illegal module name": "非法的模块名称",
+	"inconsistent table layout": "不一致的表格布局",
 	"insecure style": "不安全的样式",
 	"internal link in an external link": "外链中的内链",
 	"invalid content in <$1>": "<$1>内的无效内容",
