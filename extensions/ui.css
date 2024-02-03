@@ -31,7 +31,7 @@
 	display: inline-block;
 }
 
-.wpb-html-invalid, .wpb-image-invalid, .wpb-table-inter {
+.wpb-table-inter {
 	color: #f00;
 	font-weight: normal;
 	text-decoration: underline wavy 1px;
