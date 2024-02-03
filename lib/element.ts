@@ -31,24 +31,6 @@ export abstract class AstElement extends AstNode {
 		return text(this.childNodes, separator);
 	}
 
-	/** 合并相邻的文本子节点 */
-	normalize(): void {
-		const childNodes = [...this.childNodes];
-		for (let i = childNodes.length - 1; i >= 0; i--) {
-			const {type, data} = childNodes[i]!,
-				prev = childNodes[i - 1];
-			if (type !== 'text' || this.getGaps(i - 1)) {
-				//
-			} else if (data === '') {
-				childNodes.splice(i, 1);
-			} else if (prev?.type === 'text') {
-				prev.setAttribute('data', prev.data + data);
-				childNodes.splice(i, 1);
-			}
-		}
-		this.setAttribute('childNodes', childNodes);
-	}
-
 	/**
 	 * 移除子节点
 	 * @param i 移除位置
