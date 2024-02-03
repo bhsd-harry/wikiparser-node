@@ -1,7 +1,10 @@
 /* eslint-disable @stylistic/indent */
 import type {Title} from '../lib/title';
 import type {Config} from '../base';
-import type {AstNodes, Token, ParameterToken} from '../internal';
+import type {
+	AstNodes,
+	Token,
+} from '../internal';
 
 declare global {
 	type TokenAttribute<T extends string> =
