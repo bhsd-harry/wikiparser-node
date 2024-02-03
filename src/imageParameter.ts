@@ -157,11 +157,9 @@ export abstract class ImageParameterToken extends Token {
 	/** @override */
 	override print(): string {
 		if (this.#syntax) {
-			return this.name === 'invalid'
-				? `<span class="wpb-image-invalid">${this.#syntax.replace('$1', print(this.childNodes))}</span>`
-				: `<span class="wpb-image-parameter">${
-					this.#syntax.replace('$1', `<span class="wpb-image-caption">${print(this.childNodes)}</span>`)
-				}</span>`;
+			return `<span class="wpb-image-parameter">${
+				this.#syntax.replace('$1', `<span class="wpb-image-caption">${print(this.childNodes)}</span>`)
+			}</span>`;
 		}
 		return super.print({class: 'image-caption'});
 	}
