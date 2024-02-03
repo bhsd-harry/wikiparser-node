@@ -591,7 +591,6 @@
 		"unicorn/no-negated-condition": 2,
 		"unicorn/no-object-as-default-parameter": 2,
 		"unicorn/no-static-only-class": 2,
-		"unicorn/no-this-assignment": 0,
 		"unicorn/no-typeof-undefined": [
 			2,
 			{
@@ -626,7 +625,6 @@
 		"unicorn/prefer-optional-catch-binding": 2,
 		"unicorn/prefer-prototype-methods": 2,
 		"unicorn/prefer-spread": 2,
-		"unicorn/prefer-string-replace-all": 0,
 		"unicorn/prefer-string-starts-ends-with": 2,
 		"unicorn/prefer-switch": 2,
 		"unicorn/prefer-ternary": 2,
@@ -696,7 +694,6 @@
 				"checkSetters": "no-getter"
 			}
 		],
-		"jsdoc/require-param-description": 0,
 		"jsdoc/require-param-name": [
 			1,
 			{
@@ -708,7 +705,6 @@
 				]
 			}
 		],
-		"jsdoc/require-param-type": 0,
 		"jsdoc/require-param": [
 			1,
 			{
@@ -721,8 +717,6 @@
 				"checkConstructors": false
 			}
 		],
-		"jsdoc/require-returns-check": 0,
-		"jsdoc/require-returns-type": 0,
 		"jsdoc/require-throws": 1,
 		"eslint-comments/disable-enable-pair": [
 			2,
@@ -1014,7 +1008,8 @@
 					}
 				],
 				"@typescript-eslint/unified-signatures": 2,
-				"@stylistic/type-generic-spacing": 2
+				"@stylistic/type-generic-spacing": 2,
+				"jsdoc/check-types": 0
 			}
 		}
 	],
