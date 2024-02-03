@@ -60,7 +60,7 @@ h2 {
 .field {
 	position: relative;
 }
-input {
+.field > input {
 	position: relative;
 	z-index: 1;
 	opacity: 0;
@@ -95,7 +95,7 @@ input:active + span {
 	background-color: var(--color-active);
 	border-color: var(--color-active);
 }
-label {
+.header > label {
 	padding-left: .7em;
 }
 textarea {
@@ -117,7 +117,7 @@ textarea {
 	margin: 1rem 0;
 }
 
-button {
+.tab > button {
 	float: left;
 	font-size: var(--font-size-h2);
 	font-weight: bold;
@@ -128,10 +128,10 @@ button {
 	padding: .7rem 1rem;
 	transition: .3s;
 }
-button:hover {
+.tab > button:hover {
 	background-color: #ddd;
 }
-button.active {
+.tab > button.active {
 	background-color: var(--color-button);
 }
 
