@@ -31,7 +31,7 @@
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; node ./dist/bin/declaration.js",
 		"prepublishOnly": "npm run build && rm dist/internal.js dist/base.js dist/[pu]*/*.d.ts",
 		"build": "bash build.sh",
-		"diff": "git diff --ignore-all-space --color-moved",
+		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
