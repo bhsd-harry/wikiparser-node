@@ -36,13 +36,9 @@ export abstract class AstElement extends AstNode {
 		const childNodes = [...this.childNodes];
 		for (let i = childNodes.length - 1; i >= 0; i--) {
 			const {type, data} = childNodes[i]!,
-				prev = childNodes[i - 1];
 			if (type !== 'text' || this.getGaps(i - 1)) {
 				//
 			} else if (data === '') {
-				childNodes.splice(i, 1);
-			} else if (prev?.type === 'text') {
-				prev.setAttribute('data', prev.data + data);
 				childNodes.splice(i, 1);
 			}
 		}
