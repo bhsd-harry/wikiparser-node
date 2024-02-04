@@ -163,9 +163,13 @@ export abstract class AstElement extends AstNode {
 				//
 			} else if (data === '') {
 				childNodes.splice(i, 1);
+
+				/* NOT FOR BROWSER */
 			} else if (prev?.type === 'text') {
 				prev.setAttribute('data', prev.data + data);
 				childNodes.splice(i, 1);
+
+				/* NOT FOR BROWSER END */
 			}
 		}
 		this.setAttribute('childNodes', childNodes);
