@@ -35,7 +35,7 @@
 		"build:core": "esbuild index.ts --bundle --minify --target=es2018 --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.json bundle/bundle.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build": "npm run build:core && npm run build:ext",
-		"diff": "git diff --ignore-all-space --color-moved",
+		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
