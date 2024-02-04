@@ -36,11 +36,15 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	const instance = new CodeMirror6(textbox2),
 		mwConfig = getMwConfig(config);
 	instance.prefer([
+		'allowMultipleSelections',
+		'bracketMatching',
+		'closeBrackets',
+		'escape',
+		'codeFolding',
+		'highlightActiveLine',
 		'highlightSpecialChars',
 		'highlightWhitespace',
 		'highlightTrailingWhitespace',
-		'bracketMatching',
-		'closeBrackets',
 	]);
 
 	/**
