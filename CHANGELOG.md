@@ -1,10 +1,19 @@
 ## v1.4.4
 
-*2024-02-02*
+*2024-02-04*
 
 **Added**
 
 - New category of linting errors: inconsistent [table layout](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#getlayout)
+
+**Fixed**
+
+- Inconsistent output from `AttributesToken.prototype.print`
+
+**Changed**
+
+- `HtmlToken.prototype.print` and `ImageParameterToken.prototype.print` do not differentiate invalid tokens any more
+- `HtmlToken.prototype.text` now treats void tags as self-closing tags
 
 ## v1.4.3
 

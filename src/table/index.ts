@@ -84,10 +84,13 @@ export abstract class TableToken extends TrBaseToken {
 		/* NOT FOR BROWSER */
 
 		const layout = this.getLayout(),
-			j = new Array(layout.length - 1).fill(undefined)
+			{length} = layout;
+		if (length > 1) {
+			const j = new Array(length - 1).fill(undefined)
 				.findIndex((_, i) => layout[i]!.length !== layout[i + 1]!.length) + 1;
-		if (j) {
-			errors.push(generateForChild(this.getNthRow(j)!, {start}, 'inconsistent table layout', 'warning'));
+			if (j) {
+				errors.push(generateForChild(this.getNthRow(j)!, {start}, 'inconsistent table layout', 'warning'));
+			}
 		}
 
 		/* NOT FOR BROWSER END */
