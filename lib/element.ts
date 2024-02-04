@@ -157,15 +157,21 @@ export abstract class AstElement extends AstNode {
 	normalize(): void {
 		const childNodes = [...this.childNodes];
 		for (let i = childNodes.length - 1; i >= 0; i--) {
-			const {type, data} = childNodes[i]!,
-				prev = childNodes[i - 1];
+			const {type, data} = childNodes[i]!;
 			if (type !== 'text' || this.getGaps(i - 1)) {
 				//
 			} else if (data === '') {
 				childNodes.splice(i, 1);
-			} else if (prev?.type === 'text') {
-				prev.setAttribute('data', prev.data + data);
-				childNodes.splice(i, 1);
+
+				/* NOT FOR BROWSER */
+			} else {
+				const prev = childNodes[i - 1];
+				if (prev?.type === 'text') {
+					prev.setAttribute('data', prev.data + data);
+					childNodes.splice(i, 1);
+				}
+
+				/* NOT FOR BROWSER END */
 			}
 		}
 		this.setAttribute('childNodes', childNodes);
