@@ -166,6 +166,7 @@ export class Token extends AstElement {
 			str = String(firstChild);
 		if (length === 1 && firstChild!.type === 'text' && str.includes('\0')) {
 			this.replaceChildren(...this.buildFromStr(str));
+			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
 					token.#build();
