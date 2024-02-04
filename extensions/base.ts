@@ -28,7 +28,7 @@ const workerJS = (): void => {
 				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, JSON.stringify(Parser.parse(wikitext, include).json())]);
+				postMessage([qid, Parser.parse(wikitext, include).json()]);
 				break;
 			case 'lint':
 				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
@@ -113,8 +113,8 @@ const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
  * @param include 是否嵌入
  * @param qid 编号
  */
-const json = async (wikitext: string, include: boolean, qid: number): Promise<AST> =>
-	JSON.parse(await getFeedback('json', qid, false, wikitext, include));
+const json = (wikitext: string, include: boolean, qid: number): Promise<AST> =>
+	getFeedback('json', qid, false, wikitext, include);
 
 /**
  * 将解析改为异步执行
