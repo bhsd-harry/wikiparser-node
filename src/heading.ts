@@ -78,21 +78,27 @@ export abstract class HeadingToken extends Token {
 		let rect: BoundingRect | undefined;
 		if (this.level === 1) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(firstChild, rect, '<h1>'));
+			errors.push(generateForChild(firstChild, rect, 'h1', '<h1>'));
 		}
 		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(firstChild, rect, Parser.msg('unbalanced $1 in a section header', '"="')));
+			errors.push(generateForChild(
+				firstChild,
+				rect,
+				'unbalanced-header',
+				Parser.msg('unbalanced $1 in a section header', '"="'),
+			));
 		}
 		if (this.closest('html-attrs, table-attrs')) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForSelf(this, rect, 'section header in a HTML tag'));
+			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in a HTML tag'));
 		}
 		if (boldQuotes.length % 2) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(
 				boldQuotes[boldQuotes.length - 1]!,
 				{...rect, start: start + level, left: rect.left + level},
+				'format-leakage',
 				Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
 			));
 		}
@@ -101,6 +107,7 @@ export abstract class HeadingToken extends Token {
 			errors.push(generateForChild(
 				italicQuotes[italicQuotes.length - 1]!,
 				{start: start + level},
+				'format-leakage',
 				Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
 			));
 		}

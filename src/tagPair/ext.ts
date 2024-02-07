@@ -164,11 +164,11 @@ export abstract class ExtToken extends TagPairToken {
 		let rect: BoundingRect | undefined;
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForSelf(this, rect, 'extension tag in HTML tag attributes'));
+			errors.push(generateForSelf(this, rect, 'parsing-order', 'extension tag in HTML tag attributes'));
 		}
 		if (this.name === 'ref' && this.closest('heading-title')) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForSelf(this, rect, 'variable anchor in a section header'));
+			errors.push(generateForSelf(this, rect, 'var-anchor', 'variable anchor in a section header'));
 		}
 		return errors;
 	}

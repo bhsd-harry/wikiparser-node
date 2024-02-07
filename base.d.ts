@@ -14,7 +14,42 @@ export interface Config {
 
 export type Severity = 'error' | 'warning';
 
+export type Rule = 'bold-header'
+	| 'format-leakage'
+	| 'fostered-content'
+	| 'h1'
+	| 'illegal-attr'
+	| 'insecure-style'
+	| 'invalid-gallery'
+	| 'invalid-imagemap'
+	| 'invalid-invoke'
+	| 'lonely-apos'
+	| 'lonely-bracket'
+	| 'lonely-http'
+	| 'nested-link'
+	| 'no-arg'
+	| 'no-duplicate'
+	| 'no-ignored'
+	| 'obsolete-attr'
+	| 'obsolete-tag'
+	| 'parsing-order'
+	| 'pipe-like'
+	| 'table-layout'
+	| 'tag-like'
+	| 'unbalanced-header'
+	| 'unclosed-comment'
+	| 'unclosed-quote'
+	| 'unclosed-table'
+	| 'unescaped'
+	| 'unknown-page'
+	| 'unmatched-tag'
+	| 'unterminated-url'
+	| 'url-encoding'
+	| 'var-anchor'
+	| 'void-ext';
+
 export interface LintError {
+	readonly rule: Rule;
 	readonly message: string;
 	readonly severity: Severity;
 	readonly startIndex: number;

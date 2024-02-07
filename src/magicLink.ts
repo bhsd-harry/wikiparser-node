@@ -44,7 +44,7 @@ export abstract class MagicLinkToken extends Token {
 				continue;
 			}
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			const refError = generateForChild(child, rect, '', 'warning');
+			const refError = generateForChild(child, rect, 'unterminated-url', '', 'warning');
 			regexGlobal.lastIndex = 0;
 			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
 				const {index, 0: s} = mt,

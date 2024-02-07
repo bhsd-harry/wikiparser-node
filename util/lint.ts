@@ -1,10 +1,11 @@
 import Parser from '../index';
-import type {LintError, Severity} from '../base';
+import type {LintError, Severity, Rule} from '../base';
 import type {AstNodes} from '../internal';
 
 declare type generator = (
 	token: AstNodes,
 	boundingRect: BoundingRect | {start: number},
+	rule: Rule,
 	msg: string,
 	severity?: Severity,
 ) => LintError;
@@ -20,12 +21,13 @@ const factory = (
 		top: number,
 		left: number,
 	) => Pick<LintError, 'startIndex' | 'startLine' | 'startCol'>,
-): generator => (token, boundingRect, msg, severity = 'error') => {
+): generator => (token, boundingRect, rule, msg, severity = 'error') => {
 	const {start} = boundingRect,
 		{top, left} = 'top' in boundingRect ? boundingRect : token.getRootNode().posFromIndex(start)!,
 		{offsetHeight, offsetWidth} = token,
 		{startIndex, startLine, startCol} = func(token, start, top, left);
 	return {
+		rule,
 		message: Parser.msg(msg),
 		severity,
 		startIndex,
