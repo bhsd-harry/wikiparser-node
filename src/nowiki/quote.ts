@@ -26,7 +26,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			errors: LintError[] = [];
 		let refError: LintError | undefined;
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
-			refError = generateForSelf(this, {start}, message);
+			refError = generateForSelf(this, {start}, 'lonely-apos', message);
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
 				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousSibling.data) as string[] as [string, string],
 				startIndex = start - length;
@@ -40,7 +40,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
-			refError ??= generateForSelf(this, {start}, message);
+			refError ??= generateForSelf(this, {start}, 'lonely-apos', message);
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = /^'+/u.exec(nextSibling.data)!,
 				endIndex = startIndex + length;
@@ -54,9 +54,10 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			});
 		}
 		if (bold && this.closest('heading-title')) {
-			refError ??= generateForSelf(this, {start}, message);
+			refError ??= generateForSelf(this, {start}, 'lonely-apos', message);
 			errors.push({
 				...refError,
+				rule: 'bold-header',
 				message: Parser.msg('bold in section header'),
 				severity: 'warning',
 			});

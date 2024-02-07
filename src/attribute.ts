@@ -316,7 +316,13 @@ export abstract class AttributeToken extends Token {
 		if (!balanced) {
 			const root = this.getRootNode();
 			rect = {start, ...root.posFromIndex(start)!};
-			const e = generateForChild(lastChild, rect, Parser.msg('unclosed $1', 'quotes'), 'warning');
+			const e = generateForChild(
+				lastChild,
+				rect,
+				'unclosed-quote',
+				Parser.msg('unclosed $1', 'quotes'),
+				'warning',
+			);
 			errors.push({
 				...e,
 				startIndex: e.startIndex - 1,
@@ -332,16 +338,16 @@ export abstract class AttributeToken extends Token {
 			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(firstChild, rect, 'illegal attribute name'));
+			errors.push(generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name'));
 		} else if (obsoleteAttrs[tag]?.has(name)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(firstChild, rect, 'obsolete attribute', 'warning'));
+			errors.push(generateForChild(firstChild, rect, 'obsolete-attr', 'obsolete attribute', 'warning'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(lastChild, rect, 'insecure style'));
+			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
 		} else if (name === 'tabindex' && typeof value === 'string' && value.trim() !== '0') {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(lastChild, rect, 'nonzero tabindex'));
+			errors.push(generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex'));
 		}
 		return errors;
 	}

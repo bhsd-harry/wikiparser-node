@@ -95,21 +95,23 @@ export abstract class LinkBaseToken extends Token {
 		let rect: BoundingRect | undefined;
 		if (target.childNodes.some(({type}) => type === 'template')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(target, rect, 'template in an internal link target', 'warning'));
+			errors.push(
+				generateForChild(target, rect, 'unknown-page', 'template in an internal link target', 'warning'),
+			);
 		}
 		if (encoded) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(target, rect, 'unnecessary URL encoding in an internal link'));
+			errors.push(generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link'));
 		}
 		if (
 			(linkType === 'link' || linkType === 'category')
 			&& linkText?.childNodes.some(({type, data}) => type === 'text' && data.includes('|'))
 		) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(linkText, rect, 'additional "|" in the link text', 'warning'));
+			errors.push(generateForChild(linkText, rect, 'pipe-like', 'additional "|" in the link text', 'warning'));
 		} else if (linkType !== 'link' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(target, rect, 'useless fragment'));
+			errors.push(generateForChild(target, rect, 'no-ignored', 'useless fragment'));
 		}
 		return errors;
 	}

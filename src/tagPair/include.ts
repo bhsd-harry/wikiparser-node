@@ -35,6 +35,8 @@ export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return this.closed ? [] : [generateForSelf(this, {start}, Parser.msg('unclosed $1', `<${this.name}>`))];
+		return this.closed
+			? []
+			: [generateForSelf(this, {start}, 'unclosed-comment', Parser.msg('unclosed $1', `<${this.name}>`))];
 	}
 }

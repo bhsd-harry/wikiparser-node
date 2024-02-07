@@ -69,7 +69,7 @@ export abstract class ArgToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (!this.getAttribute('include')) {
-			return [generateForSelf(this, {start}, 'unexpected template argument')];
+			return [generateForSelf(this, {start}, 'no-arg', 'unexpected template argument')];
 		}
 		const {childNodes: [argName, argDefault, ...rest]} = this,
 			errors = argName.lint(start + 3);
@@ -79,7 +79,7 @@ export abstract class ArgToken extends Token {
 		if (rest.length > 0) {
 			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(...rest.map(child => {
-				const error = generateForChild(child, rect, 'invisible content inside triple braces');
+				const error = generateForChild(child, rect, 'no-ignored', 'invisible content inside triple braces');
 				return {
 					...error,
 					startIndex: error.startIndex - 1,

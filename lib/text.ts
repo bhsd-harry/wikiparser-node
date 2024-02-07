@@ -1,6 +1,6 @@
 import Parser from '../index';
 import {AstNode} from './node';
-import type {LintError} from '../base';
+import type {LintError, Rule} from '../base';
 import type {ExtToken} from '../internal';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -19,6 +19,14 @@ const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
 		'{': /[{}]/u,
 		']': /[[\]](?=[^[\]]*$)/u,
 		'}': /[{}](?=[^{}]*$)/u,
+	},
+	ruleMap: Record<string, Rule> = {
+		'<': 'tag-like',
+		'[': 'lonely-bracket',
+		'{': 'lonely-bracket',
+		']': 'lonely-bracket',
+		'}': 'lonely-bracket',
+		h: 'lonely-http',
 	},
 	disallowedTags = [
 		'html',
@@ -182,6 +190,7 @@ export class AstText extends AstNode {
 				line = lines[lines.length - 1]!,
 				startCol = lines.length === 1 ? left + line.length : line.length;
 			errors.push({
+				rule: ruleMap[char!]!,
 				message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
 				severity,
 				startIndex,
