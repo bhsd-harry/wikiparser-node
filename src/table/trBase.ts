@@ -59,7 +59,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 				}
 			} catch {}
 		}
-		const error = generateForChild(inter, {start}, 'content to be moved out from the table');
+		const error = generateForChild(inter, {start}, 'fostered-content', 'content to be moved out from the table');
 		errors.push({
 			...error,
 			severity: first.type === 'template' ? 'warning' : 'error',

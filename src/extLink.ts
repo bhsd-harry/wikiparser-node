@@ -122,7 +122,7 @@ export abstract class ExtLinkToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (this.length === 1 && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, {start}, 'variable anchor in a section header'));
+			errors.push(generateForSelf(this, {start}, 'var-anchor', 'variable anchor in a section header'));
 		}
 		return errors;
 	}

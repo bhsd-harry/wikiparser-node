@@ -8,6 +8,7 @@ import Parser from '../index';
 import {Token} from './index';
 import type {
 	LintError,
+	Rule,
 	AST,
 } from '../base';
 import type {AttributesParentBase} from '../mixin/attributesParent';
@@ -187,13 +188,14 @@ export abstract class HtmlToken extends Token {
 		const errors = super.lint(start);
 		let refError: LintError | undefined;
 		if (this.name === 'h1' && !this.closing) {
-			refError = generateForSelf(this, {start}, '<h1>');
+			refError = generateForSelf(this, {start}, 'h1', '<h1>');
 			errors.push(refError);
 		}
 		if (this.closest('table-attrs')) {
-			refError ??= generateForSelf(this, {start}, '');
+			refError ??= generateForSelf(this, {start}, 'h1', '');
 			errors.push({
 				...refError,
+				rule: 'parsing-order',
 				message: Parser.msg('HTML tag in table attributes'),
 			});
 		}
@@ -202,9 +204,9 @@ export abstract class HtmlToken extends Token {
 		} catch (e) {
 			if (e instanceof SyntaxError) {
 				const {message} = e;
-				refError ??= generateForSelf(this, {start}, '');
+				refError ??= generateForSelf(this, {start}, 'h1', '');
 				const [msg] = message.split(':'),
-					error = {...refError, message: Parser.msg(msg!)};
+					error = {...refError, rule: 'unmatched-tag' as Rule, message: Parser.msg(msg!)};
 				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
 					if (formattingTags.has(this.name)) {
 						const childNodes = this.parentNode?.childNodes,
@@ -225,17 +227,19 @@ export abstract class HtmlToken extends Token {
 			}
 		}
 		if (obsoleteTags.has(this.name)) {
-			refError ??= generateForSelf(this, {start}, '');
+			refError ??= generateForSelf(this, {start}, 'h1', '');
 			errors.push({
 				...refError,
+				rule: 'obsolete-tag',
 				message: Parser.msg('obsolete HTML tag'),
 				severity: 'warning',
 			});
 		}
 		if ((this.name === 'b' || this.name === 'strong') && this.closest('heading-title')) {
-			refError ??= generateForSelf(this, {start}, '');
+			refError ??= generateForSelf(this, {start}, 'h1', '');
 			errors.push({
 				...refError,
+				rule: 'format-leakage',
 				message: Parser.msg('bold in section header'),
 				severity: 'warning',
 			});

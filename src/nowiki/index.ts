@@ -26,7 +26,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name, firstChild: {data}} = this;
 		return (name === 'templatestyles' || name === 'section') && data
-			? [generateForSelf(this, {start}, Parser.msg('nothing should be in <$1>', name))]
+			? [generateForSelf(this, {start}, 'void-ext', Parser.msg('nothing should be in <$1>', name))]
 			: super.lint(start);
 	}
 }

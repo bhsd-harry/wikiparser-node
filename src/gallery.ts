@@ -105,6 +105,7 @@ export abstract class GalleryToken extends Token {
 				startCol = i ? 0 : left;
 			if (child.type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				errors.push({
+					rule: 'no-ignored',
 					message: Parser.msg('invalid content in <$1>', 'gallery'),
 					severity: 'error',
 					startIndex: start,

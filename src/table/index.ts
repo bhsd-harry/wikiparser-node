@@ -78,7 +78,9 @@ export abstract class TableToken extends TrBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start);
 		if (!this.closed) {
-			errors.push(generateForChild(this.firstChild, {start}, Parser.msg('unclosed $1', 'table')));
+			errors.push(
+				generateForChild(this.firstChild, {start}, 'unclosed-table', Parser.msg('unclosed $1', 'table')),
+			);
 		}
 
 		/* NOT FOR BROWSER */
@@ -89,7 +91,13 @@ export abstract class TableToken extends TrBaseToken {
 			const j = new Array(length - 1).fill(undefined)
 				.findIndex((_, i) => layout[i]!.length !== layout[i + 1]!.length) + 1;
 			if (j) {
-				errors.push(generateForChild(this.getNthRow(j)!, {start}, 'inconsistent table layout', 'warning'));
+				errors.push(generateForChild(
+					this.getNthRow(j)!,
+					{start},
+					'table-layout',
+					'inconsistent table layout',
+					'warning',
+				));
 			}
 		}
 
