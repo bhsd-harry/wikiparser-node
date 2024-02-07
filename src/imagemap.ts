@@ -136,10 +136,10 @@ export abstract class ImagemapToken extends Token {
 				...this.childNodes.filter(child => {
 					const str = String(child).trim();
 					return child.type === 'noinclude' && str && !str.startsWith('#');
-				}).map(child => generateForChild(child, rect, 'invalid link in <imagemap>')),
+				}).map(child => generateForChild(child, rect, 'invalid-imagemap', 'invalid link in <imagemap>')),
 			);
 		} else {
-			errors.push(generateForSelf(this, rect, '<imagemap> without an image'));
+			errors.push(generateForSelf(this, rect, 'invalid-imagemap', '<imagemap> without an image'));
 		}
 		return errors;
 	}

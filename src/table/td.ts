@@ -122,6 +122,7 @@ export abstract class TdToken extends TableBaseToken {
 					errors.push(generateForChild(
 						child,
 						{start},
+						'pipe-like',
 						'additional "|" in a table cell',
 						data.includes('||') ? 'error' : 'warning',
 					));

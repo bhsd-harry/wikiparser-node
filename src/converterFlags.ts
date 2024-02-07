@@ -82,7 +82,7 @@ export abstract class ConverterFlagsToken extends Token {
 				&& !unknownFlags.has(flag)
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
-				errors.push(generateForChild(child, rect, 'invalid conversion flag'));
+				errors.push(generateForChild(child, rect, 'no-ignored', 'invalid conversion flag'));
 			}
 		}
 		return errors;

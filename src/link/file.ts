@@ -75,7 +75,7 @@ export abstract class FileToken extends LinkBaseToken {
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key));
 		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
-			errors.push(generateForSelf(this, {start}, 'internal link in an external link'));
+			errors.push(generateForSelf(this, {start}, 'nested-link', 'internal link in an external link'));
 		}
 		if (
 			args.length === keys.length
@@ -93,7 +93,8 @@ export abstract class FileToken extends LinkBaseToken {
 		 * @param p1 替换$1
 		 */
 		const generate = (msg: string, p1: string) =>
-			(arg: ImageParameterToken) => generateForChild(arg, rect, Parser.msg(`${msg} image $1 parameter`, p1));
+			(arg: ImageParameterToken) =>
+				generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
 		for (const key of keys) {
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {

@@ -83,7 +83,12 @@ export abstract class ParameterToken extends Token {
 			{firstChild} = this,
 			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu').exec(firstChild.text())?.[0];
 		if (link && new URL(link).search) {
-			const e = generateForChild(firstChild, {start}, 'unescaped query string in an anonymous parameter');
+			const e = generateForChild(
+				firstChild,
+				{start},
+				'unescaped',
+				'unescaped query string in an anonymous parameter',
+			);
 			errors.push({
 				...e,
 				startIndex: e.endIndex,
