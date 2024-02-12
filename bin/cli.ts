@@ -51,7 +51,7 @@ const plural = (n: number, word: string): string => `${n} ${word}${n > 1 ? 's' :
  * @param severity problem severity
  */
 const coloredSeverity = (severity: 'error' | 'warning'): string =>
-	`\x1B[${severity === 'error' ? 31 : 33}m${severity}\x1B[0m`.padEnd(16);
+	`\x1B[${severity === 'error' ? 31 : 33}m${severity.padEnd(7)}\x1B[0m`;
 
 for (let i = 2; i < argv.length; i++) {
 	option = argv[i]!;
@@ -130,12 +130,16 @@ for (const file of files) {
 	if (problems.length > 0) {
 		console.error('\x1B[4m%s\x1B[0m', resolve(file));
 		const {length: maxLineChars} = String(Math.max(...problems.map(({startLine}) => startLine))),
-			{length: maxColChars} = String(Math.max(...problems.map(({startCol}) => startCol)));
-		for (const {message, severity, startLine, startCol} of problems) {
+			{length: maxColChars} = String(Math.max(...problems.map(({startCol}) => startCol))),
+			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
+		for (const {rule, message, severity, startLine, startCol} of problems) {
 			console.error(
-				`  ${String(startLine).padStart(maxLineChars)}:${String(startCol).padEnd(maxColChars)}  ${
-					coloredSeverity(severity)
-				}  ${message}`,
+				`  \x1B[37m%s:%s\x1B[0m  %s  %s  \x1B[37m%s\x1B[0m`,
+				String(startLine).padStart(maxLineChars),
+				String(startCol).padEnd(maxColChars),
+				coloredSeverity(severity),
+				message.padEnd(maxMessageChars),
+				rule,
 			);
 		}
 		console.error();
