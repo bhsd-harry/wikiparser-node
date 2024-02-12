@@ -9,12 +9,6 @@ declare global {
 	module '/*' {
 		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
-
-		/**
-		 * 将wikiparser-node设置转换为codemirror-mediawiki设置
-		 * @param config
-		 */
-		export function getMwConfig(config: Config): MwConfig;
 	}
 
 	const Parser: Parser;

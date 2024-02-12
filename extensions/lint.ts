@@ -51,11 +51,12 @@ class Linter {
 	 * @param wikitext 待分析的文本
 	 */
 	async codemirror(wikitext: string): Promise<Diagnostic[]> {
-		return (await this.queue(wikitext)).map(({startIndex, endIndex, severity, message}) => ({
+		return (await this.queue(wikitext)).map(({startIndex, endIndex, severity, message, rule}) => ({
+			source: 'WikiLint',
 			from: startIndex,
 			to: endIndex,
 			severity,
-			message,
+			message: `${message} (${rule})`,
 		}));
 	}
 }

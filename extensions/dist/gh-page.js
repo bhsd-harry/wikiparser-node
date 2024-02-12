@@ -1,5 +1,4 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
-import { getMwConfig } from '/codemirror-mediawiki/gh-page.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
@@ -8,13 +7,17 @@ const keys = new Set(['type', 'childNodes', 'range']);
     wikiparse.setConfig(config);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
-    const instance = new CodeMirror6(textbox2), mwConfig = getMwConfig(config);
+    const instance = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
     instance.prefer([
+        'allowMultipleSelections',
+        'bracketMatching',
+        'closeBrackets',
+        'escape',
+        'codeFolding',
+        'highlightActiveLine',
         'highlightSpecialChars',
         'highlightWhitespace',
         'highlightTrailingWhitespace',
-        'bracketMatching',
-        'closeBrackets',
     ]);
     const updateDoc = (str) => {
         if (str) {

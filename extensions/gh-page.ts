@@ -1,5 +1,4 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
-import {getMwConfig} from '/codemirror-mediawiki/gh-page.js';
 import type {Config, AST} from '../base';
 
 /**
@@ -34,7 +33,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 
 	// CodeMirror初始化
 	const instance = new CodeMirror6(textbox2),
-		mwConfig = getMwConfig(config);
+		mwConfig = CodeMirror6.getMwConfig(config);
 	instance.prefer([
 		'allowMultipleSelections',
 		'bracketMatching',
