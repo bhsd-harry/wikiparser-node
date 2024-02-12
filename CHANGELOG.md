@@ -1,3 +1,11 @@
+## v1.4.5
+
+*2024-02-12*
+
+**Changed**
+
+- New property `rule` of the interface [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
+
 ## v1.4.4
 
 *2024-02-04*
