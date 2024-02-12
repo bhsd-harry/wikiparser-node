@@ -8,17 +8,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
     const instance = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
-    instance.prefer([
-        'allowMultipleSelections',
-        'bracketMatching',
-        'closeBrackets',
-        'escape',
-        'codeFolding',
-        'highlightActiveLine',
-        'highlightSpecialChars',
-        'highlightWhitespace',
-        'highlightTrailingWhitespace',
-    ]);
     const updateDoc = (str) => {
         if (str) {
             textbox.value = str;

@@ -34,17 +34,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	// CodeMirror初始化
 	const instance = new CodeMirror6(textbox2),
 		mwConfig = CodeMirror6.getMwConfig(config);
-	instance.prefer([
-		'allowMultipleSelections',
-		'bracketMatching',
-		'closeBrackets',
-		'escape',
-		'codeFolding',
-		'highlightActiveLine',
-		'highlightSpecialChars',
-		'highlightWhitespace',
-		'highlightTrailingWhitespace',
-	]);
 
 	/**
 	 * 更新第一个文本框
