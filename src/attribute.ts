@@ -381,6 +381,10 @@ export abstract class AttributeToken extends Token {
 			);
 			e.startIndex--;
 			e.startCol--;
+			e.fix = {
+				range: [e.endIndex, e.endIndex],
+				text: this.#quotes[0]!,
+			};
 			errors.push(e);
 		}
 		const attrs = extAttrs[tag];
@@ -401,7 +405,20 @@ export abstract class AttributeToken extends Token {
 			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
 		} else if (name === 'tabindex' && typeof value === 'string' && value.trim() !== '0') {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex'));
+			const e = generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex');
+			e.suggestions = [
+				{
+					desc: 'remove',
+					range: [start, e.endIndex],
+					text: '',
+				},
+				{
+					desc: '0 tabindex',
+					range: [e.startIndex, e.endIndex],
+					text: '0',
+				},
+			];
+			errors.push(e);
 		}
 		return errors;
 	}
