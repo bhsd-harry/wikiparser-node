@@ -379,11 +379,9 @@ export abstract class AttributeToken extends Token {
 				Parser.msg('unclosed $1', 'quotes'),
 				'warning',
 			);
-			errors.push({
-				...e,
-				startIndex: e.startIndex - 1,
-				startCol: e.startCol - 1,
-			});
+			e.startIndex--;
+			e.startCol--;
+			errors.push(e);
 		}
 		const attrs = extAttrs[tag];
 		if (

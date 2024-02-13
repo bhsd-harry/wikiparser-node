@@ -162,7 +162,7 @@ export abstract class MagicLinkToken extends Token {
 			if (type === 'template') {
 				this.constructorError('不可插入模板');
 			} else if (!Shadow.running && type === 'magic-word' && name !== '!' && name !== '=') {
-				this.constructorError('不可插入 `{{!}}` 或 `{{=}}` 以外的魔术字');
+				this.constructorError('不可插入 "{{!}}" 或 "{{=}}" 以外的魔术字');
 			}
 		}
 		return super.insertAt(token as string, i);

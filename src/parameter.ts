@@ -160,14 +160,12 @@ export abstract class ParameterToken extends Token {
 				'unescaped',
 				'unescaped query string in an anonymous parameter',
 			);
-			errors.push({
-				...e,
-				startIndex: e.endIndex,
-				endIndex: e.endIndex + 1,
-				startLine: e.endLine,
-				startCol: e.endCol,
-				endCol: e.endCol + 1,
-			});
+			e.startIndex = e.endIndex;
+			e.startLine = e.endLine;
+			e.startCol = e.endCol;
+			e.endIndex++;
+			e.endCol++;
+			errors.push(e);
 		}
 		return errors;
 	}
