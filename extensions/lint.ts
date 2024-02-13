@@ -56,6 +56,7 @@ class Linter {
 			from: startIndex,
 			to: endIndex,
 			severity,
+			rule,
 			message: `${message} (${rule})`,
 		}));
 	}
