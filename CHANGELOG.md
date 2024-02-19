@@ -1,3 +1,11 @@
+## v1.5.0
+
+*2024-02-20*
+
+**Added**
+
+- Auto-fix and suggestions for selected linting errors
+
 ## v1.4.5
 
 *2024-02-12*

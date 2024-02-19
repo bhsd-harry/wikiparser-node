@@ -3,7 +3,7 @@ import {setChildNodes} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, Rule} from '../base';
-import type {ExtToken} from '../internal';
+import type {AttributeToken, ExtToken} from '../internal';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
@@ -143,7 +143,8 @@ export class AstText extends AstNode {
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 		const {type, name} = parentNode!,
-			nowiki = name === 'nowiki' || name === 'pre';
+			nowiki = name === 'nowiki' || name === 'pre',
+			isHtmlAttrVal = type === 'attr-value' && (parentNode.parentNode as AttributeToken).type !== 'ext-attr';
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
 			errorRegex = new RegExp(
@@ -154,7 +155,7 @@ export class AstText extends AstNode {
 			type === 'free-ext-link'
 				|| type === 'ext-link-url'
 				|| type === 'image-parameter' && name === 'link'
-				|| type === 'attr-value'
+				|| isHtmlAttrVal
 		) {
 			errorRegex = errorSyntaxUrl;
 		} else {
@@ -201,7 +202,10 @@ export class AstText extends AstNode {
 				rootStr = String(root),
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
-				severity = length > 1 && (char !== '<' || !nowiki && /[\s/>]/u.test(nextChar ?? ''))
+				severity = length > 1 && !(
+					char === '<' && (nowiki || !/[\s/>]/u.test(nextChar ?? ''))
+					|| isHtmlAttrVal && (char === '[' || char === ']')
+				)
 				|| char === '{' && (nextChar === char || previousChar === '-')
 				|| char === '}' && (previousChar === char || nextChar === '-')
 				|| char === '[' && (
