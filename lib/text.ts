@@ -131,18 +131,15 @@ export class AstText extends AstNode {
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
-
-		/* NOT FOR BROWSER */
-
 		if (!parentNode) {
+			/* NOT FOR BROWSER */
+
 			throw new Error('无法对孤立文本节点进行语法分析！');
+
+			/* NOT FOR BROWSER END */
 		}
-
-		/* NOT FOR BROWSER END */
-
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-		const {type, name} = parentNode!,
+		const {type, name} = parentNode,
 			nowiki = name === 'nowiki' || name === 'pre',
 			isHtmlAttrVal = type === 'attr-value' && (parentNode.parentNode as AttributeToken).type !== 'ext-attr';
 		let errorRegex;
