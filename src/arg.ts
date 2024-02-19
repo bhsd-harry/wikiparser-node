@@ -68,11 +68,18 @@ export abstract class ArgToken extends Token {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		const {childNodes: [argName, argDefault, ...rest]} = this;
 		if (!this.getAttribute('include')) {
-			return [generateForSelf(this, {start}, 'no-arg', 'unexpected template argument')];
+			const e = generateForSelf(this, {start}, 'no-arg', 'unexpected template argument');
+			if (argDefault) {
+				e.fix = {
+					range: [start, start + String(this).length],
+					text: argDefault.text(),
+				};
+			}
+			return [e];
 		}
-		const {childNodes: [argName, argDefault, ...rest]} = this,
-			errors = argName.lint(start + 3);
+		const errors = argName.lint(start + 3);
 		if (argDefault) {
 			errors.push(...argDefault.lint(start + 4 + String(argName).length));
 		}
@@ -80,11 +87,21 @@ export abstract class ArgToken extends Token {
 			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(...rest.map(child => {
 				const error = generateForChild(child, rect, 'no-ignored', 'invisible content inside triple braces');
-				return {
-					...error,
-					startIndex: error.startIndex - 1,
-					startCol: error.startCol - 1,
-				};
+				error.startIndex--;
+				error.startCol--;
+				error.suggestions = [
+					{
+						desc: 'remove',
+						range: [error.startIndex, error.endIndex],
+						text: '',
+					},
+					{
+						desc: 'escape',
+						range: [error.startIndex, error.startIndex + 1],
+						text: '{{!}}',
+					},
+				];
+				return error;
 			}));
 		}
 		return errors;

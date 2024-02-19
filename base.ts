@@ -47,16 +47,23 @@ export type Rule = 'bold-header'
 	| 'var-anchor'
 	| 'void-ext';
 
+declare interface Fix {
+	readonly range: [number, number];
+	text: string;
+}
+
 export interface LintError {
-	readonly rule: Rule;
-	readonly message: string;
-	readonly severity: Severity;
-	readonly startIndex: number;
-	readonly endIndex: number;
-	readonly startLine: number;
-	readonly startCol: number;
-	readonly endLine: number;
-	readonly endCol: number;
+	rule: Rule;
+	message: string;
+	severity: Severity;
+	startIndex: number;
+	endIndex: number;
+	startLine: number;
+	startCol: number;
+	endLine: number;
+	endCol: number;
+	fix?: Fix;
+	suggestions?: (Fix & {desc: string})[];
 }
 
 /** 类似Node */
