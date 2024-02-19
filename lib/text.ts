@@ -1,7 +1,7 @@
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, Rule} from '../base';
-import type {ExtToken} from '../internal';
+import type {AttributeToken, ExtToken} from '../internal';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
@@ -92,7 +92,8 @@ export class AstText extends AstNode {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
 		const {type, name} = parentNode!,
-			nowiki = name === 'nowiki' || name === 'pre';
+			nowiki = name === 'nowiki' || name === 'pre',
+			isHtmlAttrVal = type === 'attr-value' && (parentNode.parentNode as AttributeToken).type !== 'ext-attr';
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
 			errorRegex = new RegExp(
@@ -103,7 +104,7 @@ export class AstText extends AstNode {
 			type === 'free-ext-link'
 				|| type === 'ext-link-url'
 				|| type === 'image-parameter' && name === 'link'
-				|| type === 'attr-value'
+				|| isHtmlAttrVal
 		) {
 			errorRegex = errorSyntaxUrl;
 		} else {
@@ -150,17 +151,20 @@ export class AstText extends AstNode {
 				rootStr = String(root),
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
-				severity = length > 1 && (char !== '<' || !nowiki && /[\s/>]/u.test(nextChar ?? ''))
+				severity = length > 1 && !(
+					char === '<' && (nowiki || !/[\s/>]/u.test(nextChar ?? ''))
+					|| isHtmlAttrVal && (char === '[' || char === ']')
+				)
 				|| char === '{' && (nextChar === char || previousChar === '-')
 				|| char === '}' && (previousChar === char || nextChar === '-')
 				|| char === '[' && (
 					nextChar === char
 					|| type === 'ext-link-text'
-					|| !data.slice(index + 1).trim() && nextType === 'free-ext-link'
+					|| nextType === 'free-ext-link' && !data.slice(index + 1).trim()
 				)
 				|| char === ']' && (
 					previousChar === char
-					|| !data.slice(0, index).trim() && previousType === 'free-ext-link'
+					|| previousType === 'free-ext-link' && !data.slice(0, index).includes(']')
 				)
 					? 'error'
 					: 'warning';
@@ -188,18 +192,55 @@ export class AstText extends AstNode {
 			const lines = data.slice(0, index).split('\n'),
 				startLine = lines.length + top - 1,
 				line = lines[lines.length - 1]!,
-				startCol = lines.length === 1 ? left + line.length : line.length;
-			errors.push({
-				rule: ruleMap[char!]!,
-				message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
-				severity,
-				startIndex,
-				endIndex,
-				startLine,
-				endLine: startLine,
-				startCol,
-				endCol: startCol + length,
-			});
+				startCol = lines.length === 1 ? left + line.length : line.length,
+				e: LintError = {
+					rule: ruleMap[char!]!,
+					message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
+					severity,
+					startIndex,
+					endIndex,
+					startLine,
+					endLine: startLine,
+					startCol,
+					endCol: startCol + length,
+				};
+			if (char === '<') {
+				e.suggestions = [
+					{
+						desc: 'escape',
+						range: [startIndex, startIndex + 1],
+						text: '&lt;',
+					},
+				];
+			} else if (
+				char === 'h'
+				&& !(type === 'ext-link-text' || type === 'link-text')
+				&& /[\p{L}\d_]/u.test(previousChar || '')
+			) {
+				e.suggestions = [
+					{
+						desc: 'whitespace',
+						range: [startIndex, startIndex],
+						text: ' ',
+					},
+				];
+			} else if (char === '[' && type === 'ext-link-text') {
+				const i = parentNode.getAbsoluteIndex() + String(parentNode).length;
+				e.suggestions = [
+					{
+						desc: 'escape',
+						range: [i, i + 1],
+						text: '&#93;',
+					},
+				];
+			} else if (char === ']' && previousType === 'free-ext-link' && severity === 'error') {
+				const i = start - String(previousSibling).length;
+				e.fix = {
+					range: [i, i],
+					text: '[',
+				};
+			}
+			errors.push(e);
 		}
 		return errors;
 	}
