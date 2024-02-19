@@ -90,8 +90,10 @@ export class AstText extends AstNode {
 	 */
 	lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
+		if (!parentNode) {
+		}
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
-		const {type, name} = parentNode!,
+		const {type, name} = parentNode,
 			nowiki = name === 'nowiki' || name === 'pre',
 			isHtmlAttrVal = type === 'attr-value' && (parentNode.parentNode as AttributeToken).type !== 'ext-attr';
 		let errorRegex;
