@@ -11,59 +11,61 @@ export interface Config {
 	readonly excludes?: string[];
 }
 
-export type Severity = 'error' | 'warning';
+export namespace LintError {
+	export type Severity = 'error' | 'warning';
 
-export type Rule = 'bold-header'
-	| 'format-leakage'
-	| 'fostered-content'
-	| 'h1'
-	| 'illegal-attr'
-	| 'insecure-style'
-	| 'invalid-gallery'
-	| 'invalid-imagemap'
-	| 'invalid-invoke'
-	| 'lonely-apos'
-	| 'lonely-bracket'
-	| 'lonely-http'
-	| 'nested-link'
-	| 'no-arg'
-	| 'no-duplicate'
-	| 'no-ignored'
-	| 'obsolete-attr'
-	| 'obsolete-tag'
-	| 'parsing-order'
-	| 'pipe-like'
-	| 'table-layout'
-	| 'tag-like'
-	| 'unbalanced-header'
-	| 'unclosed-comment'
-	| 'unclosed-quote'
-	| 'unclosed-table'
-	| 'unescaped'
-	| 'unknown-page'
-	| 'unmatched-tag'
-	| 'unterminated-url'
-	| 'url-encoding'
-	| 'var-anchor'
-	| 'void-ext';
+	export type Rule = 'bold-header'
+		| 'format-leakage'
+		| 'fostered-content'
+		| 'h1'
+		| 'illegal-attr'
+		| 'insecure-style'
+		| 'invalid-gallery'
+		| 'invalid-imagemap'
+		| 'invalid-invoke'
+		| 'lonely-apos'
+		| 'lonely-bracket'
+		| 'lonely-http'
+		| 'nested-link'
+		| 'no-arg'
+		| 'no-duplicate'
+		| 'no-ignored'
+		| 'obsolete-attr'
+		| 'obsolete-tag'
+		| 'parsing-order'
+		| 'pipe-like'
+		| 'table-layout'
+		| 'tag-like'
+		| 'unbalanced-header'
+		| 'unclosed-comment'
+		| 'unclosed-quote'
+		| 'unclosed-table'
+		| 'unescaped'
+		| 'unknown-page'
+		| 'unmatched-tag'
+		| 'unterminated-url'
+		| 'url-encoding'
+		| 'var-anchor'
+		| 'void-ext';
 
-declare interface Fix {
-	readonly range: [number, number];
-	text: string;
+	export interface Fix {
+		readonly range: [number, number];
+		text: string;
+	}
 }
 
 export interface LintError {
-	rule: Rule;
+	rule: LintError.Rule;
 	message: string;
-	severity: Severity;
+	severity: LintError.Severity;
 	startIndex: number;
 	endIndex: number;
 	startLine: number;
 	startCol: number;
 	endLine: number;
 	endCol: number;
-	fix?: Fix;
-	suggestions?: (Fix & {desc: string})[];
+	fix?: LintError.Fix;
+	suggestions?: (LintError.Fix & {desc: string})[];
 }
 
 export type AST = Record<string, string | number | boolean> & {
