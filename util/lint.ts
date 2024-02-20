@@ -1,13 +1,13 @@
 import Parser from '../index';
-import type {LintError, Severity, Rule} from '../base';
+import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
 
 declare type generator = (
 	token: AstNodes,
 	boundingRect: BoundingRect | {start: number},
-	rule: Rule,
+	rule: LintError.Rule,
 	msg: string,
-	severity?: Severity,
+	severity?: LintError.Severity,
 ) => LintError;
 
 /**

@@ -4,6 +4,7 @@ import {readFileSync, readdirSync, promises} from 'fs';
 import {resolve} from 'path';
 import * as chalk from 'chalk';
 import Parser = require('../index');
+import type {LintError} from '../base';
 
 const man = `
 Available options:
@@ -130,16 +131,13 @@ for (const file of files) {
 		problems = Parser.parse(wikitext, include).lint();
 	if (fixing && problems.some(({fix}) => fix)) {
 		// 倒序修复，跳过嵌套的修复
-		const fixable = problems.map(({fix}) => fix).filter(Boolean).sort((a, b) => {
-			const {range: [aStart, aEnd]} = a!,
-				{range: [bStart, bEnd]} = b!;
-			return aEnd === bEnd ? bStart - aStart : bEnd - aEnd;
-		});
+		const fixable = (problems.map(({fix}) => fix).filter(Boolean) as LintError.Fix[])
+			.sort(({range: [aFrom, aTo]}, {range: [bFrom, bTo]}) => aTo === bTo ? bFrom - aFrom : bTo - aTo);
 		let start = Infinity;
-		for (const fix of fixable) {
-			if (fix!.range[1] <= start) {
-				wikitext = `${wikitext.slice(0, fix!.range[0])}${fix!.text}${wikitext.slice(fix!.range[1])}`;
-				[start] = fix!.range;
+		for (const {range: [from, to], text} of fixable) {
+			if (to <= start) {
+				wikitext = `${wikitext.slice(0, from)}${text}${wikitext.slice(to)}`;
+				start = from;
 			}
 		}
 		void promises.writeFile(file, wikitext);
