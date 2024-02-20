@@ -1,14 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import * as chalk from 'chalk';
-import {
-	text,
-	print,
-
-	/* NOT FOR BROWSER */
-
-	noWrap,
-} from '../util/string';
+import {text, print} from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {typeAliases, classes} from '../util/constants';
 import {parseSelector} from '../parser/selector';
@@ -730,46 +722,6 @@ export abstract class AstElement extends AstNode {
 		return reference === undefined
 			? this.insertAt(child as T)
 			: this.insertAt(child as T, this.#getChildIndex(reference));
-	}
-
-	/**
-	 * 输出AST
-	 * @param depth 当前深度
-	 */
-	echo(depth = 0): void {
-		const indent = '  '.repeat(depth),
-			str = String(this),
-			{childNodes, type, length} = this;
-		if (childNodes.every(child => child.type === 'text' || !String(child))) {
-			console.log(`%s${chalk.blue('<%s>')}%s${chalk.blue('</%s>')}`, indent, type, noWrap(str), type);
-			return;
-		}
-		console.log(`%s${chalk.blue('<%s>')}`, indent, type);
-		let i = this.getAttribute('padding');
-		if (i) {
-			console.log('%s  %s', indent, noWrap(str.slice(0, i)));
-		}
-		for (let j = 0; j < length; j++) {
-			const child = childNodes[j]!,
-				childStr = String(child),
-				gap = j === length - 1 ? 0 : this.getGaps(j);
-			if (!childStr) {
-				//
-			} else if (child.type === 'text') {
-				console.log('%s  %s', indent, noWrap(child.data));
-			} else {
-				child.echo(depth + 1);
-			}
-			i += childStr.length;
-			if (gap) {
-				console.log('%s  %s', indent, noWrap(str.slice(i, i + gap)));
-				i += gap;
-			}
-		}
-		if (i < str.length) {
-			console.log('%s  %s', indent, noWrap(str.slice(i)));
-		}
-		console.log(`%s${chalk.blue('</%s>')}`, indent, type);
 	}
 }
 
