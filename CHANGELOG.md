@@ -6,6 +6,10 @@
 
 - Auto-fix and suggestions for selected linting errors
 
+**Removed**
+
+- `AstElement.prototype.echo` method
+
 ## v1.4.5
 
 *2024-02-12*
