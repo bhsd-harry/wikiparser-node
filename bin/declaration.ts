@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as chalk from 'chalk';
 
 const regex = /^declare const \w+_base:(?:.+\) &)? typeof (?:\w+\.)?(\w+)\b.+(export [^\n]+ extends )\w+\b/imsu;
 
@@ -10,7 +11,7 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 	const fullPath = path.join('dist/src', file),
 		content = fs.readFileSync(fullPath, 'utf8');
 	if (/^declare const \w+_base: /mu.test(content)) {
-		console.log('\x1B[32mCleaning declaration:\x1B[0m %s', file);
+		console.log('%s %s', chalk.green('Cleaning declaration:'), file);
 		fs.writeFileSync(
 			fullPath,
 			content.replace(
