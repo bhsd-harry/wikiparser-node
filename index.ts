@@ -1,6 +1,7 @@
 /* eslint n/exports-style: 0 */
 import * as fs from 'fs';
 import * as path from 'path';
+import * as chalk from 'chalk';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
@@ -233,13 +234,13 @@ const Parser: Parser = {
 	/** @implements */
 	warn(msg, ...args) {
 		if (this.warning) {
-			console.warn('\x1B[33m%s\x1B[0m', msg, ...args);
+			console.warn(chalk.yellow(msg), ...args);
 		}
 	},
 	/** @implements */
 	debug(msg, ...args) {
 		if (this.debugging) {
-			console.debug('\x1B[34m%s\x1B[0m', msg, ...args);
+			console.debug(chalk.blue(msg), ...args);
 		}
 	},
 	error,

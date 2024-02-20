@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import * as chalk from 'chalk';
 import {
 	text,
 	print,
@@ -13,7 +14,6 @@ import {typeAliases, classes} from '../util/constants';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
-import Parser from '../index';
 import {AstNode} from './node';
 import type {
 	LintError,
@@ -741,13 +741,13 @@ export abstract class AstElement extends AstNode {
 			str = String(this),
 			{childNodes, type, length} = this;
 		if (childNodes.every(child => child.type === 'text' || !String(child))) {
-			console.log(`${indent}\x1B[32m<%s>\x1B[0m${noWrap(str)}\x1B[32m</%s>\x1B[0m`, type, type);
+			console.log(`%s${chalk.blue('<%s>')}%s${chalk.blue('</%s>')}`, indent, type, noWrap(str), type);
 			return;
 		}
-		Parser.info(`${indent}<${type}>`);
+		console.log(`%s${chalk.blue('<%s>')}`, indent, type);
 		let i = this.getAttribute('padding');
 		if (i) {
-			console.log(`${indent}  ${noWrap(str.slice(0, i))}`);
+			console.log('%s  %s', indent, noWrap(str.slice(0, i)));
 		}
 		for (let j = 0; j < length; j++) {
 			const child = childNodes[j]!,
@@ -756,20 +756,20 @@ export abstract class AstElement extends AstNode {
 			if (!childStr) {
 				//
 			} else if (child.type === 'text') {
-				console.log(`${indent}  ${noWrap(child.data)}`);
+				console.log('%s  %s', indent, noWrap(child.data));
 			} else {
 				child.echo(depth + 1);
 			}
 			i += childStr.length;
 			if (gap) {
-				console.log(`${indent}  ${noWrap(str.slice(i, i + gap))}`);
+				console.log('%s  %s', indent, noWrap(str.slice(i, i + gap)));
 				i += gap;
 			}
 		}
 		if (i < str.length) {
-			console.log(`${indent}  ${noWrap(str.slice(i))}`);
+			console.log('%s  %s', indent, noWrap(str.slice(i)));
 		}
-		Parser.info(`${indent}</${type}>`);
+		console.log(`%s${chalk.blue('</%s>')}`, indent, type);
 	}
 }
 
