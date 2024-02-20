@@ -1,12 +1,14 @@
 /* eslint-disable n/no-process-exit */
 
-import {readFileSync} from 'fs';
+import {readFileSync, promises} from 'fs';
 import {resolve} from 'path';
 import * as chalk from 'chalk';
 import Parser = require('../index');
+
 const man = `
 Available options:
 -c, --config <path or preset config>    Choose parser's configuration
+--fix                                   Automatically fix problems
 -h, --help                              Print available options
 -i, --include                           Parse for inclusion
 -l, --lang                              Choose i18n language
@@ -22,8 +24,11 @@ let include = false,
 	quiet = false,
 	strict = false,
 	exit = false,
+	fixing = false,
 	nErr = 0,
 	nWarn = 0,
+	nFixableErr = 0,
+	nFixableWarn = 0,
 	option: string,
 	config: string | undefined,
 	lang: string | undefined;
@@ -45,7 +50,7 @@ const throwOnConfig = (): void => {
  * @param n number of items
  * @param word item name
  */
-const plural = (n: number, word: string): string => `${n} ${word}${n > 1 ? 's' : ''}`;
+const plural = (n: number, word: string): string => `${n} ${word}${n === 1 ? '' : 's'}`;
 
 /**
  * color the severity
@@ -61,6 +66,9 @@ for (let i = 2; i < argv.length; i++) {
 		case '--config':
 			config = argv[++i];
 			throwOnConfig();
+			break;
+		case '--fix':
+			fixing = true;
 			break;
 		case '-h':
 		case '--help':
@@ -118,20 +126,41 @@ if (quiet && strict) {
 }
 
 for (const file of files) {
-	const wikitext = readFileSync(file, 'utf8');
-	let problems = Parser.parse(wikitext, include).lint();
+	let wikitext = readFileSync(file, 'utf8'),
+		problems = Parser.parse(wikitext, include).lint();
+	if (fixing && problems.some(({fix}) => fix)) {
+		// 倒序修复，跳过嵌套的修复
+		const fixable = problems.map(({fix}) => fix).filter(Boolean).sort((a, b) => {
+			const {range: [aStart, aEnd]} = a!,
+				{range: [bStart, bEnd]} = b!;
+			return aEnd === bEnd ? bStart - aStart : bEnd - aEnd;
+		});
+		let start = Infinity;
+		for (const fix of fixable) {
+			if (fix!.range[1] <= start) {
+				wikitext = `${wikitext.slice(0, fix!.range[0])}${fix!.text}${wikitext.slice(fix!.range[1])}`;
+				[start] = fix!.range;
+			}
+		}
+		void promises.writeFile(file, wikitext);
+		problems = Parser.parse(wikitext, include).lint();
+	}
 	const errors = problems.filter(({severity}) => severity === 'error'),
-		{length: nLocalErr} = errors,
-		nLocalWarn = problems.length - nLocalErr;
+		fixable = problems.filter(({fix}) => fix),
+		nLocalErr = errors.length,
+		nLocalWarn = problems.length - nLocalErr,
+		nLocalFixableErr = fixable.filter(({severity}) => severity === 'error').length,
+		nLocalFixableWarn = fixable.length - nLocalFixableErr;
 	if (quiet) {
 		problems = errors;
 	} else {
 		nWarn += nLocalWarn;
+		nFixableWarn += nLocalFixableWarn;
 	}
 	if (problems.length > 0) {
 		console.error(chalk.underline('%s'), resolve(file));
-		const {length: maxLineChars} = String(Math.max(...problems.map(({startLine}) => startLine))),
-			{length: maxColChars} = String(Math.max(...problems.map(({startCol}) => startCol))),
+		const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
+			maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
 			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
 		for (const {rule, message, severity, startLine, startCol} of problems) {
 			console.error(
@@ -146,13 +175,23 @@ for (const file of files) {
 		console.error();
 	}
 	nErr += nLocalErr;
+	nFixableErr += nLocalFixableErr;
 	exit ||= Boolean(nLocalErr || strict && nLocalWarn);
 }
 if (nErr || nWarn) {
 	console.error(
-		`${chalk.red.bold('%s')}\n`,
+		chalk.red.bold('%s'),
 		`✖ ${plural(nErr + nWarn, 'problem')} (${plural(nErr, 'error')}, ${plural(nWarn, 'warning')})`,
 	);
+	if (nFixableErr || nFixableWarn) {
+		console.error(
+			chalk.red.bold('%s'),
+			`  ${plural(nFixableErr, 'error')} and ${
+				plural(nFixableWarn, 'warning')
+			} potentially fixable with the \`--fix\` option.`,
+		);
+	}
+	console.error('\n');
 }
 if (exit) {
 	process.exitCode = 1;
