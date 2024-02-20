@@ -2,6 +2,7 @@
 
 import {readFileSync} from 'fs';
 import {resolve} from 'path';
+import * as chalk from 'chalk';
 import Parser = require('../index');
 const man = `
 Available options:
@@ -51,7 +52,7 @@ const plural = (n: number, word: string): string => `${n} ${word}${n > 1 ? 's' :
  * @param severity problem severity
  */
 const coloredSeverity = (severity: 'error' | 'warning'): string =>
-	`\x1B[${severity === 'error' ? 31 : 33}m${severity.padEnd(7)}\x1B[0m`;
+	chalk[severity === 'error' ? 'red' : 'yellow'](severity.padEnd(7));
 
 for (let i = 2; i < argv.length; i++) {
 	option = argv[i]!;
@@ -128,13 +129,13 @@ for (const file of files) {
 		nWarn += nLocalWarn;
 	}
 	if (problems.length > 0) {
-		console.error('\x1B[4m%s\x1B[0m', resolve(file));
+		console.error(chalk.underline('%s'), resolve(file));
 		const {length: maxLineChars} = String(Math.max(...problems.map(({startLine}) => startLine))),
 			{length: maxColChars} = String(Math.max(...problems.map(({startCol}) => startCol))),
 			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
 		for (const {rule, message, severity, startLine, startCol} of problems) {
 			console.error(
-				`  \x1B[37m%s:%s\x1B[0m  %s  %s  \x1B[37m%s\x1B[0m`,
+				`  ${chalk.dim('%s:%s')}  %s  %s  ${chalk.dim('%s')}`,
 				String(startLine).padStart(maxLineChars),
 				String(startCol).padEnd(maxColChars),
 				coloredSeverity(severity),
@@ -149,7 +150,7 @@ for (const file of files) {
 }
 if (nErr || nWarn) {
 	console.error(
-		'\x1B[1;31m%s\x1B[0m\n',
+		`${chalk.red.bold('%s')}\n`,
 		`✖ ${plural(nErr + nWarn, 'problem')} (${plural(nErr, 'error')}, ${plural(nWarn, 'warning')})`,
 	);
 }
