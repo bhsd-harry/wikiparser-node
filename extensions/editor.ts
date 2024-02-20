@@ -144,7 +144,7 @@ class Printer {
 			{scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]}	= this.#preview;
 		let text = value,
 			start = 0,
-			{length: end} = this.#root;
+			end = this.#root.length;
 		if (scrollHeight > parentHeight) {
 			const childNodes = [...rootNode!.childNodes] as HTMLElement[],
 				headings = childNodes.filter(({className}) => className === 'wpb-heading'),
