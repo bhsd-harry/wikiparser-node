@@ -381,10 +381,20 @@ export abstract class AttributeToken extends Token {
 			);
 			e.startIndex--;
 			e.startCol--;
-			e.fix = {
+			const fix: LintError.Fix = {
 				range: [e.endIndex, e.endIndex],
 				text: this.#quotes[0]!,
 			};
+			if (lastChild.childNodes.some(child => child.type === 'text' && /\s/u.test(child.text()))) {
+				e.suggestions = [
+					{
+						desc: 'quote',
+						...fix,
+					},
+				];
+			} else {
+				e.fix = fix;
+			}
 			errors.push(e);
 		}
 		const attrs = extAttrs[tag];
