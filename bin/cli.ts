@@ -1,6 +1,6 @@
 /* eslint-disable n/no-process-exit */
 
-import {readFileSync, promises} from 'fs';
+import {readFileSync, readdirSync, promises} from 'fs';
 import {resolve} from 'path';
 import * as chalk from 'chalk';
 import Parser = require('../index');
@@ -17,7 +17,7 @@ Available options:
                                         Override -q or --quiet
 -v, --version                           Print package version
 `,
-	preset = new Set(['default', 'zhwiki', 'moegirl', 'llwiki']),
+	preset = new Set(readdirSync('./config').filter(file => file.endsWith('.json')).map(file => file.slice(0, -5))),
 	{argv} = process,
 	files: string[] = [];
 let include = false,
@@ -158,7 +158,7 @@ for (const file of files) {
 		nFixableWarn += nLocalFixableWarn;
 	}
 	if (problems.length > 0) {
-		console.error(chalk.underline('%s'), resolve(file));
+		console.error(`\n${chalk.underline('%s')}`, resolve(file));
 		const maxLineChars = String(Math.max(...problems.map(({startLine}) => startLine))).length,
 			maxColChars = String(Math.max(...problems.map(({startCol}) => startCol))).length,
 			maxMessageChars = Math.max(...problems.map(({message: {length}}) => length));
@@ -172,7 +172,6 @@ for (const file of files) {
 				rule,
 			);
 		}
-		console.error();
 	}
 	nErr += nLocalErr;
 	nFixableErr += nLocalFixableErr;
@@ -181,7 +180,7 @@ for (const file of files) {
 if (nErr || nWarn) {
 	console.error(
 		chalk.red.bold('%s'),
-		`✖ ${plural(nErr + nWarn, 'problem')} (${plural(nErr, 'error')}, ${plural(nWarn, 'warning')})`,
+		`\n✖ ${plural(nErr + nWarn, 'problem')} (${plural(nErr, 'error')}, ${plural(nWarn, 'warning')})`,
 	);
 	if (nFixableErr || nFixableWarn) {
 		console.error(
@@ -191,7 +190,7 @@ if (nErr || nWarn) {
 			} potentially fixable with the \`--fix\` option.`,
 		);
 	}
-	console.error('\n');
+	console.error();
 }
 if (exit) {
 	process.exitCode = 1;
