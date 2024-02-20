@@ -8,7 +8,6 @@ import Parser from '../index';
 import {Token} from './index';
 import type {
 	LintError,
-	Rule,
 	AST,
 } from '../base';
 import type {AttributesParentBase} from '../mixin/attributesParent';
@@ -206,7 +205,7 @@ export abstract class HtmlToken extends Token {
 				const {message} = e;
 				refError ??= generateForSelf(this, {start}, 'h1', '');
 				const [msg] = message.split(':'),
-					error = {...refError, rule: 'unmatched-tag' as Rule, message: Parser.msg(msg!)};
+					error = {...refError, rule: 'unmatched-tag' as LintError.Rule, message: Parser.msg(msg!)};
 				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
 					if (formattingTags.has(this.name)) {
 						const childNodes = this.parentNode?.childNodes,

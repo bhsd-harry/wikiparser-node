@@ -2,7 +2,7 @@ import {classes} from '../util/constants';
 import {setChildNodes} from '../util/debug';
 import Parser from '../index';
 import {AstNode} from './node';
-import type {LintError, Rule} from '../base';
+import type {LintError} from '../base';
 import type {AttributeToken, ExtToken} from '../internal';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -22,7 +22,7 @@ const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
 		']': /[[\]](?=[^[\]]*$)/u,
 		'}': /[{}](?=[^{}]*$)/u,
 	},
-	ruleMap: Record<string, Rule> = {
+	ruleMap: Record<string, LintError.Rule> = {
 		'<': 'tag-like',
 		'[': 'lonely-bracket',
 		'{': 'lonely-bracket',
