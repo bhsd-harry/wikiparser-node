@@ -1,7 +1,4 @@
-import {
-	text,
-	print,
-} from '../util/string';
+import {text, print} from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {AstNode} from './node';
 import type {

@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import {spawn} from 'child_process';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
+import * as chalk from 'chalk';
 
 process.on('unhandledRejection', e => {
 	console.error(e);
@@ -76,10 +77,10 @@ export const diff = async (oldStr: string, newStr: string, uid = -1): Promise<vo
 
 /** @implements */
 export const error: log = (msg, ...args) => {
-	console.error('\x1B[31m%s\x1B[0m', msg, ...args);
+	console.error(chalk.red(msg), ...args);
 };
 
 /** @implements */
 export const info: log = (msg, ...args) => {
-	console.info('\x1B[32m%s\x1B[0m', msg, ...args);
+	console.info(chalk.green(msg), ...args);
 };
