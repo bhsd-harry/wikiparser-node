@@ -27,12 +27,23 @@ class Linter {
         return __classPrivateFieldGet(this, _Linter_running, "f");
     }
     async codemirror(wikitext) {
-        return (await this.queue(wikitext)).map(({ startIndex, endIndex, severity, message, rule }) => ({
+        return (await this.queue(wikitext))
+            .map(({ startIndex, endIndex, severity, message, rule, fix, suggestions = [] }) => ({
             source: 'WikiLint',
             from: startIndex,
             to: endIndex,
             severity,
+            rule,
             message: `${message} (${rule})`,
+            actions: [
+                ...fix ? [{ name: 'fix', fix }] : [],
+                ...suggestions.map(suggestion => ({ name: 'suggestion', fix: suggestion })),
+            ].map(({ name, fix: { range: [from, to], text } }) => ({
+                name,
+                apply(view) {
+                    view.dispatch({ changes: { from, to, insert: text } });
+                },
+            })),
         }));
     }
 }

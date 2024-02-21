@@ -3,7 +3,7 @@ import type {Config, LintError, Parser, AST} from '../base';
 import type {Printer} from './editor';
 import type {Linter} from './lint';
 
-export type {Diagnostic} from '@codemirror/lint';
+export type {Diagnostic, Action} from '@codemirror/lint';
 
 declare global {
 	module '/*' {

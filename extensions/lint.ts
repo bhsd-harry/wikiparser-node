@@ -1,5 +1,5 @@
 import type {LintError} from '../base';
-import type {Diagnostic} from './typings';
+import type {Diagnostic, Action} from './typings';
 
 /** 用于语法分析 */
 class Linter {
@@ -51,14 +51,25 @@ class Linter {
 	 * @param wikitext 待分析的文本
 	 */
 	async codemirror(wikitext: string): Promise<Diagnostic[]> {
-		return (await this.queue(wikitext)).map(({startIndex, endIndex, severity, message, rule}) => ({
-			source: 'WikiLint',
-			from: startIndex,
-			to: endIndex,
-			severity,
-			rule,
-			message: `${message} (${rule})`,
-		}));
+		return (await this.queue(wikitext))
+			.map(({startIndex, endIndex, severity, message, rule, fix, suggestions = []}) => ({
+				source: 'WikiLint',
+				from: startIndex,
+				to: endIndex,
+				severity,
+				rule,
+				message: `${message} (${rule})`,
+				actions: [
+					...fix ? [{name: 'fix', fix}] : [],
+					...suggestions.map(suggestion => ({name: 'suggestion', fix: suggestion})),
+				].map(({name, fix: {range: [from, to], text}}) => ({
+					name,
+					/** @implements */
+					apply(view) {
+						view.dispatch({changes: {from, to, insert: text}});
+					},
+				}) as Action),
+			}));
 	}
 }
 

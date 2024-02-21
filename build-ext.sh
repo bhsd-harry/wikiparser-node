@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 rm -rf extensions/dist/
-tsc --project extensions/tsconfig.json --module ES6
+tsc --project extensions/tsconfig.json --module ES6 --noImplicitAny false
 for x in extensions/dist/*.js
 do
 	if [[ $x != 'extensions/dist/gh-page.js' ]]

@@ -89,7 +89,7 @@ _Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox 
     }
     __classPrivateFieldSet(this, _Printer_viewportChanged, false, "f");
     const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), { scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode] } = __classPrivateFieldGet(this, _Printer_preview, "f");
-    let text = value, start = 0, { length: end } = __classPrivateFieldGet(this, _Printer_root, "f");
+    let text = value, start = 0, end = __classPrivateFieldGet(this, _Printer_root, "f").length;
     if (scrollHeight > parentHeight) {
         const childNodes = [...rootNode.childNodes], headings = childNodes.filter(({ className }) => className === 'wpb-heading'), { length } = headings;
         if (length > 0) {
