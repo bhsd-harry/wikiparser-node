@@ -37,6 +37,13 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startCol: endCol - length,
 				endLine,
 				endCol,
+				suggestions: [
+					{
+						desc: 'escape',
+						range: [startIndex, endIndex],
+						text: '&apos;'.repeat(length),
+					},
+				],
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
@@ -51,6 +58,13 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startLine,
 				startCol,
 				endCol: startCol + length,
+				suggestions: [
+					{
+						desc: 'escape',
+						range: [startIndex, endIndex],
+						text: '&apos;'.repeat(length),
+					},
+				],
 			});
 		}
 		if (bold && this.closest('heading-title')) {

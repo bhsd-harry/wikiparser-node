@@ -138,6 +138,22 @@ export abstract class HtmlToken extends Token {
 					const ancestor = this.closest<TranscludeToken>('magic-word');
 					if (ancestor && magicWords.has(ancestor.name)) {
 						error.severity = 'warning';
+					} else {
+						error.suggestions = [
+							{
+								desc: 'remove',
+								range: [start, error.endIndex],
+								text: '',
+							},
+						];
+					}
+				} else if (msg === 'tag that is both closing and self-closing') {
+					const {html: [,, voidTags]} = this.getAttribute('config');
+					if (voidTags.includes(this.name)) {
+						error.fix = {
+							range: [start + 1, start + 2],
+							text: '',
+						};
 					}
 				}
 				errors.push(error);
@@ -156,7 +172,7 @@ export abstract class HtmlToken extends Token {
 			refError ??= generateForSelf(this, {start}, 'h1', '');
 			errors.push({
 				...refError,
-				rule: 'format-leakage',
+				rule: 'bold-header',
 				message: Parser.msg('bold in section header'),
 				severity: 'warning',
 			});

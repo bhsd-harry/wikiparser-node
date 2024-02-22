@@ -153,13 +153,23 @@ export abstract class AttributesToken extends Token {
 		let rect: BoundingRect | undefined;
 		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag'));
+			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag');
+			e.fix = {range: [start, e.endIndex], text: ''};
+			errors.push(e);
 		}
 		for (let i = 0; i < length; i++) {
 			const attr = childNodes[i]!;
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-				errors.push(generateForChild(attr, rect, 'no-ignored', 'containing invalid attribute'));
+				const e = generateForChild(attr, rect, 'no-ignored', 'containing invalid attribute');
+				e.suggestions = [
+					{
+						desc: 'remove',
+						range: [e.startIndex, e.endIndex],
+						text: ' ',
+					},
+				];
+				errors.push(e);
 			} else if (attr instanceof AttributeToken) {
 				const {name} = attr;
 				if (attrs.has(name)) {
