@@ -13,6 +13,7 @@ import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
+import type {AstText} from '../../internal';
 
 /**
  * 内链
@@ -187,15 +188,35 @@ export abstract class LinkBaseToken extends Token {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link'));
 		}
-		if (
-			(linkType === 'link' || linkType === 'category')
-			&& linkText?.childNodes.some(({type, data}) => type === 'text' && data.includes('|'))
-		) {
+		if (linkType === 'link' || linkType === 'category') {
+			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));
+			if (textNode) {
+				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
+				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning');
+				e.suggestions = [
+					{
+						desc: 'escape',
+						range: [
+							e.startIndex + textNode.getRelativeIndex(),
+							e.startIndex + textNode.getRelativeIndex() + textNode.data.length,
+						],
+						text: textNode.data.replace(/\|/gu, '&#124;'),
+					},
+				];
+				errors.push(e);
+			}
+		}
+		if (linkType !== 'link' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(linkText, rect, 'pipe-like', 'additional "|" in the link text', 'warning'));
-		} else if (linkType !== 'link' && fragment !== undefined) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(generateForChild(target, rect, 'no-ignored', 'useless fragment'));
+			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
+				textNode = target.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
+			if (textNode) {
+				e.fix = {
+					range: [e.startIndex + textNode.getRelativeIndex() + textNode.data.indexOf('#'), e.endIndex],
+					text: '',
+				};
+			}
+			errors.push(e);
 		}
 		return errors;
 	}

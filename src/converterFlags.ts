@@ -117,7 +117,22 @@ export abstract class ConverterFlagsToken extends Token {
 				&& !unknownFlags.has(flag)
 				&& (variantFlags.size > 0 || !validFlags.has(flag))
 			) {
-				errors.push(generateForChild(child, rect, 'no-ignored', 'invalid conversion flag'));
+				const e = generateForChild(child, rect, 'no-ignored', 'invalid conversion flag');
+				if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
+					e.fix = {
+						range: [e.startIndex, e.endIndex],
+						text: flag.toUpperCase(),
+					};
+				} else {
+					e.suggestions = [
+						{
+							desc: 'remove',
+							range: [e.startIndex, e.endIndex],
+							text: '',
+						},
+					];
+				}
+				errors.push(e);
 			}
 		}
 		return errors;

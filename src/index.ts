@@ -527,14 +527,22 @@ export class Token extends AstElement {
 			}
 			for (const value of Object.values(record)) {
 				if (value.size > 1) {
-					errors.push(...[...value].map(
-						cat => generateForSelf(
+					errors.push(...[...value].map(cat => {
+						const e = generateForSelf(
 							cat,
 							{start: cat.getAbsoluteIndex()},
 							'no-duplicate',
 							'duplicated category',
-						),
-					));
+						);
+						e.suggestions = [
+							{
+								desc: 'remove',
+								range: [e.startIndex, e.endIndex],
+								text: '',
+							},
+						];
+						return e;
+					}));
 				}
 			}
 		}
