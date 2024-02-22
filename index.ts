@@ -2,6 +2,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as chalk from 'chalk';
+import {rules} from './base';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
@@ -97,6 +98,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
 const Parser: Parser = {
 	config: 'default',
 	i18n: undefined,
+	rules,
 
 	/* NOT FOR BROWSER */
 

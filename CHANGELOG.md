@@ -1,3 +1,11 @@
+## v1.5.1
+
+*2024-02-23*
+
+**Added**
+
+- New property [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#rules) of the interface `Parser`
+
 ## v1.5.0
 
 *2024-02-22*
