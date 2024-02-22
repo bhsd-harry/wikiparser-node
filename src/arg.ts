@@ -74,7 +74,7 @@ export abstract class ArgToken extends Token {
 			const e = generateForSelf(this, {start}, 'no-arg', 'unexpected template argument');
 			if (argDefault) {
 				e.fix = {
-					range: [start, start + String(this).length],
+					range: [start, e.endIndex],
 					text: argDefault.text(),
 				};
 			}
@@ -87,22 +87,22 @@ export abstract class ArgToken extends Token {
 		if (rest.length > 0) {
 			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(...rest.map(child => {
-				const error = generateForChild(child, rect, 'no-ignored', 'invisible content inside triple braces');
-				error.startIndex--;
-				error.startCol--;
-				error.suggestions = [
+				const e = generateForChild(child, rect, 'no-ignored', 'invisible content inside triple braces');
+				e.startIndex--;
+				e.startCol--;
+				e.suggestions = [
 					{
 						desc: 'remove',
-						range: [error.startIndex, error.endIndex],
+						range: [e.startIndex, e.endIndex],
 						text: '',
 					},
 					{
 						desc: 'escape',
-						range: [error.startIndex, error.startIndex + 1],
+						range: [e.startIndex, e.startIndex + 1],
 						text: '{{!}}',
 					},
 				];
-				return error;
+				return e;
 			}));
 		}
 		return errors;

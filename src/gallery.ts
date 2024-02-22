@@ -91,6 +91,18 @@ export abstract class GalleryToken extends Token {
 					endLine: startLine,
 					startCol,
 					endCol: startCol + length,
+					suggestions: [
+						{
+							desc: 'remove',
+							range: [start, start + length],
+							text: '',
+						},
+						{
+							desc: 'comment',
+							range: [start, start + length],
+							text: `<!--${str}-->`,
+						},
+					],
 				});
 			} else if (child.type !== 'noinclude' && child.type !== 'text') {
 				errors.push(...child.lint(start));
