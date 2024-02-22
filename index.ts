@@ -1,3 +1,4 @@
+import {rules} from './base';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
@@ -38,6 +39,7 @@ declare interface Parser extends ParserBase {
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	i18n: undefined,
+	rules,
 
 	/** @implements */
 	getConfig() {

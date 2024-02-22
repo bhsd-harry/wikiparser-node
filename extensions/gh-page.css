@@ -235,7 +235,7 @@ pre.highlight span {
 	article {
 		padding: 1rem;
 	}
-	.wikiparse-container, .cm-editor {
+	.wikiparse-container, .cm-content {
 		font-size: var(--font-size-tablet);
 	}
 }

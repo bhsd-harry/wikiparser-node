@@ -7,7 +7,7 @@ export type {Diagnostic, Action} from '@codemirror/lint';
 
 declare global {
 	module '/*' {
-		/** @see https://npmjs.com/package/@bhsd/codemirror-mediawiki */
+		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
 	}
 
