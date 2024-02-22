@@ -11,42 +11,46 @@ export interface Config {
 	readonly excludes?: string[];
 }
 
+export const rules = [
+	'bold-header',
+	'format-leakage',
+	'fostered-content',
+	'h1',
+	'illegal-attr',
+	'insecure-style',
+	'invalid-gallery',
+	'invalid-imagemap',
+	'invalid-invoke',
+	'lonely-apos',
+	'lonely-bracket',
+	'lonely-http',
+	'nested-link',
+	'no-arg',
+	'no-duplicate',
+	'no-ignored',
+	'obsolete-attr',
+	'obsolete-tag',
+	'parsing-order',
+	'pipe-like',
+	'table-layout',
+	'tag-like',
+	'unbalanced-header',
+	'unclosed-comment',
+	'unclosed-quote',
+	'unclosed-table',
+	'unescaped',
+	'unknown-page',
+	'unmatched-tag',
+	'unterminated-url',
+	'url-encoding',
+	'var-anchor',
+	'void-ext',
+] as const;
+
 export namespace LintError {
 	export type Severity = 'error' | 'warning';
 
-	export type Rule = 'bold-header'
-		| 'format-leakage'
-		| 'fostered-content'
-		| 'h1'
-		| 'illegal-attr'
-		| 'insecure-style'
-		| 'invalid-gallery'
-		| 'invalid-imagemap'
-		| 'invalid-invoke'
-		| 'lonely-apos'
-		| 'lonely-bracket'
-		| 'lonely-http'
-		| 'nested-link'
-		| 'no-arg'
-		| 'no-duplicate'
-		| 'no-ignored'
-		| 'obsolete-attr'
-		| 'obsolete-tag'
-		| 'parsing-order'
-		| 'pipe-like'
-		| 'table-layout'
-		| 'tag-like'
-		| 'unbalanced-header'
-		| 'unclosed-comment'
-		| 'unclosed-quote'
-		| 'unclosed-table'
-		| 'unescaped'
-		| 'unknown-page'
-		| 'unmatched-tag'
-		| 'unterminated-url'
-		| 'url-encoding'
-		| 'var-anchor'
-		| 'void-ext';
+	export type Rule = typeof rules[number];
 
 	export interface Fix {
 		readonly range: [number, number];
@@ -84,6 +88,7 @@ interface AstElement extends AstNode {
 export interface Parser {
 	config: string | Config;
 	i18n: string | Record<string, string> | undefined;
+	rules: readonly LintError.Rule[];
 
 	/** 获取解析设置 */
 	getConfig(): Config;
