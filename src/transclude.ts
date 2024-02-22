@@ -16,6 +16,9 @@ import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
 import type {Title} from '../lib/title';
+import type {
+	AstText,
+} from '../internal';
 
 const insensitiveVars = new Set<string | undefined>([
 	'pageid',
@@ -223,9 +226,16 @@ export abstract class TranscludeToken extends Token {
 		const title = this.#getTitle();
 		if (title.fragment !== undefined) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
-			errors.push(
-				generateForChild(childNodes[type === 'template' ? 0 : 1], rect, 'no-ignored', 'useless fragment'),
-			);
+			const child = childNodes[type === 'template' ? 0 : 1] as AtomToken,
+				e = generateForChild(child, rect, 'no-ignored', 'useless fragment'),
+				textNode = child.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
+			if (textNode) {
+				e.fix = {
+					range: [e.startIndex + textNode.getRelativeIndex() + textNode.data.indexOf('#'), e.endIndex],
+					text: '',
+				};
+			}
+			errors.push(e);
 		}
 		if (!title.valid) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};

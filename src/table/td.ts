@@ -120,13 +120,30 @@ export abstract class TdToken extends TableBaseToken {
 			if (child.type === 'text') {
 				const {data} = child;
 				if (data.includes('|')) {
-					errors.push(generateForChild(
-						child,
-						{start},
-						'pipe-like',
-						'additional "|" in a table cell',
-						data.includes('||') ? 'error' : 'warning',
-					));
+					const isError = data.includes('||'),
+						e = generateForChild(
+							child,
+							{start},
+							'pipe-like',
+							'additional "|" in a table cell',
+							isError ? 'error' : 'warning',
+						);
+					if (isError) {
+						const syntax = {caption: '|+', td: '|', th: '!'}[this.subtype];
+						e.fix = {
+							range: [e.startIndex, e.endIndex],
+							text: data.replace(/\|\|/gu, `\n${syntax}`),
+						};
+					} else {
+						e.suggestions = [
+							{
+								desc: 'escape',
+								range: [e.startIndex, e.endIndex],
+								text: data.replace(/\|/gu, '&#124;'),
+							},
+						];
+					}
+					errors.push(e);
 				}
 			}
 		}

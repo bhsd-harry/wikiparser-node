@@ -53,17 +53,41 @@ export abstract class MagicLinkToken extends Token {
 					left = lines[top - 1]!.length,
 					startIndex = refError.startIndex + index,
 					startLine = refError.startLine + top - 1,
-					startCol = top === 1 ? refError.startCol + left : left;
-				errors.push({
+					startCol = top === 1 ? refError.startCol + left : left,
+					pipe = s.startsWith('|');
+				const e = {
 					...refError,
-					message: Parser.msg('$1 in URL', s.startsWith('|') ? '"|"' : 'full-width punctuation'),
+					message: Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
 					startIndex,
 					endIndex: startIndex + s.length,
 					startLine,
 					endLine: startLine,
 					startCol,
 					endCol: startCol + s.length,
-				});
+				};
+				if (!pipe) {
+					e.suggestions = [
+						{
+							desc: 'whitespace',
+							range: [startIndex, startIndex],
+							text: ' ',
+						},
+						{
+							desc: 'escape',
+							range: [startIndex, e.endIndex],
+							text: encodeURI(s),
+						},
+					];
+				} else if (s.length === 1) {
+					e.suggestions = [
+						{
+							desc: 'whitespace',
+							range: [startIndex, startIndex + 1],
+							text: ' ',
+						},
+					];
+				}
+				errors.push(e);
 			}
 		}
 		return errors;
