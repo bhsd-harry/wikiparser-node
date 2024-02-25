@@ -179,7 +179,7 @@ const commonHtmlAttrs = new Set([
 	insecureStyle = new RegExp(
 		'expression'
 		+ '|'
-		+ '(?:filter|accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
+		+ '(?:accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
 		+ '|'
 		+ '(?:url|image(?:-set)?)\\s*\\('
 		+ '|'
