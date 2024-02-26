@@ -5,7 +5,7 @@ import {
 	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
-import {typeAliases, classes} from '../util/constants';
+import {classes} from '../util/constants';
 import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
@@ -502,7 +502,7 @@ export abstract class AstElement extends AstNode {
 						return this.#isProtected() === false;
 					default: {
 						const [t, n] = selector.split('#');
-						return (!t || t === type || Boolean(typeAliases[type]?.includes(t))) && (!n || n === name);
+						return (!t || t === type) && (!n || n === name);
 					}
 				}
 			} else if (selector.length === 4) { // 情形2：属性选择器
