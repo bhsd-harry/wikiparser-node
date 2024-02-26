@@ -37,6 +37,7 @@ const commonHtmlAttrs = new Set([
 		'aria-hidden',
 		'aria-label',
 		'aria-labelledby',
+		'aria-level',
 		'aria-owns',
 		'role',
 		'about',

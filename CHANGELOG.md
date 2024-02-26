@@ -6,6 +6,10 @@
 
 - New property [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#rules) of the interface `Parser`
 
+**Removed**
+
+- Token type aliases have been malfunctioning since [v1.4.3](#v143), and are now removed
+
 ## v1.5.0
 
 *2024-02-22*
