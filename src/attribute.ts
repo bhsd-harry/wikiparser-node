@@ -25,6 +25,7 @@ const commonHtmlAttrs = new Set([
 		'aria-hidden',
 		'aria-label',
 		'aria-labelledby',
+		'aria-level',
 		'aria-owns',
 		'role',
 		'about',
@@ -167,7 +168,7 @@ const commonHtmlAttrs = new Set([
 	insecureStyle = new RegExp(
 		'expression'
 		+ '|'
-		+ '(?:filter|accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
+		+ '(?:accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
 		+ '|'
 		+ '(?:url|image(?:-set)?)\\s*\\('
 		+ '|'
