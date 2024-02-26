@@ -39,10 +39,13 @@ export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 			return [];
 		}
 		const e = generateForSelf(this, {start}, 'unclosed-comment', Parser.msg('unclosed $1', `<${this.name}>`));
-		e.fix = {
-			range: [e.endIndex, e.endIndex],
-			text: `</${this.name}>`,
-		};
+		e.suggestions = [
+			{
+				desc: 'close',
+				range: [e.endIndex, e.endIndex],
+				text: `</${this.name}>`,
+			},
+		];
 		return [e];
 	}
 }
