@@ -58,7 +58,7 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 			return title.valid && title;
 		}
 		case 'lang':
-			return !value || config.variants.includes(value);
+			return !/[^a-z\d-]/u.test(value);
 		case 'alt':
 		case 'class':
 		case 'manualthumb':
