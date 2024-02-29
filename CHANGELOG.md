@@ -6,6 +6,14 @@
 
 - New property [`rules`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#rules) of the interface `Parser`
 
+**Fixed**
+
+- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when HTML tags are present in the same line
+
+**Changed**
+
+- `filter` in the `style` attribute is no longer reported as an error
+
 **Removed**
 
 - Token type aliases have been malfunctioning since [v1.4.3](#v143), and are now removed

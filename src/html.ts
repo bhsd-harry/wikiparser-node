@@ -73,6 +73,11 @@ export abstract class HtmlToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
+	/** 是否自封闭 */
+	get selfClosing(): boolean {
+		return this.#selfClosing;
+	}
+
 	/** 是否是闭合标签 */
 	get closing(): boolean {
 		return this.#closing;
@@ -95,13 +100,8 @@ export abstract class HtmlToken extends Token {
 		this.#closing = true;
 	}
 
-	/** 是否自封闭 */
-	get selfClosing(): boolean {
-		return this.#selfClosing;
-	}
-
 	/** @throws `Error` 闭合标签或无效自封闭标签 */
-	set selfClosing(value) {
+	set selfClosing(value) { // eslint-disable-line grouped-accessor-pairs
 		if (!value) {
 			this.#selfClosing = false;
 			return;
@@ -269,14 +269,14 @@ export abstract class HtmlToken extends Token {
 	 * @throws `SyntaxError` 未匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		const {html} = this.getAttribute('config'),
+		const {html: [normalTags, flexibleTags, voidTags]} = this.getAttribute('config'),
 			{name: tagName, parentNode, closing} = this,
 			string = noWrap(String(this));
-		if (closing && (this.#selfClosing || html[2].includes(tagName))) {
+		if (closing && (this.#selfClosing || voidTags.includes(tagName))) {
 			throw new SyntaxError(`tag that is both closing and self-closing: ${string}`);
-		} else if (html[2].includes(tagName) || this.#selfClosing && html[1].includes(tagName)) { // 自封闭标签
+		} else if (voidTags.includes(tagName) || this.#selfClosing && flexibleTags.includes(tagName)) { // 自封闭标签
 			return this;
-		} else if (this.#selfClosing && html[0].includes(tagName)) {
+		} else if (this.#selfClosing && normalTags.includes(tagName)) {
 			throw new SyntaxError(`invalid self-closing tag: ${string}`);
 		} else if (!parentNode) {
 			return undefined;
@@ -343,9 +343,9 @@ export abstract class HtmlToken extends Token {
 	 * @throws `Error` 无法修复无效自封闭标签
 	 */
 	fix(): void {
-		const config = this.getAttribute('config'),
+		const {html: [normalTags]} = this.getAttribute('config'),
 			{parentNode, name: tagName, firstChild, selfClosing} = this;
-		if (!parentNode || !selfClosing || !config.html[0].includes(tagName)) {
+		if (!parentNode || !selfClosing || !normalTags.includes(tagName)) {
 			return;
 		} else if (firstChild.text().trim()) {
 			this.#selfClosing = false;
