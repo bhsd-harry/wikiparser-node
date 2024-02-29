@@ -1,7 +1,7 @@
 #!/usr/local/bin/bash
 if [[ $2 == 'npm' ]]
 then
-	sed -i '' -E "s/\"version\": \".+\"/\"version\": \"$1-b\"/" package.json
+	gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1-b\"/" package.json
 	gsed -i 's|/gh/bhsd-harry/wikiparser-node|/npm/wikiparser-node|' extensions/base.ts
 	npm publish --tag browser
 	git add -A
