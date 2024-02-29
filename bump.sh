@@ -1,7 +1,7 @@
 #!/usr/local/bin/bash
 if [[ $2 == 'npm' ]]
 then
-	sed -i '' -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
+	gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 	npm i --package-lock-only
 	npm publish --tag ${3-latest}
 	git add -A
