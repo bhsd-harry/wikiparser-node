@@ -2,7 +2,7 @@ import {parsers} from '../util/constants';
 import Parser from '../index';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
-import type {Token, HtmlToken} from '../internal';
+import type {Token, HtmlToken, QuoteToken} from '../internal';
 
 /**
  * 解析列表
@@ -24,10 +24,12 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 		return text;
 	}
 	const {html: [normalTags]} = config,
-		fullRegex = /:+|-\{|\0\d+x\x7F/gu;
+		fullRegex = /:+|-\{|\0\d+[xq]\x7F/gu;
 	let regex = fullRegex,
 		ex = regex.exec(text),
 		lt = 0,
+		lb = false,
+		li = false,
 		lc = 0;
 
 	/**
@@ -56,7 +58,7 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 				regex = fullRegex;
 				regex.lastIndex = lastIndex;
 			}
-		} else if (syntax.startsWith('\0')) {
+		} else if (syntax.endsWith('x\x7F')) {
 			const {name, closing, selfClosing} = accum[Number(syntax.slice(1, -2))] as HtmlToken;
 			if (!selfClosing || normalTags.includes(name)) {
 				if (!closing) {
@@ -65,7 +67,15 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 					lt--;
 				}
 			}
-		} else if (lt === 0) { // syntax === ':'
+		} else if (syntax.endsWith('q\x7F')) {
+			const {bold, italic} = accum[Number(syntax.slice(1, -2))] as QuoteToken;
+			if (bold) {
+				lb = !lb;
+			}
+			if (italic) {
+				li = !li;
+			}
+		} else if (lt === 0 && !lb && !li) { // syntax === ':'
 			if (syntax.length >= dt) {
 				return dd(syntax.slice(0, dt), index);
 			}

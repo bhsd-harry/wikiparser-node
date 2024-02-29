@@ -1,3 +1,11 @@
+## v1.5.2
+
+*2024-03-01*
+
+**Fixed**
+
+- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken) is present in the same line
+
 ## v1.5.1
 
 *2024-02-29*
@@ -8,7 +16,7 @@
 
 **Fixed**
 
-- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when HTML tags are present in the same line
+- [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) is present in the same line
 
 **Changed**
 
