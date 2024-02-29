@@ -1,7 +1,8 @@
 import type {AstNodes} from '../lib/node';
 
-export const extUrlCharFirst = '(?:\\[[\\da-f:.]+\\]|[^[\\]<>"\0-\x1F\x7F\\p{Zs}\uFFFD])';
-export const extUrlChar = '(?:[^[\\]<>"\0-\x1F\x7F\\p{Zs}\uFFFD]|\0\\d+[c!~]\x7F)*';
+const commonExtUrlChar = '[^[\\]<>"\0-\x1F\x7F\\p{Zs}\uFFFD]';
+export const extUrlCharFirst = `(?:\\[[\\da-f:.]+\\]|${commonExtUrlChar})`;
+export const extUrlChar = `(?:${commonExtUrlChar}|\0\\d+[c!~]\x7F)*`;
 
 /**
  * 生成正则替换函数
