@@ -1,5 +1,4 @@
-import type {LintError} from '../base';
-import type {Diagnostic, Action} from './typings';
+import type {LintError, Diagnostic, Action} from './typings';
 
 /** 用于语法分析 */
 class Linter {

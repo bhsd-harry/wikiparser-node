@@ -1,3 +1,4 @@
+(() => {
 var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
     if (kind === "m") throw new TypeError("Private method is not writable");
     if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
@@ -56,4 +57,4 @@ _Linter_id = new WeakMap(), _Linter_wikitext = new WeakMap(), _Linter_running = 
     return __classPrivateFieldGet(this, _Linter_running, "f");
 };
 wikiparse.Linter = Linter;
-export {};
+})();

@@ -1,5 +1,5 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
-import type {Config, AST} from '../base';
+import type {Config, AST} from './typings';
 
 /**
  * Kebab case to Pascal case

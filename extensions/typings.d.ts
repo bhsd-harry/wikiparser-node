@@ -4,6 +4,7 @@ import type {Printer} from './editor';
 import type {Linter} from './lint';
 
 export type {Diagnostic, Action} from '@codemirror/lint';
+export type {Config, LintError, AST};
 
 declare global {
 	module '/*' {
