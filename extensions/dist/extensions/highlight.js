@@ -1,4 +1,3 @@
-(() => {
 "use strict";
 const append = (parent, text) => {
     if (text) {
@@ -56,4 +55,3 @@ const highlight = async (ele, include, linenums = false, start = 1) => {
     }
 };
 wikiparse.highlight = highlight;
-})();
