@@ -404,8 +404,7 @@
 		"text-bottom": "text-bottom",
 		"lang=$1": "lang",
 		"page=$1": "page",
-		"page $1": "page",
-		"lossy=$1": "lossy"
+		"page $1": "page"
 	},
 	"variants": []
 }
