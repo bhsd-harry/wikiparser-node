@@ -31,9 +31,15 @@ export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption'])
  * @param key 参数名
  * @param val 参数值
  */
-function validate(key: 'link', val: string, config?: Config, halfParsed?: boolean): string | Title;
-function validate(key: string, val: string, config?: Config, halfParsed?: boolean): boolean;
-function validate(key: string, val: string, config = Parser.getConfig(), halfParsed = false): string | Title | boolean {
+function validate(key: 'link', val: string, config: Config, halfParsed?: boolean): string | Title;
+function validate(key: string, val: string, config: Config, halfParsed: boolean, ext: string | undefined): boolean;
+function validate(
+	key: string,
+	val: string,
+	config: Config,
+	halfParsed = false,
+	ext?: string,
+): string | Title | boolean {
 	val = val.trim();
 	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
@@ -58,11 +64,13 @@ function validate(key: string, val: string, config = Parser.getConfig(), halfPar
 			return title.valid && title;
 		}
 		case 'lang':
-			return !/[^a-z\d-]/u.test(value);
+			return (ext === 'svg' || ext === 'svgz') && !/[^a-z\d-]/u.test(value);
 		case 'alt':
 		case 'class':
 		case 'manualthumb':
 			return true;
+		case 'page':
+			return (ext === 'djvu' || ext === 'djv') && Number(value) > 0;
 		default:
 			return !Number.isNaN(Number(value));
 	}
@@ -73,6 +81,7 @@ export abstract class ImageParameterToken extends Token {
 	override readonly type = 'image-parameter';
 	declare readonly name: string;
 	#syntax = '';
+	#extension;
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;
@@ -160,7 +169,7 @@ export abstract class ImageParameterToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/** @param str 图片参数 */
-	constructor(str: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum: Token[] = []) {
 		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img).map(
 				([syntax, param]): [string, string, RegExp] => [
@@ -172,7 +181,10 @@ export abstract class ImageParameterToken extends Token {
 			param = regexes.find(([, key, regex]) => {
 				mt = regex.exec(str) as [string, string, string, string?] | null;
 				return mt
-					&& (mt.length !== 4 || validate(key, mt[2], config, true) as string | Title | boolean !== false);
+					&& (
+						mt.length !== 4
+						|| validate(key, mt[2], config, true, extension) as string | Title | boolean !== false
+					);
 			});
 		// @ts-expect-error mt already assigned
 		if (param && mt) {
@@ -189,6 +201,7 @@ export abstract class ImageParameterToken extends Token {
 			return;
 		}
 		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, accum);
+		this.#extension = extension;
 		this.setAttribute('name', 'caption');
 		this.setAttribute('stage', 7);
 	}
@@ -271,7 +284,7 @@ export abstract class ImageParameterToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), config) as this;
+			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), this.#extension, config) as this;
 			token.replaceChildren(...cloned);
 			token.setAttribute('name', this.name);
 			token.setAttribute('syntax', this.#syntax);

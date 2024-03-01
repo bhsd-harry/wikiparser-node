@@ -58,6 +58,15 @@ export abstract class FileToken extends LinkBaseToken {
 	abstract override get children(): [AtomToken, ...ImageParameterToken[]];
 	abstract override get lastElementChild(): AtomToken | ImageParameterToken;
 
+	/* NOT FOR BROWSER END */
+
+	/** 扩展名 */
+	get extension(): string | undefined {
+		return this.getTitle().extension;
+	}
+
+	/* NOT FOR BROWSER */
+
 	/** 图片链接 */
 	override get link(): string | Title {
 		return this.getArg('link')?.link ?? super.link;
@@ -120,9 +129,10 @@ export abstract class FileToken extends LinkBaseToken {
 
 		/* NOT FOR BROWSER END */
 
+		const {extension} = this;
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class
-			part => new ImageParameterToken(part, config, accum) as ImageParameterToken,
+			part => new ImageParameterToken(part, extension, config, accum) as ImageParameterToken,
 		));
 	}
 
@@ -307,7 +317,7 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 		const parameter: ImageParameterToken = Shadow.run(
 			// @ts-expect-error abstract class
-			() => new ImageParameterToken(syntax.replace('$1', ''), config),
+			() => new ImageParameterToken(syntax.replace('$1', ''), this.extension, config),
 		);
 		if (free) {
 			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);

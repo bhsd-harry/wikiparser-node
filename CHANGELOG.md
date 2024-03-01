@@ -2,9 +2,14 @@
 
 *2024-03-01*
 
+**Added**
+
+- New getter [`FileToken.prototype.extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension)
+
 **Fixed**
 
 - [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken) is present in the same line
+- Improved [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) validation for different file extensions
 
 ## v1.5.1
 

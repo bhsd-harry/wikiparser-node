@@ -15,16 +15,18 @@ export class Title {
 	fragment;
 	/** @private */
 	readonly encoded: boolean = false;
+	#main: string;
 
 	/* NOT FOR BROWSER */
 
 	readonly #namespaces;
-	#main: string;
 	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
 	redirects = new Map<string, string>();
+
+	/* NOT FOR BROWSER END */
 
 	/** 不含命名空间的标题主体部分 */
 	get main(): string {
@@ -34,6 +36,21 @@ export class Title {
 	set main(title) {
 		title = title.replace(/_/gu, ' ').trim();
 		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+	}
+
+	/** 扩展名 */
+	get extension(): string | undefined {
+		const {main} = this,
+			i = main.lastIndexOf('.');
+		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
+	}
+
+	/* NOT FOR BROWSER */
+
+	set extension(extension) {
+		const {main} = this,
+			i = main.lastIndexOf('.');
+		this.main = `${i === -1 ? main : main.slice(0, i)}.${extension}`;
 	}
 
 	/** 命名空间前缀 */
@@ -53,19 +70,6 @@ export class Title {
 		this.autoConvert();
 		title = `${prefix}${this.main}`.replace(/ /gu, '_');
 		return this.redirects.get(title) ?? title;
-	}
-
-	/** 扩展名 */
-	get extension(): string | undefined {
-		const {main} = this,
-			i = main.lastIndexOf('.');
-		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
-	}
-
-	set extension(extension) {
-		const {main} = this,
-			i = main.lastIndexOf('.');
-		this.main = `${i === -1 ? main : main.slice(0, i)}.${extension}`;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -128,11 +132,11 @@ export class Title {
 		}
 		this.valid = Boolean(title || this.interwiki || selfLink && this.fragment !== undefined)
 			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
+		this.main = title;
 
 		/* NOT FOR BROWSER */
 
 		this.#namespaces = config.namespaces;
-		this.main = title;
 		Object.defineProperties(this, {
 			valid: {writable: false},
 			encoded: {enumerable: false, writable: false},
