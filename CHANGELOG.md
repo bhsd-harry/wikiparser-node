@@ -10,6 +10,7 @@
 
 - [`DdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DdToken) is now correctly parsed when [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken) is present in the same line
 - Improved [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) validation for different file extensions
+- Ignore incomplete Wikitext syntax in `before` and `after` attributes of a `<choose>` extension tag when linting
 
 ## v1.5.1
 

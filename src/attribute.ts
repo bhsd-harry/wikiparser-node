@@ -238,7 +238,7 @@ export abstract class AttributeToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
-	/** @private */
+	/** 标签名 */
 	get tag(): string {
 		return this.#tag;
 	}

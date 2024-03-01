@@ -357,11 +357,6 @@ export abstract class AstElement extends AstNode {
 
 	/* NOT FOR BROWSER */
 
-	/** @private */
-	matchesTypes(types: Set<string>): boolean {
-		return types.has(this.type);
-	}
-
 	/** 销毁 */
 	destroy(): void {
 		this.parentNode?.destroy();

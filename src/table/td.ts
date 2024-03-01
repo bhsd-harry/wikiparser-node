@@ -307,11 +307,7 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/**
-	 * @override
-	 * @param syntax 表格语法
-	 * @param esc 是否需要转义
-	 */
+	/** @private */
 	override setSyntax(syntax: string, esc = false): void {
 		const aliases: Record<string, string> = {td: '\n|', th: '\n!', caption: '\n|+'};
 		super.setSyntax(aliases[syntax] ?? syntax, esc);
