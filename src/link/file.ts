@@ -50,6 +50,11 @@ export abstract class FileToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
 
+	/** 扩展名 */
+	get extension(): string | undefined {
+		return this.getTitle().extension;
+	}
+
 	/**
 	 * @param link 文件名
 	 * @param text 图片参数
@@ -57,9 +62,10 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	constructor(link: string, text?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(link, undefined, config, accum, delimiter);
+		const {extension} = this;
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class
-			part => new ImageParameterToken(part, config, accum) as ImageParameterToken,
+			part => new ImageParameterToken(part, extension, config, accum) as ImageParameterToken,
 		));
 	}
 
