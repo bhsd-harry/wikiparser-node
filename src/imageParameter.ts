@@ -70,7 +70,6 @@ export abstract class ImageParameterToken extends Token {
 	override readonly type = 'image-parameter';
 	declare readonly name: string;
 	#syntax = '';
-	#extension;
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;
@@ -113,7 +112,6 @@ export abstract class ImageParameterToken extends Token {
 			return;
 		}
 		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, accum);
-		this.#extension = extension;
 		this.setAttribute('name', 'caption');
 		this.setAttribute('stage', 7);
 	}
