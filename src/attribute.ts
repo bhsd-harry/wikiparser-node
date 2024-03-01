@@ -214,7 +214,7 @@ export abstract class AttributeToken extends Token {
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
 
-	/** @private */
+	/** 标签名 */
 	get tag(): string {
 		return this.#tag;
 	}
