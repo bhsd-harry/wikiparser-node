@@ -830,8 +830,7 @@
 		"page=$1": "page",
 		"page $1": "page",
 		"页数=$1": "page",
-		"$1页": "page",
-		"lossy=$1": "lossy"
+		"$1页": "page"
 	},
 	"variants": [
 		"zh",

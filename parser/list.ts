@@ -41,6 +41,18 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 		new DdToken(syntax, config, accum);
 		return `${text.slice(0, index)}\0${accum.length - 1}d\x7F${text.slice(index + syntax.length)}`;
 	};
+
+	/**
+	 * 更新 `lt`
+	 * @param closing 是否是闭合标签
+	 */
+	const update = (closing: boolean): void => {
+		if (!closing) {
+			lt++;
+		} else if (lt) {
+			lt--;
+		}
+	};
 	while (ex && dt) {
 		const {0: syntax, index} = ex;
 		if (syntax === '-{') {
@@ -60,21 +72,19 @@ export const parseList = (wikitext: string, config = Parser.getConfig(), accum: 
 		} else if (syntax.endsWith('x\x7F')) {
 			const {name, closing, selfClosing} = accum[Number(syntax.slice(1, -2))] as HtmlToken;
 			if (!selfClosing || normalTags.includes(name)) {
-				if (!closing) {
-					lt++;
-				} else if (lt) {
-					lt--;
-				}
+				update(closing);
 			}
 		} else if (syntax.endsWith('q\x7F')) {
 			const {bold, italic} = accum[Number(syntax.slice(1, -2))] as QuoteToken;
 			if (bold) {
+				update(lb);
 				lb = !lb;
 			}
 			if (italic) {
+				update(li);
 				li = !li;
 			}
-		} else if (lt === 0 && !lb && !li) { // syntax === ':'
+		} else if (lt === 0) { // syntax === ':'
 			if (syntax.length >= dt) {
 				return dd(syntax.slice(0, dt), index);
 			}

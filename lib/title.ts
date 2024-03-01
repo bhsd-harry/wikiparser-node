@@ -10,6 +10,24 @@ export class Title {
 	fragment;
 	/** @private */
 	readonly encoded: boolean = false;
+	#main: string;
+
+	/** 不含命名空间的标题主体部分 */
+	get main(): string {
+		return this.#main;
+	}
+
+	set main(title) {
+		title = title.replace(/_/gu, ' ').trim();
+		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+	}
+
+	/** 扩展名 */
+	get extension(): string | undefined {
+		const {main} = this,
+			i = main.lastIndexOf('.');
+		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
+	}
 
 	/**
 	 * @param title 标题（含或不含命名空间前缀）
@@ -58,5 +76,6 @@ export class Title {
 		}
 		this.valid = Boolean(title || this.interwiki || selfLink && this.fragment !== undefined)
 			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
+		this.main = title;
 	}
 }
