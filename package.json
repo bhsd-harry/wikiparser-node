@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.5.1",
+	"version": "1.5.2",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -39,6 +39,9 @@
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"
 	},
+	"dependencies": {
+		"chalk": "^4.1.2"
+	},
 	"devDependencies": {
 		"@cypress/request": "^3.0.1",
 		"@stylistic/eslint-plugin": "^1.5.4",
@@ -47,7 +50,6 @@
 		"@typescript-eslint/eslint-plugin": "^6.19.1",
 		"@typescript-eslint/parser": "^6.19.1",
 		"ajv-cli": "^5.0.0",
-		"chalk": "^4.1.2",
 		"eslint": "^8.56.0",
 		"eslint-plugin-es-x": "^7.5.0",
 		"eslint-plugin-eslint-comments": "^3.2.0",
