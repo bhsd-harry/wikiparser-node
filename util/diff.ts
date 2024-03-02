@@ -1,7 +1,7 @@
 import * as fs from 'fs/promises';
 import {spawn} from 'child_process';
-import type {ChildProcessWithoutNullStreams} from 'child_process';
 import * as chalk from 'chalk';
+import type {ChildProcessWithoutNullStreams} from 'child_process';
 
 process.on('unhandledRejection', e => {
 	console.error(e);

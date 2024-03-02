@@ -93,10 +93,18 @@ export class AstText extends AstNode {
 		if (!parentNode) {
 			return [];
 		}
+		const {type, name, parentNode: grandparent} = parentNode,
+			nowiki = name === 'nowiki' || name === 'pre';
+		let isHtmlAttrVal = false;
+		if (type === 'attr-value') {
+			const {type: grandType, name: grandName, tag} = grandparent as AttributeToken;
+			if (grandType !== 'ext-attr') {
+				isHtmlAttrVal = true;
+			} else if (tag === 'choose' && (grandName === 'before' || grandName === 'after')) {
+				return [];
+			}
+		}
 		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
-		const {type, name} = parentNode,
-			nowiki = name === 'nowiki' || name === 'pre',
-			isHtmlAttrVal = type === 'attr-value' && (parentNode.parentNode as AttributeToken).type !== 'ext-attr';
 		let errorRegex;
 		if (type === 'ext-inner' && (name === 'pre' || parentNode instanceof NowikiToken)) {
 			errorRegex = new RegExp(
