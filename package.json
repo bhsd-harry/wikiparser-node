@@ -47,8 +47,8 @@
 		"@stylistic/eslint-plugin": "^1.5.4",
 		"@types/node": "^20.11.6",
 		"@types/request": "^2.48.12",
-		"@typescript-eslint/eslint-plugin": "^6.19.1",
-		"@typescript-eslint/parser": "^6.19.1",
+		"@typescript-eslint/eslint-plugin": "^7.1.0",
+		"@typescript-eslint/parser": "^7.1.0",
 		"ajv-cli": "^5.0.0",
 		"eslint": "^8.56.0",
 		"eslint-plugin-es-x": "^7.5.0",
@@ -58,7 +58,7 @@
 		"eslint-plugin-n": "^16.6.2",
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-regexp": "^2.2.0",
-		"eslint-plugin-unicorn": "^50.0.1",
+		"eslint-plugin-unicorn": "^51.0.1",
 		"typescript": "^5.3.3"
 	},
 	"engines": {
