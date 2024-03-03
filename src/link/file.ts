@@ -129,7 +129,7 @@ export abstract class FileToken extends LinkBaseToken {
 
 		/* NOT FOR BROWSER END */
 
-		const {extension} = this;
+		const {extension} = this.getTitle(true);
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class
 			part => new ImageParameterToken(part, extension, config, accum) as ImageParameterToken,
