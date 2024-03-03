@@ -4,7 +4,7 @@
 
 **Fixed**
 
-- [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) parsing when file name contains [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken) and/or [`TranscludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken), introduced in [v1.5.2](#v152)
+- [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) parsing when file name contains [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken) and/or [`TranscludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken), since [v1.5.2](#v152)
 
 ## v1.5.2
 
