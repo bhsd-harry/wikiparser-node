@@ -1,14 +1,14 @@
-## v1.5.3
+## v1.5.4
 
-*2024-03-03*
+*2024-03-05*
 
 **Fixed**
 
-- [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) parsing when file name contains [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken) and/or [`TranscludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken), since [v1.5.2](#v152)
+- Ignore most invalid Wikitext syntax nested in a [`PreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/PreToken) when linting
 
-## v1.5.2
+## v1.5.3
 
-*2024-03-01*
+*2024-03-03*
 
 **Added**
 
