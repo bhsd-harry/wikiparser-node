@@ -33,7 +33,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			};
 			return [e];
 		}
-		return super.lint(start);
+		return super.lint(start, new RegExp(`<\\s*(?:\\/\\s*)${name === 'nowiki' ? '' : '?'}(${name})\\b`, 'giu'));
 	}
 }
 

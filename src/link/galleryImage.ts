@@ -76,8 +76,8 @@ export abstract class GalleryImageToken extends FileToken {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			{ns, interwiki} = this.getAttribute('title');
 		if (interwiki || ns !== 6) {
 			errors.push(generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image'));

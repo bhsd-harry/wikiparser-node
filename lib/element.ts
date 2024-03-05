@@ -300,12 +300,13 @@ export abstract class AstElement extends AstNode {
 	/**
 	 * @override
 	 * @param start
+	 * @param re 用于`AstText`后代节点的正则表达式
 	 */
-	lint(start = this.getAbsoluteIndex()): LintError[] {
+	lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors: LintError[] = [];
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
-			errors.push(...child.lint(cur));
+			errors.push(...child.lint(cur, re));
 			cur += String(child).length + this.getGaps(i);
 		}
 		return errors;

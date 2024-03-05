@@ -93,7 +93,7 @@ export abstract class GalleryToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];
 		for (let i = 0; i < this.length; i++) {
@@ -128,7 +128,7 @@ export abstract class GalleryToken extends Token {
 					],
 				});
 			} else if (child.type !== 'noinclude' && child.type !== 'text') {
-				errors.push(...child.lint(start));
+				errors.push(...child.lint(start, re));
 			}
 			start += length + 1;
 		}

@@ -86,10 +86,10 @@ export abstract class NestedToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		let rect: BoundingRect | undefined;
 		return [
-			...super.lint(start),
+			...super.lint(start, re),
 			...this.childNodes.filter(child => {
 				if (child.type === 'ext' || child.type === 'comment') {
 					return false;

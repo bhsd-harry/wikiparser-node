@@ -219,8 +219,8 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			{parentNode, length, childNodes} = this,
 			attrs = new Map<string, AttributeToken[]>(),
 			duplicated = new Set<string>();

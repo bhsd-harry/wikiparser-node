@@ -96,13 +96,13 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
 			validFlags = new Set(this.#flags!.filter(flag => definedFlags.has(flag))),
 			emptyFlagCount = this.#flags!.filter(flag => !flag).length,
 			knownFlagCount = this.#flags!.length - unknownFlags.size - emptyFlagCount,
-			errors = super.lint(start);
+			errors = super.lint(start, re);
 		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 			return errors;
 		}

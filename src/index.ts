@@ -513,8 +513,8 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER */
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken>> = {};
 			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
