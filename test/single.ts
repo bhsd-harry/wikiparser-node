@@ -1,7 +1,8 @@
 import {diff, error} from '../util/diff';
-import type {Parser} from '../base';
+import type {Parser, LintError} from '../base';
 
-const entities = {lt: '<', gt: '>', amp: '&'};
+const entities = {lt: '<', gt: '>', amp: '&'},
+	ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 
 /**
  * 测试单个页面
@@ -36,7 +37,7 @@ export const single = async (Parser: Parser, {title, ns, content}: SimplePage): 
 		}
 
 		console.time(`lint: ${title}`);
-		const errors = token.lint().filter(({message}) => message !== '过时的属性');
+		const errors = token.lint().filter(({rule}) => !ignored.has(rule));
 		console.timeEnd(`lint: ${title}`);
 		console.log(errors.map(({message, severity}) => ({message, severity})));
 		if (errors.length === 0) {
