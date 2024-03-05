@@ -144,8 +144,8 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			{link, name} = this;
 		if (name === 'invalid') {
 			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image parameter');

@@ -13,8 +13,8 @@ export abstract class LinkToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re);
 		if (this.closest('ext-link-text')) {
 			errors.push(generateForSelf(this, {start}, 'nested-link', 'internal link in an external link'));
 		}

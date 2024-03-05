@@ -68,7 +68,7 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this;
 		if (!this.getAttribute('include')) {
 			const e = generateForSelf(this, {start}, 'no-arg', 'unexpected template argument');
@@ -80,9 +80,9 @@ export abstract class ArgToken extends Token {
 			}
 			return [e];
 		}
-		const errors = argName.lint(start + 3);
+		const errors = argName.lint(start + 3, re);
 		if (argDefault) {
-			errors.push(...argDefault.lint(start + 4 + String(argName).length));
+			errors.push(...argDefault.lint(start + 4 + String(argName).length, re));
 		}
 		if (rest.length > 0) {
 			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};

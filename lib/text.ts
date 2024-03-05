@@ -88,7 +88,7 @@ export class AstText extends AstNode {
 	 * @override
 	 * @param start
 	 */
-	lint(start = this.getAbsoluteIndex()): LintError[] {
+	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
 		}
@@ -102,25 +102,12 @@ export class AstText extends AstNode {
 				return [];
 			}
 		}
-		const {NowikiToken}: typeof import('../src/nowiki') = require('../src/nowiki');
-		const pre = parentNode.closest('ext')?.name === 'pre',
-			nowiki = pre || name === 'nowiki';
-		let errorRegex;
-		if (pre || type === 'ext-inner' && parentNode instanceof NowikiToken) {
-			errorRegex = new RegExp(
-				`<\\s*(?:\\/\\s*)${nowiki ? '' : '?'}(${name})\\b`,
-				'giu',
-			);
-		} else if (
-			type === 'free-ext-link'
-				|| type === 'ext-link-url'
-				|| type === 'image-parameter' && name === 'link'
-				|| isHtmlAttrVal
-		) {
-			errorRegex = errorSyntaxUrl;
-		} else {
-			errorRegex = errorSyntax;
-		}
+		errorRegex ??= type === 'free-ext-link'
+		|| type === 'ext-link-url'
+		|| type === 'image-parameter' && name === 'link'
+		|| isHtmlAttrVal
+			? errorSyntaxUrl
+			: errorSyntax;
 		if (data.search(errorRegex) === -1) {
 			return [];
 		}
@@ -163,7 +150,7 @@ export class AstText extends AstNode {
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
 				severity = length > 1 && !(
-					char === '<' && (nowiki || !/[\s/>]/u.test(nextChar ?? ''))
+					char === '<' && !/[\s/>]/u.test(nextChar ?? '')
 					|| isHtmlAttrVal && (char === '[' || char === ']')
 				)
 				|| char === '{' && (nextChar === char || previousChar === '-')
