@@ -70,8 +70,8 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			args = this.getAllArgs().filter(({childNodes}) => {
 				const visibleNodes = childNodes.filter(node => node.text().trim());
 				return visibleNodes.length !== 1 || visibleNodes[0]!.type !== 'arg';

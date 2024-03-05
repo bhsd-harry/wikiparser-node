@@ -309,8 +309,8 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			{balanced, firstChild, lastChild, type, name, tag} = this,
 			value = this.getValue();
 		let rect: BoundingRect | undefined;
