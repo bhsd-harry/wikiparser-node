@@ -1,8 +1,8 @@
 import {diff, error} from '../util/diff';
 import type {Parser, LintError} from '../base';
 
-const entities = {lt: '<', gt: '>', amp: '&'},
-	ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
+const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
+const entities = {lt: '<', gt: '>', amp: '&'};
 
 /**
  * 测试单个页面
