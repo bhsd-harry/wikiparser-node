@@ -67,8 +67,8 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			{firstChild, level} = this,
 			innerStr = String(firstChild),
 			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),

@@ -112,8 +112,8 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re);
 		start += this.getRelativeIndex(this.length - 1);
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text') {

@@ -106,8 +106,8 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re);
 		let refError: LintError | undefined;
 		if (this.name === 'h1' && !this.closing) {
 			refError = generateForSelf(this, {start}, 'h1', '<h1>');
