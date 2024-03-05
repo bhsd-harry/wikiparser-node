@@ -89,8 +89,8 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start),
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re),
 			{childNodes: [target, linkText], type: linkType} = this,
 			{encoded, fragment} = this.#title;
 		let rect: BoundingRect | undefined;

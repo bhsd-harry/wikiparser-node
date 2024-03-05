@@ -159,8 +159,8 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @override */
-	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start);
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+		const errors = super.lint(start, re);
 		let rect: BoundingRect | undefined;
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
 			rect = {start, ...this.getRootNode().posFromIndex(start)!};
