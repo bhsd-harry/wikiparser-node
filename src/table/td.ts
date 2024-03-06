@@ -93,7 +93,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 内部wikitext */
 	get innerText(): string {
-		return this.lastChild.text();
+		return this.lastChild.text().trim();
 	}
 
 	set innerText(text) {

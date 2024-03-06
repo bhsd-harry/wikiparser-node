@@ -22,7 +22,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** 链接显示文字 */
 	get innerText(): string {
-		return this.length > 1 ? this.lastChild.text() : this.firstChild.text().replace(/^\s*:/u, '');
+		return this.length > 1 ? this.lastChild.text() : this.firstChild.text().replace(/^\s*:?/u, '');
 	}
 
 	set innerText(text) {

@@ -51,7 +51,7 @@ export abstract class HeadingToken extends Token {
 
 	/** 内部wikitext */
 	get innerText(): string {
-		return this.firstChild.text();
+		return this.firstChild.text().trim();
 	}
 
 	/** @throws `Error` 首尾包含`=` */
