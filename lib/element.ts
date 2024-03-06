@@ -416,7 +416,7 @@ export abstract class AstElement extends AstNode {
 			const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
 			return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
 				&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
-		} else if (!primitives.has(typeof thisVal)) {
+		} else if (!primitives.has(typeof thisVal) && !(thisVal instanceof Title)) {
 			throw new RangeError(`复杂属性 ${key} 不能用于选择器！`);
 		}
 		const stringVal = toCase(String(thisVal), i);
