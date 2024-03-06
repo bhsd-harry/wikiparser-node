@@ -2,6 +2,10 @@
 
 *2024-03-06*
 
+**Fixed**
+
+- [`ListToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#getrange) for `<dt>` items
+
 **Changed**
 
 - [Attribute selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#属性) now regard falsy values as non-existent attributes
@@ -20,7 +24,7 @@
 
 **Added**
 
-- New getter [`FileToken.prototype.extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension)
+- New getter [`FileToken.extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension)
 
 **Fixed**
 
