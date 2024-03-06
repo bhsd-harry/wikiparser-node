@@ -33,7 +33,7 @@ declare global {
 
 		/* NOT FOR BROWSER END */
 
-		string;
+		unknown;
 
 	type TokenAttributeGetter<T extends string> =
 		T extends 'acceptable' ? Record<string, Ranges> | undefined :

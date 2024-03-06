@@ -298,7 +298,7 @@ export abstract class ImageParameterToken extends Token {
 	/** @private */
 	override setAttribute<T extends string>(key: T, value: TokenAttributeGetter<T>): void {
 		if (key === 'syntax') {
-			this.#syntax = value;
+			this.#syntax = value as string;
 		} else {
 			super.setAttribute(key, value);
 		}

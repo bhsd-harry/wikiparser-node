@@ -1,3 +1,11 @@
+## v1.5.5
+
+*2024-03-06*
+
+**Changed**
+
+- [Attribute selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#属性) now regard falsy values as non-existent attributes
+
 ## v1.5.4
 
 *2024-03-05*

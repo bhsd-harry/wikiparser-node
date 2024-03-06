@@ -50,6 +50,8 @@ const matchesLang = (
 	return typeof lang === 'string' && regex.test(lang);
 };
 
+const primitives = new Set(['string', 'number', 'boolean', 'undefined']);
+
 /* NOT FOR BROWSER END */
 
 /** 类似HTMLElement */
@@ -396,28 +398,28 @@ export abstract class AstElement extends AstNode {
 		const isAttr = typeof this.hasAttr === 'function' && typeof this.getAttr === 'function';
 		if (!(key in this) && (!isAttr || !this.hasAttr!(key))) {
 			return equal === '!=';
-		} else if (!equal) {
-			return true;
 		}
 		const v = toCase(val, i);
-		let thisVal = this.getAttribute(key) as unknown;
+		let thisVal = this.getAttribute(key);
 		if (isAttr) {
 			const attr = this.getAttr!(key);
 			if (attr !== undefined) {
 				thisVal = attr === true ? '' : attr;
 			}
 		}
-		if (thisVal instanceof RegExp) {
+		if (!equal) {
+			return thisVal !== undefined && thisVal !== false;
+		} else if (thisVal instanceof RegExp) {
 			thisVal = thisVal.source;
 		}
 		if (equal === '~=') {
 			const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
 			return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
 				&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
-		} else if (typeof thisVal !== 'string') {
+		} else if (!primitives.has(typeof thisVal)) {
 			throw new RangeError(`复杂属性 ${key} 不能用于选择器！`);
 		}
-		const stringVal = toCase(thisVal, i);
+		const stringVal = toCase(String(thisVal), i);
 		switch (equal) {
 			case '|=':
 				return stringVal === v || stringVal.startsWith(`${v}-`);

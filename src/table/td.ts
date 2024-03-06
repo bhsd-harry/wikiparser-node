@@ -301,7 +301,7 @@ export abstract class TdToken extends TableBaseToken {
 	/** @private */
 	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
 		if (key === 'innerSyntax') {
-			this.#innerSyntax = value ?? '';
+			this.#innerSyntax = (value ?? '') as string;
 		} else {
 			super.setAttribute(key, value);
 		}

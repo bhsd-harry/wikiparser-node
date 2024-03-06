@@ -160,9 +160,7 @@ export abstract class AstNode implements AstNodeBase {
 
 			/* NOT FOR BROWSER END */
 		}
-		return key in this
-			? String(this[key as keyof this]) as TokenAttributeGetter<T>
-			: undefined as TokenAttributeGetter<T>;
+		return this[key as keyof this] as TokenAttributeGetter<T>;
 	}
 
 	/** @private */
