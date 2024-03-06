@@ -174,7 +174,7 @@ export abstract class TdToken extends TableBaseToken {
 		result.correction = str.includes('\n') && Shadow.run(() => {
 			const config = this.getAttribute('config'),
 				include = this.getAttribute('include');
-			return String(new Token(str, config).parseOnce(0, include).parseOnce()).includes('\n');
+			return String(new Token(str, config).parseOnce(0, include).parseOnce().parseOnce()).includes('\n');
 		});
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';

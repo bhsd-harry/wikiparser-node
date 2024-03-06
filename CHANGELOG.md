@@ -1,3 +1,11 @@
+## v1.5.6
+
+*2024-03-07*
+
+**Fixed**
+
+- Parsing a [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken) after another `TdToken` with a multiline [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) in it
+
 ## v1.5.5
 
 *2024-03-06*
