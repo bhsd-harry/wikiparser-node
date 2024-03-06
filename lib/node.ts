@@ -67,9 +67,7 @@ export abstract class AstNode implements AstNodeBase {
 		if (key === 'padding') {
 			return 0 as TokenAttributeGetter<T>;
 		}
-		return key in this
-			? String(this[key as keyof this]) as TokenAttributeGetter<T>
-			: undefined as TokenAttributeGetter<T>;
+		return this[key as keyof this] as TokenAttributeGetter<T>;
 	}
 
 	/** @private */
