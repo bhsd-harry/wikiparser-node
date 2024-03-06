@@ -78,7 +78,6 @@ import type {
 	ExtLinkToken,
 	MagicLinkToken,
 	ImageParameterToken,
-	ImagemapLinkToken,
 } from '../internal';
 import type {CaretPosition} from '../lib/node';
 import type {TokenTypes} from '../util/constants';
@@ -115,7 +114,7 @@ export class Token extends AstElement {
 	}
 
 	/** 所有内链、外链和自由外链 */
-	get links(): (LinkToken | ExtLinkToken | MagicLinkToken | ImageParameterToken | ImagemapLinkToken)[] {
+	get links(): (LinkToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
 		return this.querySelectorAll('link, ext-link, free-ext-link, image-parameter#link');
 	}
 

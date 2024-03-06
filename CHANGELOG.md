@@ -10,6 +10,10 @@
 
 - [Attribute selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#属性) now regard falsy values as non-existent attributes
 
+**Removed**
+
+- [`ImagemapToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImagemapToken) no longer overrides the [`links`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#links) getter
+
 ## v1.5.4
 
 *2024-03-05*

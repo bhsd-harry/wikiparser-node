@@ -55,15 +55,6 @@ export abstract class ImagemapToken extends Token {
 		return this.childNodes.find(isToken<GalleryImageToken>('imagemap-image'));
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** 链接 */
-	override get links(): ImagemapLinkToken[] {
-		return this.childNodes.filter(isToken<ImagemapLinkToken>('imagemap-link'));
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
