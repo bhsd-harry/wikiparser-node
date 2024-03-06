@@ -15,7 +15,7 @@ declare global {
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' | 'plain' ? boolean :
 		T extends 'title' ? Title :
-		string;
+		unknown;
 
 	type TokenAttributeGetter<T extends string> =
 		TokenAttribute<T>;
