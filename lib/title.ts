@@ -69,10 +69,6 @@ export class Title {
 				try {
 					fragment = decodeURIComponent(fragment);
 				} catch {}
-			} else if (fragment.includes('.')) {
-				try {
-					fragment = decodeURIComponent(fragment.replace(/\./gu, '%'));
-				} catch {}
 			}
 			this.fragment = fragment;
 			title = title.slice(0, i).trim();
