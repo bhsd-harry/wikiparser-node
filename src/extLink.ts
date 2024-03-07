@@ -152,11 +152,14 @@ export abstract class ExtLinkToken extends Token {
 
 	/** 修正空白字符 */
 	#correct(): void {
+		const {lastChild, length} = this,
+			{firstChild} = lastChild;
 		if (
 			!this.#space
-			&& this.length > 1
+			&& length > 1
+			&& (firstChild?.type === 'text' || firstChild?.type === 'converter')
 			// 都替换成`<`肯定不对，但无妨
-			&& /^[^[\]<>"{\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(this.lastChild.text().replace(/&[lg]t;/u, '<'))
+			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(lastChild.text().replace(/&[lg]t;/u, '<'))
 		) {
 			this.#space = ' ';
 		}

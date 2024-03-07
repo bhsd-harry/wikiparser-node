@@ -5,6 +5,7 @@
 **Fixed**
 
 - Parsing a [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken) after another `TdToken` with a multiline [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) in it
+- [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken) when the link text starts with a token with higher precedence
 
 ## v1.5.5
 
