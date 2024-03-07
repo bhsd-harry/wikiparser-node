@@ -7,6 +7,10 @@
 - Parsing a [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken) after another `TdToken` with a multiline [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) in it
 - [`ExtLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken) when the link text starts with a token with higher precedence
 
+**Changed**
+
+- [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) no longer decodes the deprecated MediaWiki-style fragment encoding
+
 ## v1.5.5
 
 *2024-03-06*
