@@ -1,3 +1,11 @@
+## v1.5.7
+
+*2024-03-08*
+
+**Fixed**
+
+- [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now ignores inconsistent table layout due to a large `colspan` value in the last column
+
 ## v1.5.6
 
 *2024-03-07*

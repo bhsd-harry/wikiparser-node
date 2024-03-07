@@ -88,9 +88,26 @@ export abstract class TableToken extends TrBaseToken {
 		const layout = this.getLayout(),
 			{length} = layout;
 		if (length > 1) {
-			const j = new Array(length - 1).fill(undefined)
-				.findIndex((_, i) => layout[i]!.length !== layout[i + 1]!.length) + 1;
-			if (j) {
+			let low = 1,
+				high = Infinity,
+				j = 0;
+			for (; j < length; j++) {
+				const row = layout[j]!,
+					max = row.length;
+				if (max < low) {
+					break;
+				} else if (max < high) {
+					high = max;
+				}
+				const {colspan} = this.getNthCell(row[row.length - 1]!)!,
+					min = max - colspan + 1;
+				if (min > high) {
+					break;
+				} else if (min > low) {
+					low = min;
+				}
+			}
+			if (j < length) {
 				errors.push(generateForChild(
 					this.getNthRow(j)!,
 					{start},
