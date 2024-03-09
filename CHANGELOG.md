@@ -6,6 +6,10 @@
 
 - [`TableToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#lint) now ignores inconsistent table layout due to a large `colspan` value in the last column
 
+**Changed**
+
+- Lowered severity of ignored lines due to no image in [`GalleryToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#lint)
+
 ## v1.5.6
 
 *2024-03-07*
