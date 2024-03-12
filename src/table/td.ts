@@ -19,6 +19,7 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
+
 export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
@@ -80,9 +81,14 @@ export abstract class TdToken extends TableBaseToken {
 		} else if (char === '+') {
 			subtype = 'caption';
 		}
-		return {
-			subtype,
-		};
+		if (this.isIndependent()) {
+			return {
+				subtype,
+			};
+		}
+		const {previousSibling} = this;
+		const result = previousSibling.#getSyntax();
+		return result;
 	}
 
 	/** @private */
@@ -148,6 +154,11 @@ export abstract class TdToken extends TableBaseToken {
 			}
 		}
 		return errors;
+	}
+
+	/** 是否位于行首 */
+	isIndependent(): boolean {
+		return this.firstChild.text().startsWith('\n');
 	}
 
 	/** @override */
