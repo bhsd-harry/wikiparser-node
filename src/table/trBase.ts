@@ -3,6 +3,9 @@ import {
 	isToken,
 } from '../../util/debug';
 import {TableBaseToken} from './base';
+import {
+	TdToken,
+} from './td';
 import type {LintError} from '../../base';
 import type {
 	AstNodes,
