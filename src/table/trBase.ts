@@ -9,18 +9,15 @@ import {
 import {classes} from '../../util/constants';
 import {Token} from '..';
 import {TableBaseToken} from './base';
-import {TdToken, createTd} from './td';
-import type {LintError} from '../../base';
-import type {
-	AstNodes,
-	ArgToken,
-	TranscludeToken,
+import {
+	TdToken,
 
 	/* NOT FOR BROWSER */
 
-	SyntaxToken,
-	TrToken,
-} from '../../internal';
+	createTd,
+} from './td';
+import type {LintError} from '../../base';
+import type {AstNodes, ArgToken, TranscludeToken, SyntaxToken, TrToken} from '../../internal';
 import type {TdAttrs, TdSubtypes} from './td';
 
 export interface TableCoords {
