@@ -179,7 +179,6 @@ export abstract class TdToken extends TableBaseToken {
 	 */
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
-		key = key.toLowerCase().trim() as T;
 		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
 	}
 

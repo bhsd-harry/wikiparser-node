@@ -179,7 +179,6 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 不存在该行
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
-	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
 	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
 		const isRow = super.getRowCount();
 		if (
@@ -198,8 +197,6 @@ export abstract class TableToken extends TrBaseToken {
 				if (n < 0) {
 					return child;
 				}
-			} else if (child.type === 'table-syntax') {
-				return child;
 			}
 		}
 		return undefined;
