@@ -30,16 +30,14 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
-
 declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
 
 /* NOT FOR BROWSER */
 
 declare type TdAttrSetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | boolean;
+export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /* NOT FOR BROWSER END */
-
-export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
  * `<td>`、`<th>`和`<caption>`
