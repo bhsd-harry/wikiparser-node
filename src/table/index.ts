@@ -158,8 +158,7 @@ export abstract class TableToken extends TrBaseToken {
 					}
 					if (last) {
 						const coords: TableCoords = {row: i, column: j},
-							rowspan = cell.getAttr('rowspan'),
-							colspan = cell.getAttr('colspan');
+							{rowspan, colspan} = cell;
 						j++;
 						while (rowLayout[k]) {
 							k++;
@@ -199,8 +198,9 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取指定坐标的单元格
 	 * @param coords 表格坐标
 	 */
-	getNthCell(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
-		const rawCoords = coords.row === undefined ? this.toRawCoords(coords) : coords;
+	getNthCell(coords: TableCoords): TdToken | undefined {
+		const rawCoords = coords;
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 
