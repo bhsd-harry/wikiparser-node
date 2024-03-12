@@ -23,9 +23,9 @@ const escapeTable = (syntax: SyntaxToken): void => {
 	syntax.replaceChildren(...childNodes);
 };
 
-export interface TableBaseToken extends AttributesParentBase {}
-
 /* NOT FOR BROWSER END */
+
+export interface TableBaseToken extends AttributesParentBase {}
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
