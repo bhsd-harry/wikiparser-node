@@ -178,10 +178,14 @@ export abstract class TableToken extends TrBaseToken {
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
 	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
-		const nRows = this.getRowCount(),
-			isRow = super.getRowCount();
-		n += n < 0 ? nRows : 0;
-		if (n === 0 && (isRow || force && nRows === 0)) {
+		const isRow = super.getRowCount();
+		if (
+			n === 0
+			// eslint-disable-next-line @stylistic/no-extra-parens
+			&& (
+				isRow
+			)
+		) {
 			return this;
 		} else if (isRow) {
 			n--;
@@ -197,11 +201,6 @@ export abstract class TableToken extends TrBaseToken {
 			}
 		}
 		return undefined;
-	}
-
-	/** @override */
-	override getRowCount(): number {
-		return super.getRowCount() + this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
 	/** @override */
