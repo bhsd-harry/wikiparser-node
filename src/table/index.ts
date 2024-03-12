@@ -9,7 +9,6 @@ import type {
 } from '../../base';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
-import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
@@ -127,6 +126,11 @@ export abstract class TableToken extends TrBaseToken {
 			}
 		}
 		return layout;
+	}
+
+	/** @override */
+	override getRowCount(): number {
+		return super.getRowCount() + this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
 	/** @override */

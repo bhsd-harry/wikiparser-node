@@ -54,4 +54,11 @@ export abstract class TrBaseToken extends TableBaseToken {
 		errors.push(error);
 		return errors;
 	}
+
+	/** 获取行数 */
+	getRowCount(): number {
+		return Number(this.childNodes.some(
+			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
+		));
+	}
 }
