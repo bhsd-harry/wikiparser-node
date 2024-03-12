@@ -1,13 +1,17 @@
+import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '../index';
 import {SyntaxToken} from '../syntax';
 import {AttributesToken} from '../attributes';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
+
+export interface TableBaseToken extends AttributesParentBase {}
 
 /**
  * 表格行，含开头的换行，不含结尾的换行
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
-export abstract class TableBaseToken extends Token {
+export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	declare type: 'table' | 'tr' | 'td';
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
