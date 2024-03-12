@@ -68,6 +68,51 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return errors;
 	}
 
+	/** 获取行数 */
+	getRowCount(): number {
+		return Number(this.childNodes.some(
+			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
+		));
+	}
+
+	/**
+	 * 获取第n列
+	 * @param n 列号
+	 * @param insert 是否用于判断插入新列的位置
+	 * @throws `RangeError` 不存在对应单元格
+	 */
+	getNthCol(n: number, insert?: false): TdToken | undefined;
+	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
+	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
+		/* NOT FOR BROWSER */
+
+		const nCols = this.getColCount();
+		n += n < 0 ? nCols : 0;
+		if (n < 0 || n > nCols || n === nCols && !insert) {
+			throw new RangeError(`不存在第 ${n} 个单元格！`);
+		}
+
+		/* NOT FOR BROWSER END */
+
+		let last = 0;
+		const isTr = isToken<TrToken>('tr'),
+			isSyntax = isToken<SyntaxToken>('table-syntax');
+		for (const child of this.childNodes.slice(2)) {
+			if (child instanceof TdToken) {
+				if (child.isIndependent()) {
+					last = Number(child.subtype !== 'caption');
+				}
+				n -= last;
+				if (n < 0) {
+					return child;
+				}
+			} else if (isTr(child) || isSyntax(child)) {
+				return child;
+			}
+		}
+		return undefined;
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** 修复简单的表格语法错误 */
@@ -132,13 +177,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return super.insertAt(token, i);
 	}
 
-	/** 获取行数 */
-	getRowCount(): number {
-		return Number(this.childNodes.some(
-			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
-		));
-	}
-
 	/** 获取列数 */
 	getColCount(): number {
 		let count = 0,
@@ -150,39 +188,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 			}
 		}
 		return count;
-	}
-
-	/**
-	 * 获取第n列
-	 * @param n 列号
-	 * @param insert 是否用于判断插入新列的位置
-	 * @throws `RangeError` 不存在对应单元格
-	 */
-	getNthCol(n: number, insert?: false): TdToken | undefined;
-	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
-	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
-		const nCols = this.getColCount();
-		n += n < 0 ? nCols : 0;
-		if (n < 0 || n > nCols || n === nCols && !insert) {
-			throw new RangeError(`不存在第 ${n} 个单元格！`);
-		}
-		let last = 0;
-		const isTr = isToken<TrToken>('tr'),
-			isSyntax = isToken<SyntaxToken>('table-syntax');
-		for (const child of this.childNodes.slice(2)) {
-			if (child instanceof TdToken) {
-				if (child.isIndependent()) {
-					last = Number(child.subtype !== 'caption');
-				}
-				n -= last;
-				if (n < 0) {
-					return child;
-				}
-			} else if (isTr(child) || isSyntax(child)) {
-				return child;
-			}
-		}
-		return undefined;
 	}
 
 	/**

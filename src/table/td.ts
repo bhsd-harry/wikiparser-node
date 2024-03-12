@@ -278,6 +278,16 @@ export abstract class TdToken extends TableBaseToken {
 		return this.firstChild.text().startsWith('\n');
 	}
 
+	/**
+	 * @override
+	 * @param key 属性键
+	 */
+	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
+		const value = super.getAttr(key);
+		key = key.toLowerCase().trim() as T;
+		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
+	}
+
 	/** @override */
 	override print(): string {
 		const {childNodes: [syntax, attr, inner]} = this;
@@ -337,16 +347,6 @@ export abstract class TdToken extends TableBaseToken {
 			const {subtype, escape} = this.#getSyntax();
 			this.setSyntax(subtype, escape);
 		}
-	}
-
-	/**
-	 * @override
-	 * @param key 属性键
-	 */
-	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
-		const value = super.getAttr(key);
-		key = key.toLowerCase().trim() as T;
-		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
 	}
 
 	/** @override */

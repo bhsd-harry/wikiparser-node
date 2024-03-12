@@ -3,6 +3,8 @@ import type {AstNodes, AttributesToken} from '../internal';
 
 export interface AttributesParentBase {
 
+	/* NOT FOR BROWSER */
+
 	/** getAttrs()方法的getter写法 */
 	attributes: Record<string, string | true>;
 
@@ -15,17 +17,21 @@ export interface AttributesParentBase {
 	/** id属性 */
 	id: string;
 
-	/**
-	 * AttributesToken子节点是否具有某属性
-	 * @param key 属性键
-	 */
-	hasAttr(key: string): boolean;
+	/* NOT FOR BROWSER END */
 
 	/**
 	 * 获取AttributesToken子节点的属性
 	 * @param key 属性键
 	 */
 	getAttr(key: string): string | true | undefined;
+
+	/* NOT FOR BROWSER */
+
+	/**
+	 * AttributesToken子节点是否具有某属性
+	 * @param key 属性键
+	 */
+	hasAttr(key: string): boolean;
 
 	/** 列举AttributesToken子节点的属性键 */
 	getAttrNames(): Set<string>;
@@ -72,6 +78,8 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			return this.childNodes[i] as AttributesToken;
 		}
 
+		/* NOT FOR BROWSER */
+
 		/** @implements */
 		get attributes(): Record<string, string | true> {
 			return this.#attributesChild.attributes;
@@ -108,14 +116,18 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			this.#attributesChild.id = id;
 		}
 
-		/** @implements */
-		hasAttr(key: string): boolean {
-			return this.#attributesChild.hasAttr(key);
-		}
+		/* NOT FOR BROWSER END */
 
 		/** @implements */
 		getAttr(key: string): string | true | undefined {
 			return this.#attributesChild.getAttr(key);
+		}
+
+		/* NOT FOR BROWSER */
+
+		/** @implements */
+		hasAttr(key: string): boolean {
+			return this.#attributesChild.hasAttr(key);
 		}
 
 		/** @implements */

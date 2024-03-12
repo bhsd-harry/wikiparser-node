@@ -67,8 +67,6 @@ export const setChildNodes = (
 	return removed;
 };
 
-/* NOT FOR BROWSER */
-
 /**
  * 生成一个指定长度的空数组
  * @param n 数组长度
@@ -76,6 +74,8 @@ export const setChildNodes = (
  */
 export const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
 	new Array(n).fill(undefined).map((_, i) => callback(i));
+
+/* NOT FOR BROWSER */
 
 /**
  * 撤销最近一次Mutation
