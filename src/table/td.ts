@@ -19,6 +19,9 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
+
+declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
+
 export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
