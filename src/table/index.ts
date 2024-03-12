@@ -270,10 +270,22 @@ export abstract class TableToken extends TrBaseToken {
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
 	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
-		const nRows = this.getRowCount(),
-			isRow = super.getRowCount();
+		const isRow = super.getRowCount();
+
+		/* NOT FOR BROWSER */
+
+		const nRows = this.getRowCount();
 		n += n < 0 ? nRows : 0;
-		if (n === 0 && (isRow || force && nRows === 0)) {
+
+		/* NOT FOR BROWSER END */
+
+		if (
+			n === 0
+			&& (
+				isRow
+				|| force && nRows === 0
+			)
+		) {
 			return this;
 
 			/* NOT FOR BROWSER */
@@ -290,16 +302,15 @@ export abstract class TableToken extends TrBaseToken {
 				if (n < 0) {
 					return child;
 				}
+
+				/* NOT FOR BROWSER */
 			} else if (child.type === 'table-syntax') {
 				return child;
+
+				/* NOT FOR BROWSER END */
 			}
 		}
 		return undefined;
-	}
-
-	/** @override */
-	override getRowCount(): number {
-		return super.getRowCount() + this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
 	/** @override */
@@ -327,6 +338,11 @@ export abstract class TableToken extends TrBaseToken {
 			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(String(token))}`);
 		}
 		return super.insertAt(token, i);
+	}
+
+	/** @override */
+	override getRowCount(): number {
+		return super.getRowCount() + this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
 
 	/** 获取下一行 */
