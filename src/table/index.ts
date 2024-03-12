@@ -187,9 +187,14 @@ export abstract class TableToken extends TrBaseToken {
 			{length} = rows,
 			layout = new Layout(...emptyArray(length, () => []));
 		for (let i = 0; i < length; i++) {
+			/* NOT FOR BROWSER */
+
 			if (i > (stop?.row ?? stop?.y ?? NaN)) {
 				break;
 			}
+
+			/* NOT FOR BROWSER END */
+
 			const rowLayout = layout[i]!;
 			let j = 0,
 				k = 0,
@@ -206,16 +211,25 @@ export abstract class TableToken extends TrBaseToken {
 						while (rowLayout[k]) {
 							k++;
 						}
+
+						/* NOT FOR BROWSER */
+
 						if (i === stop?.row && j > (stop.column ?? NaN)) {
 							layout[i]![k] = coords;
 							return layout;
 						}
+
+						/* NOT FOR BROWSER END */
+
 						for (let y = i; y < Math.min(i + rowspan, length); y++) {
 							for (let x = k; x < k + colspan; x++) {
 								layout[y]![x] = coords;
 							}
 						}
 						k += colspan;
+
+						/* NOT FOR BROWSER */
+
 						if (i === stop?.y && k > (stop.x ?? NaN)) {
 							return layout;
 						}
