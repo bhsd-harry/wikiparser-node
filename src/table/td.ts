@@ -62,6 +62,16 @@ export abstract class TdToken extends TableBaseToken {
 
 	/* NOT FOR BROWSER END */
 
+	/** rowspan */
+	get rowspan(): number {
+		return this.getAttr('rowspan');
+	}
+
+	/** colspan */
+	get colspan(): number {
+		return this.getAttr('colspan');
+	}
+
 	/** 单元格类型 */
 	get subtype(): TdSubtypes {
 		return this.#getSyntax().subtype;
@@ -73,21 +83,11 @@ export abstract class TdToken extends TableBaseToken {
 		this.setSyntax(subtype);
 	}
 
-	/** rowspan */
-	get rowspan(): number {
-		return this.getAttr('rowspan');
-	}
-
-	set rowspan(rowspan) {
+	set rowspan(rowspan) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
 		this.setAttr('rowspan', rowspan);
 	}
 
-	/** colspan */
-	get colspan(): number {
-		return this.getAttr('colspan');
-	}
-
-	set colspan(colspan) {
+	set colspan(colspan) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
 		this.setAttr('colspan', colspan);
 	}
 
