@@ -34,7 +34,16 @@ export abstract class TdToken extends TableBaseToken {
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token | undefined;
 
-	/** 单元格类型 */
+	/** rowspan */
+	get rowspan(): number {
+		return this.getAttr('rowspan');
+	}
+
+	/** colspan */
+	get colspan(): number {
+		return this.getAttr('colspan');
+	}
+
 	get subtype(): TdSubtypes {
 		return this.#getSyntax().subtype;
 	}

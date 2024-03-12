@@ -162,8 +162,7 @@ export abstract class TableToken extends TrBaseToken {
 					}
 					if (last) {
 						const coords: TableCoords = {row: i, column: j},
-							rowspan = cell.getAttr('rowspan'),
-							colspan = cell.getAttr('colspan');
+							{rowspan, colspan} = cell;
 						j++;
 						while (rowLayout[k]) {
 							k++;
