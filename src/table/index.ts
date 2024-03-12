@@ -214,7 +214,7 @@ export abstract class TableToken extends TrBaseToken {
 
 						/* NOT FOR BROWSER */
 
-						if (i === stop?.row && j > (stop.column ?? NaN)) {
+						if (i === stop?.row && j > stop.column!) {
 							layout[i]![k] = coords;
 							return layout;
 						}

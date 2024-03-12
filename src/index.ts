@@ -82,6 +82,13 @@ import type {
 import type {CaretPosition} from '../lib/node';
 import type {TokenTypes} from '../util/constants';
 
+declare interface LintIgnore {
+	line: number;
+	from: number | undefined;
+	to: number | undefined;
+	rules: Set<string> | undefined;
+}
+
 /* NOT FOR BROWSER */
 
 declare type TagToken = IncludeToken | ExtToken | HtmlToken;
@@ -509,12 +516,12 @@ export class Token extends AstElement {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		if (this.type === 'root') {
+			/* NOT FOR BROWSER */
+
 			const record: Record<string, Set<CategoryToken>> = {};
 			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
 				const thisCat = record[cat.name];
@@ -544,9 +551,52 @@ export class Token extends AstElement {
 					}));
 				}
 			}
+
+			/* NOT FOR BROWSER END */
+
+			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
+				wikitext = String(this),
+				ignores: LintIgnore[] = [];
+			let mt = regex.exec(wikitext),
+				last = 0,
+				curLine = 0;
+			while (mt) {
+				const {1: type, index} = mt,
+					detail = mt[2]?.trim();
+				curLine += wikitext.slice(last, index).split('\n').length - 1;
+				last = index;
+				ignores.push({
+					line: curLine + (type === 'disable-line' ? 0 : 1),
+					from: type === 'disable' ? regex.lastIndex : undefined,
+					to: type === 'enable' ? regex.lastIndex : undefined,
+					rules: detail ? new Set(detail.split(',').map(r => r.trim())) : undefined,
+				});
+				mt = regex.exec(wikitext);
+			}
+			return errors.filter(({rule, startLine, startIndex}) => {
+				const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
+				for (const {line, from, to, rules} of ignores) {
+					if (line > startLine + 1) {
+						break;
+					} else if (rules && !rules.has(rule)) {
+						continue;
+					} else if (line === startLine && from === undefined && to === undefined) {
+						return false;
+					} else if (from! <= startIndex && from! > nearest.pos) {
+						nearest.pos = from!;
+						nearest.type = 'from';
+					} else if (to! <= startIndex && to! > nearest.pos) {
+						nearest.pos = to!;
+						nearest.type = 'to';
+					}
+				}
+				return nearest.type !== 'from';
+			});
 		}
 		return errors;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** @private */
 	protectChildren(...args: (string | number | Range)[]): void {
