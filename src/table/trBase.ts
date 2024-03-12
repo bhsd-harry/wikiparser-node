@@ -7,11 +7,7 @@ import {
 	TdToken,
 } from './td';
 import type {LintError} from '../../base';
-import type {
-	AstNodes,
-	ArgToken,
-	TranscludeToken,
-} from '../../internal';
+import type {AstNodes, ArgToken, TranscludeToken, SyntaxToken, TrToken} from '../../internal';
 
 export interface TableCoords {
 	readonly row: number;

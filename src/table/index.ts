@@ -20,32 +20,6 @@ export const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 't
 
 /** @extends {Array<TableCoords[]>} */
 export class Layout extends Array<TableCoords[]> {
-	/* NOT FOR BROWSER */
-
-	/** 打印表格布局 */
-	print(): void {
-		const hBorders = emptyArray(this.length + 1, i => {
-				const prev = this[i - 1] ?? [],
-					next = this[i] ?? [];
-				return emptyArray(Math.max(prev.length, next.length), j => prev[j] !== next[j]);
-			}),
-			vBorders = this.map(cur => emptyArray(cur.length + 1, j => cur[j - 1] !== cur[j]));
-		let out = '';
-		for (let i = 0; i <= this.length; i++) {
-			const hBorder = hBorders[i]!.map(Number),
-				vBorderTop = (vBorders[i - 1] ?? []).map(Number),
-				vBorderBottom = (vBorders[i] ?? []).map(Number),
-				// eslint-disable-next-line no-sparse-arrays
-				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
-			for (let j = 0; j <= hBorder.length; j++) {
-				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0)
-					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1);
-				out += `${border[bit]!}${hBorder[j] ? '─' : ' '}`;
-			}
-			out += '\n';
-		}
-		console.log(out.slice(0, -1));
-	}
 }
 
 /**
