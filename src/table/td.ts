@@ -44,6 +44,7 @@ export abstract class TdToken extends TableBaseToken {
 		return this.getAttr('colspan');
 	}
 
+	/** 单元格类型 */
 	get subtype(): TdSubtypes {
 		return this.#getSyntax().subtype;
 	}
