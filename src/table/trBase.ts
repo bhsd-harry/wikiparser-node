@@ -68,6 +68,13 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return errors;
 	}
 
+	/** 获取行数 */
+	getRowCount(): number {
+		return Number(this.childNodes.some(
+			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
+		));
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** 修复简单的表格语法错误 */
@@ -130,13 +137,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 			child.independence();
 		}
 		return super.insertAt(token, i);
-	}
-
-	/** 获取行数 */
-	getRowCount(): number {
-		return Number(this.childNodes.some(
-			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
-		));
 	}
 
 	/** 获取列数 */

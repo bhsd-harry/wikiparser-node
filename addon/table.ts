@@ -1,16 +1,16 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import * as assert from 'assert/strict';
-import {Shadow, emptyArray} from '../util/debug';
+import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {Token} from '../src';
 import {TrToken} from '../src/table/tr';
-import {TableToken} from '../src/table';
+import {TableToken, isRowEnd} from '../src/table';
 import {TdToken, createTd} from '../src/table/td';
 import {TrBaseToken} from '../src/table/trBase';
 import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
-import type {TableRenderedCoords} from '../src/table';
+import type {TableRenderedCoords, Layout} from '../src/table';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from '../src/table/td';
 
 /**
@@ -28,12 +28,6 @@ const cmpCoords = (coords1: TableCoords, coords2: TableCoords): number => {
 	const diff = coords1.row - coords2.row;
 	return diff === 0 ? coords1.column - coords2.column : diff;
 };
-
-/**
- * 是否是行尾
- * @param {Token} cell 表格单元格
- */
-const isRowEnd = ({type}: Token): boolean => type === 'tr' || type === 'table-syntax';
 
 /**
  * 是否是合并单元格的第一列
@@ -105,87 +99,11 @@ const fill = (y: number, rowToken: TrBaseToken, layout: Layout, maxCol: number, 
 	});
 };
 
-/** @extends {Array<TableCoords[]>} */
-export class Layout extends Array<TableCoords[]> {
-	/** 打印表格布局 */
-	print(): void {
-		const hBorders = emptyArray(this.length + 1, i => {
-				const prev = this[i - 1] ?? [],
-					next = this[i] ?? [];
-				return emptyArray(Math.max(prev.length, next.length), j => prev[j] !== next[j]);
-			}),
-			vBorders = this.map(cur => emptyArray(cur.length + 1, j => cur[j - 1] !== cur[j]));
-		let out = '';
-		for (let i = 0; i <= this.length; i++) {
-			const hBorder = hBorders[i]!.map(Number),
-				vBorderTop = (vBorders[i - 1] ?? []).map(Number),
-				vBorderBottom = (vBorders[i] ?? []).map(Number),
-				// eslint-disable-next-line no-sparse-arrays
-				border = [' ',,, '┌',, '┐', '─', '┬',, '│', '└', '├', '┘', '┤', '┴', '┼'];
-			for (let j = 0; j <= hBorder.length; j++) {
-				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0)
-					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1);
-				out += `${border[bit]!}${hBorder[j] ? '─' : ' '}`;
-			}
-			out += '\n';
-		}
-		console.log(out.slice(0, -1));
-	}
-}
-
 TableToken.prototype.getNthCell =
 	/** @implements */
 	function(coords: TableCoords | TableRenderedCoords): TdToken | undefined {
 		const rawCoords = coords.row === undefined ? this.toRawCoords(coords) : coords;
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
-	};
-
-TableToken.prototype.getLayout	=
-	/** @implements */
-	function(stop?: {row?: number, column?: number, x?: number, y?: number}): Layout {
-		const rows = this.getAllRows(),
-			{length} = rows,
-			layout = new Layout(...emptyArray(length, () => []));
-		for (let i = 0; i < length; i++) {
-			if (i > (stop?.row ?? stop?.y ?? NaN)) {
-				break;
-			}
-			const rowLayout = layout[i]!;
-			let j = 0,
-				k = 0,
-				last: boolean | undefined;
-			for (const cell of rows[i]!.childNodes.slice(2)) {
-				if (cell.type === 'td') {
-					if (cell.isIndependent()) {
-						last = cell.subtype !== 'caption';
-					}
-					if (last) {
-						const coords: TableCoords = {row: i, column: j},
-							{rowspan, colspan} = cell;
-						j++;
-						while (rowLayout[k]) {
-							k++;
-						}
-						if (i === stop?.row && j > (stop.column ?? NaN)) {
-							layout[i]![k] = coords;
-							return layout;
-						}
-						for (let y = i; y < Math.min(i + rowspan, length); y++) {
-							for (let x = k; x < k + colspan; x++) {
-								layout[y]![x] = coords;
-							}
-						}
-						k += colspan;
-						if (i === stop?.y && k > (stop.x ?? NaN)) {
-							return layout;
-						}
-					}
-				} else if (isRowEnd(cell)) {
-					break;
-				}
-			}
-		}
-		return layout;
 	};
 
 TableToken.prototype.printLayout =
