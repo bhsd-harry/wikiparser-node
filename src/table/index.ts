@@ -118,9 +118,6 @@ export abstract class TableToken extends TrBaseToken {
 			{length} = rows,
 			layout = new Layout(...emptyArray(length, () => []));
 		for (let i = 0; i < length; i++) {
-			if (i > (stop?.row ?? stop?.y ?? NaN)) {
-				break;
-			}
 			const rowLayout = layout[i]!;
 			let j = 0,
 				k = 0,
@@ -137,19 +134,12 @@ export abstract class TableToken extends TrBaseToken {
 						while (rowLayout[k]) {
 							k++;
 						}
-						if (i === stop?.row && j > (stop.column ?? NaN)) {
-							layout[i]![k] = coords;
-							return layout;
-						}
 						for (let y = i; y < Math.min(i + rowspan, length); y++) {
 							for (let x = k; x < k + colspan; x++) {
 								layout[y]![x] = coords;
 							}
 						}
 						k += colspan;
-						if (i === stop?.y && k > (stop.x ?? NaN)) {
-							return layout;
-						}
 					}
 				} else if (isRowEnd(cell)) {
 					break;
@@ -193,12 +183,6 @@ export abstract class TableToken extends TrBaseToken {
 		n += n < 0 ? nRows : 0;
 		if (n === 0 && (isRow || force && nRows === 0)) {
 			return this;
-
-			/* NOT FOR BROWSER */
-		} else if (n < 0 || n > nRows || n === nRows && !insert) {
-			throw new RangeError(`不存在第 ${n} 行！`);
-
-			/* NOT FOR BROWSER END */
 		} else if (isRow) {
 			n--;
 		}
