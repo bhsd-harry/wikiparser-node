@@ -19,7 +19,6 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
-
 export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 
 /**
@@ -87,7 +86,7 @@ export abstract class TdToken extends TableBaseToken {
 			};
 		}
 		const {previousSibling} = this;
-		const result = previousSibling.#getSyntax();
+		const result = (previousSibling as TdToken).#getSyntax();
 		return result;
 	}
 
