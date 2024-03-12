@@ -88,12 +88,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 		if (n < 0 || n > nCols || n === nCols && !insert) {
 			throw new RangeError(`不存在第 ${n} 个单元格！`);
 		}
+		const isTr = isToken<TrToken>('tr'),
+			isSyntax = isToken<SyntaxToken>('table-syntax');
 
 		/* NOT FOR BROWSER END */
 
 		let last = 0;
-		const isTr = isToken<TrToken>('tr'),
-			isSyntax = isToken<SyntaxToken>('table-syntax');
 		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {
 				if (child.isIndependent()) {
@@ -103,8 +103,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 				if (n < 0) {
 					return child;
 				}
+
+				/* NOT FOR BROWSER */
 			} else if (isTr(child) || isSyntax(child)) {
 				return child;
+
+				/* NOT FOR BROWSER END */
 			}
 		}
 		return undefined;
