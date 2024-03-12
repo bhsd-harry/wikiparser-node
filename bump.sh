@@ -1,11 +1,13 @@
 #!/usr/local/bin/bash
 if [[ $2 == 'npm' ]]
 then
-	gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
+	IFS='.' read major minor <<< "$1"
+	version=$(( major + 1 )).$minor
+	gsed -i -E "s/\"version\": \".+\"/\"version\": \"$version\"/" package.json
 	npm i --package-lock-only
 	npm publish --tag ${3-latest}
 	git add -A
-	git commit -m "chore: publish v$1 to npm"
+	git commit -m "chore: publish v$version to npm"
 else
 	npm run lint && npm run build && npm run test:real
 	if [[ $? -eq 0 ]]
