@@ -18,7 +18,7 @@ export interface TdSpanAttrs {
 	rowspan?: number;
 	colspan?: number;
 }
-export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
+declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
 
 /**
  * `<td>`、`<th>`和`<caption>`
@@ -32,6 +32,16 @@ export abstract class TdToken extends TableBaseToken {
 	abstract override get parentNode(): TrToken | TableToken | undefined;
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token | undefined;
+
+	/** rowspan */
+	get rowspan(): number {
+		return this.getAttr('rowspan');
+	}
+
+	/** colspan */
+	get colspan(): number {
+		return this.getAttr('colspan');
+	}
 
 	/** 单元格类型 */
 	get subtype(): TdSubtypes {
@@ -157,5 +167,14 @@ export abstract class TdToken extends TableBaseToken {
 	/** 是否位于行首 */
 	isIndependent(): boolean {
 		return this.firstChild.text().startsWith('\n');
+	}
+
+	/**
+	 * @override
+	 * @param key 属性键
+	 */
+	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
+		const value = super.getAttr(key);
+		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
 	}
 }
