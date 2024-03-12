@@ -161,15 +161,21 @@ export abstract class TdToken extends TableBaseToken {
 				correction: false,
 			};
 		}
+		const {previousSibling} = this;
 
 		/* NOT FOR BROWSER */
 
-		const {previousSibling} = this;
 		if (!(previousSibling instanceof TdToken)) {
 			return {subtype, escape: esc, correction: true};
 		}
-		const result = previousSibling.#getSyntax(),
-			str = String(previousSibling.lastChild);
+
+		/* NOT FOR BROWSER END */
+
+		const result = previousSibling.#getSyntax();
+
+		/* NOT FOR BROWSER */
+
+		const str = String(previousSibling.lastChild);
 		result.escape ||= esc;
 		result.correction = str.includes('\n') && Shadow.run(() => {
 			const config = this.getAttribute('config'),
@@ -180,6 +186,7 @@ export abstract class TdToken extends TableBaseToken {
 			result.subtype = 'th';
 			result.correction = true;
 		}
+
 		return result;
 	}
 
@@ -266,6 +273,11 @@ export abstract class TdToken extends TableBaseToken {
 		return errors;
 	}
 
+	/** 是否位于行首 */
+	isIndependent(): boolean {
+		return this.firstChild.text().startsWith('\n');
+	}
+
 	/** @override */
 	override print(): string {
 		const {childNodes: [syntax, attr, inner]} = this;
@@ -280,11 +292,6 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/* NOT FOR BROWSER */
-
-	/** 是否位于行首 */
-	isIndependent(): boolean {
-		return this.firstChild.text().startsWith('\n');
-	}
 
 	/** @override */
 	override cloneNode(): this {
