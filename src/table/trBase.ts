@@ -9,7 +9,13 @@ import {
 import {classes} from '../../util/constants';
 import {Token} from '..';
 import {TableBaseToken} from './base';
-import {TdToken, createTd} from './td';
+import {
+	TdToken,
+
+	/* NOT FOR BROWSER */
+
+	createTd,
+} from './td';
 import type {LintError} from '../../base';
 import type {
 	AstNodes,

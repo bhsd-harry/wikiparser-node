@@ -31,9 +31,10 @@ export interface TdSpanAttrs {
 	colspan?: number;
 }
 
+declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
+
 /* NOT FOR BROWSER */
 
-declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | true | undefined;
 declare type TdAttrSetter<T extends string> = T extends keyof TdSpanAttrs ? number : string | boolean;
 
 /* NOT FOR BROWSER END */
