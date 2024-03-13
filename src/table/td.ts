@@ -284,7 +284,7 @@ export abstract class TdToken extends TableBaseToken {
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
 		key = key.toLowerCase().trim() as T;
-		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
+		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
 	}
 
 	/** @override */
@@ -352,10 +352,10 @@ export abstract class TdToken extends TableBaseToken {
 	override getAttrs(): TdAttrs {
 		const attr: TdAttrs = super.getAttrs();
 		if ('rowspan' in attr) {
-			attr.rowspan = Number(attr.rowspan);
+			attr.rowspan = parseInt(attr.rowspan as unknown as string);
 		}
 		if ('colspan' in attr) {
-			attr.colspan = Number(attr.colspan);
+			attr.colspan = parseInt(attr.colspan as unknown as string);
 		}
 		return attr;
 	}

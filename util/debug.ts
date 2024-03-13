@@ -101,6 +101,6 @@ export const undo: AstListener = (e, data): void => {
 			}
 			break;
 		default:
-			throw new RangeError(`无法撤销未知类型的事件：${String(type)}`);
+			throw new RangeError(`无法撤销未知类型的事件：${type}`);
 	}
 };
