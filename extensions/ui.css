@@ -83,12 +83,14 @@
 	font-weight: normal;
 }
 .wpb-parameter {
-	color: initial;
 	font-weight: normal;
 }
-.wpb-template > .wpb-parameter > .wpb-parameter-key,
-.wpb-invoke-function ~ .wpb-parameter > .wpb-parameter-key {
+.wpb-template > .wpb-parameter,
+.wpb-invoke-function ~ .wpb-parameter {
 	color: #b0c;
+}
+.wpb-parameter-value {
+	color: initial;
 }
 
 .wpb-heading, .wpb-image-parameter {
