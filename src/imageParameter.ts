@@ -61,7 +61,7 @@ function validate(
 		case 'page':
 			return (ext === 'djvu' || ext === 'djv' || ext === 'pdf') && Number(value) > 0;
 		default:
-			return value && !isNaN(value as unknown as number);
+			return Boolean(value) && !isNaN(value as unknown as number);
 	}
 }
 
