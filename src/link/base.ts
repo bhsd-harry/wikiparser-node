@@ -21,13 +21,7 @@ import type {AstText} from '../../internal';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
-
-	/* NOT FOR BROWSER */
-
 	declare readonly name: string;
-
-	/* NOT FOR BROWSER END */
-
 	#bracket = true;
 	#delimiter;
 	#title: Title;
@@ -97,10 +91,10 @@ export abstract class LinkBaseToken extends Token {
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
+		this.setAttribute('name', this.#title.title);
 
 		/* NOT FOR BROWSER */
 
-		this.setAttribute('name', this.#title.title);
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
