@@ -78,13 +78,17 @@ export abstract class TableToken extends TrBaseToken {
 				}
 			}
 			if (j < length) {
-				errors.push(generateForChild(
-					this.getNthRow(j)!,
+				const e = generateForChild(
+					this.getNthRow(j) as TrToken,
 					{start},
 					'table-layout',
 					'inconsistent table layout',
 					'warning',
-				));
+				);
+				e.startIndex++;
+				e.startLine++;
+				e.startCol = 0;
+				errors.push(e);
 			}
 		}
 		return errors;
