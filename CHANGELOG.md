@@ -1,10 +1,14 @@
-## v1.6.0
+## v1.6.1
 
 *2024-03-13*
 
 **Added**
 
 - Linting errors can now be disabled using inline comments
+
+**Changed**
+
+- The start position of a linting error associated with a [`TrToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TrToken) is now one character ahead
 
 ## v1.5.7
 
