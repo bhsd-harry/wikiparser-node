@@ -9,6 +9,8 @@
 **Fixed**
 
 - Allow the image parameter `page` in PDF file links
+- Disallow empty strings as the `manual-upright` image parameter
+- Use `parseInt()` for the `rowspan` and `colspan` properties of [`TdToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken)
 
 **Changed**
 
