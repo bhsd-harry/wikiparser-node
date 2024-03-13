@@ -70,7 +70,7 @@ function validate(
 		case 'manualthumb':
 			return true;
 		case 'page':
-			return (ext === 'djvu' || ext === 'djv') && Number(value) > 0;
+			return (ext === 'djvu' || ext === 'djv' || ext === 'pdf') && Number(value) > 0;
 		default:
 			return !Number.isNaN(Number(value));
 	}
