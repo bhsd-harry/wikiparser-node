@@ -245,7 +245,7 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	setTarget(link: string): void {
 		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(String(link), this.getAttribute('include'), 2, config),
+			{childNodes} = Parser.parse(link, this.getAttribute('include'), 2, config),
 			token = Shadow.run(() => new AtomToken(undefined, 'link-target', config, [], {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			}));

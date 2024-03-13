@@ -72,7 +72,7 @@ function validate(
 		case 'page':
 			return (ext === 'djvu' || ext === 'djv' || ext === 'pdf') && Number(value) > 0;
 		default:
-			return !Number.isNaN(Number(value));
+			return value && !isNaN(value as unknown as number);
 	}
 }
 
