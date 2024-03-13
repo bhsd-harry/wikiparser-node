@@ -42,6 +42,7 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
+import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
@@ -49,6 +50,7 @@ import type {LintError} from '../base';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
+	CategoryToken,
 } from '../internal';
 import type {TokenTypes} from '../util/constants';
 
@@ -381,6 +383,35 @@ export class Token extends AstElement {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
+		const record: Record<string, Set<CategoryToken>> = {};
+		for (const cat of this.childNodes.filter((node): node is CategoryToken => node.type === 'category')) {
+			const thisCat = record[cat.name];
+			if (thisCat) {
+				thisCat.add(cat);
+			} else {
+				record[cat.name] = new Set([cat]);
+			}
+		}
+		for (const value of Object.values(record)) {
+			if (value.size > 1) {
+				errors.push(...[...value].map(cat => {
+					const e = generateForSelf(
+						cat,
+						{start: cat.getAbsoluteIndex()},
+						'no-duplicate',
+						'duplicated category',
+					);
+					e.suggestions = [
+						{
+							desc: 'remove',
+							range: [e.startIndex, e.endIndex],
+							text: '',
+						},
+					];
+					return e;
+				}));
+			}
+		}
 		if (this.type === 'root') {
 			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
 				wikitext = String(this),
