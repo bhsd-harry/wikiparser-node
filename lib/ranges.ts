@@ -78,6 +78,8 @@ export class Ranges extends Array<number | Range> {
 			if (ele instanceof Range) {
 				this.push(ele);
 				continue;
+			} else if (typeof ele === 'string' && !ele.trim()) {
+				continue;
 			}
 			const number = Number(ele);
 			if (Number.isInteger(number)) {
