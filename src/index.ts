@@ -60,6 +60,7 @@ import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
+	CategoryToken,
 
 	/* NOT FOR BROWSER */
 
@@ -70,7 +71,6 @@ import type {
 	TranscludeToken,
 	CommentToken,
 	HeadingToken,
-	CategoryToken,
 	FileToken,
 	ParameterToken,
 	SyntaxToken,
@@ -520,8 +520,6 @@ export class Token extends AstElement {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		if (this.type === 'root') {
-			/* NOT FOR BROWSER */
-
 			const record: Record<string, Set<CategoryToken>> = {};
 			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
 				const thisCat = record[cat.name];
@@ -551,9 +549,8 @@ export class Token extends AstElement {
 					}));
 				}
 			}
-
-			/* NOT FOR BROWSER END */
-
+		}
+		if (this.type === 'root') {
 			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
 				wikitext = String(this),
 				ignores: LintIgnore[] = [];
