@@ -1,3 +1,11 @@
+## v1.6.0
+
+*2024-03-13*
+
+**Added**
+
+- Linting errors can now be disabled using inline comments
+
 ## v1.5.7
 
 *2024-03-12*
