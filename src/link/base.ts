@@ -16,6 +16,7 @@ import type {AstText} from '../../internal';
  */
 export abstract class LinkBaseToken extends Token {
 	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
+	declare readonly name: string;
 	#bracket = true;
 	#delimiter;
 	#title: Title;
@@ -50,6 +51,7 @@ export abstract class LinkBaseToken extends Token {
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
+		this.setAttribute('name', this.#title.main);
 	}
 
 	/** @private */
