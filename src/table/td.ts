@@ -175,6 +175,6 @@ export abstract class TdToken extends TableBaseToken {
 	 */
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
-		return (key === 'rowspan' || key === 'colspan' ? Number(value) || 1 : value) as TdAttrGetter<T>;
+		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
 	}
 }
