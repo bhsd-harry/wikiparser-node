@@ -6,6 +6,10 @@
 
 - Linting errors can now be disabled using inline comments
 
+**Fixed**
+
+- Allow the image parameter `page` in PDF file links
+
 **Changed**
 
 - The start position of a linting error associated with a [`TrToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TrToken) is now one character ahead
