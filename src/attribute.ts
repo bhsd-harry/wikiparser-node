@@ -1,5 +1,7 @@
 import {generateForChild} from '../util/lint';
-import {removeComment} from '../util/string';
+import {
+	removeComment,
+} from '../util/string';
 import {
 	MAX_STAGE,
 	BuildMethod,
