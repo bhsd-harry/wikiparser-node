@@ -10,17 +10,17 @@ import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	readonly valid;
+	#main: string;
+	readonly #namespaces;
 	ns;
 	fragment;
+	interwiki = '';
+	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
-	#main: string;
-	interwiki = '';
 
 	/* NOT FOR BROWSER */
 
-	readonly #namespaces;
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -38,6 +38,35 @@ export class Title {
 		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
 	}
 
+	/** 命名空间前缀 */
+	get prefix(): string {
+		const namespace = this.#namespaces[this.ns]!;
+		return `${namespace}${namespace && ':'}`;
+	}
+
+	/** 完整标题 */
+	get title(): string {
+		const prefix = `${this.interwiki}${this.interwiki && ':'}${this.prefix}`;
+		let title = `${prefix}${this.main}`.replace(/ /gu, '_');
+
+		/* NOT FOR BROWSER */
+
+		let redirected = this.redirects.get(title);
+		if (redirected) {
+			return redirected;
+		}
+		this.autoConvert();
+		title = `${prefix}${this.main}`.replace(/ /gu, '_');
+		redirected = this.redirects.get(title);
+		if (redirected) {
+			return redirected;
+		}
+
+		/* NOT FOR BROWSER END */
+
+		return title;
+	}
+
 	/** 扩展名 */
 	get extension(): string | undefined {
 		const {main} = this,
@@ -51,25 +80,6 @@ export class Title {
 		const {main} = this,
 			i = main.lastIndexOf('.');
 		this.main = `${i === -1 ? main : main.slice(0, i)}.${extension}`;
-	}
-
-	/** 命名空间前缀 */
-	get prefix(): string {
-		const namespace = this.#namespaces[this.ns]!;
-		return `${namespace}${namespace && ':'}`;
-	}
-
-	/** 完整标题 */
-	get title(): string {
-		const prefix = `${this.interwiki}${this.interwiki && ':'}${this.prefix}`;
-		let title = `${prefix}${this.main}`.replace(/ /gu, '_');
-		const redirected = this.redirects.get(title);
-		if (redirected) {
-			return redirected;
-		}
-		this.autoConvert();
-		title = `${prefix}${this.main}`.replace(/ /gu, '_');
-		return this.redirects.get(title) ?? title;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -138,18 +148,15 @@ export class Title {
 			conversionTable: {enumerable: false},
 			redirects: {enumerable: false},
 		});
-
-		/* NOT FOR BROWSER */
-
 		this.#namespaces = config.namespaces;
 	}
-
-	/* NOT FOR BROWSER */
 
 	/** @private */
 	toString(): string {
 		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** 执行单向转换 */
 	autoConvert(): void {
