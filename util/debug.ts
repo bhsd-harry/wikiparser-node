@@ -1,4 +1,11 @@
-import type {AstNodes, Token, AstText} from '../internal';
+import type {
+	AstNodes,
+	Token,
+
+	/* NOT FOR BROWSER */
+
+	AstText,
+} from '../internal';
 
 export const Shadow = {
 	running: false,
