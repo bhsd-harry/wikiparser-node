@@ -12,24 +12,12 @@ export const Shadow = {
 
 	/** @private */
 	run<T>(callback: () => T): T {
-		/* NOT FOR BROWSER */
-
 		const {running} = this;
 		this.running = true;
 		try {
-			/* NOT FOR BROWSER END */
-
 			const result = callback();
-
-			/* NOT FOR BROWSER */
-
 			this.running = running;
-
-			/* NOT FOR BROWSER END */
-
 			return result;
-
-			/* NOT FOR BROWSER */
 		} catch (e) {
 			this.running = running;
 			throw e;
