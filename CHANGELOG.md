@@ -1,3 +1,15 @@
+## v1.6.2
+
+*2024-03-14*
+
+**Fixed**
+
+- Mimic the structure of CSS compound selectors
+
+**Changed**
+
+- Error messages are gradually translated into English
+
 ## v1.6.1
 
 *2024-03-13*

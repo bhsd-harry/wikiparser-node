@@ -1,6 +1,5 @@
 import {parsers} from '../util/constants';
 import {escapeRegExp} from '../util/string';
-import Parser from '../index';
 
 const simplePseudos = new Set([
 	'root',
@@ -22,7 +21,7 @@ const simplePseudos = new Set([
 	'required',
 	'optional',
 ]);
-const complexPseudos = [
+const complexPseudos = new Set([
 	'is',
 	'not',
 	'nth-child',
@@ -33,7 +32,7 @@ const complexPseudos = [
 	'has',
 	'lang',
 	'regex',
-];
+]);
 const specialChars: [string, string][] = [
 	['[', '&lbrack;'],
 	[']', '&rbrack;'],
@@ -45,8 +44,7 @@ const specialChars: [string, string][] = [
 	['\\', '&bsol;'],
 	['&', '&amp;'],
 ];
-const pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
-	regularRegex = /[[(,>+~]|\s+/u,
+const regularRegex = /[[(,>+~]|\s+/u,
 	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
 	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u,
 	grouping = new Set([',', '>', '+', '~']),
@@ -97,17 +95,46 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 	/**
 	 * 解析简单伪选择器
 	 * @param index 伪选择器的终点位置
+	 * @throws `SyntaxError` 选择器排序
 	 * @throws `SyntaxError` 非法的选择器
 	 */
 	const pushSimple = (index: number): void => {
-		const str = sanitized.slice(0, index),
-			pieces = str.trim().split(':'),
-			// eslint-disable-next-line unicorn/explicit-length-check
-			i = pieces.slice(1).findIndex(pseudo => simplePseudos.has(pseudo)) + 1 || pieces.length;
-		if (pieces.slice(i).some(pseudo => !simplePseudos.has(pseudo))) {
-			throw new SyntaxError(`非法的选择器！\n${str}\n可能需要将':'转义为'\\:'。`);
+		const str = sanitized.slice(0, index).trim();
+		if (!str) {
+			return;
 		}
-		step.push(desanitize(pieces.slice(0, i).join(':')), ...pieces.slice(i).map(piece => `:${piece}`));
+		const pieces = str.split(/(?=[:#])/u);
+		for (let i = 0; i < pieces.length; i++) {
+			const piece = pieces[i]!;
+			if (!/^[:#]/u.test(piece)) {
+				if (step.length > 0) {
+					throw new SyntaxError(`Invalid selector!\n${selector}\nType selectors must come first.`);
+				} else {
+					step.push(piece);
+				}
+			} else if (piece.startsWith(':')) {
+				if (simplePseudos.has(piece.slice(1))) {
+					step.push(piece);
+				} else if (pieces[i - 1]?.startsWith('#')) {
+					pieces[i - 1] += piece;
+					pieces.splice(i, 1);
+					i--;
+				} else {
+					throw new SyntaxError(`Non-existing pseudo selector!\n${desanitize(piece)}`);
+				}
+			}
+		}
+		step.push(...pieces.filter(piece => piece.startsWith('#')).map(piece => desanitize(piece)));
+	};
+
+	/**
+	 * 检查是否需要通用选择器
+	 * @throws `SyntaxError` 非法的选择器
+	 */
+	const needUniversal = (): void => {
+		if (step.length === 0) {
+			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
+		}
 	};
 	while (mt) {
 		let {0: syntax, index} = mt;
@@ -118,14 +145,13 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 		}
 		if (syntax === ',') { // 情形1：并列
 			pushSimple(index);
+			needUniversal();
 			condition = [[]];
 			[step] = condition;
 			stack.push(condition);
 		} else if (combinator.has(syntax)) { // 情形2：关系
 			pushSimple(index);
-			if (!step.some(Boolean)) {
-				throw new SyntaxError(`非法的选择器！\n${selector}\n可能需要通用选择器'*'。`);
-			}
+			needUniversal();
 			step.relation = syntax;
 			step = [];
 			condition.push(step);
@@ -137,12 +163,13 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 			step.push(mt.slice(1) as [string, string | undefined, string | undefined, string | undefined]);
 			regex = regularRegex;
 		} else if (syntax === '(') { // 情形5：伪选择器开启
-			const pseudoExec = pseudoRegex.exec(sanitized.slice(0, index)) as RegExpExecArray & [string, string] | null;
-			if (!pseudoExec) {
-				throw new SyntaxError(`非法的选择器！\n${desanitize(sanitized)}\n请检查伪选择器是否存在。`);
+			const i = sanitized.lastIndexOf(':', index),
+				pseudo = sanitized.slice(i + 1, index);
+			if (i === -1 || !complexPseudos.has(pseudo)) {
+				throw new SyntaxError(`Non-existing pseudo selector!\n${desanitize(sanitized)}`);
 			}
-			pushSimple(pseudoExec.index);
-			step.push(pseudoExec[1]); // 临时存放复杂伪选择器
+			pushSimple(i);
+			step.push(pseudo); // 临时存放复杂伪选择器
 			regex = functionRegex;
 		} else { // 情形6：伪选择器闭合
 			mt.push(step.pop() as string);
@@ -158,13 +185,12 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 	}
 	if (regex === regularRegex) {
 		pushSimple(Infinity);
-		const pseudos = new Set(stack.flat(2).filter((e): e is string => typeof e === 'string' && e.startsWith(':')));
-		if (pseudos.size > 0) {
-			Parser.warn('检测到伪选择器，请确认是否需要将":"转义成"\\:"。', pseudos);
-		}
+		needUniversal();
 		return stack;
 	}
-	throw new SyntaxError(`非法的选择器！\n${selector}\n检测到未闭合的'${regex === attributeRegex ? '[' : '('}'`);
+	throw new SyntaxError(
+		`Unclosed '${regex === attributeRegex ? '[' : '('}' in the selector!\n${desanitize(sanitized)}`,
+	);
 };
 
 parsers['parseSelector'] = __filename;
