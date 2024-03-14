@@ -413,8 +413,6 @@ export class Token extends AstElement {
 					}));
 				}
 			}
-		}
-		if (this.type === 'root') {
 			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
 				wikitext = String(this),
 				ignores: LintIgnore[] = [];
