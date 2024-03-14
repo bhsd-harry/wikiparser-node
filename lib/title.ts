@@ -11,6 +11,7 @@ export class Title {
 	/** @private */
 	readonly encoded: boolean = false;
 	#main: string;
+	interwiki = '';
 
 	/** 不含命名空间的标题主体部分 */
 	get main(): string {
@@ -28,9 +29,6 @@ export class Title {
 			i = main.lastIndexOf('.');
 		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
 	}
-
-	/** @private */
-	declare interwiki: string;
 
 	/**
 	 * @param title 标题（含或不含命名空间前缀）
