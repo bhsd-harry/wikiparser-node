@@ -2,6 +2,7 @@ import {rules} from './base';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
+	BuildMethod,
 	minConfig,
 } from './util/constants';
 import {tidy} from './util/string';
@@ -72,6 +73,14 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const token = Shadow.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
+		Shadow.run(() => {
+			for (const key of ['main', 'fragment'] as const) {
+				const str = titleObj[key];
+				if (str?.includes('\0')) {
+					titleObj[key] = token.buildFromStr(str, BuildMethod.Text);
+				}
+			}
+		});
 		return titleObj;
 	},
 
