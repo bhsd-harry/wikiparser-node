@@ -27,6 +27,7 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
+		"parserTests": "node ./dist/bin/parserTests.js",
 		"toc": "node ./dist/bin/toc.js",
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; node ./dist/bin/declaration.js",
 		"prepublishOnly": "npm run build && rm dist/internal.js dist/[pu]*/*.d.ts",
@@ -37,6 +38,7 @@
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "node dist/test/test.js",
+		"test:parser": "node dist/test/parserTests.js",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"
 	},
