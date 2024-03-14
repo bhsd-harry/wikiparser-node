@@ -6,6 +6,7 @@ import '../../bundle/bundle.min.js';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;
+Parser.config = require('../../config/default');
 
 Object.assign(Parser, {assert});
 const title = process.argv[2]?.toLowerCase();
@@ -33,7 +34,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 				Parser.i18n = undefined;
 				eval(code); // eslint-disable-line no-eval
 				if (code.includes('Parser.config = ')) {
-					Parser.config = require('../config/default');
+					Parser.config = require('../../config/default');
 				}
 			} catch (e) {
 				error(code);

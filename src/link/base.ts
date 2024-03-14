@@ -51,7 +51,7 @@ export abstract class LinkBaseToken extends Token {
 		if (this.#delimiter.includes('\0')) {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
-		this.setAttribute('name', this.#title.main);
+		this.setAttribute('name', this.#title.title);
 	}
 
 	/** @private */
