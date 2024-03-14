@@ -16,11 +16,11 @@ export class Title {
 	/** @private */
 	readonly encoded: boolean = false;
 	#main: string;
+	interwiki = '';
 
 	/* NOT FOR BROWSER */
 
 	readonly #namespaces;
-	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
