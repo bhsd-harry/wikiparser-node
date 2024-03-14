@@ -8,7 +8,6 @@ import type {Parser as ParserBase} from '../base';
 declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
 
-Object.assign(Parser, {assert});
 const title = process.argv[2]?.toLowerCase();
 
 for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
@@ -38,6 +37,9 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 				}
 			} catch (e) {
 				error(code);
+				if (e instanceof assert.AssertionError) {
+					e.cause = lines[Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1];
+				}
 				throw e;
 			}
 		}
