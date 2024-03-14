@@ -208,6 +208,14 @@ pre.highlight span {
 	font-weight: normal;
 }
 
+select {
+	text-align: center;
+	font-size: 1em;
+}
+select, pre.tests {
+	padding: 4px 6px;
+}
+
 @media screen and (min-width: 1200px) {
 	.wikiparse-container {
 		width: 70%;
