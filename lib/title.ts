@@ -74,5 +74,8 @@ export class Title {
 		this.valid = Boolean(title || this.interwiki || selfLink && this.fragment !== undefined)
 			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.main = title;
+		Object.defineProperties(this, {
+			encoded: {enumerable: false, writable: false},
+		});
 	}
 }

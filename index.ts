@@ -11,6 +11,7 @@ import type {Title} from './lib/title';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
+	rules: readonly LintError.Rule[];
 
 	/** @private */
 	msg(msg: string, arg?: string): string;

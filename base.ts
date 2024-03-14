@@ -101,9 +101,8 @@ interface AstElement extends AstNode {
 export interface Parser {
 	config?: Config;
 	i18n: Record<string, string> | undefined;
-	rules: readonly LintError.Rule[];
 
-	/** 获取解析设置 */
+	/** @private */
 	getConfig(): Config;
 
 	/**
