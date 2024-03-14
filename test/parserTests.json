@@ -114,12 +114,6 @@
 		"print": "<span class=\"wpb-root\">&lt;blockquote|&gt;a<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\n&lt;b→&gt; doesn't terminate &lt;/b→&gt;\n\n&lt;bä&gt; doesn't terminate &lt;/bä&gt;\n\n&lt;boo&gt; doesn't terminate &lt;/boo&gt;\n\n&lt;s.foo&gt; doesn't terminate &lt;/s.foo&gt;\n\n&lt;sub-ID#1&gt;</span>"
 	},
 	{
-		"desc": "Non-word characters are valid in extension tags (T19663)",
-		"wikitext": "<tåg>tåg</tåg>",
-		"html": "<pre>'tåg'\narray (\n)\n</pre>",
-		"print": "<span class=\"wpb-root\">&lt;tåg&gt;tåg&lt;/tåg&gt;</span>"
-	},
-	{
 		"desc": "Self-closed tag hooks",
 		"wikitext": "<pre />\n<gallery />\n<indicator name=\"something\" />",
 		"html": "<pre></pre>\n<ul class=\"gallery mw-gallery-traditional\">\n</ul>",
@@ -200,7 +194,7 @@
 	{
 		"desc": "multiple templates that are redirects",
 		"wikitext": "{{redirect to foo}}\n{{redirect to foo}}",
-		"html": "<p>FOO\nFOO\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"redirect to foo\",\"href\":\"./Template:Redirect_to_foo\"},\"params\":{},\"i\":0}}]}'>FOO</span>\n<span about=\"#mwt2\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"redirect to foo\",\"href\":\"./Template:Redirect_to_foo\"},\"params\":{},\"i\":0}}]}'>FOO</span></p>",
+		"html": "<p>FOO\nFOO\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">redirect to foo</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">redirect to foo</span>}}</span></span>"
 	},
 	{
@@ -236,7 +230,7 @@
 	{
 		"desc": "Templates: Handle empty comment-and-ws-only lines correctly",
 		"wikitext": "{{1x|foo\n<!--should be ignored-->\n <!--should be ignored as well-->\nbar}}",
-		"html": "<p>foo\nbar\n</p>\n!! html/parsoid+standalone\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo\\n&lt;!--should be ignored-->\\n &lt;!--should be ignored as well-->\\nbar\"}},\"i\":0}}]}'>foo\n</span><span about=\"#mwt1\"><!--should be ignored--></span><span about=\"#mwt1\">\n </span><span about=\"#mwt1\"><!--should be ignored as well--></span><span about=\"#mwt1\">\nbar</span></p>\n!! html/parsoid+integrated\n<p><span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo\\n&lt;!--should be ignored-->\\n &lt;!--should be ignored as well-->\\nbar\"}},\"i\":0}}]}'>foo bar</span></p>",
+		"html": "<p>foo\nbar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo\n<span class=\"wpb-comment\">&lt;!--should be ignored--&gt;</span>\n <span class=\"wpb-comment\">&lt;!--should be ignored as well--&gt;</span>\nbar</span></span>}}</span></span>"
 	},
 	{
@@ -254,7 +248,7 @@
 	{
 		"desc": "Templates: Other wikitext in parameter names (T69657)",
 		"wikitext": "{{1x|''1''=foo}}",
-		"html": "<p>{{{1}}}\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"&#39;&#39;1&#39;&#39;\":{\"wt\":\"foo\"}},\"i\":0}}]}'>{{{1}}}</span></p>",
+		"html": "<p>{{{1}}}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"><span class=\"wpb-quote\">''</span>1<span class=\"wpb-quote\">''</span></span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
 	},
 	{
@@ -902,37 +896,37 @@
 	{
 		"desc": "Parsoid: unknown parser function (T314524)",
 		"wikitext": "{{#tag:b|This is a known parser function}}\n\nNow show the unknown parser functions for comparison.\n\n{{#foo}}\n\n{{#foo:bar|bat}}",
-		"html": "<p><b>This is a known parser function</b>\n</p><p>Now show the unknown parser functions for comparison.\n</p><p>{{#foo}}\n</p><p>{{#foo:bar|bat}}\n</p>\n!! html/parsoid+standalone\n<p><b typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#tag:b\",\"function\":\"tag\"},\"params\":{\"1\":{\"wt\":\"This is a known parser function\"}},\"i\":0}}]}'>This is a known parser function</b></p>\n<p>Now show the unknown parser functions for comparison.</p>\n<p><span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#foo\",\"function\":\"foo\"},\"params\":{},\"i\":0}}]}'>Parser function implementation for pf_foo missing in Parsoid.</span></p>\n<p><span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#foo:bar\",\"function\":\"foo\"},\"params\":{\"1\":{\"wt\":\"bat\"}},\"i\":0}}]}'>Parser function implementation for pf_foo missing in Parsoid.</span></p>\n!! html/parsoid+integrated\n<p><b typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#tag:b\",\"function\":\"tag\"},\"params\":{\"1\":{\"wt\":\"This is a known parser function\"}},\"i\":0}}]}'>This is a known parser function</b></p>\n<p>Now show the unknown parser functions for comparison.</p>\n<p><span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#foo\",\"function\":\"foo\"},\"params\":{},\"i\":0}}]}'>{{#foo}}</span></p>\n<p><span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#foo:bar\",\"function\":\"foo\"},\"params\":{\"1\":{\"wt\":\"bat\"}},\"i\":0}}]}'>{{#foo:bar|bat}}</span></p>",
+		"html": "<p><b>This is a known parser function</b>\n</p><p>Now show the unknown parser functions for comparison.\n</p><p>{{#foo}}\n</p><p>{{#foo:bar|bat}}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">This is a known parser function</span></span>}}</span>\n\nNow show the unknown parser functions for comparison.\n\n{{#foo}}\n\n{{#foo:bar|bat}}</span>"
 	},
 	{
 		"desc": "Namespace 1 {{ns:1}}",
 		"wikitext": "{{ns:1}}",
-		"html": "<p>Talk\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"ns:1\",\"function\":\"ns\"},\"params\":{},\"i\":0}}]}'>Talk</span></p>",
+		"html": "<p>Talk\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Namespace 1 {{ns:01}}",
 		"wikitext": "{{ns:01}}",
-		"html": "<p>Talk\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"ns:01\",\"function\":\"ns\"},\"params\":{},\"i\":0}}]}'>Talk</span></p>",
+		"html": "<p>Talk\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">01</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Namespace 0 {{ns:0}} (T6783)",
 		"wikitext": "{{ns:0}}",
-		"html": "!! html/parsoid+integrated\n<span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"ns:0\",\"function\":\"ns\"},\"params\":{},\"i\":0}}]}'></span>",
+		"html": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">0</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Namespace 0 {{ns:00}} (T6783)",
 		"wikitext": "{{ns:00}}",
-		"html": "!! html/parsoid+integrated\n<span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"ns:00\",\"function\":\"ns\"},\"params\":{},\"i\":0}}]}'></span>",
+		"html": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">00</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Namespace -1 {{ns:-1}}",
 		"wikitext": "{{ns:-1}}",
-		"html": "<p>Special\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"ns:-1\",\"function\":\"ns\"},\"params\":{},\"i\":0}}]}'>Special</span></p>",
+		"html": "<p>Special\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-1</span></span>}}</span></span>"
 	},
 	{
@@ -1058,7 +1052,7 @@
 	{
 		"desc": "Template redirect",
 		"wikitext": "{{templateredirect}}",
-		"html": "<p>(test)\n</p>\n!! html/parsoid+standalone\n<link rel=\"mw:PageProp/redirect\" href=\"./Template:Templatesimple\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"templateredirect\",\"href\":\"./Template:Templateredirect\"},\"params\":{},\"i\":0}}]}'/>\n!! html/parsoid+integrated\n<p><span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"templateredirect\",\"href\":\"./Template:Templateredirect\"},\"params\":{},\"i\":0}}]}'>(test)</span></p>",
+		"html": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateredirect</span>}}</span></span>"
 	},
 	{
@@ -1172,13 +1166,13 @@
 	{
 		"desc": "int keyword",
 		"wikitext": "{{int:new-messages|lots of money|not!}}",
-		"html": "<p>You have lots of money (not!).\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"pi\":[[{\"k\":\"1\"},{\"k\":\"2\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"int:new-messages\",\"function\":\"int\"},\"params\":{\"1\":{\"wt\":\"lots of money\"},\"2\":{\"wt\":\"not!\"}},\"i\":0}}]}'>You have lots of money (not!).</span></p>",
+		"html": "<p>You have lots of money (not!).\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">int</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">new-messages</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">lots of money</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">not!</span></span>}}</span></span>"
 	},
 	{
 		"desc": "int keyword - non-existing message",
 		"wikitext": "{{int:var}}",
-		"html": "<p>⧼var⧽\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"int:var\",\"function\":\"int\"},\"params\":{},\"i\":0}}]}'>⧼var⧽</span></p>",
+		"html": "<p>⧼var⧽\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">int</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">var</span></span>}}</span></span>"
 	},
 	{
@@ -1190,13 +1184,13 @@
 	{
 		"desc": "<onlyinclude> being included",
 		"wikitext": "{{Includes2}}",
-		"html": "<p>Foo\n</p>\n!! html/parsoid+standalone\n<p><meta typeof=\"mw:Transclusion mw:Includes/OnlyInclude\" about=\"#mwt1\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Includes2\",\"href\":\"./Template:Includes2\"},\"params\":{},\"i\":0}}]}'/><span about=\"#mwt1\">Foo</span><meta typeof=\"mw:Includes/OnlyInclude/End\" about=\"#mwt1\"/></p>\n!! html/parsoid+integrated\n<p><span typeof=\"mw:Transclusion\" about=\"#mwt1\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Includes2\",\"href\":\"./Template:Includes2\"},\"params\":{},\"i\":0}}]}'>Foo</span></p>",
+		"html": "<p>Foo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes2</span>}}</span></span>"
 	},
 	{
 		"desc": "<onlyinclude> and <includeonly> being included",
 		"wikitext": "{{Includes3}}",
-		"html": "<p>Foo\n</p>\n!! html/parsoid+standalone\n<p><meta typeof=\"mw:Transclusion mw:Includes/OnlyInclude\" about=\"#mwt1\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Includes3\",\"href\":\"./Template:Includes3\"},\"params\":{},\"i\":0}}]}'/><span about=\"#mwt1\">Foo</span><meta typeof=\"mw:Includes/OnlyInclude/End\" about=\"#mwt1\"/></p>\n!! html/parsoid+integrated\n<p><span typeof=\"mw:Transclusion\" about=\"#mwt1\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Includes3\",\"href\":\"./Template:Includes3\"},\"params\":{},\"i\":0}}]}'>Foo</span></p>",
+		"html": "<p>Foo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes3</span>}}</span></span>"
 	},
 	{
@@ -1520,7 +1514,7 @@
 	{
 		"desc": "1. Entities and nowikis inside templated attributes should be handled correctly",
 		"wikitext": "<div {{1x|style{{=}}\"background:&#35;f9f9f9;\"}}>foo</div>",
-		"html": "<div style=\"background:#f9f9f9;\">foo</div>\n!! html/parsoid+standalone\n<div style=\"background:#f9f9f9;\" about=\"#mwt3\" typeof=\"mw:ExpandedAttrs\" data-parsoid='{\"stx\":\"html\"}' data-mw='{\"attribs\":[[{\"txt\":\"style\",\"html\":\"&lt;span about=\\\"#mwt1\\\" typeof=\\\"mw:Transclusion\\\" data-parsoid=&#39;{\\\"pi\\\":[[{\\\"k\\\":\\\"1\\\"}]]}&#39; data-mw=&#39;{\\\"parts\\\":[{\\\"template\\\":{\\\"target\\\":{\\\"wt\\\":\\\"1x\\\",\\\"href\\\":\\\"./Template:1x\\\"},\\\"params\\\":{\\\"1\\\":{\\\"wt\\\":\\\"style{{=}}\\\\\\\"background:&amp;amp;#35;f9f9f9;\\\\\\\"\\\"}},\\\"i\\\":0}}]}&#39;>style&lt;/span>&lt;span typeof=\\\"mw:Nowiki\\\" about=\\\"#mwt1\\\" data-parsoid=\\\"{}\\\">=&lt;/span>&lt;span about=\\\"#mwt1\\\" data-parsoid=\\\"{}\\\">\\\"background:&lt;/span>&lt;span typeof=\\\"mw:Entity\\\" about=\\\"#mwt1\\\" data-parsoid=&#39;{\\\"src\\\":\\\"&amp;amp;#35;\\\",\\\"srcContent\\\":\\\"#\\\"}&#39;>#&lt;/span>&lt;span about=\\\"#mwt1\\\" data-parsoid=\\\"{}\\\">f9f9f9;\\\"&lt;/span>\"},{\"html\":\"\"}]]}'>foo</div>\n!! html/parsoid+integrated\n<div style=\"background:#f9f9f9;\" about=\"#mwt3\" typeof=\"mw:ExpandedAttrs\" data-parsoid='{\"stx\":\"html\"}' data-mw='{\"attribs\":[[{\"txt\":\"style\",\"html\":\"&lt;span about=\\\"#mwt1\\\" typeof=\\\"mw:Transclusion\\\" data-parsoid=&#39;{\\\"pi\\\":[[{\\\"k\\\":\\\"1\\\"}]]}&#39; data-mw=&#39;{\\\"parts\\\":[{\\\"template\\\":{\\\"target\\\":{\\\"wt\\\":\\\"1x\\\",\\\"href\\\":\\\"./Template:1x\\\"},\\\"params\\\":{\\\"1\\\":{\\\"wt\\\":\\\"style{{=}}\\\\\\\"background:&amp;amp;#35;f9f9f9;\\\\\\\"\\\"}},\\\"i\\\":0}}]}&#39;>style=\\\"background:&lt;/span>&lt;span typeof=\\\"mw:Entity\\\" about=\\\"#mwt1\\\" data-parsoid=&#39;{\\\"src\\\":\\\"&amp;amp;#35;\\\",\\\"srcContent\\\":\\\"#\\\"}&#39;>#&lt;/span>&lt;span about=\\\"#mwt1\\\" data-parsoid=\\\"{}\\\">f9f9f9;\\\"&lt;/span>\"},{\"html\":\"\"}]]}'>foo</div>",
+		"html": "<div style=\"background:#f9f9f9;\">foo</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">style<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">=</span>}}</span>\"background:&amp;#35;f9f9f9;\"</span></span>}}</span></span></span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -1760,7 +1754,7 @@
 	{
 		"desc": "Parsoid: Defaultsort variations (T236846)",
 		"wikitext": "{{DEFAULTSORT}}\n\n{{DEFAULTSORT:}}\n{{DEFAULTSORT:DOGGIE}}",
-		"html": "<p><a href=\"/index.php?title=Template:DEFAULTSORT&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:DEFAULTSORT (page does not exist)\">Template:DEFAULTSORT</a>\n</p><p><br />\n</p>\n!! html/parsoid+integrated\n<p><a rel=\"mw:WikiLink\" href=\"./Template:DEFAULTSORT?action=edit&amp;redlink=1\" title=\"Template:DEFAULTSORT\" about=\"#mwt1\" typeof=\"mw:Transclusion mw:LocalizedAttrs\" class=\"new\" data-parsoid='{\"stx\":\"simple\",\"a\":{\"href\":\"./Template:DEFAULTSORT\"},\"sa\":{\"href\":\"Template:DEFAULTSORT\"},\"pi\":[[]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"DEFAULTSORT\",\"href\":\"./Template:DEFAULTSORT\"},\"params\":{},\"i\":0}}]}' data-mw-i18n='{\"title\":{\"lang\":\"x-page\",\"key\":\"red-link-title\",\"params\":[\"Template:DEFAULTSORT\"]}}'>Template:DEFAULTSORT</a></p>\n\n<span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"DEFAULTSORT:\",\"function\":\"defaultsort\"},\"params\":{},\"i\":0}}]}'></span>\n<span about=\"#mwt2\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"DEFAULTSORT:DOGGIE\",\"function\":\"defaultsort\"},\"params\":{},\"i\":0}}]}'></span>",
+		"html": "<p><a href=\"/index.php?title=Template:DEFAULTSORT&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:DEFAULTSORT (page does not exist)\">Template:DEFAULTSORT</a>\n</p><p><br />\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DEFAULTSORT</span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DEFAULTSORT</span>:}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DEFAULTSORT</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">DOGGIE</span></span>}}</span></span>"
 	},
 	{
@@ -1946,7 +1940,7 @@
 	{
 		"desc": "Media link redirect",
 		"wikitext": "[[Media:Redirect to foobar.jpg]]",
-		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>\n!! html/parsoid+integrated\n<p><a rel=\"mw:MediaLink\" href=\"http://example.com/images/3/3a/Foobar.jpg\" resource=\"./Media:Foobar.jpg\" title=\"Foobar.jpg\">Media:Redirect to foobar.jpg</a></p>",
+		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Redirect to foobar.jpg</span>]]</span></span>"
 	},
 	{
@@ -2042,13 +2036,13 @@
 	{
 		"desc": "T4304: HTML attribute safety (unsafe breakout parameter; 2309)",
 		"wikitext": "{{div style|\"><script>alert(document.cookie)</script>}}",
-		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>\n!! html/parsoid+integrated\n<div style=\"float: right; \" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"div style\",\"href\":\"./Template:Div_style\"},\"params\":{\"1\":{\"wt\":\"\\\">&lt;script>alert(document.cookie)&lt;/script>\"}},\"i\":0}}]}'>&lt;script>alert(document.cookie)&lt;/script>\">Magic div</div>",
+		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\"&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe breakout parameter 2; 2309)",
 		"wikitext": "{{div style|\" ><script>alert(document.cookie)</script>}}",
-		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>\n!! html/parsoid+integrated\n<div style=\"float: right; \" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"div style\",\"href\":\"./Template:Div_style\"},\"params\":{\"1\":{\"wt\":\"\\\" >&lt;script>alert(document.cookie)&lt;/script>\"}},\"i\":0}}]}'>&lt;script>alert(document.cookie)&lt;/script>\">Magic div</div>",
+		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\" &gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></span>}}</span></span>"
 	},
 	{
@@ -2174,7 +2168,7 @@
 	{
 		"desc": "Expansion of multi-line templates in attribute values (T8255)",
 		"wikitext": "<div style=\"background: {{1x|#00FF00}}\">-</div>",
-		"html": "<div style=\"background: #00FF00\">-</div>\n!! html/parsoid+integrated\n<div style=\"background: \n#00FF00\" about=\"#mwt2\" typeof=\"mw:ExpandedAttrs\" data-parsoid='{\"stx\":\"html\",\"a\":{\"style\":\"background: \\n#00FF00\"},\"sa\":{\"style\":\"background: {{1x|#00FF00}}\"}}' data-mw='{\"attribs\":[[{\"txt\":\"style\"},{\"html\":\"background: &lt;span about=\\\"#mwt1\\\" typeof=\\\"mw:Transclusion\\\" data-parsoid=&apos;{\\\"pi\\\":[[{\\\"k\\\":\\\"1\\\"}]],\\\"dsr\\\":[24,38,null,null]}&apos; data-mw=&apos;{\\\"parts\\\":[{\\\"template\\\":{\\\"target\\\":{\\\"wt\\\":\\\"1x\\\",\\\"href\\\":\\\"./Template:1x\\\"},\\\"params\\\":{\\\"1\\\":{\\\"wt\\\":\\\"#00FF00\\\"}},\\\"i\\\":0}}]}&apos;>\\n#00FF00&lt;/span>\"}]]}'>-</div>",
+		"html": "<div style=\"background: #00FF00\">-</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background: <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">#00FF00</span></span>}}</span></span>\"</span></span>&gt;</span>-<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -2462,19 +2456,19 @@
 	{
 		"desc": "Special page transclusion",
 		"wikitext": "{{Special:Prefixindex/Xyzzyx}}",
-		"html": "<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>\n!! html/parsoid+integrated\n<ul class=\"mw-prefixindex-list\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Special:Prefixindex/Xyzzyx\",\"href\":\"./Special:PrefixIndex/Xyzzyx\"},\"params\":{},\"i\":0}}]}'>\n<li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>",
+		"html": "<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:Prefixindex/Xyzzyx</span>}}</span></span>"
 	},
 	{
 		"desc": "Special page transclusion twice (T7021)",
 		"wikitext": "{{Special:Prefixindex/Xyzzyx}}\n{{Special:Prefixindex/Xyzzyx}}",
-		"html": "<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>\n<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>\n!! html/parsoid+integrated\n<ul class=\"mw-prefixindex-list\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Special:Prefixindex/Xyzzyx\",\"href\":\"./Special:PrefixIndex/Xyzzyx\"},\"params\":{},\"i\":0}}]}'>\n<li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>\n<ul class=\"mw-prefixindex-list\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Special:Prefixindex/Xyzzyx\",\"href\":\"./Special:PrefixIndex/Xyzzyx\"},\"params\":{},\"i\":0}}]}'>\n<li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>",
+		"html": "<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>\n<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:Prefixindex/Xyzzyx</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:Prefixindex/Xyzzyx</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of default MediaWiki message",
 		"wikitext": "{{MediaWiki:Mainpage}}",
-		"html": "<p>Main Page\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"MediaWiki:Mainpage\",\"href\":\"./MediaWiki:Mainpage\"},\"params\":{},\"i\":0}}]}'>Main Page</span></p>",
+		"html": "<p>Main Page\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:Mainpage</span>}}</span></span>"
 	},
 	{
@@ -2486,13 +2480,13 @@
 	{
 		"desc": "Transclusion of MediaWiki message with underscore",
 		"wikitext": "{{MediaWiki:history_short}}",
-		"html": "<p>History\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"MediaWiki:history_short\",\"href\":\"./MediaWiki:History_short\"},\"params\":{},\"i\":0}}]}'>History</span></p>",
+		"html": "<p>History\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:history_short</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of MediaWiki message with space",
 		"wikitext": "{{MediaWiki:history short}}",
-		"html": "<p>History\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"MediaWiki:history short\",\"href\":\"./MediaWiki:History_short\"},\"params\":{},\"i\":0}}]}'>History</span></p>",
+		"html": "<p>History\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:history short</span>}}</span></span>"
 	},
 	{
@@ -2516,7 +2510,7 @@
 	{
 		"desc": "Special:Search page linking.",
 		"wikitext": "{{Special:search}}",
-		"html": "<p><a href=\"/wiki/Special:Search\" title=\"Special:Search\">Special:Search</a>\n</p>\n!! html/parsoid+integrated\n<p><a href=\"/wiki/Special:Search\" title=\"Special:Search\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Special:search\",\"href\":\"./Special:Search\"},\"params\":{},\"i\":0}}]}'>Special:Search</a></p>",
+		"html": "<p><a href=\"/wiki/Special:Search\" title=\"Special:Search\">Special:Search</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:search</span>}}</span></span>"
 	},
 	{
@@ -2630,7 +2624,7 @@
 	{
 		"desc": "RAW magic word",
 		"wikitext": "{{RAW:QUERTY}}",
-		"html": "<p><a href=\"/index.php?title=Template:QUERTY&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:QUERTY (page does not exist)\">Template:QUERTY</a>\n</p>\n!! html/parsoid+integrated\n<p><a rel=\"mw:WikiLink\" href=\"./Template:QUERTY?action=edit&amp;redlink=1\" title=\"Template:QUERTY\" typeof=\"mw:Transclusion mw:LocalizedAttrs\" class=\"new\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"RAW:QUERTY\",\"href\":\"./Template:RAW:QUERTY\"},\"params\":{},\"i\":0}}]}' data-mw-i18n='{\"title\":{\"lang\":\"x-page\",\"key\":\"red-link-title\",\"params\":[\"Template:QUERTY\"]}}'>Template:QUERTY</a></p>",
+		"html": "<p><a href=\"/index.php?title=Template:QUERTY&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:QUERTY (page does not exist)\">Template:QUERTY</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{RAW:<span class=\"wpb-template-name\">QUERTY</span>}}</span></span>"
 	},
 	{
@@ -2714,7 +2708,7 @@
 	{
 		"desc": "anchorencode encodes like the TOC generator: (T20431)",
 		"wikitext": "===_ +:.3A%3A _ &&amp;]] x===\n{{anchorencode: _ +:.3A%3A _ &&amp;]] x}}\n\n__NOEDITSECTION__",
-		"html": "<h3><span id=\".2B:.3A.253A_.26.26.5D.5D_x\"></span><span class=\"mw-headline\" id=\"+:.3A%3A_&amp;&amp;]]_x\">_ +:.3A%3A _ &amp;&amp;]] x</span></h3>\n<p>+:.3A%253A_&amp;&amp;&#93;&#93;_x\n</p><p><br />\n</p>\n!! html/parsoid+standalone\n<h3 id=\"+:.3A%3A_&amp;&amp;]]_x\"><span id=\".2B:.3A.253A_.26.26.5D.5D_x\" typeof=\"mw:FallbackId\"></span>_ +:.3A%3A _ &amp;<span typeof=\"mw:Entity\" data-parsoid='{\"src\":\"&amp;amp;\",\"srcContent\":\"&amp;\"}'>&amp;</span>]] x</h3>\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"anchorencode: _ +:.3A%3A _ &amp;&amp;amp;]] x\",\"function\":\"anchorencode\"},\"params\":{},\"i\":0}}]}'>+:.3A%253A_&amp;&amp;</span><span typeof=\"mw:Entity\" about=\"#mwt1\">]</span><span typeof=\"mw:Entity\" about=\"#mwt1\">]</span><span about=\"#mwt1\">_x</span></p>\n<meta property=\"mw:PageProp/noeditsection\"/>\n!! html/parsoid+integrated\n<h3 id=\"+:.3A%3A_&amp;&amp;]]_x\"><span id=\".2B:.3A.253A_.26.26.5D.5D_x\" typeof=\"mw:FallbackId\"></span>_ +:.3A%3A _ &amp;<span typeof=\"mw:Entity\" data-parsoid='{\"src\":\"&amp;amp;\",\"srcContent\":\"&amp;\"}'>&amp;</span>]] x</h3>\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"anchorencode: _ +:.3A%3A _ &amp;&amp;amp;]] x\",\"function\":\"anchorencode\"},\"params\":{},\"i\":0}}]}'>+:.3A%253A_</span><span typeof=\"mw:Entity\" about=\"#mwt1\">&amp;</span><span typeof=\"mw:Entity\" about=\"#mwt1\">&amp;</span><span typeof=\"mw:Entity\" about=\"#mwt1\">]</span><span typeof=\"mw:Entity\" about=\"#mwt1\">]</span><span about=\"#mwt1\">_x</span></p>\n<meta property=\"mw:PageProp/noeditsection\"/>",
+		"html": "<h3><span id=\".2B:.3A.253A_.26.26.5D.5D_x\"></span><span class=\"mw-headline\" id=\"+:.3A%3A_&amp;&amp;]]_x\">_ +:.3A%3A _ &amp;&amp;]] x</span></h3>\n<p>+:.3A%253A_&amp;&amp;&#93;&#93;_x\n</p><p><br />\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">===<span class=\"wpb-heading-title\">_ +:.3A%3A _ &amp;&amp;amp;]] x</span>===</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> _ +:.3A%3A _ &amp;&amp;amp;]] x</span></span>}}</span>\n\n<span class=\"wpb-double-underscore\">__NOEDITSECTION__</span></span>"
 	},
 	{
@@ -2762,7 +2756,7 @@
 	{
 		"desc": "T2529: Uncovered bullet in parser function result",
 		"wikitext": "*Foo{{lc:{{bullet}} }}",
-		"html": "<ul><li>Foo</li>\n<li>bar</li></ul>\n!! html/parsoid+integrated\n<ul><li>Foo</li><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"lc:{{bullet}} \",\"function\":\"lc\"},\"params\":{},\"i\":0}}]}'>\n</span><li about=\"#mwt1\">bar</li></ul>",
+		"html": "<ul><li>Foo</li>\n<li>bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>Foo<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">lc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">bullet</span>}}</span> </span></span>}}</span></span>"
 	},
 	{
@@ -2882,37 +2876,37 @@
 	{
 		"desc": "formatdate parser function",
 		"wikitext": "{{#formatdate:2009-03-24}}",
-		"html": "<p><span class=\"mw-formatted-date\" title=\"2009-03-24\">2009-03-24</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"2009-03-24\" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:2009-03-24\",\"function\":\"formatdate\"},\"params\":{},\"i\":0}}]}'>2009-03-24</span></p>",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"2009-03-24\">2009-03-24</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2009-03-24</span></span>}}</span></span>"
 	},
 	{
 		"desc": "formatdate parser function, with default format",
 		"wikitext": "{{#formatdate:2009-03-24|mdy}}",
-		"html": "<p><span class=\"mw-formatted-date\" title=\"2009-03-24\">March 24, 2009</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"2009-03-24\" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:2009-03-24\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"mdy\"}},\"i\":0}}]}'>March 24, 2009</span></p>",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"2009-03-24\">March 24, 2009</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2009-03-24</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">mdy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Spacing of numbers in formatted dates",
 		"wikitext": "{{#formatdate:January 15}}",
-		"html": "<p><span class=\"mw-formatted-date\" title=\"01-15\">January 15</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"01-15\" typeof=\"mw:Transclusion\" about=\"#mwt1\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:January 15\",\"function\":\"formatdate\"},\"params\":{},\"i\":0}}]}'>January 15</span></p>",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"01-15\">January 15</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">January 15</span></span>}}</span></span>"
 	},
 	{
 		"desc": "formatdate with invalid month",
 		"wikitext": "{{#formatdate:2019-22-22|dmy}}",
-		"html": "<p>2019-22-22\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:2019-22-22\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"dmy\"}},\"i\":0}}]}'>2019-22-22</span></p>",
+		"html": "<p>2019-22-22\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2019-22-22</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "formatdate uses correct capitalisation in English",
 		"wikitext": "{{#formatdate:june 3|dmy}}",
-		"html": "<p><span class=\"mw-formatted-date\" title=\"06-03\">3 June</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"06-03\" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:june 3\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"dmy\"}},\"i\":0}}]}'>3 June</span></p>",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"06-03\">3 June</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">june 3</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "formatdate formats ISO year 0 as 1 BC",
 		"wikitext": "{{#formatdate:-0001-12-31|mdy}}\n{{#formatdate:0000-12-31|mdy}}\n{{#formatdate:0001-12-31|mdy}}",
-		"html": "<p><span class=\"mw-formatted-date\" title=\"-0001-12-31\">December 31, 2 BC</span>\n<span class=\"mw-formatted-date\" title=\"0000-12-31\">December 31, 1 BC</span>\n<span class=\"mw-formatted-date\" title=\"0001-12-31\">December 31, 1</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"-0001-12-31\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:-0001-12-31\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"mdy\"}},\"i\":0}}]}'>December 31, 2 BC</span> <span class=\"mw-formatted-date\" title=\"0000-12-31\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:0000-12-31\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"mdy\"}},\"i\":0}}]}'>December 31, 1 BC</span> <span class=\"mw-formatted-date\" title=\"0001-12-31\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:0001-12-31\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"mdy\"}},\"i\":0}}]}'>December 31, 1</span></p>",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"-0001-12-31\">December 31, 2 BC</span>\n<span class=\"mw-formatted-date\" title=\"0000-12-31\">December 31, 1 BC</span>\n<span class=\"mw-formatted-date\" title=\"0001-12-31\">December 31, 1</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-0001-12-31</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">mdy</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">0000-12-31</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">mdy</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">0001-12-31</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">mdy</span></span>}}</span></span>"
 	},
 	{
@@ -2978,7 +2972,7 @@
 	{
 		"desc": "T33098 Template which includes system messages which includes the template",
 		"wikitext": "{{Identical}}",
-		"html": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n<span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"error\" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"Identical\",\"href\":\"./Template:Identical\"},\"params\":{},\"i\":0}}]}'>Template loop detected: <a rel=\"mw:WikiLink\" href=\"./Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span><span about=\"#mwt1\">\n</span><span class=\"error\" about=\"#mwt1\" data-parsoid='{\"stx\":\"html\"}'>Template loop detected: <a rel=\"mw:WikiLink\" href=\"./Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span></p>",
+		"html": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n<span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Identical</span>}}</span></span>"
 	},
 	{
@@ -2990,13 +2984,13 @@
 	{
 		"desc": "Strip marker in lc",
 		"wikitext": "{{lc:x<nowiki/>y}}",
-		"html": "<p>xy\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"lc:x&lt;nowiki/>y\",\"function\":\"lc\"},\"params\":{},\"i\":0}}]}'>x</span><span>y</span></p>",
+		"html": "<p>xy\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">lc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">x<span class=\"wpb-ext\">&lt;nowiki/&gt;</span>y</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Strip marker in uc",
 		"wikitext": "{{uc:x<nowiki/>y}}",
-		"html": "<p>XY\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"uc:x&lt;nowiki/>y\",\"function\":\"uc\"},\"params\":{},\"i\":0}}]}'>X</span><span>Y</span></p>",
+		"html": "<p>XY\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">uc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">x<span class=\"wpb-ext\">&lt;nowiki/&gt;</span>y</span></span>}}</span></span>"
 	},
 	{
@@ -3008,7 +3002,7 @@
 	{
 		"desc": "Wrong option for formatNum (T58199)",
 		"wikitext": "{{formatnum:1,234.56|Random}}\n{{formatnum:1,234.56|EVERYTHING}}\n{{formatnum:1234.56|any argument that has the string 'NOSEP'}}",
-		"html": "<p>1,234.56\n1,234.56\n1,234.56\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"formatnum:1,234.56\",\"function\":\"formatnum\"},\"params\":{\"1\":{\"wt\":\"Random\"}},\"i\":0}}]}'>1,234.56</span>\n<span about=\"#mwt2\" typeof=\"mw:Transclusion\" data-parsoid='{\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"formatnum:1,234.56\",\"function\":\"formatnum\"},\"params\":{\"1\":{\"wt\":\"EVERYTHING\"}},\"i\":0}}]}'>1,234.56</span>\n<span about=\"#mwt3\" typeof=\"mw:Transclusion\" data-parsoid='{\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"formatnum:1234.56\",\"function\":\"formatnum\"},\"params\":{\"1\":{\"wt\":\"any argument that has the string &apos;NOSEP&apos;\"}},\"i\":0}}]}'>1,234.56</span></p>",
+		"html": "<p>1,234.56\n1,234.56\n1,234.56\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1,234.56</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Random</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1,234.56</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">EVERYTHING</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1234.56</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">any argument that has the string 'NOSEP'</span></span>}}</span></span>"
 	},
 	{
@@ -3050,7 +3044,7 @@
 	{
 		"desc": "Language parser function",
 		"wikitext": "{{#language:ar}}",
-		"html": "<p>العربية\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#language:ar\",\"function\":\"language\"},\"params\":{},\"i\":0}}]}'>العربية</span></p>",
+		"html": "<p>العربية\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#language</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ar</span></span>}}</span></span>"
 	},
 	{
