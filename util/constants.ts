@@ -96,5 +96,3 @@ export const aliases = [
 	['ListToken', 'DdToken'],
 	['ConverterToken'],
 ] as const;
-
-export const promises = [Promise.resolve()];

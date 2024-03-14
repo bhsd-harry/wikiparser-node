@@ -10,7 +10,6 @@ import {
 
 	/* NOT FOR BROWSER */
 
-	promises,
 	classes,
 	mixins,
 	parsers,
@@ -23,6 +22,7 @@ import type {Title} from './lib/title';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
+	rules: readonly LintError.Rule[];
 
 	/* NOT FOR BROWSER */
 
@@ -194,9 +194,7 @@ const Parser: Parser = {
 						stage = token.getAttribute('stage');
 					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : String(token));
 					fs.writeFileSync(`${file}.err`, e.stack!);
-					fs.writeFileSync(`${file}.json`, JSON.stringify({
-						stage, include: token.getAttribute('include'), config: this.config,
-					}, null, '\t'));
+					fs.writeFileSync(`${file}.json`, JSON.stringify({stage, include, config}, null, '\t'));
 				}
 				throw e;
 			}
@@ -206,23 +204,19 @@ const Parser: Parser = {
 
 		if (this.debugging) {
 			let restored = String(root),
-				process = '解析';
+				process = 'parsing';
 			if (restored === wikitext) {
 				const entities = {lt: '<', gt: '>', amp: '&'};
 				restored = root.print().replace(
 					/<[^<]+?>|&([lg]t|amp);/gu,
 					(_, s?: keyof typeof entities) => s ? entities[s] : '',
 				);
-				process = '渲染HTML';
+				process = 'printing';
 			}
 			if (restored !== wikitext) {
 				const {diff}: typeof import('./util/diff') = require('./util/diff');
-				const {0: cur, length} = promises;
-				promises.unshift((async (): Promise<void> => {
-					await cur;
-					this.error(`${process}过程中不可逆地修改了原始文本！`);
-					return diff(wikitext, restored, length);
-				})());
+				this.error(`Original wikitext is altered when ${process}!`);
+				void diff(wikitext, restored);
 			}
 		}
 
