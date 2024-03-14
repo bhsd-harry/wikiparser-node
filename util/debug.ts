@@ -1,4 +1,4 @@
-import type {AstNodes, Token} from '../internal';
+import type {AstNodes, Token, AstText} from '../internal';
 
 export const Shadow = {
 	running: false,
@@ -96,11 +96,9 @@ export const undo: AstListener = (e, data): void => {
 			setChildNodes(target.parentNode!, data.position, 1, [data.oldToken]);
 			break;
 		case 'text':
-			if (target.type === 'text') {
-				target.replaceData(data.oldText);
-			}
+			(target as AstText).replaceData(data.oldText);
 			break;
 		default:
-			throw new RangeError(`无法撤销未知类型的事件：${type}`);
+			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
 	}
 };

@@ -34,7 +34,7 @@ export const text = (childNodes: readonly (string | AstNodes)[], separator = '')
 /** decode HTML entities */
 export const decodeHtml = factory(
 	/&#(\d+|x[\da-f]+);/giu,
-	(_, code: string) => String.fromCodePoint(Number(`${code.toLowerCase().startsWith('x') ? '0' : ''}${code}`)),
+	(_, code: string) => String.fromCodePoint(Number(`${/^x/iu.test(code) ? '0' : ''}${code}`)),
 );
 
 /** escape newlines */
