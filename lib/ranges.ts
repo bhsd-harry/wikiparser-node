@@ -1,11 +1,12 @@
 import {classes} from '../util/constants';
 import {emptyArray} from '../util/debug';
+import {error} from '../util/diff';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
 export class Range {
-	readonly #start: number;
-	readonly #end: number;
-	readonly #step: number;
+	readonly start: number;
+	readonly end: number;
+	readonly step: number;
 
 	/**
 	 * @param s 表达式
@@ -21,38 +22,40 @@ export class Range {
 			Object.assign(this, {start: 0, end: Infinity, step: 2});
 		} else if (str.includes(':')) {
 			const [start, end, step = '1'] = str.split(':', 3) as [string, string | undefined, string | undefined];
-			this.#start = Number(start);
-			this.#end = Number(end || Infinity);
-			this.#step = Math.max(Number(step), 1);
-			if (!Number.isInteger(this.#start)) {
-				throw new RangeError(`起点 ${this.#start} 应为整数！`);
-			} else if (this.#end !== Infinity && !Number.isInteger(this.#end)) {
-				throw new RangeError(`终点 ${this.#end} 应为整数！`);
-			} else if (!Number.isInteger(this.#step)) {
-				throw new RangeError(`步长 ${this.#step} 应为整数！`);
+			this.start = Number(start);
+			this.end = Number(end?.trim() || Infinity);
+			this.step = Math.max(Number(step), 1);
+			if (!Number.isInteger(this.start)) {
+				throw new RangeError(`The start of a range, \`${start}\`, should be an integer!`);
+			} else if (this.end !== Infinity && !Number.isInteger(this.end)) {
+				throw new RangeError(`The end of a range, \`${end}\`, should be an integer!`);
+			} else if (!Number.isInteger(this.step)) {
+				throw new RangeError(`The step of a range, \`${step}\`, should be an integer!`);
 			}
 		} else {
-			const mt = /^([+-])?(\d+)?n(?:([+-])(\d+))?$/u
+			const mt = /^([+-])?(\d+)?n(?:\s*([+-])\s*(\d+))?$/u
 				.exec(str) as [string, string | undefined, string | undefined, string | undefined, string | undefined]
 				| null;
 			if (mt) {
 				const [, sgnA = '+', a = 1, sgnB = '+'] = mt,
 					b = Number(mt[4] ?? 0);
-				this.#step = Number(a);
-				if (this.#step === 0) {
-					throw new RangeError(`参数 ${str} 中 "n" 的系数不允许为 0！`);
-				} else if (sgnA === '+') {
-					this.#start = sgnB === '+' || b === 0 ? b : this.#step - 1 - (b - 1) % this.#step;
-					this.#end = Infinity;
-				} else if (sgnB === '-') {
-					this.#start = 0;
-					this.#end = b > 0 ? 0 : this.#step;
-				} else {
-					this.#start = b % this.#step;
-					this.#end = this.#step + b;
+				this.step = Number(a);
+				if (this.step === 0) {
+					throw new RangeError(`In the argument \`${str}\`, the coefficient of "n" must not be 0!`);
+				} else if (sgnA === '+') { // `an+b` or `an-b`
+					this.start = sgnB === '+' || b === 0 ? b : this.step - 1 - (b - 1) % this.step;
+					this.end = Infinity;
+				} else if (sgnB === '-') { // `-an-b`
+					this.start = 0;
+					this.end = b > 0 ? 0 : this.step;
+				} else { // `-an+b`
+					this.start = b % this.step;
+					this.end = this.step + b;
 				}
 			} else {
-				throw new RangeError(`参数 ${str} 应写作CSS选择器的 "an+b" 形式或Python切片！`);
+				throw new RangeError(`The argument \`${
+					str
+				}\` should be either in the form of "an+b" as in CSS selectors or Python slices!`);
 			}
 		}
 	}
@@ -62,7 +65,7 @@ export class Range {
 	 * @param arr 参考数组`[0, 1, 2, ...]`
 	 */
 	applyTo(arr: readonly number[]): number[] {
-		return arr.slice(this.#start, this.#end).filter((_, j) => j % this.#step === 0);
+		return arr.slice(this.start, this.end).filter((_, j) => j % this.step === 0);
 	}
 }
 
@@ -74,7 +77,7 @@ export class Ranges extends Array<number | Range> {
 		if (a === undefined) {
 			return;
 		}
-		for (const ele of Array.isArray(a) ? a : [a]) {
+		for (const ele of (Array.isArray(a) ? a : [a]) as readonly (number | string | Range)[]) {
 			if (ele instanceof Range) {
 				this.push(ele);
 				continue;
@@ -87,7 +90,11 @@ export class Ranges extends Array<number | Range> {
 			} else if (typeof ele === 'string' && Number.isNaN(number)) {
 				try {
 					this.push(new Range(ele));
-				} catch {}
+				} catch (e) {
+					if (e instanceof RangeError) {
+						error(e.message);
+					}
+				}
 			}
 		}
 	}
