@@ -14,12 +14,17 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		const md = fs.readFileSync(path.join(__dirname, '..', '..', 'wiki', file), 'utf8');
 		// eslint-disable-next-line es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
+			if (code.split('\n', 1)[0]!.endsWith(' (browser)')) {
+				continue;
+			}
 			try {
-				Parser.config = 'default';
 				Parser.i18n = undefined;
 				Parser.conversionTable.clear();
 				Parser.redirects.clear();
 				eval(code); // eslint-disable-line no-eval
+				if (code.includes('Parser.config = ')) {
+					Parser.config = 'default';
+				}
 			} catch (e) {
 				Parser.error(code);
 				throw e;
