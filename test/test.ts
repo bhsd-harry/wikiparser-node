@@ -14,7 +14,8 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		const md = fs.readFileSync(path.join(__dirname, '..', '..', 'wiki', file), 'utf8');
 		// eslint-disable-next-line es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
-			if (code.split('\n', 1)[0]!.endsWith(' (main)')) {
+			const [first] = code.split('\n', 1) as [string, string?];
+			if (first.endsWith(' (main)') || /^\/\/ (?:print|json)(?!\S)/u.test(first)) {
 				continue;
 			}
 			try {
