@@ -7,11 +7,12 @@ const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table
  * 测试单个页面
  * @param Parser 解析器
  * @param page 页面
+ * @param page.pageid 页面ID
  * @param page.title 页面标题
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export const single = async (Parser: Parser, {title, ns, content}: SimplePage): Promise<void> => {
+export const single = async (Parser: Parser, {pageid, title, ns, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]/gu, '');
 	try {
 		console.time(`parse: ${title}`);
@@ -19,7 +20,7 @@ export const single = async (Parser: Parser, {title, ns, content}: SimplePage): 
 		console.timeEnd(`parse: ${title}`);
 		const parsed = String(token);
 		if (parsed !== content) {
-			await diff(content, parsed);
+			await diff(content, parsed, pageid);
 			throw new Error('解析过程中不可逆地修改了原始文本！');
 		}
 
@@ -41,7 +42,7 @@ export const single = async (Parser: Parser, {title, ns, content}: SimplePage): 
 				firstStart = Math.min(firstStart, startIndex);
 			}
 		}
-		await diff(content, text);
+		await diff(content, text, pageid);
 	} catch (e) {
 		error(`解析 ${title} 页面时出错！`, e);
 	}

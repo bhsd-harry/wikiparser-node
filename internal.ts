@@ -8,7 +8,7 @@ export type * from './src/index';
 export type * from './src/onlyinclude';
 // export type * from './src/nowiki/base';
 export type * from './src/nowiki/noinclude';
-// export type * from './src/tagPair';
+// export type * from './src/tagPair/index';
 export type * from './src/tagPair/include';
 export type * from './src/nowiki/comment';
 export type * from './src/atom';
