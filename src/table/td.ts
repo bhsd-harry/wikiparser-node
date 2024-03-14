@@ -170,7 +170,8 @@ export abstract class TdToken extends TableBaseToken {
 
 		/* NOT FOR BROWSER END */
 
-		const result = previousSibling.#getSyntax();
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		const result = (previousSibling as TdToken).#getSyntax();
 
 		/* NOT FOR BROWSER */
 
