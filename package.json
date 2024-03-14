@@ -31,7 +31,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"parserTests": "node ./dist/bin/parserTests.js",
 		"prepublishOnly": "npm run build",
 		"build:core": "esbuild index.ts --bundle --minify --target=es2018 --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.json bundle/bundle.min.js",
 		"build:ext": "bash build-ext.sh",
