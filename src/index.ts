@@ -383,33 +383,35 @@ export class Token extends AstElement {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
-		const record: Record<string, Set<CategoryToken>> = {};
-		for (const cat of this.querySelectorAll<CategoryToken>('category')) {
-			const thisCat = record[cat.name];
-			if (thisCat) {
-				thisCat.add(cat);
-			} else {
-				record[cat.name] = new Set([cat]);
+		if (this.type === 'root') {
+			const record: Record<string, Set<CategoryToken>> = {};
+			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
+				const thisCat = record[cat.name];
+				if (thisCat) {
+					thisCat.add(cat);
+				} else {
+					record[cat.name] = new Set([cat]);
+				}
 			}
-		}
-		for (const value of Object.values(record)) {
-			if (value.size > 1) {
-				errors.push(...[...value].map(cat => {
-					const e = generateForSelf(
-						cat,
-						{start: cat.getAbsoluteIndex()},
-						'no-duplicate',
-						'duplicated category',
-					);
-					e.suggestions = [
-						{
-							desc: 'remove',
-							range: [e.startIndex, e.endIndex],
-							text: '',
-						},
-					];
-					return e;
-				}));
+			for (const value of Object.values(record)) {
+				if (value.size > 1) {
+					errors.push(...[...value].map(cat => {
+						const e = generateForSelf(
+							cat,
+							{start: cat.getAbsoluteIndex()},
+							'no-duplicate',
+							'duplicated category',
+						);
+						e.suggestions = [
+							{
+								desc: 'remove',
+								range: [e.startIndex, e.endIndex],
+								text: '',
+							},
+						];
+						return e;
+					}));
+				}
 			}
 		}
 		if (this.type === 'root') {
