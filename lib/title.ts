@@ -16,11 +16,11 @@ export class Title {
 	/** @private */
 	readonly encoded: boolean = false;
 	#main: string;
+	interwiki = '';
 
 	/* NOT FOR BROWSER */
 
 	readonly #namespaces;
-	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -129,16 +129,19 @@ export class Title {
 		this.valid = Boolean(title || this.interwiki || selfLink && this.fragment !== undefined)
 			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
 		this.main = title;
+		Object.defineProperties(this, {
+			encoded: {enumerable: false, writable: false},
+
+			/* NOT FOR BROWSER */
+
+			valid: {writable: false},
+			conversionTable: {enumerable: false},
+			redirects: {enumerable: false},
+		});
 
 		/* NOT FOR BROWSER */
 
 		this.#namespaces = config.namespaces;
-		Object.defineProperties(this, {
-			valid: {writable: false},
-			encoded: {enumerable: false, writable: false},
-			conversionTable: {enumerable: false},
-			redirects: {enumerable: false},
-		});
 	}
 
 	/* NOT FOR BROWSER */
