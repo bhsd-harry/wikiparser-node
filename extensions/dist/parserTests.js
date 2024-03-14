@@ -16,8 +16,13 @@
         pre.innerHTML = print;
         container.prepend(pre);
         const section = document.createElement('div');
+        section.className = 'tests';
         section.innerHTML = html;
         container.append(section);
+        select.selectedOptions[0].disabled = true;
     });
+    container.addEventListener('click', e => {
+        e.preventDefault();
+    }, { capture: true });
 })();
 })();

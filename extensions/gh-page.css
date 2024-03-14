@@ -212,8 +212,9 @@ select {
 	text-align: center;
 	font-size: 1em;
 }
-select, pre.tests {
+.tests {
 	padding: 4px 6px;
+	line-height: 1.3;
 }
 
 @media screen and (min-width: 1200px) {
