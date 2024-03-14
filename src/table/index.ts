@@ -166,9 +166,14 @@ export abstract class TableToken extends TrBaseToken {
 	 * 获取指定坐标的单元格
 	 * @param coords 表格坐标
 	 */
-	getNthCell(coords: TableCoords): TdToken | undefined {
-		const rawCoords = coords;
+	getNthCell(
+		// eslint-disable-next-line @stylistic/comma-dangle
+		coords: TableCoords
+	): TdToken | undefined {
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		const rawCoords = coords.row === undefined
+			? undefined
+			: coords;
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 
