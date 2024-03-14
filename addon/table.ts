@@ -3,14 +3,14 @@
 import * as assert from 'assert/strict';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {Token} from '../src';
+import {Token} from '../src/index';
 import {TrToken} from '../src/table/tr';
-import {TableToken, isRowEnd} from '../src/table';
+import {TableToken, isRowEnd} from '../src/table/index';
 import {TdToken, createTd} from '../src/table/td';
 import {TrBaseToken} from '../src/table/trBase';
 import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
-import type {TableRenderedCoords, Layout} from '../src/table';
+import type {TableRenderedCoords, Layout} from '../src/table/index';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from '../src/table/td';
 
 /**

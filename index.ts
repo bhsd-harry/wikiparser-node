@@ -82,7 +82,7 @@ declare interface Parser extends ParserBase {
 	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
 
 	/** @private */
-	reparse(date: string): Token;
+	reparse(date?: string): Token;
 }
 
 /**
@@ -281,7 +281,7 @@ const Parser: Parser = {
 	},
 
 	/** @implements */
-	reparse(date) {
+	reparse(date = '') {
 		const main = fs.readdirSync(path.join(__dirname, '..', 'errors'))
 			.find(name => name.startsWith(date) && name.endsWith('Z'));
 		if (!main) {
@@ -290,11 +290,10 @@ const Parser: Parser = {
 		const file = path.join(__dirname, '..', 'errors', main),
 			wikitext = fs.readFileSync(file, 'utf8');
 		const {stage, include, config}: ParsingError = require(`${file}.json`),
-			{Token}: typeof import('./src') = require('./src');
-		this.config = config;
+			{Token}: typeof import('./src/index') = require('./src/index');
 		return Shadow.run(() => {
 			const halfParsed = stage < MAX_STAGE,
-				token = new Token(halfParsed ? wikitext : tidy(wikitext), this.getConfig());
+				token = new Token(halfParsed ? wikitext : tidy(wikitext), config);
 			if (halfParsed) {
 				token.setAttribute('stage', stage);
 				token.parseOnce(stage, include);

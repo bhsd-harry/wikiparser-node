@@ -1,5 +1,5 @@
 import {mixins} from '../util/constants';
-import type {Token} from '../src';
+import type {Token} from '../src/index';
 
 /**
  * 只能位于行首的类
