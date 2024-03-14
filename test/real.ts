@@ -1,7 +1,7 @@
 import {error, info} from '../util/diff';
 import {Api} from './api';
 import {single} from './single';
-import Parser from '../index';
+import Parser = require('../index');
 
 const {argv: [,, site = '']} = process,
 	apis = ([

@@ -1,6 +1,6 @@
 import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
-import Parser from '../index';
+import Parser = require('../index');
 
 const tests: {wikitext: string, print: string}[] = require('wikiparser-node/test/parserTests.json');
 (async () => {
