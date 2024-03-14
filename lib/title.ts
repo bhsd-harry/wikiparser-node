@@ -11,6 +11,7 @@ export class Title {
 	/** @private */
 	readonly encoded: boolean = false;
 	#main: string;
+	interwiki = '';
 
 	/** 不含命名空间的标题主体部分 */
 	get main(): string {
