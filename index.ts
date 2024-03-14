@@ -6,10 +6,10 @@ import {rules} from './base';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
+	BuildMethod,
 
 	/* NOT FOR BROWSER */
 
-	BuildMethod,
 	promises,
 	classes,
 	mixins,
@@ -161,9 +161,6 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const token = Shadow.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
-
-		/* NOT FOR BROWSER */
-
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
 				const str = titleObj[key];
@@ -172,6 +169,9 @@ const Parser: Parser = {
 				}
 			}
 		});
+
+		/* NOT FOR BROWSER */
+
 		titleObj.conversionTable = this.conversionTable;
 		titleObj.redirects = this.redirects;
 
