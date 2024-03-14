@@ -18,7 +18,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		// eslint-disable-next-line es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
 			const [first] = code.split('\n', 1) as [string, string?];
-			if (first.endsWith(' (main)')) {
+			if (first.endsWith(' (main)') || /^\/\/ (?:config|i18n)(?!\S)/u.test(first)) {
 				continue;
 			}
 			try {
