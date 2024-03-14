@@ -8,8 +8,16 @@ export const Shadow = {
 
 	/** @private */
 	run<T>(callback: () => T): T {
-		const result = callback();
-		return result;
+		const {running} = this;
+		this.running = true;
+		try {
+			const result = callback();
+			this.running = running;
+			return result;
+		} catch (e) {
+			this.running = running;
+			throw e;
+		}
 	},
 };
 
