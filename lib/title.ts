@@ -5,13 +5,14 @@ import Parser from '../index';
 
 /** MediaWiki页面标题对象 */
 export class Title {
-	readonly valid;
+	#main: string;
+	readonly #namespaces;
 	ns;
 	fragment;
+	interwiki = '';
+	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
-	#main: string;
-	interwiki = '';
 
 	/** 不含命名空间的标题主体部分 */
 	get main(): string {
@@ -21,6 +22,20 @@ export class Title {
 	set main(title) {
 		title = title.replace(/_/gu, ' ').trim();
 		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+	}
+
+	/** 命名空间前缀 */
+	get prefix(): string {
+		const namespace = this.#namespaces[this.ns]!;
+		return `${namespace}${namespace && ':'}`;
+	}
+
+	/** 完整标题 */
+	get title(): string {
+		const prefix = `${this.interwiki}${this.interwiki && ':'}${this.prefix}`;
+		// eslint-disable-next-line prefer-const
+		let title = `${prefix}${this.main}`.replace(/ /gu, '_');
+		return title;
 	}
 
 	/** 扩展名 */
@@ -77,5 +92,11 @@ export class Title {
 		Object.defineProperties(this, {
 			encoded: {enumerable: false, writable: false},
 		});
+		this.#namespaces = config.namespaces;
+	}
+
+	/** @private */
+	toString(): string {
+		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
 	}
 }

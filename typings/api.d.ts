@@ -1,5 +1,6 @@
 declare global {
 	interface MediaWikiPage {
+		readonly pageid: number;
 		readonly title: string;
 		readonly ns: number;
 		readonly revisions?: {
@@ -7,7 +8,7 @@ declare global {
 			readonly contentmodel: string;
 		}[];
 	}
-	interface SimplePage extends Pick<MediaWikiPage, 'title' | 'ns'> {
+	interface SimplePage extends Pick<MediaWikiPage, 'pageid' | 'title' | 'ns'> {
 		readonly content: string;
 	}
 	interface MediaWikiResponse {
