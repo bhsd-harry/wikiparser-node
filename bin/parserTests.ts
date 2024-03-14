@@ -2,6 +2,8 @@
 import * as fs from 'fs';
 import Parser from '../index';
 
+Parser.debugging = true;
+
 const content = fs.readFileSync('test/parserTests.txt', 'utf8'),
 	tests = [];
 for (const [test] of content.matchAll(/^!! test\n.+?^!! end$/gmsu)) {
