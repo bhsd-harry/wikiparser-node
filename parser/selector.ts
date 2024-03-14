@@ -22,7 +22,7 @@ const simplePseudos = new Set([
 	'required',
 	'optional',
 ]);
-const complexPseudos = [
+const complexPseudos = new Set([
 	'is',
 	'not',
 	'nth-child',
@@ -33,7 +33,7 @@ const complexPseudos = [
 	'has',
 	'lang',
 	'regex',
-];
+]);
 const specialChars: [string, string][] = [
 	['[', '&lbrack;'],
 	[']', '&rbrack;'],
@@ -45,8 +45,7 @@ const specialChars: [string, string][] = [
 	['\\', '&bsol;'],
 	['&', '&amp;'],
 ];
-const pseudoRegex = new RegExp(`:(${complexPseudos.join('|')})$`, 'u'),
-	regularRegex = /[[(,>+~]|\s+/u,
+const regularRegex = /[[(,>+~]|\s+/u,
 	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
 	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u,
 	grouping = new Set([',', '>', '+', '~']),
@@ -100,8 +99,8 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 	 * @throws `SyntaxError` 非法的选择器
 	 */
 	const pushSimple = (index: number): void => {
-		const str = sanitized.slice(0, index),
-			pieces = str.trim().split(':'),
+		const str = sanitized.slice(0, index).trim(),
+			pieces = str.split(':'),
 			// eslint-disable-next-line unicorn/explicit-length-check
 			i = pieces.slice(1).findIndex(pseudo => simplePseudos.has(pseudo)) + 1 || pieces.length;
 		if (pieces.slice(i).some(pseudo => !simplePseudos.has(pseudo))) {
@@ -137,12 +136,13 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 			step.push(mt.slice(1) as [string, string | undefined, string | undefined, string | undefined]);
 			regex = regularRegex;
 		} else if (syntax === '(') { // 情形5：伪选择器开启
-			const pseudoExec = pseudoRegex.exec(sanitized.slice(0, index)) as RegExpExecArray & [string, string] | null;
-			if (!pseudoExec) {
+			const i = sanitized.lastIndexOf(':', index),
+				pseudo = sanitized.slice(i + 1, index);
+			if (i === -1 || !complexPseudos.has(pseudo)) {
 				throw new SyntaxError(`非法的选择器！\n${desanitize(sanitized)}\n请检查伪选择器是否存在。`);
 			}
-			pushSimple(pseudoExec.index);
-			step.push(pseudoExec[1]); // 临时存放复杂伪选择器
+			pushSimple(i);
+			step.push(pseudo); // 临时存放复杂伪选择器
 			regex = functionRegex;
 		} else { // 情形6：伪选择器闭合
 			mt.push(step.pop() as string);
