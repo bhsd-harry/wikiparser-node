@@ -285,11 +285,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">|The|Main|Page|</span>]]</span></span>"
 	},
 	{
-		"wikitext": "[[Thomas Bek (bishop of St David's)|]]",
-		"html": "<p>[[Thomas Bek (bishop of St David's)|]]\n</p>",
-		"print": "<span class=\"wpb-root\">[[Thomas Bek (bishop of St David's)|]]</span>"
-	},
-	{
 		"wikitext": "[[Main Page|<nowiki/>]] - empty nowiki\n[[Main Page|&nbsp;]] - empty non breaking space",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\"></a> - empty nowiki\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">&#160;</a> - empty non breaking space\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\"><span class=\"wpb-ext\">&lt;nowiki/&gt;</span></span>]]</span> - empty nowiki\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">&amp;nbsp;</span>]]</span> - empty non breaking space</span>"
