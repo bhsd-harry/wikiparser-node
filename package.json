@@ -40,6 +40,7 @@
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
 		"lint": "npm run lint:ts && npm run lint:json",
+		"test": "node dist/test/test.js",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"
 	},
