@@ -40,6 +40,11 @@ export const decodeHtml = factory(
 /** escape newlines */
 export const noWrap = factory(/\n/gu, '\\n');
 
+const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+
+/** escape HTML entities */
+export const escape = factory(/[&<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
+
 /**
  * 以HTML格式打印
  * @param childNodes 子节点

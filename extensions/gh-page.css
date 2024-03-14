@@ -41,7 +41,7 @@ article {
 	width: 100%;
 	padding: 1rem 2rem 2rem;
 }
-h2 {
+article > h2 {
 	font-size: var(--font-size-h2);
 	margin: .5rem 0;
 	font-weight: bold;
@@ -148,37 +148,37 @@ textarea {
 	overflow: auto;
 	padding: 0 .5rem;
 }
-dt {
+#ast dt {
 	color: #2b91af;
 	cursor: pointer;
 	white-space: nowrap;
 }
-dt:hover {
+#ast dt:hover {
 	color: #1b43d4;
 	text-decoration: underline;
 }
-dt::before {
+#ast dt::before {
 	content: "-";
 	font-family: monospace;
 	display: inline-block;
 	width: 1em;
 }
-dt.inactive::before {
+#ast dt.inactive::before {
 	content: "+";
 }
-dd {
+#ast dd {
 	margin-left: 1em;
 	color: #d00;
 	white-space: nowrap;
 }
-dt.inactive ~ *,
-dt:not(.inactive) > :nth-child(n+2) {
+#ast dt.inactive ~ *,
+#ast dt:not(.inactive) > :nth-child(n+2) {
 	display: none;
 }
-dl > span, dt > span { /* stylelint-disable-line no-descending-specificity */
+#ast dl > span, #ast dt > span {
 	color: initial;
 }
-dt > :nth-child(2) {
+#ast dt > :nth-child(2) {
 	color: #080;
 }
 .string {
@@ -195,16 +195,16 @@ dt > :nth-child(2) {
 span.hover {
 	background-color: rgba(108, 108, 108, .2);
 }
-dl.hover {
+#ast dl.hover {
 	background-color: rgba(108, 108, 108, .1);
 }
 
-h3 {
+.tabcontent h3 {
 	margin: .5rem 0;
 	font-size: var(--font-size-h3);
 	font-weight: bold;
 }
-pre.highlight span {
+pre.highlight span { /* stylelint-disable-line no-descending-specificity */
 	font-weight: normal;
 }
 
