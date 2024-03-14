@@ -25,19 +25,19 @@ export const parseHtml = (wikitext: string, config = Parser.getConfig(), accum: 
 		}
 		const [, slash,, params = '', brace, rest] = mt,
 			// @ts-expect-error abstract class
-			attr: AttributesToken = new AttributesToken(params, 'html-attrs', name!, config, accum),
-			itemprop = attr.getAttr('itemprop');
+			attrs: AttributesToken = new AttributesToken(params, 'html-attrs', name!, config, accum),
+			itemprop = attrs.getAttr('itemprop');
 		if (
-			name === 'meta' && (itemprop === undefined || attr.getAttr('content') === undefined)
-			|| name === 'link' && (itemprop === undefined || attr.getAttr('href') === undefined)
+			name === 'meta' && (itemprop === undefined || attrs.getAttr('content') === undefined)
+			|| name === 'link' && (itemprop === undefined || attrs.getAttr('href') === undefined)
 		) {
 			text += `<${x}`;
-			accum.pop();
+			accum.length = accum.indexOf(attrs);
 			continue;
 		}
 		text += `\0${accum.length}x\x7F${rest}`;
 		// @ts-expect-error abstract class
-		new HtmlToken(t!, attr, slash === '/', brace === '/>', config, accum);
+		new HtmlToken(t!, attrs, slash === '/', brace === '/>', config, accum);
 	}
 	return text;
 };
