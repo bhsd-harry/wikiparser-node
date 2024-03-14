@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
 import {info, error} from '../util/diff';
-import Parser from '../index';
+import Parser = require('../index');
 
 const title = process.argv[2]?.toLowerCase();
 
