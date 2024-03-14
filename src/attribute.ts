@@ -1,5 +1,5 @@
 import {generateForChild} from '../util/lint';
-import {removeComment} from '../util/string';
+import {removeComment, escape} from '../util/string';
 import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
@@ -449,7 +449,7 @@ export abstract class AttributeToken extends Token {
 	/** @override */
 	override print(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.print({sep: `${this.#equal}${quoteStart}`, post: quoteEnd}) : super.print();
+		return this.#equal ? super.print({sep: `${escape(this.#equal)}${quoteStart}`, post: quoteEnd}) : super.print();
 	}
 
 	/* NOT FOR BROWSER */

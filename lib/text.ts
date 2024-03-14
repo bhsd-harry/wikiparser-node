@@ -1,5 +1,6 @@
 import {classes} from '../util/constants';
 import {setChildNodes} from '../util/debug';
+import {escape} from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
@@ -321,8 +322,7 @@ export class AstText extends AstNode {
 
 	/** @override */
 	print(): string {
-		const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
-		return this.data.replace(/[&<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
+		return escape(this.data);
 	}
 
 	/* NOT FOR BROWSER */

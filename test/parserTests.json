@@ -38,8 +38,14 @@
 	{
 		"desc": "Extra newlines: More paragraphs with indented comment",
 		"wikitext": "a\n\n   <!--boo-->\n\nb",
-		"html": "<p>a\n</p><p><br />\nb\n</p>\n!!end\n",
+		"html": "<p>a\n</p><p><br />\nb\n</p>",
 		"print": "<span class=\"wpb-root\">a\n\n   <span class=\"wpb-comment\">&lt;!--boo--&gt;</span>\n\nb</span>"
+	},
+	{
+		"desc": "Extra newlines followed by heading",
+		"wikitext": "a\n\n\n=b=\n[[a]]\n\n\n=b=",
+		"html": "<p>a\n</p><p><br />\n</p>\n<h1><span class=\"mw-headline\" id=\"b\">b</span><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: b\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></h1>\n<p><a href=\"/wiki/A\" title=\"A\">a</a>\n</p><p><br />\n</p>\n<h1><span class=\"mw-headline\" id=\"b_2\">b</span><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=2\" title=\"Edit section: b\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></h1>",
+		"print": "<span class=\"wpb-root\">a\n\n\n<span class=\"wpb-heading\">=<span class=\"wpb-heading-title\">b</span>=</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">a</span>]]</span>\n\n\n<span class=\"wpb-heading\">=<span class=\"wpb-heading-title\">b</span>=</span></span>"
 	},
 	{
 		"desc": "Extra newlines between heading and content are swallowed (Parsoid does not)",
@@ -474,6 +480,12 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">7% Solution</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">7% Solution</span>|<span class=\"wpb-link-text\">7%25 Solution</span>]]</span></span>"
 	},
 	{
+		"desc": "Link containing % as a double hex sequence interpreted to hex sequence",
+		"wikitext": "[[7%2525 Solution]]",
+		"html": "<p>[[7%2525 Solution]]\n</p>",
+		"print": "<span class=\"wpb-root\">[[7%2525 Solution]]</span>"
+	},
+	{
 		"desc": "Link containing \"#<\" and \"#>\" % as a hex sequences- these are valid section anchors (legacy)",
 		"wikitext": "[[%23%3c]][[%23%3e]]",
 		"html": "<p><a href=\"#.3C\">#&lt;</a><a href=\"#.3E\">#&gt;</a>\n</p>",
@@ -594,6 +606,12 @@
 		"print": "<span class=\"wpb-root\">[[Main<span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\"> Page</span>&lt;/pre&gt;</span>]] <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">the main page <span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">[it's not very good]</span>&lt;/pre&gt;</span></span>]]</span></span>"
 	},
 	{
+		"desc": "Non-breaking spaces in title",
+		"wikitext": "[[&nbsp; Main &nbsp; Page &nbsp;]]",
+		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">&#160; Main &#160; Page &#160;</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">&amp;nbsp; Main &amp;nbsp; Page &amp;nbsp;</span>]]</span></span>"
+	},
+	{
 		"desc": "Link with multiple \":\" in a subpage-supporting namespace (T65636)",
 		"wikitext": "[[User:Foo/Test/63636:Bar|Test]]",
 		"html": "<p><a href=\"/wiki/User:Foo/Test/63636:Bar\" title=\"User:Foo/Test/63636:Bar\">Test</a>\n</p>",
@@ -656,8 +674,14 @@
 	{
 		"desc": "Failing to transform badly formed HTML into correct XHTML",
 		"wikitext": "<br style=\"clear: left;\">\n<br style=\"clear: right;\">\n<br style=\"clear: both;\">",
-		"html": "<p><br style=\"clear: left;\" />\n<br style=\"clear: right;\" />\n<br style=\"clear: both;\" />\n</p>\n!!end\n\n## Parsoid's behavior w/ self-closing HTML tags is now a bug;\n## see T134423.  Legacy Parser now implements proper HTML5 semantics.",
+		"html": "<p><br style=\"clear: left;\" />\n<br style=\"clear: right;\" />\n<br style=\"clear: both;\" />\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">clear: left;</span>\"</span></span>&gt;</span>\n<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">clear: right;</span>\"</span></span>&gt;</span>\n<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">clear: both;</span>\"</span></span>&gt;</span></span>"
+	},
+	{
+		"desc": "Handling html with a div self-closing tag",
+		"wikitext": "<div title />\n<div title/>\n<div title/ >\n<div title=bar />\n<div title=bar/>\n<div title=bar/ >",
+		"html": "<div title=\"\">\n<div title=\"\">\n<div title=\"\">\n<div title=\"bar\">\n<div title=\"bar\">\n<div title=\"bar/\"></div></div></div></div></div></div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span><span class=\"wpb-attr-dirty\"> </span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span></span><span class=\"wpb-attr-dirty\">/ </span></span>&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar</span></span><span class=\"wpb-attr-dirty\"> </span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar</span></span></span>/&gt;</span>\n<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=<span class=\"wpb-attr-value\">bar/</span></span><span class=\"wpb-attr-dirty\"> </span></span>&gt;</span></span>"
 	},
 	{
 		"desc": "Handling html with a br self-closing tag",
@@ -812,14 +836,32 @@
 	{
 		"desc": "List interrupted by empty line or heading",
 		"wikitext": "*foo\n\n**bar\n==A heading==\n*Another list item",
-		"html": "<ul><li>foo</li></ul>\n<ul><li><ul><li>bar</li></ul></li></ul>\n<h2><span class=\"mw-headline\" id=\"A_heading\">A heading</span><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: A heading\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></h2>\n<ul><li>Another list item</li></ul>\n!!end\n",
+		"html": "<ul><li>foo</li></ul>\n<ul><li><ul><li>bar</li></ul></li></ul>\n<h2><span class=\"mw-headline\" id=\"A_heading\">A heading</span><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: A heading\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></h2>\n<ul><li>Another list item</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>foo\n\n<span class=\"wpb-list\">**</span>bar\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">A heading</span>==</span>\n<span class=\"wpb-list\">*</span>Another list item</span>"
+	},
+	{
+		"desc": "Multiple list tags generated by templates",
+		"wikitext": "{{1x|<li>}}a\n{{1x|<li>}}b\n{{1x|<li>}}c",
+		"html": "<li>a\n</li><li>b\n</li><li>c</li>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;li&gt;</span></span></span>}}</span>a\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;li&gt;</span></span></span>}}</span>b\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;li&gt;</span></span></span>}}</span>c</span>"
 	},
 	{
 		"desc": "Multiple newlines in between HTML list items don't induce paragraph wrapping",
 		"wikitext": "<ul>\n<li>hi</li>\n\n\n\n\n<li>ho</li>\n</ul>\n\n<dl>\n<dt>hi</dt>\n<dd>ho<div>123</div>\n</dd>\n\n\n</dl>",
 		"html": "<ul>\n<li>hi</li>\n\n\n\n\n<li>ho</li>\n</ul>\n<dl>\n<dt>hi</dt>\n<dd>ho<div>123</div>\n</dd>\n\n\n</dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;ul&gt;</span>\n<span class=\"wpb-html\">&lt;li&gt;</span>hi<span class=\"wpb-html\">&lt;/li&gt;</span>\n\n\n\n\n<span class=\"wpb-html\">&lt;li&gt;</span>ho<span class=\"wpb-html\">&lt;/li&gt;</span>\n<span class=\"wpb-html\">&lt;/ul&gt;</span>\n\n<span class=\"wpb-html\">&lt;dl&gt;</span>\n<span class=\"wpb-html\">&lt;dt&gt;</span>hi<span class=\"wpb-html\">&lt;/dt&gt;</span>\n<span class=\"wpb-html\">&lt;dd&gt;</span>ho<span class=\"wpb-html\">&lt;div&gt;</span>123<span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-html\">&lt;/dd&gt;</span>\n\n\n<span class=\"wpb-html\">&lt;/dl&gt;</span></span>"
+	},
+	{
+		"desc": "Single-comment whitespace lines dont break lists, and neither do multi-comment whitespace lines",
+		"wikitext": "*a\n<!--This line will NOT split the list-->\n*b\n <!--This line will NOT split the list either-->\n*c\n <!--foo--> <!----> <!--This line NOT split the list either--> \n*d",
+		"html": "<ul><li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li></ul>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>a\n<span class=\"wpb-comment\">&lt;!--This line will NOT split the list--&gt;</span>\n<span class=\"wpb-list\">*</span>b\n <span class=\"wpb-comment\">&lt;!--This line will NOT split the list either--&gt;</span>\n<span class=\"wpb-list\">*</span>c\n <span class=\"wpb-comment\">&lt;!--foo--&gt;</span> <span class=\"wpb-comment\">&lt;!----&gt;</span> <span class=\"wpb-comment\">&lt;!--This line NOT split the list either--&gt;</span> \n<span class=\"wpb-list\">*</span>d</span>"
+	},
+	{
+		"desc": "Replacing whitespace with tabs still doesn't break the list (gerrit 78327)",
+		"wikitext": "*a\n<!--This line will NOT split the list-->\t\n*b\n\t<!--This line will NOT split the list either--> \t\n*c\n\t<!--foo--> <!---->\t<!--This line NOT split the list\n        either-->\t \n*d",
+		"html": "<ul><li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li></ul>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>a\n<span class=\"wpb-comment\">&lt;!--This line will NOT split the list--&gt;</span>\t\n<span class=\"wpb-list\">*</span>b\n\t<span class=\"wpb-comment\">&lt;!--This line will NOT split the list either--&gt;</span> \t\n<span class=\"wpb-list\">*</span>c\n\t<span class=\"wpb-comment\">&lt;!--foo--&gt;</span> <span class=\"wpb-comment\">&lt;!----&gt;</span>\t<span class=\"wpb-comment\">&lt;!--This line NOT split the list\n        either--&gt;</span>\t \n<span class=\"wpb-list\">*</span>d</span>"
 	},
 	{
 		"desc": "Parsoid: Make sure nested lists are serialized on their own line even if HTML contains no newlines",
@@ -928,6 +970,12 @@
 		"wikitext": "{{urlencode:hi world?!}}\n{{urlencode:hi world?!|WIKI}}\n{{urlencode:hi world?!|PATH}}\n{{urlencode:hi world?!|QUERY}}",
 		"html": "<p>hi+world%3F%21\nhi_world%3F!\nhi%20world%3F%21\nhi+world%3F%21\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">urlencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi world?!</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">urlencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi world?!</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">WIKI</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">urlencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi world?!</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">PATH</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">urlencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi world?!</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">QUERY</span></span>}}</span></span>"
+	},
+	{
+		"desc": "__proto__ is treated as normal wikitext (T105997)",
+		"wikitext": "__proto__",
+		"html": "<p>__proto__\n</p>",
+		"print": "<span class=\"wpb-root\">__proto__</span>"
 	},
 	{
 		"desc": "Template titles with entities in them",
@@ -1188,6 +1236,18 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-noinclude\">&lt;onlyinclude&gt;</span></span>"
 	},
 	{
+		"desc": "Self-closed noinclude, includeonly, onlyinclude tags",
+		"wikitext": "<noinclude />\n<includeonly />\n<onlyinclude />",
+		"html": "<p><br />\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-noinclude\">&lt;noinclude /&gt;</span>\n<span class=\"wpb-include\">&lt;includeonly /&gt;</span>\n<span class=\"wpb-noinclude\">&lt;onlyinclude /&gt;</span></span>"
+	},
+	{
+		"desc": "Unbalanced includeonly and noinclude tags",
+		"wikitext": "{|\n|a</noinclude>\n|b</noinclude></noinclude>\n|c</noinclude></includeonly>\n|d</includeonly></includeonly>\n|}",
+		"html": "<table>\n<tbody><tr>\n<td>a\n</td>\n<td>b\n</td>\n<td>c&lt;/includeonly&gt;\n</td>\n<td>d&lt;/includeonly&gt;&lt;/includeonly&gt;\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">a<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">b<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">c<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>&lt;/includeonly&gt;</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">d&lt;/includeonly&gt;&lt;/includeonly&gt;</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
 		"desc": "T8563: Edit link generation for section shown by <includeonly>",
 		"wikitext": "{{includeonly section}}",
 		"html": "<h2><span class=\"mw-headline\" id=\"Includeonly_section\">Includeonly section</span><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Template:Includeonly_section&amp;action=edit&amp;section=T-1\" title=\"Edit section: Includeonly section\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></h2>\n<h2><span class=\"mw-headline\" id=\"Section_T-1\">Section T-1</span><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Template:Includeonly_section&amp;action=edit&amp;section=T-2\" title=\"Edit section: Section T-1\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></h2>",
@@ -1216,6 +1276,36 @@
 		"wikitext": "{{1x|<div>}}\n{|\n|{{1x|{{!}} foo}}\n|}\n{{1x|</div>}}",
 		"html": "<div>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span></span></span>}}</span>\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span> foo</span></span>}}</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
+	},
+	{
+		"desc": "0. includeonly around the entire attribute",
+		"wikitext": "<span <includeonly>id=\"v1\"</includeonly><noinclude>id=\"v2\"</noinclude>>bar</span>",
+		"html": "<p><span id=\"v2\">bar</span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-include\">&lt;includeonly&gt;id=\"v1\"&lt;/includeonly&gt;</span><span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>id</span>=\"<span class=\"wpb-attr-value\">v2</span>\"</span><span class=\"wpb-attr-dirty\"><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span></span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
+	},
+	{
+		"desc": "1. includeonly in html attr key",
+		"wikitext": "<span <noinclude>id</noinclude><includeonly>about</includeonly>=\"foo\">bar</span>",
+		"html": "<p><span id=\"foo\">bar</span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>id<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-include\">&lt;includeonly&gt;about&lt;/includeonly&gt;</span></span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
+	},
+	{
+		"desc": "2. includeonly in html attr value",
+		"wikitext": "<span id=\"<noinclude>v1</noinclude><includeonly>v2</includeonly>\">bar</span>\n<span id=<noinclude>\"v1\"</noinclude><includeonly>\"v2\"</includeonly>>bar</span>",
+		"html": "<p><span id=\"v1\">bar</span>\n<span id=\"v1\">bar</span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>v1<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-include\">&lt;includeonly&gt;v2&lt;/includeonly&gt;</span></span>\"</span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=&lt;noinclude&gt;\"<span class=\"wpb-attr-value\">v1</span>\"</span><span class=\"wpb-attr-dirty\"><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-include\">&lt;includeonly&gt;\"v2\"&lt;/includeonly&gt;</span></span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
+	},
+	{
+		"desc": "3. includeonly in part of an attr value",
+		"wikitext": "<span style=\"color:<noinclude>red</noinclude><includeonly>blue</includeonly>;\">bar</span>",
+		"html": "<p><span style=\"color:red;\">bar</span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>red<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-include\">&lt;includeonly&gt;blue&lt;/includeonly&gt;</span>;</span>\"</span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
+	},
+	{
+		"desc": "4. includeonly in table attributes",
+		"wikitext": "{|\n|- <noinclude>\n|-\n|a\n</noinclude>\n|- <includeonly>\n|-\n|b\n</includeonly>\n|}",
+		"html": "<table>\n\n\n<tbody><tr>\n<td>a\n</td></tr>\n</tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> <span class=\"wpb-noinclude\">&lt;noinclude&gt;</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">a\n<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> <span class=\"wpb-include\">&lt;includeonly&gt;\n|-\n|b\n&lt;/includeonly&gt;</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Table wikitext syntax outside wiki-tables",
@@ -1254,6 +1344,66 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">quote</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">quote</span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
 	},
 	{
+		"desc": "Templates: 1. Simple use",
+		"wikitext": "{{1x|Foo}}",
+		"html": "<p>Foo\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: 2. Inside a block tag",
+		"wikitext": "<div>{{1x|Foo}}</div>\n<blockquote>{{1x|Foo}}</blockquote>",
+		"html": "<div>Foo</div>\n<blockquote><p>Foo</p></blockquote>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span><span class=\"wpb-html\">&lt;/div&gt;</span>\n<span class=\"wpb-html\">&lt;blockquote&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span><span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: P-wrapping: 1a. Templates on consecutive lines",
+		"wikitext": "{{1x|Foo}}\n{{1x|bar}}",
+		"html": "<p>Foo\nbar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: P-wrapping: 1b. Templates on consecutive lines",
+		"wikitext": "Foo\n\n{{1x|bar}}\n{{1x|baz}}",
+		"html": "<p>Foo\n</p><p>bar\nbaz\n</p>",
+		"print": "<span class=\"wpb-root\">Foo\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">baz</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: P-wrapping: 1c. Templates on consecutive lines",
+		"wikitext": "{{1x|Foo}}\n{{1x|bar}} <div>baz</div>",
+		"html": "<p>Foo\n</p><p>\nbar </p><div>baz</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span> <span class=\"wpb-html\">&lt;div&gt;</span>baz<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: P-wrapping: 1d. Template preceded by comment-only line",
+		"wikitext": "<!-- foo -->\n{{1x|Bar}}",
+		"html": "<p>Bar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- foo --&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Bar</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Inline Text: 1. Multiple template uses",
+		"wikitext": "{{1x|Foo}}bar{{1x|baz}}",
+		"html": "<p>Foobarbaz\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span>bar<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">baz</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Inline Text: 2. Back-to-back template uses",
+		"wikitext": "{{1x|Foo}}{{1x|bar}}",
+		"html": "<p>Foobar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Block Tags: 1. Multiple template uses",
+		"wikitext": "{{1x|<div>Foo</div>}}<div>bar</div>{{1x|<div>baz</div>}}",
+		"html": "<div>Foo</div><div>bar</div><div>baz</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span>Foo<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;div&gt;</span>bar<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span>baz<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Block Tags: 2. Back-to-back template uses",
+		"wikitext": "{{1x|<div>Foo</div>}}{{1x|<div>bar</div>}}",
+		"html": "<div>Foo</div><div>bar</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span>Foo<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span>bar<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
+	},
+	{
 		"desc": "Templates: Correctly encapsulate templates producing </p> tag without a corresponding <p> tag",
 		"wikitext": "{{1x|a\nb</p>}}",
 		"html": "<p>a\n</p><p>\nb</p><p class=\"mw-empty-elt\"></p>",
@@ -1266,10 +1416,106 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span></span>"
 	},
 	{
+		"desc": "Templates: Links: 1. Simple example",
+		"wikitext": "{{1x|[[Foo|bar]]}}",
+		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">bar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">bar</span>]]</span></span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Links: 2. Generation of link href",
+		"wikitext": "[[{{1x|Foo}}|bar]]",
+		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">bar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span></span>"
+	},
+	{
+		"desc": "Templates: Links: 3. Generation of part of a link href",
+		"wikitext": "[[Fo{{1x|o}}|bar]]\n\n[[Foo{{1x|bar}}]]\n\n[[Foo{{1x|bar}}baz]]\n\n[[Foo{{1x|bar}}|bar]]\n\n[[:Foo{{1x|bar}}]]\n\n[[:Foo{{1x|bar}}|bar]]",
+		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">bar</a>\n</p><p><a href=\"/wiki/Foobar\" title=\"Foobar\">Foobar</a>\n</p><p><a href=\"/wiki/Foobarbaz\" title=\"Foobarbaz\">Foobarbaz</a>\n</p><p><a href=\"/wiki/Foobar\" title=\"Foobar\">bar</a>\n</p><p><a href=\"/wiki/Foobar\" title=\"Foobar\">Foobar</a>\n</p><p><a href=\"/wiki/Foobar\" title=\"Foobar\">bar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Fo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">o</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span>baz</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span></span>"
+	},
+	{
+		"desc": "Templates: Links: 4. Multiple templates generating link href",
+		"wikitext": "[[{{1x|F}}{{1x|o}}ob{{1x|ar}}]]",
+		"html": "<p><a href=\"/wiki/Foobar\" title=\"Foobar\">Foobar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">F</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">o</span></span>}}</span>ob<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ar</span></span>}}</span></span>]]</span></span>"
+	},
+	{
+		"desc": "Templates: Links: 5. Generation of link text",
+		"wikitext": "[[Foo|{{1x|bar}}]]",
+		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">bar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">bar</span></span>}}</span></span>]]</span></span>"
+	},
+	{
+		"desc": "Templates: Links: 5. Nested templates (only outermost template should be marked)",
+		"wikitext": "{{1x|[[{{1x|Foo}}|bar]]}}",
+		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">bar</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foo</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span></span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 1. Generation of HTML attr. key",
+		"wikitext": "<div {{1x|style}}=\"color:red;\">foo</div>",
+		"html": "<div style=\"color:red;\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">style</span></span>}}</span></span>=\"<span class=\"wpb-attr-value\">color:red;</span>\"</span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 2. Generation of HTML attr. value",
+		"wikitext": "<div style={{1x|'color:red;'}}>foo</div>",
+		"html": "<div style=\"color:red;\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">'color:red;'</span></span>}}</span></span></span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 3. Generation of HTML attr key and value",
+		"wikitext": "<div {{1x|style}}={{1x|'color:red;'}}>foo</div>",
+		"html": "<div style=\"color:red;\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">style</span></span>}}</span></span>=<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">'color:red;'</span></span>}}</span></span></span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 4. Generation of starting piece of HTML attr value",
+		"wikitext": "<div title=\"{{1x|This is a long title}} with just one piece templated\">foo</div>",
+		"html": "<div title=\"This is a long title with just one piece templated\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">This is a long title</span></span>}}</span> with just one piece templated</span>\"</span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 5. Generation of middle piece of HTML attr value",
+		"wikitext": "<div title=\"This is a long title with just {{1x|one piece}} templated\">foo</div>",
+		"html": "<div title=\"This is a long title with just one piece templated\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">This is a long title with just <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">one piece</span></span>}}</span> templated</span>\"</span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 6. Generation of end piece of HTML attr value",
+		"wikitext": "<div title=\"This is a long title with just one piece {{1x|templated}}\">foo</div>",
+		"html": "<div title=\"This is a long title with just one piece templated\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">This is a long title with just one piece <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">templated</span></span>}}</span></span>\"</span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 7. Generation of partial attribute key string",
+		"wikitext": "<div st{{1x|yle}}=\"color:red;\">foo</div>",
+		"html": "<div style=\"color:red;\">foo</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">st<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">yle</span></span>}}</span></span>=\"<span class=\"wpb-attr-value\">color:red;</span>\"</span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
 		"desc": "Templates: HTML Tag: 8. Template-generated attribute (k=v)",
 		"wikitext": "<div {{1x|1=id=\"v1\"}}>bar</div>",
-		"html": "<div id=\"v1\">bar</div>\n!!end\n",
+		"html": "<div id=\"v1\">bar</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">id=\"v1\"</span></span>}}</span></span></span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tag: 9. Multiple template-generated attributes",
+		"wikitext": "<div {{1x|1=id=\"v1\" title=\"foo\"}}>bar</div>",
+		"html": "<div id=\"v1\" title=\"foo\">bar</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">id=\"v1\" title=\"foo\"</span></span>}}</span></span></span></span>&gt;</span>bar<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: Support for templates generating attributes and content",
+		"wikitext": "{| {{mixed_attr_content_template}}\n|-\n|bar\n|}",
+		"html": "<table style=\"color:red;\" title=\"T48811\">\n\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">mixed_attr_content_template</span>}}</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Templates: Support for templates generating table attributes and content (with fostered categories)",
+		"wikitext": "{| {{mixed_attr_content_template_2}}\n|-\n|bar\n|}",
+		"html": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">mixed_attr_content_template_2</span>}}</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "1. Entities and nowikis inside templated attributes should be handled correctly",
@@ -1302,10 +1548,76 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">123</span>\"</span><span class=\"wpb-attr-dirty\"> <span class=\"wpb-ext\">&lt;nowiki<span class=\"wpb-ext-attrs\"><span class=\"wpb-attr-dirty\"> </span></span>/&gt;</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span></span><span class=\"wpb-td-inner\"> hi</span></span><span class=\"wpb-table-syntax\">\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>}</span></span>\n</span></span>}}</span></span>"
 	},
 	{
+		"desc": "Templates: HTML Tables: 1. Generating start of a HTML table",
+		"wikitext": "{{1x|<table><tr><td>foo</td>}}</tr></table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 2a. Generating middle of a HTML table",
+		"wikitext": "<table><tr>{{1x|<td>foo</td>}}</tr></table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 2b. Generating middle of a HTML table",
+		"wikitext": "<table>{{1x|<tr><td>foo</td></tr>}}</table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 3. Generating end of a HTML table",
+		"wikitext": "<table><tr>{{1x|<td>foo</td></tr></table>}}",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 4a. Generating a single tag of a HTML table",
+		"wikitext": "{{1x|<table>}}<tr><td>foo</td></tr></table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;table&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 4b. Generating a single tag of a HTML table",
+		"wikitext": "<table>{{1x|<tr>}}<td>foo</td></tr></table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;tr&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 4c. Generating a single tag of a HTML table",
+		"wikitext": "<table><tr>{{1x|<td>}}foo</td></tr></table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;td&gt;</span></span></span>}}</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 4d. Generating a single tag of a HTML table",
+		"wikitext": "<table><tr><td>foo{{1x|</td>}}</tr></table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;/td&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 4e. Generating a single tag of a HTML table",
+		"wikitext": "<table><tr><td>foo</td>{{1x|</tr>}}</table>",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span><span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+	},
+	{
+		"desc": "Templates: HTML Tables: 4f. Generating a single tag of a HTML table",
+		"wikitext": "<table><tr><td>foo</td></tr>{{1x|</table>}}",
+		"html": "<table><tbody><tr><td>foo</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;/table&gt;</span></span></span>}}</span></span>"
+	},
+	{
 		"desc": "Templates: Wiki Tables: 1a. Fostering of entire template content",
 		"wikitext": "{|\n{{1x|a}}\n|}",
 		"html": "\na\n<table><tbody><tr><td></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a</span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Templates: Wiki Tables: 1b. Fostering of entire template content",
+		"wikitext": "{|\n{{1x|<div>}}\nfoo\n{{1x|</div>}}\n|}",
+		"html": "<div>\n<p>foo\n</p>\n</div><table>\n\n<tbody><tr><td></td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span></span></span>}}</span>\nfoo\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Templates: Wiki Tables: 2. Fostering of partial template content",
@@ -1314,10 +1626,40 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\n<span class=\"wpb-html\">&lt;div&gt;</span>b<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
+		"desc": "Templates: Wiki Tables: 3. td-content via multiple templates",
+		"wikitext": "{|\n{{1x|{{pipe}}a}}{{1x|b}}\n|}",
+		"html": "<table>\n<tbody><tr>\n<td>ab\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">pipe</span>}}</span>a</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b</span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Templates: Wiki Tables: 4. Templated tags, no content",
+		"wikitext": "{{tbl-start}}\n{{tbl-end}}",
+		"html": "<table>\n<tbody><tr><td></td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-start</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-end</span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Wiki Tables: 5. Templated tags, regular td-tags",
+		"wikitext": "{{tbl-start}}\n|foo\n{{tbl-end}}",
+		"html": "<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-start</span>}}</span>\n|foo\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-end</span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Wiki Tables: 6. Templated tags, templated td-tags",
+		"wikitext": "{{tbl-start}}\n{{!}}foo\n{{tbl-end}}",
+		"html": "<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-start</span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>foo\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-end</span>}}</span></span>"
+	},
+	{
 		"desc": "Templates: Lists: Multi-line list-items via templates",
 		"wikitext": "*{{1x|a {{nonexistent|\nunused}}}}\n*{{1x|b {{nonexistent|\nunused}}}}",
 		"html": "<ul><li>a <a href=\"/index.php?title=Template:Nonexistent&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Nonexistent (page does not exist)\">Template:Nonexistent</a></li>\n<li>b <a href=\"/index.php?title=Template:Nonexistent&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Nonexistent (page does not exist)\">Template:Nonexistent</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">nonexistent</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nunused</span></span>}}</span></span></span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">nonexistent</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nunused</span></span>}}</span></span></span>}}</span></span>"
+	},
+	{
+		"desc": "Templates: Ugly nesting: 1. Quotes opened/closed across templates (1x)",
+		"wikitext": "{{1x|''a}}{{1x|b''c''d}}{{1x|''e}}",
+		"html": "<p><i>ab</i>c<i>d</i>e\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>a</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b<span class=\"wpb-quote\">''</span>c<span class=\"wpb-quote\">''</span>d</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>e</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Templates: Ugly nesting: 4. Divs opened/closed across templates",
@@ -1350,6 +1692,18 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;table&gt;</span></span></span>}}</span>\n<span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">top</span>|<span class=\"wpb-arg-default\"><span class=\"wpb-html\">&lt;td&gt;</span>123<span class=\"wpb-html\">&lt;/td&gt;</span></span>}}}</span>\n<span class=\"wpb-html\">&lt;/table&gt;</span></span>"
 	},
 	{
+		"desc": "Parser Functions: 1. Simple example",
+		"wikitext": "{{uc:foo}}",
+		"html": "<p>FOO\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">uc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Parser Functions: 2. Nested use (only outermost should be marked up)",
+		"wikitext": "{{uc:{{lc:FOO}}}}",
+		"html": "<p>FOO\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">uc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">lc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">FOO</span></span>}}</span></span></span>}}</span></span>"
+	},
+	{
 		"desc": "ParserTest <spantag> tag, using data-mw.body serialization shortcut",
 		"wikitext": "Hello <spantag>'''world'''!</spantag>",
 		"html": "<p>Hello <span><b>world</b>!</span>\n</p>",
@@ -1363,9 +1717,15 @@
 	},
 	{
 		"desc": "Render invalid page names as plain text (T53090)",
-		"wikitext": "[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo>bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo[http://example.com]xyz]]\n\n[[{{1x|./../foo}}|bar]]\n[[{{1x|foo/.}}|bar]]\n[[{{1x|foo/..}}|bar]]\n[[{{1x|foo~~~~bar}}]]\n[[{{1x|foo>bar}}]]\n[[{{1x|foo././bar}}]]\n[[{{1x|foo{bar}}]]\n[[{{1x|foo}bar}}]]\n[[{{1x|foo[bar}}]]\n[[{{1x|foo]bar}}]]\n[[{{1x|foo<bar}}]]\n!!html/php\n<p>[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo&gt;bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com\">[1]</a>xyz]]\n</p><p>[[./../foo|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~~bar]]\n[[foo&gt;bar]]\n[[foo././bar]]\n[[foo{bar]]\n[[foo}bar]]\n[[foo[bar]]\n[[foo]bar]]\n[[foo&lt;bar]]\n</p>\n!!html/parsoid\n<p>[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo>bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<a rel=\"mw:ExtLink\" href=\"http://example.com\" class=\"external autonumber\"></a>xyz]]</p>\n\n<p>[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"./../foo\"}},\"i\":0}}]}'>./../foo</span>|bar]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo/.\"}},\"i\":0}}]}'>foo/.</span>|bar]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo/..\"}},\"i\":0}}]}'>foo/..</span>|bar]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo~~~~bar\"}},\"i\":0}}]}'>foo~~~~bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo>bar\"}},\"i\":0}}]}'>foo>bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo././bar\"}},\"i\":0}}]}'>foo././bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo{bar\"}},\"i\":0}}]}'>foo{bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo}bar\"}},\"i\":0}}]}'>foo}bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo[bar\"}},\"i\":0}}]}'>foo[bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo]bar\"}},\"i\":0}}]}'>foo]bar</span>]]\n[[<span typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo&lt;bar\"}},\"i\":0}}]}'>foo&lt;bar</span>]]</p>\n!!end\n",
+		"wikitext": "[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo>bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo[http://example.com]xyz]]\n\n[[{{1x|./../foo}}|bar]]\n[[{{1x|foo/.}}|bar]]\n[[{{1x|foo/..}}|bar]]\n[[{{1x|foo~~~~bar}}]]\n[[{{1x|foo>bar}}]]\n[[{{1x|foo././bar}}]]\n[[{{1x|foo{bar}}]]\n[[{{1x|foo}bar}}]]\n[[{{1x|foo[bar}}]]\n[[{{1x|foo]bar}}]]\n[[{{1x|foo<bar}}]]",
+		"html": "<p>[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo&gt;bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com\">[1]</a>xyz]]\n</p><p>[[./../foo|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~~bar]]\n[[foo&gt;bar]]\n[[foo././bar]]\n[[foo{bar]]\n[[foo}bar]]\n[[foo[bar]]\n[[foo]bar]]\n[[foo&lt;bar]]\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">./../foo</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo�</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/.</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/..</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo~~~bar</span>]]</span>\n[[foo&gt;bar]]\n[[foo[bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">.</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">..</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo././bar</span>]]</span>\n[[foo<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span>]</span>xyz]]\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">./../foo</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo/.</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo/..</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo~~~~bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo&gt;bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo././bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo{bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo}bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo[bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo]bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo&lt;bar</span></span>}}</span></span>]]</span></span>"
+	},
+	{
+		"desc": "Disabled subpages",
+		"wikitext": "[[/subpage]]",
 		"html": "<p><a href=\"/index.php?title=/subpage&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"/subpage (page does not exist)\">/subpage</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">./../foo</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo�</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/.</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/..</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo~~~bar</span>]]</span>\n[[foo&gt;bar]]\n[[foo[bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">.</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">..</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo././bar</span>]]</span>\n[[foo<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span>]</span>xyz]]\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">./../foo</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo/.</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo/..</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo~~~~bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo&gt;bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo././bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo{bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo}bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo[bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo]bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo&lt;bar</span></span>}}</span></span>]]</span>\n!!html/php\n<span class=\"wpb-html\">&lt;p&gt;</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">./../foo</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo�</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/.</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/..</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo~~~bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo&amp;gt;bar</span>]]</span>\n[[foo[bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">.</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">..</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo././bar</span>]]</span>\n[[foo&lt;a rel=\"nofollow\" class=\"external autonumber\" href=\"<span class=\"wpb-free-ext-link\">http://example.com</span>\"&gt;[1]&lt;/a&gt;xyz]]\n<span class=\"wpb-html\">&lt;/p&gt;</span><span class=\"wpb-html\">&lt;p&gt;</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">./../foo</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/.</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/..</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo~~~~bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo&amp;gt;bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo././bar</span>]]</span>\n[[foo{bar]]\n[[foo}bar]]\n[[foo[bar]]\n[[foo]bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo&amp;lt;bar</span>]]</span>\n<span class=\"wpb-html\">&lt;/p&gt;</span>\n!!html/parsoid\n<span class=\"wpb-html\">&lt;p&gt;</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">./../foo</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo�</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/.</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo/..</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo~~~bar</span>]]</span>\n[[foo&gt;bar]]\n[[foo[bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">.</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">..</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo././bar</span>]]</span>\n[[foo&lt;a rel=\"mw:ExtLink\" href=\"<span class=\"wpb-free-ext-link\">http://example.com</span>\" class=\"external autonumber\"&gt;&lt;/a&gt;xyz]]<span class=\"wpb-html\">&lt;/p&gt;</span>\n\n<span class=\"wpb-html\">&lt;p&gt;</span>[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"./../foo\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>./../foo<span class=\"wpb-html\">&lt;/span&gt;</span>|bar]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo/.\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo/.<span class=\"wpb-html\">&lt;/span&gt;</span>|bar]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo/..\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo/..<span class=\"wpb-html\">&lt;/span&gt;</span>|bar]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo~~~~bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo~~~~bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo</span></span></span>&gt;</span>bar\"}},\"i\":0}}]}'&gt;foo&gt;bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo././bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo././bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo{bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo{bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo}bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo}bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo[bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo[bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo]bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo]bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]\n[[<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">typeof</span>=\"<span class=\"wpb-attr-value\">mw:Transclusion</span>\"</span><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">data-mw</span>='<span class=\"wpb-attr-value\">{\"parts\":[{\"template\":{\"target\":{\"wt\":\"1x\",\"href\":\"./Template:1x\"},\"params\":{\"1\":{\"wt\":\"foo&amp;lt;bar\"}},\"i\":0}}]}</span>'</span></span>&gt;</span>foo&amp;lt;bar<span class=\"wpb-html\">&lt;/span&gt;</span>]]<span class=\"wpb-html\">&lt;/p&gt;</span>\n!!end\n</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">/subpage</span>]]</span></span>"
 	},
 	{
 		"desc": "Link to category",
@@ -1406,8 +1766,26 @@
 	{
 		"desc": "T3186 news: in the middle of text",
 		"wikitext": "http://en.wikinews.org/wiki/Wikinews:Workplace",
-		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://en.wikinews.org/wiki/Wikinews:Workplace\">http://en.wikinews.org/wiki/Wikinews:Workplace</a>\n</p>\n!!end\n\n",
+		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://en.wikinews.org/wiki/Wikinews:Workplace\">http://en.wikinews.org/wiki/Wikinews:Workplace</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://en.wikinews.org/wiki/Wikinews:Workplace</span></span>"
+	},
+	{
+		"desc": "Namespaced link must have a title",
+		"wikitext": "[[Project:]]",
+		"html": "<p>[[Project:]]\n</p>",
+		"print": "<span class=\"wpb-root\">[[Project:]]</span>"
+	},
+	{
+		"desc": "Namespaced link must have a title (bad fragment version)",
+		"wikitext": "[[Project:#fragment]]",
+		"html": "<p>[[Project:#fragment]]\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Project:#fragment</span>]]</span></span>"
+	},
+	{
+		"desc": "div with no attributes",
+		"wikitext": "<div>HTML rocks</div>",
+		"html": "<div>HTML rocks</div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>HTML rocks<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "div with double-quoted attribute",
@@ -1980,6 +2358,12 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;ol&gt;</span><span class=\"wpb-html\">&lt;li<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">fragment</span>\"</span></span>&gt;</span>One<span class=\"wpb-html\">&lt;/li&gt;</span>\n<span class=\"wpb-html\">&lt;/ol&gt;</span></span>"
 	},
 	{
+		"desc": "T7918: autonumbering",
+		"wikitext": "[http://first/] [http://second] [ftp://ftp]\n\nftp://inlineftp\n\n[mailto:enclosed@mail.tld With target]\n\n[mailto:enclosed@mail.tld]\n\nmailto:inline@mail.tld",
+		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://first/\">[1]</a> <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://second\">[2]</a> <a rel=\"nofollow\" class=\"external autonumber\" href=\"ftp://ftp\">[3]</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"ftp://inlineftp\">ftp://inlineftp</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"mailto:enclosed@mail.tld\">With target</a>\n</p><p><a rel=\"nofollow\" class=\"external autonumber\" href=\"mailto:enclosed@mail.tld\">[4]</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"mailto:inline@mail.tld\">mailto:inline@mail.tld</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://first/</span>]</span> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://second</span>]</span> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">ftp://ftp</span>]</span>\n\n<span class=\"wpb-free-ext-link\">ftp://inlineftp</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">mailto:enclosed@mail.tld</span> <span class=\"wpb-ext-link-text\">With target</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">mailto:enclosed@mail.tld</span>]</span>\n\n<span class=\"wpb-free-ext-link\">mailto:inline@mail.tld</span></span>"
+	},
+	{
 		"desc": "Fuzz testing: Parser13",
 		"wikitext": "{| \n| http://a|",
 		"html": "<table>\n<tbody><tr>\n<td>\n</td>\n</tr>\n</tbody></table>",
@@ -2008,6 +2392,24 @@
 		"wikitext": "http://===r:::https://b\n\n{|",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://===r:::https://b\">http://===r:::https://b</a>\n</p>\n<table>\n<tbody><tr><td></td></tr>\n</tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://===r:::https://b</span>\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span></span></span>"
+	},
+	{
+		"desc": "Fuzz testing: Parser25 (T8055)",
+		"wikitext": "{{{\n| \n<LI CLASS=||\n >\n}}}blah\" onmouseover=\"alert('hello world');\" align=\"left\"'''MOVE MOUSE CURSOR OVER HERE",
+		"html": "<p>&lt;LI CLASS=blah\" onmouseover=\"alert('hello world');\" align=\"left\"<b>MOVE MOUSE CURSOR OVER HERE</b>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">\n</span>|<span class=\"wpb-arg-default\"> \n&lt;LI CLASS=</span>||<span class=\"wpb-hidden\">\n &gt;\n</span>}}}</span>blah\" onmouseover=\"alert('hello world');\" align=\"left\"<span class=\"wpb-quote\">'''</span>MOVE MOUSE CURSOR OVER HERE</span>"
+	},
+	{
+		"desc": "Fuzz testing: URL adjacent extension (with space, clean)",
+		"wikitext": "http://example.com <nowiki>junk</nowiki>",
+		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a> junk\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span> <span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">junk</span>&lt;/nowiki&gt;</span></span>"
+	},
+	{
+		"desc": "Fuzz testing: URL adjacent extension (no space, dirty; nowiki)",
+		"wikitext": "http://example.com<nowiki>junk</nowiki>",
+		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>junk\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">junk</span>&lt;/nowiki&gt;</span></span>"
 	},
 	{
 		"desc": "Fuzz testing: URL adjacent extension (no space, dirty; pre)",
@@ -2050,6 +2452,12 @@
 		"wikitext": "<b>Bold paragraph\n\nNew wiki paragraph",
 		"html": "<p><b>Bold paragraph\n</b></p><p><b>New wiki paragraph\n</b></p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;b&gt;</span>Bold paragraph\n\nNew wiki paragraph</span>"
+	},
+	{
+		"desc": "Mixing markup for italics and bold",
+		"wikitext": "'''bold''''''bold''bolditalics'''''",
+		"html": "<p>'<i>bold'</i><b>bold<i>bolditalics</i></b>\n</p>",
+		"print": "<span class=\"wpb-root\">'<span class=\"wpb-quote\">''</span>bold'<span class=\"wpb-quote\">'''''</span>bold<span class=\"wpb-quote\">''</span>bolditalics<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
 		"desc": "Special page transclusion",
@@ -2328,6 +2736,12 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;center&gt;</span>\nfoo\n<span class=\"wpb-html\">&lt;/center&gt;</span>\n\nbar\n\n baz</span>"
 	},
 	{
+		"desc": "Parsing of overlapping (improperly nested) inline html tags",
+		"wikitext": "<span><s>x</span></s>",
+		"html": "<p><span><s>x</s></span>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;s&gt;</span>x<span class=\"wpb-html\">&lt;/span&gt;</span><span class=\"wpb-html\">&lt;/s&gt;</span></span>"
+	},
+	{
 		"desc": "T2529: Uncovered bullet",
 		"wikitext": "*Foo {{bullet}}",
 		"html": "<ul><li>Foo</li>\n<li>Bar</li></ul>",
@@ -2464,6 +2878,18 @@
 		"wikitext": "{{padright:Hello-|7|Æ}}",
 		"html": "<p>Hello-Æ\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padright</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Hello-</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">7</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Æ</span></span>}}</span></span>"
+	},
+	{
+		"desc": "formatdate parser function",
+		"wikitext": "{{#formatdate:2009-03-24}}",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"2009-03-24\">2009-03-24</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"2009-03-24\" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:2009-03-24\",\"function\":\"formatdate\"},\"params\":{},\"i\":0}}]}'>2009-03-24</span></p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2009-03-24</span></span>}}</span></span>"
+	},
+	{
+		"desc": "formatdate parser function, with default format",
+		"wikitext": "{{#formatdate:2009-03-24|mdy}}",
+		"html": "<p><span class=\"mw-formatted-date\" title=\"2009-03-24\">March 24, 2009</span>\n</p>\n!! html/parsoid+integrated\n<p><span class=\"mw-formatted-date\" title=\"2009-03-24\" about=\"#mwt1\" typeof=\"mw:Transclusion\" data-parsoid='{\"stx\":\"html\",\"pi\":[[{\"k\":\"1\"}]]}' data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#formatdate:2009-03-24\",\"function\":\"formatdate\"},\"params\":{\"1\":{\"wt\":\"mdy\"}},\"i\":0}}]}'>March 24, 2009</span></p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2009-03-24</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">mdy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Spacing of numbers in formatted dates",
@@ -2622,16 +3048,64 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">quux</span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">id</span>=<span class=\"wpb-attr-value\">foo</span></span><span class=\"wpb-attr-dirty\"> | </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>='<span class=\"wpb-attr-value\">color: red</span>'</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
+		"desc": "Language parser function",
+		"wikitext": "{{#language:ar}}",
+		"html": "<p>العربية\n</p>\n!! html/parsoid+integrated\n<p><span about=\"#mwt1\" typeof=\"mw:Transclusion\" data-mw='{\"parts\":[{\"template\":{\"target\":{\"wt\":\"#language:ar\",\"function\":\"language\"},\"params\":{},\"i\":0}}]}'>العربية</span></p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#language</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ar</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Padleft and padright (default 0-padding)",
+		"wikitext": "{{padleft:xyz|5}}\n{{padright:xyz|5}}",
+		"html": "<p>00xyz\nxyz00\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padleft</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">xyz</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">5</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padright</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">xyz</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">5</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Padleft and padright (partial fill)",
+		"wikitext": "{{padleft:xyz|6|ab}}\n{{padright:xyz|6|ab}}",
+		"html": "<p>abaxyz\nxyzaba\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padleft</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">xyz</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">6</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ab</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padright</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">xyz</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">6</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ab</span></span>}}</span></span>"
+	},
+	{
+		"desc": "Padleft and padright as substr",
+		"wikitext": "{{padleft:|3|abcde}}\n{{padright:|3|abcde}}",
+		"html": "<p>abc\nabc\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padleft</span>:|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">3</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">abcde</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padright</span>:|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">3</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">abcde</span></span>}}</span></span>"
+	},
+	{
 		"desc": "Padleft and padright with non-numerical length (T180403)",
 		"wikitext": "{{padleft:abcdef|junk}}\n{{padright:abcdef|junk}}",
 		"html": "<p>abcdef\nabcdef\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padleft</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">abcdef</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">junk</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">padright</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">abcdef</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">junk</span></span>}}</span></span>"
 	},
 	{
+		"desc": "Special parser function",
+		"wikitext": "{{#special:RandomPage}}\n{{#special:BaDtItLe}}\n{{#special:Foobar}}",
+		"html": "<p>Special:Random\nSpecial:Badtitle\nSpecial:Foobar\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#special</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">RandomPage</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#special</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">BaDtItLe</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#special</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Foobar</span></span>}}</span></span>"
+	},
+	{
 		"desc": "Using {{=}} when it expands to \"=\" should not create a tracking category",
 		"wikitext": "This uses {{=}} and {{Template:=}}.",
 		"html": "<p>This uses = and =.\n</p>",
 		"print": "<span class=\"wpb-root\">This uses <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">=</span>}}</span> and <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template:=</span>}}</span>.</span>"
+	},
+	{
+		"desc": "T36939 - Case insensitive link parsing ([HttP://])",
+		"wikitext": "[HttP://MediaWiki.Org/]",
+		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"HttP://MediaWiki.Org/\">[1]</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">HttP://MediaWiki.Org/</span>]</span></span>"
+	},
+	{
+		"desc": "T36939 - Case insensitive link parsing ([HttP:// title])",
+		"wikitext": "[HttP://MediaWiki.Org/ MediaWiki]",
+		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"HttP://MediaWiki.Org/\">MediaWiki</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">HttP://MediaWiki.Org/</span> <span class=\"wpb-ext-link-text\">MediaWiki</span>]</span></span>"
+	},
+	{
+		"desc": "T36939 - Case insensitive link parsing (HttP://)",
+		"wikitext": "HttP://MediaWiki.Org/",
+		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"HttP://MediaWiki.Org/\">HttP://MediaWiki.Org/</a>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">HttP://MediaWiki.Org/</span></span>"
 	},
 	{
 		"desc": "\nTag-like HTML structures are passed through as text",
@@ -2652,16 +3126,76 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">&amp;amp;</span>\"</span></span>&gt;</span>foo<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
 	},
 	{
+		"desc": "Accept empty td cell attribute",
+		"wikitext": "{|\n| align=\"center\" |foo||  |\n|}",
+		"html": "<table>\n<tbody><tr>\n<td align=\"center\">foo</td>\n<td>\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">align</span>=\"<span class=\"wpb-attr-value\">center</span>\"</span><span class=\"wpb-attr-dirty\"> </span></span>|<span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\">  </span></span>|</span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Non-empty attributes in th-cells",
+		"wikitext": "{|\n!Foo!! style=\"color: red\" |Bar\n|}",
+		"html": "<table>\n<tbody><tr>\n<th>Foo</th>\n<th style=\"color: red\">Bar\n</th></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">Foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">!!</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color: red</span>\"</span><span class=\"wpb-attr-dirty\"> </span></span>|<span class=\"wpb-td-inner\">Bar</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Accept empty attributes in th-cells",
+		"wikitext": "{|\n!|foo!!|bar\n|}",
+		"html": "<table>\n<tbody><tr>\n<th>foo</th>\n<th>bar\n</th></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span>|<span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">!!</span>|<span class=\"wpb-td-inner\">bar</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Empty table rows go away",
+		"wikitext": "{|\n|Hello\n|there\n|- class=\"foo\"\n|-\n|}",
+		"html": "<table>\n<tbody><tr>\n<td>Hello\n</td>\n<td>there\n</td></tr>\n\n</tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">Hello</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">there</span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "RT-ed inter-element separators should be valid separators",
+		"wikitext": "{|\n|- [[foo]]\n|}",
+		"html": "<table>\n\n</table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> [[foo]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Empty TD followed by TD with tpl-generated attribute",
+		"wikitext": "{|\n|-\n|\n|{{1x|style='color:red'}}|foo\n|}",
+		"html": "<table>\n\n<tbody><tr>\n<td>\n</td>\n<td>foo\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">style</span>=<span class=\"wpb-parameter-value\">'color:red'</span></span>}}</span></span></span></span>|<span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Indented table with an empty td",
+		"wikitext": " {|\n |-\n |\n |foo\n |}",
+		"html": "<table>\n\n<tbody><tr>\n<td>\n</td>\n<td>foo\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+	},
+	{
 		"desc": "Indented table with blank lines in between (T85627)",
 		"wikitext": " {|\n |foo\n \n \n |}",
 		"html": "<table>\n<tbody><tr>\n<td>foo\n<p><br /> \n</p>\n</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"> <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo\n \n </span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
 	},
 	{
+		"desc": "Indented block & table",
+		"wikitext": " <div>foo</div>\n {|\n |foo\n |}",
+		"html": " <div>foo</div>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+	},
+	{
 		"desc": "Indent and comment before table row",
 		"wikitext": "{|\n <!--hi-->|-\n |there\n|}",
 		"html": "<table>\n\n<tbody><tr>\n<td>there\n</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n <span class=\"wpb-comment\">&lt;!--hi--&gt;</span>|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">there</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Empty TR followed by a template-generated TR",
+		"wikitext": "{|\n|-\n{{1x|<tr><td>foo</td></tr>}}\n|}",
+		"html": "<table>\n\n<tbody><tr><td>foo</td></tr>\n</tbody></table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Empty TR followed by mixed-ws-comment line should RT correctly",
+		"wikitext": "{|\n|-\n <!--c-->\n|-\n<!--c--> <!--d-->\n|}",
+		"html": "<table>\n\n\n</table>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n <span class=\"wpb-comment\">&lt;!--c--&gt;</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-comment\">&lt;!--c--&gt;</span> <span class=\"wpb-comment\">&lt;!--d--&gt;</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T72867: Don't block XML namespace declaration",
