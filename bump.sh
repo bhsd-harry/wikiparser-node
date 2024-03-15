@@ -7,7 +7,7 @@ then
 	git add -A
 	git commit -m "chore: publish v$1 to npm"
 else
-	npm run lint && npm run build && npm test && npm run test:real
+	npm run lint && npm run build && npm test && npm run test:parser && npm run test:real
 	if [[ $? -eq 0 ]]
 	then
 		git add -A
