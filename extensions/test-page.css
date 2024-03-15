@@ -104,7 +104,7 @@ pre {
 	color: #36b;
 }
 #frame a.external {
-	background-image: url('/wikiparser-node/assets/external-link.svg');
+	background-image: url("/wikiparser-node/assets/external-link.svg");
 	background-position: center right;
 	background-repeat: no-repeat;
 	background-size: 12px;
