@@ -31,10 +31,14 @@ export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
 export const text = (childNodes: readonly (string | AstNodes)[], separator = ''): string =>
 	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
+const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}'};
+
 /** decode HTML entities */
 export const decodeHtml = factory(
-	/&#(\d+|x[\da-f]+);/giu,
-	(_, code: string) => String.fromCodePoint(Number(`${/^x/iu.test(code) ? '0' : ''}${code}`)),
+	/&(?:#(\d+|x[\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]));/gu,
+	(_, code: string, name: string) => code
+		? String.fromCodePoint(Number(`${/^x/iu.test(code) ? '0' : ''}${code}`))
+		: names[name.toLowerCase() as keyof typeof names],
 );
 
 /** escape newlines */
