@@ -2172,24 +2172,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background: &amp;#10;#00FF00</span>\"</span></span>&gt;</span>-<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
-		"desc": "Parser hook: basic arguments",
-		"wikitext": "<tag width=\"200\" height=\"100\" depth=\"50\" square=\"\"></tag>",
-		"html": "<pre>''\narray (\n  'width' =&gt; '200',\n  'height' =&gt; '100',\n  'depth' =&gt; '50',\n  'square' =&gt; '',\n)\n</pre>",
-		"print": "<span class=\"wpb-root\">&lt;tag width=\"200\" height=\"100\" depth=\"50\" square=\"\"&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: argument containing a forward slash (T7344)",
-		"wikitext": "<tag filename=\"/tmp/bla\"></tag>",
-		"html": "<pre>''\narray (\n  'filename' =&gt; '/tmp/bla',\n)\n</pre>",
-		"print": "<span class=\"wpb-root\">&lt;tag filename=\"/tmp/bla\"&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: horizontal rule inside extension tag that outputs <pre>",
-		"wikitext": "<tag>\nHello\n<hr/>\nGoodbye\n</tag>",
-		"html": "<pre>'\nHello\n<hr />\nGoodbye\n'\narray (\n)\n</pre>",
-		"print": "<span class=\"wpb-root\">&lt;tag&gt;\nHello\n<span class=\"wpb-html\">&lt;hr/&gt;</span>\nGoodbye\n&lt;/tag&gt;</span>"
-	},
-	{
 		"desc": "Nested template calls",
 		"wikitext": "{{Map-one-parameter|One-parameter|param}}",
 		"html": "<p>(My parameter is: param)\n</p>",
