@@ -88,8 +88,7 @@ export class Title {
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(title || this.interwiki || selfLink && ns === 0 && this.fragment !== undefined)
-			&& !/^:|\0\d+[eh!+-]\x7F|[^\w\x80-\xFF %!"$&'()*,./:;=?@\\^`~+-]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu
-				.test(title);
+			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(title);
 		this.main = title;
 		Object.defineProperties(this, {
 			encoded: {enumerable: false, writable: false},
