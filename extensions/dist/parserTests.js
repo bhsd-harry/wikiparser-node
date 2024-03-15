@@ -1,7 +1,12 @@
 (() => {
+"use strict";
 (async () => {
-    const tests = await (await fetch('./test/parserTests.json')).json(), config = await (await fetch('./config/default.json')).json(), select = document.querySelector('select'), pre = document.querySelector('pre'), container = document.getElementById('frame'), seen = new Set();
-    wikiparse.setConfig(config);
+    const tests = await (await fetch('./test/parserTests.json')).json(), select = document.querySelector('select'), pre = document.querySelector('pre'), container = document.getElementById('frame'), seen = new Set();
+    Parser.config = await (await fetch('./config/default.json')).json();
+    wikiparse.print = (wikitext, include, stage) => {
+        const printed = Parser.parse(wikitext, include, stage).print();
+        return Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, printed]]);
+    };
     wikiparse.highlight(pre, false, true);
     select.append(...tests.map(({ desc }, i) => {
         const option = document.createElement('option');

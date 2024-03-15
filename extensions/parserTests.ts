@@ -1,5 +1,3 @@
-import type {Config} from './typings';
-
 declare interface Test {
 	desc: string;
 	wikitext: string;
@@ -8,12 +6,16 @@ declare interface Test {
 
 (async () => {
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
-		config: Config = await (await fetch('./config/default.json')).json(),
 		select = document.querySelector('select')!,
 		pre = document.querySelector('pre')!,
 		container = document.getElementById('frame')!,
 		seen = new Set<string>();
-	wikiparse.setConfig(config);
+	Parser.config = await (await fetch('./config/default.json')).json();
+	/** @implements */
+	wikiparse.print = (wikitext, include, stage): Promise<[number, string, string][]> => {
+		const printed = Parser.parse(wikitext, include, stage).print();
+		return Promise.resolve([[stage ?? Infinity, wikitext, printed]]);
+	};
 	wikiparse.highlight!(pre, false, true);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	select.append(...tests.map(({desc}, i) => {
