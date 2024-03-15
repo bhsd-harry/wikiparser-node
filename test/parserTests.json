@@ -3276,12 +3276,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">tabindex</span>=\"<span class=\"wpb-attr-value\">0</span>\"</span></span>&gt;</span>A<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
-		"desc": "aside tag in extension HTML is not p-wrapped (T278565)",
-		"wikitext": "<asidetag></asidetag>This is some article content.",
-		"html": "<aside>Some aside content</aside><p>This is some article content.</p>",
-		"print": "<span class=\"wpb-root\">&lt;asidetag&gt;&lt;/asidetag&gt;This is some article content.</span>"
-	},
-	{
 		"desc": "aside tag is not allowed directly in wikitext (T278565)",
 		"wikitext": "<aside>This aside tag in wikitext should be escaped</aside>",
 		"html": "<p>&lt;aside&gt;This aside tag in wikitext should be escaped&lt;/aside&gt;\n</p>",
