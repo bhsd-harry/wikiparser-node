@@ -1,7 +1,6 @@
 import {
 	removeComment,
 	text,
-	decodeHtml,
 	print,
 
 	/* NOT FOR BROWSER */
@@ -154,8 +153,8 @@ export abstract class TranscludeToken extends Token {
 			}
 		}
 		if (this.type === 'template') {
-			const name = removeComment(decodeHtml(title)).split('#')[0]!.trim();
-			if (!name || /^:[\s_]*:|\0\d+[eh!+-]\x7F|[<>[\]{}\n]|%[\da-f]{2}/iu.test(name)) {
+			const name = removeComment(title).trim();
+			if (!this.normalizeTitle(name, 10, true).valid) {
 				accum.pop();
 
 				/* NOT FOR BROWSER */
