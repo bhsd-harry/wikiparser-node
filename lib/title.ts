@@ -8,6 +8,12 @@ import {
 import {classes} from '../util/constants';
 import Parser from '../index';
 
+/**
+ * PHP的`rawurldecode`函数的JavaScript实现
+ * @param str 要解码的字符串
+ */
+const rawurldecode = (str: string): string => decodeURIComponent(str.replace(/%(?![\da-f]{2})/giu, '%25'));
+
 /** MediaWiki页面标题对象 */
 export class Title {
 	#main: string;
@@ -97,7 +103,7 @@ export class Title {
 		if (decode && title.includes('%')) {
 			try {
 				const encoded = /%(?!21|3[ce]|5[bd]|7[b-d])[\da-f]{2}/iu.test(title);
-				title = decodeURIComponent(title);
+				title = rawurldecode(title);
 				this.encoded = encoded;
 			} catch {}
 		}
@@ -132,7 +138,7 @@ export class Title {
 			let fragment = title.slice(i + 1).trimEnd();
 			if (fragment.includes('%')) {
 				try {
-					fragment = decodeURIComponent(fragment);
+					fragment = rawurldecode(fragment);
 				} catch {}
 			}
 			this.fragment = fragment;
