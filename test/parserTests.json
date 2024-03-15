@@ -2211,7 +2211,7 @@
 		"desc": "Sanitizer: angle brackets are invalid, even in interwiki links (T182338)",
 		"wikitext": "[[meatball:Foo<Bar]]\n[[meatball:Foo>Bar]]\n[[meatball:Foo&lt;bar]]\n[[meatball:Foo&gt;bar]]",
 		"html": "<p>[[meatball:Foo&lt;Bar]]\n[[meatball:Foo&gt;Bar]]\n[[meatball:Foo&lt;bar]]\n[[meatball:Foo&gt;bar]]\n</p>",
-		"print": "<span class=\"wpb-root\">[[meatball:Foo&lt;Bar]]\n[[meatball:Foo&gt;Bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:Foo&amp;lt;bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:Foo&amp;gt;bar</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\">[[meatball:Foo&lt;Bar]]\n[[meatball:Foo&gt;Bar]]\n[[meatball:Foo&amp;lt;bar]]\n[[meatball:Foo&amp;gt;bar]]</span>"
 	},
 	{
 		"desc": "Self closed html pairs (T7487)",
