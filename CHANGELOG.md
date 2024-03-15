@@ -1,11 +1,12 @@
 ## v1.6.2
 
-*2024-03-14*
+*2024-03-15*
 
 **Fixed**
 
 - Mimic the structure of CSS compound selectors
 - Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) tag attributes
+- Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
 
 **Changed**
 

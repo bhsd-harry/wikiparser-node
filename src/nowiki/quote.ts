@@ -9,7 +9,7 @@ import type {
 } from '../../base';
 
 /** `''`和`'''` */
-@syntax(/^(?:'{5}|'''?)$/u)
+@syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
 	override readonly type = 'quote';
 
