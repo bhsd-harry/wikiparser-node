@@ -41,7 +41,7 @@ article {
 	width: 100%;
 	padding: 1rem 2rem 2rem;
 }
-article > h2 {
+h2 {
 	font-size: var(--font-size-h2);
 	margin: .5rem 0;
 	font-weight: bold;
@@ -148,37 +148,37 @@ textarea {
 	overflow: auto;
 	padding: 0 .5rem;
 }
-#ast dt {
+dt {
 	color: #2b91af;
 	cursor: pointer;
 	white-space: nowrap;
 }
-#ast dt:hover {
+dt:hover {
 	color: #1b43d4;
 	text-decoration: underline;
 }
-#ast dt::before {
+dt::before {
 	content: "-";
 	font-family: monospace;
 	display: inline-block;
 	width: 1em;
 }
-#ast dt.inactive::before {
+dt.inactive::before {
 	content: "+";
 }
-#ast dd {
+dd {
 	margin-left: 1em;
 	color: #d00;
 	white-space: nowrap;
 }
-#ast dt.inactive ~ *,
-#ast dt:not(.inactive) > :nth-child(n+2) {
+dt.inactive ~ *,
+dt:not(.inactive) > :nth-child(n+2) {
 	display: none;
 }
-#ast dl > span, #ast dt > span {
+dl > span, dt > span { /* stylelint-disable-line no-descending-specificity */
 	color: initial;
 }
-#ast dt > :nth-child(2) {
+dt > :nth-child(2) {
 	color: #080;
 }
 .string {
@@ -195,26 +195,17 @@ textarea {
 span.hover {
 	background-color: rgba(108, 108, 108, .2);
 }
-#ast dl.hover {
+dl.hover {
 	background-color: rgba(108, 108, 108, .1);
 }
 
-.tabcontent h3 {
+h3 {
 	margin: .5rem 0;
 	font-size: var(--font-size-h3);
 	font-weight: bold;
 }
-pre.highlight span { /* stylelint-disable-line no-descending-specificity */
+pre.highlight span {
 	font-weight: normal;
-}
-
-select {
-	text-align: center;
-	font-size: 1em;
-}
-.tests {
-	padding: 4px 6px;
-	line-height: 1.3;
 }
 
 @media screen and (min-width: 1200px) {

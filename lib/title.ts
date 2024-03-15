@@ -46,6 +46,8 @@ export class Title {
 	}
 
 	/**
+	 * @see MediaWikiTitleCodec::splitTitleString
+	 *
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param decode 是否需要解码
@@ -86,8 +88,8 @@ export class Title {
 			this.fragment = fragment;
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || this.interwiki || selfLink && this.fragment !== undefined)
-			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}/iu.test(title);
+		this.valid = Boolean(title || this.interwiki || selfLink && ns === 0 && this.fragment !== undefined)
+			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(title);
 		this.main = title;
 		Object.defineProperties(this, {
 			encoded: {enumerable: false, writable: false},

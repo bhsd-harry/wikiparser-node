@@ -1,7 +1,16 @@
+declare interface Test {
+	desc: string;
+	wikitext: string;
+	html: string;
+}
+
 (async () => {
-	const tests: {desc: string, print: string, html: string}[] = await (await fetch('./test/parserTests.json')).json(),
+	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
 		select = document.querySelector('select')!,
-		container = document.querySelector('.tab')!;
+		pre = document.querySelector('pre')!,
+		container = document.getElementById('frame')!,
+		seen = new Set<string>();
+	wikiparse.highlight!(pre, false, true);
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	select.append(...tests.map(({desc}, i) => {
 		const option = document.createElement('option');
@@ -9,20 +18,52 @@
 		option.textContent = desc;
 		return option;
 	}));
+
+	/**
+	 * Find unique tags in the HTML
+	 * @param html The HTML content
+	 */
+	const findUnique = (html: string): Set<string> => {
+		const temp = new Set<string>();
+		for (const ele of html.match(/<\w.*?>/gu) ?? []) {
+			const mt = /<(\w+(?=[\s/>]))(?:.*(\sclass="[^"]+"))?/u.exec(ele)!,
+				tag = `<${mt[1]}${mt[2] ?? ''}>`;
+			if (!seen.has(tag)) {
+				temp.add(tag);
+			}
+		}
+		return temp;
+	};
 	select.addEventListener('change', () => {
-		container.innerHTML = '';
-		const {print, html} = tests[Number(select.value)]!;
-		const pre = document.createElement('pre');
-		pre.className = 'wikiparser tests';
-		pre.innerHTML = print;
-		container.prepend(pre);
-		const section = document.createElement('div');
-		section.className = 'tests';
-		section.innerHTML = html;
-		container.append(section);
+		const {wikitext, html} = tests[Number(select.value)]!;
+		pre.textContent = wikitext;
+		pre.classList.remove('wikiparser');
+		container.innerHTML = html;
+		wikiparse.highlight!(pre, false, true);
 		select.selectedOptions[0]!.disabled = true;
+		const tags = findUnique(html);
+		console.info(tags);
+		for (const tag of tags) {
+			seen.add(tag);
+		}
 	});
 	container.addEventListener('click', e => {
 		e.preventDefault();
 	}, {capture: true});
+	document.body.addEventListener('keydown', e => {
+		if (e.metaKey && e.key === 'ArrowDown') {
+			e.preventDefault();
+			const {selectedIndex, options} = select;
+			for (let i = selectedIndex + 1; i < options.length; i++) {
+				if (!options[i]!.disabled) {
+					const tags = findUnique(tests[i - 1]!.html);
+					if (tags.size > 0) {
+						select.selectedIndex = i;
+						select.dispatchEvent(new Event('change'));
+						break;
+					}
+				}
+			}
+		}
+	});
 })();

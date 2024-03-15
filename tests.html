@@ -4,19 +4,22 @@
 		<title>Tests: WikiParser-Node</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0, width=device-width">
-		<link rel="stylesheet" href="extensions/gh-page.css">
+		<link rel="stylesheet" href="extensions/test-page.css">
 		<link rel="stylesheet" href="extensions/ui.css">
-		<script src="extensions/dist/parserTests.js"></script>
+		<script defer="" src="extensions/dist/base.js"></script>
+		<script defer="" src="extensions/dist/highlight.js"></script>
+		<script defer="" src="extensions/dist/parserTests.js"></script>
 	</head>
-	<body style="font-size:15px">
+	<body>
 		<main>
 			<article>
-				<div style="text-align:center">
-					<select class="tests">
+				<div class="field">
+					<select>
 						<option value="" disabled selected>Please select tests</option>
 					</select>
 				</div>
-				<div class="tab" style="font-family:monospace"></div>
+				<pre></pre>
+				<div id="frame"></div>
 			</article>
 		</main>
 	</body>
