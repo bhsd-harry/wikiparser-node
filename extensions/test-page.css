@@ -103,6 +103,13 @@ pre {
 #frame a.external, #frame a.extiw {
 	color: #36b;
 }
+#frame a.external {
+	background-image: url('/wikiparser-node/assets/external-link.svg');
+	background-position: center right;
+	background-repeat: no-repeat;
+	background-size: 12px;
+	padding-right: 1em;
+}
 #frame a.external.free {
 	word-break: break-all;
 }
