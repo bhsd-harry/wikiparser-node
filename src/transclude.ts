@@ -435,7 +435,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param exact 是否匹配匿名性
 	 * @param copy 是否返回一个备份
 	 */
-	getArgs(key: string | number, exact = false, copy = true): Set<ParameterToken> {
+	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
 		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args: Set<ParameterToken>;
 		if (this.#args.has(keyStr)) {
@@ -576,7 +576,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param key 参数名
 	 * @param exact 是否匹配匿名性
 	 */
-	hasArg(key: string | number, exact = false): boolean {
+	hasArg(key: string | number, exact?: boolean): boolean {
 		return this.getArgs(key, exact, false).size > 0;
 	}
 
@@ -585,7 +585,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param key 参数名
 	 * @param exact 是否匹配匿名性
 	 */
-	getArg(key: string | number, exact = false): ParameterToken | undefined {
+	getArg(key: string | number, exact?: boolean): ParameterToken | undefined {
 		const args = [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b));
 		return args[args.length - 1];
 	}
@@ -595,7 +595,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param key 参数名
 	 * @param exact 是否匹配匿名性
 	 */
-	removeArg(key: string | number, exact = false): void {
+	removeArg(key: string | number, exact?: boolean): void {
 		Shadow.run(() => {
 			for (const token of this.getArgs(key, exact, false)) {
 				this.removeChild(token);
@@ -768,7 +768,7 @@ export abstract class TranscludeToken extends Token {
 	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数。
 	 * @param aggressive 是否使用有更大风险的修复手段
 	 */
-	fixDuplication(aggressive = false): string[] {
+	fixDuplication(aggressive?: boolean): string[] {
 		if (!this.hasDuplicatedArgs()) {
 			return [];
 		}

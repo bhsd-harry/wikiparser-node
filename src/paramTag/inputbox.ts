@@ -8,10 +8,11 @@ import type {Token} from '../index';
 export abstract class InputboxToken extends ParamTagToken {
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
-		const placeholder = Symbol('InputboxToken');
+		const placeholder = Symbol('InputboxToken'),
+			{length} = accum;
 		accum.push(placeholder as unknown as Token);
 		wikitext &&= parseBraces(wikitext, config, accum);
-		accum.splice(accum.indexOf(placeholder as unknown as Token), 1);
+		accum.splice(length, 1);
 		super(wikitext, config, accum, {
 			ArgToken: ':', TranscludeToken: ':',
 		});

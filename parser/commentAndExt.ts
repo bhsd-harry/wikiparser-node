@@ -1,10 +1,10 @@
 import {parsers} from '../util/constants';
-import Parser from '../index';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';
 import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
+import type {Config} from '../base';
 import type {Token} from '../src/index';
 
 /**
@@ -14,12 +14,7 @@ import type {Token} from '../src/index';
  * @param accum
  * @param includeOnly 是否嵌入
  */
-export const parseCommentAndExt = (
-	wikitext: string,
-	config = Parser.getConfig(),
-	accum: Token[] = [],
-	includeOnly = false,
-): string => {
+export const parseCommentAndExt = (wikitext: string, config: Config, accum: Token[], includeOnly: boolean): string => {
 	const onlyincludeLeft = '<onlyinclude>',
 		onlyincludeRight = '</onlyinclude>',
 		{length} = onlyincludeLeft;

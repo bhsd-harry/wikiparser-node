@@ -1,9 +1,9 @@
 import {removeComment} from '../util/string';
 import {parsers} from '../util/constants';
-import Parser from '../index';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';
+import type {Config} from '../base';
 import type {Token} from '../src/index';
 
 /**
@@ -13,7 +13,7 @@ import type {Token} from '../src/index';
  * @param accum
  * @throws TranscludeToken.constructor()
  */
-export const parseBraces = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [],

@@ -7,6 +7,7 @@ import {
 } from '../util/string';
 import {classes} from '../util/constants';
 import Parser from '../index';
+import type {Config} from '../base';
 
 /**
  * PHP的`rawurldecode`函数的JavaScript实现
@@ -98,7 +99,7 @@ export class Title {
 	 * @param decode 是否需要解码
 	 * @param selfLink 是否允许selfLink
 	 */
-	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
+	constructor(title: string, defaultNs: number, config: Config, decode: boolean, selfLink: boolean) {
 		const subpage = title.trim().startsWith('../');
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {

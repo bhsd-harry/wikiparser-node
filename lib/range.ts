@@ -253,7 +253,7 @@ export class AstRange {
 	 * 使起始和终止位置重合
 	 * @param toStart 重合至起始位置
 	 */
-	collapse(toStart = false): void {
+	collapse(toStart?: boolean): void {
 		if (toStart) {
 			this.#endContainer = this.startContainer;
 			this.#endOffset = this.startOffset;

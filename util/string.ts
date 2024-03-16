@@ -65,7 +65,7 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
  * convert newline in text nodes to single whitespace
  * @param token 父节点
  */
-export const normalizeSpace = (token?: AstNodes): void => {
+export const normalizeSpace = (token: AstNodes | undefined): void => {
 	if (token) {
 		for (const child of token.childNodes) {
 			if (child.type === 'text') {

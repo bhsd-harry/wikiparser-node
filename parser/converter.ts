@@ -1,6 +1,6 @@
 import {parsers} from '../util/constants';
-import Parser from '../index';
 import {ConverterToken} from '../src/converter';
+import type {Config} from '../base';
 import type {Token} from '../src/index';
 
 /**
@@ -9,7 +9,7 @@ import type {Token} from '../src/index';
  * @param config
  * @param accum
  */
-export const parseConverter = (text: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseConverter = (text: string, config: Config, accum: Token[]): string => {
 	const regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
 		stack: RegExpExecArray[] = [];

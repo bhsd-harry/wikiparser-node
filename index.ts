@@ -94,6 +94,8 @@ const rootRequire = (file: string, dir: string): unknown => require(
 	file.startsWith('/') ? file : `../${file.includes('/') ? '' : dir}${file}`,
 );
 
+const promises = [Promise.resolve()];
+
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
 	config: 'default',
@@ -148,9 +150,9 @@ const Parser: Parser = {
 	normalizeTitle(
 		title,
 		defaultNs = 0,
-		include = false,
+		include?: boolean,
 		config = Parser.getConfig(),
-		halfParsed = false,
+		halfParsed?: boolean,
 		decode = false,
 		selfLink = false,
 	) {
@@ -215,8 +217,12 @@ const Parser: Parser = {
 			}
 			if (restored !== wikitext) {
 				const {diff}: typeof import('./util/diff') = require('./util/diff');
-				this.error(`Original wikitext is altered when ${process}!`);
-				void diff(wikitext, restored);
+				const {0: cur, length} = promises;
+				promises.unshift((async (): Promise<void> => {
+					await cur;
+					this.error(`Original wikitext is altered when ${process}!`);
+					return diff(wikitext, restored, length);
+				})());
 			}
 		}
 

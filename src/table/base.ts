@@ -104,7 +104,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	}
 
 	/** @private */
-	setSyntax(syntax: string, esc = false): void {
+	setSyntax(syntax: string, esc?: boolean): void {
 		const {firstChild} = this;
 		firstChild.replaceChildren(syntax);
 		if (esc) {

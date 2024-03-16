@@ -161,7 +161,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax 表格结尾语法
 	 * @param halfParsed
 	 */
-	close(syntax = '\n|}', halfParsed = false): void {
+	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
@@ -278,7 +278,7 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
 	getNthRow(n: number, force: boolean, insert: true): TrToken | this | SyntaxToken | undefined;
-	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
+	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
 		const isRow = super.getRowCount();
 
 		/* NOT FOR BROWSER */
@@ -407,7 +407,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 * @param multiRow 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
-	formatTableRow(y: number, attr: TdAttrs | string = {}, multiRow = false): void {
+	formatTableRow(y: number, attr: TdAttrs | string = {}, multiRow?: boolean): void {
 		require('../../addon/table');
 		this.formatTableRow(y, attr, multiRow);
 	}
@@ -418,7 +418,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 * @param multiCol 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
-	formatTableCol(x: number, attr: TdAttrs | string = {}, multiCol = false): void {
+	formatTableCol(x: number, attr: TdAttrs | string = {}, multiCol?: boolean): void {
 		require('../../addon/table');
 		this.formatTableCol(x, attr, multiCol);
 	}

@@ -325,7 +325,7 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override setSyntax(syntax: string, esc = false): void {
+	override setSyntax(syntax: string, esc?: boolean): void {
 		const aliases: Record<string, string> = {td: '\n|', th: '\n!', caption: '\n|+'};
 		super.setSyntax(aliases[syntax] ?? syntax, esc);
 	}
@@ -418,7 +418,7 @@ export const createTd = (
 	inner: string | Token,
 	subtype: TdSubtypes = 'td',
 	attr: TdAttrs = {},
-	include = false,
+	include?: boolean,
 	config = Parser.getConfig(),
 ): TdToken => {
 	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,

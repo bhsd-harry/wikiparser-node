@@ -216,7 +216,7 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	getTitle(halfParsed = false): Title {
+	getTitle(halfParsed?: boolean): Title {
 		return this.normalizeTitle(this.firstChild.text(), 0, halfParsed, true, true);
 	}
 

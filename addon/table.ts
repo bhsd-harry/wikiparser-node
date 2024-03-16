@@ -35,7 +35,7 @@ const cmpCoords = (coords1: TableCoords, coords2: TableCoords): number => {
  * @param i 单元格序号
  * @param oneCol 是否仅有一列
  */
-const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false): boolean => {
+const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol?: boolean): boolean => {
 	const coords = rowLayout[i];
 	return rowLayout[i - 1] !== coords && (!oneCol || rowLayout[i + 1] !== coords);
 };
@@ -49,7 +49,7 @@ const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol = false
  */
 function occupied(layout: Layout, i: number, oneRow: true, cells: readonly TdToken[]): number[];
 function occupied(layout: Layout, i: number): number[];
-function occupied(layout: Layout, i: number, oneRow = false, cells?: readonly TdToken[]): number[] {
+function occupied(layout: Layout, i: number, oneRow?: boolean, cells?: readonly TdToken[]): number[] {
 	const rowLayout = layout[i];
 	if (rowLayout) {
 		return rowLayout.map(
@@ -65,7 +65,7 @@ function occupied(layout: Layout, i: number, oneRow = false, cells?: readonly Td
  * @param attr 属性
  * @param multi 是否对所有单元格设置，或是仅对行首单元格设置
  */
-const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | string = {}, multi = false): void => {
+const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | string = {}, multi?: boolean): void => {
 	for (const [token, start] of cells) {
 		if (multi || start) {
 			if (typeof attr === 'string') {
@@ -148,13 +148,13 @@ TableToken.prototype.getFullCol =
 
 TableToken.prototype.formatTableRow =
 	/** @implements */
-	function(y: number, attr: TdAttrs | string = {}, multiRow = false): void {
+	function(y: number, attr: TdAttrs | string = {}, multiRow?: boolean): void {
 		format(this.getFullRow(y), attr, multiRow);
 	};
 
 TableToken.prototype.formatTableCol =
 	/** @implements */
-	function(x: number, attr: TdAttrs | string = {}, multiCol = false): void {
+	function(x: number, attr: TdAttrs | string = {}, multiCol?: boolean): void {
 		format(this.getFullCol(x), attr, multiCol);
 	};
 

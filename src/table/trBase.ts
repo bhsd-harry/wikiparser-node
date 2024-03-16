@@ -80,7 +80,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 */
 	getNthCol(n: number, insert?: false): TdToken | undefined;
 	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
-	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
+	getNthCol(n: number, insert?: boolean): TdToken | TrToken | SyntaxToken | undefined {
 		/* NOT FOR BROWSER */
 
 		const nCols = this.getColCount();

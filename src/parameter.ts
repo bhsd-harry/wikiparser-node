@@ -236,7 +236,7 @@ export abstract class ParameterToken extends Token {
 	 * @throws `Error` 仅用于模板参数
 	 * @throws `RangeError` 更名造成重复参数
 	 */
-	rename(key: string, force = false): void {
+	rename(key: string, force?: boolean): void {
 		const {parentNode, anon} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {

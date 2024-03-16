@@ -52,12 +52,13 @@ export abstract class GalleryImageToken extends FileToken {
 	) {
 		let token: Token | undefined;
 		if (text !== undefined) {
+			const {length} = accum;
 			token = new Token(text, config, accum);
 			token.type = 'plain';
 			for (let n = 1; n < MAX_STAGE; n++) {
 				token.parseOnce();
 			}
-			accum.splice(accum.indexOf(token), 1);
+			accum.splice(length, 1);
 		}
 		super(link, token?.toString(), config, accum);
 		this.setAttribute('bracket', false);
