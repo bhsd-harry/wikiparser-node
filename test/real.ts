@@ -35,17 +35,35 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 	})).filter((page): page is SimplePage => page.content !== false);
 
 (async () => {
+	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：`);
 		Parser.config = require(`../../config/${config}`);
 		try {
 			/* eslint-disable no-await-in-loop */
+			let failed = 0;
 			for (const page of await getPages(`${url}/api.php`)) {
-				await single(Parser, page);
+				try {
+					await single(Parser, page);
+				} catch (e) {
+					error(`解析 ${page.title} 页面时出错！`, e);
+					failed++;
+				}
+			}
+			if (failed) {
+				failures.set(name, failed);
 			}
 			/* eslint-enable no-await-in-loop */
 		} catch (e) {
 			error(`访问${name}的API端口时出错！`, e);
 		}
+	}
+	if (failures.size > 0) {
+		let total = 0;
+		for (const [name, failed] of failures) {
+			error(`${name}：${failed} 个页面解析失败！`);
+			total += failed;
+		}
+		throw new Error(`共有 ${total} 个页面解析失败！`);
 	}
 })();
