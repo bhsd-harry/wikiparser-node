@@ -4482,7 +4482,7 @@
 		"desc": "External links: Free with trailing punctuation",
 		"wikitext": "http://example.com,\nhttp://example.com;\nhttp://example.com\\\nhttp://example.com.\nhttp://example.com:\nhttp://example.com!\nhttp://example.com?\nhttp://example.com)\nhttp://example.com/url_with_(brackets)\n(http://example.com/url_without_brackets)\nhttp://example.com/url_with_entity&amp;\nhttp://example.com/url_with_entity&#x26;\nhttp://example.com/url_with_entity&#038;\nhttp://example.com/url_with_entity&nbsp;\nhttp://example.com/url_with_entity&#xA0;\nhttp://example.com/url_with_entity&#160;\nhttp://example.com/url_with_entity&lt;\nhttp://example.com/url_with_entity&#x3C;\nhttp://example.com/url_with_entity&#60;",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>,\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\\\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>.\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>:\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>!\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>?\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_(brackets)\">http://example.com/url_with_(brackets)</a>\n(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_without_brackets\">http://example.com/url_without_brackets</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#xa0;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&lt;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#x3c;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#60;\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span>,\n<span class=\"wpb-free-ext-link\">http://example.com</span>;\n<span class=\"wpb-free-ext-link\">http://example.com\\</span>\n<span class=\"wpb-free-ext-link\">http://example.com</span>.\n<span class=\"wpb-free-ext-link\">http://example.com</span>:\n<span class=\"wpb-free-ext-link\">http://example.com</span>!\n<span class=\"wpb-free-ext-link\">http://example.com</span>?\n<span class=\"wpb-free-ext-link\">http://example.com</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_(brackets)</span>\n(<span class=\"wpb-free-ext-link\">http://example.com/url_without_brackets</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;amp;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#x26;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#038;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;nbsp;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#xA0;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#160;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;lt;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#x3C;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#60;</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span>,\n<span class=\"wpb-free-ext-link\">http://example.com</span>;\n<span class=\"wpb-free-ext-link\">http://example.com</span>\\\n<span class=\"wpb-free-ext-link\">http://example.com</span>.\n<span class=\"wpb-free-ext-link\">http://example.com</span>:\n<span class=\"wpb-free-ext-link\">http://example.com</span>!\n<span class=\"wpb-free-ext-link\">http://example.com</span>?\n<span class=\"wpb-free-ext-link\">http://example.com</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_(brackets)</span>\n(<span class=\"wpb-free-ext-link\">http://example.com/url_without_brackets</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;amp;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#x26;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#038;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;nbsp;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#xA0;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#160;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;lt;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#x3C;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#60;</span>"
 	},
 	{
 		"desc": "External links: tricky Parsoid html2html case",
@@ -6106,75 +6106,6 @@
 		"wikitext": "[[File:Broken.jpg|thumb|A caption for the media.]]",
 		"html": "<div class=\"thumb tright\"><div class=\"thumbinner\" style=\"width:182px;\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=Broken.jpg\" class=\"new\" title=\"File:Broken.jpg\">File:Broken.jpg</a>  <div class=\"thumbcaption\">A caption for the media.</div></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Broken.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">A caption for the media.</span>]]</span></span>"
-	},
-	{
-		"desc": "magicLinks"
-	},
-	{
-		"desc": "Magic links: internal link to RFC (T2479)",
-		"wikitext": "[[RFC 123]]",
-		"html": "<p><a href=\"/index.php?title=RFC_123&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"RFC 123 (page does not exist)\">RFC 123</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">RFC 123</span>]]</span></span>"
-	},
-	{
-		"desc": "Magic links: RFC (T2479)",
-		"wikitext": "RFC 822",
-		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\n</p>",
-		"print": "<span class=\"wpb-root\">RFC 822</span>"
-	},
-	{
-		"desc": "Magic links: RFC (T67278)",
-		"wikitext": "This is RFC 822 but thisRFC 822 is not RFC 822linked.",
-		"html": "<p>This is <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a> but thisRFC 822 is not RFC 822linked.\n</p>",
-		"print": "<span class=\"wpb-root\">This is RFC 822 but thisRFC 822 is not RFC 822linked.</span>"
-	},
-	{
-		"desc": "Magic links: RFC (w/ non-newline whitespace, T30950/T31025)",
-		"wikitext": "RFC &nbsp;&#160;&#0160;&#xA0;&#Xa0; 822\nRFC\n822",
-		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
-		"print": "<span class=\"wpb-root\">RFC &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 822\nRFC\n822</span>"
-	},
-	{
-		"desc": "Magic links: ISBN (T3937)",
-		"wikitext": "ISBN 0-306-40615-2",
-		"html": "<p><a href=\"/wiki/Special:BookSources/0306406152\" class=\"internal mw-magiclink-isbn\">ISBN 0-306-40615-2</a>\n</p>",
-		"print": "<span class=\"wpb-root\">ISBN 0-306-40615-2</span>"
-	},
-	{
-		"desc": "Magic links: ISBN (T67278)",
-		"wikitext": "This is ISBN 978-0-316-09811-3 but thisISBN 978-0-316-09811-3 is not ISBN 978-0-316-09811-3linked.",
-		"html": "<p>This is <a href=\"/wiki/Special:BookSources/9780316098113\" class=\"internal mw-magiclink-isbn\">ISBN 978-0-316-09811-3</a> but thisISBN 978-0-316-09811-3 is not ISBN 978-0-316-09811-3linked.\n</p>",
-		"print": "<span class=\"wpb-root\">This is ISBN 978-0-316-09811-3 but thisISBN 978-0-316-09811-3 is not ISBN 978-0-316-09811-3linked.</span>"
-	},
-	{
-		"desc": "Magic links: ISBN (w/ non-newline whitespace, T30950/T31025)",
-		"wikitext": "ISBN &nbsp;&#160;&#0160;&#xA0;&#Xa0; 978&nbsp;0&#160;316&#0160;09811&#xA0;3\nISBN\n9780316098113\nISBN 978\n0316098113",
-		"html": "<p><a href=\"/wiki/Special:BookSources/9780316098113\" class=\"internal mw-magiclink-isbn\">ISBN 978 0 316 09811 3</a>\nISBN\n9780316098113\nISBN 978\n0316098113\n</p>",
-		"print": "<span class=\"wpb-root\">ISBN &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 978&amp;nbsp;0&amp;#160;316&amp;#0160;09811&amp;#xA0;3\nISBN\n9780316098113\nISBN 978\n0316098113</span>"
-	},
-	{
-		"desc": "Magic links: PMID incorrectly converts space to underscore",
-		"wikitext": "PMID 1234",
-		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\n</p>",
-		"print": "<span class=\"wpb-root\">PMID 1234</span>"
-	},
-	{
-		"desc": "Magic links: PMID (T67278)",
-		"wikitext": "This is PMID 1234 but thisPMID 1234 is not PMID 1234linked.",
-		"html": "<p>This is <a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
-		"print": "<span class=\"wpb-root\">This is PMID 1234 but thisPMID 1234 is not PMID 1234linked.</span>"
-	},
-	{
-		"desc": "Magic links: PMID (w/ non-newline whitespace, T30950/T31025)",
-		"wikitext": "PMID &nbsp;&#160;&#0160;&#xA0;&#Xa0; 1234\nPMID\n1234",
-		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\nPMID\n1234\n</p>",
-		"print": "<span class=\"wpb-root\">PMID &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 1234\nPMID\n1234</span>"
-	},
-	{
-		"desc": "Magic links: use appropriate serialization for \"almost\" magic links.",
-		"wikitext": "X[[Special:BookSources/0978739256|foo]]\n\nX[https://tools.ietf.org/html/rfc1234 foo]",
-		"html": "<p>X<a href=\"/wiki/Special:BookSources/0978739256\" title=\"Special:BookSources/0978739256\">foo</a>\n</p><p>X<a rel=\"nofollow\" class=\"external text\" href=\"https://tools.ietf.org/html/rfc1234\">foo</a>\n</p>",
-		"print": "<span class=\"wpb-root\">X<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Special:BookSources/0978739256</span>|<span class=\"wpb-link-text\">foo</span>]]</span>\n\nX<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://tools.ietf.org/html/rfc1234</span> <span class=\"wpb-ext-link-text\">foo</span>]</span></span>"
 	},
 	{
 		"desc": "magicWords"

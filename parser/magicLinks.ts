@@ -22,7 +22,7 @@ export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), a
 			trail = url.slice(m2.index);
 			url = url.slice(0, m2.index);
 		}
-		const sep = new RegExp(`[,;.:!?${url.includes('(') ? '' : ')'}]+$`, 'u'),
+		const sep = new RegExp(`[,;\\\\.:!?${url.includes('(') ? '' : ')'}]+$`, 'u'),
 			sepChars = sep.exec(url);
 		if (sepChars) {
 			let correction = 0;
