@@ -60,6 +60,7 @@ export class Title {
 	 * @param selfLink 是否允许selfLink
 	 */
 	constructor(title: string, defaultNs = 0, config = Parser.getConfig(), decode = false, selfLink = false) {
+		const subpage = title.trim().startsWith('../');
 		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
@@ -69,20 +70,24 @@ export class Title {
 			} catch {}
 		}
 		title = title.replace(/_/gu, ' ').trim();
-		let ns = defaultNs;
-		if (title.startsWith(':')) {
-			ns = 0;
-			title = title.slice(1).trim();
-		}
-		const m = title.split(':');
-		if (m.length > 1) {
-			const id = config.nsid[m[0]!.trim().toLowerCase()];
-			if (id) {
-				ns = id;
-				title = m.slice(1).join(':').trim();
+		if (subpage) {
+			this.ns = 0;
+		} else {
+			let ns = defaultNs;
+			if (title.startsWith(':')) {
+				ns = 0;
+				title = title.slice(1).trim();
 			}
+			const m = title.split(':');
+			if (m.length > 1) {
+				const id = config.nsid[m[0]!.trim().toLowerCase()];
+				if (id) {
+					ns = id;
+					title = m.slice(1).join(':').trim();
+				}
+			}
+			this.ns = ns;
 		}
-		this.ns = ns;
 		const i = title.indexOf('#');
 		if (i !== -1) {
 			let fragment = title.slice(i + 1).trimEnd();
@@ -94,8 +99,10 @@ export class Title {
 			this.fragment = fragment;
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || this.interwiki || selfLink && ns === 0 && this.fragment !== undefined)
-			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(title);
+		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.fragment !== undefined)
+			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
+				subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
+			);
 		this.main = title;
 		Object.defineProperties(this, {
 			encoded: {enumerable: false, writable: false},
