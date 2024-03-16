@@ -59,8 +59,16 @@ select, #frame {
 optgroup[label="parserTests"],
 optgroup[label="badCharacters"],
 optgroup[label="comments"],
-optgroup[label="definitionList"],
-optgroup[label="extLinks"] {
+optgroup[label="definitionLists"],
+optgroup[label="extLinks"],
+optgroup[label="indentPre"],
+optgroup[label="indicators"],
+optgroup[label="magicWords"],
+optgroup[label="pfeqParserTests"],
+optgroup[label="redirects"],
+optgroup[label="wtEscaping"],
+optgroup[label="preTags"],
+optgroup[label="preprocessor"] {
 	display: none;
 }
 pre {
@@ -92,12 +100,13 @@ pre {
 #frame h3, #frame h4, #frame h5, #frame h6 {
 	margin-top: .3em;
 	line-height: 1.6;
-}
-#frame h3, #frame h4 {
 	font-weight: bold;
 }
 #frame h3 {
 	font-size: 1.2em;
+}
+#frame h4, #frame h5, #frame h6 {
+	font-size: 100%;
 }
 #frame a {
 	word-wrap: break-word;
