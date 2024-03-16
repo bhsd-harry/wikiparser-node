@@ -4083,7 +4083,7 @@
 		"print": "<span class=\"wpb-root\">hi <span class=\"wpb-comment\">&lt;!--{\"hi\":\"ho\"}--&gt;</span> ho</span>"
 	},
 	{
-		"desc": "definitionList"
+		"desc": "definitionLists"
 	},
 	{
 		"desc": "Simple definition",
@@ -5373,7 +5373,7 @@
 		"desc": "Image with size specified with pxpx (T15500, T53628)",
 		"wikitext": "[[File:Foobar.jpg|20pxpx]]\n[[File:Foobar.jpg|200x20pxpx]]",
 		"html": "<p><a href=\"/wiki/File:Foobar.jpg\" class=\"image\"><img alt=\"Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/20px-Foobar.jpg\" decoding=\"async\" width=\"20\" height=\"2\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/30px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/40px-Foobar.jpg 2x\" /></a>\n<a href=\"/wiki/File:Foobar.jpg\" class=\"image\"><img alt=\"Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/177px-Foobar.jpg\" decoding=\"async\" width=\"177\" height=\"20\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/265px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/353px-Foobar.jpg 2x\" /></a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">20pxpx</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">200x20pxpx</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">20px</span>px</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">200x20px</span>px</span>]]</span></span>"
 	},
 	{
 		"desc": "Image with link parameter, wiki target",
@@ -6393,7 +6393,7 @@
 		"desc": "Image with size specified with pxpx (T15500, T53628)",
 		"wikitext": "[[File:Foobar.jpg|20pxpx]]\n[[File:Foobar.jpg|200x20pxpx]]",
 		"html": "<p><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/20px-Foobar.jpg\" decoding=\"async\" width=\"20\" height=\"2\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/30px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/40px-Foobar.jpg 2x\" /></a></span>\n<span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/177px-Foobar.jpg\" decoding=\"async\" width=\"177\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/265px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/353px-Foobar.jpg 2x\" /></a></span>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">20pxpx</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">200x20pxpx</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">20px</span>px</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">200x20px</span>px</span>]]</span></span>"
 	},
 	{
 		"desc": "Image with link parameter, wiki target",
@@ -7218,93 +7218,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-quote\">'''</span>thumb<span class=\"wpb-quote\">'''</span></span>]]</span></span>"
 	},
 	{
-		"desc": "pWrapping"
-	},
-	{
-		"desc": "No block tags",
-		"wikitext": "a\n\nb",
-		"html": "<p>a\n</p><p>b\n</p>",
-		"print": "<span class=\"wpb-root\">a\n\nb</span>"
-	},
-	{
-		"desc": "Block tag on one line (<div>)",
-		"wikitext": "a <div>foo</div>\n\nb",
-		"html": "<p>a </p><div>foo</div>\n<p>b\n</p>",
-		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n\nb</span>"
-	},
-	{
-		"desc": "No p-wrappable content",
-		"wikitext": "<span><div>x</div></span>\n<span><s><div>x</div></s></span>\n<small><em></em></small><span><s><div>x</div></s></span>",
-		"html": "<span><div>x</div></span>\n<span><s><div>x</div></s></span>\n<p><small><em></em></small></p><span><s><div>x</div></s></span>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>x<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;s&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>x<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/s&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-html\">&lt;small&gt;</span><span class=\"wpb-html\">&lt;em&gt;</span><span class=\"wpb-html\">&lt;/em&gt;</span><span class=\"wpb-html\">&lt;/small&gt;</span><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;s&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>x<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/s&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span></span>"
-	},
-	{
-		"desc": "Block tag on one line (<blockquote>)",
-		"wikitext": "a <blockquote>foo</blockquote>\n\nb",
-		"html": "<p>a </p><blockquote><p>foo</p></blockquote>\n<p>b\n</p>",
-		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;blockquote&gt;</span>foo<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\nb</span>"
-	},
-	{
-		"desc": "Block tag on both lines (<div>)",
-		"wikitext": "a <div>foo</div>\n\nb <div>foo</div>",
-		"html": "<p>a </p><div>foo</div><p>\nb </p><div>foo</div>",
-		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n\nb <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
-	},
-	{
-		"desc": "Block tag on both lines (<blockquote>)",
-		"wikitext": "a <blockquote>foo</blockquote>\n\nb <blockquote>foo</blockquote>",
-		"html": "<p>a </p><blockquote><p>foo</p></blockquote><p>\nb </p><blockquote><p>foo</p></blockquote>",
-		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;blockquote&gt;</span>foo<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\nb <span class=\"wpb-html\">&lt;blockquote&gt;</span>foo<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
-	},
-	{
-		"desc": "Multiple lines without block tags",
-		"wikitext": "<div>foo</div> a\nb\nc\nd<!--foo--> e\nx <div>foo</div> z",
-		"html": "<div>foo</div><p> a\n</p><p>b\nc\nd e\n</p><p>\nx </p><div>foo</div><p> z</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span> a\nb\nc\nd<span class=\"wpb-comment\">&lt;!--foo--&gt;</span> e\nx <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span> z</span>"
-	},
-	{
-		"desc": "Empty lines between lines with block tags",
-		"wikitext": "<div></div>\n\n\n<div></div>a\n\nb\n<div>a</div>b\n\n<div>b</div>d\n\n\n<div>e</div>",
-		"html": "<div></div>\n<p><br />\n</p>\n<div></div><p>a\n</p><p>b\n</p>\n<div>a</div><p>b\n</p><div>b</div><p>d\n</p><p><br />\n</p>\n<div>e</div>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span>\n\n\n<span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span>a\n\nb\n<span class=\"wpb-html\">&lt;div&gt;</span>a<span class=\"wpb-html\">&lt;/div&gt;</span>b\n\n<span class=\"wpb-html\">&lt;div&gt;</span>b<span class=\"wpb-html\">&lt;/div&gt;</span>d\n\n\n<span class=\"wpb-html\">&lt;div&gt;</span>e<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
-	},
-	{
-		"desc": "Unclosed HTML p-tags should be handled properly",
-		"wikitext": "<div><p>foo</div>\na\n\nb",
-		"html": "<div><p>foo</p></div>\n<p>a\n</p><p>b\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span><span class=\"wpb-html\">&lt;p&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\na\n\nb</span>"
-	},
-	{
-		"desc": "No paragraph necessary for SOL transparent template",
-		"wikitext": "<span><div>foo</div></span>\n[[Category:Foo]]\n\n<span><div>foo</div></span>\n{{1x|[[Category:Foo]]}}",
-		"html": "<span><div>foo</div></span>\n<span><div>foo</div></span>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>\n\n<span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span></span></span>}}</span></span>"
-	},
-	{
-		"desc": "Avoid expanding multiline sol transparent template ranges unnecessarily",
-		"wikitext": "hi\n\n\n{{1x|<br/>\n}}\n\n[[Category:Ho]]",
-		"html": "<p>hi\n</p><p><br />\n<br />\n</p>",
-		"print": "<span class=\"wpb-root\">hi\n\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;br/&gt;</span>\n</span></span>}}</span>\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Ho</span>]]</span></span>"
-	},
-	{
-		"desc": "Paragraph wrapping following unclosed table",
-		"wikitext": "{|\n|-\n\n{|\n| x\n|}\n\na\n\nb\n\nc",
-		"html": "<table>\n\n\n</table><table>\n<tbody><tr>\n<td>x\n</td></tr></tbody></table>\n<p>a\n</p><p>b\n</p><p>c\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n</span></span></span>\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> x</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n\na\n\nb\n\nc</span>"
-	},
-	{
-		"desc": "Paragraph wrapping suppressed in html p",
-		"wikitext": "<p>\n\n\nhi\n\n\n\n</p>",
-		"html": "<p>\n\n\nhi\n\n\n\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span>\n\n\nhi\n\n\n\n<span class=\"wpb-html\">&lt;/p&gt;</span></span>"
-	},
-	{
-		"desc": "Paragraph wrapping suppressed in table captions",
-		"wikitext": "{|\n|+hi\n|ho\n|}\n\n{|\n|hi\n|+ho\n|}\n\nit's off to work we go",
-		"html": "<table>\n<caption>hi\n</caption>\n<tbody><tr>\n<td>ho\n</td></tr></tbody></table>\n<table>\n<tbody><tr>\n<td>hi\n</td>\n</tr></tbody><caption>ho\n</caption></table>\n<p>it's off to work we go\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|+</span><span class=\"wpb-td-inner\">hi</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">ho</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">hi</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|+</span><span class=\"wpb-td-inner\">ho</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n\nit's off to work we go</span>"
-	},
-	{
 		"desc": "pfeqParserTests"
 	},
 	{
@@ -7455,7 +7368,7 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\n* foo\n# bar\n= no-h =\n'' no-italic ''\n[[ NoLink ]]\n</span>&lt;/pre&gt;</span></span>"
 	},
 	{
-		"desc": "preproessor"
+		"desc": "preprocessor"
 	},
 	{
 		"desc": "Preprocessor precedence 1: link is rightmost opening",
@@ -7495,9 +7408,9 @@
 	},
 	{
 		"desc": "Preprocessor precedence 12: broken language converter closed by brace.",
-		"wikitext": "This form breaks the template, which is unfortunate:\n*{{1x|foo-{bar}bat}}\n\nBut if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n*<nowiki>foo-{bar}bat</nowiki>\n*{{1x|<nowiki>foo-{bar}bat</nowiki>}}\n*<pre>foo-{bar}bat</pre>\n*{{1x|<pre>foo-{bar}bat</pre>}}\n\n<tag>foo-{bar}bat</tag>\n{{1x|<tag>foo-{bar}bat</tag>}}",
-		"html": "<p>This form breaks the template, which is unfortunate:\n</p>\n<ul><li>{{1x|foo-{bar}bat}}</li></ul>\n<p>But if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n</p>\n<ul><li>foo-&#123;bar}bat</li>\n<li>foo-&#123;bar}bat</li>\n<li><pre>foo-{bar}bat</pre></li>\n<li><pre>foo-{bar}bat</pre></li></ul>\n<pre>'foo-{bar}bat'\narray (\n)\n</pre>\n<pre>'foo-{bar}bat'\narray (\n)\n</pre>",
-		"print": "<span class=\"wpb-root\">This form breaks the template, which is unfortunate:\n<span class=\"wpb-list\">*</span>{{1x|foo-{bar}bat}}\n\nBut if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/nowiki&gt;</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/nowiki&gt;</span></span></span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/pre&gt;</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/pre&gt;</span></span></span>}}</span>\n\n&lt;tag&gt;foo-{bar}bat&lt;/tag&gt;\n{{1x|&lt;tag&gt;foo-{bar}bat&lt;/tag&gt;}}</span>"
+		"wikitext": "This form breaks the template, which is unfortunate:\n*{{1x|foo-{bar}bat}}\n\nBut if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n*<nowiki>foo-{bar}bat</nowiki>\n*{{1x|<nowiki>foo-{bar}bat</nowiki>}}\n*<pre>foo-{bar}bat</pre>\n*{{1x|<pre>foo-{bar}bat</pre>}}",
+		"html": "<p>This form breaks the template, which is unfortunate:\n</p>\n<ul><li>{{1x|foo-{bar}bat}}</li></ul>\n<p>But if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n</p>\n<ul><li>foo-&#123;bar}bat</li>\n<li>foo-&#123;bar}bat</li>\n<li><pre>foo-{bar}bat</pre></li>\n<li><pre>foo-{bar}bat</pre></li></ul>",
+		"print": "<span class=\"wpb-root\">This form breaks the template, which is unfortunate:\n<span class=\"wpb-list\">*</span>{{1x|foo-{bar}bat}}\n\nBut if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/nowiki&gt;</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/nowiki&gt;</span></span></span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/pre&gt;</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/pre&gt;</span></span></span>}}</span></span>"
 	},
 	{
 		"desc": "Preprocessor precedence 13: broken language converter in external link",

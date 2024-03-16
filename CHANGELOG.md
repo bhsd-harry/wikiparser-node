@@ -7,6 +7,7 @@
 - Mimic the structure of CSS compound selectors
 - Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) tag attributes
 - Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
+- Image size parameter with a suffix of `pxpx` is now also valid
 
 **Changed**
 
