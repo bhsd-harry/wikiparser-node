@@ -25,6 +25,7 @@
 // c: CommentToken、NoIncludeToken和IncludeToken
 // d: ListToken
 // e: ExtToken
+// f: MagicLinkToken inside ImageParameterToken
 // h: HeadingToken
 // l: LinkToken
 // m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
@@ -195,7 +196,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	parse(n = MAX_STAGE, include = false): this {
+	parse(n = MAX_STAGE, include?: boolean): this {
 		n = Math.min(n, MAX_STAGE);
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include);
@@ -373,9 +374,9 @@ export class Token extends AstElement {
 	normalizeTitle(
 		title: string,
 		defaultNs = 0,
-		halfParsed = false,
-		decode = false,
-		selfLink = false,
+		halfParsed?: boolean,
+		decode?: boolean,
+		selfLink?: boolean,
 	): Title {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}

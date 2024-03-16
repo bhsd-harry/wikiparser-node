@@ -1,7 +1,10 @@
 import Parser from '../index';
+import {parseQuotes} from './quotes';
+import {parseExternalLinks} from './externalLinks';
 import {LinkToken} from '../src/link/index';
 import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';
+import type {Config} from '../base';
 import type {Token} from '../internal';
 
 /**
@@ -10,8 +13,7 @@ import type {Token} from '../internal';
  * @param config
  * @param accum
  */
-export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
-	const {parseQuotes}: typeof import('./quotes') = require('./quotes');
+export const parseLinks = (wikitext: string, config: Config, accum: Token[]): string => {
 	const regex = config.inExt
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
 			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
@@ -82,10 +84,10 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 			}
 		}
 		text &&= parseQuotes(text, config, accum);
-		s += `\0${accum.length}l\x7F${after!}`;
 		let SomeLinkToken: typeof LinkToken | typeof FileToken | typeof CategoryToken = LinkToken;
 		if (!force) {
 			if (!interwiki && ns === 6) {
+				text &&= parseExternalLinks(text, config, accum, true);
 				SomeLinkToken = FileToken;
 			} else if (!interwiki && ns === 14) {
 				SomeLinkToken = CategoryToken;
@@ -94,6 +96,7 @@ export const parseLinks = (wikitext: string, config = Parser.getConfig(), accum:
 		if (text === undefined && delimiter) {
 			text = '';
 		}
+		s += `\0${accum.length}l\x7F${after!}`;
 		// @ts-expect-error abstract class
 		new SomeLinkToken(link, text, config, accum, delimiter);
 	}

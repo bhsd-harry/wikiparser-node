@@ -26,7 +26,7 @@ function validate(
 	key: string,
 	val: string,
 	config: Config,
-	halfParsed = false,
+	halfParsed?: boolean,
 	ext?: string,
 ): string | Title | boolean {
 	val = val.trim();

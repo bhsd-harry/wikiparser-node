@@ -1,9 +1,9 @@
-import Parser from '../index';
 import {Token} from '../src/index';
 import {TableToken} from '../src/table/index';
 import {TrToken} from '../src/table/tr';
 import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';
+import type {Config} from '../base';
 import type {AstText} from '../internal';
 
 /**
@@ -21,8 +21,8 @@ const isTr = (token: TrToken | TableToken | TdToken): token is TrToken | TableTo
  */
 export const parseTable = (
 	{firstChild: {data}, type, name}: Token & {firstChild: AstText},
-	config = Parser.getConfig(),
-	accum: Token[] = [],
+	config: Config,
+	accum: Token[],
 ): string => {
 	const stack: (TrToken | TableToken | TdToken)[] = [],
 		lines = data.split('\n');

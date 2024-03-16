@@ -5991,7 +5991,7 @@
 		"desc": "Images with the \"|\" character in the comment",
 		"wikitext": "[[File:Foobar.jpg|thumb|An [http://test/?param1=|left|&param2=|x external] URL]]",
 		"html": "<div class=\"thumb tright\"><div class=\"thumbinner\" style=\"width:182px;\"><a href=\"/wiki/File:Foobar.jpg\" class=\"image\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"thumbimage\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a>  <div class=\"thumbcaption\"><div class=\"magnify\"><a href=\"/wiki/File:Foobar.jpg\" class=\"internal\" title=\"Enlarge\"></a></div>An <a rel=\"nofollow\" class=\"external text\" href=\"http://test/?param1=%7Cleft%7C&amp;param2=%7Cx\">external</a> URL</div></div></div>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">An [<span class=\"wpb-free-ext-link\">http://test/?param1=</span></span>|<span class=\"wpb-image-parameter\">left</span>|<span class=\"wpb-image-caption\">&amp;param2=</span>|<span class=\"wpb-image-caption\">x external] URL</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">An <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test/?param1=|left|&amp;param2=|x</span> <span class=\"wpb-ext-link-text\">external</span>]</span> URL</span>]]</span></span>"
 	},
 	{
 		"desc": "Free external link invading image caption",
@@ -7053,7 +7053,7 @@
 		"desc": "Images with the \"|\" character in the comment",
 		"wikitext": "[[File:Foobar.jpg|thumb|An [http://test/?param1=|left|&param2=|x external] URL]]",
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>An <a rel=\"nofollow\" class=\"external text\" href=\"http://test/?param1=%7Cleft%7C&amp;param2=%7Cx\">external</a> URL</figcaption></figure>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">An [<span class=\"wpb-free-ext-link\">http://test/?param1=</span></span>|<span class=\"wpb-image-parameter\">left</span>|<span class=\"wpb-image-caption\">&amp;param2=</span>|<span class=\"wpb-image-caption\">x external] URL</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">An <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test/?param1=|left|&amp;param2=|x</span> <span class=\"wpb-ext-link-text\">external</span>]</span> URL</span>]]</span></span>"
 	},
 	{
 		"desc": "Free external link invading image caption",

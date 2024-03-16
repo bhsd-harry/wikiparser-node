@@ -27,8 +27,11 @@ export abstract class ExtLinkToken extends Token {
 	constructor(url?: string, space = '', text = '', config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		// @ts-expect-error abstract class
-		this.insertAt(new MagicLinkToken(url, true, config, accum) as MagicLinkToken);
+		const link: MagicLinkToken = url && /\0\d+f\x7F/u.test(url)
+			? accum[Number(url.slice(1, -2))]
+			// @ts-expect-error abstract class
+			: new MagicLinkToken(url, true, config, accum);
+		this.insertAt(link);
 		this.#space = space;
 		if (text) {
 			const inner = new Token(text, config, accum, {
