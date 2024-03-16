@@ -9,5 +9,5 @@
 /.markdownlint.json
 /wiki/
 /test/*.wiki
-/test/*.txt
+/test/**/*.txt
 !README
