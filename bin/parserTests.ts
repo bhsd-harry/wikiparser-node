@@ -1,66 +1,93 @@
 /* eslint-disable es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions */
 import * as fs from 'fs';
+import * as path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
 
 Parser.debugging = true;
 
-const content = fs.readFileSync('test/parserTests.txt', 'utf8'),
-	cases = [...content.matchAll(/^!!\s*test\n.+?^!!\s*end$/gmsu)],
-	tests = [],
-	regex = {
-		html: /^!!\s*(html\b.*)$/mu,
-		options: /^!!\s*options\n(.*?)^!!/msu,
-	},
-	optionRegex = new RegExp(`^(?:\\n?(?:(?:${[
-		'parsoid',
-		'wgRawHtml',
-		'maxincludesize',
-		'maxtemplatedepth',
-		'title',
-		'language',
-		'subpage title',
-		'wgNonincludableNamespaces',
-		'section',
-		'replace',
-		'comment title',
-		'comment local title',
-		'wgLinkHolderBatchSize',
-		'styletag',
-	].join('|')})\\s*=.+|${
-		[
-			'showtitle',
-			'msg',
-			'cat',
-			'ill',
-			'comment',
-			'subpage',
-			'disabled',
+const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] = [],
+	files = new Set(fs.readdirSync('test/core/'));
+files.delete('parserTests.txt');
+for (const file of ['parserTests.txt', ...files]) {
+	tests.push({desc: file.slice(0, -4)});
+	const content = fs.readFileSync(path.join('test/core', file), 'utf8'),
+		cases = [...content.matchAll(/^!!\s*test\n.+?^!!\s*end$/gmsu)],
+		regex = {
+			html: /^!!\s*(html\b.*)$/mu,
+			options: /^!!\s*options\n(.*?)^!!/msu,
+		},
+		modes = new Set([
+			'html',
+			'html/php',
+			'html/parsoid',
+			'html/parsoid+integrated',
+			'html/php+disabled',
+			'html/*',
+		]),
+		// eslint-disable-next-line @stylistic/max-len
+		re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|cat|subpage|showindicators|djvu))*\n!/mu,
+		optionRegex = new RegExp(`^(?:\\n?(?:(?:${[
 			'parsoid',
-			'preload',
-			'local',
-		].join('|')
-	}|parsoid=\\s*\\{\\n[\\s\\S]+\\n\\}))+$`, 'u');
-info('html', new Set(cases.map(([test]) => regex.html.exec(test)?.[1]).filter(Boolean)));
-info(
-	'options',
-	new Set(cases.map(([test]) => regex.options.exec(test)?.[1]!.trim()).filter(x => x && !optionRegex.test(x))),
-);
-for (const [test] of cases) {
-	if (
-		/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test)
-		&& (
-			!test.includes('options')
-			|| /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:subpage )?title=.+|cat|subpage))*\n!/mu.test(test)
-		)
-	) {
-		try {
-			const wikitext = /(?<=^!!\s*wikitext\n).*?(?=^!!)/msu.exec(test)![0].trim(),
-				html = /(?<=^!!\s*html(?:\/(?:php|\*))?\n).*?(?=^!!)/msu.exec(test)![0].trim(),
-				[desc] = /(?<=^!!\s*test\n).*?(?=\n!!)/msu.exec(test)!;
-			tests.push({desc, wikitext, html, print: Parser.parse(wikitext).print()});
-		} catch {
-			console.error(test);
+			'wgRawHtml',
+			'maxincludesize',
+			'maxtemplatedepth',
+			'title',
+			'language',
+			'subpage title',
+			'wgNonincludableNamespaces',
+			'section',
+			'replace',
+			'comment title',
+			'comment local title',
+			'wgLinkHolderBatchSize',
+			'styletag',
+			'preprocessor',
+			'wgAllowExternalImages',
+			'externallinktarget',
+			'thumbsize',
+			'wgEnableUploads',
+			'wgEnableMagicLinks',
+		].join('|')})\\s*=.+|${
+			[
+				'showtitle',
+				'msg',
+				'cat',
+				'ill',
+				'comment',
+				'subpage',
+				'disabled',
+				'parsoid',
+				'preload',
+				'local',
+				'showindicators',
+				'djvu',
+				'lastsavedrevision',
+				'showflags',
+			].join('|')
+		}|parsoid\\s*=\\s*\\{\\n[\\s\\S]+\\n\\}|# .*))+$`, 'u'),
+		htmlInfo = cases.map(([test]) => regex.html.exec(test)?.[1]).filter(x => x && !modes.has(x)),
+		optionInfo = cases.map(([test]) => regex.options.exec(test)?.[1]!.trim())
+			.filter(x => x && !optionRegex.test(x));
+	if (htmlInfo.length > 0) {
+		info('html', new Set(htmlInfo));
+	}
+	if (optionInfo.length > 0) {
+		info('options', new Set(optionInfo));
+	}
+	for (const [test] of cases) {
+		if (
+			/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test)
+			&& (!test.includes('options') || re.test(test))
+		) {
+			try {
+				const wikitext = /(?<=^!!\s*wikitext\n).*?(?=^!!)/msu.exec(test)![0].trim(),
+					html = /(?<=^!!\s*html(?:\/(?:php|\*))?\n).*?(?=^!!)/msu.exec(test)![0].trim(),
+					[desc] = /(?<=^!!\s*test\n).*?(?=\n!!)/msu.exec(test)!;
+				tests.push({desc, wikitext, html, print: Parser.parse(wikitext).print()});
+			} catch {
+				console.error(test);
+			}
 		}
 	}
 }
