@@ -1,7 +1,7 @@
-import Parser from '../index';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';
+import type {Config} from '../base';
 import type {AstText, Token} from '../internal';
 
 /**
@@ -12,8 +12,8 @@ import type {AstText, Token} from '../internal';
  */
 export const parseHrAndDoubleUnderscore = (
 	{firstChild: {data}, type, name}: Token & {firstChild: AstText},
-	config = Parser.getConfig(),
-	accum: Token[] = [],
+	config: Config,
+	accum: Token[],
 ): string => {
 	const {doubleUnderscore} = config,
 		insensitive = new Set(doubleUnderscore[0]),

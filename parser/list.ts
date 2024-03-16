@@ -1,6 +1,6 @@
-import Parser from '../index';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
+import type {Config} from '../base';
 import type {Token, HtmlToken, QuoteToken} from '../internal';
 
 /**
@@ -9,7 +9,7 @@ import type {Token, HtmlToken, QuoteToken} from '../internal';
  * @param config
  * @param accum
  */
-export const parseList = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseList = (wikitext: string, config: Config, accum: Token[]): string => {
 	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(wikitext) as [string, string, string] | null;
 	if (!mt) {
 		return wikitext;

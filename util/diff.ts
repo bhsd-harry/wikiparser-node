@@ -56,7 +56,7 @@ export const cmd = (command: string, args: readonly string[]): Promise<string | 
  * @param newStr 新文本
  * @param uid 唯一标识
  */
-export const diff = async (oldStr: string, newStr: string, uid = -1): Promise<void> => {
+export const diff = async (oldStr: string, newStr: string, uid: number): Promise<void> => {
 	if (oldStr === newStr) {
 		return;
 	}

@@ -94,7 +94,7 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** @private */
-	close(syntax = '\n|}', halfParsed = false): void {
+	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
@@ -184,7 +184,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @throws `RangeError` 不存在该行
 	 */
 	getNthRow(n: number, force?: boolean, insert?: false): TrToken | this | undefined;
-	getNthRow(n: number, force = false, insert = false): TrToken | this | SyntaxToken | undefined {
+	getNthRow(n: number, force?: boolean, insert?: boolean): TrToken | this | SyntaxToken | undefined {
 		const isRow = super.getRowCount();
 		if (
 			n === 0

@@ -80,9 +80,9 @@ const Parser: Parser = {
 	normalizeTitle(
 		title,
 		defaultNs = 0,
-		include = false,
+		include?: boolean,
 		config = Parser.getConfig(),
-		halfParsed = false,
+		halfParsed?: boolean,
 		decode = false,
 		selfLink = false,
 	) {

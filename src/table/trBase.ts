@@ -68,7 +68,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 * @throws `RangeError` 不存在对应单元格
 	 */
 	getNthCol(n: number, insert?: false): TdToken | undefined;
-	getNthCol(n: number, insert = false): TdToken | TrToken | SyntaxToken | undefined {
+	getNthCol(n: number, insert?: boolean): TdToken | TrToken | SyntaxToken | undefined {
 		let last = 0;
 		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {
