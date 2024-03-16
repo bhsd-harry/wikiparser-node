@@ -2025,13 +2025,13 @@
 		"desc": "T335847: Resolve subpage of control title",
 		"wikitext": "[[../Hi]]",
 		"html": "<p>[[../Hi]]\n</p>",
-		"print": "<span class=\"wpb-root\">[[../Hi]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../Hi</span>]]</span></span>"
 	},
 	{
 		"desc": "T335847: Resolve subpage of forward slash title",
 		"wikitext": "[[../Hi]]",
 		"html": "<p><a href=\"/index.php?title=/Hi&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"/Hi (page does not exist)\">/Hi</a>\n</p>",
-		"print": "<span class=\"wpb-root\">[[../Hi]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../Hi</span>]]</span></span>"
 	},
 	{
 		"desc": "Link to category",
@@ -2134,18 +2134,6 @@
 		"wikitext": "{{DEFAULTSORT}}\n\n{{DEFAULTSORT:}}\n{{DEFAULTSORT:DOGGIE}}",
 		"html": "<p><a href=\"/index.php?title=Template:DEFAULTSORT&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:DEFAULTSORT (page does not exist)\">Template:DEFAULTSORT</a>\n</p><p><br />\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DEFAULTSORT</span>}}</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DEFAULTSORT</span>:}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DEFAULTSORT</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">DOGGIE</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Interlanguage links",
-		"wikitext": "[[es:Alimento]]\n[[fr:Nourriture]]\n[[zh:食品]]",
-		"html": "es:Alimento fr:Nourriture zh:食品",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Alimento</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">fr:Nourriture</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">zh:食品</span>]]</span></span>"
-	},
-	{
-		"desc": "Duplicate interlanguage links (T26502)",
-		"wikitext": "[[es:1]]\n[[es:2]]\n[[fr:1]]\n[[fr:2]]",
-		"html": "es:1 fr:1",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:1</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:2</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">fr:1</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">fr:2</span>]]</span></span>"
 	},
 	{
 		"desc": "Single-line or multiline-comments can follow headings",
@@ -2646,12 +2634,6 @@
 		"print": "<span class=\"wpb-root\">&lt;mw:editsection&gt;&lt;script&gt;alert();&lt;/script&gt;&lt;/mw:editsection&gt;\n\n&lt;meta property=\"mw:PageProp/toc\" /&gt;</span>"
 	},
 	{
-		"desc": "Parser hook: Don't allow unclosed extension tags",
-		"wikitext": "test <tag>123\n\nthis is a '''test'''",
-		"html": "<p>test &lt;tag&gt;123\n</p><p>this is a <b>test</b>\n</p>",
-		"print": "<span class=\"wpb-root\">test &lt;tag&gt;123\n\nthis is a <span class=\"wpb-quote\">'''</span>test<span class=\"wpb-quote\">'''</span></span>"
-	},
-	{
 		"desc": "Nested template calls",
 		"wikitext": "{{Map-one-parameter|One-parameter|param}}",
 		"html": "<p>(My parameter is: param)\n</p>",
@@ -3117,19 +3099,19 @@
 		"desc": "Parents of subpages, one level up",
 		"wikitext": "[[../|L2]]",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1/L2\" title=\"Subpage test/L1/L2\">L2</a>\n</p>",
-		"print": "<span class=\"wpb-root\">[[../|L2]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../</span>|<span class=\"wpb-link-text\">L2</span>]]</span></span>"
 	},
 	{
 		"desc": "Parents of subpages, one level up, not named",
 		"wikitext": "[[../]]",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1/L2\" title=\"Subpage test/L1/L2\">Subpage test/L1/L2</a>\n</p>",
-		"print": "<span class=\"wpb-root\">[[../]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../</span>]]</span></span>"
 	},
 	{
 		"desc": "Parents of subpages, two levels up",
 		"wikitext": "[[../../|L1]]2\n\n[[../../|L1]]l",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1\" title=\"Subpage test/L1\">L1</a>2\n</p><p><a href=\"/wiki/Subpage_test/L1\" title=\"Subpage test/L1\">L1l</a>\n</p>",
-		"print": "<span class=\"wpb-root\">[[../../|L1]]2\n\n[[../../|L1]]l</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../</span>|<span class=\"wpb-link-text\">L1</span>]]</span>2\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../</span>|<span class=\"wpb-link-text\">L1</span>]]</span>l</span>"
 	},
 	{
 		"desc": "Parents of subpages, two levels up, without trailing slash or name.",
@@ -3141,13 +3123,13 @@
 		"desc": "Parents of subpages, two levels up, with lots of extra trailing slashes.",
 		"wikitext": "[[../../////]]",
 		"html": "<p><a href=\"/wiki/Subpage_test/L1\" title=\"Subpage test/L1\">Subpage test/L1</a>\n</p>",
-		"print": "<span class=\"wpb-root\">[[../../////]]</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">../../////</span>]]</span></span>"
 	},
 	{
 		"desc": "Transclusion of a sibling page (one level up)",
 		"wikitext": "{{../L3Sibling}}",
 		"html": "<p>Sibling article\n</p>",
-		"print": "<span class=\"wpb-root\">{{../L3Sibling}}</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../L3Sibling</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of a child page",
@@ -3159,7 +3141,7 @@
 		"desc": "Non-transclusion because of too many up levels",
 		"wikitext": "{{../../../../More than parent}}",
 		"html": "<p>{{../../../../More than parent}}\n</p>",
-		"print": "<span class=\"wpb-root\">{{../../../../More than parent}}</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../../../../More than parent</span>}}</span></span>"
 	},
 	{
 		"desc": "Definition list code coverage",
