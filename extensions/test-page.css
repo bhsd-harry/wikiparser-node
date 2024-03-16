@@ -68,7 +68,8 @@ optgroup[label="pfeqParserTests"],
 optgroup[label="redirects"],
 optgroup[label="wtEscaping"],
 optgroup[label="preTags"],
-optgroup[label="preprocessor"] {
+optgroup[label="preprocessor"],
+optgroup[label="legacyMedia"] {
 	display: none;
 }
 pre {
@@ -237,6 +238,29 @@ pre {
 }
 #frame .tocnumber, #frame .toctext {
 	display: table-cell;
+}
+#frame ul.gallery {
+	margin: 2px;
+	padding: 2px;
+	display: block;
+}
+#frame li.gallerybox {
+	vertical-align: top;
+	display: inline-block;
+}
+#frame div.gallerytext {
+	overflow: hidden;
+	font-size: 94%;
+	padding: 9px 4px 17px;
+	word-wrap: break-word;
+}
+#frame .mw-gallery-traditional .gallerybox > .thumb > * {
+	vertical-align: middle;
+	display: inline-block;
+}
+#frame li.gallerybox div.thumb img {
+	display: block;
+	margin: 0 auto;
 }
 
 @media screen and (max-width: 720px) {

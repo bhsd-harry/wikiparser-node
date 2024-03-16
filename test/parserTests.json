@@ -5373,7 +5373,7 @@
 		"desc": "Image with size specified with pxpx (T15500, T53628)",
 		"wikitext": "[[File:Foobar.jpg|20pxpx]]\n[[File:Foobar.jpg|200x20pxpx]]",
 		"html": "<p><a href=\"/wiki/File:Foobar.jpg\" class=\"image\"><img alt=\"Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/20px-Foobar.jpg\" decoding=\"async\" width=\"20\" height=\"2\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/30px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/40px-Foobar.jpg 2x\" /></a>\n<a href=\"/wiki/File:Foobar.jpg\" class=\"image\"><img alt=\"Foobar.jpg\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/177px-Foobar.jpg\" decoding=\"async\" width=\"177\" height=\"20\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/265px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/353px-Foobar.jpg 2x\" /></a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">20pxpx</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">200x20pxpx</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">20px</span>px</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">200x20px</span>px</span>]]</span></span>"
 	},
 	{
 		"desc": "Image with link parameter, wiki target",
@@ -6393,7 +6393,7 @@
 		"desc": "Image with size specified with pxpx (T15500, T53628)",
 		"wikitext": "[[File:Foobar.jpg|20pxpx]]\n[[File:Foobar.jpg|200x20pxpx]]",
 		"html": "<p><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/20px-Foobar.jpg\" decoding=\"async\" width=\"20\" height=\"2\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/30px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/40px-Foobar.jpg 2x\" /></a></span>\n<span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/177px-Foobar.jpg\" decoding=\"async\" width=\"177\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/265px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/353px-Foobar.jpg 2x\" /></a></span>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">20pxpx</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">200x20pxpx</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">20px</span>px</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">200x20px</span>px</span>]]</span></span>"
 	},
 	{
 		"desc": "Image with link parameter, wiki target",
