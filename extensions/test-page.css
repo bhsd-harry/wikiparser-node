@@ -113,11 +113,22 @@ pre {
 #frame a.external.free {
 	word-break: break-all;
 }
+#frame a.mw-selflink {
+	color: inherit;
+	font-weight: bold;
+	cursor: inherit;
+}
 #frame a:hover, #frame a:focus {
 	text-decoration: underline;
 }
+#frame a.mw-selflink:hover {
+	text-decoration: inherit;
+}
 #frame a:active {
 	color: #faa700;
+}
+#frame a.mw-selflink:active {
+	color: inherit;
 }
 #frame ul {
 	margin: .3em 0 0 1.6em;

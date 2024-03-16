@@ -16,7 +16,7 @@ const tests: {wikitext: string, print: string}[] = require('wikiparser-node/test
 			console.log(wikitext);
 			console.log();
 			if (e instanceof assert.AssertionError) {
-				await diff(e.actual as string, e.expected as string, i); // eslint-disable-line no-await-in-loop
+				await diff(e.expected as string, e.actual as string, i); // eslint-disable-line no-await-in-loop
 			}
 			failed++;
 		}
