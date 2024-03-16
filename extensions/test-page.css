@@ -56,6 +56,12 @@ select {
 select, #frame {
 	padding: 5px 12px;
 }
+optgroup[label="parserTests"],
+optgroup[label="badCharacters"],
+optgroup[label="comments"],
+optgroup[label="definitionList"] {
+	display: none;
+}
 pre {
 	border-radius: .3em;
 }

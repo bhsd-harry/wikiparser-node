@@ -1,6 +1,6 @@
 declare interface Test {
 	desc: string;
-	wikitext: string;
+	wikitext?: string;
 	html: string;
 }
 
@@ -17,13 +17,20 @@ declare interface Test {
 		return Promise.resolve([[stage ?? Infinity, wikitext, printed]]);
 	};
 	wikiparse.highlight!(pre, false, true);
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	select.append(...tests.map(({desc}, i) => {
-		const option = document.createElement('option');
-		option.value = String(i);
-		option.textContent = desc;
-		return option;
-	}));
+	let optgroup: HTMLOptGroupElement;
+	for (const [i, {desc, wikitext}] of tests.entries()) {
+		if (wikitext === undefined) {
+			optgroup = document.createElement('optgroup');
+			optgroup.label = desc;
+			select.append(optgroup);
+		} else {
+			const option = document.createElement('option');
+			option.value = String(i);
+			option.textContent = desc;
+			// @ts-expect-error already assigned
+			optgroup.append(option);
+		}
+	}
 
 	/**
 	 * Find unique tags in the HTML
@@ -42,7 +49,7 @@ declare interface Test {
 	};
 	select.addEventListener('change', () => {
 		const {wikitext, html} = tests[Number(select.value)]!;
-		pre.textContent = wikitext;
+		pre.textContent = wikitext!;
 		pre.classList.remove('wikiparser');
 		container.innerHTML = html;
 		wikiparse.highlight!(pre, false, true);

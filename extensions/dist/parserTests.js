@@ -8,12 +8,20 @@
         return Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, printed]]);
     };
     wikiparse.highlight(pre, false, true);
-    select.append(...tests.map(({ desc }, i) => {
-        const option = document.createElement('option');
-        option.value = String(i);
-        option.textContent = desc;
-        return option;
-    }));
+    let optgroup;
+    for (const [i, { desc, wikitext }] of tests.entries()) {
+        if (wikitext === undefined) {
+            optgroup = document.createElement('optgroup');
+            optgroup.label = desc;
+            select.append(optgroup);
+        }
+        else {
+            const option = document.createElement('option');
+            option.value = String(i);
+            option.textContent = desc;
+            optgroup.append(option);
+        }
+    }
     const findUnique = (html) => {
         var _a, _b;
         const temp = new Set();
