@@ -1,7 +1,6 @@
 import {
 	decodeHtml,
 } from '../util/string';
-import Parser from '../index';
 import type {Config} from '../base';
 
 /**
