@@ -59,7 +59,8 @@ select, #frame {
 optgroup[label="parserTests"],
 optgroup[label="badCharacters"],
 optgroup[label="comments"],
-optgroup[label="definitionList"] {
+optgroup[label="definitionList"],
+optgroup[label="extLinks"] {
 	display: none;
 }
 pre {
