@@ -51,7 +51,7 @@ for (const [test] of cases) {
 		/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test)
 		&& (
 			!test.includes('options')
-			|| /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:subpage )?title=.+|cat|ill|subpage))*\n!/mu.test(test)
+			|| /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:subpage )?title=.+|cat|subpage))*\n!/mu.test(test)
 		)
 	) {
 		try {
