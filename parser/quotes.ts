@@ -1,5 +1,5 @@
-import Parser from '../index';
 import {QuoteToken} from '../src/nowiki/quote';
+import type {Config} from '../base';
 import type {Token} from '../src/index';
 
 /**
@@ -8,7 +8,7 @@ import type {Token} from '../src/index';
  * @param config
  * @param accum
  */
-export const parseQuotes = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseQuotes = (wikitext: string, config: Config, accum: Token[]): string => {
 	const arr = wikitext.split(/('{2,})/u),
 		{length} = arr;
 	if (length === 1) {
