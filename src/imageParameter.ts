@@ -25,14 +25,14 @@ function validate(
 	key: string,
 	val: string,
 	config: Config,
-	halfParsed = false,
+	halfParsed?: boolean,
 	ext?: string,
 ): string | Title | boolean {
 	val = val.trim();
 	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
-			return !value || /^(?:\d+x?|\d*x\d+)$/u.test(value);
+			return !value || /^(?:\d+x?|\d*x\d+)(?:\s*px)?$/u.test(value);
 		case 'link': {
 			if (!value) {
 				return val;

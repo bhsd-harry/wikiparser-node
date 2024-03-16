@@ -1,6 +1,6 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
-import Parser from '../index';
 import {MagicLinkToken} from '../src/magicLink';
+import type {Config} from '../base';
 import type {Token} from '../src/index';
 
 /**
@@ -9,7 +9,7 @@ import type {Token} from '../src/index';
  * @param config
  * @param accum
  */
-export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), accum: Token[] = []): string => {
+export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	/(^|[^\p{L}\d_])((?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*)/giu;
 	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
@@ -21,7 +21,7 @@ export const parseMagicLinks = (wikitext: string, config = Parser.getConfig(), a
 			trail = url.slice(m2.index);
 			url = url.slice(0, m2.index);
 		}
-		const sep = new RegExp(`[,;.:!?${url.includes('(') ? '' : ')'}]+$`, 'u'),
+		const sep = new RegExp(`[,;\\\\.:!?${url.includes('(') ? '' : ')'}]+$`, 'u'),
 			sepChars = sep.exec(url);
 		if (sepChars) {
 			let correction = 0;
