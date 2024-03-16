@@ -3,12 +3,6 @@
 		"desc": "parserTests"
 	},
 	{
-		"desc": "Blank input",
-		"wikitext": "",
-		"html": "",
-		"print": ""
-	},
-	{
 		"desc": "Simple paragraph",
 		"wikitext": "This is a simple paragraph.",
 		"html": "<p>This is a simple paragraph.\n</p>",
@@ -3082,9 +3076,9 @@
 	},
 	{
 		"desc": "Another italics / bold test",
-		"wikitext": "''' ''x'",
+		"wikitext": " ''' ''x'",
 		"html": "<pre>'<i> </i>x'\n</pre>",
-		"print": "<span class=\"wpb-root\">'<span class=\"wpb-quote\">''</span> <span class=\"wpb-quote\">''</span>x'</span>"
+		"print": "<span class=\"wpb-root\"> '<span class=\"wpb-quote\">''</span> <span class=\"wpb-quote\">''</span>x'</span>"
 	},
 	{
 		"desc": "dt/dd/dl test",
@@ -3772,21 +3766,21 @@
 	},
 	{
 		"desc": "Indented table with an empty td",
-		"wikitext": "{|\n |-\n |\n |foo\n |}",
+		"wikitext": " {|\n |-\n |\n |foo\n |}",
 		"html": "<table>\n\n<tbody><tr>\n<td>\n</td>\n<td>foo\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
 	},
 	{
 		"desc": "Indented table with blank lines in between (T85627)",
-		"wikitext": "{|\n |foo\n \n \n |}",
+		"wikitext": " {|\n |foo\n \n \n |}",
 		"html": "<table>\n<tbody><tr>\n<td>foo\n<p><br /> \n</p>\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo\n \n </span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo\n \n </span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
 	},
 	{
 		"desc": "Indented block & table",
-		"wikitext": "<div>foo</div>\n {|\n |foo\n |}",
+		"wikitext": " <div>foo</div>\n {|\n |foo\n |}",
 		"html": "<div>foo</div>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-html\">&lt;div&gt;</span>foo<span class=\"wpb-html\">&lt;/div&gt;</span>\n <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
 	},
 	{
 		"desc": "Indent and comment before table row",
@@ -4482,7 +4476,7 @@
 		"desc": "External links: Free with trailing punctuation",
 		"wikitext": "http://example.com,\nhttp://example.com;\nhttp://example.com\\\nhttp://example.com.\nhttp://example.com:\nhttp://example.com!\nhttp://example.com?\nhttp://example.com)\nhttp://example.com/url_with_(brackets)\n(http://example.com/url_without_brackets)\nhttp://example.com/url_with_entity&amp;\nhttp://example.com/url_with_entity&#x26;\nhttp://example.com/url_with_entity&#038;\nhttp://example.com/url_with_entity&nbsp;\nhttp://example.com/url_with_entity&#xA0;\nhttp://example.com/url_with_entity&#160;\nhttp://example.com/url_with_entity&lt;\nhttp://example.com/url_with_entity&#x3C;\nhttp://example.com/url_with_entity&#60;",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>,\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\\\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>.\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>:\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>!\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>?\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_(brackets)\">http://example.com/url_with_(brackets)</a>\n(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_without_brackets\">http://example.com/url_without_brackets</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#xa0;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&lt;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#x3c;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#60;\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span>,\n<span class=\"wpb-free-ext-link\">http://example.com</span>;\n<span class=\"wpb-free-ext-link\">http://example.com\\</span>\n<span class=\"wpb-free-ext-link\">http://example.com</span>.\n<span class=\"wpb-free-ext-link\">http://example.com</span>:\n<span class=\"wpb-free-ext-link\">http://example.com</span>!\n<span class=\"wpb-free-ext-link\">http://example.com</span>?\n<span class=\"wpb-free-ext-link\">http://example.com</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_(brackets)</span>\n(<span class=\"wpb-free-ext-link\">http://example.com/url_without_brackets</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;amp;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#x26;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#038;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;nbsp;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#xA0;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#160;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;lt;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#x3C;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#60;</span>"
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span>,\n<span class=\"wpb-free-ext-link\">http://example.com</span>;\n<span class=\"wpb-free-ext-link\">http://example.com</span>\\\n<span class=\"wpb-free-ext-link\">http://example.com</span>.\n<span class=\"wpb-free-ext-link\">http://example.com</span>:\n<span class=\"wpb-free-ext-link\">http://example.com</span>!\n<span class=\"wpb-free-ext-link\">http://example.com</span>?\n<span class=\"wpb-free-ext-link\">http://example.com</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_(brackets)</span>\n(<span class=\"wpb-free-ext-link\">http://example.com/url_without_brackets</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;amp;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#x26;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#038;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;nbsp;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#xA0;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#160;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;lt;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#x3C;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#60;</span>"
 	},
 	{
 		"desc": "External links: tricky Parsoid html2html case",
@@ -4897,21 +4891,21 @@
 	},
 	{
 		"desc": "Preformatted text",
-		"wikitext": "This is some\n Preformatted text\n With ''italic''\n And '''bold'''\n And a [[Main Page|link]]",
+		"wikitext": " This is some\n Preformatted text\n With ''italic''\n And '''bold'''\n And a [[Main Page|link]]",
 		"html": "<pre>This is some\nPreformatted text\nWith <i>italic</i>\nAnd <b>bold</b>\nAnd a <a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a>\n</pre>",
-		"print": "<span class=\"wpb-root\">This is some\n Preformatted text\n With <span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>\n And <span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>\n And a <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">link</span>]]</span></span>"
+		"print": "<span class=\"wpb-root\"> This is some\n Preformatted text\n With <span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>\n And <span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>\n And a <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">link</span>]]</span></span>"
 	},
 	{
 		"desc": "Tabs don't trigger preformatted text",
-		"wikitext": "This is not\n\t preformatted text.\n This is preformatted text.\n \tSo is this.",
+		"wikitext": "\tThis is not\n\t preformatted text.\n This is preformatted text.\n \tSo is this.",
 		"html": "<p>\tThis is not\n\t preformatted text.\n</p>\n<pre>This is preformatted text.\n\tSo is this.\n</pre>",
-		"print": "<span class=\"wpb-root\">This is not\n\t preformatted text.\n This is preformatted text.\n \tSo is this.</span>"
+		"print": "<span class=\"wpb-root\">\tThis is not\n\t preformatted text.\n This is preformatted text.\n \tSo is this.</span>"
 	},
 	{
 		"desc": "Indent preformatting with inline content",
-		"wikitext": "a\n ''b''",
+		"wikitext": " a\n ''b''",
 		"html": "<pre>a\n<i>b</i>\n</pre>",
-		"print": "<span class=\"wpb-root\">a\n <span class=\"wpb-quote\">''</span>b<span class=\"wpb-quote\">''</span></span>"
+		"print": "<span class=\"wpb-root\"> a\n <span class=\"wpb-quote\">''</span>b<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "<pre> with <nowiki> inside (compatibility with 1.6 and earlier)",
@@ -4933,27 +4927,27 @@
 	},
 	{
 		"desc": "Templates: Indent-Pre: 1a. Templates that break a line should suppress <pre>",
-		"wikitext": "{{1x|}}",
+		"wikitext": " {{1x|}}",
 		"html": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|}}</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|}}</span></span>"
 	},
 	{
 		"desc": "Templates: Indent-Pre: 1b. Templates that break a line should suppress <pre>",
-		"wikitext": "{{1x|\nfoo}}",
+		"wikitext": " {{1x|\nfoo}}",
 		"html": "<p>foo\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nfoo</span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nfoo</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Templates: Indent-Pre: 1c: Wrapping should be based on expanded content",
-		"wikitext": "{{1x|a\nb}}",
+		"wikitext": " {{1x|a\nb}}",
 		"html": "<pre>a\n</pre>\n<p>b\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\nb</span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\nb</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Templates: Indent-Pre: 1d: Wrapping should be based on expanded content",
-		"wikitext": "{{1x|a\nb\nc\n d\ne\n}}",
+		"wikitext": " {{1x|a\nb\nc\n d\ne\n}}",
 		"html": "<pre>a\n</pre>\n<p>b\nc\n</p>\n<pre>d\n</pre>\n<p>e\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\nb\nc\n d\ne\n</span></span>}}</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\nb\nc\n d\ne\n</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Templates: Indent-Pre: 1e. Wrapping should be based on expanded content",
@@ -4969,27 +4963,27 @@
 	},
 	{
 		"desc": "Off-by-1 DSR values: Regression test for indent-pre usages",
-		"wikitext": "{{1x|\n}} ''{{1x|\n}} X'' {{1x|<span></span>\n}} Y",
+		"wikitext": " {{1x|\n}} ''{{1x|\n}} X'' {{1x|<span></span>\n}} Y",
 		"html": "<pre><i></i>\nX<i> <span></span></i>\nY\n</pre>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n</span></span>}}</span> <span class=\"wpb-quote\">''</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n</span></span>}}</span> X<span class=\"wpb-quote\">''</span> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n</span></span>}}</span> Y</span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n</span></span>}}</span> <span class=\"wpb-quote\">''</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n</span></span>}}</span> X<span class=\"wpb-quote\">''</span> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n</span></span>}}</span> Y</span>"
 	},
 	{
 		"desc": "Ensure DSR values for mw:DisplaySpace spans are computed correctly",
-		"wikitext": "x\n y :)",
+		"wikitext": " x\n y :)",
 		"html": "<pre>x\ny&#160;:)\n</pre>",
-		"print": "<span class=\"wpb-root\">x\n y :)</span>"
+		"print": "<span class=\"wpb-root\"> x\n y :)</span>"
 	},
 	{
 		"desc": "1a. Indent-Pre and Comments",
-		"wikitext": "a\n<!--a-->\nc",
+		"wikitext": " a\n<!--a-->\nc",
 		"html": "<pre>a\n</pre>\n<p>c\n</p>",
-		"print": "<span class=\"wpb-root\">a\n<span class=\"wpb-comment\">&lt;!--a--&gt;</span>\nc</span>"
+		"print": "<span class=\"wpb-root\"> a\n<span class=\"wpb-comment\">&lt;!--a--&gt;</span>\nc</span>"
 	},
 	{
 		"desc": "1b. Indent-Pre and Comments",
-		"wikitext": "a\n <!--a-->\nc",
+		"wikitext": " a\n <!--a-->\nc",
 		"html": "<pre>a\n</pre>\n<p>c\n</p>",
-		"print": "<span class=\"wpb-root\">a\n <span class=\"wpb-comment\">&lt;!--a--&gt;</span>\nc</span>"
+		"print": "<span class=\"wpb-root\"> a\n <span class=\"wpb-comment\">&lt;!--a--&gt;</span>\nc</span>"
 	},
 	{
 		"desc": "1c. Indent-Pre and Comments",
@@ -5005,15 +4999,15 @@
 	},
 	{
 		"desc": "2a. Indent-Pre and tables",
-		"wikitext": "{|\n |-\n !h1!!h2\n |foo||bar\n |}",
+		"wikitext": " {|\n |-\n !h1!!h2\n |foo||bar\n |}",
 		"html": "<table>\n\n<tbody><tr>\n<th>h1</th>\n<th>h2\n</th>\n<td>foo</td>\n<td>bar\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n !</span><span class=\"wpb-td-inner\">h1</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">!!</span><span class=\"wpb-td-inner\">h2</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n !</span><span class=\"wpb-td-inner\">h1</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">!!</span><span class=\"wpb-td-inner\">h2</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
 	},
 	{
 		"desc": "2b. Indent-Pre and tables",
-		"wikitext": "{|\n |-\n|foo\n|}",
+		"wikitext": "  {|\n |-\n|foo\n|}",
 		"html": "<table>\n\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+		"print": "<span class=\"wpb-root\">  <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n |-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "2c. Indent-Pre and tables (T44252)",
@@ -5023,15 +5017,15 @@
 	},
 	{
 		"desc": "2d. Indent-Pre and tables",
-		"wikitext": "a\n {|\n |b\n |}",
+		"wikitext": " a\n {|\n |b\n |}",
 		"html": "<pre>a\n</pre>\n<table>\n<tbody><tr>\n<td>b\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\">a\n <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">b</span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
+		"print": "<span class=\"wpb-root\"> a\n <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n |</span><span class=\"wpb-td-inner\">b</span></span><span class=\"wpb-table-syntax\">\n |}</span></span></span>"
 	},
 	{
 		"desc": "2e. Indent-Pre and table-line syntax",
-		"wikitext": "a\n | b\n | c",
+		"wikitext": " a\n | b\n | c",
 		"html": "<pre>a\n| b\n| c\n</pre>",
-		"print": "<span class=\"wpb-root\">a\n | b\n | c</span>"
+		"print": "<span class=\"wpb-root\"> a\n | b\n | c</span>"
 	},
 	{
 		"desc": "2f. Indent-pre started by table-line syntax",
@@ -5041,9 +5035,9 @@
 	},
 	{
 		"desc": "2g. Indented table markup mixed with indented pre content (proposed in T8200)",
-		"wikitext": "<table>\n <tr>\n <td>\n Text that should be rendered preformatted\n </td>\n </tr>\n </table>",
+		"wikitext": " <table>\n <tr>\n <td>\n Text that should be rendered preformatted\n </td>\n </tr>\n </table>",
 		"html": "<table>\n <tbody><tr>\n <td>\n<pre>Text that should be rendered preformatted\n</pre>\n </td>\n </tr>\n </tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;table&gt;</span>\n <span class=\"wpb-html\">&lt;tr&gt;</span>\n <span class=\"wpb-html\">&lt;td&gt;</span>\n Text that should be rendered preformatted\n <span class=\"wpb-html\">&lt;/td&gt;</span>\n <span class=\"wpb-html\">&lt;/tr&gt;</span>\n <span class=\"wpb-html\">&lt;/table&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-html\">&lt;table&gt;</span>\n <span class=\"wpb-html\">&lt;tr&gt;</span>\n <span class=\"wpb-html\">&lt;td&gt;</span>\n Text that should be rendered preformatted\n <span class=\"wpb-html\">&lt;/td&gt;</span>\n <span class=\"wpb-html\">&lt;/tr&gt;</span>\n <span class=\"wpb-html\">&lt;/table&gt;</span></span>"
 	},
 	{
 		"desc": "2h. Indent pre in tables",
@@ -5053,15 +5047,15 @@
 	},
 	{
 		"desc": "3a. Indent-Pre and block tags (single-line html)",
-		"wikitext": "a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n <span> foo </span>",
+		"wikitext": " a <p> foo </p>\n b <div> foo </div>\n c <blockquote> foo </blockquote>\n <span> foo </span>",
 		"html": "<p> a </p><p> foo </p><p>\n b </p><div> foo </div><p>\n c </p><blockquote><p> foo </p></blockquote>\n<pre><span> foo </span>\n</pre>",
-		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span>\n c <span class=\"wpb-html\">&lt;blockquote&gt;</span> foo <span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n <span class=\"wpb-html\">&lt;span&gt;</span> foo <span class=\"wpb-html\">&lt;/span&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"> a <span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span>\n c <span class=\"wpb-html\">&lt;blockquote&gt;</span> foo <span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n <span class=\"wpb-html\">&lt;span&gt;</span> foo <span class=\"wpb-html\">&lt;/span&gt;</span></span>"
 	},
 	{
 		"desc": "3b. Indent-Pre and block tags (multi-line html)",
-		"wikitext": "a <span>foo</span>\n<!-- comment --> b <div> foo </div>",
+		"wikitext": " a <span>foo</span>\n<!-- comment --> b <div> foo </div>",
 		"html": "<pre>a <span>foo</span>\n</pre><p>\n b </p><div> foo </div>",
-		"print": "<span class=\"wpb-root\">a <span class=\"wpb-html\">&lt;span&gt;</span>foo<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-comment\">&lt;!-- comment --&gt;</span> b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"> a <span class=\"wpb-html\">&lt;span&gt;</span>foo<span class=\"wpb-html\">&lt;/span&gt;</span>\n<span class=\"wpb-comment\">&lt;!-- comment --&gt;</span> b <span class=\"wpb-html\">&lt;div&gt;</span> foo <span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "3c. Indent-Pre and block tags (pre-content on separate line)",
@@ -5070,22 +5064,16 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/p&gt;</span>\n\n<span class=\"wpb-html\">&lt;div&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/div&gt;</span>\n\n<span class=\"wpb-html\">&lt;center&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/center&gt;</span>\n\n<span class=\"wpb-html\">&lt;blockquote&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\n<span class=\"wpb-html\">&lt;blockquote&gt;</span>\n<span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nfoo\n</span>&lt;/pre&gt;</span>\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\n\n<span class=\"wpb-html\">&lt;ul&gt;</span><span class=\"wpb-html\">&lt;li&gt;</span>\n  foo\n<span class=\"wpb-html\">&lt;/li&gt;</span><span class=\"wpb-html\">&lt;/ul&gt;</span></span>"
 	},
 	{
-		"desc": "4. Indent-Pre and extension tags",
-		"wikitext": "a <tag />",
-		"html": "<p> a </p><pre>NULL\narray (\n)\n</pre>",
-		"print": "<span class=\"wpb-root\">a &lt;tag /&gt;</span>"
-	},
-	{
 		"desc": "5. Indent-Pre and html pre",
-		"wikitext": "<pre class=\"123\">hi</pre>",
+		"wikitext": " <pre class=\"123\">hi</pre>",
 		"html": "<pre class=\"123\">hi</pre>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre<span class=\"wpb-ext-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">123</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">hi</span>&lt;/pre&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-ext\">&lt;pre<span class=\"wpb-ext-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">123</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">hi</span>&lt;/pre&gt;</span></span>"
 	},
 	{
 		"desc": "Serializing indent pre at sol",
-		"wikitext": "hi",
+		"wikitext": " hi",
 		"html": "<pre>hi\n</pre>",
-		"print": "<span class=\"wpb-root\">hi</span>"
+		"print": "<span class=\"wpb-root\"> hi</span>"
 	},
 	{
 		"desc": "Render paragraphs when indent-pre is suppressed in blocklevels",
@@ -5095,39 +5083,39 @@
 	},
 	{
 		"desc": "4. Multiple spaces at start-of-line",
-		"wikitext": "<p> foo </p>\n    foo\n\t{|\n|foo\n|}",
+		"wikitext": "    <p> foo </p>\n    foo\n\t{|\n|foo\n|}",
 		"html": "<p> foo </p>\n<pre>   foo\n</pre>\n<table>\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n    foo\n\t<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+		"print": "<span class=\"wpb-root\">    <span class=\"wpb-html\">&lt;p&gt;</span> foo <span class=\"wpb-html\">&lt;/p&gt;</span>\n    foo\n\t<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "5a. White-space in indent-pre",
-		"wikitext": "a<br />\n \n b",
+		"wikitext": " a<br />\n \n b",
 		"html": "<pre>a<br />\n\nb\n</pre>",
-		"print": "<span class=\"wpb-root\">a<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span></span>/&gt;</span>\n \n b</span>"
+		"print": "<span class=\"wpb-root\"> a<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span></span>/&gt;</span>\n \n b</span>"
 	},
 	{
 		"desc": "5b. White-space in indent-pre",
-		"wikitext": "a\n \n b\n \n \n c",
+		"wikitext": " a\n \n b\n \n \n c",
 		"html": "<pre>a\n\nb\n\n\nc\n</pre>",
-		"print": "<span class=\"wpb-root\">a\n \n b\n \n \n c</span>"
+		"print": "<span class=\"wpb-root\"> a\n \n b\n \n \n c</span>"
 	},
 	{
 		"desc": "5c. White-space in indent-pre",
-		"wikitext": "''a''\n  ''b''\n   ''c''",
+		"wikitext": " ''a''\n  ''b''\n   ''c''",
 		"html": "<pre><i>a</i>\n <i>b</i>\n  <i>c</i>\n</pre>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>a<span class=\"wpb-quote\">''</span>\n  <span class=\"wpb-quote\">''</span>b<span class=\"wpb-quote\">''</span>\n   <span class=\"wpb-quote\">''</span>c<span class=\"wpb-quote\">''</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-quote\">''</span>a<span class=\"wpb-quote\">''</span>\n  <span class=\"wpb-quote\">''</span>b<span class=\"wpb-quote\">''</span>\n   <span class=\"wpb-quote\">''</span>c<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "6. Pre-blocks should extend across lines with leading WS even when there is no wrappable content",
-		"wikitext": "a\n \n <!-- continue -->\n b\n\n c\n \nd",
+		"wikitext": " a\n \n <!-- continue -->\n b\n\n c\n \nd",
 		"html": "<pre>a\n\nb\n</pre>\n<pre>c\n\n</pre>\n<p>d\n</p>",
-		"print": "<span class=\"wpb-root\">a\n \n <span class=\"wpb-comment\">&lt;!-- continue --&gt;</span>\n b\n\n c\n \nd</span>"
+		"print": "<span class=\"wpb-root\"> a\n \n <span class=\"wpb-comment\">&lt;!-- continue --&gt;</span>\n b\n\n c\n \nd</span>"
 	},
 	{
 		"desc": "7a. Indent-pre and category links",
-		"wikitext": "[[Category:foo]] <!-- No pre-wrapping -->\n{{1x| [[Category:foo]]}} <!-- No pre-wrapping -->",
+		"wikitext": " [[Category:foo]] <!-- No pre-wrapping -->\n{{1x| [[Category:foo]]}} <!-- No pre-wrapping -->",
 		"html": "",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo</span>]]</span> <span class=\"wpb-comment\">&lt;!-- No pre-wrapping --&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo</span>]]</span></span></span>}}</span> <span class=\"wpb-comment\">&lt;!-- No pre-wrapping --&gt;</span></span>"
+		"print": "<span class=\"wpb-root\"> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo</span>]]</span> <span class=\"wpb-comment\">&lt;!-- No pre-wrapping --&gt;</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:foo</span>]]</span></span></span>}}</span> <span class=\"wpb-comment\">&lt;!-- No pre-wrapping --&gt;</span></span>"
 	},
 	{
 		"desc": "Indent-Pre: Newlines in comments shouldn't affect sol state",
@@ -5137,9 +5125,9 @@
 	},
 	{
 		"desc": "Indent pre with leading colon",
-		"wikitext": ":foo",
+		"wikitext": " :foo",
 		"html": "<pre>:foo\n</pre>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">:</span>foo</span>"
+		"print": "<span class=\"wpb-root\"> :foo</span>"
 	},
 	{
 		"desc": "Indent-Pre regression test: Trailing whitespace after sol-transparent content",
@@ -6106,75 +6094,6 @@
 		"wikitext": "[[File:Broken.jpg|thumb|A caption for the media.]]",
 		"html": "<div class=\"thumb tright\"><div class=\"thumbinner\" style=\"width:182px;\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=Broken.jpg\" class=\"new\" title=\"File:Broken.jpg\">File:Broken.jpg</a>  <div class=\"thumbcaption\">A caption for the media.</div></div></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Broken.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">A caption for the media.</span>]]</span></span>"
-	},
-	{
-		"desc": "magicLinks"
-	},
-	{
-		"desc": "Magic links: internal link to RFC (T2479)",
-		"wikitext": "[[RFC 123]]",
-		"html": "<p><a href=\"/index.php?title=RFC_123&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"RFC 123 (page does not exist)\">RFC 123</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">RFC 123</span>]]</span></span>"
-	},
-	{
-		"desc": "Magic links: RFC (T2479)",
-		"wikitext": "RFC 822",
-		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\n</p>",
-		"print": "<span class=\"wpb-root\">RFC 822</span>"
-	},
-	{
-		"desc": "Magic links: RFC (T67278)",
-		"wikitext": "This is RFC 822 but thisRFC 822 is not RFC 822linked.",
-		"html": "<p>This is <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a> but thisRFC 822 is not RFC 822linked.\n</p>",
-		"print": "<span class=\"wpb-root\">This is RFC 822 but thisRFC 822 is not RFC 822linked.</span>"
-	},
-	{
-		"desc": "Magic links: RFC (w/ non-newline whitespace, T30950/T31025)",
-		"wikitext": "RFC &nbsp;&#160;&#0160;&#xA0;&#Xa0; 822\nRFC\n822",
-		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
-		"print": "<span class=\"wpb-root\">RFC &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 822\nRFC\n822</span>"
-	},
-	{
-		"desc": "Magic links: ISBN (T3937)",
-		"wikitext": "ISBN 0-306-40615-2",
-		"html": "<p><a href=\"/wiki/Special:BookSources/0306406152\" class=\"internal mw-magiclink-isbn\">ISBN 0-306-40615-2</a>\n</p>",
-		"print": "<span class=\"wpb-root\">ISBN 0-306-40615-2</span>"
-	},
-	{
-		"desc": "Magic links: ISBN (T67278)",
-		"wikitext": "This is ISBN 978-0-316-09811-3 but thisISBN 978-0-316-09811-3 is not ISBN 978-0-316-09811-3linked.",
-		"html": "<p>This is <a href=\"/wiki/Special:BookSources/9780316098113\" class=\"internal mw-magiclink-isbn\">ISBN 978-0-316-09811-3</a> but thisISBN 978-0-316-09811-3 is not ISBN 978-0-316-09811-3linked.\n</p>",
-		"print": "<span class=\"wpb-root\">This is ISBN 978-0-316-09811-3 but thisISBN 978-0-316-09811-3 is not ISBN 978-0-316-09811-3linked.</span>"
-	},
-	{
-		"desc": "Magic links: ISBN (w/ non-newline whitespace, T30950/T31025)",
-		"wikitext": "ISBN &nbsp;&#160;&#0160;&#xA0;&#Xa0; 978&nbsp;0&#160;316&#0160;09811&#xA0;3\nISBN\n9780316098113\nISBN 978\n0316098113",
-		"html": "<p><a href=\"/wiki/Special:BookSources/9780316098113\" class=\"internal mw-magiclink-isbn\">ISBN 978 0 316 09811 3</a>\nISBN\n9780316098113\nISBN 978\n0316098113\n</p>",
-		"print": "<span class=\"wpb-root\">ISBN &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 978&amp;nbsp;0&amp;#160;316&amp;#0160;09811&amp;#xA0;3\nISBN\n9780316098113\nISBN 978\n0316098113</span>"
-	},
-	{
-		"desc": "Magic links: PMID incorrectly converts space to underscore",
-		"wikitext": "PMID 1234",
-		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\n</p>",
-		"print": "<span class=\"wpb-root\">PMID 1234</span>"
-	},
-	{
-		"desc": "Magic links: PMID (T67278)",
-		"wikitext": "This is PMID 1234 but thisPMID 1234 is not PMID 1234linked.",
-		"html": "<p>This is <a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
-		"print": "<span class=\"wpb-root\">This is PMID 1234 but thisPMID 1234 is not PMID 1234linked.</span>"
-	},
-	{
-		"desc": "Magic links: PMID (w/ non-newline whitespace, T30950/T31025)",
-		"wikitext": "PMID &nbsp;&#160;&#0160;&#xA0;&#Xa0; 1234\nPMID\n1234",
-		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\nPMID\n1234\n</p>",
-		"print": "<span class=\"wpb-root\">PMID &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 1234\nPMID\n1234</span>"
-	},
-	{
-		"desc": "Magic links: use appropriate serialization for \"almost\" magic links.",
-		"wikitext": "X[[Special:BookSources/0978739256|foo]]\n\nX[https://tools.ietf.org/html/rfc1234 foo]",
-		"html": "<p>X<a href=\"/wiki/Special:BookSources/0978739256\" title=\"Special:BookSources/0978739256\">foo</a>\n</p><p>X<a rel=\"nofollow\" class=\"external text\" href=\"https://tools.ietf.org/html/rfc1234\">foo</a>\n</p>",
-		"print": "<span class=\"wpb-root\">X<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Special:BookSources/0978739256</span>|<span class=\"wpb-link-text\">foo</span>]]</span>\n\nX<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://tools.ietf.org/html/rfc1234</span> <span class=\"wpb-ext-link-text\">foo</span>]</span></span>"
 	},
 	{
 		"desc": "magicWords"
@@ -7378,12 +7297,6 @@
 		"wikitext": "<p>\n\n\nhi\n\n\n\n</p>",
 		"html": "<p>\n\n\nhi\n\n\n\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span>\n\n\nhi\n\n\n\n<span class=\"wpb-html\">&lt;/p&gt;</span></span>"
-	},
-	{
-		"desc": "P-wrapping non-breaking spaces",
-		"wikitext": "",
-		"html": "<p>&#160;\n</p>",
-		"print": ""
 	},
 	{
 		"desc": "Paragraph wrapping suppressed in table captions",

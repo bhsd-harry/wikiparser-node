@@ -1,4 +1,4 @@
-/* eslint-disable es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions */
+/* eslint-disable es-x/no-string-prototype-matchall */
 import * as fs from 'fs';
 import * as path from 'path';
 import {info} from '../util/diff';
@@ -81,10 +81,12 @@ for (const file of ['parserTests.txt', ...files]) {
 			&& (!test.includes('options') || re.test(test))
 		) {
 			try {
-				const wikitext = /(?<=^!!\s*wikitext\n).*?(?=^!!)/msu.exec(test)![0].trim(),
-					html = /(?<=^!!\s*html(?:\/(?:php|\*))?\n).*?(?=^!!)/msu.exec(test)![0].trim(),
-					[desc] = /(?<=^!!\s*test\n).*?(?=\n!!)/msu.exec(test)!;
-				tests.push({desc, wikitext, html, print: Parser.parse(wikitext).print()});
+				const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
+					html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)![1]!.trim(),
+					desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!;
+				if (wikitext) {
+					tests.push({desc, wikitext, html, print: Parser.parse(wikitext).print()});
+				}
 			} catch {
 				console.error(test);
 			}
