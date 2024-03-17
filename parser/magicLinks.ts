@@ -16,7 +16,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
 	return wikitext.replace(regex, (m, lead: string, p1: string) => {
 		let trail = '',
-			url = lead ? m.slice(1) : m;
+			url = lead ? m.slice(lead.length) : m;
 		const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);
 		if (m2) {
 			trail = url.slice(m2.index);

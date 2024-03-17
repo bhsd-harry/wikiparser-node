@@ -13,6 +13,7 @@
 - Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
 - Image size parameter with a suffix of `pxpx` is now also valid
 - Fix conflicts between image parameters and external links
+- Fix free external links led by a Unicode character
 
 **Changed**
 
