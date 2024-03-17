@@ -4842,7 +4842,7 @@
 		"desc": "Unicode text around autolinks",
 		"wikitext": "größhttps://foo.org\n\ngröß https://foo.org\n\n아들 고건 사진https://foo.org\n\n💩https://foo.org",
 		"html": "<p>größhttps://foo.org\n</p><p>größ <a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p>",
-		"print": "<span class=\"wpb-root\">größhttps://foo.org\n\ngröß <span class=\"wpb-free-ext-link\">https://foo.org</span>\n\n아들 고건 사진https://foo.org\n\n💩<span class=\"wpb-free-ext-link\">\udca9https://foo.org</span></span>"
+		"print": "<span class=\"wpb-root\">größhttps://foo.org\n\ngröß <span class=\"wpb-free-ext-link\">https://foo.org</span>\n\n아들 고건 사진https://foo.org\n\n💩<span class=\"wpb-free-ext-link\">https://foo.org</span></span>"
 	},
 	{
 		"desc": "IPv6 urls, bracketed format (T23261)",
