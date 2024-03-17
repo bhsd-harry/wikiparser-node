@@ -1,6 +1,10 @@
 ## v1.6.2
 
-*2024-03-16*
+*2024-03-17*
+
+**Added**
+
+- [Parser tests](https://bhsd-harry.github.io/wikiparser-node/tests.html) are now available
 
 **Fixed**
 
@@ -8,6 +12,7 @@
 - Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) tag attributes
 - Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
 - Image size parameter with a suffix of `pxpx` is now also valid
+- Fix conflicts between image parameters and external links
 
 **Changed**
 
