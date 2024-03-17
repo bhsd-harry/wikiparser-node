@@ -1,6 +1,7 @@
 .wikiparser {
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
+	word-break: break-all;
 	font-family: monospace;
 	border: 1.5px solid #dedede;
 }

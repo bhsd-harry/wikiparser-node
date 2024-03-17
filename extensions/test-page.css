@@ -30,6 +30,7 @@ main {
 article {
 	display: block;
 	width: 100%;
+	box-sizing: border-box;
 	padding: 1rem 2rem;
 }
 .field {
@@ -56,24 +57,11 @@ select {
 select, #frame {
 	padding: 5px 12px;
 }
-optgroup[label="parserTests"],
-optgroup[label="badCharacters"],
-optgroup[label="comments"],
-optgroup[label="definitionLists"],
-optgroup[label="extLinks"],
-optgroup[label="indentPre"],
-optgroup[label="indicators"],
-optgroup[label="magicWords"],
-optgroup[label="pfeqParserTests"],
-optgroup[label="redirects"],
-optgroup[label="wtEscaping"],
-optgroup[label="preTags"],
-optgroup[label="preprocessor"],
-optgroup[label="legacyMedia"] {
-	display: none;
-}
 pre {
 	border-radius: .3em;
+}
+#frame {
+	overflow-x: auto;
 }
 
 .mw-editsection, .mw-empty-elt {
@@ -199,6 +187,60 @@ pre {
 }
 #frame img {
 	vertical-align: middle;
+	max-width: 100%;
+}
+#frame figure.mw-halign-right {
+	margin: 0 0 .5em .5em;
+	clear: right;
+	float: right;
+	max-width: 50%;
+}
+#frame .mw-image-border .mw-file-element {
+	border: 1px solid #eaecf0;
+}
+#frame figure[typeof~="mw:File/Thumb"].mw-halign-left,
+#frame figure[typeof~="mw:File/Frame"].mw-halign-left {
+	margin: .5em 1.4em 1.3em 0;
+	clear: left;
+	float: left;
+	max-width: 50%;
+}
+#frame figure[typeof~="mw:File/Thumb"],
+#frame figure[typeof~="mw:File/Frame"] {
+	margin: .5em 0 1.3em 1.4em;
+	clear: right;
+	float: right;
+	min-width: 100px;
+	border: 1px solid #c8ccd1;
+	border-bottom: 0;
+	background-color: #f8f9fa;
+	display: table;
+	text-align: center;
+	border-collapse: collapse;
+	line-height: 0;
+}
+#frame figure[typeof~="mw:File/Thumb"] > .mw-file-description {
+	display: block;
+	position: relative;
+}
+#frame figure[typeof~="mw:File/Thumb"] > :not(figcaption) .mw-file-element,
+#frame figure[typeof~="mw:File/Frame"] > :not(figcaption) .mw-file-element {
+	border: 1px solid #c8ccd1;
+	background: #f8f9fa;
+	margin: 3px;
+}
+#frame figure[typeof~="mw:File/Thumb"] > figcaption,
+#frame figure[typeof~="mw:File/Frame"] > figcaption {
+	text-align: left;
+	border: 1px solid #c8ccd1;
+	border-top: 0;
+	background-color: #f8f9fa;
+	font-size: 88.4%;
+	display: table-caption;
+	caption-side: bottom;
+	line-height: 1.4em;
+	word-break: break-word;
+	padding: 0 6px 6px;
 }
 #frame .toc {
 	display: table;

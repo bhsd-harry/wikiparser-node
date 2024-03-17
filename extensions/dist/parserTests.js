@@ -13,6 +13,9 @@
         if (wikitext === undefined) {
             optgroup = document.createElement('optgroup');
             optgroup.label = desc;
+            if (desc === 'legacyMedia') {
+                optgroup.hidden = true;
+            }
             select.append(optgroup);
         }
         else {
@@ -38,6 +41,10 @@
         pre.textContent = wikitext;
         pre.classList.remove('wikiparser');
         container.innerHTML = html;
+        for (const img of container.querySelectorAll('img[src]')) {
+            img.src = '/wikiparser-node/assets/bad-image.svg';
+            img.removeAttribute('srcset');
+        }
         wikiparse.highlight(pre, false, true);
         select.selectedOptions[0].disabled = true;
         const tags = findUnique(html);
