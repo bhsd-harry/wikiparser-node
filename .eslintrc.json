@@ -208,8 +208,18 @@
 		"no-octal-escape": 2,
 		"no-restricted-globals": [
 			2,
+			"close",
+			"closed",
 			"constructor",
+			"escape",
+			"length",
+			"name",
+			"open",
+			"parent",
+			"print",
 			"root",
+			"stop",
+			"top",
 			"Request"
 		],
 		"no-return-assign": [
