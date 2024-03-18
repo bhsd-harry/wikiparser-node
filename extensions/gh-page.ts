@@ -25,9 +25,20 @@ const keys = new Set(['type', 'childNodes', 'range']);
 
 	// Parser初始化
 	const config: Config = await (await fetch('./config/default.json')).json();
+	Parser.config = config;
 	wikiparse.setConfig(config);
+
+	/**
+	 * 不通过worker立即执行print方法
+	 * @param wikitext wikitext
+	 * @param include 是否嵌入
+	 * @param stage 解析层级
+	 */
+	const immediatePrint = (wikitext: string, include?: boolean, stage?: number): Promise<[number, string, string][]> =>
+		Promise.resolve([[stage ?? Infinity, wikitext, Parser.parse(wikitext, include, stage).print()]]);
 	const printer = wikiparse.edit!(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
+		{print} = wikiparse,
 		qid = wikiparse.id++;
 	highlighters[1 - Number(input.checked)]!.style.display = 'none';
 
@@ -214,6 +225,10 @@ const keys = new Set(['type', 'childNodes', 'range']);
 				if (text1 !== text2) {
 					updateDoc(text2);
 				}
+				break;
+			case 'highlighter':
+				// 离开highlighter时，还原`wikiparser.print()`方法
+				wikiparse.print = print;
 			// no default
 		}
 		switch (value) {
@@ -230,6 +245,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 					break;
 				}
 				(async () => {
+					wikiparse.print = immediatePrint;
 					for (const [i, pre] of pres.entries()) {
 						pre.classList.remove('wikiparser');
 						pre.textContent = textbox.value;

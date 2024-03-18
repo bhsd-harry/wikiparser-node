@@ -4,8 +4,10 @@ const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
     const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
+    Parser.config = config;
     wikiparse.setConfig(config);
-    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), qid = wikiparse.id++;
+    const immediatePrint = (wikitext, include, stage) => Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, Parser.parse(wikitext, include, stage).print()]]);
+    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
     const instance = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
     const updateDoc = (str) => {
@@ -142,6 +144,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
                 if (text1 !== text2) {
                     updateDoc(text2);
                 }
+                break;
+            case 'highlighter':
+                wikiparse.print = print;
         }
         switch (value) {
             case 'linter':
@@ -155,6 +160,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
                     break;
                 }
                 (async () => {
+                    wikiparse.print = immediatePrint;
                     for (const [i, pre] of pres.entries()) {
                         pre.classList.remove('wikiparser');
                         pre.textContent = textbox.value;

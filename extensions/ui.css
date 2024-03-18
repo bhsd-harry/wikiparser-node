@@ -117,13 +117,13 @@
 	font-weight: normal;
 }
 
-.wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd {
+.wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd, .wpb-redirect-syntax {
 	color: #0076dd;
 	font-weight: bold;
 	background-color: #eee;
 }
 
-.wpb-link, .wpb-category, .wpb-file, .wpb-gallery-image, .wpb-imagemap-image,
+.wpb-link, .wpb-category, .wpb-file, .wpb-gallery-image, .wpb-imagemap-image, .wpb-redirect-target,
 .wpb-ext-link, .wpb-free-ext-link {
 	color: #000aaa;
 	background-color: rgba(34, 17, 153, .03);
