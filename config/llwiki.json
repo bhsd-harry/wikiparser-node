@@ -617,6 +617,10 @@
 		"页数=$1": "page",
 		"$1页": "page"
 	},
+	"redirection": [
+		"#redirect",
+		"#重定向"
+	],
 	"variants": [
 		"zh",
 		"zh-hans",

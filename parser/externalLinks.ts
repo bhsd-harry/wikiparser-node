@@ -28,8 +28,8 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		'giu',
 	);
 	return wikitext.replace(regex, (_, url: string, space: string, text: string) => {
-		const {length} = accum;
-		const mt = /&[lg]t;/u.exec(url);
+		const {length} = accum,
+			mt = /&[lg]t;/u.exec(url);
 		if (mt) {
 			url = url.slice(0, mt.index);
 			space = '';

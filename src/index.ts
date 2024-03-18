@@ -172,6 +172,8 @@ export class Token extends AstElement {
 			case 0:
 				if (this.type === 'root') {
 					this.#accum.shift();
+					const isRedirect = this.#parseRedirect();
+					include &&= !isRedirect;
 				}
 				this.#include = include;
 				this.#parseCommentAndExt(include);
@@ -274,6 +276,17 @@ export class Token extends AstElement {
 			this.afterBuild();
 		}
 		return this;
+	}
+
+	/** 解析重定向 */
+	#parseRedirect(): boolean {
+		const {parseRedirect}: typeof import('../parser/redirect') = require('../parser/redirect');
+		const wikitext = String(this.firstChild!),
+			parsed = parseRedirect(wikitext, this.#config, this.#accum);
+		if (parsed) {
+			this.setText(parsed);
+		}
+		return Boolean(parsed);
 	}
 
 	/**

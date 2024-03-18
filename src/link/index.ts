@@ -18,7 +18,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
 	abstract override get link(): Title;
-	abstract override set link(link);
+	abstract override set link(link: string);
 
 	/** 链接显示文字 */
 	get innerText(): string {

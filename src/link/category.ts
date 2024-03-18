@@ -1,12 +1,23 @@
 import {decodeHtml} from '../../util/string';
 import {classes} from '../../util/constants';
 import {LinkBaseToken} from './base';
+import type {Title} from '../../lib/title';
+import type {Token, AtomToken} from '../../internal';
 
-/** 分类 */
+/**
+ * 分类
+ * @classdesc `{childNodes: [AtomToken, ?Token]}`
+ */
 export abstract class CategoryToken extends LinkBaseToken {
 	override readonly type = 'category';
 
+	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
+
 	/* NOT FOR BROWSER */
+
+	abstract override get children(): [AtomToken] | [AtomToken, Token];
+	abstract override get link(): Title;
+	abstract override set link(link: string);
 
 	/** 分类排序关键字 */
 	get sortkey(): string | undefined {

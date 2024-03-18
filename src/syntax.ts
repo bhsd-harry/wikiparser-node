@@ -3,10 +3,9 @@ import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
 import type {SyntaxBase} from '../mixin/syntax';
 
-declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
+declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
 /** NOT FOR BROWSER */
 
@@ -37,7 +36,7 @@ export class SyntaxToken extends Token {
 	}
 
 	/** @override */
-	override lint(): LintError[] {
+	override lint(): [] {
 		return [];
 	}
 

@@ -20,7 +20,7 @@ import type {AstText} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ...Token]}`
  */
 export abstract class LinkBaseToken extends Token {
-	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image';
+	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image' | 'redirect-target';
 	declare readonly name: string;
 	#bracket = true;
 	#delimiter;
@@ -200,7 +200,7 @@ export abstract class LinkBaseToken extends Token {
 				errors.push(e);
 			}
 		}
-		if (linkType !== 'link' && fragment !== undefined) {
+		if (linkType !== 'link' && linkType !== 'redirect-target' && fragment !== undefined) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
 				textNode = target.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
