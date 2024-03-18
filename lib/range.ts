@@ -1,5 +1,5 @@
 import {classes} from '../util/constants';
-import type {AstNodes} from '../internal';
+import type {AstNodes, Token} from '../internal';
 import type {Dimension, Position} from './node';
 
 /**
@@ -10,21 +10,25 @@ import type {Dimension, Position} from './node';
 const getIndex = (referenceNode: AstNodes, offset: number): number =>
 	referenceNode.getAbsoluteIndex() + referenceNode.getRelativeIndex(offset);
 
+/**
+ * 获取父节点或抛出错误
+ * @param node 参考节点
+ * @throws `RangeError` 参考节点没有父节点
+ */
+const getParent = (node: AstNodes): Token => {
+	const {parentNode} = node;
+	if (parentNode) {
+		return parentNode;
+	}
+	throw new RangeError('The reference node has no parent node!');
+};
+
 /** 模拟Range对象 */
 export class AstRange {
 	#startContainer: AstNodes | undefined;
 	#startOffset: number | undefined;
 	#endContainer: AstNodes | undefined;
 	#endOffset: number | undefined;
-
-	/**
-	 * 未初始化时抛出错误
-	 * @param start 是否未初始化起点
-	 * @throws `Error` 未初始化
-	 */
-	#notInit(start: boolean): never {
-		throw new Error(`请先指定${start ? '起始' : '终止'}位置！`);
-	}
 
 	/** 起点容器 */
 	get startContainer(): AstNodes {
@@ -78,15 +82,26 @@ export class AstRange {
 	}
 
 	/**
+	 * 未初始化时抛出错误
+	 * @param start 是否未初始化起点
+	 * @throws `Error` 未初始化
+	 */
+	#notInit(start: boolean): never {
+		throw new Error(`Please set the ${start ? 'start' : 'end'} position first!`);
+	}
+
+	/**
 	 * 检查起点和终点的设置是否有效
 	 * @throws `RangeError` 起点和终点不是兄弟节点
 	 * @throws `RangeError` 起点位于终点之后
 	 */
 	#check(): void {
-		const {startContainer, startOffset, endContainer, endOffset} = this;
+		const {startContainer, startOffset, endContainer, endOffset} = this,
+			msg1 = 'The start and end positions are not siblings!',
+			msg2 = 'The start position cannot be after the end position!';
 		if (startContainer === endContainer) {
 			if (startOffset > endOffset) {
-				throw new RangeError('起点不能位于终点之后！');
+				throw new RangeError(msg2);
 			}
 			return;
 		}
@@ -94,44 +109,46 @@ export class AstRange {
 			{type: endType, parentNode: endParent} = endContainer;
 		if (startType !== 'text') {
 			if (endType !== 'text' || startContainer !== endParent) {
-				throw new RangeError('起点和终点不是兄弟节点！');
+				throw new RangeError(msg1);
 			} else if (startOffset > endParent.childNodes.indexOf(endContainer)) {
-				throw new RangeError('起点不能位于终点之后！');
+				throw new RangeError(msg2);
 			}
 		} else if (endType === 'text') {
 			if (!startParent || startParent !== endParent) {
-				throw new RangeError('起点和终点不是兄弟节点！');
+				throw new RangeError(msg1);
 			}
 			const {childNodes} = startParent;
 			if (childNodes.indexOf(startContainer) > childNodes.indexOf(endContainer)) {
-				throw new RangeError('起点不能位于终点之后！');
+				throw new RangeError(msg2);
 			}
 		} else if (startParent !== endContainer) {
-			throw new RangeError('起点和终点不是兄弟节点！');
+			throw new RangeError(msg1);
 		} else if (endOffset <= startParent.childNodes.indexOf(startContainer)) {
-			throw new RangeError('起点不能位于终点之后！');
+			throw new RangeError(msg2);
 		}
 	}
 
 	/**
 	 * 设置起点
 	 * @param startNode 起点容器
-	 * @param startOffset 起点位置
+	 * @param offset 起点位置
 	 * @throws `RangeError` offset取值超出范围
 	 */
-	setStart(startNode: AstNodes, startOffset: number): void {
+	setStart(startNode: AstNodes, offset: number): void {
 		const {length} = startNode;
-		if (startOffset < 0 || startOffset > length) {
-			throw new RangeError(`offset取值范围应为 0 ~ ${length}`);
+		if (offset < 0 || offset > length) {
+			throw new RangeError(`The range of startOffset should be 0 ~ ${length}`);
 		}
+		const startContainer = this.#startContainer,
+			startOffset = this.#startOffset;
 		this.#startContainer = startNode;
-		this.#startOffset = startOffset;
+		this.#startOffset = offset;
 		if (this.#endContainer) {
 			try {
 				this.#check();
 			} catch (e) {
-				this.#startContainer = undefined;
-				this.#startOffset = undefined;
+				this.#startContainer = startContainer;
+				this.#startOffset = startOffset;
 				throw e;
 			}
 		}
@@ -140,22 +157,24 @@ export class AstRange {
 	/**
 	 * 设置终点
 	 * @param endNode 终点容器
-	 * @param endOffset 终点位置
+	 * @param offset 终点位置
 	 * @throws `RangeError` offset取值超出范围
 	 */
-	setEnd(endNode: AstNodes, endOffset: number): void {
+	setEnd(endNode: AstNodes, offset: number): void {
 		const {length} = endNode;
-		if (endOffset < 0 || endOffset > length) {
-			throw new RangeError(`offset取值范围应为 0 ~ ${length}`);
+		if (offset < 0 || offset > length) {
+			throw new RangeError(`The range of endOffset should be 0 ~ ${length}`);
 		}
+		const endContainer = this.#endContainer,
+			endOffset = this.#endOffset;
 		this.#endContainer = endNode;
-		this.#endOffset = endOffset;
+		this.#endOffset = offset;
 		if (this.#startContainer) {
 			try {
 				this.#check();
 			} catch (e) {
-				this.#endContainer = undefined;
-				this.#endOffset = undefined;
+				this.#endContainer = endContainer;
+				this.#endOffset = endOffset;
 				throw e;
 			}
 		}
@@ -165,13 +184,9 @@ export class AstRange {
 	 * 在节点后设置
 	 * @param method 方法名
 	 * @param referenceNode 节点
-	 * @throws `RangeError` 参考节点没有父节点
 	 */
 	#setAfter(method: 'setStart' | 'setEnd', referenceNode: AstNodes): void {
-		const {parentNode} = referenceNode;
-		if (!parentNode) {
-			throw new RangeError('参考节点没有父节点！');
-		}
+		const parentNode = getParent(referenceNode);
 		this[method](parentNode, parentNode.childNodes.indexOf(referenceNode) + 1);
 	}
 
@@ -195,13 +210,9 @@ export class AstRange {
 	 * 在节点前设置
 	 * @param method 方法名
 	 * @param referenceNode 节点
-	 * @throws `RangeError` 参考节点没有父节点
 	 */
 	#setBefore(method: 'setStart' | 'setEnd', referenceNode: AstNodes): void {
-		const {parentNode} = referenceNode;
-		if (!parentNode) {
-			throw new RangeError('参考节点没有父节点！');
-		}
+		const parentNode = getParent(referenceNode);
 		this[method](parentNode, parentNode.childNodes.indexOf(referenceNode));
 	}
 
@@ -235,14 +246,10 @@ export class AstRange {
 	/**
 	 * 设置Range包含整个节点
 	 * @param referenceNode 节点
-	 * @throws `RangeError` 参考节点没有父节点
 	 */
 	selectNode(referenceNode: AstNodes): void {
-		const {parentNode} = referenceNode;
-		if (!parentNode) {
-			throw new RangeError('参考节点没有父节点！');
-		}
-		const i = parentNode.childNodes.indexOf(referenceNode);
+		const parentNode = getParent(referenceNode),
+			i = parentNode.childNodes.indexOf(referenceNode);
 		this.#startContainer = parentNode;
 		this.#startOffset = i;
 		this.#endContainer = parentNode;
@@ -272,7 +279,7 @@ export class AstRange {
 	comparePoint(referenceNode: AstNodes, offset: number): -1 | 0 | 1 {
 		const {startContainer, startIndex, endContainer, endIndex} = this;
 		if (startContainer.getRootNode() !== referenceNode.getRootNode()) {
-			throw new RangeError('待比较的端点不在同一个文档中！');
+			throw new RangeError('The point to be compared is not in the same document!');
 		}
 		const index = getIndex(referenceNode, offset);
 		if (index < startIndex || index === startIndex && !startContainer.contains(referenceNode)) {
@@ -298,6 +305,14 @@ export class AstRange {
 		return range;
 	}
 
+	/** 清空Range */
+	detach(): void {
+		this.#startContainer = undefined;
+		this.#startOffset = undefined;
+		this.#endContainer = undefined;
+		this.#endOffset = undefined;
+	}
+
 	/** 删除Range中的内容 */
 	deleteContents(): void {
 		const {startContainer, endContainer, commonAncestorContainer} = this,
@@ -305,6 +320,7 @@ export class AstRange {
 		let {startOffset, endOffset} = this;
 		if (commonAncestorContainer.type === 'text') {
 			commonAncestorContainer.deleteData(startOffset, endOffset);
+			this.#endOffset = this.#startOffset;
 			return;
 		} else if (startContainer.type === 'text') {
 			startContainer.deleteData(startOffset, Infinity);
@@ -345,12 +361,12 @@ export class AstRange {
 				if (endContainer === startContainer) {
 					this.#endContainer = this.#startContainer;
 					this.#endOffset! -= startOffset;
-				} else if (endContainer && endContainer.type !== 'text') {
+				} else if (endContainer) {
 					this.#endOffset! += 2;
 				}
 			} else {
 				startContainer.before(newNode);
-				if (endContainer && endContainer.type !== 'text') {
+				if (endContainer && endContainer !== startContainer) {
 					this.#endOffset!++;
 				}
 			}
@@ -373,36 +389,46 @@ export class AstRange {
 	extractContents(): AstNodes[] {
 		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
 			{childNodes} = commonAncestorContainer;
+		let from: number,
+			to: number;
 		if (commonAncestorContainer.type === 'text') {
 			if (startOffset === endOffset) {
 				return [];
+			} else if (endOffset < commonAncestorContainer.length) {
+				commonAncestorContainer.splitText(endOffset);
 			}
-			commonAncestorContainer.splitText(endOffset);
-			const nextSibling = commonAncestorContainer.splitText(startOffset);
-			this.#startContainer = nextSibling;
-			this.#startOffset = 0;
-			this.#endContainer = nextSibling;
-			this.#endOffset! -= startOffset;
-			return [nextSibling];
+			if (startOffset) {
+				const nextSibling = commonAncestorContainer.splitText(startOffset);
+				this.#startContainer = nextSibling;
+				this.#startOffset = 0;
+				this.#endContainer = nextSibling;
+				this.#endOffset! -= startOffset;
+				return [nextSibling];
+			}
+			return [commonAncestorContainer];
 		} else if (endContainer.type === 'text') {
 			if (endOffset && endOffset < endContainer.length) {
 				endContainer.splitText(endOffset);
 			}
-			this.#endContainer = commonAncestorContainer;
-			this.#endOffset = childNodes.indexOf(endContainer) + (endOffset && 1);
+			to = childNodes.indexOf(endContainer) + (endOffset && 1);
+		} else {
+			to = endOffset;
 		}
 		if (startContainer.type === 'text') {
 			if (startOffset && startOffset < startContainer.length) {
-				startContainer.splitText(startOffset);
+				this.#startContainer = startContainer.splitText(startOffset);
+				this.#startOffset = 0;
 				this.#endOffset!++;
+				to++;
 			}
-			this.#startContainer = commonAncestorContainer;
-			this.#startOffset = childNodes.indexOf(startContainer) + (startOffset && 1);
+			from = childNodes.indexOf(startContainer) + (startOffset && 1);
+		} else {
+			from = startOffset;
 		}
-		return commonAncestorContainer.childNodes.slice(this.#startOffset, this.#endOffset);
+		return commonAncestorContainer.childNodes.slice(from, to);
 	}
 
-	/** 在满足条件时拷贝范围内的全部节点 */
+	/** 拷贝范围内的全部节点 */
 	cloneContents(): AstNodes[] {
 		return this.extractContents().map(node => node.cloneNode());
 	}

@@ -8,7 +8,6 @@ declare global {
 		readonly target: EventTarget & AstNodes;
 		readonly currentTarget: EventTarget & Token;
 		readonly prevTarget?: Token;
-		readonly bubbles: boolean;
 	}
 
 	type AstEventData = ({

@@ -110,6 +110,7 @@ export class Token extends AstElement {
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	readonly #accum;
 	#include?: boolean;
+	#built = false;
 
 	/* NOT FOR BROWSER */
 
@@ -254,6 +255,7 @@ export class Token extends AstElement {
 				}
 			}
 		}
+		this.#built = true;
 	}
 
 	/** @private */
@@ -607,6 +609,13 @@ export class Token extends AstElement {
 
 	/* NOT FOR BROWSER */
 
+	/** @override */
+	override dispatchEvent(e: Event, data: AstEventData): void {
+		if (this.#built) {
+			super.dispatchEvent(e, data);
+		}
+	}
+
 	/** @private */
 	protectChildren(...args: (string | number | Range)[]): void {
 		this.#protectedChildren.push(...new Ranges(args));
@@ -943,7 +952,7 @@ export class Token extends AstElement {
 			node.setAttribute('stage', 6);
 			return node.parse(7);
 		});
-		this.setAttribute('childNodes', [...token.childNodes]);
+		this.replaceChildren(...token.childNodes);
 	}
 
 	/** 解析部分魔术字 */

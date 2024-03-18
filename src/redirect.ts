@@ -21,7 +21,6 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 	declare readonly childNodes: readonly [SyntaxToken, RedirectTargetToken];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): RedirectTargetToken;
-	abstract override get parentNode(): Token;
 	abstract override get previousSibling(): undefined;
 
 	/* NOT FOR BROWSER */
@@ -29,7 +28,6 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 	abstract override get children(): [SyntaxToken, RedirectTargetToken];
 	abstract override get firstElementChild(): SyntaxToken;
 	abstract override get lastElementChild(): RedirectTargetToken;
-	abstract override get parentElement(): Token;
 	abstract override get previousElementSibling(): undefined;
 
 	/* NOT FOR BROWSER END */

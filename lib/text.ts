@@ -408,7 +408,7 @@ export class AstText extends AstNode {
 			}
 			// @ts-expect-error abstract class
 			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')) as Parser.TranscludeToken);
-			this.setAttribute('data', this.data.slice(0, i));
+			this.#setData(this.data.slice(0, i));
 		}
 	}
 }

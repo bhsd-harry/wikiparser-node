@@ -389,7 +389,7 @@ export abstract class AttributeToken extends Token {
 				range: [e.endIndex, e.endIndex],
 				text: this.#quotes[0]!,
 			};
-			if (lastChild.childNodes.some(child => child.type === 'text' && /\s/u.test(child.text()))) {
+			if (lastChild.childNodes.some(({type: t, data}) => t === 'text' && /\s/u.test(data))) {
 				e.suggestions = [
 					{
 						desc: 'close',

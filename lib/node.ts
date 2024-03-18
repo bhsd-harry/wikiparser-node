@@ -440,11 +440,6 @@ export abstract class AstNode implements AstNodeBase {
 	dispatchEvent(e: Event, data: AstEventData): void {
 		if (!e.target) { // 初始化
 			Object.defineProperty(e, 'target', {value: this, enumerable: true});
-
-			/** 终止冒泡 */
-			e.stopPropagation = function(): void {
-				Object.defineProperty(this, 'bubbles', {value: false});
-			};
 		}
 		Object.defineProperties(e, { // 每次bubble更新
 			prevTarget: {value: e.currentTarget, enumerable: true, configurable: true},
