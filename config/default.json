@@ -832,6 +832,11 @@
 		"页数=$1": "page",
 		"$1页": "page"
 	},
+	"redirection": [
+		"#redirect",
+		"#重定向",
+		"#重新導向"
+	],
 	"variants": [
 		"zh",
 		"zh-hans",

@@ -7,6 +7,7 @@ export interface Config {
 	readonly doubleUnderscore: [string[], string[]];
 	readonly protocol: string;
 	readonly img: Record<string, string>;
+	readonly redirection: string[];
 	readonly variants: string[];
 	readonly excludes?: string[];
 }
