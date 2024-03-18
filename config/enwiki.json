@@ -406,5 +406,8 @@
 		"page=$1": "page",
 		"page $1": "page"
 	},
+	"redirection": [
+		"#redirect"
+	],
 	"variants": []
 }
