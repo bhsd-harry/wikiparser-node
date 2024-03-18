@@ -25,7 +25,7 @@ const getPages = async (url: string): Promise<SimplePage[]> =>
 		generator: 'recentchanges',
 		grcnamespace: '0|10',
 		grclimit: 10,
-		grctype: 'edit',
+		grctype: 'edit|new',
 		prop: 'revisions',
 		rvprop: 'contentmodel|content',
 	})).query.pages.map(({title, ns, revisions}) => ({

@@ -1,8 +1,7 @@
 import Parser from '../index';
 import {Token} from './index';
-import type {LintError} from '../base';
 
-declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax';
+declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
 /** 满足特定语法格式的plain Token */
 export class SyntaxToken extends Token {
@@ -22,7 +21,7 @@ export class SyntaxToken extends Token {
 	}
 
 	/** @override */
-	override lint(): LintError[] {
+	override lint(): [] {
 		return [];
 	}
 }

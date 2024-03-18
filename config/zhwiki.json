@@ -790,6 +790,11 @@
 		"頁=$1": "page",
 		"$1頁": "page"
 	},
+	"redirection": [
+		"#redirect",
+		"#重定向",
+		"#重新導向"
+	],
 	"variants": [
 		"zh",
 		"zh-hans",

@@ -211,14 +211,16 @@
 			2,
 			"close",
 			"closed",
+			"constructor",
+			"escape",
 			"length",
 			"name",
 			"open",
 			"parent",
 			"print",
-			"top",
-			"constructor",
 			"root",
+			"stop",
+			"top",
 			"Request"
 		],
 		"no-return-assign": [

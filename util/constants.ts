@@ -2,6 +2,9 @@ import type {Config} from '../index';
 
 export type TokenTypes = 'root'
 	| 'plain'
+	| 'redirect'
+	| 'redirect-syntax'
+	| 'redirect-target'
 	| 'onlyinclude'
 	| 'noinclude'
 	| 'include'
