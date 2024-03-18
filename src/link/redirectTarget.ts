@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
@@ -17,39 +16,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
 	abstract override get lastChild(): AtomToken | NoincludeToken;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [AtomToken] | [AtomToken, NoincludeToken];
-	abstract override get lastElementChild(): AtomToken | NoincludeToken;
-	abstract override get link(): Title;
-	abstract override set link(link: string);
-
-	/** @override */
-	override get fragment(): string | undefined {
-		return super.fragment;
-	}
-
-	override set fragment(fragment) {
-		this.setFragment(fragment);
-	}
-
-	/** interwiki */
-	get interwiki(): string {
-		return this.link.interwiki;
-	}
-
-	/** @throws `RangeError` 非法的跨维基前缀 */
-	set interwiki(interwiki) {
-		const {link: {prefix, main, fragment}} = this,
-			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
-		if (interwiki && !this.isInterwiki(link)) {
-			throw new RangeError(`${interwiki} 不是合法的跨维基前缀!`);
-		}
-		this.setTarget(link);
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字
@@ -61,12 +27,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			// @ts-expect-error abstract class
 			this.insertAt(new NoincludeToken(linkText, config, accum));
 		}
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('acceptable', {AtomToken: 0, NoincludeToken: 1});
-		// @ts-expect-error abstract getter
-		this.firstChild.setAttribute('acceptable', {AstText: ':'});
 	}
 
 	/** @private */
@@ -83,39 +43,8 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start, /\]\]/u);
 		if (this.length === 2) {
-			errors.push(generateForChild(this, {start}, 'no-ignored', 'useless link text'));
+			errors.push(generateForChild(this.lastChild, {start}, 'no-ignored', 'useless link text'));
 		}
 		return errors;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * 设置链接目标
-	 * @param link 链接目标
-	 */
-	override setTarget(link: string): void {
-		this.firstChild.setText(link);
-	}
-
-	/**
-	 * 设置fragment
-	 * @param fragment fragment
-	 */
-	setFragment(fragment?: string): void {
-		fragment &&= fragment.replace(/[\]|]/gu, p => encodeURIComponent(p));
-		this.setTarget(`${this.name}${fragment === undefined ? '' : `#${fragment}`}`);
-	}
-
-	/**
-	 * 设置链接显示文字
-	 * @param linkStr 链接显示文字
-	 */
-	override setLinkText(linkStr?: string): void {
-		if (!linkStr) {
-			this.childNodes[1]?.remove();
-		}
-	}
 }
-
-classes['RedirectTargetToken'] = __filename;

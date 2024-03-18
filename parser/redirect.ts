@@ -1,4 +1,3 @@
-import {parsers} from '../util/constants';
 import Parser from '../index';
 import {RedirectToken} from '../src/redirect';
 import type {Config} from '../base';
@@ -25,5 +24,3 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 	}
 	return false;
 };
-
-parsers['parseRedirect'] = __filename;
