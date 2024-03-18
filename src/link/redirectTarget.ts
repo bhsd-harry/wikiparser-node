@@ -43,7 +43,14 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start, /\]\]/u);
 		if (this.length === 2) {
-			errors.push(generateForChild(this.lastChild, {start}, 'no-ignored', 'useless link text'));
+			const e = generateForChild(this.lastChild, {start}, 'no-ignored', 'useless link text');
+			e.startIndex--;
+			e.startCol--;
+			e.fix = {
+				range: [e.startIndex, e.endIndex],
+				text: '',
+			};
+			errors.push(e);
 		}
 		return errors;
 	}
