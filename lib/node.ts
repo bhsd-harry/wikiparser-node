@@ -16,6 +16,25 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
+/**
+ * 计算字符串的行列数
+ * @param str 字符串
+ */
+const getDimension = (str: string): Dimension => {
+	const lines = str.split('\n'),
+		height = lines.length;
+	return {height, width: lines[height - 1]!.length};
+};
+
+/**
+ * 获取子节点相对于父节点的字符位置
+ * @param j 子节点序号
+ * @param parent 父节点
+ */
+const getIndex = (j: number, parent: AstNode): number =>
+	parent.childNodes.slice(0, j).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
+	+ parent.getAttribute('padding');
+
 /** 类似Node */
 export abstract class AstNode implements AstNodeBase {
 	declare type: TokenTypes | 'text';
@@ -95,18 +114,15 @@ export abstract class AstNode implements AstNodeBase {
 	posFromIndex(index: number): Position | undefined {
 		const str = String(this);
 		if (index >= -str.length && index <= str.length) {
-			const lines = str.slice(0, index).split('\n'),
-				top = lines.length - 1;
-			return {top, left: lines[top]!.length};
+			const {height, width} = getDimension(str.slice(0, index));
+			return {top: height - 1, left: width};
 		}
 		return undefined;
 	}
 
 	/** 获取行数和最后一行的列数 */
 	#getDimension(): Dimension {
-		const lines = String(this).split('\n'),
-			height = lines.length;
-		return {height, width: lines[height - 1]!.length};
+		return getDimension(String(this));
 	}
 
 	/** @private */
@@ -119,25 +135,10 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param j 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
-		let childNodes: readonly AstNodes[];
-
-		/**
-		 * 获取子节点相对于父节点的字符位置，使用前需要先给`childNodes`赋值
-		 * @param end 子节点序号
-		 * @param parent 父节点
-		 */
-		const getIndex = (end: number, parent: AstNode): number =>
-			childNodes.slice(0, end).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
-			+ parent.getAttribute('padding');
 		if (j === undefined) {
 			const {parentNode} = this;
-			if (parentNode) {
-				({childNodes} = parentNode);
-				return getIndex(childNodes.indexOf(this as AstNode as AstNodes), parentNode);
-			}
-			return 0;
+			return parentNode ? getIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes), parentNode) : 0;
 		}
-		({childNodes} = this);
 		return getIndex(j, this);
 	}
 
