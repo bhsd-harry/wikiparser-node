@@ -5,6 +5,8 @@ export type {
 export type * from './lib/text';
 // export type * from './lib/element';
 export type * from './src/index';
+export type * from './src/redirect';
+export type * from './src/link/redirectTarget';
 export type * from './src/onlyinclude';
 // export type * from './src/nowiki/base';
 export type * from './src/nowiki/noinclude';
