@@ -11,7 +11,7 @@ import {TrBaseToken} from '../src/table/trBase';
 import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
 import type {TableRenderedCoords, Layout} from '../src/table/index';
-import type {TdAttrs, TdSubtypes, TdSpanAttrs} from '../src/table/td';
+import type {TdAttrs} from '../src/table/td';
 
 /**
  * 检查坐标形式
@@ -107,7 +107,7 @@ TableToken.prototype.printLayout =
 
 TableToken.prototype.toRenderedCoords =
 	/** @implements */
-	function({row, column}: TableCoords): TableRenderedCoords | undefined {
+	function({row, column}): TableRenderedCoords | undefined {
 		const rowLayout = this.getLayout({row, column})[row],
 			x = rowLayout?.findIndex(coords => cmpCoords(coords, {row, column}) === 0);
 		return rowLayout && (x === -1 ? undefined : {y: row, x: x!});
@@ -115,7 +115,7 @@ TableToken.prototype.toRenderedCoords =
 
 TableToken.prototype.toRawCoords =
 	/** @implements */
-	function({x, y}: TableRenderedCoords): TableCoords | undefined {
+	function({x, y}): TableCoords | undefined {
 		const rowLayout = this.getLayout({x, y})[y],
 			coords = rowLayout?.[x];
 		if (coords) {
@@ -130,14 +130,14 @@ TableToken.prototype.toRawCoords =
 
 TableToken.prototype.getFullRow =
 	/** @implements */
-	function(y: number): Map<TdToken, boolean> {
+	function(y): Map<TdToken, boolean> {
 		const rows = this.getAllRows();
 		return new Map(this.getLayout({y})[y]?.map(({row, column}) => [rows[row]!.getNthCol(column)!, row === y]));
 	};
 
 TableToken.prototype.getFullCol =
 	/** @implements */
-	function(x: number): Map<TdToken, boolean> {
+	function(x): Map<TdToken, boolean> {
 		const layout = this.getLayout(),
 			colLayout = layout.map(row => row[x]).filter(Boolean) as TableCoords[],
 			rows = this.getAllRows();
@@ -148,19 +148,19 @@ TableToken.prototype.getFullCol =
 
 TableToken.prototype.formatTableRow =
 	/** @implements */
-	function(y: number, attr: TdAttrs | string = {}, multiRow?: boolean): void {
+	function(y, attr, multiRow): void {
 		format(this.getFullRow(y), attr, multiRow);
 	};
 
 TableToken.prototype.formatTableCol =
 	/** @implements */
-	function(x: number, attr: TdAttrs | string = {}, multiCol?: boolean): void {
+	function(x, attr, multiCol): void {
 		format(this.getFullCol(x), attr, multiCol);
 	};
 
 TableToken.prototype.fillTableRow =
 	/** @implements */
-	function(y: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	function(y, inner, subtype, attr): void {
 		const rowToken = this.getNthRow(y)!,
 			layout = this.getLayout({y}),
 			maxCol = Math.max(...layout.map(({length}) => length)),
@@ -170,7 +170,7 @@ TableToken.prototype.fillTableRow =
 
 TableToken.prototype.fillTable =
 	/** @implements */
-	function(inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	function(inner, subtype, attr): void {
 		const rowTokens = this.getAllRows(),
 			layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
@@ -182,12 +182,7 @@ TableToken.prototype.fillTable =
 
 TableToken.prototype.insertTableCell =
 	/** @implements */
-	function(
-		inner: string | Token,
-		coords: TableCoords | TableRenderedCoords,
-		subtype: TdSubtypes = 'td',
-		attr: TdAttrs = {},
-	): TdToken {
+	function(inner, coords, subtype, attr): TdToken {
 		let rawCoords: TableCoords | undefined;
 		if (coords.column === undefined) {
 			const {x, y} = coords;
@@ -227,13 +222,7 @@ TableToken.prototype.prependTableRow =
 
 TableToken.prototype.insertTableRow =
 	/** @implements */
-	function(
-		y: number,
-		attr: Record<string, string | true> = {},
-		inner?: string | Token,
-		subtype: TdSubtypes = 'td',
-		innerAttr: TdAttrs = {},
-	): TrToken {
+	function(y, attr = {}, inner?: string | Token, subtype = 'td', innerAttr = {}): TrToken {
 		let reference = this.getNthRow(y, false, true);
 		// @ts-expect-error abstract class
 		const token: TrToken = Shadow.run(() => new TrToken('\n|-', undefined, this.getAttribute('config')));
@@ -267,7 +256,7 @@ TableToken.prototype.insertTableRow =
 
 TableToken.prototype.insertTableCol =
 	/** @implements */
-	function(x: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	function(x, inner, subtype, attr): void {
 		const layout = this.getLayout(),
 			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);
@@ -291,7 +280,7 @@ TableToken.prototype.insertTableCol =
 
 TableToken.prototype.removeTableRow =
 	/** @implements */
-	function(y: number): TrToken {
+	function(y): TrToken {
 		const rows = this.getAllRows(),
 			layout = this.getLayout(),
 			rowLayout = layout[y]!,
@@ -327,7 +316,7 @@ TableToken.prototype.removeTableRow =
 
 TableToken.prototype.removeTableCol =
 	/** @implements */
-	function(x: number): void {
+	function(x): void {
 		for (const [token, start] of this.getFullCol(x)) {
 			const {colspan, lastChild} = token;
 			if (colspan > 1) {
@@ -343,7 +332,7 @@ TableToken.prototype.removeTableCol =
 
 TableToken.prototype.mergeCells =
 	/** @implements */
-	function(xlim: readonly [number, number], ylim: readonly [number, number]): TdToken {
+	function(xlim, ylim): TdToken {
 		const layout = this.getLayout(),
 			maxCol = Math.max(...layout.map(({length}) => length)),
 			[xmin, xmax] = xlim.map(x => x < 0 ? x + maxCol : x).sort() as [number, number],
@@ -369,7 +358,7 @@ TableToken.prototype.mergeCells =
 
 TableToken.prototype.split =
 	/** @implements */
-	function(coords: TableCoords | TableRenderedCoords, dirs: Set<keyof TdSpanAttrs>): void {
+	function(coords, dirs): void {
 		const cell = this.getNthCell(coords)!,
 			attr = cell.getAttrs(),
 			{subtype} = cell;
@@ -412,25 +401,25 @@ TableToken.prototype.split =
 
 TableToken.prototype.splitIntoRows =
 	/** @implements */
-	function(coords: TableCoords | TableRenderedCoords): void {
+	function(coords): void {
 		this.split(coords, new Set(['rowspan']));
 	};
 
 TableToken.prototype.splitIntoCols =
 	/** @implements */
-	function(coords: TableCoords | TableRenderedCoords): void {
+	function(coords): void {
 		this.split(coords, new Set(['colspan']));
 	};
 
 TableToken.prototype.splitIntoCells =
 	/** @implements */
-	function(coords: TableCoords | TableRenderedCoords): void {
+	function(coords): void {
 		this.split(coords, new Set(['rowspan', 'colspan']));
 	};
 
 TableToken.prototype.replicateTableRow =
 	/** @implements */
-	function(row: number): TrToken {
+	function(row): TrToken {
 		let rowToken = this.getNthRow(row)!;
 		if (rowToken.type === 'table') {
 			rowToken = this.prependTableRow();
@@ -448,7 +437,7 @@ TableToken.prototype.replicateTableRow =
 
 TableToken.prototype.replicateTableCol =
 	/** @implements */
-	function(x: number): TdToken[] {
+	function(x): TdToken[] {
 		const replicated: TdToken[] = [];
 		for (const [token, start] of this.getFullCol(x)) {
 			if (start) {
@@ -465,7 +454,7 @@ TableToken.prototype.replicateTableCol =
 
 TableToken.prototype.moveTableRowBefore =
 	/** @implements */
-	function(y: number, before: number): TrToken {
+	function(y, before): TrToken {
 		const layout = this.getLayout();
 		try {
 			assert.deepEqual(occupied(layout, y), occupied(layout, before));
@@ -491,7 +480,7 @@ TableToken.prototype.moveTableRowBefore =
 
 TableToken.prototype.moveTableRowAfter =
 	/** @implements */
-	function(y: number, after: number): TrToken {
+	function(y, after): TrToken {
 		const layout = this.getLayout(),
 			afterToken = this.getNthRow(after)!,
 			cells = afterToken.childNodes.filter(
@@ -528,7 +517,7 @@ TableToken.prototype.moveTableRowAfter =
 
 TableToken.prototype.moveCol =
 	/** @implements */
-	function(x: number, reference: number, after = false): void {
+	function(x, reference, after): void {
 		const layout = this.getLayout();
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);
@@ -572,14 +561,14 @@ TableToken.prototype.moveCol =
 
 TableToken.prototype.moveTableColBefore =
 	/** @implements */
-	function(x: number, before: number): void {
+	function(x, before): void {
 		this.moveCol(x, before);
 	};
 
 TableToken.prototype.moveTableColAfter =
 	/** @implements */
-	function(x: number, after: number): void {
+	function(x, after): void {
 		this.moveCol(x, after, true);
 	};
 
-classes['ExtendTableToken'] = __filename;
+classes['ExtendedTableToken'] = __filename;

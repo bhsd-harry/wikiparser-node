@@ -407,7 +407,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 * @param multiRow 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
-	formatTableRow(y: number, attr: TdAttrs | string = {}, multiRow?: boolean): void {
+	formatTableRow(y: number, attr?: TdAttrs | string, multiRow?: boolean): void {
 		require('../../addon/table');
 		this.formatTableRow(y, attr, multiRow);
 	}
@@ -418,7 +418,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 * @param multiCol 是否对所有单元格设置，或是仅对行首单元格设置
 	 */
-	formatTableCol(x: number, attr: TdAttrs | string = {}, multiCol?: boolean): void {
+	formatTableCol(x: number, attr?: TdAttrs | string, multiCol?: boolean): void {
 		require('../../addon/table');
 		this.formatTableCol(x, attr, multiCol);
 	}
@@ -430,7 +430,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param subtype 单元格类型
 	 * @param attr 表格属性
 	 */
-	fillTableRow(y: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	fillTableRow(y: number, inner: string | Token, subtype?: TdSubtypes, attr?: TdAttrs): void {
 		require('../../addon/table');
 		this.fillTableRow(y, inner, subtype, attr);
 	}
@@ -441,7 +441,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param subtype 单元格类型
 	 * @param attr 表格属性
 	 */
-	fillTable(inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	fillTable(inner: string | Token, subtype?: TdSubtypes, attr?: TdAttrs): void {
 		require('../../addon/table');
 		this.fillTable(inner, subtype, attr);
 	}
@@ -457,8 +457,8 @@ export abstract class TableToken extends TrBaseToken {
 	override insertTableCell(
 		inner: string | Token,
 		coords: TableCoords | TableRenderedCoords,
-		subtype: TdSubtypes = 'td',
-		attr: TdAttrs = {},
+		subtype?: TdSubtypes,
+		attr?: TdAttrs,
 	): TdToken {
 		require('../../addon/table');
 		return this.insertTableCell(inner, coords, subtype, attr);
@@ -497,7 +497,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 单元格属性
 	 * @throws `RangeError` 列号过大
 	 */
-	insertTableCol(x: number, inner: string | Token, subtype: TdSubtypes = 'td', attr: TdAttrs = {}): void {
+	insertTableCol(x: number, inner: string | Token, subtype?: TdSubtypes, attr?: TdAttrs): void {
 		require('../../addon/table');
 		this.insertTableCol(x, inner, subtype, attr);
 	}

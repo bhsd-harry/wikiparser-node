@@ -4,7 +4,14 @@ import {escape} from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {AttributeToken, ExtToken} from '../internal';
+import type {
+	AttributeToken,
+	ExtToken,
+
+	/* NOT FOR BROWSER */
+
+	TranscludeToken,
+} from '../internal';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
@@ -407,7 +414,7 @@ export class AstText extends AstNode {
 				this.splitText(i + 1);
 			}
 			// @ts-expect-error abstract class
-			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')) as Parser.TranscludeToken);
+			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')) as TranscludeToken);
 			this.#setData(this.data.slice(0, i));
 		}
 	}

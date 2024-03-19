@@ -6,7 +6,6 @@ import {
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {classes} from '../util/constants';
-import {parseSelector} from '../parser/selector';
 import {Ranges} from './ranges';
 import {Title} from './title';
 import {AstNode} from './node';
@@ -229,6 +228,7 @@ export abstract class AstElement extends AstNode {
 		/* NOT FOR BROWSER */
 
 		if (/[^a-z\-,\s]/u.test(selector)) {
+			const {parseSelector}: typeof import('../parser/selector') = require('../parser/selector');
 			const stack = parseSelector(selector);
 			return (token => stack.some(copy => token.#matchesArray(copy))) as TokenPredicate<T>;
 		}

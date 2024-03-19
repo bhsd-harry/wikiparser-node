@@ -1,9 +1,8 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
-import type {LintError, AstNode as AstNodeBase} from '../base';
+import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {AstText, Token} from '../internal';
-import type {TokenTypes} from '../util/constants';
 
 export type AstNodes = AstText | Token;
 export interface Dimension {

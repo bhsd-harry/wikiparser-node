@@ -15,7 +15,7 @@ import {
 	parsers,
 } from './util/constants';
 import {tidy} from './util/string';
-import {cmd, info, error} from './util/diff';
+import {cmd, info, error, diff} from './util/diff';
 import type {log} from './util/diff';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
@@ -216,7 +216,6 @@ const Parser: Parser = {
 				process = 'printing';
 			}
 			if (restored !== wikitext) {
-				const {diff}: typeof import('./util/diff') = require('./util/diff');
 				const {0: cur, length} = promises;
 				promises.unshift((async (): Promise<void> => {
 					await cur;
