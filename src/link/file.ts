@@ -313,7 +313,7 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 		const free = syntax.includes('$1');
 		if (value === true && free) {
-			this.typeError('setValue', 'Boolean');
+			this.typeError('setValue', 'String');
 		}
 		const parameter: ImageParameterToken = Shadow.run(
 			// @ts-expect-error abstract class

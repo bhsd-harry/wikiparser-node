@@ -709,7 +709,7 @@ export abstract class AstElement extends AstNode {
 	#getChildIndex(node: AstNodes): number {
 		const i = this.childNodes.indexOf(node);
 		if (i === -1) {
-			throw new RangeError('找不到子节点！');
+			throw new RangeError('Not a child node!');
 		}
 		return i;
 	}
@@ -719,8 +719,7 @@ export abstract class AstElement extends AstNode {
 	 * @param node 子节点
 	 */
 	removeChild<T extends AstNodes>(node: T): T {
-		this.removeAt(this.#getChildIndex(node));
-		return node;
+		return this.removeAt(this.#getChildIndex(node)) as T;
 	}
 
 	/**

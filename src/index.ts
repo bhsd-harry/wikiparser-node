@@ -76,6 +76,7 @@ import type {
 	ParameterToken,
 	SyntaxToken,
 	LinkToken,
+	RedirectTargetToken,
 	ExtLinkToken,
 	MagicLinkToken,
 	ImageParameterToken,
@@ -123,8 +124,8 @@ export class Token extends AstElement {
 	}
 
 	/** 所有内链、外链和自由外链 */
-	get links(): (LinkToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
-		return this.querySelectorAll('link, ext-link, free-ext-link, image-parameter#link');
+	get links(): (LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
+		return this.querySelectorAll('link, redirect-target, ext-link, free-ext-link, image-parameter#link');
 	}
 
 	/** 所有模板和模块 */

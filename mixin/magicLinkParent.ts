@@ -41,7 +41,7 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T, _?: un
 			return this.firstChild.protocol;
 		}
 
-		set protocol(value) {
+		set protocol(value: string) {
 			this.firstChild.protocol = value;
 		}
 

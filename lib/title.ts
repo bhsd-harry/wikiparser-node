@@ -84,9 +84,10 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	set extension(extension) {
+		extension ||= '';
 		const {main} = this,
 			i = main.lastIndexOf('.');
-		this.main = `${i === -1 ? main : main.slice(0, i)}.${extension}`;
+		this.main = `${i === -1 ? main : main.slice(0, i)}${extension && '.'}${extension}`;
 	}
 
 	/* NOT FOR BROWSER END */

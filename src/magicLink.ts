@@ -52,10 +52,7 @@ export abstract class MagicLinkToken extends Token {
 	}
 
 	/** @throws `Error` 特殊外链无法更改协议n */
-	set protocol(value) {
-		if (typeof value !== 'string') {
-			this.typeError('protocol', 'String');
-		}
+	set protocol(value: string) {
 		const {link, pattern} = this;
 		if (!pattern.test(link)) {
 			throw new Error(`特殊外链无法更改协议：${link}`);

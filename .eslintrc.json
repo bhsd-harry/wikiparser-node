@@ -748,6 +748,7 @@
 			"rules": {
 				"no-var": 0,
 				"unicorn/filename-case": 0,
+				"jsdoc/require-jsdoc": 0,
 				"@stylistic/max-len": [
 					2,
 					{

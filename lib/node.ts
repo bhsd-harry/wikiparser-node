@@ -19,6 +19,25 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
+/**
+ * 计算字符串的行列数
+ * @param str 字符串
+ */
+const getDimension = (str: string): Dimension => {
+	const lines = str.split('\n'),
+		height = lines.length;
+	return {height, width: lines[height - 1]!.length};
+};
+
+/**
+ * 获取子节点相对于父节点的字符位置
+ * @param j 子节点序号
+ * @param parent 父节点
+ */
+const getIndex = (j: number, parent: AstNode): number =>
+	parent.childNodes.slice(0, j).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
+	+ parent.getAttribute('padding');
+
 /* NOT FOR BROWSER */
 
 /**
@@ -29,7 +48,7 @@ export interface CaretPosition {
  * @throws `TypeError`
  */
 const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(`${name}.${method} 方法仅接受 ${args.join('、')} 作为输入参数！`);
+	throw new TypeError(`${name}.${method} method only accepts ${args.join('、')} as input parameters!`);
 };
 
 /* NOT FOR BROWSER END */
@@ -203,18 +222,15 @@ export abstract class AstNode implements AstNodeBase {
 	posFromIndex(index: number): Position | undefined {
 		const str = String(this);
 		if (index >= -str.length && index <= str.length) {
-			const lines = str.slice(0, index).split('\n'),
-				top = lines.length - 1;
-			return {top, left: lines[top]!.length};
+			const {height, width} = getDimension(str.slice(0, index));
+			return {top: height - 1, left: width};
 		}
 		return undefined;
 	}
 
 	/** 获取行数和最后一行的列数 */
 	#getDimension(): Dimension {
-		const lines = String(this).split('\n'),
-			height = lines.length;
-		return {height, width: lines[height - 1]!.length};
+		return getDimension(String(this));
 	}
 
 	/** @private */
@@ -228,23 +244,9 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param j 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
-		let childNodes: readonly AstNodes[];
-
-		/**
-		 * 获取子节点相对于父节点的字符位置，使用前需要先给`childNodes`赋值
-		 * @param end 子节点序号
-		 * @param parent 父节点
-		 */
-		const getIndex = (end: number, parent: AstNode): number =>
-			childNodes.slice(0, end).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
-			+ parent.getAttribute('padding');
 		if (j === undefined) {
 			const {parentNode} = this;
-			if (parentNode) {
-				({childNodes} = parentNode);
-				return getIndex(childNodes.indexOf(this as AstNode as AstNodes), parentNode);
-			}
-			return 0;
+			return parentNode ? getIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes), parentNode) : 0;
 		}
 
 		/* NOT FOR BROWSER */
@@ -253,7 +255,6 @@ export abstract class AstNode implements AstNodeBase {
 
 		/* NOT FOR BROWSER END */
 
-		({childNodes} = this);
 		return getIndex(j, this);
 	}
 
@@ -321,7 +322,7 @@ export abstract class AstNode implements AstNodeBase {
 	#insertAdjacent(nodes: readonly (AstNodes | string)[], offset: number): void {
 		const {parentNode} = this;
 		if (!parentNode) {
-			throw new Error('不存在父节点！');
+			throw new Error('The node has no parent!');
 		}
 		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
 		for (let j = 0; j < nodes.length; j++) {
@@ -347,10 +348,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 移除当前节点 */
 	remove(): void {
-		const {parentNode} = this;
-		if (parentNode) {
-			parentNode.removeChild(this as AstNode as AstNodes);
-		}
+		this.parentNode?.removeChild(this as AstNode as AstNodes);
 	}
 
 	/**
@@ -374,7 +372,7 @@ export abstract class AstNode implements AstNodeBase {
 	verifyChild(i: number, addition = 0): void {
 		const {childNodes: {length}} = this;
 		if (i < -length || i >= length + addition) {
-			throw new RangeError(`不存在第 ${i} 个子节点！`);
+			throw new RangeError(`The ${i}th child does not exist!`);
 		}
 	}
 
@@ -414,12 +412,12 @@ export abstract class AstNode implements AstNodeBase {
 	 * 移除事件的所有监听
 	 * @param types 事件类型
 	 */
-	removeAllEventListeners(types?: string | string[]): void {
+	removeAllEventListeners(types: string | string[]): void {
 		if (Array.isArray(types)) {
 			for (const type of types) {
 				this.removeAllEventListeners(type);
 			}
-		} else {
+		} else if (typeof types === 'string') {
 			this.#events.removeAllListeners(types);
 		}
 	}
@@ -446,7 +444,7 @@ export abstract class AstNode implements AstNodeBase {
 			currentTarget: {value: this, enumerable: true, configurable: true},
 		});
 		this.#events.emit(e.type, e, data);
-		if (e.bubbles && this.parentNode) {
+		if (e.bubbles && !e.cancelBubble && this.parentNode) {
 			this.parentNode.dispatchEvent(e, data);
 		}
 	}
@@ -480,8 +478,7 @@ export abstract class AstNode implements AstNodeBase {
 		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],
 			bAncestors = [...other.getAncestors().reverse(), other],
 			depth = aAncestors.findIndex((ancestor, i) => bAncestors[i] !== ancestor),
-			commonAncestor = aAncestors[depth - 1]!,
-			{childNodes} = commonAncestor;
+			{childNodes} = aAncestors[depth - 1]!;
 		return childNodes.indexOf(aAncestors[depth]!) - childNodes.indexOf(bAncestors[depth]!);
 	}
 
@@ -492,8 +489,8 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
 		const lines = String(this).split('\n');
-		return top >= 0 && left >= 0 && lines.length >= top + 1 && lines[top]!.length >= left
-			? lines.slice(0, top).reduce((acc, curLine) => acc + curLine.length + 1, 0) + left
+		return top >= 0 && left >= 0 && top <= lines.length - 1 && left <= lines[top]!.length
+			? lines.slice(0, top).reduce((acc, cur) => acc + cur.length + 1, 0) + left
 			: undefined;
 	}
 
