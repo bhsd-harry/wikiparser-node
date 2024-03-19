@@ -241,9 +241,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
 				break;
 			case 'highlighter':
 				// 进入highlighter时，将editor的文本同步到highlighter
-				if (pres[0].childElementCount && pres[0].innerText === textbox.value.trimEnd()) {
-					break;
-				}
 				(async () => {
 					wikiparse.print = immediatePrint;
 					for (const [i, pre] of pres.entries()) {

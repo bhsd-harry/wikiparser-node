@@ -50,10 +50,9 @@ const highlight = async (ele: HTMLElement, include?: boolean, linenums = false, 
 	ele.classList.add('wikiparser');
 	if (linenums) {
 		const root = document.createElement('span');
-		root.className = 'wpb-root';
 		root.innerHTML = html;
 		// 添加行号。这里不使用<table>排版，而是使用<ol>
-		const lines = splitNewLine(root).map((line, i) => {
+		const lines = splitNewLine(root.firstElementChild || root).map((line, i) => {
 				const li = document.createElement('li');
 				li.id = `L${i + start}`;
 				li.append(line);

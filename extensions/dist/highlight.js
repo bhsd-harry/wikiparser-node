@@ -34,9 +34,8 @@ const highlight = async (ele, include, linenums = false, start = 1) => {
     ele.classList.add('wikiparser');
     if (linenums) {
         const root = document.createElement('span');
-        root.className = 'wpb-root';
         root.innerHTML = html;
-        const lines = splitNewLine(root).map((line, i) => {
+        const lines = splitNewLine(root.firstElementChild || root).map((line, i) => {
             const li = document.createElement('li');
             li.id = `L${i + start}`;
             li.append(line);
