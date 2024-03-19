@@ -40,7 +40,6 @@ export abstract class AstElement extends AstNode {
 		 * @param i 移除位置
 		 */
 		const remove = (i: number): void => {
-			childNodes[i]!.setAttribute('parentNode', undefined);
 			childNodes.splice(i, 1);
 		};
 		for (let i = childNodes.length - 1; i >= 0; i--) {
