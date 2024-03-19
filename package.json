@@ -57,6 +57,7 @@
 		"eslint-plugin-eslint-comments": "^3.2.0",
 		"eslint-plugin-jsdoc": "^48.0.2",
 		"eslint-plugin-json-es": "^1.5.7",
+		"eslint-plugin-markdown": "^4.0.1",
 		"eslint-plugin-n": "^16.6.2",
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-regexp": "^2.2.0",

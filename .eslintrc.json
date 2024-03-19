@@ -14,6 +14,7 @@
 	],
 	"extends": [
 		"eslint:recommended",
+		"plugin:markdown/recommended-legacy",
 		"plugin:promise/recommended",
 		"plugin:n/recommended-script",
 		"plugin:regexp/recommended",
@@ -23,7 +24,6 @@
 		"ecmaVersion": 13
 	},
 	"ignorePatterns": [
-		"/wiki/",
 		"/bundle/",
 		"dist/"
 	],
@@ -739,6 +739,23 @@
 		]
 	},
 	"overrides": [
+		{
+			"files": "wiki/*.md/**",
+			"globals": {
+				"assert": "readonly",
+				"Parser": "readonly"
+			},
+			"rules": {
+				"no-var": 0,
+				"unicorn/filename-case": 0,
+				"@stylistic/max-len": [
+					2,
+					{
+						"code": 80
+					}
+				]
+			}
+		},
 		{
 			"files": "**/*.json",
 			"excludedFiles": [
