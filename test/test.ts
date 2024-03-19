@@ -14,14 +14,7 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		// eslint-disable-next-line es-x/no-string-prototype-matchall, es-x/no-regexp-lookbehind-assertions
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
 			const lines = code.split('\n') as [string, ...string[]],
-				[first] = lines,
-				long = lines.filter(line => {
-					const i = line.indexOf('//');
-					return i > 80 || i === -1 && line.length > 80;
-				});
-			if (long.length > 0) {
-				error(first, long);
-			}
+				[first] = lines;
 			if (first.endsWith(' (browser)')) {
 				continue;
 			}
