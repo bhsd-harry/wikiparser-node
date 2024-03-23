@@ -4,7 +4,7 @@ export type {
 } from './lib/node';
 export type * from './lib/text';
 // export type * from './lib/element';
-export type * from './src/index';
+export type {Token} from './src/index';
 export type * from './src/redirect';
 export type * from './src/link/redirectTarget';
 export type * from './src/onlyinclude';

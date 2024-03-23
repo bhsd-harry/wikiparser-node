@@ -14,9 +14,7 @@ import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
 import type {LintError} from '../base';
 import type {Title} from '../lib/title';
-import type {
-	AstText,
-} from '../internal';
+import type {AstText} from '../internal';
 
 const insensitiveVars = new Set<string | undefined>([
 	'pageid',
