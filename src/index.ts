@@ -47,13 +47,12 @@ import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
-import type {LintError} from '../base';
+import type {LintError, TokenTypes} from '../base';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
 	CategoryToken,
 } from '../internal';
-import type {TokenTypes} from '../util/constants';
 
 declare interface LintIgnore {
 	line: number;
