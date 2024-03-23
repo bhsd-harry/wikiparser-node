@@ -2,7 +2,10 @@ import {escape} from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
-import type {AttributeToken, ExtToken} from '../internal';
+import type {
+	AttributeToken,
+	ExtToken,
+} from '../internal';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
