@@ -33,7 +33,7 @@
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
-		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
+		"lint:json": "v8r -s config/.schema.json config/*.json",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"test": "node dist/test/test.js",
 		"test:parser": "node dist/test/parserTests.js",
@@ -50,7 +50,6 @@
 		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^7.1.0",
 		"@typescript-eslint/parser": "^7.1.0",
-		"ajv-cli": "^5.0.0",
 		"eslint": "^8.56.0",
 		"eslint-plugin-es-x": "^7.5.0",
 		"eslint-plugin-eslint-comments": "^3.2.0",
@@ -60,7 +59,8 @@
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-regexp": "^2.2.0",
 		"eslint-plugin-unicorn": "^51.0.1",
-		"typescript": "^5.3.3"
+		"typescript": "^5.3.3",
+		"v8r": "^3.0.0"
 	},
 	"engines": {
 		"node": "^20.9.0"
