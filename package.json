@@ -41,7 +41,7 @@
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && eslint --cache .",
-		"lint:json": "ajv -s config/.schema.json -d 'config/*.json' --strict=true --strict-required=false",
+		"lint:json": "v8r -s config/.schema.json config/*.json",
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"server": "npm run test:end; http-server .. -c-1 --cors &",
@@ -61,7 +61,6 @@
 		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^7.1.0",
 		"@typescript-eslint/parser": "^7.1.0",
-		"ajv-cli": "^5.0.0",
 		"chalk": "^4.1.2",
 		"esbuild": "^0.19.12",
 		"eslint": "^8.56.0",
@@ -76,7 +75,8 @@
 		"http-server": "^14.1.0",
 		"stylelint": "^16.1.0",
 		"stylelint-config-recommended": "^14.0.0",
-		"typescript": "^5.3.3"
+		"typescript": "^5.3.3",
+		"v8r": "^3.0.0"
 	},
 	"engines": {
 		"node": "^20.9.0"
