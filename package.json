@@ -34,7 +34,8 @@
 	"scripts": {
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; node ./dist/bin/declaration.js",
 		"prepublishOnly": "npm run build && rm dist/internal.js dist/[bpu]*/*.d.ts",
-		"build": "bash build.sh",
+		"build:core": "bash build.sh",
+		"build": "npm run build:core",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",

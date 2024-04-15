@@ -1015,6 +1015,12 @@
 				"@stylistic/type-generic-spacing": 2,
 				"jsdoc/check-types": 0
 			}
+		},
+		{
+			"files": "extensions/*.ts",
+			"parserOptions": {
+				"project": "./extensions/tsconfig.json"
+			}
 		}
 	],
 	"settings": {
