@@ -29,5 +29,5 @@ jobs:
         node-version: '20.x'
         cache: 'npm'
     - run: npm ci
-    - run: npm run build
+    - run: npm run build:core
     - run: npm test
