@@ -1,10 +1,23 @@
 import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
-import type {Config, LintError, Parser, AST} from '../base';
-import type {Printer} from './editor';
-import type {Linter} from './lint';
+import type {
+	Config,
+	LintError,
+	AST,
+	Parser,
+} from '../base';
 
 export type {Diagnostic, Action} from '@codemirror/lint';
 export type {Config, LintError, AST};
+
+export interface PrinterBase {
+	include: boolean;
+}
+
+export interface LinterBase {
+	include: boolean;
+	queue(wikitext: string): Promise<LintError[]>;
+	codemirror(wikitext: string): Promise<Diagnostic[]>;
+}
 
 declare global {
 	module '/*' {
@@ -26,8 +39,8 @@ export interface wikiparse {
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
-	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => Printer;
-	Printer?: typeof Printer;
-	Linter?: typeof Linter;
+	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
+	Printer?: new (preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
+	Linter?: new (include?: boolean) => LinterBase;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */

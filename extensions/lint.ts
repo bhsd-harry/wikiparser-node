@@ -1,7 +1,7 @@
-import type {LintError, Diagnostic, Action} from './typings';
+import type {LintError, Diagnostic, Action, LinterBase} from './typings';
 
 /** 用于语法分析 */
-class Linter {
+class Linter implements LinterBase {
 	readonly #id;
 	#wikitext: string;
 	#running: Promise<LintError[]> | undefined;

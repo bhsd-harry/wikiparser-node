@@ -1,10 +1,12 @@
+import type {PrinterBase} from './typings';
+
 const enum PrintType {
 	Coarse,
 	Fine,
 }
 
 /** 用于打印AST */
-class Printer {
+class Printer implements PrinterBase {
 	readonly #id;
 	readonly #preview;
 	readonly #textbox;
