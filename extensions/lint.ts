@@ -1,4 +1,4 @@
-import type {LintError, Diagnostic, Action, LinterBase} from './typings';
+import type {LintError, Diagnostic, Action, LinterBase, editor} from './typings';
 
 /** 用于语法分析 */
 class Linter implements LinterBase {
@@ -69,6 +69,22 @@ class Linter implements LinterBase {
 					},
 				}) as Action),
 			}));
+	}
+
+	/**
+	 * 用于 Monaco 的语法分析
+	 * @param wikitext 待分析的文本
+	 */
+	async monaco(wikitext: string): Promise<editor.IMarkerData[]> {
+		return (await this.queue(wikitext)).map(({startLine, startCol, endLine, endCol, severity, message, rule}) => ({
+			source: `WikiLint(${rule})`,
+			startLineNumber: startLine + 1,
+			startColumn: startCol + 1,
+			endLineNumber: endLine + 1,
+			endColumn: endCol + 1,
+			severity: severity === 'error' ? 8 : 4,
+			message,
+		}));
 	}
 }
 

@@ -73,6 +73,7 @@
 		"eslint-plugin-regexp": "^2.2.0",
 		"eslint-plugin-unicorn": "^51.0.1",
 		"http-server": "^14.1.0",
+		"monaco-editor": "^0.47.0",
 		"stylelint": "^16.1.0",
 		"stylelint-config-recommended": "^14.0.0",
 		"typescript": "^5.3.3",

@@ -46,6 +46,17 @@ class Linter {
             })),
         }));
     }
+    async monaco(wikitext) {
+        return (await this.queue(wikitext)).map(({ startLine, startCol, endLine, endCol, severity, message, rule }) => ({
+            source: `WikiLint(${rule})`,
+            startLineNumber: startLine + 1,
+            startColumn: startCol + 1,
+            endLineNumber: endLine + 1,
+            endColumn: endCol + 1,
+            severity: severity === 'error' ? 8 : 4,
+            message,
+        }));
+    }
 }
 _Linter_id = new WeakMap(), _Linter_wikitext = new WeakMap(), _Linter_running = new WeakMap(), _Linter_instances = new WeakSet(), _Linter_lint = async function _Linter_lint(wikitext) {
     const { include } = this, errors = await wikiparse.lint(wikitext, include, __classPrivateFieldGet(this, _Linter_id, "f"));

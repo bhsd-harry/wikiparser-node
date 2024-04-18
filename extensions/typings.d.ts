@@ -1,13 +1,12 @@
 import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
 import type {
-	Config,
-	LintError,
-	AST,
-	Parser,
-} from '../base';
+	Diagnostic,
+	Action,
+} from '@codemirror/lint';
+import type {editor} from 'monaco-editor';
+import type {Config, LintError, AST, Parser} from '../base';
 
-export type {Diagnostic, Action} from '@codemirror/lint';
-export type {Config, LintError, AST};
+export type {Config, LintError, AST, Diagnostic, Action, editor};
 
 export interface PrinterBase {
 	include: boolean;
@@ -17,6 +16,7 @@ export interface LinterBase {
 	include: boolean;
 	queue(wikitext: string): Promise<LintError[]>;
 	codemirror(wikitext: string): Promise<Diagnostic[]>;
+	monaco(wikitext: string): Promise<editor.IMarkerData[]>;
 }
 
 declare global {
