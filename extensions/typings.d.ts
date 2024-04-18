@@ -1,8 +1,8 @@
 import type {
-	Config,
-	LintError,
-	AST,
-} from '../base';
+	Diagnostic,
+} from '@codemirror/lint';
+import type {editor} from 'monaco-editor';
+import type {Config, LintError, AST} from '../base';
 
 export interface PrinterBase {
 	include: boolean;
@@ -12,6 +12,7 @@ export interface LinterBase {
 	include: boolean;
 	queue(wikitext: string): Promise<LintError[]>;
 	codemirror(wikitext: string): Promise<Diagnostic[]>;
+	monaco(wikitext: string): Promise<editor.IMarkerData[]>;
 }
 
 declare global {
