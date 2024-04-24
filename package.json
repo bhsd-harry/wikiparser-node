@@ -16,7 +16,6 @@
 	"files": [
 		"/errors/README",
 		"/printed/README",
-		"/extensions/*.d.ts",
 		"/config/",
 		"/i18n/",
 		"/dist/",
@@ -46,7 +45,6 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@codemirror/lint": "^6.4.2",
 		"@cypress/request": "^3.0.1",
 		"@stylistic/eslint-plugin": "^1.5.4",
 		"@types/node": "^20.11.6",
