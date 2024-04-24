@@ -16,6 +16,7 @@
 	"files": [
 		"/errors/README",
 		"/printed/README",
+		"/extensions/*.d.ts",
 		"/config/",
 		"/i18n/",
 		"/dist/",
@@ -29,7 +30,8 @@
 	"scripts": {
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; node ./dist/bin/declaration.js",
 		"prepublishOnly": "npm run build && rm dist/internal.js dist/[pu]*/*.d.ts",
-		"build": "bash build.sh",
+		"build:core": "bash build.sh",
+		"build": "npm run build:core && node ./dist/bin/parserTests.js",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
@@ -44,6 +46,7 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
+		"@codemirror/lint": "^6.4.2",
 		"@cypress/request": "^3.0.1",
 		"@stylistic/eslint-plugin": "^1.5.4",
 		"@types/node": "^20.11.6",

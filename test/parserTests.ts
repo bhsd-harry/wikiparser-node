@@ -2,7 +2,7 @@ import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
 import Parser = require('../index');
 
-const tests: {wikitext?: string, print?: string}[] = require('wikiparser-node/test/parserTests.json');
+const tests: {wikitext?: string, print?: string}[] = require('../../test/parserTests.json');
 (async () => {
 	let failed = 0;
 	for (const [i, {wikitext, print}] of tests.entries()) {

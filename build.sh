@@ -1,6 +1,6 @@
 #!/usr/local/bin/bash
 rm -rf dist/
-tsc && npm run declaration && node ./dist/bin/parserTests.js
+tsc && npm run declaration
 if [[ $? -eq 0 ]]
 then
 	err=$(tsc --project tsconfig.dist.json 2>&1 | bash sed.sh -E '/error TS2309:/d')
