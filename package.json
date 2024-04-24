@@ -16,7 +16,6 @@
 	"files": [
 		"/errors/README",
 		"/printed/README",
-		"/extensions/*.d.ts",
 		"/config/",
 		"/i18n/",
 		"/dist/",
@@ -64,6 +63,7 @@
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-regexp": "^2.2.0",
 		"eslint-plugin-unicorn": "^51.0.1",
+		"monaco-editor": "^0.47.0",
 		"typescript": "^5.3.3",
 		"v8r": "^3.0.0"
 	},
