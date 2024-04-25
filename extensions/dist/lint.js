@@ -54,6 +54,7 @@ class Linter {
             endLineNumber: endLine + 1,
             endColumn: endCol + 1,
             severity: severity === 'error' ? 8 : 4,
+            rule,
             message,
         }));
     }
