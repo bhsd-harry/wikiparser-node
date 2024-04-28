@@ -1,3 +1,4 @@
+
 ## v1.7.0
 
 *2024-03-18*
@@ -5,6 +6,10 @@
 **Added**
 
 - Parse redirect pages
+
+**Fixed**
+
+- Allow an external image as `ext-link-text`
 
 ## v1.6.2
 

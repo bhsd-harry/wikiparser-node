@@ -1,6 +1,10 @@
 import {classes} from '../util/constants';
 import {setChildNodes} from '../util/debug';
-import {escape} from '../util/string';
+import {
+	extUrlChar,
+	extUrlCharFirst,
+	escape,
+} from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
@@ -24,6 +28,7 @@ const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
 	+ '((?:^|\\])[^[]*?)\\]+', // `]`
 	errorSyntax = new RegExp(`${source}|https?[:/]\\/+`, 'giu'),
 	errorSyntaxUrl = new RegExp(source, 'giu'),
+	extImage = new RegExp(`^https?:\\/\\/${extUrlCharFirst}${extUrlChar}\\.(?:gif|png|jpg|jpeg)$`, 'iu'),
 	regexes = {
 		'[': /[[\]]/u,
 		'{': /[{}]/u,
@@ -198,6 +203,8 @@ export class AstText extends AstNode {
 				continue;
 			} else if (char === ']' && (index || length > 1)) {
 				errorRegex.lastIndex--;
+			} else if (char === 'h' && index === 0 && type === 'ext-link-text' && extImage.test(data)) {
+				continue;
 			}
 			const startIndex = start + index,
 				endIndex = startIndex + length,
