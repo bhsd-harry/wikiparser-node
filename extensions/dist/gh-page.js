@@ -1,8 +1,9 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
+import '/monaco-wiki/all.min.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
     Parser.config = config;
     wikiparse.setConfig(config);
@@ -10,6 +11,24 @@ const keys = new Set(['type', 'childNodes', 'range']);
     const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
     const instance = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
+    localStorage.setItem('codemirror-mediawiki-addons', JSON.stringify(['lint']));
+    const model = (await monaco).editor.createModel(textbox2.value, 'wikitext');
+    monaco.editor.create(monacoContainer, {
+        model,
+        automaticLayout: true,
+        theme: 'monokai',
+        readOnly: true,
+        wordWrap: 'on',
+        wordBreak: 'keepAll',
+        glyphMargin: true,
+        fontSize: parseFloat(getComputedStyle(textbox2).fontSize),
+        unicodeHighlight: {
+            ambiguousCharacters: false,
+        },
+    });
+    textbox2.addEventListener('input', () => {
+        model.setValue(textbox2.value);
+    });
     const updateDoc = (str) => {
         if (str) {
             textbox.value = str;
@@ -152,6 +171,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
             case 'linter':
                 if (text1 !== text2) {
                     instance.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
+                    model.setValue(text1);
                     instance.update();
                 }
                 break;
@@ -176,5 +196,5 @@ const keys = new Set(['type', 'childNodes', 'range']);
     };
     hashchange();
     window.addEventListener('hashchange', hashchange);
-    Object.assign(window, { cm: instance });
+    Object.assign(window, { cm: instance, model });
 })();

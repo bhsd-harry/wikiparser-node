@@ -27,6 +27,8 @@ declare global {
 
 	const Parser: Parser;
 	const wikiparse: wikiparse;
+
+	type MonacoEditor = typeof editor;
 }
 
 /* eslint-disable @typescript-eslint/method-signature-style */

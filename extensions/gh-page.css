@@ -200,6 +200,11 @@ dl.hover {
 	background-color: rgba(108, 108, 108, .1);
 }
 
+#monaco-container {
+	height: 450px;
+	margin-top: 1rem;
+}
+
 h3 {
 	margin: .5rem 0;
 	font-size: var(--font-size-h3);
