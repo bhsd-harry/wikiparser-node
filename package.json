@@ -52,7 +52,7 @@
 		"test:real": "node dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.1.11",
+		"@bhsd/codemirror-mediawiki": "^2.10.0",
 		"@codemirror/lint": "^6.4.2",
 		"@cypress/request": "^3.0.1",
 		"@stylistic/eslint-plugin": "^1.5.4",
@@ -71,9 +71,9 @@
 		"eslint-plugin-n": "^16.6.2",
 		"eslint-plugin-promise": "^6.1.1",
 		"eslint-plugin-regexp": "^2.2.0",
-		"eslint-plugin-unicorn": "^51.0.1",
+		"eslint-plugin-unicorn": "^52.0.0",
 		"http-server": "^14.1.0",
-		"monaco-editor": "^0.47.0",
+		"monaco-editor": "^0.48.0",
 		"stylelint": "^16.1.0",
 		"stylelint-config-recommended": "^14.0.0",
 		"typescript": "^5.3.3",
