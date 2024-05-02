@@ -1052,6 +1052,7 @@
 	"settings": {
 		"n": {
 			"tryExtensions": [
+				".js",
 				".json",
 				".ts"
 			],
