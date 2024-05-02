@@ -1017,6 +1017,7 @@
 		{
 			"files": "test/*.ts",
 			"rules": {
+				"n/no-missing-import": 0,
 				"n/no-missing-require": 0
 			}
 		},
@@ -1034,6 +1035,7 @@
 				"unicorn/empty-brace-spaces": 2,
 				"unicorn/no-this-assignment": 2,
 				"n/no-missing-import": 0,
+				"n/no-unsupported-features/node-builtins": 0,
 				"@typescript-eslint/no-unused-vars": [
 					2,
 					{
@@ -1050,6 +1052,7 @@
 	"settings": {
 		"n": {
 			"tryExtensions": [
+				".json",
 				".ts"
 			],
 			"allowModules": [
