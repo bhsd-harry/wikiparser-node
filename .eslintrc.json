@@ -505,8 +505,8 @@
 			2,
 			"exports"
 		],
-		"n/no-missing-import": 0,
-		"n/no-missing-require": 0,
+		"n/no-missing-import": 2,
+		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
 		"n/no-new-require": 2,
 		"n/no-path-concat": 2,
@@ -1021,9 +1021,25 @@
 				"@stylistic/type-generic-spacing": 2,
 				"jsdoc/check-types": 0
 			}
+		},
+		{
+			"files": "test/*.ts",
+			"rules": {
+				"n/no-missing-require": 0
+			}
 		}
 	],
 	"settings": {
+		"n": {
+			"tryExtensions": [
+				".ts"
+			],
+			"allowModules": [
+				"chalk",
+				"request",
+				"monaco-editor"
+			]
+		},
 		"jsdoc": {
 			"tagNamePreference": {
 				"augments": "extends"
