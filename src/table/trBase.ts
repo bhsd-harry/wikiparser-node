@@ -7,7 +7,7 @@ import {
 	Shadow,
 } from '../../util/debug';
 import {classes} from '../../util/constants';
-import {Token} from '..';
+import {Token} from '../index';
 import {TableBaseToken} from './base';
 import {
 	TdToken,

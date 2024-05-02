@@ -507,8 +507,8 @@
 			2,
 			"exports"
 		],
-		"n/no-missing-import": 0,
-		"n/no-missing-require": 0,
+		"n/no-missing-import": 2,
+		"n/no-missing-require": 2,
 		"n/no-mixed-requires": 2,
 		"n/no-new-require": 2,
 		"n/no-path-concat": 2,
@@ -751,6 +751,7 @@
 				"no-var": 0,
 				"unicorn/filename-case": 0,
 				"jsdoc/require-jsdoc": 0,
+				"n/no-missing-require": 0,
 				"@stylistic/max-len": [
 					2,
 					{
@@ -1053,6 +1054,12 @@
 			}
 		},
 		{
+			"files": "test/*.ts",
+			"rules": {
+				"n/no-missing-require": 0
+			}
+		},
+		{
 			"files": "extensions/*.ts",
 			"parserOptions": {
 				"project": "./extensions/tsconfig.json"
@@ -1060,6 +1067,16 @@
 		}
 	],
 	"settings": {
+		"n": {
+			"tryExtensions": [
+				".ts"
+			],
+			"allowModules": [
+				"chalk",
+				"request",
+				"monaco-editor"
+			]
+		},
 		"jsdoc": {
 			"tagNamePreference": {
 				"augments": "extends"
