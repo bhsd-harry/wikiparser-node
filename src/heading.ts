@@ -48,13 +48,13 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	override toString(): string {
 		const equals = this.#equals;
-		return `${equals}${String(this.firstChild)}${equals}${String(this.lastChild)}`;
+		return equals + String(this.firstChild) + equals + String(this.lastChild);
 	}
 
 	/** @override */
 	override text(): string {
 		const equals = this.#equals;
-		return `${equals}${this.firstChild.text()}${equals}`;
+		return equals + this.firstChild.text() + equals;
 	}
 
 	/** @private */

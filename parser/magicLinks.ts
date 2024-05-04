@@ -28,7 +28,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 			if (sepChars[0].startsWith(';') && /&(?:[a-z]+|#x[\da-f]+|#\d+)$/iu.test(url.slice(0, sepChars.index))) {
 				correction = 1;
 			}
-			trail = `${url.slice(sepChars.index + correction)}${trail}`;
+			trail = url.slice(sepChars.index + correction) + trail;
 			url = url.slice(0, sepChars.index + correction);
 		}
 		if (trail.length >= p1.length) {

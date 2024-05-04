@@ -106,7 +106,7 @@ export abstract class ImageParameterToken extends Token {
 			} else {
 				super(mt[2], config, accum, {
 				});
-				this.#syntax = `${mt[1]}${param[0]}${mt[3]!}`;
+				this.#syntax = mt[1] + param[0] + mt[3]!;
 			}
 			this.setAttribute('name', param[1]);
 			return;

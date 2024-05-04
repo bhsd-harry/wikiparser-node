@@ -193,7 +193,7 @@ export abstract class TranscludeToken extends Token {
 			? ''
 			: `{{${modifier}${
 				type === 'magic-word'
-					? `${firstChild.text()}${length === 1 ? '' : ':'}${text(childNodes.slice(1), '|')}`
+					? firstChild.text() + (length === 1 ? '' : ':') + text(childNodes.slice(1), '|')
 					: super.text('|')
 			}}}`;
 	}
@@ -370,7 +370,7 @@ export abstract class TranscludeToken extends Token {
 		const {childNodes, length, firstChild, modifier, type} = this;
 		return `<span class="wpb-${type}">{{${escape(modifier)}${
 			type === 'magic-word'
-				? `${firstChild.print()}${length === 1 ? '' : ':'}${print(childNodes.slice(1), {sep: '|'})}`
+				? firstChild.print() + (length === 1 ? '' : ':') + print(childNodes.slice(1), {sep: '|'})
 				: print(childNodes, {sep: '|'})
 		}}}</span>`;
 	}
