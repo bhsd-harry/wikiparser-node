@@ -20,6 +20,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
         readOnly: true,
         wordWrap: 'on',
         wordBreak: 'keepAll',
+        renderValidationDecorations: 'on',
         glyphMargin: true,
         fontSize: parseFloat(getComputedStyle(textbox2).fontSize),
         unicodeHighlight: {
