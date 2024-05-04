@@ -244,7 +244,7 @@ export abstract class TranscludeToken extends Token {
 			errors.push(generateForSelf(this, rect, 'invalid-invoke', 'missing module function'));
 			return errors;
 		}
-		const duplicatedArgs = this.getDuplicatedArgs();
+		const duplicatedArgs = this.getDuplicatedArgs().filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 		if (duplicatedArgs.length > 0) {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
