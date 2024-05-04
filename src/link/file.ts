@@ -82,7 +82,7 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	set size(size) {
-		this.setValue('width', size && `${size.width}${size.height && 'x'}${size.height}`);
+		this.setValue('width', size && size.width + (size.height && 'x') + size.height);
 	}
 
 	/** 图片宽度 */

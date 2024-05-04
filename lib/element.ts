@@ -383,7 +383,7 @@ export abstract class AstElement extends AstNode {
 
 		if (typeof file === 'string') {
 			fs.writeFileSync(
-				path.join(__dirname.slice(0, -4), '..', 'printed', `${file}${file.endsWith('.json') ? '' : '.json'}`),
+				path.join(__dirname.slice(0, -4), '..', 'printed', file + (file.endsWith('.json') ? '' : '.json')),
 				JSON.stringify(json, null, 2),
 			);
 		}

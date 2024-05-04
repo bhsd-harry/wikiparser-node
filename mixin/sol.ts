@@ -23,7 +23,7 @@ export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T =>
 
 		/** @private */
 		override toString(): string {
-			return `${this.#prependNewLine()}${super.toString()}`;
+			return this.#prependNewLine() + super.toString();
 		}
 
 		/** @private */
@@ -35,7 +35,7 @@ export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T =>
 
 		/** @override */
 		override text(): string {
-			return `${this.#prependNewLine()}${super.text()}`;
+			return this.#prependNewLine() + super.text();
 		}
 	}
 	Object.defineProperty(SolToken, 'name', {value: constructor.name});

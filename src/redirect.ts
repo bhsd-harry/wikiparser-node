@@ -68,7 +68,7 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 
 	/** @override */
 	override toString(): string {
-		return `${this.#pre}${super.toString()}${this.#post}`;
+		return this.#pre + super.toString() + this.#post;
 	}
 
 	/** @override */

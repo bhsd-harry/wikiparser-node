@@ -139,7 +139,7 @@ export abstract class ImageParameterToken extends Token {
 
 	set size(size) {
 		if (this.name === 'width') {
-			this.setValue(size && `${size.width}${size.height && 'x'}${size.height}`);
+			this.setValue(size && size.width + (size.height && 'x') + size.height);
 		}
 	}
 
@@ -151,7 +151,7 @@ export abstract class ImageParameterToken extends Token {
 	set width(width) {
 		if (this.name === 'width') {
 			const {height} = this;
-			this.setValue(`${width || ''}${height! && 'x'}${height!}`);
+			this.setValue((width || '') + (height! && 'x') + height!);
 		}
 	}
 
@@ -195,7 +195,7 @@ export abstract class ImageParameterToken extends Token {
 				super(mt[2], config, accum, {
 					'Stage-2': ':', '!HeadingToken': ':',
 				});
-				this.#syntax = `${mt[1]}${param[0]}${mt[3]!}`;
+				this.#syntax = mt[1] + param[0] + mt[3]!;
 			}
 			this.setAttribute('name', param[1]);
 			return;

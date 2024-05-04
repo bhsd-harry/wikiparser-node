@@ -48,7 +48,7 @@ export const single = async (Parser: Parser, {pageid, title, ns, content}: Simpl
 		firstStart = Infinity;
 	for (const {startIndex, endIndex} of errors) {
 		if (endIndex < firstStart) {
-			text = `${text.slice(0, startIndex)}${text.slice(endIndex)}`;
+			text = text.slice(0, startIndex) + text.slice(endIndex);
 			firstStart = startIndex;
 		} else {
 			firstStart = Math.min(firstStart, startIndex);

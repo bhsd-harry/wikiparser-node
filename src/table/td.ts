@@ -206,7 +206,7 @@ export abstract class TdToken extends TableBaseToken {
 		/* NOT FOR BROWSER END */
 
 		const {childNodes: [syntax, attr, inner]} = this;
-		return `${String(syntax)}${String(attr)}${this.#innerSyntax}${String(inner)}`;
+		return String(syntax) + String(attr) + this.#innerSyntax + String(inner);
 	}
 
 	/** @override */
@@ -218,7 +218,7 @@ export abstract class TdToken extends TableBaseToken {
 		/* NOT FOR BROWSER END */
 
 		const {childNodes: [syntax, attr, inner]} = this;
-		return `${syntax.text()}${attr.text()}${this.#innerSyntax}${inner.text()}`;
+		return syntax.text() + attr.text() + this.#innerSyntax + inner.text();
 	}
 
 	/** @private */

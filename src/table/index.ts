@@ -57,7 +57,7 @@ export class Layout extends Array<TableCoords[]> {
 			for (let j = 0; j <= hBorder.length; j++) {
 				const bit = (vBorderTop[j]! << 3) + (vBorderBottom[j]! << 0)
 					+ (hBorder[j - 1]! << 2) + (hBorder[j]! << 1);
-				out += `${border[bit]!}${hBorder[j] ? '─' : ' '}`;
+				out += border[bit]! + (hBorder[j] ? '─' : ' ');
 			}
 			out += '\n';
 		}

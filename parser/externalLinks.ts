@@ -33,7 +33,7 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		if (mt) {
 			url = url.slice(0, mt.index);
 			space = '';
-			text = `${url.slice(mt.index)}${space}${text}`;
+			text = url.slice(mt.index) + space + text;
 		}
 		if (inFile) {
 			// @ts-expect-error abstract class

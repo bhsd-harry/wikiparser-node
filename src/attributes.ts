@@ -443,7 +443,7 @@ export abstract class AttributesToken extends Token {
 			normalizeSpace(this);
 		}
 		const str = super.toString();
-		return `${this.#leadingSpace(str)}${str}`;
+		return this.#leadingSpace(str) + str;
 	}
 
 	/** @private */
@@ -459,7 +459,7 @@ export abstract class AttributesToken extends Token {
 			normalizeSpace(this);
 		}
 		const str = text(this.childNodes.filter(child => child instanceof AttributeToken), ' ');
-		return `${this.#leadingSpace(str)}${str}`;
+		return this.#leadingSpace(str) + str;
 	}
 }
 

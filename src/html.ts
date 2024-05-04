@@ -154,7 +154,7 @@ export abstract class HtmlToken extends Token {
 				name,
 			} = this,
 			{html: [,, voidTags]} = this.getAttribute('config'),
-			tag = `${this.#tag}${closing ? '' : super.text()}`;
+			tag = this.#tag + (closing ? '' : super.text());
 
 		/* NOT FOR BROWSER */
 

@@ -80,7 +80,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** @override */
 	override setTarget(link: string): void {
-		super.setTarget(`${/^\s*[:#]/u.test(link) ? '' : ':'}${link}`);
+		super.setTarget((/^\s*[:#]/u.test(link) ? '' : ':') + link);
 	}
 
 	/**
@@ -94,7 +94,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		if (link.startsWith('#')) {
 			throw new SyntaxError('跨语言链接不能仅为fragment！');
 		}
-		super.setTarget(`${lang}${link.startsWith(':') ? '' : ':'}${link}`);
+		super.setTarget(lang + (link.startsWith(':') ? '' : ':') + link);
 	}
 
 	/**
