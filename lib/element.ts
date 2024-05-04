@@ -97,10 +97,38 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * 符合条件的第一个后代节点
+	 * @param condition 条件
+	 */
+	#getElementBy<T>(condition: TokenPredicate<T>): T | undefined {
+		for (const child of this.childNodes) {
+			if (child.type === 'text') {
+				continue;
+			} else if (condition(child)) {
+				return child;
+			}
+			const descendant = child.#getElementBy(condition);
+			if (descendant) {
+				return descendant;
+			}
+		}
+		return undefined;
+	}
+
+	/**
+	 * 符合选择器的第一个后代节点
+	 * @param selector 选择器
+	 */
+	querySelector<T = Token>(selector: string): T | undefined {
+		const condition = this.#getCondition<T>(selector);
+		return this.#getElementBy(condition);
+	}
+
+	/**
 	 * 符合条件的所有后代节点
 	 * @param condition 条件
 	 */
-	#getElementsBy<T = Token>(condition: TokenPredicate<T>): T[] {
+	#getElementsBy<T>(condition: TokenPredicate<T>): T[] {
 		const descendants: T[] = [];
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {
