@@ -191,7 +191,7 @@ export abstract class TranscludeToken extends Token {
 			? ''
 			: `{{${modifier}${
 				type === 'magic-word'
-					? `${firstChild.text()}${length === 1 ? '' : ':'}${text(childNodes.slice(1), '|')}`
+					? firstChild.text() + (length === 1 ? '' : ':') + text(childNodes.slice(1), '|')
 					: super.text('|')
 			}}}`;
 	}

@@ -27,19 +27,19 @@ export class Title {
 
 	set main(title) {
 		title = title.replace(/_/gu, ' ').trim();
-		this.#main = title && `${title[0]!.toUpperCase()}${title.slice(1)}`;
+		this.#main = title && title[0]!.toUpperCase() + title.slice(1);
 	}
 
 	/** 命名空间前缀 */
 	get prefix(): string {
 		const namespace = this.#namespaces[this.ns]!;
-		return `${namespace}${namespace && ':'}`;
+		return namespace + (namespace && ':');
 	}
 
 	/** 完整标题 */
 	get title(): string {
-		const prefix = `${this.interwiki}${this.interwiki && ':'}${this.prefix}`;
-		let title = `${prefix}${this.main}`.replace(/ /gu, '_');
+		const prefix = this.interwiki + (this.interwiki && ':') + this.prefix;
+		let title = (prefix + this.main).replace(/ /gu, '_');
 		return title;
 	}
 
