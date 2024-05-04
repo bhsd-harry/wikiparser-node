@@ -136,7 +136,7 @@ for (const file of files) {
 		let start = Infinity;
 		for (const {range: [from, to], text} of fixable) {
 			if (to <= start) {
-				wikitext = `${wikitext.slice(0, from)}${text}${wikitext.slice(to)}`;
+				wikitext = wikitext.slice(0, from) + text + wikitext.slice(to);
 				start = from;
 			}
 		}

@@ -37,7 +37,7 @@ const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: 
 export const decodeHtml = factory(
 	/&(?:#(\d+|x[\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]));/gu,
 	(_, code: string, name: string) => code
-		? String.fromCodePoint(Number(`${/^x/iu.test(code) ? '0' : ''}${code}`))
+		? String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code))
 		: names[name.toLowerCase() as keyof typeof names],
 );
 
