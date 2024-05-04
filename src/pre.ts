@@ -43,7 +43,7 @@ export abstract class PreToken extends Token {
 				i = wikitext.indexOf(opening);
 				j = wikitext.indexOf(closing, i + length);
 			}
-			wikitext = `${str}${wikitext}`;
+			wikitext = str + wikitext;
 		}
 		super(wikitext, config, accum, {
 		});

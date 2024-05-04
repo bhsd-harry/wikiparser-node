@@ -95,7 +95,7 @@ export abstract class HtmlToken extends Token {
 		const {
 				closing,
 			} = this,
-			tag = `${this.#tag}${closing ? '' : super.text()}`;
+			tag = this.#tag + (closing ? '' : super.text());
 		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
 	}
 
