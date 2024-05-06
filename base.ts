@@ -177,8 +177,10 @@ interface AstElement extends AstNode {
 }
 
 export interface Parser {
-	config: string | Config;
-	i18n: string | Record<string, string> | undefined;
+	config: Config | string;
+	i18n: Record<string, string>
+	| string
+	| undefined;
 
 	/** @private */
 	getConfig(): Config;
