@@ -172,8 +172,7 @@ interface AstElement extends AstNode {
 }
 
 export interface Parser {
-	// eslint-disable-next-line @typescript-eslint/member-delimiter-style
-	config?: Config
+	config?: Config;
 	i18n: Record<string, string>
 	| undefined;
 
