@@ -112,6 +112,12 @@ export class Title {
 
 	/** @private */
 	toString(): string {
-		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
+		return `${this.title}${
+			this.fragment === undefined
+				? ''
+				: `#${
+					this.fragment
+				}`
+		}`;
 	}
 }

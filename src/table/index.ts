@@ -169,10 +169,9 @@ export abstract class TableToken extends TrBaseToken {
 		// eslint-disable-next-line @stylistic/comma-dangle
 		coords: TableCoords
 	): TdToken | undefined {
+		// eslint-disable-next-line prefer-const, @typescript-eslint/no-unnecessary-type-assertion
+		let rawCoords: TableCoords | undefined = coords as TableCoords;
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		const rawCoords = coords.row === undefined
-			? undefined
-			: coords;
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 

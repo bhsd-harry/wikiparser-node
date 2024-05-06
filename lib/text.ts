@@ -95,11 +95,12 @@ export class AstText extends AstNode {
 	/**
 	 * @override
 	 * @param start
+	 * @throws `Error` 孤立文本节点
 	 */
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
-			return [];
+			throw new Error('无法对孤立文本节点进行语法分析！');
 		}
 		const {type, name, parentNode: grandparent} = parentNode;
 		let isHtmlAttrVal = false;
