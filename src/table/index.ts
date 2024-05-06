@@ -263,9 +263,10 @@ export abstract class TableToken extends TrBaseToken {
 		coords: TableCoords
 		| TableRenderedCoords,
 	): TdToken | undefined {
-		const rawCoords = coords.row === undefined
-			? this.toRawCoords(coords)
-			: coords;
+		let rawCoords: TableCoords | undefined = coords as TableCoords;
+		if (coords.row === undefined) {
+			rawCoords = this.toRawCoords(coords);
+		}
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 

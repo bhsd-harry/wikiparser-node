@@ -28,6 +28,7 @@ export class Title {
 
 	/* NOT FOR BROWSER */
 
+	#fragment: string | undefined;
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -58,13 +59,13 @@ export class Title {
 
 		/* NOT FOR BROWSER */
 
-		let redirected = this.redirects.get(title);
+		let redirected = this.#redirect(title);
 		if (redirected) {
 			return redirected;
 		}
 		this.autoConvert();
 		title = (prefix + this.main).replace(/ /gu, '_');
-		redirected = this.redirects.get(title);
+		redirected = this.#redirect(title);
 		if (redirected) {
 			return redirected;
 		}
@@ -170,10 +171,28 @@ export class Title {
 
 	/** @private */
 	toString(): string {
-		return `${this.title}${this.fragment === undefined ? '' : `#${this.fragment}`}`;
+		return `${this.title}${
+			this.fragment === undefined
+				&& this.#fragment === undefined
+				? ''
+				: `#${this.fragment ?? this.#fragment}`
+		}`;
 	}
 
 	/* NOT FOR BROWSER */
+
+	/**
+	 * 处理重定向
+	 * @param title 原标题
+	 */
+	#redirect(title: string): string {
+		const redirected = this.redirects.get(title);
+		if (redirected) {
+			[title, this.#fragment] = redirected.split('#', 2) as [string, string?];
+			return title;
+		}
+		return '';
+	}
 
 	/** 执行单向转换 */
 	autoConvert(): void {

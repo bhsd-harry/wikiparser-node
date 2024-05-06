@@ -12,6 +12,10 @@
 - Allow an external image as `ext-link-text`
 - Ignore duplicated parameters containing extension tags in [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint)
 
+**Changed**
+
+- For redirects with a fragment, the fragment is now ignored by [`Title.prototype.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title)
+
 ## v1.6.2
 
 *2024-03-17*
