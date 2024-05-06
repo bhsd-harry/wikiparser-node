@@ -175,7 +175,10 @@ export class Title {
 			this.fragment === undefined
 				&& this.#fragment === undefined
 				? ''
-				: `#${this.fragment ?? this.#fragment}`
+				: `#${
+					this.fragment
+						?? this.#fragment
+				}`
 		}`;
 	}
 
