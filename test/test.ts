@@ -15,7 +15,8 @@ for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		for (const [code] of md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)) {
 			const lines = code.split('\n') as [string, ...string[]],
 				[first] = lines;
-			if (first.endsWith(' (browser)')) {
+			if (
+			) {
 				continue;
 			}
 			try {
