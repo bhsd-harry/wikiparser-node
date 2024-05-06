@@ -173,9 +173,7 @@ export abstract class TableToken extends TrBaseToken {
 	getNthCell(
 		coords: TableCoords
 	): TdToken | undefined {
-		const rawCoords = coords.row === undefined
-			? this.toRawCoords(coords)
-			: coords;
+		let rawCoords: TableCoords | undefined = coords as TableCoords;
 		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 
