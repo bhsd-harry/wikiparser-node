@@ -1,5 +1,4 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
-import '/monaco-wiki/dist/all.min.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {

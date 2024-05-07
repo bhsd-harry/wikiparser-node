@@ -1,5 +1,4 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
-import '/monaco-wiki/dist/all.min.js';
 import type {Config, AST} from './typings';
 
 declare global {
