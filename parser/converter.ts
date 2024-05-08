@@ -17,8 +17,6 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 	while (mt) {
 		const {0: syntax, index} = mt;
 		if (syntax === '}-') {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/;(?=(?:[^;]*?=>)?\s*foo\s*:|(?:\s|\0\d+c\x7F)*$)/u;
 			const top = stack.pop()!,
 				{length} = accum,
 				str = text.slice(top.index + 2, index),
