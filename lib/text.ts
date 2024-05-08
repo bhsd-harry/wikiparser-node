@@ -11,8 +11,6 @@ import type {
 	ExtToken,
 } from '../internal';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
 	+ '|'
 	+ '\\{+|\\}+' // `{`、`}`

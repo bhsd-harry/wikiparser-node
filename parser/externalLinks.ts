@@ -12,8 +12,6 @@ import type {Token} from '../src/index';
  * @param inFile 是否在图链中
  */
 export const parseExternalLinks = (wikitext: string, config: Config, accum: Token[], inFile?: boolean): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/\[((?:\[[\da-f:.]+\]|[^[\]\t\n\p{Zs}])[^[\]\t\n\p{Zs}]*(?=[[\]\t\p{Zs}]|\0\d))(\p{Zs}*(?=\P{Zs}))([^\]\n]*)\]/giu;
 	const regex = new RegExp(
 		'\\[' // 左括号
 		+ `(${

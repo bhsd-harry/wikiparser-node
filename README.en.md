@@ -18,7 +18,7 @@ This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interfa
 
 ## Browser-compatible
 
-A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with the [CodeMirror](https://codemirror.net/) editor. ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
+A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://codemirror.net/) and [Monaco](https://microsoft.github.io/monaco-editor/). ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
 
 # Installation
 
