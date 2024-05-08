@@ -37,8 +37,6 @@ function validate(
 			if (!value) {
 				return val;
 			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/^(?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
 			const regex = new RegExp(
 				`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}$`,
 				'iu',
