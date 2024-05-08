@@ -55,8 +55,6 @@ export abstract class AttributesToken extends Token {
 		this.type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:(\s*(?:=|\0\d+~\x7F)\s*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 			const regex = new RegExp(
 				'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
 				+ `(?:${

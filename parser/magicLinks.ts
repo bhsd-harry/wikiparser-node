@@ -10,8 +10,6 @@ import type {Token} from '../src/index';
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/(^|[^\p{L}\d_])((?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*)/giu;
 	const regex = new RegExp(`(^|[^\\p{L}\\d_])(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})`, 'giu');
 	return wikitext.replace(regex, (m, lead: string, p1: string) => {
 		let trail = '',

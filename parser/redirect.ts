@@ -10,8 +10,6 @@ import type {Token} from '../src/index';
  * @param accum
  */
 export const parseRedirect = (text: string, config: Config, accum: Token[]): string | false => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^(\s*)((?:#redirect|#重定向)\s*(?::\s*)?)\[\[([^\n|\]]+)(\|.*?)?\]\](\s*)/iu;
 	const re = new RegExp(`^(\\s*)((?:${
 			config.redirection.join('|')
 		})\\s*(?::\\s*)?)\\[\\[([^\\n|\\]]+)(\\|.*?)?\\]\\](\\s*)`, 'iu'),
