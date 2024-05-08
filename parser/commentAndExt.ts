@@ -55,7 +55,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		}
 	}
 	/* eslint-disable @typescript-eslint/no-unused-expressions */
-	/<foo(?:\s[^>]*)?>|<\/foo\s*>/giu;
+	/<foo(?:\s[^>]*)?\/?>|<\/foo\s*>/giu;
 	/<(bar)(\s[^>]*?)?(?:\/>|>(.*?)<\/(\1\s*)>)/gisu;
 	/<(baz)(\s[^>]*?)?(?:\/>|>(.*?)(?:<\/(baz\s*)>|$))/gisu;
 	/* eslint-enable @typescript-eslint/no-unused-expressions */
@@ -65,7 +65,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		regex = new RegExp(
 			'<!--.*?(?:-->|$)' // comment
 			+ '|'
-			+ `<${noincludeRegex}(?:\\s[^>]*)?>|</${noincludeRegex}\\s*>` // <noinclude>
+			+ `<${noincludeRegex}(?:\\s[^>]*)?/?>|</${noincludeRegex}\\s*>` // <noinclude>
 			+ '|'
 			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)` // 扩展标签
 			+ '|'

@@ -11,6 +11,7 @@
 
 - Allow an external image as `ext-link-text`
 - Ignore duplicated parameters containing extension tags in [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint)
+- Self-closing tags `<noinclude/>` and `<includeonly/>` are now valid
 
 **Changed**
 
