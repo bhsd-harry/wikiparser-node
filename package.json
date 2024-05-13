@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.6.2",
+	"version": "1.7.0",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -28,7 +28,7 @@
 	},
 	"scripts": {
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; node ./dist/bin/declaration.js",
-		"prepublishOnly": "npm run build && rm dist/internal.js dist/[pu]*/*.d.ts",
+		"prepublishOnly": "npm run build",
 		"build:core": "bash build.sh",
 		"build": "npm run build:core && node ./dist/bin/parserTests.js",
 		"diff": "bash diff.sh",
