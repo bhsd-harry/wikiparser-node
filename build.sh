@@ -7,7 +7,6 @@ then
 	bash sed.sh -i '/export declare const /,$d' dist/mixin/*.d.ts
 	echo 'declare global {
 	type Acceptable = unknown;
-	type PrintOpt = unknown;
 }' >> dist/index.d.ts
 	err=$(tsc --project tsconfig.dist.json 2>&1 | bash sed.sh -E '/error TS(2309|7016):/d')
 	if [[ -n $err ]]
