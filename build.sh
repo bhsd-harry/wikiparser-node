@@ -8,7 +8,7 @@ then
 	echo 'declare global {
 	type Acceptable = unknown;
 }' >> dist/index.d.ts
-	err=$(tsc --project tsconfig.dist.json 2>&1 | bash sed.sh -E '/error TS(2309|7016):/d')
+	err=$(tsc --project tsconfig.dist.json 2>&1 | bash sed.sh -E '/error TS2309:/d')
 	if [[ -n $err ]]
 	then
 		echo $err
