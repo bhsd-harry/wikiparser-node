@@ -8,7 +8,9 @@ then
 	echo 'declare global {
 	type Acceptable = unknown;
 }' >> dist/index.d.ts
-	err=$(tsc --project tsconfig.dist.json 2>&1 | bash sed.sh -E '/error TS2309:/d')
+	bash sed.sh -i '/export = Parser/i \
+// @ts-expect-error mixed export styles' dist/index.d.ts
+	err=$(tsc --project tsconfig.dist.json 2>&1)
 	if [[ -n $err ]]
 	then
 		echo $err
