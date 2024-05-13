@@ -106,9 +106,11 @@ export abstract class TagPairToken extends Token {
 	/** @override */
 	override print(): string {
 		const [opening, closing] = this.#tags;
-		return super.print(this.selfClosing
-			? {pre: `&lt;${opening}`, post: '/&gt;'}
-			: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''});
+		return super.print(
+			this.selfClosing
+				? {pre: `&lt;${opening}`, post: '/&gt;'}
+				: {pre: `&lt;${opening}`, sep: '&gt;', post: this.closed ? `&lt;/${closing}&gt;` : ''},
+		);
 	}
 }
 

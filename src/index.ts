@@ -609,7 +609,7 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER */
 
 	/** @override */
-	override dispatchEvent(e: Event, data: AstEventData): void {
+	override dispatchEvent(e: Event, data: unknown): void {
 		if (this.#built) {
 			super.dispatchEvent(e, data);
 		}

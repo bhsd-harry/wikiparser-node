@@ -29,7 +29,7 @@
 	"scripts": {
 		"toc": "node ./dist/bin/toc.js",
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; node ./dist/bin/declaration.js",
-		"prepublishOnly": "npm run build && rm dist/internal.js dist/[pu]*/*.d.ts",
+		"prepublishOnly": "npm run build",
 		"build:core": "bash build.sh",
 		"build": "npm run build:core && node ./dist/bin/parserTests.js",
 		"diff": "bash diff.sh",

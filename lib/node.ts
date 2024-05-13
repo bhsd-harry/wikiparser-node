@@ -434,7 +434,7 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param e 事件对象
 	 * @param data 事件数据
 	 */
-	dispatchEvent(e: Event, data: AstEventData): void {
+	dispatchEvent(e: Event, data: unknown): void {
 		if (!e.target) { // 初始化
 			Object.defineProperty(e, 'target', {value: this, enumerable: true});
 		}

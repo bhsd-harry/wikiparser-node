@@ -14,7 +14,7 @@ declare global {
 		insertAt(token: unknown, i?: number): unknown;
 		getAttribute<T extends string>(key: T): TokenAttributeGetter<T>;
 		setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void;
-		addEventListener(events: string | string[], listener: AstListener): void;
+		addEventListener(events: string | string[], listener: (...args: any[]) => void): void;
 		replaceChildren(...elements: (AstNodes | string)[]): void;
 		constructorError(msg: string): never;
 		seal(key: string, permanent?: boolean): void;
