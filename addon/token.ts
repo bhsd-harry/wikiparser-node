@@ -11,7 +11,7 @@ import {AttributesToken} from '../src/attributes';
 import type {AstRange} from '../lib/range';
 import type {AstNodes, CaretPosition} from '../lib/node';
 import type {TagToken} from '../src/index';
-import type {AstText, HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
+import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken, QuoteToken} from '../internal';
 
 Token.prototype.createComment =
 	/** @implements */
@@ -83,32 +83,39 @@ Token.prototype.caretPositionFromIndex =
 
 Token.prototype.sections =
 	/** @implements */
-	function(): (AstText | Token)[][] | undefined {
+	function(): AstRange[] | undefined {
 		if (this.type !== 'root') {
 			return undefined;
 		}
-		const {childNodes} = this,
+		const {childNodes, length} = this,
 			headings: [number, number][] = [...childNodes.entries()]
 				.filter((entry): entry is [number, HeadingToken] => entry[1].type === 'heading')
 				.map(([i, {level}]) => [i, level]),
 			lastHeading = [-1, -1, -1, -1, -1, -1],
-			sections: (AstText | Token)[][] = new Array(headings.length);
+			sections = headings.map(([i]) => {
+				const range = this.createRange();
+				range.setStart(this, i);
+				return range;
+			});
 		for (let i = 0; i < headings.length; i++) {
 			const [index, level] = headings[i]!;
 			for (let j = level; j < 6; j++) {
 				const last = lastHeading[j]!;
 				if (last >= 0) {
-					sections[last] = childNodes.slice(headings[last]![0], index);
+					sections[last]!.setEnd(this, index);
 				}
 				lastHeading[j] = j === level ? i : -1;
 			}
 		}
 		for (const last of lastHeading) {
 			if (last >= 0) {
-				sections[last] = childNodes.slice(headings[last]![0]);
+				sections[last]!.setEnd(this, length);
 			}
 		}
-		sections.unshift(childNodes.slice(0, headings[0]?.[0]));
+		const range = this.createRange();
+		range.setStart(this, 0);
+		range.setEnd(this, headings[0]?.[0] ?? length);
+		sections.unshift(range);
 		return sections;
 	};
 
@@ -116,7 +123,10 @@ Token.prototype.findEnclosingHtml =
 	/** @implements */
 	function(tag): AstRange | undefined {
 		tag = tag?.toLowerCase();
-		if (tag !== undefined && !this.getAttribute('config').html.slice(0, 2).flat().includes(tag)) {
+		const {html} = this.getAttribute('config'),
+			normalTags = new Set(html[0]),
+			voidTags = new Set(html[2]);
+		if (tag !== undefined && !html.slice(0, 2).flat().includes(tag)) {
 			throw new RangeError(`非法的标签或空标签：${tag}`);
 		}
 		const {parentNode} = this;
@@ -124,31 +134,42 @@ Token.prototype.findEnclosingHtml =
 			return undefined;
 		}
 		const isHtml = isToken<HtmlToken>('html'),
-			{childNodes, length} = parentNode,
+
+			/**
+			 * 检查是否为指定的 HTML 标签
+			 * @param node 节点
+			 * @param name 标签名
+			 * @param closing 是否为闭合标签
+			 */
+			checkHtml = (node: AstNodes, name: string | undefined, closing: boolean): boolean =>
+				isHtml(node)
+				&& (!name && !voidTags.has(node.name) || node.name === name)
+				&& (normalTags.has(node.name) || !node.selfClosing)
+				&& node.closing === closing;
+		const {childNodes, length} = parentNode,
 			index = childNodes.indexOf(this);
-		let i: number;
-		for (i = index - 1; i >= 0; i--) {
-			const child = childNodes[i]!;
-			if (isHtml(child) && (!tag || child.name === tag) && !child.selfClosing && !child.closing) {
-				break;
+		let i = index - 1,
+			j = length;
+		for (; i >= 0; i--) {
+			const open = childNodes[i]!;
+			if (checkHtml(open, tag, false)) {
+				for (j = index + 1; j < length; j++) {
+					const close = childNodes[j]!;
+					if (checkHtml(close, open.name, true)) {
+						break;
+					}
+				}
+				if (j < length) {
+					break;
+				}
 			}
 		}
 		if (i === -1) {
 			return parentNode.findEnclosingHtml(tag);
 		}
-		const opening = childNodes[i] as HtmlToken;
-		for (i = index + 1; i < length; i++) {
-			const child = childNodes[i]!;
-			if (isHtml(child) && child.name === opening.name && !child.selfClosing && child.closing) {
-				break;
-			}
-		}
-		if (i === length) {
-			return parentNode.findEnclosingHtml(tag);
-		}
 		const range = this.createRange();
-		range.setStartBefore(opening);
-		range.setEnd(parentNode, i + 1);
+		range.setStart(parentNode, i);
+		range.setEnd(parentNode, j + 1);
 		return range;
 	};
 
