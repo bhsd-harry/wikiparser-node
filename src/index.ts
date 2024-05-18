@@ -795,7 +795,7 @@ export class Token extends AstElement {
 	}
 
 	/** 获取全部章节 */
-	sections(): (AstText | Token)[][] | undefined {
+	sections(): AstRange[] | undefined {
 		require('../addon/token');
 		return this.sections();
 	}
@@ -804,7 +804,7 @@ export class Token extends AstElement {
 	 * 获取指定章节
 	 * @param n 章节序号
 	 */
-	section(n: number): (AstText | Token)[] | undefined {
+	section(n: number): AstRange | undefined {
 		return this.sections()?.[n];
 	}
 
@@ -828,6 +828,12 @@ export class Token extends AstElement {
 	redoQuotes(): void {
 		require('../addon/token');
 		this.redoQuotes();
+	}
+
+	/** 获取节点的字体样式 */
+	fontStyle(): {bold: boolean, italic: boolean} {
+		require('../addon/token');
+		return this.fontStyle();
 	}
 
 	/** 解析部分魔术字 */

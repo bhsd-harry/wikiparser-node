@@ -1,3 +1,19 @@
+## v1.7.2
+
+*2024-05-18*
+
+**Added**
+
+- New method [`Token.prototype.fontStyle`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#fontstyle)
+
+**Fixed**
+
+- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now correctly handles self-closing tags
+
+**Changed**
+
+- [`Token.prototype.sections`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#sections) now returns an array of [`AstRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstRange) objects
+
 ## v1.7.1
 
 *2024-05-13*
