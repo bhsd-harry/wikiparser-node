@@ -10,13 +10,13 @@ import type {
 export abstract class QuoteToken extends NowikiBaseToken {
 	override readonly type = 'quote';
 
-	/** 是否粗体 */
-	get bold(): boolean {
+	/** @override */
+	override get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
-	/** 是否斜体 */
-	get italic(): boolean {
+	/** @override */
+	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
 
