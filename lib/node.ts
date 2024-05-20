@@ -202,8 +202,8 @@ export abstract class AstNode implements AstNodeBase {
 		for (let i = index - 1; i >= 0; i--) {
 			const child = childNodes[i]!;
 			if (isQuote(child)) {
-				bold = child.bold ? !bold : bold;
-				italic = child.italic ? !italic : italic;
+				bold = child.bold !== bold;
+				italic = child.italic !== italic;
 			} else if (child.type === 'text' && child.data.includes('\n')) {
 				break;
 			}
