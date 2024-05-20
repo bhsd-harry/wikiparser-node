@@ -100,24 +100,6 @@ export abstract class AstElement extends AstNode {
 		return this.text() === '';
 	}
 
-	/** 后一个可见的兄弟节点 */
-	get nextVisibleSibling(): AstNodes | undefined {
-		let {nextSibling} = this;
-		while (nextSibling?.text() === '') {
-			({nextSibling} = nextSibling);
-		}
-		return nextSibling;
-	}
-
-	/** 前一个可见的兄弟节点 */
-	get previousVisibleSibling(): AstNodes | undefined {
-		let {previousSibling} = this;
-		while (previousSibling?.text() === '') {
-			({previousSibling} = previousSibling);
-		}
-		return previousSibling;
-	}
-
 	/** 内部高度 */
 	get clientHeight(): number | undefined {
 		const {innerText} = this as {innerText?: string};
@@ -423,15 +405,6 @@ export abstract class AstElement extends AstNode {
 
 	/* NOT FOR BROWSER */
 
-	/** 销毁 */
-	destroy(): void {
-		this.parentNode?.destroy();
-		for (const child of this.childNodes) {
-			child.setAttribute('parentNode', undefined);
-		}
-		Object.setPrototypeOf(this, null);
-	}
-
 	/** 是否受保护。保护条件来自Token，这里仅提前用于:required和:optional伪选择器。 */
 	#isProtected(): boolean | undefined {
 		const {parentNode} = this;
@@ -683,14 +656,6 @@ export abstract class AstElement extends AstNode {
 		return this.#getElementsBy<T>(
 			(({type, name}) => name === tag && (type === 'html' || type === 'ext')) as TokenPredicate<T>,
 		);
-	}
-
-	/**
-	 * 获取某一行的wikitext
-	 * @param n 行号
-	 */
-	getLine(n: number): string | undefined {
-		return String(this).split('\n', n + 1)[n];
 	}
 
 	/**

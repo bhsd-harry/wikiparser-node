@@ -74,6 +74,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/* NOT FOR BROWSER END */
 
+	abstract text(): string;
 	abstract lint(): LintError[];
 	abstract print(): string;
 
@@ -128,6 +129,24 @@ export abstract class AstNode implements AstNodeBase {
 		const childNodes = this.parentNode?.childNodes,
 			i = childNodes?.indexOf(this as AstNode as AstNodes);
 		return childNodes?.slice(0, i).reverse().find((child): child is Token => child.type !== 'text');
+	}
+
+	/** 后一个可见的兄弟节点 */
+	get nextVisibleSibling(): AstNodes | undefined {
+		let {nextSibling} = this;
+		while (nextSibling?.text() === '') {
+			({nextSibling} = nextSibling);
+		}
+		return nextSibling;
+	}
+
+	/** 前一个可见的兄弟节点 */
+	get previousVisibleSibling(): AstNodes | undefined {
+		let {previousSibling} = this;
+		while (previousSibling?.text() === '') {
+			({previousSibling} = previousSibling);
+		}
+		return previousSibling;
 	}
 
 	/** 是否具有根节点 */
@@ -543,6 +562,23 @@ export abstract class AstNode implements AstNodeBase {
 	/** 获取当前节点的行列位置和大小 */
 	getBoundingClientRect(): Dimension & Position {
 		return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
+	}
+
+	/** 销毁 */
+	destroy(): void {
+		this.parentNode?.destroy();
+		for (const child of this.childNodes) {
+			child.setAttribute('parentNode', undefined);
+		}
+		Object.setPrototypeOf(this, null);
+	}
+
+	/**
+	 * 获取某一行的wikitext
+	 * @param n 行号
+	 */
+	getLine(n: number): string | undefined {
+		return String(this).split('\n', n + 1)[n];
 	}
 }
 
