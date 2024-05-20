@@ -15,7 +15,7 @@ const factory = (
 ) => (str: string): string => str.replace(regex, replace as string);
 
 /** 清理解析专用的不可见字符 */
-export const tidy = factory(/[\0\x7F]/gu, '');
+export const tidy = factory(/[\0\x7F]|\r$/gmu, '');
 
 /** remove half-parsed comment-like tokens */
 export const removeComment = factory(/\0\d+c\x7F/gu, '');
