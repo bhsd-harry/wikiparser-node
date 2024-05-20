@@ -1,5 +1,8 @@
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
-import type {AstText, Token} from '../internal';
+import type {
+	AstText,
+	Token,
+} from '../internal';
 
 export type AstNodes = AstText | Token;
 export interface Dimension {
