@@ -3,7 +3,7 @@ rm -rf dist/
 tsc && npm run declaration
 if [[ $? -eq 0 ]]
 then
-	rm dist/internal.js dist/[btpu]*/*.d.ts
+	rm dist/internal.js dist/[abptu]*/*.d.ts
 	bash sed.sh -i '/export declare const /,$d' dist/mixin/*.d.ts
 	echo 'declare global {
 	type Acceptable = unknown;
