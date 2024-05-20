@@ -1,6 +1,6 @@
 ## v1.8.0
 
-*2024-05-18*
+*2024-05-20*
 
 **Added**
 
@@ -9,6 +9,7 @@
 **Fixed**
 
 - [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml) now correctly handles self-closing tags
+- `\r` is now automatically removed from EOL for CRLF (`\r\n`) line breaks
 
 **Changed**
 
