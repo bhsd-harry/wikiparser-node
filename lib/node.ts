@@ -1,8 +1,16 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
+import {isToken} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
-import type {AstText, Token} from '../internal';
+import type {
+	AstText,
+	Token,
+
+	/* NOT FOR BROWSER */
+
+	QuoteToken,
+} from '../internal';
 
 export type AstNodes = AstText | Token;
 export interface Dimension {
@@ -158,6 +166,40 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	get fixed(): boolean {
 		return false;
+	}
+
+	/** 字体样式 */
+	get font(): {bold: boolean, italic: boolean} {
+		const {parentNode} = this,
+			acceptable = parentNode?.getAttribute('acceptable');
+		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
+			return {bold: false, italic: false};
+		}
+		const {childNodes} = parentNode,
+			index = childNodes.indexOf(this as unknown as AstNodes),
+			isQuote = isToken<QuoteToken>('quote');
+		let bold = false,
+			italic = false;
+		for (let i = index - 1; i >= 0; i--) {
+			const child = childNodes[i]!;
+			if (isQuote(child)) {
+				bold = child.bold ? !bold : bold;
+				italic = child.italic ? !italic : italic;
+			} else if (child.type === 'text' && child.data.includes('\n')) {
+				break;
+			}
+		}
+		return {bold, italic};
+	}
+
+	/** 是否粗体 */
+	get bold(): boolean {
+		return this.font.bold;
+	}
+
+	/** 是否斜体 */
+	get italic(): boolean {
+		return this.font.italic;
 	}
 
 	constructor() {

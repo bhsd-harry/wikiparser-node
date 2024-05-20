@@ -11,7 +11,7 @@ import {AttributesToken} from '../src/attributes';
 import type {AstRange} from '../lib/range';
 import type {AstNodes, CaretPosition} from '../lib/node';
 import type {TagToken} from '../src/index';
-import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken, QuoteToken} from '../internal';
+import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
 Token.prototype.createComment =
 	/** @implements */

@@ -1,10 +1,10 @@
-## v1.7.2
+## v1.8.0
 
 *2024-05-18*
 
 **Added**
 
-- New method [`Token.prototype.fontStyle`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#fontstyle)
+- New getter [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font)
 
 **Fixed**
 
@@ -30,7 +30,7 @@
 
 **Changed**
 
-- For redirects with a fragment, the fragment is now ignored by [`Title.prototype.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title)
+- For redirects with a fragment, the fragment is now ignored by [`Title.title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#title)
 
 ## v1.6.2
 

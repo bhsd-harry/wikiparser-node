@@ -13,15 +13,24 @@ import type {
 export abstract class QuoteToken extends NowikiBaseToken {
 	override readonly type = 'quote';
 
-	/** 是否粗体 */
-	get bold(): boolean {
+	/** @override */
+	override get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
-	/** 是否斜体 */
-	get italic(): boolean {
+	/** @override */
+	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
+
+	/* NOT FOR BROWSER */
+
+	/** @override */
+	override get font(): {bold: boolean, italic: boolean} {
+		return {bold: this.bold, italic: this.italic};
+	}
+
+	/* NOT FOR BROWSER END */
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
