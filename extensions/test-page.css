@@ -75,7 +75,7 @@ pre {
 	background-color: #a2a9b1;
 	margin: .2em 0;
 }
-#frame h1, h2 {
+#frame h1, #frame h2 {
 	margin: 1em 0 .25em;
 	line-height: 1.38;
 	border-bottom: 1px solid #a2a9b1;
