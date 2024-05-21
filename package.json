@@ -22,6 +22,7 @@
 		"!/dist/[bt]*/"
 	],
 	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
@@ -47,10 +48,8 @@
 	},
 	"devDependencies": {
 		"@codemirror/lint": "^6.4.2",
-		"@cypress/request": "^3.0.1",
 		"@stylistic/eslint-plugin": "^1.5.4",
 		"@types/node": "^20.11.6",
-		"@types/request": "^2.48.12",
 		"@typescript-eslint/eslint-plugin": "^7.1.0",
 		"@typescript-eslint/parser": "^7.1.0",
 		"eslint": "^8.56.0",

@@ -1,5 +1,4 @@
 import {error, info} from '../util/diff';
-import {Api} from './api';
 import {single} from './single';
 import Parser = require('../index');
 
@@ -23,19 +22,28 @@ Parser.warning = false;
  * 获取最近更改的页面源代码
  * @param url api.php网址
  */
-const getPages = async (url: string): Promise<SimplePage[]> =>
-	(await new Api(url).get({
-		generator: 'recentchanges',
-		grcnamespace: '0|10',
-		grclimit: 10,
-		grctype: 'edit|new',
-		prop: 'revisions',
-		rvprop: 'contentmodel|content',
-	})).query.pages.map(({title, ns, revisions}) => ({
+const getPages = async (url: string): Promise<SimplePage[]> => {
+	const qs = {
+			action: 'query',
+			format: 'json',
+			formatversion: '2',
+			errorformat: 'plaintext',
+			generator: 'recentchanges',
+			grcnamespace: '0|10',
+			grclimit: '10',
+			grctype: 'edit|new',
+			prop: 'revisions',
+			rvprop: 'contentmodel|content',
+		},
+		// eslint-disable-next-line n/no-unsupported-features/node-builtins
+		response: MediaWikiResponse = await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json();
+	return response.query.pages.map(({pageid, title, ns, revisions}) => ({
+		pageid,
 		title,
 		ns,
 		content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
 	})).filter((page): page is SimplePage => page.content !== false);
+};
 
 (async () => {
 	const failures = new Map<string, number>();
