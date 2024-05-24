@@ -37,7 +37,7 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		}
 		if (inFile) {
 			// @ts-expect-error abstract class
-			new MagicLinkToken(url, true, config, accum);
+			new MagicLinkToken(url, 'ext-link-url', config, accum);
 			return `[\0${length}f\x7F${space}${text}]`;
 		}
 		// @ts-expect-error abstract class

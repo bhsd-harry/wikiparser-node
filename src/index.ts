@@ -27,6 +27,7 @@
 // e: ExtToken
 // f: MagicLinkToken inside ImageParameterToken
 // h: HeadingToken
+// i: RFC/PMID/ISBN
 // l: LinkToken
 // m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
 // q: QuoteToken

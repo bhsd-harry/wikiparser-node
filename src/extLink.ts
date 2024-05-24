@@ -61,7 +61,7 @@ export abstract class ExtLinkToken extends Token {
 		const link: MagicLinkToken = url && /\0\d+f\x7F/u.test(url)
 			? accum[Number(url.slice(1, -2))]
 			// @ts-expect-error abstract class
-			: new MagicLinkToken(url, true, config, accum);
+			: new MagicLinkToken(url, 'ext-link-url', config, accum);
 		this.insertAt(link);
 		this.#space = space;
 		if (text) {

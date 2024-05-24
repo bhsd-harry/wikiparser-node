@@ -32,7 +32,7 @@ export interface MagicLinkToken extends SyntaxBase {}
  */
 @syntax()
 export abstract class MagicLinkToken extends Token {
-	declare type: 'free-ext-link' | 'ext-link-url';
+	declare type: 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
@@ -48,7 +48,7 @@ export abstract class MagicLinkToken extends Token {
 
 	/** 协议 */
 	get protocol(): string | undefined {
-		return this.pattern.exec(this.text())?.[0];
+		return this.pattern.exec(this.text())?.[1];
 	}
 
 	/** @throws `Error` 特殊外链无法更改协议n */
@@ -57,7 +57,7 @@ export abstract class MagicLinkToken extends Token {
 		if (!pattern.test(link)) {
 			throw new Error(`特殊外链无法更改协议：${link}`);
 		}
-		this.setTarget(link.replace(pattern, value));
+		this.setTarget(link.replace(pattern, `${value}${this.type === 'magic-link' ? '$2' : ''}`));
 	}
 
 	/** 和内链保持一致 */
@@ -77,23 +77,41 @@ export abstract class MagicLinkToken extends Token {
 
 	/**
 	 * @param url 网址
-	 * @param doubleSlash 是否接受"//"作为协议
+	 * @param type 类型
 	 */
-	constructor(url?: string, doubleSlash?: boolean, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(
+		url?: string,
+		type: 'ext-link-url' | 'free-ext-link' | 'magic-link' = 'free-ext-link',
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+	) {
 		super(url, config, accum, {
 			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
-		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
+		this.type = type;
 
 		/* NOT FOR BROWSER */
 
-		this.setAttribute('pattern', new RegExp(`^(?:${config.protocol}${doubleSlash ? '|//' : ''})`, 'iu'));
+		const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+			spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+			pattern = type === 'magic-link'
+				? new RegExp(
+					url?.startsWith('ISBN')
+						? `^(ISBN)(${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX])$`
+						: `^(RFC|PMID)(${space}+\\d+)$`,
+					'u',
+				)
+				: new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
+		this.setAttribute('pattern', pattern);
 	}
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
+		const errors = super.lint(start, re);
+		if (this.type === 'magic-link') {
+			return errors;
+		}
+		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');
 		let rect: BoundingRect | undefined;
@@ -159,11 +177,7 @@ export abstract class MagicLinkToken extends Token {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new MagicLinkToken(
-				undefined,
-				this.type === 'ext-link-url',
-				this.getAttribute('config'),
-			) as this;
+			const token = new MagicLinkToken(undefined, this.type, this.getAttribute('config')) as this;
 			token.append(...cloned);
 			token.afterBuild();
 			return token;
@@ -195,7 +209,9 @@ export abstract class MagicLinkToken extends Token {
 	 */
 	getUrl(): URL {
 		let {link} = this;
-		if (link.startsWith('//')) {
+		if (this.type === 'magic-link') {
+			throw new Error(`暂不支持特殊外链：${link}`);
+		} else if (link.startsWith('//')) {
 			link = `https:${link}`;
 		}
 		try {
