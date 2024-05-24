@@ -619,6 +619,7 @@ export class Token extends AstElement {
 			this.#string ??= super.toString(separator);
 			return this.#string;
 		}
+		this.#string = undefined;
 		return super.toString(separator);
 	}
 
