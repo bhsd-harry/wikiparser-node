@@ -141,7 +141,7 @@ export abstract class ImageParameterToken extends Token {
 			: super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{link, name} = this;
@@ -168,7 +168,7 @@ export abstract class ImageParameterToken extends Token {
 		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		if (this.#syntax) {
 			return `<span class="wpb-image-parameter">${

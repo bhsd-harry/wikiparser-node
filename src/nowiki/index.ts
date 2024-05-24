@@ -13,7 +13,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name, firstChild: {data}} = this;
 		if ((name === 'templatestyles' || name === 'section') && data) {

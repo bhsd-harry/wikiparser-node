@@ -127,7 +127,7 @@ export abstract class TdToken extends TableBaseToken {
 		return 0;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		start += this.getRelativeIndex(this.length - 1);
@@ -179,7 +179,7 @@ export abstract class TdToken extends TableBaseToken {
 		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const {childNodes: [syntax, attr, inner]} = this;
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;

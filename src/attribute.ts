@@ -311,7 +311,7 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? this.#equal.length + (this.#quotes[0]?.length ?? 0) : 0;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{balanced, firstChild, lastChild, type, name, tag} = this,
@@ -393,7 +393,7 @@ export abstract class AttributeToken extends Token {
 		return this.type === 'ext-attr' || '';
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();

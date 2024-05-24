@@ -20,7 +20,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return this.innerText.length !== 3;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {previousSibling, nextSibling, bold} = this,
 			message = Parser.msg('lonely "$1"', `'`),

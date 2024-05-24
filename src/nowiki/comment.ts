@@ -21,7 +21,7 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 		return key === 'padding' ? 4 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (this.closed) {
 			return [];
@@ -39,7 +39,7 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
 	}
