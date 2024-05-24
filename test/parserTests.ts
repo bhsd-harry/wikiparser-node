@@ -2,6 +2,8 @@ import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
 import Parser = require('../index');
 
+Parser.viewOnly = true;
+
 const tests: {wikitext?: string, print?: string}[] = require('../../test/parserTests.json');
 (async () => {
 	let failed = 0;

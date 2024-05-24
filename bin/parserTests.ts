@@ -4,6 +4,7 @@ import * as path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
 
+Parser.viewOnly = true;
 Parser.debugging = true;
 
 const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] = [],

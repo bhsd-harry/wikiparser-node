@@ -165,7 +165,11 @@ const Parser: Parser = {
 			return new Title(title, defaultNs, config, decode, selfLink);
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
-		const token = Shadow.run(() => new Token(title, config).parseOnce(0, include).parseOnce()),
+		const token = Shadow.run(() => {
+				const root = new Token(title, config);
+				root.type = 'root';
+				return root.parseOnce(0, include).parseOnce();
+			}),
 			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
@@ -192,6 +196,7 @@ const Parser: Parser = {
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
+			token.type = 'root';
 			try {
 				return token.parse(maxStage, include);
 			} catch (e) {
@@ -303,6 +308,7 @@ const Parser: Parser = {
 		return Shadow.run(() => {
 			const halfParsed = stage < MAX_STAGE,
 				token = new Token(halfParsed ? wikitext : tidy(wikitext), config);
+			token.type = 'root';
 			if (halfParsed) {
 				token.setAttribute('stage', stage);
 				token.parseOnce(stage, include);

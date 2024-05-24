@@ -189,7 +189,6 @@ Token.prototype.redoQuotes =
 		}
 		const token = Shadow.run(() => {
 			const node = new Token(String(this), this.getAttribute('config'), accum);
-			node.type = 'plain';
 			node.setAttribute('stage', 6);
 			return node.parse(7);
 		});

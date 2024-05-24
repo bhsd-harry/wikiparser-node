@@ -98,7 +98,7 @@ export type TagToken = IncludeToken | ExtToken | HtmlToken;
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 export class Token extends AstElement {
-	override type: TokenTypes = 'root';
+	override type: TokenTypes = 'plain';
 
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */
 	#stage = 0;
@@ -255,7 +255,6 @@ export class Token extends AstElement {
 				}
 			}
 		}
-		this.#built = true;
 	}
 
 	/** @private */
@@ -265,6 +264,7 @@ export class Token extends AstElement {
 				token.afterBuild();
 			}
 		}
+		this.#built = true;
 	}
 
 	/** @private */
@@ -613,13 +613,13 @@ export class Token extends AstElement {
 	/** @override */
 	override toString(separator?: string): string {
 		if (
-			!this.#built
-			|| !Parser.viewOnly
+			this.#built
+				&& Parser.viewOnly
 		) {
-			this.#string = undefined;
+			this.#string ??= super.toString(separator);
+			return this.#string;
 		}
-		this.#string ??= super.toString(separator);
-		return this.#string;
+		return super.toString(separator);
 	}
 
 	/* NOT FOR BROWSER */
