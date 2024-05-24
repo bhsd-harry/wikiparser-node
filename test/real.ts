@@ -1,6 +1,9 @@
 import {error, info} from '../util/diff';
 import {single} from './single';
 import Parser = require('../index');
+import type {
+	Config,
+} from '../base';
 
 const {argv: [,, site = '']} = process,
 	apis = ([
@@ -43,7 +46,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：`);
-		const parserConfig: Parser.Config = require(`../../config/${config}`);
+		const parserConfig: Config = require(`../../config/${config}`);
 		Parser.config = parserConfig;
 		try {
 			/* eslint-disable no-await-in-loop */
