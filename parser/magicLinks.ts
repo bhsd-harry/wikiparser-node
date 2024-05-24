@@ -17,7 +17,9 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 			+ '(?:'
 			+ `(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})` // free external link
 			+ '|'
-			+ `(?:RFC|PMID)(?:${space})+\\d+|ISBN(?:${space})+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dx]\\b`
+			+ `(?:RFC|PMID)(?:${space})+\\d+\\b` // RFC or PMID
+			+ '|'
+			+ `ISBN(?:${space})+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dx]\\b` // ISBN
 			+ ')',
 			'giu',
 		);
