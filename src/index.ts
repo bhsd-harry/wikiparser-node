@@ -67,7 +67,7 @@ declare interface LintIgnore {
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 export class Token extends AstElement {
-	override type: TokenTypes = 'root';
+	override type: TokenTypes = 'plain';
 
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */
 	#stage = 0;
@@ -76,6 +76,8 @@ export class Token extends AstElement {
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	readonly #accum;
 	#include?: boolean;
+	#built = false;
+	#string: string | undefined;
 
 	/** @class */
 	constructor(
@@ -195,6 +197,7 @@ export class Token extends AstElement {
 				token.afterBuild();
 			}
 		}
+		this.#built = true;
 	}
 
 	/** @private */
@@ -396,7 +399,7 @@ export class Token extends AstElement {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
+		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken>> = {};
 			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
@@ -446,7 +449,7 @@ export class Token extends AstElement {
 				});
 				mt = regex.exec(wikitext);
 			}
-			return errors.filter(({rule, startLine, startIndex}) => {
+			errors = errors.filter(({rule, startLine, startIndex}) => {
 				const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
 				for (const {line, from, to, rules} of ignores) {
 					if (line > startLine + 1) {
@@ -467,5 +470,16 @@ export class Token extends AstElement {
 			});
 		}
 		return errors;
+	}
+
+	/** @override */
+	override toString(separator?: string): string {
+		if (
+			this.#built
+		) {
+			this.#string ??= super.toString(separator);
+			return this.#string;
+		}
+		return super.toString(separator);
 	}
 }

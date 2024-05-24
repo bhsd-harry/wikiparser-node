@@ -46,7 +46,8 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：`);
-		Parser.config = require(`../../config/${config}`);
+		const parserConfig: Parser.Config = require(`../../config/${config}`);
+		Parser.config = parserConfig;
 		try {
 			/* eslint-disable no-await-in-loop */
 			let failed = 0;
