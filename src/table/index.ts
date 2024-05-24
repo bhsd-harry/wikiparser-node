@@ -46,7 +46,7 @@ export abstract class TableToken extends TrBaseToken {
 		});
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		if (!this.closed) {

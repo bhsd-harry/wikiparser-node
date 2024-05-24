@@ -90,7 +90,7 @@ export abstract class LinkBaseToken extends Token {
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{childNodes: [target, linkText], type: linkType} = this,

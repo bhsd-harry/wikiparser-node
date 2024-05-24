@@ -59,7 +59,7 @@ export abstract class NestedToken extends Token {
 		});
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		let rect: BoundingRect | undefined;
 		return [

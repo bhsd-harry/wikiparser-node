@@ -20,7 +20,7 @@ export class SyntaxToken extends Token {
 		this.type = type;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(): [] {
 		return [];
 	}

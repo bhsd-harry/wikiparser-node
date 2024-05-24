@@ -65,7 +65,7 @@ export abstract class ExtLinkToken extends Token {
 		return this.#space.length;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		if (this.length === 1 && this.closest('heading-title')) {

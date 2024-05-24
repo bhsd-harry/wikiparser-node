@@ -142,7 +142,7 @@ export abstract class AttributesToken extends Token {
 		return this.getAttrToken(key)?.getValue();
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{parentNode, length, childNodes} = this,

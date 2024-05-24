@@ -52,12 +52,12 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 		return key === 'padding' ? this.#pre.length as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override toString(): string {
 		return this.#pre + super.toString() + this.#post;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return this.lastChild.lint(start + this.#pre.length + String(this.firstChild).length);
 	}

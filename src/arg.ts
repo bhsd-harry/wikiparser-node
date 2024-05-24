@@ -66,7 +66,7 @@ export abstract class ArgToken extends Token {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this;
 		if (!this.getAttribute('include')) {

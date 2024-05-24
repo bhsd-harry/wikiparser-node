@@ -105,7 +105,7 @@ export abstract class HtmlToken extends Token {
 			: super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		let refError: LintError | undefined;

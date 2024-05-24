@@ -140,7 +140,7 @@ export abstract class ImageParameterToken extends Token {
 			: super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{link, name} = this;

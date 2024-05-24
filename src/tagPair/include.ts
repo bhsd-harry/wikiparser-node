@@ -33,7 +33,7 @@ export abstract class IncludeToken extends hiddenToken(TagPairToken) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (this.closed) {
 			return [];

@@ -187,11 +187,7 @@ export abstract class AstElement extends AstNode {
 		return this.childNodes.map(String).join(separator);
 	}
 
-	/**
-	 * @override
-	 * @param start
-	 * @param re 用于`AstText`后代节点的正则表达式
-	 */
+	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors: LintError[] = [];
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
