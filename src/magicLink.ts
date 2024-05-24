@@ -120,9 +120,10 @@ export abstract class MagicLinkToken extends Token {
 		const errors = super.lint(start, re);
 		let rect: BoundingRect | undefined;
 		if (this.type === 'magic-link') {
-			if (this.protocol === 'ISBN') {
-				const link = this.link.slice(5),
-					digits = [...link].map(s => s === 'X' ? 10 : Number(s));
+			const {link} = this;
+			if (link.startsWith('ISBN')) {
+				// eslint-disable-next-line unicorn/no-useless-spread
+				const digits = [...link.slice(5)].map(s => s === 'X' ? 10 : Number(s));
 				if (
 					digits.length === 10 && digits.reduce((sum, d, i) => sum + d * (10 - i), 0) % 11
 					|| digits.length === 13 && (
