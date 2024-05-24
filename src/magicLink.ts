@@ -1,4 +1,5 @@
 import {generateForChild, generateForSelf} from '../util/lint';
+import {text} from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
@@ -22,6 +23,22 @@ export abstract class MagicLinkToken extends Token {
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
+
+	/** 和内链保持一致 */
+	get link(): string {
+		const map = {'!': '|', '=': '='};
+		let link = text(this.childNodes.map(child => {
+			const {type, name} = child;
+			return type === 'magic-word' && name in map ? map[name as keyof typeof map] : child;
+		}));
+		if (this.type === 'magic-link') {
+			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
+			if (link.startsWith('ISBN')) {
+				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
+			}
+		}
+		return link;
+	}
 
 	/**
 	 * @param url 网址
