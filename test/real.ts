@@ -1,7 +1,10 @@
 import {error, info} from '../util/diff';
 import {single} from './single';
 import '../../bundle/bundle.min.js';
-import type {Parser as ParserBase} from '../base';
+import type {
+	Config,
+	Parser as ParserBase,
+} from '../base';
 
 declare const Parser: ParserBase;
 
@@ -46,7 +49,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：`);
-		const parserConfig: Parser.Config = require(`../../config/${config}`);
+		const parserConfig: Config = require(`../../config/${config}`);
 		Parser.config = parserConfig;
 		try {
 			/* eslint-disable no-await-in-loop */
