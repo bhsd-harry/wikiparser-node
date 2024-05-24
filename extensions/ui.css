@@ -124,7 +124,7 @@
 }
 
 .wpb-link, .wpb-category, .wpb-file, .wpb-gallery-image, .wpb-imagemap-image, .wpb-redirect-target,
-.wpb-ext-link, .wpb-free-ext-link {
+.wpb-ext-link, .wpb-free-ext-link, .wpb-magic-link {
 	color: #000aaa;
 	background-color: rgba(34, 17, 153, .03);
 }
