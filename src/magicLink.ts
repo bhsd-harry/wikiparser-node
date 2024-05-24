@@ -13,6 +13,8 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
+const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
+
 /**
  * 自由外链
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
@@ -29,7 +31,7 @@ export abstract class MagicLinkToken extends Token {
 		const map = {'!': '|', '=': '='};
 		let link = text(this.childNodes.map(child => {
 			const {type, name} = child;
-			return type === 'magic-word' && name in map ? map[name as keyof typeof map] : child;
+			return type === 'magic-word' && String(name) in map ? map[name as keyof typeof map] : child;
 		}));
 		if (this.type === 'magic-link') {
 			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
