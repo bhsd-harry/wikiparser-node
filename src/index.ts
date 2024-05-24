@@ -534,7 +534,9 @@ export class Token extends AstElement {
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
+		const {viewOnly} = Parser;
+		Parser.viewOnly = true;
+		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken>> = {};
 			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
@@ -584,7 +586,7 @@ export class Token extends AstElement {
 				});
 				mt = regex.exec(wikitext);
 			}
-			return errors.filter(({rule, startLine, startIndex}) => {
+			errors = errors.filter(({rule, startLine, startIndex}) => {
 				const nearest: {pos: number, type?: 'from' | 'to'} = {pos: 0};
 				for (const {line, from, to, rules} of ignores) {
 					if (line > startLine + 1) {
@@ -604,6 +606,7 @@ export class Token extends AstElement {
 				return nearest.type !== 'from';
 			});
 		}
+		Parser.viewOnly = viewOnly;
 		return errors;
 	}
 

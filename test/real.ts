@@ -14,7 +14,6 @@ Parser.i18n = require('../../i18n/zh-hans');
 
 /* NOT FOR BROWSER */
 
-Parser.viewOnly = true;
 Parser.warning = false;
 
 /* NOT FOR BROWSER END */
