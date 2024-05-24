@@ -15,7 +15,7 @@ import type {
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
 export abstract class MagicLinkToken extends Token {
-	declare type: 'free-ext-link' | 'ext-link-url';
+	declare type: 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
@@ -23,18 +23,26 @@ export abstract class MagicLinkToken extends Token {
 
 	/**
 	 * @param url 网址
-	 * @param doubleSlash 是否接受"//"作为协议
+	 * @param type 类型
 	 */
-	constructor(url?: string, doubleSlash?: boolean, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(
+		url?: string,
+		type: 'ext-link-url' | 'free-ext-link' | 'magic-link' = 'free-ext-link',
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+	) {
 		super(url, config, accum, {
 		});
-		this.type = doubleSlash ? 'ext-link-url' : 'free-ext-link';
+		this.type = type;
 	}
 
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
+		const errors = super.lint(start, re);
+		if (this.type === 'magic-link') {
+			return errors;
+		}
+		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');
 		let rect: BoundingRect | undefined;
