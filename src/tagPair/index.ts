@@ -74,7 +74,7 @@ export abstract class TagPairToken extends Token {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const [opening, closing] = this.#tags;
 		return super.print(

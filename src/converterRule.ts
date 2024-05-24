@@ -64,7 +64,7 @@ export abstract class ConverterRuleToken extends Token {
 		return i === 0 && this.length === 3 ? 2 : 1;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const {childNodes} = this;
 		if (childNodes.length === 3) {

@@ -397,7 +397,7 @@ export class Token extends AstElement {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
@@ -474,8 +474,10 @@ export class Token extends AstElement {
 
 	/** @override */
 	override toString(separator?: string): string {
+		const root = this.getRootNode();
 		if (
-			this.#built
+			root.type === 'root'
+			&& root.#built
 		) {
 			this.#string ??= super.toString(separator);
 			return this.#string;

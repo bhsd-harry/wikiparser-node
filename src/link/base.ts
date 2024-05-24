@@ -90,7 +90,7 @@ export abstract class LinkBaseToken extends Token {
 		return i === 0 ? this.#delimiter.length : 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{childNodes: [target, linkText], type: linkType} = this,
@@ -144,7 +144,7 @@ export abstract class LinkBaseToken extends Token {
 		return this.normalizeTitle(this.firstChild.text(), 0, halfParsed, true, true);
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
 	}

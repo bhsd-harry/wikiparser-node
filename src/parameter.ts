@@ -76,7 +76,7 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? 0 : 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{firstChild} = this,
@@ -102,7 +102,7 @@ export abstract class ParameterToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({sep: this.anon ? '' : '='});
 	}

@@ -60,7 +60,7 @@ export abstract class ConverterFlagsToken extends Token {
 		return new Set(this.#flags!.filter(flag => variants.has(flag)));
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags(),
@@ -103,7 +103,7 @@ export abstract class ConverterFlagsToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({sep: ';'});
 	}
