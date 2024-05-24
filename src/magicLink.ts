@@ -26,10 +26,11 @@ declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 export interface MagicLinkToken extends SyntaxBase {}
 
-const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
-	spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
+const spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
 
 /** NOT FOR BROWSER END */
+
+const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
 
 /**
  * 自由外链
@@ -51,6 +52,30 @@ export abstract class MagicLinkToken extends Token {
 	abstract override get lastElementChild():
 		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
+	/* NOT FOR BROWSER END */
+
+	/** 和内链保持一致 */
+	get link(): string {
+		const map = {'!': '|', '=': '='};
+		let link = text(this.childNodes.map(child => {
+			const {type, name} = child;
+			return type === 'magic-word' && String(name) in map ? map[name as keyof typeof map] : child;
+		}));
+		if (this.type === 'magic-link') {
+			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
+			if (link.startsWith('ISBN')) {
+				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
+			}
+		}
+		return link;
+	}
+
+	/* NOT FOR BROWSER */
+
+	set link(url) {
+		this.setTarget(url);
+	}
+
 	/** 协议 */
 	get protocol(): string | undefined {
 		return this.pattern.exec(this.text())?.[1];
@@ -63,26 +88,6 @@ export abstract class MagicLinkToken extends Token {
 			throw new Error(`特殊外链无法更改协议：${link}`);
 		}
 		this.setTarget(link.replace(pattern, value));
-	}
-
-	/** 和内链保持一致 */
-	get link(): string {
-		const map = {'!': '|', '=': '='};
-		let link = text(this.childNodes.map(child => {
-			const {type, name} = child;
-			return type === 'magic-word' && name in map ? map[name as keyof typeof map] : child;
-		}));
-		if (this.type === 'magic-link') {
-			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
-			if (link.startsWith('ISBN')) {
-				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
-			}
-		}
-		return link;
-	}
-
-	set link(url) {
-		this.setTarget(url);
 	}
 
 	/* NOT FOR BROWSER END */
