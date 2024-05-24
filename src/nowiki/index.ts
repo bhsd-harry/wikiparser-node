@@ -22,7 +22,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER END */
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name, firstChild: {data}} = this;
 		if ((name === 'templatestyles' || name === 'section') && data) {

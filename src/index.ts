@@ -532,7 +532,7 @@ export class Token extends AstElement {
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {viewOnly} = Parser;
 		Parser.viewOnly = true;

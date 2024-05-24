@@ -319,7 +319,7 @@ export abstract class TranscludeToken extends Token {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{type, childNodes, length} = this;
@@ -508,7 +508,7 @@ export abstract class TranscludeToken extends Token {
 		return queue;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const {childNodes, length, firstChild, modifier, type} = this;
 		return `<span class="wpb-${type}">{{${escape(modifier)}${

@@ -92,7 +92,7 @@ export abstract class GalleryToken extends Token {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];
@@ -135,7 +135,7 @@ export abstract class GalleryToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({sep: '\n'});
 	}

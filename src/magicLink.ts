@@ -115,7 +115,7 @@ export abstract class MagicLinkToken extends Token {
 		this.setAttribute('pattern', pattern);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		let rect: BoundingRect | undefined;

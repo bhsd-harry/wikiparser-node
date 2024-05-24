@@ -72,7 +72,7 @@ export abstract class PreToken extends Token {
 		return (key === 'plain') as TokenAttributeGetter<T> || super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return super.lint(start, /<\s*\/\s*(pre)\b/giu);
 	}

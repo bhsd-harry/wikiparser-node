@@ -103,7 +103,7 @@ export abstract class HeadingToken extends Token {
 		return this.level;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{firstChild, level} = this,
@@ -150,7 +150,7 @@ export abstract class HeadingToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const equals = this.#equals;
 		return super.print({pre: equals, sep: equals});

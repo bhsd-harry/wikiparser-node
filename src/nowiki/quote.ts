@@ -32,7 +32,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER END */
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {previousSibling, nextSibling, bold} = this,
 			message = Parser.msg('lonely "$1"', `'`),

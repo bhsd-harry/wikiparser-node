@@ -32,7 +32,7 @@ export interface TableCoords {
 export abstract class TrBaseToken extends TableBaseToken {
 	declare type: 'table' | 'tr';
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			inter = this.childNodes.find(({type}) => type === 'table-inter');

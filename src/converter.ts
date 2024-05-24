@@ -93,7 +93,7 @@ export abstract class ConverterToken extends Token {
 		return i || this.firstChild.length > 0 ? 1 : 0;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return `<span class="wpb-converter">-{${flags.print()}${

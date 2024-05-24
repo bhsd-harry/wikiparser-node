@@ -146,7 +146,7 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? 0 : 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		/https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
@@ -174,7 +174,7 @@ export abstract class ParameterToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({sep: this.anon ? '' : '='});
 	}

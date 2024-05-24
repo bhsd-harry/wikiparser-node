@@ -64,7 +64,7 @@ export abstract class ParamTagToken extends Token {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		let rect: BoundingRect | undefined;
 		return this.childNodes.filter(child => {
@@ -86,7 +86,7 @@ export abstract class ParamTagToken extends Token {
 		});
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({sep: '\n'});
 	}

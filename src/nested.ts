@@ -85,7 +85,7 @@ export abstract class NestedToken extends Token {
 		this.#regex = regex;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		let rect: BoundingRect | undefined;
 		return [

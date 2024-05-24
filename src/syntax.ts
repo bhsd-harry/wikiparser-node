@@ -35,7 +35,7 @@ export class SyntaxToken extends Token {
 		this.setAttribute('pattern', pattern);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(): [] {
 		return [];
 	}

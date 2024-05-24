@@ -75,7 +75,7 @@ export abstract class GalleryImageToken extends FileToken {
 		return key === 'padding' ? 0 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{ns, interwiki} = this.getAttribute('title');

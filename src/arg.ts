@@ -93,7 +93,7 @@ export abstract class ArgToken extends Token {
 		return 1;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this;
 		if (!this.getAttribute('include')) {
@@ -134,7 +134,7 @@ export abstract class ArgToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}

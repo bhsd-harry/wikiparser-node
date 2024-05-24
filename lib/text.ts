@@ -137,12 +137,7 @@ export class AstText extends AstNode {
 		return this.data;
 	}
 
-	/**
-	 * @override
-	 * @param start
-	 * @param errorRegex 正则表达式
-	 * @throws `Error` 孤立文本节点
-	 */
+	/** @private */
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
@@ -330,7 +325,7 @@ export class AstText extends AstNode {
 		this.#setData(text);
 	}
 
-	/** @override */
+	/** @private */
 	print(): string {
 		return escape(this.data);
 	}

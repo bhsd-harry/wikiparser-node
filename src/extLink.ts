@@ -121,7 +121,7 @@ export abstract class ExtLinkToken extends Token {
 		return this.#space.length;
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
 		if (this.length === 1 && this.closest('heading-title')) {
@@ -130,7 +130,7 @@ export abstract class ExtLinkToken extends Token {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override print(): string {
 		return super.print(
 			this.length === 1 ? {pre: '[', post: `${this.#space}]`} : {pre: '[', sep: this.#space, post: ']'},
