@@ -522,6 +522,7 @@ export abstract class AstElement extends AstNode {
 					case ':any-link':
 						return type === 'link'
 							|| type === 'free-ext-link'
+							|| type === 'magic-link'
 							|| type === 'ext-link'
 							|| (type === 'file' || type === 'gallery-image' && link);
 					case ':local-link':

@@ -121,7 +121,9 @@ export class Token extends AstElement {
 
 	/** 所有内链、外链和自由外链 */
 	get links(): (LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
-		return this.querySelectorAll('link, redirect-target, ext-link, free-ext-link, image-parameter#link');
+		return this.querySelectorAll(
+			'link, redirect-target, ext-link, free-ext-link, magic-link, image-parameter#link',
+		);
 	}
 
 	/** 所有模板和模块 */

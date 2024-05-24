@@ -20,6 +20,8 @@ import type {
 	ParameterToken,
 } from '../internal';
 
+declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
+
 /** NOT FOR BROWSER */
 
 export interface MagicLinkToken extends SyntaxBase {}
@@ -35,7 +37,7 @@ const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
  */
 @syntax()
 export abstract class MagicLinkToken extends Token {
-	declare type: 'free-ext-link' | 'ext-link-url' | 'magic-link';
+	declare type: ExtLinkTypes;
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
@@ -56,11 +58,11 @@ export abstract class MagicLinkToken extends Token {
 
 	/** @throws `Error` 特殊外链无法更改协议n */
 	set protocol(value: string) {
-		const {link, pattern} = this;
-		if (!pattern.test(link)) {
+		const {link, pattern, type} = this;
+		if (type === 'magic-link' || !pattern.test(link)) {
 			throw new Error(`特殊外链无法更改协议：${link}`);
 		}
-		this.setTarget(link.replace(pattern, `${value}${this.type === 'magic-link' ? '$2' : ''}`));
+		this.setTarget(link.replace(pattern, value));
 	}
 
 	/** 和内链保持一致 */
@@ -89,12 +91,7 @@ export abstract class MagicLinkToken extends Token {
 	 * @param url 网址
 	 * @param type 类型
 	 */
-	constructor(
-		url?: string,
-		type: 'ext-link-url' | 'free-ext-link' | 'magic-link' = 'free-ext-link',
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-	) {
+	constructor(url?: string, type: ExtLinkTypes = 'free-ext-link', config = Parser.getConfig(), accum: Token[] = []) {
 		super(url, config, accum, {
 			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
@@ -105,8 +102,8 @@ export abstract class MagicLinkToken extends Token {
 		const pattern = type === 'magic-link'
 			? new RegExp(
 				url?.startsWith('ISBN')
-					? `^(ISBN)(${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX])$`
-					: `^(RFC|PMID)(${space}+\\d+)$`,
+					? `^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX]$`
+					: `^(RFC|PMID)${space}+\\d+$`,
 				'u',
 			)
 			: new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
@@ -217,15 +214,16 @@ export abstract class MagicLinkToken extends Token {
 	 * @throws `Error` 非标准协议
 	 */
 	getUrl(): URL {
+		const {type, protocol} = this;
 		let {link} = this;
-		if (this.type === 'magic-link') {
-			if (link.startsWith('ISBN')) {
+		if (type === 'magic-link') {
+			if (protocol === 'ISBN') {
 				throw new Error(`不支持ISBN链接：${link}`);
 			}
-			link = link.startsWith('RFC')
+			link = protocol === 'RFC'
 				? `https://tools.ietf.org/html/rfc${link.slice(4)}`
 				: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`;
-		} else if (link.startsWith('//')) {
+		} else if (protocol === '//') {
 			link = `https:${link}`;
 		}
 		try {
