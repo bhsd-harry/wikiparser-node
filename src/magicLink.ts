@@ -1,4 +1,4 @@
-import {generateForChild} from '../util/lint';
+import {generateForChild, generateForSelf} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {text} from '../util/string';
@@ -113,13 +113,27 @@ export abstract class MagicLinkToken extends Token {
 	/** @override */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re);
+		let rect: BoundingRect | undefined;
 		if (this.type === 'magic-link') {
+			if (this.protocol === 'ISBN') {
+				const link = this.link.slice(5),
+					digits = [...link].map(s => s === 'X' ? 10 : Number(s));
+				if (
+					digits.length === 10 && digits.reduce((sum, d, i) => sum + d * (10 - i), 0) % 11
+					|| digits.length === 13 && (
+						digits[12] === 10
+						|| digits.reduce((sum, d, i) => sum + d * (i % 2 ? 3 : 1), 0) % 10
+					)
+				) {
+					rect = {start, ...this.getRootNode().posFromIndex(start)!};
+					errors.push(generateForSelf(this, rect, 'invalid-isbn', 'invalid ISBN'));
+				}
+			}
 			return errors;
 		}
 		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');
-		let rect: BoundingRect | undefined;
 		for (const child of this.childNodes) {
 			const {type, data} = child;
 			if (type !== 'text' || !regex.test(data)) {

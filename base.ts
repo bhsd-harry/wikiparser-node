@@ -101,6 +101,7 @@ export const rules = [
 	'invalid-gallery',
 	'invalid-imagemap',
 	'invalid-invoke',
+	'invalid-isbn',
 	'lonely-apos',
 	'lonely-bracket',
 	'lonely-http',
