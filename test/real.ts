@@ -12,8 +12,9 @@ const {argv: [,, site = '']} = process,
 
 Parser.i18n = require('../../i18n/zh-hans');
 
-/* NOt FOR BROWSER */
+/* NOT FOR BROWSER */
 
+Parser.viewOnly = true;
 Parser.warning = false;
 
 /* NOT FOR BROWSER END */

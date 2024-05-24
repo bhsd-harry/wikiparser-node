@@ -3,6 +3,7 @@
 *2024-05-24*
 
 - Magic links (RFC, PMID and ISBN) are now parsed as [`MagicLinkToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken)
+- New property [`Parser.viewOnly`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#viewonly)
 
 ## v1.8.0
 

@@ -26,6 +26,8 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
 
+	viewOnly: boolean;
+
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 
@@ -103,6 +105,8 @@ const Parser: Parser = {
 	rules,
 
 	/* NOT FOR BROWSER */
+
+	viewOnly: false,
 
 	conversionTable: new Map(),
 	redirects: new Map(),

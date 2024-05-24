@@ -107,12 +107,13 @@ export class Token extends AstElement {
 	/** 这个数组起两个作用：1. 数组中的Token会在build时替换`/\0\d+.\x7F/`标记；2. 数组中的Token会依次执行parseOnce和build方法。 */
 	readonly #accum;
 	#include?: boolean;
+	#built = false;
+	#string: string | undefined;
 
 	/* NOT FOR BROWSER */
 
 	#acceptable?: Record<string, Ranges>;
 	readonly #protectedChildren = new Ranges();
-	#built = false;
 
 	/** 所有图片，包括图库 */
 	get images(): FileToken[] {
@@ -254,9 +255,6 @@ export class Token extends AstElement {
 				}
 			}
 		}
-
-		/* NOT FOR BROWSER */
-
 		this.#built = true;
 	}
 
@@ -607,6 +605,18 @@ export class Token extends AstElement {
 			});
 		}
 		return errors;
+	}
+
+	/** @override */
+	override toString(separator?: string): string {
+		if (
+			!this.#built
+			|| !Parser.viewOnly
+		) {
+			this.#string = undefined;
+		}
+		this.#string ??= super.toString(separator);
+		return this.#string;
 	}
 
 	/* NOT FOR BROWSER */
