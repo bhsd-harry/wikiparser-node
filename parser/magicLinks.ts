@@ -17,14 +17,14 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 			+ '(?:'
 			+ `(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})` // free external link
 			+ '|'
-			+ `((?:RFC|PMID)(?:${space})+\\d+|ISBN(?:${space})+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dx])\\b`
+			+ `(?:RFC|PMID)(?:${space})+\\d+|ISBN(?:${space})+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dx]\\b`
 			+ ')',
 			'giu',
 		);
-	return wikitext.replace(regex, (m, lead: string, p1: string | undefined, p2: string | undefined) => {
+	return wikitext.replace(regex, (m, lead: string, p1: string | undefined) => {
+		let url = lead ? m.slice(lead.length) : m;
 		if (p1) {
-			let trail = '',
-				url = lead ? m.slice(lead.length) : m;
+			let trail = '';
 			const m2 = /&(?:lt|gt|nbsp|#x0*(?:3[ce]|a0)|#0*(?:6[02]|160));/iu.exec(url);
 			if (m2) {
 				trail = url.slice(m2.index);
@@ -49,11 +49,11 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 			// @ts-expect-error abstract class
 			new MagicLinkToken(url, undefined, config, accum);
 			return `${lead}\0${accum.length - 1}w\x7F${trail}`;
-		} else if (!/^(?:RFC|PMID|ISBN)/u.test(p2!)) {
+		} else if (!/^(?:RFC|PMID|ISBN)/u.test(url)) {
 			return m;
 		}
 		// @ts-expect-error abstract class
-		new MagicLinkToken(p2, 'magic-link', config, accum);
+		new MagicLinkToken(url, 'magic-link', config, accum);
 		return `${lead}\0${accum.length - 1}i\x7F`;
 	});
 };
