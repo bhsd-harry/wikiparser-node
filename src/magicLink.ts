@@ -24,6 +24,9 @@ import type {
 
 export interface MagicLinkToken extends SyntaxBase {}
 
+const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+	spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
+
 /** NOT FOR BROWSER END */
 
 /**
@@ -63,10 +66,17 @@ export abstract class MagicLinkToken extends Token {
 	/** 和内链保持一致 */
 	get link(): string {
 		const map = {'!': '|', '=': '='};
-		return text(this.childNodes.map(child => {
+		let link = text(this.childNodes.map(child => {
 			const {type, name} = child;
 			return type === 'magic-word' && name in map ? map[name as keyof typeof map] : child;
 		}));
+		if (this.type === 'magic-link') {
+			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
+			if (link.startsWith('ISBN')) {
+				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
+			}
+		}
+		return link;
 	}
 
 	set link(url) {
@@ -92,16 +102,14 @@ export abstract class MagicLinkToken extends Token {
 
 		/* NOT FOR BROWSER */
 
-		const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
-			spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
-			pattern = type === 'magic-link'
-				? new RegExp(
-					url?.startsWith('ISBN')
-						? `^(ISBN)(${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX])$`
-						: `^(RFC|PMID)(${space}+\\d+)$`,
-					'u',
-				)
-				: new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
+		const pattern = type === 'magic-link'
+			? new RegExp(
+				url?.startsWith('ISBN')
+					? `^(ISBN)(${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX])$`
+					: `^(RFC|PMID)(${space}+\\d+)$`,
+				'u',
+			)
+			: new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
 		this.setAttribute('pattern', pattern);
 	}
 
@@ -205,12 +213,18 @@ export abstract class MagicLinkToken extends Token {
 
 	/**
 	 * 获取网址
+	 * @throws `Error` ISBN
 	 * @throws `Error` 非标准协议
 	 */
 	getUrl(): URL {
 		let {link} = this;
 		if (this.type === 'magic-link') {
-			throw new Error(`暂不支持特殊外链：${link}`);
+			if (link.startsWith('ISBN')) {
+				throw new Error(`不支持ISBN链接：${link}`);
+			}
+			link = link.startsWith('RFC')
+				? `https://tools.ietf.org/html/rfc${link.slice(4)}`
+				: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`;
 		} else if (link.startsWith('//')) {
 			link = `https:${link}`;
 		}
