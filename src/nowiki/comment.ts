@@ -21,7 +21,7 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 		return key === 'padding' ? 4 as TokenAttributeGetter<T> : super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (this.closed) {
 			return [];

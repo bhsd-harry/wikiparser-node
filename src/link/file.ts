@@ -69,7 +69,7 @@ export abstract class FileToken extends LinkBaseToken {
 		));
 	}
 
-	/** @override */
+	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			args = this.getAllArgs().filter(({childNodes}) => {
