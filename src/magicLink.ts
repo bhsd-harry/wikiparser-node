@@ -51,19 +51,7 @@ export abstract class MagicLinkToken extends Token {
 	abstract override get lastElementChild():
 		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
-	/** 协议 */
-	get protocol(): string | undefined {
-		return this.pattern.exec(this.text())?.[1];
-	}
-
-	/** @throws `Error` 特殊外链无法更改协议n */
-	set protocol(value: string) {
-		const {link, pattern, type} = this;
-		if (type === 'magic-link' || !pattern.test(link)) {
-			throw new Error(`特殊外链无法更改协议：${link}`);
-		}
-		this.setTarget(link.replace(pattern, value));
-	}
+	/* NOT FOR BROWSER END */
 
 	/** 和内链保持一致 */
 	get link(): string {
@@ -81,8 +69,24 @@ export abstract class MagicLinkToken extends Token {
 		return link;
 	}
 
+	/* NOT FOR BROWSER */
+
 	set link(url) {
 		this.setTarget(url);
+	}
+
+	/** 协议 */
+	get protocol(): string | undefined {
+		return this.pattern.exec(this.text())?.[1];
+	}
+
+	/** @throws `Error` 特殊外链无法更改协议n */
+	set protocol(value: string) {
+		const {link, pattern, type} = this;
+		if (type === 'magic-link' || !pattern.test(link)) {
+			throw new Error(`特殊外链无法更改协议：${link}`);
+		}
+		this.setTarget(link.replace(pattern, value));
 	}
 
 	/* NOT FOR BROWSER END */
