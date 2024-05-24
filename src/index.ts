@@ -612,9 +612,11 @@ export class Token extends AstElement {
 
 	/** @override */
 	override toString(separator?: string): string {
+		const root = this.getRootNode();
 		if (
-			this.#built
-				&& Parser.viewOnly
+			root.type === 'root'
+			&& root.#built
+			&& Parser.viewOnly
 		) {
 			this.#string ??= super.toString(separator);
 			return this.#string;
