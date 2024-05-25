@@ -1,6 +1,6 @@
 (() => {
 const workerJS = () => {
-    importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.8.0-b/bundle/bundle.min.js');
+    importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.9.0-b/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
