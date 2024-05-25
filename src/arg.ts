@@ -81,7 +81,7 @@ export abstract class ArgToken extends Token {
 		}
 		const errors = argName.lint(start + 3, re);
 		if (argDefault) {
-			errors.push(...argDefault.lint(start + 4 + String(argName).length, re));
+			errors.push(...argDefault.lint(start + 4 + argName.toString().length, re));
 		}
 		if (rest.length > 0) {
 			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};

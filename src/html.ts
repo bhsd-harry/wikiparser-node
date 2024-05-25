@@ -194,7 +194,7 @@ export abstract class HtmlToken extends Token {
 	findMatchingTag(): this | undefined {
 		const {html: [normalTags, flexibleTags, voidTags]} = this.getAttribute('config'),
 			{name: tagName, parentNode, closing} = this,
-			string = noWrap(String(this));
+			string = noWrap(this.toString());
 		if (closing && (this.#selfClosing || voidTags.includes(tagName))) {
 			throw new SyntaxError(`tag that is both closing and self-closing: ${string}`);
 		} else if (voidTags.includes(tagName) || this.#selfClosing && flexibleTags.includes(tagName)) { // 自封闭标签

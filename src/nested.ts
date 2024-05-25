@@ -68,7 +68,7 @@ export abstract class NestedToken extends Token {
 				if (child.type === 'ext' || child.type === 'comment') {
 					return false;
 				}
-				const str = String(child).trim();
+				const str = child.toString().trim();
 				return str && !/^<!--.*-->$/su.test(str);
 			}).map(child => {
 				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
@@ -82,7 +82,7 @@ export abstract class NestedToken extends Token {
 					{
 						desc: 'comment',
 						range: [e.startIndex, e.startIndex],
-						text: `<!--${String(child)}-->`,
+						text: `<!--${child.toString()}-->`,
 					},
 				];
 				return e;
