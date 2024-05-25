@@ -44,7 +44,6 @@
 		"lint:json": "v8r -s config/.schema.json config/*.json",
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
-		"prof": "node --prof dist/test/prof.js && node --prof-process isolate-0x*-v8.log > test/prof.txt && bash sed.sh -i '0,/Bottom up/d' test/prof.txt && rm isolate-0x*-v8.log",
 		"server": "npm run test:end; http-server .. -c-1 --cors &",
 		"test": " node dist/test/test.js",
 		"test:parser": "node dist/test/parserTests.js",
