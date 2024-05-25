@@ -34,7 +34,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 			isTransclude = isToken<TranscludeToken>('magic-word');
 		if (
 			!first
-			|| tdPattern.test(String(first))
+			|| tdPattern.test(first.toString())
 			|| isArg(first) && tdPattern.test(first.default || '')
 		) {
 			return errors;

@@ -75,7 +75,7 @@ export abstract class GalleryToken extends Token {
 			errors: LintError[] = [];
 		for (let i = 0; i < this.length; i++) {
 			const child = this.childNodes[i]!,
-				str = String(child),
+				str = child.toString(),
 				{length} = str,
 				trimmed = str.trim(),
 				startLine = top + i,

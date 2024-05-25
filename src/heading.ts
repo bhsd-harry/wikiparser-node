@@ -47,7 +47,7 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	override toString(): string {
 		const equals = this.#equals;
-		return equals + String(this.firstChild) + equals + String(this.lastChild);
+		return equals + this.firstChild.toString() + equals + this.lastChild.toString();
 	}
 
 	/** @override */
@@ -70,7 +70,7 @@ export abstract class HeadingToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{firstChild, level} = this,
-			innerStr = String(firstChild),
+			innerStr = firstChild.toString(),
 			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),
 			boldQuotes = quotes.filter(({bold}) => bold),
 			italicQuotes = quotes.filter(({italic}) => italic);
