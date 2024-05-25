@@ -77,7 +77,7 @@ const Parser: Parser = {
 				root.type = 'root';
 				return root.parseOnce(0, include).parseOnce();
 			}),
-			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
+			titleObj = new Title(token.toString(), defaultNs, config, decode, selfLink);
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
 				const str = titleObj[key];

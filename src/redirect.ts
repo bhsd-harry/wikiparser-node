@@ -59,7 +59,7 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		return this.lastChild.lint(start + this.#pre.length + String(this.firstChild).length);
+		return this.lastChild.lint(start + this.#pre.length + this.firstChild.toString().length);
 	}
 
 	/** @private */

@@ -179,7 +179,7 @@ export abstract class TranscludeToken extends Token {
 	override toString(): string {
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
-				? `${String(this.firstChild)}${this.length === 1 ? '' : ':'}${
+				? `${this.firstChild.toString()}${this.length === 1 ? '' : ':'}${
 					this.childNodes.slice(1).map(String).join('|')
 				}`
 				: super.toString('|')
