@@ -153,7 +153,7 @@ export class AstText extends AstNode {
 			}
 			const startIndex = start + index,
 				endIndex = startIndex + length,
-				rootStr = String(root),
+				rootStr = root.toString(),
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
 				severity = length > 1 && !(
@@ -230,7 +230,7 @@ export class AstText extends AstNode {
 					},
 				];
 			} else if (char === '[' && type === 'ext-link-text') {
-				const i = parentNode.getAbsoluteIndex() + String(parentNode).length;
+				const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
 				e.suggestions = [
 					{
 						desc: 'escape',
@@ -239,7 +239,7 @@ export class AstText extends AstNode {
 					},
 				];
 			} else if (char === ']' && previousType === 'free-ext-link' && severity === 'error') {
-				const i = start - String(previousSibling).length;
+				const i = start - previousSibling!.toString().length;
 				e.fix = {
 					range: [i, i],
 					text: '[',

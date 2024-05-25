@@ -44,7 +44,7 @@ export abstract class ConverterRuleToken extends Token {
 		const {childNodes} = this;
 		if (childNodes.length === 3) {
 			const [from, variant, to] = childNodes;
-			return `${String(from)}=>${String(variant)}:${String(to)}`;
+			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
 		}
 		return super.toString(':');
 	}

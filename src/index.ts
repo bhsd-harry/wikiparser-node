@@ -216,7 +216,7 @@ export class Token extends AstElement {
 	/** 解析重定向 */
 	#parseRedirect(): boolean {
 		const {parseRedirect}: typeof import('../parser/redirect') = require('../parser/redirect');
-		const wikitext = String(this.firstChild!),
+		const wikitext = this.firstChild!.toString(),
 			parsed = parseRedirect(wikitext, this.#config, this.#accum);
 		if (parsed) {
 			this.setText(parsed);
@@ -230,13 +230,13 @@ export class Token extends AstElement {
 	 */
 	#parseCommentAndExt(includeOnly: boolean): void {
 		const {parseCommentAndExt}: typeof import('../parser/commentAndExt') = require('../parser/commentAndExt');
-		this.setText(parseCommentAndExt(String(this.firstChild!), this.#config, this.#accum, includeOnly));
+		this.setText(parseCommentAndExt(this.firstChild!.toString(), this.#config, this.#accum, includeOnly));
 	}
 
 	/** 解析花括号 */
 	#parseBraces(): void {
 		const {parseBraces}: typeof import('../parser/braces') = require('../parser/braces');
-		const str = this.type === 'root' ? String(this.firstChild!) : `\0${String(this.firstChild!)}`,
+		const str = this.type === 'root' ? this.firstChild!.toString() : `\0${this.firstChild!.toString()}`,
 			parsed = parseBraces(str, this.#config, this.#accum);
 		this.setText(this.type === 'root' ? parsed : parsed.slice(1));
 	}
@@ -247,7 +247,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseHtml}: typeof import('../parser/html') = require('../parser/html');
-		this.setText(parseHtml(String(this.firstChild!), this.#config, this.#accum));
+		this.setText(parseHtml(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
 	/** 解析表格 */
@@ -272,7 +272,7 @@ export class Token extends AstElement {
 	/** 解析内部链接 */
 	#parseLinks(): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(String(this.firstChild!), this.#config, this.#accum));
+		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
 	/** 解析单引号 */
@@ -281,7 +281,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
-		const lines = String(this.firstChild!).split('\n');
+		const lines = this.firstChild!.toString().split('\n');
 		for (let i = 0; i < lines.length; i++) {
 			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum);
 		}
@@ -294,7 +294,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseExternalLinks}: typeof import('../parser/externalLinks') = require('../parser/externalLinks');
-		this.setText(parseExternalLinks(String(this.firstChild!), this.#config, this.#accum));
+		this.setText(parseExternalLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
 	/** 解析自由外链 */
@@ -303,7 +303,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseMagicLinks}: typeof import('../parser/magicLinks') = require('../parser/magicLinks');
-		this.setText(parseMagicLinks(String(this.firstChild!), this.#config, this.#accum));
+		this.setText(parseMagicLinks(this.firstChild!.toString(), this.#config, this.#accum));
 	}
 
 	/** 解析列表 */
@@ -312,7 +312,7 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const lines = String(this.firstChild!).split('\n');
+		const lines = this.firstChild!.toString().split('\n');
 		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, this.#config, this.#accum);
@@ -324,7 +324,7 @@ export class Token extends AstElement {
 	#parseConverter(): void {
 		if (this.#config.variants.length > 0) {
 			const {parseConverter}: typeof import('../parser/converter') = require('../parser/converter');
-			this.setText(parseConverter(String(this.firstChild!), this.#config, this.#accum));
+			this.setText(parseConverter(this.firstChild!.toString(), this.#config, this.#accum));
 		}
 	}
 
@@ -431,7 +431,7 @@ export class Token extends AstElement {
 				}
 			}
 			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
-				wikitext = String(this),
+				wikitext = this.toString(),
 				ignores: LintIgnore[] = [];
 			let mt = regex.exec(wikitext),
 				last = 0,

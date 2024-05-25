@@ -195,14 +195,16 @@ export abstract class AstElement extends AstNode {
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			errors.push(...child.lint(cur, re));
-			cur += String(child).length + this.getGaps(i);
+			cur += child.toString().length + this.getGaps(i);
 		}
 		return errors;
 	}
 
 	/** @private */
 	print(opt: PrintOpt = {}): string {
-		return String(this) ? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>` : '';
+		return this.toString()
+			? `<span class="wpb-${opt.class ?? this.type}">${print(this.childNodes, opt)}</span>`
+			: '';
 	}
 
 	/**
@@ -213,12 +215,12 @@ export abstract class AstElement extends AstNode {
 	json(file?: string, start = this.getAbsoluteIndex()): AST {
 		const json = {
 			...this,
-			range: [start, start + String(this).length],
+			range: [start, start + this.toString().length],
 			childNodes: [],
 		} as unknown as AST;
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!,
-				{length} = String(child);
+				{length} = child.toString();
 			if (child.type === 'text') {
 				json.childNodes!.push({data: child.data, range: [cur, cur + length]} as unknown as AST);
 			} else {

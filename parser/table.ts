@@ -48,7 +48,7 @@ export const parseTable = (
 				token.setAttribute('stage', 3);
 				topToken.insertAt(token);
 			} else {
-				lastChild.setText(String(lastChild) + str);
+				lastChild.setText(lastChild.toString() + str);
 			}
 		},
 
