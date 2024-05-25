@@ -1,4 +1,4 @@
-import {error, info} from '../util/diff';
+import {error, info, diff} from '../util/diff';
 import {single} from './single';
 import Parser = require('../index');
 import type {
@@ -52,10 +52,26 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 			/* eslint-disable no-await-in-loop */
 			let failed = 0;
 			for (const page of await getPages(`${url}/api.php`)) {
+				const {pageid, title, content} = page;
 				try {
-					await single(Parser, page);
+					const errors = await single(Parser, page);
+					if (errors.length > 0) {
+						console.log(errors.map(({message, severity}) => ({message, severity})));
+						errors.sort(({startIndex: a}, {startIndex: b}) => b - a);
+						let text = content,
+							firstStart = Infinity;
+						for (const {startIndex, endIndex} of errors) {
+							if (endIndex < firstStart) {
+								text = text.slice(0, startIndex) + text.slice(endIndex);
+								firstStart = startIndex;
+							} else {
+								firstStart = Math.min(firstStart, startIndex);
+							}
+						}
+						await diff(content, text, pageid);
+					}
 				} catch (e) {
-					error(`解析 ${page.title} 页面时出错！`, e);
+					error(`解析 ${title} 页面时出错！`, e);
 					failed++;
 				}
 			}
