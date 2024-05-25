@@ -189,6 +189,8 @@ export abstract class TdToken extends TableBaseToken {
 			result.correction = true;
 		}
 
+		/* NOT FOR BROWSER END */
+
 		return result;
 	}
 
