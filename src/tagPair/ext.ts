@@ -197,7 +197,7 @@ export abstract class ExtToken extends TagPairToken {
 		const inner = this.lastChild.cloneNode(),
 			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
-			attr = String(this.firstChild);
+			attr = this.firstChild.toString();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
 			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config) as this;

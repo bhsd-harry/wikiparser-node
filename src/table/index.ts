@@ -345,7 +345,7 @@ export abstract class TableToken extends TrBaseToken {
 			Parser.warn('改为将单元格插入当前行。');
 			return previous.insertAt(token);
 		} else if (i > 0 && token instanceof SyntaxToken && token.pattern !== closingPattern) {
-			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(String(token))}`);
+			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(token.toString())}`);
 		}
 		return super.insertAt(token, i);
 	}

@@ -51,7 +51,7 @@ Token.prototype.caretPositionFromIndex =
 		if (index === undefined) {
 			return undefined;
 		}
-		const {length} = String(this);
+		const {length} = this.toString();
 		if (index >= length || index < -length) {
 			return undefined;
 		}
@@ -64,7 +64,7 @@ Token.prototype.caretPositionFromIndex =
 			acc += self.getAttribute('padding');
 			for (let i = 0; acc <= index && i < childNodes.length; i++) {
 				const cur: AstNodes = childNodes[i]!,
-					l = String(cur).length;
+					l = cur.toString().length;
 				acc += l;
 				if (acc > index) {
 					self = cur;
@@ -188,7 +188,7 @@ Token.prototype.redoQuotes =
 			}
 		}
 		const token = Shadow.run(() => {
-			const node = new Token(String(this), this.getAttribute('config'), accum);
+			const node = new Token(this.toString(), this.getAttribute('config'), accum);
 			node.setAttribute('stage', 6);
 			return node.parse(7);
 		});
@@ -207,7 +207,7 @@ Token.prototype.solveConst =
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace = '';
 				if (type === 'arg') {
-					replace = target.default === false ? String(target) : target.default;
+					replace = target.default === false ? target.toString() : target.default;
 				} else if (name === 'if' && !var1?.getElementByTypes('magic-word, template')) {
 					replace = String(childNodes[String(var1 ?? '').trim() ? 2 : 3] ?? '').trim();
 				} else if (

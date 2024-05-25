@@ -42,7 +42,7 @@ const getDimension = (str: string): Dimension => {
  * @param parent 父节点
  */
 const getIndex = (j: number, parent: AstNode): number =>
-	parent.childNodes.slice(0, j).reduce((acc, cur, i) => acc + String(cur).length + parent.getGaps(i), 0)
+	parent.childNodes.slice(0, j).reduce((acc, cur, i) => acc + cur.toString().length + parent.getGaps(i), 0)
 	+ parent.getAttribute('padding');
 
 /* NOT FOR BROWSER */

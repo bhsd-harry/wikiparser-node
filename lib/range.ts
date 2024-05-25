@@ -382,7 +382,7 @@ export class AstRange {
 	/** @private */
 	toString(): string {
 		const {startContainer, startIndex, endIndex} = this;
-		return String(startContainer.getRootNode()).slice(startIndex, endIndex);
+		return startContainer.getRootNode().toString().slice(startIndex, endIndex);
 	}
 
 	/** 获取范围内的全部节点 */

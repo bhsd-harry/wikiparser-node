@@ -70,7 +70,7 @@ export abstract class ParamTagToken extends Token {
 		return this.childNodes.filter(child => {
 			const {childNodes} = child,
 				i = childNodes.findIndex(({type}) => type !== 'text'),
-				str = (i >= 0 ? childNodes.slice(0, i).map(String).join('') : String(child)).trim();
+				str = (i >= 0 ? childNodes.slice(0, i).map(String).join('') : child.toString()).trim();
 			return str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str);
 		}).map(child => {
 			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};

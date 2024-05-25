@@ -170,7 +170,7 @@ const Parser: Parser = {
 				root.type = 'root';
 				return root.parseOnce(0, include).parseOnce();
 			}),
-			titleObj = new Title(String(token), defaultNs, config, decode, selfLink);
+			titleObj = new Title(token.toString(), defaultNs, config, decode, selfLink);
 		Shadow.run(() => {
 			for (const key of ['main', 'fragment'] as const) {
 				const str = titleObj[key];
@@ -203,7 +203,7 @@ const Parser: Parser = {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
-					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : String(token));
+					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : token.toString());
 					fs.writeFileSync(`${file}.err`, e.stack!);
 					fs.writeFileSync(`${file}.json`, JSON.stringify({stage, include, config}, null, '\t'));
 				}
@@ -214,7 +214,7 @@ const Parser: Parser = {
 		/* NOT FOR BROWSER */
 
 		if (this.debugging) {
-			let restored = String(root),
+			let restored = root.toString(),
 				process = 'parsing';
 			if (restored === wikitext) {
 				const entities = {lt: '<', gt: '>', amp: '&'};

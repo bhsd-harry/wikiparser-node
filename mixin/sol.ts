@@ -13,7 +13,7 @@ export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T =>
 		#prependNewLine(): string {
 			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
 			if (previousVisibleSibling) {
-				return String(previousVisibleSibling).endsWith('\n') ? '' : '\n';
+				return previousVisibleSibling.toString().endsWith('\n') ? '' : '\n';
 			}
 			return parentNode?.type === 'root'
 				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem'

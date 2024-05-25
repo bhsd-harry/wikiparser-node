@@ -17,7 +17,7 @@ const escapeTable = (syntax: SyntaxToken): void => {
 	const wikitext = syntax.childNodes.map(
 			child => child.type === 'text'
 				? child.data.replace(/\|/gu, '{{!}}')
-				: String(child),
+				: child.toString(),
 		).join(''),
 		{childNodes} = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
 	syntax.replaceChildren(...childNodes);

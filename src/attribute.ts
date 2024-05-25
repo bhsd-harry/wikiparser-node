@@ -354,7 +354,7 @@ export abstract class AttributeToken extends Token {
 	/** @private */
 	override toString(): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.toString(this.#equal + quoteStart) + quoteEnd : String(this.firstChild);
+		return this.#equal ? super.toString(this.#equal + quoteStart) + quoteEnd : this.firstChild.toString();
 	}
 
 	/** @override */

@@ -175,12 +175,14 @@ export abstract class TdToken extends TableBaseToken {
 
 		/* NOT FOR BROWSER */
 
-		const str = String(previousSibling.lastChild);
+		const str = previousSibling.lastChild.toString();
 		result.escape ||= esc;
 		result.correction = str.includes('\n') && Shadow.run(() => {
 			const config = this.getAttribute('config'),
 				include = this.getAttribute('include');
-			return String(new Token(str, config).parseOnce(0, include).parseOnce().parseOnce()).includes('\n');
+			return new Token(str, config).parseOnce(0, include).parseOnce().parseOnce()
+				.toString()
+				.includes('\n');
 		});
 		if (subtype === 'th' && result.subtype !== 'th') {
 			result.subtype = 'th';
@@ -206,7 +208,7 @@ export abstract class TdToken extends TableBaseToken {
 		/* NOT FOR BROWSER END */
 
 		const {childNodes: [syntax, attr, inner]} = this;
-		return String(syntax) + String(attr) + this.#innerSyntax + String(inner);
+		return syntax.toString() + attr.toString() + this.#innerSyntax + inner.toString();
 	}
 
 	/** @override */
@@ -332,7 +334,7 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 修复\<td\>语法 */
 	#correct(): void {
-		if (String(this.childNodes[1])) {
+		if (this.childNodes[1].toString()) {
 			this.#innerSyntax ||= '|';
 		}
 		const {subtype, escape, correction} = this.#getSyntax();
@@ -387,7 +389,7 @@ export abstract class TdToken extends TableBaseToken {
 			v = value!;
 		}
 		super.setAttr(key, v);
-		if (!String(this.childNodes[1])) {
+		if (!this.childNodes[1].toString()) {
 			this.#innerSyntax = '';
 		}
 	}
@@ -395,7 +397,7 @@ export abstract class TdToken extends TableBaseToken {
 	/** @override */
 	override escape(): void {
 		super.escape();
-		if (String(this.childNodes[1])) {
+		if (this.childNodes[1].toString()) {
 			this.#innerSyntax ||= '{{!}}';
 		}
 		if (this.#innerSyntax === '|') {

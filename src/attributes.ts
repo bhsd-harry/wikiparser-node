@@ -267,7 +267,7 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override print(): string {
-		return String(this)
+		return this.toString()
 			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print(
 				child instanceof AtomToken ? {class: 'attr-dirty'} : undefined,
 			)).join('')}</span>`
@@ -311,7 +311,7 @@ export abstract class AttributesToken extends Token {
 	 */
 	override insertAt<T extends AttributeToken | AtomToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
-			if (String(token).trim()) {
+			if (token.toString().trim()) {
 				this.constructorError('只能插入 AttributeToken');
 			}
 			return super.insertAt(token, i);
@@ -333,10 +333,10 @@ export abstract class AttributesToken extends Token {
 			type = toDirty(this.type),
 			config = this.getAttribute('config'),
 			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
-		if (nextVisibleSibling && !/^\s/u.test(String(nextVisibleSibling))) {
+		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling.toString())) {
 			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i + 1);
 		}
-		if (previousVisibleSibling && !/\s$/u.test(String(previousVisibleSibling))) {
+		if (previousVisibleSibling && !/\s$/u.test(previousVisibleSibling.toString())) {
 			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
 		}
 		return token;

@@ -71,12 +71,12 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** @private */
 	override getTitle(): Title {
-		return this.normalizeTitle(String(this.firstChild), 0, true, true);
+		return this.normalizeTitle(this.firstChild.toString(), 0, true, true);
 	}
 
 	/** @override */
 	override text(): string {
-		return `[[${String(this.firstChild)}]]`;
+		return `[[${this.firstChild.toString()}]]`;
 	}
 
 	/** @private */

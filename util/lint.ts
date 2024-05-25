@@ -31,7 +31,7 @@ const factory = (
 		message: Parser.msg(msg),
 		severity,
 		startIndex,
-		endIndex: startIndex + String(token).length,
+		endIndex: startIndex + token.toString().length,
 		startLine,
 		endLine: startLine + offsetHeight - 1,
 		startCol,

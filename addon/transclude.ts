@@ -183,7 +183,7 @@ TranscludeToken.prototype.escapeTables =
 		if (!/\n[^\S\n]*(?::+[^\S\n]*)?\{\|/u.test(this.text())) {
 			return this;
 		}
-		const stripped = String(this).slice(2, -2),
+		const stripped = this.toString().slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
 			parsed = Parser.parse(stripped, include, 4, config),
@@ -193,7 +193,7 @@ TranscludeToken.prototype.escapeTables =
 				table.escape();
 			}
 		}
-		const {firstChild, length} = Parser.parse(`{{${String(parsed)}}}`, include, undefined, config);
+		const {firstChild, length} = Parser.parse(`{{${parsed.toString()}}}`, include, undefined, config);
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('转义表格失败！');
 		}

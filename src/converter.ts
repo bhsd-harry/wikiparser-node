@@ -74,7 +74,7 @@ export abstract class ConverterToken extends Token {
 	/** @private */
 	override toString(): string {
 		const {childNodes: [flags, ...rules]} = this;
-		return `-{${String(flags)}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
+		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
 	/** @override */

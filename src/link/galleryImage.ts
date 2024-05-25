@@ -67,7 +67,7 @@ export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	override getTitle(): Title {
 		const imagemap = this.type === 'imagemap-image';
-		return this.normalizeTitle(String(this.firstChild), imagemap ? 0 : 6, true, !imagemap);
+		return this.normalizeTitle(this.firstChild.toString(), imagemap ? 0 : 6, true, !imagemap);
 	}
 
 	/** @private */
@@ -106,7 +106,7 @@ export abstract class GalleryImageToken extends FileToken {
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
-				const name = String(prevTarget),
+				const name = prevTarget.toString(),
 					title = this.getTitle(),
 					{interwiki, ns, valid} = title;
 				if (!valid) {
