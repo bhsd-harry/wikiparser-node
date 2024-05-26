@@ -10,6 +10,8 @@ Parser.debugging = true;
 const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] = [],
 	files = new Set(fs.readdirSync('test/core/'));
 files.delete('parserTests.txt');
+files.delete('indentPre.txt');
+files.delete('pst.txt');
 for (const file of ['parserTests.txt', ...files]) {
 	tests.push({desc: file.slice(0, -4)});
 	const content = fs.readFileSync(path.join('test/core', file), 'utf8'),
@@ -27,7 +29,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			'html/*',
 		]),
 		// eslint-disable-next-line @stylistic/max-len
-		re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|cat|subpage|showindicators|djvu))*\n!/mu,
+		re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
 		optionRegex = new RegExp(`^(?:\\n?(?:(?:${[
 			'parsoid',
 			'wgRawHtml',
@@ -49,6 +51,7 @@ for (const file of ['parserTests.txt', ...files]) {
 			'thumbsize',
 			'wgEnableUploads',
 			'wgEnableMagicLinks',
+			'wgMaxTocLevel',
 		].join('|')})\\s*=.+|${
 			[
 				'showtitle',
@@ -65,6 +68,10 @@ for (const file of ['parserTests.txt', ...files]) {
 				'djvu',
 				'lastsavedrevision',
 				'showflags',
+				'nohtml',
+				'showtocdata',
+				'showmedia',
+				'notoc',
 			].join('|')
 		}|parsoid\\s*=\\s*\\{\\n[\\s\\S]+\\n\\}|# .*))+$`, 'u'),
 		htmlInfo = cases.map(([test]) => regex.html.exec(test)?.[1]).filter(x => x && !modes.has(x)),
