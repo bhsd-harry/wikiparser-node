@@ -21,9 +21,6 @@ declare interface Test {
 		if (wikitext === undefined) {
 			optgroup = document.createElement('optgroup');
 			optgroup.label = desc;
-			if (desc === 'legacyMedia') {
-				optgroup.hidden = true;
-			}
 			select.append(optgroup);
 		} else {
 			const option = document.createElement('option');
