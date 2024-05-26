@@ -56,3 +56,12 @@ export const setChildNodes = (
  */
 export const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
 	new Array(n).fill(undefined).map((_, i) => callback(i));
+
+/**
+ * 同步混入的类名
+ * @param target 混入的目标
+ * @param source 混入的源
+ */
+export const mixin = (target: Function, source: Function): void => {
+	Object.defineProperty(target, 'name', {value: source.name});
+};

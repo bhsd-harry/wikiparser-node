@@ -1,3 +1,4 @@
+import {mixin} from '../util/debug';
 import type {AstNodes, AttributesToken} from '../internal';
 
 export interface AttributesParentBase {
@@ -30,6 +31,6 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			return this.#attributesChild.getAttr(key);
 		}
 	}
-	Object.defineProperty(AttributesParent, 'name', {value: constructor.name});
+	mixin(AttributesParent, constructor);
 	return AttributesParent;
 };
