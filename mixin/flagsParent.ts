@@ -1,3 +1,4 @@
+import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {ConverterFlagsToken} from '../src/converterFlags';
 
@@ -112,7 +113,7 @@ export const flagsParent = <T extends AstConstructor>(constructor: T, _?: unknow
 			this.firstChild.toggleFlag(flag);
 		}
 	}
-	Object.defineProperty(FlagsParent, 'name', {value: constructor.name});
+	mixin(FlagsParent, constructor);
 	return FlagsParent;
 };
 

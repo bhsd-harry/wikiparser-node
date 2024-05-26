@@ -1,3 +1,4 @@
+import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {AstNodes, AttributesToken} from '../internal';
 
@@ -157,7 +158,7 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			this.#attributesChild.toggleAttr(key, force);
 		}
 	}
-	Object.defineProperty(AttributesParent, 'name', {value: constructor.name});
+	mixin(AttributesParent, constructor);
 	return AttributesParent;
 };
 

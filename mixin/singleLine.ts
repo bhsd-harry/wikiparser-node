@@ -1,3 +1,4 @@
+import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 
 /**
@@ -18,7 +19,7 @@ export const singleLine = <T extends AstConstructor>(constructor: T, _?: unknown
 			return super.text().replace(/\n/gu, ' ');
 		}
 	}
-	Object.defineProperty(SingleLineToken, 'name', {value: constructor.name});
+	mixin(SingleLineToken, constructor);
 	return SingleLineToken;
 };
 

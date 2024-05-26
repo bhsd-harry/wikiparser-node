@@ -1,4 +1,4 @@
-import {undo, Shadow} from '../util/debug';
+import {undo, Shadow, mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import {text} from '../util/string';
 import type {AstNodes} from '../lib/node';
@@ -51,7 +51,7 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			}
 		}
 	}
-	Object.defineProperty(SyntaxToken, 'name', {value: constructor.name});
+	mixin(SyntaxToken, constructor);
 	return SyntaxToken;
 };
 

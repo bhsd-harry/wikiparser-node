@@ -1,3 +1,4 @@
+import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {Token} from '../src/index';
 
@@ -38,7 +39,7 @@ export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T =>
 			return this.#prependNewLine() + super.text();
 		}
 	}
-	Object.defineProperty(SolToken, 'name', {value: constructor.name});
+	mixin(SolToken, constructor);
 	return SolToken;
 };
 

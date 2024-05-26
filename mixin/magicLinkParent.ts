@@ -1,3 +1,4 @@
+import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {MagicLinkToken} from '../src/magicLink';
 
@@ -64,7 +65,7 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T, _?: un
 			this.firstChild.setTarget(url);
 		}
 	}
-	Object.defineProperty(MagicLinkParent, 'name', {value: constructor.name});
+	mixin(MagicLinkParent, constructor);
 	return MagicLinkParent;
 };
 

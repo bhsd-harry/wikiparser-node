@@ -1,4 +1,4 @@
-import {Shadow} from '../util/debug';
+import {Shadow, mixin} from '../util/debug';
 import {mixins} from '../util/constants';
 import type {AstNodes, AstText} from '../internal';
 
@@ -31,7 +31,7 @@ export const fixedToken = <S extends AstConstructor>(constructor: S, _?: unknown
 			return Shadow.running ? super.insertAt(token, i) as T | AstText : this.constructorError('不可插入元素');
 		}
 	}
-	Object.defineProperty(FixedToken, 'name', {value: constructor.name});
+	mixin(FixedToken, constructor);
 	return FixedToken;
 };
 
