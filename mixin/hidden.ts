@@ -1,10 +1,12 @@
+import {mixin} from '../util/debug';
 import type {LintError} from '../base';
 
 /**
  * 解析后不可见的类
  * @param constructor 基类
+ * @param _ context
  */
-export const hiddenToken = <T extends AstConstructor>(constructor: T): T => {
+export const hiddenToken = <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 解析后不可见的类 */
 	abstract class AnyHiddenToken extends constructor {
 		/** 没有可见部分 */
@@ -17,5 +19,6 @@ export const hiddenToken = <T extends AstConstructor>(constructor: T): T => {
 			return [];
 		}
 	}
+	mixin(AnyHiddenToken, constructor);
 	return AnyHiddenToken;
 };
