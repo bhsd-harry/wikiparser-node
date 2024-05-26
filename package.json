@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.8.0",
+	"version": "1.9.0",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -29,7 +29,7 @@
 	},
 	"scripts": {
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print)\\b/\\1/' dist/lib/node.d.ts; node ./dist/bin/declaration.js",
-		"prepublishOnly": "npm run build",
+		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
 		"build": "npm run build:core && node ./dist/bin/parserTests.js",
 		"diff": "bash diff.sh",
