@@ -10,6 +10,15 @@ import type {LintError} from '../base';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
+const regex = new RegExp(
+	'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
+	+ `(?:${
+		'((?:\\s|\0\\d+c\x7F)*(?:=|\0\\d+~\x7F)(?:\\s|\0\\d+c\x7F)*)' // `=`和前后的空白字符
+		+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
+	})?`,
+	'gsu',
+);
+
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
 
@@ -55,14 +64,7 @@ export abstract class AttributesToken extends Token {
 		this.type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			const regex = new RegExp(
-				'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
-				+ `(?:${
-					'((?:\\s|\0\\d+c\x7F)*(?:=|\0\\d+~\x7F)(?:\\s|\0\\d+c\x7F)*)' // `=`和前后的空白字符
-					+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
-				})?`,
-				'gsu',
-			);
+			regex.lastIndex = 0;
 			let out = '',
 				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;

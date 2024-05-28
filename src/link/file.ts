@@ -99,7 +99,7 @@ export abstract class FileToken extends LinkBaseToken {
 		 * @param p1 替换$1
 		 */
 		const generate = (msg: string, p1: string) =>
-			(arg: ImageParameterToken) =>
+			(arg: ImageParameterToken): LintError =>
 				generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
 		for (const key of keys) {
 			let relevantArgs = args.filter(({name}) => name === key);

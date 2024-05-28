@@ -13,6 +13,8 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  */
 const getName = (name: Token): string => name.text().replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 
+const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
+
 /**
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
@@ -79,7 +81,7 @@ export abstract class ParameterToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{firstChild} = this,
-			link = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu').exec(firstChild.text())?.[0];
+			link = linkRegex.exec(firstChild.text())?.[0];
 		if (link && new URL(link).search) {
 			const e = generateForChild(
 				firstChild,
