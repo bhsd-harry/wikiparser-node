@@ -7,6 +7,8 @@ import Parser from '../index';
 Parser.viewOnly = true;
 Parser.debugging = true;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
 const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] = [],
 	regex = {
 		html: /^!!\s*(html\b.*)$/mu,
@@ -22,7 +24,7 @@ const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] 
 	]),
 	// eslint-disable-next-line @stylistic/max-len
 	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
-	optionRegex = new RegExp(`^(?:\\n?(?:(?:${[
+	optionRegex = new RegExp(`^(?:\n?(?:(?:${[
 		'parsoid',
 		'wgRawHtml',
 		'maxincludesize',
@@ -65,7 +67,7 @@ const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] 
 			'showmedia',
 			'notoc',
 		].join('|')
-	}|parsoid\\s*=\\s*\\{\\n[\\s\\S]+\\n\\}|# .*))+$`, 'u'),
+	}|parsoid\\s*=\\s*\\{\n[\\s\\S]+\n\\}|# .*))+$`, 'u'),
 	files = new Set(fs.readdirSync('test/core/'));
 files.delete('parserTests.txt');
 files.delete('indentPre.txt');

@@ -116,6 +116,8 @@ export abstract class TranscludeToken extends Token {
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName ?? lcName);
 				this.type = 'magic-word';
+				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+				/^\s*uc\s*$/iu;
 				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',

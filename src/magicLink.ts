@@ -22,14 +22,20 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
+const space = '(?:[\\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
 	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /** NOT FOR BROWSER */
 
 export interface MagicLinkToken extends SyntaxBase {}
 
-const spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
+/^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
+/* eslint-enable @typescript-eslint/no-unused-expressions */
+const spdash = '(?:[\\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
 	isbnPattern = new RegExp(`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX]$`, 'u'),
 	rfcPattern = new RegExp(`^(RFC|PMID)${space}+\\d+$`, 'u');
 
@@ -111,6 +117,8 @@ export abstract class MagicLinkToken extends Token {
 		if (type === 'magic-link') {
 			pattern = url?.startsWith('ISBN') ? isbnPattern : rfcPattern;
 		} else {
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+			/^(ftp:\/\/|\/\/)/iu;
 			pattern = new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
 		}
 		this.setAttribute('pattern', pattern);
@@ -138,6 +146,8 @@ export abstract class MagicLinkToken extends Token {
 			}
 			return errors;
 		}
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		/[，；。：！？（）]+|\|+/gu;
 		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');

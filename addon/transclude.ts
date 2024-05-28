@@ -138,6 +138,8 @@ TranscludeToken.prototype.fixDuplication =
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
 				let last: number;
+				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+				/^a\d+$/u;
 				// eslint-disable-next-line es-x/no-regexp-lookbehind-assertions
 				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0].length),
 					regex = new RegExp(`^${escapeRegExp(str)}\\d+$`, 'u'),

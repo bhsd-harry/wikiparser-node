@@ -15,6 +15,8 @@ import type {Token} from '../internal';
  * @param accum
  */
 export const parseLinks = (wikitext: string, config: Config, accum: Token[]): string => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	/^\s*(?:ftp:\/\/|\/\/)/iu;
 	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
 			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,

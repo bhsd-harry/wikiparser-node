@@ -288,6 +288,8 @@ const Parser: Parser = {
 
 	/** @implements */
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		/^(zh|en)\s*:/diu;
 		return interwiki.length > 0
 			? new RegExp(`^(${interwiki.join('|')})\\s*:`, 'diu')
 				.exec(title.replace(/_/gu, ' ').replace(/^\s*:?\s*/u, ''))

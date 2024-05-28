@@ -557,6 +557,8 @@ export abstract class AstElement extends AstNode {
 				case 'has':
 					return Boolean(this.querySelector<Token>(s));
 				case 'lang': {
+					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+					/^zh(?:-|$)/u;
 					const regex = new RegExp(`^${s}(?:-|$)`, 'u');
 					return matchesLang(this, regex)
 						|| this.getAncestors().some(ancestor => matchesLang(ancestor, regex));

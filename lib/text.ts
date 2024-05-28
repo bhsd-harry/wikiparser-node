@@ -17,8 +17,10 @@ import type {
 	TranscludeToken,
 } from '../internal';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
+/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
+/* eslint-enable @typescript-eslint/no-unused-expressions */
 const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
 	+ '|'
 	+ '\\{+|\\}+' // `{`、`}`

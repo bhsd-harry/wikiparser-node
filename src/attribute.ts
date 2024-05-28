@@ -27,6 +27,8 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 
 /* NOT FOR BROWSER END */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u;
 const commonHtmlAttrs = new Set([
 		'id',
 		'class',

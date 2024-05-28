@@ -50,7 +50,7 @@ function validate(
 				return val;
 			}
 			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/^(?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
+			/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
 			const regex = new RegExp(
 				`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}$`,
 				'iu',
@@ -171,11 +171,20 @@ export abstract class ImageParameterToken extends Token {
 	/** @param str 图片参数 */
 	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum: Token[] = []) {
 		let mt: [string, string, string, string?] | null;
+		/* eslint-disable @typescript-eslint/no-unused-expressions */
+		/^(\s*)link=(.*)(?=$|\n)(\s*)$/u;
+		/^(\s*(?!\s))(.*)px(\s*)$/u;
+		/* eslint-enable @typescript-eslint/no-unused-expressions */
 		const regexes = Object.entries(config.img).map(
 				([syntax, param]): [string, string, RegExp] => [
 					syntax,
 					param,
-					new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`, 'u'),
+					new RegExp(
+						`^(\\s*(?!\\s))${syntax.replace('$1', '(.*)')}${
+							syntax.endsWith('$1') ? '(?=$|\n)' : ''
+						}(\\s*)$`,
+						'u',
+					),
 				],
 			),
 			param = regexes.find(([, key, regex]) => {

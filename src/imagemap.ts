@@ -114,7 +114,7 @@ export abstract class ImagemapToken extends Token {
 					protocols.has(substr.slice(1, substr.indexOf(':') + 1))
 					|| protocols.has(substr.slice(1, substr.indexOf('//') + 2))
 				) {
-					const mtEx = /^\[([^\]\s]+)(?:(\s+(?=\S))([^\]]*))?\][\w\s]*$/u
+					const mtEx = /^\[([^\]\s]+)(?:(\s+(?!\s))([^\]]*))?\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined, string | undefined] | null;
 					if (mtEx) {
 						// @ts-expect-error abstract class

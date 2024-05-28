@@ -15,7 +15,7 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 	/^(\s*)((?:#redirect|#重定向)\s*(?::\s*)?)\[\[([^\n|\]]+)(\|.*?)?\]\](\s*)/iu;
 	const re = new RegExp(`^(\\s*)((?:${
 			config.redirection.join('|')
-		})\\s*(?::\\s*)?)\\[\\[([^\\n|\\]]+)(\\|.*?)?\\]\\](\\s*)`, 'iu'),
+		})\\s*(?::\\s*)?)\\[\\[([^\n|\\]]+)(\\|.*?)?\\]\\](\\s*)`, 'iu'),
 		mt = re.exec(text);
 	if (mt && Parser.normalizeTitle(mt[3]!, 0, false, config, true, true).valid) {
 		text = `\0${accum.length}c\x7F${text.slice(mt[0].length)}`;

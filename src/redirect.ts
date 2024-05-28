@@ -51,6 +51,8 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 		super(undefined, config, accum);
 		this.#pre = pre;
 		this.#post = post;
+		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+		/^(?:#redirect|#重定向)\s*(?::\s*)?$/iu;
 		const pattern = new RegExp(`^(?:${config.redirection.join('|')})\\s*(?::\\s*)?$`, 'iu');
 		this.append(
 			new SyntaxToken(syntax, pattern, 'redirect-syntax', config, accum, {
