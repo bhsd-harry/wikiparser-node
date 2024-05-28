@@ -34,7 +34,7 @@ Token.prototype.createElement =
 		} else if (config.ext.includes(tagName)) {
 			// @ts-expect-error abstract class
 			return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config));
-		} else if (config.html.flat().includes(tagName)) {
+		} else if (config.html.some(tags => tags.includes(tagName))) {
 			return Shadow.run(() => {
 				// @ts-expect-error abstract class
 				const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
@@ -126,7 +126,7 @@ Token.prototype.findEnclosingHtml =
 		const {html} = this.getAttribute('config'),
 			normalTags = new Set(html[0]),
 			voidTags = new Set(html[2]);
-		if (tag !== undefined && !html.slice(0, 2).flat().includes(tag)) {
+		if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
 			throw new RangeError(`非法的标签或空标签：${tag}`);
 		}
 		const {parentNode} = this;

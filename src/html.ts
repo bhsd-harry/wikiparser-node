@@ -331,7 +331,7 @@ export abstract class HtmlToken extends Token {
 	 */
 	replaceTag(tag: string): void {
 		const name = tag.toLowerCase();
-		if (!this.getAttribute('config').html.flat().includes(name)) {
+		if (!this.getAttribute('config').html.some(tags => tags.includes(name))) {
 			throw new RangeError(`非法的HTML标签：${tag}`);
 		}
 		this.setAttribute('name', name);

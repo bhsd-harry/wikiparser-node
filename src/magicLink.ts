@@ -22,15 +22,18 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
+const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+	spaceRegex = new RegExp(`${space}+`, 'gu');
+
 /** NOT FOR BROWSER */
 
 export interface MagicLinkToken extends SyntaxBase {}
 
-const spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
+const spdash = '(?:[\\p{Zs}\\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+	isbnPattern = new RegExp(`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX]$`, 'u'),
+	rfcPattern = new RegExp(`^(RFC|PMID)${space}+\\d+$`, 'u');
 
 /** NOT FOR BROWSER END */
-
-const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
 
 /**
  * 自由外链
@@ -62,7 +65,7 @@ export abstract class MagicLinkToken extends Token {
 			return type === 'magic-word' && String(name) in map ? map[name as keyof typeof map] : child;
 		}));
 		if (this.type === 'magic-link') {
-			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
+			link = link.replace(spaceRegex, ' ');
 			if (link.startsWith('ISBN')) {
 				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
 			}
@@ -104,14 +107,12 @@ export abstract class MagicLinkToken extends Token {
 
 		/* NOT FOR BROWSER */
 
-		const pattern = type === 'magic-link'
-			? new RegExp(
-				url?.startsWith('ISBN')
-					? `^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX]$`
-					: `^(RFC|PMID)${space}+\\d+$`,
-				'u',
-			)
-			: new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
+		let pattern;
+		if (type === 'magic-link') {
+			pattern = url?.startsWith('ISBN') ? isbnPattern : rfcPattern;
+		} else {
+			pattern = new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
+		}
 		this.setAttribute('pattern', pattern);
 	}
 

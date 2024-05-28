@@ -12,7 +12,8 @@ import type {Token} from '../src/index';
  */
 export const parseHtml = (wikitext: string, config: Config, accum: Token[]): string => {
 	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,
-		elements = new Set(config.html.flat()),
+		{html} = config,
+		elements = new Set([...html[0], ...html[1], ...html[2]]),
 		bits = wikitext.split('<');
 	let text = bits.shift()!;
 	for (const x of bits) {
