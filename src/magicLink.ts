@@ -13,7 +13,8 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)';
+const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /**
  * 自由外链
@@ -34,7 +35,7 @@ export abstract class MagicLinkToken extends Token {
 			return type === 'magic-word' && String(name) in map ? map[name as keyof typeof map] : child;
 		}));
 		if (this.type === 'magic-link') {
-			link = link.replace(new RegExp(`${space}+`, 'gu'), ' ');
+			link = link.replace(spaceRegex, ' ');
 			if (link.startsWith('ISBN')) {
 				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
 			}

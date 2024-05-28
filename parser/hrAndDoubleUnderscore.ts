@@ -29,7 +29,7 @@ export const parseHrAndDoubleUnderscore = (
 			return `${lead}\0${accum.length - 1}r\x7F`;
 		},
 	).replace(
-		new RegExp(`__(${doubleUnderscore.flat().join('|')})__`, 'giu'),
+		new RegExp(`__(${[...doubleUnderscore[0], ...doubleUnderscore[1]].join('|')})__`, 'giu'),
 		(m, p1: string) => {
 			const caseSensitive = sensitive.has(p1);
 			if (caseSensitive || insensitive.has(p1.toLowerCase())) {
