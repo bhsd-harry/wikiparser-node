@@ -6,6 +6,8 @@ import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;
 const closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]),
 	re = new RegExp(`\\{\\{\\s*(${[...marks.keys()].map(escapeRegExp).join('|')})\\s*\\}\\}(?!\\})`, 'gu');
@@ -18,8 +20,6 @@ const closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}
  * @throws TranscludeToken.constructor()
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;
 	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [];
