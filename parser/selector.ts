@@ -48,15 +48,17 @@ const regularRegex = /[[(,>+~]|\s+/u,
 	attributeRegex = /^\s*(\w+)\s*(?:([~|^$*!]?=)\s*("[^"]*"|'[^']*'|[^\s[\]]+)(?:\s+(i))?\s*)?\]/u,
 	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u,
 	grouping = new Set([',', '>', '+', '~']),
-	combinator = new Set(['>', '+', '~', '']);
+	combinator = new Set(['>', '+', '~', '']),
+	sanitizeRegex = specialChars.map(([c, escaped]) => [new RegExp(escapeRegExp(`\\${c}`), 'gu'), escaped] as const),
+	desanitizeRegex = specialChars.map(([c, escaped]) => [c, new RegExp(escaped, 'gu')] as const);
 
 /**
  * 清理转义符号
  * @param selector
  */
 const sanitize = (selector: string): string => {
-	for (const [c, escaped] of specialChars) {
-		selector = selector.replace(new RegExp(escapeRegExp(`\\${c}`), 'gu'), escaped);
+	for (const [re, escaped] of sanitizeRegex) {
+		selector = selector.replace(re, escaped);
 	}
 	return selector;
 };
@@ -66,8 +68,8 @@ const sanitize = (selector: string): string => {
  * @param selector
  */
 const desanitize = (selector: string): string => {
-	for (const [c, escaped] of specialChars) {
-		selector = selector.replace(new RegExp(escaped, 'gu'), c);
+	for (const [c, re] of desanitizeRegex) {
+		selector = selector.replace(re, c);
 	}
 	return selector.trim();
 };

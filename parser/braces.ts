@@ -6,6 +6,10 @@ import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
+const closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
+	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]),
+	re = new RegExp(`\\{\\{\\s*(${[...marks.keys()].map(escapeRegExp).join('|')})\\s*\\}\\}(?!\\})`, 'gu');
+
 /**
  * 解析花括号
  * @param wikitext
@@ -18,10 +22,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	/\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;
 	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
-		stack: BraceExecArrayOrEmpty[] = [],
-		closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
-		marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]),
-		re = new RegExp(`\\{\\{\\s*(${[...marks.keys()].map(escapeRegExp).join('|')})\\s*\\}\\}(?!\\})`, 'gu');
+		stack: BraceExecArrayOrEmpty[] = [];
 	wikitext = wikitext.replace(re, (m, p1: string) => {
 		// @ts-expect-error abstract class
 		new TranscludeToken(m.slice(2, -2), [], config, accum);

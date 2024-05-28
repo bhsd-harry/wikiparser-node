@@ -23,6 +23,17 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /* NOT FOR BROWSER END */
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:(\s*(?:=|\0\d+~\x7F)\s*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
+const regex = new RegExp(
+	'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
+	+ `(?:${
+		'((?:\\s|\0\\d+c\x7F)*(?:=|\0\\d+~\x7F)(?:\\s|\0\\d+c\x7F)*)' // `=`和前后的空白字符
+		+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
+	})?`,
+	'gsu',
+);
+
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
 
@@ -128,16 +139,7 @@ export abstract class AttributesToken extends Token {
 		this.type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:(\s*(?:=|\0\d+~\x7F)\s*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
-			const regex = new RegExp(
-				'([^\\s/](?:(?!\0\\d+~\x7F)[^\\s/=])*)' // 属性名
-				+ `(?:${
-					'((?:\\s|\0\\d+c\x7F)*(?:=|\0\\d+~\x7F)(?:\\s|\0\\d+c\x7F)*)' // `=`和前后的空白字符
-					+ `(?:(["'])(.*?)(\\3|$)|(\\S*))` // 属性值
-				})?`,
-				'gsu',
-			);
+			regex.lastIndex = 0;
 			let out = '',
 				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;

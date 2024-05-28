@@ -10,8 +10,10 @@ import type {Token} from '../src/index';
  * @param accum
  */
 export const parseConverter = (text: string, config: Config, accum: Token[]): string => {
-	const regex1 = /-\{/gu,
+	const variants = `(?:${config.variants.join('|')})`,
+		regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
+		regex3 = new RegExp(`;(?=(?:[^;]*?=>)?\\s*${variants}\\s*:|(?:\\s|\0\\d+c\x7F)*$)`, 'u'),
 		stack: RegExpExecArray[] = [];
 	let regex = regex1,
 		mt = regex.exec(text);
@@ -26,9 +28,7 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 				i = str.indexOf('|'),
 				[flags, raw] = i === -1 ? [[], str] : [str.slice(0, i).split(';'), str.slice(i + 1)],
 				temp = raw.replace(/(&[#a-z\d]+);/giu, '$1\x01'),
-				variants = `(?:${config.variants.join('|')})`,
-				rules = temp.split(new RegExp(`;(?=(?:[^;]*?=>)?\\s*${variants}\\s*:|(?:\\s|\0\\d+c\x7F)*$)`, 'u'))
-					.map(rule => rule.replace(/\x01/gu, ';')) as [string, ...string[]];
+				rules = temp.split(regex3).map(rule => rule.replace(/\x01/gu, ';')) as [string, ...string[]];
 			// @ts-expect-error abstract class
 			new ConverterToken(flags, rules, config, accum);
 			text = `${text.slice(0, top.index)}\0${length}v\x7F${text.slice(index + 2)}`;

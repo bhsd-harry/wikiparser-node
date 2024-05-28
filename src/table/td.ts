@@ -388,7 +388,7 @@ export abstract class TdToken extends TableBaseToken {
 		if (typeof value === 'number' && (key === 'rowspan' || key === 'colspan')) {
 			v = value === 1 ? false : String(value);
 		} else {
-			v = value!;
+			v = String(value);
 		}
 		super.setAttr(key, v);
 		if (!this.childNodes[1].toString()) {
