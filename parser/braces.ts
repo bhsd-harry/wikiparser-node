@@ -17,8 +17,6 @@ const closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}
  * @throws TranscludeToken.constructor()
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;
 	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [];
@@ -27,8 +25,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		new TranscludeToken(m.slice(2, -2), [], config, accum);
 		return `\0${accum.length - 2}${marks.get(p1)}\x7F`;
 	});
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^(\0\d+c\x7F)*={1,6}|\[\[|\{{2,}|-\{(?!\{)|[\n|=]|\}{2,}|\}-|\]\]/gmu;
 	let regex = new RegExp(source, 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		moreBraces = wikitext.includes('}}'),
