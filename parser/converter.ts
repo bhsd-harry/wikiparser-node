@@ -11,7 +11,7 @@ import type {Token} from '../src/index';
  */
 export const parseConverter = (text: string, config: Config, accum: Token[]): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/;(?=(?:[^;]*?=>)?\s*foo\s*:|(?:\s|\0\d+c\x7F)*$)/u;
+	/;(?=(?:[^;]*?=>)?\s*zh\s*:|(?:\s|\0\d+c\x7F)*$)/u;
 	const variants = `(?:${config.variants.join('|')})`,
 		regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,

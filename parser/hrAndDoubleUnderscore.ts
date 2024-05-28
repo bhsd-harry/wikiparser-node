@@ -22,6 +22,8 @@ export const parseHrAndDoubleUnderscore = (
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	/__(toc|notoc)__/giu;
 	data = data.replace(
 		/^((?:\0\d+c\x7F)*)(-{4,})/gmu,
 		(_, lead: string, m: string) => {

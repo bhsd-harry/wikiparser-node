@@ -54,11 +54,8 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			return str;
 		}
 	}
-	/* eslint-disable @typescript-eslint/no-unused-expressions */
-	/<foo(?:\s[^>]*)?\/?>|<\/foo\s*>/giu;
-	/<(bar)(\s[^>]*?)?(?:\/>|>(.*?)<\/(\1\s*)>)/gisu;
-	/<(baz)(\s[^>]*?)?(?:\/>|>(.*?)(?:<\/(baz\s*)>|$))/gisu;
-	/* eslint-enable @typescript-eslint/no-unused-expressions */
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions, @stylistic/max-len
+	/<!--.*?(?:-->|$)|<foo(?:\s[^>]*)?\/?>|<\/foo\s*>|<(bar)(\s[^>]*?)?(?:\/>|>(.*?)<\/(\1\s*)>)|<(baz)(\s[^>]*?)?(?:\/>|>(.*?)(?:<\/(baz\s*)>|$))/gisu;
 	const ext = config.ext.join('|'),
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly',

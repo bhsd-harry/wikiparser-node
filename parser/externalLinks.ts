@@ -13,16 +13,16 @@ import type {Token} from '../src/index';
  * @param inFile 是否在图链中
  */
 export const parseExternalLinks = (wikitext: string, config: Config, accum: Token[], inFile?: boolean): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/\[((?:\[[\da-f:.]+\]|[^[\]\t\n\p{Zs}])[^[\]\t\n\p{Zs}]*(?=[[\]\t\p{Zs}]|\0\d))(\p{Zs}*(?=\P{Zs}))([^\]\n]*)\]/giu;
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions, @stylistic/max-len
+	/\[((?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*(?=[[\]<>"\t\p{Zs}]|\0\d))(\p{Zs}*(?!\p{Zs}))([^\]\n]*)\]/giu;
 	const regex = new RegExp(
 		'\\[' // 左括号
 		+ `(${
 			'\0\\d+f\x7F' // 预先解析的MagicLinkToken
 			+ '|'
-			+ `(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}(?=[[\\]<>"\\t\\p{Zs}]|\0\\d)`
+			+ `(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}(?=[[\\]<>"\t\\p{Zs}]|\0\\d)`
 		})` // 链接网址
-		+ '(\\p{Zs}*(?=\\P{Zs}))' // 空格
+		+ '(\\p{Zs}*(?!\\p{Zs}))' // 空格
 		+ '([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)' // 链接文字
 		+ '\\]', // 右括号
 		'giu',
