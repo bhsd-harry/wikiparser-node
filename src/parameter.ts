@@ -17,6 +17,8 @@ import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
  */
 const getName = (name: Token): string => name.text().replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
 const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
 
 /**
@@ -150,8 +152,6 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])(?:[^[\]<>"\0\t\n\p{Zs}]|\0\d+c\x7F)*$/iu;
 		const errors = super.lint(start, re),
 			{firstChild} = this,
 			link = linkRegex.exec(firstChild.text())?.[0];
