@@ -84,7 +84,12 @@ export abstract class ImageParameterToken extends Token {
 				([syntax, param]): [string, string, RegExp] => [
 					syntax,
 					param,
-					new RegExp(`^(\\s*)${syntax.replace('$1', '(.*)')}(\\s*)$`, 'u'),
+					new RegExp(
+						`^(\\s*(?!\\s))${syntax.replace('$1', '(.*)')}${
+							syntax.endsWith('$1') ? '(?=$|\n)' : ''
+						}(\\s*)$`,
+						'u',
+					),
 				],
 			),
 			param = regexes.find(([, key, regex]) => {
