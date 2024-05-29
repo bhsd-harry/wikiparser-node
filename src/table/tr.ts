@@ -38,7 +38,7 @@ export abstract class TrToken extends TrBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const str = super.text();
 		return str.trim().includes('\n') ? str : '';

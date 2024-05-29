@@ -39,10 +39,7 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
 		}
 
-		/**
-		 * @override
-		 * @param elements 待替换的子节点
-		 */
+		/** @private */
 		override replaceChildren(...elements: (AstNodes | string)[]): void {
 			if (Shadow.running || this.pattern.test(text(elements))) {
 				Shadow.run(() => {

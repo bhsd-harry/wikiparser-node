@@ -284,7 +284,7 @@ export abstract class TranscludeToken extends Token {
 		}}}`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const {childNodes, length, firstChild, modifier, type, name} = this;
 		return type === 'magic-word' && name === 'vardefine'

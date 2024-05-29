@@ -94,7 +94,7 @@ export abstract class ExtLinkToken extends Token {
 		return `[${super.toString(this.#space)}]`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		/* NOT FOR BROWSER */
 

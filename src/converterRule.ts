@@ -109,7 +109,7 @@ export abstract class ConverterRuleToken extends Token {
 		return super.toString(':');
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const {childNodes} = this;
 		if (childNodes.length === 3) {

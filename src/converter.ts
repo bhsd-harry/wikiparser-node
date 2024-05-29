@@ -77,7 +77,7 @@ export abstract class ConverterToken extends Token {
 		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;

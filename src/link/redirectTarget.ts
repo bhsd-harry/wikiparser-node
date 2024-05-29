@@ -74,7 +74,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		return this.normalizeTitle(this.firstChild.toString(), 0, true, true);
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return `[[${this.firstChild.toString()}]]`;
 	}
@@ -97,10 +97,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/**
-	 * 设置链接目标
-	 * @param link 链接目标
-	 */
+	/** @private */
 	override setTarget(link: string): void {
 		this.firstChild.setText(link);
 	}
@@ -114,10 +111,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		this.setTarget(`${this.name}${fragment === undefined ? '' : `#${fragment}`}`);
 	}
 
-	/**
-	 * 设置链接显示文字
-	 * @param linkStr 链接显示文字
-	 */
+	/** @private */
 	override setLinkText(linkStr?: string): void {
 		if (!linkStr) {
 			this.childNodes[1]?.remove();

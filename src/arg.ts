@@ -78,7 +78,7 @@ export abstract class ArgToken extends Token {
 		return `{{{${super.toString('|')}}}}`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}

@@ -144,7 +144,7 @@ export abstract class HtmlToken extends Token {
 		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.#selfClosing ? '/' : ''}>`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const {
 				closing,

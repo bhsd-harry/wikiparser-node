@@ -1,5 +1,5 @@
 import type {Ranges} from '../lib/ranges';
-import type {Config} from '../base';
+import type {Config, LintError} from '../base';
 import type {AstNodes} from '../lib/node';
 
 declare global {
@@ -8,6 +8,7 @@ declare global {
 	type AstConstructor = abstract new (...args: any[]) => {
 		toString(separator?: string): string;
 		text(separator?: string): string;
+		lint(): LintError[];
 
 		/* NOT FOR BROWSER */
 

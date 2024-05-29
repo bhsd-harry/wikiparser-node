@@ -123,10 +123,7 @@ export abstract class AstElement extends AstNode {
 
 	/* NOT FOR BROWSER END */
 
-	/**
-	 * 可见部分
-	 * @param separator 子节点间的连接符
-	 */
+	/** @private */
 	text(separator?: string): string {
 		return text(this.childNodes, separator);
 	}
