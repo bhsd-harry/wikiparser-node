@@ -334,7 +334,7 @@ export class Token extends AstElement {
 			case 'plain':
 				return (this.constructor === Token) as TokenAttributeGetter<T>;
 			case 'config':
-				return structuredClone(this.#config) as TokenAttributeGetter<T>;
+				return JSON.parse(JSON.stringify(this.#config)) as TokenAttributeGetter<T>;
 			case 'include': {
 				if (this.#include !== undefined) {
 					return this.#include as TokenAttributeGetter<T>;
