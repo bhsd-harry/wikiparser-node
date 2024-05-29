@@ -139,7 +139,7 @@ export abstract class ImagemapToken extends Token {
 		return super.toString('\n');
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return super.text('\n').replace(/\n{2,}/gu, '\n');
 	}

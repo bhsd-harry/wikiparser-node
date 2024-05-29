@@ -213,7 +213,7 @@ export abstract class TdToken extends TableBaseToken {
 		return syntax.toString() + attr.toString() + this.#innerSyntax + inner.toString();
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		/* NOT FOR BROWSER */
 
@@ -396,7 +396,7 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override escape(): void {
 		super.escape();
 		if (this.childNodes[1].toString()) {

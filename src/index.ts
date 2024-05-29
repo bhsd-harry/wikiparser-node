@@ -610,7 +610,7 @@ export class Token extends AstElement {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override toString(separator?: string): string {
 		const root = this.getRootNode();
 		if (
@@ -627,7 +627,7 @@ export class Token extends AstElement {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
+	/** @private */
 	override dispatchEvent(e: Event, data: unknown): void {
 		if (this.#built) {
 			super.dispatchEvent(e, data);

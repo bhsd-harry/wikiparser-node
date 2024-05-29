@@ -34,7 +34,7 @@ export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T =>
 				: super.getAttribute(key);
 		}
 
-		/** @override */
+		/** @private */
 		override text(): string {
 			return this.#prependNewLine() + super.text();
 		}

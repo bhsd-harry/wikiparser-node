@@ -147,7 +147,7 @@ export abstract class LinkBaseToken extends Token {
 		return this.#bracket ? `[[${str}]]` : str;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const str = super.text('|');
 		return this.#bracket ? `[[${str}]]` : str;

@@ -455,7 +455,7 @@ export abstract class AttributesToken extends Token {
 			: super.getAttribute(key);
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		if (this.type === 'table-attrs') {
 			normalizeSpace(this);

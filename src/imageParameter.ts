@@ -230,7 +230,7 @@ export abstract class ImageParameterToken extends Token {
 		return this.#syntax ? this.#syntax.replace('$1', super.toString()) : super.toString();
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
 	}

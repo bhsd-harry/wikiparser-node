@@ -8,7 +8,7 @@ import type {Token} from '../index';
 
 /** 状态开关 */
 @syntax()
-@hiddenToken
+@hiddenToken(true)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	override readonly type = 'double-underscore';
 

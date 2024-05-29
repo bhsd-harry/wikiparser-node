@@ -14,7 +14,7 @@ export const singleLine = <T extends AstConstructor>(constructor: T, _?: unknown
 			return super.toString().replace(/\n/gu, ' ');
 		}
 
-		/** @override */
+		/** @private */
 		override text(): string {
 			return super.text().replace(/\n/gu, ' ');
 		}

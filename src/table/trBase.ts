@@ -129,7 +129,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		}
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		this.#correct();
 		return super.text();

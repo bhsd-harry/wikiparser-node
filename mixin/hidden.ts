@@ -4,10 +4,11 @@ import type {LintError} from '../base';
 
 /**
  * 解析后不可见的类
+ * @param linter 是否覆写 lint 方法
  * @param constructor 基类
  * @param _ context
  */
-export const hiddenToken = <T extends AstConstructor>(constructor: T, _?: unknown): T => {
+export const hiddenToken = (linter?: boolean) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 解析后不可见的类 */
 	abstract class AnyHiddenToken extends constructor {
 		/** 没有可见部分 */
@@ -15,9 +16,10 @@ export const hiddenToken = <T extends AstConstructor>(constructor: T, _?: unknow
 			return '';
 		}
 
-		/** @override */
-		lint(): LintError[] { // eslint-disable-line @typescript-eslint/class-methods-use-this
-			return [];
+		/** @private */
+		override lint(start?: number): LintError[] {
+			// @ts-expect-error private argument
+			return linter ? [] : super.lint(start);
 		}
 	}
 	mixin(AnyHiddenToken, constructor);

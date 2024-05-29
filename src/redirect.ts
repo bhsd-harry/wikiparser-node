@@ -13,7 +13,8 @@ import type {LintError} from '../base';
  * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
  */
 @fixedToken
-export abstract class RedirectToken extends hiddenToken(Token) {
+@hiddenToken()
+export abstract class RedirectToken extends Token {
 	override readonly type = 'redirect';
 	#pre: string;
 	#post: string;

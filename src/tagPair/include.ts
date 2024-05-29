@@ -11,7 +11,8 @@ import type {AstText, Token} from '../../internal';
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
-export abstract class IncludeToken extends hiddenToken(TagPairToken) {
+@hiddenToken()
+export abstract class IncludeToken extends TagPairToken {
 	override readonly type = 'include';
 
 	declare readonly childNodes: readonly [AstText, AstText];

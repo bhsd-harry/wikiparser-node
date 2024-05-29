@@ -77,7 +77,7 @@ export abstract class TagPairToken extends Token {
 			: `<${opening}${firstChild.toString()}>${lastChild.toString()}${this.closed ? `</${closing}>` : ''}`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const [opening, closing] = this.#tags;
 		return this.selfClosing

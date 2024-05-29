@@ -8,7 +8,8 @@ import type {LintError} from '../../base';
 import type {Token} from '../index';
 
 /** HTML注释，不可见 */
-export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
+@hiddenToken()
+export abstract class CommentToken extends NowikiBaseToken {
 	override readonly type = 'comment';
 	closed;
 
@@ -76,10 +77,7 @@ export abstract class CommentToken extends hiddenToken(NowikiBaseToken) {
 		return Shadow.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);
 	}
 
-	/**
-	 * @override
-	 * @throws `RangeError` 不允许包含`-->`
-	 */
+	/** @private */
 	override setText(text: string): string {
 		if (text.includes('-->')) {
 			throw new RangeError('不允许包含 "-->"！');
