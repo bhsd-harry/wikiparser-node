@@ -13,7 +13,7 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-const space = '(?:[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+const space = '(?:[\\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
 	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /**
