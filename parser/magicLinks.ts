@@ -3,6 +3,9 @@ import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
+const sepRegex = /[^,;\\.:!?)][,;\\.:!?)]+$/u,
+	sepLparRegex = /[^,;\\.:!?][,;\\.:!?]+$/u;
+
 /**
  * 解析自由外链
  * @param wikitext
@@ -10,7 +13,7 @@ import type {Token} from '../src/index';
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	const space = '[\\p{Zs}\\t]|&nbsp;|&#0*160;|&#x0*a0;',
+	const space = '[\\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;',
 		spdash = `(?:${space}|-)`,
 		regex = new RegExp(
 			'(^|[^\\p{L}\\d_])' // lead
@@ -32,15 +35,15 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 				trail = url.slice(m2.index);
 				url = url.slice(0, m2.index);
 			}
-			const sep = new RegExp(`[,;\\\\.:!?${url.includes('(') ? '' : ')'}]+$`, 'u'),
+			const sep = url.includes('(') ? sepLparRegex : sepRegex,
 				sepChars = sep.exec(url);
 			if (sepChars) {
-				let correction = 0;
+				let correction = 1;
 				if (
-					sepChars[0].startsWith(';')
+					sepChars[0][1] === ';'
 					&& /&(?:[a-z]+|#x[\da-f]+|#\d+)$/iu.test(url.slice(0, sepChars.index))
 				) {
-					correction = 1;
+					correction = 2;
 				}
 				trail = url.slice(sepChars.index + correction) + trail;
 				url = url.slice(0, sepChars.index + correction);
