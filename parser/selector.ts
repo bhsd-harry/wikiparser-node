@@ -100,7 +100,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 	 * @throws `SyntaxError` 选择器排序
 	 * @throws `SyntaxError` 非法的选择器
 	 */
-	const pushSimple = (index: number): void => {
+	const pushSimple = (index?: number): void => {
 		const str = sanitized.slice(0, index).trim();
 		if (!str) {
 			return;
@@ -186,7 +186,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 		mt = regex.exec(sanitized);
 	}
 	if (regex === regularRegex) {
-		pushSimple(Infinity);
+		pushSimple();
 		needUniversal();
 		return stack;
 	}
