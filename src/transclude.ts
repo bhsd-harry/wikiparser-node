@@ -186,7 +186,7 @@ export abstract class TranscludeToken extends Token {
 		}}}`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const {childNodes, length, firstChild, modifier, type, name} = this;
 		return type === 'magic-word' && name === 'vardefine'
@@ -199,10 +199,10 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
 			case 'padding':
-				return this.modifier.length + 2 as TokenAttributeGetter<T>;
+				return this.modifier.length + 2 as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}

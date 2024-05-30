@@ -39,7 +39,7 @@ export abstract class ConverterFlagsToken extends Token {
 		return super.toString(';');
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return super.text(';');
 	}

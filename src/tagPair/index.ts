@@ -1,5 +1,6 @@
 import Parser from '../../index';
 import {Token} from '../index';
+import type {Config} from '../../base';
 import type {AstNodes} from '../../lib/node';
 
 /** 成对标签 */
@@ -30,7 +31,7 @@ export abstract class TagPairToken extends Token {
 		attr: string | Token,
 		inner: string | Token,
 		closed?: string,
-		config = Parser.getConfig(),
+		config?: Config,
 		accum: Token[] = [],
 	) {
 		super(undefined, config);
@@ -56,7 +57,7 @@ export abstract class TagPairToken extends Token {
 			: `<${opening}${firstChild.toString()}>${lastChild.toString()}${this.closed ? `</${closing}>` : ''}`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const [opening, closing] = this.#tags;
 		return this.selfClosing
@@ -65,8 +66,8 @@ export abstract class TagPairToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

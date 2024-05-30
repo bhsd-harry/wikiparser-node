@@ -35,8 +35,7 @@ export abstract class ArgToken extends Token {
 				});
 				super.insertAt(token);
 			} else if (i > 1) {
-				const token = new HiddenToken(parts[i], config, accum, {
-				});
+				const token = new HiddenToken(parts[i], config, accum);
 				super.insertAt(token);
 			} else {
 				const token = new Token(parts[i], config, accum);
@@ -52,14 +51,14 @@ export abstract class ArgToken extends Token {
 		return `{{{${super.toString('|')}}}}`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return `{{{${text(this.childNodes.slice(0, 2), '|')}}}}`;
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? 3 as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? 3 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

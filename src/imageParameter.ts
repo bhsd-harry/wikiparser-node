@@ -79,7 +79,7 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @param str 图片参数 */
-	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum?: Token[]) {
 		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img).map(
 				([syntax, param]): [string, string, RegExp] => [
@@ -131,18 +131,18 @@ export abstract class ImageParameterToken extends Token {
 		return this.#syntax ? this.#syntax.replace('$1', super.toString()) : super.toString();
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return this.#syntax ? this.#syntax.replace('$1', super.text()).trim() : super.text().trim();
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'plain') {
-			return (this.name === 'caption') as TokenAttributeGetter<T>;
+			return (this.name === 'caption') as TokenAttribute<T>;
 		}
 		return key === 'padding'
-			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>
+			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
 			: super.getAttribute(key);
 	}
 

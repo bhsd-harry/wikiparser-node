@@ -85,17 +85,17 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** @private */
-	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'padding') {
-			return 0 as TokenAttributeGetter<T>;
+			return 0 as TokenAttribute<T>;
 		}
-		return this[key as keyof this] as TokenAttributeGetter<T>;
+		return this[key as keyof this] as TokenAttribute<T>;
 	}
 
 	/** @private */
-	setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
+	setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'parentNode') {
-			this.#parentNode = value as TokenAttributeSetter<'parentNode'>;
+			this.#parentNode = value as TokenAttribute<'parentNode'>;
 		} else {
 			this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}

@@ -16,10 +16,4 @@ declare global {
 		T extends 'bracket' | 'include' | 'plain' ? boolean :
 		T extends 'title' ? Title :
 		unknown;
-
-	type TokenAttributeGetter<T extends string> =
-		TokenAttribute<T>;
-
-	type TokenAttributeSetter<T extends string> =
-		TokenAttribute<T> | undefined;
 }
