@@ -1,4 +1,6 @@
-import type {Config, LintError} from '../base';
+import type {
+	LintError,
+} from '../base';
 
 declare global {
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
