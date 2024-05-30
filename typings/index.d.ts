@@ -1,5 +1,11 @@
 import type {Ranges} from '../lib/ranges';
-import type {Config, LintError} from '../base';
+import type {
+	LintError,
+
+	/* NOT FOR BROWSER */
+
+	Config,
+} from '../base';
 import type {AstNodes} from '../lib/node';
 
 declare global {
