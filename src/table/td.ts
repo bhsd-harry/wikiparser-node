@@ -315,12 +315,12 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'innerSyntax' ? this.#innerSyntax as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'innerSyntax' ? this.#innerSyntax as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'innerSyntax') {
 			this.#innerSyntax = (value ?? '') as string;
 		} else {

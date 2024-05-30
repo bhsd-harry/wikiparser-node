@@ -2,8 +2,8 @@ import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {hiddenToken} from '../../mixin/hidden';
 import {syntax} from '../../mixin/syntax';
-import Parser from '../../index';
 import {NowikiBaseToken} from './base';
+import type {Config} from '../../base';
 import type {Token} from '../index';
 
 /** 状态开关 */
@@ -23,7 +23,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	 * @param word 状态开关名
 	 * @param sensitive 是否固定大小写
 	 */
-	constructor(word: string, sensitive: boolean, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(word: string, sensitive: boolean, config?: Config, accum?: Token[]) {
 		super(word, config, accum);
 
 		/* NOT FOR BROWSER */
@@ -34,8 +34,8 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

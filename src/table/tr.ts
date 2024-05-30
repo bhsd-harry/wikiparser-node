@@ -1,6 +1,6 @@
 import {classes} from '../../util/constants';
-import Parser from '../../index';
 import {TrBaseToken} from './trBase';
+import type {Config} from '../../base';
 import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../../internal';
 
 /**
@@ -30,7 +30,7 @@ export abstract class TrToken extends TrBaseToken {
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
-	constructor(syntax: string, attr?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
 		super(/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u, syntax, attr, config, accum, {
 			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
 		});

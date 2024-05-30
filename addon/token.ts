@@ -176,7 +176,7 @@ Token.prototype.findEnclosingHtml =
 Token.prototype.redoQuotes =
 	/** @implements */
 	function(): void {
-		const acceptable = this.getAttribute('acceptable');
+		const acceptable = this.getAcceptable();
 		if (acceptable && !('QuoteToken' in acceptable)) {
 			return;
 		}

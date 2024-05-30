@@ -460,11 +460,11 @@ export abstract class AttributeToken extends Token {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'equal') {
-			return this.#equal as TokenAttributeGetter<T>;
+			return this.#equal as TokenAttribute<T>;
 		}
-		return key === 'quotes' ? this.#quotes as TokenAttributeGetter<T> : super.getAttribute(key);
+		return key === 'quotes' ? this.#quotes as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @override */

@@ -4,7 +4,7 @@ import {classes} from '../../util/constants';
 import {hiddenToken} from '../../mixin/hidden';
 import Parser from '../../index';
 import {TagPairToken} from './index';
-import type {LintError} from '../../base';
+import type {LintError, Config} from '../../base';
 import type {AstText, Token} from '../../internal';
 
 /**
@@ -47,14 +47,7 @@ export abstract class IncludeToken extends TagPairToken {
 	 * @param inner 内部wikitext
 	 * @param closed 是否封闭
 	 */
-	constructor(
-		name: string,
-		attr = '',
-		inner?: string,
-		closed?: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-	) {
+	constructor(name: string, attr = '', inner?: string, closed?: string, config?: Config, accum?: Token[]) {
 		super(name, attr, inner ?? '', inner === undefined ? closed : closed ?? '', config, accum);
 	}
 

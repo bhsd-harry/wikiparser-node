@@ -105,7 +105,7 @@ export abstract class MagicLinkToken extends Token {
 	 * @param url 网址
 	 * @param type 类型
 	 */
-	constructor(url?: string, type: ExtLinkTypes = 'free-ext-link', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(url?: string, type: ExtLinkTypes = 'free-ext-link', config = Parser.getConfig(), accum?: Token[]) {
 		super(url, config, accum, {
 			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
