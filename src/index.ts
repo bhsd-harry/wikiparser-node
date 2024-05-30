@@ -80,12 +80,7 @@ export class Token extends AstElement {
 	#string: string | undefined;
 
 	/** @class */
-	constructor(
-		wikitext?: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-		acceptable?: Acceptable,
-	) {
+	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
@@ -329,34 +324,29 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
 			case 'plain':
-				return (this.constructor === Token) as TokenAttributeGetter<T>;
+				return (this.constructor === Token) as TokenAttribute<T>;
 			case 'config':
-				return JSON.parse(JSON.stringify(this.#config)) as TokenAttributeGetter<T>;
-			case 'include': {
-				if (this.#include !== undefined) {
-					return this.#include as TokenAttributeGetter<T>;
-				}
-				const root = this.getRootNode();
-				return (root !== this && root.getAttribute('include')) as TokenAttributeGetter<T>;
-			}
+				return this.#config as TokenAttribute<T>;
+			case 'include':
+				return (this.#include ?? Boolean(this.getRootNode().#include)) as TokenAttribute<T>;
 			case 'accum':
-				return this.#accum as TokenAttributeGetter<T>;
+				return this.#accum as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		switch (key) {
 			case 'stage':
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
+				this.#stage = (value as TokenAttribute<'stage'>)!;
 				break;
 			default:
 				super.setAttribute(key, value);
@@ -472,7 +462,7 @@ export class Token extends AstElement {
 		return errors;
 	}
 
-	/** @override */
+	/** @private */
 	override toString(separator?: string): string {
 		const root = this.getRootNode();
 		if (

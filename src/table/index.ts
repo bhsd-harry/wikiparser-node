@@ -4,6 +4,7 @@ import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../../base';
@@ -42,7 +43,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param syntax 表格语法
 	 * @param attr 表格属性
 	 */
-	constructor(syntax: string, attr?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
 		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, attr, config, accum, {
 		});
 	}
