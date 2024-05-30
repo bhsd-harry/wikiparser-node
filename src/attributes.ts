@@ -449,9 +449,9 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		return key === 'padding'
-			? this.#leadingSpace(super.toString()).length as TokenAttributeGetter<T>
+			? this.#leadingSpace(super.toString()).length as TokenAttribute<T>
 			: super.getAttribute(key);
 	}
 

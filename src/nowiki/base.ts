@@ -1,8 +1,8 @@
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {fixedToken} from '../../mixin/fixed';
-import Parser from '../../index';
 import {Token} from '../index';
+import type {Config} from '../../base';
 import type {AstText} from '../../lib/text';
 
 declare type NowikiTypes = 'ext-inner'
@@ -40,7 +40,7 @@ export abstract class NowikiBaseToken extends Token {
 	}
 
 	/** @param wikitext default: `''` */
-	constructor(wikitext = '', config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(wikitext = '', config?: Config, accum?: Token[]) {
 		super(wikitext, config, accum);
 	}
 

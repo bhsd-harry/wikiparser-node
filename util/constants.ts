@@ -26,4 +26,4 @@ export const aliases = [
 	['MagicLinkToken'],
 	['ListToken', 'DdToken'],
 	['ConverterToken'],
-] as const;
+];

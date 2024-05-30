@@ -297,17 +297,17 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
 			case 'padding':
-				return this.modifier.length + 2 as TokenAttributeGetter<T>;
+				return this.modifier.length + 2 as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER */
 
 			case 'args':
-				return new Map(this.#args) as TokenAttributeGetter<T>;
+				return this.#args as TokenAttribute<T>;
 			case 'keys':
-				return this.#keys as TokenAttributeGetter<T>;
+				return this.#keys as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER END */
 

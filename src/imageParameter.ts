@@ -169,7 +169,7 @@ export abstract class ImageParameterToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/** @param str 图片参数 */
-	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum?: Token[]) {
 		let mt: [string, string, string, string?] | null;
 		/* eslint-disable @typescript-eslint/no-unused-expressions */
 		/^(\s*)link=(.*)(?=$|\n)(\s*)$/u;
@@ -236,18 +236,18 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'plain') {
-			return (this.name === 'caption') as TokenAttributeGetter<T>;
+			return (this.name === 'caption') as TokenAttribute<T>;
 
 			/* NOT FOR BROWSER */
 		} else if (key === 'syntax') {
-			return this.#syntax as TokenAttributeGetter<T>;
+			return this.#syntax as TokenAttribute<T>;
 
 			/* NOT FOR BROWSER END */
 		}
 		return key === 'padding'
-			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttributeGetter<T>
+			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
 			: super.getAttribute(key);
 	}
 
@@ -305,7 +305,7 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeGetter<T>): void {
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'syntax') {
 			this.#syntax = value as string;
 		} else {

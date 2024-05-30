@@ -30,16 +30,9 @@ declare global {
 		T extends 'optional' | 'keys' ? Set<string> :
 		T extends 'args' ? Map<string, Set<ParameterToken>> :
 		T extends 'protectedChildren' ? Ranges :
+		T extends 'acceptable' ? Acceptable | undefined :
 
 		/* NOT FOR BROWSER END */
 
 		unknown;
-
-	type TokenAttributeGetter<T extends string> =
-		T extends 'acceptable' ? Record<string, Ranges> | undefined :
-		TokenAttribute<T>;
-
-	type TokenAttributeSetter<T extends string> =
-		T extends 'acceptable' ? Acceptable | undefined :
-		TokenAttribute<T> | undefined;
 }

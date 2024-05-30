@@ -131,11 +131,11 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'bracket') {
-			this.#bracket = (value as TokenAttributeSetter<'bracket'>)!;
+			this.#bracket = (value as TokenAttribute<'bracket'>)!;
 		} else if (key === 'title') {
-			this.#title = (value as TokenAttributeSetter<'title'>)!;
+			this.#title = (value as TokenAttribute<'title'>)!;
 		} else {
 			super.setAttribute(key, value);
 		}
@@ -154,11 +154,11 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'title') {
-			return this.#title as TokenAttributeGetter<T>;
+			return this.#title as TokenAttribute<T>;
 		}
-		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
+		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

@@ -1,8 +1,8 @@
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
-import Parser from '../index';
 import {Token} from './index';
+import type {Config} from '../base';
 import type {SyntaxBase} from '../mixin/syntax';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
@@ -23,8 +23,8 @@ export class SyntaxToken extends Token {
 		wikitext: string | undefined,
 		pattern: RegExp,
 		type: SyntaxTypes = 'plain',
-		config = Parser.getConfig(),
-		accum: Token[] = [],
+		config?: Config,
+		accum?: Token[],
 		acceptable?: Acceptable,
 	) {
 		super(wikitext, config, accum, acceptable);
@@ -46,7 +46,7 @@ export class SyntaxToken extends Token {
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
-			acceptable = this.getAttribute('acceptable');
+			acceptable = this.getAcceptable();
 		return Shadow.run(() => {
 			const token = new SyntaxToken(undefined, this.pattern, this.type, config, [], acceptable) as this;
 			token.append(...cloned);

@@ -91,6 +91,28 @@ declare interface LintIgnore {
 
 export type TagToken = IncludeToken | ExtToken | HtmlToken;
 
+/**
+ * 可接受的Token类型
+ * @param value 可接受的Token类型
+ */
+const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
+	const acceptable: Record<string, Ranges> = {};
+	for (const [k, v] of Object.entries(value)) {
+		if (k.startsWith('Stage-')) {
+			for (let i = 0; i <= Number(k.slice(6)); i++) {
+				for (const type of aliases[i]!) {
+					acceptable[type] = new Ranges(v);
+				}
+			}
+		} else if (k.startsWith('!')) { // `!`项必须放在最后
+			delete acceptable[k.slice(1)];
+		} else {
+			acceptable[k] = new Ranges(v);
+		}
+	}
+	return acceptable;
+};
+
 /* NOT FOR BROWSER END */
 
 /**
@@ -112,7 +134,7 @@ export class Token extends AstElement {
 
 	/* NOT FOR BROWSER */
 
-	#acceptable?: Record<string, Ranges>;
+	#acceptable?: Record<string, Ranges> | (() => Record<string, Ranges>);
 	readonly #protectedChildren = new Ranges();
 
 	/** 所有图片，包括图库 */
@@ -135,12 +157,7 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER END */
 
 	/** @class */
-	constructor(
-		wikitext?: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-		acceptable?: Acceptable,
-	) {
+	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
 		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
@@ -396,30 +413,23 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		switch (key) {
 			case 'plain':
-				return (this.constructor === Token) as TokenAttributeGetter<T>;
+				return (this.constructor === Token) as TokenAttribute<T>;
 			case 'config':
-				return JSON.parse(JSON.stringify(this.#config)) as TokenAttributeGetter<T>;
-			case 'include': {
-				if (this.#include !== undefined) {
-					return this.#include as TokenAttributeGetter<T>;
-				}
-				const root = this.getRootNode();
-				return (root !== this && root.getAttribute('include')) as TokenAttributeGetter<T>;
-			}
+				return this.#config as TokenAttribute<T>;
+			case 'include':
+				return (this.#include ?? Boolean(this.getRootNode().#include)) as TokenAttribute<T>;
 			case 'accum':
-				return this.#accum as TokenAttributeGetter<T>;
+				return this.#accum as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER */
 
 			case 'stage':
-				return this.#stage as TokenAttributeGetter<T>;
-			case 'acceptable':
-				return (this.#acceptable ? {...this.#acceptable} : undefined) as TokenAttributeGetter<T>;
+				return this.#stage as TokenAttribute<T>;
 			case 'protectedChildren':
-				return new Ranges(this.#protectedChildren) as TokenAttributeGetter<T>;
+				return this.#protectedChildren as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER END */
 
@@ -429,39 +439,22 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
+	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		switch (key) {
 			case 'stage':
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#stage = (value as TokenAttributeSetter<'stage'>)!;
+				this.#stage = (value as TokenAttribute<'stage'>)!;
 				break;
 
 				/* NOT FOR BROWSER */
 
-			case 'acceptable': {
-				const acceptable: Record<string, Ranges> = {};
-				if (value) {
-					for (const [k, v] of Object.entries(value as unknown as Acceptable)) {
-						if (k.startsWith('Stage-')) {
-							for (let i = 0; i <= Number(k.slice(6)); i++) {
-								for (const type of aliases[i]!) {
-									acceptable[type] = new Ranges(v);
-								}
-							}
-						} else if (k.startsWith('!')) { // `!`项必须放在最后
-							delete acceptable[k.slice(1)];
-						} else {
-							acceptable[k] = new Ranges(v);
-						}
-					}
-				}
-				this.#acceptable = value && acceptable;
+			case 'acceptable':
+				this.#acceptable = value && ((): Record<string, Ranges> => getAcceptable(value as Acceptable));
 				break;
-			}
 
-			/* NOT FOR BROWSER END */
+				/* NOT FOR BROWSER END */
 
 			default:
 				super.setAttribute(key, value);
@@ -480,9 +473,10 @@ export class Token extends AstElement {
 
 		/* NOT FOR BROWSER */
 
-		if (!Shadow.running && this.#acceptable) {
+		const acceptable = this.getAcceptable();
+		if (!Shadow.running && acceptable) {
 			const acceptableIndices = Object.fromEntries(
-					Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
+					Object.entries(acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
 				),
 				nodesAfter = this.childNodes.slice(i),
 				insertedName = token.constructor.name;
@@ -628,6 +622,14 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER */
 
 	/** @private */
+	getAcceptable(): Record<string, Ranges> | undefined {
+		if (typeof this.#acceptable === 'function') {
+			this.#acceptable = this.#acceptable();
+		}
+		return this.#acceptable;
+	}
+
+	/** @private */
 	override dispatchEvent(e: Event, data: unknown): void {
 		if (this.#built) {
 			super.dispatchEvent(e, data);
@@ -649,9 +651,11 @@ export class Token extends AstElement {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
 			if (protectedIndices.includes(i)) {
 				this.constructorError(`的第 ${i} 个子节点不可移除`);
-			} else if (this.#acceptable) {
+			}
+			const acceptable = this.getAcceptable();
+			if (acceptable) {
 				const acceptableIndices = Object.fromEntries(
-						Object.entries(this.#acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
+						Object.entries(acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
 					),
 					nodesAfter = this.childNodes.slice(i + 1);
 				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
@@ -678,7 +682,7 @@ export class Token extends AstElement {
 			this.typeError('safeReplaceWith', this.constructor.name);
 		}
 		try {
-			assert.deepEqual(token.getAttribute('acceptable'), this.#acceptable);
+			assert.deepEqual(token.getAcceptable(), this.getAcceptable());
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				this.constructorError('带有不同的 #acceptable 属性');
@@ -804,7 +808,7 @@ export class Token extends AstElement {
 		}
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
-			const token = new Token(undefined, this.#config, [], this.#acceptable) as this;
+			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
 			token.type = this.type;
 			token.setAttribute('name', this.name);
 			token.append(...cloned);

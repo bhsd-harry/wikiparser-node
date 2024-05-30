@@ -7,6 +7,7 @@ import {attributesParent} from '../mixin/attributesParent';
 import Parser from '../index';
 import {Token} from './index';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../base';
@@ -128,8 +129,8 @@ export abstract class HtmlToken extends Token {
 		attr: AttributesToken,
 		closing: boolean,
 		selfClosing: boolean,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
+		config?: Config,
+		accum?: Token[],
 	) {
 		super(undefined, config, accum);
 		this.insertAt(attr);
@@ -168,17 +169,17 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		/* NOT FOR BROWSER */
 
 		if (key === 'tag') {
-			return this.#tag as TokenAttributeGetter<T>;
+			return this.#tag as TokenAttribute<T>;
 		}
 
 		/* NOT FOR BROWSER END */
 
 		return key === 'padding'
-			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttributeGetter<T>
+			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttribute<T>
 			: super.getAttribute(key);
 	}
 

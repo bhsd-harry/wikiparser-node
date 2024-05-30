@@ -190,7 +190,7 @@ export abstract class AstNode implements AstNodeBase {
 	/** 字体样式 */
 	get font(): {bold: boolean, italic: boolean} {
 		const {parentNode} = this,
-			acceptable = parentNode?.getAttribute('acceptable');
+			acceptable = parentNode?.getAcceptable();
 		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
 			return {bold: false, italic: false};
 		}
@@ -229,23 +229,23 @@ export abstract class AstNode implements AstNodeBase {
 	/* NOT FOR BROWSER END */
 
 	/** @private */
-	getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
+	getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'padding') {
-			return 0 as TokenAttributeGetter<T>;
+			return 0 as TokenAttribute<T>;
 
 			/* NOT FOR BROWSER */
 		} else if (key === 'optional') {
-			return new Set(this.#optional) as TokenAttributeGetter<T>;
+			return this.#optional as TokenAttribute<T>;
 
 			/* NOT FOR BROWSER END */
 		}
-		return this[key as keyof this] as TokenAttributeGetter<T>;
+		return this[key as keyof this] as TokenAttribute<T>;
 	}
 
 	/** @private */
-	setAttribute<T extends string>(key: T, value: TokenAttributeSetter<T>): void {
+	setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
 		if (key === 'parentNode') {
-			this.#parentNode = value as TokenAttributeSetter<'parentNode'>;
+			this.#parentNode = value as TokenAttribute<'parentNode'>;
 
 			/* NOT FOR BROWSER */
 		} else if (Object.prototype.hasOwnProperty.call(this, key)) {

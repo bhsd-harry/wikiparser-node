@@ -158,8 +158,8 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'flags' ? this.#flags as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'flags' ? this.#flags as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/**
