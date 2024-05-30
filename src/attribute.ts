@@ -300,7 +300,7 @@ export abstract class AttributeToken extends Token {
 		return this.#equal ? super.toString(this.#equal + quoteStart) + quoteEnd : this.firstChild.toString();
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return this.#equal ? `${super.text(`${this.#equal.trim()}"`)}"` : this.firstChild.text();
 	}

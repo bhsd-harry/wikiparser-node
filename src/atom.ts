@@ -1,5 +1,5 @@
-import Parser from '../index';
 import {Token} from './index';
+import type {Config} from '../base';
 
 declare type AtomTypes = 'arg-name'
 | 'attr-key'
@@ -25,8 +25,8 @@ export class AtomToken extends Token {
 	constructor(
 		wikitext: string | undefined,
 		type: AtomTypes,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
+		config?: Config,
+		accum?: Token[],
 		acceptable?: Acceptable,
 	) {
 		super(wikitext, config, accum, acceptable);

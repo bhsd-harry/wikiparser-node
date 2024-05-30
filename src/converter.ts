@@ -52,15 +52,15 @@ export abstract class ConverterToken extends Token {
 		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const {childNodes: [flags, ...rules]} = this;
 		return `-{${flags.text()}|${text(rules, ';')}}-`;
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? 2 as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? 2 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

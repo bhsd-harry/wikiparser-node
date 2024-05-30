@@ -1,5 +1,5 @@
-import Parser from '../index';
 import {Token} from './index';
+import type {Config} from '../base';
 
 declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
@@ -12,8 +12,8 @@ export class SyntaxToken extends Token {
 		wikitext: string | undefined,
 		pattern: RegExp,
 		type: SyntaxTypes = 'plain',
-		config = Parser.getConfig(),
-		accum: Token[] = [],
+		config?: Config,
+		accum?: Token[],
 		acceptable?: Acceptable,
 	) {
 		super(wikitext, config, accum, acceptable);
