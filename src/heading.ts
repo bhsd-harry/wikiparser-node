@@ -50,15 +50,15 @@ export abstract class HeadingToken extends Token {
 		return equals + this.firstChild.toString() + equals + this.lastChild.toString();
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		const equals = this.#equals;
 		return equals + this.firstChild.text() + equals;
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? this.level as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? this.level as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

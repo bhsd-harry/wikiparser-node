@@ -9,7 +9,8 @@ import type {LintError} from '../base';
  * 重定向
  * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
  */
-export abstract class RedirectToken extends hiddenToken(Token) {
+@hiddenToken()
+export abstract class RedirectToken extends Token {
 	override readonly type = 'redirect';
 	#pre: string;
 	#post: string;
@@ -48,8 +49,8 @@ export abstract class RedirectToken extends hiddenToken(Token) {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? this.#pre.length as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? this.#pre.length as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

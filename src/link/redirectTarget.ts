@@ -34,7 +34,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		return this.normalizeTitle(this.firstChild.toString(), 0, true, true);
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return `[[${this.firstChild.toString()}]]`;
 	}

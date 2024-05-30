@@ -47,8 +47,8 @@ export abstract class GalleryImageToken extends FileToken {
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? 0 as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? 0 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

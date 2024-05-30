@@ -50,14 +50,14 @@ export abstract class ExtLinkToken extends Token {
 		return `[${super.toString(this.#space)}]`;
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return `[${super.text(' ')}]`;
 	}
 
 	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttributeGetter<T> {
-		return key === 'padding' ? 1 as TokenAttributeGetter<T> : super.getAttribute(key);
+	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
+		return key === 'padding' ? 1 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

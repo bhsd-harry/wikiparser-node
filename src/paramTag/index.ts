@@ -38,7 +38,7 @@ export abstract class ParamTagToken extends Token {
 		return super.toString('\n');
 	}
 
-	/** @override */
+	/** @private */
 	override text(): string {
 		return super.text('\n');
 	}
