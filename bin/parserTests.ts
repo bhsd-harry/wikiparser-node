@@ -1,4 +1,3 @@
-/* eslint-disable es-x/no-string-prototype-matchall */
 import * as fs from 'fs';
 import * as path from 'path';
 import {info} from '../util/diff';
@@ -22,9 +21,8 @@ const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] 
 		'html/php+disabled',
 		'html/*',
 	]),
-	// eslint-disable-next-line @stylistic/max-len
 	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
-	optionRegex = new RegExp(`^(?:\n?(?:(?:${[
+	optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 		'parsoid',
 		'wgRawHtml',
 		'maxincludesize',
@@ -46,7 +44,7 @@ const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] 
 		'wgEnableUploads',
 		'wgEnableMagicLinks',
 		'wgMaxTocLevel',
-	].join('|')})\\s*=.+|${
+	].join('|')})\s*=.+|${
 		[
 			'showtitle',
 			'msg',
@@ -67,7 +65,7 @@ const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] 
 			'showmedia',
 			'notoc',
 		].join('|')
-	}|parsoid\\s*=\\s*\\{\n[\\s\\S]+\n\\}|# .*))+$`, 'u'),
+	}|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$`, 'u'),
 	files = new Set(fs.readdirSync('test/core/'));
 files.delete('parserTests.txt');
 files.delete('indentPre.txt');
@@ -75,6 +73,7 @@ files.delete('pst.txt');
 for (const file of ['parserTests.txt', ...files]) {
 	tests.push({desc: file.slice(0, -4)});
 	const content = fs.readFileSync(path.join('test/core', file), 'utf8'),
+		// eslint-disable-next-line es-x/no-string-prototype-matchall
 		cases = [...content.matchAll(/^!!\s*test\n.+?^!!\s*end$/gmsu)],
 		htmlInfo = cases.map(([test]) => regex.html.exec(test)?.[1]).filter(x => x && !modes.has(x)),
 		optionInfo = cases.map(([test]) => regex.options.exec(test)?.[1]!.trim())

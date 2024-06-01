@@ -35,7 +35,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		/<\s*(?:\/\s*)?(nowiki)\b/giu;
-		return super.lint(start, new RegExp(`<\\s*(?:\\/\\s*)${name === 'nowiki' ? '' : '?'}(${name})\\b`, 'giu'));
+		return super.lint(start, new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'));
 	}
 }
 

@@ -118,7 +118,7 @@ export abstract class TranscludeToken extends Token {
 				this.type = 'magic-word';
 				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 				/^\s*uc\s*$/iu;
-				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
+				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
 					});
@@ -206,8 +206,8 @@ export abstract class TranscludeToken extends Token {
 			isSubst = subst.includes(magicWord);
 		if (
 			this.#raw && isRaw
-				|| !this.#raw && (isSubst || modifier === '')
-				|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
+			|| !this.#raw && (isSubst || modifier === '')
+			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;

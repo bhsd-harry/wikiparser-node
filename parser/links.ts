@@ -21,7 +21,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
 			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
 		regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
-		regexExt = new RegExp(`^\\s*(?:${config.protocol}|//)`, 'iu'),
+		regexExt = new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu'),
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;
 	for (let i = 0; i < bits.length; i++) {

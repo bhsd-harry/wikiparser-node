@@ -65,7 +65,7 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 	await Promise.all([fs.writeFile(oldFile, oldStr), fs.writeFile(newFile, newStr)]);
 	const stdout = await cmd('git', [
 		'diff',
-		'--color-words=[\xC0-\xFF][\x80-\xBF]+|<?/?\\w+/?>?|[^[:space:]]',
+		String.raw`--color-words=[\xC0-\xFF][\x80-\xBF]+|<?/?\w+/?>?|[^[:space:]]`,
 		'-U0',
 		'--no-index',
 		oldFile,

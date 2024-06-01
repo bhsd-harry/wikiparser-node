@@ -24,7 +24,7 @@ declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
-const space = '(?:[\\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+const space = String.raw`(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /** NOT FOR BROWSER */
@@ -35,9 +35,9 @@ export interface MagicLinkToken extends SyntaxBase {}
 /^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
 /^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
 /* eslint-enable @typescript-eslint/no-unused-expressions */
-const spdash = '(?:[\\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
-	isbnPattern = new RegExp(`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dxX]$`, 'u'),
-	rfcPattern = new RegExp(`^(RFC|PMID)${space}+\\d+$`, 'u');
+const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
+	isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u'),
+	rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
 
 /** NOT FOR BROWSER END */
 
@@ -148,7 +148,7 @@ export abstract class MagicLinkToken extends Token {
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 		/[，；。：！？（）]+|\|+/gu;
-		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
+		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? String.raw`|\|+` : ''}`,
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');
 		for (const child of this.childNodes) {

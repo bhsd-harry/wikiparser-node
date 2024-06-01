@@ -8,9 +8,14 @@ import type {Token} from '../src/index';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;
-const closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}-', '[': '\\]\\]'},
+const closes: Record<string, string> = {
+		'=': '\n',
+		'{': String.raw`\}{2,}|\|`,
+		'-': String.raw`\}-`,
+		'[': String.raw`\]\]`,
+	},
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]),
-	re = new RegExp(`\\{\\{\\s*(${[...marks.keys()].map(escapeRegExp).join('|')})\\s*\\}\\}(?!\\})`, 'gu');
+	re = new RegExp(String.raw`\{\{\s*(${[...marks.keys()].map(escapeRegExp).join('|')})\s*\}\}(?!\})`, 'gu');
 
 /**
  * 解析花括号
@@ -20,7 +25,9 @@ const closes: Record<string, string> = {'=': '\n', '{': '\\}{2,}|\\|', '-': '\\}
  * @throws TranscludeToken.constructor()
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
-	const source = `${config.excludes?.includes('heading') ? '' : '^(\0\\d+c\x7F)*={1,6}|'}\\[\\[|\\{{2,}|-\\{(?!\\{)`,
+	const source = String.raw`${
+			config.excludes?.includes('heading') ? '' : String.raw`^(\0\d+c\x7F)*={1,6}|`
+		}\[\[|\{{2,}|-\{(?!\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [];
 	wikitext = wikitext.replace(re, (m, p1: string) => {

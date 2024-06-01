@@ -25,7 +25,7 @@ export abstract class IncludeToken extends TagPairToken {
 	abstract override get firstElementChild(): undefined;
 	abstract override get lastElementChild(): undefined;
 
-	/**	@override */
+	/** @override */
 	override get innerText(): string | undefined {
 		return this.selfClosing ? undefined : this.lastChild.data;
 	}

@@ -21,16 +21,10 @@ import type {
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 /^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
 /* eslint-enable @typescript-eslint/no-unused-expressions */
-const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
-	+ '|'
-	+ '\\{+|\\}+' // `{`、`}`
-	+ '|'
-	+ '\\[{2,}|\\[(?![^[]*?\\])' // `[`
-	+ '|'
-	+ '((?:^|\\])[^[]*?)\\]+', // `]`
-	errorSyntax = new RegExp(`${source}|https?[:/]\\/+`, 'giu'),
+const source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`,
+	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
 	errorSyntaxUrl = new RegExp(source, 'giu'),
-	extImage = new RegExp(`^https?:\\/\\/${extUrlCharFirst}${extUrlChar}\\.(?:gif|png|jpg|jpeg)$`, 'iu'),
+	extImage = new RegExp(String.raw`^https?://${extUrlCharFirst}${extUrlChar}\.(?:gif|png|jpg|jpeg)$`, 'iu'),
 	regexes = {
 		'[': /[[\]]/u,
 		'{': /[{}]/u,

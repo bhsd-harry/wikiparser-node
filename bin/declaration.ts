@@ -19,7 +19,7 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 				(_, base: string, exp: string): string => {
 					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 					/import \{\s*Token\b.+?;\n/su;
-					const regex2 = new RegExp(`import \\{\\s*${base}\\b.+?;\n`, 'su');
+					const regex2 = new RegExp(String.raw`import \{\s*${base}\b.+?;\n`, 'su');
 					if (regex2.test(content)) {
 						return exp + base;
 					}
