@@ -1,3 +1,11 @@
+## v1.9.1
+
+*2024-06-02*
+
+**Fixed**
+
+- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#italic) for external links which have a lower precedence than apostrophes
+
 ## v1.9.0
 
 *2024-05-26*

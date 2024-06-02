@@ -194,11 +194,10 @@ export abstract class AstNode implements AstNodeBase {
 		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
 			return {bold: false, italic: false};
 		}
-		const {childNodes} = parentNode,
+		const {childNodes, type} = parentNode,
 			index = childNodes.indexOf(this as unknown as AstNodes),
 			isQuote = isToken<QuoteToken>('quote');
-		let bold = false,
-			italic = false;
+		let {bold = false, italic = false} = type === 'ext-link-text' && parentNode.parentNode || {};
 		for (let i = index - 1; i >= 0; i--) {
 			const child = childNodes[i]!;
 			if (isQuote(child)) {
