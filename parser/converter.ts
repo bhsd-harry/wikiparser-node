@@ -12,7 +12,7 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 	const variants = `(?:${config.variants.join('|')})`,
 		regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
-		regex3 = new RegExp(`;(?=(?:[^;]*?=>)?\\s*${variants}\\s*:|(?:\\s|\0\\d+c\x7F)*$)`, 'u'),
+		regex3 = new RegExp(String.raw`;(?=(?:[^;]*?=>)?\s*${variants}\s*:|(?:\s|\0\d+c\x7F)*$)`, 'u'),
 		stack: RegExpExecArray[] = [];
 	let regex = regex1,
 		mt = regex.exec(text);
