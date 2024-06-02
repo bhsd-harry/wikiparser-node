@@ -141,9 +141,9 @@ export abstract class ExtToken extends TagPairToken {
 			// 更多定制扩展的代码示例：
 			// ```
 			// case 'extensionName': {
-			//	const {ExtensionToken}: typeof import('../extension') = require('../extension');
-			//	innerToken = new ExtensionToken(inner, newConfig, accum);
-			//	break;
+			//   const {ExtensionToken}: typeof import('../extension') = require('../extension');
+			//   innerToken = new ExtensionToken(inner, newConfig, accum);
+			//   break;
 			// }
 			// ```
 			default: {

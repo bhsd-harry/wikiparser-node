@@ -13,17 +13,12 @@ const sepRegex = /[^,;\\.:!?)][,;\\.:!?)]+$/u,
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	const space = '[\\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;',
+	const space = String.raw`[\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
 		spdash = `(?:${space}|-)`,
 		regex = new RegExp(
-			'(^|[^\\p{L}\\d_])' // lead
-			+ '(?:'
-			+ `(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})` // free external link
-			+ '|'
-			+ `(?:RFC|PMID)(?:${space})+\\d+\\b` // RFC or PMID
-			+ '|'
-			+ `ISBN(?:${space})+(?:97[89]${spdash}?)?(?:\\d${spdash}?){9}[\\dx]\\b` // ISBN
-			+ ')',
+			String.raw`(^|[^\p{L}\d_])(?:(?:${config.protocol})(${extUrlCharFirst}${
+				extUrlChar
+			})|(?:RFC|PMID)(?:${space})+\d+\b|ISBN(?:${space})+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dx]\b)`,
 			'giu',
 		);
 	return wikitext.replace(regex, (m, lead: string, p1: string | undefined) => {

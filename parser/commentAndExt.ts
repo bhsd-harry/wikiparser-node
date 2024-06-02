@@ -57,13 +57,11 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
 		regex = new RegExp(
-			'<!--.*?(?:-->|$)' // comment
-			+ '|'
-			+ `<${noincludeRegex}(?:\\s[^>]*)?/?>|</${noincludeRegex}\\s*>` // <noinclude>
-			+ '|'
-			+ `<(${ext})(\\s[^>]*?)?(?:/>|>(.*?)</(\\1\\s*)>)` // 扩展标签
-			+ '|'
-			+ `<(${includeRegex})(\\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\\s*)>|$))`, // <includeonly>
+			String.raw`<!--.*?(?:-->|$)|<${
+				noincludeRegex
+			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>(.*?)</(\1\s*)>)|<(${
+				includeRegex
+			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
 			'gisu',
 		);
 	return wikitext.replace(

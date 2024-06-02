@@ -11,16 +11,10 @@ import type {
 	ExtToken,
 } from '../internal';
 
-const source = '<\\s*(?:\\/\\s*)?([a-z]\\w*)' // 疑似标签
-	+ '|'
-	+ '\\{+|\\}+' // `{`、`}`
-	+ '|'
-	+ '\\[{2,}|\\[(?![^[]*?\\])' // `[`
-	+ '|'
-	+ '((?:^|\\])[^[]*?)\\]+', // `]`
-	errorSyntax = new RegExp(`${source}|https?[:/]\\/+`, 'giu'),
+const source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`,
+	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
 	errorSyntaxUrl = new RegExp(source, 'giu'),
-	extImage = new RegExp(`^https?:\\/\\/${extUrlCharFirst}${extUrlChar}\\.(?:gif|png|jpg|jpeg)$`, 'iu'),
+	extImage = new RegExp(String.raw`^https?://${extUrlCharFirst}${extUrlChar}\.(?:gif|png|jpg|jpeg)$`, 'iu'),
 	regexes = {
 		'[': /[[\]]/u,
 		'{': /[{}]/u,

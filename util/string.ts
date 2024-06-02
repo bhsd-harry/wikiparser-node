@@ -1,8 +1,8 @@
 import type {AstNodes} from '../lib/node';
 
-const commonExtUrlChar = '[^[\\]<>"\0-\x1F\x7F\\p{Zs}\uFFFD]';
-export const extUrlCharFirst = `(?:\\[[\\da-f:.]+\\]|${commonExtUrlChar})`;
-export const extUrlChar = `(?:${commonExtUrlChar}|\0\\d+[c!~]\x7F)*`;
+const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]`;
+export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
+export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[c!~]\x7F)*`;
 
 /**
  * 生成正则替换函数
@@ -21,7 +21,7 @@ export const tidy = factory(/[\0\x7F]|\r$/gmu, '');
 export const removeComment = factory(/\0\d+c\x7F/gu, '');
 
 /** escape special chars for RegExp constructor */
-export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, '\\$&');
+export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 
 /**
  * extract effective wikitext
@@ -42,7 +42,7 @@ export const decodeHtml = factory(
 );
 
 /** escape newlines */
-export const noWrap = factory(/\n/gu, '\\n');
+export const noWrap = factory(/\n/gu, String.raw`\n`);
 
 const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 

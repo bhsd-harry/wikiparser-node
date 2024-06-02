@@ -142,8 +142,8 @@ class Printer implements PrinterBase {
 		}
 		this.#viewportChanged = false;
 		const {include} = this,
-			{value}	= this.#textbox,
-			{scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]}	= this.#preview;
+			{value} = this.#textbox,
+			{scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode]} = this.#preview;
 		let text = value,
 			start = 0,
 			end = this.#root.length;

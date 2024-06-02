@@ -13,7 +13,7 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-const space = '(?:[\\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)',
+const space = String.raw`(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /**
@@ -75,7 +75,7 @@ export abstract class MagicLinkToken extends Token {
 			}
 			return errors;
 		}
-		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? '|\\|+' : ''}`,
+		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? String.raw`|\|+` : ''}`,
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');
 		for (const child of this.childNodes) {
