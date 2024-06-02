@@ -13,15 +13,9 @@ import type {Token} from '../src/index';
  */
 export const parseExternalLinks = (wikitext: string, config: Config, accum: Token[], inFile?: boolean): string => {
 	const regex = new RegExp(
-		'\\[' // 左括号
-		+ `(${
-			'\0\\d+f\x7F' // 预先解析的MagicLinkToken
-			+ '|'
-			+ `(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}(?=[[\\]<>"\t\\p{Zs}]|\0\\d)`
-		})` // 链接网址
-		+ '(\\p{Zs}*(?!\\p{Zs}))' // 空格
-		+ '([^\\]\x01-\x08\x0A-\x1F\uFFFD]*)' // 链接文字
-		+ '\\]', // 右括号
+		String.raw`\[(\0\d+f\x7F|(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${
+			extUrlChar
+		}(?=[[\]<>"\t\p{Zs}]|\0\d))(\p{Zs}*(?!\p{Zs}))([^\]\x01-\x08\x0A-\x1F\uFFFD]*)\]`,
 		'giu',
 	);
 	return wikitext.replace(regex, (_, url: string, space: string, text: string) => {

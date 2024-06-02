@@ -50,8 +50,8 @@ or
 <script src="//unpkg.com/wikiparser-node@browser/bundle/bundle.min.js"></script>
 ```
 
-For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser.en).
+For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-%28EN%29).
 
 # Usage
 
-Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home.en).
+Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).

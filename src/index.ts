@@ -259,8 +259,8 @@ export class Token extends AstElement {
 		if (this.#config.excludes?.includes('hr')) {
 			return;
 		}
-		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore')
-			= require('../parser/hrAndDoubleUnderscore');
+		const {parseHrAndDoubleUnderscore}: typeof import('../parser/hrAndDoubleUnderscore') =
+			require('../parser/hrAndDoubleUnderscore');
 		this.setText(parseHrAndDoubleUnderscore(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
 

@@ -167,16 +167,7 @@ const commonHtmlAttrs = new Set([
 		tabs: new Set(['plain', 'class', 'container', 'id', 'title', 'style']),
 		combobox: new Set(['placeholder', 'value', 'id', 'class', 'text', 'dropdown', 'style']),
 	},
-	insecureStyle = new RegExp(
-		'expression'
-		+ '|'
-		+ '(?:accelerator|-o-link(?:-source)?|-o-replace)\\s*:'
-		+ '|'
-		+ '(?:url|image(?:-set)?)\\s*\\('
-		+ '|'
-		+ 'attr\\s*\\([^)]+[\\s,]url',
-		'u',
-	),
+	insecureStyle = /expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u,
 	obsoleteAttrs: Record<string, Set<string>> = {
 		table: obsoleteTableAttrs,
 		td: new Set([...obsoleteTdAttrs, 'scope']),

@@ -17,7 +17,7 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 			content.replace(
 				regex,
 				(_, base: string, exp: string): string => {
-					const regex2 = new RegExp(`import \\{\\s*${base}\\b.+?;\n`, 'su');
+					const regex2 = new RegExp(String.raw`import \{\s*${base}\b.+?;\n`, 'su');
 					if (regex2.test(content)) {
 						return exp + base;
 					}
