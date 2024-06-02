@@ -1,4 +1,5 @@
 import {generateForChild, generateForSelf} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -73,14 +74,12 @@ export abstract class HeadingToken extends Token {
 			innerStr = firstChild.toString(),
 			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),
 			boldQuotes = quotes.filter(({bold}) => bold),
-			italicQuotes = quotes.filter(({italic}) => italic);
-		let rect: BoundingRect | undefined;
+			italicQuotes = quotes.filter(({italic}) => italic),
+			rect = new BoundingRect(this, start);
 		if (this.level === 1) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(firstChild, rect, 'h1', '<h1>'));
 		}
 		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(
 				firstChild,
 				rect,
@@ -89,11 +88,9 @@ export abstract class HeadingToken extends Token {
 			));
 		}
 		if (this.closest('html-attrs, table-attrs')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in a HTML tag'));
 		}
 		if (boldQuotes.length % 2) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(
 				boldQuotes[boldQuotes.length - 1]!,
 				{...rect, start: start + level, left: rect.left + level},
@@ -102,7 +99,6 @@ export abstract class HeadingToken extends Token {
 			));
 		}
 		if (italicQuotes.length % 2) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(
 				italicQuotes[italicQuotes.length - 1]!,
 				{start: start + level},

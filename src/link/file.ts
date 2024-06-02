@@ -1,5 +1,6 @@
 import {escapeRegExp} from '../../util/string';
 import {generateForChild, generateForSelf} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
@@ -79,9 +80,10 @@ export abstract class FileToken extends LinkBaseToken {
 			keys = [...new Set(args.map(({name}) => name))].filter(key => key !== 'invalid'),
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
-			vertAlignKeys = keys.filter(key => vertAlign.has(key));
+			vertAlignKeys = keys.filter(key => vertAlign.has(key)),
+			rect = new BoundingRect(this, start);
 		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
-			errors.push(generateForSelf(this, {start}, 'nested-link', 'internal link in an external link'));
+			errors.push(generateForSelf(this, rect, 'nested-link', 'internal link in an external link'));
 		}
 		if (
 			args.length === keys.length
@@ -91,7 +93,6 @@ export abstract class FileToken extends LinkBaseToken {
 		) {
 			return errors;
 		}
-		const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
 
 		/**
 		 * 图片参数到语法错误的映射

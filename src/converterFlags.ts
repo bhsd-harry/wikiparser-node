@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -71,7 +72,7 @@ export abstract class ConverterFlagsToken extends Token {
 		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 			return errors;
 		}
-		const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!},
+		const rect = new BoundingRect(this, start),
 			{childNodes, length} = this;
 		for (let i = 0; i < length; i++) {
 			const child = childNodes[i]!,
