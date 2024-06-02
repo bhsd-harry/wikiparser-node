@@ -24,6 +24,6 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			};
 			return [e];
 		}
-		return super.lint(start, new RegExp(`<\\s*(?:\\/\\s*)${name === 'nowiki' ? '' : '?'}(${name})\\b`, 'giu'));
+		return super.lint(start, new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'));
 	}
 }

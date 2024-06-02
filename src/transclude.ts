@@ -79,7 +79,7 @@ export abstract class TranscludeToken extends Token {
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName ?? lcName);
 				this.type = 'magic-word';
-				const pattern = new RegExp(`^\\s*${name}\\s*$`, isSensitive ? 'u' : 'iu'),
+				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 					});
 				super.insertAt(token);
@@ -146,8 +146,8 @@ export abstract class TranscludeToken extends Token {
 			isSubst = subst.includes(magicWord);
 		if (
 			this.#raw && isRaw
-				|| !this.#raw && (isSubst || modifier === '')
-				|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
+			|| !this.#raw && (isSubst || modifier === '')
+			|| (Shadow.running || this.length > 1) && (isRaw || isSubst || modifier === '')
 		) {
 			this.setAttribute('modifier', modifier);
 			this.#raw = isRaw;

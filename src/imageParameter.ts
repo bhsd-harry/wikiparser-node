@@ -39,7 +39,7 @@ function validate(
 				return val;
 			}
 			const regex = new RegExp(
-				`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\\d+m\x7F)${extUrlChar}$`,
+				String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
 				'iu',
 			);
 			if (regex.test(value)) {
@@ -86,9 +86,9 @@ export abstract class ImageParameterToken extends Token {
 					syntax,
 					param,
 					new RegExp(
-						`^(\\s*(?!\\s))${syntax.replace('$1', '(.*)')}${
+						String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
 							syntax.endsWith('$1') ? '(?=$|\n)' : ''
-						}(\\s*)$`,
+						}(\s*)$`,
 						'u',
 					),
 				],

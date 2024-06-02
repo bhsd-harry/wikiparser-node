@@ -10,9 +10,9 @@ import type {Token} from '../src/index';
  * @param accum
  */
 export const parseRedirect = (text: string, config: Config, accum: Token[]): string | false => {
-	const re = new RegExp(`^(\\s*)((?:${
+	const re = new RegExp(String.raw`^(\s*)((?:${
 			config.redirection.join('|')
-		})\\s*(?::\\s*)?)\\[\\[([^\n|\\]]+)(\\|.*?)?\\]\\](\\s*)`, 'iu'),
+		})\s*(?::\s*)?)\[\[([^\n|\]]+)(\|.*?)?\]\](\s*)`, 'iu'),
 		mt = re.exec(text);
 	if (mt && Parser.normalizeTitle(mt[3]!, 0, false, config, true, true).valid) {
 		text = `\0${accum.length}c\x7F${text.slice(mt[0].length)}`;
