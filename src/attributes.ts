@@ -1,4 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import {
 	removeComment,
 } from '../util/string';
@@ -142,10 +143,9 @@ export abstract class AttributesToken extends Token {
 		const errors = super.lint(start, re),
 			{parentNode, length, childNodes} = this,
 			attrs = new Map<string, AttributeToken[]>(),
-			duplicated = new Set<string>();
-		let rect: BoundingRect | undefined;
+			duplicated = new Set<string>(),
+			rect = new BoundingRect(this, start);
 		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag');
 			e.fix = {range: [start, e.endIndex], text: ''};
 			errors.push(e);
@@ -153,7 +153,6 @@ export abstract class AttributesToken extends Token {
 		for (let i = 0; i < length; i++) {
 			const attr = childNodes[i]!;
 			if (attr instanceof AtomToken && attr.text().trim()) {
-				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 				const e = generateForChild(attr, rect, 'no-ignored', 'containing invalid attribute');
 				e.suggestions = [
 					{
@@ -174,10 +173,9 @@ export abstract class AttributesToken extends Token {
 			}
 		}
 		if (duplicated.size > 0) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			for (const key of duplicated) {
 				errors.push(...attrs.get(key)!.map(
-					attr => generateForChild(attr, rect!, 'no-duplicate', Parser.msg('duplicated $1 attribute', key)),
+					attr => generateForChild(attr, rect, 'no-duplicate', Parser.msg('duplicated $1 attribute', key)),
 				));
 			}
 		}

@@ -1,5 +1,6 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -84,7 +85,7 @@ export abstract class ArgToken extends Token {
 			errors.push(...argDefault.lint(start + 4 + argName.toString().length, re));
 		}
 		if (rest.length > 0) {
-			const rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
+			const rect = new BoundingRect(this, start);
 			errors.push(...rest.map(child => {
 				const e = generateForChild(child, rect, 'no-ignored', 'invisible content inside triple braces');
 				e.startIndex--;
