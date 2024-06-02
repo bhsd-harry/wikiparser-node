@@ -1,10 +1,11 @@
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
 
 declare type generator = (
 	token: AstNodes,
-	boundingRect: BoundingRect | {start: number},
+	rect: BoundingRect | {start: number},
 	rule: LintError.Rule,
 	msg: string,
 	severity?: LintError.Severity,
@@ -21,9 +22,9 @@ const factory = (
 		top: number,
 		left: number,
 	) => Pick<LintError, 'startIndex' | 'startLine' | 'startCol'>,
-): generator => (token, boundingRect, rule, msg, severity = 'error') => {
-	const {start} = boundingRect,
-		{top, left} = 'top' in boundingRect ? boundingRect : token.getRootNode().posFromIndex(start)!,
+): generator => (token, rect, rule, msg, severity = 'error') => {
+	const {start} = rect,
+		{top, left} = 'top' in rect ? rect : new BoundingRect(token, start),
 		{offsetHeight, offsetWidth} = token,
 		{startIndex, startLine, startCol} = func(token, start, top, left);
 	return {

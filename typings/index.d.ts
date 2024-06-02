@@ -11,12 +11,6 @@ declare global {
 		lint(): LintError[];
 	};
 
-	interface BoundingRect {
-		readonly top: number;
-		readonly left: number;
-		readonly start: number;
-	}
-
 	interface PrintOpt {
 		readonly pre?: string;
 		readonly post?: string;

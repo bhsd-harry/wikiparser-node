@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import {
 	BuildMethod,
 } from '../../util/constants';
@@ -129,8 +130,8 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		start += this.getRelativeIndex(this.length - 1);
+		const errors = super.lint(start, re),
+			rect = new BoundingRect(this, start + this.getRelativeIndex(this.length - 1));
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text') {
 				const {data} = child;
@@ -138,7 +139,7 @@ export abstract class TdToken extends TableBaseToken {
 					const isError = data.includes('||'),
 						e = generateForChild(
 							child,
-							{start},
+							rect,
 							'pipe-like',
 							'additional "|" in a table cell',
 							isError ? 'error' : 'warning',

@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {TagPairToken} from './index';
@@ -160,14 +161,12 @@ export abstract class ExtToken extends TagPairToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		let rect: BoundingRect | undefined;
+		const errors = super.lint(start, re),
+			rect = new BoundingRect(this, start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs, table-attrs')) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'parsing-order', 'extension tag in HTML tag attributes'));
 		}
 		if (this.name === 'ref' && this.closest('heading-title')) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'var-anchor', 'variable anchor in a section header'));
 		}
 		return errors;
