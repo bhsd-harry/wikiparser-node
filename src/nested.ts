@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
@@ -61,7 +62,7 @@ export abstract class NestedToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		let rect: BoundingRect | undefined;
+		const rect = new BoundingRect(this, start);
 		return [
 			...super.lint(start, re),
 			...this.childNodes.filter(child => {
@@ -71,7 +72,6 @@ export abstract class NestedToken extends Token {
 				const str = child.toString().trim();
 				return str && !/^<!--.*-->$/su.test(str);
 			}).map(child => {
-				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 				const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid content in <$1>', this.name));
 				e.suggestions = [
 					{

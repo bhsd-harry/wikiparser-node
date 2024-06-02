@@ -3,6 +3,7 @@ import {
 	text,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import {isToken, Shadow} from '../util/debug';
 import {
 	BuildMethod,
@@ -214,14 +215,13 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{type, childNodes, length} = this;
-		let rect: BoundingRect | undefined;
+			{type, childNodes, length} = this,
+			rect = new BoundingRect(this, start);
 		if (!this.isTemplate()) {
 			return errors;
 		}
 		const title = this.#getTitle();
 		if (title.fragment !== undefined) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			const child = childNodes[type === 'template' ? 0 : 1] as AtomToken,
 				e = generateForChild(child, rect, 'no-ignored', 'useless fragment'),
 				textNode = child.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
@@ -234,19 +234,16 @@ export abstract class TranscludeToken extends Token {
 			errors.push(e);
 		}
 		if (!title.valid) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(childNodes[1], rect, 'invalid-invoke', 'illegal module name'));
 		}
 		if (type === 'magic-word' && length === 2) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForSelf(this, rect, 'invalid-invoke', 'missing module function'));
 			return errors;
 		}
 		const duplicatedArgs = this.getDuplicatedArgs().filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 		if (duplicatedArgs.length > 0) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(
-				arg => generateForChild(arg, rect!, 'no-duplicate', 'duplicated parameter'),
+				arg => generateForChild(arg, rect, 'no-duplicate', 'duplicated parameter'),
 			));
 		}
 		return errors;
