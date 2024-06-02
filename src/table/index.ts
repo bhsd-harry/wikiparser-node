@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import {Shadow, emptyArray} from '../../util/debug';
 import {noWrap} from '../../util/string';
 import {classes} from '../../util/constants';
@@ -112,10 +113,11 @@ export abstract class TableToken extends TrBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
+		const errors = super.lint(start, re),
+			rect = new BoundingRect(this, start);
 		if (!this.closed) {
 			errors.push(
-				generateForChild(this.firstChild, {start}, 'unclosed-table', Parser.msg('unclosed $1', 'table')),
+				generateForChild(this.firstChild, rect, 'unclosed-table', Parser.msg('unclosed $1', 'table')),
 			);
 		}
 		const layout = this.getLayout(),
@@ -143,7 +145,7 @@ export abstract class TableToken extends TrBaseToken {
 			if (j < length) {
 				const e = generateForChild(
 					this.getNthRow(j) as TrToken,
-					{start},
+					rect,
 					'table-layout',
 					'inconsistent table layout',
 					'warning',

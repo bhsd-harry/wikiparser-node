@@ -1,4 +1,5 @@
 import {generateForSelf} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
 import Parser from '../../index';
@@ -36,10 +37,27 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {previousSibling, nextSibling, bold} = this,
 			message = Parser.msg('lonely "$1"', `'`),
-			errors: LintError[] = [];
+			errors: LintError[] = [],
+			rect = new BoundingRect(this, start);
 		let refError: LintError | undefined;
+
+		/**
+		 * 获取建议
+		 * @param startIndex 起点
+		 * @param endIndex 终点
+		 * @param length 长度
+		 */
+		const getSuggestion = (
+			startIndex: number,
+			endIndex: number,
+			length: number,
+		): LintError.Fix & {desc: string} => ({
+			desc: 'escape',
+			range: [startIndex, endIndex],
+			text: '&apos;'.repeat(length),
+		});
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
-			refError = generateForSelf(this, {start}, 'lonely-apos', message);
+			refError = generateForSelf(this, rect, 'lonely-apos', message);
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
 				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousSibling.data) as string[] as [string, string],
 				startIndex = start - length;
@@ -50,17 +68,11 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startCol: endCol - length,
 				endLine,
 				endCol,
-				suggestions: [
-					{
-						desc: 'escape',
-						range: [startIndex, endIndex],
-						text: '&apos;'.repeat(length),
-					},
-				],
+				suggestions: [getSuggestion(startIndex, endIndex, length)],
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
-			refError ??= generateForSelf(this, {start}, 'lonely-apos', message);
+			refError ??= generateForSelf(this, rect, 'lonely-apos', message);
 			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
 				[{length}] = /^'+/u.exec(nextSibling.data)!,
 				endIndex = startIndex + length;
@@ -71,23 +83,11 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startLine,
 				startCol,
 				endCol: startCol + length,
-				suggestions: [
-					{
-						desc: 'escape',
-						range: [startIndex, endIndex],
-						text: '&apos;'.repeat(length),
-					},
-				],
+				suggestions: [getSuggestion(startIndex, endIndex, length)],
 			});
 		}
 		if (bold && this.closest('heading-title')) {
-			refError ??= generateForSelf(this, {start}, 'lonely-apos', message);
-			errors.push({
-				...refError,
-				rule: 'bold-header',
-				message: Parser.msg('bold in section header'),
-				severity: 'warning',
-			});
+			errors.push(generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'));
 		}
 		return errors;
 	}

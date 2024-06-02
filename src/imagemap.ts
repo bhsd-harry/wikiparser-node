@@ -1,4 +1,5 @@
 import {generateForSelf, generateForChild} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import {
 	isToken,
 
@@ -152,7 +153,7 @@ export abstract class ImagemapToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			rect: BoundingRect = {start, ...this.getRootNode().posFromIndex(start)!};
+			rect = new BoundingRect(this, start);
 		if (this.image) {
 			errors.push(
 				...this.childNodes.filter(child => {

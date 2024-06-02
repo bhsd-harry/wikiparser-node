@@ -1,4 +1,5 @@
 import {generateForChild, generateForSelf} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {text} from '../util/string';
@@ -126,8 +127,8 @@ export abstract class MagicLinkToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		let rect: BoundingRect | undefined;
+		const errors = super.lint(start, re),
+			rect = new BoundingRect(this, start);
 		if (this.type === 'magic-link') {
 			const {link} = this;
 			if (link.startsWith('ISBN')) {
@@ -140,7 +141,6 @@ export abstract class MagicLinkToken extends Token {
 						|| digits.reduce((sum, d, i) => sum + d * (i % 2 ? 3 : 1), 0) % 10
 					)
 				) {
-					rect = {start, ...this.getRootNode().posFromIndex(start)!};
 					errors.push(generateForSelf(this, rect, 'invalid-isbn', 'invalid ISBN'));
 				}
 			}
@@ -156,7 +156,6 @@ export abstract class MagicLinkToken extends Token {
 			if (type !== 'text' || !regex.test(data)) {
 				continue;
 			}
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			const refError = generateForChild(child, rect, 'unterminated-url', '', 'warning');
 			regexGlobal.lastIndex = 0;
 			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {

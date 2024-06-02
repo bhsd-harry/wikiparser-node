@@ -1,4 +1,5 @@
 import {generateForSelf} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import {noWrap} from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
@@ -185,28 +186,21 @@ export abstract class HtmlToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re);
-		let refError: LintError | undefined;
+		const errors = super.lint(start, re),
+			rect = new BoundingRect(this, start);
 		if (this.name === 'h1' && !this.closing) {
-			refError = generateForSelf(this, {start}, 'h1', '<h1>');
-			errors.push(refError);
+			errors.push(generateForSelf(this, rect, 'h1', '<h1>'));
 		}
 		if (this.closest('table-attrs')) {
-			refError ??= generateForSelf(this, {start}, 'h1', '');
-			errors.push({
-				...refError,
-				rule: 'parsing-order',
-				message: Parser.msg('HTML tag in table attributes'),
-			});
+			errors.push(generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes'));
 		}
 		try {
 			this.findMatchingTag();
 		} catch (e) {
 			if (e instanceof SyntaxError) {
 				const {message} = e;
-				refError ??= generateForSelf(this, {start}, 'h1', '');
 				const [msg] = message.split(':'),
-					error = {...refError, rule: 'unmatched-tag' as LintError.Rule, message: Parser.msg(msg!)};
+					error = generateForSelf(this, rect, 'unmatched-tag', msg!);
 				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
 					if (formattingTags.has(this.name)) {
 						const childNodes = this.parentNode?.childNodes,
@@ -243,22 +237,10 @@ export abstract class HtmlToken extends Token {
 			}
 		}
 		if (obsoleteTags.has(this.name)) {
-			refError ??= generateForSelf(this, {start}, 'h1', '');
-			errors.push({
-				...refError,
-				rule: 'obsolete-tag',
-				message: Parser.msg('obsolete HTML tag'),
-				severity: 'warning',
-			});
+			errors.push(generateForSelf(this, rect, 'obsolete-tag', 'obsolete HTML tag', 'warning'));
 		}
 		if ((this.name === 'b' || this.name === 'strong') && this.closest('heading-title')) {
-			refError ??= generateForSelf(this, {start}, 'h1', '');
-			errors.push({
-				...refError,
-				rule: 'bold-header',
-				message: Parser.msg('bold in section header'),
-				severity: 'warning',
-			});
+			errors.push(generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'));
 		}
 		return errors;
 	}

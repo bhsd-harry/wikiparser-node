@@ -1,4 +1,5 @@
 import {generateForChild} from '../util/lint';
+import {BoundingRect} from '../lib/rect';
 import {
 	removeComment,
 	escape,
@@ -362,11 +363,9 @@ export abstract class AttributeToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{balanced, firstChild, lastChild, type, name, tag} = this,
-			value = this.getValue();
-		let rect: BoundingRect | undefined;
+			value = this.getValue(),
+			rect = new BoundingRect(this, start);
 		if (!balanced) {
-			const root = this.getRootNode();
-			rect = {start, ...root.posFromIndex(start)!};
 			const e = generateForChild(
 				lastChild,
 				rect,
@@ -400,16 +399,12 @@ export abstract class AttributeToken extends Token {
 			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
 			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name'));
 		} else if (obsoleteAttrs[tag]?.has(name)) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(firstChild, rect, 'obsolete-attr', 'obsolete attribute', 'warning'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
 		} else if (name === 'tabindex' && typeof value === 'string' && value.trim() !== '0') {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			const e = generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex');
 			e.suggestions = [
 				{

@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {singleLine} from '../../mixin/singleLine';
@@ -66,14 +67,13 @@ export abstract class ParamTagToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		let rect: BoundingRect | undefined;
+		const rect = new BoundingRect(this, start);
 		return this.childNodes.filter(child => {
 			const {childNodes} = child,
 				i = childNodes.findIndex(({type}) => type !== 'text'),
 				str = (i >= 0 ? childNodes.slice(0, i).map(String).join('') : child.toString()).trim();
 			return str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str);
 		}).map(child => {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid parameter of <$1>', this.name));
 			e.suggestions = [
 				{

@@ -27,12 +27,6 @@ declare global {
 		seal(key: string, permanent?: boolean): void;
 	};
 
-	interface BoundingRect {
-		readonly top: number;
-		readonly left: number;
-		readonly start: number;
-	}
-
 	interface PrintOpt {
 		readonly pre?: string;
 		readonly post?: string;

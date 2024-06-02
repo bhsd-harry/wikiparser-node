@@ -1,4 +1,5 @@
 import {generateForChild} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -170,22 +171,19 @@ export abstract class LinkBaseToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
 			{childNodes: [target, linkText], type: linkType} = this,
-			{encoded, fragment} = this.#title;
-		let rect: BoundingRect | undefined;
+			{encoded, fragment} = this.#title,
+			rect = new BoundingRect(this, start);
 		if (target.childNodes.some(({type}) => type === 'template')) {
-			rect = {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(
 				generateForChild(target, rect, 'unknown-page', 'template in an internal link target', 'warning'),
 			);
 		}
 		if (encoded) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			errors.push(generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link'));
 		}
 		if (linkType === 'link' || linkType === 'category') {
 			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));
 			if (textNode) {
-				rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning');
 				e.suggestions = [
 					{
@@ -201,7 +199,6 @@ export abstract class LinkBaseToken extends Token {
 			}
 		}
 		if (linkType !== 'link' && linkType !== 'redirect-target' && fragment !== undefined) {
-			rect ??= {start, ...this.getRootNode().posFromIndex(start)!};
 			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
 				textNode = target.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
 			if (textNode) {
