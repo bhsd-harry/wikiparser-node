@@ -106,7 +106,7 @@ export abstract class TranscludeToken extends Token {
 			const name = removeComment(title).trim();
 			if (!this.normalizeTitle(name, 10, true).valid) {
 				accum.pop();
-				throw new SyntaxError('非法的模板名称');
+				throw new SyntaxError('Invalid template name');
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
 			});
@@ -324,7 +324,7 @@ export abstract class TranscludeToken extends Token {
 	getPossibleValues(): Token[] {
 		const {type, name, childNodes, constructor: {name: cName}} = this;
 		if (type === 'template') {
-			throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+			throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
 		}
 		let start: number;
 		switch (name) {
@@ -338,7 +338,7 @@ export abstract class TranscludeToken extends Token {
 				start = 3;
 				break;
 			default:
-				throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+				throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
 		}
 		const queue = (childNodes.slice(start, start + 2) as ParameterToken[]).map(({childNodes: [, value]}) => value);
 		for (let i = 0; i < queue.length;) {
