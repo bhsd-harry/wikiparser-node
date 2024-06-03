@@ -71,8 +71,7 @@ export abstract class TableToken extends TrBaseToken {
 				} else if (max < high) {
 					high = max;
 				}
-				const {colspan} = this.getNthCell(row[row.length - 1]!)!,
-					min = max - colspan + 1;
+				const min = row.indexOf(row[max - 1]!) + 1;
 				if (min > high) {
 					break;
 				} else if (min > low) {
