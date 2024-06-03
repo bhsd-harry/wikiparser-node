@@ -33,7 +33,7 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			const /** @implements */ syntaxListener: AstListener = (e, data) => {
 				if (!Shadow.running && !this.pattern.test(this.text())) {
 					undo(e, data);
-					this.constructorError('不可修改语法');
+					this.constructorError('cannot modify the syntax pattern');
 				}
 			};
 			this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);

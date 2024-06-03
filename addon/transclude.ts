@@ -26,7 +26,7 @@ TranscludeToken.prototype.setValue =
 	/** @implements */
 	function(key, value): void {
 		if (!this.isTemplate()) {
-			throw new Error('setValue 方法仅供模板使用！');
+			throw new Error('setValue method is only for templates!');
 		}
 		const arg = this.getArg(key);
 		if (arg) {
@@ -49,7 +49,7 @@ TranscludeToken.prototype.replaceTemplate =
 	/** @implements */
 	function(title): void {
 		if (this.type === 'magic-word') {
-			throw new Error('replaceTemplate 方法仅用于更换模板！');
+			throw new Error('replaceTemplate method is only for templates!');
 		}
 		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, this.getAttribute('config'));
 		(this.firstChild as AtomToken).replaceChildren(...childNodes);
@@ -59,7 +59,7 @@ TranscludeToken.prototype.replaceModule =
 	/** @implements */
 	function(title): void {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
-			throw new Error('replaceModule 方法仅用于更换模块！');
+			throw new Error('replaceModule method is only for modules!');
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 1) {
@@ -76,9 +76,9 @@ TranscludeToken.prototype.replaceFunction =
 	/** @implements */
 	function(func): void {
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
-			throw new Error('replaceModule 方法仅用于更换模块！');
+			throw new Error('replaceModule method is only for modules!');
 		} else if (this.length < 2) {
-			throw new Error('尚未指定模块名称！');
+			throw new Error('No module name specified yet!');
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 2) {
@@ -168,10 +168,10 @@ TranscludeToken.prototype.fixDuplication =
 					? this.name
 					: this.normalizeTitle(this.childNodes[1].text(), 828)
 						.title
-				} 还留有 ${remaining} 个重复的 ${key} 参数：${[...this.getArgs(key)].map(arg => {
+				} still has ${remaining} duplicated ${key} parameters:\n${[...this.getArgs(key)].map(arg => {
 					const {top, left} = arg.getBoundingClientRect();
-					return `第 ${String(top)} 行第 ${String(left)} 列`;
-				}).join('、')}`);
+					return `Line ${String(top)} Column ${String(left)}`;
+				}).join('\n')}`);
 				duplicatedKeys.push(key);
 				continue;
 			}
@@ -197,7 +197,7 @@ TranscludeToken.prototype.escapeTables =
 		}
 		const {firstChild, length} = Parser.parse(`{{${parsed.toString()}}}`, include, undefined, config);
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
-			throw new Error('转义表格失败！');
+			throw new Error('Failed to escape tables!');
 		}
 		this.safeReplaceWith(firstChild);
 		return firstChild;

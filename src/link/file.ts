@@ -220,7 +220,11 @@ export abstract class FileToken extends LinkBaseToken {
 		/* NOT FOR BROWSER */
 
 		if (args.length > 1) {
-			Parser.warn(`图片 ${this.name} 带有 ${args.length} 个${type}参数，只有最后 1 个 ${args[0]!.name} 会生效！`);
+			Parser.warn(
+				`The image ${this.name} has ${args.length} ${type} parameters. Only the last ${
+					args[0]!.name
+				} will take effect!`,
+			);
 		}
 
 		/* NOT FOR BROWSER END */
@@ -230,17 +234,17 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** 获取图片框架属性参数节点 */
 	getFrameArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(frame, '框架');
+		return this.#getTypedArgs(frame, 'frame');
 	}
 
 	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(horizAlign, '水平对齐');
+		return this.#getTypedArgs(horizAlign, 'horizontal-align');
 	}
 
 	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(vertAlign, '垂直对齐');
+		return this.#getTypedArgs(vertAlign, 'vertical-align');
 	}
 
 	/**
@@ -312,7 +316,7 @@ export abstract class FileToken extends LinkBaseToken {
 		const config = this.getAttribute('config'),
 			syntax = key === 'caption' ? '$1' : Object.entries(config.img).find(([, name]) => name === key)?.[0];
 		if (syntax === undefined) {
-			throw new RangeError(`未定义的图片参数： ${key}`);
+			throw new RangeError(`Unknown image parameter: ${key}`);
 		}
 		const free = syntax.includes('$1');
 		if (value === true && free) {
@@ -335,7 +339,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @throws `Error` 不适用于图片
 	 */
 	override setLinkText(): never {
-		throw new Error('setLinkText 方法不适用于图片！');
+		throw new Error('setLinkText method is not applicable to images!');
 	}
 }
 

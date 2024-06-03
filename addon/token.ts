@@ -42,7 +42,7 @@ Token.prototype.createElement =
 				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});
 		}
-		throw new RangeError(`非法的标签名：${tagName}`);
+		throw new RangeError(`Invalid tag name: ${tagName}`);
 	};
 
 Token.prototype.caretPositionFromIndex =
@@ -127,7 +127,7 @@ Token.prototype.findEnclosingHtml =
 			normalTags = new Set(html[0]),
 			voidTags = new Set(html[2]);
 		if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
-			throw new RangeError(`非法的标签或空标签：${tag}`);
+			throw new RangeError(`Invalid or void tag name: ${tag}`);
 		}
 		const {parentNode} = this;
 		if (!parentNode) {

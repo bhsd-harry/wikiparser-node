@@ -137,7 +137,7 @@ export class AstText extends AstNode {
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
-			throw new Error('无法对孤立文本节点进行语法分析！');
+			throw new Error('Cannot lint an isolated text node!');
 		}
 		const {type, name, parentNode: grandparent} = parentNode;
 		let isHtmlAttrVal = false;
@@ -378,11 +378,11 @@ export class AstText extends AstNode {
 	 */
 	splitText(offset: number): AstText {
 		if (offset > this.length || offset < -this.length) {
-			throw new RangeError(`错误的断开位置：${offset}`);
+			throw new RangeError(`Wrong offset to split: ${offset}`);
 		}
 		const {parentNode, data} = this;
 		if (!parentNode) {
-			throw new Error('待分裂的文本节点没有父节点！');
+			throw new Error('The text node to be split has no parent!');
 		}
 		const newText = new AstText(data.slice(offset));
 		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
@@ -395,7 +395,7 @@ export class AstText extends AstNode {
 		if (j === undefined) {
 			return super.getRelativeIndex();
 		} else if (j < 0 || j > this.length) {
-			throw new RangeError('超出文本长度范围！');
+			throw new RangeError('Exceeding the text length range!');
 		}
 		return j;
 	}

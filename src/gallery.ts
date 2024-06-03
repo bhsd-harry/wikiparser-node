@@ -168,7 +168,7 @@ export abstract class GalleryToken extends Token {
 			token.afterBuild();
 			return this.insertAt(token, i);
 		}
-		throw new SyntaxError(`非法的文件名：${file}`);
+		throw new SyntaxError(`Invalid file name: ${file}`);
 	}
 
 	/**
@@ -181,7 +181,7 @@ export abstract class GalleryToken extends Token {
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
 		if (typeof token === 'string' && token.trim() || token instanceof NoincludeToken) {
-			throw new RangeError('请勿向图库中插入不可见内容！');
+			throw new RangeError('Please do not insert invisible content into the gallery!');
 		}
 		return super.insertAt(token as T, i);
 	}

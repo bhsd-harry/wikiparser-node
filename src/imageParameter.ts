@@ -324,7 +324,7 @@ export abstract class ImageParameterToken extends Token {
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		if (!Shadow.running && this.#isVoid()) {
-			throw new Error(`图片参数 ${this.name} 不接受自定义输入！`);
+			throw new Error(`Image parameter ${this.name} does not accept custom input!`);
 		}
 		return super.insertAt(token as T, i);
 	}
@@ -340,7 +340,7 @@ export abstract class ImageParameterToken extends Token {
 			this.remove();
 			return;
 		} else if (name === 'invalid') {
-			throw new Error('当前节点是一个无效的图片参数！');
+			throw new Error('The current node is an invalid image parameter!');
 		}
 		const type = this.#isVoid() ? 'Boolean' : 'String';
 		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof

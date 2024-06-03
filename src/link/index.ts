@@ -60,7 +60,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		const {link: {prefix, main, fragment}} = this,
 			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
 		if (interwiki && !this.isInterwiki(link)) {
-			throw new RangeError(`${interwiki} 不是合法的跨维基前缀!`);
+			throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
 		}
 		this.setTarget(link);
 	}
@@ -92,7 +92,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	setLangLink(lang: string, link: string): void {
 		link = link.trim();
 		if (link.startsWith('#')) {
-			throw new SyntaxError('跨语言链接不能仅为fragment！');
+			throw new SyntaxError('Interlanguage links cannot be fragments only!');
 		}
 		super.setTarget(lang + (link.startsWith(':') ? '' : ':') + link);
 	}
@@ -122,7 +122,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 */
 	asSelfLink(fragment = this.fragment): void {
 		if (!fragment?.trim()) {
-			throw new RangeError('asSelfLink 方法必须指定非空的 fragment！');
+			throw new RangeError('asSelfLink method must specify a non-empty fragment!');
 		}
 		this.#setFragment(fragment, false);
 	}
@@ -134,7 +134,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	pipeTrick(): void {
 		const linkText = this.firstChild.text();
 		if (linkText.includes('#') || linkText.includes('%')) {
-			throw new Error('Pipe trick 不能用于带有"#"或"%"的场合！');
+			throw new Error('Pipe trick cannot be used with "#" or "%"!');
 		}
 		const m1 = /^:?(?:[ \w\x80-\xFF-]+:)?([^(]+)\(.+\)$/u.exec(linkText) as [string, string] | null;
 		if (m1) {

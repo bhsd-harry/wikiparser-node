@@ -55,7 +55,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 		/* NOT FOR BROWSER */
 
 		if (!this.closed && this.nextSibling) {
-			Parser.error('自动闭合HTML注释', this);
+			Parser.error('Auto-closing HTML comment', this);
 			this.closed = true;
 		}
 
@@ -80,7 +80,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	/** @private */
 	override setText(text: string): string {
 		if (text.includes('-->')) {
-			throw new RangeError('不允许包含 "-->"！');
+			throw new RangeError('Do not contain "-->" in the comment!');
 		}
 		return super.setText(text);
 	}

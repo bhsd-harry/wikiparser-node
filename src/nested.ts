@@ -125,7 +125,7 @@ export abstract class NestedToken extends Token {
 	 */
 	override insertAt<T extends Token>(token: T, i?: number): T {
 		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {
-			this.constructorError(`只能以 ${this.#tags.join(' 或 ')} 标签作为子节点`);
+			this.constructorError(`can only have ${this.#tags.join(' or ')} tags as child nodes`);
 		}
 		return super.insertAt(token, i);
 	}

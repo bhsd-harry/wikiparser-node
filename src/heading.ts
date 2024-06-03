@@ -58,7 +58,7 @@ export abstract class HeadingToken extends Token {
 	/** @throws `Error` 首尾包含`=` */
 	set innerText(text) {
 		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
-			throw new Error('修改标题层级请使用 setLevel 方法！');
+			throw new Error('Please use setLevel method to change the level of the heading!');
 		}
 		const {childNodes} = Parser.parse(text, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		this.firstChild.replaceChildren(...childNodes);

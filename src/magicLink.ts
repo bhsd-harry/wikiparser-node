@@ -95,7 +95,7 @@ export abstract class MagicLinkToken extends Token {
 	set protocol(value: string) {
 		const {link, pattern, type} = this;
 		if (type === 'magic-link' || !pattern.test(link)) {
-			throw new Error(`特殊外链无法更改协议：${link}`);
+			throw new Error(`Special external link cannot change protocol: ${link}`);
 		}
 		this.setTarget(link.replace(pattern, value));
 	}
@@ -230,9 +230,9 @@ export abstract class MagicLinkToken extends Token {
 		if (typeof token !== 'string') {
 			const {type, name} = token;
 			if (type === 'template') {
-				this.constructorError('不可插入模板');
+				this.constructorError('cannot insert a template');
 			} else if (!Shadow.running && type === 'magic-word' && name !== '!' && name !== '=') {
-				this.constructorError('不可插入 "{{!}}" 或 "{{=}}" 以外的魔术字');
+				this.constructorError('cannot insert magic words other than "{{!}}" or "{{=}}"');
 			}
 		}
 		return super.insertAt(token as string, i);
@@ -248,7 +248,7 @@ export abstract class MagicLinkToken extends Token {
 		let {link} = this;
 		if (type === 'magic-link') {
 			if (protocol === 'ISBN') {
-				throw new Error(`不支持ISBN链接：${link}`);
+				throw new Error(`This method does not support ISBN links: ${link}`);
 			}
 			link = protocol === 'RFC'
 				? `https://tools.ietf.org/html/rfc${link.slice(4)}`
@@ -260,7 +260,7 @@ export abstract class MagicLinkToken extends Token {
 			return new URL(link);
 		} catch (e) {
 			if (e instanceof TypeError && e.message === 'Invalid URL') {
-				throw new Error(`非标准协议的外部链接：${link}`);
+				throw new Error(`External link with a non-standard protocol: ${link}`);
 			}
 			throw e;
 		}

@@ -86,7 +86,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 		const nCols = this.getColCount();
 		n += n < 0 ? nCols : 0;
 		if (n < 0 || n > nCols || n === nCols && !insert) {
-			throw new RangeError(`不存在第 ${n} 个单元格！`);
+			throw new RangeError(`There is no ${n}th cell!`);
 		}
 		const isTr = isToken<TrToken>('tr'),
 			isSyntax = isToken<SyntaxToken>('table-syntax');

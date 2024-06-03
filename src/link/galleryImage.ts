@@ -111,10 +111,10 @@ export abstract class GalleryImageToken extends FileToken {
 					{interwiki, ns, valid} = title;
 				if (!valid) {
 					undo(e, data);
-					throw new Error(`非法的图片文件名：${name}`);
+					throw new Error(`Invalid image file name: ${name}`);
 				} else if (interwiki || ns !== 6) {
 					undo(e, data);
-					throw new Error(`图片链接不可更改命名空间：${name}`);
+					throw new Error(`Image link cannot change namespace: ${name}`);
 				}
 				this.#setName(title);
 			}

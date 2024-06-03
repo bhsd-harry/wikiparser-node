@@ -43,7 +43,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		const {link: {prefix, main, fragment}} = this,
 			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
 		if (interwiki && !this.isInterwiki(link)) {
-			throw new RangeError(`${interwiki} 不是合法的跨维基前缀!`);
+			throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
 		}
 		this.setTarget(link);
 	}

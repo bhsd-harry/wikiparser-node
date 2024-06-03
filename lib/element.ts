@@ -185,10 +185,10 @@ export abstract class AstElement extends AstNode {
 		/* NOT FOR BROWSER */
 
 		if (node.contains(this)) {
-			throw new RangeError('不能插入祖先节点！');
+			throw new RangeError('Cannot insert an ancestor node!');
 		}
 		if (this.childNodes.includes(node)) {
-			throw new RangeError('不能插入子节点！');
+			throw new RangeError('Cannot insert its own child node!');
 		}
 		this.verifyChild(i, 1);
 		node.parentNode?.removeChild(node);
@@ -333,7 +333,7 @@ export abstract class AstElement extends AstNode {
 
 		/* NOT FOR BROWSER */
 
-		throw new RangeError(`第 ${i} 个子节点是 ${oldText.constructor.name}！`);
+		throw new RangeError(`The ${i}th child node is ${oldText.constructor.name}!`);
 	}
 
 	/** @private */
@@ -445,7 +445,7 @@ export abstract class AstElement extends AstNode {
 			return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
 				&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
 		} else if (!primitives.has(typeof thisVal) && !(thisVal instanceof Title)) {
-			throw new RangeError(`复杂属性 ${key} 不能用于选择器！`);
+			throw new RangeError(`The complex attribute ${key} cannot be used in a selector!`);
 		}
 		const stringVal = toCase(String(thisVal), i);
 		switch (equal) {
@@ -563,16 +563,18 @@ export abstract class AstElement extends AstNode {
 				case 'regex': {
 					const mt = /^([^,]+),\s*\/(.+)\/([a-z]*)$/u.exec(s) as [string, string, string, string] | null;
 					if (!mt) {
-						throw new SyntaxError('错误的伪选择器用法。请使用形如 ":regex(\'attr, /re/i\')" 的格式。');
+						throw new SyntaxError(
+							`Wrong usage of the regex pseudo-selector. Use ":regex('attr, /re/i')" format.`,
+						);
 					}
 					try {
 						return new RegExp(mt[2], mt[3]).test(String(this.getAttribute(mt[1].trim())));
 					} catch {
-						throw new SyntaxError(`错误的正则表达式：/${mt[2]}/${mt[3]}`);
+						throw new SyntaxError(`Wrong regex: /${mt[2]}/${mt[3]}`);
 					}
 				}
 				default:
-					throw new SyntaxError(`未定义的伪选择器：${pseudo}`);
+					throw new SyntaxError(`Undefined pseudo-selector: ${pseudo}`);
 			}
 		});
 	}

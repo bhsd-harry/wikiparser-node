@@ -351,7 +351,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	constructorError(msg: string): never {
-		throw new Error(`${this.constructor.name} ${msg}！`);
+		throw new Error(`${this.constructor.name} ${msg}!`);
 	}
 
 	/**
@@ -531,7 +531,7 @@ export abstract class AstNode implements AstNodeBase {
 		} else if (other.contains(this)) {
 			return 1;
 		} else if (this.getRootNode() !== other.getRootNode()) {
-			throw new RangeError('不在同一个语法树！');
+			throw new RangeError('Nodes are not in the same tree!');
 		}
 		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],
 			bAncestors = [...other.getAncestors().reverse(), other],

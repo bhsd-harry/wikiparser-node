@@ -204,9 +204,9 @@ export abstract class ArgToken extends Token {
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
 		if (i > 1) {
-			this.constructorError('不可插入多余的子节点');
+			this.constructorError('cannot insert redundant child nodes');
 		} else if (typeof token === 'string') {
-			this.constructorError('不可插入文本节点');
+			this.constructorError('cannot insert text nodes');
 		}
 		super.insertAt(token, i);
 		if (i === 1) {

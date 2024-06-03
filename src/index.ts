@@ -179,7 +179,7 @@ export class Token extends AstElement {
 			/* NOt FOR BROWSER */
 
 			if (this.type === 'root') {
-				Parser.error('已完全解析！');
+				Parser.error('Fully parsed!');
 			}
 
 			/* NOT FOR BROWSER END */
@@ -248,7 +248,7 @@ export class Token extends AstElement {
 			} else if (isNaN(s.slice(-1) as unknown as number)) {
 				return this.#accum[Number(s.slice(0, -1))]!;
 			}
-			throw new Error(`解析错误！未正确标记的 Token：${s}`);
+			throw new Error(`Failed to build! Unrecognized token: ${s}`);
 		});
 		if (type === BuildMethod.String) {
 			return nodes.map(String).join('');
@@ -482,9 +482,11 @@ export class Token extends AstElement {
 				insertedName = token.constructor.name;
 			i += i < 0 ? this.length : 0;
 			if (!acceptableIndices[insertedName]?.includes(i)) {
-				this.constructorError(`的第 ${i} 个子节点不能为 ${insertedName}`);
+				this.constructorError(`cannot insert a ${insertedName} at position ${i}`);
 			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j + 1))) {
-				this.constructorError(`插入新的第 ${i} 个子节点会破坏规定的顺序`);
+				this.constructorError(
+					`violates the order of acceptable nodes by inserting a child node at position ${i}`,
+				);
 			}
 		}
 
@@ -497,7 +499,10 @@ export class Token extends AstElement {
 		const e = new Event('insert', {bubbles: true});
 		this.dispatchEvent(e, {type: 'insert', position: i < 0 ? i + this.length - 1 : i});
 		if (token.constructor === Token && this.getAttribute('plain')) {
-			Parser.warn('您正将一个普通节点作为另一个普通节点的子节点，请考虑要不要执行 flatten 方法。');
+			Parser.warn(
+				'You are inserting a plain token as a child of another plain token. '
+				+ 'Consider calling the flatten method afterwards.',
+			);
 		}
 
 		/* NOT FOR BROWSER END */
@@ -644,7 +649,7 @@ export class Token extends AstElement {
 		if (!Shadow.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
 			if (protectedIndices.includes(i)) {
-				this.constructorError(`的第 ${i} 个子节点不可移除`);
+				this.constructorError(`cannot remove the ${i}th child node`);
 			}
 			const acceptable = this.getAcceptable();
 			if (acceptable) {
@@ -653,7 +658,7 @@ export class Token extends AstElement {
 					),
 					nodesAfter = this.childNodes.slice(i + 1);
 				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
-					this.constructorError(`移除第 ${i} 个子节点会破坏规定的顺序`);
+					this.constructorError(`violates the order of acceptable nodes by removing the ${i}th child node`);
 				}
 			}
 		}
@@ -671,7 +676,7 @@ export class Token extends AstElement {
 	safeReplaceWith(token: this): void {
 		const {parentNode} = this;
 		if (!parentNode) {
-			throw new Error('不存在父节点！');
+			throw new Error('The node does not have a parent!');
 		} else if (token.constructor !== this.constructor) {
 			this.typeError('safeReplaceWith', this.constructor.name);
 		}
@@ -679,7 +684,7 @@ export class Token extends AstElement {
 			assert.deepEqual(token.getAcceptable(), this.getAcceptable());
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
-				this.constructorError('带有不同的 #acceptable 属性');
+				this.constructorError('has a different #acceptable property');
 			}
 			throw e;
 		}
@@ -798,7 +803,7 @@ export class Token extends AstElement {
 	/** 深拷贝节点 */
 	cloneNode(): this {
 		if (this.constructor !== Token) {
-			this.constructorError('未定义复制方法');
+			this.constructorError('does not specify a clone method');
 		}
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

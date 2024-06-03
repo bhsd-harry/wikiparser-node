@@ -57,7 +57,7 @@ export abstract class ParameterToken extends Token {
 
 	set anon(value) {
 		if (value) {
-			throw new Error('无法将命名参数转换为匿名参数！');
+			throw new Error('Cannot convert named parameter to anonymous parameter!');
 		}
 		this.parentNode?.anonToNamed();
 	}
@@ -212,7 +212,7 @@ export abstract class ParameterToken extends Token {
 	 * @param token 待替换的节点
 	 */
 	override safeReplaceWith(token: this): void {
-		Parser.warn(`${this.constructor.name}.safeReplaceWith 方法退化到 replaceWith。`);
+		Parser.warn(`${this.constructor.name}.safeReplaceWith regress to AstNode.replaceWith.`);
 		this.replaceWith(token);
 	}
 
@@ -242,19 +242,19 @@ export abstract class ParameterToken extends Token {
 		const {parentNode, anon} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {
-			throw new Error('rename 方法仅用于模板参数！');
+			throw new Error('rename method is only for template parameters!');
 		} else if (anon) {
 			parentNode?.anonToNamed();
 		}
 		const root = Parser.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
 			name = getName(root);
 		if (this.name === name) {
-			Parser.warn('未改变实际参数名', name);
+			Parser.warn('Not changing the actual parameter name', name);
 		} else if (parentNode?.hasArg(name)) {
 			if (force) {
-				Parser.warn('参数更名造成重复参数', name);
+				Parser.warn('Parameter renaming causes duplicated parameters', name);
 			} else {
-				throw new RangeError(`参数更名造成重复参数：${name}`);
+				throw new RangeError(`Parameter renaming causes duplicated parameters: ${name}`);
 			}
 		}
 		this.firstChild.replaceChildren(...root.childNodes);

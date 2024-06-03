@@ -186,9 +186,9 @@ export abstract class ImagemapToken extends Token {
 	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
 		const {image} = this;
 		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
-			throw new Error('当前缺少一张合法图片！');
+			throw new Error('Missing a valid image!');
 		} else if (image && typeof token !== 'string' && token.type === 'imagemap-image') {
-			throw new RangeError('已有一张合法图片！');
+			throw new RangeError('Already have a valid image!');
 		}
 		return super.insertAt(token as T, i);
 	}
@@ -200,7 +200,7 @@ export abstract class ImagemapToken extends Token {
 	 */
 	override removeAt(i: number): AstNodes {
 		if (this.childNodes[i]?.type === 'imagemap-image') {
-			throw new Error('禁止移除<imagemap>内的图片！');
+			throw new Error('Do not remove the image in <imagemap>!');
 		}
 		return super.removeAt(i);
 	}

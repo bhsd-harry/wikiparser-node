@@ -56,7 +56,7 @@ function occupied(layout: Layout, i: number, oneRow?: boolean, cells?: readonly 
 			({row, column}, j) => row === i && (!oneRow || cells![column]?.rowspan === 1) ? j : undefined,
 		).filter((j): j is number => j !== undefined);
 	}
-	throw new RangeError(`表格没有第 ${i} 行！`);
+	throw new RangeError(`The table layout does not contain row ${i}!`);
 }
 
 /**
@@ -188,7 +188,7 @@ TableToken.prototype.insertTableCell =
 			const {x, y} = coords;
 			rawCoords = this.toRawCoords(coords);
 			if (!rawCoords?.start) {
-				throw new RangeError(`指定的坐标不是单元格起始点：(${x}, ${y})`);
+				throw new RangeError(`The specified coordinates are not the starting point of a cell: (${x}, ${y})`);
 			}
 		} else {
 			rawCoords = coords;
@@ -261,7 +261,7 @@ TableToken.prototype.insertTableCol =
 			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);
 		if (x > minCol) {
-			throw new RangeError(`表格第 ${rowLength.indexOf(minCol)} 行仅有 ${minCol} 列！`);
+			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} columns!`);
 		}
 		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let i = 0; i < layout.length; i++) {
@@ -342,7 +342,7 @@ TableToken.prototype.mergeCells =
 			[...layout[ymin - 1] ?? [], ...layout[ymax] ?? []].some(coords => set.has(coords))
 			|| layout.some(rowLayout => set.has(rowLayout[xmin - 1]!) || set.has(rowLayout[xmax]!))
 		) {
-			throw new RangeError('待合并区域与外侧区域有重叠！');
+			throw new RangeError('The area to be merged overlaps with the outer area!');
 		}
 		const corner = layout[ymin]![xmin]!,
 			rows = this.getAllRows(),
@@ -389,7 +389,10 @@ TableToken.prototype.split =
 					try {
 						this.insertTableCell('', {x: i, y: j}, subtype, attr);
 					} catch (e) {
-						if (e instanceof RangeError && e.message.startsWith('指定的坐标不是单元格起始点：')) {
+						if (
+							e instanceof RangeError
+							&& e.message.startsWith('The specified coordinates are not the starting point of a cell: ')
+						) {
 							break;
 						}
 						throw e;
@@ -460,7 +463,9 @@ TableToken.prototype.moveTableRowBefore =
 			assert.deepEqual(occupied(layout, y), occupied(layout, before));
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
-				throw new RangeError(`第 ${y} 行与第 ${before} 行的构造不同，无法移动！`);
+				throw new RangeError(
+					`The structure of row ${y} is different from that of row ${before}, so it cannot be moved!`,
+				);
 			}
 			throw e;
 		}
@@ -490,7 +495,9 @@ TableToken.prototype.moveTableRowAfter =
 			assert.deepEqual(occupied(layout, y), occupied(layout, after, true, cells));
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
-				throw new RangeError(`第 ${y} 行与第 ${after} 行的构造不同，无法移动！`);
+				throw new RangeError(
+					`The structure of row ${y} is different from that of row ${after}, so it cannot be moved!`,
+				);
 			}
 			throw e;
 		}
@@ -520,7 +527,9 @@ TableToken.prototype.moveCol =
 	function(x, reference, after): void {
 		const layout = this.getLayout();
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
-			throw new RangeError(`第 ${x} 列与第 ${reference} 列的构造不同，无法移动！`);
+			throw new RangeError(
+				`The structure of column ${x} is different from that of column ${reference}, so it cannot be moved!`,
+			);
 		}
 		const setX = new WeakSet<TableCoords>(),
 			setRef = new WeakSet<TableCoords>(),

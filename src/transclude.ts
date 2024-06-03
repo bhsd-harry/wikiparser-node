@@ -159,11 +159,11 @@ export abstract class TranscludeToken extends Token {
 
 				/* NOT FOR BROWSER */
 
-				Parser.debug(`非法的模板名称：${noWrap(name)}`);
+				Parser.debug(`Invalid template name: ${noWrap(name)}`);
 
 				/* NOT FOR BROWSER END */
 
-				throw new SyntaxError('非法的模板名称');
+				throw new SyntaxError('Invalid template name');
 			}
 			const token = new AtomToken(title, 'template-name', config, accum, {
 				'Stage-2': ':', '!HeadingToken': '',
@@ -461,7 +461,7 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
-		throw new Error('getDuplicatedArgs 方法仅供模板使用！');
+		throw new Error('getDuplicatedArgs method is only for template!');
 	}
 
 	/**
@@ -471,7 +471,7 @@ export abstract class TranscludeToken extends Token {
 	getPossibleValues(): Token[] {
 		const {type, name, childNodes, constructor: {name: cName}} = this;
 		if (type === 'template') {
-			throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+			throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
 		}
 		let start: number;
 		switch (name) {
@@ -485,7 +485,7 @@ export abstract class TranscludeToken extends Token {
 				start = 3;
 				break;
 			default:
-				throw new Error(`${cName}.getPossibleValues 方法仅供特定魔术字使用！`);
+				throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
 		}
 		const queue = (childNodes.slice(start, start + 2) as ParameterToken[]).map(({childNodes: [, value]}) => value);
 		for (let i = 0; i < queue.length;) {
@@ -655,7 +655,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	anonToNamed(): void {
 		if (!this.isTemplate()) {
-			throw new Error('anonToNamed 方法仅供模板使用！');
+			throw new Error('anonToNamed method is only for template!');
 		}
 		for (const token of this.getAnonArgs()) {
 			token.firstChild.replaceChildren(token.name);
@@ -701,7 +701,7 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return this.getAllArgs().length - this.getKeys().length;
 		}
-		throw new Error('hasDuplicatedArgs 方法仅供模板使用！');
+		throw new Error('hasDuplicatedArgs method is only for template!');
 	}
 
 	/**

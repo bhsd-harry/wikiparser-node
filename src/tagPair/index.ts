@@ -67,7 +67,7 @@ export abstract class TagPairToken extends Token {
 		/* NOT FOR BROWSER */
 
 		if (!closed && nextSibling) {
-			Parser.error(`自动闭合 <${name}>`, lastChild);
+			Parser.error(`Auto-closing <${name}>`, lastChild);
 			this.closed = true;
 		}
 

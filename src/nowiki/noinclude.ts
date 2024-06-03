@@ -15,7 +15,7 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 	 */
 	override setText(str: string): string {
 		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s[^>]*)?\/?>$/iu.test(this.innerText)) {
-			this.constructorError('不可更改文字内容');
+			this.constructorError('cannot change the text content');
 		}
 		return super.setText(str);
 	}

@@ -278,7 +278,7 @@ export abstract class AttributesToken extends Token {
 			}
 		}
 		if (!Shadow.running && dirty) {
-			Parser.warn(`${this.constructor.name}.sanitize 方法将清理无效属性！`);
+			Parser.warn(`${this.constructor.name}.sanitize will remove invalid attributes!`);
 		}
 	}
 
@@ -303,11 +303,11 @@ export abstract class AttributesToken extends Token {
 	override insertAt<T extends AttributeToken | AtomToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
 			if (token.toString().trim()) {
-				this.constructorError('只能插入 AttributeToken');
+				this.constructorError('can only insert AttributeToken');
 			}
 			return super.insertAt(token, i);
 		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {
-			throw new RangeError(`待插入的AttributeToken只可用于${token.tag}标签！`);
+			throw new RangeError(`The AttributeToken to be inserted can only be used for ${token.tag} tag!`);
 		} else if (i === this.length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
@@ -349,7 +349,7 @@ export abstract class AttributesToken extends Token {
 			}
 			return;
 		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
-			throw new RangeError('扩展标签属性不能包含 ">"！');
+			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		}
 		const key = keyOrProp.toLowerCase().trim(),
 			attr = this.getAttrToken(key);
@@ -410,7 +410,7 @@ export abstract class AttributesToken extends Token {
 		key = key.toLowerCase().trim();
 		const attr = this.getAttrToken(key);
 		if (attr && attr.getValue() !== true) {
-			throw new RangeError(`${key} 属性的值不为 Boolean！`);
+			throw new RangeError(`${key} attribute is not Boolean!`);
 		} else if (attr) {
 			attr.setValue(force === true);
 		} else if (force !== false) {

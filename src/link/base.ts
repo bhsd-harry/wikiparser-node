@@ -104,13 +104,15 @@ export abstract class LinkBaseToken extends Token {
 					{title, interwiki, ns, valid} = titleObj;
 				if (!valid) {
 					undo(e, data);
-					throw new Error(`非法的内链目标：${name}`);
+					throw new Error(`Invalid link target: ${name}`);
 				} else if (
 					this.type === 'category' && (interwiki || ns !== 14)
 					|| this.type === 'file' && (interwiki || ns !== 6)
 				) {
 					undo(e, data);
-					throw new Error(`${this.type === 'file' ? '文件' : '分类'}链接不可更改命名空间：${name}`);
+					throw new Error(
+						`${this.type === 'file' ? 'File' : 'Category'} link cannot change namespace: ${name}`,
+					);
 				} else if (
 					this.type === 'link'
 					&& !interwiki

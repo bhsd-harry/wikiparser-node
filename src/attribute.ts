@@ -492,9 +492,9 @@ export abstract class AttributeToken extends Token {
 			this.#equal = '';
 			return;
 		} else if (this.type === 'ext-attr' && value.includes('>')) {
-			throw new RangeError('扩展标签属性不能包含 ">"！');
+			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		} else if (value.includes('"') && value.includes(`'`)) {
-			throw new RangeError('属性值不能同时包含单引号和双引号！');
+			throw new RangeError('Attribute values cannot contain both single and double quotes at the same time!');
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[this.type] + 1, config);
@@ -515,7 +515,7 @@ export abstract class AttributeToken extends Token {
 	 */
 	rename(key: string): void {
 		if (this.name === 'title' || this.name === 'alt' && this.tag === 'img') {
-			throw new Error(`${this.name} 属性不能更名！`);
+			throw new Error(`${this.name} attribute cannot be renamed!`);
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(key, this.getAttribute('include'), stages[this.type] + 1, config);

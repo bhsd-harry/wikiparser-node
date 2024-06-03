@@ -50,9 +50,12 @@ export abstract class ConverterRuleToken extends Token {
 		if (length === 3 && !flag) {
 			this.makeBidirectional();
 		} else if (length === 2 && flag) {
-			throw new Error('想更改为单向转换请使用 makeUnidirectional 方法！');
+			throw new Error('If you want to change to unidirectional, please use makeUnidirectional method!');
 		} else if (length === 1 && flag) {
-			throw new Error('想更改为单向转换请先使用 setVariant 方法指定语言变体！');
+			throw new Error(
+				'If you want to change to unidirectional, '
+				+ 'please use setVariant method to specify the language variant first!',
+			);
 		}
 	}
 
@@ -67,9 +70,9 @@ export abstract class ConverterRuleToken extends Token {
 		if (length === 3 && flag) {
 			this.makeBidirectional();
 		} else if (length === 2 && !flag) {
-			throw new Error('想更改为单向转换请使用 makeUnidirectional 方法！');
+			throw new Error('If you want to change to unidirectional, please use makeUnidirectional method!');
 		} else if (length === 1 && flag) {
-			throw new Error('想更改为双向转换请使用 setVariant 方法！');
+			throw new Error('If you want to change to bidirectional, please use setVariant method!');
 		}
 	}
 
@@ -164,7 +167,7 @@ export abstract class ConverterRuleToken extends Token {
 				const {variant} = this;
 				if (!this.getAttribute('config').variants.includes(variant)) {
 					undo(e, data);
-					throw new Error(`无效的语言变体：${variant}`);
+					throw new Error(`Invalid language variant: ${variant}`);
 				}
 			}
 		};
@@ -177,14 +180,14 @@ export abstract class ConverterRuleToken extends Token {
 	 */
 	override removeAt(i: number): AtomToken {
 		if (this.length === 1) {
-			this.constructorError('需至少保留 1 个子节点');
+			this.constructorError('needs at least 1 child node');
 		}
 		return super.removeAt(i) as AtomToken;
 	}
 
 	/** @override */
 	override insertAt(): never {
-		this.constructorError('语法复杂，请勿尝试手动插入子节点');
+		this.constructorError('has complex syntax. Do not try to insert child nodes manually');
 	}
 
 	/** 修改为不转换 */
@@ -225,7 +228,7 @@ export abstract class ConverterRuleToken extends Token {
 	setFrom(from: string): void {
 		const {variant, unidirectional} = this;
 		if (!variant) {
-			throw new Error('请先指定语言变体！');
+			throw new Error('Please specify the language variant first!');
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config);

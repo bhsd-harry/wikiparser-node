@@ -303,7 +303,7 @@ export abstract class TableToken extends TrBaseToken {
 
 			/* NOT FOR BROWSER */
 		} else if (n < 0 || n > nRows || n === nRows && !insert) {
-			throw new RangeError(`不存在第 ${n} 行！`);
+			throw new RangeError(`The table does not have the ${n}th row!`);
 
 			/* NOT FOR BROWSER END */
 		} else if (isRow) {
@@ -345,10 +345,10 @@ export abstract class TableToken extends TrBaseToken {
 		i += i < 0 ? this.length : 0;
 		const previous = this.childNodes[i - 1];
 		if (typeof token !== 'string' && token.type === 'td' && previous?.type === 'tr') {
-			Parser.warn('改为将单元格插入当前行。');
+			Parser.warn('The table cell is inserted into the current row instead.');
 			return previous.insertAt(token);
 		} else if (i > 0 && token instanceof SyntaxToken && token.pattern !== closingPattern) {
-			throw new SyntaxError(`表格的闭合部分不符合语法：${noWrap(token.toString())}`);
+			throw new SyntaxError(`The closing part of the table is invalid: ${noWrap(token.toString())}`);
 		}
 		return super.insertAt(token, i);
 	}
