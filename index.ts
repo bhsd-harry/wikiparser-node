@@ -45,12 +45,7 @@ declare interface Parser extends ParserBase {
 	 * @param defaultNs 命名空间
 	 * @param include 是否嵌入
 	 */
-	normalizeTitle(
-		title: string,
-		defaultNs?: number,
-		include?: boolean,
-		config?: Config,
-	): Title;
+	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: Config): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 
@@ -343,5 +338,6 @@ Object.defineProperties(Parser, def);
 
 // @ts-expect-error mixed export styles
 export = Parser;
+export default Parser;
 export type {Config, LintError};
 export type * from './internal';

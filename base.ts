@@ -184,7 +184,7 @@ export interface Parser {
 	| string
 	| undefined;
 
-	/** @private */
+	/** 获取当前的解析设置 */
 	getConfig(): Config;
 
 	/**

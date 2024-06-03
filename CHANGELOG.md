@@ -6,6 +6,11 @@
 
 - [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#italic) for external links which have a lower precedence than apostrophes
 
+**Changed**
+
+- `Token.prototype.normalizeTitle` is now a private method
+- [`Parser.getConfig`](ttps://github.com/bhsd-harry/wikiparser-node/wiki/Parser#getconfig) is now available for public use
+
 ## v1.9.0
 
 *2024-05-26*
