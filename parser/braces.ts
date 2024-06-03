@@ -115,7 +115,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						ch = 'c';
 					}
 				} catch (e) {
-					if (e instanceof SyntaxError && e.message === '非法的模板名称') {
+					if (e instanceof SyntaxError && e.message === 'Invalid template name') {
 						skip = true;
 					} else {
 						throw e;
