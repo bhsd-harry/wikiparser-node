@@ -195,10 +195,9 @@ export abstract class AstNode implements AstNodeBase {
 			return {bold: false, italic: false};
 		}
 		const {childNodes, type} = parentNode,
-			index = childNodes.indexOf(this as unknown as AstNodes),
 			isQuote = isToken<QuoteToken>('quote');
 		let {bold = false, italic = false} = type === 'ext-link-text' && parentNode.parentNode || {};
-		for (let i = index - 1; i >= 0; i--) {
+		for (let i = childNodes.indexOf(this as unknown as AstNodes) - 1; i >= 0; i--) {
 			const child = childNodes[i]!;
 			if (isQuote(child)) {
 				bold = child.bold !== bold;

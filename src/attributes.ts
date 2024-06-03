@@ -24,7 +24,7 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /* NOT FOR BROWSER END */
 
-const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s|\0\d+c\x7F)*(?:=|\0\d+~\x7F)(?:\s|\0\d+c\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
+const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+c\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+c\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
