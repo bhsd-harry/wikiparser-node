@@ -54,7 +54,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
         var _a;
         const entries = Object.entries(ast).filter(([key]) => !keys.has(key)), dl = document.createElement('dl'), dt = document.createElement('dt'), childNodes = document.createElement('dd'), dds = entries.map(([key, value]) => {
             const dd = document.createElement('dd'), code = document.createElement('code');
-            code.textContent = typeof value === 'string' ? `"${value.replace(/[\\"]/gu, '\\$&')}"` : String(value);
+            code.textContent = typeof value === 'string'
+                ? `"${value.replace(/[\\"]/gu, String.raw `\$&`)}"`
+                : String(value);
             code.className = typeof value;
             dd.textContent = `${key}: `;
             dd.append(code);
@@ -190,9 +192,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
     for (const button of buttons.slice(0, -1)) {
         button.addEventListener('click', switchTab);
     }
-    const hashchange = () => {
+    const hashchange = (e) => {
         var _a;
-        (_a = buttons.find(({ value }) => value === location.hash.slice(1))) === null || _a === void 0 ? void 0 : _a.click();
+        (_a = buttons.find(({ value }) => value === (location.hash.slice(1) || e === undefined && 'editor'))) === null || _a === void 0 ? void 0 : _a.click();
     };
     hashchange();
     window.addEventListener('hashchange', hashchange);

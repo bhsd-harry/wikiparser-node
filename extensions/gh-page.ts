@@ -287,9 +287,12 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		button.addEventListener('click', switchTab);
 	}
 
-	/** hashchange事件处理 */
-	const hashchange = (): void => {
-		buttons.find(({value}) => value === location.hash.slice(1))?.click();
+	/**
+	 * hashchange事件处理
+	 * @param e 事件
+	 */
+	const hashchange = (e?: HashChangeEvent): void => {
+		buttons.find(({value}) => value === (location.hash.slice(1) || e === undefined && 'editor'))?.click();
 	};
 	hashchange();
 	window.addEventListener('hashchange', hashchange);

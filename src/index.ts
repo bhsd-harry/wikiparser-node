@@ -377,7 +377,6 @@ export class Token extends AstElement {
 		decode?: boolean,
 		selfLink?: boolean,
 	): Title {
-		// @ts-expect-error private arguments
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 

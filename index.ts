@@ -23,6 +23,16 @@ declare interface Parser extends ParserBase {
 	 * @param include 是否嵌入
 	 */
 	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: Config): Title;
+	/** @private */
+	normalizeTitle(
+		title: string,
+		defaultNs?: number,
+		include?: boolean,
+		config?: Config,
+		halfParsed?: boolean,
+		decode?: boolean,
+		selfLink?: boolean, // eslint-disable-line @typescript-eslint/unified-signatures
+	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 }
@@ -53,8 +63,8 @@ const Parser: Parser = {
 		include?: boolean,
 		config = Parser.getConfig(),
 		halfParsed?: boolean,
-		decode = false,
-		selfLink = false,
+		decode: boolean = false,
+		selfLink: boolean = false,
 	) {
 		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		if (halfParsed) {
