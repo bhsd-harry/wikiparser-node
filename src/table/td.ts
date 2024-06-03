@@ -48,6 +48,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 export abstract class TdToken extends TableBaseToken {
 	override readonly type = 'td';
 	#innerSyntax = '';
+	#syntax: TdSyntax | undefined;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
@@ -136,6 +137,16 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
+		if (Parser.viewOnly) {
+			this.#syntax ??= this.#computeSyntax();
+			return this.#syntax;
+		}
+		this.#syntax = undefined;
+		return this.#computeSyntax();
+	}
+
+	/** 表格语法信息 */
+	#computeSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
 
 			/* NOT FOR BROWSER */
@@ -172,7 +183,7 @@ export abstract class TdToken extends TableBaseToken {
 		/* NOT FOR BROWSER END */
 
 		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-		const result = (previousSibling as TdToken).#getSyntax();
+		const result = {...(previousSibling as TdToken).#getSyntax()};
 
 		/* NOT FOR BROWSER */
 
