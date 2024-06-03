@@ -26,7 +26,7 @@ export abstract class AstElement extends AstNode {
 		return text(this.childNodes, separator);
 	}
 
-	/** 合并相邻的文本子节点 */
+	/** @private */
 	normalize(): void {
 		const childNodes = [...this.childNodes];
 
