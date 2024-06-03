@@ -17,6 +17,7 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 			config.redirection.join('|')
 		})\s*(?::\s*)?)\[\[([^\n|\]]+)(\|.*?)?\]\](\s*)`, 'iu'),
 		mt = re.exec(text);
+	// @ts-expect-error private arguments
 	if (mt && Parser.normalizeTitle(mt[3]!, 0, false, config, true, true).valid) {
 		text = `\0${accum.length}c\x7F${text.slice(mt[0].length)}`;
 		// @ts-expect-error abstract class

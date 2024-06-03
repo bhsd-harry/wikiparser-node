@@ -44,18 +44,12 @@ declare interface Parser extends ParserBase {
 	 * @param title 标题（含或不含命名空间前缀）
 	 * @param defaultNs 命名空间
 	 * @param include 是否嵌入
-	 * @param halfParsed 是否是半解析状态
-	 * @param decode 是否需要解码
-	 * @param selfLink 是否允许selfLink
 	 */
 	normalizeTitle(
 		title: string,
 		defaultNs?: number,
 		include?: boolean,
 		config?: Config,
-		halfParsed?: boolean,
-		decode?: boolean,
-		selfLink?: boolean,
 	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;

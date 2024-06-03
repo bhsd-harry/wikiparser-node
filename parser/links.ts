@@ -54,6 +54,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 			s += `[[${x}`;
 			continue;
 		}
+		// @ts-expect-error private arguments
 		const title = Parser.normalizeTitle(link, 0, false, config, true, true, true),
 			{ns, valid, interwiki} = title;
 		if (!valid) {

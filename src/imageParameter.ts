@@ -60,6 +60,7 @@ function validate(
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
+			// @ts-expect-error private arguments
 			const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true, true);
 			return title.valid && title;
 		}

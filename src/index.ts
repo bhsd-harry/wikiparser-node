@@ -508,14 +508,7 @@ export class Token extends AstElement {
 		return token;
 	}
 
-	/**
-	 * 规范化页面标题
-	 * @param title 标题（含或不含命名空间前缀）
-	 * @param defaultNs 命名空间
-	 * @param halfParsed 仅供内部使用
-	 * @param decode 是否需要解码
-	 * @param selfLink 是否允许selfLink
-	 */
+	/** @private */
 	normalizeTitle(
 		title: string,
 		defaultNs = 0,
@@ -523,6 +516,7 @@ export class Token extends AstElement {
 		decode?: boolean,
 		selfLink?: boolean,
 	): Title {
+		// @ts-expect-error private arguments
 		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
 	}
 
