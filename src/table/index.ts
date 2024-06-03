@@ -97,7 +97,11 @@ export abstract class TableToken extends TrBaseToken {
 		return errors;
 	}
 
-	/** @private */
+	/**
+	 * 闭合表格语法
+	 * @param syntax 表格结尾语法
+	 * @param halfParsed
+	 */
 	close(syntax = '\n|}', halfParsed?: boolean): void {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
