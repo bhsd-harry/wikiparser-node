@@ -29,6 +29,7 @@ declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? numb
 export abstract class TdToken extends TableBaseToken {
 	override readonly type = 'td';
 	#innerSyntax = '';
+	#syntax: TdSyntax | undefined;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
@@ -83,6 +84,12 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
+		this.#syntax ??= this.#computeSyntax();
+		return this.#syntax;
+	}
+
+	/** 表格语法信息 */
+	#computeSyntax(): TdSyntax {
 		const syntax = this.firstChild.text(),
 			char = syntax.slice(-1);
 		let subtype: TdSubtypes = 'td';
@@ -97,7 +104,7 @@ export abstract class TdToken extends TableBaseToken {
 			};
 		}
 		const {previousSibling} = this;
-		const result = (previousSibling as TdToken).#getSyntax();
+		const result = {...(previousSibling as TdToken).#getSyntax()};
 		return result;
 	}
 
