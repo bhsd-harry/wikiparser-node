@@ -122,8 +122,8 @@ export abstract class HtmlToken extends Token {
 		} catch (e) {
 			if (e instanceof SyntaxError) {
 				const {message} = e;
-				const [msg] = message.split(':'),
-					error = generateForSelf(this, rect, 'unmatched-tag', msg!);
+				const msg = message.split(':')[0]!.toLowerCase(),
+					error = generateForSelf(this, rect, 'unmatched-tag', msg);
 				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
 					if (formattingTags.has(this.name)) {
 						const childNodes = this.parentNode?.childNodes,
@@ -179,11 +179,11 @@ export abstract class HtmlToken extends Token {
 			{name: tagName, parentNode, closing} = this,
 			string = noWrap(this.toString());
 		if (closing && (this.#selfClosing || voidTags.includes(tagName))) {
-			throw new SyntaxError(`tag that is both closing and self-closing: ${string}`);
+			throw new SyntaxError(`Tag that is both closing and self-closing: ${string}`);
 		} else if (voidTags.includes(tagName) || this.#selfClosing && flexibleTags.includes(tagName)) { // 自封闭标签
 			return this;
 		} else if (this.#selfClosing && normalTags.includes(tagName)) {
-			throw new SyntaxError(`invalid self-closing tag: ${string}`);
+			throw new SyntaxError(`Invalid self-closing tag: ${string}`);
 		} else if (!parentNode) {
 			return undefined;
 		}
@@ -202,7 +202,7 @@ export abstract class HtmlToken extends Token {
 				return token;
 			}
 		}
-		throw new SyntaxError(`${closing ? 'unmatched closing' : 'unclosed'} tag: ${string}`);
+		throw new SyntaxError(`${closing ? 'Unmatched closing' : 'Unclosed'} tag: ${string}`);
 	}
 
 	/** @private */
