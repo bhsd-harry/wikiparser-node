@@ -11,7 +11,7 @@ import type {LintError} from '../base';
 import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
-const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s|\0\d+c\x7F)*(?:=|\0\d+~\x7F)(?:\s|\0\d+c\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
+const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+c\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+c\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;

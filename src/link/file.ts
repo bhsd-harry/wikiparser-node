@@ -152,17 +152,17 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** 获取图片框架属性参数节点 */
 	getFrameArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(frame, '框架');
+		return this.#getTypedArgs(frame, 'frame');
 	}
 
 	/** 获取图片水平对齐参数节点 */
 	getHorizAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(horizAlign, '水平对齐');
+		return this.#getTypedArgs(horizAlign, 'horizontal-align');
 	}
 
 	/** 获取图片垂直对齐参数节点 */
 	getVertAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(vertAlign, '垂直对齐');
+		return this.#getTypedArgs(vertAlign, 'vertical-align');
 	}
 
 	/**
