@@ -178,7 +178,7 @@ export interface Parser {
 	i18n: Record<string, string>
 	| undefined;
 
-	/** @private */
+	/** 获取当前的解析设置 */
 	getConfig(): Config;
 
 	/**
