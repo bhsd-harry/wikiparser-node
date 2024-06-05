@@ -333,7 +333,7 @@ export abstract class AstElement extends AstNode {
 
 		/* NOT FOR BROWSER */
 
-		throw new RangeError(`The ${i}th child node is ${oldText.constructor.name}!`);
+		throw new RangeError(`The child node at position ${i} is ${oldText.constructor.name}!`);
 	}
 
 	/** @private */
@@ -570,7 +570,7 @@ export abstract class AstElement extends AstNode {
 					try {
 						return new RegExp(mt[2], mt[3]).test(String(this.getAttribute(mt[1].trim())));
 					} catch {
-						throw new SyntaxError(`Wrong regex: /${mt[2]}/${mt[3]}`);
+						throw new SyntaxError(`Invalid regular expression: /${mt[2]}/${mt[3]}`);
 					}
 				}
 				default:

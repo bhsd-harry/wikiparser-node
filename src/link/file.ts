@@ -339,7 +339,7 @@ export abstract class FileToken extends LinkBaseToken {
 	 * @throws `Error` 不适用于图片
 	 */
 	override setLinkText(): never {
-		throw new Error('setLinkText method is not applicable to images!');
+		throw new Error('LinkBaseToken.setLinkText method is not applicable to images!');
 	}
 }
 

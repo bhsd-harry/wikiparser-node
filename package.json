@@ -48,7 +48,7 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@codemirror/lint": "^6.5.0",
+		"@codemirror/lint": "^6.8.0",
 		"@stylistic/eslint-plugin": "^2.1.0",
 		"@types/node": "^20.11.6",
 		"@typescript-eslint/eslint-plugin": "^7.10.0",

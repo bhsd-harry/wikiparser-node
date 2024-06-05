@@ -248,7 +248,7 @@ export abstract class MagicLinkToken extends Token {
 		let {link} = this;
 		if (type === 'magic-link') {
 			if (protocol === 'ISBN') {
-				throw new Error(`This method does not support ISBN links: ${link}`);
+				throw new Error(`MagicLinkToken.getUrl method does not support ISBN links: ${link}`);
 			}
 			link = protocol === 'RFC'
 				? `https://tools.ietf.org/html/rfc${link.slice(4)}`

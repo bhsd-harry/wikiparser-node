@@ -501,7 +501,7 @@ export class Token extends AstElement {
 		if (token.constructor === Token && this.getAttribute('plain')) {
 			Parser.warn(
 				'You are inserting a plain token as a child of another plain token. '
-				+ 'Consider calling the flatten method afterwards.',
+				+ 'Consider calling Token.flatten method afterwards.',
 			);
 		}
 
@@ -648,7 +648,7 @@ export class Token extends AstElement {
 		if (!Shadow.running) {
 			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
 			if (protectedIndices.includes(i)) {
-				this.constructorError(`cannot remove the ${i}th child node`);
+				this.constructorError(`cannot remove the child node at position ${i}`);
 			}
 			const acceptable = this.getAcceptable();
 			if (acceptable) {
@@ -657,7 +657,9 @@ export class Token extends AstElement {
 					),
 					nodesAfter = this.childNodes.slice(i + 1);
 				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
-					this.constructorError(`violates the order of acceptable nodes by removing the ${i}th child node`);
+					this.constructorError(
+						`violates the order of acceptable nodes by removing the child node at position ${i}`,
+					);
 				}
 			}
 		}
@@ -675,7 +677,7 @@ export class Token extends AstElement {
 	safeReplaceWith(token: this): void {
 		const {parentNode} = this;
 		if (!parentNode) {
-			throw new Error('The node does not have a parent!');
+			throw new Error('The node does not have a parent node!');
 		} else if (token.constructor !== this.constructor) {
 			this.typeError('safeReplaceWith', this.constructor.name);
 		}
@@ -802,7 +804,7 @@ export class Token extends AstElement {
 	/** 深拷贝节点 */
 	cloneNode(): this {
 		if (this.constructor !== Token) {
-			this.constructorError('does not specify a clone method');
+			this.constructorError('does not specify a cloneNode method');
 		}
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

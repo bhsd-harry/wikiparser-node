@@ -278,7 +278,7 @@ export abstract class AttributesToken extends Token {
 			}
 		}
 		if (!Shadow.running && dirty) {
-			Parser.warn(`${this.constructor.name}.sanitize will remove invalid attributes!`);
+			Parser.warn('AttributesToken.sanitize will remove invalid attributes!');
 		}
 	}
 
@@ -307,7 +307,7 @@ export abstract class AttributesToken extends Token {
 			}
 			return super.insertAt(token, i);
 		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {
-			throw new RangeError(`The AttributeToken to be inserted can only be used for ${token.tag} tag!`);
+			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
 		} else if (i === this.length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {

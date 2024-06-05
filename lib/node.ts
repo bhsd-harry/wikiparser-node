@@ -380,7 +380,7 @@ export abstract class AstNode implements AstNodeBase {
 	#insertAdjacent(nodes: readonly (AstNodes | string)[], offset: number): void {
 		const {parentNode} = this;
 		if (!parentNode) {
-			throw new Error('The node has no parent!');
+			throw new Error('There is no parent node!');
 		}
 		const i = parentNode.childNodes.indexOf(this as AstNode as AstNodes) + offset;
 		for (let j = 0; j < nodes.length; j++) {
@@ -430,7 +430,7 @@ export abstract class AstNode implements AstNodeBase {
 	verifyChild(i: number, addition = 0): void {
 		const {childNodes: {length}} = this;
 		if (i < -length || i >= length + addition) {
-			throw new RangeError(`The ${i}th child does not exist!`);
+			throw new RangeError(`The child node at position ${i} does not exist!`);
 		}
 	}
 
@@ -531,7 +531,7 @@ export abstract class AstNode implements AstNodeBase {
 		} else if (other.contains(this)) {
 			return 1;
 		} else if (this.getRootNode() !== other.getRootNode()) {
-			throw new RangeError('Nodes are not in the same tree!');
+			throw new RangeError('Nodes to be compared are not in the same document!');
 		}
 		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],
 			bAncestors = [...other.getAncestors().reverse(), other],

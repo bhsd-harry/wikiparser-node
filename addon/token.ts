@@ -126,8 +126,10 @@ Token.prototype.findEnclosingHtml =
 		const {html} = this.getAttribute('config'),
 			normalTags = new Set(html[0]),
 			voidTags = new Set(html[2]);
-		if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
-			throw new RangeError(`Invalid or void tag name: ${tag}`);
+		if (html[2].includes(tag!)) {
+			throw new RangeError(`Void tag: ${tag}`);
+		} else if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
+			throw new RangeError(`Invalid tag name: ${tag}`);
 		}
 		const {parentNode} = this;
 		if (!parentNode) {

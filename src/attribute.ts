@@ -494,7 +494,7 @@ export abstract class AttributeToken extends Token {
 		} else if (this.type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		} else if (value.includes('"') && value.includes(`'`)) {
-			throw new RangeError('Attribute values cannot contain both single and double quotes at the same time!');
+			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
 		}
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[this.type] + 1, config);

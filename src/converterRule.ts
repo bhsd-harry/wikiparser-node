@@ -50,11 +50,13 @@ export abstract class ConverterRuleToken extends Token {
 		if (length === 3 && !flag) {
 			this.makeBidirectional();
 		} else if (length === 2 && flag) {
-			throw new Error('If you want to change to unidirectional, please use makeUnidirectional method!');
+			throw new Error(
+				'If you want to change to unidirectional, please use ConverterRuleToken.makeUnidirectional method!',
+			);
 		} else if (length === 1 && flag) {
 			throw new Error(
 				'If you want to change to unidirectional, '
-				+ 'please use setVariant method to specify the language variant first!',
+				+ 'please use ConverterRuleToken.setVariant method to specify the language variant first!',
 			);
 		}
 	}
@@ -70,9 +72,11 @@ export abstract class ConverterRuleToken extends Token {
 		if (length === 3 && flag) {
 			this.makeBidirectional();
 		} else if (length === 2 && !flag) {
-			throw new Error('If you want to change to unidirectional, please use makeUnidirectional method!');
+			throw new Error(
+				'If you want to change to unidirectional, please use ConverterRuleToken.makeUnidirectional method!',
+			);
 		} else if (length === 1 && flag) {
-			throw new Error('If you want to change to bidirectional, please use setVariant method!');
+			throw new Error('If you want to change to bidirectional, please use ConverterRuleToken.setVariant method!');
 		}
 	}
 

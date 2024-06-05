@@ -122,7 +122,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 					pieces.splice(i, 1);
 					i--;
 				} else {
-					throw new SyntaxError(`Non-existing pseudo selector!\n${desanitize(piece)}`);
+					throw new SyntaxError(`Undefined pseudo selector!\n${desanitize(piece)}`);
 				}
 			}
 		}
@@ -168,7 +168,7 @@ export const parseSelector = (selector: string): SelectorArray[][] => {
 			const i = sanitized.lastIndexOf(':', index),
 				pseudo = sanitized.slice(i + 1, index);
 			if (i === -1 || !complexPseudos.has(pseudo)) {
-				throw new SyntaxError(`Non-existing pseudo selector!\n${desanitize(sanitized)}`);
+				throw new SyntaxError(`Undefined pseudo selector!\n${desanitize(sanitized)}`);
 			}
 			pushSimple(i);
 			step.push(pseudo); // 临时存放复杂伪选择器

@@ -461,7 +461,7 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return [...this.#args].filter(([, {size}]) => size > 1).map(([key, args]) => [key, [...args]]);
 		}
-		throw new Error('getDuplicatedArgs method is only for template!');
+		throw new Error('TranscludeToken.getDuplicatedArgs method is only for template!');
 	}
 
 	/**
@@ -469,9 +469,9 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 不是可接受的魔术字
 	 */
 	getPossibleValues(): Token[] {
-		const {type, name, childNodes, constructor: {name: cName}} = this;
+		const {type, name, childNodes} = this;
 		if (type === 'template') {
-			throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
+			throw new Error(`TranscludeToken.getPossibleValues method is only for specific magic words!`);
 		}
 		let start: number;
 		switch (name) {
@@ -485,7 +485,7 @@ export abstract class TranscludeToken extends Token {
 				start = 3;
 				break;
 			default:
-				throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
+				throw new Error(`TranscludeToken.getPossibleValues method is only for specific magic words!`);
 		}
 		const queue = (childNodes.slice(start, start + 2) as ParameterToken[]).map(({childNodes: [, value]}) => value);
 		for (let i = 0; i < queue.length;) {
@@ -655,7 +655,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	anonToNamed(): void {
 		if (!this.isTemplate()) {
-			throw new Error('anonToNamed method is only for template!');
+			throw new Error('TranscludeToken.anonToNamed method is only for template!');
 		}
 		for (const token of this.getAnonArgs()) {
 			token.firstChild.replaceChildren(token.name);
@@ -701,7 +701,7 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			return this.getAllArgs().length - this.getKeys().length;
 		}
-		throw new Error('hasDuplicatedArgs method is only for template!');
+		throw new Error('TranscludeToken.hasDuplicatedArgs method is only for template!');
 	}
 
 	/**

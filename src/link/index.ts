@@ -92,7 +92,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	setLangLink(lang: string, link: string): void {
 		link = link.trim();
 		if (link.startsWith('#')) {
-			throw new SyntaxError('Interlanguage links cannot be fragments only!');
+			throw new SyntaxError('An interlanguage link cannot be fragment only!');
 		}
 		super.setTarget(lang + (link.startsWith(':') ? '' : ':') + link);
 	}
@@ -122,7 +122,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 */
 	asSelfLink(fragment = this.fragment): void {
 		if (!fragment?.trim()) {
-			throw new RangeError('asSelfLink method must specify a non-empty fragment!');
+			throw new RangeError('LinkToken.asSelfLink method must specify a non-empty fragment!');
 		}
 		this.#setFragment(fragment, false);
 	}

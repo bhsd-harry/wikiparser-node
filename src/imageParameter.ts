@@ -339,7 +339,7 @@ export abstract class ImageParameterToken extends Token {
 			this.remove();
 			return;
 		} else if (name === 'invalid') {
-			throw new Error('The current node is an invalid image parameter!');
+			throw new Error('Invalid image parameter!');
 		}
 		const type = this.#isVoid() ? 'Boolean' : 'String';
 		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof

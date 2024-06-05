@@ -137,7 +137,7 @@ export class AstText extends AstNode {
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
-			throw new Error('Cannot lint an isolated text node!');
+			throw new Error('An isolated text node cannot be linted!');
 		}
 		const {type, name, parentNode: grandparent} = parentNode;
 		let isHtmlAttrVal = false;
@@ -382,7 +382,7 @@ export class AstText extends AstNode {
 		}
 		const {parentNode, data} = this;
 		if (!parentNode) {
-			throw new Error('The text node to be split has no parent!');
+			throw new Error('The text node to be split has no parent node!');
 		}
 		const newText = new AstText(data.slice(offset));
 		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);

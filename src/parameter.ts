@@ -242,14 +242,14 @@ export abstract class ParameterToken extends Token {
 		const {parentNode, anon} = this;
 		// 必须检测是否是TranscludeToken
 		if (parentNode?.isTemplate() === false) {
-			throw new Error('rename method is only for template parameters!');
+			throw new Error('ParameterToken.rename method is only for template parameters!');
 		} else if (anon) {
 			parentNode?.anonToNamed();
 		}
 		const root = Parser.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
 			name = getName(root);
 		if (this.name === name) {
-			Parser.warn('Not changing the actual parameter name', name);
+			Parser.warn('The actual parameter name is not changed', name);
 		} else if (parentNode?.hasArg(name)) {
 			if (force) {
 				Parser.warn('Parameter renaming causes duplicated parameters', name);

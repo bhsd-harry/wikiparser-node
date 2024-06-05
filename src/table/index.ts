@@ -302,7 +302,7 @@ export abstract class TableToken extends TrBaseToken {
 
 			/* NOT FOR BROWSER */
 		} else if (n < 0 || n > nRows || n === nRows && !insert) {
-			throw new RangeError(`The table does not have the ${n}th row!`);
+			throw new RangeError(`The table does not have row ${n}!`);
 
 			/* NOT FOR BROWSER END */
 		} else if (isRow) {

@@ -188,7 +188,7 @@ TableToken.prototype.insertTableCell =
 			const {x, y} = coords;
 			rawCoords = this.toRawCoords(coords);
 			if (!rawCoords?.start) {
-				throw new RangeError(`The specified coordinates are not the starting point of a cell: (${x}, ${y})`);
+				throw new RangeError(`The specified coordinates are not the starting point of any cell: (${x}, ${y})`);
 			}
 		} else {
 			rawCoords = coords;
@@ -261,7 +261,7 @@ TableToken.prototype.insertTableCol =
 			rowLength = layout.map(({length}) => length),
 			minCol = Math.min(...rowLength);
 		if (x > minCol) {
-			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} columns!`);
+			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} column(s)!`);
 		}
 		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		for (let i = 0; i < layout.length; i++) {
