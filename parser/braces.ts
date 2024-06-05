@@ -32,9 +32,10 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		new TranscludeToken(m.slice(2, -2), [], config, accum);
 		return `\0${accum.length - 2}${marks.get(p1)}\x7F`;
 	});
+	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let regex = new RegExp(source, 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
-		moreBraces = wikitext.includes('}}'),
+		moreBraces = lastBraces + wikitext.length !== -1,
 		lastIndex: number | undefined;
 	while (
 		mt
@@ -139,7 +140,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			}
 			stack.push(...'0' in top ? [top] : [], mt!);
 		}
-		moreBraces &&= wikitext.slice(lastIndex).includes('}}');
+		moreBraces &&= lastBraces + wikitext.length >= lastIndex;
 		let curTop = stack[stack.length - 1];
 		if (!moreBraces && curTop?.[0]?.startsWith('{')) {
 			stack.pop();
