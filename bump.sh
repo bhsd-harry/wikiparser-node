@@ -7,7 +7,7 @@ then
 	git add -A
 	git commit -m "chore: publish v$1-b to npm"
 else
-	npm run lint && npm run build:test && npm run test:parser && npm run test:real
+	npm run lint && npm run build:test && npm test && npm run test:parser && npm run test:real
 	if [[ $? -eq 0 ]]
 	then
 		gsed -i -E "s|wikiparser-node@.+-b|wikiparser-node@$1-b|" extensions/base.ts
