@@ -103,7 +103,6 @@ textarea {
 	width: 100%;
 	height: var(--height-editor);
 	max-height: var(--max-height-editor);
-	direction: ltr;
 	padding: .4em;
 }
 #wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor, #wpTextbox2, pre {
