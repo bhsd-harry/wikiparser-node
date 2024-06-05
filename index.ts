@@ -264,7 +264,7 @@ const Parser: Parser = {
 
 	/** @implements */
 	async clearCache(): Promise<void> {
-		const promise = cmd('npm', ['run', 'build']),
+		const promise = cmd('npm', ['run', 'build:core']),
 			entries = [
 				...Object.entries(classes),
 				...Object.entries(mixins),
