@@ -324,9 +324,9 @@ export abstract class TranscludeToken extends Token {
 	 * @throws `Error` 不是可接受的魔术字
 	 */
 	getPossibleValues(): Token[] {
-		const {type, name, childNodes, constructor: {name: cName}} = this;
+		const {type, name, childNodes} = this;
 		if (type === 'template') {
-			throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
+			throw new Error(`TranscludeToken.getPossibleValues method is only for specific magic words!`);
 		}
 		let start: number;
 		switch (name) {
@@ -340,7 +340,7 @@ export abstract class TranscludeToken extends Token {
 				start = 3;
 				break;
 			default:
-				throw new Error(`${cName}.getPossibleValues method is only for specific magic words!`);
+				throw new Error(`TranscludeToken.getPossibleValues method is only for specific magic words!`);
 		}
 		const queue = (childNodes.slice(start, start + 2) as ParameterToken[]).map(({childNodes: [, value]}) => value);
 		for (let i = 0; i < queue.length;) {
