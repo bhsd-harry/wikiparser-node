@@ -6,6 +6,7 @@
 
 - [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#italic) for external links which have a lower precedence than apostrophes
 - [Pseudo selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) `:any-link` for [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken)
+- [Pseudo selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) `:lang()`
 
 **Changed**
 

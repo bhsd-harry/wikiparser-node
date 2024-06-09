@@ -44,9 +44,9 @@ const nth = (str: string, i: number): boolean => new Ranges(str).applyTo(i + 1).
 const matchesLang = (
 	{attributes}: AstElement & {attributes?: Record<string, string | true>},
 	regex: RegExp,
-): boolean => {
+): boolean | undefined => {
 	const lang = attributes?.['lang'];
-	return typeof lang === 'string' && regex.test(lang);
+	return lang === undefined ? undefined : typeof lang === 'string' && regex.test(lang);
 };
 
 const primitives = new Set(['string', 'number', 'boolean', 'undefined']);
@@ -557,8 +557,13 @@ export abstract class AstElement extends AstNode {
 					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 					/^zh(?:-|$)/u;
 					const regex = new RegExp(`^${s}(?:-|$)`, 'u');
-					return matchesLang(this, regex)
-						|| this.getAncestors().some(ancestor => matchesLang(ancestor, regex));
+					for (let node: AstElement | undefined = this as AstElement; node; node = node.parentNode) {
+						const result = matchesLang(node, regex);
+						if (result !== undefined) {
+							return result;
+						}
+					}
+					return false;
 				}
 				case 'regex': {
 					const mt = /^([^,]+),\s*\/(.+)\/([a-z]*)$/u.exec(s) as [string, string, string, string] | null;
