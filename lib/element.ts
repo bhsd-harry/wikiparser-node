@@ -516,7 +516,7 @@ export abstract class AstElement extends AstNode {
 							|| type === 'free-ext-link'
 							|| type === 'magic-link'
 							|| type === 'ext-link'
-							|| (type === 'file' || type === 'gallery-image' && link);
+							|| (type === 'file' || type === 'gallery-image') && link;
 					case ':local-link':
 						return (type === 'link' || type === 'file' || type === 'gallery-image')
 							&& link instanceof Title
