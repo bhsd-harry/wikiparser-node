@@ -88,7 +88,7 @@ export class AstText extends AstNode {
 	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
-			throw new Error('Cannot lint an isolated text node!');
+			throw new Error('An isolated text node cannot be linted!');
 		}
 		const {type, name, parentNode: grandparent} = parentNode;
 		let isHtmlAttrVal = false;
