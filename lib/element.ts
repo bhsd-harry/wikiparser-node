@@ -218,11 +218,11 @@ export abstract class AstElement extends AstNode {
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				{length} = child.toString();
-			if (child.type === 'text') {
-				json.childNodes!.push({data: child.data, range: [cur, cur + length]} as unknown as AST);
-			} else {
-				json.childNodes!.push(child.json(undefined, cur));
-			}
+			json.childNodes!.push(
+				child.type === 'text'
+					? {data: child.data, range: [cur, cur + length]} as unknown as AST
+					: child.json(undefined, cur),
+			);
 			cur += length + this.getGaps(i);
 		}
 		return json;
