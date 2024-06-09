@@ -1,6 +1,6 @@
 ## v1.9.1
 
-*2024-06-02*
+*2024-06-09*
 
 **Fixed**
 
@@ -9,7 +9,11 @@
 **Changed**
 
 - `Token.prototype.normalizeTitle` is now a private method
-- [`Parser.getConfig`](ttps://github.com/bhsd-harry/wikiparser-node/wiki/Parser#getconfig) is now available for public use
+- [`Parser.getConfig`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#getconfig) is now available for public use
+
+**Removed**
+
+- [Pseudo selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) `:nth-child`, `:nth-last-child`, `:nth-of-type` and `:nth-last-of-type` no longer support comma-delimited arguments
 
 ## v1.9.0
 

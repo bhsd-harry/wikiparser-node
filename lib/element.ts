@@ -33,7 +33,7 @@ const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
  * @param str 表达式
  * @param i 待检查的下标
  */
-const nth = (str: string, i: number): boolean => new Ranges(str.split(',')).applyTo(i + 1).includes(i);
+const nth = (str: string, i: number): boolean => new Ranges(str).applyTo(i + 1).includes(i);
 
 /**
  * 检测:lang()伪选择器
@@ -186,8 +186,7 @@ export abstract class AstElement extends AstNode {
 
 		if (node.contains(this)) {
 			throw new RangeError('Cannot insert an ancestor node!');
-		}
-		if (this.childNodes.includes(node)) {
+		} else if (this.childNodes.includes(node)) {
 			throw new RangeError('Cannot insert its own child node!');
 		}
 		this.verifyChild(i, 1);
@@ -373,11 +372,11 @@ export abstract class AstElement extends AstNode {
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				{length} = child.toString();
-			if (child.type === 'text') {
-				json.childNodes!.push({data: child.data, range: [cur, cur + length]} as unknown as AST);
-			} else {
-				json.childNodes!.push(child.json(undefined, cur));
-			}
+			json.childNodes!.push(
+				child.type === 'text'
+					? {data: child.data, range: [cur, cur + length]} as unknown as AST
+					: child.json(undefined, cur),
+			);
 			cur += length + this.getGaps(i);
 		}
 
@@ -385,7 +384,7 @@ export abstract class AstElement extends AstNode {
 
 		if (typeof file === 'string') {
 			fs.writeFileSync(
-				path.join(__dirname.slice(0, -4), '..', 'printed', file + (file.endsWith('.json') ? '' : '.json')),
+				path.join(__dirname, '..', '..', 'printed', file + (file.endsWith('.json') ? '' : '.json')),
 				JSON.stringify(json, null, 2),
 			);
 		}
@@ -403,9 +402,10 @@ export abstract class AstElement extends AstNode {
 		if (!parentNode) {
 			return undefined;
 		}
-		const {childNodes, fixed} = parentNode,
-			protectedIndices = parentNode.getAttribute('protectedChildren').applyTo(childNodes);
-		return fixed || protectedIndices.includes(childNodes.indexOf(this as AstElement as Token));
+		const {childNodes, fixed} = parentNode;
+		return fixed
+			|| parentNode.getAttribute('protectedChildren').applyTo(childNodes)
+				.includes(childNodes.indexOf(this as AstElement as Token));
 	}
 
 	/**
