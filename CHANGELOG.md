@@ -5,8 +5,9 @@
 **Fixed**
 
 - [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font), [`AstNode.bold`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#bold) and [`AstNode.italic`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#italic) for external links which have a lower precedence than apostrophes
-- [Pseudo selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) `:any-link` for [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken)
-- [Pseudo selector](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) `:lang()`
+- Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#any-link) for [`FileToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken)
+- Pseudo selector [`:lang()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#lang)
+- Pseudo selector [`:regex()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#正则选择器) for [`AttributesToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken)
 
 **Changed**
 
@@ -379,7 +380,7 @@
 **Changed**
 
 - `HiddenToken` child nodes of [`GalleryToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken) are replaced by [`NoincludeToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/NoincludeToken)
-- The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#伪选择器) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
+- The pseudo selector [`:invalid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#invalid) now reports invalid [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken) instead of redundant child nodes of [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
 
 **Removed**
 

@@ -409,6 +409,21 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * 获取属性
+	 * @param key 属性键
+	 */
+	#getAttr(this: AstElement & Partial<AttributesParentBase>, key: string): unknown {
+		if (typeof this.getAttr === 'function') {
+			const attr = this.getAttr(key);
+			if (attr !== undefined) {
+				return attr;
+			}
+		}
+		const val = this.getAttribute(key);
+		return val instanceof RegExp ? val.source : val;
+	}
+
+	/**
 	 * 检查是否符合属性选择器
 	 * @param key 属性键
 	 * @param equal 比较符
@@ -427,18 +442,10 @@ export abstract class AstElement extends AstNode {
 		if (!(key in this) && (!isAttr || !this.hasAttr!(key))) {
 			return equal === '!=';
 		}
-		const v = toCase(val, i);
-		let thisVal = this.getAttribute(key);
-		if (isAttr) {
-			const attr = this.getAttr!(key);
-			if (attr !== undefined) {
-				thisVal = attr === true ? '' : attr;
-			}
-		}
+		const v = toCase(val, i),
+			thisVal = this.#getAttr(key);
 		if (!equal) {
 			return thisVal !== undefined && thisVal !== false;
-		} else if (thisVal instanceof RegExp) {
-			thisVal = thisVal.source;
 		}
 		if (equal === '~=') {
 			const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
@@ -470,7 +477,7 @@ export abstract class AstElement extends AstNode {
 	 * @throws `SyntaxError` 错误的正则伪选择器
 	 * @throws `SyntaxError` 未定义的伪选择器
 	 */
-	#matches(step: SelectorArray): boolean {
+	#matches(this: AstElement & Partial<AttributesParentBase>, step: SelectorArray): boolean {
 		const {parentNode, type, name, childNodes, link} = this as AstElement & {link?: string | Title},
 			children = parentNode?.children,
 			childrenOfType = children?.filter(({type: t}) => t === type),
@@ -555,8 +562,8 @@ export abstract class AstElement extends AstNode {
 					return Boolean(this.querySelector<Token>(s));
 				case 'lang': {
 					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-					/^zh(?:-|$)/u;
-					const regex = new RegExp(`^${s}(?:-|$)`, 'u');
+					/^zh(?:-|$)/iu;
+					const regex = new RegExp(`^${s}(?:-|$)`, 'iu');
 					for (let node: AstElement | undefined = this as AstElement; node; node = node.parentNode) {
 						const result = matchesLang(node, regex);
 						if (result !== undefined) {
@@ -573,7 +580,7 @@ export abstract class AstElement extends AstNode {
 						);
 					}
 					try {
-						return new RegExp(mt[2], mt[3]).test(String(this.getAttribute(mt[1].trim())));
+						return new RegExp(mt[2], mt[3]).test(String(this.#getAttr(mt[1].trim())));
 					} catch {
 						throw new SyntaxError(`Invalid regular expression: /${mt[2]}/${mt[3]}`);
 					}
