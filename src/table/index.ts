@@ -106,13 +106,9 @@ export abstract class TableToken extends TrBaseToken {
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
 		Shadow.run(() => {
-			const token = super.insertAt(
-				new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
-				}),
-			);
-			if (!halfParsed) {
-				token.afterBuild();
-			}
+			const token = new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			});
+			super.insertAt(token);
 		});
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
