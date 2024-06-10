@@ -1,6 +1,6 @@
 {
 	"name": "wikilint",
-	"version": "2.9.1",
+	"version": "2.9.2",
 	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
@@ -24,7 +24,7 @@
 		"!/dist/bin/declaration.js"
 	],
 	"bin": {
-		"wikilint": "./bin/cli.js"
+		"wikilint": "bin/cli.js"
 	},
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
