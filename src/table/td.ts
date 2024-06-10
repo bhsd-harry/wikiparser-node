@@ -117,6 +117,7 @@ export abstract class TdToken extends TableBaseToken {
 		super(
 			/^(?:\n[^\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u,
 			syntax,
+			'td',
 			attr,
 			config,
 			accum,

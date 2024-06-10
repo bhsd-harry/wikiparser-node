@@ -25,6 +25,8 @@ const escapeTable = (syntax: SyntaxToken): void => {
 
 /* NOT FOR BROWSER END */
 
+declare type TableTypes = 'table' | 'tr' | 'td';
+
 export interface TableBaseToken extends AttributesParentBase {}
 
 /**
@@ -32,7 +34,7 @@ export interface TableBaseToken extends AttributesParentBase {}
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
 export abstract class TableBaseToken extends attributesParent(1)(Token) {
-	declare type: 'table' | 'tr' | 'td';
+	declare type: TableTypes;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
@@ -49,11 +51,13 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	/**
 	 * @param pattern 表格语法正则
 	 * @param syntax 表格语法
+	 * @param type 节点类型
 	 * @param attr 表格属性
 	 */
 	constructor(
 		pattern: RegExp,
-		syntax?: string,
+		syntax: string,
+		type: TableTypes,
 		attr?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
@@ -65,7 +69,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 				'Stage-1': ':', '!ExtToken': '', TranscludeToken: ':',
 			}),
 			// @ts-expect-error abstract class
-			new AttributesToken(attr, 'table-attrs', this.type, config, accum) as AttributesToken,
+			new AttributesToken(attr, 'table-attrs', type, config, accum) as AttributesToken,
 		);
 
 		/* NOT FOR BROWSER */
