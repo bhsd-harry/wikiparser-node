@@ -27,7 +27,8 @@ const closes: Record<string, string> = {
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${
 			config.excludes?.includes('heading') ? '' : String.raw`^(\0\d+c\x7F)*={1,6}|`
-		}\[\[|\{{2,}|-\{(?!\{)`,
+		}\[\[|-\{(?!\{)`,
+		openBraces = String.raw`|\{{2,}`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [];
 	wikitext = wikitext.replace(re, (m, p1: string) => {
@@ -37,10 +38,10 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^(\0\d+c\x7F)*={1,6}|\[\[|\{{2,}|-\{(?!\{)|[\n|=]|\}{2,}|\}-|\]\]/gmu;
-	let regex = new RegExp(source, 'gmu'),
+	/^(\0\d+c\x7F)*={1,6}|\[\[|-\{(?!\{)|\{{2,}|[\n|=]|\}{2,}|\}-|\]\]/gmu;
+	let moreBraces = lastBraces + wikitext.length !== -1,
+		regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
-		moreBraces = lastBraces + wikitext.length !== -1,
 		lastIndex: number | undefined;
 	while (
 		mt
@@ -145,14 +146,18 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			}
 			stack.push(...'0' in top ? [top] : [], mt!);
 		}
-		moreBraces &&= lastBraces + wikitext.length >= lastIndex;
 		let curTop = stack[stack.length - 1];
-		if (!moreBraces && curTop?.[0]?.startsWith('{')) {
-			stack.pop();
-			curTop = stack[stack.length - 1];
+		if (moreBraces && lastBraces + wikitext.length < lastIndex) {
+			moreBraces = false;
+			while (curTop?.[0]?.startsWith('{')) {
+				stack.pop();
+				curTop = stack[stack.length - 1];
+			}
 		}
 		regex = new RegExp(
-			source + (curTop ? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}` : ''),
+			source
+			+ (moreBraces ? openBraces : '')
+			+ (curTop ? `|${closes[curTop[0]![0]!]!}${curTop.findEqual ? '|=' : ''}` : ''),
 			'gmu',
 		);
 		regex.lastIndex = lastIndex;
