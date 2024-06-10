@@ -1,3 +1,4 @@
+import {constants} from './constants';
 import type {
 	AstNodes,
 	Token,
@@ -27,6 +28,8 @@ export const Shadow = {
 			throw e;
 		}
 	},
+
+	rev: 0,
 };
 
 /**
@@ -110,3 +113,5 @@ export const undo: AstListener = (e, data): void => {
 			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
 	}
 };
+
+constants['Shadow'] = __filename;

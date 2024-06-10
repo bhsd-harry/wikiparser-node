@@ -5,6 +5,7 @@
 **Fixed**
 
 - Fix event handling since [v1.9.0](#v190)
+- Fix issues related to [`Parser.viewOnly`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#viewonly)
 
 ## v1.9.1
 

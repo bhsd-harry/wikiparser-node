@@ -13,6 +13,7 @@ import {
 	classes,
 	mixins,
 	parsers,
+	constants,
 } from './util/constants';
 import {tidy} from './util/string';
 import {cmd, info, error, diff} from './util/diff';
@@ -95,7 +96,12 @@ const rootRequire = (file: string, dir: string): unknown => require(
 	file.startsWith('/') ? file : `../${file.includes('/') ? '' : dir}${file}`,
 );
 
+/* NOT FOR BROWSER */
+
 const promises = [Promise.resolve()];
+let viewOnly = false;
+
+/* NOT FOR BROWSER END */
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 const Parser: Parser = {
@@ -105,7 +111,17 @@ const Parser: Parser = {
 
 	/* NOT FOR BROWSER */
 
-	viewOnly: false,
+	/** @implements */
+	get viewOnly() {
+		return viewOnly;
+	},
+
+	set viewOnly(value) {
+		if (viewOnly && !value) {
+			Shadow.rev++;
+		}
+		viewOnly = value;
+	},
 
 	conversionTable: new Map(),
 	redirects: new Map(),
@@ -267,6 +283,7 @@ const Parser: Parser = {
 				...Object.entries(classes),
 				...Object.entries(mixins),
 				...Object.entries(parsers),
+				...Object.entries(constants),
 			];
 		for (const [, filePath] of entries) {
 			try {

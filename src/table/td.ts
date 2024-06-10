@@ -48,7 +48,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 export abstract class TdToken extends TableBaseToken {
 	override readonly type = 'td';
 	#innerSyntax = '';
-	#syntax: TdSyntax | undefined;
+	#syntax: [number, TdSyntax] | undefined;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
@@ -137,11 +137,14 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
-		if (Parser.viewOnly) {
-			this.#syntax ??= this.#computeSyntax();
-			return this.#syntax;
+		const {rev} = Shadow;
+		if (this.#syntax && this.#syntax[0] !== rev) {
+			this.#syntax = undefined;
 		}
-		this.#syntax = undefined;
+		if (Parser.viewOnly) {
+			this.#syntax ??= [rev, this.#computeSyntax()];
+			return this.#syntax[1];
+		}
 		return this.#computeSyntax();
 	}
 

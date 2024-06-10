@@ -130,7 +130,7 @@ export class Token extends AstElement {
 	readonly #accum;
 	#include?: boolean;
 	#built = false;
-	#string: string | undefined;
+	#string: [number, string] | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -606,16 +606,19 @@ export class Token extends AstElement {
 
 	/** @private */
 	override toString(separator?: string): string {
-		const root = this.getRootNode();
+		const {rev} = Shadow,
+			root = this.getRootNode();
+		if (this.#string && this.#string[0] !== rev) {
+			this.#string = undefined;
+		}
 		if (
 			root.type === 'root'
 			&& root.#built
 			&& Parser.viewOnly
 		) {
-			this.#string ??= super.toString(separator);
-			return this.#string;
+			this.#string ??= [rev, super.toString(separator)];
+			return this.#string[1];
 		}
-		this.#string = undefined;
 		return super.toString(separator);
 	}
 

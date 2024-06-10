@@ -7,11 +7,10 @@ export enum BuildMethod {
 
 /* NOT FOR BROWSER */
 
-export const classes: Record<string, string> = {};
-
-export const mixins: Record<string, string> = {};
-
-export const parsers: Record<string, string> = {};
+export const classes: Record<string, string> = {},
+	mixins: Record<string, string> = {},
+	parsers: Record<string, string> = {},
+	constants: Record<string, string> = {};
 
 export const aliases = [
 	['AstText'],
