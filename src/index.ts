@@ -44,6 +44,7 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
+import {Shadow} from '../util/debug';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
@@ -77,7 +78,7 @@ export class Token extends AstElement {
 	readonly #accum;
 	#include?: boolean;
 	#built = false;
-	#string: string | undefined;
+	#string: [number, string] | undefined;
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
@@ -169,8 +170,8 @@ export class Token extends AstElement {
 		return nodes;
 	}
 
-	/** 将占位符替换为子Token */
-	#build(): void {
+	/** @private */
+	build(): void {
 		this.#stage = MAX_STAGE;
 		const {length, firstChild} = this,
 			str = String(firstChild);
@@ -179,7 +180,7 @@ export class Token extends AstElement {
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
-					token.#build();
+					token.build();
 				}
 			}
 		}
@@ -202,7 +203,7 @@ export class Token extends AstElement {
 			this.parseOnce(this.#stage, include);
 		}
 		if (n) {
-			this.#build();
+			this.build();
 			this.afterBuild();
 		}
 		return this;
@@ -457,13 +458,14 @@ export class Token extends AstElement {
 
 	/** @private */
 	override toString(separator?: string): string {
-		const root = this.getRootNode();
+		const {rev} = Shadow,
+			root = this.getRootNode();
 		if (
 			root.type === 'root'
 			&& root.#built
 		) {
-			this.#string ??= super.toString(separator);
-			return this.#string;
+			this.#string ??= [rev, super.toString(separator)];
+			return this.#string[1];
 		}
 		return super.toString(separator);
 	}
