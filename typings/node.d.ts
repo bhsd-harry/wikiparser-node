@@ -13,7 +13,7 @@ declare global {
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'childNodes' ? AstNodes[] :
-		T extends 'bracket' | 'include' | 'plain' ? boolean :
+		T extends 'bracket' | 'include' | 'plain' | 'built' ? boolean :
 		T extends 'title' ? Title :
 		unknown;
 }

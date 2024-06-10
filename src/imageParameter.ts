@@ -123,6 +123,7 @@ export abstract class ImageParameterToken extends Token {
 		if (this.parentNode?.type === 'gallery-image' && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
+		super.afterBuild();
 	}
 
 	/** @private */

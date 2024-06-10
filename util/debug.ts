@@ -11,7 +11,11 @@ export const Shadow = {
 		const {running} = this;
 		this.running = true;
 		try {
+			const {Token: AnyToken}: typeof import('../src/index') = require('../src/index');
 			const result = callback();
+			if (result instanceof AnyToken && !result.getAttribute('built')) {
+				result.afterBuild();
+			}
 			this.running = running;
 			return result;
 		} catch (e) {
@@ -19,6 +23,8 @@ export const Shadow = {
 			throw e;
 		}
 	},
+
+	rev: 0,
 };
 
 /**

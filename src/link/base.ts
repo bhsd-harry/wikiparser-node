@@ -53,6 +53,7 @@ export abstract class LinkBaseToken extends Token {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
 		this.setAttribute('name', this.#title.title);
+		super.afterBuild();
 	}
 
 	/** @private */
