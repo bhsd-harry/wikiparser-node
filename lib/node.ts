@@ -228,16 +228,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		if (key === 'padding') {
-			return 0 as TokenAttribute<T>;
-
-			/* NOT FOR BROWSER */
-		} else if (key === 'optional') {
-			return this.#optional as TokenAttribute<T>;
-
-			/* NOT FOR BROWSER END */
-		}
-		return this[key as keyof this] as TokenAttribute<T>;
+		return (key === 'padding' ? 0 : this[key as keyof this]) as TokenAttribute<T>;
 	}
 
 	/** @private */

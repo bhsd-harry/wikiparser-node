@@ -223,6 +223,7 @@ export abstract class ImageParameterToken extends Token {
 		if (this.parentNode?.type === 'gallery-image' && !galleryParams.has(this.name)) {
 			this.setAttribute('name', 'invalid');
 		}
+		super.afterBuild();
 	}
 
 	/** @private */
@@ -239,12 +240,6 @@ export abstract class ImageParameterToken extends Token {
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		if (key === 'plain') {
 			return (this.name === 'caption') as TokenAttribute<T>;
-
-			/* NOT FOR BROWSER */
-		} else if (key === 'syntax') {
-			return this.#syntax as TokenAttribute<T>;
-
-			/* NOT FOR BROWSER END */
 		}
 		return key === 'padding'
 			? Math.max(0, this.#syntax.indexOf('$1')) as TokenAttribute<T>
@@ -298,19 +293,8 @@ export abstract class ImageParameterToken extends Token {
 			// @ts-expect-error abstract class
 			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), this.#extension, config) as this;
 			token.replaceChildren(...cloned);
-			token.setAttribute('name', this.name);
-			token.setAttribute('syntax', this.#syntax);
 			return token;
 		});
-	}
-
-	/** @private */
-	override setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
-		if (key === 'syntax') {
-			this.#syntax = value as string;
-		} else {
-			super.setAttribute(key, value);
-		}
 	}
 
 	/**

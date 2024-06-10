@@ -83,7 +83,7 @@ declare interface Parser extends ParserBase {
 	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
 
 	/** @private */
-	reparse(date?: string): Token;
+	reparse(date?: string): void;
 }
 
 /**
@@ -164,29 +164,27 @@ const Parser: Parser = {
 			return new Title(title, defaultNs, config, decode, selfLink);
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
-		const token = Shadow.run(() => {
-				const root = new Token(title, config);
-				root.type = 'root';
-				return root.parseOnce(0, include).parseOnce();
-			}),
-			titleObj = new Title(token.toString(), defaultNs, config, decode, selfLink);
-		Shadow.run(() => {
+		return Shadow.run(() => {
+			const root = new Token(title, config);
+			root.type = 'root';
+			root.parseOnce(0, include).parseOnce();
+			const titleObj = new Title(root.toString(), defaultNs, config, decode, selfLink);
 			for (const key of ['main', 'fragment'] as const) {
 				const str = titleObj[key];
 				if (str?.includes('\0')) {
-					titleObj[key] = token.buildFromStr(str, BuildMethod.Text);
+					titleObj[key] = root.buildFromStr(str, BuildMethod.Text);
 				}
 			}
+
+			/* NOT FOR BROWSER */
+
+			titleObj.conversionTable = this.conversionTable;
+			titleObj.redirects = this.redirects;
+
+			/* NOT FOR BROWSER END */
+
+			return titleObj;
 		});
-
-		/* NOT FOR BROWSER */
-
-		titleObj.conversionTable = this.conversionTable;
-		titleObj.redirects = this.redirects;
-
-		/* NOT FOR BROWSER END */
-
-		return titleObj;
 	},
 
 	/** @implements */
@@ -306,7 +304,7 @@ const Parser: Parser = {
 			wikitext = fs.readFileSync(file, 'utf8');
 		const {stage, include, config}: ParsingError = require(`${file}.json`),
 			{Token}: typeof import('./src/index') = require('./src/index');
-		return Shadow.run(() => {
+		Shadow.run(() => {
 			const halfParsed = stage < MAX_STAGE,
 				token = new Token(halfParsed ? wikitext : tidy(wikitext), config);
 			token.type = 'root';
@@ -319,7 +317,6 @@ const Parser: Parser = {
 			fs.unlinkSync(file);
 			fs.unlinkSync(`${file}.err`);
 			fs.unlinkSync(`${file}.json`);
-			return token;
 		});
 	},
 };

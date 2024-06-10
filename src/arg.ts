@@ -155,7 +155,6 @@ export abstract class ArgToken extends Token {
 			const token = new ArgToken([''], this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(name);
 			token.append(...cloned);
-			token.afterBuild();
 			return token;
 		});
 	}
@@ -168,6 +167,7 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		this.#setName();
+		super.afterBuild();
 		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
 			if (prevTarget === this.firstChild) {
 				this.#setName();

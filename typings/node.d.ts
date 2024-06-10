@@ -5,10 +5,6 @@ import type {Config} from '../base';
 import type {
 	AstNodes,
 	Token,
-
-	/* NOT FOR BROWSER */
-
-	ParameterToken,
 } from '../internal';
 
 declare global {
@@ -18,17 +14,14 @@ declare global {
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :
 		T extends 'childNodes' ? AstNodes[] :
-		T extends 'bracket' | 'include' | 'plain' ? boolean :
+		T extends 'bracket' | 'include' | 'plain' | 'built' ? boolean :
 		T extends 'title' ? Title :
 
 		/* NOT FOR BROWSER */
 
 		T extends 'pattern' ? RegExp :
-		T extends 'flags' ? string[] :
 		T extends 'tags' ? [string, string] :
-		T extends 'quotes' ? [string?, string?] :
-		T extends 'optional' | 'keys' ? Set<string> :
-		T extends 'args' ? Map<string, Set<ParameterToken>> :
+		T extends 'keys' ? Set<string> :
 		T extends 'protectedChildren' ? Ranges :
 		T extends 'acceptable' ? Acceptable | undefined :
 

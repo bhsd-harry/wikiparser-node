@@ -38,6 +38,7 @@ Token.prototype.createElement =
 			return Shadow.run(() => {
 				// @ts-expect-error abstract class
 				const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
+				attr.afterBuild();
 				// @ts-expect-error abstract class
 				return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 			});

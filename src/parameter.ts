@@ -118,6 +118,7 @@ export abstract class ParameterToken extends Token {
 				parentNode.getAttribute('keys').add(name);
 			}
 		}
+		super.afterBuild();
 
 		/* NOT FOR BROWSER */
 
@@ -199,7 +200,6 @@ export abstract class ParameterToken extends Token {
 			const token = new ParameterToken(this.anon ? Number(this.name) : undefined, undefined, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
-			token.afterBuild();
 			if (this.anon) {
 				token.setAttribute('name', this.name);
 			}

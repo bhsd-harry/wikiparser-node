@@ -52,7 +52,6 @@ export abstract class NowikiBaseToken extends Token {
 		return Shadow.run(() => {
 			const token = new constructor(data, this.getAttribute('config')) as this;
 			token.type = type;
-			token.afterBuild();
 			return token;
 		});
 	}

@@ -50,7 +50,6 @@ export class SyntaxToken extends Token {
 		return Shadow.run(() => {
 			const token = new SyntaxToken(undefined, this.pattern, this.type, config, [], acceptable) as this;
 			token.append(...cloned);
-			token.afterBuild();
 			return token;
 		});
 	}

@@ -341,6 +341,7 @@ export abstract class AttributeToken extends Token {
 			this.#tag = this.parentNode.name;
 		}
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
+		super.afterBuild();
 	}
 
 	/** @private */
@@ -443,14 +444,6 @@ export abstract class AttributeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		if (key === 'equal') {
-			return this.#equal as TokenAttribute<T>;
-		}
-		return key === 'quotes' ? this.#quotes as TokenAttribute<T> : super.getAttribute(key);
-	}
-
 	/** @override */
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
@@ -460,7 +453,6 @@ export abstract class AttributeToken extends Token {
 			const token = new AttributeToken(this.type, this.tag, '', this.#equal, '', this.#quotes, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
-			token.setAttribute('name', this.name);
 			return token;
 		});
 	}

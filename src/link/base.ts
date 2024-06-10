@@ -93,6 +93,7 @@ export abstract class LinkBaseToken extends Token {
 			this.#delimiter = this.buildFromStr(this.#delimiter, BuildMethod.String);
 		}
 		this.setAttribute('name', this.#title.title);
+		super.afterBuild();
 
 		/* NOT FOR BROWSER */
 
@@ -233,7 +234,6 @@ export abstract class LinkBaseToken extends Token {
 			const token = new this.constructor('', undefined, this.getAttribute('config')) as this;
 			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
-			token.afterBuild();
 			return token;
 		});
 	}

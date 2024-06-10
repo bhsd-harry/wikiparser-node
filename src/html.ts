@@ -171,14 +171,6 @@ export abstract class HtmlToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* NOT FOR BROWSER */
-
-		if (key === 'tag') {
-			return this.#tag as TokenAttribute<T>;
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return key === 'padding'
 			? this.#tag.length + (this.closing ? 2 : 1) as TokenAttribute<T>
 			: super.getAttribute(key);

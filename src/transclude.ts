@@ -234,13 +234,14 @@ export abstract class TranscludeToken extends Token {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
+		super.afterBuild();
 
 		/* NOT FOR BROWSER */
 
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
-			if (isTemplate || this.length > 1) {
-				this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle().title);
+			if (isTemplate) {
+				this.setAttribute('name', this.#getTitle().title);
 			}
 
 			/**
@@ -255,11 +256,8 @@ export abstract class TranscludeToken extends Token {
 					delete data.oldKey;
 					delete data.newKey;
 				}
-				if (
-					prevTarget === this.firstChild && isTemplate
-					|| prevTarget === this.childNodes[1] && !isTemplate && this.name === 'invoke'
-				) {
-					this.setAttribute(isTemplate ? 'name' : 'module', this.#getTitle().title);
+				if (prevTarget === this.firstChild && isTemplate) {
+					this.setAttribute('name', this.#getTitle().title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey!, false, false);
 					oldArgs.delete(prevTarget);
@@ -305,8 +303,6 @@ export abstract class TranscludeToken extends Token {
 
 				/* NOT FOR BROWSER */
 
-			case 'args':
-				return this.#args as TokenAttribute<T>;
 			case 'keys':
 				return this.#keys as TokenAttribute<T>;
 
@@ -532,7 +528,6 @@ export abstract class TranscludeToken extends Token {
 				token.setAttribute('modifier', this.modifier);
 			}
 			token.firstChild.safeReplaceWith(first as never);
-			token.afterBuild();
 			token.append(...cloned);
 			return token;
 		});

@@ -100,6 +100,7 @@ export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	override afterBuild(): void {
 		this.#setName(this.getTitle());
+		super.afterBuild();
 
 		/* NOT FOR BROWSER */
 

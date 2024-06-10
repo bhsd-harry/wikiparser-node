@@ -258,8 +258,8 @@ export class Token extends AstElement {
 		return nodes;
 	}
 
-	/** 将占位符替换为子Token */
-	#build(): void {
+	/** @private */
+	build(): void {
 		this.#stage = MAX_STAGE;
 		const {length, firstChild} = this,
 			str = String(firstChild);
@@ -268,7 +268,7 @@ export class Token extends AstElement {
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
-					token.#build();
+					token.build();
 				}
 			}
 		}
@@ -291,7 +291,7 @@ export class Token extends AstElement {
 			this.parseOnce(this.#stage, include);
 		}
 		if (n) {
-			this.#build();
+			this.build();
 			this.afterBuild();
 		}
 		return this;
@@ -423,6 +423,8 @@ export class Token extends AstElement {
 				return (this.#include ?? Boolean(this.getRootNode().#include)) as TokenAttribute<T>;
 			case 'accum':
 				return this.#accum as TokenAttribute<T>;
+			case 'built':
+				return this.#built as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER */
 

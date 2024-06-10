@@ -59,6 +59,7 @@ export abstract class ConverterFlagsToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		this.#flags = this.childNodes.map(child => child.text().trim());
+		super.afterBuild();
 
 		/* NOT FOR BROWSER */
 
@@ -153,14 +154,8 @@ export abstract class ConverterFlagsToken extends Token {
 			// @ts-expect-error abstract class
 			const token = new ConverterFlagsToken([], this.getAttribute('config')) as this;
 			token.append(...cloned);
-			token.afterBuild();
 			return token;
 		});
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'flags' ? this.#flags as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/**

@@ -211,6 +211,7 @@ export abstract class TdToken extends TableBaseToken {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, BuildMethod.String);
 		}
+		super.afterBuild();
 	}
 
 	/** @private */
@@ -324,11 +325,6 @@ export abstract class TdToken extends TableBaseToken {
 		const token = super.cloneNode();
 		token.setAttribute('innerSyntax', this.#innerSyntax);
 		return token;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'innerSyntax' ? this.#innerSyntax as TokenAttribute<T> : super.getAttribute(key);
 	}
 
 	/** @private */

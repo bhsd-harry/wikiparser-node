@@ -158,13 +158,13 @@ export abstract class ConverterRuleToken extends Token {
 			for (let i = 0; i < cloned.length; i++) {
 				token.childNodes[i]!.safeReplaceWith(cloned[i]!);
 			}
-			token.afterBuild();
 			return token;
 		});
 	}
 
 	/** @private */
 	override afterBuild(): void {
+		super.afterBuild();
 		const /** @implements */ converterRuleListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (this.length > 1 && this.childNodes[this.length - 2] === prevTarget) {
