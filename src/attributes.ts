@@ -101,13 +101,11 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override afterBuild(): void {
-		if (this.type === 'table-attrs') {
-			const {parentNode} = this as this & {parentNode?: TableToken | TrToken | TdToken};
-			this.setAttribute(
-				'name',
-				parentNode?.type === 'td' && parentNode.subtype === 'caption' ? 'caption' : parentNode?.type,
-			);
+		const {parentNode} = this;
+		if (parentNode?.type === 'td' && parentNode.subtype === 'caption') {
+			this.setAttribute('name', 'caption');
 		}
+		super.afterBuild();
 	}
 
 	/**

@@ -284,6 +284,7 @@ export abstract class AttributeToken extends Token {
 			this.#tag = this.parentNode.name;
 		}
 		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
+		super.afterBuild();
 	}
 
 	/** @private */

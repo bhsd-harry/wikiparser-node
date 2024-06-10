@@ -172,6 +172,7 @@ export abstract class TranscludeToken extends Token {
 		if (this.modifier.includes('\0')) {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
+		super.afterBuild();
 	}
 
 	/** @private */

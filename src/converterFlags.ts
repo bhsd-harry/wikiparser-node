@@ -33,6 +33,7 @@ export abstract class ConverterFlagsToken extends Token {
 	/** @private */
 	override afterBuild(): void {
 		this.#flags = this.childNodes.map(child => child.text().trim());
+		super.afterBuild();
 	}
 
 	/** @private */

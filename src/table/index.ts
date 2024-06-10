@@ -44,7 +44,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, attr, config, accum, {
+		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
 		});
 	}
 
@@ -104,13 +104,11 @@ export abstract class TableToken extends TrBaseToken {
 		const config = this.getAttribute('config'),
 			accum = this.getAttribute('accum'),
 			inner = halfParsed ? [syntax] : Parser.parse(syntax, this.getAttribute('include'), 2, config).childNodes;
-		const token = Shadow.run(() => super.insertAt(
-			new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
-			}),
-		));
-		if (!halfParsed) {
-			token.afterBuild();
-		}
+		Shadow.run(() => {
+			const token = new SyntaxToken(undefined, closingPattern, 'table-syntax', config, accum, {
+			});
+			super.insertAt(token);
+		});
 		(this.lastChild as SyntaxToken).replaceChildren(...inner);
 	}
 

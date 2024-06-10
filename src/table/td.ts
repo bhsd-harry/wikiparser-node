@@ -3,6 +3,7 @@ import {BoundingRect} from '../../lib/rect';
 import {
 	BuildMethod,
 } from '../../util/constants';
+import {Shadow} from '../../util/debug';
 import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
@@ -28,7 +29,7 @@ declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? numb
 export abstract class TdToken extends TableBaseToken {
 	override readonly type = 'td';
 	#innerSyntax = '';
-	#syntax: TdSyntax | undefined;
+	#syntax: [number, TdSyntax] | undefined;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
@@ -64,6 +65,7 @@ export abstract class TdToken extends TableBaseToken {
 		super(
 			/^(?:\n[^\S\n]*(?:[|!]|\|\+|\{\{\s*!\s*\}\}\+?)|(?:\||\{\{\s*!\s*\}\}){2}|!!|\{\{\s*!!\s*\}\})$/u,
 			syntax,
+			'td',
 			attr,
 			config,
 			accum,
@@ -83,8 +85,9 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
-		this.#syntax ??= this.#computeSyntax();
-		return this.#syntax;
+		const {rev} = Shadow;
+		this.#syntax ??= [rev, this.#computeSyntax()];
+		return this.#syntax[1];
 	}
 
 	/** 表格语法信息 */
@@ -112,6 +115,7 @@ export abstract class TdToken extends TableBaseToken {
 		if (this.#innerSyntax.includes('\0')) {
 			this.#innerSyntax = this.buildFromStr(this.#innerSyntax, BuildMethod.String);
 		}
+		super.afterBuild();
 	}
 
 	/** @private */

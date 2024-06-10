@@ -90,21 +90,19 @@ const Parser: Parser = {
 			return new Title(title, defaultNs, config, decode, selfLink);
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
-		const token = Shadow.run(() => {
-				const root = new Token(title, config);
-				root.type = 'root';
-				return root.parseOnce(0, include).parseOnce();
-			}),
-			titleObj = new Title(token.toString(), defaultNs, config, decode, selfLink);
-		Shadow.run(() => {
+		return Shadow.run(() => {
+			const root = new Token(title, config);
+			root.type = 'root';
+			root.parseOnce(0, include).parseOnce();
+			const titleObj = new Title(root.toString(), defaultNs, config, decode, selfLink);
 			for (const key of ['main', 'fragment'] as const) {
 				const str = titleObj[key];
 				if (str?.includes('\0')) {
-					titleObj[key] = token.buildFromStr(str, BuildMethod.Text);
+					titleObj[key] = root.buildFromStr(str, BuildMethod.Text);
 				}
 			}
+			return titleObj;
 		});
-		return titleObj;
 	},
 
 	/** @implements */
