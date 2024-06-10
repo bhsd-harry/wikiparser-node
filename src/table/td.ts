@@ -3,6 +3,7 @@ import {BoundingRect} from '../../lib/rect';
 import {
 	BuildMethod,
 } from '../../util/constants';
+import {Shadow} from '../../util/debug';
 import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
