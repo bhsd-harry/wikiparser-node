@@ -61,6 +61,7 @@ export abstract class ParameterToken extends Token {
 				parentNode.getArgs(name, false, false).add(this);
 			}
 		}
+		super.afterBuild();
 	}
 
 	/** @private */
