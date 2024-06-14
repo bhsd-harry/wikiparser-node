@@ -35,6 +35,7 @@ const insensitiveVars = new Set<string | undefined>([
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	#type: 'template' | 'magic-word' = 'template';
+
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 
@@ -42,6 +43,10 @@ export abstract class TranscludeToken extends Token {
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
+
+	override get type(): 'template' | 'magic-word' {
+		return this.#type;
+	}
 
 	/**
 	 * @param title 模板标题或魔术字
