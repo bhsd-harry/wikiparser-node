@@ -13,7 +13,6 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export abstract class ConverterFlagsToken extends Token {
-	override readonly type = 'converter-flags';
 	#flags?: string[];
 
 	declare readonly childNodes: readonly AtomToken[];
@@ -22,6 +21,10 @@ export abstract class ConverterFlagsToken extends Token {
 	abstract override get parentNode(): ConverterToken | undefined;
 	abstract override get previousSibling(): undefined;
 	abstract override get nextSibling(): ConverterRuleToken | undefined;
+
+	override get type(): 'converter-flags' {
+		return 'converter-flags';
+	}
 
 	/** @param flags 转换类型标记 */
 	constructor(flags: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {

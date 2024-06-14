@@ -212,6 +212,7 @@ export abstract class AstElement extends AstNode {
 	json(file?: string, start = this.getAbsoluteIndex()): AST {
 		const json = {
 			...this,
+			type: this.type,
 			range: [start, start + this.toString().length],
 			childNodes: [],
 		} as unknown as AST;

@@ -16,8 +16,7 @@ declare type NowikiTypes = 'ext-inner'
  * @classdesc `{childNodes: [AstText]}`
  */
 export abstract class NowikiBaseToken extends Token {
-	declare type: NowikiTypes;
-
+	abstract override get type(): NowikiTypes;
 	declare readonly childNodes: readonly [AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;

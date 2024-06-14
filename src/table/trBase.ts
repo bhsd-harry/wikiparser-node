@@ -19,7 +19,7 @@ export interface TableCoords {
 
 /** 表格行或表格 */
 export abstract class TrBaseToken extends TableBaseToken {
-	declare type: 'table' | 'tr';
+	abstract override get type(): 'table' | 'tr';
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {

@@ -6,7 +6,9 @@ import type {Token} from '../index';
 /** 状态开关 */
 @hiddenToken(true)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
-	override readonly type = 'double-underscore';
+	override get type(): 'double-underscore' {
+		return 'double-underscore';
+	}
 
 	/**
 	 * @param word 状态开关名

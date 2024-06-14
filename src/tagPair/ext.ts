@@ -22,12 +22,15 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
 export abstract class ExtToken extends TagPairToken {
-	override readonly type = 'ext';
 	declare closed: true;
 
 	declare readonly childNodes: readonly [AttributesToken, Token];
 	abstract override get firstChild(): AttributesToken;
 	abstract override get lastChild(): Token;
+
+	override get type(): 'ext' {
+		return 'ext';
+	}
 
 	/**
 	 * @param name 标签名
@@ -154,7 +157,9 @@ export abstract class ExtToken extends TagPairToken {
 			}
 		}
 		innerToken.setAttribute('name', lcName);
-		innerToken.type = 'ext-inner';
+		if (innerToken.type === 'plain') {
+			innerToken.type = 'ext-inner';
+		}
 		super(name, attrToken, innerToken, closed, config, accum);
 		this.seal('closed', true);
 	}

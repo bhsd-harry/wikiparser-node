@@ -14,12 +14,15 @@ import type {QuoteToken} from '../internal';
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
 export abstract class HeadingToken extends Token {
-	override readonly type = 'heading';
 	#level;
 
 	declare readonly childNodes: readonly [Token, SyntaxToken];
 	abstract override get firstChild(): Token;
 	abstract override get lastChild(): SyntaxToken;
+
+	override get type(): 'heading' {
+		return 'heading';
+	}
 
 	/** 标题格式的等号 */
 	get #equals(): string {

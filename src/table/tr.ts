@@ -7,13 +7,15 @@ import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
  */
 export abstract class TrToken extends TrBaseToken {
-	override readonly type = 'tr';
-
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...TdToken[]];
 	abstract override get lastChild(): AttributesToken | TdToken;
 	abstract override get parentNode(): TableToken | undefined;
 	abstract override get nextSibling(): this | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token;
+
+	override get type(): 'tr' {
+		return 'tr';
+	}
 
 	/**
 	 * @param syntax 表格语法

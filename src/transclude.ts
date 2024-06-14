@@ -33,8 +33,8 @@ const insensitiveVars = new Set<string | undefined>([
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
 export abstract class TranscludeToken extends Token {
-	override type: 'template' | 'magic-word' = 'template';
 	readonly modifier: string = '';
+	#type: 'template' | 'magic-word' = 'template';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 
@@ -79,7 +79,7 @@ export abstract class TranscludeToken extends Token {
 				isVar = isSensitive || insensitiveVars.has(canonicalName);
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName ?? lcName);
-				this.type = 'magic-word';
+				this.#type = 'magic-word';
 				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 					});

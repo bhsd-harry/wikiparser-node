@@ -11,11 +11,13 @@ import type {AstText, Token} from '../../internal';
  */
 @hiddenToken()
 export abstract class IncludeToken extends TagPairToken {
-	override readonly type = 'include';
-
 	declare readonly childNodes: readonly [AstText, AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
+
+	override get type(): 'include' {
+		return 'include';
+	}
 
 	/**
 	 * @param name 标签名

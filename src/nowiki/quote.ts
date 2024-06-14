@@ -9,7 +9,9 @@ import type {
 
 /** `''`和`'''` */
 export abstract class QuoteToken extends NowikiBaseToken {
-	override readonly type = 'quote';
+	override get type(): 'quote' {
+		return 'quote';
+	}
 
 	/** 是否粗体 */
 	get bold(): boolean {
