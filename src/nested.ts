@@ -15,7 +15,6 @@ import type {AttributesToken} from './attributes';
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
 export abstract class NestedToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: string;
 
 	/* NOT FOR BROWSER */
@@ -42,6 +41,10 @@ export abstract class NestedToken extends Token {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/**
 	 * @param regex 内层正则
@@ -130,7 +133,6 @@ export abstract class NestedToken extends Token {
 		return super.insertAt(token, i);
 	}
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');

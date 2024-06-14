@@ -5,14 +5,12 @@ import {NowikiBaseToken} from './base';
 /** `<noinclude>`和`</noinclude>`，不可进行任何更改 */
 @hiddenToken(true)
 export abstract class NoincludeToken extends NowikiBaseToken {
-	override readonly type = 'noinclude';
+	override get type(): 'noinclude' {
+		return 'noinclude';
+	}
 
 	/* NOT FOR BROWSER */
 
-	/**
-	 * @override
-	 * @param str 新文本
-	 */
 	override setText(str: string): string {
 		if (/^<\/?(?:(?:no|only)include|includeonly)(?:\s[^>]*)?\/?>$/iu.test(this.innerText)) {
 			this.constructorError('cannot change the text content');

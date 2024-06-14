@@ -20,7 +20,6 @@ import type {
  * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
  */
 export abstract class GalleryToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
@@ -38,6 +37,14 @@ export abstract class GalleryToken extends Token {
 	abstract override get nextElementSibling(): undefined;
 	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentElement(): ExtToken | undefined;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 所有图片 */
 	override get images(): GalleryImageToken[] {
@@ -142,7 +149,6 @@ export abstract class GalleryToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

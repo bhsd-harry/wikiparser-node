@@ -27,7 +27,6 @@ const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
  */
 @fixedToken
 export abstract class ParameterToken extends Token {
-	override readonly type = 'parameter';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [Token, Token];
@@ -47,6 +46,10 @@ export abstract class ParameterToken extends Token {
 	abstract override get previousElementSibling(): AtomToken | SyntaxToken | this;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'parameter' {
+		return 'parameter';
+	}
 
 	/** 是否是匿名参数 */
 	get anon(): boolean {
@@ -141,7 +144,6 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? this.lastChild.toString() : super.toString('=');
 	}
 
-	/** @override */
 	override text(): string {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}
@@ -191,7 +193,6 @@ export abstract class ParameterToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [Token, Token],
 			config = this.getAttribute('config');
@@ -207,10 +208,6 @@ export abstract class ParameterToken extends Token {
 		});
 	}
 
-	/**
-	 * @override
-	 * @param token 待替换的节点
-	 */
 	override safeReplaceWith(token: this): void {
 		Parser.warn(`${this.constructor.name}.safeReplaceWith regress to AstNode.replaceWith.`);
 		this.replaceWith(token);

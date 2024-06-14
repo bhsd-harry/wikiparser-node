@@ -5,7 +5,7 @@ import {NowikiBaseToken} from './base';
 /** `;:*#` */
 @syntax(/^[;:*#]+$/u)
 export abstract class ListBaseToken extends NowikiBaseToken {
-	declare type: 'dd' | 'list';
+	abstract override get type(): 'dd' | 'list';
 }
 
 classes['ListBase'] = __filename;

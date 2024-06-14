@@ -33,7 +33,6 @@ export interface ExtToken extends AttributesParentBase {}
  */
 @attributesParent()
 export abstract class ExtToken extends TagPairToken {
-	override readonly type = 'ext';
 	declare closed: true;
 
 	declare readonly childNodes: readonly [AttributesToken, Token];
@@ -46,6 +45,10 @@ export abstract class ExtToken extends TagPairToken {
 	abstract override get firstElementChild(): AttributesToken;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext' {
+		return 'ext';
+	}
 
 	/**
 	 * @param name 标签名
@@ -171,7 +174,9 @@ export abstract class ExtToken extends TagPairToken {
 			}
 		}
 		innerToken.setAttribute('name', lcName);
-		innerToken.type = 'ext-inner';
+		if (innerToken.type === 'plain') {
+			innerToken.type = 'ext-inner';
+		}
 		super(name, attrToken, innerToken, closed, config, accum);
 		this.seal('closed', true);
 	}
@@ -191,7 +196,6 @@ export abstract class ExtToken extends TagPairToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const inner = this.lastChild.cloneNode(),
 			tags = this.getAttribute('tags'),

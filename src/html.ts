@@ -57,7 +57,6 @@ export interface HtmlToken extends AttributesParentBase {}
  */
 @fixedToken @attributesParent()
 export abstract class HtmlToken extends Token {
-	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;
 	#selfClosing;
@@ -74,6 +73,10 @@ export abstract class HtmlToken extends Token {
 	abstract override get lastElementChild(): AttributesToken;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'html' {
+		return 'html';
+	}
 
 	/** 是否自封闭 */
 	get selfClosing(): boolean {
@@ -291,7 +294,6 @@ export abstract class HtmlToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [attr] = this.cloneChildNodes() as [AttributesToken],
 			config = this.getAttribute('config');

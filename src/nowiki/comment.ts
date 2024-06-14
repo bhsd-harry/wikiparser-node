@@ -10,8 +10,11 @@ import type {Token} from '../index';
 /** HTML注释，不可见 */
 @hiddenToken()
 export abstract class CommentToken extends NowikiBaseToken {
-	override readonly type = 'comment';
 	closed;
+
+	override get type(): 'comment' {
+		return 'comment';
+	}
 
 	/* NOT FOR BROWSER */
 
@@ -71,7 +74,6 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		// @ts-expect-error abstract class
 		return Shadow.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);

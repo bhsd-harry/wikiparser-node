@@ -8,7 +8,9 @@ import {Token} from './index';
  * @classdesc `{childNodes: ...AstText|Token}`
  */
 export class OnlyincludeToken extends Token {
-	override readonly type = 'onlyinclude';
+	override get type(): 'onlyinclude' {
+		return 'onlyinclude';
+	}
 
 	/* NOT FOR BROWSER */
 
@@ -50,7 +52,6 @@ export class OnlyincludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

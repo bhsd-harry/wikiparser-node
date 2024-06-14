@@ -20,8 +20,7 @@ declare type NowikiTypes = 'ext-inner'
  */
 @fixedToken
 export abstract class NowikiBaseToken extends Token {
-	declare type: NowikiTypes;
-
+	abstract override get type(): NowikiTypes;
 	declare readonly childNodes: readonly [AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
@@ -46,12 +45,10 @@ export abstract class NowikiBaseToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
-		const {constructor, firstChild: {data}, type} = this;
+		const {constructor, firstChild: {data}} = this;
 		return Shadow.run(() => {
 			const token = new constructor(data, this.getAttribute('config')) as this;
-			token.type = type;
 			return token;
 		});
 	}

@@ -10,14 +10,16 @@ import type {Token} from '../index';
 @syntax()
 @hiddenToken(true)
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
-	override readonly type = 'double-underscore';
-
 	/* NOT FOR BROWSER */
 
 	declare readonly name: string;
 	readonly #sensitive;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'double-underscore' {
+		return 'double-underscore';
+	}
 
 	/**
 	 * @param word 状态开关名
@@ -50,7 +52,6 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const config = this.getAttribute('config');
 		// @ts-expect-error abstract class

@@ -41,8 +41,8 @@ const insensitiveVars = new Set<string | undefined>([
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
  */
 export abstract class TranscludeToken extends Token {
-	override type: 'template' | 'magic-word' = 'template';
 	readonly modifier: string = '';
+	#type: 'template' | 'magic-word' = 'template';
 
 	/* NOT FOR BROWSER */
 
@@ -65,6 +65,14 @@ export abstract class TranscludeToken extends Token {
 	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstElementChild(): AtomToken | SyntaxToken;
 	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'template' | 'magic-word' {
+		return this.#type;
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 是否存在重复参数 */
 	get duplication(): boolean {
@@ -116,7 +124,7 @@ export abstract class TranscludeToken extends Token {
 				isVar = isSensitive || insensitiveVars.has(canonicalName);
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName ?? lcName);
-				this.type = 'magic-word';
+				this.#type = 'magic-word';
 				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 				/^\s*uc\s*$/iu;
 				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
@@ -515,7 +523,6 @@ export abstract class TranscludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [first, ...cloned] = this.cloneChildNodes(),
 			config = this.getAttribute('config');

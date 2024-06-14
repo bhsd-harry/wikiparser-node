@@ -14,7 +14,6 @@ import type {AttributesToken, ExtToken} from '../../internal';
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export abstract class ParamTagToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly AtomToken[];
@@ -34,6 +33,10 @@ export abstract class ParamTagToken extends Token {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
@@ -93,7 +96,6 @@ export abstract class ParamTagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

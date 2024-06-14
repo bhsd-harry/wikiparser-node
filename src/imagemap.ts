@@ -30,7 +30,6 @@ import type {
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
 export abstract class ImagemapToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: 'imagemap';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
@@ -50,6 +49,10 @@ export abstract class ImagemapToken extends Token {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {
@@ -205,7 +208,6 @@ export abstract class ImagemapToken extends Token {
 		return super.removeAt(i);
 	}
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

@@ -19,7 +19,6 @@ import type {QuoteToken} from '../internal';
  */
 @fixedToken @sol
 export abstract class HeadingToken extends Token {
-	override readonly type = 'heading';
 	#level;
 
 	declare readonly childNodes: readonly [Token, SyntaxToken];
@@ -33,6 +32,10 @@ export abstract class HeadingToken extends Token {
 	abstract override get lastElementChild(): SyntaxToken;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'heading' {
+		return 'heading';
+	}
 
 	/** 标题格式的等号 */
 	get #equals(): string {
@@ -161,7 +164,6 @@ export abstract class HeadingToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [title, trail] = this.cloneChildNodes() as [Token, SyntaxToken];
 		return Shadow.run(() => {

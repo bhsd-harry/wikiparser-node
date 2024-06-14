@@ -13,8 +13,6 @@ import type {AstText, Token} from '../../internal';
  */
 @hiddenToken()
 export abstract class IncludeToken extends TagPairToken {
-	override readonly type = 'include';
-
 	declare readonly childNodes: readonly [AstText, AstText];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
@@ -25,7 +23,14 @@ export abstract class IncludeToken extends TagPairToken {
 	abstract override get firstElementChild(): undefined;
 	abstract override get lastElementChild(): undefined;
 
-	/** @override */
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'include' {
+		return 'include';
+	}
+
+	/* NOT FOR BROWSER */
+
 	override get innerText(): string | undefined {
 		return this.selfClosing ? undefined : this.lastChild.data;
 	}
@@ -69,7 +74,6 @@ export abstract class IncludeToken extends TagPairToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),

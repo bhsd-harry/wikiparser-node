@@ -8,12 +8,12 @@ import type {AstNodes} from '../../lib/node';
 /** 成对标签 */
 @fixedToken
 export abstract class TagPairToken extends Token {
-	declare type: 'ext' | 'include';
 	declare readonly name: string;
 	readonly #tags: [string, string];
 	closed;
 	selfClosing;
 
+	abstract override get type(): 'ext' | 'include';
 	declare readonly childNodes: readonly [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;

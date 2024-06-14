@@ -46,8 +46,8 @@ const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(ty
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
 export abstract class AttributesToken extends Token {
-	declare type: AttributesTypes;
 	declare readonly name: string;
+	#type;
 
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
@@ -60,6 +60,14 @@ export abstract class AttributesToken extends Token {
 	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): AttributesTypes {
+		return this.#type;
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** getAttrs()方法的getter写法 */
 	get attributes(): Record<string, string | true> {
@@ -128,7 +136,7 @@ export abstract class AttributesToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: ':', AttributeToken: ':',
 		});
-		this.type = type;
+		this.#type = type;
 		this.setAttribute('name', name);
 		if (attr) {
 			regex.lastIndex = 0;
@@ -280,7 +288,6 @@ export abstract class AttributesToken extends Token {
 		}
 	}
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

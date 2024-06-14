@@ -7,7 +7,6 @@ import type {AttributesToken, ExtToken} from '../../internal';
 
 /** 扩展标签内的纯文字Token */
 export abstract class NowikiToken extends NowikiBaseToken {
-	override readonly type = 'ext-inner';
 	declare readonly name: string;
 
 	abstract override get nextSibling(): undefined;
@@ -21,6 +20,10 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {

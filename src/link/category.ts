@@ -9,8 +9,6 @@ import type {Token, AtomToken} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 export abstract class CategoryToken extends LinkBaseToken {
-	override readonly type = 'category';
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
 
 	/* NOT FOR BROWSER */
@@ -18,6 +16,14 @@ export abstract class CategoryToken extends LinkBaseToken {
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
 	abstract override get link(): Title;
 	abstract override set link(link: string);
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'category' {
+		return 'category';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 分类排序关键字 */
 	get sortkey(): string | undefined {

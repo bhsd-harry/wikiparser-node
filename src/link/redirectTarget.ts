@@ -12,8 +12,6 @@ import type {Token, AtomToken} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 export abstract class RedirectTargetToken extends LinkBaseToken {
-	override readonly type = 'redirect-target';
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
 	abstract override get lastChild(): AtomToken | NoincludeToken;
 
@@ -24,7 +22,14 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	abstract override get link(): Title;
 	abstract override set link(link: string);
 
-	/** @override */
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'redirect-target' {
+		return 'redirect-target';
+	}
+
+	/* NOT FOR BROWSER */
+
 	override get fragment(): string | undefined {
 		return super.fragment;
 	}

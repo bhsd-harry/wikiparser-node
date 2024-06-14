@@ -78,7 +78,6 @@ function validate(
 
 /** 图片参数 */
 export abstract class ImageParameterToken extends Token {
-	override readonly type = 'image-parameter';
 	declare readonly name: string;
 	#syntax = '';
 	#extension;
@@ -94,6 +93,10 @@ export abstract class ImageParameterToken extends Token {
 	abstract override get previousElementSibling(): AtomToken | this;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'image-parameter' {
+		return 'image-parameter';
+	}
 
 	/** 图片链接 */
 	get link(): string | Title | undefined {
@@ -285,7 +288,6 @@ export abstract class ImageParameterToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');

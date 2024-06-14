@@ -7,7 +7,9 @@ import type {AstText, DdToken} from '../../internal';
 /** 位于行首的`;:*#` */
 @sol
 export abstract class ListToken extends ListBaseToken {
-	override readonly type = 'list';
+	override get type(): 'list' {
+		return 'list';
+	}
 
 	/* NOT FOR BROWSER */
 

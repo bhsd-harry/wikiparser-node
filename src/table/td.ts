@@ -46,7 +46,6 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
  */
 @fixedToken
 export abstract class TdToken extends TableBaseToken {
-	override readonly type = 'td';
 	#innerSyntax = '';
 	#syntax: [number, TdSyntax] | undefined;
 
@@ -62,6 +61,10 @@ export abstract class TdToken extends TableBaseToken {
 	abstract override get nextElementSibling(): this | TrToken | SyntaxToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'td' {
+		return 'td';
+	}
 
 	/** rowspan */
 	get rowspan(): number {
@@ -299,10 +302,6 @@ export abstract class TdToken extends TableBaseToken {
 		return this.firstChild.text().startsWith('\n');
 	}
 
-	/**
-	 * @override
-	 * @param key 属性键
-	 */
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
 		key = key.toLowerCase().trim() as T;
@@ -324,7 +323,6 @@ export abstract class TdToken extends TableBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const token = super.cloneNode();
 		token.setAttribute('innerSyntax', this.#innerSyntax);
@@ -365,7 +363,6 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/** @override */
 	override getAttrs(): TdAttrs {
 		const attr: TdAttrs = super.getAttrs();
 		if ('rowspan' in attr) {

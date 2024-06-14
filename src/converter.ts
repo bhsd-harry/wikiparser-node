@@ -19,8 +19,6 @@ export interface ConverterToken extends FlagsParentBase {}
  */
 @flagsParent
 export abstract class ConverterToken extends Token {
-	override readonly type = 'converter';
-
 	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
@@ -30,6 +28,14 @@ export abstract class ConverterToken extends Token {
 	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
 	abstract override get firstElementChild(): ConverterFlagsToken;
 	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'converter' {
+		return 'converter';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 是否不转换 */
 	get noConvert(): boolean {
@@ -103,7 +109,6 @@ export abstract class ConverterToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [flags, ...rules] = this.cloneChildNodes() as [ConverterFlagsToken, ...ConverterRuleToken[]];
 		return Shadow.run(() => {

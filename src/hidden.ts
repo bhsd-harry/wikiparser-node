@@ -7,7 +7,9 @@ import type {Config} from '../base';
 /** 不可见的节点 */
 @hiddenToken(true)
 export class HiddenToken extends Token {
-	override readonly type = 'hidden';
+	override get type(): 'hidden' {
+		return 'hidden';
+	}
 
 	/* NOT FOR BROWSER */
 
@@ -18,7 +20,6 @@ export class HiddenToken extends Token {
 		});
 	}
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config');

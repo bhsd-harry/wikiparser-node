@@ -48,7 +48,7 @@ const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
  */
 @syntax()
 export abstract class MagicLinkToken extends Token {
-	declare type: ExtLinkTypes;
+	#type;
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
@@ -63,6 +63,10 @@ export abstract class MagicLinkToken extends Token {
 		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): ExtLinkTypes {
+		return this.#type;
+	}
 
 	/** 和内链保持一致 */
 	get link(): string {
@@ -110,7 +114,7 @@ export abstract class MagicLinkToken extends Token {
 		super(url, config, accum, {
 			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
-		this.type = type;
+		this.#type = type;
 
 		/* NOT FOR BROWSER */
 
@@ -207,7 +211,6 @@ export abstract class MagicLinkToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

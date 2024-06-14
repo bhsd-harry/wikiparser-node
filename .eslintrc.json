@@ -710,7 +710,7 @@
 				"contexts": [
 					"FunctionDeclaration:not(TSDeclareFunction + FunctionDeclaration)",
 					"TSDeclareFunction:not(TSDeclareFunction + TSDeclareFunction)",
-					"MethodDefinition:not(MethodDefinition:has(TSEmptyBodyFunctionExpression) + MethodDefinition, [kind='get'] + [kind='set'])"
+					"MethodDefinition:not(MethodDefinition:has(TSEmptyBodyFunctionExpression) + MethodDefinition, [kind='get'] + [kind='set'], [override=true])"
 				],
 				"require": {
 					"ArrowFunctionExpression": true,

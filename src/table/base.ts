@@ -34,8 +34,7 @@ export interface TableBaseToken extends AttributesParentBase {}
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
 export abstract class TableBaseToken extends attributesParent(1)(Token) {
-	declare type: TableTypes;
-
+	abstract override get type(): TableTypes;
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): Token;
@@ -79,7 +78,6 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [syntax, attr, ...cloned] = this.cloneChildNodes() as [SyntaxToken, AttributesToken, ...Token[]];
 		return Shadow.run(() => {

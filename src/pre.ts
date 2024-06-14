@@ -17,7 +17,6 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
 export abstract class PreToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: 'pre';
 
 	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
@@ -37,6 +36,10 @@ export abstract class PreToken extends Token {
 	abstract override get parentElement(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
@@ -79,7 +82,6 @@ export abstract class PreToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

@@ -15,7 +15,6 @@ const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export abstract class ConverterFlagsToken extends Token {
-	override readonly type = 'converter-flags';
 	#flags?: string[];
 
 	declare readonly childNodes: readonly AtomToken[];
@@ -33,6 +32,14 @@ export abstract class ConverterFlagsToken extends Token {
 	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousElementSibling(): undefined;
 	abstract override get nextElementSibling(): ConverterRuleToken | undefined;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'converter-flags' {
+		return 'converter-flags';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 所有转换类型标记 */
 	get flags(): Set<string> {
@@ -147,7 +154,6 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {

@@ -15,8 +15,6 @@ import type {AstText, ImagemapToken} from '../internal';
  */
 @fixedToken @singleLine
 export abstract class ImagemapLinkToken extends Token {
-	override readonly type = 'imagemap-link';
-
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): NoincludeToken;
@@ -28,6 +26,14 @@ export abstract class ImagemapLinkToken extends Token {
 	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
 	abstract override get lastElementChild(): NoincludeToken;
 	abstract override get parentElement(): ImagemapToken | undefined;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'imagemap-link' {
+		return 'imagemap-link';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 内外链接 */
 	get link(): string | Title {

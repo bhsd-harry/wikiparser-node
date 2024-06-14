@@ -3,7 +3,9 @@ import {ListBaseToken} from './listBase';
 
 /** `:` */
 export abstract class DdToken extends ListBaseToken {
-	override readonly type = 'dd';
+	override get type(): 'dd' {
+		return 'dd';
+	}
 
 	/* NOT FOR BROWSER */
 

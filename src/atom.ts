@@ -3,25 +3,40 @@ import {classes} from '../util/constants';
 import {Token} from './index';
 import type {Config} from '../base';
 
-declare type AtomTypes = 'arg-name'
-| 'attr-key'
-| 'attr-value'
-| 'ext-attr-dirty'
-| 'html-attr-dirty'
-| 'table-attr-dirty'
-| 'converter-flag'
-| 'converter-rule-variant'
-| 'converter-rule-to'
-| 'converter-rule-from'
-| 'invoke-function'
-| 'invoke-module'
-| 'template-name'
-| 'link-target'
-| 'param-line';
+const atomTypes = [
+	'arg-name',
+	'attr-key',
+	'attr-value',
+	'ext-attr-dirty',
+	'html-attr-dirty',
+	'table-attr-dirty',
+	'converter-flag',
+	'converter-rule-variant',
+	'converter-rule-to',
+	'converter-rule-from',
+	'invoke-function',
+	'invoke-module',
+	'template-name',
+	'link-target',
+	'param-line',
+] as const;
+
+declare type AtomTypes = typeof atomTypes[number];
 
 /** 不会被继续解析的plain Token */
 export class AtomToken extends Token {
-	declare type: AtomTypes;
+	#type;
+
+	override get type(): AtomTypes {
+		return this.#type;
+	}
+
+	override set type(value) {
+		if (!atomTypes.includes(value)) {
+			throw new RangeError(`"${value}" is not a valid type for AtomToken!`);
+		}
+		this.#type = value;
+	}
 
 	/** @class */
 	constructor(
@@ -32,12 +47,11 @@ export class AtomToken extends Token {
 		acceptable?: Acceptable,
 	) {
 		super(wikitext, config, accum, acceptable);
-		this.type = type;
+		this.#type = type;
 	}
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),

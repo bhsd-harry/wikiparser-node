@@ -91,6 +91,25 @@ declare interface LintIgnore {
 
 export type TagToken = IncludeToken | ExtToken | HtmlToken;
 
+/* NOT FOR BROWSER END */
+
+const plainTypes = new Set<TokenTypes>([
+	'plain',
+	'root',
+	'table-inter',
+	'arg-default',
+	'attr-value',
+	'ext-link-text',
+	'heading-title',
+	'parameter-key',
+	'parameter-value',
+	'link-text',
+	'td-inner',
+	'ext-inner',
+]);
+
+/* NOT FOR BROWSER */
+
 /**
  * 可接受的Token类型
  * @param value 可接受的Token类型
@@ -120,7 +139,7 @@ const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 export class Token extends AstElement {
-	override type: TokenTypes = 'plain';
+	#type: TokenTypes = 'plain';
 
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */
 	#stage = 0;
@@ -136,6 +155,21 @@ export class Token extends AstElement {
 
 	#acceptable?: Record<string, Ranges> | (() => Record<string, Ranges>);
 	readonly #protectedChildren = new Ranges();
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): TokenTypes {
+		return this.#type;
+	}
+
+	override set type(value) {
+		if (!plainTypes.has(value)) {
+			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);
+		}
+		this.#type = value;
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 所有图片，包括图库 */
 	get images(): FileToken[] {

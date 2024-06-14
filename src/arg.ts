@@ -17,7 +17,6 @@ import type {
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 export abstract class ArgToken extends Token {
-	override readonly type = 'arg';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
@@ -31,6 +30,10 @@ export abstract class ArgToken extends Token {
 	abstract override get lastElementChild(): Token;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'arg' {
+		return 'arg';
+	}
 
 	/** 预设值 */
 	get default(): string | false {
@@ -147,7 +150,6 @@ export abstract class ArgToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [name, ...cloned] = this.cloneChildNodes() as [AtomToken, ...Token[]];
 		return Shadow.run(() => {

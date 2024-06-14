@@ -21,12 +21,12 @@ import type {AstText} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ...Token]}`
  */
 export abstract class LinkBaseToken extends Token {
-	declare type: 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image' | 'redirect-target';
 	declare readonly name: string;
 	#bracket = true;
 	#delimiter;
 	#title: Title;
 
+	abstract override get type(): 'link' | 'category' | 'file' | 'gallery-image' | 'imagemap-image' | 'redirect-target';
 	declare readonly childNodes: readonly [AtomToken, ...Token[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
@@ -227,7 +227,6 @@ export abstract class LinkBaseToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
 		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...Token[]];
 		return Shadow.run(() => {

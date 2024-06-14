@@ -23,7 +23,6 @@ export interface ExtLinkToken extends MagicLinkParentBase {}
  */
 @magicLinkParent
 export abstract class ExtLinkToken extends Token {
-	override readonly type = 'ext-link';
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
@@ -35,6 +34,14 @@ export abstract class ExtLinkToken extends Token {
 	abstract override get children(): [MagicLinkToken] | [MagicLinkToken, Token];
 	abstract override get firstElementChild(): MagicLinkToken;
 	abstract override get lastElementChild(): Token;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'ext-link' {
+		return 'ext-link';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 链接显示文字 */
 	get innerText(): string {
@@ -139,7 +146,6 @@ export abstract class ExtLinkToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const [url, text] = this.cloneChildNodes() as [MagicLinkToken, Token?];
 		return Shadow.run(() => {

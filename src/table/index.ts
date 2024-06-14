@@ -72,8 +72,6 @@ export class Layout extends Array<TableCoords[]> {
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 export abstract class TableToken extends TrBaseToken {
-	override readonly type = 'table';
-
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 	| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
@@ -85,6 +83,10 @@ export abstract class TableToken extends TrBaseToken {
 	abstract override get lastElementChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'table' {
+		return 'table';
+	}
 
 	/** 表格是否闭合 */
 	get closed(): boolean {
@@ -353,7 +355,6 @@ export abstract class TableToken extends TrBaseToken {
 		return super.insertAt(token, i);
 	}
 
-	/** @override */
 	override getRowCount(): number {
 		return super.getRowCount() + this.childNodes.filter(child => child.type === 'tr' && child.getRowCount()).length;
 	}
@@ -450,14 +451,6 @@ export abstract class TableToken extends TrBaseToken {
 		this.fillTable(inner, subtype, attr);
 	}
 
-	/**
-	 * @override
-	 * @param inner 单元格内部wikitext
-	 * @param coords 单元格坐标
-	 * @param subtype 单元格类型
-	 * @param attr 单元格属性
-	 * @throws `RangeError` 指定的坐标不是单元格起始点
-	 */
 	override insertTableCell(
 		inner: string | Token,
 		coords: TableCoords | TableRenderedCoords,

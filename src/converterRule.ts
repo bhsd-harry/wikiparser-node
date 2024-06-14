@@ -10,8 +10,6 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export abstract class ConverterRuleToken extends Token {
-	override readonly type = 'converter-rule';
-
 	declare readonly childNodes: readonly [AtomToken]
 	| readonly [AtomToken, AtomToken]
 	| readonly [AtomToken, AtomToken, AtomToken];
@@ -29,6 +27,14 @@ export abstract class ConverterRuleToken extends Token {
 	abstract override get parentElement(): ConverterToken | undefined;
 	abstract override get previousElementSibling(): ConverterFlagsToken | this;
 	abstract override get nextElementSibling(): this | undefined;
+
+	/* NOT FOR BROWSER END */
+
+	override get type(): 'converter-rule' {
+		return 'converter-rule';
+	}
+
+	/* NOT FOR BROWSER */
 
 	/** 语言变体 */
 	get variant(): string {
@@ -143,7 +149,6 @@ export abstract class ConverterRuleToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes() as AtomToken[],
 			placeholders = ['', 'zh:', '=>zh:'],
@@ -189,7 +194,6 @@ export abstract class ConverterRuleToken extends Token {
 		return super.removeAt(i) as AtomToken;
 	}
 
-	/** @override */
 	override insertAt(): never {
 		this.constructorError('has complex syntax. Do not try to insert child nodes manually');
 	}

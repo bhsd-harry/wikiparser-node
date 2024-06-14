@@ -12,21 +12,20 @@ import type {
 /** `''`和`'''` */
 @syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
-	override readonly type = 'quote';
+	override get type(): 'quote' {
+		return 'quote';
+	}
 
-	/** @override */
 	override get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
-	/** @override */
 	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override get font(): {bold: boolean, italic: boolean} {
 		return {bold: this.bold, italic: this.italic};
 	}

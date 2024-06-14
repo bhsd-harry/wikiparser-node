@@ -15,7 +15,6 @@ import type {LintError} from '../base';
 @fixedToken
 @hiddenToken()
 export abstract class RedirectToken extends Token {
-	override readonly type = 'redirect';
 	#pre: string;
 	#post: string;
 
@@ -32,6 +31,10 @@ export abstract class RedirectToken extends Token {
 	abstract override get previousElementSibling(): undefined;
 
 	/* NOT FOR BROWSER END */
+
+	override get type(): 'redirect' {
+		return 'redirect';
+	}
 
 	/**
 	 * @param pre leading whitespace
@@ -86,7 +89,6 @@ export abstract class RedirectToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes() as [SyntaxToken, RedirectTargetToken],
 			config = this.getAttribute('config');

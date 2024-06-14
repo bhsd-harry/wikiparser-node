@@ -5,7 +5,7 @@ import {Token} from './index';
 import type {Config} from '../base';
 import type {SyntaxBase} from '../mixin/syntax';
 
-declare type SyntaxTypes = 'plain' | 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
+declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
 /** NOT FOR BROWSER */
 
@@ -16,19 +16,23 @@ export interface SyntaxToken extends SyntaxBase {}
 /** 满足特定语法格式的plain Token */
 @syntax()
 export class SyntaxToken extends Token {
-	declare type: SyntaxTypes;
+	#type;
+
+	override get type(): SyntaxTypes {
+		return this.#type;
+	}
 
 	/** @param pattern 语法正则 */
 	constructor(
 		wikitext: string | undefined,
 		pattern: RegExp,
-		type: SyntaxTypes = 'plain',
+		type: SyntaxTypes,
 		config?: Config,
 		accum?: Token[],
 		acceptable?: Acceptable,
 	) {
 		super(wikitext, config, accum, acceptable);
-		this.type = type;
+		this.#type = type;
 
 		/* NOT FOR BROWSER */
 
@@ -42,7 +46,6 @@ export class SyntaxToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** @override */
 	override cloneNode(): this {
 		const cloned = this.cloneChildNodes(),
 			config = this.getAttribute('config'),
