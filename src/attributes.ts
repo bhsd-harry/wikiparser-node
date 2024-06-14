@@ -33,13 +33,17 @@ const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(ty
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
  */
 export abstract class AttributesToken extends Token {
-	declare type: AttributesTypes;
 	declare readonly name: string;
+	#type;
 
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+
+	override get type(): AttributesTypes {
+		return this.#type;
+	}
 
 	/**
 	 * @param attr 标签属性
@@ -55,7 +59,7 @@ export abstract class AttributesToken extends Token {
 	) {
 		super(undefined, config, accum, {
 		});
-		this.type = type;
+		this.#type = type;
 		this.setAttribute('name', name);
 		if (attr) {
 			regex.lastIndex = 0;

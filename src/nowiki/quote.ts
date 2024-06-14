@@ -8,14 +8,14 @@ import type {
 
 /** `''`和`'''` */
 export abstract class QuoteToken extends NowikiBaseToken {
-	override readonly type = 'quote';
+	override get type(): 'quote' {
+		return 'quote';
+	}
 
-	/** @override */
 	override get bold(): boolean {
 		return this.innerText.length !== 2;
 	}
 
-	/** @override */
 	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}

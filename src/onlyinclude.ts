@@ -5,7 +5,9 @@ import {Token} from './index';
  * @classdesc `{childNodes: ...AstText|Token}`
  */
 export class OnlyincludeToken extends Token {
-	override readonly type = 'onlyinclude';
+	override get type(): 'onlyinclude' {
+		return 'onlyinclude';
+	}
 
 	/** @private */
 	override toString(): string {

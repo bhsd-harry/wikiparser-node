@@ -11,11 +11,13 @@ import {ConverterRuleToken} from './converterRule';
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
 export abstract class ConverterToken extends Token {
-	override readonly type = 'converter';
-
 	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
+
+	override get type(): 'converter' {
+		return 'converter';
+	}
 
 	/**
 	 * @param flags 转换类型标记

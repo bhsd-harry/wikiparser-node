@@ -27,7 +27,6 @@ declare type TdAttrGetter<T extends string> = T extends keyof TdSpanAttrs ? numb
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 export abstract class TdToken extends TableBaseToken {
-	override readonly type = 'td';
 	#innerSyntax = '';
 	#syntax: [number, TdSyntax] | undefined;
 
@@ -35,6 +34,10 @@ export abstract class TdToken extends TableBaseToken {
 	abstract override get parentNode(): TrToken | TableToken | undefined;
 	abstract override get nextSibling(): this | TrToken | SyntaxToken | undefined;
 	abstract override get previousSibling(): Token | undefined;
+
+	override get type(): 'td' {
+		return 'td';
+	}
 
 	/** rowspan */
 	get rowspan(): number {
@@ -181,10 +184,6 @@ export abstract class TdToken extends TableBaseToken {
 		return this.firstChild.text().startsWith('\n');
 	}
 
-	/**
-	 * @override
-	 * @param key 属性键
-	 */
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
 		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;

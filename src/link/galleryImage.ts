@@ -12,7 +12,12 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
 
 /** 图库图片 */
 export abstract class GalleryImageToken extends FileToken {
-	declare type: `${GalleryTypes}-image`;
+	/** @private */
+	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';
+
+	override get type(): `${GalleryTypes}-image` {
+		return this.privateType;
+	}
 
 	/**
 	 * @param type 图片类型
@@ -37,7 +42,8 @@ export abstract class GalleryImageToken extends FileToken {
 		}
 		super(link, token?.toString(), config, accum);
 		this.setAttribute('bracket', false);
-		this.type = `${type}-image`;
+		this.privateType = `${type}-image`;
+		this.seal('privateType', true);
 	}
 
 	/** @private */

@@ -8,9 +8,11 @@ import type {Token, AtomToken} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 export abstract class LinkToken extends LinkBaseToken {
-	override readonly type = 'link';
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
+
+	override get type(): 'link' {
+		return 'link';
+	}
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {

@@ -22,11 +22,15 @@ const space = String.raw`(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
 export abstract class MagicLinkToken extends Token {
-	declare type: ExtLinkTypes;
+	#type;
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
+
+	override get type(): ExtLinkTypes {
+		return this.#type;
+	}
 
 	/** 和内链保持一致 */
 	get link(): string {
@@ -51,7 +55,7 @@ export abstract class MagicLinkToken extends Token {
 	constructor(url?: string, type: ExtLinkTypes = 'free-ext-link', config = Parser.getConfig(), accum?: Token[]) {
 		super(url, config, accum, {
 		});
-		this.type = type;
+		this.#type = type;
 	}
 
 	/** @private */

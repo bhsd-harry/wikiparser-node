@@ -28,11 +28,13 @@ export class Layout extends Array<TableCoords[]> {
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken, ...TrToken, ?SyntaxToken]}`
  */
 export abstract class TableToken extends TrBaseToken {
-	override readonly type = 'table';
-
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
 	| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
+
+	override get type(): 'table' {
+		return 'table';
+	}
 
 	/** 表格是否闭合 */
 	get closed(): boolean {

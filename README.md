@@ -4,54 +4,54 @@
 
 # Other Languages
 
-- [English](./README.en.md)
+- [简体中文](./README-%28ZH%29.md)
 
-# 简介
+# Introduction
 
-WikiParser-Node 是一款由 Bhsd 开发的基于 [Node.js](https://nodejs.org/) 环境的离线[维基文本](https://www.mediawiki.org/wiki/Wikitext)语法解析器，可以解析几乎全部的维基语法并生成[语法树](https://en.wikipedia.org/wiki/Abstract_syntax_tree)（[在线解析](https://bhsd-harry.github.io/wikiparser-node/#editor)），还可以很方便地对语法树进行查询和修改，最后返回修改后的维基文本。
+WikiParser-Node is an offline [Wikitext](https://www.mediawiki.org/wiki/Wikitext) parser developed by Bhsd for the [Node.js](https://nodejs.org/) environment. It can parse almost all wiki syntax and generate an [Abstract Syntax Tree (AST)](https://en.wikipedia.org/wiki/Abstract_syntax_tree) ([Try it online](https://bhsd-harry.github.io/wikiparser-node/#editor)). It also allows for easy querying and modification of the AST, and returns the modified wikitext.
 
-# 其他版本
+# Other Versions
 
-## Mini (又名 [WikiLint](https://www.npmjs.com/package/wikilint))
+## Mini (also known as [WikiLint](https://www.npmjs.com/package/wikilint))
 
-提供了 [CLI](https://en.wikipedia.org/wiki/Command-line_interface)，但仅保留了解析功能和语法错误分析功能，解析生成的语法树不能修改。这个版本被应用于 [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext) 插件。
+This version provides a [CLI](https://en.wikipedia.org/wiki/Command-line_interface), but only retains the parsing functionality and linting functionality. The parsed AST cannot be modified. It is used in the [eslint-plugin-wikitext](https://www.npmjs.com/package/eslint-plugin-wikitext) plugin.
 
 ## Browser-compatible
 
-兼容浏览器的版本，可用于代码高亮或是搭配 [CodeMirror](https://codemirror.net/) 和 [Monaco](https://microsoft.github.io/monaco-editor/) 等编辑器作为语法分析插件。（[使用实例展示](https://bhsd-harry.github.io/wikiparser-node)）
+A browser-compatible version, which can be used for code highlighting or as a linting plugin in conjunction with editors such as [CodeMirror](https://codemirror.net/) and [Monaco](https://microsoft.github.io/monaco-editor/). ([Usage example](https://bhsd-harry.github.io/wikiparser-node))
 
-# 安装方法
+# Installation
 
 ## Node.js
 
-请根据需要需要安装对应的版本（`WikiParser-Node` 或 `WikiLint`），如：
+Please install the corresponding version as needed (`WikiParser-Node` or `WikiLint`), for example:
 
 ```sh
 npm i wikiparser-node
 ```
 
-或
+or
 
 ```sh
 npm i wikilint
 ```
 
-## 浏览器
+## Browser
 
-可以通过 CDN 下载代码，如：
-
-```html
-<script src="//cdn.jsdelivr.net/npm/wikiparser-node@browser"></script>
-```
-
-或
+You can download the code via CDN, for example:
 
 ```html
-<script src="//unpkg.com/wikiparser-node@browser"></script>
+<script src="//cdn.jsdelivr.net/npm/wikiparser-node@browser/bundle/bundle.min.js"></script>
 ```
 
-更多浏览器端可用的插件请查阅对应[文档](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser)。
+or
 
-# 使用方法
+```html
+<script src="//unpkg.com/wikiparser-node@browser/bundle/bundle.min.js"></script>
+```
 
-请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
+For more browser extensions, please refer to the corresponding [documentation](https://github.com/bhsd-harry/wikiparser-node/wiki/Browser-%28EN%29).
+
+# Usage
+
+Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).

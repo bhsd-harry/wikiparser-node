@@ -13,7 +13,6 @@ import type {AttributesToken} from './attributes';
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
 export abstract class NestedToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly (ExtToken | NoincludeToken | CommentToken)[];
@@ -22,6 +21,10 @@ export abstract class NestedToken extends Token {
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/**
 	 * @param regex 内层正则

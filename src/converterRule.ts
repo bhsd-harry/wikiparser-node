@@ -8,8 +8,6 @@ import type {ConverterToken, ConverterFlagsToken} from '../internal';
  * @classdesc `{childNodes: ...AtomToken}`
  */
 export abstract class ConverterRuleToken extends Token {
-	override readonly type = 'converter-rule';
-
 	declare readonly childNodes: readonly [AtomToken]
 	| readonly [AtomToken, AtomToken]
 	| readonly [AtomToken, AtomToken, AtomToken];
@@ -18,6 +16,10 @@ export abstract class ConverterRuleToken extends Token {
 	abstract override get parentNode(): ConverterToken | undefined;
 	abstract override get previousSibling(): ConverterFlagsToken | this;
 	abstract override get nextSibling(): this | undefined;
+
+	override get type(): 'converter-rule' {
+		return 'converter-rule';
+	}
 
 	/**
 	 * @param rule 转换规则
