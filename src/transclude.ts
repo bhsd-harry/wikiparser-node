@@ -43,6 +43,10 @@ export abstract class TranscludeToken extends Token {
 	abstract override get firstChild(): AtomToken | SyntaxToken;
 	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
 
+	override get type(): 'template' | 'magic-word' {
+		return this.#type;
+	}
+
 	/**
 	 * @param title 模板标题或魔术字
 	 * @param parts 参数各部分
