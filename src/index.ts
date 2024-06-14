@@ -91,8 +91,6 @@ declare interface LintIgnore {
 
 export type TagToken = IncludeToken | ExtToken | HtmlToken;
 
-/* NOT FOR BROWSER END */
-
 const plainTypes = new Set<TokenTypes>([
 	'plain',
 	'root',
@@ -107,8 +105,6 @@ const plainTypes = new Set<TokenTypes>([
 	'td-inner',
 	'ext-inner',
 ]);
-
-/* NOT FOR BROWSER */
 
 /**
  * 可接受的Token类型

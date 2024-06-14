@@ -43,6 +43,8 @@ const insensitiveVars = new Set<string | undefined>([
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
 	#type: 'template' | 'magic-word' = 'template';
+	#raw = false;
+	readonly #args = new Map<string, Set<ParameterToken>>();
 
 	/* NOT FOR BROWSER */
 
@@ -50,9 +52,6 @@ export abstract class TranscludeToken extends Token {
 	readonly #keys = new Set<string>();
 
 	/* NOT FOR BROWSER END */
-
-	#raw = false;
-	readonly #args = new Map<string, Set<ParameterToken>>();
 
 	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
