@@ -208,6 +208,7 @@ export abstract class AttributeToken extends Token {
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
+
 	override get type(): AttributeTypes {
 		return this.#type;
 	}

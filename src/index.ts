@@ -63,21 +63,6 @@ declare interface LintIgnore {
 	rules: Set<string> | undefined;
 }
 
-const plainTypes = new Set<TokenTypes>([
-	'plain',
-	'root',
-	'table-inter',
-	'arg-default',
-	'attr-value',
-	'ext-link-text',
-	'heading-title',
-	'parameter-key',
-	'parameter-value',
-	'link-text',
-	'td-inner',
-	'ext-inner',
-]);
-
 /**
  * 所有节点的基类
  * @classdesc `{childNodes: ...(AstText|Token)}`
