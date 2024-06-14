@@ -13,7 +13,6 @@ import {
 	classes,
 	mixins,
 	parsers,
-	constants,
 } from './util/constants';
 import {tidy} from './util/string';
 import {cmd, info, error, diff} from './util/diff';
@@ -283,7 +282,6 @@ const Parser: Parser = {
 				...Object.entries(classes),
 				...Object.entries(mixins),
 				...Object.entries(parsers),
-				...Object.entries(constants),
 			];
 		for (const [, filePath] of entries) {
 			try {

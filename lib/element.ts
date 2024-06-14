@@ -420,7 +420,7 @@ export abstract class AstElement extends AstNode {
 				return attr;
 			}
 		}
-		const val = this.getAttribute(key);
+		const val = this[key as keyof AstElement];
 		return val instanceof RegExp ? val.source : val;
 	}
 

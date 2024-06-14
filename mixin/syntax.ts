@@ -29,9 +29,10 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 		}
 
 		/** @private */
-		afterBuild(): void {
+		override afterBuild(): void {
+			super.afterBuild();
 			const /** @implements */ syntaxListener: AstListener = (e, data) => {
-				if (!Shadow.running && !this.pattern.test(this.text())) {
+				if (!Shadow.running && !this.pattern.test(text(this.childNodes))) {
 					undo(e, data);
 					this.constructorError('cannot modify the syntax pattern');
 				}

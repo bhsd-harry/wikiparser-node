@@ -62,7 +62,7 @@ export abstract class GalleryToken extends Token {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
 			if (!matches) {
 				// @ts-expect-error abstract class
-				super.insertAt((line.trim() ? new NoincludeToken(line, config) : line) as string);
+				super.insertAt((line.trim() ? new NoincludeToken(line, config, accum) : line) as string);
 				continue;
 			}
 			const [, file, alt] = matches;
@@ -71,7 +71,7 @@ export abstract class GalleryToken extends Token {
 				super.insertAt(new GalleryImageToken('gallery', file, alt, config, accum) as GalleryImageToken);
 			} else {
 				// @ts-expect-error abstract class
-				super.insertAt(new NoincludeToken(line, config) as NoincludeToken);
+				super.insertAt(new NoincludeToken(line, config, accum) as NoincludeToken);
 			}
 		}
 	}

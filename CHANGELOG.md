@@ -1,3 +1,11 @@
+## v1.9.3
+
+*2024-06-15*
+
+**Fixed**
+
+- Fix event handling for [`DoubleUnderscoreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DoubleUnderscoreToken)
+
 ## v1.9.2
 
 *2024-06-10*
