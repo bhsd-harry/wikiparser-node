@@ -58,16 +58,18 @@ const source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|
 
 /** 文本节点 */
 export class AstText extends AstNode {
-	override readonly type = 'text';
 	declare readonly name: undefined;
 	override readonly data: string = '';
+
+	override get type(): 'text' {
+		return 'text';
+	}
 
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
 		Object.defineProperties(this, {
 			childNodes: {enumerable: false, configurable: false},
-			type: {enumerable: false, writable: false},
 			data: {
 				value: text,
 			},

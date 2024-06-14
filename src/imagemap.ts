@@ -20,7 +20,6 @@ import type {
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
  */
 export abstract class ImagemapToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: 'imagemap';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
@@ -29,6 +28,10 @@ export abstract class ImagemapToken extends Token {
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** 图片 */
 	get image(): GalleryImageToken | undefined {

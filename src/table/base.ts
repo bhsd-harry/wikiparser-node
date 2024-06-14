@@ -14,8 +14,7 @@ export interface TableBaseToken extends AttributesParentBase {}
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
  */
 export abstract class TableBaseToken extends attributesParent(1)(Token) {
-	declare type: TableTypes;
-
+	abstract override get type(): TableTypes;
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...Token[]];
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): Token;

@@ -12,12 +12,15 @@ import type {LintError} from '../base';
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
 export abstract class ExtLinkToken extends Token {
-	override readonly type = 'ext-link';
 	#space;
 
 	declare readonly childNodes: readonly [MagicLinkToken] | readonly [MagicLinkToken, Token];
 	abstract override get firstChild(): MagicLinkToken;
 	abstract override get lastChild(): Token;
+
+	override get type(): 'ext-link' {
+		return 'ext-link';
+	}
 
 	/**
 	 * @param url 网址

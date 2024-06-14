@@ -12,7 +12,6 @@ import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../intern
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
  */
 export abstract class PreToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: 'pre';
 
 	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
@@ -21,6 +20,10 @@ export abstract class PreToken extends Token {
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {

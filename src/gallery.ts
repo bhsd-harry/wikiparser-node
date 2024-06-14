@@ -14,7 +14,6 @@ import type {
  * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
  */
 export abstract class GalleryToken extends Token {
-	override readonly type = 'ext-inner';
 	declare readonly name: 'gallery';
 
 	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
@@ -23,6 +22,10 @@ export abstract class GalleryToken extends Token {
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
+
+	override get type(): 'ext-inner' {
+		return 'ext-inner';
+	}
 
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {

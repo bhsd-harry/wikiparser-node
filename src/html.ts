@@ -43,7 +43,6 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * @classdesc `{childNodes: [AttributesToken]}`
  */
 export abstract class HtmlToken extends Token {
-	override readonly type = 'html';
 	declare readonly name: string;
 	#closing;
 	#selfClosing;
@@ -52,6 +51,10 @@ export abstract class HtmlToken extends Token {
 	declare readonly childNodes: readonly [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
 	abstract override get lastChild(): AttributesToken;
+
+	override get type(): 'html' {
+		return 'html';
+	}
 
 	/** 是否自封闭 */
 	get selfClosing(): boolean {

@@ -11,7 +11,6 @@ import type {LintError} from '../base';
  */
 @hiddenToken()
 export abstract class RedirectToken extends Token {
-	override readonly type = 'redirect';
 	#pre: string;
 	#post: string;
 
@@ -19,6 +18,10 @@ export abstract class RedirectToken extends Token {
 	abstract override get firstChild(): SyntaxToken;
 	abstract override get lastChild(): RedirectTargetToken;
 	abstract override get previousSibling(): undefined;
+
+	override get type(): 'redirect' {
+		return 'redirect';
+	}
 
 	/**
 	 * @param pre leading whitespace

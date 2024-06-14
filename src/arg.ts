@@ -14,11 +14,13 @@ import type {
  * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
  */
 export abstract class ArgToken extends Token {
-	override readonly type = 'arg';
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
+
+	override get type(): 'arg' {
+		return 'arg';
+	}
 
 	/** 预设值 */
 	get default(): string | false {

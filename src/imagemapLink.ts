@@ -10,12 +10,14 @@ import type {AstText, ImagemapToken} from '../internal';
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
 export abstract class ImagemapLinkToken extends Token {
-	override readonly type = 'imagemap-link';
-
 	declare readonly childNodes: readonly [AstText, LinkToken | ExtLinkToken, NoincludeToken];
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): NoincludeToken;
 	abstract override get parentNode(): ImagemapToken | undefined;
+
+	override get type(): 'imagemap-link' {
+		return 'imagemap-link';
+	}
 
 	/**
 	 * @param pre 链接前的文本

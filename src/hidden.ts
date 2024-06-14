@@ -4,5 +4,7 @@ import {Token} from './index';
 /** 不可见的节点 */
 @hiddenToken(true)
 export class HiddenToken extends Token {
-	override readonly type = 'hidden';
+	override get type(): 'hidden' {
+		return 'hidden';
+	}
 }
