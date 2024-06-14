@@ -8,8 +8,11 @@ import type {Token} from '../index';
 /** HTML注释，不可见 */
 @hiddenToken()
 export abstract class CommentToken extends NowikiBaseToken {
-	override readonly type = 'comment';
 	closed;
+
+	override get type(): 'comment' {
+		return 'comment';
+	}
 
 	/** @param closed 是否闭合 */
 	constructor(wikitext: string, closed = true, config?: Config, accum?: Token[]) {

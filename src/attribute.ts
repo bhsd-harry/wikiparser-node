@@ -196,8 +196,8 @@ const commonHtmlAttrs = new Set([
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
 export abstract class AttributeToken extends Token {
-	declare type: AttributeTypes;
 	declare readonly name: string;
+	#type;
 	#tag;
 	#equal;
 	#quotes: [string?, string?];
@@ -208,6 +208,9 @@ export abstract class AttributeToken extends Token {
 	abstract override get parentNode(): AttributesToken | undefined;
 	abstract override get nextSibling(): AtomToken | this | undefined;
 	abstract override get previousSibling(): AtomToken | this | undefined;
+	override get type(): AttributeTypes {
+		return this.#type;
+	}
 
 	/** 标签名 */
 	get tag(): string {
@@ -268,7 +271,7 @@ export abstract class AttributeToken extends Token {
 			});
 		}
 		super(undefined, config, accum);
-		this.type = type;
+		this.#type = type;
 		this.append(keyToken, valueToken);
 		this.#equal = equal;
 		this.#quotes = [...quotes];

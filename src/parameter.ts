@@ -21,7 +21,6 @@ const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
  * @classdesc `{childNodes: [Token, Token]}`
  */
 export abstract class ParameterToken extends Token {
-	override readonly type = 'parameter';
 	declare readonly name: string;
 
 	declare readonly childNodes: readonly [Token, Token];
@@ -30,6 +29,10 @@ export abstract class ParameterToken extends Token {
 	abstract override get parentNode(): TranscludeToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | SyntaxToken | this;
+
+	override get type(): 'parameter' {
+		return 'parameter';
+	}
 
 	/** 是否是匿名参数 */
 	get anon(): boolean {
@@ -69,7 +72,6 @@ export abstract class ParameterToken extends Token {
 		return this.anon ? this.lastChild.toString() : super.toString('=');
 	}
 
-	/** @override */
 	override text(): string {
 		return this.anon ? this.lastChild.text() : super.text('=');
 	}

@@ -46,10 +46,12 @@ const explode = (start: string, end: string, separator: string, str?: string): s
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
  */
 export abstract class FileToken extends LinkBaseToken {
-	override readonly type: 'file' | 'gallery-image' | 'imagemap-image' = 'file';
-
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
 	abstract override get lastChild(): AtomToken | ImageParameterToken;
+
+	override get type(): 'file' | 'gallery-image' | 'imagemap-image' {
+		return 'file';
+	}
 
 	/** 扩展名 */
 	get extension(): string | undefined {

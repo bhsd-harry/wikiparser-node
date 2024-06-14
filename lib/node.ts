@@ -39,11 +39,14 @@ const getIndex = (j: number, parent: AstNode): number =>
 
 /** 类似Node */
 export abstract class AstNode implements AstNodeBase {
-	declare type: TokenTypes | 'text';
 	declare data?: string | undefined;
 	readonly childNodes: readonly AstNodes[] = [];
 	#parentNode: Token | undefined;
 
+	/** 节点类型 */
+	abstract get type(): TokenTypes | 'text';
+	abstract set type(value);
+	abstract text(): string;
 	abstract lint(): LintError[];
 	abstract print(): string;
 

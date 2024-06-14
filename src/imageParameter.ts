@@ -65,13 +65,16 @@ function validate(
 
 /** 图片参数 */
 export abstract class ImageParameterToken extends Token {
-	override readonly type = 'image-parameter';
 	declare readonly name: string;
 	#syntax = '';
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | this;
+
+	override get type(): 'image-parameter' {
+		return 'image-parameter';
+	}
 
 	/** 图片链接 */
 	get link(): string | Title | undefined {

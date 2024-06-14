@@ -11,10 +11,12 @@ import type {Token, AtomToken} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 export abstract class RedirectTargetToken extends LinkBaseToken {
-	override readonly type = 'redirect-target';
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
 	abstract override get lastChild(): AtomToken | NoincludeToken;
+
+	override get type(): 'redirect-target' {
+		return 'redirect-target';
+	}
 
 	/**
 	 * @param link 链接标题

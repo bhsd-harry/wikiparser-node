@@ -6,7 +6,8 @@ import type {Token, AtomToken} from '../../internal';
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
 export abstract class CategoryToken extends LinkBaseToken {
-	override readonly type = 'category';
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
+	override get type(): 'category' {
+		return 'category';
+	}
 }

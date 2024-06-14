@@ -63,12 +63,27 @@ declare interface LintIgnore {
 	rules: Set<string> | undefined;
 }
 
+const plainTypes = new Set<TokenTypes>([
+	'plain',
+	'root',
+	'table-inter',
+	'arg-default',
+	'attr-value',
+	'ext-link-text',
+	'heading-title',
+	'parameter-key',
+	'parameter-value',
+	'link-text',
+	'td-inner',
+	'ext-inner',
+]);
+
 /**
  * 所有节点的基类
  * @classdesc `{childNodes: ...(AstText|Token)}`
  */
 export class Token extends AstElement {
-	override type: TokenTypes = 'plain';
+	#type: TokenTypes = 'plain';
 
 	/** 解析阶段，参见顶部注释。只对plain Token有意义。 */
 	#stage = 0;
@@ -79,6 +94,14 @@ export class Token extends AstElement {
 	#include?: boolean;
 	#built = false;
 	#string: [number, string] | undefined;
+
+	override get type(): TokenTypes {
+		return this.#type;
+	}
+
+	override set type(value) {
+		this.#type = value;
+	}
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
