@@ -16,6 +16,12 @@ import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
 import type {AstText} from '../../internal';
 
+/* NOT FOR BROWSER */
+
+const fileTypes = new Set(['file', 'gallery-image', 'imagemap-image']);
+
+/* NOT FOR BROWSER END */
+
 /**
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token]}`
@@ -108,11 +114,11 @@ export abstract class LinkBaseToken extends Token {
 					throw new Error(`Invalid link target: ${name}`);
 				} else if (
 					this.type === 'category' && (interwiki || ns !== 14)
-					|| this.type === 'file' && (interwiki || ns !== 6)
+					|| fileTypes.has(this.type) && (interwiki || ns !== 6)
 				) {
 					undo(e, data);
 					throw new Error(
-						`${this.type === 'file' ? 'File' : 'Category'} link cannot change namespace: ${name}`,
+						`${this.type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
 					);
 				} else if (
 					this.type === 'link'

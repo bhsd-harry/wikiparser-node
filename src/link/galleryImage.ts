@@ -6,7 +6,6 @@ import {
 
 	classes,
 } from '../../util/constants';
-import {undo} from '../../util/debug';
 import {singleLine} from '../../mixin/singleLine';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -89,44 +88,6 @@ export abstract class GalleryImageToken extends FileToken {
 			errors.push(generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image'));
 		}
 		return errors;
-	}
-
-	/**
-	 * 设置`#title`
-	 * @param title Title对象
-	 */
-	#setName(title: Title): void {
-		this.setAttribute('title', title);
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('name', title.title);
-	}
-
-	/** @private */
-	override afterBuild(): void {
-		this.#setName(this.getTitle());
-		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e;
-			if (prevTarget?.type === 'link-target') {
-				const name = prevTarget.toString(),
-					title = this.getTitle(),
-					{interwiki, ns, valid} = title;
-				if (!valid) {
-					undo(e, data);
-					throw new Error(`Invalid image file name: ${name}`);
-				} else if (interwiki || ns !== 6) {
-					undo(e, data);
-					throw new Error(`Image link cannot change namespace: ${name}`);
-				}
-				this.#setName(title);
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
 
 	/* NOT FOR BROWSER */
