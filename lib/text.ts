@@ -108,6 +108,12 @@ export class AstText extends AstNode {
 		return this.data.length;
 	}
 
+	set length(n) {
+		if (n >= 0 && n < this.length) {
+			this.replaceData(this.data.slice(0, n));
+		}
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/** @param text 包含文本 */

@@ -2,6 +2,10 @@
 
 *2024-06-15*
 
+**Added**
+
+- [`AstElement.length`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#length) and [`AstText.length`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#length) are now writable
+
 **Fixed**
 
 - Fix event handling for [`DoubleUnderscoreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DoubleUnderscoreToken)

@@ -65,6 +65,14 @@ export abstract class AstElement extends AstNode {
 
 	/* NOT FOR BROWSER */
 
+	set length(n) {
+		if (n >= 0 && n < this.length) {
+			for (let i = this.length - 1; i >= n; i--) {
+				this.removeAt(i);
+			}
+		}
+	}
+
 	/** 全部非文本子节点 */
 	get children(): Token[] {
 		return this.childNodes.filter((child): child is Token => child.type !== 'text');
