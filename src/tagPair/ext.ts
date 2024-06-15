@@ -153,7 +153,7 @@ export abstract class ExtToken extends TagPairToken {
 			default: {
 				const {NowikiToken}: typeof import('../nowiki/index') = require('../nowiki/index');
 				// @ts-expect-error abstract class
-				innerToken = new NowikiToken(inner, newConfig);
+				innerToken = new NowikiToken(inner, newConfig, accum);
 			}
 		}
 		innerToken.setAttribute('name', lcName);
