@@ -113,19 +113,19 @@ export const parseTable = (
 			 * 创建表格单元格
 			 * @param tr 当前表格行
 			 */
-			const createTd = (tr: TrToken | TableToken): TdToken => {
+			const newTd = (tr: TrToken | TableToken): TdToken => {
 				// @ts-expect-error abstract class
 				const td: TdToken = new TdToken(lastSyntax, attr.slice(lastIndex, mt?.index), config, accum);
 				tr.insertAt(td);
 				return td;
 			};
 			while (mt) {
-				createTd(top);
+				newTd(top);
 				({lastIndex} = regex);
 				[lastSyntax] = mt;
 				mt = regex.exec(attr);
 			}
-			stack.push(top, createTd(top));
+			stack.push(top, newTd(top));
 		}
 	}
 	return out.slice(1);
