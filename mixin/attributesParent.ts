@@ -1,6 +1,6 @@
 import {mixin} from '../util/debug';
 import {mixins} from '../util/constants';
-import type {AstNodes, AttributesToken} from '../internal';
+import type {AttributesToken} from '../internal';
 
 export interface AttributesParentBase {
 
@@ -72,8 +72,6 @@ export interface AttributesParentBase {
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {
-		declare readonly childNodes: readonly AstNodes[];
-
 		/** AttributesToken子节点 */
 		get #attributesChild(): AttributesToken {
 			return this.childNodes[i] as AttributesToken;

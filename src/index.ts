@@ -479,9 +479,6 @@ export class Token extends AstElement {
 				}
 				this.#stage = value as TokenAttribute<'stage'>;
 				break;
-			case 'built':
-				this.#built = value as TokenAttribute<'built'>;
-				break;
 
 				/* NOT FOR BROWSER */
 
