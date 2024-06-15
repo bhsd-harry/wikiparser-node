@@ -357,7 +357,10 @@ export class Token extends AstElement {
 				if (this.#stage === 0 && this.type === 'root') {
 					this.#accum.shift();
 				}
-				this.#stage = (value as TokenAttribute<'stage'>)!;
+				this.#stage = value as TokenAttribute<'stage'>;
+				break;
+			case 'built':
+				this.#built = value as TokenAttribute<'built'>;
 				break;
 			default:
 				super.setAttribute(key, value);

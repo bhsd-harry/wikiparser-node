@@ -66,18 +66,4 @@ export abstract class GalleryImageToken extends FileToken {
 		}
 		return errors;
 	}
-
-	/**
-	 * 设置`#title`
-	 * @param title Title对象
-	 */
-	#setName(title: Title): void {
-		this.setAttribute('title', title);
-	}
-
-	/** @private */
-	override afterBuild(): void {
-		this.#setName(this.getTitle());
-		super.afterBuild();
-	}
 }
