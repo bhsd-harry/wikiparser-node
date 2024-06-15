@@ -1,11 +1,13 @@
 import type {
 	LintError,
 } from '../base';
+import type {AstNodes} from '../lib/node';
 
 declare global {
 	type Acceptable = unknown;
 
 	type AstConstructor = abstract new (...args: any[]) => {
+		readonly childNodes: readonly AstNodes[];
 		toString(separator?: string): string;
 		text(separator?: string): string;
 		lint(): LintError[];
