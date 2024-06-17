@@ -11,6 +11,15 @@ import type {AstNodes, AstText, Token} from '../internal';
 // @ts-expect-error unconstrained predicate
 declare type TokenPredicate<T = Token> = (token: Token) => token is T;
 
+/**
+ * 将选择器转化为类型谓词
+ * @param selector 选择器
+ */
+const getCondition = <T>(selector: string): TokenPredicate<T> => {
+	const types = new Set(selector.split(',').map(str => str.trim()));
+	return (({type}) => types.has(type)) as TokenPredicate<T>;
+};
+
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
 	declare readonly name?: string;
@@ -67,20 +76,11 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 将选择器转化为类型谓词
-	 * @param selector 选择器
-	 */
-	#getCondition<T>(selector: string): TokenPredicate<T> {
-		const types = new Set(selector.split(',').map(str => str.trim()));
-		return (({type}) => types.has(type)) as TokenPredicate<T>;
-	}
-
-	/**
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
 	closest<T = Token>(selector: string): T | undefined {
-		const condition = this.#getCondition<T>(selector);
+		const condition = getCondition<T>(selector);
 		let {parentNode} = this;
 		while (parentNode) {
 			if (condition(parentNode)) {
@@ -115,7 +115,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelector<T = Token>(selector: string): T | undefined {
-		const condition = this.#getCondition<T>(selector);
+		const condition = getCondition<T>(selector);
 		return this.#getElementBy(condition);
 	}
 
@@ -141,7 +141,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[] {
-		const condition = this.#getCondition<T>(selector);
+		const condition = getCondition<T>(selector);
 		return this.#getElementsBy(condition);
 	}
 
