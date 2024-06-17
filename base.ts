@@ -164,28 +164,28 @@ export interface AstNode {
 	type: string;
 	readonly childNodes: readonly AstNode[];
 
+	/** @private */
+	getAttribute(key: string): unknown;
+
 	/** Linter */
 	lint(): LintError[];
 
 	/** 以HTML格式打印 */
 	print(): string;
-
-	/** @private */
-	getAttribute(key: string): unknown;
 }
 
 /** 所有节点的基类 */
 interface Token extends AstNode {
 	readonly name?: string;
 
-	/** 保存为JSON */
-	json(): AST;
-
 	/**
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
+
+	/** 保存为JSON */
+	json(): AST;
 }
 
 export interface Parser {
