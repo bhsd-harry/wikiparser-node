@@ -827,7 +827,6 @@
 					{
 						"ignoreOverrideMethods": true,
 						"exceptMethods": [
-							"#getCondition",
 							"getGaps"
 						]
 					}
