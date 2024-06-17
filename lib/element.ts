@@ -6,52 +6,35 @@ import {
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {classes} from '../util/constants';
-import {Ranges} from './ranges';
-import {Title} from './title';
 import {AstNode} from './node';
 import type {
 	LintError,
 	AST,
 } from '../base';
-import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AstNodes, AstText, Token} from '../internal';
 
 // @ts-expect-error unconstrained predicate
 declare type TokenPredicate<T = Token> = (token: Token) => token is T;
 
-/* NOT FOR BROWSER */
-
 /**
- * optionally convert to lower cases
- * @param val 属性值
- * @param i 是否对大小写不敏感
+ * 将选择器转化为类型谓词
+ * @param selector 选择器
  */
-const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
+const getCondition = <T>(selector: string): TokenPredicate<T> => {
+	/* NOT FOR BROWSER */
 
-/**
- * 检查某个下标是否符合表达式
- * @param str 表达式
- * @param i 待检查的下标
- */
-const nth = (str: string, i: number): boolean => new Ranges(str).applyTo(i + 1).includes(i);
+	if (/[^a-z\-,\s]/u.test(selector)) {
+		const {parseSelector}: typeof import('../parser/selector') = require('../parser/selector'),
+			{matchesArray}: typeof import('../addon/element') = require('../addon/element');
+		const stack = parseSelector(selector);
+		return (token => stack.some(copy => matchesArray(token, copy))) as TokenPredicate<T>;
+	}
 
-/**
- * 检测:lang()伪选择器
- * @param node 节点
- * @param node.attributes 节点属性
- * @param regex 语言正则
- */
-const matchesLang = (
-	{attributes}: AstElement & {attributes?: Record<string, string | true>},
-	regex: RegExp,
-): boolean | undefined => {
-	const lang = attributes?.['lang'];
-	return lang === undefined ? undefined : typeof lang === 'string' && regex.test(lang);
+	/* NOT FOR BROWSER END */
+
+	const types = new Set(selector.split(',').map(str => str.trim()));
+	return (({type}) => types.has(type)) as TokenPredicate<T>;
 };
-
-const primitives = new Set(['string', 'number', 'boolean', 'undefined']);
-
-/* NOT FOR BROWSER END */
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
@@ -207,30 +190,11 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 将选择器转化为类型谓词
-	 * @param selector 选择器
-	 */
-	#getCondition<T>(selector: string): TokenPredicate<T> {
-		/* NOT FOR BROWSER */
-
-		if (/[^a-z\-,\s]/u.test(selector)) {
-			const {parseSelector}: typeof import('../parser/selector') = require('../parser/selector');
-			const stack = parseSelector(selector);
-			return (token => stack.some(copy => token.#matchesArray(copy))) as TokenPredicate<T>;
-		}
-
-		/* NOT FOR BROWSER END */
-
-		const types = new Set(selector.split(',').map(str => str.trim()));
-		return (({type}) => types.has(type)) as TokenPredicate<T>;
-	}
-
-	/**
 	 * 最近的祖先节点
 	 * @param selector 选择器
 	 */
 	closest<T = Token>(selector: string): T | undefined {
-		const condition = this.#getCondition<T>(selector);
+		const condition = getCondition<T>(selector);
 		let {parentNode} = this;
 		while (parentNode) {
 			if (condition(parentNode)) {
@@ -265,7 +229,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelector<T = Token>(selector: string): T | undefined {
-		const condition = this.#getCondition<T>(selector);
+		const condition = getCondition<T>(selector);
 		return this.#getElementBy(condition);
 	}
 
@@ -291,7 +255,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[] {
-		const condition = this.#getCondition<T>(selector);
+		const condition = getCondition<T>(selector);
 		return this.#getElementsBy(condition);
 	}
 
@@ -405,238 +369,12 @@ export abstract class AstElement extends AstNode {
 
 	/* NOT FOR BROWSER */
 
-	/** 是否受保护。保护条件来自Token，这里仅提前用于:required和:optional伪选择器。 */
-	#isProtected(): boolean | undefined {
-		const {parentNode} = this;
-		if (!parentNode) {
-			return undefined;
-		}
-		const {childNodes, fixed} = parentNode;
-		return fixed
-			|| parentNode.getAttribute('protectedChildren').applyTo(childNodes)
-				.includes(childNodes.indexOf(this as AstElement as Token));
-	}
-
-	/**
-	 * 获取属性
-	 * @param key 属性键
-	 */
-	#getAttr(this: AstElement & Partial<AttributesParentBase>, key: string): unknown {
-		if (typeof this.getAttr === 'function') {
-			const attr = this.getAttr(key);
-			if (attr !== undefined) {
-				return attr;
-			}
-		}
-		const val = this[key as keyof AstElement];
-		return val instanceof RegExp ? val.source : val;
-	}
-
-	/**
-	 * 检查是否符合属性选择器
-	 * @param key 属性键
-	 * @param equal 比较符
-	 * @param val 属性值
-	 * @param i 是否对大小写不敏感
-	 * @throws `RangeError` 复杂属性不能用于选择器
-	 */
-	#matchesAttr(
-		this: AstElement & Partial<AttributesParentBase>,
-		key: string,
-		equal?: string,
-		val = '',
-		i?: string,
-	): boolean {
-		const isAttr = typeof this.hasAttr === 'function' && typeof this.getAttr === 'function';
-		if (!(key in this) && (!isAttr || !this.hasAttr!(key))) {
-			return equal === '!=';
-		}
-		const v = toCase(val, i),
-			thisVal = this.#getAttr(key);
-		if (!equal) {
-			return thisVal !== undefined && thisVal !== false;
-		}
-		if (equal === '~=') {
-			const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
-			return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
-				&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
-		} else if (!primitives.has(typeof thisVal) && !(thisVal instanceof Title)) {
-			throw new RangeError(`The complex attribute ${key} cannot be used in a selector!`);
-		}
-		const stringVal = toCase(String(thisVal), i);
-		switch (equal) {
-			case '|=':
-				return stringVal === v || stringVal.startsWith(`${v}-`);
-			case '^=':
-				return stringVal.startsWith(v);
-			case '$=':
-				return stringVal.endsWith(v);
-			case '*=':
-				return stringVal.includes(v);
-			case '!=':
-				return stringVal !== v;
-			default: // `=`
-				return stringVal === v;
-		}
-	}
-
-	/**
-	 * 检查是否符合解析后的选择器，不含节点关系
-	 * @param step 解析后的选择器
-	 * @throws `SyntaxError` 错误的正则伪选择器
-	 * @throws `SyntaxError` 未定义的伪选择器
-	 */
-	#matches(this: AstElement & Partial<AttributesParentBase>, step: SelectorArray): boolean {
-		const {parentNode, type, name, childNodes, link} = this as AstElement & {link?: string | Title},
-			children = parentNode?.children,
-			childrenOfType = children?.filter(({type: t}) => t === type),
-			siblingsCount = children?.length ?? 1,
-			siblingsCountOfType = childrenOfType?.length ?? 1,
-			index = (children?.indexOf(this as AstElement as Token) ?? 0) + 1,
-			indexOfType = (childrenOfType?.indexOf(this as AstElement as Token) ?? 0) + 1,
-			lastIndex = siblingsCount - index + 1,
-			lastIndexOfType = siblingsCountOfType - indexOfType + 1;
-		return step.every(selector => {
-			if (typeof selector === 'string') {
-				switch (selector) { // 情形1：简单伪选择器、type和name
-					case '*':
-						return true;
-					case ':root':
-						return !parentNode;
-					case ':first-child':
-						return index === 1;
-					case ':first-of-type':
-						return indexOfType === 1;
-					case ':last-child':
-						return lastIndex === 1;
-					case ':last-of-type':
-						return lastIndexOfType === 1;
-					case ':only-child':
-						return siblingsCount === 1;
-					case ':only-of-type':
-						return siblingsCountOfType === 1;
-					case ':empty':
-						return !childNodes.some(({type: t, data}) => t !== 'text' || data);
-					case ':parent':
-						return childNodes.some(({type: t, data}) => t !== 'text' || data);
-					case ':header':
-						return type === 'heading';
-					case ':hidden':
-						return this.text() === '';
-					case ':visible':
-						return this.text() !== '';
-					case ':only-whitespace':
-						return this.text().trim() === '';
-					case ':any-link':
-						return type === 'link'
-							|| type === 'free-ext-link'
-							|| type === 'magic-link'
-							|| type === 'ext-link'
-							|| (type === 'file' || type === 'gallery-image') && link;
-					case ':local-link':
-						return (type === 'link' || type === 'file' || type === 'gallery-image')
-							&& link instanceof Title
-							&& link.title === '';
-					case ':invalid':
-						return type === 'table-inter' || type === 'image-parameter' && name === 'invalid';
-					case ':required':
-						return this.#isProtected() === true;
-					case ':optional':
-						return this.#isProtected() === false;
-					default: {
-						const [t, n] = selector.split('#');
-						return (!t || t === type) && (!n || n === name);
-					}
-				}
-			} else if (selector.length === 4) { // 情形2：属性选择器
-				return this.#matchesAttr(...selector);
-			}
-			const [s, pseudo] = selector; // 情形3：复杂伪选择器
-			switch (pseudo) {
-				case 'is':
-					return this.matches(s);
-				case 'not':
-					return !this.matches(s);
-				case 'nth-child':
-					return nth(s, index);
-				case 'nth-of-type':
-					return nth(s, indexOfType);
-				case 'nth-last-child':
-					return nth(s, lastIndex);
-				case 'nth-last-of-type':
-					return nth(s, lastIndexOfType);
-				case 'contains':
-					return this.text().includes(s);
-				case 'has':
-					return Boolean(this.querySelector<Token>(s));
-				case 'lang': {
-					// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-					/^zh(?:-|$)/iu;
-					const regex = new RegExp(`^${s}(?:-|$)`, 'iu');
-					for (let node: AstElement | undefined = this as AstElement; node; node = node.parentNode) {
-						const result = matchesLang(node, regex);
-						if (result !== undefined) {
-							return result;
-						}
-					}
-					return false;
-				}
-				case 'regex': {
-					const mt = /^([^,]+),\s*\/(.+)\/([a-z]*)$/u.exec(s) as [string, string, string, string] | null;
-					if (!mt) {
-						throw new SyntaxError(
-							`Wrong usage of the regex pseudo-selector. Use ":regex('attr, /re/i')" format.`,
-						);
-					}
-					try {
-						return new RegExp(mt[2], mt[3]).test(String(this.#getAttr(mt[1].trim())));
-					} catch {
-						throw new SyntaxError(`Invalid regular expression: /${mt[2]}/${mt[3]}`);
-					}
-				}
-				default:
-					throw new SyntaxError(`Undefined pseudo-selector: ${pseudo}`);
-			}
-		});
-	}
-
-	/**
-	 * 检查是否符合解析后的选择器
-	 * @param copy 解析后的选择器
-	 */
-	#matchesArray(copy: readonly SelectorArray[]): boolean {
-		const condition = [...copy],
-			step = condition.pop()!;
-		if (this.#matches(step)) {
-			const {parentNode, previousElementSibling} = this;
-			switch (condition[condition.length - 1]?.relation) {
-				case undefined:
-					return true;
-				case '>':
-					return Boolean(parentNode && parentNode.#matchesArray(condition));
-				case '+':
-					return Boolean(previousElementSibling && previousElementSibling.#matchesArray(condition));
-				case '~': {
-					if (!parentNode) {
-						return false;
-					}
-					const {children} = parentNode;
-					return children.slice(0, children.indexOf(this as AstElement as Token))
-						.some(child => child.#matchesArray(condition));
-				}
-				default: // ' '
-					return this.getAncestors().some(ancestor => ancestor.#matchesArray(condition));
-			}
-		}
-		return false;
-	}
-
 	/**
 	 * 检查是否符合选择器
 	 * @param selector 选择器
 	 */
 	matches<T>(selector?: string): this is T {
-		return selector === undefined || this.#getCondition<T>(selector)(this as unknown as Token);
+		return selector === undefined || getCondition<T>(selector)(this as unknown as Token);
 	}
 
 	/**

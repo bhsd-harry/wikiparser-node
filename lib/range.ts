@@ -23,6 +23,15 @@ const getParent = (node: AstNodes): Token => {
 	throw new RangeError('The reference node has no parent node!');
 };
 
+/**
+ * 未初始化时抛出错误
+ * @param start 是否未初始化起点
+ * @throws `Error` 未初始化
+ */
+const notInit = (start: boolean): never => {
+	throw new Error(`Please set the ${start ? 'start' : 'end'} position first!`);
+};
+
 /** 模拟Range对象 */
 export class AstRange {
 	#startContainer: AstNodes | undefined;
@@ -32,12 +41,12 @@ export class AstRange {
 
 	/** 起点容器 */
 	get startContainer(): AstNodes {
-		return this.#startContainer ?? this.#notInit(true);
+		return this.#startContainer ?? notInit(true);
 	}
 
 	/** 起点位置 */
 	get startOffset(): number {
-		return this.#startOffset ?? this.#notInit(true);
+		return this.#startOffset ?? notInit(true);
 	}
 
 	/** 起点绝对位置 */
@@ -52,12 +61,12 @@ export class AstRange {
 
 	/** 终点容器 */
 	get endContainer(): AstNodes {
-		return this.#endContainer ?? this.#notInit(false);
+		return this.#endContainer ?? notInit(false);
 	}
 
 	/** 终点位置 */
 	get endOffset(): number {
-		return this.#endOffset ?? this.#notInit(false);
+		return this.#endOffset ?? notInit(false);
 	}
 
 	/** 终点绝对位置 */
@@ -79,15 +88,6 @@ export class AstRange {
 	get commonAncestorContainer(): AstNodes {
 		const {startContainer, endContainer} = this;
 		return startContainer.contains(endContainer) ? startContainer : startContainer.parentNode!;
-	}
-
-	/**
-	 * 未初始化时抛出错误
-	 * @param start 是否未初始化起点
-	 * @throws `Error` 未初始化
-	 */
-	#notInit(start: boolean): never {
-		throw new Error(`Please set the ${start ? 'start' : 'end'} position first!`);
 	}
 
 	/**
