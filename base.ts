@@ -164,13 +164,23 @@ export interface AstNode {
 
 	/** 以HTML格式打印 */
 	print(): string;
+
+	/** @private */
+	getAttribute(key: string): unknown;
 }
 
-/** 类似HTMLElement */
-interface AstElement extends AstNode {
+/** 所有节点的基类 */
+interface Token extends AstNode {
+	readonly name?: string;
 
 	/** 保存为JSON */
 	json(): AST;
+
+	/**
+	 * 符合选择器的所有后代节点
+	 * @param selector 选择器
+	 */
+	querySelectorAll<T = Token>(selector: string): T[];
 }
 
 export interface Parser {
@@ -186,5 +196,5 @@ export interface Parser {
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): AstElement;
+	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 }
