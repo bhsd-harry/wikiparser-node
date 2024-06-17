@@ -24,10 +24,8 @@ const getCondition = <T>(selector: string): TokenPredicate<T> => {
 	/* NOT FOR BROWSER */
 
 	if (/[^a-z\-,\s]/u.test(selector)) {
-		const {parseSelector}: typeof import('../parser/selector') = require('../parser/selector'),
-			{matchesArray}: typeof import('../addon/element') = require('../addon/element');
-		const stack = parseSelector(selector);
-		return (token => stack.some(copy => matchesArray(token, copy))) as TokenPredicate<T>;
+		const {checkToken}: typeof import('../parser/selector') = require('../parser/selector');
+		return checkToken(selector) as TokenPredicate<T>;
 	}
 
 	/* NOT FOR BROWSER END */
