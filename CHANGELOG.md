@@ -1,6 +1,6 @@
 ## v1.9.3
 
-*2024-06-17*
+*2024-06-18*
 
 **Added**
 
@@ -9,6 +9,10 @@
 **Fixed**
 
 - Fix event handling for [`DoubleUnderscoreToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/DoubleUnderscoreToken)
+
+**Changed**
+
+- No longer report full-width punctuations in `ext-link-url` as an error in [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
 
 ## v1.9.2
 
