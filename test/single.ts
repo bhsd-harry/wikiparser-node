@@ -1,4 +1,4 @@
-import {diff} from '../util/diff';
+import {diff, error} from '../util/diff';
 import type {Parser, LintError} from '../base';
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
@@ -21,6 +21,15 @@ export const single = async (Parser: Parser, {pageid, title, ns, content}: Simpl
 	if (parsed !== content) {
 		await diff(content, parsed, pageid);
 		throw new Error('解析过程中不可逆地修改了原始文本！');
+	}
+	const set = new Set<string>();
+	for (const t of token.querySelectorAll('*')) {
+		if (!t.getAttribute('built')) {
+			set.add(`${t.type}#${t.name ?? ''}`);
+		}
+	}
+	if (set.size > 0) {
+		error('未构建的节点：', set);
 	}
 
 	console.time(`lint: ${title}`);
