@@ -21,6 +21,13 @@ export const hiddenToken = (linter?: boolean) => <T extends AstConstructor>(cons
 			// @ts-expect-error private argument
 			return linter ? [] : super.lint(start);
 		}
+
+		/* NOT FOR BROWSER */
+
+		/** @private */
+		dispatchEvent(): void { // eslint-disable-line @typescript-eslint/class-methods-use-this
+			//
+		}
 	}
 	mixin(AnyHiddenToken, constructor);
 	return AnyHiddenToken;
