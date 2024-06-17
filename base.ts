@@ -152,11 +152,11 @@ export interface AstNode {
 	type: string;
 	readonly childNodes: readonly AstNode[];
 
-	/** Linter */
-	lint(): LintError[];
-
 	/** @private */
 	getAttribute(key: string): unknown;
+
+	/** Linter */
+	lint(): LintError[];
 }
 
 /** 所有节点的基类 */
