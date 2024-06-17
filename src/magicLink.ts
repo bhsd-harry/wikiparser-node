@@ -79,7 +79,8 @@ export abstract class MagicLinkToken extends Token {
 			}
 			return errors;
 		}
-		const source = `[，；。：！？（）]+${this.type === 'ext-link-url' ? String.raw`|\|+` : ''}`,
+		const pipe = this.type === 'ext-link-url',
+			source = pipe ? String.raw`\|+` : '[，；。：！？（）]+',
 			regex = new RegExp(source, 'u'),
 			regexGlobal = new RegExp(source, 'gu');
 		for (const child of this.childNodes) {
@@ -96,8 +97,7 @@ export abstract class MagicLinkToken extends Token {
 					left = lines[top - 1]!.length,
 					startIndex = refError.startIndex + index,
 					startLine = refError.startLine + top - 1,
-					startCol = top === 1 ? refError.startCol + left : left,
-					pipe = s.startsWith('|');
+					startCol = top === 1 ? refError.startCol + left : left;
 				const e = {
 					...refError,
 					message: Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
