@@ -34,7 +34,7 @@
 	},
 	"scripts": {
 		"prepublishOnly": "npm run build",
-		"build:core": "esbuild index.ts --bundle --minify --target=es2018 --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.json bundle/bundle.min.js",
+		"build:core": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.json bundle/bundle.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "npm run build:core && tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:ext",
@@ -45,11 +45,11 @@
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"server": "npm run test:end; http-server .. -c-1 --cors &",
-		"test": " node dist/test/test.js",
-		"test:parser": "node dist/test/parserTests.js",
+		"test": " node --enable-source-maps dist/test/test.js",
+		"test:parser": "node --enable-source-maps dist/test/parserTests.js",
 		"test:server": "npm run build && bash sed.sh -i 's|importScripts.*|importScripts(\"http://127.0.0.1:8080/wikiparser-node/bundle/bundle.min.js\");|' extensions/dist/base.js; npm run server",
 		"test:end": "pkill -x http-server",
-		"test:real": "node dist/test/real.js"
+		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
 		"@bhsd/codemirror-mediawiki": "^2.14.0",
