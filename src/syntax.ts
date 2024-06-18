@@ -2,7 +2,7 @@ import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
 import {Token} from './index';
-import type {Config} from '../base';
+import type {Config, LintError} from '../base';
 import type {SyntaxBase} from '../mixin/syntax';
 
 declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
@@ -40,8 +40,8 @@ export class SyntaxToken extends Token {
 	}
 
 	/** @private */
-	override lint(): [] {
-		return [];
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		return super.lint(start, false);
 	}
 
 	/* NOT FOR BROWSER */

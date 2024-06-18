@@ -1,3 +1,11 @@
+## v1.9.4
+
+*2024-06-18*
+
+**Fixed**
+
+- [`SyntaxToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/SyntaxToken#lint) now also reports errors from its [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#children)
+
 ## v1.9.3
 
 *2024-06-18*

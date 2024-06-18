@@ -136,13 +136,16 @@ export class AstText extends AstNode {
 		return this.data;
 	}
 
-	/** 可见部分 */
+	/** @private */
 	text(): string {
 		return this.data;
 	}
 
 	/** @private */
-	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp): LintError[] {
+	lint(start = this.getAbsoluteIndex(), errorRegex?: RegExp | false): LintError[] {
+		if (errorRegex === false) {
+			return [];
+		}
 		const {data, parentNode, nextSibling, previousSibling} = this;
 		if (!parentNode) {
 			throw new Error('An isolated text node cannot be linted!');

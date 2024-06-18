@@ -557,7 +557,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
 		const {viewOnly} = Parser;
 		Parser.viewOnly = true;
 		let errors = super.lint(start, re);

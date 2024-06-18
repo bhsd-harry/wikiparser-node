@@ -161,8 +161,10 @@ export type AST = Record<string, string | number | boolean> & {
 
 /** 类似Node */
 export interface AstNode {
-	type: string;
 	readonly childNodes: readonly AstNode[];
+
+	/** 节点类型 */
+	type: string;
 
 	/** @private */
 	getAttribute(key: string): unknown;
