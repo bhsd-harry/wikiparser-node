@@ -221,29 +221,28 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const errors = super.lint(start, re),
-			{type, childNodes, length} = this,
-			rect = new BoundingRect(this, start);
+		const errors = super.lint(start, re);
 		if (!this.isTemplate()) {
 			return errors;
 		}
-		const title = this.#getTitle();
-		if (title.fragment !== undefined) {
-			const child = childNodes[type === 'template' ? 0 : 1] as AtomToken,
-				e = generateForChild(child, rect, 'no-ignored', 'useless fragment'),
+		const {type, childNodes, length} = this,
+			rect = new BoundingRect(this, start),
+			invoke = type === 'magic-word';
+		if (invoke && !this.#getTitle().valid) {
+			errors.push(generateForChild(childNodes[1], rect, 'invalid-invoke', 'illegal module name'));
+		} else {
+			const child = childNodes[invoke ? 1 : 0] as AtomToken,
 				textNode = child.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
 			if (textNode) {
+				const e = generateForChild(child, rect, 'no-ignored', 'useless fragment');
 				e.fix = {
 					range: [e.startIndex + textNode.getRelativeIndex() + textNode.data.indexOf('#'), e.endIndex],
 					text: '',
 				};
+				errors.push(e);
 			}
-			errors.push(e);
 		}
-		if (!title.valid) {
-			errors.push(generateForChild(childNodes[1], rect, 'invalid-invoke', 'illegal module name'));
-		}
-		if (type === 'magic-word' && length === 2) {
+		if (invoke && length === 2) {
 			errors.push(generateForSelf(this, rect, 'invalid-invoke', 'missing module function'));
 			return errors;
 		}
