@@ -43,9 +43,10 @@ export abstract class AstNode implements AstNodeBase {
 	readonly childNodes: readonly AstNodes[] = [];
 	#parentNode: Token | undefined;
 
-	/** 节点类型 */
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
+
+	/** 可见部分 */
 	abstract text(): string;
 	abstract lint(): LintError[];
 
