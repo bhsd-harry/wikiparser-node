@@ -1,5 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {classes} from '../../util/constants';
+import {encode} from '../../util/string';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
@@ -47,14 +48,6 @@ export abstract class LinkToken extends LinkBaseToken {
 		}
 	}
 
-	override get fragment(): string | undefined {
-		return super.fragment;
-	}
-
-	override set fragment(fragment) {
-		this.#setFragment(fragment);
-	}
-
 	/** interwiki */
 	get interwiki(): string {
 		return this.link.interwiki;
@@ -98,24 +91,6 @@ export abstract class LinkToken extends LinkBaseToken {
 	}
 
 	/**
-	 * 设置fragment
-	 * @param fragment fragment
-	 * @param page 是否是其他页面
-	 */
-	#setFragment(fragment?: string, page = true): void {
-		fragment &&= fragment.replace(/[<>[\]#|=]/gu, p => encodeURIComponent(p));
-		this.setTarget(`${page ? this.name : ''}${fragment === undefined ? '' : `#${fragment}`}`);
-	}
-
-	/**
-	 * 设置fragment
-	 * @param fragment fragment
-	 */
-	setFragment(fragment?: string): void {
-		this.#setFragment(fragment);
-	}
-
-	/**
 	 * 修改为到自身的链接
 	 * @param fragment fragment
 	 * @throws `RangeError` 空fragment
@@ -124,7 +99,7 @@ export abstract class LinkToken extends LinkBaseToken {
 		if (!fragment?.trim()) {
 			throw new RangeError('LinkToken.asSelfLink method must specify a non-empty fragment!');
 		}
-		this.#setFragment(fragment, false);
+		this.setTarget(`#${encode(fragment)}`);
 	}
 
 	/**

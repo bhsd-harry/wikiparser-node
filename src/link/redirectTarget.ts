@@ -30,14 +30,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	override get fragment(): string | undefined {
-		return super.fragment;
-	}
-
-	override set fragment(fragment) {
-		this.setFragment(fragment);
-	}
-
 	/** interwiki */
 	get interwiki(): string {
 		return this.link.interwiki;
@@ -105,15 +97,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	/** @private */
 	override setTarget(link: string): void {
 		this.firstChild.setText(link);
-	}
-
-	/**
-	 * 设置fragment
-	 * @param fragment fragment
-	 */
-	setFragment(fragment?: string): void {
-		fragment &&= fragment.replace(/[\]|]/gu, p => encodeURIComponent(p));
-		this.setTarget(`${this.name}${fragment === undefined ? '' : `#${fragment}`}`);
 	}
 
 	/** @private */

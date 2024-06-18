@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -9,6 +8,8 @@ import {
 	classes,
 } from '../../util/constants';
 import {undo, Shadow} from '../../util/debug';
+import {encode} from '../../util/string';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -58,9 +59,7 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	set fragment(fragment) {
-		if (fragment === undefined) {
-			this.setTarget(this.name);
-		}
+		this.setFragment(fragment);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -255,6 +254,18 @@ export abstract class LinkBaseToken extends Token {
 			}));
 		token.append(...childNodes);
 		this.firstChild.safeReplaceWith(token);
+	}
+
+	/**
+	 * 设置fragment
+	 * @param fragment fragment
+	 */
+	setFragment(fragment?: string): void {
+		const {type, name} = this;
+		if (fragment === undefined || type === 'redirect-target' || type === 'link') {
+			fragment &&= encode(fragment);
+			this.setTarget(`${name}${fragment === undefined ? '' : `#${fragment}`}`);
+		}
 	}
 
 	/**

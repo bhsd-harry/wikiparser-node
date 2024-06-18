@@ -61,6 +61,8 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
 
 /* NOT FOR BROWSER */
 
+export const encode = factory(/[<>[\]#|=]+/gu, p => encodeURIComponent(p));
+
 /**
  * convert newline in text nodes to single whitespace
  * @param token 父节点
