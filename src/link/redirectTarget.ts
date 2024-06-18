@@ -9,7 +9,7 @@ import type {Token, AtomToken} from '../../internal';
 
 /**
  * 重定向目标
- * @classdesc `{childNodes: [AtomToken, ?Token]}`
+ * @classdesc `{childNodes: [AtomToken, ?NoincludeToken]}`
  */
 export abstract class RedirectTargetToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
@@ -59,7 +59,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const errors = super.lint(start, /\]\]/u);
+		const errors = super.lint(start, false);
 		if (this.length === 2) {
 			const e = generateForChild(this.lastChild, {start}, 'no-ignored', 'useless link text');
 			e.startIndex--;
