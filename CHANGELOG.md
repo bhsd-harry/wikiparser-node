@@ -11,6 +11,7 @@
 
 - [`LinkBaseToken.prototype.setTarget`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#settarget) now only adds leading `:` when necessary
 - [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint) now only reports the first occurrence of full-width punctuations in `free-ext-link` as an error
+- [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint) now ignores the fragment of an invalid module name
 
 ## v1.9.3
 
