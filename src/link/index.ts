@@ -48,21 +48,6 @@ export abstract class LinkToken extends LinkBaseToken {
 		}
 	}
 
-	/** interwiki */
-	get interwiki(): string {
-		return this.link.interwiki;
-	}
-
-	/** @throws `RangeError` 非法的跨维基前缀 */
-	set interwiki(interwiki) {
-		const {link: {prefix, main, fragment}} = this,
-			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
-		if (interwiki && !this.isInterwiki(link)) {
-			throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
-		}
-		this.setTarget(link);
-	}
-
 	/* NOT FOR BROWSER END */
 
 	/** @private */

@@ -17,6 +17,12 @@ import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
 import type {AstText} from '../../internal';
 
+/**
+ * 是否为普通内链
+ * @param type 节点类型
+ */
+const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
+
 /* NOT FOR BROWSER */
 
 const fileTypes = new Set(['file', 'gallery-image', 'imagemap-image']);
@@ -60,6 +66,23 @@ export abstract class LinkBaseToken extends Token {
 
 	set fragment(fragment) {
 		this.setFragment(fragment);
+	}
+
+	/** interwiki */
+	get interwiki(): string {
+		return this.#title.interwiki;
+	}
+
+	/** @throws `RangeError` 非法的跨维基前缀 */
+	set interwiki(interwiki) {
+		if (isLink(this.type)) {
+			const {prefix, main, fragment} = this.#title,
+				link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
+			if (interwiki && !this.isInterwiki(link)) {
+				throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
+			}
+			this.setTarget(link);
+		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -178,10 +201,10 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{childNodes: [target, linkText], type: linkType} = this,
+			{childNodes: [target, linkText], type} = this,
 			{encoded, fragment} = this.#title,
 			rect = new BoundingRect(this, start);
-		if (target.childNodes.some(({type}) => type === 'template')) {
+		if (target.childNodes.some(({type: t}) => t === 'template')) {
 			errors.push(
 				generateForChild(target, rect, 'unknown-page', 'template in an internal link target', 'warning'),
 			);
@@ -189,7 +212,7 @@ export abstract class LinkBaseToken extends Token {
 		if (encoded) {
 			errors.push(generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link'));
 		}
-		if (linkType === 'link' || linkType === 'category') {
+		if (type === 'link' || type === 'category') {
 			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));
 			if (textNode) {
 				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning');
@@ -206,7 +229,7 @@ export abstract class LinkBaseToken extends Token {
 				errors.push(e);
 			}
 		}
-		if (linkType !== 'link' && linkType !== 'redirect-target' && fragment !== undefined) {
+		if (fragment !== undefined && !isLink(type)) {
 			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
 				textNode = target.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
 			if (textNode) {
@@ -262,7 +285,7 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	setFragment(fragment?: string): void {
 		const {type, name} = this;
-		if (fragment === undefined || type === 'redirect-target' || type === 'link') {
+		if (fragment === undefined || isLink(type)) {
 			fragment &&= encode(fragment);
 			this.setTarget(`${name}${fragment === undefined ? '' : `#${fragment}`}`);
 		}

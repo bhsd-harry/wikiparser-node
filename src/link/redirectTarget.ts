@@ -28,25 +28,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		return 'redirect-target';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** interwiki */
-	get interwiki(): string {
-		return this.link.interwiki;
-	}
-
-	/** @throws `RangeError` 非法的跨维基前缀 */
-	set interwiki(interwiki) {
-		const {link: {prefix, main, fragment}} = this,
-			link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
-		if (interwiki && !this.isInterwiki(link)) {
-			throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
-		}
-		this.setTarget(link);
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字
