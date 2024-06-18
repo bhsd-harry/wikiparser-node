@@ -364,7 +364,7 @@ export abstract class AttributesToken extends Token {
 			return;
 		}
 		// @ts-expect-error abstract class
-		const token: AttributeToken = Shadow.run(() => new AttributeToken(
+		const token = Shadow.run((): AttributeToken => new AttributeToken(
 			toAttributeType(this.type),
 			this.name,
 			key,

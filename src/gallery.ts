@@ -167,9 +167,9 @@ export abstract class GalleryToken extends Token {
 	 */
 	insertImage(file: string, i?: number): GalleryImageToken {
 		if (this.#checkFile(file)) {
-			const token: GalleryImageToken = Shadow.run(
+			const token = Shadow.run(
 				// @ts-expect-error abstract class
-				() => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
+				(): GalleryImageToken => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
 			token.afterBuild();
 			return this.insertAt(token, i);

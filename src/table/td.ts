@@ -436,7 +436,7 @@ export const createTd = (
 ): TdToken => {
 	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
 		// @ts-expect-error abstract class
-		token = Shadow.run(() => new TdToken('\n|', undefined, config) as TdToken);
+		token = Shadow.run((): TdToken => new TdToken('\n|', undefined, config));
 	token.setSyntax(subtype);
 	token.lastChild.safeReplaceWith(innerToken);
 	token.setAttr(attr);

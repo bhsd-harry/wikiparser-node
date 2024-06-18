@@ -1,5 +1,5 @@
 import {classes} from '../util/constants';
-import {setChildNodes} from '../util/debug';
+import {setChildNodes, Shadow} from '../util/debug';
 import {
 	extUrlChar,
 	extUrlCharFirst,
@@ -415,8 +415,10 @@ export class AstText extends AstNode {
 			if (i < this.length - 1) {
 				this.splitText(i + 1);
 			}
-			// @ts-expect-error abstract class
-			this.after(new TranscludeToken('=', [], this.parentNode!.getAttribute('config')) as TranscludeToken);
+			this.after(Shadow.run(
+				// @ts-expect-error abstract class
+				(): TranscludeToken => new TranscludeToken('=', [], this.parentNode!.getAttribute('config')),
+			));
 			this.#setData(this.data.slice(0, i));
 		}
 	}

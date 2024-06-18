@@ -137,7 +137,7 @@ export abstract class FileToken extends LinkBaseToken {
 		/-\{|\}-|\|/gu;
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class
-			part => new ImageParameterToken(part, extension, config, accum) as ImageParameterToken,
+			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),
 		));
 	}
 
@@ -324,9 +324,9 @@ export abstract class FileToken extends LinkBaseToken {
 		if (value === true && free) {
 			this.typeError('setValue', 'String');
 		}
-		const parameter: ImageParameterToken = Shadow.run(
+		const parameter = Shadow.run(
 			// @ts-expect-error abstract class
-			() => new ImageParameterToken(syntax.replace('$1', ''), this.extension, config),
+			(): ImageParameterToken => new ImageParameterToken(syntax.replace('$1', ''), this.extension, config),
 		);
 		if (free) {
 			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);

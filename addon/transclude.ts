@@ -16,7 +16,7 @@ TranscludeToken.prototype.newAnonArg =
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(val, this.getAttribute('include'), undefined, config),
 			// @ts-expect-error abstract class
-			token: ParameterToken = Shadow.run(() => new ParameterToken(undefined, undefined, config));
+			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
 		token.lastChild.append(...childNodes);
 		token.afterBuild();
 		return this.insertAt(token);
@@ -38,7 +38,7 @@ TranscludeToken.prototype.setValue =
 			k = Parser.parse(key, include, undefined, config),
 			v = Parser.parse(value, include, undefined, config),
 			// @ts-expect-error abstract class
-			token: ParameterToken = Shadow.run(() => new ParameterToken(undefined, undefined, config));
+			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
 		token.firstChild.append(...k.childNodes);
 		token.lastChild.append(...v.childNodes);
 		token.afterBuild();
@@ -63,9 +63,12 @@ TranscludeToken.prototype.replaceModule =
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 1) {
-			Token.prototype.insertAt.call(this, new AtomToken(undefined, 'invoke-module', config, [], {
-				'Stage-1': ':', '!ExtToken': '',
-			}));
+			Token.prototype.insertAt.call(
+				this,
+				Shadow.run(() => new AtomToken(undefined, 'invoke-module', config, [], {
+					'Stage-1': ':', '!ExtToken': '',
+				})),
+			);
 			return;
 		}
 		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, config);
@@ -82,9 +85,12 @@ TranscludeToken.prototype.replaceFunction =
 		}
 		const config = this.getAttribute('config');
 		if (this.length === 2) {
-			Token.prototype.insertAt.call(this, new AtomToken(undefined, 'invoke-function', config, [], {
-				'Stage-1': ':', '!ExtToken': '',
-			}));
+			Token.prototype.insertAt.call(
+				this,
+				Shadow.run(() => new AtomToken(undefined, 'invoke-function', config, [], {
+					'Stage-1': ':', '!ExtToken': '',
+				})),
+			);
 			return;
 		}
 		const {childNodes} = Parser.parse(func, this.getAttribute('include'), 2, config);
