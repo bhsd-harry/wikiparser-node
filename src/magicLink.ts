@@ -80,58 +80,40 @@ export abstract class MagicLinkToken extends Token {
 			return errors;
 		}
 		const pipe = this.type === 'ext-link-url',
-			source = pipe ? String.raw`\|+` : '[，；。：！？（）]+',
-			regex = new RegExp(source, 'u'),
-			regexGlobal = new RegExp(source, 'gu');
-		for (const child of this.childNodes) {
-			const {type, data} = child;
-			if (type !== 'text' || !regex.test(data)) {
-				continue;
-			}
-			const refError = generateForChild(child, rect, 'unterminated-url', '', 'warning');
-			regexGlobal.lastIndex = 0;
-			for (let mt = regexGlobal.exec(data); mt; mt = regexGlobal.exec(data)) {
-				const {index, 0: s} = mt,
-					lines = data.slice(0, index).split('\n'),
-					top = lines.length,
-					left = lines[top - 1]!.length,
-					startIndex = refError.startIndex + index,
-					startLine = refError.startLine + top - 1,
-					startCol = top === 1 ? refError.startCol + left : left;
-				const e = {
-					...refError,
-					message: Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
-					startIndex,
-					endIndex: startIndex + s.length,
-					startLine,
-					endLine: startLine,
-					startCol,
-					endCol: startCol + s.length,
-				};
-				if (!pipe) {
-					e.suggestions = [
-						{
-							desc: 'whitespace',
-							range: [startIndex, startIndex],
-							text: ' ',
-						},
-						{
-							desc: 'escape',
-							range: [startIndex, e.endIndex],
-							text: encodeURI(s),
-						},
-					];
-				} else if (s.length === 1) {
-					e.suggestions = [
-						{
-							desc: 'whitespace',
-							range: [startIndex, startIndex + 1],
-							text: ' ',
-						},
-					];
-				}
-				errors.push(e);
-			}
+			regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
+			child = this.childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
+		if (child) {
+			const {data} = child,
+				e = generateForChild(
+					child,
+					rect,
+					'unterminated-url',
+					Parser.msg('$1 in URL', pipe ? '"|"' : 'full-width punctuation'),
+					'warning',
+				),
+				{index, 0: s} = regex.exec(data)!,
+				i = e.startIndex + index;
+			e.suggestions = pipe
+				? [
+					{
+						desc: 'whitespace',
+						range: [i, i + 1],
+						text: ' ',
+					},
+				]
+				: [
+					{
+						desc: 'whitespace',
+						range: [i, i],
+						text: ' ',
+					},
+					{
+						desc: 'escape',
+						range: [i, i + s.length],
+						text: encodeURI(s),
+					},
+				];
+			errors.push(e);
 		}
 		return errors;
 	}
