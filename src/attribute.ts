@@ -294,22 +294,16 @@ export abstract class AttributeToken extends Token {
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', MAX_STAGE - 1);
-		} else if (tag === 'gallery' && key === 'caption') {
-			const newConfig: Config = {
-				...config,
-				excludes: [...config.excludes!, 'quote', 'extLink', 'magicLink', 'list'],
-			};
-			valueToken = new Token(value, newConfig, accum, {
-				AstText: ':', LinkToken: ':', FileToken: ':', CategoryToken: ':', ConverterToken: ':',
-			});
-			valueToken.type = 'attr-value';
-			valueToken.setAttribute('stage', 5);
-		} else if (tag === 'choose' && (key === 'before' || key === 'after')) {
+		} else if (
+			tag === 'gallery' && key === 'caption'
+			|| tag === 'choose' && (key === 'before' || key === 'after')
+		) {
 			const newConfig: Config = {
 				...config,
 				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
+				AstText: ':',
 				ArgToken: ':',
 				TranscludeToken: ':',
 				LinkToken: ':',

@@ -5,6 +5,7 @@
 **Fixed**
 
 - [`SyntaxToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/SyntaxToken#lint) now also reports errors from its [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#children)
+- Parse the `caption` attribute of a `<gallery>` extension tag
 
 **Changed**
 
