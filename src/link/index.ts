@@ -83,11 +83,6 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** @private */
-	override setTarget(link: string): void {
-		super.setTarget((/^\s*[:#]/u.test(link) ? '' : ':') + link);
-	}
-
 	/**
 	 * 设置跨语言链接
 	 * @param lang 语言前缀

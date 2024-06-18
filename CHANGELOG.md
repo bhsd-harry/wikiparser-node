@@ -6,6 +6,10 @@
 
 - [`SyntaxToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/SyntaxToken#lint) now also reports errors from its [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#children)
 
+**Changed**
+
+- [`LinkBaseToken.prototype.setTarget`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#settarget) now only adds leading `:` when necessary
+
 ## v1.9.3
 
 *2024-06-18*
