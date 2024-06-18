@@ -12,6 +12,12 @@ import type {Title} from '../../lib/title';
 import type {AstText} from '../../internal';
 
 /**
+ * 是否为普通内链
+ * @param type 节点类型
+ */
+const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
+
+/**
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token]}`
  */
@@ -95,10 +101,10 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{childNodes: [target, linkText], type: linkType} = this,
+			{childNodes: [target, linkText], type} = this,
 			{encoded, fragment} = this.#title,
 			rect = new BoundingRect(this, start);
-		if (target.childNodes.some(({type}) => type === 'template')) {
+		if (target.childNodes.some(({type: t}) => t === 'template')) {
 			errors.push(
 				generateForChild(target, rect, 'unknown-page', 'template in an internal link target', 'warning'),
 			);
@@ -106,7 +112,7 @@ export abstract class LinkBaseToken extends Token {
 		if (encoded) {
 			errors.push(generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link'));
 		}
-		if (linkType === 'link' || linkType === 'category') {
+		if (type === 'link' || type === 'category') {
 			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));
 			if (textNode) {
 				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning');
@@ -123,7 +129,7 @@ export abstract class LinkBaseToken extends Token {
 				errors.push(e);
 			}
 		}
-		if (linkType !== 'link' && linkType !== 'redirect-target' && fragment !== undefined) {
+		if (fragment !== undefined && !isLink(type)) {
 			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
 				textNode = target.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
 			if (textNode) {
