@@ -1,5 +1,5 @@
 import {Token} from './index';
-import type {Config} from '../base';
+import type {Config, LintError} from '../base';
 
 declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
@@ -25,7 +25,7 @@ export class SyntaxToken extends Token {
 	}
 
 	/** @private */
-	override lint(): [] {
-		return [];
+	override lint(start = this.getAbsoluteIndex()): LintError[] {
+		return super.lint(start, false);
 	}
 }
