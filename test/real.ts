@@ -61,7 +61,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 						let text = content,
 							firstStart = Infinity;
 						for (const {startIndex, endIndex} of errors) {
-							if (endIndex < firstStart) {
+							if (endIndex <= firstStart) {
 								text = text.slice(0, startIndex) + text.slice(endIndex);
 								firstStart = startIndex;
 							} else {
