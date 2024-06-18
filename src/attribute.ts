@@ -241,8 +241,12 @@ export abstract class AttributeToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		const keyToken = new AtomToken(key, 'attr-key', config, accum, {
-		});
+		const keyToken = new AtomToken(
+			key,
+			'attr-key',
+			config,
+			accum,
+		);
 		let valueToken: Token;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, accum, {
