@@ -392,7 +392,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
+	override lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken>> = {};
