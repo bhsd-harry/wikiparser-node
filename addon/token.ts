@@ -202,35 +202,31 @@ Token.prototype.solveConst =
 	/** @implements */
 	function(): void {
 		const targets = this.querySelectorAll<ArgToken | TranscludeToken>('magic-word, arg'),
-			magicWords = new Set(['if', 'ifeq', 'switch']);
+			magicWords = new Set(['if', 'ifeq', 'switch']),
+			types = 'magic-word, template';
 		for (let i = targets.length - 1; i >= 0; i--) {
 			const target = targets[i]!,
-				{type, name, childNodes, length} = target,
-				[, var1, var2 = ''] = childNodes as [SyntaxToken, ...ParameterToken[]];
+				{type, name, childNodes: c, length} = target,
+				[, var1, var2 = ''] = c as [SyntaxToken, ...ParameterToken[]];
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
-				let replace = '';
+				let replace: string | readonly AstNodes[] = '';
 				if (type === 'arg') {
-					replace = target.default === false ? target.toString() : target.default;
-				} else if (name === 'if' && !var1?.getElementByTypes('magic-word, template')) {
-					replace = String(childNodes[String(var1 ?? '').trim() ? 2 : 3] ?? '').trim();
-				} else if (
-					name === 'ifeq'
-					&& !childNodes.slice(1, 3).some(child => child.getElementByTypes('magic-word, template'))
-				) {
-					replace = String(childNodes[
-						String(var1 ?? '').trim() === String(var2).trim() ? 3 : 4
-					] ?? '').trim();
-				} else if (name === 'switch' && !var1?.getElementByTypes('magic-word, template')) {
+					replace = var1?.childNodes ?? target.toString();
+				} else if (name === 'if' && !var1?.getElementByTypes(types)) {
+					replace = c[String(var1 ?? '').trim() ? 2 : 3]?.lastChild!.childNodes ?? '';
+				} else if (name === 'ifeq' && !c.slice(1, 3).some(child => child.getElementByTypes(types))) {
+					replace = c[String(var1 ?? '').trim() === String(var2).trim() ? 3 : 4]?.lastChild!.childNodes ?? '';
+				} else if (name === 'switch' && !var1?.getElementByTypes(types)) {
 					const key = String(var1 ?? '').trim();
-					let defaultVal = '',
+					let defaultVal: readonly AstNodes[] = [],
 						found = false,
 						transclusion = false;
 					for (let j = 2; j < length; j++) {
-						const {anon, name: option, value, firstChild} = childNodes[j] as ParameterToken;
-						transclusion = Boolean(firstChild.getElementByTypes<TranscludeToken>('magic-word, template'));
+						const {anon, name: option, value, firstChild, lastChild: {childNodes}} = c[j] as ParameterToken;
+						transclusion = Boolean(firstChild.getElementByTypes<TranscludeToken>(types));
 						if (anon) {
 							if (j === length - 1) {
-								defaultVal = value;
+								defaultVal = childNodes;
 							} else if (transclusion) {
 								break;
 							} else {
@@ -239,10 +235,10 @@ Token.prototype.solveConst =
 						} else if (transclusion) {
 							break;
 						} else if (found || option === key) {
-							replace = value;
+							replace = childNodes;
 							break;
 						} else if (option.toLowerCase() === '#default') {
-							defaultVal = value;
+							defaultVal = childNodes;
 						}
 						if (j === length - 1) {
 							replace = defaultVal;
@@ -254,7 +250,7 @@ Token.prototype.solveConst =
 				} else {
 					continue;
 				}
-				target.replaceWith(replace);
+				target.replaceWith(...typeof replace === 'string' ? [replace] : replace);
 			}
 		}
 	};

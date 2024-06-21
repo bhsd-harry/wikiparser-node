@@ -7,6 +7,7 @@
 - [`SyntaxToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/SyntaxToken#lint) now also reports errors from its [`children`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#children)
 - Parse the `caption` attribute of a `<gallery>` extension tag
 - Fix [`LinkToken.prototype.pipeTrick`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#pipetrick)
+- [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) when the default value of a [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken) contains `Token`
 
 **Changed**
 
