@@ -96,21 +96,21 @@ export abstract class LinkToken extends LinkBaseToken {
 		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick cannot be used with "#" or "%"!');
 		}
-		const m1 = /^:?(?:[ \w\x80-\xFF-]+:)?([^(]+)\(.+\)$/u.exec(linkText) as [string, string] | null;
+		const m1 = /^:?(?:[ \w\x80-\xFF-]+:)?([^(]+?) ?\(.+\)$/u.exec(linkText) as [string, string] | null;
 		if (m1) {
-			this.setLinkText(m1[1].trim());
+			this.setLinkText(m1[1]);
 			return;
 		}
-		const m2 = /^:?(?:[ \w\x80-\xFF-]+:)?([^（]+)（.+）$/u.exec(linkText) as [string, string] | null;
+		const m2 = /^:?(?:[ \w\x80-\xFF-]+:)?([^（]+?) ?（.+）$/u.exec(linkText) as [string, string] | null;
 		if (m2) {
-			this.setLinkText(m2[1].trim());
+			this.setLinkText(m2[1]);
 			return;
 		}
 		// eslint-disable-next-line es-x/no-regexp-lookbehind-assertions
-		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?:(?<!\()\(.+\))?(?:, |，|، )./u
+		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?: ?(?<!\()\(.+\))?(?:(?:, |，|، ).|$)/u
 			.exec(linkText) as [string, string] | null;
 		if (m3) {
-			this.setLinkText(m3[1].trim());
+			this.setLinkText(m3[1]);
 			return;
 		}
 		this.setLinkText(linkText);

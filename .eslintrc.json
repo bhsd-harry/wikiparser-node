@@ -770,6 +770,7 @@
 				"@stylistic/max-len": [
 					2,
 					{
+						"ignoreTemplateLiterals": true,
 						"code": 80
 					}
 				]
