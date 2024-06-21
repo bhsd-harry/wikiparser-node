@@ -1058,6 +1058,7 @@
 				"@typescript-eslint/unified-signatures": 2,
 				"@stylistic/type-generic-spacing": 2,
 				"@stylistic/type-named-tuple-spacing": 2,
+				"es-x/no-object-hasown": 0,
 				"jsdoc/check-types": 0
 			}
 		},

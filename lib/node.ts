@@ -240,7 +240,7 @@ export abstract class AstNode implements AstNodeBase {
 			this.#parentNode = value as TokenAttribute<'parentNode'>;
 
 			/* NOT FOR BROWSER */
-		} else if (Object.prototype.hasOwnProperty.call(this, key)) {
+		} else if (Object.hasOwn(this, key)) {
 			const descriptor = Object.getOwnPropertyDescriptor(this, key)!;
 			if (this.#optional.has(key)) {
 				descriptor.enumerable = Boolean(value);
