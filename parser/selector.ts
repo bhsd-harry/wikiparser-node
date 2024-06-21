@@ -351,7 +351,7 @@ export const checkToken = (selector: string) => <T extends Token>(token: Token):
 				}
 			}
 		}
-		step.push(...pieces.filter(piece => piece.startsWith('#')).map(piece => desanitize(piece)));
+		step.push(...pieces.filter(piece => piece.startsWith('#')).map(desanitize));
 	};
 
 	/**

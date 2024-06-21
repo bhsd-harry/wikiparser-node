@@ -31,6 +31,9 @@ declare interface Parser extends ParserBase {
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 
+	templateDir?: string;
+	templates: Map<string, Token>;
+
 	warning: boolean;
 	debugging: boolean;
 
@@ -92,7 +95,7 @@ declare interface Parser extends ParserBase {
  * @param dir 子路径
  */
 const rootRequire = (file: string, dir: string): unknown => require(
-	file.startsWith('/') ? file : `../${file.includes('/') ? '' : dir}${file}`,
+	path.isAbsolute(file) ? file : path.join('..', file.includes('/') ? '' : dir, file),
 );
 
 /* NOT FOR BROWSER */
@@ -125,6 +128,8 @@ const Parser: Parser = {
 	conversionTable: new Map(),
 	redirects: new Map(),
 
+	templates: new Map(),
+
 	warning: true,
 	debugging: false,
 
@@ -133,7 +138,7 @@ const Parser: Parser = {
 	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
-			this.config = rootRequire(this.config, 'config/') as Config;
+			this.config = rootRequire(this.config, 'config') as Config;
 
 			/* NOT FOR BROWSER */
 
@@ -158,7 +163,7 @@ const Parser: Parser = {
 	/** @implements */
 	msg(msg, arg = '') {
 		if (typeof this.i18n === 'string') {
-			this.i18n = rootRequire(this.i18n, 'i18n/') as Record<string, string>;
+			this.i18n = rootRequire(this.i18n, 'i18n') as Record<string, string>;
 			return this.msg(msg, arg);
 		}
 		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
@@ -347,6 +352,7 @@ const def: PropertyDescriptorMap = {
 
 		'conversionTable',
 		'redirects',
+		'templateDir',
 		'warning',
 		'debugging',
 		'isInterwiki',
