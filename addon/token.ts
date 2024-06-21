@@ -1,7 +1,10 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
+import * as fs from 'fs';
+import * as path from 'path';
 import {classes} from '../util/constants';
 import {Shadow, isToken} from '../util/debug';
+import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
 import {IncludeToken} from '../src/tagPair/include';
@@ -198,10 +201,12 @@ Token.prototype.redoQuotes =
 		this.replaceChildren(...token.childNodes);
 	};
 
-Token.prototype.solveConst =
+Token.prototype.expand =
 	/** @implements */
-	function(): void {
-		const targets = this.querySelectorAll<ArgToken | TranscludeToken>('magic-word, arg'),
+	function(context, recursive = true): void {
+		const targets = this.querySelectorAll<ArgToken | TranscludeToken>(
+				`magic-word, arg${recursive ? ', template' : ''}`,
+			),
 			magicWords = new Set(['if', 'ifeq', 'switch']),
 			types = 'magic-word, template';
 		for (let i = targets.length - 1; i >= 0; i--) {
@@ -211,7 +216,7 @@ Token.prototype.solveConst =
 			if (type === 'arg' || type === 'magic-word' && magicWords.has(name)) {
 				let replace: string | readonly AstNodes[] = '';
 				if (type === 'arg') {
-					replace = var1?.childNodes ?? target.toString();
+					replace = (context?.getArg(name)?.lastChild.cloneNode() ?? var1)?.childNodes ?? target.toString();
 				} else if (name === 'if' && !var1?.getElementByTypes(types)) {
 					replace = c[String(var1 ?? '').trim() ? 2 : 3]?.lastChild!.childNodes ?? '';
 				} else if (name === 'ifeq' && !c.slice(1, 3).some(child => child.getElementByTypes(types))) {
@@ -251,6 +256,24 @@ Token.prototype.solveConst =
 					continue;
 				}
 				target.replaceWith(...typeof replace === 'string' ? [replace] : replace);
+			} else if (type === 'template') {
+				if (!Parser.templates.has(name)) {
+					if (Parser.templateDir === undefined) {
+						continue;
+					} else if (!path.isAbsolute(Parser.templateDir)) {
+						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
+					}
+					const file = ['.wiki', '.txt', ''].map(ext => path.join(Parser.templateDir!, name + ext))
+						.find(fs.existsSync);
+					if (!file) {
+						continue;
+					}
+					const wikitext = fs.readFileSync(file, 'utf8');
+					Parser.templates.set(name, Parser.parse(wikitext, true));
+				}
+				const template = Parser.templates.get(name)!.cloneNode();
+				template.expand(target, recursive);
+				target.replaceWith(...template.childNodes);
 			}
 		}
 	};

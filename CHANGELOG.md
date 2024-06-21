@@ -1,6 +1,10 @@
-## v1.9.4
+## v1.10.0
 
 *2024-06-21*
+
+**Added**
+
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) method
 
 **Fixed**
 
@@ -9,6 +13,7 @@
 - Fix [`LinkToken.prototype.pipeTrick`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#pipetrick)
 - [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) when the default value of a [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken) contains `Token`
 - Absolute path on Windows in [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config) and [`Parser.i18n`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#i18n)
+- [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#clonenode) when applied to a `root` token
 
 **Changed**
 

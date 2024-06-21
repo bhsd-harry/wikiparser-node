@@ -738,7 +738,7 @@ export class Token extends AstElement {
 	 * 创建HTML注释
 	 * @param data 注释内容
 	 */
-	createComment(data = ''): CommentToken {
+	createComment(data?: string): CommentToken {
 		require('../addon/token');
 		return this.createComment(data);
 	}
@@ -751,7 +751,7 @@ export class Token extends AstElement {
 	 * @param options.closing 是否是闭合标签
 	 * @throws `RangeError` 非法的标签名
 	 */
-	createElement(tagName: string, options: {selfClosing?: boolean, closing?: boolean} = {}): TagToken {
+	createElement(tagName: string, options?: {selfClosing?: boolean, closing?: boolean}): TagToken {
 		require('../addon/token');
 		return this.createElement(tagName, options);
 	}
@@ -845,6 +845,7 @@ export class Token extends AstElement {
 		return Shadow.run(() => {
 			const token = new Token(undefined, this.#config, [], this.getAcceptable()) as this;
 			token.type = this.type;
+			token.setAttribute('stage', this.#stage);
 			token.setAttribute('name', this.name);
 			token.append(...cloned);
 			token.protectChildren(...this.#protectedChildren);
@@ -888,10 +889,19 @@ export class Token extends AstElement {
 		this.redoQuotes();
 	}
 
+	/**
+	 * 展开模板
+	 * @param context 模板调用环境
+	 * @param recursive 是否递归展开
+	 */
+	expand(context?: TranscludeToken, recursive?: boolean): void {
+		require('../addon/token');
+		this.expand(context, recursive);
+	}
+
 	/** 解析部分魔术字 */
 	solveConst(): void {
-		require('../addon/token');
-		this.solveConst();
+		this.expand(undefined, false);
 	}
 
 	/** 合并普通节点的普通子节点 */

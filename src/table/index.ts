@@ -477,10 +477,10 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	insertTableRow(
 		y: number,
-		attr: Record<string, string | true> = {},
+		attr?: Record<string, string | true>,
 		inner?: string | Token,
-		subtype: TdSubtypes = 'td',
-		innerAttr: TdAttrs = {},
+		subtype?: TdSubtypes,
+		innerAttr?: TdAttrs,
 	): TrToken {
 		require('../../addon/table');
 		return this.insertTableRow(y, attr, inner, subtype, innerAttr);
