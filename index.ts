@@ -37,8 +37,7 @@ declare interface Parser extends ParserBase {
 	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-const Parser: Parser = {
+const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	i18n: undefined,
 	rules,
 

@@ -159,4 +159,12 @@ export abstract class AstNode implements AstNodeBase {
 			configurable: true,
 		});
 	}
+
+	/**
+	 * 是否是某种类型的节点
+	 * @param type 节点类型
+	 */
+	is<T extends Token>(type: string): this is T {
+		return this.type === type;
+	}
 }
