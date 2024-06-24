@@ -1,7 +1,6 @@
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
-import {isToken} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {
 	AstText,
@@ -197,12 +196,11 @@ export abstract class AstNode implements AstNodeBase {
 		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
 			return {bold: false, italic: false};
 		}
-		const {childNodes, type} = parentNode,
-			isQuote = isToken<QuoteToken>('quote');
+		const {childNodes, type} = parentNode;
 		let {bold = false, italic = false} = type === 'ext-link-text' && parentNode.parentNode || {};
 		for (let i = childNodes.indexOf(this as unknown as AstNodes) - 1; i >= 0; i--) {
 			const child = childNodes[i]!;
-			if (isQuote(child)) {
+			if (child.is<QuoteToken>('quote')) {
 				bold = child.bold !== bold;
 				italic = child.italic !== italic;
 			} else if (child.type === 'text' && child.data.includes('\n')) {
@@ -334,6 +332,14 @@ export abstract class AstNode implements AstNodeBase {
 
 			writable: false,
 		});
+	}
+
+	/**
+	 * 是否是某种类型的节点
+	 * @param type 节点类型
+	 */
+	is<T extends Token>(type: string): this is T {
+		return this.type === type;
 	}
 
 	/* NOT FOR BROWSER */

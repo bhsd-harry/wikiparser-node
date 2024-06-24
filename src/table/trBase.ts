@@ -1,11 +1,5 @@
 import {generateForChild} from '../../util/lint';
-import {
-	isToken,
-
-	/* NOT FOR BROWSER */
-
-	Shadow,
-} from '../../util/debug';
+import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
@@ -40,16 +34,14 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
-			isArg = isToken<ArgToken>('arg'),
-			isTransclude = isToken<TranscludeToken>('magic-word');
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
 		if (
 			!first
 			|| tdPattern.test(first.toString())
-			|| isArg(first) && tdPattern.test(first.default || '')
+			|| first.is<ArgToken>('arg') && tdPattern.test(first.default || '')
 		) {
 			return errors;
-		} else if (isTransclude(first)) {
+		} else if (first.is<TranscludeToken>('magic-word')) {
 			try {
 				if (first.getPossibleValues().every(token => tdPattern.test(token.text()))) {
 					return errors;
@@ -88,8 +80,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 		if (n < 0 || n > nCols || n === nCols && !insert) {
 			throw new RangeError(`There is no cell at position ${n}!`);
 		}
-		const isTr = isToken<TrToken>('tr'),
-			isSyntax = isToken<SyntaxToken>('table-syntax');
 
 		/* NOT FOR BROWSER END */
 
@@ -105,7 +95,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 				}
 
 				/* NOT FOR BROWSER */
-			} else if (isTr(child) || isSyntax(child)) {
+			} else if (child.is<TrToken>('tr') || child.is<SyntaxToken>('table-syntax')) {
 				return child;
 
 				/* NOT FOR BROWSER END */

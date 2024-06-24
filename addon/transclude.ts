@@ -1,7 +1,7 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import {classes} from '../util/constants';
-import {Shadow, isToken} from '../util/debug';
+import {Shadow} from '../util/debug';
 import {escapeRegExp} from '../util/string';
 import Parser from '../index';
 import {Token} from '../src/index';
@@ -194,10 +194,9 @@ TranscludeToken.prototype.escapeTables =
 		const stripped = this.toString().slice(2, -2),
 			include = this.getAttribute('include'),
 			config = this.getAttribute('config'),
-			parsed = Parser.parse(stripped, include, 4, config),
-			isTable = isToken<TableToken>('table');
+			parsed = Parser.parse(stripped, include, 4, config);
 		for (const table of parsed.childNodes) {
-			if (isTable(table)) {
+			if (table.is<TableToken>('table')) {
 				table.escape();
 			}
 		}

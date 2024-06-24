@@ -1,6 +1,12 @@
 import {generateForChild, generateForSelf} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
-import {Shadow} from '../util/debug';
+import {
+	isToken,
+
+	/* NOT FOR BROWSER */
+
+	Shadow,
+} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
@@ -112,7 +118,7 @@ export abstract class HeadingToken extends Token {
 		const errors = super.lint(start, re),
 			{firstChild, level} = this,
 			innerStr = firstChild.toString(),
-			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),
+			quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
 			boldQuotes = quotes.filter(({bold}) => bold),
 			italicQuotes = quotes.filter(({italic}) => italic),
 			rect = new BoundingRect(this, start);

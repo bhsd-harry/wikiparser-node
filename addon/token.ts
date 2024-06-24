@@ -3,7 +3,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {classes} from '../util/constants';
-import {Shadow, isToken} from '../util/debug';
+import {Shadow} from '../util/debug';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -139,19 +139,18 @@ Token.prototype.findEnclosingHtml =
 		if (!parentNode) {
 			return undefined;
 		}
-		const isHtml = isToken<HtmlToken>('html'),
 
-			/**
-			 * 检查是否为指定的 HTML 标签
-			 * @param node 节点
-			 * @param name 标签名
-			 * @param closing 是否为闭合标签
-			 */
-			checkHtml = (node: AstNodes, name: string | undefined, closing: boolean): boolean =>
-				isHtml(node)
-				&& (!name && !voidTags.has(node.name) || node.name === name)
-				&& (normalTags.has(node.name) || !node.selfClosing)
-				&& node.closing === closing;
+		/**
+		 * 检查是否为指定的 HTML 标签
+		 * @param node 节点
+		 * @param name 标签名
+		 * @param closing 是否为闭合标签
+		 */
+		const checkHtml = (node: AstNodes, name: string | undefined, closing: boolean): boolean =>
+			node.is<HtmlToken>('html')
+			&& (!name && !voidTags.has(node.name) || node.name === name)
+			&& (normalTags.has(node.name) || !node.selfClosing)
+			&& node.closing === closing;
 		const {childNodes, length} = parentNode,
 			index = childNodes.indexOf(this);
 		let i = index - 1,

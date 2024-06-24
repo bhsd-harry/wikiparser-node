@@ -5,6 +5,7 @@
 **Added**
 
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) method
+- [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#is) method
 
 **Fixed**
 

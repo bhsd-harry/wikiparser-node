@@ -372,7 +372,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	matches<T>(selector?: string): this is T {
-		return selector === undefined || getCondition<T>(selector)(this as unknown as Token);
+		return selector === undefined || getCondition<T>(selector)(this as AstElement as Token);
 	}
 
 	/**
