@@ -154,6 +154,7 @@ const matches = (
 					return token.text().trim() === '';
 				case ':any-link':
 					return type === 'link'
+						|| type === 'redirect-target'
 						|| type === 'free-ext-link'
 						|| type === 'magic-link'
 						|| type === 'ext-link'

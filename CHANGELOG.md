@@ -1,6 +1,6 @@
 ## v1.10.0
 
-*2024-06-21*
+*2024-06-25*
 
 **Added**
 
@@ -15,6 +15,7 @@
 - Fix [`LinkToken.prototype.pipeTrick`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#pipetrick)
 - Absolute path on Windows in [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config) and [`Parser.i18n`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#i18n)
 - [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#clonenode) when applied to a `root` token
+- Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#any-link) for [`RedirectTargetToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken)
 
 **Changed**
 
@@ -131,7 +132,7 @@
 
 **Fixed**
 
-- Mimic the structure of CSS compound selectors
+- Mimic the structure of CSS [compound selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#组合器)
 - Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) tag attributes
 - Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
 - Image size parameter with a suffix of `pxpx` is now also valid
