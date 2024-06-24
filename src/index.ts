@@ -203,7 +203,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false): this {
-		if (n < this.#stage || !this.getAttribute('plain') || this.length === 0) {
+		if (n < this.#stage || this.length === 0 || !this.getAttribute('plain')) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
 			/* NOt FOR BROWSER */
@@ -219,7 +219,7 @@ export class Token extends AstElement {
 		switch (n) {
 			case 0:
 				if (this.type === 'root') {
-					this.#accum.shift();
+					this.#accum.pop();
 					const isRedirect = this.#parseRedirect();
 					include &&= !isRedirect;
 				}
@@ -259,7 +259,7 @@ export class Token extends AstElement {
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.parseOnce(n, include);
+				token?.parseOnce(n, include); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			}
 		}
 		this.#stage++;
@@ -298,7 +298,7 @@ export class Token extends AstElement {
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
-					token.build();
+					token?.build(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 				}
 			}
 		}
@@ -308,7 +308,7 @@ export class Token extends AstElement {
 	afterBuild(): void {
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.afterBuild();
+				token?.afterBuild(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			}
 		}
 		this.#built = true;
@@ -889,19 +889,16 @@ export class Token extends AstElement {
 		this.redoQuotes();
 	}
 
-	/**
-	 * 展开模板
-	 * @param context 模板调用环境
-	 * @param recursive 是否递归展开
-	 */
-	expand(context?: TranscludeToken, recursive?: boolean): void {
+	/** 展开模板 */
+	expand(): Token {
 		require('../addon/token');
-		this.expand(context, recursive);
+		return this.expand();
 	}
 
 	/** 解析部分魔术字 */
-	solveConst(): void {
-		this.expand(undefined, false);
+	solveConst(): Token {
+		require('../addon/token');
+		return this.solveConst();
 	}
 
 	/** 合并普通节点的普通子节点 */

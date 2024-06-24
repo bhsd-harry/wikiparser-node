@@ -32,7 +32,7 @@ declare interface Parser extends ParserBase {
 	redirects: Map<string, string>;
 
 	templateDir?: string;
-	templates: Map<string, Token>;
+	templates: Map<string, string>;
 
 	warning: boolean;
 	debugging: boolean;
@@ -105,8 +105,7 @@ let viewOnly = false;
 
 /* NOT FOR BROWSER END */
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-const Parser: Parser = {
+const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 	i18n: undefined,
 	rules,
@@ -352,7 +351,6 @@ const def: PropertyDescriptorMap = {
 
 		'conversionTable',
 		'redirects',
-		'templateDir',
 		'warning',
 		'debugging',
 		'isInterwiki',

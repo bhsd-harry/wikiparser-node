@@ -1,4 +1,11 @@
-import {extUrlChar, extUrlCharFirst} from '../util/string';
+import {
+	extUrlChar,
+	extUrlCharFirst,
+
+	/* NOT FOR BROWSER */
+
+	removeComment,
+} from '../util/string';
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
@@ -102,6 +109,7 @@ export abstract class ParameterToken extends Token {
 			}),
 			token = new Token(value, config, accum);
 		keyToken.type = 'parameter-key';
+		keyToken.setAttribute('stage', 2);
 		token.type = 'parameter-value';
 		token.setAttribute('stage', 2);
 		this.append(keyToken, token);
@@ -215,7 +223,7 @@ export abstract class ParameterToken extends Token {
 
 	/** 获取参数值 */
 	getValue(): string {
-		const value = this.lastChild.text();
+		const value = removeComment(this.lastChild.text());
 		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 

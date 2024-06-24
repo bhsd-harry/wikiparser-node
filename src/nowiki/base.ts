@@ -58,7 +58,7 @@ export abstract class NowikiBaseToken extends Token {
 	 * @param str 新文本
 	 */
 	override setText(str: string): string {
-		return super.setText(str, 0);
+		return super.setText(str);
 	}
 }
 

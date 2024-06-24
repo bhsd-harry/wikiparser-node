@@ -78,8 +78,7 @@ export const parseTable = (
 			out += `\n${outLine}`;
 			continue;
 		}
-		// eslint-disable-next-line @stylistic/operator-linebreak
-		const matches =
+		const matches = // eslint-disable-line @stylistic/operator-linebreak
 			/^(?:(\|\}|\0\d+!\x7F\}|\0\d+\}\x7F)|(\|-+|\0\d+!\x7F-+|\0\d+-\x7F-*)(?!-)|(!|(?:\||\0\d+!\x7F)\+?))(.*)$/u
 				.exec(line) as [string, string | undefined, string | undefined, string | undefined, string] | null;
 		if (!matches) {
