@@ -70,12 +70,10 @@ export abstract class MagicLinkToken extends Token {
 
 	/** 和内链保持一致 */
 	get link(): string {
-		const map = {'!': '|', '=': '='};
+		const map = new Map([['!', '|'], ['=', '=']]);
 		let link = text(this.childNodes.map(child => {
 			const {type, name} = child;
-			return type === 'magic-word' && Object.prototype.hasOwnProperty.call(map, String(name))
-				? map[name as keyof typeof map]
-				: child;
+			return type === 'magic-word' && map.has(name) ? map.get(name)! : child;
 		}));
 		if (this.type === 'magic-link') {
 			link = link.replace(spaceRegex, ' ');
