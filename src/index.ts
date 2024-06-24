@@ -101,7 +101,7 @@ export class Token extends AstElement {
 
 	/** @private */
 	parseOnce(n = this.#stage, include = false): this {
-		if (n < this.#stage || !this.getAttribute('plain') || this.length === 0) {
+		if (n < this.#stage || this.length === 0 || !this.getAttribute('plain')) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
 			return this;
@@ -109,7 +109,7 @@ export class Token extends AstElement {
 		switch (n) {
 			case 0:
 				if (this.type === 'root') {
-					this.#accum.shift();
+					this.#accum.pop();
 					const isRedirect = this.#parseRedirect();
 					include &&= !isRedirect;
 				}
@@ -149,7 +149,7 @@ export class Token extends AstElement {
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.parseOnce(n, include);
+				token?.parseOnce(n, include); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			}
 		}
 		this.#stage++;
@@ -188,7 +188,7 @@ export class Token extends AstElement {
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {
-					token.build();
+					token?.build(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 				}
 			}
 		}
@@ -198,7 +198,7 @@ export class Token extends AstElement {
 	afterBuild(): void {
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token.afterBuild();
+				token?.afterBuild(); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			}
 		}
 		this.#built = true;

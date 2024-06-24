@@ -24,7 +24,7 @@ const factory = (
 	) => Pick<LintError, 'startIndex' | 'startLine' | 'startCol'>,
 ): generator => (token, rect, rule, msg, severity = 'error') => {
 	const {start} = rect,
-		{top, left} = 'top' in rect ? rect : new BoundingRect(token, start),
+		{top, left} = rect instanceof BoundingRect ? rect : new BoundingRect(token, start),
 		{offsetHeight, offsetWidth} = token,
 		{startIndex, startLine, startCol} = func(token, start, top, left);
 	return {

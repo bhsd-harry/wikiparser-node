@@ -1,4 +1,7 @@
-import {extUrlChar, extUrlCharFirst} from '../util/string';
+import {
+	extUrlChar,
+	extUrlCharFirst,
+} from '../util/string';
 import {generateForChild} from '../util/lint';
 import Parser from '../index';
 import {Token} from './index';
@@ -49,6 +52,7 @@ export abstract class ParameterToken extends Token {
 			}),
 			token = new Token(value, config, accum);
 		keyToken.type = 'parameter-key';
+		keyToken.setAttribute('stage', 2);
 		token.type = 'parameter-value';
 		token.setAttribute('stage', 2);
 		this.append(keyToken, token);

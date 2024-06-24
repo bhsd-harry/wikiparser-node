@@ -1,7 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {
-	isToken,
-} from '../../util/debug';
 import {TableBaseToken} from './base';
 import {
 	TdToken,
@@ -29,16 +26,14 @@ export abstract class TrBaseToken extends TableBaseToken {
 			return errors;
 		}
 		const first = (inter.childNodes as AstNodes[]).find(child => child.text().trim()),
-			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u,
-			isArg = isToken<ArgToken>('arg'),
-			isTransclude = isToken<TranscludeToken>('magic-word');
+			tdPattern = /^\s*(?:!|\{\{\s*![!-]?\s*\}\})/u;
 		if (
 			!first
 			|| tdPattern.test(first.toString())
-			|| isArg(first) && tdPattern.test(first.default || '')
+			|| first.is<ArgToken>('arg') && tdPattern.test(first.default || '')
 		) {
 			return errors;
-		} else if (isTransclude(first)) {
+		} else if (first.is<TranscludeToken>('magic-word')) {
 			try {
 				if (first.getPossibleValues().every(token => tdPattern.test(token.text()))) {
 					return errors;
