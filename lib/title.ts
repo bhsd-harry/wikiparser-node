@@ -29,6 +29,7 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#fragment: string | undefined;
+	#path: string;
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -89,6 +90,18 @@ export class Title {
 		const {main} = this,
 			i = main.lastIndexOf('.');
 		this.main = (i === -1 ? main : main.slice(0, i)) + (extension && '.') + extension;
+	}
+
+	/** article path */
+	get path(): string {
+		return this.#path;
+	}
+
+	set path(path) {
+		if (!path.includes('$1')) {
+			throw new RangeError('Invalid article path');
+		}
+		this.#path = path;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -167,6 +180,7 @@ export class Title {
 			redirects: {enumerable: false},
 		});
 		this.#namespaces = config.namespaces;
+		this.#path = config.articlePath || '/wiki/$1';
 	}
 
 	/** @private */
@@ -233,6 +247,18 @@ export class Title {
 	/** 转换为根页面 */
 	toRootPage(): void {
 		this.main = this.main.replace(/\/.*/u, '');
+	}
+
+	/** 生成URL */
+	getUrl(): string {
+		return this.path.replace(
+			'$1',
+			`${encodeURIComponent(this.title)}${
+				this.fragment === undefined && this.#fragment === undefined
+					? ''
+					: `#${encodeURIComponent(this.fragment ?? this.#fragment!)}`
+			}`,
+		);
 	}
 }
 

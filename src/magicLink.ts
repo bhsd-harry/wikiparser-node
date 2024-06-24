@@ -68,8 +68,8 @@ export abstract class MagicLinkToken extends Token {
 		return this.#type;
 	}
 
-	/** 和内链保持一致 */
-	get link(): string {
+	/** 链接显示文字 */
+	get innerText(): string {
 		const map = new Map([['!', '|'], ['=', '=']]);
 		let link = text(this.childNodes.map(child => {
 			const {type} = child,
@@ -78,11 +78,17 @@ export abstract class MagicLinkToken extends Token {
 		}));
 		if (this.type === 'magic-link') {
 			link = link.replace(spaceRegex, ' ');
-			if (link.startsWith('ISBN')) {
-				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
-			}
 		}
 		return link;
+	}
+
+	/** 和内链保持一致 */
+	get link(): string {
+		let {innerText} = this;
+		if (this.type === 'magic-link' && innerText.startsWith('ISBN')) {
+			innerText = `ISBN ${innerText.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
+		}
+		return innerText;
 	}
 
 	/* NOT FOR BROWSER */
@@ -223,15 +229,14 @@ export abstract class MagicLinkToken extends Token {
 
 	/**
 	 * 获取网址
-	 * @throws `Error` ISBN
 	 * @throws `Error` 非标准协议
 	 */
-	getUrl(): URL {
+	getUrl(): URL | string {
 		const {type, protocol} = this;
 		let {link} = this;
 		if (type === 'magic-link') {
 			if (protocol === 'ISBN') {
-				throw new Error(`MagicLinkToken.getUrl method does not support ISBN links: ${link}`);
+				return this.normalizeTitle(`Special:BookSources/${link.slice(5)}`).getUrl();
 			}
 			link = protocol === 'RFC'
 				? `https://tools.ietf.org/html/rfc${link.slice(4)}`
@@ -270,6 +275,15 @@ export abstract class MagicLinkToken extends Token {
 				child.escape();
 			}
 		}
+	}
+
+	/** @private */
+	override toHtml(): string {
+		const {type, innerText} = this,
+			url = this.getUrl();
+		return `<a class="external ${type === 'free-ext-link' ? 'free' : ''}" rel="nofollow" href="${
+			typeof url === 'string' ? url : url.href
+		}">${innerText}</a>`;
 	}
 }
 

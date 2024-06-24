@@ -28,6 +28,15 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		return 'redirect-target';
 	}
 
+	/* NOT FOR BROWSER */
+
+	/** 链接显示文字 */
+	get innerText(): string {
+		return String(this.link);
+	}
+
+	/* NOT FOR BROWSER END */
+
 	/**
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字

@@ -425,6 +425,11 @@ export class AstText extends AstNode {
 			this.#setData(this.data.slice(0, i));
 		}
 	}
+
+	/** @private */
+	toHtml(): string {
+		return escape(this.data);
+	}
 }
 
 classes['AstText'] = __filename;

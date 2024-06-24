@@ -76,3 +76,11 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
 		}
 	}
 };
+
+/**
+ * convert to HTML
+ * @param childNodes a Token's contents
+ * @param separator delimiter between nodes
+ */
+export const html = (childNodes: readonly AstNodes[], separator = ''): string =>
+	childNodes.map(child => child.toHtml()).join(separator);

@@ -7,6 +7,7 @@ import {
 
 	normalizeSpace,
 	text,
+	html,
 } from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
@@ -247,7 +248,7 @@ export abstract class AttributesToken extends Token {
 				if (attrs.has(name)) {
 					duplicated.add(name);
 					attrs.get(name)!.push(attr);
-				} else if (name !== 'class') {
+				} else {
 					attrs.set(name, [attr]);
 				}
 			}
@@ -455,6 +456,11 @@ export abstract class AttributesToken extends Token {
 		}
 		const str = text(this.childNodes.filter(child => child instanceof AttributeToken), ' ');
 		return this.#leadingSpace(str) + str;
+	}
+
+	/** @private */
+	override toHtml(): string {
+		return ` ${html(this.childNodes.filter(child => child instanceof AttributeToken), ' ')}`;
 	}
 }
 

@@ -15,7 +15,14 @@ import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
-import type {AstText} from '../../internal';
+import type {
+	AstText,
+
+	/* NOT FOR BROWSER */
+
+	LinkToken,
+	RedirectTargetToken,
+} from '../../internal';
 
 /**
  * 是否为普通内链
@@ -310,6 +317,17 @@ export abstract class LinkBaseToken extends Token {
 		} else {
 			this.lastChild.replaceChildren(...root.childNodes);
 		}
+	}
+
+	/** @private */
+	override toHtml(): string {
+		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
+			const {link, innerText} = this;
+			return `<a ${link.interwiki && 'class="extiw" '}href="${link.getUrl()}" title="${
+				link.title.replace(/"/gu, '&quot;')
+			}">${innerText}</a>`;
+		}
+		return '';
 	}
 }
 

@@ -93,7 +93,6 @@ const commonHtmlAttrs = new Set([
 		img: new Set(['alt', 'src', 'width', 'height', 'srcset']),
 		font: new Set(['size', 'color', 'face']),
 		hr: widthAttrs,
-		rt: new Set(['rbspan']),
 		data: new Set(['value']),
 		time: new Set(['datetime']),
 		meta: new Set(['itemprop', 'content']),
@@ -513,6 +512,26 @@ export abstract class AttributeToken extends Token {
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(key, this.getAttribute('include'), stages[this.type] + 1, config);
 		this.firstChild.replaceChildren(...childNodes);
+	}
+
+	/** @private */
+	override toHtml(): string {
+		const {type, name, tag} = this;
+		let value = this.lastChild.toHtml();
+		if (
+			name === 'style' && insecureStyle.test(value)
+			|| name === 'tabindex' && value.trim() !== '0'
+			|| type === 'ext-attr' && !(tag in htmlAttrs)
+			|| !htmlAttrs[tag]?.has(name) && (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+		) {
+			return '';
+		} else if (!this.#quotes[1]) {
+			value = value[this.#quotes[0] ? 'trimEnd' : 'trim']();
+		}
+		if (name === 'id') {
+			value = value.replace(/\s/gu, '_');
+		}
+		return `${name}="${value.replace(/"/gu, '&quot;')}"`;
 	}
 }
 

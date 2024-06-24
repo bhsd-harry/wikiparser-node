@@ -1222,5 +1222,6 @@
 	"redirection": [
 		"#redirect"
 	],
-	"variants": []
+	"variants": [],
+	"articlePath": "/wiki/$1"
 }

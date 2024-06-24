@@ -8,7 +8,7 @@ import type {Token} from '../index';
 
 /** 状态开关 */
 @syntax()
-@hiddenToken(true)
+@hiddenToken()
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
 

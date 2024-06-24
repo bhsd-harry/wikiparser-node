@@ -13,7 +13,7 @@ import type {LintError} from '../base';
  * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
  */
 @fixedToken
-@hiddenToken()
+@hiddenToken(false, false)
 export abstract class RedirectToken extends Token {
 	#pre: string;
 	#post: string;
@@ -99,6 +99,11 @@ export abstract class RedirectToken extends Token {
 			token.lastChild.safeReplaceWith(cloned[1]);
 			return token;
 		});
+	}
+
+	/** @private */
+	override toHtml(): string {
+		return `<ul class="redirectText"><li>${this.lastChild.toHtml()}</li></ul>`;
 	}
 }
 

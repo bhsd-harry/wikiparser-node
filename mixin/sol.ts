@@ -22,19 +22,16 @@ export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T =>
 				: '\n';
 		}
 
-		/** @private */
 		override toString(): string {
 			return this.#prependNewLine() + super.toString();
 		}
 
-		/** @private */
 		override getAttribute<S extends string>(key: S): TokenAttribute<S> {
 			return key === 'padding'
 				? this.#prependNewLine().length + super.getAttribute('padding') as TokenAttribute<S>
 				: super.getAttribute(key);
 		}
 
-		/** @private */
 		override text(): string {
 			return this.#prependNewLine() + super.text();
 		}

@@ -730,5 +730,6 @@
 		"zh-cn",
 		"zh-tw",
 		"zh-hk"
-	]
+	],
+	"articlePath": "/$1"
 }

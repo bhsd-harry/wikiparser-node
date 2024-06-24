@@ -40,7 +40,13 @@
 // x: HtmlToken
 
 import * as assert from 'assert/strict';
-import {text} from '../util/string';
+import {
+	text,
+
+	/* NOT FOR BROWSER */
+
+	html,
+} from '../util/string';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -889,10 +895,13 @@ export class Token extends AstElement {
 		this.redoQuotes();
 	}
 
-	/** 展开模板 */
-	expand(): Token {
+	/**
+	 * 展开模板
+	 * @param context 模板调用环境
+	 */
+	expand(context?: false): Token {
 		require('../addon/token');
-		return this.expand();
+		return this.expand(context);
 	}
 
 	/** 解析部分魔术字 */
@@ -910,6 +919,16 @@ export class Token extends AstElement {
 				}
 			}
 		}
+	}
+
+	/** 生成HTML */
+	toHtml(): string {
+		if (this.type === 'root') {
+			const root = this.expand(false);
+			root.type = 'plain';
+			return root.toHtml();
+		}
+		return html(this.childNodes, '');
 	}
 }
 

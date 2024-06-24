@@ -8,7 +8,7 @@ import type {LintError, Config} from '../../base';
 import type {Token} from '../index';
 
 /** HTML注释，不可见 */
-@hiddenToken()
+@hiddenToken(false)
 export abstract class CommentToken extends NowikiBaseToken {
 	closed;
 

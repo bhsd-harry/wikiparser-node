@@ -16,6 +16,7 @@ export interface Config {
 	readonly interwiki: string[];
 	readonly conversionTable?: [string, string][];
 	readonly redirects?: [string, string][];
+	readonly articlePath?: string;
 }
 
 export type TokenTypes = 'root'

@@ -57,7 +57,7 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T, _?: un
 
 		/** @implements */
 		getUrl(): URL {
-			return this.firstChild.getUrl();
+			return this.firstChild.getUrl() as URL;
 		}
 
 		/** @implements */

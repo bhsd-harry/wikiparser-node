@@ -28,7 +28,6 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			this.seal('pattern', true);
 		}
 
-		/** @private */
 		override afterBuild(): void {
 			super.afterBuild();
 			const /** @implements */ syntaxListener: AstListener = (e, data) => {
@@ -40,7 +39,6 @@ export const syntax = (pattern?: RegExp) => <S extends AstConstructor>(construct
 			this.addEventListener(['remove', 'insert', 'replace', 'text'], syntaxListener);
 		}
 
-		/** @private */
 		override replaceChildren(...elements: (AstNodes | string)[]): void {
 			if (Shadow.running || this.pattern.test(text(elements))) {
 				Shadow.run(() => {

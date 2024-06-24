@@ -7,6 +7,9 @@
 - [`AstNode.prototype.is`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#is) method
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) method
 - [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templatedir) property
+- [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
+- [`Title.path`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#path) property and [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) method
+- [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#innertext) properties
 
 **Fixed**
 
@@ -16,6 +19,7 @@
 - Absolute path on Windows in [`Parser.config`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#config) and [`Parser.i18n`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#i18n)
 - [`Token.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#clonenode) when applied to a `root` token
 - Pseudo selector [`:any-link`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#any-link) for [`RedirectTargetToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken)
+- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#lint) now reports duplicated `class` attributes
 
 **Changed**
 
@@ -23,10 +27,12 @@
 - [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint) now only reports the first occurrence of full-width punctuations in `free-ext-link` as an error
 - [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint) now ignores the fragment of an invalid module name
 - [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) now returns a copy of the original token
+- [`MagicLinkToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#geturl) now returns a string for ISBN links
 
 **Removed**
 
 - `RedirectTargetToken.prototoype.text` method overriding
+- `rbspan` attribute of a `<rt>` tag
 
 ## v1.9.3
 
@@ -261,7 +267,7 @@
 
 *2024-02-12*
 
-**Changed**
+**Added**
 
 - New property `rule` of the interface [`LintError`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterror)
 

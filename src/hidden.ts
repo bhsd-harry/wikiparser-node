@@ -5,7 +5,7 @@ import {Token} from './index';
 import type {Config} from '../base';
 
 /** 不可见的节点 */
-@hiddenToken(true)
+@hiddenToken()
 export class HiddenToken extends Token {
 	override get type(): 'hidden' {
 		return 'hidden';

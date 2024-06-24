@@ -723,6 +723,11 @@ export abstract class TranscludeToken extends Token {
 		require('../addon/transclude');
 		return this.escapeTables();
 	}
+
+	/** @private */
+	override toHtml(): string {
+		return '';
+	}
 }
 
 classes['TranscludeToken'] = __filename;

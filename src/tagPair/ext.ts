@@ -208,6 +208,18 @@ export abstract class ExtToken extends TagPairToken {
 			return token;
 		});
 	}
+
+	/** @private */
+	override toHtml(): string {
+		switch (this.name) {
+			case 'nowiki':
+				return this.lastChild.toHtml();
+			case 'pre':
+				return `<pre${this.firstChild.toHtml()}>${this.lastChild.toHtml()}</pre>`;
+			default:
+				return '';
+		}
+	}
 }
 
 classes['ExtToken'] = __filename;

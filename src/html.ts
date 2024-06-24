@@ -343,6 +343,18 @@ export abstract class HtmlToken extends Token {
 			);
 		}
 	}
+
+	/** @private */
+	override toHtml(): string {
+		const {closing, name} = this,
+			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config'),
+			tag = name + (closing ? '' : super.toHtml()),
+			selfClosing = this.#selfClosing && !closing && selfClosingTags.includes(name);
+		if (voidTags.includes(name)) {
+			return closing && name !== 'br' ? '' : `<${tag}>`;
+		}
+		return `<${closing ? '/' : ''}${tag}>${selfClosing ? `</${name}>` : ''}`;
+	}
 }
 
 classes['HtmlToken'] = __filename;

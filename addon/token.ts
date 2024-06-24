@@ -331,11 +331,13 @@ export const expand = (
 	return token;
 };
 
-Token.prototype.expand = /** @implements */ function(): Token {
+Token.prototype.expand = /** @implements */ function(context): Token {
 	if (this.type !== 'root') {
 		throw new Error('Only root token can be expanded!');
 	}
-	return Shadow.run(() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include')).parse());
+	return Shadow.run(
+		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'), context).parse(),
+	);
 };
 
 Token.prototype.solveConst = /** @implements */ function(): Token {
