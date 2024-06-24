@@ -1,5 +1,8 @@
 import {generateForChild, generateForSelf} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
+import {
+	isToken,
+} from '../util/debug';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -75,7 +78,7 @@ export abstract class HeadingToken extends Token {
 		const errors = super.lint(start, re),
 			{firstChild, level} = this,
 			innerStr = firstChild.toString(),
-			quotes = firstChild.childNodes.filter((node): node is QuoteToken => node.type === 'quote'),
+			quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
 			boldQuotes = quotes.filter(({bold}) => bold),
 			italicQuotes = quotes.filter(({italic}) => italic),
 			rect = new BoundingRect(this, start);

@@ -37,11 +37,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	}
 
 	/** @private */
-	override text(): string {
-		return `[[${this.firstChild.toString()}]]`;
-	}
-
-	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const errors = super.lint(start, false);
 		if (this.length === 2) {

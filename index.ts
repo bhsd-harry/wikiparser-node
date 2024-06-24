@@ -45,11 +45,10 @@ declare interface Parser extends ParserBase {
  * @param dir 子路径
  */
 const rootRequire = (file: string, dir: string): unknown => require(
-	file.startsWith('/') ? file : `../${file.includes('/') ? '' : dir}${file}`,
+	path.isAbsolute(file) ? file : path.join('..', file.includes('/') ? '' : dir, file),
 );
 
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-const Parser: Parser = {
+const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 	i18n: undefined,
 	rules,
@@ -57,7 +56,7 @@ const Parser: Parser = {
 	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
-			this.config = rootRequire(this.config, 'config/') as Config;
+			this.config = rootRequire(this.config, 'config') as Config;
 			return this.getConfig();
 		}
 		return {
@@ -69,7 +68,7 @@ const Parser: Parser = {
 	/** @implements */
 	msg(msg, arg = '') {
 		if (typeof this.i18n === 'string') {
-			this.i18n = rootRequire(this.i18n, 'i18n/') as Record<string, string>;
+			this.i18n = rootRequire(this.i18n, 'i18n') as Record<string, string>;
 			return this.msg(msg, arg);
 		}
 		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
