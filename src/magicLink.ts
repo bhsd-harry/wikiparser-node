@@ -72,7 +72,8 @@ export abstract class MagicLinkToken extends Token {
 	get link(): string {
 		const map = new Map([['!', '|'], ['=', '=']]);
 		let link = text(this.childNodes.map(child => {
-			const {type, name} = child;
+			const {type} = child,
+				name = String(child.name);
 			return type === 'magic-word' && map.has(name) ? map.get(name)! : child;
 		}));
 		if (this.type === 'magic-link') {
