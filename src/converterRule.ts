@@ -43,22 +43,18 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	override toString(): string {
-		const {childNodes} = this;
-		if (childNodes.length === 3) {
-			const [from, variant, to] = childNodes;
-			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
-		}
-		return super.toString(':');
+		const {childNodes, firstChild, lastChild} = this;
+		return childNodes.length === 3
+			? `${firstChild.toString()}=>${childNodes[1].toString()}:${lastChild.toString()}`
+			: super.toString(':');
 	}
 
 	/** @private */
 	override text(): string {
-		const {childNodes} = this;
-		if (childNodes.length === 3) {
-			const [from, variant, to] = childNodes;
-			return `${from.text()}=>${variant.text()}:${to.text()}`;
-		}
-		return super.text(':');
+		const {childNodes, firstChild, lastChild} = this;
+		return childNodes.length === 3
+			? `${firstChild.text()}=>${childNodes[1].text()}:${lastChild.text()}`
+			: super.text(':');
 	}
 
 	/** @private */

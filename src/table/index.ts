@@ -1,6 +1,9 @@
 import {generateForChild} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
-import {Shadow, emptyArray} from '../../util/debug';
+import {
+	Shadow,
+	emptyArray,
+} from '../../util/debug';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
