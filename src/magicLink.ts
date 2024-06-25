@@ -32,8 +32,8 @@ export abstract class MagicLinkToken extends Token {
 		return this.#type;
 	}
 
-	/** 和内链保持一致 */
-	get link(): string {
+	/** 链接显示文字 */
+	get innerText(): string {
 		const map = new Map([['!', '|'], ['=', '=']]);
 		let link = text(this.childNodes.map(child => {
 			const {type} = child,
@@ -42,11 +42,17 @@ export abstract class MagicLinkToken extends Token {
 		}));
 		if (this.type === 'magic-link') {
 			link = link.replace(spaceRegex, ' ');
-			if (link.startsWith('ISBN')) {
-				link = `ISBN ${link.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
-			}
 		}
 		return link;
+	}
+
+	/** 和内链保持一致 */
+	get link(): string {
+		let {innerText} = this;
+		if (this.type === 'magic-link' && innerText.startsWith('ISBN')) {
+			innerText = `ISBN ${innerText.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
+		}
+		return innerText;
 	}
 
 	/**

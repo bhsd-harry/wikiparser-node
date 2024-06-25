@@ -9,7 +9,7 @@ import type {LintError} from '../base';
  * 重定向
  * @classdesc `{childNodes: [SyntaxToken, LinkToken]}`
  */
-@hiddenToken()
+@hiddenToken(false, false)
 export abstract class RedirectToken extends Token {
 	#pre: string;
 	#post: string;
