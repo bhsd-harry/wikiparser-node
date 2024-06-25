@@ -805,5 +805,6 @@
 		"zh-sg",
 		"zh-my",
 		"zh-mo"
-	]
+	],
+	"articlePath": "/wiki/$1"
 }

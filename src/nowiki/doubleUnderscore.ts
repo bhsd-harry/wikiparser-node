@@ -4,7 +4,7 @@ import type {Config} from '../../base';
 import type {Token} from '../index';
 
 /** 状态开关 */
-@hiddenToken(true)
+@hiddenToken()
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	override get type(): 'double-underscore' {
 		return 'double-underscore';
