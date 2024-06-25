@@ -83,6 +83,8 @@ import type {
 	ExtLinkToken,
 	MagicLinkToken,
 	ImageParameterToken,
+	ListToken,
+	DdToken,
 } from '../internal';
 import type {CaretPosition} from '../lib/node';
 
@@ -928,7 +930,30 @@ export class Token extends AstElement {
 			root.type = 'plain';
 			return root.toHtml();
 		}
-		return html(this.childNodes, '');
+		const {HtmlToken}: typeof import('./html') = require('./html'),
+			{AttributesToken}: typeof import('./attributes') = require('./attributes'),
+			{list}: typeof import('./nowiki/listBase') = require('./nowiki/listBase');
+		const config = this.getAttribute('config');
+		for (const child of this.childNodes) {
+			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
+				const range = child.getRange();
+				range.collapse();
+				Shadow.run(() => {
+					for (const ch of child.firstChild.data) {
+						for (const name of list.get(ch)!) {
+							// @ts-expect-error abstract class
+							const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', name, config),
+								// @ts-expect-error abstract class
+								token: HtmlToken = new HtmlToken(name, attr, true, false, config);
+							range.insertNode(token);
+							range.setStartBefore(token);
+						}
+					}
+				});
+			}
+		}
+		const result = html(this.childNodes);
+		return result;
 	}
 }
 

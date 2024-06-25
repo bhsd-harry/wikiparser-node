@@ -8,7 +8,7 @@
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) method
 - [`Parser.templateDir`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#templatedir) property
 - [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
-- [`Title.path`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#path) property and [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) method
+- [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) method
 - [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#innertext) properties
 
 **Fixed**

@@ -1,5 +1,6 @@
 import {undo, Shadow} from '../util/debug';
 import {classes} from '../util/constants';
+import {html} from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -114,22 +115,18 @@ export abstract class ConverterRuleToken extends Token {
 
 	/** @private */
 	override toString(): string {
-		const {childNodes} = this;
-		if (childNodes.length === 3) {
-			const [from, variant, to] = childNodes;
-			return `${from.toString()}=>${variant.toString()}:${to.toString()}`;
-		}
-		return super.toString(':');
+		const {childNodes, firstChild, lastChild} = this;
+		return childNodes.length === 3
+			? `${firstChild.toString()}=>${childNodes[1].toString()}:${lastChild.toString()}`
+			: super.toString(':');
 	}
 
 	/** @private */
 	override text(): string {
-		const {childNodes} = this;
-		if (childNodes.length === 3) {
-			const [from, variant, to] = childNodes;
-			return `${from.text()}=>${variant.text()}:${to.text()}`;
-		}
-		return super.text(':');
+		const {childNodes, firstChild, lastChild} = this;
+		return childNodes.length === 3
+			? `${firstChild.text()}=>${childNodes[1].text()}:${lastChild.text()}`
+			: super.text(':');
 	}
 
 	/** @private */
@@ -259,6 +256,14 @@ export abstract class ConverterRuleToken extends Token {
 		if (this.unidirectional) {
 			this.removeAt(0);
 		}
+	}
+
+	/** @private */
+	override toHtml(): string {
+		const {childNodes, firstChild, lastChild} = this;
+		return childNodes.length === 3
+			? `${firstChild.toHtml()}=>${childNodes[1].text()}:${lastChild.toHtml()}`
+			: html(childNodes, ':');
 	}
 }
 

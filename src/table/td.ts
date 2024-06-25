@@ -415,6 +415,12 @@ export abstract class TdToken extends TableBaseToken {
 			this.#innerSyntax = '{{!}}';
 		}
 	}
+
+	/** @private */
+	override toHtml(): string {
+		const {subtype, childNodes: [, attr, inner]} = this;
+		return `<${subtype}${attr.toHtml()}>${inner.toHtml()}</${subtype}>`;
+	}
 }
 
 /* NOT FOR BROWSER */

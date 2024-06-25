@@ -193,6 +193,15 @@ export abstract class HeadingToken extends Token {
 	removeTrail(): void {
 		this.lastChild.replaceChildren();
 	}
+
+	/** @private */
+	override toHtml(): string {
+		const {level, firstChild} = this,
+			html = firstChild.toHtml();
+		return `<div class="mw-heading mw-heading${level}"><h${level} id="${
+			html.replace(/<[a-z].*?>/gu, '').replace(/[\s_]+/gu, '_')
+		}">${html}</h${level}></div>`;
+	}
 }
 
 classes['HeadingToken'] = __filename;

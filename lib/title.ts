@@ -92,18 +92,6 @@ export class Title {
 		this.main = (i === -1 ? main : main.slice(0, i)) + (extension && '.') + extension;
 	}
 
-	/** article path */
-	get path(): string {
-		return this.#path;
-	}
-
-	set path(path) {
-		if (!path.includes('$1')) {
-			throw new RangeError('Invalid article path');
-		}
-		this.#path = path;
-	}
-
 	/* NOT FOR BROWSER END */
 
 	/**
@@ -251,7 +239,7 @@ export class Title {
 
 	/** 生成URL */
 	getUrl(): string {
-		return this.path.replace(
+		return this.#path.replace(
 			'$1',
 			`${encodeURIComponent(this.title)}${
 				this.fragment === undefined && this.#fragment === undefined

@@ -1,7 +1,14 @@
 import {generateForChild} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
-import {Shadow, emptyArray} from '../../util/debug';
-import {noWrap} from '../../util/string';
+import {
+	Shadow,
+	emptyArray,
+
+	/* NOT FOR BROWSER */
+
+	isToken,
+} from '../../util/debug';
+import {noWrap, html} from '../../util/string';
 import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
@@ -625,6 +632,21 @@ export abstract class TableToken extends TrBaseToken {
 	moveTableColAfter(x: number, after: number): void {
 		require('../../addon/table');
 		this.moveTableColAfter(x, after);
+	}
+
+	/** @private */
+	override toHtml(): string {
+		/**
+		 * 过滤需要移出表格的节点
+		 * @param token 表格或表格行
+		 */
+		const filter = (token: TrBaseToken): Token[] => token.childNodes.filter(isToken('table-inter'));
+		const {childNodes} = this,
+			td = childNodes.filter(({type}) => type === 'td'),
+			tr = childNodes.filter(isToken<TrToken>('tr')),
+			inter = [this, ...tr].flatMap(filter),
+			firstTr = td.length === 0 ? '' : `<tr>${html(td)}</tr>`;
+		return `${html(inter)}<table${childNodes[1].toHtml()}><tbody>${firstTr}${html(tr)}</tbody></table>`;
 	}
 }
 

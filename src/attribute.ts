@@ -529,7 +529,7 @@ export abstract class AttributeToken extends Token {
 			value = value[this.#quotes[0] ? 'trimEnd' : 'trim']();
 		}
 		if (name === 'id') {
-			value = value.replace(/\s/gu, '_');
+			value = value.replace(/\s+/gu, '_');
 		}
 		return `${name}="${value.replace(/"/gu, '&quot;')}"`;
 	}

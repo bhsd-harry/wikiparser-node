@@ -1,6 +1,10 @@
 import {
 	text,
 	print,
+
+	/* NOT FOR BROWSER */
+
+	html,
 } from '../util/string';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
@@ -119,6 +123,16 @@ export abstract class ConverterToken extends Token {
 			token.append(...rules);
 			return token;
 		});
+	}
+
+	/** @private */
+	override toHtml(): string {
+		const flags = this.getEffectiveFlags(),
+			{childNodes: [, ...rules]} = this;
+		if (flags.has('R')) {
+			return html(rules, ';');
+		}
+		return flags.has('S') ? rules[0]!.lastChild.toHtml() : '';
 	}
 }
 
