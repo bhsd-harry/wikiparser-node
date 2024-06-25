@@ -597,5 +597,6 @@
 		"zh-sg",
 		"zh-my",
 		"zh-mo"
-	]
+	],
+	"articlePath": "/zh/$1"
 }

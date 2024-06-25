@@ -162,6 +162,11 @@
 				"minItems": 2,
 				"maxItems": 2
 			}
+		},
+		"articlePath": {
+			"description": "base URL of internal links",
+			"type": "string",
+			"pattern": "\\$1"
 		}
 	},
 	"required": [

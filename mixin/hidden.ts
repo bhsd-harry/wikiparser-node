@@ -7,7 +7,9 @@ import type {LintError} from '../base';
  * @param constructor 基类
  * @param _ context
  */
-export const hiddenToken = (linter?: boolean) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
+export const hiddenToken = (
+	linter = true,
+) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 解析后不可见的类 */
 	abstract class AnyHiddenToken extends constructor {
 		/** 没有可见部分 */
@@ -15,7 +17,6 @@ export const hiddenToken = (linter?: boolean) => <T extends AstConstructor>(cons
 			return '';
 		}
 
-		/** @private */
 		override lint(start?: number): LintError[] {
 			// @ts-expect-error private argument
 			return linter ? [] : super.lint(start);

@@ -169,7 +169,7 @@ export abstract class AttributesToken extends Token {
 				if (attrs.has(name)) {
 					duplicated.add(name);
 					attrs.get(name)!.push(attr);
-				} else if (name !== 'class') {
+				} else {
 					attrs.set(name, [attr]);
 				}
 			}
