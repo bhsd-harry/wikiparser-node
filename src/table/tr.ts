@@ -1,5 +1,4 @@
 import {classes} from '../../util/constants';
-import {html} from '../../util/string';
 import {TrBaseToken} from './trBase';
 import type {Config} from '../../base';
 import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../../internal';
@@ -74,13 +73,6 @@ export abstract class TrToken extends TrBaseToken {
 	/** 获取前一行 */
 	getPreviousRow(): TrToken | undefined {
 		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).reverse());
-	}
-
-	/** @private */
-	override toHtml(): string {
-		const {childNodes} = this,
-			td = childNodes.filter(({type}) => type === 'td');
-		return td.length === 0 ? '' : `<tr${childNodes[1].toHtml()}>${html(td)}</tr>`;
 	}
 }
 

@@ -211,11 +211,15 @@ export abstract class ExtToken extends TagPairToken {
 
 	/** @private */
 	override toHtml(): string {
-		switch (this.name) {
+		const {name, firstChild, lastChild} = this;
+		switch (name) {
 			case 'nowiki':
-				return this.lastChild.toHtml();
+				return lastChild.toHtml();
 			case 'pre':
-				return `<pre${this.firstChild.toHtml()}>${this.lastChild.toHtml()}</pre>`;
+				return `<pre${firstChild.toHtml()}>${lastChild.toHtml()}</pre>`;
+			case 'poem':
+				firstChild.classList.add('poem');
+				return `<div${firstChild.toHtml()}>${lastChild.toHtml()}</div>`;
 			default:
 				return '';
 		}

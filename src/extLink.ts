@@ -194,8 +194,9 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override toHtml(): string {
-		const {innerText} = this;
-		return `<a class="external" rel="nofollow" href="${this.getUrl().href}">${innerText}</a>`;
+		return `<a class="external" rel="nofollow" href="${this.getUrl().href}">${
+			this.length > 1 ? this.lastChild.toHtml() : this.innerText
+		}</a>`;
 	}
 }
 

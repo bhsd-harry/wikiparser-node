@@ -516,14 +516,15 @@ export abstract class AttributeToken extends Token {
 
 	/** @private */
 	override toHtml(): string {
-		const {type, name, tag} = this;
-		let value = this.lastChild.toHtml();
+		const {type, name, tag, lastChild} = this;
 		if (
-			name === 'style' && insecureStyle.test(value)
-			|| name === 'tabindex' && value.trim() !== '0'
-			|| type === 'ext-attr' && !(tag in htmlAttrs)
-			|| !htmlAttrs[tag]?.has(name) && (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			type === 'ext-attr' && !(tag in htmlAttrs)
+				|| !htmlAttrs[tag]?.has(name) && (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
+			return '';
+		}
+		let value = lastChild.toHtml();
+		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value.trim() !== '0') {
 			return '';
 		} else if (!this.#quotes[1]) {
 			value = value[this.#quotes[0] ? 'trimEnd' : 'trim']();

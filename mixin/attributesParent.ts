@@ -102,10 +102,6 @@ export const attributesParent = (i = 0) => <T extends AstConstructor>(constructo
 			return this.#attributesChild.classList;
 		}
 
-		set classList(classList) {
-			this.#attributesChild.classList = classList;
-		}
-
 		/** @implements */
 		get id(): string {
 			return this.#attributesChild.id;

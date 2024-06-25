@@ -924,8 +924,11 @@ export class Token extends AstElement {
 		}
 	}
 
-	/** 生成HTML */
-	toHtml(): string {
+	/**
+	 * 生成HTML
+	 * @param nowrap 是否不换行
+	 */
+	toHtml(nowrap?: boolean): string {
 		if (this.type === 'root') {
 			const root = this.expand(false);
 			root.type = 'plain';
@@ -955,8 +958,7 @@ export class Token extends AstElement {
 				});
 			}
 		}
-		const result = font(this, html(this.childNodes));
-		return result;
+		return font(this, html(this.childNodes, '', nowrap));
 	}
 }
 

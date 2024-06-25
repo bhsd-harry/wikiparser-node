@@ -1,6 +1,6 @@
 ## v1.10.0
 
-*2024-06-25*
+*2024-06-26*
 
 **Added**
 
@@ -10,6 +10,7 @@
 - [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
 - [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) method
 - [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) and [`MagicLinkToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#innertext) properties
+- `AstNode.prototype.toHtml` method, which is an incomplete implementation of Wikitext-to-HTML conversion
 
 **Fixed**
 

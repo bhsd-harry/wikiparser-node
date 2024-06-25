@@ -84,9 +84,10 @@ export const sanitize = factory(/[<>]/gu, p => `&${entities[p as keyof typeof en
  * convert to HTML
  * @param childNodes a Token's contents
  * @param separator delimiter between nodes
+ * @param nowrap whether to normalize newlines
  */
-export const html = (childNodes: readonly AstNodes[], separator = ''): string =>
-	childNodes.map(child => child.toHtml()).join(separator);
+export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: boolean): string =>
+	childNodes.map(child => child.toHtml(nowrap)).join(separator);
 
 /**
  * wrap text with <b> and <i> tags

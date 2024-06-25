@@ -642,11 +642,10 @@ export abstract class TableToken extends TrBaseToken {
 		 */
 		const filter = (token: TrBaseToken): Token[] => token.childNodes.filter(isToken('table-inter'));
 		const {childNodes} = this,
-			td = childNodes.filter(({type}) => type === 'td'),
-			tr = childNodes.filter(isToken<TrToken>('tr')),
-			inter = [this, ...tr].flatMap(filter),
-			firstTr = td.length === 0 ? '' : `<tr>${html(td)}</tr>`;
-		return `${html(inter)}<table${childNodes[1].toHtml()}><tbody>${firstTr}${html(tr)}</tbody></table>`;
+			tr = childNodes.filter(isToken<TrToken>('tr'));
+		return `${
+			[this, ...tr].flatMap(filter).map(token => token.toHtml(true).trim()).join('')
+		}<table${childNodes[1].toHtml()}><tbody>${super.toHtml()}${html(tr)}</tbody></table>`;
 	}
 }
 

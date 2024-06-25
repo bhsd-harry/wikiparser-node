@@ -1,6 +1,8 @@
 import {generateForChild} from '../../util/lint';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import {html} from '../../util/string';
+import {isToken} from '../../util/debug';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
 import {
@@ -196,6 +198,15 @@ export abstract class TrBaseToken extends TableBaseToken {
 	): TdToken {
 		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
 		return this.insertBefore(token, this.getNthCol(column, true));
+	}
+
+	/** @private */
+	override toHtml(): string {
+		const {childNodes, type} = this,
+			td = childNodes.filter(isToken<TdToken>('td'));
+		return td.some(({subtype}) => subtype !== 'caption')
+			? `<tr${type === 'tr' ? childNodes[1].toHtml() : ''}>${html(td)}</tr>`
+			: html(td);
 	}
 }
 

@@ -49,6 +49,7 @@ const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(ty
 export abstract class AttributesToken extends Token {
 	declare readonly name: string;
 	#type;
+	#classList: Set<string> | undefined;
 
 	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
@@ -92,11 +93,27 @@ export abstract class AttributesToken extends Token {
 
 	/** 以Set表示的class属性 */
 	get classList(): Set<string> {
-		return new Set(this.className.split(/\s/u));
-	}
+		if (!this.#classList) {
+			this.#classList = new Set(this.className.split(/\s/u));
 
-	set classList(classList) {
-		this.setAttr('class', [...classList].join(' '));
+			/**
+			 * 更新classList
+			 * @param prop 方法名
+			 */
+			const factory = (prop: 'add' | 'delete' | 'clear'): PropertyDescriptor => ({
+				value: /** @ignore */ (...args: unknown[]): unknown => {
+					const result = Set.prototype[prop as 'add'].apply(this.#classList, args as [unknown]);
+					this.setAttr('class', [...this.#classList!].join(' '));
+					return result;
+				},
+			});
+			Object.defineProperties(this.#classList, {
+				add: factory('add'),
+				delete: factory('delete'),
+				clear: factory('clear'),
+			});
+		}
+		return this.#classList;
 	}
 
 	/** id属性 */
@@ -460,7 +477,13 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override toHtml(): string {
-		return ` ${html(this.childNodes.filter(child => child instanceof AttributeToken), ' ')}`;
+		const map = new Map<string, AttributeToken>();
+		for (const child of this.childNodes) {
+			if (child instanceof AttributeToken) {
+				map.set(child.name, child);
+			}
+		}
+		return ` ${html([...map.values()], ' ')}`;
 	}
 }
 
