@@ -1,7 +1,9 @@
 import {classes} from '../../util/constants';
+import {syntax} from '../../mixin/syntax';
 import {ListBaseToken} from './listBase';
 
 /** `:` */
+@syntax(/^:+[^\S\n]*$/u)
 export abstract class DdToken extends ListBaseToken {
 	override get type(): 'dd' {
 		return 'dd';
@@ -11,17 +13,11 @@ export abstract class DdToken extends ListBaseToken {
 
 	/** 缩进数 */
 	get indent(): number {
-		return this.innerText.length;
+		return this.innerText.trimEnd().length;
 	}
 
 	set indent(indent) {
 		this.setText(':'.repeat(indent));
-	}
-
-	/** @private */
-	override afterBuild(): void {
-		this.setAttribute('pattern', /^:+$/u);
-		super.afterBuild();
 	}
 }
 

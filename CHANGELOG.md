@@ -28,6 +28,7 @@
 - [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint) now ignores the fragment of an invalid module name
 - [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) now returns a copy of the original token
 - [`MagicLinkToken.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#geturl) now returns a string for ISBN links
+- Each [`ListToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken) now contains at most one `;`
 
 **Removed**
 

@@ -419,7 +419,7 @@ export abstract class TdToken extends TableBaseToken {
 	/** @private */
 	override toHtml(): string {
 		const {subtype, childNodes: [, attr, inner]} = this;
-		return `<${subtype}${attr.toHtml()}>${inner.toHtml()}</${subtype}>`;
+		return `<${subtype}${attr.toHtml()}>${inner.toHtml().trim()}</${subtype}>`;
 	}
 }
 

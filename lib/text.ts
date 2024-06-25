@@ -4,6 +4,11 @@ import {
 	extUrlChar,
 	extUrlCharFirst,
 	escape,
+
+	/* NOT FOR BROWSER */
+
+	sanitize,
+	font,
 } from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
@@ -193,9 +198,7 @@ export class AstText extends AstNode {
 				&& type === 'ext-link-text'
 				&& (
 					/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-					|| nextType === 'ext'
-					&& nextName === 'nowiki'
-					&& (nextSibling as ExtToken).innerText?.includes(']')
+					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki' && nextSibling.innerText?.includes(']')
 				)
 			) {
 				continue;
@@ -428,7 +431,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	toHtml(): string {
-		return escape(this.data);
+		return font(this, sanitize(this.data));
 	}
 }
 

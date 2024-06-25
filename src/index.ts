@@ -46,6 +46,7 @@ import {
 	/* NOT FOR BROWSER */
 
 	html,
+	font,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -933,14 +934,16 @@ export class Token extends AstElement {
 		const {HtmlToken}: typeof import('./html') = require('./html'),
 			{AttributesToken}: typeof import('./attributes') = require('./attributes'),
 			{list}: typeof import('./nowiki/listBase') = require('./nowiki/listBase');
-		const config = this.getAttribute('config');
-		for (const child of this.childNodes) {
+		const config = this.getAttribute('config'),
+			{childNodes, length} = this;
+		for (let i = length - 1; i >= 0; i--) {
+			const child = childNodes[i]!;
 			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
 				const range = child.getRange();
 				range.collapse();
 				Shadow.run(() => {
 					for (const ch of child.firstChild.data) {
-						for (const name of list.get(ch)!) {
+						for (const name of list.get(ch) ?? []) {
 							// @ts-expect-error abstract class
 							const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', name, config),
 								// @ts-expect-error abstract class
@@ -952,7 +955,7 @@ export class Token extends AstElement {
 				});
 			}
 		}
-		const result = html(this.childNodes);
+		const result = font(this, html(this.childNodes));
 		return result;
 	}
 }

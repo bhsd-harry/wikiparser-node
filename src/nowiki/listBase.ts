@@ -1,13 +1,20 @@
 import {classes} from '../../util/constants';
-import {syntax} from '../../mixin/syntax';
 import {NowikiBaseToken} from './base';
 import type {AstRange} from '../../lib/range';
-import type {AstText, DdToken} from '../../internal';
+import type {DdToken, ListToken} from '../../internal';
 
-export const list = new Map([['#', ['ol', 'li']], ['*', ['ul', 'li']], [';', ['dl', 'dt']], [':', ['dl', 'dd']]]);
+/* NOT FOR BROWSER */
+
+export const list = new Map([
+	['#', ['ol', 'li']],
+	['*', ['ul', 'li']],
+	[';', ['dl', 'dt']],
+	[':', ['dl', 'dd']],
+]);
+
+/* NOT FOR BROWSER END */
 
 /** `;:*#` */
-@syntax(/^[;:*#]+$/u)
 export abstract class ListBaseToken extends NowikiBaseToken {
 	abstract override get type(): 'dd' | 'list';
 
@@ -36,35 +43,40 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	/** 获取列表行的范围 */
 	getRange(): AstRange {
 		const range = this.createRange();
-		let nDt = this.dt ? this.innerText.split(';').length - 2 : 0;
 		range.setStartBefore(this);
-		let {nextSibling} = this;
+		const {dt, type} = this;
+		let {nextSibling} = this,
+			nDt = dt ? 1 : Infinity;
 		while (nextSibling && (nextSibling.type !== 'text' || !nextSibling.data.includes('\n'))) {
-			if (nextSibling.type === 'dd') {
-				nDt -= (nextSibling as DdToken).indent;
-			}
-			if (nDt < 0) {
+			if (dt) {
+				if (nextSibling.is<DdToken>('dd')) {
+					nDt -= nextSibling.indent;
+					if (nDt <= 0) {
+						break;
+					}
+				} else if (nextSibling.is<ListToken>('list') && nextSibling.dt) {
+					nDt++;
+				}
+			} else if (type === 'dd' && nextSibling.type === 'dd') {
 				break;
 			}
 			({nextSibling} = nextSibling);
 		}
-		if (nextSibling) {
-			if (nDt < 0) {
-				range.setEndBefore(nextSibling);
-			} else {
-				const i = (nextSibling as AstText).data.indexOf('\n');
-				range.setEnd(nextSibling, i);
-			}
-		} else {
+		if (!nextSibling) {
 			const {parentNode} = this;
 			range.setEnd(parentNode!, parentNode!.length);
+		} else if (nextSibling.type === 'text') {
+			const i = nextSibling.data.indexOf('\n');
+			range.setEnd(nextSibling, i);
+		} else {
+			range.setEndBefore(nextSibling);
 		}
 		return range;
 	}
 
 	/** @private */
 	override toHtml(): string {
-		return [...this.firstChild.data].map(ch => list.get(ch)!.map(name => `<${name}>`).join('')).join('');
+		return [...this.firstChild.data].map(ch => list.get(ch)?.map(name => `<${name}>`).join('') ?? '').join('');
 	}
 }
 

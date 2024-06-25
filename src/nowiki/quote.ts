@@ -97,6 +97,13 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		Object.assign(json, {bold: this.bold, italic: this.italic});
 		return json;
 	}
+
+	/* NOT FOR BROWSER */
+
+	/** @private */
+	override toHtml(): string {
+		return '';
+	}
 }
 
 classes['QuoteToken'] = __filename;

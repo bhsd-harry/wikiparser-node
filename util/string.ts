@@ -77,6 +77,9 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
 	}
 };
 
+/** escape HTML entities */
+export const sanitize = factory(/[<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
+
 /**
  * convert to HTML
  * @param childNodes a Token's contents
@@ -84,3 +87,13 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
  */
 export const html = (childNodes: readonly AstNodes[], separator = ''): string =>
 	childNodes.map(child => child.toHtml()).join(separator);
+
+/**
+ * wrap text with <b> and <i> tags
+ * @param node
+ * @param str
+ */
+export const font = (node: AstNodes, str: string): string => {
+	const {font: {bold, italic}} = node;
+	return (bold ? '<b>' : '') + (italic ? '<i>' : '') + str + (italic ? '</i>' : '') + (bold ? '</b>' : '');
+};

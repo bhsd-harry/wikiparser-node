@@ -531,7 +531,7 @@ export abstract class AttributeToken extends Token {
 		if (name === 'id') {
 			value = value.replace(/\s+/gu, '_');
 		}
-		return `${name}="${value.replace(/"/gu, '&quot;')}"`;
+		return `${name}="${value.replace(/["\n]/gu, p => p === '"' ? '&quot;' : '&#10;')}"`;
 	}
 }
 

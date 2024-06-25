@@ -4,7 +4,7 @@ import {syntax} from '../../mixin/syntax';
 import {NowikiBaseToken} from './base';
 
 /** `<hr>` */
-@sol @syntax(/^-{4,}$/u)
+@sol() @syntax(/^-{4,}$/u)
 export abstract class HrToken extends NowikiBaseToken {
 	override get type(): 'hr' {
 		return 'hr';

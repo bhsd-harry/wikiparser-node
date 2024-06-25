@@ -4,17 +4,20 @@ import type {Token} from '../src/index';
 
 /**
  * 只能位于行首的类
+ * @param self 是否允许同类节点相邻
  * @param constructor 基类
  * @param _ context
  */
-export const sol = <T extends AstConstructor>(constructor: T, _?: unknown): T => {
+export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 只能位于行首的类 */
 	abstract class SolToken extends constructor {
 		/** @implements */
 		#prependNewLine(): string {
 			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
 			if (previousVisibleSibling) {
-				return previousVisibleSibling.toString().endsWith('\n') ? '' : '\n';
+				return self && previousVisibleSibling.type === type || previousVisibleSibling.toString().endsWith('\n')
+					? ''
+					: '\n';
 			}
 			return parentNode?.type === 'root'
 				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem'

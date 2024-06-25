@@ -23,7 +23,7 @@ import type {QuoteToken} from '../internal';
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
-@fixedToken @sol
+@fixedToken @sol()
 export abstract class HeadingToken extends Token {
 	#level;
 
@@ -197,9 +197,9 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	override toHtml(): string {
 		const {level, firstChild} = this,
-			html = firstChild.toHtml();
+			html = firstChild.toHtml().trim();
 		return `<div class="mw-heading mw-heading${level}"><h${level} id="${
-			html.replace(/<[a-z].*?>/gu, '').replace(/[\s_]+/gu, '_')
+			html.replace(/<\/?[a-z].*?>/gu, '').replace(/[\s_]+/gu, '_')
 		}">${html}</h${level}></div>`;
 	}
 }
