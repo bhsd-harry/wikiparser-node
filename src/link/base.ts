@@ -9,7 +9,9 @@ import {Token} from '../index';
 import {AtomToken} from '../atom';
 import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
-import type {AstText} from '../../internal';
+import type {
+	AstText,
+} from '../../internal';
 
 /**
  * 是否为普通内链

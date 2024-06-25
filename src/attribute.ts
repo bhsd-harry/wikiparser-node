@@ -81,7 +81,6 @@ const commonHtmlAttrs = new Set([
 		img: new Set(['alt', 'src', 'width', 'height', 'srcset']),
 		font: new Set(['size', 'color', 'face']),
 		hr: widthAttrs,
-		rt: new Set(['rbspan']),
 		data: new Set(['value']),
 		time: new Set(['datetime']),
 		meta: new Set(['itemprop', 'content']),
