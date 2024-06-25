@@ -139,9 +139,7 @@ export class AstText extends AstNode {
 				&& type === 'ext-link-text'
 				&& (
 					/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-					|| nextType === 'ext'
-					&& nextName === 'nowiki'
-					&& (nextSibling as ExtToken).innerText?.includes(']')
+					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki' && nextSibling.innerText?.includes(']')
 				)
 			) {
 				continue;
