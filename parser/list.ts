@@ -10,20 +10,23 @@ import type {Token, HtmlToken, QuoteToken} from '../internal';
  * @param accum
  */
 export const parseList = (wikitext: string, config: Config, accum: Token[]): string => {
-	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+)/u.exec(wikitext) as [string, string, string] | null;
+	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+\s*)/u.exec(wikitext) as [string, string, string] | null;
 	if (!mt) {
 		return wikitext;
 	}
-	const [total, comment, prefix] = mt;
-	let text = `${comment}\0${accum.length}d\x7F${wikitext.slice(total.length)}`,
-		dt = prefix.split(';').length - 1;
-	// @ts-expect-error abstract class
-	new ListToken(prefix, config, accum);
+	const [total, comment, prefix] = mt,
+		parts = prefix.split(/(?=;)/u);
+	let text = comment + parts.map((_, i) => `\0${accum.length + i}d\x7F`).join('') + wikitext.slice(total.length),
+		dt = parts.length - (parts[0]!.startsWith(';') ? 0 : 1);
+	for (const part of parts) {
+		// @ts-expect-error abstract class
+		new ListToken(part, config, accum);
+	}
 	if (!dt) {
 		return text;
 	}
 	const {html: [normalTags]} = config,
-		fullRegex = /:+|-\{|\0\d+[xq]\x7F/gu;
+		fullRegex = /:+\s*|-\{|\0\d+[xq]\x7F/gu;
 	let regex = fullRegex,
 		ex = regex.exec(text),
 		lt = 0,
