@@ -1,7 +1,7 @@
 import {
 	text,
-	print,
 	removeComment,
+	print,
 } from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
