@@ -113,6 +113,12 @@ export abstract class ParameterToken extends Token {
 		token.type = 'parameter-value';
 		token.setAttribute('stage', 2);
 		this.append(keyToken, token);
+
+		/* NOT FOR BROWSER */
+
+		if (typeof key === 'string') {
+			this.setAttribute('name', removeComment(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'));
+		}
 	}
 
 	/** @private */
