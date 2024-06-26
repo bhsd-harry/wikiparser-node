@@ -1471,7 +1471,7 @@
 		"desc": "Templates with templated name",
 		"wikitext": "{{{{1x|1x}}|foo}}\n{{{{1x|inner list}} }}",
 		"html": "<p>foo\n</p>\n<ul><li>item 1</li></ul>",
-		"render": "\n",
+		"render": "foo\n<ul><li>item 1</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1x</span></span>}}</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">inner list</span></span>}}</span> </span>}}</span></span>"
 	},
 	{

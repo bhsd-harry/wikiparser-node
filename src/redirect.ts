@@ -73,8 +73,8 @@ export abstract class RedirectToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return this.#pre + super.toString() + this.#post;
+	override toString(skip?: boolean): string {
+		return this.#pre + super.toString(skip) + this.#post;
 	}
 
 	/** @private */

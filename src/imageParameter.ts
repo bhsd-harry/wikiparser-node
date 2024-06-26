@@ -230,8 +230,8 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return this.#syntax ? this.#syntax.replace('$1', super.toString()) : super.toString();
+	override toString(skip?: boolean): string {
+		return this.#syntax ? this.#syntax.replace('$1', super.toString(skip)) : super.toString(skip);
 	}
 
 	/** @private */

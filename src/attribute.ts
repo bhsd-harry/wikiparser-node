@@ -341,14 +341,14 @@ export abstract class AttributeToken extends Token {
 		if (this.parentNode) {
 			this.#tag = this.parentNode.name;
 		}
-		this.setAttribute('name', this.firstChild.text().trim().toLowerCase());
+		this.setAttribute('name', this.firstChild.toString(true).trim().toLowerCase());
 		super.afterBuild();
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.toString(this.#equal + quoteStart) + quoteEnd : this.firstChild.toString();
+		return this.#equal ? super.toString(skip, this.#equal + quoteStart) + quoteEnd : this.firstChild.toString(skip);
 	}
 
 	/** @private */

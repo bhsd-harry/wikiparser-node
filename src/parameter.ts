@@ -18,12 +18,6 @@ import type {
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
-/**
- * 准确获取参数名
- * @param name 预定的参数名
- */
-const getName = (name: Token): string => name.text().replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
-
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/iu;
 const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
@@ -117,16 +111,25 @@ export abstract class ParameterToken extends Token {
 		/* NOT FOR BROWSER */
 
 		if (typeof key === 'string') {
-			this.setAttribute('name', removeComment(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1'));
+			this.trimName(removeComment(key));
 		}
+	}
+
+	/** @private */
+	trimName(name: string | Token, set = true): string {
+		const trimmed = (typeof name === 'string' ? name : name.toString(true))
+			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		if (set) {
+			this.setAttribute('name', trimmed);
+		}
+		return trimmed;
 	}
 
 	/** @private */
 	override afterBuild(): void {
 		if (!this.anon) {
 			const {parentNode, firstChild} = this,
-				name = getName(firstChild);
-			this.setAttribute('name', name);
+				name = this.trimName(firstChild);
 			if (parentNode) {
 				parentNode.getArgs(name, false, false).add(this);
 
@@ -143,10 +146,9 @@ export abstract class ParameterToken extends Token {
 			if (!this.anon) { // 匿名参数不管怎么变动还是匿名
 				const {firstChild, name} = this;
 				if (prevTarget === firstChild) {
-					const newKey = getName(firstChild);
+					const newKey = this.trimName(firstChild);
 					data.oldKey = name;
 					data.newKey = newKey;
-					this.setAttribute('name', newKey);
 				}
 			}
 		};
@@ -154,8 +156,8 @@ export abstract class ParameterToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return this.anon ? this.lastChild.toString() : super.toString('=');
+	override toString(skip?: boolean): string {
+		return this.anon ? this.lastChild.toString(skip) : super.toString(skip, '=');
 	}
 
 	override text(): string {
@@ -258,7 +260,7 @@ export abstract class ParameterToken extends Token {
 			parentNode?.anonToNamed();
 		}
 		const root = Parser.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
-			name = getName(root);
+			name = this.trimName(root, false);
 		if (this.name === name) {
 			Parser.warn('The actual parameter name is not changed', name);
 		} else if (parentNode?.hasArg(name)) {

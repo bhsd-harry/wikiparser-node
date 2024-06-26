@@ -9,6 +9,11 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 		return 'noinclude';
 	}
 
+	/** @private */
+	override toString(skip?: boolean): string {
+		return skip ? '' : super.toString();
+	}
+
 	/* NOT FOR BROWSER */
 
 	override setText(str: string): string {

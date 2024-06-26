@@ -76,8 +76,8 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return `{{{${super.toString('|')}}}}`;
+	override toString(skip?: boolean): string {
+		return `{{{${super.toString(skip, '|')}}}}`;
 	}
 
 	/** @private */
@@ -163,7 +163,7 @@ export abstract class ArgToken extends Token {
 
 	/** 设置name */
 	#setName(): void {
-		this.setAttribute('name', this.firstChild.text().trim());
+		this.setAttribute('name', this.firstChild.toString(true).trim());
 	}
 
 	/** @private */

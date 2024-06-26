@@ -50,7 +50,7 @@ export abstract class TagPairToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		const {
 				selfClosing,
 				firstChild,
@@ -74,8 +74,10 @@ export abstract class TagPairToken extends Token {
 		/* NOT FOR BROWSER END */
 
 		return selfClosing
-			? `<${opening}${firstChild.toString()}/>`
-			: `<${opening}${firstChild.toString()}>${lastChild.toString()}${this.closed ? `</${closing}>` : ''}`;
+			? `<${opening}${firstChild.toString(skip)}/>`
+			: `<${opening}${firstChild.toString(skip)}>${lastChild.toString(skip)}${
+				this.closed ? `</${closing}>` : ''
+			}`;
 	}
 
 	/** @private */

@@ -54,7 +54,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		/* NOT FOR BROWSER */
 
 		if (!this.closed && this.nextSibling) {
@@ -64,7 +64,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 		/* NOT FOR BROWSER END */
 
-		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
+		return skip ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 
 	/** @private */

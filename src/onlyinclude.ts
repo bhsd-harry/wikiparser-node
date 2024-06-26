@@ -30,8 +30,8 @@ export class OnlyincludeToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/** @private */
-	override toString(): string {
-		return `<onlyinclude>${super.toString()}</onlyinclude>`;
+	override toString(skip?: boolean): string {
+		return `<onlyinclude>${super.toString(skip)}</onlyinclude>`;
 	}
 
 	/** @private */

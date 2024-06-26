@@ -128,9 +128,9 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		this.#correct();
-		return super.toString();
+		return super.toString(skip);
 	}
 
 	/**

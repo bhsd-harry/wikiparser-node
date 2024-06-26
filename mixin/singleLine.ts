@@ -9,8 +9,8 @@ import {mixins} from '../util/constants';
 export const singleLine = <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
-		override toString(): string {
-			return super.toString().replace(/\n/gu, ' ');
+		override toString(skip?: boolean): string {
+			return super.toString(skip).replace(/\n/gu, ' ');
 		}
 
 		override text(): string {

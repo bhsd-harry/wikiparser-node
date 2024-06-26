@@ -223,7 +223,7 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		/* NOT FOR BROWSER */
 
 		this.#correct();
@@ -231,7 +231,7 @@ export abstract class TdToken extends TableBaseToken {
 		/* NOT FOR BROWSER END */
 
 		const {childNodes: [syntax, attr, inner]} = this;
-		return syntax.toString() + attr.toString() + this.#innerSyntax + inner.toString();
+		return syntax.toString(skip) + attr.toString(skip) + this.#innerSyntax + inner.toString(skip);
 	}
 
 	/** @private */

@@ -25,8 +25,8 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 				: '\n';
 		}
 
-		override toString(): string {
-			return this.#prependNewLine() + super.toString();
+		override toString(skip?: boolean): string {
+			return this.#prependNewLine() + super.toString(skip);
 		}
 
 		override getAttribute<S extends string>(key: S): TokenAttribute<S> {

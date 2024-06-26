@@ -135,7 +135,7 @@ export abstract class LinkBaseToken extends Token {
 		const /** @implements */ linkListener: AstListener = (e, data) => {
 			const {prevTarget} = e;
 			if (prevTarget?.type === 'link-target') {
-				const name = prevTarget.text(),
+				const name = prevTarget.toString(true),
 					titleObj = this.getTitle(),
 					{title, interwiki, ns, valid} = titleObj;
 				if (!valid) {
@@ -181,8 +181,8 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		const str = super.toString(this.#delimiter);
+	override toString(skip?: boolean): string {
+		const str = super.toString(skip, this.#delimiter);
 		return this.#bracket ? `[[${str}]]` : str;
 	}
 
@@ -252,7 +252,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	getTitle(halfParsed?: boolean): Title {
-		return this.normalizeTitle(this.firstChild.text(), 0, halfParsed, true, true);
+		return this.normalizeTitle(this.firstChild.toString(true), 0, halfParsed, true, true);
 	}
 
 	/** @private */

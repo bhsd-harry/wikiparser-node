@@ -172,7 +172,7 @@ TranscludeToken.prototype.fixDuplication =
 			if (remaining > 1) {
 				Parser.error(`${this.type === 'template'
 					? this.name
-					: this.normalizeTitle(this.childNodes[1].text(), 828)
+					: this.normalizeTitle(this.childNodes[1].toString(true), 828)
 						.title
 				} still has ${remaining} duplicated ${key} parameters:\n${[...this.getArgs(key)].map(arg => {
 					const {top, left} = arg.getBoundingClientRect();

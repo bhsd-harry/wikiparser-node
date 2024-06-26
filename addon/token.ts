@@ -214,14 +214,14 @@ export const expand = (
 	}
 	token.parseOnce();
 	for (const plain of [...accum.slice(n), token]) {
-		if (plain.length === 0 || !plain.getAttribute('plain')) {
+		if (plain.length !== 1 || plain.firstChild!.type !== 'text') {
 			continue;
 		}
-		const str = plain.firstChild!.toString();
-		if (!/\0\d+t\x7F/u.test(str)) {
+		const {data} = plain.firstChild!;
+		if (!/\0\d+t\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = str.replace(/\0(\d+)t\x7F/gu, (m, i: number) => {
+		const expanded = data.replace(/\0(\d+)t\x7F/gu, (m, i: number) => {
 			const target = accum[i] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f} = target;
 			if (type === 'arg') {
@@ -327,6 +327,9 @@ export const expand = (
 			return m;
 		});
 		plain.setText(expanded);
+		if (plain.type === 'parameter-key') {
+			(plain.parentNode as ParameterToken).trimName(expanded);
+		}
 	}
 	return token;
 };
