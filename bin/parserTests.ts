@@ -3,12 +3,20 @@ import * as path from 'path';
 import {info} from '../util/diff';
 import Parser from '../index';
 
+declare interface Test {
+	desc: string;
+	wikitext?: string;
+	html?: string;
+	print?: string;
+	render?: string;
+}
+
 Parser.viewOnly = true;
 Parser.debugging = true;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
-const tests: {desc: string, wikitext?: string, html?: string, print?: string}[] = [],
+const tests: Test[] = [],
 	regex = {
 		html: /^!!\s*(html\b.*)$/mu,
 		options: /^!!\s*options\n(.*?)^!!/msu,
@@ -94,7 +102,12 @@ for (const file of ['parserTests.txt', ...files]) {
 					html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)![1]!.trim(),
 					desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!;
 				if (wikitext) {
-					tests.push({desc, wikitext, html, print: Parser.parse(wikitext).print()});
+					const t: Test = {desc, wikitext, html};
+					try {
+						t.render = Parser.parse(wikitext).toHtml();
+					} catch {}
+					t.print = Parser.parse(wikitext).print();
+					tests.push(t);
 				}
 			} catch {
 				console.error(test);
