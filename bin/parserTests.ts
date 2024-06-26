@@ -13,6 +13,8 @@ declare interface Test {
 
 Parser.viewOnly = true;
 Parser.debugging = true;
+Parser.templateDir = './test/templates';
+Parser.redirects.set('Template:Redirect_to_foo', 'Template:Foo');
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
@@ -116,3 +118,4 @@ for (const file of ['parserTests.txt', ...files]) {
 	}
 }
 fs.writeFileSync('test/parserTests.json', JSON.stringify(tests, null, '\t'));
+console.log([...Parser.templates.keys()].sort());
