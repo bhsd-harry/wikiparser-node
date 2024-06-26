@@ -1,6 +1,7 @@
 import {
 	text,
 	print,
+	removeComment,
 
 	/* NOT FOR BROWSER */
 
@@ -65,7 +66,10 @@ export abstract class ConverterToken extends Token {
 			hasColon = firstRule.includes(':'),
 			// @ts-expect-error abstract class
 			firstRuleToken: ConverterRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
-		if (hasColon && firstRuleToken.length === 1) {
+		if (
+			hasColon && firstRuleToken.length === 1
+			|| !hasColon && rules.length === 2 || !removeComment(rules[1]!).trim()
+		) {
 			// @ts-expect-error abstract class
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken);
 		} else {
