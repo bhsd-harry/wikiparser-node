@@ -328,7 +328,7 @@ export const expand = (
 		});
 		plain.setText(expanded);
 		if (plain.type === 'parameter-key') {
-			(plain.parentNode as ParameterToken).trimName(expanded);
+			(plain.parentNode as ParameterToken).trimName(removeComment(expanded));
 		}
 	}
 	return token;
