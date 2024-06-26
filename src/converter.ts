@@ -1,7 +1,7 @@
 import {
 	text,
-	print,
 	removeComment,
+	print,
 
 	/* NOT FOR BROWSER */
 
