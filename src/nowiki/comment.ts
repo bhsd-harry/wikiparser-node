@@ -39,7 +39,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override toString(): string {
-		return `<!--${this.innerText}${this.closed ? '-->' : ''}`;
+	override toString(skip?: boolean): string {
+		return skip ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
 }

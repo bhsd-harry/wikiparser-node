@@ -53,9 +53,11 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		const {childNodes: [flags, ...rules]} = this;
-		return `-{${flags.toString()}${flags.length > 0 ? '|' : ''}${rules.map(String).join(';')}}-`;
+		return `-{${flags.toString(skip)}${flags.length > 0 ? '|' : ''}${
+			rules.map(rule => rule.toString(skip)).join(';')
+		}}-`;
 	}
 
 	/** @private */
