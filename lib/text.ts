@@ -429,9 +429,13 @@ export class AstText extends AstNode {
 		}
 	}
 
-	/** @private */
-	toHtml(): string {
-		return font(this, sanitize(this.data));
+	/**
+	 * 生成HTML
+	 * @param nowrap 是否不换行
+	 */
+	toHtml(nowrap?: boolean): string {
+		const {data} = this;
+		return font(this, sanitize(nowrap ? data.replace(/\n/gu, ' ') : data));
 	}
 }
 

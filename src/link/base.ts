@@ -322,10 +322,10 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override toHtml(): string {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
-			const {link, length, lastChild} = this;
+			const {link, length, lastChild, type} = this;
 			return `<a ${link.interwiki && 'class="extiw" '}href="${link.getUrl()}" title="${
 				link.title.replace(/"/gu, '&quot;')
-			}">${length > 1 ? lastChild.toHtml(true) : this.innerText}</a>`;
+			}">${type === 'link' && length > 1 ? lastChild.toHtml(true) : this.innerText}</a>`;
 		}
 		return '';
 	}

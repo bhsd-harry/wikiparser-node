@@ -24,13 +24,13 @@ export interface ConverterToken extends FlagsParentBase {}
  */
 @flagsParent
 export abstract class ConverterToken extends Token {
-	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
+	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): [ConverterFlagsToken, ...ConverterRuleToken[]];
+	abstract override get children(): [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstElementChild(): ConverterFlagsToken;
 	abstract override get lastElementChild(): ConverterFlagsToken | ConverterRuleToken;
 
@@ -68,7 +68,7 @@ export abstract class ConverterToken extends Token {
 			firstRuleToken: ConverterRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
 		if (
 			hasColon && firstRuleToken.length === 1
-			|| !hasColon && rules.length === 2 || !removeComment(rules[1]!).trim()
+			|| !hasColon && rules.length === 2 && !removeComment(rules[1]!).trim()
 		) {
 			// @ts-expect-error abstract class
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken);
@@ -130,13 +130,14 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtml(nowrap?: boolean): string {
 		const flags = this.getEffectiveFlags(),
 			{childNodes: [, ...rules]} = this;
-		if (flags.has('R')) {
-			return html(rules, ';');
+		if (flags.has('S')) {
+			return rules.find(({variant}) => variant)?.lastChild.toHtml(nowrap).trim()
+				?? rules[0].lastChild.toHtml(nowrap);
 		}
-		return flags.has('S') ? rules[0]!.lastChild.toHtml() : '';
+		return flags.has('R') ? html(rules, ';', nowrap) : '';
 	}
 }
 

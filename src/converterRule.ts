@@ -259,11 +259,11 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtml(nowrap?: boolean): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3
-			? `${firstChild.toHtml()}=>${childNodes[1].text()}:${lastChild.toHtml()}`
-			: html(childNodes, ':');
+			? `${firstChild.toHtml(nowrap)}=>${childNodes[1].text()}:${lastChild.toHtml(nowrap)}`
+			: html(childNodes, ':', nowrap);
 	}
 }
 

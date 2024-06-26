@@ -279,10 +279,13 @@ export abstract class MagicLinkToken extends Token {
 
 	/** @private */
 	override toHtml(): string {
-		const url = this.getUrl();
-		return `<a class="external ${this.type === 'free-ext-link' ? 'free' : ''}" rel="nofollow" href="${
-			typeof url === 'string' ? url : url.href
-		}">${this.innerText}</a>`;
+		const url = this.getUrl(),
+			{type, innerText, protocol} = this;
+		return `<a ${
+			type === 'magic-link' && protocol === 'ISBN'
+				? ''
+				: `class="external${type === 'free-ext-link' ? ' free' : ''}" rel="nofollow" `
+		}href="${typeof url === 'string' ? url : url.href}">${innerText}</a>`;
 	}
 }
 

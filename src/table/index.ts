@@ -644,7 +644,7 @@ export abstract class TableToken extends TrBaseToken {
 		const {childNodes} = this,
 			tr = childNodes.filter(isToken<TrToken>('tr'));
 		return `${
-			[this, ...tr].flatMap(filter).map(token => token.toHtml(true).trim()).join('')
+			[this, ...tr].flatMap(filter).map(token => token.toHtml(true)).join('')
 		}<table${childNodes[1].toHtml()}><tbody>${super.toHtml()}${html(tr)}</tbody></table>`;
 	}
 }

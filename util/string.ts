@@ -95,6 +95,12 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
  * @param str
  */
 export const font = (node: AstNodes, str: string): string => {
-	const {font: {bold, italic}} = node;
-	return (bold ? '<b>' : '') + (italic ? '<i>' : '') + str + (italic ? '</i>' : '') + (bold ? '</b>' : '');
+	const {font: {bold, italic}} = node,
+		i = str.indexOf('\n');
+	const wrap = /** @ignore */ (s: string): string =>
+		(bold ? '<b>' : '') + (italic ? '<i>' : '') + s + (italic ? '</i>' : '') + (bold ? '</b>' : '');
+	return i === -1 ? wrap(str) : wrap(str.slice(0, i)) + str.slice(i);
 };
+
+/** escape newline */
+export const newline = factory(/\n/gu, '&#10;');

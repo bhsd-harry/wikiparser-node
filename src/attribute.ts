@@ -406,7 +406,7 @@ export abstract class AttributeToken extends Token {
 			errors.push(generateForChild(firstChild, rect, 'obsolete-attr', 'obsolete attribute', 'warning'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
-		} else if (name === 'tabindex' && typeof value === 'string' && value.trim() !== '0') {
+		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
 			const e = generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex');
 			e.suggestions = [
 				{
@@ -427,14 +427,7 @@ export abstract class AttributeToken extends Token {
 
 	/** 获取属性值 */
 	getValue(): string | true {
-		if (this.#equal) {
-			const value = this.lastChild.text();
-			if (this.#quotes[1]) {
-				return value;
-			}
-			return value[this.#quotes[0] ? 'trimEnd' : 'trim']();
-		}
-		return this.type === 'ext-attr' || '';
+		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
 	}
 
 	/** @private */
@@ -523,13 +516,10 @@ export abstract class AttributeToken extends Token {
 		) {
 			return '';
 		}
-		let value = lastChild.toHtml();
-		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value.trim() !== '0') {
+		let value = lastChild.toHtml().trim();
+		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value !== '0') {
 			return '';
-		} else if (!this.#quotes[1]) {
-			value = value[this.#quotes[0] ? 'trimEnd' : 'trim']();
-		}
-		if (name === 'id') {
+		} else if (name === 'id') {
 			value = value.replace(/\s+/gu, '_');
 		}
 		return `${name}="${value.replace(/["\n]/gu, p => p === '"' ? '&quot;' : '&#10;')}"`;

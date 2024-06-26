@@ -8,6 +8,7 @@ import {
 	classes,
 } from '../../util/constants';
 import {Shadow} from '../../util/debug';
+import {newline} from '../../util/string';
 import {fixedToken} from '../../mixin/fixed';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -418,8 +419,9 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** @private */
 	override toHtml(): string {
-		const {subtype, childNodes: [, attr, inner]} = this;
-		return `<${subtype}${attr.toHtml()}>${inner.toHtml().trim()}</${subtype}>`;
+		const {subtype, childNodes: [, attr, inner]} = this,
+			html = inner.toHtml();
+		return `<${subtype}${attr.toHtml()}>${subtype === 'caption' ? newline(html) : html}</${subtype}>`;
 	}
 }
 

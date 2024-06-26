@@ -930,7 +930,7 @@ export class Token extends AstElement {
 	 */
 	toHtml(nowrap?: boolean): string {
 		if (this.type === 'root') {
-			const root = this.expand(false);
+			const root = this.expand();
 			root.type = 'plain';
 			return root.toHtml();
 		}
@@ -942,6 +942,7 @@ export class Token extends AstElement {
 		for (let i = length - 1; i >= 0; i--) {
 			const child = childNodes[i]!;
 			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
+				let ref: HtmlToken | undefined;
 				const range = child.getRange();
 				range.collapse();
 				Shadow.run(() => {
@@ -951,8 +952,12 @@ export class Token extends AstElement {
 							const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', name, config),
 								// @ts-expect-error abstract class
 								token: HtmlToken = new HtmlToken(name, attr, true, false, config);
-							range.insertNode(token);
-							range.setStartBefore(token);
+							if (ref) {
+								ref.before(token);
+							} else {
+								range.insertNode(token);
+							}
+							ref = token;
 						}
 					}
 				});

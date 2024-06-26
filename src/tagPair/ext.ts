@@ -2,6 +2,7 @@ import {generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import {newline} from '../../util/string';
 import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -214,12 +215,12 @@ export abstract class ExtToken extends TagPairToken {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {
 			case 'nowiki':
-				return lastChild.toHtml();
+				return newline(lastChild.toHtml());
 			case 'pre':
-				return `<pre${firstChild.toHtml()}>${lastChild.toHtml()}</pre>`;
+				return `<pre${firstChild.toHtml()}>${newline(lastChild.toHtml())}</pre>`;
 			case 'poem':
 				firstChild.classList.add('poem');
-				return `<div${firstChild.toHtml()}>${lastChild.toHtml()}</div>`;
+				return `<div${firstChild.toHtml()}>${lastChild.toHtml().replace(/\n/gu, '<br>')}</div>`;
 			default:
 				return '';
 		}
