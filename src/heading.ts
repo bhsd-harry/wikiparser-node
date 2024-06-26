@@ -52,9 +52,9 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		const equals = this.#equals;
-		return equals + this.firstChild.toString() + equals + this.lastChild.toString();
+		return equals + this.firstChild.toString(skip) + equals + this.lastChild.toString(skip);
 	}
 
 	/** @private */

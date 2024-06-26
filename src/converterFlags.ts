@@ -40,8 +40,8 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return super.toString(';');
+	override toString(skip?: boolean): string {
+		return super.toString(skip, ';');
 	}
 
 	/** @private */
