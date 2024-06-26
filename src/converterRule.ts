@@ -42,11 +42,11 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3
-			? `${firstChild.toString()}=>${childNodes[1].toString()}:${lastChild.toString()}`
-			: super.toString(':');
+			? `${firstChild.toString(skip)}=>${childNodes[1].toString(skip)}:${lastChild.toString(skip)}`
+			: super.toString(skip, ':');
 	}
 
 	/** @private */

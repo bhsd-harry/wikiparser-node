@@ -11,12 +11,6 @@ import type {
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
-/**
- * 准确获取参数名
- * @param name 预定的参数名
- */
-const getName = (name: Token): string => name.text().replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
-
 const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
 
 /**
@@ -59,11 +53,18 @@ export abstract class ParameterToken extends Token {
 	}
 
 	/** @private */
+	trimName(name: string | Token, set = true): string {
+		const trimmed = (typeof name === 'string' ? name : name.toString(true))
+			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		this.setAttribute('name', trimmed);
+		return trimmed;
+	}
+
+	/** @private */
 	override afterBuild(): void {
 		if (!this.anon) {
 			const {parentNode, firstChild} = this,
-				name = getName(firstChild);
-			this.setAttribute('name', name);
+				name = this.trimName(firstChild);
 			if (parentNode) {
 				parentNode.getArgs(name, false, false).add(this);
 			}
@@ -72,8 +73,8 @@ export abstract class ParameterToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return this.anon ? this.lastChild.toString() : super.toString('=');
+	override toString(skip?: boolean): string {
+		return this.anon ? this.lastChild.toString(skip) : super.toString(skip, '=');
 	}
 
 	override text(): string {

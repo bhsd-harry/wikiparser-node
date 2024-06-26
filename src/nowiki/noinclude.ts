@@ -7,4 +7,9 @@ export abstract class NoincludeToken extends NowikiBaseToken {
 	override get type(): 'noinclude' {
 		return 'noinclude';
 	}
+
+	/** @private */
+	override toString(skip?: boolean): string {
+		return skip ? '' : super.toString();
+	}
 }

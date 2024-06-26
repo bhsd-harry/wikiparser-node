@@ -469,16 +469,17 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	override toString(separator?: string): string {
+	override toString(skip?: boolean, separator?: string): string {
 		const {rev} = Shadow,
 			root = this.getRootNode();
 		if (
-			root.type === 'root'
+			!skip
+			&& root.type === 'root'
 			&& root.#built
 		) {
-			this.#string ??= [rev, super.toString(separator)];
+			this.#string ??= [rev, super.toString(false, separator)];
 			return this.#string[1];
 		}
-		return super.toString(separator);
+		return super.toString(skip, separator);
 	}
 }

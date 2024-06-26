@@ -46,11 +46,11 @@ export abstract class ExtLinkToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		if (this.length === 1) {
-			return `[${super.toString()}${this.#space}]`;
+			return `[${super.toString(skip)}${this.#space}]`;
 		}
-		return `[${super.toString(this.#space)}]`;
+		return `[${super.toString(skip, this.#space)}]`;
 	}
 
 	/** @private */

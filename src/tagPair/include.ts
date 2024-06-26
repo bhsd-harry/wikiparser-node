@@ -30,6 +30,11 @@ export abstract class IncludeToken extends TagPairToken {
 	}
 
 	/** @private */
+	override toString(skip?: boolean): string {
+		return skip ? '' : super.toString();
+	}
+
+	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		if (this.closed) {
 			return [];

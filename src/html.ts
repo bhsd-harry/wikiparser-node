@@ -90,8 +90,8 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString()}${this.#selfClosing ? '/' : ''}>`;
+	override toString(skip?: boolean): string {
+		return `<${this.closing ? '/' : ''}${this.#tag}${super.toString(skip)}${this.#selfClosing ? '/' : ''}>`;
 	}
 
 	/** @private */
