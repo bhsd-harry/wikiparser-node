@@ -1,6 +1,7 @@
 import {
 	text,
 	print,
+	removeComment,
 } from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
@@ -12,7 +13,7 @@ import {ConverterRuleToken} from './converterRule';
  * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
  */
 export abstract class ConverterToken extends Token {
-	declare readonly childNodes: readonly [ConverterFlagsToken, ...ConverterRuleToken[]];
+	declare readonly childNodes: readonly [ConverterFlagsToken, ConverterRuleToken, ...ConverterRuleToken[]];
 	abstract override get firstChild(): ConverterFlagsToken;
 	abstract override get lastChild(): ConverterFlagsToken | ConverterRuleToken;
 
@@ -37,7 +38,10 @@ export abstract class ConverterToken extends Token {
 			hasColon = firstRule.includes(':'),
 			// @ts-expect-error abstract class
 			firstRuleToken: ConverterRuleToken = new ConverterRuleToken(firstRule, hasColon, config, accum);
-		if (hasColon && firstRuleToken.length === 1) {
+		if (
+			hasColon && firstRuleToken.length === 1
+			|| !hasColon && rules.length === 2 && !removeComment(rules[1]!).trim()
+		) {
 			// @ts-expect-error abstract class
 			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken);
 		} else {
