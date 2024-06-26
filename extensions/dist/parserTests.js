@@ -1,7 +1,7 @@
 (() => {
 "use strict";
 (async () => {
-    const tests = await (await fetch('./test/parserTests.json')).json(), select = document.querySelector('select'), pre = document.querySelector('pre'), container = document.getElementById('frame');
+    const tests = await (await fetch('./test/parserTests.json')).json(), select = document.querySelector('select'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     Parser.config = await (await fetch('./config/default.json')).json();
     wikiparse.print = (wikitext, include, stage) => {
         const printed = Parser.parse(wikitext, include, stage).print();
@@ -23,10 +23,11 @@
         }
     }
     select.addEventListener('change', () => {
-        const { wikitext, html } = tests[Number(select.value)];
+        const { wikitext, html, render } = tests[Number(select.value)];
         pre.textContent = wikitext;
         pre.classList.remove('wikiparser');
-        container.innerHTML = html;
+        container1.innerHTML = html;
+        container2.innerHTML = render !== null && render !== void 0 ? render : '';
         for (const img of container.querySelectorAll('img[src]')) {
             img.src = '/wikiparser-node/assets/bad-image.svg';
             img.removeAttribute('srcset');

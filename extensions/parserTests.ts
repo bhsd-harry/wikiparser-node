@@ -2,13 +2,16 @@ declare interface Test {
 	desc: string;
 	wikitext?: string;
 	html: string;
+	render?: string;
 }
 
 (async () => {
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
 		select = document.querySelector('select')!,
 		pre = document.querySelector('pre')!,
-		container = document.getElementById('frame')!;
+		container = document.getElementById('frame')!,
+		container1 = document.getElementById('frame1')!,
+		container2 = document.getElementById('frame2')!;
 	Parser.config = await (await fetch('./config/default.json')).json();
 	/** @implements */
 	wikiparse.print = (wikitext, include, stage): Promise<[number, string, string][]> => {
@@ -31,10 +34,11 @@ declare interface Test {
 		}
 	}
 	select.addEventListener('change', () => {
-		const {wikitext, html} = tests[Number(select.value)]!;
+		const {wikitext, html, render} = tests[Number(select.value)]!;
 		pre.textContent = wikitext!;
 		pre.classList.remove('wikiparser');
-		container.innerHTML = html;
+		container1.innerHTML = html;
+		container2.innerHTML = render ?? '';
 		for (const img of container.querySelectorAll<HTMLImageElement>('img[src]')) {
 			img.src = '/wikiparser-node/assets/bad-image.svg';
 			img.removeAttribute('srcset');

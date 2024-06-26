@@ -1,5 +1,5 @@
 html, body, main, article, div, select, pre, ol, li, ul, dl, dt, dd,
-p, hr, h1, h2, h3, h4, h5, h6, a, center, cite, dfn, img {
+p, hr, h1, h2, h3, h4, h5, h6, a, center, img {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -53,160 +53,162 @@ select {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	cursor: pointer;
-}
-select, #frame {
 	padding: 5px 12px;
 }
 pre {
 	border-radius: .3em;
 }
-#frame {
+.frame:not(:empty) {
 	overflow-x: auto;
+	border: 1.5px solid #dedede;
+	border-radius: .3em;
+	margin-top: 1rem;
+	padding: 12px;
 }
 
 .mw-editsection, .mw-empty-elt {
 	display: none;
 }
-#frame p {
+.frame p {
 	margin: .5em 0;
 }
-#frame hr {
+.frame hr {
 	height: 1px;
 	background-color: #a2a9b1;
 	margin: .2em 0;
 }
-#frame h1, #frame h2 {
+.frame h1, .frame h2 {
 	margin: 1em 0 .25em;
 	line-height: 1.38;
 	border-bottom: 1px solid #a2a9b1;
 }
-#frame h1 {
+.frame h1 {
 	font-size: 1.8em;
 }
-#frame h2 {
+.frame h2 {
 	font-size: 1.5em;
 }
-#frame h3, #frame h4, #frame h5, #frame h6 {
+.frame h3, .frame h4, .frame h5, .frame h6 {
 	margin-top: .3em;
 	line-height: 1.6;
 	font-weight: bold;
 }
-#frame h3 {
+.frame h3 {
 	font-size: 1.2em;
 }
-#frame h4, #frame h5, #frame h6 {
+.frame h4, .frame h5, .frame h6 {
 	font-size: 100%;
 }
-#frame a {
+.frame a {
 	word-wrap: break-word;
 	text-decoration: none;
 	color: #0645ad;
 }
-#frame a.new {
+.frame a.new {
 	color: #ba0000;
 }
-#frame a.external, #frame a.extiw {
+.frame a.external, .frame a.extiw {
 	color: #36b;
 }
-#frame a.external {
+.frame a.external {
 	background-image: url("/wikiparser-node/assets/external-link.svg");
 	background-position: center right;
 	background-repeat: no-repeat;
 	background-size: 12px;
 	padding-right: 1em;
 }
-#frame a.external.free {
+.frame a.external.free {
 	word-break: break-all;
 }
-#frame a.mw-selflink {
+.frame a.mw-selflink {
 	color: inherit;
 	font-weight: bold;
 	cursor: inherit;
 }
-#frame a:hover, #frame a:focus {
+.frame a:hover, .frame a:focus {
 	text-decoration: underline;
 }
-#frame a.mw-selflink:hover {
+.frame a.mw-selflink:hover {
 	text-decoration: inherit;
 }
-#frame a:active {
+.frame a:active {
 	color: #faa700;
 }
-#frame a.mw-selflink:active {
+.frame a.mw-selflink:active {
 	color: inherit;
 }
-#frame ul {
+.frame ul {
 	margin: .3em 0 0 1.6em;
 }
-#frame ol {
+.frame ol {
 	margin: .3em 0 0 3.2em;
 	list-style-image: none;
 }
-#frame li {
+.frame li {
 	margin-bottom: .1em;
 }
-#frame dl {
+.frame dl {
 	margin: .2em 0 .5em;
 }
-#frame dt {
+.frame dt {
 	font-weight: bold;
 	margin-bottom: .1em;
 }
-#frame dd {
+.frame dd {
 	margin: 0 0 .1em 1.6em;
 }
-#frame q {
+.frame q {
 	quotes: '"' '"' "'" "'";
 }
-#frame code {
+.frame code {
 	border-radius: 2px;
 	padding: 1px 4px;
 }
-#frame pre {
+.frame pre {
 	padding: 1em;
 	white-space: pre-wrap;
 	overflow: hidden;
 	word-wrap: break-word;
 }
-#frame code, #frame pre {
+.frame code, .frame pre {
 	background: #f8f9fa;
 	color: #000;
 	border: 1px solid #eaecf0;
 }
-#frame sub, #frame sup {
+.frame sub, .frame sup {
 	font-size: 80%;
 	line-height: 1;
 }
-#frame blockquote {
+.frame blockquote {
 	padding: 8px 32px;
 	margin: 1em 0;
 }
-#frame .error {
+.frame .error {
 	font-size: larger;
 	color: #d73333;
 }
-#frame img {
+.frame img {
 	vertical-align: middle;
 	max-width: 100%;
 }
-#frame figure.mw-halign-right {
+.frame figure.mw-halign-right {
 	margin: 0 0 .5em .5em;
 	clear: right;
 	float: right;
 	max-width: 50%;
 }
-#frame .mw-image-border .mw-file-element {
+.frame .mw-image-border .mw-file-element {
 	border: 1px solid #eaecf0;
 }
-#frame figure[typeof~="mw:File/Thumb"].mw-halign-left,
-#frame figure[typeof~="mw:File/Frame"].mw-halign-left {
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-left,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-left {
 	margin: .5em 1.4em 1.3em 0;
 	clear: left;
 	float: left;
 	max-width: 50%;
 }
-#frame figure[typeof~="mw:File/Thumb"],
-#frame figure[typeof~="mw:File/Frame"] {
+.frame figure[typeof~="mw:File/Thumb"],
+.frame figure[typeof~="mw:File/Frame"] {
 	margin: .5em 0 1.3em 1.4em;
 	clear: right;
 	float: right;
@@ -219,18 +221,18 @@ pre {
 	border-collapse: collapse;
 	line-height: 0;
 }
-#frame figure[typeof~="mw:File/Thumb"] > .mw-file-description {
+.frame figure[typeof~="mw:File/Thumb"] > .mw-file-description {
 	display: block;
 	position: relative;
 }
-#frame figure[typeof~="mw:File/Thumb"] > :not(figcaption) .mw-file-element,
-#frame figure[typeof~="mw:File/Frame"] > :not(figcaption) .mw-file-element {
+.frame figure[typeof~="mw:File/Thumb"] > :not(figcaption) .mw-file-element,
+.frame figure[typeof~="mw:File/Frame"] > :not(figcaption) .mw-file-element {
 	border: 1px solid #c8ccd1;
 	background: #f8f9fa;
 	margin: 3px;
 }
-#frame figure[typeof~="mw:File/Thumb"] > figcaption,
-#frame figure[typeof~="mw:File/Frame"] > figcaption {
+.frame figure[typeof~="mw:File/Thumb"] > figcaption,
+.frame figure[typeof~="mw:File/Frame"] > figcaption {
 	text-align: left;
 	border: 1px solid #c8ccd1;
 	border-top: 0;
@@ -242,65 +244,65 @@ pre {
 	word-break: break-word;
 	padding: 0 6px 6px;
 }
-#frame .toc {
+.frame .toc {
 	display: table;
 	padding: 7px;
 	background-color: #f8f9fa;
 	border: 1px solid #a2a9b1;
 	font-size: 95%;
 }
-#frame .toctitle {
+.frame .toctitle {
 	text-align: center;
 }
-#frame .toc h2 {
+.frame .toc h2 {
 	display: inline;
 	border: 0;
 	font-size: 100%;
 	font-weight: bold;
 }
-#frame .toctogglespan {
+.frame .toctogglespan {
 	font-size: 94%;
 }
-#frame .toctogglespan::before {
+.frame .toctogglespan::before {
 	content: " [";
 }
-#frame .toctogglespan::after {
+.frame .toctogglespan::after {
 	content: "]";
 }
-#frame .toctogglelabel::after {
+.frame .toctogglelabel::after {
 	content: "隐藏";
 }
-#frame .toc ul {
+.frame .toc ul {
 	list-style: none;
 	margin: .3em 0;
 }
-#frame .tocnumber {
+.frame .tocnumber {
 	padding-right: .5em;
 	color: #202122;
 }
-#frame .tocnumber, #frame .toctext {
+.frame .tocnumber, .frame .toctext {
 	display: table-cell;
 }
-#frame ul.gallery {
+.frame ul.gallery {
 	margin: 2px;
 	padding: 2px;
 	display: block;
 }
-#frame li.gallerybox {
+.frame li.gallerybox {
 	vertical-align: top;
 	display: inline-block;
 }
-#frame div.gallerytext {
+.frame div.gallerytext {
 	overflow: hidden;
 	font-size: 94%;
 	padding: 9px 4px 17px;
 	word-wrap: break-word;
 }
-#frame .mw-gallery-traditional .gallerybox > .thumb > * {
+.frame .mw-gallery-traditional .gallerybox > .thumb > * {
 	vertical-align: middle;
 	display: inline-block;
 }
-#frame li.gallerybox div.thumb img {
+.frame li.gallerybox div.thumb img {
 	display: block;
 	margin: 0 auto;
 }
