@@ -170,7 +170,7 @@ export abstract class TranscludeToken extends Token {
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template',
 			child = this.childNodes[isTemplate ? 0 : 1] as AtomToken;
-		return this.normalizeTitle(child.text(), isTemplate ? 10 : 828);
+		return this.normalizeTitle(child.toString(true), isTemplate ? 10 : 828);
 	}
 
 	/** @private */
@@ -182,13 +182,13 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
+	override toString(skip?: boolean): string {
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
-				? `${this.firstChild.toString()}${this.length === 1 ? '' : ':'}${
-					this.childNodes.slice(1).map(String).join('|')
+				? `${this.firstChild.toString(skip)}${this.length === 1 ? '' : ':'}${
+					this.childNodes.slice(1).map(child => child.toString(skip)).join('|')
 				}`
-				: super.toString('|')
+				: super.toString(skip, '|')
 		}}}`;
 	}
 

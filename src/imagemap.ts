@@ -117,8 +117,8 @@ export abstract class ImagemapToken extends Token {
 	}
 
 	/** @private */
-	override toString(): string {
-		return super.toString('\n');
+	override toString(skip?: boolean): string {
+		return super.toString(skip, '\n');
 	}
 
 	/** @private */
