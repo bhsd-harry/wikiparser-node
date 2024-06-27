@@ -1,3 +1,11 @@
+## v1.10.1
+
+*2024-06-28*
+
+**Fixed**
+
+- [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) when there are nested internal links
+
 ## v1.10.0
 
 *2024-06-26*

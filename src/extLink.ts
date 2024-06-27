@@ -6,7 +6,7 @@ import {
 	classes,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
-import {normalizeSpace} from '../util/string';
+import {normalizeSpace, html} from '../util/string';
 import {Shadow} from '../util/debug';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import Parser from '../index';
@@ -14,6 +14,7 @@ import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {LintError} from '../base';
 import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
+import type {FileToken} from '../internal';
 
 export interface ExtLinkToken extends MagicLinkParentBase {}
 
@@ -193,10 +194,26 @@ export abstract class ExtLinkToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
-		return `<a class="external" rel="nofollow" href="${this.getUrl().href}">${
-			this.length > 1 ? this.lastChild.toHtml() : this.innerText
-		}</a>`;
+	override toHtml(nowrap?: boolean): string {
+		const {length, lastChild} = this,
+			{childNodes} = lastChild;
+		let trail = '',
+			innerText: string;
+		if (length > 1) {
+			const i = childNodes.findIndex(
+				child => child.type === 'link'
+				|| child.is<FileToken>('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
+			);
+			if (i !== -1) {
+				const after = childNodes.slice(i);
+				this.after(...after);
+				trail = html(after, '', nowrap);
+			}
+			innerText = lastChild.toHtml();
+		} else {
+			({innerText} = this);
+		}
+		return `<a class="external" rel="nofollow" href="${this.getUrl().href}">${innerText}</a>${trail}`;
 	}
 }
 
