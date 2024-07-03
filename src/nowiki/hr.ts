@@ -13,7 +13,7 @@ export abstract class HrToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		return '<hr>';
 	}
 }

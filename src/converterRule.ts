@@ -259,10 +259,10 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(nowrap?: boolean): string {
+	override toHtmlInternal(nowrap?: boolean): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3
-			? `${firstChild.toHtml(nowrap)}=>${childNodes[1].text()}:${lastChild.toHtml(nowrap)}`
+			? `${firstChild.toHtmlInternal(nowrap)}=>${childNodes[1].text()}:${lastChild.toHtmlInternal(nowrap)}`
 			: html(childNodes, ':', nowrap);
 	}
 }

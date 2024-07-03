@@ -25,8 +25,6 @@ const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 
 /* NOT FOR BROWSER END */
 
-const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+c\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+c\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
-
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
 
@@ -157,7 +155,7 @@ export abstract class AttributesToken extends Token {
 		this.#type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			regex.lastIndex = 0;
+			const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+c\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+c\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
 			let out = '',
 				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;
@@ -476,7 +474,7 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		const map = new Map<string, AttributeToken>();
 		for (const child of this.childNodes) {
 			if (child instanceof AttributeToken) {

@@ -725,7 +725,7 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		return '';
 	}
 }

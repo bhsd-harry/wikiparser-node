@@ -635,7 +635,7 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		/**
 		 * 过滤需要移出表格的节点
 		 * @param token 表格或表格行
@@ -644,8 +644,8 @@ export abstract class TableToken extends TrBaseToken {
 		const {childNodes} = this,
 			tr = childNodes.filter(isToken<TrToken>('tr'));
 		return `${
-			[this, ...tr].flatMap(filter).map(token => token.toHtml(true)).join('')
-		}<table${childNodes[1].toHtml()}><tbody>${super.toHtml()}${html(tr)}</tbody></table>`;
+			[this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(true)).join('')
+		}<table${childNodes[1].toHtmlInternal()}><tbody>${super.toHtmlInternal()}${html(tr)}</tbody></table>`;
 	}
 }
 

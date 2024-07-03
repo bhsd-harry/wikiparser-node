@@ -437,6 +437,11 @@ export class AstText extends AstNode {
 		const {data} = this;
 		return font(this, sanitize(nowrap ? data.replace(/\n/gu, ' ') : data));
 	}
+
+	/** @private */
+	toHtmlInternal(nowrap?: boolean): string {
+		return this.toHtml(nowrap);
+	}
 }
 
 classes['AstText'] = __filename;

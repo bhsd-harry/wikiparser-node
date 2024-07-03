@@ -278,7 +278,7 @@ export abstract class MagicLinkToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		const url = this.getUrl(),
 			{type, innerText, protocol} = this;
 		return `<a ${

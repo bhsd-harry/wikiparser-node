@@ -195,9 +195,9 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		const {level, firstChild} = this,
-			html = firstChild.toHtml();
+			html = firstChild.toHtmlInternal();
 		return `<div class="mw-heading mw-heading${level}"><h${level} id="${
 			html.replace(/<\/?[a-z].*?>/gu, '').trim().replace(/[\s_]+/gu, '_').replace(/"/gu, '&quot;')
 		}">${html.trim()}</h${level}></div>`;

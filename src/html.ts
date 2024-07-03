@@ -345,10 +345,10 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		const {closing, name} = this,
 			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config'),
-			tag = name + (closing ? '' : super.toHtml());
+			tag = name + (closing ? '' : super.toHtmlInternal());
 		if (voidTags.includes(name)) {
 			return closing && name !== 'br' ? '' : `<${tag}>`;
 		}

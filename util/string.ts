@@ -87,7 +87,7 @@ export const sanitize = factory(/[<>]/gu, p => `&${entities[p as keyof typeof en
  * @param nowrap whether to normalize newlines
  */
 export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: boolean): string =>
-	childNodes.map(child => child.toHtml(nowrap)).join(separator);
+	childNodes.map(child => child.toHtmlInternal(nowrap)).join(separator);
 
 /**
  * wrap text with <b> and <i> tags

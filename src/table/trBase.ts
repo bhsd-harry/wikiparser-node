@@ -201,11 +201,11 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		const {childNodes, type} = this,
 			td = childNodes.filter(isToken<TdToken>('td'));
 		return td.some(({subtype}) => subtype !== 'caption')
-			? `<tr${type === 'tr' ? childNodes[1].toHtml() : ''}>${html(td)}</tr>`
+			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${html(td)}</tr>`
 			: html(td);
 	}
 }

@@ -132,12 +132,12 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(nowrap?: boolean): string {
+	override toHtmlInternal(nowrap?: boolean): string {
 		const flags = this.getEffectiveFlags(),
 			{childNodes: [, ...rules]} = this;
 		if (flags.has('S')) {
-			return rules.find(({variant}) => variant)?.lastChild.toHtml(nowrap).trim()
-				?? rules[0].lastChild.toHtml(nowrap);
+			return rules.find(({variant}) => variant)?.lastChild.toHtmlInternal(nowrap).trim()
+				?? rules[0].lastChild.toHtmlInternal(nowrap);
 		}
 		return flags.has('R') ? html(rules, ';', nowrap) : '';
 	}

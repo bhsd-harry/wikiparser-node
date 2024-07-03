@@ -30,12 +30,6 @@ import type {
  */
 const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
 
-/* NOT FOR BROWSER */
-
-const fileTypes = new Set(['file', 'gallery-image', 'imagemap-image']);
-
-/* NOT FOR BROWSER END */
-
 /**
  * 内链
  * @classdesc `{childNodes: [AtomToken, ...Token]}`
@@ -133,7 +127,8 @@ export abstract class LinkBaseToken extends Token {
 		/* NOT FOR BROWSER */
 
 		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e;
+			const {prevTarget} = e,
+				{type} = this;
 			if (prevTarget?.type === 'link-target') {
 				const name = prevTarget.toString(true),
 					titleObj = this.getTitle(),
@@ -142,19 +137,15 @@ export abstract class LinkBaseToken extends Token {
 					undo(e, data);
 					throw new Error(`Invalid link target: ${name}`);
 				} else if (
-					this.type === 'category' && (interwiki || ns !== 14)
-					|| fileTypes.has(this.type) && (interwiki || ns !== 6)
+					type === 'category' && (interwiki || ns !== 14)
+						|| (type === 'file' || type === 'gallery-image' || type === 'imagemap-image')
+						&& (interwiki || ns !== 6)
 				) {
 					undo(e, data);
 					throw new Error(
-						`${this.type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
+						`${type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
 					);
-				} else if (
-					this.type === 'link'
-					&& !interwiki
-					&& (ns === 6 || ns === 14)
-					&& !name.trim().startsWith(':')
-				) {
+				} else if (type === 'link' && !interwiki && (ns === 6 || ns === 14) && !name.trim().startsWith(':')) {
 					const {firstChild} = prevTarget;
 					if (firstChild?.type === 'text') {
 						firstChild.insertData(0, ':');
@@ -320,12 +311,12 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
 			const {link, length, lastChild, type} = this;
 			return `<a ${link.interwiki && 'class="extiw" '}href="${link.getUrl()}" title="${
 				link.title.replace(/"/gu, '&quot;')
-			}">${type === 'link' && length > 1 ? lastChild.toHtml(true) : this.innerText}</a>`;
+			}">${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`;
 		}
 		return '';
 	}

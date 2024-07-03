@@ -508,7 +508,7 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		const {type, name, tag, lastChild} = this;
 		if (
 			type === 'ext-attr' && !(tag in htmlAttrs)
@@ -516,7 +516,7 @@ export abstract class AttributeToken extends Token {
 		) {
 			return '';
 		}
-		let value = lastChild.toHtml().trim();
+		let value = lastChild.toHtmlInternal().trim();
 		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value !== '0') {
 			return '';
 		} else if (name === 'id') {

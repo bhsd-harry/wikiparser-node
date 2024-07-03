@@ -925,16 +925,13 @@ export class Token extends AstElement {
 		}
 	}
 
-	/**
-	 * 生成HTML
-	 * @param nowrap 是否不换行
-	 */
-	toHtml(nowrap?: boolean): string {
-		if (this.type === 'root') {
-			const root = this.expand();
-			root.type = 'plain';
-			return root.toHtml();
-		}
+	/** 生成HTML */
+	toHtml(): string {
+		return this[this.type === 'root' ? 'expand' : 'cloneNode']().toHtmlInternal();
+	}
+
+	/** @private */
+	toHtmlInternal(nowrap?: boolean): string {
 		const {HtmlToken}: typeof import('./html') = require('./html'),
 			{AttributesToken}: typeof import('./attributes') = require('./attributes'),
 			{list}: typeof import('./nowiki/listBase') = require('./nowiki/listBase');
