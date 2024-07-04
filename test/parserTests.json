@@ -146,7 +146,7 @@
 		"desc": "Implicit newline insertion/sol when expanding templates (T241150/T14974/T2529)",
 		"wikitext": "{{1x|#foo}}{{1x|#foo}}",
 		"html": "<ol><li>foo</li>\n<li>foo</li></ol>",
-		"render": "<ol><li>foo#foo</li></ol>",
+		"render": "<ol><li>foo</li></ol>\n<ol><li>foo</li></ol>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">#foo</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">#foo</span></span>}}</span></span>"
 	},
 	{
@@ -251,7 +251,7 @@
 		"desc": "Templates: Strip leading and trailing whitespace from named-param values",
 		"wikitext": "{{1x|1= a }}\n\n{{1x|1= {{1x|b}} }}\n\n{{1x| 1 =\n c }}\n\n{{1x| 1 =\n* d\n}}",
 		"html": "<p>a\n</p><p>b\n</p><p>c\n</p>\n<ul><li>d</li></ul>",
-		"render": "<p>a\n</p><p>b\n</p><p>c\n</p>\n<ul><li>d</li></ul>",
+		"render": "<p>a\n</p><p>b\n</p><p>c\n</p><p><br>\n</p>\n<ul><li>d</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"> a </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b</span></span>}}</span> </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> 1 </span>=<span class=\"wpb-parameter-value\">\n c </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> 1 </span>=<span class=\"wpb-parameter-value\">\n<span class=\"wpb-list\">* </span>d\n</span></span>}}</span></span>"
 	},
 	{
@@ -1135,7 +1135,7 @@
 		"desc": "List items from template",
 		"wikitext": "{{inner list}}\n*item 2\n\n*item 0\n{{inner list}}\n*item 2\n\n*item 0\n*notSOL{{inner list}}\n*item 2",
 		"html": "<ul><li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>notSOL</li>\n<li>item 1</li>\n<li>item 2</li></ul>",
-		"render": "<ul><li>item 1</li></ul>\n<ul><li>item 2</li></ul>\n\n<ul><li>item 0</li></ul>\n<ul><li>item 1</li></ul>\n<ul><li>item 2</li></ul>\n<ul><li>item 0</li></ul>\n<ul><li>notSOL* item 1</li></ul>\n<ul><li>item 2</li></ul>",
+		"render": "<ul><li>item 1</li></ul>\n<ul><li>item 2</li></ul>\n\n<ul><li>item 0</li></ul>\n<ul><li>item 1</li></ul>\n<ul><li>item 2</li></ul>\n\n<ul><li>item 0</li></ul>\n<ul><li>notSOL</li></ul>\n<ul><li>item 1</li></ul>\n<p><ul><li>item 2</li></ul>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">inner list</span>}}</span>\n<span class=\"wpb-list\">*</span>item 2\n\n<span class=\"wpb-list\">*</span>item 0\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">inner list</span>}}</span>\n<span class=\"wpb-list\">*</span>item 2\n\n<span class=\"wpb-list\">*</span>item 0\n<span class=\"wpb-list\">*</span>notSOL<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">inner list</span>}}</span>\n<span class=\"wpb-list\">*</span>item 2</span>"
 	},
 	{
@@ -1191,7 +1191,7 @@
 		"desc": "Parsoid: Test of whitespace serialization with Templated bullets",
 		"wikitext": "* {{bullet}}",
 		"html": "<ul><li class=\"mw-empty-elt\"></li>\n<li>Bar</li></ul>",
-		"render": "<ul><li>*Bar</li></ul>",
+		"render": "<ul><li></li></ul>\n<ul><li>Bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">bullet</span>}}</span></span>"
 	},
 	{
@@ -3018,7 +3018,7 @@
 		"desc": "Expansion of multi-line templates in attribute values (T8255)",
 		"wikitext": "<div style=\"background: {{1x|#00FF00}}\">-</div>",
 		"html": "<div style=\"background: #00FF00\">-</div>",
-		"render": "<div style=\"background: #00FF00\">-</div>",
+		"render": "<div style=\"background: &#10;#00FF00\">-</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background: <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">#00FF00</span></span>}}</span></span>\"</span></span>&gt;</span>-<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -3773,14 +3773,14 @@
 		"desc": "T2529: Uncovered bullet",
 		"wikitext": "*Foo {{bullet}}",
 		"html": "<ul><li>Foo</li>\n<li>Bar</li></ul>",
-		"render": "<ul><li>Foo *Bar</li></ul>",
+		"render": "<ul><li>Foo </li></ul>\n<ul><li>Bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>Foo <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">bullet</span>}}</span></span>"
 	},
 	{
 		"desc": "T2529: Uncovered bullet in a deeply nested list",
 		"wikitext": "*******Foo {{bullet}}",
 		"html": "<ul><li><ul><li><ul><li><ul><li><ul><li><ul><li><ul><li>Foo</li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li>\n<li>Bar</li></ul>",
-		"render": "<ul><li><ul><li><ul><li><ul><li><ul><li><ul><li><ul><li>Foo *Bar</li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>",
+		"render": "<ul><li><ul><li><ul><li><ul><li><ul><li><ul><li><ul><li>Foo </li></ul></li></ul></li></ul></li></ul></li></ul></li></ul></li></ul>\n<ul><li>Bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*******</span>Foo <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">bullet</span>}}</span></span>"
 	},
 	{

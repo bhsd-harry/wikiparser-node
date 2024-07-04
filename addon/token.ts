@@ -189,6 +189,12 @@ Token.prototype.redoQuotes = /** @implements */ function(): void {
 };
 
 /**
+ * 隐式换行
+ * @param str 字符串
+ */
+const implicitNewLine = (str: string): string => /^(?:\{\||[:;#*])/u.test(str) ? `\n${str}` : str;
+
+/**
  * 展开模板
  * @param wikitext
  * @param config
@@ -201,7 +207,7 @@ export const expand = (
 	wikitext: string,
 	config: Config,
 	include: boolean,
-	context?: TranscludeToken | false,
+	context: TranscludeToken | false | undefined,
 	accum: Token[] = [],
 ): Token => {
 	const magicWords = new Set(['if', 'ifeq', 'switch']),
@@ -256,7 +262,7 @@ export const expand = (
 					}
 					Parser.templates.set(title, fs.readFileSync(file, 'utf8'));
 				}
-				return expand(Parser.templates.get(title)!, config, true, target, accum).toString();
+				return implicitNewLine(expand(Parser.templates.get(title)!, config, true, target, accum).toString());
 			} else if (!magicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {
@@ -271,7 +277,7 @@ export const expand = (
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
-					return effective.value;
+					return implicitNewLine(effective.value);
 				}
 				return '';
 			} else if (name === 'ifeq' && known && !/\0\d+t\x7F/u.test(var2)) {
@@ -279,7 +285,7 @@ export const expand = (
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
-					return effective.value;
+					return implicitNewLine(effective.value);
 				}
 				return '';
 			} else if (name === 'switch' && known) {
@@ -296,7 +302,7 @@ export const expand = (
 						if (j === length - 1) {
 							// @ts-expect-error sparse array
 							accum[accum.indexOf(lastChild)] = undefined;
-							return value;
+							return implicitNewLine(value);
 						} else if (transclusion) {
 							break;
 						} else {
@@ -307,7 +313,7 @@ export const expand = (
 					} else if (found || option === var1) {
 						// @ts-expect-error sparse array
 						accum[accum.indexOf(lastChild)] = undefined;
-						return value;
+						return implicitNewLine(value);
 					} else if (option.toLowerCase() === '#default') {
 						defaultVal = value;
 						defaultParam = lastChild;
@@ -317,11 +323,8 @@ export const expand = (
 							// @ts-expect-error sparse array
 							accum[accum.indexOf(defaultParam)] = undefined;
 						}
-						return defaultVal;
+						return implicitNewLine(defaultVal);
 					}
-				}
-				if (transclusion) {
-					return m;
 				}
 			}
 			return m;
