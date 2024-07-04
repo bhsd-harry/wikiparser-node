@@ -4,6 +4,7 @@ import {
 	extUrlChar,
 	extUrlCharFirst,
 	escape,
+	removeComment,
 
 	/* NOT FOR BROWSER */
 
@@ -137,8 +138,8 @@ export class AstText extends AstNode {
 	}
 
 	/** @private */
-	override toString(): string {
-		return this.data;
+	override toString(skip?: boolean): string {
+		return skip && !this.parentNode?.getAttribute('built') ? removeComment(this.data) : this.data;
 	}
 
 	/** @private */
@@ -440,6 +441,34 @@ export class AstText extends AstNode {
 
 	/** @private */
 	toHtmlInternal(nowrap?: boolean): string {
+		const mt = /\n[^\S\n]*$/u.exec(this.data);
+		if (mt) {
+			const spaces: AstText[] = [];
+			let {nextSibling} = this,
+				mt2: RegExpExecArray | null = null;
+			while (
+				nextSibling
+				&& (nextSibling.type === 'comment' || nextSibling.type === 'category' || nextSibling.type === 'text')
+			) {
+				if (nextSibling.type === 'text') {
+					const {data} = nextSibling;
+					mt2 = /^[^\S\n]*(?=\n)/u.exec(data);
+					if (mt2 || data.trim()) {
+						break;
+					} else {
+						spaces.push(nextSibling);
+					}
+				}
+				({nextSibling} = nextSibling);
+			}
+			if (mt2) {
+				this.deleteData(mt.index, Infinity);
+				(nextSibling as AstText).deleteData(0, mt2[0].length);
+				for (const space of spaces) {
+					space.#setData('');
+				}
+			}
+		}
 		return this.toHtml(nowrap);
 	}
 }
