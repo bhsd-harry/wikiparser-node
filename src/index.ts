@@ -100,21 +100,6 @@ declare interface LintIgnore {
 
 export type TagToken = IncludeToken | ExtToken | HtmlToken;
 
-const plainTypes = new Set<TokenTypes>([
-	'plain',
-	'root',
-	'table-inter',
-	'arg-default',
-	'attr-value',
-	'ext-link-text',
-	'heading-title',
-	'parameter-key',
-	'parameter-value',
-	'link-text',
-	'td-inner',
-	'ext-inner',
-]);
-
 /**
  * 可接受的Token类型
  * @param value 可接受的Token类型
@@ -168,7 +153,21 @@ export class Token extends AstElement {
 	}
 
 	override set type(value) {
-		if (!plainTypes.has(value)) {
+		const plainTypes: TokenTypes[] = [
+			'plain',
+			'root',
+			'table-inter',
+			'arg-default',
+			'attr-value',
+			'ext-link-text',
+			'heading-title',
+			'parameter-key',
+			'parameter-value',
+			'link-text',
+			'td-inner',
+			'ext-inner',
+		];
+		if (!plainTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);
 		}
 		this.#type = value;
@@ -927,7 +926,80 @@ export class Token extends AstElement {
 
 	/** 生成HTML */
 	toHtml(): string {
-		return this[this.type === 'root' ? 'expand' : 'cloneNode']().toHtmlInternal();
+		if (this.type !== 'root') {
+			return this.cloneNode().toHtmlInternal();
+		}
+		const lines = this.expand().toHtmlInternal().split('\n'),
+			blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
+			antiBlockElems = 'td|th',
+			openRegex = new RegExp(
+				String.raw`<(?:${blockElems}|\/(?:${antiBlockElems})|\/?(?:tr|caption|dt|dd|li))\b`,
+				'giu',
+			),
+			closeRegex = new RegExp(
+				String.raw`<(?:\/(?:${blockElems})|${antiBlockElems}|\/?(?:center|blockquote|div|hr|figure))\b`,
+				'giu',
+			);
+		let output = '',
+			inBlockElem = false,
+			pendingPTag: string | false = false,
+			inBlockquote = false,
+			lastParagraph = '';
+		const /** @ignore */ closeParagraph = (): string => {
+			if (lastParagraph) {
+				const result = `</${lastParagraph}>\n`;
+				lastParagraph = '';
+				return result;
+			}
+			return '';
+		};
+		for (let line of lines) {
+			const openMatch = openRegex.test(line),
+				closeMatch = closeRegex.test(line);
+			if (openMatch || closeMatch) {
+				pendingPTag = false;
+				output += closeParagraph();
+				inBlockquote = /<(\/?)blockquote[\s>](?!.*<\/?blockquote[\s>])/iu.exec(line)?.[1] === '';
+				inBlockElem = !closeMatch;
+			} else if (!inBlockElem) {
+				if (line.startsWith(' ') && (lastParagraph === 'pre' || line.trim()) && !inBlockquote) {
+					if (lastParagraph !== 'pre') {
+						pendingPTag = false;
+						output += `${closeParagraph()}<pre>`;
+						lastParagraph = 'pre';
+					}
+					line = line.slice(1);
+				} else if (/^(?:<link\b[^>]*>\s*)+$/iu.test(line)) {
+					if (pendingPTag) {
+						output += closeParagraph();
+						pendingPTag = false;
+					}
+				} else if (!line.trim()) {
+					if (pendingPTag) {
+						output += `${pendingPTag}<br>`;
+						pendingPTag = false;
+						lastParagraph = 'p';
+					} else if (lastParagraph === 'p') {
+						pendingPTag = '</p><p>';
+					} else {
+						output += closeParagraph();
+						pendingPTag = '<p>';
+					}
+				} else if (pendingPTag) {
+					output += pendingPTag;
+					pendingPTag = false;
+					lastParagraph = 'p';
+				} else if (lastParagraph !== 'p') {
+					output += `${closeParagraph()}<p>`;
+					lastParagraph = 'p';
+				}
+			}
+			if (!pendingPTag) {
+				output += `${line}\n`;
+			}
+		}
+		output += closeParagraph();
+		return output;
 	}
 
 	/** @private */

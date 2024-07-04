@@ -1,6 +1,10 @@
 ## v1.10.1
 
-*2024-06-28*
+*2024-07-04*
+
+**Added**
+
+- `<p>` wrapping for [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml)
 
 **Fixed**
 
