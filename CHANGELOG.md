@@ -13,6 +13,12 @@
 - Implicit newline in [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand)
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) for template redirects
 - [`Title.prototype.getUrl`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#geturl) for self links
+- Definition list parsing since [v1.10.0](#v1100)
+
+**Changed**
+
+- `ListBaseToken.prototype.toHtml` now returns an empty string
+- [`ListBaseToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListBaseToken#getrange) now modifies the AST and returns a plain token with the type `list-range`
 
 ## v1.10.0
 

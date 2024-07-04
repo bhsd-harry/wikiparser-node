@@ -203,7 +203,7 @@ const implicitNewLine = (str: string): string => /^(?:\{\||[:;#*])/u.test(str) ?
  * @param accum
  * @throws `Error` not root token
  */
-export const expand = (
+const expand = (
 	wikitext: string,
 	config: Config,
 	include: boolean,

@@ -1,16 +1,17 @@
 import {classes} from '../../util/constants';
+import {Shadow} from '../../util/debug';
 import {NowikiBaseToken} from './base';
-import type {AstRange} from '../../lib/range';
-import type {DdToken, ListToken} from '../../internal';
+import {Token} from '../index';
+import type {DdToken, ListToken, AstText} from '../../internal';
 
 /* NOT FOR BROWSER */
 
-export const list = new Map([
-	['#', ['ol', 'li']],
-	['*', ['ul', 'li']],
-	[';', ['dl', 'dt']],
-	[':', ['dl', 'dd']],
-]);
+export interface ListRangeToken extends Token {
+	readonly type: 'list-range';
+	readonly previousSibling: ListToken | DdToken;
+	readonly nextSibling: DdToken | AstText | undefined;
+	readonly previousElementSibling: ListToken | DdToken;
+}
 
 /* NOT FOR BROWSER END */
 
@@ -41,42 +42,63 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	}
 
 	/** 获取列表行的范围 */
-	getRange(): AstRange {
-		const range = this.createRange();
-		range.setStartBefore(this);
+	getRange(): ListRangeToken {
+		let {nextSibling} = this;
+		if (nextSibling?.type === 'list-range') {
+			return nextSibling as ListRangeToken;
+		}
 		const {dt, type} = this;
-		let {nextSibling} = this,
-			nDt = dt ? 1 : Infinity;
+		let nDt = 0;
 		while (nextSibling && (nextSibling.type !== 'text' || !nextSibling.data.includes('\n'))) {
-			if (dt) {
+			if (type === 'list') {
 				if (nextSibling.is<DdToken>('dd')) {
 					nDt -= nextSibling.indent;
-					if (nDt <= 0) {
+					if (dt && nDt < 0) {
 						break;
 					}
 				} else if (nextSibling.is<ListToken>('list') && nextSibling.dt) {
 					nDt++;
 				}
-			} else if (type === 'dd' && nextSibling.type === 'dd') {
+			} else if (nextSibling.type === 'dd') {
 				break;
 			}
 			({nextSibling} = nextSibling);
 		}
-		if (!nextSibling) {
-			const {parentNode} = this;
-			range.setEnd(parentNode!, parentNode!.length);
-		} else if (nextSibling.type === 'text') {
-			const i = nextSibling.data.indexOf('\n');
-			range.setEnd(nextSibling, i);
-		} else {
+		const range = this.createRange();
+		if (nextSibling && nextSibling.type !== 'text') {
+			range.setStartAfter(this);
 			range.setEndBefore(nextSibling);
+		} else {
+			while (this.previousSibling?.is<ListToken>('list')) {
+				this.setText(this.previousSibling.innerText + this.innerText);
+				this.previousSibling.remove();
+			}
+			for (let i = 0; i < nDt; i++) {
+				const token = this.nextSibling as ListToken;
+				this.setText(this.innerText + token.innerText);
+				token.remove();
+			}
+			range.setStartAfter(this);
+			if (nextSibling) {
+				range.setEnd(nextSibling, nextSibling.data.indexOf('\n'));
+			} else {
+				const {parentNode} = this;
+				range.setEnd(parentNode!, parentNode!.length);
+			}
 		}
-		return range;
+		const token = Shadow.run(() => {
+			const t = new Token(undefined, this.getAttribute('config'));
+			t.type = 'list-range';
+			return t;
+		});
+		token.append(...range.extractContents());
+		range.insertNode(token);
+		return token as ListRangeToken;
 	}
 
 	/** @private */
 	override toHtmlInternal(): string {
-		return [...this.firstChild.data].map(ch => list.get(ch)?.map(name => `<${name}>`).join('') ?? '').join('');
+		return '';
 	}
 }
 

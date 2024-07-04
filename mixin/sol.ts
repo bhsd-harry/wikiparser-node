@@ -20,6 +20,7 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 					: '\n';
 			}
 			return parentNode?.type === 'root'
+				|| type === 'list' && parentNode?.type === 'list-range'
 				|| type !== 'heading' && parentNode?.type === 'ext-inner' && parentNode.name === 'poem'
 				? ''
 				: '\n';

@@ -122,6 +122,13 @@ const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
 	return acceptable;
 };
 
+const listTags = new Map([
+	['#', ['li', 'ol']],
+	['*', ['li', 'ul']],
+	[';', ['dt', 'dl']],
+	[':', ['dd', 'dl']],
+]);
+
 /* NOT FOR BROWSER END */
 
 /**
@@ -166,6 +173,7 @@ export class Token extends AstElement {
 			'link-text',
 			'td-inner',
 			'ext-inner',
+			'list-range',
 		];
 		if (!plainTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);
@@ -538,7 +546,7 @@ export class Token extends AstElement {
 
 		const e = new Event('insert', {bubbles: true});
 		this.dispatchEvent(e, {type: 'insert', position: i < 0 ? i + this.length - 1 : i});
-		if (token.constructor === Token && this.getAttribute('plain')) {
+		if (token.type !== 'list-range' && token.constructor === Token && this.getAttribute('plain')) {
 			Parser.warn(
 				'You are inserting a plain token as a child of another plain token. '
 				+ 'Consider calling Token.flatten method afterwards.',
@@ -1004,36 +1012,23 @@ export class Token extends AstElement {
 
 	/** @private */
 	toHtmlInternal(nowrap?: boolean): string {
-		const {HtmlToken}: typeof import('./html') = require('./html'),
-			{AttributesToken}: typeof import('./attributes') = require('./attributes'),
-			{list}: typeof import('./nowiki/listBase') = require('./nowiki/listBase');
-		const config = this.getAttribute('config'),
-			{childNodes, length} = this;
-		for (let i = length - 1; i >= 0; i--) {
-			const child = childNodes[i]!;
+		for (let i = 0; i < this.length; i++) {
+			const child = this.childNodes[i]!;
 			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
-				let ref: HtmlToken | undefined;
-				const range = child.getRange();
-				range.collapse();
-				Shadow.run(() => {
-					for (const ch of child.firstChild.data) {
-						for (const name of list.get(ch) ?? []) {
-							// @ts-expect-error abstract class
-							const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', name, config),
-								// @ts-expect-error abstract class
-								token: HtmlToken = new HtmlToken(name, attr, true, false, config);
-							if (ref) {
-								ref.before(token);
-							} else {
-								range.insertNode(token);
-							}
-							ref = token;
-						}
-					}
-				});
+				child.getRange();
 			}
 		}
-		return font(this, html(this.childNodes, '', nowrap));
+		let result = font(this, html(this.childNodes, '', nowrap));
+		if (this.type === 'list-range') {
+			const {firstChild: {data}} = this.previousSibling as ListToken | DdToken;
+			for (let i = data.length - 1; i >= 0; i--) {
+				const ch = data[i]!;
+				for (const name of listTags.get(ch) ?? []) {
+					result = `<${name}>${result}</${name}>`;
+				}
+			}
+		}
+		return result;
 	}
 }
 

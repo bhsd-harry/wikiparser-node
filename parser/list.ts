@@ -89,10 +89,11 @@ export const parseList = (wikitext: string, config: Config, accum: Token[]): str
 				li = !li;
 			}
 		} else if (lt === 0) { // syntax === ':'
-			if (syntax.length >= dt) {
+			const trimmed = syntax.trim();
+			if (trimmed.length >= dt) {
 				return dd(syntax.slice(0, dt), index);
 			}
-			dt -= syntax.length;
+			dt -= trimmed.length;
 			regex.lastIndex = index + 4 + String(accum.length).length;
 			text = dd(syntax, index);
 		}
