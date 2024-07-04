@@ -75,7 +75,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	}
 
 	/** @private */
-	override toHtml(): string {
+	override toHtmlInternal(): string {
 		return [...this.firstChild.data].map(ch => list.get(ch)?.map(name => `<${name}>`).join('') ?? '').join('');
 	}
 }

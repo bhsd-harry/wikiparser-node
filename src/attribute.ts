@@ -440,10 +440,11 @@ export abstract class AttributeToken extends Token {
 
 	override cloneNode(): this {
 		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
+			k = key.toString(),
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new AttributeToken(this.type, this.tag, '', this.#equal, '', this.#quotes, config) as this;
+			const token = new AttributeToken(this.type, this.tag, k, this.#equal, '', this.#quotes, config) as this;
 			token.firstChild.safeReplaceWith(key);
 			token.lastChild.safeReplaceWith(value);
 			return token;

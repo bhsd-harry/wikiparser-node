@@ -186,7 +186,7 @@ export abstract class GalleryToken extends Token {
 	override insertAt(token: string, i?: number): AstText;
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
 	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
-		if (typeof token === 'string' && token.trim() || token instanceof NoincludeToken) {
+		if (!Shadow.running && (typeof token === 'string' && token.trim() || token instanceof NoincludeToken)) {
 			throw new RangeError('Please do not insert invisible content into <gallery>!');
 		}
 		return super.insertAt(token as T, i);

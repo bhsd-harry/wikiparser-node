@@ -205,7 +205,9 @@ export abstract class ArgToken extends Token {
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
-		if (i > 1) {
+		if (Shadow.running) {
+			//
+		} else if (i > 1) {
 			this.constructorError('cannot insert redundant child nodes');
 		} else if (typeof token === 'string') {
 			this.constructorError('cannot insert text nodes');

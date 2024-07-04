@@ -999,7 +999,7 @@ export class Token extends AstElement {
 			}
 		}
 		output += closeParagraph();
-		return output;
+		return output.trimEnd();
 	}
 
 	/** @private */

@@ -204,6 +204,7 @@ export abstract class MagicLinkToken extends Token {
 			// @ts-expect-error abstract class
 			const token = new MagicLinkToken(undefined, this.type, this.getAttribute('config')) as this;
 			token.append(...cloned);
+			token.setAttribute('pattern', this.pattern);
 			return token;
 		});
 	}

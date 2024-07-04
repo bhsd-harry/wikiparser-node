@@ -322,7 +322,7 @@ export abstract class AttributesToken extends Token {
 	 */
 	override insertAt<T extends AttributeToken | AtomToken>(token: T, i = this.length): T {
 		if (!(token instanceof AttributeToken)) {
-			if (token.toString().trim()) {
+			if (!Shadow.running && token.toString().trim()) {
 				this.constructorError('can only insert AttributeToken');
 			}
 			return super.insertAt(token, i);
