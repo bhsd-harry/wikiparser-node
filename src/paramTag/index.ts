@@ -96,10 +96,11 @@ export abstract class ParamTagToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
+	override cloneNode(): this {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
-			const token = new this.constructor(undefined, this.getAttribute('config')) as this;
+			const C = this.constructor as new (...args: any[]) => this,
+				token = new C(undefined, this.getAttribute('config'));
 			token.append(...cloned);
 			return token;
 		});

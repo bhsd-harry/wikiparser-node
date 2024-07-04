@@ -253,10 +253,11 @@ export abstract class LinkBaseToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	override cloneNode(this: this & {constructor: new (...args: any[]) => unknown}): this {
+	override cloneNode(): this {
 		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...Token[]];
 		return Shadow.run(() => {
-			const token = new this.constructor('', undefined, this.getAttribute('config')) as this;
+			const C = this.constructor as new (...args: any[]) => this,
+				token = new C('', undefined, this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(link);
 			token.append(...linkText);
 			return token;
@@ -313,10 +314,11 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override toHtmlInternal(): string {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
-			const {link, length, lastChild, type} = this;
-			return `<a ${link.interwiki && 'class="extiw" '}href="${link.getUrl()}" title="${
-				link.title.replace(/"/gu, '&quot;')
-			}">${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`;
+			const {link, length, lastChild, type} = this,
+				{interwiki, title} = link;
+			return `<a ${interwiki && 'class="extiw" '}href="${link.getUrl()}"${
+				title && ` title="${title.replace(/"/gu, '&quot;')}"`
+			}>${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`;
 		}
 		return '';
 	}

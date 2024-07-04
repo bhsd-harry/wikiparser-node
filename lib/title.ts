@@ -239,14 +239,18 @@ export class Title {
 
 	/** 生成URL */
 	getUrl(): string {
-		return this.#path.replace(
-			'$1',
-			`${encodeURIComponent(this.title)}${
-				this.fragment === undefined && this.#fragment === undefined
-					? ''
-					: `#${encodeURIComponent(this.fragment ?? this.#fragment!)}`
-			}`,
-		);
+		const {title, fragment} = this;
+		if (title) {
+			return this.#path.replace(
+				'$1',
+				`${encodeURIComponent(title)}${
+					fragment === undefined && this.#fragment === undefined
+						? ''
+						: `#${encodeURIComponent(fragment ?? this.#fragment!)}`
+				}`,
+			);
+		}
+		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 	}
 }
 

@@ -81,8 +81,8 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	override cloneNode(): this {
 		const [syntax, attr, ...cloned] = this.cloneChildNodes() as [SyntaxToken, AttributesToken, ...Token[]];
 		return Shadow.run(() => {
-			const {constructor} = this as this & {constructor: new (...args: any[]) => unknown},
-				token = new constructor(undefined, undefined, this.getAttribute('config')) as this;
+			const C = this.constructor as new (...args: any[]) => this,
+				token = new C(undefined, undefined, this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(syntax);
 			token.childNodes[1].safeReplaceWith(attr);
 			if (token.type === 'td') { // TdToken
