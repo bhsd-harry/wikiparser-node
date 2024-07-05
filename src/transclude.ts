@@ -27,7 +27,7 @@ import type {LintError} from '../base';
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
 
-const insensitiveVars = new Set<string | undefined>([
+const insensitiveVars = new Set<string | false | undefined>([
 	'pageid',
 	'articlepath',
 	'server',
@@ -118,7 +118,7 @@ export abstract class TranscludeToken extends Token {
 				cleaned = removeComment(magicWord!),
 				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
 				lcName = name.toLowerCase(),
-				canonicalName = insensitive[lcName],
+				canonicalName = Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName],
 				isSensitive = sensitive.includes(name),
 				isVar = isSensitive || insensitiveVars.has(canonicalName);
 			if (isVar || isFunction && canonicalName) {

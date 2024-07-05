@@ -54,6 +54,7 @@ const tests: Test[] = [],
 		'wgEnableUploads',
 		'wgEnableMagicLinks',
 		'wgMaxTocLevel',
+		'wgParserEnableLegacyHeadingDOM',
 	].join('|')})\s*=.+|${
 		[
 			'showtitle',

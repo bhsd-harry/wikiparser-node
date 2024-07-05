@@ -143,7 +143,11 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 				({nextSibling} = next);
 				j += 2;
 			}
-			if (nextSibling?.type === 'text' && nextSibling.data === '\n' && childNodes[j + 2]?.type === 'list') {
+			if (
+				nextSibling?.type === 'text'
+				&& nextSibling.data === '\n'
+				&& nextSibling.nextVisibleSibling?.type === 'list'
+			) {
 				j += 2;
 				lastPrefix = prefix2;
 			} else {

@@ -1119,7 +1119,7 @@
 		"desc": "1. Lists with start-of-line-transparent tokens before bullets: Comments",
 		"wikitext": "*foo\n*<!--cmt-->bar\n<!--cmt-->*baz",
 		"html": "<ul><li>foo</li>\n<li>bar</li>\n<li>baz</li></ul>",
-		"render": "<ul><li>foo</li>\n<li>bar</li></ul>\n<ul><li>baz</li></ul>",
+		"render": "<ul><li>foo</li>\n<li>bar</li>\n<li>baz</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>foo\n<span class=\"wpb-list\">*</span><span class=\"wpb-comment\">&lt;!--cmt--&gt;</span>bar\n<span class=\"wpb-comment\">&lt;!--cmt--&gt;</span><span class=\"wpb-list\">*</span>baz</span>"
 	},
 	{
@@ -4639,7 +4639,7 @@
 		"desc": "Multiple comments should still parse as SOL-transparent",
 		"wikitext": "<!--c1-->*a\n<!--c2--><!--c3--><!--c4-->*b",
 		"html": "<ul><li>a</li>\n<li>b</li></ul>",
-		"render": "<ul><li>a</li></ul>\n<ul><li>b</li></ul>",
+		"render": "<ul><li>a</li>\n<li>b</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!--c1--&gt;</span><span class=\"wpb-list\">*</span>a\n<span class=\"wpb-comment\">&lt;!--c2--&gt;</span><span class=\"wpb-comment\">&lt;!--c3--&gt;</span><span class=\"wpb-comment\">&lt;!--c4--&gt;</span><span class=\"wpb-list\">*</span>b</span>"
 	},
 	{
@@ -5127,7 +5127,7 @@
 	{
 		"desc": "External links: Free with trailing quotes (T113666)",
 		"wikitext": "'''News:''' Stuff here\n\nnews:'a'b''c''d e",
-		"html": "<p><b>News:</b> Stuff here\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"news:&#39;a&#39;b\">news:'a'b</a><i>c</i>d e\n</p>",
+		"html": "<p><b>News:</b> Stuff here\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"news:&#39;a&#39;b\">news:&#39;a&#39;b</a><i>c</i>d e\n</p>",
 		"render": "<p><b>News:</b> Stuff here\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"news:'a'b\">news:'a'b</a><i>c</i>d e\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>News:<span class=\"wpb-quote\">'''</span> Stuff here\n\n<span class=\"wpb-free-ext-link\">news:'a'b</span><span class=\"wpb-quote\">''</span>c<span class=\"wpb-quote\">''</span>d e</span>"
 	},
