@@ -1,13 +1,8 @@
 import {
 	decodeHtml,
+	rawurldecode,
 } from '../util/string';
 import type {Config} from '../base';
-
-/**
- * PHP的`rawurldecode`函数的JavaScript实现
- * @param str 要解码的字符串
- */
-const rawurldecode = (str: string): string => decodeURIComponent(str.replace(/%(?![\da-f]{2})/giu, '%25'));
 
 /** MediaWiki页面标题对象 */
 export class Title {
