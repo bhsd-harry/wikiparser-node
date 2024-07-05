@@ -3,7 +3,7 @@ import {syntax} from '../../mixin/syntax';
 import {ListBaseToken} from './listBase';
 
 /** `:` */
-@syntax(/^:+[^\S\n]*$/u)
+@syntax(/^:+$/u)
 export abstract class DdToken extends ListBaseToken {
 	override get type(): 'dd' {
 		return 'dd';
@@ -13,7 +13,7 @@ export abstract class DdToken extends ListBaseToken {
 
 	/** 缩进数 */
 	get indent(): number {
-		return this.innerText.trimEnd().length;
+		return this.innerText.length;
 	}
 
 	set indent(indent) {

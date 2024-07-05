@@ -2,11 +2,8 @@ import {
 	text,
 	removeComment,
 	print,
-
-	/* NOT FOR BROWSER */
-
-	html,
 } from '../util/string';
+import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {flagsParent} from '../mixin/flagsParent';

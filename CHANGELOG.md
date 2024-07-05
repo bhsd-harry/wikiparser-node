@@ -5,6 +5,7 @@
 **Added**
 
 - `<p>` wrapping for [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml)
+- Conversion from Wikitext lists to HTML
 
 **Fixed**
 

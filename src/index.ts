@@ -40,14 +40,8 @@
 // x: HtmlToken
 
 import * as assert from 'assert/strict';
-import {
-	text,
-
-	/* NOT FOR BROWSER */
-
-	html,
-	font,
-} from '../util/string';
+import {text} from '../util/string';
+import {html, font} from '../util/html';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -121,13 +115,6 @@ const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
 	}
 	return acceptable;
 };
-
-const listTags = new Map([
-	['#', ['li', 'ol']],
-	['*', ['li', 'ul']],
-	[';', ['dt', 'dl']],
-	[':', ['dd', 'dl']],
-]);
 
 /* NOT FOR BROWSER END */
 
@@ -942,11 +929,11 @@ export class Token extends AstElement {
 			antiBlockElems = 'td|th',
 			openRegex = new RegExp(
 				String.raw`<(?:${blockElems}|\/(?:${antiBlockElems})|\/?(?:tr|caption|dt|dd|li))\b`,
-				'giu',
+				'iu',
 			),
 			closeRegex = new RegExp(
 				String.raw`<(?:\/(?:${blockElems})|${antiBlockElems}|\/?(?:center|blockquote|div|hr|figure))\b`,
-				'giu',
+				'iu',
 			);
 		let output = '',
 			inBlockElem = false,
@@ -1018,17 +1005,7 @@ export class Token extends AstElement {
 				child.getRange();
 			}
 		}
-		let result = font(this, html(this.childNodes, '', nowrap));
-		if (this.type === 'list-range') {
-			const {firstChild: {data}} = this.previousSibling as ListToken | DdToken;
-			for (let i = data.length - 1; i >= 0; i--) {
-				const ch = data[i]!;
-				for (const name of listTags.get(ch) ?? []) {
-					result = `<${name}>${result}</${name}>`;
-				}
-			}
-		}
-		return result;
+		return font(this, html(this.childNodes, '', nowrap));
 	}
 }
 

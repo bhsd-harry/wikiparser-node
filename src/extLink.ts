@@ -6,7 +6,8 @@ import {
 	classes,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
-import {normalizeSpace, html} from '../util/string';
+import {normalizeSpace} from '../util/string';
+import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import Parser from '../index';

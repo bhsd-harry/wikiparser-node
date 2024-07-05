@@ -27,7 +27,7 @@ export const parseList = (wikitext: string, config: Config, accum: Token[]): str
 		return text;
 	}
 	const {html: [normalTags]} = config,
-		fullRegex = /:+\s*|-\{|\0\d+[xq]\x7F/gu;
+		fullRegex = /:+|-\{|\0\d+[xq]\x7F/gu;
 	let regex = fullRegex,
 		ex = regex.exec(text),
 		lt = 0,
@@ -89,11 +89,10 @@ export const parseList = (wikitext: string, config: Config, accum: Token[]): str
 				li = !li;
 			}
 		} else if (lt === 0) { // syntax === ':'
-			const trimmed = syntax.trim();
-			if (trimmed.length >= dt) {
+			if (syntax.length >= dt) {
 				return dd(syntax.slice(0, dt), index);
 			}
-			dt -= trimmed.length;
+			dt -= syntax.length;
 			regex.lastIndex = index + 4 + String(accum.length).length;
 			text = dd(syntax, index);
 		}

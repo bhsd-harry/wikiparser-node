@@ -7,8 +7,8 @@ import {
 
 	normalizeSpace,
 	text,
-	html,
 } from '../util/string';
+import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import Parser from '../index';

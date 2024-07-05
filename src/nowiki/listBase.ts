@@ -69,20 +69,27 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			range.setStartAfter(this);
 			range.setEndBefore(nextSibling);
 		} else {
-			while (this.previousSibling?.is<ListToken>('list')) {
-				this.setText(this.previousSibling.innerText + this.innerText);
-				this.previousSibling.remove();
-			}
-			for (let i = 0; i < nDt; i++) {
-				const token = this.nextSibling as ListToken;
-				this.setText(this.innerText + token.innerText);
-				token.remove();
+			const {parentNode} = this;
+			if (type === 'list') {
+				while (this.previousSibling?.is<ListToken>('list')) {
+					this.setText(this.previousSibling.innerText + this.innerText);
+					this.previousSibling.remove();
+				}
+				for (let i = 0; i < nDt; i++) {
+					const token = this.nextSibling as ListToken;
+					this.setText(this.innerText + token.innerText);
+					token.remove();
+				}
+				if (parentNode?.is<ListRangeToken>('list-range')) {
+					parentNode.previousSibling.setText(parentNode.previousSibling.innerText + this.innerText);
+					this.remove();
+					return parentNode;
+				}
 			}
 			range.setStartAfter(this);
 			if (nextSibling) {
 				range.setEnd(nextSibling, nextSibling.data.indexOf('\n'));
 			} else {
-				const {parentNode} = this;
 				range.setEnd(parentNode!, parentNode!.length);
 			}
 		}

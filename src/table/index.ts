@@ -8,7 +8,8 @@ import {
 
 	isToken,
 } from '../../util/debug';
-import {noWrap, html} from '../../util/string';
+import {noWrap} from '../../util/string';
+import {html} from '../../util/html';
 import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';

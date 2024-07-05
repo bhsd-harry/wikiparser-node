@@ -9,8 +9,8 @@ import {
 	/* NOT FOR BROWSER */
 
 	sanitize,
-	font,
 } from '../util/string';
+import {font} from '../util/html';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';

@@ -80,27 +80,5 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
 /** escape HTML entities */
 export const sanitize = factory(/[<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
 
-/**
- * convert to HTML
- * @param childNodes a Token's contents
- * @param separator delimiter between nodes
- * @param nowrap whether to normalize newlines
- */
-export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: boolean): string =>
-	childNodes.map(child => child.toHtmlInternal(nowrap)).join(separator);
-
-/**
- * wrap text with <b> and <i> tags
- * @param node
- * @param str
- */
-export const font = (node: AstNodes, str: string): string => {
-	const {font: {bold, italic}} = node,
-		i = str.indexOf('\n');
-	const wrap = /** @ignore */ (s: string): string =>
-		(bold ? '<b>' : '') + (italic ? '<i>' : '') + s + (italic ? '</i>' : '') + (bold ? '</b>' : '');
-	return i === -1 ? wrap(str) : wrap(str.slice(0, i)) + str.slice(i);
-};
-
 /** escape newline */
 export const newline = factory(/\n/gu, '&#10;');
