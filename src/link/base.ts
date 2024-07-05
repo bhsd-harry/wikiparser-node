@@ -9,6 +9,7 @@ import {
 } from '../../util/constants';
 import {undo, Shadow} from '../../util/debug';
 import {encode} from '../../util/string';
+import {font} from '../../util/html';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -316,9 +317,12 @@ export abstract class LinkBaseToken extends Token {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
 			const {link, length, lastChild, type} = this,
 				{interwiki, title} = link;
-			return `<a ${interwiki && 'class="extiw" '}href="${link.getUrl()}"${
-				title && ` title="${title.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ')}"`
-			}>${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`;
+			return font(
+				this,
+				`<a ${interwiki && 'class="extiw" '}href="${link.getUrl()}"${
+					title && ` title="${title.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ')}"`
+				}>${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`,
+			);
 		}
 		return '';
 	}

@@ -670,7 +670,7 @@
 		"desc": "Link containing double-single-quotes '' in text embedded in italics (T6598 check)",
 		"wikitext": "''Some [[Link|pretty ''italics'' and stuff]]!''",
 		"html": "<p><i>Some <a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a>!</i>\n</p>",
-		"render": "<p><i>Some </i><a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a><i>!</i>\n</p>",
+		"render": "<p><i>Some </i><i><a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a></i><i>!</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>Some <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Link</span>|<span class=\"wpb-link-text\">pretty <span class=\"wpb-quote\">''</span>italics<span class=\"wpb-quote\">''</span> and stuff</span>]]</span>!<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -7685,7 +7685,7 @@
 		"desc": "Italics and possessives (1)",
 		"wikitext": "obtained by ''[[Lunar Prospector]]'''s gamma-ray spectrometer",
 		"html": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a>'</i>s gamma-ray spectrometer\n</p>",
-		"render": "<p>obtained by <a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a><i>'</i>s gamma-ray spectrometer\n</p>",
+		"render": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a></i><i>'</i>s gamma-ray spectrometer\n</p>",
 		"print": "<span class=\"wpb-root\">obtained by <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Lunar Prospector</span>]]</span>'<span class=\"wpb-quote\">''</span>s gamma-ray spectrometer</span>"
 	},
 	{
@@ -7699,7 +7699,7 @@
 		"desc": "Italics and possessives (3)",
 		"wikitext": "The first monolingual dictionary written in a Romance language was ''Sebastián Covarrubias''' ''Tesoro de la lengua castellana o española'', published in 1611 in Madrid. In 1612 the first edition of the ''Vocabolario dell'[[Accademia della Crusca]]'', for Italian, was published. In 1690 in Rotterdam was published, posthumously, the ''Dictionnaire Universel''.",
 		"html": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'<a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
-		"render": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'</i><a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
+		"render": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'</i><i><a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
 		"print": "<span class=\"wpb-root\">The first monolingual dictionary written in a Romance language was <span class=\"wpb-quote\">''</span>Sebastián Covarrubias'<span class=\"wpb-quote\">''</span> <span class=\"wpb-quote\">''</span>Tesoro de la lengua castellana o española<span class=\"wpb-quote\">''</span>, published in 1611 in Madrid. In 1612 the first edition of the <span class=\"wpb-quote\">''</span>Vocabolario dell'<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Accademia della Crusca</span>]]</span><span class=\"wpb-quote\">''</span>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <span class=\"wpb-quote\">''</span>Dictionnaire Universel<span class=\"wpb-quote\">''</span>.</span>"
 	},
 	{
@@ -7958,7 +7958,7 @@
 		"desc": "Italicized possessive",
 		"wikitext": "The ''[[Main Page]]'''s talk page.",
 		"html": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>'</i>s talk page.\n</p>",
-		"render": "<p>The <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a><i>'</i>s talk page.\n</p>",
+		"render": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a></i><i>'</i>s talk page.\n</p>",
 		"print": "<span class=\"wpb-root\">The <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>'<span class=\"wpb-quote\">''</span>s talk page.</span>"
 	},
 	{
