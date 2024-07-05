@@ -3,8 +3,8 @@ import {setChildNodes, Shadow} from '../util/debug';
 import {
 	extUrlChar,
 	extUrlCharFirst,
-	escape,
 	removeComment,
+	escape,
 
 	/* NOT FOR BROWSER */
 
