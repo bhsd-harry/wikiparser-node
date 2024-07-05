@@ -74,7 +74,8 @@ export class Title {
 			}
 			const m = title.split(':');
 			if (m.length > 1) {
-				const id = config.nsid[m[0]!.trim().toLowerCase()];
+				const k = m[0]!.trim().toLowerCase(),
+					id = Object.prototype.hasOwnProperty.call(config.nsid, k) && config.nsid[k];
 				if (id) {
 					ns = id;
 					title = m.slice(1).join(':').trim();
