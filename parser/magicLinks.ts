@@ -3,9 +3,6 @@ import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-const sepRegex = /[^,;\\.:!?)][,;\\.:!?)]+$/u,
-	sepLparRegex = /[^,;\\.:!?][,;\\.:!?]+$/u;
-
 /**
  * 解析自由外链
  * @param wikitext
@@ -30,7 +27,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 				trail = url.slice(m2.index);
 				url = url.slice(0, m2.index);
 			}
-			const sep = url.includes('(') ? sepLparRegex : sepRegex,
+			const sep = url.includes('(') ? /[^,;\\.:!?][,;\\.:!?]+$/u : /[^,;\\.:!?)][,;\\.:!?)]+$/u,
 				sepChars = sep.exec(url);
 			if (sepChars) {
 				let correction = 1;
