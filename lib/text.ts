@@ -1,8 +1,8 @@
 import {
 	extUrlChar,
 	extUrlCharFirst,
-	escape,
 	removeComment,
+	escape,
 } from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
