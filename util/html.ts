@@ -1,6 +1,16 @@
 import type {AstNodes} from '../lib/node';
 import type {ListRangeToken} from '../src/nowiki/listBase';
 
+/**
+ * get common prefix length
+ * @param prefix
+ * @param lastPrefix
+ */
+export const getCommon = (prefix: string, lastPrefix: string): number =>
+	prefix.startsWith(lastPrefix) ? lastPrefix.length : [...lastPrefix].findIndex((ch, i) => ch !== prefix[i]);
+
+/* NOT FOR BROWSER */
+
 declare type Prefix = '#' | '*' | ';' | ':';
 
 /**
@@ -94,9 +104,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 			const {previousSibling: {firstChild: {data}}} = child,
 				prefix = data.trim(),
 				prefix2 = prefix.replace(/;/gu, ':'),
-				commonPrefixLength = prefix2.startsWith(lastPrefix)
-					? lastPrefix.length
-					: [...lastPrefix].findIndex((ch, i) => ch !== prefix2[i]);
+				commonPrefixLength = getCommon(prefix2, lastPrefix);
 			let pre = closeList(lastPrefix.slice(commonPrefixLength), state);
 			if (prefix.length === commonPrefixLength) {
 				pre += nextItem(prefix.slice(-1) as Prefix, state);

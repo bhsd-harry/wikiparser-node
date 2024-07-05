@@ -1,4 +1,5 @@
 import {parsers} from '../util/constants';
+import {getCommon} from '../util/html';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
 import type {Config} from '../base';
@@ -7,18 +8,33 @@ import type {Token, HtmlToken, QuoteToken} from '../internal';
 /**
  * 解析列表
  * @param wikitext
+ * @param state
+ * @param state.lastPrefix 上一个列表的前缀
  * @param config
  * @param accum
  */
-export const parseList = (wikitext: string, config: Config, accum: Token[]): string => {
+export const parseList = (wikitext: string, state: {lastPrefix: string}, config: Config, accum: Token[]): string => {
 	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+\s*)/u.exec(wikitext) as [string, string, string] | null;
 	if (!mt) {
+		state.lastPrefix = '';
 		return wikitext;
 	}
 	const [total, comment, prefix] = mt,
-		parts = prefix.split(/(?=;)/u);
-	let text = comment + parts.map((_, i) => `\0${accum.length + i}d\x7F`).join('') + wikitext.slice(total.length),
-		dt = parts.length - (parts[0]!.startsWith(';') ? 0 : 1);
+		prefix2 = prefix.replace(/;/gu, ':'),
+		commonPrefixLength = getCommon(prefix2, state.lastPrefix),
+		parts = (commonPrefixLength > 1 ? prefix.slice(commonPrefixLength - 1) : prefix).split(/(?=;)/u),
+		isDt = parts[0]!.startsWith(';');
+	let dt = parts.length - (isDt ? 0 : 1);
+	if (commonPrefixLength > 1) {
+		const commonPrefix = prefix.slice(0, commonPrefixLength - 1);
+		if (isDt) {
+			parts.unshift(commonPrefix);
+		} else {
+			parts[0] = commonPrefix + parts[0];
+		}
+	}
+	state.lastPrefix = prefix2;
+	let text = comment + parts.map((_, i) => `\0${accum.length + i}d\x7F`).join('') + wikitext.slice(total.length);
 	for (const part of parts) {
 		// @ts-expect-error abstract class
 		new ListToken(part, config, accum);
