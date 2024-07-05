@@ -1,6 +1,6 @@
 import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
 
-declare type WorkerListener<T> = ({data: [rid, res, resRaw]}: {data: [number, T, string]}) => void;
+declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
 /** web worker */
 const workerJS = (): void => {
@@ -12,8 +12,7 @@ const workerJS = (): void => {
 		data: ['setI18N', Record<string, string>]
 		| ['setConfig', Config]
 		| ['getConfig', number]
-		| ['json' | 'lint', number, string, boolean?]
-		| ['print', number, string, boolean?, number?];
+		| ['json' | 'lint' | 'print', number, string, boolean?, number?];
 	}): void => {
 		const [command, qid, wikitext, include, stage] = data;
 		switch (command) {

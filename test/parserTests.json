@@ -2383,7 +2383,7 @@
 		"desc": "Category / paragraph interactions",
 		"wikitext": "Foo [[Category:Baz]] Bar\n\nFoo [[Category:Baz]]\nBar\n\nFoo\n[[Category:Baz]]\nBar\n\nFoo\n[[Category:Baz]] Bar\n\nFoo\n[[Category:Baz]]\n [[Category:Baz]]\n[[Category:Baz]]\nBar\n\n[[Category:Baz]]\n [[Category:Baz]]\n[[Category:Baz]]\n\n[[Category:Baz]]\n {{1x|[[Category:Baz]]}}\n[[Category:Baz]]",
 		"html": "<p>Foo  Bar\n</p><p>Foo \nBar\n</p><p>Foo\nBar\n</p><p>Foo Bar\n</p><p>Foo\nBar\n</p>",
-		"render": "<p>Foo  Bar\n</p><p>Foo \nBar\n</p><p>Foo\nBar\n</p><p>Foo\n</p>\n<pre>Bar\n</pre>\n<p>Foo\nBar\n</p><p><br>\n</p>",
+		"render": "<p>Foo  Bar\n</p><p>Foo \nBar\n</p><p>Foo\nBar\n</p><p>Foo Bar\n</p><p>Foo\nBar\n</p>",
 		"print": "<span class=\"wpb-root\">Foo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span> Bar\n\nFoo <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\nBar\n\nFoo\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\nBar\n\nFoo\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span> Bar\n\nFoo\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\nBar\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span>\n <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span></span></span>}}</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span></span>"
 	},
 	{
@@ -2404,14 +2404,14 @@
 		"desc": "1. Categories and newlines: All preceding newlines should be suppressed (courtesy T2087)",
 		"wikitext": "This\n   \n[[Category:Foo]] and this should be part of same paragraph (not an indent-pre)\n   \n{{1x|[[Category:Foo]] and so should this!}}",
 		"html": "<p>This and this should be part of same paragraph (not an indent-pre) and so should this!\n</p>",
-		"render": "<p>This\n</p>\n<pre>and this should be part of same paragraph (not an indent-pre)\n  \nand so should this!\n</pre>",
+		"render": "<p>This and this should be part of same paragraph (not an indent-pre) and so should this!\n</p>",
 		"print": "<span class=\"wpb-root\">This\n   \n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this should be part of same paragraph (not an indent-pre)\n   \n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and so should this!</span></span>}}</span></span>"
 	},
 	{
 		"desc": "2. Categories and newlines: All preceding newlines should be suppressed (courtesy T2087)",
 		"wikitext": "* This\n   \n[[Category:Foo]] and this should be part of the same list item\n* So should this\n\n{{1x|[[Category:Foo]] and this should be part of the same list item}}",
 		"html": "<ul><li>This and this should be part of the same list item</li>\n<li>So should this and this should be part of the same list item</li></ul>",
-		"render": "<ul><li>This</li></ul>\n<pre>and this should be part of the same list item\n</pre>\n<ul><li>So should this</li></ul>\n<pre>and this should be part of the same list item\n</pre>",
+		"render": "<ul><li>This</li></ul> and this should be part of the same list item\n<ul><li>So should this</li></ul> and this should be part of the same list item",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span>This\n   \n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this should be part of the same list item\n<span class=\"wpb-list\">* </span>So should this\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this should be part of the same list item</span></span>}}</span></span>"
 	},
 	{
@@ -2446,7 +2446,7 @@
 		"desc": "Parsoid: Serialize a genuine category link without colon escape",
 		"wikitext": "[[Category:Foo]]\n[[Category:Foo|Bar]]",
 		"html": "",
-		"render": "<p><br>\n</p>",
+		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>|<span class=\"wpb-link-text\">Bar</span>]]</span></span>"
 	},
 	{

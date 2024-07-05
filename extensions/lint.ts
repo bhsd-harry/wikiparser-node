@@ -63,8 +63,7 @@ class Linter implements LinterBase {
 					...suggestions.map(suggestion => ({name: 'suggestion', fix: suggestion})),
 				].map(({name, fix: {range: [from, to], text}}) => ({
 					name,
-					/** @implements */
-					apply(view) {
+					/** @implements */ apply(view) {
 						view.dispatch({changes: {from, to, insert: text}});
 					},
 				}) as Action),
