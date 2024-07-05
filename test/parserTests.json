@@ -342,6 +342,7 @@
 		"desc": "Parsoid: Pipe in template with nested template in external link target in template parameter (seriously)",
 		"wikitext": "{{1x|[{{fullurl:{{FULLPAGENAME}}|action=edit}} bar]}}",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.org/index.php?title=Parser_test&amp;action=edit\">bar</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\">bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">fullurl</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">action=edit</span></span>}}</span></span> <span class=\"wpb-ext-link-text\">bar</span>]</span></span></span>}}</span></span>"
 	},
 	{
@@ -411,49 +412,49 @@
 		"desc": "Plain link, capitalized",
 		"wikitext": "[[Main Page]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Plain link, uncapitalized",
 		"wikitext": "[[main Page]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">main Page</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">main Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Piped link",
 		"wikitext": "[[Main Page|The Main Page]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">The Main Page</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">The Main Page</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">The Main Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">The Main Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Piped link with comment in link text",
 		"wikitext": "[[Main Page|The Main<!--front--> Page]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">The Main Page</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">The Main Page</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">The Main Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">The Main<span class=\"wpb-comment\">&lt;!--front--&gt;</span> Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Piped link with multiple pipe characters in link text",
 		"wikitext": "[[Main Page||The|Main|Page|]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">|The|Main|Page|</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">|The|Main|Page|</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">|The|Main|Page|</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">|The|Main|Page|</span>]]</span></span>"
 	},
 	{
 		"desc": "Piped link with empty link text",
 		"wikitext": "[[Main Page|<nowiki/>]] - empty nowiki\n[[Main Page|&nbsp;]] - empty non breaking space",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\"></a> - empty nowiki\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">&#160;</a> - empty non breaking space\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\"></a> - empty nowiki\n<a href=\"/wiki/Main_Page\" title=\"Main_Page\">&nbsp;</a> - empty non breaking space\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\"></a> - empty nowiki\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">&nbsp;</a> - empty non breaking space\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\"><span class=\"wpb-ext\">&lt;nowiki/&gt;</span></span>]]</span> - empty nowiki\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">&amp;nbsp;</span>]]</span> - empty non breaking space</span>"
 	},
 	{
 		"desc": "Piped link with empty link text - 2",
 		"wikitext": "[[Main Page| ]] - empty space",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\"> </a> - empty space\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\"> </a> - empty space\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\"> </a> - empty space\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\"> </span>]]</span> - empty space</span>"
 	},
 	{
@@ -488,28 +489,28 @@
 		"desc": "Link with prefix",
 		"wikitext": "xxx[[main Page]], xxx[[Main Page]], Xxx[[main Page]] XXX[[main Page]], XXX[[Main Page]]",
 		"html": "<p>xxx<a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a>, xxx<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>, Xxx<a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a> XXX<a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a>, XXX<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p>",
-		"render": "<p>xxx<a href=\"/wiki/Main_Page\" title=\"Main_Page\">main Page</a>, xxx<a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>, Xxx<a href=\"/wiki/Main_Page\" title=\"Main_Page\">main Page</a> XXX<a href=\"/wiki/Main_Page\" title=\"Main_Page\">main Page</a>, XXX<a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>\n</p>",
+		"render": "<p>xxx<a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a>, xxx<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>, Xxx<a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a> XXX<a href=\"/wiki/Main_Page\" title=\"Main Page\">main Page</a>, XXX<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\">xxx<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">main Page</span>]]</span>, xxx<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>, Xxx<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">main Page</span>]]</span> XXX<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">main Page</span>]]</span>, XXX<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Link with suffix",
 		"wikitext": "[[Main Page]]xxx, [[Main Page]]XXX, [[Main Page]]!!!",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Pagexxx</a>, <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>XXX, <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>!!!\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>xxx, <a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>XXX, <a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>!!!\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>xxx, <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>XXX, <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>!!!\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>xxx, <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>XXX, <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>!!!</span>"
 	},
 	{
 		"desc": "T45661: Piped links with identical prefixes",
 		"wikitext": "[[prefixed article|prefixed articles with spaces]]\n\n[[prefixed article|prefixed articlesaoeu]]\n\n[[Main Page|Main Page test]]",
 		"html": "<p><a href=\"/wiki/Prefixed_article\" title=\"Prefixed article\">prefixed articles with spaces</a>\n</p><p><a href=\"/wiki/Prefixed_article\" title=\"Prefixed article\">prefixed articlesaoeu</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page test</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Prefixed_article\" title=\"Prefixed_article\">prefixed articles with spaces</a>\n</p><p><a href=\"/wiki/Prefixed_article\" title=\"Prefixed_article\">prefixed articlesaoeu</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page test</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Prefixed_article\" title=\"Prefixed article\">prefixed articles with spaces</a>\n</p><p><a href=\"/wiki/Prefixed_article\" title=\"Prefixed article\">prefixed articlesaoeu</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page test</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">prefixed article</span>|<span class=\"wpb-link-text\">prefixed articles with spaces</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">prefixed article</span>|<span class=\"wpb-link-text\">prefixed articlesaoeu</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">Main Page test</span>]]</span></span>"
 	},
 	{
 		"desc": "Link with HTML entity in suffix / tail",
 		"wikitext": "[[Main Page]]&quot;, [[Main Page]]&#97;",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>&quot;, <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>&#97;\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>&quot;, <a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>&#97;\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>&quot;, <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>&#97;\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>&amp;quot;, <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>&amp;#97;</span>"
 	},
 	{
@@ -523,7 +524,7 @@
 		"desc": "Link with 4 brackets",
 		"wikitext": "[[[[Main Page]]]]",
 		"html": "<p>[[<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>]]\n</p>",
-		"render": "<p>[[<a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>]]\n</p>",
+		"render": "<p>[[<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>]]\n</p>",
 		"print": "<span class=\"wpb-root\">[[<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>]]</span>"
 	},
 	{
@@ -537,35 +538,35 @@
 		"desc": "Piped link with extlink-like text",
 		"wikitext": "[[Main Page|[bar]]]\n[[Main Page|This is a [bar]]]\n[[Main Page|[bar]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">[bar]</a>\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">This is a [bar]</a>\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">[bar</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">[bar]</a>\n<a href=\"/wiki/Main_Page\" title=\"Main_Page\">This is a [bar]</a>\n<a href=\"/wiki/Main_Page\" title=\"Main_Page\">[bar</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">[bar]</a>\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">This is a [bar]</a>\n<a href=\"/wiki/Main_Page\" title=\"Main Page\">[bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">[bar]</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">This is a [bar]</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">[bar</span>]]</span></span>"
 	},
 	{
 		"desc": "Link with multiple pipes",
 		"wikitext": "[[Main Page|The|Main|Page]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">The|Main|Page</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">The|Main|Page</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">The|Main|Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">The|Main|Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Anchor containing a #. (T65430)",
 		"wikitext": "[[Main Page#And#Link]]",
 		"html": "<p><a href=\"/wiki/Main_Page#And#Link\" title=\"Main Page\">Main Page#And#Link</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page#And%23Link\" title=\"Main_Page\">Main Page#And#Link</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page#And%23Link\" title=\"Main Page\">Main Page#And#Link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page#And#Link</span>]]</span></span>"
 	},
 	{
 		"desc": "Link to namespaces",
 		"wikitext": "[[Talk:Parser testing]], [[Meta:Disclaimers]]",
 		"html": "<p><a href=\"/wiki/Talk:Parser_testing\" title=\"Talk:Parser testing\">Talk:Parser testing</a>, <a href=\"/wiki/Meta:Disclaimers\" title=\"Meta:Disclaimers\">Meta:Disclaimers</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Talk%3AParser_testing\" title=\"Talk:Parser_testing\">Talk:Parser testing</a>, <a href=\"/wiki/Meta%3ADisclaimers\" title=\"Meta:Disclaimers\">Meta:Disclaimers</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Talk%3AParser_testing\" title=\"Talk:Parser testing\">Talk:Parser testing</a>, <a href=\"/wiki/Meta%3ADisclaimers\" title=\"Meta:Disclaimers\">Meta:Disclaimers</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Talk:Parser testing</span>]]</span>, <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Meta:Disclaimers</span>]]</span></span>"
 	},
 	{
 		"desc": "Link with space in namespace",
 		"wikitext": "[[User talk:Foo bar]]",
 		"html": "<p><a href=\"/wiki/User_talk:Foo_bar\" title=\"User talk:Foo bar\">User talk:Foo bar</a>\n</p>",
-		"render": "<p><a href=\"/wiki/User_talk%3AFoo_bar\" title=\"User_talk:Foo_bar\">User talk:Foo bar</a>\n</p>",
+		"render": "<p><a href=\"/wiki/User_talk%3AFoo_bar\" title=\"User talk:Foo bar\">User talk:Foo bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">User talk:Foo bar</span>]]</span></span>"
 	},
 	{
@@ -593,7 +594,7 @@
 		"desc": "Link containing % (not as a hex sequence)",
 		"wikitext": "[[7% Solution]]\n[[7% Solution|7%25 Solution]]",
 		"html": "<p><a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7% Solution</a>\n<a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7%25 Solution</a>\n</p>",
-		"render": "<p><a href=\"/wiki/7%25_Solution\" title=\"7%_Solution\">7% Solution</a>\n<a href=\"/wiki/7%25_Solution\" title=\"7%_Solution\">7%25 Solution</a>\n</p>",
+		"render": "<p><a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7% Solution</a>\n<a href=\"/wiki/7%25_Solution\" title=\"7% Solution\">7%25 Solution</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">7% Solution</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">7% Solution</span>|<span class=\"wpb-link-text\">7%25 Solution</span>]]</span></span>"
 	},
 	{
@@ -607,14 +608,14 @@
 		"desc": "Link containing \"#<\" and \"#>\" % as a hex sequences- these are valid section anchors",
 		"wikitext": "[[%23%3c]][[%23%3e]]",
 		"html": "<p><a href=\"#&lt;\">#&lt;</a><a href=\"#&gt;\">#&gt;</a>\n</p>",
-		"render": "<p><a href=\"#%3C\">%23%3c</a><a href=\"#%3E\">%23%3e</a>\n</p>",
+		"render": "<p><a href=\"#%3C\">#<</a><a href=\"#%3E\">#></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%23%3c</span>]]</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%23%3e</span>]]</span></span>"
 	},
 	{
 		"desc": "Link containing \"#<\" and \"#>\" % as a hex sequences- these are valid section anchors (legacy)",
 		"wikitext": "[[%23%3c]][[%23%3e]]",
 		"html": "<p><a href=\"#.3C\">#&lt;</a><a href=\"#.3E\">#&gt;</a>\n</p>",
-		"render": "<p><a href=\"#%3C\">%23%3c</a><a href=\"#%3E\">%23%3e</a>\n</p>",
+		"render": "<p><a href=\"#%3C\">#<</a><a href=\"#%3E\">#></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%23%3c</span>]]</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%23%3e</span>]]</span></span>"
 	},
 	{
@@ -635,7 +636,7 @@
 		"desc": "Link containing an ampersand",
 		"wikitext": "[[Foo & bar]]\n\n[[Foo &amp; bar]]\n\n[[Foo &amp;amp; bar]]",
 		"html": "<p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo &amp; bar\">Foo &amp; bar</a>\n</p><p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo &amp; bar\">Foo &amp; bar</a>\n</p><p>[[Foo &amp;amp; bar]]\n</p>",
-		"render": "<p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo_&_bar\">Foo & bar</a>\n</p><p><a href=\"/wiki/Foo_%26amp%3B_bar\" title=\"Foo_&amp;_bar\">Foo &amp; bar</a>\n</p><p><a href=\"/wiki/Foo_%26amp%3Bamp%3B_bar\" title=\"Foo_&amp;amp;_bar\">Foo &amp;amp; bar</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo & bar\">Foo & bar</a>\n</p><p><a href=\"/wiki/Foo_%26amp%3B_bar\" title=\"Foo &amp; bar\">Foo &amp; bar</a>\n</p><p><a href=\"/wiki/Foo_%26amp%3Bamp%3B_bar\" title=\"Foo &amp;amp; bar\">Foo &amp;amp; bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp; bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp;amp; bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp;amp;amp; bar</span>]]</span></span>"
 	},
 	{
@@ -649,14 +650,14 @@
 		"desc": "Link containing double-single-quotes '' (T6598)",
 		"wikitext": "[[Lista d''e paise d''o munno]]",
 		"html": "<p><a href=\"/wiki/Lista_d%27%27e_paise_d%27%27o_munno\" title=\"Lista d&#39;&#39;e paise d&#39;&#39;o munno\">Lista d''e paise d''o munno</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Lista_d''e_paise_d''o_munno\" title=\"Lista_d''e_paise_d''o_munno\">Lista d''e paise d''o munno</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Lista_d''e_paise_d''o_munno\" title=\"Lista d''e paise d''o munno\">Lista d''e paise d''o munno</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Lista d''e paise d''o munno</span>]]</span></span>"
 	},
 	{
 		"desc": "Link containing double quotes and spaces",
 		"wikitext": "[[Cool \"Gator\"]]",
 		"html": "<p><a href=\"/wiki/Cool_%22Gator%22\" title=\"Cool &quot;Gator&quot;\">Cool \"Gator\"</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Cool_%22Gator%22\" title=\"Cool_&quot;Gator&quot;\">Cool \"Gator\"</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Cool_%22Gator%22\" title=\"Cool &quot;Gator&quot;\">Cool \"Gator\"</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Cool \"Gator\"</span>]]</span></span>"
 	},
 	{
@@ -670,7 +671,7 @@
 		"desc": "Link containing double-single-quotes '' in text embedded in italics (T6598 check)",
 		"wikitext": "''Some [[Link|pretty ''italics'' and stuff]]!''",
 		"html": "<p><i>Some <a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a>!</i>\n</p>",
-		"render": "<p><i>Some </i><a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a><i>!</i>\n</p>",
+		"render": "<p><i>Some </i><i><a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a></i><i>!</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>Some <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Link</span>|<span class=\"wpb-link-text\">pretty <span class=\"wpb-quote\">''</span>italics<span class=\"wpb-quote\">''</span> and stuff</span>]]</span>!<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -726,12 +727,14 @@
 		"desc": "Piped link to URL",
 		"wikitext": "Piped link to URL: [[http://www.example.com|an example URL]]",
 		"html": "<p>Piped link to URL: [<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com%7Can\">example URL</a>]\n</p>",
+		"render": "<p>Piped link to URL: [<a rel=\"nofollow\" class=\"external\">example URL</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">Piped link to URL: [<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com|an</span> <span class=\"wpb-ext-link-text\">example URL</span>]</span>]</span>"
 	},
 	{
 		"desc": "Nested wikilink syntax in wikilink syntax that parses as wikilink in extlink",
 		"wikitext": "[[http://example.com|[[Example]]]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com%7C\"></a><a href=\"/wiki/Example\" title=\"Example\">Example</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\"></a><a href=\"/wiki/Example\" title=\"Example\">Example</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com|</span><span class=\"wpb-ext-link-text\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Example</span>]]</span></span>]</span>]</span>"
 	},
 	{
@@ -745,7 +748,7 @@
 		"desc": "T2002: [[page|http://url/]] should link to page, not http://url/",
 		"wikitext": "[[Main Page|http://url/]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">http://url/</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">http://url/</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">http://url/</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">http://url/</span>]]</span></span>"
 	},
 	{
@@ -759,14 +762,14 @@
 		"desc": "Self-link to section should not be bold",
 		"wikitext": "[[Main Page#section]]",
 		"html": "<p><a class=\"mw-selflink-fragment\" href=\"#section\">Main Page#section</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page#section\" title=\"Main_Page\">Main Page#section</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page#section\" title=\"Main Page\">Main Page#section</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page#section</span>]]</span></span>"
 	},
 	{
 		"desc": "Self-link hash fragment should be escaped",
 		"wikitext": "[[Main Page#section with spaces]]",
 		"html": "<p><a class=\"mw-selflink-fragment\" href=\"#section_with_spaces\">Main Page#section with spaces</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page#section%20with%20spaces\" title=\"Main_Page\">Main Page#section with spaces</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page#section%20with%20spaces\" title=\"Main Page\">Main Page#section with spaces</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page#section with spaces</span>]]</span></span>"
 	},
 	{
@@ -787,28 +790,28 @@
 		"desc": "<nowiki> inside a link",
 		"wikitext": "[[Main<nowiki> Page</nowiki>]] [[Main Page|the main page <nowiki>[it's not very good]</nowiki>]]",
 		"html": "<p>[[Main Page]] <a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page [it's not very good]</a>\n</p>",
-		"render": "<p>[[Main Page]] <a href=\"/wiki/Main_Page\" title=\"Main_Page\">the main page [it's not very good]</a>\n</p>",
+		"render": "<p>[[Main Page]] <a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page [it's not very good]</a>\n</p>",
 		"print": "<span class=\"wpb-root\">[[Main<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\"> Page</span>&lt;/nowiki&gt;</span>]] <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">the main page <span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">[it's not very good]</span>&lt;/nowiki&gt;</span></span>]]</span></span>"
 	},
 	{
 		"desc": "<pre> inside a link",
 		"wikitext": "[[Main<pre> Page</pre>]] [[Main Page|the main page <pre>[it's not very good]</pre>]]",
 		"html": "<p>[[Main</p><pre> Page</pre><p>]] <a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page </a></p><a href=\"/wiki/Main_Page\" title=\"Main Page\"><pre>[it's not very good]</pre></a>",
-		"render": "[[Main<pre > Page</pre>]] <a href=\"/wiki/Main_Page\" title=\"Main_Page\">the main page <pre >[it's not very good]</pre></a>",
+		"render": "[[Main<pre > Page</pre>]] <a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page <pre >[it's not very good]</pre></a>",
 		"print": "<span class=\"wpb-root\">[[Main<span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\"> Page</span>&lt;/pre&gt;</span>]] <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">the main page <span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">[it's not very good]</span>&lt;/pre&gt;</span></span>]]</span></span>"
 	},
 	{
 		"desc": "Non-breaking spaces in title",
 		"wikitext": "[[&nbsp; Main &nbsp; Page &nbsp;]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">&#160; Main &#160; Page &#160;</a>\n</p>",
-		"render": "<p><a href=\"/wiki/%26nbsp%3B_Main_%26nbsp%3B_Page_%26nbsp%3B\" title=\"&nbsp;_Main_&nbsp;_Page_&nbsp;\">&nbsp; Main &nbsp; Page &nbsp;</a>\n</p>",
+		"render": "<p><a href=\"/wiki/%26nbsp%3B_Main_%26nbsp%3B_Page_%26nbsp%3B\" title=\"&nbsp; Main &nbsp; Page &nbsp;\">&nbsp; Main &nbsp; Page &nbsp;</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">&amp;nbsp; Main &amp;nbsp; Page &amp;nbsp;</span>]]</span></span>"
 	},
 	{
 		"desc": "Multiple spaces in titles should normalize to a single underscore",
 		"wikitext": "[[Foo bar baz|x]]\n[[Foo  bar baz|x]]\n[[Foo  bar   baz|x]]",
 		"html": "<p><a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Foo_bar_baz\" title=\"Foo_bar_baz\">x</a>\n<a href=\"/wiki/Foo__bar_baz\" title=\"Foo__bar_baz\">x</a>\n<a href=\"/wiki/Foo__bar___baz\" title=\"Foo__bar___baz\">x</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo__bar_baz\" title=\"Foo  bar baz\">x</a>\n<a href=\"/wiki/Foo__bar___baz\" title=\"Foo  bar   baz\">x</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo bar baz</span>|<span class=\"wpb-link-text\">x</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo  bar baz</span>|<span class=\"wpb-link-text\">x</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo  bar   baz</span>|<span class=\"wpb-link-text\">x</span>]]</span></span>"
 	},
 	{
@@ -1368,7 +1371,7 @@
 		"desc": "Template with invalid target containing wikilink",
 		"wikitext": "{{[[Main Page]]}}",
 		"html": "<p>{{<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>}}\n</p>",
-		"render": "<p>{{<a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>}}\n</p>",
+		"render": "<p>{{<a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>}}\n</p>",
 		"print": "<span class=\"wpb-root\">{{<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>}}</span>"
 	},
 	{
@@ -1410,7 +1413,7 @@
 		"desc": "Template unnamed parameter",
 		"wikitext": "{{paramtestnum|Main Page|the main page}}",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">the main page</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">the main page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">paramtestnum</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Main Page</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">the main page</span></span>}}</span></span>"
 	},
 	{
@@ -2320,7 +2323,7 @@
 		"desc": "Link to category",
 		"wikitext": "[[:Category:MediaWiki User's Guide]]",
 		"html": "<p><a href=\"/wiki/Category:MediaWiki_User%27s_Guide\" title=\"Category:MediaWiki User&#39;s Guide\">Category:MediaWiki User's Guide</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki_User's_Guide\">Category:MediaWiki User's Guide</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Category%3AMediaWiki_User's_Guide\" title=\"Category:MediaWiki User's Guide\">Category:MediaWiki User's Guide</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Category:MediaWiki User's Guide</span>]]</span></span>"
 	},
 	{
@@ -2719,7 +2722,7 @@
 		"desc": "Media link redirect",
 		"wikitext": "[[Media:Redirect to foobar.jpg]]",
 		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Media%3ARedirect_to_foobar.jpg\" title=\"Media:Redirect_to_foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Media%3ARedirect_to_foobar.jpg\" title=\"Media:Redirect to foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Redirect to foobar.jpg</span>]]</span></span>"
 	},
 	{
@@ -2733,7 +2736,7 @@
 		"desc": "Media link to nonexistent file (T3702)",
 		"wikitext": "[[Media:No such.jpg]]\n[[Media:No_such file.jpg]]",
 		"html": "<p><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=No_such.jpg\" class=\"new\" title=\"No such.jpg\">Media:No such.jpg</a>\n<a href=\"/index.php?title=Special:Upload&amp;wpDestFile=No_such_file.jpg\" class=\"new\" title=\"No such file.jpg\">Media:No_such file.jpg</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Media%3ANo_such.jpg\" title=\"Media:No_such.jpg\">Media:No such.jpg</a>\n<a href=\"/wiki/Media%3ANo_such_file.jpg\" title=\"Media:No_such_file.jpg\">Media:No_such file.jpg</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Media%3ANo_such.jpg\" title=\"Media:No such.jpg\">Media:No such.jpg</a>\n<a href=\"/wiki/Media%3ANo_such_file.jpg\" title=\"Media:No such file.jpg\">Media:No_such file.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:No such.jpg</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:No_such file.jpg</span>]]</span></span>"
 	},
 	{
@@ -2747,7 +2750,7 @@
 		"desc": "Character reference normalization in link text (T3938)",
 		"wikitext": "[[Main Page|this&that]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">this&amp;that</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">this&that</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">this&that</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">this&amp;that</span>]]</span></span>"
 	},
 	{
@@ -2803,21 +2806,21 @@
 		"desc": "T4095: link with three closing brackets",
 		"wikitext": "[[Main Page]]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>]\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a>]\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>]\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>]</span>"
 	},
 	{
 		"desc": "T4095: link with pipe and three closing brackets",
 		"wikitext": "[[Main Page|link]]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a>]\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">link</a>]\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a>]\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">link</span>]]</span>]</span>"
 	},
 	{
 		"desc": "T4095: link with pipe and three closing brackets, version 2",
 		"wikitext": "[[Main Page|[http://example.com/]]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">[http://example.com/]</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">[http://example.com/]</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">[http://example.com/]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">[http://example.com/]</span>]]</span></span>"
 	},
 	{
@@ -3244,6 +3247,7 @@
 		"desc": "Fuzz testing: Parser22",
 		"wikitext": "http://===r:::https://b\n\n{|",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://===r:::https://b\">http://===r:::https://b</a>\n</p>\n<table>\n<tbody><tr><td></td></tr>\n</tbody></table>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\">http://===r:::https://b</a>\n</p>\n<table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://===r:::https://b</span>\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span></span></span>"
 	},
 	{
@@ -3439,7 +3443,7 @@
 		"desc": "Using {{!}} in wikilinks (T290526)",
 		"wikitext": "[[Main Page{{!}}Something else]]\n\n[[{{T290526}}]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Something else</a>\n</p><p><a href=\"/wiki/%7B%7BT290526%7D%7D\" title=\"{{T290526}}\">{{T290526}}</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p><p><a href=\"/wiki/%7B%7BT290526%7D%7D\" title=\"{{T290526}}\">{{T290526}}</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>{{!}}<span class=\"wpb-link-text\">Something else</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">T290526</span>}}</span></span>]]</span></span>"
 	},
 	{
@@ -3537,7 +3541,7 @@
 		"desc": "Double RFC with a wiki link",
 		"wikitext": "RFC [[RFC 1234]]",
 		"html": "<p>RFC <a href=\"/index.php?title=RFC_1234&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"RFC 1234 (page does not exist)\">RFC 1234</a>\n</p>",
-		"render": "<p>RFC <a href=\"/wiki/RFC_1234\" title=\"RFC_1234\">RFC 1234</a>\n</p>",
+		"render": "<p>RFC <a href=\"/wiki/RFC_1234\" title=\"RFC 1234\">RFC 1234</a>\n</p>",
 		"print": "<span class=\"wpb-root\">RFC <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">RFC 1234</span>]]</span></span>"
 	},
 	{
@@ -4020,7 +4024,7 @@
 		"desc": "percent-encoding and + signs in internal links (T28410)",
 		"wikitext": "[[User:+%]] [[Page+title%]]\n[[%+]] [[%+|%20]] [[%+ ]] [[%+r]]\n[[%]] [[+]] [[File:%+abc%39|foo|[[bar]]]]\n[[%33%45]] [[%33%45+]]",
 		"html": "<p><a href=\"/index.php?title=User:%2B%25&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"User:+% (page does not exist)\">User:+%</a> <a href=\"/index.php?title=Page%2Btitle%25&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Page+title% (page does not exist)\">Page+title%</a>\n<a href=\"/index.php?title=%25%2B&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"%+ (page does not exist)\">%+</a> <a href=\"/index.php?title=%25%2B&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"%+ (page does not exist)\">%20</a> <a href=\"/index.php?title=%25%2B&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"%+ (page does not exist)\">%+ </a> <a href=\"/index.php?title=%25%2Br&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"%+r (page does not exist)\">%+r</a>\n<a href=\"/index.php?title=%25&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"% (page does not exist)\">%</a> <a href=\"/index.php?title=%2B&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"+ (page does not exist)\">+</a> <span class=\"mw-default-size\" typeof=\"mw:Error mw:File\"><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=%25%2Babc9\" class=\"new\" title=\"File:%+abc9\"><span class=\"mw-file-element mw-broken-media\">bar</span></a></span>\n<a href=\"/index.php?title=3E&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"3E (page does not exist)\">3E</a> <a href=\"/index.php?title=3E%2B&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"3E+ (page does not exist)\">3E+</a>\n</p>",
-		"render": "<p><a href=\"/wiki/User%3A%2B%25\" title=\"User:+%\">User:+%</a> <a href=\"/wiki/Page%2Btitle%25\" title=\"Page+title%\">Page+title%</a>\n<a href=\"/wiki/%25%2B\" title=\"%+\">%+</a> <a href=\"/wiki/%25%2B\" title=\"%+\">%20</a> <a href=\"/wiki/%25%2B\" title=\"%+\">%+ </a> <a href=\"/wiki/%25%2Br\" title=\"%+r\">%+r</a>\n<a href=\"/wiki/%25\" title=\"%\">%</a> <a href=\"/wiki/%2B\" title=\"+\">+</a> \n<a href=\"/wiki/3E\" title=\"3E\">%33%45</a> <a href=\"/wiki/3E%2B\" title=\"3E+\">%33%45+</a>\n</p>",
+		"render": "<p><a href=\"/wiki/User%3A%2B%25\" title=\"User:+%\">User:+%</a> <a href=\"/wiki/Page%2Btitle%25\" title=\"Page+title%\">Page+title%</a>\n<a href=\"/wiki/%25%2B\" title=\"%+\">%+</a> <a href=\"/wiki/%25%2B\" title=\"%+\">%20</a> <a href=\"/wiki/%25%2B\" title=\"%+\">%+ </a> <a href=\"/wiki/%25%2Br\" title=\"%+r\">%+r</a>\n<a href=\"/wiki/%25\" title=\"%\">%</a> <a href=\"/wiki/%2B\" title=\"+\">+</a> \n<a href=\"/wiki/3E\" title=\"3E\">3E</a> <a href=\"/wiki/3E%2B\" title=\"3E+\">3E+</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">User:+%</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Page+title%</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%+</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%+</span>|<span class=\"wpb-link-text\">%20</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%+ </span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%+r</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">+</span>]]</span> <span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:%+abc%39</span>|<span class=\"wpb-image-caption\">foo</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">bar</span>]]</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%33%45</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">%33%45+</span>]]</span></span>"
 	},
 	{
@@ -5481,7 +5485,7 @@
 		"desc": "External link containing double-single-quotes with no space separating the url from text in italics",
 		"wikitext": "[http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm''La muerte de Casagemas'' (1901) en el sitio de [[Museo Picasso (París)|Museo Picasso]].]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm\"><i>La muerte de Casagemas</i> (1901) en el sitio de </a><a href=\"/wiki/Museo_Picasso_(Par%C3%ADs)\" title=\"Museo Picasso (París)\">Museo Picasso</a>.\n</p>",
-		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm\"><i>La muerte de Casagemas</i> (1901) en el sitio de </a><a href=\"/wiki/Museo_Picasso_(Par%C3%ADs)\" title=\"Museo_Picasso_(París)\">Museo Picasso</a>.\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm\"><i>La muerte de Casagemas</i> (1901) en el sitio de </a><a href=\"/wiki/Museo_Picasso_(Par%C3%ADs)\" title=\"Museo Picasso (París)\">Museo Picasso</a>.\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm</span><span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">''</span>La muerte de Casagemas<span class=\"wpb-quote\">''</span> (1901) en el sitio de <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Museo Picasso (París)</span>|<span class=\"wpb-link-text\">Museo Picasso</span>]]</span>.</span>]</span></span>"
 	},
 	{
@@ -5652,7 +5656,7 @@
 		"desc": "Link inside a section heading",
 		"wikitext": "==Section with a [[Main Page|link]] in it==",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Section_with_a_link_in_it\">Section with a <a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a> in it</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Section with a link in it\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Section_with_a_link_in_it\">Section with a <a href=\"/wiki/Main_Page\" title=\"Main_Page\">link</a> in it</h2></div>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Section_with_a_link_in_it\">Section with a <a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a> in it</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Section with a <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">link</span>]]</span> in it</span>==</span></span>"
 	},
 	{
@@ -5890,21 +5894,21 @@
 		"desc": "HTML5 ids: fallback to legacy",
 		"wikitext": "==Foo bar==\n\n==foo Bar==\n\n==Тест==\n\n==Тест==\n\n==тест==\n\n==Hey < # \" > % : '==\n[[#Foo bar]] [[#foo Bar]] [[#Тест]] [[#тест]] [[#Hey < # \" > % : ']]\n\n{{anchorencode:💩}} <span id=\"{{anchorencode:💩}}\"></span>\n\n<!-- These two links should produce identical HTML -->\n[[#啤酒]] [[#%E5%95%A4%E9%85%92]]",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Foo_bar\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">Foo bar</span></a></li>\n<li class=\"toclevel-1 tocsection-2\"><a href=\"#foo_Bar_2\"><span class=\"tocnumber\">2</span> <span class=\"toctext\">foo Bar</span></a></li>\n<li class=\"toclevel-1 tocsection-3\"><a href=\"#Тест\"><span class=\"tocnumber\">3</span> <span class=\"toctext\">Тест</span></a></li>\n<li class=\"toclevel-1 tocsection-4\"><a href=\"#Тест_2\"><span class=\"tocnumber\">4</span> <span class=\"toctext\">Тест</span></a></li>\n<li class=\"toclevel-1 tocsection-5\"><a href=\"#тест\"><span class=\"tocnumber\">5</span> <span class=\"toctext\">тест</span></a></li>\n<li class=\"toclevel-1 tocsection-6\"><a href=\"#Hey_&lt;_#_&quot;_&gt;_%_:_&#39;\"><span class=\"tocnumber\">6</span> <span class=\"toctext\">Hey &lt; # \" &gt;&#160;%&#160;: '</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Foo bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar_2\">foo Bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=2\" title=\"Edit section: foo Bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\"><span id=\".D0.A2.D0.B5.D1.81.D1.82\"></span>Тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=3\" title=\"Edit section: Тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест_2\"><span id=\".D0.A2.D0.B5.D1.81.D1.82_2\"></span>Тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=4\" title=\"Edit section: Тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\"><span id=\".D1.82.D0.B5.D1.81.D1.82\"></span>тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=5\" title=\"Edit section: тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\"><span id=\"Hey_.3C_.23_.22_.3E_.25_:_.27\"></span>Hey &lt; # \" &gt;&#160;%&#160;: '</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=6\" title=\"Edit section: Hey &lt; # &quot; &gt; % : &#039;\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<p><a href=\"#Foo_bar\">#Foo bar</a> <a href=\"#foo_Bar\">#foo Bar</a> <a href=\"#Тест\">#Тест</a> <a href=\"#тест\">#тест</a> <a href=\"#Hey_&lt;_#_&quot;_&gt;_%_:_&#39;\">#Hey &lt; # \" &gt;&#160;%&#160;: '</a>\n</p><p>💩 <span id=\"💩\"></span>\n</p><p><a href=\"#啤酒\">#啤酒</a> <a href=\"#啤酒\">#啤酒</a>\n</p>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar\">foo Bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt; % : '</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo bar</a> <a href=\"#foo%20Bar\">#foo Bar</a> <a href=\"#%D0%A2%D0%B5%D1%81%D1%82\">#Тест</a> <a href=\"#%D1%82%D0%B5%D1%81%D1%82\">#тест</a> <a href=\"#Hey%20%3C%20%23%20%22%20%3E%20%25%20%3A%20'\">#Hey < # \" > % : '</a>\n</p>\n<pre><span id=\"\"></span>\n</pre>\n<p><a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a> <a href=\"#%E5%95%A4%E9%85%92\">#%E5%95%A4%E9%85%92</a>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar\">foo Bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt; % : '</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo bar</a> <a href=\"#foo%20Bar\">#foo Bar</a> <a href=\"#%D0%A2%D0%B5%D1%81%D1%82\">#Тест</a> <a href=\"#%D1%82%D0%B5%D1%81%D1%82\">#тест</a> <a href=\"#Hey%20%3C%20%23%20%22%20%3E%20%25%20%3A%20'\">#Hey < # \" > % : '</a>\n</p>\n<pre><span id=\"\"></span>\n</pre>\n<p><a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a> <a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Foo bar</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">foo Bar</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Hey &lt; # \" &gt; % : '</span>==</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Foo bar</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#foo Bar</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Тест</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#тест</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Hey &lt; # \" &gt; % : '</span>]]</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">💩</span></span>}}</span> <span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">💩</span></span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n\n<span class=\"wpb-comment\">&lt;!-- These two links should produce identical HTML --&gt;</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#啤酒</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#%E5%95%A4%E9%85%92</span>]]</span></span>"
 	},
 	{
 		"desc": "HTML5 ids: legacy with a fallback to modern",
 		"wikitext": "==Foo bar==\n\n==foo Bar==\n\n==Тест==\n\n==Тест==\n\n==тест==\n\n==Hey < # \" > % : '==\n[[#Foo bar]] [[#foo Bar]] [[#Тест]] [[#тест]] [[#Hey < # \" > % : ']]\n\n{{anchorencode:💩}} <span id=\"{{anchorencode:💩}}\"></span>\n\n<!-- These two links should produce identical HTML -->\n[[#啤酒]] [[#%E5%95%A4%E9%85%92]]",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Foo_bar\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">Foo bar</span></a></li>\n<li class=\"toclevel-1 tocsection-2\"><a href=\"#foo_Bar_2\"><span class=\"tocnumber\">2</span> <span class=\"toctext\">foo Bar</span></a></li>\n<li class=\"toclevel-1 tocsection-3\"><a href=\"#.D0.A2.D0.B5.D1.81.D1.82\"><span class=\"tocnumber\">3</span> <span class=\"toctext\">Тест</span></a></li>\n<li class=\"toclevel-1 tocsection-4\"><a href=\"#.D0.A2.D0.B5.D1.81.D1.82_2\"><span class=\"tocnumber\">4</span> <span class=\"toctext\">Тест</span></a></li>\n<li class=\"toclevel-1 tocsection-5\"><a href=\"#.D1.82.D0.B5.D1.81.D1.82\"><span class=\"tocnumber\">5</span> <span class=\"toctext\">тест</span></a></li>\n<li class=\"toclevel-1 tocsection-6\"><a href=\"#Hey_.3C_.23_.22_.3E_.25_:_.27\"><span class=\"tocnumber\">6</span> <span class=\"toctext\">Hey &lt; # \" &gt;&#160;%&#160;: '</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Foo bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar_2\">foo Bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=2\" title=\"Edit section: foo Bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\".D0.A2.D0.B5.D1.81.D1.82\"><span id=\"Тест\"></span>Тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=3\" title=\"Edit section: Тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\".D0.A2.D0.B5.D1.81.D1.82_2\"><span id=\"Тест_2\"></span>Тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=4\" title=\"Edit section: Тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\".D1.82.D0.B5.D1.81.D1.82\"><span id=\"тест\"></span>тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=5\" title=\"Edit section: тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_.3C_.23_.22_.3E_.25_:_.27\"><span id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\"></span>Hey &lt; # \" &gt;&#160;%&#160;: '</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=6\" title=\"Edit section: Hey &lt; # &quot; &gt; % : &#039;\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<p><a href=\"#Foo_bar\">#Foo bar</a> <a href=\"#foo_Bar\">#foo Bar</a> <a href=\"#.D0.A2.D0.B5.D1.81.D1.82\">#Тест</a> <a href=\"#.D1.82.D0.B5.D1.81.D1.82\">#тест</a> <a href=\"#Hey_.3C_.23_.22_.3E_.25_:_.27\">#Hey &lt; # \" &gt;&#160;%&#160;: '</a>\n</p><p>.F0.9F.92.A9 <span id=\".F0.9F.92.A9\"></span>\n</p><p><a href=\"#.E5.95.A4.E9.85.92\">#啤酒</a> <a href=\"#.E5.95.A4.E9.85.92\">#啤酒</a>\n</p>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar\">foo Bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt; % : '</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo bar</a> <a href=\"#foo%20Bar\">#foo Bar</a> <a href=\"#%D0%A2%D0%B5%D1%81%D1%82\">#Тест</a> <a href=\"#%D1%82%D0%B5%D1%81%D1%82\">#тест</a> <a href=\"#Hey%20%3C%20%23%20%22%20%3E%20%25%20%3A%20'\">#Hey < # \" > % : '</a>\n</p>\n<pre><span id=\"\"></span>\n</pre>\n<p><a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a> <a href=\"#%E5%95%A4%E9%85%92\">#%E5%95%A4%E9%85%92</a>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar\">foo Bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt; % : '</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo bar</a> <a href=\"#foo%20Bar\">#foo Bar</a> <a href=\"#%D0%A2%D0%B5%D1%81%D1%82\">#Тест</a> <a href=\"#%D1%82%D0%B5%D1%81%D1%82\">#тест</a> <a href=\"#Hey%20%3C%20%23%20%22%20%3E%20%25%20%3A%20'\">#Hey < # \" > % : '</a>\n</p>\n<pre><span id=\"\"></span>\n</pre>\n<p><a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a> <a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Foo bar</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">foo Bar</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Hey &lt; # \" &gt; % : '</span>==</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Foo bar</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#foo Bar</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Тест</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#тест</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Hey &lt; # \" &gt; % : '</span>]]</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">💩</span></span>}}</span> <span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">💩</span></span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n\n<span class=\"wpb-comment\">&lt;!-- These two links should produce identical HTML --&gt;</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#啤酒</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#%E5%95%A4%E9%85%92</span>]]</span></span>"
 	},
 	{
 		"desc": "HTML5 ids: no legacy",
 		"wikitext": "==Foo bar==\n\n==foo Bar==\n\n==Тест==\n\n==Тест==\n\n==тест==\n\n==Hey < # \" > % : '==\n[[#Foo bar]] [[#foo Bar]] [[#Тест]] [[#тест]] [[#Hey < # \" > % : ']]\n\n{{anchorencode:💩}} <span id=\"{{anchorencode:💩}}\"></span>\n\n<!-- These two links should produce identical HTML -->\n[[#啤酒]] [[#%E5%95%A4%E9%85%92]]",
 		"html": "<div id=\"toc\" class=\"toc\" role=\"navigation\" aria-labelledby=\"mw-toc-heading\"><input type=\"checkbox\" role=\"button\" id=\"toctogglecheckbox\" class=\"toctogglecheckbox\" style=\"display:none\" /><div class=\"toctitle\" lang=\"en\" dir=\"ltr\"><h2 id=\"mw-toc-heading\">Contents</h2><span class=\"toctogglespan\"><label class=\"toctogglelabel\" for=\"toctogglecheckbox\"></label></span></div>\n<ul>\n<li class=\"toclevel-1 tocsection-1\"><a href=\"#Foo_bar\"><span class=\"tocnumber\">1</span> <span class=\"toctext\">Foo bar</span></a></li>\n<li class=\"toclevel-1 tocsection-2\"><a href=\"#foo_Bar_2\"><span class=\"tocnumber\">2</span> <span class=\"toctext\">foo Bar</span></a></li>\n<li class=\"toclevel-1 tocsection-3\"><a href=\"#Тест\"><span class=\"tocnumber\">3</span> <span class=\"toctext\">Тест</span></a></li>\n<li class=\"toclevel-1 tocsection-4\"><a href=\"#Тест_2\"><span class=\"tocnumber\">4</span> <span class=\"toctext\">Тест</span></a></li>\n<li class=\"toclevel-1 tocsection-5\"><a href=\"#тест\"><span class=\"tocnumber\">5</span> <span class=\"toctext\">тест</span></a></li>\n<li class=\"toclevel-1 tocsection-6\"><a href=\"#Hey_&lt;_#_&quot;_&gt;_%_:_&#39;\"><span class=\"tocnumber\">6</span> <span class=\"toctext\">Hey &lt; # \" &gt;&#160;%&#160;: '</span></a></li>\n</ul>\n</div>\n\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Foo bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar_2\">foo Bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=2\" title=\"Edit section: foo Bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=3\" title=\"Edit section: Тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест_2\">Тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=4\" title=\"Edit section: Тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=5\" title=\"Edit section: тест\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt;&#160;%&#160;: '</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=6\" title=\"Edit section: Hey &lt; # &quot; &gt; % : &#039;\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<p><a href=\"#Foo_bar\">#Foo bar</a> <a href=\"#foo_Bar\">#foo Bar</a> <a href=\"#Тест\">#Тест</a> <a href=\"#тест\">#тест</a> <a href=\"#Hey_&lt;_#_&quot;_&gt;_%_:_&#39;\">#Hey &lt; # \" &gt;&#160;%&#160;: '</a>\n</p><p>💩 <span id=\"💩\"></span>\n</p><p><a href=\"#啤酒\">#啤酒</a> <a href=\"#啤酒\">#啤酒</a>\n</p>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar\">foo Bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt; % : '</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo bar</a> <a href=\"#foo%20Bar\">#foo Bar</a> <a href=\"#%D0%A2%D0%B5%D1%81%D1%82\">#Тест</a> <a href=\"#%D1%82%D0%B5%D1%81%D1%82\">#тест</a> <a href=\"#Hey%20%3C%20%23%20%22%20%3E%20%25%20%3A%20'\">#Hey < # \" > % : '</a>\n</p>\n<pre><span id=\"\"></span>\n</pre>\n<p><a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a> <a href=\"#%E5%95%A4%E9%85%92\">#%E5%95%A4%E9%85%92</a>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"foo_Bar\">foo Bar</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Тест\">Тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"тест\">тест</h2></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Hey_&lt;_#_&quot;_&gt;_%_:_'\">Hey &lt; # \" &gt; % : '</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo bar</a> <a href=\"#foo%20Bar\">#foo Bar</a> <a href=\"#%D0%A2%D0%B5%D1%81%D1%82\">#Тест</a> <a href=\"#%D1%82%D0%B5%D1%81%D1%82\">#тест</a> <a href=\"#Hey%20%3C%20%23%20%22%20%3E%20%25%20%3A%20'\">#Hey < # \" > % : '</a>\n</p>\n<pre><span id=\"\"></span>\n</pre>\n<p><a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a> <a href=\"#%E5%95%A4%E9%85%92\">#啤酒</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Foo bar</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">foo Bar</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">тест</span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Hey &lt; # \" &gt; % : '</span>==</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Foo bar</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#foo Bar</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Тест</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#тест</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Hey &lt; # \" &gt; % : '</span>]]</span>\n\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">💩</span></span>}}</span> <span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">anchorencode</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">💩</span></span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n\n<span class=\"wpb-comment\">&lt;!-- These two links should produce identical HTML --&gt;</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#啤酒</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#%E5%95%A4%E9%85%92</span>]]</span></span>"
 	},
 	{
@@ -6001,7 +6005,7 @@
 		"desc": "Magic links: internal link to RFC (T2479)",
 		"wikitext": "[[RFC 123]]",
 		"html": "<p><a href=\"/index.php?title=RFC_123&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"RFC 123 (page does not exist)\">RFC 123</a>\n</p>",
-		"render": "<p><a href=\"/wiki/RFC_123\" title=\"RFC_123\">RFC 123</a>\n</p>",
+		"render": "<p><a href=\"/wiki/RFC_123\" title=\"RFC 123\">RFC 123</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">RFC 123</span>]]</span></span>"
 	},
 	{
@@ -6434,7 +6438,7 @@
 		"desc": "File with link to page section",
 		"wikitext": "[[Main Page#section]]\n[[File:Foobar.jpg|link=Main Page#section]]",
 		"html": "<p><a href=\"/wiki/Main_Page#section\" title=\"Main Page\">Main Page#section</a>\n<span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/Main_Page#section\" title=\"Main Page\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page#section\" title=\"Main_Page\">Main Page#section</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page#section\" title=\"Main Page\">Main Page#section</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page#section</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">Main Page#section</span></span>]]</span></span>"
 	},
 	{
@@ -6616,7 +6620,7 @@
 		"desc": "Italics markup in link attribute (T206940)",
 		"wikitext": "[[Foo''s bar''s]]\n\n<!-- Note that \"italics\" are stripped, even though this is a valid page title -->\n[[File:Foobar.jpg|link=Foo''s bar''s|caption1]]\n\n[[File:Foobar.jpg|link=''Main Page''|caption2]]\n\n<!-- consistency with gallery extension -->\n<gallery>\nFile:Foobar.jpg|link=Foo''s bar''s|caption1\nFile:Foobar.jpg|link=''Main Page''|caption2\n</gallery>",
 		"html": "<p><a href=\"/wiki/Foo%27%27s_bar%27%27s\" title=\"Foo&#39;&#39;s bar&#39;&#39;s\">Foo''s bar''s</a>\n</p><p><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/Foos_bars\" title=\"caption1\"><img alt=\"caption1\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p><p><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/Main_Page\" title=\"caption2\"><img alt=\"caption2\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>\n<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/Foos_bars\" title=\"caption1\"><img alt=\"caption1\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\">caption1</div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/Main_Page\" title=\"caption2\"><img alt=\"caption2\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\">caption2</div>\n\t\t</li>\n</ul>",
-		"render": "<p><a href=\"/wiki/Foo''s_bar''s\" title=\"Foo''s_bar''s\">Foo''s bar''s</a>\n</p><p><br>\n</p><p><br>\n</p><p><br>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo''s_bar''s\" title=\"Foo''s bar''s\">Foo''s bar''s</a>\n</p><p><br>\n</p><p><br>\n</p><p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo''s bar''s</span>]]</span>\n\n<span class=\"wpb-comment\">&lt;!-- Note that \"italics\" are stripped, even though this is a valid page title --&gt;</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">Foo<span class=\"wpb-quote\">''</span>s bar<span class=\"wpb-quote\">''</span>s</span></span>|<span class=\"wpb-image-caption\">caption1</span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-quote\">''</span>Main Page<span class=\"wpb-quote\">''</span></span></span>|<span class=\"wpb-image-caption\">caption2</span>]]</span>\n\n<span class=\"wpb-comment\">&lt;!-- consistency with gallery extension --&gt;</span>\n<span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">Foo<span class=\"wpb-quote\">''</span>s bar<span class=\"wpb-quote\">''</span>s</span></span>|<span class=\"wpb-image-caption\">caption1</span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-quote\">''</span>Main Page<span class=\"wpb-quote\">''</span></span></span>|<span class=\"wpb-image-caption\">caption2</span></span>\n</span>&lt;/gallery&gt;</span></span>"
 	},
 	{
@@ -6861,7 +6865,7 @@
 		"desc": "Broken image caption with link",
 		"wikitext": "[[Image:Foobar.jpg|thumb|This is a broken caption. But [[Main Page|this]] is just an ordinary link.",
 		"html": "<p>[[Image:Foobar.jpg|thumb|This is a broken caption. But <a href=\"/wiki/Main_Page\" title=\"Main Page\">this</a> is just an ordinary link.\n</p>",
-		"render": "<p>[[Image:Foobar.jpg|thumb|This is a broken caption. But <a href=\"/wiki/Main_Page\" title=\"Main_Page\">this</a> is just an ordinary link.\n</p>",
+		"render": "<p>[[Image:Foobar.jpg|thumb|This is a broken caption. But <a href=\"/wiki/Main_Page\" title=\"Main Page\">this</a> is just an ordinary link.\n</p>",
 		"print": "<span class=\"wpb-root\">[[Image:Foobar.jpg|thumb|This is a broken caption. But <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">this</span>]]</span> is just an ordinary link.</span>"
 	},
 	{
@@ -6994,7 +6998,7 @@
 		"desc": ":Image link to nonexistent file (T3850 - bad)",
 		"wikitext": "[[:Image:No such.jpg]]",
 		"html": "<p><a href=\"/index.php?title=File:No_such.jpg&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"File:No such.jpg (page does not exist)\">Image:No such.jpg</a>\n</p>",
-		"render": "<p><a href=\"/wiki/File%3ANo_such.jpg\" title=\"File:No_such.jpg\">Image:No such.jpg</a>\n</p>",
+		"render": "<p><a href=\"/wiki/File%3ANo_such.jpg\" title=\"File:No such.jpg\">Image:No such.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Image:No such.jpg</span>]]</span></span>"
 	},
 	{
@@ -7260,7 +7264,7 @@
 		"desc": "Percent decode titles in the link option (T216003#7836261)",
 		"wikitext": "[[Test%22123]]\n[[File:Foobar.jpg|link=Test%22123]]\n[[File:Foobar.jpg|link=[[Test%22123]]]]\n\n<gallery>\nFile:Foobar.jpg|link=Test%22123\nFile:Foobar.jpg|link=[[Test%22123]]\n</gallery>",
 		"html": "<p><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\">Test\"123</a>\n<span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n<span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>\n<ul class=\"gallery mw-gallery-traditional\">\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"></div>\n\t\t</li>\n\t\t<li class=\"gallerybox\" style=\"width: 155px\">\n\t\t\t<div class=\"thumb\" style=\"width: 150px; height: 150px;\"><span typeof=\"mw:File\"><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/120px-Foobar.jpg\" decoding=\"async\" width=\"120\" height=\"14\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/240px-Foobar.jpg 2x\" /></a></span></div>\n\t\t\t<div class=\"gallerytext\"></div>\n\t\t</li>\n</ul>",
-		"render": "<p><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\">Test%22123</a>\n</p><p><br>\n</p><p><br>\n</p>",
+		"render": "<p><a href=\"/wiki/Test%22123\" title=\"Test&quot;123\">Test\"123</a>\n</p><p><br>\n</p><p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test%22123</span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">Test%22123</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test%22123</span>]]</span></span></span>]]</span>\n\n<span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">Test%22123</span></span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test%22123</span>]]</span></span></span></span>\n</span>&lt;/gallery&gt;</span></span>"
 	},
 	{
@@ -7685,7 +7689,7 @@
 		"desc": "Italics and possessives (1)",
 		"wikitext": "obtained by ''[[Lunar Prospector]]'''s gamma-ray spectrometer",
 		"html": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a>'</i>s gamma-ray spectrometer\n</p>",
-		"render": "<p>obtained by <a href=\"/wiki/Lunar_Prospector\" title=\"Lunar_Prospector\">Lunar Prospector</a><i>'</i>s gamma-ray spectrometer\n</p>",
+		"render": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a></i><i>'</i>s gamma-ray spectrometer\n</p>",
 		"print": "<span class=\"wpb-root\">obtained by <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Lunar Prospector</span>]]</span>'<span class=\"wpb-quote\">''</span>s gamma-ray spectrometer</span>"
 	},
 	{
@@ -7699,7 +7703,7 @@
 		"desc": "Italics and possessives (3)",
 		"wikitext": "The first monolingual dictionary written in a Romance language was ''Sebastián Covarrubias''' ''Tesoro de la lengua castellana o española'', published in 1611 in Madrid. In 1612 the first edition of the ''Vocabolario dell'[[Accademia della Crusca]]'', for Italian, was published. In 1690 in Rotterdam was published, posthumously, the ''Dictionnaire Universel''.",
 		"html": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'<a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
-		"render": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'</i><a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia_della_Crusca\">Accademia della Crusca</a>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
+		"render": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'</i><i><a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
 		"print": "<span class=\"wpb-root\">The first monolingual dictionary written in a Romance language was <span class=\"wpb-quote\">''</span>Sebastián Covarrubias'<span class=\"wpb-quote\">''</span> <span class=\"wpb-quote\">''</span>Tesoro de la lengua castellana o española<span class=\"wpb-quote\">''</span>, published in 1611 in Madrid. In 1612 the first edition of the <span class=\"wpb-quote\">''</span>Vocabolario dell'<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Accademia della Crusca</span>]]</span><span class=\"wpb-quote\">''</span>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <span class=\"wpb-quote\">''</span>Dictionnaire Universel<span class=\"wpb-quote\">''</span>.</span>"
 	},
 	{
@@ -7958,7 +7962,7 @@
 		"desc": "Italicized possessive",
 		"wikitext": "The ''[[Main Page]]'''s talk page.",
 		"html": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>'</i>s talk page.\n</p>",
-		"render": "<p>The <a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main Page</a><i>'</i>s talk page.\n</p>",
+		"render": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a></i><i>'</i>s talk page.\n</p>",
 		"print": "<span class=\"wpb-root\">The <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>'<span class=\"wpb-quote\">''</span>s talk page.</span>"
 	},
 	{
@@ -7982,14 +7986,14 @@
 		"desc": "Redirect followed by block on the same line",
 		"wikitext": "#REDIRECT [[Main Page]]<!-- haha -->==hi==",
 		"html": "<ol><li>REDIRECT <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>==hi==</li></ol>",
-		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main_Page</a></li></ul><div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
+		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main_Page</a></li></ul><div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span><span class=\"wpb-comment\">&lt;!-- haha --&gt;</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">hi</span>==</span></span>"
 	},
 	{
 		"desc": "Redirect followed by horizontal rule on the same line",
 		"wikitext": "#REDIRECT [[Main Page]]----",
 		"html": "<ol><li>REDIRECT <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>----</li></ol>",
-		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main_Page\">Main_Page</a></li></ul><hr>",
+		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main_Page</a></li></ul><hr>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span><span class=\"wpb-hr\">----</span></span>"
 	},
 	{
@@ -8195,6 +8199,7 @@
 		"desc": "Table security: embedded pipes",
 		"wikitext": "{|\n| |[ftp://|x||]\" onmouseover=\"alert(document.cookie)\">test",
 		"html": "<table>\n<tbody><tr>\n<td>[<a rel=\"nofollow\" class=\"external free\" href=\"ftp://%7Cx\">ftp://%7Cx</a></td>\n<td>]\" onmouseover=\"alert(document.cookie)\"&gt;test\n</td>\n</tr>\n</tbody></table>",
+		"render": "<table ><tbody><tr><td >[<a rel=\"nofollow\" class=\"external free\">ftp://|x</a></td><td >]\" onmouseover=\"alert(document.cookie)\"&gt;test</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span></span>|<span class=\"wpb-td-inner\">[<span class=\"wpb-free-ext-link\">ftp://|x</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">]\" onmouseover=\"alert(document.cookie)\"&gt;test</span></span></span></span>"
 	},
 	{
@@ -8327,7 +8332,7 @@
 		"desc": "Build table with wikilink",
 		"wikitext": "{| class=\"wikitable\"\n!header||second header\n|- style=\"color:red;\"\n|data [[Main Page|linktext]]||second data [[Main Page|linktext]]\n|-\n|data||second data [[Main Page|link|text with pipe]]\n|}",
 		"html": "<table class=\"wikitable\">\n<tbody><tr>\n<th>header</th>\n<th>second header\n</th></tr>\n<tr style=\"color:red;\">\n<td>data <a href=\"/wiki/Main_Page\" title=\"Main Page\">linktext</a></td>\n<td>second data <a href=\"/wiki/Main_Page\" title=\"Main Page\">linktext</a>\n</td></tr>\n<tr>\n<td>data</td>\n<td>second data <a href=\"/wiki/Main_Page\" title=\"Main Page\">link|text with pipe</a>\n</td></tr></tbody></table>",
-		"render": "<table class=\"wikitable\"><tbody><tr><th >header</th><th >second header</th></tr><tr style=\"color:red;\"><td >data <a href=\"/wiki/Main_Page\" title=\"Main_Page\">linktext</a></td><td >second data <a href=\"/wiki/Main_Page\" title=\"Main_Page\">linktext</a></td></tr><tr ><td >data</td><td >second data <a href=\"/wiki/Main_Page\" title=\"Main_Page\">link|text with pipe</a></td></tr></tbody></table>",
+		"render": "<table class=\"wikitable\"><tbody><tr><th >header</th><th >second header</th></tr><tr style=\"color:red;\"><td >data <a href=\"/wiki/Main_Page\" title=\"Main Page\">linktext</a></td><td >second data <a href=\"/wiki/Main_Page\" title=\"Main Page\">linktext</a></td></tr><tr ><td >data</td><td >second data <a href=\"/wiki/Main_Page\" title=\"Main Page\">link|text with pipe</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">wikitable</span>\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">header</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">second header</span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color:red;</span>\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">data <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">linktext</span>]]</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">second data <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">linktext</span>]]</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">data</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">second data <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\">link|text with pipe</span>]]</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{

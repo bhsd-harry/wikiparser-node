@@ -1,6 +1,7 @@
 import {
 	extUrlChar,
 	extUrlCharFirst,
+	trimPHP,
 } from '../util/string';
 import {generateForChild} from '../util/lint';
 import Parser from '../index';
@@ -54,8 +55,7 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	trimName(name: string | Token, set = true): string {
-		const trimmed = (typeof name === 'string' ? name : name.toString(true))
-			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		const trimmed = trimPHP(typeof name === 'string' ? name : name.toString(true));
 		this.setAttribute('name', trimmed);
 		return trimmed;
 	}
