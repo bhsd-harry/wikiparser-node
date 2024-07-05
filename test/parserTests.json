@@ -1070,21 +1070,21 @@
 		"desc": "Nested lists 4 (first element empty)",
 		"wikitext": "**\n*bar",
 		"html": "<ul><li><ul><li class=\"mw-empty-elt\"></li></ul></li>\n<li>bar</li></ul>",
-		"render": "<ul><li><ul><li></li></ul></li>\n<li>bar</li></ul>",
+		"render": "<ul><li><ul><li class=\"mw-empty-elt\"></li></ul></li>\n<li>bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">**</span>\n<span class=\"wpb-list\">*</span>bar</span>"
 	},
 	{
 		"desc": "Nested lists 5 (both elements empty)",
 		"wikitext": "**\n*",
 		"html": "<ul><li><ul><li class=\"mw-empty-elt\"></li></ul></li>\n<li class=\"mw-empty-elt\"></li></ul>",
-		"render": "<ul><li><ul><li></li></ul></li>\n<li></li></ul>",
+		"render": "<ul><li><ul><li class=\"mw-empty-elt\"></li></ul></li>\n<li class=\"mw-empty-elt\"></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">**</span>\n<span class=\"wpb-list\">*</span></span>"
 	},
 	{
 		"desc": "Nested lists 6 (both elements empty)",
 		"wikitext": "*\n**",
 		"html": "<ul><li>\n<ul><li class=\"mw-empty-elt\"></li></ul></li></ul>",
-		"render": "<ul><li>\n<ul><li></li></ul></li></ul>",
+		"render": "<ul><li>\n<ul><li class=\"mw-empty-elt\"></li></ul></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>\n<span class=\"wpb-list\">**</span></span>"
 	},
 	{
@@ -1196,7 +1196,7 @@
 		"desc": "Parsoid: Test of whitespace serialization with Templated bullets",
 		"wikitext": "* {{bullet}}",
 		"html": "<ul><li class=\"mw-empty-elt\"></li>\n<li>Bar</li></ul>",
-		"render": "<ul><li></li>\n<li>Bar</li></ul>",
+		"render": "<ul><li class=\"mw-empty-elt\"></li>\n<li>Bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">bullet</span>}}</span></span>"
 	},
 	{
@@ -1343,7 +1343,7 @@
 		"desc": "Template titles with entities in them",
 		"wikitext": "*{{Foo–bar}}\n*{{Foo&ndash;bar}}",
 		"html": "<ul><li>foo</li>\n<li>foo</li></ul>",
-		"render": "<ul><li></li>\n<li></li></ul>",
+		"render": "<ul><li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Foo–bar</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Foo&amp;ndash;bar</span>}}</span></span>"
 	},
 	{
@@ -3464,7 +3464,7 @@
 		"desc": "Say the magic word",
 		"wikitext": "*{{PAGENAME}}\n*{{PAGENAMEE}}\n*{{FULLPAGENAME}}\n*{{FULLPAGENAMEE}}\n*{{BASEPAGENAME}}\n*{{BASEPAGENAMEE}}\n*{{SUBPAGENAME}}\n*{{SUBPAGENAMEE}}\n*{{ROOTPAGENAME}}\n*{{ROOTPAGENAMEE}}\n*{{TALKPAGENAME}}\n*{{TALKPAGENAMEE}}\n*{{SUBJECTPAGENAME}}\n*{{SUBJECTPAGENAMEE}}\n*{{NAMESPACEE}}\n*{{NAMESPACE}}\n*{{NAMESPACENUMBER}}\n*{{TALKSPACE}}\n*{{TALKSPACEE}}\n*{{SUBJECTSPACE}}\n*{{SUBJECTSPACEE}}\n*{{Dynamic|{{NUMBEROFUSERS}}|{{NUMBEROFPAGES}}|{{CURRENTVERSION}}|{{CONTENTLANGUAGE}}|{{DIRECTIONMARK}}|{{CURRENTTIMESTAMP}}|{{NUMBEROFARTICLES}}}}",
 		"html": "<ul><li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Talk:Parser test</li>\n<li>Talk:Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li>0</li>\n<li>Talk</li>\n<li>Talk</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li><a href=\"/index.php?title=Template:Dynamic&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Dynamic (page does not exist)\">Template:Dynamic</a></li></ul>",
-		"render": "<ul><li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li></ul>",
+		"render": "<ul><li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACENUMBER</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Dynamic</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFUSERS</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFPAGES</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTVERSION</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CONTENTLANGUAGE</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DIRECTIONMARK</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTTIMESTAMP</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFARTICLES</span>}}</span></span></span>}}</span></span>"
 	},
 	{
@@ -4402,7 +4402,7 @@
 		"desc": "Empty LI (T49673)",
 		"wikitext": "*a\n* \n*\n*b",
 		"html": "<ul><li>a</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li>b</li></ul>",
-		"render": "<ul><li>a</li>\n<li></li>\n<li></li>\n<li>b</li></ul>",
+		"render": "<ul><li>a</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li>b</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>a\n<span class=\"wpb-list\">* </span>\n<span class=\"wpb-list\">*</span>\n<span class=\"wpb-list\">*</span>b</span>"
 	},
 	{
@@ -6183,7 +6183,7 @@
 		"desc": "Magic Words LOCAL (UTC)",
 		"wikitext": "*{{LOCALMONTH}}\n*{{LOCALMONTH1}}\n*{{LOCALMONTHNAME}}\n*{{LOCALMONTHNAMEGEN}}\n*{{LOCALMONTHABBREV}}\n*{{LOCALDAY}}\n*{{LOCALDAY2}}\n*{{LOCALDAYNAME}}\n*{{LOCALYEAR}}\n*{{LOCALTIME}}\n*{{LOCALHOUR}}\n*{{LOCALWEEK}}\n*{{LOCALDOW}}\n*{{LOCALTIMESTAMP}}",
 		"html": "<ul><li>01</li>\n<li>1</li>\n<li>January</li>\n<li>January</li>\n<li>Jan</li>\n<li>1</li>\n<li>01</li>\n<li>Thursday</li>\n<li>1970</li>\n<li>00:02</li>\n<li>00</li>\n<li>1</li>\n<li>4</li>\n<li>19700101000203</li></ul>",
-		"render": "<ul><li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li></ul>",
+		"render": "<ul><li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTH</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTH1</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHNAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHNAMEGEN</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALMONTHABBREV</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAY</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAY2</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDAYNAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALYEAR</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALTIME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALHOUR</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALWEEK</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALDOW</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">LOCALTIMESTAMP</span>}}</span></span>"
 	},
 	{

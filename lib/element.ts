@@ -100,7 +100,7 @@ export abstract class AstElement extends AstNode {
 		const {innerText} = this as {innerText?: string};
 		if (typeof innerText === 'string') {
 			const lines = innerText.split('\n');
-			return lines[lines.length - 1]!.length;
+			return lines.at(-1)!.length; // eslint-disable-line es-x/no-array-string-prototype-at
 		}
 		return undefined;
 	}

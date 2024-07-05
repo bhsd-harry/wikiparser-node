@@ -14,13 +14,22 @@ export const getCommon = (prefix: string, lastPrefix: string): number =>
 declare type Prefix = '#' | '*' | ';' | ':';
 
 /**
+ * mark empty list item
+ * @param item list item
+ */
+const markEmpty = (item: string | undefined): string | undefined =>
+	item?.endsWith('<li>') ? `${item.slice(0, -1)} class="mw-empty-elt">` : item;
+
+/**
  * get next list item
  * @param char list syntax
  * @param state
  * @param state.dt whether a <dt> tag is open
+ * @param results previous results
  */
-const nextItem = (char: Prefix, state: {dt: boolean[]}): string => {
+const nextItem = (char: Prefix, state: {dt: boolean[]}, results?: string[]): string => {
 	if (char === '*' || char === '#') {
+		results?.push(markEmpty(results.pop())!);
 		return '</li>\n<li>';
 	}
 	const close = state.dt[0] ? '</dt>\n' : '</dd>\n';
@@ -37,16 +46,24 @@ const nextItem = (char: Prefix, state: {dt: boolean[]}): string => {
  * @param chars list syntax
  * @param state
  * @param state.dt whether a <dt> tag is open
+ * @param results previous results or last result
  */
-const closeList = (chars: string, state: {dt: boolean[]}): string => {
-	let result = '';
+const closeList = (chars: string, state: {dt: boolean[]}, results: string[] | string): string => {
+	let result = typeof results === 'string' ? results : '';
 	for (let i = chars.length - 1; i >= 0; i--) {
-		switch (chars[i]!) {
+		const char = chars[i] as Prefix;
+		switch (char) {
 			case '*':
-				result += '</li></ul>';
-				break;
 			case '#':
-				result += '</li></ol>';
+				if (i === chars.length - 1) {
+					const last = markEmpty(typeof results === 'string' ? results : results.pop())!;
+					if (typeof results === 'string') {
+						result = last;
+					} else {
+						results.push(last);
+					}
+				}
+				result += `</li></${char === '*' ? 'ul' : 'ol'}>`;
 				break;
 			case ':':
 				result += `</${state.dt.shift() ? 'dt' : 'dd'}></dl>`;
@@ -69,10 +86,8 @@ const openList = (chars: string, state: {dt: boolean[]}): string => {
 	for (const char of chars) {
 		switch (char as Prefix) {
 			case '*':
-				result += '<ul><li>';
-				break;
 			case '#':
-				result += '<ol><li>';
+				result += `<${char === '*' ? 'ul' : 'ol'}><li>`;
 				break;
 			case ':':
 				state.dt.unshift(false);
@@ -105,9 +120,9 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 				prefix = data.trim(),
 				prefix2 = prefix.replace(/;/gu, ':'),
 				commonPrefixLength = getCommon(prefix2, lastPrefix);
-			let pre = closeList(lastPrefix.slice(commonPrefixLength), state);
+			let pre = closeList(lastPrefix.slice(commonPrefixLength), state, results);
 			if (prefix.length === commonPrefixLength) {
-				pre += nextItem(prefix.slice(-1) as Prefix, state);
+				pre += nextItem(prefix.slice(-1) as Prefix, state, results);
 			} else {
 				if (state.dt[0] && prefix[commonPrefixLength - 1] === ':') {
 					pre += nextItem(':', state);
@@ -133,7 +148,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 				lastPrefix = prefix2;
 			} else {
 				lastPrefix = '';
-				result += closeList(prefix2, state);
+				result = closeList(prefix2, state, result);
 			}
 		}
 		results.push(result);
