@@ -458,6 +458,16 @@ export class AstText extends AstNode {
 					} else {
 						spaces.push(nextSibling);
 					}
+				} else if (nextSibling.type === 'category') {
+					const trimmed = this.data.trimEnd();
+					if (this.data !== trimmed) {
+						const {length} = trimmed;
+						this.deleteData(length + this.data.slice(length).indexOf('\n'), Infinity);
+					}
+					for (const space of spaces) {
+						space.#setData('');
+					}
+					spaces.length = 0;
 				}
 				({nextSibling} = nextSibling);
 			}
