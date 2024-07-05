@@ -902,7 +902,7 @@
 		"desc": "Parsoid: handle constructor well",
 		"wikitext": "[[constructor]]\n\n[[constructor:foo]]",
 		"html": "<p><a href=\"/index.php?title=Constructor&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Constructor (page does not exist)\">constructor</a>\n</p><p><a href=\"/index.php?title=Constructor:foo&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Constructor:foo (page does not exist)\">constructor:foo</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Constructor\" title=\"Constructor\">constructor</a>\n</p><p><a href=\"/wiki/NaNFoo\" title=\"NaNFoo\">constructor:foo</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Constructor\" title=\"Constructor\">constructor</a>\n</p><p><a href=\"/wiki/Constructor%3Afoo\" title=\"Constructor:foo\">constructor:foo</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">constructor</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">constructor:foo</span>]]</span></span>"
 	},
 	{
