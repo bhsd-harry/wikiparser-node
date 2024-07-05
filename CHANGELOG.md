@@ -17,6 +17,7 @@
 - Definition list parsing since [v1.10.0](#v1100)
 - [`LinkBaseToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#tohtml) when wrapped by apostrophes
 - [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) and [`MagicLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#tohtml) for invalid URLs
+- [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing with multiple consecutive spaces and/or underscores
 
 **Changed**
 
