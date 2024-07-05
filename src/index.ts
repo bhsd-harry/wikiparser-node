@@ -147,6 +147,8 @@ export class Token extends AstElement {
 	}
 
 	override set type(value) {
+		/* NOT FOR BROWSER */
+
 		const plainTypes: TokenTypes[] = [
 			'plain',
 			'root',
@@ -165,6 +167,9 @@ export class Token extends AstElement {
 		if (!plainTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for ${this.constructor.name}!`);
 		}
+
+		/* NOT FOR BROWSER END */
+
 		this.#type = value;
 	}
 
