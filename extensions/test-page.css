@@ -65,6 +65,9 @@ pre {
 	margin-top: 1rem;
 	padding: 12px;
 }
+#frame[data-source] > .frame {
+	padding: 0;
+}
 
 .mw-editsection, .mw-empty-elt {
 	display: none;
@@ -315,5 +318,18 @@ pre {
 	}
 	article {
 		padding: 1rem;
+	}
+}
+
+@media screen and (min-width: 1200px) {
+	#frame {
+		column-count: 2;
+	}
+	.frame:not(:empty) {
+		display: inline-block;
+		width: calc(100% - 27px);
+	}
+	#frame[data-source] > .frame:not(:empty) {
+		width: calc(100% - 3px);
 	}
 }

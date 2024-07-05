@@ -37,6 +37,7 @@ declare interface Test {
 		const {wikitext, html, render} = tests[Number(select.value)]!;
 		pre.textContent = wikitext!;
 		pre.classList.remove('wikiparser');
+		container.removeAttribute('data-source');
 		container1.innerHTML = html;
 		container2.innerHTML = render ?? '';
 		for (const img of container.querySelectorAll<HTMLImageElement>('img[src]')) {
@@ -49,4 +50,20 @@ declare interface Test {
 	container.addEventListener('click', e => {
 		e.preventDefault();
 	}, {capture: true});
+	container.addEventListener('dblclick', e => {
+		e.preventDefault();
+		if (container.dataset['source']) {
+			container.removeAttribute('data-source');
+			container1.innerHTML = container1.textContent!;
+			container2.innerHTML = container2.textContent!;
+		} else {
+			container.dataset['source'] = '1';
+			const pre1 = document.createElement('pre'),
+				pre2 = document.createElement('pre');
+			pre1.textContent = container1.innerHTML;
+			pre2.textContent = container2.innerHTML;
+			container1.replaceChildren(pre1);
+			container2.replaceChildren(pre2);
+		}
+	});
 })();

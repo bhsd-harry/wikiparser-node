@@ -14,9 +14,7 @@ const splitNewLine = (html) => {
             cur.append(child.cloneNode(true));
             continue;
         }
-        const lines = child.nodeType === Node.TEXT_NODE
-            ? textContent.split('\n')
-            : splitNewLine(child);
+        const lines = child.nodeType === Node.TEXT_NODE ? textContent.split('\n') : splitNewLine(child);
         append(cur, lines[0]);
         for (const text of lines.slice(1)) {
             cur = html.cloneNode();

@@ -149,8 +149,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			timer = window.setTimeout((async () => {
 				const astDom = createAST(await wikiparse.json(textbox.value, printer.include, qid));
 				astDom.children[0]!.classList.remove('inactive');
-				astContainer.innerHTML = '';
-				astContainer.append(astDom);
+				astContainer.replaceChildren(astDom);
 			}) as () => void, 2000);
 		}
 	});
