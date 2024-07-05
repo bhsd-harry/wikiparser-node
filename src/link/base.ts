@@ -317,7 +317,7 @@ export abstract class LinkBaseToken extends Token {
 			const {link, length, lastChild, type} = this,
 				{interwiki, title} = link;
 			return `<a ${interwiki && 'class="extiw" '}href="${link.getUrl()}"${
-				title && ` title="${title.replace(/"/gu, '&quot;')}"`
+				title && ` title="${title.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ')}"`
 			}>${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`;
 		}
 		return '';
