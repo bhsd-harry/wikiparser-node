@@ -342,6 +342,7 @@
 		"desc": "Parsoid: Pipe in template with nested template in external link target in template parameter (seriously)",
 		"wikitext": "{{1x|[{{fullurl:{{FULLPAGENAME}}|action=edit}} bar]}}",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.org/index.php?title=Parser_test&amp;action=edit\">bar</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\">bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">fullurl</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">action=edit</span></span>}}</span></span> <span class=\"wpb-ext-link-text\">bar</span>]</span></span></span>}}</span></span>"
 	},
 	{
@@ -726,12 +727,14 @@
 		"desc": "Piped link to URL",
 		"wikitext": "Piped link to URL: [[http://www.example.com|an example URL]]",
 		"html": "<p>Piped link to URL: [<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com%7Can\">example URL</a>]\n</p>",
+		"render": "<p>Piped link to URL: [<a rel=\"nofollow\" class=\"external\">example URL</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">Piped link to URL: [<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com|an</span> <span class=\"wpb-ext-link-text\">example URL</span>]</span>]</span>"
 	},
 	{
 		"desc": "Nested wikilink syntax in wikilink syntax that parses as wikilink in extlink",
 		"wikitext": "[[http://example.com|[[Example]]]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com%7C\"></a><a href=\"/wiki/Example\" title=\"Example\">Example</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\"></a><a href=\"/wiki/Example\" title=\"Example\">Example</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com|</span><span class=\"wpb-ext-link-text\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Example</span>]]</span></span>]</span>]</span>"
 	},
 	{
@@ -3244,6 +3247,7 @@
 		"desc": "Fuzz testing: Parser22",
 		"wikitext": "http://===r:::https://b\n\n{|",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://===r:::https://b\">http://===r:::https://b</a>\n</p>\n<table>\n<tbody><tr><td></td></tr>\n</tbody></table>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\">http://===r:::https://b</a>\n</p>\n<table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://===r:::https://b</span>\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span></span></span>"
 	},
 	{
@@ -8195,6 +8199,7 @@
 		"desc": "Table security: embedded pipes",
 		"wikitext": "{|\n| |[ftp://|x||]\" onmouseover=\"alert(document.cookie)\">test",
 		"html": "<table>\n<tbody><tr>\n<td>[<a rel=\"nofollow\" class=\"external free\" href=\"ftp://%7Cx\">ftp://%7Cx</a></td>\n<td>]\" onmouseover=\"alert(document.cookie)\"&gt;test\n</td>\n</tr>\n</tbody></table>",
+		"render": "<table ><tbody><tr><td >[<a rel=\"nofollow\" class=\"external free\">ftp://|x</a></td><td >]\" onmouseover=\"alert(document.cookie)\"&gt;test</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> </span></span>|<span class=\"wpb-td-inner\">[<span class=\"wpb-free-ext-link\">ftp://|x</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">||</span><span class=\"wpb-td-inner\">]\" onmouseover=\"alert(document.cookie)\"&gt;test</span></span></span></span>"
 	},
 	{

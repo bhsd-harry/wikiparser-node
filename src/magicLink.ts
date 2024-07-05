@@ -245,14 +245,7 @@ export abstract class MagicLinkToken extends Token {
 		} else if (protocol === '//') {
 			link = `https:${link}`;
 		}
-		try {
-			return new URL(link);
-		} catch (e) {
-			if (e instanceof TypeError && e.message === 'Invalid URL') {
-				throw new Error(`External link with a non-standard protocol: ${link}`);
-			}
-			throw e;
-		}
+		return new URL(link);
 	}
 
 	/**
@@ -280,13 +273,16 @@ export abstract class MagicLinkToken extends Token {
 
 	/** @private */
 	override toHtmlInternal(): string {
-		const url = this.getUrl(),
-			{type, innerText, protocol} = this;
-		return `<a ${
+		const {type, innerText, protocol} = this;
+		let url: URL | string | undefined;
+		try {
+			url = this.getUrl();
+		} catch {}
+		return `<a${
 			type === 'magic-link' && protocol === 'ISBN'
 				? ''
-				: `rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}" `
-		}href="${typeof url === 'string' ? url : url.href}">${innerText}</a>`;
+				: ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"`
+		}${url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`}>${innerText}</a>`;
 	}
 }
 

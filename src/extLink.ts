@@ -199,7 +199,8 @@ export abstract class ExtLinkToken extends Token {
 		const {length, lastChild} = this,
 			{childNodes} = lastChild;
 		let trail = '',
-			innerText: string;
+			innerText: string,
+			href: string | undefined;
 		if (length > 1) {
 			const i = childNodes.findIndex(
 				child => child.type === 'link'
@@ -214,7 +215,12 @@ export abstract class ExtLinkToken extends Token {
 		} else {
 			({innerText} = this);
 		}
-		return `<a rel="nofollow" class="external" href="${this.getUrl().href}">${innerText}</a>${trail}`;
+		try {
+			({href} = this.getUrl());
+		} catch {}
+		return `<a rel="nofollow" class="external"${
+			href === undefined ? '' : ` href="${href}"`
+		}>${innerText}</a>${trail}`;
 	}
 }
 
