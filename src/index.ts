@@ -316,10 +316,11 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const lines = this.firstChild!.toString().split('\n');
+		const lines = this.firstChild!.toString().split('\n'),
+			state = {lastPrefix: ''};
 		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
-			lines[i] = parseList(lines[i]!, this.#config, this.#accum);
+			lines[i] = parseList(lines[i]!, state, this.#config, this.#accum);
 		}
 		this.setText(lines.join('\n'));
 	}
