@@ -63,7 +63,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replace(/_/gu, ' ').trim();
+		title = title.replace(/[_ ]+/gu, ' ').trim();
 		if (subpage) {
 			this.ns = 0;
 		} else {

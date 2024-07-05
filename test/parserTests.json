@@ -804,14 +804,14 @@
 		"desc": "Non-breaking spaces in title",
 		"wikitext": "[[&nbsp; Main &nbsp; Page &nbsp;]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">&#160; Main &#160; Page &#160;</a>\n</p>",
-		"render": "<p><a href=\"/wiki/%26nbsp%3B_Main_%26nbsp%3B_Page_%26nbsp%3B\" title=\"&nbsp; Main &nbsp; Page &nbsp;\">&nbsp; Main &nbsp; Page &nbsp;</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">&nbsp; Main &nbsp; Page &nbsp;</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">&amp;nbsp; Main &amp;nbsp; Page &amp;nbsp;</span>]]</span></span>"
 	},
 	{
 		"desc": "Multiple spaces in titles should normalize to a single underscore",
 		"wikitext": "[[Foo bar baz|x]]\n[[Foo  bar baz|x]]\n[[Foo  bar   baz|x]]",
 		"html": "<p><a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo__bar_baz\" title=\"Foo  bar baz\">x</a>\n<a href=\"/wiki/Foo__bar___baz\" title=\"Foo  bar   baz\">x</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n<a href=\"/wiki/Foo_bar_baz\" title=\"Foo bar baz\">x</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo bar baz</span>|<span class=\"wpb-link-text\">x</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo  bar baz</span>|<span class=\"wpb-link-text\">x</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo  bar   baz</span>|<span class=\"wpb-link-text\">x</span>]]</span></span>"
 	},
 	{
@@ -5915,7 +5915,7 @@
 		"desc": "T90902: Normalize weird characters in section IDs",
 		"wikitext": "==Foo&nbsp;bar==\n[[#Foo&nbsp;bar]]",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo_bar\">Foo&#160;bar</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: Foo bar\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<p><a href=\"#Foo_bar\">#Foo&#160;bar</a>\n</p>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo&nbsp;bar\">Foo&nbsp;bar</h2></div>\n<p><a href=\"#Foo%26nbsp%3Bbar\">#Foo&nbsp;bar</a>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Foo&nbsp;bar\">Foo&nbsp;bar</h2></div>\n<p><a href=\"#Foo%20bar\">#Foo&nbsp;bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Foo&amp;nbsp;bar</span>==</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#Foo&amp;nbsp;bar</span>]]</span></span>"
 	},
 	{
