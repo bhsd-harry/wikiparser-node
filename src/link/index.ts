@@ -1,6 +1,6 @@
 import {generateForSelf} from '../../util/lint';
 import {classes} from '../../util/constants';
-import {encode} from '../../util/string';
+import {encode, rawurldecode} from '../../util/string';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
@@ -29,7 +29,7 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/** 链接显示文字 */
 	get innerText(): string {
-		return this.length > 1 ? this.lastChild.text() : this.firstChild.text().replace(/^\s*:?/u, '');
+		return this.length > 1 ? this.lastChild.text() : rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
 	}
 
 	set innerText(text) {

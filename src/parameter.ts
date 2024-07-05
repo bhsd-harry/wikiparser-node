@@ -1,6 +1,7 @@
 import {
 	extUrlChar,
 	extUrlCharFirst,
+	trimPHP,
 
 	/* NOT FOR BROWSER */
 
@@ -117,8 +118,7 @@ export abstract class ParameterToken extends Token {
 
 	/** @private */
 	trimName(name: string | Token, set = true): string {
-		const trimmed = (typeof name === 'string' ? name : name.toString(true))
-			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		const trimmed = trimPHP(typeof name === 'string' ? name : name.toString(true));
 		if (set) {
 			this.setAttribute('name', trimmed);
 		}
