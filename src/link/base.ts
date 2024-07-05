@@ -8,7 +8,7 @@ import {
 	classes,
 } from '../../util/constants';
 import {undo, Shadow} from '../../util/debug';
-import {encode} from '../../util/string';
+import {encode, sanitize} from '../../util/string';
 import {font} from '../../util/html';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -321,7 +321,7 @@ export abstract class LinkBaseToken extends Token {
 				this,
 				`<a ${interwiki && 'class="extiw" '}href="${link.getUrl()}"${
 					title && ` title="${title.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ')}"`
-				}>${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : this.innerText}</a>`,
+				}>${type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : sanitize(this.innerText)}</a>`,
 			);
 		}
 		return '';
