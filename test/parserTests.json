@@ -62,7 +62,7 @@
 		"desc": "Parsing an URL",
 		"wikitext": "http://fr.wikipedia.org/wiki/🍺\n<!-- EasterEgg we love beer, better be able be able to link to it -->",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://fr.wikipedia.org/wiki/🍺\">http://fr.wikipedia.org/wiki/🍺</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://fr.wikipedia.org/wiki/%F0%9F%8D%BA\">http://fr.wikipedia.org/wiki/🍺</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://fr.wikipedia.org/wiki/%F0%9F%8D%BA\">http://fr.wikipedia.org/wiki/🍺</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://fr.wikipedia.org/wiki/🍺</span>\n<span class=\"wpb-comment\">&lt;!-- EasterEgg we love beer, better be able be able to link to it --&gt;</span></span>"
 	},
 	{
@@ -328,14 +328,14 @@
 		"desc": "Parsoid: Pipes in external links in template parameter",
 		"wikitext": "{{1x|[{{1x|http://example.com}} link]}}",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">link</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">link</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">[<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-free-ext-link\">http://example.com</span></span></span>}}</span> link]</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Parsoid: pipe in transclusion parameter",
 		"wikitext": "{{1x|http://foo.com/a&#124;b}}",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://foo.com/a%7Cb\">http://foo.com/a%7Cb</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://foo.com/a&#124;b\">http://foo.com/a&#124;b</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://foo.com/a&#124;b\">http://foo.com/a&#124;b</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-free-ext-link\">http://foo.com/a&amp;#124;b</span></span></span>}}</span></span>"
 	},
 	{
@@ -369,7 +369,7 @@
 		"desc": "Broken wikilinks (but not external links) prevent templates from closing",
 		"wikitext": "[http://example.com x\n\n{{1x|[http://example.com x}}\n\n[[Foo\n\n{{1x|[[Foo}}",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a> x\n</p><p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a> x\n</p><p>[[Foo\n</p><p>{{1x|[[Foo}}\n</p>",
-		"render": "<p>[<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a> x\n</p><p>[<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a> x\n</p><p>[[Foo\n</p><p>{{1x|[[Foo}}\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a> x\n</p><p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a> x\n</p><p>[[Foo\n</p><p>{{1x|[[Foo}}\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-free-ext-link\">http://example.com</span> x\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">[<span class=\"wpb-free-ext-link\">http://example.com</span> x</span></span>}}</span>\n\n[[Foo\n\n{{1x|[[Foo}}</span>"
 	},
 	{
@@ -397,7 +397,7 @@
 		"desc": "T4702: Mismatched <i>, <b> and <a> tags are invalid",
 		"wikitext": "''[http://example.com text'']\n[http://example.com '''text]'''\n''Something [http://example.com in italic'']\n''Something [http://example.com mixed''''', even bold]'''\n'''''Now [http://example.com both''''']",
 		"html": "<p><i><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">text</a></i>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\"><b>text</b></a>\n<i>Something <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">in italic</a></i>\n<i>Something <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">mixed</a></i><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\"><b>, even bold</b></a>\n<i><b>Now <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">both</a></b></i>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"><i>text</i></a><i></i>\n<a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"><b>text</b></a><b></b>\n<i>Something </i><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"><i>in italic</i></a><i></i>\n<i>Something </i><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"><i>mixed</i><b>, even bold</b></a><b><i></i></b>\n<b><i>Now </i></b><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"><b><i>both</i></b></a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>text</i></a><i></i>\n<a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><b>text</b></a><b></b>\n<i>Something </i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>in italic</i></a><i></i>\n<i>Something </i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>mixed</i><b>, even bold</b></a><b><i></i></b>\n<b><i>Now </i></b><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><b><i>both</i></b></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">text<span class=\"wpb-quote\">''</span></span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">'''</span>text</span>]</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">''</span>Something <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">in italic<span class=\"wpb-quote\">''</span></span>]</span>\n<span class=\"wpb-quote\">''</span>Something <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">mixed<span class=\"wpb-quote\">'''''</span>, even bold</span>]</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''''</span>Now <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">both<span class=\"wpb-quote\">'''''</span></span>]</span></span>"
 	},
 	{
@@ -684,35 +684,35 @@
 		"desc": "Plain link to URL",
 		"wikitext": "[[http://www.example.com]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external autonumber\" href=\"http://www.example.com\">[1]</a>]\n</p>",
-		"render": "<p>[<a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">[1]</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">[1]</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span>]</span>]</span>"
 	},
 	{
 		"desc": "Plain link to URL with link text",
 		"wikitext": "[[http://www.example.com Link text]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">Link text</a>]\n</p>",
-		"render": "<p>[<a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">Link text</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">Link text</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">Link text</span>]</span>]</span>"
 	},
 	{
 		"desc": "Plain link to URL containing special characters, with link text (see T213950).",
 		"wikitext": "[[http://www.example.com/?q=%7Babc%7D Link text]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/?q=%7Babc%7D\">Link text</a>]\n</p>",
-		"render": "<p>[<a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?q=%7Babc%7D\">Link text</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?q=%7Babc%7D\">Link text</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?q=%7Babc%7D</span> <span class=\"wpb-ext-link-text\">Link text</span>]</span>]</span>"
 	},
 	{
 		"desc": "Plain link to protocol-relative URL",
 		"wikitext": "[[//www.example.com]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external autonumber\" href=\"//www.example.com\">[1]</a>]\n</p>",
-		"render": "<p>[<a class=\"external\" rel=\"nofollow\" href=\"https://www.example.com/\">[1]</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\" href=\"https://www.example.com/\">[1]</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//www.example.com</span>]</span>]</span>"
 	},
 	{
 		"desc": "Plain link to protocol-relative URL with link text",
 		"wikitext": "[[//www.example.com Link text]]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external text\" href=\"//www.example.com\">Link text</a>]\n</p>",
-		"render": "<p>[<a class=\"external\" rel=\"nofollow\" href=\"https://www.example.com/\">Link text</a>]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external\" href=\"https://www.example.com/\">Link text</a>]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//www.example.com</span> <span class=\"wpb-ext-link-text\">Link text</span>]</span>]</span>"
 	},
 	{
@@ -738,7 +738,7 @@
 		"desc": "Plain link in template argument",
 		"wikitext": "{{1x|[http://www.example.com |123]}}\n\n{{1x|[[http://www.example.com |123]]}}\n\n{{1x|[[http://www.example.com |123]}}\n\n{{1x|[http://www.example.com |123]]}}",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com\">http://www.example.com</a> \n</p><p>[<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">|123</a>]\n</p><p>{{1x|[<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">|123</a>}}\n</p><p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com\">http://www.example.com</a> \n</p>",
-		"render": "<p>[<a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com</a> \n</p><p>[<a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">|123</a>]\n</p><p>{{1x|[<a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">|123</a>}}\n</p><p>[<a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com</a> \n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com</a> \n</p><p>[<a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">|123</a>]\n</p><p>{{1x|[<a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">|123</a>}}\n</p><p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com</a> \n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">[<span class=\"wpb-free-ext-link\">http://www.example.com</span> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123]</span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">|123</span>]</span>]</span></span>}}</span>\n\n{{1x|[<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">|123</span>]</span>}}\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">[<span class=\"wpb-free-ext-link\">http://www.example.com</span> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123]]</span></span>}}</span></span>"
 	},
 	{
@@ -871,7 +871,7 @@
 		"desc": "Parsoid-centric test: Whitespace in ext- and wiki-links should be preserved",
 		"wikitext": "[[Foo|  bar]]\n\n[[Foo|  ''bar'']]\n\n[http://wp.org   foo]\n\n[http://wp.org   ''foo'']",
 		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">  bar</a>\n</p><p><a href=\"/wiki/Foo\" title=\"Foo\">  <i>bar</i></a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://wp.org\">foo</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://wp.org\"><i>foo</i></a>\n</p>",
-		"render": "<p><a href=\"/wiki/Foo\" title=\"Foo\">  bar</a>\n</p><p><a href=\"/wiki/Foo\" title=\"Foo\">  <i>bar</i></a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"http://wp.org/\">foo</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"http://wp.org/\"><i>foo</i></a>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo\" title=\"Foo\">  bar</a>\n</p><p><a href=\"/wiki/Foo\" title=\"Foo\">  <i>bar</i></a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://wp.org/\">foo</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://wp.org/\"><i>foo</i></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">  bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">  <span class=\"wpb-quote\">''</span>bar<span class=\"wpb-quote\">''</span></span>]]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://wp.org</span>   <span class=\"wpb-ext-link-text\">foo</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://wp.org</span>   <span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span></span>]</span></span>"
 	},
 	{
@@ -2271,7 +2271,7 @@
 		"desc": "Render invalid page names as plain text (T53090)",
 		"wikitext": "[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo>bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo[http://example.com]xyz]]\n\n[[{{1x|./../foo}}|bar]]\n[[{{1x|foo/.}}|bar]]\n[[{{1x|foo/..}}|bar]]\n[[{{1x|foo~~~~bar}}]]\n[[{{1x|foo>bar}}]]\n[[{{1x|foo././bar}}]]\n[[{{1x|foo{bar}}]]\n[[{{1x|foo}bar}}]]\n[[{{1x|foo[bar}}]]\n[[{{1x|foo]bar}}]]\n[[{{1x|foo<bar}}]]",
 		"html": "<p>[[./../foo|bar]]\n[[foo�|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~bar]]\n[[foo&gt;bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com\">[1]</a>xyz]]\n</p><p>[[./../foo|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n[[foo~~~~bar]]\n[[foo&gt;bar]]\n[[foo././bar]]\n[[foo{bar]]\n[[foo}bar]]\n[[foo[bar]]\n[[foo]bar]]\n[[foo&lt;bar]]\n</p>",
-		"render": "<p>[[./../foo|bar]]\n<a href=\"/wiki/Foo%EF%BF%BD\" title=\"Foo�\">bar</a>\n[[foo/.|bar]]\n[[foo/..|bar]]\n<a href=\"/wiki/Foo~~~bar\" title=\"Foo~~~bar\">foo~~~bar</a>\n[[foo&gt;bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">[1]</a>xyz]]\n</p><p>[[./../foo|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n<a href=\"/wiki/Foo~~~~bar\" title=\"Foo~~~~bar\">foo~~~~bar</a>\n[[foo&gt;bar]]\n[[foo././bar]]\n[[foo{bar]]\n[[foo}bar]]\n[[foo[bar]]\n[[foo]bar]]\n[[foo&lt;bar]]\n</p>",
+		"render": "<p>[[./../foo|bar]]\n<a href=\"/wiki/Foo%EF%BF%BD\" title=\"Foo�\">bar</a>\n[[foo/.|bar]]\n[[foo/..|bar]]\n<a href=\"/wiki/Foo~~~bar\" title=\"Foo~~~bar\">foo~~~bar</a>\n[[foo&gt;bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">[1]</a>xyz]]\n</p><p>[[./../foo|bar]]\n[[foo/.|bar]]\n[[foo/..|bar]]\n<a href=\"/wiki/Foo~~~~bar\" title=\"Foo~~~~bar\">foo~~~~bar</a>\n[[foo&gt;bar]]\n[[foo././bar]]\n[[foo{bar]]\n[[foo}bar]]\n[[foo[bar]]\n[[foo]bar]]\n[[foo&lt;bar]]\n</p>",
 		"print": "<span class=\"wpb-root\">[[./../foo|bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo�</span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n[[foo/.|bar]]\n[[foo/..|bar]]\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo~~~bar</span>]]</span>\n[[foo&gt;bar]]\n[[foo[bar]]\n[[.]]\n[[..]]\n[[foo././bar]]\n[[foo<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span>]</span>xyz]]\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">./../foo</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo/.</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo/..</span></span>}}</span></span>|<span class=\"wpb-link-text\">bar</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo~~~~bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo&gt;bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo././bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo{bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo}bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo[bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo]bar</span></span>}}</span></span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo&lt;bar</span></span>}}</span></span>]]</span></span>"
 	},
 	{
@@ -2474,7 +2474,7 @@
 		"desc": "T3186 news: in the middle of text",
 		"wikitext": "http://en.wikinews.org/wiki/Wikinews:Workplace",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://en.wikinews.org/wiki/Wikinews:Workplace\">http://en.wikinews.org/wiki/Wikinews:Workplace</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://en.wikinews.org/wiki/Wikinews:Workplace\">http://en.wikinews.org/wiki/Wikinews:Workplace</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://en.wikinews.org/wiki/Wikinews:Workplace\">http://en.wikinews.org/wiki/Wikinews:Workplace</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://en.wikinews.org/wiki/Wikinews:Workplace</span></span>"
 	},
 	{
@@ -2593,7 +2593,7 @@
 		"desc": "Pseudo-tag with URL 'name' renders as url link",
 		"wikitext": "<http://example.com/>",
 		"html": "<p>&lt;<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a>&gt;\n</p>",
-		"render": "<p>&lt;<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com/</a>&gt;\n</p>",
+		"render": "<p>&lt;<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a>&gt;\n</p>",
 		"print": "<span class=\"wpb-root\">&lt;<span class=\"wpb-free-ext-link\">http://example.com/</span>&gt;</span>"
 	},
 	{
@@ -3216,7 +3216,7 @@
 		"desc": "T7918: autonumbering",
 		"wikitext": "[http://first/] [http://second] [ftp://ftp]\n\nftp://inlineftp\n\n[mailto:enclosed@mail.tld With target]\n\n[mailto:enclosed@mail.tld]\n\nmailto:inline@mail.tld",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://first/\">[1]</a> <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://second\">[2]</a> <a rel=\"nofollow\" class=\"external autonumber\" href=\"ftp://ftp\">[3]</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"ftp://inlineftp\">ftp://inlineftp</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"mailto:enclosed@mail.tld\">With target</a>\n</p><p><a rel=\"nofollow\" class=\"external autonumber\" href=\"mailto:enclosed@mail.tld\">[4]</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"mailto:inline@mail.tld\">mailto:inline@mail.tld</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://first/\">[1]</a> <a class=\"external\" rel=\"nofollow\" href=\"http://second/\">[2]</a> <a class=\"external\" rel=\"nofollow\" href=\"ftp://ftp/\">[3]</a>\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"ftp://inlineftp/\">ftp://inlineftp</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"mailto:enclosed@mail.tld\">With target</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"mailto:enclosed@mail.tld\">[4]</a>\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"mailto:inline@mail.tld\">mailto:inline@mail.tld</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://first/\">[1]</a> <a rel=\"nofollow\" class=\"external\" href=\"http://second/\">[2]</a> <a rel=\"nofollow\" class=\"external\" href=\"ftp://ftp/\">[3]</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"ftp://inlineftp/\">ftp://inlineftp</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"mailto:enclosed@mail.tld\">With target</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"mailto:enclosed@mail.tld\">[4]</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"mailto:inline@mail.tld\">mailto:inline@mail.tld</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://first/</span>]</span> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://second</span>]</span> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">ftp://ftp</span>]</span>\n\n<span class=\"wpb-free-ext-link\">ftp://inlineftp</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">mailto:enclosed@mail.tld</span> <span class=\"wpb-ext-link-text\">With target</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">mailto:enclosed@mail.tld</span>]</span>\n\n<span class=\"wpb-free-ext-link\">mailto:inline@mail.tld</span></span>"
 	},
 	{
@@ -3237,7 +3237,7 @@
 		"desc": "Fuzz testing: Parser21",
 		"wikitext": "{|\n!irc://{{ftp://a\" onmouseover=\"alert('hello world');\"\n|",
 		"html": "<table>\n<tbody><tr>\n<th><a rel=\"nofollow\" class=\"external free\" href=\"irc://{{ftp://a\">irc://{{ftp://a</a>\" onmouseover=\"alert('hello world');\"\n</th>\n<td>\n</td>\n</tr>\n</tbody></table>",
-		"render": "<table ><tbody><tr><th ><a class=\"external free\" rel=\"nofollow\" href=\"irc://{{ftp//a\">irc://{{ftp://a</a>\" onmouseover=\"alert('hello world');\"</th><td ></td></tr></tbody></table>",
+		"render": "<table ><tbody><tr><th ><a rel=\"nofollow\" class=\"external free\" href=\"irc://{{ftp//a\">irc://{{ftp://a</a>\" onmouseover=\"alert('hello world');\"</th><td ></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\"><span class=\"wpb-free-ext-link\">irc://{{ftp://a</span>\" onmouseover=\"alert('hello world');\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span></span></span></span>"
 	},
 	{
@@ -3271,21 +3271,21 @@
 		"desc": "Fuzz testing: URL adjacent extension (with space, clean)",
 		"wikitext": "http://example.com <nowiki>junk</nowiki>",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a> junk\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a> junk\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a> junk\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span> <span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">junk</span>&lt;/nowiki&gt;</span></span>"
 	},
 	{
 		"desc": "Fuzz testing: URL adjacent extension (no space, dirty; nowiki)",
 		"wikitext": "http://example.com<nowiki>junk</nowiki>",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>junk\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>junk\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>junk\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">junk</span>&lt;/nowiki&gt;</span></span>"
 	},
 	{
 		"desc": "Fuzz testing: URL adjacent extension (no space, dirty; pre)",
 		"wikitext": "http://example.com<pre>junk</pre>",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a></p><pre>junk</pre>",
-		"render": "<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a><pre >junk</pre>",
+		"render": "<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a><pre >junk</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">junk</span>&lt;/pre&gt;</span></span>"
 	},
 	{
@@ -3397,14 +3397,14 @@
 		"desc": "Handling of &#x0A; in URLs",
 		"wikitext": "*irc://&#x0A;a",
 		"html": "<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"irc://%0Aa\">irc://%0Aa</a></li></ul>",
-		"render": "<ul><li><a class=\"external free\" rel=\"nofollow\" href=\"irc://&#x0A;a\">irc://&#x0A;a</a></li></ul>",
+		"render": "<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"irc://&#x0A;a\">irc://&#x0A;a</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">irc://&amp;#x0A;a</span></span>"
 	},
 	{
 		"desc": "Handling of %0A in URLs",
 		"wikitext": "*irc://%0Aa",
 		"html": "<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"irc://%0Aa\">irc://%0Aa</a></li></ul>",
-		"render": "<ul><li><a class=\"external free\" rel=\"nofollow\" href=\"irc://%0Aa\">irc://%0Aa</a></li></ul>",
+		"render": "<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"irc://%0Aa\">irc://%0Aa</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">irc://%0Aa</span></span>"
 	},
 	{
@@ -3523,14 +3523,14 @@
 		"desc": "T24905: <abbr> followed by ISBN followed by </a>",
 		"wikitext": "<abbr>(fr)</abbr> ISBN 2753300917 [http://www.example.com example.com]",
 		"html": "<p><abbr>(fr)</abbr> <a href=\"/wiki/Special:BookSources/2753300917\" class=\"internal mw-magiclink-isbn\">ISBN 2753300917</a> <a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">example.com</a>\n</p>",
-		"render": "<p><abbr >(fr)</abbr> <a href=\"/wiki/Special%3ABookSources%2F2753300917\">ISBN 2753300917</a> <a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">example.com</a>\n</p>",
+		"render": "<p><abbr >(fr)</abbr> <a href=\"/wiki/Special%3ABookSources%2F2753300917\">ISBN 2753300917</a> <a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">example.com</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;abbr&gt;</span>(fr)<span class=\"wpb-html\">&lt;/abbr&gt;</span> <span class=\"wpb-magic-link\">ISBN 2753300917</span> <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">example.com</span>]</span></span>"
 	},
 	{
 		"desc": "Double RFC",
 		"wikitext": "RFC RFC 1234",
 		"html": "<p>RFC <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc1234\">RFC 1234</a>\n</p>",
-		"render": "<p>RFC <a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc1234\">RFC 1234</a>\n</p>",
+		"render": "<p>RFC <a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc1234\">RFC 1234</a>\n</p>",
 		"print": "<span class=\"wpb-root\">RFC <span class=\"wpb-magic-link\">RFC 1234</span></span>"
 	},
 	{
@@ -3544,7 +3544,7 @@
 		"desc": "RFC code coverage",
 		"wikitext": "RFC   983&#x20;987",
 		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc983\">RFC 983</a>&#x20;987\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc983\">RFC 983</a>&#x20;987\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc983\">RFC 983</a>&#x20;987\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC   983</span>&amp;#x20;987</span>"
 	},
 	{
@@ -4034,21 +4034,21 @@
 		"desc": "T21052 U+3000 IDEOGRAPHIC SPACE should terminate free external links",
 		"wikitext": "http://www.example.org/　<-- U+3000 (vim: ^Vu3000)",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.org/\">http://www.example.org/</a>　&lt;-- U+3000 (vim: ^Vu3000)\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.org/\">http://www.example.org/</a>　&lt;-- U+3000 (vim: ^Vu3000)\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.org/\">http://www.example.org/</a>　&lt;-- U+3000 (vim: ^Vu3000)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.org/</span>　&lt;-- U+3000 (vim: ^Vu3000)</span>"
 	},
 	{
 		"desc": "T21052 U+3000 IDEOGRAPHIC SPACE should terminate bracketed external links",
 		"wikitext": "[http://www.example.org/　ideograms]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.org/\">ideograms</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.org/\">ideograms</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.org/\">ideograms</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.org/</span>　<span class=\"wpb-ext-link-text\">ideograms</span>]</span></span>"
 	},
 	{
 		"desc": "T21052 U+3000 IDEOGRAPHIC SPACE should terminate external images links",
 		"wikitext": "http://www.example.org/pic.png　<-- U+3000 (vim: ^Vu3000)",
 		"html": "<p><img src=\"http://www.example.org/pic.png\" alt=\"pic.png\" />　&lt;-- U+3000 (vim: ^Vu3000)\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.org/pic.png\">http://www.example.org/pic.png</a>　&lt;-- U+3000 (vim: ^Vu3000)\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.org/pic.png\">http://www.example.org/pic.png</a>　&lt;-- U+3000 (vim: ^Vu3000)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.org/pic.png</span>　&lt;-- U+3000 (vim: ^Vu3000)</span>"
 	},
 	{
@@ -4202,21 +4202,21 @@
 		"desc": "T36939 - Case insensitive link parsing ([HttP://])",
 		"wikitext": "[HttP://MediaWiki.Org/]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"HttP://MediaWiki.Org/\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://mediawiki.org/\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://mediawiki.org/\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">HttP://MediaWiki.Org/</span>]</span></span>"
 	},
 	{
 		"desc": "T36939 - Case insensitive link parsing ([HttP:// title])",
 		"wikitext": "[HttP://MediaWiki.Org/ MediaWiki]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"HttP://MediaWiki.Org/\">MediaWiki</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://mediawiki.org/\">MediaWiki</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://mediawiki.org/\">MediaWiki</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">HttP://MediaWiki.Org/</span> <span class=\"wpb-ext-link-text\">MediaWiki</span>]</span></span>"
 	},
 	{
 		"desc": "T36939 - Case insensitive link parsing (HttP://)",
 		"wikitext": "HttP://MediaWiki.Org/",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"HttP://MediaWiki.Org/\">HttP://MediaWiki.Org/</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://mediawiki.org/\">HttP://MediaWiki.Org/</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://mediawiki.org/\">HttP://MediaWiki.Org/</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">HttP://MediaWiki.Org/</span></span>"
 	},
 	{
@@ -4384,7 +4384,7 @@
 		"desc": "Magic links inside links (not autolinked)",
 		"wikitext": "[[Foo|http://example.com]]\n[[Foo|RFC 1234]]\n[[Foo|PMID 1234]]\n[[Foo|ISBN 123456789x]]\n\n[http://foo.com http://example.com]\n[http://foo.com RFC 1234]\n[http://foo.com PMID 1234]\n[http://foo.com ISBN 123456789x]",
 		"html": "<p><a href=\"/wiki/Foo\" title=\"Foo\">http://example.com</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">RFC 1234</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">PMID 1234</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">ISBN 123456789x</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://foo.com\">http://example.com</a>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://foo.com\">RFC 1234</a>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://foo.com\">PMID 1234</a>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://foo.com\">ISBN 123456789x</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Foo\" title=\"Foo\">http://example.com</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">RFC 1234</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">PMID 1234</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">ISBN 123456789x</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"http://foo.com/\">http://example.com</a>\n<a class=\"external\" rel=\"nofollow\" href=\"http://foo.com/\">RFC 1234</a>\n<a class=\"external\" rel=\"nofollow\" href=\"http://foo.com/\">PMID 1234</a>\n<a class=\"external\" rel=\"nofollow\" href=\"http://foo.com/\">ISBN 123456789x</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Foo\" title=\"Foo\">http://example.com</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">RFC 1234</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">PMID 1234</a>\n<a href=\"/wiki/Foo\" title=\"Foo\">ISBN 123456789x</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://foo.com/\">http://example.com</a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://foo.com/\">RFC 1234</a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://foo.com/\">PMID 1234</a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://foo.com/\">ISBN 123456789x</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">http://example.com</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">RFC 1234</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">PMID 1234</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">ISBN 123456789x</span>]]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://foo.com</span> <span class=\"wpb-ext-link-text\">http://example.com</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://foo.com</span> <span class=\"wpb-ext-link-text\">RFC 1234</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://foo.com</span> <span class=\"wpb-ext-link-text\">PMID 1234</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://foo.com</span> <span class=\"wpb-ext-link-text\">ISBN 123456789x</span>]</span></span>"
 	},
 	{
@@ -4419,7 +4419,7 @@
 		"desc": "T51672: Test for brackets in attributes of elements in external link texts",
 		"wikitext": "[http://example.com/ link <span title=\"title with [brackets]\">span</span>]\n[http://example.com/ link <span title=\"title with &#91;brackets&#93;\">span</span>]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">link <span title=\"title with &#91;brackets&#93;\">span</span></a>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">link <span title=\"title with &#91;brackets&#93;\">span</span></a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">link <span title=\"title with [brackets]\">span</span></a>\n<a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">link <span title=\"title with &#91;brackets&#93;\">span</span></a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">link <span title=\"title with [brackets]\">span</span></a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">link <span title=\"title with &#91;brackets&#93;\">span</span></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/</span> <span class=\"wpb-ext-link-text\">link <span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">title with [brackets]</span>\"</span></span>&gt;</span>span<span class=\"wpb-html\">&lt;/span&gt;</span></span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/</span> <span class=\"wpb-ext-link-text\">link <span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"><span class=\"wpb-attr-dirty\"> </span><span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">title with &amp;#91;brackets&amp;#93;</span>\"</span></span>&gt;</span>span<span class=\"wpb-html\">&lt;/span&gt;</span></span>]</span></span>"
 	},
 	{
@@ -4478,35 +4478,35 @@
 		"desc": "External links: invalid character NUL (stripped)",
 		"wikitext": "[http://www.example.com\u0000 test]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">test</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">test</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">test</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">test</span>]</span></span>"
 	},
 	{
 		"desc": "External links: invalid character backspace (preserved)",
 		"wikitext": "[http://www.example.com\b test]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com\">http://www.example.com</a>\b test]\n</p>",
-		"render": "<p>[<a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com</a>\b test]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com</a>\b test]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-free-ext-link\">http://www.example.com</span>\b test]</span>"
 	},
 	{
 		"desc": "Magic link: invalid character NUL (stripped)",
 		"wikitext": "http://www.example.com\u0000 test",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com\">http://www.example.com</a> test\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com</a> test\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com</a> test\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com</span> test</span>"
 	},
 	{
 		"desc": "Magic link: invalid character backspace (preserved)",
 		"wikitext": "http://www.example.com\b test",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com\">http://www.example.com</a>\b test\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com</a>\b test\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com</a>\b test\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com</span>\b test</span>"
 	},
 	{
 		"desc": "External links: tab character",
 		"wikitext": "[http://www.example.com Alice in\tWonderland]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">Alice in\tWonderland</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">Alice in\tWonderland</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">Alice in\tWonderland</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">Alice in\tWonderland</span>]</span></span>"
 	},
 	{
@@ -4673,14 +4673,14 @@
 		"desc": "Definition list with URL link",
 		"wikitext": ";http://example.com/ :definition",
 		"html": "<dl><dt><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a></dt>\n<dd>definition</dd></dl>",
-		"render": "<dl><dt><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com/</a></dt>\n<dd>definition</dd></dl>",
+		"render": "<dl><dt><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a></dt>\n<dd>definition</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-free-ext-link\">http://example.com/</span> <span class=\"wpb-dd\">:</span>definition</span>"
 	},
 	{
 		"desc": "Definition list with bracketed URL link",
 		"wikitext": ";[http://www.example.com/ Example]:Something about it",
 		"html": "<dl><dt><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/\">Example</a></dt>\n<dd>Something about it</dd></dl>",
-		"render": "<dl><dt><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">Example</a></dt>\n<dd>Something about it</dd></dl>",
+		"render": "<dl><dt><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">Example</a></dt>\n<dd>Something about it</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/</span> <span class=\"wpb-ext-link-text\">Example</span>]</span><span class=\"wpb-dd\">:</span>Something about it</span>"
 	},
 	{
@@ -4694,21 +4694,21 @@
 		"desc": "Definition list with news link containing colon",
 		"wikitext": ";news:alt.wikipedia.rox :This isn't even a real newsgroup!",
 		"html": "<dl><dt><a rel=\"nofollow\" class=\"external free\" href=\"news:alt.wikipedia.rox\">news:alt.wikipedia.rox</a></dt>\n<dd>This isn't even a real newsgroup!</dd></dl>",
-		"render": "<dl><dt><a class=\"external free\" rel=\"nofollow\" href=\"news:alt.wikipedia.rox\">news:alt.wikipedia.rox</a></dt>\n<dd>This isn't even a real newsgroup!</dd></dl>",
+		"render": "<dl><dt><a rel=\"nofollow\" class=\"external free\" href=\"news:alt.wikipedia.rox\">news:alt.wikipedia.rox</a></dt>\n<dd>This isn't even a real newsgroup!</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-free-ext-link\">news:alt.wikipedia.rox</span> <span class=\"wpb-dd\">:</span>This isn't even a real newsgroup!</span>"
 	},
 	{
 		"desc": "Malformed definition list with colon",
 		"wikitext": ";news:alt.wikipedia.rox -- don't crash or enter an infinite loop",
 		"html": "<dl><dt><a rel=\"nofollow\" class=\"external free\" href=\"news:alt.wikipedia.rox\">news:alt.wikipedia.rox</a> -- don't crash or enter an infinite loop</dt></dl>",
-		"render": "<dl><dt><a class=\"external free\" rel=\"nofollow\" href=\"news:alt.wikipedia.rox\">news:alt.wikipedia.rox</a> -- don't crash or enter an infinite loop</dt></dl>",
+		"render": "<dl><dt><a rel=\"nofollow\" class=\"external free\" href=\"news:alt.wikipedia.rox\">news:alt.wikipedia.rox</a> -- don't crash or enter an infinite loop</dt></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-free-ext-link\">news:alt.wikipedia.rox</span> -- don't crash or enter an infinite loop</span>"
 	},
 	{
 		"desc": "Definition lists: colon in external link text",
 		"wikitext": ";[http://www.wikipedia2.org/ Wikipedia :The Next Generation] :OK, I made that up",
 		"html": "<dl><dt><a rel=\"nofollow\" class=\"external text\" href=\"http://www.wikipedia2.org/\">Wikipedia :The Next Generation</a></dt>\n<dd>OK, I made that up</dd></dl>",
-		"render": "<dl><dt><a class=\"external\" rel=\"nofollow\" href=\"http://www.wikipedia2.org/\">Wikipedia :The Next Generation</a></dt>\n<dd>OK, I made that up</dd></dl>",
+		"render": "<dl><dt><a rel=\"nofollow\" class=\"external\" href=\"http://www.wikipedia2.org/\">Wikipedia :The Next Generation</a></dt>\n<dd>OK, I made that up</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.wikipedia2.org/</span> <span class=\"wpb-ext-link-text\">Wikipedia :The Next Generation</span>]</span> <span class=\"wpb-dd\">:</span>OK, I made that up</span>"
 	},
 	{
@@ -4984,98 +4984,98 @@
 		"desc": "External links: non-bracketed",
 		"wikitext": "Non-bracketed: http://example.com",
 		"html": "<p>Non-bracketed: <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\n</p>",
-		"render": "<p>Non-bracketed: <a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\n</p>",
+		"render": "<p>Non-bracketed: <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Non-bracketed: <span class=\"wpb-free-ext-link\">http://example.com</span></span>"
 	},
 	{
 		"desc": "External links: numbered",
 		"wikitext": "Numbered: [http://example.com]\nNumbered: [http://example.net]\nNumbered: [http://example.com]",
 		"html": "<p>Numbered: <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com\">[1]</a>\nNumbered: <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.net\">[2]</a>\nNumbered: <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com\">[3]</a>\n</p>",
-		"render": "<p>Numbered: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">[1]</a>\nNumbered: <a class=\"external\" rel=\"nofollow\" href=\"http://example.net/\">[2]</a>\nNumbered: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">[3]</a>\n</p>",
+		"render": "<p>Numbered: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">[1]</a>\nNumbered: <a rel=\"nofollow\" class=\"external\" href=\"http://example.net/\">[2]</a>\nNumbered: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">[3]</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Numbered: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span>]</span>\nNumbered: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.net</span>]</span>\nNumbered: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span>]</span></span>"
 	},
 	{
 		"desc": "External links: specified text",
 		"wikitext": "Specified text: [http://example.com link]",
 		"html": "<p>Specified text: <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">link</a>\n</p>",
-		"render": "<p>Specified text: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">link</a>\n</p>",
+		"render": "<p>Specified text: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Specified text: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">link</span>]</span></span>"
 	},
 	{
 		"desc": "External links: trail",
 		"wikitext": "Linktrails should not work for external links: [http://example.com link]s",
 		"html": "<p>Linktrails should not work for external links: <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">link</a>s\n</p>",
-		"render": "<p>Linktrails should not work for external links: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">link</a>s\n</p>",
+		"render": "<p>Linktrails should not work for external links: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">link</a>s\n</p>",
 		"print": "<span class=\"wpb-root\">Linktrails should not work for external links: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">link</span>]</span>s</span>"
 	},
 	{
 		"desc": "External links: dollar sign in URL",
 		"wikitext": "http://example.com/1$2345",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/1$2345\">http://example.com/1$2345</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/1$2345\">http://example.com/1$2345</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/1$2345\">http://example.com/1$2345</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com/1$2345</span></span>"
 	},
 	{
 		"desc": "External links: dollar sign in URL (autonumber)",
 		"wikitext": "[http://example.com/1$2345]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com/1$2345\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/1$2345\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/1$2345\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/1$2345</span>]</span></span>"
 	},
 	{
 		"desc": "External links: open square bracket forbidden in URL (T6377)",
 		"wikitext": "http://example.com/1[2345",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/1\">http://example.com/1</a>[2345\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/1\">http://example.com/1</a>[2345\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/1\">http://example.com/1</a>[2345\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com/1</span>[2345</span>"
 	},
 	{
 		"desc": "External links: open square bracket forbidden in URL (named) (T6377)",
 		"wikitext": "[http://example.com/1[2345]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/1\">[2345</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/1\">[2345</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/1\">[2345</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/1</span><span class=\"wpb-ext-link-text\">[2345</span>]</span></span>"
 	},
 	{
 		"desc": "External links: open square bracket forbidden in URL (named) (T6377)\nParsoid variant.",
 		"wikitext": "[http://example.com/1 [2345]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/1\">[2345</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/1\">[2345</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/1\">[2345</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/1</span> <span class=\"wpb-ext-link-text\">[2345</span>]</span></span>"
 	},
 	{
 		"desc": "External links: nowiki in URL link text (T8230)",
 		"wikitext": "[http://example.com/ <nowiki>''example site''</nowiki>]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">''example site''</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">''example site''</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">''example site''</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">''example site''</span>&lt;/nowiki&gt;</span></span>]</span></span>"
 	},
 	{
 		"desc": "External links: newline forbidden in text (T8230 regression check)",
 		"wikitext": "[http://example.com/ first\nsecond]",
 		"html": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a> first\nsecond]\n</p>",
-		"render": "<p>[<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com/</a> first\nsecond]\n</p>",
+		"render": "<p>[<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a> first\nsecond]\n</p>",
 		"print": "<span class=\"wpb-root\">[<span class=\"wpb-free-ext-link\">http://example.com/</span> first\nsecond]</span>"
 	},
 	{
 		"desc": "External links: Pipe char between url and text",
 		"wikitext": "[http://example.com | link]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">| link</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">| link</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">| link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">| link</span>]</span></span>"
 	},
 	{
 		"desc": "External links: protocol-relative URL in brackets",
 		"wikitext": "[//example.com/ Test]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"//example.com/\">Test</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://example.com/\">Test</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://example.com/\">Test</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//example.com/</span> <span class=\"wpb-ext-link-text\">Test</span>]</span></span>"
 	},
 	{
 		"desc": "External links: protocol-relative URL in brackets without text",
 		"wikitext": "[//example.com]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"//example.com\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://example.com/\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://example.com/\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//example.com</span>]</span></span>"
 	},
 	{
@@ -5096,42 +5096,42 @@
 		"desc": "External links: with no contents",
 		"wikitext": "[http://en.wikipedia.org/wiki/Foo]\n\n[[wikipedia:Foo|Bar]]\n\n[[wikipedia:Foo|<span>Bar</span>]]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://en.wikipedia.org/wiki/Foo\">[1]</a>\n</p><p><a href=\"http://en.wikipedia.org/wiki/Foo\" class=\"extiw\" title=\"wikipedia:Foo\">Bar</a>\n</p><p><a href=\"http://en.wikipedia.org/wiki/Foo\" class=\"extiw\" title=\"wikipedia:Foo\"><span>Bar</span></a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://en.wikipedia.org/wiki/Foo\">[1]</a>\n</p><p><a href=\"/wiki/Project%3AFoo\" title=\"Project:Foo\">Bar</a>\n</p><p><a href=\"/wiki/Project%3AFoo\" title=\"Project:Foo\"><span >Bar</span></a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://en.wikipedia.org/wiki/Foo\">[1]</a>\n</p><p><a href=\"/wiki/Project%3AFoo\" title=\"Project:Foo\">Bar</a>\n</p><p><a href=\"/wiki/Project%3AFoo\" title=\"Project:Foo\"><span >Bar</span></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://en.wikipedia.org/wiki/Foo</span>]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">wikipedia:Foo</span>|<span class=\"wpb-link-text\">Bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">wikipedia:Foo</span>|<span class=\"wpb-link-text\"><span class=\"wpb-html\">&lt;span&gt;</span>Bar<span class=\"wpb-html\">&lt;/span&gt;</span></span>]]</span></span>"
 	},
 	{
 		"desc": "External links: Free with trailing punctuation",
 		"wikitext": "http://example.com,\nhttp://example.com;\nhttp://example.com\\\nhttp://example.com.\nhttp://example.com:\nhttp://example.com!\nhttp://example.com?\nhttp://example.com)\nhttp://example.com/url_with_(brackets)\n(http://example.com/url_without_brackets)\nhttp://example.com/url_with_entity&amp;\nhttp://example.com/url_with_entity&#x26;\nhttp://example.com/url_with_entity&#038;\nhttp://example.com/url_with_entity&nbsp;\nhttp://example.com/url_with_entity&#xA0;\nhttp://example.com/url_with_entity&#160;\nhttp://example.com/url_with_entity&lt;\nhttp://example.com/url_with_entity&#x3C;\nhttp://example.com/url_with_entity&#60;",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>,\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\\\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>.\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>:\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>!\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>?\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_(brackets)\">http://example.com/url_with_(brackets)</a>\n(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_without_brackets\">http://example.com/url_without_brackets</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#xa0;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&lt;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#x3c;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#60;\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>,\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>;\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\\\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>.\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>:\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>!\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>?\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>)\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_(brackets)\">http://example.com/url_with_(brackets)</a>\n(<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_without_brackets\">http://example.com/url_without_brackets</a>)\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity&#x26;\">http://example.com/url_with_entity&#x26;</a>\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity&#038;\">http://example.com/url_with_entity&#038;</a>\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&nbsp;\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#xA0;\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&lt;\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#x3C;\n<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#60;\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>,\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>\\\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>.\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>:\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>!\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>?\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_(brackets)\">http://example.com/url_with_(brackets)</a>\n(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_without_brackets\">http://example.com/url_without_brackets</a>)\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;\">http://example.com/url_with_entity&amp;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&#x26;\">http://example.com/url_with_entity&#x26;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&#038;\">http://example.com/url_with_entity&#038;</a>\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&nbsp;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#xA0;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#160;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&lt;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#x3C;\n<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity\">http://example.com/url_with_entity</a>&#60;\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span>,\n<span class=\"wpb-free-ext-link\">http://example.com</span>;\n<span class=\"wpb-free-ext-link\">http://example.com</span>\\\n<span class=\"wpb-free-ext-link\">http://example.com</span>.\n<span class=\"wpb-free-ext-link\">http://example.com</span>:\n<span class=\"wpb-free-ext-link\">http://example.com</span>!\n<span class=\"wpb-free-ext-link\">http://example.com</span>?\n<span class=\"wpb-free-ext-link\">http://example.com</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_(brackets)</span>\n(<span class=\"wpb-free-ext-link\">http://example.com/url_without_brackets</span>)\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;amp;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#x26;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;#038;</span>\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;nbsp;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#xA0;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#160;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;lt;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#x3C;\n<span class=\"wpb-free-ext-link\">http://example.com/url_with_entity</span>&amp;#60;</span>"
 	},
 	{
 		"desc": "External links: tricky Parsoid html2html case",
 		"wikitext": "http://example.com/url_with_entity&amp;amp;",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;amp\">http://example.com/url_with_entity&amp;amp</a>;\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/url_with_entity&amp;amp\">http://example.com/url_with_entity&amp;amp</a>;\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/url_with_entity&amp;amp\">http://example.com/url_with_entity&amp;amp</a>;\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com/url_with_entity&amp;amp;amp</span>;</span>"
 	},
 	{
 		"desc": "External links: html2html with trailing dot (T263203)",
 		"wikitext": "test [http://example.com/test. http://example.com/test.] test\n\ntest http://example.com/test. test",
 		"html": "<p>test <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/test.\">http://example.com/test.</a> test\n</p><p>test <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/test\">http://example.com/test</a>. test\n</p>",
-		"render": "<p>test <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/test.\">http://example.com/test.</a> test\n</p><p>test <a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/test\">http://example.com/test</a>. test\n</p>",
+		"render": "<p>test <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/test.\">http://example.com/test.</a> test\n</p><p>test <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/test\">http://example.com/test</a>. test\n</p>",
 		"print": "<span class=\"wpb-root\">test <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/test.</span> <span class=\"wpb-ext-link-text\">http://example.com/test.</span>]</span> test\n\ntest <span class=\"wpb-free-ext-link\">http://example.com/test</span>. test</span>"
 	},
 	{
 		"desc": "External links: Free with trailing quotes (T113666)",
 		"wikitext": "'''News:''' Stuff here\n\nnews:'a'b''c''d e",
 		"html": "<p><b>News:</b> Stuff here\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"news:&#39;a&#39;b\">news:'a'b</a><i>c</i>d e\n</p>",
-		"render": "<p><b>News:</b> Stuff here\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"news:'a'b\">news:'a'b</a><i>c</i>d e\n</p>",
+		"render": "<p><b>News:</b> Stuff here\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"news:'a'b\">news:'a'b</a><i>c</i>d e\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>News:<span class=\"wpb-quote\">'''</span> Stuff here\n\n<span class=\"wpb-free-ext-link\">news:'a'b</span><span class=\"wpb-quote\">''</span>c<span class=\"wpb-quote\">''</span>d e</span>"
 	},
 	{
 		"desc": "External links: with entity",
 		"wikitext": "[http://&#x20;www.librarieswithoutborders.org Libraries without borders]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://+www.librarieswithoutborders.org\">Libraries without borders</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://&/#x20;www.librarieswithoutborders.org\">Libraries without borders</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://&/#x20;www.librarieswithoutborders.org\">Libraries without borders</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://&amp;#x20;www.librarieswithoutborders.org</span> <span class=\"wpb-ext-link-text\">Libraries without borders</span>]</span></span>"
 	},
 	{
@@ -5145,231 +5145,231 @@
 		"desc": "External links: No preceding word characters allowed (T67278)",
 		"wikitext": "NOPEhttp://example.com\nN0http://example.com\nok:http://example.com\nok-http://example.com",
 		"html": "<p>NOPEhttp://example.com\nN0http://example.com\nok:<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\nok-<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\n</p>",
-		"render": "<p>NOPEhttp://example.com\nN0http://example.com\nok:<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\nok-<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\n</p>",
+		"render": "<p>NOPEhttp://example.com\nN0http://example.com\nok:<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>\nok-<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>\n</p>",
 		"print": "<span class=\"wpb-root\">NOPEhttp://example.com\nN0http://example.com\nok:<span class=\"wpb-free-ext-link\">http://example.com</span>\nok-<span class=\"wpb-free-ext-link\">http://example.com</span></span>"
 	},
 	{
 		"desc": "External links: nofollow domain exception",
 		"wikitext": "A [https://no-nofollow.org/foobar link], and another [https://example.org link].",
 		"html": "<p>A <a class=\"external text\" href=\"https://no-nofollow.org/foobar\">link</a>, and another <a rel=\"nofollow\" class=\"external text\" href=\"https://example.org\">link</a>.\n</p>",
-		"render": "<p>A <a class=\"external\" rel=\"nofollow\" href=\"https://no-nofollow.org/foobar\">link</a>, and another <a class=\"external\" rel=\"nofollow\" href=\"https://example.org/\">link</a>.\n</p>",
+		"render": "<p>A <a rel=\"nofollow\" class=\"external\" href=\"https://no-nofollow.org/foobar\">link</a>, and another <a rel=\"nofollow\" class=\"external\" href=\"https://example.org/\">link</a>.\n</p>",
 		"print": "<span class=\"wpb-root\">A <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://no-nofollow.org/foobar</span> <span class=\"wpb-ext-link-text\">link</span>]</span>, and another <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://example.org</span> <span class=\"wpb-ext-link-text\">link</span>]</span>.</span>"
 	},
 	{
 		"desc": "External image",
 		"wikitext": "External image: http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png",
 		"html": "<p>External image: <img src=\"http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\" alt=\"Ncwikicol.png\" />\n</p>",
-		"render": "<p>External image: <a class=\"external free\" rel=\"nofollow\" href=\"http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\">http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</a>\n</p>",
+		"render": "<p>External image: <a rel=\"nofollow\" class=\"external free\" href=\"http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\">http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</a>\n</p>",
 		"print": "<span class=\"wpb-root\">External image: <span class=\"wpb-free-ext-link\">http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</span></span>"
 	},
 	{
 		"desc": "External image from https",
 		"wikitext": "External image from https: https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png",
 		"html": "<p>External image from https: <img src=\"https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\" alt=\"Ncwikicol.png\" />\n</p>",
-		"render": "<p>External image from https: <a class=\"external free\" rel=\"nofollow\" href=\"https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\">https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</a>\n</p>",
+		"render": "<p>External image from https: <a rel=\"nofollow\" class=\"external free\" href=\"https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\">https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</a>\n</p>",
 		"print": "<span class=\"wpb-root\">External image from https: <span class=\"wpb-free-ext-link\">https://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</span></span>"
 	},
 	{
 		"desc": "Link to non-http image, no img tag",
 		"wikitext": "Link to non-http image, no img tag: ftp://example.com/test.jpg",
 		"html": "<p>Link to non-http image, no img tag: <a rel=\"nofollow\" class=\"external free\" href=\"ftp://example.com/test.jpg\">ftp://example.com/test.jpg</a>\n</p>",
-		"render": "<p>Link to non-http image, no img tag: <a class=\"external free\" rel=\"nofollow\" href=\"ftp://example.com/test.jpg\">ftp://example.com/test.jpg</a>\n</p>",
+		"render": "<p>Link to non-http image, no img tag: <a rel=\"nofollow\" class=\"external free\" href=\"ftp://example.com/test.jpg\">ftp://example.com/test.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Link to non-http image, no img tag: <span class=\"wpb-free-ext-link\">ftp://example.com/test.jpg</span></span>"
 	},
 	{
 		"desc": "External links: terminating separator",
 		"wikitext": "Terminating separator: http://example.com/thing,",
 		"html": "<p>Terminating separator: <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/thing\">http://example.com/thing</a>,\n</p>",
-		"render": "<p>Terminating separator: <a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/thing\">http://example.com/thing</a>,\n</p>",
+		"render": "<p>Terminating separator: <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/thing\">http://example.com/thing</a>,\n</p>",
 		"print": "<span class=\"wpb-root\">Terminating separator: <span class=\"wpb-free-ext-link\">http://example.com/thing</span>,</span>"
 	},
 	{
 		"desc": "External links: intervening separator",
 		"wikitext": "Intervening separator: http://example.com/1,2,3",
 		"html": "<p>Intervening separator: <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/1,2,3\">http://example.com/1,2,3</a>\n</p>",
-		"render": "<p>Intervening separator: <a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/1,2,3\">http://example.com/1,2,3</a>\n</p>",
+		"render": "<p>Intervening separator: <a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/1,2,3\">http://example.com/1,2,3</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Intervening separator: <span class=\"wpb-free-ext-link\">http://example.com/1,2,3</span></span>"
 	},
 	{
 		"desc": "External links: old bug with URL in query",
 		"wikitext": "Old bug with URL in query: [http://example.com/thing?url=http://example.com link]",
 		"html": "<p>Old bug with URL in query: <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/thing?url=http://example.com\">link</a>\n</p>",
-		"render": "<p>Old bug with URL in query: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/thing?url=http://example.com\">link</a>\n</p>",
+		"render": "<p>Old bug with URL in query: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/thing?url=http://example.com\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Old bug with URL in query: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/thing?url=http://example.com</span> <span class=\"wpb-ext-link-text\">link</span>]</span></span>"
 	},
 	{
 		"desc": "External links: old URL-in-URL bug, mixed protocols",
 		"wikitext": "And again with mixed protocols: [ftp://example.com?url=http://example.com link]",
 		"html": "<p>And again with mixed protocols: <a rel=\"nofollow\" class=\"external text\" href=\"ftp://example.com?url=http://example.com\">link</a>\n</p>",
-		"render": "<p>And again with mixed protocols: <a class=\"external\" rel=\"nofollow\" href=\"ftp://example.com/?url=http://example.com\">link</a>\n</p>",
+		"render": "<p>And again with mixed protocols: <a rel=\"nofollow\" class=\"external\" href=\"ftp://example.com/?url=http://example.com\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\">And again with mixed protocols: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">ftp://example.com?url=http://example.com</span> <span class=\"wpb-ext-link-text\">link</span>]</span></span>"
 	},
 	{
 		"desc": "External links: URL in text",
 		"wikitext": "URL in text: [http://example.com http://example.com]",
 		"html": "<p>URL in text: <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">http://example.com</a>\n</p>",
-		"render": "<p>URL in text: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\n</p>",
+		"render": "<p>URL in text: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">http://example.com</a>\n</p>",
 		"print": "<span class=\"wpb-root\">URL in text: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">http://example.com</span>]</span></span>"
 	},
 	{
 		"desc": "External links: Clickable images",
 		"wikitext": "ja-style clickable images: [http://example.com http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png]",
 		"html": "<p>ja-style clickable images: <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\"><img src=\"http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png\" alt=\"Ncwikicol.png\" /></a>\n</p>",
-		"render": "<p>ja-style clickable images: <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</a>\n</p>",
+		"render": "<p>ja-style clickable images: <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</a>\n</p>",
 		"print": "<span class=\"wpb-root\">ja-style clickable images: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">http://meta.wikimedia.org/upload/f/f1/Ncwikicol.png</span>]</span></span>"
 	},
 	{
 		"desc": "External links: raw ampersand",
 		"wikitext": "Old &amp; use: http://x&y",
 		"html": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external free\" href=\"http://x&amp;y\">http://x&amp;y</a>\n</p>",
-		"render": "<p>Old &amp; use: <a class=\"external free\" rel=\"nofollow\" href=\"http://x&y/\">http://x&y</a>\n</p>",
+		"render": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external free\" href=\"http://x&y/\">http://x&y</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Old &amp;amp; use: <span class=\"wpb-free-ext-link\">http://x&amp;y</span></span>"
 	},
 	{
 		"desc": "External links: encoded ampersand",
 		"wikitext": "Old &amp; use: http://x&amp;y",
 		"html": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external free\" href=\"http://x&amp;y\">http://x&amp;y</a>\n</p>",
-		"render": "<p>Old &amp; use: <a class=\"external free\" rel=\"nofollow\" href=\"http://x&amp;y/\">http://x&amp;y</a>\n</p>",
+		"render": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external free\" href=\"http://x&amp;y/\">http://x&amp;y</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Old &amp;amp; use: <span class=\"wpb-free-ext-link\">http://x&amp;amp;y</span></span>"
 	},
 	{
 		"desc": "External links: encoded equals (T8102)",
 		"wikitext": "http://example.com/?foo&#61;bar",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/?foo=bar\">http://example.com/?foo=bar</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/?foo&#61;bar\">http://example.com/?foo&#61;bar</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/?foo&#61;bar\">http://example.com/?foo&#61;bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com/?foo&amp;#61;bar</span></span>"
 	},
 	{
 		"desc": "External links: [raw ampersand]",
 		"wikitext": "Old &amp; use: [http://x&y]",
 		"html": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://x&amp;y\">[1]</a>\n</p>",
-		"render": "<p>Old &amp; use: <a class=\"external\" rel=\"nofollow\" href=\"http://x&y/\">[1]</a>\n</p>",
+		"render": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external\" href=\"http://x&y/\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Old &amp;amp; use: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://x&amp;y</span>]</span></span>"
 	},
 	{
 		"desc": "External links: [encoded ampersand]",
 		"wikitext": "Old &amp; use: [http://x&amp;y]",
 		"html": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external autonumber\" href=\"http://x&amp;y\">[1]</a>\n</p>",
-		"render": "<p>Old &amp; use: <a class=\"external\" rel=\"nofollow\" href=\"http://x&amp;y/\">[1]</a>\n</p>",
+		"render": "<p>Old &amp; use: <a rel=\"nofollow\" class=\"external\" href=\"http://x&amp;y/\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\">Old &amp;amp; use: <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://x&amp;amp;y</span>]</span></span>"
 	},
 	{
 		"desc": "External links: [raw equals]",
 		"wikitext": "[http://example.com/?foo=bar]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com/?foo=bar\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/?foo=bar\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/?foo=bar\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/?foo=bar</span>]</span></span>"
 	},
 	{
 		"desc": "External links: [encoded equals] (T8102)",
 		"wikitext": "[http://example.com/?foo&#61;bar]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com/?foo=bar\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/?foo&#61;bar\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/?foo&#61;bar\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/?foo&amp;#61;bar</span>]</span></span>"
 	},
 	{
 		"desc": "External links: [IDN ignored character reference in hostname; strip it right off]",
 		"wikitext": "[http://e&zwnj;xample.com/]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://example.com/\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://e&zwnj;xample.com/\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://e&zwnj;xample.com/\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://e&amp;zwnj;xample.com/</span>]</span></span>"
 	},
 	{
 		"desc": "External links: IDN ignored character reference in hostname; strip it right off",
 		"wikitext": "http://e&zwnj;xample.com/",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com/</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://e&zwnj;xample.com/\">http://e&zwnj;xample.com/</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://e&zwnj;xample.com/\">http://e&zwnj;xample.com/</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://e&amp;zwnj;xample.com/</span></span>"
 	},
 	{
 		"desc": "External links: www.jpeg.org (T2554)",
 		"wikitext": "http://www.jpeg.org",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.jpeg.org\">http://www.jpeg.org</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.jpeg.org/\">http://www.jpeg.org</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.jpeg.org/\">http://www.jpeg.org</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.jpeg.org</span></span>"
 	},
 	{
 		"desc": "External links: URL within URL (T2002)",
 		"wikitext": "[http://www.unausa.org/newindex.asp?place=http://www.unausa.org/programs/mun.asp]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://www.unausa.org/newindex.asp?place=http://www.unausa.org/programs/mun.asp\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.unausa.org/newindex.asp?place=http://www.unausa.org/programs/mun.asp\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.unausa.org/newindex.asp?place=http://www.unausa.org/programs/mun.asp\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.unausa.org/newindex.asp?place=http://www.unausa.org/programs/mun.asp</span>]</span></span>"
 	},
 	{
 		"desc": "T2361: URL inside bracketed URL",
 		"wikitext": "[http://www.example.com/foo http://www.example.com/bar]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/foo\">http://www.example.com/bar</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/foo\">http://www.example.com/bar</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/foo\">http://www.example.com/bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/foo</span> <span class=\"wpb-ext-link-text\">http://www.example.com/bar</span>]</span></span>"
 	},
 	{
 		"desc": "T2361: URL within URL, not bracketed",
 		"wikitext": "http://www.example.com/foo?=http://www.example.com/bar",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/foo?=http://www.example.com/bar\">http://www.example.com/foo?=http://www.example.com/bar</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/foo?=http://www.example.com/bar\">http://www.example.com/foo?=http://www.example.com/bar</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/foo?=http://www.example.com/bar\">http://www.example.com/foo?=http://www.example.com/bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/foo?=http://www.example.com/bar</span></span>"
 	},
 	{
 		"desc": "T2289: \">\"-token in URL-tail",
 		"wikitext": "http://www.example.com/<hello>",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com/</a>&lt;hello&gt;\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com/</a>&lt;hello&gt;\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com/</a>&lt;hello&gt;\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/</span>&lt;hello&gt;</span>"
 	},
 	{
 		"desc": "T2289: literal \">\"-token in URL-tail",
 		"wikitext": "http://www.example.com/<b>html</b>",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com/</a><b>html</b>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com/</a><b >html</b>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com/</a><b >html</b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/</span><span class=\"wpb-html\">&lt;b&gt;</span>html<span class=\"wpb-html\">&lt;/b&gt;</span></span>"
 	},
 	{
 		"desc": "T2289: \">\"-token in bracketed URL",
 		"wikitext": "[http://www.example.com/<hello> stuff]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/\">&lt;hello&gt; stuff</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">&lt;hello&gt; stuff</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">&lt;hello&gt; stuff</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/</span><span class=\"wpb-ext-link-text\">&lt;hello&gt; stuff</span>]</span></span>"
 	},
 	{
 		"desc": "T2289: literal \">\"-token in bracketed URL",
 		"wikitext": "[http://www.example.com/<b>html</b> stuff]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/\"><b>html</b> stuff</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\"><b >html</b> stuff</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\"><b >html</b> stuff</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/</span><span class=\"wpb-ext-link-text\"><span class=\"wpb-html\">&lt;b&gt;</span>html<span class=\"wpb-html\">&lt;/b&gt;</span> stuff</span>]</span></span>"
 	},
 	{
 		"desc": "T2289: literal double quote at end of URL",
 		"wikitext": "http://www.example.com/\"hello\"",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com/</a>\"hello\"\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/\">http://www.example.com/</a>\"hello\"\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/\">http://www.example.com/</a>\"hello\"\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/</span>\"hello\"</span>"
 	},
 	{
 		"desc": "T2289: literal double quote in bracketed URL",
 		"wikitext": "[http://www.example.com/\"hello\" stuff]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/\">\"hello\" stuff</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">\"hello\" stuff</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">\"hello\" stuff</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/</span><span class=\"wpb-ext-link-text\">\"hello\" stuff</span>]</span></span>"
 	},
 	{
 		"desc": "External links: multiple legal whitespace is fine, Magnus. Don't break it please. (T7081)",
 		"wikitext": "[http://www.example.com  test]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">test</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">test</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">test</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span>  <span class=\"wpb-ext-link-text\">test</span>]</span></span>"
 	},
 	{
 		"desc": "External links: link text with spaces",
 		"wikitext": "[http://www.example.com a b c]\n[http://www.example.com ''a'' ''b'']",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\">a b c</a>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com\"><i>a</i> <i>b</i></a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\">a b c</a>\n<a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/\"><i>a</i> <i>b</i></a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\">a b c</a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/\"><i>a</i> <i>b</i></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\">a b c</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">''</span>a<span class=\"wpb-quote\">''</span> <span class=\"wpb-quote\">''</span>b<span class=\"wpb-quote\">''</span></span>]</span></span>"
 	},
 	{
 		"desc": "External links: wiki links within external link (T5695)",
 		"wikitext": "[http://example.com [[wikilink]] embedded in ext link]\n\n[http://example.com test [[wikilink]] embedded in ext link]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\"></a><a href=\"/wiki/Wikilink\" title=\"Wikilink\">wikilink</a> embedded in ext link\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">test </a><a href=\"/wiki/Wikilink\" title=\"Wikilink\">wikilink</a> embedded in ext link\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"></a><a href=\"/wiki/Wikilink\" title=\"Wikilink\">wikilink</a> embedded in ext link\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">test </a><a href=\"/wiki/Wikilink\" title=\"Wikilink\">wikilink</a> embedded in ext link\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"></a><a href=\"/wiki/Wikilink\" title=\"Wikilink\">wikilink</a> embedded in ext link\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">test </a><a href=\"/wiki/Wikilink\" title=\"Wikilink\">wikilink</a> embedded in ext link\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">wikilink</span>]]</span> embedded in ext link</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">test <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">wikilink</span>]]</span> embedded in ext link</span>]</span></span>"
 	},
 	{
@@ -5390,112 +5390,112 @@
 		"desc": "T6781: %26 in URL",
 		"wikitext": "http://www.example.com/?title=AT%26T",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/?title=AT%26T\">http://www.example.com/?title=AT%26T</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/?title=AT%26T\">http://www.example.com/?title=AT%26T</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/?title=AT%26T\">http://www.example.com/?title=AT%26T</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/?title=AT%26T</span></span>"
 	},
 	{
 		"desc": "T6781, T7267: %25 in URL",
 		"wikitext": "http://www.example.com/?title=100%25_Bran",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/?title=100%25_Bran\">http://www.example.com/?title=100%25_Bran</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/?title=100%25_Bran\">http://www.example.com/?title=100%25_Bran</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/?title=100%25_Bran\">http://www.example.com/?title=100%25_Bran</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/?title=100%25_Bran</span></span>"
 	},
 	{
 		"desc": "T6781, T7267: %28, %29 in URL",
 		"wikitext": "http://www.example.com/?title=Ben-Hur_%281959_film%29",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">http://www.example.com/?title=Ben-Hur_%281959_film%29</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">http://www.example.com/?title=Ben-Hur_%281959_film%29</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">http://www.example.com/?title=Ben-Hur_%281959_film%29</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.example.com/?title=Ben-Hur_%281959_film%29</span></span>"
 	},
 	{
 		"desc": "T6781: %26 in autonumber URL",
 		"wikitext": "[http://www.example.com/?title=AT%26T]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://www.example.com/?title=AT%26T\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?title=AT%26T\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?title=AT%26T\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?title=AT%26T</span>]</span></span>"
 	},
 	{
 		"desc": "T6781, T7267: %26 in autonumber URL",
 		"wikitext": "[http://www.example.com/?title=100%25_Bran]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://www.example.com/?title=100%25_Bran\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?title=100%25_Bran\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?title=100%25_Bran\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?title=100%25_Bran</span>]</span></span>"
 	},
 	{
 		"desc": "T6781, T7267: %28, %29 in autonumber URL",
 		"wikitext": "[http://www.example.com/?title=Ben-Hur_%281959_film%29]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">[1]</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">[1]</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">[1]</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?title=Ben-Hur_%281959_film%29</span>]</span></span>"
 	},
 	{
 		"desc": "T6781: %26 in bracketed URL",
 		"wikitext": "[http://www.example.com/?title=AT%26T link]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/?title=AT%26T\">link</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?title=AT%26T\">link</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?title=AT%26T\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?title=AT%26T</span> <span class=\"wpb-ext-link-text\">link</span>]</span></span>"
 	},
 	{
 		"desc": "T6781, T7267: %25 in bracketed URL",
 		"wikitext": "[http://www.example.com/?title=100%25_Bran link]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/?title=100%25_Bran\">link</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?title=100%25_Bran\">link</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?title=100%25_Bran\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?title=100%25_Bran</span> <span class=\"wpb-ext-link-text\">link</span>]</span></span>"
 	},
 	{
 		"desc": "T6781, T7267: %28, %29 in bracketed URL",
 		"wikitext": "[http://www.example.com/?title=Ben-Hur_%281959_film%29 link]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">link</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">link</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.example.com/?title=Ben-Hur_%281959_film%29\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.example.com/?title=Ben-Hur_%281959_film%29</span> <span class=\"wpb-ext-link-text\">link</span>]</span></span>"
 	},
 	{
 		"desc": "External link containing a period in the anchor. (T65947)",
 		"wikitext": "[//foo.org/bar#baz. bang]\n\n[//foo.org/bar. bang]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"//foo.org/bar#baz.\">bang</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"//foo.org/bar.\">bang</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://foo.org/bar#baz.\">bang</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"https://foo.org/bar.\">bang</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://foo.org/bar#baz.\">bang</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"https://foo.org/bar.\">bang</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//foo.org/bar#baz.</span> <span class=\"wpb-ext-link-text\">bang</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//foo.org/bar.</span> <span class=\"wpb-ext-link-text\">bang</span>]</span></span>"
 	},
 	{
 		"desc": "External link containing a single quote. (T65947)",
 		"wikitext": "[//foo.org/bar'baz]\n\n[//foo.org/bar'baz bang]",
 		"html": "<p><a rel=\"nofollow\" class=\"external autonumber\" href=\"//foo.org/bar&#39;baz\">[1]</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"//foo.org/bar&#39;baz\">bang</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://foo.org/bar'baz\">[1]</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"https://foo.org/bar'baz\">bang</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://foo.org/bar'baz\">[1]</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"https://foo.org/bar'baz\">bang</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//foo.org/bar'baz</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//foo.org/bar'baz</span> <span class=\"wpb-ext-link-text\">bang</span>]</span></span>"
 	},
 	{
 		"desc": "External link containing double-single-quotes in text '' (T6598 check)",
 		"wikitext": "Some [http://example.com/ pretty ''italics'' and stuff]!",
 		"html": "<p>Some <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">pretty <i>italics</i> and stuff</a>!\n</p>",
-		"render": "<p>Some <a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">pretty <i>italics</i> and stuff</a>!\n</p>",
+		"render": "<p>Some <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">pretty <i>italics</i> and stuff</a>!\n</p>",
 		"print": "<span class=\"wpb-root\">Some <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/</span> <span class=\"wpb-ext-link-text\">pretty <span class=\"wpb-quote\">''</span>italics<span class=\"wpb-quote\">''</span> and stuff</span>]</span>!</span>"
 	},
 	{
 		"desc": "External link containing double-single-quotes in text embedded in italics (T6598 check)",
 		"wikitext": "''Some [http://example.com/ pretty ''italics'' and stuff]!''",
 		"html": "<p><i>Some <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">pretty </a></i><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">italics<i> and stuff</i></a><i>!</i>\n</p>",
-		"render": "<p><i>Some </i><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\"><i>pretty </i>italics<i> and stuff</i></a><i>!</i>\n</p>",
+		"render": "<p><i>Some </i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>pretty </i>italics<i> and stuff</i></a><i>!</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>Some <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/</span> <span class=\"wpb-ext-link-text\">pretty <span class=\"wpb-quote\">''</span>italics<span class=\"wpb-quote\">''</span> and stuff</span>]</span>!<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "External link containing double-single-quotes with no space separating the url from text in italics",
 		"wikitext": "[http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm''La muerte de Casagemas'' (1901) en el sitio de [[Museo Picasso (París)|Museo Picasso]].]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm\"><i>La muerte de Casagemas</i> (1901) en el sitio de </a><a href=\"/wiki/Museo_Picasso_(Par%C3%ADs)\" title=\"Museo Picasso (París)\">Museo Picasso</a>.\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm\"><i>La muerte de Casagemas</i> (1901) en el sitio de </a><a href=\"/wiki/Museo_Picasso_(Par%C3%ADs)\" title=\"Museo_Picasso_(París)\">Museo Picasso</a>.\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm\"><i>La muerte de Casagemas</i> (1901) en el sitio de </a><a href=\"/wiki/Museo_Picasso_(Par%C3%ADs)\" title=\"Museo_Picasso_(París)\">Museo Picasso</a>.\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.musee-picasso.fr/pages/page_id18528_u1l2.htm</span><span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">''</span>La muerte de Casagemas<span class=\"wpb-quote\">''</span> (1901) en el sitio de <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Museo Picasso (París)</span>|<span class=\"wpb-link-text\">Museo Picasso</span>]]</span>.</span>]</span></span>"
 	},
 	{
 		"desc": "External link with comments in link text",
 		"wikitext": "[http://www.google.com Google <!-- comment -->]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://www.google.com\">Google </a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://www.google.com/\">Google </a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://www.google.com/\">Google </a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.google.com</span> <span class=\"wpb-ext-link-text\">Google <span class=\"wpb-comment\">&lt;!-- comment --&gt;</span></span>]</span></span>"
 	},
 	{
 		"desc": "External link to bare IPv4 address",
 		"wikitext": "[http://192.168.0.1 Link]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://192.168.0.1\">Link</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://192.168.0.1/\">Link</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://192.168.0.1/\">Link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://192.168.0.1</span> <span class=\"wpb-ext-link-text\">Link</span>]</span></span>"
 	},
 	{
@@ -5516,70 +5516,70 @@
 		"desc": "Brackets in urls",
 		"wikitext": "http://example.com/index.php?foozoid%5B%5D=bar\n\nhttp://example.com/index.php?foozoid&#x5B;&#x5D;=bar",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/index.php?foozoid%5B%5D=bar\">http://example.com/index.php?foozoid%5B%5D=bar</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/index.php?foozoid%5B%5D=bar\">http://example.com/index.php?foozoid%5B%5D=bar</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/index.php?foozoid%5B%5D=bar\">http://example.com/index.php?foozoid%5B%5D=bar</a>\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/index.php?foozoid&#x5B;&#x5D;=bar\">http://example.com/index.php?foozoid&#x5B;&#x5D;=bar</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/index.php?foozoid%5B%5D=bar\">http://example.com/index.php?foozoid%5B%5D=bar</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/index.php?foozoid&#x5B;&#x5D;=bar\">http://example.com/index.php?foozoid&#x5B;&#x5D;=bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com/index.php?foozoid%5B%5D=bar</span>\n\n<span class=\"wpb-free-ext-link\">http://example.com/index.php?foozoid&amp;#x5B;&amp;#x5D;=bar</span></span>"
 	},
 	{
 		"desc": "IPv6 urls, autolink format (T23261)",
 		"wikitext": "http://[2404:130:0:1000::187:2]/index.php\n\nExamples from RFC 2373, section 2.2:\n\n*http://[1080::8:800:200C:417A]/unicast\n*http://[FF01::101]/multicast\n*http://[::1]/loopback\n*http://[::]/unspecified\n*http://[::13.1.68.3]/ipv4compat\n*http://[::FFFF:129.144.52.38]/ipv4compat\n\nExamples from RFC 2732, section 2:\n\n*http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html\n*http://[1080:0:0:0:8:800:200C:417A]/index.html\n*http://[3ffe:2a00:100:7031::1]\n*http://[1080::8:800:200C:417A]/foo\n*http://[::192.9.5.5]/ipng\n*http://[::FFFF:129.144.52.38]:80/index.html\n*http://[2010:836B:4179::836B:4179]",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://[2404:130:0:1000::187:2]/index.php\">http://[2404:130:0:1000::187:2]/index.php</a>\n</p><p>Examples from <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2373\">RFC 2373</a>, section 2.2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"http://[1080::8:800:200C:417A]/unicast\">http://[1080::8:800:200C:417A]/unicast</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[FF01::101]/multicast\">http://[FF01::101]/multicast</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::1]/loopback\">http://[::1]/loopback</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::]/unspecified\">http://[::]/unspecified</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::13.1.68.3]/ipv4compat\">http://[::13.1.68.3]/ipv4compat</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::FFFF:129.144.52.38]/ipv4compat\">http://[::FFFF:129.144.52.38]/ipv4compat</a></li></ul>\n<p>Examples from <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2732\">RFC 2732</a>, section 2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[1080:0:0:0:8:800:200C:417A]/index.html\">http://[1080:0:0:0:8:800:200C:417A]/index.html</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[3ffe:2a00:100:7031::1]\">http://[3ffe:2a00:100:7031::1]</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[1080::8:800:200C:417A]/foo\">http://[1080::8:800:200C:417A]/foo</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::192.9.5.5]/ipng\">http://[::192.9.5.5]/ipng</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::FFFF:129.144.52.38]:80/index.html\">http://[::FFFF:129.144.52.38]:80/index.html</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[2010:836B:4179::836B:4179]\">http://[2010:836B:4179::836B:4179]</a></li></ul>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://[2404:130:0:1000::187:2]/index.php\">http://[2404:130:0:1000::187:2]/index.php</a>\n</p><p>Examples from <a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2373\">RFC 2373</a>, section 2.2:\n</p>\n<ul><li><a class=\"external free\" rel=\"nofollow\" href=\"http://[1080::8:800:200c:417a]/unicast\">http://[1080::8:800:200C:417A]/unicast</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[ff01::101]/multicast\">http://[FF01::101]/multicast</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[::1]/loopback\">http://[::1]/loopback</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[::]/unspecified\">http://[::]/unspecified</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[::d01:4403]/ipv4compat\">http://[::13.1.68.3]/ipv4compat</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[::ffff:8190:3426]/ipv4compat\">http://[::FFFF:129.144.52.38]/ipv4compat</a></li></ul>\n<p>Examples from <a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2732\">RFC 2732</a>, section 2:\n</p>\n<ul><li><a class=\"external free\" rel=\"nofollow\" href=\"http://[fedc:ba98:7654:3210:fedc:ba98:7654:3210]/index.html\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[1080::8:800:200c:417a]/index.html\">http://[1080:0:0:0:8:800:200C:417A]/index.html</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[3ffe:2a00:100:7031::1]/\">http://[3ffe:2a00:100:7031::1]</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[1080::8:800:200c:417a]/foo\">http://[1080::8:800:200C:417A]/foo</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[::c009:505]/ipng\">http://[::192.9.5.5]/ipng</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[::ffff:8190:3426]/index.html\">http://[::FFFF:129.144.52.38]:80/index.html</a></li>\n<li><a class=\"external free\" rel=\"nofollow\" href=\"http://[2010:836b:4179::836b:4179]/\">http://[2010:836B:4179::836B:4179]</a></li></ul>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://[2404:130:0:1000::187:2]/index.php\">http://[2404:130:0:1000::187:2]/index.php</a>\n</p><p>Examples from <a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc2373\">RFC 2373</a>, section 2.2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"http://[1080::8:800:200c:417a]/unicast\">http://[1080::8:800:200C:417A]/unicast</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[ff01::101]/multicast\">http://[FF01::101]/multicast</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::1]/loopback\">http://[::1]/loopback</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::]/unspecified\">http://[::]/unspecified</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::d01:4403]/ipv4compat\">http://[::13.1.68.3]/ipv4compat</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::ffff:8190:3426]/ipv4compat\">http://[::FFFF:129.144.52.38]/ipv4compat</a></li></ul>\n<p>Examples from <a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc2732\">RFC 2732</a>, section 2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external free\" href=\"http://[fedc:ba98:7654:3210:fedc:ba98:7654:3210]/index.html\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[1080::8:800:200c:417a]/index.html\">http://[1080:0:0:0:8:800:200C:417A]/index.html</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[3ffe:2a00:100:7031::1]/\">http://[3ffe:2a00:100:7031::1]</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[1080::8:800:200c:417a]/foo\">http://[1080::8:800:200C:417A]/foo</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::c009:505]/ipng\">http://[::192.9.5.5]/ipng</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[::ffff:8190:3426]/index.html\">http://[::FFFF:129.144.52.38]:80/index.html</a></li>\n<li><a rel=\"nofollow\" class=\"external free\" href=\"http://[2010:836b:4179::836b:4179]/\">http://[2010:836B:4179::836B:4179]</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://[2404:130:0:1000::187:2]/index.php</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2373</span>, section 2.2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/unicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FF01::101]/multicast</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::1]/loopback</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::]/unspecified</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::13.1.68.3]/ipv4compat</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]/ipv4compat</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2732</span>, section 2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080:0:0:0:8:800:200C:417A]/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[3ffe:2a00:100:7031::1]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[1080::8:800:200C:417A]/foo</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::192.9.5.5]/ipng</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[::FFFF:129.144.52.38]:80/index.html</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-free-ext-link\">http://[2010:836B:4179::836B:4179]</span></span>"
 	},
 	{
 		"desc": "Unicode text around autolinks",
 		"wikitext": "größhttps://foo.org\n\ngröß https://foo.org\n\n아들 고건 사진https://foo.org\n\n💩https://foo.org",
 		"html": "<p>größhttps://foo.org\n</p><p>größ <a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org\">https://foo.org</a>\n</p>",
-		"render": "<p>größhttps://foo.org\n</p><p>größ <a class=\"external free\" rel=\"nofollow\" href=\"https://foo.org/\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a class=\"external free\" rel=\"nofollow\" href=\"https://foo.org/\">https://foo.org</a>\n</p>",
+		"render": "<p>größhttps://foo.org\n</p><p>größ <a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org/\">https://foo.org</a>\n</p><p>아들 고건 사진https://foo.org\n</p><p>💩<a rel=\"nofollow\" class=\"external free\" href=\"https://foo.org/\">https://foo.org</a>\n</p>",
 		"print": "<span class=\"wpb-root\">größhttps://foo.org\n\ngröß <span class=\"wpb-free-ext-link\">https://foo.org</span>\n\n아들 고건 사진https://foo.org\n\n💩<span class=\"wpb-free-ext-link\">https://foo.org</span></span>"
 	},
 	{
 		"desc": "IPv6 urls, bracketed format (T23261)",
 		"wikitext": "[http://[2404:130:0:1000::187:2]/index.php test]\n\nExamples from RFC 2373, section 2.2:\n\n*[http://[1080::8:800:200C:417A] unicast]\n*[http://[FF01::101] multicast]\n*[http://[::1]/ loopback]\n*[http://[::] unspecified]\n*[http://[::13.1.68.3] ipv4compat]\n*[http://[::FFFF:129.144.52.38] ipv4compat]\n\nExamples from RFC 2732, section 2:\n\n*[http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html 1]\n*[http://[1080:0:0:0:8:800:200C:417A]/index.html 2]\n*[http://[3ffe:2a00:100:7031::1] 3]\n*[http://[1080::8:800:200C:417A]/foo 4]\n*[http://[::192.9.5.5]/ipng 5]\n*[http://[::FFFF:129.144.52.38]:80/index.html 6]\n*[http://[2010:836B:4179::836B:4179] 7]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"http://[2404:130:0:1000::187:2]/index.php\">test</a>\n</p><p>Examples from <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2373\">RFC 2373</a>, section 2.2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external text\" href=\"http://[1080::8:800:200C:417A]\">unicast</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[FF01::101]\">multicast</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[::1]/\">loopback</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[::]\">unspecified</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[::13.1.68.3]\">ipv4compat</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[::FFFF:129.144.52.38]\">ipv4compat</a></li></ul>\n<p>Examples from <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2732\">RFC 2732</a>, section 2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external text\" href=\"http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html\">1</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[1080:0:0:0:8:800:200C:417A]/index.html\">2</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[3ffe:2a00:100:7031::1]\">3</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[1080::8:800:200C:417A]/foo\">4</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[::192.9.5.5]/ipng\">5</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[::FFFF:129.144.52.38]:80/index.html\">6</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://[2010:836B:4179::836B:4179]\">7</a></li></ul>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"http://[2404:130:0:1000::187:2]/index.php\">test</a>\n</p><p>Examples from <a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2373\">RFC 2373</a>, section 2.2:\n</p>\n<ul><li><a class=\"external\" rel=\"nofollow\" href=\"http://[1080::8:800:200c:417a]/\">unicast</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[ff01::101]/\">multicast</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[::1]/\">loopback</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[::]/\">unspecified</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[::d01:4403]/\">ipv4compat</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[::ffff:8190:3426]/\">ipv4compat</a></li></ul>\n<p>Examples from <a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc2732\">RFC 2732</a>, section 2:\n</p>\n<ul><li><a class=\"external\" rel=\"nofollow\" href=\"http://[fedc:ba98:7654:3210:fedc:ba98:7654:3210]/index.html\">1</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[1080::8:800:200c:417a]/index.html\">2</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[3ffe:2a00:100:7031::1]/\">3</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[1080::8:800:200c:417a]/foo\">4</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[::c009:505]/ipng\">5</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[::ffff:8190:3426]/index.html\">6</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://[2010:836b:4179::836b:4179]/\">7</a></li></ul>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://[2404:130:0:1000::187:2]/index.php\">test</a>\n</p><p>Examples from <a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc2373\">RFC 2373</a>, section 2.2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external\" href=\"http://[1080::8:800:200c:417a]/\">unicast</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[ff01::101]/\">multicast</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[::1]/\">loopback</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[::]/\">unspecified</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[::d01:4403]/\">ipv4compat</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[::ffff:8190:3426]/\">ipv4compat</a></li></ul>\n<p>Examples from <a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc2732\">RFC 2732</a>, section 2:\n</p>\n<ul><li><a rel=\"nofollow\" class=\"external\" href=\"http://[fedc:ba98:7654:3210:fedc:ba98:7654:3210]/index.html\">1</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[1080::8:800:200c:417a]/index.html\">2</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[3ffe:2a00:100:7031::1]/\">3</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[1080::8:800:200c:417a]/foo\">4</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[::c009:505]/ipng\">5</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[::ffff:8190:3426]/index.html\">6</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://[2010:836b:4179::836b:4179]/\">7</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[2404:130:0:1000::187:2]/index.php</span> <span class=\"wpb-ext-link-text\">test</span>]</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2373</span>, section 2.2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[1080::8:800:200C:417A]</span> <span class=\"wpb-ext-link-text\">unicast</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[FF01::101]</span> <span class=\"wpb-ext-link-text\">multicast</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[::1]/</span> <span class=\"wpb-ext-link-text\">loopback</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[::]</span> <span class=\"wpb-ext-link-text\">unspecified</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[::13.1.68.3]</span> <span class=\"wpb-ext-link-text\">ipv4compat</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[::FFFF:129.144.52.38]</span> <span class=\"wpb-ext-link-text\">ipv4compat</span>]</span>\n\nExamples from <span class=\"wpb-magic-link\">RFC 2732</span>, section 2:\n\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[FEDC:BA98:7654:3210:FEDC:BA98:7654:3210]:80/index.html</span> <span class=\"wpb-ext-link-text\">1</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[1080:0:0:0:8:800:200C:417A]/index.html</span> <span class=\"wpb-ext-link-text\">2</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[3ffe:2a00:100:7031::1]</span> <span class=\"wpb-ext-link-text\">3</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[1080::8:800:200C:417A]/foo</span> <span class=\"wpb-ext-link-text\">4</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[::192.9.5.5]/ipng</span> <span class=\"wpb-ext-link-text\">5</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[::FFFF:129.144.52.38]:80/index.html</span> <span class=\"wpb-ext-link-text\">6</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://[2010:836B:4179::836B:4179]</span> <span class=\"wpb-ext-link-text\">7</span>]</span></span>"
 	},
 	{
 		"desc": "Non-extlinks in brackets",
 		"wikitext": "[foo]\n[foo bar]\n[foo ''bar'']\n[fool's] errand\n[fool's errand]\n[{{1x|foo}}]\n[{{1x|foo}} bar]\n[{{1x|foo}} ''bar'']\n[{{1x|foo}}l's] errand\n[{{1x|foo}}l's errand]\n[url={{1x|foo}}]\n[url=http://example.com]\n[http:// bare protocols don't count]",
 		"html": "<p>[foo]\n[foo bar]\n[foo <i>bar</i>]\n[fool's] errand\n[fool's errand]\n[foo]\n[foo bar]\n[foo <i>bar</i>]\n[fool's] errand\n[fool's errand]\n[url=foo]\n[url=<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>]\n[http:// bare protocols don't count]\n</p>",
-		"render": "<p>[foo]\n[foo bar]\n[foo <i>bar</i>]\n[fool's] errand\n[fool's errand]\n[foo]\n[foo bar]\n[foo <i>bar</i>]\n[fool's] errand\n[fool's errand]\n[url=foo]\n[url=<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>]\n[http:// bare protocols don't count]\n</p>",
+		"render": "<p>[foo]\n[foo bar]\n[foo <i>bar</i>]\n[fool's] errand\n[fool's errand]\n[foo]\n[foo bar]\n[foo <i>bar</i>]\n[fool's] errand\n[fool's errand]\n[url=foo]\n[url=<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>]\n[http:// bare protocols don't count]\n</p>",
 		"print": "<span class=\"wpb-root\">[foo]\n[foo bar]\n[foo <span class=\"wpb-quote\">''</span>bar<span class=\"wpb-quote\">''</span>]\n[fool's] errand\n[fool's errand]\n[<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span>]\n[<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span> bar]\n[<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span> <span class=\"wpb-quote\">''</span>bar<span class=\"wpb-quote\">''</span>]\n[<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span>l's] errand\n[<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span>l's errand]\n[url=<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span>]\n[url=<span class=\"wpb-free-ext-link\">http://example.com</span>]\n[http:// bare protocols don't count]</span>"
 	},
 	{
 		"desc": "Percent encoding in external links",
 		"wikitext": "[https://github.com/search?l=&q=ResourceLoader+%40wikimedia Search]",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"https://github.com/search?l=&amp;q=ResourceLoader+%40wikimedia\">Search</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://github.com/search?l=&q=ResourceLoader+%40wikimedia\">Search</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://github.com/search?l=&q=ResourceLoader+%40wikimedia\">Search</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://github.com/search?l=&amp;q=ResourceLoader+%40wikimedia</span> <span class=\"wpb-ext-link-text\">Search</span>]</span></span>"
 	},
 	{
 		"desc": "Use url link syntax for links where the content is equal the link target",
 		"wikitext": "http://example.com",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span></span>"
 	},
 	{
 		"desc": "Parenthesis in external links, especially URL links",
 		"wikitext": "http://example.com)\n\nhttp://example.com/test)\n\nhttp://example.com/(test)\n\nhttp://example.com/((test)\n\n(http://example.com/(test))\n\n(http://example.com/(test)))))\n\nhttp://example.com/a)b\n\n[http://example.com) foo]",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>)\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/test\">http://example.com/test</a>)\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/(test)\">http://example.com/(test)</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/((test)\">http://example.com/((test)</a>\n</p><p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/(test))\">http://example.com/(test))</a>\n</p><p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/(test)))))\">http://example.com/(test)))))</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/a)b\">http://example.com/a)b</a>\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com)\">foo</a>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>)\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/test\">http://example.com/test</a>)\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/(test)\">http://example.com/(test)</a>\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/((test)\">http://example.com/((test)</a>\n</p><p>(<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/(test))\">http://example.com/(test))</a>\n</p><p>(<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/(test)))))\">http://example.com/(test)))))</a>\n</p><p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/a)b\">http://example.com/a)b</a>\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"http://example.com)/\">foo</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>)\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/test\">http://example.com/test</a>)\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/(test)\">http://example.com/(test)</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/((test)\">http://example.com/((test)</a>\n</p><p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/(test))\">http://example.com/(test))</a>\n</p><p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/(test)))))\">http://example.com/(test)))))</a>\n</p><p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/a)b\">http://example.com/a)b</a>\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com)/\">foo</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span>)\n\n<span class=\"wpb-free-ext-link\">http://example.com/test</span>)\n\n<span class=\"wpb-free-ext-link\">http://example.com/(test)</span>\n\n<span class=\"wpb-free-ext-link\">http://example.com/((test)</span>\n\n(<span class=\"wpb-free-ext-link\">http://example.com/(test))</span>\n\n(<span class=\"wpb-free-ext-link\">http://example.com/(test)))))</span>\n\n<span class=\"wpb-free-ext-link\">http://example.com/a)b</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com)</span> <span class=\"wpb-ext-link-text\">foo</span>]</span></span>"
 	},
 	{
 		"desc": "Parenthesis in external links, w/ transclusion or comment",
 		"wikitext": "(http://example.com/{{1x|hi}})\n\n(http://example.com<!-- hi -->)",
 		"html": "<p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/hi\">http://example.com/hi</a>)\n</p><p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a>)\n</p>",
-		"render": "<p>(<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/hi\">http://example.com/hi</a>)\n</p><p>(<a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>)\n</p>",
+		"render": "<p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/hi\">http://example.com/hi</a>)\n</p><p>(<a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>)\n</p>",
 		"print": "<span class=\"wpb-root\">(<span class=\"wpb-free-ext-link\">http://example.com/</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span>)\n\n(<span class=\"wpb-free-ext-link\">http://example.com<span class=\"wpb-comment\">&lt;!-- hi --&gt;</span></span>)</span>"
 	},
 	{
 		"desc": "Extlink in square brackets with entity",
 		"wikitext": "[&nbsp;[http://test.com 123]&nbsp;]\n\n[http://test.com [123]",
 		"html": "<p>[&#160;<a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">123</a>&#160;]\n</p><p><a rel=\"nofollow\" class=\"external text\" href=\"http://test.com\">[123</a>\n</p>",
-		"render": "<p>[&nbsp;<a class=\"external\" rel=\"nofollow\" href=\"http://test.com/\">123</a>&nbsp;]\n</p><p><a class=\"external\" rel=\"nofollow\" href=\"http://test.com/\">[123</a>\n</p>",
+		"render": "<p>[&nbsp;<a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">123</a>&nbsp;]\n</p><p><a rel=\"nofollow\" class=\"external\" href=\"http://test.com/\">[123</a>\n</p>",
 		"print": "<span class=\"wpb-root\">[&amp;nbsp;<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">123</span>]</span>&amp;nbsp;]\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test.com</span> <span class=\"wpb-ext-link-text\">[123</span>]</span></span>"
 	},
 	{
@@ -6008,21 +6008,21 @@
 		"desc": "Magic links: RFC (T2479)",
 		"wikitext": "RFC 822",
 		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC 822</span></span>"
 	},
 	{
 		"desc": "Magic links: RFC (T67278)",
 		"wikitext": "This is RFC 822 but thisRFC 822 is not RFC 822linked.",
 		"html": "<p>This is <a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a> but thisRFC 822 is not RFC 822linked.\n</p>",
-		"render": "<p>This is <a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a> but thisRFC 822 is not RFC 822linked.\n</p>",
+		"render": "<p>This is <a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a> but thisRFC 822 is not RFC 822linked.\n</p>",
 		"print": "<span class=\"wpb-root\">This is <span class=\"wpb-magic-link\">RFC 822</span> but thisRFC 822 is not RFC 822linked.</span>"
 	},
 	{
 		"desc": "Magic links: RFC (w/ non-newline whitespace, T30950/T31025)",
 		"wikitext": "RFC &nbsp;&#160;&#0160;&#xA0;&#Xa0; 822\nRFC\n822",
 		"html": "<p><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc822\">RFC 822</a>\nRFC\n822\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">RFC &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 822</span>\nRFC\n822</span>"
 	},
 	{
@@ -6050,28 +6050,28 @@
 		"desc": "Magic links: PMID incorrectly converts space to underscore",
 		"wikitext": "PMID 1234",
 		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">PMID 1234</span></span>"
 	},
 	{
 		"desc": "Magic links: PMID (T67278)",
 		"wikitext": "This is PMID 1234 but thisPMID 1234 is not PMID 1234linked.",
 		"html": "<p>This is <a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
-		"render": "<p>This is <a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
+		"render": "<p>This is <a rel=\"nofollow\" class=\"external\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a> but thisPMID 1234 is not PMID 1234linked.\n</p>",
 		"print": "<span class=\"wpb-root\">This is <span class=\"wpb-magic-link\">PMID 1234</span> but thisPMID 1234 is not PMID 1234linked.</span>"
 	},
 	{
 		"desc": "Magic links: PMID (w/ non-newline whitespace, T30950/T31025)",
 		"wikitext": "PMID &nbsp;&#160;&#0160;&#xA0;&#Xa0; 1234\nPMID\n1234",
 		"html": "<p><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a>\nPMID\n1234\n</p>",
-		"render": "<p><a class=\"external\" rel=\"nofollow\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\nPMID\n1234\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a>\nPMID\n1234\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-link\">PMID &amp;nbsp;&amp;#160;&amp;#0160;&amp;#xA0;&amp;#Xa0; 1234</span>\nPMID\n1234</span>"
 	},
 	{
 		"desc": "Magic links: use appropriate serialization for \"almost\" magic links.",
 		"wikitext": "X[[Special:BookSources/0978739256|foo]]\n\nX[https://tools.ietf.org/html/rfc1234 foo]",
 		"html": "<p>X<a href=\"/wiki/Special:BookSources/0978739256\" title=\"Special:BookSources/0978739256\">foo</a>\n</p><p>X<a rel=\"nofollow\" class=\"external text\" href=\"https://tools.ietf.org/html/rfc1234\">foo</a>\n</p>",
-		"render": "<p>X<a href=\"/wiki/Special%3ABookSources%2F0978739256\" title=\"Special:BookSources/0978739256\">foo</a>\n</p><p>X<a class=\"external\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc1234\">foo</a>\n</p>",
+		"render": "<p>X<a href=\"/wiki/Special%3ABookSources%2F0978739256\" title=\"Special:BookSources/0978739256\">foo</a>\n</p><p>X<a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc1234\">foo</a>\n</p>",
 		"print": "<span class=\"wpb-root\">X<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Special:BookSources/0978739256</span>|<span class=\"wpb-link-text\">foo</span>]]</span>\n\nX<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://tools.ietf.org/html/rfc1234</span> <span class=\"wpb-ext-link-text\">foo</span>]</span></span>"
 	},
 	{
@@ -6973,14 +6973,14 @@
 		"desc": "T3219 URL next to image (good)",
 		"wikitext": "http://example.com [[File:Foobar.jpg]]",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a> <span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a> \n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a> \n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span> <span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>]]</span></span>"
 	},
 	{
 		"desc": "T3219 URL next to image (broken)",
 		"wikitext": "http://example.com[[File:Foobar.jpg]]",
 		"html": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a><span class=\"mw-default-size\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>",
-		"render": "<p><a class=\"external free\" rel=\"nofollow\" href=\"http://example.com/\">http://example.com</a>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://example.com</span><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>]]</span></span>"
 	},
 	{
@@ -7612,7 +7612,7 @@
 		"desc": "Preprocessor precedence 13: broken language converter in external link",
 		"wikitext": "*[http://example.com/-{foo Example in URL]\n*[http://example.com Example in -{link} description]\n*{{1x|[http://example.com/-{foo Breaks template, however]}}",
 		"html": "<ul><li><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/-{foo\">Example in URL</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">Example in -{link} description</a></li>\n<li>{{1x|<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/-{foo\">Breaks template, however</a>}}</li></ul>",
-		"render": "<ul><li><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/-%7Bfoo\">Example in URL</a></li>\n<li><a class=\"external\" rel=\"nofollow\" href=\"http://example.com/\">Example in -{link} description</a></li>\n<li>{{1x|<a class=\"external\" rel=\"nofollow\" href=\"http://example.com/-%7Bfoo\">Breaks template, however</a>}}</li></ul>",
+		"render": "<ul><li><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/-%7Bfoo\">Example in URL</a></li>\n<li><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">Example in -{link} description</a></li>\n<li>{{1x|<a rel=\"nofollow\" class=\"external\" href=\"http://example.com/-%7Bfoo\">Breaks template, however</a>}}</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/-{foo</span> <span class=\"wpb-ext-link-text\">Example in URL</span>]</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">Example in -{link} description</span>]</span>\n<span class=\"wpb-list\">*</span>{{1x|<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/-{foo</span> <span class=\"wpb-ext-link-text\">Breaks template, however</span>]</span>}}</span>"
 	},
 	{

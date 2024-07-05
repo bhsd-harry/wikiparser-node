@@ -214,7 +214,7 @@ export abstract class ExtLinkToken extends Token {
 		} else {
 			({innerText} = this);
 		}
-		return `<a class="external" rel="nofollow" href="${this.getUrl().href}">${innerText}</a>${trail}`;
+		return `<a rel="nofollow" class="external" href="${this.getUrl().href}">${innerText}</a>${trail}`;
 	}
 }
 

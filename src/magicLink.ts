@@ -285,7 +285,7 @@ export abstract class MagicLinkToken extends Token {
 		return `<a ${
 			type === 'magic-link' && protocol === 'ISBN'
 				? ''
-				: `class="external${type === 'free-ext-link' ? ' free' : ''}" rel="nofollow" `
+				: `rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}" `
 		}href="${typeof url === 'string' ? url : url.href}">${innerText}</a>`;
 	}
 }
