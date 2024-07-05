@@ -26,7 +26,7 @@ export const parseList = (wikitext: string, config: Config, accum: Token[]): str
 		return text;
 	}
 	const {html: [normalTags]} = config,
-		fullRegex = /:+\s*|-\{|\0\d+[xq]\x7F/gu;
+		fullRegex = /:+|-\{|\0\d+[xq]\x7F/gu;
 	let regex = fullRegex,
 		ex = regex.exec(text),
 		lt = 0,

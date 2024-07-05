@@ -2,6 +2,7 @@ import {
 	extUrlChar,
 	extUrlCharFirst,
 	escape,
+	removeComment,
 } from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
@@ -78,8 +79,8 @@ export class AstText extends AstNode {
 	}
 
 	/** @private */
-	override toString(): string {
-		return this.data;
+	override toString(skip?: boolean): string {
+		return skip && !this.parentNode?.getAttribute('built') ? removeComment(this.data) : this.data;
 	}
 
 	/** @private */

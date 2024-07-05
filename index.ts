@@ -66,23 +66,26 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		selfLink: boolean = false,
 	) {
 		const {Title}: typeof import('./lib/title') = require('./lib/title');
+		let titleObj: Title;
 		if (halfParsed) {
-			return new Title(title, defaultNs, config, decode, selfLink);
-		}
-		const {Token}: typeof import('./src/index') = require('./src/index');
-		return Shadow.run(() => {
-			const root = new Token(title, config);
-			root.type = 'root';
-			root.parseOnce(0, include).parseOnce();
-			const titleObj = new Title(root.toString(), defaultNs, config, decode, selfLink);
-			for (const key of ['main', 'fragment'] as const) {
-				const str = titleObj[key];
-				if (str?.includes('\0')) {
-					titleObj[key] = root.buildFromStr(str, BuildMethod.Text);
+			titleObj = new Title(title, defaultNs, config, decode, selfLink);
+		} else {
+			const {Token}: typeof import('./src/index') = require('./src/index');
+			titleObj = Shadow.run(() => {
+				const root = new Token(title, config);
+				root.type = 'root';
+				root.parseOnce(0, include).parseOnce();
+				const t = new Title(root.toString(), defaultNs, config, decode, selfLink);
+				for (const key of ['main', 'fragment'] as const) {
+					const str = t[key];
+					if (str?.includes('\0')) {
+						t[key] = root.buildFromStr(str, BuildMethod.Text);
+					}
 				}
-			}
-			return titleObj;
-		});
+				return t;
+			});
+		}
+		return titleObj;
 	},
 
 	/** @implements */
