@@ -220,7 +220,9 @@ export abstract class ExtToken extends TagPairToken {
 				return `<pre${firstChild.toHtmlInternal()}>${newline(lastChild.toHtmlInternal())}</pre>`;
 			case 'poem':
 				firstChild.classList.add('poem');
-				return `<div${firstChild.toHtmlInternal()}>${lastChild.toHtmlInternal().replace(/\n/gu, '<br>')}</div>`;
+				return `<div${firstChild.toHtmlInternal()}>${
+					lastChild.toHtmlInternal().replaceAll('\n', '<br>')
+				}</div>`;
 			default:
 				return '';
 		}

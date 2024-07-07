@@ -19,7 +19,7 @@ import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToke
 Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
 	const config = this.getAttribute('config');
 	// @ts-expect-error abstract class
-	return Shadow.run((): CommentToken => new CommentToken(data.replace(/-->/gu, '--&gt;'), true, config));
+	return Shadow.run((): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
 };
 
 Token.prototype.createElement = /** @implements */ function(tagName, {selfClosing, closing} = {}): TagToken {

@@ -60,7 +60,7 @@ export class Title {
 			return redirected;
 		}
 		this.autoConvert();
-		title = (prefix + this.main).replace(/ /gu, '_');
+		title = (prefix + this.main).replaceAll(' ', '_');
 		redirected = this.#redirect(title);
 		if (redirected) {
 			return redirected;

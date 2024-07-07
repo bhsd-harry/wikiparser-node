@@ -582,7 +582,7 @@ export abstract class TranscludeToken extends Token {
 	 */
 	getArg(key: string | number, exact?: boolean): ParameterToken | undefined {
 		const args = [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b));
-		return args.at(-1); // eslint-disable-line es-x/no-array-string-prototype-at
+		return args.at(-1);
 	}
 
 	/**

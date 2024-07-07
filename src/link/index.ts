@@ -106,7 +106,6 @@ export abstract class LinkToken extends LinkBaseToken {
 			this.setLinkText(m2[1]);
 			return;
 		}
-		// eslint-disable-next-line es-x/no-regexp-lookbehind-assertions
 		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?: ?(?<!\()\(.+\))?(?:(?:, |，|، ).|$)/u
 			.exec(linkText) as [string, string] | null;
 		if (m3) {

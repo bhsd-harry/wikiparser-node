@@ -267,7 +267,7 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[]): boolean => 
 	const condition = [...copy];
 	if (matches(token, condition.pop()!)) {
 		const {parentNode, previousElementSibling} = token;
-		switch (condition.at(-1)?.relation) { // eslint-disable-line es-x/no-array-string-prototype-at
+		switch (condition.at(-1)?.relation) {
 			case undefined:
 				return true;
 			case '>':

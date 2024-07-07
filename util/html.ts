@@ -118,7 +118,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 			result = result.trim();
 			const {previousSibling: {firstChild: {data}}} = child,
 				prefix = data.trim(),
-				prefix2 = prefix.replace(/;/gu, ':'),
+				prefix2 = prefix.replaceAll(';', ':'),
 				commonPrefixLength = getCommon(prefix2, lastPrefix);
 			let pre = closeList(lastPrefix.slice(commonPrefixLength), state, results);
 			if (prefix.length === commonPrefixLength) {

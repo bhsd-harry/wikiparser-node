@@ -146,7 +146,6 @@ TranscludeToken.prototype.fixDuplication =
 				let last: number;
 				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 				/^a\d+$/u;
-				// eslint-disable-next-line es-x/no-regexp-lookbehind-assertions
 				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0].length),
 					regex = new RegExp(String.raw`^${escapeRegExp(str)}\d+$`, 'u'),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),

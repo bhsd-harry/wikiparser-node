@@ -83,7 +83,6 @@ files.delete('parserTests.txt');
 for (const file of ['parserTests.txt', ...files]) {
 	tests.push({desc: file.slice(0, -4)});
 	const content = fs.readFileSync(path.join('test', 'core', file), 'utf8'),
-		// eslint-disable-next-line es-x/no-string-prototype-matchall
 		cases = [...content.matchAll(/^!!\s*test\n.+?^!!\s*end$/gmsu)],
 		htmlInfo = cases.map(([test]) => regex.html.exec(test)?.[1]).filter(x => x && !modes.has(x)),
 		optionInfo = cases.map(([test]) => regex.options.exec(test)?.[1]!.trim())

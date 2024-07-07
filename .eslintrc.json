@@ -6,7 +6,6 @@
 	},
 	"plugins": [
 		"@stylistic",
-		"es-x",
 		"promise",
 		"regexp",
 		"unicorn",
@@ -526,12 +525,6 @@
 		"n/no-mixed-requires": 2,
 		"n/no-new-require": 2,
 		"n/no-path-concat": 2,
-		"es-x/no-array-string-prototype-at": 2,
-		"es-x/no-global-this": 2,
-		"es-x/no-object-hasown": 2,
-		"es-x/no-regexp-lookbehind-assertions": 2,
-		"es-x/no-string-prototype-matchall": 2,
-		"es-x/no-string-prototype-replaceall": 2,
 		"regexp/no-contradiction-with-assertion": 2,
 		"regexp/no-dupe-disjunctions": [
 			2,
@@ -617,6 +610,7 @@
 		"unicorn/no-invalid-remove-event-listener": 2,
 		"unicorn/no-lonely-if": 2,
 		"unicorn/no-negated-condition": 2,
+		"unicorn/no-negation-in-equality-check": 2,
 		"unicorn/no-object-as-default-parameter": 2,
 		"unicorn/no-single-promise-in-promise-methods": 2,
 		"unicorn/no-static-only-class": 2,
@@ -634,12 +628,7 @@
 		"unicorn/no-useless-switch-case": 2,
 		"unicorn/number-literal-case": 2,
 		"unicorn/numeric-separators-style": 2,
-		"unicorn/prefer-array-find": [
-			2,
-			{
-				"checkFromLast": true
-			}
-		],
+		"unicorn/prefer-array-find": 2,
 		"unicorn/prefer-array-flat": 2,
 		"unicorn/prefer-array-flat-map": 2,
 		"unicorn/prefer-array-index-of": 2,
@@ -1058,7 +1047,6 @@
 				"@typescript-eslint/unified-signatures": 2,
 				"@stylistic/type-generic-spacing": 2,
 				"@stylistic/type-named-tuple-spacing": 2,
-				"es-x/no-object-hasown": 0,
 				"jsdoc/check-types": 0
 			}
 		},
@@ -1096,9 +1084,6 @@
 				"augments": "extends"
 			},
 			"ignorePrivate": true
-		},
-		"es-x": {
-			"aggressive": true
 		}
 	}
 }

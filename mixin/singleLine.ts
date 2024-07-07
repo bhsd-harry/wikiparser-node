@@ -10,11 +10,11 @@ export const singleLine = <T extends AstConstructor>(constructor: T, _?: unknown
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
 		override toString(skip?: boolean): string {
-			return super.toString(skip).replace(/\n/gu, ' ');
+			return super.toString(skip).replaceAll('\n', ' ');
 		}
 
 		override text(): string {
-			return super.text().replace(/\n/gu, ' ');
+			return super.text().replaceAll('\n', ' ');
 		}
 	}
 	mixin(SingleLineToken, constructor);

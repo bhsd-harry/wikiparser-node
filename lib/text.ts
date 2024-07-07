@@ -436,7 +436,7 @@ export class AstText extends AstNode {
 	 */
 	toHtml(nowrap?: boolean): string {
 		const {data} = this;
-		return font(this, sanitize(nowrap ? data.replace(/\n/gu, ' ') : data));
+		return font(this, sanitize(nowrap ? data.replaceAll('\n', ' ') : data));
 	}
 
 	/** @private */
