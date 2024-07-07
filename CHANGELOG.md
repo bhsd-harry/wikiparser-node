@@ -19,6 +19,7 @@
 - [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) and [`MagicLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#tohtml) for invalid URLs
 - [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing with multiple consecutive spaces and/or underscores
 - Self-closing `<ref>` tags inside a `<references>` tag
+- [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) should not be bold or italic
 
 **Changed**
 

@@ -120,6 +120,10 @@ export abstract class HtmlToken extends Token {
 		this.#selfClosing = true;
 	}
 
+	override get font(): {bold: boolean, italic: boolean} {
+		return {bold: false, italic: false};
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
