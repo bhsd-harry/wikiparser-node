@@ -31,7 +31,7 @@ const tests: Test[] = [],
 		'html/php+disabled',
 		'html/*',
 	]),
-	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize|language|htmlVariantLanguage)=.+|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
+	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
 	optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 		'parsoid',
 		'wgRawHtml',
