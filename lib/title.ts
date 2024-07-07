@@ -1,13 +1,8 @@
 import {
 	decodeHtml,
+	rawurldecode,
 } from '../util/string';
 import type {Config} from '../base';
-
-/**
- * PHP的`rawurldecode`函数的JavaScript实现
- * @param str 要解码的字符串
- */
-const rawurldecode = (str: string): string => decodeURIComponent(str.replace(/%(?![\da-f]{2})/giu, '%25'));
 
 /** MediaWiki页面标题对象 */
 export class Title {
@@ -69,7 +64,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replace(/_/gu, ' ').trim();
+		title = title.replace(/[_ ]+/gu, ' ').trim();
 		if (subpage) {
 			this.ns = 0;
 		} else {
@@ -80,7 +75,8 @@ export class Title {
 			}
 			const m = title.split(':');
 			if (m.length > 1) {
-				const id = config.nsid[m[0]!.trim().toLowerCase()];
+				const k = m[0]!.trim().toLowerCase(),
+					id = Object.prototype.hasOwnProperty.call(config.nsid, k) && config.nsid[k];
 				if (id) {
 					ns = id;
 					title = m.slice(1).join(':').trim();
