@@ -139,8 +139,8 @@ export abstract class LinkBaseToken extends Token {
 					throw new Error(`Invalid link target: ${name}`);
 				} else if (
 					type === 'category' && (interwiki || ns !== 14)
-						|| (type === 'file' || type === 'gallery-image' || type === 'imagemap-image')
-						&& (interwiki || ns !== 6)
+					|| (type === 'file' || type === 'gallery-image' || type === 'imagemap-image')
+					&& (interwiki || ns !== 6)
 				) {
 					undo(e, data);
 					throw new Error(

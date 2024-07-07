@@ -513,7 +513,7 @@ export abstract class AttributeToken extends Token {
 		const {type, name, tag, lastChild} = this;
 		if (
 			type === 'ext-attr' && !(tag in htmlAttrs)
-				|| !htmlAttrs[tag]?.has(name) && (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			|| !htmlAttrs[tag]?.has(name) && (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
 			return '';
 		}
