@@ -1,6 +1,6 @@
 ## v1.10.1
 
-*2024-07-04*
+*2024-07-07*
 
 **Added**
 
@@ -18,6 +18,7 @@
 - [`LinkBaseToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#tohtml) when wrapped by apostrophes
 - [`ExtLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ExtLinkToken#tohtml) and [`MagicLinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#tohtml) for invalid URLs
 - [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing with multiple consecutive spaces and/or underscores
+- Self-closing `<ref>` tags inside a `<references>` tag
 
 **Changed**
 
