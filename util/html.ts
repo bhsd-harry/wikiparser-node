@@ -14,22 +14,13 @@ export const getCommon = (prefix: string, lastPrefix: string): number =>
 declare type Prefix = '#' | '*' | ';' | ':';
 
 /**
- * mark empty list item
- * @param item list item
- */
-const markEmpty = (item: string | undefined): string | undefined =>
-	item?.endsWith('<li>') ? `${item.slice(0, -1)} class="mw-empty-elt">` : item;
-
-/**
  * get next list item
  * @param char list syntax
  * @param state
  * @param state.dt whether a <dt> tag is open
- * @param results previous results
  */
-const nextItem = (char: Prefix, state: {dt: boolean[]}, results?: string[]): string => {
+const nextItem = (char: Prefix, state: {dt: boolean[]}): string => {
 	if (char === '*' || char === '#') {
-		results?.push(markEmpty(results.pop())!);
 		return '</li>\n<li>';
 	}
 	const close = state.dt[0] ? '</dt>\n' : '</dd>\n';
@@ -46,23 +37,14 @@ const nextItem = (char: Prefix, state: {dt: boolean[]}, results?: string[]): str
  * @param chars list syntax
  * @param state
  * @param state.dt whether a <dt> tag is open
- * @param results previous results or last result
  */
-const closeList = (chars: string, state: {dt: boolean[]}, results: string[] | string): string => {
-	let result = typeof results === 'string' ? results : '';
+const closeList = (chars: string, state: {dt: boolean[]}): string => {
+	let result = '';
 	for (let i = chars.length - 1; i >= 0; i--) {
 		const char = chars[i] as Prefix;
 		switch (char) {
 			case '*':
 			case '#':
-				if (i === chars.length - 1) {
-					const last = markEmpty(typeof results === 'string' ? results : results.pop())!;
-					if (typeof results === 'string') {
-						result = last;
-					} else {
-						results.push(last);
-					}
-				}
 				result += `</li></${char === '*' ? 'ul' : 'ol'}>`;
 				break;
 			case ':':
@@ -120,9 +102,9 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 				prefix = data.trim(),
 				prefix2 = prefix.replaceAll(';', ':'),
 				commonPrefixLength = getCommon(prefix2, lastPrefix);
-			let pre = closeList(lastPrefix.slice(commonPrefixLength), state, results);
+			let pre = closeList(lastPrefix.slice(commonPrefixLength), state);
 			if (prefix.length === commonPrefixLength) {
-				pre += nextItem(prefix.slice(-1) as Prefix, state, results);
+				pre += nextItem(prefix.slice(-1) as Prefix, state);
 			} else {
 				if (state.dt[0] && prefix[commonPrefixLength - 1] === ':') {
 					pre += nextItem(':', state);
@@ -152,7 +134,7 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 				lastPrefix = prefix2;
 			} else {
 				lastPrefix = '';
-				result = closeList(prefix2, state, result);
+				result += closeList(prefix2, state);
 			}
 		}
 		results.push(result);
