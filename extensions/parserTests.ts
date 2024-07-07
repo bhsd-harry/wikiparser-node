@@ -40,10 +40,6 @@ declare interface Test {
 		container.removeAttribute('data-source');
 		container1.innerHTML = html;
 		container2.innerHTML = render ?? '';
-		for (const img of container.querySelectorAll<HTMLImageElement>('img[src]')) {
-			img.src = '/wikiparser-node/assets/bad-image.svg';
-			img.removeAttribute('srcset');
-		}
 		wikiparse.highlight!(pre, false, true);
 		select.selectedOptions[0]!.disabled = true;
 	});

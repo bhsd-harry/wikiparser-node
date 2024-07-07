@@ -29,10 +29,6 @@
         container.removeAttribute('data-source');
         container1.innerHTML = html;
         container2.innerHTML = render !== null && render !== void 0 ? render : '';
-        for (const img of container.querySelectorAll('img[src]')) {
-            img.src = '/wikiparser-node/assets/bad-image.svg';
-            img.removeAttribute('srcset');
-        }
         wikiparse.highlight(pre, false, true);
         select.selectedOptions[0].disabled = true;
     });

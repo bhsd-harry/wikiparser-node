@@ -150,6 +150,10 @@ pre {
 .frame li {
 	margin-bottom: .1em;
 }
+.frame li:empty, .frame li:-moz-only-whitespace,
+.frame p:empty, .frame p:-moz-only-whitespace {
+	display: none;
+}
 .frame dl {
 	margin: .2em 0 .5em;
 }
@@ -193,22 +197,35 @@ pre {
 .frame img {
 	vertical-align: middle;
 	max-width: 100%;
-}
-.frame figure.mw-halign-right {
-	margin: 0 0 .5em .5em;
-	clear: right;
-	float: right;
-	max-width: 50%;
+	min-width: 50px;
+	background: url("/wikiparser-node/assets/bad-image.svg") center/contain no-repeat;
 }
 .frame .mw-image-border .mw-file-element {
 	border: 1px solid #eaecf0;
 }
-.frame figure[typeof~="mw:File/Thumb"].mw-halign-left,
-.frame figure[typeof~="mw:File/Frame"].mw-halign-left {
-	margin: .5em 1.4em 1.3em 0;
-	clear: left;
-	float: left;
-	max-width: 50%;
+.frame .mw-valign-middle .mw-file-element {
+	vertical-align: middle;
+}
+.frame .mw-valign-baseline .mw-file-element {
+	vertical-align: baseline;
+}
+.frame .mw-valign-sub .mw-file-element {
+	vertical-align: sub;
+}
+.frame .mw-valign-super .mw-file-element {
+	vertical-align: super;
+}
+.frame .mw-valign-top .mw-file-element {
+	vertical-align: top;
+}
+.frame .mw-valign-text-top .mw-file-element {
+	vertical-align: text-top;
+}
+.frame .mw-valign-bottom .mw-file-element {
+	vertical-align: bottom;
+}
+.frame .mw-valign-text-bottom .mw-file-element {
+	vertical-align: text-bottom;
 }
 .frame figure[typeof~="mw:File/Thumb"],
 .frame figure[typeof~="mw:File/Frame"] {
@@ -224,6 +241,52 @@ pre {
 	border-collapse: collapse;
 	line-height: 0;
 }
+.frame figure.mw-halign-left {
+	clear: left;
+	float: left;
+}
+.frame figure[typeof~="mw:File"].mw-halign-left,
+.frame figure[typeof~="mw:File/Frameless"].mw-halign-left {
+	margin: 0 .5em .5em 0;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-left,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-left {
+	margin: .5em 1.4em 1.3em 0;
+}
+.frame figure.mw-halign-right {
+	clear: right;
+	float: right;
+}
+.frame figure[typeof~="mw:File"].mw-halign-right,
+.frame figure[typeof~="mw:File/Frameless"].mw-halign-right {
+	margin: 0 0 .5em .5em;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-right,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-right {
+	margin: .5em 0 1.3em 1.4em;
+}
+.frame figure.mw-halign-center {
+	margin: 0 auto;
+	clear: none;
+	float: none;
+}
+.frame figure[typeof~="mw:File"].mw-halign-center,
+.frame figure[typeof~="mw:File/Frameless"].mw-halign-center {
+	display: table;
+	border-collapse: collapse;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-center,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-center {
+	margin-bottom: .5em;
+}
+.frame figure.mw-halign-none {
+	clear: none;
+	float: none;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-none,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-none {
+	margin: 0 0 .5em;
+}
 .frame figure[typeof~="mw:File/Thumb"] > .mw-file-description {
 	display: block;
 	position: relative;
@@ -233,6 +296,10 @@ pre {
 	border: 1px solid #c8ccd1;
 	background: #f8f9fa;
 	margin: 3px;
+}
+.frame figure[typeof~="mw:File"] > figcaption,
+.frame figure[typeof~="mw:File/Frameless"] > figcaption {
+	display: none;
 }
 .frame figure[typeof~="mw:File/Thumb"] > figcaption,
 .frame figure[typeof~="mw:File/Frame"] > figcaption {
