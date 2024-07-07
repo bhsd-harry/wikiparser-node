@@ -24,6 +24,15 @@ export const removeComment = factory(/\0\d+c\x7F/gu, '');
 export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 
 /**
+ * PHP的`rawurldecode`函数的JavaScript实现
+ * @param str 要解码的字符串
+ */
+export const rawurldecode = (str: string): string => decodeURIComponent(str.replace(/%(?![\da-f]{2})/giu, '%25'));
+
+/** PHP的`trim`函数的JavaScript实现 */
+export const trimPHP = factory(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+
+/**
  * extract effective wikitext
  * @param childNodes a Token's contents
  * @param separator delimiter between nodes
@@ -31,11 +40,11 @@ export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
 export const text = (childNodes: readonly (string | AstNodes)[], separator = ''): string =>
 	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
-const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}'};
+const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' '};
 
 /** decode HTML entities */
 export const decodeHtml = factory(
-	/&(?:#(\d+|x[\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]));/gu,
+	/&(?:#(\d+|x[\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]|nbsp));/gu,
 	(_, code: string, name: string) => code
 		? String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code))
 		: names[name.toLowerCase() as keyof typeof names],
