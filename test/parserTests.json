@@ -7406,7 +7406,7 @@
 		"desc": "Filter syntax for language variants",
 		"wikitext": "foo-{zh;zh-hans;zh-hant|blog, WEBJOURNAL, WEBLOG}-quux",
 		"html": "<p>fooblog, WEBJOURNAL, WEBLOGquux\n</p>",
-		"render": "<p>fooquux\n</p>",
+		"render": "<p>fooblog, WEBJOURNAL, WEBLOGquux\n</p>",
 		"print": "<span class=\"wpb-root\">foo<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">blog, WEBJOURNAL, WEBLOG</span></span>}-</span>quux</span>"
 	},
 	{
@@ -7637,14 +7637,14 @@
 		"desc": "HTML markups with conversion syntax in attribs, nested in other conversion blocks",
 		"wikitext": "-{zh;zh-hans;zh-hant|<span title=\"-{X}-\">A</span>}-",
 		"html": "<p><span title=\"X\">A</span>\n</p>",
-		"render": "",
+		"render": "<p><span title=\"X\">A</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">X</span></span>}-</span></span>\"</span></span>&gt;</span>A<span class=\"wpb-html\">&lt;/span&gt;</span></span></span>}-</span></span>"
 	},
 	{
 		"desc": "Language converter markup with block content",
 		"wikitext": "<span>a-{b<div>c}-d\n\n<span>a-{zh;zh-hans;zh-hant|b<div>c}-d\n\n<span>a-{H|0=>zh-cn:x<span>y;0=>zh-tw:b<div>c}-d",
 		"html": "<span>ab<div>cd\n<span>ab<div>cd\n<span>ad</span></div></span></div></span>",
-		"render": "<span >ab<div >cd\n<p><span >ad\n</p><p><span >ad\n</p>",
+		"render": "<span >ab<div >cd\n<span >ab<div >cd\n<p><span >ad\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;span&gt;</span>a<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">b<span class=\"wpb-html\">&lt;div&gt;</span>c</span></span>}-</span>d\n\n<span class=\"wpb-html\">&lt;span&gt;</span>a<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">b<span class=\"wpb-html\">&lt;div&gt;</span>c</span></span>}-</span>d\n\n<span class=\"wpb-html\">&lt;span&gt;</span>a<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">0</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">x<span class=\"wpb-html\">&lt;span&gt;</span>y</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">0</span>=><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">b<span class=\"wpb-html\">&lt;div&gt;</span>c</span></span>}-</span>d</span>"
 	},
 	{
@@ -7665,7 +7665,7 @@
 		"desc": "T153135: Nested language converter markup in definition list (code coverage)",
 		"wikitext": ";-{|zh-cn:AAA -{zh-hans|foo:bar}- -{R|bat:baz}-}-:def",
 		"html": "<dl><dt>AAA foo:bar bat:baz</dt>\n<dd>def</dd></dl>",
-		"render": "<dl><dt>AAA  bat:baz</dt>\n<dd>def</dd></dl>",
+		"render": "<dl><dt>AAA foo:bar bat:baz</dt>\n<dd>def</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-converter\">-{|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">AAA <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo:bar</span></span>}-</span> <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bat:baz</span></span>}-</span></span></span>}-</span><span class=\"wpb-dd\">:</span>def</span>"
 	},
 	{

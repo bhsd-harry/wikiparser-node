@@ -136,7 +136,7 @@ export abstract class ConverterToken extends Token {
 			return rules.find(({variant}) => variant)?.lastChild.toHtmlInternal(nowrap).trim()
 				?? rules[0].lastChild.toHtmlInternal(nowrap);
 		}
-		return flags.has('R') ? html(rules, ';', nowrap) : '';
+		return flags.has('R') || this.getVariantFlags().size > 0 ? html(rules, ';', nowrap) : '';
 	}
 }
 

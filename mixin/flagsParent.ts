@@ -18,6 +18,9 @@ export interface FlagsParentBase {
 	/** 获取未知的转换类型标记 */
 	getUnknownFlags(): Set<string>;
 
+	/** 获取指定语言变体的转换标记 */
+	getVariantFlags(): Set<string>;
+
 	/**
 	 * 是否具有某转换类型标记
 	 * @param flag 转换类型标记
@@ -86,6 +89,11 @@ export const flagsParent = <T extends AstConstructor>(constructor: T, _?: unknow
 		/** @implements */
 		getUnknownFlags(): Set<string> {
 			return this.firstChild.getUnknownFlags();
+		}
+
+		/** @implements */
+		getVariantFlags(): Set<string> {
+			return this.firstChild.getVariantFlags();
 		}
 
 		/** @implements */

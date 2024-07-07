@@ -6,6 +6,7 @@
 
 - `<p>` wrapping for [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml)
 - Conversion from Wikitext lists to HTML
+- [`ConverterToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterToken#tohtml) when there are variant flags
 
 **Fixed**
 
