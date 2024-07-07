@@ -282,7 +282,7 @@ export abstract class AttributesToken extends Token {
 	override print(): string {
 		return this.toString()
 			? `<span class="wpb-${this.type}">${this.childNodes.map(child => child.print(
-				child instanceof AtomToken ? {class: 'attr-dirty'} : undefined,
+				child instanceof AtomToken ? {class: child.toString().trim() && 'attr-dirty'} : undefined,
 			)).join('')}</span>`
 			: '';
 	}
