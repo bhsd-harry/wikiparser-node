@@ -116,10 +116,8 @@ Object.defineProperties(Parser, def);
 
 if (typeof self === 'object') {
 	Object.assign(self, {Parser});
-/* eslint-disable es-x/no-global-this */
 } else if (typeof globalThis === 'object') {
 	Object.assign(globalThis, {Parser});
-/* eslint-enable es-x/no-global-this */
 }
 
 export default Parser;
