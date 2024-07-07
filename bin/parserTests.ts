@@ -31,7 +31,7 @@ const tests: Test[] = [],
 		'html/php+disabled',
 		'html/*',
 	]),
-	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
+	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize|language|htmlVariantLanguage)=.+|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
 	optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 		'parsoid',
 		'wgRawHtml',
@@ -75,12 +75,11 @@ const tests: Test[] = [],
 			'showtocdata',
 			'showmedia',
 			'notoc',
+			'pst',
 		].join('|')
-	}|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$`, 'u'),
+	}|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*)|pst )+$`, 'u'),
 	files = new Set(fs.readdirSync('test/core/'));
 files.delete('parserTests.txt');
-files.delete('indentPre.txt');
-files.delete('pst.txt');
 for (const file of ['parserTests.txt', ...files]) {
 	tests.push({desc: file.slice(0, -4)});
 	const content = fs.readFileSync(path.join('test', 'core', file), 'utf8'),
@@ -104,7 +103,11 @@ for (const file of ['parserTests.txt', ...files]) {
 				const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
 					html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)![1]!.trim(),
 					desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!;
-				if (wikitext) {
+				if (
+					wikitext
+					&& !/\b(?:NULL\b|array\s*\()/u.test(html)
+					&& !/<(?:span|static|aside)tag\b/iu.test(wikitext)
+				) {
 					const t: Test = {desc, wikitext, html};
 					try {
 						t.render = Parser.parse(wikitext).toHtml();
