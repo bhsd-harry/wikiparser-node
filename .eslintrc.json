@@ -576,6 +576,7 @@
 				"lookbehind": false
 			}
 		],
+		"regexp/unicode-property": 2,
 		"unicorn/catch-error-name": [
 			2,
 			{
