@@ -202,11 +202,8 @@ export abstract class ConverterFlagsToken extends Token {
 	getEffectiveFlags(): Set<string> {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags();
-		if (variantFlags.size > 0) {
-			return new Set([...variantFlags, ...unknownFlags]);
-		}
 		const flags = new Set([...this.#flags!.filter(flag => definedFlags.has(flag)), ...unknownFlags]);
-		if (flags.size === 0) {
+		if (flags.size === 0 && variantFlags.size === 0) {
 			return new Set('S');
 		} else if (flags.has('R')) {
 			return new Set('R');
@@ -220,6 +217,8 @@ export abstract class ConverterFlagsToken extends Token {
 			return hasT && hasD
 				? new Set(['+', 'H', 'T', 'D'])
 				: new Set(['+', 'H', ...hasT ? ['T'] : [], ...hasD ? ['D'] : [], ...unknownFlags]);
+		} else if (variantFlags.size > 0) {
+			return new Set([...variantFlags, ...unknownFlags]);
 		}
 		if (flags.size === 1 && flags.has('T')) {
 			flags.add('H');
