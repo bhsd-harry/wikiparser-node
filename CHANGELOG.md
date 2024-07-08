@@ -1,6 +1,6 @@
-## v1.10.1
+## v1.11.0
 
-*2024-07-07*
+*2024-07-08*
 
 **Added**
 
@@ -32,6 +32,10 @@
 
 - `ListBaseToken.prototype.toHtml` now returns an empty string
 - [`ListBaseToken.prototype.getRange`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListBaseToken#getrange) now modifies the AST and returns a plain token with the type `list-range`
+
+**Removed**
+
+- `Token.prototype.redoQuotes` method, which does not work as expected
 
 ## v1.10.0
 

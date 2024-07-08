@@ -168,26 +168,6 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 	return range;
 };
 
-Token.prototype.redoQuotes = /** @implements */ function(): void {
-	const acceptable = this.getAcceptable();
-	if (acceptable && !('QuoteToken' in acceptable)) {
-		return;
-	}
-	const accum: Token[] = [];
-	for (const child of this.childNodes) {
-		if (child.type !== 'quote' && child.type !== 'text') {
-			child.replaceWith(`\0${accum.length}e\x7F`);
-			accum.push(child);
-		}
-	}
-	const token = Shadow.run(() => {
-		const node = new Token(this.toString(), this.getAttribute('config'), accum);
-		node.setAttribute('stage', 6);
-		return node.parse(7);
-	});
-	this.replaceChildren(...token.childNodes);
-};
-
 /**
  * 隐式换行
  * @param str 字符串

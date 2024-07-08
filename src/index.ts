@@ -893,12 +893,6 @@ export class Token extends AstElement {
 		return categories.map(({name, sortkey}) => [name, sortkey]);
 	}
 
-	/** 重新解析单引号 */
-	redoQuotes(): void {
-		require('../addon/token');
-		this.redoQuotes();
-	}
-
 	/**
 	 * 展开模板
 	 * @param context 模板调用环境
