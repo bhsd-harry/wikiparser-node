@@ -49,14 +49,17 @@ function validate(
 			if (!value) {
 				return val;
 			}
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+			/* eslint-disable @typescript-eslint/no-unused-expressions */
+			/^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu;
 			/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
-			const regex = new RegExp(
-				String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
-				'iu',
-			);
-			if (regex.test(value)) {
-				return val;
+			/* eslint-enable @typescript-eslint/no-unused-expressions */
+			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu'),
+				re2 = new RegExp(
+					String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
+					'iu',
+				);
+			if (re1.test(value)) {
+				return re2.test(value) && val;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
