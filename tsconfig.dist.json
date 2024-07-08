@@ -3,6 +3,7 @@
 	"include": [
 		"dist/**/*.d.ts"
 	],
+	"exclude": [],
 	"compilerOptions": {
 		"noEmit": true
 	}

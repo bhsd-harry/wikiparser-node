@@ -320,10 +320,7 @@ export abstract class AttributeToken extends Token {
 			);
 			e.startIndex--;
 			e.startCol--;
-			const fix: LintError.Fix = {
-				range: [e.endIndex, e.endIndex],
-				text: this.#quotes[0]!,
-			};
+			const fix: LintError.Fix = {range: [e.endIndex, e.endIndex], text: this.#quotes[0]!};
 			if (lastChild.childNodes.some(({type: t, data}) => t === 'text' && /\s/u.test(data))) {
 				e.suggestions = [
 					{
