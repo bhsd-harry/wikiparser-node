@@ -25,6 +25,7 @@
 - Self-closing `<ref>` tags inside a `<references>` tag
 - [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) should not be bold or italic
 - [`ImageParameterToken.size`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#size) when the parameter ends with `pxpx`
+- [`ImageParameterToken.link`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#link) when containing [`QuoteToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/QuoteToken)
 
 **Changed**
 
