@@ -238,10 +238,7 @@ export class AstText extends AstNode {
 				];
 			} else if (char === ']' && previousType === 'free-ext-link' && severity === 'error') {
 				const i = start - previousSibling!.toString().length;
-				e.fix = {
-					range: [i, i],
-					text: '[',
-				};
+				e.fix = {range: [i, i], text: '['};
 			}
 			errors.push(e);
 		}

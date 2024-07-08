@@ -30,7 +30,7 @@ function validate(
 	ext?: string,
 ): string | Title | boolean {
 	val = val.trim();
-	let value = val.replace(/\0\d+t\x7F/gu, '').trim();
+	let value = val.replace(key === 'link' ? /\0\d+[tq]\x7F/gu : /\0\d+t\x7F/gu, '').trim();
 	switch (key) {
 		case 'width':
 			return !value || /^(?:\d+x?|\d*x\d+)(?:\s*px)?$/u.test(value);
@@ -38,12 +38,13 @@ function validate(
 			if (!value) {
 				return val;
 			}
-			const regex = new RegExp(
-				String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
-				'iu',
-			);
-			if (regex.test(value)) {
-				return val;
+			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu'),
+				re2 = new RegExp(
+					String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
+					'iu',
+				);
+			if (re1.test(value)) {
+				return re2.test(value) && val;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
@@ -155,11 +156,8 @@ export abstract class ImageParameterToken extends Token {
 		const errors = super.lint(start, re),
 			{link, name} = this;
 		if (name === 'invalid') {
-			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image parameter');
-			e.fix = {
-				range: [start, start + e.endIndex],
-				text: '',
-			};
+			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid image parameter');
+			e.fix = {range: [start - 1, e.endIndex], text: ''};
 			errors.push(e);
 		} else if (typeof link === 'object' && link.encoded) {
 			errors.push(generateForSelf(this, {start}, 'url-encoding', 'unnecessary URL encoding in an internal link'));
