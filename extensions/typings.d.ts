@@ -19,10 +19,23 @@ export interface LinterBase {
 	monaco(wikitext: string): Promise<editor.IMarkerData[]>;
 }
 
+declare interface CodeJarOptions {
+	indentOn?: RegExp;
+	moveToNewLine?: RegExp;
+	spellcheck?: boolean;
+	addClosing?: boolean;
+}
+declare const CodeJar: (editor: HTMLElement, highlight: (editor: HTMLElement) => void, opt?: CodeJarOptions) => void;
+
 declare global {
 	module '/*' {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
+	}
+
+	module 'https://*' {
+		/** @see https://www.npmjs.com/package/codejar */
+		export {CodeJar};
 	}
 
 	const Parser: Parser;

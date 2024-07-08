@@ -5,7 +5,7 @@ tsc --project extensions/tsconfig.json --module ES6 --noImplicitAny false
 bash sed.sh -i -E "s|// (import type .+ from '../base';)|\1|" extensions/typings.d.ts
 for x in extensions/dist/*.js
 do
-	if [[ $x != 'extensions/dist/gh-page.js' ]]
+	if [[ $x != 'extensions/dist/gh-page.js' ]] && [[ $x != 'extensions/dist/codejar.js' ]]
 	then
 		bash sed.sh -i '/export {};/d' $x
 		printf '%s\n%s\n%s\n' '(() => {' "$(cat $x)" '})();' > $x

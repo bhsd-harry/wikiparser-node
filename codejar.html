@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+	<head>
+		<title>Demo: WikiParser-Node</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=yes, minimum-scale=0.25, maximum-scale=5.0, width=device-width">
+		<link rel="stylesheet" href="extensions/gh-page.css">
+		<link rel="stylesheet" href="extensions/codejar.css">
+		<link rel="stylesheet" href="extensions/ui.css">
+		<script src="bundle/bundle.min.js"></script>
+		<script defer="" src="extensions/dist/codejar.js" type="module"></script>
+	</head>
+	<body>
+		<main>
+			<article>
+				<h2>Please input wikitext below.</h2>
+				<div class="fieldLayout">
+					<span class="field">
+						<input type="checkbox" id="wpInclude">
+						<span></span>
+					</span>
+					<span class="header">
+						<label for="wpInclude">To be transcluded</label>
+					</span>
+				</div>
+				<div id="wpTextbox1"></div>
+				<div id="ast"></div>
+			</article>
+		</main>
+	</body>
+</html>
