@@ -897,9 +897,9 @@ export class Token extends AstElement {
 	 * 展开模板
 	 * @param context 模板调用环境
 	 */
-	expand(context?: false): Token {
+	expand(): Token {
 		require('../addon/token');
-		return this.expand(context);
+		return this.expand();
 	}
 
 	/** 解析部分魔术字 */

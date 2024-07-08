@@ -284,7 +284,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	async clearCache(): Promise<void> {
-		const promise = cmd('npm', ['run', 'build:core']),
+		const promise = cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']),
 			entries = [
 				...Object.entries(classes),
 				...Object.entries(mixins),

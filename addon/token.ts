@@ -187,7 +187,7 @@ const expand = (
 	wikitext: string,
 	config: Config,
 	include: boolean,
-	context: TranscludeToken | false | undefined,
+	context?: TranscludeToken | false,
 	accum: Token[] = [],
 ): Token => {
 	const magicWords = new Set(['if', 'ifeq', 'switch']),
@@ -316,12 +316,12 @@ const expand = (
 	return token;
 };
 
-Token.prototype.expand = /** @implements */ function(context): Token {
+Token.prototype.expand = /** @implements */ function(): Token {
 	if (this.type !== 'root') {
 		throw new Error('Only root token can be expanded!');
 	}
 	return Shadow.run(
-		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'), context).parse(),
+		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include')).parse(),
 	);
 };
 
