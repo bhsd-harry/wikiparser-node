@@ -3,6 +3,10 @@ import {BoundingRect} from '../lib/rect';
 import {
 	removeComment,
 	escape,
+
+	/* NOT FOR BROWSER */
+
+	sanitizeAttr,
 } from '../util/string';
 import {Shadow} from '../util/debug';
 import {
@@ -523,8 +527,7 @@ export abstract class AttributeToken extends Token {
 		} else if (name === 'id') {
 			value = value.replace(/\s+/gu, '_');
 		}
-		const entities = {'<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
-		return `${name}="${value.replace(/[<>"\n]/gu, p => `&${entities[p as keyof typeof entities]};`)}"`;
+		return `${name}="${sanitizeAttr(value)}"`;
 	}
 }
 

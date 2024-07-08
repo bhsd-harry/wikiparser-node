@@ -8,6 +8,7 @@
 - Conversion from Wikitext lists to HTML
 - [`ConverterToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterToken#tohtml) when there are variant flags
 - [`ConverterFlagsToken.prototype.getEffectiveFlags`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterFlagsToken#geteffectiveflags) when there are variant flags
+- [`FileToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#tohtml), [`FileToken.prototype.getFrame`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#getframe), [`FileToken.prototype.getHorizAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#gethorizalign) and [`FileToken.prototype.getVertAlign`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#getvertalign)
 
 **Fixed**
 
@@ -22,6 +23,7 @@
 - [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing with multiple consecutive spaces and/or underscores
 - Self-closing `<ref>` tags inside a `<references>` tag
 - [`HtmlToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken) should not be bold or italic
+- [`ImageParameterToken.size`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken#size) when the parameter ends with `pxpx`
 
 **Changed**
 

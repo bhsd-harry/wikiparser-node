@@ -8,6 +8,7 @@ import {
 	Shadow,
 } from '../util/debug';
 import {classes} from '../util/constants';
+import {sanitizeAlt} from '../util/string';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import Parser from '../index';
@@ -199,7 +200,7 @@ export abstract class HeadingToken extends Token {
 		const {level, firstChild} = this,
 			html = firstChild.toHtmlInternal();
 		return `<div class="mw-heading mw-heading${level}"><h${level} id="${
-			html.replace(/<\/?[a-z].*?>/gu, '').trim().replace(/[\s_]+/gu, '_').replaceAll('"', '&quot;')
+			sanitizeAlt(html)!.replace(/[\s_]+/gu, '_')
 		}">${html.trim()}</h${level}></div>`;
 	}
 }

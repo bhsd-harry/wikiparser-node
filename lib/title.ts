@@ -248,6 +248,11 @@ export class Title {
 		}
 		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 	}
+
+	/** @private */
+	getTitleAttr(): string {
+		return this.title.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
+	}
 }
 
 classes['Title'] = __filename;

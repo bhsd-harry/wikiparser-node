@@ -1,16 +1,27 @@
-import {escapeRegExp} from '../../util/string';
+import {
+	escapeRegExp,
+
+	/* NOT FOR BROWSER */
+
+	sanitizeAlt,
+} from '../../util/string';
 import {generateForChild, generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
+import {Title} from '../../lib/title';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
-import type {Title} from '../../lib/title';
 import type {LintError} from '../../base';
 import type {Token, AtomToken} from '../../internal';
 
-const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
+const frame = new Map([
+		['manualthumb', 'Thumb'],
+		['frameless', 'Frameless'],
+		['framed', 'Frame'],
+		['thumbnail', 'Thumb'],
+	]),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
 	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
 
@@ -212,11 +223,30 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/**
+	 * 获取生效的指定图片参数
+	 * @param key 参数名
+	 */
+	getArg(key: string): ImageParameterToken | undefined {
+		const args = this.getArgs(key);
+		return args[key === 'manualthumb' ? 0 : args.length - 1];
+	}
+
+	/**
+	 * 获取生效的指定图片参数值
+	 * @param key 参数名
+	 */
+	getValue(key: string): string | true | undefined {
+		return this.getArg(key)?.getValue();
+	}
+
+	/* NOT FOR BROWSER */
+
+	/**
 	 * 获取特定类型的图片属性参数节点
 	 * @param keys 接受的参数名
 	 * @param type 类型名
 	 */
-	#getTypedArgs(keys: Set<string>, type: string): ImageParameterToken[] {
+	#getTypedArgs(keys: Set<string> | Map<string, string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
 
 		/* NOT FOR BROWSER */
@@ -249,24 +279,22 @@ export abstract class FileToken extends LinkBaseToken {
 		return this.#getTypedArgs(vertAlign, 'vertical-align');
 	}
 
-	/**
-	 * 获取生效的指定图片参数
-	 * @param key 参数名
-	 */
-	getArg(key: string): ImageParameterToken | undefined {
-		const args = this.getArgs(key);
-		return args[args.length - 1];
+	/** 获取生效的图片框架属性参数 */
+	getFrame(): string | Title | undefined {
+		const [arg] = this.getFrameArgs(),
+			val = arg?.name;
+		return val === 'manualthumb' ? this.normalizeTitle(arg!.getValue() as string, 6) : val;
 	}
 
-	/**
-	 * 获取生效的指定图片参数值
-	 * @param key 参数名
-	 */
-	getValue(key: string): string | true | undefined {
-		return this.getArg(key)?.getValue();
+	/** 获取生效的图片水平对齐参数 */
+	getHorizAlign(): string | undefined {
+		return this.getHorizAlignArgs()[0]?.name;
 	}
 
-	/* NOT FOR BROWSER */
+	/** 获取生效的图片垂直对齐参数 */
+	getVertAlign(): string | undefined {
+		return this.getVertAlignArgs()[0]?.name;
+	}
 
 	/**
 	 * 是否具有指定图片参数
@@ -342,6 +370,41 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	override setLinkText(): never {
 		throw new Error('LinkBaseToken.setLinkText method is not applicable to images!');
+	}
+
+	/** @private */
+	override toHtmlInternal(): string {
+		/** @ignore */
+		const isInteger = (n: string | undefined): boolean => Boolean(n && /^\d+$/u.test(n));
+		const {link, width, height} = this,
+			file = this.getAttribute('title'),
+			hasLink = link !== file,
+			fr = this.getFrame(),
+			manual = fr instanceof Title,
+			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed',
+			caption = this.getArg('caption')?.toHtmlInternal(true) ?? '',
+			titleFromCaption = visibleCaption ? '' : sanitizeAlt(caption)!,
+			title = titleFromCaption || (hasLink && typeof link !== 'string' ? link.getTitleAttr() : ''),
+			titleAttr = title && ` title="${title}"`,
+			alt = sanitizeAlt(this.getArg('alt')?.toHtmlInternal(true)) ?? titleFromCaption,
+			horiz = this.getHorizAlign() ?? '',
+			vert = this.getVertAlign() ?? '',
+			className = `${
+				horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`
+			} ${sanitizeAlt(this.getValue('class') as string | undefined) ?? ''}`.trim(),
+			img = `<img${alt && ` alt="${alt}"`} src="${(manual ? fr : file).getUrl()}" class="mw-file-element"${
+				isInteger(width) ? ` width="${width}"` : ''
+			}${isInteger(height) ? ` height="${height}"` : ''}>`,
+			a = link
+				? `<a href="${typeof link === 'string' ? link : link.getUrl()}"${
+					hasLink ? '' : ` class="mw-file-description"`
+				}${titleAttr}${typeof link === 'string' ? ` rel="nofollow"` : ''}>${img}</a>`
+				: `<span${titleAttr}>${img}</span>`;
+		return horiz || vert || visibleCaption
+			? `<figure${className && ` class="${className}"`} typeof="mw:File${
+				fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
+			}">${a}<figcaption>${caption}</figcaption></figure>`
+			: `<span>${a}</span>`;
 	}
 }
 

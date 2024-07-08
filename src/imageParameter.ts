@@ -123,7 +123,7 @@ export abstract class ImageParameterToken extends Token {
 	/** 图片大小 */
 	get size(): {width: string, height: string} | undefined {
 		if (this.name === 'width') {
-			const size = (this.getValue() as string).trim();
+			const size = (this.getValue() as string).trim().replace(/px$/u, '').trim();
 			if (!size.includes('{{')) {
 				const [width, height = ''] = size.split('x') as [string, string?];
 				return {width, height};

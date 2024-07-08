@@ -11,10 +11,18 @@ declare interface Test {
 	render?: string;
 }
 
+const redirects: Record<string, string> = {
+	'File:Redirect_to_foobar.jpg': 'File:Foobar.jpg',
+	'Template:Redirect_to_foo': 'Template:Foo',
+};
+
 Parser.viewOnly = true;
 Parser.debugging = true;
+Parser.warning = false;
 Parser.templateDir = './test/templates';
-Parser.redirects.set('Template:Redirect_to_foo', 'Template:Foo');
+for (const [name, target] of Object.entries(redirects)) {
+	Parser.redirects.set(name, target);
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;

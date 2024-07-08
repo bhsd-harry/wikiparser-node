@@ -53,10 +53,17 @@ export const decodeHtml = factory(
 /** escape newlines */
 export const noWrap = factory(/\n/gu, String.raw`\n`);
 
-const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
+
+/**
+ * replace by HTML entities
+ * @param re regex
+ */
+const replaceEntities = (re: RegExp): (str: string) => string =>
+	factory(re, p => `&${entities[p as keyof typeof entities]};`);
 
 /** escape HTML entities */
-export const escape = factory(/[&<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
+export const escape = replaceEntities(/[&<>]/gu);
 
 /**
  * 以HTML格式打印
@@ -70,6 +77,7 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
 
 /* NOT FOR BROWSER */
 
+/** encode URI */
 export const encode = factory(/[<>[\]#|=]+/gu, encodeURIComponent);
 
 /**
@@ -87,7 +95,17 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
 };
 
 /** escape HTML entities */
-export const sanitize = factory(/[<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
+export const sanitize = replaceEntities(/[<>]/gu);
+
+/** escape HTML entities in attributes */
+export const sanitizeAttr = replaceEntities(/[<>"\n]/gu);
+
+/**
+ * sanitize selected HTML attributes
+ * @param str attribute value
+ */
+export const sanitizeAlt = (str: string | undefined): string | undefined =>
+	str?.replace(/<\/?[a-z].*?>/gu, '').trim().replace(/\s+/gu, ' ').replaceAll('"', '&quot;');
 
 /** escape newline */
 export const newline = factory(/\n/gu, '&#10;');
