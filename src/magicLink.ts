@@ -228,10 +228,7 @@ export abstract class MagicLinkToken extends Token {
 		return super.insertAt(token as string, i);
 	}
 
-	/**
-	 * 获取网址
-	 * @throws `Error` 非标准协议
-	 */
+	/** 获取网址 */
 	getUrl(): URL | string {
 		const {type, protocol} = this;
 		let {link} = this;

@@ -378,12 +378,12 @@ export abstract class FileToken extends LinkBaseToken {
 		const isInteger = (n: string | undefined): boolean => Boolean(n && /^\d+$/u.test(n));
 		const {link, width, height} = this,
 			file = this.getAttribute('title'),
-			hasLink = link !== file,
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
 			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed',
 			caption = this.getArg('caption')?.toHtmlInternal(true) ?? '',
 			titleFromCaption = visibleCaption ? '' : sanitizeAlt(caption)!,
+			hasLink = manual || link !== file,
 			title = titleFromCaption || (hasLink && typeof link !== 'string' ? link.getTitleAttr() : ''),
 			titleAttr = title && ` title="${title}"`,
 			alt = sanitizeAlt(this.getArg('alt')?.toHtmlInternal(true)) ?? titleFromCaption,
@@ -394,12 +394,18 @@ export abstract class FileToken extends LinkBaseToken {
 			} ${sanitizeAlt(this.getValue('class') as string | undefined) ?? ''}`.trim(),
 			img = `<img${alt && ` alt="${alt}"`} src="${(manual ? fr : file).getUrl()}" class="mw-file-element"${
 				isInteger(width) ? ` width="${width}"` : ''
-			}${isInteger(height) ? ` height="${height}"` : ''}>`,
-			a = link
-				? `<a href="${typeof link === 'string' ? link : link.getUrl()}"${
-					hasLink ? '' : ` class="mw-file-description"`
-				}${titleAttr}${typeof link === 'string' ? ` rel="nofollow"` : ''}>${img}</a>`
-				: `<span${titleAttr}>${img}</span>`;
+			}${isInteger(height) ? ` height="${height}"` : ''}>`;
+		let href = '';
+		if (link) {
+			try {
+				href = typeof link === 'string' ? this.getArg('link')!.getUrl()! : link.getUrl();
+			} catch {}
+		}
+		const a = link
+			? `<a${href && ` href="${href}"`}${hasLink ? '' : ` class="mw-file-description"`}${titleAttr}${
+				typeof link === 'string' ? ` rel="nofollow"` : ''
+			}>${img}</a>`
+			: `<span${titleAttr}>${img}</span>`;
 		return horiz || vert || visibleCaption
 			? `<figure${className && ` class="${className}"`} typeof="mw:File${
 				fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''

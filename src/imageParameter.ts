@@ -337,6 +337,19 @@ export abstract class ImageParameterToken extends Token {
 			this.replaceChildren(...childNodes);
 		}
 	}
+
+	/** 获取网址 */
+	getUrl(): string | undefined {
+		let {link} = this;
+		if (!link) {
+			return link;
+		} else if (typeof link !== 'string') {
+			return link.getUrl();
+		} else if (link.startsWith('//')) {
+			link = `https:${link}`;
+		}
+		return new URL(link).href;
+	}
 }
 
 classes['ImageParameterToken'] = __filename;
