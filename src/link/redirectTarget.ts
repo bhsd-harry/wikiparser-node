@@ -68,10 +68,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			const e = generateForChild(this.lastChild, {start}, 'no-ignored', 'useless link text');
 			e.startIndex--;
 			e.startCol--;
-			e.fix = {
-				range: [e.startIndex, e.endIndex],
-				text: '',
-			};
+			e.fix = {range: [e.startIndex, e.endIndex], text: ''};
 			errors.push(e);
 		}
 		return errors;

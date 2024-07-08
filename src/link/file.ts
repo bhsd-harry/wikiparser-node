@@ -5,6 +5,7 @@ import {
 
 	sanitizeAlt,
 } from '../../util/string';
+import {font} from '../../util/html';
 import {generateForChild, generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {Title} from '../../lib/title';
@@ -92,7 +93,8 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** 图片大小 */
 	get size(): {width: string, height: string} | undefined {
-		return this.getArg('width')?.size;
+		const fr = this.getFrame();
+		return fr === 'framed' || fr instanceof Title ? undefined : this.getArg('width')?.size;
 	}
 
 	set size(size) {
@@ -159,13 +161,22 @@ export abstract class FileToken extends LinkBaseToken {
 				const visibleNodes = childNodes.filter(node => node.text().trim());
 				return visibleNodes.length !== 1 || visibleNodes[0]!.type !== 'arg';
 			}),
-			keys = [...new Set(args.map(({name}) => name))].filter(key => key !== 'invalid'),
+			keys = [...new Set(args.map(({name}) => name))],
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key)),
+			[fr] = frameKeys,
+			unscaled = fr === 'framed' || fr === 'manualthumb',
 			rect = new BoundingRect(this, start);
 		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
 			errors.push(generateForSelf(this, rect, 'nested-link', 'internal link in an external link'));
+		}
+		if (unscaled) {
+			for (const arg of args.filter(({name}) => name === 'width')) {
+				const e = generateForChild(arg, rect, 'invalid-gallery', 'invalid image parameter');
+				e.fix = {range: [e.startIndex - 1, e.endIndex], text: ''};
+				errors.push(e);
+			}
 		}
 		if (
 			args.length === keys.length
@@ -185,6 +196,9 @@ export abstract class FileToken extends LinkBaseToken {
 			(arg: ImageParameterToken): LintError =>
 				generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
 		for (const key of keys) {
+			if (key === 'invalid' || key === 'width' && unscaled) {
+				continue;
+			}
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {
 				relevantArgs = [...relevantArgs.slice(0, -1).filter(arg => arg.text()), ...relevantArgs.slice(-1)];
@@ -248,9 +262,6 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	#getTypedArgs(keys: Set<string> | Map<string, string>, type: string): ImageParameterToken[] {
 		const args = this.getAllArgs().filter(({name}) => keys.has(name));
-
-		/* NOT FOR BROWSER */
-
 		if (args.length > 1) {
 			Parser.warn(
 				`The image ${this.name} has ${args.length} ${type} parameters. Only the last ${
@@ -258,9 +269,6 @@ export abstract class FileToken extends LinkBaseToken {
 				} will take effect!`,
 			);
 		}
-
-		/* NOT FOR BROWSER END */
-
 		return args;
 	}
 
@@ -400,6 +408,15 @@ export abstract class FileToken extends LinkBaseToken {
 		if (link) {
 			try {
 				href = typeof link === 'string' ? this.getArg('link')!.getUrl()! : link.getUrl();
+				if (link === file) {
+					const lang = this.getValue('lang') as string | undefined,
+						page = this.getValue('page') as string | undefined;
+					if (lang) {
+						href += `?lang=${lang}`;
+					} else if (page) {
+						href += `?page=${page}`;
+					}
+				}
 			} catch {}
 		}
 		const a = link
@@ -407,11 +424,14 @@ export abstract class FileToken extends LinkBaseToken {
 				typeof link === 'string' ? ` rel="nofollow"` : ''
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
-		return horiz || vert || visibleCaption
-			? `<figure${classAttr} typeof="mw:File${
-				fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
-			}">${a}<figcaption>${caption}</figcaption></figure>`
-			: `<span${classAttr}>${a}</span>`;
+		return font(
+			this,
+			horiz || vert || visibleCaption
+				? `<figure${classAttr} typeof="mw:File${
+					fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
+				}">${a}<figcaption>${caption}</figcaption></figure>`
+				: `<span${classAttr}>${a}</span>`,
+		);
 	}
 }
 

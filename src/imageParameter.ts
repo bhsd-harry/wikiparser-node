@@ -257,11 +257,8 @@ export abstract class ImageParameterToken extends Token {
 		const errors = super.lint(start, re),
 			{link, name} = this;
 		if (name === 'invalid') {
-			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image parameter');
-			e.fix = {
-				range: [start, start + e.endIndex],
-				text: '',
-			};
+			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid image parameter');
+			e.fix = {range: [start - 1, e.endIndex], text: ''};
 			errors.push(e);
 		} else if (typeof link === 'object' && link.encoded) {
 			errors.push(generateForSelf(this, {start}, 'url-encoding', 'unnecessary URL encoding in an internal link'));

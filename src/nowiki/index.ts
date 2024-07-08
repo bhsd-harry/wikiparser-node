@@ -30,10 +30,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 		const {name, firstChild: {data}} = this;
 		if ((name === 'templatestyles' || name === 'section') && data) {
 			const e = generateForSelf(this, {start}, 'void-ext', Parser.msg('nothing should be in <$1>', name));
-			e.fix = {
-				range: [start - 1, e.endIndex + name.length + 3],
-				text: '/>',
-			};
+			e.fix = {range: [start, e.endIndex], text: ''};
 			return [e];
 		}
 		// eslint-disable-next-line @typescript-eslint/no-unused-expressions

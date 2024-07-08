@@ -27,7 +27,7 @@
 	"invalid content in <$1>": "<$1>內的無效內容",
 	"invalid conversion flag": "無效的轉換標記",
 	"invalid gallery image": "無效的圖庫圖片",
-	"invalid gallery image parameter": "無效的圖庫圖片參數",
+	"invalid image parameter": "無效的圖片參數",
 	"invalid ISBN": "無效的ISBN",
 	"invalid link in <imagemap>": "無效的<imagemap>連結",
 	"invalid parameter of <$1>": "<$1>的無效參數",

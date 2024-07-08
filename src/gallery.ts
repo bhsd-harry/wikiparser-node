@@ -111,12 +111,13 @@ export abstract class GalleryToken extends Token {
 				startLine = top + i,
 				startCol = i ? 0 : left;
 			if (child.type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
+				const endIndex = start + length;
 				errors.push({
 					rule: 'no-ignored',
 					message: Parser.msg('invalid content in <$1>', 'gallery'),
 					severity: trimmed.startsWith('|') ? 'warning' : 'error',
 					startIndex: start,
-					endIndex: start + length,
+					endIndex,
 					startLine,
 					endLine: startLine,
 					startCol,
@@ -124,12 +125,12 @@ export abstract class GalleryToken extends Token {
 					suggestions: [
 						{
 							desc: 'remove',
-							range: [start, start + length],
+							range: [start, endIndex],
 							text: '',
 						},
 						{
 							desc: 'comment',
-							range: [start, start + length],
+							range: [start, endIndex],
 							text: `<!--${str}-->`,
 						},
 					],
