@@ -8437,14 +8437,14 @@
 		"desc": "Image: unspecified format and border enlarge",
 		"wikitext": "[[File:Foobar.jpg|2000px]]\n\n[[File:Foobar.jpg|border|2000px]]",
 		"html": "<p><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"2000\" height=\"227\" class=\"mw-file-element\" /></a></span>\n</p><p><span class=\"mw-image-border\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"2000\" height=\"227\" class=\"mw-file-element\" /></a></span>\n</p>",
-		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"2000\"></a></span>\n</p><p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"2000\"></a></span>\n</p>",
+		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"2000\"></a></span>\n</p><p><span class=\"mw-image-border\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"2000\"></a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">2000</span>px</span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">border</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">2000</span>px</span>]]</span></span>"
 	},
 	{
 		"desc": "Image: \"unspecified format\" and border reduce",
 		"wikitext": "[[File:Foobar.jpg|1000px]]\n\n[[File:Foobar.jpg|border|1000px]]",
 		"html": "<p><span typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/1000px-Foobar.jpg\" decoding=\"async\" width=\"1000\" height=\"113\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/1500px-Foobar.jpg 1.5x, http://example.com/images/3/3a/Foobar.jpg 2x\" /></a></span>\n</p><p><span class=\"mw-image-border\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/1000px-Foobar.jpg\" decoding=\"async\" width=\"1000\" height=\"113\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/1500px-Foobar.jpg 1.5x, http://example.com/images/3/3a/Foobar.jpg 2x\" /></a></span>\n</p>",
-		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"1000\"></a></span>\n</p><p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"1000\"></a></span>\n</p>",
+		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"1000\"></a></span>\n</p><p><span class=\"mw-image-border\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"1000\"></a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">1000</span>px</span>]]</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">border</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">1000</span>px</span>]]</span></span>"
 	},
 	{
@@ -8668,14 +8668,14 @@
 		"desc": "Custom class",
 		"wikitext": "[[Image:foobar.jpg|a|class=b]]",
 		"html": "<p><span class=\"mw-default-size b\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"a\"><img alt=\"a\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>",
-		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"a\"><img alt=\"a\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span>\n</p>",
+		"render": "<p><span class=\"b\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"a\"><img alt=\"a\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">Image:foobar.jpg</span>|<span class=\"wpb-image-caption\">a</span>|<span class=\"wpb-image-parameter\">class=<span class=\"wpb-image-caption\">b</span></span>]]</span></span>"
 	},
 	{
 		"desc": "\"border\", \"frameless\" and \"class\" attributes on an image.",
 		"wikitext": "[[File:Foobar.jpg|frameless|border|class=extra|caption]]",
 		"html": "<p><span class=\"mw-default-size mw-image-border extra\" typeof=\"mw:File/Frameless\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"caption\"><img alt=\"caption\" src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/220px-Foobar.jpg\" decoding=\"async\" width=\"220\" height=\"25\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/330px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/440px-Foobar.jpg 2x\" /></a></span>\n</p>",
-		"render": "<p><span><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"caption\"><img alt=\"caption\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span>\n</p>",
+		"render": "<p><span class=\"mw-image-border extra\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"caption\"><img alt=\"caption\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">frameless</span>|<span class=\"wpb-image-parameter\">border</span>|<span class=\"wpb-image-parameter\">class=<span class=\"wpb-image-caption\">extra</span></span>|<span class=\"wpb-image-caption\">caption</span>]]</span></span>"
 	},
 	{

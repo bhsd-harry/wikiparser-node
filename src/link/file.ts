@@ -389,9 +389,10 @@ export abstract class FileToken extends LinkBaseToken {
 			alt = sanitizeAlt(this.getArg('alt')?.toHtmlInternal(true)) ?? titleFromCaption,
 			horiz = this.getHorizAlign() ?? '',
 			vert = this.getVertAlign() ?? '',
-			className = `${
-				horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`
+			className = `${horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`}${
+				this.getValue('border') ? ' mw-image-border' : ''
 			} ${sanitizeAlt(this.getValue('class') as string | undefined) ?? ''}`.trim(),
+			classAttr = className && ` class="${className}"`,
 			img = `<img${alt && ` alt="${alt}"`} src="${(manual ? fr : file).getUrl()}" class="mw-file-element"${
 				isInteger(width) ? ` width="${width}"` : ''
 			}${isInteger(height) ? ` height="${height}"` : ''}>`;
@@ -407,10 +408,10 @@ export abstract class FileToken extends LinkBaseToken {
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
 		return horiz || vert || visibleCaption
-			? `<figure${className && ` class="${className}"`} typeof="mw:File${
+			? `<figure${classAttr} typeof="mw:File${
 				fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
 			}">${a}<figcaption>${caption}</figcaption></figure>`
-			: `<span>${a}</span>`;
+			: `<span${classAttr}>${a}</span>`;
 	}
 }
 
