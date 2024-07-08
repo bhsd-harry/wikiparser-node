@@ -84,7 +84,7 @@ export abstract class NestedToken extends Token {
 					},
 					{
 						desc: 'comment',
-						range: [e.startIndex, e.startIndex],
+						range: [e.startIndex, e.endIndex],
 						text: `<!--${child.toString()}-->`,
 					},
 				];

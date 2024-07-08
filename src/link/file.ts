@@ -1,4 +1,6 @@
-import {escapeRegExp} from '../../util/string';
+import {
+	escapeRegExp,
+} from '../../util/string';
 import {generateForChild, generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -7,7 +9,12 @@ import {ImageParameterToken} from '../imageParameter';
 import type {LintError} from '../../base';
 import type {Token, AtomToken} from '../../internal';
 
-const frame = new Set(['manualthumb', 'frameless', 'framed', 'thumbnail']),
+const frame = new Map([
+		['manualthumb', 'Thumb'],
+		['frameless', 'Frameless'],
+		['framed', 'Frame'],
+		['thumbnail', 'Thumb'],
+	]),
 	horizAlign = new Set(['left', 'right', 'center', 'none']),
 	vertAlign = new Set(['baseline', 'sub', 'super', 'top', 'text-top', 'middle', 'bottom', 'text-bottom']);
 
@@ -79,13 +86,22 @@ export abstract class FileToken extends LinkBaseToken {
 				const visibleNodes = childNodes.filter(node => node.text().trim());
 				return visibleNodes.length !== 1 || visibleNodes[0]!.type !== 'arg';
 			}),
-			keys = [...new Set(args.map(({name}) => name))].filter(key => key !== 'invalid'),
+			keys = [...new Set(args.map(({name}) => name))],
 			frameKeys = keys.filter(key => frame.has(key)),
 			horizAlignKeys = keys.filter(key => horizAlign.has(key)),
 			vertAlignKeys = keys.filter(key => vertAlign.has(key)),
+			[fr] = frameKeys,
+			unscaled = fr === 'framed' || fr === 'manualthumb',
 			rect = new BoundingRect(this, start);
 		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
 			errors.push(generateForSelf(this, rect, 'nested-link', 'internal link in an external link'));
+		}
+		if (unscaled) {
+			for (const arg of args.filter(({name}) => name === 'width')) {
+				const e = generateForChild(arg, rect, 'invalid-gallery', 'invalid image parameter');
+				e.fix = {range: [e.startIndex - 1, e.endIndex], text: ''};
+				errors.push(e);
+			}
 		}
 		if (
 			args.length === keys.length
@@ -105,6 +121,9 @@ export abstract class FileToken extends LinkBaseToken {
 			(arg: ImageParameterToken): LintError =>
 				generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
 		for (const key of keys) {
+			if (key === 'invalid' || key === 'width' && unscaled) {
+				continue;
+			}
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {
 				relevantArgs = [...relevantArgs.slice(0, -1).filter(arg => arg.text()), ...relevantArgs.slice(-1)];
@@ -143,37 +162,12 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/**
-	 * 获取特定类型的图片属性参数节点
-	 * @param keys 接受的参数名
-	 * @param type 类型名
-	 */
-	#getTypedArgs(keys: Set<string>, type: string): ImageParameterToken[] {
-		const args = this.getAllArgs().filter(({name}) => keys.has(name));
-		return args;
-	}
-
-	/** 获取图片框架属性参数节点 */
-	getFrameArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(frame, 'frame');
-	}
-
-	/** 获取图片水平对齐参数节点 */
-	getHorizAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(horizAlign, 'horizontal-align');
-	}
-
-	/** 获取图片垂直对齐参数节点 */
-	getVertAlignArgs(): ImageParameterToken[] {
-		return this.#getTypedArgs(vertAlign, 'vertical-align');
-	}
-
-	/**
 	 * 获取生效的指定图片参数
 	 * @param key 参数名
 	 */
 	getArg(key: string): ImageParameterToken | undefined {
 		const args = this.getArgs(key);
-		return args[args.length - 1];
+		return args[key === 'manualthumb' ? 0 : args.length - 1];
 	}
 
 	/**

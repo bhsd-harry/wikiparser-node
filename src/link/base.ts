@@ -117,14 +117,12 @@ export abstract class LinkBaseToken extends Token {
 		if (type === 'link' || type === 'category') {
 			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));
 			if (textNode) {
-				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning');
+				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning'),
+					i = e.startIndex + textNode.getRelativeIndex();
 				e.suggestions = [
 					{
 						desc: 'escape',
-						range: [
-							e.startIndex + textNode.getRelativeIndex(),
-							e.startIndex + textNode.getRelativeIndex() + textNode.data.length,
-						],
+						range: [i, i + textNode.data.length],
 						text: textNode.data.replace(/\|/gu, '&#124;'),
 					},
 				];

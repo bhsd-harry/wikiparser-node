@@ -53,10 +53,17 @@ export const decodeHtml = factory(
 /** escape newlines */
 export const noWrap = factory(/\n/gu, String.raw`\n`);
 
-const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
+
+/**
+ * replace by HTML entities
+ * @param re regex
+ */
+const replaceEntities = (re: RegExp): (str: string) => string =>
+	factory(re, p => `&${entities[p as keyof typeof entities]};`);
 
 /** escape HTML entities */
-export const escape = factory(/[&<>]/gu, p => `&${entities[p as keyof typeof entities]};`);
+export const escape = replaceEntities(/[&<>]/gu);
 
 /**
  * 以HTML格式打印
