@@ -14,7 +14,6 @@ module.exports = {
 	ignorePatterns: [
 		...config.ignorePatterns,
 		'/wiki/',
-		'/bundle/',
 	],
 	rules: {
 		...config.rules,
