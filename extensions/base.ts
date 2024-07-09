@@ -4,7 +4,7 @@ declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.11.0-b/bundle/bundle.min.js');
+	importScripts('https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@1.11.1-b/bundle/bundle.min.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
