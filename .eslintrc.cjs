@@ -40,7 +40,6 @@ module.exports = {
 			'close',
 			'closed',
 			'constructor',
-			'escape',
 			'length',
 			'name',
 			'open',
