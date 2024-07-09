@@ -361,8 +361,9 @@ export abstract class FileToken extends LinkBaseToken {
 			this.typeError('setValue', 'String');
 		}
 		const parameter = Shadow.run(
-			// @ts-expect-error abstract class
-			(): ImageParameterToken => new ImageParameterToken(syntax.replace('$1', ''), this.extension, config),
+			(): ImageParameterToken =>
+				// @ts-expect-error abstract class
+				new ImageParameterToken(syntax.replace('$1', key === 'width' ? '1' : ''), this.extension, config),
 		);
 		if (free) {
 			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);

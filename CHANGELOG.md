@@ -1,3 +1,11 @@
+## v1.11.1
+
+*2024-07-10*
+
+**Fixed**
+
+- Lonely `px` should be considered as caption in [`ImageParameterToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImageParameterToken)
+
 ## v1.11.0
 
 *2024-07-08*
