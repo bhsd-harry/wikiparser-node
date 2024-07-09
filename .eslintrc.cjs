@@ -15,10 +15,6 @@ module.exports = {
 		...config.extends,
 		'plugin:markdown/recommended-legacy',
 	],
-	ignorePatterns: [
-		...config.ignorePatterns,
-		'/bundle/',
-	],
 	rules: {
 		...config.rules,
 		'no-control-regex': 0,
@@ -162,14 +158,9 @@ module.exports = {
 					{
 						allowIIFEs: true,
 						allowedNames: [
-							'attributesParent',
 							'flagsParent',
 							'magicLinkParent',
-							'fixedToken',
-							'singleLine',
 							'sol',
-							'syntax',
-							'hiddenToken',
 						],
 					},
 				],
@@ -199,7 +190,6 @@ module.exports = {
 			...config.settings.n,
 			allowModules: [
 				'chalk',
-				'request',
 				'monaco-editor',
 			],
 		},
