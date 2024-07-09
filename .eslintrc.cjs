@@ -48,7 +48,6 @@ module.exports = {
 			'root',
 			'stop',
 			'top',
-			'Request',
 		],
 		'no-param-reassign': 0,
 		'no-shadow': [
