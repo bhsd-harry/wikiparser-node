@@ -275,7 +275,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 					for (const [i, pre] of pres.entries()) {
 						pre.classList.remove('wikiparser');
 						pre.textContent = textbox.value;
-						await wikiparse.highlight!(pre, Boolean(i), true); // eslint-disable-line no-await-in-loop
+						await wikiparse.highlight!(pre, Boolean(i), true);
 					}
 				})();
 			// no default
