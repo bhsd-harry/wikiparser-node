@@ -57,7 +57,6 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 		Object.assign(parserConfig, {interwiki: []});
 		Parser.config = parserConfig;
 		try {
-			/* eslint-disable no-await-in-loop */
 			let failed = 0;
 			for (const page of await getPages(`${url}/api.php`)) {
 				const {pageid, title, content} = page;
@@ -86,7 +85,6 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 			if (failed) {
 				failures.set(name, failed);
 			}
-			/* eslint-enable no-await-in-loop */
 		} catch (e) {
 			error(`访问${name}的API端口时出错！`, e);
 		}
