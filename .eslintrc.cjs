@@ -42,6 +42,7 @@ module.exports = {
 		'no-new': 0,
 		'no-restricted-globals': [
 			2,
+			'print',
 			'close',
 			'closed',
 			'constructor',
@@ -50,11 +51,9 @@ module.exports = {
 			'name',
 			'open',
 			'parent',
-			'print',
 			'root',
 			'stop',
 			'top',
-			'Request',
 		],
 		'no-param-reassign': 0,
 		'no-shadow': [
