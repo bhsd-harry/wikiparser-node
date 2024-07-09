@@ -38,10 +38,10 @@ module.exports = {
 		'no-restricted-globals': [
 			2,
 			'print',
+			'escape',
 			'close',
 			'closed',
 			'constructor',
-			'escape',
 			'length',
 			'name',
 			'open',
