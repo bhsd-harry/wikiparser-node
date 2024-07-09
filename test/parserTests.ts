@@ -13,7 +13,7 @@ const tests: {wikitext?: string, print?: string}[] = require('../../test/parserT
 				console.log(wikitext);
 				console.log();
 				if (e instanceof assert.AssertionError) {
-					await diff(e.expected as string, e.actual as string, i); // eslint-disable-line no-await-in-loop
+					await diff(e.expected as string, e.actual as string, i);
 				}
 				failed++;
 			}
