@@ -23,6 +23,14 @@ module.exports = {
 	rules: {
 		...config.rules,
 		'no-control-regex': 0,
+		'no-unused-vars': [
+			2,
+			{
+				args: 'none',
+				caughtErrors: 'all',
+				ignoreRestSiblings: true,
+			},
+		],
 		'no-bitwise': [
 			2,
 			{
@@ -120,6 +128,14 @@ module.exports = {
 					2,
 					{
 						builtinGlobals: false,
+					},
+				],
+				'@typescript-eslint/no-unused-vars': [
+					2,
+					{
+						args: 'none',
+						caughtErrors: 'all',
+						ignoreRestSiblings: true,
 					},
 				],
 				'@typescript-eslint/no-namespace': 0,
