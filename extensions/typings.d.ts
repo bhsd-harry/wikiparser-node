@@ -4,9 +4,10 @@ import type {
 	Action,
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
+import type {CodeJar as CodeJarAsync} from 'codejar-async';
 import type {Config, LintError, AST, Parser} from '../base';
 
-export type {Config, LintError, AST, Diagnostic, Action, editor};
+export type {Config, LintError, AST, Diagnostic, Action, editor, CodeJarAsync};
 
 export interface PrinterBase {
 	include: boolean;
@@ -25,11 +26,15 @@ declare global {
 		export {CodeMirror6};
 	}
 
+	module 'https://*';
+
 	const Parser: Parser;
 	const wikiparse: wikiparse;
 
 	type MonacoEditor = typeof editor;
 }
+
+export type codejar = (textbox: HTMLTextAreaElement, include?: boolean) => CodeJarAsync & {include: boolean};
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {
@@ -37,11 +42,12 @@ export interface wikiparse {
 	setI18N: (i18n: Record<string, string>) => void;
 	setConfig: (config: Config) => void;
 	getConfig: () => Promise<Config>;
-	json: (wikitext: string, include: boolean, qid: number) => Promise<AST>;
+	json: (wikitext: string, include: boolean, qid?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
+	codejar?: codejar | Promise<codejar>;
 	Printer?: new (preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
 	Linter?: new (include?: boolean) => LinterBase;
 }

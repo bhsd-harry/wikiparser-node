@@ -111,7 +111,7 @@ const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
  * @param include 是否嵌入
  * @param qid 编号
  */
-const json = (wikitext: string, include: boolean, qid: number): Promise<AST> =>
+const json = (wikitext: string, include: boolean, qid = -4): Promise<AST> =>
 	getFeedback('json', qid, false, wikitext, include);
 
 /**

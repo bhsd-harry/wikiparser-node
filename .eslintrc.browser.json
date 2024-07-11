@@ -25,6 +25,12 @@
 			"parserOptions": {
 				"sourceType": "module"
 			}
+		},
+		{
+			"files": "extensions/dist/codejar.js",
+			"rules": {
+				"es-x/no-dynamic-import": 0
+			}
 		}
 	],
 	"settings": {

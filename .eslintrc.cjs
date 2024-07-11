@@ -186,6 +186,12 @@ module.exports = {
 				'@typescript-eslint/no-floating-promises': 0,
 			},
 		},
+		{
+			files: 'extensions/codejar.ts',
+			parserOptions: {
+				project: './extensions/tsconfig.codejar.json',
+			},
+		},
 	],
 	settings: {
 		...config.settings,

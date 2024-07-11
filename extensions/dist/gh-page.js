@@ -7,10 +7,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
     Parser.config = config;
     wikiparse.setConfig(config);
     const immediatePrint = (wikitext, include, stage) => Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, Parser.parse(wikitext, include, stage).print()]]);
-    const printer = wikiparse.edit(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
+    const jar = (await wikiparse.codejar)(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
-    const instance = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
-    localStorage.setItem('codemirror-mediawiki-addons', JSON.stringify(['lint']));
+    const cm = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
     const model = (await monaco).editor.createModel(textbox2.value, 'wikitext');
     monaco.editor.create(monacoContainer, {
         model,
@@ -29,24 +28,18 @@ const keys = new Set(['type', 'childNodes', 'range']);
     textbox2.addEventListener('input', () => {
         model.setValue(textbox2.value);
     });
-    const updateDoc = (str) => {
-        if (str) {
-            textbox.value = str;
-        }
-        textbox.dispatchEvent(new Event('input'));
-    };
     input.addEventListener('change', () => {
         const { checked } = input;
-        printer.include = checked;
+        jar.include = checked;
         Linter.include = checked;
-        updateDoc();
-        instance.update();
+        jar.updateCode(jar.toString());
+        cm.update();
         highlighters[Number(checked)].style.display = '';
         highlighters[1 - Number(checked)].style.display = 'none';
     });
     const setLang = () => {
-        instance.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
-        instance.lint((doc) => Linter.codemirror(String(doc)));
+        cm.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
+        cm.lint((doc) => Linter.codemirror(String(doc)));
     };
     setLang();
     input2.addEventListener('change', setLang);
@@ -78,15 +71,13 @@ const keys = new Set(['type', 'childNodes', 'range']);
         return dl;
     };
     let timer;
-    textbox.addEventListener('input', e => {
-        if (!e.isComposing) {
-            clearTimeout(timer);
-            timer = window.setTimeout((async () => {
-                const astDom = createAST(await wikiparse.json(textbox.value, printer.include, qid));
-                astDom.children[0].classList.remove('inactive');
-                astContainer.replaceChildren(astDom);
-            }), 2000);
-        }
+    jar.onUpdate(code => {
+        clearTimeout(timer);
+        timer = window.setTimeout((async () => {
+            const astDom = createAST(await wikiparse.json(code, jar.include, qid));
+            astDom.children[0].classList.remove('inactive');
+            astContainer.replaceChildren(astDom);
+        }), 2000);
     });
     astContainer.addEventListener('click', ({ target }) => {
         var _a;
@@ -158,11 +149,11 @@ const keys = new Set(['type', 'childNodes', 'range']);
         for (const tabcontent of tabcontents) {
             tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
         }
-        const text1 = textbox.value, text2 = instance.view.state.doc.toString();
+        const text1 = jar.toString(), text2 = cm.view.state.doc.toString();
         switch (active.value) {
             case 'linter':
                 if (text1 !== text2) {
-                    updateDoc(text2);
+                    jar.updateCode(text2);
                 }
                 break;
             case 'highlighter':
@@ -171,9 +162,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
         switch (value) {
             case 'linter':
                 if (text1 !== text2) {
-                    instance.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
+                    cm.view.dispatch({ changes: { from: 0, to: text2.length, insert: text1 } });
                     model.setValue(text1);
-                    instance.update();
+                    cm.update();
                 }
                 break;
             case 'highlighter':
@@ -181,7 +172,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
                     wikiparse.print = immediatePrint;
                     for (const [i, pre] of pres.entries()) {
                         pre.classList.remove('wikiparser');
-                        pre.textContent = textbox.value;
+                        pre.textContent = jar.toString();
                         await wikiparse.highlight(pre, Boolean(i), true);
                     }
                 })();
@@ -197,5 +188,5 @@ const keys = new Set(['type', 'childNodes', 'range']);
     };
     hashchange();
     window.addEventListener('hashchange', hashchange);
-    Object.assign(window, { cm: instance, model });
+    Object.assign(window, { jar, cm, model });
 })();

@@ -3,6 +3,9 @@
 	"include": [
 		"*.ts"
 	],
+	"exclude": [
+		"codejar.ts"
+	],
 	"compilerOptions": {
 		"target": "es2018",
 		"outDir": "dist",

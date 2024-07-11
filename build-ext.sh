@@ -2,6 +2,7 @@
 rm -rf extensions/dist/
 bash sed.sh -i -E "s|(import type .+ from '../base';)|// \1|" extensions/typings.d.ts
 tsc --project extensions/tsconfig.json --module ES6 --noImplicitAny false
+tsc --project extensions/tsconfig.codejar.json --module ES2020 --noImplicitAny false
 bash sed.sh -i -E "s|// (import type .+ from '../base';)|\1|" extensions/typings.d.ts
 for x in extensions/dist/*.js
 do
