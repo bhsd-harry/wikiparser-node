@@ -46,6 +46,7 @@ const highlight = async (ele: HTMLElement, include?: boolean, linenums = false, 
 	}
 	const html = (await wikiparse.print(ele.innerText, include)).map(([,, printed]) => printed).join('');
 	ele.classList.add('wikiparser');
+	ele.tabIndex = 0;
 	if (linenums) {
 		const root = document.createElement('span');
 		root.innerHTML = html;
@@ -68,6 +69,16 @@ const highlight = async (ele: HTMLElement, include?: boolean, linenums = false, 
 	} else {
 		ele.innerHTML = html;
 	}
+	ele.addEventListener('keydown', e => {
+		if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
+			e.preventDefault();
+			const range = document.createRange(),
+				selection = window.getSelection()!;
+			range.selectNodeContents(ele);
+			selection.removeAllRanges();
+			selection.addRange(range);
+		}
+	});
 };
 
 wikiparse.highlight = highlight;
