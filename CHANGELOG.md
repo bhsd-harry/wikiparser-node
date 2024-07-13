@@ -1,3 +1,11 @@
+## v1.11.2
+
+*2024-07-13*
+
+**Changed**
+
+- [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports `lonely-http` for `http://` in `ext-link-text`
+
 ## v1.11.1
 
 *2024-07-10*
