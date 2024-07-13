@@ -12,7 +12,7 @@ const codejar = (async (): Promise<f> => {
 			container = document.createElement('div'),
 			{offsetHeight, style: {height}, selectionStart: start, selectionEnd: end} = textbox;
 		preview.id = 'wikiPretty';
-		preview.classList.add('wikiparser');
+		preview.classList.add('wikiparser', 'wpb-root');
 		container.className = 'wikiparse-container';
 		container.style.height = offsetHeight ? `${offsetHeight}px` : height;
 		textbox.replaceWith(container);

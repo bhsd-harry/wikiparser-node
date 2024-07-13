@@ -59,7 +59,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
         dt.className = 'inactive';
         dl.dataset['start'] = String(ast.range[0]);
         dl.dataset['end'] = String(ast.range[1]);
-        if ('childNodes' in ast) {
+        if (ast.childNodes) {
             childNodes.append(...ast.childNodes.map(createAST));
         }
         lbrace.textContent = ' { ';

@@ -56,7 +56,7 @@ const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve 
     worker.postMessage([command, qid, raw, ...args]);
 });
 const getConfig = () => getFeedback('getConfig', -3);
-const json = (wikitext, include, qid) => getFeedback('json', qid, false, wikitext, include);
+const json = (wikitext, include, qid = -4) => getFeedback('json', qid, false, wikitext, include);
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
 const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint, json };
