@@ -32,16 +32,16 @@ export abstract class ArgToken extends Token {
 	constructor(parts: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
-		for (let i = 0; i < parts.length; i++) {
+		for (const [i, part] of parts.entries()) {
 			if (i === 0) {
-				const token = new AtomToken(parts[i], 'arg-name', config, accum, {
+				const token = new AtomToken(part, 'arg-name', config, accum, {
 				});
 				super.insertAt(token);
 			} else if (i > 1) {
-				const token = new HiddenToken(parts[i], config, accum);
+				const token = new HiddenToken(part, config, accum);
 				super.insertAt(token);
 			} else {
-				const token = new Token(parts[i], config, accum);
+				const token = new Token(part, config, accum);
 				token.type = 'arg-default';
 				token.setAttribute('stage', 2);
 				super.insertAt(token);
