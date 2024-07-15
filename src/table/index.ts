@@ -203,7 +203,7 @@ export abstract class TableToken extends TrBaseToken {
 		const rows = this.getAllRows(),
 			{length} = rows,
 			layout = new Layout(...emptyArray(length, () => []));
-		for (let i = 0; i < length; i++) {
+		for (const [i, rowLayout] of layout.entries()) {
 			/* NOT FOR BROWSER */
 
 			if (i > (stop?.row ?? stop?.y ?? NaN)) {
@@ -212,7 +212,6 @@ export abstract class TableToken extends TrBaseToken {
 
 			/* NOT FOR BROWSER END */
 
-			const rowLayout = layout[i]!;
 			let j = 0,
 				k = 0,
 				last: boolean | undefined;
@@ -232,7 +231,7 @@ export abstract class TableToken extends TrBaseToken {
 						/* NOT FOR BROWSER */
 
 						if (i === stop?.row && j > stop.column!) {
-							layout[i]![k] = coords;
+							rowLayout[k] = coords;
 							return layout;
 						}
 

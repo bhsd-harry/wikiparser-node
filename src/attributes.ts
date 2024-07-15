@@ -237,7 +237,7 @@ export abstract class AttributesToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{parentNode, length, childNodes} = this,
+			{parentNode, childNodes} = this,
 			attrs = new Map<string, AttributeToken[]>(),
 			duplicated = new Set<string>(),
 			rect = new BoundingRect(this, start);
@@ -246,8 +246,7 @@ export abstract class AttributesToken extends Token {
 			e.fix = {range: [start, e.endIndex], text: ''};
 			errors.push(e);
 		}
-		for (let i = 0; i < length; i++) {
-			const attr = childNodes[i]!;
+		for (const attr of childNodes) {
 			if (attr instanceof AtomToken && attr.text().trim()) {
 				const e = generateForChild(attr, rect, 'no-ignored', 'containing invalid attribute');
 				e.suggestions = [

@@ -179,8 +179,7 @@ export abstract class TranscludeToken extends Token {
 		}
 		const templateLike = this.isTemplate();
 		let i = 1;
-		for (let j = 0; j < parts.length; j++) {
-			const part = parts[j]!;
+		for (const [j, part] of parts.entries()) {
 			if (!templateLike && !(this.name === 'switch' && j > 0)) {
 				part[0] = part.join('=');
 				part.length = 1;

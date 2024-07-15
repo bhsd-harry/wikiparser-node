@@ -264,9 +264,9 @@ TableToken.prototype.insertTableCol =
 			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} column(s)!`);
 		}
 		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		for (let i = 0; i < layout.length; i++) {
-			const coords = layout[i]![x],
-				prevCoords = x === 0 ? true : layout[i]![x - 1];
+		for (const [i, rowLayout] of layout.entries()) {
+			const coords = rowLayout[x],
+				prevCoords = x === 0 ? true : rowLayout[x - 1];
 			if (!prevCoords) {
 				continue;
 			} else if (prevCoords !== coords) {
@@ -534,9 +534,8 @@ TableToken.prototype.moveCol =
 		const setX = new WeakSet<TableCoords>(),
 			setRef = new WeakSet<TableCoords>(),
 			rows = this.getAllRows();
-		for (let i = 0; i < layout.length; i++) {
-			const rowLayout = layout[i]!,
-				coords = rowLayout[x],
+		for (const [i, rowLayout] of layout.entries()) {
+			const coords = rowLayout[x],
 				refCoords = rowLayout[reference],
 				start = isStartCol(rowLayout, x);
 			if (refCoords && !start && !setRef.has(refCoords)) {
