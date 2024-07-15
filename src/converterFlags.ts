@@ -76,11 +76,9 @@ export abstract class ConverterFlagsToken extends Token {
 		if (variantFlags.size === knownFlagCount || validFlags.size === knownFlagCount) {
 			return errors;
 		}
-		const rect = new BoundingRect(this, start),
-			{childNodes, length} = this;
-		for (let i = 0; i < length; i++) {
-			const child = childNodes[i]!,
-				flag = child.text().trim();
+		const rect = new BoundingRect(this, start);
+		for (const [i, child] of this.childNodes.entries()) {
+			const flag = child.text().trim();
 			if (
 				flag
 				&& !variantFlags.has(flag)
