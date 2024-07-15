@@ -1,4 +1,5 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
+import {CodeJar} from '/codejar/dist/codejar.js';
 import type {Config, AST} from './typings';
 
 declare global {
@@ -15,6 +16,9 @@ const transform = (type?: string): string | undefined =>
 const keys = new Set(['type', 'childNodes', 'range']);
 
 (async () => {
+	Object.assign(window, {CodeJar});
+	await import('/wikiparser-node/extensions/dist/codejar.js');
+
 	// DOM元素
 	const textbox = document.querySelector<HTMLTextAreaElement>('#wpTextbox1')!,
 		textbox2 = document.querySelector<HTMLTextAreaElement>('#wpTextbox2')!,
@@ -44,7 +48,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			Parser.parse(wikitext, include, stage).childNodes
 				.map(child => [stage ?? Infinity, String(child), child.print()]),
 		);
-	const jar = (await wikiparse.codejar!)(textbox, input.checked),
+	const jar = (await wikiparse.codejar!)(textbox, input.checked, true),
 		Linter = new wikiparse.Linter!(input.checked),
 		{print} = wikiparse,
 		qid = wikiparse.id++;
@@ -175,7 +179,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		if (start === end) {
 			return undefined;
 		}
-		let cur = document.getElementById('wikiPretty')!.firstChild;
+		let cur = document.querySelector('#editor > .wikiparser')!.firstChild;
 		while (cur) {
 			const {length} = cur.textContent!;
 			if (start >= length) {

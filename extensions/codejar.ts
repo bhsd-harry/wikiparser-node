@@ -6,7 +6,11 @@ const codejar = (async (): Promise<f> => {
 		? window
 		: await import('https://testingcf.jsdelivr.net/npm/codejar-async');
 
-	return (textbox: HTMLTextAreaElement, include?: boolean): CodeJarAsync & {include: boolean} => {
+	return (
+		textbox: HTMLTextAreaElement,
+		include?: boolean,
+		linenums?: boolean,
+	): CodeJarAsync & {include: boolean} => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
 			throw new TypeError('wikiparse.codejar方法仅可用于textarea元素！');
 		}
@@ -28,6 +32,12 @@ const codejar = (async (): Promise<f> => {
 			...CodeJar(root, highlight, {spellcheck: true}), // eslint-disable-line new-cap
 			include: Boolean(include),
 		};
+		if (linenums) {
+			jar.onHighlight(e => {
+				e.parentNode!.querySelector('.wikiparser-line-numbers')?.remove();
+				wikiparse.lineNumbers(e);
+			});
+		}
 		jar.restore({start: 0, end: 0});
 		jar.updateCode(textbox.value);
 		jar.restore({start, end});

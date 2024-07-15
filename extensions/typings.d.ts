@@ -24,6 +24,9 @@ declare global {
 	module '/*' {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
+		/** @see https://www.npmjs.com/package/codejar-async */
+		const CodeJar: (...args: unknown[]) => CodeJarAsync;
+		export {CodeJar};
 	}
 
 	module 'https://*';
@@ -34,7 +37,8 @@ declare global {
 	type MonacoEditor = typeof editor;
 }
 
-export type codejar = (textbox: HTMLTextAreaElement, include?: boolean) => CodeJarAsync & {include: boolean};
+export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) =>
+	CodeJarAsync & {include: boolean};
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {

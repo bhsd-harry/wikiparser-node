@@ -187,7 +187,10 @@ module.exports = {
 			},
 		},
 		{
-			files: 'extensions/codejar.ts',
+			files: [
+				'extensions/gh-page.ts',
+				'extensions/codejar.ts',
+			],
 			parserOptions: {
 				project: './extensions/tsconfig.codejar.json',
 			},

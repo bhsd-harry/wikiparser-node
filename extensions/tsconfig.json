@@ -4,6 +4,7 @@
 		"*.ts"
 	],
 	"exclude": [
+		"gh-page.ts",
 		"codejar.ts"
 	],
 	"compilerOptions": {

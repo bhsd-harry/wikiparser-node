@@ -177,11 +177,13 @@ const splitNewLine = (html: HTMLElement): HTMLElement[] => {
  * @param html 待添加行号的多行文本
  */
 const size = (html: HTMLElement): void => {
-	const gutter = html.parentNode!.querySelector<HTMLElement>('.wikiparser-line-numbers');
+	const container = html.parentElement!,
+		gutter = container.querySelector<HTMLElement>('.wikiparser-line-numbers');
 	if (!gutter) {
 		intersectionObserver.unobserve(html);
 		return;
 	}
+	html.style.marginLeft = '';
 	const start = Number(html.dataset['start'] || 1),
 		lines = splitNewLine(html),
 		width = `${String(lines.length + start - 1).length + 1.5}ch`;
@@ -205,7 +207,12 @@ const size = (html: HTMLElement): void => {
 		lastTop = top;
 	}
 	if (line) {
-		line.style.height = `${html.getBoundingClientRect().bottom - lastTop!}px`;
+		line.style.height = `${
+			(html.offsetHeight > container.offsetHeight
+				? html.getBoundingClientRect().bottom
+				: container.getBoundingClientRect().top + container.scrollHeight)
+				- lastTop!
+		}px`;
 	}
 	sizer.remove();
 	intersectionObserver.unobserve(html);

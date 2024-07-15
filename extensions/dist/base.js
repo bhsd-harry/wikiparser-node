@@ -84,11 +84,12 @@ const splitNewLine = (html) => {
     return result;
 };
 const size = (html) => {
-    const gutter = html.parentNode.querySelector('.wikiparser-line-numbers');
+    const container = html.parentElement, gutter = container.querySelector('.wikiparser-line-numbers');
     if (!gutter) {
         intersectionObserver.unobserve(html);
         return;
     }
+    html.style.marginLeft = '';
     const start = Number(html.dataset['start'] || 1), lines = splitNewLine(html), width = `${String(lines.length + start - 1).length + 1.5}ch`;
     html.style.marginLeft = width;
     gutter.style.width = width;
@@ -109,7 +110,10 @@ const size = (html) => {
         lastTop = top;
     }
     if (line) {
-        line.style.height = `${html.getBoundingClientRect().bottom - lastTop}px`;
+        line.style.height = `${(html.offsetHeight > container.offsetHeight
+            ? html.getBoundingClientRect().bottom
+            : container.getBoundingClientRect().top + container.scrollHeight)
+            - lastTop}px`;
     }
     sizer.remove();
     intersectionObserver.unobserve(html);

@@ -1,6 +1,6 @@
 (() => {
 "use strict";
-const highlight = async (ele, include, linenums = false, start) => {
+const highlight = async (ele, include, linenums, start) => {
     if (ele.classList.contains('wikiparser')) {
         return;
     }

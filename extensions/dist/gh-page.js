@@ -1,14 +1,17 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
+import { CodeJar } from '/codejar/dist/codejar.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
+    Object.assign(window, { CodeJar });
+    await import('/wikiparser-node/extensions/dist/codejar.js');
     const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
     const config = await (await fetch('./config/default.json')).json();
     Parser.config = config;
     wikiparse.setConfig(config);
     const immediatePrint = (wikitext, include, stage) => Promise.resolve(Parser.parse(wikitext, include, stage).childNodes
         .map(child => [stage !== null && stage !== void 0 ? stage : Infinity, String(child), child.print()]));
-    const jar = (await wikiparse.codejar)(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
+    const jar = (await wikiparse.codejar)(textbox, input.checked, true), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
     const cm = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
     const model = (await monaco).editor.createModel(textbox2.value, 'wikitext');
@@ -98,7 +101,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
         if (start === end) {
             return undefined;
         }
-        let cur = document.getElementById('wikiPretty').firstChild;
+        let cur = document.querySelector('#editor > .wikiparser').firstChild;
         while (cur) {
             const { length } = cur.textContent;
             if (start >= length) {

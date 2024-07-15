@@ -19,6 +19,7 @@
 	padding: 0 6px;
 	display: block;
 	position: relative;
+	overflow-y: hidden !important;
 }
 
 .wikiparser-line-numbers {

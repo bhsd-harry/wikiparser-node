@@ -1,6 +1,7 @@
 {
 	"extends": "./tsconfig",
 	"include": [
+		"gh-page.ts",
 		"codejar.ts"
 	],
 	"exclude": []

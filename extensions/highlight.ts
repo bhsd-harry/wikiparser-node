@@ -5,7 +5,7 @@
  * @param linenums 是否添加行号
  * @param start 起始行号
  */
-const highlight = async (ele: HTMLElement, include?: boolean, linenums = false, start?: number): Promise<void> => {
+const highlight = async (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number): Promise<void> => {
 	if (ele.classList.contains('wikiparser')) {
 		return;
 	}
