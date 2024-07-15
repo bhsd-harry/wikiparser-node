@@ -59,6 +59,85 @@ const getConfig = () => getFeedback('getConfig', -3);
 const json = (wikitext, include, qid = -4) => getFeedback('json', qid, false, wikitext, include);
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
-const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint, json };
+const append = (parent, text) => {
+    if (text) {
+        parent.append(text);
+    }
+};
+const splitNewLine = (html) => {
+    let cur = html.cloneNode();
+    const result = [cur];
+    for (const child of html.childNodes) {
+        const { textContent } = child;
+        if (!(textContent === null || textContent === void 0 ? void 0 : textContent.includes('\n'))) {
+            cur.append(child.cloneNode(true));
+            continue;
+        }
+        const lines = child.nodeType === Node.TEXT_NODE ? textContent.split('\n') : splitNewLine(child);
+        append(cur, lines[0]);
+        for (const text of lines.slice(1)) {
+            cur = html.cloneNode();
+            result.push(cur);
+            append(cur, text);
+        }
+    }
+    return result;
+};
+const size = (html) => {
+    const gutter = html.parentNode.querySelector('.wikiparser-line-numbers');
+    if (!gutter) {
+        intersectionObserver.unobserve(html);
+        return;
+    }
+    const start = Number(html.dataset['start'] || 1), lines = splitNewLine(html), width = `${String(lines.length + start - 1).length + 1.5}ch`;
+    html.style.marginLeft = width;
+    gutter.style.width = width;
+    const sizer = document.createElement('span');
+    sizer.className = 'wikiparser-sizer';
+    sizer.innerHTML = '';
+    html.append(sizer);
+    let line, lastTop;
+    for (const [i, child] of lines.entries()) {
+        sizer.append(child, '\n');
+        const { top } = child.getBoundingClientRect();
+        if (line) {
+            line.style.height = `${top - lastTop}px`;
+        }
+        line = document.createElement('span');
+        line.textContent = String(i + start);
+        gutter.append(line);
+        lastTop = top;
+    }
+    if (line) {
+        line.style.height = `${html.getBoundingClientRect().bottom - lastTop}px`;
+    }
+    sizer.remove();
+    intersectionObserver.unobserve(html);
+};
+const intersectionObserver = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+        if (!entry.isIntersecting) {
+            continue;
+        }
+        size(entry.target);
+    }
+});
+const lineNumbers = (html, start = 1) => {
+    const styles = getComputedStyle(html), container = html.parentElement, gutter = document.createElement('span');
+    html.dataset['start'] = String(start);
+    gutter.className = 'wikiparser-line-numbers';
+    container.classList.add('wikiparse-container');
+    container.append(gutter);
+    if (styles.whiteSpace !== 'pre') {
+        html.style.whiteSpace = 'pre-wrap';
+    }
+    if (html.offsetParent) {
+        size(html);
+    }
+    else {
+        intersectionObserver.observe(html);
+    }
+};
+const wikiparse = { id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers };
 Object.assign(window, { wikiparse });
 })();

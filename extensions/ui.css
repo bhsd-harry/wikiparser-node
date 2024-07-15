@@ -1,35 +1,49 @@
+.wikiparse-container {
+	position: relative;
+	-webkit-text-size-adjust: none;
+}
 .wikiparser {
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
 	word-break: break-all;
 	font-family: monospace;
 	border: 1.5px solid #dedede;
-}
-.wikiparser > ol {
-	background-color: #f5f5f5;
-	list-style: none;
-}
-.wikiparser > ol > li {
 	background-color: #fff;
+}
+/* wikiparse.highlight或wikiparse.codejar */
+.wikiparser.wikiparse-container {
+	padding: 4px 0;
+	overflow-y: auto;
+}
+.wikiparse-container > .wpb-root {
 	padding: 0 6px;
-	border-left: 1px solid #ddd;
-	counter-increment: wikiparser;
+	display: block;
+	position: relative;
 }
-.wikiparser > ol > li:first-child {
-	padding-top: 4px;
-}
-.wikiparser > ol > li:last-child {
-	padding-bottom: 4px;
-}
-.wikiparser > ol > li::before {
-	content: counter(wikiparser);
+
+.wikiparser-line-numbers {
 	position: absolute;
-	transform: translateX(calc(-100% - 10px));
-	color: #6c6c6c;
-}
-.wikiparser > ol > li::after {
-	content: "";
+	top: 0;
+	left: 0;
 	display: inline-block;
+	background-color: #f5f5f5;
+	color: #6c6c6c;
+	border-right: 1px solid #ddd;
+	padding: 4px 0;
+}
+.wikiparser-line-numbers > span {
+	display: inline-block;
+	width: calc(100% - .5ch);
+	text-align: right;
+}
+.wikiparser-sizer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	visibility: hidden;
+	z-index: -1;
+	padding: 0 6px;
 }
 
 .wpb-table-inter {

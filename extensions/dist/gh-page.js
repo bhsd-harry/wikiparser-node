@@ -6,7 +6,8 @@ const keys = new Set(['type', 'childNodes', 'range']);
     const config = await (await fetch('./config/default.json')).json();
     Parser.config = config;
     wikiparse.setConfig(config);
-    const immediatePrint = (wikitext, include, stage) => Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, Parser.parse(wikitext, include, stage).print()]]);
+    const immediatePrint = (wikitext, include, stage) => Promise.resolve(Parser.parse(wikitext, include, stage).childNodes
+        .map(child => [stage !== null && stage !== void 0 ? stage : Infinity, String(child), child.print()]));
     const jar = (await wikiparse.codejar)(textbox, input.checked), Linter = new wikiparse.Linter(input.checked), { print } = wikiparse, qid = wikiparse.id++;
     highlighters[1 - Number(input.checked)].style.display = 'none';
     const cm = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
@@ -34,8 +35,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
         Linter.include = checked;
         jar.updateCode(jar.toString());
         cm.update();
-        highlighters[Number(checked)].style.display = '';
-        highlighters[1 - Number(checked)].style.display = 'none';
+        const i = Number(checked);
+        highlighters[i].style.display = '';
+        highlighters[1 - i].style.display = 'none';
     });
     const setLang = () => {
         cm.setLanguage(input2.checked ? 'mediawiki' : 'plain', mwConfig);
@@ -172,7 +174,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
                     wikiparse.print = immediatePrint;
                     for (const [i, pre] of pres.entries()) {
                         pre.classList.remove('wikiparser');
-                        pre.textContent = jar.toString();
+                        pre.textContent = jar.toString() || ' ';
                         await wikiparse.highlight(pre, Boolean(i), true);
                     }
                 })();

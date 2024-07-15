@@ -1,24 +1,24 @@
 (() => {
 const codejar = (async () => {
-    const { CodeJar } = await import('https://testingcf.jsdelivr.net/npm/codejar-async');
+    const { CodeJar } = 'CodeJar' in window
+        ? window
+        : await import('https://testingcf.jsdelivr.net/npm/codejar-async');
     return (textbox, include) => {
         var _a;
         if (!(textbox instanceof HTMLTextAreaElement)) {
             throw new TypeError('wikiparse.codejar方法仅可用于textarea元素！');
         }
-        const preview = document.createElement('div'), container = document.createElement('div'), { offsetHeight, style: { height }, selectionStart: start, selectionEnd: end } = textbox;
-        preview.id = 'wikiPretty';
-        preview.classList.add('wikiparser', 'wpb-root');
-        container.className = 'wikiparse-container';
-        container.style.height = offsetHeight ? `${offsetHeight}px` : height;
-        textbox.replaceWith(container);
-        textbox.classList.add('wikiparsed');
-        textbox.style.visibility = 'hidden';
-        container.append(preview, textbox);
+        const preview = document.createElement('div'), root = document.createElement('span'), { offsetHeight, style: { height }, selectionStart: start, selectionEnd: end } = textbox;
+        preview.className = 'wikiparser wikiparse-container';
+        preview.style.height = offsetHeight ? `${offsetHeight}px` : height;
+        root.className = 'wpb-root';
+        preview.append(root);
+        textbox.after(preview);
+        textbox.style.display = 'none';
         const id = wikiparse.id++;
         const highlight = async (e) => (await wikiparse.print(e.textContent, jar.include, undefined, id)).map(([, , printed]) => printed).join('');
         const jar = {
-            ...CodeJar(preview, highlight, { spellcheck: true }),
+            ...CodeJar(root, highlight, { spellcheck: true }),
             include: Boolean(include),
         };
         jar.restore({ start: 0, end: 0 });

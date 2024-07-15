@@ -1,4 +1,4 @@
-html, body, main, article, div, button, a, h2, h3, span, input, label, textarea, dl, dt, dd, code, pre, ol, li {
+html, body, main, article, div, button, a, h2, h3, span, input, label, textarea, dl, dt, dd, code, pre {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -103,12 +103,11 @@ textarea {
 	width: 100%;
 	height: var(--height-editor);
 	max-height: var(--max-height-editor);
-	padding: .4em;
 }
-#wikiPretty + #wpTextbox1, div#wikiPretty, .cm-editor, #wpTextbox2, pre {
+#editor > .wikiparser, .cm-editor, #wpTextbox2, pre {
 	border-radius: .3em;
 }
-.cm-editor, textarea {
+.cm-editor {
 	border: 1.5px solid #dedede;
 }
 
@@ -209,12 +208,9 @@ h3 {
 	font-size: var(--font-size-h3);
 	font-weight: bold;
 }
-pre.highlight span {
-	font-weight: normal;
-}
 
 @media screen and (min-width: 1200px) {
-	.wikiparse-container {
+	#editor > .wikiparse-container {
 		width: 70%;
 		float: left;
 		margin-right: .5rem;
@@ -225,7 +221,7 @@ pre.highlight span {
 }
 
 @media screen and (max-width: 1200px) {
-	.wikiparse-container, #wpTextbox1 {
+	#editor > .wikiparse-container {
 		max-height: 60vh;
 		margin-bottom: .5rem;
 	}
@@ -240,7 +236,7 @@ pre.highlight span {
 	article {
 		padding: 1rem;
 	}
-	.wikiparse-container, .cm-content {
+	#editor > .wikiparse-container, .cm-content {
 		font-size: var(--font-size-tablet);
 	}
 }

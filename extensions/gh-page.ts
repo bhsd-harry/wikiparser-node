@@ -40,7 +40,10 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	 * @param stage 解析层级
 	 */
 	const immediatePrint = (wikitext: string, include?: boolean, stage?: number): Promise<[number, string, string][]> =>
-		Promise.resolve([[stage ?? Infinity, wikitext, Parser.parse(wikitext, include, stage).print()]]);
+		Promise.resolve(
+			Parser.parse(wikitext, include, stage).childNodes
+				.map(child => [stage ?? Infinity, String(child), child.print()]),
+		);
 	const jar = (await wikiparse.codejar!)(textbox, input.checked),
 		Linter = new wikiparse.Linter!(input.checked),
 		{print} = wikiparse,
@@ -79,8 +82,9 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		Linter.include = checked;
 		jar.updateCode(jar.toString());
 		cm.update();
-		highlighters[Number(checked)]!.style.display = '';
-		highlighters[1 - Number(checked)]!.style.display = 'none';
+		const i = Number(checked);
+		highlighters[i]!.style.display = '';
+		highlighters[1 - i]!.style.display = 'none';
 	});
 
 	/** 切换CodeMirror语言 */
@@ -260,7 +264,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 					wikiparse.print = immediatePrint;
 					for (const [i, pre] of pres.entries()) {
 						pre.classList.remove('wikiparser');
-						pre.textContent = jar.toString();
+						pre.textContent = jar.toString() || ' ';
 						await wikiparse.highlight!(pre, Boolean(i), true);
 					}
 				})();

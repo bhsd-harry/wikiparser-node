@@ -137,5 +137,111 @@ const print = (
 const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[]> =>
 	getFeedback('lint', qid, true, wikitext, include);
 
-const wikiparse: Wikiparse = {id: 0, setI18N, setConfig, getConfig, print, lint, json};
+/**
+ * 插入非空文本
+ * @param parent span元素
+ * @param text 文本
+ */
+const append = (parent: HTMLElement, text: string | HTMLElement): void => {
+	if (text) {
+		parent.append(text);
+	}
+};
+
+/**
+ * 将span元素拆分为多个span元素，每个span元素都不包含换行符
+ * @param html span元素
+ */
+const splitNewLine = (html: HTMLElement): HTMLElement[] => {
+	let cur = html.cloneNode() as HTMLElement;
+	const result = [cur];
+	for (const child of html.childNodes as NodeListOf<HTMLElement | Text>) {
+		const {textContent} = child;
+		if (!textContent?.includes('\n')) {
+			cur.append(child.cloneNode(true));
+			continue;
+		}
+		const lines = child.nodeType === Node.TEXT_NODE ? textContent.split('\n') : splitNewLine(child as HTMLElement);
+		append(cur, lines[0]!);
+		for (const text of lines.slice(1)) {
+			cur = html.cloneNode() as HTMLElement;
+			result.push(cur);
+			append(cur, text);
+		}
+	}
+	return result;
+};
+
+/**
+ * 计算行号
+ * @param html 待添加行号的多行文本
+ */
+const size = (html: HTMLElement): void => {
+	const gutter = html.parentNode!.querySelector<HTMLElement>('.wikiparser-line-numbers');
+	if (!gutter) {
+		intersectionObserver.unobserve(html);
+		return;
+	}
+	const start = Number(html.dataset['start'] || 1),
+		lines = splitNewLine(html),
+		width = `${String(lines.length + start - 1).length + 1.5}ch`;
+	html.style.marginLeft = width;
+	gutter.style.width = width;
+	const sizer = document.createElement('span');
+	sizer.className = 'wikiparser-sizer';
+	sizer.innerHTML = '';
+	html.append(sizer);
+	let line: HTMLElement | undefined,
+		lastTop: number | undefined;
+	for (const [i, child] of lines.entries()) {
+		sizer.append(child, '\n');
+		const {top} = child.getBoundingClientRect();
+		if (line) {
+			line.style.height = `${top - lastTop!}px`;
+		}
+		line = document.createElement('span');
+		line.textContent = String(i + start);
+		gutter.append(line);
+		lastTop = top;
+	}
+	if (line) {
+		line.style.height = `${html.getBoundingClientRect().bottom - lastTop!}px`;
+	}
+	sizer.remove();
+	intersectionObserver.unobserve(html);
+};
+
+const intersectionObserver = new IntersectionObserver(entries => {
+	for (const entry of entries) {
+		if (!entry.isIntersecting) {
+			continue;
+		}
+		size(entry.target as HTMLElement);
+	}
+});
+
+/**
+ * 添加行号
+ * @param html 待添加行号的多行文本
+ * @param start 起始行号
+ */
+const lineNumbers = (html: HTMLElement, start = 1): void => {
+	const styles = getComputedStyle(html),
+		container = html.parentElement!,
+		gutter = document.createElement('span');
+	html.dataset['start'] = String(start);
+	gutter.className = 'wikiparser-line-numbers';
+	container.classList.add('wikiparse-container');
+	container.append(gutter);
+	if (styles.whiteSpace !== 'pre') {
+		html.style.whiteSpace = 'pre-wrap';
+	}
+	if (html.offsetParent) {
+		size(html);
+	} else {
+		intersectionObserver.observe(html);
+	}
+};
+
+const wikiparse: Wikiparse = {id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
 Object.assign(window, {wikiparse});
