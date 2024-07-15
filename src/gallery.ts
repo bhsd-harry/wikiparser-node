@@ -76,9 +76,8 @@ export abstract class GalleryToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {top, left} = this.getRootNode().posFromIndex(start)!,
 			errors: LintError[] = [];
-		for (let i = 0; i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				str = child.toString(),
+		for (const [i, child] of this.childNodes.entries()) {
+			const str = child.toString(),
 				{length} = str,
 				trimmed = str.trim(),
 				startLine = top + i,
