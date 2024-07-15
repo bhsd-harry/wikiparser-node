@@ -18,11 +18,15 @@ const codejar = (async (): Promise<f> => {
 			root = document.createElement('span'),
 			{offsetHeight, style: {height}, selectionStart: start, selectionEnd: end} = textbox;
 		preview.className = 'wikiparser wikiparse-container';
+		preview.tabIndex = 0;
 		preview.style.height = offsetHeight ? `${offsetHeight}px` : height;
 		root.className = 'wpb-root';
 		preview.append(root);
 		textbox.after(preview);
 		textbox.style.display = 'none';
+		preview.addEventListener('focus', () => {
+			root.focus();
+		});
 
 		const id = wikiparse.id++;
 		/** @implements */
