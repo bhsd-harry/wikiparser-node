@@ -201,12 +201,15 @@ export abstract class HeadingToken extends Token {
 			html = firstChild.toHtmlInternal(),
 			headings = states.get(this.getRootNode())?.headings;
 		let id = sanitizeAlt(html)!.replace(/[\s_]+/gu, '_');
-		if (headings?.has(id)) {
-			const thisHeadings = headings.get(id)!;
-			thisHeadings.push(this);
-			id = `${id}_${thisHeadings.length}`;
+		const lcId = id.toLowerCase();
+		if (headings?.has(lcId)) {
+			let i = 2;
+			for (; headings.has(`${lcId}_${i}`); i++) {
+				// pass
+			}
+			id = `${id}_${i}`;
 		} else {
-			headings?.set(id, [this]);
+			headings?.add(lcId);
 		}
 		return `<div class="mw-heading mw-heading${level}"><h${level} id="${id}">${html.trim()}</h${level}></div>`;
 	}

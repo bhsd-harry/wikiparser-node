@@ -926,7 +926,7 @@ export class Token extends AstElement {
 			return this.cloneNode().toHtmlInternal();
 		}
 		const expanded = this.expand();
-		states.set(expanded, {headings: new Map()});
+		states.set(expanded, {headings: new Set()});
 		const lines = expanded.toHtmlInternal().split('\n'),
 			blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 			antiBlockElems = 'td|th',
