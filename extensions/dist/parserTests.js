@@ -16,11 +16,10 @@
             optgroup.label = desc;
             select.append(optgroup);
         }
-        else {
+        else if (!dones.has(desc)) {
             const option = document.createElement('option');
             option.value = String(i);
             option.textContent = desc;
-            option.disabled = dones.has(desc);
             optgroup.append(option);
         }
     }
@@ -38,6 +37,8 @@
     btn.addEventListener('click', () => {
         dones.add(tests[Number(select.value)].desc);
         localStorage.setItem(key, JSON.stringify([...dones]));
+        select.selectedIndex++;
+        select.dispatchEvent(new Event('change'));
     });
     container.addEventListener('click', e => {
         e.preventDefault();
