@@ -8,6 +8,7 @@ const highlight = async (ele, include, linenums, start) => {
     if (innerText.endsWith('\n')) {
         innerText = innerText.slice(0, -1);
     }
+    innerText || (innerText = ' ');
     const html = `<span class="wpb-root">${(await wikiparse.print(innerText, include)).map(([, , printed]) => printed).join('')}</span>`;
     ele.classList.add('wikiparser');
     ele.tabIndex = 0;

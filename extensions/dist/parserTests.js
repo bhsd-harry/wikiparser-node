@@ -1,13 +1,14 @@
 (() => {
 "use strict";
 (async () => {
-    const tests = await (await fetch('./test/parserTests.json')).json(), select = document.querySelector('select'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const tests = await (await fetch('./test/parserTests.json')).json(), key = 'wikiparser-node-done', dones = new Set(JSON.parse(localStorage.getItem(key))), select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     Parser.config = await (await fetch('./config/default.json')).json();
     wikiparse.print = (wikitext, include, stage) => {
         const printed = Parser.parse(wikitext, include, stage).print();
         return Promise.resolve([[stage !== null && stage !== void 0 ? stage : Infinity, wikitext, printed]]);
     };
     wikiparse.highlight(pre, false, true);
+    btn.disabled = !select.value;
     let optgroup;
     for (const [i, { desc, wikitext }] of tests.entries()) {
         if (wikitext === undefined) {
@@ -19,6 +20,7 @@
             const option = document.createElement('option');
             option.value = String(i);
             option.textContent = desc;
+            option.disabled = dones.has(desc);
             optgroup.append(option);
         }
     }
@@ -31,6 +33,11 @@
         container2.innerHTML = render !== null && render !== void 0 ? render : '';
         wikiparse.highlight(pre, false, true);
         select.selectedOptions[0].disabled = true;
+        btn.disabled = false;
+    });
+    btn.addEventListener('click', () => {
+        dones.add(tests[Number(select.value)].desc);
+        localStorage.setItem(key, JSON.stringify([...dones]));
     });
     container.addEventListener('click', e => {
         e.preventDefault();

@@ -68,6 +68,37 @@ pre {
 #frame[data-source] > .frame {
 	padding: 0;
 }
+#buttons {
+	text-align: center;
+}
+#done {
+	color: #fff;
+	border: 1px solid #36c;
+	border-radius: 2px;
+	background-color: #36c;
+	padding: 5px 12px;
+	margin-top: .5rem;
+	font-weight: bold;
+	line-height: 1.4;
+	cursor: pointer;
+}
+#done:hover {
+	background-color: #447ff5;
+	border-color: #447ff5;
+}
+#done:active {
+	background-color: #2a4b8d;
+	border-color: #2a4b8d;
+}
+#done:focus {
+	box-shadow: inset 0 0 0 1px #36c, inset 0 0 0 2px #fff;
+	outline: none;
+}
+#done:disabled {
+	background-color: #c8ccd1;
+	border-color: #c8ccd1;
+	cursor: not-allowed;
+}
 
 .mw-editsection, .mw-empty-elt {
 	display: none;

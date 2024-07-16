@@ -13,6 +13,7 @@ const highlight = async (ele: HTMLElement, include?: boolean, linenums?: boolean
 	if (innerText.endsWith('\n')) {
 		innerText = innerText.slice(0, -1);
 	}
+	innerText ||= ' ';
 	const html = `<span class="wpb-root">${
 		(await wikiparse.print(innerText, include)).map(([,, printed]) => printed).join('')
 	}</span>`;

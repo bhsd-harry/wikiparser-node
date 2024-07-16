@@ -177,7 +177,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
                     wikiparse.print = immediatePrint;
                     for (const [i, pre] of pres.entries()) {
                         pre.classList.remove('wikiparser');
-                        pre.textContent = jar.toString() || ' ';
+                        pre.textContent = jar.toString();
                         await wikiparse.highlight(pre, Boolean(i), true);
                     }
                 })();

@@ -7,7 +7,10 @@ declare interface Test {
 
 (async () => {
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
+		key = 'wikiparser-node-done',
+		dones = new Set<string>(JSON.parse(localStorage.getItem(key)!) as string[]),
 		select = document.querySelector('select')!,
+		btn = document.querySelector('button')!,
 		pre = document.querySelector('pre')!,
 		container = document.getElementById('frame')!,
 		container1 = document.getElementById('frame1')!,
@@ -19,6 +22,7 @@ declare interface Test {
 		return Promise.resolve([[stage ?? Infinity, wikitext, printed]]);
 	};
 	wikiparse.highlight!(pre, false, true);
+	btn.disabled = !select.value;
 	let optgroup: HTMLOptGroupElement;
 	for (const [i, {desc, wikitext}] of tests.entries()) {
 		if (wikitext === undefined) {
@@ -29,6 +33,7 @@ declare interface Test {
 			const option = document.createElement('option');
 			option.value = String(i);
 			option.textContent = desc;
+			option.disabled = dones.has(desc);
 			// @ts-expect-error already assigned
 			optgroup.append(option);
 		}
@@ -42,6 +47,11 @@ declare interface Test {
 		container2.innerHTML = render ?? '';
 		wikiparse.highlight!(pre, false, true);
 		select.selectedOptions[0]!.disabled = true;
+		btn.disabled = false;
+	});
+	btn.addEventListener('click', () => {
+		dones.add(tests[Number(select.value)]!.desc);
+		localStorage.setItem(key, JSON.stringify([...dones]));
 	});
 	container.addEventListener('click', e => {
 		e.preventDefault();
