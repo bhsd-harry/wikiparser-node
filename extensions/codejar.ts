@@ -16,11 +16,20 @@ const codejar = (async (): Promise<f> => {
 		}
 		const preview = document.createElement('div'),
 			root = document.createElement('span'),
-			{offsetHeight, style: {height}, selectionStart: start, selectionEnd: end} = textbox;
+			{
+				offsetHeight,
+				selectionStart: start,
+				selectionEnd: end,
+				style: {height, paddingTop, paddingBottom, paddingLeft, paddingRight},
+			} = textbox;
 		preview.className = 'wikiparser wikiparse-container';
 		preview.tabIndex = 0;
 		preview.style.height = offsetHeight ? `${offsetHeight}px` : height;
+		preview.style.paddingTop = paddingTop;
+		preview.style.paddingBottom = paddingBottom;
 		root.className = 'wpb-root';
+		root.style.paddingLeft = paddingLeft;
+		root.style.paddingRight = paddingRight;
 		preview.append(root);
 		textbox.after(preview);
 		textbox.style.display = 'none';
@@ -39,7 +48,7 @@ const codejar = (async (): Promise<f> => {
 		if (linenums) {
 			jar.onHighlight(e => {
 				e.parentNode!.querySelector('.wikiparser-line-numbers')?.remove();
-				wikiparse.lineNumbers(e);
+				wikiparse.lineNumbers(e, 1, paddingTop);
 			});
 		}
 		jar.restore({start: 0, end: 0});

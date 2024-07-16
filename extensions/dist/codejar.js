@@ -8,11 +8,15 @@ const codejar = (async () => {
         if (!(textbox instanceof HTMLTextAreaElement)) {
             throw new TypeError('wikiparse.codejar方法仅可用于textarea元素！');
         }
-        const preview = document.createElement('div'), root = document.createElement('span'), { offsetHeight, style: { height }, selectionStart: start, selectionEnd: end } = textbox;
+        const preview = document.createElement('div'), root = document.createElement('span'), { offsetHeight, selectionStart: start, selectionEnd: end, style: { height, paddingTop, paddingBottom, paddingLeft, paddingRight }, } = textbox;
         preview.className = 'wikiparser wikiparse-container';
         preview.tabIndex = 0;
         preview.style.height = offsetHeight ? `${offsetHeight}px` : height;
+        preview.style.paddingTop = paddingTop;
+        preview.style.paddingBottom = paddingBottom;
         root.className = 'wpb-root';
+        root.style.paddingLeft = paddingLeft;
+        root.style.paddingRight = paddingRight;
         preview.append(root);
         textbox.after(preview);
         textbox.style.display = 'none';
@@ -29,7 +33,7 @@ const codejar = (async () => {
             jar.onHighlight(e => {
                 var _a;
                 (_a = e.parentNode.querySelector('.wikiparser-line-numbers')) === null || _a === void 0 ? void 0 : _a.remove();
-                wikiparse.lineNumbers(e);
+                wikiparse.lineNumbers(e, 1, paddingTop);
             });
         }
         jar.restore({ start: 0, end: 0 });

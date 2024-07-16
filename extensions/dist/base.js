@@ -66,6 +66,7 @@ const append = (parent, text) => {
 };
 const splitNewLine = (html) => {
     let cur = html.cloneNode();
+    cur.style.padding = '';
     const result = [cur];
     for (const child of html.childNodes) {
         const { textContent } = child;
@@ -77,6 +78,7 @@ const splitNewLine = (html) => {
         append(cur, lines[0]);
         for (const text of lines.slice(1)) {
             cur = html.cloneNode();
+            cur.style.padding = '';
             result.push(cur);
             append(cur, text);
         }
@@ -90,16 +92,20 @@ const size = (html) => {
         return;
     }
     html.style.marginLeft = '';
-    const start = Number(html.dataset['start'] || 1), lines = splitNewLine(html), width = `${String(lines.length + start - 1).length + 1.5}ch`;
+    const start = Number(html.dataset['start'] || 1), { style: { paddingLeft, paddingRight } } = html, lines = splitNewLine(html), width = `${String(lines.length + start - 1).length + 1.5}ch`;
     html.style.marginLeft = width;
     gutter.style.width = width;
     const sizer = document.createElement('span');
     sizer.className = 'wikiparser-sizer';
+    sizer.style.paddingLeft = paddingLeft;
+    sizer.style.paddingRight = paddingRight;
     sizer.innerHTML = '';
     html.append(sizer);
     let line, lastTop;
-    for (const [i, child] of lines.entries()) {
+    for (const child of lines) {
         sizer.append(child, '\n');
+    }
+    for (const [i, child] of lines.entries()) {
         const { top } = child.getBoundingClientRect();
         if (line) {
             line.style.height = `${top - lastTop}px`;
@@ -110,10 +116,15 @@ const size = (html) => {
         lastTop = top;
     }
     if (line) {
-        line.style.height = `${(html.offsetHeight > container.offsetHeight
-            ? html.getBoundingClientRect().bottom
-            : container.getBoundingClientRect().top + container.scrollHeight)
-            - lastTop}px`;
+        const noScroll = html.offsetHeight <= container.clientHeight;
+        if (noScroll) {
+            line.style.height = `${container.getBoundingClientRect().top + container.scrollHeight - lastTop}px`;
+            container.style.overflowY = 'hidden';
+        }
+        else {
+            line.style.height = `${html.getBoundingClientRect().bottom - lastTop}px`;
+            container.style.overflowY = '';
+        }
     }
     sizer.remove();
     intersectionObserver.unobserve(html);
@@ -126,10 +137,11 @@ const intersectionObserver = new IntersectionObserver(entries => {
         size(entry.target);
     }
 });
-const lineNumbers = (html, start = 1) => {
+const lineNumbers = (html, start = 1, paddingTop = '') => {
     const styles = getComputedStyle(html), container = html.parentElement, gutter = document.createElement('span');
     html.dataset['start'] = String(start);
     gutter.className = 'wikiparser-line-numbers';
+    gutter.style.paddingTop = paddingTop;
     container.classList.add('wikiparse-container');
     container.append(gutter);
     if (styles.whiteSpace !== 'pre') {
