@@ -170,8 +170,10 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 /**
  * 隐式换行
  * @param str 字符串
+ * @param prev 前一个字符
  */
-const implicitNewLine = (str: string): string => /^(?:\{\||[:;#*])/u.test(str) ? `\n${str}` : str;
+const implicitNewLine = (str: string, prev: string): string =>
+	prev + (prev !== '\n' && /^(?:\{\||[:;#*])/u.test(str) ? `\n${str}` : str);
 
 /**
  * 展开模板
@@ -206,7 +208,7 @@ const expand = (
 		if (!/\0\d+t\x7F/u.test(data)) {
 			continue;
 		}
-		const expanded = data.replace(/\0(\d+)t\x7F/gu, (m, i: number) => {
+		const expanded = data.replace(/([^\x7F]?)\0(\d+)t\x7F/gu, (m, prev: string, i: number) => {
 			const target = accum[i] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f} = target;
 			if (type === 'arg') {
@@ -217,11 +219,11 @@ const expand = (
 					const effective = target.childNodes[1] ?? target;
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective)] = undefined;
-					return effective.toString();
+					return prev + effective.toString();
 				}
 				// @ts-expect-error sparse array
 				accum[accum.indexOf(context.getArg(arg)!.lastChild)] = undefined;
-				return context.getValue(arg)!;
+				return prev + context.getValue(arg)!;
 			} else if (type === 'template') {
 				if (context === false) {
 					return m;
@@ -241,11 +243,14 @@ const expand = (
 					}
 					Parser.templates.set(title, fs.readFileSync(file, 'utf8'));
 				}
-				return implicitNewLine(expand(Parser.templates.get(title)!, config, true, target, accum).toString());
+				return implicitNewLine(
+					expand(Parser.templates.get(title)!, config, true, target, accum).toString(),
+					prev,
+				);
 			} else if (!magicWords.has(name)) {
 				return m;
 			} else if (length < 3 || name === 'ifeq' && length === 3) {
-				return '';
+				return prev;
 			}
 			const c = target.childNodes as [SyntaxToken, ParameterToken, ParameterToken, ...ParameterToken[]],
 				var1 = c[1].value,
@@ -256,17 +261,17 @@ const expand = (
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
-					return implicitNewLine(effective.value);
+					return implicitNewLine(effective.value, prev);
 				}
-				return '';
+				return prev;
 			} else if (name === 'ifeq' && known && !/\0\d+t\x7F/u.test(var2)) {
 				const effective = c[var1 === var2 ? 3 : 4];
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
-					return implicitNewLine(effective.value);
+					return implicitNewLine(effective.value, prev);
 				}
-				return '';
+				return prev;
 			} else if (name === 'switch' && known) {
 				let defaultVal = '',
 					found = false,
@@ -280,7 +285,7 @@ const expand = (
 						if (j === length - 1) {
 							// @ts-expect-error sparse array
 							accum[accum.indexOf(lastChild)] = undefined;
-							return implicitNewLine(value);
+							return implicitNewLine(value, prev);
 						} else if (transclusion) {
 							break;
 						} else {
@@ -291,7 +296,7 @@ const expand = (
 					} else if (found || option === var1) {
 						// @ts-expect-error sparse array
 						accum[accum.indexOf(lastChild)] = undefined;
-						return implicitNewLine(value);
+						return implicitNewLine(value, prev);
 					} else if (option.toLowerCase() === '#default') {
 						defaultVal = value;
 						defaultParam = lastChild;
@@ -301,7 +306,7 @@ const expand = (
 							// @ts-expect-error sparse array
 							accum[accum.indexOf(defaultParam)] = undefined;
 						}
-						return implicitNewLine(defaultVal);
+						return implicitNewLine(defaultVal, prev);
 					}
 				}
 			}

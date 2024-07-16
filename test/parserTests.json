@@ -251,7 +251,7 @@
 		"desc": "Templates: Strip leading and trailing whitespace from named-param values",
 		"wikitext": "{{1x|1= a }}\n\n{{1x|1= {{1x|b}} }}\n\n{{1x| 1 =\n c }}\n\n{{1x| 1 =\n* d\n}}",
 		"html": "<p>a\n</p><p>b\n</p><p>c\n</p>\n<ul><li>d</li></ul>",
-		"render": "<p>a\n</p><p>b\n</p><p>c\n</p><p><br>\n</p>\n<ul><li>d</li></ul>",
+		"render": "<p>a\n</p><p>b\n</p><p>c\n</p>\n<ul><li>d</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"> a </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b</span></span>}}</span> </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> 1 </span>=<span class=\"wpb-parameter-value\">\n c </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> 1 </span>=<span class=\"wpb-parameter-value\">\n<span class=\"wpb-list\">* </span>d\n</span></span>}}</span></span>"
 	},
 	{
@@ -1147,7 +1147,7 @@
 		"desc": "List items from template",
 		"wikitext": "{{inner list}}\n*item 2\n\n*item 0\n{{inner list}}\n*item 2\n\n*item 0\n*notSOL{{inner list}}\n*item 2",
 		"html": "<ul><li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>notSOL</li>\n<li>item 1</li>\n<li>item 2</li></ul>",
-		"render": "<ul><li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li></ul>\n<ul><li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>notSOL</li>\n<li>item 1</li>\n<li>item 2</li></ul>",
+		"render": "<ul><li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>item 1</li>\n<li>item 2</li></ul>\n<ul><li>item 0</li>\n<li>notSOL</li>\n<li>item 1</li>\n<li>item 2</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">inner list</span>}}</span>\n<span class=\"wpb-list\">*</span>item 2\n\n<span class=\"wpb-list\">*</span>item 0\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">inner list</span>}}</span>\n<span class=\"wpb-list\">*</span>item 2\n\n<span class=\"wpb-list\">*</span>item 0\n<span class=\"wpb-list\">*</span>notSOL<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">inner list</span>}}</span>\n<span class=\"wpb-list\">*</span>item 2</span>"
 	},
 	{

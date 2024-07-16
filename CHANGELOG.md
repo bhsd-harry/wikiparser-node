@@ -5,6 +5,7 @@
 **Fixed**
 
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) now correctly handles headings with duplicated IDs
+- Remove unnecessary implicit leading newline from [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand)
 
 **Changed**
 
