@@ -1,6 +1,10 @@
 ## v1.11.2
 
-*2024-07-13*
+*2024-07-17*
+
+**Fixed**
+
+- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) now correctly handles headings with duplicated IDs
 
 **Changed**
 

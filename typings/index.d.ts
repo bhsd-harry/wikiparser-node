@@ -7,6 +7,7 @@ import type {
 	Config,
 } from '../base';
 import type {AstNodes} from '../lib/node';
+import type {HeadingToken} from '../internal';
 
 declare global {
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
@@ -43,6 +44,10 @@ declare global {
 		readonly stage: number;
 		readonly include: boolean;
 		readonly config: Config;
+	}
+
+	interface State {
+		headings: Map<string, HeadingToken[]>;
 	}
 }
 

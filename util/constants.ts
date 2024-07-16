@@ -1,3 +1,5 @@
+import type {Token} from '../internal';
+
 export const MAX_STAGE = 11;
 
 export enum BuildMethod {
@@ -25,3 +27,5 @@ export const aliases = [
 	['ListToken', 'DdToken'],
 	['ConverterToken'],
 ];
+
+export const states = new WeakMap<Token, State>();

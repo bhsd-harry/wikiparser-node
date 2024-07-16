@@ -50,6 +50,7 @@ import {
 
 	aliases,
 	classes,
+	states,
 } from '../util/constants';
 import {Shadow} from '../util/debug';
 import {generateForSelf} from '../util/lint';
@@ -924,7 +925,9 @@ export class Token extends AstElement {
 		if (this.type !== 'root') {
 			return this.cloneNode().toHtmlInternal();
 		}
-		const lines = this.expand().toHtmlInternal().split('\n'),
+		const expanded = this.expand();
+		states.set(expanded, {headings: new Map()});
+		const lines = expanded.toHtmlInternal().split('\n'),
 			blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',
 			antiBlockElems = 'td|th',
 			openRegex = new RegExp(
@@ -994,6 +997,7 @@ export class Token extends AstElement {
 			}
 		}
 		output += closeParagraph();
+		states.delete(expanded);
 		return output.trimEnd();
 	}
 

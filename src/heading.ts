@@ -7,7 +7,7 @@ import {
 
 	Shadow,
 } from '../util/debug';
-import {classes} from '../util/constants';
+import {classes, states} from '../util/constants';
 import {sanitizeAlt} from '../util/string';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
@@ -198,10 +198,17 @@ export abstract class HeadingToken extends Token {
 	/** @private */
 	override toHtmlInternal(): string {
 		const {level, firstChild} = this,
-			html = firstChild.toHtmlInternal();
-		return `<div class="mw-heading mw-heading${level}"><h${level} id="${
-			sanitizeAlt(html)!.replace(/[\s_]+/gu, '_')
-		}">${html.trim()}</h${level}></div>`;
+			html = firstChild.toHtmlInternal(),
+			headings = states.get(this.getRootNode())?.headings;
+		let id = sanitizeAlt(html)!.replace(/[\s_]+/gu, '_');
+		if (headings?.has(id)) {
+			const thisHeadings = headings.get(id)!;
+			thisHeadings.push(this);
+			id = `${id}_${thisHeadings.length}`;
+		} else {
+			headings?.set(id, [this]);
+		}
+		return `<div class="mw-heading mw-heading${level}"><h${level} id="${id}">${html.trim()}</h${level}></div>`;
 	}
 }
 
