@@ -65,11 +65,18 @@ declare interface Test {
 		} else {
 			container.dataset['source'] = '1';
 			const pre1 = document.createElement('pre'),
-				pre2 = document.createElement('pre');
-			pre1.textContent = container1.innerHTML;
-			pre2.textContent = container2.innerHTML;
+				pre2 = document.createElement('pre'),
+				code1 = document.createElement('code'),
+				code2 = document.createElement('code');
+			code1.textContent = container1.innerHTML;
+			code2.textContent = container2.innerHTML;
+			pre1.className = 'language-html';
+			pre2.className = 'language-html';
+			pre1.append(code1);
+			pre2.append(code2);
 			container1.replaceChildren(pre1);
 			container2.replaceChildren(pre2);
+			Prism.highlightAllUnder(container);
 		}
 	});
 })();
