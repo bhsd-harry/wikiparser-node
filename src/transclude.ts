@@ -61,13 +61,13 @@ export abstract class TranscludeToken extends Token {
 		super(undefined, config, accum, {
 		});
 		const {parserFunction: [insensitive, sensitive]} = config,
-			argSubst = /^(?:\s|\0\d+c\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
+			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
 			title = title.slice(argSubst.length);
 		} else if (title.includes(':')) {
 			const [modifier, ...arg] = title.split(':'),
-				[mt] = /^(?:\s|\0\d+c\x7F)*/u.exec(arg[0] ?? '')!;
+				[mt] = /^(?:\s|\0\d+[cn]\x7F)*/u.exec(arg[0] ?? '')!;
 			if (this.setModifier(`${modifier!}:${mt}`)) {
 				title = arg.join(':').slice(mt.length);
 			}
