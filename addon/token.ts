@@ -197,7 +197,7 @@ const expand = (
 	token.type = 'root';
 	token.parseOnce(0, include);
 	if (context !== false) {
-		token.setText(removeCommentLine(token.firstChild!.toString(), accum, true));
+		token.setText(removeCommentLine(token.firstChild!.toString(), true));
 	}
 	token.parseOnce();
 	for (const plain of [...accum.slice(n), token]) {
@@ -212,7 +212,7 @@ const expand = (
 			const target = accum[i] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f} = target;
 			if (type === 'arg') {
-				const arg = removeCommentLine(f.toString(), accum).trim();
+				const arg = removeCommentLine(f.toString()).trim();
 				if (context === undefined || /\0\d+t\x7F/u.test(arg)) {
 					return m;
 				} else if (context === false || !context.hasArg(arg)) {
@@ -279,7 +279,7 @@ const expand = (
 					defaultParam: Token | undefined;
 				for (let j = 2; j < length; j++) {
 					const {anon, value, firstChild, lastChild} = c[j] as ParameterToken,
-						option = trimPHP(removeCommentLine(firstChild.toString(), accum));
+						option = trimPHP(removeCommentLine(firstChild.toString()));
 					transclusion = /\0\d+t\x7F/u.test(anon ? value : option);
 					if (anon) {
 						if (j === length - 1) {
@@ -314,7 +314,7 @@ const expand = (
 		});
 		plain.setText(expanded);
 		if (plain.type === 'parameter-key') {
-			(plain.parentNode as ParameterToken).trimName(removeCommentLine(expanded, accum));
+			(plain.parentNode as ParameterToken).trimName(removeCommentLine(expanded));
 		}
 	}
 	return token;

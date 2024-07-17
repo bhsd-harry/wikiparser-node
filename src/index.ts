@@ -22,7 +22,7 @@
 // ~: `{{=}}`专用
 // a: AttributeToken
 // b: TableToken
-// c: CommentToken、NoIncludeToken和IncludeToken
+// c: CommentToke
 // d: ListToken
 // e: ExtToken
 // f: MagicLinkToken inside ImageParameterToken
@@ -30,6 +30,7 @@
 // i: RFC/PMID/ISBN
 // l: LinkToken
 // m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
+// n: RedirectToken、NoIncludeToken和IncludeToken
 // q: QuoteToken
 // r: HrToken
 // s: `{{{|subst:}}}`

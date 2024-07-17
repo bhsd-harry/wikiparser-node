@@ -323,7 +323,7 @@ export abstract class AstElement extends AstNode {
 
 	/** @private */
 	print(opt: PrintOpt = {}): string {
-		const {class: cl} = opt;
+		const cl = opt.class;
 		return this.toString()
 			? `${
 				cl === '' ? '' : `<span class="wpb-${cl ?? this.type}">`

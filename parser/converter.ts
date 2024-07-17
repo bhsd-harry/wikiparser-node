@@ -11,11 +11,11 @@ import type {Token} from '../src/index';
  */
 export const parseConverter = (text: string, config: Config, accum: Token[]): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/;(?=(?:[^;]*?=>)?\s*zh\s*:|(?:\s|\0\d+c\x7F)*$)/u;
+	/;(?=(?:[^;]*?=>)?\s*zh\s*:|(?:\s|\0\d+[cn]\x7F)*$)/u;
 	const variants = `(?:${config.variants.join('|')})`,
 		regex1 = /-\{/gu,
 		regex2 = /-\{|\}-/gu,
-		regex3 = new RegExp(String.raw`;(?=(?:[^;]*?=>)?\s*${variants}\s*:|(?:\s|\0\d+c\x7F)*$)`, 'u'),
+		regex3 = new RegExp(String.raw`;(?=(?:[^;]*?=>)?\s*${variants}\s*:|(?:\s|\0\d+[cn]\x7F)*$)`, 'u'),
 		stack: RegExpExecArray[] = [];
 	let regex = regex1,
 		mt = regex.exec(text);

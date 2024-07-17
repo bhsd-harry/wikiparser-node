@@ -112,7 +112,7 @@ export abstract class ParameterToken extends Token {
 		/* NOT FOR BROWSER */
 
 		if (typeof key === 'string') {
-			this.trimName(removeCommentLine(key, accum));
+			this.trimName(removeCommentLine(key));
 		}
 	}
 
@@ -228,7 +228,7 @@ export abstract class ParameterToken extends Token {
 
 	/** 获取参数值 */
 	getValue(): string {
-		const value = removeCommentLine(this.lastChild.text(), this.getAttribute('accum'));
+		const value = removeCommentLine(this.lastChild.text());
 		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 

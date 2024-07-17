@@ -1,9 +1,8 @@
 import type {AstNodes} from '../lib/node';
-import type {Token} from '../internal';
 
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
-export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[c!~]\x7F)*`;
+export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
 
 /**
  * 生成正则替换函数
@@ -19,7 +18,7 @@ const factory = (
 export const tidy = factory(/[\0\x7F]|\r$/gmu, '');
 
 /** remove half-parsed comment-like tokens */
-export const removeComment = factory(/\0\d+c\x7F/gu, '');
+export const removeComment = factory(/\0\d+[cn]\x7F/gu, '');
 
 /** escape special chars for RegExp constructor */
 export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
@@ -114,20 +113,21 @@ export const newline = factory(/\n/gu, '&#10;');
 /**
  * remove lines that only contain comments
  * @param str
- * @param accum
  * @param standalone whether for a standalone document
  */
-export const removeCommentLine = (str: string, accum: Token[], standalone?: boolean): string => {
+export const removeCommentLine = (str: string, standalone?: boolean): string => {
 	const lines = str.split('\n'),
-		offset = standalone ? 0 : 1;
-	for (let i = lines.length - 1 - offset; i >= offset; i--) {
-		const line = lines[i]!;
-		if (
-			/^(?:\s|\0\d+c\x7F)*$/u.test(line)
-			&& line.match(/\0\d+c\x7F/gu)?.every(s => accum[Number(s.slice(1, -2))]?.type === 'comment')
-		) {
-			lines.splice(i, 1);
-		}
+		{length} = lines;
+	if (!standalone && length < 3) {
+		return removeComment(str);
 	}
-	return removeComment(lines.join('\n'));
+	const offset = standalone ? 0 : 1,
+		end = length - offset;
+	return removeComment(
+		[
+			...lines.slice(0, offset),
+			...lines.slice(offset, end).filter(line => !/^(?!\s*$)(?:\s|\0\d+c\x7F)*$/u.test(line)),
+			...lines.slice(end),
+		].join('\n'),
+	);
 };

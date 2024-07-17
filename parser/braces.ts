@@ -26,7 +26,7 @@ const closes: Record<string, string> = {
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${
-			config.excludes?.includes('heading') ? '' : String.raw`^(\0\d+c\x7F)*={1,6}|`
+			config.excludes?.includes('heading') ? '' : String.raw`^(\0\d+[cn]\x7F)*={1,6}|`
 		}\[\[|-\{(?!\{)`,
 		openBraces = String.raw`|\{{2,}`,
 		{parserFunction: [,,, subst]} = config,
@@ -38,7 +38,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^(\0\d+c\x7F)*={1,6}|\[\[|-\{(?!\{)|\{{2,}|[\n|=]|\}{2,}|\}-|\]\]/gmu;
+	/^(\0\d+[cn]\x7F)*={1,6}|\[\[|-\{(?!\{)|\{{2,}|[\n|=]|\}{2,}|\}-|\]\]/gmu;
 	let moreBraces = lastBraces + wikitext.length !== -1,
 		regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
@@ -70,7 +70,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			lastIndex = curIndex + 1;
 			const {pos, findEqual} = stack[stack.length - 1] ?? {};
 			if (pos === undefined || findEqual || removeComment(wikitext.slice(pos, index)) !== '') {
-				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+c\x7F)*)$/u
+				const rmt = /^(={1,6})(.+)\1((?:\s|\0\d+[cn]\x7F)*)$/u
 					.exec(wikitext.slice(index, curIndex)) as [string, string, string, string] | null;
 				if (rmt) {
 					wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${wikitext.slice(curIndex)}`;
@@ -119,7 +119,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
 						ch = 'm';
 					} else if (/^#vardefine:./iu.test(name)) {
-						ch = 'c';
+						ch = 'n';
 					}
 				} catch (e) {
 					if (e instanceof SyntaxError && e.message === 'Invalid template name') {

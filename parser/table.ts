@@ -57,9 +57,9 @@ export const parseTable = (
 		pop = (): TrToken | TableToken => top!.type === 'td' ? stack.pop() as TrToken | TableToken : top!;
 	for (const outLine of lines) {
 		top = stack.pop();
-		const [spaces] = /^(?:\s|\0\d+c\x7F)*/u.exec(outLine)!,
+		const [spaces] = /^(?:\s|\0\d+[cn]\x7F)*/u.exec(outLine)!,
 			line = outLine.slice(spaces.length),
-			matchesStart = /^(:*)((?:\s|\0\d+c\x7F)*)(\{\||\{(?:\0\d+c\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
+			matchesStart = /^(:*)((?:\s|\0\d+[cn]\x7F)*)(\{\||\{(?:\0\d+[cn]\x7F)*\0\d+!\x7F|\0\d+\{\x7F)(.*)$/u
 				.exec(line) as [string, string, string, string, string] | null;
 		if (matchesStart) {
 			while (top && top.type !== 'td') {
