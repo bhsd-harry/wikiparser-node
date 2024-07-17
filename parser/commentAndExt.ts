@@ -35,7 +35,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			const noinclude = (text: string): void => {
 				// @ts-expect-error abstract class
 				new NoincludeToken(text, config, accum);
-				str += `\0${accum.length - 1}c\x7F`;
+				str += `\0${accum.length - 1}n\x7F`;
 			};
 			while (i !== -1 && j !== -1) {
 				const token = `\0${accum.length}e\x7F`;
@@ -77,11 +77,14 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			includeInner?: string,
 			includeClosing?: string,
 		) => {
-			const str = `\0${accum.length}${name ? 'e' : 'c'}\x7F`;
+			const l = accum.length;
+			let ch = 'n';
 			if (name) {
+				ch = 'e';
 				// @ts-expect-error abstract class
 				new ExtToken(name, attr, inner, closing, config, accum);
 			} else if (substr.startsWith('<!--')) {
+				ch = 'c';
 				const closed = substr.endsWith('-->');
 				// @ts-expect-error abstract class
 				new CommentToken(substr.slice(4, closed ? -3 : undefined), closed, config, accum);
@@ -92,7 +95,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
 			}
-			return str;
+			return `\0${l}${ch}\x7F`;
 		},
 	);
 };

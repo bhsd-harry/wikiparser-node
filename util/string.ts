@@ -2,7 +2,7 @@ import type {AstNodes} from '../lib/node';
 
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
-export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[c!~]\x7F)*`;
+export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
 
 /**
  * 生成正则替换函数
@@ -18,7 +18,7 @@ const factory = (
 export const tidy = factory(/[\0\x7F]|\r$/gmu, '');
 
 /** remove half-parsed comment-like tokens */
-export const removeComment = factory(/\0\d+c\x7F/gu, '');
+export const removeComment = factory(/\0\d+[cn]\x7F/gu, '');
 
 /** escape special chars for RegExp constructor */
 export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);

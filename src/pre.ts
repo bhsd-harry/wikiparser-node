@@ -39,9 +39,9 @@ export abstract class PreToken extends Token {
 				new NoincludeToken(opening, config, accum);
 				// @ts-expect-error abstract class
 				new NoincludeToken(closing, config, accum);
-				str += `${wikitext.slice(0, i)}\0${accum.length - 1}c\x7F${
+				str += `${wikitext.slice(0, i)}\0${accum.length - 1}n\x7F${
 					wikitext.slice(i + length, j)
-				}\0${accum.length}c\x7F`;
+				}\0${accum.length}n\x7F`;
 				wikitext = wikitext.slice(j + length + 1);
 				i = wikitext.indexOf(opening);
 				j = wikitext.indexOf(closing, i + length);

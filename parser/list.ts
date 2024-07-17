@@ -13,7 +13,7 @@ import type {Token, HtmlToken, QuoteToken} from '../internal';
  * @param accum
  */
 export const parseList = (wikitext: string, state: {lastPrefix: string}, config: Config, accum: Token[]): string => {
-	const mt = /^((?:\0\d+c\x7F)*)([;:*#]+\s*)/u.exec(wikitext) as [string, string, string] | null;
+	const mt = /^((?:\0\d+[cn]\x7F)*)([;:*#]+\s*)/u.exec(wikitext) as [string, string, string] | null;
 	if (!mt) {
 		state.lastPrefix = '';
 		return wikitext;
