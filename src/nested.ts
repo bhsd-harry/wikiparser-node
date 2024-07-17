@@ -52,11 +52,11 @@ export abstract class NestedToken extends Token {
 				return str;
 			},
 		).replace(
-			/(^|\0\d+[ce]\x7F)([^\0]+)(?=$|\0\d+[ce]\x7F)/gu,
+			/(^|\0\d+[cne]\x7F)([^\0]+)(?=$|\0\d+[cne]\x7F)/gu,
 			(_, lead: string, substr: string) => {
 				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
-				return `${lead}\0${accum.length}c\x7F`;
+				return `${lead}\0${accum.length}n\x7F`;
 			},
 		);
 		super(wikitext, config, accum, {
