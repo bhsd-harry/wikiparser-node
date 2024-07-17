@@ -1,4 +1,5 @@
 import type {AstNodes} from '../lib/node';
+import type {Token} from '../internal';
 
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
@@ -109,3 +110,24 @@ export const sanitizeAlt = (str: string | undefined): string | undefined =>
 
 /** escape newline */
 export const newline = factory(/\n/gu, '&#10;');
+
+/**
+ * remove lines that only contain comments
+ * @param str
+ * @param accum
+ * @param standalone whether for a standalone document
+ */
+export const removeCommentLine = (str: string, accum: Token[], standalone?: boolean): string => {
+	const lines = str.split('\n'),
+		offset = standalone ? 0 : 1;
+	for (let i = lines.length - 1 - offset; i >= offset; i--) {
+		const line = lines[i]!;
+		if (
+			/^(?:\s|\0\d+c\x7F)*$/u.test(line)
+			&& line.match(/\0\d+c\x7F/gu)?.every(s => accum[Number(s.slice(1, -2))]?.type === 'comment')
+		) {
+			lines.splice(i, 1);
+		}
+	}
+	return removeComment(lines.join('\n'));
+};

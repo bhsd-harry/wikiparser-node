@@ -286,7 +286,7 @@
 		"desc": "Templates: Handle empty comment-and-ws-only lines correctly",
 		"wikitext": "{{1x|foo\n<!--should be ignored-->\n <!--should be ignored as well-->\nbar}}",
 		"html": "<p>foo\nbar\n</p>",
-		"render": "<p>foo\n</p><p><br> \nbar\n</p>",
+		"render": "<p>foo\nbar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo\n<span class=\"wpb-comment\">&lt;!--should be ignored--&gt;</span>\n <span class=\"wpb-comment\">&lt;!--should be ignored as well--&gt;</span>\nbar</span></span>}}</span></span>"
 	},
 	{
@@ -1175,14 +1175,14 @@
 		"desc": "Single-comment whitespace lines dont break lists, and neither do multi-comment whitespace lines",
 		"wikitext": "*a\n<!--This line will NOT split the list-->\n*b\n <!--This line will NOT split the list either-->\n*c\n <!--foo--> <!----> <!--This line NOT split the list either--> \n*d",
 		"html": "<ul><li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li></ul>",
-		"render": "<ul><li>a</li></ul>\n<ul><li>b</li></ul>\n<ul><li>c</li></ul>\n<ul><li>d</li></ul>",
+		"render": "<ul><li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>a\n<span class=\"wpb-comment\">&lt;!--This line will NOT split the list--&gt;</span>\n<span class=\"wpb-list\">*</span>b\n <span class=\"wpb-comment\">&lt;!--This line will NOT split the list either--&gt;</span>\n<span class=\"wpb-list\">*</span>c\n <span class=\"wpb-comment\">&lt;!--foo--&gt;</span> <span class=\"wpb-comment\">&lt;!----&gt;</span> <span class=\"wpb-comment\">&lt;!--This line NOT split the list either--&gt;</span> \n<span class=\"wpb-list\">*</span>d</span>"
 	},
 	{
 		"desc": "Replacing whitespace with tabs still doesn't break the list (gerrit 78327)",
 		"wikitext": "*a\n<!--This line will NOT split the list-->\t\n*b\n\t<!--This line will NOT split the list either--> \t\n*c\n\t<!--foo--> <!---->\t<!--This line NOT split the list\n        either-->\t \n*d",
 		"html": "<ul><li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li></ul>",
-		"render": "<ul><li>a</li></ul>\n<ul><li>b</li></ul>\n<ul><li>c</li></ul>\n<ul><li>d</li></ul>",
+		"render": "<ul><li>a</li>\n<li>b</li>\n<li>c</li>\n<li>d</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>a\n<span class=\"wpb-comment\">&lt;!--This line will NOT split the list--&gt;</span>\t\n<span class=\"wpb-list\">*</span>b\n\t<span class=\"wpb-comment\">&lt;!--This line will NOT split the list either--&gt;</span> \t\n<span class=\"wpb-list\">*</span>c\n\t<span class=\"wpb-comment\">&lt;!--foo--&gt;</span> <span class=\"wpb-comment\">&lt;!----&gt;</span>\t<span class=\"wpb-comment\">&lt;!--This line NOT split the list\n        either--&gt;</span>\t \n<span class=\"wpb-list\">*</span>d</span>"
 	},
 	{
@@ -4374,7 +4374,7 @@
 		"desc": "Empty TR followed by mixed-ws-comment line should RT correctly",
 		"wikitext": "{|\n|-\n <!--c-->\n|-\n<!--c--> <!--d-->\n|}",
 		"html": "<table>\n\n\n</table>",
-		"render": "    <table ><tbody></tbody></table>",
+		"render": "<table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n <span class=\"wpb-comment\">&lt;!--c--&gt;</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-comment\">&lt;!--c--&gt;</span> <span class=\"wpb-comment\">&lt;!--d--&gt;</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -5635,14 +5635,14 @@
 		"desc": "Comment on its own line post-expand",
 		"wikitext": "a\n{{blank}}<!---->\nb",
 		"html": "<p>a\n</p><p>b\n</p>",
-		"render": "<p>a\nb\n</p>",
+		"render": "<p>a\n</p><p>b\n</p>",
 		"print": "<span class=\"wpb-root\">a\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">blank</span>}}</span><span class=\"wpb-comment\">&lt;!----&gt;</span>\nb</span>"
 	},
 	{
 		"desc": "Comment on its own line post-expand with non-significant whitespace",
 		"wikitext": "a\n {{blank}} <!----> \nb",
 		"html": "<p>a\n</p><p>b\n</p>",
-		"render": "<p>a\nb\n</p>",
+		"render": "<p>a\n</p><p>b\n</p>",
 		"print": "<span class=\"wpb-root\">a\n <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">blank</span>}}</span> <span class=\"wpb-comment\">&lt;!----&gt;</span> \nb</span>"
 	},
 	{
@@ -9931,14 +9931,14 @@
 		"desc": "Redirect followed by block on the same line",
 		"wikitext": "#REDIRECT [[Main Page]]<!-- haha -->==hi==",
 		"html": "<ol><li>REDIRECT <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>==hi==</li></ol>",
-		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main_Page</a></li></ul><div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span><span class=\"wpb-comment\">&lt;!-- haha --&gt;</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">hi</span>==</span></span>"
 	},
 	{
 		"desc": "Redirect followed by horizontal rule on the same line",
 		"wikitext": "#REDIRECT [[Main Page]]----",
 		"html": "<ol><li>REDIRECT <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>----</li></ol>",
-		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main_Page</a></li></ul><hr>",
+		"render": "<hr>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span><span class=\"wpb-hr\">----</span></span>"
 	},
 	{
@@ -10228,7 +10228,7 @@
 		"desc": "Wikitext table with a lot of comments",
 		"wikitext": "{|\n<!-- c0 -->\n|foo\n<!-- c1 -->\n|-<!-- c2 -->\n<!-- c3 -->\n|<!-- c4 -->\n<!-- c5 -->\n|}",
 		"html": "<table>\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>\n</td></tr></tbody></table>",
-		"render": "  <table ><tbody><tr><td >foo\n</td></tr><tr ><td >\n</td></tr></tbody></table>",
+		"render": "<table ><tbody><tr><td >foo</td></tr><tr ><td ></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-comment\">&lt;!-- c0 --&gt;</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo\n<span class=\"wpb-comment\">&lt;!-- c1 --&gt;</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"><span class=\"wpb-comment\">&lt;!-- c2 --&gt;</span></span></span><span class=\"wpb-table-inter\">\n<span class=\"wpb-comment\">&lt;!-- c3 --&gt;</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-comment\">&lt;!-- c4 --&gt;</span>\n<span class=\"wpb-comment\">&lt;!-- c5 --&gt;</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -10256,7 +10256,7 @@
 		"desc": "Table-cell after a comment-only-empty-line",
 		"wikitext": "{|\n|a\n<!--c1-->\n<!--c2-->|b\n|}",
 		"html": "<table>\n<tbody><tr>\n<td>a\n</td>\n<td>b\n</td></tr></tbody></table>",
-		"render": "<table ><tbody><tr><td >a\n</td><td >b</td></tr></tbody></table>",
+		"render": "<table ><tbody><tr><td >a</td><td >b</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">a\n<span class=\"wpb-comment\">&lt;!--c1--&gt;</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n<span class=\"wpb-comment\">&lt;!--c2--&gt;</span>|</span><span class=\"wpb-td-inner\">b</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{

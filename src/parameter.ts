@@ -5,7 +5,7 @@ import {
 
 	/* NOT FOR BROWSER */
 
-	removeComment,
+	removeCommentLine,
 } from '../util/string';
 import {generateForChild} from '../util/lint';
 import {Shadow} from '../util/debug';
@@ -112,7 +112,7 @@ export abstract class ParameterToken extends Token {
 		/* NOT FOR BROWSER */
 
 		if (typeof key === 'string') {
-			this.trimName(removeComment(key));
+			this.trimName(removeCommentLine(key, accum));
 		}
 	}
 
@@ -228,7 +228,7 @@ export abstract class ParameterToken extends Token {
 
 	/** 获取参数值 */
 	getValue(): string {
-		const value = removeComment(this.lastChild.text());
+		const value = removeCommentLine(this.lastChild.text(), this.getAttribute('accum'));
 		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 

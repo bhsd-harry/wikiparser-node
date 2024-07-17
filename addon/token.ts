@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {removeComment, trimPHP} from '../util/string';
+import {removeComment, removeCommentLine, trimPHP} from '../util/string';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -196,8 +196,8 @@ const expand = (
 		token = new Token(wikitext, config, accum);
 	token.type = 'root';
 	token.parseOnce(0, include);
-	if (context) {
-		token.setText(removeComment(token.firstChild!.toString()));
+	if (context !== false) {
+		token.setText(removeCommentLine(token.firstChild!.toString(), accum, true));
 	}
 	token.parseOnce();
 	for (const plain of [...accum.slice(n), token]) {
@@ -212,7 +212,7 @@ const expand = (
 			const target = accum[i] as ArgToken | TranscludeToken,
 				{type, name, length, firstChild: f} = target;
 			if (type === 'arg') {
-				const arg = removeComment(f.toString()).trim();
+				const arg = removeCommentLine(f.toString(), accum).trim();
 				if (context === undefined || /\0\d+t\x7F/u.test(arg)) {
 					return m;
 				} else if (context === false || !context.hasArg(arg)) {
@@ -279,7 +279,7 @@ const expand = (
 					defaultParam: Token | undefined;
 				for (let j = 2; j < length; j++) {
 					const {anon, value, firstChild, lastChild} = c[j] as ParameterToken,
-						option = trimPHP(removeComment(firstChild.toString()));
+						option = trimPHP(removeCommentLine(firstChild.toString(), accum));
 					transclusion = /\0\d+t\x7F/u.test(anon ? value : option);
 					if (anon) {
 						if (j === length - 1) {
@@ -314,7 +314,7 @@ const expand = (
 		});
 		plain.setText(expanded);
 		if (plain.type === 'parameter-key') {
-			(plain.parentNode as ParameterToken).trimName(removeComment(expanded));
+			(plain.parentNode as ParameterToken).trimName(removeCommentLine(expanded, accum));
 		}
 	}
 	return token;

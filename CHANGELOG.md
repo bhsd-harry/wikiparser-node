@@ -1,6 +1,6 @@
 ## v1.11.2
 
-*2024-07-17*
+*2024-07-18*
 
 **Fixed**
 
@@ -10,6 +10,7 @@
 **Changed**
 
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports `lonely-http` for `http://` in `ext-link-text`
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now removes all comments
 
 ## v1.11.1
 
