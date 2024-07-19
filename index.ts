@@ -11,8 +11,6 @@ import {
 	/* NOT FOR BROWSER */
 
 	classes,
-	mixins,
-	parsers,
 } from './util/constants';
 import {tidy} from './util/string';
 import {cmd, info, error, diff} from './util/diff';
@@ -75,6 +73,9 @@ declare interface Parser extends ParserBase {
 
 	/** @private */
 	log(f: Function): void;
+
+	/** @private */
+	require(file: string): unknown;
 
 	/** @private */
 	clearCache(): Promise<void>;
@@ -283,19 +284,20 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
+	require(name: string): unknown {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+		return Object.hasOwn(classes, name) ? require(classes[name]!)[name] : require(path.join(__dirname, name));
+	},
+
+	/** @implements */
 	async clearCache(): Promise<void> {
-		const promise = cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']),
-			entries = [
-				...Object.entries(classes),
-				...Object.entries(mixins),
-				...Object.entries(parsers),
-			];
+		await cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']);
+		const entries = Object.entries(classes);
 		for (const [, filePath] of entries) {
 			try {
 				delete require.cache[require.resolve(filePath)];
 			} catch {}
 		}
-		await promise;
 		for (const [name, filePath] of entries) {
 			if (name in global) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

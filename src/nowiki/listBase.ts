@@ -109,4 +109,4 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	}
 }
 
-classes['ListBase'] = __filename;
+classes['ListBaseToken'] = __filename;

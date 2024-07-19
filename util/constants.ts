@@ -10,8 +10,8 @@ export enum BuildMethod {
 /* NOT FOR BROWSER */
 
 export const classes: Record<string, string> = {},
-	mixins: Record<string, string> = {},
-	parsers: Record<string, string> = {};
+	mixins = classes,
+	parsers = classes;
 
 export const aliases = [
 	['AstText'],

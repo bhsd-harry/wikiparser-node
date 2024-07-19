@@ -418,4 +418,4 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 	return output.trimEnd();
 };
 
-classes['ExtendedTableToken'] = __filename;
+classes['ExtendedToken'] = __filename;
