@@ -55,11 +55,11 @@ import {
 import {Shadow} from '../util/debug';
 import {generateForSelf} from '../util/lint';
 import {Ranges} from '../lib/ranges';
+import {AstRange} from '../lib/range';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {LintError, TokenTypes} from '../base';
-import type {AstRange} from '../lib/range';
 import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
@@ -777,7 +777,6 @@ export class Token extends AstElement {
 
 	/** 创建AstRange对象 */
 	createRange(): AstRange {
-		const {AstRange} = require('../lib/range');
 		return new AstRange();
 	}
 

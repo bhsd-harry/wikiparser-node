@@ -6,6 +6,7 @@ import {
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {classes} from '../util/constants';
+import {checkToken} from '../parser/selector';
 import {AstNode} from './node';
 import type {
 	LintError,
@@ -24,7 +25,6 @@ const getCondition = <T>(selector: string): TokenPredicate<T> => {
 	/* NOT FOR BROWSER */
 
 	if (/[^a-z\-,\s]/u.test(selector)) {
-		const {checkToken}: typeof import('../parser/selector') = require('../parser/selector');
 		return checkToken(selector) as TokenPredicate<T>;
 	}
 
