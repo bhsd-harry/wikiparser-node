@@ -11,6 +11,7 @@
 - [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) now correctly handles headings with duplicated IDs
 - Remove unnecessary implicit leading newline from [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand)
 - Remove unexpected leading space for fostered table content in [`TableToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#tohtml)
+- A valid title should not contain characters that are escaped as HTML entities twice (e.g., `&amp;amp;`)
 
 **Changed**
 
