@@ -181,6 +181,9 @@ pre {
 .frame li {
 	margin-bottom: .1em;
 }
+.frame ul > li, .frame ol > li {
+	min-height: 1em;
+}
 .frame li:empty, .frame li:-moz-only-whitespace,
 .frame p:empty, .frame p:-moz-only-whitespace {
 	display: none;

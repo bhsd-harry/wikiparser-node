@@ -33,10 +33,7 @@ export class Title {
 
 	/** 完整标题 */
 	get title(): string {
-		const prefix = this.interwiki + (this.interwiki && ':') + this.prefix;
-		// eslint-disable-next-line prefer-const
-		let title = (prefix + this.main).replace(/ /gu, '_');
-		return title;
+		return this.getRedirection()[1];
 	}
 
 	/** 扩展名 */
@@ -96,6 +93,7 @@ export class Title {
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.fragment !== undefined)
+		&& decodeHtml(title) === title
 		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
 			subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
 		);
@@ -115,5 +113,13 @@ export class Title {
 					this.fragment
 				}`
 		}`;
+	}
+
+	/** 检测是否是重定向 */
+	getRedirection(): [boolean, string] {
+		const prefix = this.interwiki + (this.interwiki && ':') + this.prefix;
+		// eslint-disable-next-line prefer-const
+		let title = (prefix + this.main).replace(/ /gu, '_');
+		return [false, title];
 	}
 }
