@@ -40,11 +40,11 @@ export const trimPHP = factory(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$
 export const text = (childNodes: readonly (string | AstNodes)[], separator = ''): string =>
 	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
-const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' '};
+const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' ', amp: '&'};
 
 /** decode HTML entities */
 export const decodeHtml = factory(
-	/&(?:#(\d+|x[\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]|nbsp));/gu,
+	/&(?:#(\d+|[Xx][\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]|nbsp|amp|AMP));/gu,
 	(_, code: string, name: string) => code
 		? String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code))
 		: names[name.toLowerCase() as keyof typeof names],
