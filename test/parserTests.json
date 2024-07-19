@@ -1602,7 +1602,7 @@
 		"desc": "Templates with intersecting and overlapping ranges",
 		"wikitext": "{|{{1x|1=class=\"foo\"\n<p>ha</p>}}\n{|{{1x|1=class=\"bar\"\n<p>ho</p>}}\n{{1x|{{!}}hi}}\n|}",
 		"html": "<p>ha</p><table class=\"foo\">\n\n</table><p>ho</p><table class=\"bar\">\n\n<tbody><tr>\n<td>hi\n</td></tr></tbody></table>",
-		"render": " <p >ha</p><table class=\"foo\"><tbody></tbody></table>\n <p >ho</p><table class=\"bar\"><tbody><tr><td >hi</td></tr></tbody></table>",
+		"render": "<p >ha</p><table class=\"foo\"><tbody></tbody></table>\n<p >ho</p><table class=\"bar\"><tbody><tr><td >hi</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">class=\"foo\"\n<span class=\"wpb-html\">&lt;p&gt;</span>ha<span class=\"wpb-html\">&lt;/p&gt;</span></span></span>}}</span></span></span></span></span>\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">class=\"bar\"\n<span class=\"wpb-html\">&lt;p&gt;</span>ho<span class=\"wpb-html\">&lt;/p&gt;</span></span></span>}}</span></span></span></span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>hi</span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -2134,21 +2134,21 @@
 		"desc": "Templates: Wiki Tables: 1a. Fostering of entire template content",
 		"wikitext": "{|\n{{1x|a}}\n|}",
 		"html": "a\n<table><tbody><tr><td></td></tr></tbody></table>",
-		"render": " a<table ><tbody></tbody></table>",
+		"render": "a<table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a</span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Templates: Wiki Tables: 1b. Fostering of entire template content",
 		"wikitext": "{|\n{{1x|<div>}}\nfoo\n{{1x|</div>}}\n|}",
 		"html": "<div>\n<p>foo\n</p>\n</div><table>\n\n<tbody><tr><td></td></tr></tbody></table>",
-		"render": " <div > foo </div><table ><tbody></tbody></table>",
+		"render": "<div > foo </div><table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;div&gt;</span></span></span>}}</span>\nfoo\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Templates: Wiki Tables: 2. Fostering of partial template content",
 		"wikitext": "{|\n{{1x|a\n<div>b</div>}}\n|}",
 		"html": "a\n<div>b</div><table>\n<tbody><tr><td></td></tr></tbody></table>",
-		"render": " a <div >b</div><table ><tbody></tbody></table>",
+		"render": "a <div >b</div><table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a\n<span class=\"wpb-html\">&lt;div&gt;</span>b<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -3275,7 +3275,7 @@
 		"desc": "Fuzz testing: Parser24",
 		"wikitext": "{|\n{{{|\n<u CLASS=\n| {{{{SSSll!!!!!!!VVVV)]]][[Special:*xxxxxxx--><noinclude>}}}} >\n<br style=\"onmouseover='alert(document.cookie);' \" />\n\nMOVE YOUR MOUSE CURSOR OVER THIS TEXT\n|",
 		"html": "{{{|\n<u class=\"&#124;\">}}}} &gt;\n<br style=\"onmouseover=&#39;alert(document.cookie);&#39;\" />\n\nMOVE YOUR MOUSE CURSOR OVER THIS TEXT\n</u><table><tbody><tr>\n<td>\n</td>\n</tr>\n</tbody></table>",
-		"render": " {{{| <u class=\"|\">}}}} &gt; <br style=\"onmouseover='alert(document.cookie);'\">  MOVE YOUR MOUSE CURSOR OVER THIS TEXT<table ><tbody><tr><td ></td></tr></tbody></table>",
+		"render": "{{{| <u class=\"|\">}}}} &gt; <br style=\"onmouseover='alert(document.cookie);'\">  MOVE YOUR MOUSE CURSOR OVER THIS TEXT<table ><tbody><tr><td ></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n{{{|\n<span class=\"wpb-html\">&lt;u<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">CLASS</span>=\n<span class=\"wpb-attr-value\">|</span></span><span class=\"wpb-attr-dirty\"> {{{{SSSll!!!!!!!VVVV)]]][[Special:*xxxxxxx--</span></span>&gt;</span><span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>}}}} &gt;\n<span class=\"wpb-html\">&lt;br<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">onmouseover='alert(document.cookie);' </span>\"</span> </span>/&gt;</span>\n\nMOVE YOUR MOUSE CURSOR OVER THIS TEXT</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span></span></span></span>"
 	},
 	{
@@ -4367,7 +4367,7 @@
 		"desc": "Empty TR followed by a template-generated TR",
 		"wikitext": "{|\n|-\n{{1x|<tr><td>foo</td></tr>}}\n|}",
 		"html": "<table>\n\n<tbody><tr><td>foo</td></tr>\n</tbody></table>",
-		"render": " <tr ><td >foo</td></tr><table ><tbody></tbody></table>",
+		"render": "<tr ><td >foo</td></tr><table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>foo<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span></span></span>}}</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -9955,7 +9955,7 @@
 		"desc": "Tables with multiple newlines after individual lines embedded in links",
 		"wikitext": "[[Test|\n{|\n\n|test\n|}]]",
 		"html": "<p><a href=\"/wiki/Test\" title=\"Test\">\n</a></p><table>\n\n<tbody><tr>\n<td>test\n</td></tr></tbody></table>\n<p class=\"mw-empty-elt\"></p>",
-		"render": "<a href=\"/wiki/Test\" title=\"Test\">  <table ><tbody><tr><td >test</td></tr></tbody></table></a>",
+		"render": "<a href=\"/wiki/Test\" title=\"Test\"> <table ><tbody><tr><td >test</td></tr></tbody></table></a>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test</span>|<span class=\"wpb-link-text\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">test</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>]]</span></span>"
 	},
 	{
@@ -9983,14 +9983,14 @@
 		"desc": "Parsoid: Don't paragraph-wrap fosterable content even if table syntax is unbalanced",
 		"wikitext": "{|\n<td>\n<td>\n</td>\n\n\n\n|}",
 		"html": "<table>\n<tbody><tr><td>\n</td><td>\n</td>\n\n\n\n</tr><tr><td></td></tr></tbody></table>",
-		"render": " <td > <td > </td>   <table ><tbody></tbody></table>",
+		"render": "<td > <td > </td><table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-html\">&lt;td&gt;</span>\n<span class=\"wpb-html\">&lt;td&gt;</span>\n<span class=\"wpb-html\">&lt;/td&gt;</span>\n\n\n</span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "A table with stray table end tags on start tag line (wt2html)",
 		"wikitext": "{|style=\"color: red;\"|}\n\n{|style=\"color: red;\" |}\n|foo\n|}\n\n{|style=\"color: red;\"|} id=\"foo\"\n|foo\n|}\n\n{|style=\"color: red;\" |} id=\"foo\"\n|foo\n|}",
 		"html": "<table style=\"color: red;\">\n\n</table><table style=\"color: red;\">\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>\n<table style=\"color: red;\" id=\"foo\">\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>\n<table style=\"color: red;\" id=\"foo\">\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"render": " <table style=\"color: red;\"><tbody></tbody></table>\n<table style=\"color: red;\"><tbody><tr><td >foo</td></tr></tbody></table>\n<table style=\"color: red;\" id=\"foo\"><tbody><tr><td >foo</td></tr></tbody></table>\n<table style=\"color: red;\" id=\"foo\"><tbody><tr><td >foo</td></tr></tbody></table>",
+		"render": "<table style=\"color: red;\"><tbody></tbody></table>\n<table style=\"color: red;\"><tbody><tr><td >foo</td></tr></tbody></table>\n<table style=\"color: red;\" id=\"foo\"><tbody><tr><td >foo</td></tr></tbody></table>\n<table style=\"color: red;\" id=\"foo\"><tbody><tr><td >foo</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color: red;</span>\"</span><span class=\"wpb-attr-dirty\">|}</span></span><span class=\"wpb-table-inter\">\n</span></span>\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color: red;</span>\"</span><span class=\"wpb-attr-dirty\"> |}</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color: red;</span>\"</span><span class=\"wpb-attr-dirty\">|} </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">color: red;</span>\"</span><span class=\"wpb-attr-dirty\"> |} </span><span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">id</span>=\"<span class=\"wpb-attr-value\">foo</span>\"</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -10207,14 +10207,14 @@
 		"desc": "Table with row followed by newlines and table heading",
 		"wikitext": "{|\n|-\n\n!foo\n|}",
 		"html": "<table>\n\n\n<tbody><tr>\n<th>foo\n</th></tr></tbody></table>",
-		"render": " <table ><tbody><tr ><th >foo</th></tr></tbody></table>",
+		"render": "<table ><tbody><tr ><th >foo</th></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Table with empty line following the start tag",
 		"wikitext": "{|\n\n|-\n|foo\n|}",
 		"html": "<table>\n\n\n<tbody><tr>\n<td>foo\n</td></tr></tbody></table>",
-		"render": " <table ><tbody><tr ><td >foo</td></tr></tbody></table>",
+		"render": "<table ><tbody><tr ><td >foo</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-inter\">\n</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">foo</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -10284,14 +10284,14 @@
 		"desc": "Fostered content in tables: Plain text",
 		"wikitext": "{|\n|-\na\n|}",
 		"html": "a\n<table></table>",
-		"render": " a<table ><tbody></tbody></table>",
+		"render": "a<table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\na</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Template generated table cell with attributes",
 		"wikitext": "{|\n|-\n{{table_attribs_4}} ||a||b\n|}",
 		"html": "<table>\n\n<tbody><tr>\n<td style=\"background-color:#DC241f;\" width=\"10px\"></td>\n<td>a</td>\n<td>b\n</td></tr></tbody></table>",
-		"render": "  ||a||b<table ><tbody></tbody></table>",
+		"render": "||a||b<table ><tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs_4</span>}}</span> ||a||b</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
