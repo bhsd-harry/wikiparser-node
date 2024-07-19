@@ -1,5 +1,4 @@
-import type {AstNodes} from '../lib/node';
-import type {ListRangeToken} from '../src/nowiki/listBase';
+import type {AstNodes, ListRangeToken} from '../internal';
 
 /**
  * get common prefix length

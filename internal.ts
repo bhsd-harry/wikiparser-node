@@ -40,6 +40,7 @@ export type * from './src/link/galleryImage';
 export type * from './src/nowiki/quote';
 export type * from './src/magicLink';
 export type * from './src/extLink';
+export type {ListRangeToken} from './src/nowiki/listBase';
 export type * from './src/nowiki/dd';
 export type * from './src/nowiki/list';
 export type * from './src/converterFlags';

@@ -196,16 +196,17 @@ export abstract class ExtLinkToken extends Token {
 
 	/** @private */
 	override toHtmlInternal(nowrap?: boolean): string {
-		const {length, lastChild} = this,
-			{childNodes} = lastChild;
+		const {length, lastChild} = this;
 		let trail = '',
 			innerText: string,
 			href: string | undefined;
 		if (length > 1) {
-			const i = childNodes.findIndex(
-				child => child.type === 'link'
-				|| child.is<FileToken>('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
-			);
+			lastChild.normalize();
+			const {childNodes} = lastChild,
+				i = childNodes.findIndex(
+					child => child.type === 'link'
+					|| child.is<FileToken>('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
+				);
 			if (i !== -1) {
 				const after = childNodes.slice(i);
 				this.after(...after);
