@@ -643,8 +643,8 @@
 		"desc": "Link containing an ampersand",
 		"wikitext": "[[Foo & bar]]\n\n[[Foo &amp; bar]]\n\n[[Foo &amp;amp; bar]]",
 		"html": "<p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo &amp; bar\">Foo &amp; bar</a>\n</p><p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo &amp; bar\">Foo &amp; bar</a>\n</p><p>[[Foo &amp;amp; bar]]\n</p>",
-		"render": "<p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo & bar\">Foo & bar</a>\n</p><p><a href=\"/wiki/Foo_%26amp%3B_bar\" title=\"Foo &amp; bar\">Foo &amp; bar</a>\n</p><p><a href=\"/wiki/Foo_%26amp%3Bamp%3B_bar\" title=\"Foo &amp;amp; bar\">Foo &amp;amp; bar</a>\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp; bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp;amp; bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp;amp;amp; bar</span>]]</span></span>"
+		"render": "<p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo & bar\">Foo & bar</a>\n</p><p><a href=\"/wiki/Foo_%26_bar\" title=\"Foo & bar\">Foo &amp; bar</a>\n</p><p>[[Foo &amp;amp; bar]]\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp; bar</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo &amp;amp; bar</span>]]</span>\n\n[[Foo &amp;amp;amp; bar]]</span>"
 	},
 	{
 		"desc": "Link containing a tilde",
@@ -6956,7 +6956,7 @@
 		"desc": "Decoding of HTML entities in headings and links for IDs and link fragments (T103714) (legacy)",
 		"wikitext": "==A&B&amp;C&amp;amp;D&amp;amp;amp;E==\n[[#A&B&amp;C&amp;amp;D&amp;amp;amp;E]]",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"A.26B.26C.26amp.3BD.26amp.3Bamp.3BE\">A&amp;B&amp;C&amp;amp;D&amp;amp;amp;E</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Parser_test&amp;action=edit&amp;section=1\" title=\"Edit section: A&amp;B&amp;C&amp;amp;D&amp;amp;amp;E\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<p><a href=\"#A.26B.26C.26amp.3BD.26amp.3Bamp.3BE\">#A&amp;B&amp;C&amp;amp;D&amp;amp;amp;E</a>\n</p>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"A&B&amp;C&amp;amp;D&amp;amp;amp;E\">A&B&amp;C&amp;amp;D&amp;amp;amp;E</h2></div>\n<p><a href=\"#A%26B%26amp%3BC%26amp%3Bamp%3BD%26amp%3Bamp%3Bamp%3BE\">#A&B&amp;C&amp;amp;D&amp;amp;amp;E</a>\n</p>",
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"A&B&amp;C&amp;amp;D&amp;amp;amp;E\">A&B&amp;C&amp;amp;D&amp;amp;amp;E</h2></div>\n<p><a href=\"#A%26B%26C%26amp%3BD%26amp%3Bamp%3BE\">#A&B&amp;C&amp;amp;D&amp;amp;amp;E</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">A&amp;B&amp;amp;C&amp;amp;amp;D&amp;amp;amp;amp;E</span>==</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">#A&amp;B&amp;amp;C&amp;amp;amp;D&amp;amp;amp;amp;E</span>]]</span></span>"
 	},
 	{
