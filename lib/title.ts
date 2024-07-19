@@ -50,25 +50,7 @@ export class Title {
 
 	/** 完整标题 */
 	get title(): string {
-		const prefix = this.interwiki + (this.interwiki && ':') + this.prefix;
-		let title = (prefix + this.main).replace(/ /gu, '_');
-
-		/* NOT FOR BROWSER */
-
-		let redirected = this.#redirect(title);
-		if (redirected) {
-			return redirected;
-		}
-		this.autoConvert();
-		title = (prefix + this.main).replaceAll(' ', '_');
-		redirected = this.#redirect(title);
-		if (redirected) {
-			return redirected;
-		}
-
-		/* NOT FOR BROWSER END */
-
-		return title;
+		return this.getRedirection()[1];
 	}
 
 	/** 扩展名 */
@@ -178,6 +160,29 @@ export class Title {
 					?? this.#fragment
 				}`
 		}`;
+	}
+
+	/** 检测是否是重定向 */
+	getRedirection(): [boolean, string] {
+		const prefix = this.interwiki + (this.interwiki && ':') + this.prefix;
+		let title = (prefix + this.main).replace(/ /gu, '_');
+
+		/* NOT FOR BROWSER */
+
+		let redirected = this.#redirect(title);
+		if (redirected) {
+			return [true, redirected];
+		}
+		this.autoConvert();
+		title = (prefix + this.main).replaceAll(' ', '_');
+		redirected = this.#redirect(title);
+		if (redirected) {
+			return [true, redirected];
+		}
+
+		/* NOT FOR BROWSER END */
+
+		return [false, title];
 	}
 
 	/* NOT FOR BROWSER */

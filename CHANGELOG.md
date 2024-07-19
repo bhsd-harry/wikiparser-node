@@ -1,6 +1,10 @@
-## v1.11.2
+## v1.12.0
 
-*2024-07-18*
+*2024-07-19*
+
+**Added**
+
+- [`Title.prototype.getRedirection`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#getredirection) method
 
 **Fixed**
 
