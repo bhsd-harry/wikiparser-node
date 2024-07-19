@@ -99,12 +99,6 @@ pre {
 	border-color: #c8ccd1;
 	cursor: not-allowed;
 }
-.frame > pre.language-html {
-	margin: 0;
-}
-.frame > pre.language-html > code {
-	white-space: pre-wrap;
-}
 
 .mw-editsection, .mw-empty-elt {
 	display: none;
@@ -412,6 +406,14 @@ pre {
 .frame li.gallerybox div.thumb img {
 	display: block;
 	margin: 0 auto;
+}
+
+.frame > pre.language-html {
+	margin: 0;
+}
+.frame > pre.language-html > code {
+	white-space: pre-wrap;
+	word-wrap: break-word;
 }
 
 @media screen and (max-width: 720px) {
