@@ -421,7 +421,7 @@ export abstract class TdToken extends TableBaseToken {
 	override toHtmlInternal(): string {
 		const {subtype, childNodes: [, attr, inner]} = this,
 			html = inner.toHtmlInternal();
-		return `<${subtype}${attr.toHtmlInternal()}>${subtype === 'caption' ? newline(html) : html}</${subtype}>`;
+		return `\n<${subtype}${attr.toHtmlInternal()}>${subtype === 'caption' ? newline(html) : html}</${subtype}>`;
 	}
 }
 

@@ -644,7 +644,7 @@ export abstract class TableToken extends TrBaseToken {
 		const {childNodes} = this,
 			tr = childNodes.filter(isToken<TrToken>('tr')),
 			inter = [this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(true).trim()).join(' ');
-		return `${inter}<table${childNodes[1].toHtmlInternal()}><tbody>${super.toHtmlInternal()}${
+		return `${inter}<table${childNodes[1].toHtmlInternal()}>\n<tbody>${super.toHtmlInternal()}${
 			html(tr)
 		}</tbody></table>`;
 	}
