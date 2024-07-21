@@ -103,26 +103,18 @@ for (const file of ['parserTests.txt', ...files]) {
 		info('options', new Set(optionInfo));
 	}
 	for (const [test] of cases) {
-		const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd();
-		if (!wikitext) {
+		const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
+			html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)?.[1]!.trim();
+		if (!wikitext || /<(?:span|static|aside)?tag\b/iu.test(wikitext) || /\b(?:NULL\b|array\s*\()/u.test(html!)) {
 			continue;
 		}
 		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,
 			root = Parser.parse(wikitext),
 			t: Test = {desc, wikitext};
-		if (
-			/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test)
-			&& (!test.includes('options') || re.test(test))
-			&& !/<(?:span|static|aside)tag\b/iu.test(wikitext)
-		) {
+		if (/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test) && (!test.includes('options') || re.test(test))) {
+			t.html = html!;
 			try {
-				const html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)![1]!.trim();
-				if (!/\b(?:NULL\b|array\s*\()/u.test(html)) {
-					t.html = html;
-					try {
-						t.render = root.toHtml();
-					} catch {}
-				}
+				t.render = root.toHtml();
 			} catch {
 				console.error(test);
 			}
