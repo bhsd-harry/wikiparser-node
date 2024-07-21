@@ -104,8 +104,14 @@ for (const file of ['parserTests.txt', ...files]) {
 	}
 	for (const [test] of cases) {
 		const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
+			option = regex.options.exec(test)?.[1]!.trim(),
 			html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)?.[1]!.trim();
-		if (!wikitext || /<(?:span|static|aside)?tag\b/iu.test(wikitext) || /\b(?:NULL\b|array\s*\()/u.test(html!)) {
+		if (
+			!wikitext
+			|| /<(?:span|static|aside)?tag\b/iu.test(wikitext)
+			|| /\b(?:NULL\b|array\s*\()/u.test(html!)
+			|| /\blanguage=(?!en|zh)/u.test(option!)
+		) {
 			continue;
 		}
 		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,

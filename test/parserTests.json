@@ -912,27 +912,7 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo bar baz</span>|<span class=\"wpb-link-text\">x</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo  bar baz</span>|<span class=\"wpb-link-text\">x</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo  bar   baz</span>|<span class=\"wpb-link-text\">x</span>]]</span></span>"
 	},
 	{
-		"desc": "Internal link with ca linktrail, surrounded by bold apostrophes (T29473 primary issue)",
-		"wikitext": "'''[[Main Page]]'''",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span><span class=\"wpb-quote\">'''</span></span>"
-	},
-	{
-		"desc": "Internal link with ca linktrail, surrounded by italic apostrophes (T29473 primary issue)",
-		"wikitext": "''[[Main Page]]''",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span><span class=\"wpb-quote\">''</span></span>"
-	},
-	{
 		"desc": "Internal link with en linktrail: no apostrophes (T29473)",
-		"wikitext": "[[Something]]'nice",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Something</span>]]</span>'nice</span>"
-	},
-	{
-		"desc": "Internal link with ca linktrail with apostrophes (T29473)",
-		"wikitext": "[[Something]]'nice",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Something</span>]]</span>'nice</span>"
-	},
-	{
-		"desc": "Internal link with kaa linktrail with apostrophes (T29473)",
 		"wikitext": "[[Something]]'nice",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Something</span>]]</span>'nice</span>"
 	},
@@ -998,24 +978,9 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Some <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Fool</span>]]</span>s are <span class=\"wpb-quote\">'''</span>bold and foolish<span class=\"wpb-quote\">'''</span></span></span>}}</span></span>"
 	},
 	{
-		"desc": "Internal link with is link prefix",
-		"wikitext": "Aðrir mótmælenda[[söfnuður|söfnuðir]] og\n{{1x|mótmælenda[[söfnuður|söfnuðir]]}}\nmótmæ{{1x|lenda[[söfnuður|söfnuðir]]}}",
-		"print": "<span class=\"wpb-root\">Aðrir mótmælenda<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>|<span class=\"wpb-link-text\">söfnuðir</span>]]</span> og\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">mótmælenda<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>|<span class=\"wpb-link-text\">söfnuðir</span>]]</span></span></span>}}</span>\nmótmæ<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">lenda<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>|<span class=\"wpb-link-text\">söfnuðir</span>]]</span></span></span>}}</span></span>"
-	},
-	{
-		"desc": "Internal link with is link trail and link prefix",
-		"wikitext": "[[mótmælendatrú|xxx]]ar\n[[mótmælendatrú]]ar\nmótmælenda[[söfnuður]]\nmótmælenda[[söfnuður|söfnuðir]]\nmótmælenda[[söfnuður|söfnuðir]]xxx",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">mótmælendatrú</span>|<span class=\"wpb-link-text\">xxx</span>]]</span>ar\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">mótmælendatrú</span>]]</span>ar\nmótmælenda<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>]]</span>\nmótmælenda<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>|<span class=\"wpb-link-text\">söfnuðir</span>]]</span>\nmótmælenda<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>|<span class=\"wpb-link-text\">söfnuðir</span>]]</span>xxx</span>"
-	},
-	{
 		"desc": "Parsoid link trail escaping",
 		"wikitext": "[[apple]]<nowiki/>s",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">apple</span>]]</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>s</span>"
-	},
-	{
-		"desc": "Parsoid link prefix escaping",
-		"wikitext": "Aðrir mótmælenda<nowiki/>[[söfnuður]]",
-		"print": "<span class=\"wpb-root\">Aðrir mótmælenda<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">söfnuður</span>]]</span></span>"
 	},
 	{
 		"desc": "Parsoid link bracket escaping",
@@ -1054,11 +1019,6 @@
 		"html": "<p>[[Hi|<a href=\"/wiki/Ho\" title=\"Ho\">Ho</a>]]\n</p>",
 		"render": "<p>[[Hi|<a href=\"/wiki/Ho\" title=\"Ho\">Ho</a>]]\n</p>",
 		"print": "<span class=\"wpb-root\">[[Hi|<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Ho</span>]]</span>]]</span>"
-	},
-	{
-		"desc": "Parsoid-specific test: Wikilinks with &nbsp; should RT properly",
-		"wikitext": "[[WW&nbsp;II]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">WW&amp;nbsp;II</span>]]</span></span>"
 	},
 	{
 		"desc": "Parsoid T55221: Wikilinks should be properly entity-escaped",
@@ -1526,16 +1486,6 @@
 		"html": "<p>File\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Image</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Namespace (lang=de) Benutzer {{ns:User}}",
-		"wikitext": "{{ns:User}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">User</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Namespace (lang=de) Benutzer Diskussion {{ns:3}}",
-		"wikitext": "{{ns:3}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ns</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">3</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Urlencode",
@@ -2815,11 +2765,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>a\n\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Bar</span>]]</span><span class=\"wpb-comment\">&lt;!--boo1--&gt;</span> <span class=\"wpb-comment\">&lt;!--boo2--&gt;</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Baz</span>]]</span><span class=\"wpb-comment\">&lt;!--boo3--&gt;</span> <span class=\"wpb-comment\">&lt;!--boo4--&gt;</span></span>"
 	},
 	{
-		"desc": "Categories and newlines: should behave properly with linkprefix (T87753)",
-		"wikitext": "foo bar\nfoo bar\n[[تصنيف:Foo]]\n[[تصنيف:Bar]]",
-		"print": "<span class=\"wpb-root\">foo bar\nfoo bar\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">تصنيف:Foo</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">تصنيف:Bar</span>]]</span></span>"
-	},
-	{
 		"desc": "No regressions on internal links following category (T174639)",
 		"wikitext": "[[Category:Foo]]<div>a\n\n[[Foo]]</div>",
 		"html": "<div>a\n<a href=\"/wiki/Foo\" title=\"Foo\">Foo</a></div>",
@@ -2844,16 +2789,6 @@
 		"html": "<p><a href=\"/index.php?title=Category:Foo&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Category:Foo (page does not exist)\">Category:Foo</a>\n<a href=\"/index.php?title=Category:Foo&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Category:Foo (page does not exist)\">Bar</a>\n</p>",
 		"render": "<p><a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Category:Foo</a>\n<a href=\"/wiki/Category%3AFoo\" title=\"Category:Foo\">Bar</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Category:Foo</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Category:Foo</span>|<span class=\"wpb-link-text\">Bar</span>]]</span></span>"
-	},
-	{
-		"desc": "Link prefix/suffixes aren't applied to category links",
-		"wikitext": "x[[Category:Foo]]y",
-		"print": "<span class=\"wpb-root\">x<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span>y</span>"
-	},
-	{
-		"desc": "Link prefix/suffixes aren't applied to language links",
-		"wikitext": "x[[es:Foo]]y",
-		"print": "<span class=\"wpb-root\">x<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">es:Foo</span>]]</span>y</span>"
 	},
 	{
 		"desc": "Parsoid: Serialize link to file page with colon escape",
@@ -3183,11 +3118,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Redirect to foobar.jpg</span>]]</span></span>"
 	},
 	{
-		"desc": "Localized media link",
-		"wikitext": "[[Miðill:Foobar.jpg]]\n\n[[Miðill:Foobar.jpg|Icelandic]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Miðill:Foobar.jpg</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Miðill:Foobar.jpg</span>|<span class=\"wpb-link-text\">Icelandic</span>]]</span></span>"
-	},
-	{
 		"desc": "Media link with nasty text",
 		"wikitext": "[[Media:Foobar.jpg|Safe Link<div style=display:none>\" onmouseover=\"alert(document.cookie)\" onfoo=\"</div>]]",
 		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Safe Link</a></p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\"><div style=\"display:none\">\" onmouseover=\"alert(document.cookie)\" onfoo=\"</div></a>",
@@ -3198,11 +3128,6 @@
 		"desc": "Media link from missing resource (parsoid-only)",
 		"wikitext": "[[Media:Foobar.jpg|Bat!]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Foobar.jpg</span>|<span class=\"wpb-link-text\">Bat!</span>]]</span></span>"
-	},
-	{
-		"desc": "Media link from missing resource, localized (parsoid-only)",
-		"wikitext": "[[Miðill:Foobar.jpg|Bat!]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Miðill:Foobar.jpg</span>|<span class=\"wpb-link-text\">Bat!</span>]]</span></span>"
 	},
 	{
 		"desc": "Media link from old 1.7.0 DOM spec (crash test, parsoid-only) T198511",
@@ -4535,11 +4460,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">lc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">{{paramtest <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span> param = hello }} </span></span>}}</span></span>"
 	},
 	{
-		"desc": "Case insensitivity of parser functions for non-ASCII characters (T10143)",
-		"wikitext": "{{PRVNÍVELKÉ:ěščř}}\n{{prvnívelké:ěščř}}\n{{PRVNÍMALÉ:ěščř}}\n{{prvnímalé:ěščř}}\n{{MALÁ:ěščř}}\n{{malá:ěščř}}\n{{VELKÁ:ěščř}}\n{{velká:ěščř}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">PRVNÍVELKÉ:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">prvnívelké:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">PRVNÍMALÉ:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">prvnímalé:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MALÁ:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">malá:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">VELKÁ:ěščř</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">velká:ěščř</span>}}</span></span>"
-	},
-	{
 		"desc": "Paragraphs inside divs (no extra line breaks)",
 		"wikitext": "<div>Line one\n\nLine two</div>",
 		"html": "<div>Line one\nLine two</div>",
@@ -4636,11 +4556,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:1</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:2</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">meatball:3</span>]]</span></span>"
 	},
 	{
-		"desc": "T17196: localised external link numbers",
-		"wikitext": "[http://en.wikipedia.org/]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://en.wikipedia.org/</span>]</span></span>"
-	},
-	{
 		"desc": "Multibyte character in padleft",
 		"wikitext": "{{padleft:-Hello|7|Æ}}",
 		"html": "<p>Æ-Hello\n</p>",
@@ -4676,26 +4591,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">January 15</span></span>}}</span></span>"
 	},
 	{
-		"desc": "formatdate parser function, with default format and on a page of which the content language is always English and different from the wiki content language",
-		"wikitext": "{{#formatdate:2009-03-24|dmy}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2009-03-24</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span></span>"
-	},
-	{
 		"desc": "formatdate with invalid month",
 		"wikitext": "{{#formatdate:2019-22-22|dmy}}",
 		"html": "<p>2019-22-22\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2019-22-22</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span></span>"
-	},
-	{
-		"desc": "formatdate: dots in month name do not match any char (T220563)",
-		"wikitext": "{{#formatdate:jun. 3|dmy}}\n{{#formatdate:junx 3|dmy}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">jun. 3</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">junx 3</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span></span>"
-	},
-	{
-		"desc": "formatdate uses correct capitalisation in French",
-		"wikitext": "{{#formatdate:Juin 3|dmy}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#formatdate</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Juin 3</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">dmy</span></span>}}</span></span>"
 	},
 	{
 		"desc": "formatdate uses correct capitalisation in English",
@@ -4970,26 +4870,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Identical</span>}}</span></span>"
 	},
 	{
-		"desc": "T33490 Turkish: ucfirst 'blah'",
-		"wikitext": "{{ucfirst:blah}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ucfirst</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">blah</span></span>}}</span></span>"
-	},
-	{
-		"desc": "T33490 Turkish: ucfirst 'ix'",
-		"wikitext": "{{ucfirst:ix}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ucfirst</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ix</span></span>}}</span></span>"
-	},
-	{
-		"desc": "T33490 Turkish: lcfirst 'BLAH'",
-		"wikitext": "{{lcfirst:BLAH}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">lcfirst</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">BLAH</span></span>}}</span></span>"
-	},
-	{
-		"desc": "T33490 Turkish: ucfırst (with a dotless i)",
-		"wikitext": "{{ucfırst:blah}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">ucfırst:blah</span>}}</span></span>"
-	},
-	{
 		"desc": "T33490 ucfırst (with a dotless i) with English language",
 		"wikitext": "{{ucfırst:blah}}",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">ucfırst:blah</span>}}</span></span>"
@@ -5037,21 +4917,11 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1<span class=\"wpb-ext\">&lt;nowiki/&gt;</span>2</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1<span class=\"wpb-ext\">&lt;nowiki/&gt;</span>2</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">R</span></span>}}</span></span>"
 	},
 	{
-		"desc": "Check noCommafy in formatNum",
-		"wikitext": "{{formatnum:123456.78}}\n{{formatnum:123456.78|NOSEP}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123456.78</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123456.78</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">NOSEP</span></span>}}</span></span>"
-	},
-	{
 		"desc": "Wrong option for formatNum (T58199)",
 		"wikitext": "{{formatnum:1,234.56|Random}}\n{{formatnum:1,234.56|EVERYTHING}}\n{{formatnum:1234.56|any argument that has the string 'NOSEP'}}",
 		"html": "<p>1,234.56\n1,234.56\n1,234.56\n</p>",
 		"render": "<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1,234.56</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Random</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1,234.56</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">EVERYTHING</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">formatnum</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1234.56</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">any argument that has the string 'NOSEP'</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Strip marker in grammar",
-		"wikitext": "{{grammar:elative|foo<nowiki/>bar}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">grammar</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">elative</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo<span class=\"wpb-ext\">&lt;nowiki/&gt;</span>bar</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Strip marker in padleft",
@@ -5530,11 +5400,6 @@
 		"desc": "New category links (href variations)",
 		"wikitext": "[[Category:Toxine bactérienne]]\n[[Category:Toxine bactérienne]]\n[[Category:Toxine bactérienne]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Toxine bactérienne</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Toxine bactérienne</span>]]</span>\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Toxine bactérienne</span>]]</span></span>"
-	},
-	{
-		"desc": "New sol transparent links don't need indent-pre nowiki protection",
-		"wikitext": "         #WEITERLEITUNG [[Main Page]]\n<!-- this is good  -->    [[Category:Good]]\n<!-- this is great -->    [[Kategorie:Great]]",
-		"print": "<span class=\"wpb-root\">         #WEITERLEITUNG <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>\n<span class=\"wpb-comment\">&lt;!-- this is good  --&gt;</span>    <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Good</span>]]</span>\n<span class=\"wpb-comment\">&lt;!-- this is great --&gt;</span>    <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Kategorie:Great</span>]]</span></span>"
 	},
 	{
 		"desc": "New interlanguage links (href variations)",
@@ -6335,16 +6200,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">parent</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">[foo]</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">extends</span>=\"<span class=\"wpb-attr-value\">parent</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">[bar]</span>&lt;/ref&gt;</span></span>"
 	},
 	{
-		"desc": "T236256 - Extending the same base multiple times is fine",
-		"wikitext": "<ref name=\"a\">book</ref>\n<ref extends=\"a\">page 2</ref>\n<ref extends=\"a\">page 3</ref>\n<references />",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">book</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">extends</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">page 2</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">extends</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">page 3</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
-	},
-	{
-		"desc": "Extended references can be reused",
-		"wikitext": "<ref name=\"a\">book</ref>\n<ref extends=\"a\" name=\"b\">page 2</ref>\n<ref name=\"b\" />",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">book</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">extends</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">b</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">page 2</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">b</span>\"</span> </span>/&gt;</span></span>"
-	},
-	{
 		"desc": "T240424 - Subreference reused as normal ref before its full definition",
 		"wikitext": "<ref name=\"b\" />\n<ref name=\"b\" extends=\"a\">page 2</ref>\n<ref name=\"a\">book</ref>",
 		"html": "<p><sup id=\"cite_ref-b_1-0\" class=\"reference\"><a href=\"#cite_note-b-1\">&#91;1&#93;</a></sup>\n<span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: Invalid <code>&lt;ref&gt;</code> tag; name \"b\" defined multiple times with different content</span>\n<sup id=\"cite_ref-a_2-0\" class=\"reference\"><a href=\"#cite_note-a-2\">&#91;2&#93;</a></sup>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-b-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-b_1-0\">↑</a></span> <span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: Invalid <code>&lt;ref&gt;</code> tag; no text was provided for refs named <code>b</code></span></li>\n<li id=\"cite_note-a-2\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-a_2-0\">↑</a></span> <span class=\"reference-text\">book</span>\n</li>\n</ol></div>",
@@ -6682,11 +6537,6 @@
 		"html": "<table>\n\n<tbody><tr id=\"cite_ref-1\" class=\"reference\">\n<td>x\n</td></tr></tbody></table>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-1\">↑</a></span> <span class=\"reference-text\">boo</span>\n</li>\n</ol></div>",
 		"render": "<table >\n<tbody><tr >\n<td >x</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"><span class=\"wpb-attr-dirty\"> <span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">boo</span>&lt;/ref&gt;</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">x</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
-	},
-	{
-		"desc": "<ref>s in language variant markup",
-		"wikitext": "-{lj <ref>a</ref>}-аб-{nj <ref name=\"y\">b</ref>}-вг-{dž}- c <ref name=\"y\" />\n<references />",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">lj <span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">a</span>&lt;/ref&gt;</span></span></span>}-</span>аб<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">nj <span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">y</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">b</span>&lt;/ref&gt;</span></span></span>}-</span>вг<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">dž</span></span>}-</span> c <span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">y</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
 		"desc": "<references> after <gallery> (bug 6164)",
@@ -7611,11 +7461,6 @@
 		"html": "<p><sup id=\"cite_ref-a_1-0\" class=\"reference\"><a href=\"#cite_note-a-1\">&#91;1&#93;</a></sup>\n<sup id=\"cite_ref-a_1-1\" class=\"reference\"><a href=\"#cite_note-a-1\">&#91;1&#93;</a></sup>\n<sup id=\"cite_ref-b_2-0\" class=\"reference\"><a href=\"#cite_note-b-2\">&#91;2&#93;</a></sup>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-a-1\"><span class=\"mw-cite-backlink\">↑ <sup><a href=\"#cite_ref-a_1-0\">1.0</a></sup> <sup><a href=\"#cite_ref-a_1-1\">1.1</a></sup></span> <span class=\"reference-text\">text <span class=\"error mw-ext-cite-error\" lang=\"en\" dir=\"ltr\">Cite error: Invalid <code>&lt;ref&gt;</code> tag; name \"a\" defined multiple times with different content</span></span>\n</li>\n<li id=\"cite_note-b-2\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-b_2-0\">↑</a></span> <span class=\"reference-text\">other</span>\n</li>\n</ol></div>",
 		"render": "<p><br>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">text</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">bad</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">b</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">other</span>&lt;/ref&gt;</span></span>"
-	},
-	{
-		"desc": "Smoke test for references that are reused *before* defined in the text",
-		"wikitext": "<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\" />\n<ref name=\"a\">text</ref>\n<ref name=\"b\">other</ref>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span> </span>/&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">a</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">text</span>&lt;/ref&gt;</span>\n<span class=\"wpb-ext\">&lt;ref<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">name</span>=\"<span class=\"wpb-attr-value\">b</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">other</span>&lt;/ref&gt;</span></span>"
 	},
 	{
 		"desc": "Smoke test for references that are reused *before* defined in <references>",
@@ -9965,140 +9810,14 @@
 		"desc": "langParserTests"
 	},
 	{
-		"desc": "sr-ec: Simple conversion of Latin to Cyrillic",
-		"wikitext": "abvg",
-		"print": "<span class=\"wpb-root\">abvg</span>"
-	},
-	{
-		"desc": "sr-ec: Same as above, but assert that -{}-s must be removed and not converted (1)",
-		"wikitext": "-{lj}-аб-{nj}-вг-{dž}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">lj</span></span>}-</span>аб<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">nj</span></span>}-</span>вг<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">dž</span></span>}-</span></span>"
-	},
-	{
-		"desc": "sr-ec: This text has some Cyrillic, but is recognized as Latin, so it should be converted",
-		"wikitext": "абвгšđžčć",
-		"print": "<span class=\"wpb-root\">абвгšđžčć</span>"
-	},
-	{
-		"desc": "sr-ec: Same as above, but assert that -{}-s must be removed and not converted (2)",
-		"wikitext": "-{lj}-абвг-{nj}-šđžčć-{dž}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">lj</span></span>}-</span>абвг<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">nj</span></span>}-</span>šđžčć<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">dž</span></span>}-</span></span>"
-	},
-	{
-		"desc": "sr-ec: Roman numerals are not converted",
-		"wikitext": "a I b II v III g IV šđžčć",
-		"print": "<span class=\"wpb-root\">a I b II v III g IV šđžčć</span>"
-	},
-	{
-		"desc": "sr-el: A simple conversion of Latin to Latin",
-		"wikitext": "abcd",
-		"print": "<span class=\"wpb-root\">abcd</span>"
-	},
-	{
-		"desc": "sr-el: A simple conversion of Cyrillic to Latin",
-		"wikitext": "абцд",
-		"print": "<span class=\"wpb-root\">абцд</span>"
-	},
-	{
-		"desc": "sr-el: This text has some Latin, but is recognized as Cyrillic, so it should be converted",
-		"wikitext": "abcdшђжчћ",
-		"print": "<span class=\"wpb-root\">abcdшђжчћ</span>"
-	},
-	{
-		"desc": "External links should be converted, unless they \"look like a URL\".",
-		"wikitext": "[http://example.com abcd]\n\n[http://example.com http://foo.com]\n\nhttp://example.com\n\n[http://example.com -{abcd}-]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">abcd</span>]</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">http://foo.com</span>]</span>\n\n<span class=\"wpb-free-ext-link\">http://example.com</span>\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">abcd</span></span>}-</span></span>]</span></span>"
-	},
-	{
 		"desc": "Language converter: output gets cut off unexpectedly (T7757)",
 		"wikitext": "this bit is safe: }-\n\nbut if we add a conversion instance: -{zh-cn:xxx;zh-tw:yyy}-\n\nthen we get cut off here: }-\n\nall additional text is vanished",
 		"print": "<span class=\"wpb-root\">this bit is safe: }-\n\nbut if we add a conversion instance: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">xxx</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">yyy</span></span>}-</span>\n\nthen we get cut off here: }-\n\nall additional text is vanished</span>"
 	},
 	{
-		"desc": "Language converter glossary rules inside attributes (T119158)",
-		"wikitext": "-{H|foAjrjvi=>sr-el:\" onload=\"alert(1)\" data-foo=\"}-\n\n[[File:Foobar.jpg|alt=-{}-foAjrjvi-{}-]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foAjrjvi=&gt;sr-el:\" onload=\"alert(1)\" data-foo=\"</span></span>}-</span>\n\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\">-{}-foAjrjvi-{}-</span></span>]]</span></span>"
-	},
-	{
-		"desc": "Self-link in language variants",
-		"wikitext": "Both [[Dunav]] and [[Дунав]] are names for this river.",
-		"html": "<p>Both <a class=\"mw-selflink selflink\">Dunav</a> and <a class=\"mw-selflink selflink\">Дунав</a> are names for this river.\n</p>",
-		"render": "<p>Both <a href=\"/wiki/Dunav\" title=\"Dunav\">Dunav</a> and <a href=\"/wiki/%D0%94%D1%83%D0%BD%D0%B0%D0%B2\" title=\"Дунав\">Дунав</a> are names for this river.\n</p>",
-		"print": "<span class=\"wpb-root\">Both <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Dunav</span>]]</span> and <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Дунав</span>]]</span> are names for this river.</span>"
-	},
-	{
-		"desc": "Link to another existing title shouldn't be parsed as self-link even if it's a variant of this title",
-		"wikitext": "[[Дуна]] is not a self-link while [[Duna]] and [[Dуна]] are still self-links.",
-		"html": "<p><a href=\"/wiki/%D0%94%D1%83%D0%BD%D0%B0\" title=\"Дуна\">Дуна</a> is not a self-link while <a class=\"mw-selflink selflink\">Duna</a> and <a class=\"mw-selflink selflink\">Dуна</a> are still self-links.\n</p>",
-		"render": "<p><a href=\"/wiki/%D0%94%D1%83%D0%BD%D0%B0\" title=\"Дуна\">Дуна</a> is not a self-link while <a href=\"/wiki/Duna\" title=\"Duna\">Duna</a> and <a href=\"/wiki/D%D1%83%D0%BD%D0%B0\" title=\"Dуна\">Dуна</a> are still self-links.\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Дуна</span>]]</span> is not a self-link while <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Duna</span>]]</span> and <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Dуна</span>]]</span> are still self-links.</span>"
-	},
-	{
-		"desc": "Link to a section of a variant of this title should be parsed as mw-selflink-fragment",
-		"wikitext": "[[Dуна]] is a self-link while [[Duna#Foo]] and [[Dуна#Foo]] are mw-selflink-fragments.",
-		"html": "<p><a class=\"mw-selflink selflink\">Dуна</a> is a self-link while <a class=\"mw-selflink-fragment\" href=\"#Foo\">Duna#Foo</a> and <a class=\"mw-selflink-fragment\" href=\"#Foo\">Dуна#Foo</a> are mw-selflink-fragments.\n</p>",
-		"render": "<p><a href=\"/wiki/D%D1%83%D0%BD%D0%B0\" title=\"Dуна\">Dуна</a> is a self-link while <a href=\"/wiki/Duna#Foo\" title=\"Duna\">Duna#Foo</a> and <a href=\"/wiki/D%D1%83%D0%BD%D0%B0#Foo\" title=\"Dуна\">Dуна#Foo</a> are mw-selflink-fragments.\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Dуна</span>]]</span> is a self-link while <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Duna#Foo</span>]]</span> and <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Dуна#Foo</span>]]</span> are mw-selflink-fragments.</span>"
-	},
-	{
-		"desc": "Link to pages in language variants",
-		"wikitext": "Main Page can be written as [[Маин Паге]]",
-		"print": "<span class=\"wpb-root\">Main Page can be written as <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Маин Паге</span>]]</span></span>"
-	},
-	{
-		"desc": "Multiple links to pages in language variants",
-		"wikitext": "[[Main Page]] can be written as [[Маин Паге]] same as [[Маин Паге]].",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span> can be written as <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Маин Паге</span>]]</span> same as <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Маин Паге</span>]]</span>.</span>"
-	},
-	{
-		"desc": "Simple template in language variants",
-		"wikitext": "{{тест}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">тест</span>}}</span></span>"
-	},
-	{
-		"desc": "Template with explicit namespace in language variants",
-		"wikitext": "{{Template:тест}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template:тест</span>}}</span></span>"
-	},
-	{
-		"desc": "Basic test for template parameter in language variants",
-		"wikitext": "{{парамтест|param=foo}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">парамтест</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">param</span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Simple category in language variants",
-		"wikitext": "[[Category:МедиаWики Усер'с Гуиде]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:МедиаWики Усер'с Гуиде</span>]]</span></span>"
-	},
-	{
 		"desc": "Don't convert blue categorylinks to another variant (T35210)",
 		"wikitext": "[[A]][[Category:分类]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">A</span>]]</span><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:分类</span>]]</span></span>"
-	},
-	{
-		"desc": "Stripping -{}- tags (language variants)",
-		"wikitext": "Latin proverb: -{Ne nuntium necare}-",
-		"print": "<span class=\"wpb-root\">Latin proverb: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Ne nuntium necare</span></span>}-</span></span>"
-	},
-	{
-		"desc": "Prevent conversion with -{}- tags (language variants)",
-		"wikitext": "Latinski: -{Ne nuntium necare}-",
-		"print": "<span class=\"wpb-root\">Latinski: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Ne nuntium necare</span></span>}-</span></span>"
-	},
-	{
-		"desc": "Prevent conversion of text with -{}- tags (language variants)",
-		"wikitext": "Latinski: -{Ne nuntium necare}-",
-		"print": "<span class=\"wpb-root\">Latinski: <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Ne nuntium necare</span></span>}-</span></span>"
-	},
-	{
-		"desc": "Prevent conversion of links with -{}- tags (language variants)",
-		"wikitext": "-{[[Main Page]]}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span></span>}-</span></span>"
-	},
-	{
-		"desc": "-{}- tags within headlines (within html for parserConvert())",
-		"wikitext": "==-{Naslov}-==\n\nNote that even an unprotected headline ID is not affected by language\nconversion:\n\n==Latinski==",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Naslov</span></span>}-</span></span>==</span>\n\nNote that even an unprotected headline ID is not affected by language\nconversion:\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Latinski</span>==</span></span>"
 	},
 	{
 		"desc": "Explicit definition of language variant alternatives",
@@ -10120,11 +9839,6 @@
 		"html": "<p>fooblog, WEBJOURNAL, WEBLOGquux\n</p>",
 		"render": "<p>fooblog, WEBJOURNAL, WEBLOGquux\n</p>",
 		"print": "<span class=\"wpb-root\">foo<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh</span>;<span class=\"wpb-converter-flag\">zh-hans</span>;<span class=\"wpb-converter-flag\">zh-hant</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">blog, WEBJOURNAL, WEBLOG</span></span>}-</span>quux</span>"
-	},
-	{
-		"desc": "Conversion around HTML tags",
-		"wikitext": "-{H|span=>sr-ec:script;title=>sr-ec:src}-\n<span title=\"La-{sr-el:L;sr-ec:C}-tin\">ski</span>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">span=&gt;sr-ec:script;title=&gt;sr-ec:src</span></span>}-</span>\n<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">La<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">sr-el:L;sr-ec:C</span></span>}-</span>tin</span>\"</span></span>&gt;</span>ski<span class=\"wpb-html\">&lt;/span&gt;</span></span>"
 	},
 	{
 		"desc": "Explicit session-wise two-way language variant mapping (A flag and - flag)",
@@ -10395,36 +10109,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;</span>Foo<span class=\"wpb-html\">&lt;/span&gt;</span><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Bar</span></span>}-</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span>|<span class=\"wpb-td-inner\"><span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">x</span>\"</span></span>&gt;</span>Foo<span class=\"wpb-html\">&lt;/span&gt;</span><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">Bar</span></span>}-</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
-		"desc": "Proper conversion of text in external links",
-		"wikitext": "http://www.google.com\ngopher://www.google.com\n[http://www.google.com http://www.google.com]\n[gopher://www.google.com gopher://www.google.com]\n[https://www.google.com irc://www.google.com]\n[ftp://www.google.com www.google.com/ftp://dir]\n[//www.google.com www.google.com]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-free-ext-link\">http://www.google.com</span>\n<span class=\"wpb-free-ext-link\">gopher://www.google.com</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://www.google.com</span> <span class=\"wpb-ext-link-text\">http://www.google.com</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">gopher://www.google.com</span> <span class=\"wpb-ext-link-text\">gopher://www.google.com</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://www.google.com</span> <span class=\"wpb-ext-link-text\">irc://www.google.com</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">ftp://www.google.com</span> <span class=\"wpb-ext-link-text\">www.google.com/ftp://dir</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//www.google.com</span> <span class=\"wpb-ext-link-text\">www.google.com</span>]</span></span>"
-	},
-	{
-		"desc": "Do not convert roman numbers to language variants",
-		"wikitext": "Fridrih IV je car.",
-		"print": "<span class=\"wpb-root\">Fridrih IV je car.</span>"
-	},
-	{
-		"desc": "Unclosed language converter markup \"-{\"",
-		"wikitext": "-{T|hello",
-		"print": "<span class=\"wpb-root\">-{T|hello</span>"
-	},
-	{
-		"desc": "Don't convert raw rule \"-{R|=&gt;}-\" to \"=>\"",
-		"wikitext": "-{R|=&gt;}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">=&amp;gt;</span></span>}-</span></span>"
-	},
-	{
-		"desc": "Don't break link parsing if language converter markup is in the caption.",
-		"wikitext": "[[Main Page|-{R|main page}-]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>|<span class=\"wpb-link-text\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">main page</span></span>}-</span></span>]]</span></span>"
-	},
-	{
-		"desc": "T146304: Don't break template parsing if language converter markup is in the parameter.",
-		"wikitext": "{{1x|-{R|foo}-}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo</span></span>}-</span></span></span>}}</span></span>"
-	},
-	{
 		"desc": "T153135: Don't break list handling if language converter markup is in the item.",
 		"wikitext": ";-{zh-cn:AAA;zh-tw:BBB}-\n;-{R|foo:bar}-",
 		"html": "<dl><dt>AAA</dt>\n<dt>foo:bar</dt></dl>",
@@ -10446,31 +10130,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">;</span><span class=\"wpb-converter\">-{|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">AAA <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">zh-hans</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">foo:bar</span></span>}-</span> <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">bat:baz</span></span>}-</span></span></span>}-</span><span class=\"wpb-dd\">:</span>def</span>"
 	},
 	{
-		"desc": "T153140: Don't break table handling if language converter markup is in the cell.",
-		"wikitext": "{|\n|-\n| -{R|B}-\n|}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> <span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">B</span></span>}-</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
-	},
-	{
-		"desc": "Language converter tricky html2wt cases (1)",
-		"wikitext": "-{<nowiki>}-</nowiki>}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">}-</span>&lt;/nowiki&gt;</span></span></span>}-</span></span>"
-	},
-	{
-		"desc": "Language converter tricky html2wt cases (2)",
-		"wikitext": "<nowiki>-{foo}-</nowiki>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">-{foo}-</span>&lt;/nowiki&gt;</span></span>"
-	},
-	{
-		"desc": "Language converter tricky html2wt cases (3)",
-		"wikitext": "-{R||}-\n\n-{R|R|raw}-\n\n-{<nowiki>-{foo}-</nowiki>}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">|</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">R|raw</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">-{foo}-</span>&lt;/nowiki&gt;</span></span></span>}-</span></span>"
-	},
-	{
-		"desc": "Language converter tricky html2wt cases (4)",
-		"wikitext": "-{R|{{1x|hey}}}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hey</span></span>}}</span></span></span>}-</span></span>"
-	},
-	{
 		"desc": "Language converter tricky html2wt cases (5)",
 		"wikitext": "-{H|<nowiki>a:b=>c</nowiki>=>zh-cn:<nowiki>x;foo=>zh-cn:boo</nowiki>;bar=>zh-cn:<nowiki>bat;xyz=>zh-cn:abc</nowiki>}-foobar\n\n-{H|A=><nowiki>bo:g;us</nowiki>:B}-\n\n-{A|zh-tw:xyz; zh-cn:<nowiki>0;zh-tw:bar</nowiki>}-\n\n-{<nowiki>bo:g;us</nowiki>:xyz; zh-cn:abc}-\n\na:b=>c xyz",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">a:b=&gt;c</span>&lt;/nowiki&gt;</span></span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">x;foo=&gt;zh-cn:boo</span>&lt;/nowiki&gt;</span></span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-from\">bar</span>=><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">bat;xyz=&gt;zh-cn:abc</span>&lt;/nowiki&gt;</span></span></span>}-</span>foobar\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">A=&gt;<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">bo:g;us</span>&lt;/nowiki&gt;</span>:B</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">A</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-tw</span>:<span class=\"wpb-converter-rule-to\">xyz</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-cn</span>:<span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">0;zh-tw:bar</span>&lt;/nowiki&gt;</span></span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">bo:g;us</span>&lt;/nowiki&gt;</span>:xyz; zh-cn:abc</span></span>}-</span>\n\na:b=&gt;c xyz</span>"
@@ -10488,16 +10147,6 @@
 		"html": "<p class=\"mw-empty-elt\">\n</p>",
 		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\">zh-cn</span>:<span class=\"wpb-converter-rule-to\">玛格特·罗比</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-tw</span>:<span class=\"wpb-converter-rule-to\">瑪格·羅比</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-hk</span>:<span class=\"wpb-converter-rule-to\">瑪歌·羅比</span></span>;<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-variant\"> zh-sg</span>:<span class=\"wpb-converter-rule-to\">玛格·罗比; </span></span>;}-</span></span>"
-	},
-	{
-		"desc": "T179579: Nowiki and lc interaction",
-		"wikitext": "-{</nowiki>123}-\n\n-{123<nowiki>|</nowiki>456}-",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">&lt;/nowiki&gt;123</span></span>}-</span>\n\n<span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">123<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">|</span>&lt;/nowiki&gt;</span>456</span></span>}-</span></span>"
-	},
-	{
-		"desc": "Balinese language conversion",
-		"wikitext": "ᬫᬦ᭄ᬢ᭄ᬭ -{ban-x-palmleaf:AAA;ban:BBB}-",
-		"print": "<span class=\"wpb-root\">ᬫᬦ᭄ᬢ᭄ᬭ <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">ban-x-palmleaf:AAA;ban:BBB</span></span>}-</span></span>"
 	},
 	{
 		"desc": "Langconvert tag: crh-latn to crh-cyrl",
@@ -10580,11 +10229,6 @@
 		"desc": "T302678: Serialize empty twoway",
 		"wikitext": "-{H|}-",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">H</span></span>|}-</span></span>"
-	},
-	{
-		"desc": "Nonexistent internal link targets should be resolved using variants (T258856)",
-		"wikitext": "[[Test]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Test</span>]]</span></span>"
 	},
 	{
 		"desc": "luaParserTests"
@@ -11210,11 +10854,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SITENAME</span>}}</span></span>"
 	},
 	{
-		"desc": "Magic Word: {{PAGELANGUAGE}}",
-		"wikitext": "{{PAGELANGUAGE}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGELANGUAGE</span>}}</span></span>"
-	},
-	{
 		"desc": "Magic Word: {{PAGELANGUAGE}} on a page with no explicitly set language",
 		"wikitext": "{{PAGELANGUAGE}}",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGELANGUAGE</span>}}</span></span>"
@@ -11256,11 +10895,6 @@
 		"html": "<p>foo\n</p><p>bar\n</p>",
 		"render": "<p>foo\n</p><p>bar\n</p>",
 		"print": "<span class=\"wpb-root\">foo\n<span class=\"wpb-double-underscore\">__NOtOC__</span>\nbar</span>"
-	},
-	{
-		"desc": "Magic Word: rt non-english wikis",
-		"wikitext": "__NOEDITSECTION__",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__NOEDITSECTION__</span></span>"
 	},
 	{
 		"desc": "Magic words",
@@ -11704,11 +11338,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\">https://example.com?foo&amp;params=bar</span></span>]]</span>\n\n<span class=\"wpb-comment\">&lt;!-- consistency with gallery extension --&gt;</span>\n<span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">link=<span class=\"wpb-image-caption\"><span class=\"wpb-free-ext-link\">https://example.com?foo&amp;params=bar</span></span></span></span>\n</span>&lt;/gallery&gt;</span></span>"
 	},
 	{
-		"desc": "Image link markup is not generated when redundant (T108504) - encoded href",
-		"wikitext": "[[Датотека:Foobar.jpg]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Датотека:Foobar.jpg</span>]]</span></span>"
-	},
-	{
 		"desc": "Image with table with attributes in caption",
 		"wikitext": "[[File:Foobar.jpg|thumb|\n{| class=\"123\" |\n|- class=\"456\" |\n| ha\n|}\n]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">123</span>\"</span><span class=\"wpb-attr-dirty\"> |</span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">456</span>\"</span><span class=\"wpb-attr-dirty\"> |</span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> ha</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n</span>]]</span></span>"
@@ -11883,16 +11512,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.svg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">caption</span>|<span class=\"wpb-image-caption\">lang=invalid:language:code</span>]]</span></span>"
 	},
 	{
-		"desc": "SVG thumbnails in page language",
-		"wikitext": "[[Файл:Foobar.svg]] [[Файл:Foobar.svg|lang=en]]\n\n<gallery>\nФайл:Foobar.svg\nФайл:Foobar.svg|lang=en\n</gallery>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Файл:Foobar.svg</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Файл:Foobar.svg</span>|<span class=\"wpb-link-text\">lang=en</span>]]</span>\n\n<span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">Файл:Foobar.svg</span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">Файл:Foobar.svg</span>|<span class=\"wpb-image-parameter\">lang=<span class=\"wpb-image-caption\">en</span></span></span>\n</span>&lt;/gallery&gt;</span></span>"
-	},
-	{
-		"desc": "SVG thumbnails in page language not present in the file",
-		"wikitext": "[[Datei:Foobar.svg]] [[Datei:Foobar.svg|sprache=ru]]\n\n<gallery>\nDatei:Foobar.svg\nDatei:Foobar.svg|sprache=ru\n</gallery>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Datei:Foobar.svg</span>]]</span> <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Datei:Foobar.svg</span>|<span class=\"wpb-link-text\">sprache=ru</span>]]</span>\n\n<span class=\"wpb-ext\">&lt;gallery&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">Datei:Foobar.svg</span></span>\n<span class=\"wpb-gallery-image\"><span class=\"wpb-link-target\">Datei:Foobar.svg</span>|<span class=\"wpb-image-caption\">sprache=ru</span></span>\n</span>&lt;/gallery&gt;</span></span>"
-	},
-	{
 		"desc": "T3887: A ISBN with a thumbnail",
 		"wikitext": "[[File:Foobar.jpg|thumb|ISBN 1235467890]]",
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a href=\"/wiki/Special:BookSources/1235467890\" class=\"internal mw-magiclink-isbn\">ISBN 1235467890</a></figcaption></figure>",
@@ -12020,21 +11639,6 @@
 		"html": "<p><span class=\"mw-default-size b\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\" title=\"a\"><img alt=\"a\" src=\"http://example.com/images/3/3a/Foobar.jpg\" decoding=\"async\" width=\"1941\" height=\"220\" class=\"mw-file-element\" /></a></span>\n</p>",
 		"render": "<p><span class=\"b\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\" title=\"a\"><img alt=\"a\" src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">Image:foobar.jpg</span>|<span class=\"wpb-image-caption\">a</span>|<span class=\"wpb-image-parameter\">class=<span class=\"wpb-image-caption\">b</span></span>]]</span></span>"
-	},
-	{
-		"desc": "Localized image handling (1).",
-		"wikitext": "[[Archivo:Foobar.jpg|izquierda|enlace=foo|caption]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Archivo:Foobar.jpg</span>|<span class=\"wpb-link-text\">izquierda|enlace=foo|caption</span>]]</span></span>"
-	},
-	{
-		"desc": "Localized image handling (2).",
-		"wikitext": "[[Archivo:Foobar.jpg|miniatura|izquierda|enlace=foo|caption]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Archivo:Foobar.jpg</span>|<span class=\"wpb-link-text\">miniatura|izquierda|enlace=foo|caption</span>]]</span></span>"
-	},
-	{
-		"desc": "Localized image handling (3).",
-		"wikitext": "[[File:Foobar.jpg|بندانگشتی]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-caption\">بندانگشتی</span>]]</span></span>"
 	},
 	{
 		"desc": "\"border\", \"frameless\" and \"class\" attributes on an image.",
@@ -12484,11 +12088,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">An <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://test/?param1=|left|&amp;param2=|x</span> <span class=\"wpb-ext-link-text\">external</span>]</span> URL</span>]]</span></span>"
 	},
 	{
-		"desc": "T146305: Don't break image parsing if language converter markup is in the caption.",
-		"wikitext": "[[Датотека:Foobar.jpg|thumb|-{R|caption:}-]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Датотека:Foobar.jpg</span>|<span class=\"wpb-link-text\">thumb|<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">R</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\">caption:</span></span>}-</span></span>]]</span></span>"
-	},
-	{
 		"desc": "T146305: Don't break image parsing if nested language converter markup is in the caption.",
 		"wikitext": "[[File:Foobar.jpg|thumb|-{|zh-cn:blog (hk: -{zh-hans|WEBJOURNAL}-, tw: -{zh-hans|WEBLOG}-)}-]]",
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>blog (hk: WEBJOURNAL, tw: WEBLOG)</figcaption></figure>",
@@ -12590,11 +12189,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">alt=<span class=\"wpb-image-caption\"></span></span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">bar</span>]]</span></span>"
 	},
 	{
-		"desc": "Image: new attributes should be serialized in wiki's language for RTL languages (T53852)",
-		"wikitext": "[[Imagen:Foobar.jpg|derecha|miniaturadeimagen]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Imagen:Foobar.jpg</span>|<span class=\"wpb-link-text\">derecha|miniaturadeimagen</span>]]</span></span>"
-	},
-	{
 		"desc": "Image: Block level image should have \\n before and after",
 		"wikitext": "123\n[[File:Foobar.jpg|right|thumb|150x150px]]\n456",
 		"print": "<span class=\"wpb-root\">123\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">right</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">150x150</span>px</span>]]</span>\n456</span>"
@@ -12678,11 +12272,6 @@
 		"html": "<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com\">http://example.com</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a class=\"external mw-magiclink-rfc\" rel=\"nofollow\" href=\"https://tools.ietf.org/html/rfc1234\">RFC 1234</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a class=\"external mw-magiclink-pmid\" rel=\"nofollow\" href=\"//www.ncbi.nlm.nih.gov/pubmed/1234?dopt=Abstract\">PMID 1234</a></figcaption></figure>\n<figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><a href=\"/wiki/Special:BookSources/123456789X\" class=\"internal mw-magiclink-isbn\">ISBN 123456789x</a></figcaption></figure>",
 		"render": "<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption><a rel=\"nofollow\" class=\"external free\" href=\"http://example.com/\">http://example.com</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption><a rel=\"nofollow\" class=\"external\" href=\"https://tools.ietf.org/html/rfc1234\">RFC 1234</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption><a rel=\"nofollow\" class=\"external\" href=\"https://pubmed.ncbi.nlm.nih.gov/1234\">PMID 1234</a></figcaption></figure>\n<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption><a href=\"/wiki/Special%3ABookSources%2F123456789X\">ISBN 123456789x</a></figcaption></figure>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-free-ext-link\">http://example.com</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-magic-link\">RFC 1234</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-magic-link\">PMID 1234</span></span>]]</span>\n<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-magic-link\">ISBN 123456789x</span></span>]]</span></span>"
-	},
-	{
-		"desc": "Interwiki links inside image captions",
-		"wikitext": "[[File:Foobar.jpg|thumb|right|[[:Wikipedia:Foo]] bar]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-parameter\">right</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Wikipedia:Foo</span>]]</span> bar</span>]]</span></span>"
 	},
 	{
 		"desc": "File in link scenarios",
@@ -13234,11 +12823,6 @@
 		"html": "<p>hi {{}}\n</p>",
 		"render": "<p>hi {{}}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi {{}}</span></span>}}</span></span>"
-	},
-	{
-		"desc": "Preprocessor precedence 18: another rightmost wins scenario",
-		"wikitext": "{{ -{{{{1|tplarg}}} }} }-",
-		"print": "<span class=\"wpb-root\">{{ <span class=\"wpb-converter\">-{<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">1</span>|<span class=\"wpb-arg-default\">tplarg</span>}}}</span> }} </span></span>}-</span></span>"
 	},
 	{
 		"desc": "Preprocessor precedence 19: break syntax",
@@ -13946,11 +13530,6 @@
 		"desc": "Redirect to interwiki (T104918)",
 		"wikitext": "#REDIRECT [[meatball:File:Wiki.png]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">meatball:File:Wiki.png</span>]]</span></span></span>"
-	},
-	{
-		"desc": "Non-English #REDIRECT",
-		"wikitext": "#TILVÍSUN [[Main Page]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">#</span>TILVÍSUN <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span>"
 	},
 	{
 		"desc": "Redirect syntax under text isn't considered a redirect",
@@ -14826,16 +14405,6 @@
 		"desc": "Links 14. Protect link-like plain text. (Parsoid bug T78425)",
 		"wikitext": "this is not a link: <nowiki>http://example.com</nowiki>",
 		"print": "<span class=\"wpb-root\">this is not a link: <span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">http://example.com</span>&lt;/nowiki&gt;</span></span>"
-	},
-	{
-		"desc": "Links 15. Link trails can't become link prefixes.",
-		"wikitext": "[[Söfnuður]]-[[00]]",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Söfnuður</span>]]</span>-<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">00</span>]]</span></span>"
-	},
-	{
-		"desc": "Links 17. Link trails (T236183)",
-		"wikitext": "[[Likalo]]&nbsp;·\n[[Pusupúsu]]&nbsp;·",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Likalo</span>]]</span>&amp;nbsp;·\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Pusupúsu</span>]]</span>&amp;nbsp;·</span>"
 	},
 	{
 		"desc": "1a. Quotes inside <b> and <i>",
