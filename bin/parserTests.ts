@@ -63,6 +63,7 @@ const tests: Test[] = [],
 		'wgEnableMagicLinks',
 		'wgMaxTocLevel',
 		'wgParserEnableLegacyHeadingDOM',
+		'extension',
 	].join('|')})\s*=.+|${
 		[
 			'showtitle',
@@ -102,30 +103,32 @@ for (const file of ['parserTests.txt', ...files]) {
 		info('options', new Set(optionInfo));
 	}
 	for (const [test] of cases) {
+		const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd();
+		if (!wikitext) {
+			continue;
+		}
+		const desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!,
+			root = Parser.parse(wikitext),
+			t: Test = {desc, wikitext};
 		if (
 			/^!!\s*html(?:\/(?:php|\*))?$/mu.test(test)
 			&& (!test.includes('options') || re.test(test))
+			&& !/<(?:span|static|aside)tag\b/iu.test(wikitext)
 		) {
 			try {
-				const wikitext = /^!!\s*wikitext\n+((?!!!)[^\n].*?)^!!/msu.exec(test)?.[1]!.trimEnd(),
-					html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)![1]!.trim(),
-					desc = /^!!\s*test\n(.*?)\n!!/msu.exec(test)![1]!;
-				if (
-					wikitext
-					&& !/\b(?:NULL\b|array\s*\()/u.test(html)
-					&& !/<(?:span|static|aside)tag\b/iu.test(wikitext)
-				) {
-					const t: Test = {desc, wikitext, html};
+				const html = /^!!\s*html(?:\/(?:php|\*))?\n(.*?)^!!/msu.exec(test)![1]!.trim();
+				if (!/\b(?:NULL\b|array\s*\()/u.test(html)) {
+					t.html = html;
 					try {
-						t.render = Parser.parse(wikitext).toHtml();
+						t.render = root.toHtml();
 					} catch {}
-					t.print = Parser.parse(wikitext).print();
-					tests.push(t);
 				}
 			} catch {
 				console.error(test);
 			}
 		}
+		t.print = root.print();
+		tests.push(t);
 	}
 }
 fs.writeFileSync('test/parserTests.json', JSON.stringify(tests, null, '\t'));
