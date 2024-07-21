@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {classes, states} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {removeComment, removeCommentLine} from '../util/string';
+import {removeComment, removeCommentLine, decodeHtml} from '../util/string';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -176,6 +176,13 @@ const implicitNewLine = (str: string, prev: string): string =>
 	prev + (prev !== '\n' && /^(?:\{\||[:;#*])/u.test(str) ? `\n${str}` : str);
 
 /**
+ * 比较两个字符串是否相等
+ * @param a
+ * @param b
+ */
+const cmp = (a: string, b: string): boolean => a === b || Boolean(a && b) && Number(a) === Number(b);
+
+/**
  * 展开模板
  * @param wikitext
  * @param config
@@ -266,8 +273,8 @@ const expand = (
 				return prev;
 			}
 			const c = target.childNodes as [SyntaxToken, ParameterToken, ParameterToken, ...ParameterToken[]],
-				var1 = c[1].value,
-				var2 = c[2].value,
+				var1 = decodeHtml(c[1].value),
+				var2 = decodeHtml(c[2].value),
 				known = !/\0\d+t\x7F/u.test(var1);
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
@@ -283,7 +290,7 @@ const expand = (
 				}
 				return prev;
 			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {
-				const effective = c[var1 === var2 || var1 && var2 && Number(var1) === Number(var2) ? 3 : 4];
+				const effective = c[cmp(var1, var2) ? 3 : 4];
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
@@ -306,11 +313,11 @@ const expand = (
 						} else if (transclusion) {
 							break;
 						} else {
-							found ||= var1 === value || value === '#default';
+							found ||= cmp(var1, decodeHtml(value)) || value === '#default';
 						}
 					} else if (transclusion) {
 						break;
-					} else if (found || option === var1) {
+					} else if (found || cmp(var1, decodeHtml(option))) {
 						// @ts-expect-error sparse array
 						accum[accum.indexOf(lastChild)] = undefined;
 						return implicitNewLine(value, prev);
