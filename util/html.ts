@@ -150,6 +150,6 @@ export const font = (node: AstNodes, str: string): string => {
 	const {font: {bold, italic}} = node,
 		i = str.indexOf('\n');
 	const wrap = /** @ignore */ (s: string): string =>
-		s && (bold ? '<b>' : '') + (italic ? '<i>' : '') + s + (italic ? '</i>' : '') + (bold ? '</b>' : '');
+		s && (italic ? '<i>' : '') + (bold ? '<b>' : '') + s + (bold ? '</b>' : '') + (italic ? '</i>' : '');
 	return i === -1 ? wrap(str) : wrap(str.slice(0, i)) + str.slice(i);
 };
