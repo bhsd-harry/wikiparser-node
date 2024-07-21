@@ -3,6 +3,7 @@ import {BoundingRect} from '../../lib/rect';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
+import {font} from '../../util/html';
 import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -209,14 +210,17 @@ export abstract class ExtToken extends TagPairToken {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {
 			case 'nowiki':
-				return newline(lastChild.toHtmlInternal());
+				return font(this, newline(lastChild.toHtmlInternal()));
 			case 'pre':
-				return `<pre${firstChild.toHtmlInternal()}>${newline(lastChild.toHtmlInternal())}</pre>`;
+				return font(this, `<pre${firstChild.toHtmlInternal()}>${newline(lastChild.toHtmlInternal())}</pre>`);
 			case 'poem':
 				firstChild.classList.add('poem');
-				return `<div${firstChild.toHtmlInternal()}>${
-					lastChild.toHtmlInternal().replaceAll('\n', '<br>')
-				}</div>`;
+				return font(
+					this,
+					`<div${firstChild.toHtmlInternal()}>${
+						lastChild.toHtmlInternal().replaceAll('\n', '<br>')
+					}</div>`,
+				);
 			default:
 				return '';
 		}

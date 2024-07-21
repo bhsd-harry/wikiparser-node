@@ -3,7 +3,7 @@ import {
 	removeComment,
 	print,
 } from '../util/string';
-import {html} from '../util/html';
+import {html, font} from '../util/html';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {flagsParent} from '../mixin/flagsParent';
@@ -133,10 +133,13 @@ export abstract class ConverterToken extends Token {
 		const flags = this.getEffectiveFlags(),
 			{childNodes: [, ...rules]} = this;
 		if (flags.has('S')) {
-			return rules.find(({variant}) => variant)?.lastChild.toHtmlInternal(nowrap).trim()
-				?? rules[0].lastChild.toHtmlInternal(nowrap);
+			return font(
+				this,
+				rules.find(({variant}) => variant)?.lastChild.toHtmlInternal(nowrap).trim()
+				?? rules[0].lastChild.toHtmlInternal(nowrap),
+			);
 		}
-		return flags.has('R') || this.getVariantFlags().size > 0 ? html(rules, ';', nowrap) : '';
+		return flags.has('R') || this.getVariantFlags().size > 0 ? font(this, html(rules, ';', nowrap)) : '';
 	}
 }
 

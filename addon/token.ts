@@ -226,9 +226,9 @@ const expand = (
 				{type, name, length, firstChild: f} = target;
 			if (type === 'arg') {
 				const arg = removeCommentLine(f.toString()).trim();
-				if (context === undefined || /\0\d+t\x7F/u.test(arg)) {
+				if (/\0\d+t\x7F/u.test(arg)) {
 					return m;
-				} else if (context === false || !context.hasArg(arg)) {
+				} else if (!context || !context.hasArg(arg)) {
 					const effective = target.childNodes[1] ?? target;
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective)] = undefined;

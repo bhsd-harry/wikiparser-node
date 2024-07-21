@@ -3,6 +3,7 @@ import {BoundingRect} from '../lib/rect';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {text} from '../util/string';
+import {font} from '../util/html';
 import {syntax} from '../mixin/syntax';
 import Parser from '../index';
 import {Token} from './index';
@@ -275,11 +276,14 @@ export abstract class MagicLinkToken extends Token {
 		try {
 			url = this.getUrl();
 		} catch {}
-		return `<a${
-			type === 'magic-link' && protocol === 'ISBN'
-				? ''
-				: ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"`
-		}${url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`}>${innerText}</a>`;
+		return font(
+			this,
+			`<a${
+				type === 'magic-link' && protocol === 'ISBN'
+					? ''
+					: ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"`
+			}${url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`}>${innerText}</a>`,
+		);
 	}
 }
 

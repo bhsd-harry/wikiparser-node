@@ -3,6 +3,7 @@ import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
+import {font} from '../util/html';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -242,6 +243,15 @@ export abstract class ArgToken extends Token {
 			root.type = 'arg-default';
 			this.insertAt(root);
 		}
+	}
+
+	/** @private */
+	override toHtmlInternal(nowrap?: boolean): string {
+		if (this.length === 1) {
+			const html = font(this, this.toString());
+			return nowrap ? html.replaceAll('\n', ' ') : html;
+		}
+		return font(this, this.childNodes[1]!.toHtmlInternal(nowrap));
 	}
 }
 

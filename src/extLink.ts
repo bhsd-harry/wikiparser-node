@@ -7,7 +7,7 @@ import {
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
 import {normalizeSpace} from '../util/string';
-import {html} from '../util/html';
+import {html, font} from '../util/html';
 import {Shadow} from '../util/debug';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import Parser from '../index';
@@ -199,6 +199,7 @@ export abstract class ExtLinkToken extends Token {
 		const {length, lastChild} = this;
 		let trail = '',
 			innerText: string,
+			autonumber = false,
 			href: string | undefined;
 		if (length > 1) {
 			lastChild.normalize();
@@ -215,13 +216,15 @@ export abstract class ExtLinkToken extends Token {
 			innerText = lastChild.toHtmlInternal();
 		} else {
 			({innerText} = this);
+			autonumber = true;
 		}
 		try {
 			({href} = this.getUrl());
 		} catch {}
-		return `<a rel="nofollow" class="external"${
+		const a = `<a rel="nofollow" class="external"${
 			href === undefined ? '' : ` href="${href}"`
 		}>${innerText}</a>${trail}`;
+		return autonumber ? font(this, a) : a;
 	}
 }
 
