@@ -115,11 +115,6 @@
 		"print": "<span class=\"wpb-root\">&lt;blockquote|&gt;a<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\n&lt;b→&gt; doesn't terminate &lt;/b→&gt;\n\n&lt;bä&gt; doesn't terminate &lt;/bä&gt;\n\n&lt;boo&gt; doesn't terminate &lt;/boo&gt;\n\n&lt;s.foo&gt; doesn't terminate &lt;/s.foo&gt;\n\n&lt;sub-ID#1&gt;</span>"
 	},
 	{
-		"desc": "Non-word characters are valid in extension tags (T19663)",
-		"wikitext": "<tåg>tåg</tåg>",
-		"print": "<span class=\"wpb-root\">&lt;tåg&gt;tåg&lt;/tåg&gt;</span>"
-	},
-	{
 		"desc": "Isolated close tags should be treated as literal text (T54760)",
 		"wikitext": "</b>\n\n<s.foo>s</s>",
 		"html": "<p class=\"mw-empty-elt\">\n</p><p>&lt;s.foo&gt;s\n</p>",
@@ -492,11 +487,6 @@
 		"desc": "Break on | in element attribute name in template",
 		"wikitext": "{{1x|<div cla|ss=\"hiho\">ha</div>}}",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">&lt;div cla</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">ss</span>=<span class=\"wpb-parameter-value\">\"hiho\"&gt;ha<span class=\"wpb-html\">&lt;/div&gt;</span></span></span>}}</span></span>"
-	},
-	{
-		"desc": "Don't break on | in extension attribute in template",
-		"wikitext": "{{1x|<tag name=\"hi|ho\">ha</tag>}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">&lt;tag name</span>=<span class=\"wpb-parameter-value\">\"hi</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ho\"&gt;ha&lt;/tag&gt;</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Plain link, capitalized",
@@ -1287,11 +1277,6 @@
 		"html": "<ul><li>foo\n<ul><li><ul><li>bar</li></ul></li>\n<li>baz</li></ul></li>\n<li>boo</li></ul>",
 		"render": "<ul><li>foo\n<ul><li><ul><li>bar</li></ul></li>\n<li>baz</li></ul></li>\n<li>boo</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>foo\n<span class=\"wpb-list\">***</span>bar\n<span class=\"wpb-list\">**</span>baz\n<span class=\"wpb-list\">*</span>boo</span>"
-	},
-	{
-		"desc": "Nested lists 9 (extension interaction)",
-		"wikitext": "*<tag />",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>&lt;tag /&gt;</span>"
 	},
 	{
 		"desc": "Nested lists 10 (list and span siblings: wt2wt regression)",
@@ -2555,21 +2540,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">uc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">lc</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">FOO</span></span>}}</span></span></span>}}</span></span>"
 	},
 	{
-		"desc": "Template nested in extension tag in template",
-		"wikitext": "{{1x|hi<span>[[ho|{{1x|hi}}]]</span>}}\n{{1x|hi<spantag>[[ho|{{1x|hi}}]]</spantag>}}\n{{1x|hi<spantag>[http://test.com?q={{1x|ho}}]</spantag>}}\n{{1x|hi<spantag>-{ho|{{1x|hi}}}-</spantag>}}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi<span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">ho</span>|<span class=\"wpb-link-text\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span></span>]]</span><span class=\"wpb-html\">&lt;/span&gt;</span></span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi&lt;spantag&gt;<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">ho</span>|<span class=\"wpb-link-text\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span></span>]]</span>&lt;/spantag&gt;</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">hi&lt;spantag&gt;[<span class=\"wpb-free-ext-link\">http://test.com?q</span></span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ho</span></span>}}</span>]&lt;/spantag&gt;</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi&lt;spantag&gt;<span class=\"wpb-converter\">-{<span class=\"wpb-converter-flags\"><span class=\"wpb-converter-flag\">ho</span></span>|<span class=\"wpb-converter-rule\"><span class=\"wpb-converter-rule-to\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hi</span></span>}}</span></span></span>}-</span>&lt;/spantag&gt;</span></span>}}</span></span>"
-	},
-	{
-		"desc": "ParserTest <spantag> tag, using data-mw.body serialization shortcut",
-		"wikitext": "Hello <spantag>'''world'''!</spantag>",
-		"print": "<span class=\"wpb-root\">Hello &lt;spantag&gt;<span class=\"wpb-quote\">'''</span>world<span class=\"wpb-quote\">'''</span>!&lt;/spantag&gt;</span>"
-	},
-	{
-		"desc": "ParserTest <spantag> tag, without data-mw.body serialization shortcut",
-		"wikitext": "Hello <spantag>'''world'''!</spantag>",
-		"print": "<span class=\"wpb-root\">Hello &lt;spantag&gt;<span class=\"wpb-quote\">'''</span>world<span class=\"wpb-quote\">'''</span>!&lt;/spantag&gt;</span>"
-	},
-	{
 		"desc": "Parsoid: Recognize nowiki with odd capitalization",
 		"wikitext": "<noWikI ><div>[[foo]]</Nowiki >",
 		"html": "<p>&lt;div&gt;[[foo]]\n</p>",
@@ -3563,88 +3533,6 @@
 		"html": "<p>&lt;mw:editsection&gt;&lt;script&gt;alert();&lt;/script&gt;&lt;/mw:editsection&gt;\n</p><p>&lt;meta property=\"mw:PageProp/toc\" /&gt;\n</p>",
 		"render": "<p>&lt;mw:editsection&gt;&lt;script&gt;alert();&lt;/script&gt;&lt;/mw:editsection&gt;\n</p><p>&lt;meta property=\"mw:PageProp/toc\" /&gt;\n</p>",
 		"print": "<span class=\"wpb-root\">&lt;mw:editsection&gt;&lt;script&gt;alert();&lt;/script&gt;&lt;/mw:editsection&gt;\n\n&lt;meta property=\"mw:PageProp/toc\" /&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: empty input",
-		"wikitext": "<tag></tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: empty input using terminated empty elements",
-		"wikitext": "<tag/>",
-		"print": "<span class=\"wpb-root\">&lt;tag/&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: empty input using terminated empty elements (space before)",
-		"wikitext": "<tag />",
-		"print": "<span class=\"wpb-root\">&lt;tag /&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: basic input",
-		"wikitext": "<tag>input</tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag&gt;input&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: case insensitive",
-		"wikitext": "<TAG>input</TAG>",
-		"print": "<span class=\"wpb-root\">&lt;TAG&gt;input&lt;/TAG&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: case insensitive, redux",
-		"wikitext": "<TaG>input</TAg>",
-		"print": "<span class=\"wpb-root\">&lt;TaG&gt;input&lt;/TAg&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: nested tags",
-		"wikitext": "<tag><tag></tag></tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag&gt;&lt;tag&gt;&lt;/tag&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: basic arguments",
-		"wikitext": "<tag width=\"200\" height=\"100\" depth=\"50\" square=\"\"></tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag width=\"200\" height=\"100\" depth=\"50\" square=\"\"&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: basic arguments, variations",
-		"wikitext": "<tag width=200 height = \"100\" depth = '50' square></tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag width=200 height = \"100\" depth = '50' square&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: argument containing a forward slash (T7344)",
-		"wikitext": "<tag filename=\"/tmp/bla\"></tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag filename=\"/tmp/bla\"&gt;&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: empty input using terminated empty elements (T4374)",
-		"wikitext": "<tag foo=bar/>text",
-		"print": "<span class=\"wpb-root\">&lt;tag foo=bar/&gt;text</span>"
-	},
-	{
-		"desc": "Parser hook: basic arguments using terminated empty elements (T4374)",
-		"wikitext": "<tag width=200 height = \"100\" depth = '50' square/>\nother stuff\n</tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag width=200 height = \"100\" depth = '50' square/&gt;\nother stuff\n&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: Don't allow unclosed extension tags",
-		"wikitext": "test <tag>123\n\nthis is a '''test'''",
-		"html": "<p>test &lt;tag&gt;123\n</p><p>this is a <b>test</b>\n</p>",
-		"render": "<p>test &lt;tag&gt;123\n</p><p>this is a <b>test</b>\n</p>",
-		"print": "<span class=\"wpb-root\">test &lt;tag&gt;123\n\nthis is a <span class=\"wpb-quote\">'''</span>test<span class=\"wpb-quote\">'''</span></span>"
-	},
-	{
-		"desc": "Parser hook: horizontal rule inside extension tag that outputs <pre>",
-		"wikitext": "<tag>\nHello\n<hr/>\nGoodbye\n</tag>",
-		"print": "<span class=\"wpb-root\">&lt;tag&gt;\nHello\n<span class=\"wpb-html\">&lt;hr/&gt;</span>\nGoodbye\n&lt;/tag&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: static parser hook not inside a comment",
-		"wikitext": "<statictag>hello, world</statictag>\n\n<statictag action=\"flush\" />",
-		"print": "<span class=\"wpb-root\">&lt;statictag&gt;hello, world&lt;/statictag&gt;\n\n&lt;statictag action=\"flush\" /&gt;</span>"
-	},
-	{
-		"desc": "Parser hook: static parser hook inside a comment",
-		"wikitext": "<!-- <statictag>hello, world</statictag> -->\n<statictag action=\"flush\" />",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- &lt;statictag&gt;hello, world&lt;/statictag&gt; --&gt;</span>\n&lt;statictag action=\"flush\" /&gt;</span>"
 	},
 	{
 		"desc": "Nested template calls",
@@ -5714,11 +5602,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo''bar''baz</span>]]</span></span>"
 	},
 	{
-		"desc": "Enforce single-line context in the serializer",
-		"wikitext": "== testing 123 ==\n\n== hi {{bogus|there\nyou}} ==\n\n== foo <spantag>hello\nthere</spantag> ==\n\n* asd sdf\n\n* foo bar baz\n* foo '''bar''' baz\n\n; hi ho : hi ho\n\n: {|\n| ha\nha\nha\n|}",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> testing 123 </span>==</span>\n\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> hi <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">bogus</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">there\nyou</span></span>}}</span> </span>==</span>\n\n== foo &lt;spantag&gt;hello\nthere&lt;/spantag&gt; ==\n\n<span class=\"wpb-list\">* </span>asd sdf\n\n<span class=\"wpb-list\">* </span>foo bar baz\n<span class=\"wpb-list\">* </span>foo <span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">'''</span> baz\n\n<span class=\"wpb-list\">; </span>hi ho <span class=\"wpb-dd\">:</span> hi ho\n\n<span class=\"wpb-dd\">:</span> <span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> ha\nha\nha</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
-	},
-	{
 		"desc": "Ignore single-line context for wikilinks",
 		"wikitext": "* [[Foo|\nbar]]\n\n== [[Foo|\nbar]] ==\n\n* [[Foo|bar\n<span style=\"background-color:green;\ncolor:blue\">x</span>]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">\nbar</span>]]</span>\n\n== <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">\nbar</span>]]</span> ==\n\n<span class=\"wpb-list\">* </span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">bar\n<span class=\"wpb-html\">&lt;span<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background-color:green;\ncolor:blue</span>\"</span></span>&gt;</span>x<span class=\"wpb-html\">&lt;/span&gt;</span></span>]]</span></span>"
@@ -5727,11 +5610,6 @@
 		"desc": "Selser: Ignore single-line context for wikilinks",
 		"wikitext": "* [[Foo|\nbar]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Foo</span>|<span class=\"wpb-link-text\">\nbar</span>]]</span></span>"
-	},
-	{
-		"desc": "Serialize new displayspace spans",
-		"wikitext": "foo : bar\n\nfoo : bar\n\n<spantag>foo : bar</spantag>ok\n\n[http://example.com « Tour Eiffel »]\n\nHello World!\n\n*  Foo",
-		"print": "<span class=\"wpb-root\">foo : bar\n\nfoo : bar\n\n&lt;spantag&gt;foo : bar&lt;/spantag&gt;ok\n\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">« Tour Eiffel »</span>]</span>\n\nHello World!\n\n<span class=\"wpb-list\">*  </span>Foo</span>"
 	},
 	{
 		"desc": "1. I/B quote minimization: wikitext-only tags should be combined",
@@ -6371,11 +6249,6 @@
 		"html": "<div>A</div>",
 		"render": "<div >A</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">tabindex</span>=\"<span class=\"wpb-attr-value\">3</span>\"</span></span>&gt;</span>A<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
-	},
-	{
-		"desc": "aside tag in extension HTML is not p-wrapped (T278565)",
-		"wikitext": "<asidetag></asidetag>This is some article content.",
-		"print": "<span class=\"wpb-root\">&lt;asidetag&gt;&lt;/asidetag&gt;This is some article content.</span>"
 	},
 	{
 		"desc": "aside tag is not allowed directly in wikitext (T278565)",
@@ -9194,11 +9067,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">a</span>==</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">b</span>==</span>\n</span></span>}}</span></span>"
 	},
 	{
-		"desc": "Handle extension content in section headers properly (non-Cite version)",
-		"wikitext": "==c<tag>d</tag>==",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">c&lt;tag&gt;d&lt;/tag&gt;</span>==</span></span>"
-	},
-	{
 		"desc": "Offsets in toc metadata should be unicode codepoints, not bytes or UCS-2",
 		"wikitext": "==One 💩==\n==Two 💩==\n==Three 💩==",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">One 💩</span>==</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Two 💩</span>==</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Three 💩</span>==</span></span>"
@@ -9532,21 +9400,6 @@
 		"desc": "TOC with french spacing (T324763)",
 		"wikitext": "__TOC__\n== Renommer la page « Informatique durable » en « Numérique responsable » ? ==\nOui.",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__TOC__</span>\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> Renommer la page « Informatique durable » en « Numérique responsable » ? </span>==</span>\nOui.</span>"
-	},
-	{
-		"desc": "1. Ensure sections in extensions are ignored + TOC is inserted outside extensions",
-		"wikitext": "__FORCETOC__\n<spantag>\n==spantag h2==\n</spantag>\nintro\n==page h2==\nblah",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__FORCETOC__</span>\n&lt;spantag&gt;\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">spantag h2</span>==</span>\n&lt;/spantag&gt;\nintro\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">page h2</span>==</span>\nblah</span>"
-	},
-	{
-		"desc": "2. Ensure sections in extensions are ignored + TOC is inserted outside extensions",
-		"wikitext": "__FORCETOC__\n{{1x|1=foo\n<spantag>\n==spantag h2==\n</spantag>\n}}\nintro\n==page h2==\nblah",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__FORCETOC__</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">foo\n&lt;spantag&gt;\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">spantag h2</span>==</span>\n&lt;/spantag&gt;\n</span></span>}}</span>\nintro\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">page h2</span>==</span>\nblah</span>"
-	},
-	{
-		"desc": "3. Ensure sections in extensions are ignored + TOC is inserted outside extensions",
-		"wikitext": "__FORCETOC__\n{{1x|1=<spantag>\n==spantag h2==\n</spantag>\n==template h2==\n}}\nintro\n==page h2==\nblah",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-double-underscore\">__FORCETOC__</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\">&lt;spantag&gt;\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">spantag h2</span>==</span>\n&lt;/spantag&gt;\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">template h2</span>==</span>\n</span></span>}}</span>\nintro\n<span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">page h2</span>==</span>\nblah</span>"
 	},
 	{
 		"desc": "TOC data when heading content is equal to an id already set on the page",
@@ -9926,11 +9779,6 @@
 		"html": "<p>\n foo\n</p>\n<div>\n<pre>foo\n</pre>\n</div>\n<center>\n<pre>foo\n</pre>\n</center>\n<blockquote>\n<p> foo\n</p>\n</blockquote>\n<blockquote>\n<pre>foo\n</pre>\n</blockquote>\n<table><tbody><tr><td>\n<pre>foo\n</pre>\n</td></tr></tbody></table>\n<ul><li>\n  foo\n</li></ul>",
 		"render": "<p >\n foo\n</p>\n<div >\n<pre>foo\n</pre>\n</div>\n<center >\n<pre>foo\n</pre>\n</center>\n<blockquote >\n<p> foo\n</p>\n</blockquote>\n<blockquote >\n<pre >&#10;foo&#10;</pre>\n</blockquote>\n<table ><tr ><td >\n<pre>foo\n</pre>\n</td></tr></table>\n<ul ><li >\n  foo\n</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/p&gt;</span>\n\n<span class=\"wpb-html\">&lt;div&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/div&gt;</span>\n\n<span class=\"wpb-html\">&lt;center&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/center&gt;</span>\n\n<span class=\"wpb-html\">&lt;blockquote&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\n<span class=\"wpb-html\">&lt;blockquote&gt;</span>\n<span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">\nfoo\n</span>&lt;/pre&gt;</span>\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span>\n\n<span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>\n foo\n<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span>\n\n<span class=\"wpb-html\">&lt;ul&gt;</span><span class=\"wpb-html\">&lt;li&gt;</span>\n  foo\n<span class=\"wpb-html\">&lt;/li&gt;</span><span class=\"wpb-html\">&lt;/ul&gt;</span></span>"
-	},
-	{
-		"desc": "4. Indent-Pre and extension tags",
-		"wikitext": " a <tag />",
-		"print": "<span class=\"wpb-root\"> a &lt;tag /&gt;</span>"
 	},
 	{
 		"desc": "5. Indent-Pre and html pre",
@@ -13355,11 +13203,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">span</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#tag</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">span</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">x</span></span>}}</span></span></span>}}</span></span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">x</span></span>}}</span></span></span>}}</span></span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">-<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">x</span></span>}}</span></span></span>}}</span></span>"
 	},
 	{
-		"desc": "Preprocessor precedence 12: broken language converter closed by brace.",
-		"wikitext": "This form breaks the template, which is unfortunate:\n*{{1x|foo-{bar}bat}}\n\nBut if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n*<nowiki>foo-{bar}bat</nowiki>\n*{{1x|<nowiki>foo-{bar}bat</nowiki>}}\n*<pre>foo-{bar}bat</pre>\n*{{1x|<pre>foo-{bar}bat</pre>}}\n\n<tag>foo-{bar}bat</tag>\n{{1x|<tag>foo-{bar}bat</tag>}}",
-		"print": "<span class=\"wpb-root\">This form breaks the template, which is unfortunate:\n<span class=\"wpb-list\">*</span>{{1x|foo-{bar}bat}}\n\nBut if the broken language converter markup is inside an extension\ntag, nothing bad happens:\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/nowiki&gt;</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/nowiki&gt;</span></span></span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/pre&gt;</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-ext\">&lt;pre&gt;<span class=\"wpb-ext-inner\">foo-{bar}bat</span>&lt;/pre&gt;</span></span></span>}}</span>\n\n&lt;tag&gt;foo-{bar}bat&lt;/tag&gt;\n{{1x|&lt;tag&gt;foo-{bar}bat&lt;/tag&gt;}}</span>"
-	},
-	{
 		"desc": "Preprocessor precedence 13: broken language converter in external link",
 		"wikitext": "*[http://example.com/-{foo Example in URL]\n*[http://example.com Example in -{link} description]\n*{{1x|[http://example.com/-{foo Breaks template, however]}}",
 		"html": "<ul><li><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/-{foo\">Example in URL</a></li>\n<li><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">Example in -{link} description</a></li>\n<li>{{1x|<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/-{foo\">Breaks template, however</a>}}</li></ul>",
@@ -13475,11 +13318,6 @@
 		"desc": "pre-save transform: comment containing gallery (T7024)",
 		"wikitext": "<!-- <gallery>data</gallery> -->",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- &lt;gallery&gt;data&lt;/gallery&gt; --&gt;</span></span>"
-	},
-	{
-		"desc": "pre-save transform: comment containing extension",
-		"wikitext": "<!-- <tag>data</tag> -->",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- &lt;tag&gt;data&lt;/tag&gt; --&gt;</span></span>"
 	},
 	{
 		"desc": "pre-save transform: comment containing nowiki",
@@ -15005,11 +14843,6 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'foo'<span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">''foo''</span>&lt;/nowiki&gt;</span><span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">'''foo'''</span>&lt;/nowiki&gt;</span><span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'s\n<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'foo'<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">''foo''</span>&lt;/nowiki&gt;</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">'''foo'''</span>&lt;/nowiki&gt;</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''</span>foo'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">''</span>bar'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">''</span>baz<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'s\n'<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'\n<span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'\n'<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'\n'<span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'\n'<span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span>'\n<span class=\"wpb-quote\">''</span>fools'<span class=\"wpb-html\">&lt;span&gt;</span> errand<span class=\"wpb-html\">&lt;/span&gt;</span><span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span><span class=\"wpb-html\">&lt;span&gt;</span>fool<span class=\"wpb-html\">&lt;/span&gt;</span>'s errand<span class=\"wpb-quote\">''</span>\n'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span> bar '<span class=\"wpb-quote\">''</span>baz<span class=\"wpb-quote\">''</span>\na|!*#-:;+-~[]{}b'<span class=\"wpb-quote\">''</span>x<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
-		"desc": "1b. Quotes inside <b> and <i> with other tags on same line",
-		"wikitext": "'''a'' foo ''[[bar]]''\n''a''' foo ''[[bar]]''\n''a''' foo '''{{1x|[[bar]]}}'''\n[[foo]] x'''[[bar]]''\n'''foo'' <spantag>test</spantag>\n'''foo'' <div title=\"name\">test</div>\n'''foo'' and <br> bar",
-		"print": "<span class=\"wpb-root\">'<span class=\"wpb-quote\">''</span>a<span class=\"wpb-quote\">''</span> foo <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">bar</span>]]</span><span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span>a'<span class=\"wpb-quote\">''</span> foo <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">bar</span>]]</span><span class=\"wpb-quote\">''</span>\n<span class=\"wpb-quote\">''</span>a'<span class=\"wpb-quote\">''</span> foo <span class=\"wpb-quote\">'''</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">bar</span>]]</span></span></span>}}</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">foo</span>]]</span> x'<span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">bar</span>]]</span><span class=\"wpb-quote\">''</span>\n'<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span> &lt;spantag&gt;test&lt;/spantag&gt;\n'<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span> <span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\">name</span>\"</span></span>&gt;</span>test<span class=\"wpb-html\">&lt;/div&gt;</span>\n'<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span> and <span class=\"wpb-html\">&lt;br&gt;</span> bar</span>"
-	},
-	{
 		"desc": "2. Link fragments separated by <i> and <b> tags",
 		"wikitext": "[[''foo''<nowiki>hello]]</nowiki>\n\n[['''foo'''<nowiki>hello]]</nowiki>",
 		"print": "<span class=\"wpb-root\">[[<span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">''</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">hello]]</span>&lt;/nowiki&gt;</span>\n\n[[<span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''</span><span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">hello]]</span>&lt;/nowiki&gt;</span></span>"
@@ -15033,11 +14866,6 @@
 		"desc": "1. Leading whitespace in SOL context should be stripped",
 		"wikitext": "a\n\na\n\n\ta(tab)\n\na\n<!--cmt-->\na\n\na\nb\n\na\n\tb\n\na\n\t b",
 		"print": "<span class=\"wpb-root\">a\n\na\n\n\ta(tab)\n\na\n<span class=\"wpb-comment\">&lt;!--cmt--&gt;</span>\na\n\na\nb\n\na\n\tb\n\na\n\t b</span>"
-	},
-	{
-		"desc": "2. Leading whitespace in non-indent-pre contexts should not be escaped",
-		"wikitext": "foo <spantag>''a''\n b</spantag>",
-		"print": "<span class=\"wpb-root\">foo &lt;spantag&gt;<span class=\"wpb-quote\">''</span>a<span class=\"wpb-quote\">''</span>\n b&lt;/spantag&gt;</span>"
 	},
 	{
 		"desc": "3. Leading whitespace in indent-pre suppressing contexts should not be escaped",
