@@ -424,6 +424,8 @@ pre {
 .frame > pre.language-html > code {
 	white-space: pre-wrap;
 	word-wrap: break-word;
+	padding: 0;
+	border: 0;
 }
 
 @media screen and (max-width: 720px) {
