@@ -9931,14 +9931,14 @@
 		"desc": "Redirect followed by block on the same line",
 		"wikitext": "#REDIRECT [[Main Page]]<!-- haha -->==hi==",
 		"html": "<ol><li>REDIRECT <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>==hi==</li></ol>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
+		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main_Page</a></li></ul><div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span><span class=\"wpb-comment\">&lt;!-- haha --&gt;</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">hi</span>==</span></span>"
 	},
 	{
 		"desc": "Redirect followed by horizontal rule on the same line",
 		"wikitext": "#REDIRECT [[Main Page]]----",
 		"html": "<ol><li>REDIRECT <a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>----</li></ol>",
-		"render": "<hr>",
+		"render": "<ul class=\"redirectText\"><li><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main_Page</a></li></ul><hr>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-redirect\"><span class=\"wpb-redirect-syntax\">#REDIRECT </span><span class=\"wpb-redirect-target\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span></span><span class=\"wpb-hr\">----</span></span>"
 	},
 	{
