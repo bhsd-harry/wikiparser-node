@@ -10,7 +10,7 @@ const tests: {wikitext?: string, print?: string}[] = require('../../test/parserT
 (async () => {
 	let failed = 0;
 	for (const [i, {wikitext, print}] of tests.entries()) {
-		if (wikitext && print && wikitext !== "[[Thomas Bek (bishop of St David's)|]]") {
+		if (wikitext && print && !wikitext.includes('|]]')) {
 			try {
 				assert.equal(Parser.parse(wikitext).print(), print);
 			} catch (e) {

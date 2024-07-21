@@ -145,10 +145,7 @@ pre {
 	color: #36b;
 }
 .frame a.external {
-	background-image: url("/wikiparser-node/assets/external-link.svg");
-	background-position: center right;
-	background-repeat: no-repeat;
-	background-size: 12px;
+	background: url("/wikiparser-node/assets/external-link.svg") center right/12px no-repeat;
 	padding-right: 1em;
 }
 .frame a.external.free {
@@ -187,6 +184,16 @@ pre {
 .frame li:empty, .frame li:-moz-only-whitespace,
 .frame p:empty, .frame p:-moz-only-whitespace {
 	display: none;
+}
+.frame .redirectText {
+	font-size: 140%;
+	list-style: none;
+	margin: 0;
+}
+.frame .redirectText > li {
+	padding-left: 47px;
+	background: url("/wikiparser-node/assets/redirect-ltr.svg") bottom left no-repeat;
+	margin: 0;
 }
 .frame dl {
 	margin: .2em 0 .5em;
