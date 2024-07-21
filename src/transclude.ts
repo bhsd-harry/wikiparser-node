@@ -36,6 +36,12 @@ const insensitiveVars = new Set<string | false | undefined>([
 	'stylepath',
 ]);
 
+/* NOT FOR BROWSER */
+
+const basicMagicWords = new Map<string, string>([['=', '='], ['!', '|']]);
+
+/* NOT FOR BROWSER END */
+
 /**
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
@@ -725,6 +731,10 @@ export abstract class TranscludeToken extends Token {
 
 	/** @private */
 	override toHtmlInternal(): string {
+		const {type, name} = this;
+		if (type === 'magic-word' && basicMagicWords.has(name)) {
+			return basicMagicWords.get(name)!;
+		}
 		return '';
 	}
 }

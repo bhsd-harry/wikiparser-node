@@ -4131,28 +4131,28 @@
 		"desc": "{{!}} is a magic word",
 		"wikitext": "{{!}} is a magic word there and {{!}} is still a magic word here\n| is not a magic word here but {{!}} is still a magic word here",
 		"html": "<p>| is a magic word there and | is still a magic word here\n| is not a magic word here but | is still a magic word here\n</p>",
-		"render": "<pre>is a magic word there and  is still a magic word here\n</pre>\n<p>| is not a magic word here but  is still a magic word here\n</p>",
+		"render": "<p>| is a magic word there and | is still a magic word here\n| is not a magic word here but | is still a magic word here\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span> is a magic word there and <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span> is still a magic word here\n| is not a magic word here but <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span> is still a magic word here</span>"
 	},
 	{
 		"desc": "Single {{!}} in table cell",
 		"wikitext": "{|\n| colspan=\"1\" |foo {{!}} bar\n|}",
 		"html": "<table>\n<tbody><tr>\n<td colspan=\"1\">foo | bar\n</td></tr></tbody></table>",
-		"render": "<table ><tbody><tr><td colspan=\"1\">foo  bar</td></tr></tbody></table>",
+		"render": "<table ><tbody><tr><td colspan=\"1\">foo | bar</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\">colspan</span>=\"<span class=\"wpb-attr-value\">1</span>\"</span> </span>|<span class=\"wpb-td-inner\">foo <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span> bar</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Using {{!}} in wikilinks (T290526)",
 		"wikitext": "[[Main Page{{!}}Something else]]\n\n[[{{T290526}}]]",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p><p><a href=\"/wiki/%7B%7BT290526%7D%7D\" title=\"{{T290526}}\">{{T290526}}</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Something else</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>{{!}}<span class=\"wpb-link-text\">Something else</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">T290526</span>}}</span></span>]]</span></span>"
 	},
 	{
 		"desc": "Using {{!}} in template arguments (T290526)",
 		"wikitext": "{{1x|Main Page{{!}}Something else}}\n\n{{1x|{{T290526}}}}",
 		"html": "<p>Main Page|Something else\n</p><p>Main Page|Something else\n</p>",
-		"render": "<p>Main PageSomething else\n</p><p><br>\n</p>",
+		"render": "<p>Main Page|Something else\n</p><p>Main Page|Something else\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Main Page<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>Something else</span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">T290526</span>}}</span></span></span>}}</span></span>"
 	},
 	{
@@ -5134,14 +5134,14 @@
 		"desc": "Using {{=}} when it expands to \"=\" should not create a tracking category",
 		"wikitext": "This uses {{=}} and {{Template:=}}.",
 		"html": "<p>This uses = and =.\n</p>",
-		"render": "<p>This uses  and .\n</p>",
+		"render": "<p>This uses = and no.\n</p>",
 		"print": "<span class=\"wpb-root\">This uses <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">=</span>}}</span> and <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template:=</span>}}</span>.</span>"
 	},
 	{
 		"desc": "Using {{=}} when it expands to \"=\" should not create a tracking category (cat)",
 		"wikitext": "This uses {{=}} and {{Template:=}}.",
 		"html": "<p>This uses = and =.\n</p>",
-		"render": "<p>This uses  and .\n</p>",
+		"render": "<p>This uses = and no.\n</p>",
 		"print": "<span class=\"wpb-root\">This uses <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">=</span>}}</span> and <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template:=</span>}}</span>.</span>"
 	},
 	{
@@ -12871,14 +12871,14 @@
 		"desc": "Basic usage of {{=}}",
 		"wikitext": "This uses {{=}}.",
 		"html": "<p>This uses =.\n</p>",
-		"render": "<p>This uses .\n</p>",
+		"render": "<p>This uses =.\n</p>",
 		"print": "<span class=\"wpb-root\">This uses <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">=</span>}}</span>.</span>"
 	},
 	{
 		"desc": "Using {{Template:=}} doesn't invoke the parser function",
 		"wikitext": "This uses {{Template:=}}.",
 		"html": "<p>This uses no.\n</p>",
-		"render": "<p>This uses .\n</p>",
+		"render": "<p>This uses no.\n</p>",
 		"print": "<span class=\"wpb-root\">This uses <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template:=</span>}}</span>.</span>"
 	},
 	{
@@ -14432,7 +14432,7 @@
 		"desc": "Templated table cell with untemplated attributes: Unsupported Scenario",
 		"wikitext": "{|\n|-\n|class=\"foo\"{{1x|1={{!}}title=\"fail\"{{!}}bar}}\n|}",
 		"html": "<table>\n\n<tbody><tr>\n<td class=\"foo\">title=\"fail\"|bar\n</td></tr></tbody></table>",
-		"render": "<table ><tbody><tr ><td class=\"foo\">title=\"fail\"bar</td></tr></tbody></table>",
+		"render": "<table ><tbody><tr ><td class=\"foo\">title=\"fail\"|bar</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">class=\"foo\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">1</span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>title=\"fail\"<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">!</span>}}</span>bar</span></span>}}</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
