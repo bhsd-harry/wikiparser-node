@@ -29,9 +29,6 @@ export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
  */
 export const rawurldecode = (str: string): string => decodeURIComponent(str.replace(/%(?![\da-f]{2})/giu, '%25'));
 
-/** PHP的`trim`函数的JavaScript实现 */
-export const trimPHP = factory(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
-
 /**
  * extract effective wikitext
  * @param childNodes a Token's contents

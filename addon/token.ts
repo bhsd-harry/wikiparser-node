@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {classes, states} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {removeComment, removeCommentLine, trimPHP} from '../util/string';
+import {removeComment, removeCommentLine} from '../util/string';
 import Parser from '../index';
 import {Token} from '../src/index';
 import {CommentToken} from '../src/nowiki/comment';
@@ -291,8 +291,7 @@ const expand = (
 					transclusion = false,
 					defaultParam: Token | undefined;
 				for (let j = 2; j < length; j++) {
-					const {anon, value, firstChild, lastChild} = c[j] as ParameterToken,
-						option = trimPHP(removeCommentLine(firstChild.toString()));
+					const {anon, value, lastChild, name: option} = c[j] as ParameterToken;
 					transclusion = /\0\d+t\x7F/u.test(anon ? value : option);
 					if (anon) {
 						if (j === length - 1) {
