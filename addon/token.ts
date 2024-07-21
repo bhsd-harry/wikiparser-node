@@ -283,7 +283,7 @@ const expand = (
 				}
 				return prev;
 			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {
-				const effective = c[var1 === var2 ? 3 : 4];
+				const effective = c[var1 === var2 || var1 && var2 && Number(var1) === Number(var2) ? 3 : 4];
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
