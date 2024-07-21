@@ -12888,28 +12888,28 @@
 		"desc": "<poem>",
 		"wikitext": "<poem>\nthis\nis\na\ntest\n</poem>",
 		"html": "<div class=\"poem\">\n<p>this<br />\nis<br />\na<br />\ntest\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br>this<br>is<br>a<br>test<br></div>",
+		"render": "<div class=\"poem\">\n<p>this<br>\nis<br>\na<br>\ntest\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\nthis\nis\na\ntest\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "<poem> with recursive parsing",
 		"wikitext": "<poem>\nthis ''is'' a '''test'''\n</poem>",
 		"html": "<div class=\"poem\">\n<p>this <i>is</i> a <b>test</b>\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br>this <i>is</i> a <b>test</b><br></div>",
+		"render": "<div class=\"poem\">\n<p>this <i>is</i> a <b>test</b>\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\nthis <span class=\"wpb-quote\">''</span>is<span class=\"wpb-quote\">''</span> a <span class=\"wpb-quote\">'''</span>test<span class=\"wpb-quote\">'''</span>\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "<poem> with leading whitespace",
 		"wikitext": "<poem>\n\n   test\n\n</poem>",
 		"html": "<div class=\"poem\">\n<p><br />\n&#160;&#160;&#160;test<br />\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br><br>   test<br><br></div>",
+		"render": "<div class=\"poem\">\n<p><br>\n&nbsp;&nbsp;&nbsp;test<br>\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\n\n   test\n\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "Horizontal rule",
 		"wikitext": "<poem>\nsome\n-----\ntext\n</poem>",
 		"html": "<div class=\"poem\">\n<p>some<br />\n</p>\n<hr />\n<p>text\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br>some<br><hr><br>text<br></div>",
+		"render": "<div class=\"poem\">\n<p>some<br>\n</p>\n<hr>\n<p>text\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\nsome\n<span class=\"wpb-hr\">-----</span>\ntext\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
@@ -12930,49 +12930,49 @@
 		"desc": "Basic <poem> usage with style",
 		"wikitext": "<poem style=\"border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;\">\nA stately pleasure-dome decree:\nWhere Alph, the sacred river, ran\nThrough caverns measureless to man\nDown to a sunless sea.\n</poem>",
 		"html": "<div style=\"border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;\" class=\"poem\">\n<p>A stately pleasure-dome decree:<br />\nWhere Alph, the sacred river, ran<br />\nThrough caverns measureless to man<br />\nDown to a sunless sea.\n</p>\n</div>",
-		"render": "<div style=\"border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;\" class=\"poem\"><br>A stately pleasure-dome decree:<br>Where Alph, the sacred river, ran<br>Through caverns measureless to man<br>Down to a sunless sea.<br></div>",
+		"render": "<div style=\"border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;\" class=\"poem\">\n<p>A stately pleasure-dome decree:<br>\nWhere Alph, the sacred river, ran<br>\nThrough caverns measureless to man<br>\nDown to a sunless sea.\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">border: 2px solid #d6d2c5; background-color: #f9f4e6; padding: 1em;</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nA stately pleasure-dome decree:\nWhere Alph, the sacred river, ran\nThrough caverns measureless to man\nDown to a sunless sea.\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "Verify Parsoid handles entities in nowikis in poem correctly",
 		"wikitext": "<poem>\nL1\nL2\n<nowiki>\n<ref>Not a ref</ref>\nfoo &amp; bar\n[[Not a link]]\n</nowiki>\nL3\n</poem>",
 		"html": "<div class=\"poem\">\n<p>L1<br />\nL2<br />\n<br />\n&lt;ref&gt;Not a ref&lt;/ref&gt;<br />\nfoo &amp; bar<br />\n[[Not a link]]<br />\n<br />\nL3\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br>L1<br>L2<br>&#10;&lt;ref&gt;Not a ref&lt;/ref&gt;&#10;foo &amp; bar&#10;[[Not a link]]&#10;<br>L3<br></div>",
+		"render": "<div class=\"poem\">\n<p>L1<br>\nL2<br>\n&#10;&lt;ref&gt;Not a ref&lt;/ref&gt;&#10;foo &amp; bar&#10;[[Not a link]]&#10;<br>\nL3\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\nL1\nL2\n<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">\n&lt;ref&gt;Not a ref&lt;/ref&gt;\nfoo &amp;amp; bar\n[[Not a link]]\n</span>&lt;/nowiki&gt;</span>\nL3\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "UTF-8 sequences in extension tags (T231945)",
 		"wikitext": "<poem>\n{{1x|ၶိူဝ်းႁဝ်ၶိူဝ်းရႃႇၸႃႇ}}\n</poem>",
 		"html": "<div class=\"poem\">\n<p>ၶိူဝ်းႁဝ်ၶိူဝ်းရႃႇၸႃႇ\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br>ၶိူဝ်းႁဝ်ၶိူဝ်းရႃႇၸႃႇ<br></div>",
+		"render": "<div class=\"poem\">\n<p>ၶိူဝ်းႁဝ်ၶိူဝ်းရႃႇၸႃႇ\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ၶိူဝ်းႁဝ်ၶိူဝ်းရႃႇၸႃႇ</span></span>}}</span>\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "Multi-line poems with indentation use spans and breaks correctly (T235709)",
 		"wikitext": "<poem>\n''CONGREGATI''\n:'''EX TOTO ORBE'''\n::'''''MATHEMATICI'''''\n:<span>foo</span>\n</poem>",
 		"html": "<div class=\"poem\">\n<p><i>CONGREGATI</i><br />\n<span class=\"mw-poem-indented\" style=\"display: inline-block; margin-inline-start: 1em;\"><b>EX TOTO ORBE</b></span><br />\n<span class=\"mw-poem-indented\" style=\"display: inline-block; margin-inline-start: 2em;\"><i><b>MATHEMATICI</b></i></span><br />\n<span class=\"mw-poem-indented\" style=\"display: inline-block; margin-inline-start: 1em;\"><span>foo</span></span>\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br><i>CONGREGATI</i><br><dl><dd><b>EX TOTO ORBE</b><br><dl><dd><b><i>MATHEMATICI</i></b></dd></dl></dd><br><dd><span >foo</span></dd></dl><br></div>",
+		"render": "<div class=\"poem\">\n<p><i>CONGREGATI</i><br>\n</p>\n<dl><dd><b>EX TOTO ORBE</b><br>\n<dl><dd><b><i>MATHEMATICI</i></b></dd></dl></dd><br>\n<dd><span >foo</span></dd></dl>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-quote\">''</span>CONGREGATI<span class=\"wpb-quote\">''</span>\n<span class=\"wpb-list\">:</span><span class=\"wpb-quote\">'''</span>EX TOTO ORBE<span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-list\">::</span><span class=\"wpb-quote\">'''''</span>MATHEMATICI<span class=\"wpb-quote\">'''''</span>\n<span class=\"wpb-list\">:</span><span class=\"wpb-html\">&lt;span&gt;</span>foo<span class=\"wpb-html\">&lt;/span&gt;</span>\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "Indention syntax with no content",
 		"wikitext": "<poem>\n::\n</poem>",
 		"html": "<div class=\"poem\">\n<dl><dd><dl><dd></dd></dl></dd></dl>\n</div>",
-		"render": "<div class=\"poem\"><br><dl><dd><dl><dd></dd></dl></dd></dl><br></div>",
+		"render": "<div class=\"poem\">\n<dl><dd><dl><dd></dd></dl></dd></dl>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem&gt;<span class=\"wpb-ext-inner\">\n<span class=\"wpb-list\">::</span>\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "Poem with class",
 		"wikitext": "<poem class=\"hiho\">\nhi ho\n</poem>",
 		"html": "<div class=\"poem hiho\">\n<p>hi ho\n</p>\n</div>",
-		"render": "<div class=\"hiho poem\"><br>hi ho<br></div>",
+		"render": "<div class=\"hiho poem\">\n<p>hi ho\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">hiho</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nhi ho\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{
 		"desc": "Poem with empty class",
 		"wikitext": "<poem class=\"\">\nhi ho\n</poem>",
 		"html": "<div class=\"poem\">\n<p>hi ho\n</p>\n</div>",
-		"render": "<div class=\"poem\"><br>hi ho<br></div>",
+		"render": "<div class=\"poem\">\n<p>hi ho\n</p>\n</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;poem<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"\"</span></span>&gt;<span class=\"wpb-ext-inner\">\nhi ho\n</span>&lt;/poem&gt;</span></span>"
 	},
 	{

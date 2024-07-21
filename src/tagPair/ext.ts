@@ -218,7 +218,8 @@ export abstract class ExtToken extends TagPairToken {
 				return font(
 					this,
 					`<div${firstChild.toHtmlInternal()}>${
-						lastChild.toHtmlInternal().replaceAll('\n', '<br>')
+						lastChild.toHtmlInternal().replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+							.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 					}</div>`,
 				);
 			default:
