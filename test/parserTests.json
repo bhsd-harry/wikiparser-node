@@ -1511,7 +1511,7 @@
 		"desc": "T2553: link with two variables in a piped link",
 		"wikitext": "{|\n|[[{{{1}}}|{{{2}}}]]\n|}",
 		"html": "<table>\n<tbody><tr>\n<td>[[{{{1}}}|{{{2}}}]]\n</td></tr></tbody></table>",
-		"render": "<table ><tbody><tr><td ><a href=\"/wiki/%7B%7B%7B1%7D%7D%7D\" title=\"{{{1}}}\">2</a></td></tr></tbody></table>",
+		"render": "<table ><tbody><tr><td >[[{{{1}}}|{{{2}}}]]</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">1</span>}}}</span></span>|<span class=\"wpb-link-text\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">2</span>}}}</span></span>]]</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -1581,7 +1581,7 @@
 		"desc": "T2041: Template parameters shown as broken links",
 		"wikitext": "{{{parameter}}}",
 		"html": "<p>{{{parameter}}}\n</p>",
-		"render": "<p>parameter\n</p>",
+		"render": "<p>{{{parameter}}}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">parameter</span>}}}</span></span>"
 	},
 	{
@@ -2225,14 +2225,14 @@
 		"desc": "Templates: Parameters substituted at the top-level",
 		"wikitext": "{{{foo|''who'' {{1x|me}}? '''never!'''}}}\n\n{{{foo|bar|baz}}}",
 		"html": "<p><i>who</i> me? <b>never!</b>\n</p><p>bar\n</p>",
-		"render": "<p>foo<i>who</i> me? <b>never!</b>\n</p><p>foobar\n</p>",
+		"render": "<p><i>who</i> me? <b>never!</b>\n</p><p>bar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">foo</span>|<span class=\"wpb-arg-default\"><span class=\"wpb-quote\">''</span>who<span class=\"wpb-quote\">''</span> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">me</span></span>}}</span>? <span class=\"wpb-quote\">'''</span>never!<span class=\"wpb-quote\">'''</span></span>}}}</span>\n\n<span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">foo</span>|<span class=\"wpb-arg-default\">bar</span>|<span class=\"wpb-hidden\">baz</span>}}}</span></span>"
 	},
 	{
 		"desc": "Compound transclusion with template and top level templatearg",
 		"wikitext": "{{1x|<table>}}\n{{{top|<td>123</td>}}}\n</table>",
 		"html": "<table>\n<tbody><tr><td>123</td>\n</tr></tbody></table>",
-		"render": "<table >\ntop<td >123</td>\n</table>",
+		"render": "<table >\n<td >123</td>\n</table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;table&gt;</span></span></span>}}</span>\n<span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">top</span>|<span class=\"wpb-arg-default\"><span class=\"wpb-html\">&lt;td&gt;</span>123<span class=\"wpb-html\">&lt;/td&gt;</span></span>}}}</span>\n<span class=\"wpb-html\">&lt;/table&gt;</span></span>"
 	},
 	{
@@ -3282,7 +3282,7 @@
 		"desc": "Fuzz testing: Parser25 (T8055)",
 		"wikitext": "{{{\n| \n<LI CLASS=||\n >\n}}}blah\" onmouseover=\"alert('hello world');\" align=\"left\"'''MOVE MOUSE CURSOR OVER HERE",
 		"html": "<p>&lt;LI CLASS=blah\" onmouseover=\"alert('hello world');\" align=\"left\"<b>MOVE MOUSE CURSOR OVER HERE</b>\n</p>",
-		"render": "<p><br> \n&lt;LI CLASS=blah\" onmouseover=\"alert('hello world');\" align=\"left\"<b>MOVE MOUSE CURSOR OVER HERE</b>\n</p>",
+		"render": "<p>&lt;LI CLASS=blah\" onmouseover=\"alert('hello world');\" align=\"left\"<b>MOVE MOUSE CURSOR OVER HERE</b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">\n</span>|<span class=\"wpb-arg-default\"> \n&lt;LI CLASS=</span>||<span class=\"wpb-hidden\">\n &gt;\n</span>}}}</span>blah\" onmouseover=\"alert('hello world');\" align=\"left\"<span class=\"wpb-quote\">'''</span>MOVE MOUSE CURSOR OVER HERE</span>"
 	},
 	{
@@ -6725,7 +6725,7 @@
 		"desc": "Empty condition in #if and such",
 		"wikitext": "Empty ifexpr is {{#ifexpr:|true|false}}\nEmpty if is {{#if:|true|false}}\nEmpty ifeq is {{#ifeq:||equal|not equal}}\nEmpty switch is {{#switch:|=empty|#default=something else}}\nEmpty ifexist is {{#ifexist:|true|false}}",
 		"html": "<p>Empty ifexpr is false\nEmpty if is false\nEmpty ifeq is equal\nEmpty switch is empty\nEmpty ifexist is false\n</p>",
-		"render": "<p>Empty ifexpr is \nEmpty if is false\nEmpty ifeq is equal\nEmpty switch is empty\nEmpty ifexist is \n</p>",
+		"render": "<p>Empty ifexpr is \nEmpty if is false\nEmpty ifeq is equal\nEmpty switch is empty\nEmpty ifexist is false\n</p>",
 		"print": "<span class=\"wpb-root\">Empty ifexpr is <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexpr</span>:|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">true</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">false</span></span>}}</span>\nEmpty if is <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">true</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">false</span></span>}}</span>\nEmpty ifeq is <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifeq</span>:||<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">equal</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">not equal</span></span>}}</span>\nEmpty switch is <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:|<span class=\"wpb-parameter\">=<span class=\"wpb-parameter-value\">empty</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">#default</span>=<span class=\"wpb-parameter-value\">something else</span></span>}}</span>\nEmpty ifexist is <span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">true</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">false</span></span>}}</span></span>"
 	},
 	{
@@ -6746,28 +6746,28 @@
 		"desc": "Bug 19093: Default values don't fall through in switch",
 		"wikitext": "<{{#switch: foo | bar | #default = DEF }}>\n<{{#switch: foo | #default | bar = DEF }}>",
 		"html": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
-		"render": "<p>&lt;DEF&gt;\n&lt;&gt;\n</p>",
+		"render": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
 		"print": "<span class=\"wpb-root\">&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> bar </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> #default </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>}}</span>&gt;\n&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> #default </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> bar </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>}}</span>&gt;</span>"
 	},
 	{
 		"desc": "{{#ifexist}}",
 		"wikitext": "{{#ifexist:Media:Foobar.jpg|Found|Not found}}\n{{#ifexist:ParserFunctions page|Found|Not found}}\n{{#ifexist:Missing|Found|Not found}}",
 		"html": "<p>Found\nFound\nNot found\n</p>",
-		"render": "<p><br>\n</p>",
+		"render": "<p>Found\nFound\nFound\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Media:Foobar.jpg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">ParserFunctions page</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Missing</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span></span>"
 	},
 	{
 		"desc": "{{#ifexist:}} media redirect (bug 32031)",
 		"wikitext": "{{#ifexist:Media:Redirect_to_Foobar.jpg|Found|Not found}}\n{{#ifexist:Media:Redirect_to_nowhere.jpg|Found|Not found}}\n{{#ifexist:Media:Missing file.jpg|Found|Not found}}\n{{#ifexist:Media:Dionysos-Brunnen am Kölner Dom.jpg|Found|Not found}}",
 		"html": "<p>Found\nNot found\nNot found\nNot found\n</p>",
-		"render": "<p><br>\n</p><p><br>\n</p>",
+		"render": "<p>Found\nFound\nFound\nFound\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Media:Redirect_to_Foobar.jpg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Media:Redirect_to_nowhere.jpg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Media:Missing file.jpg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#ifexist</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Media:Dionysos-Brunnen am Kölner Dom.jpg</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Found</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Not found</span></span>}}</span></span>"
 	},
 	{
 		"desc": "#if",
 		"wikitext": "{{#if: | yes | no}}\n{{#if: string | yes | no}}\n{{#if:      | yes | no}}\n{{#if:\n\n\n| yes | no}}\n{{#if: 1==2 | yes | no}}\n{{#if: foo | yes }}\n{{#if: | yes }}(empty)\n{{#if: foo | | no}}(empty)\n{{#if: {{{1}}} | yes | no}}\n{{#if: {{{1|}}} | yes | no}}",
 		"html": "<p>no\nyes\nno\nno\nyes\nyes\n(empty)\n(empty)\nyes\nno\n</p>",
-		"render": "<p>no\nyes\nno\nno\nyes\nyes\n(empty)\n(empty)\n</p><p><br>\n</p>",
+		"render": "<p>no\nyes\nno\nno\nyes\nyes\n(empty)\n(empty)\nyes\nno\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> string </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">      </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n\n\n</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> 1==2 </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>}}</span>(empty)\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>(empty)\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> <span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">1</span>}}}</span> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#if</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> <span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">1</span>|}}}</span> </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> yes </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> no</span></span>}}</span></span>"
 	},
 	{
@@ -6823,7 +6823,7 @@
 		"desc": "#switch #default should match next and not last named parameter",
 		"wikitext": "<{{#switch: foo | #default | bar = DEF }}>\n<{{#switch: foo | #default | bar = DEF | baz = GHI }}>",
 		"html": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
-		"render": "<p>&lt;&gt;\n&lt;&gt;\n</p>",
+		"render": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
 		"print": "<span class=\"wpb-root\">&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> #default </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> bar </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>}}</span>&gt;\n&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> #default </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> bar </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> baz </span>=<span class=\"wpb-parameter-value\"> GHI </span></span>}}</span>&gt;</span>"
 	},
 	{
@@ -9875,7 +9875,7 @@
 		"desc": "Italics and bold: 2-quote opening sequence: (2,4) w/ nowiki",
 		"wikitext": "''foo<nowiki>''</nowiki>''",
 		"html": "<p><i>foo''</i>\n</p>",
-		"render": "<p><i>foo</i>''\n</p>",
+		"render": "<p><i>foo</i><i>''</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">''</span>&lt;/nowiki&gt;</span><span class=\"wpb-quote\">''</span></span>"
 	},
 	{
