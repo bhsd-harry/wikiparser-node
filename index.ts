@@ -313,7 +313,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/^(zh|en)\s*:/diu;
 		return interwiki.length > 0
 			? new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu')
-				.exec(title.replace(/_/gu, ' ').replace(/^\s*:?\s*/u, ''))
+				.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''))
 			: null;
 	},
 

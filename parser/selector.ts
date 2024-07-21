@@ -1,5 +1,4 @@
 import {parsers} from '../util/constants';
-import {escapeRegExp} from '../util/string';
 import {Ranges} from '../lib/ranges';
 import {Title} from '../lib/title';
 import type {AttributesParentBase} from '../mixin/attributesParent';
@@ -53,8 +52,6 @@ const simplePseudos = new Set([
 	functionRegex = /^(\s*"[^"]*"\s*|\s*'[^']*'\s*|[^()]*)\)/u,
 	grouping = new Set([',', '>', '+', '~']),
 	combinator = new Set(['>', '+', '~', '']),
-	sanitizeRegex = specialChars.map(([c, escaped]) => [new RegExp(escapeRegExp(`\\${c}`), 'gu'), escaped] as const),
-	desanitizeRegex = specialChars.map(([c, escaped]) => [c, new RegExp(escaped, 'gu')] as const),
 	primitives = new Set(['string', 'number', 'boolean', 'undefined']);
 
 /**
@@ -293,8 +290,8 @@ const matchesArray = (token: Token, copy: readonly SelectorArray[]): boolean => 
  * @param selector
  */
 const desanitize = (selector: string): string => {
-	for (const [c, re] of desanitizeRegex) {
-		selector = selector.replace(re, c);
+	for (const [c, entity] of specialChars) {
+		selector = selector.replaceAll(entity, c);
 	}
 	return selector.trim();
 };
@@ -311,8 +308,8 @@ const deQuote = (val: string): string => /^(["']).*\1$/u.test(val) ? val.slice(1
  */
 export const checkToken = (selector: string) => <T extends Token>(token: Token): token is T => {
 	let sanitized = selector.trim();
-	for (const [re, escaped] of sanitizeRegex) {
-		sanitized = sanitized.replace(re, escaped);
+	for (const [c, entity] of specialChars) {
+		sanitized = sanitized.replaceAll(`\\${c}`, entity);
 	}
 	const stack: [[SelectorArray, ...SelectorArray[]], ...SelectorArray[][]] = [[[]]];
 	let regex = regularRegex,

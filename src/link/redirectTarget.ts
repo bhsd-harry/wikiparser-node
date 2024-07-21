@@ -32,7 +32,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** 链接显示文字 */
 	get innerText(): string {
-		return String(this.link);
+		return String(this.link).replaceAll('_', ' ');
 	}
 
 	/* NOT FOR BROWSER END */
