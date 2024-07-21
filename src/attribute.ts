@@ -518,13 +518,11 @@ export abstract class AttributeToken extends Token {
 		) {
 			return '';
 		}
-		let value = lastChild.toHtmlInternal().trim();
+		const value = lastChild.toHtmlInternal().trim();
 		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value !== '0') {
 			return '';
-		} else if (name === 'id') {
-			value = value.replace(/\s+/gu, '_');
 		}
-		return `${name}="${sanitizeAttr(value)}"`;
+		return `${name}="${sanitizeAttr(value.replace(/\s+/gu, name === 'id' ? '_' : ' '))}"`;
 	}
 }
 
