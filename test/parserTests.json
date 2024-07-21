@@ -6746,7 +6746,7 @@
 		"desc": "Bug 19093: Default values don't fall through in switch",
 		"wikitext": "<{{#switch: foo | bar | #default = DEF }}>\n<{{#switch: foo | #default | bar = DEF }}>",
 		"html": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
-		"render": "<p>&lt;DEF&gt;\n&lt;&gt;\n</p>",
+		"render": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
 		"print": "<span class=\"wpb-root\">&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> bar </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> #default </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>}}</span>&gt;\n&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> #default </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> bar </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>}}</span>&gt;</span>"
 	},
 	{
@@ -6823,7 +6823,7 @@
 		"desc": "#switch #default should match next and not last named parameter",
 		"wikitext": "<{{#switch: foo | #default | bar = DEF }}>\n<{{#switch: foo | #default | bar = DEF | baz = GHI }}>",
 		"html": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
-		"render": "<p>&lt;&gt;\n&lt;&gt;\n</p>",
+		"render": "<p>&lt;DEF&gt;\n&lt;DEF&gt;\n</p>",
 		"print": "<span class=\"wpb-root\">&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> #default </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> bar </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>}}</span>&gt;\n&lt;<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#switch</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> foo </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"> #default </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> bar </span>=<span class=\"wpb-parameter-value\"> DEF </span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\"> baz </span>=<span class=\"wpb-parameter-value\"> GHI </span></span>}}</span>&gt;</span>"
 	},
 	{

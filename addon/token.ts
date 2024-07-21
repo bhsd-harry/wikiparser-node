@@ -306,7 +306,7 @@ const expand = (
 						} else if (transclusion) {
 							break;
 						} else {
-							found ||= var1 === value;
+							found ||= var1 === value || value === '#default';
 						}
 					} else if (transclusion) {
 						break;
