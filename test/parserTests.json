@@ -1845,7 +1845,7 @@
 		"desc": "<includeonly> and <noinclude> being included",
 		"wikitext": "{{Includes}}",
 		"html": "<p>Foobar\n</p>",
-		"render": "",
+		"render": "<p>Foobar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes</span>}}</span></span>"
 	},
 	{
@@ -3505,7 +3505,7 @@
 		"desc": "Expansion of multi-line templates in attribute values (T8255)",
 		"wikitext": "<div style=\"background: {{1x|#00FF00}}\">-</div>",
 		"html": "<div style=\"background: #00FF00\">-</div>",
-		"render": "<div style=\"background: &#10;#00FF00\">-</div>",
+		"render": "<div style=\"background: #00FF00\">-</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background: <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">#00FF00</span></span>}}</span></span>\"</span></span>&gt;</span>-<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -3517,7 +3517,7 @@
 		"desc": "Expansion of multi-line templates in attribute values (T8255 check)",
 		"wikitext": "<div style=\"background:\n#00FF00\">-</div>",
 		"html": "<div style=\"background: #00FF00\">-</div>",
-		"render": "<div style=\"background:&#10;#00FF00\">-</div>",
+		"render": "<div style=\"background: #00FF00\">-</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background:\n#00FF00</span>\"</span></span>&gt;</span>-<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -13066,7 +13066,7 @@
 		"desc": "Pres with newline attributes",
 		"wikitext": "<pre class=\"one\ntwo\">hi</pre>",
 		"html": "<pre class=\"one two\">hi</pre>",
-		"render": "<pre class=\"one&#10;two\">hi</pre>",
+		"render": "<pre class=\"one two\">hi</pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">class</span>=\"<span class=\"wpb-attr-value\">one\ntwo</span>\"</span></span>&gt;<span class=\"wpb-ext-inner\">hi</span>&lt;/pre&gt;</span></span>"
 	},
 	{
@@ -13161,7 +13161,7 @@
 		"desc": "Preprocessor precedence 5: tplarg takes precedence over template",
 		"wikitext": "{{Precedence5|Bullet}}",
 		"html": "<ul><li>Bar</li></ul>",
-		"render": "",
+		"render": "<ul><li>Bar</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Precedence5</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Bullet</span></span>}}</span></span>"
 	},
 	{
@@ -13187,7 +13187,7 @@
 		"desc": "Preprocessor precedence 9: groups of braces",
 		"wikitext": "{{Preprocessor precedence 9|Four|Bullet|1|2}}",
 		"html": "<dl><dt>4</dt>\n<dd>{Four}</dd>\n<dt>5</dt>\n<dd></dd></dl>\n<ul><li>Bar</li></ul>\n<dl><dt>6</dt>\n<dd>Four</dd>\n<dt>7</dt>\n<dd>{Bullet}</dd></dl>",
-		"render": "",
+		"render": "<dl><dt>4</dt>\n<dd>{Four}</dd>\n<dt>5</dt>\n<dd></dd></dl>\n<ul><li>Bar</li></ul>\n<dl><dt>6</dt>\n<dd>Four</dd>\n<dt>7</dt>\n<dd>{Bullet}</dd></dl>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Preprocessor precedence 9</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Four</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Bullet</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">1</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">2</span></span>}}</span></span>"
 	},
 	{
@@ -13311,7 +13311,7 @@
 		"desc": "(confirming safety of fix for subst T3936)",
 		"wikitext": "{{Template:dangerous}}",
 		"html": "<p>@<span>Oh no</span>\n</p>",
-		"render": "",
+		"render": "<p>@<span >Oh no</span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Template:dangerous</span>}}</span></span>"
 	},
 	{
@@ -13343,7 +13343,7 @@
 		"desc": "T24297: safesubst: works during normal parse",
 		"wikitext": "{{SafeSubstTest}}",
 		"html": "<p>Foobar\n</p>",
-		"render": "",
+		"render": "<p>Foobar\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">SafeSubstTest</span>}}</span></span>"
 	},
 	{
@@ -13362,7 +13362,7 @@
 		"desc": "Template named safesubst - T309405",
 		"wikitext": "{{safesubst|123}}",
 		"html": "<p>123\n</p>",
-		"render": "",
+		"render": "<p>123\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">safesubst</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">123</span></span>}}</span></span>"
 	},
 	{
