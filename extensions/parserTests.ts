@@ -1,7 +1,7 @@
 declare interface Test {
 	desc: string;
 	wikitext?: string;
-	html: string;
+	html?: string;
 	render?: string;
 }
 
@@ -24,12 +24,12 @@ declare interface Test {
 	wikiparse.highlight!(pre, false, true);
 	btn.disabled = !select.value;
 	let optgroup: HTMLOptGroupElement;
-	for (const [i, {desc, wikitext}] of tests.entries()) {
+	for (const [i, {desc, wikitext, html}] of tests.entries()) {
 		if (wikitext === undefined) {
 			optgroup = document.createElement('optgroup');
 			optgroup.label = desc;
 			select.append(optgroup);
-		} else if (!dones.has(desc)) {
+		} else if (html !== undefined && !dones.has(desc)) {
 			const option = document.createElement('option');
 			option.value = String(i);
 			option.textContent = desc;
@@ -42,7 +42,7 @@ declare interface Test {
 		pre.textContent = wikitext!;
 		pre.classList.remove('wikiparser');
 		container.removeAttribute('data-source');
-		container1.innerHTML = html;
+		container1.innerHTML = html!;
 		container2.innerHTML = render ?? '';
 		wikiparse.highlight!(pre, false, true);
 		select.selectedOptions[0]!.disabled = true;

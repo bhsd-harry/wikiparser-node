@@ -10,13 +10,13 @@
     wikiparse.highlight(pre, false, true);
     btn.disabled = !select.value;
     let optgroup;
-    for (const [i, { desc, wikitext }] of tests.entries()) {
+    for (const [i, { desc, wikitext, html }] of tests.entries()) {
         if (wikitext === undefined) {
             optgroup = document.createElement('optgroup');
             optgroup.label = desc;
             select.append(optgroup);
         }
-        else if (!dones.has(desc)) {
+        else if (html !== undefined && !dones.has(desc)) {
             const option = document.createElement('option');
             option.value = String(i);
             option.textContent = desc;
