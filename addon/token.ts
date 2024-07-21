@@ -191,7 +191,7 @@ const expand = (
 	context?: TranscludeToken | false,
 	accum: Token[] = [],
 ): Token => {
-	const magicWords = new Set(['if', 'ifeq', 'switch']),
+	const magicWords = new Set(['if', 'ifeq', 'ifexist', 'switch']),
 		n = accum.length,
 		token = new Token(wikitext, config, accum);
 	token.type = 'root';
@@ -269,15 +269,20 @@ const expand = (
 				var1 = c[1].value,
 				var2 = c[2].value,
 				known = !/\0\d+t\x7F/u.test(var1);
-			if (name === 'if' && known) {
-				const effective = c[var1 ? 2 : 3];
+			if (known && (name === 'if' || name === 'ifexist')) {
+				let bool = Boolean(var1);
+				if (name === 'ifexist') {
+					const title = Parser.normalizeTitle(var1, 0, include, config, true);
+					bool = title.valid && !title.interwiki;
+				}
+				const effective = c[bool ? 2 : 3];
 				if (effective) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(effective.lastChild)] = undefined;
 					return implicitNewLine(effective.value, prev);
 				}
 				return prev;
-			} else if (name === 'ifeq' && known && !/\0\d+t\x7F/u.test(var2)) {
+			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {
 				const effective = c[var1 === var2 ? 3 : 4];
 				if (effective) {
 					// @ts-expect-error sparse array
@@ -285,7 +290,7 @@ const expand = (
 					return implicitNewLine(effective.value, prev);
 				}
 				return prev;
-			} else if (name === 'switch' && known) {
+			} else if (known && name === 'switch') {
 				let defaultVal = '',
 					found = false,
 					transclusion = false,
