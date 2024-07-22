@@ -1,8 +1,13 @@
-import {parsers} from '../util/constants';
 import Parser from '../index';
 import {RedirectToken} from '../src/redirect';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析重定向

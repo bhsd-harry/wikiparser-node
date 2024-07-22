@@ -9,7 +9,6 @@ import {
 	noWrap,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {isToken, Shadow} from '../util/debug';
 import {
 	BuildMethod,
@@ -18,6 +17,7 @@ import {
 
 	classes,
 } from '../util/constants';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';

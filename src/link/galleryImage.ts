@@ -6,14 +6,19 @@ import {
 
 	classes,
 } from '../../util/constants';
-import {singleLine} from '../../mixin/singleLine';
 import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
-import {galleryParams} from '../imageParameter';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../base';
+
+/* NOT FOR BROWSER */
+
+import {singleLine} from '../../mixin/singleLine';
+import {galleryParams} from '../imageParameter';
 import type {AtomToken, ImageParameterToken} from '../../internal';
+
+/* NOT FOR BROWSER END */
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 

@@ -1,10 +1,15 @@
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import {hiddenToken} from '../../mixin/hidden';
-import {syntax} from '../../mixin/syntax';
 import {NowikiBaseToken} from './base';
 import type {Config} from '../../base';
 import type {Token} from '../index';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {syntax} from '../../mixin/syntax';
+
+/* NOT FOR BROWSER END */
 
 /** 状态开关 */
 @syntax()

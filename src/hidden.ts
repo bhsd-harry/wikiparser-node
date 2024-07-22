@@ -1,8 +1,13 @@
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {hiddenToken} from '../mixin/hidden';
 import {Token} from './index';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 import type {Config} from '../base';
+
+/* NOT FOR BROWSER END */
 
 /** 不可见的节点 */
 @hiddenToken()

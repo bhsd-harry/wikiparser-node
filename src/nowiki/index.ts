@@ -1,9 +1,14 @@
 import {generateForSelf} from '../../util/lint';
-import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /** 扩展标签内的纯文字Token */
 export abstract class NowikiToken extends NowikiBaseToken {

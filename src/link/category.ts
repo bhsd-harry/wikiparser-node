@@ -1,8 +1,13 @@
+import {LinkBaseToken} from './base';
+import type {Token, AtomToken} from '../../internal';
+
+/* NOT FOR BROWSER */
+
 import {decodeHtml} from '../../util/string';
 import {classes} from '../../util/constants';
-import {LinkBaseToken} from './base';
 import type {Title} from '../../lib/title';
-import type {Token, AtomToken} from '../../internal';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 分类

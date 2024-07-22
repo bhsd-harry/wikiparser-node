@@ -1,17 +1,18 @@
+import {Token} from './index';
+import type {Config, LintError} from '../base';
+
+/* NOT FOR BROWSER */
+
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {syntax} from '../mixin/syntax';
-import {Token} from './index';
-import type {Config, LintError} from '../base';
 import type {SyntaxBase} from '../mixin/syntax';
-
-declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
-
-/** NOT FOR BROWSER */
 
 export interface SyntaxToken extends SyntaxBase {}
 
-/** NOT FOR BROWSER END */
+/* NOT FOR BROWSER END */
+
+declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
 /** 满足特定语法格式的plain Token */
 @syntax()

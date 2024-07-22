@@ -1,7 +1,12 @@
-import {classes} from '../../util/constants';
 import {TrBaseToken} from './trBase';
 import type {Config} from '../../base';
 import type {Token, TdToken, TableToken, SyntaxToken, AttributesToken} from '../../internal';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 表格行，含开头的换行，不含结尾的换行

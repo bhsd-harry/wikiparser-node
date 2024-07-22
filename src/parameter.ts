@@ -7,9 +7,6 @@ import {
 	removeCommentLine,
 } from '../util/string';
 import {generateForChild} from '../util/lint';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {fixedToken} from '../mixin/fixed';
 import Parser from '../index';
 import {Token} from './index';
 import type {
@@ -17,6 +14,14 @@ import type {
 	AST,
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+import {fixedToken} from '../mixin/fixed';
+
+/* NOT FOR BROWSER END */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/iu;

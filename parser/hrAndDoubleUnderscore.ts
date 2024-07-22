@@ -1,9 +1,14 @@
-import {parsers} from '../util/constants';
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';
 import type {Config} from '../base';
 import type {AstText, Token} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析`<hr>`和状态开关

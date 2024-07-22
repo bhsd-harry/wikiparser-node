@@ -1,9 +1,14 @@
-import {classes} from '../../util/constants';
-import {fixedToken} from '../../mixin/fixed';
-import Parser from '../../index';
 import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstNodes} from '../../lib/node';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+import {fixedToken} from '../../mixin/fixed';
+import Parser from '../../index';
+
+/* NOT FOR BROWSER END */
 
 /** 成对标签 */
 @fixedToken

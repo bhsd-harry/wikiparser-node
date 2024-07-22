@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {
 	BuildMethod,
 
@@ -8,8 +7,7 @@ import {
 	classes,
 } from '../../util/constants';
 import {Shadow} from '../../util/debug';
-import {newline} from '../../util/string';
-import {fixedToken} from '../../mixin/fixed';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
@@ -18,6 +16,13 @@ import type {
 	AST,
 } from '../../base';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
+
+/* NOT FOR BROWSER */
+
+import {newline} from '../../util/string';
+import {fixedToken} from '../../mixin/fixed';
+
+/* NOT FOR BROWSER END */
 
 export type TdSubtypes = 'td' | 'th' | 'caption';
 declare interface TdSyntax {

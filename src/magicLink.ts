@@ -1,14 +1,9 @@
 import {generateForChild, generateForSelf} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {text, decodeNumber} from '../util/string';
-import {font} from '../util/html';
-import {syntax} from '../mixin/syntax';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';
-import type {SyntaxBase} from '../mixin/syntax';
 import type {
 	AstText,
 	CommentToken,
@@ -22,6 +17,16 @@ import type {
 	ParameterToken,
 } from '../internal';
 
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+import {font} from '../util/html';
+import {syntax} from '../mixin/syntax';
+import type {SyntaxBase} from '../mixin/syntax';
+
+/* NOT FOR BROWSER END */
+
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -31,8 +36,6 @@ const space = String.raw`(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 
 /** NOT FOR BROWSER */
 
-export interface MagicLinkToken extends SyntaxBase {}
-
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
 /^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
@@ -40,6 +43,8 @@ export interface MagicLinkToken extends SyntaxBase {}
 const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 	isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u'),
 	rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
+
+export interface MagicLinkToken extends SyntaxBase {}
 
 /** NOT FOR BROWSER END */
 

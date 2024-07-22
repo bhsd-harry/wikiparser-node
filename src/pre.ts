@@ -5,12 +5,17 @@ import {
 
 	classes,
 } from '../util/constants';
-import {Shadow} from '../util/debug';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import type {LintError} from '../base';
 import type {AstText, AttributesToken, ExtToken, ConverterToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+
+/* NOT FOR BROWSER END */
 
 /**
  * `<pre>`

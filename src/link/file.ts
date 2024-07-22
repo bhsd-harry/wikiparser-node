@@ -5,17 +5,22 @@ import {
 
 	sanitizeAlt,
 } from '../../util/string';
-import {font} from '../../util/html';
 import {generateForChild, generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
-import {Title} from '../../lib/title';
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {LintError} from '../../base';
 import type {Token, AtomToken} from '../../internal';
+
+/* NOT FOR BROWSER */
+
+import {font} from '../../util/html';
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {Title} from '../../lib/title';
+
+/* NOT FOR BROWSER END */
 
 const frame = new Map([
 		['manualthumb', 'Thumb'],

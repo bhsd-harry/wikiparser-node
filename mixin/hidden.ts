@@ -1,6 +1,11 @@
 import {mixin} from '../util/debug';
-import {mixins} from '../util/constants';
 import type {LintError} from '../base';
+
+/* NOT FOR BROWSER */
+
+import {mixins} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析后不可见的类

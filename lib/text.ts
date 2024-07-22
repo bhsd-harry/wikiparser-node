@@ -1,5 +1,3 @@
-import {classes} from '../util/constants';
-import {setChildNodes, Shadow} from '../util/debug';
 import {
 	extUrlChar,
 	extUrlCharFirst,
@@ -10,7 +8,6 @@ import {
 
 	sanitize,
 } from '../util/string';
-import {font} from '../util/html';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError} from '../base';
@@ -22,6 +19,14 @@ import type {
 
 	TranscludeToken,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../util/constants';
+import {setChildNodes, Shadow} from '../util/debug';
+import {font} from '../util/html';
+
+/* NOT FOR BROWSER END */
 
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;

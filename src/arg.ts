@@ -1,9 +1,6 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
-import {classes} from '../util/constants';
-import {Shadow} from '../util/debug';
-import {font} from '../util/html';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -12,6 +9,14 @@ import type {
 	LintError,
 	AST,
 } from '../base';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../util/constants';
+import {Shadow} from '../util/debug';
+import {font} from '../util/html';
+
+/* NOT FOR BROWSER END */
 
 /**
  * `{{{}}}`包裹的参数

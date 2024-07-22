@@ -1,13 +1,18 @@
-import {classes} from '../util/constants';
-import {fixedToken} from '../mixin/fixed';
-import {singleLine} from '../mixin/singleLine';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
-import type {Title} from '../lib/title';
 import type {AstText, ImagemapToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../util/constants';
+import {fixedToken} from '../mixin/fixed';
+import {singleLine} from '../mixin/singleLine';
+import type {Title} from '../lib/title';
+
+/* NOT FOR BROWSER END */
 
 /**
  * `<imagemap>`内的链接

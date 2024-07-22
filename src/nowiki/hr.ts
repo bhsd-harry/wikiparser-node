@@ -1,7 +1,12 @@
+import {NowikiBaseToken} from './base';
+
+/* NOT FOR BROWSER */
+
 import {classes} from '../../util/constants';
 import {sol} from '../../mixin/sol';
 import {syntax} from '../../mixin/syntax';
-import {NowikiBaseToken} from './base';
+
+/* NOT FOR BROWSER END */
 
 /** `<hr>` */
 @sol() @syntax(/^-{4,}$/u)

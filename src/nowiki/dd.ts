@@ -1,6 +1,11 @@
+import {ListBaseToken} from './listBase';
+
+/* NOT FOR BROWSER */
+
 import {classes} from '../../util/constants';
 import {syntax} from '../../mixin/syntax';
-import {ListBaseToken} from './listBase';
+
+/* NOT FOR BROWSER END */
 
 /** `:` */
 @syntax(/^:+$/u)

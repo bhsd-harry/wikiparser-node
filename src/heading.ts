@@ -1,5 +1,4 @@
 import {generateForChild, generateForSelf} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {
 	isToken,
 
@@ -7,10 +6,7 @@ import {
 
 	Shadow,
 } from '../util/debug';
-import {classes, states} from '../util/constants';
-import {sanitizeAlt, decodeHtml, sanitizeId} from '../util/string';
-import {fixedToken} from '../mixin/fixed';
-import {sol} from '../mixin/sol';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
@@ -19,6 +15,15 @@ import type {
 	AST,
 } from '../base';
 import type {QuoteToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {classes, states} from '../util/constants';
+import {sanitizeAlt, decodeHtml, sanitizeId} from '../util/string';
+import {fixedToken} from '../mixin/fixed';
+import {sol} from '../mixin/sol';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 章节标题

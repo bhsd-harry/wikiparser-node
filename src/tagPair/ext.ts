@@ -1,10 +1,5 @@
 import {generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
-import {newline} from '../../util/string';
-import {font} from '../../util/html';
-import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '../index';
 import {TagPairToken} from './index';
@@ -16,7 +11,19 @@ import {GalleryToken} from '../gallery';
 import {ImagemapToken} from '../imagemap';
 import {NowikiToken} from '../nowiki/index';
 import type {LintError, Config} from '../../base';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {newline} from '../../util/string';
+import {font} from '../../util/html';
+import {attributesParent} from '../../mixin/attributesParent';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
+
+export interface ExtToken extends AttributesParentBase {}
+
+/* NOT FOR BROWSER END */
 
 /**
  * 从数组中删除指定元素
@@ -28,12 +35,6 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
 	set.delete(ele);
 	return [...set];
 };
-
-/* NOT FOR BROWSER */
-
-export interface ExtToken extends AttributesParentBase {}
-
-/* NOT FOR BROWSER END */
 
 /**
  * 扩展标签

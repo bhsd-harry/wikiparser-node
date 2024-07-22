@@ -3,17 +3,22 @@ import {
 	removeComment,
 	print,
 } from '../util/string';
-import {html, font} from '../util/html';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {flagsParent} from '../mixin/flagsParent';
 import Parser from '../index';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
+
+/* NOT FOR BROWSER */
+
+import {html, font} from '../util/html';
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+import {flagsParent} from '../mixin/flagsParent';
 import type {FlagsParentBase} from '../mixin/flagsParent';
 
 export interface ConverterToken extends FlagsParentBase {}
+
+/* NOT FOR BROWSER END */
 
 /**
  * 转换

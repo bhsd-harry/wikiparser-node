@@ -1,9 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
-import {html} from '../../util/html';
-import {isToken} from '../../util/debug';
-import {Token} from '../index';
 import {TableBaseToken} from './base';
 import {
 	TdToken,
@@ -14,7 +9,17 @@ import {
 } from './td';
 import type {LintError} from '../../base';
 import type {AstNodes, ArgToken, TranscludeToken, SyntaxToken, TrToken} from '../../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {html} from '../../util/html';
+import {isToken} from '../../util/debug';
+import {Token} from '../index';
 import type {TdAttrs, TdSubtypes} from './td';
+
+/* NOT FOR BROWSER END */
 
 export interface TableCoords {
 	readonly row: number;

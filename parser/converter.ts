@@ -1,7 +1,12 @@
-import {parsers} from '../util/constants';
 import {ConverterToken} from '../src/converter';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析语言变体转换

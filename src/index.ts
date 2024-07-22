@@ -40,9 +40,7 @@
 // w: ExtLinkToken
 // x: HtmlToken
 
-import * as assert from 'assert/strict';
 import {text} from '../util/string';
-import {html, font} from '../util/html';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -54,13 +52,10 @@ import {
 } from '../util/constants';
 import {Shadow} from '../util/debug';
 import {generateForSelf} from '../util/lint';
-import {Ranges} from '../lib/ranges';
-import {AstRange} from '../lib/range';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {LintError, TokenTypes} from '../base';
-import type {Range} from '../lib/ranges';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
@@ -82,7 +77,17 @@ import type {
 	ListToken,
 	DdToken,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import * as assert from 'assert/strict';
+import {html, font} from '../util/html';
+import {Ranges} from '../lib/ranges';
+import {AstRange} from '../lib/range';
+import type {Range} from '../lib/ranges';
 import type {CaretPosition} from '../lib/node';
+
+/* NOT FOR BROWSER END */
 
 declare interface LintIgnore {
 	line: number;

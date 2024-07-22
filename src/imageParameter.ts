@@ -8,8 +8,6 @@ import {
 	text,
 } from '../util/string';
 import {generateForSelf} from '../util/lint';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError, Config} from '../base';
@@ -23,6 +21,13 @@ import type {
 	AstNodes,
 	AstText,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 

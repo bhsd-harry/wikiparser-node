@@ -1,4 +1,3 @@
-import {parsers} from '../util/constants';
 import Parser from '../index';
 import {parseQuotes} from './quotes';
 import {parseExternalLinks} from './externalLinks';
@@ -7,6 +6,12 @@ import {FileToken} from '../src/link/file';
 import {CategoryToken} from '../src/link/category';
 import type {Config} from '../base';
 import type {Token} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析内部链接

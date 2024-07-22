@@ -1,7 +1,12 @@
+import {Token} from './index';
+
+/* NOT FOR BROWSER */
+
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import Parser from '../index';
-import {Token} from './index';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 嵌入时的`<onlyinclude>`

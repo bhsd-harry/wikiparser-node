@@ -1,8 +1,13 @@
-import {classes} from '../../util/constants';
 import {parseBraces} from '../../parser/braces';
 import Parser from '../../index';
 import {ParamTagToken} from './index';
 import type {Token} from '../index';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /** `<inputbox>` */
 export abstract class InputboxToken extends ParamTagToken {

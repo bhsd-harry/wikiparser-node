@@ -1,5 +1,4 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {
 	isToken,
 
@@ -7,8 +6,7 @@ import {
 
 	Shadow,
 } from '../util/debug';
-import {classes} from '../util/constants';
-import {singleLine} from '../mixin/singleLine';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
@@ -24,6 +22,13 @@ import type {
 
 	AstNodes,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../util/constants';
+import {singleLine} from '../mixin/singleLine';
+
+/* NOT FOR BROWSER END */
 
 /**
  * `<imagemap>`

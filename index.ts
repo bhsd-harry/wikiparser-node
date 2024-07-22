@@ -1,7 +1,6 @@
 /* eslint n/exports-style: 0 */
 import * as fs from 'fs';
 import * as path from 'path';
-import * as chalk from 'chalk';
 import {rules} from './base';
 import {Shadow} from './util/debug';
 import {
@@ -13,11 +12,17 @@ import {
 	classes,
 } from './util/constants';
 import {tidy} from './util/string';
-import {cmd, info, error, diff} from './util/diff';
-import type {log} from './util/diff';
 import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
+
+/* NOT FOR BROWSER */
+
+import * as chalk from 'chalk';
+import {cmd, info, error, diff} from './util/diff';
+import type {log} from './util/diff';
+
+/* NOT FOR BROWSER END */
 
 declare interface Parser extends ParserBase {
 	rules: readonly LintError.Rule[];

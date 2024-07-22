@@ -1,6 +1,11 @@
 import {mixin} from '../util/debug';
-import {mixins} from '../util/constants';
 import type {AttributesToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {mixins} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 export interface AttributesParentBase {
 

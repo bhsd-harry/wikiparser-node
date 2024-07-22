@@ -1,6 +1,3 @@
-import * as assert from 'assert/strict';
-import * as EventEmitter from 'events';
-import {classes} from '../util/constants';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {
 	AstText,
@@ -10,6 +7,14 @@ import type {
 
 	QuoteToken,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import * as assert from 'assert/strict';
+import * as EventEmitter from 'events';
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 export type AstNodes = AstText | Token;
 export interface Dimension {

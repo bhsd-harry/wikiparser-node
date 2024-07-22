@@ -1,14 +1,19 @@
 import {generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
-import {classes} from '../../util/constants';
-import {font} from '../../util/html';
-import {syntax} from '../../mixin/syntax';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {
 	LintError,
 	AST,
 } from '../../base';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+import {font} from '../../util/html';
+import {syntax} from '../../mixin/syntax';
+
+/* NOT FOR BROWSER END */
 
 /** `''`和`'''` */
 @syntax(/^(?:'{5}|'{2,3})$/u)

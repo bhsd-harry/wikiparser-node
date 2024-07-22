@@ -1,10 +1,15 @@
 import {removeComment, escapeRegExp} from '../util/string';
-import {parsers} from '../util/constants';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;

@@ -1,12 +1,17 @@
 import {generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
 

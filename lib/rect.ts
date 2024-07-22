@@ -1,5 +1,10 @@
-import {classes} from '../util/constants';
 import type {AstNodes, Position} from './node';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /** 节点位置 */
 export class BoundingRect {

@@ -6,18 +6,23 @@ import {
 	classes,
 } from '../util/constants';
 import {generateForSelf} from '../util/lint';
-import {normalizeSpace} from '../util/string';
-import {html, font} from '../util/html';
-import {Shadow} from '../util/debug';
-import {magicLinkParent} from '../mixin/magicLinkParent';
 import Parser from '../index';
 import {Token} from './index';
 import {MagicLinkToken} from './magicLink';
 import type {LintError} from '../base';
+
+/* NOT FOR BROWSER */
+
+import {normalizeSpace} from '../util/string';
+import {html, font} from '../util/html';
+import {Shadow} from '../util/debug';
+import {magicLinkParent} from '../mixin/magicLinkParent';
 import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
 import type {FileToken} from '../internal';
 
 export interface ExtLinkToken extends MagicLinkParentBase {}
+
+/* NOT FOR BROWSER END */
 
 /**
  * 外链

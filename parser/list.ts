@@ -1,9 +1,14 @@
-import {parsers} from '../util/constants';
 import {getCommon} from '../util/html';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
 import type {Config} from '../base';
 import type {Token, HtmlToken, QuoteToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析列表

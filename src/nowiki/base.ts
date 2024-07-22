@@ -1,9 +1,14 @@
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
-import {fixedToken} from '../../mixin/fixed';
 import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstText} from '../../lib/text';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
+import {fixedToken} from '../../mixin/fixed';
+
+/* NOT FOR BROWSER END */
 
 declare type NowikiTypes = 'ext-inner'
 | 'comment'

@@ -1,10 +1,11 @@
-import {classes} from '../../util/constants';
-import {Shadow} from '../../util/debug';
 import {NowikiBaseToken} from './base';
-import {Token} from '../index';
-import type {DdToken, ListToken, AstText} from '../../internal';
 
 /* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+import {Shadow} from '../../util/debug';
+import {Token} from '../index';
+import type {DdToken, ListToken, AstText} from '../../internal';
 
 export interface ListRangeToken extends Token {
 	readonly type: 'list-range';

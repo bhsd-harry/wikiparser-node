@@ -1,11 +1,16 @@
 /* eslint-disable @stylistic/indent */
-import type {Ranges} from '../lib/ranges';
-import type {Title} from '../lib/title';
 import type {Config} from '../base';
+import type {Title} from '../lib/title';
 import type {
 	AstNodes,
 	Token,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import type {Ranges} from '../lib/ranges';
+
+/* NOT FOR BROWSER END */
 
 declare global {
 	type TokenAttribute<T extends string> =

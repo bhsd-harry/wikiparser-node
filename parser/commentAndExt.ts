@@ -1,4 +1,3 @@
-import {parsers} from '../util/constants';
 import {OnlyincludeToken} from '../src/onlyinclude';
 import {NoincludeToken} from '../src/nowiki/noinclude';
 import {IncludeToken} from '../src/tagPair/include';
@@ -6,6 +5,12 @@ import {ExtToken} from '../src/tagPair/ext';
 import {CommentToken} from '../src/nowiki/comment';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析HTML注释和扩展标签

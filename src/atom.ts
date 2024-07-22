@@ -1,7 +1,12 @@
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import {Token} from './index';
 import type {Config} from '../base';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 const atomTypes = [
 	'arg-name',

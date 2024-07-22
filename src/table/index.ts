@@ -1,5 +1,4 @@
 import {generateForChild} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {
 	Shadow,
 	emptyArray,
@@ -9,9 +8,7 @@ import {
 	isToken,
 } from '../../util/debug';
 import {noWrap} from '../../util/string';
-import {html} from '../../util/html';
-import {classes} from '../../util/constants';
-import Parser from '../../index';
+import {BoundingRect} from '../../lib/rect';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {
@@ -25,6 +22,10 @@ import type {TableCoords} from './trBase';
 import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 /* NOT FOR BROWSER */
+
+import {html} from '../../util/html';
+import {classes} from '../../util/constants';
+import Parser from '../../index';
 
 export interface TableRenderedCoords {
 	readonly row?: undefined;

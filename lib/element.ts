@@ -1,18 +1,23 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import {
 	text,
 	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
-import {classes} from '../util/constants';
-import {checkToken} from '../parser/selector';
 import {AstNode} from './node';
 import type {
 	LintError,
 	AST,
 } from '../base';
 import type {AstNodes, AstText, Token} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import {classes} from '../util/constants';
+import {checkToken} from '../parser/selector';
+
+/* NOT FOR BROWSER END */
 
 // @ts-expect-error unconstrained predicate
 declare type TokenPredicate<T = Token> = (token: Token) => token is T;

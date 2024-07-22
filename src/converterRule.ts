@@ -1,10 +1,15 @@
-import {undo, Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {html} from '../util/html';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {ConverterToken, ConverterFlagsToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {undo, Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+import {html} from '../util/html';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 转换规则

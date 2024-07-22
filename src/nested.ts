@@ -1,7 +1,5 @@
 import {generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
@@ -9,6 +7,13 @@ import {NoincludeToken} from './nowiki/noinclude';
 import {CommentToken} from './nowiki/comment';
 import type {LintError} from '../base';
 import type {AttributesToken} from './attributes';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 嵌套式的扩展标签

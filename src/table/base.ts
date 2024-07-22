@@ -1,5 +1,3 @@
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
 import {attributesParent} from '../../mixin/attributesParent';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -8,6 +6,9 @@ import {AttributesToken} from '../attributes';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 /* NOT FOR BROWSER */
+
+import {Shadow} from '../../util/debug';
+import {classes} from '../../util/constants';
 
 /**
  * 转义表格语法

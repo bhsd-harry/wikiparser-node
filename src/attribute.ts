@@ -1,5 +1,4 @@
 import {generateForChild} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {
 	removeComment,
 	escape,
@@ -8,7 +7,6 @@ import {
 
 	sanitizeAttr,
 } from '../util/string';
-import {Shadow} from '../util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -17,20 +15,23 @@ import {
 
 	classes,
 } from '../util/constants';
-import {fixedToken} from '../mixin/fixed';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';
 import type {AttributesToken} from '../internal';
 
-export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
-
 /* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {fixedToken} from '../mixin/fixed';
 
 const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 
 /* NOT FOR BROWSER END */
+
+export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const commonHtmlAttrs = new Set([
 		'id',

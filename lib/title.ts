@@ -6,9 +6,14 @@ import {
 
 	escapeRegExp,
 } from '../util/string';
+import type {Config} from '../base';
+
+/* NOT FOR BROWSER */
+
 import {classes} from '../util/constants';
 import Parser from '../index';
-import type {Config} from '../base';
+
+/* NOT FOR BROWSER END */
 
 /** MediaWiki页面标题对象 */
 export class Title {

@@ -1,12 +1,17 @@
-import {classes} from '../util/constants';
-import {Shadow} from '../util/debug';
 import {hiddenToken} from '../mixin/hidden';
-import {fixedToken} from '../mixin/fixed';
 import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import {RedirectTargetToken} from './link/redirectTarget';
 import type {LintError} from '../base';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../util/constants';
+import {Shadow} from '../util/debug';
+import {fixedToken} from '../mixin/fixed';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 重定向

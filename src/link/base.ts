@@ -7,9 +7,6 @@ import {
 
 	classes,
 } from '../../util/constants';
-import {undo, Shadow} from '../../util/debug';
-import {encode, sanitize} from '../../util/string';
-import {font} from '../../util/html';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -24,6 +21,14 @@ import type {
 	LinkToken,
 	RedirectTargetToken,
 } from '../../internal';
+
+/* NOT FOR BROWSER */
+
+import {undo, Shadow} from '../../util/debug';
+import {encode, sanitize} from '../../util/string';
+import {font} from '../../util/html';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 是否为普通内链

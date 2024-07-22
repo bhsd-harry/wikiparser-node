@@ -1,5 +1,3 @@
-import {Shadow, isToken} from '../util/debug';
-import {classes} from '../util/constants';
 import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
@@ -14,6 +12,13 @@ import type {
 
 	AstNodes,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow, isToken} from '../util/debug';
+import {classes} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * gallery标签

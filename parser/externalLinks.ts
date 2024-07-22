@@ -1,9 +1,14 @@
 import {extUrlChar, extUrlCharFirst} from '../util/string';
-import {parsers} from '../util/constants';
 import {ExtLinkToken} from '../src/extLink';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析外部链接

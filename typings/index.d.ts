@@ -1,4 +1,3 @@
-import type {Ranges} from '../lib/ranges';
 import type {
 	LintError,
 
@@ -7,6 +6,12 @@ import type {
 	Config,
 } from '../base';
 import type {AstNodes} from '../lib/node';
+
+/* NOT FOR BROWSER */
+
+import type {Ranges} from '../lib/ranges';
+
+/* NOT FOR BROWSER END */
 
 declare global {
 	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;

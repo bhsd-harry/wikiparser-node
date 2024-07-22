@@ -1,5 +1,4 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {
 	removeComment,
 
@@ -8,9 +7,7 @@ import {
 	normalizeSpace,
 	text,
 } from '../util/string';
-import {html} from '../util/html';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
@@ -20,6 +17,10 @@ import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../interna
 import type {AttributeTypes} from './attribute';
 
 /* NOT FOR BROWSER */
+
+import {html} from '../util/html';
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
 
 const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
 

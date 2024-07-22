@@ -1,19 +1,26 @@
 import {generateForSelf} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {noWrap} from '../util/string';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {fixedToken} from '../mixin/fixed';
-import {attributesParent} from '../mixin/attributesParent';
-import Parser from '../index';
+import {BoundingRect} from '../lib/rect';
 import {Token} from './index';
 import type {
 	Config,
 	LintError,
 	AST,
 } from '../base';
-import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
+
+/* NOT FOR BROWSER */
+
+import {Shadow} from '../util/debug';
+import {classes} from '../util/constants';
+import {fixedToken} from '../mixin/fixed';
+import {attributesParent} from '../mixin/attributesParent';
+import Parser from '../index';
+import type {AttributesParentBase} from '../mixin/attributesParent';
+
+export interface HtmlToken extends AttributesParentBase {}
+
+/* NOT FOR BROWSER END */
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
 	formattingTags = new Set([
@@ -44,12 +51,6 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
 		'var',
 	]),
 	obsoleteTags = new Set(['strike', 'big', 'center', 'font', 'tt']);
-
-/* NOT FOR BROWSER */
-
-export interface HtmlToken extends AttributesParentBase {}
-
-/* NOT FOR BROWSER END */
 
 /**
  * HTML标签

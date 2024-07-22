@@ -1,6 +1,11 @@
-import {classes} from '../../util/constants';
 import {hiddenToken} from '../../mixin/hidden';
 import {NowikiBaseToken} from './base';
+
+/* NOT FOR BROWSER */
+
+import {classes} from '../../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /** `<noinclude>`和`</noinclude>`，不可进行任何更改 */
 @hiddenToken()

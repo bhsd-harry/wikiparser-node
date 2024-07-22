@@ -1,8 +1,13 @@
-import {parsers} from '../util/constants';
 import {AttributesToken} from '../src/attributes';
 import {HtmlToken} from '../src/html';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
+
+/* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+
+/* NOT FOR BROWSER END */
 
 /**
  * 解析HTML标签
