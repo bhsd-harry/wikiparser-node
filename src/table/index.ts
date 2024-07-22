@@ -1,10 +1,10 @@
 import {generateForChild} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {
 	Shadow,
 	emptyArray,
 } from '../../util/debug';
-import Parser from '../../index';
+import {noWrap} from '../../util/string';
+import {BoundingRect} from '../../lib/rect';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {
@@ -14,6 +14,7 @@ import type {
 } from '../../base';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
+import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
@@ -50,7 +51,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
+		super(/^[^\S\n]*(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
 		});
 	}
 

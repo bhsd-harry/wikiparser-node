@@ -1,6 +1,6 @@
 import {generateForChild, generateForSelf} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {text, decodeNumber} from '../util/string';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import type {LintError} from '../base';

@@ -1,8 +1,8 @@
 import {generateForSelf, generateForChild} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {
 	isToken,
 } from '../util/debug';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';

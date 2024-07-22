@@ -1,5 +1,4 @@
 import {generateForChild} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {
 	removeComment,
 	escape,
@@ -8,6 +7,7 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
+import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';

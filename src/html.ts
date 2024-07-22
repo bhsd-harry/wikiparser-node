@@ -1,6 +1,6 @@
 import {generateForSelf} from '../util/lint';
-import {BoundingRect} from '../lib/rect';
 import {noWrap} from '../util/string';
+import {BoundingRect} from '../lib/rect';
 import {Token} from './index';
 import type {
 	Config,
