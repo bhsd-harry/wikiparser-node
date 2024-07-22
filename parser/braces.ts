@@ -6,7 +6,7 @@ import type {Config} from '../base';
 import type {Token} from '../src/index';
 
 const closes: Record<string, string> = {
-		'=': '\n',
+		'=': String.raw`\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)`,
 		'{': String.raw`\}{2,}|\|`,
 		'-': String.raw`\}-`,
 		'[': String.raw`\]\]`,

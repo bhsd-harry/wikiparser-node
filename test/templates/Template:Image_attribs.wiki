@@ -1,2 +1,0 @@
-<noinclude>
-[[File:foobar.jpg|</noinclude>right|Caption text<noinclude>]]</noinclude>
