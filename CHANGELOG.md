@@ -23,6 +23,7 @@
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports `lonely-http` for `http://` in `ext-link-text`
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now removes all comments and expands [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
 - [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) now includes trailing blank lines
+- [`TableToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken) now includes leading spaces
 
 ## v1.11.1
 

@@ -116,7 +116,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
+		super(/^[^\S\n]*(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
 			Token: 2, SyntaxToken: [0, -1], AttributesToken: 1, TdToken: '2:', TrToken: '2:',
 		});
 	}
