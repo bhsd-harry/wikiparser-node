@@ -1,9 +1,9 @@
 import {generateForChild} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {
 	Shadow,
 	emptyArray,
 } from '../../util/debug';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
@@ -50,7 +50,7 @@ export abstract class TableToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
+		super(/^[^\S\n]*(?:\{\||\{\{\{\s*!\s*\}\}|\{\{\s*\(!\s*\}\})$/u, syntax, 'table', attr, config, accum, {
 		});
 	}
 
