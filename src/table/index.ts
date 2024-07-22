@@ -7,8 +7,8 @@ import {
 
 	isToken,
 } from '../../util/debug';
-import {noWrap} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
+import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {
@@ -19,13 +19,13 @@ import type {
 import type {SyntaxBase} from '../../mixin/syntax';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
-import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 /* NOT FOR BROWSER */
 
 import {html} from '../../util/html';
 import {classes} from '../../util/constants';
-import Parser from '../../index';
+import {noWrap} from '../../util/string';
+import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 export interface TableRenderedCoords {
 	readonly row?: undefined;
