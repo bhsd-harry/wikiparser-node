@@ -16,6 +16,7 @@
 - `Token.prototype.toHtml` for various token types that have a bold and/or italic style
 - [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) for `#ifeq` when comparing two numbers or strings containing HTML entities
 [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) should replace underscores with spaces
+- [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) should replace spaces with underscores
 
 **Changed**
 

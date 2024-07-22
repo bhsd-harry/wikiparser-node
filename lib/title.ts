@@ -128,7 +128,7 @@ export class Title {
 					fragment = rawurldecode(fragment);
 				} catch {}
 			}
-			this.fragment = fragment;
+			this.fragment = fragment.replace(/ /gu, '_');
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.fragment !== undefined)
