@@ -37,14 +37,20 @@ export const rawurldecode = (str: string): string => decodeURIComponent(str.repl
 export const text = (childNodes: readonly (string | AstNodes)[], separator = ''): string =>
 	childNodes.map(child => typeof child === 'string' ? child : child.text()).join(separator);
 
-const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' ', amp: '&'};
+const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' ', amp: '&', quot: '"'};
 
 /** decode HTML entities */
 export const decodeHtml = factory(
-	/&(?:#(\d+|[Xx][\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]|nbsp|amp|AMP));/gu,
+	/&(?:#(\d+|[Xx][\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]|nbsp|amp|AMP|quot|QUOT));/gu,
 	(_, code: string, name: string) => code
 		? String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code))
 		: names[name.toLowerCase() as keyof typeof names],
+);
+
+/** decode numbered HTML entities */
+export const decodeNumber = factory(
+	/&#(\d+|x[\da-f]+);/giu,
+	(_, code: string) => String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code)),
 );
 
 /** escape newlines */

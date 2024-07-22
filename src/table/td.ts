@@ -1,9 +1,9 @@
 import {generateForChild} from '../../util/lint';
-import {BoundingRect} from '../../lib/rect';
 import {
 	BuildMethod,
 } from '../../util/constants';
 import {Shadow} from '../../util/debug';
+import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {TableBaseToken} from './base';
