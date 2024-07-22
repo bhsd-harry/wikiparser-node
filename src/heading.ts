@@ -8,7 +8,7 @@ import {
 	Shadow,
 } from '../util/debug';
 import {classes, states} from '../util/constants';
-import {sanitizeAlt} from '../util/string';
+import {sanitizeAlt, decodeHtml, sanitizeId} from '../util/string';
 import {fixedToken} from '../mixin/fixed';
 import {sol} from '../mixin/sol';
 import Parser from '../index';
@@ -200,7 +200,10 @@ export abstract class HeadingToken extends Token {
 		const {level, firstChild} = this,
 			html = firstChild.toHtmlInternal(),
 			headings = states.get(this.getRootNode())?.headings;
-		let id = sanitizeAlt(html)!.replace(/[\s_]+/gu, '_');
+		let id = decodeHtml(sanitizeAlt(html)!).replace(/[\s_]+/gu, '_');
+		if (id.endsWith('_')) {
+			id = id.slice(0, -1);
+		}
 		const lcId = id.toLowerCase();
 		if (headings?.has(lcId)) {
 			let i = 2;
@@ -211,7 +214,9 @@ export abstract class HeadingToken extends Token {
 		} else {
 			headings?.add(lcId);
 		}
-		return `<div class="mw-heading mw-heading${level}"><h${level} id="${id}">${html.trim()}</h${level}></div>`;
+		return `<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${html.trim()}</h${
+			level
+		}></div>`;
 	}
 }
 
