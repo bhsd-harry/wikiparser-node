@@ -2,7 +2,7 @@ import {generateForChild, generateForSelf} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
-import {text} from '../util/string';
+import {text, decodeNumber} from '../util/string';
 import {font} from '../util/html';
 import {syntax} from '../mixin/syntax';
 import Parser from '../index';
@@ -85,11 +85,13 @@ export abstract class MagicLinkToken extends Token {
 
 	/** 和内链保持一致 */
 	get link(): string {
-		let {innerText} = this;
-		if (this.type === 'magic-link' && innerText.startsWith('ISBN')) {
-			innerText = `ISBN ${innerText.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`;
+		const {innerText} = this;
+		if (this.type === 'magic-link') {
+			return innerText.startsWith('ISBN')
+				? `ISBN ${innerText.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`
+				: innerText;
 		}
-		return innerText;
+		return decodeNumber(innerText);
 	}
 
 	/* NOT FOR BROWSER */

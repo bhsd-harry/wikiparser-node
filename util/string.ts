@@ -47,6 +47,12 @@ export const decodeHtml = factory(
 		: names[name.toLowerCase() as keyof typeof names],
 );
 
+/** decode numbered HTML entities */
+export const decodeNumber = factory(
+	/&#(\d+|x[\da-f]+);/giu,
+	(_, code: string) => String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code)),
+);
+
 /** escape newlines */
 export const noWrap = factory(/\n/gu, String.raw`\n`);
 
