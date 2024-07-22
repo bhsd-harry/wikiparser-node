@@ -9,7 +9,7 @@ import type {Token} from '../src/index';
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /\{\{\s*([!=]|!!|\(!|!\)|!-)\s*\}\}(?!\})/gu;
 const closes: Record<string, string> = {
-		'=': '\n',
+		'=': String.raw`\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)`,
 		'{': String.raw`\}{2,}|\|`,
 		'-': String.raw`\}-`,
 		'[': String.raw`\]\]`,
@@ -38,7 +38,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^(\0\d+[cn]\x7F)*={1,6}|\[\[|-\{(?!\{)|\{{2,}|[\n|=]|\}{2,}|\}-|\]\]/gmu;
+	/^(\0\d+[cn]\x7F)*={1,6}|\[\[|-\{(?!\{)|\{{2,}|\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)|[|=]|\}{2,}|\}-|\]\]/gmu;
 	let moreBraces = lastBraces + wikitext.length !== -1,
 		regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
