@@ -1,6 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import {classes} from '../../util/constants';
+import {font} from '../../util/html';
 import {syntax} from '../../mixin/syntax';
 import Parser from '../../index';
 import {NowikiBaseToken} from './base';
@@ -108,7 +109,15 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override toHtmlInternal(): string {
-		return '';
+		const {previousVisibleSibling, nextVisibleSibling} = this;
+		return (
+			!previousVisibleSibling
+			|| previousVisibleSibling.type === 'text' && previousVisibleSibling.data.includes('\n')
+		)
+		&& nextVisibleSibling?.type === 'text'
+		&& nextVisibleSibling.data.startsWith('\n')
+			? font(this)
+			: '';
 	}
 }
 

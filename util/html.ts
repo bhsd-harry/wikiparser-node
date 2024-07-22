@@ -144,12 +144,14 @@ export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: b
 /**
  * wrap text with <b> and <i> tags
  * @param node
- * @param str
+ * @param strOrOmit
  */
-export const font = (node: AstNodes, str: string): string => {
+export const font = (node: AstNodes, strOrOmit?: string): string => {
 	const {font: {bold, italic}} = node,
+		str = strOrOmit ?? '',
 		i = str.indexOf('\n');
-	const wrap = /** @ignore */ (s: string): string =>
-		s && (italic ? '<i>' : '') + (bold ? '<b>' : '') + s + (bold ? '</b>' : '') + (italic ? '</i>' : '');
-	return i === -1 ? wrap(str) : wrap(str.slice(0, i)) + str.slice(i);
+	const wrap = /** @ignore */ (s: string | undefined): string => s === ''
+		? ''
+		: (italic ? '<i>' : '') + (bold ? '<b>' : '') + (s ?? '') + (bold ? '</b>' : '') + (italic ? '</i>' : '');
+	return i === -1 ? wrap(strOrOmit) : wrap(str.slice(0, i)) + str.slice(i);
 };
