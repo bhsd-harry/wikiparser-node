@@ -3,8 +3,8 @@ import {
 	Shadow,
 	emptyArray,
 } from '../../util/debug';
-import {noWrap} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
+import Parser from '../../index';
 import {TrBaseToken} from './trBase';
 import {SyntaxToken} from '../syntax';
 import type {
@@ -14,7 +14,6 @@ import type {
 } from '../../base';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
-import type {TdAttrs, TdSubtypes, TdSpanAttrs} from './td';
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
