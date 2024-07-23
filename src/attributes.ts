@@ -8,7 +8,7 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../base';
-import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
+import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken, SyntaxToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
 declare type AttributesTypes = `${AttributeTypes}s`;
@@ -38,6 +38,7 @@ export abstract class AttributesToken extends Token {
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+	abstract override get previousSibling(): SyntaxToken | undefined;
 
 	override get type(): AttributesTypes {
 		return this.#type;

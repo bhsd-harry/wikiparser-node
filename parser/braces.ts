@@ -23,7 +23,7 @@ const closes: Record<string, string> = {
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${
-			config.excludes?.includes('heading') ? '' : String.raw`^(\0\d+[cn]\x7F)*={1,6}|`
+			config.excludes?.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
 		}\[\[|-\{(?!\{)`,
 		openBraces = String.raw`|\{{2,}`,
 		{parserFunction: [,,, subst]} = config,

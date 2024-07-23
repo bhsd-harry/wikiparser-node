@@ -98,7 +98,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				for (const key of ['main', 'fragment'] as const) {
 					const str = t[key];
 					if (str?.includes('\0')) {
-						t[key] = root.buildFromStr(str, BuildMethod.Text);
+						const s = root.buildFromStr(str, BuildMethod.Text);
+						if (key === 'main') {
+							t.main = s;
+						} else {
+							t.setFragment(s);
+						}
 					}
 				}
 				return t;
