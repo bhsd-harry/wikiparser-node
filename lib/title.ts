@@ -223,6 +223,11 @@ export class Title {
 		return [false, title];
 	}
 
+	/** @private */
+	setFragment(fragment: string): void {
+		this.#fragment = fragment;
+	}
+
 	/* NOT FOR BROWSER */
 
 	/**
