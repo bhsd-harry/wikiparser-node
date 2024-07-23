@@ -1,6 +1,6 @@
 ## v1.12.0
 
-*2024-07-19*
+*2024-07-23*
 
 **Added**
 
@@ -13,8 +13,8 @@
 - Remove unexpected leading space for fostered table content in [`TableToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TableToken#tohtml)
 - A valid title should not contain characters that are escaped as HTML entities twice (e.g., `&amp;amp;`)
 - [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) for `#switch` with a fall-through default case
-- `Token.prototype.toHtml` for various token types that have a bold and/or italic style
 - [`Token.prototype.solveConst`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#solveconst) for `#ifeq` when comparing two numbers or strings containing HTML entities
+- `Token.prototype.toHtml` for various token types that have a bold and/or italic style
 [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) should replace underscores with spaces
 - [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) should replace spaces with underscores
 
@@ -23,6 +23,7 @@
 - [`AstText.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#lint) no longer reports `lonely-http` for `http://` in `ext-link-text`
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now removes all comments and expands [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
 - [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) now includes trailing blank lines
+- By turning [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#redirects) and [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) into accessors, page titles and fragments are now automatically normalized
 
 ## v1.11.1
 

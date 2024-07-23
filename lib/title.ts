@@ -188,8 +188,8 @@ export class Title {
 	}
 
 	/** @private */
-	toString(): string {
-		return `${this.title}${
+	toString(display?: boolean): string {
+		return `${display ? this.title.replace(/_/gu, ' ') : this.title}${
 			this.#fragment === undefined
 			&& this.#redirectFragment === undefined
 				? ''

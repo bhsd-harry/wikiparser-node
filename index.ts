@@ -106,8 +106,32 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER */
 
+/**
+ * 快速规范化页面标题
+ * @param title 标题
+ */
+const normalizeTitle = (title: string): string => String(Parser.normalizeTitle(title));
+
+/** 重定向列表 */
+class RedirectMap extends Map<string, string> {
+	/** @ignore */
+	constructor(entries?: Map<string, string>) {
+		super();
+		if (entries) {
+			for (const [k, v] of entries) {
+				this.set(k, v);
+			}
+		}
+	}
+
+	override set(key: string, value: string): this {
+		return super.set(normalizeTitle(key), normalizeTitle(value));
+	}
+}
+
 const promises = [Promise.resolve()];
-let viewOnly = false;
+let viewOnly = false,
+	redirectMap = new RedirectMap();
 
 /* NOT FOR BROWSER END */
 
@@ -130,8 +154,16 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		viewOnly = value;
 	},
 
+	/** @implements */
+	get redirects() {
+		return redirectMap;
+	},
+
+	set redirects(redirects: Map<string, string>) {
+		redirectMap = new RedirectMap(redirects);
+	},
+
 	conversionTable: new Map(),
-	redirects: new Map(),
 
 	templates: new Map(),
 
@@ -360,7 +392,6 @@ const def: PropertyDescriptorMap = {
 		/* NOT FOR BROWSER */
 
 		'conversionTable',
-		'redirects',
 		'warning',
 		'debugging',
 		'isInterwiki',
