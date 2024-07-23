@@ -8,12 +8,22 @@ import type {Config} from '../base';
 export class Title {
 	#main: string;
 	readonly #namespaces;
-	ns;
-	fragment;
+	#ns;
+	#fragment;
 	interwiki = '';
 	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
+
+	/** 命名空间 */
+	get ns(): number {
+		return this.#ns;
+	}
+
+	/** 片段标识符 */
+	get fragment(): string | undefined {
+		return this.#fragment;
+	}
 
 	/** 不含命名空间的标题主体部分 */
 	get main(): string {
@@ -63,7 +73,7 @@ export class Title {
 		}
 		title = title.replace(/[_ ]+/gu, ' ').trim();
 		if (subpage) {
-			this.ns = 0;
+			this.#ns = 0;
 		} else {
 			let ns = defaultNs;
 			if (title.startsWith(':')) {
@@ -79,7 +89,7 @@ export class Title {
 					title = m.slice(1).join(':').trim();
 				}
 			}
-			this.ns = ns;
+			this.#ns = ns;
 		}
 		const i = title.indexOf('#');
 		if (i !== -1) {
@@ -89,10 +99,10 @@ export class Title {
 					fragment = rawurldecode(fragment);
 				} catch {}
 			}
-			this.fragment = fragment.replace(/ /gu, '_');
+			this.#fragment = fragment.replace(/ /gu, '_');
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.fragment !== undefined)
+		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.#fragment !== undefined)
 		&& decodeHtml(title) === title
 		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
 			subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
@@ -105,12 +115,12 @@ export class Title {
 	}
 
 	/** @private */
-	toString(): string {
-		return `${this.title}${
-			this.fragment === undefined
+	toString(display?: boolean): string {
+		return `${display ? this.title.replace(/_/gu, ' ') : this.title}${
+			this.#fragment === undefined
 				? ''
 				: `#${
-					this.fragment
+					this.#fragment
 				}`
 		}`;
 	}
