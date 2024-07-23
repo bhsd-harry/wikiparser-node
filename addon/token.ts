@@ -14,7 +14,7 @@ import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
 import type {AstNodes, CaretPosition} from '../lib/node';
 import type {TagToken} from '../src/index';
-import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken, RedirectToken} from '../internal';
+import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
 Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
 	const config = this.getAttribute('config');
@@ -204,20 +204,7 @@ const expand = (
 	token.type = 'root';
 	token.parseOnce(0, include);
 	if (context !== false) {
-		const str = token.firstChild!.toString(),
-			mt = /^\0(\d+)n\x7F/u.exec(str);
-		let visible = removeCommentLine(str, true);
-		if (mt) {
-			const redirect = accum[Number(mt[1])];
-			if (redirect?.type === 'redirect') {
-				if (context) {
-					Parser.error('Transcluded redirect ->', (redirect as RedirectToken).lastChild.toString());
-					throw new Error('A redirect is transcluded!');
-				}
-				visible = mt[0] + visible;
-			}
-		}
-		token.setText(visible);
+		token.setText(removeCommentLine(token.firstChild!.toString(), true));
 	}
 	token.parseOnce();
 	for (const plain of [...accum.slice(n), token]) {

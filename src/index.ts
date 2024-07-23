@@ -30,7 +30,8 @@
 // i: RFC/PMID/ISBN
 // l: LinkToken
 // m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// n: RedirectToken、NoIncludeToken和IncludeToken
+// n: NoIncludeToken和IncludeToken
+// o: RedirectToken
 // q: QuoteToken
 // r: HrToken
 // s: `{{{|subst:}}}`

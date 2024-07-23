@@ -30,7 +30,7 @@ export const parseHrAndDoubleUnderscore = (
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	/__(toc|notoc)__/giu;
 	data = data.replace(
-		/^((?:\0\d+[cn]\x7F)*)(-{4,})/gmu,
+		/^((?:\0\d+[cno]\x7F)*)(-{4,})/gmu,
 		(_, lead: string, m: string) => {
 			// @ts-expect-error abstract class
 			new HrToken(m, config, accum);

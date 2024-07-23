@@ -31,7 +31,7 @@ const closes: Record<string, string> = {
  */
 export const parseBraces = (wikitext: string, config: Config, accum: Token[]): string => {
 	const source = String.raw`${
-			config.excludes?.includes('heading') ? '' : String.raw`^(\0\d+[cn]\x7F)*={1,6}|`
+			config.excludes?.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
 		}\[\[|-\{(?!\{)`,
 		openBraces = String.raw`|\{{2,}`,
 		{parserFunction: [,,, subst]} = config,
@@ -43,7 +43,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^(\0\d+[cn]\x7F)*={1,6}|\[\[|-\{(?!\{)|\{{2,}|\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)|[|=]|\}{2,}|\}-|\]\]/gmu;
+	/^((?:\0\d+[cno]\x7F)*)={1,6}|\[\[|-\{(?!\{)|\{{2,}|\n(?!(?:[^\S\n]|\0\d+[cn]\x7F)*\n)|[|=]|\}{2,}|\}-|\]\]/gmu;
 	let moreBraces = lastBraces + wikitext.length !== -1,
 		regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),

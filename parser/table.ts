@@ -62,8 +62,9 @@ export const parseTable = (
 		pop = (): TrToken | TableToken => top!.type === 'td' ? stack.pop() as TrToken | TableToken : top!;
 	for (const outLine of lines) {
 		top = stack.pop();
-		const [spaces] = /^(?:\s|\0\d+[cn]\x7F)*/u.exec(outLine)!,
-			line = outLine.slice(spaces.length),
+		const [lead, redirect, spaces] = /^(\0\d+o\x7F)?((?:\s|\0\d+[cn]\x7F)*)/u
+				.exec(outLine)! as string[] as [string, string | undefined, string],
+			line = outLine.slice(lead.length),
 			matchesStart = /^(:*)((?:\s|\0\d+[cn]\x7F)*(?:\{\||\{(?:\0\d+[cn]\x7F)*\0\d+!\x7F|\0\d+\{\x7F))(.*)$/u
 				.exec(line) as [string, string, string, string, string] | null;
 		if (matchesStart) {
@@ -75,7 +76,7 @@ export const parseTable = (
 				// @ts-expect-error abstract class
 				new DdToken(indent, config, accum);
 			}
-			push(`\n${indent && `${spaces}\0${accum.length - 1}d\x7F`}\0${accum.length}b\x7F`, top);
+			push(`\n${indent ? `${lead}\0${accum.length - 1}d\x7F` : redirect ?? ''}\0${accum.length}b\x7F`, top);
 			stack.push(
 				...top ? [top] : [],
 				// @ts-expect-error abstract class
