@@ -13,7 +13,7 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../base';
-import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken} from '../internal';
+import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken, SyntaxToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 
 /* NOT FOR BROWSER */
@@ -54,6 +54,7 @@ export abstract class AttributesToken extends Token {
 	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+	abstract override get previousSibling(): SyntaxToken | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -61,6 +62,7 @@ export abstract class AttributesToken extends Token {
 	abstract override get firstElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get lastElementChild(): AtomToken | AttributeToken | undefined;
 	abstract override get parentElement(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+	abstract override get previousElementSibling(): SyntaxToken | undefined;
 
 	/* NOT FOR BROWSER END */
 

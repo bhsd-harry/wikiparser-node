@@ -3,7 +3,7 @@ import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
-import type {AstText, ImagemapToken} from '../internal';
+import type {AstText, ImagemapToken, GalleryImageToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -24,6 +24,8 @@ export abstract class ImagemapLinkToken extends Token {
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): NoincludeToken;
 	abstract override get parentNode(): ImagemapToken | undefined;
+	abstract override get previousSibling(): GalleryImageToken | this | NoincludeToken | AstText;
+	abstract override get nextSibling(): this | NoincludeToken | AstText | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -31,6 +33,8 @@ export abstract class ImagemapLinkToken extends Token {
 	abstract override get firstElementChild(): LinkToken | ExtLinkToken;
 	abstract override get lastElementChild(): NoincludeToken;
 	abstract override get parentElement(): ImagemapToken | undefined;
+	abstract override get previousElementSibling(): GalleryImageToken | this | NoincludeToken;
+	abstract override get nextElementSibling(): this | NoincludeToken | undefined;
 
 	/* NOT FOR BROWSER END */
 
