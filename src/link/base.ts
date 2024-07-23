@@ -66,7 +66,7 @@ export abstract class LinkBaseToken extends Token {
 		this.setTarget(link);
 	}
 
-	/** fragment */
+	/** 片段标识符 */
 	get fragment(): string | undefined {
 		return this.#title.fragment;
 	}
@@ -283,8 +283,8 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/**
-	 * 设置fragment
-	 * @param fragment fragment
+	 * 设置片段标识符
+	 * @param fragment 片段标识符
 	 */
 	setFragment(fragment?: string): void {
 		const {type, name} = this;

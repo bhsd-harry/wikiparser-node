@@ -129,6 +129,7 @@ export const rules = [
 	'var-anchor',
 	'void-ext',
 ] as const;
+Object.freeze(rules);
 
 export namespace LintError {
 	export type Severity = 'error' | 'warning';

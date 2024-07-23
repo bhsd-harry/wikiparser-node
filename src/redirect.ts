@@ -20,8 +20,8 @@ import {fixedToken} from '../mixin/fixed';
 @fixedToken
 @hiddenToken(false, false)
 export abstract class RedirectToken extends Token {
-	#pre: string;
-	#post: string;
+	#pre;
+	#post;
 
 	declare readonly childNodes: readonly [SyntaxToken, RedirectTargetToken];
 	abstract override get firstChild(): SyntaxToken;

@@ -70,7 +70,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * 设置跨语言链接
 	 * @param lang 语言前缀
 	 * @param link 页面标题
-	 * @throws `SyntaxError` 仅有fragment
+	 * @throws `SyntaxError` 仅有片段标识符
 	 */
 	setLangLink(lang: string, link: string): void {
 		link = link.trim();
@@ -82,8 +82,8 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/**
 	 * 修改为到自身的链接
-	 * @param fragment fragment
-	 * @throws `RangeError` 空fragment
+	 * @param fragment 片段标识符
+	 * @throws `RangeError` 空的片段标识符
 	 */
 	asSelfLink(fragment = this.fragment): void {
 		if (!fragment?.trim()) {

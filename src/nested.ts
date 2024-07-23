@@ -24,7 +24,7 @@ export abstract class NestedToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	readonly #tags: string[];
+	readonly #tags;
 	readonly #regex;
 
 	/* NOT FOR BROWSER END */
