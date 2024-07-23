@@ -131,4 +131,9 @@ export class Title {
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		return [false, title];
 	}
+
+	/** @private */
+	setFragment(fragment: string): void {
+		this.#fragment = fragment;
+	}
 }
