@@ -48,7 +48,7 @@ export const parseHrAndDoubleUnderscore = (
 			return m;
 		},
 	).replace(
-		/^((?:\0\d+[cn]\x7F)*)(={1,6})(.+)\2((?:[^\S\n]|\0\d+[cn]\x7F)*)$/gmu,
+		/^((?:\0\d+[cn]\x7F)*)(={1,6})(.+)\2((?:\s|\0\d+[cn]\x7F)*)$/gmu,
 		(_, lead: string, equals: string, heading: string, trail: string) => {
 			const text = `${lead}\0${accum.length}h\x7F`;
 			// @ts-expect-error abstract class
