@@ -30,7 +30,8 @@
 // i: RFC/PMID/ISBN
 // l: LinkToken
 // m: `{{fullurl:}}`、`{{canonicalurl:}}`或`{{filepath:}}`
-// n: RedirectToken、NoIncludeToken和IncludeToken
+// n: NoIncludeToken和IncludeToken
+// o: RedirectToken
 // q: QuoteToken
 // r: HrToken
 // s: `{{{|subst:}}}`
@@ -183,9 +184,9 @@ export class Token extends AstElement {
 	build(): void {
 		this.#stage = MAX_STAGE;
 		const {length, firstChild} = this,
-			str = String(firstChild);
-		if (length === 1 && firstChild!.type === 'text' && str.includes('\0')) {
-			this.replaceChildren(...this.buildFromStr(str));
+			str = firstChild?.toString();
+		if (length === 1 && firstChild!.type === 'text' && str!.includes('\0')) {
+			this.replaceChildren(...this.buildFromStr(str!));
 			this.normalize();
 			if (this.type === 'root') {
 				for (const token of this.#accum) {

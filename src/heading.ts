@@ -10,7 +10,7 @@ import type {
 	LintError,
 	AST,
 } from '../base';
-import type {QuoteToken} from '../internal';
+import type {QuoteToken, AstText} from '../internal';
 
 /**
  * 章节标题
@@ -22,6 +22,7 @@ export abstract class HeadingToken extends Token {
 	declare readonly childNodes: readonly [Token, SyntaxToken];
 	abstract override get firstChild(): Token;
 	abstract override get lastChild(): SyntaxToken;
+	abstract override get nextSibling(): AstText | undefined;
 
 	override get type(): 'heading' {
 		return 'heading';
