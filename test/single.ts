@@ -3,6 +3,8 @@ import {writeFileSync} from 'fs';
 import {diff, error} from '../util/diff';
 import type {Parser, LintError} from '../base';
 
+declare type Token = ReturnType<Parser['parse']>;
+
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
 
@@ -23,13 +25,14 @@ export const single = async (
 ): Promise<LintError[]> => {
 	content = content.replace(/[\0\x7F]/gu, '');
 	console.time(`parse: ${title}`);
-	const token = profiling
-		? await new Promise<ReturnType<typeof Parser.parse>>(resolve => {
+	const parse = /** @ignore */ (): Token => Parser.parse(content, ns === 10 || title.endsWith('/doc'));
+	const token = await new Promise<Token>(resolve => {
+		if (profiling) {
 			const session = new inspector.Session();
 			session.connect();
 			session.post('Profiler.enable', () => {
 				session.post('Profiler.start', () => {
-					const t = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
+					const t = parse();
 					session.post('Profiler.stop', (_, {profile}) => {
 						writeFileSync('test/prof.txt', JSON.stringify(profile, null, '\t'));
 						session.disconnect();
@@ -37,8 +40,10 @@ export const single = async (
 					});
 				});
 			});
-		})
-		: Parser.parse(content, ns === 10 || title.endsWith('/doc'));
+		} else {
+			resolve(parse());
+		}
+	});
 	console.timeEnd(`parse: ${title}`);
 	const parsed = String(token);
 	if (parsed !== content) {
