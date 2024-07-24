@@ -9,4 +9,4 @@ Parser.viewOnly = true;
 /* NOT FOR BROWSER END */
 
 const content = readFileSync('test/page.wiki', 'utf8');
-void single(Parser, {content, ns: 0, pageid: 0, title: 'Prof'});
+void single(Parser, {content, ns: 0, pageid: 0, title: 'Prof'}, true);
