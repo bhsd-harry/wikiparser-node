@@ -1,3 +1,5 @@
+import * as inspector from 'inspector';
+import {writeFileSync} from 'fs';
 import {diff, error} from '../util/diff';
 import type {Parser, LintError} from '../base';
 
@@ -11,11 +13,31 @@ const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table
  * @param page.title 页面标题
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
+ * @param profiling 是否启用性能分析
  */
-export const single = async (Parser: Parser, {pageid, title, ns, content}: SimplePage): Promise<LintError[]> => {
+export const single = async (
+	Parser: Parser,
+	{pageid, title, ns, content}: SimplePage,
+	profiling?: boolean,
+): Promise<LintError[]> => {
 	content = content.replace(/[\0\x7F]/gu, '');
 	console.time(`parse: ${title}`);
-	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
+	const token = profiling
+		? await new Promise<ReturnType<typeof Parser.parse>>(resolve => {
+			const session = new inspector.Session();
+			session.connect();
+			session.post('Profiler.enable', () => {
+				session.post('Profiler.start', () => {
+					const t = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
+					session.post('Profiler.stop', (_, {profile}) => {
+						writeFileSync('test/prof.txt', JSON.stringify(profile, null, '\t'));
+						session.disconnect();
+						resolve(t);
+					});
+				});
+			});
+		})
+		: Parser.parse(content, ns === 10 || title.endsWith('/doc'));
 	console.timeEnd(`parse: ${title}`);
 	const parsed = String(token);
 	if (parsed !== content) {
