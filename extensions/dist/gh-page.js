@@ -15,7 +15,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
     highlighters[1 - Number(input.checked)].style.display = 'none';
     const cm = new CodeMirror6(textbox2), mwConfig = CodeMirror6.getMwConfig(config);
     const model = (await monaco).editor.createModel(textbox2.value, 'wikitext');
-    monaco.editor.create(monacoContainer, {
+    (await monaco).editor.create(monacoContainer, {
         model,
         automaticLayout: true,
         theme: 'monokai',

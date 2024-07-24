@@ -3,7 +3,7 @@ import {CodeJar} from '/codejar/dist/codejar.js';
 import type {Config, AST} from './typings';
 
 declare global {
-	const monaco: {editor: MonacoEditor};
+	const monaco: PromiseLike<{editor: MonacoEditor}>;
 }
 
 /**
@@ -61,7 +61,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 	// Monaco初始化
 	// eslint-disable-next-line @typescript-eslint/await-thenable
 	const model = (await monaco).editor.createModel(textbox2.value, 'wikitext');
-	monaco.editor.create(monacoContainer, {
+	(await monaco).editor.create(monacoContainer, {
 		model,
 		automaticLayout: true,
 		theme: 'monokai',
