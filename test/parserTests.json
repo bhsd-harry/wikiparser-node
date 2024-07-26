@@ -1659,7 +1659,7 @@
 		"desc": "Template with complex arguments",
 		"wikitext": "{{complextemplate|\n  param ={{ templateasargtest  |\n templ = simple }}|[[Template:complextemplate|link]]}}",
 		"html": "<p><a href=\"/wiki/Template:Complextemplate\" title=\"Template:Complextemplate\">link</a> This is a test template with parameter (test)\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3AComplextemplate?action=edit&redlink=1\" class=\"new\" title=\"Template:Complextemplate (page does not exist)\">Template:Complextemplate</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Template%3AComplextemplate\" title=\"Template:Complextemplate\">link</a> This is a test template with parameter (test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">complextemplate</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n  param </span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"> templateasargtest  </span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n templ </span>=<span class=\"wpb-parameter-value\"> simple </span></span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Template:complextemplate</span>|<span class=\"wpb-link-text\">link</span>]]</span></span></span>}}</span></span>"
 	},
 	{
@@ -1692,35 +1692,35 @@
 		"desc": "Template parameter as link source",
 		"wikitext": "{{linktest|param=Main Page}}",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3ALinktest?action=edit&redlink=1\" class=\"new\" title=\"Template:Linktest (page does not exist)\">Template:Linktest</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">linktest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">param</span>=<span class=\"wpb-parameter-value\">Main Page</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template passing argument to another template",
 		"wikitext": "{{paramtest2|arg='hmm'}}",
 		"html": "<p>including another template, This is a test template with parameter 'hmm'\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3AParamtest2?action=edit&redlink=1\" class=\"new\" title=\"Template:Paramtest2 (page does not exist)\">Template:Paramtest2</a>\n</p>",
+		"render": "<p>including another template, This is a test template with parameter 'hmm'\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">paramtest2</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">arg</span>=<span class=\"wpb-parameter-value\">'hmm'</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template as link source",
 		"wikitext": "[[{{linktest2}}]]\n\n[[{{linktest2}}|Main Page]]\n\n[[{{linktest2}}]]Page",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>Page\n</p>",
-		"render": "<p><a href=\"/wiki/%7B%7Blinktest2%7D%7D\" title=\"{{linktest2}}\">{{linktest2}}</a>\n</p><p><a href=\"/wiki/%7B%7Blinktest2%7D%7D\" title=\"{{linktest2}}\">Main Page</a>\n</p><p><a href=\"/wiki/%7B%7Blinktest2%7D%7D\" title=\"{{linktest2}}\">{{linktest2}}</a>Page\n</p>",
+		"render": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>\n</p><p><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>Page\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">linktest2</span>}}</span></span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">linktest2</span>}}</span></span>|<span class=\"wpb-link-text\">Main Page</span>]]</span>\n\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">linktest2</span>}}</span></span>]]</span>Page</span>"
 	},
 	{
 		"desc": "Template infinite loop",
 		"wikitext": "{{loop1}}",
 		"html": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Loop1\" title=\"Template:Loop1\">Template:Loop1</a></span>\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3ALoop1?action=edit&redlink=1\" class=\"new\" title=\"Template:Loop1 (page does not exist)\">Template:Loop1</a>\n</p>",
+		"render": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template%3ALoop1\" title=\"Template:Loop1\">Template:Loop1</a></span>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">loop1</span>}}</span></span>"
 	},
 	{
 		"desc": "Template from main namespace",
 		"wikitext": "{{:Main Page}}",
 		"html": "<p>blah blah\n</p>",
-		"render": "<p><a href=\"/wiki/Main_Page?action=edit&redlink=1\" class=\"new\" title=\"Main_Page (page does not exist)\">Main_Page</a>\n</p>",
+		"render": "<p>blah blah\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">:Main Page</span>}}</span></span>"
 	},
 	{
@@ -1732,14 +1732,14 @@
 		"desc": "T2529: Template with table, not included at beginning of line",
 		"wikitext": "foo {{table}}",
 		"html": "<p>foo \n</p>\n<table>\n<tbody><tr>\n<td>1</td>\n<td>2\n</td></tr>\n<tr>\n<td>3</td>\n<td>4\n</td></tr></tbody></table>",
-		"render": "<p>foo <a href=\"/wiki/Template%3ATable?action=edit&redlink=1\" class=\"new\" title=\"Template:Table (page does not exist)\">Template:Table</a>\n</p>",
+		"render": "<p>foo \n</p>\n<table >\n<tbody><tr>\n<td > 1 </td>\n<td > 2</td></tr><tr >\n<td > 3 </td>\n<td > 4</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\">foo <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table</span>}}</span></span>"
 	},
 	{
 		"desc": "T2523: Template shouldn't eat newline (or add an extra one before table)",
 		"wikitext": "foo\n{{table}}",
 		"html": "<p>foo\n</p>\n<table>\n<tbody><tr>\n<td>1</td>\n<td>2\n</td></tr>\n<tr>\n<td>3</td>\n<td>4\n</td></tr></tbody></table>",
-		"render": "<p>foo\n<a href=\"/wiki/Template%3ATable?action=edit&redlink=1\" class=\"new\" title=\"Template:Table (page does not exist)\">Template:Table</a>\n</p>",
+		"render": "<p>foo\n</p>\n<table >\n<tbody><tr>\n<td > 1 </td>\n<td > 2</td></tr><tr >\n<td > 3 </td>\n<td > 4</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\">foo\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table</span>}}</span></span>"
 	},
 	{
@@ -1760,7 +1760,7 @@
 		"desc": "Templates: Double quotes as template target",
 		"wikitext": "foo {{''}} baz",
 		"html": "<p>foo bar baz\n</p>",
-		"render": "<p>foo <a href=\"/wiki/Template%3A''?action=edit&redlink=1\" class=\"new\" title=\"Template:'' (page does not exist)\">Template:''</a> baz\n</p>",
+		"render": "<p>foo bar baz\n</p>",
 		"print": "<span class=\"wpb-root\">foo <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">''</span>}}</span> baz</span>"
 	},
 	{
@@ -1802,14 +1802,14 @@
 		"desc": "<onlyinclude> being included",
 		"wikitext": "{{Includes2}}",
 		"html": "<p>Foo\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3AIncludes2?action=edit&redlink=1\" class=\"new\" title=\"Template:Includes2 (page does not exist)\">Template:Includes2</a>\n</p>",
+		"render": "<p>Foo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes2</span>}}</span></span>"
 	},
 	{
 		"desc": "<onlyinclude> and <includeonly> being included",
 		"wikitext": "{{Includes3}}",
 		"html": "<p>Foo\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3AIncludes3?action=edit&redlink=1\" class=\"new\" title=\"Template:Includes3 (page does not exist)\">Template:Includes3</a>\n</p>",
+		"render": "<p>Foo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes3</span>}}</span></span>"
 	},
 	{
@@ -1899,8 +1899,8 @@
 		"desc": "Includes and comments at SOL",
 		"wikitext": "<!-- comment --><noinclude><!-- comment --></noinclude><!-- comment -->==hu==\n\n<noinclude>\nsome\n</noinclude>*stuff\n*here\n\n<noinclude>\nsome</noinclude>* stuff\n* here\n\n<includeonly>can have stuff</includeonly>===here===\n\n__INDEX__== hi ==",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"hu\">hu</h2></div>\n<p>some\n</p>\n<ul><li>stuff</li>\n<li>here</li></ul>\n<p><br />\nsome* stuff\n</p>\n<ul><li>here</li></ul>\n<div class=\"mw-heading mw-heading3\"><h3 id=\"here\">here</h3></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
-		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"hu\">hu</h2></div>\n<p>some\n</p>\n<ul><li>stuff</li>\n<li>here</li></ul>\n<p><br>\nsome* stuff\n</p>\n<ul><li>here</li></ul>\n<div class=\"mw-heading mw-heading3\"><h3 id=\"here\">here</h3></div>\n<p>== hi ==\n</p>",
-		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- comment --&gt;</span><span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-comment\">&lt;!-- comment --&gt;</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-comment\">&lt;!-- comment --&gt;</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">hu</span>==<span class=\"wpb-heading-trail\">\n\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span></span></span>\nsome\n<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-list\">*</span>stuff\n<span class=\"wpb-list\">*</span>here\n\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>\nsome<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>* stuff\n<span class=\"wpb-list\">* </span>here\n\n<span class=\"wpb-include\">&lt;includeonly&gt;can have stuff&lt;/includeonly&gt;</span><span class=\"wpb-heading\">===<span class=\"wpb-heading-title\">here</span>===<span class=\"wpb-heading-trail\">\n</span></span>\n<span class=\"wpb-double-underscore\">__INDEX__</span>== hi ==</span>"
+		"render": "<div class=\"mw-heading mw-heading2\"><h2 id=\"hu\">hu</h2></div>\n<p>some\n</p>\n<ul><li>stuff</li>\n<li>here</li></ul>\n<p><br>\nsome* stuff\n</p>\n<ul><li>here</li></ul>\n<div class=\"mw-heading mw-heading3\"><h3 id=\"here\">here</h3></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"hi\">hi</h2></div>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-comment\">&lt;!-- comment --&gt;</span><span class=\"wpb-noinclude\">&lt;noinclude&gt;</span><span class=\"wpb-comment\">&lt;!-- comment --&gt;</span><span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-comment\">&lt;!-- comment --&gt;</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">hu</span>==<span class=\"wpb-heading-trail\">\n\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span></span></span>\nsome\n<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span><span class=\"wpb-list\">*</span>stuff\n<span class=\"wpb-list\">*</span>here\n\n<span class=\"wpb-noinclude\">&lt;noinclude&gt;</span>\nsome<span class=\"wpb-noinclude\">&lt;/noinclude&gt;</span>* stuff\n<span class=\"wpb-list\">* </span>here\n\n<span class=\"wpb-include\">&lt;includeonly&gt;can have stuff&lt;/includeonly&gt;</span><span class=\"wpb-heading\">===<span class=\"wpb-heading-title\">here</span>===<span class=\"wpb-heading-trail\">\n</span></span>\n<span class=\"wpb-double-underscore\">__INDEX__</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\"> hi </span>==</span></span>"
 	},
 	{
 		"desc": "Parsoid: DOM fragment reuse",
@@ -2003,14 +2003,14 @@
 		"desc": "Templates: Template Name/Arg clash: 1. Use of positional param",
 		"wikitext": "{{quote|foo}}",
 		"html": "<p>foo\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3AQuote?action=edit&redlink=1\" class=\"new\" title=\"Template:Quote (page does not exist)\">Template:Quote</a>\n</p>",
+		"render": "<p>foo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">quote</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Templates: Template Name/Arg clash: 2. Use of named param",
 		"wikitext": "{{quote|quote=foo}}",
 		"html": "<p>foo\n</p>",
-		"render": "<p><a href=\"/wiki/Template%3AQuote?action=edit&redlink=1\" class=\"new\" title=\"Template:Quote (page does not exist)\">Template:Quote</a>\n</p>",
+		"render": "<p>foo\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">quote</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">quote</span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
 	},
 	{
@@ -2218,14 +2218,14 @@
 		"desc": "Templates: Support for templates generating attributes and content",
 		"wikitext": "{| {{mixed_attr_content_template}}\n|-\n|bar\n|}",
 		"html": "<table style=\"color:red;\" title=\"T48811\">\n\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>",
-		"render": "<table style=\"color:red;\" title=\"T48811\">\n<tbody><tr >\n<td >bar</td></tr></tbody></table>",
+		"render": "<table style=\"color:red;\" title=\"T48811\">\n<tbody><tr >\n<td >foo</td></tr><tr >\n<td >bar</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">mixed_attr_content_template</span>}}</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Templates: Support for templates generating table attributes and content (with fostered categories)",
 		"wikitext": "{| {{mixed_attr_content_template_2}}\n|-\n|bar\n|}",
 		"html": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr>\n<td>foo\n</td></tr>\n<tr>\n<td>bar\n</td></tr></tbody></table>",
-		"render": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr >\n<td >bar</td></tr></tbody></table>",
+		"render": "<table style=\"color:red;\" title=\"T249740\">\n<tbody><tr >\n<td >foo</td></tr><tr >\n<td >bar</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-table-attrs\"> <span class=\"wpb-table-attr\"><span class=\"wpb-attr-key\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">mixed_attr_content_template_2</span>}}</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">bar</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -2258,7 +2258,7 @@
 		"desc": "4. Entities and nowikis inside templated attributes should be handled correctly inside templated tables",
 		"wikitext": "{|\n|{{table_attribs_6}} hi\n|}",
 		"html": "<table>\n<tbody><tr>\n<td style=\"background: red;\">hi\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr>\n<td style=\"background: &#10;&#10;&#10;red;\"> hi</td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr>\n<td style=\"background:    red;\"> hi</td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs_6</span>}}</span> hi</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -3409,7 +3409,7 @@
 		"desc": "CSS line continuation 1",
 		"wikitext": "<div style=\"background-image: u\\&#10;rl(test.jpg);\"></div>",
 		"html": "<div style=\"/* insecure input */\"></div>",
-		"render": "<div style=\"background-image: u\\&#10;rl(test.jpg);\"></div>",
+		"render": "<div style=\"background-image: u\\ rl(test.jpg);\"></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background-image: u\\&amp;#10;rl(test.jpg);</span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -3449,7 +3449,7 @@
 		"desc": "Expansion of multi-line templates in attribute values (T8255 check 2)",
 		"wikitext": "<div style=\"background: &#10;#00FF00\">-</div>",
 		"html": "<div style=\"background: &#10;#00FF00\">-</div>",
-		"render": "<div style=\"background: &#10;#00FF00\">-</div>",
+		"render": "<div style=\"background:  #00FF00\">-</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">background: &amp;#10;#00FF00</span>\"</span></span>&gt;</span>-<span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
@@ -3718,7 +3718,7 @@
 		"desc": "Fuzz testing: encoded newline in generated HTML replacements (T8577)",
 		"wikitext": "<pre dir=\"&#10;\"></pre>",
 		"html": "<pre dir=\"&#10;\"></pre>",
-		"render": "<pre dir=\"&#10;\"></pre>",
+		"render": "<pre dir=\" \"></pre>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext\">&lt;pre<span class=\"wpb-ext-attrs\"> <span class=\"wpb-ext-attr\"><span class=\"wpb-attr-key\">dir</span>=\"<span class=\"wpb-attr-value\">&amp;#10;</span>\"</span></span>&gt;&lt;/pre&gt;</span></span>"
 	},
 	{
@@ -4435,7 +4435,7 @@
 		"desc": "T2529: Uncovered table already at line-start",
 		"wikitext": "x\n\n{{table}}\ny",
 		"html": "<p>x\n</p>\n<table>\n<tbody><tr>\n<td>1</td>\n<td>2\n</td></tr>\n<tr>\n<td>3</td>\n<td>4\n</td></tr></tbody></table>\n<p>y\n</p>",
-		"render": "<p>x\n</p><p><a href=\"/wiki/Template%3ATable?action=edit&redlink=1\" class=\"new\" title=\"Template:Table (page does not exist)\">Template:Table</a>\ny\n</p>",
+		"render": "<p>x\n</p>\n<table >\n<tbody><tr>\n<td > 1 </td>\n<td > 2</td></tr><tr >\n<td > 3 </td>\n<td > 4</td></tr></tbody></table>\n<p>y\n</p>",
 		"print": "<span class=\"wpb-root\">x\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table</span>}}</span>\ny</span>"
 	},
 	{
