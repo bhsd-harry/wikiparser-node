@@ -3100,28 +3100,28 @@
 		"desc": "Media link",
 		"wikitext": "[[Media:Foobar.jpg]]\n[[Media:Video.ogv]]\n[[:Media:Video.ogv]]",
 		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Media:Foobar.jpg</a>\n<a href=\"http://example.com/images/0/00/Video.ogv\" class=\"internal\" title=\"Video.ogv\">Media:Video.ogv</a>\n<a href=\"http://example.com/images/0/00/Video.ogv\" class=\"internal\" title=\"Video.ogv\">Media:Video.ogv</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Media:Foobar.jpg\">Media:Foobar.jpg</a>\n<a href=\"/wiki/Media%3AVideo.ogv\" title=\"Media:Video.ogv\">Media:Video.ogv</a>\n<a href=\"/wiki/Media%3AVideo.ogv\" title=\"Media:Video.ogv\">Media:Video.ogv</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Foobar.jpg\">Media:Foobar.jpg</a>\n<a href=\"/wiki/Media%3AVideo.ogv\" title=\"Video.ogv\">Media:Video.ogv</a>\n<a href=\"/wiki/Media%3AVideo.ogv\" title=\"Video.ogv\">Media:Video.ogv</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Foobar.jpg</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Video.ogv</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">:Media:Video.ogv</span>]]</span></span>"
 	},
 	{
 		"desc": "Media link with text",
 		"wikitext": "[[Media:Foobar.jpg|A neat file to look at]]",
 		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">A neat file to look at</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Media:Foobar.jpg\">A neat file to look at</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Foobar.jpg\">A neat file to look at</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Foobar.jpg</span>|<span class=\"wpb-link-text\">A neat file to look at</span>]]</span></span>"
 	},
 	{
 		"desc": "Media link redirect",
 		"wikitext": "[[Media:Redirect to foobar.jpg]]",
 		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Media%3ARedirect_to_foobar.jpg\" title=\"Media:Redirect to foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Foobar.jpg\">Media:Redirect to foobar.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Redirect to foobar.jpg</span>]]</span></span>"
 	},
 	{
 		"desc": "Media link with nasty text",
 		"wikitext": "[[Media:Foobar.jpg|Safe Link<div style=display:none>\" onmouseover=\"alert(document.cookie)\" onfoo=\"</div>]]",
 		"html": "<p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\">Safe Link</a></p><a href=\"http://example.com/images/3/3a/Foobar.jpg\" class=\"internal\" title=\"Foobar.jpg\"><div style=\"display:none\">\" onmouseover=\"alert(document.cookie)\" onfoo=\"</div></a>",
-		"render": "<a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Media:Foobar.jpg\">Safe Link<div style=\"display:none\">\" onmouseover=\"alert(document.cookie)\" onfoo=\"</div></a>",
+		"render": "<a href=\"/wiki/Media%3AFoobar.jpg\" title=\"Foobar.jpg\">Safe Link<div style=\"display:none\">\" onmouseover=\"alert(document.cookie)\" onfoo=\"</div></a>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:Foobar.jpg</span>|<span class=\"wpb-link-text\">Safe Link<span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=<span class=\"wpb-attr-value\">display:none</span></span></span>&gt;</span>\" onmouseover=\"alert(document.cookie)\" onfoo=\"<span class=\"wpb-html\">&lt;/div&gt;</span></span>]]</span></span>"
 	},
 	{
@@ -3138,7 +3138,7 @@
 		"desc": "Media link to nonexistent file (T3702)",
 		"wikitext": "[[Media:No such.jpg]]\n[[Media:No_such file.jpg]]",
 		"html": "<p><a href=\"/index.php?title=Special:Upload&amp;wpDestFile=No_such.jpg\" class=\"new\" title=\"No such.jpg\">Media:No such.jpg</a>\n<a href=\"/index.php?title=Special:Upload&amp;wpDestFile=No_such_file.jpg\" class=\"new\" title=\"No such file.jpg\">Media:No_such file.jpg</a>\n</p>",
-		"render": "<p><a href=\"/wiki/Media%3ANo_such.jpg\" title=\"Media:No such.jpg\">Media:No such.jpg</a>\n<a href=\"/wiki/Media%3ANo_such_file.jpg\" title=\"Media:No such file.jpg\">Media:No_such file.jpg</a>\n</p>",
+		"render": "<p><a href=\"/wiki/Media%3ANo_such.jpg\" title=\"No such.jpg\">Media:No such.jpg</a>\n<a href=\"/wiki/Media%3ANo_such_file.jpg\" title=\"No such file.jpg\">Media:No_such file.jpg</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:No such.jpg</span>]]</span>\n<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Media:No_such file.jpg</span>]]</span></span>"
 	},
 	{
@@ -3241,42 +3241,42 @@
 		"desc": "T4304: HTML attribute safety (dangerous template; 2309)",
 		"wikitext": "<div title=\"{{dangerous attribute}}\"></div>",
 		"html": "<div title=\"\"></div>",
-		"render": "<div title=\"&lt;a href=&quot;/wiki/Template%3ADangerous_attribute?action=edit&redlink=1&quot; class=&quot;new&quot; title=&quot;Template:Dangerous_attribute (page does not exist)&quot;&gt;Template:Dangerous_attribute&lt;/a&gt;\"></div>",
+		"render": "<div title=\"\" ></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">dangerous attribute</span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (dangerous style template; 2309)",
 		"wikitext": "<div style=\"{{dangerous style attribute}}\"></div>",
 		"html": "<div style=\"/* insecure input */\"></div>",
-		"render": "<div style=\"&lt;a href=&quot;/wiki/Template%3ADangerous_style_attribute?action=edit&redlink=1&quot; class=&quot;new&quot; title=&quot;Template:Dangerous_style_attribute (page does not exist)&quot;&gt;Template:Dangerous_style_attribute&lt;/a&gt;\"></div>",
+		"render": "<div ></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">dangerous style attribute</span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (safe parameter; 2309)",
 		"wikitext": "{{div style|width: 200px}}",
 		"html": "<div style=\"float: right; width: 200px\">Magic div</div>",
-		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
+		"render": "<div style=\"float: right; width: 200px\">Magic div</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">width: 200px</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe parameter; 2309)",
 		"wikitext": "{{div style|width: expression(alert(document.cookie))}}",
 		"html": "<div style=\"/* insecure input */\">Magic div</div>",
-		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
+		"render": "<div >Magic div</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">width: expression(alert(document.cookie))</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe breakout parameter; 2309)",
 		"wikitext": "{{div style|\"><script>alert(document.cookie)</script>}}",
 		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
-		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
+		"render": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\"&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe breakout parameter 2; 2309)",
 		"wikitext": "{{div style|\" ><script>alert(document.cookie)</script>}}",
 		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
-		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
+		"render": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\" &gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></span>}}</span></span>"
 	},
 	{

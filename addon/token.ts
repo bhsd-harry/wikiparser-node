@@ -245,8 +245,10 @@ const expand = (
 					} else if (!path.isAbsolute(Parser.templateDir)) {
 						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 					}
-					const file = ['.wiki', '.txt', ''].map(ext => path.join(Parser.templateDir!, title + ext))
-						.find(fs.existsSync);
+					const titles = [title, title.replaceAll('_', ' ')],
+						file = ['.wiki', '.txt', '']
+							.flatMap(ext => titles.map(tt => path.join(Parser.templateDir!, tt + ext)))
+							.find(fs.existsSync);
 					if (!file) {
 						return m;
 					}

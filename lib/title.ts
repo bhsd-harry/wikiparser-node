@@ -235,10 +235,14 @@ export class Title {
 	 * @param title 原标题
 	 */
 	#redirect(title: string): string {
+		const media = title.startsWith('Media:');
+		if (media) {
+			title = `File:${title.slice(6)}`;
+		}
 		const redirected = this.redirects.get(title);
 		if (redirected) {
 			[title, this.#redirectFragment] = redirected.split('#', 2) as [string, string?];
-			return title;
+			return media ? title.replace(/^File:/u, 'Media:') : title;
 		}
 		return '';
 	}
@@ -299,7 +303,7 @@ export class Title {
 
 	/** @private */
 	getTitleAttr(): string {
-		return this.title.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
+		return this.title.replace(/Media:/u, '').replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
 	}
 }
 

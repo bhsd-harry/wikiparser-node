@@ -20,6 +20,7 @@
 - [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) should replace spaces with underscores
 - Some Wikitext syntaxes at SOL, including headings and lists, are now allowed following behavior switches except `__toc__`
 - `<p>` wrapping for [`TdToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#tohtml)
+- Media namespace redirects
 
 **Changed**
 
