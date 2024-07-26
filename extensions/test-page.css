@@ -65,6 +65,10 @@ pre {
 	margin-top: 1rem;
 	padding: 12px;
 }
+.frame:empty::after {
+	content: "";
+	display: inline-block;
+}
 #frame[data-source] > .frame {
 	padding: 0;
 }
