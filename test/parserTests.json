@@ -2726,7 +2726,7 @@
 		"desc": "2. Categories and newlines: All preceding newlines should be suppressed (courtesy T2087)",
 		"wikitext": "* This\n   \n[[Category:Foo]] and this should be part of the same list item\n* So should this\n\n{{1x|[[Category:Foo]] and this should be part of the same list item}}",
 		"html": "<ul><li>This and this should be part of the same list item</li>\n<li>So should this and this should be part of the same list item</li></ul>",
-		"render": "<ul><li>This</li></ul> and this should be part of the same list item\n<ul><li>So should this</li></ul> and this should be part of the same list item",
+		"render": "<ul><li>This and this should be part of the same list item</li>\n<li>So should this and this should be part of the same list item</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">* </span>This\n   \n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this should be part of the same list item\n<span class=\"wpb-list\">* </span>So should this\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:Foo</span>]]</span> and this should be part of the same list item</span></span>}}</span></span>"
 	},
 	{
@@ -2813,7 +2813,7 @@
 		"desc": "Empty templates should be handled properly without being redlinked",
 		"wikitext": "{{emptytemplate}}",
 		"html": "",
-		"render": "<p><a href=\"/wiki/Template%3AEmptytemplate?action=edit&redlink=1\" class=\"new\" title=\"Template:Emptytemplate (page does not exist)\">Template:Emptytemplate</a>\n</p>",
+		"render": "",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">emptytemplate</span>}}</span></span>"
 	},
 	{

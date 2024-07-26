@@ -443,7 +443,7 @@ export class AstText extends AstNode {
 	}
 
 	/** @private */
-	toHtmlInternal(nowrap?: boolean): string {
+	removeBlankLines(): void {
 		const mt = /\n[^\S\n]*$/u.exec(this.data);
 		if (mt) {
 			const spaces: AstText[] = [];
@@ -482,6 +482,11 @@ export class AstText extends AstNode {
 				}
 			}
 		}
+	}
+
+	/** @private */
+	toHtmlInternal(nowrap?: boolean): string {
+		this.removeBlankLines();
 		return this.toHtml(nowrap);
 	}
 }

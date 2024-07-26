@@ -933,6 +933,11 @@ export class Token extends AstElement {
 
 	/** @private */
 	toHtmlInternal(nowrap?: boolean): string {
+		for (const child of this.childNodes) {
+			if (child.type === 'text') {
+				child.removeBlankLines();
+			}
+		}
 		for (let i = 0; i < this.length; i++) {
 			const child = this.childNodes[i]!;
 			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
