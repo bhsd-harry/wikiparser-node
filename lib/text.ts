@@ -364,7 +364,7 @@ export class AstText extends AstNode {
 	 * @param offset 起始位置
 	 * @param count 删减字符数
 	 */
-	deleteData(offset: number, count: number): void {
+	deleteData(offset: number, count = Infinity): void {
 		this.#setData(
 			this.data.slice(0, offset) + (offset < 0 && offset + count >= 0 ? '' : this.data.slice(offset + count)),
 		);
@@ -384,7 +384,7 @@ export class AstText extends AstNode {
 	 * @param offset 起始位置
 	 * @param count 字符数
 	 */
-	substringData(offset: number, count: number): string {
+	substringData(offset: number, count?: number): string {
 		return this.data.substr(offset, count);
 	}
 
@@ -465,7 +465,7 @@ export class AstText extends AstNode {
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
-						this.deleteData(length + this.data.slice(length).indexOf('\n'), Infinity);
+						this.deleteData(length + this.data.slice(length).indexOf('\n'));
 					}
 					for (const space of spaces) {
 						space.#setData('');
@@ -475,7 +475,7 @@ export class AstText extends AstNode {
 				({nextSibling} = nextSibling);
 			}
 			if (mt2) {
-				this.deleteData(mt.index, Infinity);
+				this.deleteData(mt.index);
 				(nextSibling as AstText).deleteData(0, mt2[0].length);
 				for (const space of spaces) {
 					space.#setData('');

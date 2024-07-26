@@ -27,6 +27,7 @@
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now removes all comments and expands [`ArgToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken)
 - [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) now includes trailing blank lines
 - By turning [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#redirects) and [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) into accessors, page titles and fragments are now automatically normalized
+- The second arguments of [`AstText.prototype.deleteData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#deletedata) and [`AstText.prototype.substringData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#substringdata) are now optional
 
 ## v1.11.1
 

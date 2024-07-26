@@ -323,7 +323,7 @@ export class AstRange {
 			this.#endOffset = this.#startOffset;
 			return;
 		} else if (startContainer.type === 'text') {
-			startContainer.deleteData(startOffset, Infinity);
+			startContainer.deleteData(startOffset);
 			startOffset = childNodes.indexOf(startContainer) + 1;
 		}
 		if (endContainer.type === 'text') {
