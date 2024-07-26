@@ -1505,14 +1505,14 @@
 		"desc": "Template titles with entities in them",
 		"wikitext": "*{{Foo–bar}}\n*{{Foo&ndash;bar}}",
 		"html": "<ul><li>foo</li>\n<li>foo</li></ul>",
-		"render": "<ul><li></li>\n<li></li></ul>",
+		"render": "<ul><li>foo</li>\n<li><a href=\"/wiki/Template%3AFoo%26ndash%3Bbar?action=edit&redlink=1\" class=\"new\" title=\"Template:Foo&ndash;bar (page does not exist)\">Template:Foo&ndash;bar</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Foo–bar</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Foo&amp;ndash;bar</span>}}</span></span>"
 	},
 	{
 		"desc": "Nonexistent template",
 		"wikitext": "{{thistemplatedoesnotexist}}",
 		"html": "<p><a href=\"/index.php?title=Template:Thistemplatedoesnotexist&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Thistemplatedoesnotexist (page does not exist)\">Template:Thistemplatedoesnotexist</a>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AThistemplatedoesnotexist?action=edit&redlink=1\" class=\"new\" title=\"Template:Thistemplatedoesnotexist (page does not exist)\">Template:Thistemplatedoesnotexist</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">thistemplatedoesnotexist</span>}}</span></span>"
 	},
 	{
@@ -1582,56 +1582,56 @@
 		"desc": "Template with template name as unnamed argument",
 		"wikitext": "{{templateasargtestnum|templatesimple}}",
 		"html": "<p>(test)\n</p>",
-		"render": "",
+		"render": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateasargtestnum</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">templatesimple</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template with template name as argument",
 		"wikitext": "{{templateasargtest|templ=simple}}",
 		"html": "<p>(test)\n</p>",
-		"render": "",
+		"render": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateasargtest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">templ</span>=<span class=\"wpb-parameter-value\">simple</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template with template name as argument (2)",
 		"wikitext": "{{templateasargtest2|templ=templatesimple}}",
 		"html": "<p>(test)\n</p>",
-		"render": "",
+		"render": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateasargtest2</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">templ</span>=<span class=\"wpb-parameter-value\">templatesimple</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template with default value",
 		"wikitext": "{{templateasargtestdefault}}",
 		"html": "<p>(test)\n</p>",
-		"render": "",
+		"render": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateasargtestdefault</span>}}</span></span>"
 	},
 	{
 		"desc": "Template with default value (value set)",
 		"wikitext": "{{templateasargtestdefault|templ=templa}}",
 		"html": "<p><b>templ</b>\n</p>",
-		"render": "",
+		"render": "<p><b>templ</b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateasargtestdefault</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">templ</span>=<span class=\"wpb-parameter-value\">templa</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template redirect",
 		"wikitext": "{{templateredirect}}",
 		"html": "<p>(test)\n</p>",
-		"render": "",
+		"render": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">templateredirect</span>}}</span></span>"
 	},
 	{
 		"desc": "Template with argument in separate line",
 		"wikitext": "{{ templateasargtest  |\n templ = simple }}",
 		"html": "<p>(test)\n</p>",
-		"render": "",
+		"render": "<p>(test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"> templateasargtest  </span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n templ </span>=<span class=\"wpb-parameter-value\"> simple </span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template with complex template as argument",
 		"wikitext": "{{paramtest|\n  param ={{ templateasargtest  |\n templ = simple }}}}",
 		"html": "<p>This is a test template with parameter (test)\n</p>",
-		"render": "<p>This is a test template with parameter \n</p>",
+		"render": "<p>This is a test template with parameter (test)\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">paramtest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n  param </span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"> templateasargtest  </span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n templ </span>=<span class=\"wpb-parameter-value\"> simple </span></span>}}</span></span></span>}}</span></span>"
 	},
 	{
@@ -1645,7 +1645,7 @@
 		"desc": "Templates with templated name and top level template args",
 		"wikitext": "{{1{{2{{{3}}}|4=5}}}}",
 		"html": "<p>{{1{{2{{{3}}}|4=5}}}}\n</p>",
-		"render": "",
+		"render": "<p>{{1{{2{{{3}}}|4=5}}}}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">2<span class=\"wpb-arg\">{{{<span class=\"wpb-arg-name\">3</span>}}}</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">4</span>=<span class=\"wpb-parameter-value\">5</span></span>}}</span></span>}}</span></span>"
 	},
 	{
@@ -1659,7 +1659,7 @@
 		"desc": "Template with complex arguments",
 		"wikitext": "{{complextemplate|\n  param ={{ templateasargtest  |\n templ = simple }}|[[Template:complextemplate|link]]}}",
 		"html": "<p><a href=\"/wiki/Template:Complextemplate\" title=\"Template:Complextemplate\">link</a> This is a test template with parameter (test)\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AComplextemplate?action=edit&redlink=1\" class=\"new\" title=\"Template:Complextemplate (page does not exist)\">Template:Complextemplate</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">complextemplate</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n  param </span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"> templateasargtest  </span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">\n templ </span>=<span class=\"wpb-parameter-value\"> simple </span></span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Template:complextemplate</span>|<span class=\"wpb-link-text\">link</span>]]</span></span></span>}}</span></span>"
 	},
 	{
@@ -1692,14 +1692,14 @@
 		"desc": "Template parameter as link source",
 		"wikitext": "{{linktest|param=Main Page}}",
 		"html": "<p><a href=\"/wiki/Main_Page\" title=\"Main Page\">link</a>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ALinktest?action=edit&redlink=1\" class=\"new\" title=\"Template:Linktest (page does not exist)\">Template:Linktest</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">linktest</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">param</span>=<span class=\"wpb-parameter-value\">Main Page</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Template passing argument to another template",
 		"wikitext": "{{paramtest2|arg='hmm'}}",
 		"html": "<p>including another template, This is a test template with parameter 'hmm'\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AParamtest2?action=edit&redlink=1\" class=\"new\" title=\"Template:Paramtest2 (page does not exist)\">Template:Paramtest2</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">paramtest2</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">arg</span>=<span class=\"wpb-parameter-value\">'hmm'</span></span>}}</span></span>"
 	},
 	{
@@ -1713,14 +1713,14 @@
 		"desc": "Template infinite loop",
 		"wikitext": "{{loop1}}",
 		"html": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Loop1\" title=\"Template:Loop1\">Template:Loop1</a></span>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ALoop1?action=edit&redlink=1\" class=\"new\" title=\"Template:Loop1 (page does not exist)\">Template:Loop1</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">loop1</span>}}</span></span>"
 	},
 	{
 		"desc": "Template from main namespace",
 		"wikitext": "{{:Main Page}}",
 		"html": "<p>blah blah\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Main_Page?action=edit&redlink=1\" class=\"new\" title=\"Main_Page (page does not exist)\">Main_Page</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">:Main Page</span>}}</span></span>"
 	},
 	{
@@ -1732,14 +1732,14 @@
 		"desc": "T2529: Template with table, not included at beginning of line",
 		"wikitext": "foo {{table}}",
 		"html": "<p>foo \n</p>\n<table>\n<tbody><tr>\n<td>1</td>\n<td>2\n</td></tr>\n<tr>\n<td>3</td>\n<td>4\n</td></tr></tbody></table>",
-		"render": "<p>foo \n</p>",
+		"render": "<p>foo <a href=\"/wiki/Template%3ATable?action=edit&redlink=1\" class=\"new\" title=\"Template:Table (page does not exist)\">Template:Table</a>\n</p>",
 		"print": "<span class=\"wpb-root\">foo <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table</span>}}</span></span>"
 	},
 	{
 		"desc": "T2523: Template shouldn't eat newline (or add an extra one before table)",
 		"wikitext": "foo\n{{table}}",
 		"html": "<p>foo\n</p>\n<table>\n<tbody><tr>\n<td>1</td>\n<td>2\n</td></tr>\n<tr>\n<td>3</td>\n<td>4\n</td></tr></tbody></table>",
-		"render": "<p>foo\n</p>",
+		"render": "<p>foo\n<a href=\"/wiki/Template%3ATable?action=edit&redlink=1\" class=\"new\" title=\"Template:Table (page does not exist)\">Template:Table</a>\n</p>",
 		"print": "<span class=\"wpb-root\">foo\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table</span>}}</span></span>"
 	},
 	{
@@ -1760,7 +1760,7 @@
 		"desc": "Templates: Double quotes as template target",
 		"wikitext": "foo {{''}} baz",
 		"html": "<p>foo bar baz\n</p>",
-		"render": "<p>foo  baz\n</p>",
+		"render": "<p>foo <a href=\"/wiki/Template%3A''?action=edit&redlink=1\" class=\"new\" title=\"Template:'' (page does not exist)\">Template:''</a> baz\n</p>",
 		"print": "<span class=\"wpb-root\">foo <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">''</span>}}</span> baz</span>"
 	},
 	{
@@ -1802,14 +1802,14 @@
 		"desc": "<onlyinclude> being included",
 		"wikitext": "{{Includes2}}",
 		"html": "<p>Foo\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AIncludes2?action=edit&redlink=1\" class=\"new\" title=\"Template:Includes2 (page does not exist)\">Template:Includes2</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes2</span>}}</span></span>"
 	},
 	{
 		"desc": "<onlyinclude> and <includeonly> being included",
 		"wikitext": "{{Includes3}}",
 		"html": "<p>Foo\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AIncludes3?action=edit&redlink=1\" class=\"new\" title=\"Template:Includes3 (page does not exist)\">Template:Includes3</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes3</span>}}</span></span>"
 	},
 	{
@@ -2003,14 +2003,14 @@
 		"desc": "Templates: Template Name/Arg clash: 1. Use of positional param",
 		"wikitext": "{{quote|foo}}",
 		"html": "<p>foo\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AQuote?action=edit&redlink=1\" class=\"new\" title=\"Template:Quote (page does not exist)\">Template:Quote</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">quote</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
 	},
 	{
 		"desc": "Templates: Template Name/Arg clash: 2. Use of named param",
 		"wikitext": "{{quote|quote=foo}}",
 		"html": "<p>foo\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AQuote?action=edit&redlink=1\" class=\"new\" title=\"Template:Quote (page does not exist)\">Template:Quote</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">quote</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">quote</span>=<span class=\"wpb-parameter-value\">foo</span></span>}}</span></span>"
 	},
 	{
@@ -2403,7 +2403,7 @@
 		"desc": "Templates: Lists: Multi-line list-items via templates",
 		"wikitext": "*{{1x|a {{nonexistent|\nunused}}}}\n*{{1x|b {{nonexistent|\nunused}}}}",
 		"html": "<ul><li>a <a href=\"/index.php?title=Template:Nonexistent&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Nonexistent (page does not exist)\">Template:Nonexistent</a></li>\n<li>b <a href=\"/index.php?title=Template:Nonexistent&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Nonexistent (page does not exist)\">Template:Nonexistent</a></li></ul>",
-		"render": "<ul><li>a</li>\n<li>b</li></ul>",
+		"render": "<ul><li>a <a href=\"/wiki/Template%3ANonexistent?action=edit&redlink=1\" class=\"new\" title=\"Template:Nonexistent (page does not exist)\">Template:Nonexistent</a></li>\n<li>b <a href=\"/wiki/Template%3ANonexistent?action=edit&redlink=1\" class=\"new\" title=\"Template:Nonexistent (page does not exist)\">Template:Nonexistent</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">a <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">nonexistent</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nunused</span></span>}}</span></span></span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">nonexistent</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\nunused</span></span>}}</span></span></span>}}</span></span>"
 	},
 	{
@@ -2600,7 +2600,7 @@
 		"desc": "T2561: {{/Subpage}}",
 		"wikitext": "{{/Subpage}}",
 		"html": "<p><a href=\"/index.php?title=Page/Subpage&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Page/Subpage (page does not exist)\">Page/Subpage</a>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3A%2FSubpage?action=edit&redlink=1\" class=\"new\" title=\"Template:/Subpage (page does not exist)\">Template:/Subpage</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">/Subpage</span>}}</span></span>"
 	},
 	{
@@ -2813,7 +2813,7 @@
 		"desc": "Empty templates should be handled properly without being redlinked",
 		"wikitext": "{{emptytemplate}}",
 		"html": "",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AEmptytemplate?action=edit&redlink=1\" class=\"new\" title=\"Template:Emptytemplate (page does not exist)\">Template:Emptytemplate</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">emptytemplate</span>}}</span></span>"
 	},
 	{
@@ -3241,42 +3241,42 @@
 		"desc": "T4304: HTML attribute safety (dangerous template; 2309)",
 		"wikitext": "<div title=\"{{dangerous attribute}}\"></div>",
 		"html": "<div title=\"\"></div>",
-		"render": "<div title=\"\"></div>",
+		"render": "<div title=\"&lt;a href=&quot;/wiki/Template%3ADangerous_attribute?action=edit&redlink=1&quot; class=&quot;new&quot; title=&quot;Template:Dangerous_attribute (page does not exist)&quot;&gt;Template:Dangerous_attribute&lt;/a&gt;\"></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">title</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">dangerous attribute</span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (dangerous style template; 2309)",
 		"wikitext": "<div style=\"{{dangerous style attribute}}\"></div>",
 		"html": "<div style=\"/* insecure input */\"></div>",
-		"render": "<div style=\"\"></div>",
+		"render": "<div style=\"&lt;a href=&quot;/wiki/Template%3ADangerous_style_attribute?action=edit&redlink=1&quot; class=&quot;new&quot; title=&quot;Template:Dangerous_style_attribute (page does not exist)&quot;&gt;Template:Dangerous_style_attribute&lt;/a&gt;\"></div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">dangerous style attribute</span>}}</span></span>\"</span></span>&gt;</span><span class=\"wpb-html\">&lt;/div&gt;</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (safe parameter; 2309)",
 		"wikitext": "{{div style|width: 200px}}",
 		"html": "<div style=\"float: right; width: 200px\">Magic div</div>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">width: 200px</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe parameter; 2309)",
 		"wikitext": "{{div style|width: expression(alert(document.cookie))}}",
 		"html": "<div style=\"/* insecure input */\">Magic div</div>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">width: expression(alert(document.cookie))</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe breakout parameter; 2309)",
 		"wikitext": "{{div style|\"><script>alert(document.cookie)</script>}}",
 		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\"&gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></span>}}</span></span>"
 	},
 	{
 		"desc": "T4304: HTML attribute safety (unsafe breakout parameter 2; 2309)",
 		"wikitext": "{{div style|\" ><script>alert(document.cookie)</script>}}",
 		"html": "<div style=\"float: right;\">&lt;script&gt;alert(document.cookie)&lt;/script&gt;\"&gt;Magic div</div>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ADiv_style?action=edit&redlink=1\" class=\"new\" title=\"Template:Div_style (page does not exist)\">Template:Div_style</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">div style</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\" &gt;&lt;script&gt;alert(document.cookie)&lt;/script&gt;</span></span>}}</span></span>"
 	},
 	{
@@ -3463,7 +3463,7 @@
 		"desc": "Nested template calls",
 		"wikitext": "{{Map-one-parameter|One-parameter|param}}",
 		"html": "<p>(My parameter is: param)\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AMap-one-parameter?action=edit&redlink=1\" class=\"new\" title=\"Template:Map-one-parameter (page does not exist)\">Template:Map-one-parameter</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Map-one-parameter</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">One-parameter</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">param</span></span>}}</span></span>"
 	},
 	{
@@ -3779,42 +3779,42 @@
 		"desc": "Special page transclusion",
 		"wikitext": "{{Special:Prefixindex/Xyzzyx}}",
 		"html": "<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Special%3APrefixindex%2FXyzzyx?action=edit&redlink=1\" class=\"new\" title=\"Special:Prefixindex/Xyzzyx (page does not exist)\">Special:Prefixindex/Xyzzyx</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:Prefixindex/Xyzzyx</span>}}</span></span>"
 	},
 	{
 		"desc": "Special page transclusion twice (T7021)",
 		"wikitext": "{{Special:Prefixindex/Xyzzyx}}\n{{Special:Prefixindex/Xyzzyx}}",
 		"html": "<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>\n<ul class=\"mw-prefixindex-list\"><li><a href=\"/wiki/Xyzzyx\" title=\"Xyzzyx\">Xyzzyx</a></li>\n</ul>",
-		"render": "<p><br>\n</p>",
+		"render": "<p><a href=\"/wiki/Special%3APrefixindex%2FXyzzyx?action=edit&redlink=1\" class=\"new\" title=\"Special:Prefixindex/Xyzzyx (page does not exist)\">Special:Prefixindex/Xyzzyx</a>\n<a href=\"/wiki/Special%3APrefixindex%2FXyzzyx?action=edit&redlink=1\" class=\"new\" title=\"Special:Prefixindex/Xyzzyx (page does not exist)\">Special:Prefixindex/Xyzzyx</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:Prefixindex/Xyzzyx</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:Prefixindex/Xyzzyx</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of default MediaWiki message",
 		"wikitext": "{{MediaWiki:Mainpage}}",
 		"html": "<p>Main Page\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/MediaWiki%3AMainpage?action=edit&redlink=1\" class=\"new\" title=\"MediaWiki:Mainpage (page does not exist)\">MediaWiki:Mainpage</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:Mainpage</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of nonexistent MediaWiki message",
 		"wikitext": "{{MediaWiki:Mainpagexxx}}",
 		"html": "<p><a href=\"/index.php?title=MediaWiki:Mainpagexxx&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"MediaWiki:Mainpagexxx (page does not exist)\">MediaWiki:Mainpagexxx</a>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/MediaWiki%3AMainpagexxx?action=edit&redlink=1\" class=\"new\" title=\"MediaWiki:Mainpagexxx (page does not exist)\">MediaWiki:Mainpagexxx</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:Mainpagexxx</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of MediaWiki message with underscore",
 		"wikitext": "{{MediaWiki:history_short}}",
 		"html": "<p>History\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/MediaWiki%3AHistory_short?action=edit&redlink=1\" class=\"new\" title=\"MediaWiki:History_short (page does not exist)\">MediaWiki:History_short</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:history_short</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of MediaWiki message with space",
 		"wikitext": "{{MediaWiki:history short}}",
 		"html": "<p>History\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/MediaWiki%3AHistory_short?action=edit&redlink=1\" class=\"new\" title=\"MediaWiki:History_short (page does not exist)\">MediaWiki:History_short</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">MediaWiki:history short</span>}}</span></span>"
 	},
 	{
@@ -4049,7 +4049,7 @@
 		"desc": "Special:Search page linking.",
 		"wikitext": "{{Special:search}}",
 		"html": "<p><a href=\"/wiki/Special:Search\" title=\"Special:Search\">Special:Search</a>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Special%3ASearch?action=edit&redlink=1\" class=\"new\" title=\"Special:Search (page does not exist)\">Special:Search</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Special:search</span>}}</span></span>"
 	},
 	{
@@ -4084,14 +4084,14 @@
 		"desc": "Using {{!}} in template arguments, part 2 (T290526)",
 		"wikitext": "{{ Main Page|Something else }}\n\n{{ {{T290526}} }}",
 		"html": "<p><a href=\"/index.php?title=Template:Main_Page&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Main Page (page does not exist)\">Template:Main Page</a>\n</p><p>{{ Main Page|Something else }}\n</p>",
-		"render": "<p><br>\n</p>",
+		"render": "<p><a href=\"/wiki/Template%3AMain_Page?action=edit&redlink=1\" class=\"new\" title=\"Template:Main_Page (page does not exist)\">Template:Main_Page</a>\n</p><p>{{ Main Page{{!}}Something else }}\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\"> Main Page</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">Something else </span></span>}}</span>\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">T290526</span>}}</span> </span>}}</span></span>"
 	},
 	{
 		"desc": "Say the magic word",
 		"wikitext": "*{{PAGENAME}}\n*{{PAGENAMEE}}\n*{{FULLPAGENAME}}\n*{{FULLPAGENAMEE}}\n*{{BASEPAGENAME}}\n*{{BASEPAGENAMEE}}\n*{{SUBPAGENAME}}\n*{{SUBPAGENAMEE}}\n*{{ROOTPAGENAME}}\n*{{ROOTPAGENAMEE}}\n*{{TALKPAGENAME}}\n*{{TALKPAGENAMEE}}\n*{{SUBJECTPAGENAME}}\n*{{SUBJECTPAGENAMEE}}\n*{{NAMESPACEE}}\n*{{NAMESPACE}}\n*{{NAMESPACENUMBER}}\n*{{TALKSPACE}}\n*{{TALKSPACEE}}\n*{{SUBJECTSPACE}}\n*{{SUBJECTSPACEE}}\n*{{Dynamic|{{NUMBEROFUSERS}}|{{NUMBEROFPAGES}}|{{CURRENTVERSION}}|{{CONTENTLANGUAGE}}|{{DIRECTIONMARK}}|{{CURRENTTIMESTAMP}}|{{NUMBEROFARTICLES}}}}",
 		"html": "<ul><li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li>Talk:Parser test</li>\n<li>Talk:Parser_test</li>\n<li>Parser test</li>\n<li>Parser_test</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li>0</li>\n<li>Talk</li>\n<li>Talk</li>\n<li class=\"mw-empty-elt\"></li>\n<li class=\"mw-empty-elt\"></li>\n<li><a href=\"/index.php?title=Template:Dynamic&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Dynamic (page does not exist)\">Template:Dynamic</a></li></ul>",
-		"render": "<ul><li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li></ul>",
+		"render": "<ul><li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li></li>\n<li><a href=\"/wiki/Template%3ADynamic?action=edit&redlink=1\" class=\"new\" title=\"Template:Dynamic (page does not exist)\">Template:Dynamic</a></li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">PAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">FULLPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">BASEPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">ROOTPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAME</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTPAGENAMEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NAMESPACENUMBER</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">TALKSPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">SUBJECTSPACEE</span>}}</span>\n<span class=\"wpb-list\">*</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Dynamic</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFUSERS</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFPAGES</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTVERSION</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CONTENTLANGUAGE</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">DIRECTIONMARK</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">CURRENTTIMESTAMP</span>}}</span></span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">NUMBEROFARTICLES</span>}}</span></span></span>}}</span></span>"
 	},
 	{
@@ -4253,21 +4253,21 @@
 		"desc": "Transclusion of a sibling page (one level up)",
 		"wikitext": "{{../L3Sibling}}",
 		"html": "<p>Sibling article\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/..%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"../L3Sibling (page does not exist)\">../L3Sibling</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../L3Sibling</span>}}</span></span>"
 	},
 	{
 		"desc": "Transclusion of a child page",
 		"wikitext": "{{/L3Sibling}}",
 		"html": "<p>Sibling article\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3A%2FL3Sibling?action=edit&redlink=1\" class=\"new\" title=\"Template:/L3Sibling (page does not exist)\">Template:/L3Sibling</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">/L3Sibling</span>}}</span></span>"
 	},
 	{
 		"desc": "Non-transclusion because of too many up levels",
 		"wikitext": "{{../../../../More than parent}}",
 		"html": "<p>{{../../../../More than parent}}\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/..%2F..%2F..%2F..%2FMore_than_parent?action=edit&redlink=1\" class=\"new\" title=\"../../../../More_than_parent (page does not exist)\">../../../../More_than_parent</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">../../../../More than parent</span>}}</span></span>"
 	},
 	{
@@ -4295,7 +4295,7 @@
 		"desc": "RAW magic word",
 		"wikitext": "{{RAW:QUERTY}}",
 		"html": "<p><a href=\"/index.php?title=Template:QUERTY&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:QUERTY (page does not exist)\">Template:QUERTY</a>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AQUERTY?action=edit&redlink=1\" class=\"new\" title=\"Template:QUERTY (page does not exist)\">Template:QUERTY</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{RAW:<span class=\"wpb-template-name\">QUERTY</span>}}</span></span>"
 	},
 	{
@@ -4435,7 +4435,7 @@
 		"desc": "T2529: Uncovered table already at line-start",
 		"wikitext": "x\n\n{{table}}\ny",
 		"html": "<p>x\n</p>\n<table>\n<tbody><tr>\n<td>1</td>\n<td>2\n</td></tr>\n<tr>\n<td>3</td>\n<td>4\n</td></tr></tbody></table>\n<p>y\n</p>",
-		"render": "<p>x\n</p><p><br>\ny\n</p>",
+		"render": "<p>x\n</p><p><a href=\"/wiki/Template%3ATable?action=edit&redlink=1\" class=\"new\" title=\"Template:Table (page does not exist)\">Template:Table</a>\ny\n</p>",
 		"print": "<span class=\"wpb-root\">x\n\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table</span>}}</span>\ny</span>"
 	},
 	{
@@ -4866,7 +4866,7 @@
 		"desc": "T33098 Template which includes system messages which includes the template",
 		"wikitext": "{{Identical}}",
 		"html": "<p><span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n<span class=\"error\">Template loop detected: <a href=\"/wiki/Template:Identical\" title=\"Template:Identical\">Template:Identical</a></span>\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AIdentical?action=edit&redlink=1\" class=\"new\" title=\"Template:Identical (page does not exist)\">Template:Identical</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Identical</span>}}</span></span>"
 	},
 	{
@@ -7120,7 +7120,7 @@
 		"desc": "Ref in ref: top level ref nested in transclusion",
 		"wikitext": "test {{refinref|456<ref>123</ref>}}\n<references />",
 		"html": "<p>test <sup id=\"cite_ref-1\" class=\"reference\"><a href=\"#cite_note-1\">&#91;1&#93;</a></sup>\n</p>\n<div class=\"mw-references-wrap\"><ol class=\"references\">\n<li id=\"cite_note-1\"><span class=\"mw-cite-backlink\"><a href=\"#cite_ref-1\">↑</a></span> <span class=\"reference-text\">{{{1}}}</span>\n</li>\n</ol></div>",
-		"render": "<p>test \n</p>",
+		"render": "<p>test <a href=\"/wiki/Template%3ARefinref?action=edit&redlink=1\" class=\"new\" title=\"Template:Refinref (page does not exist)\">Template:Refinref</a>\n</p>",
 		"print": "<span class=\"wpb-root\">test <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">refinref</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">456<span class=\"wpb-ext\">&lt;ref&gt;<span class=\"wpb-ext-inner\">123</span>&lt;/ref&gt;</span></span></span>}}</span>\n<span class=\"wpb-ext\">&lt;references<span class=\"wpb-ext-attrs\"> </span>/&gt;</span></span>"
 	},
 	{
@@ -9295,7 +9295,7 @@
 		"desc": "T8563: Edit link generation for section shown by <includeonly>",
 		"wikitext": "{{includeonly section}}",
 		"html": "<div class=\"mw-heading mw-heading2\"><h2 id=\"Includeonly_section\">Includeonly section</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Template:Includeonly_section&amp;action=edit&amp;section=T-1\" title=\"Edit section: Includeonly section\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>\n<div class=\"mw-heading mw-heading2\"><h2 id=\"Section_T-1\">Section T-1</h2><span class=\"mw-editsection\"><span class=\"mw-editsection-bracket\">[</span><a href=\"/index.php?title=Template:Includeonly_section&amp;action=edit&amp;section=T-2\" title=\"Edit section: Section T-1\">edit</a><span class=\"mw-editsection-bracket\">]</span></span></div>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3AIncludeonly_section?action=edit&redlink=1\" class=\"new\" title=\"Template:Includeonly_section (page does not exist)\">Template:Includeonly_section</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">includeonly section</span>}}</span></span>"
 	},
 	{
@@ -10862,7 +10862,7 @@
 		"desc": "Case-sensitive magic words, when cased differently, should just be template transclusions",
 		"wikitext": "{{CurrentMonth}}\n{{currentday}}\n{{cURreNTweEK}}\n{{currentHour}}",
 		"html": "<p><a href=\"/index.php?title=Template:CurrentMonth&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:CurrentMonth (page does not exist)\">Template:CurrentMonth</a>\n<a href=\"/index.php?title=Template:Currentday&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:Currentday (page does not exist)\">Template:Currentday</a>\n<a href=\"/index.php?title=Template:CURreNTweEK&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:CURreNTweEK (page does not exist)\">Template:CURreNTweEK</a>\n<a href=\"/index.php?title=Template:CurrentHour&amp;action=edit&amp;redlink=1\" class=\"new\" title=\"Template:CurrentHour (page does not exist)\">Template:CurrentHour</a>\n</p>",
-		"render": "<p><br>\n</p><p><br>\n</p>",
+		"render": "<p><a href=\"/wiki/Template%3ACurrentMonth?action=edit&redlink=1\" class=\"new\" title=\"Template:CurrentMonth (page does not exist)\">Template:CurrentMonth</a>\n<a href=\"/wiki/Template%3ACurrentday?action=edit&redlink=1\" class=\"new\" title=\"Template:Currentday (page does not exist)\">Template:Currentday</a>\n<a href=\"/wiki/Template%3ACURreNTweEK?action=edit&redlink=1\" class=\"new\" title=\"Template:CURreNTweEK (page does not exist)\">Template:CURreNTweEK</a>\n<a href=\"/wiki/Template%3ACurrentHour?action=edit&redlink=1\" class=\"new\" title=\"Template:CurrentHour (page does not exist)\">Template:CurrentHour</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">CurrentMonth</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">currentday</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">cURreNTweEK</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">currentHour</span>}}</span></span>"
 	},
 	{
@@ -12934,7 +12934,7 @@
 		"desc": "subst: does not work during normal parse",
 		"wikitext": "{{SubstTest}}",
 		"html": "<p>{{subst:Includes}}\n</p>",
-		"render": "",
+		"render": "<p><a href=\"/wiki/Template%3ASubstTest?action=edit&redlink=1\" class=\"new\" title=\"Template:SubstTest (page does not exist)\">Template:SubstTest</a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">SubstTest</span>}}</span></span>"
 	},
 	{
@@ -13849,14 +13849,14 @@
 		"desc": "1. Template-generated table cell attributes and cell content",
 		"wikitext": "{|\n|{{table_attribs}}\n| {{table_attribs}}\n|| {{table_attribs_5}}\n| <!--foo--> <!--bar--> <!--baz--> {{table_attribs}}\n|align=center {{table_attribs}}\n| <!--foo--> align=center <!--bar--> {{table_attribs}}\n|}",
 		"html": "<table>\n<tbody><tr>\n<td style=\"color:red;\">Foo\n</td>\n<td style=\"color:red;\">Foo\n</td>\n<td>style=\"color:red;\"</td>\n<td>Bar\n</td>\n<td style=\"color:red;\">Foo\n</td>\n<td align=\"center\" style=\"color:red;\">Foo\n</td>\n<td align=\"center\" style=\"color:red;\">Foo\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr>\n<td ></td>\n<td > </td>\n<td > </td>\n<td >    </td>\n<td >align=center </td>\n<td >  align=center  </td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr>\n<td ><a href=\"/wiki/Template%3ATable_attribs?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs (page does not exist)\">Template:Table_attribs</a></td>\n<td > <a href=\"/wiki/Template%3ATable_attribs?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs (page does not exist)\">Template:Table_attribs</a></td>\n<td > <a href=\"/wiki/Template%3ATable_attribs_5?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs_5 (page does not exist)\">Template:Table_attribs_5</a></td>\n<td >    <a href=\"/wiki/Template%3ATable_attribs?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs (page does not exist)\">Template:Table_attribs</a></td>\n<td >align=center <a href=\"/wiki/Template%3ATable_attribs?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs (page does not exist)\">Template:Table_attribs</a></td>\n<td >  align=center  <a href=\"/wiki/Template%3ATable_attribs?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs (page does not exist)\">Template:Table_attribs</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs</span>}}</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs</span>}}</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span>|<span class=\"wpb-td-inner\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs_5</span>}}</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> <span class=\"wpb-comment\">&lt;!--foo--&gt;</span> <span class=\"wpb-comment\">&lt;!--bar--&gt;</span> <span class=\"wpb-comment\">&lt;!--baz--&gt;</span> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs</span>}}</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">align=center <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs</span>}}</span></span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"> <span class=\"wpb-comment\">&lt;!--foo--&gt;</span> align=center <span class=\"wpb-comment\">&lt;!--bar--&gt;</span> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs</span>}}</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "2a. Template-generated table cell attributes and cell content",
 		"wikitext": "{|\n|{{table_attribs_2}}\n|}",
 		"html": "<table>\n<tbody><tr>\n<td data-sort-value=\"\" style=\"color:red;\">Foo\n</td>\n<td>Bar</td>\n<td>Baz\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr>\n<td ></td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr>\n<td ><a href=\"/wiki/Template%3ATable_attribs_2?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs_2 (page does not exist)\">Template:Table_attribs_2</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs_2</span>}}</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
@@ -13868,14 +13868,14 @@
 		"desc": "3. Template-generated table cell attributes and cell content",
 		"wikitext": "{|\n!align=center {{table_header_cells}}\n|-\n|align=center {{table_cells}}\n|}",
 		"html": "<table>\n<tbody><tr>\n<th align=\"center\" style=\"color:red;\">Foo</th>\n<th style=\"color:red;\"><i>Bar</i></th>\n<th style=\"color:brown;\"><i>Foo</i> and Baz\n</th></tr>\n<tr>\n<td align=\"center\" style=\"color:red;\">Foo</td>\n<td style=\"color:red;\"><i>Bar</i></td>\n<td style=\"color:brown;\"><i>Foo</i> and Baz\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr>\n<th >align=center </th></tr><tr >\n<td >align=center </td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr>\n<th >align=center <a href=\"/wiki/Template%3ATable_header_cells?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_header_cells (page does not exist)\">Template:Table_header_cells</a></th></tr><tr >\n<td >align=center <a href=\"/wiki/Template%3ATable_cells?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cells (page does not exist)\">Template:Table_cells</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">align=center <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_header_cells</span>}}</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">align=center <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cells</span>}}</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "4. Template-generated table cell attributes and cell content inside a templated table",
 		"wikitext": "{{tbl-start}}\n!align=center {{table_header_cells}}\n|-\n|align=center {{table_cells}}\n{{tbl-end}}",
 		"html": "<table>\n<tbody><tr>\n<th align=\"center\" style=\"color:red;\">Foo</th>\n<th style=\"color:red;\"><i>Bar</i></th>\n<th style=\"color:brown;\"><i>Foo</i> and Baz\n</th></tr>\n<tr>\n<td align=\"center\" style=\"color:red;\">Foo</td>\n<td style=\"color:red;\"><i>Bar</i></td>\n<td style=\"color:brown;\"><i>Foo</i> and Baz\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr>\n<th >align=center </th></tr><tr >\n<td >align=center </td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr>\n<th >align=center <a href=\"/wiki/Template%3ATable_header_cells?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_header_cells (page does not exist)\">Template:Table_header_cells</a></th></tr><tr >\n<td >align=center <a href=\"/wiki/Template%3ATable_cells?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cells (page does not exist)\">Template:Table_cells</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-start</span>}}</span>\n!align=center <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_header_cells</span>}}</span>\n|-\n|align=center <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cells</span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-end</span>}}</span></span>"
 	},
 	{
@@ -13976,21 +13976,21 @@
 		"desc": "Template generated table cell with attributes",
 		"wikitext": "{|\n|-\n{{table_attribs_4}} ||a||b\n|}",
 		"html": "<table>\n\n<tbody><tr>\n<td style=\"background-color:#DC241f;\" width=\"10px\"></td>\n<td>a</td>\n<td>b\n</td></tr></tbody></table>",
-		"render": "||a||b<table >\n<tbody></tbody></table>",
+		"render": "<a href=\"/wiki/Template%3ATable_attribs_4?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_attribs_4 (page does not exist)\">Template:Table_attribs_4</a> ||a||b<table >\n<tbody></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-table-inter\">\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_attribs_4</span>}}</span> ||a||b</span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "Templated table cell with untemplated attributes: Cell combination tests",
 		"wikitext": "{|\n|-\n!class=\"test\"{{table_cell_content|attr=! align=left}} /* th & th combine */\n|-\n|class=\"test\"{{table_cell_content}} /* td & td combine */\n|-\n!class=\"test\"{{table_cell_content}} /* th & td combine */\n|-\n|class=\"test\"{{table_cell_content|attr=! align=left}} /* td & th combine */\n|-\n|class=\"test\"{{table_cell_content|attr=style='color:red;'}}\n|-\n|class=\"test\"{{table_cell_content|cmt=<!--bar-->}}\n|}",
 		"html": "<table>\n\n<tbody><tr>\n<th class=\"test\" align=\"left\">foo /* th &amp; th combine */\n</th></tr>\n<tr>\n<td class=\"test\">foo /* td &amp; td combine */\n</td></tr>\n<tr>\n<th class=\"test\">foo /* th &amp; td combine */\n</th></tr>\n<tr>\n<td class=\"test\" align=\"left\">foo /* td &amp; th combine */\n</td></tr>\n<tr>\n<td class=\"test\" style=\"color:red;\">foo\n</td></tr>\n<tr>\n<td class=\"test\">foo\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr >\n<th >class=\"test\" /* th & th combine */</th></tr><tr >\n<td >class=\"test\" /* td & td combine */</td></tr><tr >\n<th >class=\"test\" /* th & td combine */</th></tr><tr >\n<td >class=\"test\" /* td & th combine */</td></tr><tr >\n<td >class=\"test\"</td></tr><tr >\n<td >class=\"test\"</td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr >\n<th >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a> /* th & th combine */</th></tr><tr >\n<td >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a> /* td & td combine */</td></tr><tr >\n<th >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a> /* th & td combine */</th></tr><tr >\n<td >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a> /* td & th combine */</td></tr><tr >\n<td >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a></td></tr><tr >\n<td >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">attr</span>=<span class=\"wpb-parameter-value\">! align=left</span></span>}}</span> /* th &amp; th combine */</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>}}</span> /* td &amp; td combine */</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\">class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>}}</span> /* th &amp; td combine */</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">attr</span>=<span class=\"wpb-parameter-value\">! align=left</span></span>}}</span> /* td &amp; th combine */</span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">attr</span>=<span class=\"wpb-parameter-value\">style='color:red;'</span></span>}}</span></span></span></span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">cmt</span>=<span class=\"wpb-parameter-value\"><span class=\"wpb-comment\">&lt;!--bar--&gt;</span></span></span>}}</span></span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
 	},
 	{
 		"desc": "T343874: Templated table that has a templated cell with untemplated attributes",
 		"wikitext": "{{tbl-start}}\n|-\n|class=\"test\"{{table_cell_content}}\n|-\n|class=\"test\"{{table_cell_content|attr=! align=left}}\n{{tbl-end}}",
 		"html": "<table>\n\n<tbody><tr>\n<td class=\"test\">foo\n</td></tr>\n<tr>\n<td class=\"test\" align=\"left\">foo\n</td></tr></tbody></table>",
-		"render": "<table >\n<tbody><tr >\n<td >class=\"test\"</td></tr><tr >\n<td >class=\"test\"</td></tr></tbody></table>",
+		"render": "<table >\n<tbody><tr >\n<td >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a></td></tr><tr >\n<td >class=\"test\"<a href=\"/wiki/Template%3ATable_cell_content?action=edit&redlink=1\" class=\"new\" title=\"Template:Table_cell_content (page does not exist)\">Template:Table_cell_content</a></td></tr></tbody></table>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-start</span>}}</span>\n|-\n|class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>}}</span>\n|-\n|class=\"test\"<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">table_cell_content</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-key\">attr</span>=<span class=\"wpb-parameter-value\">! align=left</span></span>}}</span>\n<span class=\"wpb-template\">{{<span class=\"wpb-template-name\">tbl-end</span>}}</span></span>"
 	},
 	{
