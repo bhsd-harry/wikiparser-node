@@ -18,6 +18,7 @@
 - `Token.prototype.toHtml` for various token types that have a bold and/or italic style
 [`RedirectTargetToken.innerText`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectTargetToken#innertext) should replace underscores with spaces
 - [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) should replace spaces with underscores
+- Some Wikitext syntaxes at SOL, including headings and lists, are now allowed following behavior switches except `__toc__`
 
 **Changed**
 

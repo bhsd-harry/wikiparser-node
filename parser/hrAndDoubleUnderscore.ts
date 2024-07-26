@@ -39,11 +39,12 @@ export const parseHrAndDoubleUnderscore = (
 	).replace(
 		new RegExp(`__(${[...doubleUnderscore[0], ...doubleUnderscore[1]].join('|')})__`, 'giu'),
 		(m, p1: string) => {
-			const caseSensitive = sensitive.has(p1);
-			if (caseSensitive || insensitive.has(p1.toLowerCase())) {
+			const caseSensitive = sensitive.has(p1),
+				lc = p1.toLowerCase();
+			if (caseSensitive || insensitive.has(lc)) {
 				// @ts-expect-error abstract class
 				new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
-				return `\0${accum.length - 1}u\x7F`;
+				return `\0${accum.length - 1}${lc === 'toc' ? 'u' : 'n'}\x7F`;
 			}
 			return m;
 		},

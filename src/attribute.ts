@@ -523,7 +523,7 @@ export abstract class AttributeToken extends Token {
 		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value !== '0') {
 			return '';
 		}
-		return `${name}="${sanitizeAttr(value.replace(/\s+/gu, name === 'id' ? '_' : ' '))}"`;
+		return `${name}="${sanitizeAttr(value.replace(/\s+|&#10;/gu, name === 'id' ? '_' : ' '))}"`;
 	}
 }
 
