@@ -730,14 +730,16 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
+	override toHtmlInternal(nowrap?: boolean): string {
 		const {type, name} = this;
 		if (type === 'template') {
-			return this.normalizeTitle(name, 0, true).valid
-				? `<a href="${this.#getTitle().getUrl()}?action=edit&redlink=1" class="new" title="${
+			if (this.normalizeTitle(name, 0, true).valid) {
+				return `<a href="${this.#getTitle().getUrl()}?action=edit&redlink=1" class="new" title="${
 					name
-				} (page does not exist)">${name}</a>`
-				: this.toString(true);
+				} (page does not exist)">${name}</a>`;
+			}
+			const str = this.toString(true);
+			return nowrap ? str.replaceAll('\n', ' ') : str;
 		}
 		return basicMagicWords.has(name) ? basicMagicWords.get(name)! : '';
 	}

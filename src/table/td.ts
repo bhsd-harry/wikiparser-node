@@ -423,10 +423,17 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
-		const {subtype, childNodes: [, attr, inner]} = this,
-			html = inner.toHtmlInternal();
-		return `\n<${subtype}${attr.toHtmlInternal()}>${subtype === 'caption' ? newline(html) : html}</${subtype}>`;
+	override toHtmlInternal(nowrap?: boolean): string {
+		const {subtype, childNodes: [, attr, inner], nextSibling} = this,
+			notEOL = nextSibling?.toString().startsWith('\n') === false,
+			lf = nowrap ? ' ' : '\n';
+		let html = inner.toHtmlInternal(nowrap).replace(/^[^\S\n]*/u, '');
+		if (notEOL) {
+			html = html.replace(/(?<=[\S\n])[^\S\n]*$/u, '');
+		}
+		return `${lf}<${subtype}${attr.toHtmlInternal()}>${
+			subtype === 'caption' ? newline(html) : html + (notEOL ? '' : lf)
+		}</${subtype}>`;
 	}
 }
 
