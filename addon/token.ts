@@ -189,7 +189,7 @@ const cmp = (a: string, b: string): boolean => a === b || Boolean(a && b) && Num
  * @param include
  * @param context 模板调用环境
  * @param accum
- * @throws `Error` 嵌入了重定向页面
+ * @param stack 模板调用栈
  */
 const expand = (
 	wikitext: string,
@@ -197,6 +197,7 @@ const expand = (
 	include: boolean,
 	context?: TranscludeToken | false,
 	accum: Token[] = [],
+	stack: string[] = [],
 ): Token => {
 	const magicWords = new Set(['if', 'ifeq', 'ifexist', 'switch']),
 		n = accum.length,
@@ -236,7 +237,8 @@ const expand = (
 					return m;
 				}
 				const c = target.getAttribute('config'),
-					{title} = Parser.normalizeTitle(removeComment(f.toString()), 10, include, c, true);
+					t = Parser.normalizeTitle(removeComment(f.toString()), 10, include, c, true),
+					{title} = t;
 				if (!Parser.templates.has(title)) {
 					if (Parser.templateDir === undefined) {
 						return m;
@@ -249,9 +251,11 @@ const expand = (
 						return m;
 					}
 					Parser.templates.set(title, fs.readFileSync(file, 'utf8'));
+				} else if (stack.includes(title)) {
+					return `<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
 				return implicitNewLine(
-					expand(Parser.templates.get(title)!, config, true, target, accum).toString(),
+					expand(Parser.templates.get(title)!, config, true, target, accum, [...stack, title]).toString(),
 					prev,
 				);
 			} else if (!magicWords.has(name)) {

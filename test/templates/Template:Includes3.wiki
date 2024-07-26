@@ -1,0 +1,1 @@
+<onlyinclude>Foo</onlyinclude>bar<includeonly>zar</includeonly>

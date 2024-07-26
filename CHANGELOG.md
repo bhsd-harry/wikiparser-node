@@ -5,7 +5,7 @@
 **Added**
 
 - [`Title.prototype.getRedirection`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#getredirection) method
-- [`TranscludeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#tohtml) for nonexistent transcluded pages
+- [`TranscludeToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#tohtml) for nonexistent transcluded pages and transclusion loops
 
 **Fixed**
 
