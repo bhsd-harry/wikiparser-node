@@ -98,7 +98,7 @@ export const normalizeSpace = (token: AstNodes | undefined): void => {
 };
 
 /** escape HTML entities */
-export const sanitize = replaceEntities(/[<>]/gu);
+export const sanitize = replaceEntities(/[<>]|&(?=amp(?!;))/giu);
 
 /** escape HTML entities in attributes */
 export const sanitizeAttr = replaceEntities(/[<>"]/gu);

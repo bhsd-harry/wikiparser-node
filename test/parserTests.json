@@ -3023,7 +3023,7 @@
 		"desc": "Text with HTML5 semicolon-less entity (should not decode)",
 		"wikitext": "&ampamp;",
 		"html": "<p>&amp;ampamp;\n</p>",
-		"render": "<p>&ampamp;\n</p>",
+		"render": "<p>&amp;ampamp;\n</p>",
 		"print": "<span class=\"wpb-root\">&amp;ampamp;</span>"
 	},
 	{
