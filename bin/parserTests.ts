@@ -14,6 +14,7 @@ declare interface Test {
 const redirects: Record<string, string> = {
 	'File:Redirect_to_foobar.jpg': 'File:Foobar.jpg',
 	'Template:Redirect_to_foo': 'Template:Foo',
+	'Template:Templateredirect': 'Template:Templatesimple',
 };
 
 Parser.viewOnly = true;
