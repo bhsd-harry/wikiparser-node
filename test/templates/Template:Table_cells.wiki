@@ -1,1 +1,0 @@
-{{table_attribs}}||style='color:red;'|''Bar''||style='color:brown;'|''Foo'' and Baz
