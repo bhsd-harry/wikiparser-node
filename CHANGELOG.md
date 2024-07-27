@@ -21,6 +21,7 @@
 - Some Wikitext syntaxes at SOL, including headings and lists, are now allowed following behavior switches except `__toc__`
 - `<p>` wrapping for [`TdToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#tohtml)
 - Media namespace redirects
+- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) when `<blockquote>` interferes with indent-`<pre>`
 
 **Changed**
 

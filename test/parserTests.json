@@ -9456,7 +9456,7 @@
 		"desc": "T54763: Preformatted in <blockquote>",
 		"wikitext": "<blockquote>\n Blah\n{|\n|\n indented cell (no pre-wrapping!)\n|}\n</blockquote>",
 		"html": "<blockquote>\n<p> Blah\n</p>\n<table>\n<tbody><tr>\n<td>\n<p> indented cell (no pre-wrapping!)\n</p>\n</td></tr></tbody></table>\n</blockquote>",
-		"render": "<blockquote >\n<p> Blah\n</p>\n<table >\n<tbody><tr>\n<td >\n<pre>indented cell (no pre-wrapping!)\n</pre>\n</td></tr></tbody></table>\n</blockquote>",
+		"render": "<blockquote >\n<p> Blah\n</p>\n<table >\n<tbody><tr>\n<td >\n<p> indented cell (no pre-wrapping!)\n</p>\n</td></tr></tbody></table>\n</blockquote>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;blockquote&gt;</span>\n Blah\n<span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n|</span><span class=\"wpb-td-inner\">\n indented cell (no pre-wrapping!)</span></span><span class=\"wpb-table-syntax\">\n|}</span></span>\n<span class=\"wpb-html\">&lt;/blockquote&gt;</span></span>"
 	},
 	{

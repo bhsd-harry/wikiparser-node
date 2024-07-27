@@ -389,9 +389,10 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 		const openMatch = openRegex.test(line),
 			closeMatch = closeRegex.test(line);
 		if (openMatch || closeMatch) {
+			const blockquote = /<(\/?)blockquote[\s>](?!.*<\/?blockquote[\s>])/iu.exec(line)?.[1];
+			inBlockquote = blockquote === undefined ? inBlockquote : blockquote === '';
 			pendingPTag = false;
 			output += closeParagraph();
-			inBlockquote = /<(\/?)blockquote[\s>](?!.*<\/?blockquote[\s>])/iu.exec(line)?.[1] === '';
 			inBlockElem = !closeMatch;
 		} else if (!inBlockElem) {
 			if (line.startsWith(' ') && (lastParagraph === 'pre' || line.trim()) && !inBlockquote) {
