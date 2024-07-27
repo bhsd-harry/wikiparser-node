@@ -1,10 +1,9 @@
-export interface Config {
+interface CommonConfig {
 	ext: string[];
 	readonly html: [string[], string[], string[]];
 	readonly namespaces: Record<string, string>;
 	readonly nsid: Record<string, number>;
 	readonly parserFunction: [Record<string, string>, string[], string[], string[]];
-	readonly doubleUnderscore: [string[], string[]];
 	readonly protocol: string;
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
@@ -17,6 +16,14 @@ export interface Config {
 	readonly conversionTable?: [string, string][];
 	readonly redirects?: [string, string][];
 	readonly articlePath?: string;
+}
+
+export interface DeprecatedConfig extends CommonConfig {
+	readonly doubleUnderscore: [string[], string[]];
+}
+
+export interface Config extends CommonConfig {
+	readonly doubleUnderscore: [Record<string, string>, string[]];
 }
 
 export type TokenTypes = 'root'

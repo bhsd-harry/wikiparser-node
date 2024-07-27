@@ -30,6 +30,7 @@
 - [`HeadingToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken) now includes trailing blank lines
 - By turning [`Parser.redirects`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#redirects) and [`Title.fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title#fragment) into accessors, page titles and fragments are now automatically normalized
 - The second arguments of [`AstText.prototype.deleteData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#deletedata) and [`AstText.prototype.substringData`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstText#substringdata) are now optional
+- The first item of the `doubleUnderscore` property of [`Config`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) is now `Record<string, string>`
 
 ## v1.11.1
 
