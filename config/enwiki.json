@@ -343,19 +343,19 @@
 		]
 	],
 	"doubleUnderscore": [
-		{
-			"forcetoc": "forcetoc",
-			"nocc": "nocontentconvert",
-			"nocontentconvert": "nocontentconvert",
-			"noeditsection": "noeditsection",
-			"nogallery": "nogallery",
-			"notc": "notitleconvert",
-			"notitleconvert": "notitleconvert",
-			"notoc": "notoc",
-			"toc": "toc",
-			"archivedtalk": "archivedtalk",
-			"notalk": "notalk"
-		},
+		[
+			"forcetoc",
+			"nocc",
+			"nocontentconvert",
+			"noeditsection",
+			"nogallery",
+			"notc",
+			"notitleconvert",
+			"notoc",
+			"toc",
+			"archivedtalk",
+			"notalk"
+		],
 		[
 			"EXPECTUNUSEDCATEGORY",
 			"DISAMBIG",
