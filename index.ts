@@ -179,6 +179,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				{doubleUnderscore} = config,
 				[insensitive] = doubleUnderscore;
 			if (Array.isArray(insensitive)) {
+				this.warn(
+					`The schema (${
+						path.resolve(__dirname, '..', 'config', '.schema.json')
+					}) of parser configuration is updated.`,
+				);
 				doubleUnderscore[0] = {};
 				for (const k of insensitive) {
 					doubleUnderscore[0][k] = k;

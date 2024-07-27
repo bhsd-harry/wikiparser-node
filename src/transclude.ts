@@ -732,11 +732,12 @@ export abstract class TranscludeToken extends Token {
 	/** @private */
 	override toHtmlInternal(nowrap?: boolean): string {
 		const {type, name} = this;
-		if (type === 'template') {
+		if (type === 'template' && !name.startsWith('Special:')) {
 			if (this.normalizeTitle(name, 0, true).valid) {
+				const title = name.replaceAll('_', ' ');
 				return `<a href="${this.#getTitle().getUrl()}?action=edit&redlink=1" class="new" title="${
-					name
-				} (page does not exist)">${name}</a>`;
+					title
+				} (page does not exist)">${title}</a>`;
 			}
 			const str = this.toString(true);
 			return nowrap ? str.replaceAll('\n', ' ') : str;
