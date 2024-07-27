@@ -8,7 +8,7 @@ import {
 	BuildMethod,
 } from './util/constants';
 import {tidy} from './util/string';
-import type {Config, LintError, Parser as ParserBase} from './base';
+import type {Config, DeprecatedConfig, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -56,7 +56,16 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
-			this.config = rootRequire(this.config, 'config') as Config;
+			const config = rootRequire(this.config, 'config') as Config | DeprecatedConfig,
+				{doubleUnderscore} = config,
+				[insensitive] = doubleUnderscore;
+			if (Array.isArray(insensitive)) {
+				doubleUnderscore[0] = {};
+				for (const k of insensitive) {
+					doubleUnderscore[0][k] = k;
+				}
+			}
+			this.config = config as Config;
 			return this.getConfig();
 		}
 		return {
