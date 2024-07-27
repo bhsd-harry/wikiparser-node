@@ -12,6 +12,14 @@ import type {Config, DeprecatedConfig, LintError, Parser as ParserBase} from './
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
+/* NOT FOR BROWSER */
+
+import {
+	error,
+} from './util/diff';
+
+/* NOT FOR BROWSER END */
+
 declare interface Parser extends ParserBase {
 	rules: readonly LintError.Rule[];
 
@@ -60,7 +68,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				{doubleUnderscore} = config,
 				[insensitive] = doubleUnderscore;
 			if (Array.isArray(insensitive)) {
-				console.warn(
+				error(
 					`The schema (${
 						path.resolve(__dirname, '..', 'config', '.schema.json')
 					}) of parser configuration is updated.`,
