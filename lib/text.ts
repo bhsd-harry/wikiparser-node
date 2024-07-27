@@ -445,7 +445,7 @@ export class AstText extends AstNode {
 	/** @private */
 	removeBlankLines(): void {
 		const mt = /\n[^\S\n]*$/u.exec(this.data);
-		if (mt) {
+		if (/\s$/u.test(this.data)) {
 			const spaces: AstText[] = [];
 			let {nextSibling} = this,
 				mt2: RegExpExecArray | null = null;
@@ -455,13 +455,13 @@ export class AstText extends AstNode {
 			) {
 				if (nextSibling.type === 'text') {
 					const {data} = nextSibling;
-					mt2 = /^[^\S\n]*(?=\n)/u.exec(data);
+					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(data);
 					if (mt2 || data.trim()) {
 						break;
 					} else {
 						spaces.push(nextSibling);
 					}
-				} else if (nextSibling.type === 'category') {
+				} else if (mt && nextSibling.type === 'category') {
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -474,9 +474,15 @@ export class AstText extends AstNode {
 				}
 				({nextSibling} = nextSibling);
 			}
-			if (mt2) {
-				this.deleteData(mt.index);
-				(nextSibling as AstText).deleteData(0, mt2[0].length);
+			if (mt2 || nextSibling?.type === 'table') {
+				if (mt) {
+					this.deleteData(mt.index + (mt2 ? 0 : 1));
+					if (mt2) {
+						(nextSibling as AstText).deleteData(0, mt2[0].length);
+					}
+				} else {
+					this.#setData(this.data.trimEnd());
+				}
 				for (const space of spaces) {
 					space.#setData('');
 				}

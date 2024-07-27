@@ -22,6 +22,7 @@
 - `<p>` wrapping for [`TdToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#tohtml)
 - Media namespace redirects
 - [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) when `<blockquote>` interferes with indent-`<pre>`
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) should also report reserved data attributes
 
 **Changed**
 
