@@ -3,7 +3,7 @@ if [[ $2 == 'npm' ]]
 then
 	gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1-b\"/" package.json
 	gsed -i 's|/gh/bhsd-harry/wikiparser-node|/npm/wikiparser-node|' extensions/base.ts
-	npm publish --tag browser
+	npm publish --tag ${3-browser}
 	git add -A
 	git commit -m "chore: publish v$1-b to npm"
 else
