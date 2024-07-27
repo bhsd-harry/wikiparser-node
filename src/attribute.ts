@@ -339,7 +339,7 @@ export abstract class AttributeToken extends Token {
 			attrs && !attrs.has(name)
 			|| (type === 'ext-attr' ? tag in htmlAttrs : !/\{\{[^{]+\}\}/u.test(name))
 			&& !htmlAttrs[tag]?.has(name)
-			&& !/^(?:xmlns:[\w:.-]+|data-[^:]*)$/u.test(name)
+			&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
 			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 		) {
 			errors.push(generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name'));
