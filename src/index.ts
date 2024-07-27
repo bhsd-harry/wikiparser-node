@@ -36,7 +36,7 @@
 // r: HrToken
 // s: `{{{|subst:}}}`
 // t: ArgToken或TranscludeToken
-// u: DoubleUnderscoreToken
+// u: `__toc__`
 // v: ConverterToken
 // w: ExtLinkToken
 // x: HtmlToken
