@@ -19,8 +19,13 @@ import type {Token} from './internal';
 /* NOT FOR BROWSER */
 
 import * as chalk from 'chalk';
-import {cmd, info, error, diff} from './util/diff';
 import type {log} from './util/diff';
+import {
+	error,
+	cmd,
+	info,
+	diff,
+} from './util/diff';
 
 /* NOT FOR BROWSER END */
 
@@ -179,7 +184,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				{doubleUnderscore} = config,
 				[insensitive] = doubleUnderscore;
 			if (Array.isArray(insensitive)) {
-				this.warn(
+				error(
 					`The schema (${
 						path.resolve(__dirname, '..', 'config', '.schema.json')
 					}) of parser configuration is updated.`,
