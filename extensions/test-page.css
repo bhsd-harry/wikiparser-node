@@ -239,6 +239,25 @@ pre {
 	font-size: larger;
 	color: #d73333;
 }
+.frame p + ul, .frame p + ol, .frame p + table, .frame p + dl, .frame p + blockquote {
+	margin-top: -.5em;
+}
+.wikitable {
+	background-color: #f8f9fa;
+	color: #202122;
+	margin: 1em 0;
+	border: 1px solid #a2a9b1;
+	border-collapse: collapse;
+}
+.wikitable > * > tr > th {
+	background-color: #eaecf0;
+	color: #202122;
+	text-align: center;
+}
+.wikitable > * > tr > th, .wikitable > * > tr > td {
+	border: 1px solid #a2a9b1;
+	padding: .2em .4em;
+}
 .frame img {
 	vertical-align: middle;
 	max-width: 100%;

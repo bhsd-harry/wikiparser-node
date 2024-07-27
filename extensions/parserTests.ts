@@ -51,7 +51,9 @@ declare interface Test {
 	btn.addEventListener('click', () => {
 		dones.add(tests[Number(select.value)]!.desc);
 		localStorage.setItem(key, JSON.stringify([...dones]));
-		select.selectedIndex++;
+		while (select.selectedOptions[0]!.disabled) {
+			select.selectedIndex++;
+		}
 		select.dispatchEvent(new Event('change'));
 	});
 	container.addEventListener('click', e => {
