@@ -16,7 +16,7 @@ export const parseHrAndDoubleUnderscore = (
 	accum: Token[],
 ): string => {
 	const {doubleUnderscore} = config,
-		insensitive = new Set(Object.keys(doubleUnderscore[0])),
+		insensitive = new Set(doubleUnderscore[0]),
 		sensitive = new Set(doubleUnderscore[1]);
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
@@ -37,7 +37,7 @@ export const parseHrAndDoubleUnderscore = (
 			if (caseSensitive || caseInsensitive) {
 				// @ts-expect-error abstract class
 				new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
-				return `\0${accum.length - 1}${caseInsensitive && doubleUnderscore[0][lc] === 'toc' ? 'u' : 'n'}\x7F`;
+				return `\0${accum.length - 1}${caseInsensitive && doubleUnderscore[2][lc] === 'toc' ? 'u' : 'n'}\x7F`;
 			}
 			return m;
 		},
