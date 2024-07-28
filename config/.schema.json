@@ -96,8 +96,8 @@
 			"prefixItems": [
 				{
 					"description": "case-insensitive behavior switches",
-					"type": "object",
-					"additionalProperties": {
+					"type": "array",
+					"items": {
 						"type": "string"
 					}
 				},
@@ -107,10 +107,17 @@
 					"items": {
 						"type": "string"
 					}
+				},
+				{
+					"description": "case-insensitive behavior switches",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
 				}
 			],
 			"minItems": 2,
-			"maxItems": 2
+			"maxItems": 3
 		},
 		"protocol": {
 			"description": "external link protocols",

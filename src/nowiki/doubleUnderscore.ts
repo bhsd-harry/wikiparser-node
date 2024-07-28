@@ -37,7 +37,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 
 		const lc = word.toLowerCase();
 		this.#sensitive = sensitive;
-		this.setAttribute('name', sensitive ? lc : config.doubleUnderscore[2][lc] ?? lc);
+		this.setAttribute('name', sensitive ? lc : config.doubleUnderscore[2]?.[lc] ?? lc);
 		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));
 	}
 

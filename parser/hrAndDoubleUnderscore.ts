@@ -46,7 +46,7 @@ export const parseHrAndDoubleUnderscore = (
 				// @ts-expect-error abstract class
 				new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
 				return `\0${accum.length - 1}${
-					caseInsensitive && (doubleUnderscore[2][lc] ?? lc) === 'toc' ? 'u' : 'n'
+					caseInsensitive && (doubleUnderscore[2]?.[lc] ?? lc) === 'toc' ? 'u' : 'n'
 				}\x7F`;
 			}
 			return m;
