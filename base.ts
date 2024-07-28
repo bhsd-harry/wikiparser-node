@@ -1,9 +1,10 @@
-interface CommonConfig {
+export interface JsonConfig {
 	ext: string[];
 	readonly html: [string[], string[], string[]];
 	readonly namespaces: Record<string, string>;
 	readonly nsid: Record<string, number>;
 	readonly parserFunction: [Record<string, string>, string[], string[], string[]];
+	readonly doubleUnderscore: [Record<string, string> | string[], string[], Record<string, string>?];
 	readonly protocol: string;
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
@@ -18,11 +19,7 @@ interface CommonConfig {
 	readonly articlePath?: string;
 }
 
-export interface JsonConfig extends CommonConfig {
-	readonly doubleUnderscore: [Record<string, string> | string[], string[]];
-}
-
-export interface Config extends CommonConfig {
+export interface Config extends JsonConfig {
 	readonly doubleUnderscore: [string[], string[], Record<string, string>];
 }
 
