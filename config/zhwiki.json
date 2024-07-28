@@ -659,6 +659,28 @@
 		]
 	],
 	"doubleUnderscore": [
+		[],
+		[
+			"EXPECTUNUSEDCATEGORY",
+			"DISAMBIG",
+			"消除歧义",
+			"HIDDENCAT",
+			"隐藏分类",
+			"隱藏分類",
+			"INDEX",
+			"索引",
+			"NEWSECTIONLINK",
+			"新段落链接",
+			"NOINDEX",
+			"无索引",
+			"NONEWSECTIONLINK",
+			"无新段落链接",
+			"STATICREDIRECT",
+			"静态重定向",
+			"靜態重新導向",
+			"NOGLOBAL",
+			"EXPECTED_UNCONNECTED_PAGE"
+		],
 		{
 			"forcetoc": "forcetoc",
 			"强显目录": "forcetoc",
@@ -684,28 +706,7 @@
 			"toc": "toc",
 			"目录": "toc",
 			"目錄": "toc"
-		},
-		[
-			"EXPECTUNUSEDCATEGORY",
-			"DISAMBIG",
-			"消除歧义",
-			"HIDDENCAT",
-			"隐藏分类",
-			"隱藏分類",
-			"INDEX",
-			"索引",
-			"NEWSECTIONLINK",
-			"新段落链接",
-			"NOINDEX",
-			"无索引",
-			"NONEWSECTIONLINK",
-			"无新段落链接",
-			"STATICREDIRECT",
-			"静态重定向",
-			"靜態重新導向",
-			"NOGLOBAL",
-			"EXPECTED_UNCONNECTED_PAGE"
-		]
+		}
 	],
 	"protocol": "bitcoin:|ftp://|ftps://|geo:|git://|gopher://|http://|https://|irc://|ircs://|magnet:|mailto:|matrix:|mms://|news:|nntp://|redis://|sftp://|sip:|sips:|sms:|ssh://|svn://|tel:|telnet://|urn:|worldwind://|xmpp:",
 	"interwiki": [],

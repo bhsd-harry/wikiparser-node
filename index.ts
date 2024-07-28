@@ -8,7 +8,7 @@ import {
 	BuildMethod,
 } from './util/constants';
 import {tidy} from './util/string';
-import type {Config, JsonConfig, LintError, Parser as ParserBase} from './base';
+import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -64,21 +64,18 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getConfig() {
 		if (typeof this.config === 'string') {
-			const config = rootRequire(this.config, 'config') as JsonConfig,
-				{doubleUnderscore} = config,
-				[jsonInsensitive, sensitiveKeys] = doubleUnderscore,
-				deprecated = Array.isArray(jsonInsensitive),
-				insensitiveKeys = deprecated ? jsonInsensitive : Object.keys(jsonInsensitive),
-				[,, insensitive = deprecated ? {} : jsonInsensitive] = doubleUnderscore;
-			if (deprecated) {
-				error(
-					`The schema (${
-						path.resolve(__dirname, '..', 'config', '.schema.json')
-					}) of parser configuration is updated.`,
-				);
-			}
-			this.config = {...config, doubleUnderscore: [insensitiveKeys, sensitiveKeys, insensitive]};
+			this.config = rootRequire(this.config, 'config') as Config;
 			return this.getConfig();
+		}
+		const {doubleUnderscore} = this.config;
+		if (doubleUnderscore.length === 2) {
+			error(
+				`The schema (${
+					path.resolve(__dirname, '..', 'config', '.schema.json')
+				}) of parser configuration is updated.`,
+			);
+		} else if (doubleUnderscore[0].length === 0) {
+			doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
 		}
 		return {
 			...this.config,
@@ -174,5 +171,5 @@ Object.defineProperties(Parser, def);
 // @ts-expect-error mixed export styles
 export = Parser;
 export default Parser;
-export type {Config, JsonConfig, LintError};
+export type {Config, LintError};
 export type * from './internal';
