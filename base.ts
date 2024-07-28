@@ -18,12 +18,12 @@ interface CommonConfig {
 	readonly articlePath?: string;
 }
 
-export interface DeprecatedConfig extends CommonConfig {
-	readonly doubleUnderscore: [string[], string[]];
+export interface JsonConfig extends CommonConfig {
+	readonly doubleUnderscore: [Record<string, string> | string[], string[]];
 }
 
 export interface Config extends CommonConfig {
-	readonly doubleUnderscore: [Record<string, string>, string[]];
+	readonly doubleUnderscore: [string[], string[], Record<string, string>];
 }
 
 export type TokenTypes = 'root'
