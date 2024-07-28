@@ -1,22 +1,15 @@
-interface CommonConfig {
+export interface Config {
 	ext: string[];
 	readonly html: [string[], string[], string[]];
 	readonly namespaces: Record<string, string>;
 	readonly nsid: Record<string, number>;
 	readonly parserFunction: [Record<string, string>, string[], string[], string[]];
+	readonly doubleUnderscore: [string[], string[], Record<string, string>?];
 	readonly protocol: string;
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
 	readonly variants: string[];
 	readonly excludes?: string[];
-}
-
-export interface JsonConfig extends CommonConfig {
-	readonly doubleUnderscore: [Record<string, string> | string[], string[]];
-}
-
-export interface Config extends CommonConfig {
-	readonly doubleUnderscore: [string[], string[], Record<string, string>];
 }
 
 export type TokenTypes = 'root'
