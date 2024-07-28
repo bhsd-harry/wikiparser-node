@@ -65,19 +65,17 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	getConfig() {
 		if (typeof this.config === 'string') {
 			const config = rootRequire(this.config, 'config') as JsonConfig,
-				{doubleUnderscore: [jsonInsensitive, sensitiveKeys]} = config,
+				{doubleUnderscore} = config,
+				[jsonInsensitive, sensitiveKeys] = doubleUnderscore,
 				deprecated = Array.isArray(jsonInsensitive),
 				insensitiveKeys = deprecated ? jsonInsensitive : Object.keys(jsonInsensitive),
-				insensitive = deprecated ? {} : jsonInsensitive;
+				[,, insensitive = deprecated ? {} : jsonInsensitive] = doubleUnderscore;
 			if (deprecated) {
 				error(
 					`The schema (${
 						path.resolve(__dirname, '..', 'config', '.schema.json')
 					}) of parser configuration is updated.`,
 				);
-				for (const k of insensitiveKeys) {
-					insensitive[k] = k;
-				}
 			}
 			this.config = {...config, doubleUnderscore: [insensitiveKeys, sensitiveKeys, insensitive]};
 			return this.getConfig();
