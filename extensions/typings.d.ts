@@ -5,9 +5,9 @@ import type {
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
 import type {CodeJar as CodeJarAsync} from 'codejar-async';
-import type {Config, LintError, AST, Parser} from '../base';
+import type {Config, JsonConfig, LintError, AST, Parser} from '../base';
 
-export type {Config, LintError, AST, Diagnostic, Action, editor, CodeJarAsync};
+export type {Config, JsonConfig, LintError, AST, Diagnostic, Action, editor, CodeJarAsync};
 
 export interface PrinterBase {
 	include: boolean;
@@ -44,7 +44,7 @@ export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums
 export interface wikiparse {
 	id: number;
 	setI18N: (i18n: Record<string, string>) => void;
-	setConfig: (config: Config) => void;
+	setConfig: (config: JsonConfig) => void;
 	getConfig: () => Promise<Config>;
 	json: (wikitext: string, include: boolean, qid?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;

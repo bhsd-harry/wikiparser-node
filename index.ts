@@ -38,12 +38,13 @@ declare interface Parser extends ParserBase {
 }
 
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
+	config: minConfig,
 	i18n: undefined,
 	rules,
 
 	/** @implements */
 	getConfig() {
-		const config = this.config as JsonConfig,
+		const config = this.config!,
 			{doubleUnderscore} = config,
 			[jsonInsensitive, sensitiveKeys] = doubleUnderscore,
 			deprecated = Array.isArray(jsonInsensitive),
@@ -133,4 +134,4 @@ if (typeof self === 'object') {
 }
 
 export default Parser;
-export type {Config, LintError};
+export type {Config, JsonConfig, LintError};

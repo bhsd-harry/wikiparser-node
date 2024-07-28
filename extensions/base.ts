@@ -1,4 +1,4 @@
-import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
+import type {Config, JsonConfig, LintError, AST, wikiparse as Wikiparse} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
@@ -84,7 +84,7 @@ const setI18N = (i18n: Record<string, string>): void => {
  * 更新解析设置
  * @param config 设置
  */
-const setConfig = (config: Config): void => {
+const setConfig = (config: JsonConfig): void => {
 	worker.postMessage(['setConfig', config]);
 };
 

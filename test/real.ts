@@ -2,7 +2,7 @@ import {error, info, diff} from '../util/diff';
 import {single} from './single';
 import '../../bundle/bundle.min.js';
 import type {
-	Config,
+	JsonConfig,
 	Parser as ParserBase,
 } from '../base';
 
@@ -49,7 +49,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：`);
-		const parserConfig: Config = require(`../../config/${config}`);
+		const parserConfig: JsonConfig = require(`../../config/${config}`);
 		Parser.config = parserConfig;
 		try {
 			let failed = 0;

@@ -191,7 +191,7 @@ interface Token extends AstNode {
 }
 
 export interface Parser {
-	config?: Config;
+	config?: JsonConfig;
 	i18n: Record<string, string>
 	| undefined;
 
