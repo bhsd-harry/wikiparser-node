@@ -6,7 +6,7 @@ import {
 	minConfig,
 } from './util/constants';
 import {tidy} from './util/string';
-import type {Config, JsonConfig, LintError, Parser as ParserBase} from './base';
+import type {Config, LintError, Parser as ParserBase} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -44,13 +44,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	getConfig() {
-		const config = this.config!,
-			{doubleUnderscore} = config,
-			[jsonInsensitive, sensitiveKeys] = doubleUnderscore,
-			deprecated = Array.isArray(jsonInsensitive),
-			insensitiveKeys = deprecated ? jsonInsensitive : Object.keys(jsonInsensitive),
-			[,, insensitive = deprecated ? {} : jsonInsensitive] = doubleUnderscore;
-		this.config = {...config, doubleUnderscore: [insensitiveKeys, sensitiveKeys, insensitive]};
+		const {doubleUnderscore} = this.config;
+		if (doubleUnderscore.length === 2) {
+			//
+		} else if (doubleUnderscore[0].length === 0) {
+			doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
+		}
 		return {
 			...minConfig,
 			...this.config,
@@ -134,4 +133,4 @@ if (typeof self === 'object') {
 }
 
 export default Parser;
-export type {Config, JsonConfig, LintError};
+export type {Config, LintError};

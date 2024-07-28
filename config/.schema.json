@@ -93,14 +93,31 @@
 		"doubleUnderscore": {
 			"description": "behavior switches",
 			"type": "array",
-			"items": {
-				"type": "array",
-				"items": {
-					"type": "string"
+			"prefixItems": [
+				{
+					"description": "case-insensitive behavior switches",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "case-sensitive behavior switches",
+					"type": "array",
+					"items": {
+						"type": "string"
+					}
+				},
+				{
+					"description": "case-insensitive behavior switches",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
 				}
-			},
+			],
 			"minItems": 2,
-			"maxItems": 2
+			"maxItems": 3
 		},
 		"protocol": {
 			"description": "external link protocols",
