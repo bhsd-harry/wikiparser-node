@@ -46,6 +46,9 @@
 	z-index: -1;
 	padding: 0 6px;
 }
+.wpb-root[contenteditable] > .wikiparser-sizer {
+	overflow-y: scroll;
+}
 
 .wpb-table-inter {
 	color: #d73333;
