@@ -46,10 +46,9 @@ const isStartCol = (rowLayout: readonly TableCoords[], i: number, oneCol?: boole
  * @param i 行号
  * @param oneRow 是否要求单元格跨行数为1
  * @param cells 改行全部单元格
+ * @throws `RangeError` 表格布局不包含第`i`行
  */
-function occupied(layout: Layout, i: number, oneRow: true, cells: readonly TdToken[]): number[];
-function occupied(layout: Layout, i: number): number[];
-function occupied(layout: Layout, i: number, oneRow?: boolean, cells?: readonly TdToken[]): number[] {
+const occupied = (layout: Layout, i: number, oneRow?: true, cells?: readonly TdToken[]): number[] => {
 	const rowLayout = layout[i];
 	if (rowLayout) {
 		return rowLayout.map(
@@ -57,7 +56,7 @@ function occupied(layout: Layout, i: number, oneRow?: boolean, cells?: readonly 
 		).filter((j): j is number => j !== undefined);
 	}
 	throw new RangeError(`The table layout does not contain row ${i}!`);
-}
+};
 
 /**
  * 设置表格格式
