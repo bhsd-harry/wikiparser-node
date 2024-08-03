@@ -303,7 +303,7 @@ export class Title {
 
 	/** @private */
 	getTitleAttr(): string {
-		return this.title.replace(/Media:/u, '').replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
+		return this.title.replace(/^Media:/u, '').replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
 	}
 }
 

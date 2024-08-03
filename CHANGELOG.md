@@ -1,3 +1,11 @@
+## v1.12.3
+
+*2024-08-04*
+
+**Fixed**
+
+- Fix a rare case of [`LinkToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkToken#tohtml) for the [Media namespace](https://www.mediawiki.org/wiki/Help:Namespaces#Media)
+
 ## v1.12.2
 
 *2024-07-29*
