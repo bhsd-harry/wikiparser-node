@@ -42,6 +42,7 @@ export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {
+	version: string;
 	id: number;
 	setI18N: (i18n: Record<string, string>) => void;
 	setConfig: (config: Config) => void;

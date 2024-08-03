@@ -10,7 +10,7 @@ else
 	npm run lint && npm run build:test && npm test && npm run test:parser && npm run test:real
 	if [[ $? -eq 0 ]]
 	then
-		gsed -i -E "s|wikiparser-node@.+-b|wikiparser-node@$1-b|" extensions/base.ts
+		gsed -i -E "s|const version = '.+';|const version = '$1';|" extensions/base.ts
 		gsed -i 's|/npm/wikiparser-node|/gh/bhsd-harry/wikiparser-node|' extensions/base.ts
 		npm run build:ext
 		git add -A

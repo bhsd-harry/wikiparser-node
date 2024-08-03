@@ -2,9 +2,11 @@ import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
+const version = '1.12.2';
+
 /** web worker */
 const workerJS = (): void => {
-	importScripts('https://testingcf.jsdelivr.net/npm/wikiparser-node@1.12.2-b/bundle/bundle.min.js');
+	importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}-b/bundle/bundle.min.js`);
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
@@ -47,7 +49,7 @@ const workerJS = (): void => {
 	};
 };
 
-const blob = new Blob([`(${String(workerJS)})()`], {type: 'text/javascript'}),
+const blob = new Blob([`(${String(workerJS).replace(`\${version}`, version)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
 	worker = new Worker(url);
 URL.revokeObjectURL(url);
@@ -268,5 +270,5 @@ const lineNumbers = (html: HTMLElement, start = 1, paddingTop = ''): void => {
 	}
 };
 
-const wikiparse: Wikiparse = {id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
+const wikiparse: Wikiparse = {version, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
 Object.assign(window, {wikiparse});
