@@ -28,7 +28,7 @@ const workerJS = (): void => {
 				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, Parser.parse(wikitext, include).json()]);
+				postMessage([qid, Parser.parse(wikitext, include, stage).json()]);
 				break;
 			case 'lint':
 				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
@@ -112,9 +112,10 @@ const getConfig = (): Promise<Config> => getFeedback('getConfig', -3);
  * @param wikitext wikitext
  * @param include 是否嵌入
  * @param qid 编号
+ * @param stage 解析层级
  */
-const json = (wikitext: string, include: boolean, qid = -4): Promise<AST> =>
-	getFeedback('json', qid, false, wikitext, include);
+const json = (wikitext: string, include: boolean, qid = -4, stage?: number): Promise<AST> =>
+	getFeedback('json', qid, false, wikitext, include, stage);
 
 /**
  * 将解析改为异步执行

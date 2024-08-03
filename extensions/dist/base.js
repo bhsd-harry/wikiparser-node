@@ -16,7 +16,7 @@ const workerJS = () => {
                 postMessage([qid, Parser.getConfig()]);
                 break;
             case 'json':
-                postMessage([qid, Parser.parse(wikitext, include).json()]);
+                postMessage([qid, Parser.parse(wikitext, include, stage).json()]);
                 break;
             case 'lint':
                 postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
@@ -57,7 +57,7 @@ const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve 
     worker.postMessage([command, qid, raw, ...args]);
 });
 const getConfig = () => getFeedback('getConfig', -3);
-const json = (wikitext, include, qid = -4) => getFeedback('json', qid, false, wikitext, include);
+const json = (wikitext, include, qid = -4, stage) => getFeedback('json', qid, false, wikitext, include, stage);
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
 const append = (parent, text) => {

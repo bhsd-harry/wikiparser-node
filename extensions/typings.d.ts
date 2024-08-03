@@ -47,7 +47,7 @@ export interface wikiparse {
 	setI18N: (i18n: Record<string, string>) => void;
 	setConfig: (config: Config) => void;
 	getConfig: () => Promise<Config>;
-	json: (wikitext: string, include: boolean, qid?: number) => Promise<AST>;
+	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string) => void;
