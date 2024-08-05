@@ -2,11 +2,15 @@
 
 *2024-08-05*
 
+**Added**
+
+- [`HeadingToken.id`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#id)
+
 **Fixed**
 
 - [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) should skip language conversion for the `id` attribute
 - [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) when there are more than 3 duplicated IDs
-- [Descendant combinator](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#combinator)
+- [Descendant combinator](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#后代选择器)
 
 **Changed**
 
@@ -246,7 +250,7 @@
 
 **Fixed**
 
-- Mimic the structure of CSS [compound selectors](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#组合器)
+- Mimic the structure of CSS [combinators](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#组合器)
 - Fully escape `<` and `>` when [printing](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#print) tag attributes
 - Recognize invalid [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) patterns
 - Image size parameter with a suffix of `pxpx` is now also valid

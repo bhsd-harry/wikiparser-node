@@ -80,6 +80,11 @@ export abstract class HeadingToken extends Token {
 		this.firstChild.replaceChildren(...childNodes);
 	}
 
+	/** id属性 */
+	get id(): string {
+		return this.#getId(true);
+	}
+
 	/* NOT FOR BROWSER END */
 
 	/**
@@ -201,14 +206,24 @@ export abstract class HeadingToken extends Token {
 		this.lastChild.replaceChildren();
 	}
 
-	/** @private */
-	override toHtmlInternal(): string {
-		const {level, firstChild} = this;
-		let id = decodeHtml(sanitizeAlt(firstChild.toHtmlInternal(false, true))!).replace(/[\s_]+/gu, '_');
+	/**
+	 * id属性
+	 * @param expand 是否展开模板
+	 */
+	#getId(expand?: boolean): string {
+		const token = expand ? this.firstChild.expand() : this.firstChild;
+		let id = decodeHtml(sanitizeAlt(token.toHtmlInternal(false, true))!).replace(/[\s_]+/gu, '_');
 		if (id.endsWith('_')) {
 			id = id.slice(0, -1);
 		}
-		const lcId = id.toLowerCase(),
+		return id;
+	}
+
+	/** @private */
+	override toHtmlInternal(): string {
+		let id = this.#getId();
+		const {level, firstChild} = this,
+			lcId = id.toLowerCase(),
 			headings = states.get(this.getRootNode())?.headings;
 		if (headings?.has(lcId)) {
 			let i = 2;

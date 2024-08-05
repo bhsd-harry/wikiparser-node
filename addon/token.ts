@@ -338,18 +338,12 @@ const expand = (
 };
 
 Token.prototype.expand = /** @implements */ function(): Token {
-	if (this.type !== 'root') {
-		throw new Error('Only root token can be expanded!');
-	}
 	return Shadow.run(
 		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include')).parse(),
 	);
 };
 
 Token.prototype.solveConst = /** @implements */ function(): Token {
-	if (this.type !== 'root') {
-		throw new Error('Only root token can be expanded!');
-	}
 	return Shadow.run(
 		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'), false).parse(),
 	);
