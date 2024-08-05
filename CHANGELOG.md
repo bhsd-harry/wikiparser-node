@@ -6,6 +6,7 @@
 
 - [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) should skip language conversion for the `id` attribute
 - [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) when there are more than 3 duplicated IDs
+- [Descendant combinator](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#combinator)
 
 **Changed**
 
