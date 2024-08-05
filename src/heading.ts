@@ -203,26 +203,26 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override toHtmlInternal(): string {
-		const {level, firstChild} = this,
-			html = firstChild.toHtmlInternal(),
-			headings = states.get(this.getRootNode())?.headings;
-		let id = decodeHtml(sanitizeAlt(html)!).replace(/[\s_]+/gu, '_');
+		const {level, firstChild} = this;
+		let id = decodeHtml(sanitizeAlt(firstChild.toHtmlInternal(false, true))!).replace(/[\s_]+/gu, '_');
 		if (id.endsWith('_')) {
 			id = id.slice(0, -1);
 		}
-		const lcId = id.toLowerCase();
+		const lcId = id.toLowerCase(),
+			headings = states.get(this.getRootNode())?.headings;
 		if (headings?.has(lcId)) {
 			let i = 2;
 			for (; headings.has(`${lcId}_${i}`); i++) {
 				// pass
 			}
 			id = `${id}_${i}`;
+			headings.add(`${lcId}_${i}`);
 		} else {
 			headings?.add(lcId);
 		}
-		return `<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${html.trim()}</h${
-			level
-		}></div>`;
+		return `<div class="mw-heading mw-heading${level}"><h${level} id="${sanitizeId(id)}">${
+			firstChild.toHtmlInternal().trim()
+		}</h${level}></div>`;
 	}
 }
 

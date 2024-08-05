@@ -387,7 +387,7 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
+	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
 		/** @ignore */
 		const isInteger = (n: string | undefined): boolean => Boolean(n && /^\d+$/u.test(n));
 		const {link, width, height} = this,
@@ -395,7 +395,7 @@ export abstract class FileToken extends LinkBaseToken {
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
 			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed',
-			caption = this.getArg('caption')?.toHtmlInternal(true) ?? '',
+			caption = this.getArg('caption')?.toHtmlInternal(true, nocc) ?? '',
 			titleFromCaption = visibleCaption ? '' : sanitizeAlt(caption)!,
 			hasLink = manual || link !== file,
 			title = titleFromCaption || (hasLink && typeof link !== 'string' ? link.getTitleAttr() : ''),

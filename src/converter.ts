@@ -134,17 +134,19 @@ export abstract class ConverterToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean): string {
+	override toHtmlInternal(nowrap?: boolean, nocc?: boolean): string {
 		const flags = this.getEffectiveFlags(),
 			{childNodes: [, ...rules]} = this;
-		if (flags.has('S')) {
+		if (nocc || flags.has('R') || this.getVariantFlags().size > 0) {
+			return font(this, (nocc ? '-{' : '') + html(rules, ';', nowrap, nocc) + (nocc ? '}-' : ''));
+		} else if (flags.has('S')) {
 			return font(
 				this,
 				rules.find(({variant}) => variant)?.lastChild.toHtmlInternal(nowrap).trim()
 				?? rules[0].lastChild.toHtmlInternal(nowrap),
 			);
 		}
-		return flags.has('R') || this.getVariantFlags().size > 0 ? font(this, html(rules, ';', nowrap)) : '';
+		return '';
 	}
 }
 

@@ -87,14 +87,15 @@ const openList = (chars: string, state: {dt: boolean[]}): string => {
  * @param childNodes a Token's contents
  * @param separator delimiter between nodes
  * @param nowrap whether to normalize newlines
+ * @param nocc whether to perform language conversion
  */
-export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: boolean): string => {
+export const html = (childNodes: readonly AstNodes[], separator = '', nowrap?: boolean, nocc?: boolean): string => {
 	let lastPrefix = '';
 	const results: string[] = [],
 		state = {dt: []};
 	for (let j = 0; j < childNodes.length; j++) {
 		const child = childNodes[j]!;
-		let result = child.toHtmlInternal(nowrap);
+		let result = child.toHtmlInternal(nowrap, nocc);
 		if (child.is<ListRangeToken>('list-range')) {
 			result = result.trim();
 			const {previousSibling: {firstChild: {data}}} = child,

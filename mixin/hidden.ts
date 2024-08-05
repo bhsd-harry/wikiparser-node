@@ -35,8 +35,8 @@ export const hiddenToken = (linter = true, html = true) =>
 				//
 			}
 
-			override toHtmlInternal(nowrap?: boolean): string {
-				return html ? '' : super.toHtmlInternal(nowrap);
+			override toHtmlInternal(): string {
+				return html ? '' : super.toHtmlInternal();
 			}
 		}
 		mixin(AnyHiddenToken, constructor);

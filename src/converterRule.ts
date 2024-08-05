@@ -264,11 +264,13 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean): string {
+	override toHtmlInternal(nowrap?: boolean, nocc?: boolean): string {
 		const {childNodes, firstChild, lastChild} = this;
 		return childNodes.length === 3
-			? `${firstChild.toHtmlInternal(nowrap)}=>${childNodes[1].text()}:${lastChild.toHtmlInternal(nowrap)}`
-			: html(childNodes, ':', nowrap);
+			? `${firstChild.toHtmlInternal(nowrap, nocc)}=>${childNodes[1].text()}:${
+				lastChild.toHtmlInternal(nowrap, nocc)
+			}`
+			: html(childNodes, ':', nowrap, nocc);
 	}
 }
 

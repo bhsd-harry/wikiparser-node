@@ -200,7 +200,7 @@ export abstract class ExtLinkToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean): string {
+	override toHtmlInternal(nowrap?: boolean, nocc?: boolean): string {
 		const {length, lastChild} = this;
 		let trail = '',
 			innerText: string,
@@ -216,9 +216,9 @@ export abstract class ExtLinkToken extends Token {
 			if (i !== -1) {
 				const after = childNodes.slice(i);
 				this.after(...after);
-				trail = html(after, '', nowrap);
+				trail = html(after, '', nowrap, nocc);
 			}
-			innerText = lastChild.toHtmlInternal();
+			innerText = lastChild.toHtmlInternal(false, nocc);
 		} else {
 			({innerText} = this);
 			autonumber = true;

@@ -2,6 +2,11 @@
 
 *2024-08-05*
 
+**Fixed**
+
+- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) should skip language conversion for the `id` attribute
+- [`HeadingToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#tohtml) when there are more than 3 duplicated IDs
+
 **Changed**
 
 - `ArgToken.prototype.json` no longer includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property

@@ -207,19 +207,21 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
+	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {
 			case 'nowiki':
 				return font(this, newline(lastChild.toHtmlInternal()));
 			case 'pre':
-				return font(this, `<pre${firstChild.toHtmlInternal()}>${newline(lastChild.toHtmlInternal())}</pre>`);
+				return font(this, `<pre${firstChild.toHtmlInternal()}>${
+					newline(lastChild.toHtmlInternal(false, nocc))
+				}</pre>`);
 			case 'poem':
 				firstChild.classList.add('poem');
 				return font(
 					this,
 					`<div${firstChild.toHtmlInternal()}>${
-						lastChild.toHtmlInternal().replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+						lastChild.toHtmlInternal(false, nocc).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
 							.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 					}</div>`,
 				);

@@ -32,7 +32,7 @@ declare global {
 		replaceChildren(...elements: (AstNodes | string)[]): void;
 		constructorError(msg: string): never;
 		seal(key: string, permanent?: boolean): void;
-		toHtmlInternal(nowrap?: boolean): string;
+		toHtmlInternal(nowrap?: boolean, nocc?: boolean): string;
 	};
 
 	interface PrintOpt {

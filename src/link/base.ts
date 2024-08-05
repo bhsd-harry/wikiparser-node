@@ -316,14 +316,14 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(): string {
+	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
 			const {link, length, lastChild, type} = this,
 				title = link.getTitleAttr();
 			return font(
 				this,
 				`<a${link.interwiki && ' class="extiw"'} href="${link.getUrl()}"${title && ` title="${title}"`}>${
-					type === 'link' && length > 1 ? lastChild.toHtmlInternal(true) : sanitize(this.innerText)
+					type === 'link' && length > 1 ? lastChild.toHtmlInternal(true, nocc) : sanitize(this.innerText)
 				}</a>`,
 			);
 		}
