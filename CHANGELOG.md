@@ -1,3 +1,11 @@
+## v1.12.4
+
+*2024-08-05*
+
+**Changed**
+
+- `ArgToken.prototype.json` no longer includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
+
 ## v1.12.3
 
 *2024-08-04*

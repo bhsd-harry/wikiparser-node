@@ -144,13 +144,6 @@ export abstract class ArgToken extends Token {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
 
-	/** @override */
-	override json(): AST {
-		const json = super.json();
-		json['default'] = this.default;
-		return json;
-	}
-
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
