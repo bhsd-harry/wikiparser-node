@@ -400,7 +400,7 @@ export class Token extends AstElement {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken | AttributeToken>> = {},
-				selector = 'category, html-attr#id, ext-attr#id, table-attr#id';
+				selector = 'category,html-attr#id,ext-attr#id,table-attr#id';
 			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 				let key;
 				if (cat.type === 'category') {
