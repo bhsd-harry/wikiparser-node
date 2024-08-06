@@ -226,7 +226,7 @@ const expand = (
 				} else if (!context || !context.hasArg(arg)) {
 					const effective = target.childNodes[1] ?? target;
 					// @ts-expect-error sparse array
-					accum[accum.indexOf(effective)] = undefined;
+					accum[accum.indexOf(length === 1 ? f : effective)] = undefined;
 					return prev + effective.toString();
 				}
 				// @ts-expect-error sparse array
@@ -238,8 +238,14 @@ const expand = (
 				}
 				const c = target.getAttribute('config'),
 					t = Parser.normalizeTitle(removeComment(f.toString()), 10, include, c, true),
-					{title} = t;
-				if (!Parser.templates.has(title)) {
+					{title, valid} = t;
+				if (!valid) {
+					// @ts-expect-error sparse array
+					accum[accum.indexOf(target)] = undefined;
+					// @ts-expect-error sparse array
+					accum[accum.indexOf(f)] = undefined;
+					return prev + target.toString();
+				} else if (!Parser.templates.has(title)) {
 					if (Parser.templateDir === undefined) {
 						return m;
 					} else if (!path.isAbsolute(Parser.templateDir)) {
@@ -254,7 +260,7 @@ const expand = (
 					}
 					Parser.templates.set(title, fs.readFileSync(file, 'utf8'));
 				} else if (stack.includes(title)) {
-					return `<span class="error">Template loop detected: [[${title}]]</span>`;
+					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
 				return implicitNewLine(
 					expand(Parser.templates.get(title)!, config, true, target, accum, [...stack, title]).toString(),
