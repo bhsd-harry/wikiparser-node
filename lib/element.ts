@@ -17,12 +17,12 @@ declare type TokenPredicate<T = Token> = (token: Token) => token is T;
  * 将选择器转化为类型谓词
  * @param selector 选择器
  */
-const getCondition = <T>(selector: string): TokenPredicate<T> => {
-	return (({type, name}) => selector.split(',').some(str => {
-		const [t, ...ns] = str.split('#');
+const getCondition = <T>(selector: string): TokenPredicate<T> => (
+	({type, name}): boolean => selector.split(',').some(str => {
+		const [t, ...ns] = str.trim().split('#');
 		return (!t || t === type) && ns.every(n => n === name);
-	})) as TokenPredicate<T>;
-};
+	})
+) as TokenPredicate<T>;
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
