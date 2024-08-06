@@ -26,20 +26,16 @@ declare type TokenPredicate<T = Token> = (token: Token) => token is T;
  * 将选择器转化为类型谓词
  * @param selector 选择器
  */
-const getCondition = <T>(selector: string): TokenPredicate<T> => {
-	/* NOT FOR BROWSER */
-
-	if (/[^a-z\-,#]/u.test(selector)) {
-		return checkToken(selector) as TokenPredicate<T>;
-	}
-
-	/* NOT FOR BROWSER END */
-
-	return (({type, name}) => selector.split(',').some(str => {
-		const [t, ...ns] = str.split('#');
-		return (!t || t === type) && ns.every(n => n === name);
-	})) as TokenPredicate<T>;
-};
+const getCondition = <T>(selector: string): TokenPredicate<T> => (
+	/* eslint-disable operator-linebreak */
+	/[^a-z\-,#]/u.test(selector) ?
+		checkToken(selector) :
+		({type, name}): boolean => selector.split(',').some(str => {
+			const [t, ...ns] = str.trim().split('#');
+			return (!t || t === type) && ns.every(n => n === name);
+		})
+/* eslint-enable operator-linebreak */
+) as TokenPredicate<T>;
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
