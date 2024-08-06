@@ -95,7 +95,7 @@ export abstract class HeadingToken extends Token {
 				Parser.msg('unbalanced $1 in a section header', '"="'),
 			));
 		}
-		if (this.closest('html-attrs, table-attrs')) {
+		if (this.closest('html-attrs,table-attrs')) {
 			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in a HTML tag'));
 		}
 		if (boldQuotes.length % 2) {
