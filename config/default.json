@@ -702,7 +702,10 @@
 			"CONTENTLANGUAGE",
 			"CONTENTLANG",
 			"PAGELANGUAGE",
-			"="
+			"=",
+			"#FORMAL",
+			"#timef",
+			"#timefl"
 		],
 		[
 			"msg",
