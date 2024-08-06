@@ -111,11 +111,4 @@ export abstract class ArgToken extends Token {
 	override print(): string {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
 	}
-
-	/** @override */
-	override json(): AST {
-		const json = super.json();
-		json['default'] = this.default;
-		return json;
-	}
 }

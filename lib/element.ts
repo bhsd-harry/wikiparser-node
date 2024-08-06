@@ -18,8 +18,10 @@ declare type TokenPredicate<T = Token> = (token: Token) => token is T;
  * @param selector 选择器
  */
 const getCondition = <T>(selector: string): TokenPredicate<T> => {
-	const types = new Set(selector.split(',').map(str => str.trim()));
-	return (({type}) => types.has(type)) as TokenPredicate<T>;
+	return (({type, name}) => selector.split(',').some(str => {
+		const [t, ...ns] = str.split('#');
+		return (!t || t === type) && ns.every(n => n === name);
+	})) as TokenPredicate<T>;
 };
 
 /** 类似HTMLElement */
