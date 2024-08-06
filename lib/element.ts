@@ -27,14 +27,14 @@ declare type TokenPredicate<T = Token> = (token: Token) => token is T;
  * @param selector 选择器
  */
 const getCondition = <T>(selector: string): TokenPredicate<T> => (
-	/* eslint-disable operator-linebreak */
+	/* eslint-disable @stylistic/operator-linebreak */
 	/[^a-z\-,#]/u.test(selector) ?
 		checkToken(selector) :
 		({type, name}): boolean => selector.split(',').some(str => {
 			const [t, ...ns] = str.trim().split('#');
 			return (!t || t === type) && ns.every(n => n === name);
 		})
-/* eslint-enable operator-linebreak */
+/* eslint-enable @stylistic/operator-linebreak */
 ) as TokenPredicate<T>;
 
 /** 类似HTMLElement */

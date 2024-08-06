@@ -185,19 +185,17 @@ export class Token extends AstElement {
 
 	/** 所有图片，包括图库 */
 	get images(): FileToken[] {
-		return this.querySelectorAll('file, gallery-image, imagemap-image');
+		return this.querySelectorAll('file,gallery-image,imagemap-image');
 	}
 
 	/** 所有内链、外链和自由外链 */
 	get links(): (LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
-		return this.querySelectorAll(
-			'link, redirect-target, ext-link, free-ext-link, magic-link, image-parameter#link',
-		);
+		return this.querySelectorAll('link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link');
 	}
 
 	/** 所有模板和模块 */
 	get embeds(): TranscludeToken[] {
-		return this.querySelectorAll('template, magic-word#invoke');
+		return this.querySelectorAll('template,magic-word#invoke');
 	}
 
 	/* NOT FOR BROWSER END */
@@ -580,7 +578,7 @@ export class Token extends AstElement {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken | AttributeToken>> = {},
-				selector = 'category, html-attr#id, ext-attr#id, table-attr#id';
+				selector = 'category,html-attr#id,ext-attr#id,table-attr#id';
 			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 				let key;
 				if (cat.type === 'category') {
