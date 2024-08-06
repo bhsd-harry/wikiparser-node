@@ -61,6 +61,7 @@ import type {Title} from '../lib/title';
 import type {
 	AstNodes,
 	CategoryToken,
+	AttributeToken,
 
 	/* NOT FOR BROWSER */
 
@@ -578,31 +579,43 @@ export class Token extends AstElement {
 		Parser.viewOnly = true;
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
-			const record: Record<string, Set<CategoryToken>> = {};
-			for (const cat of this.querySelectorAll<CategoryToken>('category')) {
-				const thisCat = record[cat.name];
+			const record: Record<string, Set<CategoryToken | AttributeToken>> = {},
+				selector = 'category, html-attr#id, ext-attr#id, table-attr#id';
+			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
+				let key;
+				if (cat.type === 'category') {
+					key = cat.name;
+				} else {
+					const value = cat.getValue();
+					key = `#${value === true ? '' : value}`;
+				}
+				const thisCat = record[key];
 				if (thisCat) {
 					thisCat.add(cat);
 				} else {
-					record[cat.name] = new Set([cat]);
+					record[key] = new Set([cat]);
 				}
 			}
-			for (const value of Object.values(record)) {
+			for (const [key, value] of Object.entries(record)) {
 				if (value.size > 1) {
+					const isCat = !key.startsWith('#'),
+						msg = `duplicated ${isCat ? 'category' : 'id'}`;
 					errors.push(...[...value].map(cat => {
 						const e = generateForSelf(
 							cat,
 							{start: cat.getAbsoluteIndex()},
 							'no-duplicate',
-							'duplicated category',
+							msg,
 						);
-						e.suggestions = [
-							{
-								desc: 'remove',
-								range: [e.startIndex, e.endIndex],
-								text: '',
-							},
-						];
+						if (isCat) {
+							e.suggestions = [
+								{
+									desc: 'remove',
+									range: [e.startIndex, e.endIndex],
+									text: '',
+								},
+							];
+						}
 						return e;
 					}));
 				}

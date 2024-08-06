@@ -5,6 +5,7 @@
 **Added**
 
 - [`HeadingToken.id`](https://github.com/bhsd-harry/wikiparser-node/wiki/HeadingToken#id)
+- New category of linting errors: duplicated id
 
 **Fixed**
 
