@@ -1,7 +1,7 @@
 (() => {
 const version = '1.12.3';
 const workerJS = () => {
-    importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}-b/bundle/bundle.min.js`);
+    importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
@@ -35,7 +35,7 @@ const workerJS = () => {
         }
     };
 };
-const blob = new Blob([`(${String(workerJS).replace(`\${version}`, version)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
+const blob = new Blob([`(${String(workerJS).replace('$VERSION', version)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
 URL.revokeObjectURL(url);
 const getListener = (qid, resolve, raw) => {
     const listener = ({ data: [rid, res, resRaw] }) => {

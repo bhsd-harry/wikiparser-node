@@ -417,15 +417,17 @@ export class Token extends AstElement {
 				}
 			}
 			for (const [key, value] of Object.entries(record)) {
-				if (value.size > 1) {
+				if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
 					const isCat = !key.startsWith('#'),
-						msg = `duplicated ${isCat ? 'category' : 'id'}`;
+						msg = `duplicated ${isCat ? 'category' : 'id'}`,
+						severity = isCat ? 'error' : 'warning';
 					errors.push(...[...value].map(cat => {
 						const e = generateForSelf(
 							cat,
 							{start: cat.getAbsoluteIndex()},
 							'no-duplicate',
 							msg,
+							severity,
 						);
 						if (isCat) {
 							e.suggestions = [

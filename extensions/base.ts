@@ -6,7 +6,7 @@ const version = '1.12.3';
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}-b/bundle/bundle.min.js`);
+	importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
@@ -49,7 +49,7 @@ const workerJS = (): void => {
 	};
 };
 
-const blob = new Blob([`(${String(workerJS).replace(`\${version}`, version)})()`], {type: 'text/javascript'}),
+const blob = new Blob([`(${String(workerJS).replace('$VERSION', version)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
 	worker = new Worker(url);
 URL.revokeObjectURL(url);
