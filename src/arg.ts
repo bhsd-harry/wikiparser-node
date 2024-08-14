@@ -66,6 +66,17 @@ export abstract class ArgToken extends Token {
 		return 1;
 	}
 
+	/** 设置name */
+	#setName(): void {
+		this.setAttribute('name', this.firstChild.toString(true).trim());
+	}
+
+	/** @private */
+	override afterBuild(): void {
+		this.#setName();
+		super.afterBuild();
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this;
