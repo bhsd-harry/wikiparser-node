@@ -69,7 +69,12 @@
 			"link"
 		]
 	],
-	"namespaces": {},
+	"namespaces": {
+		"0": "",
+		"6": "File",
+		"10": "Template",
+		"828": "Module"
+	},
 	"nsid": {
 		"file": 6,
 		"category": 14
