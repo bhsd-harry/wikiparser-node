@@ -98,6 +98,26 @@ export abstract class ArgToken extends Token {
 		return 1;
 	}
 
+	/** 设置name */
+	#setName(): void {
+		this.setAttribute('name', this.firstChild.toString(true).trim());
+	}
+
+	/** @private */
+	override afterBuild(): void {
+		this.#setName();
+		super.afterBuild();
+
+		/* NOT FOR BROWSER */
+
+		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
+			if (prevTarget === this.firstChild) {
+				this.#setName();
+			}
+		};
+		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
+	}
+
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const {childNodes: [argName, argDefault, ...rest]} = this;
@@ -152,23 +172,6 @@ export abstract class ArgToken extends Token {
 			token.append(...cloned);
 			return token;
 		});
-	}
-
-	/** 设置name */
-	#setName(): void {
-		this.setAttribute('name', this.firstChild.toString(true).trim());
-	}
-
-	/** @private */
-	override afterBuild(): void {
-		this.#setName();
-		super.afterBuild();
-		const /** @implements */ argListener: AstListener = ({prevTarget}) => {
-			if (prevTarget === this.firstChild) {
-				this.#setName();
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], argListener);
 	}
 
 	/** 移除无效部分 */

@@ -247,14 +247,13 @@ export abstract class TranscludeToken extends Token {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
 			if (isTemplate) {
 				this.setAttribute('name', this.#getTitle().title);
 			}
+
+			/* NOT FOR BROWSER */
 
 			/**
 			 * 当事件bubble到`parameter`时，将`oldKey`和`newKey`保存进AstEventData。
