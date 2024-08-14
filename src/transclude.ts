@@ -178,6 +178,12 @@ export abstract class TranscludeToken extends Token {
 			this.setAttribute('modifier', this.buildFromStr(this.modifier, BuildMethod.String));
 		}
 		super.afterBuild();
+		if (this.isTemplate()) {
+			const isTemplate = this.type === 'template';
+			if (isTemplate) {
+				this.setAttribute('name', this.#getTitle().title);
+			}
+		}
 	}
 
 	/** @private */
