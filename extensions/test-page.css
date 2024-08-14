@@ -422,6 +422,12 @@ pre {
 	padding: 2px;
 	display: block;
 }
+.frame li.gallerycaption {
+	font-weight: bold;
+	text-align: center;
+	display: block;
+	word-wrap: break-word;
+}
 .frame li.gallerybox {
 	vertical-align: top;
 	display: inline-block;
@@ -431,6 +437,12 @@ pre {
 	font-size: 94%;
 	padding: 9px 4px 17px;
 	word-wrap: break-word;
+}
+.frame li.gallerybox div.thumb {
+	background-color: #f8f9fa;
+	border: 1px solid #c8ccd1;
+	text-align: center;
+	margin: 2px
 }
 .frame .mw-gallery-traditional .gallerybox > .thumb > * {
 	vertical-align: middle;
