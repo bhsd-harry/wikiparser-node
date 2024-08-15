@@ -11,7 +11,14 @@ import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
 import type {LintError} from '../../base';
-import type {Token, AtomToken} from '../../internal';
+import type {
+	Token,
+	AtomToken,
+
+	/* NOT FOR BROWSER */
+
+	GalleryToken,
+} from '../../internal';
 
 /* NOT FOR BROWSER */
 
@@ -61,6 +68,21 @@ const explode = (start: string, end: string, separator: string, str?: string): s
 	return exploded;
 };
 
+/* NOT FOR BROWSER */
+
+/**
+ * 获取图库图片的宽度或高度
+ * @param token 图库
+ * @param key `widths` 或 `heights`
+ */
+const getWidth = (token: GalleryToken | undefined, key: 'widths' | 'heights'): string => {
+	const widths = token?.parentNode?.getAttr(key),
+		mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
+	return String(mt && Number(mt) || 120);
+};
+
+/* NOT FOR BROWSER END */
+
 /**
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
@@ -108,7 +130,9 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** 图片宽度 */
 	get width(): string | undefined {
-		return this.size?.width;
+		return this.type === 'gallery-image'
+			? getWidth(this.parentNode as GalleryToken | undefined, 'widths')
+			: this.size?.width;
 	}
 
 	set width(width) {
@@ -122,7 +146,9 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** 图片高度 */
 	get height(): string | undefined {
-		return this.size?.height;
+		return this.type === 'gallery-image'
+			? getWidth(this.parentNode as GalleryToken | undefined, 'heights')
+			: this.size?.height;
 	}
 
 	set height(height) {
@@ -390,13 +416,13 @@ export abstract class FileToken extends LinkBaseToken {
 	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
 		/** @ignore */
 		const isInteger = (n: string | undefined): boolean => Boolean(n && /^\d+$/u.test(n));
-		const {link, width, height} = this,
+		const {link, width, height, type} = this,
 			file = this.getAttribute('title'),
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
-			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed',
+			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed' || type === 'gallery-image',
 			caption = this.getArg('caption')?.toHtmlInternal(true, nocc) ?? '',
-			titleFromCaption = visibleCaption ? '' : sanitizeAlt(caption)!,
+			titleFromCaption = visibleCaption && type !== 'gallery-image' ? '' : sanitizeAlt(caption)!,
 			hasLink = manual || link !== file,
 			title = titleFromCaption || (hasLink && typeof link !== 'string' ? link.getTitleAttr() : ''),
 			titleAttr = title && ` title="${title}"`,
@@ -430,14 +456,21 @@ export abstract class FileToken extends LinkBaseToken {
 				typeof link === 'string' ? ` rel="nofollow"` : ''
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
-		return font(
-			this,
-			horiz || vert || visibleCaption
-				? `<figure${classAttr} typeof="mw:File${
-					fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
-				}">${a}<figcaption>${caption}</figcaption></figure>`
-				: `<span${classAttr}>${a}</span>`,
-		);
+		if (type !== 'gallery-image') {
+			return font(
+				this,
+				horiz || vert || visibleCaption
+					? `<figure${classAttr} typeof="mw:File${
+						fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
+					}">${a}<figcaption>${caption}</figcaption></figure>`
+					: `<span${classAttr}>${a}</span>`,
+			);
+		}
+		return `<li class="gallerybox" style="width: ${Number(width) + 35}px">\n<div class="thumb" style="width: ${
+			Number(width) + 30
+		}px; height: ${
+			Number(height) + 30
+		}px"><span>${a}</span></div>\n<div class="gallerytext">${caption}</div>\n</li>`;
 	}
 }
 

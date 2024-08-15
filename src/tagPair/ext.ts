@@ -225,6 +225,13 @@ export abstract class ExtToken extends TagPairToken {
 							.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 					}</div>`,
 				);
+			case 'gallery': {
+				const type = firstChild.getAttrToken('type'),
+					caption = firstChild.getAttrToken('caption');
+				return font(this, `<ul class="gallery"${type ? ` ${type.toHtmlInternal()}` : ''}>\n${
+					caption ? `<li class="gallerycaption">${caption.lastChild.toHtmlInternal(true)}</li>\n` : ''
+				}${lastChild.toHtmlInternal()}\n</ul>`);
+			}
 			default:
 				return '';
 		}

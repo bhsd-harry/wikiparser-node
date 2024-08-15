@@ -17,6 +17,7 @@ import type {
 
 import {Shadow, isToken} from '../util/debug';
 import {classes} from '../util/constants';
+import {html} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -195,6 +196,11 @@ export abstract class GalleryToken extends Token {
 			throw new RangeError('Please do not insert invisible content into <gallery>!');
 		}
 		return super.insertAt(token as T, i);
+	}
+
+	/** @private */
+	override toHtmlInternal(): string {
+		return html(this.childNodes.filter(isToken<GalleryImageToken>('gallery-image')), '\n');
 	}
 }
 

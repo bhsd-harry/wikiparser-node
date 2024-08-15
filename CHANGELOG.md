@@ -1,3 +1,11 @@
+## v1.12.5
+
+*2024-08-15*
+
+**Added**
+
+- [`GalleryToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#tohtml)
+
 ## v1.12.4
 
 *2024-08-07*
