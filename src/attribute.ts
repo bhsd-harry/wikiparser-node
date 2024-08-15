@@ -342,8 +342,8 @@ export abstract class AttributeToken extends Token {
 			!(attrs && attrs.has(name))
 			&& (type === 'ext-attr' || !/\{\{[^{]+\}\}/u.test(name))
 			&& (
-				!(tag in htmlAttrs)
-				|| !htmlAttrs[tag]!.has(name)
+				type === 'ext-attr' && !(tag in htmlAttrs)
+				|| !htmlAttrs[tag]?.has(name)
 				&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
