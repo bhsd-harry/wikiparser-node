@@ -452,6 +452,10 @@ pre {
 	text-align: center;
 	margin: 2px
 }
+.frame ul.mw-gallery-nolines li.gallerybox div.thumb {
+	background-color: transparent;
+	border: 0;
+}
 .frame .mw-gallery-traditional .gallerybox > .thumb > * {
 	vertical-align: middle;
 	display: inline-block;
