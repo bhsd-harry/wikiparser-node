@@ -466,11 +466,19 @@ export abstract class FileToken extends LinkBaseToken {
 					: `<span${classAttr}>${a}</span>`,
 			);
 		}
-		return `<li class="gallerybox" style="width: ${Number(width) + 35}px">\n<div class="thumb" style="width: ${
-			Number(width) + 30
-		}px; height: ${
+		const parent = this.parentNode as GalleryToken | undefined,
+			showfilename = parent?.parentNode?.getAttr('showfilename') !== undefined;
+		return `\t<li class="gallerybox" style="width: ${
+			Number(width) + 35
+		}px">\n\t\t<div class="thumb" style="width: ${Number(width) + 30}px; height: ${
 			Number(height) + 30
-		}px"><span>${a}</span></div>\n<div class="gallerytext">${caption}</div>\n</li>`;
+		}px"><span>${a}</span></div>\n\t\t<div class="gallerytext">${
+			showfilename
+				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
+					file.title
+				}">${file.main}</a>\n`
+				: ''
+		}${caption}</div>\n\t</li>`;
 	}
 }
 

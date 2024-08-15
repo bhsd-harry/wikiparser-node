@@ -6,6 +6,10 @@
 
 - [`GalleryToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#tohtml)
 
+**Fixed**
+
+- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#lint) now correctly reports invalid attribute names containing `{{!}}`
+
 ## v1.12.4
 
 *2024-08-07*

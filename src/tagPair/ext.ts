@@ -226,10 +226,10 @@ export abstract class ExtToken extends TagPairToken {
 					}</div>`,
 				);
 			case 'gallery': {
-				const type = firstChild.getAttrToken('type'),
-					caption = firstChild.getAttrToken('caption');
-				return font(this, `<ul class="gallery"${type ? ` ${type.toHtmlInternal()}` : ''}>\n${
-					caption ? `<li class="gallerycaption">${caption.lastChild.toHtmlInternal(true)}</li>\n` : ''
+				const caption = firstChild.getAttrToken('caption');
+				firstChild.classList.add('gallery');
+				return font(this, `<ul${firstChild.toHtmlInternal()}>\n${
+					caption ? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal(true)}</li>\n` : ''
 				}${lastChild.toHtmlInternal()}\n</ul>`);
 			}
 			default:
