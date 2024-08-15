@@ -227,14 +227,20 @@ export abstract class ExtToken extends TagPairToken {
 				);
 			case 'gallery': {
 				const caption = firstChild.getAttrToken('caption'),
-					perrow = parseInt(String(firstChild.getAttr('perrow')));
+					perrow = parseInt(String(firstChild.getAttr('perrow'))),
+					mode = firstChild.getAttr('mode'),
+					nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
+					padding = nolines ? 9 : 43;
 				firstChild.classList.add('gallery');
+				if (nolines) {
+					firstChild.classList.add('mw-gallery-nolines');
+				}
 				if (perrow > 0) {
 					const style = firstChild.getAttr('style');
 					firstChild.setAttr(
 						'style',
 						`max-width: ${
-							((lastChild as GalleryToken).widths + 43) * perrow
+							((lastChild as GalleryToken).widths + padding) * perrow
 						}px;${typeof style === 'string' ? style : ''}`,
 					);
 				}

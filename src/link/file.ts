@@ -452,12 +452,15 @@ export abstract class FileToken extends LinkBaseToken {
 			);
 		}
 		const parent = this.parentNode as GalleryToken | undefined,
+			mode = parent?.parentNode?.getAttr('mode'),
+			nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
+			padding = nolines ? 0 : 30,
 			showfilename = parent?.parentNode?.getAttr('showfilename') !== undefined;
 		return `\t<li class="gallerybox" style="width: ${
-			Number(width) + 35
-		}px">\n\t\t<div class="thumb" style="width: ${Number(width) + 30}px; height: ${
-			Number(height) + 30
-		}px"><span>${a}</span></div>\n\t\t<div class="gallerytext">${
+			Number(width) + padding + 5
+		}px">\n\t\t<div class="thumb" style="width: ${Number(width) + padding}px${
+			nolines ? '' : `; height: ${Number(height) + padding}px`
+		}"><span>${a}</span></div>\n\t\t<div class="gallerytext">${
 			showfilename
 				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
 					file.title
