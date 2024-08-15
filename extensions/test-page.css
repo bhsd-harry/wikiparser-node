@@ -422,6 +422,14 @@ pre {
 	padding: 2px;
 	display: block;
 }
+.frame .galleryfilename-truncate {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.frame .galleryfilename {
+	display: block;
+}
 .frame li.gallerycaption {
 	font-weight: bold;
 	text-align: center;
