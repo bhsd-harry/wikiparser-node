@@ -84,10 +84,16 @@ const commonHtmlAttrs = new Set([
 		time: new Set(['datetime']),
 		meta: new Set(['itemprop', 'content']),
 		link: new Set(['itemprop', 'href', 'title']),
-		gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails', 'type']),
-		poem: new Set(['compact', 'align']),
+		gallery: typeAttrs,
+		poem: blockAttrs,
+		categorytree: blockAttrs,
+		combooption: blockAttrs,
+	},
+	empty = new Set<string>(),
+	extAttrs: Record<string, Set<string>> = {
+		gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails']),
+		poem: new Set(['compact']),
 		categorytree: new Set([
-			'align',
 			'hideroot',
 			'onlyroot',
 			'depth',
@@ -97,10 +103,7 @@ const commonHtmlAttrs = new Set([
 			'showcount',
 			'notranslations',
 		]),
-		combooption: new Set(['name', 'for', 'inline', 'align']),
-	},
-	empty = new Set<string>(),
-	extAttrs: Record<string, Set<string>> = {
+		combooption: new Set(['name', 'for', 'inline']),
 		nowiki: empty,
 		indicator: new Set(['name']),
 		langconvert: new Set(['from', 'to']),
@@ -335,11 +338,14 @@ export abstract class AttributeToken extends Token {
 		}
 		const attrs = extAttrs[tag];
 		if (
-			attrs && !attrs.has(name)
-			|| (type === 'ext-attr' ? tag in htmlAttrs : !/\{\{[^{]+\}\}/u.test(name))
-			&& !htmlAttrs[tag]?.has(name)
-			&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
-			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			!(attrs && attrs.has(name))
+			&& (type === 'ext-attr' || !/\{\{[^{]+\}\}/u.test(name))
+			&& (
+				!(tag in htmlAttrs)
+				|| !htmlAttrs[tag]!.has(name)
+				&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
+				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
+			)
 		) {
 			errors.push(generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name'));
 		} else if (obsoleteAttrs[tag]?.has(name)) {
