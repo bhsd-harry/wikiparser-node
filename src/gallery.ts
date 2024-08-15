@@ -52,6 +52,16 @@ export abstract class GalleryToken extends Token {
 
 	/* NOT FOR BROWSER */
 
+	/** 图片宽度 */
+	get widths(): number {
+		return this.#getSize('widths');
+	}
+
+	/** 图片高度 */
+	get heights(): number {
+		return this.#getSize('heights');
+	}
+
 	/** 所有图片 */
 	override get images(): GalleryImageToken[] {
 		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
@@ -196,6 +206,16 @@ export abstract class GalleryToken extends Token {
 			throw new RangeError('Please do not insert invisible content into <gallery>!');
 		}
 		return super.insertAt(token as T, i);
+	}
+
+	/**
+	 * 获取图片的宽度或高度
+	 * @param key `widths` 或 `heights`
+	 */
+	#getSize(key: 'widths' | 'heights'): number {
+		const widths = this.parentNode?.getAttr(key),
+			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
+		return mt && Number(mt) || 120;
 	}
 
 	/** @private */

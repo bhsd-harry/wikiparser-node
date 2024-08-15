@@ -226,8 +226,18 @@ export abstract class ExtToken extends TagPairToken {
 					}</div>`,
 				);
 			case 'gallery': {
-				const caption = firstChild.getAttrToken('caption');
+				const caption = firstChild.getAttrToken('caption'),
+					perrow = parseInt(String(firstChild.getAttr('perrow')));
 				firstChild.classList.add('gallery');
+				if (perrow > 0) {
+					const style = firstChild.getAttr('style');
+					firstChild.setAttr(
+						'style',
+						`max-width: ${
+							((lastChild as GalleryToken).widths + 43) * perrow
+						}px;${typeof style === 'string' ? style : ''}`,
+					);
+				}
 				return font(this, `<ul${firstChild.toHtmlInternal()}>\n${
 					caption ? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal(true)}</li>\n` : ''
 				}${lastChild.toHtmlInternal()}\n</ul>`);

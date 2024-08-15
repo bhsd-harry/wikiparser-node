@@ -5,6 +5,7 @@
 **Added**
 
 - [`GalleryToken.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#tohtml)
+- [`GalleryToken.widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#widths) and [`GalleryToken.heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#heights)
 
 **Fixed**
 

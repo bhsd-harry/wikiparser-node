@@ -68,21 +68,6 @@ const explode = (start: string, end: string, separator: string, str?: string): s
 	return exploded;
 };
 
-/* NOT FOR BROWSER */
-
-/**
- * 获取图库图片的宽度或高度
- * @param token 图库
- * @param key `widths` 或 `heights`
- */
-const getWidth = (token: GalleryToken | undefined, key: 'widths' | 'heights'): string => {
-	const widths = token?.parentNode?.getAttr(key),
-		mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
-	return String(mt && Number(mt) || 120);
-};
-
-/* NOT FOR BROWSER END */
-
 /**
  * 图片
  * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
@@ -131,7 +116,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/** 图片宽度 */
 	get width(): string | undefined {
 		return this.type === 'gallery-image'
-			? getWidth(this.parentNode as GalleryToken | undefined, 'widths')
+			? (this.parentNode as GalleryToken | undefined)?.widths.toString()
 			: this.size?.width;
 	}
 
@@ -147,7 +132,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/** 图片高度 */
 	get height(): string | undefined {
 		return this.type === 'gallery-image'
-			? getWidth(this.parentNode as GalleryToken | undefined, 'heights')
+			? (this.parentNode as GalleryToken | undefined)?.heights.toString()
 			: this.size?.height;
 	}
 
