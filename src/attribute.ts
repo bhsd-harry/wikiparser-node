@@ -400,8 +400,8 @@ export abstract class AttributeToken extends Token {
 		}
 		const attrs = extAttrs[tag];
 		if (
-			!(attrs && attrs.has(name))
-			&& (type === 'ext-attr' || !/\{\{[^{]+\}\}/u.test(name))
+			!attrs?.has(name)
+			&& (type === 'ext-attr' ? attrs : !/\{\{[^{]+\}\}/u.test(name))
 			&& (
 				type === 'ext-attr' && !(tag in htmlAttrs)
 				|| !htmlAttrs[tag]?.has(name)

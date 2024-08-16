@@ -1,3 +1,11 @@
+## v1.12.6
+
+*2024-08-17*
+
+**Fixed**
+
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) for unknown extension tags, since [v1.12.5](#v1125)
+
 ## v1.12.5
 
 *2024-08-16*
