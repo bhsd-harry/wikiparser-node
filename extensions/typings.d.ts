@@ -5,6 +5,8 @@ import type {editor} from 'monaco-editor';
 import type {CodeJar as CodeJarAsync} from 'codejar-async';
 import type {Config, LintError, AST} from '../base';
 
+export type {AST};
+
 export interface PrinterBase {
 	include: boolean;
 }
