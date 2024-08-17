@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.12.5",
+	"version": "1.12.6",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
