@@ -152,6 +152,7 @@ export interface LintError {
 export type AST = Record<string, string | number | boolean> & {
 	range: [number, number];
 	type?: TokenTypes;
+	name?: string;
 	childNodes?: AST[];
 };
 
