@@ -2,10 +2,12 @@ import type {
 	Diagnostic,
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
-import type {CodeJar as CodeJarAsync} from 'codejar-async';
+import type {CodeJar} from 'codejar-async';
 import type {Config, LintError, AST} from '../base';
 
-export type {AST};
+export type {
+	AST,
+};
 
 export interface PrinterBase {
 	include: boolean;
@@ -22,8 +24,12 @@ declare global {
 	const wikiparse: wikiparse;
 }
 
-export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) =>
-	CodeJarAsync & {include: boolean};
+export type CodeJarAsync = CodeJar & {
+	include: boolean;
+	editor: HTMLElement;
+};
+
+export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) => CodeJarAsync;
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {
