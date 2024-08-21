@@ -1,16 +1,12 @@
 /* eslint jsdoc/require-jsdoc: 0 */
-import type {CodeJarAsync, codejar as f} from './typings';
+import type {CodeJar as Jar, CodeJarAsync, codejar as f} from './typings';
 
 const codejar = (async (): Promise<f> => {
-	const {CodeJar}: {CodeJar: typeof CodeJarAsync} = 'CodeJar' in window
+	const {CodeJar}: {CodeJar: typeof Jar} = 'CodeJar' in window
 		? window
 		: await import('https://testingcf.jsdelivr.net/npm/codejar-async');
 
-	return (
-		textbox: HTMLTextAreaElement,
-		include?: boolean,
-		linenums?: boolean,
-	): CodeJarAsync & {include: boolean} => {
+	return (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean): CodeJarAsync => {
 		if (!(textbox instanceof HTMLTextAreaElement)) {
 			throw new TypeError('wikiparse.codejar方法仅可用于textarea元素！');
 		}
@@ -44,6 +40,7 @@ const codejar = (async (): Promise<f> => {
 		const jar = {
 			...CodeJar(root, highlight, {spellcheck: true}), // eslint-disable-line new-cap
 			include: Boolean(include),
+			editor: root,
 		};
 		if (linenums) {
 			jar.onHighlight(e => {

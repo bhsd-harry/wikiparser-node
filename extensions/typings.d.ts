@@ -4,7 +4,7 @@ import type {
 	Action,
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
-import type {CodeJar as CodeJarAsync} from 'codejar-async';
+import type {CodeJar} from 'codejar-async';
 import type {Config, LintError, AST, Parser} from '../base';
 
 export type {
@@ -14,7 +14,7 @@ export type {
 	Diagnostic,
 	Action,
 	editor,
-	CodeJarAsync,
+	CodeJar,
 };
 
 export interface PrinterBase {
@@ -33,7 +33,7 @@ declare global {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
 		/** @see https://www.npmjs.com/package/codejar-async */
-		const CodeJar: (...args: unknown[]) => CodeJarAsync;
+		const CodeJar: (...args: unknown[]) => CodeJar;
 		export {CodeJar};
 	}
 
@@ -45,8 +45,12 @@ declare global {
 	type MonacoEditor = typeof editor;
 }
 
-export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) =>
-	CodeJarAsync & {include: boolean};
+export type CodeJarAsync = CodeJar & {
+	include: boolean;
+	editor: HTMLElement;
+};
+
+export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) => CodeJarAsync;
 
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {

@@ -28,6 +28,7 @@ const codejar = (async () => {
         const jar = {
             ...CodeJar(root, highlight, { spellcheck: true }),
             include: Boolean(include),
+            editor: root,
         };
         if (linenums) {
             jar.onHighlight(e => {
