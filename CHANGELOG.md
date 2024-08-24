@@ -1,3 +1,11 @@
+## v1.12.7
+
+*2024-08-24*
+
+**Fixed**
+
+- [`TranscludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#lint) should not report `#` in an HTML entity as template page fragment
+
 ## v1.12.6
 
 *2024-08-17*
