@@ -1,6 +1,7 @@
 import {
 	removeComment,
 	text,
+	decodeHtml,
 } from '../util/string';
 import {generateForChild, generateForSelf} from '../util/lint';
 import {isToken, Shadow} from '../util/debug';
@@ -235,7 +236,9 @@ export abstract class TranscludeToken extends Token {
 			errors.push(generateForChild(childNodes[1], rect, 'invalid-invoke', 'illegal module name'));
 		} else {
 			const child = childNodes[invoke ? 1 : 0] as AtomToken,
-				textNode = child.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
+				textNode = child.childNodes.find(
+					(c): c is AstText => c.type === 'text' && decodeHtml(c.data).includes('#'),
+				);
 			if (textNode) {
 				const e = generateForChild(child, rect, 'no-ignored', 'useless fragment');
 				e.fix = {
