@@ -6,7 +6,7 @@ const version = '1.12.7';
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts(`https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
+	importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
