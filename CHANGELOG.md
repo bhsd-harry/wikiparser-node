@@ -1,3 +1,11 @@
+## v1.12.8
+
+*2024-09-16*
+
+**Fixed**
+
+- [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports file names containing `꞉` as a substitute for `:` in a Windows file system
+
 ## v1.12.7
 
 *2024-08-24*

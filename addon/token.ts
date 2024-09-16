@@ -251,7 +251,7 @@ const expand = (
 					} else if (!path.isAbsolute(Parser.templateDir)) {
 						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 					}
-					const titles = [title, title.replaceAll('_', ' ')],
+					const titles = [title, title.replaceAll('_', ' ')].flatMap(tt => [tt, tt.replaceAll(':', '꞉')]),
 						file = ['.wiki', '.txt', '']
 							.flatMap(ext => titles.map(tt => path.join(Parser.templateDir!, tt + ext)))
 							.find(fs.existsSync);
