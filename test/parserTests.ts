@@ -2,13 +2,20 @@ import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
 import Parser = require('../index');
 
-const tests: {wikitext?: string, print?: string}[] = require('../../test/parserTests.json');
+declare interface Test {
+	wikitext?: string;
+	print?: string;
+	render?: string;
+}
+
+const tests: Test[] = require('../../test/parserTests.json');
 (async () => {
 	let failed = 0;
-	for (const [i, {wikitext, print}] of tests.entries()) {
-		if (wikitext && print) {
+	for (const [i, {wikitext, print, render}] of tests.entries()) {
+		if (wikitext && (print || render)) {
+			const root = Parser.parse(wikitext);
 			try {
-				assert.equal(Parser.parse(wikitext).print(), print);
+				assert.equal(root.print(), print);
 			} catch (e) {
 				console.log(wikitext);
 				console.log();
