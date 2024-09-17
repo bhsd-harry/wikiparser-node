@@ -1,6 +1,3 @@
-/* eslint n/exports-style: [2, 'module.exports'] */
-/* eslint @stylistic/array-bracket-newline: [2, {minItems: 1}] */
-/* eslint-disable @stylistic/max-len */
 'use strict';
 
 const config = require('@bhsd/common/eslintrc.node.cjs');
@@ -148,6 +145,21 @@ module.exports = {
 			rules: {
 				'n/no-missing-import': 0,
 				'n/no-missing-require': 0,
+			},
+		},
+		{
+			files: '*.cjs',
+			rules: {
+				'n/exports-style': [
+					2,
+					'module.exports',
+				],
+				'@stylistic/array-bracket-newline': [
+					2,
+					{
+						minItems: 1,
+					},
+				],
 			},
 		},
 		{
