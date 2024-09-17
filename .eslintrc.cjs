@@ -18,7 +18,9 @@ module.exports = {
 		'no-bitwise': [
 			2,
 			{
-				allow: ['<<'],
+				allow: [
+					'<<',
+				],
 			},
 		],
 		'no-new': 0,
@@ -89,7 +91,9 @@ module.exports = {
 	overrides: [
 		{
 			...json,
-			excludedFiles: ['test/parserTests.json'],
+			excludedFiles: [
+				'test/parserTests.json',
+			],
 		},
 		{
 			files: [
@@ -161,7 +165,9 @@ module.exports = {
 			},
 		},
 		{
-			files: ['test/*.ts'],
+			files: [
+				'test/*.ts',
+			],
 			rules: {
 				'n/no-missing-import': 0,
 				'n/no-missing-require': 0,
@@ -173,6 +179,12 @@ module.exports = {
 				'n/exports-style': [
 					2,
 					'module.exports',
+				],
+				'@stylistic/array-bracket-newline': [
+					2,
+					{
+						minItems: 1,
+					},
 				],
 			},
 		},

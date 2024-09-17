@@ -51,7 +51,7 @@
 		"@bhsd/common": "^0.1.1",
 		"@codemirror/lint": "^6.8.0",
 		"@types/node": "^20.11.6",
-		"codejar-async": "^4.2.0",
+		"codejar-async": "^4.2.3",
 		"monaco-editor": "^0.51.0",
 		"v8r": "^3.0.0"
 	},
