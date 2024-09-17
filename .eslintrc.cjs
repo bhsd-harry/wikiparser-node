@@ -168,18 +168,18 @@ module.exports = {
 			},
 		},
 		{
-			files: 'extensions/*.ts',
-			parserOptions: {
-				project: './extensions/tsconfig.json',
-			},
-		},
-		{
 			files: '*.cjs',
 			rules: {
 				'n/exports-style': [
 					2,
 					'module.exports',
 				],
+			},
+		},
+		{
+			files: 'extensions/*.ts',
+			parserOptions: {
+				project: './extensions/tsconfig.json',
 			},
 		},
 	],
