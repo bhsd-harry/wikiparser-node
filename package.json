@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.12.6",
+	"version": "1.12.7",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -46,11 +46,11 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@bhsd/common": "^0.0.0",
+		"@bhsd/common": "^0.1.1",
 		"@types/node": "^20.11.6",
 		"v8r": "^3.0.0"
 	},
 	"engines": {
-		"node": "^20.9.0"
+		"node": ">=20.9.0"
 	}
 }
