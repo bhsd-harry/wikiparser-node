@@ -95,6 +95,9 @@ module.exports = {
 	},
 	overrides: [
 		{
+			...json,
+		},
+		{
 			files: [
 				'errors/*.json',
 			],
