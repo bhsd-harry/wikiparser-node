@@ -1,6 +1,11 @@
 ## v1.12.8
 
-*2024-09-16*
+*2024-09-21*
+
+**Added**
+
+- New pseudo selectors [`:valid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#valid) and [`:scope`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#scope)
+- Pseudo selector [`:has()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#has) now supports relative selectors
 
 **Fixed**
 

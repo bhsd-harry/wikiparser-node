@@ -2,7 +2,13 @@ import {parsers} from '../util/constants';
 import {Ranges} from '../lib/ranges';
 import {Title} from '../lib/title';
 import type {AttributesParentBase} from '../mixin/attributesParent';
-import type {Token} from '../internal';
+import type {AstElement} from '../lib/element';
+import type {Token, AstNodes} from '../internal';
+
+// @ts-expect-error unconstrained predicate
+export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
+
+/* NOT FOR BROWSER */
 
 const simplePseudos = new Set([
 		'root',
@@ -21,8 +27,10 @@ const simplePseudos = new Set([
 		'any-link',
 		'local-link',
 		'invalid',
+		'valid',
 		'required',
 		'optional',
+		'scope',
 	]),
 	complexPseudos = new Set([
 		'is',
@@ -102,14 +110,19 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
  * 检查是否符合解析后的选择器，不含节点关系
  * @param token 节点
  * @param step 解析后的选择器
+ * @param scope 作用对象
+ * @param has `:has()`伪选择器
  * @throws `SyntaxError` 错误的正则伪选择器
  * @throws `SyntaxError` 未定义的伪选择器
  */
 const matches = (
 	token: Token & Partial<AttributesParentBase> & {link?: string | Title},
 	step: SelectorArray,
+	scope: AstElement,
+	has: Token | undefined,
 ): boolean => {
 	const {parentNode, type, name, childNodes, link} = token,
+		invalid = type === 'table-inter' || type === 'image-parameter' && name === 'invalid',
 		children = parentNode?.children,
 		childrenOfType = children?.filter(({type: t}) => t === type),
 		siblingsCount = children?.length ?? 1,
@@ -121,6 +134,8 @@ const matches = (
 	return step.every(selector => {
 		if (typeof selector === 'string') {
 			switch (selector) { // 情形1：简单伪选择器、type和name
+				case '':
+					return token === has;
 				case '*':
 					return true;
 				case ':root':
@@ -161,11 +176,15 @@ const matches = (
 						&& link instanceof Title
 						&& link.title === '';
 				case ':invalid':
-					return type === 'table-inter' || type === 'image-parameter' && name === 'invalid';
+					return invalid;
+				case ':valid':
+					return !invalid;
 				case ':required':
 					return isProtected(token) === true;
 				case ':optional':
 					return isProtected(token) === false;
+				case ':scope':
+					return token === scope;
 				default: {
 					const [t, n] = selector.split('#');
 					return (!t || t === type) && (!n || n === name);
@@ -208,9 +227,9 @@ const matches = (
 		const [s, pseudo] = selector; // 情形3：复杂伪选择器
 		switch (pseudo) {
 			case 'is':
-				return token.matches(s);
+				return getCondition(s, scope)(token);
 			case 'not':
-				return !token.matches(s);
+				return !getCondition(s, scope)(token);
 			case 'nth-child':
 				return nth(s, index);
 			case 'nth-of-type':
@@ -221,8 +240,23 @@ const matches = (
 				return nth(s, lastIndexOfType);
 			case 'contains':
 				return token.text().includes(s);
-			case 'has':
-				return Boolean(token.querySelector<Token>(s));
+			case 'has': {
+				if (has) {
+					throw new SyntaxError('The :has() pseudo-selector cannot be nested.');
+				}
+				const condition: (child: Token) => boolean = getCondition(s, scope, token),
+					childOrSibling = children && /(?:^|,)\s*[+~]/u.test(s)
+						? [...token.childNodes, ...children.slice(children.indexOf(token))]
+						: token.childNodes;
+
+				/**
+				 * 递归查找元素
+				 * @param child 子节点
+				 */
+				const hasElement = (child: AstNodes): boolean =>
+					child.type !== 'text' && (condition(child) || child.childNodes.some(hasElement));
+				return childOrSibling.some(hasElement);
+			}
 			case 'lang': {
 				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 				/^zh(?:-|$)/iu;
@@ -259,27 +293,35 @@ const matches = (
  * 检查是否符合解析后的选择器
  * @param token 节点
  * @param copy 解析后的选择器
+ * @param scope 作用对象
+ * @param has `:has()`伪选择器
  */
-const matchesArray = (token: Token, copy: readonly SelectorArray[]): boolean => {
+const matchesArray = (
+	token: Token,
+	copy: readonly SelectorArray[],
+	scope: AstElement,
+	has: Token | undefined,
+): boolean => {
 	const condition = [...copy];
-	if (matches(token, condition.pop()!)) {
+	if (matches(token, condition.pop()!, scope, has)) {
 		const {parentNode, previousElementSibling} = token;
 		switch (condition.at(-1)?.relation) {
 			case undefined:
 				return true;
 			case '>':
-				return Boolean(parentNode && matchesArray(parentNode, condition));
+				return Boolean(parentNode && matchesArray(parentNode, condition, scope, has));
 			case '+':
-				return Boolean(previousElementSibling && matchesArray(previousElementSibling, condition));
+				return Boolean(previousElementSibling && matchesArray(previousElementSibling, condition, scope, has));
 			case '~': {
 				if (!parentNode) {
 					return false;
 				}
 				const {children} = parentNode;
-				return children.slice(0, children.indexOf(token)).some(child => matchesArray(child, condition));
+				return children.slice(0, children.indexOf(token))
+					.some(child => matchesArray(child, condition, scope, has));
 			}
 			default: // ' '
-				return token.getAncestors().some(ancestor => matchesArray(ancestor, condition));
+				return token.getAncestors().some(ancestor => matchesArray(ancestor, condition, scope, has));
 		}
 	}
 	return false;
@@ -305,8 +347,14 @@ const deQuote = (val: string): string => /^(["']).*\1$/u.test(val) ? val.slice(1
 /**
  * 检查节点是否符合选择器
  * @param selector
+ * @param scope 作用对象
+ * @param has `:has()`伪选择器
  */
-export const checkToken = (selector: string) => <T extends Token>(token: Token): token is T => {
+const checkToken = (
+	selector: string,
+	scope: AstElement,
+	has: Token | undefined,
+) => <T extends Token>(token: Token): token is T => {
 	let sanitized = selector.trim();
 	for (const [c, entity] of specialChars) {
 		sanitized = sanitized.replaceAll(`\\${c}`, entity);
@@ -357,7 +405,7 @@ export const checkToken = (selector: string) => <T extends Token>(token: Token):
 	 * @throws `SyntaxError` 非法的选择器
 	 */
 	const needUniversal = (): void => {
-		if (step.length === 0) {
+		if (step.length === 0 && (condition.length > 1 || !has)) {
 			throw new SyntaxError(`Invalid selector!\n${selector}\nYou may need the universal selector '*'.`);
 		}
 	};
@@ -375,7 +423,11 @@ export const checkToken = (selector: string) => <T extends Token>(token: Token):
 			[step] = condition;
 			stack.push(condition);
 		} else if (combinator.has(syntax)) { // 情形2：关系
-			pushSimple(index);
+			if (has && syntax && condition.length === 1 && step.length === 0 && !sanitized.slice(0, index).trim()) {
+				step.push('');
+			} else {
+				pushSimple(index);
+			}
 			needUniversal();
 			step.relation = syntax;
 			step = [];
@@ -411,11 +463,30 @@ export const checkToken = (selector: string) => <T extends Token>(token: Token):
 	if (regex === regularRegex) {
 		pushSimple();
 		needUniversal();
-		return stack.some(copy => matchesArray(token, copy));
+		return stack.some(copy => matchesArray(token, copy, scope, has));
 	}
 	throw new SyntaxError(
 		`Unclosed '${regex === attributeRegex ? '[' : '('}' in the selector!\n${desanitize(sanitized)}`,
 	);
 };
+
+/* NOT FOR BROWSER END */
+
+/**
+ * 将选择器转化为类型谓词
+ * @param selector 选择器
+ * @param scope 作用对象
+ * @param has `:has()`伪选择器
+ */
+export const getCondition = <T>(selector: string, scope: AstElement, has?: Token): TokenPredicate<T> => (
+	/* eslint-disable @stylistic/operator-linebreak */
+	/[^a-z\-,#]/u.test(selector) ?
+		checkToken(selector, scope, has) :
+		({type, name}): boolean => selector.split(',').some(str => {
+			const [t, ...ns] = str.trim().split('#');
+			return (!t || t === type) && ns.every(n => n === name);
+		})
+/* eslint-enable @stylistic/operator-linebreak */
+) as TokenPredicate<T>;
 
 parsers['parseSelector'] = __filename;

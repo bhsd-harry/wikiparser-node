@@ -400,7 +400,7 @@ export abstract class FileToken extends LinkBaseToken {
 	/** @private */
 	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
 		/** @ignore */
-		const isInteger = (n: string | undefined): boolean => Boolean(n && /^\d+$/u.test(n));
+		const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n));
 		const {link, width, height, type} = this,
 			file = this.getAttribute('title'),
 			fr = this.getFrame(),
