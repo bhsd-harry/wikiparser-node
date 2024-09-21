@@ -3,7 +3,13 @@ import {Ranges} from '../lib/ranges';
 import {Title} from '../lib/title';
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AstElement} from '../lib/element';
-import type {Token, AstNodes} from '../internal';
+import type {
+	Token,
+
+	/* NOT FOR BROWSER */
+
+	AstNodes,
+} from '../internal';
 
 // @ts-expect-error unconstrained predicate
 export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
