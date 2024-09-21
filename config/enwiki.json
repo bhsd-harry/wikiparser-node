@@ -120,6 +120,8 @@
 		"101": "Portal talk",
 		"118": "Draft",
 		"119": "Draft talk",
+		"126": "MOS",
+		"127": "MOS talk",
 		"710": "TimedText",
 		"711": "TimedText talk",
 		"828": "Module",
@@ -158,6 +160,8 @@
 		"portal talk": 101,
 		"draft": 118,
 		"draft talk": 119,
+		"mos": 126,
+		"mos talk": 127,
 		"timedtext": 710,
 		"timedtext talk": 711,
 		"module": 828,
@@ -357,7 +361,8 @@
 			"NONEWSECTIONLINK",
 			"STATICREDIRECT",
 			"NOGLOBAL",
-			"EXPECTED_UNCONNECTED_PAGE"
+			"EXPECTED_UNCONNECTED_PAGE",
+			"EXPECTUNUSEDTEMPLATE"
 		],
 		{
 			"forcetoc": "forcetoc",
