@@ -3,26 +3,14 @@ import {
 	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
+import {getCondition} from '../parser/selector';
 import {AstNode} from './node';
 import type {
 	LintError,
 	AST,
 } from '../base';
+import type {TokenPredicate} from '../parser/selector';
 import type {AstNodes, AstText, Token} from '../internal';
-
-// @ts-expect-error unconstrained predicate
-declare type TokenPredicate<T = Token> = (token: Token) => token is T;
-
-/**
- * 将选择器转化为类型谓词
- * @param selector 选择器
- */
-const getCondition = <T>(selector: string): TokenPredicate<T> => (
-	({type, name}): boolean => selector.split(',').some(str => {
-		const [t, ...ns] = str.trim().split('#');
-		return (!t || t === type) && ns.every(n => n === name);
-	})
-) as TokenPredicate<T>;
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
@@ -84,7 +72,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	closest<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector);
+		const condition = getCondition<T>(selector, this);
 		let {parentNode} = this;
 		while (parentNode) {
 			if (condition(parentNode)) {
@@ -119,7 +107,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelector<T = Token>(selector: string): T | undefined {
-		const condition = getCondition<T>(selector);
+		const condition = getCondition<T>(selector, this);
 		return this.#getElementBy(condition);
 	}
 
@@ -145,7 +133,7 @@ export abstract class AstElement extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[] {
-		const condition = getCondition<T>(selector);
+		const condition = getCondition<T>(selector, this);
 		return this.#getElementsBy(condition);
 	}
 
