@@ -96,13 +96,12 @@ export class Title {
 		if (fragment === undefined) {
 			this.#fragment = undefined;
 		} else {
-			fragment = decodeHtml(fragment);
 			if (fragment.includes('%')) {
 				try {
 					fragment = rawurldecode(fragment);
 				} catch {}
 			}
-			this.#fragment = fragment.replace(/[_ ]+/gu, ' ').trimEnd().replaceAll(' ', '_');
+			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd().replaceAll(' ', '_');
 		}
 	}
 
@@ -118,7 +117,6 @@ export class Title {
 	 */
 	constructor(title: string, defaultNs: number, config: Config, decode: boolean, selfLink: boolean) {
 		const subpage = title.trim().startsWith('../');
-		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
 				const encoded = /%(?!21|3[ce]|5[bd]|7[b-d])[\da-f]{2}/iu.test(title);
@@ -126,7 +124,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replace(/[_ ]+/gu, ' ').trim();
+		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
 		if (subpage) {
 			this.#ns = 0;
 		} else {
