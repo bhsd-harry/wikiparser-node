@@ -119,7 +119,6 @@ export const stages = {
 	dd: 10,
 	converter: 11,
 };
-Object.setPrototypeOf(stages, null);
 
 export type Stage = keyof typeof stages;
 
