@@ -152,23 +152,32 @@ export abstract class AttributesToken extends Token {
 			errors.push(e);
 		}
 		for (const attr of childNodes) {
-			if (attr instanceof AtomToken && attr.text().trim()) {
-				const e = generateForChild(attr, rect, 'no-ignored', 'containing invalid attribute');
-				e.suggestions = [
-					{
-						desc: 'remove',
-						range: [e.startIndex, e.endIndex],
-						text: ' ',
-					},
-				];
-				errors.push(e);
-			} else if (attr instanceof AttributeToken) {
+			if (attr instanceof AttributeToken) {
 				const {name} = attr;
 				if (attrs.has(name)) {
 					duplicated.add(name);
 					attrs.get(name)!.push(attr);
 				} else {
 					attrs.set(name, [attr]);
+				}
+			} else {
+				const str = attr.text().trim();
+				if (str) {
+					const e = generateForChild(
+						attr,
+						rect,
+						'no-ignored',
+						'containing invalid attribute',
+						/[\p{L}\d]/u.test(str) ? 'error' : 'warning',
+					);
+					e.suggestions = [
+						{
+							desc: 'remove',
+							range: [e.startIndex, e.endIndex],
+							text: ' ',
+						},
+					];
+					errors.push(e);
 				}
 			}
 		}
