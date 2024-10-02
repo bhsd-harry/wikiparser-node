@@ -4,10 +4,6 @@ const config = require('@bhsd/common/eslintrc.dist.cjs');
 
 module.exports = {
 	...config,
-	rules: {
-		...config.rules,
-		'es-x/no-global-this': 0,
-	},
 	overrides: [
 		{
 			files: [

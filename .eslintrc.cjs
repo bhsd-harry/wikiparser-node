@@ -1,10 +1,13 @@
 'use strict';
 
-const config = require('@bhsd/common/eslintrc.node.cjs');
+const config = require('@bhsd/common/eslintrc.node.cjs'),
+	{rules} = require('@bhsd/common/eslintrc.browser.cjs');
 const [
-	json,
-	ts,
-] = config.overrides;
+		json,
+		ts,
+	] = config.overrides,
+	// eslint-disable-next-line @stylistic/array-bracket-newline
+	esRules = Object.fromEntries(Object.entries(rules).filter(([k]) => k.startsWith('es-x/')));
 
 module.exports = {
 	...config,
@@ -171,18 +174,11 @@ module.exports = {
 				project: './extensions/tsconfig.json',
 			},
 			rules: {
+				...esRules,
 				'no-control-regex': 2,
 				'no-bitwise': 2,
 				'no-new': 2,
 				'no-param-reassign': 2,
-				'es-x/no-array-prototype-at': 2,
-				'es-x/no-global-this': 2,
-				'es-x/no-object-fromentries': 2,
-				'es-x/no-object-hasown': 2,
-				'es-x/no-regexp-lookbehind-assertions': 2,
-				'es-x/no-string-prototype-at': 2,
-				'es-x/no-string-prototype-matchall': 2,
-				'es-x/no-string-prototype-replaceall': 2,
 				'unicorn/empty-brace-spaces': 2,
 				'unicorn/no-this-assignment': 2,
 				'n/no-missing-import': 0,
