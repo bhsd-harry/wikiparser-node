@@ -86,6 +86,36 @@ export type TokenTypes = 'root'
 	| 'param-line'
 	| 'imagemap-link';
 
+export const stages = {
+	redirect: 1,
+	onlyinclude: 1,
+	noinclude: 1,
+	include: 1,
+	comment: 1,
+	ext: 1,
+	arg: 2,
+	'magic-word': 2,
+	template: 2,
+	heading: 2,
+	html: 3,
+	table: 4,
+	hr: 5,
+	'double-underscore': 5,
+	link: 6,
+	category: 6,
+	file: 6,
+	quote: 7,
+	'ext-link': 8,
+	'free-ext-link': 9,
+	'magic-link': 9,
+	list: 10,
+	dd: 10,
+	converter: 11,
+};
+Object.setPrototypeOf(stages, null);
+
+export type Stage = keyof typeof stages;
+
 export const rules = [
 	'bold-header',
 	'format-leakage',
@@ -187,5 +217,5 @@ export interface Parser {
 	 * @param include 是否嵌入
 	 * @param maxStage 最大解析层级
 	 */
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
 }

@@ -63,7 +63,6 @@ export class Title {
 	 */
 	constructor(title: string, defaultNs: number, config: Config, decode: boolean, selfLink: boolean) {
 		const subpage = title.trim().startsWith('../');
-		title = decodeHtml(title);
 		if (decode && title.includes('%')) {
 			try {
 				const encoded = /%(?!21|3[ce]|5[bd]|7[b-d])[\da-f]{2}/iu.test(title);
@@ -71,7 +70,7 @@ export class Title {
 				this.encoded = encoded;
 			} catch {}
 		}
-		title = title.replace(/[_ ]+/gu, ' ').trim();
+		title = decodeHtml(title).replace(/[_ ]+/gu, ' ').trim();
 		if (subpage) {
 			this.#ns = 0;
 		} else {
