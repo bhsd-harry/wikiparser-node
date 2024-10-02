@@ -272,7 +272,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		wikitext = tidy(wikitext);
 		if (typeof maxStage !== 'number') {
 			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
-			maxStage = Math.max(...types.map(t => stages[t] ?? MAX_STAGE));
+			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
 		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const root = Shadow.run(() => {
