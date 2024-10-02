@@ -1,15 +1,17 @@
 ## v1.13.0
 
-*2024-09-21*
+*2024-10-02*
 
 **Added**
 
 - New pseudo selectors [`:valid`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#valid) and [`:scope`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#scope)
 - Pseudo selector [`:has()`](https://github.com/bhsd-harry/wikiparser-node/wiki/Selector#has) now supports relative selectors
+- [`Parser.parse`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#parse) now accepts an array of token types as the third argument to specify the maximum stage of parsing
 
 **Fixed**
 
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports file names containing `꞉` as a substitute for `:` in a Windows file system
+- Order of HTML/URL decoding in [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing
 
 ## v1.12.7
 
