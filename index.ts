@@ -45,9 +45,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getConfig() {
 		const {doubleUnderscore} = this.config;
-		if (doubleUnderscore.length === 2) {
-			//
-		} else if (doubleUnderscore[0].length === 0) {
+		if (doubleUnderscore.length > 2 && doubleUnderscore[0].length === 0) {
 			doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
 		}
 		return {
