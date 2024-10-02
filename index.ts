@@ -181,6 +181,13 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
+			if (this.config.doubleUnderscore.length < 3) {
+				error(
+					`The schema (${
+						path.resolve(__dirname, '..', 'config', '.schema.json')
+					}) of parser configuration is updated.`,
+				);
+			}
 
 			/* NOT FOR BROWSER */
 
@@ -197,13 +204,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			return this.getConfig();
 		}
 		const {doubleUnderscore} = this.config;
-		if (doubleUnderscore.length === 2) {
-			error(
-				`The schema (${
-					path.resolve(__dirname, '..', 'config', '.schema.json')
-				}) of parser configuration is updated.`,
-			);
-		} else if (doubleUnderscore[0].length === 0) {
+		if (doubleUnderscore.length > 2 && doubleUnderscore[0].length === 0) {
 			doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
 		}
 		return {
