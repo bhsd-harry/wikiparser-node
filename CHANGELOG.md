@@ -13,6 +13,10 @@
 - [`Token.prototype.expand`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#expand) now supports file names containing `꞉` as a substitute for `:` in a Windows file system
 - Order of HTML/URL decoding in [`Title`](https://github.com/bhsd-harry/wikiparser-node/wiki/Title) parsing
 
+**Changed**
+
+- [`AttributesToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributesToken#lint) now reports warnings instead of errors for useless non-word characters
+
 ## v1.12.7
 
 *2024-08-24*
