@@ -59,7 +59,7 @@
 		"@types/prismjs": "^1.26.3",
 		"chalk": "^4.1.2",
 		"codejar-async": "^4.2.3",
-		"monaco-editor": "^0.51.0",
+		"monaco-editor": "^0.52.0",
 		"v8r": "^3.0.0"
 	},
 	"engines": {

@@ -1,4 +1,4 @@
-import {rules} from './base';
+import {rules, stages} from './base';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
@@ -6,7 +6,7 @@ import {
 	minConfig,
 } from './util/constants';
 import {tidy} from './util/string';
-import type {Config, LintError, TokenTypes, Parser as ParserBase} from './base';
+import type {Config, LintError, TokenTypes, Parser as ParserBase, Stage} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -34,7 +34,7 @@ declare interface Parser extends ParserBase {
 		selfLink?: boolean, // eslint-disable-line @typescript-eslint/unified-signatures
 	): Title;
 
-	parse(wikitext: string, include?: boolean, maxStage?: number, config?: Config): Token;
+	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
 }
 
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
@@ -103,6 +103,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	parse(wikitext, include, maxStage = MAX_STAGE, config = Parser.getConfig()) {
 		wikitext = tidy(wikitext);
+		if (typeof maxStage !== 'number') {
+			const types = Array.isArray(maxStage) ? maxStage : [maxStage];
+			maxStage = Math.max(...types.map(t => stages[t] || MAX_STAGE));
+		}
 		const {Token}: typeof import('./src/index') = require('./src/index');
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
