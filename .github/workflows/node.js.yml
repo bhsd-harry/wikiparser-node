@@ -14,9 +14,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    strategry:
-      matrix:
-        node: [ 20, 22 ]
 
     steps:
     - uses: actions/checkout@v4
@@ -29,7 +26,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node }}
+        node-version: 20.x, 22.x
         cache: 'npm'
     - run: npm ci
     - run: npm run build:core
