@@ -650,6 +650,8 @@
 			"PAGELANGUAGE",
 			"=",
 			"#FORMAL",
+			"#bcp47",
+			"#dir",
 			"#timef",
 			"#timefl"
 		],
