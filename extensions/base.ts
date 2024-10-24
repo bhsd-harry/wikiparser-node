@@ -2,11 +2,11 @@ import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
-const version = '1.12.7';
+const version = '1.13.0';
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts(`https://testingcf.jsdelivr.net/npm/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
+	importScripts(`https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
