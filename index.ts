@@ -127,12 +127,7 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-
-if (typeof self === 'object') {
-	Object.assign(self, {Parser});
-} else if (typeof globalThis === 'object') {
-	Object.assign(globalThis, {Parser});
-}
+Object.assign(globalThis, {Parser});
 
 export default Parser;
 export type {Config, LintError, TokenTypes};
