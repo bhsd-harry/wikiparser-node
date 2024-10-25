@@ -191,6 +191,7 @@ export type AST = Record<string, string | number | boolean> & {
 	type?: TokenTypes;
 	name?: string;
 	childNodes?: AST[];
+	data?: string;
 };
 
 /** 类似Node */
