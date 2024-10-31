@@ -1,3 +1,11 @@
+## v1.13.1
+
+*2024-11-01*
+
+**Changed**
+
+- [`IncludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken#lint) now also reports useless attributes
+
 ## v1.13.0
 
 *2024-10-24*
