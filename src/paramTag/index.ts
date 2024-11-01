@@ -56,9 +56,9 @@ export abstract class ParamTagToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const rect = new BoundingRect(this, start);
 		return this.childNodes.filter(child => {
-			const {childNodes} = child,
+			const childNodes = child.childNodes.filter(({type}) => type !== 'comment'),
 				i = childNodes.findIndex(({type}) => type !== 'text'),
-				str = (i >= 0 ? childNodes.slice(0, i).map(String).join('') : child.toString()).trim();
+				str = childNodes.slice(0, i >= 0 ? i : undefined).map(String).join('');
 			return str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str);
 		}).map(child => {
 			const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid parameter of <$1>', this.name));

@@ -53,6 +53,7 @@
 	"unexpected template argument": "未預期的模板參數",
 	"unmatched closing tag": "未匹配的閉合標籤",
 	"unnecessary URL encoding in an internal link": "內部連結中不必要的URL編碼",
+	"useless attribute": "無用的屬性",
 	"useless fragment": "無用的fragment",
 	"useless link text": "無用的連結文字",
 	"variable anchor in a section header": "段落標題中可變的錨點",
