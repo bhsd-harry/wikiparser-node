@@ -2,6 +2,10 @@
 
 *2024-11-01*
 
+**Fixed**
+
+- Case-insensitive `<nowiki>` inside a `<pre>` tag
+
 **Changed**
 
 - [`IncludeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/IncludeToken#lint) now also reports useless attributes

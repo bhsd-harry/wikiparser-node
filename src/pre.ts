@@ -49,25 +49,33 @@ export abstract class PreToken extends Token {
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		if (wikitext) {
-			const opening = '<nowiki>',
-				closing = '</nowiki>',
-				{length} = opening;
-			let i = wikitext.indexOf(opening),
-				j = wikitext.indexOf(closing, i + length),
-				str = '';
-			while (i !== -1 && j !== -1) {
-				// @ts-expect-error abstract class
-				new NoincludeToken(opening, config, accum);
-				// @ts-expect-error abstract class
-				new NoincludeToken(closing, config, accum);
-				str += `${wikitext.slice(0, i)}\0${accum.length - 1}n\x7F${
-					wikitext.slice(i + length, j)
-				}\0${accum.length}n\x7F`;
-				wikitext = wikitext.slice(j + length + 1);
-				i = wikitext.indexOf(opening);
-				j = wikitext.indexOf(closing, i + length);
+			const opening = /<nowiki>/giu,
+				closing = /<\/nowiki>/giu,
+				{length} = opening.source;
+			let i = opening.exec(wikitext);
+			if (i) {
+				closing.lastIndex = i.index + length;
 			}
-			wikitext = str + wikitext;
+			let j = closing.exec(wikitext),
+				lastIndex = 0,
+				str = '';
+			while (i && j) {
+				// @ts-expect-error abstract class
+				new NoincludeToken(i[0], config, accum);
+				// @ts-expect-error abstract class
+				new NoincludeToken(j[0], config, accum);
+				str += `${wikitext.slice(lastIndex, i.index)}\0${accum.length - 1}n\x7F${
+					wikitext.slice(i.index + length, j.index)
+				}\0${accum.length}n\x7F`;
+				lastIndex = j.index + length + 1;
+				opening.lastIndex = lastIndex;
+				i = opening.exec(wikitext);
+				if (i) {
+					closing.lastIndex = i.index + length;
+				}
+				j = closing.exec(wikitext);
+			}
+			wikitext = str + wikitext.slice(lastIndex);
 		}
 		super(wikitext, config, accum, {
 			AstText: ':', NoincludeToken: ':', ConverterToken: ':',
