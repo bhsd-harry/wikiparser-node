@@ -5,6 +5,7 @@
 **Fixed**
 
 - Case-insensitive `<nowiki>` inside a `<pre>` tag
+- HTML comments inside a `<inputbox>` tag
 
 **Changed**
 
