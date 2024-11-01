@@ -1,4 +1,5 @@
-import {generateForSelf} from '../../util/lint';
+import {generateForSelf, generateForChild} from '../../util/lint';
+import {BoundingRect} from '../../lib/rect';
 import {hiddenToken} from '../../mixin/hidden';
 import Parser from '../../index';
 import {TagPairToken} from './index';
@@ -36,17 +37,31 @@ export abstract class IncludeToken extends TagPairToken {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		if (this.closed) {
-			return [];
+		const errors: LintError[] = [],
+			{firstChild, closed, name} = this,
+			rect = new BoundingRect(this, start);
+		if (firstChild.data.trim()) {
+			const e = generateForChild(firstChild, rect, 'no-ignored', 'useless attribute', 'warning');
+			e.suggestions = [
+				{
+					desc: 'remove',
+					range: [e.startIndex, e.endIndex],
+					text: '',
+				},
+			];
+			errors.push(e);
 		}
-		const e = generateForSelf(this, {start}, 'unclosed-comment', Parser.msg('unclosed $1', `<${this.name}>`));
-		e.suggestions = [
-			{
-				desc: 'close',
-				range: [e.endIndex, e.endIndex],
-				text: `</${this.name}>`,
-			},
-		];
-		return [e];
+		if (!closed) {
+			const e = generateForSelf(this, rect, 'unclosed-comment', Parser.msg('unclosed $1', `<${name}>`));
+			e.suggestions = [
+				{
+					desc: 'close',
+					range: [e.endIndex, e.endIndex],
+					text: `</${name}>`,
+				},
+			];
+			errors.push(e);
+		}
+		return errors;
 	}
 }
