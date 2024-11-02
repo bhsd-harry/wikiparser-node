@@ -68,7 +68,7 @@ export abstract class NestedToken extends Token {
 				const str = `\0${accum.length + 1}${name ? 'e' : 'c'}\x7F`;
 				if (name) {
 					// @ts-expect-error abstract class
-					new ExtToken(name, attr, inner, closing, config, accum);
+					new ExtToken(name, attr, inner, closing, config, false, accum);
 				} else {
 					const closed = comment.endsWith('-->');
 					// @ts-expect-error abstract class

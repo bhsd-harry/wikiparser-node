@@ -3,14 +3,23 @@ import {mixins} from '../util/constants';
 
 /**
  * 不可包含换行符的类
+ * @param strict 是否严格
  * @param constructor 基类
  * @param _ context
  */
-export const singleLine = <T extends AstConstructor>(constructor: T, _?: unknown): T => {
+export const singleLine = (strict = true) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 不可包含换行符的类 */
 	abstract class SingleLineToken extends constructor {
 		override toString(skip?: boolean): string {
-			return super.toString(skip).replaceAll('\n', ' ');
+			if (strict) {
+				return super.toString(skip).replaceAll('\n', ' ');
+			}
+			// InputboxToken
+			return this.childNodes.map(child => {
+				const str = child.toString(skip),
+					{type} = child;
+				return type === 'comment' || type === 'include' || type === 'ext' ? str : str.replaceAll('\n', ' ');
+			}).join('');
 		}
 
 		override text(): string {

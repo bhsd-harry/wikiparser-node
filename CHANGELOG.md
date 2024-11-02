@@ -1,3 +1,11 @@
+## v1.13.2
+
+*2024-11-02*
+
+**Fixed**
+
+- Parse and report extension tags inside `<inputbox>`/`<dynamicpagelist>`
+
 ## v1.13.1
 
 *2024-11-01*

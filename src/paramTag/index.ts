@@ -1,5 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
+import {parseCommentAndExt} from '../../parser/commentAndExt';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
@@ -44,18 +45,28 @@ export abstract class ParamTagToken extends Token {
 	}
 
 	/** @class */
-	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable: Acceptable = {}) {
+	constructor(
+		include: boolean,
+		wikitext?: string,
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+		acceptable?: Acceptable,
+	) {
 		super(undefined, config, accum, {
 			AtomToken: ':',
 		});
 		if (wikitext) {
-			const SingleLineAtomToken = singleLine(AtomToken);
+			const SingleLineAtomToken = singleLine(!acceptable)(AtomToken);
 			this.append(
-				...wikitext.split('\n').map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
-					AstText: ':', ...acceptable,
-				})),
+				...wikitext.split('\n')
+					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))
+					.map(line => new SingleLineAtomToken(line, 'param-line', config, accum, {
+						'Stage-1': ':', ...acceptable,
+					})),
 			);
 		}
+		accum.splice(accum.indexOf(this), 1);
+		accum.push(this);
 	}
 
 	/** @private */
@@ -75,23 +86,34 @@ export abstract class ParamTagToken extends Token {
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
-		const rect = new BoundingRect(this, start);
-		return this.childNodes.filter(child => {
-			const childNodes = child.childNodes.filter(({type}) => type !== 'comment'),
-				i = childNodes.findIndex(({type}) => type !== 'text'),
-				str = childNodes.slice(0, i >= 0 ? i : undefined).map(String).join('');
-			return str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str);
-		}).map(child => {
-			const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid parameter of <$1>', this.name));
-			e.suggestions = [
-				{
-					desc: 'remove',
-					range: [e.startIndex, e.endIndex],
-					text: '',
-				},
-			];
-			return e;
-		});
+		const rect = new BoundingRect(this, start),
+			msg = Parser.msg('invalid parameter of <$1>', this.name),
+			errors: LintError[] = [];
+		for (const child of this.childNodes) {
+			const grandChildren = child.childNodes
+				.filter(({type}) => type !== 'comment' && type !== 'include' && type !== 'noinclude');
+			if (grandChildren.some(({type}) => type === 'ext')) {
+				errors.push(generateForChild(child, rect, 'no-ignored', msg));
+			} else {
+				const i = grandChildren.findIndex(({type}) => type !== 'text'),
+					str = grandChildren.slice(0, i >= 0 ? i : undefined).map(String).join('');
+				if (str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str)) {
+					const e = generateForChild(child, rect, 'no-ignored', msg);
+					e.suggestions = [
+						{
+							desc: 'remove',
+							range: [e.startIndex, e.endIndex],
+							text: '',
+						},
+					];
+					errors.push(e);
+				} else {
+					errors.push(...child.lint(start, false));
+				}
+			}
+			start += child.toString().length + 1;
+		}
+		return errors;
 	}
 
 	/** @private */
@@ -105,7 +127,7 @@ export abstract class ParamTagToken extends Token {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
 			const C = this.constructor as new (...args: any[]) => this,
-				token = new C(undefined, this.getAttribute('config'));
+				token = new C(this.getAttribute('include'), undefined, this.getAttribute('config'));
 			token.append(...cloned);
 			return token;
 		});

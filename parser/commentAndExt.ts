@@ -90,7 +90,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			if (name) {
 				ch = 'e';
 				// @ts-expect-error abstract class
-				new ExtToken(name, attr, inner, closing, config, accum);
+				new ExtToken(name, attr, inner, closing, config, include, accum);
 			} else if (substr.startsWith('<!--')) {
 				ch = 'c';
 				const closed = substr.endsWith('-->');

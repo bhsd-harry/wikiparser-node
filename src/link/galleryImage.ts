@@ -23,7 +23,7 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
 /** 图库图片 */
-@singleLine
+@singleLine()
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';

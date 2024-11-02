@@ -61,6 +61,7 @@ export abstract class ExtToken extends TagPairToken {
 
 	/**
 	 * @param name 标签名
+	 * @param include 是否嵌入
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
 	 * @param closed 是否封闭
@@ -71,6 +72,7 @@ export abstract class ExtToken extends TagPairToken {
 		inner?: string,
 		closed?: string,
 		config = Parser.getConfig(),
+		include = false,
 		accum: Token[] = [],
 	) {
 		const lcName = name.toLowerCase(),
@@ -107,12 +109,12 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			case 'dynamicpagelist':
 				// @ts-expect-error abstract class
-				innerToken = new ParamTagToken(inner, newConfig, accum);
+				innerToken = new ParamTagToken(include, inner, newConfig, accum);
 				break;
 			case 'inputbox':
 				newConfig.excludes!.push('heading');
 				// @ts-expect-error abstract class
-				innerToken = new InputboxToken(inner, newConfig, accum);
+				innerToken = new InputboxToken(include, inner, newConfig, accum);
 				break;
 			case 'references': {
 				const {NestedToken}: typeof import('../nested') = require('../nested');
@@ -197,10 +199,12 @@ export abstract class ExtToken extends TagPairToken {
 		const inner = this.lastChild.cloneNode(),
 			tags = this.getAttribute('tags'),
 			config = this.getAttribute('config'),
+			include = this.getAttribute('include'),
+			closed = this.selfClosing ? undefined : tags[1],
 			attr = this.firstChild.toString();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ExtToken(tags[0], attr, '', this.selfClosing ? undefined : tags[1], config) as this;
+			const token = new ExtToken(tags[0], attr, '', closed, config, include) as this;
 			token.lastChild.safeReplaceWith(inner);
 			return token;
 		});

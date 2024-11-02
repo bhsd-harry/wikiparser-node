@@ -100,8 +100,6 @@ declare interface LintIgnore {
 
 /* NOT FOR BROWSER */
 
-export type TagToken = IncludeToken | ExtToken | HtmlToken;
-
 /**
  * 可接受的Token类型
  * @param value 可接受的Token类型
@@ -781,7 +779,10 @@ export class Token extends AstElement {
 	 * @param options.closing 是否是闭合标签
 	 * @throws `RangeError` 非法的标签名
 	 */
-	createElement(tagName: string, options?: {selfClosing?: boolean, closing?: boolean}): TagToken {
+	createElement(
+		tagName: string,
+		options?: {selfClosing?: boolean, closing?: boolean},
+	): IncludeToken | ExtToken | HtmlToken {
 		require('../addon/token');
 		return this.createElement(tagName, options);
 	}

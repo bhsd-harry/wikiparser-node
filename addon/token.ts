@@ -13,7 +13,6 @@ import {AttributesToken} from '../src/attributes';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
 import type {AstNodes, CaretPosition} from '../lib/node';
-import type {TagToken} from '../src/index';
 import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
 Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
@@ -22,7 +21,10 @@ Token.prototype.createComment = /** @implements */ function(data = ''): CommentT
 	return Shadow.run((): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
 };
 
-Token.prototype.createElement = /** @implements */ function(tagName, {selfClosing, closing} = {}): TagToken {
+Token.prototype.createElement = /** @implements */ function(
+	tagName,
+	{selfClosing, closing} = {},
+): IncludeToken | ExtToken | HtmlToken {
 	const config = this.getAttribute('config'),
 		include = this.getAttribute('include');
 	if (tagName === (include ? 'noinclude' : 'includeonly')) {
@@ -32,7 +34,7 @@ Token.prototype.createElement = /** @implements */ function(tagName, {selfClosin
 		);
 	} else if (config.ext.includes(tagName)) {
 		// @ts-expect-error abstract class
-		return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config));
+		return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config, include));
 	} else if (config.html.some(tags => tags.includes(tagName))) {
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
@@ -115,7 +117,7 @@ Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined
 };
 
 Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange | undefined {
-	tag = tag?.toLowerCase();
+	tag &&= tag.toLowerCase();
 	const {html} = this.getAttribute('config'),
 		normalTags = new Set(html[0]),
 		voidTags = new Set(html[2]);
