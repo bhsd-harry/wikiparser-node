@@ -1,12 +1,13 @@
 import {generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
+import {parseCommentAndExt} from '../parser/commentAndExt';
+import {parseBraces} from '../parser/braces';
 import Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
-import {CommentToken} from './nowiki/comment';
 import type {LintError} from '../base';
-import type {AttributesToken} from './attributes';
+import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -15,32 +16,31 @@ import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
+
+const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']);
+
 /**
  * 嵌套式的扩展标签
  * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
  */
 export abstract class NestedToken extends Token {
 	declare readonly name: string;
-
-	/* NOT FOR BROWSER */
-
 	readonly #tags;
 	readonly #regex;
 
-	/* NOT FOR BROWSER END */
-
-	declare readonly childNodes: readonly (ExtToken | NoincludeToken | CommentToken)[];
-	abstract override get firstChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	abstract override get lastChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	declare readonly childNodes: readonly Child[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (ExtToken | NoincludeToken | CommentToken)[];
-	abstract override get firstElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
-	abstract override get lastElementChild(): ExtToken | NoincludeToken | CommentToken | undefined;
+	abstract override get children(): Child[];
+	abstract override get firstElementChild(): Child | undefined;
+	abstract override get lastElementChild(): Child | undefined;
 	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;
@@ -57,54 +57,64 @@ export abstract class NestedToken extends Token {
 	 */
 	constructor(
 		wikitext: string | undefined,
-		regex: RegExp,
+		regex: RegExp | boolean,
 		tags: readonly string[],
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
-		wikitext = wikitext?.replace(
-			regex,
-			(comment, name?: string, attr?: string, inner?: string, closing?: string) => {
-				const str = `\0${accum.length + 1}${name ? 'e' : 'c'}\x7F`;
-				if (name) {
+		if (typeof regex === 'boolean') {
+			const placeholder = Symbol('InputboxToken'),
+				{length} = accum;
+			accum.push(placeholder as unknown as Token);
+			wikitext &&= parseCommentAndExt(wikitext, config, accum, regex);
+			wikitext &&= parseBraces(wikitext, config, accum);
+			accum.splice(length, 1);
+		} else {
+			wikitext &&= wikitext.replace(
+				regex,
+				(_, name: string, attr?: string, inner?: string, closing?: string) => {
+					const str = `\0${accum.length + 1}e\x7F`;
 					// @ts-expect-error abstract class
 					new ExtToken(name, attr, inner, closing, config, false, accum);
-				} else {
-					const closed = comment.endsWith('-->');
-					// @ts-expect-error abstract class
-					new CommentToken(comment.slice(4, closed ? -3 : undefined), closed, config, accum);
-				}
-				return str;
-			},
-		).replace(
-			/(^|\0\d+[cne]\x7F)([^\0]+)(?=$|\0\d+[cne]\x7F)/gu,
+					return str;
+				},
+			);
+		}
+		wikitext &&= wikitext.replace(
+			/(^|\0\d+.\x7F)([^\0]+)(?=$|\0\d+.\x7F)/gu,
 			(_, lead: string, substr: string) => {
 				// @ts-expect-error abstract class
 				new NoincludeToken(substr, config, accum);
 				return `${lead}\0${accum.length}n\x7F`;
 			},
 		);
-		super(wikitext, config, accum, {
-			NoincludeToken: ':', ExtToken: ':',
-		});
-
-		/* NOT FOR BROWSER */
-
+		super(
+			wikitext,
+			config,
+			accum,
+			typeof regex === 'boolean' ? {'Stage-2': ':', '!HeadingToken': ''} : {NoincludeToken: ':', ExtToken: ':'},
+		);
 		this.#tags = [...tags];
 		this.#regex = regex;
 	}
 
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
-		const rect = new BoundingRect(this, start);
+		const rect = new BoundingRect(this, start),
+			noinclude = this.#regex ? 'includeonly' : 'noinclude',
+			regex = typeof this.#regex === 'boolean'
+				? new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu')
+				: /^<!--.*-->$/su;
 		return [
 			...super.lint(start, re),
 			...this.childNodes.filter(child => {
-				if (child.type === 'ext' || child.type === 'comment') {
+				if (child.type === 'ext') {
+					return !this.#tags.includes(child.name);
+				} else if (childTypes.has(child.type)) {
 					return false;
 				}
 				const str = child.toString().trim();
-				return str && !/^<!--.*-->$/su.test(str);
+				return str && !regex.test(str);
 			}).map(child => {
 				const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid content in <$1>', this.name));
 				e.suggestions = [
@@ -132,7 +142,7 @@ export abstract class NestedToken extends Token {
 	 * @param i 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i?: number): T {
-		if (typeof token !== 'string' && token.type === 'ext' && !this.#tags.includes(token.name!)) {
+		if (!Shadow.running && token.type === 'ext' && !this.#tags.includes(token.name!)) {
 			this.constructorError(`can only have ${this.#tags.join(' or ')} tags as child nodes`);
 		}
 		return super.insertAt(token, i);

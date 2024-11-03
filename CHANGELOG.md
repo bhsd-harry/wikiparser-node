@@ -5,6 +5,7 @@
 **Fixed**
 
 - Parse and report extension tags inside `<inputbox>`/`<dynamicpagelist>`
+- Parse transclusion inside `<references>`
 
 ## v1.13.1
 

@@ -118,14 +118,9 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			case 'references': {
 				const {NestedToken}: typeof import('../nested') = require('../nested');
+				newConfig.excludes!.push('heading');
 				// @ts-expect-error abstract class
-				innerToken = new NestedToken(
-					inner,
-					/<!--.*?(?:-->|$)|<(ref)(\s[^>]*?)?(?:\/>|>(.*?)<\/(ref\s*)>)/gisu,
-					['ref'],
-					newConfig,
-					accum,
-				);
+				innerToken = new NestedToken(inner, include, ['ref'], newConfig, accum);
 				break;
 			}
 			case 'choose': {
