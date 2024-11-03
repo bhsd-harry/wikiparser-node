@@ -40,6 +40,7 @@ export abstract class ExtToken extends TagPairToken {
 
 	/**
 	 * @param name 标签名
+	 * @param include 是否嵌入
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
 	 * @param closed 是否封闭
@@ -50,6 +51,7 @@ export abstract class ExtToken extends TagPairToken {
 		inner?: string,
 		closed?: string,
 		config = Parser.getConfig(),
+		include = false,
 		accum: Token[] = [],
 	) {
 		const lcName = name.toLowerCase(),
@@ -86,23 +88,18 @@ export abstract class ExtToken extends TagPairToken {
 				break;
 			case 'dynamicpagelist':
 				// @ts-expect-error abstract class
-				innerToken = new ParamTagToken(inner, newConfig, accum);
+				innerToken = new ParamTagToken(include, inner, newConfig, accum);
 				break;
 			case 'inputbox':
 				newConfig.excludes!.push('heading');
 				// @ts-expect-error abstract class
-				innerToken = new InputboxToken(inner, newConfig, accum);
+				innerToken = new InputboxToken(include, inner, newConfig, accum);
 				break;
 			case 'references': {
 				const {NestedToken}: typeof import('../nested') = require('../nested');
+				newConfig.excludes!.push('heading');
 				// @ts-expect-error abstract class
-				innerToken = new NestedToken(
-					inner,
-					/<!--.*?(?:-->|$)|<(ref)(\s[^>]*?)?(?:\/>|>(.*?)<\/(ref\s*)>)/gisu,
-					['ref'],
-					newConfig,
-					accum,
-				);
+				innerToken = new NestedToken(inner, include, ['ref'], newConfig, accum);
 				break;
 			}
 			case 'choose': {

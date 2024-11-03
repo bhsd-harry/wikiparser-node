@@ -29,6 +29,8 @@ const insensitiveVars = new Set<string | false | undefined>([
 	'stylepath',
 ]);
 
+declare type Child = AtomToken | SyntaxToken;
+
 /**
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
@@ -39,10 +41,10 @@ export abstract class TranscludeToken extends Token {
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 
-	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
+	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstChild(): AtomToken | SyntaxToken;
-	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
+	abstract override get firstChild(): Child;
+	abstract override get lastChild(): Child | ParameterToken;
 
 	override get type(): 'template' | 'magic-word' {
 		return this.#type;
