@@ -35,9 +35,10 @@ export interface TableRenderedCoords {
 }
 
 export interface TableToken extends SyntaxBase {}
-export type TableTokens = TableToken | TrToken | TdToken;
 
 /* NOT FOR BROWSER END */
+
+export type TableTokens = TableToken | TrToken | TdToken;
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
