@@ -8,11 +8,13 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
 import type {LintError} from '../base';
-import type {ExtToken, HtmlToken, TdToken, TrToken, TableToken, SyntaxToken} from '../internal';
+import type {ExtToken, HtmlToken, SyntaxToken} from '../internal';
 import type {AttributeTypes} from './attribute';
+import type {TableTokens} from './table/index';
 
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
+declare type Child = AtomToken | AttributeToken;
 
 /**
  * 将属性类型转换为单属性类型
@@ -34,10 +36,10 @@ export abstract class AttributesToken extends Token {
 	declare readonly name: string;
 	#type;
 
-	declare readonly childNodes: readonly (AtomToken | AttributeToken)[];
-	abstract override get firstChild(): AtomToken | AttributeToken | undefined;
-	abstract override get lastChild(): AtomToken | AttributeToken | undefined;
-	abstract override get parentNode(): ExtToken | HtmlToken | TableToken | TrToken | TdToken | undefined;
+	declare readonly childNodes: readonly Child[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | undefined;
+	abstract override get parentNode(): ExtToken | HtmlToken | TableTokens | undefined;
 	abstract override get previousSibling(): SyntaxToken | undefined;
 
 	override get type(): AttributesTypes {

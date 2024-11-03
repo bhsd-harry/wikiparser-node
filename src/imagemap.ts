@@ -15,6 +15,8 @@ import type {
 	ExtToken,
 } from '../internal';
 
+declare type Child = GalleryImageToken | NoincludeToken;
+
 /**
  * `<imagemap>`
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
@@ -22,9 +24,9 @@ import type {
 export abstract class ImagemapToken extends Token {
 	declare readonly name: 'imagemap';
 
-	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
-	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
-	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
+	declare readonly childNodes: readonly (Child | ImagemapLinkToken | AstText)[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
