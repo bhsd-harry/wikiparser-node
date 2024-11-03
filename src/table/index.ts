@@ -35,6 +35,7 @@ export interface TableRenderedCoords {
 }
 
 export interface TableToken extends SyntaxBase {}
+export type TableTokens = TableToken | TrToken | TdToken;
 
 /* NOT FOR BROWSER END */
 

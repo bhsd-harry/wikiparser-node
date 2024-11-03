@@ -17,6 +17,8 @@ import {Shadow} from '../util/debug';
 
 /* NOT FOR BROWSER END */
 
+declare type Child = NoincludeToken | ConverterToken;
+
 /**
  * `<pre>`
  * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
@@ -24,18 +26,18 @@ import {Shadow} from '../util/debug';
 export abstract class PreToken extends Token {
 	declare readonly name: 'pre';
 
-	declare readonly childNodes: readonly (AstText | NoincludeToken | ConverterToken)[];
-	abstract override get firstChild(): AstText | NoincludeToken | ConverterToken | undefined;
-	abstract override get lastChild(): AstText | NoincludeToken | ConverterToken | undefined;
+	declare readonly childNodes: readonly (AstText | Child)[];
+	abstract override get firstChild(): AstText | Child | undefined;
+	abstract override get lastChild(): AstText | Child | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (NoincludeToken | ConverterToken)[];
-	abstract override get firstElementChild(): NoincludeToken | ConverterToken | undefined;
-	abstract override get lastElementChild(): NoincludeToken | ConverterToken | undefined;
+	abstract override get children(): Child[];
+	abstract override get firstElementChild(): Child | undefined;
+	abstract override get lastElementChild(): Child | undefined;
 	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get parentElement(): ExtToken | undefined;

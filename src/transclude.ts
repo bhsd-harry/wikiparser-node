@@ -43,6 +43,8 @@ const basicMagicWords = new Map<string, string>([['=', '='], ['!', '|']]);
 
 /* NOT FOR BROWSER END */
 
+declare type Child = AtomToken | SyntaxToken;
+
 /**
  * 模板或魔术字
  * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
@@ -60,17 +62,17 @@ export abstract class TranscludeToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
-	declare readonly childNodes: readonly [AtomToken | SyntaxToken, ...ParameterToken[]]
+	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
 	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstChild(): AtomToken | SyntaxToken;
-	abstract override get lastChild(): AtomToken | SyntaxToken | ParameterToken;
+	abstract override get firstChild(): Child;
+	abstract override get lastChild(): Child | ParameterToken;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): [AtomToken | SyntaxToken, ...ParameterToken[]]
+	abstract override get children(): [Child, ...ParameterToken[]]
 	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
-	abstract override get firstElementChild(): AtomToken | SyntaxToken;
-	abstract override get lastElementChild(): AtomToken | SyntaxToken | ParameterToken;
+	abstract override get firstElementChild(): Child;
+	abstract override get lastElementChild(): Child | ParameterToken;
 
 	/* NOT FOR BROWSER END */
 

@@ -30,6 +30,8 @@ import {singleLine} from '../mixin/singleLine';
 
 /* NOT FOR BROWSER END */
 
+declare type Child = GalleryImageToken | NoincludeToken;
+
 /**
  * `<imagemap>`
  * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
@@ -37,18 +39,18 @@ import {singleLine} from '../mixin/singleLine';
 export abstract class ImagemapToken extends Token {
 	declare readonly name: 'imagemap';
 
-	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText)[];
-	abstract override get firstChild(): NoincludeToken | GalleryImageToken | undefined;
-	abstract override get lastChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | AstText | undefined;
+	declare readonly childNodes: readonly (Child | ImagemapLinkToken | AstText)[];
+	abstract override get firstChild(): Child | undefined;
+	abstract override get lastChild(): Child | ImagemapLinkToken | AstText | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
 
 	/* NOT FOR BROWSER */
 
-	abstract override get children(): (GalleryImageToken | NoincludeToken | ImagemapLinkToken)[];
-	abstract override get firstElementChild(): NoincludeToken | GalleryImageToken | undefined;
-	abstract override get lastElementChild(): GalleryImageToken | NoincludeToken | ImagemapLinkToken | undefined;
+	abstract override get children(): (Child | ImagemapLinkToken)[];
+	abstract override get firstElementChild(): Child | undefined;
+	abstract override get lastElementChild(): Child | ImagemapLinkToken | undefined;
 	abstract override get nextElementSibling(): undefined;
 	abstract override get previousElementSibling(): AttributesToken;
 	abstract override get parentElement(): ExtToken | undefined;
