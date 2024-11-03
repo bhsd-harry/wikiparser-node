@@ -9,6 +9,8 @@ import type {
 	ExtToken,
 } from '../internal';
 
+declare type Child = GalleryImageToken | NoincludeToken;
+
 /**
  * gallery标签
  * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
@@ -16,9 +18,9 @@ import type {
 export abstract class GalleryToken extends Token {
 	declare readonly name: 'gallery';
 
-	declare readonly childNodes: readonly (GalleryImageToken | NoincludeToken | AstText)[];
-	abstract override get firstChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
-	abstract override get lastChild(): GalleryImageToken | NoincludeToken | AstText | undefined;
+	declare readonly childNodes: readonly (Child | AstText)[];
+	abstract override get firstChild(): Child | AstText | undefined;
+	abstract override get lastChild(): Child | AstText | undefined;
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;

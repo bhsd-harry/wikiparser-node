@@ -32,7 +32,7 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		attr?: string,
 		config = Parser.getConfig(),
 		accum: Token[] = [],
-		acceptable: Acceptable = {},
+		acceptable?: Acceptable,
 	) {
 		super(undefined, config, accum, acceptable);
 		this.append(

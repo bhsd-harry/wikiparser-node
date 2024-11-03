@@ -5,12 +5,13 @@ import {TdToken} from '../src/table/td';
 import {DdToken} from '../src/nowiki/dd';
 import type {Config} from '../base';
 import type {AstText} from '../internal';
+import type {TableTokens} from '../src/table/index';
 
 /**
  * 判断是否为表格行或表格
  * @param token 表格节点
  */
-const isTr = (token: TrToken | TableToken | TdToken): token is TrToken | TableToken =>
+const isTr = (token: TableTokens): token is TrToken | TableToken =>
 	token.lastChild.constructor !== Token;
 
 /**
@@ -24,19 +25,19 @@ export const parseTable = (
 	config: Config,
 	accum: Token[],
 ): string => {
-	const stack: (TrToken | TableToken | TdToken)[] = [],
+	const stack: TableTokens[] = [],
 		lines = data.split('\n');
 	let out = type === 'root' || type === 'parameter-value' || type === 'ext-inner' && name === 'poem'
 			? ''
 			: `\n${lines.shift()!}`,
-		top: TrToken | TableToken | TdToken | undefined;
+		top: TableTokens | undefined;
 
 	/**
 	 * 向表格中插入纯文本
 	 * @param str 待插入的文本
 	 * @param topToken 当前解析的表格或表格行
 	 */
-	const push = (str: string, topToken?: TrToken | TableToken | TdToken): void => {
+	const push = (str: string, topToken?: TableTokens): void => {
 			if (!topToken) {
 				out += str;
 				return;
