@@ -15,6 +15,8 @@ import type {
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 
+export type TableTokens = TableToken | TrToken | TdToken;
+
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
 
 /**
