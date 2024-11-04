@@ -106,6 +106,12 @@ export abstract class TranscludeToken extends Token {
 		config = Parser.getConfig(),
 		accum: Token[] = [],
 	) {
+		let heading: number | undefined;
+		const mt = /^(?:\s|\0\d+[cn]\x7F)*\0(\d+)h\x7F(?:\s|\0\d+[cn]\x7F)*/u.exec(title);
+		if (mt) {
+			heading = Number(mt[1]);
+			title = title.replace(`\0${heading}h\x7F`, accum[heading]!.toString().replace(/^\n/u, ''));
+		}
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
@@ -185,6 +191,10 @@ export abstract class TranscludeToken extends Token {
 				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 			});
 			super.insertAt(token);
+		}
+		if (typeof heading === 'number') {
+			// @ts-expect-error sparse array
+			accum[heading] = undefined;
 		}
 		const templateLike = this.isTemplate();
 		let i = 1;

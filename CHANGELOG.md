@@ -6,6 +6,7 @@
 
 - Parse and report extension tags inside `<inputbox>`/`<dynamicpagelist>`
 - Parse transclusion inside `<references>`
+- `{{\n=a=\n}}` is now parsed as `Template:=a=` instead of `<p>{{</p><h1>a</h1><p>}}</p>`
 
 ## v1.13.1
 
