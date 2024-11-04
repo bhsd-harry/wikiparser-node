@@ -1,17 +1,23 @@
 #!/usr/local/bin/bash
 if [[ $2 == 'npm' ]]
 then
-	npm view wikiparser-node@$1-b
-	if [[ $? -eq 0 ]]
+	if [[ $(git tag -l v$1-b) ]]
 	then
 		git checkout browser bundle/bundle.min.js extensions/dist/*.js extensions/*.css
-		gsed -i 's/$VERSION-b/$VERSION/' extensions/dist/base.js
+		gsed -i 's|/gh/bhsd-harry/wikiparser-node@$VERSION-b|/npm/wikiparser-node@$VERSION|' extensions/dist/base.js
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 		npm i --package-lock-only
 		npm publish --tag ${3-latest}
+		if [[ -z $3 ]]
+		then
+			npm dist-tag add wikiparser-node@$1 browser
+		fi
 		rm bundle/bundle.min.js extensions/dist/*.js extensions/*.css
 		git add -A
 		git commit -m "chore: publish v$1 to npm"
+	else
+		echo "Tag v$1-b not found"
+		exit 1
 	fi
 else
 	npm run lint && npm run build && npm test && npm run test:parser && npm run test:real
