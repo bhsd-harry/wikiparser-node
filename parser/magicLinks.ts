@@ -15,11 +15,11 @@ const space = String.raw`[\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	const regex = new RegExp(
+	config.regexMagicLinks ??= new RegExp(
 		String.raw`(^|[^\p{L}\d_])(?:(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 		'giu',
 	);
-	return wikitext.replace(regex, (m, lead: string, p1: string | undefined) => {
+	return wikitext.replace(config.regexMagicLinks, (m, lead: string, p1: string | undefined) => {
 		let url = lead ? m.slice(lead.length) : m;
 		if (p1) {
 			let trail = '';
