@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.13.2-b",
+	"version": "1.13.2",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -33,7 +33,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build",
 		"build:core": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
 		"build:ext": "bash build-ext.sh",
 		"build:test": "npm run build:core && tsc --project tsconfig.dist.json",
