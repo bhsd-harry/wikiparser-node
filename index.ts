@@ -285,6 +285,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
+					for (const k in config) {
+						if (k.startsWith('regex')) {
+							delete config[k as keyof Config];
+						}
+					}
 					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : token.toString());
 					fs.writeFileSync(`${file}.err`, e.stack!);
 					fs.writeFileSync(`${file}.json`, JSON.stringify({stage, include, config}, null, '\t'));
