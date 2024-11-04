@@ -1,8 +1,6 @@
 import {diff, error} from '../util/diff';
 import type {Parser, LintError} from '../base';
 
-declare type Token = ReturnType<Parser['parse']>;
-
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
 
@@ -15,21 +13,15 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export const single = async (
-	Parser: Parser,
-	{pageid, title, ns, content}: SimplePage,
-): Promise<LintError[]> => {
+export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
 	content = content.replace(/[\0\x7F]/gu, '');
 	console.time(`parse: ${title}`);
-	const parse = /** @ignore */ (): Token => Parser.parse(content, ns === 10 || title.endsWith('/doc'));
-	const token = await new Promise<Token>(resolve => {
-		resolve(parse());
-	});
+	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
 	console.timeEnd(`parse: ${title}`);
 	const parsed = String(token);
 	if (parsed !== content) {
-		await diff(content, parsed, pageid);
-		throw new Error('解析过程中不可逆地修改了原始文本！');
+		error('解析过程中不可逆地修改了原始文本！');
+		return diff(content, parsed, pageid);
 	}
 	const set = new Set<string>();
 	for (const t of token.querySelectorAll('*')) {
@@ -49,8 +41,8 @@ export const single = async (
 		(_, s?: keyof typeof entities) => s ? entities[s] : '',
 	);
 	if (restored !== content) {
-		await diff(content, restored, pageid);
-		throw new Error('渲染HTML过程中不可逆地修改了原始文本！');
+		error('渲染HTML过程中不可逆地修改了原始文本！');
+		return diff(content, restored, pageid);
 	}
 
 	console.time(`lint: ${title}`);

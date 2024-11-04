@@ -9,8 +9,23 @@ export interface Config {
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
 	readonly variants: string[];
+
+	/** @private */
 	readonly excludes?: string[];
+	/** @private */
 	inExt?: boolean;
+	/** @private */
+	regexRedirect?: RegExp;
+	/** @private */
+	regexHrAndDoubleUnderscore?: RegExp;
+	/** @private */
+	regexLinks?: RegExp;
+	/** @private */
+	regexExternalLinks?: RegExp;
+	/** @private */
+	regexMagicLinks?: RegExp;
+	/** @private */
+	regexConverter?: RegExp;
 }
 
 export type TokenTypes = 'root'
