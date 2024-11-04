@@ -20,13 +20,13 @@ import {parsers} from '../util/constants';
 export const parseExternalLinks = (wikitext: string, config: Config, accum: Token[], inFile?: boolean): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	/\[((?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*(?=[[\]<>"\t\p{Zs}]|\0\d))(\p{Zs}*(?!\p{Zs}))([^\]\n]*)\]/giu;
-	const regex = new RegExp(
+	config.regexExternalLinks ??= new RegExp(
 		String.raw`\[(\0\d+f\x7F|(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${
 			extUrlChar
 		}(?=[[\]<>"\t\p{Zs}]|\0\d))(\p{Zs}*(?!\p{Zs}))([^\]\x01-\x08\x0A-\x1F\uFFFD]*)\]`,
 		'giu',
 	);
-	return wikitext.replace(regex, (_, url: string, space: string, text: string) => {
+	return wikitext.replace(config.regexExternalLinks, (_, url: string, space: string, text: string) => {
 		const {length} = accum,
 			mt = /&[lg]t;/u.exec(url);
 		if (mt) {

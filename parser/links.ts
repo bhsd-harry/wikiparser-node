@@ -13,6 +13,8 @@ import {parsers} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su;
+
 /**
  * 解析内部链接
  * @param wikitext
@@ -22,11 +24,10 @@ import {parsers} from '../util/constants';
 export const parseLinks = (wikitext: string, config: Config, accum: Token[]): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 	/^\s*(?:ftp:\/\/|\/\/)/iu;
+	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
 			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
-		regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su,
-		regexExt = new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu'),
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;
 	for (let i = 0; i < bits.length; i++) {
@@ -50,7 +51,7 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 				[, link, delimiter, text] = m2;
 			}
 		}
-		if (link === undefined || regexExt.test(link) || /\0\d+[exhbru]\x7F/u.test(link)) {
+		if (link === undefined || config.regexLinks.test(link) || /\0\d+[exhbru]\x7F/u.test(link)) {
 			s += `[[${x}`;
 			continue;
 		}

@@ -24,6 +24,7 @@ export const parseHrAndDoubleUnderscore = (
 	const {doubleUnderscore} = config,
 		insensitive = new Set(doubleUnderscore[0]),
 		sensitive = new Set(doubleUnderscore[1]);
+	config.regexHrAndDoubleUnderscore ??= new RegExp(`__(${[...insensitive, ...sensitive].join('|')})__`, 'giu');
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}
@@ -37,7 +38,7 @@ export const parseHrAndDoubleUnderscore = (
 			return `${lead}\0${accum.length - 1}r\x7F`;
 		},
 	).replace(
-		new RegExp(`__(${[...insensitive, ...sensitive].join('|')})__`, 'giu'),
+		config.regexHrAndDoubleUnderscore,
 		(m, p1: string) => {
 			const caseSensitive = sensitive.has(p1),
 				lc = p1.toLowerCase(),
