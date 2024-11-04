@@ -62,9 +62,9 @@ export abstract class TranscludeToken extends Token {
 		accum: Token[] = [],
 	) {
 		let heading: number | undefined;
-		const mt = /^(?:\s|\0\d+[cn]\x7F)*\0(\d+)h\x7F(?:\s|\0\d+[cn]\x7F)*/u.exec(title);
-		if (mt) {
-			heading = Number(mt[1]);
+		const m = /^(?:\s|\0\d+[cn]\x7F)*\0(\d+)h\x7F(?:\s|\0\d+[cn]\x7F)*/u.exec(title);
+		if (m) {
+			heading = Number(m[1]);
 			title = title.replace(`\0${heading}h\x7F`, accum[heading]!.toString().replace(/^\n/u, ''));
 		}
 		super(undefined, config, accum, {
