@@ -1,4 +1,4 @@
-import {removeComment, escapeRegExp} from '../util/string';
+import {removeComment} from '../util/string';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
 import {ArgToken} from '../src/arg';
@@ -11,8 +11,8 @@ const closes: Record<string, string> = {
 		'-': String.raw`\}-`,
 		'[': String.raw`\]\]`,
 	},
-	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~']]),
-	re = new RegExp(String.raw`\{\{\s*(${[...marks.keys()].map(escapeRegExp).join('|')})\s*\}\}(?!\})`, 'gu');
+	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
+	re = /\{\{\s*([^\s\0<>[\]{}|_#&%:.]+)\s*\}\}(?!\})/gu;
 
 /**
  * 解析花括号
@@ -31,7 +31,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	wikitext = wikitext.replace(re, (m, p1: string) => {
 		// @ts-expect-error abstract class
 		new TranscludeToken(m.slice(2, -2), [], config, accum);
-		return `\0${accum.length - 2}${marks.get(p1)}\x7F`;
+		return `\0${accum.length - 2}${marks.get(p1.toLowerCase()) ?? 't'}\x7F`;
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let moreBraces = lastBraces + wikitext.length !== -1,
@@ -109,9 +109,9 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						accum,
 					);
 					const name = removeComment(parts![0]![0]!).trim();
-					if (marks.has(name)) {
-						ch = marks.get(name)!; // 标记{{!}}等
-					} else if (/^(?:filepath|(?:full|canonical)urle?):.|^server$/iu.test(name)) {
+					if (marks.has(name.toLowerCase())) {
+						ch = marks.get(name.toLowerCase())!; // 标记{{!}}等
+					} else if (/^(?:filepath|(?:full|canonical)urle?):./iu.test(name)) {
 						ch = 'm';
 					} else if (/^#vardefine:./iu.test(name)) {
 						ch = 'n';
