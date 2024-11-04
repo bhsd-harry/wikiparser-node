@@ -16,6 +16,13 @@
 	"files": [
 		"/errors/README",
 		"/printed/README",
+		"/bundle/bundle.min.js",
+		"/extensions/dist/",
+		"/extensions/*.css",
+		"!/extensions/dist/gh-page.js",
+		"!/extensions/gh-page.css",
+		"!/extensions/dist/parserTests.js",
+		"!/extensions/test-page.css",
 		"/config/",
 		"/i18n/",
 		"/dist/",
