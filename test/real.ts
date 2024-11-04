@@ -54,7 +54,9 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 				const {pageid, title, content} = page;
 				try {
 					const errors = await single(Parser, page);
-					if (errors.length > 0) {
+					if (!errors) {
+						throw new Error('解析错误');
+					} else if (errors.length > 0) {
 						console.log(errors.map(({message, severity}) => ({message, severity})));
 						errors.sort(({startIndex: a}, {startIndex: b}) => b - a);
 						let text = content,
