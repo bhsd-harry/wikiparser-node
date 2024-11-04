@@ -28,6 +28,7 @@
 		"/dist/",
 		"!/dist/[bt]*/"
 	],
+	"browser": "/bundle/bundle.min.js",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"repository": {
