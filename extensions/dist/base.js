@@ -1,7 +1,10 @@
 (() => {
-const version = '1.13.2';
+var _a;
+const version = '1.13.2', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+    ? src.replace(file, '')
+    : `https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@${version}-b`;
 const workerJS = () => {
-    importScripts(`https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
+    importScripts('$CDN/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
@@ -35,7 +38,7 @@ const workerJS = () => {
         }
     };
 };
-const blob = new Blob([`(${String(workerJS).replace('$VERSION', version)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
+const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
 URL.revokeObjectURL(url);
 const getListener = (qid, resolve, raw) => {
     const listener = ({ data: [rid, res, resRaw] }) => {
@@ -158,6 +161,6 @@ const lineNumbers = (html, start = 1, paddingTop = '') => {
         intersectionObserver.observe(html);
     }
 };
-const wikiparse = { version, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers };
+const wikiparse = { version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers };
 Object.assign(window, { wikiparse });
 })();

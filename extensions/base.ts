@@ -2,11 +2,16 @@ import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
-const version = '1.13.2';
+const version = '1.13.2',
+	src = (document.currentScript as HTMLScriptElement | null)?.src,
+	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
+	CDN = src && file.test(src)
+		? src.replace(file, '')
+		: `https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@${version}-b`;
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts(`https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@$VERSION-b/bundle/bundle.min.js`);
+	importScripts('$CDN/bundle/bundle.min.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
@@ -49,7 +54,7 @@ const workerJS = (): void => {
 	};
 };
 
-const blob = new Blob([`(${String(workerJS).replace('$VERSION', version)})()`], {type: 'text/javascript'}),
+const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], {type: 'text/javascript'}),
 	url = URL.createObjectURL(blob),
 	worker = new Worker(url);
 URL.revokeObjectURL(url);
@@ -271,5 +276,5 @@ const lineNumbers = (html: HTMLElement, start = 1, paddingTop = ''): void => {
 	}
 };
 
-const wikiparse: Wikiparse = {version, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
+const wikiparse: Wikiparse = {version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
 Object.assign(window, {wikiparse});
