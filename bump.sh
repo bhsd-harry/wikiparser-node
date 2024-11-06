@@ -4,7 +4,7 @@ then
 	if [[ $(git tag -l v$1-b) ]]
 	then
 		git checkout browser bundle/bundle.min.js extensions/dist/*.js extensions/*.css
-		gsed -i 's|/gh/bhsd-harry/wikiparser-node@$VERSION-b|/npm/wikiparser-node@$VERSION|' extensions/dist/base.js
+		gsed -i 's|/gh/bhsd-harry/wikiparser-node@${version}-b|/npm/wikiparser-node@${version}|' extensions/dist/base.js
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
 		npm i --package-lock-only
 		npm publish --tag ${3-latest}

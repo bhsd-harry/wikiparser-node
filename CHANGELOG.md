@@ -1,3 +1,11 @@
+## v1.14.0
+
+*2024-11-11*
+
+**Fixed**
+
+- [`AttributeToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/AttributeToken#lint) now correctly reports invalid attribute names of `<pre>` tags
+
 ## v1.13.2
 
 *2024-11-04*
