@@ -52,7 +52,7 @@
 	},
 	"devDependencies": {
 		"@bhsd/codemirror-mediawiki": "^2.18.3",
-		"@bhsd/common": "^0.3.0",
+		"@bhsd/common": "^0.4.0",
 		"@codemirror/lint": "^6.8.0",
 		"@types/node": "^20.11.6",
 		"@types/prismjs": "^1.26.3",
