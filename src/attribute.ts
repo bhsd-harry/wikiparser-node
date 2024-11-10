@@ -336,14 +336,16 @@ export abstract class AttributeToken extends Token {
 			}
 			errors.push(e);
 		}
-		const attrs = extAttrs[tag];
+		const attrs = extAttrs[tag],
+			attrs2 = htmlAttrs[tag];
 		if (
 			!attrs?.has(name)
-			&& (type === 'ext-attr' ? attrs : !/\{\{[^{]+\}\}/u.test(name))
+			&& !attrs2?.has(name)
+			// 不是未定义的扩展标签或包含嵌入的HTML标签
+			&& (type === 'ext-attr' ? attrs || attrs2 : !/\{\{[^{]+\}\}/u.test(name))
 			&& (
-				type === 'ext-attr' && !(tag in htmlAttrs)
-				|| !htmlAttrs[tag]?.has(name)
-				&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
+				type === 'ext-attr' && !attrs2
+				|| !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
 		) {
