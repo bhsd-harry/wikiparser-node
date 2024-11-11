@@ -46,7 +46,7 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@bhsd/common": "^0.4.0",
+		"@bhsd/common": "^0.4.1",
 		"@types/node": "^20.11.6",
 		"v8r": "^3.0.0"
 	},
