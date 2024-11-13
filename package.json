@@ -55,14 +55,14 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@bhsd/common": "^0.4.1",
+		"@bhsd/common": "^0.4.2",
 		"@codemirror/lint": "^6.8.0",
-		"@types/node": "^20.11.6",
+		"@types/node": "^22.9.0",
 		"codejar-async": "^4.2.3",
 		"monaco-editor": "^0.52.0",
 		"v8r": "^3.0.0"
 	},
 	"engines": {
-		"node": ">=20.9.0"
+		"node": ">=22.11.0"
 	}
 }
