@@ -46,11 +46,11 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@bhsd/common": "^0.4.1",
-		"@types/node": "^20.11.6",
+		"@bhsd/common": "^0.4.2",
+		"@types/node": "^22.9.0",
 		"v8r": "^3.0.0"
 	},
 	"engines": {
-		"node": ">=20.9.0"
+		"node": ">=22.11.0"
 	}
 }
