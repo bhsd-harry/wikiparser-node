@@ -488,13 +488,11 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override toHtmlInternal(): string {
-		const map = new Map<string, AttributeToken>();
-		for (const child of this.childNodes) {
-			if (child instanceof AttributeToken) {
-				map.set(child.name, child);
-			}
-		}
-		return ` ${html([...map.values()], ' ')}`;
+		return ` ${html([
+			...new Map(
+				this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
+			).values(),
+		], ' ')}`;
 	}
 }
 
