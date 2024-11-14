@@ -1,5 +1,7 @@
 import type {AstNodes} from '../lib/node';
 
+export {rawurldecode} from '@bhsd/common';
+
 const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
 export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
@@ -22,12 +24,6 @@ export const removeComment = factory(/\0\d+[cn]\x7F/gu, '');
 
 /** escape special chars for RegExp constructor */
 export const escapeRegExp = factory(/[\\{}()|.?*+^$[\]]/gu, String.raw`\$&`);
-
-/**
- * PHP的`rawurldecode`函数的JavaScript实现
- * @param str 要解码的字符串
- */
-export const rawurldecode = (str: string): string => decodeURIComponent(str.replace(/%(?![\da-f]{2})/giu, '%25'));
 
 /**
  * extract effective wikitext
