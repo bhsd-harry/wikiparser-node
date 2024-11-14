@@ -3,7 +3,9 @@ rm -rf dist/
 tsc && npm run declaration
 if [[ $? -eq 0 ]]
 then
+	mv dist/util/sharable.d.ts .
 	rm dist/internal.js dist/[abptu]*/*.d.ts
+	mv sharable.d.ts dist/util/
 	bash sed.sh -i '/export declare const /,$d' dist/mixin/*.d.ts
 	echo 'declare global { type Acceptable = unknown; }' >> dist/index.d.ts
 	bash sed.sh -i '/export = Parser/i \
