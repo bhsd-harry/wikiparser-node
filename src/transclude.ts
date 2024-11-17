@@ -91,7 +91,7 @@ export abstract class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name),
 				isVar = isSensitive || insensitiveVars.has(canonicalName);
 			if (isVar || isFunction && canonicalName) {
-				this.setAttribute('name', canonicalName || lcName);
+				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';
 				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {

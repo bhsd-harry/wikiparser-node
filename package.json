@@ -51,8 +51,8 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.18.7",
-		"@bhsd/common": "^0.4.2",
+		"@bhsd/codemirror-mediawiki": "^2.18.8",
+		"@bhsd/common": "^0.4.3",
 		"@codemirror/lint": "^6.8.0",
 		"@types/node": "^22.9.0",
 		"@types/prismjs": "^1.26.3",
