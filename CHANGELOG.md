@@ -1,3 +1,11 @@
+## v1.13.4
+
+*2024-11-17*
+
+**Fixed**
+
+- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#name) for some new parser functions, e.g., `{{#dir}}`.
+
 ## v1.13.3
 
 *2024-11-14*

@@ -137,7 +137,7 @@ export abstract class TranscludeToken extends Token {
 				isSensitive = sensitive.includes(name),
 				isVar = isSensitive || insensitiveVars.has(canonicalName);
 			if (isVar || isFunction && canonicalName) {
-				this.setAttribute('name', canonicalName || lcName);
+				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';
 				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
 				/^\s*uc\s*$/iu;
