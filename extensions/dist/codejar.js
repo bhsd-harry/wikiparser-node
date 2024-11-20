@@ -26,7 +26,10 @@ const codejar = (async () => {
         const id = wikiparse.id++;
         const highlight = async (e) => (await wikiparse.print(e.textContent, jar.include, undefined, id)).map(([, , printed]) => printed).join('');
         const jar = {
-            ...CodeJar(root, highlight, { spellcheck: true }),
+            ...CodeJar(root, highlight, {
+                spellcheck: true,
+                autoclose: { open: '([{"', close: ')]}"' },
+            }),
             include: Boolean(include),
             editor: root,
         };

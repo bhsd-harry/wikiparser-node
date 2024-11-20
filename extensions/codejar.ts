@@ -38,7 +38,10 @@ const codejar = (async (): Promise<f> => {
 		const highlight = async (e: HTMLElement): Promise<string> =>
 			(await wikiparse.print(e.textContent!, jar.include, undefined, id)).map(([,, printed]) => printed).join('');
 		const jar = {
-			...CodeJar(root, highlight, {spellcheck: true}), // eslint-disable-line new-cap
+			...CodeJar(root, highlight, { // eslint-disable-line new-cap
+				spellcheck: true,
+				autoclose: {open: '([{"', close: ')]}"'},
+			}),
 			include: Boolean(include),
 			editor: root,
 		};
