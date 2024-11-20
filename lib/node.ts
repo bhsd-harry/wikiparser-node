@@ -111,6 +111,18 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * 将行列号转换为字符位置
+	 * @param top 行号
+	 * @param left 列号
+	 */
+	indexFromPos(top: number, left: number): number | undefined {
+		const lines = String(this).split('\n');
+		return top >= 0 && left >= 0 && top <= lines.length - 1 && left <= lines[top]!.length
+			? lines.slice(0, top).reduce((acc, cur) => acc + cur.length + 1, 0) + left
+			: undefined;
+	}
+
+	/**
 	 * 将字符位置转换为行列号
 	 * @param index 字符位置
 	 */
