@@ -12,6 +12,15 @@ import {
 	classes,
 } from './util/constants';
 import {tidy} from './util/string';
+import {
+	error,
+
+	/* NOT FOR BROWSER */
+
+	cmd,
+	info,
+	diff,
+} from './util/diff';
 import type {Config, LintError, TokenTypes, Parser as ParserBase, Stage} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
@@ -20,12 +29,6 @@ import type {Token} from './internal';
 
 import * as chalk from 'chalk';
 import type {log} from './util/diff';
-import {
-	error,
-	cmd,
-	info,
-	diff,
-} from './util/diff';
 
 /* NOT FOR BROWSER END */
 

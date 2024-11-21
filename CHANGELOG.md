@@ -4,7 +4,7 @@
 
 **Fixed**
 
-- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#name) for some new parser functions, e.g., `{{#dir}}`.
+- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#name) for some new parser functions, e.g., `{{#dir}}`
 
 ## v1.13.3
 
