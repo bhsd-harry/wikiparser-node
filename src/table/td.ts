@@ -423,11 +423,11 @@ export abstract class TdToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean): string {
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {subtype, childNodes: [, attr, inner], nextSibling} = this,
 			notEOL = nextSibling?.toString().startsWith('\n') === false,
-			lf = nowrap ? ' ' : '\n';
-		let html = inner.toHtmlInternal(nowrap).replace(/^[^\S\n]*/u, '');
+			lf = opt?.nowrap ? ' ' : '\n';
+		let html = inner.toHtmlInternal(opt).replace(/^[^\S\n]*/u, '');
 		if (notEOL) {
 			html = html.replace(/(?<=[\S\n])[^\S\n]*$/u, '');
 		}

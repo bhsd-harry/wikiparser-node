@@ -946,7 +946,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	toHtmlInternal(nowrap?: boolean, nocc?: boolean): string {
+	toHtmlInternal(opt?: HtmlOpt): string {
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {
 				child.removeBlankLines();
@@ -959,7 +959,7 @@ export class Token extends AstElement {
 			}
 		}
 		this.normalize();
-		return font(this, html(this.childNodes, '', nowrap, nocc));
+		return font(this, html(this.childNodes, '', opt));
 	}
 }
 

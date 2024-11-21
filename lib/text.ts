@@ -444,9 +444,9 @@ export class AstText extends AstNode {
 
 	/** @private */
 	removeBlankLines(): void {
-		const mt = /\n[^\S\n]*$/u.exec(this.data);
 		if (/\s$/u.test(this.data)) {
-			const spaces: AstText[] = [];
+			const spaces: AstText[] = [],
+				mt = /\n[^\S\n]*$/u.exec(this.data);
 			let {nextSibling} = this,
 				mt2: RegExpExecArray | null = null;
 			while (
@@ -454,9 +454,8 @@ export class AstText extends AstNode {
 				&& (nextSibling.type === 'comment' || nextSibling.type === 'category' || nextSibling.type === 'text')
 			) {
 				if (nextSibling.type === 'text') {
-					const {data} = nextSibling;
-					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(data);
-					if (mt2 || data.trim()) {
+					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(nextSibling.data);
+					if (mt2 || nextSibling.data.trim()) {
 						break;
 					} else {
 						spaces.push(nextSibling);
@@ -491,9 +490,9 @@ export class AstText extends AstNode {
 	}
 
 	/** @private */
-	toHtmlInternal(nowrap?: boolean): string {
+	toHtmlInternal(opt?: Pick<HtmlOpt, 'nowrap'>): string {
 		this.removeBlankLines();
-		return this.toHtml(nowrap);
+		return this.toHtml(opt?.nowrap);
 	}
 }
 

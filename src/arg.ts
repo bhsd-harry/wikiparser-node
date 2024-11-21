@@ -244,12 +244,12 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean, nocc?: boolean): string {
+	override toHtmlInternal(opt?: HtmlOpt): string {
 		if (this.length === 1) {
 			const html = font(this, this.toString());
-			return nowrap ? html.replaceAll('\n', ' ') : html;
+			return opt?.nowrap ? html.replaceAll('\n', ' ') : html;
 		}
-		return font(this, this.childNodes[1]!.toHtmlInternal(nowrap, nocc));
+		return font(this, this.childNodes[1]!.toHtmlInternal(opt));
 	}
 }
 

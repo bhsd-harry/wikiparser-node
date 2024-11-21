@@ -744,7 +744,7 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean): string {
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {type, name} = this;
 		if (type === 'template' && !name.startsWith('Special:')) {
 			if (this.normalizeTitle(name, 0, true).valid) {
@@ -754,7 +754,7 @@ export abstract class TranscludeToken extends Token {
 				} (page does not exist)">${title}</a>`;
 			}
 			const str = this.toString(true);
-			return nowrap ? str.replaceAll('\n', ' ') : str;
+			return opt?.nowrap ? str.replaceAll('\n', ' ') : str;
 		}
 		return basicMagicWords.has(name) ? basicMagicWords.get(name)! : '';
 	}

@@ -32,7 +32,7 @@ declare global {
 		replaceChildren(...elements: (AstNodes | string)[]): void;
 		constructorError(msg: string): never;
 		seal(key: string, permanent?: boolean): void;
-		toHtmlInternal(nowrap?: boolean, nocc?: boolean): string;
+		toHtmlInternal(opt?: HtmlOpt): string;
 	};
 
 	interface PrintOpt {
@@ -52,6 +52,12 @@ declare global {
 
 	interface State {
 		headings: Set<string>;
+	}
+
+	/** 注意`nocc`只用于`HeadingToken.id` */
+	interface HtmlOpt {
+		readonly nowrap?: boolean | undefined;
+		readonly nocc?: boolean | undefined;
 	}
 }
 

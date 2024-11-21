@@ -206,12 +206,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(nowrap?: boolean): string {
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nocc'>): string {
 		const {childNodes, type} = this,
 			td = childNodes.filter(isToken<TdToken>('td'));
 		return td.some(({subtype}) => subtype !== 'caption')
-			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${html(td, '', nowrap)}</tr>`
-			: html(td, '', nowrap);
+			? `<tr${type === 'tr' ? childNodes[1].toHtmlInternal() : ''}>${html(td, '', opt)}</tr>`
+			: html(td, '', opt);
 	}
 }
 

@@ -212,7 +212,7 @@ export abstract class HeadingToken extends Token {
 	 */
 	#getId(expand?: boolean): string {
 		const token = expand ? this.firstChild.expand() : this.firstChild;
-		let id = decodeHtml(sanitizeAlt(token.toHtmlInternal(false, true))!).replace(/[\s_]+/gu, '_');
+		let id = decodeHtml(sanitizeAlt(token.toHtmlInternal({nocc: true}))!).replace(/[\s_]+/gu, '_');
 		if (id.endsWith('_')) {
 			id = id.slice(0, -1);
 		}

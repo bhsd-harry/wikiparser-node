@@ -206,21 +206,21 @@ export abstract class ExtToken extends TagPairToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {
 			case 'nowiki':
 				return font(this, newline(lastChild.toHtmlInternal()));
 			case 'pre':
 				return font(this, `<pre${firstChild.toHtmlInternal()}>${
-					newline(lastChild.toHtmlInternal(false, nocc))
+					newline(lastChild.toHtmlInternal({...opt, nowrap: false}))
 				}</pre>`);
 			case 'poem':
 				firstChild.classList.add('poem');
 				return font(
 					this,
 					`<div${firstChild.toHtmlInternal()}>${
-						lastChild.toHtmlInternal(false, nocc).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+						lastChild.toHtmlInternal({...opt, nowrap: false}).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
 							.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 					}</div>`,
 				);
@@ -244,7 +244,9 @@ export abstract class ExtToken extends TagPairToken {
 					);
 				}
 				return font(this, `<ul${firstChild.toHtmlInternal()}>\n${
-					caption ? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal(true)}</li>\n` : ''
+					caption
+						? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal({nowrap: true})}</li>\n`
+						: ''
 				}${lastChild.toHtmlInternal()}\n</ul>`);
 			}
 			default:

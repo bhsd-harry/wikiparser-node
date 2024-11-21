@@ -35,8 +35,8 @@ export const hiddenToken = (linter = true, html = true) =>
 				//
 			}
 
-			override toHtmlInternal(): string {
-				return html ? '' : super.toHtmlInternal();
+			override toHtmlInternal(opt?: HtmlOpt): string {
+				return html ? '' : super.toHtmlInternal(opt);
 			}
 		}
 		mixin(AnyHiddenToken, constructor);

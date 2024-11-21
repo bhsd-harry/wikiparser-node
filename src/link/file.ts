@@ -398,7 +398,7 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/** @private */
-	override toHtmlInternal(_?: boolean, nocc?: boolean): string {
+	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
 		/** @ignore */
 		const isInteger = (n: string | undefined): boolean => Boolean(n && !/\D/u.test(n));
 		const {link, width, height, type} = this,
@@ -406,12 +406,12 @@ export abstract class FileToken extends LinkBaseToken {
 			fr = this.getFrame(),
 			manual = fr instanceof Title,
 			visibleCaption = manual || fr === 'thumbnail' || fr === 'framed' || type === 'gallery-image',
-			caption = this.getArg('caption')?.toHtmlInternal(true, nocc) ?? '',
+			caption = this.getArg('caption')?.toHtmlInternal({...opt, nowrap: true}) ?? '',
 			titleFromCaption = visibleCaption && type !== 'gallery-image' ? '' : sanitizeAlt(caption)!,
 			hasLink = manual || link !== file,
 			title = titleFromCaption || (hasLink && typeof link !== 'string' ? link.getTitleAttr() : ''),
 			titleAttr = title && ` title="${title}"`,
-			alt = sanitizeAlt(this.getArg('alt')?.toHtmlInternal(true)) ?? titleFromCaption,
+			alt = sanitizeAlt(this.getArg('alt')?.toHtmlInternal({...opt, nowrap: true})) ?? titleFromCaption,
 			horiz = this.getHorizAlign() ?? '',
 			vert = this.getVertAlign() ?? '',
 			className = `${horiz ? `mw-halign-${horiz}` : vert && `mw-valign-${vert}`}${
