@@ -8,17 +8,12 @@ import {
 	BuildMethod,
 } from './util/constants';
 import {tidy} from './util/string';
-import type {Config, LintError, TokenTypes, Parser as ParserBase, Stage} from './base';
-import type {Title} from './lib/title';
-import type {Token} from './internal';
-
-/* NOT FOR BROWSER */
-
 import {
 	error,
 } from './util/diff';
-
-/* NOT FOR BROWSER END */
+import type {Config, LintError, TokenTypes, Parser as ParserBase, Stage} from './base';
+import type {Title} from './lib/title';
+import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
 	rules: readonly LintError.Rule[];
