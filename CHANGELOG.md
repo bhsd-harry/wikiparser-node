@@ -1,3 +1,11 @@
+## v1.13.6
+
+*2024-11-22*
+
+**Added**
+
+- New category of linting errors: duplicated `<ref>` name
+
 ## v1.13.4
 
 *2024-11-17*
