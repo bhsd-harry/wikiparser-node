@@ -57,6 +57,7 @@ import type {
 	AstNodes,
 	CategoryToken,
 	AttributeToken,
+	ExtToken,
 } from '../internal';
 
 declare interface LintIgnore {
@@ -400,14 +401,23 @@ export class Token extends AstElement {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record: Record<string, Set<CategoryToken | AttributeToken>> = {},
-				selector = 'category,html-attr#id,ext-attr#id,table-attr#id';
+				selector = 'category,html-attr#id,ext-attr#id,table-attr#id,ext-attr#name';
 			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 				let key;
 				if (cat.type === 'category') {
 					key = cat.name;
 				} else {
 					const value = cat.getValue();
-					key = `#${value === true ? '' : value}`;
+					if (cat.name === 'id') {
+						key = `#${value === true ? '' : value}`;
+					} else if (
+						cat.tag === 'ref' && value !== true && value
+						&& !(cat.parentNode!.parentNode as ExtToken).selfClosing
+					) {
+						key = `ref#${value}`;
+					} else {
+						continue;
+					}
 				}
 				const thisCat = record[key];
 				if (thisCat) {
@@ -418,9 +428,9 @@ export class Token extends AstElement {
 			}
 			for (const [key, value] of Object.entries(record)) {
 				if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
-					const isCat = !key.startsWith('#'),
-						msg = `duplicated ${isCat ? 'category' : 'id'}`,
-						severity = isCat ? 'error' : 'warning';
+					const isCat = !key.includes('#'),
+						msg = `duplicated ${isCat ? 'category' : 'id/name'}`,
+						severity = key.startsWith('#') ? 'warning' : 'error';
 					errors.push(...[...value].map(cat => {
 						const e = generateForSelf(
 							cat,
