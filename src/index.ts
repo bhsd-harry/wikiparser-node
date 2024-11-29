@@ -412,7 +412,7 @@ export class Token extends AstElement {
 						key = `#${value === true ? '' : value}`;
 					} else if (
 						cat.tag === 'ref' && value !== true && value
-						&& !(cat.parentNode!.parentNode as ExtToken).selfClosing
+						&& (cat.parentNode!.parentNode as ExtToken).innerText
 					) {
 						key = `ref#${value}`;
 					} else {
