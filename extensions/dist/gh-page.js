@@ -1,5 +1,5 @@
 import { CodeMirror6 } from '/codemirror-mediawiki/dist/main.min.js';
-import { CodeJar } from '/codejar/dist/codejar.js';
+import { CodeJar } from '/codejar-async/dist/codejar.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
