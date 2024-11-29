@@ -1,5 +1,5 @@
 import {CodeMirror6} from '/codemirror-mediawiki/dist/main.min.js';
-import {CodeJar} from '/codejar/dist/codejar.js';
+import {CodeJar} from '/codejar-async/dist/codejar.js';
 import type {Config, AST} from './typings';
 
 declare global {
