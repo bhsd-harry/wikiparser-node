@@ -17,9 +17,9 @@ const workerJS = (): void => {
 	/** @implements */
 	self.onmessage = ({data}: {
 		data: ['setI18N', Record<string, string>]
-		| ['setConfig', Config]
-		| ['getConfig', number]
-		| ['json' | 'lint' | 'print', number, string, boolean?, number?];
+			| ['setConfig', Config]
+			| ['getConfig', number]
+			| ['json' | 'lint' | 'print', number, string, boolean?, number?];
 	}): void => {
 		const [command, qid, wikitext, include, stage] = data;
 		switch (command) {

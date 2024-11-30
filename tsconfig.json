@@ -26,6 +26,7 @@
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"useUnknownInCatchVariables": true,
-		"removeComments": true
+		"removeComments": true,
+		"skipLibCheck": true
 	}
 }

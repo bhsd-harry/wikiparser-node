@@ -209,6 +209,8 @@ export interface AstNode {
 	/** 节点类型 */
 	type: string;
 
+	toString(...args: unknown[]): string;
+
 	/** @private */
 	getAttribute(key: string): unknown;
 
@@ -236,7 +238,7 @@ interface Token extends AstNode {
 export interface Parser {
 	config: Config;
 	i18n: Record<string, string>
-	| undefined;
+		| undefined;
 
 	/** 获取当前的解析设置 */
 	getConfig(): Config;
