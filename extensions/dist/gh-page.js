@@ -3,9 +3,12 @@ import { CodeJar } from '/codejar-async/dist/codejar.js';
 const transform = (type) => type && type.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join('');
 const keys = new Set(['type', 'childNodes', 'range']);
 (async () => {
-    Object.assign(window, { CodeJar });
+    Object.assign(globalThis, { CodeJar });
     await import('/wikiparser-node/extensions/dist/codejar.js');
-    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [...document.getElementsByClassName('highlight')];
+    const textbox = document.querySelector('#wpTextbox1'), textbox2 = document.querySelector('#wpTextbox2'), monacoContainer = document.getElementById('monaco-container'), input = document.querySelector('#wpInclude'), input2 = document.querySelector('#wpHighlight'), h2 = document.querySelector('h2'), buttons = [...document.querySelectorAll('.tab > button')], tabcontents = document.querySelectorAll('.tabcontent'), astContainer = document.getElementById('ast'), highlighters = document.getElementById('highlighter').children, pres = [
+        ...document
+            .getElementsByClassName('highlight'),
+    ];
     const config = await (await fetch('./config/default.json')).json();
     Parser.config = config;
     wikiparse.setConfig(config);
@@ -78,7 +81,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
     let timer;
     jar.onUpdate(code => {
         clearTimeout(timer);
-        timer = window.setTimeout((async () => {
+        timer = setTimeout((async () => {
             const astDom = createAST(await wikiparse.json(code, jar.include, qid));
             astDom.children[0].classList.remove('inactive');
             astContainer.replaceChildren(astDom);
@@ -192,6 +195,6 @@ const keys = new Set(['type', 'childNodes', 'range']);
         (_a = buttons.find(({ value }) => value === (location.hash.slice(1) || e === undefined && 'editor'))) === null || _a === void 0 ? void 0 : _a.click();
     };
     hashchange();
-    window.addEventListener('hashchange', hashchange);
-    Object.assign(window, { jar, cm, model });
+    addEventListener('hashchange', hashchange);
+    Object.assign(globalThis, { jar, cm, model });
 })();

@@ -19,7 +19,7 @@ const highlight = async (ele, include, linenums, start) => {
     ele.addEventListener('keydown', e => {
         if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
             e.preventDefault();
-            const range = document.createRange(), selection = window.getSelection();
+            const range = document.createRange(), selection = getSelection();
             range.selectNodeContents(ele.firstChild);
             selection.removeAllRanges();
             selection.addRange(range);

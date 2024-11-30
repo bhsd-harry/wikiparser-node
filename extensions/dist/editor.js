@@ -88,10 +88,10 @@ _Printer_id = new WeakMap(), _Printer_preview = new WeakMap(), _Printer_textbox 
         return __classPrivateFieldGet(this, _Printer_running, "f");
     }
     __classPrivateFieldSet(this, _Printer_viewportChanged, false, "f");
-    const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), { scrollHeight, offsetHeight: parentHeight, scrollTop, children: [rootNode] } = __classPrivateFieldGet(this, _Printer_preview, "f");
+    const { include } = this, { value } = __classPrivateFieldGet(this, _Printer_textbox, "f"), { scrollHeight, offsetHeight: parentHeight, scrollTop, children } = __classPrivateFieldGet(this, _Printer_preview, "f");
     let text = value, start = 0, end = __classPrivateFieldGet(this, _Printer_root, "f").length;
     if (scrollHeight > parentHeight) {
-        const childNodes = [...rootNode.childNodes], headings = childNodes.filter(({ className }) => className === 'wpb-heading'), { length } = headings;
+        const childNodes = [...children[0].childNodes], headings = childNodes.filter(({ className }) => className === 'wpb-heading'), { length } = headings;
         if (length > 0) {
             let i = headings.findIndex(({ offsetTop, offsetHeight }) => offsetTop + offsetHeight > scrollTop);
             i = i === -1 ? length : i;

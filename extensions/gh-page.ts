@@ -16,7 +16,7 @@ const transform = (type?: string): string | undefined =>
 const keys = new Set(['type', 'childNodes', 'range']);
 
 (async () => {
-	Object.assign(window, {CodeJar});
+	Object.assign(globalThis, {CodeJar});
 	await import('/wikiparser-node/extensions/dist/codejar.js');
 
 	// DOM元素
@@ -26,11 +26,14 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		input = document.querySelector<HTMLInputElement>('#wpInclude')!,
 		input2 = document.querySelector<HTMLInputElement>('#wpHighlight')!,
 		h2 = document.querySelector('h2')!,
-		buttons = [...document.querySelectorAll<HTMLButtonElement>('.tab > button')],
+		buttons = [...document.querySelectorAll('.tab > button') as unknown as Iterable<HTMLButtonElement>],
 		tabcontents = document.querySelectorAll<HTMLDivElement>('.tabcontent'),
 		astContainer = document.getElementById('ast')!,
 		highlighters = document.getElementById('highlighter')!.children as HTMLCollectionOf<HTMLDivElement>,
-		pres = [...document.getElementsByClassName('highlight')] as [HTMLPreElement, HTMLPreElement];
+		pres = [
+			...document
+				.getElementsByClassName('highlight') as unknown as Iterable<HTMLPreElement>,
+		] as [HTMLPreElement, HTMLPreElement];
 
 	// Parser初始化
 	const config: Config = await (await fetch('./config/default.json')).json();
@@ -138,10 +141,10 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		dl.append(dt, ...dds, childNodes, rbrace2);
 		return dl;
 	};
-	let timer: number;
+	let timer: NodeJS.Timeout;
 	jar.onUpdate(code => {
 		clearTimeout(timer);
-		timer = window.setTimeout((async () => {
+		timer = setTimeout((async () => {
 			const astDom = createAST(await wikiparse.json(code, jar.include, qid));
 			astDom.children[0]!.classList.remove('inactive');
 			astContainer.replaceChildren(astDom);
@@ -236,7 +239,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		h2.textContent = `Please input wikitext into the text box ${
 			value === 'highlighter' ? 'under the first tab' : 'below'
 		}.`;
-		for (const tabcontent of tabcontents) {
+		for (const tabcontent of tabcontents as unknown as Iterable<HTMLDivElement>) {
 			tabcontent.style.display = tabcontent.id === value ? 'block' : 'none';
 		}
 		const text1 = jar.toString(),
@@ -288,7 +291,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 		buttons.find(({value}) => value === (location.hash.slice(1) || e === undefined && 'editor'))?.click();
 	};
 	hashchange();
-	window.addEventListener('hashchange', hashchange);
+	addEventListener('hashchange', hashchange);
 
-	Object.assign(window, {jar, cm, model});
+	Object.assign(globalThis, {jar, cm, model});
 })();

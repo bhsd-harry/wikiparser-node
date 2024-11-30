@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
 import {info, error} from '../util/diff';
-import '../../bundle/bundle.min.js';
+import '../../bundle/bundle.min.js'; // eslint-disable-line n/no-missing-import
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;

@@ -27,7 +27,7 @@ const highlight = async (ele: HTMLElement, include?: boolean, linenums?: boolean
 		if ((e.metaKey || e.ctrlKey) && e.key === 'a') {
 			e.preventDefault();
 			const range = document.createRange(),
-				selection = window.getSelection()!;
+				selection = getSelection()!;
 			range.selectNodeContents(ele.firstChild!);
 			selection.removeAllRanges();
 			selection.addRange(range);

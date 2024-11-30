@@ -1,6 +1,6 @@
 import * as assert from 'assert/strict';
 import {diff} from '../util/diff';
-import '../../bundle/bundle.min.js';
+import '../../bundle/bundle.min.js'; // eslint-disable-line n/no-missing-import
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;

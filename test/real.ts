@@ -1,6 +1,6 @@
 import {error, info, diff} from '../util/diff';
 import {single} from './single';
-import '../../bundle/bundle.min.js';
+import '../../bundle/bundle.min.js'; // eslint-disable-line n/no-missing-import
 import type {
 	Config,
 	Parser as ParserBase,
@@ -35,8 +35,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 			prop: 'revisions',
 			rvprop: 'contentmodel|content',
 		},
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
-		response: MediaWikiResponse = await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json();
+		response = await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json() as MediaWikiResponse;
 	return response.query.pages.map(({pageid, title, ns, revisions}) => ({
 		pageid,
 		title,

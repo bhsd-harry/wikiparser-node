@@ -6,7 +6,7 @@ const version = '1.13.6', src = (_a = document.currentScript) === null || _a ===
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle.min.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
-    self.onmessage = ({ data }) => {
+    globalThis.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
         switch (command) {
             case 'setI18N':
@@ -162,5 +162,5 @@ const lineNumbers = (html, start = 1, paddingTop = '') => {
     }
 };
 const wikiparse = { version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers };
-Object.assign(window, { wikiparse });
+Object.assign(globalThis, { wikiparse });
 })();

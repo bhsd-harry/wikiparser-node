@@ -15,7 +15,7 @@ const workerJS = (): void => {
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
-	self.onmessage = ({data}: {
+	globalThis.onmessage = ({data}: {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
 			| ['getConfig', number]
@@ -164,7 +164,7 @@ const splitNewLine = (html: HTMLElement): HTMLElement[] => {
 	let cur = html.cloneNode() as HTMLElement;
 	cur.style.padding = '';
 	const result = [cur];
-	for (const child of html.childNodes as NodeListOf<HTMLElement | Text>) {
+	for (const child of html.childNodes as unknown as Iterable<HTMLElement | Text>) {
 		const {textContent} = child;
 		if (!textContent?.includes('\n')) {
 			cur.append(child.cloneNode(true));
@@ -277,4 +277,4 @@ const lineNumbers = (html: HTMLElement, start = 1, paddingTop = ''): void => {
 };
 
 const wikiparse: Wikiparse = {version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
-Object.assign(window, {wikiparse});
+Object.assign(globalThis, {wikiparse});
