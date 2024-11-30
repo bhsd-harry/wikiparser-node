@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {
 	AstText,

@@ -27,6 +27,7 @@
 		"strictBindCallApply": true,
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
-		"useUnknownInCatchVariables": true
+		"useUnknownInCatchVariables": true,
+		"skipLibCheck": true
 	}
 }
