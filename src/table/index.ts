@@ -84,13 +84,13 @@ export class Layout extends Array<TableCoords[]> {
  */
 export abstract class TableToken extends TrBaseToken {
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
-	| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
+		| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
-	| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
+		| [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	abstract override get lastElementChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	/* NOT FOR BROWSER END */
@@ -276,7 +276,7 @@ export abstract class TableToken extends TrBaseToken {
 	 */
 	getNthCell(
 		coords: TableCoords
-		| TableRenderedCoords,
+			| TableRenderedCoords,
 	): TdToken | undefined {
 		let rawCoords: TableCoords | undefined = coords as TableCoords;
 		if (coords.row === undefined) {

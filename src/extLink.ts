@@ -211,7 +211,7 @@ export abstract class ExtLinkToken extends Token {
 			const {childNodes} = lastChild,
 				i = childNodes.findIndex(
 					child => child.type === 'link'
-					|| child.is<FileToken>('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
+						|| child.is<FileToken>('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
 				);
 			if (i !== -1) {
 				const after = childNodes.slice(i);

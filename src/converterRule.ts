@@ -17,8 +17,8 @@ import {html} from '../util/html';
  */
 export abstract class ConverterRuleToken extends Token {
 	declare readonly childNodes: readonly [AtomToken]
-	| readonly [AtomToken, AtomToken]
-	| readonly [AtomToken, AtomToken, AtomToken];
+		| readonly [AtomToken, AtomToken]
+		| readonly [AtomToken, AtomToken, AtomToken];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): AtomToken;
 	abstract override get parentNode(): ConverterToken | undefined;

@@ -63,14 +63,14 @@ export abstract class TranscludeToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
-	| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstChild(): Child;
 	abstract override get lastChild(): Child | ParameterToken;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [Child, ...ParameterToken[]]
-	| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
+		| [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstElementChild(): Child;
 	abstract override get lastElementChild(): Child | ParameterToken;
 
