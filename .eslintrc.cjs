@@ -137,7 +137,10 @@ module.exports = {
 					},
 				],
 				'@typescript-eslint/no-namespace': 0,
+				'@typescript-eslint/no-require-imports': 0,
 				'@typescript-eslint/no-unsafe-declaration-merging': 0,
+				'@typescript-eslint/no-unsafe-function-type': 0,
+				'@typescript-eslint/related-getter-setter-pairs': 0,
 			},
 		},
 		{

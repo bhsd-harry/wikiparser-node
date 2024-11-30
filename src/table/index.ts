@@ -34,7 +34,7 @@ export class Layout extends Array<TableCoords[]> {
  */
 export abstract class TableToken extends TrBaseToken {
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[], SyntaxToken]
-	| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
+		| readonly [SyntaxToken, AttributesToken, ...(TdToken | TrToken)[]];
 	abstract override get lastChild(): AttributesToken | TdToken | TrToken | SyntaxToken;
 
 	override get type(): 'table' {
