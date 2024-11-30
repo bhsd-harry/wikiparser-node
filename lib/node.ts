@@ -165,6 +165,11 @@ export abstract class AstNode implements AstNodeBase {
 		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
 	}
 
+	/** 获取当前节点的行列位置和大小 */
+	getBoundingClientRect(): Dimension & Position {
+		return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
+	}
+
 	/** @private */
 	seal(key: string, permanent?: boolean): void {
 		Object.defineProperty(this, key, {
