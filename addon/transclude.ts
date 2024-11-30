@@ -110,7 +110,6 @@ TranscludeToken.prototype.fixDuplication =
 				continue;
 			}
 			const values: Map<string, ParameterToken[]> =
-				// @ts-expect-error ES2024
 				Map.groupBy(args, (arg: ParameterToken) => arg.getValue().trim());
 			let noMoreAnon = anonCount === 0 || !key.trim() || isNaN(key as unknown as number);
 			const emptyArgs = values.get('') ?? [],

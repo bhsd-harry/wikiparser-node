@@ -369,9 +369,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			} catch {}
 		}
 		for (const [name, filePath] of entries) {
-			if (name in global) {
+			if (name in globalThis) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-				Object.assign(global, {[name]: require(filePath)[name]});
+				Object.assign(globalThis, {[name]: require(filePath)[name]});
 			}
 		}
 		this.info('已重新加载Parser');

@@ -331,6 +331,11 @@ export abstract class AstNode implements AstNodeBase {
 		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
 	}
 
+	/** 获取当前节点的行列位置和大小 */
+	getBoundingClientRect(): Dimension & Position {
+		return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
+	}
+
 	/** @private */
 	seal(key: string, permanent?: boolean): void {
 		/* NOT FOR BROWSER */
@@ -519,7 +524,7 @@ export abstract class AstNode implements AstNodeBase {
 			currentTarget: {value: this, enumerable: true, configurable: true},
 		});
 		this.#events.emit(e.type, e, data);
-		if (e.bubbles && !e.cancelBubble && this.parentNode) {
+		if (e.bubbles && !(e.cancelBubble as unknown as boolean) && this.parentNode) {
 			this.parentNode.dispatchEvent(e, data);
 		}
 	}
@@ -560,11 +565,6 @@ export abstract class AstNode implements AstNodeBase {
 	/** 获取当前节点的相对位置 */
 	#getPosition(): Position {
 		return this.parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
-	}
-
-	/** 获取当前节点的行列位置和大小 */
-	getBoundingClientRect(): Dimension & Position {
-		return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
 	}
 
 	/** 销毁 */

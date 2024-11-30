@@ -172,7 +172,6 @@ module.exports = {
 				'test/*.ts',
 			],
 			rules: {
-				'n/no-missing-import': 0,
 				'n/no-missing-require': 0,
 			},
 		},

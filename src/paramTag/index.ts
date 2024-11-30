@@ -96,8 +96,8 @@ export abstract class ParamTagToken extends Token {
 				errors.push(generateForChild(child, rect, 'no-ignored', msg));
 			} else {
 				const i = grandChildren.findIndex(({type}) => type !== 'text'),
-					str = grandChildren.slice(0, i >= 0 ? i : undefined).map(String).join('');
-				if (str && !(i >= 0 ? /^[a-z]+(?:\[\])?\s*(?:=|$)/iu : /^[a-z]+(?:\[\])?\s*=/iu).test(str)) {
+					str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
+				if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
 					const e = generateForChild(child, rect, 'no-ignored', msg);
 					e.suggestions = [
 						{
