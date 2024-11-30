@@ -1,3 +1,11 @@
+## v1.13.7
+
+*2024-12-01*
+
+**Fixed**
+
+- `Token.prototype.lint` should ignore `<ref>` tags with identical names but in different groups
+
 ## v1.13.6
 
 *2024-11-29*

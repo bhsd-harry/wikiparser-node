@@ -575,33 +575,35 @@ export class Token extends AstElement {
 		Parser.viewOnly = true;
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
-			const record: Record<string, Set<CategoryToken | AttributeToken>> = {},
+			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
 				selector = 'category,html-attr#id,ext-attr#id,table-attr#id,ext-attr#name';
 			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 				let key;
 				if (cat.type === 'category') {
 					key = cat.name;
 				} else {
-					const value = cat.getValue();
+					const value = cat.getValue(),
+						attrs = cat.parentNode!;
 					if (cat.name === 'id') {
 						key = `#${value === true ? '' : value}`;
 					} else if (
 						cat.tag === 'ref' && value !== true && value
-						&& (cat.parentNode!.parentNode as ExtToken).innerText
+						&& (attrs.parentNode as ExtToken).innerText
 					) {
-						key = `ref#${value}`;
+						const group = attrs.getAttr('group');
+						key = `${typeof group === 'string' && group || ' '}#${value}`;
 					} else {
 						continue;
 					}
 				}
-				const thisCat = record[key];
+				const thisCat = record.get(key);
 				if (thisCat) {
 					thisCat.add(cat);
 				} else {
-					record[key] = new Set([cat]);
+					record.set(key, new Set([cat]));
 				}
 			}
-			for (const [key, value] of Object.entries(record)) {
+			for (const [key, value] of record) {
 				if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
 					const isCat = !key.includes('#'),
 						msg = `duplicated ${isCat ? 'category' : 'id/name'}`,
