@@ -46,28 +46,28 @@
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@bhsd/common": "^0.4.5",
+		"@bhsd/common": "^0.4.6",
 		"@stylistic/eslint-plugin": "^2.11.0",
 		"@stylistic/stylelint-plugin": "^3.1.1",
 		"@types/node": "^22.10.1",
 		"@typescript-eslint/eslint-plugin": "^8.16.0",
 		"@typescript-eslint/parser": "^8.16.0",
-		"esbuild": "^0.21.4",
+		"esbuild": "^0.24.0",
 		"eslint": "^8.57.1",
-		"eslint-plugin-es-x": "^8.0.0",
+		"eslint-plugin-es-x": "^8.4.1",
 		"eslint-plugin-eslint-comments": "^3.2.0",
-		"eslint-plugin-jsdoc": "^48.5.2",
+		"eslint-plugin-jsdoc": "^50.6.0",
 		"eslint-plugin-json-es": "^1.6.0",
-		"eslint-plugin-markdown": "^4.0.1",
-		"eslint-plugin-n": "^17.9.0",
-		"eslint-plugin-promise": "^6.2.0",
+		"eslint-plugin-markdown": "4.0.1",
+		"eslint-plugin-n": "^17.14.0",
+		"eslint-plugin-promise": "^7.2.1",
 		"eslint-plugin-regexp": "^2.6.0",
-		"eslint-plugin-unicorn": "^54.0.0",
+		"eslint-plugin-unicorn": "^56.0.1",
 		"http-server": "^14.1.0",
 		"stylelint": "^16.11.0",
 		"stylelint-config-recommended": "^14.0.0",
-		"typescript": "^5.5.3",
-		"v8r": "^3.0.0"
+		"typescript": "^5.7.2",
+		"v8r": "^4.2.0"
 	},
 	"engines": {
 		"node": ">=22.11.0"
