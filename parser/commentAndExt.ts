@@ -12,6 +12,19 @@ import {parsers} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+const onlyincludeLeft = '<onlyinclude>',
+	onlyincludeRight = '</onlyinclude>',
+	{length} = onlyincludeLeft;
+
+/**
+ * 更新`<onlyinclude>`和`</onlyinclude>`的位置
+ * @param wikitext
+ */
+const update = (wikitext: string): {i: number, j: number} => {
+	const i = wikitext.indexOf(onlyincludeLeft);
+	return {i, j: wikitext.indexOf(onlyincludeRight, i + length)};
+};
+
 /**
  * 解析HTML注释和扩展标签
  * @param wikitext
@@ -20,17 +33,8 @@ import {parsers} from '../util/constants';
  * @param includeOnly 是否嵌入
  */
 export const parseCommentAndExt = (wikitext: string, config: Config, accum: Token[], includeOnly: boolean): string => {
-	const onlyincludeLeft = '<onlyinclude>',
-		onlyincludeRight = '</onlyinclude>',
-		{length} = onlyincludeLeft;
-
-	/** 更新`<onlyinclude>`和`</onlyinclude>`的位置 */
-	const update = (): {i: number, j: number} => {
-		const i = wikitext.indexOf(onlyincludeLeft);
-		return {i, j: wikitext.indexOf(onlyincludeRight, i + length)};
-	};
 	if (includeOnly) {
-		let {i, j} = update();
+		let {i, j} = update(wikitext);
 		if (i !== -1 && j !== -1) { // `<onlyinclude>`拥有最高优先级
 			let str = '';
 
@@ -51,7 +55,7 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 				}
 				str += token;
 				wikitext = wikitext.slice(j + length + 1);
-				({i, j} = update());
+				({i, j} = update(wikitext));
 			}
 			if (wikitext) {
 				noinclude(wikitext);
@@ -64,6 +68,8 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	const ext = config.ext.join('|'),
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
+
+		/** Never cached due to the possibility of nested extension tags */
 		regex = new RegExp(
 			String.raw`<!--.*?(?:-->|$)|<${
 				noincludeRegex

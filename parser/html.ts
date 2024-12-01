@@ -9,6 +9,8 @@ import {parsers} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
+const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu;
+
 /**
  * 解析HTML标签
  * @param wikitext
@@ -16,16 +18,14 @@ import {parsers} from '../util/constants';
  * @param accum
  */
 export const parseHtml = (wikitext: string, config: Config, accum: Token[]): string => {
-	const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu,
-		{html} = config,
-		elements = new Set([...html[0], ...html[1], ...html[2]]),
-		bits = wikitext.split('<');
+	config.htmlElements ??= new Set(config.html.flat());
+	const bits = wikitext.split('<');
 	let text = bits.shift()!;
 	for (const x of bits) {
 		const mt = regex.exec(x) as [string, string, string, string | undefined, string, string] | null,
 			t = mt?.[2],
 			name = t?.toLowerCase();
-		if (!mt || !elements.has(name!)) {
+		if (!mt || !config.htmlElements.has(name!)) {
 			text += `<${x}`;
 			continue;
 		}
