@@ -36,6 +36,6 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build:core
-    - run: npm run prune --omit=dev
+    - run: npm prune --omit=dev
     - run: npm test
     - run: npm run test:parser
