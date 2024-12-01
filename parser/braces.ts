@@ -11,6 +11,7 @@ const closes: Record<string, string> = {
 		'-': String.raw`\}-`,
 		'[': String.raw`\]\]`,
 	},
+	openBraces = String.raw`|\{{2,}`,
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
 	re = /\{\{\s*([^\s\0<>[\]{}|_#&%:.]+)\s*\}\}(?!\})/gu;
 
@@ -25,7 +26,6 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	const source = String.raw`${
 			config.excludes?.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
 		}\[\[|-\{(?!\{)`,
-		openBraces = String.raw`|\{{2,}`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [];
 	wikitext = wikitext.replace(re, (m, p1: string) => {

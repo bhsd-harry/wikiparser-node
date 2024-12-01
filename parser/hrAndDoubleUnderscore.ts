@@ -15,9 +15,9 @@ export const parseHrAndDoubleUnderscore = (
 	config: Config,
 	accum: Token[],
 ): string => {
-	const {doubleUnderscore} = config,
-		insensitive = new Set(doubleUnderscore[0]),
-		sensitive = new Set(doubleUnderscore[1]);
+	const {doubleUnderscore: [insensitive, sensitive, aliases]} = config;
+	config.insensitiveDoubleUnderscore ??= new Set(insensitive);
+	config.sensitiveDoubleUnderscore ??= new Set(sensitive);
 	config.regexHrAndDoubleUnderscore ??= new RegExp(`__(${[...insensitive, ...sensitive].join('|')})__`, 'giu');
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
@@ -32,15 +32,13 @@ export const parseHrAndDoubleUnderscore = (
 	).replace(
 		config.regexHrAndDoubleUnderscore,
 		(m, p1: string) => {
-			const caseSensitive = sensitive.has(p1),
+			const caseSensitive = config.sensitiveDoubleUnderscore!.has(p1),
 				lc = p1.toLowerCase(),
-				caseInsensitive = insensitive.has(lc);
+				caseInsensitive = config.insensitiveDoubleUnderscore!.has(lc);
 			if (caseSensitive || caseInsensitive) {
 				// @ts-expect-error abstract class
 				new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
-				return `\0${accum.length - 1}${
-					caseInsensitive && (doubleUnderscore[2]?.[lc] ?? lc) === 'toc' ? 'u' : 'n'
-				}\x7F`;
+				return `\0${accum.length - 1}${caseInsensitive && (aliases?.[lc] ?? lc) === 'toc' ? 'u' : 'n'}\x7F`;
 			}
 			return m;
 		},
