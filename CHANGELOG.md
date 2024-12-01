@@ -1,3 +1,11 @@
+## v1.13.9
+
+*2024-12-02*
+
+**Added**
+
+- New category of linting errors: lonely `RFC`/`PMID`/`ISBN`
+
 ## v1.13.7
 
 *2024-12-01*
