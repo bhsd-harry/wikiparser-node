@@ -23,7 +23,7 @@ export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage)
 		return diff(content, parsed, pageid);
 	}
 	const set = new Set<string>();
-	for (const t of token.querySelectorAll('*')) {
+	for (const t of token.querySelectorAll('')) {
 		if (!t.getAttribute('built')) {
 			set.add(`${t.type}#${t.name ?? ''}`);
 		}

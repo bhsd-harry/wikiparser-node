@@ -15,6 +15,14 @@ const isTr = (token: TableTokens): token is TrToken | TableToken =>
 	token.lastChild.constructor !== Token;
 
 /**
+ * 取出最近的表格行
+ * @param top 当前解析的表格或表格行
+ * @param stack 表格栈
+ */
+const pop = (top: TableTokens | undefined, stack: TableTokens[]): TrToken | TableToken =>
+	top!.type === 'td' ? stack.pop() as TrToken | TableToken : top!;
+
+/**
  * 解析表格，注意`tr`和`td`包含开头的换行
  * @param {Token & {firstChild: AstText}} root 根节点
  * @param config
@@ -38,23 +46,20 @@ export const parseTable = (
 	 * @param topToken 当前解析的表格或表格行
 	 */
 	const push = (str: string, topToken?: TableTokens): void => {
-			if (!topToken) {
-				out += str;
-				return;
-			}
-			const {lastChild} = topToken;
-			if (isTr(topToken)) {
-				const token = new Token(str, config, accum);
-				token.type = 'table-inter';
-				token.setAttribute('stage', 3);
-				topToken.insertAt(token);
-			} else {
-				lastChild.setText(lastChild.toString() + str);
-			}
-		},
-
-		/** 取出最近的表格行 */
-		pop = (): TrToken | TableToken => top!.type === 'td' ? stack.pop() as TrToken | TableToken : top!;
+		if (!topToken) {
+			out += str;
+			return;
+		}
+		const {lastChild} = topToken;
+		if (isTr(topToken)) {
+			const token = new Token(str, config, accum);
+			token.type = 'table-inter';
+			token.setAttribute('stage', 3);
+			topToken.insertAt(token);
+		} else {
+			lastChild.setText(lastChild.toString() + str);
+		}
+	};
 	for (const outLine of lines) {
 		top = stack.pop();
 		const [spaces] = /^(?:\s|\0\d+[cno]\x7F)*/u.exec(outLine)!,
@@ -94,7 +99,7 @@ export const parseTable = (
 			top!.close(`\n${spaces}${closing}`, true);
 			push(attr, stack[stack.length - 1]);
 		} else if (row) {
-			top = pop();
+			top = pop(top, stack);
 			if (top.type === 'tr') {
 				top = stack.pop() as TableToken;
 			}
@@ -103,7 +108,7 @@ export const parseTable = (
 			stack.push(top, tr);
 			top.insertAt(tr);
 		} else {
-			top = pop();
+			top = pop(top, stack);
 			const regex = cell === '!' ? /!!|(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu : /(?:\||\0\d+!\x7F){2}|\0\d+\+\x7F/gu;
 			let mt = regex.exec(attr),
 				lastIndex = 0,
