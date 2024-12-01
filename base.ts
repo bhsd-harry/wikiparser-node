@@ -24,6 +24,12 @@ export interface Config {
 	regexMagicLinks?: RegExp;
 	/** @private */
 	regexConverter?: RegExp;
+	/** @private */
+	insensitiveDoubleUnderscore?: Set<string>;
+	/** @private */
+	sensitiveDoubleUnderscore?: Set<string>;
+	/** @private */
+	htmlElements?: Set<string>;
 }
 
 export type TokenTypes = 'root'
