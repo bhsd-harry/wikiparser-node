@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.13.6",
+	"version": "1.13.8",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -43,10 +43,10 @@
 		"test:real": "node dist/test/real.js"
 	},
 	"dependencies": {
+		"@bhsd/common": "^0.4.6",
 		"chalk": "^4.1.2"
 	},
 	"devDependencies": {
-		"@bhsd/common": "^0.4.6",
 		"@stylistic/eslint-plugin": "^2.11.0",
 		"@stylistic/stylelint-plugin": "^3.1.1",
 		"@types/node": "^22.10.1",
