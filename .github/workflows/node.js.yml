@@ -4,6 +4,9 @@
 name: Node.js CI
 
 on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+-m'
   workflow_dispatch:
     inputs:
       branch:
@@ -31,6 +34,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: npm ci --omit=dev
     - run: npm run build:core
     - run: npm test
