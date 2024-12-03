@@ -1,10 +1,14 @@
 ## v1.13.9
 
-*2024-12-02*
+*2024-12-03*
 
 **Added**
 
 - New category of linting errors: lonely `RFC`/`PMID`/`ISBN`
+
+**Changed**
+
+- The preset configurations are updated
 
 ## v1.13.7
 

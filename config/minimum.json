@@ -73,11 +73,15 @@
 		"0": "",
 		"6": "File",
 		"10": "Template",
+		"14": "Category",
 		"828": "Module"
 	},
 	"nsid": {
+		"": 0,
 		"file": 6,
-		"category": 14
+		"template": 10,
+		"category": 14,
+		"module": 828
 	},
 	"parserFunction": [
 		{
@@ -113,14 +117,44 @@
 			"#vardefine": "vardefine",
 			"#vardefineecho": "vardefineecho",
 			"#widget": "widget",
-			"#regex": "regex",
 			"#related": "related",
-			"#cscore": "cscore"
+			"#cscore": "cscore",
+			"#regex": "regex",
+			"#regex_var": "regex_var",
+			"#regexquote": "regexquote",
+			"#regexall": "regexall",
+			"#len": "len",
+			"#pos": "pos",
+			"#rpos": "rpos",
+			"#sub": "sub",
+			"#count": "count",
+			"#replace": "replace",
+			"#explode": "explode",
+			"#tab": "tab",
+			"#seo": "seo",
+			"#babel": "babel",
+			"#commaseparatedlist": "commaseparatedlist",
+			"#coordinates": "coordinates",
+			"#lst": "lst",
+			"#lsth": "lsth",
+			"#lstx": "lstx",
+			"#assessment": "assessment",
+			"#mentor": "mentor",
+			"#property": "property",
+			"#target": "target",
+			"#section": "section",
+			"#section-x": "section-x",
+			"#section-h": "section-h",
+			"#statements": "statements"
 		},
 		[
 			"!",
 			"=",
 			"#FORMAL",
+			"#bcp47",
+			"#dir",
+			"#interwikilink",
+			"#interlanguagelink",
 			"#timef",
 			"#timefl"
 		],
