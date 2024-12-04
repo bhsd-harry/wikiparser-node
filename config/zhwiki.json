@@ -652,6 +652,8 @@
 			"#FORMAL",
 			"#bcp47",
 			"#dir",
+			"#interwikilink",
+			"#interlanguagelink",
 			"#timef",
 			"#timefl"
 		],
