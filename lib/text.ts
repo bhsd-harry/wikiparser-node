@@ -5,16 +5,20 @@ import {
 } from '../util/string';
 import Parser from '../index';
 import {AstNode} from './node';
-import type {LintError} from '../base';
+import type {LintError, TokenTypes} from '../base';
 import type {
 	AttributeToken,
 	ExtToken,
 } from '../internal';
 
-const source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+`,
+const sp = String.raw`[\p{Zs}\t]*`,
+	source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[:：]?${
+		sp
+	}\d)|isbn(?=[:：]?${sp}(?:\d(?:${sp}|-)){6})`,
 	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
 	errorSyntaxUrl = new RegExp(source, 'giu'),
 	extImage = new RegExp(String.raw`^https?://${extUrlCharFirst}${extUrlChar}\.(?:gif|png|jpg|jpeg)$`, 'iu'),
+	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
 		'[': /[[\]]/u,
 		'{': /[{}]/u,
@@ -28,6 +32,9 @@ const source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|
 		']': 'lonely-bracket',
 		'}': 'lonely-bracket',
 		h: 'lonely-http',
+		r: 'lonely-http',
+		p: 'lonely-http',
+		i: 'lonely-http',
 	},
 	disallowedTags = [
 		'html',
@@ -127,27 +134,27 @@ export class AstText extends AstNode {
 			tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
 		for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 			const [, tag, prefix] = mt;
-			let {0: error, index} = mt;
+			let {index} = mt,
+				error = mt[0].toLowerCase();
 			if (prefix && prefix !== ']') {
 				const {length} = prefix;
 				index += length;
 				error = error.slice(length);
 			}
-			const {0: char, length} = error;
+			const {0: char, length} = error,
+				magicLink = char === 'r' || char === 'p' || char === 'i';
 			if (
 				char === '<' && !tags.has(tag!.toLowerCase())
-				|| char === '['
-				&& type === 'ext-link-text'
-				&& (
+				|| char === '[' && type === 'ext-link-text' && (
 					/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
 					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki' && nextSibling.innerText?.includes(']')
 				)
+				|| char === 'h' && index === 0 && type === 'ext-link-text' && extImage.test(data)
+				|| magicLink && (!parentNode.getAttribute('plain') || noLinkTypes.has(type))
 			) {
 				continue;
 			} else if (char === ']' && (index || length > 1)) {
 				errorRegex.lastIndex--;
-			} else if (char === 'h' && index === 0 && type === 'ext-link-text' && extImage.test(data)) {
-				continue;
 			}
 			const startIndex = start + index,
 				endIndex = startIndex + length,
@@ -157,6 +164,7 @@ export class AstText extends AstNode {
 				severity = length > 1 && !(
 					char === '<' && !/[\s/>]/u.test(nextChar ?? '')
 					|| isHtmlAttrVal && (char === '[' || char === ']')
+					|| magicLink && type === 'parameter-value'
 				)
 				|| char === '{' && (nextChar === char || previousChar === '-')
 				|| char === '}' && (previousChar === char || nextChar === '-')
@@ -192,13 +200,16 @@ export class AstText extends AstNode {
 					}
 				}
 			}
+			if (magicLink) {
+				error = error.toUpperCase();
+			}
 			const lines = data.slice(0, index).split('\n'),
 				startLine = lines.length + top - 1,
 				line = lines[lines.length - 1]!,
 				startCol = lines.length === 1 ? left + line.length : line.length,
 				e: LintError = {
 					rule: ruleMap[char!]!,
-					message: Parser.msg('lonely "$1"', char === 'h' ? error : char),
+					message: Parser.msg('lonely "$1"', magicLink || char === 'h' ? error : char),
 					severity,
 					startIndex,
 					endIndex,
