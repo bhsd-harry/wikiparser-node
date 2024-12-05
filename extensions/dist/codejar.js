@@ -28,7 +28,7 @@ const codejar = (async () => {
         const jar = {
             ...CodeJar(root, highlight, {
                 spellcheck: true,
-                autoclose: { open: '([{"', close: ')]}"' },
+                autoclose: { open: '', close: '' },
             }),
             include: Boolean(include),
             editor: root,

@@ -40,7 +40,7 @@ const codejar = (async (): Promise<f> => {
 		const jar = {
 			...CodeJar(root, highlight, { // eslint-disable-line new-cap
 				spellcheck: true,
-				autoclose: {open: '([{"', close: ')]}"'},
+				autoclose: {open: '', close: ''},
 			}),
 			include: Boolean(include),
 			editor: root,
