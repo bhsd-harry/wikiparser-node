@@ -4,15 +4,12 @@ then
 	if [[ $(git tag -l v$1-b) ]]
 	then
 		git checkout browser bundle/bundle.min.js extensions/dist/*.js extensions/*.css
-		gsed -i 's|/gh/bhsd-harry/wikiparser-node@${version}-b|/npm/wikiparser-node@${version}|' extensions/dist/base.js
 		npm publish --tag ${3-latest}
 		if [[ -z $3 ]]
 		then
 			npm dist-tag add wikiparser-node@$1 browser
 		fi
 		rm bundle/bundle.min.js extensions/dist/*.js extensions/*.css
-		git add -A
-		git commit -m "chore: publish v$1 to npm"
 	else
 		echo "Tag v$1-b not found"
 		exit 1
