@@ -7,7 +7,7 @@ const version = '1.13.8',
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
 		? src.replace(file, '')
-		: `https://testingcf.jsdelivr.net/gh/bhsd-harry/wikiparser-node@${version}-b`;
+		: `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 
 /** web worker */
 const workerJS = (): void => {
