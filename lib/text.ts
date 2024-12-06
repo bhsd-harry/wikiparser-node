@@ -12,9 +12,10 @@ import type {
 } from '../internal';
 
 const sp = String.raw`[\p{Zs}\t]*`,
-	source = String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[:：]?${
-		sp
-	}\d)|isbn(?=[:：]?${sp}(?:\d(?:${sp}|-)){6})`,
+	source =
+		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
+			sp
+		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
 	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
 	errorSyntaxUrl = new RegExp(source, 'giu'),
 	extImage = new RegExp(String.raw`^https?://${extUrlCharFirst}${extUrlChar}\.(?:gif|png|jpg|jpeg)$`, 'iu'),
