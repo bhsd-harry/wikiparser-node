@@ -109,8 +109,15 @@ TranscludeToken.prototype.fixDuplication =
 			if (args.length <= 1) {
 				continue;
 			}
-			const values: Map<string, ParameterToken[]> =
-				Map.groupBy(args, (arg: ParameterToken) => arg.getValue().trim());
+			const values = new Map<string, ParameterToken[]>();
+			for (const arg of args) {
+				const val = arg.getValue().trim();
+				if (values.has(val)) {
+					values.get(val)!.push(arg);
+				} else {
+					values.set(val, [arg]);
+				}
+			}
 			let noMoreAnon = anonCount === 0 || !key.trim() || isNaN(key as unknown as number);
 			const emptyArgs = values.get('') ?? [],
 				duplicatedArgs = [...values].filter(([val, {length}]) => val && length > 1).flatMap(([, curArgs]) => {

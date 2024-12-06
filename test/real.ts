@@ -39,6 +39,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 			prop: 'revisions',
 			rvprop: 'contentmodel|content',
 		},
+		// eslint-disable-next-line n/no-unsupported-features/node-builtins
 		response = await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json() as MediaWikiResponse;
 	return response.query.pages.map(({pageid, title, ns, revisions}) => ({
 		pageid,

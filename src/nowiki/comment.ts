@@ -51,7 +51,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 			return [];
 		}
 		const e = generateForSelf(this, {start}, 'unclosed-comment', Parser.msg('unclosed $1', 'HTML comment'));
-		e.fix = {range: [e.endIndex, e.endIndex], text: '-->', desc: 'close'};
+		e.suggestions = [{range: [e.endIndex, e.endIndex], text: '-->', desc: 'close'}];
 		return [e];
 	}
 

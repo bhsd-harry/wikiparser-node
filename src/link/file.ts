@@ -208,9 +208,11 @@ export abstract class FileToken extends LinkBaseToken {
 		 * @param msg 消息键
 		 * @param p1 替换$1
 		 */
-		const generate = (msg: string, p1: string) =>
-			(arg: ImageParameterToken): LintError =>
-				generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
+		const generate = (msg: string, p1: string) => (arg: ImageParameterToken): LintError => {
+			const e = generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
+			e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
+			return e;
+		};
 		for (const key of keys) {
 			if (key === 'invalid' || key === 'width' && unscaled) {
 				continue;

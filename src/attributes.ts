@@ -247,8 +247,12 @@ export abstract class AttributesToken extends Token {
 			duplicated = new Set<string>(),
 			rect = new BoundingRect(this, start);
 		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
-			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag');
-			e.fix = {range: [start, e.endIndex], text: '', desc: 'remove'};
+			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag'),
+				index = parentNode.getAbsoluteIndex();
+			e.suggestions = [
+				{desc: 'remove', range: [start, e.endIndex], text: ''},
+				{desc: 'open', range: [index + 1, index + 2], text: ''},
+			];
 			errors.push(e);
 		}
 		for (const attr of childNodes) {
@@ -270,22 +274,27 @@ export abstract class AttributesToken extends Token {
 						'containing invalid attribute',
 						/[\p{L}\d]/u.test(str) ? 'error' : 'warning',
 					);
-					e.suggestions = [
-						{
-							desc: 'remove',
-							range: [e.startIndex, e.endIndex],
-							text: ' ',
-						},
-					];
+					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ' '}];
 					errors.push(e);
 				}
 			}
 		}
 		if (duplicated.size > 0) {
 			for (const key of duplicated) {
-				errors.push(...attrs.get(key)!.map(
-					attr => generateForChild(attr, rect, 'no-duplicate', Parser.msg('duplicated $1 attribute', key)),
-				));
+				const pairs = attrs.get(key)!.map(attr => {
+					const value = attr.getValue();
+					return [attr, value === true ? '' : value] as const;
+				});
+				errors.push(...pairs.map(([attr, value], i) => {
+					const e = generateForChild(attr, rect, 'no-duplicate', Parser.msg('duplicated $1 attribute', key)),
+						remove: LintError.Fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+					if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
+						e.fix = remove;
+					} else {
+						e.suggestions = [remove];
+					}
+					return e;
+				}));
 			}
 		}
 		return errors;

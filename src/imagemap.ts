@@ -169,7 +169,14 @@ export abstract class ImagemapToken extends Token {
 				...this.childNodes.filter(child => {
 					const str = child.toString().trim();
 					return child.type === 'noinclude' && str && !str.startsWith('#');
-				}).map(child => generateForChild(child, rect, 'invalid-imagemap', 'invalid link in <imagemap>')),
+				}).map(child => {
+					const e = generateForChild(child, rect, 'invalid-imagemap', 'invalid link in <imagemap>');
+					e.suggestions = [
+						{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''},
+						{desc: 'comment', range: [e.startIndex, e.startIndex], text: '# '},
+					];
+					return e;
+				}),
 			);
 		} else {
 			errors.push(generateForSelf(this, rect, 'invalid-imagemap', '<imagemap> without an image'));

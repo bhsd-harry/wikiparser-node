@@ -124,7 +124,7 @@ export abstract class ArgToken extends Token {
 		if (!this.getAttribute('include')) {
 			const e = generateForSelf(this, {start}, 'no-arg', 'unexpected template argument');
 			if (argDefault) {
-				e.fix = {range: [start, e.endIndex], text: argDefault.text(), desc: 'expand'};
+				e.suggestions = [{range: [start, e.endIndex], text: argDefault.text(), desc: 'expand'}];
 			}
 			return [e];
 		}
@@ -139,16 +139,8 @@ export abstract class ArgToken extends Token {
 				e.startIndex--;
 				e.startCol--;
 				e.suggestions = [
-					{
-						desc: 'remove',
-						range: [e.startIndex, e.endIndex],
-						text: '',
-					},
-					{
-						desc: 'escape',
-						range: [e.startIndex, e.startIndex + 1],
-						text: '{{!}}',
-					},
+					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
+					{desc: 'escape', range: [e.startIndex, e.startIndex + 1], text: '{{!}}'},
 				];
 				return e;
 			}));

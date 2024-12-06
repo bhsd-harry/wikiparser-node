@@ -130,39 +130,74 @@ export abstract class HeadingToken extends Token {
 		const errors = super.lint(start, re),
 			{firstChild, level} = this,
 			innerStr = firstChild.toString(),
+			unbalancedStart = innerStr.startsWith('='),
+			unbalanced = unbalancedStart || innerStr.endsWith('='),
 			quotes = firstChild.childNodes.filter(isToken<QuoteToken>('quote')),
 			boldQuotes = quotes.filter(({bold}) => bold),
 			italicQuotes = quotes.filter(({italic}) => italic),
 			rect = new BoundingRect(this, start);
 		if (this.level === 1) {
-			errors.push(generateForChild(firstChild, rect, 'h1', '<h1>'));
+			const e = generateForChild(firstChild, rect, 'h1', '<h1>');
+			if (!unbalanced) {
+				e.suggestions = [{desc: 'h2', range: [e.startIndex, e.endIndex], text: `=${innerStr}=`}];
+			}
+			errors.push(e);
 		}
-		if (innerStr.startsWith('=') || innerStr.endsWith('=')) {
-			errors.push(generateForChild(
+		if (unbalanced) {
+			const e = generateForChild(
 				firstChild,
 				rect,
 				'unbalanced-header',
 				Parser.msg('unbalanced $1 in a section header', '"="'),
-			));
+			);
+			if (innerStr === '=') {
+				//
+			} else if (unbalancedStart) {
+				const [extra] = /^=+/u.exec(innerStr)!;
+				e.suggestions = [
+					{desc: `h${level}`, range: [e.startIndex, e.startIndex + extra.length], text: ''},
+					{desc: `h${level + extra.length}`, range: [e.endIndex, e.endIndex], text: extra},
+				];
+			} else {
+				const extra = /[^=](=+)$/u.exec(innerStr)![1]!;
+				e.suggestions = [
+					{desc: `h${level}`, range: [e.endIndex - extra.length, e.endIndex], text: ''},
+					{desc: `h${level + extra.length}`, range: [e.startIndex, e.startIndex], text: extra},
+				];
+			}
+			errors.push(e);
 		}
 		if (this.closest('html-attrs,table-attrs')) {
 			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in a HTML tag'));
 		}
+		const rootStr = this.getRootNode().toString();
 		if (boldQuotes.length % 2) {
-			errors.push(generateForChild(
-				boldQuotes[boldQuotes.length - 1]!,
-				{...rect, start: start + level, left: rect.left + level},
-				'format-leakage',
-				Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
-			));
+			const e = generateForChild(
+					boldQuotes[boldQuotes.length - 1]!,
+					{...rect, start: start + level, left: rect.left + level},
+					'format-leakage',
+					Parser.msg('unbalanced $1 in a section header', 'bold apostrophes'),
+				),
+				end = start + level + innerStr.length;
+			if (rootStr.slice(e.endIndex, end).trim()) {
+				e.suggestions = [{desc: 'close', range: [end, end], text: "'''"}];
+			} else {
+				e.fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+			}
+			errors.push(e);
 		}
 		if (italicQuotes.length % 2) {
-			errors.push(generateForChild(
-				italicQuotes[italicQuotes.length - 1]!,
-				{start: start + level},
-				'format-leakage',
-				Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
-			));
+			const e = generateForChild(
+					italicQuotes[italicQuotes.length - 1]!,
+					{start: start + level},
+					'format-leakage',
+					Parser.msg('unbalanced $1 in a section header', 'italic apostrophes'),
+				),
+				end = start + level + innerStr.length;
+			e.fix = rootStr.slice(e.endIndex, end).trim()
+				? {desc: 'close', range: [end, end], text: "''"}
+				: {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
+			errors.push(e);
 		}
 		return errors;
 	}
@@ -228,7 +263,7 @@ export abstract class HeadingToken extends Token {
 		if (headings?.has(lcId)) {
 			let i = 2;
 			for (; headings.has(`${lcId}_${i}`); i++) {
-				// pass
+				//
 			}
 			id = `${id}_${i}`;
 			headings.add(`${lcId}_${i}`);

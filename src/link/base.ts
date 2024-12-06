@@ -7,6 +7,7 @@ import {
 
 	classes,
 } from '../../util/constants';
+import {rawurldecode} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -214,7 +215,9 @@ export abstract class LinkBaseToken extends Token {
 			);
 		}
 		if (encoded) {
-			errors.push(generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link'));
+			const e = generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link');
+			e.suggestions = [{desc: 'decode', range: [e.startIndex, e.endIndex], text: rawurldecode(target.text())}];
+			errors.push(e);
 		}
 		if (type === 'link' || type === 'category') {
 			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));

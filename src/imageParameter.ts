@@ -1,6 +1,7 @@
 import {
 	extUrlChar,
 	extUrlCharFirst,
+	rawurldecode,
 	print,
 
 	/* NOT FOR BROWSER */
@@ -266,7 +267,9 @@ export abstract class ImageParameterToken extends Token {
 			e.fix = {range: [start - 1, e.endIndex], text: '', desc: 'remove'};
 			errors.push(e);
 		} else if (typeof link === 'object' && link.encoded) {
-			errors.push(generateForSelf(this, {start}, 'url-encoding', 'unnecessary URL encoding in an internal link'));
+			const e = generateForSelf(this, {start}, 'url-encoding', 'unnecessary URL encoding in an internal link');
+			e.suggestions = [{desc: 'decode', range: [start, e.endIndex], text: rawurldecode(this.text())}];
+			errors.push(e);
 		}
 		return errors;
 	}

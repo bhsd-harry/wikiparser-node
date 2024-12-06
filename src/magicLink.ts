@@ -180,24 +180,10 @@ export abstract class MagicLinkToken extends Token {
 				{index, 0: s} = regex.exec(data)!,
 				i = e.startIndex + index;
 			e.suggestions = pipe
-				? [
-					{
-						desc: 'whitespace',
-						range: [i, i + 1],
-						text: ' ',
-					},
-				]
+				? [{desc: 'whitespace', range: [i, i + 1], text: ' '}]
 				: [
-					{
-						desc: 'whitespace',
-						range: [i, i],
-						text: ' ',
-					},
-					{
-						desc: 'escape',
-						range: [i, i + s.length],
-						text: encodeURI(s),
-					},
+					{desc: 'whitespace', range: [i, i], text: ' '},
+					{desc: 'escape', range: [i, i + s.length], text: encodeURI(s)},
 				];
 			errors.push(e);
 		}

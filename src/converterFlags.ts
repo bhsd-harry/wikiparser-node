@@ -133,13 +133,7 @@ export abstract class ConverterFlagsToken extends Token {
 				if (variantFlags.size === 0 && definedFlags.has(flag.toUpperCase())) {
 					e.fix = {range: [e.startIndex, e.endIndex], text: flag.toUpperCase(), desc: 'uppercase'};
 				} else {
-					e.suggestions = [
-						{
-							desc: 'remove',
-							range: [e.startIndex - (i && 1), e.endIndex],
-							text: '',
-						},
-					];
+					e.suggestions = [{desc: 'remove', range: [e.startIndex - (i && 1), e.endIndex], text: ''}];
 				}
 				errors.push(e);
 			}
