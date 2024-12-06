@@ -83,7 +83,7 @@ export abstract class ArgToken extends Token {
 		if (!this.getAttribute('include')) {
 			const e = generateForSelf(this, {start}, 'no-arg', 'unexpected template argument');
 			if (argDefault) {
-				e.fix = {range: [start, e.endIndex], text: argDefault.text()};
+				e.fix = {range: [start, e.endIndex], text: argDefault.text(), desc: 'expand'};
 			}
 			return [e];
 		}
