@@ -153,7 +153,7 @@ export abstract class HtmlToken extends Token {
 				} else if (msg === 'tag that is both closing and self-closing') {
 					const {html: [,, voidTags]} = this.getAttribute('config');
 					if (voidTags.includes(this.name)) {
-						error.fix = {range: [start + 1, start + 2], text: ''};
+						error.fix = {range: [start + 1, start + 2], text: '', desc: 'open'};
 					}
 				}
 				errors.push(error);

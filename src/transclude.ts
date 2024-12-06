@@ -258,6 +258,7 @@ export abstract class TranscludeToken extends Token {
 				e.fix = {
 					range: [e.startIndex + textNode.getRelativeIndex() + textNode.data.indexOf('#'), e.endIndex],
 					text: '',
+					desc: 'remove',
 				};
 				errors.push(e);
 			}

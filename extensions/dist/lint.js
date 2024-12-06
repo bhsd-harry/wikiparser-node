@@ -36,8 +36,8 @@ class Linter {
             rule,
             message: `${message} (${rule})`,
             actions: [
-                ...fix ? [{ name: 'fix', fix }] : [],
-                ...suggestions.map(suggestion => ({ name: 'suggestion', fix: suggestion })),
+                ...fix ? [{ name: `Fix: ${fix.desc}`, fix }] : [],
+                ...suggestions.map(suggestion => ({ name: `Suggestion: ${suggestion.desc}`, fix: suggestion })),
             ].map(({ name, fix: { range: [from, to], text } }) => ({
                 name,
                 apply(view) {
