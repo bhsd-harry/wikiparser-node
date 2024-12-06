@@ -181,6 +181,7 @@ export namespace LintError {
 	export interface Fix {
 		readonly range: [number, number];
 		text: string;
+		desc: string;
 	}
 }
 

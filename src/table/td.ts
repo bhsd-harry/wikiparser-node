@@ -163,6 +163,7 @@ export abstract class TdToken extends TableBaseToken {
 						e.fix = {
 							range: [e.startIndex, e.endIndex],
 							text: data.replace(/\|\|/gu, `\n${syntax}`),
+							desc: 'newline',
 						};
 					} else {
 						e.suggestions = [
