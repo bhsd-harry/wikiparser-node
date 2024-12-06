@@ -190,7 +190,7 @@ export abstract class FileToken extends LinkBaseToken {
 		if (unscaled) {
 			for (const arg of args.filter(({name}) => name === 'width')) {
 				const e = generateForChild(arg, rect, 'invalid-gallery', 'invalid image parameter');
-				e.fix = {range: [e.startIndex - 1, e.endIndex], text: ''};
+				e.fix = {range: [e.startIndex - 1, e.endIndex], text: '', desc: 'remove'};
 				errors.push(e);
 			}
 		}

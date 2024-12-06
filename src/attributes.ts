@@ -248,7 +248,7 @@ export abstract class AttributesToken extends Token {
 			rect = new BoundingRect(this, start);
 		if (parentNode?.type === 'html' && parentNode.closing && this.text().trim()) {
 			const e = generateForSelf(this, rect, 'no-ignored', 'attributes of a closing tag');
-			e.fix = {range: [start, e.endIndex], text: ''};
+			e.fix = {range: [start, e.endIndex], text: '', desc: 'remove'};
 			errors.push(e);
 		}
 		for (const attr of childNodes) {

@@ -1,10 +1,11 @@
 ## v1.13.9
 
-*2024-12-03*
+*2024-12-06*
 
 **Added**
 
 - New category of linting errors: lonely `RFC`/`PMID`/`ISBN`
+- [`LintError.Fix`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#linterrorfix) now has a new string property `desc`
 
 **Changed**
 
