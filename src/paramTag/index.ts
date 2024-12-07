@@ -78,13 +78,7 @@ export abstract class ParamTagToken extends Token {
 					str = grandChildren.slice(0, i === -1 ? undefined : i).map(String).join('');
 				if (str && !(i === -1 ? /^[a-z]+(?:\[\])?\s*=/iu : /^[a-z]+(?:\[\])?\s*(?:=|$)/iu).test(str)) {
 					const e = generateForChild(child, rect, 'no-ignored', msg);
-					e.suggestions = [
-						{
-							desc: 'remove',
-							range: [e.startIndex, e.endIndex],
-							text: '',
-						},
-					];
+					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
 					errors.push(e);
 				} else {
 					errors.push(...child.lint(start, false));
