@@ -114,10 +114,15 @@ export abstract class HtmlToken extends Token {
 		const errors = super.lint(start, re),
 			rect = new BoundingRect(this, start);
 		if (this.name === 'h1' && !this.closing) {
-			errors.push(generateForSelf(this, rect, 'h1', '<h1>'));
+			errors.push({
+				...generateForSelf(this, rect, 'h1', '<h1>'),
+				suggestions: [{desc: 'h2', range: [start + 2, start + 3], text: '2'}],
+			});
 		}
 		if (this.closest('table-attrs')) {
-			errors.push(generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes'));
+			const e = generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes');
+			e.fix = {desc: 'remove', range: [start, e.endIndex], text: ''};
+			errors.push(e);
 		}
 		try {
 			this.findMatchingTag();
@@ -125,35 +130,53 @@ export abstract class HtmlToken extends Token {
 			if (e instanceof SyntaxError) {
 				const {message} = e;
 				const msg = message.split(':')[0]!.toLowerCase(),
-					error = generateForSelf(this, rect, 'unmatched-tag', msg);
-				if (msg === 'unclosed tag' && !this.closest('heading-title')) {
-					if (formattingTags.has(this.name)) {
-						const childNodes = this.parentNode?.childNodes,
-							i = childNodes?.indexOf(this);
-						if (!childNodes?.slice(0, i).some(({type, name}) => type === 'html' && name === this.name)) {
+					error = generateForSelf(this, rect, 'unmatched-tag', msg),
+					noSelfClosing: LintError.Fix = {
+						desc: 'no self-closing',
+						range: [error.endIndex - 2, error.endIndex - 1],
+						text: '',
+					};
+				switch (msg) {
+					case 'unclosed tag': {
+						const childNodes = this.parentNode?.childNodes;
+						if (
+							formattingTags.has(this.name)
+							&& childNodes?.slice(0, childNodes.indexOf(this))
+								.some(({type, name}) => type === 'html' && name === this.name)
+						) {
+							error.suggestions = [{desc: 'close', range: [start + 1, start + 1], text: '/'}];
+						} else if (!this.closest('heading-title')) {
 							error.severity = 'warning';
 						}
-					} else {
-						error.severity = 'warning';
+						break;
 					}
-				} else if (msg === 'unmatched closing tag') {
-					const ancestor = this.closest<TranscludeToken>('magic-word');
-					if (ancestor && magicWords.has(ancestor.name)) {
-						error.severity = 'warning';
-					} else {
+					case 'unmatched closing tag': {
+						const ancestor = this.closest<TranscludeToken>('magic-word');
+						if (ancestor && magicWords.has(ancestor.name)) {
+							error.severity = 'warning';
+						} else {
+							error.suggestions = [{desc: 'remove', range: [start, error.endIndex], text: ''}];
+						}
+						break;
+					}
+					case 'tag that is both closing and self-closing': {
+						const {html: [normalTags,, voidTags]} = this.getAttribute('config'),
+							open: LintError.Fix = {desc: 'open', range: [start + 1, start + 2], text: ''};
+						if (voidTags.includes(this.name)) {
+							error.fix = open;
+						} else if (normalTags.includes(this.name)) {
+							error.fix = noSelfClosing;
+						} else {
+							error.suggestions = [open, noSelfClosing];
+						}
+						break;
+					}
+					case 'invalid self-closing tag':
 						error.suggestions = [
-							{
-								desc: 'remove',
-								range: [start, error.endIndex],
-								text: '',
-							},
+							noSelfClosing,
+							{desc: 'close', range: [error.endIndex - 2, error.endIndex], text: `></${this.name}>`},
 						];
-					}
-				} else if (msg === 'tag that is both closing and self-closing') {
-					const {html: [,, voidTags]} = this.getAttribute('config');
-					if (voidTags.includes(this.name)) {
-						error.fix = {range: [start + 1, start + 2], text: '', desc: 'open'};
-					}
+						// no default
 				}
 				errors.push(error);
 			}

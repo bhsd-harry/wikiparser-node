@@ -149,16 +149,12 @@ export abstract class AttributeToken extends Token {
 			);
 			e.startIndex--;
 			e.startCol--;
-			const fix: LintError.Fix = {range: [e.endIndex, e.endIndex], text: this.#quotes[0]!, desc: 'close'};
-			if (lastChild.childNodes.some(({type: t, data}) => t === 'text' && /\s/u.test(data))) {
-				e.suggestions = [fix];
-			} else {
-				e.fix = fix;
-			}
+			e.suggestions = [{range: [e.endIndex, e.endIndex], text: this.#quotes[0]!, desc: 'close'}];
 			errors.push(e);
 		}
 		const attrs = extAttrs[tag],
-			attrs2 = htmlAttrs[tag];
+			attrs2 = htmlAttrs[tag],
+			{length} = this.toString();
 		if (
 			!attrs?.has(name)
 			&& !attrs2?.has(name)
@@ -170,7 +166,10 @@ export abstract class AttributeToken extends Token {
 				&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
 			)
 		) {
-			errors.push(generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name'));
+			errors.push({
+				...generateForChild(firstChild, rect, 'illegal-attr', 'illegal attribute name'),
+				suggestions: [{desc: 'remove', range: [start, start + length], text: ''}],
+			});
 		} else if (obsoleteAttrs[tag]?.has(name)) {
 			errors.push(generateForChild(firstChild, rect, 'obsolete-attr', 'obsolete attribute', 'warning'));
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
@@ -178,16 +177,8 @@ export abstract class AttributeToken extends Token {
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
 			const e = generateForChild(lastChild, rect, 'illegal-attr', 'nonzero tabindex');
 			e.suggestions = [
-				{
-					desc: 'remove',
-					range: [start, e.endIndex],
-					text: '',
-				},
-				{
-					desc: '0 tabindex',
-					range: [e.startIndex, e.endIndex],
-					text: '0',
-				},
+				{desc: 'remove', range: [start, start + length], text: ''},
+				{desc: '0 tabindex', range: [e.startIndex, e.endIndex], text: '0'},
 			];
 			errors.push(e);
 		}

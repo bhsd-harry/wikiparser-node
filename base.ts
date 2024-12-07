@@ -196,7 +196,7 @@ export interface LintError {
 	endLine: number;
 	endCol: number;
 	fix?: LintError.Fix;
-	suggestions?: (LintError.Fix & {desc: string})[];
+	suggestions?: LintError.Fix[];
 }
 
 /** 类似Node */
