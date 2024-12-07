@@ -47,11 +47,10 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			startIndex: number,
 			endIndex: number,
 			length: number,
-		): LintError.Fix & {desc: string} => ({
-			desc: 'escape',
-			range: [startIndex, endIndex],
-			text: '&apos;'.repeat(length),
-		});
+		): LintError.Fix[] => [
+			{desc: 'escape', range: [startIndex, endIndex], text: '&apos;'.repeat(length)},
+			{desc: 'remove', range: [startIndex, endIndex], text: ''},
+		];
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
 			refError = generateForSelf(this, rect, 'lonely-apos', message);
 			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
@@ -64,7 +63,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startCol: endCol - length,
 				endLine,
 				endCol,
-				suggestions: [getSuggestion(startIndex, endIndex, length)],
+				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
@@ -79,11 +78,14 @@ export abstract class QuoteToken extends NowikiBaseToken {
 				startLine,
 				startCol,
 				endCol: startCol + length,
-				suggestions: [getSuggestion(startIndex, endIndex, length)],
+				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
 		if (bold && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'));
+			errors.push({
+				...generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'),
+				suggestions: [{desc: 'remove', range: [start, start + 3], text: ''}],
+			});
 		}
 		return errors;
 	}

@@ -442,13 +442,12 @@ export class Token extends AstElement {
 							severity,
 						);
 						if (isCat) {
-							e.suggestions = [
-								{
-									desc: 'remove',
-									range: [e.startIndex, e.endIndex],
-									text: '',
-								},
-							];
+							e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
+						} else if (!key.startsWith('#')) {
+							const inner = cat.parentNode!.nextSibling!,
+								index = inner.getAbsoluteIndex(),
+								{length} = inner.toString();
+							e.suggestions = [{desc: 'empty', range: [index, index + length], text: ''}];
 						}
 						return e;
 					}));

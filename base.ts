@@ -198,7 +198,7 @@ export interface LintError {
 	endLine: number;
 	endCol: number;
 	fix?: LintError.Fix;
-	suggestions?: (LintError.Fix & {desc: string})[];
+	suggestions?: LintError.Fix[];
 }
 
 export type AST = Record<string, string | number | boolean> & {

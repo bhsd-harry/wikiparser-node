@@ -131,6 +131,7 @@ export class AstText extends AstNode {
 			nextName = nextSibling?.name,
 			previousType = previousSibling?.type,
 			root = this.getRootNode(),
+			rootStr = root.toString(),
 			{ext, html} = root.getAttribute('config'),
 			{top, left} = root.posFromIndex(start)!,
 			tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
@@ -160,7 +161,6 @@ export class AstText extends AstNode {
 			}
 			const startIndex = start + index,
 				endIndex = startIndex + length,
-				rootStr = root.toString(),
 				nextChar = rootStr[endIndex],
 				previousChar = rootStr[startIndex - 1],
 				severity = length > 1 && !(
@@ -221,37 +221,28 @@ export class AstText extends AstNode {
 					endCol: startCol + length,
 				};
 			if (char === '<') {
-				e.suggestions = [
-					{
-						desc: 'escape',
-						range: [startIndex, startIndex + 1],
-						text: '&lt;',
-					},
-				];
+				e.suggestions = [{desc: 'escape', range: [startIndex, startIndex + 1], text: '&lt;'}];
 			} else if (
 				char === 'h'
 				&& !(type === 'ext-link-text' || type === 'link-text')
 				&& /[\p{L}\d_]/u.test(previousChar || '')
 			) {
-				e.suggestions = [
-					{
-						desc: 'whitespace',
-						range: [startIndex, startIndex],
-						text: ' ',
-					},
-				];
+				e.suggestions = [{desc: 'whitespace', range: [startIndex, startIndex], text: ' '}];
 			} else if (char === '[' && type === 'ext-link-text') {
 				const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
-				e.suggestions = [
-					{
-						desc: 'escape',
-						range: [i, i + 1],
-						text: '&#93;',
-					},
-				];
+				e.suggestions = [{desc: 'escape', range: [i, i + 1], text: '&#93;'}];
 			} else if (char === ']' && previousType === 'free-ext-link' && severity === 'error') {
 				const i = start - previousSibling!.toString().length;
 				e.fix = {range: [i, i], text: '[', desc: 'left bracket'};
+			} else if (magicLink) {
+				e.suggestions = [
+					...mt[0] === error
+						? []
+						: [{desc: 'uppercase', range: [startIndex, endIndex], text: error} as LintError.Fix],
+					...nextChar === ':' || nextChar === '：'
+						? [{desc: 'whitespace', range: [endIndex, endIndex + 1], text: ' '} as LintError.Fix]
+						: [],
+				];
 			}
 			errors.push(e);
 		}
