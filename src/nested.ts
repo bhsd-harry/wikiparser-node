@@ -99,16 +99,8 @@ export abstract class NestedToken extends Token {
 			}).map(child => {
 				const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid content in <$1>', this.name));
 				e.suggestions = [
-					{
-						desc: 'remove',
-						range: [e.startIndex, e.endIndex],
-						text: '',
-					},
-					{
-						desc: 'comment',
-						range: [e.startIndex, e.endIndex],
-						text: `<!--${child.toString()}-->`,
-					},
+					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
+					{desc: 'comment', range: [e.startIndex, e.endIndex], text: `<!--${child.toString()}-->`},
 				];
 				return e;
 			}),

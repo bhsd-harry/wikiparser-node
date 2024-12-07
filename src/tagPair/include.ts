@@ -42,24 +42,12 @@ export abstract class IncludeToken extends TagPairToken {
 			rect = new BoundingRect(this, start);
 		if (firstChild.data.trim()) {
 			const e = generateForChild(firstChild, rect, 'no-ignored', 'useless attribute', 'warning');
-			e.suggestions = [
-				{
-					desc: 'remove',
-					range: [e.startIndex, e.endIndex],
-					text: '',
-				},
-			];
+			e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
 			errors.push(e);
 		}
 		if (!closed) {
 			const e = generateForSelf(this, rect, 'unclosed-comment', Parser.msg('unclosed $1', `<${name}>`));
-			e.suggestions = [
-				{
-					desc: 'close',
-					range: [e.endIndex, e.endIndex],
-					text: `</${name}>`,
-				},
-			];
+			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: `</${name}>`}];
 			errors.push(e);
 		}
 		return errors;
