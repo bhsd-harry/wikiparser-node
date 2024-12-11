@@ -62,12 +62,12 @@ import type {
 	AstNodes,
 	CategoryToken,
 	AttributeToken,
-	ExtToken,
 
 	/* NOT FOR BROWSER */
 
 	IncludeToken,
 	HtmlToken,
+	ExtToken,
 	TranscludeToken,
 	CommentToken,
 	FileToken,
@@ -576,38 +576,31 @@ export class Token extends AstElement {
 		let errors = super.lint(start, re);
 		if (this.type === 'root') {
 			const record = new Map<string, Set<CategoryToken | AttributeToken>>(),
-				selector = 'category,html-attr#id,ext-attr#id,table-attr#id,ext-attr#name';
+				selector = 'category,html-attr#id,ext-attr#id,table-attr#id';
 			for (const cat of this.querySelectorAll<CategoryToken | AttributeToken>(selector)) {
 				let key;
 				if (cat.type === 'category') {
 					key = cat.name;
 				} else {
-					const value = cat.getValue(),
-						attrs = cat.parentNode!;
-					if (cat.name === 'id') {
-						key = `#${value === true ? '' : value}`;
-					} else if (
-						cat.tag === 'ref' && value !== true && value
-						&& (attrs.parentNode as ExtToken).innerText
-					) {
-						const group = attrs.getAttr('group');
-						key = `${typeof group === 'string' && group || ' '}#${value}`;
-					} else {
-						continue;
+					const value = cat.getValue();
+					if (value && value !== true) {
+						key = `#${value}`;
 					}
 				}
-				const thisCat = record.get(key);
-				if (thisCat) {
-					thisCat.add(cat);
-				} else {
-					record.set(key, new Set([cat]));
+				if (key) {
+					const thisCat = record.get(key);
+					if (thisCat) {
+						thisCat.add(cat);
+					} else {
+						record.set(key, new Set([cat]));
+					}
 				}
 			}
 			for (const [key, value] of record) {
 				if (value.size > 1 && !key.startsWith('#mw-customcollapsible-')) {
-					const isCat = !key.includes('#'),
-						msg = `duplicated ${isCat ? 'category' : 'id/name'}`,
-						severity = key.startsWith('#') ? 'warning' : 'error';
+					const isCat = !key.startsWith('#'),
+						msg = `duplicated ${isCat ? 'category' : 'id'}`,
+						severity = isCat ? 'error' : 'warning';
 					errors.push(...[...value].map(cat => {
 						const e = generateForSelf(
 							cat,
@@ -618,11 +611,6 @@ export class Token extends AstElement {
 						);
 						if (isCat) {
 							e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
-						} else if (!key.startsWith('#')) {
-							const inner = cat.parentNode!.nextSibling!,
-								index = inner.getAbsoluteIndex(),
-								{length} = inner.toString();
-							e.suggestions = [{desc: 'empty', range: [index, index + length], text: ''}];
 						}
 						return e;
 					}));

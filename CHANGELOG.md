@@ -1,10 +1,14 @@
-## v1.13.10
+## v1.14.0
 
-*2024-12-07*
+*2024-12-13*
 
 **Added**
 
 - More auto-fix and suggestions for linting errors
+
+**Removed**
+
+- Removed category of linting errors: duplicated `<ref>` name
 
 ## v1.13.9
 
