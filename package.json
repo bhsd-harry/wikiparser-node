@@ -1,6 +1,6 @@
 {
 	"name": "wikiparser-node",
-	"version": "1.13.9",
+	"version": "1.14.0",
 	"description": "A Node.js parser for MediaWiki markup with AST",
 	"keywords": [
 		"mediawiki",
@@ -51,7 +51,7 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.18.8",
+		"@bhsd/codemirror-mediawiki": "^2.19.3",
 		"@bhsd/common": "^0.4.6",
 		"@codemirror/lint": "^6.8.4",
 		"@stylistic/eslint-plugin": "^2.11.0",
