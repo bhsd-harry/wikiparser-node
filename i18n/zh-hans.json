@@ -11,7 +11,7 @@
 	"content to be moved out from the table": "将被移出表格的内容",
 	"duplicated $1 attribute": "重复的$1属性",
 	"duplicated category": "重复的分类",
-	"duplicated id/name": "重复的id/name",
+	"duplicated id": "重复的id",
 	"duplicated image $1 parameter": "重复的图片$1参数",
 	"duplicated parameter": "重复参数",
 	"extension tag in HTML tag attributes": "HTML标签属性中的扩展标签",
