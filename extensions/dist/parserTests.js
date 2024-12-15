@@ -24,7 +24,7 @@
         }
     }
     select.addEventListener('change', () => {
-        const { wikitext, html, render } = tests[Number(select.value)];
+        const { wikitext, html, render, desc } = tests[Number(select.value)];
         pre.textContent = wikitext;
         pre.classList.remove('wikiparser');
         container.removeAttribute('data-source');
@@ -33,6 +33,7 @@
         wikiparse.highlight(pre, false, true);
         select.selectedOptions[0].disabled = true;
         btn.disabled = false;
+        location.hash = `#${encodeURIComponent(desc)}`;
     });
     btn.addEventListener('click', () => {
         dones.add(tests[Number(select.value)].desc);
@@ -66,5 +67,13 @@
             Prism.highlightAllUnder(container);
         }
     });
+    addEventListener('hashchange', () => {
+        const hash = decodeURIComponent(location.hash.slice(1)), i = tests.findIndex(({ desc }) => desc === hash);
+        if (i !== -1) {
+            select.value = String(i);
+            select.dispatchEvent(new Event('change'));
+        }
+    });
+    dispatchEvent(new Event('hashchange'));
 })();
 })();
