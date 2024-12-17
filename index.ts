@@ -127,7 +127,7 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser});
+Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser}); // eslint-disable-line es-x/no-global-this
 
 export default Parser;
 export type {Config, LintError, TokenTypes};

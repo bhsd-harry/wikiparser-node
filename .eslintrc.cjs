@@ -158,11 +158,14 @@ module.exports = {
 			files: '**/*.ts',
 			excludedFiles: [
 				'test/*.ts',
+				'extensions/gh-page.ts',
+				'extensions/codejar.ts',
 			],
 			plugins: [
 				'es-x',
 			],
 			rules: {
+				'es-x/no-global-this': 2,
 				'es-x/no-malformed-template-literals': 2,
 				'es-x/no-regexp-s-flag': 2,
 				'es-x/no-regexp-unicode-property-escapes': 2,
