@@ -2,7 +2,8 @@ import type {AstNodes} from '../lib/node';
 
 export {rawurldecode} from '@bhsd/common';
 
-const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]`;
+export const zs = String.raw` \xA0\u1680\u2000-\u200A\u202F\u205F\u3000`;
+const commonExtUrlChar = String.raw`[^[\]<>"\0-\x1F\x7F${zs}\uFFFD]`;
 export const extUrlCharFirst = String.raw`(?:\[[\da-f:.]+\]|${commonExtUrlChar})`;
 export const extUrlChar = String.raw`(?:${commonExtUrlChar}|\0\d+[cn!~]\x7F)*`;
 

@@ -23,7 +23,7 @@ import {fixedToken} from '../mixin/fixed';
 
 /* NOT FOR BROWSER END */
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 /https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*$/iu;
 const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
 

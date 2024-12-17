@@ -1,4 +1,5 @@
 import {
+	zs,
 	extUrlChar,
 	extUrlCharFirst,
 	removeComment,
@@ -28,11 +29,11 @@ import {font} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
 /<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 /^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
-/* eslint-enable @typescript-eslint/no-unused-expressions */
-const sp = String.raw`[\p{Zs}\t]*`,
+/* eslint-enable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
+const sp = String.raw`[${zs}\t]*`,
 	source =
 		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
@@ -110,6 +111,13 @@ const sp = String.raw`[\p{Zs}\t]*`,
 		'param',
 		'xmp',
 	];
+let wordRegex: RegExp;
+try {
+	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
+	wordRegex = new RegExp(String.raw`[\p{L}\d_]`, 'u');
+} catch {
+	wordRegex = /\w/u;
+}
 
 /** 文本节点 */
 export class AstText extends AstNode {
@@ -289,7 +297,7 @@ export class AstText extends AstNode {
 			} else if (
 				char === 'h'
 				&& !(type === 'ext-link-text' || type === 'link-text')
-				&& /[\p{L}\d_]/u.test(previousChar || '')
+				&& wordRegex.test(previousChar || '')
 			) {
 				e.suggestions = [{desc: 'whitespace', range: [startIndex, startIndex], text: ' '}];
 			} else if (char === '[' && type === 'ext-link-text') {

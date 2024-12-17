@@ -16,7 +16,7 @@
 	"files": [
 		"/errors/README",
 		"/printed/README",
-		"/bundle/bundle.min.js",
+		"/bundle/bundle.*.js",
 		"/extensions/dist/",
 		"/extensions/*.css",
 		"!/extensions/dist/gh-page.js",

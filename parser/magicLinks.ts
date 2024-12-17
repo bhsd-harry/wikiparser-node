@@ -1,4 +1,4 @@
-import {extUrlChar, extUrlCharFirst} from '../util/string';
+import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
@@ -9,7 +9,7 @@ import {parsers} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
-const space = String.raw`[\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
+const space = String.raw`[${zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
 	sp = `(?:${space})+`,
 	spdash = `(?:${space}|-)`,
 	magicLinkPattern = String.raw`(?:RFC|PMID)${sp}\d+\b|ISBN${sp}(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dx]\b`;
@@ -21,7 +21,7 @@ const space = String.raw`[\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
  * @param accum
  */
 export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+	// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 	/(^|[^\p{L}\d_])(?:(?:ftp:\/\/|http:\/\/)((?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\0\t\n\p{Zs}]*)|(?:rfc|pmid)[\p{Zs}\t]+\d+\b|isbn[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dx]\b)/giu;
 	config.regexMagicLinks ??= new RegExp(
 		String.raw`(^|[^\p{L}\d_])(?:(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,

@@ -55,10 +55,10 @@ function validate(
 			if (!value) {
 				return val;
 			}
-			/* eslint-disable @typescript-eslint/no-unused-expressions */
+			/* eslint-disable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
 			/^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu;
 			/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
-			/* eslint-enable @typescript-eslint/no-unused-expressions */
+			/* eslint-enable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
 			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu'),
 				re2 = new RegExp(
 					String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,

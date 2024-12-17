@@ -1,5 +1,5 @@
 import {generateForChild, generateForSelf} from '../util/lint';
-import {text, decodeNumber} from '../util/string';
+import {zs, text, decodeNumber} from '../util/string';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
@@ -29,17 +29,17 @@ import type {SyntaxBase} from '../mixin/syntax';
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 /(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
-const space = String.raw`(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
+const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /** NOT FOR BROWSER */
 
-/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
 /^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
 /^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
-/* eslint-enable @typescript-eslint/no-unused-expressions */
+/* eslint-enable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
 const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 	isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u'),
 	rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
