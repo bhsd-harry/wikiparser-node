@@ -85,7 +85,7 @@ export abstract class NestedToken extends Token {
 			noinclude = this.#regex ? 'includeonly' : 'noinclude',
 			regex = typeof this.#regex === 'boolean'
 				? new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu')
-				: /^<!--.*-->$/su;
+				: /^<!--[\s\S]*-->$/u;
 		return [
 			...super.lint(start, re),
 			...this.childNodes.filter(child => {

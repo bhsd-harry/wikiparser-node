@@ -28,6 +28,14 @@ const toAttributeType = (type: AttributesTypes): AttributeTypes => type.slice(0,
  */
 const toDirty = (type: AttributesTypes): AttributeDirty => `${toAttributeType(type)}-dirty`;
 
+let wordRegex: RegExp;
+try {
+	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
+	wordRegex = new RegExp(String.raw`[\p{L}\d]`, 'u');
+} catch {
+	wordRegex = /[^\W_]/u;
+}
+
 /**
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
@@ -63,7 +71,7 @@ export abstract class AttributesToken extends Token {
 		this.#type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+[cn]\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+[cn]\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
+			const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+[cn]\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+[cn]\x7F)*)(?:(["'])([\s\S]*?)(\3|$)|(\S*)))?/gu;
 			let out = '',
 				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;
@@ -174,7 +182,7 @@ export abstract class AttributesToken extends Token {
 						rect,
 						'no-ignored',
 						'containing invalid attribute',
-						/[\p{L}\d]/u.test(str) ? 'error' : 'warning',
+						wordRegex.test(str) ? 'error' : 'warning',
 					);
 					e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ' '}];
 					errors.push(e);
