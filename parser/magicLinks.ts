@@ -1,9 +1,9 @@
-import {extUrlChar, extUrlCharFirst} from '../util/string';
+import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-const space = String.raw`[\p{Zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
+const space = String.raw`[${zs}\t]|&nbsp;|&#0*160;|&#x0*a0;`,
 	sp = `(?:${space})+`,
 	spdash = `(?:${space}|-)`,
 	magicLinkPattern = String.raw`(?:RFC|PMID)${sp}\d+\b|ISBN${sp}(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dx]\b`;

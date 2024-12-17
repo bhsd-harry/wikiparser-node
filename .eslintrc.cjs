@@ -19,7 +19,7 @@ module.exports = {
 		...config.ignorePatterns,
 		'/wiki/',
 		'/bundle/',
-		'/extensions/es6/',
+		'/extensions/es7/',
 	],
 	rules: {
 		...config.rules,
@@ -163,7 +163,9 @@ module.exports = {
 				'es-x',
 			],
 			rules: {
+				'es-x/no-malformed-template-literals': 2,
 				'es-x/no-regexp-s-flag': 2,
+				'es-x/no-regexp-unicode-property-escapes': 2,
 			},
 		},
 		{

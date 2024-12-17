@@ -1,5 +1,5 @@
 import {generateForChild, generateForSelf} from '../util/lint';
-import {text, decodeNumber} from '../util/string';
+import {zs, text, decodeNumber} from '../util/string';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import {Token} from './index';
@@ -14,7 +14,7 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-const space = String.raw`(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
+const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
 	spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /**
