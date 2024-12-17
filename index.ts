@@ -127,7 +127,7 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
-Object.assign(globalThis, {Parser});
+Object.assign(typeof window === 'object' ? window : self, {Parser});
 
 export default Parser;
 export type {Config, LintError, TokenTypes};

@@ -1,7 +1,7 @@
 /node_modules/
 /dist/
 /bundle/
-!/bundle/bundle.min.js
+!/bundle/bundle.*.js
 /errors/*
 /printed/*
 /.vscode/

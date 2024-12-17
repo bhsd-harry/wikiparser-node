@@ -19,6 +19,7 @@ module.exports = {
 		...config.ignorePatterns,
 		'/wiki/',
 		'/bundle/',
+		'/extensions/es6/',
 	],
 	rules: {
 		...config.rules,
@@ -76,6 +77,7 @@ module.exports = {
 		],
 		'unicorn/no-this-assignment': 0,
 		'unicorn/empty-brace-spaces': 0,
+		'unicorn/prefer-global-this': 0,
 		'jsdoc/require-jsdoc': [
 			1,
 			{

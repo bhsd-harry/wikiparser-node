@@ -1,0 +1,11 @@
+{
+	"extends": "./tsconfig",
+	"include": [
+		"base.ts",
+		"lint.ts"
+	],
+	"compilerOptions": {
+		"target": "es2015",
+		"outDir": "es6"
+	}
+}

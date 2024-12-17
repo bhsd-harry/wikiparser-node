@@ -15,7 +15,7 @@ const workerJS = (): void => {
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
-	globalThis.onmessage = ({data}: {
+	self.onmessage = ({data}: {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
 			| ['getConfig', number]
@@ -277,4 +277,4 @@ const lineNumbers = (html: HTMLElement, start = 1, paddingTop = ''): void => {
 };
 
 const wikiparse: Wikiparse = {version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
-Object.assign(globalThis, {wikiparse});
+Object.assign(window, {wikiparse});
