@@ -1,4 +1,4 @@
-import {extUrlChar, extUrlCharFirst} from '../util/string';
+import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
 import {ExtLinkToken} from '../src/extLink';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
@@ -15,7 +15,7 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 	config.regexExternalLinks ??= new RegExp(
 		String.raw`\[(\0\d+f\x7F|(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${
 			extUrlChar
-		}(?=[[\]<>"\t\p{Zs}]|\0\d))(\p{Zs}*(?!\p{Zs}))([^\]\x01-\x08\x0A-\x1F\uFFFD]*)\]`,
+		}(?=[[\]<>"\t${zs}]|\0\d))([${zs}]*(?![${zs}]))([^\]\x01-\x08\x0A-\x1F\uFFFD]*)\]`,
 		'giu',
 	);
 	return wikitext.replace(config.regexExternalLinks, (_, url: string, space: string, text: string) => {

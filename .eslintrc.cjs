@@ -152,6 +152,21 @@ module.exports = {
 			},
 		},
 		{
+			files: '**/*.ts',
+			excludedFiles: [
+				'bin/*.ts',
+				'test/*.ts',
+			],
+			plugins: [
+				'es-x',
+			],
+			rules: {
+				'es-x/no-malformed-template-literals': 2,
+				'es-x/no-regexp-s-flag': 2,
+				'es-x/no-regexp-unicode-property-escapes': 2,
+			},
+		},
+		{
 			files: '*.cjs',
 			rules: {
 				'n/exports-style': [

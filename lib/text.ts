@@ -1,4 +1,5 @@
 import {
+	zs,
 	extUrlChar,
 	extUrlCharFirst,
 	removeComment,
@@ -11,7 +12,7 @@ import type {
 	ExtToken,
 } from '../internal';
 
-const sp = String.raw`[\p{Zs}\t]*`,
+const sp = String.raw`[${zs}\t]*`,
 	source =
 		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
@@ -64,6 +65,13 @@ const sp = String.raw`[\p{Zs}\t]*`,
 		'select',
 		'textarea',
 	];
+let wordRegex: RegExp;
+try {
+	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
+	wordRegex = new RegExp(String.raw`[\p{L}\d_]`, 'u');
+} catch {
+	wordRegex = /\w/u;
+}
 
 /** 文本节点 */
 export class AstText extends AstNode {
@@ -224,7 +232,7 @@ export class AstText extends AstNode {
 			} else if (
 				char === 'h'
 				&& !(type === 'ext-link-text' || type === 'link-text')
-				&& /[\p{L}\d_]/u.test(previousChar || '')
+				&& wordRegex.test(previousChar || '')
 			) {
 				e.suggestions = [{desc: 'whitespace', range: [startIndex, startIndex], text: ' '}];
 			} else if (char === '[' && type === 'ext-link-text') {
