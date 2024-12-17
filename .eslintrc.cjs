@@ -157,6 +157,19 @@ module.exports = {
 			},
 		},
 		{
+			files: '**/*.ts',
+			excludedFiles: [
+				'bin/*.ts',
+				'test/*.ts',
+			],
+			plugins: [
+				'es-x',
+			],
+			rules: {
+				'es-x/no-regexp-s-flag': 2,
+			},
+		},
+		{
 			files: '*.cjs',
 			rules: {
 				'n/exports-style': [
