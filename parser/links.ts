@@ -13,7 +13,7 @@ import {parsers} from '../util/constants';
 
 /* NOT FOR BROWSER END */
 
-const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)(.*)$/su;
+const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
 
 /**
  * 解析内部链接
@@ -26,8 +26,8 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 	/^\s*(?:ftp:\/\/|\/\/)/iu;
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
-			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]]))?\]\](.*)$/su
-			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)(.*?[^\]])?)?\]\](.*)$/su,
+			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u
+			: /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]])?)?\]\]([\s\S]*)$/u,
 		bits = wikitext.split('[[');
 	let s = bits.shift()!;
 	for (let i = 0; i < bits.length; i++) {

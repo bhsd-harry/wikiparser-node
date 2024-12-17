@@ -64,19 +64,19 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		}
 	}
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/<!--.*?(?:-->|$)|<foo(?:\s[^>]*)?\/?>|<\/foo\s*>|<(bar)(\s[^>]*?)?(?:\/>|>(.*?)<\/(\1\s*)>)|<(baz)(\s[^>]*?)?(?:\/>|>(.*?)(?:<\/(baz\s*)>|$))/gisu;
+	/<!--[\s\S]*?(?:-->|$)|<foo(?:\s[^>]*)?\/?>|<\/foo\s*>|<(bar)(\s[^>]*?)?(?:\/>|>([\s\S]*?)<\/(\1\s*)>)|<(baz)(\s[^>]*?)?(?:\/>|>([\s\S]*?)(?:<\/(baz\s*)>|$))/giu;
 	const ext = config.ext.join('|'),
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
 
 		/** Never cached due to the possibility of nested extension tags */
 		regex = new RegExp(
-			String.raw`<!--.*?(?:-->|$)|<${
+			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
-			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>(.*?)</(\1\s*)>)|<(${
+			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
-			'gisu',
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
+			'giu',
 		);
 	return wikitext.replace(
 		regex,
