@@ -92,7 +92,7 @@ export class Title {
 		}
 		const i = title.indexOf('#');
 		if (i !== -1) {
-			let fragment = title.slice(i + 1).trimEnd();
+			let fragment = title.slice(i).trim().slice(1);
 			if (fragment.includes('%')) {
 				try {
 					fragment = rawurldecode(fragment);
