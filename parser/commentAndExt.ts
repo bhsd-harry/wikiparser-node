@@ -63,12 +63,12 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 
 		/** Never cached due to the possibility of nested extension tags */
 		regex = new RegExp(
-			String.raw`<!--.*?(?:-->|$)|<${
+			String.raw`<!--[\s\S]*?(?:-->|$)|<${
 				noincludeRegex
-			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>(.*?)</(\1\s*)>)|<(${
+			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
 				includeRegex
-			})(\s[^>]*?)?(?:/>|>(.*?)(?:</(${includeRegex}\s*)>|$))`,
-			'gisu',
+			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
+			'giu',
 		);
 	return wikitext.replace(
 		regex,

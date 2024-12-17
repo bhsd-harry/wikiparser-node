@@ -5,9 +5,6 @@ const config = require('@bhsd/common/eslintrc.dist.cjs');
 module.exports = {
 	...config,
 	extends: [
-		'plugin:es-x/restrict-to-es2015',
+		'plugin:es-x/restrict-to-es2016',
 	],
-	rules: {
-		'es-x/no-array-prototype-includes': 0,
-	},
 };

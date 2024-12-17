@@ -2,9 +2,9 @@
 rm -rf extensions/dist/
 bash sed.sh -i -E "s|(import type .+ from '../base';)|// \1|" extensions/typings.d.ts
 tsc --project extensions/tsconfig.json --module ES6 --noImplicitAny false
-tsc --project extensions/tsconfig.es6.json --module ES6 --noImplicitAny false
+tsc --project extensions/tsconfig.es7.json --module ES6 --noImplicitAny false
 tsc --project extensions/tsconfig.codejar.json --module ES2020 --noImplicitAny false
-bash sed.sh -i 's|bundle.min.js|bundle.es6.js|' extensions/es6/base.js
+bash sed.sh -i 's|bundle.min.js|bundle.es7.js|' extensions/es7/base.js
 bash sed.sh -i -E "s|// (import type .+ from '../base';)|\1|" extensions/typings.d.ts
 for x in extensions/*/*.js
 do
@@ -15,4 +15,4 @@ do
 	fi
 done
 eslint --no-eslintrc -c .eslintrc.browser.cjs extensions/dist/
-eslint --no-eslintrc -c .eslintrc.es6.cjs extensions/es6/
+eslint --no-eslintrc -c .eslintrc.es7.cjs extensions/es7/

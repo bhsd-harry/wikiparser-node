@@ -5,7 +5,7 @@
 		"lint.ts"
 	],
 	"compilerOptions": {
-		"target": "es2015",
-		"outDir": "es6"
+		"target": "es2016",
+		"outDir": "es7"
 	}
 }

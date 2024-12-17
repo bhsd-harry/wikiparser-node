@@ -63,7 +63,7 @@ export abstract class AttributesToken extends Token {
 		this.#type = type;
 		this.setAttribute('name', name);
 		if (attr) {
-			const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+[cn]\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+[cn]\x7F)*)(?:(["'])(.*?)(\3|$)|(\S*)))?/gsu;
+			const regex = /([^\s/](?:(?!\0\d+~\x7F)[^\s/=])*)(?:((?:\s(?:\s|\0\d+[cn]\x7F)*)?(?:=|\0\d+~\x7F)(?:\s|\0\d+[cn]\x7F)*)(?:(["'])([\s\S]*?)(\3|$)|(\S*)))?/gu;
 			let out = '',
 				mt = regex.exec(attr) as RegExpExecArray & {1: string} | null,
 				lastIndex = 0;

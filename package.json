@@ -34,9 +34,9 @@
 	},
 	"scripts": {
 		"build:core": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:es6": "esbuild index.ts --bundle --minify --target=es2015 --outfile=bundle/bundle.es6.js && eslint --no-eslintrc -c .eslintrc.es6.cjs bundle/bundle.es6.js",
+		"build:es7": "esbuild index.ts --bundle --minify --target=es2016 --outfile=bundle/bundle.es7.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle.es7.js",
 		"build:ext": "bash build-ext.sh",
-		"build": "npm run build:core && npm run build:es6 && tsc --project tsconfig.dist.json",
+		"build": "npm run build:core && npm run build:es7 && tsc --project tsconfig.dist.json",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",

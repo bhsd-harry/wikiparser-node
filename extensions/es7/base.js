@@ -4,7 +4,7 @@ const version = '1.14.0', src = (_a = document.currentScript) === null || _a ===
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
-    importScripts('$CDN/bundle/bundle.es6.js');
+    importScripts('$CDN/bundle/bundle.es7.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
