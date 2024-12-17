@@ -108,7 +108,7 @@ export class Ranges extends Array<number | Range> {
 			a = emptyArray(length, i => i);
 		return [
 			...new Set(
-				[...this].flatMap(ele => {
+				[...this].flatMap(ele => { // eslint-disable-line es-x/no-array-prototype-flat
 					if (typeof ele === 'number') {
 						return ele < 0 ? ele + length : ele;
 					}

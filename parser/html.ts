@@ -18,7 +18,8 @@ const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu;
  * @param accum
  */
 export const parseHtml = (wikitext: string, config: Config, accum: Token[]): string => {
-	config.htmlElements ??= new Set(config.html.flat());
+	const {html} = config;
+	config.htmlElements ??= new Set([...html[0], ...html[1], ...html[2]]);
 	const bits = wikitext.split('<');
 	let text = bits.shift()!;
 	for (const x of bits) {

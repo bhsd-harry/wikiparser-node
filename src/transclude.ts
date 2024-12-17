@@ -374,11 +374,13 @@ export abstract class TranscludeToken extends Token {
 		}
 		const duplicatedArgs = this.getDuplicatedArgs().filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 		if (duplicatedArgs.length > 0) {
-			errors.push(...duplicatedArgs.flatMap(([, args]) => args).map(arg => {
-				const e = generateForChild(arg, rect, 'no-duplicate', 'duplicated parameter');
-				e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
-				return e;
-			}));
+			for (const [, args] of duplicatedArgs) {
+				errors.push(...args.map(arg => {
+					const e = generateForChild(arg, rect, 'no-duplicate', 'duplicated parameter');
+					e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
+					return e;
+				}));
+			}
 		}
 		return errors;
 	}
