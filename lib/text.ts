@@ -142,7 +142,16 @@ export class AstText extends AstNode {
 			rootStr = root.toString(),
 			{ext, html} = root.getAttribute('config'),
 			{top, left} = root.posFromIndex(start)!,
-			tags = new Set(['onlyinclude', 'noinclude', 'includeonly', ext, html, disallowedTags].flat(2));
+			tags = new Set([
+				'onlyinclude',
+				'noinclude',
+				'includeonly',
+				...ext,
+				...html[0],
+				...html[1],
+				...html[2],
+				...disallowedTags,
+			]);
 		for (let mt = errorRegex.exec(data); mt; mt = errorRegex.exec(data)) {
 			const [, tag, prefix] = mt;
 			let {index} = mt,
