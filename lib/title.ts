@@ -101,6 +101,7 @@ export class Title {
 					fragment = rawurldecode(fragment);
 				} catch {}
 			}
+			// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
 			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd().replaceAll(' ', '_');
 		}
 	}
@@ -157,7 +158,7 @@ export class Title {
 		}
 		const i = title.indexOf('#');
 		if (i !== -1) {
-			let fragment = title.slice(i + 1).trimEnd();
+			let fragment = title.slice(i).trim().slice(1);
 			if (fragment.includes('%')) {
 				try {
 					fragment = rawurldecode(fragment);

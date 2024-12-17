@@ -369,8 +369,8 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			} catch {}
 		}
 		for (const [name, filePath] of entries) {
-			if (name in globalThis) {
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+			if (name in globalThis) { // eslint-disable-line es-x/no-global-this
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, es-x/no-global-this
 				Object.assign(globalThis, {[name]: require(filePath)[name]});
 			}
 		}

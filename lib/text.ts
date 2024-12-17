@@ -472,6 +472,7 @@ export class AstText extends AstNode {
 						spaces.push(nextSibling);
 					}
 				} else if (mt && nextSibling.type === 'category') {
+					// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
 					const trimmed = this.data.trimEnd();
 					if (this.data !== trimmed) {
 						const {length} = trimmed;
@@ -491,6 +492,7 @@ export class AstText extends AstNode {
 						(nextSibling as AstText).deleteData(0, mt2[0].length);
 					}
 				} else {
+					// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
 					this.#setData(this.data.trimEnd());
 				}
 				for (const space of spaces) {

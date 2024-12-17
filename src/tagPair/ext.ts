@@ -78,7 +78,7 @@ export abstract class ExtToken extends TagPairToken {
 		const lcName = name.toLowerCase(),
 			// @ts-expect-error abstract class
 			attrToken: AttributesToken = new AttributesToken(
-				!attr || attr.trimStart() !== attr ? attr : ` ${attr}`,
+				!attr || /^\s/u.test(attr) ? attr : ` ${attr}`,
 				'ext-attrs',
 				lcName,
 				config,

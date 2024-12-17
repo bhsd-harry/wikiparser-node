@@ -186,9 +186,11 @@ module.exports = {
 				'es-x',
 			],
 			rules: {
+				'es-x/no-global-this': 2,
 				'es-x/no-malformed-template-literals': 2,
 				'es-x/no-regexp-s-flag': 2,
 				'es-x/no-regexp-unicode-property-escapes': 2,
+				'es-x/no-string-prototype-trimstart-trimend': 2,
 			},
 		},
 		{
@@ -221,6 +223,9 @@ module.exports = {
 				'chalk',
 				'monaco-editor',
 			],
+		},
+		'es-x': {
+			aggressive: true,
 		},
 	},
 };
