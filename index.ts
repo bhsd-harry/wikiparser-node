@@ -6,7 +6,14 @@ import {
 	minConfig,
 } from './util/constants';
 import {tidy} from './util/string';
-import type {Config, LintError, TokenTypes, Parser as ParserBase, Stage} from './base';
+import type {
+	Config,
+	LintError,
+	TokenTypes,
+	Parser as ParserBase,
+	Stage,
+	AST,
+} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -130,4 +137,9 @@ Object.defineProperties(Parser, def);
 Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser}); // eslint-disable-line es-x/no-global-this
 
 export default Parser;
-export type {Config, LintError, TokenTypes};
+export type {
+	Config,
+	LintError,
+	TokenTypes,
+	AST,
+};
