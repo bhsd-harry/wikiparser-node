@@ -3,7 +3,7 @@ import type {
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
-import type {Config, LintError, AST} from '../base';
+import type {Config, LintError, AST} from 'wikiparser-node';
 
 export type {
 	AST,
