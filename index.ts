@@ -11,7 +11,14 @@ import {tidy} from './util/string';
 import {
 	error,
 } from './util/diff';
-import type {Config, LintError, TokenTypes, Parser as ParserBase, Stage} from './base';
+import type {
+	Config,
+	LintError,
+	TokenTypes,
+	Parser as ParserBase,
+	Stage,
+	AST,
+} from './base';
 import type {Title} from './lib/title';
 import type {Token} from './internal';
 
@@ -176,5 +183,10 @@ Object.defineProperties(Parser, def);
 // @ts-expect-error mixed export styles
 export = Parser;
 export default Parser;
-export type {Config, LintError, TokenTypes};
+export type {
+	Config,
+	LintError,
+	TokenTypes,
+	AST,
+};
 export type * from './internal';
