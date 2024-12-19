@@ -17,6 +17,7 @@
 		"/errors/README",
 		"/printed/README",
 		"/bundle/bundle.*.js",
+		"/extensions/typings.d.ts",
 		"/extensions/dist/",
 		"/extensions/*.css",
 		"!/extensions/dist/gh-page.js",
