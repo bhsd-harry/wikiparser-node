@@ -33,8 +33,9 @@
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"server": "npm run test:end; http-server .. -c-1 --cors &",
-		"test": " node --enable-source-maps dist/test/test.js",
+		"test:unit": " node --enable-source-maps dist/test/test.js",
 		"test:parser": "node --enable-source-maps dist/test/parserTests.js",
+		"test": "npm run test:unit && npm run test:parser",
 		"test:server": "npm run build:core && npm run build:ext && bash sed.sh -i 's|importScripts.*|importScripts(\"http://127.0.0.1:8080/wikiparser-node/bundle/bundle.min.js\");|' extensions/dist/base.js; npm run server",
 		"test:end": "pkill -x http-server",
 		"test:real": "node --enable-source-maps dist/test/real.js"
