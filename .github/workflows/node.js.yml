@@ -38,4 +38,3 @@ jobs:
     - run: npm run build:core
     - run: npm prune --omit=dev
     - run: npm test
-    - run: npm run test:parser

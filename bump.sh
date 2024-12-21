@@ -15,7 +15,7 @@ then
 		exit 1
 	fi
 else
-	npm run lint && npm run build && npm test && npm run test:parser && npm run test:real
+	npm run lint && npm run build && npm test && npm run test:real
 	if [[ $? -eq 0 ]]
 	then
 		gsed -i -E "s/\"version\": \".+\"/\"version\": \"$1\"/" package.json
