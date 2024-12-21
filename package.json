@@ -43,7 +43,8 @@
 		"lint:json": "v8r -s config/.schema.json config/*.json && node ./dist/test/json.js",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"prof": "node dist/test/prof.js",
-		"test": "node dist/test/test.js",
+		"test:unit": "node dist/test/test.js",
+		"test": "npm run test:unit",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"
 	},
