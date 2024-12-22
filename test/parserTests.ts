@@ -11,7 +11,9 @@ declare interface Test {
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
-		if (wikitext && (print || render)) {
+		if (
+			wikitext && (print || render)
+		) {
 			it(desc, () => {
 				const root = Parser.parse(wikitext);
 				try {

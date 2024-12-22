@@ -3,15 +3,12 @@ import * as path from 'path';
 import * as assert from 'assert';
 import Parser = require('../index');
 
-const allCodes = new Map<string, string[]>();
-
 describe('API tests', () => {
 	for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		if (file.endsWith('.md')) {
 			const md = fs.readFileSync(path.join(__dirname, '..', '..', 'wiki', file), 'utf8'),
 				codes = [...md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
 					.map(([code]) => code.replace(/[ \n]\/\/ .*$/gmu, ''));
-			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
 					Parser.i18n = undefined;
