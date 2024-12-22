@@ -47,8 +47,8 @@
 		"lint:json": "v8r -s config/.schema.json config/*.json && node ./dist/test/json.js",
 		"lint": "npm run lint:ts && npm run lint:json",
 		"prof": "node dist/test/prof.js",
-		"test:unit": "node dist/test/test.js",
-		"test:parser": "node dist/test/parserTests.js",
+		"test:unit": "mocha dist/test/test.js",
+		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"
@@ -63,6 +63,7 @@
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^2.11.0",
 		"@stylistic/stylelint-plugin": "^3.1.1",
+		"@types/mocha": "^10.0.10",
 		"@types/node": "^22.10.1",
 		"@typescript-eslint/eslint-plugin": "^8.16.0",
 		"@typescript-eslint/parser": "^8.16.0",
@@ -78,6 +79,7 @@
 		"eslint-plugin-regexp": "^2.6.0",
 		"eslint-plugin-unicorn": "^56.0.1",
 		"http-server": "^14.1.0",
+		"mocha": "^10.8.2",
 		"stylelint": "^16.11.0",
 		"stylelint-config-recommended": "^14.0.0",
 		"typescript": "^5.7.2",
