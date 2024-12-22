@@ -1,5 +1,5 @@
 {
-	"nodeOption": "enable-source-maps",
+	"enable-source-maps": true,
 	"file": "bundle/bundle.min.js",
 	"diff": false,
 	"reporter": "progress"
