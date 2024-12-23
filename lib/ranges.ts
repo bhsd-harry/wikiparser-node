@@ -77,7 +77,7 @@ export class Ranges extends Array<number | Range> {
 		if (a === undefined) {
 			return;
 		}
-		for (const ele of (Array.isArray(a) ? a : [a]) as readonly (number | string | Range)[]) {
+		for (const ele of (Array.isArray(a) ? a : [a]) satisfies readonly (number | string | Range)[]) {
 			if (ele instanceof Range) {
 				this.push(ele);
 				continue;
