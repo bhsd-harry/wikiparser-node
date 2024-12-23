@@ -254,9 +254,9 @@ export class AstText extends AstNode {
 				e.suggestions = [
 					...mt[0] === error
 						? []
-						: [{desc: 'uppercase', range: [startIndex, endIndex], text: error} as LintError.Fix],
+						: [{desc: 'uppercase', range: [startIndex, endIndex], text: error} satisfies LintError.Fix],
 					...nextChar === ':' || nextChar === '：'
-						? [{desc: 'whitespace', range: [endIndex, endIndex + 1], text: ' '} as LintError.Fix]
+						? [{desc: 'whitespace', range: [endIndex, endIndex + 1], text: ' '} satisfies LintError.Fix]
 						: [],
 				];
 			}
