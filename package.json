@@ -41,10 +41,10 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.4.6"
+		"@bhsd/common": "^0.5.0"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.19.5",
+		"@bhsd/codemirror-mediawiki": "^2.19.7",
 		"@codemirror/lint": "^6.8.4",
 		"@stylistic/eslint-plugin": "^2.11.0",
 		"@stylistic/stylelint-plugin": "^3.1.1",
@@ -54,7 +54,7 @@
 		"@typescript-eslint/eslint-plugin": "^8.16.0",
 		"@typescript-eslint/parser": "^8.16.0",
 		"chalk": "^4.1.2",
-		"codejar-async": "^4.2.5",
+		"codejar-async": "^4.2.6",
 		"esbuild": "^0.24.0",
 		"eslint": "^8.57.1",
 		"eslint-plugin-es-x": "^8.4.1",
