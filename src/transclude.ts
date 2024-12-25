@@ -300,9 +300,9 @@ export abstract class TranscludeToken extends Token {
 	override toString(skip?: boolean): string {
 		return `{{${this.modifier}${
 			this.type === 'magic-word'
-				? `${this.firstChild.toString(skip)}${this.length === 1 ? '' : ':'}${
-					this.childNodes.slice(1).map(child => child.toString(skip)).join('|')
-				}`
+				? this.firstChild.toString(skip)
+				+ (this.length === 1 ? '' : ':')
+				+ this.childNodes.slice(1).map(child => child.toString(skip)).join('|')
 				: super.toString(skip, '|')
 		}}}`;
 	}

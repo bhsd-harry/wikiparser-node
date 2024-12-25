@@ -294,7 +294,7 @@ export abstract class LinkBaseToken extends Token {
 		const {type, name} = this;
 		if (fragment === undefined || isLink(type)) {
 			fragment &&= encode(fragment);
-			this.setTarget(`${name}${fragment === undefined ? '' : `#${fragment}`}`);
+			this.setTarget(name + (fragment === undefined ? '' : `#${fragment}`));
 		}
 	}
 

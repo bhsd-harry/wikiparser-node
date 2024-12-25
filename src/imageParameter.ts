@@ -174,7 +174,7 @@ export abstract class ImageParameterToken extends Token {
 
 	set height(height) {
 		if (this.name === 'width') {
-			this.setValue(`${this.width!}${height ? `x${height}` : ''}`);
+			this.setValue(this.width! + (height ? `x${height}` : ''));
 		}
 	}
 

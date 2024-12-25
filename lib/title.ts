@@ -188,15 +188,16 @@ export class Title {
 
 	/** @private */
 	toString(display?: boolean): string {
-		return `${display ? this.title.replace(/_/gu, ' ') : this.title}${
-			this.#fragment === undefined
-			&& this.#redirectFragment === undefined
-				? ''
-				: `#${
-					this.#fragment
-					?? this.#redirectFragment
-				}`
-		}`;
+		return (display ? this.title.replace(/_/gu, ' ') : this.title)
+			+ (
+				this.#fragment === undefined
+				&& this.#redirectFragment === undefined
+					? ''
+					: `#${
+						this.#fragment
+						?? this.#redirectFragment
+					}`
+			);
 	}
 
 	/** 检测是否是重定向 */
@@ -290,11 +291,12 @@ export class Title {
 		if (title) {
 			return this.#path.replace(
 				'$1',
-				`${encodeURIComponent(title)}${
+				encodeURIComponent(title)
+				+ (
 					fragment === undefined && this.#redirectFragment === undefined
 						? ''
 						: `#${encodeURIComponent(fragment ?? this.#redirectFragment!)}`
-				}`,
+				),
 			);
 		}
 		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
