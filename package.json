@@ -32,7 +32,7 @@
 		"lint:json": "v8r -s config/.schema.json config/*.json && node ./dist/test/json.js",
 		"lint:css": "stylelint extensions/*.css",
 		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
-		"server": "npm run test:end; http-server .. -c-1 --cors &",
+		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
 		"test:unit": "mocha dist/test/test.js",
 		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",

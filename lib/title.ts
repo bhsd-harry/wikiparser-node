@@ -115,13 +115,14 @@ export class Title {
 
 	/** @private */
 	toString(display?: boolean): string {
-		return `${display ? this.title.replace(/_/gu, ' ') : this.title}${
-			this.#fragment === undefined
-				? ''
-				: `#${
-					this.#fragment
-				}`
-		}`;
+		return (display ? this.title.replace(/_/gu, ' ') : this.title)
+			+ (
+				this.#fragment === undefined
+					? ''
+					: `#${
+						this.#fragment
+					}`
+			);
 	}
 
 	/** 检测是否是重定向 */
