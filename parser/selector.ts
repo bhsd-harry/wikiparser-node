@@ -199,7 +199,7 @@ const matches = (
 		} else if (selector.length === 4) { // 情形2：属性选择器
 			const [key, equal, val = '', i] = selector,
 				isAttr = typeof token.hasAttr === 'function' && typeof token.getAttr === 'function';
-			if (!(key in token) && (!isAttr || !token.hasAttr!(key))) {
+			if (!(key in token || isAttr && token.hasAttr!(key))) {
 				return equal === '!=';
 			}
 			const v = toCase(val, i),
@@ -211,7 +211,7 @@ const matches = (
 				const thisVals = typeof thisVal === 'string' ? thisVal.split(/\s/u) : thisVal;
 				return Boolean(thisVals?.[Symbol.iterator as keyof unknown])
 					&& [...thisVals as Iterable<unknown>].some(w => typeof w === 'string' && toCase(w, i) === v);
-			} else if (!primitives.has(typeof thisVal) && !(thisVal instanceof Title)) {
+			} else if (!(primitives.has(typeof thisVal) || thisVal instanceof Title)) {
 				throw new RangeError(`The complex attribute ${key} cannot be used in a selector!`);
 			}
 			const stringVal = toCase(String(thisVal), i);

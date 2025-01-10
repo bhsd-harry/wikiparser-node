@@ -1,3 +1,11 @@
+## v1.14.1
+
+*2025-01-10*
+
+**Added**
+
+- Named parameters are recognized for the `{{#tag}}` parser function
+
 ## v1.14.0
 
 *2024-12-13*
