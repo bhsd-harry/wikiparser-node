@@ -18,7 +18,7 @@
 		"/printed/README",
 		"/bundle/bundle.*.js",
 		"/extensions/typings.d.ts",
-		"/extensions/dist/",
+		"/extensions/*/*.js",
 		"/extensions/*.css",
 		"!/extensions/dist/gh-page.js",
 		"!/extensions/gh-page.css",
