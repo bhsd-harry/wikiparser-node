@@ -11,6 +11,12 @@ declare interface Test {
 	render?: string;
 }
 
+/**
+ * HTML字符串分行
+ * @param str HTML字符串
+ */
+const split = (str: string): string[] => str.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
+
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
@@ -22,7 +28,7 @@ describe('Parser tests', () => {
 				const root = Parser.parse(wikitext);
 				try {
 					if (print) {
-						assert.equal(root.print(), print);
+						assert.deepStrictEqual(split(root.print()), split(print));
 					}
 				} catch (e) {
 					if (e instanceof assert.AssertionError) {
