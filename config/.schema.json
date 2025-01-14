@@ -39,8 +39,18 @@
 				"file",
 				"category"
 			],
-			"additionalProperties": {
-				"type": "integer"
+			"patternProperties": {
+				"^[^A-Z]*$": {
+					"type": "integer"
+				}
+			},
+			"additionalProperties": false
+		},
+		"variable": {
+			"type": "array",
+			"items": {
+				"type": "string",
+				"pattern": "^[^#A-Z]+$"
 			}
 		},
 		"parserFunction": {
@@ -49,9 +59,13 @@
 				{
 					"description": "case-insensitive parser functions",
 					"type": "object",
-					"additionalProperties": {
-						"type": "string"
-					}
+					"patternProperties": {
+						"^[^A-Z]+$": {
+							"type": "string",
+							"pattern": "^[^#A-Z]+$"
+						}
+					},
+					"additionalProperties": false
 				},
 				{
 					"description": "case-sensitive parser functions",
@@ -76,14 +90,16 @@
 					"description": "msg and raw",
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"pattern": "^[^A-Z]+$"
 					}
 				},
 				{
 					"description": "subst and safesubst",
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"pattern": "^[^A-Z]+$"
 					}
 				}
 			],
@@ -98,7 +114,8 @@
 					"description": "case-insensitive behavior switches",
 					"type": "array",
 					"items": {
-						"type": "string"
+						"type": "string",
+						"pattern": "^[^A-Z]+$"
 					}
 				},
 				{
@@ -111,9 +128,13 @@
 				{
 					"description": "case-insensitive behavior switches",
 					"type": "object",
-					"additionalProperties": {
-						"type": "string"
-					}
+					"patternProperties": {
+						"^[^A-Z]+$": {
+							"type": "string",
+							"pattern": "^[^A-Z]+$"
+						}
+					},
+					"additionalProperties": false
 				}
 			],
 			"minItems": 2,
@@ -127,23 +148,27 @@
 		"interwiki": {
 			"type": "array",
 			"items": {
-				"type": "string"
+				"type": "string",
+				"pattern": "^[^A-Z]+$"
 			}
 		},
 		"img": {
 			"description": "image-related magic words",
 			"type": "object",
-			"additionalProperties": {
-				"type": "string",
-				"pattern": "^[-a-z]+$"
-			}
+			"patternProperties": {
+				"^[^A-Z]+$": {
+					"type": "string",
+					"pattern": "^[-a-z]+$"
+				}
+			},
+			"additionalProperties": false
 		},
 		"redirection": {
 			"description": "magic words for redirection",
 			"type": "array",
 			"items": {
 				"type": "string",
-				"pattern": "^#.+$"
+				"pattern": "^#[^A-Z]+$"
 			}
 		},
 		"variants": {
@@ -191,6 +216,7 @@
 		"html",
 		"namespaces",
 		"nsid",
+		"variable",
 		"parserFunction",
 		"doubleUnderscore",
 		"protocol",
