@@ -83,6 +83,14 @@
 		"category": 14,
 		"module": 828
 	},
+	"variable": [
+		"pageid",
+		"articlepath",
+		"server",
+		"servername",
+		"scriptpath",
+		"stylepath"
+	],
 	"parserFunction": [
 		{
 			"#language": "language",
