@@ -28,15 +28,6 @@ import type {LintError} from '../base';
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
 
-const insensitiveVars = new Set<string | false | undefined>([
-	'pageid',
-	'articlepath',
-	'server',
-	'servername',
-	'scriptpath',
-	'stylepath',
-]);
-
 /* NOT FOR BROWSER */
 
 const basicMagicWords = new Map<string, string>([['=', '='], ['!', '|']]);
@@ -115,7 +106,7 @@ export abstract class TranscludeToken extends Token {
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
 		});
-		const {parserFunction: [insensitive, sensitive]} = config,
+		const {parserFunction: [insensitive, sensitive], variable} = config,
 			argSubst = /^(?:\s|\0\d+[cn]\x7F)*\0\d+s\x7F/u.exec(title)?.[0];
 		if (argSubst) {
 			this.setAttribute('modifier', argSubst);
@@ -135,7 +126,7 @@ export abstract class TranscludeToken extends Token {
 				lcName = name.toLowerCase(),
 				canonicalName = Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName],
 				isSensitive = sensitive.includes(name),
-				isVar = isSensitive || insensitiveVars.has(canonicalName);
+				isVar = isSensitive || variable.includes(canonicalName as string);
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';

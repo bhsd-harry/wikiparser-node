@@ -1,3 +1,11 @@
+## v1.14.2
+
+*2025-01-14*
+
+**Fixed**
+
+- Case-insensitive variables without a parameter, e.g., `{{#language}}`
+
 ## v1.14.1
 
 *2025-01-11*
