@@ -2,7 +2,7 @@ import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
-const version = '1.14.1',
+const version = '1.15.0',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
