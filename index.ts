@@ -67,7 +67,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
-			if (this.config.doubleUnderscore.length < 3) {
+			if (this.config.doubleUnderscore.length < 3 || Array.isArray(this.config.parserFunction[1])) {
 				error(
 					`The schema (${
 						path.resolve(__dirname, '..', 'config', '.schema.json')
@@ -77,8 +77,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			return this.getConfig();
 		}
 		const {doubleUnderscore} = this.config;
-		if (doubleUnderscore.length > 2 && doubleUnderscore[0].length === 0) {
-			doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
+		for (let i = 0; i < 2; i++) {
+			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
+				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
+			}
 		}
 		return {
 			...this.config,

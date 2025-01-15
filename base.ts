@@ -4,8 +4,8 @@ export interface Config {
 	readonly namespaces: Record<string, string>;
 	readonly nsid: Record<string, number>;
 	readonly variable: string[];
-	readonly parserFunction: [Record<string, string>, string[], string[], string[]];
-	readonly doubleUnderscore: [string[], string[], Record<string, string>?];
+	readonly parserFunction: [Record<string, string>, Record<string, string> | string[], string[], string[]];
+	readonly doubleUnderscore: [string[], string[], Record<string, string>?, Record<string, string>?];
 	readonly protocol: string;
 	readonly img: Record<string, string>;
 	readonly redirection: string[];

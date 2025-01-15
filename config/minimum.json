@@ -155,17 +155,17 @@
 			"#section-h": "section-h",
 			"#statements": "statements"
 		},
-		[
-			"!",
-			"=",
-			"#FORMAL",
-			"#bcp47",
-			"#dir",
-			"#interwikilink",
-			"#interlanguagelink",
-			"#timef",
-			"#timefl"
-		],
+		{
+			"!": "!",
+			"=": "=",
+			"#FORMAL": "formal",
+			"#bcp47": "bcp47",
+			"#dir": "dir",
+			"#interwikilink": "interwikilink",
+			"#interlanguagelink": "interlanguagelink",
+			"#timef": "timef",
+			"#timefl": "timefl"
+		},
 		[
 			"msg",
 			"raw"
