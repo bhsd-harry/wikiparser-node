@@ -9,7 +9,7 @@ for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		info(file);
 		const config: Config = require(path.join('..', '..', 'config', file));
-		const {html, namespaces, nsid} = config;
+		const {html, namespaces, nsid, doubleUnderscore} = config;
 
 		// ext/variable/interwiki/redirection/variants
 		for (const key of ['ext', 'variable', 'interwiki', 'redirection', 'variants'] as const) {
@@ -37,6 +37,20 @@ for (const file of fs.readdirSync('config')) {
 				new Set(parserFunction[i as 2 | 3]).size,
 				`parserFunction[${i}] not unique`,
 			);
+		}
+
+		// doubleUnderscore (browser)
+		for (let i = 0; i < 2; i++) {
+			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i as 0 | 1].length > 0) {
+				assert.strictEqual(
+					doubleUnderscore[i]!.length,
+					Object.keys(doubleUnderscore[i + 2]!).length,
+					`inconsistent doubleUnderscore[${i}] and doubleUnderscore[${i + 2}]`,
+				);
+				for (const alias of doubleUnderscore[i as 0 | 1]) {
+					assert(alias in doubleUnderscore[i + 2]!, `'${alias}' not in doubleUnderscore[${i + 2}]`);
+				}
+			}
 		}
 
 		configs[file] = config;
