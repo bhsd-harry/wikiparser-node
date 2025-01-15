@@ -9,7 +9,13 @@ for (const file of fs.readdirSync('config')) {
 	if (!file.startsWith('.')) {
 		info(file);
 		const config: Config = require(path.join('..', '..', 'config', file));
-		const {html, namespaces, nsid} = config;
+		const {html, namespaces, nsid, doubleUnderscore} = config;
+
+		// ext/variable/interwiki/redirection/variants
+		for (const key of ['ext', 'variable', 'interwiki', 'redirection', 'variants'] as const) {
+			const v = config[key];
+			assert.strictEqual(v.length, new Set(v).size, `${key} not unique`);
+		}
 
 		// html
 		const htmls = html.flat();
@@ -23,106 +29,97 @@ for (const file of fs.readdirSync('config')) {
 			assert(ns in namespaces, `'${ns}' not in namespaces`);
 		}
 
+		// parserFunction
+		const {parserFunction} = config;
+		for (let i = 2; i < 4; i++) {
+			assert.strictEqual(
+				parserFunction[i as 2 | 3].length,
+				new Set(parserFunction[i as 2 | 3]).size,
+				`parserFunction[${i}] not unique`,
+			);
+		}
+
+		// doubleUnderscore (browser)
+		for (let i = 0; i < 2; i++) {
+			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i as 0 | 1].length > 0) {
+				assert.strictEqual(
+					doubleUnderscore[i]!.length,
+					Object.keys(doubleUnderscore[i + 2]!).length,
+					`inconsistent doubleUnderscore[${i}] and doubleUnderscore[${i + 2}]`,
+				);
+				for (const alias of doubleUnderscore[i as 0 | 1]) {
+					assert(alias in doubleUnderscore[i + 2]!, `'${alias}' not in doubleUnderscore[${i + 2}]`);
+				}
+			}
+		}
+
 		configs[file] = config;
 	}
 }
 
 console.log();
-const {
-	ext,
-	html,
-	namespaces,
-	nsid,
-	parserFunction,
-	doubleUnderscore,
-	img,
-	redirection,
-	variants,
-} = configs['default.json']!;
-if (doubleUnderscore[0].length === 0) {
-	doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
-}
+const defaultConfig = configs['default.json']!,
+	{parserFunction} = defaultConfig;
 for (const [file, config] of Object.entries(configs)) {
 	if (file !== 'default.json') {
 		info(`${file} vs. default.json`);
 
-		// ext
-		for (const tag of config.ext) {
-			assert(ext.includes(tag), `'${tag}' not in defaultConfig.ext`);
-		}
-
-		// html
-		for (const [i, htmls] of config.html.entries()) {
-			for (const tag of htmls) {
-				assert(html[i]!.includes(tag), `'${tag}' not in defaultConfig.html`);
+		// ext/variable/redirection/variants
+		for (const key of ['ext', 'variable', 'redirection', 'variants'] as const) {
+			for (const ele of config[key]) {
+				assert(defaultConfig[key].includes(ele), `'${ele}' not in defaultConfig.${key}`);
 			}
 		}
 
-		// namspaces
-		for (const [ns, namespace] of Object.entries(config.namespaces)) {
-			assert.strictEqual(namespaces[ns], namespace, `'${ns}' not in defaultConfig.namespaces`);
-		}
-
-		// nsid
-		for (const [namespace, ns] of Object.entries(config.nsid)) {
-			assert.strictEqual(nsid[namespace], ns, `'${namespace}' not in defaultConfig.nsid`);
-		}
-
-		// parserFunction
-		for (const [alias, canonical] of Object.entries(config.parserFunction[0])) {
-			assert.strictEqual(parserFunction[0][alias], canonical, `'${alias}' not in defaultConfig.parserFunction`);
-		}
-		for (const [i, functions] of (config.parserFunction.slice(1) as string[][]).entries()) {
-			for (const f of functions) {
-				assert((parserFunction[i + 1] as string[]).includes(f), `'${f}' not in defaultConfig.parserFunction`);
+		// html/parserFunction
+		for (const key of ['html', 'parserFunction'] as const) {
+			for (const [i, arr] of config[key].entries()) {
+				if (Array.isArray(arr)) {
+					for (const ele of arr) {
+						assert(
+							(defaultConfig[key][i] as string[]).includes(ele),
+							`'${ele}' not in defaultConfig.${key}[${i}]`,
+						);
+					}
+				}
 			}
 		}
+
+		// namspaces/nsid/img
+		for (const key of ['namespaces', 'nsid', 'img'] as const) {
+			for (const [k, v] of Object.entries(config[key])) {
+				assert.strictEqual(defaultConfig[key][k], v, `'${k}' not in defaultConfig.${key}`);
+			}
+		}
+
+		// parserFunction/doubleUnderscore
+		for (const key of ['parserFunction', 'doubleUnderscore'] as const) {
+			for (const [i, obj] of config[key].entries()) {
+				if (obj && !Array.isArray(obj)) {
+					for (const [alias, canonical] of Object.entries(obj)) {
+						assert.strictEqual(
+							(defaultConfig[key][i] as Record<string, string>)[alias],
+							canonical,
+							`'${alias}' not in defaultConfig.${key}[${i}]`,
+						);
+					}
+				}
+			}
+		}
+
 		if (file === 'minimum.json') {
-			for (const [alias, canonical] of Object.entries(parserFunction[0])) {
-				if (/^#[\w-]+$/u.test(alias)) {
-					assert.strictEqual(
-						config.parserFunction[0][alias],
-						canonical,
-						`'${alias}' not in minConfig.parserFunction`,
-					);
+			// parserFunction
+			for (let i = 0; i < 2; i++) {
+				for (const [alias, canonical] of Object.entries(parserFunction[i]!)) {
+					if (/^#[\w-]+$/u.test(alias)) {
+						assert.strictEqual(
+							(config.parserFunction[i] as Record<string, string>)[alias],
+							canonical,
+							`'${alias}' not in minConfig.parserFunction[${i}]`,
+						);
+					}
 				}
 			}
-			for (const f of parserFunction[1]) {
-				if (/^#[\w-]+$/u.test(f)) {
-					assert(config.parserFunction[1].includes(f), `'${f}' not in minConfig.parserFunction`);
-				}
-			}
-		}
-
-		// doubleUnderscore
-		for (const [i, switches] of (config.doubleUnderscore.slice(0, 2) as string[][]).entries()) {
-			for (const s of switches) {
-				assert((doubleUnderscore[i] as string[]).includes(s), `'${s}' not in defaultConfig.doubleUnderscore`);
-			}
-		}
-		if (config.doubleUnderscore.length === 3) {
-			for (const [alias, canonical] of Object.entries(config.doubleUnderscore[2]!)) {
-				assert.strictEqual(
-					doubleUnderscore[2]![alias],
-					canonical,
-					`'${alias}' not in defaultConfig.doubleUnderscore`,
-				);
-			}
-		}
-
-		// img
-		for (const [alias, canonical] of Object.entries(config.img)) {
-			assert.strictEqual(img[alias], canonical, `'${alias}' not in defaultConfig.img`);
-		}
-
-		// redirection
-		for (const redirect of config.redirection) {
-			assert(redirection.includes(redirect), `'${redirect}' not in defaultConfig.redirection`);
-		}
-
-		// variants
-		for (const variant of config.variants) {
-			assert(variants.includes(variant), `'${variant}' not in defaultConfig.variants`);
 		}
 	}
 }

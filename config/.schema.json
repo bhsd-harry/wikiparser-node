@@ -69,21 +69,18 @@
 				},
 				{
 					"description": "case-sensitive parser functions",
-					"type": "array",
-					"allOf": [
-						{
-							"contains": {
-								"const": "!"
-							}
+					"type": "object",
+					"properties": {
+						"!": {
+							"const": "!"
 						},
-						{
-							"contains": {
-								"const": "="
-							}
+						"=": {
+							"const": "="
 						}
-					],
-					"items": {
-						"type": "string"
+					},
+					"additionalProperties": {
+						"type": "string",
+						"pattern": "^[^#A-Z]+$"
 					}
 				},
 				{
@@ -135,10 +132,17 @@
 						}
 					},
 					"additionalProperties": false
+				},
+				{
+					"description": "case-sensitive behavior switches",
+					"type": "object",
+					"additionalProperties": {
+						"type": "string"
+					}
 				}
 			],
 			"minItems": 2,
-			"maxItems": 3
+			"maxItems": 4
 		},
 		"protocol": {
 			"description": "external link protocols",
