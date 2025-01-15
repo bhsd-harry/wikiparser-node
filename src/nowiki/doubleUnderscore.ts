@@ -37,6 +37,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 
 		const lc = word.toLowerCase();
 		this.#sensitive = sensitive;
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		this.setAttribute('name', sensitive ? lc : config.doubleUnderscore[2]?.[lc] ?? lc);
 		this.setAttribute('pattern', new RegExp(`^${word}$`, sensitive ? 'u' : 'iu'));
 	}

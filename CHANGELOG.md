@@ -1,10 +1,14 @@
-## v1.14.2
+## v1.15.0
 
-*2025-01-14*
+*2025-01-15*
 
 **Fixed**
 
-- Case-insensitive variables without a parameter, e.g., `{{#language}}`
+- Case-insensitive variables without a parameter, e.g., `{{#language}}`, and case-sensitive parser functions requiring a parameter, e.g., `{{DEFAULTSORT:}}`
+
+**Changed**
+
+- The [schema](./config/.schema.json) for parser configurations is changed for the [`parserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
 
 ## v1.14.1
 

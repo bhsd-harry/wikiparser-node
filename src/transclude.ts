@@ -124,9 +124,13 @@ export abstract class TranscludeToken extends Token {
 				cleaned = removeComment(magicWord!),
 				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
 				lcName = name.toLowerCase(),
-				canonicalName = Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName],
-				isSensitive = sensitive.includes(name),
-				isVar = isSensitive || variable.includes(canonicalName as string);
+				isOldSchema = Array.isArray(sensitive),
+				isSensitive = isOldSchema
+					? sensitive.includes(name)
+					: Object.prototype.hasOwnProperty.call(sensitive, name),
+				canonicalName = Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]
+				|| !isOldSchema && isSensitive && sensitive[name],
+				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';
