@@ -7,6 +7,7 @@ export interface Config {
 	readonly parserFunction: [Record<string, string>, Record<string, string> | string[], string[], string[]];
 	readonly doubleUnderscore: [string[], string[], Record<string, string>?, Record<string, string>?];
 	readonly protocol: string;
+	readonly interwiki: string[];
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
 	readonly variants: string[];
