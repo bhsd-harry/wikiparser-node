@@ -52,8 +52,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	/** @implements */
 	getConfig() {
 		const {doubleUnderscore} = this.config;
-		if (doubleUnderscore.length > 2 && doubleUnderscore[0].length === 0) {
-			doubleUnderscore[0] = Object.keys(doubleUnderscore[2]!);
+		for (let i = 0; i < 2; i++) {
+			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
+				doubleUnderscore[i] = Object.keys(doubleUnderscore[i + 2]!);
+			}
 		}
 		return {
 			...minConfig,
