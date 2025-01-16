@@ -1,7 +1,7 @@
 (() => {
 "use strict";
 (async () => {
-    const tests = await (await fetch('./test/parserTests.json')).json(), key = 'wikiparser-node-done', dones = new Set(JSON.parse(localStorage.getItem(key))), select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
+    const tests = await (await fetch('./test/parserTests.json')).json(), key = 'wikiparser-node-done', dones = new Set(JSON.parse(localStorage.getItem(key))), isGH = location.hostname.endsWith('.github.io'), isIframe = self !== top, select = document.querySelector('select'), btn = document.querySelector('button'), pre = document.querySelector('pre'), container = document.getElementById('frame'), container1 = document.getElementById('frame1'), container2 = document.getElementById('frame2');
     Parser.config = await (await fetch('./config/default.json')).json();
     wikiparse.print = (wikitext, include, stage) => {
         const printed = Parser.parse(wikitext, include, stage).print();
@@ -9,6 +9,9 @@
     };
     wikiparse.highlight(pre, false, true);
     btn.disabled = !select.value;
+    if (isGH) {
+        btn.style.display = 'none';
+    }
     let optgroup;
     for (const [i, { desc, wikitext, html }] of tests.entries()) {
         if (wikitext === undefined) {
@@ -16,7 +19,7 @@
             optgroup.label = desc;
             select.append(optgroup);
         }
-        else if (html !== undefined && !dones.has(desc)) {
+        else if ((isIframe || html !== undefined) && (isGH || !dones.has(desc))) {
             const option = document.createElement('option');
             option.value = String(i);
             option.textContent = desc;
@@ -28,8 +31,14 @@
         pre.textContent = wikitext;
         pre.classList.remove('wikiparser');
         container.removeAttribute('data-source');
-        container1.innerHTML = html;
-        container2.innerHTML = render !== null && render !== void 0 ? render : '';
+        if (html === undefined) {
+            container.style.display = 'none';
+        }
+        else {
+            container.style.display = '';
+            container1.innerHTML = html;
+            container2.innerHTML = render !== null && render !== void 0 ? render : '';
+        }
         wikiparse.highlight(pre, false, true);
         select.selectedOptions[0].disabled = true;
         btn.disabled = false;

@@ -9,6 +9,8 @@ declare interface Test {
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
 		key = 'wikiparser-node-done',
 		dones = new Set<string>(JSON.parse(localStorage.getItem(key)!) as string[]),
+		isGH = location.hostname.endsWith('.github.io'),
+		isIframe = self !== top, // eslint-disable-line no-restricted-globals
 		select = document.querySelector('select')!,
 		btn = document.querySelector('button')!,
 		pre = document.querySelector('pre')!,
@@ -23,13 +25,16 @@ declare interface Test {
 	};
 	wikiparse.highlight!(pre, false, true);
 	btn.disabled = !select.value;
+	if (isGH) {
+		btn.style.display = 'none';
+	}
 	let optgroup: HTMLOptGroupElement;
 	for (const [i, {desc, wikitext, html}] of tests.entries()) {
 		if (wikitext === undefined) {
 			optgroup = document.createElement('optgroup');
 			optgroup.label = desc;
 			select.append(optgroup);
-		} else if (html !== undefined && !dones.has(desc)) {
+		} else if ((isIframe || html !== undefined) && (isGH || !dones.has(desc))) {
 			const option = document.createElement('option');
 			option.value = String(i);
 			option.textContent = desc;
@@ -42,8 +47,13 @@ declare interface Test {
 		pre.textContent = wikitext!;
 		pre.classList.remove('wikiparser');
 		container.removeAttribute('data-source');
-		container1.innerHTML = html!;
-		container2.innerHTML = render ?? '';
+		if (html === undefined) {
+			container.style.display = 'none';
+		} else {
+			container.style.display = '';
+			container1.innerHTML = html!;
+			container2.innerHTML = render ?? '';
+		}
 		wikiparse.highlight!(pre, false, true);
 		select.selectedOptions[0]!.disabled = true;
 		btn.disabled = false;
