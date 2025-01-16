@@ -165,7 +165,7 @@ textarea {
 #editor > .wikiparser, .cm-editor, #wpTextbox2, pre {
 	border-radius: .3em;
 }
-.cm-editor {
+.cm-editor, #wpTextbox2 {
 	border: 1.5px solid #dedede;
 }
 
