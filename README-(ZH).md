@@ -57,3 +57,16 @@ npm i wikilint
 # 使用方法
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
+
+# 已知问题
+
+## 解析器
+
+1. 使用行首空格的预格式化文本只在 [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) 方法中处理。
+
+## HTML 转换
+
+1. 许多扩展不被支持，如 `<indicator>` 和 `<ref>`。
+1. 大多数解析器函数不被支持。
+1. 目录不被支持。
+1. 自由外链中的 URI 编码（[示例](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)）。

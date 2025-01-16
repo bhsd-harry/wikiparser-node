@@ -24,6 +24,8 @@
 		"!/extensions/gh-page.css",
 		"!/extensions/dist/parserTests.js",
 		"!/extensions/test-page.css",
+		"!/extensions/dist/compare.js",
+		"!/extensions/compare.css",
 		"/config/",
 		"/i18n/",
 		"/dist/",
@@ -55,7 +57,7 @@
 		"test:real": "node dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.6.0",
+		"@bhsd/common": "^0.6.1",
 		"@codemirror/lint": "^6.8.4",
 		"chalk": "^4.1.2",
 		"codejar-async": "^4.2.6",
