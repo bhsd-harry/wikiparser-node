@@ -2,7 +2,7 @@
 	const iframes = top!.document.getElementsByTagName('iframe'); // eslint-disable-line no-restricted-globals
 	iframes[0]!.addEventListener('load', () => {
 		const {contentWindow, contentDocument} = iframes[0]!;
-		contentWindow!.addEventListener('hashchange', () => {
+		contentWindow!.addEventListener('casechange', () => {
 			for (let i = 1; i < iframes.length; i++) {
 				iframes[i]!.contentWindow!.location.hash = contentWindow!.location.hash;
 			}
@@ -15,13 +15,13 @@
 			}
 		});
 	});
-	for (const iframe of iframes as unknown as Iterable<HTMLIFrameElement>) {
-		iframe.addEventListener('load', () => {
-			const {contentDocument} = iframe,
+	for (let i = 0; i < iframes.length; i++) {
+		iframes[i]!.addEventListener('load', () => {
+			const {contentDocument} = iframes[i]!,
 				style = contentDocument!.createElement('style');
-			style.textContent = 'body{background:#fff}'
-			+ 'main{margin:0;box-shadow:none}'
-			+ '#compare>:last-child{display:none}';
+			style.textContent = `body{background:#fff}main{margin:0;box-shadow:none}${
+				i === 0 ? '' : '.field{min-height:0}select,'
+			}#compare>:last-child{display:none}`;
 			contentDocument!.head.append(style);
 		});
 	}

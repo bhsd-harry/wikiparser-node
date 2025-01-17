@@ -9,4 +9,7 @@ iframe {
 		margin: 0;
 		column-count: 3;
 	}
+	iframe {
+		display: block;
+	}
 }

@@ -25,8 +25,8 @@ declare interface Test {
 	};
 	wikiparse.highlight!(pre, false, true);
 	btn.disabled = !select.value;
-	if (isGH) {
-		btn.style.display = 'none';
+	if (!isGH) {
+		btn.style.display = '';
 	}
 	let optgroup: HTMLOptGroupElement;
 	for (const [i, {desc, wikitext, html}] of tests.entries()) {
@@ -57,7 +57,8 @@ declare interface Test {
 		wikiparse.highlight!(pre, false, true);
 		select.selectedOptions[0]!.disabled = true;
 		btn.disabled = false;
-		location.hash = `#${encodeURIComponent(desc)}`;
+		history.replaceState(null, '', `#${encodeURIComponent(desc)}`);
+		dispatchEvent(new Event('casechange'));
 	});
 	btn.addEventListener('click', () => {
 		dones.add(tests[Number(select.value)]!.desc);

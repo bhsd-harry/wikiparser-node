@@ -489,10 +489,11 @@ pre {
 @media screen and (min-width: 1200px) {
 	#frame {
 		column-count: 2;
+		padding-top: 1rem;
 	}
 	.frame:not(:empty) {
-		display: inline-block;
 		width: calc(100% - 27px);
+		margin-top: 0;
 	}
 	#frame[data-source] > .frame:not(:empty) {
 		width: calc(100% - 3px);
