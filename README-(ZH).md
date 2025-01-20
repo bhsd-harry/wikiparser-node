@@ -57,3 +57,7 @@ npm i wikilint
 # 使用方法
 
 请查阅 [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki)。
+
+# 已知问题
+
+请参阅[英语版本](./README.md#known-issues)。
