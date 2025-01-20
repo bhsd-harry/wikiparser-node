@@ -435,32 +435,8 @@
 		]
 	],
 	"doubleUnderscore": [
-		[
-			"forcetoc",
-			"nocc",
-			"nocontentconvert",
-			"noeditsection",
-			"nogallery",
-			"notc",
-			"notitleconvert",
-			"notoc",
-			"toc",
-			"archivedtalk",
-			"notalk"
-		],
-		[
-			"EXPECTUNUSEDCATEGORY",
-			"DISAMBIG",
-			"HIDDENCAT",
-			"INDEX",
-			"NEWSECTIONLINK",
-			"NOINDEX",
-			"NONEWSECTIONLINK",
-			"STATICREDIRECT",
-			"NOGLOBAL",
-			"EXPECTED_UNCONNECTED_PAGE",
-			"EXPECTUNUSEDTEMPLATE"
-		],
+		[],
+		[],
 		{
 			"forcetoc": "forcetoc",
 			"nocc": "nocontentconvert",
