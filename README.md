@@ -56,3 +56,18 @@ For more browser extensions, please refer to the corresponding [documentation](h
 # Usage
 
 Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Home-%28EN%29).
+
+# Known issues
+
+## Parser
+
+1. Preformatted text with a leading space is only processed by [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token-%28EN%29#tohtml).
+
+## HTML conversion
+
+1. Many extensions are not supported, such as `<indicator>` and `<ref>`.
+1. Most parser functions are not supported.
+1. TOC is not supported.
+1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
+1. Incomplete `<p>` wrapping ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
+1. URI encoding in free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
