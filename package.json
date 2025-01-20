@@ -50,7 +50,8 @@
 	},
 	"dependencies": {
 		"@bhsd/common": "^0.6.1",
-		"chalk": "^4.1.2"
+		"chalk": "^4.1.2",
+		"entities": "^6.0.0"
 	},
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^2.11.0",
