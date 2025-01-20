@@ -37,12 +37,24 @@ export const text = (childNodes: readonly (string | AstNodes)[], separator = '')
 const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' ', amp: '&', quot: '"'};
 
 /** decode HTML entities */
-export const decodeHtml = factory(
+const decodeHtmlBasic = factory(
 	/&(?:#(\d+|[Xx][\da-fA-F]+)|([lLgG][tT]|[lr]brac[ke]|nbsp|amp|AMP|quot|QUOT));/gu,
 	(_, code: string, name: string) => code
 		? String.fromCodePoint(Number((/^x/iu.test(code) ? '0' : '') + code))
 		: names[name.toLowerCase() as keyof typeof names],
 );
+
+/**
+ * decode HTML entities
+ * @param str
+ */
+export const decodeHtml = (str: string): string => {
+	try {
+		return (require('entities') as typeof import('entities')).decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
+	} catch {
+		return decodeHtmlBasic(str);
+	}
+};
 
 /** decode numbered HTML entities */
 export const decodeNumber = factory(
