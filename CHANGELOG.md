@@ -2,6 +2,10 @@
 
 *2025-01-20*
 
+**Changed**
+
+- Full HTML entity decoding via [entitie](https://npmjs.com/package/entity)
+
 **Removed**
 
 - Interwiki prefixes are no longer available from the preset configuration files
