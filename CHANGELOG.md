@@ -1,3 +1,11 @@
+## v1.15.1
+
+*2025-01-20*
+
+**Removed**
+
+- Interwiki prefixes are no longer available from the preset configuration files
+
 ## v1.15.0
 
 *2025-01-15*
