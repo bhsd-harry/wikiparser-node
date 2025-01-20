@@ -70,5 +70,5 @@ Please refer to the [Wiki](https://github.com/bhsd-harry/wikiparser-node/wiki/Ho
 1. Most parser functions are not supported.
 1. TOC is not supported.
 1. Link trail is not supported ([Example](https://bhsd-harry.github.io/wikiparser-node/tests.html#1.%20Interaction%20of%20linktrail%20and%20template%20encapsulation)).
-1. Incomplete `<p>` wrapping ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link)).
+1. Incomplete `<p>` wrapping (Examples [1](http://bhsd-harry.github.io/wikiparser-node/tests.html#%3Cpre%3E%20inside%20a%20link), [2](http://bhsd-harry.github.io/wikiparser-node/tests.html#Templates%3A%20Scopes%20should%20not%20be%20expanded%20unnecessarily)).
 1. URI encoding in free external links ([Example](http://bhsd-harry.github.io/wikiparser-node/tests.html#Parsoid%3A%20pipe%20in%20transclusion%20parameter)).
