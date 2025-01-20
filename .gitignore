@@ -1,11 +1,14 @@
 /node_modules/
 /dist/
 /bundle/*.map
+/coverage/
 /errors/*
 /printed/*
 /.vscode/
 /.eslintcache*
 /.markdownlint.json
+/.nyc_output/
+/.cache/
 /wiki/
 /test/*.wiki
 /test/**/*.txt
