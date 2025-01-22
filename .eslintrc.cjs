@@ -12,6 +12,10 @@ module.exports = {
 		...config.extends,
 		'plugin:markdown/recommended-legacy',
 	],
+	ignorePatterns: [
+		...config.ignorePatterns,
+		'coverage/',
+	],
 	rules: {
 		...config.rules,
 		'no-control-regex': 0,

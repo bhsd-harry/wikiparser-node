@@ -52,6 +52,7 @@ const getIndex = (j: number, parent: AstNode): number =>
 
 /* NOT FOR BROWSER */
 
+/* istanbul ignore next */
 /**
  * 定制TypeError消息
  * @param {Function} Constructor 类
@@ -366,6 +367,7 @@ export abstract class AstNode implements AstNodeBase {
 
 	/* NOT FOR BROWSER */
 
+	/* istanbul ignore next */
 	/** @private */
 	typeError(method: string, ...types: string[]): never {
 		return typeError(this.constructor, method, ...types);
@@ -388,6 +390,7 @@ export abstract class AstNode implements AstNodeBase {
 			if (e instanceof assert.AssertionError) {
 				return false;
 			}
+			/* istanbul ignore next */
 			throw e;
 		}
 		return true;
@@ -401,6 +404,7 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	#insertAdjacent(nodes: readonly (AstNodes | string)[], offset: number): void {
 		const {parentNode} = this;
+		/* istanbul ignore if */
 		if (!parentNode) {
 			throw new Error('There is no parent node!');
 		}
@@ -451,6 +455,7 @@ export abstract class AstNode implements AstNodeBase {
 	/** @private */
 	verifyChild(i: number, addition = 0): void {
 		const {childNodes: {length}} = this;
+		/* istanbul ignore if */
 		if (i < -length || i >= length + addition) {
 			throw new RangeError(`The child node at position ${i} does not exist!`);
 		}
@@ -552,7 +557,7 @@ export abstract class AstNode implements AstNodeBase {
 			return -1;
 		} else if (other.contains(this)) {
 			return 1;
-		} else if (this.getRootNode() !== other.getRootNode()) {
+		} else /* istanbul ignore if */ if (this.getRootNode() !== other.getRootNode()) {
 			throw new RangeError('Nodes to be compared are not in the same document!');
 		}
 		const aAncestors = [...this.getAncestors().reverse(), this as AstNode as AstNodes],

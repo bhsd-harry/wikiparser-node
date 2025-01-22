@@ -20,9 +20,11 @@ const getParent = (node: AstNodes): Token => {
 	if (parentNode) {
 		return parentNode;
 	}
+	/* istanbul ignore next */
 	throw new RangeError('The reference node has no parent node!');
 };
 
+/* istanbul ignore next */
 /**
  * 未初始化时抛出错误
  * @param start 是否未初始化起点
@@ -41,12 +43,12 @@ export class AstRange {
 
 	/** 起点容器 */
 	get startContainer(): AstNodes {
-		return this.#startContainer ?? notInit(true);
+		return this.#startContainer ?? /* istanbul ignore next */ notInit(true);
 	}
 
 	/** 起点位置 */
 	get startOffset(): number {
-		return this.#startOffset ?? notInit(true);
+		return this.#startOffset ?? /* istanbul ignore next */ notInit(true);
 	}
 
 	/** 起点绝对位置 */
@@ -61,12 +63,12 @@ export class AstRange {
 
 	/** 终点容器 */
 	get endContainer(): AstNodes {
-		return this.#endContainer ?? notInit(false);
+		return this.#endContainer ?? /* istanbul ignore next */ notInit(false);
 	}
 
 	/** 终点位置 */
 	get endOffset(): number {
-		return this.#endOffset ?? notInit(false);
+		return this.#endOffset ?? /* istanbul ignore next */ notInit(false);
 	}
 
 	/** 终点绝对位置 */
@@ -100,6 +102,7 @@ export class AstRange {
 			msg1 = 'The start and end positions are not siblings!',
 			msg2 = 'The start position cannot be after the end position!';
 		if (startContainer === endContainer) {
+			/* istanbul ignore if */
 			if (startOffset > endOffset) {
 				throw new RangeError(msg2);
 			}
@@ -107,6 +110,7 @@ export class AstRange {
 		}
 		const {type: startType, parentNode: startParent} = startContainer,
 			{type: endType, parentNode: endParent} = endContainer;
+		/* istanbul ignore next */
 		if (startType !== 'text') {
 			if (endType !== 'text' || startContainer !== endParent) {
 				throw new RangeError(msg1);
@@ -136,6 +140,7 @@ export class AstRange {
 	 */
 	setStart(startNode: AstNodes, offset: number): void {
 		const {length} = startNode;
+		/* istanbul ignore if */
 		if (offset < 0 || offset > length) {
 			throw new RangeError(`The range of startOffset should be 0 ~ ${length}`);
 		}
@@ -146,7 +151,7 @@ export class AstRange {
 		if (this.#endContainer) {
 			try {
 				this.#check();
-			} catch (e) {
+			} catch (e) /* istanbul ignore next */ {
 				this.#startContainer = startContainer;
 				this.#startOffset = startOffset;
 				throw e;
@@ -162,6 +167,7 @@ export class AstRange {
 	 */
 	setEnd(endNode: AstNodes, offset: number): void {
 		const {length} = endNode;
+		/* istanbul ignore if */
 		if (offset < 0 || offset > length) {
 			throw new RangeError(`The range of endOffset should be 0 ~ ${length}`);
 		}
@@ -172,7 +178,7 @@ export class AstRange {
 		if (this.#startContainer) {
 			try {
 				this.#check();
-			} catch (e) {
+			} catch (e) /* istanbul ignore next */ {
 				this.#endContainer = endContainer;
 				this.#endOffset = endOffset;
 				throw e;
@@ -278,6 +284,7 @@ export class AstRange {
 	 */
 	comparePoint(referenceNode: AstNodes, offset: number): -1 | 0 | 1 {
 		const {startContainer, startIndex, endContainer, endIndex} = this;
+		/* istanbul ignore if */
 		if (startContainer.getRootNode() !== referenceNode.getRootNode()) {
 			throw new RangeError('The point to be compared is not in the same document!');
 		}

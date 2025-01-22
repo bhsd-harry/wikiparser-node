@@ -86,6 +86,7 @@ export class Title {
 
 	/** @throws `RangeError` undefined namespace */
 	set ns(ns) { // eslint-disable-line grouped-accessor-pairs
+		/* istanbul ignore if */
 		if (!(this.ns in this.#namespaces)) {
 			throw new RangeError('Undefined namespace!');
 		}

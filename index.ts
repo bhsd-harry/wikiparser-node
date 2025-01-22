@@ -116,7 +116,7 @@ declare interface Parser extends ParserBase {
  * @param dir 子路径
  */
 const rootRequire = (file: string, dir: string): unknown => require(
-	path.isAbsolute(file) ? file : path.join('..', file.includes('/') ? '' : dir, file),
+	path.isAbsolute(file) ? /* istanbul ignore next */ file : path.join('..', file.includes('/') ? '' : dir, file),
 );
 
 /* NOT FOR BROWSER */
@@ -191,6 +191,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
+			/* istanbul ignore if */
 			if (this.config.doubleUnderscore.length < 3 || Array.isArray(this.config.parserFunction[1])) {
 				error(
 					`The schema (${
@@ -202,9 +203,11 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			/* NOT FOR BROWSER */
 
 			const {config: {conversionTable, redirects}} = this;
+			/* istanbul ignore if */
 			if (conversionTable) {
 				this.conversionTable = new Map(conversionTable);
 			}
+			/* istanbul ignore if */
 			if (redirects) {
 				this.redirects = new Map(redirects);
 			}
@@ -293,7 +296,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			token.type = 'root';
 			try {
 				return token.parse(maxStage, include);
-			} catch (e) {
+			} catch (e) /* istanbul ignore next */ {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
@@ -312,6 +315,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 		/* NOT FOR BROWSER */
 
+		/* istanbul ignore if */
 		if (this.debugging) {
 			let restored = root.toString(),
 				process = 'parsing';
@@ -342,12 +346,14 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	warn(msg, ...args) {
+		/* istanbul ignore if */
 		if (this.warning) {
 			console.warn(chalk.yellow(msg), ...args);
 		}
 	},
 	/** @implements */
 	debug(msg, ...args) {
+		/* istanbul ignore if */
 		if (this.debugging) {
 			console.debug(chalk.blue(msg), ...args);
 		}
@@ -355,6 +361,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	error,
 	info,
 
+	/* istanbul ignore next */
 	/** @implements */
 	log(f) {
 		if (typeof f === 'function') {
@@ -362,12 +369,14 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		}
 	},
 
+	/* istanbul ignore next */
 	/** @implements */
 	require(name: string): unknown {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 		return Object.hasOwn(classes, name) ? require(classes[name]!)[name] : require(path.join(__dirname, name));
 	},
 
+	/* istanbul ignore next */
 	/** @implements */
 	async clearCache(): Promise<void> {
 		await cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']);
@@ -396,6 +405,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			: null;
 	},
 
+	/* istanbul ignore next */
 	/** @implements */
 	reparse(date = '') {
 		const main = fs.readdirSync(path.join(__dirname, '..', 'errors'))

@@ -31,8 +31,7 @@ export const parseMagicLinks = (wikitext: string, config: Config, accum: Token[]
 				})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 				'giu',
 			);
-		} catch {
-			/* istanbul ignore next */
+		} catch /* istanbul ignore next */ {
 			config.regexMagicLinks = new RegExp(
 				String.raw`(^|\W)(?:(?:${config.protocol})(${extUrlCharFirst}${extUrlChar})|${magicLinkPattern})`,
 				'giu',

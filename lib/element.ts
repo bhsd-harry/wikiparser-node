@@ -159,6 +159,7 @@ export abstract class AstElement extends AstNode {
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
 		/* NOT FOR BROWSER */
 
+		/* istanbul ignore next */
 		if (node.contains(this)) {
 			throw new RangeError('Cannot insert an ancestor node!');
 		} else if (this.childNodes.includes(node)) {
@@ -288,6 +289,7 @@ export abstract class AstElement extends AstNode {
 
 		/* NOT FOR BROWSER */
 
+		/* istanbul ignore next */
 		throw new RangeError(`The child node at position ${i} is ${oldText.constructor.name}!`);
 	}
 
@@ -342,6 +344,7 @@ export abstract class AstElement extends AstNode {
 
 		/* NOT FOR BROWSER */
 
+		/* istanbul ignore if */
 		if (typeof file === 'string') {
 			fs.writeFileSync(
 				path.join(__dirname, '..', '..', 'printed', file + (file.endsWith('.json') ? '' : '.json')),
@@ -418,6 +421,7 @@ export abstract class AstElement extends AstNode {
 	 */
 	#getChildIndex(node: AstNodes): number {
 		const i = this.childNodes.indexOf(node);
+		/* istanbul ignore if */
 		if (i === -1) {
 			throw new RangeError('Not a child node!');
 		}

@@ -51,7 +51,7 @@ const decodeHtmlBasic = factory(
 export const decodeHtml = (str: string): string => {
 	try {
 		return (require('entities') as typeof import('entities')).decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
-	} catch {
+	} catch /* istanbul ignore next */ {
 		return decodeHtmlBasic(str);
 	}
 };

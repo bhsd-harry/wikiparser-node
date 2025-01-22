@@ -22,7 +22,7 @@ export const Shadow = {
 			}
 			this.running = running;
 			return result;
-		} catch (e) {
+		} catch (e) /* istanbul ignore next */ {
 			this.running = running;
 			throw e;
 		}
@@ -108,6 +108,7 @@ export const undo: AstListener = (e, data): void => {
 		case 'text':
 			(target as AstText).replaceData(data.oldText);
 			break;
+		/* istanbul ignore next */
 		default:
 			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
 	}

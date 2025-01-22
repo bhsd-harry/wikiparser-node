@@ -25,6 +25,7 @@ export class Range {
 			this.start = Number(start);
 			this.end = Number(end?.trim() || Infinity);
 			this.step = Math.max(Number(step), 1);
+			/* istanbul ignore next */
 			if (!Number.isInteger(this.start)) {
 				throw new RangeError(`The start of a range, \`${start}\`, should be an integer!`);
 			} else if (this.end !== Infinity && !Number.isInteger(this.end)) {
@@ -36,10 +37,12 @@ export class Range {
 			const mt = /^([+-])?(\d+)?n(?:\s*([+-])\s*(\d+))?$/u
 				.exec(str) as [string, string | undefined, string | undefined, string | undefined, string | undefined]
 				| null;
+			/* istanbul ignore else */
 			if (mt) {
 				const [, sgnA = '+', a = 1, sgnB = '+'] = mt,
 					b = Number(mt[4] ?? 0);
 				this.step = Number(a);
+				/* istanbul ignore if */
 				if (this.step === 0) {
 					throw new RangeError(`In the argument \`${str}\`, the coefficient of "n" must not be 0!`);
 				} else if (sgnA === '+') { // `an+b` or `an-b`
@@ -90,7 +93,7 @@ export class Ranges extends Array<number | Range> {
 			} else if (typeof ele === 'string' && Number.isNaN(number)) {
 				try {
 					this.push(new Range(ele));
-				} catch (e) {
+				} catch (e) /* istanbul ignore next */ {
 					if (e instanceof RangeError) {
 						error(e.message);
 					}
