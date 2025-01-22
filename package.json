@@ -28,6 +28,7 @@
 		"!/extensions/compare.css",
 		"/config/",
 		"/i18n/",
+		"/coverage/badge.svg",
 		"/dist/",
 		"!/dist/[bt]*/"
 	],
