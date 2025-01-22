@@ -3,6 +3,7 @@
 [![CI](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml/badge.svg)](https://github.com/bhsd-harry/wikiparser-node/actions/workflows/node.js.yml)
 [![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/wikiparser-node)](https://www.npmjs.com/package/wikiparser-node)
 [![codebeat badge](https://codebeat.co/badges/7cdd51e6-2c5d-4a22-aae1-f5e352047d54)](https://codebeat.co/projects/github-com-bhsd-harry-wikiparser-node-main)
+![Istanbul coverage](./coverage/badge.svg)
 
 # Other Languages
 
