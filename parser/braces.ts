@@ -127,6 +127,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						ch = 'n';
 					}
 				} catch (e) {
+					/* istanbul ignore else */
 					if (e instanceof SyntaxError && e.message === 'Invalid template name') {
 						skip = true;
 					} else {
