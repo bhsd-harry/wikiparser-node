@@ -18,6 +18,7 @@
 		"/errors/README",
 		"/config/",
 		"/i18n/",
+		"/coverage/badge.svg",
 		"/bin/cli.js",
 		"/dist/",
 		"!/dist/test/",
