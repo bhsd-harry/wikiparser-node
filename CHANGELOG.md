@@ -2,6 +2,10 @@
 
 *2025-01-20*
 
+**Fixed**
+
+- `&lt;` and `&gt;` in external links
+
 **Changed**
 
 - Full HTML entity decoding via [entitie](https://npmjs.com/package/entity)
