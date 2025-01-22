@@ -1,7 +1,8 @@
 /node_modules/
 dist/
 /bundle/*.map
-/coverage/
+/coverage/*
+!/coverage/badge.svg
 /errors/*
 /printed/*
 /.vscode/
