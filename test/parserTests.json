@@ -6138,6 +6138,41 @@
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;div<span class=\"wpb-html-attrs\"> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">width</span>=\"<span class=\"wpb-attr-value\">95%</span>\"</span> <span class=\"wpb-html-attr\"><span class=\"wpb-attr-key\">style</span>=\"<span class=\"wpb-attr-value\">border: 3px solid darkblue</span>\"</span></span>&gt;</span>hi</span>"
 	},
 	{
+		"desc": "additionalTests"
+	},
+	{
+		"desc": "Multiple <onlyinclude> being included",
+		"wikitext": "{{Includes4}}",
+		"html": "<p>FooBaz\n</p>",
+		"render": "<p>FooBaz\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">Includes4</span>}}</span></span>"
+	},
+	{
+		"desc": "#vardefine at SOL",
+		"wikitext": "{{#vardefine:test|heading}}==Heading==\n{{#vardefine:test|hr}}----\n{{#vardefine:test|list}};dt:dd\n{{#vardefine:test|table}}{|\n|-\n! !!\n|}",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#vardefine</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">test</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">heading</span></span>}}</span><span class=\"wpb-heading\">==<span class=\"wpb-heading-title\">Heading</span>==</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#vardefine</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">test</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">hr</span></span>}}</span><span class=\"wpb-hr\">----</span>\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#vardefine</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">test</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">list</span></span>}}</span><span class=\"wpb-list\">;</span>dt<span class=\"wpb-dd\">:</span>dd\n<span class=\"wpb-magic-word\">{{<span class=\"wpb-magic-word-name\">#vardefine</span>:<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">test</span></span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">table</span></span>}}</span><span class=\"wpb-table\"><span class=\"wpb-table-syntax\">{|</span><span class=\"wpb-tr\"><span class=\"wpb-table-syntax\">\n|-</span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">\n!</span><span class=\"wpb-td-inner\"> </span></span><span class=\"wpb-td\"><span class=\"wpb-table-syntax\">!!</span></span></span><span class=\"wpb-table-syntax\">\n|}</span></span></span>"
+	},
+	{
+		"desc": "Case-sensitive behavior switches in lower cases",
+		"wikitext": "__index__",
+		"print": "<span class=\"wpb-root\">__index__</span>"
+	},
+	{
+		"desc": "Nested file links",
+		"wikitext": "[[file:thumb.jpg|[[file:thumb.png|Thumb|thumb]]|thumb]]\n[[file:thumb.jpg|[[file:thumb.png|[[T]]humb|thumb]]|thumb]]",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:thumb.jpg</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:thumb.png</span>|<span class=\"wpb-image-caption\">Thumb</span>|<span class=\"wpb-image-parameter\">thumb</span>]]</span></span>|<span class=\"wpb-image-parameter\">thumb</span>]]</span>\n[[file:thumb.jpg|[[file:thumb.png|<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">T</span>]]</span>humb|thumb]]|thumb]]</span>"
+	},
+	{
+		"desc": "&lt; in an external link",
+		"wikitext": "[https://mediawiki.org/&LT;&lt;text]\n[https://mediawiki.org/&GT;&gt;text]",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://mediawiki.org/&amp;LT;</span><span class=\"wpb-ext-link-text\">&amp;lt;text</span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">https://mediawiki.org/&amp;GT;</span><span class=\"wpb-ext-link-text\">&amp;gt;text</span>]</span></span>"
+	},
+	{
+		"desc": "Magic links in lower cases",
+		"wikitext": "pmid 1 PMID 1\nrfc 1 RFC 1\nisbn 1234567890 ISBN 1234567890",
+		"print": "<span class=\"wpb-root\">pmid 1 <span class=\"wpb-magic-link\">PMID 1</span>\nrfc 1 <span class=\"wpb-magic-link\">RFC 1</span>\nisbn 1234567890 <span class=\"wpb-magic-link\">ISBN 1234567890</span></span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
