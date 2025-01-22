@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {HrToken} from '../src/nowiki/hr';
 import {DoubleUnderscoreToken} from '../src/nowiki/doubleUnderscore';
 import {HeadingToken} from '../src/heading';

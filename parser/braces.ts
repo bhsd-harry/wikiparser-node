@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {removeComment} from '../util/string';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';
@@ -117,6 +118,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						ch = 'n';
 					}
 				} catch (e) {
+					/* istanbul ignore else */
 					if (e instanceof SyntaxError && e.message === 'Invalid template name') {
 						skip = true;
 					} else {

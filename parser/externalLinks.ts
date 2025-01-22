@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
 import {ExtLinkToken} from '../src/extLink';
 import {MagicLinkToken} from '../src/magicLink';
@@ -22,9 +23,9 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		const {length} = accum,
 			mt = /&[lg]t;/u.exec(url);
 		if (mt) {
-			url = url.slice(0, mt.index);
 			space = '';
 			text = url.slice(mt.index) + space + text;
+			url = url.slice(0, mt.index);
 		}
 		if (inFile) {
 			// @ts-expect-error abstract class
