@@ -1,7 +1,5 @@
 import {
 	zs,
-	extUrlChar,
-	extUrlCharFirst,
 	removeComment,
 	escape,
 
@@ -40,7 +38,6 @@ const sp = String.raw`[${zs}\t]*`,
 		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
 	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
 	errorSyntaxUrl = new RegExp(source, 'giu'),
-	extImage = new RegExp(String.raw`^https?://${extUrlCharFirst}${extUrlChar}\.(?:gif|png|jpg|jpeg)$`, 'iu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
 		'[': /[[\]]/u,
@@ -115,7 +112,7 @@ let wordRegex: RegExp;
 try {
 	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
 	wordRegex = new RegExp(String.raw`[\p{L}\d_]`, 'u');
-} catch {
+} catch /* istanbul ignore next */ {
 	wordRegex = /\w/u;
 }
 
@@ -174,6 +171,7 @@ export class AstText extends AstNode {
 			return [];
 		}
 		const {data, parentNode, nextSibling, previousSibling} = this;
+		/* istanbul ignore if */
 		if (!parentNode) {
 			throw new Error('An isolated text node cannot be linted!');
 		}
@@ -233,7 +231,6 @@ export class AstText extends AstNode {
 					/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
 					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki' && nextSibling.innerText?.includes(']')
 				)
-				|| char === 'h' && index === 0 && type === 'ext-link-text' && extImage.test(data)
 				|| magicLink && (!parentNode.getAttribute('plain') || noLinkTypes.has(type))
 			) {
 				continue;
@@ -303,11 +300,7 @@ export class AstText extends AstNode {
 				};
 			if (char === '<') {
 				e.suggestions = [{desc: 'escape', range: [startIndex, startIndex + 1], text: '&lt;'}];
-			} else if (
-				char === 'h'
-				&& !(type === 'ext-link-text' || type === 'link-text')
-				&& wordRegex.test(previousChar || '')
-			) {
+			} else if (char === 'h' && type !== 'link-text' && wordRegex.test(previousChar || '')) {
 				e.suggestions = [{desc: 'whitespace', range: [startIndex, startIndex], text: ' '}];
 			} else if (char === '[' && type === 'ext-link-text') {
 				const i = parentNode.getAbsoluteIndex() + parentNode.toString().length;
@@ -415,10 +408,12 @@ export class AstText extends AstNode {
 	 * @throws `Error` 没有父节点
 	 */
 	splitText(offset: number): AstText {
+		/* istanbul ignore if */
 		if (offset > this.length || offset < -this.length) {
 			throw new RangeError(`Wrong offset to split: ${offset}`);
 		}
 		const {parentNode, data} = this;
+		/* istanbul ignore if */
 		if (!parentNode) {
 			throw new Error('The text node to be split has no parent node!');
 		}
@@ -430,6 +425,7 @@ export class AstText extends AstNode {
 
 	/** @private */
 	override getRelativeIndex(j?: number): number {
+		/* istanbul ignore else */
 		if (j === undefined) {
 			return super.getRelativeIndex();
 		} else if (j < 0 || j > this.length) {

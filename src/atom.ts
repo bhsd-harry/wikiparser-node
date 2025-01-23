@@ -37,6 +37,7 @@ export class AtomToken extends Token {
 	}
 
 	override set type(value) {
+		/* istanbul ignore if */
 		if (!atomTypes.includes(value)) {
 			throw new RangeError(`"${value}" is not a valid type for AtomToken!`);
 		}

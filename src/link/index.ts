@@ -74,6 +74,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 */
 	setLangLink(lang: string, link: string): void {
 		link = link.trim();
+		/* istanbul ignore if */
 		if (link.startsWith('#')) {
 			throw new SyntaxError('An interlanguage link cannot be fragment only!');
 		}
@@ -86,6 +87,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 * @throws `RangeError` 空的片段标识符
 	 */
 	asSelfLink(fragment = this.fragment): void {
+		/* istanbul ignore if */
 		if (!fragment?.trim()) {
 			throw new RangeError('LinkToken.asSelfLink method must specify a non-empty fragment!');
 		}
@@ -98,6 +100,7 @@ export abstract class LinkToken extends LinkBaseToken {
 	 */
 	pipeTrick(): void {
 		const linkText = this.firstChild.text();
+		/* istanbul ignore if */
 		if (linkText.includes('#') || linkText.includes('%')) {
 			throw new Error('Pipe trick cannot be used with "#" or "%"!');
 		}
@@ -111,13 +114,9 @@ export abstract class LinkToken extends LinkBaseToken {
 			this.setLinkText(m2[1]);
 			return;
 		}
-		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.+?)(?: ?(?<!\()\(.+\))?(?:(?:, |，|، ).|$)/u
-			.exec(linkText) as [string, string] | null;
-		if (m3) {
-			this.setLinkText(m3[1]);
-			return;
-		}
-		this.setLinkText(linkText);
+		const m3 = /^:?(?:[ \w\x80-\xFF-]+:)?(.*?)(?: ?(?<!\()\(.+\))?(?:(?:, |，|، ).|$)/u
+			.exec(linkText) as string[] as [string, string];
+		this.setLinkText(m3[1]);
 	}
 }
 

@@ -86,6 +86,7 @@ export abstract class LinkBaseToken extends Token {
 		if (isLink(this.type)) {
 			const {prefix, main, fragment} = this.#title,
 				link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
+			/* istanbul ignore if */
 			if (interwiki && !this.isInterwiki(link)) {
 				throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
 			}

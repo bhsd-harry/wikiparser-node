@@ -26,6 +26,7 @@ export class OnlyincludeToken extends Token {
 
 	/** @throws `RangeError` 不允许包含`</onlyinclude>` */
 	set innerText(text) {
+		/* istanbul ignore if */
 		if (text.includes('</onlyinclude>')) {
 			throw new RangeError('"</onlyinclude>" is not allowed in the text!');
 		}
