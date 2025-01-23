@@ -18,6 +18,9 @@ describe('API tests', () => {
 					Parser.i18n = undefined;
 					Parser.conversionTable.clear();
 					Parser.redirects.clear();
+					if (typeof Parser.config === 'object') {
+						Parser.config.interwiki.length = 0;
+					}
 				});
 				for (const code of codes) {
 					const lines = code.split('\n') as [string, ...string[]],
