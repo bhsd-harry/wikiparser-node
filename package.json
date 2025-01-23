@@ -41,6 +41,7 @@
 		"prof": "node dist/test/prof.js",
 		"coverage": "nyc --reporter=html --reporter=text-summary --reporter=json-summary --cache-dir=./.cache/nyc npm test && node dist/bin/coverage.js && open coverage/index.html",
 		"test:unit": "mocha dist/test/test.js",
+		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
 		"test:end": "pkill -x http-server",
 		"test:real": "node dist/test/real.js"

@@ -97,6 +97,9 @@ module.exports = {
 	overrides: [
 		{
 			...json,
+			excludedFiles: [
+				'test/parserTests.json',
+			],
 		},
 		{
 			files: [
