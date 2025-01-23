@@ -6158,6 +6158,13 @@
 		"print": "<span class=\"wpb-root\">__index__</span>"
 	},
 	{
+		"desc": "Category / whitespace (newline and non-newline) interactions",
+		"wikitext": "x\n[[Category:A]] [[Category:B]]\ny",
+		"html": "<p>x\ny\n</p>",
+		"render": "<p>x\ny\n</p>",
+		"print": "<span class=\"wpb-root\">x\n<span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:A</span>]]</span> <span class=\"wpb-category\">[[<span class=\"wpb-link-target\">Category:B</span>]]</span>\ny</span>"
+	},
+	{
 		"desc": "Nested file links",
 		"wikitext": "[[file:thumb.jpg|[[file:thumb.png|Thumb|thumb]]|thumb]]\n[[file:thumb.jpg|[[file:thumb.png|[[T]]humb|thumb]]|thumb]]",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:thumb.jpg</span>|<span class=\"wpb-image-caption\"><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">file:thumb.png</span>|<span class=\"wpb-image-caption\">Thumb</span>|<span class=\"wpb-image-parameter\">thumb</span>]]</span></span>|<span class=\"wpb-image-parameter\">thumb</span>]]</span>\n[[file:thumb.jpg|[[file:thumb.png|<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">T</span>]]</span>humb|thumb]]|thumb]]</span>"
