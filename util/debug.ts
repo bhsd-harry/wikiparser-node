@@ -18,7 +18,7 @@ export const Shadow = {
 			}
 			this.running = running;
 			return result;
-		} catch (e) {
+		} catch (e) /* istanbul ignore next */ {
 			this.running = running;
 			throw e;
 		}

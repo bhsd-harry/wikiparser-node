@@ -1,8 +1,7 @@
 import {generateForChild} from '../../util/lint';
-import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {NoincludeToken} from '../nowiki/noinclude';
-import type {LintError} from '../../base';
+import type {LintError, Config} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
@@ -23,7 +22,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	 * @param linkText 链接显示文字
 	 * @param delimiter `|`
 	 */
-	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(link: string, linkText?: string, config?: Config, accum?: Token[]) {
 		super(link, undefined, config, accum);
 		if (linkText !== undefined) {
 			// @ts-expect-error abstract class
