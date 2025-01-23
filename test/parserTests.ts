@@ -25,7 +25,8 @@ describe('Parser tests', () => {
 			&& !wikitext.includes('|]]')
 		) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext);
+				const root =
+					Parser.parse(wikitext);
 				try {
 					if (print) {
 						assert.deepStrictEqual(split(root.print()), split(print));
