@@ -14,7 +14,7 @@ describe('Parser tests', () => {
 			wikitext && (print || render)
 		) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext);
+				Parser.parse(wikitext);
 			});
 		}
 	}
