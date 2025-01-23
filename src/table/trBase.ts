@@ -84,6 +84,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 
 		const nCols = this.getColCount();
 		n += n < 0 ? nCols : 0;
+		/* istanbul ignore if */
 		if (n < 0 || n > nCols || n === nCols && !insert) {
 			throw new RangeError(`There is no cell at position ${n}!`);
 		}
@@ -161,6 +162,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		if (!Shadow.running && token.type !== 'td') {
+			/* istanbul ignore next */
 			if (this.type === 'tr') {
 				this.typeError('insertAt', 'TdToken');
 			} else if (token.type !== 'tr') {

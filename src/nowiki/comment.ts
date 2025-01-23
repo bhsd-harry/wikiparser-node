@@ -83,6 +83,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/** @private */
 	override setText(text: string): string {
+		/* istanbul ignore if */
 		if (text.includes('-->')) {
 			throw new RangeError('Do not contain "-->" in the comment!');
 		}

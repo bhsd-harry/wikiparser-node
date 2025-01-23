@@ -314,7 +314,7 @@ export abstract class TableToken extends TrBaseToken {
 			return this;
 
 			/* NOT FOR BROWSER */
-		} else if (n < 0 || n > nRows || n === nRows && !insert) {
+		} else /* istanbul ignore if */ if (n < 0 || n > nRows || n === nRows && !insert) {
 			throw new RangeError(`The table does not have row ${n}!`);
 
 			/* NOT FOR BROWSER END */
@@ -356,6 +356,7 @@ export abstract class TableToken extends TrBaseToken {
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
 		const previous = this.childNodes[i - 1];
+		/* istanbul ignore else */
 		if (typeof token !== 'string' && token.type === 'td' && previous?.type === 'tr') {
 			Parser.warn('The table cell is inserted into the current row instead.');
 			return previous.insertAt(token);

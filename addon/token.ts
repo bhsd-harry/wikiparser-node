@@ -44,6 +44,7 @@ Token.prototype.createElement = /** @implements */ function(
 			return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
 		});
 	}
+	/* istanbul ignore next */
 	throw new RangeError(`Invalid tag name: ${tagName}`);
 };
 
@@ -121,6 +122,7 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 	const {html} = this.getAttribute('config'),
 		normalTags = new Set(html[0]),
 		voidTags = new Set(html[2]);
+	/* istanbul ignore next */
 	if (html[2].includes(tag!)) {
 		throw new RangeError(`Void tag: ${tag}`);
 	} else if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {

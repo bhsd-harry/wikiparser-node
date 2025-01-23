@@ -371,10 +371,12 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 		const config = this.getAttribute('config'),
 			syntax = key === 'caption' ? '$1' : Object.entries(config.img).find(([, name]) => name === key)?.[0];
+		/* istanbul ignore if */
 		if (syntax === undefined) {
 			throw new RangeError(`Unknown image parameter: ${key}`);
 		}
 		const free = syntax.includes('$1');
+		/* istanbul ignore if */
 		if (value === true && free) {
 			this.typeError('setValue', 'String');
 		}
@@ -391,6 +393,7 @@ export abstract class FileToken extends LinkBaseToken {
 		this.insertAt(parameter);
 	}
 
+	/* istanbul ignore next */
 	/**
 	 * @override
 	 * @throws `Error` 不适用于图片

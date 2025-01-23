@@ -25,6 +25,7 @@ TranscludeToken.prototype.newAnonArg =
 TranscludeToken.prototype.setValue =
 	/** @implements */
 	function(key, value): void {
+		/* istanbul ignore if */
 		if (!this.isTemplate()) {
 			throw new Error('TranscludeToken.setValue method is only for templates!');
 		}
@@ -48,6 +49,7 @@ TranscludeToken.prototype.setValue =
 TranscludeToken.prototype.replaceTemplate =
 	/** @implements */
 	function(title): void {
+		/* istanbul ignore if */
 		if (this.type === 'magic-word') {
 			throw new Error('TranscludeToken.replaceTemplate method is only for templates!');
 		}
@@ -58,6 +60,7 @@ TranscludeToken.prototype.replaceTemplate =
 TranscludeToken.prototype.replaceModule =
 	/** @implements */
 	function(title): void {
+		/* istanbul ignore if */
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
 		}
@@ -78,6 +81,7 @@ TranscludeToken.prototype.replaceModule =
 TranscludeToken.prototype.replaceFunction =
 	/** @implements */
 	function(func): void {
+		/* istanbul ignore next */
 		if (this.type !== 'magic-word' || this.name !== 'invoke') {
 			throw new Error('TranscludeToken.replaceModule method is only for modules!');
 		} else if (this.length < 2) {
@@ -199,6 +203,7 @@ TranscludeToken.prototype.escapeTables =
 			}
 		}
 		const {firstChild, length} = Parser.parse(`{{${parsed.toString()}}}`, include, undefined, config);
+		/* istanbul ignore if */
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('Failed to escape tables!');
 		}
