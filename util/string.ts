@@ -36,6 +36,7 @@ export const text = (childNodes: readonly (string | AstNodes)[], separator = '')
 
 const names = {lt: '<', gt: '>', lbrack: '[', rbrack: ']', lbrace: '{', rbrace: '}', nbsp: ' ', amp: '&', quot: '"'};
 
+/* istanbul ignore next */
 /** decode HTML entities */
 const decodeHtmlBasic = factory(
 	/&(?:#(\d+|[Xx][\da-fA-F]+)|([lg]t|[LG]T|[lr]brac[ke]|nbsp|amp|AMP|quot|QUOT));/gu,
@@ -51,7 +52,7 @@ const decodeHtmlBasic = factory(
 export const decodeHtml = (str: string): string => {
 	try {
 		return (require('entities') as typeof import('entities')).decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
-	} catch {
+	} catch /* istanbul ignore next */ {
 		return decodeHtmlBasic(str);
 	}
 };

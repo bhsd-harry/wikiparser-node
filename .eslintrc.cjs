@@ -10,6 +10,7 @@ module.exports = {
 	...config,
 	ignorePatterns: [
 		...config.ignorePatterns,
+		'coverage/',
 		'/wiki/',
 	],
 	rules: {
