@@ -25,7 +25,7 @@ describe('API tests', () => {
 								if (code.includes('Parser.config = ')) {
 									Parser.config = 'default';
 								}
-							} catch (e) {
+							} catch (e) /* istanbul ignore next */ {
 								if (e instanceof assert.AssertionError) {
 									e.cause = {message: lines[Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1]};
 								}
