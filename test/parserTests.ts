@@ -21,7 +21,7 @@ const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
 	for (const {desc, wikitext, print, render} of tests) {
 		if (
-			wikitext && (print || render)
+			wikitext && (print || /* istanbul ignore next */ render)
 			&& !wikitext.includes('|]]')
 		) {
 			it(desc, () => {
@@ -31,7 +31,7 @@ describe('Parser tests', () => {
 					if (print) {
 						assert.deepStrictEqual(split(root.print()), split(print));
 					}
-				} catch (e) {
+				} catch (e) /* istanbul ignore next */ {
 					if (e instanceof assert.AssertionError) {
 						e.cause = {message: `\n${wikitext}`};
 					}
