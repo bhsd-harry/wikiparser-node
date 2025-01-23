@@ -21,7 +21,8 @@ describe('Parser tests', () => {
 			wikitext && (print || render)
 		) {
 			it(desc, () => {
-				const root = Parser.parse(wikitext);
+				const root =
+					Parser.parse(wikitext);
 				try {
 					if (print) {
 						assert.deepStrictEqual(split(root.print()), split(print));
