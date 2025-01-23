@@ -39,7 +39,9 @@ export const parseHrAndDoubleUnderscore = (
 			if (caseSensitive || caseInsensitive) {
 				// @ts-expect-error abstract class
 				new DoubleUnderscoreToken(p1, caseSensitive, config, accum);
-				return `\0${accum.length - 1}${caseInsensitive && (aliases?.[lc] ?? lc) === 'toc' ? 'u' : 'n'}\x7F`;
+				return `\0${accum.length - 1}${
+					caseInsensitive && (aliases?.[lc] ?? /* istanbul ignore next */ lc) === 'toc' ? 'u' : 'n'
+				}\x7F`;
 			}
 			return m;
 		},

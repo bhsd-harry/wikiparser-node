@@ -54,7 +54,7 @@ declare interface Parser extends ParserBase {
  * @param dir 子路径
  */
 const rootRequire = (file: string, dir: string): unknown => require(
-	path.isAbsolute(file) ? file : path.join('..', file.includes('/') ? '' : dir, file),
+	path.isAbsolute(file) ? /* istanbul ignore next */ file : path.join('..', file.includes('/') ? '' : dir, file),
 );
 
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
@@ -66,6 +66,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	getConfig() {
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
+			/* istanbul ignore if */
 			if (this.config.doubleUnderscore.length < 3 || Array.isArray(this.config.parserFunction[1])) {
 				error(
 					`The schema (${
@@ -147,7 +148,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			token.type = 'root';
 			try {
 				return token.parse(maxStage, include);
-			} catch (e) {
+			} catch (e) /* istanbul ignore next */ {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');

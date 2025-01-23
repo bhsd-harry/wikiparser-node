@@ -3,12 +3,14 @@ import {spawn} from 'child_process';
 import * as chalk from 'chalk';
 import type {ChildProcessWithoutNullStreams} from 'child_process';
 
+/* istanbul ignore next */
 process.on('unhandledRejection', e => {
 	console.error(e);
 });
 
 export type log = (msg: string, ...args: unknown[]) => void;
 
+/* istanbul ignore next */
 /**
  * 将shell命令转化为Promise对象
  * @param command shell指令
@@ -50,6 +52,7 @@ export const cmd = (command: string, args: readonly string[]): Promise<string | 
 	}
 });
 
+/* istanbul ignore next */
 /**
  * 比较两个文件
  * @param oldStr 旧文本
@@ -75,11 +78,13 @@ export const diff = async (oldStr: string, newStr: string, uid: number): Promise
 	await Promise.all([fs.unlink(oldFile), fs.unlink(newFile)]);
 };
 
+/* istanbul ignore next */
 /** @implements */
 export const error: log = (msg, ...args) => {
 	console.error(chalk.red(msg), ...args);
 };
 
+/* istanbul ignore next */
 /** @implements */
 export const info: log = (msg, ...args) => {
 	console.info(chalk.green(msg), ...args);
