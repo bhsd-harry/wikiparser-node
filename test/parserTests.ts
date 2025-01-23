@@ -19,9 +19,7 @@ const redirects: Record<string, string> = {
 Parser.viewOnly = true;
 Parser.warning = false;
 Parser.templateDir = './test/templates';
-for (const [name, target] of Object.entries(redirects)) {
-	Parser.redirects.set(name, target);
-}
+Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 
 /* NOT FOR BROWSER END */
 

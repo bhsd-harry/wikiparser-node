@@ -18,7 +18,7 @@ export interface AttributesParentBase {
 	className: string;
 
 	/** 以Set表示的class属性 */
-	classList: Set<string>;
+	readonly classList: Set<string>;
 
 	/** id属性 */
 	id: string;

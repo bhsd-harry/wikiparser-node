@@ -47,7 +47,7 @@ let wordRegex: RegExp;
 try {
 	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
 	wordRegex = new RegExp(String.raw`[\p{L}\d]`, 'u');
-} catch {
+} catch /* istanbul ignore next */ {
 	wordRegex = /[^\W_]/u;
 }
 
@@ -505,14 +505,10 @@ export abstract class AttributesToken extends Token {
 
 	/** @private */
 	override toHtmlInternal(): string {
-		return ` ${html(
-			[
-				...new Map(
-					this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
-				).values(),
-			],
-			' ',
-		)}`;
+		const map = new Map(
+			this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
+		);
+		return map.size === 0 ? '' : ` ${html([...map.values()], ' ')}`;
 	}
 }
 

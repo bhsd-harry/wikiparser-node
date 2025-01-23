@@ -187,6 +187,21 @@ const implicitNewLine = (str: string, prev: string): string =>
 const cmp = (a: string, b: string): boolean => a === b || Boolean(a && b) && Number(a) === Number(b);
 
 /**
+ * 解析 if/ifexist/ifeq 解析器函数
+ * @param accum
+ * @param prev 解析器函数前的字符串
+ * @param effective 生效的参数
+ */
+const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): string => {
+	if (effective) {
+		// @ts-expect-error sparse array
+		accum[accum.indexOf(effective.lastChild)] = undefined;
+		return implicitNewLine(effective.value, prev);
+	}
+	return prev;
+};
+
+/**
  * 展开模板
  * @param wikitext
  * @param config
@@ -285,21 +300,9 @@ const expand = (
 					const title = Parser.normalizeTitle(var1, 0, include, config, true);
 					bool = title.valid && !title.interwiki;
 				}
-				const effective = c[bool ? 2 : 3];
-				if (effective) {
-					// @ts-expect-error sparse array
-					accum[accum.indexOf(effective.lastChild)] = undefined;
-					return implicitNewLine(effective.value, prev);
-				}
-				return prev;
+				return parseIf(accum, prev, c[bool ? 2 : 3]);
 			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {
-				const effective = c[cmp(var1, var2) ? 3 : 4];
-				if (effective) {
-					// @ts-expect-error sparse array
-					accum[accum.indexOf(effective.lastChild)] = undefined;
-					return implicitNewLine(effective.value, prev);
-				}
-				return prev;
+				return parseIf(accum, prev, c[cmp(var1, var2) ? 3 : 4]);
 			} else if (known && name === 'switch') {
 				let defaultVal = '',
 					found = false,

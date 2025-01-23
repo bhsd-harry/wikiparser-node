@@ -21,9 +21,7 @@ Parser.viewOnly = true;
 Parser.debugging = true;
 Parser.warning = false;
 Parser.templateDir = './test/templates';
-for (const [name, target] of Object.entries(redirects)) {
-	Parser.redirects.set(name, target);
-}
+Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions
 /^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;

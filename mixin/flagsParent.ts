@@ -63,7 +63,6 @@ export const flagsParent = <T extends AstConstructor>(constructor: T, _?: unknow
 	/** 子节点含有ConverterFlagsToken的类 */
 	abstract class FlagsParent extends constructor {
 		abstract get firstChild(): ConverterFlagsToken;
-		abstract get firstElementChild(): ConverterFlagsToken;
 
 		/* NOT FOR BROWSER */
 

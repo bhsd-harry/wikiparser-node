@@ -130,7 +130,7 @@ const normalizeTitle = (title: string): string => String(Parser.normalizeTitle(t
 /** 重定向列表 */
 class RedirectMap extends Map<string, string> {
 	/** @ignore */
-	constructor(entries?: Map<string, string>) {
+	constructor(entries?: Iterable<[string, string]>) {
 		super();
 		if (entries) {
 			for (const [k, v] of entries) {

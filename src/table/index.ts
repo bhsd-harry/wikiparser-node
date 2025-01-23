@@ -16,7 +16,6 @@ import type {
 	LintError,
 	AST,
 } from '../../base';
-import type {SyntaxBase} from '../../mixin/syntax';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
 
@@ -33,8 +32,6 @@ export interface TableRenderedCoords {
 	readonly x: number;
 	readonly y: number;
 }
-
-export interface TableToken extends SyntaxBase {}
 
 /* NOT FOR BROWSER END */
 

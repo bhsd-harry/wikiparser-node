@@ -33,7 +33,6 @@ export const magicLinkParent = <T extends AstConstructor>(constructor: T, _?: un
 	/** 子节点含有MagicLinkParent的类 */
 	abstract class MagicLinkParent extends constructor {
 		abstract get firstChild(): MagicLinkToken;
-		abstract get firstElementChild(): MagicLinkToken;
 
 		/* NOT FOR BROWSER */
 
