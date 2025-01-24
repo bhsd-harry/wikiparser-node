@@ -32,7 +32,7 @@ let wordRegex: RegExp;
 try {
 	// eslint-disable-next-line prefer-regex-literals, es-x/no-regexp-unicode-property-escapes
 	wordRegex = new RegExp(String.raw`[\p{L}\d]`, 'u');
-} catch {
+} catch /* istanbul ignore next */ {
 	wordRegex = /[^\W_]/u;
 }
 
