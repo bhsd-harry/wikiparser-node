@@ -52,7 +52,7 @@
 		"test:real": "node dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.6.1",
+		"@bhsd/common": "^0.6.3",
 		"chalk": "^4.1.2",
 		"entities": "^6.0.0"
 	},
