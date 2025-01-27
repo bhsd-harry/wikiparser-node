@@ -12,10 +12,9 @@ import type {AstNodes, ArgToken, TranscludeToken, SyntaxToken, TrToken} from '..
 
 /* NOT FOR BROWSER */
 
-import {Shadow} from '../../util/debug';
+import {Shadow, isToken} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {html} from '../../util/html';
-import {isToken} from '../../util/debug';
 import {Token} from '../index';
 import type {TdAttrs, TdSubtypes} from './td';
 

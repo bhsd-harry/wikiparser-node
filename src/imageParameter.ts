@@ -88,8 +88,8 @@ function validate(
 /** 图片参数 */
 export abstract class ImageParameterToken extends Token {
 	declare readonly name: string;
-	#syntax = '';
-	#extension;
+	readonly #syntax: string = '';
+	readonly #extension;
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;

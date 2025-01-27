@@ -54,7 +54,7 @@ export interface MagicLinkToken extends SyntaxBase {}
  */
 @syntax()
 export abstract class MagicLinkToken extends Token {
-	#type;
+	readonly #type;
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;

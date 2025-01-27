@@ -57,7 +57,7 @@ try {
  */
 export abstract class AttributesToken extends Token {
 	declare readonly name: string;
-	#type;
+	readonly #type;
 	#classList: Set<string> | undefined;
 
 	declare readonly childNodes: readonly Child[];

@@ -29,7 +29,7 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#redirectFragment: string | undefined;
-	#path;
+	readonly #path;
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
