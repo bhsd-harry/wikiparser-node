@@ -51,7 +51,20 @@
 			"items": {
 				"type": "string",
 				"pattern": "^[^#A-Z]+$"
-			}
+			},
+			"allOf": [
+				{
+					"contains": {
+						"const": "!"
+					}
+				},
+				{
+					"contains": {
+						"const": "="
+					}
+				}
+			],
+			"minItems": 2
 		},
 		"parserFunction": {
 			"type": "array",

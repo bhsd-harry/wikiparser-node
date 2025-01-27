@@ -154,7 +154,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
 						stage = token.getAttribute('stage');
 					for (const k in config) {
-						if (k.startsWith('regex')) {
+						if (k.startsWith('regex') || config[k as keyof Config] instanceof Set) {
 							delete config[k as keyof Config];
 						}
 					}
