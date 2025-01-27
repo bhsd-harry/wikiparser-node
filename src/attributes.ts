@@ -42,7 +42,7 @@ try {
  */
 export abstract class AttributesToken extends Token {
 	declare readonly name: string;
-	#type;
+	readonly #type;
 
 	declare readonly childNodes: readonly Child[];
 	abstract override get firstChild(): Child | undefined;

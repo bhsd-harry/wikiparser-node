@@ -69,13 +69,13 @@ export abstract class AstNode implements AstNodeBase {
 	/** 后一个兄弟节点 */
 	get nextSibling(): AstNodes | undefined {
 		const childNodes = this.parentNode?.childNodes;
-		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) + 1];
+		return childNodes?.[childNodes.indexOf(this as AstNode as AstNodes) + 1];
 	}
 
 	/** 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
 		const childNodes = this.parentNode?.childNodes;
-		return childNodes && childNodes[childNodes.indexOf(this as AstNode as AstNodes) - 1];
+		return childNodes?.[childNodes.indexOf(this as AstNode as AstNodes) - 1];
 	}
 
 	/** 行数 */
