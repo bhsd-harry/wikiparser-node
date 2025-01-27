@@ -5,7 +5,7 @@ declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' 
 
 /** 满足特定语法格式的plain Token */
 export class SyntaxToken extends Token {
-	#type;
+	readonly #type;
 
 	override get type(): SyntaxTypes {
 		return this.#type;
