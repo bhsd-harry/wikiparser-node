@@ -28,7 +28,7 @@ declare type Child = AtomToken | SyntaxToken;
  */
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
-	#type: 'template' | 'magic-word' = 'template';
+	readonly #type: 'template' | 'magic-word' = 'template';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 

@@ -11,8 +11,8 @@ import type {LintError} from '../base';
  */
 @hiddenToken(false, false)
 export abstract class RedirectToken extends Token {
-	#pre;
-	#post;
+	readonly #pre;
+	readonly #post;
 
 	declare readonly childNodes: readonly [SyntaxToken, RedirectTargetToken];
 	abstract override get firstChild(): SyntaxToken;

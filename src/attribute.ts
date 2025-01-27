@@ -15,6 +15,7 @@ import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';
 import type {AttributesToken} from '../internal';
 
+declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
 const insecureStyle = /expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u;
@@ -25,7 +26,7 @@ const insecureStyle = /expression|(?:accelerator|-o-link(?:-source)?|-o-replace)
  */
 export abstract class AttributeToken extends Token {
 	declare readonly name: string;
-	#type;
+	readonly #type;
 	#tag;
 	#equal;
 	#quotes: [string?, string?];
@@ -34,8 +35,8 @@ export abstract class AttributeToken extends Token {
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
 	abstract override get parentNode(): AttributesToken | undefined;
-	abstract override get nextSibling(): AtomToken | this | undefined;
-	abstract override get previousSibling(): AtomToken | this | undefined;
+	abstract override get nextSibling(): Child;
+	abstract override get previousSibling(): Child;
 
 	override get type(): AttributeTypes {
 		return this.#type;
