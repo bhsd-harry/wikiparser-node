@@ -85,6 +85,13 @@ export const mixin = (target: Function, source: Function): void => {
 	Object.defineProperty(target, 'name', {value: source.name});
 };
 
+/**
+ * 比较两个数
+ * @param a
+ * @param b
+ */
+export const compare = (a: number, b: number): number => a - b;
+
 /* NOT FOR BROWSER */
 
 /**

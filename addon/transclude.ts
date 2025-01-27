@@ -181,7 +181,6 @@ TranscludeToken.prototype.fixDuplication =
 					return `Line ${String(top)} Column ${String(left)}`;
 				}).join('\n')}`);
 				duplicatedKeys.push(key);
-				continue;
 			}
 		}
 		return duplicatedKeys;

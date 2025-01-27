@@ -1,5 +1,5 @@
 import {classes} from '../util/constants';
-import {emptyArray} from '../util/debug';
+import {emptyArray, compare} from '../util/debug';
 import {error} from '../util/diff';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
@@ -118,7 +118,7 @@ export class Ranges extends Array<number | Range> {
 					return ele.applyTo(a);
 				}),
 			),
-		].filter(i => i >= 0 && i < length).sort();
+		].filter(i => i >= 0 && i < length).sort(compare);
 	}
 }
 
