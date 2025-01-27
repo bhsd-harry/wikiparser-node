@@ -84,6 +84,8 @@
 		"module": 828
 	},
 	"variable": [
+		"!",
+		"=",
 		"pageid",
 		"articlepath",
 		"server",

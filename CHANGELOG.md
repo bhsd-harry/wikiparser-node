@@ -8,7 +8,7 @@
 
 **Changed**
 
-- Full HTML entity decoding via [entitie](https://npmjs.com/package/entity)
+- Full HTML entity decoding via [entities](https://npmjs.com/package/entities)
 
 **Removed**
 
@@ -24,7 +24,7 @@
 
 **Changed**
 
-- The [schema](./config/.schema.json) for parser configurations is changed for the [`parserFunction`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) property
+- The [schema](./config/.schema.json) for parser configurations is changed, including changes for the `parserFunction` and `doubleUnderscore` properties and a new `variable` property
 
 ## v1.14.1
 
