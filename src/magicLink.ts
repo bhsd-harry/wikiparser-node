@@ -22,7 +22,7 @@ const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
  * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
  */
 export abstract class MagicLinkToken extends Token {
-	#type;
+	readonly #type;
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
