@@ -49,13 +49,10 @@ const decodeHtmlBasic = factory(
  * decode HTML entities
  * @param str
  */
-export const decodeHtml = (str: string): string => {
-	try {
-		return (require('entities') as typeof import('entities')).decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
-	} catch /* istanbul ignore next */ {
-		return decodeHtmlBasic(str);
-	}
-};
+export const decodeHtml = (str: string): string =>
+	typeof process === 'object' && typeof process.versions?.node === 'string'
+		? (require('entities') as typeof import('entities')).decodeHTMLStrict(str).replace(/\xA0/gu, ' ')
+		: /* istanbul ignore next */ decodeHtmlBasic(str);
 
 /** decode numbered HTML entities */
 export const decodeNumber = factory(
