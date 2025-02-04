@@ -17,6 +17,7 @@
 	"browser": "/bundle/bundle.min.js",
 	"main": "./bundle/bundle.min.js",
 	"types": "./extensions/typings.d.ts",
+	"sideEffects": false,
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
