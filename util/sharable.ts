@@ -1,3 +1,4 @@
+/* eslint-disable unicorn/no-unreadable-iife */
 const blockAttrs = new Set(['align']),
 	citeAttrs = new Set(['cite']),
 	citeAndAttrs = new Set(['cite', 'datetime']),
@@ -39,7 +40,7 @@ export const commonHtmlAttrs = new Set([
 		'itemscope',
 		'itemtype',
 	]),
-	htmlAttrs: Record<string, Set<string>> = {
+	htmlAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 		div: blockAttrs,
 		h1: blockAttrs,
 		h2: blockAttrs,
@@ -73,8 +74,8 @@ export const commonHtmlAttrs = new Set([
 		poem: blockAttrs,
 		categorytree: blockAttrs,
 		combooption: blockAttrs,
-	},
-	extAttrs: Record<string, Set<string>> = {
+	}))(),
+	extAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 		gallery: new Set(['mode', 'showfilename', 'caption', 'perrow', 'widths', 'heights', 'showthumbnails']),
 		poem: new Set(['compact']),
 		categorytree: new Set([
@@ -153,8 +154,8 @@ export const commonHtmlAttrs = new Set([
 		]),
 		tabs: new Set(['plain', 'class', 'container', 'id', 'title', 'style']),
 		combobox: new Set(['placeholder', 'value', 'id', 'class', 'text', 'dropdown', 'style']),
-	},
-	obsoleteAttrs: Record<string, Set<string>> = {
+	}))(),
+	obsoleteAttrs = /* #__PURE__ */ ((): Record<string, Set<string>> => ({
 		table: obsoleteTableAttrs,
 		td: new Set([...obsoleteTdAttrs, 'scope']),
 		th: obsoleteTdAttrs,
@@ -173,4 +174,4 @@ export const commonHtmlAttrs = new Set([
 		pre: widthAttrs,
 		tr: trAttrs,
 		ul: typeAttrs,
-	};
+	}))();
