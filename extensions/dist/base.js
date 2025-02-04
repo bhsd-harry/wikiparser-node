@@ -1,45 +1,8 @@
 (() => {
 var _a;
-const version = '1.15.1', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
-    ? src.replace(file, '')
-    : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
-const workerJS = () => {
-    importScripts('$CDN/bundle/bundle.min.js');
-    const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
-    self.onmessage = ({ data }) => {
-        const [command, qid, wikitext, include, stage] = data;
-        switch (command) {
-            case 'setI18N':
-                Parser.i18n = qid;
-                break;
-            case 'setConfig':
-                Parser.config = qid;
-                break;
-            case 'getConfig':
-                postMessage([qid, Parser.getConfig()]);
-                break;
-            case 'json':
-                postMessage([qid, Parser.parse(wikitext, include, stage).json()]);
-                break;
-            case 'lint':
-                postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
-                break;
-            case 'print':
-                postMessage([
-                    qid,
-                    Parser.parse(wikitext, include, stage).childNodes.map(child => [
-                        stage !== null && stage !== void 0 ? stage : Infinity,
-                        String(child),
-                        child.type === 'text'
-                            ? String(child).replace(/[&<>]/gu, p => `&${entities[p]};`)
-                            : child.print(),
-                    ]),
-                ]);
-        }
-    };
-};
-const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], { type: 'text/javascript' }), url = URL.createObjectURL(blob), worker = new Worker(url);
-URL.revokeObjectURL(url);
+const version = '1.15.1', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+    ? src.replace(file, '/')
+    : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}/extensions/dist/`, worker = new Worker(new URL(`worker${(src === null || src === void 0 ? void 0 : src.endsWith('/base.min.js')) ? '.min' : ''}.js`, CDN));
 const getListener = (qid, resolve, raw) => {
     const listener = ({ data: [rid, res, resRaw] }) => {
         if (rid === qid && (raw === undefined || raw === resRaw)) {

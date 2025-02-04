@@ -2,6 +2,7 @@
 	"extends": "./tsconfig",
 	"include": [
 		"base.ts",
+		"worker.ts",
 		"lint.ts"
 	],
 	"compilerOptions": {
