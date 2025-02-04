@@ -4,11 +4,60 @@ declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
 const version = '1.15.1',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
-	file = /\/base\.(?:min\.)?js$/u,
+	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
-		? src.replace(file, '/')
-		: `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}/extensions/dist/`,
-	worker = new Worker(new URL(`worker${src?.endsWith('/base.min.js') ? '.min' : ''}.js`, CDN));
+		? src.replace(file, '')
+		: `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
+
+/** web worker */
+const workerJS = (): void => {
+	importScripts('$CDN/bundle/bundle.min.js');
+	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
+
+	/** @implements */
+	self.onmessage = ({data}: {
+		data: ['setI18N', Record<string, string>]
+			| ['setConfig', Config]
+			| ['getConfig', number]
+			| ['json' | 'lint' | 'print', number, string, boolean?, number?];
+	}): void => {
+		const [command, qid, wikitext, include, stage] = data;
+		switch (command) {
+			case 'setI18N':
+				Parser.i18n = qid;
+				break;
+			case 'setConfig':
+				Parser.config = qid;
+				break;
+			case 'getConfig':
+				postMessage([qid, Parser.getConfig()]);
+				break;
+			case 'json':
+				postMessage([qid, Parser.parse(wikitext, include, stage).json()]);
+				break;
+			case 'lint':
+				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
+				break;
+			case 'print':
+				postMessage([
+					qid,
+					Parser.parse(wikitext, include, stage).childNodes.map(child => [
+						stage ?? Infinity,
+						String(child),
+						child.type === 'text'
+							? String(child).replace(/[&<>]/gu, p => `&${entities[p as '&' | '<' | '>']};`)
+							: child.print(),
+					]),
+				]);
+			// no default
+		}
+	};
+};
+
+const blob = new Blob([`(${String(workerJS).replace('$CDN', CDN)})()`], {type: 'text/javascript'}),
+	url = URL.createObjectURL(blob),
+	worker = new Worker(url); // same-origin policy
+URL.revokeObjectURL(url);
 
 /**
  * 生成事件监听函数
