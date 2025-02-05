@@ -15,6 +15,7 @@ import type {
 	AST,
 } from './base';
 import type {Title} from './lib/title';
+import type {LanguageService} from './lib/lsp';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
@@ -42,6 +43,12 @@ declare interface Parser extends ParserBase {
 	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
+
+	/**
+	 * 创建语言服务
+	 * @param uri 文档唯一标识符
+	 */
+	createLanguageService(uri: unknown): LanguageService;
 }
 
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
@@ -122,6 +129,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		});
 		return root;
 	},
+
+	/** @implements */
+	createLanguageService(uri: unknown) {
+		const {LanguageService}: typeof import('./lib/lsp') = require('./lib/lsp');
+		return new LanguageService(uri);
+	},
 };
 
 const def: PropertyDescriptorMap = {
@@ -129,6 +142,7 @@ const def: PropertyDescriptorMap = {
 	enumerable = new Set([
 		'normalizeTitle',
 		'parse',
+		'createLanguageService',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {

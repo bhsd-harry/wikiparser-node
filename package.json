@@ -42,7 +42,8 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
-		"@bhsd/common": "^0.6.3"
+		"@bhsd/common": "^0.6.3",
+		"vscode-languageserver": "^9.0.1"
 	},
 	"devDependencies": {
 		"@bhsd/codemirror-mediawiki": "^2.20.1",
