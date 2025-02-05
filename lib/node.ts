@@ -14,6 +14,7 @@ import type {
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
+import {typeError} from '../util/debug';
 
 /* NOT FOR BROWSER END */
 
@@ -49,22 +50,6 @@ const getDimension = (str: string): Dimension => {
 const getIndex = (j: number, parent: AstNode): number =>
 	parent.childNodes.slice(0, j).reduce((acc, cur, i) => acc + cur.toString().length + parent.getGaps(i), 0)
 	+ parent.getAttribute('padding');
-
-/* NOT FOR BROWSER */
-
-/* istanbul ignore next */
-/**
- * 定制TypeError消息
- * @param {Function} Constructor 类
- * @param method
- * @param args 可接受的参数类型
- * @throws `TypeError`
- */
-const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(`${name}.${method} method only accepts ${args.join('、')} as input parameters!`);
-};
-
-/* NOT FOR BROWSER END */
 
 /** 类似Node */
 export abstract class AstNode implements AstNodeBase {
