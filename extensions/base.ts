@@ -11,7 +11,7 @@ const version = '1.15.1',
 
 /** web worker */
 const workerJS = (): void => {
-	importScripts('$CDN/bundle/bundle.min.js');
+	importScripts('$CDN/bundle/bundle.lsp.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'};
 
 	/** @implements */
