@@ -425,7 +425,7 @@ export class LanguageService {
 							? new Array(names.size).fill('').map((_, i) => `${section.trim()}_${i + 2}`)
 								.find(s => !names.has(s))!
 							: section,
-						container = sections.slice(0, level - 1).findLast(Boolean),
+						container = sections.slice(0, level - 1).reverse().find(Boolean),
 						range = {
 							start: {line: top, character: left - level},
 							end: {line: top + height - 1, character: (height === 1 ? left : 0) + width + level},
