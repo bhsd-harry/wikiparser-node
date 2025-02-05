@@ -24,7 +24,7 @@
 	},
 	"scripts": {
 		"build:core": "esbuild index.ts --bundle --minify --external:entities --drop-labels=LSP --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
-		"build:lsp": "esbuild index.ts --bundle --minify --external:entities --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.lsp.js",
+		"build:lsp": "esbuild index.ts --bundle --minify --external:entities --target=es2018 --sourcemap --outfile=bundle/bundle.lsp.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.lsp.js",
 		"build:es7": "esbuild index.ts --bundle --minify --external:entities --drop-labels=LSP --target=es2016 --outfile=bundle/bundle.es7.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle.es7.js",
 		"build:ext": "bash build-ext.sh",
 		"build": "npm run build:core && npm run build:es7 && npm run build:lsp && tsc --project tsconfig.dist.json",
