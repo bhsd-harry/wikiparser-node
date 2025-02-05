@@ -351,7 +351,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	createLanguageService(uri: unknown) {
-		const {LanguageService}: typeof import('./lib/lsp') = require('./lib/lsp');
+		// @ts-expect-error esbuild label
+		// eslint-disable-next-line no-unused-labels
+		LSP: const {LanguageService}: typeof import('./lib/lsp') = require('./lib/lsp');
 		return new LanguageService(uri);
 	},
 
