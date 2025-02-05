@@ -67,28 +67,30 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			{desc: 'remove', range: [startIndex, endIndex], text: ''},
 		];
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
-			const {startIndex: endIndex, startLine: endLine, startCol: endCol} = refError,
+			const {startIndex: endIndex, startLine, startCol: endCol} = refError,
 				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousSibling.data) as string[] as [string, string],
 				startIndex = start - length;
 			errors.push({
 				...refError,
 				startIndex,
 				endIndex,
+				startLine,
+				endLine: startLine,
 				startCol: endCol - length,
-				endLine,
 				endCol,
 				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
-			const {endIndex: startIndex, endLine: startLine, endCol: startCol} = refError,
+			const {endIndex: startIndex, endLine, endCol: startCol} = refError,
 				[{length}] = /^'+/u.exec(nextSibling.data)!,
 				endIndex = startIndex + length;
 			errors.push({
 				...refError,
 				startIndex,
 				endIndex,
-				startLine,
+				startLine: endLine,
+				endLine,
 				startCol,
 				endCol: startCol + length,
 				suggestions: getSuggestion(startIndex, endIndex, length),
