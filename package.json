@@ -50,7 +50,8 @@
 	"dependencies": {
 		"@bhsd/common": "^0.6.3",
 		"chalk": "^4.1.2",
-		"entities": "^6.0.0"
+		"entities": "^6.0.0",
+		"vscode-languageserver": "^9.0.1"
 	},
 	"devDependencies": {
 		"@stylistic/eslint-plugin": "^2.11.0",

@@ -2,20 +2,23 @@ import type {AstNodes, Position} from './node';
 
 /** 节点位置 */
 export class BoundingRect {
+	readonly #token: AstNodes;
+	readonly #start: number;
 	#pos: Position | undefined;
-	readonly token: AstNodes;
-	readonly start: number;
+
+	/** 起点 */
+	get start(): number {
+		return this.#start;
+	}
 
 	/** 起点行 */
 	get top(): number {
-		this.#pos ??= this.getPosition();
-		return this.#pos.top;
+		return this.#getPosition().top;
 	}
 
 	/** 起点列 */
 	get left(): number {
-		this.#pos ??= this.getPosition();
-		return this.#pos.left;
+		return this.#getPosition().left;
 	}
 
 	/**
@@ -23,12 +26,13 @@ export class BoundingRect {
 	 * @param start 起点
 	 */
 	constructor(token: AstNodes, start: number) {
-		this.token = token;
-		this.start = start;
+		this.#token = token;
+		this.#start = start;
 	}
 
 	/** 计算位置 */
-	getPosition(): Position {
-		return this.token.getRootNode().posFromIndex(this.start)!;
+	#getPosition(): Position {
+		this.#pos ??= this.#token.getRootNode().posFromIndex(this.#start)!;
+		return this.#pos;
 	}
 }

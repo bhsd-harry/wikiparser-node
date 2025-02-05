@@ -71,3 +71,15 @@ export const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
 export const mixin = (target: Function, source: Function): void => {
 	Object.defineProperty(target, 'name', {value: source.name});
 };
+
+/* istanbul ignore next */
+/**
+ * 定制TypeError消息
+ * @param {Function} Constructor 类
+ * @param method
+ * @param args 可接受的参数类型
+ * @throws `TypeError`
+ */
+export const typeError = ({name}: Function, method: string, ...args: string[]): never => {
+	throw new TypeError(`${name}.${method} method only accepts ${args.join('、')} as input parameters!`);
+};
