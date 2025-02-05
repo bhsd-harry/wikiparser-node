@@ -185,6 +185,7 @@ module.exports = {
 				'addon/*.ts',
 				'bin/*.ts',
 				'test/*.ts',
+				'lib/lsp.ts',
 			],
 			plugins: [
 				'es-x',

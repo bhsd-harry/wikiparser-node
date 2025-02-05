@@ -1,6 +1,3 @@
-/* eslint-disable es-x/no-array-prototype-flat */
-/* eslint-disable es-x/no-string-prototype-trimstart-trimend */
-/* eslint-disable es-x/no-regexp-unicode-property-escapes */
 import {splitColors, numToHex} from '@bhsd/common';
 import {typeError} from '../util/debug';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
@@ -268,7 +265,8 @@ export class LanguageService {
 			].flat(2),
 			switches = (doubleUnderscore.slice(0, 2) as string[][]).flat().map(w => `__${w}__`),
 			protocols = protocol.split('|'),
-			params = Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1')).map(k => k.replace(/\$1$/u, '')),
+			params = Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1'))
+				.map(k => k.replace(/\$1$/u, '')),
 			{line, character} = position,
 			mt = re.exec(text.split('\n')[line]?.slice(0, character) ?? ''),
 			root = await this.#queue(text);
