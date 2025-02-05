@@ -1,6 +1,6 @@
-import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
+import {LazyLintError} from '../lib/error';
 import type {LintError} from '../base';
+import type {BoundingRect} from '../lib/rect';
 import type {AstNodes} from '../internal';
 
 declare type generator = (
@@ -9,35 +9,23 @@ declare type generator = (
 	rule: LintError.Rule,
 	msg: string,
 	severity?: LintError.Severity,
+	lazy?: boolean,
 ) => LintError;
+
+export type rangeGenerator = (
+	token: AstNodes,
+	start: number,
+	top: number,
+	left: number,
+) => Pick<LintError, 'startIndex' | 'startLine' | 'startCol'>;
 
 /**
  * 生成lint函数
  * @param func lint函数
  */
-const factory = (
-	func: (
-		token: AstNodes,
-		start: number,
-		top: number,
-		left: number,
-	) => Pick<LintError, 'startIndex' | 'startLine' | 'startCol'>,
-): generator => (token, rect, rule, msg, severity = 'error') => {
-	const {start} = rect,
-		{top, left} = rect instanceof BoundingRect ? rect : new BoundingRect(token, start),
-		{offsetHeight, offsetWidth} = token,
-		{startIndex, startLine, startCol} = func(token, start, top, left);
-	return {
-		rule,
-		message: Parser.msg(msg),
-		severity,
-		startIndex,
-		endIndex: startIndex + token.toString().length,
-		startLine,
-		endLine: startLine + offsetHeight - 1,
-		startCol,
-		endCol: offsetHeight === 1 ? startCol + offsetWidth : offsetWidth,
-	};
+const factory = (func: rangeGenerator): generator => (token, rect, rule, msg, severity = 'error', lazy = false) => {
+	const error = new LazyLintError(token, rect, func, rule, msg, severity);
+	return lazy ? error : {...error, ...error.getRange()};
 };
 
 export const generateForChild = factory((child, start, line, col) => {
