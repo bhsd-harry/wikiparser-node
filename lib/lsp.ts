@@ -511,18 +511,18 @@ export class LanguageService {
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		const srcTags = new Set(['templatestyles', 'img']),
 			citeTags = new Set(['blockquote', 'del', 'ins', 'q']),
-			linkTypes = new Set<Parser.TokenTypes>(['link-target', 'template-name', 'invoke-module']),
+			linkTypes = new Set<TokenTypes>(['link-target', 'template-name', 'invoke-module']),
 			protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			root = await this.#queue(text),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 			+ 'image-parameter#link';
 		return root.querySelectorAll(selector).filter(({type, parentNode, childNodes}) => {
-			const {name, tag} = parentNode as Parser.AttributeToken;
+			const {name, tag} = parentNode as AttributeToken;
 			return (type !== 'attr-value' || name === 'src' && srcTags.has(tag) || name === 'cite' && citeTags.has(tag))
 				&& childNodes.every(({type: t}) => plainTypes.has(t));
-		}).flatMap((token: Parser.Token & {toString(skip?: boolean): string}) => {
+		}).flatMap((token: Token & {toString(skip?: boolean): string}) => {
 			const {type, parentNode, firstChild, lastChild} = token,
-				{name, tag} = parentNode as Parser.AttributeToken;
+				{name, tag} = parentNode as AttributeToken;
 			let target = type === 'image-parameter'
 				? (Object.getPrototypeOf(token.constructor) as ObjectConstructor).prototype
 					.toString.apply(token, [true] as unknown as []).trim()

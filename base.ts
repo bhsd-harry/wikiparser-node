@@ -11,6 +11,7 @@ export interface Config {
 	readonly img: Record<string, string>;
 	readonly redirection: string[];
 	readonly variants: string[];
+	readonly articlePath?: string;
 
 	/** @private */
 	readonly excludes?: string[];
@@ -37,7 +38,6 @@ export interface Config {
 
 	readonly conversionTable?: [string, string][];
 	readonly redirects?: [string, string][];
-	readonly articlePath?: string;
 }
 
 export type TokenTypes = 'root'
