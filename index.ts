@@ -85,7 +85,7 @@ declare interface Parser extends ParserBase {
 	 * 创建语言服务
 	 * @param uri 文档标识
 	 */
-	createLanguageService(uri: object | symbol): LanguageService;
+	createLanguageService(uri: object): LanguageService;
 
 	/* NOT FOR BROWSER */
 
@@ -350,7 +350,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	createLanguageService(uri: object | symbol) {
+	createLanguageService(uri: object) {
 		let mod: typeof import('./lib/lsp');
 		// eslint-disable-next-line no-unused-labels
 		LSP: mod = require('./lib/lsp');

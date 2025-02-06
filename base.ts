@@ -332,5 +332,5 @@ export interface Parser {
 	 * 创建语言服务
 	 * @param uri 文档标识
 	 */
-	createLanguageService(uri: object | symbol): LanguageService;
+	createLanguageService(uri: object): LanguageService;
 }
