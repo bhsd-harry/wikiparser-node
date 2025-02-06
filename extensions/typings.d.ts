@@ -14,12 +14,13 @@ import type {
 	ColorPresentation,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, LintError, AST, Parser} from '../base';
+import type {Config, LintError, AST, Parser, LanguageService} from '../base';
 
 export type {
 	AST,
 	Config,
 	LintError,
+	LanguageService,
 	Diagnostic,
 	Action,
 	editor,
@@ -74,8 +75,6 @@ export interface wikiparse {
 	Linter?: new (include?: boolean) => LinterBase;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
-
-export type LanguageService = ReturnType<Parser['createLanguageService']>;
 
 declare global {
 	module '/*' {
