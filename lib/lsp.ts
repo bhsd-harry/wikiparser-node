@@ -7,18 +7,15 @@ import {AstElement} from '../lib/element';
 import type {
 	Position,
 	ColorInformation,
-	ColorPresentationParams,
 	ColorPresentation,
 	CompletionItem,
 	CompletionItemKind,
 	FoldingRange,
 	DocumentSymbol,
 	DocumentLink,
-} from 'vscode-languageserver/node';
-import type {TokenTypes} from '../base';
+} from 'vscode-languageserver-types';
+import type {TokenTypes, LanguageService as LanguageServiceBase} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken} from '../internal';
-
-declare type PartialCompletionItem = Omit<CompletionItem, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
 declare interface CompletionConfig {
 	re: RegExp;
@@ -31,8 +28,9 @@ declare interface CompletionConfig {
 	params: string[];
 }
 
-const tasks = new WeakMap<object, LanguageService>(),
-	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
+export const tasks = new WeakMap<object, LanguageService>();
+
+const plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -64,7 +62,7 @@ const getCompletion = (
 	kind: keyof typeof CompletionItemKind,
 	mt: string,
 	{line, character}: Position,
-): PartialCompletionItem[] => [...new Set(words)].map(w => ({
+): CompletionItem[] => [...new Set(words)].map(w => ({
 	label: w,
 	kind,
 	textEdit: {
@@ -74,7 +72,7 @@ const getCompletion = (
 		},
 		newText: w,
 	},
-}));
+} as unknown as CompletionItem));
 
 /**
  * Get the end position of a section.
@@ -111,16 +109,7 @@ const getUrl = (page: string, ns?: number): string => {
 };
 
 /** VSCode-style language service */
-export class LanguageService {
-	/* istanbul ignore next */
-	/**
-	 * 获取指定任务
-	 * @param uri 任务标识
-	 */
-	static get(uri: object): LanguageService | undefined {
-		return tasks.get(uri);
-	}
-
+export class LanguageService implements LanguageServiceBase {
 	#text: string;
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
@@ -180,10 +169,12 @@ export class LanguageService {
 	 * 提供颜色指示
 	 * @param rgba 颜色解析函数
 	 * @param text 源代码
+	 * @param hsl 是否允许HSL颜色
 	 */
 	async provideDocumentColors(
 		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
+		hsl = true,
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').flatMap(({type, childNodes}) => {
@@ -191,7 +182,7 @@ export class LanguageService {
 				return [];
 			}
 			return childNodes.filter((child): child is AstText => child.type === 'text').flatMap(child => {
-				const parts = splitColors(child.data).filter(([,,, isColor]) => isColor);
+				const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
 				if (parts.length === 0) {
 					return [];
 				}
@@ -220,7 +211,7 @@ export class LanguageService {
 	 * @ignore
 	 */
 	provideColorPresentations( // eslint-disable-line @typescript-eslint/class-methods-use-this
-		{color: {red, green, blue, alpha}, range}: ColorPresentationParams,
+		{color: {red, green, blue, alpha}, range}: ColorInformation,
 	): ColorPresentation[] {
 		const newText = `#${numToHex(red)}${numToHex(green)}${numToHex(blue)}${alpha < 1 ? numToHex(alpha) : ''}`;
 		return [
@@ -286,7 +277,7 @@ export class LanguageService {
 	 * @param text 源代码
 	 * @param position 位置
 	 */
-	async provideCompletionItems(text: string, position: Position): Promise<PartialCompletionItem[] | null> {
+	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | null> {
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
