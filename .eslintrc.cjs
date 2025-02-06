@@ -159,6 +159,7 @@ module.exports = {
 			files: '**/*.ts',
 			excludedFiles: [
 				'test/*.ts',
+				'lib/lsp.ts',
 				'extensions/gh-page.ts',
 				'extensions/codejar.ts',
 			],
