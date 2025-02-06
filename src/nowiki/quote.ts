@@ -49,8 +49,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		const {previousSibling, nextSibling, bold} = this,
 			message = Parser.msg('lonely "$1"', `'`),
 			errors: LintError[] = [],
-			rect = new BoundingRect(this, start),
-			refError = generateForSelf(this, rect, 'lonely-apos', message, 'error', true);
+			rect = new BoundingRect(this, start);
 
 		/**
 		 * 获取建议
@@ -67,40 +66,39 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			{desc: 'remove', range: [startIndex, endIndex], text: ''},
 		];
 		if (previousSibling?.type === 'text' && previousSibling.data.endsWith(`'`)) {
-			const {startIndex: endIndex, startLine, startCol: endCol} = refError,
+			const e = generateForSelf(this, rect, 'lonely-apos', message),
+				{startIndex: endIndex, startLine: endLine, startCol: endCol} = e,
 				[, {length}] = /(?:^|[^'])('+)$/u.exec(previousSibling.data) as string[] as [string, string],
 				startIndex = start - length;
 			errors.push({
-				...refError,
+				...e,
 				startIndex,
 				endIndex,
-				startLine,
-				endLine: startLine,
+				endLine,
 				startCol: endCol - length,
 				endCol,
 				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
 		if (nextSibling?.type === 'text' && nextSibling.data.startsWith(`'`)) {
-			const {endIndex: startIndex, endLine, endCol: startCol} = refError,
+			const e = generateForSelf(this, rect, 'lonely-apos', message),
+				{endIndex: startIndex, endLine: startLine, endCol: startCol} = e,
 				[{length}] = /^'+/u.exec(nextSibling.data)!,
 				endIndex = startIndex + length;
 			errors.push({
-				...refError,
+				...e,
 				startIndex,
 				endIndex,
-				startLine: endLine,
-				endLine,
+				startLine,
 				startCol,
 				endCol: startCol + length,
 				suggestions: getSuggestion(startIndex, endIndex, length),
 			});
 		}
 		if (bold && this.closest('heading-title')) {
-			errors.push({
-				...generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'),
-				suggestions: [{desc: 'remove', range: [start, start + 3], text: ''}],
-			});
+			const e = generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning');
+			e.suggestions = [{desc: 'remove', range: [start, start + 3], text: ''}];
+			errors.push(e);
 		}
 		return errors;
 	}
