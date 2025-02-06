@@ -5,7 +5,35 @@ const version = '1.15.1', src = (_a = document.currentScript) === null || _a ===
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle.lsp.js');
-    const entities = { '&': 'amp', '<': 'lt', '>': 'gt' };
+    const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map();
+    const getLSP = (qid) => {
+        if (lsps.has(qid)) {
+            return lsps.get(qid);
+        }
+        const lsp = Parser.createLanguageService({});
+        lsps.set(qid, lsp);
+        return lsp;
+    };
+    const parseColor = (s) => {
+        var _a;
+        if (s.startsWith('#')) {
+            const short = s.length < 7;
+            return [
+                parseInt(short ? s.charAt(1).repeat(2) : s.slice(1, 3), 16) / 255,
+                parseInt(short ? s.charAt(2).repeat(2) : s.slice(3, 5), 16) / 255,
+                parseInt(short ? s.charAt(3).repeat(2) : s.slice(5, 7), 16) / 255,
+                parseInt((short ? s.charAt(4).repeat(2) : s.slice(7, 9)) || 'ff', 16) / 255,
+            ];
+        }
+        const values = s.slice(s.indexOf('(') + 1, -1).split(/\s+(?:[,/]\s*)?|[,/]\s*/u)
+            .map(v => parseFloat(v) / (v.endsWith('%') ? 100 : 1));
+        return [
+            values[0] / 255,
+            values[1] / 255,
+            values[2] / 255,
+            (_a = values[3]) !== null && _a !== void 0 ? _a : 1,
+        ];
+    };
     self.onmessage = ({ data }) => {
         const [command, qid, wikitext, include, stage] = data;
         switch (command) {
@@ -35,6 +63,29 @@ const workerJS = () => {
                             : child.print(),
                     ]),
                 ]);
+                break;
+            case 'documentColors':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideDocumentColors(parseColor, wikitext, false)]);
+                })();
+                break;
+            case 'colorPresentations':
+                postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
+                break;
+            case 'completionItems':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideCompletionItems(wikitext, include)]);
+                })();
+                break;
+            case 'foldingRanges':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideFoldingRanges(wikitext)]);
+                })();
+                break;
+            case 'links':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideLinks(wikitext)]);
+                })();
         }
     };
 };
@@ -63,6 +114,11 @@ const getConfig = () => getFeedback('getConfig', -3);
 const json = (wikitext, include, qid = -4, stage) => getFeedback('json', qid, false, wikitext, include, stage);
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
+const provideDocumentColors = (wikitext, qid = -10) => getFeedback('documentColors', qid, true, wikitext);
+const provideFoldingRanges = (wikitext, qid = -10) => getFeedback('foldingRanges', qid, true, wikitext);
+const provideLinks = (wikitext, qid = -10) => getFeedback('links', qid, true, wikitext);
+const provideCompletionItems = (wikitext, pos, qid = -10) => getFeedback('links', qid, true, wikitext, pos);
+const provideColorPresentations = (color, qid = -10) => getFeedback('links', qid, false, color);
 const append = (parent, text) => {
     if (text) {
         parent.append(text);
@@ -161,6 +217,22 @@ const lineNumbers = (html, start = 1, paddingTop = '') => {
         intersectionObserver.observe(html);
     }
 };
-const wikiparse = { version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers };
+const wikiparse = {
+    version,
+    CDN,
+    id: 0,
+    setI18N,
+    setConfig,
+    getConfig,
+    print,
+    lint,
+    json,
+    lineNumbers,
+    provideDocumentColors,
+    provideFoldingRanges,
+    provideLinks,
+    provideCompletionItems,
+    provideColorPresentations,
+};
 Object.assign(window, { wikiparse });
 })();

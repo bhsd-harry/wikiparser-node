@@ -13,12 +13,8 @@ import type {
 	CompletionItem,
 	ColorPresentation,
 } from 'vscode-languageserver-types';
-import type {
-	Config,
-	LintError,
-	AST,
-	Parser,
-} from '../base';
+// 必须写在一行内
+import type {Config, LintError, AST, Parser} from '../base';
 
 export type {
 	AST,

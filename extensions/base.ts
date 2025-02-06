@@ -35,7 +35,7 @@ const workerJS = (): void => {
 		if (lsps.has(qid)) {
 			return lsps.get(qid)!;
 		}
-		const lsp = Parser.createLanguageService(Symbol(qid));
+		const lsp = Parser.createLanguageService({});
 		lsps.set(qid, lsp);
 		return lsp;
 	};
