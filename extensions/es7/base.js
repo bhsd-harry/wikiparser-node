@@ -34,7 +34,7 @@ const workerJS = () => {
                 parseInt((short ? s.charAt(4).repeat(2) : s.slice(7, 9)) || 'ff', 16) / 255,
             ];
         }
-        const values = s.slice(s.indexOf('(') + 1, -1).split(/\s+(?:[,/]\s*)?|[,/]\s*/u)
+        const values = s.slice(s.indexOf('(') + 1, -1).trim().split(/\s+(?:[,/]\s*)?|[,/]\s*/u)
             .map(v => parseFloat(v) / (v.endsWith('%') ? 100 : 1));
         return [
             values[0],
