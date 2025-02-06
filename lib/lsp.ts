@@ -7,14 +7,13 @@ import {AstElement} from '../lib/element';
 import type {
 	Position,
 	ColorInformation,
-	ColorPresentationParams,
 	ColorPresentation,
 	CompletionItem,
 	CompletionItemKind,
 	FoldingRange,
 	DocumentSymbol,
 	DocumentLink,
-} from 'vscode-languageserver/node';
+} from 'vscode-languageserver-types';
 import type {TokenTypes} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken} from '../internal';
 
@@ -214,7 +213,7 @@ export class LanguageService {
 	 * @ignore
 	 */
 	provideColorPresentations( // eslint-disable-line @typescript-eslint/class-methods-use-this
-		{color: {red, green, blue, alpha}, range}: ColorPresentationParams,
+		{color: {red, green, blue, alpha}, range}: ColorInformation,
 	): ColorPresentation[] {
 		const newText = `#${numToHex(red)}${numToHex(green)}${numToHex(blue)}${alpha < 1 ? numToHex(alpha) : ''}`;
 		return [
