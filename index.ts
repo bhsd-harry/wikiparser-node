@@ -30,7 +30,6 @@ import type {
 	AST,
 } from './base';
 import type {Title} from './lib/title';
-import type {LanguageService} from './lib/lsp';
 import type {Token} from './internal';
 
 /* NOT FOR BROWSER */
@@ -80,12 +79,6 @@ declare interface Parser extends ParserBase {
 	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
-
-	/**
-	 * 创建语言服务
-	 * @param uri 文档标识
-	 */
-	createLanguageService(uri: object): LanguageService;
 
 	/* NOT FOR BROWSER */
 
@@ -350,7 +343,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	},
 
 	/** @implements */
-	createLanguageService(uri: object) {
+	createLanguageService(uri: object | symbol) {
 		let mod: typeof import('./lib/lsp');
 		// eslint-disable-next-line no-unused-labels
 		LSP: mod = require('./lib/lsp');
