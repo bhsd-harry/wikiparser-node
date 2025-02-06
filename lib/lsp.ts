@@ -37,8 +37,9 @@ declare interface CompletionConfig {
 	params: string[];
 }
 
-const tasks = new WeakMap<object, LanguageService>(),
-	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
+export const tasks = new WeakMap<object, LanguageService>();
+
+const plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
 
 /**
  * Check if all child nodes are plain text or comments.
@@ -118,15 +119,6 @@ const getUrl = (page: string, ns?: number): string => {
 
 /** VSCode-style language service */
 export class LanguageService {
-	/* istanbul ignore next */
-	/**
-	 * 获取指定任务
-	 * @param uri 任务标识
-	 */
-	static get(uri: object): LanguageService | undefined {
-		return tasks.get(uri);
-	}
-
 	#text: string;
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
@@ -186,10 +178,12 @@ export class LanguageService {
 	 * 提供颜色指示
 	 * @param rgba 颜色解析函数
 	 * @param text 源代码
+	 * @param hsl 是否允许HSL颜色
 	 */
 	async provideDocumentColors(
 		rgba: (s: string) => [number, number, number, number] | [],
 		text: string,
+		hsl = true,
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').flatMap(({type, childNodes}) => {
@@ -197,7 +191,7 @@ export class LanguageService {
 				return [];
 			}
 			return childNodes.filter((child): child is AstText => child.type === 'text').flatMap(child => {
-				const parts = splitColors(child.data).filter(([,,, isColor]) => isColor);
+				const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
 				if (parts.length === 0) {
 					return [];
 				}
