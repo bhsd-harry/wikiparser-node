@@ -35,7 +35,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER END */
 
 	/** @param closed 是否闭合 */
-	constructor(wikitext: string, closed = true, config?: Config, accum?: Token[]) {
+	constructor(wikitext: string, closed: boolean, config?: Config, accum?: Token[]) {
 		super(wikitext, config, accum);
 		this.closed = closed;
 	}

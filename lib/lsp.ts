@@ -1,9 +1,10 @@
 import {splitColors, numToHex} from '@bhsd/common';
 import {typeError} from '../util/debug';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
+import {getEndPos} from '../util/lint';
 import Parser from '../index';
+import {AstElement} from '../lib/element';
 import type {
-	Range as TextRange,
 	Position,
 	ColorInformation,
 	ColorPresentationParams,
@@ -15,7 +16,7 @@ import type {
 	DocumentLink,
 } from 'vscode-languageserver/node';
 import type {TokenTypes} from '../base';
-import type {Token, AstText, AttributeToken, ParameterToken, HeadingToken} from '../internal';
+import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -25,8 +26,25 @@ import {classes} from '../util/constants';
 
 declare type PartialCompletionItem = Omit<CompletionItem, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
-const tasks = new Map<unknown, LanguageService>(),
+declare interface CompletionConfig {
+	re: RegExp;
+	ext: string[];
+	tags: Set<string>;
+	allTags: string[];
+	functions: string[];
+	switches: string[];
+	protocols: string[];
+	params: string[];
+}
+
+const tasks = new WeakMap<object, LanguageService>(),
 	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
+
+/**
+ * Check if all child nodes are plain text or comments.
+ * @param childNodes child nodes
+ */
+const isPlain = (childNodes: readonly AstNodes[]): boolean => childNodes.every(({type}) => plainTypes.has(type));
 
 /**
  * Get the position of a character in the document.
@@ -37,17 +55,6 @@ const positionAt = (root: Token, i: number): Position => {
 	const {top, left} = root.posFromIndex(i)!;
 	return {line: top, character: left};
 };
-
-/**
- * Create a range from two character indices.
- * @param root root token
- * @param start start index
- * @param end end index
- */
-const createRange = (root: Token, start: number, end: number): TextRange => ({
-	start: positionAt(root, start),
-	end: positionAt(root, end),
-});
 
 /**
  * Get completion items.
@@ -76,6 +83,18 @@ const getCompletion = (
 }));
 
 /**
+ * Get the end position of a section.
+ * @param section section
+ * @param lines lines
+ * @param line line number
+ */
+const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], line: number): void => {
+	if (section) {
+		section.range.end = {line, character: lines[line]!.length};
+	}
+};
+
+/**
  * Create the URL of a page.
  * @param page page name
  * @param ns namespace
@@ -85,6 +104,7 @@ const getCompletion = (
 const getUrl = (page: string, ns?: number): string => {
 	const {title, fragment, valid} = Parser.normalizeTitle(page, ns),
 		{articlePath} = Parser.getConfig();
+	/* istanbul ignore next */
 	if (!valid) {
 		throw new RangeError('Invalid page name.');
 	} else if (!articlePath) {
@@ -96,36 +116,25 @@ const getUrl = (page: string, ns?: number): string => {
 		: articlePath + (articlePath.endsWith('/') ? '' : '/') + encoded;
 };
 
-/**
- * Create the URL of a magic link.
- * @param link magic link
- */
-const parseMagicLink = (link: string): string => {
-	if (link.startsWith('ISBN')) {
-		return getUrl(`Special:Booksources/${link.slice(4).replace(/[\p{Zs}\t-]/gu, '')}`);
-	}
-	return link.startsWith('RFC')
-		? `https://tools.ietf.org/html/rfc${link.slice(3).trim()}`
-		: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(4).trim()}`;
-};
-
 /** VSCode-style language service */
 export class LanguageService {
-	#uri: unknown;
+	/* istanbul ignore next */
+	/**
+	 * 获取指定任务
+	 * @param uri 任务标识
+	 */
+	static get(uri: object): LanguageService | undefined {
+		return tasks.get(uri);
+	}
+
 	#text: string;
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
+	#completionConfig: CompletionConfig | undefined;
 
-	/** @param uri */
-	constructor(uri: unknown) {
-		this.#uri = uri;
+	/** @param uri 任务标识 */
+	constructor(uri: object) {
 		tasks.set(uri, this);
-	}
-
-	/** 销毁任务 */
-	destroy(): void {
-		tasks.delete(this.#uri);
-		Object.setPrototypeOf(this, null);
 	}
 
 	/**
@@ -137,6 +146,7 @@ export class LanguageService {
 	 * - 否则开始新的解析
 	 */
 	async #queue(text: string): Promise<Token> {
+		/* istanbul ignore if */
 		if (typeof text !== 'string') {
 			return typeError(this.constructor, 'queue', 'String');
 		} else if (this.#text === text && !this.#running && this.#done) {
@@ -155,7 +165,7 @@ export class LanguageService {
 	 */
 	async #parse(): Promise<Token> {
 		return new Promise(resolve => {
-			(typeof setImmediate === 'function' ? setImmediate : setTimeout)(() => {
+			(typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout)(() => {
 				const text = this.#text,
 					root = Parser.parse(text, true);
 				if (this.#text === text) {
@@ -164,7 +174,9 @@ export class LanguageService {
 					resolve(root);
 					return;
 				}
+				/* istanbul ignore next */
 				this.#running = this.#parse();
+				/* istanbul ignore next */
 				resolve(this.#running);
 			}, 0);
 		});
@@ -181,7 +193,7 @@ export class LanguageService {
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').flatMap(({type, childNodes}) => {
-			if (type !== 'attr-value' && !childNodes.every(({type: t}) => plainTypes.has(t))) {
+			if (type !== 'attr-value' && !isPlain(childNodes)) {
 				return [];
 			}
 			return childNodes.filter((child): child is AstText => child.type === 'text').flatMap(child => {
@@ -199,7 +211,10 @@ export class LanguageService {
 							blue: color[2] / 255,
 							alpha: color[3],
 						},
-						range: createRange(root, start + from, start + to),
+						range: {
+							start: positionAt(root, start + from),
+							end: positionAt(root, start + to),
+						},
 					};
 				}).filter(Boolean) as ColorInformation[];
 			});
@@ -222,58 +237,110 @@ export class LanguageService {
 		];
 	}
 
+	/** 准备自动补全设置 */
+	#prepareCompletionConfig(): CompletionConfig {
+		if (!this.#completionConfig) {
+			const {
+					nsid,
+					ext,
+					html,
+					parserFunction: [insensitive, sensitive, ...other],
+					doubleUnderscore,
+					protocol,
+					img,
+				} = Parser.getConfig(),
+				tags = new Set([ext, html].flat(2));
+			this.#completionConfig = {
+				re: new RegExp(
+					'(?:' // eslint-disable-line prefer-template
+					+ String.raw`<\/?(\w+)` // tag
+					+ '|'
+					+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)` // braces and brackets
+					+ '|'
+					+ String.raw`(__(?:(?!__)[\p{L}\d_])+)` // behavior switch
+					+ '|'
+					+ String.raw`(?<!\[)\[([a-z:/]+)` // protocol
+					+ '|'
+					+ String.raw`\[\[\s*(?:${
+						Object.entries(nsid).filter(([, v]) => v === 6).map(([k]) => k).join('|')
+					})\s*:[^[\]{}<>]+\|([^[\]{}<>|=]+)` // image parameter
+					+ '|'
+					// attribute key
+					+ String.raw`<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w+)`
+					+ ')$',
+					'iu',
+				),
+				ext,
+				tags,
+				allTags: [...tags, 'onlyinclude', 'includeonly', 'noinclude'],
+				functions: [
+					Object.keys(insensitive),
+					Array.isArray(sensitive) ? /* istanbul ignore next */ sensitive : Object.keys(sensitive),
+					other,
+				].flat(2),
+				switches: (doubleUnderscore.slice(0, 2) as string[][]).flat().map(w => `__${w}__`),
+				protocols: protocol.split('|'),
+				params: Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1'))
+					.map(k => k.replace(/\$1$/u, '')),
+			};
+		}
+		return this.#completionConfig;
+	}
+
 	/**
 	 * 提供自动补全
 	 * @param text 源代码
 	 * @param position 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<PartialCompletionItem[] | null> {
-		const {
-				nsid,
-				ext,
-				html,
-				parserFunction: [insensitive, sensitive, ...other],
-				doubleUnderscore,
-				protocol,
-				img,
-			} = Parser.getConfig(),
-			re = new RegExp(
-				'(?:' // eslint-disable-line prefer-template
-				+ String.raw`<\/?(\w+)` // tag
-				+ '|'
-				+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)` // braces and brackets
-				+ '|'
-				+ String.raw`(__(?:(?!__)[\p{L}\d_])+)` // behavior switch
-				+ '|'
-				+ String.raw`(?<!\[)\[([a-z:/]+)` // protocol
-				+ '|'
-				+ String.raw`\[\[\s*(?:${
-					Object.entries(nsid).filter(([, v]) => v === 6).map(([k]) => k).join('|')
-				})\s*:[^[\]{}<>]+\|([^[\]{}<>|=]+)` // image parameter
-				+ '|'
-				// attribute key
-				+ String.raw`<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w+)`
-				+ ')$',
-				'iu',
-			),
-			tags = new Set([ext, html].flat(2)),
-			allTags = [...tags, 'onlyinclude', 'includeonly', 'noinclude'],
-			functions = [
-				Object.keys(insensitive),
-				Array.isArray(sensitive) ? sensitive : Object.keys(sensitive),
-				other,
-			].flat(2),
-			switches = (doubleUnderscore.slice(0, 2) as string[][]).flat().map(w => `__${w}__`),
-			protocols = protocol.split('|'),
-			params = Object.keys(img).filter(k => k.endsWith('$1') || !k.includes('$1'))
-				.map(k => k.replace(/\$1$/u, '')),
+		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
-			mt = re.exec(text.split('\n')[line]?.slice(0, character) ?? ''),
-			root = await this.#queue(text);
+			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
+		if (mt?.[1]) { // tag
+			return getCompletion(allTags, 'Class', mt[1], position);
+		} else if (mt?.[4]) { // behavior switch
+			return getCompletion(switches, 'Constant', mt[4], position);
+		} else if (mt?.[5]) { // protocol
+			return getCompletion(protocols, 'Reference', mt[5], position);
+		}
+		const root = await this.#queue(text);
+		if (mt?.[2] === '{{{') { // argument
+			return getCompletion(
+				root.querySelectorAll('arg').map(({name}) => name!),
+				'Variable',
+				mt[3]!,
+				position,
+			);
+		} else if (mt?.[3]) { // parser function, template or link
+			const colon = mt[3].startsWith(':'),
+				str = colon ? mt[3].slice(1).trimStart() : mt[3];
+			if (mt[2] === '[[') {
+				return getCompletion(
+					root.querySelectorAll('link,file,category').map(({name}) => name!),
+					'Folder',
+					str,
+					position,
+				);
+			}
+			return [
+				...getCompletion(functions, 'Function', mt[3], position),
+				...mt[3].startsWith('#')
+					? []
+					: getCompletion(
+						root.querySelectorAll('template')
+							.map(({name}) => colon ? name! : name!.replace(/^Template:/u, '')),
+						'Folder',
+						str,
+						position,
+					),
+			];
+		}
 		let token: Token | undefined;
 		if ('elementFromPoint' in root) {
-			token = root.elementFromPoint(character, line) as Token;
+			const node = root.elementFromPoint(character, line)!;
+			token = node.type === 'text' ? node.parentNode : node;
 		}
+		/* istanbul ignore if */
 		if (!token) { // workaround
 			let offset = root.indexFromPos(line, character)!,
 				node = root;
@@ -281,7 +348,7 @@ export class LanguageService {
 				// eslint-disable-next-line @typescript-eslint/no-loop-func
 				const child = node.childNodes.find(ch => {
 					const i = ch.getRelativeIndex();
-					if (i < offset && i + String(ch).length >= offset) {
+					if (i < offset && i + ch.toString().length >= offset) {
 						offset -= i;
 						return true;
 					}
@@ -294,45 +361,10 @@ export class LanguageService {
 			}
 			token = node;
 		}
-		const {type: t, parentNode: parent} = token;
-		if (mt?.[1]) { // tag
-			return getCompletion(allTags, 'Class', mt[1], position);
-		} else if (mt?.[2] === '{{{') { // argument
-			return getCompletion(
-				root.querySelectorAll('arg').map(({name}) => name!),
-				'Variable',
-				mt[3]!,
-				position,
-			);
-		} else if (mt?.[3]) { // parser function, template or link
-			const colon = mt[3].startsWith(':');
-			if (mt[2] === '[[') {
-				return getCompletion(
-					root.querySelectorAll('link,file,category').map(({name}) => name!),
-					'Folder',
-					colon ? mt[3].slice(1).trimStart() : mt[3],
-					position,
-				);
-			}
-			return [
-				...getCompletion(functions, 'Function', mt[3], position),
-				...mt[3].startsWith('#')
-					? []
-					: getCompletion(
-						root.querySelectorAll('template')
-							.map(({name}) => colon ? name! : name!.replace(/^Template:/u, '')),
-						'Folder',
-						colon ? mt[3].slice(1).trimStart() : mt[3],
-						position,
-					),
-			];
-		} else if (mt?.[4]) { // behavior switch
-			return getCompletion(switches, 'Constant', mt[4], position);
-		} else if (mt?.[5]) { // protocol
-			return getCompletion(protocols, 'Reference', mt[5], position);
-		} else if (mt?.[6]?.trim() || t === 'image-parameter') { // image parameter
+		const {type, parentNode} = token;
+		if (mt?.[6]?.trim() || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
-				?? text.slice(
+				?? root.toString().slice(
 					token.getAbsoluteIndex(),
 					root.indexFromPos(position.line, position.character),
 				).trimStart();
@@ -345,12 +377,12 @@ export class LanguageService {
 					position,
 				),
 			];
-		} else if (mt?.[7] || t === 'attr-key') { // attribute key
-			const tag = mt?.[7]?.toLowerCase() ?? (token.parentNode as AttributeToken).tag;
+		} else if (mt?.[7] || type === 'attr-key') { // attribute key
+			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag;
 			if (!tags.has(tag)) {
 				return null;
 			}
-			const key = mt?.[9] ?? String(token),
+			const key = mt?.[9] ?? token.toString(),
 				thisHtmlAttrs = htmlAttrs[tag],
 				thisExtAttrs = extAttrs[tag],
 				extCompletion = thisExtAttrs
@@ -370,16 +402,16 @@ export class LanguageService {
 					...getCompletion(['xmlns:'], 'Interface', key, position),
 				];
 		} else if (
-			(t === 'parameter-key' || t === 'parameter-value' && (parent as ParameterToken).anon)
-			&& parent!.parentNode!.type === 'template'
+			(type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon)
+			&& parentNode!.parentNode!.type === 'template'
 		) { // parameter key
 			return getCompletion(
 				root.querySelectorAll<ParameterToken>('parameter').filter(
-					({anon, parentNode}) => !anon && parentNode!.type === 'template'
-						&& parentNode!.name === parent!.parentNode!.name,
+					({anon, parentNode: parent}) => !anon && parent!.type === 'template'
+						&& parent!.name === parentNode!.parentNode!.name,
 				).map(({name}) => name),
 				'Variable',
-				String(token).trimStart(),
+				token.toString().trimStart(),
 				position,
 			);
 		}
@@ -400,7 +432,8 @@ export class LanguageService {
 		const ranges: FoldingRange[] = [],
 			symbols: DocumentSymbol[] = [],
 			names = new Set<string>(),
-			lineCount = text.split('\n').length,
+			lines = text.split(/\r?\n/u),
+			{length} = lines,
 			root = await this.#queue(text),
 			levels = new Array<number | undefined>(6),
 			sections = new Array<DocumentSymbol | undefined>(6),
@@ -411,11 +444,7 @@ export class LanguageService {
 				const {level} = token.parentNode as HeadingToken;
 				if (symbol) {
 					for (let i = level - 1; i < 6; i++) {
-						if (sections[i]) {
-							const {end} = sections[i]!.range;
-							end.line = top - 1;
-							end.character = text.split('\n')[top - 1]!.length;
-						}
+						getSectionEnd(sections[i], lines, top - 1);
 						sections[i] = undefined;
 					}
 					const section = token.text().trim() || ' ',
@@ -424,16 +453,16 @@ export class LanguageService {
 								.find(s => !names.has(s))!
 							: section,
 						container = sections.slice(0, level - 1).reverse().find(Boolean),
-						range = {
+						selectionRange = {
 							start: {line: top, character: left - level},
-							end: {line: top + height - 1, character: (height === 1 ? left : 0) + width + level},
+							end: getEndPos(top, left, width + level, height),
 						},
-						info: DocumentSymbol = {
+						info = {
 							name,
 							kind: 15,
-							range,
-							selectionRange: structuredClone(range),
-						};
+							range: {start: selectionRange.start},
+							selectionRange,
+						} as DocumentSymbol;
 					names.add(name);
 					sections[level - 1] = info;
 					if (container) {
@@ -466,18 +495,14 @@ export class LanguageService {
 		}
 		if (symbol) {
 			for (const section of sections) {
-				if (section) {
-					const {end} = section.range;
-					end.line = lineCount - 1;
-					end.character = text.split('\n')[lineCount - 1]!.length;
-				}
+				getSectionEnd(section, lines, length - 1);
 			}
 		} else {
-			for (const line of levels) {
-				if (line !== undefined && line < lineCount) {
+			for (const startLine of levels) {
+				if (startLine !== undefined && startLine < length - 1) {
 					ranges.push({
-						startLine: line,
-						endLine: lineCount - 1,
+						startLine,
+						endLine: length - 1,
 						kind: 'region',
 					});
 				}
@@ -514,20 +539,27 @@ export class LanguageService {
 			root = await this.#queue(text),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 			+ 'image-parameter#link';
-		return root.querySelectorAll(selector).filter(({type, parentNode, childNodes}) => {
-			const {name, tag} = parentNode as AttributeToken;
-			return (type !== 'attr-value' || name === 'src' && srcTags.has(tag) || name === 'cite' && citeTags.has(tag))
-				&& childNodes.every(({type: t}) => plainTypes.has(t));
-		}).flatMap((token: Token & {toString(skip?: boolean): string}) => {
-			const {type, parentNode, firstChild, lastChild} = token,
+		return root.querySelectorAll(selector).flatMap(token => {
+			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
+			if (
+				!(type !== 'attr-value' || name === 'src' && srcTags.has(tag) || name === 'cite' && citeTags.has(tag))
+				|| !isPlain(childNodes)
+			) {
+				return [];
+			}
 			let target = type === 'image-parameter'
-				? (Object.getPrototypeOf(token.constructor) as ObjectConstructor).prototype
-					.toString.apply(token, [true] as unknown as []).trim()
+				? AstElement.prototype.toString.call(token, true).trim()
 				: token.toString(true).trim();
 			try {
 				if (type === 'magic-link') {
-					target = parseMagicLink(target);
+					if (target.startsWith('ISBN')) {
+						target = getUrl(`Special:Booksources/${target.slice(4).replace(/[\p{Zs}\t-]/gu, '')}`);
+					} else {
+						target = target.startsWith('RFC')
+							? `https://tools.ietf.org/html/rfc${target.slice(3).trim()}`
+							: `https://pubmed.ncbi.nlm.nih.gov/${target.slice(4).trim()}`;
+					}
 				} else if (
 					linkTypes.has(type)
 					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
@@ -547,15 +579,17 @@ export class LanguageService {
 				if (target.startsWith('//')) {
 					target = `https:${target}`;
 				}
+				target = new URL(target).href;
 				if (type === 'image-parameter') {
+					const rect = firstChild!.getBoundingClientRect(),
+						{top, left, height, width} = lastChild!.getBoundingClientRect();
 					return [
 						{
-							range: createRange(
-								root,
-								firstChild!.getAbsoluteIndex(),
-								lastChild!.getAbsoluteIndex() + String(lastChild!).length,
-							),
-							target: new URL(target).href,
+							range: {
+								start: {line: rect.top, character: rect.left},
+								end: getEndPos(top, left, width, height),
+							},
+							target,
 						},
 					];
 				}
@@ -564,9 +598,9 @@ export class LanguageService {
 					{
 						range: {
 							start: {line: top, character: left},
-							end: {line: top + height - 1, character: (height === 1 ? left : 0) + width},
+							end: getEndPos(top, left, width, height),
 						},
-						target: new URL(target).href,
+						target,
 					},
 				];
 			} catch {

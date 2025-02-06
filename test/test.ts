@@ -28,12 +28,17 @@ describe('API tests', () => {
 					if (
 						!first.endsWith(' (browser)')
 					) {
-						it(first.slice(3), () => {
+						it(first.slice(3), async () => {
 							try {
-								eval(code); // eslint-disable-line no-eval
+								await eval(code); // eslint-disable-line no-eval
+								if (typeof Parser.config === 'object') {
+									// @ts-expect-error delete readonly property
+									delete Parser.config.articlePath;
+								}
 								if (code.includes('Parser.config = ')) {
 									Parser.config = 'default';
 								}
+								Parser.viewOnly = false;
 							} catch (e) /* istanbul ignore next */ {
 								if (e instanceof assert.AssertionError) {
 									e.cause = {message: lines[Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1]};
