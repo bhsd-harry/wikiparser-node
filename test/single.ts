@@ -18,7 +18,7 @@ export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage)
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
 	console.timeEnd(`parse: ${title}`);
-	const parsed = String(token);
+	const parsed = token.toString();
 	if (parsed !== content) {
 		error('解析过程中不可逆地修改了原始文本！');
 		return diff(content, parsed, pageid);
