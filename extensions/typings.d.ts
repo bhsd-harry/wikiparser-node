@@ -5,7 +5,6 @@ import type {
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
-import type {Config, LintError, AST, Parser} from '../base';
 import type {
 	ColorInformation,
 	Position,
@@ -14,8 +13,7 @@ import type {
 	CompletionItem,
 	ColorPresentation,
 } from 'vscode-languageserver-types';
-
-export type {LanguageService} from '../lib/lsp';
+import type {Config, LintError, AST, Parser} from '../base';
 
 export type {
 	AST,
@@ -32,6 +30,8 @@ export type {
 	CompletionItem,
 	ColorPresentation,
 };
+
+export type LanguageService = ReturnType<Parser['createLanguageService']>;
 
 export interface PrinterBase {
 	include: boolean;

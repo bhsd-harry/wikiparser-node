@@ -1,3 +1,13 @@
+import type {
+	Position,
+	ColorInformation,
+	ColorPresentation,
+	CompletionItem,
+	FoldingRange,
+	DocumentSymbol,
+	DocumentLink,
+} from 'vscode-languageserver-types';
+
 export interface Config {
 	ext: string[];
 	readonly html: [string[], string[], string[]];
@@ -252,6 +262,53 @@ interface Token extends AstNode {
 	json(): AST;
 }
 
+export interface LanguageService {
+
+	/**
+	 * 提供颜色指示
+	 * @param rgba 颜色解析函数
+	 * @param text 源代码
+	 * @param hsl 是否允许HSL颜色
+	 */
+	provideDocumentColors(
+		rgba: (s: string) => [number, number, number, number] | [],
+		text: string,
+		hsl?: boolean,
+	): Promise<ColorInformation[]>;
+
+	/**
+	 * 颜色选择器
+	 * @ignore
+	 */
+	provideColorPresentations(// eslint-disable-line @typescript-eslint/class-methods-use-this
+		{color: {red, green, blue, alpha}, range}: ColorInformation): ColorPresentation[];
+
+	/**
+	 * 提供自动补全
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | null>;
+
+	/**
+	 * 提供折叠范围
+	 * @param text 源代码
+	 */
+	provideFoldingRanges(text: string): Promise<FoldingRange[]>;
+
+	/**
+	 * 提供章节
+	 * @param text 源代码
+	 */
+	provideDocumentSymbols(text: string): Promise<DocumentSymbol[]>;
+
+	/**
+	 * 提供链接
+	 * @param text 源代码
+	 */
+	provideLinks(text: string): Promise<DocumentLink[]>;
+}
+
 export interface Parser {
 	config: Config;
 	i18n: Record<string, string>
@@ -266,4 +323,10 @@ export interface Parser {
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
+
+	/**
+	 * 创建语言服务
+	 * @param uri 文档标识
+	 */
+	createLanguageService(uri: object | symbol): LanguageService;
 }

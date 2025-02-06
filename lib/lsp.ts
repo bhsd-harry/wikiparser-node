@@ -14,10 +14,8 @@ import type {
 	DocumentSymbol,
 	DocumentLink,
 } from 'vscode-languageserver-types';
-import type {TokenTypes} from '../base';
+import type {TokenTypes, LanguageService as LanguageServiceBase} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken} from '../internal';
-
-declare type PartialCompletionItem = Omit<CompletionItem, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
 declare interface CompletionConfig {
 	re: RegExp;
@@ -64,7 +62,7 @@ const getCompletion = (
 	kind: keyof typeof CompletionItemKind,
 	mt: string,
 	{line, character}: Position,
-): PartialCompletionItem[] => [...new Set(words)].map(w => ({
+): CompletionItem[] => [...new Set(words)].map(w => ({
 	label: w,
 	kind,
 	textEdit: {
@@ -74,7 +72,7 @@ const getCompletion = (
 		},
 		newText: w,
 	},
-}));
+} as unknown as CompletionItem));
 
 /**
  * Get the end position of a section.
@@ -111,7 +109,7 @@ const getUrl = (page: string, ns?: number): string => {
 };
 
 /** VSCode-style language service */
-export class LanguageService {
+export class LanguageService implements LanguageServiceBase {
 	#text: string;
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
@@ -279,7 +277,7 @@ export class LanguageService {
 	 * @param text 源代码
 	 * @param position 位置
 	 */
-	async provideCompletionItems(text: string, position: Position): Promise<PartialCompletionItem[] | null> {
+	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | null> {
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
