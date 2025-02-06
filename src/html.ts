@@ -114,10 +114,9 @@ export abstract class HtmlToken extends Token {
 		const errors = super.lint(start, re),
 			rect = new BoundingRect(this, start);
 		if (this.name === 'h1' && !this.closing) {
-			errors.push({
-				...generateForSelf(this, rect, 'h1', '<h1>'),
-				suggestions: [{desc: 'h2', range: [start + 2, start + 3], text: '2'}],
-			});
+			const e = generateForSelf(this, rect, 'h1', '<h1>');
+			e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
+			errors.push(e);
 		}
 		if (this.closest('table-attrs')) {
 			const e = generateForSelf(this, rect, 'parsing-order', 'HTML tag in table attributes');
