@@ -13,7 +13,12 @@ import type {
 	CompletionItem,
 	ColorPresentation,
 } from 'vscode-languageserver-types';
-import type {Config, LintError, AST, Parser} from '../base';
+import type {
+	Config,
+	LintError,
+	AST,
+	Parser,
+} from '../base';
 
 export type {
 	AST,
@@ -31,8 +36,6 @@ export type {
 	ColorPresentation,
 };
 
-export type LanguageService = ReturnType<Parser['createLanguageService']>;
-
 export interface PrinterBase {
 	include: boolean;
 }
@@ -42,23 +45,6 @@ export interface LinterBase {
 	queue(wikitext: string): Promise<LintError[]>;
 	codemirror(wikitext: string): Promise<Diagnostic[]>;
 	monaco(wikitext: string): Promise<editor.IMarkerData[]>;
-}
-
-declare global {
-	module '/*' {
-		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
-		export {CodeMirror6};
-		/** @see https://www.npmjs.com/package/codejar-async */
-		const CodeJar: (...args: unknown[]) => CodeJar;
-		export {CodeJar};
-	}
-
-	module 'https://*';
-
-	const Parser: Parser;
-	const wikiparse: wikiparse;
-
-	type MonacoEditor = typeof editor;
 }
 
 export type CodeJarAsync = CodeJar & {
@@ -92,3 +78,22 @@ export interface wikiparse {
 	Linter?: new (include?: boolean) => LinterBase;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
+
+export type LanguageService = ReturnType<Parser['createLanguageService']>;
+
+declare global {
+	module '/*' {
+		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
+		export {CodeMirror6};
+		/** @see https://www.npmjs.com/package/codejar-async */
+		const CodeJar: (...args: unknown[]) => CodeJar;
+		export {CodeJar};
+	}
+
+	module 'https://*';
+
+	type MonacoEditor = typeof editor;
+
+	const Parser: Parser;
+	const wikiparse: wikiparse;
+}
