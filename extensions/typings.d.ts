@@ -7,6 +7,8 @@ import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
 import type {Config, LintError, AST, Parser} from '../base';
 
+export type {ColorInformation} from 'vscode-languageserver-types';
+
 export type {
 	AST,
 	Config,

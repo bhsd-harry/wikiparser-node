@@ -44,7 +44,7 @@
 	},
 	"dependencies": {
 		"@bhsd/common": "^0.6.3",
-		"vscode-languageserver": "^9.0.1"
+		"vscode-languageserver-types": "^3.17.5"
 	},
 	"devDependencies": {
 		"@bhsd/codemirror-mediawiki": "^2.20.1",

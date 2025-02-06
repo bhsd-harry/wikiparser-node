@@ -1,4 +1,4 @@
-import type {Config, LintError, AST, wikiparse as Wikiparse} from './typings';
+import type {Config, LintError, AST, wikiparse as Wikiparse, ColorInformation} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
@@ -44,7 +44,8 @@ const workerJS = (): void => {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
 			| ['getConfig', number]
-			| ['json' | 'lint' | 'print', number, string, boolean?, number?];
+			| ['json' | 'lint' | 'print', number, string, boolean?, number?]
+			| ['documentColors', ColorInformation[]];
 	}): void => {
 		const [command, qid, wikitext, include, stage] = data;
 		switch (command) {
@@ -77,6 +78,9 @@ const workerJS = (): void => {
 				break;
 			case 'documentColors': {
 				const lsp = Parser.createLanguageService(uri);
+				(async () => {
+					postMessage([qid, await lsp.provideDocumentColors(parseColor, wikitext!, false)]);
+				})();
 				break;
 			}
 			// no default
