@@ -32,10 +32,6 @@ export interface LinterBase {
 	monaco(wikitext: string): Promise<editor.IMarkerData[]>;
 }
 
-declare global {
-	const wikiparse: wikiparse;
-}
-
 export type CodeJarAsync = CodeJar & {
 	include: boolean;
 	editor: HTMLElement;
@@ -67,3 +63,7 @@ export interface wikiparse {
 	Linter?: new (include?: boolean) => LinterBase;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
+
+declare global {
+	const wikiparse: wikiparse;
+}
