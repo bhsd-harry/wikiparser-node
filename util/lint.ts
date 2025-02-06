@@ -1,6 +1,6 @@
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
-import type {Position} from 'vscode-languageserver/node';
+import type {Position} from 'vscode-languageserver-types';
 import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
 
