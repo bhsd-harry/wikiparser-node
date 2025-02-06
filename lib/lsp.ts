@@ -28,7 +28,7 @@ declare interface CompletionConfig {
 	params: string[];
 }
 
-export const tasks = new WeakMap<object | symbol, LanguageService>();
+export const tasks = new WeakMap<object, LanguageService>();
 
 const plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
 
@@ -116,7 +116,7 @@ export class LanguageService implements LanguageServiceBase {
 	#completionConfig: CompletionConfig | undefined;
 
 	/** @param uri 任务标识 */
-	constructor(uri: object | symbol) {
+	constructor(uri: object) {
 		tasks.set(uri, this);
 	}
 
