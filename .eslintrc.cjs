@@ -160,6 +160,7 @@ module.exports = {
 			excludedFiles: [
 				'bin/*.ts',
 				'test/*.ts',
+				'lib/lsp.ts',
 			],
 			plugins: [
 				'es-x',
