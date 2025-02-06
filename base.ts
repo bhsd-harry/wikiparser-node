@@ -270,10 +270,4 @@ export interface Parser {
 	 * @param maxStage 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
-
-	/**
-	 * 创建语言服务
-	 * @param uri 文档标识
-	 */
-	createLanguageService(uri: object | symbol): import('./lib/lsp').LanguageService;
 }
