@@ -1,4 +1,16 @@
-import type {Config, LintError, AST, wikiparse as Wikiparse, ColorInformation} from './typings';
+import type {
+	Config,
+	LintError,
+	AST,
+	LanguageService,
+	wikiparse as Wikiparse,
+	ColorInformation,
+	Position,
+	FoldingRange,
+	DocumentLink,
+	CompletionItem,
+	ColorPresentation,
+} from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
@@ -13,7 +25,20 @@ const version = '1.15.1',
 const workerJS = (): void => {
 	importScripts('$CDN/bundle/bundle.lsp.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'},
-		uri = Symbol('LSP');
+		lsps = new Map<number, LanguageService>();
+
+	/**
+	 * 获取LSP
+	 * @param qid 文档编号
+	 */
+	const getLSP = (qid: number): LanguageService => {
+		if (lsps.has(qid)) {
+			return lsps.get(qid)!;
+		}
+		const lsp = Parser.createLanguageService(Symbol(qid));
+		lsps.set(qid, lsp);
+		return lsp;
+	};
 
 	/**
 	 * 解析颜色字符串
@@ -44,8 +69,15 @@ const workerJS = (): void => {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
 			| ['getConfig', number]
-			| ['json' | 'lint' | 'print', number, string, boolean?, number?]
-			| ['documentColors', ColorInformation[]];
+			| [
+				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links',
+				number,
+				string,
+				boolean?,
+				number?,
+			]
+			| ['colorPresentations', number, ColorInformation]
+			| ['completionItems', number, string, Position];
 	}): void => {
 		const [command, qid, wikitext, include, stage] = data;
 		switch (command) {
@@ -76,13 +108,28 @@ const workerJS = (): void => {
 					]),
 				]);
 				break;
-			case 'documentColors': {
-				const lsp = Parser.createLanguageService(uri);
+			case 'documentColors':
 				(async () => {
-					postMessage([qid, await lsp.provideDocumentColors(parseColor, wikitext!, false)]);
+					postMessage([qid, await getLSP(qid).provideDocumentColors(parseColor, wikitext, false)]);
 				})();
 				break;
-			}
+			case 'colorPresentations':
+				postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
+				break;
+			case 'completionItems':
+				(async () => {
+					postMessage([qid, await getLSP(qid).provideCompletionItems(wikitext, include)]);
+				})();
+				break;
+			case 'foldingRanges':
+				(async () => {
+					postMessage([qid, await getLSP(qid).provideFoldingRanges(wikitext)]);
+				})();
+				break;
+			case 'links':
+				(async () => {
+					postMessage([qid, await getLSP(qid).provideLinks(wikitext)]);
+				})();
 			// no default
 		}
 	};
@@ -178,6 +225,47 @@ const print = (
  */
 const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[]> =>
 	getFeedback('lint', qid, true, wikitext, include);
+
+/**
+ * 提供颜色指示
+ * @param wikitext wikitext
+ * @param qid LSP编号
+ */
+const provideDocumentColors = (wikitext: string, qid = -10): Promise<ColorInformation[]> =>
+	getFeedback('documentColors', qid, true, wikitext);
+
+/**
+ * 提供折叠范围
+ * @param wikitext wikitext
+ * @param qid LSP编号
+ */
+const provideFoldingRanges = (wikitext: string, qid = -10): Promise<FoldingRange[]> =>
+	getFeedback('foldingRanges', qid, true, wikitext);
+
+/**
+ * 提供链接
+ * @param wikitext wikitext
+ * @param qid LSP编号
+ */
+const provideLinks = (wikitext: string, qid = -10): Promise<DocumentLink[]> =>
+	getFeedback('links', qid, true, wikitext);
+
+/**
+ * 提供链接
+ * @param wikitext wikitext
+ * @param pos 位置
+ * @param qid LSP编号
+ */
+const provideCompletionItems = (wikitext: string, pos: Position, qid = -10): Promise<CompletionItem[] | null> =>
+	getFeedback('links', qid, true, wikitext, pos);
+
+/**
+ * 颜色选择器
+ * @param color 颜色信息
+ * @param qid LSP编号
+ */
+const provideColorPresentations = (color: ColorInformation, qid = -10): Promise<ColorPresentation[]> =>
+	getFeedback('links', qid, false, color as unknown as string);
 
 /**
  * 插入非空文本
@@ -310,5 +398,21 @@ const lineNumbers = (html: HTMLElement, start = 1, paddingTop = ''): void => {
 	}
 };
 
-const wikiparse: Wikiparse = {version, CDN, id: 0, setI18N, setConfig, getConfig, print, lint, json, lineNumbers};
+const wikiparse: Wikiparse = {
+	version,
+	CDN,
+	id: 0,
+	setI18N,
+	setConfig,
+	getConfig,
+	print,
+	lint,
+	json,
+	lineNumbers,
+	provideDocumentColors,
+	provideFoldingRanges,
+	provideLinks,
+	provideCompletionItems,
+	provideColorPresentations,
+};
 Object.assign(window, {wikiparse});

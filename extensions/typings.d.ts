@@ -6,8 +6,16 @@ import type {
 import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
 import type {Config, LintError, AST, Parser} from '../base';
+import type {
+	ColorInformation,
+	Position,
+	FoldingRange,
+	DocumentLink,
+	CompletionItem,
+	ColorPresentation,
+} from 'vscode-languageserver-types';
 
-export type {ColorInformation} from 'vscode-languageserver-types';
+export type {LanguageService} from '../lib/lsp';
 
 export type {
 	AST,
@@ -17,6 +25,12 @@ export type {
 	Action,
 	editor,
 	CodeJar,
+	ColorInformation,
+	Position,
+	FoldingRange,
+	DocumentLink,
+	CompletionItem,
+	ColorPresentation,
 };
 
 export interface PrinterBase {
@@ -65,6 +79,11 @@ export interface wikiparse {
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
+	provideDocumentColors: (wikitext: string, qid?: number) => Promise<ColorInformation[]>;
+	provideFoldingRanges: (wikitext: string, qid?: number) => Promise<FoldingRange[]>;
+	provideLinks: (wikitext: string, qid?: number) => Promise<DocumentLink[]>;
+	provideCompletionItems: (wikitext: string, position: Position, qid?: number) => Promise<CompletionItem[] | null>;
+	provideColorPresentations: (color: ColorInformation, qid?: number) => Promise<ColorPresentation[]>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string) => void;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
