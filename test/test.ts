@@ -6,23 +6,38 @@ import Parser = require('../index');
 Parser.warning = false;
 const allCodes = new Map<string, string[]>();
 
+/**
+ * Mock CRLF
+ * @param str LF string
+ */
+const mockCRLF = (str: string): string => str.replaceAll('\n', '\\r\n');
+
 describe('API tests', () => {
 	for (const file of fs.readdirSync(path.join(__dirname, '..', '..', 'wiki'))) {
 		if (file.endsWith('.md')) {
 			const md = fs.readFileSync(path.join(__dirname, '..', '..', 'wiki', file), 'utf8'),
 				codes = [...md.matchAll(/(?<=```js\n).*?(?=\n```)/gsu)]
-					.map(([code]) => code.replace(/[ \n]\/\/ .*$/gmu, ''));
+					.map(([code]) => code.replace(/[ \n]\/\/ .*$/gmu, '')),
+				testCodes = file.startsWith('LanguageService')
+					? codes.flatMap(code => [
+						code,
+						code.replace(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF).replace('\n', ' (CRLF)\n'),
+					])
+					: codes;
 			allCodes.set(file.slice(0, -3), codes);
 			describe(file, () => {
 				beforeEach(() => {
+					Parser.viewOnly = false;
 					Parser.i18n = undefined;
 					Parser.conversionTable.clear();
 					Parser.redirects.clear();
 					if (typeof Parser.config === 'object') {
 						Parser.config.interwiki.length = 0;
+						// @ts-expect-error delete readonly property
+						delete Parser.config.articlePath;
 					}
 				});
-				for (const code of codes) {
+				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
 					if (
@@ -31,14 +46,9 @@ describe('API tests', () => {
 						it(first.slice(3), async () => {
 							try {
 								await eval(code); // eslint-disable-line no-eval
-								if (typeof Parser.config === 'object') {
-									// @ts-expect-error delete readonly property
-									delete Parser.config.articlePath;
-								}
 								if (code.includes('Parser.config = ')) {
 									Parser.config = 'default';
 								}
-								Parser.viewOnly = false;
 							} catch (e) /* istanbul ignore next */ {
 								if (e instanceof assert.AssertionError) {
 									e.cause = {message: lines[Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1]};

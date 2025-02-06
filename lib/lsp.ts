@@ -141,7 +141,7 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (this.#text === text && !this.#running && this.#done) {
 			return this.#done;
 		}
-		this.#text = text;
+		this.#text = text.replace(/\r$/gmu, '');
 		this.#running ??= this.#parse(); // 不要提交多个解析任务
 		return this.#running;
 	}
@@ -355,7 +355,7 @@ export class LanguageService implements LanguageServiceBase {
 		const {type, parentNode} = token;
 		if (mt?.[6]?.trim() || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
-				?? root.toString().slice(
+				?? this.#text.slice(
 					token.getAbsoluteIndex(),
 					root.indexFromPos(position.line, position.character),
 				).trimStart();
@@ -423,9 +423,9 @@ export class LanguageService implements LanguageServiceBase {
 		const ranges: FoldingRange[] = [],
 			symbols: DocumentSymbol[] = [],
 			names = new Set<string>(),
-			lines = text.split(/\r?\n/u),
-			{length} = lines,
 			root = await this.#queue(text),
+			lines = this.#text.split('\n'),
+			{length} = lines,
 			levels = new Array<number | undefined>(6),
 			sections = new Array<DocumentSymbol | undefined>(6),
 			tokens = root.querySelectorAll<Token>(symbol ? 'heading-title' : 'heading-title,table,template,magic-word');

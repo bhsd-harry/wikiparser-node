@@ -1,3 +1,16 @@
+## v1.16.0
+
+*2025-02-07*
+
+**Added**
+
+- [`Parser.createLanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/Parser#createlanguageservice) method will create a [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) instance that provides various functions
+- [`Config.articlePath`](https://github.com/bhsd-harry/wikiparser-node/wiki/types#config) does not have to include `'$1'` now
+
+**Fixed**
+
+- `"sideEffects": false` is now added to `package.json` to facilitate tree-shaking
+
 ## v1.15.1
 
 *2025-01-30*
