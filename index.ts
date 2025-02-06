@@ -20,6 +20,7 @@ import type {
 	AST,
 } from './base';
 import type {Title} from './lib/title';
+import type {LanguageService} from './lib/lsp';
 import type {Token} from './internal';
 
 declare interface Parser extends ParserBase {
@@ -47,6 +48,12 @@ declare interface Parser extends ParserBase {
 	): Title;
 
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
+
+	/**
+	 * 创建语言服务
+	 * @param uri 文档标识
+	 */
+	createLanguageService(uri: object | symbol): LanguageService;
 }
 
 /**
