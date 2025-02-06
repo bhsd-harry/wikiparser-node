@@ -3,7 +3,19 @@ import type {
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
-import type {Config, LintError, AST} from 'wikiparser-node';
+import type {
+	ColorInformation,
+	Position,
+	FoldingRange,
+	DocumentLink,
+	CompletionItem,
+	ColorPresentation,
+} from 'vscode-languageserver-types';
+import type {
+	Config,
+	LintError,
+	AST,
+} from '../base';
 
 export type {
 	AST,
@@ -42,6 +54,11 @@ export interface wikiparse {
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
+	provideDocumentColors: (wikitext: string, qid?: number) => Promise<ColorInformation[]>;
+	provideFoldingRanges: (wikitext: string, qid?: number) => Promise<FoldingRange[]>;
+	provideLinks: (wikitext: string, qid?: number) => Promise<DocumentLink[]>;
+	provideCompletionItems: (wikitext: string, position: Position, qid?: number) => Promise<CompletionItem[] | null>;
+	provideColorPresentations: (color: ColorInformation, qid?: number) => Promise<ColorPresentation[]>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string) => void;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
