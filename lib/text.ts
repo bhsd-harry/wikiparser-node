@@ -2,6 +2,7 @@ import {
 	zs,
 	removeComment,
 } from '../util/string';
+import {getEndPos} from '../util/lint';
 import Parser from '../index';
 import {AstNode} from './node';
 import type {LintError, TokenTypes} from '../base';
@@ -219,9 +220,8 @@ export class AstText extends AstNode {
 				error = error.toUpperCase();
 			}
 			const lines = data.slice(0, index).split('\n'),
-				startLine = lines.length + top - 1,
 				line = lines[lines.length - 1]!,
-				startCol = lines.length === 1 ? left + line.length : line.length,
+				{line: startLine, character: startCol} = getEndPos(top, left, line.length, lines.length),
 				e: LintError = {
 					rule: ruleMap[char!]!,
 					message: Parser.msg('lonely "$1"', magicLink || char === 'h' ? error : char),

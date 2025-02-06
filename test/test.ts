@@ -19,9 +19,13 @@ describe('API tests', () => {
 					if (
 						!first.endsWith(' (main)') && !/^\/\/ (?:print|json)(?!\S)/u.test(first)
 					) {
-						it(first.slice(3), () => {
+						it(first.slice(3), async () => {
 							try {
-								eval(code); // eslint-disable-line no-eval
+								await eval(code); // eslint-disable-line no-eval
+								if (typeof Parser.config === 'object') {
+									// @ts-expect-error delete readonly property
+									delete Parser.config.articlePath;
+								}
 								if (code.includes('Parser.config = ')) {
 									Parser.config = 'default';
 								}
