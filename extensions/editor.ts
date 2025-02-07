@@ -226,5 +226,3 @@ const edit = (textbox: HTMLTextAreaElement, include?: boolean): Printer => {
 
 wikiparse.Printer = Printer;
 wikiparse.edit = edit;
-
-export type {Printer};

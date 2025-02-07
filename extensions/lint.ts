@@ -89,5 +89,3 @@ class Linter implements LinterBase {
 }
 
 wikiparse.Linter = Linter;
-
-export type {Linter};

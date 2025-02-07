@@ -114,11 +114,7 @@ const getConfig = () => getFeedback('getConfig', -3);
 const json = (wikitext, include, qid = -4, stage) => getFeedback('json', qid, false, wikitext, include, stage);
 const print = (wikitext, include, stage, qid = -1) => getFeedback('print', qid, false, wikitext, include, stage);
 const lint = (wikitext, include, qid = -2) => getFeedback('lint', qid, true, wikitext, include);
-const provideDocumentColors = (wikitext, qid = -10) => getFeedback('documentColors', qid, true, wikitext);
-const provideFoldingRanges = (wikitext, qid = -10) => getFeedback('foldingRanges', qid, true, wikitext);
-const provideLinks = (wikitext, qid = -10) => getFeedback('links', qid, true, wikitext);
-const provideCompletionItems = (wikitext, pos, qid = -10) => getFeedback('completionItems', qid, true, wikitext, pos);
-const provideColorPresentations = (color, qid = -10) => getFeedback('colorPresentations', qid, false, color);
+const provide = (command, qid, wikitext, ...args) => getFeedback(command, qid, typeof wikitext === 'string', wikitext, ...args);
 const append = (parent, text) => {
     if (text) {
         parent.append(text);
@@ -228,11 +224,7 @@ const wikiparse = {
     lint,
     json,
     lineNumbers,
-    provideDocumentColors,
-    provideFoldingRanges,
-    provideLinks,
-    provideCompletionItems,
-    provideColorPresentations,
+    provide,
 };
 Object.assign(window, { wikiparse });
 })();

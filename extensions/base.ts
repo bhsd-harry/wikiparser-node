@@ -6,10 +6,6 @@ import type {
 	wikiparse as Wikiparse,
 	ColorInformation,
 	Position,
-	FoldingRange,
-	DocumentLink,
-	CompletionItem,
-	ColorPresentation,
 } from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
@@ -227,45 +223,14 @@ const lint = (wikitext: string, include?: boolean, qid = -2): Promise<LintError[
 	getFeedback('lint', qid, true, wikitext, include);
 
 /**
- * 提供颜色指示
+ * 提供语言服务
+ * @param command 指令名
+ * @param qid 文档编号
  * @param wikitext wikitext
- * @param qid LSP编号
+ * @param args 额外参数
  */
-const provideDocumentColors = (wikitext: string, qid = -10): Promise<ColorInformation[]> =>
-	getFeedback('documentColors', qid, true, wikitext);
-
-/**
- * 提供折叠范围
- * @param wikitext wikitext
- * @param qid LSP编号
- */
-const provideFoldingRanges = (wikitext: string, qid = -10): Promise<FoldingRange[]> =>
-	getFeedback('foldingRanges', qid, true, wikitext);
-
-/**
- * 提供链接
- * @param wikitext wikitext
- * @param qid LSP编号
- */
-const provideLinks = (wikitext: string, qid = -10): Promise<DocumentLink[]> =>
-	getFeedback('links', qid, true, wikitext);
-
-/**
- * 提供链接
- * @param wikitext wikitext
- * @param pos 位置
- * @param qid LSP编号
- */
-const provideCompletionItems = (wikitext: string, pos: Position, qid = -10): Promise<CompletionItem[] | null> =>
-	getFeedback('completionItems', qid, true, wikitext, pos);
-
-/**
- * 颜色选择器
- * @param color 颜色信息
- * @param qid LSP编号
- */
-const provideColorPresentations = (color: ColorInformation, qid = -10): Promise<ColorPresentation[]> =>
-	getFeedback('colorPresentations', qid, false, color as unknown as string);
+const provide = (command: string, qid: number, wikitext: unknown, ...args: unknown[]): Promise<unknown> =>
+	getFeedback(command, qid, typeof wikitext === 'string', wikitext as string, ...args);
 
 /**
  * 插入非空文本
@@ -409,10 +374,6 @@ const wikiparse: Wikiparse = {
 	lint,
 	json,
 	lineNumbers,
-	provideDocumentColors,
-	provideFoldingRanges,
-	provideLinks,
-	provideCompletionItems,
-	provideColorPresentations,
+	provide,
 };
 Object.assign(window, {wikiparse});
