@@ -5,14 +5,10 @@ import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
 import type {
 	ColorInformation,
-	Position,
-	FoldingRange,
-	DocumentLink,
-	CompletionItem,
 	ColorPresentation,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, LintError, AST} from '../base';
+import type {Config, LintError, AST, LanguageService} from '../base';
 
 export type {
 	AST,
@@ -36,6 +32,11 @@ export type CodeJarAsync = CodeJar & {
 
 export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) => CodeJarAsync;
 
+export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocumentSymbols'> {
+	provideDocumentColors(text: string): Promise<ColorInformation[]>;
+	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
+}
+
 /* eslint-disable @typescript-eslint/method-signature-style */
 export interface wikiparse {
 	version: string;
@@ -47,17 +48,13 @@ export interface wikiparse {
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
 	print: (wikitext: string, include?: boolean, stage?: number, qid?: number) => Promise<[number, string, string][]>;
 	lint: (wikitext: string, include?: boolean, qid?: number) => Promise<LintError[]>;
-	provideDocumentColors: (wikitext: string, qid?: number) => Promise<ColorInformation[]>;
-	provideFoldingRanges: (wikitext: string, qid?: number) => Promise<FoldingRange[]>;
-	provideLinks: (wikitext: string, qid?: number) => Promise<DocumentLink[]>;
-	provideCompletionItems: (wikitext: string, position: Position, qid?: number) => Promise<CompletionItem[] | null>;
-	provideColorPresentations: (color: ColorInformation, qid?: number) => Promise<ColorPresentation[]>;
 	lineNumbers: (html: HTMLElement, start?: number, paddingTop?: string) => void;
 	highlight?: (ele: HTMLElement, include?: boolean, linenums?: boolean, start?: number) => Promise<void>;
 	edit?: (textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
 	codejar?: codejar | Promise<codejar>;
 	Printer?: new (preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
 	Linter?: new (include?: boolean) => LinterBase;
+	LanguageService?: new () => LanguageServiceBase;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
 
