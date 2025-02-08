@@ -326,7 +326,7 @@ export abstract class AstElement extends AstNode {
 	 */
 	json(file?: string, start = this.getAbsoluteIndex()): AST {
 		const json = {
-			...this,
+			...this, // eslint-disable-line @typescript-eslint/no-misused-spread
 			type: this.type,
 			range: [start, start + this.toString().length],
 			childNodes: [],

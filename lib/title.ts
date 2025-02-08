@@ -169,10 +169,10 @@ export class Title {
 			title = title.slice(0, i).trim();
 		}
 		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.#fragment !== undefined)
-		&& decodeHtml(title) === title
-		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
-			subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
-		);
+			&& decodeHtml(title) === title
+			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
+				subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
+			);
 		this.main = title;
 		Object.defineProperties(this, {
 			encoded: {enumerable: false, writable: false},
