@@ -122,10 +122,10 @@ export class AstText extends AstNode {
 			}
 		}
 		errorRegex ??= type === 'free-ext-link'
-		|| type === 'ext-link-url'
-		|| type === 'ext-link-text'
-		|| type === 'image-parameter' && name === 'link'
-		|| isHtmlAttrVal
+			|| type === 'ext-link-url'
+			|| type === 'ext-link-text'
+			|| type === 'image-parameter' && name === 'link'
+			|| isHtmlAttrVal
 			? errorSyntaxUrl
 			: errorSyntax;
 		if (data.search(errorRegex) === -1) {

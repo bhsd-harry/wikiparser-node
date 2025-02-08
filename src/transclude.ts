@@ -81,7 +81,7 @@ export abstract class TranscludeToken extends Token {
 					? sensitive.includes(name)
 					: Object.prototype.hasOwnProperty.call(sensitive, name),
 				canonicalName = Object.prototype.hasOwnProperty.call(insensitive, lcName) && insensitive[lcName]
-				|| !isOldSchema && isSensitive && sensitive[name],
+					|| !isOldSchema && isSensitive && sensitive[name],
 				isVar = isOldSchema && isSensitive || variable.includes(canonicalName as string);
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
