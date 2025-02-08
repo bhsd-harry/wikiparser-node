@@ -591,7 +591,7 @@ export class LanguageService implements LanguageServiceBase {
 		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			root = await this.#queue(text),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
-			+ 'image-parameter#link';
+				+ 'image-parameter#link';
 		return root.querySelectorAll(selector).flatMap(token => {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
@@ -729,7 +729,7 @@ export class LanguageService implements LanguageServiceBase {
 				return type === 'attr-value'
 					? getRefName(token) === refName || getRefGroup(token) === refGroup
 					: getName(token) === name;
-			}).map(token => token.type === 'parameter-key' ? token.parentNode! : token);
+			}).map(token => usage !== 3 && token.type === 'parameter-key' ? token.parentNode! : token);
 		if (refs.length === 0) {
 			return undefined;
 		}
