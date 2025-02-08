@@ -16,20 +16,36 @@ class LanguageService {
         _LanguageService_id.set(this, void 0);
         __classPrivateFieldSet(this, _LanguageService_id, wikiparse.id++, "f");
     }
+    provideColorPresentations(color) {
+        return wikiparse.provide('colorPresentations', __classPrivateFieldGet(this, _LanguageService_id, "f"), color);
+    }
     provideDocumentColors(text) {
         return wikiparse.provide('documentColors', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.1, text);
     }
-    provideColorPresentations(color) {
-        return wikiparse.provide('colorPresentations', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.2, color);
-    }
-    provideCompletionItems(text, position) {
-        return wikiparse.provide('completionItems', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.3, text, position);
-    }
     provideFoldingRanges(text) {
-        return wikiparse.provide('foldingRanges', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.4, text);
+        return wikiparse.provide('foldingRanges', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.2, text);
     }
     provideLinks(text) {
-        return wikiparse.provide('links', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.5, text);
+        return wikiparse.provide('links', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.3, text);
+    }
+    provideCompletionItems(text, position) {
+        return wikiparse
+            .provide('completionItems', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.4, text, position);
+    }
+    provideReferences(text, position) {
+        return wikiparse
+            .provide('references', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.5, text, position);
+    }
+    provideDefinition(text, position) {
+        return wikiparse
+            .provide('definition', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.6, text, position);
+    }
+    resolveRenameLocation(text, position) {
+        return wikiparse.provide('renameLocation', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.7, text, position);
+    }
+    provideRenameEdits(text, position, newName) {
+        return wikiparse
+            .provide('renameEdits', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.8, text, position, newName);
     }
 }
 _LanguageService_id = new WeakMap();

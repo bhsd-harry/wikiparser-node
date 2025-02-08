@@ -64,17 +64,12 @@ const workerJS = () => {
                     ]),
                 ]);
                 break;
-            case 'documentColors':
-                (async () => {
-                    postMessage([qid, await getLSP(qid).provideDocumentColors(parseColor, wikitext, false), wikitext]);
-                })();
-                break;
             case 'colorPresentations':
                 postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
                 break;
-            case 'completionItems':
+            case 'documentColors':
                 (async () => {
-                    postMessage([qid, await getLSP(qid).provideCompletionItems(wikitext, include), wikitext]);
+                    postMessage([qid, await getLSP(qid).provideDocumentColors(parseColor, wikitext, false), wikitext]);
                 })();
                 break;
             case 'foldingRanges':
@@ -85,6 +80,31 @@ const workerJS = () => {
             case 'links':
                 (async () => {
                     postMessage([qid, await getLSP(qid).provideLinks(wikitext), wikitext]);
+                })();
+                break;
+            case 'completionItems':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideCompletionItems(wikitext, include), wikitext]);
+                })();
+                break;
+            case 'references':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideReferences(wikitext, include), wikitext]);
+                })();
+                break;
+            case 'definition':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideDefinition(wikitext, include), wikitext]);
+                })();
+                break;
+            case 'renameLocation':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).resolveRenameLocation(wikitext, include), wikitext]);
+                })();
+                break;
+            case 'renameEdits':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideRenameEdits(wikitext, include, stage), wikitext]);
                 })();
         }
     };

@@ -12,9 +12,12 @@ import type {
 	FoldingRange,
 	DocumentLink,
 	CompletionItem,
+	Location,
+	Range,
+	WorkspaceEdit,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, LintError, AST, Parser, LanguageService} from '../base';
+import type {Config, LintError, AST, LanguageService, Parser} from '../base';
 
 export type {
 	AST,
@@ -31,6 +34,9 @@ export type {
 	DocumentLink,
 	CompletionItem,
 	ColorPresentation,
+	Location,
+	Range,
+	WorkspaceEdit,
 };
 
 export interface PrinterBase {

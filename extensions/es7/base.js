@@ -73,17 +73,12 @@ const workerJS = () => {
                     ]),
                 ]);
                 break;
-            case 'documentColors':
-                (() => __awaiter(void 0, void 0, void 0, function* () {
-                    postMessage([qid, yield getLSP(qid).provideDocumentColors(parseColor, wikitext, false), wikitext]);
-                }))();
-                break;
             case 'colorPresentations':
                 postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
                 break;
-            case 'completionItems':
+            case 'documentColors':
                 (() => __awaiter(void 0, void 0, void 0, function* () {
-                    postMessage([qid, yield getLSP(qid).provideCompletionItems(wikitext, include), wikitext]);
+                    postMessage([qid, yield getLSP(qid).provideDocumentColors(parseColor, wikitext, false), wikitext]);
                 }))();
                 break;
             case 'foldingRanges':
@@ -94,6 +89,31 @@ const workerJS = () => {
             case 'links':
                 (() => __awaiter(void 0, void 0, void 0, function* () {
                     postMessage([qid, yield getLSP(qid).provideLinks(wikitext), wikitext]);
+                }))();
+                break;
+            case 'completionItems':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).provideCompletionItems(wikitext, include), wikitext]);
+                }))();
+                break;
+            case 'references':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).provideReferences(wikitext, include), wikitext]);
+                }))();
+                break;
+            case 'definition':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).provideDefinition(wikitext, include), wikitext]);
+                }))();
+                break;
+            case 'renameLocation':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).resolveRenameLocation(wikitext, include), wikitext]);
+                }))();
+                break;
+            case 'renameEdits':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).provideRenameEdits(wikitext, include, stage), wikitext]);
                 }))();
         }
     };
