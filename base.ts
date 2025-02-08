@@ -1,4 +1,5 @@
 import type {
+	Range,
 	Position,
 	ColorInformation,
 	ColorPresentation,
@@ -6,6 +7,8 @@ import type {
 	FoldingRange,
 	DocumentSymbol,
 	DocumentLink,
+	Location,
+	WorkspaceEdit,
 } from 'vscode-languageserver-types';
 
 export interface Config {
@@ -272,7 +275,7 @@ export interface LanguageService {
 	 * @param text 源代码
 	 * @param position 位置
 	 */
-	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | null>;
+	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined>;
 
 	/**
 	 * 提供折叠范围
@@ -291,6 +294,35 @@ export interface LanguageService {
 	 * @param text 源代码
 	 */
 	provideLinks(text: string): Promise<DocumentLink[]>;
+
+	/**
+	 * 提供引用
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined>;
+
+	/**
+	 * 提供定义
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined>;
+
+	/**
+	 * 提供变量更名准备
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	resolveRenameLocation(text: string, position: Position): Promise<Range | undefined>;
+
+	/**
+	 * 变量更名
+	 * @param text 源代码
+	 * @param position 位置
+	 * @param newName 新名称
+	 */
+	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined>;
 }
 
 export interface Parser {

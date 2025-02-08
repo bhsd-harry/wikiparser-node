@@ -5,6 +5,7 @@ import {getEndPos} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import type {
+	Range,
 	Position,
 	ColorInformation,
 	ColorPresentation,
@@ -13,9 +14,11 @@ import type {
 	FoldingRange,
 	DocumentSymbol,
 	DocumentLink,
+	Location,
+	WorkspaceEdit,
 } from 'vscode-languageserver-types';
 import type {TokenTypes, LanguageService as LanguageServiceBase} from '../base';
-import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken} from '../internal';
+import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken, ExtToken} from '../internal';
 
 declare interface CompletionConfig {
 	re: RegExp;
@@ -30,13 +33,12 @@ declare interface CompletionConfig {
 
 export const tasks = new WeakMap<object, LanguageService>();
 
-const plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
-
 /**
  * Check if all child nodes are plain text or comments.
  * @param childNodes child nodes
  */
-const isPlain = (childNodes: readonly AstNodes[]): boolean => childNodes.every(({type}) => plainTypes.has(type));
+const isPlain = (childNodes: readonly AstNodes[]): boolean =>
+	childNodes.every(({type}) => ['text', 'comment', 'noinclude', 'include'].includes(type));
 
 /**
  * Get the position of a character in the document.
@@ -106,6 +108,102 @@ const getUrl = (page: string, ns?: number): string => {
 	return articlePath.includes('$1')
 		? articlePath.replace('$1', encoded)
 		: articlePath + (articlePath.endsWith('/') ? '' : '/') + encoded;
+};
+
+/**
+ * Get the token at the position.
+ * @param root root token
+ * @param pos position
+ */
+const elementFromPoint = (root: Token, pos: Position): Token => {
+	const {line, character} = pos;
+	let offset = root.indexFromPos(line, character)!,
+		node = root;
+	while (true) { // eslint-disable-line no-constant-condition
+		// eslint-disable-next-line @typescript-eslint/no-loop-func
+		const child = node.childNodes.find(ch => {
+			const i = ch.getRelativeIndex();
+			if (i < offset && i + ch.toString().length >= offset) {
+				offset -= i;
+				return true;
+			}
+			return false;
+		});
+		if (!child || child.type === 'text') {
+			break;
+		}
+		node = child;
+	}
+	return node;
+};
+
+/**
+ * Get the token at the position from a word.
+ * @param root root token
+ * @param pos position
+ */
+const elementFromWord = (root: Token, pos: Position): Token => {
+	const {line, character} = pos,
+		offset = Number(/\w/u.test(root.toString().charAt(root.indexFromPos(line, character)!)));
+	return elementFromPoint(root, {line, character: character + offset});
+};
+
+/**
+ * Get the `name` attribute of a `<ref>` tag.
+ * @param token `name` attribute token
+ */
+const getRefName = (token: Token): string | number => {
+	const {type, parentNode = {}} = token,
+		{name, tag} = parentNode as AttributeToken;
+	return type === 'attr-value' && tag === 'ref' && ['name', 'extends', 'follow'].includes(name)
+		? token.toString().trim()
+		: NaN;
+};
+
+/**
+ * Get the `group` attribute of a `<ref>` or `<references>` tag.
+ * @param token `group` attribute token
+ */
+const getRefGroup = (token: Token): string | number => {
+	const {type, parentNode = {}} = token,
+		{name, tag} = parentNode as AttributeToken;
+	return type === 'attr-value' && name === 'group' && (tag === 'ref' || tag === 'references')
+		? token.toString().trim()
+		: NaN;
+};
+
+/**
+ * Get the effective name of a token.
+ * @param token
+ */
+const getName = (token: Token): string | number | undefined => {
+	const {type, name, parentNode} = token;
+	switch (type) {
+		case 'heading':
+			return (token as HeadingToken).level;
+		case 'heading-title':
+			return (parentNode as HeadingToken).level;
+		case 'parameter-key':
+			return `${parentNode!.parentNode!.name}|${parentNode!.name}`;
+		case 'ext':
+		case 'html':
+		case 'image-parameter':
+			return name;
+		default:
+			return parentNode!.name;
+	}
+};
+
+/**
+ * Create the range of a token.
+ * @param token
+ */
+const createNodeRange = (token: Token): Range => {
+	const {top, left, height, width} = token.getBoundingClientRect();
+	return {
+		start: {line: top, character: left},
+		end: getEndPos(top, left, width, height),
+	};
 };
 
 /** VSCode-style language service */
@@ -277,7 +375,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text 源代码
 	 * @param position 位置
 	 */
-	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | null> {
+	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
@@ -320,28 +418,8 @@ export class LanguageService implements LanguageServiceBase {
 					),
 			];
 		}
-		let token: Token | undefined;
-		if (!token) { // workaround
-			let offset = root.indexFromPos(line, character)!,
-				node = root;
-			while (true) { // eslint-disable-line no-constant-condition
-				// eslint-disable-next-line @typescript-eslint/no-loop-func
-				const child = node.childNodes.find(ch => {
-					const i = ch.getRelativeIndex();
-					if (i < offset && i + ch.toString().length >= offset) {
-						offset -= i;
-						return true;
-					}
-					return false;
-				});
-				if (!child || child.type === 'text') {
-					break;
-				}
-				node = child;
-			}
-			token = node;
-		}
-		const {type, parentNode} = token;
+		const token = elementFromPoint(root, position),
+			{type, parentNode} = token;
 		if (mt?.[6]?.trim() || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
 				?? this.#text.slice(
@@ -360,14 +438,12 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (mt?.[7] || type === 'attr-key') { // attribute key
 			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag;
 			if (!tags.has(tag)) {
-				return null;
+				return undefined;
 			}
 			const key = mt?.[9] ?? token.toString(),
 				thisHtmlAttrs = htmlAttrs[tag],
 				thisExtAttrs = extAttrs[tag],
-				extCompletion = thisExtAttrs
-					? getCompletion(thisExtAttrs, 'Field', key, position)
-					: null;
+				extCompletion = thisExtAttrs && getCompletion(thisExtAttrs, 'Field', key, position);
 			return ext.includes(tag) && !thisHtmlAttrs
 				? extCompletion
 				: [
@@ -395,7 +471,7 @@ export class LanguageService implements LanguageServiceBase {
 				position,
 			);
 		}
-		return null;
+		return undefined;
 	}
 
 	/**
@@ -512,10 +588,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text 源代码
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
-		const srcTags = new Set(['templatestyles', 'img']),
-			citeTags = new Set(['blockquote', 'del', 'ins', 'q']),
-			linkTypes = new Set<TokenTypes>(['link-target', 'template-name', 'invoke-module']),
-			protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
+		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			root = await this.#queue(text),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 			+ 'image-parameter#link';
@@ -523,7 +596,11 @@ export class LanguageService implements LanguageServiceBase {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
 			if (
-				!(type !== 'attr-value' || name === 'src' && srcTags.has(tag) || name === 'cite' && citeTags.has(tag))
+				!(
+					type !== 'attr-value'
+					|| name === 'src' && ['templatestyles', 'img'].includes(tag)
+					|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
+				)
 				|| !isPlain(childNodes)
 			) {
 				return [];
@@ -541,7 +618,7 @@ export class LanguageService implements LanguageServiceBase {
 							: `https://pubmed.ncbi.nlm.nih.gov/${target.slice(4).trim()}`;
 					}
 				} else if (
-					linkTypes.has(type)
+					['link-target', 'template-name', 'invoke-module'].includes(type)
 					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
 					|| type === 'image-parameter' && !protocolRegex.test(target)
 				) {
@@ -573,19 +650,135 @@ export class LanguageService implements LanguageServiceBase {
 						},
 					];
 				}
-				const {top, left, height, width} = token.getBoundingClientRect();
-				return [
-					{
-						range: {
-							start: {line: top, character: left},
-							end: getEndPos(top, left, width, height),
-						},
-						target,
-					},
-				];
+				return [{range: createNodeRange(token), target}];
 			} catch {
 				return [];
 			}
 		});
+	}
+
+	/**
+	 * 提供引用或定义或变量更名
+	 * @param text 源代码
+	 * @param position 位置
+	 * @param usage 调用类型
+	 * @param newName 新名称
+	 */
+	async #provideReferencesOrDefinition(
+		text: string,
+		position: Position,
+		usage: 0 | 1,
+	): Promise<Omit<Location, 'uri'>[] | undefined>;
+	async #provideReferencesOrDefinition(text: string, position: Position, usage: 2): Promise<Range | undefined>;
+	async #provideReferencesOrDefinition(
+		text: string,
+		position: Position,
+		usage: 3,
+		newName: string,
+	): Promise<WorkspaceEdit | undefined>;
+	async #provideReferencesOrDefinition(
+		text: string,
+		position: Position,
+		usage: 0 | 1 | 2 | 3,
+		newName?: string,
+	): Promise<Omit<Location, 'uri'>[] | Range | WorkspaceEdit | undefined> {
+		const renameTypes: TokenTypes[] = [
+				'arg-name',
+				'template-name',
+				'magic-word-name',
+				'link-target',
+				'parameter-key',
+			],
+			types: TokenTypes[] = [
+				'ext',
+				'html',
+				'attr-key',
+				'image-parameter',
+				'heading-title',
+				'heading',
+				...renameTypes,
+			],
+			root = await this.#queue(text),
+			node = elementFromWord(root, position),
+			{type} = node,
+			refName = getRefName(node),
+			refGroup = getRefGroup(node);
+		if (
+			usage > 1 && type === 'parameter-key' && /^[1-9]\d*$/u.test(node.parentNode!.name!)
+			|| !refName && (
+				usage === 1
+				|| !refGroup && (
+					usage === 0
+						? !types.includes(type)
+						: !renameTypes.includes(type)
+							|| type === 'link-target' && ['link', 'redirect-target'].includes(node.parentNode!.type)
+				)
+			)
+		) {
+			return undefined;
+		} else if (usage === 2) {
+			return createNodeRange(node);
+		}
+		const name = getName(node),
+			refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(token => {
+				if (usage === 1) {
+					const {name: n, parentNode} = token.parentNode as AttributeToken;
+					return getRefName(token) === refName
+						&& n === 'name' && (parentNode!.parentNode as ExtToken).innerText;
+				}
+				return type === 'attr-value'
+					? getRefName(token) === refName || getRefGroup(token) === refGroup
+					: getName(token) === name;
+			}).map(token => token.type === 'parameter-key' ? token.parentNode! : token);
+		if (refs.length === 0) {
+			return undefined;
+		}
+		return usage === 3
+			? {
+				changes: {
+					'': refs.map(ref => ({
+						range: createNodeRange(ref),
+						newText: newName!,
+					})),
+				},
+			}
+			: refs.map((ref): Omit<Location, 'uri'> => ({range: createNodeRange(ref)}));
+	}
+
+	/**
+	 * 提供引用
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
+		return this.#provideReferencesOrDefinition(text, position, 0);
+	}
+
+	/**
+	 * 提供定义
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
+		return this.#provideReferencesOrDefinition(text, position, 1);
+	}
+
+	/**
+	 * 提供变量更名准备
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
+		return this.#provideReferencesOrDefinition(text, position, 2);
+	}
+
+	/**
+	 * 变量更名
+	 * @param text 源代码
+	 * @param position 位置
+	 * @param newName 新名称
+	 */
+	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
+		return this.#provideReferencesOrDefinition(text, position, 3, newName);
 	}
 }
