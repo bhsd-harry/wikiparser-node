@@ -729,7 +729,7 @@ export class LanguageService implements LanguageServiceBase {
 				return type === 'attr-value'
 					? getRefName(token) === refName || getRefGroup(token) === refGroup
 					: getName(token) === name;
-			}).map(token => token.type === 'parameter-key' ? token.parentNode! : token);
+			}).map(token => usage !== 3 && token.type === 'parameter-key' ? token.parentNode! : token);
 		if (refs.length === 0) {
 			return undefined;
 		}
