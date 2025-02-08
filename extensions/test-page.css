@@ -375,7 +375,7 @@ pre {
 	display: table-caption;
 	caption-side: bottom;
 	line-height: 1.4em;
-	word-break: break-word;
+	overflow-wrap: anywhere;
 	padding: 0 6px 6px;
 }
 .frame .toc {
