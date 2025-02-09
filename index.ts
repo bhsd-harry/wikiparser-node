@@ -480,6 +480,7 @@ export type {
 	Config,
 	LintError,
 	TokenTypes,
+	LanguageService,
 	AST,
 };
 export type * from './internal';

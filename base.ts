@@ -3,7 +3,8 @@ import type {
 	Position,
 	ColorInformation,
 	ColorPresentation,
-	CompletionItem,
+	CompletionItem as CompletionItemBase,
+	CompletionItemKind,
 	FoldingRange,
 	DocumentSymbol,
 	DocumentLink,
@@ -267,6 +268,8 @@ interface Token extends AstNode {
 	/** 保存为JSON */
 	json(): AST;
 }
+
+export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
 export interface LanguageService {
 

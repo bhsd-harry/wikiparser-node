@@ -9,7 +9,6 @@ import type {
 	Position,
 	ColorInformation,
 	ColorPresentation,
-	CompletionItem,
 	CompletionItemKind,
 	FoldingRange,
 	DocumentSymbol,
@@ -17,7 +16,7 @@ import type {
 	Location,
 	WorkspaceEdit,
 } from 'vscode-languageserver-types';
-import type {TokenTypes, LanguageService as LanguageServiceBase} from '../base';
+import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken, ExtToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -80,7 +79,7 @@ const getCompletion = (
 		},
 		newText: w,
 	},
-} as unknown as CompletionItem));
+}));
 
 /**
  * Get the end position of a section.
