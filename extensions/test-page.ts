@@ -8,7 +8,7 @@ declare interface Test {
 (async () => {
 	const tests: Test[] = await (await fetch('./test/parserTests.json')).json(),
 		key = 'wikiparser-node-done',
-		dones = new Set<string>(JSON.parse(localStorage.getItem(key)!) as string[]),
+		dones = new Set(JSON.parse(localStorage.getItem(key)!) as string[]),
 		isGH = location.hostname.endsWith('.github.io'),
 		isIframe = self !== top, // eslint-disable-line no-restricted-globals
 		select = document.querySelector('select')!,

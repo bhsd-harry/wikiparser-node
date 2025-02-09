@@ -160,5 +160,6 @@ export type {
 	Config,
 	LintError,
 	TokenTypes,
+	LanguageService,
 	AST,
 };

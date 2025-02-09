@@ -11,13 +11,12 @@ import type {
 	Position,
 	FoldingRange,
 	DocumentLink,
-	CompletionItem,
 	Location,
 	Range,
 	WorkspaceEdit,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, LintError, AST, LanguageService, Parser} from '../base';
+import type {Config, LintError, AST, LanguageService, CompletionItem, Parser} from '../base';
 
 export type {
 	AST,
