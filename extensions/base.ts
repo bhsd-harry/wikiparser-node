@@ -25,7 +25,7 @@ const workerJS = (): void => {
 
 	/**
 	 * 获取LSP
-	 * @param qid 文档编号
+	 * @param qid 请求编号
 	 */
 	const getLSP = (qid: number): LanguageService => {
 		const id = Math.floor(qid);

@@ -58,7 +58,7 @@ export type CodeJarAsync = CodeJar & {
 
 export type codejar = (textbox: HTMLTextAreaElement, include?: boolean, linenums?: boolean) => CodeJarAsync;
 
-export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocumentSymbols'> {
+export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocumentSymbols' | 'provideCodeAction'> {
 	provideDocumentColors(text: string): Promise<ColorInformation[]>;
 	provideColorPresentations(color: ColorInformation): Promise<ColorPresentation[]>;
 }
