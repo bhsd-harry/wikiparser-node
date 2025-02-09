@@ -1,6 +1,6 @@
 ## v1.16.1
 
-*2025-02-09*
+*2025-02-10*
 
 **Added**
 
@@ -10,6 +10,7 @@
 **Fixed**
 
 - `"sideEffects": false` is now added to `package.json` to facilitate tree-shaking
+- `{{名字空间}}` and `{{命名空間}}` are now correctly recognized as `{{NAMESPACE}}`
 
 ## v1.15.1
 
