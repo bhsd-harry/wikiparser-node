@@ -222,6 +222,11 @@ export class LanguageService implements LanguageServiceBase {
 		tasks.set(uri, this);
 	}
 
+	/** @implements */
+	destroy(): void {
+		Object.setPrototypeOf(this, null);
+	}
+
 	/**
 	 * 提交解析任务
 	 * @param text 源代码
@@ -305,10 +310,7 @@ export class LanguageService implements LanguageServiceBase {
 		});
 	}
 
-	/**
-	 * 颜色选择器
-	 * @ignore
-	 */
+	/** @implements */
 	provideColorPresentations( // eslint-disable-line @typescript-eslint/class-methods-use-this
 		{color: {red, green, blue, alpha}, range}: ColorInformation,
 	): ColorPresentation[] {

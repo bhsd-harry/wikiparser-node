@@ -270,6 +270,9 @@ export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typ
 
 export interface LanguageService {
 
+	/** 销毁实例 */
+	destroy(): void;
+
 	/**
 	 * 提供颜色指示
 	 * @param rgba 颜色解析函数
@@ -284,10 +287,9 @@ export interface LanguageService {
 
 	/**
 	 * 颜色选择器
-	 * @ignore
+	 * @param color 颜色信息
 	 */
-	provideColorPresentations(// eslint-disable-line @typescript-eslint/class-methods-use-this
-		{color: {red, green, blue, alpha}, range}: ColorInformation): ColorPresentation[];
+	provideColorPresentations(color: ColorInformation): ColorPresentation[];
 
 	/**
 	 * 提供自动补全

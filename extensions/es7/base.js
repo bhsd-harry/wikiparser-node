@@ -75,6 +75,7 @@ const workerJS = () => {
                 ]);
                 break;
             case 'destroy':
+                getLSP(qid).destroy();
                 lsps.delete(qid);
                 break;
             case 'colorPresentations':
