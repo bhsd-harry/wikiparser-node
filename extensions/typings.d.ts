@@ -10,10 +10,6 @@ import type {
 // 必须写在一行内
 import type {Config, LintError, AST, LanguageService} from '../base';
 
-export type {
-	AST,
-};
-
 export interface PrinterBase {
 	include: boolean;
 }

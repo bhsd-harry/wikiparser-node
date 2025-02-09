@@ -248,6 +248,11 @@ export class LanguageService implements LanguageServiceBase {
 		tasks.set(uri, this);
 	}
 
+	/** @implements */
+	destroy(): void {
+		Object.setPrototypeOf(this, null);
+	}
+
 	/**
 	 * 提交解析任务
 	 * @param text 源代码
@@ -331,10 +336,7 @@ export class LanguageService implements LanguageServiceBase {
 		});
 	}
 
-	/**
-	 * 颜色选择器
-	 * @ignore
-	 */
+	/** @implements */
 	provideColorPresentations( // eslint-disable-line @typescript-eslint/class-methods-use-this
 		{color: {red, green, blue, alpha}, range}: ColorInformation,
 	): ColorPresentation[] {
@@ -864,10 +866,7 @@ export class LanguageService implements LanguageServiceBase {
 
 	/* NOT FOR BROWSER ONLY */
 
-	/**
-	 * 提供快速修复建议
-	 * @param diagnostics 语法诊断信息
-	 */
+	/** @implements */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
 		return diagnostics.filter(({data}) => data).flatMap(
