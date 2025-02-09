@@ -3,7 +3,8 @@ import type {
 	Position,
 	ColorInformation,
 	ColorPresentation,
-	CompletionItem,
+	CompletionItem as CompletionItemBase,
+	CompletionItemKind,
 	FoldingRange,
 	DocumentSymbol,
 	DocumentLink,
@@ -248,6 +249,8 @@ interface Token extends AstNode {
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
 }
+
+export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
 export interface LanguageService {
 

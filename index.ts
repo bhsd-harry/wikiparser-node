@@ -206,5 +206,6 @@ export type {
 	Config,
 	LintError,
 	TokenTypes,
+	LanguageService,
 };
 export type * from './internal';
