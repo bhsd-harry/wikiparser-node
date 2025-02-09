@@ -9,6 +9,7 @@ import type {
 	Location,
 	Range,
 	WorkspaceEdit,
+	ServerDiagnostic,
 } from './typings';
 
 /** 用于语法分析 */
@@ -17,6 +18,11 @@ class LanguageService implements LanguageServiceBase {
 
 	constructor() {
 		this.#id = wikiparse.id++;
+	}
+
+	/** @implements */
+	destroy(): void {
+		wikiparse.provide('destroy', this.#id);
 	}
 
 	/** @implements */
@@ -66,6 +72,11 @@ class LanguageService implements LanguageServiceBase {
 	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		return wikiparse
 			.provide('renameEdits', this.#id + 0.8, text, position, newName) as Promise<WorkspaceEdit | undefined>;
+	}
+
+	/** @implements */
+	provideDiagnostics(wikitext: string): Promise<ServerDiagnostic[]> {
+		return wikiparse.provide('diagnostics', this.#id + 0.9, wikitext) as Promise<ServerDiagnostic[]>;
 	}
 }
 

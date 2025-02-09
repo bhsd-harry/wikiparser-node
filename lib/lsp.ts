@@ -17,7 +17,6 @@ import type {
 	WorkspaceEdit,
 	Diagnostic,
 	TextEdit,
-	CodeAction,
 } from 'vscode-languageserver-types';
 import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken, ExtToken} from '../internal';
@@ -104,18 +103,6 @@ const getCompletion = (
 		newText: w,
 	},
 }));
-
-/**
- * Get the end position of a section.
- * @param section section
- * @param lines lines
- * @param line line number
- */
-const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], line: number): void => {
-	if (section) {
-		section.range.end = {line, character: lines[line]!.length};
-	}
-};
 
 /**
  * Create the URL of a page.
@@ -530,57 +517,29 @@ export class LanguageService implements LanguageServiceBase {
 	/**
 	 * 提供折叠范围或章节
 	 * @param text 源代码
-	 * @param symbol 是否提供章节
+	 * @param fold 是否提供折叠范围
 	 */
 	async #provideFoldingRangesOrDocumentSymbols(text: string): Promise<FoldingRange[]>;
-	async #provideFoldingRangesOrDocumentSymbols(text: string, symbol: true): Promise<DocumentSymbol[]>;
+	async #provideFoldingRangesOrDocumentSymbols(text: string, fold: false): Promise<DocumentSymbol[]>;
 	async #provideFoldingRangesOrDocumentSymbols(
 		text: string,
-		symbol?: true,
+		fold = true,
 	): Promise<FoldingRange[] | DocumentSymbol[]> {
 		const ranges: FoldingRange[] = [],
 			symbols: DocumentSymbol[] = [],
-			names = new Set<string>(),
 			root = await this.#queue(text),
 			lines = this.#text.split('\n'),
 			{length} = lines,
 			levels = new Array<number | undefined>(6),
-			sections = new Array<DocumentSymbol | undefined>(6),
-			tokens = root.querySelectorAll<Token>(symbol ? 'heading-title' : 'heading-title,table,template,magic-word');
+			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
 		for (const token of tokens) {
-			const {top, left, height, width} = token.getBoundingClientRect();
+			const {
+				top,
+				height,
+			} = token.getBoundingClientRect();
 			if (token.type === 'heading-title') {
 				const {level} = token.parentNode as HeadingToken;
-				if (symbol) {
-					for (let i = level - 1; i < 6; i++) {
-						getSectionEnd(sections[i], lines, top - 1);
-						sections[i] = undefined;
-					}
-					const section = token.text().trim() || ' ',
-						name = names.has(section)
-							? new Array(names.size).fill('').map((_, i) => `${section.trim()}_${i + 2}`)
-								.find(s => !names.has(s))!
-							: section,
-						container = sections.slice(0, level - 1).reverse().find(Boolean),
-						selectionRange = {
-							start: {line: top, character: left - level},
-							end: getEndPos(top, left, width + level, height),
-						},
-						info = {
-							name,
-							kind: 15,
-							range: {start: selectionRange.start},
-							selectionRange,
-						} as DocumentSymbol;
-					names.add(name);
-					sections[level - 1] = info;
-					if (container) {
-						container.children ??= [];
-						container.children.push(info);
-					} else {
-						symbols.push(info);
-					}
-				} else {
+				if (fold) {
 					for (let i = level - 1; i < 6; i++) {
 						const startLine = levels[i];
 						if (startLine !== undefined && startLine < top - 1) {
@@ -594,7 +553,7 @@ export class LanguageService implements LanguageServiceBase {
 					}
 					levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
 				}
-			} else if (!symbol && height > 2) {
+			} else if (fold && height > 2) {
 				ranges.push({
 					startLine: top, // 从表格或模板的第一行开始折叠
 					endLine: top + height - 2,
@@ -602,11 +561,7 @@ export class LanguageService implements LanguageServiceBase {
 				});
 			}
 		}
-		if (symbol) {
-			for (const section of sections) {
-				getSectionEnd(section, lines, length - 1);
-			}
-		} else {
+		if (fold) {
 			for (const startLine of levels) {
 				if (startLine !== undefined && startLine < length - 1) {
 					ranges.push({
@@ -617,7 +572,7 @@ export class LanguageService implements LanguageServiceBase {
 				}
 			}
 		}
-		return symbol ? symbols : ranges;
+		return fold ? ranges : symbols;
 	}
 
 	/**
@@ -825,34 +780,5 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		return this.#provideReferencesOrDefinition(text, position, 3, newName);
-	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	/**
-	 * 提供快速修复建议
-	 * @param diagnostics 语法诊断信息
-	 */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
-		return diagnostics.filter(({data}) => data).flatMap(
-			diagnostic => (diagnostic.data as QuickFixData[]).map(data => ({
-				title: data.title,
-				kind: 'quickfix',
-				diagnostics: [diagnostic],
-				isPreferred: data.fix,
-				edit: {
-					changes: {'': [data]},
-				},
-			}) satisfies CodeAction),
-		);
-	}
-
-	/**
-	 * 提供章节
-	 * @param text 源代码
-	 */
-	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		return this.#provideFoldingRangesOrDocumentSymbols(text, true);
 	}
 }

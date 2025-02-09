@@ -16,11 +16,12 @@ const workerJS = () => {
     importScripts('$CDN/bundle/bundle.es7.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map();
     const getLSP = (qid) => {
-        if (lsps.has(qid)) {
-            return lsps.get(qid);
+        const id = Math.floor(qid);
+        if (lsps.has(id)) {
+            return lsps.get(id);
         }
         const lsp = Parser.createLanguageService({});
-        lsps.set(qid, lsp);
+        lsps.set(id, lsp);
         return lsp;
     };
     const parseColor = (s) => {
@@ -73,6 +74,9 @@ const workerJS = () => {
                     ]),
                 ]);
                 break;
+            case 'destroy':
+                lsps.delete(qid);
+                break;
             case 'colorPresentations':
                 postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
                 break;
@@ -89,6 +93,11 @@ const workerJS = () => {
             case 'links':
                 (() => __awaiter(void 0, void 0, void 0, function* () {
                     postMessage([qid, yield getLSP(qid).provideLinks(wikitext), wikitext]);
+                }))();
+                break;
+            case 'diagnostics':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).provideDiagnostics(wikitext), wikitext]);
                 }))();
                 break;
             case 'completionItems':

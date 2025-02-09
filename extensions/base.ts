@@ -28,11 +28,12 @@ const workerJS = (): void => {
 	 * @param qid 文档编号
 	 */
 	const getLSP = (qid: number): LanguageService => {
-		if (lsps.has(qid)) {
-			return lsps.get(qid)!;
+		const id = Math.floor(qid);
+		if (lsps.has(id)) {
+			return lsps.get(id)!;
 		}
 		const lsp = Parser.createLanguageService({});
-		lsps.set(qid, lsp);
+		lsps.set(id, lsp);
 		return lsp;
 	};
 
@@ -64,10 +65,10 @@ const workerJS = (): void => {
 	self.onmessage = ({data}: {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
-			| ['getConfig', number]
+			| ['getConfig' | 'destroy', number]
 			| ['colorPresentations', number, ColorInformation]
 			| [
-				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links',
+				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'diagnostics',
 				number,
 				string,
 				boolean?,
@@ -110,6 +111,9 @@ const workerJS = (): void => {
 					]),
 				]);
 				break;
+			case 'destroy':
+				lsps.delete(qid);
+				break;
 			case 'colorPresentations':
 				postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
 				break;
@@ -126,6 +130,11 @@ const workerJS = (): void => {
 			case 'links':
 				(async () => {
 					postMessage([qid, await getLSP(qid).provideLinks(wikitext), wikitext]);
+				})();
+				break;
+			case 'diagnostics':
+				(async () => {
+					postMessage([qid, await getLSP(qid).provideDiagnostics(wikitext), wikitext]);
 				})();
 				break;
 			case 'completionItems':

@@ -16,6 +16,9 @@ class LanguageService {
         _LanguageService_id.set(this, void 0);
         __classPrivateFieldSet(this, _LanguageService_id, wikiparse.id++, "f");
     }
+    destroy() {
+        wikiparse.provide('destroy', __classPrivateFieldGet(this, _LanguageService_id, "f"));
+    }
     provideColorPresentations(color) {
         return wikiparse.provide('colorPresentations', __classPrivateFieldGet(this, _LanguageService_id, "f"), color);
     }
@@ -46,6 +49,9 @@ class LanguageService {
     provideRenameEdits(text, position, newName) {
         return wikiparse
             .provide('renameEdits', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.8, text, position, newName);
+    }
+    provideDiagnostics(wikitext) {
+        return wikiparse.provide('diagnostics', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.9, wikitext);
     }
 }
 _LanguageService_id = new WeakMap();

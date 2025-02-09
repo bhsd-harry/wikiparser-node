@@ -36,7 +36,7 @@ describe('API tests', () => {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
 					if (
-						!first.endsWith(' (main)') && !/^\/\/ (?:config|i18n)(?!\S)| \(Node\.js\)$/u.test(first)
+						!first.endsWith(' (main)') && !/^\/\/ (?:config|i18n)(?!\S)| \(Node\.js\)/u.test(first)
 					) {
 						it(first.slice(3), async () => {
 							try {

@@ -6,12 +6,10 @@ import type {
 	CompletionItem as CompletionItemBase,
 	CompletionItemKind,
 	FoldingRange,
-	DocumentSymbol,
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
 	Diagnostic,
-	CodeAction,
 } from 'vscode-languageserver-types';
 
 export interface Config {
@@ -344,20 +342,6 @@ export interface LanguageService {
 	 * @param newName 新名称
 	 */
 	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined>;
-
-	/* NOT FOR BROWSER ONLY */
-
-	/**
-	 * 提供快速修复建议
-	 * @param diagnostics 语法诊断信息
-	 */
-	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[];
-
-	/**
-	 * 提供章节
-	 * @param text 源代码
-	 */
-	provideDocumentSymbols(text: string): Promise<DocumentSymbol[]>;
 }
 
 export interface Parser {
