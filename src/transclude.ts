@@ -30,7 +30,7 @@ import type {AstText} from '../internal';
 
 /* NOT FOR BROWSER */
 
-const basicMagicWords = new Map<string, string>([['=', '='], ['!', '|']]);
+const basicMagicWords = new Map([['=', '='], ['!', '|']]);
 
 /* NOT FOR BROWSER END */
 
