@@ -15,6 +15,12 @@ import type {
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
+	Diagnostic,
+	TextEdit,
+
+	/* NOT FOR BROWSER ONLY */
+
+	CodeAction,
 } from 'vscode-languageserver-types';
 import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken, ExtToken} from '../internal';
@@ -35,6 +41,10 @@ declare interface CompletionConfig {
 	protocols: string[];
 	params: string[];
 }
+declare interface QuickFixData extends TextEdit {
+	title: string;
+	fix: boolean;
+}
 
 export const tasks = new WeakMap<object, LanguageService>();
 
@@ -53,6 +63,29 @@ const isPlain = (childNodes: readonly AstNodes[]): boolean =>
 const positionAt = (root: Token, i: number): Position => {
 	const {top, left} = root.posFromIndex(i)!;
 	return {line: top, character: left};
+};
+
+/**
+ * Create a range.
+ * @param root root token
+ * @param start start index
+ * @param end end index
+ */
+const createRange = (root: Token, start: number, end: number): Range => ({
+	start: positionAt(root, start),
+	end: positionAt(root, end),
+});
+
+/**
+ * Create the range of a token.
+ * @param token
+ */
+const createNodeRange = (token: Token): Range => {
+	const {top, left, height, width} = token.getBoundingClientRect();
+	return {
+		start: {line: top, character: left},
+		end: getEndPos(top, left, width, height),
+	};
 };
 
 /**
@@ -80,18 +113,6 @@ const getCompletion = (
 		newText: w,
 	},
 }));
-
-/**
- * Get the end position of a section.
- * @param section section
- * @param lines lines
- * @param line line number
- */
-const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], line: number): void => {
-	if (section) {
-		section.range.end = {line, character: lines[line]!.length};
-	}
-};
 
 /**
  * Create the URL of a page.
@@ -199,17 +220,21 @@ const getName = (token: Token): string | number | undefined => {
 	}
 };
 
+/* NOT FOR BROWSER ONLY */
+
 /**
- * Create the range of a token.
- * @param token
+ * Get the end position of a section.
+ * @param section section
+ * @param lines lines
+ * @param line line number
  */
-const createNodeRange = (token: Token): Range => {
-	const {top, left, height, width} = token.getBoundingClientRect();
-	return {
-		start: {line: top, character: left},
-		end: getEndPos(top, left, width, height),
-	};
+const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], line: number): void => {
+	if (section) {
+		section.range.end = {line, character: lines[line]!.length};
+	}
 };
+
+/* NOT FOR BROWSER ONLY END */
 
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
@@ -299,10 +324,7 @@ export class LanguageService implements LanguageServiceBase {
 							blue: color[2] / 255,
 							alpha: color[3],
 						},
-						range: {
-							start: positionAt(root, start + from),
-							end: positionAt(root, start + to),
-						},
+						range: createRange(root, start + from, start + to),
 					};
 				}).filter(Boolean) as ColorInformation[];
 			});
@@ -480,30 +502,98 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * 提供语法诊断
+	 * @param wikitext 源代码
+	 */
+	async provideDiagnostics(wikitext: string): Promise<Diagnostic[]> {
+		const root = await this.#queue(wikitext);
+		return root.lint().filter(({severity}) => severity === 'error')
+			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}) => ({
+				range: {
+					start: {line: startLine, character: startCol},
+					end: {line: endLine, character: endCol},
+				},
+				severity: severity === 'error' ? 1 : 2,
+				source: 'WikiLint',
+				code: rule,
+				message,
+				data: [
+					...fix
+						? [
+							{
+								range: createRange(root, ...fix.range),
+								newText: fix.text,
+								title: `Fix: ${fix.desc}`,
+								fix: true,
+							},
+						]
+						: [],
+					...suggestions
+						? suggestions.map(({range, text, desc}) => ({
+							range: createRange(root, ...range),
+							newText: text,
+							title: `Suggestion: ${desc}`,
+							fix: false,
+						}))
+						: [],
+				] satisfies QuickFixData[],
+			}) satisfies Diagnostic);
+	}
+
+	/**
 	 * 提供折叠范围或章节
 	 * @param text 源代码
-	 * @param symbol 是否提供章节
+	 * @param fold 是否提供折叠范围
 	 */
 	async #provideFoldingRangesOrDocumentSymbols(text: string): Promise<FoldingRange[]>;
-	async #provideFoldingRangesOrDocumentSymbols(text: string, symbol: true): Promise<DocumentSymbol[]>;
+	async #provideFoldingRangesOrDocumentSymbols(text: string, fold: false): Promise<DocumentSymbol[]>;
 	async #provideFoldingRangesOrDocumentSymbols(
 		text: string,
-		symbol?: true,
+		fold = true,
 	): Promise<FoldingRange[] | DocumentSymbol[]> {
 		const ranges: FoldingRange[] = [],
 			symbols: DocumentSymbol[] = [],
+
+			/* NOT FOR BROWSER ONLY */
+
 			names = new Set<string>(),
+			sections = new Array<DocumentSymbol | undefined>(6),
+
+			/* NOT FOR BROWSER ONLY END */
+
 			root = await this.#queue(text),
 			lines = this.#text.split('\n'),
 			{length} = lines,
 			levels = new Array<number | undefined>(6),
-			sections = new Array<DocumentSymbol | undefined>(6),
-			tokens = root.querySelectorAll<Token>(symbol ? 'heading-title' : 'heading-title,table,template,magic-word');
+			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
 		for (const token of tokens) {
-			const {top, left, height, width} = token.getBoundingClientRect();
+			const {
+				top,
+				height,
+
+				/* NOT FOR BROWSER ONLY */
+
+				left,
+				width,
+			} = token.getBoundingClientRect();
 			if (token.type === 'heading-title') {
 				const {level} = token.parentNode as HeadingToken;
-				if (symbol) {
+				if (fold) {
+					for (let i = level - 1; i < 6; i++) {
+						const startLine = levels[i];
+						if (startLine !== undefined && startLine < top - 1) {
+							ranges.push({
+								startLine,
+								endLine: top - 1,
+								kind: 'region',
+							});
+						}
+						levels[i] = undefined;
+					}
+					levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
+
+					/* NOT FOR BROWSER ONLY */
+				} else {
 					for (let i = level - 1; i < 6; i++) {
 						getSectionEnd(sections[i], lines, top - 1);
 						sections[i] = undefined;
@@ -532,21 +622,10 @@ export class LanguageService implements LanguageServiceBase {
 					} else {
 						symbols.push(info);
 					}
-				} else {
-					for (let i = level - 1; i < 6; i++) {
-						const startLine = levels[i];
-						if (startLine !== undefined && startLine < top - 1) {
-							ranges.push({
-								startLine,
-								endLine: top - 1,
-								kind: 'region',
-							});
-						}
-						levels[i] = undefined;
-					}
-					levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
+
+					/* NOT FOR BROWSER ONLY END */
 				}
-			} else if (!symbol && height > 2) {
+			} else if (fold && height > 2) {
 				ranges.push({
 					startLine: top, // 从表格或模板的第一行开始折叠
 					endLine: top + height - 2,
@@ -554,11 +633,7 @@ export class LanguageService implements LanguageServiceBase {
 				});
 			}
 		}
-		if (symbol) {
-			for (const section of sections) {
-				getSectionEnd(section, lines, length - 1);
-			}
-		} else {
+		if (fold) {
 			for (const startLine of levels) {
 				if (startLine !== undefined && startLine < length - 1) {
 					ranges.push({
@@ -568,8 +643,16 @@ export class LanguageService implements LanguageServiceBase {
 					});
 				}
 			}
+
+			/* NOT FOR BROWSER ONLY */
+		} else {
+			for (const section of sections) {
+				getSectionEnd(section, lines, length - 1);
+			}
+
+			/* NOT FOR BROWSER ONLY END */
 		}
-		return symbol ? symbols : ranges;
+		return fold ? ranges : symbols;
 	}
 
 	/**
@@ -578,14 +661,6 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		return this.#provideFoldingRangesOrDocumentSymbols(text);
-	}
-
-	/**
-	 * 提供章节
-	 * @param text 源代码
-	 */
-	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		return this.#provideFoldingRangesOrDocumentSymbols(text, true);
 	}
 
 	/**
@@ -785,6 +860,35 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		return this.#provideReferencesOrDefinition(text, position, 3, newName);
+	}
+
+	/* NOT FOR BROWSER ONLY */
+
+	/**
+	 * 提供快速修复建议
+	 * @param diagnostics 语法诊断信息
+	 */
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
+	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
+		return diagnostics.filter(({data}) => data).flatMap(
+			diagnostic => (diagnostic.data as QuickFixData[]).map(data => ({
+				title: data.title,
+				kind: 'quickfix',
+				diagnostics: [diagnostic],
+				isPreferred: data.fix,
+				edit: {
+					changes: {'': [data]},
+				},
+			}) satisfies CodeAction),
+		);
+	}
+
+	/**
+	 * 提供章节
+	 * @param text 源代码
+	 */
+	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
+		return this.#provideFoldingRangesOrDocumentSymbols(text, false);
 	}
 }
 
