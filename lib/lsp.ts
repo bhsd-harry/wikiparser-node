@@ -15,6 +15,9 @@ import type {
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
+	Diagnostic,
+	TextEdit,
+	CodeAction,
 } from 'vscode-languageserver-types';
 import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem} from '../base';
 import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken, ExtToken} from '../internal';
@@ -28,6 +31,10 @@ declare interface CompletionConfig {
 	switches: string[];
 	protocols: string[];
 	params: string[];
+}
+declare interface QuickFixData extends TextEdit {
+	title: string;
+	fix: boolean;
 }
 
 export const tasks = new WeakMap<object, LanguageService>();
@@ -47,6 +54,29 @@ const isPlain = (childNodes: readonly AstNodes[]): boolean =>
 const positionAt = (root: Token, i: number): Position => {
 	const {top, left} = root.posFromIndex(i)!;
 	return {line: top, character: left};
+};
+
+/**
+ * Create a range.
+ * @param root root token
+ * @param start start index
+ * @param end end index
+ */
+const createRange = (root: Token, start: number, end: number): Range => ({
+	start: positionAt(root, start),
+	end: positionAt(root, end),
+});
+
+/**
+ * Create the range of a token.
+ * @param token
+ */
+const createNodeRange = (token: Token): Range => {
+	const {top, left, height, width} = token.getBoundingClientRect();
+	return {
+		start: {line: top, character: left},
+		end: getEndPos(top, left, width, height),
+	};
 };
 
 /**
@@ -193,18 +223,6 @@ const getName = (token: Token): string | number | undefined => {
 	}
 };
 
-/**
- * Create the range of a token.
- * @param token
- */
-const createNodeRange = (token: Token): Range => {
-	const {top, left, height, width} = token.getBoundingClientRect();
-	return {
-		start: {line: top, character: left},
-		end: getEndPos(top, left, width, height),
-	};
-};
-
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
 	#text: string;
@@ -293,10 +311,7 @@ export class LanguageService implements LanguageServiceBase {
 							blue: color[2] / 255,
 							alpha: color[3],
 						},
-						range: {
-							start: positionAt(root, start + from),
-							end: positionAt(root, start + to),
-						},
+						range: createRange(root, start + from, start + to),
 					};
 				}).filter(Boolean) as ColorInformation[];
 			});
@@ -474,6 +489,45 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * 提供语法诊断
+	 * @param wikitext 源代码
+	 */
+	async provideDiagnostics(wikitext: string): Promise<Diagnostic[]> {
+		const root = await this.#queue(wikitext);
+		return root.lint().filter(({severity}) => severity === 'error')
+			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}) => ({
+				range: {
+					start: {line: startLine, character: startCol},
+					end: {line: endLine, character: endCol},
+				},
+				severity: severity === 'error' ? 1 : 2,
+				source: 'WikiLint',
+				code: rule,
+				message,
+				data: [
+					...fix
+						? [
+							{
+								range: createRange(root, ...fix.range),
+								newText: fix.text,
+								title: `Fix: ${fix.desc}`,
+								fix: true,
+							},
+						]
+						: [],
+					...suggestions
+						? suggestions.map(({range, text, desc}) => ({
+							range: createRange(root, ...range),
+							newText: text,
+							title: `Suggestion: ${desc}`,
+							fix: false,
+						}))
+						: [],
+				] satisfies QuickFixData[],
+			}) satisfies Diagnostic);
+	}
+
+	/**
 	 * 提供折叠范围或章节
 	 * @param text 源代码
 	 * @param symbol 是否提供章节
@@ -572,14 +626,6 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		return this.#provideFoldingRangesOrDocumentSymbols(text);
-	}
-
-	/**
-	 * 提供章节
-	 * @param text 源代码
-	 */
-	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		return this.#provideFoldingRangesOrDocumentSymbols(text, true);
 	}
 
 	/**
@@ -779,5 +825,34 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		return this.#provideReferencesOrDefinition(text, position, 3, newName);
+	}
+
+	/* NOT FOR BROWSER ONLY */
+
+	/**
+	 * 提供快速修复建议
+	 * @param diagnostics 语法诊断信息
+	 */
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
+	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
+		return diagnostics.filter(({data}) => data).flatMap(
+			diagnostic => (diagnostic.data as QuickFixData[]).map(data => ({
+				title: data.title,
+				kind: 'quickfix',
+				diagnostics: [diagnostic],
+				isPreferred: data.fix,
+				edit: {
+					changes: {'': [data]},
+				},
+			}) satisfies CodeAction),
+		);
+	}
+
+	/**
+	 * 提供章节
+	 * @param text 源代码
+	 */
+	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
+		return this.#provideFoldingRangesOrDocumentSymbols(text, true);
 	}
 }
