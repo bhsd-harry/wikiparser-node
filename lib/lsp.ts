@@ -985,22 +985,25 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		const f = firstChild!.text().trim(),
 			n = childNodes.length - 1,
-			start = lastChild!.getAbsoluteIndex(),
-			activeParameter = childNodes.findLastIndex(child => child.getRelativeIndex() <= character - start) - 1,
-			signatures = info.signatures.filter(
-				params => (params.length >= n || params.at(-1)?.rest)
-					&& params.every(({label, const: c}, i) => {
-						const p = c && i < n && childNodes[i + 1]?.text().trim();
-						return !p || label.startsWith(p) || label.startsWith(p.toLowerCase());
-					}),
-			).map((params): SignatureInformation => ({
-				label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
-				parameters: params.map(({label, const: c}) => ({
-					label,
-					...c ? {documentation: 'Predefined parameter'} : undefined,
-				})),
-				...params.length < n ? {activeParameter: Math.min(activeParameter, params.length - 1)} : undefined,
-			}));
+			start = lastChild!.getAbsoluteIndex();
+		let activeParameter = childNodes.findIndex(child => child.getRelativeIndex() > character - start) - 2;
+		if (activeParameter === -3) {
+			activeParameter = n - 1;
+		}
+		const signatures = info.signatures.filter(
+			params => (params.length >= n || params[params.length - 1]?.rest)
+				&& params.every(({label, const: c}, i) => {
+					const p = c && i < n && childNodes[i + 1]?.text().trim();
+					return !p || label.startsWith(p) || label.startsWith(p.toLowerCase());
+				}),
+		).map((params): SignatureInformation => ({
+			label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
+			parameters: params.map(({label, const: c}) => ({
+				label,
+				...c ? {documentation: 'Predefined parameter'} : undefined,
+			})),
+			...params.length < n ? {activeParameter: Math.min(activeParameter, params.length - 1)} : undefined,
+		}));
 		return {signatures, activeParameter};
 	}
 
