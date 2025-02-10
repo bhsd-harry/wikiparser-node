@@ -16,6 +16,7 @@ import type {
 	WorkspaceEdit,
 	Diagnostic as ServerDiagnostic,
 	Hover,
+	SignatureHelp,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 import type {Config, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
@@ -41,6 +42,7 @@ export type {
 	ServerDiagnostic,
 	SignatureData,
 	Hover,
+	SignatureHelp,
 };
 
 export interface PrinterBase {
