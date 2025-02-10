@@ -11,12 +11,12 @@ import type {
 	WorkspaceEdit,
 	Diagnostic,
 	Hover,
-	SignatureHelp,
 
 	/* NOT FOR BROWSER ONLY */
 
 	DocumentSymbol,
 	CodeAction,
+	SignatureHelp,
 } from 'vscode-languageserver-types';
 
 export interface Config {
@@ -374,14 +374,14 @@ export interface LanguageService {
 	 */
 	provideHover(text: string, position: Position): Promise<Hover | undefined>;
 
+	/* NOT FOR BROWSER ONLY */
+
 	/**
 	 * 提供魔术字帮助
 	 * @param text 源代码
 	 * @param position 位置
 	 */
 	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined>;
-
-	/* NOT FOR BROWSER ONLY */
 
 	/**
 	 * 提供快速修复建议
