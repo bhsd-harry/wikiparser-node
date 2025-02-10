@@ -1,3 +1,4 @@
+import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
 import {typeError} from '../util/debug';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
@@ -17,13 +18,23 @@ import type {
 	WorkspaceEdit,
 	Diagnostic,
 	TextEdit,
+	Hover,
 
 	/* NOT FOR BROWSER ONLY */
 
 	CodeAction,
 } from 'vscode-languageserver-types';
-import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem} from '../base';
-import type {AstNodes, Token, AstText, AttributeToken, ParameterToken, HeadingToken, ExtToken} from '../internal';
+import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem, SignatureData} from '../base';
+import type {
+	AstNodes,
+	Token,
+	AstText,
+	AttributeToken,
+	ParameterToken,
+	HeadingToken,
+	ExtToken,
+	DoubleUnderscoreToken,
+} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -242,10 +253,15 @@ export class LanguageService implements LanguageServiceBase {
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
 	#completionConfig: CompletionConfig | undefined;
+	data: SignatureData;
 
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
 		tasks.set(uri, this);
+
+		/* NOT FOR BROWSER ONLY */
+
+		this.data = require(path.join('..', '..', 'data', 'signatures')) as SignatureData;
 	}
 
 	/** @implements */
@@ -671,10 +687,9 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
-			root = await this.#queue(text),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 				+ 'image-parameter#link';
-		return root.querySelectorAll(selector).flatMap(token => {
+		return (await this.#queue(text)).querySelectorAll(selector).flatMap(token => {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
 			if (
@@ -862,6 +877,44 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		return this.#provideReferencesOrDefinition(text, position, 3, newName);
+	}
+
+	/**
+	 * 提供悬停信息
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
+		const {behaviorSwitches, parserFunctions} = this.data,
+			token = elementFromWord(await this.#queue(text), position);
+		let info: SignatureData['parserFunctions'][0] | undefined,
+			f: string | undefined;
+		if (token.type === 'double-underscore') {
+			info = behaviorSwitches.find(
+				({aliases}) => aliases.includes((token as DoubleUnderscoreToken).innerText.toLowerCase()),
+			);
+		} else if (token.type === 'magic-word-name') {
+			info = parserFunctions.find(
+				({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === token.parentNode!.name),
+			);
+			f = token.text().trim();
+		}
+		return info && {
+			contents: {
+				kind: 'markdown',
+				value: (
+					info.signatures
+						? `${info.signatures.map(
+							params => `- **{{ ${f}${params.length === 0 ? '**' : ':** '}${
+								params.map(({label, const: c}) => c ? label : `*${label}*`).join(' **|** ')
+							} **}}**`,
+						).join('\n')}\n\n`
+						: ''
+				)
+				+ info.description,
+			},
+			range: createNodeRange(token),
+		};
 	}
 
 	/* NOT FOR BROWSER ONLY */

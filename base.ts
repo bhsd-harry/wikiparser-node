@@ -10,6 +10,7 @@ import type {
 	Location,
 	WorkspaceEdit,
 	Diagnostic,
+	Hover,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -274,9 +275,27 @@ interface Token extends AstNode {
 	json(): AST;
 }
 
+interface SignatureParameter {
+	label: string;
+	const?: boolean;
+	rest?: boolean;
+}
+interface SignatureInfo {
+	aliases: string[];
+	description: string;
+	signatures?: SignatureParameter[][];
+}
+export interface SignatureData {
+	behaviorSwitches: SignatureInfo[];
+	parserFunctions: SignatureInfo[];
+}
+
 export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
 export interface LanguageService {
+
+	/** 魔术字信息 */
+	data: SignatureData;
 
 	/** 销毁实例 */
 	destroy(): void;
@@ -352,6 +371,13 @@ export interface LanguageService {
 	 * @param newName 新名称
 	 */
 	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined>;
+
+	/**
+	 * 提供悬停信息
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	provideHover(text: string, position: Position): Promise<Hover | undefined>;
 
 	/* NOT FOR BROWSER ONLY */
 
