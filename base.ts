@@ -11,7 +11,6 @@ import type {
 	WorkspaceEdit,
 	Diagnostic,
 	Hover,
-	SignatureHelp,
 } from 'vscode-languageserver-types';
 
 export interface Config {
@@ -370,13 +369,6 @@ export interface LanguageService {
 	 * @param position 位置
 	 */
 	provideHover(text: string, position: Position): Promise<Hover | undefined>;
-
-	/**
-	 * 提供魔术字帮助
-	 * @param text 源代码
-	 * @param position 位置
-	 */
-	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined>;
 }
 
 export interface Parser {

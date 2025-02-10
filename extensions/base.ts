@@ -22,18 +22,14 @@ const version = '1.16.0',
 const workerJS = (): void => {
 	importScripts('$CDN/bundle/bundle.lsp.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'},
-		lsps = new Map<number | string, LanguageService>();
+		lsps = new Map<number, LanguageService>();
 
 	/**
 	 * 获取LSP
 	 * @param qid 请求编号
-	 * @param signature 是否为签名
 	 */
-	const getLSP = (qid: number, signature?: boolean): LanguageService => {
-		let id: number | string = Math.floor(qid);
-		if (signature) {
-			id = String(id);
-		}
+	const getLSP = (qid: number): LanguageService => {
+		const id = Math.floor(qid);
 		if (lsps.has(id)) {
 			return lsps.get(id)!;
 		}
@@ -81,13 +77,7 @@ const workerJS = (): void => {
 				number?,
 			]
 			| [
-				'completionItems'
-				| 'references'
-				| 'definition'
-				| 'renameLocation'
-				| 'renameEdits'
-				| 'hover'
-				| 'signatureHelp',
+				'completionItems' | 'references' | 'definition' | 'renameLocation' | 'renameEdits' | 'hover',
 				number,
 				string,
 				Position,
@@ -125,13 +115,10 @@ const workerJS = (): void => {
 				break;
 			case 'destroy':
 				getLSP(qid).destroy();
-				getLSP(qid, true).destroy();
 				lsps.delete(qid);
-				lsps.delete(String(qid));
 				break;
 			case 'data':
 				getLSP(qid).data = wikitext;
-				getLSP(qid, true).data = wikitext;
 				break;
 			case 'colorPresentations':
 				postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
@@ -184,11 +171,6 @@ const workerJS = (): void => {
 			case 'hover':
 				(async () => {
 					postMessage([qid, await getLSP(qid).provideHover(wikitext, include), wikitext]);
-				})();
-				break;
-			case 'signatureHelp':
-				(async () => {
-					postMessage([qid, await getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext]);
 				})();
 			// no default
 		}

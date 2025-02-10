@@ -15,11 +15,8 @@ const version = '1.16.0', src = (_a = document.currentScript) === null || _a ===
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle.es7.js');
     const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map();
-    const getLSP = (qid, signature) => {
-        let id = Math.floor(qid);
-        if (signature) {
-            id = String(id);
-        }
+    const getLSP = (qid) => {
+        const id = Math.floor(qid);
         if (lsps.has(id)) {
             return lsps.get(id);
         }
@@ -79,13 +76,10 @@ const workerJS = () => {
                 break;
             case 'destroy':
                 getLSP(qid).destroy();
-                getLSP(qid, true).destroy();
                 lsps.delete(qid);
-                lsps.delete(String(qid));
                 break;
             case 'data':
                 getLSP(qid).data = wikitext;
-                getLSP(qid, true).data = wikitext;
                 break;
             case 'colorPresentations':
                 postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
@@ -138,11 +132,6 @@ const workerJS = () => {
             case 'hover':
                 (() => __awaiter(void 0, void 0, void 0, function* () {
                     postMessage([qid, yield getLSP(qid).provideHover(wikitext, include), wikitext]);
-                }))();
-                break;
-            case 'signatureHelp':
-                (() => __awaiter(void 0, void 0, void 0, function* () {
-                    postMessage([qid, yield getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext]);
                 }))();
         }
     };
