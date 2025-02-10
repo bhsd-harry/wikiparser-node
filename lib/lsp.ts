@@ -226,6 +226,7 @@ export class LanguageService implements LanguageServiceBase {
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
 	#completionConfig: CompletionConfig | undefined;
+	/** @private */
 	data?: SignatureData;
 
 	/** @param uri 任务标识 */
@@ -800,6 +801,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
+		/* istanbul ignore if */
 		if (!this.data) {
 			return undefined;
 		}
