@@ -12,6 +12,7 @@ import type {
 	ServerDiagnostic,
 	SignatureData,
 	Hover,
+	SignatureHelp,
 } from './typings';
 
 let data: Promise<SignatureData> | undefined;
@@ -90,6 +91,13 @@ class LanguageService implements LanguageServiceBase {
 	/** @implements */
 	provideHover(text: string, position: Position): Promise<Hover | undefined> {
 		return wikiparse.provide('hover', this.#id + 0.05, text, position) as Promise<Hover | undefined>;
+	}
+
+	/** @implements */
+	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
+		const res = await wikiparse
+			.provide('signatureHelp', this.#id + 0.15, text, position) as SignatureHelp | undefined;
+		return res && {...res, activeSignature: 0};
 	}
 }
 
