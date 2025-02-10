@@ -61,6 +61,10 @@ class LanguageService {
     provideHover(text, position) {
         return wikiparse.provide('hover', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.05, text, position);
     }
+    provideSignatureHelp(text, position) {
+        return wikiparse
+            .provide('signatureHelp', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.15, text, position);
+    }
 }
 _LanguageService_id = new WeakMap();
 wikiparse.LanguageService = LanguageService;

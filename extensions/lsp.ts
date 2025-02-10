@@ -94,10 +94,9 @@ class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
-	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
-		const res = await wikiparse
-			.provide('signatureHelp', this.#id + 0.15, text, position) as SignatureHelp | undefined;
-		return res && {...res, activeSignature: 0};
+	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
+		return wikiparse
+			.provide('signatureHelp', this.#id + 0.15, text, position) as Promise<SignatureHelp | undefined>;
 	}
 }
 
