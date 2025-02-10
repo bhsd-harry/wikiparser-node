@@ -294,9 +294,6 @@ export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typ
 
 export interface LanguageService {
 
-	/** 魔术字信息 */
-	data: SignatureData;
-
 	/** 销毁实例 */
 	destroy(): void;
 
