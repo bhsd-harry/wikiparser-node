@@ -274,9 +274,8 @@ export interface SignatureData {
 export type CompletionItem = Omit<CompletionItemBase, 'kind'> & {kind: keyof typeof CompletionItemKind};
 
 export interface LanguageService {
-
-	/** 魔术字信息 */
-	data: SignatureData;
+	/** @private */
+	data?: SignatureData;
 
 	/** 销毁实例 */
 	destroy(): void;
