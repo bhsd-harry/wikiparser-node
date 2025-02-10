@@ -965,7 +965,8 @@ export class LanguageService implements LanguageServiceBase {
 		/* istanbul ignore next */
 		if (!this.data) {
 			return undefined;
-		} else if (this.#text && !this.#signature) {
+			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+		} else if (this.#text !== undefined && !this.#signature) {
 			throw new Error('This is a regular language server!');
 		}
 		this.#signature = true;
