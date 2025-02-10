@@ -19,12 +19,20 @@ import type {
 	Diagnostic,
 	TextEdit,
 	Hover,
+	SignatureHelp,
+	SignatureInformation,
 
 	/* NOT FOR BROWSER ONLY */
 
 	CodeAction,
 } from 'vscode-languageserver-types';
-import type {TokenTypes, LanguageService as LanguageServiceBase, CompletionItem, SignatureData} from '../base';
+import type {
+	TokenTypes,
+	LanguageService as LanguageServiceBase,
+	CompletionItem,
+	SignatureData,
+	SignatureInfo,
+} from '../base';
 import type {
 	AstNodes,
 	Token,
@@ -253,6 +261,7 @@ export class LanguageService implements LanguageServiceBase {
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
 	#completionConfig: CompletionConfig | undefined;
+	#signature?: boolean;
 	/** @private */
 	data?: SignatureData;
 
@@ -326,6 +335,10 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').flatMap(({type, childNodes}) => {
 			if (type !== 'attr-value' && !isPlain(childNodes)) {
@@ -422,6 +435,10 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
@@ -525,9 +542,13 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param wikitext 源代码
 	 */
 	async provideDiagnostics(wikitext: string): Promise<Diagnostic[]> {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
 		const root = await this.#queue(wikitext);
 		return root.lint().filter(({severity}) => severity === 'error')
-			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}) => ({
+			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
 				range: {
 					start: {line: startLine, character: startCol},
 					end: {line: endLine, character: endCol},
@@ -556,7 +577,7 @@ export class LanguageService implements LanguageServiceBase {
 						}))
 						: [],
 				] satisfies QuickFixData[],
-			}) satisfies Diagnostic);
+			}));
 	}
 
 	/**
@@ -570,6 +591,10 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		fold = true,
 	): Promise<FoldingRange[] | DocumentSymbol[]> {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
 		const ranges: FoldingRange[] = [],
 			symbols: DocumentSymbol[] = [],
 
@@ -687,6 +712,10 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text 源代码
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
 		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 				+ 'image-parameter#link';
@@ -780,6 +809,10 @@ export class LanguageService implements LanguageServiceBase {
 		usage: 0 | 1 | 2 | 3,
 		newName?: string,
 	): Promise<Omit<Location, 'uri'>[] | Range | WorkspaceEdit | undefined> {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
 		const renameTypes: TokenTypes[] = [
 				'arg-name',
 				'template-name',
@@ -881,27 +914,34 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * 检索解析器函数
+	 * @param name 函数名
+	 */
+	#getParserFunction(name: string): SignatureInfo | undefined {
+		return this.data!.parserFunctions.find(({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === name));
+	}
+
+	/**
 	 * 提供悬停信息
 	 * @param text 源代码
 	 * @param position 位置
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
-		/* istanbul ignore if */
+		/* istanbul ignore next */
 		if (!this.data) {
 			return undefined;
+		} else if (this.#signature) {
+			throw new Error('This is a signature language server!');
 		}
-		const {behaviorSwitches, parserFunctions} = this.data,
-			token = elementFromWord(await this.#queue(text), position);
+		const token = elementFromWord(await this.#queue(text), position);
 		let info: SignatureData['parserFunctions'][0] | undefined,
 			f: string | undefined;
 		if (token.type === 'double-underscore') {
-			info = behaviorSwitches.find(
+			info = this.data.behaviorSwitches.find(
 				({aliases}) => aliases.includes((token as DoubleUnderscoreToken).innerText.toLowerCase()),
 			);
 		} else if (token.type === 'magic-word-name') {
-			info = parserFunctions.find(
-				({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === token.parentNode!.name),
-			);
+			info = this.#getParserFunction(token.parentNode!.name!);
 			f = token.text().trim();
 		}
 		return info && {
@@ -922,13 +962,60 @@ export class LanguageService implements LanguageServiceBase {
 		};
 	}
 
+	/**
+	 * 提供魔术字帮助
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
+		/* istanbul ignore next */
+		if (!this.data) {
+			return undefined;
+		} else if (this.#text && !this.#signature) {
+			throw new Error('This is a regular language server!');
+		}
+		this.#signature = true;
+		const {line, character} = position,
+			curLine = text.split(/\r?\n/u)[line]!,
+			{lastChild} = await this.#queue(
+				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
+			),
+			{type, name, childNodes, firstChild} = lastChild!;
+		if (type !== 'magic-word') {
+			return undefined;
+		}
+		const info = this.#getParserFunction(name!);
+		if (!info?.signatures) {
+			return undefined;
+		}
+		const f = firstChild!.text().trim(),
+			n = childNodes.length - 1,
+			start = lastChild!.getAbsoluteIndex(),
+			activeParameter = childNodes.findLastIndex(child => child.getRelativeIndex() <= character - start) - 1,
+			signatures = info.signatures.filter(
+				params => (params.length >= n || params.at(-1)?.rest)
+					&& params.every(({label, const: c}, i) => {
+						const p = c && i < n && childNodes[i + 1]?.text().trim();
+						return !p || label.startsWith(p) || label.startsWith(p.toLowerCase());
+					}),
+			).map((params): SignatureInformation => ({
+				label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
+				parameters: params.map(({label, const: c}) => ({
+					label,
+					...c ? {documentation: 'Predefined parameter'} : undefined,
+				})),
+				...params.length < n ? {activeParameter: Math.min(activeParameter, params.length - 1)} : undefined,
+			}));
+		return {signatures, activeParameter};
+	}
+
 	/* NOT FOR BROWSER ONLY */
 
 	/** @implements */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
 		return diagnostics.filter(({data}) => data).flatMap(
-			diagnostic => (diagnostic.data as QuickFixData[]).map(data => ({
+			diagnostic => (diagnostic.data as QuickFixData[]).map((data): CodeAction => ({
 				title: data.title,
 				kind: 'quickfix',
 				diagnostics: [diagnostic],
@@ -936,7 +1023,7 @@ export class LanguageService implements LanguageServiceBase {
 				edit: {
 					changes: {'': [data]},
 				},
-			}) satisfies CodeAction),
+			})),
 		);
 	}
 

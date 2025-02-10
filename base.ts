@@ -11,6 +11,7 @@ import type {
 	WorkspaceEdit,
 	Diagnostic,
 	Hover,
+	SignatureHelp,
 
 	/* NOT FOR BROWSER ONLY */
 
@@ -280,7 +281,7 @@ interface SignatureParameter {
 	const?: boolean;
 	rest?: boolean;
 }
-interface SignatureInfo {
+export interface SignatureInfo {
 	aliases: string[];
 	description: string;
 	signatures?: SignatureParameter[][];
@@ -377,6 +378,13 @@ export interface LanguageService {
 	 * @param position 位置
 	 */
 	provideHover(text: string, position: Position): Promise<Hover | undefined>;
+
+	/**
+	 * 提供魔术字帮助
+	 * @param text 源代码
+	 * @param position 位置
+	 */
+	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined>;
 
 	/* NOT FOR BROWSER ONLY */
 
