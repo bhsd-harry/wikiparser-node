@@ -247,7 +247,8 @@ export class LanguageService implements LanguageServiceBase {
 	#running: Promise<Token> | undefined;
 	#done: Token | undefined;
 	#completionConfig: CompletionConfig | undefined;
-	data: SignatureData;
+	/** @private */
+	data?: SignatureData;
 
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
@@ -879,6 +880,10 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
+		/* istanbul ignore if */
+		if (!this.data) {
+			return undefined;
+		}
 		const {behaviorSwitches, parserFunctions} = this.data,
 			token = elementFromWord(await this.#queue(text), position);
 		let info: SignatureData['parserFunctions'][0] | undefined,
