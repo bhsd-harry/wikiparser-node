@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
 import {info} from '../util/diff';
-import type {Config} from '../base';
+import type {Config, SignatureData} from '../base';
 
 const configs: Record<string, Config> = {};
 for (const file of fs.readdirSync('config')) {
@@ -59,7 +59,7 @@ for (const file of fs.readdirSync('config')) {
 
 console.log();
 const defaultConfig = configs['default.json']!,
-	{parserFunction} = defaultConfig;
+	{parserFunction, doubleUnderscore} = defaultConfig;
 for (const [file, config] of Object.entries(configs)) {
 	if (file !== 'default.json') {
 		info(`${file} vs. default.json`);
@@ -122,4 +122,26 @@ for (const [file, config] of Object.entries(configs)) {
 			}
 		}
 	}
+}
+
+console.log();
+const {behaviorSwitches, parserFunctions} = require(path.join('..', '..', 'data', 'signatures.json')) as SignatureData;
+const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
+		.map(s => s.toLowerCase()),
+	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]].flat(2)
+		.map(s => s.toLowerCase()),
+	behaviorSwitchNames = behaviorSwitches.flatMap(({aliases}) => aliases),
+	parserFunctionNames = parserFunctions.flatMap(({aliases}) => aliases);
+info('signatures.json');
+
+// behaviorSwitch signatures
+assert.strictEqual(behaviorSwitchNames.length, new Set(behaviorSwitchNames).size, 'Duplicate magic words');
+for (const word of behaviorSwitchNames) {
+	assert.ok(doubleUnderscores.includes(word), `Missing: ${word}`);
+}
+
+// parserFunction signatures
+assert.strictEqual(parserFunctionNames.length, new Set(parserFunctionNames).size, 'Duplicate magic words');
+for (const word of parserFunctionNames) {
+	assert.ok(magicWords.includes(word), `Missing: ${word}`);
 }
