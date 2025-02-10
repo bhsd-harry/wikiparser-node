@@ -11,10 +11,15 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
     return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
 };
 var _LanguageService_id;
+let data;
 class LanguageService {
     constructor() {
         _LanguageService_id.set(this, void 0);
         __classPrivateFieldSet(this, _LanguageService_id, wikiparse.id++, "f");
+        data !== null && data !== void 0 ? data : (data = (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())());
+        (async () => {
+            wikiparse.provide('data', __classPrivateFieldGet(this, _LanguageService_id, "f"), await data);
+        })();
     }
     destroy() {
         wikiparse.provide('destroy', __classPrivateFieldGet(this, _LanguageService_id, "f"));
@@ -52,6 +57,9 @@ class LanguageService {
     }
     provideDiagnostics(wikitext) {
         return wikiparse.provide('diagnostics', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.9, wikitext);
+    }
+    provideHover(text, position) {
+        return wikiparse.provide('hover', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.05, text, position);
     }
 }
 _LanguageService_id = new WeakMap();

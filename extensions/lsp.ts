@@ -10,7 +10,11 @@ import type {
 	Range,
 	WorkspaceEdit,
 	ServerDiagnostic,
+	SignatureData,
+	Hover,
 } from './typings';
+
+let data: Promise<SignatureData> | undefined;
 
 /** 用于语法分析 */
 class LanguageService implements LanguageServiceBase {
@@ -18,6 +22,10 @@ class LanguageService implements LanguageServiceBase {
 
 	constructor() {
 		this.#id = wikiparse.id++;
+		data ??= (async () => (await fetch(`${wikiparse.CDN}/data/signatures.json`)).json())();
+		(async () => {
+			wikiparse.provide('data', this.#id, await data);
+		})();
 	}
 
 	/** @implements */
@@ -77,6 +85,11 @@ class LanguageService implements LanguageServiceBase {
 	/** @implements */
 	provideDiagnostics(wikitext: string): Promise<ServerDiagnostic[]> {
 		return wikiparse.provide('diagnostics', this.#id + 0.9, wikitext) as Promise<ServerDiagnostic[]>;
+	}
+
+	/** @implements */
+	provideHover(text: string, position: Position): Promise<Hover | undefined> {
+		return wikiparse.provide('hover', this.#id + 0.05, text, position) as Promise<Hover | undefined>;
 	}
 }
 

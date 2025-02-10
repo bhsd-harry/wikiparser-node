@@ -6,6 +6,7 @@ import type {
 	wikiparse as Wikiparse,
 	ColorInformation,
 	Position,
+	SignatureData,
 } from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
@@ -66,6 +67,7 @@ const workerJS = (): void => {
 		data: ['setI18N', Record<string, string>]
 			| ['setConfig', Config]
 			| ['getConfig' | 'destroy', number]
+			| ['data', number, SignatureData]
 			| ['colorPresentations', number, ColorInformation]
 			| [
 				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'diagnostics',
@@ -75,7 +77,7 @@ const workerJS = (): void => {
 				number?,
 			]
 			| [
-				'completionItems' | 'references' | 'definition' | 'renameLocation' | 'renameEdits',
+				'completionItems' | 'references' | 'definition' | 'renameLocation' | 'renameEdits' | 'hover',
 				number,
 				string,
 				Position,
@@ -114,6 +116,9 @@ const workerJS = (): void => {
 			case 'destroy':
 				getLSP(qid).destroy();
 				lsps.delete(qid);
+				break;
+			case 'data':
+				getLSP(qid).data = wikitext;
 				break;
 			case 'colorPresentations':
 				postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
@@ -161,6 +166,11 @@ const workerJS = (): void => {
 			case 'renameEdits':
 				(async () => {
 					postMessage([qid, await getLSP(qid).provideRenameEdits(wikitext, include, stage!), wikitext]);
+				})();
+				break;
+			case 'hover':
+				(async () => {
+					postMessage([qid, await getLSP(qid).provideHover(wikitext, include), wikitext]);
 				})();
 			// no default
 		}

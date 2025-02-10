@@ -69,6 +69,9 @@ const workerJS = () => {
                 getLSP(qid).destroy();
                 lsps.delete(qid);
                 break;
+            case 'data':
+                getLSP(qid).data = wikitext;
+                break;
             case 'colorPresentations':
                 postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
                 break;
@@ -115,6 +118,11 @@ const workerJS = () => {
             case 'renameEdits':
                 (async () => {
                     postMessage([qid, await getLSP(qid).provideRenameEdits(wikitext, include, stage), wikitext]);
+                })();
+                break;
+            case 'hover':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideHover(wikitext, include), wikitext]);
                 })();
         }
     };

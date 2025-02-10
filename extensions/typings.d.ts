@@ -15,9 +15,10 @@ import type {
 	Range,
 	WorkspaceEdit,
 	Diagnostic as ServerDiagnostic,
+	Hover,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
-import type {Config, LintError, AST, LanguageService, CompletionItem, Parser} from '../base';
+import type {Config, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
 
 export type {
 	AST,
@@ -38,6 +39,8 @@ export type {
 	Range,
 	WorkspaceEdit,
 	ServerDiagnostic,
+	SignatureData,
+	Hover,
 };
 
 export interface PrinterBase {
