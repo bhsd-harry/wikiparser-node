@@ -21,7 +21,6 @@ import {font} from '../util/html';
  */
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
-
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token, ...HiddenToken[]];
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;

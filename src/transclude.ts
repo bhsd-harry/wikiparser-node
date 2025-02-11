@@ -48,11 +48,11 @@ export abstract class TranscludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	declare readonly name: string;
 	readonly #keys = new Set<string>();
 
 	/* NOT FOR BROWSER END */
 
+	declare readonly name: string;
 	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
 		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstChild(): Child;

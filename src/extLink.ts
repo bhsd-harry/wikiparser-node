@@ -54,7 +54,7 @@ export abstract class ExtLinkToken extends Token {
 	get innerText(): string {
 		return this.length > 1
 			? this.lastChild.text()
-			: `[${this.getRootNode().querySelectorAll('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
+			: `[${this.getRootNode().querySelectorAll<this>('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
 	}
 
 	set innerText(text) {
