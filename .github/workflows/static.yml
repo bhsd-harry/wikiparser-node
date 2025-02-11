@@ -9,7 +9,7 @@ on:
       - '*.html'
       - 'extensions/dist/*.js'
       - 'extensions/*.css'
-      - 'bundle/bundle.min.js'
+      - 'bundle/*.js'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
