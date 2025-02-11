@@ -1,5 +1,6 @@
 /node_modules/
 dist/
+/bundle/bundle.es7.js
 /bundle/*.map
 /coverage/*
 !/coverage/badge.svg
