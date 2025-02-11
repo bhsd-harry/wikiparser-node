@@ -30,6 +30,7 @@ export abstract class TranscludeToken extends Token {
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
 
+	declare readonly name: string;
 	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
 		| readonly [SyntaxToken, AtomToken, AtomToken, ...ParameterToken[]];
 	abstract override get firstChild(): Child;
