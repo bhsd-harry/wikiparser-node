@@ -14,8 +14,6 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [
-		"/errors/README",
-		"/printed/README",
 		"/bundle/bundle.*.js",
 		"/extensions/typings.d.ts",
 		"/extensions/*/*.js",
@@ -26,6 +24,8 @@
 		"!/extensions/test-page.css",
 		"!/extensions/dist/compare.js",
 		"!/extensions/compare.css",
+		"/printed/README",
+		"/errors/README",
 		"/config/",
 		"/data/",
 		"/i18n/",
