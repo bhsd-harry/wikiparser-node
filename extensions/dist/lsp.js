@@ -55,8 +55,8 @@ class LanguageService {
         return wikiparse
             .provide('renameEdits', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.8, text, position, newName);
     }
-    provideDiagnostics(wikitext) {
-        return wikiparse.provide('diagnostics', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.9, wikitext);
+    provideDiagnostics(wikitext, warning) {
+        return wikiparse.provide('diagnostics', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.9, wikitext, warning);
     }
     provideHover(text, position) {
         return wikiparse.provide('hover', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.05, text, position);

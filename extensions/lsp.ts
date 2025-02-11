@@ -85,8 +85,8 @@ class LanguageService implements LanguageServiceBase {
 	}
 
 	/** @implements */
-	provideDiagnostics(wikitext: string): Promise<ServerDiagnostic[]> {
-		return wikiparse.provide('diagnostics', this.#id + 0.9, wikitext) as Promise<ServerDiagnostic[]>;
+	provideDiagnostics(wikitext: string, warning?: boolean): Promise<ServerDiagnostic[]> {
+		return wikiparse.provide('diagnostics', this.#id + 0.9, wikitext, warning) as Promise<ServerDiagnostic[]>;
 	}
 
 	/** @implements */

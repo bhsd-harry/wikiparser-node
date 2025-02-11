@@ -153,7 +153,7 @@ const workerJS = (): void => {
 				break;
 			case 'diagnostics':
 				(async () => {
-					postMessage([qid, await getLSP(qid).provideDiagnostics(wikitext), wikitext]);
+					postMessage([qid, await getLSP(qid).provideDiagnostics(wikitext, include), wikitext]);
 				})();
 				break;
 			case 'completionItems':

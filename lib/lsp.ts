@@ -522,11 +522,13 @@ export class LanguageService implements LanguageServiceBase {
 	/**
 	 * 提供语法诊断
 	 * @param wikitext 源代码
+	 * @param warning 是否提供警告
 	 */
-	async provideDiagnostics(wikitext: string): Promise<Diagnostic[]> {
+	async provideDiagnostics(wikitext: string, warning = true): Promise<Diagnostic[]> {
 		this.#checkSignature();
-		const root = await this.#queue(wikitext);
-		return root.lint().filter(({severity}) => severity === 'error')
+		const root = await this.#queue(wikitext),
+			errors = root.lint();
+		return (warning ? errors : errors.filter(({severity}) => severity === 'error'))
 			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
 				range: {
 					start: {line: startLine, character: startCol},

@@ -322,7 +322,7 @@ export interface LanguageService {
 	 * 提供语法检查
 	 * @param wikitext 源代码
 	 */
-	provideDiagnostics(wikitext: string): Promise<Diagnostic[]>;
+	provideDiagnostics(wikitext: string, warning?: boolean): Promise<Diagnostic[]>;
 
 	/**
 	 * 提供折叠范围
