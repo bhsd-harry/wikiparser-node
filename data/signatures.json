@@ -764,7 +764,7 @@
 					}
 				]
 			],
-			"description": "The unexpanded wikitext is rendered (more or less, for details see [Help:Templates](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage))."
+			"description": "The unexpanded wikitext is rendered (more or less, for details see [help](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage))."
 		},
 		{
 			"aliases": [
@@ -848,7 +848,7 @@
 					}
 				]
 			],
-			"description": "Alias for XML-style MediaWiki parser tags or extension tags. It allows a [pre-save transform of wiki code](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension?) and [Extension:ParserFunctions](https://www.mediawiki.org/wiki/Special:MyLanguage/Extension:ParserFunctions) within tags before the tag is processed. It also prevents parsing of tags in conditional paths that aren't executed (like in `#if` statements). Content between tags is passed as the first parameter, and any attributes for the tags can be passed as subsequent parameters."
+			"description": "Alias for XML-style MediaWiki parser tags or extension tags. It allows a [pre-save transform of wiki code](https://www.mediawiki.org/wiki/Special:MyLanguage/Manual:Tag_extensions#How_do_I_render_wikitext_in_my_extension?) and parser functions within tags before the tag is processed. It also prevents parsing of tags in conditional paths that aren't executed (like in `#if` statements). Content between tags is passed as the first parameter, and any attributes for the tags can be passed as subsequent parameters."
 		},
 		{
 			"aliases": [
@@ -2637,13 +2637,13 @@
 			"aliases": [
 				"!"
 			],
-			"description": "Used to include a vertical bar (pipe).\n\nSee [Help:Extension:ParserFunctions#Escaping pipe characters in tables](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Extension:ParserFunctions#Escaping_pipe_characters_in_tables) for further explanation."
+			"description": "Used to include a vertical bar (pipe).\n\nSee [help](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Extension:ParserFunctions#Escaping_pipe_characters_in_tables) for further explanation."
 		},
 		{
 			"aliases": [
 				"="
 			],
-			"description": "Used to include an equal sign.\n\nSee [Help:Extension:ParserFunctions#Raw equal signs](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Extension:ParserFunctions#Raw_equal_signs) for further explanation."
+			"description": "Used to include an equal sign.\n\nSee [help](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Extension:ParserFunctions#Raw_equal_signs) for further explanation."
 		},
 		{
 			"aliases": [

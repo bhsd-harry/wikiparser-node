@@ -6,6 +6,10 @@
 
 - [`LanguageService.provideInlayHints`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#provideinlayhints) that computes inlay hints for template anonymous parameters
 
+**Fixed**
+
+- [`Language.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports warnings
+
 ## v1.16.1
 
 *2025-02-10*
