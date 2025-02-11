@@ -190,7 +190,7 @@ const elementFromPoint = (root: Token, pos: Position): Token => {
  */
 const elementFromWord = (root: Token, pos: Position): Token => {
 	const {line, character} = pos,
-		offset = Number(/\w/u.test(root.toString().charAt(root.indexFromPos(line, character)!)));
+		offset = Number(/[\w!]/u.test(root.toString().charAt(root.indexFromPos(line, character)!)));
 	return elementFromPoint(root, {line, character: character + offset});
 };
 
