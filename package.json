@@ -15,6 +15,7 @@
 	"author": "Bhsd",
 	"files": [],
 	"main": "./bundle/bundle.min.js",
+	"types": "./dist/index.d.ts",
 	"sideEffects": false,
 	"repository": {
 		"type": "git",

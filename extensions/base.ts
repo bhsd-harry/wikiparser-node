@@ -74,7 +74,7 @@ const workerJS = (): void => {
 			| ['data', number, SignatureData]
 			| ['colorPresentations', number, ColorInformation]
 			| [
-				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'diagnostics',
+				'json' | 'lint' | 'print' | 'documentColors' | 'foldingRanges' | 'links' | 'diagnostics' | 'inlayHints',
 				number,
 				string,
 				boolean?,
@@ -189,6 +189,11 @@ const workerJS = (): void => {
 			case 'signatureHelp':
 				(async () => {
 					postMessage([qid, await getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext]);
+				})();
+				break;
+			case 'inlayHints':
+				(async () => {
+					postMessage([qid, await getLSP(qid).provideInlayHints(wikitext), wikitext]);
 				})();
 			// no default
 		}

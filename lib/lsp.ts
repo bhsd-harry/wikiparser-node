@@ -20,6 +20,7 @@ import type {
 	Hover,
 	SignatureHelp,
 	SignatureInformation,
+	InlayHint,
 } from 'vscode-languageserver-types';
 import type {
 	TokenTypes,
@@ -37,6 +38,12 @@ import type {
 	HeadingToken,
 	ExtToken,
 	DoubleUnderscoreToken,
+	ArgToken,
+	LinkToken,
+	FileToken,
+	CategoryToken,
+	ImageParameterToken,
+	TranscludeToken,
 } from '../internal';
 
 declare interface CompletionConfig {
@@ -294,6 +301,17 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * 检查是否为签名语言服务器
+	 * @throws `Error` 是签名语言服务器
+	 */
+	#checkSignature(): void {
+		/* istanbul ignore if */
+		if (this.#signature) {
+			throw new Error('This is a signature language server!');
+		}
+	}
+
+	/**
 	 * 提供颜色指示
 	 * @param rgba 颜色解析函数
 	 * @param text 源代码
@@ -304,10 +322,7 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
-		}
+		this.#checkSignature();
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default').flatMap(({type, childNodes}) => {
 			if (type !== 'attr-value' && !isPlain(childNodes)) {
@@ -404,10 +419,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
-		}
+		this.#checkSignature();
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
@@ -421,7 +433,7 @@ export class LanguageService implements LanguageServiceBase {
 		const root = await this.#queue(text);
 		if (mt?.[2] === '{{{') { // argument
 			return getCompletion(
-				root.querySelectorAll('arg').map(({name}) => name!),
+				root.querySelectorAll<ArgToken>('arg').map(({name}) => name),
 				'Variable',
 				mt[3]!,
 				position,
@@ -431,7 +443,8 @@ export class LanguageService implements LanguageServiceBase {
 				str = colon ? mt[3].slice(1).trimStart() : mt[3];
 			if (mt[2] === '[[') {
 				return getCompletion(
-					root.querySelectorAll('link,file,category').map(({name}) => name!),
+					root.querySelectorAll<LinkToken | FileToken | CategoryToken>('link,file,category')
+						.map(({name}) => name),
 					'Folder',
 					str,
 					position,
@@ -442,8 +455,8 @@ export class LanguageService implements LanguageServiceBase {
 				...mt[3].startsWith('#')
 					? []
 					: getCompletion(
-						root.querySelectorAll('template')
-							.map(({name}) => colon ? name! : name!.replace(/^Template:/u, '')),
+						root.querySelectorAll<TranscludeToken>('template')
+							.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
 						'Folder',
 						str,
 						position,
@@ -461,7 +474,7 @@ export class LanguageService implements LanguageServiceBase {
 			return [
 				...getCompletion(params, 'Property', match, position),
 				...getCompletion(
-					root.querySelectorAll('image-parameter#width').map(width => width.text()),
+					root.querySelectorAll<ImageParameterToken>('image-parameter#width').map(width => width.text()),
 					'Unit',
 					match,
 					position,
@@ -511,10 +524,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param wikitext 源代码
 	 */
 	async provideDiagnostics(wikitext: string): Promise<Diagnostic[]> {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
-		}
+		this.#checkSignature();
 		const root = await this.#queue(wikitext);
 		return root.lint().filter(({severity}) => severity === 'error')
 			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
@@ -560,10 +570,7 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		fold = true,
 	): Promise<FoldingRange[] | DocumentSymbol[]> {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
-		}
+		this.#checkSignature();
 		const ranges: FoldingRange[] = [],
 			symbols: DocumentSymbol[] = [],
 			root = await this.#queue(text),
@@ -627,10 +634,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text 源代码
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
-		}
+		this.#checkSignature();
 		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 				+ 'image-parameter#link';
@@ -724,10 +728,7 @@ export class LanguageService implements LanguageServiceBase {
 		usage: 0 | 1 | 2 | 3,
 		newName?: string,
 	): Promise<Omit<Location, 'uri'>[] | Range | WorkspaceEdit | undefined> {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
-		}
+		this.#checkSignature();
 		const renameTypes: TokenTypes[] = [
 				'arg-name',
 				'template-name',
@@ -845,15 +846,14 @@ export class LanguageService implements LanguageServiceBase {
 		/* istanbul ignore next */
 		if (!this.data) {
 			return undefined;
-		} else if (this.#signature) {
-			throw new Error('This is a signature language server!');
 		}
+		this.#checkSignature();
 		const token = elementFromWord(await this.#queue(text), position);
 		let info: SignatureData['parserFunctions'][0] | undefined,
 			f: string | undefined;
-		if (token.type === 'double-underscore') {
+		if (token.is<DoubleUnderscoreToken>('double-underscore')) {
 			info = this.data.behaviorSwitches.find(
-				({aliases}) => aliases.includes((token as DoubleUnderscoreToken).innerText.toLowerCase()),
+				({aliases}) => aliases.includes(token.innerText.toLowerCase()),
 			);
 		} else if (token.type === 'magic-word-name') {
 			info = this.#getParserFunction(token.parentNode!.name!);
@@ -926,5 +926,26 @@ export class LanguageService implements LanguageServiceBase {
 			...params.length < n ? {activeParameter: Math.min(activeParameter, params.length - 1)} : undefined,
 		}));
 		return {signatures, activeParameter};
+	}
+
+	/**
+	 * 提供 CodeLens
+	 * @param text 源代码
+	 */
+	async provideInlayHints(text: string): Promise<InlayHint[]> {
+		this.#checkSignature();
+		const hints: InlayHint[] = [],
+			root = await this.#queue(text);
+		for (const template of root.querySelectorAll<TranscludeToken>('template')) {
+			hints.push(
+				...(template.childNodes.slice(1) as ParameterToken[]).filter(({anon}) => anon)
+					.map((parameter): InlayHint => ({
+						position: positionAt(root, parameter.getAbsoluteIndex()),
+						label: `${parameter.name}=`,
+						kind: 2,
+					})),
+			);
+		}
+		return hints;
 	}
 }

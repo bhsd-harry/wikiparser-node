@@ -13,6 +13,7 @@ import type {
 	SignatureData,
 	Hover,
 	SignatureHelp,
+	InlayHint,
 } from './typings';
 
 let data: Promise<SignatureData> | undefined;
@@ -97,6 +98,11 @@ class LanguageService implements LanguageServiceBase {
 	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
 		return wikiparse
 			.provide('signatureHelp', this.#id + 0.15, text, position) as Promise<SignatureHelp | undefined>;
+	}
+
+	/** @implements */
+	provideInlayHints(text: string): Promise<InlayHint[]> {
+		return wikiparse.provide('inlayHints', this.#id + 0.25, text) as Promise<InlayHint[]>;
 	}
 }
 

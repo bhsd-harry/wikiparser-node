@@ -65,6 +65,9 @@ class LanguageService {
         return wikiparse
             .provide('signatureHelp', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.15, text, position);
     }
+    provideInlayHints(text) {
+        return wikiparse.provide('inlayHints', __classPrivateFieldGet(this, _LanguageService_id, "f") + 0.25, text);
+    }
 }
 _LanguageService_id = new WeakMap();
 wikiparse.LanguageService = LanguageService;

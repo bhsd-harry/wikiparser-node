@@ -135,6 +135,11 @@ const workerJS = () => {
                 (async () => {
                     postMessage([qid, await getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext]);
                 })();
+                break;
+            case 'inlayHints':
+                (async () => {
+                    postMessage([qid, await getLSP(qid).provideInlayHints(wikitext), wikitext]);
+                })();
         }
     };
 };

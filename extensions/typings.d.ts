@@ -17,6 +17,7 @@ import type {
 	Diagnostic as ServerDiagnostic,
 	Hover,
 	SignatureHelp,
+	InlayHint,
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 import type {Config, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
@@ -43,6 +44,7 @@ export type {
 	SignatureData,
 	Hover,
 	SignatureHelp,
+	InlayHint,
 };
 
 export interface PrinterBase {

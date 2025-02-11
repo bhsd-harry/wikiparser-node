@@ -144,6 +144,11 @@ const workerJS = () => {
                 (() => __awaiter(void 0, void 0, void 0, function* () {
                     postMessage([qid, yield getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext]);
                 }))();
+                break;
+            case 'inlayHints':
+                (() => __awaiter(void 0, void 0, void 0, function* () {
+                    postMessage([qid, yield getLSP(qid).provideInlayHints(wikitext), wikitext]);
+                }))();
         }
     };
 };
