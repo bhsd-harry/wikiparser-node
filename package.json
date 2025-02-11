@@ -14,9 +14,7 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [],
-	"browser": "/bundle/bundle.min.js",
 	"main": "./bundle/bundle.min.js",
-	"types": "./extensions/typings.d.ts",
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
@@ -43,12 +41,16 @@
 		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
+		"@bhsd/codemirror-mediawiki": "^2.20.3",
 		"@bhsd/common": "^0.6.3",
+		"@codemirror/lint": "^6.8.4",
+		"chalk": "^4.1.2",
+		"codejar-async": "^4.2.6",
+		"entities": "^6.0.0",
+		"monaco-editor": "^0.52.2",
 		"vscode-languageserver-types": "^3.17.5"
 	},
 	"devDependencies": {
-		"@bhsd/codemirror-mediawiki": "^2.20.3",
-		"@codemirror/lint": "^6.8.4",
 		"@stylistic/eslint-plugin": "^3.1.0",
 		"@stylistic/stylelint-plugin": "^3.1.2",
 		"@types/mocha": "^10.0.10",
@@ -56,10 +58,7 @@
 		"@types/prismjs": "^1.26.5",
 		"@typescript-eslint/eslint-plugin": "^8.23.0",
 		"@typescript-eslint/parser": "^8.23.0",
-		"chalk": "^4.1.2",
-		"codejar-async": "^4.2.6",
 		"color-rgba": "^3.0.0",
-		"entities": "^6.0.0",
 		"esbuild": "^0.25.0",
 		"eslint": "^8.57.1",
 		"eslint-plugin-es-x": "^8.4.1",
@@ -73,7 +72,6 @@
 		"eslint-plugin-unicorn": "^56.0.1",
 		"http-server": "^14.1.1",
 		"mocha": "^11.1.0",
-		"monaco-editor": "^0.52.2",
 		"stylelint": "^16.14.1",
 		"stylelint-config-recommended": "^15.0.0",
 		"typescript": "^5.7.3",
