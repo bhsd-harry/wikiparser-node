@@ -13,7 +13,7 @@ const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table
  * @param page.content 页面源代码
  */
 export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
-	content = content.replace(/[\0\x7F]/gu, '');
+	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
 	console.timeEnd(`parse: ${title}`);
