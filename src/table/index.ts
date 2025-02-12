@@ -1,7 +1,6 @@
 import {generateForChild} from '../../util/lint';
 import {
 	Shadow,
-	emptyArray,
 } from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -17,6 +16,14 @@ import type {TableCoords} from './trBase';
 export type TableTokens = TableToken | TrToken | TdToken;
 
 const closingPattern = /^\n[^\S\n]*(?:\|\}|\{\{\s*!\s*\}\}\}|\{\{\s*!\)\s*\}\})$/u;
+
+/**
+ * 生成一个指定长度的空数组
+ * @param n 数组长度
+ * @param callback 回调函数
+ */
+const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
+	new Array(n).fill(undefined).map((_, i) => callback(i));
 
 /**
  * 是否是行尾
