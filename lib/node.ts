@@ -15,6 +15,7 @@ import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
 import {typeError} from '../util/debug';
+import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 
@@ -214,7 +215,9 @@ export abstract class AstNode implements AstNodeBase {
 
 	constructor() {
 		Object.defineProperty(this, 'childNodes', {writable: false});
-		Object.freeze(this.childNodes);
+		if (!Parser.viewOnly) {
+			Object.freeze(this.childNodes);
+		}
 	}
 
 	/* NOT FOR BROWSER END */

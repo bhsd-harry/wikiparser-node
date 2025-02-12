@@ -12,8 +12,13 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.title 页面标题
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
+ * @param html 是否渲染HTML
  */
-export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
+export const single = (
+	Parser: Parser,
+	{pageid, title, ns, content}: SimplePage,
+	html = true,
+): LintError[] | Promise<void> => {
 	/* NOT FOR BROWSER */
 
 	Parser.viewOnly = true;
@@ -53,15 +58,15 @@ export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage)
 
 	/* NOT FOR BROWSER */
 
-	Parser.viewOnly = false;
-
-	console.time(`html: ${title}`);
-	token.toHtml();
-	console.timeEnd(`html: ${title}`);
-	const reparsed = token.toString();
-	if (reparsed !== content) {
-		error('渲染HTML过程中不可逆地修改了原始文本！');
-		return diff(content, reparsed, pageid);
+	if (html) {
+		console.time(`html: ${title}`);
+		token.toHtml();
+		console.timeEnd(`html: ${title}`);
+		const reparsed = token.toString();
+		if (reparsed !== content) {
+			error('渲染HTML过程中不可逆地修改了原始文本！');
+			return diff(content, reparsed, pageid);
+		}
 	}
 
 	/* NOT FOR BROWSER END */
