@@ -43,7 +43,9 @@ describe('API tests', () => {
 								}
 							} catch (e) /* istanbul ignore next */ {
 								if (e instanceof assert.AssertionError) {
-									e.cause = {message: lines[Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1]};
+									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
+										end = lines.findIndex((line, i) => i >= start && line.endsWith(';'));
+									e.cause = {message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`};
 								}
 								throw e;
 							}
