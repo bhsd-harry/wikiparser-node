@@ -1,4 +1,8 @@
+/* NOT FOR BROWSER */
+
 import type {Token} from '../internal';
+
+/* NOT FOR BROWSER END */
 
 export const MAX_STAGE = 11;
 

@@ -1,4 +1,8 @@
+/* NOT FOR BROWSER */
+
 import type {AstNodes, ListRangeToken} from '../internal';
+
+/* NOT FOR BROWSER END */
 
 /**
  * get common prefix length

@@ -1,4 +1,3 @@
-import type {Parser} from '../base';
 import type {
 	AstNodes,
 	Token,
@@ -7,6 +6,12 @@ import type {
 
 	AstText,
 } from '../internal';
+
+/* NOT FOR BROWSER */
+
+import type {Parser} from '../base';
+
+/* NOT FOR BROWSER END */
 
 export const Shadow = {
 	running: false,

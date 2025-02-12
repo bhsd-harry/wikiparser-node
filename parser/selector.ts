@@ -1,7 +1,3 @@
-import {parsers} from '../util/constants';
-import {Ranges} from '../lib/ranges';
-import {Title} from '../lib/title';
-import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AstElement} from '../lib/element';
 import type {
 	Token,
@@ -15,6 +11,12 @@ import type {
 export type TokenPredicate<T = Token> = (token: AstElement) => token is T;
 
 /* NOT FOR BROWSER */
+
+import {parsers} from '../util/constants';
+import {Ranges} from '../lib/ranges';
+import {Title} from '../lib/title';
+import {Attributes} from '../lib/attributes';
+import type {AttributesParentBase} from '../mixin/attributesParent';
 
 const simplePseudos = new Set([
 		'root',
@@ -122,21 +124,13 @@ const getAttr = (token: Token & Partial<AttributesParentBase>, key: string): unk
  * @throws `SyntaxError` 未定义的伪选择器
  */
 const matches = (
-	token: Token & Partial<AttributesParentBase> & {link?: string | Title},
+	token: Token & Partial<AttributesParentBase>,
 	step: SelectorArray,
 	scope: AstElement,
 	has: Token | undefined,
 ): boolean => {
-	const {parentNode, type, name, childNodes, link} = token,
-		invalid = type === 'table-inter' || type === 'image-parameter' && name === 'invalid',
-		children = parentNode?.children,
-		childrenOfType = children?.filter(({type: t}) => t === type),
-		siblingsCount = children?.length ?? 1,
-		siblingsCountOfType = childrenOfType?.length ?? 1,
-		index = (children?.indexOf(token) ?? 0) + 1,
-		indexOfType = (childrenOfType?.indexOf(token) ?? 0) + 1,
-		lastIndex = siblingsCount - index + 1,
-		lastIndexOfType = siblingsCountOfType - indexOfType + 1;
+	const {parentNode, type, name, childNodes} = token,
+		attributes = new Attributes(token);
 	return step.every(selector => {
 		if (typeof selector === 'string') {
 			switch (selector) { // 情形1：简单伪选择器、type和name
@@ -147,17 +141,17 @@ const matches = (
 				case ':root':
 					return !parentNode;
 				case ':first-child':
-					return index === 1;
+					return attributes.index === 1;
 				case ':first-of-type':
-					return indexOfType === 1;
+					return attributes.indexOfType === 1;
 				case ':last-child':
-					return lastIndex === 1;
+					return attributes.lastIndex === 1;
 				case ':last-of-type':
-					return lastIndexOfType === 1;
+					return attributes.lastIndexOfType === 1;
 				case ':only-child':
-					return siblingsCount === 1;
+					return attributes.siblingsCount === 1;
 				case ':only-of-type':
-					return siblingsCountOfType === 1;
+					return attributes.siblingsCountOfType === 1;
 				case ':empty':
 					return !childNodes.some(({type: t, data}) => t !== 'text' || data);
 				case ':parent':
@@ -176,15 +170,15 @@ const matches = (
 						|| type === 'free-ext-link'
 						|| type === 'magic-link'
 						|| type === 'ext-link'
-						|| (type === 'file' || type === 'gallery-image') && link;
+						|| (type === 'file' || type === 'gallery-image') && attributes.link;
 				case ':local-link':
 					return (type === 'link' || type === 'file' || type === 'gallery-image')
-						&& link instanceof Title
-						&& link.title === '';
+						&& attributes.link instanceof Title
+						&& attributes.link.title === '';
 				case ':invalid':
-					return invalid;
+					return attributes.invalid;
 				case ':valid':
-					return !invalid;
+					return !attributes.invalid;
 				case ':required':
 					return isProtected(token) === true;
 				case ':optional':
@@ -238,13 +232,13 @@ const matches = (
 			case 'not':
 				return !getCondition(s, scope)(token);
 			case 'nth-child':
-				return nth(s, index);
+				return nth(s, attributes.index);
 			case 'nth-of-type':
-				return nth(s, indexOfType);
+				return nth(s, attributes.indexOfType);
 			case 'nth-last-child':
-				return nth(s, lastIndex);
+				return nth(s, attributes.lastIndex);
 			case 'nth-last-of-type':
-				return nth(s, lastIndexOfType);
+				return nth(s, attributes.lastIndexOfType);
 			case 'contains':
 				return token.text().includes(s);
 			case 'has': {
@@ -253,8 +247,8 @@ const matches = (
 					throw new SyntaxError('The :has() pseudo-selector cannot be nested.');
 				}
 				const condition: (child: Token) => boolean = getCondition(s, scope, token),
-					childOrSibling = children && /(?:^|,)\s*[+~]/u.test(s)
-						? [...token.childNodes, ...children.slice(children.indexOf(token))]
+					childOrSibling = attributes.siblings && /(?:^|,)\s*[+~]/u.test(s)
+						? [...token.childNodes, ...attributes.siblings.slice(attributes.siblings.indexOf(token))]
 						: token.childNodes;
 
 				/**

@@ -52,7 +52,7 @@ export abstract class AstElement extends AstNode {
 
 	/** 末位非文本子节点 */
 	get lastElementChild(): Token | undefined {
-		return this.children[this.childElementCount - 1];
+		return this.childNodes.findLast((child): child is Token => child.type !== 'text');
 	}
 
 	/** 非文本子节点总数 */
@@ -162,7 +162,7 @@ export abstract class AstElement extends AstNode {
 		/* istanbul ignore next */
 		if (node.contains(this)) {
 			throw new RangeError('Cannot insert an ancestor node!');
-		} else if (this.childNodes.includes(node)) {
+		} else if (node.parentNode as this | undefined === this) {
 			throw new RangeError('Cannot insert its own child node!');
 		}
 		this.verifyChild(i, 1);

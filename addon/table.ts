@@ -93,9 +93,8 @@ const format = (cells: Map<TdToken, boolean>, attr: TdAttrs | string = {}, multi
  */
 const fill = (y: number, rowToken: TrBaseToken, layout: Layout, maxCol: number, token: Token): void => {
 	const rowLayout = layout[y]!,
-		childNodes = [...rowToken.childNodes].reverse(),
-		index = childNodes.findIndex(child => child instanceof TdToken && child.subtype !== 'caption'),
-		pos = index > 0 ? childNodes.length - index : undefined;
+		index = rowToken.childNodes.findLastIndex(child => child instanceof TdToken && child.subtype !== 'caption'),
+		pos = index > 0 ? index + 1 : undefined;
 	Shadow.run(() => {
 		for (let i = 0; i < maxCol; i++) {
 			if (!rowLayout[i]) {
@@ -128,7 +127,7 @@ TableToken.prototype.toRawCoords =
 			return {...coords, start: coords.row === y && rowLayout[x - 1] !== coords};
 		} else if (rowLayout || y > 0) {
 			return x === rowLayout?.length
-				? {row: y, column: (rowLayout.reverse().find(({row}) => row === y)?.column ?? -1) + 1, start: true}
+				? {row: y, column: (rowLayout.findLast(({row}) => row === y)?.column ?? -1) + 1, start: true}
 				: undefined;
 		}
 		return {row: 0, column: 0, start: true};
