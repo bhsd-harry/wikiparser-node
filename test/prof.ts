@@ -16,7 +16,7 @@ session.post('Profiler.enable', () => {
 			);
 		}
 		session.post('Profiler.stop', (_, {profile}) => {
-			writeFileSync('test/prof.txt', JSON.stringify(profile, null, '\t'));
+			writeFileSync('test/prof.txt', JSON.stringify(profile.nodes, null, '\t'));
 			session.disconnect();
 		});
 	});
