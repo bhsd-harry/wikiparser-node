@@ -7,7 +7,7 @@ import type {
 	LintError,
 	AST,
 } from '../base';
-import type {AstNodes, AttributesToken, TranscludeToken} from '../internal';
+import type {AttributesToken, TranscludeToken} from '../internal';
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
 	formattingTags = new Set([
@@ -211,11 +211,12 @@ export abstract class HtmlToken extends Token {
 		}
 		const {childNodes} = parentNode,
 			i = childNodes.indexOf(this),
-			siblings = (closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1))
-				.filter((child: AstNodes): child is this => child.type === 'html' && child.name === tagName);
+			siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1);
 		let imbalance = closing ? -1 : 1;
 		for (const token of siblings) {
-			if (token.#closing) {
+			if (!token.is<this>('html') || token.name !== tagName) {
+				continue;
+			} else if (token.#closing) {
 				imbalance--;
 			} else {
 				imbalance++;
