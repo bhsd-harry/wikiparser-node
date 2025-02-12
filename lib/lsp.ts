@@ -1017,9 +1017,10 @@ export class LanguageService implements LanguageServiceBase {
 		this.#checkSignature();
 		const hints: InlayHint[] = [],
 			root = await this.#queue(text);
-		for (const template of root.querySelectorAll<TranscludeToken>('template')) {
+		for (const template of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke')) {
+			const {type, childNodes} = template;
 			hints.push(
-				...(template.childNodes.slice(1) as ParameterToken[]).filter(({anon}) => anon)
+				...(childNodes.slice(type === 'template' ? 1 : 3) as ParameterToken[]).filter(({anon}) => anon)
 					.map((parameter): InlayHint => ({
 						position: positionAt(root, parameter.getAbsoluteIndex()),
 						label: `${parameter.name}=`,
