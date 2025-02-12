@@ -69,14 +69,6 @@ export const setChildNodes = (
 };
 
 /**
- * 生成一个指定长度的空数组
- * @param n 数组长度
- * @param callback 回调函数
- */
-export const emptyArray = <T>(n: number, callback: (i: number) => T): T[] =>
-	new Array(n).fill(undefined).map((_, i) => callback(i));
-
-/**
  * 同步混入的类名
  * @param target 混入的目标
  * @param source 混入的源
@@ -98,13 +90,6 @@ export const typeError = ({name}: Function, method: string, ...args: string[]): 
 };
 
 /* NOT FOR BROWSER */
-
-/**
- * 比较两个数
- * @param a
- * @param b
- */
-export const compare = (a: number, b: number): number => a - b;
 
 /**
  * 撤销最近一次Mutation

@@ -275,6 +275,11 @@ interface Token extends AstNode {
 
 	/** 保存为JSON */
 	json(): AST;
+
+	/* NOT FOR BROWSER */
+
+	/** 生成HTML */
+	toHtml(): string;
 }
 
 interface SignatureParameter {
@@ -413,6 +418,12 @@ export interface Parser {
 	i18n: Record<string, string>
 		| string
 		| undefined;
+
+	/* NOT FOR BROWSER */
+
+	viewOnly: boolean;
+
+	/* NOT FOR BROWSER END */
 
 	/** 获取当前的解析设置 */
 	getConfig(): Config;

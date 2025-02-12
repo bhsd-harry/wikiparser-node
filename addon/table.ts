@@ -1,7 +1,7 @@
 /* eslint @stylistic/operator-linebreak: [2, "before", {overrides: {"=": "after"}}] */
 
 import * as assert from 'assert/strict';
-import {Shadow, compare} from '../util/debug';
+import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {Token} from '../src/index';
 import {TrToken} from '../src/table/tr';
@@ -12,6 +12,13 @@ import type {SyntaxToken} from '../internal';
 import type {TableCoords} from '../src/table/trBase';
 import type {TableRenderedCoords, Layout} from '../src/table/index';
 import type {TdAttrs} from '../src/table/td';
+
+/**
+ * 比较两个数
+ * @param a
+ * @param b
+ */
+const compare = (a: number, b: number): number => a - b;
 
 /**
  * 检查坐标形式

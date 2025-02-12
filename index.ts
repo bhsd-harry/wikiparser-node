@@ -45,8 +45,6 @@ declare interface Parser extends ParserBase {
 
 	/* NOT FOR BROWSER */
 
-	viewOnly: boolean;
-
 	conversionTable: Map<string, string>;
 	redirects: Map<string, string>;
 

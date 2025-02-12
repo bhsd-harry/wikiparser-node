@@ -1,5 +1,4 @@
 import {classes} from '../util/constants';
-import {emptyArray, compare} from '../util/debug';
 import {error} from '../util/diff';
 
 /** 模拟Python的Range对象。除`step`至少为`1`外，允许负数、小数或`end < start`的情形。 */
@@ -63,12 +62,12 @@ export class Range {
 		}
 	}
 
-	/**
-	 * 将Range转换为针对特定数组的下标集
-	 * @param arr 参考数组`[0, 1, 2, ...]`
-	 */
-	applyTo(arr: readonly number[]): number[] {
-		return arr.slice(this.start, this.end).filter((_, j) => j % this.step === 0);
+	/** @private */
+	has(i: number, length: number): boolean {
+		let {start, end} = this;
+		start += start < 0 ? length : 0;
+		end += end < 0 ? length : 0;
+		return i >= start && i < end && (i - Math.max(start, 0)) % this.step === 0;
 	}
 }
 
@@ -103,22 +102,13 @@ export class Ranges extends Array<number | Range> {
 	}
 
 	/**
-	 * 将Ranges转换为针对特定Array的下标集
-	 * @param arr 参考数组
+	 * 是否包含指定的索引
+	 * @param i 指定的索引
+	 * @param length 序列的长度
 	 */
-	applyTo(arr: number | readonly unknown[]): number[] {
-		const length = typeof arr === 'number' ? arr : arr.length,
-			a = emptyArray(length, i => i);
-		return [
-			...new Set(
-				[...this].flatMap(ele => { // eslint-disable-line es-x/no-array-prototype-flat
-					if (typeof ele === 'number') {
-						return ele < 0 ? ele + length : ele;
-					}
-					return ele.applyTo(a);
-				}),
-			),
-		].filter(i => i >= 0 && i < length).sort(compare);
+	has(i: number, length: number): boolean {
+		return i >= 0 && i < length
+			&& this.some(ele => typeof ele === 'number' ? ele === i || ele + length === i : ele.has(i, length));
 	}
 }
 

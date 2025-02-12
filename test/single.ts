@@ -14,7 +14,13 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.content 页面源代码
  */
 export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
-	content = content.replace(/[\0\x7F]/gu, '');
+	/* NOT FOR BROWSER */
+
+	Parser.viewOnly = true;
+
+	/* NOT FOR BROWSER END */
+
+	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
 	console.timeEnd(`parse: ${title}`);
@@ -41,9 +47,24 @@ export const single = (Parser: Parser, {pageid, title, ns, content}: SimplePage)
 		(_, s?: keyof typeof entities) => s ? entities[s] : '',
 	);
 	if (restored !== content) {
-		error('渲染HTML过程中不可逆地修改了原始文本！');
+		error('高亮过程中不可逆地修改了原始文本！');
 		return diff(content, restored, pageid);
 	}
+
+	/* NOT FOR BROWSER */
+
+	Parser.viewOnly = false;
+
+	console.time(`html: ${title}`);
+	token.toHtml();
+	console.timeEnd(`html: ${title}`);
+	const reparsed = token.toString();
+	if (reparsed !== content) {
+		error('渲染HTML过程中不可逆地修改了原始文本！');
+		return diff(content, reparsed, pageid);
+	}
+
+	/* NOT FOR BROWSER END */
 
 	console.time(`lint: ${title}`);
 	const errors = token.lint().filter(({rule}) => !ignored.has(rule));

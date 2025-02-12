@@ -520,15 +520,13 @@ export class Token extends AstElement {
 
 		const acceptable = this.getAcceptable();
 		if (!Shadow.running && acceptable) {
-			const acceptableIndices = Object.fromEntries(
-					Object.entries(acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length + 1)]),
-				),
-				nodesAfter = this.childNodes.slice(i),
+			const {length, childNodes} = this,
+				nodesAfter = childNodes.slice(i),
 				insertedName = token.constructor.name;
-			i += i < 0 ? this.length : 0;
-			if (!acceptableIndices[insertedName]?.includes(i)) {
+			i += i < 0 ? length : 0;
+			if (!acceptable[insertedName]?.has(i, length + 1)) {
 				this.constructorError(`cannot insert a ${insertedName} at position ${i}`);
-			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j + 1))) {
+			} else if (nodesAfter.some(({constructor: {name}}, j) => !acceptable[name]?.has(i + j + 1, length + 1))) {
 				this.constructorError(
 					`violates the order of acceptable nodes by inserting a child node at position ${i}`,
 				);
@@ -705,19 +703,16 @@ export class Token extends AstElement {
 	 * @param i 移除位置
 	 */
 	override removeAt(i: number): AstNodes {
-		i += i < 0 ? this.length : 0;
+		const {length, childNodes} = this;
+		i += i < 0 ? length : 0;
 		if (!Shadow.running) {
-			const protectedIndices = this.#protectedChildren.applyTo(this.childNodes);
-			if (protectedIndices.includes(i)) {
+			if (this.#protectedChildren.has(i, length)) {
 				this.constructorError(`cannot remove the child node at position ${i}`);
 			}
 			const acceptable = this.getAcceptable();
 			if (acceptable) {
-				const acceptableIndices = Object.fromEntries(
-						Object.entries(acceptable).map(([str, ranges]) => [str, ranges.applyTo(this.length - 1)]),
-					),
-					nodesAfter = this.childNodes.slice(i + 1);
-				if (nodesAfter.some(({constructor: {name}}, j) => !acceptableIndices[name]?.includes(i + j))) {
+				const nodesAfter = childNodes.slice(i + 1);
+				if (nodesAfter.some(({constructor: {name}}, j) => !acceptable[name]?.has(i + j, length - 1))) {
 					this.constructorError(
 						`violates the order of acceptable nodes by removing the child node at position ${i}`,
 					);

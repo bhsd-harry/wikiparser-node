@@ -434,7 +434,11 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param node 待检测节点
 	 */
 	contains(node: AstNode): boolean {
-		return node === this || this.childNodes.some(child => child.contains(node));
+		let parentNode: AstNode | undefined = node;
+		while (parentNode && parentNode !== this) {
+			({parentNode} = parentNode);
+		}
+		return Boolean(parentNode);
 	}
 
 	/** @private */

@@ -80,7 +80,7 @@ const toCase = (val: string, i: unknown): string => i ? val.toLowerCase() : val;
  * @param str 表达式
  * @param i 待检查的下标
  */
-const nth = (str: string, i: number): boolean => new Ranges(str).applyTo(i + 1).includes(i);
+const nth = (str: string, i: number): boolean => new Ranges(str).has(i, i + 1);
 
 /**
  * 是否受保护。保护条件来自Token，这里仅提前用于:required和:optional伪选择器。
@@ -93,7 +93,7 @@ const isProtected = (token: Token): boolean | undefined => {
 	}
 	const {childNodes, fixed} = parentNode;
 	return fixed
-		|| parentNode.getAttribute('protectedChildren').applyTo(childNodes).includes(childNodes.indexOf(token));
+		|| parentNode.getAttribute('protectedChildren').has(childNodes.indexOf(token), childNodes.length);
 };
 
 /**

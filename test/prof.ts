@@ -3,12 +3,6 @@ import {readFileSync, writeFileSync} from 'fs';
 import {single} from './single';
 import Parser = require('../index');
 
-/* NOT FOR BROWSER */
-
-Parser.viewOnly = true;
-
-/* NOT FOR BROWSER END */
-
 const content = readFileSync('test/page.wiki', 'utf8');
 
 const session = new inspector.Session();
