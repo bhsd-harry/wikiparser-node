@@ -49,11 +49,15 @@ const decodeHtmlBasic = factory(
  * decode HTML entities
  * @param str
  */
-export const decodeHtml = (str: string): string =>
+export const decodeHtml = (str: string): string => {
 	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	typeof process === 'object' && typeof process.versions?.node === 'string'
-		? (require('entities') as typeof import('entities')).decodeHTMLStrict(str).replace(/\xA0/gu, ' ')
-		: /* istanbul ignore next */ decodeHtmlBasic(str);
+	if (typeof process === 'object' && typeof process.versions?.node === 'string') {
+		const {decodeHTMLStrict}: typeof import('entities') = require('entities');
+		return decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
+	}
+	/* istanbul ignore next */
+	return decodeHtmlBasic(str);
+};
 
 /** decode numbered HTML entities */
 export const decodeNumber = factory(

@@ -51,10 +51,14 @@ export const setChildNodes = (
 			? [...childNodes]
 			: childNodes as AstNodes[],
 		removed = nodes.splice(position, deleteCount, ...inserted);
-	parent.setAttribute('childNodes', nodes);
-	for (const node of inserted) {
+	for (let i = 0; i < inserted.length; i++) {
+		const node = inserted[i]!;
 		node.setAttribute('parentNode', parent);
+		node.setAttribute('nextSibling', nodes[position + i + 1]);
+		node.setAttribute('previousSibling', nodes[position + i - 1]);
 	}
+	nodes[position - 1]?.setAttribute('nextSibling', nodes[position]);
+	nodes[position + inserted.length]?.setAttribute('previousSibling', nodes[position + inserted.length - 1]);
 	return removed;
 };
 

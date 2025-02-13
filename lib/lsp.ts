@@ -1,6 +1,5 @@
 import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
-import {typeError} from '../util/debug';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
 import Parser from '../index';
@@ -167,15 +166,17 @@ const elementFromPoint = (root: Token, pos: Position): Token => {
 	let offset = root.indexFromPos(line, character)!,
 		node = root;
 	while (true) { // eslint-disable-line no-constant-condition
-		// eslint-disable-next-line @typescript-eslint/no-loop-func
-		const child = node.childNodes.find(ch => {
+		let child: AstNodes | undefined;
+		for (const ch of node.childNodes) {
 			const i = ch.getRelativeIndex();
-			if (i < offset && i + ch.toString().length >= offset) {
+			if (i >= offset) {
+				break;
+			} else if (i + ch.toString().length >= offset) {
+				child = ch;
 				offset -= i;
-				return true;
+				break;
 			}
-			return false;
-		});
+		}
 		if (!child || child.type === 'text') {
 			break;
 		}
@@ -291,10 +292,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 否则开始新的解析
 	 */
 	async #queue(text: string): Promise<Token> {
-		/* istanbul ignore if */
-		if (typeof text !== 'string') {
-			return typeError(this.constructor, 'queue', 'String');
-		}
 		text = text.replace(/\r$/gmu, '');
 		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
