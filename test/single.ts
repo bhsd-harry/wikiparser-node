@@ -16,6 +16,7 @@ export const single = async (
 	Parser: Parser,
 	{pageid, title, ns, content}: SimplePage,
 ): Promise<LintError[] | void> => { // eslint-disable-line @typescript-eslint/no-invalid-void-type
+	console.log();
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));

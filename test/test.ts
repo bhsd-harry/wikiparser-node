@@ -33,7 +33,8 @@ describe('API tests', () => {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
 					if (
-						!first.endsWith(' (main)') && !/^\/\/ (?:print|json)(?!\S)/u.test(first)
+						!first.endsWith(' (browser)')
+						&& !first.endsWith(' (main)') && !/^\/\/ (?:print|json)(?!\S)/u.test(first)
 					) {
 						it(first.slice(3), async () => {
 							try {
