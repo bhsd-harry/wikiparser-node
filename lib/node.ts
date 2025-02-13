@@ -43,6 +43,8 @@ export abstract class AstNode implements AstNodeBase {
 	declare data?: string | undefined;
 	readonly childNodes: readonly AstNodes[] = [];
 	#parentNode: Token | undefined;
+	#nextSibling: AstNodes | undefined;
+	#previousSibling: AstNodes | undefined;
 
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
@@ -69,14 +71,12 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 后一个兄弟节点 */
 	get nextSibling(): AstNodes | undefined {
-		const childNodes = this.parentNode?.childNodes;
-		return childNodes?.[childNodes.indexOf(this as AstNode as AstNodes) + 1];
+		return this.#nextSibling;
 	}
 
 	/** 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
-		const childNodes = this.parentNode?.childNodes;
-		return childNodes?.[childNodes.indexOf(this as AstNode as AstNodes) - 1];
+		return this.#previousSibling;
 	}
 
 	/** 行数 */
@@ -96,10 +96,22 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
-		if (key === 'parentNode') {
-			this.#parentNode = value as TokenAttribute<'parentNode'>;
-		} else {
-			this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+		switch (key) {
+			case 'parentNode':
+				this.#parentNode = value as TokenAttribute<'parentNode'>;
+				if (!value) {
+					this.#nextSibling = undefined;
+					this.#previousSibling = undefined;
+				}
+				break;
+			case 'nextSibling':
+				this.#nextSibling = value as TokenAttribute<'nextSibling'>;
+				break;
+			case 'previousSibling':
+				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
+				break;
+			default:
+				this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
 	}
 
