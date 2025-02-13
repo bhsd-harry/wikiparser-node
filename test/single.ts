@@ -1,5 +1,5 @@
 import {diff, error} from '../util/diff';
-import type {Parser, LintError} from '../base';
+import type {Parser, LintError, LanguageService} from '../base';
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
@@ -14,11 +14,11 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.content 页面源代码
  * @param html 是否渲染HTML
  */
-export const single = (
+export const single = async (
 	Parser: Parser,
 	{pageid, title, ns, content}: SimplePage,
 	html = true,
-): LintError[] | Promise<void> => {
+): Promise<LintError[] | void> => { // eslint-disable-line @typescript-eslint/no-invalid-void-type
 	/* NOT FOR BROWSER */
 
 	Parser.viewOnly = true;
@@ -54,6 +54,19 @@ export const single = (
 	if (restored !== content) {
 		error('高亮过程中不可逆地修改了原始文本！');
 		return diff(content, restored, pageid);
+	}
+
+	const lsp = Parser.createLanguageService({}),
+		pos = {line: 0, character: 1};
+	await lsp.provideDiagnostics(content, false);
+	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype)) {
+		if (method !== 'constructor' && method !== 'destroy') {
+			try {
+				console.time(`${method}: ${title}`);
+				await (lsp[method as keyof LanguageService] as Function)(content, pos, 'x');
+				console.timeEnd(`${method}: ${title}`);
+			} catch {}
+		}
 	}
 
 	/* NOT FOR BROWSER */

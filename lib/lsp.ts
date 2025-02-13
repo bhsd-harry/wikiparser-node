@@ -173,15 +173,17 @@ const elementFromPoint = (root: Token, pos: Position): Token => {
 	let offset = root.indexFromPos(line, character)!,
 		node = root;
 	while (true) { // eslint-disable-line no-constant-condition
-		// eslint-disable-next-line @typescript-eslint/no-loop-func
-		const child = node.childNodes.find(ch => {
+		let child: AstNodes | undefined;
+		for (const ch of node.childNodes) {
 			const i = ch.getRelativeIndex();
-			if (i < offset && i + ch.toString().length >= offset) {
+			if (i >= offset) {
+				break;
+			} else if (i + ch.toString().length >= offset) {
+				child = ch;
 				offset -= i;
-				return true;
+				break;
 			}
-			return false;
-		});
+		}
 		if (!child || child.type === 'text') {
 			break;
 		}
