@@ -119,6 +119,7 @@ module.exports = {
 			globals: {
 				assert: 'readonly',
 				Parser: 'readonly',
+				wikiparse: 'readonly',
 			},
 			rules: {
 				'no-var': 0,

@@ -25,6 +25,7 @@ export const single = async (
 
 	/* NOT FOR BROWSER END */
 
+	console.log();
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
@@ -56,18 +57,6 @@ export const single = async (
 		return diff(content, restored, pageid);
 	}
 
-	const lsp = Parser.createLanguageService({});
-	await lsp.provideDiagnostics(content, false);
-	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype)) {
-		if (method !== 'constructor' && method !== 'destroy') {
-			try {
-				console.time(`${method}: ${title}`);
-				await (lsp[method as keyof LanguageService] as Function)(content);
-				console.timeEnd(`${method}: ${title}`);
-			} catch {}
-		}
-	}
-
 	/* NOT FOR BROWSER */
 
 	if (html) {
@@ -82,6 +71,18 @@ export const single = async (
 	}
 
 	/* NOT FOR BROWSER END */
+
+	const lsp = Parser.createLanguageService({});
+	await lsp.provideDiagnostics(content, false);
+	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype)) {
+		if (method !== 'constructor' && method !== 'destroy') {
+			try {
+				console.time(`${method}: ${title}`);
+				await (lsp[method as keyof LanguageService] as Function)(content);
+				console.timeEnd(`${method}: ${title}`);
+			} catch {}
+		}
+	}
 
 	console.time(`lint: ${title}`);
 	const errors = token.lint().filter(({rule}) => !ignored.has(rule));
