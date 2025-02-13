@@ -1,25 +1,24 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import {Worker} from 'worker_threads';
-import type {MessagePort} from 'worker_threads';
 import type {} from '../extensions/typings';
 
 export const mock = {} as {worker: Worker};
 
-let parentPort: MessagePort,
-	self: {onmessage(arg: {data: unknown}): void};
 const src = './extensions/dist/base.js',
 	head = (): void => {
-		({parentPort} = require('worker_threads'));
-		self = {
-			onmessage(): void {
-				//
-			},
-		};
-		parentPort.on('message', (message: unknown) => {
+		/* eslint-disable @typescript-eslint/no-unused-vars */
+		const {parentPort}: typeof import('worker_threads') = require('worker_threads');
+		const importScripts = require,
+			postMessage = parentPort!.postMessage.bind(parentPort),
+			self = {
+				onmessage(msg: {data: unknown}): void {
+					//
+				},
+			};
+		/* eslint-enable @typescript-eslint/no-unused-vars */
+		parentPort!.on('message', (message: unknown) => {
 			self.onmessage({data: message});
 		});
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const postMessage = parentPort.postMessage.bind(parentPort);
 	},
 	listeners = new WeakMap<Function, (msg: unknown) => void>();
 
@@ -30,7 +29,7 @@ class MockWorker {
 		this.worker = (async () => {
 			const blob = await (await fetch(url)).blob(); // eslint-disable-line n/no-unsupported-features/node-builtins
 			mock.worker = new Worker(
-				String(head).slice(8, -2) + (await blob.text()).replaceAll('importScripts(', 'require('),
+				String(head).replace(/^\(\)\s*=>\s*\{|\}$/gu, '') + await blob.text(),
 				{eval: true},
 			);
 			return mock.worker;

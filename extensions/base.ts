@@ -68,7 +68,7 @@ const workerJS = (): void => {
 
 	/** @implements */
 	self.onmessage = ({data}: {
-		data: ['setI18N', Record<string, string>]
+		data: ['setI18N', Record<string, string>?]
 			| ['setConfig', Config]
 			| ['getConfig' | 'destroy', number]
 			| ['data', number, SignatureData]
@@ -229,7 +229,7 @@ const getListener = <T>(qid: number, resolve: (res: T) => void, raw?: string): W
  * 更新I18N消息
  * @param i18n I18N消息
  */
-const setI18N = (i18n: Record<string, string>): void => {
+const setI18N = (i18n?: Record<string, string>): void => {
 	worker.postMessage(['setI18N', i18n]);
 };
 

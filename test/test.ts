@@ -33,6 +33,7 @@ describe('API tests', () => {
 						// @ts-expect-error delete readonly property
 						delete Parser.config.articlePath;
 					}
+					wikiparse.setI18N();
 				});
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
