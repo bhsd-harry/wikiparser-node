@@ -239,6 +239,7 @@ const setI18N = (i18n: Record<string, string>): void => {
  */
 const setConfig = (config: Config): void => {
 	worker.postMessage(['setConfig', config]);
+	wikiparse.config = config;
 };
 
 /**
@@ -436,6 +437,7 @@ const wikiparse: Wikiparse = {
 	version,
 	CDN,
 	id: 0,
+	config: {} as Config,
 	setI18N,
 	setConfig,
 	getConfig,

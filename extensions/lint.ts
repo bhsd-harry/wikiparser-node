@@ -1,10 +1,12 @@
-import type {LintError, Diagnostic, Action, LinterBase, editor} from './typings';
+import type {Config, LintError, Diagnostic, Action, LinterBase, editor} from './typings';
 
 /** 用于语法分析 */
 class Linter implements LinterBase {
 	readonly #id;
 	#wikitext: string;
 	#running: Promise<LintError[]> | undefined;
+	#done: LintError[];
+	#config: Config;
 	include;
 
 	/** @param include 是否嵌入 */
@@ -21,7 +23,10 @@ class Linter implements LinterBase {
 	 * - 如果已有进行中的分析，则返回该分析的结果
 	 * - 否则开始新的分析
 	 */
-	queue(wikitext: string): Promise<LintError[]> {
+	async queue(wikitext: string): Promise<LintError[]> {
+		if (this.#wikitext === wikitext && this.#config === wikiparse.config && !this.#running) {
+			return this.#done;
+		}
 		this.#wikitext = wikitext;
 		this.#running ??= this.#lint(wikitext);
 		return this.#running;
@@ -35,10 +40,12 @@ class Linter implements LinterBase {
 	 * - 总是返回最新的分析结果
 	 */
 	async #lint(wikitext: string): Promise<LintError[]> {
+		this.#config = wikiparse.config;
 		const {include} = this,
 			errors = await wikiparse.lint(wikitext, include, this.#id);
-		if (this.include === include && this.#wikitext === wikitext) {
+		if (this.include === include && this.#wikitext === wikitext && this.#config === wikiparse.config) {
 			this.#running = undefined;
+			this.#done = errors;
 			return errors;
 		}
 		this.#running = this.#lint(this.#wikitext);

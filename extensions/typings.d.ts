@@ -1,6 +1,8 @@
-import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
 import type {
 	Diagnostic,
+
+	/* NOT EXPORTED */
+
 	Action,
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
@@ -8,6 +10,9 @@ import type {CodeJar} from 'codejar-async';
 import type {
 	ColorInformation,
 	ColorPresentation,
+
+	/* NOT EXPORTED */
+
 	Position,
 	FoldingRange,
 	DocumentLink,
@@ -21,6 +26,10 @@ import type {
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 import type {Config, LintError, AST, LanguageService, CompletionItem, SignatureData, Parser} from '../base';
+
+/* NOT EXPORTED */
+
+import {CodeMirror6} from '@bhsd/codemirror-mediawiki';
 
 export type {
 	AST,
@@ -46,6 +55,8 @@ export type {
 	SignatureHelp,
 	InlayHint,
 };
+
+/* NOT EXPORTED END */
 
 export interface PrinterBase {
 	include: boolean;
@@ -74,7 +85,6 @@ export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocum
 export interface wikiparse {
 	version: string;
 	CDN: string;
-	id: number;
 	setI18N: (i18n: Record<string, string>) => void;
 	setConfig: (config: Config) => void;
 	getConfig: () => Promise<Config>;
@@ -88,11 +98,19 @@ export interface wikiparse {
 	Printer?: new (preview: HTMLDivElement, textbox: HTMLTextAreaElement, include?: boolean) => PrinterBase;
 	Linter?: new (include?: boolean) => LinterBase;
 	LanguageService?: new () => LanguageServiceBase;
+
+	/* NOT EXPORTED */
+
+	id: number;
+	config: Config;
 	provide: (command: string, qid: number, ...args: unknown[]) => Promise<unknown>;
 }
 /* eslint-enable @typescript-eslint/method-signature-style */
 
 declare global {
+
+	/* NOT EXPORTED */
+
 	module '/*' {
 		/** @see https://www.npmjs.com/package/@bhsd/codemirror-mediawiki */
 		export {CodeMirror6};
@@ -106,5 +124,8 @@ declare global {
 	type MonacoEditor = typeof editor;
 
 	const Parser: Parser;
+
+	/* NOT EXPORTED END */
+
 	const wikiparse: wikiparse;
 }

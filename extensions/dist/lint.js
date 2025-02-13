@@ -12,6 +12,7 @@ var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (
 };
 var _Linter_instances, _Linter_id, _Linter_wikitext, _Linter_running, _Linter_lint;
 class Linter {
+    count = 0;
     constructor(include) {
         _Linter_instances.add(this);
         _Linter_id.set(this, void 0);
@@ -61,6 +62,7 @@ class Linter {
 }
 _Linter_id = new WeakMap(), _Linter_wikitext = new WeakMap(), _Linter_running = new WeakMap(), _Linter_instances = new WeakSet(), _Linter_lint = async function _Linter_lint(wikitext) {
     const { include } = this, errors = await wikiparse.lint(wikitext, include, __classPrivateFieldGet(this, _Linter_id, "f"));
+    this.count++;
     if (this.include === include && __classPrivateFieldGet(this, _Linter_wikitext, "f") === wikitext) {
         __classPrivateFieldSet(this, _Linter_running, undefined, "f");
         return errors;
