@@ -23,6 +23,7 @@ import type {
 	InlayHint,
 } from 'vscode-languageserver-types';
 import type {
+	Config,
 	TokenTypes,
 	LanguageService as LanguageServiceBase,
 	CompletionItem,
@@ -239,7 +240,8 @@ const getName = (token: Token): string | number | undefined => {
 export class LanguageService implements LanguageServiceBase {
 	#text: string;
 	#running: Promise<Token> | undefined;
-	#done: Token | undefined;
+	#done: Token;
+	#config: Config | string;
 	#completionConfig: CompletionConfig | undefined;
 	#signature?: boolean;
 	/** @private */
@@ -267,10 +269,12 @@ export class LanguageService implements LanguageServiceBase {
 		/* istanbul ignore if */
 		if (typeof text !== 'string') {
 			return typeError(this.constructor, 'queue', 'String');
-		} else if (this.#text === text && !this.#running && this.#done) {
+		}
+		text = text.replace(/\r$/gmu, '');
+		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
 		}
-		this.#text = text.replace(/\r$/gmu, '');
+		this.#text = text;
 		this.#running ??= this.#parse(); // 不要提交多个解析任务
 		return this.#running;
 	}
@@ -284,9 +288,11 @@ export class LanguageService implements LanguageServiceBase {
 	async #parse(): Promise<Token> {
 		return new Promise(resolve => {
 			(typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout)(() => {
+				const config = Parser.getConfig();
+				this.#config = Parser.config;
 				const text = this.#text,
-					root = Parser.parse(text, true);
-				if (this.#text === text) {
+					root = Parser.parse(text, true, undefined, config);
+				if (this.#text === text && this.#config === Parser.config) {
 					this.#done = root;
 					this.#running = undefined;
 					resolve(root);

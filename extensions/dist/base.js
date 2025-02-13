@@ -159,6 +159,7 @@ const setI18N = (i18n) => {
 };
 const setConfig = (config) => {
     worker.postMessage(['setConfig', config]);
+    wikiparse.config = config;
 };
 const getFeedback = (command, qid, strict, raw, ...args) => new Promise(resolve => {
     worker.addEventListener('message', getListener(qid, resolve, strict ? raw : undefined));
@@ -271,6 +272,7 @@ const wikiparse = {
     version,
     CDN,
     id: 0,
+    config: {},
     setI18N,
     setConfig,
     getConfig,
