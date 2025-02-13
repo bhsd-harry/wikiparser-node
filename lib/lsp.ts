@@ -1,6 +1,5 @@
 import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
-import {typeError} from '../util/debug';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
 import Parser from '../index';
@@ -28,6 +27,7 @@ import type {
 	CodeAction,
 } from 'vscode-languageserver-types';
 import type {
+	Config,
 	TokenTypes,
 	LanguageService as LanguageServiceBase,
 	CompletionItem,
@@ -166,15 +166,17 @@ const elementFromPoint = (root: Token, pos: Position): Token => {
 	let offset = root.indexFromPos(line, character)!,
 		node = root;
 	while (true) { // eslint-disable-line no-constant-condition
-		// eslint-disable-next-line @typescript-eslint/no-loop-func
-		const child = node.childNodes.find(ch => {
+		let child: AstNodes | undefined;
+		for (const ch of node.childNodes) {
 			const i = ch.getRelativeIndex();
-			if (i < offset && i + ch.toString().length >= offset) {
+			if (i >= offset) {
+				break;
+			} else if (i + ch.toString().length >= offset) {
+				child = ch;
 				offset -= i;
-				return true;
+				break;
 			}
-			return false;
-		});
+		}
 		if (!child || child.type === 'text') {
 			break;
 		}
@@ -260,7 +262,8 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], lin
 export class LanguageService implements LanguageServiceBase {
 	#text: string;
 	#running: Promise<Token> | undefined;
-	#done: Token | undefined;
+	#done: Token;
+	#config: Config | string;
 	#completionConfig: CompletionConfig | undefined;
 	#signature?: boolean;
 	/** @private */
@@ -289,13 +292,11 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 否则开始新的解析
 	 */
 	async #queue(text: string): Promise<Token> {
-		/* istanbul ignore if */
-		if (typeof text !== 'string') {
-			return typeError(this.constructor, 'queue', 'String');
-		} else if (this.#text === text && !this.#running && this.#done) {
+		text = text.replace(/\r$/gmu, '');
+		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
 		}
-		this.#text = text.replace(/\r$/gmu, '');
+		this.#text = text;
 		this.#running ??= this.#parse(); // 不要提交多个解析任务
 		return this.#running;
 	}
@@ -309,9 +310,11 @@ export class LanguageService implements LanguageServiceBase {
 	async #parse(): Promise<Token> {
 		return new Promise(resolve => {
 			(typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout)(() => {
+				const config = Parser.getConfig();
+				this.#config = Parser.config;
 				const text = this.#text,
-					root = Parser.parse(text, true);
-				if (this.#text === text) {
+					root = Parser.parse(text, true, undefined, config);
+				if (this.#text === text && this.#config === Parser.config) {
 					this.#done = root;
 					this.#running = undefined;
 					resolve(root);
