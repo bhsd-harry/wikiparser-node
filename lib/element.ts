@@ -112,12 +112,19 @@ export abstract class AstElement extends AstNode {
 		 * @param i 移除位置
 		 */
 		const remove = (i: number): void => {
+			/* NOT FOR BROWSER */
+
 			childNodes[i]!.setAttribute('parentNode', undefined);
+
+			/* NOT FOR BROWSER END */
+
 			childNodes.splice(i, 1);
+			childNodes[i - 1]?.setAttribute('nextSibling', childNodes[i]);
+			childNodes[i]?.setAttribute('previousSibling', childNodes[i - 1]);
 		};
 		for (let i = childNodes.length - 1; i >= 0; i--) {
 			const {type, data} = childNodes[i]!;
-			if (type !== 'text' || this.getGaps(i - 1)) {
+			if (type !== 'text' || childNodes.length === 1 || this.getGaps(i - (i && 1))) {
 				//
 			} else if (data === '') {
 				remove(i);

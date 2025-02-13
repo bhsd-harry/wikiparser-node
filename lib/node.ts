@@ -57,6 +57,8 @@ export abstract class AstNode implements AstNodeBase {
 	declare data?: string | undefined;
 	readonly childNodes: readonly AstNodes[] = [];
 	#parentNode: Token | undefined;
+	#nextSibling: AstNodes | undefined;
+	#previousSibling: AstNodes | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -90,14 +92,12 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 后一个兄弟节点 */
 	get nextSibling(): AstNodes | undefined {
-		const childNodes = this.parentNode?.childNodes;
-		return childNodes?.[childNodes.indexOf(this as AstNode as AstNodes) + 1];
+		return this.#nextSibling;
 	}
 
 	/** 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
-		const childNodes = this.parentNode?.childNodes;
-		return childNodes?.[childNodes.indexOf(this as AstNode as AstNodes) - 1];
+		return this.#previousSibling;
 	}
 
 	/** 行数 */
@@ -229,25 +229,41 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** @private */
 	setAttribute<T extends string>(key: T, value: TokenAttribute<T>): void {
-		if (key === 'parentNode') {
-			this.#parentNode = value as TokenAttribute<'parentNode'>;
+		switch (key) {
+			case 'parentNode':
+				this.#parentNode = value as TokenAttribute<'parentNode'>;
+				if (!value) {
+					this.#nextSibling = undefined;
+					this.#previousSibling = undefined;
+				}
+				break;
+			case 'nextSibling':
+				this.#nextSibling = value as TokenAttribute<'nextSibling'>;
+				break;
+			case 'previousSibling':
+				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
+				break;
+			default:
 
-			/* NOT FOR BROWSER */
-		} else if (Object.hasOwn(this, key)) {
-			const descriptor = Object.getOwnPropertyDescriptor(this, key)!;
-			if (this.#optional.has(key)) {
-				descriptor.enumerable = Boolean(value);
-			}
-			const oldValue = this[key as keyof this],
-				frozen = typeof oldValue === 'object' && Object.isFrozen(oldValue);
-			Object.defineProperty(this, key, {...descriptor, value});
-			if (frozen && typeof value === 'object') {
-				Object.freeze(value);
-			}
+				/* NOT FOR BROWSER */
 
-			/* NOT FOR BROWSER END */
-		} else {
-			this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
+				if (Object.hasOwn(this, key)) {
+					const descriptor = Object.getOwnPropertyDescriptor(this, key)!;
+					if (this.#optional.has(key)) {
+						descriptor.enumerable = Boolean(value);
+					}
+					const oldValue = this[key as keyof this],
+						frozen = typeof oldValue === 'object' && Object.isFrozen(oldValue);
+					Object.defineProperty(this, key, {...descriptor, value});
+					if (frozen && typeof value === 'object') {
+						Object.freeze(value);
+					}
+					return;
+				}
+
+				/* NOT FOR BROWSER END */
+
+				this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
 	}
 

@@ -56,19 +56,25 @@ export const setChildNodes = (
 	deleteCount: number,
 	inserted: readonly AstNodes[] = [],
 ): AstNodes[] => {
+	const Parser = require('../index') as Parser;
 	const {childNodes} = parent,
 		nodes = Object.isFrozen(childNodes)
-			|| !(require('../index') as Parser).viewOnly
+			|| !Parser.viewOnly
 			? [...childNodes]
 			: childNodes as AstNodes[],
 		removed = nodes.splice(position, deleteCount, ...inserted);
-	parent.setAttribute('childNodes', nodes);
-	for (const node of inserted) {
+	for (let i = 0; i < inserted.length; i++) {
+		const node = inserted[i]!;
 		node.setAttribute('parentNode', parent);
+		node.setAttribute('nextSibling', nodes[position + i + 1]);
+		node.setAttribute('previousSibling', nodes[position + i - 1]);
 	}
+	nodes[position - 1]?.setAttribute('nextSibling', nodes[position]);
+	nodes[position + inserted.length]?.setAttribute('previousSibling', nodes[position + inserted.length - 1]);
 
 	/* NOT FOR BROWSER */
 
+	parent.setAttribute('childNodes', nodes);
 	for (const node of removed) {
 		node.setAttribute('parentNode', undefined);
 	}

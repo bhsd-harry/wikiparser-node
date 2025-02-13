@@ -18,6 +18,7 @@ declare global {
 		T extends 'config' ? Config :
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :
+		T extends 'nextSibling' | 'previousSibling' ? AstNodes | undefined :
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' | 'plain' | 'built' ? boolean :
 		T extends 'title' ? Title :

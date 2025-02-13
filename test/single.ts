@@ -56,14 +56,13 @@ export const single = async (
 		return diff(content, restored, pageid);
 	}
 
-	const lsp = Parser.createLanguageService({}),
-		pos = {line: 0, character: 1};
+	const lsp = Parser.createLanguageService({});
 	await lsp.provideDiagnostics(content, false);
 	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype)) {
 		if (method !== 'constructor' && method !== 'destroy') {
 			try {
 				console.time(`${method}: ${title}`);
-				await (lsp[method as keyof LanguageService] as Function)(content, pos, 'x');
+				await (lsp[method as keyof LanguageService] as Function)(content);
 				console.timeEnd(`${method}: ${title}`);
 			} catch {}
 		}

@@ -1,6 +1,5 @@
 import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
-import {typeError} from '../util/debug';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
 import Parser from '../index';
@@ -299,10 +298,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 否则开始新的解析
 	 */
 	async #queue(text: string): Promise<Token> {
-		/* istanbul ignore if */
-		if (typeof text !== 'string') {
-			return typeError(this.constructor, 'queue', 'String');
-		}
 		text = text.replace(/\r$/gmu, '');
 		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
