@@ -1,10 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
+import {mock} from './wikiparse';
 import type {Parser as ParserBase} from '../base';
 
 declare const Parser: ParserBase;
 Parser.config = require('../../config/default');
+wikiparse.setConfig(Parser.config);
 
 /**
  * Mock CRLF
@@ -59,3 +61,7 @@ describe('API tests', () => {
 		}
 	}
 });
+
+setTimeout(() => {
+	void mock.worker.terminate();
+}, 1000);
