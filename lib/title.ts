@@ -245,7 +245,9 @@ export class Title {
 		}
 		const redirected = this.redirects.get(title);
 		if (redirected) {
-			[title, this.#redirectFragment] = redirected.split('#', 2) as [string, string?];
+			const hash = redirected.indexOf('#');
+			title = hash === -1 ? redirected : redirected.slice(0, hash);
+			this.#redirectFragment = hash === -1 ? undefined : redirected.slice(hash + 1);
 			return media ? title.replace(/^File:/u, 'Media:') : title;
 		}
 		return '';

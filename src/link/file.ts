@@ -162,8 +162,7 @@ export abstract class FileToken extends LinkBaseToken {
 		/* NOT FOR BROWSER END */
 
 		const {extension} = this.getTitle(true);
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/-\{|\}-|\|/gu;
+		/-\{|\}-|\|/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class
 			(part): ImageParameterToken => new ImageParameterToken(part, extension, config, accum),

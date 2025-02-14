@@ -60,8 +60,7 @@ export abstract class RedirectToken extends Token {
 		super(undefined, config, accum);
 		this.#pre = pre;
 		this.#post = post;
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/^(?:#redirect|#重定向)\s*(?::\s*)?$/iu;
+		/^(?:#redirect|#重定向)\s*(?::\s*)?$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		const pattern = new RegExp(String.raw`^(?:${config.redirection.join('|')})\s*(?::\s*)?$`, 'iu');
 		this.append(
 			new SyntaxToken(syntax, pattern, 'redirect-syntax', config, accum, {

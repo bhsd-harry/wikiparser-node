@@ -23,8 +23,6 @@ Parser.warning = false;
 Parser.templateDir = './test/templates';
 Parser.redirects = Object.entries(redirects) as Iterable<[string, string]> as Map<string, string>;
 
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-/^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
 const tests: Test[] = [],
 	regex = {
 		html: /^!!\s*(html\b.*)$/mu,
@@ -38,8 +36,10 @@ const tests: Test[] = [],
 		'html/php+disabled',
 		'html/*',
 	]),
-	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu,
-	optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
+	re = /^!!\s*options(?:\n(?:parsoid=wt2html.*|(?:(?:subpage )?title|preprocessor|thumbsize)=.+|language=(?:en|zh) .*|cat|subpage|showindicators|djvu|showmedia|showtocdata))*\n!/mu;
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions
+/^(?:\n?(?:(?:parsoid|wgRawHtml)\s*=.+|parsoid|parsoid\s*=\s*\{\n[\s\S]+\n\}|# .*))+$/u;
+const optionRegex = new RegExp(String.raw`^(?:\n?(?:(?:${[
 		'parsoid',
 		'wgRawHtml',
 		'maxincludesize',

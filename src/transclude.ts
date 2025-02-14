@@ -120,9 +120,11 @@ export abstract class TranscludeToken extends Token {
 		}
 		const isFunction = title.includes(':');
 		if (isFunction || parts.length === 0 && !this.#raw) {
-			const [magicWord, ...arg] = title.split(':'),
-				cleaned = removeComment(magicWord!),
-				name = cleaned[arg.length > 0 ? 'trimStart' : 'trim'](),
+			const colon = title.indexOf(':'),
+				magicWord = colon === -1 ? title : title.slice(0, colon),
+				arg = colon === -1 ? undefined : title.slice(colon + 1),
+				cleaned = removeComment(magicWord),
+				name = cleaned[arg === undefined ? 'trim' : 'trimStart'](),
 				lcName = name.toLowerCase(),
 				isOldSchema = Array.isArray(sensitive),
 				isSensitive = isOldSchema
@@ -135,15 +137,14 @@ export abstract class TranscludeToken extends Token {
 			if (isVar || isFunction && canonicalName) {
 				this.setAttribute('name', canonicalName || lcName.replace(/^#/u, ''));
 				this.#type = 'magic-word';
-				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-				/^\s*uc\s*$/iu;
+				/^\s*uc\s*$/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 				const pattern = new RegExp(String.raw`^\s*${name}\s*$`, isSensitive ? 'u' : 'iu'),
 					token = new SyntaxToken(magicWord, pattern, 'magic-word-name', config, accum, {
 						'Stage-1': ':', '!ExtToken': '',
 					});
 				super.insertAt(token);
-				if (arg.length > 0) {
-					parts.unshift([arg.join(':')]);
+				if (arg !== undefined) {
+					parts.unshift([arg]);
 				}
 				if (this.name === 'invoke') {
 					/* NOT FOR BROWSER */

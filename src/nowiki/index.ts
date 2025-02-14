@@ -38,9 +38,9 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			e.fix = {range: [start, e.endIndex], text: '', desc: 'empty'};
 			return [e];
 		}
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/<\s*(?:\/\s*)?(nowiki)\b/giu;
-		return super.lint(start, new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu'));
+		/<\s*(?:\/\s*)?(nowiki)\b/giu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+		const re = new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu');
+		return super.lint(start, re);
 	}
 }
 

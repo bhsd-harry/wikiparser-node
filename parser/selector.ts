@@ -18,6 +18,21 @@ import {Title} from '../lib/title';
 import {Attributes} from '../lib/attributes';
 import type {AttributesParentBase} from '../mixin/attributesParent';
 
+/* NOT FOR BROWSER END */
+
+/**
+ * type和name选择器
+ * @param selector
+ * @param type
+ * @param name
+ */
+const basic = (selector: string, type: string, name?: string): boolean => {
+	const [t, ...names] = selector.split('#');
+	return (!t || t === type) && names.every(n => n === name);
+};
+
+/* NOT FOR BROWSER */
+
 const simplePseudos = new Set([
 		'root',
 		'first-child',
@@ -185,10 +200,8 @@ const matches = (
 					return isProtected(token) === false;
 				case ':scope':
 					return token === scope;
-				default: {
-					const [t, n] = selector.split('#');
-					return (!t || t === type) && (!n || n === name);
-				}
+				default:
+					return basic(selector, type, name);
 			}
 		} else if (selector.length === 4) { // 情形2：属性选择器
 			const [key, equal, val = '', i] = selector,
@@ -260,8 +273,7 @@ const matches = (
 				return childOrSibling.some(hasElement);
 			}
 			case 'lang': {
-				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-				/^zh(?:-|$)/iu;
+				/^zh(?:-|$)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 				const regex = new RegExp(`^${s}(?:-|$)`, 'iu');
 				let node: Token & Partial<AttributesParentBase> | undefined = token;
 				for (; node; node = node.parentNode) {
@@ -490,10 +502,7 @@ export const getCondition = <T>(selector: string, scope: AstElement, has?: Token
 	/* eslint-disable @stylistic/operator-linebreak */
 	/[^a-z\-,#]/u.test(selector) ?
 		checkToken(selector, scope, has) :
-		({type, name}): boolean => selector.split(',').some(str => {
-			const [t, ...ns] = str.trim().split('#');
-			return (!t || t === type) && ns.every(n => n === name);
-		})
+		({type, name}): boolean => selector.split(',').some(str => basic(str.trim(), type, name))
 /* eslint-enable @stylistic/operator-linebreak */
 ) as TokenPredicate<T>;
 

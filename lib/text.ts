@@ -28,17 +28,17 @@ import {font} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
-/* eslint-disable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
-/<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
-/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
-/* eslint-enable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
 const sp = String.raw`[${zs}\t]*`,
 	source =
 		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
-		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
-	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
-	errorSyntaxUrl = new RegExp(source, 'giu'),
+		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+/<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
+const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
+const errorSyntaxUrl = new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
 		'[': /[[\]]/u,

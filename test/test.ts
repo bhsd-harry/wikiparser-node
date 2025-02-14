@@ -71,7 +71,7 @@ describe('Documentation tests', () => {
 			const zhFile = file.slice(0, -5);
 			describe(zhFile, () => {
 				for (const [i, code] of allCodes.get(zhFile)!.entries()) {
-					it(code.split('\n')[0]!.slice(3), () => {
+					it(code.split('\n', 1)[0]!.slice(3), () => {
 						assert.strictEqual(code, enCodes[i], `${zhFile} is different from its English version`);
 					});
 				}

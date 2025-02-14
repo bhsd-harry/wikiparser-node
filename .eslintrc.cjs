@@ -59,6 +59,7 @@ module.exports = {
 			2,
 			{
 				ignoreRegExpLiterals: true,
+				ignoreComments: true,
 				code: 120,
 			},
 		],
@@ -132,6 +133,7 @@ module.exports = {
 						code: 80,
 					},
 				],
+				'n/no-unsupported-features/node-builtins': 0,
 			},
 		},
 		{

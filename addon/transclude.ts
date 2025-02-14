@@ -148,10 +148,9 @@ TranscludeToken.prototype.fixDuplication =
 				continue;
 			} else if (aggressive && (anonCount ? /\D\d+$/u : /(?:^|\D)\d+$/u).test(key)) {
 				let last: number;
-				// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-				/^a\d+$/u;
-				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0].length),
-					regex = new RegExp(String.raw`^${escapeRegExp(str)}\d+$`, 'u'),
+				const str = key.slice(0, -/(?<!\d)\d+$/u.exec(key)![0].length);
+				/^a\d+$/u; // eslint-disable-line @typescript-eslint/no-unused-expressions
+				const regex = new RegExp(String.raw`^${escapeRegExp(str)}\d+$`, 'u'),
 					series = this.getAllArgs().filter(({name}) => regex.test(name)),
 					ordered = series.every(({name}, i) => {
 						const j = Number(name.slice(str.length)),

@@ -47,6 +47,7 @@ import type {
 	LinkToken,
 	FileToken,
 	CategoryToken,
+	RedirectTargetToken,
 	ImageParameterToken,
 	TranscludeToken,
 } from '../internal';
@@ -410,26 +411,29 @@ export class LanguageService implements LanguageServiceBase {
 					img,
 				} = Parser.getConfig(),
 				tags = new Set([ext, html].flat(2));
+			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
+			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\d_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
+			const re = new RegExp(
+				'(?:' // eslint-disable-line prefer-template
+				+ String.raw`<\/?(\w*)` // tag
+				+ '|'
+				+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets
+				+ '|'
+				+ String.raw`(__(?:(?!__)[\p{L}\d_])*)` // behavior switch
+				+ '|'
+				+ String.raw`(?<!\[)\[([a-z:/]*)` // protocol
+				+ '|'
+				+ String.raw`\[\[\s*(?:${
+					Object.entries(nsid).filter(([, v]) => v === 6).map(([k]) => k).join('|')
+				})\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)` // image parameter
+				+ '|'
+				// attribute key
+				+ String.raw`<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*)`
+				+ ')$',
+				'iu',
+			);
 			this.#completionConfig = {
-				re: new RegExp(
-					'(?:' // eslint-disable-line prefer-template
-					+ String.raw`<\/?(\w+)` // tag
-					+ '|'
-					+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)` // braces and brackets
-					+ '|'
-					+ String.raw`(__(?:(?!__)[\p{L}\d_])+)` // behavior switch
-					+ '|'
-					+ String.raw`(?<!\[)\[([a-z:/]+)` // protocol
-					+ '|'
-					+ String.raw`\[\[\s*(?:${
-						Object.entries(nsid).filter(([, v]) => v === 6).map(([k]) => k).join('|')
-					})\s*:[^[\]{}<>]+\|([^[\]{}<>|=]+)` // image parameter
-					+ '|'
-					// attribute key
-					+ String.raw`<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w+)`
-					+ ')$',
-					'iu',
-				),
+				re,
 				ext,
 				tags,
 				allTags: [...tags, 'onlyinclude', 'includeonly', 'noinclude'],
@@ -456,50 +460,52 @@ export class LanguageService implements LanguageServiceBase {
 		this.#checkSignature();
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
-			mt = re.exec(text.split(/\r?\n/u)[line]?.slice(0, character) ?? '');
-		if (mt?.[1]) { // tag
+			mt = re.exec(text.split(/\r?\n/u, line + 1)[line]?.slice(0, character) ?? '');
+		if (mt?.[1] !== undefined) { // tag
 			return getCompletion(allTags, 'Class', mt[1], position);
 		} else if (mt?.[4]) { // behavior switch
 			return getCompletion(switches, 'Constant', mt[4], position);
-		} else if (mt?.[5]) { // protocol
+		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
 		const root = await this.#queue(text);
-		if (mt?.[2] === '{{{') { // argument
-			return getCompletion(
-				root.querySelectorAll<ArgToken>('arg').map(({name}) => name),
-				'Variable',
-				mt[3]!,
-				position,
-			);
-		} else if (mt?.[3]) { // parser function, template or link
-			const colon = mt[3].startsWith(':'),
-				str = colon ? mt[3].slice(1).trimStart() : mt[3];
-			if (mt[2] === '[[') {
+		if (mt?.[2]) {
+			const match = mt[3] ?? '';
+			if (mt[2] === '{{{') { // argument
 				return getCompletion(
-					root.querySelectorAll<LinkToken | FileToken | CategoryToken>('link,file,category')
-						.map(({name}) => name),
-					'Folder',
-					str,
+					root.querySelectorAll<ArgToken>('arg').map(({name}) => name).filter(Boolean),
+					'Variable',
+					match,
 					position,
 				);
 			}
-			return [
-				...getCompletion(functions, 'Function', mt[3], position),
-				...mt[3].startsWith('#')
-					? []
-					: getCompletion(
-						root.querySelectorAll<TranscludeToken>('template')
-							.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
-						'Folder',
-						str,
-						position,
-					),
-			];
+			const colon = match.startsWith(':'),
+				str = colon ? match.slice(1).trimStart() : match;
+			return mt[2] === '[['
+				? getCompletion( // link
+					root.querySelectorAll<LinkToken | FileToken | CategoryToken | RedirectTargetToken>(
+						'link,file,category,redirect-target',
+					).map(({name}) => name),
+					'Folder',
+					str,
+					position,
+				)
+				: [ // parser function or template
+					...getCompletion(functions, 'Function', match, position),
+					...match.startsWith('#')
+						? []
+						: getCompletion(
+							root.querySelectorAll<TranscludeToken>('template')
+								.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
+							'Folder',
+							str,
+							position,
+						),
+				];
 		}
 		const token = elementFromPoint(root, position),
 			{type, parentNode} = token;
-		if (mt?.[6]?.trim() || type === 'image-parameter') { // image parameter
+		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
 				?? this.#text.slice(
 					token.getAbsoluteIndex(),
@@ -514,13 +520,13 @@ export class LanguageService implements LanguageServiceBase {
 					position,
 				),
 			];
-		} else if (mt?.[7] || type === 'attr-key') { // attribute key
-			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag;
+		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
+			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
+				key = mt?.[9] ?? token.toString();
 			if (!tags.has(tag)) {
 				return undefined;
 			}
-			const key = mt?.[9] ?? token.toString(),
-				thisHtmlAttrs = htmlAttrs[tag],
+			const thisHtmlAttrs = htmlAttrs[tag],
 				thisExtAttrs = extAttrs[tag],
 				extCompletion = thisExtAttrs && getCompletion(thisExtAttrs, 'Field', key, position);
 			return ext.includes(tag) && !thisHtmlAttrs
@@ -540,15 +546,18 @@ export class LanguageService implements LanguageServiceBase {
 			(type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon)
 			&& parentNode!.parentNode!.type === 'template'
 		) { // parameter key
-			return getCompletion(
-				root.querySelectorAll<ParameterToken>('parameter').filter(
-					({anon, parentNode: parent}) => !anon && parent!.type === 'template'
-						&& parent!.name === parentNode!.parentNode!.name,
-				).map(({name}) => name),
-				'Variable',
-				token.toString().trimStart(),
-				position,
-			);
+			const key = token.toString().trimStart();
+			return key
+				? getCompletion(
+					root.querySelectorAll<ParameterToken>('parameter').filter(
+						({anon, parentNode: parent}) => !anon && parent!.type === 'template'
+							&& parent!.name === parentNode!.parentNode!.name,
+					).map(({name}) => name),
+					'Variable',
+					key,
+					position,
+				)
+				: undefined;
 		}
 		return undefined;
 	}
@@ -725,6 +734,7 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		this.#checkSignature();
+		/^(?:http:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 				+ 'image-parameter#link';
@@ -848,7 +858,7 @@ export class LanguageService implements LanguageServiceBase {
 					usage === 0
 						? !types.includes(type)
 						: !renameTypes.includes(type)
-							|| type === 'link-target' && ['link', 'redirect-target'].includes(node.parentNode!.type)
+							|| type === 'link-target' && !['link', 'redirect-target'].includes(node.parentNode!.type)
 				)
 			)
 		) {
@@ -858,10 +868,12 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		const name = getName(node),
 			refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(token => {
+				const {type: t, name: n, parentNode} = token.parentNode!;
 				if (usage === 1) {
-					const {name: n, parentNode} = token.parentNode as AttributeToken;
 					return getRefName(token) === refName
 						&& n === 'name' && (parentNode!.parentNode as ExtToken).innerText;
+				} else if (usage > 1 && type === 'link-target') {
+					return t === 'link' || t === 'redirect-target';
 				}
 				return type === 'attr-value'
 					? getRefName(token) === refName || getRefGroup(token) === refGroup
@@ -982,7 +994,7 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		this.#signature = true;
 		const {line, character} = position,
-			curLine = text.split(/\r?\n/u)[line]!,
+			curLine = text.split(/\r?\n/u, line + 1)[line]!,
 			{lastChild} = await this.#queue(
 				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
 			),

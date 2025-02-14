@@ -1,6 +1,6 @@
 ## v1.16.2
 
-*2025-02-12*
+*2025-02-15*
 
 **Added**
 
@@ -8,7 +8,8 @@
 
 **Fixed**
 
-- [`Language.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports warnings
+- [`LanguageService.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports warnings
+- [`LanguageService.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#resolverenamelocation) should ignore file and category links
 
 ## v1.16.1
 

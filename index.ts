@@ -412,12 +412,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/^(zh|en)\s*:/diu;
-		return interwiki.length > 0
-			? new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu')
-				.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''))
-			: null;
+		if (interwiki.length > 0) {
+			/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
+			const re = new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu');
+			return re.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
+		}
+		return null;
 	},
 
 	/* istanbul ignore next */

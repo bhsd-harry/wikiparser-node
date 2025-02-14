@@ -29,20 +29,20 @@ import type {SyntaxBase} from '../mixin/syntax';
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
+const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 /(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
-const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
-	spaceRegex = new RegExp(`${space}+`, 'gu');
+const spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /** NOT FOR BROWSER */
 
-/* eslint-disable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
+const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 /^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
+const isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u');
+// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
 /^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
-/* eslint-enable @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes */
-const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
-	isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u'),
-	rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
+const rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
 
 export interface MagicLinkToken extends SyntaxBase {}
 
@@ -137,8 +137,7 @@ export abstract class MagicLinkToken extends Token {
 		if (type === 'magic-link') {
 			pattern = url?.startsWith('ISBN') ? isbnPattern : rfcPattern;
 		} else {
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-			/^(ftp:\/\/|\/\/)/iu;
+			/^(ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 			pattern = new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
 		}
 		this.setAttribute('pattern', pattern);

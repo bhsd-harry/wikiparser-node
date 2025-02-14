@@ -22,8 +22,7 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
  * @param accum
  */
 export const parseLinks = (wikitext: string, config: Config, accum: Token[]): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/^\s*(?:ftp:\/\/|\/\/)/iu;
+	/^\s*(?:ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u

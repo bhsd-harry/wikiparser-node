@@ -1,5 +1,5 @@
 import {diff, error} from '../util/diff';
-import type {Parser, LintError, LanguageService} from '../base';
+import type {Parser, LintError} from '../base';
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
@@ -14,11 +14,11 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.content 页面源代码
  * @param html 是否渲染HTML
  */
-export const single = async (
+export default (
 	Parser: Parser,
 	{pageid, title, ns, content}: SimplePage,
 	html = true,
-): Promise<LintError[] | void> => { // eslint-disable-line @typescript-eslint/no-invalid-void-type
+): LintError[] | Promise<void> => {
 	/* NOT FOR BROWSER */
 
 	Parser.viewOnly = true;
@@ -71,18 +71,6 @@ export const single = async (
 	}
 
 	/* NOT FOR BROWSER END */
-
-	const lsp = Parser.createLanguageService({});
-	await lsp.provideDiagnostics(content, false);
-	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype)) {
-		if (method !== 'constructor' && method !== 'destroy') {
-			try {
-				console.time(`${method}: ${title}`);
-				await (lsp[method as keyof LanguageService] as Function)(content);
-				console.timeEnd(`${method}: ${title}`);
-			} catch {}
-		}
-	}
 
 	console.time(`lint: ${title}`);
 	const errors = token.lint().filter(({rule}) => !ignored.has(rule));

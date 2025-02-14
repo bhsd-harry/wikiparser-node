@@ -37,7 +37,7 @@ export interface LanguageServiceBase extends Omit<LanguageService, 'provideDocum
 export interface wikiparse {
 	version: string;
 	CDN: string;
-	setI18N: (i18n: Record<string, string>) => void;
+	setI18N: (i18n?: Record<string, string>) => void;
 	setConfig: (config: Config) => void;
 	getConfig: () => Promise<Config>;
 	json: (wikitext: string, include: boolean, qid?: number, stage?: number) => Promise<AST>;
