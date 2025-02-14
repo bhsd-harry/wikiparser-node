@@ -35,8 +35,8 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		return `\0${accum.length - 2}${marks.get(p1.toLowerCase()) ?? 't'}\x7F`;
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
-	let moreBraces = lastBraces + wikitext.length !== -1,
-		regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
+	let moreBraces = lastBraces + wikitext.length !== -1;
+	let regex = new RegExp(source + (moreBraces ? openBraces : ''), 'gmu'),
 		mt: BraceExecArray | null = regex.exec(wikitext),
 		lastIndex: number | undefined;
 	while (

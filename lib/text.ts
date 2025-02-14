@@ -15,9 +15,9 @@ const sp = String.raw`[${zs}\t]*`,
 	source =
 		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
-		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`,
-	errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu'),
-	errorSyntaxUrl = new RegExp(source, 'giu'),
+		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
+const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
+const errorSyntaxUrl = new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
 		'[': /[[\]]/u,

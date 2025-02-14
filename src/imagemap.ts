@@ -57,14 +57,15 @@ export abstract class ImagemapToken extends Token {
 			if (error || !trimmed || trimmed.startsWith('#')) {
 				//
 			} else if (first) {
-				const [file, ...options] = line.split('|') as [string, ...string[]],
+				const pipe = line.indexOf('|'),
+					file = pipe === -1 ? line : line.slice(0, pipe),
 					title = this.normalizeTitle(file, 0, true);
 				if (title.valid && !title.interwiki && title.ns === 6) {
 					// @ts-expect-error abstract class
 					const token: GalleryImageToken = new GalleryImageToken(
 						'imagemap',
 						file,
-						options.length > 0 ? options.join('|') : undefined,
+						pipe === -1 ? undefined : line.slice(pipe + 1),
 						config,
 						accum,
 					);
@@ -74,7 +75,7 @@ export abstract class ImagemapToken extends Token {
 				} else {
 					error = true;
 				}
-			} else if (line.trim().split(/[\t ]/u)[0] === 'desc') {
+			} else if (line.trim().split(/[\t ]/u, 1)[0] === 'desc') {
 				super.insertAt(line);
 				continue;
 			} else if (line.includes('[')) {

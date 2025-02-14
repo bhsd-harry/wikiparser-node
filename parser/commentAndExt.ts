@@ -60,17 +60,15 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	}
 	const ext = config.ext.join('|'),
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
-		includeRegex = includeOnly ? 'noinclude' : 'includeonly',
-
-		/** Never cached due to the possibility of nested extension tags */
-		regex = new RegExp(
-			String.raw`<!--[\s\S]*?(?:-->|$)|<${
-				noincludeRegex
-			}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
-				includeRegex
-			})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
-			'giu',
-		);
+		includeRegex = includeOnly ? 'noinclude' : 'includeonly';
+	const /** Never cached due to the possibility of nested extension tags */ regex = new RegExp(
+		String.raw`<!--[\s\S]*?(?:-->|$)|<${
+			noincludeRegex
+		}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
+			includeRegex
+		})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
+		'giu',
+	);
 	return wikitext.replace(
 		regex,
 		(

@@ -82,10 +82,10 @@ export abstract class NestedToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const rect = new BoundingRect(this, start),
-			noinclude = this.#regex ? 'includeonly' : 'noinclude',
-			regex = typeof this.#regex === 'boolean'
-				? new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu')
-				: /^<!--[\s\S]*-->$/u;
+			noinclude = this.#regex ? 'includeonly' : 'noinclude';
+		const regex = typeof this.#regex === 'boolean'
+			? new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu')
+			: /^<!--[\s\S]*-->$/u;
 		return [
 			...super.lint(start, re),
 			...this.childNodes.filter(child => {
