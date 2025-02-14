@@ -1,5 +1,5 @@
 import {diff, error} from '../util/diff';
-import type {Parser, LintError, LanguageService} from '../base';
+import type {Parser, LintError} from '../base';
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
@@ -13,10 +13,10 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export const single = async (
+export default (
 	Parser: Parser,
 	{pageid, title, ns, content}: SimplePage,
-): Promise<LintError[] | void> => { // eslint-disable-line @typescript-eslint/no-invalid-void-type
+): LintError[] | Promise<void> => {
 	console.log();
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
@@ -47,18 +47,6 @@ export const single = async (
 	if (restored !== content) {
 		error('高亮过程中不可逆地修改了原始文本！');
 		return diff(content, restored, pageid);
-	}
-
-	const lsp = Parser.createLanguageService({});
-	await lsp.provideDiagnostics(content, false);
-	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype)) {
-		if (method !== 'constructor' && method !== 'destroy') {
-			try {
-				console.time(`${method}: ${title}`);
-				await (lsp[method as keyof LanguageService] as Function)(content);
-				console.timeEnd(`${method}: ${title}`);
-			} catch {}
-		}
 	}
 
 	console.time(`lint: ${title}`);

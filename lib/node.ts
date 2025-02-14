@@ -130,8 +130,11 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param left 列号
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
-		const lines = String(this).split('\n');
-		return top >= 0 && left >= 0 && top <= lines.length - 1 && left <= lines[top]!.length
+		if (top < 0 || left < 0) {
+			return undefined;
+		}
+		const lines = String(this).split('\n', top + 2);
+		return top <= lines.length - 1 && left <= lines[top]!.length
 			? lines.slice(0, top).reduce((acc, cur) => acc + cur.length + 1, 0) + left
 			: undefined;
 	}

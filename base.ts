@@ -263,6 +263,12 @@ interface Token extends AstNode {
 	readonly name?: string;
 
 	/**
+	 * 符合选择器的第一个后代节点
+	 * @param selector 选择器
+	 */
+	querySelector<T = Token>(selector: TokenTypes): T | undefined;
+
+	/**
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
