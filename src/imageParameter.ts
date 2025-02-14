@@ -38,11 +38,11 @@ function validate(
 			if (!value) {
 				return val;
 			}
-			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu'),
-				re2 = new RegExp(
-					String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
-					'iu',
-				);
+			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu');
+			const re2 = new RegExp(
+				String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
+				'iu',
+			);
 			if (re1.test(value)) {
 				return re2.test(value) && val;
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
@@ -85,18 +85,15 @@ export abstract class ImageParameterToken extends Token {
 	/** @param str 图片参数 */
 	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum?: Token[]) {
 		let mt: [string, string, string, string?] | null;
-		const regexes = Object.entries(config.img).map(
-				([syntax, param]): [string, string, RegExp] => [
-					syntax,
-					param,
-					new RegExp(
-						String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
-							syntax.endsWith('$1') ? '(?=$|\n)' : ''
-						}(\s*)$`,
-						'u',
-					),
-				],
-			),
+		const regexes = Object.entries(config.img).map(([syntax, param]): [string, string, RegExp] => {
+				const re = new RegExp(
+					String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
+						syntax.endsWith('$1') ? '(?=$|\n)' : ''
+					}(\s*)$`,
+					'u',
+				);
+				return [syntax, param, re];
+			}),
 			param = regexes.find(([, key, regex]) => {
 				mt = regex.exec(str) as [string, string, string, string?] | null;
 				return mt

@@ -1,5 +1,6 @@
 import {error, info, diff} from '../util/diff';
-import {single} from './single';
+import single from './single';
+import lsp from './lsp';
 import Parser = require('../index');
 import type {
 	Config,
@@ -71,6 +72,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 						}
 						await diff(content, text, pageid);
 					}
+					await lsp(Parser, page);
 				} catch (e) {
 					error(`解析 ${title} 页面时出错！`, e);
 					failed++;

@@ -18,6 +18,7 @@ declare interface Coverage {
 // eslint-disable-next-line n/no-missing-require
 const {total: {statements: {pct}}}: Coverage = require('../../coverage/coverage-summary.json');
 const colors = ['#4c1', '#dfb317', '#e05d44'] as const;
+const re = new RegExp(colors.join('|'), 'u');
 let color: string;
 if (pct >= 80) {
 	[color] = colors;
@@ -27,5 +28,5 @@ if (pct >= 80) {
 	[,, color] = colors;
 }
 const svg = fs.readFileSync('coverage/badge.svg', 'utf8').replace(/\b\d{2}(?=%)/gu, String(Math.round(pct)))
-	.replace(new RegExp(colors.join('|'), 'u'), color);
+	.replace(re, color);
 fs.writeFileSync('coverage/badge.svg', svg);

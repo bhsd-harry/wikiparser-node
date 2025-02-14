@@ -14,8 +14,8 @@ import type {
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
-const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`,
-	spaceRegex = new RegExp(`${space}+`, 'gu');
+const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
+const spaceRegex = new RegExp(`${space}+`, 'gu');
 
 /**
  * 自由外链
