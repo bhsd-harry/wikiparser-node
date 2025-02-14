@@ -69,6 +69,7 @@ module.exports = {
 			2,
 			{
 				ignoreRegExpLiterals: true,
+				ignoreComments: true,
 				code: 120,
 			},
 		],

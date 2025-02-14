@@ -129,7 +129,7 @@ export abstract class HtmlToken extends Token {
 		} catch (e) {
 			if (e instanceof SyntaxError) {
 				const {message} = e;
-				const msg = message.split(':')[0]!.toLowerCase(),
+				const msg = message.split(':', 1)[0]!.toLowerCase(),
 					error = generateForSelf(this, rect, 'unmatched-tag', msg),
 					noSelfClosing: LintError.Fix = {
 						desc: 'no self-closing',

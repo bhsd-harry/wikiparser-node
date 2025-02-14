@@ -1,5 +1,5 @@
 import {error, info, diff} from '../util/diff';
-import {single} from './single';
+import single from './single';
 import '../../bundle/bundle.lsp.js'; // eslint-disable-line n/no-missing-import
 import type {
 	Config,

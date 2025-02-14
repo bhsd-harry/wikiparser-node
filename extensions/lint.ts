@@ -58,22 +58,21 @@ class Linter implements LinterBase {
 	 */
 	async codemirror(wikitext: string): Promise<Diagnostic[]> {
 		return (await this.queue(wikitext))
-			.map(({startIndex, endIndex, severity, message, rule, fix, suggestions = []}) => ({
+			.map(({startIndex, endIndex, severity, message, rule, fix, suggestions = []}): Diagnostic => ({
 				source: 'WikiLint',
 				from: startIndex,
 				to: endIndex,
 				severity,
-				rule,
 				message: `${message} (${rule})`,
 				actions: [
 					...fix ? [{name: `Fix: ${fix.desc}`, fix}] : [],
 					...suggestions.map(suggestion => ({name: `Suggestion: ${suggestion.desc}`, fix: suggestion})),
-				].map(({name, fix: {range: [from, to], text}}) => ({
+				].map(({name, fix: {range: [from, to], text}}): Action => ({
 					name,
 					/** @implements */ apply(view): void {
 						view.dispatch({changes: {from, to, insert: text}});
 					},
-				}) satisfies Action),
+				})),
 			}));
 	}
 
@@ -82,16 +81,17 @@ class Linter implements LinterBase {
 	 * @param wikitext 待分析的文本
 	 */
 	async monaco(wikitext: string): Promise<editor.IMarkerData[]> {
-		return (await this.queue(wikitext)).map(({startLine, startCol, endLine, endCol, severity, message, rule}) => ({
-			source: `WikiLint(${rule})`,
-			startLineNumber: startLine + 1,
-			startColumn: startCol + 1,
-			endLineNumber: endLine + 1,
-			endColumn: endCol + 1,
-			severity: severity === 'error' ? 8 : 4,
-			rule,
-			message,
-		}));
+		return (await this.queue(wikitext))
+			.map(({startLine, startCol, endLine, endCol, severity, message, rule}): editor.IMarkerData => ({
+				source: `WikiLint`,
+				startLineNumber: startLine + 1,
+				startColumn: startCol + 1,
+				endLineNumber: endLine + 1,
+				endColumn: endCol + 1,
+				severity: severity === 'error' ? 8 : 4,
+				code: rule,
+				message,
+			}));
 	}
 }
 
