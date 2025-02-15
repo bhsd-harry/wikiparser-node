@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import {Shadow} from '../util/debug';
+import {cache} from '../util/lint';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
+import type {Cached} from '../util/lint';
 import type {
 	AstText,
 	Token,
@@ -36,7 +37,9 @@ export abstract class AstNode implements AstNodeBase {
 	#parentNode: Token | undefined;
 	#nextSibling: AstNodes | undefined;
 	#previousSibling: AstNodes | undefined;
-	#lines: [number, [string, number, number][]] | undefined;
+	#lines: Cached<[string, number, number][]> | undefined;
+	#root: Cached<Token | this> | undefined;
+	#aIndex: Cached<number> | undefined;
 
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
@@ -108,11 +111,16 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 获取根节点 */
 	getRootNode(): Token | this {
-		let {parentNode} = this;
-		while (parentNode?.parentNode) {
-			({parentNode} = parentNode);
-		}
-		return parentNode ?? this;
+		return cache<Token | this>(
+			this.#root,
+			() => this.parentNode?.getRootNode() ?? this,
+			value => {
+				const [, root] = value;
+				if (root.type === 'root' && root.getAttribute('built')) {
+					this.#root = value;
+				}
+			},
+		);
 	}
 
 	/**
@@ -174,8 +182,16 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 获取当前节点的绝对位置 */
 	getAbsoluteIndex(): number {
-		const {parentNode} = this;
-		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
+		return cache<number>(
+			this.#aIndex,
+			() => {
+				const {parentNode} = this;
+				return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
+			},
+			value => {
+				this.#aIndex = value;
+			},
+		);
 	}
 
 	/** 获取当前节点的行列位置和大小 */
@@ -201,23 +217,21 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 获取所有行的wikitext和起止位置 */
 	getLines(): [string, number, number][] {
-		const {rev} = Shadow;
-		if (this.#lines && this.#lines[0] !== rev) {
-			this.#lines = undefined;
-		}
-		if (
-			this.#lines
-		) {
-			return this.#lines[1];
-		}
-		const results: [string, number, number][] = [];
-		let start = 0;
-		for (const line of String(this).split('\n')) {
-			const end = start + line.length;
-			results.push([line, start, end]);
-			start = end + 1;
-		}
-		this.#lines = [rev, results];
-		return results;
+		return cache<[string, number, number][]>(
+			this.#lines,
+			() => {
+				const results: [string, number, number][] = [];
+				let start = 0;
+				for (const line of String(this).split('\n')) {
+					const end = start + line.length;
+					results.push([line, start, end]);
+					start = end + 1;
+				}
+				return results;
+			},
+			value => {
+				this.#lines = value;
+			},
+		);
 	}
 }
