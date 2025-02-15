@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
+import {Shadow} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {
 	AstText,
@@ -205,7 +206,9 @@ export abstract class AstNode implements AstNodeBase {
 		if (this.#lines && this.#lines[0] !== rev) {
 			this.#lines = undefined;
 		}
-		if (Parser.viewOnly && this.#lines) {
+		if (
+			this.#lines
+		) {
 			return this.#lines[1];
 		}
 		const results: [string, number, number][] = [];
@@ -215,9 +218,7 @@ export abstract class AstNode implements AstNodeBase {
 			results.push([line, start, end]);
 			start = end + 1;
 		}
-		if (Parser.viewOnly) {
-			this.#lines = [rev, results];
-		}
+		this.#lines = [rev, results];
 		return results;
 	}
 }
