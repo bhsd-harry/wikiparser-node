@@ -79,6 +79,11 @@ declare interface Diagnostic extends DiagnosticBase {
 
 export const tasks = new WeakMap<object, LanguageService>();
 
+const refTags = new Set(['ref']),
+	referencesTags = new Set(['ref', 'references']),
+	nameAttrs = new Set(['name', 'extends', 'follow']),
+	groupAttrs = new Set(['group']);
+
 /**
  * Check if all child nodes are plain text or comments.
  * @param childNodes child nodes
@@ -168,68 +173,40 @@ const getUrl = (page: string, ns?: number): string => {
 };
 
 /**
- * Get the token at the position.
- * @param root root token
- * @param pos position
- */
-const elementFromPoint = (root: Token, pos: Position): Token => {
-	const {line, character} = pos;
-	let offset = root.indexFromPos(line, character)!,
-		node = root;
-	while (true) { // eslint-disable-line no-constant-condition
-		let child: AstNodes | undefined;
-		for (const ch of node.childNodes) {
-			const i = ch.getRelativeIndex();
-			if (i >= offset) {
-				break;
-			} else if (i + ch.toString().length >= offset) {
-				child = ch;
-				offset -= i;
-				break;
-			}
-		}
-		if (!child || child.type === 'text') {
-			break;
-		}
-		node = child;
-	}
-	return node;
-};
-
-/**
  * Get the token at the position from a word.
  * @param root root token
  * @param pos position
  */
 const elementFromWord = (root: Token, pos: Position): Token => {
 	const {line, character} = pos,
-		offset = Number(/[\w!]/u.test(root.toString().charAt(root.indexFromPos(line, character)!)));
-	return elementFromPoint(root, {line, character: character + offset});
+		index = root.indexFromPos(line, character)!,
+		offset = Number(/[\w!]/u.test(root.toString().charAt(index)));
+	return root.elementFromIndex(index + offset)!;
+};
+
+/**
+ * Get the attribute of a `<ref>` tag.
+ * @param token attribute token
+ * @param tags tag names
+ * @param names attribute names
+ */
+const getRefAttr = (token: Token, tags: Set<string>, names: Set<string>): string | number => {
+	const {type, parentNode = {}} = token,
+		{name, tag} = parentNode as AttributeToken;
+	return type === 'attr-value' && tags.has(tag) && names.has(name) ? token.toString().trim() : NaN;
 };
 
 /**
  * Get the `name` attribute of a `<ref>` tag.
  * @param token `name` attribute token
  */
-const getRefName = (token: Token): string | number => {
-	const {type, parentNode = {}} = token,
-		{name, tag} = parentNode as AttributeToken;
-	return type === 'attr-value' && tag === 'ref' && ['name', 'extends', 'follow'].includes(name)
-		? token.toString().trim()
-		: NaN;
-};
+const getRefName = (token: Token): string | number => getRefAttr(token, refTags, nameAttrs);
 
 /**
  * Get the `group` attribute of a `<ref>` or `<references>` tag.
  * @param token `group` attribute token
  */
-const getRefGroup = (token: Token): string | number => {
-	const {type, parentNode = {}} = token,
-		{name, tag} = parentNode as AttributeToken;
-	return type === 'attr-value' && name === 'group' && (tag === 'ref' || tag === 'references')
-		? token.toString().trim()
-		: NaN;
-};
+const getRefGroup = (token: Token): string | number => getRefAttr(token, referencesTags, groupAttrs);
 
 /**
  * Get the effective name of a token.
@@ -510,7 +487,7 @@ export class LanguageService implements LanguageServiceBase {
 						),
 				];
 		}
-		const token = elementFromPoint(root, position),
+		const token = root.elementFromPoint(character, line)!,
 			{type, parentNode} = token;
 		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
@@ -826,14 +803,7 @@ export class LanguageService implements LanguageServiceBase {
 	async #provideReferencesOrDefinition(
 		text: string,
 		position: Position,
-		usage: 3,
-		newName: string,
-	): Promise<WorkspaceEdit | undefined>;
-	async #provideReferencesOrDefinition(
-		text: string,
-		position: Position,
-		usage: 0 | 1 | 2 | 3,
-		newName?: string,
+		usage: 0 | 1 | 2,
 	): Promise<Omit<Location, 'uri'>[] | Range | WorkspaceEdit | undefined> {
 		this.#checkSignature();
 		const renameTypes: TokenTypes[] = [
@@ -858,7 +828,7 @@ export class LanguageService implements LanguageServiceBase {
 			refName = getRefName(node),
 			refGroup = getRefGroup(node);
 		if (
-			usage > 1 && type === 'parameter-key' && /^[1-9]\d*$/u.test(node.parentNode!.name!)
+			usage === 2 && type === 'parameter-key' && /^[1-9]\d*$/u.test(node.parentNode!.name!)
 			|| !refName && (
 				usage === 1
 				|| !refGroup && (
@@ -875,30 +845,18 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		const name = getName(node),
 			refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(token => {
-				const {type: t, name: n, parentNode} = token.parentNode!;
+				const {name: n, parentNode} = token.parentNode!;
 				if (usage === 1) {
 					return getRefName(token) === refName
 						&& n === 'name' && (parentNode!.parentNode as ExtToken).innerText;
-				} else if (usage > 1 && type === 'link-target') {
-					return t === 'link' || t === 'redirect-target';
 				}
 				return type === 'attr-value'
 					? getRefName(token) === refName || getRefGroup(token) === refGroup
 					: getName(token) === name;
-			}).map(token => usage !== 3 && token.type === 'parameter-key' ? token.parentNode! : token);
-		if (refs.length === 0) {
-			return undefined;
-		}
-		return usage === 3
-			? {
-				changes: {
-					'': refs.map((ref): TextEdit => ({
-						range: createNodeRange(ref),
-						newText: newName!,
-					})),
-				},
-			}
-			: refs.map((ref): Omit<Location, 'uri'> => ({range: createNodeRange(ref)}));
+			}).map((token): Omit<Location, 'uri'> => ({
+				range: createNodeRange(token.type === 'parameter-key' ? token.parentNode! : token),
+			}));
+		return refs.length === 0 ? undefined : refs;
 	}
 
 	/**
@@ -935,7 +893,33 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param newName 新名称
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
-		return this.#provideReferencesOrDefinition(text, position, 3, newName);
+		this.#checkSignature();
+		const root = await this.#queue(text),
+			node = elementFromWord(root, position),
+			{type} = node,
+			refName = getRefName(node),
+			refGroup = getRefGroup(node);
+		const name = getName(node),
+			refs = root.querySelectorAll(type).filter(token => {
+				const {type: t} = token.parentNode!;
+				if (type === 'link-target' && t !== 'link' && t !== 'redirect-target') {
+					return false;
+				}
+				return type === 'attr-value'
+					? getRefName(token) === refName || getRefGroup(token) === refGroup
+					: getName(token) === name;
+			});
+		if (refs.length === 0) {
+			return undefined;
+		}
+		return {
+			changes: {
+				'': refs.map((ref): TextEdit => ({
+					range: createNodeRange(ref),
+					newText: newName,
+				})),
+			},
+		};
 	}
 
 	/**

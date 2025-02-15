@@ -53,6 +53,7 @@ export abstract class AstNode implements AstNodeBase {
 	#previousSibling: AstNodes | undefined;
 	#lines: Cached<[string, number, number][]> | undefined;
 	#root: Cached<Token | this> | undefined;
+	#aIndex: Cached<number> | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -265,13 +266,7 @@ export abstract class AstNode implements AstNodeBase {
 	getRootNode(): Token | this {
 		return cache<Token | this>(
 			this.#root,
-			() => {
-				let {parentNode} = this;
-				while (parentNode?.parentNode) {
-					({parentNode} = parentNode);
-				}
-				return parentNode ?? this;
-			},
+			() => this.parentNode?.getRootNode() ?? this,
 			value => {
 				const [, root] = value;
 				if (root.type === 'root' && root.getAttribute('built')) {
@@ -347,8 +342,16 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 获取当前节点的绝对位置 */
 	getAbsoluteIndex(): number {
-		const {parentNode} = this;
-		return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
+		return cache<number>(
+			this.#aIndex,
+			() => {
+				const {parentNode} = this;
+				return parentNode ? parentNode.getAbsoluteIndex() + this.getRelativeIndex() : 0;
+			},
+			value => {
+				this.#aIndex = value;
+			},
+		);
 	}
 
 	/** 获取当前节点的行列位置和大小 */

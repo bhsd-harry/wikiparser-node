@@ -88,9 +88,13 @@ import {html, font} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import type {Range} from '../lib/ranges';
-import type {CaretPosition} from '../lib/node';
 
 /* NOT FOR BROWSER END */
+
+declare interface CaretPosition {
+	readonly offsetNode: AstNodes;
+	readonly offset: number;
+}
 
 declare interface LintIgnore {
 	line: number;
@@ -670,6 +674,67 @@ export class Token extends AstElement {
 			);
 	}
 
+	/**
+	 * 找到给定位置
+	 * @param index 位置
+	 */
+	caretPositionFromIndex(index?: number): CaretPosition | undefined {
+		LSP: { // eslint-disable-line no-unused-labels
+			if (index === undefined) {
+				return undefined;
+			}
+			const {length} = this.toString();
+			if (index > length || index < -length) {
+				return undefined;
+			}
+			index += index < 0 ? length : 0;
+			let self: AstNodes = this,
+				acc = 0,
+				start = 0;
+			while (self.type !== 'text') {
+				const {childNodes}: Token = self;
+				acc += self.getAttribute('padding');
+				for (let i = 0; acc < index && i < childNodes.length; i++) {
+					const cur: AstNodes = childNodes[i]!,
+						l = cur.toString().length;
+					acc += l;
+					if (acc >= index) {
+						self = cur;
+						acc -= l;
+						start = acc;
+						break;
+					}
+					acc += self.getGaps(i);
+				}
+				if (self.childNodes === childNodes) {
+					return {offsetNode: self, offset: index - start};
+				}
+			}
+			return {offsetNode: self, offset: index - start};
+		}
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param index 位置
+	 */
+	elementFromIndex(index?: number): Token | undefined {
+		LSP: { // eslint-disable-line no-unused-labels
+			const node = this.caretPositionFromIndex(index)?.offsetNode;
+			return node?.type === 'text' ? node.parentNode : node;
+		}
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param x 列数
+	 * @param y 行数
+	 */
+	elementFromPoint(x: number, y: number): Token | undefined {
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
+	}
+
 	/* NOT FOR BROWSER */
 
 	/** @private */
@@ -789,15 +854,6 @@ export class Token extends AstElement {
 
 	/**
 	 * 找到给定位置
-	 * @param index 位置
-	 */
-	caretPositionFromIndex(index?: number): CaretPosition | undefined {
-		require('../addon/token');
-		return this.caretPositionFromIndex(index);
-	}
-
-	/**
-	 * 找到给定位置
 	 * @param x 列数
 	 * @param y 行数
 	 */
@@ -806,28 +862,11 @@ export class Token extends AstElement {
 	}
 
 	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param index 位置
-	 */
-	elementFromIndex(index?: number): AstNodes | undefined {
-		return this.caretPositionFromIndex(index)?.offsetNode;
-	}
-
-	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	elementFromPoint(x: number, y: number): AstNodes | undefined {
-		return this.elementFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
 	 * 找到给定位置所在的所有节点
 	 * @param index 位置
 	 */
-	elementsFromIndex(index?: number): AstNodes[] {
-		const offsetNode = this.caretPositionFromIndex(index)?.offsetNode;
+	elementsFromIndex(index?: number): Token[] {
+		const offsetNode = this.elementFromIndex(index);
 		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
 	}
 
@@ -836,7 +875,7 @@ export class Token extends AstElement {
 	 * @param x 列数
 	 * @param y 行数
 	 */
-	elementsFromPoint(x: number, y: number): AstNodes[] {
+	elementsFromPoint(x: number, y: number): Token[] {
 		return this.elementsFromIndex(this.indexFromPos(y, x));
 	}
 

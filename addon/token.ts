@@ -12,7 +12,7 @@ import {HtmlToken} from '../src/html';
 import {AttributesToken} from '../src/attributes';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
-import type {AstNodes, CaretPosition} from '../lib/node';
+import type {AstNodes} from '../lib/node';
 import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
 Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
@@ -46,40 +46,6 @@ Token.prototype.createElement = /** @implements */ function(
 	}
 	/* istanbul ignore next */
 	throw new RangeError(`Invalid tag name: ${tagName}`);
-};
-
-Token.prototype.caretPositionFromIndex = /** @implements */ function(index): CaretPosition | undefined {
-	if (index === undefined) {
-		return undefined;
-	}
-	const {length} = this.toString();
-	if (index >= length || index < -length) {
-		return undefined;
-	}
-	index += index < 0 ? length : 0;
-	let self: AstNodes = this,
-		acc = 0,
-		start = 0;
-	while (self.type !== 'text') {
-		const {childNodes}: Token = self;
-		acc += self.getAttribute('padding');
-		for (let i = 0; acc <= index && i < childNodes.length; i++) {
-			const cur: AstNodes = childNodes[i]!,
-				l = cur.toString().length;
-			acc += l;
-			if (acc > index) {
-				self = cur;
-				acc -= l;
-				start = acc;
-				break;
-			}
-			acc += self.getGaps(i);
-		}
-		if (self.childNodes === childNodes) {
-			return {offsetNode: self, offset: index - start};
-		}
-	}
-	return {offsetNode: self, offset: index - start};
 };
 
 Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined {
