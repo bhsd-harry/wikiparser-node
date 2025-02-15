@@ -11,7 +11,7 @@ import type {
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 
-const version = '1.16.2',
+const version = '1.16.3',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
