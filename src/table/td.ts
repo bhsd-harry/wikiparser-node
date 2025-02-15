@@ -1,4 +1,4 @@
-import {generateForChild} from '../../util/lint';
+import {generateForChild, cache} from '../../util/lint';
 import {
 	BuildMethod,
 
@@ -15,6 +15,7 @@ import type {
 	LintError,
 	AST,
 } from '../../base';
+import type {Cached} from '../../util/lint';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
 
 /* NOT FOR BROWSER */
@@ -53,7 +54,7 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 @fixedToken
 export abstract class TdToken extends TableBaseToken {
 	#innerSyntax = '';
-	#syntax: [number, TdSyntax] | undefined;
+	#syntax: Cached<TdSyntax> | undefined;
 
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, Token];
 	abstract override get parentNode(): TrToken | TableToken | undefined;
@@ -147,76 +148,71 @@ export abstract class TdToken extends TableBaseToken {
 
 	/** 表格语法信息 */
 	#getSyntax(): TdSyntax {
-		const {rev} = Shadow;
-		if (this.#syntax && this.#syntax[0] !== rev) {
-			this.#syntax = undefined;
-		}
-		if (Parser.viewOnly) {
-			this.#syntax ??= [rev, this.#computeSyntax()];
-			return this.#syntax[1];
-		}
-		return this.#computeSyntax();
-	}
+		return cache<TdSyntax>(
+			this.#syntax,
+			() => {
+				const syntax = this.firstChild.text(),
 
-	/** 表格语法信息 */
-	#computeSyntax(): TdSyntax {
-		const syntax = this.firstChild.text(),
+					/* NOT FOR BROWSER */
 
-			/* NOT FOR BROWSER */
+					esc = syntax.includes('{{'),
 
-			esc = syntax.includes('{{'),
+					/* NOT FOR BROWSER END */
 
-			/* NOT FOR BROWSER END */
+					char = syntax.slice(-1);
+				let subtype: TdSubtypes = 'td';
+				if (char === '!') {
+					subtype = 'th';
+				} else if (char === '+') {
+					subtype = 'caption';
+				}
+				if (this.isIndependent()) {
+					return {
+						subtype,
 
-			char = syntax.slice(-1);
-		let subtype: TdSubtypes = 'td';
-		if (char === '!') {
-			subtype = 'th';
-		} else if (char === '+') {
-			subtype = 'caption';
-		}
-		if (this.isIndependent()) {
-			return {
-				subtype,
+						/* NOT FOR BROWSER */
+
+						escape: esc,
+						correction: false,
+					};
+				}
+				const {previousSibling} = this;
 
 				/* NOT FOR BROWSER */
 
-				escape: esc,
-				correction: false,
-			};
-		}
-		const {previousSibling} = this;
+				if (!(previousSibling instanceof TdToken)) {
+					return {subtype, escape: esc, correction: true};
+				}
 
-		/* NOT FOR BROWSER */
+				/* NOT FOR BROWSER END */
 
-		if (!(previousSibling instanceof TdToken)) {
-			return {subtype, escape: esc, correction: true};
-		}
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+				const result = {...(previousSibling as TdToken).#getSyntax()};
 
-		/* NOT FOR BROWSER END */
+				/* NOT FOR BROWSER */
 
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-		const result = {...(previousSibling as TdToken).#getSyntax()};
+				const str = previousSibling.lastChild.toString();
+				result.escape ||= esc;
+				result.correction = str.includes('\n') && Shadow.run(() => {
+					const config = this.getAttribute('config'),
+						include = this.getAttribute('include');
+					return new Token(str, config).parseOnce(0, include).parseOnce().parseOnce()
+						.toString()
+						.includes('\n');
+				});
+				if (subtype === 'th' && result.subtype !== 'th') {
+					result.subtype = 'th';
+					result.correction = true;
+				}
 
-		/* NOT FOR BROWSER */
+				/* NOT FOR BROWSER END */
 
-		const str = previousSibling.lastChild.toString();
-		result.escape ||= esc;
-		result.correction = str.includes('\n') && Shadow.run(() => {
-			const config = this.getAttribute('config'),
-				include = this.getAttribute('include');
-			return new Token(str, config).parseOnce(0, include).parseOnce().parseOnce()
-				.toString()
-				.includes('\n');
-		});
-		if (subtype === 'th' && result.subtype !== 'th') {
-			result.subtype = 'th';
-			result.correction = true;
-		}
-
-		/* NOT FOR BROWSER END */
-
-		return result;
+				return result;
+			},
+			value => {
+				this.#syntax = value;
+			},
+		);
 	}
 
 	/** @private */

@@ -52,11 +52,12 @@ import {
 	classes,
 } from '../util/constants';
 import {Shadow} from '../util/debug';
-import {generateForSelf} from '../util/lint';
+import {generateForSelf, cache} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
 import {AstText} from '../lib/text';
 import type {LintError, TokenTypes} from '../base';
+import type {Cached} from '../util/lint';
 import type {Title} from '../lib/title';
 import type {
 	AstNodes,
@@ -139,7 +140,7 @@ export class Token extends AstElement {
 	readonly #accum;
 	#include?: boolean;
 	#built = false;
-	#string: [number, string] | undefined;
+	#string: Cached<string> | undefined;
 
 	/* NOT FOR BROWSER */
 
@@ -655,21 +656,18 @@ export class Token extends AstElement {
 
 	/** @private */
 	override toString(skip?: boolean, separator?: string): string {
-		const {rev} = Shadow,
-			root = this.getRootNode();
-		if (this.#string && this.#string[0] !== rev) {
-			this.#string = undefined;
-		}
-		if (
-			!skip
-			&& root.type === 'root'
-			&& root.#built
-			&& Parser.viewOnly
-		) {
-			this.#string ??= [rev, super.toString(false, separator)];
-			return this.#string[1];
-		}
-		return super.toString(skip, separator);
+		return skip
+			? super.toString(true, separator)
+			: cache<string>(
+				this.#string,
+				() => super.toString(false, separator),
+				value => {
+					const root = this.getRootNode();
+					if (root.type === 'root' && root.#built) {
+						this.#string = value;
+					}
+				},
+			);
 	}
 
 	/* NOT FOR BROWSER */
