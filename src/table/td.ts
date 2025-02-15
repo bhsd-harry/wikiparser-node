@@ -2,7 +2,6 @@ import {generateForChild, cache} from '../../util/lint';
 import {
 	BuildMethod,
 } from '../../util/constants';
-import {Shadow} from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';

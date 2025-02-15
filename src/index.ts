@@ -46,7 +46,6 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../util/constants';
-import {Shadow} from '../util/debug';
 import {generateForSelf, cache} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
