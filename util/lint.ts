@@ -1,8 +1,11 @@
+import {Shadow} from './debug';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
 import type {Position} from 'vscode-languageserver-types';
 import type {LintError} from '../base';
 import type {AstNodes} from '../internal';
+
+export type Cached<T> = [number, T];
 
 declare type generator = (
 	token: AstNodes,
@@ -65,3 +68,20 @@ export const generateForChild = factory((child, start, line, col) => {
 });
 
 export const generateForSelf = factory((_, startIndex, startLine, startCol) => ({startIndex, startLine, startCol}));
+
+/**
+ * 缓存计算结果
+ * @param store 缓存的值
+ * @param compute 计算新值的函数
+ * @param update 更新缓存的函数
+ */
+export const cache = <T>(store: Cached<T> | undefined, compute: () => T, update: (value: Cached<T>) => void): T => {
+	if (
+		store
+	) {
+		return store[1];
+	}
+	const result = compute();
+	update([Shadow.rev, result]);
+	return result;
+};
