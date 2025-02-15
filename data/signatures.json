@@ -1552,6 +1552,84 @@
 		},
 		{
 			"aliases": [
+				"#lst",
+				"#section"
+			],
+			"signatures": [
+				[
+					{
+						"label": "article"
+					},
+					{
+						"label": "chapter"
+					}
+				]
+			],
+			"description": "Transclude a section called *chapter* from a page called *article*. The target article defines the location of the section."
+		},
+		{
+			"aliases": [
+				"#lst-x",
+				"#section-x"
+			],
+			"signatures": [
+				[
+					{
+						"label": "article"
+					},
+					{
+						"label": "chapter"
+					}
+				],
+				[
+					{
+						"label": "article"
+					},
+					{
+						"label": "chapter"
+					},
+					{
+						"label": "replacement text"
+					}
+				]
+			],
+			"description": "Transclude a page, but exclude a specified section. Optionally, you may add replacement text to the excluded section. The replacement text will appear in the area where the section is skipped (excluded)."
+		},
+		{
+			"aliases": [
+				"#lst-h",
+				"#section-h"
+			],
+			"signatures": [
+				[
+					{
+						"label": "article"
+					}
+				],
+				[
+					{
+						"label": "article"
+					},
+					{
+						"label": "section X"
+					}
+				],
+				[
+					{
+						"label": "article"
+					},
+					{
+						"label": "section X"
+					},
+					{
+						"label": "section Y"
+					}
+				]
+			],
+			"description": "Transclude the introduction of a page (i.e. the content before the first heading), or the whole content of the first occurrence of the *section X* (which includes all its sub-sections but excludes the heading of *section X* itself), or the content from the first occurrence of *section X* (excluding the heading of *section X* itself) until it reaches the next occurrence of *section Y*. Note that *section Y* acts as a stop point so the transclusion doesn't contain the content of *section Y*."
+		},
+		{
+			"aliases": [
 				"currentyear",
 				"今年"
 			],
