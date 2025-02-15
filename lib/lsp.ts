@@ -169,7 +169,7 @@ const getUrl = (page: string, ns?: number): string => {
 const elementFromWord = (root: Token, pos: Position): Token => {
 	const {line, character} = pos,
 		index = root.indexFromPos(line, character)!,
-		offset = Number(/[\w!]/u.test(root.toString().charAt(index)));
+		offset = Number(/[\w!#]/u.test(root.toString().charAt(index)));
 	return root.elementFromIndex(index + offset)!;
 };
 
