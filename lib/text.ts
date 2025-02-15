@@ -219,9 +219,8 @@ export class AstText extends AstNode {
 			if (magicLink) {
 				error = error.toUpperCase();
 			}
-			const lines = data.slice(0, index).split('\n'),
-				line = lines[lines.length - 1]!,
-				{line: startLine, character: startCol} = getEndPos(top, left, line.length, lines.length),
+			const pos = this.posFromIndex(index)!,
+				{line: startLine, character: startCol} = getEndPos(top, left, pos.top + 1, pos.left),
 				e: LintError = {
 					rule: ruleMap[char!]!,
 					message: Parser.msg('lonely "$1"', magicLink || char === 'h' ? error : char),
