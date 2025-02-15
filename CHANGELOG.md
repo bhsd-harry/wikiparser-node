@@ -10,6 +10,7 @@
 
 - [`LanguageService.provideDiagnostics`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providediagnostics) now reports warnings
 - [`LanguageService.resolveRenameLocation`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#resolverenamelocation) should ignore file and category links
+- The outputs of [`wikiparse.Linter.prototype.codemirror`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter#codemirror) and [`wikiparse.Linter.prototype.monaco`](https://github.com/bhsd-harry/wikiparser-node/wiki/wikiparse.Linter#monaco) now strictly follow the [CodeMirror](https://codemirror.net/docs/ref/#lint.Diagnostic) and [Monaco Editor](https://microsoft.github.io/monaco-editor/docs.html#interfaces/editor.IMarkerData.html) specifications, respectively
 
 ## v1.16.1
 
