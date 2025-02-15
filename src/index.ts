@@ -51,7 +51,6 @@ import {
 	aliases,
 	classes,
 } from '../util/constants';
-import {Shadow} from '../util/debug';
 import {generateForSelf, cache} from '../util/lint';
 import Parser from '../index';
 import {AstElement} from '../lib/element';
@@ -84,6 +83,7 @@ import type {
 /* NOT FOR BROWSER */
 
 import * as assert from 'assert/strict';
+import {Shadow} from '../util/debug';
 import {html, font} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';

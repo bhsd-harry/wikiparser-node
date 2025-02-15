@@ -6,7 +6,6 @@ import {
 
 	classes,
 } from '../../util/constants';
-import {Shadow} from '../../util/debug';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -20,6 +19,7 @@ import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../inte
 
 /* NOT FOR BROWSER */
 
+import {Shadow} from '../../util/debug';
 import {newline} from '../../util/string';
 import {fixedToken} from '../../mixin/fixed';
 
