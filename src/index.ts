@@ -443,16 +443,12 @@ export class Token extends AstElement {
 			const regex = /<!--\s*lint-(disable(?:(?:-next)?-line)?|enable)(\s[\sa-z,-]*)?-->/gu,
 				wikitext = this.toString(),
 				ignores: LintIgnore[] = [];
-			let mt = regex.exec(wikitext),
-				last = 0,
-				curLine = 0;
+			let mt = regex.exec(wikitext);
 			while (mt) {
 				const {1: type, index} = mt,
 					detail = mt[2]?.trim();
-				curLine += wikitext.slice(last, index).split('\n').length - 1;
-				last = index;
 				ignores.push({
-					line: curLine + (type === 'disable-line' ? 0 : 1),
+					line: this.posFromIndex(index)!.top + (type === 'disable-line' ? 0 : 1),
 					from: type === 'disable' ? regex.lastIndex : undefined,
 					to: type === 'enable' ? regex.lastIndex : undefined,
 					rules: detail ? new Set(detail.split(',').map(r => r.trim())) : undefined,
