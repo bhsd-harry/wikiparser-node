@@ -115,7 +115,7 @@ const createNodeRange = (token: Token): Range => {
 	const {top, left, height, width} = token.getBoundingClientRect();
 	return {
 		start: {line: top, character: left},
-		end: getEndPos(top, left, width, height),
+		end: getEndPos(top, left, height, width),
 	};
 };
 
@@ -261,9 +261,10 @@ const getName = (token: Token): string | number | undefined => {
  * @param lines lines
  * @param line line number
  */
-const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], line: number): void => {
+const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, number, number][], line: number): void => {
 	if (section) {
-		section.range.end = {line, character: lines[line]!.length};
+		const [, start, end] = lines[line]!;
+		section.range.end = {line, character: end - start};
 	}
 };
 
@@ -633,7 +634,7 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY END */
 
 			root = await this.#queue(text),
-			lines = this.#text.split('\n'),
+			lines = root.getLines(),
 			{length} = lines,
 			levels = new Array<number | undefined>(6),
 			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
@@ -677,7 +678,7 @@ export class LanguageService implements LanguageServiceBase {
 						container = sections.slice(0, level - 1).reverse().find(Boolean),
 						selectionRange = {
 							start: {line: top, character: left - level},
-							end: getEndPos(top, left, width + level, height),
+							end: getEndPos(top, left, height, width + level),
 						},
 						info = {
 							name,
@@ -796,7 +797,7 @@ export class LanguageService implements LanguageServiceBase {
 						{
 							range: {
 								start: {line: rect.top, character: rect.left},
-								end: getEndPos(top, left, width, height),
+								end: getEndPos(top, left, height, width),
 							},
 							target,
 						},

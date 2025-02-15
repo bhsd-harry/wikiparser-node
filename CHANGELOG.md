@@ -5,6 +5,7 @@
 **Added**
 
 - [`LanguageService.provideInlayHints`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#provideinlayhints) that computes inlay hints for template anonymous parameters
+- [`AstNode.prototype.getLines`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#getlines) that returns an array of the source text, the start and end positions of each line
 
 **Fixed**
 

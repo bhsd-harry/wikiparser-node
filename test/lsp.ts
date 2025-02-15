@@ -43,12 +43,12 @@ const check = (value: unknown, title: string, pos: Position): void => {
 
 /**
  * 将索引转换为位置
- * @param text 文本
+ * @param root 根节点
  * @param index 索引
  */
-const indexToPos = (text: string, index: number): Position => {
-	const lines = text.slice(0, index).split('\n');
-	return {line: lines.length - 1, character: lines.pop()!.length};
+const indexToPos = (root: Token, index: number): Position => {
+	const {top, left} = root.posFromIndex(index)!;
+	return {line: top, character: left};
 };
 
 /**
@@ -69,7 +69,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 	// eslint-disable-next-line no-eval
 	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
 	const lsp = Parser.createLanguageService({}),
-		root = Parser.parse(content, true),
+		root = Parser.parse(content, true) as Token,
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
 		namedParameterKey = root.querySelector('parameter[anon!=true] > parameter-key' as TokenTypes),
@@ -84,7 +84,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name > attr-value' as TokenTypes),
 		doubleUnderscore = root.querySelector('double-underscore'),
 		renamePositions = ([argName, templateName, magicWordName, linkTarget].filter(Boolean) as Token[])
-			.map(token => indexToPos(content, token.getAbsoluteIndex() + 1));
+			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 	await lsp.provideDiagnostics(content, false);
 
 	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype) as Key[]) {
@@ -110,7 +110,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 					].map(re => content.search(re)).filter(i => i !== -1),
 					...([imageParameter, attrKey, namedParameterKey].filter(Boolean) as Token[])
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
-				].map(i => indexToPos(content, i));
+				].map(i => indexToPos(root, i));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
@@ -143,7 +143,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 					namedParameterKey,
 				];
 				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
-					.map(([i, token]) => indexToPos(content, token.getAbsoluteIndex() + Number(i > 1)));
+					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
@@ -155,7 +155,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 			}
 			case 'provideDefinition':
 				if (refName) {
-					const pos = indexToPos(content, refName.getAbsoluteIndex());
+					const pos = indexToPos(root, refName.getAbsoluteIndex());
 					await wrap(method, title, () => lsp.provideDefinition(content, pos));
 				}
 				break;
@@ -171,7 +171,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 				break;
 			case 'provideHover': {
 				const positions = ([doubleUnderscore, magicWordName].filter(Boolean) as Token[])
-					.map(token => indexToPos(content, token.getAbsoluteIndex()));
+					.map(token => indexToPos(root, token.getAbsoluteIndex()));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
@@ -183,7 +183,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 			}
 			case 'provideSignatureHelp':
 				if (parserFunctionName) {
-					const pos = indexToPos(content, parserFunctionName.nextSibling!.getAbsoluteIndex());
+					const pos = indexToPos(root, parserFunctionName.nextSibling!.getAbsoluteIndex());
 					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos));
 				}
 				break;
