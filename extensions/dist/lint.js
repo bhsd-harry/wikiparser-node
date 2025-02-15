@@ -38,7 +38,6 @@ class Linter {
             from: startIndex,
             to: endIndex,
             severity,
-            rule,
             message: `${message} (${rule})`,
             actions: [
                 ...fix ? [{ name: `Fix: ${fix.desc}`, fix }] : [],
@@ -52,7 +51,8 @@ class Linter {
         }));
     }
     async monaco(wikitext) {
-        return (await this.queue(wikitext)).map(({ startLine, startCol, endLine, endCol, severity, message, rule }) => ({
+        return (await this.queue(wikitext))
+            .map(({ startLine, startCol, endLine, endCol, severity, message, rule }) => ({
             source: `WikiLint`,
             startLineNumber: startLine + 1,
             startColumn: startCol + 1,

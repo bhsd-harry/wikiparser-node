@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
+import {Shadow} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {
 	AstText,
@@ -20,16 +21,6 @@ export interface CaretPosition {
 }
 
 /**
- * 计算字符串的行列数
- * @param str 字符串
- */
-const getDimension = (str: string): Dimension => {
-	const lines = str.split('\n'),
-		height = lines.length;
-	return {height, width: lines[height - 1]!.length};
-};
-
-/**
  * 获取子节点相对于父节点的字符位置
  * @param j 子节点序号
  * @param parent 父节点
@@ -45,6 +36,7 @@ export abstract class AstNode implements AstNodeBase {
 	#parentNode: Token | undefined;
 	#nextSibling: AstNodes | undefined;
 	#previousSibling: AstNodes | undefined;
+	#lines: [number, [string, number, number][]] | undefined;
 
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
@@ -133,10 +125,13 @@ export abstract class AstNode implements AstNodeBase {
 		if (top < 0 || left < 0) {
 			return undefined;
 		}
-		const lines = String(this).split('\n', top + 1);
-		return top === lines.length - 1 && left <= lines[top]!.length
-			? lines.slice(0, top).reduce((acc, cur) => acc + cur.length + 1, 0) + left
-			: undefined;
+		const lines = this.getLines();
+		if (top >= lines.length) {
+			return undefined;
+		}
+		const [, start, end] = lines[top]!,
+			index = start + left;
+		return index > end ? undefined : index;
 	}
 
 	/**
@@ -144,17 +139,21 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param index 字符位置
 	 */
 	posFromIndex(index: number): Position | undefined {
-		const str = String(this);
-		if (index >= -str.length && index <= str.length) {
-			const {height, width} = getDimension(str.slice(0, index));
-			return {top: height - 1, left: width};
+		const {length} = String(this);
+		index += index < 0 ? length : 0;
+		if (index >= 0 && index <= length) {
+			const lines = this.getLines(),
+				top = lines.findIndex(([,, end]) => index <= end);
+			return {top, left: index - lines[top]![1]};
 		}
 		return undefined;
 	}
 
 	/** 获取行数和最后一行的列数 */
 	#getDimension(): Dimension {
-		return getDimension(String(this));
+		const lines = this.getLines(),
+			last = lines[lines.length - 1]!;
+		return {height: lines.length, width: last[2] - last[1]};
 	}
 
 	/** @private */
@@ -199,5 +198,27 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	is<T extends Token>(type: string): this is T {
 		return this.type === type;
+	}
+
+	/** 获取所有行的wikitext和起止位置 */
+	getLines(): [string, number, number][] {
+		const {rev} = Shadow;
+		if (this.#lines && this.#lines[0] !== rev) {
+			this.#lines = undefined;
+		}
+		if (
+			this.#lines
+		) {
+			return this.#lines[1];
+		}
+		const results: [string, number, number][] = [];
+		let start = 0;
+		for (const line of String(this).split('\n')) {
+			const end = start + line.length;
+			results.push([line, start, end]);
+			start = end + 1;
+		}
+		this.#lines = [rev, results];
+		return results;
 	}
 }
