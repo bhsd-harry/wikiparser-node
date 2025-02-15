@@ -16,10 +16,10 @@ declare type generator = (
  * 计算结束位置
  * @param top 起始行
  * @param left 起始列
- * @param width 宽度
  * @param height 高度
+ * @param width 宽度
  */
-export const getEndPos = (top: number, left: number, width: number, height: number): Position => ({
+export const getEndPos = (top: number, left: number, height: number, width: number): Position => ({
 	line: top + height - 1,
 	character: (height === 1 ? left : 0) + width,
 });
@@ -40,7 +40,7 @@ const factory = (
 		{top, left} = rect instanceof BoundingRect ? rect : new BoundingRect(token, start),
 		{offsetHeight, offsetWidth} = token,
 		{startIndex, startLine, startCol} = func(token, start, top, left),
-		{line, character} = getEndPos(startLine, startCol, offsetWidth, offsetHeight);
+		{line, character} = getEndPos(startLine, startCol, offsetHeight, offsetWidth);
 	return {
 		rule,
 		message: Parser.msg(msg),

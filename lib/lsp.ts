@@ -15,11 +15,12 @@ import type {
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
-	Diagnostic,
+	Diagnostic as DiagnosticBase,
 	TextEdit,
 	Hover,
 	SignatureHelp,
 	SignatureInformation,
+	ParameterInformation,
 	InlayHint,
 
 	/* NOT FOR BROWSER ONLY */
@@ -66,6 +67,9 @@ declare interface QuickFixData extends TextEdit {
 	title: string;
 	fix: boolean;
 }
+declare interface Diagnostic extends DiagnosticBase {
+	data: QuickFixData[];
+}
 
 export const tasks = new WeakMap<object, LanguageService>();
 
@@ -105,7 +109,7 @@ const createNodeRange = (token: Token): Range => {
 	const {top, left, height, width} = token.getBoundingClientRect();
 	return {
 		start: {line: top, character: left},
-		end: getEndPos(top, left, width, height),
+		end: getEndPos(top, left, height, width),
 	};
 };
 
@@ -123,7 +127,7 @@ const getCompletion = (
 	kind: keyof typeof CompletionItemKind,
 	mt: string,
 	{line, character}: Position,
-): CompletionItem[] => [...new Set(words)].map(w => ({
+): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => ({
 	label: w,
 	kind,
 	textEdit: {
@@ -251,9 +255,10 @@ const getName = (token: Token): string | number | undefined => {
  * @param lines lines
  * @param line line number
  */
-const getSectionEnd = (section: DocumentSymbol | undefined, lines: string[], line: number): void => {
+const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, number, number][], line: number): void => {
 	if (section) {
-		section.range.end = {line, character: lines[line]!.length};
+		const [, start, end] = lines[line]!;
+		section.range.end = {line, character: end - start};
 	}
 };
 
@@ -353,30 +358,32 @@ export class LanguageService implements LanguageServiceBase {
 	): Promise<ColorInformation[]> {
 		this.#checkSignature();
 		const root = await this.#queue(text);
-		return root.querySelectorAll('attr-value,parameter-value,arg-default').flatMap(({type, childNodes}) => {
-			if (type !== 'attr-value' && !isPlain(childNodes)) {
-				return [];
-			}
-			return childNodes.filter((child): child is AstText => child.type === 'text').flatMap(child => {
-				const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
-				if (parts.length === 0) {
+		return root.querySelectorAll('attr-value,parameter-value,arg-default')
+			.flatMap(({type, childNodes}) => {
+				if (type !== 'attr-value' && !isPlain(childNodes)) {
 					return [];
 				}
-				const start = child.getAbsoluteIndex();
-				return parts.map(([s, from, to]): ColorInformation | false => {
-					const color = rgba(s);
-					return color.length === 4 && {
-						color: {
-							red: color[0] / 255,
-							green: color[1] / 255,
-							blue: color[2] / 255,
-							alpha: color[3],
-						},
-						range: createRange(root, start + from, start + to),
-					};
-				}).filter(Boolean) as ColorInformation[];
+				return childNodes.filter((child): child is AstText => child.type === 'text')
+					.flatMap(child => {
+						const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
+						if (parts.length === 0) {
+							return [];
+						}
+						const start = child.getAbsoluteIndex();
+						return parts.map(([s, from, to]): ColorInformation | false => {
+							const color = rgba(s);
+							return color.length === 4 && {
+								color: {
+									red: color[0] / 255,
+									green: color[1] / 255,
+									blue: color[2] / 255,
+									alpha: color[3],
+								},
+								range: createRange(root, start + from, start + to),
+							};
+						}).filter(Boolean) as ColorInformation[];
+					});
 			});
-		});
 	}
 
 	/** @implements */
@@ -581,18 +588,18 @@ export class LanguageService implements LanguageServiceBase {
 								newText: fix.text,
 								title: `Fix: ${fix.desc}`,
 								fix: true,
-							},
+							} satisfies QuickFixData,
 						]
 						: [],
 					...suggestions
-						? suggestions.map(({range, text, desc}) => ({
+						? suggestions.map(({range, text, desc}): QuickFixData => ({
 							range: createRange(root, ...range),
 							newText: text,
 							title: `Suggestion: ${desc}`,
 							fix: false,
 						}))
 						: [],
-				] satisfies QuickFixData[],
+				],
 			}));
 	}
 
@@ -619,7 +626,7 @@ export class LanguageService implements LanguageServiceBase {
 			/* NOT FOR BROWSER ONLY END */
 
 			root = await this.#queue(text),
-			lines = this.#text.split('\n'),
+			lines = root.getLines(),
 			{length} = lines,
 			levels = new Array<number | undefined>(6),
 			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
@@ -663,7 +670,7 @@ export class LanguageService implements LanguageServiceBase {
 						container = sections.slice(0, level - 1).reverse().find(Boolean),
 						selectionRange = {
 							start: {line: top, character: left - level},
-							end: getEndPos(top, left, width + level, height),
+							end: getEndPos(top, left, height, width + level),
 						},
 						info = {
 							name,
@@ -729,7 +736,7 @@ export class LanguageService implements LanguageServiceBase {
 		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
 			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
 				+ 'image-parameter#link';
-		return (await this.#queue(text)).querySelectorAll(selector).flatMap(token => {
+		return (await this.#queue(text)).querySelectorAll(selector).flatMap((token): DocumentLink[] => {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
 			if (
@@ -781,7 +788,7 @@ export class LanguageService implements LanguageServiceBase {
 						{
 							range: {
 								start: {line: rect.top, character: rect.left},
-								end: getEndPos(top, left, width, height),
+								end: getEndPos(top, left, height, width),
 							},
 							target,
 						},
@@ -876,7 +883,7 @@ export class LanguageService implements LanguageServiceBase {
 		return usage === 3
 			? {
 				changes: {
-					'': refs.map(ref => ({
+					'': refs.map((ref): TextEdit => ({
 						range: createNodeRange(ref),
 						newText: newName!,
 					})),
@@ -1012,7 +1019,7 @@ export class LanguageService implements LanguageServiceBase {
 				}),
 		).map((params): SignatureInformation => ({
 			label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
-			parameters: params.map(({label, const: c}) => ({
+			parameters: params.map(({label, const: c}): ParameterInformation => ({
 				label,
 				...c ? {documentation: 'Predefined parameter'} : undefined,
 			})),
@@ -1048,8 +1055,8 @@ export class LanguageService implements LanguageServiceBase {
 	/** @implements */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
-		return diagnostics.filter(({data}) => data).flatMap(
-			diagnostic => (diagnostic.data as QuickFixData[]).map((data): CodeAction => ({
+		return diagnostics.flatMap(
+			diagnostic => diagnostic.data.map((data): CodeAction => ({
 				title: data.title,
 				kind: 'quickfix',
 				diagnostics: [diagnostic],
