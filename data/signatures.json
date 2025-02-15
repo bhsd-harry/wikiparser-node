@@ -1569,7 +1569,7 @@
 		},
 		{
 			"aliases": [
-				"#lst-x",
+				"#lstx",
 				"#section-x"
 			],
 			"signatures": [
@@ -1597,7 +1597,7 @@
 		},
 		{
 			"aliases": [
-				"#lst-h",
+				"#lsth",
 				"#section-h"
 			],
 			"signatures": [
