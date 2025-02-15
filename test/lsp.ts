@@ -85,7 +85,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 
 		parameterKey = root.querySelector('template > parameter[anon!=true] > parameter-key' as TokenTypes),
 		linkTarget = root.querySelector('link > link-target' as TokenTypes),
-		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name > attr-value' as TokenTypes),
+		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name' as TokenTypes),
 
 		/* NOT FOR BROWSER END */
 
