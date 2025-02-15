@@ -23,6 +23,7 @@
 		"/bin/cli.js",
 		"/dist/",
 		"!/dist/test/",
+		"!/dist/bin/coverage.js",
 		"!/dist/bin/declaration.js"
 	],
 	"bin": {
