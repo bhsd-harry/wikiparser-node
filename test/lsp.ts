@@ -72,7 +72,6 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 		root = Parser.parse(content, true) as Token,
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
-		namedParameterKey = root.querySelector('parameter[anon!=true] > parameter-key' as TokenTypes),
 		ext = root.querySelector<ExtToken>('ext'),
 		html = root.querySelector<HtmlToken>('html'),
 		headingTitle = root.querySelector('heading-title'),
@@ -80,10 +79,22 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 		templateName = root.querySelector('template-name'),
 		magicWordName = root.querySelector('magic-word-name'),
 		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke' as TokenTypes),
+		doubleUnderscore = root.querySelector('double-underscore'),
+
+		/* NOT FOR BROWSER */
+
+		parameterKey = root.querySelector('parameter[anon!=true] > parameter-key' as TokenTypes),
 		linkTarget = root.querySelector('link > link-target' as TokenTypes),
 		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name > attr-value' as TokenTypes),
-		doubleUnderscore = root.querySelector('double-underscore'),
-		renamePositions = ([argName, templateName, magicWordName, linkTarget].filter(Boolean) as Token[])
+
+		/* NOT FOR BROWSER END */
+
+		renamePositions = ([
+			argName,
+			templateName,
+			magicWordName,
+			linkTarget,
+		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 	await lsp.provideDiagnostics(content, false);
 
@@ -108,7 +119,11 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 						/(?<=\[\[)/u, // link
 						/(?<=(?<!\{)\{\{)/u, // parser function or template
 					].map(re => content.search(re)).filter(i => i !== -1),
-					...([imageParameter, attrKey, namedParameterKey].filter(Boolean) as Token[])
+					...([
+						imageParameter,
+						attrKey,
+						parameterKey,
+					].filter(Boolean) as Token[])
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
 				].map(i => indexToPos(root, i));
 				if (positions.length > 0) {
@@ -140,7 +155,7 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 					templateName,
 					magicWordName,
 					linkTarget,
-					namedParameterKey,
+					parameterKey,
 				];
 				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
 					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
@@ -153,12 +168,6 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 				}
 				break;
 			}
-			case 'provideDefinition':
-				if (refName) {
-					const pos = indexToPos(root, refName.getAbsoluteIndex());
-					await wrap(method, title, () => lsp.provideDefinition(content, pos));
-				}
-				break;
 			case 'resolveRenameLocation':
 			case 'provideRenameEdits':
 				if (renamePositions.length > 0) {
@@ -187,6 +196,18 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos));
 				}
 				break;
+
+				/* NOT FOR BROWSER */
+
+			case 'provideDefinition':
+				if (refName) {
+					const pos = indexToPos(root, refName.getAbsoluteIndex());
+					await wrap(method, title, () => lsp.provideDefinition(content, pos));
+				}
+				break;
+
+				/* NOT FOR BROWSER END */
+
 			default:
 				throw new Error(`未检测的方法：${method as string}`);
 		}
