@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
+import {Shadow} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {
 	AstText,
@@ -14,7 +15,7 @@ import type {
 import * as assert from 'assert/strict';
 import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
-import {typeError, Shadow} from '../util/debug';
+import {typeError} from '../util/debug';
 import Parser from '../index';
 
 /* NOT FOR BROWSER END */
@@ -376,7 +377,10 @@ export abstract class AstNode implements AstNodeBase {
 		if (this.#lines && this.#lines[0] !== rev) {
 			this.#lines = undefined;
 		}
-		if (Parser.viewOnly && this.#lines) {
+		if (
+			this.#lines
+			&& Parser.viewOnly
+		) {
 			return this.#lines[1];
 		}
 		const results: [string, number, number][] = [];
