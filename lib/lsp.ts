@@ -250,6 +250,13 @@ const getName = (token: Token): string | number | undefined => {
 	}
 };
 
+/**
+ * Make sure that the token is not the one at the position.
+ * @param token
+ * @param index position index
+ */
+const not = (token: Token, index: number): boolean => token.getAbsoluteIndex() !== index;
+
 /* NOT FOR BROWSER ONLY */
 
 /**
@@ -470,12 +477,14 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
-		const root = await this.#queue(text);
+		const root = await this.#queue(text),
+			index = root.indexFromPos(line, mt?.index ?? character)!;
 		if (mt?.[2]) {
 			const match = mt[3] ?? '';
 			if (mt[2] === '{{{') { // argument
 				return getCompletion(
-					root.querySelectorAll<ArgToken>('arg').map(({name}) => name).filter(Boolean),
+					root.querySelectorAll<ArgToken>('arg').filter(token => token.name && not(token, index))
+						.map(({name}) => name),
 					'Variable',
 					match,
 					position,
@@ -487,7 +496,7 @@ export class LanguageService implements LanguageServiceBase {
 				? getCompletion( // link
 					root.querySelectorAll<LinkToken | FileToken | CategoryToken | RedirectTargetToken>(
 						'link,file,category,redirect-target',
-					).map(({name}) => name),
+					).filter(token => not(token, index)).map(({name}) => name),
 					'Folder',
 					str,
 					position,
@@ -498,6 +507,7 @@ export class LanguageService implements LanguageServiceBase {
 						? []
 						: getCompletion(
 							root.querySelectorAll<TranscludeToken>('template')
+								.filter(token => not(token, index + (mt[2] === '{{' ? 0 : 2)))
 								.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
 							'Folder',
 							str,
@@ -505,18 +515,25 @@ export class LanguageService implements LanguageServiceBase {
 						),
 				];
 		}
-		const token = root.elementFromPoint(character, line)!,
-			{type, parentNode} = token;
+		let cur: Token | undefined,
+			type: TokenTypes | undefined,
+			parentNode: Token | undefined;
+		if (!mt) {
+			cur = root.elementFromPoint(character, line)!;
+			({type, parentNode} = cur);
+		}
 		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
 				?? this.#text.slice(
-					token.getAbsoluteIndex(),
+					cur!.getAbsoluteIndex(),
 					root.indexFromPos(position.line, position.character),
 				).trimStart();
 			return [
 				...getCompletion(params, 'Property', match, position),
 				...getCompletion(
-					root.querySelectorAll<ImageParameterToken>('image-parameter#width').map(width => width.text()),
+					root.querySelectorAll<ImageParameterToken>('image-parameter#width')
+						.filter(token => cur ? token !== cur : not(token.parentNode!, index))
+						.map(width => width.text()),
 					'Unit',
 					match,
 					position,
@@ -524,7 +541,7 @@ export class LanguageService implements LanguageServiceBase {
 			];
 		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
 			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[9] ?? token.toString();
+				key = mt?.[9] ?? cur!.toString();
 			if (!tags.has(tag)) {
 				return undefined;
 			}
@@ -548,12 +565,14 @@ export class LanguageService implements LanguageServiceBase {
 			(type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon)
 			&& parentNode!.parentNode!.type === 'template'
 		) { // parameter key
-			const key = token.toString().trimStart();
+			const key = cur!.toString().trimStart();
 			return key
 				? getCompletion(
 					root.querySelectorAll<ParameterToken>('parameter').filter(
-						({anon, parentNode: parent}) => !anon && parent!.type === 'template'
-							&& parent!.name === parentNode!.parentNode!.name,
+						token => token !== parentNode
+							&& !token.anon
+							&& token.parentNode!.type === 'template'
+							&& token.parentNode!.name === parentNode!.parentNode!.name,
 					).map(({name}) => name),
 					'Variable',
 					key,
