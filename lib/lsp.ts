@@ -471,11 +471,14 @@ export class LanguageService implements LanguageServiceBase {
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
 		const root = await this.#queue(text);
+		let cur: Token | undefined;
 		if (mt?.[2]) {
+			cur = root.elementFromPoint(mt.index + mt[2].length - 1, line)!;
 			const match = mt[3] ?? '';
 			if (mt[2] === '{{{') { // argument
 				return getCompletion(
-					root.querySelectorAll<ArgToken>('arg').map(({name}) => name).filter(Boolean),
+					root.querySelectorAll<ArgToken>('arg').filter(token => token.name && token !== cur)
+						.map(({name}) => name),
 					'Variable',
 					match,
 					position,
@@ -487,7 +490,7 @@ export class LanguageService implements LanguageServiceBase {
 				? getCompletion( // link
 					root.querySelectorAll<LinkToken | FileToken | CategoryToken | RedirectTargetToken>(
 						'link,file,category,redirect-target',
-					).map(({name}) => name),
+					).filter(token => token !== cur).map(({name}) => name),
 					'Folder',
 					str,
 					position,
@@ -497,7 +500,7 @@ export class LanguageService implements LanguageServiceBase {
 					...match.startsWith('#')
 						? []
 						: getCompletion(
-							root.querySelectorAll<TranscludeToken>('template')
+							root.querySelectorAll<TranscludeToken>('template').filter(token => token !== cur)
 								.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
 							'Folder',
 							str,
@@ -505,18 +508,23 @@ export class LanguageService implements LanguageServiceBase {
 						),
 				];
 		}
-		const token = root.elementFromPoint(character, line)!,
-			{type, parentNode} = token;
+		let type: TokenTypes | undefined,
+			parentNode: Token | undefined;
+		if (mt?.[7] === undefined) {
+			cur = root.elementFromPoint(character, line)!;
+			({type, parentNode} = cur);
+		}
 		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
 			const match = mt?.[6]?.trimStart()
 				?? this.#text.slice(
-					token.getAbsoluteIndex(),
+					cur!.getAbsoluteIndex(),
 					root.indexFromPos(position.line, position.character),
 				).trimStart();
 			return [
 				...getCompletion(params, 'Property', match, position),
 				...getCompletion(
-					root.querySelectorAll<ImageParameterToken>('image-parameter#width').map(width => width.text()),
+					root.querySelectorAll<ImageParameterToken>('image-parameter#width').filter(token => token !== cur)
+						.map(width => width.text()),
 					'Unit',
 					match,
 					position,
@@ -524,7 +532,7 @@ export class LanguageService implements LanguageServiceBase {
 			];
 		} else if (mt?.[7] !== undefined || type === 'attr-key') { // attribute key
 			const tag = mt?.[7]?.toLowerCase() ?? (parentNode as AttributeToken).tag,
-				key = mt?.[9] ?? token.toString();
+				key = mt?.[9] ?? cur!.toString();
 			if (!tags.has(tag)) {
 				return undefined;
 			}
@@ -548,12 +556,14 @@ export class LanguageService implements LanguageServiceBase {
 			(type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon)
 			&& parentNode!.parentNode!.type === 'template'
 		) { // parameter key
-			const key = token.toString().trimStart();
+			const key = cur!.toString().trimStart();
 			return key
 				? getCompletion(
 					root.querySelectorAll<ParameterToken>('parameter').filter(
-						({anon, parentNode: parent}) => !anon && parent!.type === 'template'
-							&& parent!.name === parentNode!.parentNode!.name,
+						token => token !== parentNode
+							&& !token.anon
+							&& token.parentNode!.type === 'template'
+							&& token.parentNode!.name === parentNode!.parentNode!.name,
 					).map(({name}) => name),
 					'Variable',
 					key,
