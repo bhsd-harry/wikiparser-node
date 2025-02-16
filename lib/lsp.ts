@@ -250,13 +250,6 @@ const getName = (token: Token): string | number | undefined => {
 	}
 };
 
-/**
- * Make sure that the token is not the one at the position.
- * @param token
- * @param index position index
- */
-const not = (token: Token, index: number): boolean => token.getAbsoluteIndex() !== index;
-
 /* NOT FOR BROWSER ONLY */
 
 /**
@@ -477,13 +470,14 @@ export class LanguageService implements LanguageServiceBase {
 		} else if (mt?.[5] !== undefined) { // protocol
 			return getCompletion(protocols, 'Reference', mt[5], position);
 		}
-		const root = await this.#queue(text),
-			index = root.indexFromPos(line, mt?.index ?? character)!;
+		const root = await this.#queue(text);
+		let cur: Token | undefined;
 		if (mt?.[2]) {
+			cur = root.elementFromPoint(mt.index + mt[2].length - 1, line)!;
 			const match = mt[3] ?? '';
 			if (mt[2] === '{{{') { // argument
 				return getCompletion(
-					root.querySelectorAll<ArgToken>('arg').filter(token => token.name && not(token, index))
+					root.querySelectorAll<ArgToken>('arg').filter(token => token.name && token !== cur)
 						.map(({name}) => name),
 					'Variable',
 					match,
@@ -496,7 +490,7 @@ export class LanguageService implements LanguageServiceBase {
 				? getCompletion( // link
 					root.querySelectorAll<LinkToken | FileToken | CategoryToken | RedirectTargetToken>(
 						'link,file,category,redirect-target',
-					).filter(token => not(token, index)).map(({name}) => name),
+					).filter(token => token !== cur).map(({name}) => name),
 					'Folder',
 					str,
 					position,
@@ -506,8 +500,7 @@ export class LanguageService implements LanguageServiceBase {
 					...match.startsWith('#')
 						? []
 						: getCompletion(
-							root.querySelectorAll<TranscludeToken>('template')
-								.filter(token => not(token, index + (mt[2] === '{{' ? 0 : 2)))
+							root.querySelectorAll<TranscludeToken>('template').filter(token => token !== cur)
 								.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
 							'Folder',
 							str,
@@ -515,10 +508,9 @@ export class LanguageService implements LanguageServiceBase {
 						),
 				];
 		}
-		let cur: Token | undefined,
-			type: TokenTypes | undefined,
+		let type: TokenTypes | undefined,
 			parentNode: Token | undefined;
-		if (!mt) {
+		if (mt?.[7] === undefined) {
 			cur = root.elementFromPoint(character, line)!;
 			({type, parentNode} = cur);
 		}
@@ -531,8 +523,7 @@ export class LanguageService implements LanguageServiceBase {
 			return [
 				...getCompletion(params, 'Property', match, position),
 				...getCompletion(
-					root.querySelectorAll<ImageParameterToken>('image-parameter#width')
-						.filter(token => cur ? token !== cur : not(token.parentNode!, index))
+					root.querySelectorAll<ImageParameterToken>('image-parameter#width').filter(token => token !== cur)
 						.map(width => width.text()),
 					'Unit',
 					match,

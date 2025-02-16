@@ -36,7 +36,7 @@ const wrap = async (method: string, title: string, fn: () => Promise<unknown>): 
  * @throws `Error` 无返回值
  */
 const check = (value: unknown, title: string, pos: Position): void => {
-	if (!value || Array.isArray(value) && value.length === 0) {
+	if (!value) {
 		throw new Error(`${title} 的第 ${pos.line + 1} 行 ${pos.character} 列未返回结果！`);
 	}
 };
