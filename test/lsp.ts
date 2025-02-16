@@ -96,13 +96,22 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 			linkTarget,
 		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
-	await lsp.provideDiagnostics(content, false);
+
+	await wrap('provideDiagnostics', title, () => {
+		void lsp.provideDiagnostics(`${content} `, false);
+		return new Promise(resolve => {
+			setImmediate(() => {
+				resolve(lsp.provideDiagnostics(content, false));
+			});
+		});
+	});
 
 	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype) as Key[]) {
 		switch (method) {
 			case 'constructor':
 			case 'data':
 			case 'destroy':
+			case 'provideDiagnostics':
 			case 'provideColorPresentations':
 			case 'provideCodeAction':
 				break;
@@ -135,12 +144,11 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 				}
 				break;
 			}
-			case 'provideDiagnostics':
 			case 'provideFoldingRanges':
 			case 'provideLinks':
 			case 'provideInlayHints':
 			case 'provideDocumentSymbols':
-				await wrap(method, title, () => lsp.provideDiagnostics(content));
+				await wrap(method, title, () => lsp[method](content));
 				break;
 			case 'provideReferences': {
 				const tokens = [

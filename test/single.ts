@@ -13,17 +13,13 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export default (
-	Parser: Parser,
-	{pageid, title, ns, content}: SimplePage,
-): LintError[] | Promise<void> => {
+export default (Parser: Parser, {pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
 	/* NOT FOR BROWSER */
 
 	Parser.viewOnly = true;
 
 	/* NOT FOR BROWSER END */
 
-	console.log();
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
