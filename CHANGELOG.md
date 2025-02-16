@@ -2,6 +2,10 @@
 
 *2025-02-16*
 
+**Fixed**
+
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
+
 **Changed**
 
 - [`LanguageService.provideDefinition`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providedefinition) now returns the [`Location`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#location) of the `<ref>` inner content for any [`Position`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position) within a `<ref>` tag that has a `name` attribute
