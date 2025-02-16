@@ -76,14 +76,30 @@ export const tasks = new WeakMap<object, LanguageService>();
 const refTags = new Set(['ref']),
 	referencesTags = new Set(['ref', 'references']),
 	nameAttrs = new Set(['name', 'extends', 'follow']),
-	groupAttrs = new Set(['group']);
+	groupAttrs = new Set(['group']),
+	renameTypes = new Set<TokenTypes>([
+		'arg-name',
+		'template-name',
+		'magic-word-name',
+		'link-target',
+		'parameter-key',
+	]),
+	referenceTypes = new Set<TokenTypes>([
+		'ext',
+		'html',
+		'attr-key',
+		'image-parameter',
+		'heading-title',
+		'heading',
+		...renameTypes,
+	]),
+	plainTypes = new Set<TokenTypes | 'text'>(['text', 'comment', 'noinclude', 'include']);
 
 /**
  * Check if all child nodes are plain text or comments.
  * @param childNodes child nodes
  */
-const isPlain = (childNodes: readonly AstNodes[]): boolean =>
-	childNodes.every(({type}) => ['text', 'comment', 'noinclude', 'include'].includes(type));
+const isPlain = (childNodes: readonly AstNodes[]): boolean => childNodes.every(({type}) => plainTypes.has(type));
 
 /**
  * Get the position of a character in the document.
@@ -201,6 +217,16 @@ const getRefName = (token: Token): string | number => getRefAttr(token, refTags,
  * @param token `group` attribute token
  */
 const getRefGroup = (token: Token): string | number => getRefAttr(token, referencesTags, groupAttrs);
+
+/**
+ * Get the attribute of a `<ref>` tag.
+ * @param tokens attribute tokens
+ * @param target attribute name
+ */
+const getRefTagAttr = (tokens: readonly Token[] | undefined, target: string): string | false => {
+	const attr = (tokens?.find(({name}) => name === target) as AttributeToken | undefined)?.getValue();
+	return attr !== true && attr || false;
+};
 
 /**
  * Get the effective name of a token.
@@ -779,84 +805,29 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
-	 * 提供引用或定义或变量更名
-	 * @param text 源代码
-	 * @param position 位置
-	 * @param usage 调用类型
-	 * @param newName 新名称
-	 */
-	async #provideReferencesOrDefinition(
-		text: string,
-		position: Position,
-		usage: 0 | 1,
-	): Promise<Omit<Location, 'uri'>[] | undefined>;
-	async #provideReferencesOrDefinition(text: string, position: Position, usage: 2): Promise<Range | undefined>;
-	async #provideReferencesOrDefinition(
-		text: string,
-		position: Position,
-		usage: 0 | 1 | 2,
-	): Promise<Omit<Location, 'uri'>[] | Range | WorkspaceEdit | undefined> {
-		this.#checkSignature();
-		const renameTypes: TokenTypes[] = [
-				'arg-name',
-				'template-name',
-				'magic-word-name',
-				'link-target',
-				'parameter-key',
-			],
-			types: TokenTypes[] = [
-				'ext',
-				'html',
-				'attr-key',
-				'image-parameter',
-				'heading-title',
-				'heading',
-				...renameTypes,
-			],
-			root = await this.#queue(text),
-			node = elementFromWord(root, position),
-			{type} = node,
-			refName = getRefName(node),
-			refGroup = getRefGroup(node);
-		if (
-			usage === 2 && type === 'parameter-key' && /^[1-9]\d*$/u.test(node.parentNode!.name!)
-			|| !refName && (
-				usage === 1
-				|| !refGroup && (
-					usage === 0
-						? !types.includes(type)
-						: !renameTypes.includes(type)
-							|| type === 'link-target' && !['link', 'redirect-target'].includes(node.parentNode!.type)
-				)
-			)
-		) {
-			return undefined;
-		} else if (usage === 2) {
-			return createNodeRange(node);
-		}
-		const name = getName(node),
-			refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(token => {
-				const {name: n, parentNode} = token.parentNode!;
-				if (usage === 1) {
-					return getRefName(token) === refName
-						&& n === 'name' && (parentNode!.parentNode as ExtToken).innerText;
-				}
-				return type === 'attr-value'
-					? getRefName(token) === refName || getRefGroup(token) === refGroup
-					: getName(token) === name;
-			}).map((token): Omit<Location, 'uri'> => ({
-				range: createNodeRange(token.type === 'parameter-key' ? token.parentNode! : token),
-			}));
-		return refs.length === 0 ? undefined : refs;
-	}
-
-	/**
 	 * 提供引用
 	 * @param text 源代码
 	 * @param position 位置
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		return this.#provideReferencesOrDefinition(text, position, 0);
+		this.#checkSignature();
+		const root = await this.#queue(text),
+			node = elementFromWord(root, position),
+			{type} = node,
+			refName = getRefName(node),
+			refGroup = getRefGroup(node);
+		if (!refName && !refGroup && !referenceTypes.has(type)) {
+			return undefined;
+		}
+		const name = getName(node),
+			refs = root.querySelectorAll(type === 'heading-title' ? 'heading' : type).filter(
+				token => type === 'attr-value'
+					? getRefName(token) === refName || getRefGroup(token) === refGroup
+					: getName(token) === name,
+			).map((token): Omit<Location, 'uri'> => ({
+				range: createNodeRange(token.type === 'parameter-key' ? token.parentNode! : token),
+			}));
+		return refs.length === 0 ? undefined : refs;
 	}
 
 	/**
@@ -865,7 +836,24 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		return this.#provideReferencesOrDefinition(text, position, 1);
+		this.#checkSignature();
+		const root = await this.#queue(text),
+			node = elementFromWord(root, position),
+			attrs = (node.is<ExtToken>('ext') && node.name === 'ref' ? node : node.closest<ExtToken>('ext#ref'))
+				?.firstChild.childNodes,
+			refName = getRefTagAttr(attrs, 'name');
+		if (!refName) {
+			return undefined;
+		}
+		const refGroup = getRefTagAttr(attrs, 'group'),
+			refs = root.querySelectorAll<ExtToken>('ext#ref').filter(
+				({firstChild: {childNodes}, innerText}) => innerText
+					&& getRefTagAttr(childNodes, 'name') === refName
+					&& getRefTagAttr(childNodes, 'group') === refGroup,
+			).map(({lastChild}): Omit<Location, 'uri'> => ({
+				range: createNodeRange(lastChild),
+			}));
+		return refs.length === 0 ? undefined : refs;
 	}
 
 	/**
@@ -874,7 +862,19 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
-		return this.#provideReferencesOrDefinition(text, position, 2);
+		this.#checkSignature();
+		const root = await this.#queue(text),
+			node = elementFromWord(root, position),
+			{type} = node,
+			refName = getRefName(node),
+			refGroup = getRefGroup(node);
+		return !refName && !refGroup && (
+			!renameTypes.has(type)
+			|| type === 'parameter-key' && /^[1-9]\d*$/u.test(node.parentNode!.name!)
+			|| type === 'link-target' && !['link', 'redirect-target'].includes(node.parentNode!.type)
+		)
+			? undefined
+			: createNodeRange(node);
 	}
 
 	/**
@@ -900,17 +900,16 @@ export class LanguageService implements LanguageServiceBase {
 					? getRefName(token) === refName || getRefGroup(token) === refGroup
 					: getName(token) === name;
 			});
-		if (refs.length === 0) {
-			return undefined;
-		}
-		return {
-			changes: {
-				'': refs.map((ref): TextEdit => ({
-					range: createNodeRange(ref),
-					newText: newName,
-				})),
-			},
-		};
+		return refs.length === 0
+			? undefined
+			: {
+				changes: {
+					'': refs.map((ref): TextEdit => ({
+						range: createNodeRange(ref),
+						newText: newName,
+					})),
+				},
+			};
 	}
 
 	/**
