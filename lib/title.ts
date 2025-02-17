@@ -112,6 +112,10 @@ export class Title {
 			encoded: {enumerable: false, writable: false},
 		});
 		this.#namespaces = config.namespaces;
+		this.#path = config.articlePath || '/wiki/$1';
+		if (!this.#path.includes('$1')) {
+			this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
+		}
 	}
 
 	/** @private */
