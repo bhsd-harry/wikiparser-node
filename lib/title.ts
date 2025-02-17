@@ -234,23 +234,25 @@ export class Title {
 
 	/** 生成URL */
 	getUrl(): string {
-		const {title, fragment} = this;
-		if (title) {
-			return this.#path.replace(
-				'$1',
-				encodeURIComponent(title)
-				+ (
-					fragment === undefined
-					&& this.#redirectFragment === undefined
-						? ''
-						: `#${encodeURIComponent(
-							fragment
-							?? this.#redirectFragment!,
-						)}`
-				),
-			);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {title, fragment} = this;
+			if (title) {
+				return this.#path.replace(
+					'$1',
+					encodeURIComponent(title)
+					+ (
+						fragment === undefined
+						&& this.#redirectFragment === undefined
+							? ''
+							: `#${encodeURIComponent(
+								fragment
+								?? this.#redirectFragment!,
+							)}`
+					),
+				);
+			}
+			return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 		}
-		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 	}
 
 	/* NOT FOR BROWSER */
