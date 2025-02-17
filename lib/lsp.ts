@@ -783,7 +783,7 @@ export class LanguageService implements LanguageServiceBase {
 					|| token.is<MagicLinkToken>('ext-link-url')
 					|| token.is<MagicLinkToken>('free-ext-link')
 				) {
-					target = token.getUrl();
+					target = token.getUrl(articlePath);
 				} else if (
 					type === 'link-target' && (
 						parentNode!.is<LinkToken>('link')
@@ -794,7 +794,7 @@ export class LanguageService implements LanguageServiceBase {
 					if (target.startsWith('/')) {
 						return false;
 					}
-					target = parentNode.link.getUrl();
+					target = parentNode.link.getUrl(articlePath);
 				} else if (
 					['link-target', 'template-name', 'invoke-module'].includes(type)
 					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
