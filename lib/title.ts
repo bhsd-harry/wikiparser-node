@@ -145,21 +145,23 @@ export class Title {
 
 	/** 生成URL */
 	getUrl(): string {
-		const {title, fragment} = this;
-		if (title) {
-			return this.#path.replace(
-				'$1',
-				encodeURIComponent(title)
-				+ (
-					fragment === undefined
-						? ''
-						: `#${encodeURIComponent(
-							// eslint-disable-next-line @stylistic/comma-dangle
-							fragment
-						)}`
-				),
-			);
+		LSP: { // eslint-disable-line no-unused-labels
+			const {title, fragment} = this;
+			if (title) {
+				return this.#path.replace(
+					'$1',
+					encodeURIComponent(title)
+					+ (
+						fragment === undefined
+							? ''
+							: `#${encodeURIComponent(
+								// eslint-disable-next-line @stylistic/comma-dangle
+								fragment
+							)}`
+					),
+				);
+			}
+			return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 		}
-		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 	}
 }
