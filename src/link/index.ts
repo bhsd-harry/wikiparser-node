@@ -1,13 +1,13 @@
 import {generateForSelf} from '../../util/lint';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
+import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
 import {encode, rawurldecode} from '../../util/string';
-import type {Title} from '../../lib/title';
 
 /* NOT FOR BROWSER END */
 
