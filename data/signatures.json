@@ -1630,6 +1630,49 @@
 		},
 		{
 			"aliases": [
+				"msg",
+				"raw",
+				"原始"
+			],
+			"signatures": [
+				[
+					{
+						"label": "xyz"
+					}
+				]
+			],
+			"description": "Even if there is a magic word named `xyz`, use template:xyz unless the template doesn't exist (equivalent to `{{template:xyz}}`). Normally, magic words have priority when there is a conflict."
+		},
+		{
+			"aliases": [
+				"subst",
+				"替代"
+			],
+			"signatures": [
+				[
+					{
+						"label": "xyz"
+					}
+				]
+			],
+			"description": "In the wikitext, the tag is substituted by the content (single-level evaluation only), see [Help:Templates](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage)."
+		},
+		{
+			"aliases": [
+				"safesubst",
+				"安全替代"
+			],
+			"signatures": [
+				[
+					{
+						"label": "xyz"
+					}
+				]
+			],
+			"description": "See [Help:Templates](https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Templates#Usage)."
+		},
+		{
+			"aliases": [
 				"currentyear",
 				"今年"
 			],

@@ -11,16 +11,17 @@ session.connect();
 session.post('Profiler.enable', () => {
 	session.post('Profiler.start', () => {
 		(async () => {
-			for (let i = 0; i < (Number(count) || 10); i++) {
+			for (let i = 0; i < (Number(count) || 20); i++) {
 				const page: SimplePage = {content, ns: 0, pageid: 0, title: `Pass ${i}`};
-				void single(
-					Parser,
-					page,
-				);
+				if (i === 0) {
+					void single(Parser, page);
+				}
 				await lsp(Parser, page);
+				console.log();
 			}
-			session.post('Profiler.stop', (_, {profile}) => {
-				writeFileSync('test/prof.txt', JSON.stringify(profile.nodes, null, '\t'));
+			session.post('Profiler.stop', (_, {profile: {nodes}}) => {
+				const useful = nodes.filter(({callFrame: {url}}) => url.startsWith('file:///'));
+				writeFileSync('test/prof.txt', JSON.stringify(useful, null, '\t'));
 				session.disconnect();
 			});
 		})();

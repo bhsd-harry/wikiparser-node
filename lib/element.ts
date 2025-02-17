@@ -8,7 +8,16 @@ import type {
 	LintError,
 } from '../base';
 import type {TokenPredicate} from '../parser/selector';
-import type {AstNodes, AstText, Token} from '../internal';
+import type {
+	AstNodes,
+	AstText,
+	Token,
+} from '../internal';
+
+export interface CaretPosition {
+	readonly offsetNode: AstNodes;
+	readonly offset: number;
+}
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
@@ -174,6 +183,68 @@ export abstract class AstElement extends AstNode {
 	/** @private */
 	override toString(skip?: boolean, separator = ''): string {
 		return this.childNodes.map(child => child.toString(skip)).join(separator);
+	}
+
+	/**
+	 * 找到给定位置
+	 * @param index 位置
+	 */
+	caretPositionFromIndex(index?: number): CaretPosition | undefined {
+		LSP: { // eslint-disable-line no-unused-labels
+			if (index === undefined) {
+				return undefined;
+			}
+			const {length} = this.toString();
+			if (index > length || index < -length) {
+				return undefined;
+			}
+			index += index < 0 ? length : 0;
+			let self: AstNode = this,
+				acc = 0,
+				start = 0;
+			while (self.type !== 'text') {
+				const {childNodes} = self;
+				acc += self.getAttribute('padding');
+				for (let i = 0; acc <= index && i < childNodes.length; i++) {
+					const cur: AstNodes = childNodes[i]!,
+						l = cur.toString().length;
+					acc += l;
+					// 优先选择靠前的非文本兄弟节点，但永不进入假节点
+					if (acc >= index && l > 0 && (cur.type !== 'text' || i === childNodes.length - 1)) {
+						self = cur;
+						acc -= l;
+						start = acc;
+						break;
+					}
+					acc += self.getGaps(i);
+				}
+				if (self.childNodes === childNodes) {
+					return {offsetNode: self as Token, offset: index - start};
+				}
+			}
+			return {offsetNode: self as AstText, offset: index - start};
+		}
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param index 位置
+	 */
+	elementFromIndex(index?: number): Token | undefined {
+		LSP: { // eslint-disable-line no-unused-labels
+			const node = this.caretPositionFromIndex(index)?.offsetNode;
+			return node?.type === 'text' ? node.parentNode : node;
+		}
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param x 列数
+	 * @param y 行数
+	 */
+	elementFromPoint(x: number, y: number): Token | undefined {
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
 	}
 
 	/** @private */

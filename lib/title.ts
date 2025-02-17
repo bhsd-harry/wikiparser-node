@@ -8,6 +8,7 @@ import type {Config} from '../base';
 export class Title {
 	#main: string;
 	readonly #namespaces;
+	readonly #path: string;
 	#ns;
 	#fragment;
 	interwiki = '';
@@ -111,6 +112,10 @@ export class Title {
 			encoded: {enumerable: false, writable: false},
 		});
 		this.#namespaces = config.namespaces;
+		this.#path = config.articlePath || '/wiki/$1';
+		if (!this.#path.includes('$1')) {
+			this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
+		}
 	}
 
 	/** @private */
@@ -136,5 +141,27 @@ export class Title {
 	/** @private */
 	setFragment(fragment: string): void {
 		this.#fragment = fragment;
+	}
+
+	/** 生成URL */
+	getUrl(): string {
+		LSP: { // eslint-disable-line no-unused-labels
+			const {title, fragment} = this;
+			if (title) {
+				return this.#path.replace(
+					'$1',
+					encodeURIComponent(title)
+					+ (
+						fragment === undefined
+							? ''
+							: `#${encodeURIComponent(
+								// eslint-disable-next-line @stylistic/comma-dangle
+								fragment
+							)}`
+					),
+				);
+			}
+			return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
+		}
 	}
 }
