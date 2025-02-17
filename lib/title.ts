@@ -147,11 +147,9 @@ export class Title {
 				encodeURIComponent(title)
 				+ (
 					fragment === undefined
-					&& this.#redirectFragment === undefined
 						? ''
 						: `#${encodeURIComponent(
 							fragment
-							?? this.#redirectFragment!,
 						)}`
 				),
 			);
