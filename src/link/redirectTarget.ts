@@ -12,6 +12,7 @@ import type {Token, AtomToken} from '../../internal';
 export abstract class RedirectTargetToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
 	abstract override get lastChild(): AtomToken | NoincludeToken;
+	abstract override get link(): Title;
 
 	override get type(): 'redirect-target' {
 		return 'redirect-target';
