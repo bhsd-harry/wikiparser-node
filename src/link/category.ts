@@ -1,4 +1,5 @@
 import {LinkBaseToken} from './base';
+import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
 /**
