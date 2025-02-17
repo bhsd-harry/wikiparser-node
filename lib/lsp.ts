@@ -679,7 +679,7 @@ export class LanguageService implements LanguageServiceBase {
 			extSelector = 'magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link',
 			fullSelector = `link-target,template-name,invoke-module,${extSelector}`,
 			selector = articlePath?.includes('//') ? fullSelector : extSelector;
-		return (await this.#queue(text)).querySelectorAll(selector).map((token): DocumentLink | false => {
+		return (await this.#queue(text)).querySelectorAll(selector).reverse().map((token): DocumentLink | false => {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
 			if (
@@ -703,7 +703,7 @@ export class LanguageService implements LanguageServiceBase {
 					|| token.is<MagicLinkToken>('ext-link-url')
 					|| token.is<MagicLinkToken>('free-ext-link')
 				) {
-					target = token.getUrl();
+					target = token.getUrl(articlePath);
 				} else if (
 					type === 'link-target' && (
 						parentNode!.is<LinkToken>('link')
@@ -714,7 +714,7 @@ export class LanguageService implements LanguageServiceBase {
 					if (target.startsWith('/')) {
 						return false;
 					}
-					target = parentNode.link.getUrl();
+					target = parentNode.link.getUrl(articlePath);
 				} else if (
 					['link-target', 'template-name', 'invoke-module'].includes(type)
 					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'

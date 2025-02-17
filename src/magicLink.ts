@@ -113,14 +113,17 @@ export abstract class MagicLinkToken extends Token {
 		return errors;
 	}
 
-	/** 获取网址 */
-	getUrl(): URL | string {
+	/**
+	 * 获取网址
+	 * @param articlePath 条目路径
+	 */
+	getUrl(articlePath?: string): URL | string {
 		LSP: { // eslint-disable-line no-unused-labels
 			const {type} = this;
 			let {link} = this;
 			if (type === 'magic-link') {
 				if (link.startsWith('ISBN')) {
-					return this.normalizeTitle(`Special:BookSources/${link.slice(5)}`).getUrl();
+					return this.normalizeTitle(`Special:BookSources/${link.slice(5)}`).getUrl(articlePath);
 				}
 				link = link.startsWith('RFC')
 					? `https://tools.ietf.org/html/rfc${link.slice(4)}`
