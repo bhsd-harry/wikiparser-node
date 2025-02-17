@@ -46,7 +46,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 (async () => {
 	const failures = new Map<string, number>();
 	for (const [name, url, config] of apis) {
-		info(`开始检查${name}：`);
+		info(`开始检查${name}：\n`);
 		const parserConfig: Config = require(`../../config/${config}`);
 		Parser.config = parserConfig;
 		try {
@@ -77,6 +77,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 					error(`解析 ${title} 页面时出错！`, e);
 					failed++;
 				}
+				console.log();
 			}
 			if (failed) {
 				failures.set(name, failed);

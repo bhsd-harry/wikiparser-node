@@ -60,6 +60,8 @@ const indexToPos = (root: Token, index: number): Position => {
  */
 export default async (Parser: Parser, {title, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	Parser.getConfig();
+	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	// eslint-disable-next-line no-eval
 	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
 	const lsp = Parser.createLanguageService({}),
@@ -80,13 +82,26 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 			magicWordName,
 		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
-	await lsp.provideDiagnostics(content, false);
+
+	await wrap('provideDiagnostics', title, () => {
+		void lsp.provideDiagnostics(
+			// `${content} `,
+			content,
+			false,
+		);
+		return new Promise(resolve => {
+			setImmediate(() => {
+				resolve(lsp.provideDiagnostics(content, false));
+			});
+		});
+	});
 
 	for (const method of Object.getOwnPropertyNames(lsp.constructor.prototype) as Key[]) {
 		switch (method) {
 			case 'constructor':
 			case 'data':
 			case 'destroy':
+			case 'provideDiagnostics':
 			case 'provideColorPresentations':
 			case 'provideCodeAction':
 				break;
@@ -118,12 +133,11 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 				}
 				break;
 			}
-			case 'provideDiagnostics':
 			case 'provideFoldingRanges':
 			case 'provideLinks':
 			case 'provideInlayHints':
 			case 'provideDocumentSymbols':
-				await wrap(method, title, () => lsp.provideDiagnostics(content));
+				await wrap(method, title, () => lsp[method](content));
 				break;
 			case 'provideReferences': {
 				const tokens = [
