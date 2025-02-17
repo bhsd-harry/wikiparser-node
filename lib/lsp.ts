@@ -768,7 +768,7 @@ export class LanguageService implements LanguageServiceBase {
 			extSelector = 'magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link',
 			fullSelector = `link-target,template-name,invoke-module,${extSelector}`,
 			selector = articlePath?.includes('//') ? fullSelector : extSelector;
-		return (await this.#queue(text)).querySelectorAll(selector).map((token): DocumentLink | false => {
+		return (await this.#queue(text)).querySelectorAll(selector).reverse().map((token): DocumentLink | false => {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
 			if (

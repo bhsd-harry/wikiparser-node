@@ -7,7 +7,14 @@ import {
 
 	classes,
 } from '../../util/constants';
-import {rawurldecode} from '../../util/string';
+import {
+	rawurldecode,
+
+	/* NOT FOR BROWSER */
+
+	encode,
+	sanitize,
+} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
@@ -26,7 +33,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../../util/debug';
-import {encode, sanitize} from '../../util/string';
 import {font} from '../../util/html';
 
 /* NOT FOR BROWSER END */
