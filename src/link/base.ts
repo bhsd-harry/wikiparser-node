@@ -3,7 +3,9 @@ import {
 	MAX_STAGE,
 	BuildMethod,
 } from '../../util/constants';
-import {rawurldecode} from '../../util/string';
+import {
+	rawurldecode,
+} from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
