@@ -1,6 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
+import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
 /**
