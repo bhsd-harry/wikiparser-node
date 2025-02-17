@@ -342,13 +342,16 @@ export abstract class ImageParameterToken extends Token {
 		}
 	}
 
-	/** 获取网址 */
-	getUrl(): string | undefined {
+	/**
+	 * 获取网址
+	 * @param articlePath 条目路径
+	 */
+	getUrl(articlePath?: string): string | undefined {
 		let {link} = this;
 		if (!link) {
 			return link;
 		} else if (typeof link !== 'string') {
-			return link.getUrl();
+			return link.getUrl(articlePath);
 		} else if (link.startsWith('//')) {
 			link = `https:${link}`;
 		}

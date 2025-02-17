@@ -19,7 +19,7 @@ import Parser from '../index';
 export class Title {
 	#main: string;
 	readonly #namespaces;
-	readonly #path: string;
+	#path: string;
 	#ns;
 	#fragment;
 	interwiki = '';
@@ -232,9 +232,18 @@ export class Title {
 		this.#fragment = fragment;
 	}
 
-	/** 生成URL */
-	getUrl(): string {
+	/**
+	 * 生成URL
+	 * @param articlePath 条目路径
+	 */
+	getUrl(articlePath?: string): string {
 		LSP: { // eslint-disable-line no-unused-labels
+			if (typeof articlePath === 'string') {
+				this.#path = articlePath || '/wiki/$1';
+				if (!this.#path.includes('$1')) {
+					this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
+				}
+			}
 			const {title, fragment} = this;
 			if (title) {
 				return this.#path.replace(
