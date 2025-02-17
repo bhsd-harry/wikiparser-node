@@ -2,6 +2,7 @@ import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
+import {tidy} from '../util/string';
 import Parser from '../index';
 import type {
 	Range,
@@ -315,7 +316,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 否则开始新的解析
 	 */
 	async #queue(text: string): Promise<Token> {
-		text = text.replace(/\r$/gmu, '');
+		text = tidy(text);
 		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
 		}
