@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 import {cache} from '../util/lint';
+import {
+	Shadow,
+} from '../util/debug';
 import type {LintError, AstNode as AstNodeBase, TokenTypes} from '../base';
 import type {Cached} from '../util/lint';
 import type {
@@ -21,15 +24,6 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
-/**
- * 获取子节点相对于父节点的字符位置
- * @param j 子节点序号
- * @param parent 父节点
- */
-const getIndex = (j: number, parent: AstNode): number =>
-	parent.childNodes.slice(0, j).reduce((acc, cur, i) => acc + cur.toString().length + parent.getGaps(i), 0)
-	+ parent.getAttribute('padding');
-
 /** 类似Node */
 export abstract class AstNode implements AstNodeBase {
 	declare data?: string | undefined;
@@ -40,6 +34,7 @@ export abstract class AstNode implements AstNodeBase {
 	#lines: Cached<[string, number, number][]> | undefined;
 	#root: Cached<Token | this> | undefined;
 	#aIndex: Cached<number> | undefined;
+	#rIndex: Record<number, Cached<number>> = {};
 
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
@@ -175,9 +170,26 @@ export abstract class AstNode implements AstNodeBase {
 	getRelativeIndex(j?: number): number {
 		if (j === undefined) {
 			const {parentNode} = this;
-			return parentNode ? getIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes), parentNode) : 0;
+			return parentNode
+				? parentNode.getRelativeIndex(parentNode.childNodes.indexOf(this as AstNode as AstNodes))
+				: 0;
 		}
-		return getIndex(j, this);
+		return cache<number>(
+			this.#rIndex[j],
+			() => {
+				const {childNodes} = this,
+					n = j + (j < 0 ? childNodes.length : 0);
+				let acc = this.getAttribute('padding');
+				for (let i = 0; i < n; i++) {
+					this.#rIndex[i] = [Shadow.rev, acc];
+					acc += childNodes[i]!.toString().length + this.getGaps(i);
+				}
+				return acc;
+			},
+			value => {
+				this.#rIndex[j] = value;
+			},
+		);
 	}
 
 	/** 获取当前节点的绝对位置 */
