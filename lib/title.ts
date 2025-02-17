@@ -148,11 +148,10 @@ export class Title {
 				encodeURIComponent(title)
 				+ (
 					fragment === undefined
-					&& this.#redirectFragment === undefined
 						? ''
 						: `#${encodeURIComponent(
+							// eslint-disable-next-line @stylistic/comma-dangle
 							fragment
-							?? this.#redirectFragment!,
 						)}`
 				),
 			);
