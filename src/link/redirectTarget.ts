@@ -18,12 +18,12 @@ import {classes} from '../../util/constants';
 export abstract class RedirectTargetToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, NoincludeToken];
 	abstract override get lastChild(): AtomToken | NoincludeToken;
+	abstract override get link(): Title;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken] | [AtomToken, NoincludeToken];
 	abstract override get lastElementChild(): AtomToken | NoincludeToken;
-	abstract override get link(): Title;
 	abstract override set link(link: string);
 
 	/* NOT FOR BROWSER END */

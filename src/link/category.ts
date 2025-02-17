@@ -15,11 +15,11 @@ import type {Title} from '../../lib/title';
  */
 export abstract class CategoryToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
+	abstract override get link(): Title;
 
 	/* NOT FOR BROWSER */
 
 	abstract override get children(): [AtomToken] | [AtomToken, Token];
-	abstract override get link(): Title;
 	abstract override set link(link: string);
 
 	/* NOT FOR BROWSER END */
