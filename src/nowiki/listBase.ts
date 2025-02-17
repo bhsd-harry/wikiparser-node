@@ -45,8 +45,8 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	/** 获取列表行的范围 */
 	getRange(): ListRangeToken {
 		let {nextSibling} = this;
-		if (nextSibling?.type === 'list-range') {
-			return nextSibling as ListRangeToken;
+		if (nextSibling?.is<ListRangeToken>('list-range')) {
+			return nextSibling;
 		}
 		const {dt, type} = this;
 		let nDt = 0;

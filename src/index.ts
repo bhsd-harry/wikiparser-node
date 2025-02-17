@@ -68,14 +68,7 @@ import type {
 	IncludeToken,
 	HtmlToken,
 	ExtToken,
-	TranscludeToken,
 	CommentToken,
-	FileToken,
-	LinkToken,
-	RedirectTargetToken,
-	ExtLinkToken,
-	MagicLinkToken,
-	ImageParameterToken,
 	ListToken,
 	DdToken,
 } from '../internal';
@@ -90,11 +83,6 @@ import {AstRange} from '../lib/range';
 import type {Range} from '../lib/ranges';
 
 /* NOT FOR BROWSER END */
-
-declare interface CaretPosition {
-	readonly offsetNode: AstNodes;
-	readonly offset: number;
-}
 
 declare interface LintIgnore {
 	line: number;
@@ -183,25 +171,6 @@ export class Token extends AstElement {
 
 		this.#type = value;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** 所有图片，包括图库 */
-	get images(): FileToken[] {
-		return this.querySelectorAll('file,gallery-image,imagemap-image');
-	}
-
-	/** 所有内链、外链和自由外链 */
-	get links(): (LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
-		return this.querySelectorAll('link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link');
-	}
-
-	/** 所有模板和模块 */
-	get embeds(): TranscludeToken[] {
-		return this.querySelectorAll('template,magic-word#invoke');
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/** @class */
 	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
@@ -674,67 +643,6 @@ export class Token extends AstElement {
 			);
 	}
 
-	/**
-	 * 找到给定位置
-	 * @param index 位置
-	 */
-	caretPositionFromIndex(index?: number): CaretPosition | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
-			if (index === undefined) {
-				return undefined;
-			}
-			const {length} = this.toString();
-			if (index > length || index < -length) {
-				return undefined;
-			}
-			index += index < 0 ? length : 0;
-			let self: AstNodes = this,
-				acc = 0,
-				start = 0;
-			while (self.type !== 'text') {
-				const {childNodes}: Token = self;
-				acc += self.getAttribute('padding');
-				for (let i = 0; acc < index && i < childNodes.length; i++) {
-					const cur: AstNodes = childNodes[i]!,
-						l = cur.toString().length;
-					acc += l;
-					if (acc >= index) {
-						self = cur;
-						acc -= l;
-						start = acc;
-						break;
-					}
-					acc += self.getGaps(i);
-				}
-				if (self.childNodes === childNodes) {
-					return {offsetNode: self, offset: index - start};
-				}
-			}
-			return {offsetNode: self, offset: index - start};
-		}
-	}
-
-	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param index 位置
-	 */
-	elementFromIndex(index?: number): Token | undefined {
-		LSP: { // eslint-disable-line no-unused-labels
-			const node = this.caretPositionFromIndex(index)?.offsetNode;
-			return node?.type === 'text' ? node.parentNode : node;
-		}
-	}
-
-	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	elementFromPoint(x: number, y: number): Token | undefined {
-		// eslint-disable-next-line no-unused-labels
-		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
-	}
-
 	/* NOT FOR BROWSER */
 
 	/** @private */
@@ -850,33 +758,6 @@ export class Token extends AstElement {
 	/** 创建AstRange对象 */
 	createRange(): AstRange {
 		return new AstRange();
-	}
-
-	/**
-	 * 找到给定位置
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	caretPositionFromPoint(x: number, y: number): CaretPosition | undefined {
-		return this.caretPositionFromIndex(this.indexFromPos(y, x));
-	}
-
-	/**
-	 * 找到给定位置所在的所有节点
-	 * @param index 位置
-	 */
-	elementsFromIndex(index?: number): Token[] {
-		const offsetNode = this.elementFromIndex(index);
-		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
-	}
-
-	/**
-	 * 找到给定位置所在的所有节点
-	 * @param x 列数
-	 * @param y 行数
-	 */
-	elementsFromPoint(x: number, y: number): Token[] {
-		return this.elementsFromIndex(this.indexFromPos(y, x));
 	}
 
 	/**

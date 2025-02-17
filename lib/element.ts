@@ -10,7 +10,21 @@ import type {
 	AST,
 } from '../base';
 import type {TokenPredicate} from '../parser/selector';
-import type {AstNodes, AstText, Token} from '../internal';
+import type {
+	AstNodes,
+	AstText,
+	Token,
+
+	/* NOT FOR BROWSER */
+
+	FileToken,
+	LinkToken,
+	RedirectTargetToken,
+	ExtLinkToken,
+	MagicLinkToken,
+	ImageParameterToken,
+	TranscludeToken,
+} from '../internal';
 
 /* NOT FOR BROWSER */
 
@@ -19,6 +33,11 @@ import * as path from 'path';
 import {classes} from '../util/constants';
 
 /* NOT FOR BROWSER END */
+
+export interface CaretPosition {
+	readonly offsetNode: AstNodes;
+	readonly offset: number;
+}
 
 /** 类似HTMLElement */
 export abstract class AstElement extends AstNode {
@@ -85,6 +104,21 @@ export abstract class AstElement extends AstNode {
 	get clientWidth(): number | undefined {
 		const {innerText} = this as {innerText?: string};
 		return innerText?.split('\n').pop()!.length;
+	}
+
+	/** 所有图片，包括图库 */
+	get images(): FileToken[] {
+		return this.querySelectorAll('file,gallery-image,imagemap-image');
+	}
+
+	/** 所有内链、外链和自由外链 */
+	get links(): (LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
+		return this.querySelectorAll('link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link');
+	}
+
+	/** 所有模板和模块 */
+	get embeds(): TranscludeToken[] {
+		return this.querySelectorAll('template,magic-word#invoke');
 	}
 
 	constructor() {
@@ -301,6 +335,68 @@ export abstract class AstElement extends AstNode {
 		return this.childNodes.map(child => child.toString(skip)).join(separator);
 	}
 
+	/**
+	 * 找到给定位置
+	 * @param index 位置
+	 */
+	caretPositionFromIndex(index?: number): CaretPosition | undefined {
+		LSP: { // eslint-disable-line no-unused-labels
+			if (index === undefined) {
+				return undefined;
+			}
+			const {length} = this.toString();
+			if (index > length || index < -length) {
+				return undefined;
+			}
+			index += index < 0 ? length : 0;
+			let self: AstNode = this,
+				acc = 0,
+				start = 0;
+			while (self.type !== 'text') {
+				const {childNodes} = self;
+				acc += self.getAttribute('padding');
+				for (let i = 0; acc <= index && i < childNodes.length; i++) {
+					const cur: AstNodes = childNodes[i]!,
+						l = cur.toString().length;
+					acc += l;
+					// 优先选择靠前的非文本兄弟节点，但永不进入假节点
+					if (acc >= index && l > 0 && (cur.type !== 'text' || i === childNodes.length - 1)) {
+						self = cur;
+						acc -= l;
+						start = acc;
+						break;
+					}
+					acc += self.getGaps(i);
+				}
+				if (self.childNodes === childNodes) {
+					return {offsetNode: self as Token, offset: index - start};
+				}
+			}
+			return {offsetNode: self as AstText, offset: index - start};
+		}
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param index 位置
+	 */
+	elementFromIndex(index?: number): Token | undefined {
+		LSP: { // eslint-disable-line no-unused-labels
+			const node = this.caretPositionFromIndex(index)?.offsetNode;
+			return node?.type === 'text' ? node.parentNode : node;
+		}
+	}
+
+	/**
+	 * 找到给定位置所在的最外层节点
+	 * @param x 列数
+	 * @param y 行数
+	 */
+	elementFromPoint(x: number, y: number): Token | undefined {
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.elementFromIndex(this.indexFromPos(y, x));
+	}
+
 	/** @private */
 	lint(start = this.getAbsoluteIndex(), re?: RegExp | false): LintError[] {
 		const errors: LintError[] = [];
@@ -450,6 +546,33 @@ export abstract class AstElement extends AstNode {
 		return reference === undefined
 			? this.insertAt(child as T)
 			: this.insertAt(child as T, this.#getChildIndex(reference));
+	}
+
+	/**
+	 * 找到给定位置
+	 * @param x 列数
+	 * @param y 行数
+	 */
+	caretPositionFromPoint(x: number, y: number): CaretPosition | undefined {
+		return this.caretPositionFromIndex(this.indexFromPos(y, x));
+	}
+
+	/**
+	 * 找到给定位置所在的所有节点
+	 * @param index 位置
+	 */
+	elementsFromIndex(index?: number): Token[] {
+		const offsetNode = this.elementFromIndex(index);
+		return offsetNode ? [...offsetNode.getAncestors().reverse(), offsetNode] : [];
+	}
+
+	/**
+	 * 找到给定位置所在的所有节点
+	 * @param x 列数
+	 * @param y 行数
+	 */
+	elementsFromPoint(x: number, y: number): Token[] {
+		return this.elementsFromIndex(this.indexFromPos(y, x));
 	}
 }
 

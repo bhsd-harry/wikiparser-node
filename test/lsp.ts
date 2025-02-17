@@ -66,6 +66,8 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 	/* NOT FOR BROWSER END */
 
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	Parser.getConfig();
+	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	// eslint-disable-next-line no-eval
 	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
 	const lsp = Parser.createLanguageService({}),
@@ -98,7 +100,11 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
 	await wrap('provideDiagnostics', title, () => {
-		void lsp.provideDiagnostics(`${content} `, false);
+		void lsp.provideDiagnostics(
+			// `${content} `,
+			content,
+			false,
+		);
 		return new Promise(resolve => {
 			setImmediate(() => {
 				resolve(lsp.provideDiagnostics(content, false));

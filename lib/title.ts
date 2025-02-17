@@ -19,6 +19,7 @@ import Parser from '../index';
 export class Title {
 	#main: string;
 	readonly #namespaces;
+	readonly #path: string;
 	#ns;
 	#fragment;
 	interwiki = '';
@@ -29,7 +30,6 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#redirectFragment: string | undefined;
-	readonly #path: string;
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -232,6 +232,27 @@ export class Title {
 		this.#fragment = fragment;
 	}
 
+	/** 生成URL */
+	getUrl(): string {
+		const {title, fragment} = this;
+		if (title) {
+			return this.#path.replace(
+				'$1',
+				encodeURIComponent(title)
+				+ (
+					fragment === undefined
+					&& this.#redirectFragment === undefined
+						? ''
+						: `#${encodeURIComponent(
+							fragment
+							?? this.#redirectFragment!,
+						)}`
+				),
+			);
+		}
+		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
+	}
+
 	/* NOT FOR BROWSER */
 
 	/**
@@ -289,23 +310,6 @@ export class Title {
 	/** 转换为根页面 */
 	toRootPage(): void {
 		this.main = this.main.replace(/\/.*/u, '');
-	}
-
-	/** 生成URL */
-	getUrl(): string {
-		const {title, fragment} = this;
-		if (title) {
-			return this.#path.replace(
-				'$1',
-				encodeURIComponent(title)
-				+ (
-					fragment === undefined && this.#redirectFragment === undefined
-						? ''
-						: `#${encodeURIComponent(fragment ?? this.#redirectFragment!)}`
-				),
-			);
-		}
-		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 	}
 
 	/** @private */

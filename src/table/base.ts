@@ -9,6 +9,7 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
+import type {TdToken} from '../../internal';
 
 /**
  * 转义表格语法
@@ -86,8 +87,8 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 				token = new C(undefined, undefined, this.getAttribute('config'));
 			token.firstChild.safeReplaceWith(syntax);
 			token.childNodes[1].safeReplaceWith(attr);
-			if (token.type === 'td') { // TdToken
-				token.childNodes[2]!.safeReplaceWith(cloned[0]!);
+			if (token.is<TdToken>('td')) { // TdToken
+				token.childNodes[2].safeReplaceWith(cloned[0]!);
 			} else {
 				token.append(...cloned);
 			}

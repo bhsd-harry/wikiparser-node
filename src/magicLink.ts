@@ -189,6 +189,23 @@ export abstract class MagicLinkToken extends Token {
 		return errors;
 	}
 
+	/** 获取网址 */
+	getUrl(): URL | string {
+		const {type} = this;
+		let {link} = this;
+		if (type === 'magic-link') {
+			if (link.startsWith('ISBN')) {
+				return this.normalizeTitle(`Special:BookSources/${link.slice(5)}`).getUrl();
+			}
+			link = link.startsWith('RFC')
+				? `https://tools.ietf.org/html/rfc${link.slice(4)}`
+				: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`;
+		} else if (link.startsWith('//')) {
+			link = `https:${link}`;
+		}
+		return new URL(link);
+	}
+
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
@@ -219,23 +236,6 @@ export abstract class MagicLinkToken extends Token {
 			}
 		}
 		return super.insertAt(token as string, i);
-	}
-
-	/** 获取网址 */
-	getUrl(): URL | string {
-		const {type, protocol} = this;
-		let {link} = this;
-		if (type === 'magic-link') {
-			if (protocol === 'ISBN') {
-				return this.normalizeTitle(`Special:BookSources/${link.slice(5)}`).getUrl();
-			}
-			link = protocol === 'RFC'
-				? `https://tools.ietf.org/html/rfc${link.slice(4)}`
-				: `https://pubmed.ncbi.nlm.nih.gov/${link.slice(5)}`;
-		} else if (protocol === '//') {
-			link = `https:${link}`;
-		}
-		return new URL(link);
 	}
 
 	/**

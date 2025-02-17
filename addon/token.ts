@@ -15,128 +15,6 @@ import type {AstRange} from '../lib/range';
 import type {AstNodes} from '../lib/node';
 import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
-Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
-	const config = this.getAttribute('config');
-	// @ts-expect-error abstract class
-	return Shadow.run((): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
-};
-
-Token.prototype.createElement = /** @implements */ function(
-	tagName,
-	{selfClosing, closing} = {},
-): IncludeToken | ExtToken | HtmlToken {
-	const config = this.getAttribute('config'),
-		include = this.getAttribute('include');
-	if (tagName === (include ? 'noinclude' : 'includeonly')) {
-		return Shadow.run(
-			// @ts-expect-error abstract class
-			() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
-		);
-	} else if (config.ext.includes(tagName)) {
-		// @ts-expect-error abstract class
-		return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config, include));
-	} else if (config.html.some(tags => tags.includes(tagName))) {
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
-			attr.afterBuild();
-			// @ts-expect-error abstract class
-			return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
-		});
-	}
-	/* istanbul ignore next */
-	throw new RangeError(`Invalid tag name: ${tagName}`);
-};
-
-Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined {
-	if (this.type !== 'root') {
-		return undefined;
-	}
-	const {childNodes, length} = this,
-		headings: [number, number][] = [...childNodes.entries()]
-			.filter((entry): entry is [number, HeadingToken] => entry[1].type === 'heading')
-			.map(([i, {level}]) => [i, level]),
-		lastHeading = [-1, -1, -1, -1, -1, -1],
-		sections = headings.map(([i]) => {
-			const range = this.createRange();
-			range.setStart(this, i);
-			return range;
-		});
-	for (const [i, [index, level]] of headings.entries()) {
-		for (let j = level; j < 6; j++) {
-			const last = lastHeading[j]!;
-			if (last >= 0) {
-				sections[last]!.setEnd(this, index);
-			}
-			lastHeading[j] = j === level ? i : -1;
-		}
-	}
-	for (const last of lastHeading) {
-		if (last >= 0) {
-			sections[last]!.setEnd(this, length);
-		}
-	}
-	const range = this.createRange();
-	range.setStart(this, 0);
-	range.setEnd(this, headings[0]?.[0] ?? length);
-	sections.unshift(range);
-	return sections;
-};
-
-Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange | undefined {
-	tag &&= tag.toLowerCase();
-	const {html} = this.getAttribute('config'),
-		normalTags = new Set(html[0]),
-		voidTags = new Set(html[2]);
-	/* istanbul ignore next */
-	if (html[2].includes(tag!)) {
-		throw new RangeError(`Void tag: ${tag}`);
-	} else if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
-		throw new RangeError(`Invalid tag name: ${tag}`);
-	}
-	const {parentNode} = this;
-	if (!parentNode) {
-		return undefined;
-	}
-
-	/**
-	 * 检查是否为指定的 HTML 标签
-	 * @param node 节点
-	 * @param name 标签名
-	 * @param closing 是否为闭合标签
-	 */
-	const checkHtml = (node: AstNodes, name: string | undefined, closing: boolean): boolean =>
-		node.is<HtmlToken>('html')
-		&& (!name && !voidTags.has(node.name) || node.name === name)
-		&& (normalTags.has(node.name) || !node.selfClosing)
-		&& node.closing === closing;
-	const {childNodes, length} = parentNode,
-		index = childNodes.indexOf(this);
-	let i = index - 1,
-		j = length;
-	for (; i >= 0; i--) {
-		const open = childNodes[i]!;
-		if (checkHtml(open, tag, false)) {
-			for (j = index + 1; j < length; j++) {
-				const close = childNodes[j]!;
-				if (checkHtml(close, open.name, true)) {
-					break;
-				}
-			}
-			if (j < length) {
-				break;
-			}
-		}
-	}
-	if (i === -1) {
-		return parentNode.findEnclosingHtml(tag);
-	}
-	const range = this.createRange();
-	range.setStart(parentNode, i);
-	range.setEnd(parentNode, j + 1);
-	return range;
-};
-
 /**
  * 隐式换行
  * @param str 字符串
@@ -417,6 +295,128 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 	}
 	Parser.viewOnly = viewOnly;
 	return html;
+};
+
+Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
+	const config = this.getAttribute('config');
+	// @ts-expect-error abstract class
+	return Shadow.run((): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
+};
+
+Token.prototype.createElement = /** @implements */ function(
+	tagName,
+	{selfClosing, closing} = {},
+): IncludeToken | ExtToken | HtmlToken {
+	const config = this.getAttribute('config'),
+		include = this.getAttribute('include');
+	if (tagName === (include ? 'noinclude' : 'includeonly')) {
+		return Shadow.run(
+			// @ts-expect-error abstract class
+			() => new IncludeToken(tagName, '', undefined, selfClosing ? undefined : tagName, config),
+		);
+	} else if (config.ext.includes(tagName)) {
+		// @ts-expect-error abstract class
+		return Shadow.run(() => new ExtToken(tagName, '', undefined, selfClosing ? undefined : '', config, include));
+	} else if (config.html.some(tags => tags.includes(tagName))) {
+		return Shadow.run(() => {
+			// @ts-expect-error abstract class
+			const attr: AttributesToken = new AttributesToken(undefined, 'html-attrs', tagName, config);
+			attr.afterBuild();
+			// @ts-expect-error abstract class
+			return new HtmlToken(tagName, attr, Boolean(closing), Boolean(selfClosing), config);
+		});
+	}
+	/* istanbul ignore next */
+	throw new RangeError(`Invalid tag name: ${tagName}`);
+};
+
+Token.prototype.sections = /** @implements */ function(): AstRange[] | undefined {
+	if (this.type !== 'root') {
+		return undefined;
+	}
+	const {childNodes, length} = this,
+		headings: [number, number][] = [...childNodes.entries()]
+			.filter((entry): entry is [number, HeadingToken] => entry[1].type === 'heading')
+			.map(([i, {level}]) => [i, level]),
+		lastHeading = [-1, -1, -1, -1, -1, -1],
+		sections = headings.map(([i]) => {
+			const range = this.createRange();
+			range.setStart(this, i);
+			return range;
+		});
+	for (const [i, [index, level]] of headings.entries()) {
+		for (let j = level; j < 6; j++) {
+			const last = lastHeading[j]!;
+			if (last >= 0) {
+				sections[last]!.setEnd(this, index);
+			}
+			lastHeading[j] = j === level ? i : -1;
+		}
+	}
+	for (const last of lastHeading) {
+		if (last >= 0) {
+			sections[last]!.setEnd(this, length);
+		}
+	}
+	const range = this.createRange();
+	range.setStart(this, 0);
+	range.setEnd(this, headings[0]?.[0] ?? length);
+	sections.unshift(range);
+	return sections;
+};
+
+Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange | undefined {
+	tag &&= tag.toLowerCase();
+	const {html} = this.getAttribute('config'),
+		normalTags = new Set(html[0]),
+		voidTags = new Set(html[2]);
+	/* istanbul ignore next */
+	if (html[2].includes(tag!)) {
+		throw new RangeError(`Void tag: ${tag}`);
+	} else if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
+		throw new RangeError(`Invalid tag name: ${tag}`);
+	}
+	const {parentNode} = this;
+	if (!parentNode) {
+		return undefined;
+	}
+
+	/**
+	 * 检查是否为指定的 HTML 标签
+	 * @param node 节点
+	 * @param name 标签名
+	 * @param closing 是否为闭合标签
+	 */
+	const checkHtml = (node: AstNodes, name: string | undefined, closing: boolean): boolean =>
+		node.is<HtmlToken>('html')
+		&& (!name && !voidTags.has(node.name) || node.name === name)
+		&& (normalTags.has(node.name) || !node.selfClosing)
+		&& node.closing === closing;
+	const {childNodes, length} = parentNode,
+		index = childNodes.indexOf(this);
+	let i = index - 1,
+		j = length;
+	for (; i >= 0; i--) {
+		const open = childNodes[i]!;
+		if (checkHtml(open, tag, false)) {
+			for (j = index + 1; j < length; j++) {
+				const close = childNodes[j]!;
+				if (checkHtml(close, open.name, true)) {
+					break;
+				}
+			}
+			if (j < length) {
+				break;
+			}
+		}
+	}
+	if (i === -1) {
+		return parentNode.findEnclosingHtml(tag);
+	}
+	const range = this.createRange();
+	range.setStart(parentNode, i);
+	range.setEnd(parentNode, j + 1);
+	return range;
 };
 
 classes['ExtendedToken'] = __filename;

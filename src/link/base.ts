@@ -58,10 +58,14 @@ export abstract class LinkBaseToken extends Token {
 	abstract override get firstElementChild(): AtomToken;
 	abstract override get lastElementChild(): Token;
 
+	/* NOT FOR BROWSER END */
+
 	/** 完整链接 */
 	get link(): string | Title {
 		return this.#title;
 	}
+
+	/* NOT FOR BROWSER */
 
 	set link(link: string) {
 		this.setTarget(link);
@@ -221,10 +225,11 @@ export abstract class LinkBaseToken extends Token {
 			errors.push(e);
 		}
 		if (type === 'link' || type === 'category') {
-			const textNode = linkText?.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('|'));
+			const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
+				textNode = linkText?.childNodes[j!] as AstText | undefined;
 			if (textNode) {
 				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning'),
-					i = e.startIndex + textNode.getRelativeIndex();
+					i = e.startIndex + linkText!.getRelativeIndex(j);
 				e.suggestions = [
 					{
 						desc: 'escape',
@@ -237,10 +242,11 @@ export abstract class LinkBaseToken extends Token {
 		}
 		if (fragment !== undefined && !isLink(type)) {
 			const e = generateForChild(target, rect, 'no-ignored', 'useless fragment'),
-				textNode = target.childNodes.find((c): c is AstText => c.type === 'text' && c.data.includes('#'));
+				j = target.childNodes.findIndex(c => c.type === 'text' && c.data.includes('#')),
+				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {
 				e.fix = {
-					range: [e.startIndex + textNode.getRelativeIndex() + textNode.data.indexOf('#'), e.endIndex],
+					range: [e.startIndex + target.getRelativeIndex(j) + textNode.data.indexOf('#'), e.endIndex],
 					text: '',
 					desc: 'remove',
 				};

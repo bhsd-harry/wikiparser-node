@@ -28,8 +28,8 @@
 
 **Changed**
 
-- The return values of [`Token.prototype.caretPositionfromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#caretpositionfromindex) and its related methods are not different if the index is at the boundary between two tokens
-- [`Token.prototype.elementFromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#elementfromindex) and its related methods now return [`Token`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token) instead of [`AstNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode)
+- The return values of [`AstElement.prototype.caretPositionfromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#caretpositionfromindex) and its related methods are not different if the index is at the boundary between two tokens
+- [`AstElement.prototype.elementFromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#elementfromindex) and its related methods now return [`Token`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token) instead of [`AstNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode)
 
 ## v1.16.1
 
@@ -531,7 +531,7 @@
 
 **Removed**
 
-- [`ImagemapToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImagemapToken) no longer overrides the [`links`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#links) getter
+- [`ImagemapToken`](https://github.com/bhsd-harry/wikiparser-node/wiki/ImagemapToken) no longer overrides the [`links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#links) getter
 
 ## v1.5.4
 

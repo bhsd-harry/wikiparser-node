@@ -19,8 +19,9 @@ session.post('Profiler.enable', () => {
 				await lsp(Parser, page);
 				console.log();
 			}
-			session.post('Profiler.stop', (_, {profile}) => {
-				writeFileSync('test/prof.txt', JSON.stringify(profile.nodes, null, '\t'));
+			session.post('Profiler.stop', (_, {profile: {nodes}}) => {
+				const useful = nodes.filter(({callFrame: {url}}) => url.startsWith('file:///'));
+				writeFileSync('test/prof.txt', JSON.stringify(useful, null, '\t'));
 				session.disconnect();
 			});
 		})();
