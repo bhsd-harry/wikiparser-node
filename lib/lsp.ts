@@ -3,7 +3,6 @@ import {splitColors, numToHex} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
 import Parser from '../index';
-import {AstElement} from '../lib/element';
 import type {
 	Range,
 	Position,
@@ -35,6 +34,7 @@ import type {
 	SignatureData,
 	SignatureInfo,
 } from '../base';
+import type {CaretPosition} from '../lib/element';
 import type {
 	AstNodes,
 	Token,
@@ -51,6 +51,7 @@ import type {
 	RedirectTargetToken,
 	ImageParameterToken,
 	TranscludeToken,
+	MagicLinkToken,
 } from '../internal';
 
 declare interface CompletionConfig {
@@ -162,24 +163,33 @@ const getCompletion = (
 
 /**
  * Create the URL of a page.
+ * @param articlePath article path
  * @param page page name
  * @param ns namespace
- * @throws `RangeError` Invalid page name.
  * @throws `Error` Article path is not set.
  */
-const getUrl = (page: string, ns?: number): string => {
-	const {title, fragment, valid} = Parser.normalizeTitle(page, ns),
-		{articlePath} = Parser.getConfig();
-	/* istanbul ignore next */
-	if (!valid) {
-		throw new RangeError('Invalid page name.');
-	} else if (!articlePath) {
+const getUrl = (articlePath: string | undefined, page: string, ns?: number): string => {
+	/* istanbul ignore if */
+	if (!articlePath?.includes('//')) {
 		throw new Error('Article path is not set.');
 	}
-	const encoded = encodeURIComponent(title) + (fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`);
-	return articlePath.includes('$1')
-		? articlePath.replace('$1', encoded)
-		: articlePath + (articlePath.endsWith('/') ? '' : '/') + encoded;
+	const title = Parser.normalizeTitle(page, ns);
+	/* istanbul ignore if */
+	if (!title.valid) {
+		throw new RangeError('Invalid page name.');
+	}
+	return title.getUrl();
+};
+
+/**
+ * Get the caret position at the position from a word.
+ * @param root root token
+ * @param pos position
+ */
+const caretPositionFromWord = (root: Token, pos: Position): CaretPosition => {
+	const {line, character} = pos,
+		index = root.indexFromPos(line, character)!;
+	return root.caretPositionFromIndex(index + Number(/\w/u.test(root.toString().charAt(index))))!;
 };
 
 /**
@@ -188,10 +198,8 @@ const getUrl = (page: string, ns?: number): string => {
  * @param pos position
  */
 const elementFromWord = (root: Token, pos: Position): Token => {
-	const {line, character} = pos,
-		index = root.indexFromPos(line, character)!,
-		offset = Number(/[\w!#]/u.test(root.toString().charAt(index)));
-	return root.elementFromIndex(index + offset)!;
+	const {offsetNode} = caretPositionFromWord(root, pos);
+	return offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode;
 };
 
 /**
@@ -746,10 +754,12 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		this.#checkSignature();
-		const protocolRegex = new RegExp(`^(?:${Parser.getConfig().protocol}|//)`, 'iu'),
-			selector = 'link-target,template-name,invoke-module,magic-link,ext-link-url,free-ext-link,attr-value,'
-				+ 'image-parameter#link';
-		return (await this.#queue(text)).querySelectorAll(selector).flatMap((token): DocumentLink[] => {
+		const {articlePath, protocol} = Parser.getConfig(),
+			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu'),
+			extSelector = 'magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link',
+			fullSelector = `link-target,template-name,invoke-module,${extSelector}`,
+			selector = articlePath?.includes('//') ? fullSelector : extSelector;
+		return (await this.#queue(text)).querySelectorAll(selector).map((token): DocumentLink | false => {
 			const {type, parentNode, firstChild, lastChild, childNodes} = token,
 				{name, tag} = parentNode as AttributeToken;
 			if (
@@ -760,27 +770,38 @@ export class LanguageService implements LanguageServiceBase {
 				)
 				|| !isPlain(childNodes)
 			) {
-				return [];
+				return false;
 			}
-			let target = type === 'image-parameter'
-				? AstElement.prototype.toString.call(token, true).trim()
-				: token.toString(true).trim();
+			let target: URL | string = childNodes.filter((node): node is AstText => node.type === 'text')
+				.map(({data}) => data).join('').trim();
+			if (!target) {
+				return false;
+			}
 			try {
-				if (type === 'magic-link') {
-					if (target.startsWith('ISBN')) {
-						target = getUrl(`Special:Booksources/${target.slice(4).replace(/[\p{Zs}\t-]/gu, '')}`);
-					} else {
-						target = target.startsWith('RFC')
-							? `https://tools.ietf.org/html/rfc${target.slice(3).trim()}`
-							: `https://pubmed.ncbi.nlm.nih.gov/${target.slice(4).trim()}`;
+				if (
+					token.is<MagicLinkToken>('magic-link')
+					|| token.is<MagicLinkToken>('ext-link-url')
+					|| token.is<MagicLinkToken>('free-ext-link')
+				) {
+					target = token.getUrl();
+				} else if (
+					type === 'link-target' && (
+						parentNode!.is<LinkToken>('link')
+						|| parentNode!.is<RedirectTargetToken>('redirect-target')
+						|| parentNode!.is<CategoryToken>('category')
+					)
+				) {
+					if (target.startsWith('/')) {
+						return false;
 					}
+					target = parentNode.link.getUrl();
 				} else if (
 					['link-target', 'template-name', 'invoke-module'].includes(type)
 					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
 					|| type === 'image-parameter' && !protocolRegex.test(target)
 				) {
 					if (target.startsWith('/')) {
-						return [];
+						return false;
 					}
 					let ns = 0;
 					if (type === 'template-name' || type === 'attr-value') {
@@ -788,30 +809,28 @@ export class LanguageService implements LanguageServiceBase {
 					} else if (type === 'invoke-module') {
 						ns = 828;
 					}
-					target = getUrl(target, ns);
+					target = getUrl(articlePath, target, ns);
 				}
-				if (target.startsWith('//')) {
+				if (typeof target === 'string' && target.startsWith('//')) {
 					target = `https:${target}`;
 				}
 				target = new URL(target).href;
 				if (type === 'image-parameter') {
 					const rect = firstChild!.getBoundingClientRect(),
 						{top, left, height, width} = lastChild!.getBoundingClientRect();
-					return [
-						{
-							range: {
-								start: {line: rect.top, character: rect.left},
-								end: getEndPos(top, left, height, width),
-							},
-							target,
+					return {
+						range: {
+							start: {line: rect.top, character: rect.left},
+							end: getEndPos(top, left, height, width),
 						},
-					];
+						target,
+					};
 				}
-				return [{range: createNodeRange(token), target}];
+				return {range: createNodeRange(token), target};
 			} catch {
-				return [];
+				return false;
 			}
-		});
+		}).filter(Boolean) as DocumentLink[];
 	}
 
 	/**
@@ -941,16 +960,38 @@ export class LanguageService implements LanguageServiceBase {
 			return undefined;
 		}
 		this.#checkSignature();
-		const token = elementFromWord(await this.#queue(text), position);
+		const root = await this.#queue(text),
+			caret = caretPositionFromWord(root, position),
+			{offsetNode, offset} = caret,
+			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
+			{type, parentNode, length, name} = token;
 		let info: SignatureData['parserFunctions'][0] | undefined,
-			f: string | undefined;
+			f: string | undefined,
+			range: Range | undefined;
 		if (token.is<DoubleUnderscoreToken>('double-underscore')) {
 			info = this.data.behaviorSwitches.find(
 				({aliases}) => aliases.includes(token.innerText.toLowerCase()),
 			);
-		} else if (token.type === 'magic-word-name') {
-			info = this.#getParserFunction(token.parentNode!.name!);
+		} else if (type === 'magic-word-name') {
+			info = this.#getParserFunction(parentNode!.name!);
 			f = token.text().trim();
+		} else if (token.is<TranscludeToken>('magic-word') && length === 1 && !token.modifier) {
+			info = this.#getParserFunction(name!);
+			f = token.firstChild.text().trim();
+		} else if (
+			(token.is<TranscludeToken>('magic-word') || token.is<TranscludeToken>('template'))
+			&& token.modifier
+		) {
+			const rIndex = token.getRelativeIndex(0);
+			if (offset >= 2 && rIndex > offset) {
+				const aIndex = token.getAbsoluteIndex();
+				f = token.modifier.trim().slice(0, -1);
+				info = this.#getParserFunction(f.toLowerCase());
+				range = {
+					start: positionAt(root, aIndex + 2),
+					end: positionAt(root, aIndex + token.modifier.trimEnd().length + 1),
+				};
+			}
 		}
 		return info && {
 			contents: {
@@ -966,7 +1007,7 @@ export class LanguageService implements LanguageServiceBase {
 				)
 				+ info.description,
 			},
-			range: createNodeRange(token),
+			range: range ?? createNodeRange(token),
 		};
 	}
 
@@ -988,37 +1029,47 @@ export class LanguageService implements LanguageServiceBase {
 			curLine = text.split(/\r?\n/u, line + 1)[line]!,
 			{lastChild} = await this.#queue(
 				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
-			),
-			{type, name, childNodes, firstChild} = lastChild!;
-		if (type !== 'magic-word') {
+			);
+		if (!lastChild!.is<TranscludeToken>('magic-word')) {
 			return undefined;
 		}
-		const info = this.#getParserFunction(name!);
+		const {name, childNodes, firstChild} = lastChild,
+			info = this.#getParserFunction(name);
 		if (!info?.signatures) {
 			return undefined;
 		}
-		const f = firstChild!.text().trim(),
-			n = childNodes.length - 1,
-			start = lastChild!.getAbsoluteIndex();
-		let activeParameter = childNodes.findIndex(child => child.getRelativeIndex() > character - start) - 2;
-		if (activeParameter === -3) {
-			activeParameter = n - 1;
+		const n = childNodes.length - 1,
+			candidates = info.signatures.filter(
+				params => (params.length >= n || params[params.length - 1]?.rest)
+					&& params.every(({label, const: c}, i) => {
+						const p = c && i < n && childNodes[i + 1]?.text().trim();
+						return !p || label.includes(p) || label.includes(p.toLowerCase());
+					}),
+			);
+		if (candidates.length === 0) {
+			return undefined;
 		}
-		const signatures = info.signatures.filter(
-			params => (params.length >= n || params[params.length - 1]?.rest)
-				&& params.every(({label, const: c}, i) => {
-					const p = c && i < n && childNodes[i + 1]?.text().trim();
-					return !p || label.startsWith(p) || label.startsWith(p.toLowerCase());
-				}),
-		).map((params): SignatureInformation => ({
-			label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
-			parameters: params.map(({label, const: c}): ParameterInformation => ({
-				label,
-				...c ? {documentation: 'Predefined parameter'} : undefined,
-			})),
-			...params.length < n ? {activeParameter: Math.min(activeParameter, params.length - 1)} : undefined,
-		}));
-		return {signatures, activeParameter};
+		let j = 0;
+		if (n === 0) {
+			j = -1;
+		} else {
+			for (let cur = lastChild.getAbsoluteIndex() + lastChild.getRelativeIndex(1); j < n; j++) {
+				cur += childNodes[j + 1]!.toString().length + 1;
+				if (cur > character) {
+					break;
+				}
+			}
+		}
+		const f = firstChild.text().trim(),
+			signatures = candidates.map((params): SignatureInformation => ({
+				label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
+				parameters: params.map(({label, const: c}): ParameterInformation => ({
+					label,
+					...c ? {documentation: 'Predefined parameter'} : undefined,
+				})),
+				...params.length < n ? {activeParameter: Math.min(j, params.length - 1)} : undefined,
+			}));
+		return {signatures, activeParameter: j};
 	}
 
 	/**

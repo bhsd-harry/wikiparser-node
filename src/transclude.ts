@@ -247,13 +247,12 @@ export abstract class TranscludeToken extends Token {
 			errors.push(generateForChild(childNodes[1], rect, 'invalid-invoke', 'illegal module name'));
 		} else {
 			const child = childNodes[invoke ? 1 : 0] as AtomToken,
-				textNode = child.childNodes.find(
-					(c): c is AstText => c.type === 'text' && decodeHtml(c.data).includes('#'),
-				);
+				i = child.childNodes.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
+				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
 				const e = generateForChild(child, rect, 'no-ignored', 'useless fragment');
 				e.fix = {
-					range: [e.startIndex + textNode.getRelativeIndex() + textNode.data.indexOf('#'), e.endIndex],
+					range: [e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'), e.endIndex],
 					text: '',
 					desc: 'remove',
 				};

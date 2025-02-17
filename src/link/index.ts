@@ -1,6 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import {LinkBaseToken} from './base';
 import type {LintError} from '../../base';
+import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
 /**
@@ -9,6 +10,7 @@ import type {Token, AtomToken} from '../../internal';
  */
 export abstract class LinkToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken] | readonly [AtomToken, Token];
+	abstract override get link(): Title;
 
 	override get type(): 'link' {
 		return 'link';
