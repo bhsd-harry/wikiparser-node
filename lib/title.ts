@@ -8,6 +8,7 @@ import type {Config} from '../base';
 export class Title {
 	#main: string;
 	readonly #namespaces;
+	readonly #path: string;
 	#ns;
 	#fragment;
 	interwiki = '';
@@ -136,5 +137,26 @@ export class Title {
 	/** @private */
 	setFragment(fragment: string): void {
 		this.#fragment = fragment;
+	}
+
+	/** 生成URL */
+	getUrl(): string {
+		const {title, fragment} = this;
+		if (title) {
+			return this.#path.replace(
+				'$1',
+				encodeURIComponent(title)
+				+ (
+					fragment === undefined
+					&& this.#redirectFragment === undefined
+						? ''
+						: `#${encodeURIComponent(
+							fragment
+							?? this.#redirectFragment!,
+						)}`
+				),
+			);
+		}
+		return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 	}
 }
