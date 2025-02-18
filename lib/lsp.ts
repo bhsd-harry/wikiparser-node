@@ -494,7 +494,17 @@ export class LanguageService implements LanguageServiceBase {
 						? []
 						: getCompletion(
 							root.querySelectorAll<TranscludeToken>('template').filter(token => token !== cur)
-								.map(({name}) => colon ? name : name.replace(/^Template:/u, '')),
+								.map(token => {
+									const {name} = token;
+									if (colon) {
+										return name;
+									}
+									const {ns} = token.getAttribute('title');
+									if (ns === 0) {
+										return `:${name}`;
+									}
+									return ns === 10 ? name.slice(9) : name;
+								}),
 							'Folder',
 							str,
 							position,
@@ -729,8 +739,10 @@ export class LanguageService implements LanguageServiceBase {
 						return false;
 					}
 					target = parentNode.link.getUrl(articlePath);
+				} else if (type === 'template-name') {
+					target = parentNode!.getAttribute('title').getUrl(articlePath);
 				} else if (
-					['link-target', 'template-name', 'invoke-module'].includes(type)
+					['link-target', 'invoke-module'].includes(type)
 					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
 					|| type === 'image-parameter' && !protocolRegex.test(target)
 				) {
@@ -738,7 +750,7 @@ export class LanguageService implements LanguageServiceBase {
 						return false;
 					}
 					let ns = 0;
-					if (type === 'template-name' || type === 'attr-value') {
+					if (type === 'attr-value') {
 						ns = 10;
 					} else if (type === 'invoke-module') {
 						ns = 828;
