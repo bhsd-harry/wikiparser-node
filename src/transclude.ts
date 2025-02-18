@@ -45,6 +45,7 @@ export abstract class TranscludeToken extends Token {
 	readonly #type: 'template' | 'magic-word' = 'template';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
+	#title: Title;
 
 	/* NOT FOR BROWSER */
 
@@ -260,7 +261,8 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
 			if (isTemplate) {
-				this.setAttribute('name', this.#getTitle().title);
+				this.#title = this.#getTitle();
+				this.setAttribute('name', this.#title.title);
 			}
 
 			/* NOT FOR BROWSER */
@@ -278,7 +280,8 @@ export abstract class TranscludeToken extends Token {
 					delete data.newKey;
 				}
 				if (prevTarget === this.firstChild && isTemplate) {
-					this.setAttribute('name', this.#getTitle().title);
+					this.#title = this.#getTitle();
+					this.setAttribute('name', this.#title.title);
 				} else if (oldKey !== newKey && prevTarget instanceof ParameterToken) {
 					const oldArgs = this.getArgs(oldKey!, false, false);
 					oldArgs.delete(prevTarget);
@@ -321,6 +324,8 @@ export abstract class TranscludeToken extends Token {
 		switch (key) {
 			case 'padding':
 				return this.modifier.length + 2 as TokenAttribute<T>;
+			case 'title':
+				return this.#title as TokenAttribute<T>;
 
 				/* NOT FOR BROWSER */
 
@@ -750,7 +755,7 @@ export abstract class TranscludeToken extends Token {
 		if (type === 'template' && !name.startsWith('Special:')) {
 			if (this.normalizeTitle(name, 0, true).valid) {
 				const title = name.replaceAll('_', ' ');
-				return `<a href="${this.#getTitle().getUrl()}?action=edit&redlink=1" class="new" title="${
+				return `<a href="${this.#title.getUrl()}?action=edit&redlink=1" class="new" title="${
 					title
 				} (page does not exist)">${title}</a>`;
 			}
