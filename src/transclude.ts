@@ -31,6 +31,7 @@ export abstract class TranscludeToken extends Token {
 	readonly #type: 'template' | 'magic-word' = 'template';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
+	#title: Title;
 
 	declare readonly name: string;
 	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
@@ -193,7 +194,8 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
 			if (isTemplate) {
-				this.setAttribute('name', this.#getTitle().title);
+				this.#title = this.#getTitle();
+				this.setAttribute('name', this.#title.title);
 			}
 		}
 	}
@@ -226,6 +228,8 @@ export abstract class TranscludeToken extends Token {
 		switch (key) {
 			case 'padding':
 				return this.modifier.length + 2 as TokenAttribute<T>;
+			case 'title':
+				return this.#title as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}
