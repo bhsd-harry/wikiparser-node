@@ -5,6 +5,7 @@
 **Fixed**
 
 - [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
+- [`AstElement.links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#links) should not return internal links inside the link parameter of an image twice
 
 **Changed**
 

@@ -32,6 +32,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {classes} from '../util/constants';
 
+declare type LinkTokens = LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken;
+
 /* NOT FOR BROWSER END */
 
 export interface CaretPosition {
@@ -112,8 +114,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/** 所有内链、外链和自由外链 */
-	get links(): (LinkToken | RedirectTargetToken | ExtLinkToken | MagicLinkToken | ImageParameterToken)[] {
-		return this.querySelectorAll('link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link');
+	get links(): LinkTokens[] {
+		return this.querySelectorAll<LinkTokens>(
+			'link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link',
+		).filter(({parentNode}) => parentNode?.type !== 'image-parameter' || parentNode.name !== 'link');
 	}
 
 	/** 所有模板和模块 */
