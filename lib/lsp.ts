@@ -660,15 +660,9 @@ export class LanguageService implements LanguageServiceBase {
 			{length} = lines,
 			levels = new Array<number | undefined>(6),
 			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
-
-		/* NOT FOR BROWSER ONLY */
-
-		for (const token of tokens.toReversed()) {
+		for (const token of [...tokens].reverse()) {
 			token.getRelativeIndex();
 		}
-
-		/* NOT FOR BROWSER ONLY END */
-
 		for (const token of tokens) {
 			const {
 				top,
