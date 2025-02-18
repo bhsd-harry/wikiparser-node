@@ -2,6 +2,7 @@ import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
+import {tidy} from '../util/string';
 import Parser from '../index';
 import type {
 	Range,
@@ -309,7 +310,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 否则开始新的解析
 	 */
 	async #queue(text: string): Promise<Token> {
-		text = text.replace(/\r$/gmu, '');
+		text = tidy(text);
 		if (this.#text === text && this.#config === Parser.config && !this.#running) {
 			return this.#done;
 		}
@@ -374,7 +375,7 @@ export class LanguageService implements LanguageServiceBase {
 				if (type !== 'attr-value' && !isPlain(childNodes)) {
 					return [];
 				}
-				return childNodes.filter((child): child is AstText => child.type === 'text')
+				return childNodes.filter((child): child is AstText => child.type === 'text').reverse()
 					.flatMap(child => {
 						const parts = splitColors(child.data, hsl).filter(([,,, isColor]) => isColor);
 						if (parts.length === 0) {
@@ -651,6 +652,15 @@ export class LanguageService implements LanguageServiceBase {
 			{length} = lines,
 			levels = new Array<number | undefined>(6),
 			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
+
+		/* NOT FOR BROWSER ONLY */
+
+		for (const token of tokens.toReversed()) {
+			token.getRelativeIndex();
+		}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		for (const token of tokens) {
 			const {
 				top,
@@ -816,8 +826,8 @@ export class LanguageService implements LanguageServiceBase {
 				}
 				target = new URL(target).href;
 				if (type === 'image-parameter') {
-					const rect = firstChild!.getBoundingClientRect(),
-						{top, left, height, width} = lastChild!.getBoundingClientRect();
+					const {top, left, height, width} = lastChild!.getBoundingClientRect(),
+						rect = firstChild!.getBoundingClientRect();
 					return {
 						range: {
 							start: {line: rect.top, character: rect.left},
@@ -1084,7 +1094,7 @@ export class LanguageService implements LanguageServiceBase {
 			const {type, childNodes} = template;
 			hints.push(
 				...(childNodes.slice(type === 'template' ? 1 : 3) as ParameterToken[]).filter(({anon}) => anon)
-					.map((parameter): InlayHint => ({
+					.reverse().map((parameter): InlayHint => ({
 						position: positionAt(root, parameter.getAbsoluteIndex()),
 						label: `${parameter.name}=`,
 						kind: 2,
