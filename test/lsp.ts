@@ -85,8 +85,8 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 
 	await wrap('provideDiagnostics', title, () => {
 		void lsp.provideDiagnostics(
-			// `${content} `,
-			content,
+			`${content} `,
+			// content,
 			false,
 		);
 		return new Promise(resolve => {
