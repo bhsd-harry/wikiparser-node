@@ -150,12 +150,14 @@ const createNodeRange = (token: Token): Range => {
  * @param pos position
  * @param pos.line line number
  * @param pos.character character number
+ * @param extra extra text
  */
 const getCompletion = (
 	words: Iterable<string>,
 	kind: keyof typeof CompletionItemKind,
 	mt: string,
 	{line, character}: Position,
+	extra?: string,
 ): CompletionItem[] => [...new Set(words)].map((w): CompletionItem => ({
 	label: w,
 	kind,
@@ -164,7 +166,7 @@ const getCompletion = (
 			start: {line, character: character - mt.length},
 			end: {line, character},
 		},
-		newText: w,
+		newText: w + (extra ?? ''),
 	},
 }));
 
@@ -434,7 +436,7 @@ export class LanguageService implements LanguageServiceBase {
 			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\d_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
 			const re = new RegExp(
 				'(?:' // eslint-disable-line prefer-template
-				+ String.raw`<\/?(\w*)` // tag
+				+ String.raw`<(\/?\w*)` // tag
 				+ '|'
 				+ String.raw`(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?` // braces and brackets
 				+ '|'
@@ -479,9 +481,17 @@ export class LanguageService implements LanguageServiceBase {
 		this.#checkSignature();
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
-			mt = re.exec(text.split(/\r?\n/u, line + 1)[line]?.slice(0, character) ?? '');
+			curLine = text.split(/\r?\n/u, line + 1)[line],
+			mt = re.exec(curLine?.slice(0, character) ?? '');
 		if (mt?.[1] !== undefined) { // tag
-			return getCompletion(allTags, 'Class', mt[1], position);
+			const closing = mt[1].startsWith('/');
+			return getCompletion(
+				allTags,
+				'Class',
+				mt[1].slice(closing ? 1 : 0),
+				position,
+				closing && !curLine?.slice(character).trim().startsWith('>') ? '>' : '',
+			);
 		} else if (mt?.[4]) { // behavior switch
 			return getCompletion(switches, 'Constant', mt[4], position);
 		} else if (mt?.[5] !== undefined) { // protocol
