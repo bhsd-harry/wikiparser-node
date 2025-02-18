@@ -552,13 +552,13 @@ export class LanguageService implements LanguageServiceBase {
 			({type, parentNode} = cur);
 		}
 		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
-			const match = mt?.[6]?.trimStart()
-				?? this.#text.slice(
-					cur!.getAbsoluteIndex(),
-					root.indexFromPos(position.line, position.character),
-				).trimStart();
+			const index = root.indexFromPos(line, character)!,
+				match = mt?.[6]?.trimStart()
+					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
+				equal = this.#text.charAt(index) === '=';
 			return [
-				...getCompletion(params, 'Property', match, position),
+				...getCompletion(params, 'Property', match, position)
+					.filter(({label}) => !equal || !/[= ]$/u.test(label)),
 				...getCompletion(
 					root.querySelectorAll<ImageParameterToken>('image-parameter#width').filter(token => token !== cur)
 						.map(width => width.text()),
