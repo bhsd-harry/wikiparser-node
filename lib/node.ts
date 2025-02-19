@@ -16,6 +16,7 @@ import type {
 	/* NOT FOR BROWSER */
 
 	QuoteToken,
+	ExtLinkToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -189,6 +190,11 @@ export abstract class AstNode implements AstNodeBase {
 			if (child.is<QuoteToken>('quote')) {
 				bold = child.bold !== bold;
 				italic = child.italic !== italic;
+			} else if (child.is<ExtLinkToken>('ext-link') && child.length === 2 && child.lastChild.length > 0) {
+				const {font} = child.lastChild.lastChild!;
+				bold = font.bold !== bold;
+				italic = font.italic !== italic;
+				break;
 			} else if (child.type === 'text' && child.data.includes('\n')) {
 				break;
 			}

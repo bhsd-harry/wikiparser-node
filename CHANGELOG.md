@@ -7,6 +7,7 @@
 - [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
 - [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should suggest with a leading `:` for the transclusion of a main namespace article
 - [`AstElement.links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#links) should not return internal links inside the link parameter of an image twice
+- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font) for nodes following an external link
 
 **Changed**
 

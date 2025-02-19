@@ -654,95 +654,37 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
-	 * 提供折叠范围或章节
+	 * 提供折叠范围
 	 * @param text 源代码
-	 * @param fold 是否提供折叠范围
 	 */
-	async #provideFoldingRangesOrDocumentSymbols(text: string): Promise<FoldingRange[]>;
-	async #provideFoldingRangesOrDocumentSymbols(text: string, fold: false): Promise<DocumentSymbol[]>;
-	async #provideFoldingRangesOrDocumentSymbols(
-		text: string,
-		fold = true,
-	): Promise<FoldingRange[] | DocumentSymbol[]> {
+	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		this.#checkSignature();
-		const ranges: FoldingRange[] = [],
-			symbols: DocumentSymbol[] = [],
-
-			/* NOT FOR BROWSER ONLY */
-
-			names = new Set<string>(),
-			sections = new Array<DocumentSymbol | undefined>(6),
-
-			/* NOT FOR BROWSER ONLY END */
-
-			root = await this.#queue(text),
+		const root = await this.#queue(text),
 			lines = root.getLines(),
 			{length} = lines,
+			ranges: FoldingRange[] = [],
 			levels = new Array<number | undefined>(6),
-			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
-		for (const token of [...tokens].reverse()) {
+			tokens = root.querySelectorAll<Token>('heading-title,table,template,magic-word');
+		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
 			token.getRelativeIndex();
 		}
 		for (const token of tokens) {
-			const {
-				top,
-				height,
-
-				/* NOT FOR BROWSER ONLY */
-
-				left,
-				width,
-			} = token.getBoundingClientRect();
+			const {top, height} = token.getBoundingClientRect();
 			if (token.type === 'heading-title') {
 				const {level} = token.parentNode as HeadingToken;
-				if (fold) {
-					for (let i = level - 1; i < 6; i++) {
-						const startLine = levels[i];
-						if (startLine !== undefined && startLine < top - 1) {
-							ranges.push({
-								startLine,
-								endLine: top - 1,
-								kind: 'region',
-							});
-						}
-						levels[i] = undefined;
+				for (let i = level - 1; i < 6; i++) {
+					const startLine = levels[i];
+					if (startLine !== undefined && startLine < top - 1) {
+						ranges.push({
+							startLine,
+							endLine: top - 1,
+							kind: 'region',
+						});
 					}
-					levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
-
-					/* NOT FOR BROWSER ONLY */
-				} else {
-					for (let i = level - 1; i < 6; i++) {
-						getSectionEnd(sections[i], lines, top - 1);
-						sections[i] = undefined;
-					}
-					const section = token.text().trim() || ' ',
-						name = names.has(section)
-							? new Array(names.size).fill('').map((_, i) => `${section.trim()}_${i + 2}`)
-								.find(s => !names.has(s))!
-							: section,
-						container = sections.slice(0, level - 1).reverse().find(Boolean),
-						selectionRange = {
-							start: {line: top, character: left - level},
-							end: getEndPos(top, left, height, width + level),
-						},
-						info = {
-							name,
-							kind: 15,
-							range: {start: selectionRange.start},
-							selectionRange,
-						} as DocumentSymbol;
-					names.add(name);
-					sections[level - 1] = info;
-					if (container) {
-						container.children ??= [];
-						container.children.push(info);
-					} else {
-						symbols.push(info);
-					}
-
-					/* NOT FOR BROWSER ONLY END */
+					levels[i] = undefined;
 				}
-			} else if (fold && height > 2) {
+				levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
+			} else if (height > 2) {
 				ranges.push({
 					startLine: top, // 从表格或模板的第一行开始折叠
 					endLine: top + height - 2,
@@ -750,34 +692,16 @@ export class LanguageService implements LanguageServiceBase {
 				});
 			}
 		}
-		if (fold) {
-			for (const startLine of levels) {
-				if (startLine !== undefined && startLine < length - 1) {
-					ranges.push({
-						startLine,
-						endLine: length - 1,
-						kind: 'region',
-					});
-				}
+		for (const startLine of levels) {
+			if (startLine !== undefined && startLine < length - 1) {
+				ranges.push({
+					startLine,
+					endLine: length - 1,
+					kind: 'region',
+				});
 			}
-
-			/* NOT FOR BROWSER ONLY */
-		} else {
-			for (const section of sections) {
-				getSectionEnd(section, lines, length - 1);
-			}
-
-			/* NOT FOR BROWSER ONLY END */
 		}
-		return fold ? ranges : symbols;
-	}
-
-	/**
-	 * 提供折叠范围
-	 * @param text 源代码
-	 */
-	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		return this.#provideFoldingRangesOrDocumentSymbols(text);
+		return ranges;
 	}
 
 	/**
@@ -1152,7 +1076,55 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text 源代码
 	 */
 	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		return this.#provideFoldingRangesOrDocumentSymbols(text, false);
+		this.#checkSignature();
+		const root = await this.#queue(text),
+			lines = root.getLines(),
+			{length} = lines,
+			symbols: DocumentSymbol[] = [],
+			names = new Set<string>(),
+			sections = new Array<DocumentSymbol | undefined>(6),
+			tokens = root.querySelectorAll<Token>('heading-title');
+		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
+			token.getRelativeIndex();
+		}
+		for (const token of tokens) {
+			const {top, height, left, width} = token.getBoundingClientRect();
+			if (token.type === 'heading-title') {
+				const {level} = token.parentNode as HeadingToken;
+				for (let i = level - 1; i < 6; i++) {
+					getSectionEnd(sections[i], lines, top - 1);
+					sections[i] = undefined;
+				}
+				const section = token.text().trim() || ' ',
+					name = names.has(section)
+						? new Array(names.size).fill('').map((_, i) => `${section.trim()}_${i + 2}`)
+							.find(s => !names.has(s))!
+						: section,
+					container = sections.slice(0, level - 1).reverse().find(Boolean),
+					selectionRange = {
+						start: {line: top, character: left - level},
+						end: getEndPos(top, left, height, width + level),
+					},
+					info = {
+						name,
+						kind: 15,
+						range: {start: selectionRange.start},
+						selectionRange,
+					} as DocumentSymbol;
+				names.add(name);
+				sections[level - 1] = info;
+				if (container) {
+					container.children ??= [];
+					container.children.push(info);
+				} else {
+					symbols.push(info);
+				}
+			}
+		}
+		for (const section of sections) {
+			getSectionEnd(section, lines, length - 1);
+		}
+		return symbols;
 	}
 }
 
