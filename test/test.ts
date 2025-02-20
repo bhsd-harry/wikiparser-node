@@ -32,10 +32,7 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (
-						!first.endsWith(' (browser)')
-						&& !first.endsWith(' (main)') && !/^\/\/ (?:print|json)(?!\S)/u.test(first)
-					) {
+					if (!/^\/\/ (?:print|json)(?!\S)| \(main\)| \(browser\)/u.test(first)) {
 						it(first.slice(3), async () => {
 							try {
 								await eval(code); // eslint-disable-line no-eval

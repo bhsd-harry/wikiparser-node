@@ -11,7 +11,6 @@ import type {
 	ColorPresentation,
 	CompletionItemKind,
 	FoldingRange,
-	DocumentSymbol,
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
@@ -26,6 +25,7 @@ import type {
 	/* NOT FOR BROWSER ONLY */
 
 	CodeAction,
+	DocumentSymbol,
 } from 'vscode-languageserver-types';
 import type {
 	Config,
@@ -34,6 +34,10 @@ import type {
 	CompletionItem,
 	SignatureData,
 	SignatureInfo,
+
+	/* NOT FOR BROWSER ONLY */
+
+	LintError,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
@@ -65,13 +69,21 @@ declare interface CompletionConfig {
 	protocols: string[];
 	params: string[];
 }
+declare interface Diagnostic extends DiagnosticBase {
+
+	/* NOT FOR BROWSER ONLY */
+
+	data: QuickFixData[];
+}
+
+/* NOT FOR BROWSER ONLY */
+
 declare interface QuickFixData extends TextEdit {
 	title: string;
 	fix: boolean;
 }
-declare interface Diagnostic extends DiagnosticBase {
-	data: QuickFixData[];
-}
+
+/* NOT FOR BROWSER ONLY END */
 
 export const tasks = new WeakMap<object, LanguageService>();
 
@@ -262,6 +274,19 @@ const getName = (token: Token): string | number | undefined => {
 };
 
 /* NOT FOR BROWSER ONLY */
+
+/**
+ * Get the quick fix data.
+ * @param root root token
+ * @param fix lint error fix
+ * @param preferred whether it is a preferred fix
+ */
+const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickFixData => ({
+	range: createRange(root, ...fix.range),
+	newText: fix.text,
+	title: `${preferred ? 'Fix' : 'Suggestion'}: ${fix.desc}`,
+	fix: preferred,
+});
 
 /**
  * Get the end position of a section.
@@ -634,25 +659,12 @@ export class LanguageService implements LanguageServiceBase {
 				source: 'WikiLint',
 				code: rule,
 				message,
+
+				/* NOT FOR BROWSER ONLY */
+
 				data: [
-					...fix
-						? [
-							{
-								range: createRange(root, ...fix.range),
-								newText: fix.text,
-								title: `Fix: ${fix.desc}`,
-								fix: true,
-							} satisfies QuickFixData,
-						]
-						: [],
-					...suggestions
-						? suggestions.map(({range, text, desc}): QuickFixData => ({
-							range: createRange(root, ...range),
-							newText: text,
-							title: `Suggestion: ${desc}`,
-							fix: false,
-						}))
-						: [],
+					...fix ? [getQuickFix(root, fix, true)] : [],
+					...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
 				],
 			}));
 	}
