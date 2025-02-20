@@ -40,9 +40,7 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (
-						!first.endsWith(' (browser)')
-					) {
+					if (!/ \(browser\)/u.test(first)) {
 						it(first.slice(3), async () => {
 							try {
 								await eval(code); // eslint-disable-line no-eval
