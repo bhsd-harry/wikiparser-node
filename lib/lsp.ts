@@ -190,8 +190,11 @@ const caretPositionFromWord = (root: Token, pos: Position): CaretPosition => {
  * @param pos position
  */
 const elementFromWord = (root: Token, pos: Position): Token => {
-	const {offsetNode} = caretPositionFromWord(root, pos);
-	return offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode;
+	const {offsetNode, offset} = caretPositionFromWord(root, pos),
+		element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode;
+	return offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
+		? element.parentNode!.parentNode!
+		: element;
 };
 
 /**
