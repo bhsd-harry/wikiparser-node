@@ -518,13 +518,13 @@ export class LanguageService implements LanguageServiceBase {
 			({type, parentNode} = cur);
 		}
 		if (mt?.[6] !== undefined || type === 'image-parameter') { // image parameter
-			const match = mt?.[6]?.trimStart()
-				?? this.#text.slice(
-					cur!.getAbsoluteIndex(),
-					root.indexFromPos(position.line, position.character),
-				).trimStart();
+			const index = root.indexFromPos(line, character)!,
+				match = mt?.[6]?.trimStart()
+					?? this.#text.slice(cur!.getAbsoluteIndex(), index).trimStart(),
+				equal = this.#text.charAt(index) === '=';
 			return [
-				...getCompletion(params, 'Property', match, position),
+				...getCompletion(params, 'Property', match, position)
+					.filter(({label}) => !equal || !/[= ]$/u.test(label)),
 				...getCompletion(
 					root.querySelectorAll<ImageParameterToken>('image-parameter#width').filter(token => token !== cur)
 						.map(width => width.text()),
@@ -555,22 +555,34 @@ export class LanguageService implements LanguageServiceBase {
 					...getCompletion(['data-'], 'Variable', key, position),
 					...getCompletion(['xmlns:'], 'Interface', key, position),
 				];
-		} else if (
-			(type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon)
-			&& parentNode!.parentNode!.type === 'template'
-		) { // parameter key
-			const key = cur!.toString().trimStart();
+		} else if (type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon) {
+			// parameter key
+			const transclusion = (parentNode as ParameterToken).parentNode!;
+			if (transclusion.type === 'magic-word' && transclusion.name !== 'invoke') {
+				return undefined;
+			}
+			const key = cur!.toString().trimStart(),
+				[module, func] = transclusion.type === 'magic-word' ? transclusion.getModule() : [];
 			return key
 				? getCompletion(
-					root.querySelectorAll<ParameterToken>('parameter').filter(
-						token => token !== parentNode
-							&& !token.anon
-							&& token.parentNode!.type === 'template'
-							&& token.parentNode!.name === parentNode!.parentNode!.name,
-					).map(({name}) => name),
+					root.querySelectorAll<ParameterToken>('parameter').filter(token => {
+						if (
+							token === parentNode
+							|| token.anon
+							|| token.parentNode!.type !== transclusion.type
+							|| token.parentNode!.name !== transclusion.name
+						) {
+							return false;
+						} else if (transclusion.type === 'template') {
+							return true;
+						}
+						const [m, f] = token.parentNode!.getModule();
+						return m === module && f === func;
+					}).map(({name}) => name),
 					'Variable',
 					key,
 					position,
+					type === 'parameter-value' ? '=' : '',
 				)
 				: undefined;
 		}
@@ -620,49 +632,37 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
-	 * 提供折叠范围或章节
+	 * 提供折叠范围
 	 * @param text 源代码
-	 * @param fold 是否提供折叠范围
 	 */
-	async #provideFoldingRangesOrDocumentSymbols(text: string): Promise<FoldingRange[]>;
-	async #provideFoldingRangesOrDocumentSymbols(text: string, fold: false): Promise<DocumentSymbol[]>;
-	async #provideFoldingRangesOrDocumentSymbols(
-		text: string,
-		fold = true,
-	): Promise<FoldingRange[] | DocumentSymbol[]> {
+	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		this.#checkSignature();
-		const ranges: FoldingRange[] = [],
-			symbols: DocumentSymbol[] = [],
-			root = await this.#queue(text),
+		const root = await this.#queue(text),
 			lines = root.getLines(),
 			{length} = lines,
+			ranges: FoldingRange[] = [],
 			levels = new Array<number | undefined>(6),
-			tokens = root.querySelectorAll<Token>(fold ? 'heading-title,table,template,magic-word' : 'heading-title');
-		for (const token of [...tokens].reverse()) {
+			tokens = root.querySelectorAll<Token>('heading-title,table,template,magic-word');
+		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
 			token.getRelativeIndex();
 		}
 		for (const token of tokens) {
-			const {
-				top,
-				height,
-			} = token.getBoundingClientRect();
+			const {top, height} = token.getBoundingClientRect();
 			if (token.type === 'heading-title') {
 				const {level} = token.parentNode as HeadingToken;
-				if (fold) {
-					for (let i = level - 1; i < 6; i++) {
-						const startLine = levels[i];
-						if (startLine !== undefined && startLine < top - 1) {
-							ranges.push({
-								startLine,
-								endLine: top - 1,
-								kind: 'region',
-							});
-						}
-						levels[i] = undefined;
+				for (let i = level - 1; i < 6; i++) {
+					const startLine = levels[i];
+					if (startLine !== undefined && startLine < top - 1) {
+						ranges.push({
+							startLine,
+							endLine: top - 1,
+							kind: 'region',
+						});
 					}
-					levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
+					levels[i] = undefined;
 				}
-			} else if (fold && height > 2) {
+				levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
+			} else if (height > 2) {
 				ranges.push({
 					startLine: top, // 从表格或模板的第一行开始折叠
 					endLine: top + height - 2,
@@ -670,26 +670,16 @@ export class LanguageService implements LanguageServiceBase {
 				});
 			}
 		}
-		if (fold) {
-			for (const startLine of levels) {
-				if (startLine !== undefined && startLine < length - 1) {
-					ranges.push({
-						startLine,
-						endLine: length - 1,
-						kind: 'region',
-					});
-				}
+		for (const startLine of levels) {
+			if (startLine !== undefined && startLine < length - 1) {
+				ranges.push({
+					startLine,
+					endLine: length - 1,
+					kind: 'region',
+				});
 			}
 		}
-		return fold ? ranges : symbols;
-	}
-
-	/**
-	 * 提供折叠范围
-	 * @param text 源代码
-	 */
-	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		return this.#provideFoldingRangesOrDocumentSymbols(text);
+		return ranges;
 	}
 
 	/**
