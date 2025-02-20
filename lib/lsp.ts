@@ -589,19 +589,30 @@ export class LanguageService implements LanguageServiceBase {
 					...getCompletion(['data-'], 'Variable', key, position),
 					...getCompletion(['xmlns:'], 'Interface', key, position),
 				];
-		} else if (
-			(type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon)
-			&& parentNode!.parentNode!.type === 'template'
-		) { // parameter key
-			const key = cur!.toString().trimStart();
+		} else if (type === 'parameter-key' || type === 'parameter-value' && (parentNode as ParameterToken).anon) {
+			// parameter key
+			const transclusion = (parentNode as ParameterToken).parentNode!;
+			if (transclusion.type === 'magic-word' && transclusion.name !== 'invoke') {
+				return undefined;
+			}
+			const key = cur!.toString().trimStart(),
+				[module, func] = transclusion.type === 'magic-word' ? transclusion.getModule() : [];
 			return key
 				? getCompletion(
-					root.querySelectorAll<ParameterToken>('parameter').filter(
-						token => token !== parentNode
-							&& !token.anon
-							&& token.parentNode!.type === 'template'
-							&& token.parentNode!.name === parentNode!.parentNode!.name,
-					).map(({name}) => name),
+					root.querySelectorAll<ParameterToken>('parameter').filter(token => {
+						if (
+							token === parentNode
+							|| token.anon
+							|| token.parentNode!.type !== transclusion.type
+							|| token.parentNode!.name !== transclusion.name
+						) {
+							return false;
+						} else if (transclusion.type === 'template') {
+							return true;
+						}
+						const [m, f] = token.parentNode!.getModule();
+						return m === module && f === func;
+					}).map(({name}) => name),
 					'Variable',
 					key,
 					position,

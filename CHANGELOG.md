@@ -5,6 +5,7 @@
 **Added**
 
 - [`TranscludeToken.prototype.getModule`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#getmodule) that returns the module name and the function name of a `#invoke` parser function
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) now suggests parameter keys for the `#invoke` parser function
 
 **Fixed**
 
@@ -88,7 +89,7 @@
 
 **Added**
 
-- Named parameters are recognized for the `{{#tag}}` parser function
+- Named parameters are recognized for the `#tag` parser function
 
 ## v1.14.0
 
@@ -137,7 +138,7 @@
 
 **Fixed**
 
-- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#name) for some new parser functions, e.g., `{{#dir}}`
+- [`TranscludeToken.name`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#name) for some new parser functions, e.g., `#dir`
 
 ## v1.13.3
 
@@ -720,7 +721,7 @@
 
 **Fixed**
 
-- Case-insensitive magic variables like `{{server}}`
+- Case-insensitive magic variables like `server`
 - `startIndex` and `endIndex` of [`MagicLinkToken.prototype.lint`](https://github.com/bhsd-harry/wikiparser-node/wiki/MagicLinkToken#lint)
 
 ## v1.3.3
