@@ -10,7 +10,6 @@ import type {
 	ColorPresentation,
 	CompletionItemKind,
 	FoldingRange,
-	DocumentSymbol,
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
