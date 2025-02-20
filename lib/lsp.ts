@@ -11,7 +11,6 @@ import type {
 	ColorPresentation,
 	CompletionItemKind,
 	FoldingRange,
-	DocumentSymbol,
 	DocumentLink,
 	Location,
 	WorkspaceEdit,
@@ -26,6 +25,7 @@ import type {
 	/* NOT FOR BROWSER ONLY */
 
 	CodeAction,
+	DocumentSymbol,
 } from 'vscode-languageserver-types';
 import type {
 	Config,
