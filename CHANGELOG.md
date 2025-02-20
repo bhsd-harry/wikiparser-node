@@ -1,6 +1,6 @@
 ## v1.16.4
 
-*2025-02-18*
+*2025-02-20*
 
 **Fixed**
 
@@ -13,6 +13,7 @@
 
 - [`LanguageService.provideDefinition`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providedefinition) now returns the [`Location`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#location) of the `<ref>` inner content for any [`Position`](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#position) within a `<ref>` tag that has a `name` attribute
 - [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) inserts a `>` character after completing a closing tag when necessary
+- [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) inserts a `=` character after completing a template parameter key when necessary
 
 ## v1.16.3
 

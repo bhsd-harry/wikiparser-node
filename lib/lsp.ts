@@ -605,6 +605,7 @@ export class LanguageService implements LanguageServiceBase {
 					'Variable',
 					key,
 					position,
+					type === 'parameter-value' ? '=' : '',
 				)
 				: undefined;
 		}
