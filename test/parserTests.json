@@ -6180,6 +6180,20 @@
 		"print": "<span class=\"wpb-root\">pmid 1 <span class=\"wpb-magic-link\">PMID 1</span>\nrfc 1 <span class=\"wpb-magic-link\">RFC 1</span>\nisbn 1234567890 <span class=\"wpb-magic-link\">ISBN 1234567890</span></span>"
 	},
 	{
+		"desc": "Font of text following an external link",
+		"wikitext": "[//a ''b]c",
+		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"//a\"><i>b</i></a><i>c</i>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://a/\"><i>b</i></a><i>c</i>\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//a</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">''</span>b</span>]</span>c</span>"
+	},
+	{
+		"desc": "Interaction between apostrophes and <b> tags",
+		"wikitext": "'''a</b>b<b>c'''d",
+		"html": "<p><b>a</b>b<b>c</b>d\n</p>",
+		"render": "<p><b>a</b></b><b>b</b><b><b>c</b>d\n</p>",
+		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>a<span class=\"wpb-html\">&lt;/b&gt;</span>b<span class=\"wpb-html\">&lt;b&gt;</span>c<span class=\"wpb-quote\">'''</span>d</span>"
+	},
+	{
 		"desc": "badCharacters"
 	},
 	{
