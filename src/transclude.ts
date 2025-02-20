@@ -29,6 +29,7 @@ export abstract class TranscludeToken extends Token {
 	readonly #type: 'template' | 'magic-word' = 'template';
 	#raw = false;
 	readonly #args = new Map<string, Set<ParameterToken>>();
+	#title: Title;
 
 	declare readonly name: string;
 	declare readonly childNodes: readonly [Child, ...ParameterToken[]]
@@ -182,6 +183,24 @@ export abstract class TranscludeToken extends Token {
 		return this.normalizeTitle(child.toString(true), isTemplate ? 10 : 828);
 	}
 
+	/**
+	 * 获取模块名和模块函数名
+	 * @throws `Error` 仅用于模块
+	 */
+	getModule(): [string, string | undefined] {
+		LSP: { // eslint-disable-line no-unused-labels
+			/* istanbul ignore if */
+			if (this.type !== 'magic-word' || this.name !== 'invoke') {
+				throw new Error('TranscludeToken.getModule method is only for modules!');
+			}
+			return [
+				this.#getTitle().title,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				this.childNodes[2]?.toString(true).trim(),
+			];
+		}
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {
@@ -191,7 +210,8 @@ export abstract class TranscludeToken extends Token {
 		if (this.isTemplate()) {
 			const isTemplate = this.type === 'template';
 			if (isTemplate) {
-				this.setAttribute('name', this.#getTitle().title);
+				this.#title = this.#getTitle();
+				this.setAttribute('name', this.#title.title);
 			}
 		}
 	}
@@ -224,6 +244,8 @@ export abstract class TranscludeToken extends Token {
 		switch (key) {
 			case 'padding':
 				return this.modifier.length + 2 as TokenAttribute<T>;
+			case 'title':
+				return this.#title as TokenAttribute<T>;
 			default:
 				return super.getAttribute(key);
 		}
