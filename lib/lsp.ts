@@ -59,12 +59,7 @@ declare interface CompletionConfig {
 	protocols: string[];
 	params: string[];
 }
-declare interface QuickFixData extends TextEdit {
-	title: string;
-	fix: boolean;
-}
 declare interface Diagnostic extends DiagnosticBase {
-	data: QuickFixData[];
 }
 
 export const tasks = new WeakMap<object, LanguageService>();
@@ -607,26 +602,6 @@ export class LanguageService implements LanguageServiceBase {
 				source: 'WikiLint',
 				code: rule,
 				message,
-				data: [
-					...fix
-						? [
-							{
-								range: createRange(root, ...fix.range),
-								newText: fix.text,
-								title: `Fix: ${fix.desc}`,
-								fix: true,
-							} satisfies QuickFixData,
-						]
-						: [],
-					...suggestions
-						? suggestions.map(({range, text, desc}): QuickFixData => ({
-							range: createRange(root, ...range),
-							newText: text,
-							title: `Suggestion: ${desc}`,
-							fix: false,
-						}))
-						: [],
-				],
 			}));
 	}
 
