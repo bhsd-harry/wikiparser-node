@@ -252,6 +252,24 @@ export abstract class TranscludeToken extends Token {
 		return this.normalizeTitle(child.toString(true), isTemplate ? 10 : 828);
 	}
 
+	/**
+	 * 获取模块名和模块函数名
+	 * @throws `Error` 仅用于模块
+	 */
+	getModule(): [string, string | undefined] {
+		LSP: { // eslint-disable-line no-unused-labels
+			/* istanbul ignore if */
+			if (this.type !== 'magic-word' || this.name !== 'invoke') {
+				throw new Error('TranscludeToken.getModule method is only for modules!');
+			}
+			return [
+				this.#getTitle().title,
+				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+				this.childNodes[2]?.toString(true).trim(),
+			];
+		}
+	}
+
 	/** @private */
 	override afterBuild(): void {
 		if (this.modifier.includes('\0')) {

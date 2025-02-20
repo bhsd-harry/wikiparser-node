@@ -2,6 +2,10 @@
 
 *2025-02-20*
 
+**Added**
+
+- [`TranscludeToken.prototype.getModule`](https://github.com/bhsd-harry/wikiparser-node/wiki/TranscludeToken#getmodule) that returns the module name and the function name of a `#invoke` parser function
+
 **Fixed**
 
 - [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should not suggest argument names, link targets, template names, parameter keys or image widths at the cursor position
@@ -360,7 +364,7 @@
 
 **Removed**
 
-- `RedirectTargetToken.prototoype.text` method overriding
+- `RedirectTargetToken.prototype.text` method overriding
 - `rbspan` attribute of a `<rt>` tag
 
 ## v1.9.3
