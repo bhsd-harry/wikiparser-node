@@ -38,9 +38,7 @@ describe('API tests', () => {
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (
-						!first.endsWith(' (main)') && !/^\/\/ (?:config|i18n)(?!\S)| \(Node\.js\)/u.test(first)
-					) {
+					if (!/^\/\/ (?:config|i18n)(?!\S)| \(main\)| \(Node\.js\)/u.test(first)) {
 						it(first.slice(3), async () => {
 							try {
 								await eval(code); // eslint-disable-line no-eval
