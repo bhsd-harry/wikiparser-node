@@ -38,6 +38,7 @@ import type {
 	ParameterToken,
 	HeadingToken,
 	ExtToken,
+	AttributesToken,
 	DoubleUnderscoreToken,
 	ArgToken,
 	LinkToken,
@@ -223,11 +224,11 @@ const getRefGroup = (token: Token): string | number => getRefAttr(token, referen
 
 /**
  * Get the attribute of a `<ref>` tag.
- * @param tokens attribute tokens
+ * @param token extension token
  * @param target attribute name
  */
-const getRefTagAttr = (tokens: readonly Token[] | undefined, target: string): string | false => {
-	const attr = (tokens?.find(({name}) => name === target) as AttributeToken | undefined)?.getValue();
+const getRefTagAttr = (token: ExtToken | AttributesToken | undefined, target: string): string | false => {
+	const attr = token?.getAttr(target);
 	return attr !== true && attr || false;
 };
 
@@ -781,17 +782,16 @@ export class LanguageService implements LanguageServiceBase {
 		this.#checkSignature();
 		const root = await this.#queue(text),
 			node = elementFromWord(root, position),
-			attrs = (node.is<ExtToken>('ext') && node.name === 'ref' ? node : node.closest<ExtToken>('ext#ref'))
-				?.firstChild.childNodes,
-			refName = getRefTagAttr(attrs, 'name');
+			ext = node.is<ExtToken>('ext') && node.name === 'ref' ? node : node.closest<ExtToken>('ext#ref'),
+			refName = getRefTagAttr(ext, 'name');
 		if (!refName) {
 			return undefined;
 		}
-		const refGroup = getRefTagAttr(attrs, 'group'),
+		const refGroup = getRefTagAttr(ext, 'group'),
 			refs = root.querySelectorAll<ExtToken>('ext#ref').filter(
-				({firstChild: {childNodes}, innerText}) => innerText
-					&& getRefTagAttr(childNodes, 'name') === refName
-					&& getRefTagAttr(childNodes, 'group') === refGroup,
+				token => token.innerText
+					&& getRefTagAttr(token, 'name') === refName
+					&& getRefTagAttr(token, 'group') === refGroup,
 			).map(({lastChild}): Omit<Location, 'uri'> => ({
 				range: createNodeRange(lastChild),
 			}));
@@ -831,15 +831,18 @@ export class LanguageService implements LanguageServiceBase {
 			node = elementFromWord(root, position),
 			{type} = node,
 			refName = getRefName(node),
-			refGroup = getRefGroup(node);
-		const name = getName(node),
+			refNameGroup = refName && getRefTagAttr(node.parentNode!.parentNode as AttributesToken, 'group'),
+			refGroup = getRefGroup(node),
+			name = getName(node),
 			refs = root.querySelectorAll(type).filter(token => {
 				const {type: t} = token.parentNode!;
 				if (type === 'link-target' && t !== 'link' && t !== 'redirect-target') {
 					return false;
 				}
 				return type === 'attr-value'
-					? getRefName(token) === refName || getRefGroup(token) === refGroup
+					? getRefGroup(token) === refGroup
+					|| getRefName(token) === refName
+					&& getRefTagAttr(token.parentNode!.parentNode as AttributesToken, 'group') === refNameGroup
 					: getName(token) === name;
 			});
 		return refs.length === 0
