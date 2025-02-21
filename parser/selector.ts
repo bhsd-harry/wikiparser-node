@@ -500,7 +500,7 @@ const checkToken = (
  */
 export const getCondition = <T>(selector: string, scope: AstElement, has?: Token): TokenPredicate<T> => (
 	/* eslint-disable @stylistic/operator-linebreak */
-	/[^a-z\-,#]/u.test(selector) ?
+	/[^a-z\-,#\s]|(?<![\s,])\s+(?![\s,])/u.test(selector.trim()) ?
 		checkToken(selector, scope, has) :
 		({type, name}): boolean => selector.split(',').some(str => basic(str.trim(), type, name))
 /* eslint-enable @stylistic/operator-linebreak */

@@ -1,12 +1,14 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import {BoundingRect} from '../lib/rect';
+import {attributesParent} from '../mixin/attributesParent';
 import {Token} from './index';
 import type {
 	Config,
 	LintError,
 	AST,
 } from '../base';
+import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -14,13 +16,11 @@ import type {AttributesToken, TranscludeToken} from '../internal';
 import {Shadow} from '../util/debug';
 import {classes} from '../util/constants';
 import {fixedToken} from '../mixin/fixed';
-import {attributesParent} from '../mixin/attributesParent';
 import Parser from '../index';
-import type {AttributesParentBase} from '../mixin/attributesParent';
-
-export interface HtmlToken extends AttributesParentBase {}
 
 /* NOT FOR BROWSER END */
+
+export interface HtmlToken extends AttributesParentBase {}
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
 	formattingTags = new Set([
@@ -56,7 +56,8 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-@fixedToken @attributesParent()
+@fixedToken
+@attributesParent()
 export abstract class HtmlToken extends Token {
 	declare readonly name: string;
 	#closing;
