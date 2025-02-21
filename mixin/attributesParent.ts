@@ -77,84 +77,84 @@ export interface AttributesParentBase {
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 子节点含有AttributesToken的类 */
 	abstract class AttributesParent extends constructor {
-		/** AttributesToken子节点 */
-		get #attributesChild(): AttributesToken {
-			return this.childNodes[i] as AttributesToken;
-		}
-
 		/* NOT FOR BROWSER */
 
 		/** @implements */
 		get attributes(): Record<string, string | true> {
-			return this.#attributesChild.attributes;
+			return this.#getAttributesChild().attributes;
 		}
 
 		set attributes(attributes) {
-			this.#attributesChild.attributes = attributes;
+			this.#getAttributesChild().attributes = attributes;
 		}
 
 		/** @implements */
 		get className(): string {
-			return this.#attributesChild.className;
+			return this.#getAttributesChild().className;
 		}
 
 		set className(className) {
-			this.#attributesChild.className = className;
+			this.#getAttributesChild().className = className;
 		}
 
 		/** @implements */
 		get classList(): Set<string> {
-			return this.#attributesChild.classList;
+			return this.#getAttributesChild().classList;
 		}
 
 		/** @implements */
 		get id(): string {
-			return this.#attributesChild.id;
+			return this.#getAttributesChild().id;
 		}
 
 		set id(id) {
-			this.#attributesChild.id = id;
+			this.#getAttributesChild().id = id;
 		}
 
 		/* NOT FOR BROWSER END */
 
+		/** AttributesToken子节点 */
+		#getAttributesChild(): AttributesToken {
+			return this.childNodes[i] as AttributesToken;
+		}
+
 		/** @implements */
 		getAttr(key: string): string | true | undefined {
-			return this.#attributesChild.getAttr(key);
+			return this.#getAttributesChild().getAttr(key);
 		}
 
 		/* NOT FOR BROWSER */
 
 		/** @implements */
 		hasAttr(key: string): boolean {
-			return this.#attributesChild.hasAttr(key);
+			return this.#getAttributesChild().hasAttr(key);
 		}
 
 		/** @implements */
 		getAttrNames(): Set<string> {
-			return this.#attributesChild.getAttrNames();
+			return this.#getAttributesChild().getAttrNames();
 		}
 
 		/** @implements */
 		getAttrs(): Record<string, string | true> {
-			return this.#attributesChild.getAttrs();
+			return this.#getAttributesChild().getAttrs();
 		}
 
 		/** @implements */
 		setAttr(key: string, value: string | boolean): void;
 		setAttr(prop: Record<string, string | boolean>): void;
 		setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
-			this.#attributesChild.setAttr(keyOrProp as string, value!);
+			this.#getAttributesChild().setAttr(keyOrProp as string, value!);
 		}
 
 		/** @implements */
 		removeAttr(key: string): void {
-			this.#attributesChild.removeAttr(key);
+			this.#getAttributesChild().removeAttr(key);
 		}
 
 		/** @implements */
 		toggleAttr(key: string, force?: boolean): void {
-			this.#attributesChild.toggleAttr(key, force);
+			this.#getAttributesChild().toggleAttr(key, force);
 		}
 	}
 	mixin(AttributesParent, constructor);

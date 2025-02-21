@@ -6190,7 +6190,7 @@
 		"desc": "Interaction between apostrophes and <b> tags",
 		"wikitext": "'''a</b>b<b>c'''d",
 		"html": "<p><b>a</b>b<b>c</b>d\n</p>",
-		"render": "<p><b>a</b></b><b>b</b><b><b>c</b>d\n</p>",
+		"render": "<p><b>a</b></b>b<b><b>c</b>d\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>a<span class=\"wpb-html\">&lt;/b&gt;</span>b<span class=\"wpb-html\">&lt;b&gt;</span>c<span class=\"wpb-quote\">'''</span>d</span>"
 	},
 	{

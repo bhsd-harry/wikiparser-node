@@ -152,8 +152,11 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
  * @param strOrOmit
  */
 export const font = (node: AstNodes, strOrOmit?: string): string => {
+	const str = strOrOmit ?? '';
+	if (node.type === 'html') {
+		return str;
+	}
 	const {font: {bold, italic}} = node,
-		str = strOrOmit ?? '',
 		i = str.indexOf('\n');
 	const wrap = /** @ignore */ (s: string | undefined): string => s === ''
 		? ''

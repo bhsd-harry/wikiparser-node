@@ -17,6 +17,7 @@ import type {
 
 	QuoteToken,
 	ExtLinkToken,
+	HtmlToken,
 } from '../internal';
 
 /* NOT FOR BROWSER */
@@ -178,28 +179,8 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 字体样式 */
 	get font(): {bold: boolean, italic: boolean} {
-		const {parentNode} = this,
-			acceptable = parentNode?.getAcceptable();
-		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
-			return {bold: false, italic: false};
-		}
-		const {childNodes, type} = parentNode;
-		let {bold = false, italic = false} = type === 'ext-link-text' && parentNode.parentNode || {};
-		for (let i = childNodes.indexOf(this as unknown as AstNodes) - 1; i >= 0; i--) {
-			const child = childNodes[i]!;
-			if (child.is<QuoteToken>('quote')) {
-				bold = child.bold !== bold;
-				italic = child.italic !== italic;
-			} else if (child.is<ExtLinkToken>('ext-link') && child.length === 2 && child.lastChild.length > 0) {
-				const {font} = child.lastChild.lastChild!;
-				bold = font.bold !== bold;
-				italic = font.italic !== italic;
-				break;
-			} else if (child.type === 'text' && child.data.includes('\n')) {
-				break;
-			}
-		}
-		return {bold, italic};
+		const {bold, italic, b = 0, i = 0} = this.#getFont();
+		return {bold: bold && b >= 0, italic: italic && i >= 0};
 	}
 
 	/** 是否粗体 */
@@ -656,6 +637,43 @@ export abstract class AstNode implements AstNodeBase {
 	 */
 	getLine(n: number): string | undefined {
 		return this.getLines()[n]?.[0];
+	}
+
+	/** 字体样式 */
+	#getFont(): {bold: boolean, italic: boolean, b?: number, i?: number} {
+		const {parentNode} = this,
+			acceptable = parentNode?.getAcceptable();
+		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
+			return {bold: false, italic: false};
+		}
+		const {childNodes, type} = parentNode;
+		let {bold = false, italic = false, b = 0, i = 0} = type === 'ext-link-text' && parentNode.parentNode
+			? parentNode.parentNode.#getFont()
+			: {};
+		for (let j = childNodes.indexOf(this as unknown as AstNodes) - 1; j >= 0; j--) {
+			const child = childNodes[j]!;
+			if (child.is<QuoteToken>('quote')) {
+				bold = child.bold !== bold;
+				italic = child.italic !== italic;
+			} else if (child.is<HtmlToken>('html')) {
+				const {name, closing} = child;
+				if (name === 'b' && b <= 0) {
+					b += closing ? -1 : 1;
+				} else if (name === 'i' && i <= 0) {
+					i += closing ? -1 : 1;
+				}
+			} else if (child.is<ExtLinkToken>('ext-link') && child.length === 2 && child.lastChild.length > 0) {
+				const font = child.lastChild.lastChild!.#getFont();
+				bold = font.bold !== bold;
+				italic = font.italic !== italic;
+				b += font.b ?? 0;
+				i += font.i ?? 0;
+				break;
+			} else if (child.type === 'text' && child.data.includes('\n')) {
+				break;
+			}
+		}
+		return {bold, italic, b, i};
 	}
 }
 

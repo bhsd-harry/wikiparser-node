@@ -13,6 +13,7 @@
 - [`LanguageService.provideCompletionItems`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providecompletionitems) should suggest with a leading `:` for the transclusion of a main namespace article
 - [`AstElement.links`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#links) should not return internal links inside the link parameter of an image twice
 - [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font) for nodes following an external link
+- [`AstNode.font`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode#font) when there are unmatched `<b>` or `<i>` tags
 - [`LanguageService.provideRenameEdits`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providerenameedits) should not rename the `name` attribute of a `<ref>` tag with a different `group` attribute
 
 **Changed**

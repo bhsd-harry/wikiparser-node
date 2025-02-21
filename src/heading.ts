@@ -50,11 +50,6 @@ export abstract class HeadingToken extends Token {
 		return 'heading';
 	}
 
-	/** 标题格式的等号 */
-	get #equals(): string {
-		return '='.repeat(this.level);
-	}
-
 	/** 标题层级 */
 	get level(): number {
 		return this.#level;
@@ -103,15 +98,20 @@ export abstract class HeadingToken extends Token {
 		this.append(token, trail);
 	}
 
+	/** 标题格式的等号 */
+	#getEquals(): string {
+		return '='.repeat(this.level);
+	}
+
 	/** @private */
 	override toString(skip?: boolean): string {
-		const equals = this.#equals;
+		const equals = this.#getEquals();
 		return equals + this.firstChild.toString(skip) + equals + this.lastChild.toString(skip);
 	}
 
 	/** @private */
 	override text(): string {
-		const equals = this.#equals;
+		const equals = this.#getEquals();
 		return equals + this.firstChild.text() + equals;
 	}
 
@@ -205,7 +205,7 @@ export abstract class HeadingToken extends Token {
 
 	/** @private */
 	override print(): string {
-		const equals = this.#equals;
+		const equals = this.#getEquals();
 		return super.print({pre: equals, sep: equals});
 	}
 
