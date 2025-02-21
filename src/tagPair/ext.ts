@@ -1,6 +1,7 @@
 import {generateForSelf} from '../../util/lint';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
+import {attributesParent} from '../../mixin/attributesParent';
 import {Token} from '../index';
 import {TagPairToken} from './index';
 import {AttributesToken} from '../attributes';
@@ -11,6 +12,9 @@ import {GalleryToken} from '../gallery';
 import {ImagemapToken} from '../imagemap';
 import {NowikiToken} from '../nowiki/index';
 import type {LintError, Config} from '../../base';
+import type {AttributesParentBase} from '../../mixin/attributesParent';
+
+export interface ExtToken extends AttributesParentBase {}
 
 /**
  * 从数组中删除指定元素
@@ -27,6 +31,7 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
+@attributesParent()
 export abstract class ExtToken extends TagPairToken {
 	declare closed: true;
 

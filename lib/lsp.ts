@@ -48,6 +48,7 @@ import type {
 	ParameterToken,
 	HeadingToken,
 	ExtToken,
+	AttributesToken,
 	DoubleUnderscoreToken,
 	ArgToken,
 	LinkToken,
@@ -177,44 +178,15 @@ const getCompletion = (
 }));
 
 /**
- * Create the URL of a page.
- * @param articlePath article path
- * @param page page name
- * @param ns namespace
- * @throws `Error` Article path is not set.
- */
-const getUrl = (articlePath: string | undefined, page: string, ns?: number): string => {
-	/* istanbul ignore if */
-	if (!articlePath?.includes('//')) {
-		throw new Error('Article path is not set.');
-	}
-	const title = Parser.normalizeTitle(page, ns);
-	/* istanbul ignore if */
-	if (!title.valid) {
-		throw new RangeError('Invalid page name.');
-	}
-	return title.getUrl();
-};
-
-/**
  * Get the caret position at the position from a word.
  * @param root root token
  * @param pos position
+ * @param pos.line line number
+ * @param pos.character character number
  */
-const caretPositionFromWord = (root: Token, pos: Position): CaretPosition => {
-	const {line, character} = pos,
-		index = root.indexFromPos(line, character)!;
+const caretPositionFromWord = (root: Token, {line, character}: Position): CaretPosition => {
+	const index = root.indexFromPos(line, character)!;
 	return root.caretPositionFromIndex(index + Number(/\w/u.test(root.toString().charAt(index))))!;
-};
-
-/**
- * Get the token at the position from a word.
- * @param root root token
- * @param pos position
- */
-const elementFromWord = (root: Token, pos: Position): Token => {
-	const {offsetNode} = caretPositionFromWord(root, pos);
-	return offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode;
 };
 
 /**
@@ -243,11 +215,11 @@ const getRefGroup = (token: Token): string | number => getRefAttr(token, referen
 
 /**
  * Get the attribute of a `<ref>` tag.
- * @param tokens attribute tokens
+ * @param token extension token
  * @param target attribute name
  */
-const getRefTagAttr = (tokens: readonly Token[] | undefined, target: string): string | false => {
-	const attr = (tokens?.find(({name}) => name === target) as AttributeToken | undefined)?.getValue();
+const getRefTagAttr = (token: ExtToken | AttributesToken | undefined, target: string): string | false => {
+	const attr = token?.getAttr(target);
 	return attr !== true && attr || false;
 };
 
@@ -676,8 +648,7 @@ export class LanguageService implements LanguageServiceBase {
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			lines = root.getLines(),
-			{length} = lines,
+			{length} = root.getLines(),
 			ranges: FoldingRange[] = [],
 			levels = new Array<number | undefined>(6),
 			tokens = root.querySelectorAll<Token>('heading-title,table,template,magic-word');
@@ -727,84 +698,91 @@ export class LanguageService implements LanguageServiceBase {
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		this.#checkSignature();
 		const {articlePath, protocol} = Parser.getConfig(),
-			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu'),
-			extSelector = 'magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link',
-			fullSelector = `link-target,template-name,invoke-module,${extSelector}`,
-			selector = articlePath?.includes('//') ? fullSelector : extSelector;
-		return (await this.#queue(text)).querySelectorAll(selector).reverse().map((token): DocumentLink | false => {
-			const {type, parentNode, firstChild, lastChild, childNodes} = token,
-				{name, tag} = parentNode as AttributeToken;
-			if (
-				!(
-					type !== 'attr-value'
-					|| name === 'src' && ['templatestyles', 'img'].includes(tag)
-					|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
-				)
-				|| !isPlain(childNodes)
-			) {
-				return false;
-			}
-			let target: URL | string = childNodes.filter((node): node is AstText => node.type === 'text')
-				.map(({data}) => data).join('').trim();
-			if (!target) {
-				return false;
-			}
-			try {
+			absolute = articlePath?.includes('//'),
+			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
+		return (await this.#queue(text))
+			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
+				absolute ? ',link-target,template-name,invoke-module' : ''
+			}`).reverse()
+			.map((token): DocumentLink | false => {
+				const {type, parentNode, firstChild, lastChild, childNodes} = token,
+					{name, tag} = parentNode as AttributeToken;
 				if (
-					token.is<MagicLinkToken>('magic-link')
-					|| token.is<MagicLinkToken>('ext-link-url')
-					|| token.is<MagicLinkToken>('free-ext-link')
-				) {
-					target = token.getUrl(articlePath);
-				} else if (
-					type === 'link-target' && (
-						parentNode!.is<LinkToken>('link')
-						|| parentNode!.is<RedirectTargetToken>('redirect-target')
-						|| parentNode!.is<CategoryToken>('category')
+					!(
+						type !== 'attr-value'
+						|| name === 'src' && ['templatestyles', 'img'].includes(tag)
+						|| name === 'cite' && ['blockquote', 'del', 'ins', 'q'].includes(tag)
 					)
+					|| !isPlain(childNodes)
 				) {
-					if (target.startsWith('/')) {
-						return false;
-					}
-					target = parentNode.link.getUrl(articlePath);
-				} else if (type === 'template-name') {
-					target = parentNode!.getAttribute('title').getUrl(articlePath);
-				} else if (
-					['link-target', 'invoke-module'].includes(type)
-					|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
-					|| type === 'image-parameter' && !protocolRegex.test(target)
-				) {
-					if (target.startsWith('/')) {
-						return false;
-					}
-					let ns = 0;
-					if (type === 'attr-value') {
-						ns = 10;
-					} else if (type === 'invoke-module') {
-						ns = 828;
-					}
-					target = getUrl(articlePath, target, ns);
+					return false;
 				}
-				if (typeof target === 'string' && target.startsWith('//')) {
-					target = `https:${target}`;
+				let target: URL | string = childNodes.filter((node): node is AstText => node.type === 'text')
+					.map(({data}) => data).join('').trim();
+				if (!target) {
+					return false;
 				}
-				target = new URL(target).href;
-				if (type === 'image-parameter') {
-					const {top, left, height, width} = lastChild!.getBoundingClientRect(),
-						rect = firstChild!.getBoundingClientRect();
-					return {
-						range: {
-							start: {line: rect.top, character: rect.left},
-							end: getEndPos(top, left, height, width),
-						},
-						target,
-					};
+				try {
+					if (
+						token.is<MagicLinkToken>('magic-link')
+						|| token.is<MagicLinkToken>('ext-link-url')
+						|| token.is<MagicLinkToken>('free-ext-link')
+					) {
+						target = token.getUrl(articlePath);
+					} else if (
+						type === 'link-target' && (
+							parentNode!.is<LinkToken>('link')
+							|| parentNode!.is<RedirectTargetToken>('redirect-target')
+							|| parentNode!.is<CategoryToken>('category')
+						)
+					) {
+						if (target.startsWith('/')) {
+							return false;
+						}
+						target = parentNode.link.getUrl(articlePath);
+					} else if (type === 'template-name') {
+						target = parentNode!.getAttribute('title').getUrl(articlePath);
+					} else if (
+						['link-target', 'invoke-module'].includes(type)
+						|| type === 'attr-value' && name === 'src' && tag === 'templatestyles'
+						|| type === 'image-parameter' && !protocolRegex.test(target)
+					) {
+						if (!absolute || target.startsWith('/')) {
+							return false;
+						}
+						let ns = 0;
+						if (type === 'attr-value') {
+							ns = 10;
+						} else if (type === 'invoke-module') {
+							ns = 828;
+						}
+						const title = Parser.normalizeTitle(target, ns);
+						/* istanbul ignore if */
+						if (!title.valid) {
+							return false;
+						}
+						target = title.getUrl();
+					}
+					if (typeof target === 'string' && target.startsWith('//')) {
+						target = `https:${target}`;
+					}
+					target = new URL(target).href;
+					if (type === 'image-parameter') {
+						const {top, left, height, width} = lastChild!.getBoundingClientRect(),
+							rect = firstChild!.getBoundingClientRect();
+						return {
+							range: {
+								start: {line: rect.top, character: rect.left},
+								end: getEndPos(top, left, height, width),
+							},
+							target,
+						};
+					}
+					return {range: createNodeRange(token), target};
+				} catch {
+					return false;
 				}
-				return {range: createNodeRange(token), target};
-			} catch {
-				return false;
-			}
-		}).filter(Boolean) as DocumentLink[];
+			}).filter(Boolean) as DocumentLink[];
 	}
 
 	/**
@@ -815,7 +793,11 @@ export class LanguageService implements LanguageServiceBase {
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = elementFromWord(root, position),
+			{offsetNode, offset} = caretPositionFromWord(root, position),
+			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
+			node = offset === 0 && (element.type === 'ext-attr-dirty' || element.type === 'html-attr-dirty')
+				? element.parentNode!.parentNode!
+				: element,
 			{type} = node,
 			refName = getRefName(node),
 			refGroup = getRefGroup(node);
@@ -836,23 +818,24 @@ export class LanguageService implements LanguageServiceBase {
 	/**
 	 * 提供定义
 	 * @param text 源代码
-	 * @param position 位置
+	 * @param pos 位置
+	 * @param pos.line 行号
+	 * @param pos.character 列号
 	 */
-	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
+	async provideDefinition(text: string, {line, character}: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = elementFromWord(root, position),
-			attrs = (node.is<ExtToken>('ext') && node.name === 'ref' ? node : node.closest<ExtToken>('ext#ref'))
-				?.firstChild.childNodes,
-			refName = getRefTagAttr(attrs, 'name');
+			node = root.elementFromPoint(character, line)!,
+			ext = node.is<ExtToken>('ext') && node.name === 'ref' ? node : node.closest<ExtToken>('ext#ref'),
+			refName = getRefTagAttr(ext, 'name');
 		if (!refName) {
 			return undefined;
 		}
-		const refGroup = getRefTagAttr(attrs, 'group'),
+		const refGroup = getRefTagAttr(ext, 'group'),
 			refs = root.querySelectorAll<ExtToken>('ext#ref').filter(
-				({firstChild: {childNodes}, innerText}) => innerText
-					&& getRefTagAttr(childNodes, 'name') === refName
-					&& getRefTagAttr(childNodes, 'group') === refGroup,
+				token => token.innerText
+					&& getRefTagAttr(token, 'name') === refName
+					&& getRefTagAttr(token, 'group') === refGroup,
 			).map(({lastChild}): Omit<Location, 'uri'> => ({
 				range: createNodeRange(lastChild),
 			}));
@@ -862,12 +845,14 @@ export class LanguageService implements LanguageServiceBase {
 	/**
 	 * 提供变量更名准备
 	 * @param text 源代码
-	 * @param position 位置
+	 * @param pos 位置
+	 * @param pos.line 行号
+	 * @param pos.character 列号
 	 */
-	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
+	async resolveRenameLocation(text: string, {line, character}: Position): Promise<Range | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = elementFromWord(root, position),
+			node = root.elementFromPoint(character, line)!,
 			{type} = node,
 			refName = getRefName(node),
 			refGroup = getRefGroup(node);
@@ -883,24 +868,33 @@ export class LanguageService implements LanguageServiceBase {
 	/**
 	 * 变量更名
 	 * @param text 源代码
-	 * @param position 位置
+	 * @param pos 位置
+	 * @param pos.line 行号
+	 * @param pos.character 列号
 	 * @param newName 新名称
 	 */
-	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
+	async provideRenameEdits(
+		text: string,
+		{line, character}: Position,
+		newName: string,
+	): Promise<WorkspaceEdit | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = elementFromWord(root, position),
+			node = root.elementFromPoint(character, line)!,
 			{type} = node,
 			refName = getRefName(node),
-			refGroup = getRefGroup(node);
-		const name = getName(node),
+			refNameGroup = refName && getRefTagAttr(node.parentNode!.parentNode as AttributesToken, 'group'),
+			refGroup = getRefGroup(node),
+			name = getName(node),
 			refs = root.querySelectorAll(type).filter(token => {
 				const {type: t} = token.parentNode!;
 				if (type === 'link-target' && t !== 'link' && t !== 'redirect-target') {
 					return false;
 				}
 				return type === 'attr-value'
-					? getRefName(token) === refName || getRefGroup(token) === refGroup
+					? getRefGroup(token) === refGroup
+					|| getRefName(token) === refName
+					&& getRefTagAttr(token.parentNode!.parentNode as AttributesToken, 'group') === refNameGroup
 					: getName(token) === name;
 			});
 		return refs.length === 0
@@ -935,32 +929,33 @@ export class LanguageService implements LanguageServiceBase {
 		}
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			caret = caretPositionFromWord(root, position),
-			{offsetNode, offset} = caret,
+			{offsetNode, offset} = caretPositionFromWord(root, position),
 			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
 			{type, parentNode, length, name} = token;
 		let info: SignatureData['parserFunctions'][0] | undefined,
 			f: string | undefined,
 			range: Range | undefined;
 		if (token.is<DoubleUnderscoreToken>('double-underscore')) {
+			if (offset === 0 && token.getBoundingClientRect().left > position.character) {
+				return undefined;
+			}
 			info = this.data.behaviorSwitches.find(
 				({aliases}) => aliases.includes(token.innerText.toLowerCase()),
 			);
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
-			f = token.text().trim();
+			f = token.toString(true).trim();
 		} else if (token.is<TranscludeToken>('magic-word') && length === 1 && !token.modifier) {
 			info = this.#getParserFunction(name!);
-			f = token.firstChild.text().trim();
+			f = token.firstChild.toString(true).trim();
 		} else if (
 			(token.is<TranscludeToken>('magic-word') || token.is<TranscludeToken>('template'))
-			&& token.modifier
+			&& token.modifier && offset >= 2 && token.getRelativeIndex(0) > offset
 		) {
-			const rIndex = token.getRelativeIndex(0);
-			if (offset >= 2 && rIndex > offset) {
+			f = token.modifier.trim().slice(0, -1);
+			info = this.#getParserFunction(f.toLowerCase());
+			if (info) {
 				const aIndex = token.getAbsoluteIndex();
-				f = token.modifier.trim().slice(0, -1);
-				info = this.#getParserFunction(f.toLowerCase());
 				range = {
 					start: positionAt(root, aIndex + 2),
 					end: positionAt(root, aIndex + token.modifier.trimEnd().length + 1),
@@ -1004,7 +999,7 @@ export class LanguageService implements LanguageServiceBase {
 			{lastChild} = await this.#queue(
 				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
 			);
-		if (!lastChild!.is<TranscludeToken>('magic-word')) {
+		if (!lastChild!.is<TranscludeToken>('magic-word') || lastChild.length === 1) {
 			return undefined;
 		}
 		const {name, childNodes, firstChild} = lastChild,
@@ -1016,34 +1011,32 @@ export class LanguageService implements LanguageServiceBase {
 			candidates = info.signatures.filter(
 				params => (params.length >= n || params[params.length - 1]?.rest)
 					&& params.every(({label, const: c}, i) => {
-						const p = c && i < n && childNodes[i + 1]?.text().trim();
-						return !p || label.includes(p) || label.includes(p.toLowerCase());
+						const p = c && i < n && childNodes[i + 1]?.toString(true).trim();
+						return !p || label.toLowerCase().includes(p.toLowerCase());
 					}),
 			);
 		if (candidates.length === 0) {
 			return undefined;
 		}
-		let j = 0;
-		if (n === 0) {
-			j = -1;
-		} else {
-			for (let cur = lastChild.getAbsoluteIndex() + lastChild.getRelativeIndex(1); j < n; j++) {
-				cur += childNodes[j + 1]!.toString().length + 1;
-				if (cur > character) {
-					break;
-				}
+		let j = -1;
+		for (let cur = lastChild.getAbsoluteIndex() + lastChild.getAttribute('padding'); j < n; j++) {
+			cur += childNodes[j + 1]!.toString().length + 1;
+			if (cur > character) {
+				break;
 			}
 		}
-		const f = firstChild.text().trim(),
-			signatures = candidates.map((params): SignatureInformation => ({
+		const f = firstChild.toString(true).trim();
+		return {
+			signatures: candidates.map((params): SignatureInformation => ({
 				label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
 				parameters: params.map(({label, const: c}): ParameterInformation => ({
 					label,
 					...c ? {documentation: 'Predefined parameter'} : undefined,
 				})),
 				...params.length < n ? {activeParameter: Math.min(j, params.length - 1)} : undefined,
-			}));
-		return {signatures, activeParameter: j};
+			})),
+			activeParameter: j,
+		};
 	}
 
 	/**
