@@ -349,12 +349,12 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	createLanguageService(uri: object) {
-		let mod: typeof import('./lib/lsp');
-		// eslint-disable-next-line no-unused-labels
-		LSP: mod = require('./lib/lsp');
-		const {LanguageService, tasks} = mod;
-		Parser.viewOnly = true;
-		return tasks.get(uri) ?? new LanguageService(uri);
+		LSP: { // eslint-disable-line no-unused-labels
+			const mod: typeof import('./lib/lsp') = require('./lib/lsp');
+			const {LanguageService, tasks} = mod;
+			Parser.viewOnly = true;
+			return tasks.get(uri) ?? new LanguageService(uri);
+		}
 	},
 
 	/* NOT FOR BROWSER */
