@@ -22,7 +22,6 @@ export class Title {
 	#path: string;
 	#ns;
 	#fragment;
-	interwiki = '';
 	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
@@ -30,6 +29,7 @@ export class Title {
 	/* NOT FOR BROWSER */
 
 	#redirectFragment: string | undefined;
+	interwiki = '';
 	/** @private */
 	conversionTable = new Map<string, string>();
 	/** @private */
@@ -168,11 +168,15 @@ export class Title {
 			this.#fragment = fragment.replace(/ /gu, '_');
 			title = title.slice(0, i).trim();
 		}
-		this.valid = Boolean(title || this.interwiki || selfLink && this.ns === 0 && this.#fragment !== undefined)
-			&& decodeHtml(title) === title
-			&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
-				subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
-			);
+		this.valid = Boolean(
+			title
+			|| this.interwiki
+			|| selfLink && this.ns === 0 && this.#fragment !== undefined,
+		)
+		&& decodeHtml(title) === title
+		&& !/^:|\0\d+[eh!+-]\x7F|[<>[\]{}|\n]|%[\da-f]{2}|(?:^|\/)\.{1,2}(?:$|\/)/iu.test(
+			subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
+		);
 		this.main = title;
 		Object.defineProperties(this, {
 			encoded: {enumerable: false, writable: false},
@@ -190,23 +194,11 @@ export class Title {
 		}
 	}
 
-	/** @private */
-	toString(display?: boolean): string {
-		return (display ? this.title.replace(/_/gu, ' ') : this.title)
-			+ (
-				this.#fragment === undefined
-				&& this.#redirectFragment === undefined
-					? ''
-					: `#${
-						this.#fragment
-						?? this.#redirectFragment
-					}`
-			);
-	}
-
 	/** 检测是否是重定向 */
 	getRedirection(): [boolean, string] {
-		const prefix = this.interwiki + (this.interwiki && ':') + this.prefix;
+		const prefix =
+			this.interwiki + (this.interwiki && ':') + // eslint-disable-line @stylistic/operator-linebreak
+			this.prefix;
 		let title = (prefix + this.main).replace(/ /gu, '_');
 
 		/* NOT FOR BROWSER */
@@ -265,6 +257,20 @@ export class Title {
 	}
 
 	/* NOT FOR BROWSER */
+
+	/** @private */
+	toString(display?: boolean): string {
+		return (display ? this.title.replace(/_/gu, ' ') : this.title)
+			+ (
+				this.#fragment === undefined
+				&& this.#redirectFragment === undefined
+					? ''
+					: `#${
+						this.#fragment
+						?? this.#redirectFragment
+					}`
+			);
+	}
 
 	/**
 	 * 处理重定向

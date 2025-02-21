@@ -272,16 +272,18 @@ export abstract class AstNode implements AstNodeBase {
 	 * @param left 列号
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
-		if (top < 0 || left < 0) {
-			return undefined;
+		LSP: { // eslint-disable-line no-unused-labels
+			if (top < 0 || left < 0) {
+				return undefined;
+			}
+			const lines = this.getLines();
+			if (top >= lines.length) {
+				return undefined;
+			}
+			const [, start, end] = lines[top]!,
+				index = start + left;
+			return index > end ? undefined : index;
 		}
-		const lines = this.getLines();
-		if (top >= lines.length) {
-			return undefined;
-		}
-		const [, start, end] = lines[top]!,
-			index = start + left;
-		return index > end ? undefined : index;
 	}
 
 	/**
@@ -365,7 +367,8 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 获取当前节点的行列位置和大小 */
 	getBoundingClientRect(): Dimension & Position {
-		return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
+		// eslint-disable-next-line no-unused-labels
+		LSP: return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
 	}
 
 	/** @private */
