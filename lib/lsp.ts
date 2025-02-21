@@ -935,7 +935,7 @@ export class LanguageService implements LanguageServiceBase {
 			{lastChild} = await this.#queue(
 				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
 			);
-		if (!lastChild!.is<TranscludeToken>('magic-word')) {
+		if (!lastChild!.is<TranscludeToken>('magic-word') || lastChild.length === 1) {
 			return undefined;
 		}
 		const {name, childNodes, firstChild} = lastChild,
@@ -948,21 +948,17 @@ export class LanguageService implements LanguageServiceBase {
 				params => (params.length >= n || params[params.length - 1]?.rest)
 					&& params.every(({label, const: c}, i) => {
 						const p = c && i < n && childNodes[i + 1]?.toString(true).trim();
-						return !p || label.includes(p) || label.includes(p.toLowerCase());
+						return !p || label.toLowerCase().includes(p.toLowerCase());
 					}),
 			);
 		if (candidates.length === 0) {
 			return undefined;
 		}
-		let j = 0;
-		if (n === 0) {
-			j = -1;
-		} else {
-			for (let cur = lastChild.getAbsoluteIndex() + lastChild.getRelativeIndex(1); j < n; j++) {
-				cur += childNodes[j + 1]!.toString().length + 1;
-				if (cur > character) {
-					break;
-				}
+		let j = -1;
+		for (let cur = lastChild.getAbsoluteIndex() + lastChild.getAttribute('padding'); j < n; j++) {
+			cur += childNodes[j + 1]!.toString().length + 1;
+			if (cur > character) {
+				break;
 			}
 		}
 		const f = firstChild.toString(true).trim();
