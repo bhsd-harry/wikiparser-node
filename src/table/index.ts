@@ -275,21 +275,6 @@ export abstract class TableToken extends TrBaseToken {
 	}
 
 	/**
-	 * 获取指定坐标的单元格
-	 * @param coords 表格坐标
-	 */
-	getNthCell(
-		coords: TableCoords
-			| TableRenderedCoords,
-	): TdToken | undefined {
-		let rawCoords: TableCoords | undefined = coords as TableCoords;
-		if (coords.row === undefined) {
-			rawCoords = this.toRawCoords(coords);
-		}
-		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
-	}
-
-	/**
 	 * 获取第n行
 	 * @param n 行号
 	 * @param force 是否将表格自身视为第一行
@@ -376,6 +361,21 @@ export abstract class TableToken extends TrBaseToken {
 	/** 获取下一行 */
 	getNextRow(): TrToken | undefined {
 		return this.getNthRow(super.getRowCount() ? 1 : 0, false, false) as TrToken | undefined;
+	}
+
+	/**
+	 * 获取指定坐标的单元格
+	 * @param coords 表格坐标
+	 */
+	getNthCell(
+		coords: TableCoords
+			| TableRenderedCoords,
+	): TdToken | undefined {
+		let rawCoords: TableCoords | undefined = coords as TableCoords;
+		if (coords.row === undefined) {
+			rawCoords = this.toRawCoords(coords);
+		}
+		return rawCoords && this.getNthRow(rawCoords.row, false, false)?.getNthCol(rawCoords.column);
 	}
 
 	/** 打印表格布局 */

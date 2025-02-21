@@ -8,7 +8,16 @@ import {
 	createTd,
 } from './td';
 import type {LintError} from '../../base';
-import type {AstNodes, ArgToken, TranscludeToken, SyntaxToken, TrToken} from '../../internal';
+import type {
+	AstNodes,
+	ArgToken,
+	TranscludeToken,
+
+	/* NOT FOR BROWSER */
+
+	SyntaxToken,
+	TrToken,
+} from '../../internal';
 
 /* NOT FOR BROWSER */
 
@@ -70,6 +79,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 		));
 	}
 
+	/* NOT FOR BROWSER */
+
 	/**
 	 * 获取第n列
 	 * @param n 列号
@@ -110,8 +121,6 @@ export abstract class TrBaseToken extends TableBaseToken {
 		}
 		return undefined;
 	}
-
-	/* NOT FOR BROWSER */
 
 	/** 修复简单的表格语法错误 */
 	#correct(): void {

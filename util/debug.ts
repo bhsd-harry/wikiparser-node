@@ -93,6 +93,8 @@ export const mixin = (target: Function, source: Function): void => {
 	Object.defineProperty(target, 'name', {value: source.name});
 };
 
+/* NOT FOR BROWSER */
+
 /* istanbul ignore next */
 /**
  * 定制TypeError消息
@@ -104,8 +106,6 @@ export const mixin = (target: Function, source: Function): void => {
 export const typeError = ({name}: Function, method: string, ...args: string[]): never => {
 	throw new TypeError(`${name}.${method} method only accepts ${args.join('、')} as input parameters!`);
 };
-
-/* NOT FOR BROWSER */
 
 /**
  * 撤销最近一次Mutation

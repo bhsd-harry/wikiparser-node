@@ -87,12 +87,12 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
+	/* NOT FOR BROWSER */
+
 	/** 扩展名 */
 	get extension(): string | undefined {
 		return this.getTitle().extension;
 	}
-
-	/* NOT FOR BROWSER */
 
 	/** 图片链接 */
 	override get link(): string | Title {
