@@ -209,10 +209,19 @@ export abstract class AstElement extends AstNode {
 				acc += self.getAttribute('padding');
 				for (let i = 0; acc <= index && i < childNodes.length; i++) {
 					const cur: AstNodes = childNodes[i]!,
-						l = cur.toString().length;
+						{nextSibling} = cur,
+						str = cur.toString(),
+						l = str.length;
 					acc += l;
 					// 优先选择靠前的非文本兄弟节点，但永不进入假节点
-					if (acc >= index && l > 0 && (cur.type !== 'text' || i === childNodes.length - 1)) {
+					if (
+						acc > index
+						|| acc === index && l > 0 && (
+							!nextSibling
+							|| nextSibling.type === 'text'
+							|| cur.type !== 'text' && (str.trim() || !nextSibling.toString().trim())
+						)
+					) {
 						self = cur;
 						acc -= l;
 						start = acc;
