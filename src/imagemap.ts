@@ -87,7 +87,11 @@ export abstract class ImagemapToken extends Token {
 				const pipe = line.indexOf('|'),
 					file = pipe === -1 ? line : line.slice(0, pipe),
 					title = this.normalizeTitle(file, 0, true);
-				if (title.valid && !title.interwiki && title.ns === 6) {
+				if (
+					title.valid
+					&& !title.interwiki
+					&& title.ns === 6
+				) {
 					// @ts-expect-error abstract class
 					const token: GalleryImageToken = new GalleryImageToken(
 						'imagemap',

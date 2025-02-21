@@ -60,12 +60,22 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 			continue;
 		}
 		const title = Parser.normalizeTitle(link, 0, false, config, true, true, true),
-			{ns, valid, interwiki} = title;
+			{
+				ns,
+				valid,
+
+				/* NOT FOR BROWSER */
+
+				interwiki,
+			} = title;
 		if (!valid) {
 			s += `[[${x}`;
 			continue;
 		} else if (mightBeImg) {
-			if (interwiki || ns !== 6) {
+			if (
+				ns !== 6
+				|| interwiki
+			) {
 				s += `[[${x}`;
 				continue;
 			}
@@ -94,10 +104,16 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 		text &&= parseQuotes(text, config, accum);
 		let SomeLinkToken: typeof LinkToken | typeof FileToken | typeof CategoryToken = LinkToken;
 		if (!force) {
-			if (!interwiki && ns === 6) {
+			if (
+				ns === 6
+				&& !interwiki
+			) {
 				text &&= parseExternalLinks(text, config, accum, true);
 				SomeLinkToken = FileToken;
-			} else if (!interwiki && ns === 14) {
+			} else if (
+				ns === 14
+				&& !interwiki
+			) {
 				SomeLinkToken = CategoryToken;
 			}
 		}

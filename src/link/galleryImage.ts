@@ -88,8 +88,17 @@ export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			{ns, interwiki} = this.getAttribute('title');
-		if (interwiki || ns !== 6) {
+			{
+				ns,
+
+				/* NOT FOR BROWSER */
+
+				interwiki,
+			} = this.getAttribute('title');
+		if (
+			ns !== 6
+			|| interwiki
+		) {
 			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image');
 			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
 			errors.push(e);
