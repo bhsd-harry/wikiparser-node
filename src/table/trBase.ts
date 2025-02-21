@@ -202,8 +202,10 @@ export abstract class TrBaseToken extends TableBaseToken {
 		subtype: TdSubtypes = 'td',
 		attr: TdAttrs = {},
 	): TdToken {
-		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
-		return this.insertBefore(token, this.getNthCol(column, true));
+		return this.insertBefore(
+			createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config')),
+			this.getNthCol(column, true),
+		);
 	}
 
 	/** @private */

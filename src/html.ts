@@ -307,7 +307,6 @@ export abstract class HtmlToken extends Token {
 		});
 	}
 
-	/** @override */
 	override json(): AST {
 		const json = super.json();
 		Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});

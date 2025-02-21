@@ -342,7 +342,6 @@ export abstract class TableToken extends TrBaseToken {
 		return undefined;
 	}
 
-	/** @override */
 	override json(): AST {
 		const json = super.json();
 		json['closed'] = this.closed;
@@ -651,10 +650,11 @@ export abstract class TableToken extends TrBaseToken {
 		const filter = (token: TrBaseToken): Token[] => token.childNodes.filter(isToken('table-inter'));
 		const {childNodes} = this,
 			tr = childNodes.filter(isToken<TrToken>('tr')),
-			newOpt = {...opt, nowrap: true},
-			// eslint-disable-next-line es-x/no-array-prototype-flat
-			inter = [this, ...tr].flatMap(filter).map(token => token.toHtmlInternal(newOpt).trim()).join(' ');
-		return `${inter}<table${childNodes[1].toHtmlInternal()}>${opt?.nowrap ? ' ' : '\n'}<tbody>${
+			newOpt = {...opt, nowrap: true};
+		return `${
+			[this, ...tr].flatMap(filter) // eslint-disable-line es-x/no-array-prototype-flat
+				.map(token => token.toHtmlInternal(newOpt).trim()).join(' ')
+		}<table${childNodes[1].toHtmlInternal()}>${opt?.nowrap ? ' ' : '\n'}<tbody>${
 			super.toHtmlInternal(opt)
 		}${html(tr, '', opt)}</tbody></table>`;
 	}

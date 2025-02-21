@@ -19,11 +19,11 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 				(_, base: string, exp: string): string => {
 					/import \{\s*Token\b.+?;\n/su; // eslint-disable-line @typescript-eslint/no-unused-expressions
 					const regex2 = new RegExp(String.raw`import \{\s*${base}\b.+?;\n`, 'su');
-					if (regex2.test(content)) {
-						return exp + base;
-					}
-					const original = fs.readFileSync(path.join('src', file.replace(/d\.ts$/u, 'ts')), 'utf8');
-					return regex2.exec(original)![0] + exp + base;
+					return (
+						regex2.test(content)
+							? ''
+							: regex2.exec(fs.readFileSync(path.join('src', file.replace(/d\.ts$/u, 'ts')), 'utf8'))![0]
+					) + exp + base;
 				},
 			),
 		);

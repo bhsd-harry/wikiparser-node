@@ -28,25 +28,25 @@ Parser.warning = false;
  */
 const getPages = async (url: string): Promise<SimplePage[]> => {
 	const qs = {
-			action: 'query',
-			format: 'json',
-			formatversion: '2',
-			errorformat: 'plaintext',
-			generator: 'recentchanges',
-			grcnamespace: '0|10',
-			grclimit: '10',
-			grctype: 'edit|new',
-			prop: 'revisions',
-			rvprop: 'contentmodel|content',
-		},
-		// eslint-disable-next-line n/no-unsupported-features/node-builtins
-		response = await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json() as MediaWikiResponse;
-	return response.query.pages.map(({pageid, title, ns, revisions}) => ({
-		pageid,
-		title,
-		ns,
-		content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
-	})).filter((page): page is SimplePage => page.content !== false);
+		action: 'query',
+		format: 'json',
+		formatversion: '2',
+		errorformat: 'plaintext',
+		generator: 'recentchanges',
+		grcnamespace: '0|10',
+		grclimit: '10',
+		grctype: 'edit|new',
+		prop: 'revisions',
+		rvprop: 'contentmodel|content',
+	};
+	// eslint-disable-next-line n/no-unsupported-features/node-builtins
+	return (await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json() as MediaWikiResponse).query.pages
+		.map(({pageid, title, ns, revisions}) => ({
+			pageid,
+			title,
+			ns,
+			content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
+		})).filter((page): page is SimplePage => page.content !== false);
 };
 
 (async () => {

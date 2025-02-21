@@ -63,9 +63,36 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[]): s
 			arr[i - 1] += `'`;
 		}
 	}
+
+	/* NOT FOR BROWSER */
+
+	let bold = true,
+		italic = true;
+
+	/* NOT FOR BROWSER END */
+
 	for (let i = 1; i < length; i += 2) {
+		/* NOT FOR BROWSER */
+
+		const n = arr[i]!.length,
+			isBold = n !== 2,
+			isItalic = n !== 3;
+		if (isBold) {
+			bold = !bold;
+		}
+		if (isItalic) {
+			italic = !italic;
+		}
+
+		/* NOT FOR BROWSER END */
+
 		// @ts-expect-error abstract class
-		new QuoteToken(arr[i], config, accum);
+		new QuoteToken(
+			arr[i],
+			{bold: isBold && bold, italic: isItalic && italic},
+			config,
+			accum,
+		);
 		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
 	return arr.join('');

@@ -98,14 +98,12 @@ export abstract class AstElement extends AstNode {
 
 	/** 内部高度 */
 	get clientHeight(): number | undefined {
-		const {innerText} = this as {innerText?: string};
-		return innerText?.split('\n').length;
+		return (this as {innerText?: string}).innerText?.split('\n').length;
 	}
 
 	/** 内部宽度 */
 	get clientWidth(): number | undefined {
-		const {innerText} = this as {innerText?: string};
-		return innerText?.split('\n').pop()!.length;
+		return (this as {innerText?: string}).innerText?.split('\n').pop()!.length;
 	}
 
 	/** 所有图片，包括图库 */

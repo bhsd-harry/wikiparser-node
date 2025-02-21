@@ -26,10 +26,9 @@ export class HiddenToken extends Token {
 	}
 
 	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
+		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
-			const token = new HiddenToken(undefined, config, []) as this;
+			const token = new HiddenToken(undefined, this.getAttribute('config'), []) as this;
 			token.append(...cloned);
 			return token;
 		});

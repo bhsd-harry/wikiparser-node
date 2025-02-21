@@ -27,6 +27,11 @@ import * as EventEmitter from 'events';
 import {classes} from '../util/constants';
 import Parser from '../index';
 
+export interface Font {
+	bold: boolean;
+	italic: boolean;
+}
+
 /* NOT FOR BROWSER END */
 
 export type AstNodes = AstText | Token;
@@ -109,16 +114,16 @@ export abstract class AstNode implements AstNodeBase {
 
 	/** 后一个非文本兄弟节点 */
 	get nextElementSibling(): Token | undefined {
-		const childNodes = this.parentNode?.childNodes,
-			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(i! + 1).find((child): child is Token => child.type !== 'text');
+		const childNodes = this.parentNode?.childNodes;
+		return childNodes?.slice(childNodes.indexOf(this as AstNode as AstNodes) + 1)
+			.find((child): child is Token => child.type !== 'text');
 	}
 
 	/** 前一个非文本兄弟节点 */
 	get previousElementSibling(): Token | undefined {
-		const childNodes = this.parentNode?.childNodes,
-			i = childNodes?.indexOf(this as AstNode as AstNodes);
-		return childNodes?.slice(0, i).findLast((child): child is Token => child.type !== 'text');
+		const childNodes = this.parentNode?.childNodes;
+		return childNodes?.slice(0, childNodes.indexOf(this as AstNode as AstNodes))
+			.findLast((child): child is Token => child.type !== 'text');
 	}
 
 	/** 后一个可见的兄弟节点 */
@@ -178,7 +183,7 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** 字体样式 */
-	get font(): {bold: boolean, italic: boolean} {
+	get font(): Font {
 		const {bold, italic, b = 0, i = 0} = this.#getFont();
 		return {bold: bold && b >= 0, italic: italic && i >= 0};
 	}
@@ -640,40 +645,62 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/** 字体样式 */
-	#getFont(): {bold: boolean, italic: boolean, b?: number, i?: number} {
+	#getFont(): Font & {b?: number, i?: number} {
 		const {parentNode} = this,
 			acceptable = parentNode?.getAcceptable();
 		if (!parentNode || acceptable && !('QuoteToken' in acceptable)) {
 			return {bold: false, italic: false};
 		}
 		const {childNodes, type} = parentNode;
-		let {bold = false, italic = false, b = 0, i = 0} = type === 'ext-link-text' && parentNode.parentNode
-			? parentNode.parentNode.#getFont()
-			: {};
+		let bold: boolean | undefined,
+			italic: boolean | undefined,
+			b = 0,
+			i = 0;
+
+		/**
+		 * 更新字体样式
+		 * @param node 父节点或兄弟节点
+		 */
+		const update = (node: AstNodes): void => {
+			const font = node.#getFont();
+			if (bold === undefined) {
+				({bold} = font);
+				b += font.b ?? 0;
+			}
+			if (italic === undefined) {
+				({italic} = font);
+				i += font.i ?? 0;
+			}
+		};
 		for (let j = childNodes.indexOf(this as unknown as AstNodes) - 1; j >= 0; j--) {
 			const child = childNodes[j]!;
 			if (child.is<QuoteToken>('quote')) {
-				bold = child.bold !== bold;
-				italic = child.italic !== italic;
+				const {closing} = child;
+				bold ??= child.bold ? !closing.bold : undefined;
+				italic ??= child.italic ? !closing.italic : undefined;
+				if (bold !== undefined && italic !== undefined) {
+					break;
+				}
 			} else if (child.is<HtmlToken>('html')) {
 				const {name, closing} = child;
-				if (name === 'b' && b <= 0) {
+				if (bold === undefined && name === 'b' && b <= 0) {
 					b += closing ? -1 : 1;
-				} else if (name === 'i' && i <= 0) {
+				} else if (italic === undefined && name === 'i' && i <= 0) {
 					i += closing ? -1 : 1;
 				}
 			} else if (child.is<ExtLinkToken>('ext-link') && child.length === 2 && child.lastChild.length > 0) {
-				const font = child.lastChild.lastChild!.#getFont();
-				bold = font.bold !== bold;
-				italic = font.italic !== italic;
-				b += font.b ?? 0;
-				i += font.i ?? 0;
+				update(child.lastChild.lastChild!);
 				break;
 			} else if (child.type === 'text' && child.data.includes('\n')) {
+				bold = Boolean(bold);
+				italic = Boolean(italic);
 				break;
 			}
 		}
-		return {bold, italic, b, i};
+		if ((bold === undefined || italic === undefined) && type === 'ext-link-text' && parentNode.parentNode) {
+			update(parentNode.parentNode);
+		}
+		return {bold: Boolean(bold), italic: Boolean(italic), b, i};
 	}
 }
 

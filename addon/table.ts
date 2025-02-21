@@ -144,9 +144,8 @@ TableToken.prototype.getFullCol =
 	/** @implements */
 	function(x): Map<TdToken, boolean> {
 		const layout = this.getLayout(),
-			colLayout = layout.map(row => row[x]).filter(Boolean) as TableCoords[],
 			rows = this.getAllRows();
-		return new Map(colLayout.map(
+		return new Map((layout.map(row => row[x]).filter(Boolean) as TableCoords[]).map(
 			coords => [rows[coords.row]!.getNthCol(coords.column)!, layout[coords.row]![x - 1] !== coords],
 		));
 	};

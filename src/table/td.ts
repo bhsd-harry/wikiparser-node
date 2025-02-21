@@ -193,13 +193,12 @@ export abstract class TdToken extends TableBaseToken {
 
 				const str = previousSibling.lastChild.toString();
 				result.escape ||= esc;
-				result.correction = str.includes('\n') && Shadow.run(() => {
-					const config = this.getAttribute('config'),
-						include = this.getAttribute('include');
-					return new Token(str, config).parseOnce(0, include).parseOnce().parseOnce()
+				result.correction = str.includes('\n') && Shadow.run(
+					() => new Token(str, this.getAttribute('config'))
+						.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce()
 						.toString()
-						.includes('\n');
-				});
+						.includes('\n'),
+				);
 				if (subtype === 'th' && result.subtype !== 'th') {
 					result.subtype = 'th';
 					result.correction = true;
@@ -317,7 +316,6 @@ export abstract class TdToken extends TableBaseToken {
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 
-	/** @override */
 	override json(): AST {
 		const json = super.json();
 		json['subtype'] = this.subtype;

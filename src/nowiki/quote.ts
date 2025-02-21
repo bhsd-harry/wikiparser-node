@@ -5,19 +5,32 @@ import {NowikiBaseToken} from './base';
 import type {
 	LintError,
 	AST,
+
+	/* NOT FOR BROWSER */
+
+	Config,
 } from '../../base';
 
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
 import {font} from '../../util/html';
+import {Shadow} from '../../util/debug';
 import {syntax} from '../../mixin/syntax';
+import type {Font} from '../../lib/node';
+import type {Token} from '../index';
 
 /* NOT FOR BROWSER END */
 
 /** `''`和`'''` */
 @syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
+	/* NOT FOR BROWSER */
+
+	#closing: Font;
+
+	/* NOT FOR BROWSER END */
+
 	override get type(): 'quote' {
 		return 'quote';
 	}
@@ -32,8 +45,19 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	override get font(): {bold: boolean, italic: boolean} {
+	override get font(): Font {
 		return {bold: this.bold, italic: this.italic};
+	}
+
+	/** 是否闭合 */
+	get closing(): Font {
+		return this.#closing;
+	}
+
+	/** @param closing 是否闭合 */
+	constructor(wikitext: string, closing: Font, config?: Config, accum?: Token[]) {
+		super(wikitext, config, accum);
+		this.#closing = closing;
 	}
 
 	/* NOT FOR BROWSER END */
@@ -103,7 +127,6 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return errors;
 	}
 
-	/** @override */
 	override json(): AST {
 		const json = super.json();
 		Object.assign(json, {bold: this.bold, italic: this.italic});
@@ -111,6 +134,11 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	}
 
 	/* NOT FOR BROWSER */
+
+	override cloneNode(): this {
+		// @ts-expect-error abstract class
+		return Shadow.run(() => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')) as this);
+	}
 
 	/** @private */
 	override toHtmlInternal(): string {

@@ -202,7 +202,6 @@ export abstract class ParameterToken extends Token {
 		return super.print({sep: this.anon ? '' : '='});
 	}
 
-	/** @override */
 	override json(): AST {
 		const json = super.json();
 		json['anon'] = this.anon;

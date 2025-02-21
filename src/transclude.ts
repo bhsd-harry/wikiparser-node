@@ -247,9 +247,8 @@ export abstract class TranscludeToken extends Token {
 
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
-		const isTemplate = this.type === 'template',
-			child = this.childNodes[isTemplate ? 0 : 1] as AtomToken;
-		return this.normalizeTitle(child.toString(true), isTemplate ? 10 : 828);
+		const isTemplate = this.type === 'template';
+		return this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].toString(true), isTemplate ? 10 : 828);
 	}
 
 	/**
@@ -624,8 +623,7 @@ export abstract class TranscludeToken extends Token {
 	 * @param exact 是否匹配匿名性
 	 */
 	getArg(key: string | number, exact?: boolean): ParameterToken | undefined {
-		const args = [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b));
-		return args.at(-1);
+		return [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**

@@ -458,18 +458,17 @@ export abstract class FileToken extends LinkBaseToken {
 		const parent = this.parentNode as GalleryToken | undefined,
 			mode = parent?.parentNode?.getAttr('mode'),
 			nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
-			padding = nolines ? 0 : 30,
-			showfilename = parent?.parentNode?.getAttr('showfilename') !== undefined;
+			padding = nolines ? 0 : 30;
 		return `\t<li class="gallerybox" style="width: ${
 			Number(width) + padding + 5
 		}px">\n\t\t<div class="thumb" style="width: ${Number(width) + padding}px${
 			nolines ? '' : `; height: ${Number(height) + padding}px`
 		}"><span>${a}</span></div>\n\t\t<div class="gallerytext">${
-			showfilename
-				? `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
+			parent?.parentNode?.getAttr('showfilename') === undefined
+				? ''
+				: `<a href="${file.getUrl()}" class="galleryfilename galleryfilename-truncate" title="${
 					file.title
 				}">${file.main}</a>\n`
-				: ''
 		}${caption}</div>\n\t</li>`;
 	}
 }

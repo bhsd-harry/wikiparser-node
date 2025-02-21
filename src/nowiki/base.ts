@@ -51,11 +51,9 @@ export abstract class NowikiBaseToken extends Token {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		const {firstChild: {data}} = this;
 		return Shadow.run(() => {
-			const C = this.constructor as new (...args: any[]) => this,
-				token = new C(data, this.getAttribute('config'));
-			return token;
+			const C = this.constructor as new (...args: any[]) => this;
+			return new C(this.innerText, this.getAttribute('config'));
 		});
 	}
 
