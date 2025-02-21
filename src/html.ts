@@ -1,12 +1,16 @@
 import {generateForSelf} from '../util/lint';
 import {noWrap} from '../util/string';
 import {BoundingRect} from '../lib/rect';
+import {attributesParent} from '../mixin/attributesParent';
 import {Token} from './index';
 import type {
 	Config,
 	LintError,
 } from '../base';
+import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
+
+export interface HtmlToken extends AttributesParentBase {}
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
 	formattingTags = new Set([
@@ -42,6 +46,7 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
+@attributesParent()
 export abstract class HtmlToken extends Token {
 	declare readonly name: string;
 	#closing;
