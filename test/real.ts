@@ -79,7 +79,10 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 						}
 						await diff(content, text, pageid);
 					}
-					await lsp(Parser, page);
+					await lsp(
+						Parser,
+						page,
+					);
 				} catch (e) {
 					error(`解析 ${title} 页面时出错！`, e);
 					failed++;
