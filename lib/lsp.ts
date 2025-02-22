@@ -331,24 +331,19 @@ export class LanguageService implements LanguageServiceBase {
 	 * - 总是返回最新的解析结果
 	 */
 	async #parse(): Promise<Token> {
-		return new Promise(resolve => {
-			(typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout)(() => {
-				const config = Parser.getConfig();
-				this.#config = Parser.config;
-				const text = this.#text,
-					root = Parser.parse(text, true, undefined, config);
-				if (this.#text === text && this.#config === Parser.config) {
-					this.#done = root;
-					this.#running = undefined;
-					resolve(root);
-					return;
-				}
-				/* istanbul ignore next */
-				this.#running = this.#parse();
-				/* istanbul ignore next */
-				resolve(this.#running);
-			}, 0);
-		});
+		const config = Parser.getConfig();
+		this.#config = Parser.config;
+		const text = this.#text,
+			root = await Parser.partialParse(text, () => this.#text, true, config);
+		if (this.#text === text && this.#config === Parser.config) {
+			this.#done = root;
+			this.#running = undefined;
+			return root;
+		}
+		/* istanbul ignore next */
+		this.#running = this.#parse();
+		/* istanbul ignore next */
+		return this.#running;
 	}
 
 	/**

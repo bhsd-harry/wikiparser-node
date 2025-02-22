@@ -79,6 +79,9 @@ declare interface Parser extends ParserBase {
 
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
 
+	/** @private */
+	partialParse(wikitext: string, watch: () => string, include?: boolean, config?: Config): Promise<Token>;
+
 	/**
 	 * 创建语言服务
 	 * @param uri 文档标识
@@ -345,6 +348,39 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		/* NOT FOR BROWSER END */
 
 		return root;
+	},
+
+	/** @implements */
+	async partialParse(wikitext, watch, include, config = Parser.getConfig()) {
+		const {Token}: typeof import('./src/index') = require('./src/index');
+		const set = typeof setImmediate === 'function' ? setImmediate : /* istanbul ignore next */ setTimeout,
+			{running} = Shadow;
+		Shadow.running = true;
+		const token = new Token(tidy(wikitext), config);
+		token.type = 'root';
+		let i = 0;
+		await new Promise<void>(resolve => {
+			const /** @ignore */ check = (): void => {
+					if (watch() === wikitext) {
+						i++;
+						set(parseOnce, 0);
+					} else {
+						resolve();
+					}
+				},
+				/** @ignore */ parseOnce = (): void => {
+					if (i === MAX_STAGE + 1) {
+						token.afterBuild();
+						resolve();
+					} else {
+						token[i === MAX_STAGE ? 'build' : 'parseOnce'](i, include);
+						check();
+					}
+				};
+			set(parseOnce, 0);
+		});
+		Shadow.running = running;
+		return token;
 	},
 
 	/** @implements */
