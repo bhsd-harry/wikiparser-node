@@ -99,7 +99,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			t.type = 'list-range';
 			return t;
 		});
-		token.append(...range.extractContents());
+		token.concat(range.extractContents()); // eslint-disable-line unicorn/prefer-spread
 		range.insertNode(token);
 		return token as ListRangeToken;
 	}

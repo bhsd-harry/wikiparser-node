@@ -671,6 +671,29 @@ export class Token extends AstElement {
 		this.#protectedChildren.push(...new Ranges(args));
 	}
 
+	/** @private */
+	concat(elements: readonly AstNodes[]): void {
+		if (elements.length === 0) {
+			return;
+		}
+		const {childNodes, lastChild} = this,
+			first = elements[0]!,
+			last = elements.at(-1)!,
+			parent = first.parentNode!,
+			nodes = [...parent.childNodes];
+		nodes.splice(nodes.indexOf(first), elements.length);
+		parent.setAttribute('childNodes', nodes);
+		first.previousSibling?.setAttribute('nextSibling', last.nextSibling);
+		last.nextSibling?.setAttribute('previousSibling', first.previousSibling);
+		for (const element of elements) {
+			element.setAttribute('parentNode', this);
+		}
+		lastChild?.setAttribute('nextSibling', first);
+		first.setAttribute('previousSibling', lastChild);
+		last.setAttribute('nextSibling', undefined);
+		this.setAttribute('childNodes', [...childNodes, ...elements]);
+	}
+
 	/**
 	 * @override
 	 * @param i 移除位置

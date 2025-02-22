@@ -17,7 +17,7 @@ TranscludeToken.prototype.newAnonArg =
 			{childNodes} = Parser.parse(val, this.getAttribute('include'), undefined, config),
 			// @ts-expect-error abstract class
 			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
-		token.lastChild.append(...childNodes);
+		token.lastChild.concat(childNodes); // eslint-disable-line unicorn/prefer-spread
 		token.afterBuild();
 		return this.insertAt(token);
 	};
@@ -41,7 +41,7 @@ TranscludeToken.prototype.setValue =
 			// @ts-expect-error abstract class
 			token = Shadow.run((): ParameterToken => new ParameterToken(undefined, undefined, config));
 		token.firstChild.append(...k.childNodes);
-		token.lastChild.append(...v.childNodes);
+		token.lastChild.concat(v.childNodes); // eslint-disable-line unicorn/prefer-spread
 		token.afterBuild();
 		this.insertAt(token);
 	};
