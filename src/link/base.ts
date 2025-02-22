@@ -68,7 +68,8 @@ export abstract class LinkBaseToken extends Token {
 
 	/** 完整链接 */
 	get link(): string | Title {
-		return this.#title;
+		// eslint-disable-next-line no-unused-labels
+		LSP: return this.#title;
 	}
 
 	/* NOT FOR BROWSER */

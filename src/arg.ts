@@ -99,12 +99,14 @@ export abstract class ArgToken extends Token {
 
 	/** 设置name */
 	#setName(): void {
-		this.setAttribute('name', this.firstChild.toString(true).trim());
+		// eslint-disable-next-line no-unused-labels
+		LSP: this.setAttribute('name', this.firstChild.toString(true).trim());
 	}
 
 	/** @private */
 	override afterBuild(): void {
-		this.#setName();
+		// eslint-disable-next-line no-unused-labels
+		LSP: this.#setName();
 		super.afterBuild();
 
 		/* NOT FOR BROWSER */

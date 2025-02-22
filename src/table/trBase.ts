@@ -90,17 +90,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 	getNthCol(n: number, insert?: false): TdToken | undefined;
 	getNthCol(n: number, insert: true): TdToken | TrToken | SyntaxToken | undefined;
 	getNthCol(n: number, insert?: boolean): TdToken | TrToken | SyntaxToken | undefined {
-		/* NOT FOR BROWSER */
-
 		const nCols = this.getColCount();
 		n += n < 0 ? nCols : 0;
 		/* istanbul ignore if */
 		if (n < 0 || n > nCols || n === nCols && !insert) {
 			throw new RangeError(`There is no cell at position ${n}!`);
 		}
-
-		/* NOT FOR BROWSER END */
-
 		let last = 0;
 		for (const child of this.childNodes.slice(2)) {
 			if (child instanceof TdToken) {
@@ -111,12 +106,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 				if (n < 0) {
 					return child;
 				}
-
-				/* NOT FOR BROWSER */
 			} else if (child.is<TrToken>('tr') || child.is<SyntaxToken>('table-syntax')) {
 				return child;
-
-				/* NOT FOR BROWSER END */
 			}
 		}
 		return undefined;
