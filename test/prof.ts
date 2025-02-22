@@ -16,7 +16,7 @@ import lsp from './lsp';
 
 const content = readFileSync('test/page.wiki', 'utf8'),
 	session = new inspector.Session(),
-	{argv: [,, count]} = process;
+	{argv: [,, count, method]} = process;
 session.connect();
 session.post('Profiler.enable', () => {
 	session.post('Profiler.start', () => {
@@ -26,10 +26,10 @@ session.post('Profiler.enable', () => {
 
 				/* NOT FOR BROWSER ONLY */
 
-				if (i === 0) {
-					void single(page);
+				await single(page, method);
+				if (!method || method === 'lsp') {
+					await lsp(page);
 				}
-				await lsp(page);
 
 				/* NOT FOR BROWSER ONLY END */
 
