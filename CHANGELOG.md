@@ -1,3 +1,11 @@
+## v1.16.5
+
+*2025-02-22*
+
+**Fixed**
+
+- [`LanguageService.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) for variables without a parameter
+
 ## v1.16.4
 
 *2025-02-21*

@@ -944,17 +944,17 @@ export class LanguageService implements LanguageServiceBase {
 		let info: SignatureData['parserFunctions'][0] | undefined,
 			f: string | undefined,
 			range: Range | undefined;
-		if (token.is<DoubleUnderscoreToken>('double-underscore')) {
-			if (offset === 0 && token.getBoundingClientRect().left > position.character) {
-				return undefined;
-			}
+		if (token.is<DoubleUnderscoreToken>('double-underscore') && offset > 0) {
 			info = this.data.behaviorSwitches.find(
 				({aliases}) => aliases.includes(token.innerText.toLowerCase()),
 			);
 		} else if (type === 'magic-word-name') {
 			info = this.#getParserFunction(parentNode!.name!);
 			f = token.toString(true).trim();
-		} else if (token.is<TranscludeToken>('magic-word') && length === 1 && !token.modifier) {
+		} else if (
+			token.is<TranscludeToken>('magic-word') && !token.modifier && length === 1
+			&& (offset > 0 || token.getBoundingClientRect().left === position.character)
+		) {
 			info = this.#getParserFunction(name!);
 			f = token.firstChild.toString(true).trim();
 		} else if (
