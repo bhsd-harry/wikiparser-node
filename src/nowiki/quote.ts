@@ -14,7 +14,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import {font} from '../../util/html';
 import {Shadow} from '../../util/debug';
 import {syntax} from '../../mixin/syntax';
 import type {Font} from '../../lib/node';
@@ -50,8 +49,11 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	}
 
 	/** 是否闭合 */
-	get closing(): Font {
-		return this.#closing;
+	get closing(): Partial<Font> {
+		return {
+			...this.bold ? {bold: this.#closing.bold} : undefined,
+			...this.italic ? {italic: this.#closing.italic} : undefined,
+		};
 	}
 
 	/** @param closing 是否闭合 */
@@ -142,15 +144,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 
 	/** @private */
 	override toHtmlInternal(): string {
-		const {previousVisibleSibling, nextVisibleSibling} = this;
-		return (
-			!previousVisibleSibling
-			|| previousVisibleSibling.type === 'text' && previousVisibleSibling.data.includes('\n')
-		)
-		&& nextVisibleSibling?.type === 'text'
-		&& nextVisibleSibling.data.startsWith('\n')
-			? font(this)
-			: '';
+		const {closing: {bold, italic}} = this;
+		return (bold ? '</b>' : '') + (italic ? '</i>' : '')
+			+ (italic === false ? '<i>' : '') + (bold === false ? '<b>' : '');
 	}
 }
 

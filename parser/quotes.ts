@@ -13,8 +13,9 @@ import {parsers} from '../util/constants';
  * @param wikitext
  * @param config
  * @param accum
+ * @param tidy 是否整理
  */
-export const parseQuotes = (wikitext: string, config: Config, accum: Token[]): string => {
+export const parseQuotes = (wikitext: string, config: Config, accum: Token[], tidy?: boolean): string => {
 	const arr = wikitext.split(/('{2,})/u),
 		{length} = arr;
 	if (length === 1) {
@@ -95,6 +96,22 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[]): s
 		);
 		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
+
+	/* NOT FOR BROWSER */
+
+	if (tidy && (!bold || !italic)) {
+		// @ts-expect-error abstract class
+		new QuoteToken(
+			(bold ? '' : "'''") + (italic ? '' : "''"),
+			{bold: !bold, italic: !italic},
+			config,
+			accum,
+		);
+		arr.push(`\0${accum.length - 1}q\x7F`);
+	}
+
+	/* NOT FOR BROWSER END */
+
 	return arr.join('');
 };
 

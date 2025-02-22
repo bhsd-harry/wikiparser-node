@@ -145,21 +145,3 @@ export const html = (childNodes: readonly AstNodes[], separator = '', opt?: Html
 	}
 	return results.join(separator);
 };
-
-/**
- * wrap text with <b> and <i> tags
- * @param node
- * @param strOrOmit
- */
-export const font = (node: AstNodes, strOrOmit?: string): string => {
-	const str = strOrOmit ?? '';
-	if (node.type === 'html') {
-		return str;
-	}
-	const {font: {bold, italic}} = node,
-		i = str.indexOf('\n');
-	const wrap = /** @ignore */ (s: string | undefined): string => s === ''
-		? ''
-		: (italic ? '<i>' : '') + (bold ? '<b>' : '') + (s ?? '') + (bold ? '</b>' : '') + (italic ? '</i>' : '');
-	return i === -1 ? wrap(strOrOmit) : wrap(str.slice(0, i)) + str.slice(i);
-};

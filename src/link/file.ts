@@ -22,7 +22,6 @@ import type {
 
 /* NOT FOR BROWSER */
 
-import {font} from '../../util/html';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {Title} from '../../lib/title';
@@ -446,14 +445,11 @@ export abstract class FileToken extends LinkBaseToken {
 			}>${img}</a>`
 			: `<span${titleAttr}>${img}</span>`;
 		if (type !== 'gallery-image') {
-			return font(
-				this,
-				horiz || vert || visibleCaption
-					? `<figure${classAttr} typeof="mw:File${
-						fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
-					}">${a}<figcaption>${caption}</figcaption></figure>`
-					: `<span${classAttr}>${a}</span>`,
-			);
+			return horiz || vert || visibleCaption
+				? `<figure${classAttr} typeof="mw:File${
+					fr ? `/${manual ? 'Thumb' : frame.get(fr)}` : ''
+				}">${a}<figcaption>${caption}</figcaption></figure>`
+				: `<span${classAttr}>${a}</span>`;
 		}
 		const parent = this.parentNode as GalleryToken | undefined,
 			mode = parent?.parentNode?.getAttr('mode'),

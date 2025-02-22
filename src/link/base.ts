@@ -33,7 +33,6 @@ import type {
 /* NOT FOR BROWSER */
 
 import {undo, Shadow} from '../../util/debug';
-import {font} from '../../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -338,14 +337,11 @@ export abstract class LinkBaseToken extends Token {
 		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
 			const {link, length, lastChild, type} = this,
 				title = link.getTitleAttr();
-			return font(
-				this,
-				`<a${link.interwiki && ' class="extiw"'} href="${link.getUrl()}"${title && ` title="${title}"`}>${
-					type === 'link' && length > 1
-						? lastChild.toHtmlInternal({...opt, nowrap: true})
-						: sanitize(this.innerText)
-				}</a>`,
-			);
+			return `<a${link.interwiki && ' class="extiw"'} href="${link.getUrl()}"${title && ` title="${title}"`}>${
+				type === 'link' && length > 1
+					? lastChild.toHtmlInternal({...opt, nowrap: true})
+					: sanitize(this.innerText)
+			}</a>`;
 		}
 		return '';
 	}

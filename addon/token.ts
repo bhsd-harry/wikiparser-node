@@ -211,7 +211,10 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 	Parser.viewOnly = false;
 	let html: string;
 	if (this.type === 'root') {
-		const expanded = this.expand();
+		const expanded = Shadow.run(
+			() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'))
+				.parse(undefined, false, true),
+		);
 		states.set(expanded, {headings: new Set()});
 		const lines = expanded.toHtmlInternal().split('\n'),
 			blockElems = 'table|h1|h2|h3|h4|h5|h6|pre|p|ul|ol|dl',

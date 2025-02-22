@@ -20,8 +20,9 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
  * @param wikitext
  * @param config
  * @param accum
+ * @param tidy 是否整理链接
  */
-export const parseLinks = (wikitext: string, config: Config, accum: Token[]): string => {
+export const parseLinks = (wikitext: string, config: Config, accum: Token[], tidy?: boolean): string => {
 	/^\s*(?:ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
@@ -95,13 +96,13 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[]): st
 					break;
 				}
 			}
-			text = parseLinks(text!, config, accum);
+			text = parseLinks(text!, config, accum, tidy);
 			if (!found) {
 				s += `[[${link}${delimiter!}${text}`;
 				continue;
 			}
 		}
-		text &&= parseQuotes(text, config, accum);
+		text &&= parseQuotes(text, config, accum, tidy);
 		let SomeLinkToken: typeof LinkToken | typeof FileToken | typeof CategoryToken = LinkToken;
 		if (!force) {
 			if (

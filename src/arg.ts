@@ -11,7 +11,6 @@ import type {LintError} from '../base';
 
 import {classes} from '../util/constants';
 import {Shadow} from '../util/debug';
-import {font} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -239,10 +238,10 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		if (this.length === 1) {
-			const html = font(this, this.toString());
+			const html = this.toString();
 			return opt?.nowrap ? html.replaceAll('\n', ' ') : html;
 		}
-		return font(this, this.childNodes[1]!.toHtmlInternal(opt));
+		return this.childNodes[1]!.toHtmlInternal(opt);
 	}
 }
 

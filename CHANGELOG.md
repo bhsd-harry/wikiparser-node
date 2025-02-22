@@ -5,6 +5,7 @@
 **Fixed**
 
 - [`LanguageService.provideHover`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService#providehover) for variables without a parameter
+- [`Token.prototype.toHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#tohtml) when there are mixed apostrophes and `<b>`/`<i>` tags
 
 ## v1.16.4
 

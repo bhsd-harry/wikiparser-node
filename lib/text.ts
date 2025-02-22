@@ -24,7 +24,6 @@ import type {
 
 import {classes} from '../util/constants';
 import {setChildNodes, Shadow} from '../util/debug';
-import {font} from '../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -454,7 +453,7 @@ export class AstText extends AstNode {
 	 */
 	toHtml(nowrap?: boolean): string {
 		const {data} = this;
-		return font(this, sanitize(nowrap ? data.replaceAll('\n', ' ') : data));
+		return sanitize(nowrap ? data.replaceAll('\n', ' ') : data);
 	}
 
 	/** @private */

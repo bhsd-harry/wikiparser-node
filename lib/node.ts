@@ -679,8 +679,8 @@ export abstract class AstNode implements AstNodeBase {
 			const child = childNodes[j]!;
 			if (child.is<QuoteToken>('quote')) {
 				const {closing} = child;
-				bold ??= child.bold ? !closing.bold : undefined;
-				italic ??= child.italic ? !closing.italic : undefined;
+				bold ??= closing.bold === undefined ? undefined : !closing.bold;
+				italic ??= closing.italic === undefined ? undefined : !closing.italic;
 				if (bold !== undefined && italic !== undefined) {
 					break;
 				}

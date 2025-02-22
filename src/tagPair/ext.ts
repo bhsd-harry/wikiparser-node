@@ -19,7 +19,6 @@ import type {AttributesParentBase} from '../../mixin/attributesParent';
 import {Shadow} from '../../util/debug';
 import {classes} from '../../util/constants';
 import {newline} from '../../util/string';
-import {font} from '../../util/html';
 
 /* NOT FOR BROWSER END */
 
@@ -210,20 +209,17 @@ export abstract class ExtToken extends TagPairToken {
 		const {name, firstChild, lastChild} = this;
 		switch (name) {
 			case 'nowiki':
-				return font(this, newline(lastChild.toHtmlInternal()));
+				return newline(lastChild.toHtmlInternal());
 			case 'pre':
-				return font(this, `<pre${firstChild.toHtmlInternal()}>${
+				return `<pre${firstChild.toHtmlInternal()}>${
 					newline(lastChild.toHtmlInternal({...opt, nowrap: false}))
-				}</pre>`);
+				}</pre>`;
 			case 'poem':
 				firstChild.classList.add('poem');
-				return font(
-					this,
-					`<div${firstChild.toHtmlInternal()}>${
-						lastChild.toHtmlInternal({...opt, nowrap: false}).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
-							.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
-					}</div>`,
-				);
+				return `<div${firstChild.toHtmlInternal()}>${
+					lastChild.toHtmlInternal({...opt, nowrap: false}).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+						.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
+				}</div>`;
 			case 'gallery': {
 				const caption = firstChild.getAttrToken('caption'),
 					perrow = parseInt(String(firstChild.getAttr('perrow'))),
@@ -243,11 +239,11 @@ export abstract class ExtToken extends TagPairToken {
 						}px;${typeof style === 'string' ? style : ''}`,
 					);
 				}
-				return font(this, `<ul${firstChild.toHtmlInternal()}>\n${
+				return `<ul${firstChild.toHtmlInternal()}>\n${
 					caption
 						? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal({nowrap: true})}</li>\n`
 						: ''
-				}${lastChild.toHtmlInternal()}\n</ul>`);
+				}${lastChild.toHtmlInternal()}\n</ul>`;
 			}
 			default:
 				return '';

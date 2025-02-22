@@ -463,7 +463,7 @@
 		"desc": "T4702: Mismatched <i>, <b> and <a> tags are invalid",
 		"wikitext": "''[http://example.com text'']\n[http://example.com '''text]'''\n''Something [http://example.com in italic'']\n''Something [http://example.com mixed''''', even bold]'''\n'''''Now [http://example.com both''''']",
 		"html": "<p><i><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">text</a></i>\n<a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\"><b>text</b></a>\n<i>Something <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">in italic</a></i>\n<i>Something <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">mixed</a></i><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\"><b>, even bold</b></a>\n<i><b>Now <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com\">both</a></b></i>\n</p>",
-		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>text</i></a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><b>text</b></a>\n<i>Something </i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>in italic</i></a>\n<i>Something </i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>mixed</i><b>, even bold</b></a>\n<i><b>Now </b></i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i><b>both</b></i></a>\n</p>",
+		"render": "<p><i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">text</i></a>\n<a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><b>text</a></b>\n<i>Something <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">in italic</i></a>\n<i>Something <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">mixed</i><b>, even bold</a></b>\n<i><b>Now <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">both</b></i></a>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">text<span class=\"wpb-quote\">''</span></span>]</span>\n<span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">'''</span>text</span>]</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">''</span>Something <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">in italic<span class=\"wpb-quote\">''</span></span>]</span>\n<span class=\"wpb-quote\">''</span>Something <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">mixed<span class=\"wpb-quote\">'''''</span>, even bold</span>]</span><span class=\"wpb-quote\">'''</span>\n<span class=\"wpb-quote\">'''''</span>Now <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com</span> <span class=\"wpb-ext-link-text\">both<span class=\"wpb-quote\">'''''</span></span>]</span></span>"
 	},
 	{
@@ -768,7 +768,7 @@
 		"desc": "Link containing double-single-quotes '' in text embedded in italics (T6598 check)",
 		"wikitext": "''Some [[Link|pretty ''italics'' and stuff]]!''",
 		"html": "<p><i>Some <a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a>!</i>\n</p>",
-		"render": "<p><i>Some </i><i><a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a></i><i>!</i>\n</p>",
+		"render": "<p><i>Some <a href=\"/wiki/Link\" title=\"Link\">pretty <i>italics</i> and stuff</a>!</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>Some <span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Link</span>|<span class=\"wpb-link-text\">pretty <span class=\"wpb-quote\">''</span>italics<span class=\"wpb-quote\">''</span> and stuff</span>]]</span>!<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -2422,7 +2422,7 @@
 		"desc": "Templates: Ugly nesting: 3. Quotes opened/closed across templates (1x_with_div)",
 		"wikitext": "{{1x_with_div|''a}}{{1x_with_div|b''c''d}}{{1x_with_div|''e}}",
 		"html": "<div><i>a</i></div><div><i>b</i>c<i>d</i></div><div>e</div>",
-		"render": "<div><i>a</i></div><div><i>b</i>c<i>d</i></div><div>e</div>",
+		"render": "<div><i>a</div><div>b</i>c<i>d</div><div></i>e</div>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x_with_div</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>a</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x_with_div</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">b<span class=\"wpb-quote\">''</span>c<span class=\"wpb-quote\">''</span>d</span></span>}}</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x_with_div</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-quote\">''</span>e</span></span>}}</span></span>"
 	},
 	{
@@ -3772,7 +3772,7 @@
 		"desc": "Mixing markup for italics and bold",
 		"wikitext": "'''bold''''''bold''bolditalics'''''",
 		"html": "<p>'<i>bold'</i><b>bold<i>bolditalics</i></b>\n</p>",
-		"render": "<p>'<i>bold'</i><b>bold</b><i><b>bolditalics</b></i>\n</p>",
+		"render": "<p>'<i>bold'</i><b>bold<i>bolditalics</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\">'<span class=\"wpb-quote\">''</span>bold'<span class=\"wpb-quote\">'''''</span>bold<span class=\"wpb-quote\">''</span>bolditalics<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
@@ -4042,7 +4042,7 @@
 		"desc": "5 quotes, code coverage +1 line",
 		"wikitext": "'''''",
 		"html": "",
-		"render": "",
+		"render": "<p><i><b></b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
@@ -6183,14 +6183,14 @@
 		"desc": "Font of text following an external link",
 		"wikitext": "[//a ''b]c",
 		"html": "<p><a rel=\"nofollow\" class=\"external text\" href=\"//a\"><i>b</i></a><i>c</i>\n</p>",
-		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://a/\"><i>b</i></a><i>c</i>\n</p>",
+		"render": "<p><a rel=\"nofollow\" class=\"external\" href=\"https://a/\"><i>b</a>c</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">//a</span> <span class=\"wpb-ext-link-text\"><span class=\"wpb-quote\">''</span>b</span>]</span>c</span>"
 	},
 	{
 		"desc": "Interaction between apostrophes and <b> tags",
 		"wikitext": "'''a</b>b<b>c'''d",
 		"html": "<p><b>a</b>b<b>c</b>d\n</p>",
-		"render": "<p><b>a</b></b>b<b><b>c</b>d\n</p>",
+		"render": "<p><b>a</b>b<b>c</b>d\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>a<span class=\"wpb-html\">&lt;/b&gt;</span>b<span class=\"wpb-html\">&lt;b&gt;</span>c<span class=\"wpb-quote\">'''</span>d</span>"
 	},
 	{
@@ -8532,7 +8532,7 @@
 		"desc": "External link containing double-single-quotes in text embedded in italics (T6598 check)",
 		"wikitext": "''Some [http://example.com/ pretty ''italics'' and stuff]!''",
 		"html": "<p><i>Some <a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">pretty </a></i><a rel=\"nofollow\" class=\"external text\" href=\"http://example.com/\">italics<i> and stuff</i></a><i>!</i>\n</p>",
-		"render": "<p><i>Some </i><a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\"><i>pretty </i>italics<i> and stuff</i></a><i>!</i>\n</p>",
+		"render": "<p><i>Some <a rel=\"nofollow\" class=\"external\" href=\"http://example.com/\">pretty </i>italics<i> and stuff</a>!</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>Some <span class=\"wpb-ext-link\">[<span class=\"wpb-ext-link-url\">http://example.com/</span> <span class=\"wpb-ext-link-text\">pretty <span class=\"wpb-quote\">''</span>italics<span class=\"wpb-quote\">''</span> and stuff</span>]</span>!<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -9561,7 +9561,7 @@
 		"desc": "Off-by-1 DSR values: Regression test for indent-pre usages",
 		"wikitext": " {{1x|\n}} ''{{1x|\n}} X'' {{1x|<span></span>\n}} Y",
 		"html": "<pre><i></i>\nX<i> <span></span></i>\nY\n</pre>",
-		"render": "<pre><i></i>\nX<i> </i><span></span>\nY\n</pre>",
+		"render": "<pre><i></i>\nX<i> <span></span></i>\nY\n</pre>",
 		"print": "<span class=\"wpb-root\"> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n</span></span>}}</span> <span class=\"wpb-quote\">''</span><span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\">\n</span></span>}}</span> X<span class=\"wpb-quote\">''</span> <span class=\"wpb-template\">{{<span class=\"wpb-template-name\">1x</span>|<span class=\"wpb-parameter\"><span class=\"wpb-parameter-value\"><span class=\"wpb-html\">&lt;span&gt;</span><span class=\"wpb-html\">&lt;/span&gt;</span>\n</span></span>}}</span> Y</span>"
 	},
 	{
@@ -12180,21 +12180,21 @@
 		"desc": "2. Treebuilder fixup of formatting elt",
 		"wikitext": "'''foo[[File:Foobar.jpg|thumb|caption]]bar'''\n\n<small>[[Image:Foobar.jpg|right|300px]]</small>",
 		"html": "<p><b>foo</b></p><b><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>caption</figcaption></figure></b><p><b>bar</b>\n</p><small><figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/300px-Foobar.jpg\" decoding=\"async\" width=\"300\" height=\"34\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/450px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/600px-Foobar.jpg 2x\" /></a><figcaption></figcaption></figure></small>",
-		"render": "<b>foo</b><b><figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption>caption</figcaption></figure></b><b>bar</b>\n<small><figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"300\"></a><figcaption></figcaption></figure></small>",
+		"render": "<b>foo<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption>caption</figcaption></figure>bar</b>\n<small><figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"300\"></a><figcaption></figcaption></figure></small>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">caption</span>]]</span>bar<span class=\"wpb-quote\">'''</span>\n\n<span class=\"wpb-html\">&lt;small&gt;</span><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">Image:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">right</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">300</span>px</span>]]</span><span class=\"wpb-html\">&lt;/small&gt;</span></span>"
 	},
 	{
 		"desc": "3. Treebuilder fixup of formatting elt",
 		"wikitext": "<small>'''foo[[File:Foobar.jpg|thumb|caption]]bar'''</small>",
 		"html": "<p><small><b>foo</b></small></p><small><b><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption>caption</figcaption></figure></b></small><p><small><b>bar</b></small></p>",
-		"render": "<small><b>foo</b><b><figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption>caption</figcaption></figure></b><b>bar</b></small>",
+		"render": "<small><b>foo<figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption>caption</figcaption></figure>bar</b></small>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;small&gt;</span><span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">caption</span>]]</span>bar<span class=\"wpb-quote\">'''</span><span class=\"wpb-html\">&lt;/small&gt;</span></span>"
 	},
 	{
 		"desc": "4. Treebuilder fixup of formatting elt: formatting tags around captionless images",
 		"wikitext": "'''<small>[[Image:Foobar.jpg|right|300px]]</small>'''",
 		"html": "<b><small><figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/300px-Foobar.jpg\" decoding=\"async\" width=\"300\" height=\"34\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/450px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/600px-Foobar.jpg 2x\" /></a><figcaption></figcaption></figure></small></b>",
-		"render": "<small><b><figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"300\"></a><figcaption></figcaption></figure></b></small>",
+		"render": "<b><small><figure class=\"mw-halign-right\" typeof=\"mw:File\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\" width=\"300\"></a><figcaption></figcaption></figure></small></b>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span><span class=\"wpb-html\">&lt;small&gt;</span><span class=\"wpb-file\">[[<span class=\"wpb-link-target\">Image:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">right</span>|<span class=\"wpb-image-parameter\"><span class=\"wpb-image-caption\">300</span>px</span>]]</span><span class=\"wpb-html\">&lt;/small&gt;</span><span class=\"wpb-quote\">'''</span></span>"
 	},
 	{
@@ -12373,7 +12373,7 @@
 		"desc": "File in formatting element violating content model, figcaption content",
 		"wikitext": "<p>''test [[File:Foobar.jpg|thumb|123]] 456''</p>",
 		"html": "<p><i>test </i></p><figure class=\"mw-default-size\" typeof=\"mw:File/Thumb\"><a href=\"/wiki/File:Foobar.jpg\" class=\"mw-file-description\"><img src=\"http://example.com/images/thumb/3/3a/Foobar.jpg/180px-Foobar.jpg\" decoding=\"async\" width=\"180\" height=\"20\" class=\"mw-file-element\" srcset=\"http://example.com/images/thumb/3/3a/Foobar.jpg/270px-Foobar.jpg 1.5x, http://example.com/images/thumb/3/3a/Foobar.jpg/360px-Foobar.jpg 2x\" /></a><figcaption><i>123</i></figcaption></figure><p><i> 456</i></p><p class=\"mw-empty-elt\"></p>",
-		"render": "<p><i>test </i><i><figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption>123</figcaption></figure></i><i> 456</i></p>",
+		"render": "<p><i>test <figure typeof=\"mw:File/Thumb\"><a href=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-description\"><img src=\"/wiki/File%3AFoobar.jpg\" class=\"mw-file-element\"></a><figcaption>123</figcaption></figure> 456</i></p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-html\">&lt;p&gt;</span><span class=\"wpb-quote\">''</span>test <span class=\"wpb-file\">[[<span class=\"wpb-link-target\">File:Foobar.jpg</span>|<span class=\"wpb-image-parameter\">thumb</span>|<span class=\"wpb-image-caption\">123</span>]]</span> 456<span class=\"wpb-quote\">''</span><span class=\"wpb-html\">&lt;/p&gt;</span></span>"
 	},
 	{
@@ -13168,28 +13168,28 @@
 		"desc": "Quotes wrapping HTML table",
 		"wikitext": "'''<table><tr><td>hi</td></tr></table>'''",
 		"html": "<b><table><tbody><tr><td>hi</td></tr></tbody></table></b>",
-		"render": "<table><tr><td><b>hi</b></td></tr></table>",
+		"render": "<b><table><tr><td>hi</td></tr></table></b>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span><span class=\"wpb-html\">&lt;table&gt;</span><span class=\"wpb-html\">&lt;tr&gt;</span><span class=\"wpb-html\">&lt;td&gt;</span>hi<span class=\"wpb-html\">&lt;/td&gt;</span><span class=\"wpb-html\">&lt;/tr&gt;</span><span class=\"wpb-html\">&lt;/table&gt;</span><span class=\"wpb-quote\">'''</span></span>"
 	},
 	{
 		"desc": "Unclosed and unmatched quotes",
 		"wikitext": "'''''Bold italic text '''with bold deactivated''' in between.'''''\n\n'''''Bold italic text ''with italic deactivated'' in between.'''''\n\n'''Bold text..\n\n..spanning two paragraphs (should not work).'''\n\n'''Bold tag left open\n\n''Italic tag left open\n\nNormal text.\n\n<!-- Unmatching number of opening, closing tags: -->\n'''This year''''s election ''should'' beat '''last year''''s.\n\n''Tom'''s car is bigger than ''Susan'''s.\n\nPlain ''italic'''s plain",
 		"html": "<p><i><b>Bold italic text </b>with bold deactivated<b> in between.</b></i>\n</p><p><b><i>Bold italic text </i>with italic deactivated<i> in between.</i></b>\n</p><p><b>Bold text..</b>\n</p><p>..spanning two paragraphs (should not work).<b></b>\n</p><p><b>Bold tag left open</b>\n</p><p><i>Italic tag left open</i>\n</p><p>Normal text.\n</p><p><b>This year'</b>s election <i>should</i> beat <b>last year'</b>s.\n</p><p><i>Tom<b>s car is bigger than </b></i><b>Susan</b>s.\n</p><p>Plain <i>italic'</i>s plain\n</p>",
-		"render": "<p><i><b>Bold italic text </b></i><i>with bold deactivated</i><i><b> in between.</b></i>\n</p><p><i><b>Bold italic text </b></i><b>with italic deactivated</b><i><b> in between.</b></i>\n</p><p><b>Bold text..</b>\n</p><p>..spanning two paragraphs (should not work).<b></b>\n</p><p><b>Bold tag left open</b>\n</p><p><i>Italic tag left open</i>\n</p><p>Normal text.\n</p><p><b>This year'</b>s election <i>should</i> beat <b>last year'</b>s.\n</p><p><i>Tom</i><i><b>s car is bigger than </b></i><b>Susan</b>s.\n</p><p>Plain <i>italic'</i>s plain\n</p>",
+		"render": "<p><i><b>Bold italic text </b>with bold deactivated<b> in between.</b></i>\n</p><p><i><b>Bold italic text </i>with italic deactivated<i> in between.</b></i>\n</p><p><b>Bold text..</b>\n</p><p>..spanning two paragraphs (should not work).<b></b>\n</p><p><b>Bold tag left open</b>\n</p><p><i>Italic tag left open</i>\n</p><p>Normal text.\n</p><p><b>This year'</b>s election <i>should</i> beat <b>last year'</b>s.\n</p><p><i>Tom<b>s car is bigger than </i>Susan</b>s.\n</p><p>Plain <i>italic'</i>s plain\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''''</span>Bold italic text <span class=\"wpb-quote\">'''</span>with bold deactivated<span class=\"wpb-quote\">'''</span> in between.<span class=\"wpb-quote\">'''''</span>\n\n<span class=\"wpb-quote\">'''''</span>Bold italic text <span class=\"wpb-quote\">''</span>with italic deactivated<span class=\"wpb-quote\">''</span> in between.<span class=\"wpb-quote\">'''''</span>\n\n<span class=\"wpb-quote\">'''</span>Bold text..\n\n..spanning two paragraphs (should not work).<span class=\"wpb-quote\">'''</span>\n\n<span class=\"wpb-quote\">'''</span>Bold tag left open\n\n<span class=\"wpb-quote\">''</span>Italic tag left open\n\nNormal text.\n\n<span class=\"wpb-comment\">&lt;!-- Unmatching number of opening, closing tags: --&gt;</span>\n<span class=\"wpb-quote\">'''</span>This year'<span class=\"wpb-quote\">'''</span>s election <span class=\"wpb-quote\">''</span>should<span class=\"wpb-quote\">''</span> beat <span class=\"wpb-quote\">'''</span>last year'<span class=\"wpb-quote\">'''</span>s.\n\n<span class=\"wpb-quote\">''</span>Tom<span class=\"wpb-quote\">'''</span>s car is bigger than <span class=\"wpb-quote\">''</span>Susan<span class=\"wpb-quote\">'''</span>s.\n\nPlain <span class=\"wpb-quote\">''</span>italic'<span class=\"wpb-quote\">''</span>s plain</span>"
 	},
 	{
 		"desc": "Italics and bold",
 		"wikitext": "*plain\n*plain''italic''plain\n*plain''italic''plain''italic''plain\n*plain'''bold'''plain\n*plain'''bold'''plain'''bold'''plain\n*plain''italic''plain'''bold'''plain\n*plain'''bold'''plain''italic''plain\n*plain''italic'''bold-italic'''italic''plain\n*plain'''bold''bold-italic''bold'''plain\n*plain'''''bold-italic'''italic''plain\n*plain'''''bold-italic''bold'''plain\n*plain''italic'''bold-italic'''''plain\n*plain'''bold''bold-italic'''''plain\n*plain l'''italic''plain\n*plain l''''bold''' plain",
 		"html": "<ul><li>plain</li>\n<li>plain<i>italic</i>plain</li>\n<li>plain<i>italic</i>plain<i>italic</i>plain</li>\n<li>plain<b>bold</b>plain</li>\n<li>plain<b>bold</b>plain<b>bold</b>plain</li>\n<li>plain<i>italic</i>plain<b>bold</b>plain</li>\n<li>plain<b>bold</b>plain<i>italic</i>plain</li>\n<li>plain<i>italic<b>bold-italic</b>italic</i>plain</li>\n<li>plain<b>bold<i>bold-italic</i>bold</b>plain</li>\n<li>plain<i><b>bold-italic</b>italic</i>plain</li>\n<li>plain<b><i>bold-italic</i>bold</b>plain</li>\n<li>plain<i>italic<b>bold-italic</b></i>plain</li>\n<li>plain<b>bold<i>bold-italic</i></b>plain</li>\n<li>plain l'<i>italic</i>plain</li>\n<li>plain l'<b>bold</b> plain</li></ul>",
-		"render": "<ul><li>plain</li>\n<li>plain<i>italic</i>plain</li>\n<li>plain<i>italic</i>plain<i>italic</i>plain</li>\n<li>plain<b>bold</b>plain</li>\n<li>plain<b>bold</b>plain<b>bold</b>plain</li>\n<li>plain<i>italic</i>plain<b>bold</b>plain</li>\n<li>plain<b>bold</b>plain<i>italic</i>plain</li>\n<li>plain<i>italic</i><i><b>bold-italic</b></i><i>italic</i>plain</li>\n<li>plain<b>bold</b><i><b>bold-italic</b></i><b>bold</b>plain</li>\n<li>plain<i><b>bold-italic</b></i><i>italic</i>plain</li>\n<li>plain<i><b>bold-italic</b></i><b>bold</b>plain</li>\n<li>plain<i>italic</i><i><b>bold-italic</b></i>plain</li>\n<li>plain<b>bold</b><i><b>bold-italic</b></i>plain</li>\n<li>plain l'<i>italic</i>plain</li>\n<li>plain l'<b>bold</b> plain</li></ul>",
+		"render": "<ul><li>plain</li>\n<li>plain<i>italic</i>plain</li>\n<li>plain<i>italic</i>plain<i>italic</i>plain</li>\n<li>plain<b>bold</b>plain</li>\n<li>plain<b>bold</b>plain<b>bold</b>plain</li>\n<li>plain<i>italic</i>plain<b>bold</b>plain</li>\n<li>plain<b>bold</b>plain<i>italic</i>plain</li>\n<li>plain<i>italic<b>bold-italic</b>italic</i>plain</li>\n<li>plain<b>bold<i>bold-italic</i>bold</b>plain</li>\n<li>plain<i><b>bold-italic</b>italic</i>plain</li>\n<li>plain<i><b>bold-italic</i>bold</b>plain</li>\n<li>plain<i>italic<b>bold-italic</b></i>plain</li>\n<li>plain<b>bold<i>bold-italic</b></i>plain</li>\n<li>plain l'<i>italic</i>plain</li>\n<li>plain l'<b>bold</b> plain</li></ul>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-list\">*</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">'''</span>bold-italic<span class=\"wpb-quote\">'''</span>italic<span class=\"wpb-quote\">''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">''</span>bold-italic<span class=\"wpb-quote\">''</span>bold<span class=\"wpb-quote\">'''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''''</span>bold-italic<span class=\"wpb-quote\">'''</span>italic<span class=\"wpb-quote\">''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''''</span>bold-italic<span class=\"wpb-quote\">''</span>bold<span class=\"wpb-quote\">'''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">'''</span>bold-italic<span class=\"wpb-quote\">'''''</span>plain\n<span class=\"wpb-list\">*</span>plain<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">''</span>bold-italic<span class=\"wpb-quote\">'''''</span>plain\n<span class=\"wpb-list\">*</span>plain l'<span class=\"wpb-quote\">''</span>italic<span class=\"wpb-quote\">''</span>plain\n<span class=\"wpb-list\">*</span>plain l'<span class=\"wpb-quote\">'''</span>bold<span class=\"wpb-quote\">'''</span> plain</span>"
 	},
 	{
 		"desc": "Italics and possessives (1)",
 		"wikitext": "obtained by ''[[Lunar Prospector]]'''s gamma-ray spectrometer",
 		"html": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a>'</i>s gamma-ray spectrometer\n</p>",
-		"render": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a></i><i>'</i>s gamma-ray spectrometer\n</p>",
+		"render": "<p>obtained by <i><a href=\"/wiki/Lunar_Prospector\" title=\"Lunar Prospector\">Lunar Prospector</a>'</i>s gamma-ray spectrometer\n</p>",
 		"print": "<span class=\"wpb-root\">obtained by <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Lunar Prospector</span>]]</span>'<span class=\"wpb-quote\">''</span>s gamma-ray spectrometer</span>"
 	},
 	{
@@ -13203,7 +13203,7 @@
 		"desc": "Italics and possessives (3)",
 		"wikitext": "The first monolingual dictionary written in a Romance language was ''Sebastián Covarrubias''' ''Tesoro de la lengua castellana o española'', published in 1611 in Madrid. In 1612 the first edition of the ''Vocabolario dell'[[Accademia della Crusca]]'', for Italian, was published. In 1690 in Rotterdam was published, posthumously, the ''Dictionnaire Universel''.",
 		"html": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'<a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
-		"render": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'</i><i><a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
+		"render": "<p>The first monolingual dictionary written in a Romance language was <i>Sebastián Covarrubias'</i> <i>Tesoro de la lengua castellana o española</i>, published in 1611 in Madrid. In 1612 the first edition of the <i>Vocabolario dell'<a href=\"/wiki/Accademia_della_Crusca\" title=\"Accademia della Crusca\">Accademia della Crusca</a></i>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <i>Dictionnaire Universel</i>.\n</p>",
 		"print": "<span class=\"wpb-root\">The first monolingual dictionary written in a Romance language was <span class=\"wpb-quote\">''</span>Sebastián Covarrubias'<span class=\"wpb-quote\">''</span> <span class=\"wpb-quote\">''</span>Tesoro de la lengua castellana o española<span class=\"wpb-quote\">''</span>, published in 1611 in Madrid. In 1612 the first edition of the <span class=\"wpb-quote\">''</span>Vocabolario dell'<span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Accademia della Crusca</span>]]</span><span class=\"wpb-quote\">''</span>, for Italian, was published. In 1690 in Rotterdam was published, posthumously, the <span class=\"wpb-quote\">''</span>Dictionnaire Universel<span class=\"wpb-quote\">''</span>.</span>"
 	},
 	{
@@ -13231,14 +13231,14 @@
 		"desc": "Italics and bold: 2-quote opening sequence: (2,4) w/ nowiki",
 		"wikitext": "''foo<nowiki>''</nowiki>''",
 		"html": "<p><i>foo''</i>\n</p>",
-		"render": "<p><i>foo</i><i>''</i>\n</p>",
+		"render": "<p><i>foo''</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-ext\">&lt;nowiki&gt;<span class=\"wpb-ext-inner\">''</span>&lt;/nowiki&gt;</span><span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: 2-quote opening sequence: (2,5)",
 		"wikitext": "''foo'''''",
 		"html": "<p><i>foo</i><b></b>\n</p>",
-		"render": "<p><i>foo</i>\n</p>",
+		"render": "<p><i>foo</i><b></b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
@@ -13271,7 +13271,7 @@
 		"desc": "Italics and bold: 3-quote opening sequence: (3,5)",
 		"wikitext": "'''foo'''''",
 		"html": "<p><b>foo</b><i></i>\n</p>",
-		"render": "<p><b>foo</b>\n</p>",
+		"render": "<p><b>foo</b><i></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
@@ -13318,7 +13318,7 @@
 		"desc": "Italics and bold: 4-quote opening sequence: (4,5)",
 		"wikitext": "''''foo'''''",
 		"html": "<p>'<b>foo</b><i></i>\n</p>",
-		"render": "<p>'<b>foo</b>\n</p>",
+		"render": "<p>'<b>foo</b><i></i>\n</p>",
 		"print": "<span class=\"wpb-root\">'<span class=\"wpb-quote\">'''</span>foo<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
@@ -13330,7 +13330,7 @@
 		"desc": "Italics and bold: 5-quote opening sequence: (5,2)",
 		"wikitext": "'''''foo''",
 		"html": "<p><b><i>foo</i></b>\n</p>",
-		"render": "<p><i><b>foo</b></i>\n</p>",
+		"render": "<p><i><b>foo</i></b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''''</span>foo<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -13379,49 +13379,49 @@
 		"desc": "Italics and bold: multiple quote sequences: (2,4,2)",
 		"wikitext": "''foo''''bar''",
 		"html": "<p><i>foo'<b>bar</b></i><b></b>\n</p>",
-		"render": "<p><i>foo'</i><i><b>bar</b></i>\n</p>",
+		"render": "<p><i>foo'<b>bar</i></b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: multiple quote sequences: (2,4,2+3) w/ nowiki",
 		"wikitext": "''foo'<nowiki/>'''bar'''''",
 		"html": "<p><i>foo'<b>bar</b></i>\n</p>",
-		"render": "<p><i>foo'</i><i><b>bar</b></i>\n</p>",
+		"render": "<p><i>foo'<b>bar</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: multiple quote sequences: (2,4,3)",
 		"wikitext": "''foo''''bar'''",
 		"html": "<p><i>foo'<b>bar</b></i>\n</p>",
-		"render": "<p><i>foo'</i><i><b>bar</b></i>\n</p>",
+		"render": "<p><i>foo'<b>bar</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">'''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: multiple quote sequences: (2,4,3+2) w/ nowiki",
 		"wikitext": "''foo'<nowiki/>'''bar'''''",
 		"html": "<p><i>foo'<b>bar</b></i>\n</p>",
-		"render": "<p><i>foo'</i><i><b>bar</b></i>\n</p>",
+		"render": "<p><i>foo'<b>bar</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: multiple quote sequences: (2,4,4)",
 		"wikitext": "''foo''''bar''''",
 		"html": "<p><i>foo'<b>bar'</b></i>\n</p>",
-		"render": "<p><i>foo'</i><i><b>bar'</b></i>\n</p>",
+		"render": "<p><i>foo'<b>bar'</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-quote\">'''</span>bar'<span class=\"wpb-quote\">'''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: multiple quote sequences: (2,4,4+2) w/ nowiki",
 		"wikitext": "''foo'<nowiki/>'''bar'<nowiki/>'''''",
 		"html": "<p><i>foo'<b>bar'</b></i>\n</p>",
-		"render": "<p><i>foo'</i><i><b>bar'</b></i>\n</p>",
+		"render": "<p><i>foo'<b>bar'</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>foo'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">'''</span>bar'<span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: multiple quote sequences: (3,4,2)",
 		"wikitext": "'''foo''''bar''",
 		"html": "<p><b>foo'</b>bar<i></i>\n</p>",
-		"render": "<p><b>foo'</b>bar\n</p>",
+		"render": "<p><b>foo'</b>bar<i></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>foo'<span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -13433,7 +13433,7 @@
 		"desc": "Italics and bold: multiple quote sequences: (3,4,3)",
 		"wikitext": "'''foo''''bar'''",
 		"html": "<p><b>foo'</b>bar<b></b>\n</p>",
-		"render": "<p><b>foo'</b>bar\n</p>",
+		"render": "<p><b>foo'</b>bar<b></b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>foo'<span class=\"wpb-quote\">'''</span>bar<span class=\"wpb-quote\">'''</span></span>"
 	},
 	{
@@ -13445,28 +13445,28 @@
 		"desc": "Italics and bold: other quote tests: (2,3,5)",
 		"wikitext": "''this is about '''foo's family'''''",
 		"html": "<p><i>this is about <b>foo's family</b></i>\n</p>",
-		"render": "<p><i>this is about </i><i><b>foo's family</b></i>\n</p>",
+		"render": "<p><i>this is about <b>foo's family</b></i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>this is about <span class=\"wpb-quote\">'''</span>foo's family<span class=\"wpb-quote\">'''''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: other quote tests: (2,(3,3),2)",
 		"wikitext": "''this is about '''foo's''' family''",
 		"html": "<p><i>this is about <b>foo's</b> family</i>\n</p>",
-		"render": "<p><i>this is about </i><i><b>foo's</b></i><i> family</i>\n</p>",
+		"render": "<p><i>this is about <b>foo's</b> family</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">''</span>this is about <span class=\"wpb-quote\">'''</span>foo's<span class=\"wpb-quote\">'''</span> family<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: other quote tests: (3,2,3,2)",
 		"wikitext": "'''this is about ''foo'''s family''",
 		"html": "<p><b>this is about <i>foo</i></b><i>s family</i>\n</p>",
-		"render": "<p><b>this is about </b><i><b>foo</b></i><i>s family</i>\n</p>",
+		"render": "<p><b>this is about <i>foo</b>s family</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>this is about <span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">'''</span>s family<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
 		"desc": "Italics and bold: other quote tests: (3,2,3+2+2,2)",
 		"wikitext": "'''this is about ''foo'''''<nowiki/>''s family''",
 		"html": "<p><b>this is about <i>foo</i></b><i>s family</i>\n</p>",
-		"render": "<p><b>this is about </b><i><b>foo</b></i><i>s family</i>\n</p>",
+		"render": "<p><b>this is about <i>foo</b></i><i>s family</i>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>this is about <span class=\"wpb-quote\">''</span>foo<span class=\"wpb-quote\">'''''</span><span class=\"wpb-ext\">&lt;nowiki/&gt;</span><span class=\"wpb-quote\">''</span>s family<span class=\"wpb-quote\">''</span></span>"
 	},
 	{
@@ -13480,14 +13480,14 @@
 		"desc": "Italics and bold: other quote tests: (3,(2,2),3)",
 		"wikitext": "'''this is about ''foo's'' family'''",
 		"html": "<p><b>this is about <i>foo's</i> family</b>\n</p>",
-		"render": "<p><b>this is about </b><i><b>foo's</b></i><b> family</b>\n</p>",
+		"render": "<p><b>this is about <i>foo's</i> family</b>\n</p>",
 		"print": "<span class=\"wpb-root\"><span class=\"wpb-quote\">'''</span>this is about <span class=\"wpb-quote\">''</span>foo's<span class=\"wpb-quote\">''</span> family<span class=\"wpb-quote\">'''</span></span>"
 	},
 	{
 		"desc": "Italicized possessive",
 		"wikitext": "The ''[[Main Page]]'''s talk page.",
 		"html": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>'</i>s talk page.\n</p>",
-		"render": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a></i><i>'</i>s talk page.\n</p>",
+		"render": "<p>The <i><a href=\"/wiki/Main_Page\" title=\"Main Page\">Main Page</a>'</i>s talk page.\n</p>",
 		"print": "<span class=\"wpb-root\">The <span class=\"wpb-quote\">''</span><span class=\"wpb-link\">[[<span class=\"wpb-link-target\">Main Page</span>]]</span>'<span class=\"wpb-quote\">''</span>s talk page.</span>"
 	},
 	{
@@ -13501,7 +13501,7 @@
 		"desc": "Bold conversion test",
 		"wikitext": "a b'''c ''d e'''f'' g h'''i ''j",
 		"html": "<p>a b'<i>c </i>d e<b>f<i> g h</i></b><i>i </i>j\n</p>",
-		"render": "<p>a b'<i>c </i>d e<b>f</b><i><b> g h</b></i><i>i </i>j\n</p>",
+		"render": "<p>a b'<i>c </i>d e<b>f<i> g h</b>i </i>j\n</p>",
 		"print": "<span class=\"wpb-root\">a b'<span class=\"wpb-quote\">''</span>c <span class=\"wpb-quote\">''</span>d e<span class=\"wpb-quote\">'''</span>f<span class=\"wpb-quote\">''</span> g h<span class=\"wpb-quote\">'''</span>i <span class=\"wpb-quote\">''</span>j</span>"
 	},
 	{

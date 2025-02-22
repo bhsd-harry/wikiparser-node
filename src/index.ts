@@ -77,7 +77,7 @@ import type {
 
 import * as assert from 'assert/strict';
 import {Shadow} from '../util/debug';
-import {html, font} from '../util/html';
+import {html} from '../util/html';
 import {Ranges} from '../lib/ranges';
 import {AstRange} from '../lib/range';
 import type {Range} from '../lib/ranges';
@@ -188,7 +188,7 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	parseOnce(n = this.#stage, include = false): this {
+	parseOnce(n = this.#stage, include = false, tidy?: boolean): this {
 		if (n < this.#stage || this.length === 0 || !this.getAttribute('plain')) {
 			return this;
 		} else if (this.#stage >= MAX_STAGE) {
@@ -225,10 +225,10 @@ export class Token extends AstElement {
 				this.#parseHrAndDoubleUnderscore();
 				break;
 			case 5:
-				this.#parseLinks();
+				this.#parseLinks(tidy);
 				break;
 			case 6:
-				this.#parseQuotes();
+				this.#parseQuotes(tidy);
 				break;
 			case 7:
 				this.#parseExternalLinks();
@@ -245,7 +245,7 @@ export class Token extends AstElement {
 		}
 		if (this.type === 'root') {
 			for (const token of this.#accum) {
-				token?.parseOnce(n, include); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
+				token?.parseOnce(n, include, tidy); // eslint-disable-line @typescript-eslint/no-unnecessary-condition
 			}
 		}
 		this.#stage++;
@@ -301,10 +301,10 @@ export class Token extends AstElement {
 	}
 
 	/** @private */
-	parse(n = MAX_STAGE, include?: boolean): this {
+	parse(n = MAX_STAGE, include?: boolean, tidy?: boolean): this {
 		n = Math.min(n, MAX_STAGE);
 		while (this.#stage < n) {
-			this.parseOnce(this.#stage, include);
+			this.parseOnce(this.#stage, include, tidy);
 		}
 		if (n) {
 			this.build();
@@ -369,21 +369,27 @@ export class Token extends AstElement {
 		this.setText(parseHrAndDoubleUnderscore(this as Token & {firstChild: AstText}, this.#config, this.#accum));
 	}
 
-	/** 解析内部链接 */
-	#parseLinks(): void {
+	/**
+	 * 解析内部链接
+	 * @param tidy 是否整理
+	 */
+	#parseLinks(tidy?: boolean): void {
 		const {parseLinks}: typeof import('../parser/links') = require('../parser/links');
-		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum));
+		this.setText(parseLinks(this.firstChild!.toString(), this.#config, this.#accum, tidy));
 	}
 
-	/** 解析单引号 */
-	#parseQuotes(): void {
+	/**
+	 * 解析单引号
+	 * @param tidy 是否整理
+	 */
+	#parseQuotes(tidy?: boolean): void {
 		if (this.#config.excludes?.includes('quote')) {
 			return;
 		}
 		const {parseQuotes}: typeof import('../parser/quotes') = require('../parser/quotes');
 		const lines = this.firstChild!.toString().split('\n');
 		for (let i = 0; i < lines.length; i++) {
-			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum);
+			lines[i] = parseQuotes(lines[i]!, this.#config, this.#accum, tidy);
 		}
 		this.setText(lines.join('\n'));
 	}
@@ -865,7 +871,7 @@ export class Token extends AstElement {
 			}
 		}
 		this.normalize();
-		return font(this, html(this.childNodes, '', opt));
+		return html(this.childNodes, '', opt);
 	}
 }
 
