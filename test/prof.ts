@@ -11,7 +11,6 @@ import {
 import * as inspector from 'inspector';
 import single from './single';
 import lsp from './lsp';
-import Parser = require('../index');
 
 /* NOT FOR BROWSER ONLY END */
 
@@ -28,9 +27,9 @@ session.post('Profiler.enable', () => {
 				/* NOT FOR BROWSER ONLY */
 
 				if (i === 0) {
-					void single(Parser, page);
+					void single(page);
 				}
-				await lsp(Parser, page);
+				await lsp(page);
 
 				/* NOT FOR BROWSER ONLY END */
 

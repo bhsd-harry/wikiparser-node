@@ -61,7 +61,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 			for (const page of await getPages(`${url}/api.php`)) {
 				const {pageid, title, content} = page;
 				try {
-					const errors = await single(Parser, page);
+					const errors = await single(page);
 					if (!errors) {
 						throw new Error('解析错误');
 					} else if (errors.length > 0) {
@@ -79,10 +79,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 						}
 						await diff(content, text, pageid);
 					}
-					await lsp(
-						Parser,
-						page,
-					);
+					await lsp(page);
 				} catch (e) {
 					error(`解析 ${title} 页面时出错！`, e);
 					failed++;

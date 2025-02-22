@@ -5,12 +5,12 @@ import type {
 
 	/* NOT FOR BROWSER ONLY */
 
-	Parser,
 	TokenTypes,
 } from '../base';
 
 /* NOT FOR BROWSER ONLY */
 
+import Parser = require('../index');
 import type {
 	Token,
 	ImageParameterToken,
@@ -20,6 +20,12 @@ import type {
 } from '../internal';
 
 /* NOT FOR BROWSER ONLY END */
+
+/* NOT FOR BROWSER */
+
+Parser.viewOnly = true;
+
+/* NOT FOR BROWSER END */
 
 declare type Key = keyof LanguageService | 'constructor';
 
@@ -68,28 +74,18 @@ const indexToPos = (
 
 /**
  * 测试单个页面
- * @param Parser 解析器
  * @param page 页面
  * @param page.title 页面标题
  * @param page.content 页面源代码
  */
-export default async (
-	Parser: Parser,
-	{title, content}: SimplePage,
-): Promise<void> => {
-	/* NOT FOR BROWSER */
-
-	Parser.viewOnly = true;
-
-	/* NOT FOR BROWSER END */
-
+export default async ({title, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	Parser.getConfig();
 	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	// eslint-disable-next-line no-eval
 	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
 	const lsp = Parser.createLanguageService({}),
-		root = Parser.parse(content, true) as Token,
+		root = Parser.parse(content, true),
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
 		ext = root.querySelector<ExtToken>('ext'),

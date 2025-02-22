@@ -1,25 +1,30 @@
 import {diff, error} from '../util/diff';
-import type {Parser, LintError} from '../base';
+import type {LintError} from '../base';
+
+/* NOT FOR BROWSER ONLY */
+
+import Parser = require('../index');
+
+/* NOT FOR BROWSER ONLY END */
+
+/* NOT FOR BROWSER */
+
+Parser.viewOnly = true;
+
+/* NOT FOR BROWSER END */
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
 
 /**
  * 测试单个页面
- * @param Parser 解析器
  * @param page 页面
  * @param page.pageid 页面ID
  * @param page.title 页面标题
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export default (Parser: Parser, {pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
-	/* NOT FOR BROWSER */
-
-	Parser.viewOnly = true;
-
-	/* NOT FOR BROWSER END */
-
+export default ({pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	console.time(`parse: ${title}`);
 	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
