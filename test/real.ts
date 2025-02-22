@@ -1,10 +1,22 @@
 import {error, info, diff} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
+import type {Config} from '../base';
+
+/* NOT FOR BROWSER ONLY */
+
 import Parser = require('../index');
-import type {
-	Config,
-} from '../base';
+
+/* NOT FOR BROWSER ONLY END */
+
+/* NOT FOR BROWSER */
+
+Parser.warning = false;
+
+/* NOT FOR BROWSER END */
+
+const i18n: Record<string, string> = require('../../i18n/zh-hans');
+Parser.i18n = i18n;
 
 const {argv: [,, site = '']} = process,
 	apis = ([
@@ -13,14 +25,6 @@ const {argv: [,, site = '']} = process,
 		['维基百科', 'https://zh.wikipedia.org/w', 'zhwiki'],
 		['Wikipedia', 'https://en.wikipedia.org/w', 'enwiki'],
 	] as const).filter(([name]) => name.toLowerCase().includes(site.toLowerCase()));
-
-Parser.i18n = require('../../i18n/zh-hans');
-
-/* NOT FOR BROWSER */
-
-Parser.warning = false;
-
-/* NOT FOR BROWSER END */
 
 /**
  * 获取最近更改的页面源代码

@@ -24,10 +24,15 @@ const entities = {lt: '<', gt: '>', amp: '&'};
  * @param page.ns 页面命名空间
  * @param page.content 页面源代码
  */
-export default ({pageid, title, ns, content}: SimplePage): LintError[] | Promise<void> => {
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
+export default async ({pageid, title, ns, content}: SimplePage): Promise<LintError[] | void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+	const include = ns === 10 || title.endsWith('/doc');
+
+	/* NOT FOR BROWSER ONLY */
+
 	console.time(`parse: ${title}`);
-	const token = Parser.parse(content, ns === 10 || title.endsWith('/doc'));
+	const token = Parser.parse(content, include);
 	console.timeEnd(`parse: ${title}`);
 	const parsed = token.toString();
 	if (parsed !== content) {
@@ -43,6 +48,8 @@ export default ({pageid, title, ns, content}: SimplePage): LintError[] | Promise
 	if (set.size > 0) {
 		error('未构建的节点：', set);
 	}
+
+	/* NOT FOR BROWSER ONLY END */
 
 	console.time(`print: ${title}`);
 	const printed = token.print();
@@ -70,7 +77,8 @@ export default ({pageid, title, ns, content}: SimplePage): LintError[] | Promise
 	/* NOT FOR BROWSER END */
 
 	console.time(`lint: ${title}`);
-	const errors = token.lint().filter(({rule}) => !ignored.has(rule));
+	const errors = token.lint()
+		.filter(({rule}) => !ignored.has(rule));
 	console.timeEnd(`lint: ${title}`);
 	return errors;
 };
