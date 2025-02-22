@@ -1,6 +1,16 @@
 import {error} from '../util/diff';
 import type {Position} from 'vscode-languageserver-types';
-import type {Parser, LanguageService, TokenTypes} from '../base';
+import type {
+	LanguageService,
+
+	/* NOT FOR BROWSER ONLY */
+
+	Parser,
+	TokenTypes,
+} from '../base';
+
+/* NOT FOR BROWSER ONLY */
+
 import type {
 	Token,
 	ImageParameterToken,
@@ -8,6 +18,8 @@ import type {
 	HtmlToken,
 	AtomToken,
 } from '../internal';
+
+/* NOT FOR BROWSER ONLY END */
 
 declare type Key = keyof LanguageService | 'constructor';
 
@@ -46,7 +58,10 @@ const check = (value: unknown, title: string, pos: Position): void => {
  * @param root 根节点
  * @param index 索引
  */
-const indexToPos = (root: Token, index: number): Position => {
+const indexToPos = (
+	root: Token,
+	index: number,
+): Position => {
 	const {top, left} = root.posFromIndex(index)!;
 	return {line: top, character: left};
 };
@@ -58,7 +73,10 @@ const indexToPos = (root: Token, index: number): Position => {
  * @param page.title 页面标题
  * @param page.content 页面源代码
  */
-export default async (Parser: Parser, {title, content}: SimplePage): Promise<void> => {
+export default async (
+	Parser: Parser,
+	{title, content}: SimplePage,
+): Promise<void> => {
 	/* NOT FOR BROWSER */
 
 	Parser.viewOnly = true;
@@ -126,6 +144,12 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 				break;
 			case 'provideCompletionItems': {
 				const positions = [
+					...([
+						imageParameter,
+						attrKey,
+						parameterKey,
+					].filter(Boolean) as Token[])
+						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
 					...[
 						/(?<=<)/u, // tag
 						/(?<=__)/u, // behavior switch
@@ -133,14 +157,13 @@ export default async (Parser: Parser, {title, content}: SimplePage): Promise<voi
 						/(?<=\{{3})/u, // argument
 						/(?<=\[\[)/u, // link
 						/(?<=(?<!\{)\{\{)/u, // parser function or template
-					].map(re => content.search(re)).filter(i => i !== -1),
-					...([
-						imageParameter,
-						attrKey,
-						parameterKey,
-					].filter(Boolean) as Token[])
-						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
-				].map(i => indexToPos(root, i));
+					// eslint-disable-next-line @stylistic/comma-dangle
+					].map(re => content.search(re)).filter(i => i !== -1)
+				]
+					.map(i => indexToPos(
+						root,
+						i,
+					));
 				if (positions.length > 0) {
 					await wrap(method, title, async () => {
 						for (const pos of positions) {
