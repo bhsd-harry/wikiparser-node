@@ -120,9 +120,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			false,
 		);
 		return new Promise(resolve => {
-			setImmediate(() => {
-				resolve(lsp.provideDiagnostics(content, false));
-			});
+			resolve(lsp.provideDiagnostics(content, false));
 		});
 	});
 
