@@ -194,7 +194,7 @@ export abstract class TdToken extends TableBaseToken {
 				const str = previousSibling.lastChild.toString();
 				result.escape ||= esc;
 				result.correction = str.includes('\n') && Shadow.run(
-					() => new Token(str, this.getAttribute('config'))
+					() => new Token(str, this.getAttribute('config'), [], undefined, true)
 						.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce()
 						.toString()
 						.includes('\n'),

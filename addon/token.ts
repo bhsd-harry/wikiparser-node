@@ -51,6 +51,7 @@ const parseIf = (accum: Token[], prev: string, effective?: ParameterToken): stri
  * @param config
  * @param include
  * @param context 模板调用环境
+ * @param temporary 是否为临时节点
  * @param accum
  * @param stack 模板调用栈
  */
@@ -59,12 +60,13 @@ const expand = (
 	config: Config,
 	include: boolean,
 	context?: TranscludeToken | false,
+	temporary?: boolean,
 	accum: Token[] = [],
 	stack: string[] = [],
 ): Token => {
 	const magicWords = new Set(['if', 'ifeq', 'ifexist', 'switch']),
 		n = accum.length,
-		token = new Token(wikitext, config, accum);
+		token = new Token(wikitext, config, accum, undefined, temporary);
 	token.type = 'root';
 	token.parseOnce(0, include);
 	if (context !== false) {
@@ -126,7 +128,8 @@ const expand = (
 					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
 				return implicitNewLine(
-					expand(Parser.templates.get(title)!, config, true, target, accum, [...stack, title]).toString(),
+					expand(Parser.templates.get(title)!, config, true, target, false, accum, [...stack, title])
+						.toString(),
 					prev,
 				);
 			} else if (!magicWords.has(name)) {
@@ -212,7 +215,7 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 	let html: string;
 	if (this.type === 'root') {
 		const expanded = Shadow.run(
-			() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'))
+			() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'), undefined, true)
 				.parse(undefined, false, true),
 		);
 		states.set(expanded, {headings: new Set()});

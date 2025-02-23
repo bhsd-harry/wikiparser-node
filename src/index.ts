@@ -173,8 +173,14 @@ export class Token extends AstElement {
 	}
 
 	/** @class */
-	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
-		super();
+	constructor(
+		wikitext?: string,
+		config = Parser.getConfig(),
+		accum: Token[] = [],
+		acceptable?: Acceptable,
+		temporary?: boolean,
+	) {
+		super(temporary);
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
 		}
@@ -302,6 +308,8 @@ export class Token extends AstElement {
 
 	/** @private */
 	parse(n = MAX_STAGE, include?: boolean, tidy?: boolean): this {
+		const {viewOnly} = Parser;
+		Parser.viewOnly = true;
 		n = Math.min(n, MAX_STAGE);
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include, tidy);
@@ -310,6 +318,7 @@ export class Token extends AstElement {
 			this.build();
 			this.afterBuild();
 		}
+		Parser.viewOnly = viewOnly;
 		return this;
 	}
 
