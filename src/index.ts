@@ -308,8 +308,6 @@ export class Token extends AstElement {
 
 	/** @private */
 	parse(n = MAX_STAGE, include?: boolean, tidy?: boolean): this {
-		const {viewOnly} = Parser;
-		Parser.viewOnly = true;
 		n = Math.min(n, MAX_STAGE);
 		while (this.#stage < n) {
 			this.parseOnce(this.#stage, include, tidy);
@@ -318,7 +316,6 @@ export class Token extends AstElement {
 			this.build();
 			this.afterBuild();
 		}
-		Parser.viewOnly = viewOnly;
 		return this;
 	}
 
@@ -689,7 +686,7 @@ export class Token extends AstElement {
 			first = elements[0]!,
 			last = elements.at(-1)!,
 			parent = first.parentNode!,
-			nodes = [...parent.childNodes];
+			nodes = parent.getChildNodes();
 		nodes.splice(nodes.indexOf(first), elements.length);
 		parent.setAttribute('childNodes', nodes);
 		first.previousSibling?.setAttribute('nextSibling', last.nextSibling);

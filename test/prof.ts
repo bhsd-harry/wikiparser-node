@@ -26,7 +26,9 @@ session.post('Profiler.enable', () => {
 
 				/* NOT FOR BROWSER ONLY */
 
-				await single(page, method);
+				if (method !== 'lsp') {
+					await single(page, method);
+				}
 				if (!method || method === 'lsp') {
 					await lsp(page);
 				}

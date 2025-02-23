@@ -211,6 +211,15 @@ export abstract class AstNode implements AstNodeBase {
 	/* NOT FOR BROWSER END */
 
 	/** @private */
+	getChildNodes(): AstNodes[] {
+		const {childNodes} = this;
+		return Object.isFrozen(childNodes)
+			|| !Parser.viewOnly
+			? [...childNodes]
+			: childNodes as AstNodes[];
+	}
+
+	/** @private */
 	getAttribute<T extends string>(key: T): TokenAttribute<T> {
 		return (key === 'padding' ? 0 : this[key as keyof this]) as TokenAttribute<T>;
 	}
@@ -262,7 +271,7 @@ export abstract class AstNode implements AstNodeBase {
 			() => this.parentNode?.getRootNode() ?? this,
 			value => {
 				const [, root] = value;
-				if (root.type === 'root' && root.getAttribute('built')) {
+				if (root.type === 'root') {
 					this.#root = value;
 				}
 			},

@@ -138,7 +138,7 @@ export abstract class AstElement extends AstNode {
 
 	/** 合并相邻的文本子节点 */
 	normalize(): void {
-		const childNodes = [...this.childNodes];
+		const childNodes = this.getChildNodes();
 
 		/**
 		 * 移除子节点

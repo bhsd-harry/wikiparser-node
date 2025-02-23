@@ -7,12 +7,6 @@ import type {
 	AstText,
 } from '../internal';
 
-/* NOT FOR BROWSER */
-
-import type {Parser} from '../base';
-
-/* NOT FOR BROWSER END */
-
 export const Shadow = {
 	running: false,
 
@@ -56,12 +50,7 @@ export const setChildNodes = (
 	deleteCount: number,
 	inserted: readonly AstNodes[] = [],
 ): AstNodes[] => {
-	const Parser = require('../index') as Parser;
-	const {childNodes} = parent,
-		nodes = Object.isFrozen(childNodes)
-			|| !Parser.viewOnly
-			? [...childNodes]
-			: childNodes as AstNodes[],
+	const nodes = parent.getChildNodes(),
 		removed = nodes.splice(position, deleteCount, ...inserted);
 	for (let i = 0; i < inserted.length; i++) {
 		const node = inserted[i]!;
