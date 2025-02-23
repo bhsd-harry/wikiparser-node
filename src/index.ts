@@ -173,14 +173,8 @@ export class Token extends AstElement {
 	}
 
 	/** @class */
-	constructor(
-		wikitext?: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-		acceptable?: Acceptable,
-		temporary?: boolean,
-	) {
-		super(temporary);
+	constructor(wikitext?: string, config = Parser.getConfig(), accum: Token[] = [], acceptable?: Acceptable) {
+		super();
 		if (typeof wikitext === 'string') {
 			this.insertAt(wikitext);
 		}

@@ -262,7 +262,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		} else {
 			const {Token}: typeof import('./src/index') = require('./src/index');
 			titleObj = Shadow.run(() => {
-				const root = new Token(title, config, [], undefined, true);
+				const root = new Token(title, config);
 				root.type = 'root';
 				root.parseOnce(0, include).parseOnce();
 				const t = new Title(root.toString(), defaultNs, config, decode, selfLink);

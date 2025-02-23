@@ -198,13 +198,10 @@ export abstract class AstNode implements AstNodeBase {
 		return this.font.italic;
 	}
 
-	/** @class */
-	constructor(temporary?: boolean) {
-		if (!temporary) {
-			Object.defineProperty(this, 'childNodes', {writable: false});
-			if (!Parser.viewOnly) {
-				Object.freeze(this.childNodes);
-			}
+	constructor() {
+		Object.defineProperty(this, 'childNodes', {writable: false});
+		if (!Parser.viewOnly) {
+			Object.freeze(this.childNodes);
 		}
 	}
 

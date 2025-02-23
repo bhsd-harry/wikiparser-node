@@ -123,9 +123,8 @@ export abstract class AstElement extends AstNode {
 		return this.querySelectorAll('template,magic-word#invoke');
 	}
 
-	/** @class */
-	constructor(temporary?: boolean) {
-		super(temporary);
+	constructor() {
+		super();
 		this.seal('name');
 	}
 
