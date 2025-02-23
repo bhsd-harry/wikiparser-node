@@ -3,7 +3,7 @@ import {NowikiBaseToken} from './base';
 /* NOT FOR BROWSER */
 
 import {classes} from '../../util/constants';
-import {Shadow} from '../../util/debug';
+import {Shadow, setChildNodes} from '../../util/debug';
 import {Token} from '../index';
 import type {DdToken, ListToken, AstText} from '../../internal';
 
@@ -42,8 +42,15 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 		return this.innerText.includes('#');
 	}
 
-	/** 获取列表行的范围 */
+	/**
+	 * 获取列表行的范围
+	 * @throws `Error` 不存在父节点
+	 */
 	getRange(): ListRangeToken {
+		const {parentNode} = this;
+		if (!parentNode) {
+			throw new Error('There is no parent node!');
+		}
 		let {nextSibling} = this;
 		if (nextSibling?.is<ListRangeToken>('list-range')) {
 			return nextSibling;
@@ -70,7 +77,6 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			range.setStartAfter(this);
 			range.setEndBefore(nextSibling);
 		} else {
-			const {parentNode} = this;
 			if (type === 'list') {
 				while (this.previousSibling?.is<ListToken>('list')) {
 					this.setText(this.previousSibling.innerText + this.innerText);
@@ -81,7 +87,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 					this.setText(this.innerText + token.innerText);
 					token.remove();
 				}
-				if (parentNode?.is<ListRangeToken>('list-range')) {
+				if (parentNode.is<ListRangeToken>('list-range')) {
 					parentNode.previousSibling.setText(parentNode.previousSibling.innerText + this.innerText);
 					this.remove();
 					return parentNode;
@@ -91,7 +97,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			if (nextSibling) {
 				range.setEnd(nextSibling, nextSibling.data.indexOf('\n'));
 			} else {
-				range.setEnd(parentNode!, parentNode!.length);
+				range.setEnd(parentNode, parentNode.length);
 			}
 		}
 		const token = Shadow.run(() => {
@@ -100,7 +106,7 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 			return t;
 		});
 		token.concat(range.extractContents()); // eslint-disable-line unicorn/prefer-spread
-		range.insertNode(token);
+		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [token]);
 		return token as ListRangeToken;
 	}
 

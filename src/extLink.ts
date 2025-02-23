@@ -14,7 +14,6 @@ import type {LintError} from '../base';
 /* NOT FOR BROWSER */
 
 import {normalizeSpace} from '../util/string';
-import {html} from '../util/html';
 import {Shadow} from '../util/debug';
 import {magicLinkParent} from '../mixin/magicLinkParent';
 import type {MagicLinkParentBase} from '../mixin/magicLinkParent';
@@ -203,8 +202,7 @@ export abstract class ExtLinkToken extends Token {
 	/** @private */
 	override toHtmlInternal(opt?: HtmlOpt): string {
 		const {length, lastChild} = this;
-		let trail = '',
-			innerText: string,
+		let innerText: string,
 			href: string | undefined;
 		if (length > 1) {
 			lastChild.normalize();
@@ -216,7 +214,6 @@ export abstract class ExtLinkToken extends Token {
 			if (i !== -1) {
 				const after = childNodes.slice(i);
 				this.after(...after);
-				trail = html(after, '', opt);
 			}
 			innerText = lastChild.toHtmlInternal(opt);
 		} else {
@@ -227,7 +224,7 @@ export abstract class ExtLinkToken extends Token {
 		} catch {}
 		return `<a rel="nofollow" class="external"${
 			href === undefined ? '' : ` href="${href}"`
-		}>${innerText}</a>${trail}`;
+		}>${innerText}</a>`;
 	}
 }
 
