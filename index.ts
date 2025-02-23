@@ -72,6 +72,7 @@ declare interface Parser extends ParserBase {
 		defaultNs?: number,
 		include?: boolean,
 		config?: Config,
+		temporary?: boolean,
 		halfParsed?: boolean,
 		decode?: boolean,
 		selfLink?: boolean, // eslint-disable-line @typescript-eslint/unified-signatures
@@ -133,7 +134,7 @@ const rootRequire = (file: string, dir: string): unknown => require(
  * 快速规范化页面标题
  * @param title 标题
  */
-const normalizeTitle = (title: string): string => String(Parser.normalizeTitle(title));
+const normalizeTitle = (title: string): string => String(Parser.normalizeTitle(title, 0, false, undefined, true));
 
 /** 重定向列表 */
 class RedirectMap extends Map<string, string> {
@@ -251,6 +252,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		defaultNs = 0,
 		include?: boolean,
 		config = Parser.getConfig(),
+		temporary: boolean = false,
 		halfParsed?: boolean,
 		decode: boolean = false,
 		selfLink: boolean = false,
@@ -258,14 +260,14 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		const {Title}: typeof import('./lib/title') = require('./lib/title');
 		let titleObj: Title;
 		if (halfParsed) {
-			titleObj = new Title(title, defaultNs, config, decode, selfLink);
+			titleObj = new Title(title, defaultNs, config, temporary, decode, selfLink);
 		} else {
 			const {Token}: typeof import('./src/index') = require('./src/index');
 			titleObj = Shadow.run(() => {
 				const root = new Token(title, config);
 				root.type = 'root';
 				root.parseOnce(0, include).parseOnce();
-				const t = new Title(root.toString(), defaultNs, config, decode, selfLink);
+				const t = new Title(root.toString(), defaultNs, config, temporary, decode, selfLink);
 				for (const key of ['main', 'fragment'] as const) {
 					const str = t[key];
 					if (str?.includes('\0')) {

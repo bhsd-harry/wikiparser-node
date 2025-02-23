@@ -22,7 +22,7 @@ export const parseRedirect = (text: string, config: Config, accum: Token[]): str
 		config.redirection.join('|')
 	})\s*(?::\s*)?)\[\[([^\n|\]]+)(\|.*?)?\]\](\s*)`, 'iu');
 	const mt = config.regexRedirect.exec(text);
-	if (mt && Parser.normalizeTitle(mt[3]!, 0, false, config, true, true).valid) {
+	if (mt && Parser.normalizeTitle(mt[3]!, 0, false, config, true, true, true).valid) {
 		text = `\0${accum.length}o\x7F${text.slice(mt[0].length)}`;
 		// @ts-expect-error abstract class
 		new RedirectToken(...mt.slice(1), config, accum);

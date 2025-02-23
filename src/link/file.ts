@@ -90,7 +90,7 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/** 扩展名 */
 	get extension(): string | undefined {
-		return this.getTitle().extension;
+		return this.getTitle(true).extension;
 	}
 
 	/** 图片链接 */
@@ -160,7 +160,7 @@ export abstract class FileToken extends LinkBaseToken {
 
 		/* NOT FOR BROWSER END */
 
-		const {extension} = this.getTitle(true);
+		const {extension} = this.getTitle(true, true);
 		/-\{|\}-|\|/gu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		this.append(...explode('-{', '}-', '|', text).map(
 			// @ts-expect-error abstract class

@@ -117,7 +117,14 @@ export class Title {
 	 * @param decode 是否需要解码
 	 * @param selfLink 是否允许selfLink
 	 */
-	constructor(title: string, defaultNs: number, config: Config, decode: boolean, selfLink: boolean) {
+	constructor(
+		title: string,
+		defaultNs: number,
+		config: Config,
+		temporary: boolean,
+		decode: boolean,
+		selfLink: boolean,
+	) {
 		const subpage = title.trim().startsWith('../');
 		if (decode && title.includes('%')) {
 			try {
@@ -178,19 +185,21 @@ export class Title {
 			subpage ? /^(?:\.\.\/)+(.*)/u.exec(title)![1]! : title,
 		);
 		this.main = title;
-		Object.defineProperties(this, {
-			encoded: {enumerable: false, writable: false},
-
-			/* NOT FOR BROWSER */
-
-			valid: {writable: false},
-			conversionTable: {enumerable: false},
-			redirects: {enumerable: false},
-		});
 		this.#namespaces = config.namespaces;
 		this.#path = config.articlePath || '/wiki/$1';
 		if (!this.#path.includes('$1')) {
 			this.#path += `${this.#path.endsWith('/') ? '' : '/'}$1`;
+		}
+		if (!temporary) {
+			Object.defineProperties(this, {
+				encoded: {enumerable: false, writable: false},
+
+				/* NOT FOR BROWSER */
+
+				valid: {writable: false},
+				conversionTable: {enumerable: false},
+				redirects: {enumerable: false},
+			});
 		}
 	}
 

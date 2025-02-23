@@ -86,11 +86,18 @@ export abstract class ImagemapToken extends Token {
 			} else if (first) {
 				const pipe = line.indexOf('|'),
 					file = pipe === -1 ? line : line.slice(0, pipe),
-					title = this.normalizeTitle(file, 0, true);
+					{
+						valid,
+						ns,
+
+						/* NOT FOR BROWSER */
+
+						interwiki,
+					} = this.normalizeTitle(file, 0, true, true);
 				if (
-					title.valid
-					&& !title.interwiki
-					&& title.ns === 6
+					valid
+					&& !interwiki
+					&& ns === 6
 				) {
 					// @ts-expect-error abstract class
 					const token: GalleryImageToken = new GalleryImageToken(
@@ -115,7 +122,7 @@ export abstract class ImagemapToken extends Token {
 					mtIn = /^\[\[([^|]+)(?:\|([^\]]+))?\]\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
-					if (this.normalizeTitle(mtIn[1], 0, true, false, true).valid) {
+					if (this.normalizeTitle(mtIn[1], 0, true, true, false, true).valid) {
 						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),

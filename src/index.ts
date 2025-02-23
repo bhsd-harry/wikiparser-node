@@ -540,11 +540,13 @@ export class Token extends AstElement {
 	normalizeTitle(
 		title: string,
 		defaultNs = 0,
+		temporary?: boolean,
 		halfParsed?: boolean,
 		decode?: boolean,
 		selfLink?: boolean,
 	): Title {
-		return Parser.normalizeTitle(title, defaultNs, this.#include, this.#config, halfParsed, decode, selfLink);
+		return Parser
+			.normalizeTitle(title, defaultNs, this.#include, this.#config, temporary, halfParsed, decode, selfLink);
 	}
 
 	/** @private */

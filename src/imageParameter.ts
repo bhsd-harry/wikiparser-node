@@ -68,7 +68,7 @@ function validate(
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
-			const title = Parser.normalizeTitle(value, 0, false, config, halfParsed, true, true);
+			const title = Parser.normalizeTitle(value, 0, false, config, false, halfParsed, true, true);
 			return title.valid && title;
 		}
 		case 'lang':

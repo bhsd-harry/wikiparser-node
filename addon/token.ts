@@ -100,8 +100,7 @@ const expand = (
 					return m;
 				}
 				const c = target.getAttribute('config'),
-					t = Parser.normalizeTitle(removeComment(f.toString()), 10, include, c, true),
-					{title, valid} = t;
+					{title, valid} = Parser.normalizeTitle(removeComment(f.toString()), 10, include, c, true, true);
 				if (!valid) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(target)] = undefined;
@@ -141,8 +140,8 @@ const expand = (
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
-					const title = Parser.normalizeTitle(var1, 0, include, config, true);
-					bool = title.valid && !title.interwiki;
+					const {valid, interwiki} = Parser.normalizeTitle(var1, 0, include, config, true, true);
+					bool = valid && !interwiki;
 				}
 				return parseIf(accum, prev, c[bool ? 2 : 3]);
 			} else if (known && name === 'ifeq' && !/\0\d+t\x7F/u.test(var2)) {

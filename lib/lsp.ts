@@ -760,7 +760,7 @@ export class LanguageService implements LanguageServiceBase {
 						} else if (type === 'invoke-module') {
 							ns = 828;
 						}
-						const title = Parser.normalizeTitle(target, ns);
+						const title = Parser.normalizeTitle(target, ns, false, undefined, true);
 						/* istanbul ignore if */
 						if (!title.valid) {
 							return false;
