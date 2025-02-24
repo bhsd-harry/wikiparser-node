@@ -18,11 +18,15 @@ export abstract class CategoryToken extends LinkBaseToken {
 		return 'category';
 	}
 
+	/* PRINT ONLY */
+
 	/** sort key / 分类排序关键字 */
 	get sortkey(): string | undefined {
 		const {childNodes: [, child]} = this;
 		return child && decodeHtml(child.text());
 	}
+
+	/* PRINT ONLY END */
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {

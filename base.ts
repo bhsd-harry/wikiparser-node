@@ -231,6 +231,8 @@ export interface LintError {
 	suggestions?: LintError.Fix[];
 }
 
+/* PRINT ONLY */
+
 export type AST = Record<string, string | number | boolean> & {
 	range: [number, number];
 	type?: TokenTypes;
@@ -238,6 +240,8 @@ export type AST = Record<string, string | number | boolean> & {
 	childNodes?: AST[];
 	data?: string;
 };
+
+/* PRINT ONLY END */
 
 /**
  * Node-like

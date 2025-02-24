@@ -68,10 +68,14 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
+	/* PRINT ONLY */
+
 	/** file extension / 扩展名 */
 	get extension(): string | undefined {
 		return this.getAttribute('title').extension;
 	}
+
+	/* PRINT ONLY END */
 
 	/**
 	 * @param link 文件名

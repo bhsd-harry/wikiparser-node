@@ -5,10 +5,14 @@ import type {AST} from '../../base';
 export abstract class ListBaseToken extends NowikiBaseToken {
 	abstract override get type(): 'dd' | 'list';
 
+	/* PRINT ONLY */
+
 	/** number of indentation / 缩进数 */
 	get indent(): number {
 		return this.innerText.split(':').length - 1;
 	}
+
+	/* PRINT ONLY END */
 
 	/** @private */
 	override json(_?: string, start = this.getAbsoluteIndex()): AST {
