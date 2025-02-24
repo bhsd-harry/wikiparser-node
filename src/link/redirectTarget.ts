@@ -46,7 +46,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	/**
 	 * @param link 链接标题
 	 * @param linkText 链接显示文字
-	 * @param delimiter `|`
 	 */
 	constructor(link: string, linkText?: string, config?: Config, accum?: Token[]) {
 		super(link, undefined, config, accum);

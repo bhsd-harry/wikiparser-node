@@ -4,8 +4,6 @@ import {mixins} from '../util/constants';
 /**
  * 不可包含换行符的类
  * @param strict 是否严格
- * @param constructor 基类
- * @param _ context
  */
 export const singleLine = (strict = true) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 不可包含换行符的类 */

@@ -8,7 +8,7 @@ export class Range {
 	readonly step: number;
 
 	/**
-	 * @param s 表达式
+	 * @param str 表达式
 	 * @throws `RangeError` 起点、终点和步长均应为整数
 	 * @throws `RangeError` n的系数不能为0
 	 * @throws `RangeError` 应使用CSS选择器或Python切片的格式

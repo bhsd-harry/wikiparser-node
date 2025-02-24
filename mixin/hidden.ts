@@ -11,8 +11,6 @@ import {mixins} from '../util/constants';
  * 解析后不可见的类
  * @param linter 是否覆写 lint 方法
  * @param html 是否覆写 toHtml 方法
- * @param constructor 基类
- * @param _ context
  */
 export const hiddenToken = (linter = true, html = true) =>
 	<T extends AstConstructor>(constructor: T, _?: unknown): T => {

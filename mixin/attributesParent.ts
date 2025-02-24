@@ -57,6 +57,7 @@ export interface AttributesParentBase {
 	 */
 	getAttrs(): Record<string, string | true>;
 
+	/* eslint-disable jsdoc/check-param-names */
 	/**
 	 * Set the attribute
 	 *
@@ -65,6 +66,7 @@ export interface AttributesParentBase {
 	 * @param value attribute value / 属性值
 	 * @param prop attribute object / 属性对象
 	 */
+	/* eslint-enable jsdoc/check-param-names */
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
 
@@ -89,8 +91,6 @@ export interface AttributesParentBase {
 /**
  * 子节点含有AttributesToken的类
  * @param i AttributesToken子节点的位置
- * @param constructor 基类
- * @param _ context
  */
 export const attributesParent = (i = 0) => <T extends AstConstructor>(constructor: T, _?: unknown): T => {
 	/** 子节点含有AttributesToken的类 */

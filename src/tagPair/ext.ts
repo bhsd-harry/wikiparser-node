@@ -62,10 +62,10 @@ export abstract class ExtToken extends TagPairToken {
 
 	/**
 	 * @param name 标签名
-	 * @param include 是否嵌入
 	 * @param attr 标签属性
 	 * @param inner 内部wikitext
 	 * @param closed 是否封闭
+	 * @param include 是否嵌入
 	 */
 	constructor(
 		name: string,

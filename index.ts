@@ -1,6 +1,4 @@
 /* eslint n/exports-style: 0 */
-import * as fs from 'fs';
-import * as path from 'path';
 import {rules, stages} from './base';
 import {Shadow} from './util/debug';
 import {
@@ -12,15 +10,6 @@ import {
 	classes,
 } from './util/constants';
 import {tidy} from './util/string';
-import {
-	error,
-
-	/* NOT FOR BROWSER */
-
-	cmd,
-	info,
-	diff,
-} from './util/diff';
 import type {
 	Config,
 	LintError,
@@ -39,6 +28,22 @@ import * as chalk from 'chalk';
 import type {log} from './util/diff';
 
 /* NOT FOR BROWSER END */
+
+/* NOT FOR BROWSER ONLY */
+
+import * as fs from 'fs';
+import * as path from 'path';
+import {
+	error,
+
+	/* NOT FOR BROWSER */
+
+	cmd,
+	info,
+	diff,
+} from './util/diff';
+
+/* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
 	rules: readonly LintError.Rule[];
@@ -125,6 +130,8 @@ declare interface Parser extends ParserBase {
 	reparse(date?: string): void;
 }
 
+/* NOT FOR BROWSER ONLY */
+
 /**
  * 从根路径require
  * @param file 文件名
@@ -135,6 +142,8 @@ const rootRequire = (file: string, dir: string): unknown => require(
 		? /* istanbul ignore next */ file
 		: path.join('..', file.includes('/') ? '' : dir, file),
 );
+
+/* NOT FOR BROWSER ONLY END */
 
 /* NOT FOR BROWSER */
 
@@ -207,6 +216,8 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	getConfig() {
+		/* NOT FOR BROWSER ONLY */
+
 		if (typeof this.config === 'string') {
 			this.config = rootRequire(this.config, 'config') as Config;
 			/* istanbul ignore if */
@@ -234,6 +245,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 			return this.getConfig();
 		}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		const {doubleUnderscore} = this.config;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
@@ -248,10 +262,15 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
+		/* NOT FOR BROWSER ONLY */
+
 		if (typeof this.i18n === 'string') {
 			this.i18n = rootRequire(this.i18n, 'i18n') as Record<string, string>;
 			return this.msg(msg, arg);
 		}
+
+		/* NOT FOR BROWSER ONLY END */
+
 		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
@@ -315,6 +334,8 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			token.type = 'root';
 			try {
 				return token.parse(maxStage, include);
+
+				/* NOT FOR BROWSER ONLY */
 			} catch (e) /* istanbul ignore next */ {
 				if (e instanceof Error) {
 					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
@@ -333,6 +354,8 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				}
 				throw e;
 			}
+
+			/* NOT FOR BROWSER ONLY END */
 		});
 
 		/* NOT FOR BROWSER */
