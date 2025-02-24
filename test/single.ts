@@ -66,6 +66,12 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 		}
 	}
 
+	if (!method || method === 'json') {
+		console.time(`json: ${title}`);
+		token.json();
+		console.timeEnd(`json: ${title}`);
+	}
+
 	/* NOT FOR BROWSER */
 
 	if (!method || method === 'html') {
