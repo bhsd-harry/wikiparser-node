@@ -75,8 +75,9 @@ export abstract class MagicLinkToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
-			rect = new BoundingRect(this, start);
-		if (this.type === 'magic-link') {
+			rect = new BoundingRect(this, start),
+			{type, childNodes} = this;
+		if (type === 'magic-link') {
 			const {link} = this;
 			if (link.startsWith('ISBN')) {
 				// eslint-disable-next-line unicorn/no-useless-spread, @typescript-eslint/no-misused-spread
@@ -93,9 +94,9 @@ export abstract class MagicLinkToken extends Token {
 			}
 			return errors;
 		}
-		const pipe = this.type === 'ext-link-url',
+		const pipe = type === 'ext-link-url',
 			regex = pipe ? /\|/u : /[，；。：！？（）]+/u,
-			child = this.childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
+			child = childNodes.find((c): c is AstText => c.type === 'text' && regex.test(c.data));
 		if (child) {
 			const {data} = child,
 				e = generateForChild(

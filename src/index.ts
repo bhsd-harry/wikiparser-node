@@ -327,9 +327,10 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const lines = this.firstChild!.toString().split('\n'),
+		const {firstChild, type, name} = this,
+			lines = firstChild!.toString().split('\n'),
 			state = {lastPrefix: ''};
-		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
+		let i = type === 'root' || type === 'ext-inner' && name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, state, this.#config, this.#accum);
 		}
@@ -386,7 +387,10 @@ export class Token extends AstElement {
 	override insertAt<T extends AstNodes>(child: T | string, i = this.length): T | AstText {
 		const token = typeof child === 'string' ? new AstText(child) : child;
 		super.insertAt(token, i);
-		if (token.type === 'root') {
+		const {
+			type,
+		} = token;
+		if (type === 'root') {
 			token.type = 'plain';
 		}
 		return token;

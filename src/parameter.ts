@@ -38,6 +38,15 @@ export abstract class ParameterToken extends Token {
 		return this.firstChild.length === 0;
 	}
 
+	/** whether to be a duplicated parameter / 是否是重复参数 */
+	get duplicated(): boolean {
+		try {
+			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
+		} catch {
+			return false;
+		}
+	}
+
 	/**
 	 * @param key 参数名
 	 * @param value 参数值
@@ -116,9 +125,10 @@ export abstract class ParameterToken extends Token {
 		return super.print({sep: this.anon ? '' : '='});
 	}
 
-	override json(): AST {
-		const json = super.json();
-		json['anon'] = this.anon;
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		Object.assign(json, {anon: this.anon, duplicated: this.duplicated});
 		return json;
 	}
 }

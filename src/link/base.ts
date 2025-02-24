@@ -10,7 +10,10 @@ import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 import type {Title} from '../../lib/title';
 import type {
 	AstText,
@@ -43,6 +46,11 @@ export abstract class LinkBaseToken extends Token {
 	get link(): string | Title {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return this.#title;
+	}
+
+	/** 片段标识符 */
+	get fragment(): string | undefined {
+		return this.#title.fragment;
 	}
 
 	/**
@@ -194,5 +202,15 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override print(): string {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start),
+			{type, fragment} = this;
+		if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
+			json['fragment'] = fragment;
+		}
+		return json;
 	}
 }
