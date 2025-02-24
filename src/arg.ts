@@ -5,7 +5,10 @@ import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 
 /**
  * argument wrapped in `{{{}}}`
@@ -120,5 +123,12 @@ export abstract class ArgToken extends Token {
 	/** @private */
 	override print(): string {
 		return super.print({pre: '{{{', post: '}}}', sep: '|'});
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		json['default'] = this.default;
+		return json;
 	}
 }

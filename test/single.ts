@@ -35,7 +35,7 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 
 	if (!method || method === 'json') {
 		console.time(`json: ${title}`);
-		token.json();
+		await wikiparse.json(content, include);
 		console.timeEnd(`json: ${title}`);
 	}
 

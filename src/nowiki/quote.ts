@@ -98,8 +98,9 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return errors;
 	}
 
-	override json(): AST {
-		const json = super.json();
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
 		Object.assign(json, {bold: this.bold, italic: this.italic});
 		return json;
 	}

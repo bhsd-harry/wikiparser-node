@@ -1,6 +1,7 @@
 import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
+import type {AST} from '../base';
 import type {ConverterToken, ConverterFlagsToken} from '../internal';
 
 /**
@@ -21,6 +22,11 @@ export abstract class ConverterRuleToken extends Token {
 
 	override get type(): 'converter-rule' {
 		return 'converter-rule';
+	}
+
+	/** language variant / 语言变体 */
+	get variant(): string {
+		return this.childNodes[this.length - 2]?.text().trim() ?? '';
 	}
 
 	/**
@@ -75,5 +81,12 @@ export abstract class ConverterRuleToken extends Token {
 			return `<span class="wpb-converter-rule">${from.print()}=>${variant.print()}:${to.print()}</span>`;
 		}
 		return super.print({sep: ':'});
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		json['variant'] = this.variant;
+		return json;
 	}
 }

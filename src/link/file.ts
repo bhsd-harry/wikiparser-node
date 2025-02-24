@@ -6,7 +6,10 @@ import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 import type {
 	Token,
 	AtomToken,
@@ -63,6 +66,11 @@ export abstract class FileToken extends LinkBaseToken {
 
 	override get type(): 'file' | 'gallery-image' | 'imagemap-image' {
 		return 'file';
+	}
+
+	/** file extension / 扩展名 */
+	get extension(): string | undefined {
+		return this.getAttribute('title').extension;
 	}
 
 	/**
@@ -201,5 +209,15 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	getValue(key: string): string | true | undefined {
 		return this.getArg(key)?.getValue();
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start),
+			{extension} = this;
+		if (extension) {
+			json['extension'] = extension;
+		}
+		return json;
 	}
 }

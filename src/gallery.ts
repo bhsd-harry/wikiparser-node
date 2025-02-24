@@ -2,7 +2,10 @@ import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 import type {
 	AstText,
 	AttributesToken,
@@ -29,6 +32,16 @@ export abstract class GalleryToken extends Token {
 
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
+	}
+
+	/** image widths / 图片宽度 */
+	get widths(): number {
+		return this.#getSize('widths');
+	}
+
+	/** image heights / 图片高度 */
+	get heights(): number {
+		return this.#getSize('heights');
 	}
 
 	/** @param inner 标签内部wikitext */
@@ -84,9 +97,10 @@ export abstract class GalleryToken extends Token {
 			const str = child.toString(),
 				{length} = str,
 				trimmed = str.trim(),
+				{type} = child,
 				startLine = top + i,
 				startCol = i ? 0 : left;
-			if (child.type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
+			if (type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				const endIndex = start + length;
 				errors.push({
 					rule: 'no-ignored',
@@ -103,7 +117,7 @@ export abstract class GalleryToken extends Token {
 						{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
 					],
 				});
-			} else if (child.type !== 'noinclude' && child.type !== 'text') {
+			} else if (type !== 'noinclude' && type !== 'text') {
 				errors.push(...child.lint(start, re));
 			}
 			start += length + 1;
@@ -111,8 +125,25 @@ export abstract class GalleryToken extends Token {
 		return errors;
 	}
 
+	/**
+	 * 获取图片的宽度或高度
+	 * @param key `widths` 或 `heights`
+	 */
+	#getSize(key: 'widths' | 'heights'): number {
+		const widths = this.parentNode?.getAttr(key),
+			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
+		return mt && Number(mt) || 120;
+	}
+
 	/** @private */
 	override print(): string {
 		return super.print({sep: '\n'});
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		Object.assign(json, {widths: this.widths, heights: this.heights});
+		return json;
 	}
 }
