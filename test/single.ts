@@ -60,6 +60,12 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 		}
 	}
 
+	if (!method || method === 'json') {
+		console.time(`json: ${title}`);
+		token.json();
+		console.timeEnd(`json: ${title}`);
+	}
+
 	if (!method || method === 'lint') {
 		console.time(`lint: ${title}`);
 		const errors = token.lint()
