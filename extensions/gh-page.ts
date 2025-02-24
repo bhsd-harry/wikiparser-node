@@ -148,7 +148,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
 			const astDom = createAST(await wikiparse.json(code, jar.include, qid));
 			astDom.children[0]!.classList.remove('inactive');
 			astContainer.replaceChildren(astDom);
-		}) as () => void, 2000);
+		}) as () => void, 30);
 	});
 	astContainer.addEventListener('click', ({target}) => {
 		(target as HTMLElement).closest('dt')?.classList.toggle('inactive');

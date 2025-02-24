@@ -5,7 +5,19 @@ const version = '1.16.5', src = (_a = document.currentScript) === null || _a ===
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
     importScripts('$CDN/bundle/bundle.lsp.js');
-    const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map();
+    const entities = { '&': 'amp', '<': 'lt', '>': 'gt' }, lsps = new Map(), last = { include: true };
+    const parse = (wikitext, include = false, stage) => {
+        if (stage === undefined && last.wikitext === wikitext && last.include === include) {
+            return last.root;
+        }
+        const root = Parser.parse(wikitext, include, stage);
+        if (stage === undefined) {
+            last.wikitext = wikitext;
+            last.include = include;
+            last.root = root;
+        }
+        return root;
+    };
     const getLSP = (qid, signature) => {
         let id = Math.floor(qid);
         if (signature) {
@@ -48,20 +60,21 @@ const workerJS = () => {
                 break;
             case 'setConfig':
                 Parser.config = qid;
+                delete last.wikitext;
                 break;
             case 'getConfig':
                 postMessage([qid, Parser.getConfig()]);
                 break;
             case 'json':
-                postMessage([qid, Parser.parse(wikitext, include, stage).json()]);
+                postMessage([qid, parse(wikitext, include, stage).json()]);
                 break;
             case 'lint':
-                postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
+                postMessage([qid, parse(wikitext, include).lint(), wikitext]);
                 break;
             case 'print':
                 postMessage([
                     qid,
-                    Parser.parse(wikitext, include, stage).childNodes.map(child => [
+                    parse(wikitext, include, stage).childNodes.map(child => [
                         stage !== null && stage !== void 0 ? stage : Infinity,
                         String(child),
                         child.type === 'text'

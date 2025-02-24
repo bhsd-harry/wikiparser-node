@@ -1,6 +1,7 @@
 import {
 	readFileSync,
 } from 'fs';
+import single from './single';
 import {mock} from './wikiparse';
 import type {Config} from '../base';
 
@@ -32,6 +33,12 @@ const content = readFileSync('test/page.wiki', 'utf8'),
 (async () => {
 	for (let i = 0; i < (Number(count) || 10); i++) {
 		const page: SimplePage = {content, ns: 0, pageid: 0, title: `Pass ${i}`};
+		if (
+			method !== 'lsp'
+			&& method !== 'linter'
+		) {
+			await single(page, method);
+		}
 		if (!method || method === 'linter') {
 			await wrap('Linter', page, s => linter.queue(s));
 			await linter.queue('');

@@ -85,7 +85,7 @@ const keys = new Set(['type', 'childNodes', 'range']);
             const astDom = createAST(await wikiparse.json(code, jar.include, qid));
             astDom.children[0].classList.remove('inactive');
             astContainer.replaceChildren(astDom);
-        }), 2000);
+        }), 30);
     });
     astContainer.addEventListener('click', ({ target }) => {
         var _a;

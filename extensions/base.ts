@@ -10,6 +10,7 @@ import type {
 } from './typings';
 
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
+declare type Token = ReturnType<typeof Parser['parse']>;
 
 const version = '1.16.5',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
@@ -22,7 +23,27 @@ const version = '1.16.5',
 const workerJS = (): void => {
 	importScripts('$CDN/bundle/bundle.lsp.js');
 	const entities = {'&': 'amp', '<': 'lt', '>': 'gt'},
-		lsps = new Map<number, LanguageService>();
+		lsps = new Map<number, LanguageService>(),
+		last: {wikitext?: string, include: boolean, root?: Token} = {include: true};
+
+	/**
+	 * 解析
+	 * @param wikitext
+	 * @param include 是否嵌入
+	 * @param stage 解析层级
+	 */
+	const parse = (wikitext: string, include = false, stage?: number): Token => {
+		if (stage === undefined && last.wikitext === wikitext && last.include === include) {
+			return last.root!;
+		}
+		const root = Parser.parse(wikitext, include, stage);
+		if (stage === undefined) {
+			last.wikitext = wikitext;
+			last.include = include;
+			last.root = root;
+		}
+		return root;
+	};
 
 	/**
 	 * 获取LSP
@@ -103,20 +124,21 @@ const workerJS = (): void => {
 				break;
 			case 'setConfig':
 				Parser.config = qid;
+				delete last.wikitext;
 				break;
 			case 'getConfig':
 				postMessage([qid, Parser.getConfig()]);
 				break;
 			case 'json':
-				postMessage([qid, Parser.parse(wikitext, include, stage).json()]);
+				postMessage([qid, parse(wikitext, include, stage).json()]);
 				break;
 			case 'lint':
-				postMessage([qid, Parser.parse(wikitext, include).lint(), wikitext]);
+				postMessage([qid, parse(wikitext, include).lint(), wikitext]);
 				break;
 			case 'print':
 				postMessage([
 					qid,
-					Parser.parse(wikitext, include, stage).childNodes.map(child => [
+					parse(wikitext, include, stage).childNodes.map(child => [
 						stage ?? Infinity,
 						String(child),
 						child.type === 'text'
