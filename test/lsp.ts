@@ -1,27 +1,15 @@
 import {error} from '../util/diff';
+import './wikiparse';
 import type {Position} from 'vscode-languageserver-types';
 import type {
 	LanguageService,
-
-	/* NOT FOR BROWSER ONLY */
-
-	TokenTypes,
+	Config,
 } from '../base';
 
-/* NOT FOR BROWSER ONLY */
-
-import Parser = require('../index');
-import type {
-	Token,
-	ImageParameterToken,
-	ExtToken,
-	HtmlToken,
-	AtomToken,
-} from '../internal';
-
-/* NOT FOR BROWSER ONLY END */
-
 declare type Key = keyof LanguageService | 'constructor';
+
+const config: Config = require('../../config/default');
+wikiparse.setConfig({...config, articlePath: 'https://mediawiki.org/wiki/$1'});
 
 /**
  * 测试单个指令
@@ -55,15 +43,15 @@ const check = (value: unknown, title: string, pos: Position): void => {
 
 /**
  * 将索引转换为位置
- * @param root 根节点
+ * @param content 源代码
  * @param index 索引
  */
 const indexToPos = (
-	root: Token,
+	content: string,
 	index: number,
 ): Position => {
-	const {top, left} = root.posFromIndex(index)!;
-	return {line: top, character: left};
+	const lines = content.slice(0, index).split('\n');
+	return {line: lines.length - 1, character: lines.at(-1)!.length};
 };
 
 /**
@@ -74,28 +62,7 @@ const indexToPos = (
  */
 export default async ({title, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
-	Parser.getConfig();
-	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
-	// eslint-disable-next-line no-eval
-	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
-	const lsp = Parser.createLanguageService({}),
-		root = Parser.parse(content, true),
-		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
-		attrKey = root.querySelector('attr-key'),
-		ext = root.querySelector<ExtToken>('ext'),
-		html = root.querySelector<HtmlToken>('html'),
-		headingTitle = root.querySelector('heading-title'),
-		argName = root.querySelector('arg-name'),
-		templateName = root.querySelector('template-name'),
-		magicWordName = root.querySelector('magic-word-name'),
-		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke' as TokenTypes),
-		doubleUnderscore = root.querySelector('double-underscore'),
-		renamePositions = ([
-			argName,
-			templateName,
-			magicWordName,
-		].filter(Boolean) as Token[])
-			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
+	const lsp = new wikiparse.LanguageService!();
 
 	await wrap('provideDiagnostics', title, () => {
 		void lsp.provideDiagnostics(
@@ -115,30 +82,27 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'destroy':
 			case 'provideDiagnostics':
 			case 'provideColorPresentations':
-			case 'provideCodeAction':
+			case 'provideReferences':
+			case 'resolveRenameLocation':
+			case 'provideRenameEdits':
+			case 'provideHover':
+			case 'provideSignatureHelp':
+			case 'provideDefinition':
 				break;
 			case 'provideDocumentColors':
-				await wrap(method, title, () => lsp.provideDocumentColors(rgba, content));
+				await wrap(method, title, () => lsp.provideDocumentColors(content));
 				break;
 			case 'provideCompletionItems': {
 				const positions = [
-					...([
-						imageParameter,
-						attrKey,
-					].filter(Boolean) as Token[])
-						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
-					...[
-						/(?<=<)/u, // tag
-						/(?<=__)/u, // behavior switch
-						/(?<=(?<!\[)\[)/u, // protocol
-						/(?<=\{{3})/u, // argument
-						/(?<=\[\[)/u, // link
-						/(?<=(?<!\{)\{\{)/u, // parser function or template
-					// eslint-disable-next-line @stylistic/comma-dangle
-					].map(re => content.search(re)).filter(i => i !== -1)
-				]
+					/(?<=<)/u, // tag
+					/(?<=__)/u, // behavior switch
+					/(?<=(?<!\[)\[)/u, // protocol
+					/(?<=\{{3})/u, // argument
+					/(?<=\[\[)/u, // link
+					/(?<=(?<!\{)\{\{)/u, // parser function or template
+				].map(re => content.search(re)).filter(i => i !== -1)
 					.map(i => indexToPos(
-						root,
+						content,
 						i,
 					));
 				if (positions.length > 0) {
@@ -153,60 +117,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'provideFoldingRanges':
 			case 'provideLinks':
 			case 'provideInlayHints':
-			case 'provideDocumentSymbols':
 				await wrap(method, title, () => lsp[method](content));
-				break;
-			case 'provideReferences': {
-				const tokens = [
-					// 不需要 +1
-					attrKey,
-					headingTitle,
-					// 需要 +1
-					ext,
-					html,
-					imageParameter,
-					argName,
-					templateName,
-					magicWordName,
-				];
-				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
-					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
-				if (positions.length > 0) {
-					await wrap(method, title, async () => {
-						for (const pos of positions) {
-							check(await lsp.provideReferences(content, pos), title, pos);
-						}
-					});
-				}
-				break;
-			}
-			case 'resolveRenameLocation':
-			case 'provideRenameEdits':
-				if (renamePositions.length > 0) {
-					await wrap(method, title, async () => {
-						for (const pos of renamePositions) {
-							check(await lsp[method](content, pos, 'x'), title, pos);
-						}
-					});
-				}
-				break;
-			case 'provideHover': {
-				const positions = ([doubleUnderscore, magicWordName].filter(Boolean) as Token[])
-					.map(token => indexToPos(root, token.getAbsoluteIndex()));
-				if (positions.length > 0) {
-					await wrap(method, title, async () => {
-						for (const pos of positions) {
-							check(await lsp.provideHover(content, pos), title, pos);
-						}
-					});
-				}
-				break;
-			}
-			case 'provideSignatureHelp':
-				if (parserFunctionName) {
-					const pos = indexToPos(root, parserFunctionName.nextSibling!.getAbsoluteIndex());
-					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos));
-				}
 				break;
 			default:
 				throw new Error(`未检测的方法：${method as string}`);

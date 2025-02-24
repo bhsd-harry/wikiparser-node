@@ -72,6 +72,7 @@ export abstract class ExtToken extends TagPairToken {
 			),
 			newConfig: Config = {...config, ext: del(config.ext, lcName), excludes: [...config.excludes ?? []]};
 		let innerToken: Token;
+		newConfig.inExt = true;
 		switch (lcName) {
 			case 'tab':
 				newConfig.ext = del(newConfig.ext, 'tabs');

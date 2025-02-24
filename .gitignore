@@ -1,5 +1,5 @@
 /node_modules/
-dist/
+/dist/
 /bundle/bundle.es7.js
 /bundle/*.map
 /extensions/es7/

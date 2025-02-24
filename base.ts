@@ -13,11 +13,6 @@ import type {
 	Hover,
 	SignatureHelp,
 	InlayHint,
-
-	/* NOT FOR BROWSER ONLY */
-
-	DocumentSymbol,
-	CodeAction,
 } from 'vscode-languageserver-types';
 
 export interface Config {
@@ -37,6 +32,8 @@ export interface Config {
 
 	/** @private */
 	readonly excludes?: string[];
+	/** @private */
+	inExt?: boolean;
 	/** @private */
 	regexRedirect?: RegExp;
 	/** @private */
@@ -440,35 +437,16 @@ export interface LanguageService {
 	 * @param text source Wikitext / 源代码
 	 */
 	provideInlayHints(text: string): Promise<InlayHint[]>;
-
-	/* NOT FOR BROWSER ONLY */
-
-	/**
-	 * Provide quick fixes
-	 *
-	 * 提供快速修复建议
-	 * @param diagnostics grammar diagnostics / 语法诊断信息
-	 */
-	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[];
-
-	/**
-	 * Provide document sections
-	 *
-	 * 提供章节
-	 * @param text source Wikitext / 源代码
-	 */
-	provideDocumentSymbols(text: string): Promise<DocumentSymbol[]>;
 }
 
 export interface Parser {
-	config: Config | string;
+	config: Config;
 	i18n: Record<string, string>
-		| string
 		| undefined;
 
 	/**
 	 * Get the current parser configuration
-	 *
+	 *s
 	 * 获取当前的解析设置
 	 */
 	getConfig(): Config;

@@ -1,9 +1,9 @@
-/* eslint n/exports-style: 0 */
 import {rules, stages} from './base';
 import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
+	minConfig,
 } from './util/constants';
 import {tidy} from './util/string';
 import type {
@@ -17,16 +17,6 @@ import type {
 import type {Title} from './lib/title';
 import type {LanguageService} from './lib/lsp';
 import type {Token} from './internal';
-
-/* NOT FOR BROWSER ONLY */
-
-import * as fs from 'fs';
-import * as path from 'path';
-import {
-	error,
-} from './util/diff';
-
-/* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
 	rules: readonly LintError.Rule[];
@@ -69,45 +59,13 @@ declare interface Parser extends ParserBase {
 	createLanguageService(uri: object): LanguageService;
 }
 
-/* NOT FOR BROWSER ONLY */
-
-/**
- * 从根路径require
- * @param file 文件名
- * @param dir 子路径
- */
-const rootRequire = (file: string, dir: string): unknown => require(
-	path.isAbsolute(file)
-		? /* istanbul ignore next */ file
-		: path.join('..', file.includes('/') ? '' : dir, file),
-);
-
-/* NOT FOR BROWSER ONLY END */
-
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
-	config: 'default',
+	config: minConfig,
 	i18n: undefined,
 	rules,
 
 	/** @implements */
 	getConfig() {
-		/* NOT FOR BROWSER ONLY */
-
-		if (typeof this.config === 'string') {
-			this.config = rootRequire(this.config, 'config') as Config;
-			/* istanbul ignore if */
-			if (this.config.doubleUnderscore.length < 3 || Array.isArray(this.config.parserFunction[1])) {
-				error(
-					`The schema (${
-						path.resolve(__dirname, '..', 'config', '.schema.json')
-					}) of parser configuration is updated.`,
-				);
-			}
-			return this.getConfig();
-		}
-
-		/* NOT FOR BROWSER ONLY END */
-
 		const {doubleUnderscore} = this.config;
 		for (let i = 0; i < 2; i++) {
 			if (doubleUnderscore.length > i + 2 && doubleUnderscore[i]!.length === 0) {
@@ -115,6 +73,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 			}
 		}
 		return {
+			...minConfig,
 			...this.config,
 			excludes: [],
 		};
@@ -122,15 +81,6 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 	/** @implements */
 	msg(msg, arg = '') {
-		/* NOT FOR BROWSER ONLY */
-
-		if (typeof this.i18n === 'string') {
-			this.i18n = rootRequire(this.i18n, 'i18n') as Record<string, string>;
-			return this.msg(msg, arg);
-		}
-
-		/* NOT FOR BROWSER ONLY END */
-
 		return msg && (this.i18n?.[msg] ?? msg).replace('$1', this.msg(arg));
 	},
 
@@ -184,30 +134,7 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		const root = Shadow.run(() => {
 			const token = new Token(wikitext, config);
 			token.type = 'root';
-			try {
-				return token.parse(maxStage, include);
-
-				/* NOT FOR BROWSER ONLY */
-			} catch (e) /* istanbul ignore next */ {
-				if (e instanceof Error) {
-					const file = path.join(__dirname, '..', 'errors', new Date().toISOString()),
-						stage = token.getAttribute('stage');
-					for (const k in config) {
-						if (k.startsWith('regex') || config[k as keyof Config] instanceof Set) {
-							delete config[k as keyof Config];
-						}
-					}
-					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : token.toString());
-					fs.writeFileSync(`${file}.err`, e.stack!);
-					fs.writeFileSync(
-						`${file}.json`,
-						JSON.stringify({stage, include, config}, null, '\t'),
-					);
-				}
-				throw e;
-			}
-
-			/* NOT FOR BROWSER ONLY END */
+			return token.parse(maxStage, include);
 		});
 		return root;
 	},
@@ -256,7 +183,6 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 };
 
 const def: PropertyDescriptorMap = {
-		default: {value: Parser},
 	},
 	enumerable = new Set([
 		'normalizeTitle',
@@ -269,9 +195,8 @@ for (const key in Parser) {
 	}
 }
 Object.defineProperties(Parser, def);
+Object.assign(typeof globalThis === 'object' ? globalThis : self, {Parser}); // eslint-disable-line es-x/no-global-this
 
-// @ts-expect-error mixed export styles
-export = Parser;
 export default Parser;
 export type {
 	Config,
@@ -280,4 +205,3 @@ export type {
 	LanguageService,
 	AST,
 };
-export type * from './internal';

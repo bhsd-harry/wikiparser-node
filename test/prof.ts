@@ -1,50 +1,48 @@
 import {
 	readFileSync,
-
-	/* NOT FOR BROWSER ONLY */
-
-	writeFileSync,
 } from 'fs';
+import {mock} from './wikiparse';
+import type {Config} from '../base';
 
-/* NOT FOR BROWSER ONLY */
+const config: Config = require('../../config/default');
+wikiparse.setConfig(config);
+const linter = new wikiparse.Linter!(true),
+	lsp = new wikiparse.LanguageService!();
 
-import * as inspector from 'inspector';
-import single from './single';
-import lsp from './lsp';
-
-/* NOT FOR BROWSER ONLY END */
+/**
+ * 测试单个指令
+ * @param constructor 类名
+ * @param page 页面
+ * @param page.title 页面标题
+ * @param page.content 页面源代码
+ * @param fn 测试指令
+ */
+const wrap = async (
+	constructor: string,
+	{title, content}: SimplePage,
+	fn: (s: string) => Promise<unknown>,
+): Promise<void> => {
+	console.time(`${constructor}: ${title}`);
+	await fn(content);
+	console.timeEnd(`${constructor}: ${title}`);
+};
 
 const content = readFileSync('test/page.wiki', 'utf8'),
-	session = new inspector.Session(),
 	{argv: [,, count, method]} = process;
-session.connect();
-session.post('Profiler.enable', () => {
-	session.post('Profiler.start', () => {
-		(async () => {
-			for (let i = 0; i < (Number(count) || 20); i++) {
-				const page: SimplePage = {content, ns: 0, pageid: 0, title: `Pass ${i}`};
-
-				/* NOT FOR BROWSER ONLY */
-
-				if (method !== 'lsp') {
-					await single(page, method);
-				}
-				if (!method || method === 'lsp') {
-					await lsp(page);
-				}
-
-				/* NOT FOR BROWSER ONLY END */
-
-				console.log();
-			}
-
-			/* NOT FOR BROWSER ONLY */
-
-			session.post('Profiler.stop', (_, {profile: {nodes}}) => {
-				const useful = nodes.filter(({callFrame: {url}}) => url.startsWith('file:///'));
-				writeFileSync('test/prof.txt', JSON.stringify(useful, null, '\t'));
-				session.disconnect();
-			});
-		})();
-	});
-});
+(async () => {
+	for (let i = 0; i < (Number(count) || 10); i++) {
+		const page: SimplePage = {content, ns: 0, pageid: 0, title: `Pass ${i}`};
+		if (!method || method === 'linter') {
+			await wrap('Linter', page, s => linter.queue(s));
+			await linter.queue('');
+		}
+		if (!method || method === 'lsp') {
+			await wrap('LanguageService', page, s => lsp.provideDiagnostics(s));
+			await lsp.provideInlayHints('');
+		}
+		console.log();
+	}
+	setTimeout(() => {
+		void mock.worker.terminate();
+	}, 1000);
+})();

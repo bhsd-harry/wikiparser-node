@@ -1,0 +1,110 @@
+.wpb-table-inter {
+	color: #d73333;
+	font-weight: normal;
+	text-decoration: underline wavy 1px;
+}
+
+.wpb-hidden, .wpb-noinclude, .wpb-include, .wpb-comment, .wpb-attr-dirty {
+	color: #7b8c8f;
+	font-weight: normal;
+	font-style: italic;
+}
+
+.wpb-ext, .wpb-html {
+	color: #14866d;
+	font-weight: bold;
+}
+.wpb-ext-attrs, .wpb-html-attrs {
+	font-weight: normal;
+}
+.wpb-ext-attr > .wpb-attr-value, .wpb-html-attr > .wpb-attr-value {
+	color: #179b1c;
+}
+.wpb-ext-inner {
+	color: initial;
+	font-weight: normal;
+	background-color: rgba(0, 0, 0, .03);
+}
+
+.wpb-arg {
+	color: #ac6600;
+	font-weight: bold;
+}
+.wpb-arg-default {
+	color: #ad9300;
+	font-weight: normal;
+}
+
+.wpb-template {
+	color: #80c;
+	font-weight: bold;
+	background-color: rgba(119, 0, 170, .03);
+}
+.wpb-magic-word {
+	color: #a11;
+	font-weight: bold;
+	background-color: rgba(170, 17, 17, .03);
+}
+.wpb-invoke-module, .wpb-invoke-function {
+	color: #bf3e13;
+	font-weight: normal;
+}
+.wpb-parameter {
+	font-weight: normal;
+}
+.wpb-template > .wpb-parameter,
+.wpb-invoke-function ~ .wpb-parameter {
+	color: #b0c;
+}
+.wpb-parameter-value {
+	color: initial;
+}
+
+.wpb-heading, .wpb-image-parameter {
+	color: #0076dd;
+}
+.wpb-heading-title {
+	color: initial;
+	font-weight: bold;
+}
+
+.wpb-table, .wpb-tr, .wpb-td {
+	color: #d08;
+	font-weight: bold;
+}
+.wpb-table-attrs {
+	font-weight: normal;
+}
+.wpb-table-attr > .wpb-attr-value {
+	color: #f500d4;
+}
+.wpb-td-inner {
+	color: initial;
+	font-weight: normal;
+}
+
+.wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd, .wpb-redirect-syntax {
+	color: #0076dd;
+	font-weight: bold;
+	background-color: #eee;
+}
+
+.wpb-link, .wpb-category, .wpb-file, .wpb-gallery-image, .wpb-imagemap-image, .wpb-redirect-target,
+.wpb-ext-link, .wpb-free-ext-link, .wpb-magic-link {
+	color: #000aaa;
+	background-color: rgba(34, 17, 153, .03);
+}
+.wpb-link-text, .wpb-image-caption, .wpb-ext-link-text {
+	color: initial;
+}
+
+.wpb-converter {
+	color: #b68;
+	font-weight: bold;
+}
+.wpb-converter-rule {
+	font-weight: normal;
+}
+.wpb-converter-rule-from, .wpb-converter-rule-to, .wpb-converter-noconvert {
+	color: initial;
+}

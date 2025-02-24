@@ -1,0 +1,501 @@
+html, body, main, article, div, select, pre, ol, li, ul, dl, dt, dd,
+p, hr, h1, h2, h3, h4, h5, h6, a, center, img {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+}
+:root {
+	font-size: 15px;
+	font-family: monospace;
+	--color-select: #f8f9fa; /* background-color of select */
+}
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: #f0f0f0;
+	line-height: 1.2;
+}
+main {
+	display: flex;
+	width: 90vw;
+	max-width: 1200px;
+	margin: 3rem 0;
+	background-color: #fff;
+	box-shadow: 0 0 .5rem rgba(0, 0, 0, .1);
+	border-radius: .5rem;
+}
+article {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 1rem 2rem;
+}
+.field {
+	position: relative;
+	box-sizing: border-box;
+	min-height: 32px;
+	background-color: var(--color-select);
+	margin-bottom: .5rem;
+}
+select {
+	position: absolute;
+	width: 100%;
+	top: 50%;
+	transform: translateY(-50%);
+	background-color: var(--color-select);
+	border: 1px solid #a2a9b1;
+	border-radius: 2px;
+	text-align: center;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	cursor: pointer;
+	padding: 5px 12px;
+}
+pre {
+	border-radius: .3em;
+}
+.frame:not(:empty) {
+	overflow-x: auto;
+	border: 1.5px solid #dedede;
+	border-radius: .3em;
+	margin-top: 1rem;
+	padding: 12px;
+}
+.frame:empty::after {
+	content: "";
+	display: inline-block;
+}
+#frame[data-source] > .frame {
+	padding: 0;
+}
+#buttons {
+	text-align: center;
+}
+#done {
+	color: #fff;
+	border: 1px solid #36c;
+	border-radius: 2px;
+	background-color: #36c;
+	padding: 5px 12px;
+	margin-top: .5rem;
+	font-weight: bold;
+	line-height: 1.4;
+	cursor: pointer;
+}
+#done:hover {
+	background-color: #447ff5;
+	border-color: #447ff5;
+}
+#done:active {
+	background-color: #2a4b8d;
+	border-color: #2a4b8d;
+}
+#done:focus {
+	box-shadow: inset 0 0 0 1px #36c, inset 0 0 0 2px #fff;
+	outline: none;
+}
+#done:disabled {
+	background-color: #c8ccd1;
+	border-color: #c8ccd1;
+	cursor: not-allowed;
+}
+
+.mw-editsection, .mw-empty-elt {
+	display: none;
+}
+.frame p {
+	margin: .5em 0;
+}
+.frame hr {
+	height: 1px;
+	background-color: #a2a9b1;
+	margin: .2em 0;
+}
+.frame h1, .frame h2 {
+	margin: 1em 0 .25em;
+	line-height: 1.38;
+	border-bottom: 1px solid #a2a9b1;
+}
+.frame h1 {
+	font-size: 1.8em;
+}
+.frame h2 {
+	font-size: 1.5em;
+}
+.frame h3, .frame h4, .frame h5, .frame h6 {
+	margin-top: .3em;
+	line-height: 1.6;
+	font-weight: bold;
+}
+.frame h3 {
+	font-size: 1.2em;
+}
+.frame h4, .frame h5, .frame h6 {
+	font-size: 100%;
+}
+.frame a {
+	word-wrap: break-word;
+	text-decoration: none;
+	color: #0645ad;
+}
+.frame a.new {
+	color: #ba0000;
+}
+.frame a.external, .frame a.extiw {
+	color: #36b;
+}
+.frame a.external {
+	background: url("/wikiparser-node/assets/external-link.svg") center right/12px no-repeat;
+	padding-right: 1em;
+}
+.frame a.external.free {
+	word-break: break-all;
+}
+.frame a.mw-selflink {
+	color: inherit;
+	font-weight: bold;
+	cursor: inherit;
+}
+.frame a:hover, .frame a:focus {
+	text-decoration: underline;
+}
+.frame a.mw-selflink:hover {
+	text-decoration: inherit;
+}
+.frame a:active {
+	color: #faa700;
+}
+.frame a.mw-selflink:active {
+	color: inherit;
+}
+.frame ul {
+	margin: .3em 0 0 1.6em;
+}
+.frame ol {
+	margin: .3em 0 0 3.2em;
+	list-style-image: none;
+}
+.frame li {
+	margin-bottom: .1em;
+}
+.frame ul > li, .frame ol > li {
+	min-height: 1em;
+}
+.frame li:empty, .frame li:-moz-only-whitespace,
+.frame p:empty, .frame p:-moz-only-whitespace {
+	display: none;
+}
+.frame .redirectText {
+	font-size: 140%;
+	list-style: none;
+	margin: 0;
+}
+.frame .redirectText > li {
+	padding-left: 47px;
+	background: url("/wikiparser-node/assets/redirect-ltr.svg") bottom left no-repeat;
+	margin: 0;
+}
+.frame dl {
+	margin: .2em 0 .5em;
+}
+.frame dt {
+	font-weight: bold;
+	margin-bottom: .1em;
+}
+.frame dd {
+	margin: 0 0 .1em 1.6em;
+}
+.frame q {
+	quotes: '"' '"' "'" "'";
+}
+.frame code {
+	border-radius: 2px;
+	padding: 1px 4px;
+}
+.frame pre {
+	padding: 1em;
+	white-space: pre-wrap;
+	overflow: hidden;
+	word-wrap: break-word;
+}
+.frame code, .frame pre {
+	background: #f8f9fa;
+	color: #000;
+	border: 1px solid #eaecf0;
+}
+.frame sub, .frame sup {
+	font-size: 80%;
+	line-height: 1;
+}
+.frame blockquote {
+	padding: 8px 32px;
+	margin: 1em 0;
+}
+.frame .error {
+	font-size: larger;
+	color: #d73333;
+}
+.frame p + ul, .frame p + ol, .frame p + table, .frame p + dl, .frame p + blockquote {
+	margin-top: -.5em;
+}
+.wikitable {
+	background-color: #f8f9fa;
+	color: #202122;
+	margin: 1em 0;
+	border: 1px solid #a2a9b1;
+	border-collapse: collapse;
+}
+.wikitable > * > tr > th {
+	background-color: #eaecf0;
+	color: #202122;
+	text-align: center;
+}
+.wikitable > * > tr > th, .wikitable > * > tr > td {
+	border: 1px solid #a2a9b1;
+	padding: .2em .4em;
+}
+.frame img {
+	vertical-align: middle;
+	max-width: 100%;
+	min-width: 50px;
+	background: url("/wikiparser-node/assets/bad-image.svg") center/contain no-repeat;
+}
+.frame .mw-image-border .mw-file-element {
+	border: 1px solid #eaecf0;
+}
+.frame .mw-valign-middle .mw-file-element {
+	vertical-align: middle;
+}
+.frame .mw-valign-baseline .mw-file-element {
+	vertical-align: baseline;
+}
+.frame .mw-valign-sub .mw-file-element {
+	vertical-align: sub;
+}
+.frame .mw-valign-super .mw-file-element {
+	vertical-align: super;
+}
+.frame .mw-valign-top .mw-file-element {
+	vertical-align: top;
+}
+.frame .mw-valign-text-top .mw-file-element {
+	vertical-align: text-top;
+}
+.frame .mw-valign-bottom .mw-file-element {
+	vertical-align: bottom;
+}
+.frame .mw-valign-text-bottom .mw-file-element {
+	vertical-align: text-bottom;
+}
+.frame figure[typeof~="mw:File/Thumb"],
+.frame figure[typeof~="mw:File/Frame"] {
+	margin: .5em 0 1.3em 1.4em;
+	clear: right;
+	float: right;
+	min-width: 100px;
+	border: 1px solid #c8ccd1;
+	border-bottom: 0;
+	background-color: #f8f9fa;
+	display: table;
+	text-align: center;
+	border-collapse: collapse;
+	line-height: 0;
+}
+.frame figure.mw-halign-left {
+	clear: left;
+	float: left;
+}
+.frame figure[typeof~="mw:File"].mw-halign-left,
+.frame figure[typeof~="mw:File/Frameless"].mw-halign-left {
+	margin: 0 .5em .5em 0;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-left,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-left {
+	margin: .5em 1.4em 1.3em 0;
+}
+.frame figure.mw-halign-right {
+	clear: right;
+	float: right;
+}
+.frame figure[typeof~="mw:File"].mw-halign-right,
+.frame figure[typeof~="mw:File/Frameless"].mw-halign-right {
+	margin: 0 0 .5em .5em;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-right,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-right {
+	margin: .5em 0 1.3em 1.4em;
+}
+.frame figure.mw-halign-center {
+	margin: 0 auto;
+	clear: none;
+	float: none;
+}
+.frame figure[typeof~="mw:File"].mw-halign-center,
+.frame figure[typeof~="mw:File/Frameless"].mw-halign-center {
+	display: table;
+	border-collapse: collapse;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-center,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-center {
+	margin-bottom: .5em;
+}
+.frame figure.mw-halign-none {
+	clear: none;
+	float: none;
+}
+.frame figure[typeof~="mw:File/Thumb"].mw-halign-none,
+.frame figure[typeof~="mw:File/Frame"].mw-halign-none {
+	margin: 0 0 .5em;
+}
+.frame figure[typeof~="mw:File/Thumb"] > .mw-file-description {
+	display: block;
+	position: relative;
+}
+.frame figure[typeof~="mw:File/Thumb"] > :not(figcaption) .mw-file-element,
+.frame figure[typeof~="mw:File/Frame"] > :not(figcaption) .mw-file-element {
+	border: 1px solid #c8ccd1;
+	background: #f8f9fa;
+	margin: 3px;
+}
+.frame figure[typeof~="mw:File"] > figcaption,
+.frame figure[typeof~="mw:File/Frameless"] > figcaption {
+	display: none;
+}
+.frame figure[typeof~="mw:File/Thumb"] > figcaption,
+.frame figure[typeof~="mw:File/Frame"] > figcaption {
+	text-align: left;
+	border: 1px solid #c8ccd1;
+	border-top: 0;
+	background-color: #f8f9fa;
+	font-size: 88.4%;
+	display: table-caption;
+	caption-side: bottom;
+	line-height: 1.4em;
+	overflow-wrap: anywhere;
+	padding: 0 6px 6px;
+}
+.frame .toc {
+	display: table;
+	padding: 7px;
+	background-color: #f8f9fa;
+	border: 1px solid #a2a9b1;
+	font-size: 95%;
+}
+.frame .toctitle {
+	text-align: center;
+}
+.frame .toc h2 {
+	display: inline;
+	border: 0;
+	font-size: 100%;
+	font-weight: bold;
+}
+.frame .toctogglespan {
+	font-size: 94%;
+}
+.frame .toctogglespan::before {
+	content: " [";
+}
+.frame .toctogglespan::after {
+	content: "]";
+}
+.frame .toctogglelabel::after {
+	content: "隐藏";
+}
+.frame .toc ul {
+	list-style: none;
+	margin: .3em 0;
+}
+.frame .tocnumber {
+	padding-right: .5em;
+	color: #202122;
+}
+.frame .tocnumber, .frame .toctext {
+	display: table-cell;
+}
+.frame ul.gallery {
+	margin: 2px;
+	padding: 2px;
+	display: block;
+}
+.frame .galleryfilename-truncate {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.frame .galleryfilename {
+	display: block;
+}
+.frame li.gallerycaption {
+	font-weight: bold;
+	text-align: center;
+	display: block;
+	word-wrap: break-word;
+}
+.frame li.gallerybox {
+	vertical-align: top;
+	display: inline-block;
+}
+.frame div.gallerytext {
+	overflow: hidden;
+	font-size: 94%;
+	padding: 9px 4px 17px;
+	word-wrap: break-word;
+}
+.frame li.gallerybox div.thumb {
+	background-color: #f8f9fa;
+	border: 1px solid #c8ccd1;
+	text-align: center;
+	margin: 2px;
+}
+.frame ul.mw-gallery-nolines li.gallerybox div.thumb {
+	background-color: transparent;
+	border: 0;
+}
+.frame .mw-gallery-traditional .gallerybox > .thumb > * {
+	vertical-align: middle;
+	display: inline-block;
+}
+.frame li.gallerybox div.thumb img {
+	display: block;
+	margin: 0 auto;
+}
+
+.frame > pre.language-html {
+	margin: 0;
+}
+.frame > pre.language-html > code {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	padding: 0;
+	border: 0;
+}
+
+@media screen and (max-width: 720px) {
+	main {
+		width: 100%;
+		margin: 0;
+		border-radius: 0;
+	}
+	article {
+		padding: 1rem;
+	}
+}
+
+@media screen and (min-width: 1200px) {
+	#frame {
+		column-count: 2;
+		padding-top: 1rem;
+	}
+	.frame:not(:empty) {
+		width: calc(100% - 27px);
+		margin-top: 0;
+	}
+	#frame[data-source] > .frame:not(:empty) {
+		width: calc(100% - 3px);
+	}
+}

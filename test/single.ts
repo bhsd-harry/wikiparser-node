@@ -1,11 +1,6 @@
 import {diff, error} from '../util/diff';
+import './wikiparse';
 import type {LintError} from '../base';
-
-/* NOT FOR BROWSER ONLY */
-
-import Parser = require('../index');
-
-/* NOT FOR BROWSER ONLY END */
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
@@ -24,31 +19,9 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
 
-	/* NOT FOR BROWSER ONLY */
-
-	console.time(`parse: ${title}`);
-	const token = Parser.parse(content, include);
-	console.timeEnd(`parse: ${title}`);
-	const parsed = token.toString();
-	if (parsed !== content) {
-		error('解析过程中不可逆地修改了原始文本！');
-		return diff(content, parsed, pageid);
-	}
-	const set = new Set<string>();
-	for (const t of token.querySelectorAll('')) {
-		if (!t.getAttribute('built')) {
-			set.add(`${t.type}#${t.name ?? ''}`);
-		}
-	}
-	if (set.size > 0) {
-		error('未构建的节点：', set);
-	}
-
-	/* NOT FOR BROWSER ONLY END */
-
 	if (!method || method === 'print') {
 		console.time(`print: ${title}`);
-		const printed = token.print();
+		const printed = (await wikiparse.print(content, include)).map(([,, s]) => s).join('');
 		console.timeEnd(`print: ${title}`);
 		const restored = printed.replace(
 			/<[^<]+?>|&([lg]t|amp);/gu,
@@ -62,7 +35,7 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 
 	if (!method || method === 'lint') {
 		console.time(`lint: ${title}`);
-		const errors = token.lint()
+		const errors = (await wikiparse.lint(content, include))
 			.filter(({rule}) => !ignored.has(rule));
 		console.timeEnd(`lint: ${title}`);
 		return errors;

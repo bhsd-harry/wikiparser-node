@@ -4,7 +4,7 @@ import type {
 import type {AstNodes} from '../lib/node';
 
 declare global {
-	type Acceptable = Record<string, number | string | Ranges | (number | string)[]>;
+	type Acceptable = unknown;
 
 	type AstConstructor = abstract new (...args: any[]) => {
 		readonly childNodes: readonly AstNodes[];

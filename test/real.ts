@@ -1,16 +1,14 @@
+import {EventEmitter} from 'events';
 import {error, info, diff} from '../util/diff';
 import single from './single';
 import lsp from './lsp';
+import {mock} from './wikiparse';
 import type {Config} from '../base';
 
-/* NOT FOR BROWSER ONLY */
-
-import Parser = require('../index');
-
-/* NOT FOR BROWSER ONLY END */
-
 const i18n: Record<string, string> = require('../../i18n/zh-hans');
-Parser.i18n = i18n;
+wikiparse.setI18N(i18n);
+
+EventEmitter.defaultMaxListeners = 15;
 
 const {argv: [,, site = '']} = process,
 	apis = ([
@@ -52,7 +50,7 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：\n`);
 		const parserConfig: Config = require(`../../config/${config}`);
-		Parser.config = parserConfig;
+		wikiparse.setConfig(parserConfig);
 		try {
 			let failed = 0;
 			for (const page of await getPages(`${url}/api.php`)) {
@@ -90,6 +88,9 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 			error(`访问${name}的API端口时出错！`, e);
 		}
 	}
+	setTimeout(() => {
+		void mock.worker.terminate();
+	}, 1000);
 	if (failures.size > 0) {
 		let total = 0;
 		for (const [name, failed] of failures) {

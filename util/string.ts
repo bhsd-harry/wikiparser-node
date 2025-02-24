@@ -49,13 +49,8 @@ const decodeHtmlBasic = factory(
  * decode HTML entities
  * @param str
  */
+// eslint-disable-next-line arrow-body-style
 export const decodeHtml = (str: string): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-	if (typeof process === 'object' && typeof process.versions?.node === 'string') {
-		const {decodeHTMLStrict}: typeof import('entities') = require('entities');
-		return decodeHTMLStrict(str).replace(/\xA0/gu, ' ');
-	}
-	/* istanbul ignore next */
 	return decodeHtmlBasic(str);
 };
 

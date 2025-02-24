@@ -1,13 +1,20 @@
 'use strict';
 
-const config = require('@bhsd/common/eslintrc.node.cjs');
+const config = require('@bhsd/common/eslintrc.node.cjs'),
+	{rules} = require('@bhsd/common/eslintrc.browser.cjs');
 const [
-	json,
-	ts,
-] = config.overrides;
+		json,
+		ts,
+	] = config.overrides,
+	// eslint-disable-next-line @stylistic/array-bracket-newline
+	esRules = Object.fromEntries(Object.entries(rules).filter(([k]) => k.startsWith('es-x/')));
 
 module.exports = {
 	...config,
+	env: {
+		...config.env,
+		browser: true,
+	},
 	ignorePatterns: [
 		...config.ignorePatterns,
 		'coverage/',
@@ -72,6 +79,7 @@ module.exports = {
 		],
 		'unicorn/no-this-assignment': 0,
 		'unicorn/empty-brace-spaces': 0,
+		'unicorn/prefer-global-this': 0,
 		'jsdoc/require-jsdoc': [
 			1,
 			{
@@ -105,18 +113,6 @@ module.exports = {
 			excludedFiles: [
 				'test/parserTests.json',
 			],
-		},
-		{
-			files: [
-				'errors/*.json',
-			],
-			rules: {
-				'@stylistic/eol-last': [
-					2,
-					'never',
-				],
-				'@stylistic/indent': 0,
-			},
 		},
 		{
 			...ts,
@@ -163,9 +159,10 @@ module.exports = {
 		{
 			files: '**/*.ts',
 			excludedFiles: [
-				'bin/*.ts',
 				'test/*.ts',
 				'lib/lsp.ts',
+				'extensions/gh-page.ts',
+				'extensions/codejar.ts',
 			],
 			plugins: [
 				'es-x',
@@ -192,6 +189,44 @@ module.exports = {
 						minItems: 1,
 					},
 				],
+			},
+		},
+		{
+			files: 'extensions/*.ts',
+			plugins: [
+				'es-x',
+			],
+			parserOptions: {
+				project: './extensions/tsconfig.json',
+			},
+			rules: {
+				...esRules,
+				'no-control-regex': 2,
+				'no-bitwise': 2,
+				'no-new': 2,
+				'no-param-reassign': 2,
+				'unicorn/empty-brace-spaces': 2,
+				'unicorn/no-this-assignment': 2,
+				'n/no-missing-import': 0,
+				'n/no-unsupported-features/node-builtins': 0,
+				'@typescript-eslint/no-unused-vars': [
+					2,
+					{
+						args: 'all',
+						caughtErrors: 'all',
+						ignoreRestSiblings: true,
+					},
+				],
+				'@typescript-eslint/no-floating-promises': 0,
+			},
+		},
+		{
+			files: [
+				'extensions/gh-page.ts',
+				'extensions/codejar.ts',
+			],
+			parserOptions: {
+				project: './extensions/tsconfig.codejar.json',
 			},
 		},
 	],

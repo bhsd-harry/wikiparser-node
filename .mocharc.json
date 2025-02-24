@@ -1,4 +1,6 @@
 {
+	"enable-source-maps": true,
+	"file": "bundle/bundle.lsp.js",
 	"diff": false,
 	"reporter": "progress"
 }

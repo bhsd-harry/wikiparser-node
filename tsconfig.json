@@ -1,6 +1,5 @@
 {
 	"include": [
-		"bin/**/*",
 		"lib/**/*",
 		"mixin/**/*",
 		"parser/**/*",
@@ -13,12 +12,13 @@
 	],
 	"compilerOptions": {
 		"lib": [
+			"dom",
+			"webWorker",
 			"es2024"
 		],
 		"target": "es2024",
 		"module": "CommonJS",
-		"allowSyntheticDefaultImports": true,
-		"declaration": true,
+		"declaration": false,
 		"outDir": "dist",
 		"alwaysStrict": true,
 		"exactOptionalPropertyTypes": true,
@@ -31,6 +31,7 @@
 		"strictFunctionTypes": true,
 		"strictNullChecks": true,
 		"useUnknownInCatchVariables": true,
+		"removeComments": true,
 		"skipLibCheck": true
 	}
 }

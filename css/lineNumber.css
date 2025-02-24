@@ -1,0 +1,27 @@
+.wikiparser-line-numbers {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: inline-block;
+	background-color: #f5f5f5;
+	color: #6c6c6c;
+	border-right: 1px solid #ddd;
+	padding: 4px 0;
+}
+.wikiparser-line-numbers > span {
+	display: inline-block;
+	width: calc(100% - .5ch);
+	text-align: right;
+}
+.wikiparser-sizer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	visibility: hidden;
+	z-index: -1;
+	padding: 0 6px;
+}
+.wpb-root[contenteditable] > .wikiparser-sizer {
+	overflow-y: scroll;
+}

@@ -1,0 +1,300 @@
+html, body, main, article, div, button, a, h2, h3, span, input, label, textarea, dl, dt, dd, code, pre {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font: inherit;
+	vertical-align: baseline;
+}
+:root {
+	font-size: 14px;
+	font-family: sans-serif;
+	--font-size-h2: 1.3rem; /* font-size of h2 and button */
+	--font-size-h3: 1.1rem; /* font-size of h3 */
+	--font-size-tablet: 16px; /* font-size of textarea on tablet */
+	--height-editor: 500px; /* height of textarea and editor */
+	--max-height-editor: 95vh; /* max-height of textarea and editor */
+	--color-input: #72777d; /* border-color of input */
+	--color-checked: #36c; /* color of checked checkbox */
+	--color-hover: #447ff5; /* color of hovered checkbox */
+	--color-active: #2a4b8d; /* color of active checkbox */
+	--color-background: #fff; /* background-color of main */
+	--color-button: #ccc; /* border-color of button */
+	--color-disabled: #c8ccd1; /* background-color of disabled button */
+	--border: 1px solid #a2a9b1; /* border of button */
+}
+body {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color: #f0f0f0;
+	line-height: 1.6;
+}
+main {
+	display: flex;
+	width: 90vw;
+	max-width: 1200px;
+	margin: 3rem 0;
+	background-color: var(--color-background);
+	box-shadow: 0 0 .5rem rgba(0, 0, 0, .1);
+	border-radius: .5rem;
+}
+article {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 1rem 2rem 2rem;
+}
+h2 {
+	font-size: var(--font-size-h2);
+	margin: .5rem 0;
+	font-weight: bold;
+}
+.fieldLayout {
+	display: table;
+	padding: .5em 0;
+}
+.field, .header {
+	display: table-cell;
+	vertical-align: middle;
+}
+.field, .header, input, input + span, label {
+	cursor: pointer;
+}
+.field {
+	position: relative;
+}
+.field > input[type="checkbox"] {
+	position: relative;
+	z-index: 1;
+	opacity: 0;
+}
+/*
+.ui-button {
+	line-height: 1.4;
+	background-color: #f8f9fa;
+	color: #202122;
+	border: var(--border);
+	border-radius: 2px;
+	padding: 5px 12px;
+	font-weight: bold;
+	vertical-align: top;
+	text-align: center;
+	cursor: pointer;
+}
+input[type="text"] {
+	box-shadow: inset 0 0 0 1px transparent;
+	background-color: var(--color-background);
+	margin: 0;
+	border: var(--border);
+	border-radius: 2px;
+	padding: 1px 2px;
+	font: inherit;
+	width: 30ch;
+}
+*/
+input + span {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	background-color: var(--color-background);
+	border: 1px solid var(--color-input);
+	border-radius: 2px;
+}
+/*
+input[type="text"]:focus,
+.ui-button:focus,
+*/
+input:focus + span {
+	border-color: var(--color-checked);
+	box-shadow: inset 0 0 0 1px var(--color-checked);
+	outline: none;
+}
+input:checked + span {
+	background-color: var(--color-checked);
+	border-color: var(--color-checked);
+	background-size: 1em 1em;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22%3E%3Cg fill=%22%23fff%22%3E%3Ctitle xmlns:default=%22http://www.w3.org/2000/svg%22%3Echeck%3C/title%3E%3Cpath xmlns:default=%22http://www.w3.org/2000/svg%22 d=%22M7 14.17L2.83 10l-1.41 1.41L7 17 19 5l-1.41-1.42L7 14.17z%22/%3E%3C/g%3E%3C/svg%3E");
+}
+/*
+input[type="text"]:hover {
+	border-color: var(--color-input);
+}
+input[type="text"].invalid {
+	border-color: #d33;
+}
+input[type="text"].invalid:focus {
+	box-shadow: inset 0 0 0 1px #d33;
+}
+.ui-button:hover {
+	background-color: var(--color-background);
+	color: #404244;
+}
+*/
+input:hover + span {
+	border-color: var(--color-hover);
+}
+input:active + span {
+	background-color: var(--color-active);
+	border-color: var(--color-active);
+}
+/*
+.ui-button:active {
+	background-color: #eaecf0;
+	color: #000;
+	border-color: var(--color-input);
+	box-shadow: none;
+}
+.ui-button[disabled] {
+	background-color: var(--color-disabled);
+	color: var(--color-background);
+	border-color: var(--color-disabled);
+}
+*/
+.header > label {
+	padding-left: .7em;
+}
+textarea {
+	width: 100%;
+	height: var(--height-editor);
+	max-height: var(--max-height-editor);
+}
+#editor > .wikiparser, .cm-editor, #wpTextbox2, pre {
+	border-radius: .3em;
+}
+.cm-editor, #wpTextbox2 {
+	border: 1.5px solid #dedede;
+}
+
+.tab {
+	overflow: hidden;
+	margin: 1rem 0;
+}
+
+.tab > button {
+	float: left;
+	font-size: var(--font-size-h2);
+	font-weight: bold;
+	background-color: #f1f1f1;
+	border: 1px solid var(--color-button);
+	outline: none;
+	cursor: pointer;
+	padding: .7rem 1rem;
+	transition: .3s;
+}
+.tab > button:hover {
+	background-color: #ddd;
+}
+.tab > button.active {
+	background-color: var(--color-button);
+}
+
+.tabcontent {
+	display: none;
+}
+#linter {
+	display: block;
+}
+
+#ast {
+	height: var(--height-editor);
+	max-height: var(--max-height-editor);
+	overflow: auto;
+	padding: 0 .5rem;
+}
+dt {
+	color: #2b91af;
+	cursor: pointer;
+	white-space: nowrap;
+}
+dt:hover {
+	color: #1b43d4;
+	text-decoration: underline;
+}
+dt::before {
+	content: "-";
+	font-family: monospace;
+	display: inline-block;
+	width: 1em;
+}
+dt.inactive::before {
+	content: "+";
+}
+dd {
+	margin-left: 1em;
+	color: #d00;
+	white-space: nowrap;
+}
+dt.inactive ~ *,
+dt:not(.inactive) > :nth-child(n+2) {
+	display: none;
+}
+dl > span, dt > span { /* stylelint-disable-line no-descending-specificity */
+	color: initial;
+}
+dt > :nth-child(2) {
+	color: #080;
+}
+.string {
+	color: #a31515;
+	display: inline-flex;
+	white-space: pre-wrap;
+}
+.number {
+	color: #098658;
+}
+.boolean {
+	color: #00f;
+}
+span.hover {
+	background-color: rgba(108, 108, 108, .2);
+}
+dl.hover {
+	background-color: rgba(108, 108, 108, .1);
+}
+
+#monaco-container {
+	height: 450px;
+	margin-top: 1rem;
+}
+
+h3 {
+	margin: .5rem 0;
+	font-size: var(--font-size-h3);
+	font-weight: bold;
+}
+
+@media screen and (min-width: 1200px) {
+	#editor > .wikiparse-container {
+		width: 70%;
+		float: left;
+		margin-right: .5rem;
+	}
+	#ast {
+		padding-right: 0;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	#editor > .wikiparse-container {
+		max-height: 60vh;
+		margin-bottom: .5rem;
+	}
+}
+
+@media screen and (max-width: 720px) {
+	main {
+		width: 100%;
+		margin: 0;
+		border-radius: 0;
+	}
+	article {
+		padding: 1rem;
+	}
+	#editor > .wikiparse-container, .cm-content {
+		font-size: var(--font-size-tablet);
+	}
+}

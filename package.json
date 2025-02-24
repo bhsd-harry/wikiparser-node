@@ -13,16 +13,8 @@
 	},
 	"license": "GPL-3.0",
 	"author": "Bhsd",
-	"files": [
-		"/errors/README",
-		"/config/",
-		"/data/",
-		"/i18n/",
-		"/coverage/badge.svg",
-		"/dist/",
-		"!/dist/[bt]*/"
-	],
-	"main": "./dist/index.js",
+	"files": [],
+	"main": "./bundle/bundle.lsp.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,
 	"repository": {
@@ -30,34 +22,30 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print|text)\\b/\\1/' dist/lib/node.d.ts; node dist/bin/declaration.js",
-		"prepublishOnly": "npm run build:core",
-		"build:core": "bash build.sh",
-		"build": "npm run build:core && node dist/bin/parserTests.js",
+		"build:css": "esbuild css/index.css --bundle --minify --outfile=extensions/ui.css",
+		"build:core": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2018 --sourcemap --outfile=bundle/bundle.min.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.min.js",
+		"build:lsp": "esbuild index.ts --bundle --minify --target=es2018 --sourcemap --outfile=bundle/bundle.lsp.js && eslint --no-eslintrc -c .eslintrc.browser.cjs bundle/bundle.lsp.js",
+		"build:es7": "esbuild index.ts --bundle --minify --drop-labels=LSP --target=es2016 --outfile=bundle/bundle.es7.js && eslint --no-eslintrc -c .eslintrc.es7.cjs bundle/bundle.es7.js",
+		"build:ext": "bash build-ext.sh",
+		"build:test": "tsc --project tsconfig.dist.json",
+		"build": "npm run build:core && npm run build:es7 && npm run build:lsp && npm run build:test && npm run build:css",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
-		"lint:ts": "tsc --noEmit && eslint --cache .",
+		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && node dist/test/json.js",
-		"lint": "npm run lint:ts && npm run lint:json",
+		"lint:css": "stylelint extensions/*.css",
+		"lint": "npm run lint:ts && npm run lint:json && npm run lint:css",
 		"prof": "node dist/test/prof.js",
-		"coverage": "nyc --cache-dir=./.cache/nyc npm test && node dist/bin/coverage.js && open coverage/index.html",
+		"server": "npm run test:end; http-server .. -c-1 --cors -s &",
 		"test:unit": "mocha dist/test/test.js",
 		"test:parser": "mocha dist/test/parserTests.js",
 		"test": "npm run test:unit && npm run test:parser",
+		"test:server": "npm run build:core && npm run build:ext && bash sed.sh -i 's|importScripts.*|importScripts(\"http://127.0.0.1:8080/wikiparser-node/bundle/bundle.min.js\");|' extensions/dist/base.js; npm run server",
 		"test:end": "pkill -x http-server",
-		"test:real": "node dist/test/real.js"
-	},
-	"nyc": {
-		"exclude": [
-			"dist/test/*.js"
-		],
-		"reporter": [
-			"html",
-			"text-summary",
-			"json-summary"
-		]
+		"test:real": "node --enable-source-maps dist/test/real.js"
 	},
 	"dependencies": {
+		"@bhsd/codemirror-mediawiki": "^2.21.0",
 		"@bhsd/common": "^0.6.5",
 		"@codemirror/lint": "^6.8.4",
 		"chalk": "^4.1.2",
@@ -72,6 +60,7 @@
 		"@types/color-rgba": "^2.1.3",
 		"@types/mocha": "^10.0.10",
 		"@types/node": "^22.13.1",
+		"@types/prismjs": "^1.26.5",
 		"@typescript-eslint/eslint-plugin": "^8.23.0",
 		"@typescript-eslint/parser": "^8.23.0",
 		"color-rgba": "^3.0.0",

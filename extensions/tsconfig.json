@@ -1,0 +1,15 @@
+{
+	"extends": "../tsconfig",
+	"include": [
+		"*.ts"
+	],
+	"exclude": [
+		"gh-page.ts",
+		"codejar.ts"
+	],
+	"compilerOptions": {
+		"target": "es2019",
+		"outDir": "dist",
+		"skipLibCheck": true
+	}
+}

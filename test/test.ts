@@ -1,7 +1,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import Parser = require('../index');
+import {mock} from './wikiparse';
+import type {Parser as ParserBase} from '../base';
+
+declare const Parser: ParserBase;
+Parser.config = require('../../config/default');
+wikiparse.setConfig(Parser.config);
 
 /**
  * Mock CRLF
@@ -29,16 +34,17 @@ describe('API tests', () => {
 						// @ts-expect-error delete readonly property
 						delete Parser.config.articlePath;
 					}
+					wikiparse.setI18N();
 				});
 				for (const code of testCodes) {
 					const lines = code.split('\n') as [string, ...string[]],
 						[first] = lines;
-					if (!/ \(browser\)/u.test(first)) {
+					if (!/^\/\/ (?:config|i18n)(?!\S)| \(main\)| \(Node\.js\)/u.test(first)) {
 						it(first.slice(3), async () => {
 							try {
 								await eval(code); // eslint-disable-line no-eval
 								if (code.includes('Parser.config = ')) {
-									Parser.config = 'default';
+									Parser.config = require('../../config/default');
 								}
 							} catch (e) /* istanbul ignore next */ {
 								if (e instanceof assert.AssertionError) {
@@ -58,3 +64,7 @@ describe('API tests', () => {
 		}
 	}
 });
+
+setTimeout(() => {
+	void mock.worker.terminate();
+}, 1000);

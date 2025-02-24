@@ -1,0 +1,59 @@
+.wikiparsed {
+	position: relative;
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	resize: vertical;
+	font-family: monospace;
+	background: none !important;
+	caret-color: #000;
+}
+#wikiPretty {
+	position: absolute;
+	inset: 0;
+	-webkit-user-select: none;
+	user-select: none;
+}
+#wikiPretty + .wikiparsed, #wikiPretty {
+	outline: none;
+	border: 1.5px solid #dedede !important;
+	border-radius: 0;
+	padding: .4em;
+	line-height: 1.4 !important;
+	font-size: inherit;
+	tab-size: 4;
+	overflow-y: auto;
+	word-break: normal;
+}
+
+/* compromise for font-weight: bold */
+.wpb-ext, .wpb-html,
+.wpb-arg,
+.wpb-template,
+.wpb-magic-word,
+.wpb-heading-title,
+.wpb-table, .wpb-tr, .wpb-td,
+.wpb-double-underscore, .wpb-hr, .wpb-quote, .wpb-list, .wpb-dd, .wpb-redirect-syntax,
+.wpb-converter {
+	-webkit-text-stroke-width: .1ex;
+}
+.wpb-table-inter,
+.wpb-hidden, .wpb-noinclude, .wpb-include, .wpb-comment, .wpb-attr-dirty,
+.wpb-ext-attrs, .wpb-html-attrs,
+.wpb-ext-inner,
+.wpb-arg-default,
+.wpb-invoke-module, .wpb-invoke-function,
+.wpb-parameter,
+.wpb-table-attrs,
+.wpb-td-inner,
+.wpb-converter-rule {
+	-webkit-text-stroke-width: 0;
+}
+#wikiPretty span {
+	font-weight: normal;
+}
+
+#wikiPretty.active span {
+	color: transparent;
+	background: none;
+}

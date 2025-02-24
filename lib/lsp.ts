@@ -1,4 +1,3 @@
-import * as path from 'path';
 import {splitColors, numToHex} from '@bhsd/common';
 import {htmlAttrs, extAttrs, commonHtmlAttrs} from '../util/sharable';
 import {getEndPos} from '../util/lint';
@@ -21,11 +20,6 @@ import type {
 	SignatureInformation,
 	ParameterInformation,
 	InlayHint,
-
-	/* NOT FOR BROWSER ONLY */
-
-	CodeAction,
-	DocumentSymbol,
 } from 'vscode-languageserver-types';
 import type {
 	Config,
@@ -34,10 +28,6 @@ import type {
 	CompletionItem,
 	SignatureData,
 	SignatureInfo,
-
-	/* NOT FOR BROWSER ONLY */
-
-	LintError,
 } from '../base';
 import type {CaretPosition} from '../lib/element';
 import type {
@@ -71,20 +61,7 @@ declare interface CompletionConfig {
 	params: string[];
 }
 declare interface Diagnostic extends DiagnosticBase {
-
-	/* NOT FOR BROWSER ONLY */
-
-	data: QuickFixData[];
 }
-
-/* NOT FOR BROWSER ONLY */
-
-declare interface QuickFixData extends TextEdit {
-	title: string;
-	fix: boolean;
-}
-
-/* NOT FOR BROWSER ONLY END */
 
 export const tasks = new WeakMap<object, LanguageService>();
 
@@ -245,36 +222,6 @@ const getName = (token: Token): string | number | undefined => {
 	}
 };
 
-/* NOT FOR BROWSER ONLY */
-
-/**
- * Get the quick fix data.
- * @param root root token
- * @param fix lint error fix
- * @param preferred whether it is a preferred fix
- */
-const getQuickFix = (root: Token, fix: LintError.Fix, preferred = false): QuickFixData => ({
-	range: createRange(root, ...fix.range),
-	newText: fix.text,
-	title: `${preferred ? 'Fix' : 'Suggestion'}: ${fix.desc}`,
-	fix: preferred,
-});
-
-/**
- * Get the end position of a section.
- * @param section section
- * @param lines lines
- * @param line line number
- */
-const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, number, number][], line: number): void => {
-	if (section) {
-		const [, start, end] = lines[line]!;
-		section.range.end = {line, character: end - start};
-	}
-};
-
-/* NOT FOR BROWSER ONLY END */
-
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
 	#text: string;
@@ -289,10 +236,6 @@ export class LanguageService implements LanguageServiceBase {
 	/** @param uri 任务标识 */
 	constructor(uri: object) {
 		tasks.set(uri, this);
-
-		/* NOT FOR BROWSER ONLY */
-
-		this.data = require(path.join('..', '..', 'data', 'signatures')) as SignatureData;
 	}
 
 	/** @implements */
@@ -638,13 +581,6 @@ export class LanguageService implements LanguageServiceBase {
 				source: 'WikiLint',
 				code: rule,
 				message,
-
-				/* NOT FOR BROWSER ONLY */
-
-				data: [
-					...fix ? [getQuickFix(root, fix, true)] : [],
-					...suggestions ? suggestions.map(suggestion => getQuickFix(root, suggestion)) : [],
-				],
 			}));
 	}
 
@@ -1080,86 +1016,5 @@ export class LanguageService implements LanguageServiceBase {
 			);
 		}
 		return hints;
-	}
-
-	/* NOT FOR BROWSER ONLY */
-
-	/**
-	 * Provide quick fixes
-	 *
-	 * 提供快速修复建议
-	 * @param diagnostics grammar diagnostics / 语法诊断信息
-	 */
-	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
-	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
-		return diagnostics.flatMap(
-			diagnostic => diagnostic.data.map((data): CodeAction => ({
-				title: data.title,
-				kind: 'quickfix',
-				diagnostics: [diagnostic],
-				isPreferred: data.fix,
-				edit: {
-					changes: {'': [data]},
-				},
-			})),
-		);
-	}
-
-	/**
-	 * Provide document sections
-	 *
-	 * 提供章节
-	 * @param text source Wikitext / 源代码
-	 */
-	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		this.#checkSignature();
-		const root = await this.#queue(text),
-			lines = root.getLines(),
-			{length} = lines,
-			symbols: DocumentSymbol[] = [],
-			names = new Set<string>(),
-			sections = new Array<DocumentSymbol | undefined>(6),
-			tokens = root.querySelectorAll<Token>('heading-title');
-		for (const token of [...tokens].reverse()) { // 提高 getBoundingClientRect 的性能
-			token.getRelativeIndex();
-		}
-		for (const token of tokens) {
-			const {top, height, left, width} = token.getBoundingClientRect();
-			if (token.type === 'heading-title') {
-				const {level} = token.parentNode as HeadingToken;
-				for (let i = level - 1; i < 6; i++) {
-					getSectionEnd(sections[i], lines, top - 1);
-					sections[i] = undefined;
-				}
-				const section = token.text().trim() || ' ',
-					name = names.has(section)
-						? new Array(names.size).fill('').map((_, i) => `${section.trim()}_${i + 2}`)
-							.find(s => !names.has(s))!
-						: section,
-					container = sections.slice(0, level - 1).reverse().find(Boolean),
-					selectionRange = {
-						start: {line: top, character: left - level},
-						end: getEndPos(top, left, height, width + level),
-					},
-					info = {
-						name,
-						kind: 15,
-						range: {start: selectionRange.start},
-						selectionRange,
-					} as DocumentSymbol;
-				names.add(name);
-				sections[level - 1] = info;
-				if (container) {
-					container.children ??= [];
-					container.children.push(info);
-				} else {
-					symbols.push(info);
-				}
-			}
-		}
-		for (const section of sections) {
-			getSectionEnd(section, lines, length - 1);
-		}
-		return symbols;
 	}
 }
