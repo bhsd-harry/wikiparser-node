@@ -24,6 +24,8 @@ export interface ExtLinkToken extends MagicLinkParentBase {}
 /* NOT FOR BROWSER END */
 
 /**
+ * external link
+ *
  * 外链
  * @classdesc `{childNodes: [MagicLinkToken, ?Token]}`
  */
@@ -49,11 +51,13 @@ export abstract class ExtLinkToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 链接显示文字 */
+	/** text of the link / 链接显示文字 */
 	get innerText(): string {
 		return this.length > 1
 			? this.lastChild.text()
-			: `[${this.getRootNode().querySelectorAll<this>('ext-link[childElementCount=1]').indexOf(this) + 1}]`;
+			: `[${
+				this.getRootNode().querySelectorAll<this>('ext-link[childElementCount=1]').indexOf(this) + 1
+			}]`;
 	}
 
 	set innerText(text) {
@@ -175,18 +179,22 @@ export abstract class ExtLinkToken extends Token {
 			&& (firstChild?.type === 'text' || firstChild?.type === 'converter')
 			// 都替换成`<`肯定不对，但无妨
 			// eslint-disable-next-line es-x/no-regexp-unicode-property-escapes
-			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u.test(lastChild.text().replace(/&[lg]t;/u, '<'))
+			&& /^[^[\]<>"\0-\x1F\x7F\p{Zs}\uFFFD]/u
+				.test(lastChild.text().replace(/&[lg]t;/u, '<'))
 		) {
 			this.#space = ' ';
 		}
 	}
 
 	/**
+	 * Set the text of the link
+	 *
 	 * 设置链接显示文字
-	 * @param str 链接显示文字
+	 * @param str text of the link / 链接显示文字
 	 */
 	setLinkText(str: string): void {
-		const root = Parser.parse(str, this.getAttribute('include'), 7, this.getAttribute('config'));
+		const root = Parser
+			.parse(str, this.getAttribute('include'), 7, this.getAttribute('config'));
 		if (this.length === 1) {
 			root.type = 'ext-link-text';
 			root.setAttribute('acceptable', {
@@ -209,7 +217,8 @@ export abstract class ExtLinkToken extends Token {
 			const {childNodes} = lastChild,
 				i = childNodes.findIndex(
 					child => child.type === 'link'
-						|| child.is<FileToken>('file') && (child.getValue('link') as string | undefined)?.trim() !== '',
+						|| child.is<FileToken>('file')
+						&& (child.getValue('link') as string | undefined)?.trim() !== '',
 				);
 			if (i !== -1) {
 				const after = childNodes.slice(i);

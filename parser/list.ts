@@ -39,7 +39,9 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 		}
 	}
 	state.lastPrefix = prefix2;
-	let text = comment + parts.map((_, i) => `\0${accum.length + i}d\x7F`).join('') + wikitext.slice(total.length);
+	let text = comment
+		+ parts.map((_, i) => `\0${accum.length + i}d\x7F`).join('')
+		+ wikitext.slice(total.length);
 	for (const part of parts) {
 		// @ts-expect-error abstract class
 		new ListToken(part, config, accum);

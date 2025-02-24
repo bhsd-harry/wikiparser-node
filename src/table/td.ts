@@ -48,7 +48,9 @@ export type TdAttrs = Record<string, string | true> & TdSpanAttrs;
 /* NOT FOR BROWSER END */
 
 /**
- * `<td>`、`<th>`和`<caption>`
+ * `<td>`, `<th>` or `<caption>`
+ *
+ * `<td>`、`<th>`或`<caption>`
  * @classdesc `{childNodes: [SyntaxToken, AttributesToken, Token]}`
  */
 @fixedToken
@@ -83,7 +85,7 @@ export abstract class TdToken extends TableBaseToken {
 		return this.getAttr('colspan');
 	}
 
-	/** 单元格类型 */
+	/** cell type / 单元格类型 */
 	get subtype(): TdSubtypes {
 		return this.#getSyntax().subtype;
 	}
@@ -102,13 +104,15 @@ export abstract class TdToken extends TableBaseToken {
 		this.setAttr('colspan', colspan);
 	}
 
-	/** 内部wikitext */
+	/** inner wikitext / 内部wikitext */
 	get innerText(): string {
 		return this.lastChild.text().trim();
 	}
 
 	set innerText(text) {
-		this.lastChild.replaceChildren(...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes);
+		this.lastChild.replaceChildren(
+			...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes,
+		);
 	}
 
 	/* NOT FOR BROWSER END */
@@ -299,7 +303,11 @@ export abstract class TdToken extends TableBaseToken {
 		return errors;
 	}
 
-	/** 是否位于行首 */
+	/**
+	 * Check if the cell is at the beginning of a line
+	 *
+	 * 是否位于行首
+	 */
 	isIndependent(): boolean {
 		return this.firstChild.text().startsWith('\n');
 	}
@@ -356,7 +364,11 @@ export abstract class TdToken extends TableBaseToken {
 		}
 	}
 
-	/** 改为独占一行 */
+	/**
+	 * Move to a new line
+	 *
+	 * 改为独占一行
+	 */
 	independence(): void {
 		if (!this.isIndependent()) {
 			const {subtype, escape} = this.#getSyntax();
@@ -377,9 +389,9 @@ export abstract class TdToken extends TableBaseToken {
 
 	/**
 	 * @override
-	 * @param key 属性键
-	 * @param value 属性值
-	 * @param prop 属性对象
+	 * @param key attribute name / 属性键
+	 * @param value attribute value / 属性值
+	 * @param prop attribute object / 属性对象
 	 */
 	override setAttr<T extends string>(key: T, value: TdAttrSetter<T>): void;
 	override setAttr(prop: Record<string, string | number | boolean>): void;

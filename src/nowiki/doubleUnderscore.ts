@@ -11,7 +11,11 @@ import {syntax} from '../../mixin/syntax';
 
 /* NOT FOR BROWSER END */
 
-/** 状态开关 */
+/**
+ * behavior switch
+ *
+ * 状态开关
+ */
 @syntax()
 @hiddenToken()
 export abstract class DoubleUnderscoreToken extends NowikiBaseToken {

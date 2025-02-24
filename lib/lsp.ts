@@ -358,10 +358,12 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide color decorators
+	 *
 	 * 提供颜色指示
-	 * @param rgba 颜色解析函数
-	 * @param text 源代码
-	 * @param hsl 是否允许HSL颜色
+	 * @param rgba color parser / 颜色解析函数
+	 * @param text source Wikitext / 源代码
+	 * @param hsl whether HSL colors are treated / 是否允许HSL颜色
 	 */
 	async provideDocumentColors(
 		rgba: (s: string) => [number, number, number, number] | [],
@@ -398,11 +400,16 @@ export class LanguageService implements LanguageServiceBase {
 			});
 	}
 
-	/** @implements */
-	provideColorPresentations( // eslint-disable-line @typescript-eslint/class-methods-use-this
-		{color: {red, green, blue, alpha}, range}: ColorInformation,
-	): ColorPresentation[] {
-		const newText = `#${numToHex(red)}${numToHex(green)}${numToHex(blue)}${alpha < 1 ? numToHex(alpha) : ''}`;
+	/**
+	 * Provide color pickers
+	 *
+	 * 颜色选择器
+	 * @param color color information / 颜色信息
+	 */
+	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
+	provideColorPresentations(color: ColorInformation): ColorPresentation[] {
+		const {color: {red, green, blue, alpha}, range} = color,
+			newText = `#${numToHex(red)}${numToHex(green)}${numToHex(blue)}${alpha < 1 ? numToHex(alpha) : ''}`;
 		return [
 			{
 				label: newText,
@@ -465,8 +472,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide auto-completion
+	 *
 	 * 提供自动补全
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
@@ -552,7 +561,8 @@ export class LanguageService implements LanguageServiceBase {
 				...getCompletion(params, 'Property', match, position)
 					.filter(({label}) => !equal || !/[= ]$/u.test(label)),
 				...getCompletion(
-					root.querySelectorAll<ImageParameterToken>('image-parameter#width').filter(token => token !== cur)
+					root.querySelectorAll<ImageParameterToken>('image-parameter#width')
+						.filter(token => token !== cur)
 						.map(width => width.text()),
 					'Unit',
 					match,
@@ -616,13 +626,15 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
-	 * 提供语法诊断
-	 * @param wikitext 源代码
-	 * @param warning 是否提供警告
+	 * Provide grammar check
+	 *
+	 * 提供语法检查
+	 * @param text source Wikitext / 源代码
+	 * @param warning whether to include warnings / 是否包含警告
 	 */
-	async provideDiagnostics(wikitext: string, warning = true): Promise<Diagnostic[]> {
+	async provideDiagnostics(text: string, warning = true): Promise<Diagnostic[]> {
 		this.#checkSignature();
-		const root = await this.#queue(wikitext),
+		const root = await this.#queue(text),
 			errors = root.lint();
 		return (warning ? errors : errors.filter(({severity}) => severity === 'error'))
 			.map(({startLine, startCol, endLine, endCol, severity, rule, message, fix, suggestions}): Diagnostic => ({
@@ -645,8 +657,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide folding ranges
+	 *
 	 * 提供折叠范围
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
 		this.#checkSignature();
@@ -695,8 +709,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide links
+	 *
 	 * 提供链接
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		this.#checkSignature();
@@ -760,7 +776,8 @@ export class LanguageService implements LanguageServiceBase {
 						} else if (type === 'invoke-module') {
 							ns = 828;
 						}
-						const title = Parser.normalizeTitle(target, ns, false, undefined, true);
+						const title = Parser
+							.normalizeTitle(target, ns, false, undefined, true);
 						/* istanbul ignore if */
 						if (!title.valid) {
 							return false;
@@ -790,8 +807,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide references
+	 *
 	 * 提供引用
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
@@ -820,17 +839,19 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide definitions
+	 *
 	 * 提供定义
-	 * @param text 源代码
-	 * @param pos 位置
-	 * @param pos.line 行号
-	 * @param pos.character 列号
+	 * @param text source Wikitext / 源代码
+	 * @param position 位置
 	 */
-	async provideDefinition(text: string, {line, character}: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
+	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = root.elementFromPoint(character, line)!,
-			ext = node.is<ExtToken>('ext') && node.name === 'ref' ? node : node.closest<ExtToken>('ext#ref'),
+			node = root.elementFromPoint(position.character, position.line)!,
+			ext = node.is<ExtToken>('ext') && node.name === 'ref'
+				? node
+				: node.closest<ExtToken>('ext#ref'),
 			refName = getRefTagAttr(ext, 'name');
 		if (!refName) {
 			return undefined;
@@ -847,16 +868,16 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide locations for renaming
+	 *
 	 * 提供变量更名准备
-	 * @param text 源代码
-	 * @param pos 位置
-	 * @param pos.line 行号
-	 * @param pos.character 列号
+	 * @param text source Wikitext / 源代码
+	 * @param position 位置
 	 */
-	async resolveRenameLocation(text: string, {line, character}: Position): Promise<Range | undefined> {
+	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = root.elementFromPoint(character, line)!,
+			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
 			refName = getRefName(node),
 			refGroup = getRefGroup(node);
@@ -870,21 +891,17 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide rename edits
+	 *
 	 * 变量更名
-	 * @param text 源代码
-	 * @param pos 位置
-	 * @param pos.line 行号
-	 * @param pos.character 列号
-	 * @param newName 新名称
+	 * @param text source Wikitext / 源代码
+	 * @param position 位置
+	 * @param newName new name / 新名称
 	 */
-	async provideRenameEdits(
-		text: string,
-		{line, character}: Position,
-		newName: string,
-	): Promise<WorkspaceEdit | undefined> {
+	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
 		this.#checkSignature();
 		const root = await this.#queue(text),
-			node = root.elementFromPoint(character, line)!,
+			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
 			refName = getRefName(node),
 			refNameGroup = refName && getRefTagAttr(node.parentNode!.parentNode as AttributesToken, 'group'),
@@ -918,12 +935,15 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param name 函数名
 	 */
 	#getParserFunction(name: string): SignatureInfo | undefined {
-		return this.data!.parserFunctions.find(({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === name));
+		return this.data!.parserFunctions
+			.find(({aliases}) => aliases.some(alias => alias.replace(/^#/u, '') === name));
 	}
 
 	/**
+	 * Provide hover information
+	 *
 	 * 提供悬停信息
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	async provideHover(text: string, position: Position): Promise<Hover | undefined> {
@@ -985,8 +1005,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide signature help for magic words
+	 *
 	 * 提供魔术字帮助
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	async provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined> {
@@ -1032,7 +1054,9 @@ export class LanguageService implements LanguageServiceBase {
 		const f = firstChild.toString(true).trim();
 		return {
 			signatures: candidates.map((params): SignatureInformation => ({
-				label: `{{${f}${params.length === 0 ? '' : ':'}${params.map(({label}) => label).join('|')}}}`,
+				label: `{{${f}${params.length === 0 ? '' : ':'}${
+					params.map(({label}) => label).join('|')
+				}}}`,
 				parameters: params.map(({label, const: c}): ParameterInformation => ({
 					label,
 					...c ? {documentation: 'Predefined parameter'} : undefined,
@@ -1044,8 +1068,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide CodeLens
+	 *
 	 * 提供 CodeLens
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
 		this.#checkSignature();
@@ -1067,7 +1093,12 @@ export class LanguageService implements LanguageServiceBase {
 
 	/* NOT FOR BROWSER ONLY */
 
-	/** @implements */
+	/**
+	 * Provide quick fixes
+	 *
+	 * 提供快速修复建议
+	 * @param diagnostics grammar diagnostics / 语法诊断信息
+	 */
 	// eslint-disable-next-line @typescript-eslint/class-methods-use-this
 	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[] {
 		return diagnostics.flatMap(
@@ -1084,8 +1115,10 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
+	 * Provide document sections
+	 *
 	 * 提供章节
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
 		this.#checkSignature();

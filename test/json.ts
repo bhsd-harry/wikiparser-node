@@ -125,11 +125,14 @@ for (const [file, config] of Object.entries(configs)) {
 }
 
 console.log();
-const {behaviorSwitches, parserFunctions} = require(path.join('..', '..', 'data', 'signatures.json')) as SignatureData;
+const {
+	behaviorSwitches,
+	parserFunctions,
+} = require(path.join('..', '..', 'data', 'signatures.json')) as SignatureData;
 const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
 		.map(s => s.toLowerCase()),
-	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]].flat(2)
-		.map(s => s.toLowerCase()),
+	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]]
+		.flat(2).map(s => s.toLowerCase()),
 	behaviorSwitchNames = behaviorSwitches.flatMap(({aliases}) => aliases),
 	parserFunctionNames = parserFunctions.flatMap(({aliases}) => aliases);
 info('signatures.json');

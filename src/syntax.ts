@@ -14,7 +14,11 @@ export interface SyntaxToken extends SyntaxBase {}
 
 declare type SyntaxTypes = 'heading-trail' | 'magic-word-name' | 'table-syntax' | 'redirect-syntax';
 
-/** 满足特定语法格式的plain Token */
+/**
+ * plain token that satisfies specific grammar syntax
+ *
+ * 满足特定语法格式的plain Token
+ */
 @syntax()
 export class SyntaxToken extends Token {
 	readonly #type;

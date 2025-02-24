@@ -7,7 +7,11 @@ import {classes} from '../../util/constants';
 
 /* NOT FOR BROWSER END */
 
-/** `<noinclude>`和`</noinclude>`，不可进行任何更改 */
+/**
+ * `<noinclude>` or `</noinclude>` that allows no modification
+ *
+ * `<noinclude>`或`</noinclude>`，不可进行任何更改
+ */
 @hiddenToken()
 export abstract class NoincludeToken extends NowikiBaseToken {
 	override get type(): 'noinclude' {

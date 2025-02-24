@@ -100,7 +100,14 @@ const expand = (
 					return m;
 				}
 				const c = target.getAttribute('config'),
-					{title, valid} = Parser.normalizeTitle(removeComment(f.toString()), 10, include, c, true, true);
+					{title, valid} = Parser.normalizeTitle(
+						removeComment(f.toString()),
+						10,
+						include,
+						c,
+						true,
+						true,
+					);
 				if (!valid) {
 					// @ts-expect-error sparse array
 					accum[accum.indexOf(target)] = undefined;
@@ -113,7 +120,8 @@ const expand = (
 					} else if (!path.isAbsolute(Parser.templateDir)) {
 						Parser.templateDir = path.join(__dirname, '..', '..', Parser.templateDir);
 					}
-					const titles = [title, title.replaceAll('_', ' ')].flatMap(tt => [tt, tt.replaceAll(':', '꞉')]),
+					const titles = [title, title.replaceAll('_', ' ')]
+							.flatMap(tt => [tt, tt.replaceAll(':', '꞉')]),
 						file = ['.wiki', '.txt', '']
 							.flatMap(ext => titles.map(tt => path.join(Parser.templateDir!, tt + ext)))
 							.find(fs.existsSync);
@@ -125,7 +133,14 @@ const expand = (
 					return `${prev}<span class="error">Template loop detected: [[${title}]]</span>`;
 				}
 				return implicitNewLine(
-					expand(Parser.templates.get(title)!, config, true, target, accum, [...stack, title]).toString(),
+					expand(
+						Parser.templates.get(title)!,
+						config,
+						true,
+						target,
+						accum,
+						[...stack, title],
+					).toString(),
 					prev,
 				);
 			} else if (!magicWords.has(name)) {
@@ -140,7 +155,8 @@ const expand = (
 			if (known && (name === 'if' || name === 'ifexist')) {
 				let bool = Boolean(var1);
 				if (name === 'ifexist') {
-					const {valid, interwiki} = Parser.normalizeTitle(var1, 0, include, config, true, true);
+					const {valid, interwiki} = Parser
+						.normalizeTitle(var1, 0, include, config, true, true);
 					bool = valid && !interwiki;
 				}
 				return parseIf(accum, prev, c[bool ? 2 : 3]);
@@ -201,7 +217,12 @@ Token.prototype.expand = /** @implements */ function(): Token {
 
 Token.prototype.solveConst = /** @implements */ function(): Token {
 	return Shadow.run(
-		() => expand(this.toString(), this.getAttribute('config'), this.getAttribute('include'), false).parse(),
+		() => expand(
+			this.toString(),
+			this.getAttribute('config'),
+			this.getAttribute('include'),
+			false,
+		).parse(),
 	);
 };
 
@@ -303,8 +324,10 @@ Token.prototype.toHtml = /** @implements */ function(): string {
 
 Token.prototype.createComment = /** @implements */ function(data = ''): CommentToken {
 	const config = this.getAttribute('config');
-	// @ts-expect-error abstract class
-	return Shadow.run((): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config));
+	return Shadow.run(
+		// @ts-expect-error abstract class
+		(): CommentToken => new CommentToken(data.replaceAll('-->', '--&gt;'), true, config),
+	);
 };
 
 Token.prototype.createElement = /** @implements */ function(

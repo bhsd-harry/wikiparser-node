@@ -28,6 +28,7 @@ if (pct >= 80) {
 } else {
 	[,, color] = colors;
 }
-const svg = fs.readFileSync('coverage/badge.svg', 'utf8').replace(/\b\d{2}(?=%)/gu, String(Math.round(pct)))
+const svg = fs.readFileSync('coverage/badge.svg', 'utf8')
+	.replace(/\b\d{2}(?=%)/gu, String(Math.round(pct)))
 	.replace(re, color);
 fs.writeFileSync('coverage/badge.svg', svg);

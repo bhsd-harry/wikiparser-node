@@ -12,8 +12,10 @@ import {html} from '../util/html';
 /* NOT FOR BROWSER END */
 
 /**
+ * language conversion rule
+ *
  * 转换规则
- * @classdesc `{childNodes: ...AtomToken}`
+ * @classdesc `{childNodes: AtomToken[]}`
  */
 export abstract class ConverterRuleToken extends Token {
 	declare readonly childNodes: readonly [AtomToken]
@@ -42,7 +44,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 语言变体 */
+	/** language variant / 语言变体 */
 	get variant(): string {
 		return this.childNodes[this.length - 2]?.text().trim() ?? '';
 	}
@@ -51,7 +53,7 @@ export abstract class ConverterRuleToken extends Token {
 		this.setVariant(variant);
 	}
 
-	/** 是否是单向转换 */
+	/** whether to be unidirectional conversion / 是否是单向转换 */
 	get unidirectional(): boolean {
 		return this.length === 3;
 	}
@@ -63,7 +65,8 @@ export abstract class ConverterRuleToken extends Token {
 			this.makeBidirectional();
 		} else if (length === 2 && flag) {
 			throw new Error(
-				'If you want to change to unidirectional, please use ConverterRuleToken.makeUnidirectional method!',
+				'If you want to change to unidirectional, '
+				+ 'please use ConverterRuleToken.makeUnidirectional method!',
 			);
 		} else if (length === 1 && flag) {
 			throw new Error(
@@ -73,7 +76,7 @@ export abstract class ConverterRuleToken extends Token {
 		}
 	}
 
-	/** 是否是双向转换 */
+	/** whether to be bidirectional conversion / 是否是双向转换 */
 	get bidirectional(): boolean {
 		return this.length === 2;
 	}
@@ -85,10 +88,14 @@ export abstract class ConverterRuleToken extends Token {
 			this.makeBidirectional();
 		} else if (length === 2 && !flag) {
 			throw new Error(
-				'If you want to change to unidirectional, please use ConverterRuleToken.makeUnidirectional method!',
+				'If you want to change to unidirectional, '
+				+ 'please use ConverterRuleToken.makeUnidirectional method!',
 			);
 		} else if (length === 1 && flag) {
-			throw new Error('If you want to change to bidirectional, please use ConverterRuleToken.setVariant method!');
+			throw new Error(
+				'If you want to change to bidirectional, '
+				+ 'please use ConverterRuleToken.setVariant method!',
+			);
 		}
 	}
 
@@ -107,7 +114,10 @@ export abstract class ConverterRuleToken extends Token {
 			super.insertAt(new AtomToken(v, 'converter-rule-variant', config, accum));
 			super.insertAt(new AtomToken(rule.slice(i + 1), 'converter-rule-to', config, accum));
 			if (j !== -1) {
-				super.insertAt(new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum), 0);
+				super.insertAt(
+					new AtomToken(rule.slice(0, j), 'converter-rule-from', config, accum),
+					0,
+				);
 			}
 		} else {
 			super.insertAt(new AtomToken(rule, 'converter-rule-to', config, accum));
@@ -187,7 +197,7 @@ export abstract class ConverterRuleToken extends Token {
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	override removeAt(i: number): AtomToken {
 		if (this.length === 1) {
@@ -200,7 +210,11 @@ export abstract class ConverterRuleToken extends Token {
 		this.constructorError('has complex syntax. Do not try to insert child nodes manually');
 	}
 
-	/** 修改为不转换 */
+	/**
+	 * Prevent language conversion
+	 *
+	 * 修改为不转换
+	 */
 	noConvert(): void {
 		const {length} = this;
 		for (let i = 0; i < length - 1; i++) { // ConverterRuleToken只能从前往后删除子节点
@@ -209,17 +223,22 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/**
+	 * Set the target of language conversion
+	 *
 	 * 设置转换目标
-	 * @param to 转换目标
+	 * @param to target of language conversion / 转换目标
 	 */
 	setTo(to: string): void {
-		const {childNodes} = Parser.parse(to, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		const {childNodes} = Parser
+			.parse(to, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		this.lastChild.replaceChildren(...childNodes);
 	}
 
 	/**
+	 * Set the language variant
+	 *
 	 * 设置语言变体
-	 * @param variant 语言变体
+	 * @param variant language variant / 语言变体
 	 */
 	setVariant(variant: string): void {
 		const config = this.getAttribute('config');
@@ -231,8 +250,10 @@ export abstract class ConverterRuleToken extends Token {
 	}
 
 	/**
+	 * Set the source of language conversion
+	 *
 	 * 设置转换原文
-	 * @param from 转换原文
+	 * @param from source of language conversion / 转换原文
 	 * @throws `Error` 尚未指定语言变体
 	 */
 	setFrom(from: string): void {
@@ -243,20 +264,29 @@ export abstract class ConverterRuleToken extends Token {
 		const config = this.getAttribute('config'),
 			{childNodes} = Parser.parse(from, this.getAttribute('include'), undefined, config);
 		if (!unidirectional) {
-			super.insertAt(Shadow.run(() => new AtomToken(undefined, 'converter-rule-from', config)), 0);
+			super.insertAt(
+				Shadow.run(() => new AtomToken(undefined, 'converter-rule-from', config)),
+				0,
+			);
 		}
 		this.firstChild.replaceChildren(...childNodes);
 	}
 
 	/**
+	 * Make the language conversion unidirectional
+	 *
 	 * 修改为单向转换
-	 * @param from 转换原文
+	 * @param from source of language conversion / 转换原文
 	 */
 	makeUnidirectional(from: string): void {
 		this.setFrom(from);
 	}
 
-	/** 修改为双向转换 */
+	/**
+	 * Make the language conversion bidirectional
+	 *
+	 * 修改为双向转换
+	 */
 	makeBidirectional(): void {
 		if (this.unidirectional) {
 			this.removeAt(0);

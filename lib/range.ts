@@ -34,59 +34,63 @@ const notInit = (start: boolean): never => {
 	throw new Error(`Please set the ${start ? 'start' : 'end'} position first!`);
 };
 
-/** 模拟Range对象 */
+/**
+ * Range-like
+ *
+ * 模拟Range对象
+ */
 export class AstRange {
 	#startContainer: AstNodes | undefined;
 	#startOffset: number | undefined;
 	#endContainer: AstNodes | undefined;
 	#endOffset: number | undefined;
 
-	/** 起点容器 */
+	/** start container / 起点容器 */
 	get startContainer(): AstNodes {
 		return this.#startContainer ?? /* istanbul ignore next */ notInit(true);
 	}
 
-	/** 起点位置 */
+	/** start offset / 起点位置 */
 	get startOffset(): number {
 		return this.#startOffset ?? /* istanbul ignore next */ notInit(true);
 	}
 
-	/** 起点绝对位置 */
+	/** start character index / 起点绝对位置 */
 	get startIndex(): number {
 		return getIndex(this.startContainer, this.startOffset);
 	}
 
-	/** 起点行列位置 */
+	/** start position / 起点行列位置 */
 	get startPos(): Position {
 		return this.startContainer.getRootNode().posFromIndex(this.startIndex)!;
 	}
 
-	/** 终点容器 */
+	/** end container / 终点容器 */
 	get endContainer(): AstNodes {
 		return this.#endContainer ?? /* istanbul ignore next */ notInit(false);
 	}
 
-	/** 终点位置 */
+	/** end offset / 终点位置 */
 	get endOffset(): number {
 		return this.#endOffset ?? /* istanbul ignore next */ notInit(false);
 	}
 
-	/** 终点绝对位置 */
+	/** end character index / 终点绝对位置 */
 	get endIndex(): number {
 		return getIndex(this.endContainer, this.endOffset);
 	}
 
-	/** 终点行列位置 */
+	/** end position / 终点行列位置 */
 	get endPos(): Position {
 		return this.endContainer.getRootNode().posFromIndex(this.endIndex)!;
 	}
 
-	/** 起始和终止位置是否重合 */
+	/** whether the start and end positions are identical / 起始和终止位置是否重合 */
 	get collapsed(): boolean {
 		return this.startContainer === this.endContainer && this.startOffset === this.endOffset;
 	}
 
-	/** 最近的公共祖先 */
+	/** closest common ancestor / 最近的公共祖先 */
 	get commonAncestorContainer(): AstNodes {
 		const {startContainer, endContainer} = this;
 		return startContainer.contains(endContainer) ? startContainer : startContainer.parentNode!;
@@ -133,9 +137,11 @@ export class AstRange {
 	}
 
 	/**
+	 * Set the start
+	 *
 	 * 设置起点
-	 * @param startNode 起点容器
-	 * @param offset 起点位置
+	 * @param startNode start container / 起点容器
+	 * @param offset start offset / 起点位置
 	 * @throws `RangeError` offset取值超出范围
 	 */
 	setStart(startNode: AstNodes, offset: number): void {
@@ -160,9 +166,11 @@ export class AstRange {
 	}
 
 	/**
+	 * Set the end
+	 *
 	 * 设置终点
-	 * @param endNode 终点容器
-	 * @param offset 终点位置
+	 * @param endNode end container / 终点容器
+	 * @param offset end offset / 终点位置
 	 * @throws `RangeError` offset取值超出范围
 	 */
 	setEnd(endNode: AstNodes, offset: number): void {
@@ -197,16 +205,20 @@ export class AstRange {
 	}
 
 	/**
+	 * Set the start after the node
+	 *
 	 * 在节点后设置起点
-	 * @param referenceNode 节点
+	 * @param referenceNode reference node / 节点
 	 */
 	setStartAfter(referenceNode: AstNodes): void {
 		this.#setAfter('setStart', referenceNode);
 	}
 
 	/**
+	 * Set the end after the node
+	 *
 	 * 在节点后设置终点
-	 * @param referenceNode 节点
+	 * @param referenceNode reference node / 节点
 	 */
 	setEndAfter(referenceNode: AstNodes): void {
 		this.#setAfter('setEnd', referenceNode);
@@ -223,24 +235,30 @@ export class AstRange {
 	}
 
 	/**
+	 * Set the start before the node
+	 *
 	 * 在节点前设置起点
-	 * @param referenceNode 节点
+	 * @param referenceNode reference node / 节点
 	 */
 	setStartBefore(referenceNode: AstNodes): void {
 		this.#setBefore('setStart', referenceNode);
 	}
 
 	/**
+	 * Set the end before the node
+	 *
 	 * 在节点前设置终点
-	 * @param referenceNode 节点
+	 * @param referenceNode reference node / 节点
 	 */
 	setEndBefore(referenceNode: AstNodes): void {
 		this.#setBefore('setEnd', referenceNode);
 	}
 
 	/**
+	 * Set the Range to contain the entire contents of the node
+	 *
 	 * 设置Range包含整个节点的内容
-	 * @param referenceNode 节点
+	 * @param referenceNode reference node / 节点
 	 */
 	selectNodeContents(referenceNode: AstNodes): void {
 		this.#startContainer = referenceNode;
@@ -250,8 +268,10 @@ export class AstRange {
 	}
 
 	/**
+	 * Set the Range to contain the entire node
+	 *
 	 * 设置Range包含整个节点
-	 * @param referenceNode 节点
+	 * @param referenceNode reference node / 节点
 	 */
 	selectNode(referenceNode: AstNodes): void {
 		const parentNode = getParent(referenceNode),
@@ -263,8 +283,10 @@ export class AstRange {
 	}
 
 	/**
+	 * Set the end position to the start position, or the other way around
+	 *
 	 * 使起始和终止位置重合
-	 * @param toStart 重合至起始位置
+	 * @param toStart whether to set the end position to the start position / 重合至起始位置
 	 */
 	collapse(toStart?: boolean): void {
 		if (toStart) {
@@ -277,8 +299,10 @@ export class AstRange {
 	}
 
 	/**
+	 * Compare the relative position of a point with the Range
+	 *
 	 * 比较端点和Range的位置
-	 * @param referenceNode 端点容器
+	 * @param referenceNode node container / 端点容器
 	 * @param offset 端点位置
 	 * @throws `RangeError` 不在同一个文档
 	 */
@@ -296,15 +320,21 @@ export class AstRange {
 	}
 
 	/**
+	 * Check if the point is in the Range
+	 *
 	 * 端点是否在Range中
-	 * @param referenceNode 端点容器
+	 * @param referenceNode node container / 端点容器
 	 * @param offset 端点位置
 	 */
 	isPointInRange(referenceNode: AstNodes, offset: number): boolean {
 		return this.comparePoint(referenceNode, offset) === 0;
 	}
 
-	/** 复制AstRange对象 */
+	/**
+	 * Clone the AstRange object
+	 *
+	 * 复制AstRange对象
+	 */
 	cloneRange(): AstRange {
 		const range = new AstRange();
 		range.setStart(this.startContainer, this.startOffset);
@@ -312,7 +342,11 @@ export class AstRange {
 		return range;
 	}
 
-	/** 清空Range */
+	/**
+	 * Empty the Range
+	 *
+	 * 清空Range
+	 */
 	detach(): void {
 		this.#startContainer = undefined;
 		this.#startOffset = undefined;
@@ -320,7 +354,11 @@ export class AstRange {
 		this.#endOffset = undefined;
 	}
 
-	/** 删除Range中的内容 */
+	/**
+	 * Remove the contents of the Range
+	 *
+	 * 删除Range中的内容
+	 */
 	deleteContents(): void {
 		const {startContainer, endContainer, commonAncestorContainer} = this,
 			{childNodes} = commonAncestorContainer;
@@ -346,15 +384,21 @@ export class AstRange {
 		this.#endOffset = startOffset;
 	}
 
-	/** 获取行列位置和大小 */
+	/**
+	 * Get the position and dimension
+	 *
+	 * 获取行列位置和大小
+	 */
 	getBoundingClientRect(): Dimension & Position {
 		const {startPos: {top, left}, endPos: {top: bottom, left: right}} = this;
 		return {top, left, height: bottom - top + 1, width: bottom === top ? right - left : right};
 	}
 
 	/**
+	 * Insert a node at the start
+	 *
 	 * 在起始位置插入节点
-	 * @param newNode 插入的节点
+	 * @param newNode node to be inserted / 插入的节点
 	 */
 	insertNode(newNode: AstNodes | string): void {
 		const {startContainer, startOffset} = this,
@@ -392,7 +436,11 @@ export class AstRange {
 		return startContainer.getRootNode().toString().slice(startIndex, endIndex);
 	}
 
-	/** 获取范围内的全部节点 */
+	/**
+	 * Get the contents of the Range
+	 *
+	 * 获取范围内的全部节点
+	 */
 	extractContents(): AstNodes[] {
 		const {startContainer, startOffset, endContainer, endOffset, commonAncestorContainer} = this,
 			{childNodes} = commonAncestorContainer;
@@ -435,7 +483,11 @@ export class AstRange {
 		return commonAncestorContainer.childNodes.slice(from, to);
 	}
 
-	/** 拷贝范围内的全部节点 */
+	/**
+	 * Clone the contents of the Range
+	 *
+	 * 拷贝范围内的全部节点
+	 */
 	cloneContents(): AstNodes[] {
 		return this.extractContents().map(node => node.cloneNode());
 	}

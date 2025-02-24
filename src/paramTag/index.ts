@@ -17,7 +17,7 @@ import {singleLine} from '../../mixin/singleLine';
 
 /**
  * `<dynamicpagelist>`
- * @classdesc `{childNodes: ...AtomToken}`
+ * @classdesc `{childNodes: AtomToken[]}`
  */
 export abstract class ParamTagToken extends Token {
 	declare readonly name: string;

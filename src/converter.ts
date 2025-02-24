@@ -21,8 +21,10 @@ export interface ConverterToken extends FlagsParentBase {}
 /* NOT FOR BROWSER END */
 
 /**
+ * language conversion
+ *
  * 转换
- * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken]}`
+ * @classdesc `{childNodes: [ConverterFlagsToken, ...ConverterRuleToken[]]}`
  */
 @flagsParent
 export abstract class ConverterToken extends Token {
@@ -44,7 +46,7 @@ export abstract class ConverterToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 是否不转换 */
+	/** whether to prevent language conversion / 是否不转换 */
 	get noConvert(): boolean {
 		return this.hasFlag('R') || this.length === 2 && this.lastChild.length === 1;
 	}
@@ -72,13 +74,16 @@ export abstract class ConverterToken extends Token {
 			hasColon && firstRuleToken.length === 1
 			|| !hasColon && rules.length === 2 && !removeComment(rules[1]!).trim()
 		) {
-			// @ts-expect-error abstract class
-			this.insertAt(new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken);
+			this.insertAt(
+				// @ts-expect-error abstract class
+				new ConverterRuleToken(rules.join(';'), false, config, accum) as ConverterRuleToken,
+			);
 		} else {
 			this.append(
 				firstRuleToken,
-				// @ts-expect-error abstract class
-				...rules.slice(1).map(rule => new ConverterRuleToken(rule, true, config, accum) as ConverterRuleToken),
+				...rules.slice(1)
+					// @ts-expect-error abstract class
+					.map(rule => new ConverterRuleToken(rule, true, config, accum) as ConverterRuleToken),
 			);
 		}
 

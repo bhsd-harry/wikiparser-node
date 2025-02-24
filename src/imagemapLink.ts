@@ -15,6 +15,8 @@ import type {Title} from '../lib/title';
 /* NOT FOR BROWSER END */
 
 /**
+ * link inside the `<imagemap>`
+ *
  * `<imagemap>`内的链接
  * @classdesc `{childNodes: [AstText, LinkToken|ExtLinkToken, NoincludeToken]}`
  */
@@ -44,7 +46,7 @@ export abstract class ImagemapLinkToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 内外链接 */
+	/** internal or external link / 内外链接 */
 	get link(): string | Title {
 		return this.childNodes[1].link;
 	}

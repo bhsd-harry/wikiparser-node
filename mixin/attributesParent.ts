@@ -11,59 +11,77 @@ export interface AttributesParentBase {
 
 	/* NOT FOR BROWSER */
 
-	/** getAttrs()方法的getter写法 */
+	/** all attributes / 全部属性 */
 	attributes: Record<string, string | true>;
 
-	/** 以字符串表示的class属性 */
+	/** class attribute in string / 以字符串表示的class属性 */
 	className: string;
 
-	/** 以Set表示的class属性 */
+	/** class attribute in Set / 以Set表示的class属性 */
 	readonly classList: Set<string>;
 
-	/** id属性 */
+	/** id attribute / id属性 */
 	id: string;
 
 	/* NOT FOR BROWSER END */
 
 	/**
-	 * 获取AttributesToken子节点的属性
-	 * @param key 属性键
+	 * Get the attribute
+	 *
+	 * 获取指定属性
+	 * @param key attribute name / 属性键
 	 */
 	getAttr(key: string): string | true | undefined;
 
 	/* NOT FOR BROWSER */
 
 	/**
-	 * AttributesToken子节点是否具有某属性
-	 * @param key 属性键
+	 * Check if the token has a certain attribute
+	 *
+	 * 是否具有某属性
+	 * @param key attribute name / 属性键
 	 */
 	hasAttr(key: string): boolean;
 
-	/** 列举AttributesToken子节点的属性键 */
+	/**
+	 * Get all attribute names
+	 *
+	 * 获取全部的属性名
+	 */
 	getAttrNames(): Set<string>;
 
-	/** 获取AttributesToken子节点的全部标签属性 */
+	/**
+	 * Get all attributes
+	 *
+	 * 获取全部属性
+	 */
 	getAttrs(): Record<string, string | true>;
 
 	/**
-	 * 对AttributesToken子节点设置属性
-	 * @param key 属性键
-	 * @param value 属性值
-	 * @param prop 属性对象
+	 * Set the attribute
+	 *
+	 * 设置指定属性
+	 * @param key attribute name / 属性键
+	 * @param value attribute value / 属性值
+	 * @param prop attribute object / 属性对象
 	 */
 	setAttr(key: string, value: string | boolean): void;
 	setAttr(prop: Record<string, string | boolean>): void;
 
 	/**
-	 * 移除AttributesToken子节点的某属性
-	 * @param key 属性键
+	 * Remove an attribute
+	 *
+	 * 移除指定属性
+	 * @param key attribute name / 属性键
 	 */
 	removeAttr(key: string): void;
 
 	/**
-	 * 开关AttributesToken子节点的某属性
-	 * @param key 属性键
-	 * @param force 强制开启或关闭
+	 * Toggle the specified attribute
+	 *
+	 * 开关指定属性
+	 * @param key attribute name / 属性键
+	 * @param force whether to force enabling or disabling / 强制开启或关闭
 	 */
 	toggleAttr(key: string, force?: boolean): void;
 }

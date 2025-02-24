@@ -26,6 +26,8 @@ import {sol} from '../mixin/sol';
 /* NOT FOR BROWSER END */
 
 /**
+ * section heading
+ *
  * 章节标题
  * @classdesc `{childNodes: [Token, SyntaxToken]}`
  */
@@ -50,7 +52,7 @@ export abstract class HeadingToken extends Token {
 		return 'heading';
 	}
 
-	/** 标题层级 */
+	/** level of the heading / 标题层级 */
 	get level(): number {
 		return this.#level;
 	}
@@ -61,7 +63,7 @@ export abstract class HeadingToken extends Token {
 		this.setLevel(n);
 	}
 
-	/** 内部wikitext */
+	/** inner wikitext / 内部wikitext */
 	get innerText(): string {
 		return this.firstChild.text().trim();
 	}
@@ -71,11 +73,12 @@ export abstract class HeadingToken extends Token {
 		if (text.length > 1 && text.startsWith('=') && text.endsWith('=')) {
 			throw new Error('Please use HeadingToken.setLevel method to change the level of the heading!');
 		}
-		const {childNodes} = Parser.parse(text, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		const {childNodes} = Parser
+			.parse(text, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		this.firstChild.replaceChildren(...childNodes);
 	}
 
-	/** id属性 */
+	/** id attribute / id属性 */
 	get id(): string {
 		return this.#getId(true);
 	}
@@ -168,7 +171,7 @@ export abstract class HeadingToken extends Token {
 			errors.push(e);
 		}
 		if (this.closest('html-attrs,table-attrs')) {
-			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in a HTML tag'));
+			errors.push(generateForSelf(this, rect, 'parsing-order', 'section header in an HTML tag'));
 		}
 		const rootStr = this.getRootNode().toString();
 		if (boldQuotes.length % 2) {
@@ -229,14 +232,20 @@ export abstract class HeadingToken extends Token {
 	}
 
 	/**
+	 * Set the level of heading
+	 *
 	 * 设置标题层级
-	 * @param n 标题层级
+	 * @param n level of heading / 标题层级
 	 */
 	setLevel(n: number): void {
 		this.#level = Math.min(Math.max(n, 1), 6);
 	}
 
-	/** 移除标题后的不可见内容 */
+	/**
+	 * Remove the invisible content following the heading
+	 *
+	 * 移除标题后的不可见内容
+	 */
 	removeTrail(): void {
 		this.lastChild.replaceChildren();
 	}
@@ -247,7 +256,8 @@ export abstract class HeadingToken extends Token {
 	 */
 	#getId(expand?: boolean): string {
 		const token = expand ? this.firstChild.expand() : this.firstChild;
-		let id = decodeHtml(sanitizeAlt(token.toHtmlInternal({nocc: true}))!).replace(/[\s_]+/gu, '_');
+		let id = decodeHtml(sanitizeAlt(token.toHtmlInternal({nocc: true}))!)
+			.replace(/[\s_]+/gu, '_');
 		if (id.endsWith('_')) {
 			id = id.slice(0, -1);
 		}

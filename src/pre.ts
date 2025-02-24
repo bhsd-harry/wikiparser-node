@@ -21,7 +21,7 @@ declare type Child = NoincludeToken | ConverterToken;
 
 /**
  * `<pre>`
- * @classdesc `{childNodes: [...AstText|NoincludeToken|ConverterToken]}`
+ * @classdesc `{childNodes: (AstText|NoincludeToken|ConverterToken)[]}`
  */
 export abstract class PreToken extends Token {
 	declare readonly name: 'pre';

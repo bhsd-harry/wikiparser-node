@@ -33,7 +33,7 @@ const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
 /(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
 const spaceRegex = new RegExp(`${space}+`, 'gu');
 
-/** NOT FOR BROWSER */
+/* NOT FOR BROWSER */
 
 const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
 // eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
@@ -45,11 +45,13 @@ const rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
 
 export interface MagicLinkToken extends SyntaxBase {}
 
-/** NOT FOR BROWSER END */
+/* NOT FOR BROWSER END */
 
 /**
+ * free external link
+ *
  * 自由外链
- * @classdesc `{childNodes: ...AstText|CommentToken|IncludeToken|NoincludeToken}`
+ * @classdesc `{childNodes: (AstText|CommentToken|IncludeToken|NoincludeToken)[]}`
  */
 @syntax()
 export abstract class MagicLinkToken extends Token {
@@ -73,7 +75,7 @@ export abstract class MagicLinkToken extends Token {
 		return this.#type;
 	}
 
-	/** 链接显示文字 */
+	/** text of the link / 链接显示文字 */
 	get innerText(): string {
 		const map = new Map([['!', '|'], ['=', '=']]);
 		let link = text(this.childNodes.map(child => {
@@ -87,12 +89,15 @@ export abstract class MagicLinkToken extends Token {
 		return link;
 	}
 
-	/** 和内链保持一致 */
+	/** link / 链接 */
 	get link(): string {
 		const {innerText} = this;
 		if (this.type === 'magic-link') {
 			return innerText.startsWith('ISBN')
-				? `ISBN ${innerText.slice(5).replace(/[- ]/gu, '').replace(/x$/u, 'X')}`
+				? `ISBN ${
+					innerText.slice(5).replace(/[- ]/gu, '')
+						.replace(/x$/u, 'X')
+				}`
 				: innerText;
 		}
 		return decodeNumber(innerText);
@@ -104,7 +109,7 @@ export abstract class MagicLinkToken extends Token {
 		this.setTarget(url);
 	}
 
-	/** 协议 */
+	/** URL protocol / 协议 */
 	get protocol(): string | undefined {
 		return this.pattern.exec(this.text())?.[1];
 	}
@@ -189,8 +194,10 @@ export abstract class MagicLinkToken extends Token {
 	}
 
 	/**
+	 * Get the URL
+	 *
 	 * 获取网址
-	 * @param articlePath 条目路径
+	 * @param articlePath article path / 条目路径
 	 */
 	getUrl(articlePath?: string): URL | string {
 		LSP: { // eslint-disable-line no-unused-labels
@@ -198,7 +205,9 @@ export abstract class MagicLinkToken extends Token {
 			let {link} = this;
 			if (type === 'magic-link') {
 				if (link.startsWith('ISBN')) {
-					return this.normalizeTitle(`BookSources/${link.slice(5)}`, -1, true).getUrl(articlePath);
+					return this
+						.normalizeTitle(`BookSources/${link.slice(5)}`, -1, true)
+						.getUrl(articlePath);
 				}
 				link = link.startsWith('RFC')
 					? `https://tools.ietf.org/html/rfc${link.slice(4)}`
@@ -225,8 +234,8 @@ export abstract class MagicLinkToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的节点
+	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt(token: string, i?: number): AstText;
 	override insertAt<T extends AstNodes>(token: T, i?: number): T;
@@ -243,20 +252,31 @@ export abstract class MagicLinkToken extends Token {
 	}
 
 	/**
+	 * Set the target of the link
+	 *
 	 * 设置外链目标
-	 * @param url 含协议的网址
+	 * @param url URL containing the protocol / 含协议的网址
 	 */
 	setTarget(url: string): void {
-		const {childNodes} = Parser.parse(url, this.getAttribute('include'), 2, this.getAttribute('config'));
+		const {childNodes} = Parser
+			.parse(url, this.getAttribute('include'), 2, this.getAttribute('config'));
 		this.replaceChildren(...childNodes);
 	}
 
-	/** 是否是模板或魔术字参数 */
+	/**
+	 * Check if it is a parameter of a template or magic word
+	 *
+	 * 是否是模板或魔术字参数
+	 */
 	isParamValue(): boolean {
 		return this.closest<ParameterToken>('parameter')?.getValue() === this.text();
 	}
 
-	/** 转义 `=` */
+	/**
+	 * Escape `=`
+	 *
+	 * 转义 `=`
+	 */
 	escape(): void {
 		for (const child of this.childNodes) {
 			if (child.type === 'text') {

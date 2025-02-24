@@ -60,10 +60,12 @@ declare interface Parser extends ParserBase {
 	msg(msg: string, arg?: string): string;
 
 	/**
+	 * Normalize page title
+	 *
 	 * 规范化页面标题
-	 * @param title 标题（含或不含命名空间前缀）
-	 * @param defaultNs 命名空间
-	 * @param include 是否嵌入
+	 * @param title title (with or without the namespace prefix) / 标题（含或不含命名空间前缀）
+	 * @param defaultNs default namespace number / 命名空间
+	 * @param include whether to be transcluded / 是否嵌入
 	 */
 	normalizeTitle(title: string, defaultNs?: number, include?: boolean, config?: Config): Title;
 	/** @private */
@@ -84,8 +86,10 @@ declare interface Parser extends ParserBase {
 	partialParse(wikitext: string, watch: () => string, include?: boolean, config?: Config): Promise<Token>;
 
 	/**
+	 * Create a language server
+	 *
 	 * 创建语言服务
-	 * @param uri 文档标识
+	 * @param uri document URI / 文档标识
 	 */
 	createLanguageService(uri: object): LanguageService;
 
@@ -110,6 +114,8 @@ declare interface Parser extends ParserBase {
 	clearCache(): Promise<void>;
 
 	/**
+	 * Check if the title is an interwiki link
+	 *
 	 * 是否是跨维基链接
 	 * @param title 链接标题
 	 */
@@ -125,7 +131,9 @@ declare interface Parser extends ParserBase {
  * @param dir 子路径
  */
 const rootRequire = (file: string, dir: string): unknown => require(
-	path.isAbsolute(file) ? /* istanbul ignore next */ file : path.join('..', file.includes('/') ? '' : dir, file),
+	path.isAbsolute(file)
+		? /* istanbul ignore next */ file
+		: path.join('..', file.includes('/') ? '' : dir, file),
 );
 
 /* NOT FOR BROWSER */
@@ -134,7 +142,8 @@ const rootRequire = (file: string, dir: string): unknown => require(
  * 快速规范化页面标题
  * @param title 标题
  */
-const normalizeTitle = (title: string): string => String(Parser.normalizeTitle(title, 0, false, undefined, true));
+const normalizeTitle = (title: string): string =>
+	String(Parser.normalizeTitle(title, 0, false, undefined, true));
 
 /** 重定向列表 */
 class RedirectMap extends Map<string, string> {
@@ -317,7 +326,10 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}
 					fs.writeFileSync(file, stage === MAX_STAGE ? wikitext : token.toString());
 					fs.writeFileSync(`${file}.err`, e.stack!);
-					fs.writeFileSync(`${file}.json`, JSON.stringify({stage, include, config}, null, '\t'));
+					fs.writeFileSync(
+						`${file}.json`,
+						JSON.stringify({stage, include, config}, null, '\t'),
+					);
 				}
 				throw e;
 			}
@@ -453,7 +465,9 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		if (interwiki.length > 0) {
 			/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 			const re = new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu');
-			return re.exec(title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''));
+			return re.exec(
+				title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
+			);
 		}
 		return null;
 	},

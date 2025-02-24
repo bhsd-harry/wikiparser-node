@@ -21,7 +21,8 @@ const escapeTable = (syntax: SyntaxToken): void => {
 				? child.data.replaceAll('|', '{{!}}')
 				: child.toString(),
 		).join(''),
-		{childNodes} = Parser.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
+		{childNodes} = Parser
+			.parse(wikitext, syntax.getAttribute('include'), 2, syntax.getAttribute('config'));
 	syntax.replaceChildren(...childNodes);
 };
 
@@ -32,8 +33,10 @@ declare type TableTypes = 'table' | 'tr' | 'td';
 export interface TableBaseToken extends AttributesParentBase {}
 
 /**
+ * table row that contains the newline at the beginning but not at the end
+ *
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ...Token[]]}`
  */
 export abstract class TableBaseToken extends attributesParent(1)(Token) {
 	abstract override get type(): TableTypes;
@@ -96,7 +99,11 @@ export abstract class TableBaseToken extends attributesParent(1)(Token) {
 		});
 	}
 
-	/** 转义表格语法 */
+	/**
+	 * Escape the table syntax
+	 *
+	 * 转义表格语法
+	 */
 	escape(): void {
 		for (const child of this.childNodes) {
 			if (child instanceof SyntaxToken) {

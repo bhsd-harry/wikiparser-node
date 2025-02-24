@@ -21,7 +21,11 @@ import type {Token} from '../index';
 
 /* NOT FOR BROWSER END */
 
-/** `''`和`'''` */
+/**
+ * `''` and `'''`
+ *
+ * `''`和`'''`
+ */
 @syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
@@ -48,7 +52,7 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		return {bold: this.bold, italic: this.italic};
 	}
 
-	/** 是否闭合 */
+	/** whether to be closing quotes / 是否闭合 */
 	get closing(): Partial<Font> {
 		return {
 			...this.bold ? {bold: this.#closing.bold} : undefined,
@@ -122,7 +126,13 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			});
 		}
 		if (bold && this.closest('heading-title')) {
-			const e = generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning');
+			const e = generateForSelf(
+				this,
+				rect,
+				'bold-header',
+				'bold in section header',
+				'warning',
+			);
 			e.suggestions = [{desc: 'remove', range: [start, start + 3], text: ''}];
 			errors.push(e);
 		}
@@ -138,8 +148,10 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Shadow.run(() => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')) as this);
+		return Shadow.run(
+			// @ts-expect-error abstract class
+			() => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')) as this,
+		);
 	}
 
 	/** @private */

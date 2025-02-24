@@ -116,7 +116,11 @@ try {
 	wordRegex = /\w/u;
 }
 
-/** 文本节点 */
+/**
+ * text node
+ *
+ * 文本节点
+ */
 export class AstText extends AstNode {
 	declare readonly name: undefined;
 	override readonly data: string = '';
@@ -127,7 +131,7 @@ export class AstText extends AstNode {
 
 	/* NOT FOR BROWSER */
 
-	/** 文本长度 */
+	/** text length / 文本长度 */
 	get length(): number {
 		return this.data.length;
 	}
@@ -229,7 +233,8 @@ export class AstText extends AstNode {
 				char === '<' && !tags.has(tag!.toLowerCase())
 				|| char === '[' && type === 'ext-link-text' && (
 					/&(?:rbrack|#93|#x5[Dd];);/u.test(data.slice(index + 1))
-					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki' && nextSibling.innerText?.includes(']')
+					|| nextSibling?.is<ExtToken>('ext') && nextName === 'nowiki'
+					&& nextSibling.innerText?.includes(']')
 				)
 				|| magicLink && (!parentNode.getAttribute('plain') || noLinkTypes.has(type))
 			) {
@@ -343,8 +348,10 @@ export class AstText extends AstNode {
 	}
 
 	/**
+	 * Replace the text
+	 *
 	 * 替换字符串
-	 * @param text 替换的字符串
+	 * @param text new text / 替换的字符串
 	 */
 	replaceData(text: string): void {
 		this.#setData(text);
@@ -357,51 +364,66 @@ export class AstText extends AstNode {
 
 	/* NOT FOR BROWSER */
 
-	/** 复制 */
+	/**
+	 * Clone the node
+	 *
+	 * 复制
+	 */
 	cloneNode(): AstText {
 		return new AstText(this.data);
 	}
 
 	/**
+	 * Insert text at the end
+	 *
 	 * 在后方添加字符串
-	 * @param text 添加的字符串
+	 * @param text text to be inserted / 添加的字符串
 	 */
 	appendData(text: string): void {
 		this.#setData(this.data + text);
 	}
 
 	/**
+	 * Delete text
+	 *
 	 * 删减字符串
-	 * @param offset 起始位置
-	 * @param count 删减字符数
+	 * @param offset start position / 起始位置
+	 * @param count number of characters to be deleted / 删减字符数
 	 */
 	deleteData(offset: number, count = Infinity): void {
 		this.#setData(
-			this.data.slice(0, offset) + (offset < 0 && offset + count >= 0 ? '' : this.data.slice(offset + count)),
+			this.data.slice(0, offset)
+			+ (offset < 0 && offset + count >= 0 ? '' : this.data.slice(offset + count)),
 		);
 	}
 
 	/**
+	 * Insert text
+	 *
 	 * 插入字符串
-	 * @param offset 插入位置
-	 * @param text 待插入的字符串
+	 * @param offset position to be inserted at / 插入位置
+	 * @param text text to be inserted / 待插入的字符串
 	 */
 	insertData(offset: number, text: string): void {
 		this.#setData(this.data.slice(0, offset) + text + this.data.slice(offset));
 	}
 
 	/**
+	 * Get the substring
+	 *
 	 * 提取子串
-	 * @param offset 起始位置
-	 * @param count 字符数
+	 * @param offset start position / 起始位置
+	 * @param count number of characters / 字符数
 	 */
 	substringData(offset: number, count?: number): string {
 		return this.data.substr(offset, count);
 	}
 
 	/**
+	 * Split the text node into two parts
+	 *
 	 * 将文本子节点分裂为两部分
-	 * @param offset 分裂位置
+	 * @param offset position to be splitted at / 分裂位置
 	 * @throws `RangeError` 错误的断开位置
 	 * @throws `Error` 没有父节点
 	 */
@@ -432,10 +454,15 @@ export class AstText extends AstNode {
 		return j;
 	}
 
-	/** 转义 `=` */
+	/**
+	 * Escape `=`
+	 *
+	 * 转义 `=`
+	 */
 	escape(): void {
 		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
-		for (let i = this.data.lastIndexOf('='); i >= 0; i = this.data.lastIndexOf('=', i - 1)) {
+		let i = this.data.lastIndexOf('=');
+		for (; i >= 0; i = this.data.lastIndexOf('=', i - 1)) {
 			if (i < this.length - 1) {
 				this.splitText(i + 1);
 			}
@@ -448,8 +475,10 @@ export class AstText extends AstNode {
 	}
 
 	/**
+	 * Generate HTML
+	 *
 	 * 生成HTML
-	 * @param nowrap 是否不换行
+	 * @param nowrap whether to disable line-wrapping / 是否不换行
 	 */
 	toHtml(nowrap?: boolean): string {
 		const {data} = this;

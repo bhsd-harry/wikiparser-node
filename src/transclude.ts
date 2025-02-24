@@ -37,8 +37,10 @@ const basicMagicWords = new Map([['=', '='], ['!', '|']]);
 declare type Child = AtomToken | SyntaxToken;
 
 /**
+ * template or magic word
+ *
  * 模板或魔术字
- * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken, ...ParameterToken]}`
+ * @classdesc `{childNodes: [AtomToken|SyntaxToken, ...AtomToken[], ...ParameterToken[]]}`
  */
 export abstract class TranscludeToken extends Token {
 	readonly modifier: string = '';
@@ -74,7 +76,7 @@ export abstract class TranscludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 是否存在重复参数 */
+	/** whether to contain duplicated parameters / 是否存在重复参数 */
 	get duplication(): boolean {
 		return this.isTemplate() && Boolean(this.hasDuplicatedArgs());
 	}
@@ -102,7 +104,10 @@ export abstract class TranscludeToken extends Token {
 		const m = /^(?:\s|\0\d+[cn]\x7F)*\0(\d+)h\x7F(?:\s|\0\d+[cn]\x7F)*/u.exec(title);
 		if (m) {
 			heading = Number(m[1]);
-			title = title.replace(`\0${heading}h\x7F`, accum[heading]!.toString().replace(/^\n/u, ''));
+			title = title.replace(
+				`\0${heading}h\x7F`,
+				accum[heading]!.toString().replace(/^\n/u, ''),
+			);
 		}
 		super(undefined, config, accum, {
 			AtomToken: 0, SyntaxToken: 0, ParameterToken: '1:',
@@ -216,8 +221,10 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Set the transclusion modifier
+	 *
 	 * 设置引用修饰符
-	 * @param modifier 引用修饰符
+	 * @param modifier transclusion modifier / 引用修饰符
 	 */
 	setModifier(modifier: string): boolean {
 		const {parserFunction: [,, raw, subst]} = this.getAttribute('config'),
@@ -240,7 +247,11 @@ export abstract class TranscludeToken extends Token {
 		return false;
 	}
 
-	/** 是否是模板或模块 */
+	/**
+	 * Check if it is a template or a module
+	 *
+	 * 是否是模板或模块
+	 */
 	isTemplate(): boolean {
 		return this.type === 'template' || this.name === 'invoke';
 	}
@@ -248,10 +259,16 @@ export abstract class TranscludeToken extends Token {
 	/** 获取模板或模块名 */
 	#getTitle(): Title {
 		const isTemplate = this.type === 'template';
-		return this.normalizeTitle(this.childNodes[isTemplate ? 0 : 1].toString(true), isTemplate ? 10 : 828, true);
+		return this.normalizeTitle(
+			this.childNodes[isTemplate ? 0 : 1].toString(true),
+			isTemplate ? 10 : 828,
+			true,
+		);
 	}
 
 	/**
+	 * Get the module name and module function name
+	 *
 	 * 获取模块名和模块函数名
 	 * @throws `Error` 仅用于模块
 	 */
@@ -374,12 +391,16 @@ export abstract class TranscludeToken extends Token {
 			errors.push(generateForChild(childNodes[1], rect, 'invalid-invoke', 'illegal module name'));
 		} else {
 			const child = childNodes[invoke ? 1 : 0] as AtomToken,
-				i = child.childNodes.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
+				i = child.childNodes
+					.findIndex(c => c.type === 'text' && decodeHtml(c.data).includes('#')),
 				textNode = child.childNodes[i] as AstText | undefined;
 			if (textNode) {
 				const e = generateForChild(child, rect, 'no-ignored', 'useless fragment');
 				e.fix = {
-					range: [e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'), e.endIndex],
+					range: [
+						e.startIndex + child.getRelativeIndex(i) + textNode.data.indexOf('#'),
+						e.endIndex,
+					],
 					text: '',
 					desc: 'remove',
 				};
@@ -390,7 +411,8 @@ export abstract class TranscludeToken extends Token {
 			errors.push(generateForSelf(this, rect, 'invalid-invoke', 'missing module function'));
 			return errors;
 		}
-		const duplicatedArgs = this.getDuplicatedArgs().filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
+		const duplicatedArgs = this.getDuplicatedArgs()
+			.filter(([, parameter]) => !parameter[0]!.querySelector('ext'));
 		if (duplicatedArgs.length > 0) {
 			for (const [, args] of duplicatedArgs) {
 				errors.push(...args.map(arg => {
@@ -441,8 +463,8 @@ export abstract class TranscludeToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends ParameterToken>(token: T, i = this.length): T {
 		super.insertAt(token, i);
@@ -458,24 +480,35 @@ export abstract class TranscludeToken extends Token {
 		return token;
 	}
 
-	/** 获取所有参数 */
+	/**
+	 * Get all parameters
+	 *
+	 * 获取所有参数
+	 */
 	getAllArgs(): ParameterToken[] {
 		return this.childNodes.filter(isToken<ParameterToken>('parameter'));
 	}
 
-	/** 获取所有匿名参数 */
+	/**
+	 * Get all anonymous parameters
+	 *
+	 * 获取所有匿名参数
+	 */
 	getAnonArgs(): ParameterToken[] {
 		return this.getAllArgs().filter(({anon}) => anon);
 	}
 
 	/**
+	 * Get parameters with the specified name
+	 *
 	 * 获取指定参数
-	 * @param key 参数名
-	 * @param exact 是否匹配匿名性
-	 * @param copy 是否返回一个备份
+	 * @param key parameter name / 参数名
+	 * @param exact whether to match anonymosity / 是否匹配匿名性
+	 * @param copy whether to return a copy / 是否返回一个备份
 	 */
 	getArgs(key: string | number, exact?: boolean, copy = true): Set<ParameterToken> {
-		const keyStr = String(key).replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
+		const keyStr = String(key)
+			.replace(/^[ \t\n\0\v]+|([^ \t\n\0\v])[ \t\n\0\v]+$/gu, '$1');
 		let args: Set<ParameterToken>;
 		if (this.#args.has(keyStr)) {
 			args = this.#args.get(keyStr)!;
@@ -498,6 +531,8 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Get duplicated parameters
+	 *
 	 * 获取重名参数
 	 * @throws `Error` 仅用于模板
 	 */
@@ -509,6 +544,8 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Get possible values of some magic words
+	 *
 	 * 对特定魔术字获取可能的取值
 	 * @throws `Error` 不是可接受的魔术字
 	 */
@@ -580,19 +617,27 @@ export abstract class TranscludeToken extends Token {
 		});
 	}
 
-	/** 替换引用 */
+	/**
+	 * Convert to substitution
+	 *
+	 * 替换引用
+	 */
 	subst(): void {
 		this.setModifier('subst:');
 	}
 
-	/** 安全的替换引用 */
+	/**
+	 * Convert to safe substitution
+	 *
+	 * 安全的替换引用
+	 */
 	safesubst(): void {
 		this.setModifier('safesubst:');
 	}
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	override removeAt(i: number): ParameterToken {
 		const token = super.removeAt(i) as ParameterToken;
@@ -609,27 +654,33 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Check if there is a parameter with the specified name
+	 *
 	 * 是否具有某参数
-	 * @param key 参数名
-	 * @param exact 是否匹配匿名性
+	 * @param key parameter name / 参数名
+	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
 	hasArg(key: string | number, exact?: boolean): boolean {
 		return this.getArgs(key, exact, false).size > 0;
 	}
 
 	/**
+	 * Get the effective parameter with the specified name
+	 *
 	 * 获取生效的指定参数
-	 * @param key 参数名
-	 * @param exact 是否匹配匿名性
+	 * @param key parameter name / 参数名
+	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
 	getArg(key: string | number, exact?: boolean): ParameterToken | undefined {
 		return [...this.getArgs(key, exact, false)].sort((a, b) => a.compareDocumentPosition(b)).at(-1);
 	}
 
 	/**
+	 * Remove parameters with the specified name
+	 *
 	 * 移除指定参数
-	 * @param key 参数名
-	 * @param exact 是否匹配匿名性
+	 * @param key parameter name / 参数名
+	 * @param exact whether to match anonymosity / 是否匹配匿名性
 	 */
 	removeArg(key: string | number, exact?: boolean): void {
 		Shadow.run(() => {
@@ -639,7 +690,11 @@ export abstract class TranscludeToken extends Token {
 		});
 	}
 
-	/** 获取所有参数名 */
+	/**
+	 * Get all parameter names
+	 *
+	 * 获取所有参数名
+	 */
 	getKeys(): string[] {
 		const args = this.getAllArgs();
 		if (this.#keys.size === 0 && args.length > 0) {
@@ -651,16 +706,20 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Get parameter values
+	 *
 	 * 获取参数值
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	getValues(key: string | number): string[] {
 		return [...this.getArgs(key, false, false)].map(token => token.getValue());
 	}
 
 	/**
+	 * Get the effective parameter value
+	 *
 	 * 获取生效的参数值
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	getValue(): Record<string, string>;
 	getValue(key: string | number): string | undefined;
@@ -671,8 +730,10 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Insert an anonymous parameter
+	 *
 	 * 插入匿名参数
-	 * @param val 参数值
+	 * @param val parameter value / 参数值
 	 */
 	newAnonArg(val: string): ParameterToken {
 		require('../addon/transclude');
@@ -680,9 +741,11 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Set the parameter value
+	 *
 	 * 设置参数值
-	 * @param key 参数名
-	 * @param value 参数值
+	 * @param key parameter name / 参数名
+	 * @param value parameter value / 参数值
 	 * @throws `Error` 仅用于模板
 	 */
 	setValue(key: string, value: string): void {
@@ -691,6 +754,8 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Convert all anonymous parameters to named ones
+	 *
 	 * 将匿名参数改写为命名参数
 	 * @throws `Error` 仅用于模板
 	 */
@@ -704,8 +769,10 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Replace the template name
+	 *
 	 * 替换模板名
-	 * @param title 模板名
+	 * @param title template name / 模板名
 	 * @throws `Error` 仅用于模板
 	 */
 	replaceTemplate(title: string): void {
@@ -714,8 +781,10 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Replace the module name
+	 *
 	 * 替换模块名
-	 * @param title 模块名
+	 * @param title module name / 模块名
 	 * @throws `Error` 仅用于模块
 	 */
 	replaceModule(title: string): void {
@@ -724,8 +793,10 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Replace the module function
+	 *
 	 * 替换模块函数
-	 * @param func 模块函数名
+	 * @param func module function name / 模块函数名
 	 * @throws `Error` 仅用于模块
 	 * @throws `Error` 尚未指定模块名称
 	 */
@@ -735,6 +806,8 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Count duplicated parameters
+	 *
 	 * 重复参数计数
 	 * @throws `Error` 仅用于模板
 	 */
@@ -746,10 +819,17 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
-	 * 修复重名参数：
-	 * `aggressive = false`时只移除空参数和全同参数，优先保留匿名参数，否则将所有匿名参数更改为命名。
-	 * `aggressive = true`时还会尝试处理连续的以数字编号的参数。
-	 * @param aggressive 是否使用有更大风险的修复手段
+	 * Fix duplicated parameters
+	 * @description
+	 * - Only empty parameters and identical parameters are removed with `aggressive = false`.
+	 * Anonymous parameters have a higher precedence, otherwise all anonymous parameters are converted to named ones.
+	 * - Additionally, consecutive numbered parameters are treated with `aggressive = true`.
+	 *
+	 * 修复重名参数
+	 * @description
+	 * - `aggressive = false`时只移除空参数和全同参数，优先保留匿名参数，否则将所有匿名参数更改为命名。
+	 * - `aggressive = true`时还会尝试处理连续的以数字编号的参数。
+	 * @param aggressive whether to use a more risky approach / 是否使用有更大风险的修复手段
 	 */
 	fixDuplication(aggressive?: boolean): string[] {
 		require('../addon/transclude');
@@ -757,6 +837,8 @@ export abstract class TranscludeToken extends Token {
 	}
 
 	/**
+	 * Escape tables inside the template
+	 *
 	 * 转义模板内的表格
 	 * @throws `Error` 转义失败
 	 */

@@ -10,7 +10,11 @@ import Parser from '../../index';
 
 /* NOT FOR BROWSER END */
 
-/** 成对标签 */
+/**
+ * Paired tags
+ *
+ * 成对标签
+ */
 @fixedToken
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
@@ -25,7 +29,7 @@ export abstract class TagPairToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
-	/** 内部wikitext */
+	/** inner wikitext / 内部wikitext */
 	get innerText(): string | undefined {
 		return this.selfClosing ? undefined : this.lastChild.text();
 	}

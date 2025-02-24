@@ -37,7 +37,11 @@ export interface TableCoords {
 	readonly start?: boolean;
 }
 
-/** 表格行或表格 */
+/**
+ * table row or table
+ *
+ * 表格行或表格
+ */
 export abstract class TrBaseToken extends TableBaseToken {
 	abstract override get type(): 'table' | 'tr';
 
@@ -63,7 +67,12 @@ export abstract class TrBaseToken extends TableBaseToken {
 				}
 			} catch {}
 		}
-		const error = generateForChild(inter, {start}, 'fostered-content', 'content to be moved out from the table');
+		const error = generateForChild(
+			inter,
+			{start},
+			'fostered-content',
+			'content to be moved out from the table',
+		);
 		error.severity = first.type === 'template' ? 'warning' : 'error';
 		error.startIndex++;
 		error.startLine++;
@@ -72,19 +81,27 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return errors;
 	}
 
-	/** 获取行数 */
+	/**
+	 * Get the number of rows
+	 *
+	 * 获取行数
+	 */
 	getRowCount(): number {
 		return Number(this.childNodes.some(
-			child => child instanceof TdToken && child.isIndependent() && !child.firstChild.text().endsWith('+'),
+			child => child instanceof TdToken
+				&& child.isIndependent()
+				&& !child.firstChild.text().endsWith('+'),
 		));
 	}
 
 	/* NOT FOR BROWSER */
 
 	/**
+	 * Get the `n`-th column
+	 *
 	 * 获取第n列
-	 * @param n 列号
-	 * @param insert 是否用于判断插入新列的位置
+	 * @param n column number / 列号
+	 * @param insert whether to be used to insert a new column / 是否用于判断插入新列的位置
 	 * @throws `RangeError` 不存在对应单元格
 	 */
 	getNthCol(n: number, insert?: false): TdToken | undefined;
@@ -140,7 +157,7 @@ export abstract class TrBaseToken extends TableBaseToken {
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	override removeAt(i: number): AstNodes {
 		i += i < 0 ? this.length : 0;
@@ -156,8 +173,8 @@ export abstract class TrBaseToken extends TableBaseToken {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		if (!Shadow.running && token.type !== 'td') {
@@ -176,7 +193,11 @@ export abstract class TrBaseToken extends TableBaseToken {
 		return super.insertAt(token, i);
 	}
 
-	/** 获取列数 */
+	/**
+	 * Get the number of columns
+	 *
+	 * 获取列数
+	 */
 	getColCount(): number {
 		let count = 0,
 			last = 0;
@@ -190,11 +211,13 @@ export abstract class TrBaseToken extends TableBaseToken {
 	}
 
 	/**
+	 * Insert a new cell
+	 *
 	 * 插入新的单元格
-	 * @param inner 单元格内部wikitext
-	 * @param {TableCoords} coord 单元格坐标
-	 * @param subtype 单元格类型
-	 * @param attr 单元格属性
+	 * @param inner inner wikitext of the cell / 单元格内部wikitext
+	 * @param {TableCoords} coord table coordinates of the cell / 单元格坐标
+	 * @param subtype cell type / 单元格类型
+	 * @param attr cell attribute / 单元格属性
 	 */
 	insertTableCell(
 		inner: string | Token,

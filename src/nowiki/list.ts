@@ -8,7 +8,11 @@ import {syntax} from '../../mixin/syntax';
 
 /* NOT FOR BROWSER END */
 
-/** 位于行首的`;:*#` */
+/**
+ * `;:*#` at the start of a line
+ *
+ * 位于行首的`;:*#`
+ */
 @sol(true) @syntax(/^[;:*#]+[^\S\n]*$/u)
 export abstract class ListToken extends ListBaseToken {
 	override get type(): 'list' {

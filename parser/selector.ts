@@ -441,7 +441,9 @@ const checkToken = (
 			[step] = condition;
 			stack.push(condition);
 		} else if (combinator.has(syntax)) { // 情形2：关系
-			if (has && syntax && condition.length === 1 && step.length === 0 && !sanitized.slice(0, index).trim()) {
+			if (
+				has && syntax && condition.length === 1 && step.length === 0 && !sanitized.slice(0, index).trim()
+			) {
 				step.push('');
 			} else {
 				pushSimple(index);

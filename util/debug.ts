@@ -93,7 +93,9 @@ export const mixin = (target: Function, source: Function): void => {
  * @throws `TypeError`
  */
 export const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(`${name}.${method} method only accepts ${args.join('、')} as input parameters!`);
+	throw new TypeError(
+		`${name}.${method} method only accepts ${args.join('、')} as input parameters!`,
+	);
 };
 
 /**

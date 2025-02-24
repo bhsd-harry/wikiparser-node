@@ -34,7 +34,7 @@ declare type Child = GalleryImageToken | NoincludeToken;
 
 /**
  * `<imagemap>`
- * @classdesc `{childNodes: ...NoincludeToken, GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)}`
+ * @classdesc `{childNodes: [...NoincludeToken[], GalleryImageToken, ...(NoincludeToken|ImagemapLinkToken|AstText)[]]}`
  */
 export abstract class ImagemapToken extends Token {
 	declare readonly name: 'imagemap';
@@ -122,7 +122,16 @@ export abstract class ImagemapToken extends Token {
 					mtIn = /^\[\[([^|]+)(?:\|([^\]]+))?\]\][\w\s]*$/u
 						.exec(substr) as [string, string, string | undefined] | null;
 				if (mtIn) {
-					if (this.normalizeTitle(mtIn[1], 0, true, true, false, true).valid) {
+					if (
+						this.normalizeTitle(
+							mtIn[1],
+							0,
+							true,
+							true,
+							false,
+							true,
+						).valid
+					) {
 						// @ts-expect-error abstract class
 						super.insertAt(new ImagemapLinkToken(
 							line.slice(0, i),
@@ -182,7 +191,12 @@ export abstract class ImagemapToken extends Token {
 					const str = child.toString().trim();
 					return child.type === 'noinclude' && str && !str.startsWith('#');
 				}).map(child => {
-					const e = generateForChild(child, rect, 'invalid-imagemap', 'invalid link in <imagemap>');
+					const e = generateForChild(
+						child,
+						rect,
+						'invalid-imagemap',
+						'invalid link in <imagemap>',
+					);
 					e.suggestions = [
 						{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''},
 						{desc: 'comment', range: [e.startIndex, e.startIndex], text: '# '},
@@ -205,8 +219,8 @@ export abstract class ImagemapToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的节点
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `Error` 当前缺少合法图片
 	 * @throws `RangeError` 已有一张合法图片
 	 */
@@ -224,7 +238,7 @@ export abstract class ImagemapToken extends Token {
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node /移除位置
 	 * @throws `Error` 禁止移除图片
 	 */
 	override removeAt(i: number): AstNodes {

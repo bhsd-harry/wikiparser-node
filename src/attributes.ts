@@ -52,8 +52,10 @@ try {
 }
 
 /**
+ * attributes of extension and HTML tags
+ *
  * 扩展和HTML标签属性
- * @classdesc `{childNodes: ...AtomToken|AttributeToken}`
+ * @classdesc `{childNodes: (AtomToken|AttributeToken)[]}`
  */
 export abstract class AttributesToken extends Token {
 	declare readonly name: string;
@@ -82,7 +84,7 @@ export abstract class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** getAttrs()方法的getter写法 */
+	/** all attributes / 全部属性 */
 	get attributes(): Record<string, string | true> {
 		return this.getAttrs();
 	}
@@ -92,7 +94,7 @@ export abstract class AttributesToken extends Token {
 		this.setAttr(attrs);
 	}
 
-	/** 以字符串表示的class属性 */
+	/** class attribute in string / 以字符串表示的class属性 */
 	get className(): string {
 		const attr = this.getAttr('class');
 		return typeof attr === 'string' ? attr : '';
@@ -102,7 +104,7 @@ export abstract class AttributesToken extends Token {
 		this.setAttr('class', className || false);
 	}
 
-	/** 以Set表示的class属性 */
+	/** class attribute in Set / 以Set表示的class属性 */
 	get classList(): Set<string> {
 		if (!this.#classList) {
 			this.#classList = new Set(this.className.split(/\s/u));
@@ -127,7 +129,7 @@ export abstract class AttributesToken extends Token {
 		return this.#classList;
 	}
 
-	/** id属性 */
+	/** id attribute / id属性 */
 	get id(): string {
 		const attr = this.getAttr('id');
 		return typeof attr === 'string' ? attr : '';
@@ -137,7 +139,7 @@ export abstract class AttributesToken extends Token {
 		this.setAttr('id', id || false);
 	}
 
-	/** 是否含有无效属性 */
+	/** whether to contain invalid attributes / 是否含有无效属性 */
 	get sanitized(): boolean {
 		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim()).length === 0;
 	}
@@ -220,8 +222,10 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
+	 * Get all AttributeTokens with the specified attribute name
+	 *
 	 * 所有指定属性名的AttributeToken
-	 * @param key 属性名
+	 * @param key attribute name / 属性名
 	 */
 	getAttrTokens(key?: string): AttributeToken[] {
 		return this.childNodes.filter(
@@ -231,8 +235,10 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
+	 * Get the last AttributeToken with the specified attribute name
+	 *
 	 * 指定属性名的最后一个AttributeToken
-	 * @param key 属性名
+	 * @param key attribute name / 属性名
 	 */
 	getAttrToken(key: string): AttributeToken | undefined {
 		const tokens = this.getAttrTokens(key);
@@ -240,8 +246,10 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
+	 * Get the attribute
+	 *
 	 * 获取指定属性
-	 * @param key 属性键
+	 * @param key attribute name / 属性键
 	 */
 	getAttr(key: string): string | true | undefined {
 		return this.getAttrToken(key)?.getValue();
@@ -294,7 +302,12 @@ export abstract class AttributesToken extends Token {
 					return [attr, value === true ? '' : value] as const;
 				});
 				errors.push(...pairs.map(([attr, value], i) => {
-					const e = generateForChild(attr, rect, 'no-duplicate', Parser.msg('duplicated $1 attribute', key)),
+					const e = generateForChild(
+							attr,
+							rect,
+							'no-duplicate',
+							Parser.msg('duplicated $1 attribute', key),
+						),
 						remove: LintError.Fix = {desc: 'remove', range: [e.startIndex, e.endIndex], text: ''};
 					if (!value || pairs.slice(0, i).some(([, v]) => v === value)) {
 						e.fix = remove;
@@ -319,7 +332,11 @@ export abstract class AttributesToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 清理无效属性 */
+	/**
+	 * Sanitize invalid attributes
+	 *
+	 * 清理无效属性
+	 */
 	sanitize(): void {
 		let dirty = false;
 		for (let i = this.length - 1; i >= 0; i--) {
@@ -338,7 +355,12 @@ export abstract class AttributesToken extends Token {
 		const cloned = this.cloneChildNodes();
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new AttributesToken(undefined, this.type, this.name, this.getAttribute('config')) as this;
+			const token = new AttributesToken(
+				undefined,
+				this.type,
+				this.name,
+				this.getAttribute('config'),
+			) as this;
 			token.append(...cloned);
 			return token;
 		});
@@ -346,8 +368,8 @@ export abstract class AttributesToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `RangeError` 标签不匹配
 	 */
 	override insertAt<T extends Child>(token: T, i = this.length): T {
@@ -384,10 +406,12 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
+	 * Set the attribute
+	 *
 	 * 设置指定属性
-	 * @param key 属性键
-	 * @param value 属性值
-	 * @param prop 属性对象
+	 * @param key attribute name / 属性键
+	 * @param value attribute value / 属性值
+	 * @param prop attribute object / 属性对象
 	 * @throws `RangeError` 扩展标签属性不能包含">"
 	 */
 	setAttr(key: string, value: string | boolean): void;
@@ -423,26 +447,38 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
-	 * 标签是否具有某属性
-	 * @param key 属性键
+	 * Check if the token has a certain attribute
+	 *
+	 * 是否具有某属性
+	 * @param key attribute name / 属性键
 	 */
 	hasAttr(key: string): boolean {
 		return this.getAttrTokens(key).length > 0;
 	}
 
-	/** 获取全部的属性名 */
+	/**
+	 * Get all attribute names
+	 *
+	 * 获取全部的属性名
+	 */
 	getAttrNames(): Set<string> {
 		return new Set(this.getAttrTokens().map(({name}) => name));
 	}
 
-	/** 获取全部属性 */
+	/**
+	 * Get all attributes
+	 *
+	 * 获取全部属性
+	 */
 	getAttrs(): Record<string, string | true> {
 		return Object.fromEntries(this.getAttrTokens().map(({name, value}) => [name, value]));
 	}
 
 	/**
+	 * Remove an attribute
+	 *
 	 * 移除指定属性
-	 * @param key 属性键
+	 * @param key attribute name / 属性键
 	 */
 	removeAttr(key: string): void {
 		for (const attr of this.getAttrTokens(key)) {
@@ -451,9 +487,11 @@ export abstract class AttributesToken extends Token {
 	}
 
 	/**
+	 * Toggle the specified attribute
+	 *
 	 * 开关指定属性
-	 * @param key 属性键
-	 * @param force 强制开启或关闭
+	 * @param key attribute name / 属性键
+	 * @param force whether to force enabling or disabling / 强制开启或关闭
 	 * @throws `RangeError` 不为Boolean类型的属性值
 	 */
 	toggleAttr(key: string, force?: boolean): void {

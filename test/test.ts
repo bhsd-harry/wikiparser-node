@@ -21,7 +21,8 @@ describe('API tests', () => {
 				testCodes = file.startsWith('LanguageService')
 					? codes.flatMap(code => [
 						code,
-						code.replace(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF).replace('\n', ' (CRLF)\n'),
+						code.replace(/(?<=\bwikitext = `).+?(?=`)/gsu, mockCRLF)
+							.replace('\n', ' (CRLF)\n'),
 					])
 					: codes;
 			allCodes.set(file.slice(0, -3), codes);
@@ -50,8 +51,11 @@ describe('API tests', () => {
 							} catch (e) /* istanbul ignore next */ {
 								if (e instanceof assert.AssertionError) {
 									const start = Number(/<anonymous>:(\d+)/u.exec(e.stack!)![1]) - 1,
-										end = lines.findIndex((line, i) => i >= start && line.endsWith(';'));
-									e.cause = {message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`};
+										end = lines
+											.findIndex((line, i) => i >= start && line.endsWith(';'));
+									e.cause = {
+										message: `\n${lines.slice(start, end + 1 || Infinity).join('\n')}`,
+									};
 								}
 								throw e;
 							}
@@ -70,7 +74,11 @@ describe('Documentation tests', () => {
 			describe(zhFile, () => {
 				for (const [i, code] of allCodes.get(zhFile)!.entries()) {
 					it(code.split('\n', 1)[0]!.slice(3), () => {
-						assert.strictEqual(code, enCodes[i], `${zhFile} is different from its English version`);
+						assert.strictEqual(
+							code,
+							enCodes[i],
+							`${zhFile} is different from its English version`,
+						);
 					});
 				}
 			});

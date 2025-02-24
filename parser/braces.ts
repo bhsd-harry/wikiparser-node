@@ -48,7 +48,8 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		lastIndex: number | undefined;
 	while (
 		mt
-		|| lastIndex !== undefined && lastIndex <= wikitext.length && stack[stack.length - 1]?.[0]?.startsWith('=')
+		|| lastIndex !== undefined && lastIndex <= wikitext.length
+		&& stack[stack.length - 1]?.[0]?.startsWith('=')
 	) {
 		if (mt?.[1]) {
 			const [, {length}] = mt;
@@ -104,7 +105,10 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 					str = argParts.length > 1 && removeComment(argParts[1]!).trim();
 				// @ts-expect-error abstract class
 				new ArgToken(argParts, config, accum);
-				if (str && str.endsWith(':') && subst.includes(str.slice(0, -1).toLowerCase())) {
+				if (
+					str && str.endsWith(':')
+					&& subst.includes(str.slice(0, -1).toLowerCase())
+				) {
 					ch = 's';
 				}
 			} else {

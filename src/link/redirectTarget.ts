@@ -12,6 +12,8 @@ import {classes} from '../../util/constants';
 /* NOT FOR BROWSER END */
 
 /**
+ * target of a redirect
+ *
  * 重定向目标
  * @classdesc `{childNodes: [AtomToken, ?NoincludeToken]}`
  */
@@ -34,7 +36,7 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 链接显示文字 */
+	/** link text / 链接显示文字 */
 	get innerText(): string {
 		return this.link.toString(true);
 	}
@@ -62,7 +64,8 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 
 	/** @private */
 	override getTitle(): Title {
-		return this.normalizeTitle(this.firstChild.toString(), 0, false, true, true);
+		return this
+			.normalizeTitle(this.firstChild.toString(), 0, false, true, true);
 	}
 
 	/** @private */

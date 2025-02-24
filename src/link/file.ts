@@ -68,8 +68,10 @@ const explode = (start: string, end: string, separator: string, str?: string): s
 };
 
 /**
+ * image
+ *
  * 图片
- * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken]}`
+ * @classdesc `{childNodes: [AtomToken, ...ImageParameterToken[]]}`
  */
 export abstract class FileToken extends LinkBaseToken {
 	declare readonly childNodes: readonly [AtomToken, ...ImageParameterToken[]];
@@ -88,12 +90,12 @@ export abstract class FileToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 扩展名 */
+	/** file extension / 扩展名 */
 	get extension(): string | undefined {
 		return this.getTitle(true).extension;
 	}
 
-	/** 图片链接 */
+	/** image link / 图片链接 */
 	override get link(): string | Title {
 		return this.getArg('link')?.link ?? super.link;
 	}
@@ -102,7 +104,7 @@ export abstract class FileToken extends LinkBaseToken {
 		this.setValue('link', value);
 	}
 
-	/** 图片大小 */
+	/** image size / 图片大小 */
 	get size(): {width: string, height: string} | undefined {
 		const fr = this.getFrame();
 		return fr === 'framed' || fr instanceof Title ? undefined : this.getArg('width')?.size;
@@ -112,7 +114,7 @@ export abstract class FileToken extends LinkBaseToken {
 		this.setValue('width', size && size.width + (size.height && 'x') + size.height);
 	}
 
-	/** 图片宽度 */
+	/** image width / 图片宽度 */
 	get width(): string | undefined {
 		return this.type === 'gallery-image'
 			? (this.parentNode as GalleryToken | undefined)?.widths.toString()
@@ -128,7 +130,7 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 	}
 
-	/** 图片高度 */
+	/** image height / 图片高度 */
 	get height(): string | undefined {
 		return this.type === 'gallery-image'
 			? (this.parentNode as GalleryToken | undefined)?.heights.toString()
@@ -182,7 +184,10 @@ export abstract class FileToken extends LinkBaseToken {
 			[fr] = frameKeys,
 			unscaled = fr === 'framed' || fr === 'manualthumb',
 			rect = new BoundingRect(this, start);
-		if (this.closest('ext-link-text') && (this.getValue('link') as string | undefined)?.trim() !== '') {
+		if (
+			this.closest('ext-link-text')
+			&& (this.getValue('link') as string | undefined)?.trim() !== ''
+		) {
 			errors.push(generateForSelf(this, rect, 'nested-link', 'internal link in an external link'));
 		}
 		if (unscaled) {
@@ -207,7 +212,12 @@ export abstract class FileToken extends LinkBaseToken {
 		 * @param p1 替换$1
 		 */
 		const generate = (msg: string, p1: string) => (arg: ImageParameterToken): LintError => {
-			const e = generateForChild(arg, rect, 'no-duplicate', Parser.msg(`${msg} image $1 parameter`, p1));
+			const e = generateForChild(
+				arg,
+				rect,
+				'no-duplicate',
+				Parser.msg(`${msg} image $1 parameter`, p1),
+			);
 			e.suggestions = [{desc: 'remove', range: [e.startIndex - 1, e.endIndex], text: ''}];
 			return e;
 		};
@@ -217,7 +227,10 @@ export abstract class FileToken extends LinkBaseToken {
 			}
 			let relevantArgs = args.filter(({name}) => name === key);
 			if (key === 'caption') {
-				relevantArgs = [...relevantArgs.slice(0, -1).filter(arg => arg.text()), ...relevantArgs.slice(-1)];
+				relevantArgs = [
+					...relevantArgs.slice(0, -1).filter(arg => arg.text()),
+					...relevantArgs.slice(-1),
+				];
 			}
 			if (relevantArgs.length > 1) {
 				errors.push(...relevantArgs.map(generate('duplicated', key)));
@@ -228,33 +241,43 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 		if (horizAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => horizAlign.has(name)).map(generate('conflicting', 'horizontal-alignment')),
+				...args.filter(({name}) => horizAlign.has(name))
+					.map(generate('conflicting', 'horizontal-alignment')),
 			);
 		}
 		if (vertAlignKeys.length > 1) {
 			errors.push(
-				...args.filter(({name}) => vertAlign.has(name)).map(generate('conflicting', 'vertical-alignment')),
+				...args.filter(({name}) => vertAlign.has(name))
+					.map(generate('conflicting', 'vertical-alignment')),
 			);
 		}
 		return errors;
 	}
 
-	/** 获取所有图片参数节点 */
+	/**
+	 * Get all image parameter tokens
+	 *
+	 * 获取所有图片参数节点
+	 */
 	getAllArgs(): ImageParameterToken[] {
 		return this.childNodes.slice(1) as ImageParameterToken[];
 	}
 
 	/**
+	 * Get image parameters with the specified name
+	 *
 	 * 获取指定图片参数
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	getArgs(key: string): ImageParameterToken[] {
 		return this.getAllArgs().filter(({name}) => key === name);
 	}
 
 	/**
+	 * Get the effective image parameter with the specified name
+	 *
 	 * 获取生效的指定图片参数
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	getArg(key: string): ImageParameterToken | undefined {
 		const args = this.getArgs(key);
@@ -262,8 +285,10 @@ export abstract class FileToken extends LinkBaseToken {
 	}
 
 	/**
+	 * Get the effective image parameter value
+	 *
 	 * 获取生效的指定图片参数值
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	getValue(key: string): string | true | undefined {
 		return this.getArg(key)?.getValue();
@@ -288,49 +313,77 @@ export abstract class FileToken extends LinkBaseToken {
 		return args;
 	}
 
-	/** 获取图片框架属性参数节点 */
+	/**
+	 * Get image frame parameter tokens
+	 *
+	 * 获取图片框架属性参数节点
+	 */
 	getFrameArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(frame, 'frame');
 	}
 
-	/** 获取图片水平对齐参数节点 */
+	/**
+	 * Get image horizontal alignment parameter tokens
+	 *
+	 * 获取图片水平对齐参数节点
+	 */
 	getHorizAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(horizAlign, 'horizontal-align');
 	}
 
-	/** 获取图片垂直对齐参数节点 */
+	/**
+	 * Get image vertical alignment parameter tokens
+	 *
+	 * 获取图片垂直对齐参数节点
+	 */
 	getVertAlignArgs(): ImageParameterToken[] {
 		return this.#getTypedArgs(vertAlign, 'vertical-align');
 	}
 
-	/** 获取生效的图片框架属性参数 */
+	/**
+	 * Get the effective image frame paremter value
+	 *
+	 * 获取生效的图片框架属性参数
+	 */
 	getFrame(): string | Title | undefined {
 		const [arg] = this.getFrameArgs(),
 			val = arg?.name;
 		return val === 'manualthumb' ? this.normalizeTitle(arg!.getValue() as string, 6) : val;
 	}
 
-	/** 获取生效的图片水平对齐参数 */
+	/**
+	 * Get the effective image horizontal alignment parameter value
+	 *
+	 * 获取生效的图片水平对齐参数
+	 */
 	getHorizAlign(): string | undefined {
 		return this.getHorizAlignArgs()[0]?.name;
 	}
 
-	/** 获取生效的图片垂直对齐参数 */
+	/**
+	 * Get the effective image vertical alignment parameter value
+	 *
+	 * 获取生效的图片垂直对齐参数
+	 */
 	getVertAlign(): string | undefined {
 		return this.getVertAlignArgs()[0]?.name;
 	}
 
 	/**
+	 * Check if the image contains the specified parameter
+	 *
 	 * 是否具有指定图片参数
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	hasArg(key: string): boolean {
 		return this.getArgs(key).length > 0;
 	}
 
 	/**
+	 * Remove the specified image parameter
+	 *
 	 * 移除指定图片参数
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	removeArg(key: string): void {
 		for (const token of this.getArgs(key)) {
@@ -338,23 +391,31 @@ export abstract class FileToken extends LinkBaseToken {
 		}
 	}
 
-	/** 获取图片参数名 */
+	/**
+	 * Get all image parameter names
+	 *
+	 * 获取图片参数名
+	 */
 	getKeys(): Set<string> {
 		return new Set(this.getAllArgs().map(({name}) => name));
 	}
 
 	/**
+	 * Get the image parameter values with the specified name
+	 *
 	 * 获取指定的图片参数值
-	 * @param key 参数名
+	 * @param key parameter name / 参数名
 	 */
 	getValues(key: string): (string | true)[] {
 		return this.getArgs(key).map(token => token.getValue());
 	}
 
 	/**
+	 * Set the image parameter
+	 *
 	 * 设置图片参数
-	 * @param key 参数名
-	 * @param value 参数值
+	 * @param key parameter name / 参数名
+	 * @param value parameter value / 参数值
 	 * @throws `RangeError` 未定义的图片参数
 	 */
 	setValue(key: string, value: string | boolean = false): void {
@@ -381,10 +442,15 @@ export abstract class FileToken extends LinkBaseToken {
 		const parameter = Shadow.run(
 			(): ImageParameterToken =>
 				// @ts-expect-error abstract class
-				new ImageParameterToken(syntax.replace('$1', key === 'width' ? '1' : ''), this.extension, config),
+				new ImageParameterToken(
+					syntax.replace('$1', key === 'width' ? '1' : ''),
+					this.extension,
+					config,
+				),
 		);
 		if (free) {
-			const {childNodes} = Parser.parse(value as string, this.getAttribute('include'), undefined, config);
+			const {childNodes} = Parser
+				.parse(value as string, this.getAttribute('include'), undefined, config);
 			parameter.replaceChildren(...childNodes);
 		}
 		parameter.afterBuild();

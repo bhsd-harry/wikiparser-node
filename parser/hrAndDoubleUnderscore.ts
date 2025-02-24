@@ -25,7 +25,10 @@ export const parseHrAndDoubleUnderscore = (
 	config.insensitiveDoubleUnderscore ??= new Set(insensitive);
 	config.sensitiveDoubleUnderscore ??= new Set(sensitive);
 	/__(toc|notoc)__/giu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-	config.regexHrAndDoubleUnderscore ??= new RegExp(`__(${[...insensitive, ...sensitive].join('|')})__`, 'giu');
+	config.regexHrAndDoubleUnderscore ??= new RegExp(
+		`__(${[...insensitive, ...sensitive].join('|')})__`,
+		'giu',
+	);
 	if (type !== 'root' && (type !== 'ext-inner' || name !== 'poem')) {
 		data = `\0${data}`;
 	}

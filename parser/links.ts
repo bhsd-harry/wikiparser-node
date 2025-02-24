@@ -67,7 +67,16 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 			/* NOT FOR BROWSER */
 
 			interwiki,
-		} = Parser.normalizeTitle(link, 0, false, config, true, true, true, true);
+		} = Parser.normalizeTitle(
+			link,
+			0,
+			false,
+			config,
+			true,
+			true,
+			true,
+			true,
+		);
 		if (!valid) {
 			s += `[[${x}`;
 			continue;

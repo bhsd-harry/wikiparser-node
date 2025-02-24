@@ -21,8 +21,10 @@ declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | A
 const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']);
 
 /**
+ * extension tag that has a nested structure
+ *
  * 嵌套式的扩展标签
- * @classdesc `{childNodes: ...ExtToken|NoincludeToken|CommentToken}`
+ * @classdesc `{childNodes: (ExtToken|NoincludeToken|CommentToken)[]}`
  */
 export abstract class NestedToken extends Token {
 	declare readonly name: string;
@@ -118,7 +120,12 @@ export abstract class NestedToken extends Token {
 				const str = child.toString().trim();
 				return str && !regex.test(str);
 			}).map(child => {
-				const e = generateForChild(child, rect, 'no-ignored', Parser.msg('invalid content in <$1>', this.name));
+				const e = generateForChild(
+					child,
+					rect,
+					'no-ignored',
+					Parser.msg('invalid content in <$1>', this.name),
+				);
 				e.suggestions = [
 					{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''},
 					{desc: 'comment', range: [e.startIndex, e.endIndex], text: `<!--${child.toString()}-->`},
@@ -132,8 +139,8 @@ export abstract class NestedToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inseted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i?: number): T {
 		if (!Shadow.running && token.type === 'ext' && !this.#tags.includes(token.name!)) {

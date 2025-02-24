@@ -20,6 +20,8 @@ declare type NowikiTypes = 'ext-inner'
 	| 'quote';
 
 /**
+ * text-only token that will not be parsed
+ *
  * 纯文字Token，不会被解析
  * @classdesc `{childNodes: [AstText]}`
  */
@@ -38,7 +40,7 @@ export abstract class NowikiBaseToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
-	/** 纯文本部分 */
+	/** text content / 纯文本部分 */
 	get innerText(): string {
 		return this.firstChild.data;
 	}
@@ -59,7 +61,7 @@ export abstract class NowikiBaseToken extends Token {
 
 	/**
 	 * @override
-	 * @param str 新文本
+	 * @param str new text / 新文本
 	 */
 	override setText(str: string): string {
 		return super.setText(str);

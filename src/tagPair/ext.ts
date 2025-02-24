@@ -36,6 +36,8 @@ const del = <T>(arr: readonly T[], ele: T): T[] => {
 };
 
 /**
+ * extension tag
+ *
  * 扩展标签
  * @classdesc `{childNodes: [AttributesToken, Token]}`
  */
@@ -179,7 +181,9 @@ export abstract class ExtToken extends TagPairToken {
 		const errors = super.lint(start, re),
 			rect = new BoundingRect(this, start);
 		if (this.name !== 'nowiki' && this.closest('html-attrs,table-attrs')) {
-			errors.push(generateForSelf(this, rect, 'parsing-order', 'extension tag in HTML tag attributes'));
+			errors.push(
+				generateForSelf(this, rect, 'parsing-order', 'extension tag in HTML tag attributes'),
+			);
 		}
 		if (this.name === 'ref' && this.closest('heading-title')) {
 			errors.push(generateForSelf(this, rect, 'var-anchor', 'variable anchor in a section header'));
@@ -217,7 +221,8 @@ export abstract class ExtToken extends TagPairToken {
 			case 'poem':
 				firstChild.classList.add('poem');
 				return `<div${firstChild.toHtmlInternal()}>${
-					lastChild.toHtmlInternal({...opt, nowrap: false}).replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
+					lastChild.toHtmlInternal({...opt, nowrap: false})
+						.replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
 						.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
 				}</div>`;
 			case 'gallery': {

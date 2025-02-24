@@ -12,6 +12,8 @@ import {encode, rawurldecode} from '../../util/string';
 /* NOT FOR BROWSER END */
 
 /**
+ * internal link
+ *
  * 内链
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
@@ -32,16 +34,18 @@ export abstract class LinkToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 链接显示文字 */
+	/** link text / 链接显示文字 */
 	get innerText(): string {
-		return this.length > 1 ? this.lastChild.text() : rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
+		return this.length > 1
+			? this.lastChild.text()
+			: rawurldecode(this.firstChild.text().replace(/^\s*:?/u, ''));
 	}
 
 	set innerText(text) {
 		this.setLinkText(text);
 	}
 
-	/** 是否链接到自身 */
+	/** whether to be a self link / 是否链接到自身 */
 	get selfLink(): boolean {
 		const {link: {title, fragment}} = this;
 		return !title && Boolean(fragment);
@@ -67,9 +71,11 @@ export abstract class LinkToken extends LinkBaseToken {
 	/* NOT FOR BROWSER */
 
 	/**
+	 * Set the interlanguage link
+	 *
 	 * 设置跨语言链接
-	 * @param lang 语言前缀
-	 * @param link 页面标题
+	 * @param lang language prefix / 语言前缀
+	 * @param link page title / 页面标题
 	 * @throws `SyntaxError` 仅有片段标识符
 	 */
 	setLangLink(lang: string, link: string): void {
@@ -82,6 +88,8 @@ export abstract class LinkToken extends LinkBaseToken {
 	}
 
 	/**
+	 * Convert to a self link
+	 *
 	 * 修改为到自身的链接
 	 * @param fragment 片段标识符
 	 * @throws `RangeError` 空的片段标识符
@@ -95,6 +103,8 @@ export abstract class LinkToken extends LinkBaseToken {
 	}
 
 	/**
+	 * Automatically generate the link text after the pipe
+	 *
 	 * 自动生成管道符后的链接文字
 	 * @throws `Error` 带有"#"或"%"时不可用
 	 */

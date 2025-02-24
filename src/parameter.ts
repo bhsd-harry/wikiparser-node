@@ -28,6 +28,8 @@ import {fixedToken} from '../mixin/fixed';
 const linkRegex = new RegExp(`https?://${extUrlCharFirst}${extUrlChar}$`, 'iu');
 
 /**
+ * template or magic word parameter
+ *
  * 模板或魔术字参数
  * @classdesc `{childNodes: [Token, Token]}`
  */
@@ -57,7 +59,7 @@ export abstract class ParameterToken extends Token {
 		return 'parameter';
 	}
 
-	/** 是否是匿名参数 */
+	/** whether to be anonymous / 是否是匿名参数 */
 	get anon(): boolean {
 		return this.firstChild.length === 0;
 	}
@@ -71,7 +73,7 @@ export abstract class ParameterToken extends Token {
 		this.parentNode?.anonToNamed();
 	}
 
-	/** getValue()的getter */
+	/** parameter value / 参数值 */
 	get value(): string {
 		return this.getValue();
 	}
@@ -80,7 +82,7 @@ export abstract class ParameterToken extends Token {
 		this.setValue(value);
 	}
 
-	/** 是否是重复参数 */
+	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
 		try {
 			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
@@ -230,25 +232,34 @@ export abstract class ParameterToken extends Token {
 		this.replaceWith(token);
 	}
 
-	/** 获取参数值 */
+	/**
+	 * Get the parameter value
+	 *
+	 * 获取参数值
+	 */
 	getValue(): string {
 		const value = removeCommentLine(this.lastChild.text());
 		return this.anon && this.parentNode?.isTemplate() !== false ? value : value.trim();
 	}
 
 	/**
+	 * Set the parameter value
+	 *
 	 * 设置参数值
-	 * @param value 参数值
+	 * @param value parameter value / 参数值
 	 */
 	setValue(value: string): void {
-		const {childNodes} = Parser.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		const {childNodes} = Parser
+			.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		this.lastChild.replaceChildren(...childNodes);
 	}
 
 	/**
+	 * Rename the parameter
+	 *
 	 * 修改参数名
-	 * @param key 新参数名
-	 * @param force 是否无视冲突命名
+	 * @param key new parameter name / 新参数名
+	 * @param force whether to rename regardless of conflicts / 是否无视冲突命名
 	 * @throws `Error` 仅用于模板参数
 	 * @throws `RangeError` 更名造成重复参数
 	 */
@@ -260,7 +271,8 @@ export abstract class ParameterToken extends Token {
 		} else if (anon) {
 			parentNode?.anonToNamed();
 		}
-		const root = Parser.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
+		const root = Parser
+				.parse(key, this.getAttribute('include'), undefined, this.getAttribute('config')),
 			name = this.trimName(root, false);
 		if (this.name === name) {
 			Parser.warn('The actual parameter name is not changed', name);
@@ -274,7 +286,11 @@ export abstract class ParameterToken extends Token {
 		this.firstChild.replaceChildren(...root.childNodes);
 	}
 
-	/** 转义 `=` */
+	/**
+	 * Ecape `=`
+	 *
+	 * 转义 `=`
+	 */
 	escape(): void {
 		for (const child of this.lastChild.childNodes) {
 			if (child.type === 'text') {

@@ -6,48 +6,74 @@ import type {ConverterFlagsToken} from '../src/converterFlags';
 
 export interface FlagsParentBase {
 
-	/** 所有转换类型标记 */
+	/** all language conversion flags / 所有转换类型标记 */
 	flags: Set<string>;
 
-	/** 获取所有转换类型标记 */
+	/**
+	 * Get all language conversion flags
+	 *
+	 * 获取所有转换类型标记
+	 */
 	getAllFlags(): Set<string>;
 
-	/** 获取有效的转换类型标记 */
+	/**
+	 * Get effective language conversion flags
+	 *
+	 * 获取有效的转换类型标记
+	 */
 	getEffectiveFlags(): Set<string>;
 
-	/** 获取未知的转换类型标记 */
+	/**
+	 * Get unknown language conversion flags
+	 *
+	 * 获取未知的转换类型标记
+	 */
 	getUnknownFlags(): Set<string>;
 
-	/** 获取指定语言变体的转换标记 */
+	/**
+	 * Get language coversion flags that specify a language variant
+	 *
+	 * 获取指定语言变体的转换标记
+	 */
 	getVariantFlags(): Set<string>;
 
 	/**
+	 * Check if a language conversion flag is present
+	 *
 	 * 是否具有某转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	hasFlag(flag: string): boolean;
 
 	/**
+	 * Check if an effective language conversion flag is present
+	 *
 	 * 是否具有某有效的转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	hasEffectiveFlag(flag: string): boolean;
 
 	/**
-	 * 移除转换类型标记
-	 * @param flag 转换类型标记
+	 * Remove a language conversion flag
+	 *
+	 * 移除某转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	removeFlag(flag: string): void;
 
 	/**
+	 * Set a language conversion flag
+	 *
 	 * 设置转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	setFlag(flag: string): void;
 
 	/**
-	 * 开关某转换类型标记
-	 * @param flag 转换类型标记
+	 * Toggle a language conversion flag
+	 *
+	 * 开关转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	toggleFlag(flag: string): void;
 }

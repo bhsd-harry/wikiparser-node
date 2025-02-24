@@ -16,7 +16,7 @@ export abstract class DdToken extends ListBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 缩进数 */
+	/** number of indentation / 缩进数 */
 	get indent(): number {
 		return this.innerText.length;
 	}

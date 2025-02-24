@@ -15,7 +15,8 @@ export const sol = (self?: boolean) => <T extends AstConstructor>(constructor: T
 		#prependNewLine(): string {
 			const {previousVisibleSibling, parentNode, type} = this as unknown as Token;
 			if (previousVisibleSibling) {
-				return self && previousVisibleSibling.type === type || previousVisibleSibling.toString().endsWith('\n')
+				return self && previousVisibleSibling.type === type
+					|| previousVisibleSibling.toString().endsWith('\n')
 					? ''
 					: '\n';
 			}

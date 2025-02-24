@@ -6,18 +6,24 @@ import type {MagicLinkToken} from '../src/magicLink';
 
 export interface MagicLinkParentBase {
 
-	/** 协议 */
+	/** URL protocol / 协议 */
 	protocol: string | undefined;
 
-	/** 和内链保持一致 */
+	/** link / 链接 */
 	link: string;
 
-	/** 获取网址 */
+	/**
+	 * Get the URL
+	 *
+	 * 获取网址
+	 */
 	getUrl(): URL;
 
 	/**
-	 * 设置链接目标
-	 * @param url 网址
+	 * Set the target of the link
+	 *
+	 * 设置外链目标
+	 * @param url URL containing the protocol / 含协议的网址
 	 */
 	setTarget(url: string): void;
 }

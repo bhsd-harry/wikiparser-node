@@ -24,8 +24,10 @@ import {html} from '../util/html';
 declare type Child = GalleryImageToken | NoincludeToken;
 
 /**
+ * gallery tag
+ *
  * gallery标签
- * @classdesc `{childNodes: ...(GalleryImageToken|NoincludeToken|AstText)}`
+ * @classdesc `{childNodes: (GalleryImageToken|NoincludeToken|AstText)[]}`
  */
 export abstract class GalleryToken extends Token {
 	declare readonly name: 'gallery';
@@ -54,17 +56,17 @@ export abstract class GalleryToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 图片宽度 */
+	/** image widths / 图片宽度 */
 	get widths(): number {
 		return this.#getSize('widths');
 	}
 
-	/** 图片高度 */
+	/** image heights / 图片高度 */
 	get heights(): number {
 		return this.#getSize('heights');
 	}
 
-	/** 所有图片 */
+	/** all images / 所有图片 */
 	override get images(): GalleryImageToken[] {
 		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
 	}
@@ -170,16 +172,19 @@ export abstract class GalleryToken extends Token {
 	}
 
 	/**
+	 * Insert an image
+	 *
 	 * 插入图片
-	 * @param file 图片文件名
-	 * @param i 插入位置
+	 * @param file image file name / 图片文件名
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `SyntaxError` 非法的文件名
 	 */
 	insertImage(file: string, i?: number): GalleryImageToken {
 		if (this.#checkFile(file)) {
 			const token = Shadow.run(
-				// @ts-expect-error abstract class
-				(): GalleryImageToken => new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
+				(): GalleryImageToken =>
+					// @ts-expect-error abstract class
+					new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
 			);
 			token.afterBuild();
 			return this.insertAt(token, i);
@@ -189,8 +194,8 @@ export abstract class GalleryToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的节点
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `RangeError` 插入不可见内容
 	 */
 	override insertAt(token: string, i?: number): AstText;

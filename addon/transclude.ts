@@ -53,7 +53,8 @@ TranscludeToken.prototype.replaceTemplate =
 		if (this.type === 'magic-word') {
 			throw new Error('TranscludeToken.replaceTemplate method is only for templates!');
 		}
-		const {childNodes} = Parser.parse(title, this.getAttribute('include'), 2, this.getAttribute('config'));
+		const {childNodes} = Parser
+			.parse(title, this.getAttribute('include'), 2, this.getAttribute('config'));
 		(this.firstChild as AtomToken).replaceChildren(...childNodes);
 	};
 
@@ -200,7 +201,8 @@ TranscludeToken.prototype.escapeTables =
 				table.escape();
 			}
 		}
-		const {firstChild, length} = Parser.parse(`{{${parsed.toString()}}}`, include, undefined, config);
+		const {firstChild, length} = Parser
+			.parse(`{{${parsed.toString()}}}`, include, undefined, config);
 		/* istanbul ignore if */
 		if (length !== 1 || !(firstChild instanceof TranscludeToken)) {
 			throw new Error('Failed to escape tables!');

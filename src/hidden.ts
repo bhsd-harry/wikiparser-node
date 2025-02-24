@@ -9,7 +9,11 @@ import type {Config} from '../base';
 
 /* NOT FOR BROWSER END */
 
-/** 不可见的节点 */
+/**
+ * invisible token
+ *
+ * 不可见的节点
+ */
 @hiddenToken()
 export class HiddenToken extends Token {
 	override get type(): 'hidden' {

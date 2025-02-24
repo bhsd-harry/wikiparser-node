@@ -28,7 +28,11 @@ const atomTypes = [
 
 declare type AtomTypes = typeof atomTypes[number];
 
-/** 不会被继续解析的plain Token */
+/**
+ * plain Token that will not be parsed further
+ *
+ * 不会被继续解析的plain Token
+ */
 export class AtomToken extends Token {
 	#type;
 

@@ -15,8 +15,10 @@ import {Shadow} from '../util/debug';
 /* NOT FOR BROWSER END */
 
 /**
+ * argument wrapped in `{{{}}}`
+ *
  * `{{{}}}`包裹的参数
- * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken]}`
+ * @classdesc `{childNodes: [AtomToken, ?Token, ...HiddenToken[]]}`
  */
 export abstract class ArgToken extends Token {
 	declare readonly name: string;
@@ -36,7 +38,7 @@ export abstract class ArgToken extends Token {
 		return 'arg';
 	}
 
-	/** 预设值 */
+	/** default value / 预设值 */
 	get default(): string | false {
 		return this.childNodes[1]?.text() ?? false;
 	}
@@ -135,7 +137,12 @@ export abstract class ArgToken extends Token {
 		if (rest.length > 0) {
 			const rect = new BoundingRect(this, start);
 			errors.push(...rest.map(child => {
-				const e = generateForChild(child, rect, 'no-ignored', 'invisible content inside triple braces');
+				const e = generateForChild(
+					child,
+					rect,
+					'no-ignored',
+					'invisible content inside triple braces',
+				);
 				e.startIndex--;
 				e.startCol--;
 				e.suggestions = [
@@ -166,7 +173,11 @@ export abstract class ArgToken extends Token {
 		});
 	}
 
-	/** 移除无效部分 */
+	/**
+	 * Remove redundant parts
+	 *
+	 * 移除无效部分
+	 */
 	removeRedundant(): void {
 		Shadow.run(() => {
 			for (let i = this.length - 1; i > 1; i--) {
@@ -177,7 +188,7 @@ export abstract class ArgToken extends Token {
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	override removeAt(i: number): Token {
 		if (i === 1) {
@@ -188,8 +199,8 @@ export abstract class ArgToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends Token>(token: T, i = this.length): T {
 		i += i < 0 ? this.length : 0;
@@ -208,24 +219,30 @@ export abstract class ArgToken extends Token {
 	}
 
 	/**
+	 * Set the argument name
+	 *
 	 * 设置参数名
-	 * @param name 新参数名
+	 * @param name new argument name / 新参数名
 	 */
 	setName(name: string): void {
-		const {childNodes} = Parser.parse(name, this.getAttribute('include'), 2, this.getAttribute('config'));
+		const {childNodes} = Parser
+			.parse(name, this.getAttribute('include'), 2, this.getAttribute('config'));
 		this.firstChild.replaceChildren(...childNodes);
 	}
 
 	/**
+	 * Set the default value
+	 *
 	 * 设置预设值
-	 * @param value 预设值
+	 * @param value default value / 预设值
 	 */
 	setDefault(value: string | false): void {
 		if (value === false) {
 			this.removeAt(1);
 			return;
 		}
-		const root = Parser.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config')),
+		const root = Parser
+				.parse(value, this.getAttribute('include'), undefined, this.getAttribute('config')),
 			{childNodes: [, oldDefault]} = this;
 		if (oldDefault) {
 			oldDefault.replaceChildren(...root.childNodes);

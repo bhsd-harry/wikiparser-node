@@ -123,7 +123,9 @@ export const sanitizeId = replaceEntities(/["&]/gu);
  * @param str attribute value
  */
 export const sanitizeAlt = (str: string | undefined): string | undefined =>
-	str?.replace(/<\/?[a-z].*?>/gu, '').trim().replace(/\s+/gu, ' ').replaceAll('"', '&quot;');
+	str?.replace(/<\/?[a-z].*?>/gu, '').trim()
+		.replace(/\s+/gu, ' ')
+		.replaceAll('"', '&quot;');
 
 /** escape newline */
 export const newline = factory(/\n/gu, '&#10;');

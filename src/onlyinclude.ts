@@ -9,8 +9,10 @@ import Parser from '../index';
 /* NOT FOR BROWSER END */
 
 /**
+ * `<onlyinclude>` during transclusion
+ *
  * 嵌入时的`<onlyinclude>`
- * @classdesc `{childNodes: ...AstText|Token}`
+ * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 export class OnlyincludeToken extends Token {
 	override get type(): 'onlyinclude' {
@@ -19,7 +21,7 @@ export class OnlyincludeToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 内部wikitext */
+	/** inner wikitext / 内部wikitext */
 	get innerText(): string {
 		return this.text();
 	}
@@ -30,7 +32,9 @@ export class OnlyincludeToken extends Token {
 		if (text.includes('</onlyinclude>')) {
 			throw new RangeError('"</onlyinclude>" is not allowed in the text!');
 		}
-		this.replaceChildren(...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes);
+		this.replaceChildren(
+			...Parser.parse(text, true, undefined, this.getAttribute('config')).childNodes,
+		);
 	}
 
 	/* NOT FOR BROWSER END */

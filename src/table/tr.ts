@@ -9,8 +9,10 @@ import {classes} from '../../util/constants';
 /* NOT FOR BROWSER END */
 
 /**
+ * table row that contains the newline at the beginning but not at the end
+ *
  * 表格行，含开头的换行，不含结尾的换行
- * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken]}`
+ * @classdesc `{childNodes: [SyntaxToken, AttributesToken, ?Token, ...TdToken[]]}`
  */
 export abstract class TrToken extends TrBaseToken {
 	declare readonly childNodes: readonly [SyntaxToken, AttributesToken, ...TdToken[]];
@@ -38,9 +40,15 @@ export abstract class TrToken extends TrBaseToken {
 	 * @param attr 表格属性
 	 */
 	constructor(syntax: string, attr?: string, config?: Config, accum?: Token[]) {
-		super(/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u, syntax, 'tr', attr, config, accum, {
-			Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:',
-		});
+		super(
+			/^\n[^\S\n]*(?:\|-+|\{\{\s*!\s*\}\}-+|\{\{\s*!-\s*\}\}-*)$/u,
+			syntax,
+			'tr',
+			attr,
+			config,
+			accum,
+			{Token: 2, SyntaxToken: 0, AttributesToken: 1, TdToken: '2:'},
+		);
 	}
 
 	/* NOT FOR BROWSER */
@@ -70,12 +78,20 @@ export abstract class TrToken extends TrBaseToken {
 		return undefined;
 	}
 
-	/** 获取下一行 */
+	/**
+	 * Get the next row
+	 *
+	 * 获取下一行
+	 */
 	getNextRow(): TrToken | undefined {
 		return this.#getSiblingRow((childNodes, index) => childNodes.slice(index + 1));
 	}
 
-	/** 获取前一行 */
+	/**
+	 * Get the previous row
+	 *
+	 * 获取前一行
+	 */
 	getPreviousRow(): TrToken | undefined {
 		return this.#getSiblingRow((childNodes, index) => childNodes.slice(0, index).reverse());
 	}

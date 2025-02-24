@@ -14,6 +14,8 @@ import {classes} from '../../util/constants';
 /* NOT FOR BROWSER END */
 
 /**
+ * `<includeonly>`, `<noinclude>` or `<onlyinclude>`
+ *
  * `<includeonly>`或`<noinclude>`或`<onlyinclude>`
  * @classdesc `{childNodes: [AstText, AstText]}`
  */
@@ -73,12 +75,23 @@ export abstract class IncludeToken extends TagPairToken {
 			{firstChild, closed, name} = this,
 			rect = new BoundingRect(this, start);
 		if (firstChild.data.trim()) {
-			const e = generateForChild(firstChild, rect, 'no-ignored', 'useless attribute', 'warning');
+			const e = generateForChild(
+				firstChild,
+				rect,
+				'no-ignored',
+				'useless attribute',
+				'warning',
+			);
 			e.suggestions = [{desc: 'remove', range: [e.startIndex, e.endIndex], text: ''}];
 			errors.push(e);
 		}
 		if (!closed) {
-			const e = generateForSelf(this, rect, 'unclosed-comment', Parser.msg('unclosed $1', `<${name}>`));
+			const e = generateForSelf(
+				this,
+				rect,
+				'unclosed-comment',
+				Parser.msg('unclosed $1', `<${name}>`),
+			);
 			e.suggestions = [{desc: 'close', range: [e.endIndex, e.endIndex], text: `</${name}>`}];
 			errors.push(e);
 		}
@@ -98,13 +111,17 @@ export abstract class IncludeToken extends TagPairToken {
 
 	/**
 	 * @override
-	 * @param str 新文本
+	 * @param str new text / 新文本
 	 */
 	override setText(str: string): string {
 		return super.setText(str, 1);
 	}
 
-	/** 清除标签属性 */
+	/**
+	 * Remove tag attributes
+	 *
+	 * 清除标签属性
+	 */
 	removeAttr(): void {
 		super.setText('');
 	}

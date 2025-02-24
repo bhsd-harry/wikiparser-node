@@ -1,6 +1,10 @@
 ## v1.16.5
 
-*2025-02-22*
+*2025-02-24*
+
+**Added**
+
+- English translation for JSDoc annotations
 
 **Fixed**
 

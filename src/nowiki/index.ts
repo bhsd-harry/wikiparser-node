@@ -10,7 +10,11 @@ import {classes} from '../../util/constants';
 
 /* NOT FOR BROWSER END */
 
-/** 扩展标签内的纯文字Token */
+/**
+ * text-only token inside an extension tag
+ *
+ * 扩展标签内的纯文字Token
+ */
 export abstract class NowikiToken extends NowikiBaseToken {
 	declare readonly name: string;
 
@@ -34,7 +38,12 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		const {name, firstChild: {data}} = this;
 		if ((name === 'templatestyles' || name === 'section') && data) {
-			const e = generateForSelf(this, {start}, 'void-ext', Parser.msg('nothing should be in <$1>', name));
+			const e = generateForSelf(
+				this,
+				{start},
+				'void-ext',
+				Parser.msg('nothing should be in <$1>', name),
+			);
 			e.fix = {range: [start, e.endIndex], text: '', desc: 'empty'};
 			return [e];
 		}

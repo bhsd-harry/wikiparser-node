@@ -35,9 +35,12 @@ const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
 declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
 
-const insecureStyle = /expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u;
+const insecureStyle =
+	/expression|(?:accelerator|-o-link(?:-source)?|-o-replace)\s*:|(?:url|image(?:-set)?)\s*\(|attr\s*\([^)]+[\s,]url/u;
 
 /**
+ * attribute of extension and HTML tags
+ *
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
@@ -71,12 +74,12 @@ export abstract class AttributeToken extends Token {
 		return this.#type;
 	}
 
-	/** 标签名 */
+	/** tag name / 标签名 */
 	get tag(): string {
 		return this.#tag;
 	}
 
-	/** 引号是否匹配 */
+	/** whether the quotes are balanced / 引号是否匹配 */
 	get balanced(): boolean {
 		return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
@@ -89,7 +92,7 @@ export abstract class AttributeToken extends Token {
 		}
 	}
 
-	/** getValue()的getter */
+	/** attribute value / 属性值 */
 	get value(): string | true {
 		return this.getValue();
 	}
@@ -233,7 +236,15 @@ export abstract class AttributeToken extends Token {
 			e.suggestions = [{desc: 'remove', range: [start, start + length], text: ''}];
 			errors.push(e);
 		} else if (obsoleteAttrs[tag]?.has(name)) {
-			errors.push(generateForChild(firstChild, rect, 'obsolete-attr', 'obsolete attribute', 'warning'));
+			errors.push(
+				generateForChild(
+					firstChild,
+					rect,
+					'obsolete-attr',
+					'obsolete attribute',
+					'warning',
+				),
+			);
 		} else if (name === 'style' && typeof value === 'string' && insecureStyle.test(value)) {
 			errors.push(generateForChild(lastChild, rect, 'insecure-style', 'insecure style'));
 		} else if (name === 'tabindex' && typeof value === 'string' && value !== '0') {
@@ -247,7 +258,11 @@ export abstract class AttributeToken extends Token {
 		return errors;
 	}
 
-	/** 获取属性值 */
+	/**
+	 * Get the attribute value
+	 *
+	 * 获取属性值
+	 */
 	getValue(): string | true {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
 	}
@@ -273,12 +288,20 @@ export abstract class AttributeToken extends Token {
 		});
 	}
 
-	/** 转义等号 */
+	/**
+	 * Escape `=`
+	 *
+	 * 转义等号
+	 */
 	escape(): void {
 		this.#equal = '{{=}}';
 	}
 
-	/** 闭合引号 */
+	/**
+	 * Close the quote
+	 *
+	 * 闭合引号
+	 */
 	close(): void {
 		const [opening] = this.#quotes;
 		if (opening) {
@@ -287,8 +310,10 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/**
+	 * Set the attribute value
+	 *
 	 * 设置属性值
-	 * @param value 参数值
+	 * @param value attribute value / 属性值
 	 * @throws `RangeError` 扩展标签属性不能包含 ">"
 	 * @throws `RangeError` 同时包含单引号和双引号
 	 */
@@ -317,8 +342,10 @@ export abstract class AttributeToken extends Token {
 	}
 
 	/**
+	 * Rename the attribute
+	 *
 	 * 修改属性名
-	 * @param key 新属性名
+	 * @param key new attribute name / 新属性名
 	 * @throws `Error` title和alt属性不能更名
 	 */
 	rename(key: string): void {

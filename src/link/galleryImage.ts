@@ -22,7 +22,11 @@ import type {AtomToken, ImageParameterToken} from '../../internal';
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
-/** 图库图片 */
+/**
+ * gallery image
+ *
+ * 图库图片
+ */
 @singleLine()
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
@@ -34,7 +38,7 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 图片链接 */
+	/** image link / 图片链接 */
 	override get link(): string | Title {
 		return this.type === 'imagemap-image' ? '' : super.link;
 	}
@@ -77,7 +81,13 @@ export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	override getTitle(temporary?: boolean): Title {
 		const imagemap = this.type === 'imagemap-image';
-		return this.normalizeTitle(this.firstChild.toString(), imagemap ? 0 : 6, temporary, true, !imagemap);
+		return this.normalizeTitle(
+			this.firstChild.toString(),
+			imagemap ? 0 : 6,
+			temporary,
+			true,
+			!imagemap,
+		);
 	}
 
 	/** @private */
@@ -110,8 +120,8 @@ export abstract class GalleryImageToken extends FileToken {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `RangeError` 不可插入多余子节点
 	 * @throws `TypeError` 不可插入文本节点
 	 */

@@ -15,7 +15,11 @@ import Parser from '../index';
 
 /* NOT FOR BROWSER END */
 
-/** MediaWiki页面标题对象 */
+/**
+ * title object of a MediaWiki page
+ *
+ * MediaWiki页面标题对象
+ */
 export class Title {
 	#main: string;
 	readonly #namespaces;
@@ -37,7 +41,7 @@ export class Title {
 
 	/* NOT FOR BROWSER END */
 
-	/** 命名空间 */
+	/** namespace number / 命名空间 */
 	get ns(): number {
 		return this.#ns;
 	}
@@ -47,7 +51,7 @@ export class Title {
 		return this.#fragment;
 	}
 
-	/** 不含命名空间的标题主体部分 */
+	/** main part without the namespace / 不含命名空间的标题主体部分 */
 	get main(): string {
 		return this.#main;
 	}
@@ -57,18 +61,18 @@ export class Title {
 		this.#main = title && title[0]!.toUpperCase() + title.slice(1);
 	}
 
-	/** 命名空间前缀 */
+	/** namespace prefix / 命名空间前缀 */
 	get prefix(): string {
 		const namespace = this.#namespaces[this.ns]!;
 		return namespace + (namespace && ':');
 	}
 
-	/** 完整标题 */
+	/** full title / 完整标题 */
 	get title(): string {
 		return this.getRedirection()[1];
 	}
 
-	/** 扩展名 */
+	/** file extension / 扩展名 */
 	get extension(): string | undefined {
 		const {main} = this,
 			i = main.lastIndexOf('.');
@@ -103,7 +107,8 @@ export class Title {
 				} catch {}
 			}
 			// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
-			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd().replaceAll(' ', '_');
+			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd()
+				.replaceAll(' ', '_');
 		}
 	}
 
@@ -203,7 +208,11 @@ export class Title {
 		}
 	}
 
-	/** 检测是否是重定向 */
+	/**
+	 * Check if the title is a redirect
+	 *
+	 * 检测是否是重定向
+	 */
 	getRedirection(): [boolean, string] {
 		const prefix =
 			this.interwiki + (this.interwiki && ':') + // eslint-disable-line @stylistic/operator-linebreak
@@ -234,8 +243,10 @@ export class Title {
 	}
 
 	/**
+	 * Get the URL of the title
+	 *
 	 * 生成URL
-	 * @param articlePath 条目路径
+	 * @param articlePath article path / 条目路径
 	 */
 	getUrl(articlePath?: string): string {
 		LSP: { // eslint-disable-line no-unused-labels
@@ -300,47 +311,75 @@ export class Title {
 		return '';
 	}
 
-	/** 执行单向转换 */
+	/**
+	 * Perform unidirectional language conversion
+	 *
+	 * 执行单向转换
+	 */
 	autoConvert(): void {
 		const {conversionTable} = this;
 		if (conversionTable.size > 0) {
-			const regex = new RegExp([...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'), 'gu');
+			const regex = new RegExp(
+				[...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'),
+				'gu',
+			);
 			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
 		}
 	}
 
-	/** 转换为主页面 */
+	/**
+	 * Get the title of its subject page
+	 *
+	 * 转换为主页面
+	 */
 	toSubjectPage(): void {
 		if (this.isTalkPage()) {
 			this.#ns--;
 		}
 	}
 
-	/** 转换为讨论页面 */
+	/**
+	 * Get the title of its talk page
+	 *
+	 * 转换为讨论页面
+	 */
 	toTalkPage(): void {
 		if (!this.isTalkPage()) {
 			this.#ns++;
 		}
 	}
 
-	/** 是否是讨论页 */
+	/**
+	 * Check if the title is a talk page
+	 *
+	 * 是否是讨论页
+	 */
 	isTalkPage(): boolean {
 		return this.ns % 2 === 1;
 	}
 
-	/** 转换为上一级页面 */
+	/**
+	 * Get the title of its base page
+	 *
+	 * 转换为上一级页面
+	 */
 	toBasePage(): void {
 		this.main = this.main.replace(/\/[^/]*$/u, '');
 	}
 
-	/** 转换为根页面 */
+	/**
+	 * Get the title of its root page
+	 *
+	 * 转换为根页面
+	 */
 	toRootPage(): void {
 		this.main = this.main.replace(/\/.*/u, '');
 	}
 
 	/** @private */
 	getTitleAttr(): string {
-		return this.title.replace(/^Media:/u, '').replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
+		return this.title.replace(/^Media:/u, '')
+			.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
 	}
 }
 

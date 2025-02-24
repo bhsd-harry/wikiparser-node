@@ -18,7 +18,9 @@ export const singleLine = (strict = true) => <T extends AstConstructor>(construc
 			return this.childNodes.map(child => {
 				const str = child.toString(skip),
 					{type} = child;
-				return type === 'comment' || type === 'include' || type === 'ext' ? str : str.replaceAll('\n', ' ');
+				return type === 'comment' || type === 'include' || type === 'ext'
+					? str
+					: str.replaceAll('\n', ' ');
 			}).join('');
 		}
 

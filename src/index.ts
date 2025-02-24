@@ -118,8 +118,10 @@ const getAcceptable = (value: Acceptable): Record<string, Ranges> => {
 /* NOT FOR BROWSER END */
 
 /**
+ * base class for all tokens
+ *
  * 所有节点的基类
- * @classdesc `{childNodes: ...(AstText|Token)}`
+ * @classdesc `{childNodes: (AstText|Token)[]}`
  */
 export class Token extends AstElement {
 	#type: TokenTypes = 'plain';
@@ -488,8 +490,8 @@ export class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @param child 待插入的子节点
-	 * @param i 插入位置
+	 * @param child node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt(child: string, i?: number): AstText;
 	override insertAt<T extends AstNodes>(child: T, i?: number): T;
@@ -698,7 +700,7 @@ export class Token extends AstElement {
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	override removeAt(i: number): AstNodes {
 		const {length, childNodes} = this;
@@ -724,8 +726,10 @@ export class Token extends AstElement {
 	}
 
 	/**
+	 * Replace with a token of the same type
+	 *
 	 * 替换为同类节点
-	 * @param token 待替换的节点
+	 * @param token token to be replaced with / 待替换的节点
 	 * @throws `Error` 不存在父节点
 	 */
 	safeReplaceWith(token: this): void {
@@ -754,8 +758,10 @@ export class Token extends AstElement {
 	}
 
 	/**
+	 * Create an HTML comment
+	 *
 	 * 创建HTML注释
-	 * @param data 注释内容
+	 * @param data comment content / 注释内容
 	 */
 	createComment(data?: string): CommentToken {
 		require('../addon/token');
@@ -763,11 +769,13 @@ export class Token extends AstElement {
 	}
 
 	/**
+	 * Create a tag
+	 *
 	 * 创建标签
-	 * @param tagName 标签名
+	 * @param tagName tag name / 标签名
 	 * @param options 选项
-	 * @param options.selfClosing 是否自封闭
-	 * @param options.closing 是否是闭合标签
+	 * @param options.selfClosing whether to be a self-closing tag / 是否自封闭
+	 * @param options.closing whether to be a closing tag / 是否是闭合标签
 	 * @throws `RangeError` 非法的标签名
 	 */
 	createElement(
@@ -779,19 +787,27 @@ export class Token extends AstElement {
 	}
 
 	/**
+	 * Create a text node
+	 *
 	 * 创建纯文本节点
-	 * @param data 文本内容
+	 * @param data text content / 文本内容
 	 */
 	createTextNode(data = ''): AstText {
 		return new AstText(data);
 	}
 
-	/** 创建AstRange对象 */
+	/**
+	 * Create an AstRange object
+	 *
+	 * 创建AstRange对象
+	 */
 	createRange(): AstRange {
 		return new AstRange();
 	}
 
 	/**
+	 * Check if a title is an interwiki link
+	 *
 	 * 判断标题是否是跨维基链接
 	 * @param title 标题
 	 */
@@ -804,7 +820,11 @@ export class Token extends AstElement {
 		return this.childNodes.map(child => child.cloneNode());
 	}
 
-	/** 深拷贝节点 */
+	/**
+	 * Deep clone the node
+	 *
+	 * 深拷贝节点
+	 */
 	cloneNode(): this {
 		if (this.constructor !== Token) {
 			this.constructorError('does not specify a cloneNode method');
@@ -821,23 +841,31 @@ export class Token extends AstElement {
 		});
 	}
 
-	/** 获取全部章节 */
+	/**
+	 * Get all sections
+	 *
+	 * 获取全部章节
+	 */
 	sections(): AstRange[] | undefined {
 		require('../addon/token');
 		return this.sections();
 	}
 
 	/**
+	 * Get a section
+	 *
 	 * 获取指定章节
-	 * @param n 章节序号
+	 * @param n rank of the section / 章节序号
 	 */
 	section(n: number): AstRange | undefined {
 		return this.sections()?.[n];
 	}
 
 	/**
+	 * Get the enclosing HTML tags
+	 *
 	 * 获取指定的外层HTML标签
-	 * @param tag HTML标签名
+	 * @param tag HTML tag name / HTML标签名
 	 * @throws `RangeError` 非法的标签或空标签
 	 */
 	findEnclosingHtml(tag?: string): AstRange | undefined {
@@ -845,27 +873,40 @@ export class Token extends AstElement {
 		return this.findEnclosingHtml(tag);
 	}
 
-	/** 获取全部分类 */
+	/**
+	 * Get all categories
+	 *
+	 * 获取全部分类
+	 */
 	getCategories(): [string, string | undefined][] {
 		return this.querySelectorAll<CategoryToken>('category').map(({name, sortkey}) => [name, sortkey]);
 	}
 
 	/**
+	 * Expand templates
+	 *
 	 * 展开模板
-	 * @param context 模板调用环境
 	 */
 	expand(): Token {
 		require('../addon/token');
 		return this.expand();
 	}
 
-	/** 解析部分魔术字 */
+	/**
+	 * Parse some magic words
+	 *
+	 * 解析部分魔术字
+	 */
 	solveConst(): Token {
 		require('../addon/token');
 		return this.solveConst();
 	}
 
-	/** 合并普通节点的普通子节点 */
+	/**
+	 * Merge plain child tokens of a plain token
+	 *
+	 * 合并普通节点的普通子节点
+	 */
 	flatten(): void {
 		if (this.getAttribute('plain')) {
 			for (const child of this.childNodes) {
@@ -876,7 +917,11 @@ export class Token extends AstElement {
 		}
 	}
 
-	/** 生成HTML */
+	/**
+	 * Generate HTML
+	 *
+	 * 生成HTML
+	 */
 	toHtml(): string {
 		require('../addon/token');
 		return this.toHtml();

@@ -10,6 +10,8 @@ import {classes} from '../../util/constants';
 /* NOT FOR BROWSER END */
 
 /**
+ * category
+ *
  * 分类
  * @classdesc `{childNodes: [AtomToken, ?Token]}`
  */
@@ -30,7 +32,7 @@ export abstract class CategoryToken extends LinkBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 分类排序关键字 */
+	/** sort key / 分类排序关键字 */
 	get sortkey(): string | undefined {
 		const {childNodes: [, child]} = this;
 		return child && decodeHtml(child.text());
@@ -41,8 +43,10 @@ export abstract class CategoryToken extends LinkBaseToken {
 	}
 
 	/**
+	 * Set the sort key
+	 *
 	 * 设置排序关键字
-	 * @param text 排序关键字
+	 * @param text sort key / 排序关键字
 	 */
 	setSortkey(text?: string): void {
 		this.setLinkText(text);

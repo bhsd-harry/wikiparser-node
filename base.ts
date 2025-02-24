@@ -244,11 +244,19 @@ export type AST = Record<string, string | number | boolean> & {
 	data?: string;
 };
 
-/** 类似Node */
+/**
+ * Node-like
+ *
+ * 类似Node
+ */
 export interface AstNode {
 	readonly childNodes: readonly AstNode[];
 
-	/** 节点类型 */
+	/**
+	 * node type
+	 *
+	 * 节点类型
+	 */
 	type: string;
 
 	toString(...args: unknown[]): string;
@@ -259,26 +267,44 @@ export interface AstNode {
 	/** Linter */
 	lint(): LintError[];
 
-	/** 以HTML格式打印 */
+	/**
+	 * print in HTML
+	 *
+	 * 以HTML格式打印
+	 */
 	print(): string;
 }
 
-/** 所有节点的基类 */
+/**
+ * base class for all tokens
+ *
+ * 所有节点的基类
+ */
 interface Token extends AstNode {
 	readonly name?: string;
 
 	/**
+	 * Get all descendants that match the selector
+	 *
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
 
-	/** 保存为JSON */
+	/**
+	 * Save in JSON format
+	 *
+	 * 保存为JSON
+	 */
 	json(): AST;
 
 	/* NOT FOR BROWSER */
 
-	/** 生成HTML */
+	/**
+	 * Generate HTML
+	 *
+	 * 生成HTML
+	 */
 	toHtml(): string;
 }
 
@@ -303,14 +329,20 @@ export interface LanguageService {
 	/** @private */
 	data?: SignatureData;
 
-	/** 销毁实例 */
+	/**
+	 * Destroy the instance
+	 *
+	 * 销毁实例
+	 */
 	destroy(): void;
 
 	/**
+	 * Provide color decorators
+	 *
 	 * 提供颜色指示
-	 * @param rgba 颜色解析函数
-	 * @param text 源代码
-	 * @param hsl 是否允许HSL颜色
+	 * @param rgba color parser / 颜色解析函数
+	 * @param text source Wikitext / 源代码
+	 * @param hsl whether HSL colors are treated / 是否允许HSL颜色
 	 */
 	provideDocumentColors(
 		rgba: (s: string) => [number, number, number, number] | [],
@@ -319,96 +351,125 @@ export interface LanguageService {
 	): Promise<ColorInformation[]>;
 
 	/**
+	 * Provide color pickers
+	 *
 	 * 颜色选择器
-	 * @param color 颜色信息
+	 * @param color color information / 颜色信息
 	 */
 	provideColorPresentations(color: ColorInformation): ColorPresentation[];
 
 	/**
+	 * Provide auto-completion
+	 *
 	 * 提供自动补全
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined>;
 
 	/**
+	 * Provide grammar check
+	 *
 	 * 提供语法检查
-	 * @param wikitext 源代码
+	 * @param text source Wikitext / 源代码
+	 * @param warning whether to include warnings / 是否包含警告
 	 */
-	provideDiagnostics(wikitext: string, warning?: boolean): Promise<Diagnostic[]>;
+	provideDiagnostics(text: string, warning?: boolean): Promise<Diagnostic[]>;
 
 	/**
+	 * Provide folding ranges
+	 *
 	 * 提供折叠范围
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	provideFoldingRanges(text: string): Promise<FoldingRange[]>;
 
 	/**
+	 * Provide links
+	 *
 	 * 提供链接
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	provideLinks(text: string): Promise<DocumentLink[]>;
 
 	/**
+	 * Provide references
+	 *
 	 * 提供引用
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined>;
 
 	/**
+	 * Provide definitions
+	 *
 	 * 提供定义
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined>;
 
 	/**
+	 * Provide locations for renaming
+	 *
 	 * 提供变量更名准备
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	resolveRenameLocation(text: string, position: Position): Promise<Range | undefined>;
 
 	/**
+	 * Provide rename edits
+	 *
 	 * 变量更名
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
-	 * @param newName 新名称
+	 * @param newName new name / 新名称
 	 */
 	provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined>;
 
 	/**
+	 * Provide hover information
+	 *
 	 * 提供悬停信息
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	provideHover(text: string, position: Position): Promise<Hover | undefined>;
 
 	/**
+	 * Provide signature help for magic words
+	 *
 	 * 提供魔术字帮助
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 * @param position 位置
 	 */
 	provideSignatureHelp(text: string, position: Position): Promise<SignatureHelp | undefined>;
 
 	/**
+	 * Provide CodeLens
+	 *
 	 * 提供 CodeLens
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	provideInlayHints(text: string): Promise<InlayHint[]>;
 
 	/* NOT FOR BROWSER ONLY */
 
 	/**
+	 * Provide quick fixes
+	 *
 	 * 提供快速修复建议
-	 * @param diagnostics 语法诊断信息
+	 * @param diagnostics grammar diagnostics / 语法诊断信息
 	 */
 	provideCodeAction(diagnostics: Diagnostic[]): CodeAction[];
 
 	/**
+	 * Provide document sections
+	 *
 	 * 提供章节
-	 * @param text 源代码
+	 * @param text source Wikitext / 源代码
 	 */
 	provideDocumentSymbols(text: string): Promise<DocumentSymbol[]>;
 }
@@ -425,19 +486,27 @@ export interface Parser {
 
 	/* NOT FOR BROWSER END */
 
-	/** 获取当前的解析设置 */
+	/**
+	 * Get the current parser configuration
+	 *
+	 * 获取当前的解析设置
+	 */
 	getConfig(): Config;
 
 	/**
+	 * Parse wikitext
+	 *
 	 * 解析wikitext
-	 * @param include 是否嵌入
-	 * @param maxStage 最大解析层级
+	 * @param include whether to be transcluded / 是否嵌入
+	 * @param maxStage max stage for parsing / 最大解析层级
 	 */
 	parse(wikitext: string, include?: boolean, maxStage?: number | Stage | Stage[], config?: Config): Token;
 
 	/**
+	 * Create a language server
+	 *
 	 * 创建语言服务
-	 * @param uri 文档标识
+	 * @param uri document URI / 文档标识
 	 */
 	createLanguageService(uri: object): LanguageService;
 }

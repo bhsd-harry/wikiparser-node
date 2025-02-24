@@ -43,8 +43,10 @@ import {undo, Shadow} from '../../util/debug';
 const isLink = (type: string): boolean => type === 'redirect-target' || type === 'link';
 
 /**
+ * internal link
+ *
  * 内链
- * @classdesc `{childNodes: [AtomToken, ...Token]}`
+ * @classdesc `{childNodes: [AtomToken, ...Token[]]}`
  */
 export abstract class LinkBaseToken extends Token {
 	declare readonly name: string;
@@ -65,7 +67,7 @@ export abstract class LinkBaseToken extends Token {
 
 	/* NOT FOR BROWSER END */
 
-	/** 完整链接 */
+	/** full link / 完整链接 */
 	get link(): string | Title {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return this.#title;
@@ -163,7 +165,10 @@ export abstract class LinkBaseToken extends Token {
 					throw new Error(
 						`${type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
 					);
-				} else if (type === 'link' && !interwiki && (ns === 6 || ns === 14) && !name.trim().startsWith(':')) {
+				} else if (
+					type === 'link' && !interwiki && (ns === 6 || ns === 14)
+					&& !name.trim().startsWith(':')
+				) {
 					const {firstChild} = prevTarget;
 					if (firstChild?.type === 'text') {
 						firstChild.insertData(0, ':');
@@ -222,11 +227,22 @@ export abstract class LinkBaseToken extends Token {
 			rect = new BoundingRect(this, start);
 		if (target.childNodes.some(({type: t}) => t === 'template')) {
 			errors.push(
-				generateForChild(target, rect, 'unknown-page', 'template in an internal link target', 'warning'),
+				generateForChild(
+					target,
+					rect,
+					'unknown-page',
+					'template in an internal link target',
+					'warning',
+				),
 			);
 		}
 		if (encoded) {
-			const e = generateForChild(target, rect, 'url-encoding', 'unnecessary URL encoding in an internal link');
+			const e = generateForChild(
+				target,
+				rect,
+				'url-encoding',
+				'unnecessary URL encoding in an internal link',
+			);
 			e.suggestions = [{desc: 'decode', range: [e.startIndex, e.endIndex], text: rawurldecode(target.text())}];
 			errors.push(e);
 		}
@@ -234,7 +250,13 @@ export abstract class LinkBaseToken extends Token {
 			const j = linkText?.childNodes.findIndex(c => c.type === 'text' && c.data.includes('|')),
 				textNode = linkText?.childNodes[j!] as AstText | undefined;
 			if (textNode) {
-				const e = generateForChild(linkText!, rect, 'pipe-like', 'additional "|" in the link text', 'warning'),
+				const e = generateForChild(
+						linkText!,
+						rect,
+						'pipe-like',
+						'additional "|" in the link text',
+						'warning',
+					),
 					i = e.startIndex + linkText!.getRelativeIndex(j);
 				e.suggestions = [
 					{
@@ -252,7 +274,10 @@ export abstract class LinkBaseToken extends Token {
 				textNode = target.childNodes[j] as AstText | undefined;
 			if (textNode) {
 				e.fix = {
-					range: [e.startIndex + target.getRelativeIndex(j) + textNode.data.indexOf('#'), e.endIndex],
+					range: [
+						e.startIndex + target.getRelativeIndex(j) + textNode.data.indexOf('#'),
+						e.endIndex,
+					],
 					text: '',
 					desc: 'remove',
 				};
@@ -264,7 +289,14 @@ export abstract class LinkBaseToken extends Token {
 
 	/** @private */
 	getTitle(temporary?: boolean, halfParsed?: boolean): Title {
-		return this.normalizeTitle(this.firstChild.toString(true), 0, temporary, halfParsed, true, true);
+		return this.normalizeTitle(
+			this.firstChild.toString(true),
+			0,
+			temporary,
+			halfParsed,
+			true,
+			true,
+		);
 	}
 
 	/** @private */
@@ -286,8 +318,10 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/**
+	 * Set the link target
+	 *
 	 * 设置链接目标
-	 * @param link 链接目标
+	 * @param link link target / 链接目标
 	 */
 	setTarget(link: string): void {
 		const config = this.getAttribute('config'),
@@ -300,6 +334,8 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/**
+	 * Set the fragment
+	 *
 	 * 设置片段标识符
 	 * @param fragment 片段标识符
 	 */
@@ -312,15 +348,18 @@ export abstract class LinkBaseToken extends Token {
 	}
 
 	/**
+	 * Set the link text
+	 *
 	 * 设置链接显示文字
-	 * @param linkStr 链接显示文字
+	 * @param linkStr link text / 链接显示文字
 	 */
 	setLinkText(linkStr?: string): void {
 		if (linkStr === undefined) {
 			this.childNodes[1]?.remove();
 			return;
 		}
-		const root = Parser.parse(linkStr, this.getAttribute('include'), undefined, this.getAttribute('config'));
+		const root = Parser
+			.parse(linkStr, this.getAttribute('include'), undefined, this.getAttribute('config'));
 		if (this.length === 1) {
 			root.type = 'link-text';
 			root.setAttribute('acceptable', {

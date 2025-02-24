@@ -48,7 +48,11 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
-/** 类似Node */
+/**
+ * Node-like
+ *
+ * 类似Node
+ */
 export abstract class AstNode implements AstNodeBase {
 	declare data?: string | undefined;
 	readonly childNodes: readonly AstNodes[] = [];
@@ -70,63 +74,67 @@ export abstract class AstNode implements AstNodeBase {
 	abstract get type(): TokenTypes | 'text';
 	abstract set type(value);
 
-	/** 可见部分 */
+	/**
+	 * Get the visible text
+	 *
+	 * 可见部分
+	 */
 	abstract text(): string;
 	abstract lint(): LintError[];
 	abstract print(): string;
 
-	/** 首位子节点 */
+	/** first child node / 首位子节点 */
 	get firstChild(): AstNodes | undefined {
 		return this.childNodes[0];
 	}
 
-	/** 末位子节点 */
+	/** last child node / 末位子节点 */
 	get lastChild(): AstNodes | undefined {
 		return this.childNodes[this.childNodes.length - 1];
 	}
 
-	/** 父节点 */
+	/** parent node / 父节点 */
 	get parentNode(): Token | undefined {
 		return this.#parentNode;
 	}
 
-	/** 后一个兄弟节点 */
+	/** next sibling node / 后一个兄弟节点 */
 	get nextSibling(): AstNodes | undefined {
 		return this.#nextSibling;
 	}
 
-	/** 前一个兄弟节点 */
+	/** previous sibling node / 前一个兄弟节点 */
 	get previousSibling(): AstNodes | undefined {
 		return this.#previousSibling;
 	}
 
-	/** 行数 */
+	/** number of lines / 行数 */
 	get offsetHeight(): number {
 		return this.#getDimension().height;
 	}
 
-	/** 最后一行的列数 */
+	/** number of columns of the last line / 最后一行的列数 */
 	get offsetWidth(): number {
 		return this.#getDimension().width;
 	}
 
 	/* NOT FOR BROWSER */
 
-	/** 后一个非文本兄弟节点 */
+	/** next sibling element / 后一个非文本兄弟节点 */
 	get nextElementSibling(): Token | undefined {
 		const childNodes = this.parentNode?.childNodes;
 		return childNodes?.slice(childNodes.indexOf(this as AstNode as AstNodes) + 1)
 			.find((child): child is Token => child.type !== 'text');
 	}
 
-	/** 前一个非文本兄弟节点 */
+	/** previous sibling element / 前一个非文本兄弟节点 */
 	get previousElementSibling(): Token | undefined {
 		const childNodes = this.parentNode?.childNodes;
 		return childNodes?.slice(0, childNodes.indexOf(this as AstNode as AstNodes))
 			.findLast((child): child is Token => child.type !== 'text');
 	}
 
-	/** 后一个可见的兄弟节点 */
+	/** next visibling sibling node / 后一个可见的兄弟节点 */
 	get nextVisibleSibling(): AstNodes | undefined {
 		let {nextSibling} = this;
 		while (nextSibling?.text() === '') {
@@ -135,7 +143,7 @@ export abstract class AstNode implements AstNodeBase {
 		return nextSibling;
 	}
 
-	/** 前一个可见的兄弟节点 */
+	/** previous visible sibling node / 前一个可见的兄弟节点 */
 	get previousVisibleSibling(): AstNodes | undefined {
 		let {previousSibling} = this;
 		while (previousSibling?.text() === '') {
@@ -144,12 +152,12 @@ export abstract class AstNode implements AstNodeBase {
 		return previousSibling;
 	}
 
-	/** 是否具有根节点 */
+	/** whether to be connected to a root token / 是否具有根节点 */
 	get isConnected(): boolean {
 		return this.getRootNode().type === 'root';
 	}
 
-	/** 后方是否还有其他节点（不含后代） */
+	/** whether to be the end of a document / 后方是否还有其他节点（不含后代） */
 	get eof(): boolean | undefined {
 		const {parentNode} = this;
 		if (!parentNode) {
@@ -162,17 +170,17 @@ export abstract class AstNode implements AstNodeBase {
 		return nextSibling === undefined && parentNode.eof;
 	}
 
-	/** 相对于父容器的行号 */
+	/** line number relative to its parent / 相对于父容器的行号 */
 	get offsetTop(): number {
 		return this.#getPosition().top;
 	}
 
-	/** 相对于父容器的列号 */
+	/** column number of the last line relative to its parent / 相对于父容器的列号 */
 	get offsetLeft(): number {
 		return this.#getPosition().left;
 	}
 
-	/** 位置、大小和padding */
+	/** position, dimension and paddings / 位置、大小和padding */
 	get style(): Position & Dimension & {padding: number} {
 		return {...this.#getPosition(), ...this.#getDimension(), padding: this.getAttribute('padding')};
 	}
@@ -182,18 +190,18 @@ export abstract class AstNode implements AstNodeBase {
 		return false;
 	}
 
-	/** 字体样式 */
+	/** font weigth and style / 字体样式 */
 	get font(): Font {
 		const {bold, italic, b = 0, i = 0} = this.#getFont();
 		return {bold: bold && b >= 0, italic: italic && i >= 0};
 	}
 
-	/** 是否粗体 */
+	/** whether to be bold / 是否粗体 */
 	get bold(): boolean {
 		return this.font.bold;
 	}
 
-	/** 是否斜体 */
+	/** whether to be italic / 是否斜体 */
 	get italic(): boolean {
 		return this.font.italic;
 	}
@@ -258,7 +266,11 @@ export abstract class AstNode implements AstNodeBase {
 		}
 	}
 
-	/** 获取根节点 */
+	/**
+	 * Get the root node
+	 *
+	 * 获取根节点
+	 */
 	getRootNode(): Token | this {
 		return cache<Token | this>(
 			this.#root,
@@ -273,9 +285,11 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Convert the position to the character index
+	 *
 	 * 将行列号转换为字符位置
-	 * @param top 行号
-	 * @param left 列号
+	 * @param top line number / 行号
+	 * @param left column number / 列号
 	 */
 	indexFromPos(top: number, left: number): number | undefined {
 		LSP: { // eslint-disable-line no-unused-labels
@@ -293,8 +307,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Convert the character indenx to the position
+	 *
 	 * 将字符位置转换为行列号
-	 * @param index 字符位置
+	 * @param index character index / 字符位置
 	 */
 	posFromIndex(index: number): Position | undefined {
 		const {length} = String(this);
@@ -320,8 +336,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Get the relative character index of the current node, or its `j`-th child node
+	 *
 	 * 获取当前节点的相对字符位置，或其第`j`个子节点的相对字符位置
-	 * @param j 子节点序号
+	 * @param j rank of the child node / 子节点序号
 	 */
 	getRelativeIndex(j?: number): number {
 		if (j === undefined) {
@@ -357,7 +375,11 @@ export abstract class AstNode implements AstNodeBase {
 		);
 	}
 
-	/** 获取当前节点的绝对位置 */
+	/**
+	 * Get the absolute character index of the current node
+	 *
+	 * 获取当前节点的绝对位置
+	 */
 	getAbsoluteIndex(): number {
 		return cache<number>(
 			this.#aIndex,
@@ -371,7 +393,11 @@ export abstract class AstNode implements AstNodeBase {
 		);
 	}
 
-	/** 获取当前节点的行列位置和大小 */
+	/**
+	 * Get the position and dimension of the current node
+	 *
+	 * 获取当前节点的行列位置和大小
+	 */
 	getBoundingClientRect(): Dimension & Position {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return {...this.#getDimension(), ...this.getRootNode().posFromIndex(this.getAbsoluteIndex())!};
@@ -398,14 +424,20 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Whether to be of a certain type
+	 *
 	 * 是否是某种类型的节点
-	 * @param type 节点类型
+	 * @param type token type / 节点类型
 	 */
 	is<T extends Token>(type: TokenTypes): this is T {
 		return this.type === type;
 	}
 
-	/** 获取所有行的wikitext和起止位置 */
+	/**
+	 * Get the text and the start/end positions of all lines
+	 *
+	 * 获取所有行的wikitext和起止位置
+	 */
 	getLines(): [string, number, number][] {
 		return cache<[string, number, number][]>(
 			this.#lines,
@@ -439,8 +471,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Check if the node is identical
+	 *
 	 * 是否是全同节点
-	 * @param node 待比较的节点
+	 * @param node node to be compared to / 待比较的节点
 	 * @throws `assert.AssertionError`
 	 */
 	isEqualNode(node: AstNode): boolean {
@@ -475,29 +509,39 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Insert a batch of sibling nodes after the current node
+	 *
 	 * 在后方批量插入兄弟节点
-	 * @param nodes 插入节点
+	 * @param nodes nodes to be inserted / 插入节点
 	 */
 	after(...nodes: (AstNodes | string)[]): void {
 		this.#insertAdjacent(nodes, 1);
 	}
 
 	/**
+	 * Insert a batch of sibling nodes before the current node
+	 *
 	 * 在前方批量插入兄弟节点
-	 * @param nodes 插入节点
+	 * @param nodes nodes to be inserted / 插入节点
 	 */
 	before(...nodes: (AstNodes | string)[]): void {
 		this.#insertAdjacent(nodes, 0);
 	}
 
-	/** 移除当前节点 */
+	/**
+	 * Remove the current node
+	 *
+	 * 移除当前节点
+	 */
 	remove(): void {
 		this.parentNode?.removeChild(this as AstNode as AstNodes);
 	}
 
 	/**
+	 * Replace the current node with new nodes
+	 *
 	 * 将当前节点批量替换为新的节点
-	 * @param nodes 插入节点
+	 * @param nodes nodes to be inserted / 插入节点
 	 */
 	replaceWith(...nodes: (AstNodes | string)[]): void {
 		this.after(...nodes);
@@ -505,8 +549,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Check if the node is a descendant
+	 *
 	 * 是自身或后代节点
-	 * @param node 待检测节点
+	 * @param node node to be compared to / 待检测节点
 	 */
 	contains(node: AstNode): boolean {
 		let parentNode: AstNode | undefined = node;
@@ -526,11 +572,13 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Add an event listener
+	 *
 	 * 添加事件监听
-	 * @param types 事件类型
-	 * @param listener 监听函数
+	 * @param types event type / 事件类型
+	 * @param listener listener function / 监听函数
 	 * @param options 选项
-	 * @param options.once 仅执行一次
+	 * @param options.once to be executed only once / 仅执行一次
 	 */
 	addEventListener(types: string | string[], listener: (...args: any[]) => void, options?: {once?: boolean}): void {
 		if (Array.isArray(types)) {
@@ -543,9 +591,11 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Remove an event listener
+	 *
 	 * 移除事件监听
-	 * @param types 事件类型
-	 * @param listener 监听函数
+	 * @param types event type / 事件类型
+	 * @param listener listener function / 监听函数
 	 */
 	removeEventListener(types: string | string[], listener: (...args: any[]) => void): void {
 		if (Array.isArray(types)) {
@@ -558,8 +608,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Remove all event listeners
+	 *
 	 * 移除事件的所有监听
-	 * @param types 事件类型
+	 * @param types event type / 事件类型
 	 */
 	removeAllEventListeners(types: string | string[]): void {
 		if (Array.isArray(types)) {
@@ -572,17 +624,21 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * List all event listeners
+	 *
 	 * 列举事件监听
-	 * @param type 事件类型
+	 * @param type event type / 事件类型
 	 */
 	listEventListeners(type: string): Function[] {
 		return this.#events.listeners(type);
 	}
 
 	/**
+	 * Dispatch an event
+	 *
 	 * 触发事件
-	 * @param e 事件对象
-	 * @param data 事件数据
+	 * @param e event object / 事件对象
+	 * @param data event data / 事件数据
 	 */
 	dispatchEvent(e: Event, data: unknown): void {
 		if (!e.target) { // 初始化
@@ -598,7 +654,11 @@ export abstract class AstNode implements AstNodeBase {
 		}
 	}
 
-	/** 获取所有祖先节点 */
+	/**
+	 * Get all the ancestor nodes
+	 *
+	 * 获取所有祖先节点
+	 */
 	getAncestors(): Token[] {
 		const ancestors: Token[] = [];
 		let {parentNode} = this;
@@ -610,8 +670,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Compare the relative position with another node
+	 *
 	 * 比较和另一个节点的相对位置
-	 * @param other 待比较的节点
+	 * @param other node to be compared with / 待比较的节点
 	 * @throws `RangeError` 不在同一个语法树
 	 */
 	compareDocumentPosition(other: AstNodes): number {
@@ -636,7 +698,11 @@ export abstract class AstNode implements AstNodeBase {
 		return this.parentNode?.posFromIndex(this.getRelativeIndex()) ?? {top: 0, left: 0};
 	}
 
-	/** 销毁 */
+	/**
+	 * Destroy the instance
+	 *
+	 * 销毁
+	 */
 	destroy(): void {
 		this.parentNode?.destroy();
 		for (const child of this.childNodes) {
@@ -646,8 +712,10 @@ export abstract class AstNode implements AstNodeBase {
 	}
 
 	/**
+	 * Get the wikitext of a line
+	 *
 	 * 获取某一行的wikitext
-	 * @param n 行号
+	 * @param n line number / 行号
 	 */
 	getLine(n: number): string | undefined {
 		return this.getLines()[n]?.[0];

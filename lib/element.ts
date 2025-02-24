@@ -41,12 +41,16 @@ export interface CaretPosition {
 	readonly offset: number;
 }
 
-/** 类似HTMLElement */
+/**
+ * HTMLElement-like
+ *
+ * 类似HTMLElement
+ */
 export abstract class AstElement extends AstNode {
 	declare readonly name?: string;
 	declare readonly data: undefined;
 
-	/** 子节点总数 */
+	/** number of child nodes / 子节点总数 */
 	get length(): number {
 		return this.childNodes.length;
 	}
@@ -61,64 +65,64 @@ export abstract class AstElement extends AstNode {
 		}
 	}
 
-	/** 全部非文本子节点 */
+	/** all child elements / 全部非文本子节点 */
 	get children(): Token[] {
 		return this.childNodes.filter((child): child is Token => child.type !== 'text');
 	}
 
-	/** 首位非文本子节点 */
+	/** first child element / 首位非文本子节点 */
 	get firstElementChild(): Token | undefined {
 		return this.childNodes.find((child): child is Token => child.type !== 'text');
 	}
 
-	/** 末位非文本子节点 */
+	/** last child element / 末位非文本子节点 */
 	get lastElementChild(): Token | undefined {
 		return this.childNodes.findLast((child): child is Token => child.type !== 'text');
 	}
 
-	/** 非文本子节点总数 */
+	/** number of child elements / 非文本子节点总数 */
 	get childElementCount(): number {
 		return this.children.length;
 	}
 
-	/** 父节点 */
+	/** parent node / 父节点 */
 	get parentElement(): Token | undefined {
 		return this.parentNode;
 	}
 
-	/** AstElement.prototype.text()的getter写法 */
+	/** visible text / 可见部分 */
 	get outerText(): string {
 		return this.text();
 	}
 
-	/** 不可见 */
+	/** invisible / 不可见 */
 	get hidden(): boolean {
 		return this.text() === '';
 	}
 
-	/** 内部高度 */
+	/** height of the inner / 内部高度 */
 	get clientHeight(): number | undefined {
 		return (this as {innerText?: string}).innerText?.split('\n').length;
 	}
 
-	/** 内部宽度 */
+	/** width of the inner / 内部宽度 */
 	get clientWidth(): number | undefined {
 		return (this as {innerText?: string}).innerText?.split('\n').pop()!.length;
 	}
 
-	/** 所有图片，包括图库 */
+	/** all images, including gallery images / 所有图片，包括图库 */
 	get images(): FileToken[] {
 		return this.querySelectorAll('file,gallery-image,imagemap-image');
 	}
 
-	/** 所有内链、外链和自由外链 */
+	/** all internal, external and free external links / 所有内链、外链和自由外链 */
 	get links(): LinkTokens[] {
 		return this.querySelectorAll<LinkTokens>(
 			'link,redirect-target,ext-link,free-ext-link,magic-link,image-parameter#link',
 		).filter(({parentNode}) => parentNode?.type !== 'image-parameter' || parentNode.name !== 'link');
 	}
 
-	/** 所有模板和模块 */
+	/** all templates and modules / 所有模板和模块 */
 	get embeds(): TranscludeToken[] {
 		return this.querySelectorAll('template,magic-word#invoke');
 	}
@@ -135,7 +139,11 @@ export abstract class AstElement extends AstNode {
 		return text(this.childNodes, separator);
 	}
 
-	/** 合并相邻的文本子节点 */
+	/**
+	 * Merge adjacent text child nodes
+	 *
+	 * 合并相邻的文本子节点
+	 */
 	normalize(): void {
 		const childNodes = this.getChildNodes();
 
@@ -176,8 +184,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Remove a child node
+	 *
 	 * 移除子节点
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	removeAt(i: number): AstNodes {
 		/* NOT FOR BROWSER */
@@ -190,9 +200,11 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Insert a child node
+	 *
 	 * 插入子节点
-	 * @param node 待插入的子节点
-	 * @param i 插入位置
+	 * @param node node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `RangeError` 不能插入祖先或子节点
 	 */
 	insertAt<T extends AstNodes>(node: T, i = this.length): T {
@@ -214,7 +226,9 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 最近的祖先节点
+	 * Get the closest ancestor node that matches the selector
+	 *
+	 * 最近的符合选择器的祖先节点
 	 * @param selector 选择器
 	 */
 	closest<T = Token>(selector: string): T | undefined {
@@ -249,6 +263,8 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get the first descendant that matches the selector
+	 *
 	 * 符合选择器的第一个后代节点
 	 * @param selector 选择器
 	 */
@@ -275,6 +291,8 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get all descendants that match the selector
+	 *
 	 * 符合选择器的所有后代节点
 	 * @param selector 选择器
 	 */
@@ -284,8 +302,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Insert a batch of child nodes at the end
+	 *
 	 * 在末尾批量插入子节点
-	 * @param elements 插入节点
+	 * @param elements nodes to be inserted / 插入节点
 	 */
 	append(...elements: (AstNodes | string)[]): void {
 		for (const element of elements) {
@@ -294,8 +314,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Replace all child nodes
+	 *
 	 * 批量替换子节点
-	 * @param elements 新的子节点
+	 * @param elements nodes to be inserted / 新的子节点
 	 */
 	replaceChildren(...elements: (AstNodes | string)[]): void {
 		for (let i = this.length - 1; i >= 0; i--) {
@@ -305,9 +327,11 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Modify the text child node
+	 *
 	 * 修改文本子节点
-	 * @param str 新文本
-	 * @param i 子节点位置
+	 * @param str new text / 新文本
+	 * @param i position of the text child node / 子节点位置
 	 * @throws `RangeError` 对应位置的子节点不是文本节点
 	 */
 	setText(str: string, i = 0): string {
@@ -338,8 +362,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get the caret position from the character index
+	 *
 	 * 找到给定位置
-	 * @param index 位置
+	 * @param index character index / 位置
 	 */
 	caretPositionFromIndex(index?: number): CaretPosition | undefined {
 		LSP: { // eslint-disable-line no-unused-labels
@@ -388,8 +414,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param index 位置
+	 * Get the closest ancestor element from the character index
+	 *
+	 * 找到给定位置所在的最内层非文本节点
+	 * @param index character index / 位置
 	 */
 	elementFromIndex(index?: number): Token | undefined {
 		LSP: { // eslint-disable-line no-unused-labels
@@ -399,9 +427,11 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
-	 * 找到给定位置所在的最外层节点
-	 * @param x 列数
-	 * @param y 行数
+	 * Get the closest ancestor element from the position
+	 *
+	 * 找到给定位置所在的最内层非文本节点
+	 * @param x column number / 列数
+	 * @param y line number / 行数
 	 */
 	elementFromPoint(x: number, y: number): Token | undefined {
 		// eslint-disable-next-line no-unused-labels
@@ -430,8 +460,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Save in JSON format
+	 *
 	 * 保存为JSON
-	 * @param file 文件名
+	 * @param file file name / 文件名
 	 * @param start
 	 */
 	json(file?: string, start = this.getAbsoluteIndex()): AST {
@@ -457,7 +489,13 @@ export abstract class AstElement extends AstNode {
 		/* istanbul ignore if */
 		if (typeof file === 'string') {
 			fs.writeFileSync(
-				path.join(__dirname, '..', '..', 'printed', file + (file.endsWith('.json') ? '' : '.json')),
+				path.join(
+					__dirname,
+					'..',
+					'..',
+					'printed',
+					file + (file.endsWith('.json') ? '' : '.json'),
+				),
 				JSON.stringify(json, null, 2),
 			);
 		}
@@ -470,6 +508,8 @@ export abstract class AstElement extends AstNode {
 	/* NOT FOR BROWSER */
 
 	/**
+	 * Check if the current element matches the selector
+	 *
 	 * 检查是否符合选择器
 	 * @param selector 选择器
 	 */
@@ -478,8 +518,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get all descendants of the types
+	 *
 	 * 类型选择器
-	 * @param types
+	 * @param types token types / 节点类型
 	 */
 	getElementByTypes<T = Token>(types: string): T | undefined {
 		const typeSet = new Set(types.split(',').map(str => str.trim()));
@@ -487,6 +529,8 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get the first descendant with the id
+	 *
 	 * id选择器
 	 * @param id id名
 	 */
@@ -495,8 +539,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get all descendants with the class
+	 *
 	 * 类选择器
-	 * @param className 类名之一
+	 * @param className class name / 类名之一
 	 */
 	getElementsByClassName<T = Token>(className: string): T[] {
 		return this.#getElementsBy(
@@ -505,8 +551,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get all descendants with the tag name
+	 *
 	 * 标签名选择器
-	 * @param tag 标签名
+	 * @param tag tag name / 标签名
 	 */
 	getElementsByTagName<T = Token>(tag: string): T[] {
 		return this.#getElementsBy<T>(
@@ -515,8 +563,10 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Insert a batch of child nodes at the start
+	 *
 	 * 在开头批量插入子节点
-	 * @param elements 插入节点
+	 * @param elements nodes to be inserted / 插入节点
 	 */
 	prepend(...elements: (AstNodes | string)[]): void {
 		for (let i = 0; i < elements.length; i++) {
@@ -539,17 +589,21 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Remove a child node
+	 *
 	 * 移除子节点
-	 * @param node 子节点
+	 * @param node child node to be removed / 子节点
 	 */
 	removeChild<T extends AstNodes>(node: T): T {
 		return this.removeAt(this.#getChildIndex(node)) as T;
 	}
 
 	/**
+	 * Insert a child node before the reference node
+	 *
 	 * 在指定位置前插入子节点
-	 * @param child 插入节点
-	 * @param reference 指定位置处的子节点
+	 * @param child node to be inserted / 插入节点
+	 * @param reference reference child node / 指定位置处的子节点
 	 */
 	insertBefore(child: string, reference?: AstNodes): AstText;
 	insertBefore<T extends AstNodes>(child: T, reference?: AstNodes): T;
@@ -560,17 +614,21 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get the caret position from the point
+	 *
 	 * 找到给定位置
-	 * @param x 列数
-	 * @param y 行数
+	 * @param x column number / 列数
+	 * @param y line number / 行数
 	 */
 	caretPositionFromPoint(x: number, y: number): CaretPosition | undefined {
 		return this.caretPositionFromIndex(this.indexFromPos(y, x));
 	}
 
 	/**
+	 * Get all ancestor elements from the character index
+	 *
 	 * 找到给定位置所在的所有节点
-	 * @param index 位置
+	 * @param index character index / 位置
 	 */
 	elementsFromIndex(index?: number): Token[] {
 		const offsetNode = this.elementFromIndex(index);
@@ -578,9 +636,11 @@ export abstract class AstElement extends AstNode {
 	}
 
 	/**
+	 * Get all ancestor elements from the position
+	 *
 	 * 找到给定位置所在的所有节点
-	 * @param x 列数
-	 * @param y 行数
+	 * @param x column number / 列数
+	 * @param y line number / 行数
 	 */
 	elementsFromPoint(x: number, y: number): Token[] {
 		return this.elementsFromIndex(this.indexFromPos(y, x));

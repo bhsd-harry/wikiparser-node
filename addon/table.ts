@@ -192,7 +192,9 @@ TableToken.prototype.insertTableCell =
 			const {x, y} = coords;
 			rawCoords = this.toRawCoords(coords);
 			if (!rawCoords?.start) {
-				throw new RangeError(`The specified coordinates are not the starting point of any cell: (${x}, ${y})`);
+				throw new RangeError(
+					`The specified coordinates are not the starting point of any cell: (${x}, ${y})`,
+				);
 			}
 		} else {
 			rawCoords = coords;
@@ -267,7 +269,13 @@ TableToken.prototype.insertTableCol =
 		if (x > minCol) {
 			throw new RangeError(`Row ${rowLength.indexOf(minCol)} has only ${minCol} column(s)!`);
 		}
-		const token = createTd(inner, subtype, attr, this.getAttribute('include'), this.getAttribute('config'));
+		const token = createTd(
+			inner,
+			subtype,
+			attr,
+			this.getAttribute('include'),
+			this.getAttribute('config'),
+		);
 		for (const [i, rowLayout] of layout.entries()) {
 			const coords = rowLayout[x],
 				prevCoords = x === 0 ? true : rowLayout[x - 1];
@@ -305,7 +313,8 @@ TableToken.prototype.removeTableRow =
 					for (let i = y + 1; rowspan && i < rows.length; i++, rowspan--) {
 						const {column} = layout[i]!.slice(x + colspan).find(({row}) => row === i) ?? {};
 						if (column !== undefined) {
-							rows[i]!.insertTableCell('', {row: 0, column}, subtype, {...attr, rowspan} as TdAttrs);
+							rows[i]!
+								.insertTableCell('', {row: 0, column}, subtype, {...attr, rowspan} as TdAttrs);
 							break;
 						}
 					}
@@ -395,7 +404,9 @@ TableToken.prototype.split =
 					} catch (e) {
 						if (
 							e instanceof RangeError
-							&& e.message.startsWith('The specified coordinates are not the starting point of a cell: ')
+							&& e.message.startsWith(
+								'The specified coordinates are not the starting point of a cell: ',
+							)
 						) {
 							break;
 						}
@@ -468,7 +479,9 @@ TableToken.prototype.moveTableRowBefore =
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				throw new RangeError(
-					`The structure of row ${y} is different from that of row ${before}, so it cannot be moved!`,
+					`The structure of row ${y} is different from that of row ${
+						before
+					}, so it cannot be moved!`,
 				);
 			}
 			throw e;
@@ -500,7 +513,9 @@ TableToken.prototype.moveTableRowAfter =
 		} catch (e) {
 			if (e instanceof assert.AssertionError) {
 				throw new RangeError(
-					`The structure of row ${y} is different from that of row ${after}, so it cannot be moved!`,
+					`The structure of row ${y} is different from that of row ${
+						after
+					}, so it cannot be moved!`,
 				);
 			}
 			throw e;
@@ -532,7 +547,9 @@ TableToken.prototype.moveCol =
 		const layout = this.getLayout();
 		if (layout.some(rowLayout => isStartCol(rowLayout, x) !== isStartCol(rowLayout, reference, after))) {
 			throw new RangeError(
-				`The structure of column ${x} is different from that of column ${reference}, so it cannot be moved!`,
+				`The structure of column ${x} is different from that of column ${
+					reference
+				}, so it cannot be moved!`,
 			);
 		}
 		const setX = new WeakSet<TableCoords>(),
@@ -564,7 +581,9 @@ TableToken.prototype.moveCol =
 					const col = rowLayout.slice(reference + Number(after)).find(({row}) => row === i)?.column;
 					rowToken.insertBefore(
 						token,
-						col === undefined ? rowToken.childNodes.slice(2).find(isRowEnd) : rowToken.getNthCol(col),
+						col === undefined
+							? rowToken.childNodes.slice(2).find(isRowEnd)
+							: rowToken.getNthCol(col),
 					);
 				}
 			}

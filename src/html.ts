@@ -53,6 +53,8 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
 	obsoleteTags = new Set(['strike', 'big', 'center', 'font', 'tt']);
 
 /**
+ * HTML tag
+ *
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
@@ -80,12 +82,12 @@ export abstract class HtmlToken extends Token {
 		return 'html';
 	}
 
-	/** 是否自封闭 */
+	/** whether to be self-closing / 是否自封闭 */
 	get selfClosing(): boolean {
 		return this.#selfClosing;
 	}
 
-	/** 是否是闭合标签 */
+	/** whether to be a closing tag / 是否是闭合标签 */
 	get closing(): boolean {
 		return this.#closing;
 	}
@@ -253,15 +255,21 @@ export abstract class HtmlToken extends Token {
 			}
 		}
 		if (obsoleteTags.has(this.name)) {
-			errors.push(generateForSelf(this, rect, 'obsolete-tag', 'obsolete HTML tag', 'warning'));
+			errors.push(
+				generateForSelf(this, rect, 'obsolete-tag', 'obsolete HTML tag', 'warning'),
+			);
 		}
 		if ((this.name === 'b' || this.name === 'strong') && this.closest('heading-title')) {
-			errors.push(generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'));
+			errors.push(
+				generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'),
+			);
 		}
 		return errors;
 	}
 
 	/**
+	 * Find the matching tag
+	 *
 	 * 搜索匹配的标签
 	 * @throws `SyntaxError` 同时闭合和自封闭的标签
 	 * @throws `SyntaxError` 无效自封闭标签
@@ -323,8 +331,10 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/**
+	 * Change the tag name
+	 *
 	 * 更换标签名
-	 * @param tag 标签名
+	 * @param tag tag name / 标签名
 	 * @throws `RangeError` 非法的HTML标签
 	 */
 	replaceTag(tag: string): void {
@@ -337,6 +347,8 @@ export abstract class HtmlToken extends Token {
 	}
 
 	/**
+	 * Fix the invalid self-closing tag
+	 *
 	 * 修复无效自封闭标签
 	 * @throws `Error` 无法修复无效自封闭标签
 	 */
@@ -347,7 +359,10 @@ export abstract class HtmlToken extends Token {
 			return;
 		} else if (firstChild.text().trim()) {
 			this.#selfClosing = false;
-			this.after(Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config')).firstChild!);
+			this.after(
+				Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'))
+					.firstChild!,
+			);
 			return;
 		}
 		const {childNodes} = parentNode,

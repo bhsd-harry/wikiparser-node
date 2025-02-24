@@ -22,7 +22,12 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 					return (
 						regex2.test(content)
 							? ''
-							: regex2.exec(fs.readFileSync(path.join('src', file.replace(/d\.ts$/u, 'ts')), 'utf8'))![0]
+							: regex2.exec(
+								fs.readFileSync(
+									path.join('src', file.replace(/d\.ts$/u, 'ts')),
+									'utf8',
+								),
+							)![0]
 					) + exp + base;
 				},
 			),

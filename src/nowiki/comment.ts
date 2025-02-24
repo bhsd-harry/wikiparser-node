@@ -12,7 +12,11 @@ import {classes} from '../../util/constants';
 
 /* NOT FOR BROWSER END */
 
-/** HTML注释，不可见 */
+/**
+ * invisible HTML comment
+ *
+ * HTML注释，不可见
+ */
 @hiddenToken(false)
 export abstract class CommentToken extends NowikiBaseToken {
 	closed;
@@ -23,7 +27,7 @@ export abstract class CommentToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 内部文本 */
+	/** comment content / 内部文本 */
 	override get innerText(): string {
 		return super.innerText;
 	}
@@ -50,7 +54,12 @@ export abstract class CommentToken extends NowikiBaseToken {
 		if (this.closed) {
 			return [];
 		}
-		const e = generateForSelf(this, {start}, 'unclosed-comment', Parser.msg('unclosed $1', 'HTML comment'));
+		const e = generateForSelf(
+			this,
+			{start},
+			'unclosed-comment',
+			Parser.msg('unclosed $1', 'HTML comment'),
+		);
 		e.suggestions = [{range: [e.endIndex, e.endIndex], text: '-->', desc: 'close'}];
 		return [e];
 	}
@@ -77,8 +86,10 @@ export abstract class CommentToken extends NowikiBaseToken {
 	/* NOT FOR BROWSER */
 
 	override cloneNode(): this {
-		// @ts-expect-error abstract class
-		return Shadow.run(() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this);
+		return Shadow.run(
+			// @ts-expect-error abstract class
+			() => new CommentToken(this.innerText, this.closed, this.getAttribute('config')) as this,
+		);
 	}
 
 	/** @private */

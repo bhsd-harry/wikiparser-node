@@ -22,27 +22,29 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 
 	/* NOT FOR BROWSER */
 
-	/** 是否包含`:` */
+	/** whether to contain `:` / 是否包含`:` */
 	get dd(): boolean {
 		return this.innerText.includes(':');
 	}
 
-	/** 是否包含`;` */
+	/** whether to contain `;` / 是否包含`;` */
 	get dt(): boolean {
 		return this.innerText.includes(';');
 	}
 
-	/** 是否包含`*` */
+	/** whether to contain `*` / 是否包含`*` */
 	get ul(): boolean {
 		return this.innerText.includes('*');
 	}
 
-	/** 是否包含`#` */
+	/** whether to contain `#` / 是否包含`#` */
 	get ol(): boolean {
 		return this.innerText.includes('#');
 	}
 
 	/**
+	 * Get the range of the list
+	 *
 	 * 获取列表行的范围
 	 * @throws `Error` 不存在父节点
 	 */

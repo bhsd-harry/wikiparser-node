@@ -68,7 +68,16 @@ function validate(
 			} else if (value.startsWith('[[') && value.endsWith(']]')) {
 				value = value.slice(2, -2);
 			}
-			const title = Parser.normalizeTitle(value, 0, false, config, false, halfParsed, true, true);
+			const title = Parser.normalizeTitle(
+				value,
+				0,
+				false,
+				config,
+				false,
+				halfParsed,
+				true,
+				true,
+			);
 			return title.valid && title;
 		}
 		case 'lang':
@@ -84,7 +93,11 @@ function validate(
 	}
 }
 
-/** 图片参数 */
+/**
+ * image parameter
+ *
+ * 图片参数
+ */
 export abstract class ImageParameterToken extends Token {
 	declare readonly name: string;
 	readonly #syntax: string = '';
@@ -106,7 +119,7 @@ export abstract class ImageParameterToken extends Token {
 		return 'image-parameter';
 	}
 
-	/** 图片链接 */
+	/** image link / 图片链接 */
 	get link(): string | Title | undefined {
 		return this.name === 'link' ? validate('link', super.text(), this.getAttribute('config')) : undefined;
 	}
@@ -119,7 +132,7 @@ export abstract class ImageParameterToken extends Token {
 		}
 	}
 
-	/** getValue()的getter */
+	/** parameter value / 参数值 */
 	get value(): string | true {
 		return this.getValue();
 	}
@@ -128,7 +141,7 @@ export abstract class ImageParameterToken extends Token {
 		this.setValue(value);
 	}
 
-	/** 图片大小 */
+	/** iamge size / 图片大小 */
 	get size(): {width: string, height: string} | undefined {
 		if (this.name === 'width') {
 			const size = (this.getValue() as string).trim().replace(/px$/u, '').trim();
@@ -154,7 +167,7 @@ export abstract class ImageParameterToken extends Token {
 		}
 	}
 
-	/** 图片宽度 */
+	/** image width / 图片宽度 */
 	get width(): string | undefined {
 		return this.size?.width;
 	}
@@ -166,7 +179,7 @@ export abstract class ImageParameterToken extends Token {
 		}
 	}
 
-	/** 图片高度 */
+	/** image height / 图片高度 */
 	get height(): string | undefined {
 		return this.size?.height;
 	}
@@ -200,7 +213,13 @@ export abstract class ImageParameterToken extends Token {
 				return mt
 					&& (
 						mt.length !== 4
-						|| validate(key, mt[2], config, true, extension) as string | Title | boolean !== false
+						|| validate(
+							key,
+							mt[2],
+							config,
+							true,
+							extension,
+						) as string | Title | boolean !== false
 					);
 			});
 		// @ts-expect-error mt already assigned
@@ -263,7 +282,12 @@ export abstract class ImageParameterToken extends Token {
 			e.fix = {range: [start - 1, e.endIndex], text: '', desc: 'remove'};
 			errors.push(e);
 		} else if (typeof link === 'object' && link.encoded) {
-			const e = generateForSelf(this, {start}, 'url-encoding', 'unnecessary URL encoding in an internal link');
+			const e = generateForSelf(
+				this,
+				{start},
+				'url-encoding',
+				'unnecessary URL encoding in an internal link',
+			);
 			e.suggestions = [{desc: 'decode', range: [start, e.endIndex], text: rawurldecode(this.text())}];
 			errors.push(e);
 		}
@@ -275,7 +299,11 @@ export abstract class ImageParameterToken extends Token {
 		return this.#syntax && !this.#syntax.includes('$1');
 	}
 
-	/** 获取参数值 */
+	/**
+	 * Get the parameter value
+	 *
+	 * 获取参数值
+	 */
 	getValue(): string | true {
 		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
 	}
@@ -284,7 +312,10 @@ export abstract class ImageParameterToken extends Token {
 	override print(): string {
 		if (this.#syntax) {
 			return `<span class="wpb-image-parameter">${
-				this.#syntax.replace('$1', `<span class="wpb-image-caption">${print(this.childNodes)}</span>`)
+				this.#syntax.replace(
+					'$1',
+					`<span class="wpb-image-caption">${print(this.childNodes)}</span>`,
+				)
 			}</span>`;
 		}
 		return super.print({class: 'image-caption'});
@@ -297,7 +328,11 @@ export abstract class ImageParameterToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token = new ImageParameterToken(this.#syntax.replace('$1', ''), this.#extension, config) as this;
+			const token = new ImageParameterToken(
+				this.#syntax.replace('$1', ''),
+				this.#extension,
+				config,
+			) as this;
 			token.replaceChildren(...cloned);
 			return token;
 		});
@@ -305,8 +340,8 @@ export abstract class ImageParameterToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 * @throws `Error` 不接受自定义输入的图片参数
 	 */
 	override insertAt(token: string, i?: number): AstText;
@@ -319,8 +354,10 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/**
+	 * Set the parameter value
+	 *
 	 * 设置参数值
-	 * @param value 参数值
+	 * @param value parameter value / 参数值
 	 * @throws `Error` 无效参数
 	 */
 	setValue(value: string | boolean = false): void {
@@ -343,8 +380,10 @@ export abstract class ImageParameterToken extends Token {
 	}
 
 	/**
+	 * Get the URL
+	 *
 	 * 获取网址
-	 * @param articlePath 条目路径
+	 * @param articlePath article path / 条目路径
 	 */
 	getUrl(articlePath?: string): string | undefined {
 		let {link} = this;

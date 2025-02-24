@@ -16,8 +16,10 @@ import {classes} from '../util/constants';
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
 
 /**
+ * flags for language conversion
+ *
  * 转换flags
- * @classdesc `{childNodes: ...AtomToken}`
+ * @classdesc `{childNodes: AtomToken[]}`
  */
 export abstract class ConverterFlagsToken extends Token {
 	#flags?: string[];
@@ -46,7 +48,7 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/* NOT FOR BROWSER */
 
-	/** 所有转换类型标记 */
+	/** all language conversion flags / 所有转换类型标记 */
 	get flags(): Set<string> {
 		return this.getAllFlags();
 	}
@@ -98,12 +100,20 @@ export abstract class ConverterFlagsToken extends Token {
 		return 1;
 	}
 
-	/** 获取未知的转换类型标记 */
+	/**
+	 * Get unknown language conversion flags
+	 *
+	 * 获取未知的转换类型标记
+	 */
 	getUnknownFlags(): Set<string> {
 		return new Set(this.#flags!.filter(flag => /\{{3}[^{}]+\}{3}/u.test(flag)));
 	}
 
-	/** 获取指定语言变体的转换标记 */
+	/**
+	 * Get language coversion flags that specify a language variant
+	 *
+	 * 获取指定语言变体的转换标记
+	 */
 	getVariantFlags(): Set<string> {
 		const variants = new Set(this.getAttribute('config').variants);
 		return new Set(this.#flags!.filter(flag => variants.has(flag)));
@@ -160,7 +170,7 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/**
 	 * @override
-	 * @param i 移除位置
+	 * @param i position of the child node / 移除位置
 	 */
 	override removeAt(i: number): AtomToken {
 		const token = super.removeAt(i) as AtomToken;
@@ -170,8 +180,8 @@ export abstract class ConverterFlagsToken extends Token {
 
 	/**
 	 * @override
-	 * @param token 待插入的子节点
-	 * @param i 插入位置
+	 * @param token node to be inserted / 待插入的子节点
+	 * @param i position to be inserted at / 插入位置
 	 */
 	override insertAt<T extends AtomToken>(token: T, i = this.length): T {
 		super.insertAt(token, i);
@@ -179,20 +189,30 @@ export abstract class ConverterFlagsToken extends Token {
 		return token;
 	}
 
-	/** 获取所有转换类型标记 */
+	/**
+	 * Get all language conversion flags
+	 *
+	 * 获取所有转换类型标记
+	 */
 	getAllFlags(): Set<string> {
 		return new Set(this.#flags);
 	}
 
 	/**
+	 * Get the conversion flag token
+	 *
 	 * 获取转换类型标记节点
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	getFlagTokens(flag: string): AtomToken[] {
 		return this.#flags!.includes(flag) ? this.childNodes.filter(child => child.text().trim() === flag) : [];
 	}
 
-	/** 获取有效的转换类型标记 */
+	/**
+	 * Get effective language conversion flags
+	 *
+	 * 获取有效的转换类型标记
+	 */
 	getEffectiveFlags(): Set<string> {
 		const variantFlags = this.getVariantFlags(),
 			unknownFlags = this.getUnknownFlags();
@@ -228,24 +248,30 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/**
+	 * Check if a language conversion flag is present
+	 *
 	 * 是否具有某转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	hasFlag(flag: string): boolean {
 		return this.#flags!.includes(flag);
 	}
 
 	/**
+	 * Check if an effective language conversion flag is present
+	 *
 	 * 是否具有某有效的转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	hasEffectiveFlag(flag: string): boolean {
 		return this.getEffectiveFlags().has(flag);
 	}
 
 	/**
+	 * Remove a language conversion flag
+	 *
 	 * 移除某转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	removeFlag(flag: string): void {
 		for (const token of this.getFlagTokens(flag)) {
@@ -262,8 +288,10 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/**
+	 * Set a language conversion flag
+	 *
 	 * 设置转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	setFlag(flag: string): void {
 		if (!this.#flags!.includes(flag)) {
@@ -272,8 +300,10 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/**
+	 * Toggle a language conversion flag
+	 *
 	 * 开关转换类型标记
-	 * @param flag 转换类型标记
+	 * @param flag language conversion flag / 转换类型标记
 	 */
 	toggleFlag(flag: string): void {
 		if (this.#flags!.includes(flag)) {

@@ -20,7 +20,8 @@ export class Range {
 		} else if (str === 'even') {
 			Object.assign(this, {start: 0, end: Infinity, step: 2});
 		} else if (str.includes(':')) {
-			const [start, end, step = '1'] = str.split(':', 3) as [string, string | undefined, string | undefined];
+			const [start, end, step = '1'] = str
+				.split(':', 3) as [string, string | undefined, string | undefined];
 			this.start = Number(start);
 			this.end = Number(end?.trim() || Infinity);
 			this.step = Math.max(Number(step), 1);
