@@ -19,6 +19,8 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
 	const include = ns === 10 || title.endsWith('/doc');
 
+	/* PRINT ONLY */
+
 	if (!method || method === 'print') {
 		console.time(`print: ${title}`);
 		const printed = (await wikiparse.print(content, include)).map(([,, s]) => s).join('');
@@ -38,6 +40,8 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 		await wikiparse.json(content, include);
 		console.timeEnd(`json: ${title}`);
 	}
+
+	/* PRINT ONLY END */
 
 	if (!method || method === 'lint') {
 		console.time(`lint: ${title}`);
