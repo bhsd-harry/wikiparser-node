@@ -8,19 +8,24 @@ const [
 
 module.exports = {
 	...config,
-	extends: [
-		...config.extends,
-		'plugin:markdown/recommended-legacy',
-	],
 	ignorePatterns: [
 		...config.ignorePatterns,
 		'coverage/',
 		'/bundle/',
 		'/extensions/es7/',
+		'/wiki/',
 	],
 	rules: {
 		...config.rules,
 		'no-control-regex': 0,
+		'no-unused-vars': [
+			2,
+			{
+				args: 'none',
+				caughtErrors: 'all',
+				ignoreRestSiblings: true,
+			},
+		],
 		'no-bitwise': [
 			2,
 			{
@@ -32,8 +37,6 @@ module.exports = {
 		'no-new': 0,
 		'no-restricted-globals': [
 			2,
-			'self',
-			'Range',
 			'print',
 			'escape',
 			'close',
@@ -68,6 +71,7 @@ module.exports = {
 			'exports',
 		],
 		'unicorn/no-this-assignment': 0,
+		'unicorn/empty-brace-spaces': 0,
 		'jsdoc/require-jsdoc': [
 			1,
 			{
@@ -105,7 +109,6 @@ module.exports = {
 		{
 			files: [
 				'errors/*.json',
-				'printed/*.json',
 			],
 			rules: {
 				'@stylistic/eol-last': [
@@ -113,27 +116,6 @@ module.exports = {
 					'never',
 				],
 				'@stylistic/indent': 0,
-			},
-		},
-		{
-			files: 'wiki/*.md/**',
-			globals: {
-				assert: 'readonly',
-				Parser: 'readonly',
-				wikiparse: 'readonly',
-			},
-			rules: {
-				'no-var': 0,
-				'jsdoc/require-jsdoc': 0,
-				'n/no-missing-require': 0,
-				'@stylistic/max-len': [
-					2,
-					{
-						ignoreTemplateLiterals: true,
-						code: 80,
-					},
-				],
-				'n/no-unsupported-features/node-builtins': 0,
 			},
 		},
 		{
@@ -145,9 +127,6 @@ module.exports = {
 					{
 						ignoreOverrideMethods: true,
 						exceptMethods: [
-							'createTextNode',
-							'createRange',
-							'fixed',
 							'getGaps',
 						],
 					},
@@ -158,15 +137,12 @@ module.exports = {
 						builtinGlobals: false,
 					},
 				],
-				'@typescript-eslint/explicit-function-return-type': [
+				'@typescript-eslint/no-unused-vars': [
 					2,
 					{
-						allowIIFEs: true,
-						allowedNames: [
-							'flagsParent',
-							'magicLinkParent',
-							'sol',
-						],
+						args: 'none',
+						caughtErrors: 'all',
+						ignoreRestSiblings: true,
 					},
 				],
 				'@typescript-eslint/no-namespace': 0,
@@ -187,7 +163,6 @@ module.exports = {
 		{
 			files: '**/*.ts',
 			excludedFiles: [
-				'addon/*.ts',
 				'bin/*.ts',
 				'test/*.ts',
 				'lib/lsp.ts',
@@ -217,12 +192,6 @@ module.exports = {
 						minItems: 1,
 					},
 				],
-			},
-		},
-		{
-			files: 'extensions/*.ts',
-			parserOptions: {
-				project: './extensions/tsconfig.json',
 			},
 		},
 	],

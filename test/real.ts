@@ -9,12 +9,6 @@ import Parser = require('../index');
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-Parser.warning = false;
-
-/* NOT FOR BROWSER END */
-
 const i18n: Record<string, string> = require('../../i18n/zh-hans');
 Parser.i18n = i18n;
 
@@ -58,7 +52,6 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	for (const [name, url, config] of apis) {
 		info(`开始检查${name}：\n`);
 		const parserConfig: Config = require(`../../config/${config}`);
-		Object.assign(parserConfig, {interwiki: []});
 		Parser.config = parserConfig;
 		try {
 			let failed = 0;

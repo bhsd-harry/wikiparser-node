@@ -11,15 +11,6 @@ import type {
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {fixedToken} from '../mixin/fixed';
-import Parser from '../index';
-
-/* NOT FOR BROWSER END */
-
 export interface HtmlToken extends AttributesParentBase {}
 
 const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist', 'iferror', 'switch']),
@@ -58,7 +49,6 @@ const magicWords = new Set<string | undefined>(['if', 'ifeq', 'ifexpr', 'ifexist
  * HTML标签
  * @classdesc `{childNodes: [AttributesToken]}`
  */
-@fixedToken
 @attributesParent()
 export abstract class HtmlToken extends Token {
 	declare readonly name: string;
@@ -69,14 +59,6 @@ export abstract class HtmlToken extends Token {
 	declare readonly childNodes: readonly [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
 	abstract override get lastChild(): AttributesToken;
-
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [AttributesToken];
-	abstract override get firstElementChild(): AttributesToken;
-	abstract override get lastElementChild(): AttributesToken;
-
-	/* NOT FOR BROWSER END */
 
 	override get type(): 'html' {
 		return 'html';
@@ -91,40 +73,6 @@ export abstract class HtmlToken extends Token {
 	get closing(): boolean {
 		return this.#closing;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** @throws `Error` 自封闭标签或空标签 */
-	set closing(value) {
-		if (!value) {
-			this.#closing = false;
-			return;
-		} else if (this.selfClosing) {
-			throw new Error('This is a self-closing tag!');
-		}
-		const {html: [,, tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error('This is a void tag!');
-		}
-		this.#closing = true;
-	}
-
-	/** @throws `Error` 闭合标签或无效自封闭标签 */
-	set selfClosing(value) { // eslint-disable-line grouped-accessor-pairs
-		if (!value) {
-			this.#selfClosing = false;
-			return;
-		} else if (this.closing) {
-			throw new Error('This is a closing tag!');
-		}
-		const {html: [tags]} = this.getAttribute('config');
-		if (tags.includes(this.name)) {
-			throw new Error(`<${this.name}> tag cannot be self-closing!`);
-		}
-		this.#selfClosing = true;
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param name 标签名
@@ -157,22 +105,8 @@ export abstract class HtmlToken extends Token {
 	override text(): string {
 		const {
 				closing,
-
-				/* NOT FOR BROWSER */
-
-				name,
 			} = this,
-			{html: [,, voidTags]} = this.getAttribute('config'),
 			tag = this.#tag + (closing ? '' : super.text());
-
-		/* NOT FOR BROWSER */
-
-		if (voidTags.includes(name)) {
-			return closing && name !== 'br' ? '' : `<${tag}/>`;
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return `<${closing ? '/' : ''}${tag}${this.#selfClosing ? '/' : ''}>`;
 	}
 
@@ -320,78 +254,4 @@ export abstract class HtmlToken extends Token {
 		Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
 		return json;
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const [attr] = this.cloneChildNodes() as [AttributesToken],
-			config = this.getAttribute('config');
-		// @ts-expect-error abstract class
-		return Shadow.run(() => new HtmlToken(this.#tag, attr, this.closing, this.selfClosing, config) as this);
-	}
-
-	/**
-	 * Change the tag name
-	 *
-	 * 更换标签名
-	 * @param tag tag name / 标签名
-	 * @throws `RangeError` 非法的HTML标签
-	 */
-	replaceTag(tag: string): void {
-		const name = tag.toLowerCase();
-		if (!this.getAttribute('config').html.some(tags => tags.includes(name))) {
-			throw new RangeError(`Invalid HTML tag: ${tag}`);
-		}
-		this.setAttribute('name', name);
-		this.#tag = tag;
-	}
-
-	/**
-	 * Fix the invalid self-closing tag
-	 *
-	 * 修复无效自封闭标签
-	 * @throws `Error` 无法修复无效自封闭标签
-	 */
-	fix(): void {
-		const {html: [normalTags]} = this.getAttribute('config'),
-			{parentNode, name: tagName, firstChild, selfClosing} = this;
-		if (!parentNode || !selfClosing || !normalTags.includes(tagName)) {
-			return;
-		} else if (firstChild.text().trim()) {
-			this.#selfClosing = false;
-			this.after(
-				Parser.parse(`</${this.name}>`, false, 3, this.getAttribute('config'))
-					.firstChild!,
-			);
-			return;
-		}
-		const {childNodes} = parentNode,
-			i = childNodes.indexOf(this),
-			prevSiblings = childNodes.slice(0, i)
-				.filter((child): child is this => child.type === 'html' && child.name === tagName),
-			imbalance = prevSiblings.reduce((acc, {closing}) => acc + (closing ? 1 : -1), 0);
-		if (imbalance < 0) {
-			this.#selfClosing = false;
-			this.#closing = true;
-		} else {
-			throw new Error(
-				`Cannot fix invalid self-closing tag: The previous ${imbalance} closing tag(s) are unmatched`,
-			);
-		}
-	}
-
-	/** @private */
-	override toHtmlInternal(): string {
-		const {closing, name} = this,
-			{html: [, selfClosingTags, voidTags]} = this.getAttribute('config'),
-			tag = name + (closing ? '' : super.toHtmlInternal());
-		if (voidTags.includes(name)) {
-			return closing && name !== 'br' ? '' : `<${tag}>`;
-		}
-		return `<${closing ? '/' : ''}${tag}>${
-			this.#selfClosing && !closing && selfClosingTags.includes(name) ? `</${name}>` : ''
-		}`;
-	}
 }
-
-classes['HtmlToken'] = __filename;

@@ -14,14 +14,6 @@ import {NowikiToken} from '../nowiki/index';
 import type {LintError, Config} from '../../base';
 import type {AttributesParentBase} from '../../mixin/attributesParent';
 
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
-import {newline} from '../../util/string';
-
-/* NOT FOR BROWSER END */
-
 export interface ExtToken extends AttributesParentBase {}
 
 /**
@@ -48,13 +40,6 @@ export abstract class ExtToken extends TagPairToken {
 	declare readonly childNodes: readonly [AttributesToken, Token];
 	abstract override get firstChild(): AttributesToken;
 	abstract override get lastChild(): Token;
-
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [AttributesToken, Token];
-	abstract override get firstElementChild(): AttributesToken;
-
-	/* NOT FOR BROWSER END */
 
 	override get type(): 'ext' {
 		return 'ext';
@@ -190,70 +175,4 @@ export abstract class ExtToken extends TagPairToken {
 		}
 		return errors;
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const inner = this.lastChild.cloneNode(),
-			tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			include = this.getAttribute('include'),
-			closed = this.selfClosing ? undefined : tags[1],
-			attr = this.firstChild.toString();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new ExtToken(tags[0], attr, '', closed, config, include) as this;
-			token.lastChild.safeReplaceWith(inner);
-			return token;
-		});
-	}
-
-	/** @private */
-	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		const {name, firstChild, lastChild} = this;
-		switch (name) {
-			case 'nowiki':
-				return newline(lastChild.toHtmlInternal());
-			case 'pre':
-				return `<pre${firstChild.toHtmlInternal()}>${
-					newline(lastChild.toHtmlInternal({...opt, nowrap: false}))
-				}</pre>`;
-			case 'poem':
-				firstChild.classList.add('poem');
-				return `<div${firstChild.toHtmlInternal()}>${
-					lastChild.toHtmlInternal({...opt, nowrap: false})
-						.replace(/(?<!^|<hr>)\n(?!$)/gu, '<br>\n')
-						.replace(/^ +/gmu, p => '&nbsp;'.repeat(p.length))
-				}</div>`;
-			case 'gallery': {
-				const caption = firstChild.getAttrToken('caption'),
-					perrow = parseInt(String(firstChild.getAttr('perrow'))),
-					mode = firstChild.getAttr('mode'),
-					nolines = typeof mode === 'string' && mode.toLowerCase() === 'nolines',
-					padding = nolines ? 9 : 43;
-				firstChild.classList.add('gallery');
-				if (nolines) {
-					firstChild.classList.add('mw-gallery-nolines');
-				}
-				if (perrow > 0) {
-					const style = firstChild.getAttr('style');
-					firstChild.setAttr(
-						'style',
-						`max-width: ${
-							((lastChild as GalleryToken).widths + padding) * perrow
-						}px;${typeof style === 'string' ? style : ''}`,
-					);
-				}
-				return `<ul${firstChild.toHtmlInternal()}>\n${
-					caption
-						? `\t<li class="gallerycaption">${caption.lastChild.toHtmlInternal({nowrap: true})}</li>\n`
-						: ''
-				}${lastChild.toHtmlInternal()}\n</ul>`;
-			}
-			default:
-				return '';
-		}
-	}
 }
-
-classes['ExtToken'] = __filename;

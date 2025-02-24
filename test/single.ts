@@ -7,12 +7,6 @@ import Parser = require('../index');
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-Parser.viewOnly = true;
-
-/* NOT FOR BROWSER END */
-
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
 const entities = {lt: '<', gt: '>', amp: '&'};
 
@@ -65,21 +59,6 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 			return diff(content, restored, pageid);
 		}
 	}
-
-	/* NOT FOR BROWSER */
-
-	if (!method || method === 'html') {
-		console.time(`html: ${title}`);
-		token.toHtml();
-		console.timeEnd(`html: ${title}`);
-		const reparsed = token.toString();
-		if (reparsed !== content) {
-			error('渲染HTML过程中不可逆地修改了原始文本！');
-			return diff(content, reparsed, pageid);
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	if (!method || method === 'lint') {
 		console.time(`lint: ${title}`);

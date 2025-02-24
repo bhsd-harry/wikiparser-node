@@ -5,35 +5,14 @@ import {NowikiBaseToken} from './base';
 import type {
 	LintError,
 	AST,
-
-	/* NOT FOR BROWSER */
-
-	Config,
 } from '../../base';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-import {Shadow} from '../../util/debug';
-import {syntax} from '../../mixin/syntax';
-import type {Font} from '../../lib/node';
-import type {Token} from '../index';
-
-/* NOT FOR BROWSER END */
 
 /**
  * `''` and `'''`
  *
  * `''`和`'''`
  */
-@syntax(/^(?:'{5}|'{2,3})$/u)
 export abstract class QuoteToken extends NowikiBaseToken {
-	/* NOT FOR BROWSER */
-
-	#closing: Font;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'quote' {
 		return 'quote';
 	}
@@ -45,28 +24,6 @@ export abstract class QuoteToken extends NowikiBaseToken {
 	override get italic(): boolean {
 		return this.innerText.length !== 3;
 	}
-
-	/* NOT FOR BROWSER */
-
-	override get font(): Font {
-		return {bold: this.bold, italic: this.italic};
-	}
-
-	/** whether to be closing quotes / 是否闭合 */
-	get closing(): Partial<Font> {
-		return {
-			...this.bold ? {bold: this.#closing.bold} : undefined,
-			...this.italic ? {italic: this.#closing.italic} : undefined,
-		};
-	}
-
-	/** @param closing 是否闭合 */
-	constructor(wikitext: string, closing: Font, config?: Config, accum?: Token[]) {
-		super(wikitext, config, accum);
-		this.#closing = closing;
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/** @private */
 	override text(): string {
@@ -144,22 +101,4 @@ export abstract class QuoteToken extends NowikiBaseToken {
 		Object.assign(json, {bold: this.bold, italic: this.italic});
 		return json;
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		return Shadow.run(
-			// @ts-expect-error abstract class
-			() => new QuoteToken(this.innerText, this.#closing, this.getAttribute('config')) as this,
-		);
-	}
-
-	/** @private */
-	override toHtmlInternal(): string {
-		const {closing: {bold, italic}} = this;
-		return (bold ? '</b>' : '') + (italic ? '</i>' : '')
-			+ (italic === false ? '<i>' : '') + (bold === false ? '<b>' : '');
-	}
 }
-
-classes['QuoteToken'] = __filename;

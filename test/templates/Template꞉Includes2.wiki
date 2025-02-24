@@ -1,1 +1,0 @@
-<onlyinclude>Foo</onlyinclude>bar

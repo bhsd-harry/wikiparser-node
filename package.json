@@ -14,17 +14,6 @@
 	"license": "GPL-3.0",
 	"author": "Bhsd",
 	"files": [
-		"/bundle/bundle.*.js",
-		"/extensions/typings.d.ts",
-		"/extensions/*/*.js",
-		"/extensions/*.css",
-		"!/extensions/dist/gh-page.js",
-		"!/extensions/gh-page.css",
-		"!/extensions/dist/test-page.js",
-		"!/extensions/test-page.css",
-		"!/extensions/dist/compare.js",
-		"!/extensions/compare.css",
-		"/printed/README",
 		"/errors/README",
 		"/config/",
 		"/data/",
@@ -33,7 +22,6 @@
 		"/dist/",
 		"!/dist/[bt]*/"
 	],
-	"browser": "/bundle/bundle.min.js",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,
@@ -42,7 +30,6 @@
 		"url": "git+https://github.com/bhsd-harry/wikiparser-node.git"
 	},
 	"scripts": {
-		"toc": "node dist/bin/toc.js",
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print|text)\\b/\\1/' dist/lib/node.d.ts; node dist/bin/declaration.js",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",

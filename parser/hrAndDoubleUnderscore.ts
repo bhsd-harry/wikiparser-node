@@ -4,12 +4,6 @@ import {HeadingToken} from '../src/heading';
 import type {Config} from '../base';
 import type {AstText, Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析`<hr>`和状态开关
  * @param {Token} root 根节点
@@ -24,7 +18,6 @@ export const parseHrAndDoubleUnderscore = (
 	const {doubleUnderscore: [insensitive, sensitive, aliases]} = config;
 	config.insensitiveDoubleUnderscore ??= new Set(insensitive);
 	config.sensitiveDoubleUnderscore ??= new Set(sensitive);
-	/__(toc|notoc)__/giu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 	config.regexHrAndDoubleUnderscore ??= new RegExp(
 		`__(${[...insensitive, ...sensitive].join('|')})__`,
 		'giu',
@@ -65,5 +58,3 @@ export const parseHrAndDoubleUnderscore = (
 	);
 	return type === 'root' || type === 'ext-inner' && name === 'poem' ? data : data.slice(1);
 };
-
-parsers['parseHrAndDoubleUnderscore'] = __filename;

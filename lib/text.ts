@@ -2,10 +2,6 @@ import {
 	zs,
 	removeComment,
 	escape,
-
-	/* NOT FOR BROWSER */
-
-	sanitize,
 } from '../util/string';
 import {getEndPos} from '../util/lint';
 import Parser from '../index';
@@ -14,29 +10,14 @@ import type {LintError, TokenTypes} from '../base';
 import type {
 	AttributeToken,
 	ExtToken,
-
-	/* NOT FOR BROWSER */
-
-	TranscludeToken,
 } from '../internal';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../util/constants';
-import {setChildNodes, Shadow} from '../util/debug';
-
-/* NOT FOR BROWSER END */
 
 const sp = String.raw`[${zs}\t]*`,
 	source =
 		String.raw`<\s*(?:/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|(?:rfc|pmid)(?=[-:：]?${
 			sp
 		}\d)|isbn(?=[-:：]?${sp}(?:\d(?:${sp}|-)){6})`;
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-/<\s*(?:\/\s*)?([a-z]\w*)|\{+|\}+|\[{2,}|\[(?![^[]*?\])|((?:^|\])[^[]*?)\]+|https?[:/]\/+/giu;
 const errorSyntax = new RegExp(String.raw`${source}|https?[:/]/+`, 'giu');
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-/^https?:\/\/(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*\.(?:gif|png|jpg|jpeg)$/iu;
 const errorSyntaxUrl = new RegExp(source, 'giu'),
 	noLinkTypes = new Set<TokenTypes>(['attr-value', 'ext-link-text', 'link-text']),
 	regexes = {
@@ -58,24 +39,17 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 	},
 	disallowedTags = [
 		'html',
-		'base',
 		'head',
 		'style',
 		'title',
 		'body',
-		'menu',
 		'a',
-		'area',
 		'audio',
 		'img',
-		'map',
-		'track',
 		'video',
 		'embed',
 		'iframe',
 		'object',
-		'picture',
-		'source',
 		'canvas',
 		'script',
 		'col',
@@ -84,29 +58,11 @@ const errorSyntaxUrl = new RegExp(source, 'giu'),
 		'tfoot',
 		'thead',
 		'button',
-		'datalist',
-		'fieldset',
-		'form',
 		'input',
 		'label',
-		'legend',
-		'meter',
-		'optgroup',
 		'option',
-		'output',
-		'progress',
 		'select',
 		'textarea',
-		'details',
-		'dialog',
-		'slot',
-		'template',
-		'dir',
-		'frame',
-		'frameset',
-		'marquee',
-		'param',
-		'xmp',
 	];
 let wordRegex: RegExp;
 try {
@@ -129,21 +85,6 @@ export class AstText extends AstNode {
 		return 'text';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** text length / 文本长度 */
-	get length(): number {
-		return this.data.length;
-	}
-
-	set length(n) {
-		if (n >= 0 && n < this.length) {
-			this.replaceData(this.data.slice(0, n));
-		}
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param text 包含文本 */
 	constructor(text: string) {
 		super();
@@ -151,10 +92,6 @@ export class AstText extends AstNode {
 			childNodes: {enumerable: false, configurable: false},
 			data: {
 				value: text,
-
-				/* NOT FOR BROWSER */
-
-				writable: false,
 			},
 		});
 	}
@@ -331,20 +268,7 @@ export class AstText extends AstNode {
 	 * @param text 新内容
 	 */
 	#setData(text: string): void {
-		/* NOT FOR BROWSER */
-
-		const {data} = this,
-			e = new Event('text', {bubbles: true});
-
-		/* NOT FOR BROWSER END */
-
 		this.setAttribute('data', text);
-
-		/* NOT FOR BROWSER */
-
-		if (data !== text) {
-			this.dispatchEvent(e, {type: 'text', oldText: data});
-		}
 	}
 
 	/**
@@ -361,184 +285,4 @@ export class AstText extends AstNode {
 	print(): string {
 		return escape(this.data);
 	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Clone the node
-	 *
-	 * 复制
-	 */
-	cloneNode(): AstText {
-		return new AstText(this.data);
-	}
-
-	/**
-	 * Insert text at the end
-	 *
-	 * 在后方添加字符串
-	 * @param text text to be inserted / 添加的字符串
-	 */
-	appendData(text: string): void {
-		this.#setData(this.data + text);
-	}
-
-	/**
-	 * Delete text
-	 *
-	 * 删减字符串
-	 * @param offset start position / 起始位置
-	 * @param count number of characters to be deleted / 删减字符数
-	 */
-	deleteData(offset: number, count = Infinity): void {
-		this.#setData(
-			this.data.slice(0, offset)
-			+ (offset < 0 && offset + count >= 0 ? '' : this.data.slice(offset + count)),
-		);
-	}
-
-	/**
-	 * Insert text
-	 *
-	 * 插入字符串
-	 * @param offset position to be inserted at / 插入位置
-	 * @param text text to be inserted / 待插入的字符串
-	 */
-	insertData(offset: number, text: string): void {
-		this.#setData(this.data.slice(0, offset) + text + this.data.slice(offset));
-	}
-
-	/**
-	 * Get the substring
-	 *
-	 * 提取子串
-	 * @param offset start position / 起始位置
-	 * @param count number of characters / 字符数
-	 */
-	substringData(offset: number, count?: number): string {
-		return this.data.substr(offset, count);
-	}
-
-	/**
-	 * Split the text node into two parts
-	 *
-	 * 将文本子节点分裂为两部分
-	 * @param offset position to be splitted at / 分裂位置
-	 * @throws `RangeError` 错误的断开位置
-	 * @throws `Error` 没有父节点
-	 */
-	splitText(offset: number): AstText {
-		/* istanbul ignore if */
-		if (offset > this.length || offset < -this.length) {
-			throw new RangeError(`Wrong offset to split: ${offset}`);
-		}
-		const {parentNode, data} = this;
-		/* istanbul ignore if */
-		if (!parentNode) {
-			throw new Error('The text node to be split has no parent node!');
-		}
-		const newText = new AstText(data.slice(offset));
-		setChildNodes(parentNode, parentNode.childNodes.indexOf(this) + 1, 0, [newText]);
-		this.setAttribute('data', data.slice(0, offset));
-		return newText;
-	}
-
-	/** @private */
-	override getRelativeIndex(j?: number): number {
-		/* istanbul ignore else */
-		if (j === undefined) {
-			return super.getRelativeIndex();
-		} else if (j < 0 || j > this.length) {
-			throw new RangeError('Exceeding the text length range!');
-		}
-		return j;
-	}
-
-	/**
-	 * Escape `=`
-	 *
-	 * 转义 `=`
-	 */
-	escape(): void {
-		const {TranscludeToken}: typeof import('../src/transclude') = require('../src/transclude');
-		let i = this.data.lastIndexOf('=');
-		for (; i >= 0; i = this.data.lastIndexOf('=', i - 1)) {
-			if (i < this.length - 1) {
-				this.splitText(i + 1);
-			}
-			this.after(Shadow.run(
-				// @ts-expect-error abstract class
-				(): TranscludeToken => new TranscludeToken('=', [], this.parentNode!.getAttribute('config')),
-			));
-			this.#setData(this.data.slice(0, i));
-		}
-	}
-
-	/**
-	 * Generate HTML
-	 *
-	 * 生成HTML
-	 * @param nowrap whether to disable line-wrapping / 是否不换行
-	 */
-	toHtml(nowrap?: boolean): string {
-		const {data} = this;
-		return sanitize(nowrap ? data.replaceAll('\n', ' ') : data);
-	}
-
-	/** @private */
-	removeBlankLines(): void {
-		if (/\s$/u.test(this.data)) {
-			const spaces: AstText[] = [],
-				mt = /\n[^\S\n]*$/u.exec(this.data);
-			let {nextSibling} = this,
-				mt2: RegExpExecArray | null = null;
-			while (
-				nextSibling
-				&& (nextSibling.type === 'comment' || nextSibling.type === 'category' || nextSibling.type === 'text')
-			) {
-				if (nextSibling.type === 'text') {
-					mt2 = mt && /^[^\S\n]*(?=\n)/u.exec(nextSibling.data);
-					if (mt2 || nextSibling.data.trim()) {
-						break;
-					} else {
-						spaces.push(nextSibling);
-					}
-				} else if (mt && nextSibling.type === 'category') {
-					// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
-					const trimmed = this.data.trimEnd();
-					if (this.data !== trimmed) {
-						const {length} = trimmed;
-						this.deleteData(length + this.data.slice(length).indexOf('\n'));
-					}
-					for (const space of spaces) {
-						space.#setData('');
-					}
-					spaces.length = 0;
-				}
-				({nextSibling} = nextSibling);
-			}
-			if (mt2 || nextSibling?.type === 'table') {
-				if (mt) {
-					this.deleteData(mt.index + (mt2 ? 0 : 1));
-					if (mt2) {
-						(nextSibling as AstText).deleteData(0, mt2[0].length);
-					}
-				} else {
-					// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
-					this.#setData(this.data.trimEnd());
-				}
-				for (const space of spaces) {
-					space.#setData('');
-				}
-			}
-		}
-	}
-
-	/** @private */
-	toHtmlInternal(opt?: Pick<HtmlOpt, 'nowrap'>): string {
-		this.removeBlankLines();
-		return this.toHtml(opt?.nowrap);
-	}
 }
-
-classes['AstText'] = __filename;

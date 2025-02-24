@@ -2,18 +2,10 @@ import {generateForChild} from '../util/lint';
 import {
 	removeComment,
 	escape,
-
-	/* NOT FOR BROWSER */
-
-	sanitizeAttr,
 } from '../util/string';
 import {
 	MAX_STAGE,
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../util/constants';
 import {commonHtmlAttrs, extAttrs, htmlAttrs, obsoleteAttrs} from '../util/sharable';
 import {BoundingRect} from '../lib/rect';
@@ -22,15 +14,6 @@ import {Token} from './index';
 import {AtomToken} from './atom';
 import type {LintError, Config} from '../base';
 import type {AttributesToken} from '../internal';
-
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../util/debug';
-import {fixedToken} from '../mixin/fixed';
-
-const stages = {'ext-attr': 0, 'html-attr': 2, 'table-attr': 3};
-
-/* NOT FOR BROWSER END */
 
 declare type Child = AtomToken | AttributeToken | undefined;
 export type AttributeTypes = 'ext-attr' | 'html-attr' | 'table-attr';
@@ -44,7 +27,6 @@ const insecureStyle =
  * 扩展和HTML标签属性
  * @classdesc `{childNodes: [AtomToken, Token|AtomToken]}`
  */
-@fixedToken
 export abstract class AttributeToken extends Token {
 	declare readonly name: string;
 	readonly #type;
@@ -59,17 +41,6 @@ export abstract class AttributeToken extends Token {
 	abstract override get nextSibling(): Child;
 	abstract override get previousSibling(): Child;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [AtomToken, Token];
-	abstract override get firstElementChild(): AtomToken;
-	abstract override get lastElementChild(): Token;
-	abstract override get parentElement(): AttributesToken | undefined;
-	abstract override get nextElementSibling(): Child;
-	abstract override get previousElementSibling(): Child;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): AttributeTypes {
 		return this.#type;
 	}
@@ -83,25 +54,6 @@ export abstract class AttributeToken extends Token {
 	get balanced(): boolean {
 		return !this.#equal || this.#quotes[0] === this.#quotes[1];
 	}
-
-	/* NOT FOR BROWSER */
-
-	set balanced(value) {
-		if (value) {
-			this.close();
-		}
-	}
-
-	/** attribute value / 属性值 */
-	get value(): string | true {
-		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param type 标签类型
@@ -126,12 +78,10 @@ export abstract class AttributeToken extends Token {
 			'attr-key',
 			config,
 			accum,
-			type === 'ext-attr' ? {AstText: ':'} : {'Stage-2': ':', '!ExtToken': '', '!HeadingToken': ''},
 		);
 		let valueToken: Token;
 		if (key === 'title' || tag === 'img' && key === 'alt') {
 			valueToken = new Token(value, config, accum, {
-				[`Stage-${stages[type]}`]: ':', ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', MAX_STAGE - 1);
@@ -144,22 +94,11 @@ export abstract class AttributeToken extends Token {
 				excludes: [...config.excludes!, 'heading', 'html', 'table', 'hr', 'list'],
 			};
 			valueToken = new Token(value, newConfig, accum, {
-				AstText: ':',
-				ArgToken: ':',
-				TranscludeToken: ':',
-				LinkToken: ':',
-				FileToken: ':',
-				CategoryToken: ':',
-				QuoteToken: ':',
-				ExtLinkToken: ':',
-				MagicLinkToken: ':',
-				ConverterToken: ':',
 			});
 			valueToken.type = 'attr-value';
 			valueToken.setAttribute('stage', 1);
 		} else {
 			valueToken = new AtomToken(value, 'attr-value', config, accum, {
-				[`Stage-${stages[type]}`]: ':',
 			});
 		}
 		super(undefined, config, accum);
@@ -272,108 +211,4 @@ export abstract class AttributeToken extends Token {
 		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
 		return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const [key, value] = this.cloneChildNodes() as [AtomToken, Token],
-			k = key.toString(),
-			config = this.getAttribute('config');
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new AttributeToken(this.type, this.tag, k, this.#equal, '', this.#quotes, config) as this;
-			token.firstChild.safeReplaceWith(key);
-			token.lastChild.safeReplaceWith(value);
-			return token;
-		});
-	}
-
-	/**
-	 * Escape `=`
-	 *
-	 * 转义等号
-	 */
-	escape(): void {
-		this.#equal = '{{=}}';
-	}
-
-	/**
-	 * Close the quote
-	 *
-	 * 闭合引号
-	 */
-	close(): void {
-		const [opening] = this.#quotes;
-		if (opening) {
-			this.#quotes[1] = opening;
-		}
-	}
-
-	/**
-	 * Set the attribute value
-	 *
-	 * 设置属性值
-	 * @param value attribute value / 属性值
-	 * @throws `RangeError` 扩展标签属性不能包含 ">"
-	 * @throws `RangeError` 同时包含单引号和双引号
-	 */
-	setValue(value: string | boolean): void {
-		if (value === false) {
-			this.remove();
-			return;
-		} else if (value === true) {
-			this.#equal = '';
-			return;
-		} else if (this.type === 'ext-attr' && value.includes('>')) {
-			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
-		} else if (value.includes('"') && value.includes(`'`)) {
-			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
-		}
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[this.type] + 1, config);
-		this.lastChild.replaceChildren(...childNodes);
-		if (value.includes('"')) {
-			this.#quotes = [`'`, `'`] as const;
-		} else if (value.includes(`'`) || !this.#quotes[0]) {
-			this.#quotes = ['"', '"'] as const;
-		} else {
-			this.close();
-		}
-	}
-
-	/**
-	 * Rename the attribute
-	 *
-	 * 修改属性名
-	 * @param key new attribute name / 新属性名
-	 * @throws `Error` title和alt属性不能更名
-	 */
-	rename(key: string): void {
-		if (this.name === 'title' || this.name === 'alt' && this.tag === 'img') {
-			throw new Error(`${this.name} attribute cannot be renamed!`);
-		}
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(key, this.getAttribute('include'), stages[this.type] + 1, config);
-		this.firstChild.replaceChildren(...childNodes);
-	}
-
-	/** @private */
-	override toHtmlInternal(): string {
-		const {type, name, tag, lastChild} = this;
-		if (
-			type === 'ext-attr' && !(tag in htmlAttrs)
-			|| !htmlAttrs[tag]?.has(name)
-			&& !/^(?:xmlns:[\w:.-]+|data-(?!ooui|mw|parsoid)[^:]*)$/u.test(name)
-			&& (tag === 'meta' || tag === 'link' || !commonHtmlAttrs.has(name))
-		) {
-			return '';
-		}
-		const value = lastChild.toHtmlInternal().trim();
-		if (name === 'style' && insecureStyle.test(value) || name === 'tabindex' && value !== '0') {
-			return '';
-		}
-		return `${name}="${sanitizeAttr(value.replace(/\s+|&#10;/gu, name === 'id' ? '_' : ' '))}"`;
-	}
 }
-
-classes['AttributeToken'] = __filename;

@@ -2,12 +2,6 @@ import {QuoteToken} from '../src/nowiki/quote';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析单引号
  * @param wikitext
@@ -64,55 +58,14 @@ export const parseQuotes = (wikitext: string, config: Config, accum: Token[], ti
 			arr[i - 1] += `'`;
 		}
 	}
-
-	/* NOT FOR BROWSER */
-
-	let bold = true,
-		italic = true;
-
-	/* NOT FOR BROWSER END */
-
 	for (let i = 1; i < length; i += 2) {
-		/* NOT FOR BROWSER */
-
-		const n = arr[i]!.length,
-			isBold = n !== 2,
-			isItalic = n !== 3;
-		if (isBold) {
-			bold = !bold;
-		}
-		if (isItalic) {
-			italic = !italic;
-		}
-
-		/* NOT FOR BROWSER END */
-
 		// @ts-expect-error abstract class
 		new QuoteToken(
 			arr[i],
-			{bold: isBold && bold, italic: isItalic && italic},
 			config,
 			accum,
 		);
 		arr[i] = `\0${accum.length - 1}q\x7F`;
 	}
-
-	/* NOT FOR BROWSER */
-
-	if (tidy && (!bold || !italic)) {
-		// @ts-expect-error abstract class
-		new QuoteToken(
-			(bold ? '' : "'''") + (italic ? '' : "''"),
-			{bold: !bold, italic: !italic},
-			config,
-			accum,
-		);
-		arr.push(`\0${accum.length - 1}q\x7F`);
-	}
-
-	/* NOT FOR BROWSER END */
-
 	return arr.join('');
 };
-
-parsers['parseQuotes'] = __filename;

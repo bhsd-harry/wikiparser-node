@@ -4,12 +4,6 @@ import Parser from '../../index';
 import {ParamTagToken} from './index';
 import type {Token} from '../index';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /** `<inputbox>` */
 export abstract class InputboxToken extends ParamTagToken {
 	/** @class */
@@ -21,9 +15,6 @@ export abstract class InputboxToken extends ParamTagToken {
 		wikitext &&= parseBraces(wikitext, config, accum);
 		accum.splice(length, 1);
 		super(include, wikitext, config, accum, {
-			ArgToken: ':', TranscludeToken: ':',
 		});
 	}
 }
-
-classes['InputboxToken'] = __filename;

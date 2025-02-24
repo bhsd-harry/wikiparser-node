@@ -7,12 +7,6 @@ import {CategoryToken} from '../src/link/category';
 import type {Config} from '../base';
 import type {Token} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
 
 /**
@@ -23,7 +17,6 @@ const regexImg = /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(\||\0\d+!\x7F)([\s\S]*)$/u;
  * @param tidy 是否整理链接
  */
 export const parseLinks = (wikitext: string, config: Config, accum: Token[], tidy?: boolean): string => {
-	/^\s*(?:ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 	config.regexLinks ??= new RegExp(String.raw`^\s*(?:${config.protocol}|//)`, 'iu');
 	const regex = true // eslint-disable-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
 			? /^((?:(?!\0\d+!\x7F)[^\n[\]{}|])+)(?:(\||\0\d+!\x7F)([\s\S]*?[^\]]))?\]\]([\s\S]*)$/u
@@ -63,10 +56,6 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 		const {
 			ns,
 			valid,
-
-			/* NOT FOR BROWSER */
-
-			interwiki,
 		} = Parser.normalizeTitle(
 			link,
 			0,
@@ -83,7 +72,6 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 		} else if (mightBeImg) {
 			if (
 				ns !== 6
-				|| interwiki
 			) {
 				s += `[[${x}`;
 				continue;
@@ -115,13 +103,11 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 		if (!force) {
 			if (
 				ns === 6
-				&& !interwiki
 			) {
 				text &&= parseExternalLinks(text, config, accum, true);
 				SomeLinkToken = FileToken;
 			} else if (
 				ns === 14
-				&& !interwiki
 			) {
 				SomeLinkToken = CategoryToken;
 			}
@@ -132,5 +118,3 @@ export const parseLinks = (wikitext: string, config: Config, accum: Token[], tid
 	}
 	return s;
 };
-
-parsers['parseLinks'] = __filename;

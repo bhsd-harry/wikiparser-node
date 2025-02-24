@@ -6,12 +6,6 @@ import type {
 	Token,
 } from '../internal';
 
-/* NOT FOR BROWSER */
-
-import type {Ranges} from '../lib/ranges';
-
-/* NOT FOR BROWSER END */
-
 declare global {
 	type TokenAttribute<T extends string> =
 		T extends 'stage' | 'padding' ? number :
@@ -22,16 +16,5 @@ declare global {
 		T extends 'childNodes' ? AstNodes[] :
 		T extends 'bracket' | 'include' | 'plain' | 'built' ? boolean :
 		T extends 'title' ? Title :
-
-		/* NOT FOR BROWSER */
-
-		T extends 'pattern' ? RegExp :
-		T extends 'tags' ? [string, string] :
-		T extends 'keys' ? Set<string> :
-		T extends 'protectedChildren' ? Ranges :
-		T extends 'acceptable' ? Acceptable | undefined :
-
-		/* NOT FOR BROWSER END */
-
 		unknown;
 }

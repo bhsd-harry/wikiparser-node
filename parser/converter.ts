@@ -2,12 +2,6 @@ import {ConverterToken} from '../src/converter';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析语言变体转换
  * @param text
@@ -15,8 +9,6 @@ import {parsers} from '../util/constants';
  * @param accum
  */
 export const parseConverter = (text: string, config: Config, accum: Token[]): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/;(?=(?:[^;]*?=>)?\s*zh\s*:|(?:\s|\0\d+[cn]\x7F)*$)/u;
 	config.regexConverter ??= new RegExp(
 		String.raw`;(?=(?:[^;]*?=>)?\s*(?:${config.variants.join('|')})\s*:|(?:\s|\0\d+[cn]\x7F)*$)`,
 		'u',
@@ -53,5 +45,3 @@ export const parseConverter = (text: string, config: Config, accum: Token[]): st
 	}
 	return text;
 };
-
-parsers['parseConverter'] = __filename;

@@ -5,12 +5,6 @@ import type {LintError, Config} from '../../base';
 import type {Title} from '../../lib/title';
 import type {Token, AtomToken} from '../../internal';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * target of a redirect
  *
@@ -22,26 +16,9 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 	abstract override get lastChild(): AtomToken | NoincludeToken;
 	abstract override get link(): Title;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [AtomToken] | [AtomToken, NoincludeToken];
-	abstract override get lastElementChild(): AtomToken | NoincludeToken;
-	abstract override set link(link: string);
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'redirect-target' {
 		return 'redirect-target';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** link text / 链接显示文字 */
-	get innerText(): string {
-		return this.link.toString(true);
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param link 链接标题
@@ -53,12 +30,6 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 			// @ts-expect-error abstract class
 			this.insertAt(new NoincludeToken(linkText, config, accum));
 		}
-
-		/* NOT FOR BROWSER */
-
-		this.setAttribute('acceptable', {AtomToken: 0, NoincludeToken: 1});
-		// @ts-expect-error abstract getter
-		this.firstChild.setAttribute('acceptable', {AstText: ':'});
 	}
 
 	/** @private */
@@ -79,20 +50,4 @@ export abstract class RedirectTargetToken extends LinkBaseToken {
 		}
 		return errors;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	override setTarget(link: string): void {
-		this.firstChild.setText(link);
-	}
-
-	/** @private */
-	override setLinkText(linkStr?: string): void {
-		if (!linkStr) {
-			this.childNodes[1]?.remove();
-		}
-	}
 }
-
-classes['RedirectTargetToken'] = __filename;

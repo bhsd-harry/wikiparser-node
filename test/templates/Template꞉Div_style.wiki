@@ -1,1 +1,0 @@
-<div style="float: right; {{{1}}}">Magic div</div>

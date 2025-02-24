@@ -1,10 +1,6 @@
 import type {
 	AstNodes,
 	Token,
-
-	/* NOT FOR BROWSER */
-
-	AstText,
 } from '../internal';
 
 export const Shadow = {
@@ -60,16 +56,6 @@ export const setChildNodes = (
 	}
 	nodes[position - 1]?.setAttribute('nextSibling', nodes[position]);
 	nodes[position + inserted.length]?.setAttribute('previousSibling', nodes[position + inserted.length - 1]);
-
-	/* NOT FOR BROWSER */
-
-	parent.setAttribute('childNodes', nodes);
-	for (const node of removed) {
-		node.setAttribute('parentNode', undefined);
-	}
-
-	/* NOT FOR BROWSER END */
-
 	return removed;
 };
 
@@ -80,47 +66,4 @@ export const setChildNodes = (
  */
 export const mixin = (target: Function, source: Function): void => {
 	Object.defineProperty(target, 'name', {value: source.name});
-};
-
-/* NOT FOR BROWSER */
-
-/* istanbul ignore next */
-/**
- * 定制TypeError消息
- * @param {Function} Constructor 类
- * @param method
- * @param args 可接受的参数类型
- * @throws `TypeError`
- */
-export const typeError = ({name}: Function, method: string, ...args: string[]): never => {
-	throw new TypeError(
-		`${name}.${method} method only accepts ${args.join('、')} as input parameters!`,
-	);
-};
-
-/**
- * 撤销最近一次Mutation
- * @param e 事件
- * @param data 事件数据
- * @throws `RangeError` 无法撤销的事件类型
- */
-export const undo: AstListener = (e, data): void => {
-	const {target, type} = e;
-	switch (data.type) {
-		case 'remove':
-			setChildNodes(target as Token, data.position, 0, [data.removed]);
-			break;
-		case 'insert':
-			setChildNodes(target as Token, data.position, 1);
-			break;
-		case 'replace':
-			setChildNodes(target.parentNode!, data.position, 1, [data.oldToken]);
-			break;
-		case 'text':
-			(target as AstText).replaceData(data.oldText);
-			break;
-		/* istanbul ignore next */
-		default:
-			throw new RangeError(`Unable to undo events with an unknown type: ${type}`);
-	}
 };

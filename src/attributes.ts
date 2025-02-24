@@ -1,11 +1,6 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {
 	removeComment,
-
-	/* NOT FOR BROWSER */
-
-	normalizeSpace,
-	text,
 } from '../util/string';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -16,16 +11,6 @@ import type {LintError} from '../base';
 import type {ExtToken, HtmlToken, SyntaxToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 import type {TableTokens} from './table/index';
-
-/* NOT FOR BROWSER */
-
-import {html} from '../util/html';
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-
-const stages = {'ext-attrs': 0, 'html-attrs': 2, 'table-attrs': 3};
-
-/* NOT FOR BROWSER END */
 
 declare type AttributesTypes = `${AttributeTypes}s`;
 declare type AttributeDirty = `${AttributeTypes}-dirty`;
@@ -60,7 +45,6 @@ try {
 export abstract class AttributesToken extends Token {
 	declare readonly name: string;
 	readonly #type;
-	#classList: Set<string> | undefined;
 
 	declare readonly childNodes: readonly Child[];
 	abstract override get firstChild(): Child | undefined;
@@ -68,89 +52,9 @@ export abstract class AttributesToken extends Token {
 	abstract override get parentNode(): ExtToken | HtmlToken | TableTokens | undefined;
 	abstract override get previousSibling(): SyntaxToken | undefined;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
-	abstract override get parentElement(): ExtToken | HtmlToken | TableTokens | undefined;
-	abstract override get previousElementSibling(): SyntaxToken | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): AttributesTypes {
 		return this.#type;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** all attributes / 全部属性 */
-	get attributes(): Record<string, string | true> {
-		return this.getAttrs();
-	}
-
-	set attributes(attrs) {
-		this.replaceChildren();
-		this.setAttr(attrs);
-	}
-
-	/** class attribute in string / 以字符串表示的class属性 */
-	get className(): string {
-		const attr = this.getAttr('class');
-		return typeof attr === 'string' ? attr : '';
-	}
-
-	set className(className) {
-		this.setAttr('class', className || false);
-	}
-
-	/** class attribute in Set / 以Set表示的class属性 */
-	get classList(): Set<string> {
-		if (!this.#classList) {
-			this.#classList = new Set(this.className.split(/\s/u));
-
-			/**
-			 * 更新classList
-			 * @param prop 方法名
-			 */
-			const factory = (prop: 'add' | 'delete' | 'clear'): PropertyDescriptor => ({
-				value: /** @ignore */ (...args: unknown[]): unknown => {
-					const result = Set.prototype[prop as 'add'].apply(this.#classList, args as [unknown]);
-					this.setAttr('class', [...this.#classList!].join(' '));
-					return result;
-				},
-			});
-			Object.defineProperties(this.#classList, {
-				add: factory('add'),
-				delete: factory('delete'),
-				clear: factory('clear'),
-			});
-		}
-		return this.#classList;
-	}
-
-	/** id attribute / id属性 */
-	get id(): string {
-		const attr = this.getAttr('id');
-		return typeof attr === 'string' ? attr : '';
-	}
-
-	set id(id) {
-		this.setAttr('id', id || false);
-	}
-
-	/** whether to contain invalid attributes / 是否含有无效属性 */
-	get sanitized(): boolean {
-		return this.childNodes.filter(child => child instanceof AtomToken && child.text().trim()).length === 0;
-	}
-
-	set sanitized(sanitized) {
-		if (sanitized) {
-			this.sanitize();
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param attr 标签属性
@@ -165,7 +69,6 @@ export abstract class AttributesToken extends Token {
 		accum: Token[] = [],
 	) {
 		super(undefined, config, accum, {
-			AtomToken: ':', AttributeToken: ':',
 		});
 		this.#type = type;
 		this.setAttribute('name', name);
@@ -177,7 +80,6 @@ export abstract class AttributesToken extends Token {
 			const insertDirty = /** 插入无效属性 */ (): void => {
 				if (out) {
 					super.insertAt(new AtomToken(out, toDirty(type), config, accum, {
-						[`Stage-${stages[type]}`]: ':',
 					}));
 					out = '';
 				}
@@ -329,225 +231,4 @@ export abstract class AttributesToken extends Token {
 			)).join('')}</span>`
 			: '';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * Sanitize invalid attributes
-	 *
-	 * 清理无效属性
-	 */
-	sanitize(): void {
-		let dirty = false;
-		for (let i = this.length - 1; i >= 0; i--) {
-			const child = this.childNodes[i]!;
-			if (child instanceof AtomToken && child.text().trim()) {
-				dirty = true;
-				this.removeAt(i);
-			}
-		}
-		if (!Shadow.running && dirty) {
-			Parser.warn('AttributesToken.sanitize will remove invalid attributes!');
-		}
-	}
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new AttributesToken(
-				undefined,
-				this.type,
-				this.name,
-				this.getAttribute('config'),
-			) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 标签不匹配
-	 */
-	override insertAt<T extends Child>(token: T, i = this.length): T {
-		if (!(token instanceof AttributeToken)) {
-			if (!Shadow.running && token.toString().trim()) {
-				this.constructorError('can only insert AttributeToken');
-			}
-			return super.insertAt(token, i);
-		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {
-			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
-		} else if (i === this.length) {
-			const {lastChild} = this;
-			if (lastChild instanceof AttributeToken) {
-				lastChild.close();
-			}
-		} else {
-			token.close();
-		}
-		if (this.closest('parameter')) {
-			token.escape();
-		}
-		super.insertAt(token, i);
-		const {previousVisibleSibling, nextVisibleSibling} = token,
-			type = toDirty(this.type),
-			config = this.getAttribute('config'),
-			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
-		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling.toString())) {
-			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i + 1);
-		}
-		if (previousVisibleSibling && !/\s$/u.test(previousVisibleSibling.toString())) {
-			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
-		}
-		return token;
-	}
-
-	/**
-	 * Set the attribute
-	 *
-	 * 设置指定属性
-	 * @param key attribute name / 属性键
-	 * @param value attribute value / 属性值
-	 * @param prop attribute object / 属性对象
-	 * @throws `RangeError` 扩展标签属性不能包含">"
-	 */
-	setAttr(key: string, value: string | boolean): void;
-	setAttr(prop: Record<string, string | boolean>): void;
-	setAttr(keyOrProp: string | Record<string, string | boolean>, value?: string | boolean): void {
-		if (typeof keyOrProp !== 'string') {
-			for (const [key, val] of Object.entries(keyOrProp)) {
-				this.setAttr(key, val);
-			}
-			return;
-		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
-			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
-		}
-		const key = keyOrProp.toLowerCase().trim(),
-			attr = this.getAttrToken(key);
-		if (attr) {
-			attr.setValue(value!);
-			return;
-		} else if (value === false) {
-			return;
-		}
-		// @ts-expect-error abstract class
-		const token = Shadow.run((): AttributeToken => new AttributeToken(
-			toAttributeType(this.type),
-			this.name,
-			key,
-			value === true ? '' : '=',
-			value === true ? '' : value,
-			['"', '"'],
-			this.getAttribute('config'),
-		));
-		this.insertAt(token);
-	}
-
-	/**
-	 * Check if the token has a certain attribute
-	 *
-	 * 是否具有某属性
-	 * @param key attribute name / 属性键
-	 */
-	hasAttr(key: string): boolean {
-		return this.getAttrTokens(key).length > 0;
-	}
-
-	/**
-	 * Get all attribute names
-	 *
-	 * 获取全部的属性名
-	 */
-	getAttrNames(): Set<string> {
-		return new Set(this.getAttrTokens().map(({name}) => name));
-	}
-
-	/**
-	 * Get all attributes
-	 *
-	 * 获取全部属性
-	 */
-	getAttrs(): Record<string, string | true> {
-		return Object.fromEntries(this.getAttrTokens().map(({name, value}) => [name, value]));
-	}
-
-	/**
-	 * Remove an attribute
-	 *
-	 * 移除指定属性
-	 * @param key attribute name / 属性键
-	 */
-	removeAttr(key: string): void {
-		for (const attr of this.getAttrTokens(key)) {
-			attr.remove();
-		}
-	}
-
-	/**
-	 * Toggle the specified attribute
-	 *
-	 * 开关指定属性
-	 * @param key attribute name / 属性键
-	 * @param force whether to force enabling or disabling / 强制开启或关闭
-	 * @throws `RangeError` 不为Boolean类型的属性值
-	 */
-	toggleAttr(key: string, force?: boolean): void {
-		key = key.toLowerCase().trim();
-		const attr = this.getAttrToken(key);
-		if (attr && attr.getValue() !== true) {
-			throw new RangeError(`${key} attribute is not Boolean!`);
-		} else if (attr) {
-			attr.setValue(force === true);
-		} else if (force !== false) {
-			this.setAttr(key, true);
-		}
-	}
-
-	/**
-	 * 生成引导空格
-	 * @param str 属性字符串
-	 */
-	#leadingSpace(str: string): string {
-		const {type} = this,
-			leadingRegex = {'ext-attrs': /^\s/u, 'html-attrs': /^[/\s]/u};
-		return str && type !== 'table-attrs' && !leadingRegex[type].test(str) ? ' ' : '';
-	}
-
-	/** @private */
-	override toString(skip?: boolean): string {
-		if (this.type === 'table-attrs') {
-			normalizeSpace(this);
-		}
-		const str = super.toString(skip);
-		return this.#leadingSpace(str) + str;
-	}
-
-	/** @private */
-	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		return key === 'padding'
-			? this.#leadingSpace(super.toString()).length as TokenAttribute<T>
-			: super.getAttribute(key);
-	}
-
-	/** @private */
-	override text(): string {
-		if (this.type === 'table-attrs') {
-			normalizeSpace(this);
-		}
-		const str = text(this.childNodes.filter(child => child instanceof AttributeToken), ' ');
-		return this.#leadingSpace(str) + str;
-	}
-
-	/** @private */
-	override toHtmlInternal(): string {
-		const map = new Map(
-			this.childNodes.filter(child => child instanceof AttributeToken).map(child => [child.name, child]),
-		);
-		return map.size === 0 ? '' : ` ${html([...map.values()], ' ')}`;
-	}
 }
-
-classes['AttributesToken'] = __filename;

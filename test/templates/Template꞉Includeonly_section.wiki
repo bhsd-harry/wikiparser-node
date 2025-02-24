@@ -1,4 +1,0 @@
-<includeonly>
-==Includeonly section==
-</includeonly>
-==Section T-1==

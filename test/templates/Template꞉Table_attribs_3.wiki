@@ -1,2 +1,0 @@
-<noinclude>
-|</noinclude>style{{=}}"background:&#35;f9f9f9;"|Foo

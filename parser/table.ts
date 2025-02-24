@@ -7,12 +7,6 @@ import type {Config} from '../base';
 import type {AstText} from '../internal';
 import type {TableTokens} from '../src/table/index';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 判断是否为表格行或表格
  * @param token 表格节点
@@ -141,4 +135,3 @@ export const parseTable = (
 	}
 	return out.slice(1);
 };
-parsers['parseTable'] = __filename;

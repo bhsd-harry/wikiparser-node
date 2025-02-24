@@ -17,7 +17,6 @@ for (const file of fs.readdirSync('dist/src/', {recursive: true}) as string[]) {
 			content.replace(
 				regex,
 				(_, base: string, exp: string): string => {
-					/import \{\s*Token\b.+?;\n/su; // eslint-disable-line @typescript-eslint/no-unused-expressions
 					const regex2 = new RegExp(String.raw`import \{\s*${base}\b.+?;\n`, 'su');
 					return (
 						regex2.test(content)

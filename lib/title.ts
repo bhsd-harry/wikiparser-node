@@ -1,19 +1,8 @@
 import {
 	decodeHtml,
 	rawurldecode,
-
-	/* NOT FOR BROWSER */
-
-	escapeRegExp,
 } from '../util/string';
 import type {Config} from '../base';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../util/constants';
-import Parser from '../index';
-
-/* NOT FOR BROWSER END */
 
 /**
  * title object of a MediaWiki page
@@ -29,17 +18,6 @@ export class Title {
 	readonly valid;
 	/** @private */
 	readonly encoded: boolean = false;
-
-	/* NOT FOR BROWSER */
-
-	#redirectFragment: string | undefined;
-	interwiki = '';
-	/** @private */
-	conversionTable = new Map<string, string>();
-	/** @private */
-	redirects = new Map<string, string>();
-
-	/* NOT FOR BROWSER END */
 
 	/** namespace number / 命名空间 */
 	get ns(): number {
@@ -79,41 +57,6 @@ export class Title {
 		return i === -1 ? undefined : main.slice(i + 1).toLowerCase();
 	}
 
-	/* NOT FOR BROWSER */
-
-	set extension(extension) {
-		extension ??= '';
-		const {main} = this,
-			i = main.lastIndexOf('.');
-		this.main = (i === -1 ? main : main.slice(0, i)) + (extension && '.') + extension;
-	}
-
-	/** @throws `RangeError` undefined namespace */
-	set ns(ns) { // eslint-disable-line grouped-accessor-pairs
-		/* istanbul ignore if */
-		if (!(this.ns in this.#namespaces)) {
-			throw new RangeError('Undefined namespace!');
-		}
-		this.#ns = Number(ns);
-	}
-
-	set fragment(fragment) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
-		if (fragment === undefined) {
-			this.#fragment = undefined;
-		} else {
-			if (fragment.includes('%')) {
-				try {
-					fragment = rawurldecode(fragment);
-				} catch {}
-			}
-			// eslint-disable-next-line es-x/no-string-prototype-trimstart-trimend
-			this.#fragment = decodeHtml(fragment).replace(/[_ ]+/gu, ' ').trimEnd()
-				.replaceAll(' ', '_');
-		}
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @see MediaWikiTitleCodec::splitTitleString
 	 *
@@ -147,17 +90,6 @@ export class Title {
 				ns = 0;
 				title = title.slice(1).trim();
 			}
-
-			/* NOT FOR BROWSER */
-
-			const iw = defaultNs ? null : Parser.isInterwiki(title, config);
-			if (iw) {
-				this.interwiki = iw[1]!.toLowerCase();
-				title = title.slice(iw.indices![0]![1]);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			const m = title.split(':');
 			if (m.length > 1) {
 				const k = m[0]!.trim().toLowerCase(),
@@ -182,7 +114,6 @@ export class Title {
 		}
 		this.valid = Boolean(
 			title
-			|| this.interwiki
 			|| selfLink && this.ns === 0 && this.#fragment !== undefined,
 		)
 		&& decodeHtml(title) === title
@@ -198,12 +129,6 @@ export class Title {
 		if (!temporary) {
 			Object.defineProperties(this, {
 				encoded: {enumerable: false, writable: false},
-
-				/* NOT FOR BROWSER */
-
-				valid: {writable: false},
-				conversionTable: {enumerable: false},
-				redirects: {enumerable: false},
 			});
 		}
 	}
@@ -215,25 +140,8 @@ export class Title {
 	 */
 	getRedirection(): [boolean, string] {
 		const prefix =
-			this.interwiki + (this.interwiki && ':') + // eslint-disable-line @stylistic/operator-linebreak
 			this.prefix;
 		let title = (prefix + this.main).replace(/ /gu, '_');
-
-		/* NOT FOR BROWSER */
-
-		let redirected = this.#redirect(title);
-		if (redirected) {
-			return [true, redirected];
-		}
-		this.autoConvert();
-		title = (prefix + this.main).replaceAll(' ', '_');
-		redirected = this.#redirect(title);
-		if (redirected) {
-			return [true, redirected];
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return [false, title];
 	}
 
@@ -263,11 +171,9 @@ export class Title {
 					encodeURIComponent(title)
 					+ (
 						fragment === undefined
-						&& this.#redirectFragment === undefined
 							? ''
 							: `#${encodeURIComponent(
 								fragment
-								?? this.#redirectFragment!,
 							)}`
 					),
 				);
@@ -275,112 +181,4 @@ export class Title {
 			return fragment === undefined ? '' : `#${encodeURIComponent(fragment)}`;
 		}
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	toString(display?: boolean): string {
-		return (display ? this.title.replace(/_/gu, ' ') : this.title)
-			+ (
-				this.#fragment === undefined
-				&& this.#redirectFragment === undefined
-					? ''
-					: `#${
-						this.#fragment
-						?? this.#redirectFragment
-					}`
-			);
-	}
-
-	/**
-	 * 处理重定向
-	 * @param title 原标题
-	 */
-	#redirect(title: string): string {
-		const media = title.startsWith('Media:');
-		if (media) {
-			title = `File:${title.slice(6)}`;
-		}
-		const redirected = this.redirects.get(title);
-		if (redirected) {
-			const hash = redirected.indexOf('#');
-			title = hash === -1 ? redirected : redirected.slice(0, hash);
-			this.#redirectFragment = hash === -1 ? undefined : redirected.slice(hash + 1);
-			return media ? title.replace(/^File:/u, 'Media:') : title;
-		}
-		return '';
-	}
-
-	/**
-	 * Perform unidirectional language conversion
-	 *
-	 * 执行单向转换
-	 */
-	autoConvert(): void {
-		const {conversionTable} = this;
-		if (conversionTable.size > 0) {
-			const regex = new RegExp(
-				[...conversionTable.keys()].sort().reverse().map(escapeRegExp).join('|'),
-				'gu',
-			);
-			this.main = this.main.replace(regex, p => conversionTable.get(p)!);
-		}
-	}
-
-	/**
-	 * Get the title of its subject page
-	 *
-	 * 转换为主页面
-	 */
-	toSubjectPage(): void {
-		if (this.isTalkPage()) {
-			this.#ns--;
-		}
-	}
-
-	/**
-	 * Get the title of its talk page
-	 *
-	 * 转换为讨论页面
-	 */
-	toTalkPage(): void {
-		if (!this.isTalkPage()) {
-			this.#ns++;
-		}
-	}
-
-	/**
-	 * Check if the title is a talk page
-	 *
-	 * 是否是讨论页
-	 */
-	isTalkPage(): boolean {
-		return this.ns % 2 === 1;
-	}
-
-	/**
-	 * Get the title of its base page
-	 *
-	 * 转换为上一级页面
-	 */
-	toBasePage(): void {
-		this.main = this.main.replace(/\/[^/]*$/u, '');
-	}
-
-	/**
-	 * Get the title of its root page
-	 *
-	 * 转换为根页面
-	 */
-	toRootPage(): void {
-		this.main = this.main.replace(/\/.*/u, '');
-	}
-
-	/** @private */
-	getTitleAttr(): string {
-		return this.title.replace(/^Media:/u, '')
-			.replace(/["_]/gu, p => p === '"' ? '&quot;' : ' ');
-	}
 }
-
-classes['Title'] = __filename;

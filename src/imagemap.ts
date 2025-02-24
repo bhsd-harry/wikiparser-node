@@ -1,10 +1,6 @@
 import {generateForSelf, generateForChild} from '../util/lint';
 import {
 	isToken,
-
-	/* NOT FOR BROWSER */
-
-	Shadow,
 } from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import Parser from '../index';
@@ -17,18 +13,7 @@ import type {
 	AstText,
 	AttributesToken,
 	ExtToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
 } from '../internal';
-
-/* NOT FOR BROWSER */
-
-import {classes} from '../util/constants';
-import {singleLine} from '../mixin/singleLine';
-
-/* NOT FOR BROWSER END */
 
 declare type Child = GalleryImageToken | NoincludeToken;
 
@@ -46,17 +31,6 @@ export abstract class ImagemapToken extends Token {
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): (Child | ImagemapLinkToken)[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | ImagemapLinkToken | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
-	abstract override get parentElement(): ExtToken | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
 	}
@@ -69,7 +43,6 @@ export abstract class ImagemapToken extends Token {
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			GalleryImageToken: ':', ImagemapLinkToken: ':', NoincludeToken: ':', AstText: ':',
 		});
 		if (!inner) {
 			return;
@@ -89,14 +62,9 @@ export abstract class ImagemapToken extends Token {
 					{
 						valid,
 						ns,
-
-						/* NOT FOR BROWSER */
-
-						interwiki,
 					} = this.normalizeTitle(file, 0, true, true);
 				if (
 					valid
-					&& !interwiki
 					&& ns === 6
 				) {
 					// @ts-expect-error abstract class
@@ -214,49 +182,4 @@ export abstract class ImagemapToken extends Token {
 	override print(): string {
 		return super.print({sep: '\n'});
 	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `Error` 当前缺少合法图片
-	 * @throws `RangeError` 已有一张合法图片
-	 */
-	override insertAt(token: string, i?: number): AstText;
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-		const {image} = this;
-		if (!image && (typeof token === 'string' || token.type === 'imagemap-link' || token.type === 'text')) {
-			throw new Error('Missing a valid image!');
-		} else if (image && typeof token !== 'string' && token.type === 'imagemap-image') {
-			throw new RangeError('Already have a valid image!');
-		}
-		return super.insertAt(token as T, i);
-	}
-
-	/**
-	 * @override
-	 * @param i position of the child node /移除位置
-	 * @throws `Error` 禁止移除图片
-	 */
-	override removeAt(i: number): AstNodes {
-		if (this.childNodes[i]?.type === 'imagemap-image') {
-			throw new Error('Do not remove the image in <imagemap>!');
-		}
-		return super.removeAt(i);
-	}
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new ImagemapToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-classes['ImagemapToken'] = __filename;

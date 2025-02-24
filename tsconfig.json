@@ -1,6 +1,5 @@
 {
 	"include": [
-		"addon/**/*",
 		"bin/**/*",
 		"lib/**/*",
 		"mixin/**/*",

@@ -4,12 +4,6 @@ import {DdToken} from '../src/nowiki/dd';
 import type {Config} from '../base';
 import type {Token, HtmlToken, QuoteToken} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析列表
  * @param wikitext
@@ -123,5 +117,3 @@ export const parseList = (wikitext: string, state: {lastPrefix: string}, config:
 	}
 	return text;
 };
-
-parsers['parseList'] = __filename;

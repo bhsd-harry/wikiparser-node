@@ -3,12 +3,6 @@ import {HtmlToken} from '../src/html';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const regex = /^(\/?)([a-z][^\s/>]*)((?:\s|\/(?!>))[^>]*?)?(\/?>)([^<]*)$/iu;
 
 /**
@@ -49,5 +43,3 @@ export const parseHtml = (wikitext: string, config: Config, accum: Token[]): str
 	}
 	return text;
 };
-
-parsers['parseHtml'] = __filename;

@@ -1,4 +1,0 @@
-style="color:red;" title="T249740"
-|-
-[[Category:Fostered Content]]
-|foo

@@ -1,2 +1,0 @@
-<noinclude>
-|</noinclude>style="color:red;"||Bar

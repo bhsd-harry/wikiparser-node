@@ -4,12 +4,6 @@ import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * 解析外部链接
  * @param wikitext
@@ -18,8 +12,6 @@ import {parsers} from '../util/constants';
  * @param inFile 是否在图链中
  */
 export const parseExternalLinks = (wikitext: string, config: Config, accum: Token[], inFile?: boolean): string => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-	/\[((?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])[^[\]<>"\t\n\p{Zs}]*(?=[[\]<>"\t\p{Zs}]|\0\d))(\p{Zs}*(?!\p{Zs}))([^\]\n]*)\]/giu;
 	config.regexExternalLinks ??= new RegExp(
 		String.raw`\[(\0\d+f\x7F|(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${
 			extUrlChar
@@ -44,5 +36,3 @@ export const parseExternalLinks = (wikitext: string, config: Config, accum: Toke
 		return `\0${length}w\x7F`;
 	});
 };
-
-parsers['parseExternalLinks'] = __filename;

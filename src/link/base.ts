@@ -2,18 +2,9 @@ import {generateForChild} from '../../util/lint';
 import {
 	MAX_STAGE,
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../../util/constants';
 import {
 	rawurldecode,
-
-	/* NOT FOR BROWSER */
-
-	encode,
-	sanitize,
 } from '../../util/string';
 import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
@@ -23,18 +14,7 @@ import type {LintError} from '../../base';
 import type {Title} from '../../lib/title';
 import type {
 	AstText,
-
-	/* NOT FOR BROWSER */
-
-	LinkToken,
-	RedirectTargetToken,
 } from '../../internal';
-
-/* NOT FOR BROWSER */
-
-import {undo, Shadow} from '../../util/debug';
-
-/* NOT FOR BROWSER END */
 
 /**
  * 是否为普通内链
@@ -59,54 +39,11 @@ export abstract class LinkBaseToken extends Token {
 	abstract override get firstChild(): AtomToken;
 	abstract override get lastChild(): Token;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [AtomToken, ...Token[]];
-	abstract override get firstElementChild(): AtomToken;
-	abstract override get lastElementChild(): Token;
-
-	/* NOT FOR BROWSER END */
-
 	/** full link / 完整链接 */
 	get link(): string | Title {
 		// eslint-disable-next-line no-unused-labels
 		LSP: return this.#title;
 	}
-
-	/* NOT FOR BROWSER */
-
-	set link(link: string) {
-		this.setTarget(link);
-	}
-
-	/** 片段标识符 */
-	get fragment(): string | undefined {
-		return this.#title.fragment;
-	}
-
-	set fragment(fragment) {
-		this.setFragment(fragment);
-	}
-
-	/** interwiki */
-	get interwiki(): string {
-		return this.#title.interwiki;
-	}
-
-	/** @throws `RangeError` 非法的跨维基前缀 */
-	set interwiki(interwiki) {
-		if (isLink(this.type)) {
-			const {prefix, main, fragment} = this.#title,
-				link = `${interwiki}:${prefix}${main}${fragment === undefined ? '' : `#${fragment}`}`;
-			/* istanbul ignore if */
-			if (interwiki && !this.isInterwiki(link)) {
-				throw new RangeError(`${interwiki} is not a valid interwiki prefix!`);
-			}
-			this.setTarget(link);
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param link 链接标题
@@ -115,24 +52,17 @@ export abstract class LinkBaseToken extends Token {
 	 */
 	constructor(link: string, linkText?: string, config = Parser.getConfig(), accum: Token[] = [], delimiter = '|') {
 		super(undefined, config, accum, {
-			AtomToken: 0, Token: 1,
 		});
 		this.insertAt(new AtomToken(link, 'link-target', config, accum, {
-			'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
 		}));
 		if (linkText !== undefined) {
 			const inner = new Token(linkText, config, accum, {
-				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
 			});
 			inner.type = 'link-text';
 			inner.setAttribute('stage', MAX_STAGE - 1);
 			this.insertAt(inner);
 		}
 		this.#delimiter = delimiter;
-
-		/* NOT FOR BROWSER */
-
-		this.protectChildren(0);
 	}
 
 	/** @private */
@@ -143,44 +73,6 @@ export abstract class LinkBaseToken extends Token {
 		}
 		this.setAttribute('name', this.#title.title);
 		super.afterBuild();
-
-		/* NOT FOR BROWSER */
-
-		const /** @implements */ linkListener: AstListener = (e, data) => {
-			const {prevTarget} = e,
-				{type} = this;
-			if (prevTarget?.type === 'link-target') {
-				const name = prevTarget.toString(true),
-					titleObj = this.getTitle(),
-					{title, interwiki, ns, valid} = titleObj;
-				if (!valid) {
-					undo(e, data);
-					throw new Error(`Invalid link target: ${name}`);
-				} else if (
-					type === 'category' && (interwiki || ns !== 14)
-					|| (type === 'file' || type === 'gallery-image' || type === 'imagemap-image')
-					&& (interwiki || ns !== 6)
-				) {
-					undo(e, data);
-					throw new Error(
-						`${type === 'category' ? 'Category' : 'File'} link cannot change namespace: ${name}`,
-					);
-				} else if (
-					type === 'link' && !interwiki && (ns === 6 || ns === 14)
-					&& !name.trim().startsWith(':')
-				) {
-					const {firstChild} = prevTarget;
-					if (firstChild?.type === 'text') {
-						firstChild.insertData(0, ':');
-					} else {
-						prevTarget.prepend(':');
-					}
-				}
-				this.#title = titleObj;
-				this.setAttribute('name', title);
-			}
-		};
-		this.addEventListener(['remove', 'insert', 'replace', 'text'], linkListener);
 	}
 
 	/** @private */
@@ -303,87 +195,4 @@ export abstract class LinkBaseToken extends Token {
 	override print(): string {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const [link, ...linkText] = this.cloneChildNodes() as [AtomToken, ...Token[]];
-		return Shadow.run(() => {
-			const C = this.constructor as new (...args: any[]) => this,
-				token = new C('', undefined, this.getAttribute('config'));
-			token.firstChild.safeReplaceWith(link);
-			token.append(...linkText);
-			return token;
-		});
-	}
-
-	/**
-	 * Set the link target
-	 *
-	 * 设置链接目标
-	 * @param link link target / 链接目标
-	 */
-	setTarget(link: string): void {
-		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(link, this.getAttribute('include'), 2, config),
-			token = Shadow.run(() => new AtomToken(undefined, 'link-target', config, [], {
-				'Stage-2': ':', '!ExtToken': '', '!HeadingToken': '',
-			}));
-		token.append(...childNodes);
-		this.firstChild.safeReplaceWith(token);
-	}
-
-	/**
-	 * Set the fragment
-	 *
-	 * 设置片段标识符
-	 * @param fragment 片段标识符
-	 */
-	setFragment(fragment?: string): void {
-		const {type, name} = this;
-		if (fragment === undefined || isLink(type)) {
-			fragment &&= encode(fragment);
-			this.setTarget(name + (fragment === undefined ? '' : `#${fragment}`));
-		}
-	}
-
-	/**
-	 * Set the link text
-	 *
-	 * 设置链接显示文字
-	 * @param linkStr link text / 链接显示文字
-	 */
-	setLinkText(linkStr?: string): void {
-		if (linkStr === undefined) {
-			this.childNodes[1]?.remove();
-			return;
-		}
-		const root = Parser
-			.parse(linkStr, this.getAttribute('include'), undefined, this.getAttribute('config'));
-		if (this.length === 1) {
-			root.type = 'link-text';
-			root.setAttribute('acceptable', {
-				'Stage-5': ':', QuoteToken: ':', ConverterToken: ':',
-			});
-			this.insertAt(root);
-		} else {
-			this.lastChild.replaceChildren(...root.childNodes);
-		}
-	}
-
-	/** @private */
-	override toHtmlInternal(opt?: Omit<HtmlOpt, 'nowrap'>): string {
-		if (this.is<LinkToken>('link') || this.is<RedirectTargetToken>('redirect-target')) {
-			const {link, length, lastChild, type} = this,
-				title = link.getTitleAttr();
-			return `<a${link.interwiki && ' class="extiw"'} href="${link.getUrl()}"${title && ` title="${title}"`}>${
-				type === 'link' && length > 1
-					? lastChild.toHtmlInternal({...opt, nowrap: true})
-					: sanitize(this.innerText)
-			}</a>`;
-		}
-		return '';
-	}
 }
-
-classes['LinkBaseToken'] = __filename;

@@ -6,13 +6,6 @@ import {TagPairToken} from './index';
 import type {LintError, Config} from '../../base';
 import type {AstText, Token} from '../../internal';
 
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../../util/debug';
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * `<includeonly>`, `<noinclude>` or `<onlyinclude>`
  *
@@ -25,34 +18,9 @@ export abstract class IncludeToken extends TagPairToken {
 	abstract override get firstChild(): AstText;
 	abstract override get lastChild(): AstText;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): [];
-	abstract override get firstElementChild(): undefined;
-	abstract override get lastElementChild(): undefined;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'include' {
 		return 'include';
 	}
-
-	/* NOT FOR BROWSER */
-
-	override get innerText(): string | undefined {
-		return this.selfClosing ? undefined : this.lastChild.data;
-	}
-
-	override set innerText(text) {
-		if (text === undefined) {
-			this.selfClosing = true;
-		} else {
-			this.selfClosing = false;
-			this.setText(text);
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param name 标签名
@@ -97,34 +65,4 @@ export abstract class IncludeToken extends TagPairToken {
 		}
 		return errors;
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const tags = this.getAttribute('tags'),
-			config = this.getAttribute('config'),
-			{innerText} = this,
-			closing = this.selfClosing || !this.closed ? undefined : tags[1];
-		// @ts-expect-error abstract class
-		return Shadow.run(() => new IncludeToken(tags[0], this.firstChild.data, innerText, closing, config) as this);
-	}
-
-	/**
-	 * @override
-	 * @param str new text / 新文本
-	 */
-	override setText(str: string): string {
-		return super.setText(str, 1);
-	}
-
-	/**
-	 * Remove tag attributes
-	 *
-	 * 清除标签属性
-	 */
-	removeAttr(): void {
-		super.setText('');
-	}
 }
-
-classes['IncludeToken'] = __filename;

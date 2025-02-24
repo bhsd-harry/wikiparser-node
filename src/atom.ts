@@ -1,13 +1,6 @@
 import {Token} from './index';
 import type {Config} from '../base';
 
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const atomTypes = [
 	'arg-name',
 	'attr-key',
@@ -41,10 +34,6 @@ export class AtomToken extends Token {
 	}
 
 	override set type(value) {
-		/* istanbul ignore if */
-		if (!atomTypes.includes(value)) {
-			throw new RangeError(`"${value}" is not a valid type for AtomToken!`);
-		}
 		this.#type = value;
 	}
 
@@ -59,19 +48,4 @@ export class AtomToken extends Token {
 		super(wikitext, config, accum, acceptable);
 		this.#type = type;
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config'),
-			acceptable = this.getAcceptable();
-		return Shadow.run(() => {
-			const token = new AtomToken(undefined, this.type, config, [], acceptable) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-classes['AtomToken'] = __filename;

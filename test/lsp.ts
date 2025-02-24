@@ -21,12 +21,6 @@ import type {
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-Parser.viewOnly = true;
-
-/* NOT FOR BROWSER END */
-
 declare type Key = keyof LanguageService | 'constructor';
 
 /**
@@ -96,20 +90,10 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 		magicWordName = root.querySelector('magic-word-name'),
 		parserFunctionName = root.querySelector<AtomToken>('magic-word-name#invoke' as TokenTypes),
 		doubleUnderscore = root.querySelector('double-underscore'),
-
-		/* NOT FOR BROWSER */
-
-		parameterKey = root.querySelector('template > parameter[anon!=true] > parameter-key' as TokenTypes),
-		linkTarget = root.querySelector('link > link-target' as TokenTypes),
-		refName = root.querySelector<AtomToken>('ext-attrs#ref > ext-attr#name' as TokenTypes),
-
-		/* NOT FOR BROWSER END */
-
 		renamePositions = ([
 			argName,
 			templateName,
 			magicWordName,
-			linkTarget,
 		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
@@ -141,7 +125,6 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 					...([
 						imageParameter,
 						attrKey,
-						parameterKey,
 					].filter(Boolean) as Token[])
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
 					...[
@@ -185,8 +168,6 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 					argName,
 					templateName,
 					magicWordName,
-					linkTarget,
-					parameterKey,
 				];
 				const positions = [...tokens.entries()].filter((entry): entry is [number, Token] => Boolean(entry[1]))
 					.map(([i, token]) => indexToPos(root, token.getAbsoluteIndex() + Number(i > 1)));
@@ -227,18 +208,6 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos));
 				}
 				break;
-
-				/* NOT FOR BROWSER */
-
-			case 'provideDefinition':
-				if (refName) {
-					const pos = indexToPos(root, refName.getAbsoluteIndex());
-					await wrap(method, title, () => lsp.provideDefinition(content, pos));
-				}
-				break;
-
-				/* NOT FOR BROWSER END */
-
 			default:
 				throw new Error(`未检测的方法：${method as string}`);
 		}

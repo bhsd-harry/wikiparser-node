@@ -60,12 +60,6 @@ import type {
 	MagicLinkToken,
 } from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 declare interface CompletionConfig {
 	re: RegExp;
 	ext: string[];
@@ -431,8 +425,6 @@ export class LanguageService implements LanguageServiceBase {
 					img,
 				} = Parser.getConfig(),
 				tags = new Set([ext, html].flat(2));
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-			/(?:<\/?(\w*)|(\{{2,4}|\[\[)\s*([^|{}<>[\]\s][^|{}<>[\]#]*)?|(__(?:(?!__)[\p{L}\d_])*)|(?<!\[)\[([a-z:/]*)|\[\[\s*(?:file|image)\s*:[^[\]{}<>]+\|([^[\]{}<>|=]*)|<(\w+)(?:\s(?:[^<>{}|=\s]+(?:\s*=\s*(?:[^\s"']\S*|(["']).*?\8))?(?=\s))*)?\s(\w*))$/iu;
 			const re = new RegExp(
 				'(?:' // eslint-disable-line prefer-template
 				+ String.raw`<(\/?\w*)` // tag
@@ -716,7 +708,6 @@ export class LanguageService implements LanguageServiceBase {
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
 		this.#checkSignature();
-		/^(?:http:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		const {articlePath, protocol} = Parser.getConfig(),
 			absolute = articlePath?.includes('//'),
 			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
@@ -1172,5 +1163,3 @@ export class LanguageService implements LanguageServiceBase {
 		return symbols;
 	}
 }
-
-classes['LanguageService'] = __filename;

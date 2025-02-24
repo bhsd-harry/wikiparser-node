@@ -9,13 +9,6 @@ import {NoincludeToken} from './nowiki/noinclude';
 import type {LintError} from '../base';
 import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 declare type Child = ExtToken | NoincludeToken | CommentToken | IncludeToken | ArgToken | TranscludeToken;
 
 const childTypes = new Set(['comment', 'include', 'arg', 'template', 'magic-word']);
@@ -37,17 +30,6 @@ export abstract class NestedToken extends Token {
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
-
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
-	abstract override get previousElementSibling(): AttributesToken;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get parentElement(): ExtToken | undefined;
-
-	/* NOT FOR BROWSER END */
 
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
@@ -94,7 +76,6 @@ export abstract class NestedToken extends Token {
 			wikitext,
 			config,
 			accum,
-			typeof regex === 'boolean' ? {'Stage-2': ':', '!HeadingToken': ''} : {NoincludeToken: ':', ExtToken: ':'},
 		);
 		this.#tags = [...tags];
 		this.#regex = regex;
@@ -104,8 +85,6 @@ export abstract class NestedToken extends Token {
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const rect = new BoundingRect(this, start),
 			noinclude = this.#regex ? 'includeonly' : 'noinclude';
-		// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-		/^(?:<noinclude(?:\s[^>]*)?\/?>|<\/noinclude\s*>)$/iu;
 		const regex = typeof this.#regex === 'boolean'
 			? new RegExp(String.raw`^(?:<${noinclude}(?:\s[^>]*)?/?>|</${noinclude}\s*>)$`, 'iu')
 			: /^<!--[\s\S]*-->$/u;
@@ -134,31 +113,4 @@ export abstract class NestedToken extends Token {
 			}),
 		];
 	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inseted at / 插入位置
-	 */
-	override insertAt<T extends Token>(token: T, i?: number): T {
-		if (!Shadow.running && token.type === 'ext' && !this.#tags.includes(token.name!)) {
-			this.constructorError(`can only have ${this.#tags.join(' or ')} tags as child nodes`);
-		}
-		return super.insertAt(token, i);
-	}
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new NestedToken(undefined, this.#regex, this.#tags, config) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
 }
-
-classes['NestedToken'] = __filename;

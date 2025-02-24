@@ -6,12 +6,6 @@ import {CommentToken} from '../src/nowiki/comment';
 import type {Config} from '../base';
 import type {Token} from '../src/index';
 
-/* NOT FOR BROWSER */
-
-import {parsers} from '../util/constants';
-
-/* NOT FOR BROWSER END */
-
 const onlyincludeLeft = '<onlyinclude>',
 	onlyincludeRight = '</onlyinclude>',
 	{length} = onlyincludeLeft;
@@ -66,8 +60,6 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 	const ext = config.ext.join('|'),
 		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
 		includeRegex = includeOnly ? 'noinclude' : 'includeonly';
-	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
-	/<!--[\s\S]*?(?:-->|$)|<foo(?:\s[^>]*)?\/?>|<\/foo\s*>|<(bar)(\s[^>]*?)?(?:\/>|>([\s\S]*?)<\/(\1\s*)>)|<(baz)(\s[^>]*?)?(?:\/>|>([\s\S]*?)(?:<\/(baz\s*)>|$))/giu;
 	const /** Never cached due to the possibility of nested extension tags */ regex = new RegExp(
 		String.raw`<!--[\s\S]*?(?:-->|$)|<${
 			noincludeRegex
@@ -111,5 +103,3 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 		},
 	);
 };
-
-parsers['parseCommentAndExt'] = __filename;

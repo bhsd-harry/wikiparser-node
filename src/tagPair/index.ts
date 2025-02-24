@@ -2,20 +2,11 @@ import {Token} from '../index';
 import type {Config} from '../../base';
 import type {AstNodes} from '../../lib/node';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-import {fixedToken} from '../../mixin/fixed';
-import Parser from '../../index';
-
-/* NOT FOR BROWSER END */
-
 /**
  * Paired tags
  *
  * 成对标签
  */
-@fixedToken
 export abstract class TagPairToken extends Token {
 	declare readonly name: string;
 	readonly #tags: [string, string];
@@ -26,8 +17,6 @@ export abstract class TagPairToken extends Token {
 	declare readonly childNodes: readonly [AstNodes, AstNodes];
 	abstract override get firstChild(): AstNodes;
 	abstract override get lastChild(): AstNodes;
-
-	/* NOT FOR BROWSER END */
 
 	/** inner wikitext / 内部wikitext */
 	get innerText(): string | undefined {
@@ -64,24 +53,8 @@ export abstract class TagPairToken extends Token {
 				selfClosing,
 				firstChild,
 				lastChild,
-
-				/* NOT FOR BROWSER */
-
-				nextSibling,
-				name,
-				closed,
 			} = this,
 			[opening, closing] = this.#tags;
-
-		/* NOT FOR BROWSER */
-
-		if (!closed && nextSibling) {
-			Parser.error(`Auto-closing <${name}>`, lastChild);
-			this.closed = true;
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return selfClosing
 			? `<${opening}${firstChild.toString(skip)}/>`
 			: `<${opening}${firstChild.toString(skip)}>${lastChild.toString(skip)}${
@@ -99,14 +72,6 @@ export abstract class TagPairToken extends Token {
 
 	/** @private */
 	override getAttribute<T extends string>(key: T): TokenAttribute<T> {
-		/* NOT FOR BROWSER */
-
-		if (key === 'tags') {
-			return this.#tags as TokenAttribute<T>;
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return key === 'padding' ? this.#tags[0].length + 1 as TokenAttribute<T> : super.getAttribute(key);
 	}
 
@@ -125,5 +90,3 @@ export abstract class TagPairToken extends Token {
 		);
 	}
 }
-
-classes['TagPairToken'] = __filename;

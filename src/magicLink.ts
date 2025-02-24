@@ -10,42 +10,12 @@ import type {
 	IncludeToken,
 	NoincludeToken,
 	TranscludeToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
-	ParameterToken,
 } from '../internal';
-
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-import {syntax} from '../mixin/syntax';
-import type {SyntaxBase} from '../mixin/syntax';
-
-/* NOT FOR BROWSER END */
 
 declare type ExtLinkTypes = 'free-ext-link' | 'ext-link-url' | 'magic-link';
 
 const space = String.raw`(?:[${zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-/(?:[\p{Zs}\t]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)+/gu;
 const spaceRegex = new RegExp(`${space}+`, 'gu');
-
-/* NOT FOR BROWSER */
-
-const spdash = String.raw`(?:[\p{Zs}\t-]|&nbsp;|&#0*160;|&#[xX]0*[aA]0;)`;
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-/^(ISBN)[\p{Zs}\t]+(?:97[89][\p{Zs}\t-]?)?(?:\d[\p{Zs}\t-]?){9}[\dxX]$/u;
-const isbnPattern = new RegExp(String.raw`^(ISBN)${space}+(?:97[89]${spdash}?)?(?:\d${spdash}?){9}[\dxX]$`, 'u');
-// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-/^(RFC|PMID)[\p{Zs}\t]+\d+$/u;
-const rfcPattern = new RegExp(String.raw`^(RFC|PMID)${space}+\d+$`, 'u');
-
-export interface MagicLinkToken extends SyntaxBase {}
-
-/* NOT FOR BROWSER END */
 
 /**
  * free external link
@@ -53,23 +23,12 @@ export interface MagicLinkToken extends SyntaxBase {}
  * 自由外链
  * @classdesc `{childNodes: (AstText|CommentToken|IncludeToken|NoincludeToken)[]}`
  */
-@syntax()
 export abstract class MagicLinkToken extends Token {
 	readonly #type;
 
 	declare readonly childNodes: readonly (AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
 	abstract override get firstChild(): AstText | TranscludeToken;
 	abstract override get lastChild(): AstText | CommentToken | IncludeToken | NoincludeToken | TranscludeToken;
-
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): (CommentToken | IncludeToken | NoincludeToken | TranscludeToken)[];
-	abstract override get firstElementChild():
-		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
-	abstract override get lastElementChild():
-		CommentToken | IncludeToken | NoincludeToken | TranscludeToken | undefined;
-
-	/* NOT FOR BROWSER END */
 
 	override get type(): ExtLinkTypes {
 		return this.#type;
@@ -103,48 +62,14 @@ export abstract class MagicLinkToken extends Token {
 		return decodeNumber(innerText);
 	}
 
-	/* NOT FOR BROWSER */
-
-	set link(url) {
-		this.setTarget(url);
-	}
-
-	/** URL protocol / 协议 */
-	get protocol(): string | undefined {
-		return this.pattern.exec(this.text())?.[1];
-	}
-
-	/** @throws `Error` 特殊外链无法更改协议n */
-	set protocol(value: string) {
-		const {link, pattern, type} = this;
-		if (type === 'magic-link' || !pattern.test(link)) {
-			throw new Error(`Special external link cannot change protocol: ${link}`);
-		}
-		this.setTarget(link.replace(pattern, value));
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/**
 	 * @param url 网址
 	 * @param type 类型
 	 */
 	constructor(url?: string, type: ExtLinkTypes = 'free-ext-link', config = Parser.getConfig(), accum?: Token[]) {
 		super(url, config, accum, {
-			'Stage-1': '1:', '!ExtToken': '', AstText: ':', TranscludeToken: ':',
 		});
 		this.#type = type;
-
-		/* NOT FOR BROWSER */
-
-		let pattern;
-		if (type === 'magic-link') {
-			pattern = url?.startsWith('ISBN') ? isbnPattern : rfcPattern;
-		} else {
-			/^(ftp:\/\/|\/\/)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-			pattern = new RegExp(`^(${config.protocol}${type === 'ext-link-url' ? '|//' : ''})`, 'iu');
-		}
-		this.setAttribute('pattern', pattern);
 	}
 
 	/** @private */
@@ -218,86 +143,4 @@ export abstract class MagicLinkToken extends Token {
 			return new URL(link);
 		}
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new MagicLinkToken(undefined, this.type, this.getAttribute('config')) as this;
-			token.append(...cloned);
-			token.setAttribute('pattern', this.pattern);
-			return token;
-		});
-	}
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的节点
-	 * @param i position to be inserted at / 插入位置
-	 */
-	override insertAt(token: string, i?: number): AstText;
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-		if (typeof token !== 'string') {
-			const {type, name} = token;
-			if (type === 'template') {
-				this.constructorError('cannot insert a template');
-			} else if (!Shadow.running && type === 'magic-word' && name !== '!' && name !== '=') {
-				this.constructorError('cannot insert magic words other than "{{!}}" or "{{=}}"');
-			}
-		}
-		return super.insertAt(token as string, i);
-	}
-
-	/**
-	 * Set the target of the link
-	 *
-	 * 设置外链目标
-	 * @param url URL containing the protocol / 含协议的网址
-	 */
-	setTarget(url: string): void {
-		const {childNodes} = Parser
-			.parse(url, this.getAttribute('include'), 2, this.getAttribute('config'));
-		this.replaceChildren(...childNodes);
-	}
-
-	/**
-	 * Check if it is a parameter of a template or magic word
-	 *
-	 * 是否是模板或魔术字参数
-	 */
-	isParamValue(): boolean {
-		return this.closest<ParameterToken>('parameter')?.getValue() === this.text();
-	}
-
-	/**
-	 * Escape `=`
-	 *
-	 * 转义 `=`
-	 */
-	escape(): void {
-		for (const child of this.childNodes) {
-			if (child.type === 'text') {
-				child.escape();
-			}
-		}
-	}
-
-	/** @private */
-	override toHtmlInternal(): string {
-		const {type, innerText, protocol} = this;
-		let url: URL | string | undefined;
-		try {
-			url = this.getUrl();
-		} catch {}
-		return `<a${
-			type === 'magic-link' && protocol === 'ISBN'
-				? ''
-				: ` rel="nofollow" class="external${type === 'free-ext-link' ? ' free' : ''}"`
-		}${url === undefined ? '' : ` href="${typeof url === 'string' ? url : url.href}"`}>${innerText}</a>`;
-	}
 }
-
-classes['MagicLinkToken'] = __filename;

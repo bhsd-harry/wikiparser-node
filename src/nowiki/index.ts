@@ -4,12 +4,6 @@ import {NowikiBaseToken} from './base';
 import type {LintError} from '../../base';
 import type {AttributesToken, ExtToken} from '../../internal';
 
-/* NOT FOR BROWSER */
-
-import {classes} from '../../util/constants';
-
-/* NOT FOR BROWSER END */
-
 /**
  * text-only token inside an extension tag
  *
@@ -21,14 +15,6 @@ export abstract class NowikiToken extends NowikiBaseToken {
 	abstract override get nextSibling(): undefined;
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
-
-	/* NOT FOR BROWSER */
-
-	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
-	abstract override get parentElement(): ExtToken | undefined;
-
-	/* NOT FOR BROWSER END */
 
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
@@ -47,10 +33,7 @@ export abstract class NowikiToken extends NowikiBaseToken {
 			e.fix = {range: [start, e.endIndex], text: '', desc: 'empty'};
 			return [e];
 		}
-		/<\s*(?:\/\s*)?(nowiki)\b/giu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 		const re = new RegExp(String.raw`<\s*(?:/\s*)${name === 'nowiki' ? '' : '?'}(${name})\b`, 'giu');
 		return super.lint(start, re);
 	}
 }
-
-classes['NowikiToken'] = __filename;

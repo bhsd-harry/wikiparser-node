@@ -4,10 +4,6 @@ import {Shadow} from './util/debug';
 import {
 	MAX_STAGE,
 	BuildMethod,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from './util/constants';
 import {tidy} from './util/string';
 import type {
@@ -22,44 +18,18 @@ import type {Title} from './lib/title';
 import type {LanguageService} from './lib/lsp';
 import type {Token} from './internal';
 
-/* NOT FOR BROWSER */
-
-import * as chalk from 'chalk';
-import type {log} from './util/diff';
-
-/* NOT FOR BROWSER END */
-
 /* NOT FOR BROWSER ONLY */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import {
 	error,
-
-	/* NOT FOR BROWSER */
-
-	cmd,
-	info,
-	diff,
 } from './util/diff';
 
 /* NOT FOR BROWSER ONLY END */
 
 declare interface Parser extends ParserBase {
 	rules: readonly LintError.Rule[];
-
-	/* NOT FOR BROWSER */
-
-	conversionTable: Map<string, string>;
-	redirects: Map<string, string>;
-
-	templateDir?: string;
-	templates: Map<string, string>;
-
-	warning: boolean;
-	debugging: boolean;
-
-	/* NOT FOR BROWSER END */
 
 	/** @private */
 	msg(msg: string, arg?: string): string;
@@ -97,37 +67,6 @@ declare interface Parser extends ParserBase {
 	 * @param uri document URI / 文档标识
 	 */
 	createLanguageService(uri: object): LanguageService;
-
-	/* NOT FOR BROWSER */
-
-	/** @private */
-	warn: log;
-	/** @private */
-	debug: log;
-	/** @private */
-	error: log;
-	/** @private */
-	info: log;
-
-	/** @private */
-	log(f: Function): void;
-
-	/** @private */
-	require(file: string): unknown;
-
-	/** @private */
-	clearCache(): Promise<void>;
-
-	/**
-	 * Check if the title is an interwiki link
-	 *
-	 * 是否是跨维基链接
-	 * @param title 链接标题
-	 */
-	isInterwiki(title: string, config?: Config): RegExpExecArray | null;
-
-	/** @private */
-	reparse(date?: string): void;
 }
 
 /* NOT FOR BROWSER ONLY */
@@ -145,74 +84,10 @@ const rootRequire = (file: string, dir: string): unknown => require(
 
 /* NOT FOR BROWSER ONLY END */
 
-/* NOT FOR BROWSER */
-
-/**
- * 快速规范化页面标题
- * @param title 标题
- */
-const normalizeTitle = (title: string): string =>
-	String(Parser.normalizeTitle(title, 0, false, undefined, true));
-
-/** 重定向列表 */
-class RedirectMap extends Map<string, string> {
-	/** @ignore */
-	constructor(entries?: Iterable<[string, string]>) {
-		super();
-		if (entries) {
-			for (const [k, v] of entries) {
-				this.set(k, v);
-			}
-		}
-	}
-
-	override set(key: string, value: string): this {
-		return super.set(normalizeTitle(key), normalizeTitle(value));
-	}
-}
-
-const promises = [Promise.resolve()];
-let viewOnly = false,
-	redirectMap = new RedirectMap();
-
-/* NOT FOR BROWSER END */
-
 const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 	config: 'default',
 	i18n: undefined,
 	rules,
-
-	/* NOT FOR BROWSER */
-
-	/** @implements */
-	get viewOnly() {
-		return viewOnly;
-	},
-
-	set viewOnly(value) {
-		if (viewOnly && !value) {
-			Shadow.rev++;
-		}
-		viewOnly = value;
-	},
-
-	/** @implements */
-	get redirects() {
-		return redirectMap;
-	},
-
-	set redirects(redirects: Map<string, string>) {
-		redirectMap = new RedirectMap(redirects);
-	},
-
-	conversionTable: new Map(),
-
-	templates: new Map(),
-
-	warning: true,
-	debugging: false,
-
-	/* NOT FOR BROWSER END */
 
 	/** @implements */
 	getConfig() {
@@ -228,21 +103,6 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 					}) of parser configuration is updated.`,
 				);
 			}
-
-			/* NOT FOR BROWSER */
-
-			const {config: {conversionTable, redirects}} = this;
-			/* istanbul ignore if */
-			if (conversionTable) {
-				this.conversionTable = new Map(conversionTable);
-			}
-			/* istanbul ignore if */
-			if (redirects) {
-				this.redirects = new Map(redirects);
-			}
-
-			/* NOT FOR BROWSER END */
-
 			return this.getConfig();
 		}
 
@@ -310,14 +170,6 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 				return t;
 			});
 		}
-
-		/* NOT FOR BROWSER */
-
-		titleObj.conversionTable = this.conversionTable;
-		titleObj.redirects = this.redirects;
-
-		/* NOT FOR BROWSER END */
-
 		return titleObj;
 	},
 
@@ -357,33 +209,6 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 
 			/* NOT FOR BROWSER ONLY END */
 		});
-
-		/* NOT FOR BROWSER */
-
-		/* istanbul ignore if */
-		if (this.debugging) {
-			let restored = root.toString(),
-				process = 'parsing';
-			if (restored === wikitext) {
-				const entities = {lt: '<', gt: '>', amp: '&'};
-				restored = root.print().replace(
-					/<[^<]+?>|&([lg]t|amp);/gu,
-					(_, s?: keyof typeof entities) => s ? entities[s] : '',
-				);
-				process = 'printing';
-			}
-			if (restored !== wikitext) {
-				const {0: cur, length} = promises;
-				promises.unshift((async (): Promise<void> => {
-					await cur;
-					this.error(`Original wikitext is altered when ${process}!`);
-					return diff(wikitext, restored, length);
-				})());
-			}
-		}
-
-		/* NOT FOR BROWSER END */
-
 		return root;
 	},
 
@@ -425,102 +250,8 @@ const Parser: Parser = { // eslint-disable-line @typescript-eslint/no-redeclare
 		LSP: { // eslint-disable-line no-unused-labels
 			const mod: typeof import('./lib/lsp') = require('./lib/lsp');
 			const {LanguageService, tasks} = mod;
-			Parser.viewOnly = true;
 			return tasks.get(uri) ?? new LanguageService(uri);
 		}
-	},
-
-	/* NOT FOR BROWSER */
-
-	/** @implements */
-	warn(msg, ...args) {
-		/* istanbul ignore if */
-		if (this.warning) {
-			console.warn(chalk.yellow(msg), ...args);
-		}
-	},
-	/** @implements */
-	debug(msg, ...args) {
-		/* istanbul ignore if */
-		if (this.debugging) {
-			console.debug(chalk.blue(msg), ...args);
-		}
-	},
-	error,
-	info,
-
-	/* istanbul ignore next */
-	/** @implements */
-	log(f) {
-		if (typeof f === 'function') {
-			console.log(String(f));
-		}
-	},
-
-	/* istanbul ignore next */
-	/** @implements */
-	require(name: string): unknown {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-		return Object.hasOwn(classes, name) ? require(classes[name]!)[name] : require(path.join(__dirname, name));
-	},
-
-	/* istanbul ignore next */
-	/** @implements */
-	async clearCache(): Promise<void> {
-		await cmd('npm', ['--prefix', path.join(__dirname, '..'), 'run', 'build:core']);
-		const entries = Object.entries(classes);
-		for (const [, filePath] of entries) {
-			try {
-				delete require.cache[require.resolve(filePath)];
-			} catch {}
-		}
-		for (const [name, filePath] of entries) {
-			if (name in globalThis) { // eslint-disable-line es-x/no-global-this
-				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, es-x/no-global-this
-				Object.assign(globalThis, {[name]: require(filePath)[name]});
-			}
-		}
-		this.info('已重新加载Parser');
-	},
-
-	/** @implements */
-	isInterwiki(title, {interwiki} = Parser.getConfig()) {
-		if (interwiki.length > 0) {
-			/^(zh|en)\s*:/diu; // eslint-disable-line @typescript-eslint/no-unused-expressions
-			const re = new RegExp(String.raw`^(${interwiki.join('|')})\s*:`, 'diu');
-			return re.exec(
-				title.replaceAll('_', ' ').replace(/^\s*:?\s*/u, ''),
-			);
-		}
-		return null;
-	},
-
-	/* istanbul ignore next */
-	/** @implements */
-	reparse(date = '') {
-		const main = fs.readdirSync(path.join(__dirname, '..', 'errors'))
-			.find(name => name.startsWith(date) && name.endsWith('Z'));
-		if (!main) {
-			throw new RangeError(`找不到对应时间戳的错误记录：${date}`);
-		}
-		const file = path.join(__dirname, '..', 'errors', main),
-			wikitext = fs.readFileSync(file, 'utf8');
-		const {stage, include, config}: ParsingError = require(`${file}.json`),
-			{Token}: typeof import('./src/index') = require('./src/index');
-		Shadow.run(() => {
-			const halfParsed = stage < MAX_STAGE,
-				token = new Token(halfParsed ? wikitext : tidy(wikitext), config);
-			token.type = 'root';
-			if (halfParsed) {
-				token.setAttribute('stage', stage);
-				token.parseOnce(stage, include);
-			} else {
-				token.parse(undefined, include);
-			}
-			fs.unlinkSync(file);
-			fs.unlinkSync(`${file}.err`);
-			fs.unlinkSync(`${file}.json`);
-		});
 	},
 };
 
@@ -531,13 +262,6 @@ const def: PropertyDescriptorMap = {
 		'normalizeTitle',
 		'parse',
 		'createLanguageService',
-
-		/* NOT FOR BROWSER */
-
-		'conversionTable',
-		'warning',
-		'debugging',
-		'isInterwiki',
 	]);
 for (const key in Parser) {
 	if (!enumerable.has(key)) {

@@ -7,19 +7,7 @@ import type {
 	AstText,
 	AttributesToken,
 	ExtToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
 } from '../internal';
-
-/* NOT FOR BROWSER */
-
-import {Shadow, isToken} from '../util/debug';
-import {classes} from '../util/constants';
-import {html} from '../util/html';
-
-/* NOT FOR BROWSER END */
 
 declare type Child = GalleryImageToken | NoincludeToken;
 
@@ -39,44 +27,13 @@ export abstract class GalleryToken extends Token {
 	abstract override get previousSibling(): AttributesToken;
 	abstract override get parentNode(): ExtToken | undefined;
 
-	/* NOT FOR BROWSER */
-
-	abstract override get children(): Child[];
-	abstract override get firstElementChild(): Child | undefined;
-	abstract override get lastElementChild(): Child | undefined;
-	abstract override get nextElementSibling(): undefined;
-	abstract override get previousElementSibling(): AttributesToken;
-	abstract override get parentElement(): ExtToken | undefined;
-
-	/* NOT FOR BROWSER END */
-
 	override get type(): 'ext-inner' {
 		return 'ext-inner';
 	}
 
-	/* NOT FOR BROWSER */
-
-	/** image widths / 图片宽度 */
-	get widths(): number {
-		return this.#getSize('widths');
-	}
-
-	/** image heights / 图片高度 */
-	get heights(): number {
-		return this.#getSize('heights');
-	}
-
-	/** all images / 所有图片 */
-	override get images(): GalleryImageToken[] {
-		return this.childNodes.filter(isToken<GalleryImageToken>('gallery-image'));
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param inner 标签内部wikitext */
 	constructor(inner?: string, config = Parser.getConfig(), accum: Token[] = []) {
 		super(undefined, config, accum, {
-			AstText: ':', GalleryImageToken: ':', NoincludeToken: ':',
 		});
 		for (const line of inner?.split('\n') ?? []) {
 			const matches = /^([^|]+)(?:\|(.*))?/u.exec(line) as [string, string, string | undefined] | null;
@@ -158,69 +115,4 @@ export abstract class GalleryToken extends Token {
 	override print(): string {
 		return super.print({sep: '\n'});
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes();
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new GalleryToken(undefined, this.getAttribute('config')) as this;
-			token.append(...cloned);
-			return token;
-		});
-	}
-
-	/**
-	 * Insert an image
-	 *
-	 * 插入图片
-	 * @param file image file name / 图片文件名
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `SyntaxError` 非法的文件名
-	 */
-	insertImage(file: string, i?: number): GalleryImageToken {
-		if (this.#checkFile(file)) {
-			const token = Shadow.run(
-				(): GalleryImageToken =>
-					// @ts-expect-error abstract class
-					new GalleryImageToken('gallery', file, undefined, this.getAttribute('config')),
-			);
-			token.afterBuild();
-			return this.insertAt(token, i);
-		}
-		throw new SyntaxError(`Invalid file name: ${file}`);
-	}
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 插入不可见内容
-	 */
-	override insertAt(token: string, i?: number): AstText;
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i = this.length): T | AstText {
-		if (!Shadow.running && (typeof token === 'string' && token.trim() || token instanceof NoincludeToken)) {
-			throw new RangeError('Please do not insert invisible content into <gallery>!');
-		}
-		return super.insertAt(token as T, i);
-	}
-
-	/**
-	 * 获取图片的宽度或高度
-	 * @param key `widths` 或 `heights`
-	 */
-	#getSize(key: 'widths' | 'heights'): number {
-		const widths = this.parentNode?.getAttr(key),
-			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
-		return mt && Number(mt) || 120;
-	}
-
-	/** @private */
-	override toHtmlInternal(): string {
-		return html(this.childNodes.filter(isToken<GalleryImageToken>('gallery-image')), '\n');
-	}
 }
-
-classes['GalleryToken'] = __filename;

@@ -1,24 +1,12 @@
 import {generateForSelf} from '../../util/lint';
 import {
 	MAX_STAGE,
-
-	/* NOT FOR BROWSER */
-
-	classes,
 } from '../../util/constants';
 import Parser from '../../index';
 import {Token} from '../index';
 import {FileToken} from './file';
 import type {Title} from '../../lib/title';
 import type {LintError} from '../../base';
-
-/* NOT FOR BROWSER */
-
-import {singleLine} from '../../mixin/singleLine';
-import {galleryParams} from '../imageParameter';
-import type {AtomToken, ImageParameterToken} from '../../internal';
-
-/* NOT FOR BROWSER END */
 
 declare type GalleryTypes = 'gallery' | 'imagemap';
 
@@ -27,7 +15,6 @@ declare type GalleryTypes = 'gallery' | 'imagemap';
  *
  * 图库图片
  */
-@singleLine()
 export abstract class GalleryImageToken extends FileToken {
 	/** @private */
 	private readonly privateType: `${GalleryTypes}-image` = 'imagemap-image';
@@ -35,21 +22,6 @@ export abstract class GalleryImageToken extends FileToken {
 	override get type(): `${GalleryTypes}-image` {
 		return this.privateType;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** image link / 图片链接 */
-	override get link(): string | Title {
-		return this.type === 'imagemap-image' ? '' : super.link;
-	}
-
-	override set link(value: string) {
-		if (this.type !== 'imagemap-image') {
-			super.link = value;
-		}
-	}
-
-	/* NOT FOR BROWSER END */
 
 	/**
 	 * @param type 图片类型
@@ -100,14 +72,9 @@ export abstract class GalleryImageToken extends FileToken {
 		const errors = super.lint(start, re),
 			{
 				ns,
-
-				/* NOT FOR BROWSER */
-
-				interwiki,
 			} = this.getAttribute('title');
 		if (
 			ns !== 6
-			|| interwiki
 		) {
 			const e = generateForSelf(this, {start}, 'invalid-gallery', 'invalid gallery image');
 			e.suggestions = [{desc: 'prefix', range: [start, start], text: 'File:'}];
@@ -115,22 +82,4 @@ export abstract class GalleryImageToken extends FileToken {
 		}
 		return errors;
 	}
-
-	/* NOT FOR BROWSER */
-
-	/**
-	 * @override
-	 * @param child node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `RangeError` 不可插入多余子节点
-	 * @throws `TypeError` 不可插入文本节点
-	 */
-	override insertAt<T extends AtomToken | ImageParameterToken>(child: T, i?: number): T {
-		if (this.type === 'gallery-image' && child.type === 'image-parameter' && !galleryParams.has(child.name)) {
-			child.setAttribute('name', 'invalid');
-		}
-		return super.insertAt(child, i);
-	}
 }
-
-classes['GalleryImageToken'] = __filename;

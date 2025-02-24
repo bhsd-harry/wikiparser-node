@@ -1,3 +1,0 @@
-<noinclude>
-|</noinclude>data-sort-value="" style="color:red;"|Foo
-|Bar||Baz

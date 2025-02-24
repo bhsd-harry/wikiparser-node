@@ -3,10 +3,6 @@ import {
 	extUrlCharFirst,
 	rawurldecode,
 	print,
-
-	/* NOT FOR BROWSER */
-
-	text,
 } from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
@@ -16,19 +12,7 @@ import type {Title} from '../lib/title';
 import type {
 	AtomToken,
 	FileToken,
-
-	/* NOT FOR BROWSER */
-
-	AstNodes,
-	AstText,
 } from '../internal';
-
-/* NOT FOR BROWSER */
-
-import {Shadow} from '../util/debug';
-import {classes} from '../util/constants';
-
-/* NOT FOR BROWSER END */
 
 export const galleryParams = new Set(['alt', 'link', 'lang', 'page', 'caption']);
 
@@ -55,10 +39,7 @@ function validate(
 			if (!value) {
 				return val;
 			}
-			/^(?:ftp:\/\/|\/\/|\0\d+m\x7F)/iu; // eslint-disable-line @typescript-eslint/no-unused-expressions
 			const re1 = new RegExp(String.raw`^(?:${config.protocol}|//|\0\d+m\x7F)`, 'iu');
-			// eslint-disable-next-line @typescript-eslint/no-unused-expressions, es-x/no-regexp-unicode-property-escapes
-			/^(?:(?:ftp:\/\/|\/\/)(?:\[[\da-f:.]+\]|[^[\]<>"\t\n\p{Zs}])|\0\d+m\x7F)[^[\]<>"\0\t\n\p{Zs}]*$/iu;
 			const re2 = new RegExp(
 				String.raw`^(?:(?:${config.protocol}|//)${extUrlCharFirst}|\0\d+m\x7F)${extUrlChar}$`,
 				'iu',
@@ -101,19 +82,10 @@ function validate(
 export abstract class ImageParameterToken extends Token {
 	declare readonly name: string;
 	readonly #syntax: string = '';
-	readonly #extension;
 
 	abstract override get parentNode(): FileToken | undefined;
 	abstract override get nextSibling(): this | undefined;
 	abstract override get previousSibling(): AtomToken | this;
-
-	/* NOT FOR BROWSER */
-
-	abstract override get parentElement(): FileToken | undefined;
-	abstract override get nextElementSibling(): this | undefined;
-	abstract override get previousElementSibling(): AtomToken | this;
-
-	/* NOT FOR BROWSER END */
 
 	override get type(): 'image-parameter' {
 		return 'image-parameter';
@@ -124,82 +96,10 @@ export abstract class ImageParameterToken extends Token {
 		return this.name === 'link' ? validate('link', super.text(), this.getAttribute('config')) : undefined;
 	}
 
-	/* NOT FOR BROWSER */
-
-	set link(value: string) {
-		if (this.name === 'link') {
-			this.setValue(value);
-		}
-	}
-
-	/** parameter value / 参数值 */
-	get value(): string | true {
-		return this.getValue();
-	}
-
-	set value(value) {
-		this.setValue(value);
-	}
-
-	/** iamge size / 图片大小 */
-	get size(): {width: string, height: string} | undefined {
-		if (this.name === 'width') {
-			const size = (this.getValue() as string).trim().replace(/px$/u, '').trim();
-			if (!size.includes('{{')) {
-				const [width, height = ''] = size.split('x') as [string, string?];
-				return {width, height};
-			}
-			const token = Parser.parse(size, false, 2, this.getAttribute('config')),
-				i = token.childNodes.findIndex(({type, data}) => type === 'text' && data.includes('x'));
-			if (i === -1) {
-				return {width: size, height: ''};
-			}
-			const str = token.childNodes[i] as AstText;
-			str.splitText(str.data.indexOf('x')).splitText(1);
-			return {width: text(token.childNodes.slice(0, i + 1)), height: text(token.childNodes.slice(i + 2))};
-		}
-		return undefined;
-	}
-
-	set size(size) {
-		if (this.name === 'width') {
-			this.setValue(size && size.width + (size.height && 'x') + size.height);
-		}
-	}
-
-	/** image width / 图片宽度 */
-	get width(): string | undefined {
-		return this.size?.width;
-	}
-
-	set width(width) {
-		if (this.name === 'width') {
-			const {height} = this;
-			this.setValue((width || '') + (height! && 'x') + height!);
-		}
-	}
-
-	/** image height / 图片高度 */
-	get height(): string | undefined {
-		return this.size?.height;
-	}
-
-	set height(height) {
-		if (this.name === 'width') {
-			this.setValue(this.width! + (height ? `x${height}` : ''));
-		}
-	}
-
-	/* NOT FOR BROWSER END */
-
 	/** @param str 图片参数 */
 	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum?: Token[]) {
 		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img).map(([syntax, param]): [string, string, RegExp] => {
-				/* eslint-disable @typescript-eslint/no-unused-expressions */
-				/^(\s*)link=(.*)(?=$|\n)(\s*)$/u;
-				/^(\s*(?!\s))(.*)px(\s*)$/u;
-				/* eslint-enable @typescript-eslint/no-unused-expressions */
 				const re = new RegExp(
 					String.raw`^(\s*(?!\s))${syntax.replace('$1', '(.*)')}${
 						syntax.endsWith('$1') ? '(?=$|\n)' : ''
@@ -229,7 +129,6 @@ export abstract class ImageParameterToken extends Token {
 				this.#syntax = str;
 			} else {
 				super(mt[2], config, accum, {
-					'Stage-2': ':', '!HeadingToken': ':',
 				});
 				this.#syntax = mt[1] + param[0] + mt[3]!;
 			}
@@ -239,10 +138,6 @@ export abstract class ImageParameterToken extends Token {
 		super(str, {...config, excludes: [...config.excludes ?? [], 'list']}, accum);
 		this.setAttribute('name', 'caption');
 		this.setAttribute('stage', 7);
-
-		/* NOT FOR BROWSER */
-
-		this.#extension = extension;
 	}
 
 	/** @private */
@@ -320,82 +215,4 @@ export abstract class ImageParameterToken extends Token {
 		}
 		return super.print({class: 'image-caption'});
 	}
-
-	/* NOT FOR BROWSER */
-
-	override cloneNode(): this {
-		const cloned = this.cloneChildNodes(),
-			config = this.getAttribute('config');
-		return Shadow.run(() => {
-			// @ts-expect-error abstract class
-			const token = new ImageParameterToken(
-				this.#syntax.replace('$1', ''),
-				this.#extension,
-				config,
-			) as this;
-			token.replaceChildren(...cloned);
-			return token;
-		});
-	}
-
-	/**
-	 * @override
-	 * @param token node to be inserted / 待插入的子节点
-	 * @param i position to be inserted at / 插入位置
-	 * @throws `Error` 不接受自定义输入的图片参数
-	 */
-	override insertAt(token: string, i?: number): AstText;
-	override insertAt<T extends AstNodes>(token: T, i?: number): T;
-	override insertAt<T extends AstNodes>(token: T | string, i?: number): T | AstText {
-		if (!Shadow.running && this.#isVoid()) {
-			throw new Error(`Image parameter ${this.name} does not accept custom input!`);
-		}
-		return super.insertAt(token as T, i);
-	}
-
-	/**
-	 * Set the parameter value
-	 *
-	 * 设置参数值
-	 * @param value parameter value / 参数值
-	 * @throws `Error` 无效参数
-	 */
-	setValue(value: string | boolean = false): void {
-		const {name} = this;
-		if (value === false) {
-			this.remove();
-			return;
-		} else if (name === 'invalid') {
-			throw new Error('Invalid image parameter!');
-		}
-		const type = this.#isVoid() ? 'Boolean' : 'String';
-		if (typeof value !== type.toLowerCase()) { // eslint-disable-line valid-typeof
-			this.typeError('setValue', type);
-		} else if (value !== true) {
-			const include = this.getAttribute('include'),
-				config = this.getAttribute('config'),
-				{childNodes} = Parser.parse(value, include, name === 'caption' ? undefined : 5, config);
-			this.replaceChildren(...childNodes);
-		}
-	}
-
-	/**
-	 * Get the URL
-	 *
-	 * 获取网址
-	 * @param articlePath article path / 条目路径
-	 */
-	getUrl(articlePath?: string): string | undefined {
-		let {link} = this;
-		if (!link) {
-			return link;
-		} else if (typeof link !== 'string') {
-			return link.getUrl(articlePath);
-		} else if (link.startsWith('//')) {
-			link = `https:${link}`;
-		}
-		return new URL(link).href;
-	}
 }
-
-classes['ImageParameterToken'] = __filename;
