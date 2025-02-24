@@ -1,7 +1,6 @@
 import {
 	zs,
 	removeComment,
-	escape,
 } from '../util/string';
 import {getEndPos} from '../util/lint';
 import Parser from '../index';
@@ -279,10 +278,5 @@ export class AstText extends AstNode {
 	 */
 	replaceData(text: string): void {
 		this.#setData(text);
-	}
-
-	/** @private */
-	print(): string {
-		return escape(this.data);
 	}
 }

@@ -1,7 +1,6 @@
 import {generateForChild} from '../util/lint';
 import {
 	removeComment,
-	escape,
 } from '../util/string';
 import {
 	MAX_STAGE,
@@ -204,11 +203,5 @@ export abstract class AttributeToken extends Token {
 	 */
 	getValue(): string | true {
 		return this.#equal ? this.lastChild.text().trim() : this.type === 'ext-attr' || '';
-	}
-
-	/** @private */
-	override print(): string {
-		const [quoteStart = '', quoteEnd = ''] = this.#quotes;
-		return this.#equal ? super.print({sep: escape(this.#equal) + quoteStart, post: quoteEnd}) : super.print();
 	}
 }

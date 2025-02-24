@@ -1,13 +1,11 @@
 import {
 	text,
-	print,
 } from '../util/string';
 import {setChildNodes} from '../util/debug';
 import {getCondition} from '../parser/selector';
 import {AstNode} from './node';
 import type {
 	LintError,
-	AST,
 } from '../base';
 import type {TokenPredicate} from '../parser/selector';
 import type {
@@ -297,42 +295,5 @@ export abstract class AstElement extends AstNode {
 			cur += child.toString().length + this.getGaps(i);
 		}
 		return errors;
-	}
-
-	/** @private */
-	print(opt: PrintOpt = {}): string {
-		const cl = opt.class;
-		return this.toString()
-			? (cl === '' ? '' : `<span class="wpb-${cl ?? this.type}">`)
-			+ print(this.childNodes, opt)
-			+ (cl === '' ? '' : '</span>')
-			: '';
-	}
-
-	/**
-	 * Save in JSON format
-	 *
-	 * 保存为JSON
-	 * @param file file name / 文件名
-	 * @param start
-	 */
-	json(file?: string, start = this.getAbsoluteIndex()): AST {
-		const json = {
-			...this, // eslint-disable-line @typescript-eslint/no-misused-spread
-			type: this.type,
-			range: [start, start + this.toString().length],
-			childNodes: [],
-		} as unknown as AST;
-		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
-			const child = this.childNodes[i]!,
-				{length} = child.toString();
-			json.childNodes!.push(
-				child.type === 'text'
-					? {data: child.data, range: [cur, cur + length]} as unknown as AST
-					: child.json(undefined, cur),
-			);
-			cur += length + this.getGaps(i);
-		}
-		return json;
 	}
 }

@@ -48,9 +48,4 @@ export abstract class CommentToken extends NowikiBaseToken {
 	override toString(skip?: boolean): string {
 		return skip ? '' : `<!--${this.innerText}${this.closed ? '-->' : ''}`;
 	}
-
-	/** @private */
-	override print(): string {
-		return super.print({pre: '&lt;!--', post: this.closed ? '--&gt;' : ''});
-	}
 }

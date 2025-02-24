@@ -2,7 +2,6 @@ import {
 	extUrlChar,
 	extUrlCharFirst,
 	rawurldecode,
-	print,
 } from '../util/string';
 import {generateForSelf} from '../util/lint';
 import Parser from '../index';
@@ -201,18 +200,5 @@ export abstract class ImageParameterToken extends Token {
 	 */
 	getValue(): string | true {
 		return this.name === 'invalid' ? this.text() : this.#isVoid() || super.text();
-	}
-
-	/** @private */
-	override print(): string {
-		if (this.#syntax) {
-			return `<span class="wpb-image-parameter">${
-				this.#syntax.replace(
-					'$1',
-					`<span class="wpb-image-caption">${print(this.childNodes)}</span>`,
-				)
-			}</span>`;
-		}
-		return super.print({class: 'image-caption'});
 	}
 }

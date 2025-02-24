@@ -1,7 +1,6 @@
 import {
 	text,
 	removeComment,
-	print,
 } from '../util/string';
 import Parser from '../index';
 import {Token} from './index';
@@ -80,13 +79,5 @@ export abstract class ConverterToken extends Token {
 	/** @private */
 	override getGaps(i: number): number {
 		return i || this.firstChild.length > 0 ? 1 : 0;
-	}
-
-	/** @private */
-	override print(): string {
-		const {childNodes: [flags, ...rules]} = this;
-		return `<span class="wpb-converter">-{${flags.print()}${
-			flags.length > 0 ? '|' : ''
-		}${print(rules, {sep: ';'})}}-</span>`;
 	}
 }

@@ -190,9 +190,4 @@ export abstract class LinkBaseToken extends Token {
 			true,
 		);
 	}
-
-	/** @private */
-	override print(): string {
-		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
-	}
 }

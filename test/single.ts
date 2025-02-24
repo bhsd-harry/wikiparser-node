@@ -8,7 +8,6 @@ import Parser = require('../index');
 /* NOT FOR BROWSER ONLY END */
 
 const ignored = new Set<LintError.Rule>(['obsolete-attr', 'obsolete-tag', 'table-layout']);
-const entities = {lt: '<', gt: '>', amp: '&'};
 
 /**
  * 测试单个页面
@@ -45,20 +44,6 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 	}
 
 	/* NOT FOR BROWSER ONLY END */
-
-	if (!method || method === 'print') {
-		console.time(`print: ${title}`);
-		const printed = token.print();
-		console.timeEnd(`print: ${title}`);
-		const restored = printed.replace(
-			/<[^<]+?>|&([lg]t|amp);/gu,
-			(_, s?: keyof typeof entities) => s ? entities[s] : '',
-		);
-		if (restored !== content) {
-			error('高亮过程中不可逆地修改了原始文本！');
-			return diff(content, restored, pageid);
-		}
-	}
 
 	if (!method || method === 'lint') {
 		console.time(`lint: ${title}`);

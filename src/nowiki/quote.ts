@@ -4,7 +4,6 @@ import Parser from '../../index';
 import {NowikiBaseToken} from './base';
 import type {
 	LintError,
-	AST,
 } from '../../base';
 
 /**
@@ -94,11 +93,5 @@ export abstract class QuoteToken extends NowikiBaseToken {
 			errors.push(e);
 		}
 		return errors;
-	}
-
-	override json(): AST {
-		const json = super.json();
-		Object.assign(json, {bold: this.bold, italic: this.italic});
-		return json;
 	}
 }

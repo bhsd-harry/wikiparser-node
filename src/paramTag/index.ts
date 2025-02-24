@@ -88,9 +88,4 @@ export abstract class ParamTagToken extends Token {
 		}
 		return errors;
 	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: '\n'});
-	}
 }

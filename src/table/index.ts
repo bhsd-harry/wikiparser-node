@@ -9,7 +9,6 @@ import {SyntaxToken} from '../syntax';
 import type {
 	Config,
 	LintError,
-	AST,
 } from '../../base';
 import type {AttributesToken, TdToken, TrToken, Token} from '../../internal';
 import type {TableCoords} from './trBase';
@@ -232,11 +231,5 @@ export abstract class TableToken extends TrBaseToken {
 			}
 		}
 		return undefined;
-	}
-
-	override json(): AST {
-		const json = super.json();
-		json['closed'] = this.closed;
-		return json;
 	}
 }

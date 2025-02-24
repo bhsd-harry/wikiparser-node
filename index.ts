@@ -12,7 +12,6 @@ import type {
 	TokenTypes,
 	Parser as ParserBase,
 	Stage,
-	AST,
 } from './base';
 import type {Title} from './lib/title';
 import type {LanguageService} from './lib/lsp';
@@ -278,6 +277,5 @@ export type {
 	LintError,
 	TokenTypes,
 	LanguageService,
-	AST,
 };
 export type * from './internal';

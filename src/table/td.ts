@@ -8,7 +8,6 @@ import {Token} from '../index';
 import {TableBaseToken} from './base';
 import type {
 	LintError,
-	AST,
 } from '../../base';
 import type {Cached} from '../../util/lint';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
@@ -196,17 +195,5 @@ export abstract class TdToken extends TableBaseToken {
 	override getAttr<T extends string>(key: T): TdAttrGetter<T> {
 		const value = super.getAttr(key);
 		return (key === 'rowspan' || key === 'colspan' ? parseInt(value as string) || 1 : value) as TdAttrGetter<T>;
-	}
-
-	/** @private */
-	override print(): string {
-		const {childNodes: [syntax, attr, inner]} = this;
-		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
-	}
-
-	override json(): AST {
-		const json = super.json();
-		json['subtype'] = this.subtype;
-		return json;
 	}
 }

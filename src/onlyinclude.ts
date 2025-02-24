@@ -23,12 +23,4 @@ export class OnlyincludeToken extends Token {
 		}
 		return (key === 'plain') as TokenAttribute<T> || super.getAttribute(key);
 	}
-
-	/** @private */
-	override print(): string {
-		return super.print({
-			pre: '<span class="wpb-ext">&lt;onlyinclude&gt;</span>',
-			post: '<span class="wpb-ext">&lt;/onlyinclude&gt;</span>',
-		});
-	}
 }

@@ -37,8 +37,6 @@ module.exports = {
 		'no-new': 0,
 		'no-restricted-globals': [
 			2,
-			'print',
-			'escape',
 			'close',
 			'closed',
 			'constructor',
@@ -201,7 +199,6 @@ module.exports = {
 			...config.settings.n,
 			allowModules: [
 				'chalk',
-				'monaco-editor',
 			],
 		},
 		'es-x': {

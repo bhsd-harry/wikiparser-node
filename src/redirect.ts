@@ -70,9 +70,4 @@ export abstract class RedirectToken extends Token {
 	override lint(start = this.getAbsoluteIndex()): LintError[] {
 		return this.lastChild.lint(start + this.#pre.length + this.firstChild.toString().length);
 	}
-
-	/** @private */
-	override print(): string {
-		return super.print({pre: this.#pre, post: this.#post});
-	}
 }

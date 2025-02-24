@@ -7,7 +7,6 @@ import Parser from '../index';
 import {Token} from './index';
 import type {
 	LintError,
-	AST,
 } from '../base';
 import type {AtomToken, SyntaxToken, TranscludeToken} from '../internal';
 
@@ -109,16 +108,5 @@ export abstract class ParameterToken extends Token {
 			errors.push(e);
 		}
 		return errors;
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: this.anon ? '' : '='});
-	}
-
-	override json(): AST {
-		const json = super.json();
-		json['anon'] = this.anon;
-		return json;
 	}
 }

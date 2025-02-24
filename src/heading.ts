@@ -8,7 +8,6 @@ import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {
 	LintError,
-	AST,
 } from '../base';
 import type {QuoteToken, AstText} from '../internal';
 
@@ -153,17 +152,5 @@ export abstract class HeadingToken extends Token {
 			errors.push(e);
 		}
 		return errors;
-	}
-
-	/** @private */
-	override print(): string {
-		const equals = this.#getEquals();
-		return super.print({pre: equals, sep: equals});
-	}
-
-	override json(): AST {
-		const json = super.json();
-		json['level'] = this.level;
-		return json;
 	}
 }

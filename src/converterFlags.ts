@@ -106,9 +106,4 @@ export abstract class ConverterFlagsToken extends Token {
 		}
 		return errors;
 	}
-
-	/** @private */
-	override print(): string {
-		return super.print({sep: ';'});
-	}
 }

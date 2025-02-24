@@ -6,7 +6,6 @@ import {Token} from './index';
 import type {
 	Config,
 	LintError,
-	AST,
 } from '../base';
 import type {AttributesParentBase} from '../mixin/attributesParent';
 import type {AttributesToken, TranscludeToken} from '../internal';
@@ -239,19 +238,5 @@ export abstract class HtmlToken extends Token {
 			}
 		}
 		throw new SyntaxError(`${closing ? 'Unmatched closing' : 'Unclosed'} tag: ${string}`);
-	}
-
-	/** @private */
-	override print(): string {
-		return super.print({
-			pre: `&lt;${this.closing ? '/' : ''}${this.#tag}`,
-			post: `${this.#selfClosing ? '/' : ''}&gt;`,
-		});
-	}
-
-	override json(): AST {
-		const json = super.json();
-		Object.assign(json, {closing: this.closing, selfClosing: this.#selfClosing});
-		return json;
 	}
 }

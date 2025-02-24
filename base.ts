@@ -231,14 +231,6 @@ export interface LintError {
 	suggestions?: LintError.Fix[];
 }
 
-export type AST = Record<string, string | number | boolean> & {
-	range: [number, number];
-	type?: TokenTypes;
-	name?: string;
-	childNodes?: AST[];
-	data?: string;
-};
-
 /**
  * Node-like
  *
@@ -261,13 +253,6 @@ export interface AstNode {
 
 	/** Linter */
 	lint(): LintError[];
-
-	/**
-	 * print in HTML
-	 *
-	 * 以HTML格式打印
-	 */
-	print(): string;
 }
 
 /**
@@ -285,13 +270,6 @@ interface Token extends AstNode {
 	 * @param selector 选择器
 	 */
 	querySelectorAll<T = Token>(selector: string): T[];
-
-	/**
-	 * Save in JSON format
-	 *
-	 * 保存为JSON
-	 */
-	json(): AST;
 }
 
 interface SignatureParameter {
