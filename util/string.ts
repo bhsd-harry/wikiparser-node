@@ -68,6 +68,8 @@ export const decodeNumber = factory(
 /** escape newlines */
 export const noWrap = factory(/\n/gu, String.raw`\n`);
 
+/* PRINT ONLY */
+
 const entities = {'&': 'amp', '<': 'lt', '>': 'gt', '"': 'quot', '\n': '#10'};
 
 /**
@@ -89,6 +91,8 @@ export const print = (childNodes: readonly AstNodes[], opt: PrintOpt = {}): stri
 	const {pre = '', post = '', sep = ''} = opt;
 	return pre + childNodes.map(child => child.print()).join(sep) + post;
 };
+
+/* PRINT ONLY END */
 
 /* NOT FOR BROWSER */
 

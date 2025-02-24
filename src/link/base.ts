@@ -76,10 +76,14 @@ export abstract class LinkBaseToken extends Token {
 		LSP: return this.#title;
 	}
 
+	/* PRINT ONLY */
+
 	/** 片段标识符 */
 	get fragment(): string | undefined {
 		return this.#title.fragment;
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 

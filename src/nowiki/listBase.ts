@@ -21,10 +21,14 @@ export interface ListRangeToken extends Token {
 export abstract class ListBaseToken extends NowikiBaseToken {
 	abstract override get type(): 'dd' | 'list';
 
+	/* PRINT ONLY */
+
 	/** number of indentation / 缩进数 */
 	get indent(): number {
 		return this.innerText.split(':').length - 1;
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 

@@ -57,6 +57,8 @@ export abstract class GalleryToken extends Token {
 		return 'ext-inner';
 	}
 
+	/* PRINT ONLY */
+
 	/** image widths / 图片宽度 */
 	get widths(): number {
 		return this.#getSize('widths');
@@ -66,6 +68,8 @@ export abstract class GalleryToken extends Token {
 	get heights(): number {
 		return this.#getSize('heights');
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 
@@ -158,6 +162,8 @@ export abstract class GalleryToken extends Token {
 		return errors;
 	}
 
+	/* PRINT ONLY */
+
 	/**
 	 * 获取图片的宽度或高度
 	 * @param key `widths` 或 `heights`
@@ -179,6 +185,8 @@ export abstract class GalleryToken extends Token {
 		Object.assign(json, {widths: this.widths, heights: this.heights});
 		return json;
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 

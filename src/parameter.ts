@@ -64,6 +64,8 @@ export abstract class ParameterToken extends Token {
 		return this.firstChild.length === 0;
 	}
 
+	/* PRINT ONLY */
+
 	/** whether to be a duplicated parameter / 是否是重复参数 */
 	get duplicated(): boolean {
 		try {
@@ -72,6 +74,8 @@ export abstract class ParameterToken extends Token {
 			return false;
 		}
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 

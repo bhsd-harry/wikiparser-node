@@ -43,10 +43,14 @@ export abstract class ConverterRuleToken extends Token {
 		return 'converter-rule';
 	}
 
+	/* PRINT ONLY */
+
 	/** language variant / 语言变体 */
 	get variant(): string {
 		return this.childNodes[this.length - 2]?.text().trim() ?? '';
 	}
+
+	/* PRINT ONLY END */
 
 	/* NOT FOR BROWSER */
 
