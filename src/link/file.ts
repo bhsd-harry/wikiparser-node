@@ -6,7 +6,9 @@ import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+} from '../../base';
 import type {
 	Token,
 	AtomToken,

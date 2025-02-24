@@ -2,7 +2,9 @@ import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {LintError} from '../base';
+import type {
+	LintError,
+} from '../base';
 import type {
 	AstText,
 	AttributesToken,
@@ -84,9 +86,10 @@ export abstract class GalleryToken extends Token {
 			const str = child.toString(),
 				{length} = str,
 				trimmed = str.trim(),
+				{type} = child,
 				startLine = top + i,
 				startCol = i ? 0 : left;
-			if (child.type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
+			if (type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				const endIndex = start + length;
 				errors.push({
 					rule: 'no-ignored',
@@ -103,7 +106,7 @@ export abstract class GalleryToken extends Token {
 						{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
 					],
 				});
-			} else if (child.type !== 'noinclude' && child.type !== 'text') {
+			} else if (type !== 'noinclude' && type !== 'text') {
 				errors.push(...child.lint(start, re));
 			}
 			start += length + 1;

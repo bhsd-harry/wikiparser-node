@@ -10,7 +10,9 @@ import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+} from '../../base';
 import type {Title} from '../../lib/title';
 import type {
 	AstText,

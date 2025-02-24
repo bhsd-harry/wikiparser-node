@@ -218,7 +218,8 @@ export abstract class TableToken extends TrBaseToken {
 			n--;
 		}
 		for (const child of this.childNodes.slice(2)) {
-			if (child.type === 'tr' && child.getRowCount()) {
+			const {type} = child;
+			if (type === 'tr' && child.getRowCount()) {
 				n--;
 				if (n < 0) {
 					return child;
