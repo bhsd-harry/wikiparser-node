@@ -116,6 +116,7 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'provideDiagnostics':
 			case 'provideColorPresentations':
 			case 'provideCodeAction':
+			case 'provideDefinition':
 				break;
 			case 'provideDocumentColors':
 				await wrap(method, title, () => lsp.provideDocumentColors(rgba, content));

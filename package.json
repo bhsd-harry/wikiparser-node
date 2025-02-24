@@ -1,13 +1,14 @@
 {
-	"name": "wikiparser-node",
-	"version": "1.16.5",
-	"description": "A Node.js parser for MediaWiki markup with AST",
+	"name": "wikilint",
+	"version": "2.16.5",
+	"description": "A Node.js linter for MediaWiki markup",
 	"keywords": [
 		"mediawiki",
 		"wikitext",
-		"parser"
+		"lint",
+		"linter"
 	],
-	"homepage": "https://github.com/bhsd-harry/wikiparser-node/wiki",
+	"homepage": "https://github.com/bhsd-harry/wikiparser-node/tree/lint#readme",
 	"bugs": {
 		"url": "https://github.com/bhsd-harry/wikiparser-node/issues"
 	},
@@ -19,9 +20,15 @@
 		"/data/",
 		"/i18n/",
 		"/coverage/badge.svg",
+		"/bin/cli.js",
 		"/dist/",
-		"!/dist/[bt]*/"
+		"!/dist/test/",
+		"!/dist/bin/coverage.js",
+		"!/dist/bin/declaration.js"
 	],
+	"bin": {
+		"wikilint": "bin/cli.js"
+	},
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"sideEffects": false,
@@ -33,7 +40,7 @@
 		"declaration": "grep -rl --include='*.d.ts' '@private' dist/ | xargs bash sed.sh -i -E '/^\\s+\\/\\*\\* @private/,+1d'; grep -rl --include='*.d.ts' '/util/' dist/ | xargs bash sed.sh -i -E '/^import .+\\/util\\//d'; bash sed.sh -i -E 's/abstract (lint|print|text)\\b/\\1/' dist/lib/node.d.ts; node dist/bin/declaration.js",
 		"prepublishOnly": "npm run build:core",
 		"build:core": "bash build.sh",
-		"build": "npm run build:core && node dist/bin/parserTests.js",
+		"build": "npm run build:core",
 		"diff": "bash diff.sh",
 		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",

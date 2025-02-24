@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {zs, extUrlChar, extUrlCharFirst} from '../util/string';
 import {MagicLinkToken} from '../src/magicLink';
 import type {Config} from '../base';

@@ -6,7 +6,7 @@ name: Node.js CI
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-m'
   workflow_dispatch:
     inputs:
       branch:

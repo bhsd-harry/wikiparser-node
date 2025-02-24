@@ -49,7 +49,7 @@ export abstract class ImagemapToken extends Token {
 		}
 		const lines = inner.split('\n'),
 			protocols = new Set(config.protocol.split('|')),
-			SingleLineNoincludeToken = singleLine()(NoincludeToken);
+			SingleLineNoincludeToken = NoincludeToken;
 		let first = true,
 			error = false;
 		for (const line of lines) {

@@ -36,7 +36,7 @@ export abstract class ParamTagToken extends Token {
 		super(undefined, config, accum, {
 		});
 		if (wikitext) {
-			const SingleLineAtomToken = singleLine(!acceptable)(AtomToken);
+			const SingleLineAtomToken = AtomToken;
 			this.append(
 				...wikitext.split('\n')
 					.map(line => acceptable ? line : parseCommentAndExt(line, config, accum, include))

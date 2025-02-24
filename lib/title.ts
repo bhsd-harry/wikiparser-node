@@ -139,8 +139,10 @@ export class Title {
 	 * 检测是否是重定向
 	 */
 	getRedirection(): [boolean, string] {
+		// eslint-disable-next-line @typescript-eslint/prefer-destructuring
 		const prefix =
 			this.prefix;
+		// eslint-disable-next-line prefer-const
 		let title = (prefix + this.main).replace(/ /gu, '_');
 		return [false, title];
 	}
@@ -173,6 +175,7 @@ export class Title {
 						fragment === undefined
 							? ''
 							: `#${encodeURIComponent(
+								// eslint-disable-next-line @stylistic/comma-dangle
 								fragment
 							)}`
 					),

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import {Token} from '../src/index';
 import {TableToken} from '../src/table/index';
 import {TrToken} from '../src/table/tr';

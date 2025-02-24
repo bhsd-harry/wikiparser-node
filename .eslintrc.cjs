@@ -68,6 +68,7 @@ module.exports = {
 			2,
 			'exports',
 		],
+		'n/no-unpublished-bin': 0,
 		'unicorn/no-this-assignment': 0,
 		'unicorn/empty-brace-spaces': 0,
 		'jsdoc/require-jsdoc': [
@@ -152,6 +153,7 @@ module.exports = {
 		},
 		{
 			files: [
+				'bin/*.js',
 				'test/*.ts',
 			],
 			rules: {
