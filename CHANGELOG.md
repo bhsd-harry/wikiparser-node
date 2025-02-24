@@ -1,10 +1,20 @@
 ## v1.16.5
 
-*2025-02-24*
+*2025-02-25*
 
 **Added**
 
 - English translation for JSDoc annotations
+- [`LinkBaseToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#json) now includes the [`fragment`](https://github.com/bhsd-harry/wikiparser-node/wiki/LinkBaseToken#fragment) property
+- [`CategoryToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken#json) now includes the [`sortKey`](https://github.com/bhsd-harry/wikiparser-node/wiki/CategoryToken#sortkey) property
+- [`FileToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#json) now includes the [`extension`](https://github.com/bhsd-harry/wikiparser-node/wiki/FileToken#extension) property
+- [`ListToken.indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#indent) property
+- [`ListToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#json) now includes the [`indent`](https://github.com/bhsd-harry/wikiparser-node/wiki/ListToken#indent) property
+- [`TdToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#json) now includes the [`rowspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#rowspan) and [`colspan`](https://github.com/bhsd-harry/wikiparser-node/wiki/TdToken#colspan) properties
+- [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#json) now includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
+- [`ConverterRuleToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken#json) now includes the [`variant`](https://github.com/bhsd-harry/wikiparser-node/wiki/ConverterRuleToken#variant) property
+- `GalleryToken.prototype.json` now includes the [`widths`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#widths) and [`heights`](https://github.com/bhsd-harry/wikiparser-node/wiki/GalleryToken#heights) properties
+- [`ParameterToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#json) now includes the [`duplicated`](https://github.com/bhsd-harry/wikiparser-node/wiki/ParameterToken#duplicated) property
 
 **Fixed**
 
@@ -251,7 +261,7 @@
 
 **Changed**
 
-- `ArgToken.prototype.json` no longer includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
+- [`ArgToken.prototype.json`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#json) no longer includes the [`default`](https://github.com/bhsd-harry/wikiparser-node/wiki/ArgToken#default) property
 
 ## v1.12.3
 

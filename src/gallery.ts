@@ -2,7 +2,10 @@ import Parser from '../index';
 import {Token} from './index';
 import {GalleryImageToken} from './link/galleryImage';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {LintError} from '../base';
+import type {
+	LintError,
+	AST,
+} from '../base';
 import type {
 	AstText,
 	AttributesToken,
@@ -54,8 +57,6 @@ export abstract class GalleryToken extends Token {
 		return 'ext-inner';
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** image widths / 图片宽度 */
 	get widths(): number {
 		return this.#getSize('widths');
@@ -65,6 +66,8 @@ export abstract class GalleryToken extends Token {
 	get heights(): number {
 		return this.#getSize('heights');
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** all images / 所有图片 */
 	override get images(): GalleryImageToken[] {
@@ -127,9 +130,10 @@ export abstract class GalleryToken extends Token {
 			const str = child.toString(),
 				{length} = str,
 				trimmed = str.trim(),
+				{type} = child,
 				startLine = top + i,
 				startCol = i ? 0 : left;
-			if (child.type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
+			if (type === 'noinclude' && trimmed && !/^<!--.*-->$/u.test(trimmed)) {
 				const endIndex = start + length;
 				errors.push({
 					rule: 'no-ignored',
@@ -146,7 +150,7 @@ export abstract class GalleryToken extends Token {
 						{desc: 'comment', range: [start, endIndex], text: `<!--${str}-->`},
 					],
 				});
-			} else if (child.type !== 'noinclude' && child.type !== 'text') {
+			} else if (type !== 'noinclude' && type !== 'text') {
 				errors.push(...child.lint(start, re));
 			}
 			start += length + 1;
@@ -154,9 +158,26 @@ export abstract class GalleryToken extends Token {
 		return errors;
 	}
 
+	/**
+	 * 获取图片的宽度或高度
+	 * @param key `widths` 或 `heights`
+	 */
+	#getSize(key: 'widths' | 'heights'): number {
+		const widths = this.parentNode?.getAttr(key),
+			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
+		return mt && Number(mt) || 120;
+	}
+
 	/** @private */
 	override print(): string {
 		return super.print({sep: '\n'});
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		Object.assign(json, {widths: this.widths, heights: this.heights});
+		return json;
 	}
 
 	/* NOT FOR BROWSER */
@@ -205,16 +226,6 @@ export abstract class GalleryToken extends Token {
 			throw new RangeError('Please do not insert invisible content into <gallery>!');
 		}
 		return super.insertAt(token as T, i);
-	}
-
-	/**
-	 * 获取图片的宽度或高度
-	 * @param key `widths` 或 `heights`
-	 */
-	#getSize(key: 'widths' | 'heights'): number {
-		const widths = this.parentNode?.getAttr(key),
-			mt = typeof widths === 'string' && /^(\d+)\s*(?:px)?$/u.exec(widths)?.[1];
-		return mt && Number(mt) || 120;
 	}
 
 	/** @private */

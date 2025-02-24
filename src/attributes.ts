@@ -378,9 +378,11 @@ export abstract class AttributesToken extends Token {
 				this.constructorError('can only insert AttributeToken');
 			}
 			return super.insertAt(token, i);
-		} else if (token.type !== this.type.slice(0, -1) || token.tag !== this.name) {
+		}
+		const {type, name, length} = this;
+		if (token.type !== type.slice(0, -1) || token.tag !== name) {
 			throw new RangeError(`The AttributeToken to be inserted can only be used for <${token.tag}> tag!`);
-		} else if (i === this.length) {
+		} else if (i === length) {
 			const {lastChild} = this;
 			if (lastChild instanceof AttributeToken) {
 				lastChild.close();
@@ -393,14 +395,14 @@ export abstract class AttributesToken extends Token {
 		}
 		super.insertAt(token, i);
 		const {previousVisibleSibling, nextVisibleSibling} = token,
-			type = toDirty(this.type),
+			dirtyType = toDirty(type),
 			config = this.getAttribute('config'),
-			acceptable = {[`Stage-${stages[this.type]}`]: ':'};
+			acceptable = {[`Stage-${stages[type]}`]: ':'};
 		if (nextVisibleSibling && !/^\s/u.test(nextVisibleSibling.toString())) {
-			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i + 1);
+			super.insertAt(Shadow.run(() => new AtomToken(' ', dirtyType, config, [], acceptable)), i + 1);
 		}
 		if (previousVisibleSibling && !/\s$/u.test(previousVisibleSibling.toString())) {
-			super.insertAt(Shadow.run(() => new AtomToken(' ', type, config, [], acceptable)), i);
+			super.insertAt(Shadow.run(() => new AtomToken(' ', dirtyType, config, [], acceptable)), i);
 		}
 		return token;
 	}
@@ -422,7 +424,9 @@ export abstract class AttributesToken extends Token {
 				this.setAttr(key, val);
 			}
 			return;
-		} else if (this.type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
+		}
+		const {type, name} = this;
+		if (type === 'ext-attrs' && typeof value === 'string' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		}
 		const key = keyOrProp.toLowerCase().trim(),
@@ -435,8 +439,8 @@ export abstract class AttributesToken extends Token {
 		}
 		// @ts-expect-error abstract class
 		const token = Shadow.run((): AttributeToken => new AttributeToken(
-			toAttributeType(this.type),
-			this.name,
+			toAttributeType(type),
+			name,
 			key,
 			value === true ? '' : '=',
 			value === true ? '' : value,

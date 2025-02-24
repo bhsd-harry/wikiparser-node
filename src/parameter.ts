@@ -64,9 +64,24 @@ export abstract class ParameterToken extends Token {
 		return this.firstChild.length === 0;
 	}
 
+	/** whether to be a duplicated parameter / 是否是重复参数 */
+	get duplicated(): boolean {
+		try {
+			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
+		} catch {
+			return false;
+		}
+	}
+
 	/* NOT FOR BROWSER */
 
-	set anon(value) {
+	set duplicated(value) {
+		if (this.duplicated && !value) {
+			this.parentNode!.fixDuplication();
+		}
+	}
+
+	set anon(value) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
 		if (value) {
 			throw new Error('Cannot convert named parameter to anonymous parameter!');
 		}
@@ -80,21 +95,6 @@ export abstract class ParameterToken extends Token {
 
 	set value(value) {
 		this.setValue(value);
-	}
-
-	/** whether to be a duplicated parameter / 是否是重复参数 */
-	get duplicated(): boolean {
-		try {
-			return Boolean(this.parentNode?.getDuplicatedArgs().some(([key]) => key === this.name));
-		} catch {
-			return false;
-		}
-	}
-
-	set duplicated(value) {
-		if (this.duplicated && !value) {
-			this.parentNode!.fixDuplication();
-		}
 	}
 
 	/* NOT FOR BROWSER END */
@@ -204,9 +204,10 @@ export abstract class ParameterToken extends Token {
 		return super.print({sep: this.anon ? '' : '='});
 	}
 
-	override json(): AST {
-		const json = super.json();
-		json['anon'] = this.anon;
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		Object.assign(json, {anon: this.anon, duplicated: this.duplicated});
 		return json;
 	}
 

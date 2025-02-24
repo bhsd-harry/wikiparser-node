@@ -339,14 +339,15 @@ export abstract class TableToken extends TrBaseToken {
 			n--;
 		}
 		for (const child of this.childNodes.slice(2)) {
-			if (child.type === 'tr' && child.getRowCount()) {
+			const {type} = child;
+			if (type === 'tr' && child.getRowCount()) {
 				n--;
 				if (n < 0) {
 					return child;
 				}
 
 				/* NOT FOR BROWSER */
-			} else if (child.type === 'table-syntax') {
+			} else if (type === 'table-syntax') {
 				return child;
 
 				/* NOT FOR BROWSER END */
@@ -355,8 +356,9 @@ export abstract class TableToken extends TrBaseToken {
 		return undefined;
 	}
 
-	override json(): AST {
-		const json = super.json();
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
 		json['closed'] = this.closed;
 		return json;
 	}

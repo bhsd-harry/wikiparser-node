@@ -13,17 +13,6 @@ export abstract class DdToken extends ListBaseToken {
 	override get type(): 'dd' {
 		return 'dd';
 	}
-
-	/* NOT FOR BROWSER */
-
-	/** number of indentation / 缩进数 */
-	get indent(): number {
-		return this.innerText.length;
-	}
-
-	set indent(indent) {
-		this.setText(':'.repeat(indent));
-	}
 }
 
 classes['DdToken'] = __filename;

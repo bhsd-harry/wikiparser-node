@@ -324,14 +324,16 @@ export abstract class AttributeToken extends Token {
 		} else if (value === true) {
 			this.#equal = '';
 			return;
-		} else if (this.type === 'ext-attr' && value.includes('>')) {
+		}
+		const {type, lastChild} = this;
+		if (type === 'ext-attr' && value.includes('>')) {
 			throw new RangeError('Attributes of an extension tag cannot contain ">"!');
 		} else if (value.includes('"') && value.includes(`'`)) {
 			throw new RangeError('Attribute values cannot contain single and double quotes simultaneously!');
 		}
 		const config = this.getAttribute('config'),
-			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[this.type] + 1, config);
-		this.lastChild.replaceChildren(...childNodes);
+			{childNodes} = Parser.parse(value, this.getAttribute('include'), stages[type] + 1, config);
+		lastChild.replaceChildren(...childNodes);
 		if (value.includes('"')) {
 			this.#quotes = [`'`, `'`] as const;
 		} else if (value.includes(`'`) || !this.#quotes[0]) {

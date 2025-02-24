@@ -32,8 +32,8 @@ export class Attributes {
 	}
 
 	get invalid(): boolean {
-		this.#invalid ??= this.type === 'table-inter'
-			|| this.type === 'image-parameter' && this.token.name === 'invalid';
+		const {type, token: {name}} = this;
+		this.#invalid ??= type === 'table-inter' || type === 'image-parameter' && name === 'invalid';
 		return this.#invalid;
 	}
 

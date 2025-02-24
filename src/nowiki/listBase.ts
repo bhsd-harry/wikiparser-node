@@ -1,4 +1,5 @@
 import {NowikiBaseToken} from './base';
+import type {AST} from '../../base';
 
 /* NOT FOR BROWSER */
 
@@ -20,7 +21,20 @@ export interface ListRangeToken extends Token {
 export abstract class ListBaseToken extends NowikiBaseToken {
 	abstract override get type(): 'dd' | 'list';
 
+	/** number of indentation / 缩进数 */
+	get indent(): number {
+		return this.innerText.split(':').length - 1;
+	}
+
 	/* NOT FOR BROWSER */
+
+	/** @throws `Error` not `<dd>` only */
+	set indent(indent) {
+		if (/[^:]/u.test(this.innerText)) {
+			throw new Error('The token is not <dd>!');
+		}
+		this.setText(':'.repeat(indent));
+	}
 
 	/** whether to contain `:` / 是否包含`:` */
 	get dd(): boolean {
@@ -41,6 +55,20 @@ export abstract class ListBaseToken extends NowikiBaseToken {
 	get ol(): boolean {
 		return this.innerText.includes('#');
 	}
+
+	/* NOT FOR BROWSER END */
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start),
+			{indent} = this;
+		if (indent) {
+			json['indent'] = indent;
+		}
+		return json;
+	}
+
+	/* NOT FOR BROWSER */
 
 	/**
 	 * Get the range of the list

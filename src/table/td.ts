@@ -324,9 +324,10 @@ export abstract class TdToken extends TableBaseToken {
 		return `<span class="wpb-td">${syntax.print()}${attr.print()}${this.#innerSyntax}${inner.print()}</span>`;
 	}
 
-	override json(): AST {
-		const json = super.json();
-		json['subtype'] = this.subtype;
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
+		Object.assign(json, {subtype: this.subtype, rowspan: this.rowspan, colspan: this.colspan});
 		return json;
 	}
 

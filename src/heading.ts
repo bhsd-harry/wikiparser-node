@@ -212,8 +212,9 @@ export abstract class HeadingToken extends Token {
 		return super.print({pre: equals, sep: equals});
 	}
 
-	override json(): AST {
-		const json = super.json();
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start);
 		json['level'] = this.level;
 		return json;
 	}

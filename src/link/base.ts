@@ -19,7 +19,10 @@ import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {Token} from '../index';
 import {AtomToken} from '../atom';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 import type {Title} from '../../lib/title';
 import type {
 	AstText,
@@ -73,19 +76,19 @@ export abstract class LinkBaseToken extends Token {
 		LSP: return this.#title;
 	}
 
-	/* NOT FOR BROWSER */
-
-	set link(link: string) {
-		this.setTarget(link);
-	}
-
 	/** 片段标识符 */
 	get fragment(): string | undefined {
 		return this.#title.fragment;
 	}
 
+	/* NOT FOR BROWSER */
+
 	set fragment(fragment) {
 		this.setFragment(fragment);
+	}
+
+	set link(link: string) { // eslint-disable-line grouped-accessor-pairs, jsdoc/require-jsdoc
+		this.setTarget(link);
 	}
 
 	/** interwiki */
@@ -302,6 +305,16 @@ export abstract class LinkBaseToken extends Token {
 	/** @private */
 	override print(): string {
 		return super.print(this.#bracket ? {pre: '[[', post: ']]', sep: this.#delimiter} : {sep: this.#delimiter});
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start),
+			{type, fragment} = this;
+		if (fragment !== undefined && (type === 'link' || type === 'redirect-target')) {
+			json['fragment'] = fragment;
+		}
+		return json;
 	}
 
 	/* NOT FOR BROWSER */

@@ -112,9 +112,10 @@ export abstract class NestedToken extends Token {
 		return [
 			...super.lint(start, re),
 			...this.childNodes.filter(child => {
-				if (child.type === 'ext') {
-					return !this.#tags.includes(child.name);
-				} else if (childTypes.has(child.type)) {
+				const {type, name} = child;
+				if (type === 'ext') {
+					return !this.#tags.includes(name);
+				} else if (childTypes.has(type)) {
 					return false;
 				}
 				const str = child.toString().trim();

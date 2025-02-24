@@ -420,9 +420,10 @@ export class Token extends AstElement {
 			return;
 		}
 		const {parseList}: typeof import('../parser/list') = require('../parser/list');
-		const lines = this.firstChild!.toString().split('\n'),
+		const {firstChild, type, name} = this,
+			lines = firstChild!.toString().split('\n'),
 			state = {lastPrefix: ''};
-		let i = this.type === 'root' || this.type === 'ext-inner' && this.name === 'poem' ? 0 : 1;
+		let i = type === 'root' || type === 'ext-inner' && name === 'poem' ? 0 : 1;
 		for (; i < lines.length; i++) {
 			lines[i] = parseList(lines[i]!, state, this.#config, this.#accum);
 		}
@@ -518,12 +519,19 @@ export class Token extends AstElement {
 		/* NOT FOR BROWSER END */
 
 		super.insertAt(token, i);
+		const {
+			type,
+
+			/* NOT FOR BROWSER */
+
+			constructor,
+		} = token;
 
 		/* NOT FOR BROWSER */
 
 		const e = new Event('insert', {bubbles: true});
 		this.dispatchEvent(e, {type: 'insert', position: i < 0 ? i + this.length - 1 : i});
-		if (token.type !== 'list-range' && token.constructor === Token && this.getAttribute('plain')) {
+		if (type !== 'list-range' && constructor === Token && this.getAttribute('plain')) {
 			Parser.warn(
 				'You are inserting a plain token as a child of another plain token. '
 				+ 'Consider calling Token.flatten method afterwards.',
@@ -532,7 +540,7 @@ export class Token extends AstElement {
 
 		/* NOT FOR BROWSER END */
 
-		if (token.type === 'root') {
+		if (type === 'root') {
 			token.type = 'plain';
 		}
 		return token;

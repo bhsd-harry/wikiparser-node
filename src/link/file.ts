@@ -10,7 +10,10 @@ import {BoundingRect} from '../../lib/rect';
 import Parser from '../../index';
 import {LinkBaseToken} from './base';
 import {ImageParameterToken} from '../imageParameter';
-import type {LintError} from '../../base';
+import type {
+	LintError,
+	AST,
+} from '../../base';
 import type {
 	Token,
 	AtomToken,
@@ -88,12 +91,12 @@ export abstract class FileToken extends LinkBaseToken {
 		return 'file';
 	}
 
-	/* NOT FOR BROWSER */
-
 	/** file extension / 扩展名 */
 	get extension(): string | undefined {
-		return this.getTitle(true).extension;
+		return this.getAttribute('title').extension;
 	}
+
+	/* NOT FOR BROWSER */
 
 	/** image link / 图片链接 */
 	override get link(): string | Title {
@@ -292,6 +295,16 @@ export abstract class FileToken extends LinkBaseToken {
 	 */
 	getValue(key: string): string | true | undefined {
 		return this.getArg(key)?.getValue();
+	}
+
+	/** @private */
+	override json(_?: string, start = this.getAbsoluteIndex()): AST {
+		const json = super.json(undefined, start),
+			{extension} = this;
+		if (extension) {
+			json['extension'] = extension;
+		}
+		return json;
 	}
 
 	/* NOT FOR BROWSER */
