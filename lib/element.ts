@@ -293,6 +293,7 @@ export abstract class AstElement extends AstNode {
 		const errors: LintError[] = [];
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!;
+			child.setAttribute('aIndex', cur);
 			errors.push(...child.lint(cur, re));
 			cur += child.toString().length + this.getGaps(i);
 		}
@@ -326,6 +327,7 @@ export abstract class AstElement extends AstNode {
 		for (let i = 0, cur = start + this.getAttribute('padding'); i < this.length; i++) {
 			const child = this.childNodes[i]!,
 				{length} = child.toString();
+			child.setAttribute('aIndex', cur);
 			json.childNodes!.push(
 				child.type === 'text'
 					? {data: child.data, range: [cur, cur + length]} as unknown as AST
