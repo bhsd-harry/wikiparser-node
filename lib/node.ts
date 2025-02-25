@@ -113,6 +113,9 @@ export abstract class AstNode implements AstNodeBase {
 			case 'previousSibling':
 				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
 				break;
+			case 'aIndex':
+				this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
+				break;
 			default:
 				this[key as keyof this] = value as any; // eslint-disable-line @typescript-eslint/no-explicit-any
 		}
