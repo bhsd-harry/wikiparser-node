@@ -238,6 +238,7 @@ export abstract class AstElement extends AstNode {
 						{nextSibling} = cur,
 						str = cur.toString(),
 						l = str.length;
+					cur.setAttribute('aIndex', acc);
 					acc += l;
 					// 优先选择靠前的非文本兄弟节点，但永不进入假节点
 					if (

@@ -48,13 +48,9 @@ const workerJS = (): void => {
 	/**
 	 * 获取LSP
 	 * @param qid 请求编号
-	 * @param signature 是否请求签名
 	 */
-	const getLSP = (qid: number, signature?: boolean): LanguageService => {
-		let id = Math.floor(qid);
-		if (signature) {
-			id += 0.5;
-		}
+	const getLSP = (qid: number): LanguageService => {
+		const id = Math.floor(qid);
 		if (lsps.has(id)) {
 			return lsps.get(id)!;
 		}
@@ -149,13 +145,10 @@ const workerJS = (): void => {
 				break;
 			case 'destroy':
 				getLSP(qid).destroy();
-				getLSP(qid, true).destroy();
 				lsps.delete(qid);
-				lsps.delete(qid + 0.5);
 				break;
 			case 'data':
 				getLSP(qid).data = wikitext;
-				getLSP(qid, true).data = wikitext;
 				break;
 			case 'colorPresentations':
 				postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
@@ -214,9 +207,7 @@ const workerJS = (): void => {
 				break;
 			case 'signatureHelp':
 				(async () => {
-					postMessage(
-						[qid, await getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext],
-					);
+					postMessage([qid, await getLSP(qid).provideSignatureHelp(wikitext, include), wikitext]);
 				})();
 				break;
 			case 'inlayHints':
