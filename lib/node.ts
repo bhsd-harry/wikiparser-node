@@ -242,6 +242,11 @@ export abstract class AstNode implements AstNodeBase {
 			case 'previousSibling':
 				this.#previousSibling = value as TokenAttribute<'previousSibling'>;
 				break;
+			case 'aIndex':
+				if (Parser.viewOnly) {
+					this.#aIndex = [Shadow.rev, value as TokenAttribute<'aIndex'>];
+				}
+				break;
 			default:
 
 				/* NOT FOR BROWSER */

@@ -14,7 +14,7 @@ import type {Ranges} from '../lib/ranges';
 
 declare global {
 	type TokenAttribute<T extends string> =
-		T extends 'stage' | 'padding' ? number :
+		T extends 'stage' | 'padding' | 'aIndex' ? number :
 		T extends 'config' ? Config :
 		T extends 'accum' ? Token[] :
 		T extends 'parentNode' ? Token | undefined :

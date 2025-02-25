@@ -80,12 +80,14 @@ const indexToPos = (
  */
 export default async ({title, content}: SimplePage): Promise<void> => {
 	content = content.replace(/[\0\x7F]|\r$/gmu, '');
+
+	/* NOT FOR BROWSER ONLY */
+
 	Parser.getConfig();
 	Object.assign(Parser.config, {articlePath: 'https://mediawiki.org/wiki/$1'});
 	// eslint-disable-next-line no-eval
 	const {default: rgba}: {default: typeof import('color-rgba')} = await eval('import("color-rgba")');
-	const lsp = Parser.createLanguageService({}),
-		root = Parser.parse(content, true),
+	const root = Parser.parse(content, true),
 		imageParameter = root.querySelector<ImageParameterToken>('image-parameter'),
 		attrKey = root.querySelector('attr-key'),
 		ext = root.querySelector<ExtToken>('ext'),
@@ -113,6 +115,10 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 		].filter(Boolean) as Token[])
 			.map(token => indexToPos(root, token.getAbsoluteIndex() + 1));
 
+	/* NOT FOR BROWSER ONLY END */
+
+	const lsp = Parser.createLanguageService({});
+
 	await wrap('provideDiagnostics', title, () => {
 		void lsp.provideDiagnostics(
 			`${content} `,
@@ -138,12 +144,18 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 				break;
 			case 'provideCompletionItems': {
 				const positions = [
+
+					/* NOT FOR BROWSER ONLY */
+
 					...([
 						imageParameter,
 						attrKey,
 						parameterKey,
 					].filter(Boolean) as Token[])
 						.map(token => token.getAbsoluteIndex() + /^\s*/u.exec(token.toString())![0].length + 1),
+
+					/* NOT FOR BROWSER ONLY END */
+
 					...[
 						/(?<=<)/u, // tag
 						/(?<=__)/u, // behavior switch
@@ -173,6 +185,9 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 			case 'provideDocumentSymbols':
 				await wrap(method, title, () => lsp[method](content));
 				break;
+
+				/* NOT FOR BROWSER ONLY */
+
 			case 'provideReferences': {
 				const tokens = [
 					// 不需要 +1
@@ -227,6 +242,8 @@ export default async ({title, content}: SimplePage): Promise<void> => {
 					await wrap(method, title, () => lsp.provideSignatureHelp(content, pos));
 				}
 				break;
+
+				/* NOT FOR BROWSER ONLY END */
 
 				/* NOT FOR BROWSER */
 
