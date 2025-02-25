@@ -1,3 +1,11 @@
+## v1.16.6
+
+*2025-02-26*
+
+**Changed**
+
+- A [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) instance can provide both signature help and other services
+
 ## v1.16.5
 
 *2025-02-25*
