@@ -278,11 +278,14 @@ const getSectionEnd = (section: DocumentSymbol | undefined, lines: [string, numb
 /** VSCode-style language service */
 export class LanguageService implements LanguageServiceBase {
 	#text: string;
+	#text2: string;
 	#running: Promise<Token> | undefined;
+	#running2: Promise<Token> | undefined;
 	#done: Token;
+	#done2: Token;
 	#config: Config | string;
+	#config2: Config | string;
 	#completionConfig: CompletionConfig | undefined;
-	#signature?: boolean;
 	/** @private */
 	data?: SignatureData;
 
@@ -304,7 +307,7 @@ export class LanguageService implements LanguageServiceBase {
 	 * 提交解析任务
 	 * @param text 源代码
 	 * @description
-	 * - 总是更新`text`以便`parse`完成时可以判断是否需要重新解析
+	 * - 总是更新`#text`以便`#parse`完成时可以判断是否需要重新解析
 	 * - 如果已有进行中或已完成的解析，则返回该解析的结果
 	 * - 否则开始新的解析
 	 */
@@ -321,7 +324,7 @@ export class LanguageService implements LanguageServiceBase {
 	/**
 	 * 执行解析
 	 * @description
-	 * - 完成后会检查`text`是否已更新，如果是则重新解析
+	 * - 完成后会检查`#text`是否已更新，如果是则重新解析
 	 * - 总是返回最新的解析结果
 	 */
 	async #parse(): Promise<Token> {
@@ -341,14 +344,43 @@ export class LanguageService implements LanguageServiceBase {
 	}
 
 	/**
-	 * 检查是否为签名语言服务器
-	 * @throws `Error` 是签名语言服务器
+	 * 提交签名解析任务
+	 * @param text 源代码
+	 * @description
+	 * - 总是更新`#text2`以便`#parseSignature`完成时可以判断是否需要重新解析
+	 * - 如果已有进行中或已完成的解析，则返回该解析的结果
+	 * - 否则开始新的解析
 	 */
-	#checkSignature(): void {
-		/* istanbul ignore if */
-		if (this.#signature) {
-			throw new Error('This is a signature language server!');
+	async #queueSignature(text: string): Promise<Token> {
+		text = tidy(text);
+		if (this.#text2 === text && this.#config2 === Parser.config && !this.#running2) {
+			return this.#done2;
 		}
+		this.#text2 = text;
+		this.#running2 ??= this.#parseSignature(); // 不要提交多个解析任务
+		return this.#running2;
+	}
+
+	/**
+	 * 执行签名解析
+	 * @description
+	 * - 完成后会检查`#text2`是否已更新，如果是则重新解析
+	 * - 总是返回最新的解析结果
+	 */
+	async #parseSignature(): Promise<Token> {
+		const config = Parser.getConfig();
+		this.#config2 = Parser.config;
+		const text = this.#text2,
+			root = await Parser.partialParse(text, () => this.#text2, true, config);
+		if (this.#text2 === text && this.#config2 === Parser.config) {
+			this.#done2 = root;
+			this.#running2 = undefined;
+			return root;
+		}
+		/* istanbul ignore next */
+		this.#running2 = this.#parseSignature();
+		/* istanbul ignore next */
+		return this.#running2;
 	}
 
 	/**
@@ -364,7 +396,6 @@ export class LanguageService implements LanguageServiceBase {
 		text: string,
 		hsl = true,
 	): Promise<ColorInformation[]> {
-		this.#checkSignature();
 		const root = await this.#queue(text);
 		return root.querySelectorAll('attr-value,parameter-value,arg-default')
 			.flatMap(({type, childNodes}) => {
@@ -471,7 +502,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideCompletionItems(text: string, position: Position): Promise<CompletionItem[] | undefined> {
-		this.#checkSignature();
 		const {re, allTags, functions, switches, protocols, params, tags, ext} = this.#prepareCompletionConfig(),
 			{line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line],
@@ -626,7 +656,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param warning whether to include warnings / 是否包含警告
 	 */
 	async provideDiagnostics(text: string, warning = true): Promise<Diagnostic[]> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			errors = root.lint();
 		return (warning ? errors : errors.filter(({severity}) => severity === 'error'))
@@ -656,7 +685,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideFoldingRanges(text: string): Promise<FoldingRange[]> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			{length} = root.getLines(),
 			ranges: FoldingRange[] = [],
@@ -708,7 +736,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideLinks(text: string): Promise<DocumentLink[]> {
-		this.#checkSignature();
 		const {articlePath, protocol} = Parser.getConfig(),
 			absolute = articlePath?.includes('//'),
 			protocolRegex = new RegExp(`^(?:${protocol}|//)`, 'iu');
@@ -806,7 +833,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideReferences(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, position),
 			element = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
@@ -838,7 +864,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async provideDefinition(text: string, position: Position): Promise<Omit<Location, 'uri'>[] | undefined> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			ext = node.is<ExtToken>('ext') && node.name === 'ref'
@@ -867,7 +892,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param position 位置
 	 */
 	async resolveRenameLocation(text: string, position: Position): Promise<Range | undefined> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
@@ -891,7 +915,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param newName new name / 新名称
 	 */
 	async provideRenameEdits(text: string, position: Position, newName: string): Promise<WorkspaceEdit | undefined> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			node = root.elementFromPoint(position.character, position.line)!,
 			{type} = node,
@@ -943,7 +966,6 @@ export class LanguageService implements LanguageServiceBase {
 		if (!this.data) {
 			return undefined;
 		}
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			{offsetNode, offset} = caretPositionFromWord(root, position),
 			token = offsetNode.type === 'text' ? offsetNode.parentNode! : offsetNode,
@@ -1007,14 +1029,10 @@ export class LanguageService implements LanguageServiceBase {
 		/* istanbul ignore next */
 		if (!this.data) {
 			return undefined;
-			// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-		} else if (this.#text !== undefined && !this.#signature) {
-			throw new Error('This is a regular language server!');
 		}
-		this.#signature = true;
 		const {line, character} = position,
 			curLine = text.split(/\r?\n/u, line + 1)[line]!,
-			{lastChild} = await this.#queue(
+			{lastChild} = await this.#queueSignature(
 				`${curLine.slice(0, character + /^[^{}<]*/u.exec(curLine.slice(character))![0].length)}}}`,
 			);
 		if (!lastChild!.is<TranscludeToken>('magic-word') || lastChild.length === 1) {
@@ -1066,7 +1084,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
-		this.#checkSignature();
 		const hints: InlayHint[] = [],
 			root = await this.#queue(text);
 		for (const template of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke')) {
@@ -1113,7 +1130,6 @@ export class LanguageService implements LanguageServiceBase {
 	 * @param text source Wikitext / 源代码
 	 */
 	async provideDocumentSymbols(text: string): Promise<DocumentSymbol[]> {
-		this.#checkSignature();
 		const root = await this.#queue(text),
 			lines = root.getLines(),
 			{length} = lines,
