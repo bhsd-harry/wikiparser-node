@@ -295,7 +295,10 @@ export class LanguageService implements LanguageServiceBase {
 
 		/* NOT FOR BROWSER ONLY */
 
-		this.data = require(path.join('..', '..', 'data', 'signatures')) as SignatureData;
+		Object.defineProperty(this, 'data', {
+			value: require(path.join('..', '..', 'data', 'signatures')) as SignatureData,
+			enumerable: false,
+		});
 	}
 
 	/** @implements */
@@ -745,9 +748,10 @@ export class LanguageService implements LanguageServiceBase {
 		return (await this.#queue(text))
 			.querySelectorAll(`magic-link,ext-link-url,free-ext-link,attr-value,image-parameter#link${
 				absolute ? ',link-target,template-name,invoke-module' : ''
-			}`).reverse()
+			}`)
+			.reverse()
 			.map((token): DocumentLink | false => {
-				const {type, parentNode, firstChild, lastChild, childNodes} = token,
+				const {type, parentNode, firstChild, lastChild, childNodes, length} = token,
 					{name, tag} = parentNode as AttributeToken;
 				if (
 					!(
@@ -760,7 +764,9 @@ export class LanguageService implements LanguageServiceBase {
 					return false;
 				}
 				let target: URL | string = childNodes.filter((node): node is AstText => node.type === 'text')
-					.map(({data}) => data).join('').trim();
+					.map(({data}) => data)
+					.join('')
+					.trim();
 				if (!target) {
 					return false;
 				}
@@ -811,8 +817,8 @@ export class LanguageService implements LanguageServiceBase {
 					}
 					target = new URL(target).href;
 					if (type === 'image-parameter') {
-						const {top, left, height, width} = lastChild!.getBoundingClientRect(),
-							rect = firstChild!.getBoundingClientRect();
+						const rect = firstChild!.getBoundingClientRect(),
+							{top, left, height, width} = length === 1 ? rect : lastChild!.getBoundingClientRect();
 						return {
 							range: {
 								start: {line: rect.top, character: rect.left},
@@ -825,7 +831,8 @@ export class LanguageService implements LanguageServiceBase {
 				} catch {
 					return false;
 				}
-			}).filter(Boolean) as DocumentLink[];
+			})
+			.filter(Boolean) as DocumentLink[];
 	}
 
 	/**
@@ -1093,7 +1100,8 @@ export class LanguageService implements LanguageServiceBase {
 			const {type, childNodes} = token;
 			hints.push(
 				...(childNodes.slice(type === 'template' ? 1 : 3) as ParameterToken[]).filter(({anon}) => anon)
-					.reverse().map((parameter): InlayHint => ({
+					.reverse()
+					.map((parameter): InlayHint => ({
 						position: positionAt(root, parameter.getAbsoluteIndex()),
 						label: `${parameter.name}=`,
 						kind: 2,
