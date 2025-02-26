@@ -199,7 +199,9 @@ export abstract class TdToken extends TableBaseToken {
 				result.escape ||= esc;
 				result.correction = str.includes('\n') && Shadow.run(
 					() => new Token(str, this.getAttribute('config'))
-						.parseOnce(0, this.getAttribute('include')).parseOnce().parseOnce()
+						.parseOnce(0, this.getAttribute('include'))
+						.parseOnce()
+						.parseOnce()
 						.toString()
 						.includes('\n'),
 				);

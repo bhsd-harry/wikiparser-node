@@ -45,12 +45,14 @@ const getPages = async (url: string): Promise<SimplePage[]> => {
 	};
 	// eslint-disable-next-line n/no-unsupported-features/node-builtins
 	return (await (await fetch(`${url}?${String(new URLSearchParams(qs))}`)).json() as MediaWikiResponse)
-		.query.pages.map(({pageid, title, ns, revisions}) => ({
+		.query.pages
+		.map(({pageid, title, ns, revisions}) => ({
 			pageid,
 			title,
 			ns,
 			content: revisions?.[0]?.contentmodel === 'wikitext' && revisions[0].content,
-		})).filter((page): page is SimplePage => page.content !== false);
+		}))
+		.filter((page): page is SimplePage => page.content !== false);
 };
 
 (async () => {
