@@ -15,7 +15,8 @@ declare interface Test {
  * HTML字符串分行
  * @param str HTML字符串
  */
-const split = (str: string): string[] => str.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
+const split = (str: string): string[] => str
+	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
