@@ -1,3 +1,11 @@
+## v1.17.0
+
+*2025-02-27*
+
+**Added**
+
+- [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#buildlists) that builds all `list-range` tokens
+
 ## v1.16.6
 
 *2025-02-26*

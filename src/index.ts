@@ -41,7 +41,10 @@
 // w: ExtLinkToken
 // x: HtmlToken
 
-import {text} from '../util/string';
+import {
+	text,
+	print,
+} from '../util/string';
 import {
 	MAX_STAGE,
 	BuildMethod,
@@ -664,6 +667,11 @@ export class Token extends AstElement {
 	/* NOT FOR BROWSER */
 
 	/** @private */
+	override print(opt?: PrintOpt): string {
+		return this.type === 'list-range' ? print(this.childNodes) : super.print(opt);
+	}
+
+	/** @private */
 	getAcceptable(): Record<string, Ranges> | undefined {
 		if (typeof this.#acceptable === 'function') {
 			this.#acceptable = this.#acceptable();
@@ -950,6 +958,22 @@ export class Token extends AstElement {
 		}
 		this.normalize();
 		return html(this.childNodes, '', opt);
+	}
+
+	/**
+	 * Build lists
+	 *
+	 * 构建列表
+	 */
+	buildLists(): void {
+		for (let i = 0; i < this.length; i++) {
+			const child = this.childNodes[i]!;
+			if (child.is<ListToken>('list') || child.is<DdToken>('dd')) {
+				child.getRange();
+			} else if (child.type !== 'text') {
+				child.buildLists();
+			}
+		}
 	}
 }
 
