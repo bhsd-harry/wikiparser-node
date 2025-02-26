@@ -21,6 +21,22 @@ const closes: Record<string, string> = {
 	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]);
 
 /**
+ * 获取模板或魔术字对应的字符
+ * @param s 模板或魔术字名
+ */
+const getSymbol = (s: string): string => {
+	const name = removeComment(s).trim().toLowerCase();
+	if (marks.has(name)) {
+		return marks.get(name)!; // 标记{{!}}等
+	} else if (/^(?:filepath|(?:full|canonical)urle?):./u.test(name)) {
+		return 'm';
+	} else if (/^#vardefine:./u.test(name)) {
+		return 'n';
+	}
+	return 't';
+};
+
+/**
  * 解析花括号
  * @param wikitext
  * @param config
@@ -40,14 +56,26 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	 * @param s 不含内链的字符串
 	 */
 	const restore = (s: string): string => s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => linkStack[p1]!);
-	wikitext = wikitext.replace(/\{\{\s*([^\s\0<>[\]{}|_#&%:.]+)\s*\}\}(?!\})/gu, (m, p1: string) => {
-		// @ts-expect-error abstract class
-		new TranscludeToken(m.slice(2, -2), [], config, accum);
-		return `\0${accum.length - 2}${marks.get(p1.toLowerCase()) ?? 't'}\x7F`;
-	}).replace(/\[\[[^\n[\]{]*\]\]/gu, m => {
-		linkStack.push(m);
-		return `\0${linkStack.length - 1}\x7F`;
-	});
+	wikitext = wikitext.replace(
+		/\{\{([^\n{}|[]*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]/gu,
+		(m, p1?: string) => {
+			if (p1 !== undefined) {
+				try {
+					const {length} = accum;
+					// @ts-expect-error abstract class
+					new TranscludeToken(m.slice(2, -2), [], config, accum);
+					return `\0${length}${getSymbol(p1)}\x7F`;
+				} catch (e) {
+					/* istanbul ignore if */
+					if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
+						throw e;
+					}
+				}
+			}
+			linkStack.push(m);
+			return `\0${linkStack.length - 1}\x7F`;
+		},
+	);
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let moreBraces = lastBraces + wikitext.length !== -1;
 	// eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -130,14 +158,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 						config,
 						accum,
 					);
-					const name = removeComment(parts![0]![0]!).trim();
-					if (marks.has(name.toLowerCase())) {
-						ch = marks.get(name.toLowerCase())!; // 标记{{!}}等
-					} else if (/^(?:filepath|(?:full|canonical)urle?):./iu.test(name)) {
-						ch = 'm';
-					} else if (/^#vardefine:./iu.test(name)) {
-						ch = 'n';
-					}
+					ch = getSymbol(parts![0]![0]!);
 				} catch (e) {
 					/* istanbul ignore else */
 					if (e instanceof SyntaxError && e.message === 'Invalid template name') {

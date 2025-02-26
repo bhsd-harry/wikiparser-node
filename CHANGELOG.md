@@ -2,6 +2,10 @@
 
 *2025-02-26*
 
+**Fixed**
+
+- Potential memory leak when parsing a page with a large number of transclusions
+
 **Changed**
 
 - A [`LanguageService`](https://github.com/bhsd-harry/wikiparser-node/wiki/LanguageService) instance can provide both signature help and other services
