@@ -41,7 +41,9 @@
 // w: ExtLinkToken
 // x: HtmlToken
 
-import {text} from '../util/string';
+import {
+	text,
+} from '../util/string';
 import {
 	MAX_STAGE,
 	BuildMethod,
