@@ -630,27 +630,30 @@ export class LanguageService implements LanguageServiceBase {
 			token.getRelativeIndex();
 		}
 		for (const token of tokens) {
-			const {top, height} = token.getBoundingClientRect();
-			if (token.type === 'heading-title') {
-				const {level} = token.parentNode as HeadingToken;
-				for (let i = level - 1; i < 6; i++) {
-					const startLine = levels[i];
-					if (startLine !== undefined && startLine < top - 1) {
-						ranges.push({
-							startLine,
-							endLine: top - 1,
-							kind: 'region',
-						});
+			const {offsetHeight} = token;
+			if (token.type === 'heading-title' || offsetHeight > 2) {
+				const {top} = token.getBoundingClientRect();
+				if (token.type === 'heading-title') {
+					const {level} = token.parentNode as HeadingToken;
+					for (let i = level - 1; i < 6; i++) {
+						const startLine = levels[i];
+						if (startLine !== undefined && startLine < top - 1) {
+							ranges.push({
+								startLine,
+								endLine: top - 1,
+								kind: 'region',
+							});
+						}
+						levels[i] = undefined;
 					}
-					levels[i] = undefined;
+					levels[level - 1] = top + offsetHeight - 1; // 从标题的最后一行开始折叠
+				} else {
+					ranges.push({
+						startLine: top, // 从表格或模板的第一行开始折叠
+						endLine: top + offsetHeight - 2,
+						kind: 'region',
+					});
 				}
-				levels[level - 1] = top + height - 1; // 从标题的最后一行开始折叠
-			} else if (height > 2) {
-				ranges.push({
-					startLine: top, // 从表格或模板的第一行开始折叠
-					endLine: top + height - 2,
-					kind: 'region',
-				});
 			}
 		}
 		for (const startLine of levels) {
