@@ -13,8 +13,7 @@ const closes: Record<string, string> = {
 		'[': String.raw`\]\]`,
 	},
 	openBraces = String.raw`|\{{2,}`,
-	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]),
-	re = /\{\{\s*([^\s\0<>[\]{}|_#&%:.]+)\s*\}\}(?!\})/gu;
+	marks = new Map([['!', '!'], ['!!', '+'], ['(!', '{'], ['!)', '}'], ['!-', '-'], ['=', '~'], ['server', 'm']]);
 
 /**
  * 解析花括号
@@ -29,7 +28,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		}\[\[|-\{(?!\{)`,
 		{parserFunction: [,,, subst]} = config,
 		stack: BraceExecArrayOrEmpty[] = [];
-	wikitext = wikitext.replace(re, (m, p1: string) => {
+	wikitext = wikitext.replace(/\{\{\s*([^\s\0<>[\]{}|_#&%:.]+)\s*\}\}(?!\})/gu, (m, p1: string) => {
 		// @ts-expect-error abstract class
 		new TranscludeToken(m.slice(2, -2), [], config, accum);
 		return `\0${accum.length - 2}${marks.get(p1.toLowerCase()) ?? 't'}\x7F`;
