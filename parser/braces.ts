@@ -51,14 +51,23 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 	 */
 	const restore = (s: string): string => s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => linkStack[p1]!);
 	wikitext = wikitext.replace(
-		/\{\{([^\n{}|[]*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]/gu,
+		/\{\{([^\n{}[]*)\}\}(?!\})|\[\[[^\n[\]{]*\]\]/gu,
 		(m, p1?: string) => {
 			if (p1 !== undefined) {
 				try {
-					const {length} = accum;
+					const {length} = accum,
+						parts = p1.split('|');
 					// @ts-expect-error abstract class
-					new TranscludeToken(m.slice(2, -2), [], config, accum);
-					return `\0${length}${getSymbol(p1)}\x7F`;
+					new TranscludeToken(
+						parts[0]!,
+						parts.slice(1).map(part => {
+							const i = part.indexOf('=');
+							return i === -1 ? [part] : [part.slice(0, i), part.slice(i + 1)];
+						}),
+						config,
+						accum,
+					);
+					return `\0${length}${getSymbol(parts[0]!)}\x7F`;
 				} catch (e) {
 					/* istanbul ignore if */
 					if (!(e instanceof SyntaxError) || e.message !== 'Invalid template name') {
