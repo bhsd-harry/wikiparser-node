@@ -132,7 +132,8 @@ const {
 const doubleUnderscores = (doubleUnderscore.slice(2) as Record<string, string>[]).flatMap(Object.keys)
 		.map(s => s.toLowerCase()),
 	magicWords = [parserFunction.slice(0, 2).map(Object.keys), parserFunction.slice(2) as string[][]]
-		.flat(2).map(s => s.toLowerCase()),
+		.flat(2)
+		.map(s => s.toLowerCase()),
 	behaviorSwitchNames = behaviorSwitches.flatMap(({aliases}) => aliases),
 	parserFunctionNames = parserFunctions.flatMap(({aliases}) => aliases);
 info('signatures.json');
