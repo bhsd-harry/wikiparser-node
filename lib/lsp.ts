@@ -397,7 +397,7 @@ export class LanguageService implements LanguageServiceBase {
 		hsl = true,
 	): Promise<ColorInformation[]> {
 		const root = await this.#queue(text);
-		return root.querySelectorAll('attr-value,parameter-value,arg-default')
+		return root.querySelectorAll('attr-value,parameter-value,arg-default').reverse()
 			.flatMap(({type, childNodes}) => {
 				if (type !== 'attr-value' && !isPlain(childNodes)) {
 					return [];
@@ -850,7 +850,7 @@ export class LanguageService implements LanguageServiceBase {
 				token => type === 'attr-value'
 					? getRefName(token) === refName || getRefGroup(token) === refGroup
 					: getName(token) === name,
-			).map((token): Omit<Location, 'uri'> => ({
+			).reverse().map((token): Omit<Location, 'uri'> => ({
 				range: createNodeRange(token.type === 'parameter-key' ? token.parentNode! : token),
 			}));
 		return refs.length === 0 ? undefined : refs;
@@ -878,7 +878,7 @@ export class LanguageService implements LanguageServiceBase {
 				token => token.innerText
 					&& getRefTagAttr(token, 'name') === refName
 					&& getRefTagAttr(token, 'group') === refGroup,
-			).map(({lastChild}): Omit<Location, 'uri'> => ({
+			).reverse().map(({lastChild}): Omit<Location, 'uri'> => ({
 				range: createNodeRange(lastChild),
 			}));
 		return refs.length === 0 ? undefined : refs;
@@ -937,7 +937,7 @@ export class LanguageService implements LanguageServiceBase {
 			? undefined
 			: {
 				changes: {
-					'': refs.map((ref): TextEdit => ({
+					'': refs.reverse().map((ref): TextEdit => ({
 						range: createNodeRange(ref),
 						newText: newName,
 					})),
@@ -1086,8 +1086,8 @@ export class LanguageService implements LanguageServiceBase {
 	async provideInlayHints(text: string): Promise<InlayHint[]> {
 		const hints: InlayHint[] = [],
 			root = await this.#queue(text);
-		for (const template of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke')) {
-			const {type, childNodes} = template;
+		for (const token of root.querySelectorAll<TranscludeToken>('template,magic-word#invoke').reverse()) {
+			const {type, childNodes} = token;
 			hints.push(
 				...(childNodes.slice(type === 'template' ? 1 : 3) as ParameterToken[]).filter(({anon}) => anon)
 					.reverse().map((parameter): InlayHint => ({
