@@ -1,6 +1,6 @@
 (() => {
 var _a;
-const version = '1.16.5', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
+const version = '1.16.6', src = (_a = document.currentScript) === null || _a === void 0 ? void 0 : _a.src, file = /\/extensions\/dist\/base\.(?:min\.)?js$/u, CDN = src && file.test(src)
     ? src.replace(file, '')
     : `https://testingcf.jsdelivr.net/npm/wikiparser-node@${version}`;
 const workerJS = () => {
@@ -18,11 +18,8 @@ const workerJS = () => {
         }
         return root;
     };
-    const getLSP = (qid, signature) => {
-        let id = Math.floor(qid);
-        if (signature) {
-            id += 0.5;
-        }
+    const getLSP = (qid) => {
+        const id = Math.floor(qid);
         if (lsps.has(id)) {
             return lsps.get(id);
         }
@@ -85,13 +82,10 @@ const workerJS = () => {
                 break;
             case 'destroy':
                 getLSP(qid).destroy();
-                getLSP(qid, true).destroy();
                 lsps.delete(qid);
-                lsps.delete(qid + 0.5);
                 break;
             case 'data':
                 getLSP(qid).data = wikitext;
-                getLSP(qid, true).data = wikitext;
                 break;
             case 'colorPresentations':
                 postMessage([qid, getLSP(qid).provideColorPresentations(wikitext)]);
@@ -148,7 +142,7 @@ const workerJS = () => {
                 break;
             case 'signatureHelp':
                 (async () => {
-                    postMessage([qid, await getLSP(qid, true).provideSignatureHelp(wikitext, include), wikitext]);
+                    postMessage([qid, await getLSP(qid).provideSignatureHelp(wikitext, include), wikitext]);
                 })();
                 break;
             case 'inlayHints':

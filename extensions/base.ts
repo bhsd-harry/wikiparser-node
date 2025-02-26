@@ -12,7 +12,7 @@ import type {
 declare type WorkerListener<T> = (e: {data: [number, T, string]}) => void;
 declare type Token = ReturnType<typeof Parser['parse']>;
 
-const version = '1.16.5',
+const version = '1.16.6',
 	src = (document.currentScript as HTMLScriptElement | null)?.src,
 	file = /\/extensions\/dist\/base\.(?:min\.)?js$/u,
 	CDN = src && file.test(src)
