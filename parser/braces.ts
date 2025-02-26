@@ -32,11 +32,21 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 			config.excludes?.includes('heading') ? '' : String.raw`^((?:\0\d+[cno]\x7F)*)={1,6}|`
 		}\[\[|-\{(?!\{)`,
 		{parserFunction: [,,, subst]} = config,
-		stack: BraceExecArrayOrEmpty[] = [];
+		stack: BraceExecArrayOrEmpty[] = [],
+		linkStack: string[] = [];
+
+	/**
+	 * 恢复内链
+	 * @param s 不含内链的字符串
+	 */
+	const restore = (s: string): string => s.replace(/\0(\d+)\x7F/gu, (_, p1: number) => linkStack[p1]!);
 	wikitext = wikitext.replace(/\{\{\s*([^\s\0<>[\]{}|_#&%:.]+)\s*\}\}(?!\})/gu, (m, p1: string) => {
 		// @ts-expect-error abstract class
 		new TranscludeToken(m.slice(2, -2), [], config, accum);
 		return `\0${accum.length - 2}${marks.get(p1.toLowerCase()) ?? 't'}\x7F`;
+	}).replace(/\[\[[^\n[\]{]*\]\]/gu, m => {
+		linkStack.push(m);
+		return `\0${linkStack.length - 1}\x7F`;
 	});
 	const lastBraces = wikitext.lastIndexOf('}}') - wikitext.length;
 	let moreBraces = lastBraces + wikitext.length !== -1;
@@ -65,7 +75,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		 * @param text wikitext全文
 		 */
 		const push = (text: string): void => {
-			parts![parts!.length - 1]!.push(text.slice(topPos, curIndex));
+			parts![parts!.length - 1]!.push(restore(text.slice(topPos, curIndex)));
 		};
 		if (syntax === ']]' || syntax === '}-') { // 情形1：闭合内链或转换
 			lastIndex = curIndex + 2;
@@ -78,6 +88,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 				if (rmt) {
 					wikitext = `${wikitext.slice(0, index)}\0${accum.length}h\x7F${wikitext.slice(curIndex)}`;
 					lastIndex = index! + 4 + String(accum.length).length;
+					rmt[2] = restore(rmt[2]);
 					// @ts-expect-error abstract class
 					new HeadingToken(rmt[1].length, rmt.slice(2) as [string, string], config, accum);
 				}
@@ -171,7 +182,7 @@ export const parseBraces = (wikitext: string, config: Config, accum: Token[]): s
 		regex.lastIndex = lastIndex;
 		mt = regex.exec(wikitext);
 	}
-	return wikitext;
+	return restore(wikitext);
 };
 
 parsers['parseBraces'] = __filename;
