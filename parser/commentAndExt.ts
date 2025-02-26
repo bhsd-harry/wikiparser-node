@@ -8,7 +8,35 @@ import type {Token} from '../src/index';
 
 const onlyincludeLeft = '<onlyinclude>',
 	onlyincludeRight = '</onlyinclude>',
-	{length} = onlyincludeLeft;
+	{length} = onlyincludeLeft,
+	regexInclude = new WeakMap<string[], RegExp>(),
+	regexNoinclude = new WeakMap<string[], RegExp>();
+
+/**
+ * 获取正则表达式
+ * @param ext 扩展标签
+ * @param includeOnly 是否嵌入
+ */
+const getRegex = (ext: string[], includeOnly: boolean): RegExp => {
+	const regex = includeOnly ? regexInclude : regexNoinclude;
+	if (regex.has(ext)) {
+		return regex.get(ext)!;
+	}
+	const noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
+		includeRegex = includeOnly ? 'noinclude' : 'includeonly';
+	const re = new RegExp(
+		String.raw`<!--[\s\S]*?(?:-->|$)|<${
+			noincludeRegex
+		}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${
+			ext.join('|')
+		})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
+			includeRegex
+		})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
+		'giu',
+	);
+	regex.set(ext, re);
+	return re;
+};
 
 /**
  * 更新`<onlyinclude>`和`</onlyinclude>`的位置
@@ -57,19 +85,8 @@ export const parseCommentAndExt = (wikitext: string, config: Config, accum: Toke
 			return str;
 		}
 	}
-	const ext = config.ext.join('|'),
-		noincludeRegex = includeOnly ? 'includeonly' : '(?:no|only)include',
-		includeRegex = includeOnly ? 'noinclude' : 'includeonly';
-	const /** Never cached due to the possibility of nested extension tags */ regex = new RegExp(
-		String.raw`<!--[\s\S]*?(?:-->|$)|<${
-			noincludeRegex
-		}(?:\s[^>]*)?/?>|</${noincludeRegex}\s*>|<(${ext})(\s[^>]*?)?(?:/>|>([\s\S]*?)</(\1\s*)>)|<(${
-			includeRegex
-		})(\s[^>]*?)?(?:/>|>([\s\S]*?)(?:</(${includeRegex}\s*)>|$))`,
-		'giu',
-	);
 	return wikitext.replace(
-		regex,
+		getRegex(config.ext, includeOnly),
 		(
 			substr,
 			name?: string,
