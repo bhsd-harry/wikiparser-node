@@ -8,12 +8,16 @@ declare interface Test {
 	render?: string;
 }
 
+/* PRINT ONLY */
+
 /**
  * HTML字符串分行
  * @param str HTML字符串
  */
 const split = (str: string): string[] => str
 	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
+
+/* PRINT ONLY END */
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {
