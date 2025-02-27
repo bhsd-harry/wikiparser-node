@@ -3,5 +3,6 @@ if (( $# > 2 ))
 then
 	git diff --ignore-all-space --color-moved "$@"
 else
-	git diff --ignore-all-space --color-moved "$@" *.ts [cilmpstu]*/
+	git diff --ignore-all-space --color-moved "$@" *.ts \
+	config/ data/ i18n/ lib/ mixin/ parser/ src/ test/ util/
 fi

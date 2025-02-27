@@ -30,7 +30,7 @@
 		"build:test": "tsc --project tsconfig.dist.json",
 		"build": "npm run build:core && npm run build:es7 && npm run build:lsp && npm run build:test && npm run build:css",
 		"diff": "bash diff.sh",
-		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
+		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && tsc --noEmit --project extensions/tsconfig.json && tsc --noEmit --project extensions/tsconfig.codejar.json && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && node dist/test/json.js",
 		"lint:css": "stylelint extensions/*.css",

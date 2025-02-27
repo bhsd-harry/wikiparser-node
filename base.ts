@@ -450,7 +450,7 @@ export interface Parser {
 
 	/**
 	 * Get the current parser configuration
-	 *s
+	 *
 	 * 获取当前的解析设置
 	 */
 	getConfig(): Config;
