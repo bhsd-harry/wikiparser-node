@@ -7,7 +7,7 @@ import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {AttributeToken} from './attribute';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 import type {ExtToken, HtmlToken, SyntaxToken} from '../internal';
 import type {AttributeTypes} from './attribute';
 import type {TableTokens} from './table/index';
@@ -61,13 +61,7 @@ export abstract class AttributesToken extends Token {
 	 * @param type 标签类型
 	 * @param name 标签名
 	 */
-	constructor(
-		attr: string | undefined,
-		type: AttributesTypes,
-		name: string,
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-	) {
+	constructor(attr: string | undefined, type: AttributesTypes, name: string, config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		this.#type = type;

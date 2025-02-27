@@ -11,12 +11,11 @@ import {
 	BuildMethod,
 } from '../util/constants';
 import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
 import {Token} from './index';
 import {ParameterToken} from './parameter';
 import {AtomToken} from './atom';
 import {SyntaxToken} from './syntax';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 import type {Title} from '../lib/title';
 import type {AstText} from '../internal';
 
@@ -53,7 +52,7 @@ export abstract class TranscludeToken extends Token {
 	constructor(
 		title: string,
 		parts: ([string] | [string | number, string])[],
-		config = Parser.getConfig(),
+		config: Config,
 		accum: Token[] = [],
 	) {
 		let heading: number | undefined;

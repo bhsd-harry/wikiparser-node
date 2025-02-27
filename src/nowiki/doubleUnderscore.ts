@@ -1,6 +1,6 @@
 import {hiddenToken} from '../../mixin/hidden';
-import Parser from '../../index';
 import {NowikiBaseToken} from './base';
+import type {Config} from '../../base';
 import type {Token} from '../index';
 
 /**
@@ -18,7 +18,7 @@ export abstract class DoubleUnderscoreToken extends NowikiBaseToken {
 	 * @param word 状态开关名
 	 * @param sensitive 是否固定大小写
 	 */
-	constructor(word: string, sensitive: boolean, config = Parser.getConfig(), accum?: Token[]) {
+	constructor(word: string, sensitive: boolean, config: Config, accum?: Token[]) {
 		super(word, config, accum);
 	}
 

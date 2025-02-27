@@ -1,11 +1,11 @@
 import {text} from '../util/string';
 import {generateForSelf, generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
 import {HiddenToken} from './hidden';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../base';
@@ -32,7 +32,7 @@ export abstract class ArgToken extends Token {
 	}
 
 	/** @param parts 以'|'分隔的各部分 */
-	constructor(parts: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(parts: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		for (const [i, part] of parts.entries()) {

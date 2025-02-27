@@ -3,10 +3,10 @@ import {
 	removeComment,
 	print,
 } from '../util/string';
-import Parser from '../index';
 import {Token} from './index';
 import {ConverterFlagsToken} from './converterFlags';
 import {ConverterRuleToken} from './converterRule';
+import type {Config} from '../base';
 
 /**
  * language conversion
@@ -27,12 +27,7 @@ export abstract class ConverterToken extends Token {
 	 * @param flags 转换类型标记
 	 * @param rules 转换规则
 	 */
-	constructor(
-		flags: readonly string[],
-		rules: readonly [string, ...string[]],
-		config = Parser.getConfig(),
-		accum: Token[] = [],
-	) {
+	constructor(flags: readonly string[], rules: readonly [string, ...string[]], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum);
 		// @ts-expect-error abstract class
 		this.append(new ConverterFlagsToken(flags, config, accum) as ConverterFlagsToken);
