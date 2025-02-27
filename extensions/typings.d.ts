@@ -55,9 +55,9 @@ export type {
 	InlayHint,
 };
 
-export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
-
 /* NOT EXPORTED END */
+
+export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
 
 export interface PrinterBase {
 	include: boolean;
