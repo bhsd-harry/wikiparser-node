@@ -1,9 +1,8 @@
 import {hiddenToken} from '../mixin/hidden';
-import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import {RedirectTargetToken} from './link/redirectTarget';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 
 /**
  * redirect
@@ -38,7 +37,7 @@ export abstract class RedirectToken extends Token {
 		link: string,
 		text: string | undefined,
 		post: string,
-		config = Parser.getConfig(),
+		config: Config,
 		accum: Token[] = [],
 	) {
 		super(undefined, config, accum);

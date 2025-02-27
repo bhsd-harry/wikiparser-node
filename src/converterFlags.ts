@@ -1,9 +1,8 @@
 import {generateForChild} from '../util/lint';
 import {BoundingRect} from '../lib/rect';
-import Parser from '../index';
 import {Token} from './index';
 import {AtomToken} from './atom';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 import type {ConverterToken, ConverterRuleToken} from '../internal';
 
 const definedFlags = new Set(['A', 'T', 'R', 'D', '-', 'H', 'N']);
@@ -29,7 +28,7 @@ export abstract class ConverterFlagsToken extends Token {
 	}
 
 	/** @param flags 转换类型标记 */
-	constructor(flags: readonly string[], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(flags: readonly string[], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum, {
 		});
 		this.append(...flags.map(flag => new AtomToken(flag, 'converter-flag', config, accum)));
