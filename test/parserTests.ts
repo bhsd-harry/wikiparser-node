@@ -30,6 +30,8 @@ const merge = (html: string): string =>
 
 /* NOT FOR BROWSER END */
 
+/* PRINT ONLY */
+
 /**
  * HTML字符串分行
  * @param str HTML字符串
@@ -37,6 +39,8 @@ const merge = (html: string): string =>
 const split = (str: string): string[] => str
 	.replace(/(?:<span class="wpb-list">[^<]+<\/span>)+/gu, merge)
 	.split(/(?<=<\/\w+>)(?!$)|(?<!^)(?=<\w)/u);
+
+/* PRINT ONLY END */
 
 const tests: Test[] = require('../../test/parserTests.json');
 describe('Parser tests', () => {

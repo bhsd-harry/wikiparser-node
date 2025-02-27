@@ -92,7 +92,7 @@
 
 **Changed**
 
-- The return values of [`AstElement.prototype.caretPositionfromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#caretpositionfromindex) and its related methods are not different if the index is at the boundary between two tokens
+- The return values of [`AstElement.prototype.caretPositionfromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#caretpositionfromindex) and its related methods are now different if the index is at the boundary between two tokens
 - [`AstElement.prototype.elementFromIndex`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstElement#elementfromindex) and its related methods now return [`Token`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token) instead of [`AstNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/AstNode)
 
 ## v1.16.1
