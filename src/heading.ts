@@ -11,6 +11,7 @@ import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import type {
+	Config,
 	LintError,
 	AST,
 } from '../base';
@@ -89,7 +90,7 @@ export abstract class HeadingToken extends Token {
 	 * @param level 标题层级
 	 * @param input 标题文字
 	 */
-	constructor(level: number, input: readonly [string?, string?], config = Parser.getConfig(), accum: Token[] = []) {
+	constructor(level: number, input: readonly [string?, string?], config: Config, accum: Token[] = []) {
 		super(undefined, config, accum);
 		this.#level = level;
 		const token = new Token(input[0], config, accum);

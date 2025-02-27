@@ -6,7 +6,7 @@ import Parser from '../index';
 import {Token} from './index';
 import {ExtToken} from './tagPair/ext';
 import {NoincludeToken} from './nowiki/noinclude';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 import type {CommentToken, AttributesToken, IncludeToken, ArgToken, TranscludeToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -61,7 +61,7 @@ export abstract class NestedToken extends Token {
 		wikitext: string | undefined,
 		regex: RegExp | boolean,
 		tags: readonly string[],
-		config = Parser.getConfig(),
+		config: Config,
 		accum: Token[] = [],
 	) {
 		if (typeof regex === 'boolean') {

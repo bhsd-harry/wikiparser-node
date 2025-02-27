@@ -193,7 +193,7 @@ export abstract class ImageParameterToken extends Token {
 	/* NOT FOR BROWSER END */
 
 	/** @param str 图片参数 */
-	constructor(str: string, extension: string | undefined, config = Parser.getConfig(), accum?: Token[]) {
+	constructor(str: string, extension: string | undefined, config: Config, accum?: Token[]) {
 		let mt: [string, string, string, string?] | null;
 		const regexes = Object.entries(config.img).map(([syntax, param]): [string, string, RegExp] => {
 				/* eslint-disable @typescript-eslint/no-unused-expressions */

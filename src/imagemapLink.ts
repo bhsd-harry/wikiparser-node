@@ -1,8 +1,8 @@
-import Parser from '../index';
 import {Token} from './index';
 import {NoincludeToken} from './nowiki/noinclude';
 import {LinkToken} from './link/index';
 import {ExtLinkToken} from './extLink';
+import type {Config} from '../base';
 import type {AstText, ImagemapToken, GalleryImageToken} from '../internal';
 
 /* NOT FOR BROWSER */
@@ -66,7 +66,7 @@ export abstract class ImagemapLinkToken extends Token {
 		pre: string,
 		linkStuff: readonly [string, string | undefined, string | undefined] | readonly [string, string | undefined],
 		post: string,
-		config = Parser.getConfig(),
+		config: Config,
 		accum: Token[] = [],
 	) {
 		super(undefined, config, accum);

@@ -1,9 +1,8 @@
 import {hiddenToken} from '../mixin/hidden';
-import Parser from '../index';
 import {Token} from './index';
 import {SyntaxToken} from './syntax';
 import {RedirectTargetToken} from './link/redirectTarget';
-import type {LintError} from '../base';
+import type {Config, LintError} from '../base';
 
 /* NOT FOR BROWSER */
 
@@ -56,7 +55,7 @@ export abstract class RedirectToken extends Token {
 		link: string,
 		text: string | undefined,
 		post: string,
-		config = Parser.getConfig(),
+		config: Config,
 		accum: Token[] = [],
 	) {
 		super(undefined, config, accum);
@@ -103,7 +102,7 @@ export abstract class RedirectToken extends Token {
 			config = this.getAttribute('config');
 		return Shadow.run(() => {
 			// @ts-expect-error abstract class
-			const token: this = new RedirectToken([this.#pre, undefined, '', undefined, this.#post], config, []);
+			const token: this = new RedirectToken(this.#pre, undefined, '', undefined, this.#post, config, []);
 			token.firstChild.safeReplaceWith(cloned[0]);
 			token.lastChild.safeReplaceWith(cloned[1]);
 			return token;

@@ -12,7 +12,6 @@ import {HtmlToken} from '../src/html';
 import {AttributesToken} from '../src/attributes';
 import type {Config} from '../base';
 import type {AstRange} from '../lib/range';
-import type {AstNodes} from '../lib/node';
 import type {HeadingToken, ArgToken, TranscludeToken, SyntaxToken, ParameterToken} from '../internal';
 
 /**
@@ -398,42 +397,33 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 		normalTags = new Set(html[0]),
 		voidTags = new Set(html[2]);
 	/* istanbul ignore next */
-	if (html[2].includes(tag!)) {
+	if (voidTags.has(tag!)) {
 		throw new RangeError(`Void tag: ${tag}`);
-	} else if (tag !== undefined && !html.slice(0, 2).some(tags => tags.includes(tag))) {
+	} else if (tag && !normalTags.has(tag) && !html[1].includes(tag)) {
 		throw new RangeError(`Invalid tag name: ${tag}`);
 	}
 	const {parentNode} = this;
 	if (!parentNode) {
 		return undefined;
 	}
-
-	/**
-	 * 检查是否为指定的 HTML 标签
-	 * @param node 节点
-	 * @param name 标签名
-	 * @param closing 是否为闭合标签
-	 */
-	const checkHtml = (node: AstNodes, name: string | undefined, closing: boolean): boolean =>
-		node.is<HtmlToken>('html')
-		&& (!name && !voidTags.has(node.name) || node.name === name)
-		&& (normalTags.has(node.name) || !node.selfClosing)
-		&& node.closing === closing;
-	const {childNodes, length} = parentNode,
+	const {childNodes} = parentNode,
 		index = childNodes.indexOf(this);
 	let i = index - 1,
-		j = length;
+		j;
 	for (; i >= 0; i--) {
-		const open = childNodes[i]!;
-		if (checkHtml(open, tag, false)) {
-			for (j = index + 1; j < length; j++) {
-				const close = childNodes[j]!;
-				if (checkHtml(close, open.name, true)) {
+		const open = childNodes[i]!,
+			{name, closing, selfClosing} = open as HtmlToken;
+		if (
+			open.is<HtmlToken>('html') && !closing
+			&& (tag ? name === tag : !voidTags.has(name))
+			&& (normalTags.has(name) || !selfClosing)
+		) {
+			const close = open.findMatchingTag();
+			if (close) {
+				j = childNodes.indexOf(close);
+				if (j > index) {
 					break;
 				}
-			}
-			if (j < length) {
-				break;
 			}
 		}
 	}
@@ -442,7 +432,7 @@ Token.prototype.findEnclosingHtml = /** @implements */ function(tag): AstRange |
 	}
 	const range = this.createRange();
 	range.setStart(parentNode, i);
-	range.setEnd(parentNode, j + 1);
+	range.setEnd(parentNode, j! + 1); // eslint-disable-line @typescript-eslint/no-unnecessary-type-assertion
 	return range;
 };
 

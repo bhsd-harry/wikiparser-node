@@ -13,6 +13,10 @@ import {TableBaseToken} from './base';
 import type {
 	LintError,
 	AST,
+
+	/* NOT FOR BROWSER */
+
+	Config,
 } from '../../base';
 import type {Cached} from '../../util/lint';
 import type {SyntaxToken, AttributesToken, TrToken, TableToken} from '../../internal';
@@ -462,7 +466,7 @@ export const createTd = (
 	subtype: TdSubtypes = 'td',
 	attr: TdAttrs = {},
 	include?: boolean,
-	config = Parser.getConfig(),
+	config?: Config,
 ): TdToken => {
 	const innerToken = typeof inner === 'string' ? Parser.parse(inner, include, undefined, config) : inner,
 		// @ts-expect-error abstract class

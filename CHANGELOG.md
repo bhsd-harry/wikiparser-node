@@ -6,6 +6,15 @@
 
 - [`Token.prototype.buildLists`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#buildlists) that builds all `list-range` tokens
 
+**Fixed**
+
+- [`Token.prototype.findEnclosingHtml`](https://github.com/bhsd-harry/wikiparser-node/wiki/Token#findenclosinghtml)
+- [`RedirectToken.prototype.cloneNode`](https://github.com/bhsd-harry/wikiparser-node/wiki/RedirectToken#clonenode)
+
+**Changed**
+
+- [`HtmlToken.prototype.findMatchingTag`](https://github.com/bhsd-harry/wikiparser-node/wiki/HtmlToken#findmatchingtag) now returns `undefined` if there is no matching tag instead of throwing a syntax error
+
 ## v1.16.6
 
 *2025-02-26*
