@@ -1,5 +1,5 @@
 import type {
-	Diagnostic,
+	Diagnostic as DiagnosticBase,
 } from '@codemirror/lint';
 import type {editor} from 'monaco-editor';
 import type {CodeJar} from 'codejar-async';
@@ -9,6 +9,8 @@ import type {
 } from 'vscode-languageserver-types';
 // 必须写在一行内
 import type {Config, LintError, AST, LanguageService} from '../base';
+
+export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
 
 export interface PrinterBase {
 	include: boolean;
