@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import {AttributesToken} from '../src/attributes';
 import {HtmlToken} from '../src/html';
 import type {Config} from '../base';

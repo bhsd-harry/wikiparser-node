@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import {removeComment} from '../util/string';
 import {HeadingToken} from '../src/heading';
 import {TranscludeToken} from '../src/transclude';

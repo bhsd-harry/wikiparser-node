@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import Parser from '../index';
 import {parseQuotes} from './quotes';
 import {parseExternalLinks} from './externalLinks';

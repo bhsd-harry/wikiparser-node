@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import {ConverterToken} from '../src/converter';
 import type {Config} from '../base';
 import type {Token} from '../src/index';

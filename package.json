@@ -42,7 +42,7 @@
 		"build:core": "bash build.sh",
 		"build": "npm run build:core",
 		"diff": "bash diff.sh",
-		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . ':!extensions/' ':!bin/' | grep '\\.ts'; }; f",
+		"diff:stat": "f() { git diff --stat --ignore-all-space --color=always $1 $2 -- . | grep '\\.ts'; }; f",
 		"lint:ts": "tsc --noEmit && eslint --cache .",
 		"lint:json": "v8r -s config/.schema.json config/*.json && v8r -s data/.schema.json data/*.json && node dist/test/json.js",
 		"lint": "npm run lint:ts && npm run lint:json",

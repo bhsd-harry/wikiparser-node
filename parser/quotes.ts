@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import {QuoteToken} from '../src/nowiki/quote';
 import type {Config} from '../base';
 import type {Token} from '../src/index';

@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import Parser from '../index';
 import {RedirectToken} from '../src/redirect';
 import type {Config} from '../base';

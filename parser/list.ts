@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import {getCommon} from '../util/html';
 import {ListToken} from '../src/nowiki/list';
 import {DdToken} from '../src/nowiki/dd';
