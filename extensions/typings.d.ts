@@ -1,5 +1,5 @@
 import type {
-	Diagnostic,
+	Diagnostic as DiagnosticBase,
 
 	/* NOT EXPORTED */
 
@@ -36,7 +36,6 @@ export type {
 	Config,
 	LintError,
 	LanguageService,
-	Diagnostic,
 	Action,
 	editor,
 	CodeJar,
@@ -55,6 +54,8 @@ export type {
 	SignatureHelp,
 	InlayHint,
 };
+
+export type Diagnostic = DiagnosticBase & {rule: LintError.Rule};
 
 /* NOT EXPORTED END */
 

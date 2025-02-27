@@ -63,6 +63,7 @@ class Linter implements LinterBase {
 				from: startIndex,
 				to: endIndex,
 				severity,
+				rule,
 				message: `${message} (${rule})`,
 				actions: [
 					...fix ? [{name: `Fix: ${fix.desc}`, fix}] : [],
