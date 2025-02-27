@@ -1,8 +1,9 @@
-import {generateForSelf} from '../util/lint';
-import {noWrap} from '../util/string';
+import {generateForSelf, cache} from '../util/lint';
+import {Shadow} from '../util/debug';
 import {BoundingRect} from '../lib/rect';
 import {attributesParent} from '../mixin/attributesParent';
 import {Token} from './index';
+import type {Cached} from '../util/lint';
 import type {
 	Config,
 	LintError,
@@ -55,6 +56,7 @@ export abstract class HtmlToken extends Token {
 	#closing;
 	#selfClosing;
 	#tag;
+	#match: Cached<this | undefined> | undefined;
 
 	declare readonly childNodes: readonly [AttributesToken];
 	abstract override get firstChild(): AttributesToken;
@@ -120,8 +122,9 @@ export abstract class HtmlToken extends Token {
 	/** @private */
 	override lint(start = this.getAbsoluteIndex(), re?: RegExp): LintError[] {
 		const errors = super.lint(start, re),
+			{name, parentNode, closing, selfClosing} = this,
 			rect = new BoundingRect(this, start);
-		if (this.name === 'h1' && !this.closing) {
+		if (name === 'h1' && !closing) {
 			const e = generateForSelf(this, rect, 'h1', '<h1>');
 			e.suggestions = [{desc: 'h2', range: [start + 2, start + 3], text: '2'}];
 			errors.push(e);
@@ -131,72 +134,71 @@ export abstract class HtmlToken extends Token {
 			e.fix = {desc: 'remove', range: [start, e.endIndex], text: ''};
 			errors.push(e);
 		}
-		try {
-			this.findMatchingTag();
-		} catch (e) {
-			if (e instanceof SyntaxError) {
-				const {message} = e;
-				const msg = message.split(':', 1)[0]!.toLowerCase(),
-					error = generateForSelf(this, rect, 'unmatched-tag', msg),
-					noSelfClosing: LintError.Fix = {
-						desc: 'no self-closing',
-						range: [error.endIndex - 2, error.endIndex - 1],
-						text: '',
-					};
-				switch (msg) {
-					case 'unclosed tag': {
-						const childNodes = this.parentNode?.childNodes;
-						if (
-							formattingTags.has(this.name)
-							&& childNodes?.slice(0, childNodes.indexOf(this))
-								.some(({type, name}) => type === 'html' && name === this.name)
-						) {
-							error.suggestions = [{desc: 'close', range: [start + 1, start + 1], text: '/'}];
-						} else if (!this.closest('heading-title')) {
-							error.severity = 'warning';
-						}
-						break;
-					}
-					case 'unmatched closing tag': {
-						const ancestor = this.closest<TranscludeToken>('magic-word');
-						if (ancestor && magicWords.has(ancestor.name)) {
-							error.severity = 'warning';
-						} else {
-							error.suggestions = [{desc: 'remove', range: [start, error.endIndex], text: ''}];
-						}
-						break;
-					}
-					case 'tag that is both closing and self-closing': {
-						const {html: [normalTags,, voidTags]} = this.getAttribute('config'),
-							open: LintError.Fix = {desc: 'open', range: [start + 1, start + 2], text: ''};
-						if (voidTags.includes(this.name)) {
-							error.fix = open;
-						} else if (normalTags.includes(this.name)) {
-							error.fix = noSelfClosing;
-						} else {
-							error.suggestions = [open, noSelfClosing];
-						}
-						break;
-					}
-					case 'invalid self-closing tag':
-						error.suggestions = [
-							noSelfClosing,
-							{desc: 'close', range: [error.endIndex - 2, error.endIndex], text: `></${this.name}>`},
-						];
-						// no default
-				}
-				errors.push(error);
-			}
-		}
-		if (obsoleteTags.has(this.name)) {
+		if (obsoleteTags.has(name)) {
 			errors.push(
 				generateForSelf(this, rect, 'obsolete-tag', 'obsolete HTML tag', 'warning'),
 			);
 		}
-		if ((this.name === 'b' || this.name === 'strong') && this.closest('heading-title')) {
+		if ((name === 'b' || name === 'strong') && this.closest('heading-title')) {
 			errors.push(
 				generateForSelf(this, rect, 'bold-header', 'bold in section header', 'warning'),
 			);
+		}
+		const {html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
+			isVoid = voidTags.includes(name),
+			isFlexible = flexibleTags.includes(name),
+			isNormal = !isVoid && !isFlexible;
+		if (closing && (selfClosing || isVoid) || selfClosing && isNormal) {
+			const error = generateForSelf(
+					this,
+					rect,
+					'unmatched-tag',
+					closing ? 'tag that is both closing and self-closing' : 'invalid self-closing tag',
+				),
+				open: LintError.Fix = {desc: 'open', range: [start + 1, start + 2], text: ''},
+				noSelfClosing: LintError.Fix = {
+					desc: 'no self-closing',
+					range: [error.endIndex - 2, error.endIndex - 1],
+					text: '',
+				};
+			if (isFlexible) {
+				error.suggestions = [open, noSelfClosing];
+			} else if (closing) {
+				error.fix = isVoid ? open : noSelfClosing;
+			} else {
+				error.suggestions = [
+					noSelfClosing,
+					{desc: 'close', range: [error.endIndex - 2, error.endIndex], text: `></${name}>`},
+				];
+			}
+			errors.push(error);
+		} else if (!this.findMatchingTag()) {
+			const error = generateForSelf(
+				this,
+				rect,
+				'unmatched-tag',
+				closing ? 'unmatched closing tag' : 'unclosed tag',
+			);
+			if (closing) {
+				const ancestor = this.closest<TranscludeToken>('magic-word');
+				if (ancestor && magicWords.has(ancestor.name)) {
+					error.severity = 'warning';
+				} else {
+					error.suggestions = [{desc: 'remove', range: [start, error.endIndex], text: ''}];
+				}
+			} else {
+				const childNodes = parentNode?.childNodes;
+				if (
+					formattingTags.has(name)
+					&& childNodes?.slice(0, childNodes.indexOf(this))
+						.some(({type, name: n}) => type === 'html' && n === name)
+				) {
+					error.suggestions = [{desc: 'close', range: [start + 1, start + 1], text: '/'}];
+				} else if (!this.closest('heading-title')) {
+					error.severity = 'warning';
+				}
+			}
+			errors.push(error);
 		}
 		return errors;
 	}
@@ -205,40 +207,51 @@ export abstract class HtmlToken extends Token {
 	 * Find the matching tag
 	 *
 	 * 搜索匹配的标签
-	 * @throws `SyntaxError` 同时闭合和自封闭的标签
-	 * @throws `SyntaxError` 无效自封闭标签
-	 * @throws `SyntaxError` 未匹配的标签
 	 */
 	findMatchingTag(): this | undefined {
-		const {html: [normalTags, flexibleTags, voidTags]} = this.getAttribute('config'),
-			{name: tagName, parentNode, closing} = this,
-			string = noWrap(this.toString());
-		if (closing && (this.#selfClosing || voidTags.includes(tagName))) {
-			throw new SyntaxError(`Tag that is both closing and self-closing: ${string}`);
-		} else if (voidTags.includes(tagName) || this.#selfClosing && flexibleTags.includes(tagName)) { // 自封闭标签
-			return this;
-		} else if (this.#selfClosing && normalTags.includes(tagName)) {
-			throw new SyntaxError(`Invalid self-closing tag: ${string}`);
-		} else if (!parentNode) {
-			return undefined;
-		}
-		const {childNodes} = parentNode,
-			i = childNodes.indexOf(this),
-			siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1);
-		let imbalance = closing ? -1 : 1;
-		for (const token of siblings) {
-			if (!token.is<this>('html') || token.name !== tagName) {
-				continue;
-			} else if (token.#closing) {
-				imbalance--;
-			} else {
-				imbalance++;
-			}
-			if (imbalance === 0) {
-				return token;
-			}
-		}
-		throw new SyntaxError(`${closing ? 'Unmatched closing' : 'Unclosed'} tag: ${string}`);
+		return cache<this | undefined>(
+			this.#match,
+			() => {
+				const {name, parentNode, closing, selfClosing} = this,
+					{html: [, flexibleTags, voidTags]} = this.getAttribute('config'),
+					isVoid = voidTags.includes(name),
+					isFlexible = flexibleTags.includes(name);
+				if (isVoid || isFlexible && selfClosing) { // 自封闭标签
+					return this;
+				} else if (!parentNode) {
+					return undefined;
+				}
+				const {childNodes} = parentNode,
+					i = childNodes.indexOf(this),
+					siblings = closing ? childNodes.slice(0, i).reverse() : childNodes.slice(i + 1),
+					stack = [this],
+					{rev} = Shadow;
+				for (const token of siblings) {
+					if (!token.is<this>('html') || token.name !== name || isFlexible && token.#selfClosing) {
+						continue;
+					} else if (token.#closing === closing) {
+						stack.push(token);
+					} else {
+						const top = stack.pop()!;
+						if (top === this) {
+							return token;
+						}
+						top.#match = [rev, token];
+						token.#match = [rev, top];
+					}
+				}
+				for (const token of stack) {
+					token.#match = [rev, undefined];
+				}
+				return undefined;
+			},
+			value => {
+				this.#match = value;
+				if (value[1] && value[1] !== this) {
+					value[1].#match = [Shadow.rev, this];
+				}
+			},
+		);
 	}
 
 	/** @private */

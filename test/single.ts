@@ -21,6 +21,8 @@ export default async ({pageid, title, ns, content}: SimplePage, method?: string)
 
 	/* PRINT ONLY */
 
+	await wikiparse.print('');
+
 	if (!method || method === 'print') {
 		console.time(`print: ${title}`);
 		const printed = (await wikiparse.print(content, include)).map(([,, s]) => s).join('');
