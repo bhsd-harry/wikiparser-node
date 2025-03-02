@@ -20,7 +20,7 @@ npx wikilint --config zhwiki --include --lang zh-hans *.wiki
 | :----- | :---------- | :------ |
 | `-c`, `--config` \<path or preset config\> | Choose parser's configuration | `default` |
 | `--cache` | Enable caching | `false` |
-| `--cache-file` \<path\> | Specify cache file | `.wikilintcache` |
+| `--cache-file` \<path\> | Specify cache file and enable caching | `.wikilintcache` |
 | `--ext` \<extension\> | Specify file extension<br>Can be used multiple times | all files |
 | `--fix` | Automatically fix problems | `false` |
 | `-h`, `--help` | Print available options | |
