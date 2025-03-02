@@ -1,5 +1,5 @@
 import * as assert from 'assert/strict';
-import Parser = require('../index');
+import Parser from '../index';
 
 declare interface Test {
 	desc: string;

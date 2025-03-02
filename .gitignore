@@ -9,6 +9,7 @@ dist/
 /printed/*
 /.vscode/
 /.eslintcache*
+/.wikilintcache
 /.markdownlint.json
 /.nyc_output/
 /.cache/

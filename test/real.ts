@@ -5,7 +5,7 @@ import type {Config} from '../base';
 
 /* NOT FOR BROWSER ONLY */
 
-import Parser = require('../index');
+import Parser from '../index';
 
 /* NOT FOR BROWSER ONLY END */
 
