@@ -1,4 +1,4 @@
-import Parser = require('../index');
+import Parser from '../index';
 
 declare interface Test {
 	desc: string;
